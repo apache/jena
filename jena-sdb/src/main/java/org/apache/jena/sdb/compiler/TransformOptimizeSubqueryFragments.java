@@ -24,12 +24,15 @@ import org.apache.jena.sparql.algebra.OpVisitor;
 import org.apache.jena.sparql.algebra.OpVisitorBase;
 import org.apache.jena.sparql.algebra.TransformCopy;
 import org.apache.jena.sparql.algebra.Transformer;
+import org.apache.jena.sparql.algebra.op.Op1;
 import org.apache.jena.sparql.algebra.op.Op2;
 import org.apache.jena.sparql.algebra.op.OpBGP;
+import org.apache.jena.sparql.algebra.op.OpGraph;
 import org.apache.jena.sparql.algebra.op.OpJoin;
 import org.apache.jena.sparql.algebra.op.OpLeftJoin;
 import org.apache.jena.sparql.algebra.op.OpMinus;
 import org.apache.jena.sparql.algebra.op.OpTable;
+import org.apache.jena.sparql.algebra.op.OpUnion;
 import org.apache.jena.sparql.core.BasicPattern;
 
 import java.util.ArrayDeque;
@@ -39,11 +42,14 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * For large datasets, the performance of the OPTIONAL joins in SQL can suffer, as the subqueries
+ * For large datasets, the performance of the OPTIONAL joins and MINUS in SQL can suffer, as the subqueries
  * generate large views which are expensive to join.
  *
  * This optimizer transforms the algebra to insert the restrictions from outside of the optional subquery,
  * reducing the amount of data that has to be joined.
+ *
+ * By reducing the amount of data that is considered in the LEFT JOIN/MINUS operations, the
+ * efficiency and performance of such constructs is greatly improved in most cases.
  */
 public class TransformOptimizeSubqueryFragments extends TransformCopy {
     private Deque<Op> tracker;
@@ -106,6 +112,20 @@ public class TransformOptimizeSubqueryFragments extends TransformCopy {
     }
 
     /**
+     * Run transformation on unions
+     *
+     * @param opUnion
+     * @param opLeft
+     * @param opRight
+     * @return
+     */
+    @Override
+    public Op transform(OpUnion opUnion, Op opLeft, Op opRight) {
+        OpTransformer transformer = new OpTransformer(opUnion, opLeft, opRight);
+        return super.transform(opUnion, transformer.opLeft, transformer.opRight);
+    }
+
+    /**
      * Helper class to perform the transformation, as it is used for OpJoin, OpLeftJoin and OpMinus
      */
     private class OpTransformer {
@@ -124,13 +144,19 @@ public class TransformOptimizeSubqueryFragments extends TransformCopy {
         }
 
         private void transform() {
-            // Add statements from left to right, unless left is table op
-            if (!(opLeft instanceof OpTable)) {
-                opRight = addStatements(opRight, opLeft);
+            // Holding place for any triples that might need to be added to the pattern,
+            // But won't know until a later op in the tracker is processed
+            BasicPattern potentialAdditions = new BasicPattern();
+
+            if (tracker.contains(opCurrent)) {
+                // Add statements from left to right, unless left is table op
+                if (!(opLeft instanceof OpTable)) {
+                    opRight = addStatements(opRight, opLeft, potentialAdditions);
+                }
             }
 
             // If we have previous operations in the tracket
-            if (tracker.size() > 1) {
+            if (needToProcess()) {
                 // Iterate through the tracker
                 Iterator<Op> iter = tracker.iterator();
                 while (iter.hasNext()) {
@@ -138,78 +164,117 @@ public class TransformOptimizeSubqueryFragments extends TransformCopy {
                     // As long as the operation is not the one being transformed
                     if (op != opCurrent) {
                         // Copy statements from previous operations into the subpatterns
-                        opLeft = addStatements(opLeft, op);
-                        opRight = addStatements(opRight, op);
+                        opLeft = addStatements(opLeft, op, potentialAdditions);
+                        opRight = addStatements(opRight, op, potentialAdditions);
                     }
                 }
             }
         }
 
+        /**
+         * Determine if there are entries in the tracker that need to be processed
+         *
+         * @return
+         */
+        private boolean needToProcess() {
+            // If the current op is in the tracker
+            if (tracker.contains(opCurrent)) {
+                // Ensure there are at least 2 tracked items
+                return tracker.size() > 1;
+            }
+
+            // The current op isn't tracked, so there needs to be at least one entry.
+            return tracker.size() > 0;
+
+        }
+
         // Add statements from src innto dest
-        private Op addStatements(Op dest, Op src) {
+        private Op addStatements(Op dest, Op src, BasicPattern potentialAdditions) {
             // Only needed if destination is a Basic Graph Pattern
             if (OpBGP.isBGP(dest)) {
                 if (src instanceof Op2) {
                     // Get the left side of an Op2 from src
-                    Op opLeft = ((Op2)src).getLeft();
+                    Op opLeft = ((Op2) src).getLeft();
 
                     // If the left side is a Basic Graph Pattern
                     if (OpBGP.isBGP(opLeft)) {
                         // Copy statements from the Basic Graph Pattern to the destination
-                        dest = addStatements(dest, opLeft);
+                        dest = addStatements(dest, opLeft, potentialAdditions);
                     } else {
                         // Not a Basic Graph Pattern
                         // Determine if we should copy statements from the right hand side
-                        if (shouldRecurseRight((Op2)src)) {
+                        if (shouldRecurseRight((Op2) src)) {
                             // Add statements from the right hand side of the op to the destination
-                            dest = addStatements(dest, ((Op2)src).getRight());
+                            dest = addStatements(dest, ((Op2) src).getRight(), potentialAdditions);
                         }
 
                         // Determine if we should copy statements from the left hand side
                         if (shouldRecurseLeft(dest, src)) {
                             // Add statements from the left hand side of the op to the destination
-                            dest = addStatements(dest, opLeft);
+                            dest = addStatements(dest, opLeft, potentialAdditions);
                         }
+                    }
+                } else if (src instanceof Op1) {
+                    if (!(src instanceof OpGraph)) {
+                        dest = addStatements(dest, ((Op1) src).getSubOp(), potentialAdditions);
                     }
                 } else if (OpBGP.isBGP(src)) {
                     // If the source is a Basic Graph Pattern we need to copy matching statements into the destination
                     BasicPattern destP = new BasicPattern( ((OpBGP)dest).getPattern() );
                     BasicPattern srcP  = ((OpBGP)src).getPattern();
 
+                    // See if there are any potential additions to consider
+                    if (potentialAdditions != null && potentialAdditions.size() > 0) {
+                        // Get variables names in the source pattern
+                        Set<String> srcNames = getVariableNames(srcP);
+                        for (Triple potentialT : potentialAdditions) {
+                            // If the potential triple is referenced in the source
+                            if (srcNames.contains(potentialT.getObject().getName())) {
+                                // Add it to the destination
+                                addToPatternIfNotPresent(destP, potentialT);
+                            }
+                        }
+                    }
+
+                    // Record the current size of dest, so that we can check if any triples have been added
+                    // after all loops are complete
                     int initialCount = destP.size();
                     int loopCount;
                     do {
                         // Record the current size of the destination pattern
                         loopCount = destP.size();
 
-                        // Get any variable names that are subjects in the destination
-                        Set<String> names = getSubjectVariableNames(destP);
+                        // Get any variable names that are in the destination
+                        Set<String> destNames = getVariableNames(destP);
 
                         // Iterate through all of the statements in the source BGP
                         for (Triple srcT : srcP) {
-                            if (srcT.getSubject().isVariable() && names.contains(srcT.getSubject().getName())) {
+                            if (srcT.getSubject().isVariable() && destNames.contains(srcT.getSubject().getName())) {
                                 // If the subject in the source is a variable
                                 // and the name is in the list of destination variables
                                 if (srcT.getObject().isVariable()) {
                                     // And the object in the source is a variable
                                     // Check that the name binds to the destination
-                                    if (names.contains(srcT.getObject().getName())) {
+                                    if (destNames.contains(srcT.getObject().getName())) {
                                         // Add the triple to the destination if it is not already present
-                                        if (!isInPattern(destP, srcT)) {
-                                            destP.add(srcT);
-                                        }
+                                        addToPatternIfNotPresent(destP, srcT);
+                                    } else {
+                                        // Not currently bound to the destination, so add to the potential list
+                                        addToPatternIfNotPresent(potentialAdditions, srcT);
                                     }
                                 } else {
                                     // The object is a literal or resource
                                     // So add the triple to the destination if it is not already present
-                                    if (!isInPattern(destP, srcT)) {
-                                        destP.add(srcT);
-                                    }
+                                    addToPatternIfNotPresent(destP, srcT);
                                 }
-                            } else if (srcT.getObject().isVariable() && names.contains(srcT.getObject().getName())) {
-                                // If the object is a variable, and the name is in the list of destination variables
-                                if (!isInPattern(destP, srcT)) {
-                                    destP.add(srcT);
+                            } else if (srcT.getObject().isVariable()) {
+                                // If the object is a variable
+                                // Check the name is in the list of destination variables
+                                if (destNames.contains(srcT.getObject().getName())) {
+                                    addToPatternIfNotPresent(destP, srcT);
+                                } else {
+                                    // Not currently bound to the destination, so add to the potential list
+                                    addToPatternIfNotPresent(potentialAdditions, srcT);
                                 }
                             }
                         }
@@ -226,6 +291,20 @@ public class TransformOptimizeSubqueryFragments extends TransformCopy {
 
             // Return the destination
             return dest;
+        }
+
+        /**
+         * Add a triple to the pattern if not already present
+         *
+         * @param pattern
+         * @param triple
+         */
+        private void addToPatternIfNotPresent(BasicPattern pattern, Triple triple) {
+            if (pattern != null) {
+                if (!isInPattern(pattern, triple)) {
+                    pattern.add(triple);
+                }
+            }
         }
 
         /**
@@ -259,9 +338,10 @@ public class TransformOptimizeSubqueryFragments extends TransformCopy {
         private boolean shouldRecurseRight(Op2 op) {
             // If the operator is a join
             if (op instanceof OpJoin) {
+                Op opLeft = op.getLeft();
                 // If the left side is an op2, and the left side of it is NOT an OpTable
-                if (op.getLeft() instanceof Op2) {
-                    return ((Op2) op.getLeft()).getLeft() instanceof OpTable;
+                if (opLeft instanceof Op2) {
+                    return (!(opLeft instanceof OpTable) && !(opLeft instanceof OpGraph));
                 }
             }
 
@@ -291,15 +371,18 @@ public class TransformOptimizeSubqueryFragments extends TransformCopy {
          * @param bp
          * @return
          */
-        private Set<String> getSubjectVariableNames(BasicPattern bp) {
+        private Set<String> getVariableNames(BasicPattern bp) {
             final Set<String> names = new HashSet<>();
 
             for (Triple triple : bp) {
                 if (triple.getSubject().isVariable()) {
                     names.add(triple.getSubject().getName());
                 }
-            }
 
+                if (triple.getObject().isVariable()) {
+                    names.add(triple.getObject().getName());
+                }
+            }
             return names;
         }
     }
