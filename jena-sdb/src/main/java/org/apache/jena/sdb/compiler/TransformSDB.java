@@ -28,6 +28,7 @@ import java.util.Set ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.query.SortCondition;
 import org.apache.jena.sdb.core.AliasesSql ;
 import org.apache.jena.sdb.core.SDBRequest ;
 import org.apache.jena.sdb.core.ScopeEntry ;
@@ -43,6 +44,8 @@ import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.TransformCopy ;
 import org.apache.jena.sparql.algebra.op.* ;
 import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.expr.ExprAggregator;
+import org.apache.jena.sparql.expr.ExprVar;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -190,16 +193,48 @@ public class TransformSDB extends TransformCopy
     
     @Override
     public Op transform(OpProject opProject, Op subOp)
-    { 
+    {
+        // If the an OpOrder has been pushed onto an SQL Op
+        if (opProject.getSubOp() instanceof OpOrder && SDB_QC.isOpSQL(subOp) ) {
+            // Just return an update Project, without a bridge
+            return opProject.copy(subOp);
+        }
+
         //request.getStore().getSQLBridgeFactory().create(request, null, null)
         if ( ! SDB_QC.isOpSQL(subOp) )
             return super.transform(opProject, subOp) ;
-        
+
         // Need to not do bridge elsewhere.
-        List<Var> vars = opProject.getVars() ;
-        return doBridge(request, (OpSQL)subOp, vars, opProject) ;
+        List<Var> vars = opProject.getVars();
+        return doBridge(request, (OpSQL) subOp, vars, opProject);
     }
-    
+
+    @Override
+    public Op transform(OpOrder opOrder, Op subOp) {
+        if (request.OrderTranslation) {
+            // If this Order has an OpSQL child
+            if (SDB_QC.isOpSQL(subOp)) {
+                // Check that all of the SortConditions are simple variable expressions
+                boolean orderInSQL = true;
+                for (SortCondition sc : opOrder.getConditions()) {
+                    if (!(sc.getExpression() instanceof ExprVar)) {
+                        orderInSQL = false;
+                    }
+                }
+
+                // Simple sorts, so copy them on to the OpSQL and drop the OpOrder
+                // (Ordering is then applied in the database, not in memory
+                if (orderInSQL) {
+                    OpSQL opSQL = (OpSQL) subOp;
+                    opSQL.setSortConditions(opOrder.getConditions());
+                    return opSQL;
+                }
+            }
+        }
+
+        return super.transform(opOrder, subOp);
+    }
+
     @Override
     public Op transform(OpService opService, Op subOp)
     {
@@ -207,7 +242,7 @@ public class TransformSDB extends TransformCopy
         // See ARQ Optimize class for a better way to do this.
         return opService ;
     }
-    
+
     // See QueryCompilerMain.SqlNodesFinisher.visit(OpExt op)
     // Be careful about being done twice.
     // XXX SHARE CODE!

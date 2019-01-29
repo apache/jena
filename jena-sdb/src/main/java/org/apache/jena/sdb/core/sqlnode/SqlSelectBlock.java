@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.jena.query.SortCondition;
 import org.apache.jena.sdb.core.* ;
 import org.apache.jena.sdb.core.sqlexpr.SqlColumn ;
 import org.apache.jena.sdb.core.sqlexpr.SqlExpr ;
@@ -62,7 +63,8 @@ public class SqlSelectBlock extends SqlNodeBase1
     private SqlTable vTable ;           // Naming base for renamed columns
     private Scope idScope = null ;      // Scopes are as the wrapped SqlNode unless explicitly changed.
     private Scope nodeScope = null ;
-    
+
+    private List<SortCondition> sortConditions = null;
     
     static public SqlNode distinct(SDBRequest request, SqlNode sqlNode)
     { 
@@ -222,6 +224,9 @@ public class SqlSelectBlock extends SqlNodeBase1
     {
         return distinct ;
     }
+
+    public List<SortCondition> getSortConditions() { return this.sortConditions; }
+    public void setSortConditions(List<SortCondition> sortConditions) { this.sortConditions = sortConditions; }
 
     private void setDistinct(boolean isDistinct)
     {

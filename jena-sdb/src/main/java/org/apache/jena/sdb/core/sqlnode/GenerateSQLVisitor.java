@@ -23,8 +23,11 @@ import java.util.Set ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.SortCondition;
 import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.core.Annotations ;
+import org.apache.jena.sdb.core.ScopeEntry;
 import org.apache.jena.sdb.core.sqlexpr.S_Equal ;
 import org.apache.jena.sdb.core.sqlexpr.SqlColumn ;
 import org.apache.jena.sdb.core.sqlexpr.SqlExpr ;
@@ -115,6 +118,10 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         if ( sqlSelectBlock.getConditions().size() > 0 )
             genWHERE(sqlSelectBlock.getConditions()) ;
 
+        // ORDDER
+        out.ensureStartOfLine() ;
+        genOrder(sqlSelectBlock) ;
+
         // LIMIT/OFFSET
         out.ensureStartOfLine() ;
         genLimitOffset(sqlSelectBlock) ;
@@ -146,6 +153,44 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     {
         // By default, NOP.
     }
+
+    protected void genOrder(SqlSelectBlock sqlSelectBlock) {
+        StringBuilder orderBuilder = new StringBuilder();
+
+        List<SortCondition> sortConditions = sqlSelectBlock.getSortConditions();
+        if (sortConditions != null && sortConditions.size() > 0) {
+            for (SortCondition sc : sortConditions) {
+                if (orderBuilder.length() > 0) {
+                    orderBuilder.append(", ");
+                }
+
+                // Find the correct column for this condition
+                for (ColAlias ca : sqlSelectBlock.getCols()) {
+                    if ("lex".equals(ca.getColumn().getColumnName())) {
+                        ScopeEntry se = ca.getColumn().getTable().getNodeScope().findScopeForVar(sc.getExpression().asVar());
+                        if (se != null) {
+                            orderBuilder.append(ca.getColumn().getFullColumnName());
+                            switch (sc.getDirection()) {
+                                case Query.ORDER_DESCENDING:
+                                    orderBuilder.append(" DESC");
+                                    break;
+
+                                case Query.ORDER_ASCENDING:
+                                    orderBuilder.append(" ASC");
+                                    break;
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (orderBuilder.length() > 0) {
+            out.println("ORDER BY " + orderBuilder.toString());
+        }
+    }
+
 
     protected void genLimitOffset(SqlSelectBlock sqlSelectBlock)
     {

@@ -70,6 +70,8 @@ public class SDB
     public static final Symbol annotateGeneratedSQL     = SDBConstants.allocSymbol("annotateGeneratedSQL") ;
 
     public static final Symbol optimizeSubqueryFragments = SDBConstants.allocSymbol("optimizeSubqueryFragments") ;
+
+    public static final Symbol optimizeOrderClause = SDBConstants.allocSymbol("optimizeOrderClause") ;
     // ----------------------------------
     
     // Global context is the ARQ context.

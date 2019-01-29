@@ -23,6 +23,8 @@ import static org.apache.jena.atlas.iterator.Iter.* ;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.jena.sdb.core.sqlnode.SqlSelectBlock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.jena.query.Query ;
@@ -87,6 +89,17 @@ public class SDB_QC
                                      SDBRequest request)
     {
         SqlNode sqlNode = opSQL.getSqlNode() ;
+
+        // If any sort conditions have been set, pass them on to the SQL Node - ensuring the SQL Node is a select block
+        List<SortCondition> sortConditions = opSQL.getSortConditions();
+        if (sortConditions != null && sortConditions.size() > 0) {
+            if ( ! sqlNode.isSelectBlock() ) {
+                sqlNode = SqlSelectBlock.project(request, sqlNode) ;
+            }
+
+            sqlNode.asSelectBlock().setSortConditions(sortConditions);
+        }
+
         String sqlStmt = request.getStore().getSQLGenerator().generateSQL(request, sqlNode) ;
         return sqlStmt ; 
     }

@@ -227,6 +227,8 @@ public abstract class QueryCompilerMain implements QueryCompiler
             // Put back project - as an OpProject to leave for the bridge.
             OpSQL x = new OpSQL(n, opProject, request) ;
             x.setBridge(opSQL.getBridge()) ;
+            // Ensure any sort conditions are copied to the new OpSQL
+            x.setSortConditions(opSQL.getSortConditions());
             // Bridge will be set later.
             // Is OpProject needed?
             return new OpProject(x, pv) ;
