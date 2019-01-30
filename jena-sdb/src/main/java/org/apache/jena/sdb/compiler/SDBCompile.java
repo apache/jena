@@ -125,7 +125,7 @@ public class SDBCompile
             request.DistinctTranslation = true ;
         }
 
-        if (context.isTrueOrUndef(SDB.optimizeOrderClause))
+        if (context.isTrue(SDB.optimizeOrderClause))
         {
             request.OrderTranslation = true;
         }

@@ -47,7 +47,7 @@ public class SDBRequest extends StoreHolder
     public boolean LeftJoinTranslation = true ;     // Does the DB support general join expressions? 
     public boolean LimitOffsetTranslation = false ; // Does the DB grok the Limit/Offset SQL?
     public boolean DistinctTranslation = true ;     // Some DBs can't do DISTINCT on CLOBS.
-    public boolean OrderTranslation = true ;        // Allow translation of ORDER to SQL to be configurable
+    public boolean OrderTranslation = false ;       // Allow translation of ORDER to SQL to be configurable
 
     private Context context ;
 
