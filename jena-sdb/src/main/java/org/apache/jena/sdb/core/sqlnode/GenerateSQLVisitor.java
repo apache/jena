@@ -160,27 +160,46 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         List<SortCondition> sortConditions = sqlSelectBlock.getSortConditions();
         if (sortConditions != null && sortConditions.size() > 0) {
             for (SortCondition sc : sortConditions) {
-                if (orderBuilder.length() > 0) {
-                    orderBuilder.append(", ");
-                }
+                ColAlias typeColumn = null;
+                ColAlias lexColumn = null;
 
                 // Find the correct column for this condition
                 for (ColAlias ca : sqlSelectBlock.getCols()) {
-                    if ("lex".equals(ca.getColumn().getColumnName())) {
+                    if ("type".equals(ca.getColumn().getColumnName())) {
                         ScopeEntry se = ca.getColumn().getTable().getNodeScope().findScopeForVar(sc.getExpression().asVar());
                         if (se != null) {
-                            orderBuilder.append(ca.getColumn().getFullColumnName());
-                            switch (sc.getDirection()) {
-                                case Query.ORDER_DESCENDING:
-                                    orderBuilder.append(" DESC");
-                                    break;
-
-                                case Query.ORDER_ASCENDING:
-                                    orderBuilder.append(" ASC");
-                                    break;
-                            }
-                            break;
+                            typeColumn = ca;
                         }
+                    } else if ("lex".equals(ca.getColumn().getColumnName())) {
+                        ScopeEntry se = ca.getColumn().getTable().getNodeScope().findScopeForVar(sc.getExpression().asVar());
+                        if (se != null) {
+                            lexColumn = ca;
+                        }
+                    }
+                }
+
+                if (typeColumn != null && lexColumn != null) {
+                    if (orderBuilder.length() > 0) {
+                        orderBuilder.append(", ");
+                    }
+
+                    switch (sc.getDirection()) {
+                        case Query.ORDER_DESCENDING:
+                            orderBuilder.append(typeColumn.getColumn().getFullColumnName()).append(" DESC");
+                            orderBuilder.append(", ");
+                            orderBuilder.append(lexColumn.getColumn().getFullColumnName()).append(" DESC");
+                            break;
+
+                        case Query.ORDER_ASCENDING:
+                            orderBuilder.append(typeColumn.getColumn().getFullColumnName()).append(" ASC");
+                            orderBuilder.append(", ");
+                            orderBuilder.append(lexColumn.getColumn().getFullColumnName()).append(" DESC");
+                            break;
+
+                        default:
+                            orderBuilder.append(typeColumn.getColumn().getFullColumnName());
+                            orderBuilder.append(", ");
+                            orderBuilder.append(lexColumn.getColumn().getFullColumnName());
                     }
                 }
             }
