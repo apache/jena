@@ -30,6 +30,9 @@ import org.apache.jena.sdb.sql.TableUtils ;
 import org.apache.jena.sdb.store.TableDesc ;
 import org.apache.jena.sparql.util.NodeUtils ;
 
+import static java.sql.Connection.TRANSACTION_NONE;
+import static java.sql.Connection.TRANSACTION_READ_UNCOMMITTED;
+
 public abstract class TupleLoaderBase extends org.apache.jena.sdb.store.TupleLoaderBase implements TupleLoaderBasics {
 	
 	PreparedStatement insertTupleLoader;
@@ -62,16 +65,42 @@ public abstract class TupleLoaderBase extends org.apache.jena.sdb.store.TupleLoa
 	}
 	
 	protected void init() throws SQLException {
-	    ensureTempTables() ;
-		// Prepare those statements
-		insertNodeLoader = connection().prepareStatement(getInsertTempNodes());
-		insertTupleLoader = connection().prepareStatement(getInsertTempTuples());
-		insertNodes = getLoadNodes();
-		insertTuples = getLoadTuples();
-		deleteTuples = connection().prepareStatement(getDeleteTuples());
-		deleteAllTuples = connection().prepareStatement(getDeleteAllTuples());
-		clearNodeLoader = connection().prepareStatement(getClearTempNodes());
-		clearTupleLoader = connection().prepareStatement(getClearTempTuples());
+		TupleLoaderDirect directLoader = null;
+
+		switch (connection().getSqlConnection().getTransactionIsolation()) {
+			case TRANSACTION_NONE:
+			case TRANSACTION_READ_UNCOMMITTED:
+				break;
+
+			default:
+				if (this instanceof TupleLoaderDirect) {
+					directLoader = (TupleLoaderDirect) this;
+				}
+		}
+
+		if (directLoader != null) {
+			// Prepare those statements
+			insertNodeLoader = connection().prepareStatement(directLoader.getDirectInsertNodes());
+			insertTupleLoader = connection().prepareStatement(directLoader.getDirectInsertTuples());
+			deleteTuples = connection().prepareStatement(getDeleteTuples());
+			deleteAllTuples = connection().prepareStatement(getDeleteAllTuples());
+
+			insertNodes = null;
+			insertTuples = null;
+			clearNodeLoader = null;
+			clearTupleLoader = null;
+		} else {
+			ensureTempTables();
+			// Prepare those statements
+			insertNodeLoader = connection().prepareStatement(getInsertTempNodes());
+			insertTupleLoader = connection().prepareStatement(getInsertTempTuples());
+			insertNodes = getLoadNodes();
+			insertTuples = getLoadTuples();
+			deleteTuples = connection().prepareStatement(getDeleteTuples());
+			deleteAllTuples = connection().prepareStatement(getDeleteAllTuples());
+			clearNodeLoader = connection().prepareStatement(getClearTempNodes());
+			clearTupleLoader = connection().prepareStatement(getClearTempTuples());
+		}
 	}
 	
 	public int getArity() {
@@ -181,8 +210,10 @@ public abstract class TupleLoaderBase extends org.apache.jena.sdb.store.TupleLoa
 	        connection().closePreparedStatement(insertNodeLoader);
 	        connection().closePreparedStatement(deleteTuples);
 	        connection().closePreparedStatement(deleteAllTuples);
-	        connection().closePreparedStatement(clearTupleLoader);
-	        connection().closePreparedStatement(clearNodeLoader);
+	        if (clearTupleLoader != null)
+	        	connection().closePreparedStatement(clearTupleLoader);
+	        if (clearNodeLoader != null)
+	        	connection().closePreparedStatement(clearNodeLoader);
 	    } catch (SQLException ex) {}
 	}
 
@@ -207,23 +238,25 @@ public abstract class TupleLoaderBase extends org.apache.jena.sdb.store.TupleLoa
 	
 	protected void flush() {
 		if (tupleNum == 0) return;
-		
+
 		boolean handleTransaction = startTransaction(connection());
-		
+
 		try {
 			if (amLoading) {
 				insertNodeLoader.executeBatch();
 				insertTupleLoader.executeBatch();
-				connection().execUpdate(insertNodes);
-				connection().execUpdate(insertTuples);
-				if (!handleTransaction || !clearsOnCommit()) {
-					clearNodeLoader.execute();
-					clearTupleLoader.execute();
+				if (insertNodes != null && insertTuples != null) {
+					connection().execUpdate(insertNodes);
+					connection().execUpdate(insertTuples);
+					if (!handleTransaction || !clearsOnCommit()) {
+						clearNodeLoader.execute();
+						clearTupleLoader.execute();
+					}
 				}
 			} else {
 				deleteTuples.executeBatch();
 			}
-			
+
 			endTransaction(connection(), handleTransaction);
 		} catch (SQLException e) {
 			if (handleTransaction)
@@ -363,7 +396,7 @@ public abstract class TupleLoaderBase extends org.apache.jena.sdb.store.TupleLoa
         } catch (SQLException ex)
         {
             // Some problem - due to the differences in databases we didn't check whether tables existed first.
-            // So attempt to cleanup, then tryagain to create the temporary tables.  
+            // So attempt to cleanup, then tryagain to create the temporary tables.
             TableUtils.dropTableSilent(connection(), getNodeLoader()) ;
             TableUtils.dropTableSilent(connection(), getTupleLoader()) ;
             createTempTables() ;    // Allow this to throw the SQLException
