@@ -38,25 +38,45 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
         return m;
         }
     
+    /** Execute an action in a transaction if the model supports transactions.*/
+    private static void exec(Model m, Resource root, Runnable action) {
+        boolean b = m.supportsTransactions();
+        if ( b ) m.begin();
+        try {
+            action.run();
+            if ( b ) m.commit();
+        }
+        catch (Throwable t) {
+            // Compatibility ... 
+            if ( b ) {
+                m.abort();
+                throw new TransactionAbortedException(root, t);
+            }
+            else
+                throw t;
+        }
+    }
+    
     @Override public Object open( Assembler a, Resource root, Mode mode )
         { 
         Model m = openModel( a, root, getInitialContent( a, root ), mode );
-        addContent( root, m, getContent( a, root ) );
-        m.setNsPrefixes( getPrefixMapping( a, root ) );
+        exec(m, root, ()->{
+            // JENA-1663: Do these together inside a transaction.
+            addContent( root, m, getContent( a, root ) );
+            addPrefixes( m, a, root );
+        });
         return m; 
         }
 
-    protected void addContent( Resource root, Model m, Content c )
-        {
-        if (m.supportsTransactions())
-            {
-            m.begin();
-            try { c.fill( m ); m.commit(); }
-            catch (Throwable t) { m.abort(); throw new TransactionAbortedException( root, t ); }
-            }
-        else
-            c.fill( m );
-        }
+    /** Add contents, inside a model-transaction if applicable */
+    protected void addContent( Resource root, Model m, Content c ) {
+        c.fill( m );
+    }
+    
+    /** Add prefixes, inside a model-transaction if applicable */
+    protected void addPrefixes(Model m, Assembler a, Resource root) {
+        m.setNsPrefixes( getPrefixMapping( a, root ) );
+    }
     
     private PrefixMapping getPrefixMapping( Assembler a, Resource root )
         {
