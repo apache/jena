@@ -29,11 +29,13 @@ class ServerConfig {
     /** Server port. This is the http port when both http and https are active. */
     public int port;
     /** Loopback */
-    public boolean loopback           = false;
+    public boolean   loopback         = false;
     /** The dataset name */
     public String    datasetPath      = null; 
     /** Allow update */
     public boolean   allowUpdate      = false;
+    
+    public boolean   verboseLogging   = false;
     
     public boolean withPing           = false;
     public boolean withStats          = false;
@@ -44,7 +46,7 @@ class ServerConfig {
     public String serverConfig        = null;
     
     /** No registered datasets without it being an error. */
-    public boolean empty         = false ;
+    public boolean empty              = false ;
     /** General query processor servlet */
     public String addGeneral          = null ;
     

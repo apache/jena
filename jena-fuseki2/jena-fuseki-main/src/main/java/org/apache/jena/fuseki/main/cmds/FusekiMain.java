@@ -185,6 +185,8 @@ public class FusekiMain extends CmdARQ {
 
         @Override
         protected void processModulesAndArgs() {
+            serverConfig.verboseLogging = super.isVerbose(); 
+            
             boolean allowEmpty = contains(argEmpty) || contains(argSparqler);
 
             // ---- Checking consistency
@@ -452,6 +454,7 @@ public class FusekiMain extends CmdARQ {
         private static FusekiServer buildServer(FusekiServer.Builder builder, ServerConfig serverConfig) {
             builder.port(serverConfig.port);
             builder.loopback(serverConfig.loopback);
+            builder.verbose(serverConfig.verboseLogging);
             
             if ( serverConfig.addGeneral != null )
                 // Add SPARQL_QueryGeneral as a general servlet, not reached by the service router. 
