@@ -57,7 +57,6 @@ public class HttpAction
     
     // -- Valid only for operational actions (e.g. SPARQL).
     
-    public  String          xendpointName    = null ;        // Endpoint name srv was found under 
     public  Endpoint        endpoint        = null ;
     private Transactional   transactional   = null ;
     private boolean         isTransactional = false ;
