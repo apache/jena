@@ -20,6 +20,8 @@ package org.apache.jena.sdb.core.sqlnode;
 
 import java.util.List ;
 import java.util.Set ;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Lib ;
@@ -89,12 +91,23 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
 //            levelSelectBlock-- ;
 //            return ;
         }
-        
+
         genPrefix(sqlSelectBlock) ;
         out.print("SELECT ") ;
-        if ( sqlSelectBlock.getDistinct() )
-            out.print("DISTINCT ") ;
-        if ( annotate(sqlSelectBlock) ) 
+
+        // Holder of a GROUP BY (to replace DISTINCT)
+        String groupBy = null;
+
+        if ( sqlSelectBlock.getDistinct())
+        {
+            // See if we can use a GROUP BY instead of DISTINCT
+            groupBy = getDistinctAsGroupBy(sqlSelectBlock.getCols());
+
+            // If we don't have a GROUP BY, use DISTINCT
+            if (StringUtils.isEmpty(groupBy))
+                out.print("DISTINCT ") ;
+        }
+        if ( annotate(sqlSelectBlock) )
             out.ensureStartOfLine() ;
         out.incIndent() ;
         genColumnPrefix(sqlSelectBlock) ;
@@ -118,6 +131,14 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         if ( sqlSelectBlock.getConditions().size() > 0 )
             genWHERE(sqlSelectBlock.getConditions()) ;
 
+        // GROUP BY - Used to replace DISTINCT
+        if (!StringUtils.isEmpty(groupBy))
+        {
+            out.ensureStartOfLine();
+            out.print("GROUP BY ");
+            out.print(groupBy);
+        }
+
         // ORDDER
         out.ensureStartOfLine() ;
         genOrder(sqlSelectBlock) ;
@@ -127,7 +148,6 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         genLimitOffset(sqlSelectBlock) ;
         genSuffix(sqlSelectBlock) ;
         levelSelectBlock-- ;
-
     }
 
     /**
@@ -219,7 +239,94 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             out.println("OFFSET "+sqlSelectBlock.getStart()) ;
         
     }
-    
+
+    // Get a GROUP BY to replace a distinct if possible
+    // Using a GROUP BY and controlling the order of variables is more efficient than a DISTINCT
+    // and can reduce the number of temporary tables used
+    private String getDistinctAsGroupBy(List<ColAlias> cols)
+    {
+        if (cols == null || cols.size() == 0)
+            return null;
+
+        String tableName = null;
+
+        ColAlias sCol = null, pCol = null, oCol = null;
+        for (ColAlias col : cols)
+        {
+            if (tableName == null)
+            {
+                tableName = col.getColumn().getTable().getTableName();
+            }
+            else if (!tableName.equals(col.getColumn().getTable().getTableName()))
+            {
+                return null;
+            }
+
+            switch (col.getColumn().getColumnName())
+            {
+                case "s":
+                    if (sCol != null)
+                        return null;
+
+                    sCol = col;
+                    break;
+
+                case "p":
+                    if (pCol != null)
+                        return null;
+
+                    pCol = col;
+                    break;
+                case "o":
+                    if (oCol != null)
+                        return null;
+
+                    oCol = col;
+                    break;
+
+                default:
+                    return null;
+            }
+        }
+
+        if (sCol == null)
+        {
+            // Hint use of PredObjSubj index
+            return createCommaSeparated(pCol, oCol);
+        }
+        else if (pCol == null)
+        {
+            // Hint use of ObjSubjPred index
+            return createCommaSeparated(oCol, sCol);
+        }
+        else if (oCol != null)
+        {
+            // Hint use of SubjPredObj index
+            return createCommaSeparated(sCol, pCol, oCol);
+        }
+
+        return null;
+    }
+
+    // Convert the list of ColAlias parameters into a comma separated string
+    private String createCommaSeparated(ColAlias... cols)
+    {
+        StringBuilder builder = new StringBuilder();
+
+        for (ColAlias col : cols)
+        {
+            if (col != null)
+            {
+                if (builder.length() > 0)
+                    builder.append(", ");
+
+                builder.append(col.getColumn().getFullColumnName());
+            }
+        }
+
+        return builder.toString();
+    }
+
     private void print(List<ColAlias> cols)
     {
         String sep = "" ;
