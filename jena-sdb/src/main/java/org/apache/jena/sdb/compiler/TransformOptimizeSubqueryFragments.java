@@ -56,7 +56,6 @@ public class TransformOptimizeSubqueryFragments extends TransformCopy {
 
     /**
      * Static method to run the transformer (needs to keep track of visited nodes)
-     * @param op The algebra to rewrite
      */
     public static Op transform(Op op) {
         final Deque<Op> stack = new ArrayDeque<>();
@@ -71,11 +70,6 @@ public class TransformOptimizeSubqueryFragments extends TransformCopy {
 
     /**
      * Run transformation on joins
-     *
-     * @param opJoin
-     * @param opLeft
-     * @param opRight
-     * @return
      */
     @Override
     public Op transform(OpJoin opJoin, Op opLeft, Op opRight) {
@@ -85,11 +79,6 @@ public class TransformOptimizeSubqueryFragments extends TransformCopy {
 
     /**
      * Run transformation on leftjoins
-     *
-     * @param opLeftJoin
-     * @param opLeft
-     * @param opRight
-     * @return
      */
     @Override
     public Op transform(OpLeftJoin opLeftJoin, Op opLeft, Op opRight) {
@@ -99,11 +88,6 @@ public class TransformOptimizeSubqueryFragments extends TransformCopy {
 
     /**
      * Run transformation on minus
-     *
-     * @param opMinus
-     * @param opLeft
-     * @param opRight
-     * @return
      */
     @Override
     public Op transform(OpMinus opMinus, Op opLeft, Op opRight) {
@@ -113,11 +97,6 @@ public class TransformOptimizeSubqueryFragments extends TransformCopy {
 
     /**
      * Run transformation on unions
-     *
-     * @param opUnion
-     * @param opLeft
-     * @param opRight
-     * @return
      */
     @Override
     public Op transform(OpUnion opUnion, Op opLeft, Op opRight) {
@@ -155,7 +134,7 @@ public class TransformOptimizeSubqueryFragments extends TransformCopy {
                 }
             }
 
-            // If we have previous operations in the tracket
+            // If we have previous operations in the tracker
             if (needToProcess()) {
                 // Iterate through the tracker
                 Iterator<Op> iter = tracker.iterator();
@@ -173,8 +152,6 @@ public class TransformOptimizeSubqueryFragments extends TransformCopy {
 
         /**
          * Determine if there are entries in the tracker that need to be processed
-         *
-         * @return
          */
         private boolean needToProcess() {
             // If the current op is in the tracker
@@ -295,9 +272,6 @@ public class TransformOptimizeSubqueryFragments extends TransformCopy {
 
         /**
          * Add a triple to the pattern if not already present
-         *
-         * @param pattern
-         * @param triple
          */
         private void addToPatternIfNotPresent(BasicPattern pattern, Triple triple) {
             if (pattern != null) {
@@ -309,10 +283,6 @@ public class TransformOptimizeSubqueryFragments extends TransformCopy {
 
         /**
          * Can we recurse the left side of the root op
-         *
-         * @param current
-         * @param root
-         * @return
          */
         private boolean shouldRecurseLeft(Op current, Op root) {
             // If the operation is a join, leftjoin or minus
@@ -331,9 +301,6 @@ public class TransformOptimizeSubqueryFragments extends TransformCopy {
 
         /**
          * Can we recurse the right side of the op
-         *
-         * @param op
-         * @return
          */
         private boolean shouldRecurseRight(Op2 op) {
             // If the operator is a join
@@ -350,10 +317,6 @@ public class TransformOptimizeSubqueryFragments extends TransformCopy {
 
         /**
          * Test whether the triple is currently in the basic pattern
-         *
-         * @param bp
-         * @param t
-         * @return
          */
         private boolean isInPattern(BasicPattern bp, Triple t) {
             for (Triple bpt : bp) {
@@ -367,9 +330,6 @@ public class TransformOptimizeSubqueryFragments extends TransformCopy {
 
         /**
          * Extract any variable names that are subjects in the basic pattern
-         *
-         * @param bp
-         * @return
          */
         private Set<String> getVariableNames(BasicPattern bp) {
             final Set<String> names = new HashSet<>();
