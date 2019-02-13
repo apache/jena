@@ -27,8 +27,11 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-// This is nolonger in the services/javax.xml.datatype.DatatypeFactory file.
-/**
+// This is no longer in the services/javax.xml.datatype.DatatypeFactory file.
+/* ++++ Out of Date ++++
+ * Now jena's datatype use is hardwired so that other XML Datatype providers don't interfere. 
+ * ++++
+ * 
  * <p>Factory that creates new <code>javax.xml.datatype</code> <code>Object</code>s that map XML to/from Java <code>Object</code>s.</p>
  * 
  * <p id="DatatypeFactory.newInstance">{@link #newInstance()} is used to create a new <code>DatatypeFactory</code>.
