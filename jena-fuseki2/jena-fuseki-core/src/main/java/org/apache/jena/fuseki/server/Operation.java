@@ -27,10 +27,15 @@ import org.apache.jena.fuseki.servlets.ServiceDispatchRegistry;
  */
 public class Operation {
     
-    // Create intern'ed symbols. 
+    /** Create/intern. */ 
     static private NameMgr<Operation> mgr = new NameMgr<>(); 
     static public Operation register(String name, String description) {
-        return mgr.register(name, (x)->new Operation(x, description));
+        return mgr.register(name, (x)->create(x, description));
+    }
+    
+    /** Create; not registered */
+    static private Operation create(String name, String description) {
+        return new Operation(name, description);
     }
     
     public static final Operation Query          = register("Query", "SPARQL Query");

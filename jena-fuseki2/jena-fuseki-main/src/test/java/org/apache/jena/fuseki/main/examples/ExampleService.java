@@ -27,7 +27,7 @@ import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.web.HttpSC;
 
-public class SpecialService extends ActionREST {
+public class ExampleService extends ActionREST {
     static { LogCtl.setLog4j(); }
     
     @Override

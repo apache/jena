@@ -23,6 +23,7 @@ import static java.lang.String.format ;
 import java.util.List ;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.system.GraphLoadUtils;
@@ -37,6 +38,11 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphZero;
 
 public class SPARQL_QueryGeneral extends SPARQL_Query {
+    // In order to use as much of the main SPARQL code as possible, 
+    // this freestanding servlet mimics being a dataset service, 
+    // and inserts the loaded dataset at decideDataset.
+    // ActionService understands this - the operation is null. 
+    
     final static int MaxTriples = 100 * 1000 ;
 
     public SPARQL_QueryGeneral() {
@@ -54,24 +60,28 @@ public class SPARQL_QueryGeneral extends SPARQL_Query {
         return null ;
     }
     
-    /** SPARQL_QueryGeneral is a servlet to be called directly.
-     * It declares it is own {@code Operation} to fit into {@link ActionService#execCommonWorker}.
-     * The Fuseki service handling continues; 
-     * {@link SPARQL_Query} will ask for a dataset which will return the fixed, empty dataset.
-     * 
-     */
+    /** SPARQL_QueryGeneral is a servlet to be called directly. */
     @Override
     protected Operation chooseOperation(HttpAction action, DataService dataService) {
-        return Operation.Query;
+        return null;
     }
 
     @Override
-    protected DatasetGraph decideDataset(HttpAction action, Query query, String queryStringLog) {
-        DatasetDescription datasetDesc = getDatasetDescription(action, query) ;
-        if ( datasetDesc == null )
+    protected Pair<DatasetGraph, Query> decideDataset(HttpAction action, Query query, String queryStringLog) {
+        DatasetDescription datasetDesc = getDatasetDescription(action, query);
+        if ( datasetDesc == null ) {
             //ServletOps.errorBadRequest("No dataset description in protocol request or in the query string") ;
-            return new DatasetGraphZero();
-        return datasetFromDescriptionWeb(action, datasetDesc) ;
+            return Pair.create(new DatasetGraphZero(), query);
+        }
+        
+        // These will have been taken care of by the "getDatasetDescription"
+        if ( query.hasDatasetDescription() ) {
+            // Don't modify input.
+            query = query.cloneQuery();
+            query.getNamedGraphURIs().clear();
+            query.getGraphURIs().clear();
+        }
+        return Pair.create(datasetFromDescriptionWeb(action, datasetDesc), query) ;
     }
 
     /**

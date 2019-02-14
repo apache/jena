@@ -35,7 +35,7 @@ import org.apache.jena.util.FileUtils;
  * This example show adding a custom operation to Fuseki, with dispatch by {@code Content-Type}.
  * <p>
  * See {@link ExtendFuseki_AddService_1} fior a geenral description of the routing process.
- * @see SpecialService
+ * @see ExampleService
  */
 
 public class ExtendFuseki_AddService_3 {
@@ -64,7 +64,7 @@ public class ExtendFuseki_AddService_3 {
 
         // The handled for the new operation.
         
-        ActionService customHandler = new SpecialService();
+        ActionService customHandler = new ExampleService();
         
         FusekiServer server = 
             FusekiServer.create().port(PORT)

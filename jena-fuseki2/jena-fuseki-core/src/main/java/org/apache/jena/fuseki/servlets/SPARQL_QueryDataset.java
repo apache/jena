@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.query.Query ;
 import org.apache.jena.sparql.core.DatasetDescription ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -42,7 +43,7 @@ public class SPARQL_QueryDataset extends SPARQL_Query
      *  If the query has a dataset description.
      */
     @Override
-    protected DatasetGraph decideDataset(HttpAction action, Query query, String queryStringLog) {
+    protected Pair<DatasetGraph, Query> decideDataset(HttpAction action, Query query, String queryStringLog) {
         DatasetGraph dsg = action.getActiveDSG() ;
         DatasetDescription dsDesc = getDatasetDescription(action, query) ;
         if ( dsDesc != null ) {
@@ -52,6 +53,6 @@ public class SPARQL_QueryDataset extends SPARQL_Query
                 query.getNamedGraphURIs().clear() ;
             }
         }
-        return dsg ;
+        return Pair.create(dsg, query);
     }
 }

@@ -24,7 +24,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-  TS_EmbeddedFuseki.class,
+  TS_FusekiMain.class,
   TS_SecurityFuseki.class
 })
 public class TC_Fuseki {

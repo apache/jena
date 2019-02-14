@@ -71,7 +71,7 @@ public class ExtendFuseki_AddService_2 {
         FusekiBuilder.addServiceEP(dataService, Operation.Query, queryEndpoint);
 
         // The handled for the new operation.
-        ActionService customHandler = new SpecialService();
+        ActionService customHandler = new ExampleService();
         
         FusekiServer server = 
             FusekiServer.create().port(PORT)

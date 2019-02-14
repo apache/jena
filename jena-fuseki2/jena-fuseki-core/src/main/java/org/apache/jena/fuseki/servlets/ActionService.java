@@ -25,6 +25,8 @@ import static org.apache.jena.fuseki.server.CounterName.RequestsGood;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.function.BiFunction;
 
 import javax.servlet.ServletException;
 
@@ -38,8 +40,26 @@ import org.apache.jena.web.HttpSC;
 
 /** Service request lifecycle */
 public abstract class ActionService extends ActionBase {
+    
+    private final BiFunction<HttpAction, Operation, ActionService> selectProcessor;
+
+    /**
+     * ActionService for a directly called serlvet. The request handler will be
+     * {@code this.executeLifecycle}.
+     */
     protected ActionService() {
         super(Fuseki.actionLog);
+        selectProcessor = (action, operation)->this;
+    }
+
+    /**
+     * ActionService to redirect to another ActionService to be request handler will be
+     * {@code selectProcessor.executeLifecycle}.
+     * @see ServiceRouter
+     */
+    protected ActionService(BiFunction<HttpAction, Operation, ActionService> selectProcessor) {
+        super(Fuseki.actionLog);
+        this.selectProcessor = selectProcessor;
     }
 
     protected abstract void validate(HttpAction action);
@@ -85,7 +105,7 @@ public abstract class ActionService extends ActionBase {
         String endpointName = mapRequestToOperation(action, dataAccessPoint);
         
         // ServiceRouter dispatch
-        Operation operation = null;
+        Operation operation;
         if ( !endpointName.isEmpty() ) {
             operation = chooseOperation(action, dSrv, endpointName);
             if ( operation == null )
@@ -96,8 +116,6 @@ public abstract class ActionService extends ActionBase {
         } else {
             // Endpoint ""
             operation = chooseOperation(action, dSrv);
-            if ( operation == null )
-                ServletOps.errorBadRequest(format("dataset=%s", dataAccessPoint.getName()));
         }
 
         // ---- Auth checking.
@@ -120,15 +138,18 @@ public abstract class ActionService extends ActionBase {
             // No Endpoint name given; there may be several endpoints for the operation.
             // authorization is the AND of all endpoints.
             Collection<Endpoint> x = getEndpoints(dSrv, operation);
-            if ( x.isEmpty() )
+            if ( operation != null && x.isEmpty() )
                 throw new InternalErrorException("Inconsistent: no endpoints for "+operation);
             x.forEach(ep->{
                 Auth.allow(user, ep.getAuthPolicy(), ServletOps::errorForbidden);
             });
         }
         // ---- End auth checking.
-
-        ActionService handler = action.getServiceDispatchRegistry().findHandler(operation);
+        
+        // Decide the code to execute the request.
+        // For ServiceRouter, this involves a lookup in the service dispatch registry.
+        // For directly called services, they override the operations called by this.executeLifecycle. 
+        ActionService handler = selectProcessor.apply(action, operation);
         if ( handler == null )
             ServletOps.errorBadRequest(format("dataset=%s: op=%s", dataAccessPoint.getName(), operation.getName()));
         handler.executeLifecycle(action);
@@ -140,6 +161,8 @@ public abstract class ActionService extends ActionBase {
     // If asked for GSP_R and there are no endpoints for GSP_R, try GSP_RW.
     // Ditto Quads_R -> Quads_RW.
     private Collection<Endpoint> getEndpoints(DataService dSrv, Operation operation) {
+        if ( operation == null )
+            return Collections.emptySet();
         Collection<Endpoint> x = dSrv.getEndpoints(operation);
         if ( x == null || x.isEmpty() ) {
             if ( operation == Operation.GSP_R )

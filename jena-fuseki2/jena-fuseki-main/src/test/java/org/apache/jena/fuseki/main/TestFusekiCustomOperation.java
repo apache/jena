@@ -35,12 +35,15 @@ import org.apache.jena.fuseki.build.FusekiBuilder;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.servlets.ActionService;
+import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
+import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.web.HttpSC;
 import org.junit.Test;
 
 /** Test for adding a new operation */
@@ -49,7 +52,38 @@ public class TestFusekiCustomOperation {
     private static final String contentType = "application/special";
     private static final String endpointName = "special";
 
-    private final ActionService customHandler = new CustomService();
+    private final ActionService customHandler = new CustomTestService() {
+        @Override
+        protected void doGet(HttpAction action) {
+            action.response.setStatus(HttpSC.OK_200);
+            try {
+                action.response.setContentType(WebContent.contentTypeTextPlain);
+                action.response.getOutputStream().println("    ** Hello world (GET) **");
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected void doHead(HttpAction action) {
+            action.response.setStatus(HttpSC.OK_200);
+            action.response.setContentType(WebContent.contentTypeTextPlain);
+        }
+
+        @Override
+        protected void doPost(HttpAction action) {
+            action.response.setStatus(HttpSC.OK_200);
+            try {
+                action.response.setContentType(WebContent.contentTypeTextPlain);
+                action.response.getOutputStream().println("    ** Hello world (POST) **");
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    
     private final int port = WebLib.choosePort();
     private final String url = "http://localhost:"+port;
 
