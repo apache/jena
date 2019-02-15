@@ -25,6 +25,7 @@ import org.apache.jena.sdb.SDBException ;
 import org.apache.jena.sdb.Store ;
 import org.apache.jena.sdb.compiler.OpSQL ;
 import org.apache.jena.sdb.compiler.SDBCompile ;
+import org.apache.jena.sdb.compiler.TransformOptimizeSubqueryFragments;
 import org.apache.jena.sdb.core.SDBRequest ;
 import org.apache.jena.sdb.store.DatasetGraphSDB ;
 import org.apache.jena.sparql.ARQConstants ;
@@ -97,7 +98,12 @@ public class QueryEngineSDB extends QueryEngineBase
         // e.g. don't place filters
         // Op op = Algebra.optimize(originalOp, context) ;
         Op op = originalOp ;
-        
+
+        // Rewrite algebra to improve OPTIONAL and MINUS performance
+        if (context.isTrueOrUndef(SDB.optimizeSubqueryFragments)) {
+            op = TransformOptimizeSubqueryFragments.transform(op);
+        }
+
         // Do property functions.
         op = Transformer.transform(new TransformPropertyFunction(context), op) ;
         op = Transformer.transform(new TransformFilterEquality(), op) ;
