@@ -22,15 +22,13 @@ import java.util.List ;
 
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
+import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.ExprException ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.Function ;
-import org.apache.jena.sparql.function.FunctionBase ;
-import org.apache.jena.sparql.function.FunctionFactory ;
-import org.apache.jena.sparql.function.FunctionRegistry ;
+import org.apache.jena.sparql.function.*;
 import org.apache.jena.sparql.util.Context ;
 
 /** XPath and XQuery Functions and Operators 3.1
@@ -46,8 +44,14 @@ public class FN_Apply extends FunctionBase {
         if ( args.isEmpty() )
             throw new ExprException("fn:apply: no function to call (minimum number of args is one)");
     }
+    
     @Override
     public NodeValue exec(List<NodeValue> args) {
+        throw new InternalErrorException("fn:apply: exec(args) Should not have been called");
+    }
+
+    @Override
+    public NodeValue exec(List<NodeValue> args, FunctionEnv env) {
         if ( args.isEmpty() )
             throw new ExprException("fn:apply: no function to call (minimum number of args is one)");
         NodeValue functionId = args.get(0);
@@ -65,7 +69,7 @@ public class FN_Apply extends FunctionBase {
             throw new ExprEvalException("fn:apply: function id is an unbound variable (must be a URI)");
         if ( fnNode.isURI() ) {
             String functionIRI = fnNode.getURI();
-            Function function = cache1.getOrFill(functionIRI, ()->buildFunction(functionIRI));
+            Function function = cache1.getOrFill(functionIRI, ()->buildFunction(functionIRI, env));
             if ( function == null )
                 throw new ExprEvalException("fn:apply: Unknown function: <"+functionId+">");
             if ( function instanceof FunctionBase ) {
@@ -80,7 +84,7 @@ public class FN_Apply extends FunctionBase {
         throw new ExprEvalException("fn:apply: Weird function argument (arg 1): "+functionId);
     }
     
-    private Function buildFunction(String functionIRI) {
+    private Function buildFunction(String functionIRI, FunctionEnv functionEnv) {
         FunctionRegistry registry = chooseRegistry(functionEnv.getContext()) ;
         FunctionFactory ff = registry.get(functionIRI) ;
         if ( ff == null )
