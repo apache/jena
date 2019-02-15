@@ -25,7 +25,7 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.junit.After;
 import org.junit.Assert;
@@ -62,7 +62,7 @@ public abstract class BaseESTest {
         transportClient = new PreBuiltTransportClient(settings);
         try {
             transportClient.addTransportAddress(
-                    new InetSocketTransportAddress(InetAddress.getByName(ADDRESS), PORT)
+                    new TransportAddress(InetAddress.getByName(ADDRESS), PORT)
             );
         } catch (UnknownHostException ex) {
             Assert.fail("Failed to create transport client" + ex.getMessage());

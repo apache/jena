@@ -36,22 +36,6 @@ public class ProgressStreamRDF extends StreamRDFWrapper {
         this.monitor = monitor ;
     }
 
-    // Better that the app call start/finish on the monitor so that a number of
-    // inputs on the stream can call start/finish. i.e the monitor can be used
-    // for a batch of oeprations.
-    
-//    @Override
-//    public void start() {
-//        monitor.start();
-//        super.start();
-//    }
-//
-//    @Override
-//    public void finish() {
-//        super.finish();
-//        monitor.finish();
-//    }
-
     @Override
     public void triple(Triple triple) {
         super.triple(triple);

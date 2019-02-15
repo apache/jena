@@ -18,7 +18,6 @@
 
 package org.apache.jena.tdb2.loader.sequential;
 
-import org.apache.jena.atlas.lib.Timer;
 import org.apache.jena.tdb2.loader.base.LoaderOps;
 import org.apache.jena.tdb2.loader.base.MonitorOutput;
 import org.apache.jena.tdb2.loader.base.ProgressMonitor;
@@ -26,27 +25,24 @@ import org.apache.jena.tdb2.loader.base.ProgressMonitorOutput;
 import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 
 /**
- * This interface is the mechanism for building indexes given that at leasts one index
+ * This interface is the mechanism for building indexes given that at least one index
  * already exists (the "primary", which normally is SPO or GSPO).
  */
 public class BuilderSecondaryIndexes
 {
-    public static void createSecondaryIndexes(MonitorOutput output, TupleIndex primaryIndex, TupleIndex[] secondaryIndexes)
-    {
-        Timer timer = new Timer() ;
-        timer.startTimer() ;
+    public static void createSecondaryIndexes(MonitorOutput output, TupleIndex primaryIndex, TupleIndex[] secondaryIndexes) {
         boolean printTiming = true;
         for ( TupleIndex index : secondaryIndexes ) {
+            String msg = primaryIndex.getName()+"->"+index.getName();
             if ( index != null ) {
-                ProgressMonitor monitor = ProgressMonitorOutput.create(output, index.getName(), 
+                ProgressMonitor monitor = ProgressMonitorOutput.create(output, msg, 
                                                                        LoaderSequential.IndexTickPoint,
                                                                        LoaderSequential.IndexSuperTick);
-                monitor.startMessage();
+                monitor.startMessage(msg);
                 monitor.start();
 
-                long time1 = timer.readTimer() ;
                 LoaderOps.copyIndex(primaryIndex.all(), new TupleIndex[]{index}, monitor) ;
-                long time2 = timer.readTimer() ;
+                
                 monitor.finish();
                 monitor.finishMessage(index.getName()+" indexing: ");
             }  

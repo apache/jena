@@ -23,9 +23,9 @@ import java.util.StringJoiner;
 import org.apache.jena.atlas.lib.Registry;
 
 /**
- * Am {@link AuthorizationService} implements as a mapping from a string (typically a user name or role
+ * A registry mapping from a string (typically a user name or role
  * name) to a {@link SecurityContext}, where the {@link SecurityContext}
- * is the access control operations for the user/role.
+ * is the access control operations for that user/role.
  */ 
 public class SecurityRegistry extends Registry<String, SecurityContext> implements AuthorizationService {
     

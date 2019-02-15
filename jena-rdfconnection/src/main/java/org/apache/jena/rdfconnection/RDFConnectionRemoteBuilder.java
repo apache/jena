@@ -62,11 +62,11 @@ public class RDFConnectionRemoteBuilder {
     protected boolean       parseCheckQueries   = true;
     protected boolean       parseCheckUpdates   = true;
 
-    RDFConnectionRemoteBuilder() { 
-        // Default settings are the meber declarations.
+    protected RDFConnectionRemoteBuilder() { 
+        // Default settings are the member declarations.
     }
     
-    RDFConnectionRemoteBuilder(RDFConnectionRemote base) {
+    protected RDFConnectionRemoteBuilder(RDFConnectionRemote base) {
         Objects.requireNonNull(base);
         txnLifecycle = base.txnLifecycle;
         if ( txnLifecycle == null )

@@ -29,12 +29,12 @@ import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.SystemARQ ;
-import org.apache.jena.sparql.lib.Metadata ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
 import org.apache.jena.sys.JenaSystem ;
+import org.apache.jena.util.Metadata;
 import org.apache.jena.vocabulary.OWL ;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
@@ -68,6 +68,8 @@ public class SDB
     // See also SDBConstants.jdbcFetchSizeOff
     
     public static final Symbol annotateGeneratedSQL     = SDBConstants.allocSymbol("annotateGeneratedSQL") ;
+
+    public static final Symbol optimizeSubqueryFragments = SDBConstants.allocSymbol("optimizeSubqueryFragments") ;
     // ----------------------------------
     
     // Global context is the ARQ context.

@@ -21,7 +21,6 @@ package org.apache.jena.tdb2.store;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.AbstractTestDynamicDataset ;
-import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.tdb2.junit.TL;
 
 public class TestDynamicDatasetTDB extends AbstractTestDynamicDataset
@@ -36,10 +35,5 @@ public class TestDynamicDatasetTDB extends AbstractTestDynamicDataset
     
     @Override
     protected void releaseDataset(Dataset ds) { ds.abort(); TL.expel(ds); }
-
-    protected void startDynamicAndUnionTest()    { TDB2.getContext().setTrue(TDB2.symUnionDefaultGraph) ; }
-
-    protected void finishDynamicAndUnionTest()   { TDB2.getContext().unset(TDB2.symUnionDefaultGraph) ; }
-
 }
 

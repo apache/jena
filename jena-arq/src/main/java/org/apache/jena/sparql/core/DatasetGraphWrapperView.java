@@ -22,7 +22,7 @@ import org.apache.jena.sparql.engine.QueryEngineFactoryWrapper;
 
 /** 
  *  Marker interface that indicates a DatasetGraphWrapper
- *  is one that defined a different view on the base dataset data.
+ *  is one that defines a different view on the base dataset data.
  *  Hence, query should not access the wrapped dataset.
  *  
  *  @see QueryEngineFactoryWrapper

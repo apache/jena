@@ -25,6 +25,7 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.impl.WrappedGraph;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 
@@ -40,7 +41,7 @@ public class GraphOps {
             return true ;
         return dsg.containsGraph(gn) ;
     }
-
+    
     /** Get a graph from the dataset - the graph name may be special
      * - the union graph (which is immutable) or a special name for
      * the default graph. 
@@ -88,5 +89,34 @@ public class GraphOps {
 
     public static void deleteAll(Graph g, Iterable<Triple> iter) {
         deleteAll(g, iter.iterator()) ;
+    }
+
+    /** Remove all layers of graph wrapping. Returns the orinalk graph is not wrapped at all.*/
+    public static Graph unwrapAll(Graph graph) {
+        Graph graph1 = graph;
+        for (;;) {
+            Graph graph2 = unwrapOne(graph1);
+            if ( graph2 == graph1 )
+                return graph1;
+            graph1 = graph2;
+        }
+    }
+
+    /** Remove one layer of graph wrapping. */
+    public static boolean isWrapped(Graph graph) {
+        if ( graph instanceof WrappedGraph ) return true;
+        if ( graph instanceof GraphWrapper ) return true;
+        return false;
+    }
+        
+    /** Remove one layer of graph wrapping. Returns the orinalk graph is not wrapped at all. */
+    public static Graph unwrapOne(Graph graph) {
+        if ( graph instanceof WrappedGraph )
+            // WrappedGraph is a GraphWithPerform
+            return ((WrappedGraph)graph).getWrapped();
+        if ( graph instanceof GraphWrapper )
+            // GraphWrapper is a pure wrapper.
+            return ((GraphWrapper)graph).get();
+        return graph;
     }
 }

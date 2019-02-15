@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import org.apache.jena.atlas.lib.tuple.Tuple;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Symbol;
 
 /**
@@ -46,6 +47,16 @@ public abstract class GraphFilter<X> implements Predicate<Tuple<X>> {
     protected GraphFilter(Collection<X> matches, boolean matchDefaultGraph) {
         this.graphs = new HashSet<X>(matches);
         this.matchDefaultGraph = matchDefaultGraph;
+    }
+    
+    public static Symbol getContextKey(DatasetGraph dsg) {
+        dsg = DatasetGraphAccessControl.removeWrapper(dsg);
+        
+        if ( org.apache.jena.tdb.sys.TDBInternal.isTDB1(dsg) )
+            return org.apache.jena.tdb.sys.SystemTDB.symTupleFilter;
+        if ( org.apache.jena.tdb2.sys.TDBInternal.isTDB2(dsg) )
+            return org.apache.jena.tdb2.sys.SystemTDB.symTupleFilter;
+        throw new IllegalArgumentException("Not a TDB database");
     }
     
     public abstract Symbol getContextKey();

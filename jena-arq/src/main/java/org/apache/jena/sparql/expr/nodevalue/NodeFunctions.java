@@ -18,8 +18,14 @@
 
 package org.apache.jena.sparql.expr.nodevalue ;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Iterator ;
 import java.util.UUID ;
+
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.Duration;
+import javax.xml.datatype.DatatypeConstants.Field;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
@@ -496,5 +502,36 @@ public class NodeFunctions {
             throw new ExprEvalException("Empty lang tag") ;
         return NodeValue.makeLangString(lex, lang) ;
     }
+    
+    /** A duration, tided */ 
+    public static Duration duration(int seconds) {
+        if ( seconds == 0 )
+            return XSDFuncOp.zeroDuration;
+        Duration dur = NodeValue.xmlDatatypeFactory.newDuration(1000*seconds);
+        // Neaten the duration. Not all the fields ar zero.
+        dur = NodeValue.xmlDatatypeFactory.newDuration(dur.getSign()>=0, 
+                                                       field(dur, DatatypeConstants.YEARS), 
+                                                       field(dur, DatatypeConstants.MONTHS),
+                                                       field(dur, DatatypeConstants.DAYS),
+                                                       field(dur, DatatypeConstants.HOURS),
+                                                       field(dur, DatatypeConstants.MINUTES),
+                                                       field2(dur, DatatypeConstants.SECONDS));
+        return dur;
+    }
 
+    //Don't set field if zero.
+    private static BigInteger field(Duration dur, Field field) {
+        BigInteger i = (BigInteger)dur.getField(field);
+        if ( i == null || i.equals(BigInteger.ZERO) )
+            return null;
+        return i;
+    }
+
+    private static BigDecimal field2(Duration dur, Field field) {
+        BigDecimal x = (BigDecimal)dur.getField(field);
+        //x = x.setScale(0);
+        if ( x.compareTo(BigDecimal.ZERO) == 0 )
+            return null;
+        return x;
+    }
 }

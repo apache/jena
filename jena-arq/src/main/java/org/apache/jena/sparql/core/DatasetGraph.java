@@ -42,9 +42,9 @@ public interface DatasetGraph extends Transactional, Closeable
     /** Get the default graph as a Jena Graph */
     public Graph getDefaultGraph() ;
 
-    /** Get the graph named by graphNode : returns null on no graph 
+    /** Get the graph named by graphNode : returns null when there is no such graph. 
      * NB Whether a dataset contains a graph if there are no triples is not defined - see the specific implementation.
-     * Some datasets are "open" - they have all graphs even if no triples,
+     * Some datasets are "open" - they have all graphs even if no triples.
      */
     public Graph getGraph(Node graphNode) ;
     

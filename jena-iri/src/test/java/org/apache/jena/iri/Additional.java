@@ -53,7 +53,39 @@ public class Additional
        test(iri2, "http://a/b/c/foo") ;
     }
 
+    // RFC 8141 permits "/" "?" and "~".
+    // "?" is still excluded in jena-iri because it is used in URN resolution algorithms for r-component and q-component.
     
+    // JENA-1647
+    @Test public void urn_rfc8141_slash() {
+        IRIFactory f = IRIFactory.iriImplementation() ;
+        IRI iri = f.construct("urn:nid:abc/def");
+    }
+    
+    // JENA-1647
+    @Test public void urn_rfc8141_frag() {
+        IRIFactory f = IRIFactory.iriImplementation() ;
+        IRI iri = f.construct("urn:nid:abc#frag");
+    }
+    
+    // JENA-1647
+    @Test public void urn_rfc8141_tilda() {
+        IRIFactory f = IRIFactory.iriImplementation() ;
+        IRI iri = f.construct("urn:nid:abc~xyz");
+    }
+    
+    // JENA-1647 - example from RFC 8141
+    @Test public void urn_rfc8141_query_1() {
+        IRIFactory f = IRIFactory.iriImplementation() ;
+        IRI iri = f.construct("urn:example:foo-bar-baz-qux?+CCResolve:cc=uk");
+    }
+    
+    // JENA-1647 - example from RFC 8141
+    @Test public void urn_rfc8141_query_2() {
+        IRIFactory f = IRIFactory.iriImplementation() ;
+        IRI iri = f.construct("urn:example:weather?=op=map&lat=39.56&lon=-104.85&datetime=1969-07-21T02:56:15Z");
+    }
+
     private static void test(IRI iri, String iriStr) throws MalformedURLException
     {
         Assert.assertEquals(iriStr, iri.toASCIIString()) ;

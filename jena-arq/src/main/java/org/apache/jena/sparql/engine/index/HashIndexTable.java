@@ -37,12 +37,12 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 public class HashIndexTable implements IndexTable {
     // Contribution from P Gearon (@quoll)
 	final private Set<Key> table ;
-	private Map<Var,Integer> varColumns ;
+	final private Map<Var,Integer> varColumns ;
 	private boolean missingValue ;
 
 	public HashIndexTable(Set<Var> commonVars, QueryIterator data) throws MissingBindingException
     {
-    	initColumnMappings(commonVars) ;
+	    varColumns = initColumnMappings(commonVars) ;
     	if ( commonVars.size() == 0 )
     	{
     		table = null ;
@@ -61,6 +61,11 @@ public class HashIndexTable implements IndexTable {
     }
 
     @Override
+    public String toString() {
+        return "HashIndexTable: "+varColumns+" "+table+ "("+missingValue+")";
+    }
+
+    @Override
 	public boolean containsCompatibleWithSharedDomain(Binding binding)
     {
     	// no shared variables means no shared domain, and should be ignored
@@ -74,7 +79,7 @@ public class HashIndexTable implements IndexTable {
 			return true ;
 		
 		if ( anyUnbound(indexKey) )
-			return exhaustiveSearch(indexKey) ;
+			return matchAnyCompatible(indexKey) ;
 		return false ;
     }
 
@@ -88,12 +93,13 @@ public class HashIndexTable implements IndexTable {
     	return false ;
     }
 
-    private void initColumnMappings(Set<Var> commonVars)
+    private static Map<Var,Integer> initColumnMappings(Set<Var> commonVars)
     {
-    	varColumns = new HashMap<>() ;
+        Map<Var,Integer> varColumns = new HashMap<>() ;
     	int c = 0 ;
     	for ( Var var: commonVars )
     		varColumns.put(var, c++) ;
+    	return varColumns;
     }
 
     private void addBindingToTable(Binding binding) throws MissingBindingException
@@ -118,7 +124,7 @@ public class HashIndexTable implements IndexTable {
 		return new Key(indexKey) ;
     }
 
-    private boolean exhaustiveSearch(Key mappedBindingLeft)
+    private boolean matchAnyCompatible(Key mappedBindingLeft)
     {
     	for ( Key mappedBindingRight: table )
     	{
@@ -198,20 +204,21 @@ public class HashIndexTable implements IndexTable {
         {
         	Node[] nodesRight = mappedBindingR.getNodes() ;
 
-        	boolean sharedDomain = false ;
         	for ( int c = 0 ; c < nodes.length ; c++ )
             {
                 Node nLeft  = nodes[c] ; 
                 Node nRight = nodesRight[c] ;
                 
-                if ( nLeft != null && nRight != null )
-            	{
+                if ( nLeft != null && nRight != null ) {
+                    // Shared domain - both left and right have a value. 
+            		// Compatible?
             		if ( nLeft.equals(nRight) )
-            			return false ;
-            		sharedDomain = true ;
-            	}
+                        return true ;
+                }
+
             }
-            return sharedDomain ;
+        	// No compatible slot or didn't find shared domain.
+            return false ;
         }
     }
 }

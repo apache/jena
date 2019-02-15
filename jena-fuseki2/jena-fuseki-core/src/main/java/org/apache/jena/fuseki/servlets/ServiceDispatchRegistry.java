@@ -39,9 +39,9 @@ import org.apache.jena.riot.WebContent;
  * <li>{@code Operation} to {@link ActionService} implementation
  * </ul>
  */
-
 public class ServiceDispatchRegistry {
 
+    // XXX Change to the Access_* versions.
     public static final ActionService queryServlet    = new SPARQL_QueryDataset() ;
     public static final ActionService updateServlet   = new SPARQL_Update() ;
     public static final ActionService uploadServlet   = new SPARQL_Upload() ;

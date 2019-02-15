@@ -46,6 +46,9 @@ public class Source {
     @Parameter
     private String input;
 
+    @Parameter(property="lang")
+    private String lang;
+
     @Parameter(property="lang-daml")
     private Boolean langDaml;
 
@@ -157,6 +160,7 @@ public class Source {
     @Parameter(property="no-strict")
     private Boolean noStrict;
 
+
     @SchemagenOption(opt=OPT.CONFIG_FILE)
     public String getConfigFile() {
         return configFile;
@@ -170,6 +174,11 @@ public class Source {
     @SchemagenOption(opt=OPT.INPUT)
     public String getInput() {
         return input;
+    }
+
+    @SchemagenOption(opt=OPT.LANG)
+    public String getLang() {
+        return lang;
     }
 
     @SchemagenOption(opt=OPT.LANG_DAML)
@@ -367,6 +376,10 @@ public class Source {
 
     public void setInput(String input) {
         this.input = input;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
     }
 
     public void setLangDaml(Boolean langDaml) {

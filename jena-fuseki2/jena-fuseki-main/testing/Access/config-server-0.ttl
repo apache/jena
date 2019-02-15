@@ -1,0 +1,61 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Used by TestSecurityConfig
+# No server level security, only service level.
+
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX access:  <http://jena.apache.org/access#>
+
+[] rdf:type fuseki:Server ;
+   fuseki:services (
+     <#service_tdb2>
+     <#service_plain>
+   ) .
+
+<#service_tdb2> rdf:type fuseki:Service ;
+    rdfs:label                      "Access controlled dataset" ;
+    fuseki:allowedUsers             "user1", "user3";
+    fuseki:name                     "database1" ;
+    fuseki:serviceQuery             "query" ;
+    fuseki:serviceQuery             "sparql" ;
+    fuseki:serviceReadGraphStore    "get" ;
+    fuseki:dataset                  <#dataset1>;
+    .
+
+## Own database
+<#dataset1> rdf:type  ja:MemoryDataset ;
+    .
+
+## Dataset 2
+## No service
+<#service_plain> rdf:type fuseki:Service ;
+    fuseki:name                  "database2";
+    fuseki:serviceQuery          "query";
+    fuseki:serviceQuery          "sparql";
+    fuseki:serviceReadGraphStore "get" ;
+    fuseki:dataset <#tdb_dataset> ;
+    .
+    
+<#tdb_dataset> rdf:type      tdb2:DatasetTDB2 ;
+    tdb2:location "--mem--" ;
+    .
+    

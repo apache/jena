@@ -712,7 +712,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredRDFList createList(final RDFNode[] members)
+	public SecuredRDFList createList(RDFNode... members)
 			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
 		return createList(Arrays.asList(members).iterator());
 	}
@@ -1063,7 +1063,35 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		checkRead(new Triple(NodeFactory.createURI(uri), RDF.type.asNode(), RDF.Bag.asNode()));
 		return SecuredBagImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().getBag(uri));
 	}
+	
+	@Override
+	public SecuredSeq getSeq(final Resource r) throws ReadDeniedException, AuthenticationRequiredException {
+	    checkRead();
+	    checkRead(new Triple(r.asNode(), RDF.type.asNode(), RDF.Seq.asNode()));
+	    return SecuredSeqImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().getSeq(r));
+	}
 
+	@Override
+	public SecuredSeq getSeq(final String uri) throws ReadDeniedException, AuthenticationRequiredException {
+	    checkRead();
+	    checkRead(new Triple(NodeFactory.createURI(uri), RDF.type.asNode(), RDF.Seq.asNode()));
+	    return SecuredSeqImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().getSeq(uri));
+	}
+
+
+
+    @Override
+    public SecuredRDFList getList( String uri ) throws ReadDeniedException, AuthenticationRequiredException { 
+        checkRead();
+        return SecuredRDFListImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().getList(uri));
+    }
+    
+    @Override
+    public SecuredRDFList getList( Resource r ) throws ReadDeniedException, AuthenticationRequiredException { 
+        checkRead();
+        return SecuredRDFListImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().getList(r));
+    } 
+	
 	@Override
 	public SecuredGraph getGraph() {
 		return graph;
@@ -1239,20 +1267,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	@Deprecated
 	public SecuredResource getResource(final String uri, final ResourceF f) {
 		return createResource(uri, f);
-	}
-
-	@Override
-	public SecuredSeq getSeq(final Resource r) throws ReadDeniedException, AuthenticationRequiredException {
-		checkRead();
-		checkRead(new Triple(r.asNode(), RDF.type.asNode(), RDF.Seq.asNode()));
-		return SecuredSeqImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().getSeq(r));
-	}
-
-	@Override
-	public SecuredSeq getSeq(final String uri) throws ReadDeniedException, AuthenticationRequiredException {
-		checkRead();
-		checkRead(new Triple(NodeFactory.createURI(uri), RDF.type.asNode(), RDF.Seq.asNode()));
-		return SecuredSeqImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().getSeq(uri));
 	}
 
 	@Override

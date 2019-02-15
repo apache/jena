@@ -24,21 +24,12 @@ import static org.apache.jena.riot.WebContent.ctHTMLForm ;
 import static org.apache.jena.riot.WebContent.ctSPARQLQuery ;
 import static org.apache.jena.riot.WebContent.isHtmlForm ;
 import static org.apache.jena.riot.WebContent.matchContentType ;
-import static org.apache.jena.riot.web.HttpNames.paramAccept ;
-import static org.apache.jena.riot.web.HttpNames.paramCallback ;
-import static org.apache.jena.riot.web.HttpNames.paramDefaultGraphURI ;
-import static org.apache.jena.riot.web.HttpNames.paramForceAccept ;
-import static org.apache.jena.riot.web.HttpNames.paramNamedGraphURI ;
-import static org.apache.jena.riot.web.HttpNames.paramOutput1 ;
-import static org.apache.jena.riot.web.HttpNames.paramOutput2 ;
-import static org.apache.jena.riot.web.HttpNames.paramQuery ;
-import static org.apache.jena.riot.web.HttpNames.paramQueryRef ;
-import static org.apache.jena.riot.web.HttpNames.paramStyleSheet ;
-import static org.apache.jena.riot.web.HttpNames.paramTimeout ;
+import static org.apache.jena.riot.web.HttpNames.*;
 
 import java.io.IOException ;
 import java.io.InputStream ;
 import java.util.* ;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
@@ -48,20 +39,25 @@ import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.riot.web.HttpOp ;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Prologue ;
+import org.apache.jena.sparql.engine.EngineLib;
 import org.apache.jena.sparql.resultset.SPARQLResult ;
 import org.apache.jena.web.HttpSC ;
 
-/** Handle SPARQL Query requests over the SPARQL Protocol.
- * Subclasses provide this algorithm with the actual dataset to query, whether
- * a dataset hosted by this server ({@link SPARQL_QueryDataset}) or
- * specified in the protocol request ({@link SPARQL_QueryGeneral}).
+/**
+ * Handle SPARQL Query requests over the SPARQL Protocol. Subclasses provide this
+ * algorithm with the actual dataset to query, whether a dataset hosted by this server
+ * ({@link SPARQL_QueryDataset}) or specified in the protocol request
+ * ({@link SPARQL_QueryGeneral}).
+ * <p>
+ * When data-level access control is in use, the ActionService's are
+ * {@code AccessCtl_SPARQL_QueryDataset} etc.
  */
 public abstract class SPARQL_Query extends SPARQL_Protocol
 {
@@ -283,7 +279,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         // Assumes finished whole thing by end of sendResult.
         try {
             action.beginRead() ;
-            Dataset dataset = decideDataset(action, query, queryStringLog) ;
+            DatasetGraph dataset = decideDataset(action, query, queryStringLog) ;
             try ( QueryExecution qExec = createQueryExecution(action, query, dataset) ; ) {
                 SPARQLResult result = executeQuery(action, qExec, query, queryStringLog) ;
                 // Deals with exceptions itself.
@@ -310,24 +306,13 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     protected abstract void validateQuery(HttpAction action, Query query) ;
 
     /** Create the {@link QueryExecution} for this operation.
-     * @param query
-     * @param dataset
-     * @return QueryExecution
-     * @deprecated Use {@link #createQueryExecution(HttpAction, Query, Dataset)}
-     */
-    @Deprecated
-    protected QueryExecution createQueryExecution(Query query, Dataset dataset) {
-        return QueryExecutionFactory.create(query, dataset) ;
-    }
-
-    /** Create the {@link QueryExecution} for this operation.
      * @param action
      * @param query
      * @param dataset
      * @return QueryExecution
      */
-    protected QueryExecution createQueryExecution(HttpAction action, Query query, Dataset dataset) {
-        return createQueryExecution(query, dataset);
+    protected QueryExecution createQueryExecution(HttpAction action, Query query, DatasetGraph dataset) {
+        return QueryExecutionFactory.create(query, dataset) ;
     }
 
     /** Perform the {@link QueryExecution} once.
@@ -387,34 +372,18 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         return null ;
     }
 
-    private void setAnyProtocolTimeouts(QueryExecution qexec, HttpAction action) {
-        //        if ( !(action.getDataService().allowTimeoutOverride) )
-        //            return ;
-        // See also QueryExecutionBase.setTimeouts to parse and process N,M form.
-        // ?? Set only if lower than any settings from the dataset or global contexts already in
-        // the QueryExecution.
-        // Add context setting for "allow increases".
-        // Documentation.
-        long desiredTimeout = Long.MAX_VALUE ;
+    private void setAnyProtocolTimeouts(QueryExecution qExec, HttpAction action) {
+        // The timeout string in the protocol is in seconds, not milliseconds.
+        String desiredTimeoutStr = null;
         String timeoutHeader = action.request.getHeader("Timeout") ;
         String timeoutParameter = action.request.getParameter("timeout") ;
-        if ( timeoutHeader != null ) {
-            try {
-                desiredTimeout = (int)(Float.parseFloat(timeoutHeader) * 1000) ;
-            } catch (NumberFormatException e) {
-                throw new FusekiException("Timeout header must be a number", e) ;
-            }
-        } else if ( timeoutParameter != null ) {
-            try {
-                desiredTimeout = (int)(Float.parseFloat(timeoutParameter) * 1000) ;
-            } catch (NumberFormatException e) {
-                throw new FusekiException("timeout parameter must be a number", e) ;
-            }
-        }
-
-//        desiredTimeout = Math.min(action.getDataService().maximumTimeoutOverride, desiredTimeout) ;
-        if ( desiredTimeout != Long.MAX_VALUE )
-            qexec.setTimeout(desiredTimeout) ;
+        if ( timeoutHeader != null ) 
+            desiredTimeoutStr = timeoutHeader;
+        if ( timeoutParameter != null )
+            desiredTimeoutStr = timeoutParameter;
+        
+        // Merge (new timeoutw can't be greater than current settings for qExec
+        EngineLib.parseSetTimeout(qExec, desiredTimeoutStr, TimeUnit.SECONDS, true);
     }
 
     /** Choose the dataset for this SPARQL Query request.
@@ -423,7 +392,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
      * @param queryStringLog
      * @return {@link Dataset}
      */
-    protected abstract Dataset decideDataset(HttpAction action, Query query, String queryStringLog) ;
+    protected abstract DatasetGraph decideDataset(HttpAction action, Query query, String queryStringLog) ;
 
     /** Ship the results to the remote caller.
      * @param action

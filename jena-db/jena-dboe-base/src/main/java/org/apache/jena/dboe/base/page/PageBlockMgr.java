@@ -155,6 +155,7 @@ public class PageBlockMgr<T extends Page> implements Closeable
     public void promoteInPlace(Page page) {
         Block block = page.getBackingBlock() ;
         block.getByteBuffer().rewind() ;
+
         Block block2 = blockMgr.promote(block) ; 
         block2.setReadOnly(false) ;
         if ( block2.getId() != block.getId() )
@@ -171,7 +172,6 @@ public class PageBlockMgr<T extends Page> implements Closeable
         Block block = page.getBackingBlock() ;
         block.getByteBuffer().rewind() ;
         
-        // --- TODO Always new
         Block block2 =  blockMgr.allocate(-1) ;
         block2.getByteBuffer().put(block.getByteBuffer()) ;
         block2.getByteBuffer().rewind() ;
@@ -202,10 +202,10 @@ public class PageBlockMgr<T extends Page> implements Closeable
     /** Signal the completion of an update operation */
     public void finishUpdate()      { blockMgr.endUpdate() ; }
 
-    /** Signal the start of an update operation */
+    /** Signal the start of an read operation */
     public void startRead()         { blockMgr.beginRead() ; }
     
-    /** Signal the completion of an update operation */
+    /** Signal the completion of an read operation */
     public void finishRead()        { blockMgr.endRead() ; }
 
     @Override

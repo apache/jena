@@ -35,7 +35,7 @@ import org.slf4j.Logger ;
  */
 public class FusekiFilter implements Filter {
     private static Logger log = Fuseki.serverLog ;
-    private static ServiceRouter routerServlet = new ServiceRouter.AccessByConfig() ;
+    private static ServiceRouter routerServlet = new ServiceRouter() ;
     
     @Override
     public void init(FilterConfig filterConfig) {
@@ -91,7 +91,9 @@ public class FusekiFilter implements Filter {
                     }
                 } 
             }
-        } catch (Exception ex) {}
+        } catch (Exception ex) {
+            log.info("Filter: expected exception: "+ex.getMessage(),ex);
+        }
         
         if ( LogFilter )
             log.info("Filter: pass to chain") ;

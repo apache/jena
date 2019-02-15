@@ -34,7 +34,7 @@ import org.apache.jena.util.iterator.NullIterator;
 public class GraphZero extends GraphBase {
     
     public static Graph instance() {
-        // It has transaction state do unsafe to share one object on one thread. 
+        // It has transaction state so unsafe to share one object on one thread. 
         return new GraphZero();
     }
 

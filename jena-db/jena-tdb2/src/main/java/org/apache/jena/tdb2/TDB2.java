@@ -24,7 +24,6 @@ import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.engine.main.StageBuilder ;
 import org.apache.jena.sparql.engine.main.StageGenerator ;
-import org.apache.jena.sparql.lib.Metadata ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
@@ -37,6 +36,7 @@ import org.apache.jena.tdb2.solver.StageGeneratorDirectTDB;
 import org.apache.jena.tdb2.sys.EnvTDB;
 import org.apache.jena.tdb2.sys.SystemTDB;
 import org.apache.jena.tdb2.sys.TDBInternal;
+import org.apache.jena.util.Metadata;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -45,7 +45,7 @@ public class TDB2 {
     private TDB2() {}
 
     /** IRI for TDB */
-    public static final String  tdbIRI                           = "http://jena.apache.org/#tdb" ;
+    public static final String  tdbIRI                           = "http://jena.apache.org/#tdb2" ;
 
     /** Root of TDB-defined parameter names */
     public static final String  tdbParamNS                       = SystemTDB.symbolNamespace;
@@ -57,7 +57,7 @@ public class TDB2 {
     private static final Logger log                              = LoggerFactory.getLogger(TDB2.class) ;
 
     /** Logger for loading information */
-    public static final String  logLoaderName                    = "org.apache.jena.tdb.loader" ;
+    public static final String  logLoaderName                    = "org.apache.jena.tdb2.loader" ;
     /** Logger for loading information */
     public static final Logger  logLoader                        = LoggerFactory.getLogger(logLoaderName) ;
 
@@ -71,6 +71,7 @@ public class TDB2 {
     // /** Logger for execution information */
     // public static final Logger logExec = LoggerFactory.getLogger(logExecName);
 
+    /** Used by the assembler */
     public final static String  namespace                        = "http://jena.apache.org/2016/tdb#" ;
 
     // Union default graph symbols for context setting.

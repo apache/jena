@@ -29,7 +29,10 @@ import org.apache.jena.fuseki.system.FusekiLogging;
 
 public class FusekiMainCmd {
     // This class wraps FusekiBasicMain so that it can take control of logging setup.
-    // It does not depend via inheritance on any Jena code - FusekiBasicMain does.
+    // This class does not depend via inheritance on any Jena code
+    // and does not trigger Jena initialization. 
+    // FusekiLogging runs before any Jena code can trigger logging setup.
+    //
     // Inheritance causes initialization in the super class first, before class
     // initialization code in this class.
     
@@ -41,6 +44,6 @@ public class FusekiMainCmd {
      * syntax but not start it.
      */
     static public void main(String... argv) {
-        FusekiMain.innerMain(argv);
+        FusekiMain.run(argv);
     }
 }

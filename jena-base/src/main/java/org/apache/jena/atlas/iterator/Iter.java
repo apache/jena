@@ -287,6 +287,19 @@ public class Iter<T> implements Iterator<T> {
         return toList(map(list.iterator(), converter)) ;
     }
 
+    /** 
+     * Apply a function to every element of an iterator, to produce possibly multiple mapping each time.
+     * See {@link Stream#flatMap}
+     */
+    public static <T, R> Iterator<R> flatMap(Iterator<T> iter, Function<T, Iterator<R>> mapper) {
+        // Combined mapping and flattening  
+        return new IteratorFlatMap<>(iter, mapper);
+        // For reference: an alternative splitting the mapping out:
+        //   Iterator<Iterator<R>> pipeline = Iter.map(iter, mapper);
+        //   Iterator<R> outcome = new IteratorFlatten<>(pipeline);
+        // IteratorFlatten is only one line and one field less complicated than IteratorFlatMap
+    }
+    
     /**
      * Apply an action to everything in stream, yielding a stream of the
      * same items.
@@ -777,6 +790,10 @@ public class Iter<T> implements Iterator<T> {
         return iter(map(iterator, converter)) ;
     }
 
+    /** FlatMap each element using given function of element to iterator of mapped elements.s */
+    public <R> Iter<R> flatMap(Function<T, Iterator<R>> converter) {
+        return iter(flatMap(iterator, converter)) ;
+    }
     /**
      * Apply an action to everything in the stream, yielding a stream of the
      * original items.

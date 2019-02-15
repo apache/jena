@@ -64,7 +64,7 @@ public class BindingFactory {
      * Create a new Binding as a copy of an existing one. Additionally, it guarantees to
      * touch each element of the binding
      */
-    public static Binding materialize(Binding b) {
+    public static Binding copy(Binding b) {
         Iterator<Var> vIter = b.vars();
         BindingMap b2 = create();
         while (vIter.hasNext()) {

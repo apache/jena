@@ -361,7 +361,7 @@ public class HttpQuery extends Params {
     
     private QueryExceptionHTTP rewrap(HttpException httpEx) {
         // The historical contract of HTTP Queries has been to throw QueryExceptionHTTP however using the standard
-    	    // ARQ HttpOp machinery we use these days means the internal HTTP errors come back as HttpException
+        // ARQ HttpOp machinery we use these days means the internal HTTP errors come back as HttpException
         // Therefore we need to wrap appropriately
         responseCode = httpEx.getResponseCode();
         if (responseCode != -1) {

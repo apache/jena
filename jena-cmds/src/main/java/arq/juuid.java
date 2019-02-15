@@ -35,7 +35,7 @@ public class juuid extends CmdGeneral
     boolean asURI = false ;
     boolean asPlain = false ;
 
-    public static void main (String [] argv)
+    public static void main (String... argv)
     {
         new juuid(argv).mainAndExit() ;
     }

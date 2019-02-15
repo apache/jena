@@ -42,7 +42,6 @@ import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.ARQNotImplemented ;
 import org.apache.jena.sparql.core.Prologue ;
-import org.apache.jena.sparql.resultset.RDFOutput;
 import org.apache.jena.sparql.resultset.ResultsFormat;
 import org.apache.jena.sparql.resultset.TextOutput;
 import org.apache.jena.sparql.resultset.XMLOutput;
@@ -281,7 +280,7 @@ public class ResultSetFormatter {
     { output(System.out, resultSet, rFmt) ; }
 
     /** Output a ResultSet in some format.
-     *  To get detailed control over each format, call the appropropiate operation directly. 
+     *  To get detailed control over each format, call the appropriate operation directly. 
      * 
      * @param outStream Output
      * @param resultSet Result set
@@ -289,27 +288,15 @@ public class ResultSetFormatter {
      */
     
     static public void output(OutputStream outStream, ResultSet resultSet, ResultsFormat rFmt) {
-        
         Lang lang = ResultsFormat.convert(rFmt);
         if ( lang != null ) {
             output(outStream, resultSet, lang);
             return ;
         }
         
-        if ( rFmt.equals(ResultsFormat.FMT_RDF_XML) ) {
-            RDFOutput.outputAsRDF(outStream, "RDF/XML-ABBREV", resultSet) ;
+        boolean b = ResultsFormat.oldWrite(outStream, rFmt, null, resultSet);
+        if ( b )
             return ;
-        }
-
-        if ( rFmt.equals(ResultsFormat.FMT_RDF_TTL) ) {
-            RDFOutput.outputAsRDF(outStream, "TTL", resultSet) ;
-            return ;
-        }
-
-        if ( rFmt.equals(ResultsFormat.FMT_RDF_NT) ) {
-            RDFOutput.outputAsRDF(outStream, "N-TRIPLES", resultSet) ;
-            return ;
-        }
         throw new ARQException("Unknown ResultSet format: " + rFmt) ;
     }
     
@@ -318,9 +305,11 @@ public class ResultSetFormatter {
     public static void output(ResultSet resultSet, Lang resultFormat) {
         output(System.out, resultSet, resultFormat);
     }
+    
     public static void output(OutputStream outStream, ResultSet resultSet, Lang resultFormat) {
         ResultsWriter.create().lang(resultFormat).write(outStream, resultSet);
     }
+    
     public static void output(boolean result, Lang resultFormat) {
         output(System.out, result, resultFormat);
     }

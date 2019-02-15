@@ -83,7 +83,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
     protected static Iterator<Node> makeSources(DatasetGraph data, Binding b, Node graphVar) {
         Node n2 = resolve(b, graphVar) ;
         if ( n2 != null && n2.isLiteral() ) 
-            // Blank node or literal possible after resolving
+            // Literal possible after resolving
             return Iter.nullIterator() ;
         
         // n2 is a URI or null.
@@ -136,21 +136,23 @@ public class QueryIterGraph extends QueryIterRepeatApply
             return iter.nextBinding();
         }
 
-        // This code predates ARQ using Java 1.5.
-
-        // This is very like QueryIteratorRepeatApply except its not
-        // repeating over bindings, but over graph nodes.
-        // There is a tradeoff of generalising QueryIteratorRepeatApply to Objects
-        // and hence no type safety. Or duplicating code (generics?)
-        
+        // Proceed to the next iterator.
         protected QueryIterator nextIterator() {
-            if ( ! graphNames.hasNext() )
-                return null ;
-            Node gn = graphNames.next() ;
-
+            while( graphNames.hasNext() ) {
+                Node gn = graphNames.next() ;
+                QueryIterator iter = buildIterator(gn);
+                if ( iter != null )
+                    return iter;
+            }
+            return null;
+        }
+        
+        // Build iterator or return null for if there can't be any results.
+        private QueryIterator buildIterator(Node gn) {
             QueryIterator qIter = buildIterator(parentBinding, gn, opSubstituted, getExecContext()) ;
             if ( qIter == null )
-                // Know to be nothing (e.g. graph does not exist). 
+                // Known to be nothing (e.g. graph does not exist). 
+                // try again.
                 return null ;
             
             if ( Var.isVar(opGraph.getNode()) ) {
@@ -163,7 +165,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
             return qIter ;
         }
         
-        // Create the iterator - or return null if there can't be any results.
+        // Create the iterator for a cycle of one node - or return null if there can't be any results.
         protected static QueryIterator buildIterator(Binding binding, Node graphNode, Op opExec, ExecutionContext outerCxt) {
             if ( !graphNode.isURI() && !graphNode.isBlank() )
                 // e.g. variable bound to a literal or blank node.

@@ -20,11 +20,9 @@ package org.apache.jena.tdb.store;
 
 import org.apache.jena.atlas.lib.Closeable;
 import org.apache.jena.atlas.lib.Sync;
-import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.TransactionHandler;
 import org.apache.jena.graph.impl.TransactionHandlerBase;
-import org.apache.jena.tdb.TDB;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction;
 
 /**
@@ -65,11 +63,11 @@ public class GraphNonTxnTDB extends GraphTDB implements Closeable, Sync {
     
     // Transaction handler for non-transactional use.
     // Does not support transactions, but syncs on commit which is the best it
-    // can do without being transactional, which is striongly preferrerd.
+    // can do without being transactional, which is strongly preferred.
     // For backwards compatibility only.
     private static class TransactionHandlerTDBNonTXn extends TransactionHandlerBase //implements TransactionHandler 
     {
-        private final Graph graph;
+        private final GraphTDB graph;
 
         public TransactionHandlerTDBNonTXn(GraphTDB graph) {
             this.graph = graph ;
@@ -86,7 +84,7 @@ public class GraphNonTxnTDB extends GraphTDB implements Closeable, Sync {
 
         @Override
         public void commit() {
-            TDB.sync(graph) ;
+            graph.getDatasetGraphTDB().sync();
         }
 
         @Override

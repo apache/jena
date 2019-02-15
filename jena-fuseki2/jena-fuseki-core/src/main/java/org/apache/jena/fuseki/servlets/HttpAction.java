@@ -57,7 +57,6 @@ public class HttpAction
     
     // -- Valid only for operational actions (e.g. SPARQL).
     
-    public  String          endpointName    = null ;        // Endpoint name srv was found under 
     public  Endpoint        endpoint        = null ;
     private Transactional   transactional   = null ;
     private boolean         isTransactional = false ;
@@ -199,6 +198,16 @@ public class HttpAction
         return context ;
     }
 
+    /** Return the authenticated user this {@code HttpAction}.
+     * Return null for no authenticated user.
+     */
+    public String getUser() {
+        if ( request == null )
+            return null;
+        return request.getRemoteUser();
+        //Same as: return request.getUserPrincipal().getName();
+    }
+
     /**
      * Return the "Transactional" for this HttpAction.
      */
@@ -250,12 +259,10 @@ public class HttpAction
     }
     
     /** Set the endpoint and endpoint name that this is an action for. 
-     * @param srvRef {@link Endpoint}
-     * @param endpointName
+     * @param endpoint {@link Endpoint}
      */
-    public void setEndpoint(Endpoint srvRef, String endpointName) {
-        this.endpoint = srvRef ; 
-        this.endpointName = endpointName ;
+    public void setEndpoint(Endpoint endpoint) {
+        this.endpoint = endpoint ; 
     }
     
     /** Get the endpoint for the action (may be null) . */

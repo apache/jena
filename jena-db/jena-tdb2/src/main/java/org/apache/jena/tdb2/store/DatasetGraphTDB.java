@@ -50,7 +50,7 @@ import org.apache.jena.tdb2.sys.StoreConnection;
 /** This is the class that provides creates a dataset over the storage via
  *  TripleTable, QuadTable and prefixes.
  *  This is the coordination of the storage.
- *  @see DatasetGraphTxn for the Transaction form.
+ *  @see DatasetGraphTxn DatasetGraphTxn for the interface to TDB2 datasets.
  */
 final
 public class DatasetGraphTDB extends DatasetGraphTriplesQuads
@@ -394,7 +394,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     /**
      * Cause an exception to be thrown if sync is called.
      * For TDB2, which is transactional only, so sync isn't a useful operation.
-     * It is implemented for completness and no more.
+     * It is implemented for completeness and no more.
      */
     public static boolean exceptionOnSync = true ;
 
@@ -418,6 +418,16 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         throw new UnsupportedOperationException("Can't set default graph on a TDB-backed dataset") ;
     }
 
+    @Override
+    public boolean supportsTransactions() {
+        return true;
+    }
+
+    @Override
+    public boolean supportsTransactionAbort() {
+        return true;
+    }
+    
     @Override
     public boolean isInTransaction() {
         return txnSystem.isInTransaction() ;

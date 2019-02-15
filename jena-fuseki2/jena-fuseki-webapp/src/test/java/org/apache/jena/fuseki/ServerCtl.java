@@ -30,13 +30,13 @@ import org.apache.http.client.HttpClient ;
 import org.apache.http.impl.client.CloseableHttpClient ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.fuseki.cmd.JettyFuseki;
+import org.apache.jena.fuseki.cmd.JettyFusekiWebapp;
 import org.apache.jena.fuseki.jetty.JettyServerConfig ;
 import org.apache.jena.fuseki.server.FusekiInitialConfig;
 import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.fuseki.webapp.FusekiEnv;
 import org.apache.jena.fuseki.webapp.FusekiServerListener;
-import org.apache.jena.fuseki.webapp.FusekiSystem;
+import org.apache.jena.fuseki.webapp.FusekiWebapp;
 import org.apache.jena.fuseki.webapp.SystemState;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -210,7 +210,7 @@ public class ServerCtl {
     
     // reference count of start/stop server
     private static AtomicInteger countServer = new AtomicInteger() ; 
-    private static JettyFuseki server        = null ;
+    private static JettyFusekiWebapp server        = null ;
     
     /*package*/ static void allocServer() {
         if ( countServer.getAndIncrement() == 0 )
@@ -223,21 +223,21 @@ public class ServerCtl {
     }
     
     protected static void setupServer(boolean updateable) {
-        FusekiEnv.FUSEKI_HOME = Paths.get(TS_Fuseki.FusekiTestHome).toAbsolutePath() ;
+        FusekiEnv.FUSEKI_HOME = Paths.get(TS_FusekiWebapp.FusekiTestHome).toAbsolutePath() ;
         FileOps.ensureDir("target");
-        FileOps.ensureDir(TS_Fuseki.FusekiTestHome);
-        FileOps.ensureDir(TS_Fuseki.FusekiTestBase) ;
-        FusekiEnv.FUSEKI_BASE = Paths.get(TS_Fuseki.FusekiTestBase).toAbsolutePath() ;
+        FileOps.ensureDir(TS_FusekiWebapp.FusekiTestHome);
+        FileOps.ensureDir(TS_FusekiWebapp.FusekiTestBase) ;
+        FusekiEnv.FUSEKI_BASE = Paths.get(TS_FusekiWebapp.FusekiTestBase).toAbsolutePath() ;
         // Must have shiro.ini.
         // This fakes the state after FusekiSystem initialization
         // in the case of starting in the same location. FusekiSystem has statics.
         // Fuseki-full is designed to be the only server, not restartable.
         // Here, we want to reset for testing.
-        emptyDirectory(FusekiSystem.dirSystemDatabase);
-        emptyDirectory(FusekiSystem.dirBackups);
-        emptyDirectory(FusekiSystem.dirLogs);
-        emptyDirectory(FusekiSystem.dirConfiguration);
-        emptyDirectory(FusekiSystem.dirDatabases);
+        emptyDirectory(FusekiWebapp.dirSystemDatabase);
+        emptyDirectory(FusekiWebapp.dirBackups);
+        emptyDirectory(FusekiWebapp.dirLogs);
+        emptyDirectory(FusekiWebapp.dirConfiguration);
+        emptyDirectory(FusekiWebapp.dirDatabases);
         
         setupServer(port(), null, datasetPath(), updateable) ;
     }
@@ -263,16 +263,16 @@ public class ServerCtl {
         
         JettyServerConfig config = make(port, true, true) ;
         config.authConfigFile = authConfigFile ;
-        JettyFuseki.initializeServer(config);
-        JettyFuseki.instance.start() ;
-        server = JettyFuseki.instance ;
+        JettyFusekiWebapp.initializeServer(config);
+        JettyFusekiWebapp.instance.start() ;
+        server = JettyFusekiWebapp.instance ;
     }
     
     /*package*/ static void teardownServer() {
         if ( server != null ) {
             // Clear out the registry.
             server.getDataAccessPointRegistry().clear() ;
-            FileOps.clearAll(FusekiSystem.dirConfiguration.toFile()) ;
+            FileOps.clearAll(FusekiWebapp.dirConfiguration.toFile()) ;
             server.stop() ;
         }
         server = null ;

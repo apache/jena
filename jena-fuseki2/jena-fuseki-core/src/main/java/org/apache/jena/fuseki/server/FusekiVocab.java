@@ -18,61 +18,70 @@
 
 package org.apache.jena.fuseki.server;
 
-import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.riot.system.IRIResolver ;
+import org.apache.jena.fuseki.FusekiException;
+import org.apache.jena.iri.IRI;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.riot.system.IRIResolver;
 
 public class FusekiVocab
 {
-    public static String NS = "http://jena.apache.org/fuseki#" ;
-    private static Model model = ModelFactory.createDefaultModel() ;
+    public static String NS = "http://jena.apache.org/fuseki#";
+    private static Model model = ModelFactory.createDefaultModel();
 
-    public static final Resource tServer = resource("Server") ;
+    public static final Resource tServer            = resource("Server");
 
-    public static final Resource fusekiService = resource("Service") ;
+    public static final Resource fusekiService      = resource("Service");
 
-    public static final Property pServices = property("services") ;
-    public static final Property pServiceName = property("name") ;
+    public static final Property pServices          = property("services");
+    public static final Property pServiceName       = property("name");
     
-    public static final Property pServiceQueryEP               = property("serviceQuery") ;
-    public static final Property pServiceUpdateEP              = property("serviceUpdate") ;
-    public static final Property pServiceUploadEP              = property("serviceUpload") ;
-    public static final Property pServiceReadWriteGraphStoreEP = property("serviceReadWriteGraphStore") ;
-    public static final Property pServiceReadGraphStoreEP      = property("serviceReadGraphStore") ;
-    public static final Property pServiceReadWriteQuadsEP      = property("serviceReadWriteQuads") ;
-    public static final Property pServiceReadQuadsEP           = property("serviceReadQuads") ;
+    public static final Property pAllowedUsers      = property("allowedUsers");
+    public static final Property pPasswordFile      = property("passwd");
+    public static final Property pRealm             = property("realm");
+    public static final Property pAuth              = property("auth");
+    
+    // Server endpoints.
+    public static final Property pServerPing        = property("pingEP");
+    public static final Property pServerStats       = property("statsEP");
 
-    public static final Property pAllowTimeoutOverride = property("allowTimeoutOverride");
-    public static final Property pMaximumTimeoutOverride = property("maximumTimeoutOverride");
+    public static final Property pServiceQueryEP                = property("serviceQuery");
+    public static final Property pServiceUpdateEP               = property("serviceUpdate");
+    public static final Property pServiceUploadEP               = property("serviceUpload");
+    public static final Property pServiceReadWriteGraphStoreEP  = property("serviceReadWriteGraphStore");
+    public static final Property pServiceReadGraphStoreEP       = property("serviceReadGraphStore");
+    public static final Property pServiceReadWriteQuadsEP       = property("serviceReadWriteQuads");
+    public static final Property pServiceReadQuadsEP            = property("serviceReadQuads");
+
+    public static final Property pAllowTimeoutOverride          = property("allowTimeoutOverride");
+    public static final Property pMaximumTimeoutOverride        = property("maximumTimeoutOverride");
     
     // Internal
     
-    private static final String stateNameActive      = DataServiceStatus.ACTIVE.name ;
-    private static final String stateNameOffline     = DataServiceStatus.OFFLINE.name ;
-    private static final String stateNameClosing     = DataServiceStatus.CLOSING.name ;
-    private static final String stateNameClosed      = DataServiceStatus.CLOSED.name ;
+    private static final String stateNameActive     = DataServiceStatus.ACTIVE.name;
+    private static final String stateNameOffline    = DataServiceStatus.OFFLINE.name;
+    private static final String stateNameClosing    = DataServiceStatus.CLOSING.name;
+    private static final String stateNameClosed     = DataServiceStatus.CLOSED.name;
     
-    public static final Resource stateActive        = resource(stateNameActive) ;
-    public static final Resource stateOffline       = resource(stateNameOffline) ;
-    public static final Resource stateClosing       = resource(stateNameClosing) ;
-    public static final Resource stateClosed        = resource(stateNameClosed) ;
+    public static final Resource stateActive        = resource(stateNameActive);
+    public static final Resource stateOffline       = resource(stateNameOffline);
+    public static final Resource stateClosing       = resource(stateNameClosing);
+    public static final Resource stateClosed        = resource(stateNameClosed);
     
-    public static final Property pStatus = property("status") ;
+//    public static final Property pStatus            = property("status");
 
-    private static Resource resource(String localname) { return model.createResource(iri(localname)) ; }
-    private static Property property(String localname) { return model.createProperty(iri(localname)) ; }
+    private static Resource resource(String localname) { return model.createResource(iri(localname)); }
+    private static Property property(String localname) { return model.createProperty(iri(localname)); }
         
     private static String iri(String localname)
     {
-        String uri = NS+localname ;
-        IRI iri = IRIResolver.parseIRI(uri) ;
+        String uri = NS+localname;
+        IRI iri = IRIResolver.parseIRI(uri);
         if ( iri.hasViolation(true) )
-            throw new FusekiException("Bad IRI: "+iri) ;
+            throw new FusekiException("Bad IRI: "+iri);
         if ( ! iri.isAbsolute() )
-            throw new FusekiException("Bad IRI: "+iri) ;
+            throw new FusekiException("Bad IRI: "+iri);
         
-        return uri ;
+        return uri;
     }
 }
 

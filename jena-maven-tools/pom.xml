@@ -20,7 +20,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jena-maven-tools</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>3.7.0-SNAPSHOT</version>
+  <version>3.10.0-SNAPSHOT</version>
   <name>Apache Jena - Maven Plugins, including schemagen</name>
   <description>Plugins for Apache Maven to perform source management activities,
   such as generating Java files from RDF vocabulary sources using
@@ -30,7 +30,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>3.7.0-SNAPSHOT</version>
+    <version>3.10.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
 
@@ -123,15 +123,10 @@
           </execution>
         </executions>
         <dependencies>
-          <dependency> <!-- remove when using maven-invoker-plugin 1.10 -->
-            <groupId>org.apache.maven.shared</groupId>
-            <artifactId>maven-invoker</artifactId>
-            <version>2.2</version>
-          </dependency>
           <dependency>
             <groupId>org.apache.maven.shared</groupId>
             <artifactId>maven-verifier</artifactId>
-            <version>1.2</version>
+            <version>1.6</version>
             <exclusions>
               <exclusion>
                 <groupId>junit</groupId>
@@ -188,7 +183,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>3.7.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>

@@ -33,9 +33,12 @@ import arq.cmdline.ModDatasetAssembler;
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdException;
 import org.apache.jena.assembler.exceptions.AssemblerException;
+import org.apache.jena.atlas.json.JSON;
+import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.logging.FmtLog;
+import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.main.FusekiServer;
@@ -55,14 +58,14 @@ import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.Txn;
-import org.apache.jena.tdb.TDB;
 import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.tdb.transaction.TransactionManager;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.slf4j.Logger;
 
 public class FusekiMain extends CmdARQ {
-        private static int defaultPort = 3030;
+        private static int defaultPort          = 3030;
+        private static int defaultHttpsPort     = 3043;
         
         private static ArgDecl  argMem          = new ArgDecl(ArgDecl.NoValue,  "mem");
         private static ArgDecl  argUpdate       = new ArgDecl(ArgDecl.NoValue,  "update", "allowUpdate");
@@ -74,13 +77,25 @@ public class FusekiMain extends CmdARQ {
         
         // No SPARQL dataset or services
         private static ArgDecl  argEmpty        = new ArgDecl(ArgDecl.NoValue,  "empty", "no-dataset");
+        private static ArgDecl  argGeneralQuerySvc = new ArgDecl(ArgDecl.HasValue, "general");
+        
         private static ArgDecl  argPort         = new ArgDecl(ArgDecl.HasValue, "port");
         private static ArgDecl  argLocalhost    = new ArgDecl(ArgDecl.NoValue,  "localhost", "local");
         private static ArgDecl  argTimeout      = new ArgDecl(ArgDecl.HasValue, "timeout");
         private static ArgDecl  argConfig       = new ArgDecl(ArgDecl.HasValue, "config", "conf");
         private static ArgDecl  argGZip         = new ArgDecl(ArgDecl.HasValue, "gzip");
         private static ArgDecl  argBase         = new ArgDecl(ArgDecl.HasValue, "base", "files");
-        private static ArgDecl  argGeneralQuerySvc = new ArgDecl(ArgDecl.HasValue, "general");
+        
+        private static ArgDecl  argWithPing     = new ArgDecl(ArgDecl.NoValue, "withPing", "ping");
+        private static ArgDecl  argWithStats    = new ArgDecl(ArgDecl.NoValue, "withStats", "stats");
+        
+        private static ArgDecl  argAuth         = new ArgDecl(ArgDecl.HasValue, "auth");
+        
+        private static ArgDecl  argHttps        = new ArgDecl(ArgDecl.HasValue, "https");
+        private static ArgDecl  argHttpsPort    = new ArgDecl(ArgDecl.HasValue, "httpsPort", "httpsport", "sport");
+        
+        private static ArgDecl  argPasswdFile   = new ArgDecl(ArgDecl.HasValue, "passwd");
+        private static ArgDecl  argRealm        = new ArgDecl(ArgDecl.HasValue, "realm");
         
         // Same as --empty --validators --general=/sparql, --files=ARG
         
@@ -100,7 +115,7 @@ public class FusekiMain extends CmdARQ {
             return inner.buildServer();
         }
 
-        static void innerMain(String... argv) {
+        static void run(String... argv) {
             JenaSystem.init();
             new FusekiMain(argv).mainRun();
         }
@@ -112,14 +127,14 @@ public class FusekiMain extends CmdARQ {
                 // Consider ...
                 TransactionManager.QueueBatchSize = TransactionManager.QueueBatchSize / 2;
 
-            getUsage().startCategory("Fuseki");
+            getUsage().startCategory("Fuseki Main");
             addModule(modDataset);
             add(argMem, "--mem",
                 "Create an in-memory, non-persistent dataset for the server");
             add(argFile, "--file=FILE",
                 "Create an in-memory, non-persistent dataset for the server, initialised with the contents of the file");
             add(argTDB2mode, "--tdb2",
-                "Create command line persistent datasets with TDB2");
+                "Use TDB2 for command line persistent datasets (dfault is TDB1)");
             add(argTDB, "--loc=DIR",
                 "Use an existing TDB database (or create if does not exist)");
             add(argMemTDB, "--memTDB",
@@ -143,9 +158,20 @@ public class FusekiMain extends CmdARQ {
                 "Directory for static content");
             add(argSparqler, "--sparqler=DIR",
                 "Run with SPARQLer services Directory for static content");
-            add(argValidators, "--validators", "Install validators");
+            add(argValidators, "--validators",      "Install validators");
+            add(argGeneralQuerySvc, "--general=",    "Add a general SPARQL endpoint (without a dataset)");
+            
+            add(argAuth, "--auth=[basic|Digest]", "Run the server using basic or digest authentication (dft: digest).");
+            add(argHttps, "--https=CONF", "https certificate access details. JSON file { \"cert\":FILE , \"passwd\"; SECRET } ");
+            add(argHttpsPort, "--httpsPort=NUM", "https port (default port is 3043)");
 
-            super.modVersion.addClass(TDB.class);
+            add(argPasswdFile, "--passwd=FILE", "Password file");
+            // put in the configuration file
+//            add(argRealm, "--realm=REALM", "Realm name");
+            
+//            add(argWithPing,    "--ping",   "Enable /$/ping");
+//            add(argWithStats,   "--stats",  "Enable /$/stats");
+
             super.modVersion.addClass(Fuseki.class);
         }
 
@@ -158,6 +184,8 @@ public class FusekiMain extends CmdARQ {
 
         @Override
         protected void processModulesAndArgs() {
+            serverConfig.verboseLogging = super.isVerbose(); 
+            
             boolean allowEmpty = contains(argEmpty) || contains(argSparqler);
 
             // ---- Checking consistency
@@ -180,7 +208,7 @@ public class FusekiMain extends CmdARQ {
                 throw new CmdException("No dataset specified on the command line.");
 
             if ( numDefinitions > 1 )
-                throw new CmdException("Multiple ways providing a dataset. Only one of --mem, --file, --loc or --desc");
+                throw new CmdException("Multiple ways providing a dataset. Only one of --mem, --file, --loc or --conf");
 
             if ( numDefinitions > 0 && allowEmpty )
                 throw new CmdException("Dataset provided but 'no dataset' flag given");
@@ -208,15 +236,9 @@ public class FusekiMain extends CmdARQ {
             // ---- Port
             serverConfig.port = defaultPort;
             
-            if ( contains(argPort) ) {
-                String portStr = getValue(argPort);
-                try {
-                    int port = Integer.parseInt(portStr);
-                    serverConfig.port = port;
-                } catch (NumberFormatException ex) {
-                    throw new CmdException(argPort.getKeyName() + " : bad port number: " + portStr);
-                }
-            }
+            if ( contains(argPort) )
+                serverConfig.port = portNumber(argPort);
+
             if ( contains(argLocalhost) )
                 serverConfig.loopback = true;
 
@@ -337,6 +359,38 @@ public class FusekiMain extends CmdARQ {
                 serverConfig.contentDirectory = filebase;
             }
 
+            if ( contains(argPasswdFile) )
+                serverConfig.passwdFile = getValue(argPasswdFile);
+            
+            if ( contains(argRealm) )
+                serverConfig.realm =  getValue(argRealm);
+            
+            if ( contains(argHttpsPort) && ! contains(argHttps) )
+                throw new CmdException("https port given but not certificate dtails via --"+argHttps.getKeyName());
+            
+            if ( contains(argHttps) ) {
+                serverConfig.httpsPort = defaultHttpsPort;
+                if (  contains(argHttpsPort) )
+                    serverConfig.httpsPort = portNumber(argHttpsPort);
+                String httpsSetup = getValue(argHttps);
+                // The details go in a separate file that can be secured. 
+                JsonObject httpsConf = JSON.read(httpsSetup);
+                Path path = Paths.get(httpsSetup).toAbsolutePath();
+                String keystore = httpsConf.get("keystore").getAsString().value();
+                // Resolve relative to the https setup file.  
+                serverConfig.httpsKeystore = path.getParent().resolve(keystore).toString();
+                
+                serverConfig.httpsKeystorePasswd = httpsConf.get("passwd").getAsString().value();
+            }
+            
+            if ( contains(argAuth) ) {
+                String schemeStr = getValue(argAuth);
+                serverConfig.authScheme = AuthScheme.scheme(schemeStr); 
+            }
+            
+            serverConfig.withPing = contains(argWithPing);
+            serverConfig.withStats = contains(argWithStats);
+            
 //            if ( contains(argGZip) ) {
 //                if ( !hasValueOfTrue(argGZip) && !hasValueOfFalse(argGZip) )
 //                    throw new CmdException(argGZip.getNames().get(0) + ": Not understood: " + getValue(argGZip));
@@ -344,11 +398,22 @@ public class FusekiMain extends CmdARQ {
 //            }
         }
         
+        private int portNumber(ArgDecl arg) {
+            String portStr = getValue(arg);
+            try {
+                int port = Integer.parseInt(portStr);
+                return port;
+            } catch (NumberFormatException ex) {
+                throw new CmdException(argPort.getKeyName() + " : bad port number: " + portStr);
+            }
+
+        }
+        
         @Override
         protected void exec() {
             try {
                 FusekiServer server = buildServer(serverConfig);
-                info(server, serverConfig);
+                info(server);
                 try {
                     server.start();
                 } catch (FusekiException ex) {
@@ -388,8 +453,10 @@ public class FusekiMain extends CmdARQ {
         private static FusekiServer buildServer(FusekiServer.Builder builder, ServerConfig serverConfig) {
             builder.port(serverConfig.port);
             builder.loopback(serverConfig.loopback);
+            builder.verbose(serverConfig.verboseLogging);
             
             if ( serverConfig.addGeneral != null )
+                // Add SPARQL_QueryGeneral as a general servlet, not reached by the service router. 
                 builder.addServlet(serverConfig.addGeneral,  new SPARQL_QueryGeneral());
             
             if ( serverConfig.validators ) {
@@ -412,10 +479,28 @@ public class FusekiMain extends CmdARQ {
             if ( serverConfig.contentDirectory != null )
                 builder.staticFileBase(serverConfig.contentDirectory) ;
 
+            if ( serverConfig.passwdFile != null )
+                builder.passwordFile(serverConfig.passwdFile);
+
+            if ( serverConfig.realm != null )
+                builder.realm(serverConfig.realm);
+            
+            if ( serverConfig.httpsKeystore != null )
+                builder.https(serverConfig.httpsPort, serverConfig.httpsKeystore, serverConfig.httpsKeystorePasswd);
+           
+            if ( serverConfig.authScheme != null )
+                builder.auth(serverConfig.authScheme);
+
+            if ( serverConfig.withPing )
+                builder.enablePing(true);
+
+            if ( serverConfig.withStats )
+                builder.enableStats(true);
+            
             return builder.build();
         }
 
-        private void info(FusekiServer server, ServerConfig serverConfig) {
+        private void info(FusekiServer server) {
             if ( super.isQuiet() )
                 return;
 
@@ -430,7 +515,7 @@ public class FusekiMain extends CmdARQ {
                 buildDate = DateTimeUtils.nowAsXSDDateTimeString() ;
             
             String name = Fuseki.NAME;
-            name = name +" (basic server)";
+            //name = name +" (basic server)";
             
             if ( version != null ) {
                 if ( Fuseki.developmentMode && buildDate != null )
@@ -481,7 +566,7 @@ public class FusekiMain extends CmdARQ {
                 DataService dSrv = dap.getDataService();
                 dSrv.getOperations().forEach((op)->{
                     dSrv.getEndpoints(op).forEach(ep-> {
-                        String x = ep.getEndpoint();
+                        String x = ep.getName();
                         if ( x.isEmpty() )
                             x = "quads";
                         endpoints.add(x);   

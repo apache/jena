@@ -42,8 +42,8 @@ import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 
-/** Batch processing of {@link DataBlock}s (triples or Quads) converting them to two output of
- * to blocks of {@code Tuple<NodeId>}.
+/** Batch processing of {@link DataBlock}s (triples or Quads) converting them to two outputs of
+ * blocks of {@code Tuple<NodeId>}.
  * <p>
  * This class runs one task thread.
  * <p>

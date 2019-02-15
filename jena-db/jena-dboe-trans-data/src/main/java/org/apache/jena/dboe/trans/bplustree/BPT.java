@@ -36,13 +36,16 @@ import org.slf4j.Logger ;
 public final class BPT {
     public static boolean Logging = false ;                  // Turn on/off logging
     
+    /** Enable forces promotion of blocks; otherwise blocks are promoted as needed. */
     public static boolean forcePromoteModes         = false ;
+    /** Whether to duplicate a records block on a promotion call if forcePromoteModes=true */
     public static boolean promoteDuplicateRecords   = false ;
+    /** Whether to duplicate a nodes block on a promotion call if forcePromoteModes=true */
     public static boolean promoteDuplicateNodes     = false ;
 
     // Check within BPTreeNode
     public static boolean CheckingNode = false ;                      
-    // Check on exit of B+Tree modifiying operations
+    // Check on exit of B+Tree modifying operations
     // Not done?
     public static boolean CheckingConcurrency = SystemIndex.Checking ;
 
@@ -56,8 +59,8 @@ public final class BPT {
 
     /** Output a lot of detailed information. */
     public static void infoAll(boolean onOrOff) { 
-        DumpTree = true ;
-        Logging = true ;
+        DumpTree = onOrOff ;
+        Logging = onOrOff ;
     }
 
     static boolean logging(Logger log) {
@@ -123,7 +126,7 @@ public final class BPT {
                 List<AccessStep> y = path.getPath().subList(0, path.getPath().size()-2) ;
                 Optional<AccessStep> z = y.stream().filter(e -> e.node.isLeaf() ).findFirst() ;
                 if ( z.isPresent() )
-                    error("promote: Leaf %s found in path but not at the tail: %s") ;
+                    error("promote: Leaf %s found in path but not at the tail: %s", z.get(), path) ;
             }
             // Check the page/index pointers
             Optional<AccessStep> z2 = path.getPath().stream().filter(e -> e.node.ptrs.get(e.idx) != e.page.getId()).findFirst() ;

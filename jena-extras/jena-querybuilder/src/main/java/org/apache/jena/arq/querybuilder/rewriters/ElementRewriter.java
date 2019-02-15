@@ -103,17 +103,12 @@ public class ElementRewriter extends AbstractRewriter<Element> implements
 	@Override
 	public void visit(ElementData el) {
 		ElementData retval = new ElementData();
-		Iterator<Var> vars = el.getVars().iterator();
-		Iterator<Binding> bindings = el.getRows().iterator();
-		while (vars.hasNext()) {
-			Var v = vars.next();
-			if (values.containsKey(v)) {
-				bindings.next(); // skip the binding
-			} else {
-				retval.add(v);
-				retval.add(rewrite(bindings.next()));
-			}
+		for (Var v : el.getVars()) {
+			retval.add(v);
 		}
+		for (Binding binding : el.getRows()) {
+			retval.add( binding );
+		}		
 		push(retval);
 
 	}

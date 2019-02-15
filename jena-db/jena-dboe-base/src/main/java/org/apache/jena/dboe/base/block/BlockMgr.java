@@ -48,7 +48,7 @@ public interface BlockMgr extends Sync, Closeable /*UnitMgr<Block>*/
     /** Release a block, unmodified or already written. */
     public void release(Block block) ;
 
-    /** Promote to writeable : it's OK to promote an already writeable block */ 
+    /** Promote to writable : it's OK to promote an already writable block */ 
     public Block promote(Block block);
 
     // Bad name?  "endWrite", "put" -- for a mapped block, the changes are made directly, not on the write() */   

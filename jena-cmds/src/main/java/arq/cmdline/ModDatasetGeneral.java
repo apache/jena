@@ -55,7 +55,7 @@ public class ModDatasetGeneral extends ModDataset
         cl.getUsage().startCategory("Dataset") ;
         cl.add(dataDecl,
                "--data=FILE",
-               "Data for the datset - triple or quad formats") ;
+               "Data for the dataset - triple or quad formats") ;
         cl.add(graphDecl,
                "--graph=FILE",
                "Graph for default graph of the datset") ;

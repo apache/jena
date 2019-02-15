@@ -27,7 +27,7 @@ import org.apache.jena.sparql.engine.binding.BindingOutputStream ;
 /** Simple command for testing bindings */
 public class bindings
 {
-    public static void main(String[] args)
+    public static void main(String... args)
     {
         InputStream in = System.in ;
         OutputStream out = System.out ;

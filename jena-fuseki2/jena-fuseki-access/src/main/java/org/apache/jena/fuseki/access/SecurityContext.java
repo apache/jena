@@ -18,145 +18,81 @@
 
 package org.apache.jena.fuseki.access;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context;
-import org.apache.jena.sparql.util.NodeUtils;
-import org.apache.jena.tdb.TDBFactory;
-import org.apache.jena.tdb2.DatabaseMgr;
 
 /** A {@link SecurityContext} is the things actor (user, role) is allowed to do. 
  * Currently version: the set of graphs, by graph name, they can access.
  * It can be inverted into a "deny" policy with {@link Predicate#negate()}.
  */ 
-public class SecurityContext {
-    
-    public static SecurityContext NONE = new SecurityContext();
-    public static SecurityContext DFT_GRAPH = new SecurityContext(true);
-
-    private final Collection<Node> graphNames = ConcurrentHashMap.newKeySet();
-    private final boolean matchDefaultGraph;
-    
-    public SecurityContext() {
-        this(false);
+public interface SecurityContext {
+    public static final SecurityContext NONE = new SecurityContextAllowNone();
+    public static final SecurityContext ALL = new SecurityContextAllowAll();
+    public static SecurityContext ALL_NG(DatasetGraph dsg) { 
+        Collection<Node> names = Iter.toList(dsg.listGraphNodes());
+        //return new SecurityContextAllowNamedGraphs(dsg);
+        return new SecurityContextView(names);
     }
 
-    public SecurityContext(boolean matchDefaultGraph) {
-        this.matchDefaultGraph = matchDefaultGraph;
-    }
-
-    public SecurityContext(String...graphNames) {
-        this(NodeUtils.convertToSetNodes(graphNames));
-    }
-
-    public SecurityContext(Node...graphNames) {
-        this(Arrays.asList(graphNames));
-    }
-
-    public SecurityContext(Collection<Node> visibleGraphs) {
-        this.graphNames.addAll(visibleGraphs);
-        this.matchDefaultGraph = visibleGraphs.stream().anyMatch(Quad::isDefaultGraph);
-        if ( matchDefaultGraph ) {
-            this.graphNames.remove(Quad.defaultGraphIRI);
-            this.graphNames.remove(Quad.defaultGraphNodeGenerated);
-        }
-    }
-    
-    public Collection<Node> visibleGraphs() {
-        return Collections.unmodifiableCollection(graphNames);
-    }
+    public static final Node allGraphs = NodeFactory.createURI("urn:jena:accessAllGraphs");
+    public static final Node allNamedGraphs = NodeFactory.createURI("urn:jena:accessAllNamedGraphs");
+    public static final Node allNamedGraphsStr = NodeFactory.createLiteral("*");
+    public static final Node allGraphsStr = NodeFactory.createLiteral("**");
     
     /**
-     * Apply a filter suitable for the TDB-backed {@link DatasetGraph}, to the {@link Context} of the
-     * {@link QueryExecution}. This does not modify the {@link DatasetGraph}
+     * Collection of visible graph names. This method return null for null for "all" to avoid
+     * needing to calculate the current set of named graph names.
      */
-    /*package*/ void filterTDB(DatasetGraph dsg, QueryExecution qExec) {
-        GraphFilter<?> predicate = predicate(dsg);
-        qExec.getContext().set(predicate.getContextKey(), predicate);
+    public Collection<Node> visibleGraphs();
+    
+    /**
+     * Collection of visible graph URI names. This method return null for null for "all" to avoid
+     * needing to calculate the current set of named graph names.
+     */
+    public default Collection<String> visibleGraphNames() {
+        if ( visibleGraphs() == null )
+            return null;
+        return visibleGraphs().stream()
+                .filter(Node::isURI)
+                .map(Node::getURI)
+                .collect(Collectors.toList()) ;
     }
+    
+    public boolean visableDefaultGraph();
 
-    public QueryExecution createQueryExecution(String queryString, DatasetGraph dsg) {
+    public default QueryExecution createQueryExecution(String queryString, DatasetGraph dsg) {
         return createQueryExecution(QueryFactory.create(queryString), dsg);
     }
     
-    public QueryExecution createQueryExecution(Query query, DatasetGraph dsg) {
-        if ( ! ( dsg instanceof DatasetGraphAccessControl ) ) {
-            return QueryExecutionFactory.create(query, dsg);
-        }
-        if ( isAccessControlledTDB(dsg) ) {
-            QueryExecution qExec = QueryExecutionFactory.create(query, dsg);
-            filterTDB(dsg, qExec);
-            return qExec;
-        }
-        
-        DatasetGraph dsgA = DataAccessCtl.filteredDataset(dsg, this);
-        return QueryExecutionFactory.create(query, dsgA); 
-    }
-    
-    @Override
-    public String toString() {
-        return "dft:"+matchDefaultGraph+" / "+graphNames.toString();
-    }
-
-    public Predicate<Quad> predicateQuad() {
-        return quad -> {
-            if ( quad.isDefaultGraph() )
-                return matchDefaultGraph;
-            if ( quad.isUnionGraph() ) 
-                // Union graph is automatically there but its visible contents are different.
-                return true;
-            return graphNames.contains(quad.getGraph());
-        };
-    }
+    public QueryExecution createQueryExecution(Query query, DatasetGraph dsg);
 
     /**
-     * Create a GraphFilter for a TDB backed dataset.
-     * 
-     * @return GraphFilter
-     * @throws IllegalArgumentException
-     *             if not a TDB database, or a {@link DatasetGraphAccessControl} wrapped
-     *             TDB database.
+     * Quad filter to reflect the security policy of this {@link SecurityContext}. It is
+     * better to call {@link #createQueryExecution(Query, DatasetGraph)} which may be more
+     * efficient.
      */
-    public GraphFilter<?> predicate(DatasetGraph dsg) {
-        dsg = DatasetGraphAccessControl.removeWrapper(dsg);
-        // dsg has to be the database dataset, not wrapped.
-        //  DatasetGraphSwitchable is wrapped but should not be unwrapped. 
-        if ( TDBFactory.isTDB1(dsg) )
-            return filterTDB1(dsg);
-        if ( DatabaseMgr.isTDB2(dsg) )
-            return filterTDB2(dsg);
-        throw new IllegalArgumentException("Not a TDB1 or TDB2 database: "+dsg.getClass().getSimpleName());
-    }
-
-    public boolean isAccessControlledTDB(DatasetGraph dsg) {
-        DatasetGraph dsgBase = DatasetGraphAccessControl.unwrapOrNull(dsg);
-        if ( dsgBase == null )
-            return false;
-        if ( TDBFactory.isTDB1(dsgBase) )
-            return true;
-        if ( DatabaseMgr.isTDB2(dsgBase) )
-            return true;
-        return false;
-    }
+    public Predicate<Quad> predicateQuad();
     
-    public GraphFilterTDB2 filterTDB2(DatasetGraph dsg) {
-        GraphFilterTDB2 f = GraphFilterTDB2.graphFilter(dsg, graphNames, matchDefaultGraph);
-        return f;
-    }
-    
-    public GraphFilterTDB1 filterTDB1(DatasetGraph dsg) {
-        GraphFilterTDB1 f = GraphFilterTDB1.graphFilter(dsg, graphNames, matchDefaultGraph);
-        return f; 
+    /**
+     * Apply a filter suitable for the TDB-backed {@link DatasetGraph}, to the {@link Context} of the
+     * {@link QueryExecution}. This does not modify the {@link DatasetGraph}.
+     * Throws {@link IllegalArgumentException} if {@link DatasetGraph} is not a TDB1 or TDB2 backed dataset.
+     * May throw {@link UnsupportedOperationException}.
+     */
+    public default void filterTDB(DatasetGraph dsg, QueryExecution qExec) {
+        if ( ! org.apache.jena.tdb.sys.TDBInternal.isTDB1(dsg) || ! org.apache.jena.tdb2.sys.TDBInternal.isTDB2(dsg) )
+            throw new IllegalArgumentException("Not a TDB database");
+        throw new UnsupportedOperationException();
     }
 }

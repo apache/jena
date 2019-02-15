@@ -64,7 +64,7 @@ public class JsonDescription {
         builder.key(ServerConst.srvEndpoints) ;
         builder.startArray() ;
         for ( Endpoint endpoint : endpoints )
-            builder.value(endpoint.getEndpoint()) ;
+            builder.value(endpoint.getName()) ;
         builder.finishArray() ;
 
         builder.finishObject() ;

@@ -23,7 +23,6 @@ import jena.cmd.CmdGeneral ;
 import org.apache.jena.Jena ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.ARQ ;
-import org.apache.jena.riot.RIOT ;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorBase ;
 import org.apache.jena.sys.JenaSystem ;
 
@@ -40,8 +39,9 @@ public abstract class CmdARQ extends CmdGeneral
     {
         super(argv) ;
         modVersion.addClass(Jena.class) ;
-        modVersion.addClass(ARQ.class) ;
-        modVersion.addClass(RIOT.class) ;
+        // These are the same.
+//        modVersion.addClass(ARQ.class) ;
+//        modVersion.addClass(RIOT.class) ;
         super.add(strictDecl, "--strict", "Operate in strict SPARQL mode (no extensions of any kind)") ; 
         addModule(modContext) ;
     }

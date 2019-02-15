@@ -35,6 +35,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.ext.com.google.common.base.Strings;
 import org.apache.jena.ext.com.google.common.collect.LinkedListMultimap;
 import org.apache.jena.ext.com.google.common.collect.ListMultimap;
+import org.apache.jena.graph.Node_URI;
 import org.apache.jena.query.QueryBuildException ;
 import org.apache.jena.query.QueryExecException ;
 import org.apache.jena.sparql.core.* ;
@@ -250,8 +251,13 @@ public class TextQueryPF extends PropertyFunctionBase {
 
     private QueryIterator concreteSubject(Binding binding, Node s, Node score, Node literal, Node graph, StrMatch match, ExecutionContext execCxt) {
         log.trace("concreteSubject: {}", match) ;
-        ListMultimap<String,TextHit> x = query(match.getProperty(), match.getQueryString(), match.getLang(), -1, match.getHighlight(), execCxt) ;
-        
+        ListMultimap<String,TextHit> x;
+
+        if (s instanceof Node_URI) {
+            x = query(s.getURI(), match.getProperty(), match.getQueryString(), match.getLang(), -1, match.getHighlight(), execCxt);
+        } else {
+            x = query(match.getProperty(), match.getQueryString(), match.getLang(), -1, match.getHighlight(), execCxt);
+        }
         if ( x == null ) // null return value - empty result
             return IterLib.noResults(execCxt) ;
         
@@ -262,7 +268,55 @@ public class TextQueryPF extends PropertyFunctionBase {
 
     private ListMultimap<String,TextHit> query(Node property, String queryString, String lang, int limit, String highlight, ExecutionContext execCxt) {
         String graphURI = chooseGraphURI(execCxt);
-        
+
+        explainQuery(queryString, limit, execCxt, graphURI);
+
+        if (textIndex.getDocDef().areQueriesCached()) {
+            // Cache-key does not matter if lang or graphURI are null
+            String cacheKey = limit + " " + property + " " + queryString + " " + lang + " " + graphURI ;
+            Cache<String, ListMultimap<String, TextHit>> queryCache = prepareCache(execCxt);
+
+            log.trace("Caching Text query: {} with key: >>{}<< in cache: {}", queryString, cacheKey, queryCache) ;
+
+            return queryCache.getOrFill(cacheKey, ()->performQuery(property, queryString, graphURI, lang, limit, highlight));
+        } else {
+            log.trace("Executing w/o cache Text query: {}", queryString) ;
+            return performQuery(property, queryString, graphURI, lang, limit, highlight);
+        }
+    }
+
+    private ListMultimap<String,TextHit> query(String uri, Node property, String queryString, String lang, int limit, String highlight, ExecutionContext execCxt) {
+        String graphURI = chooseGraphURI(execCxt);
+
+        explainQuery(queryString, limit, execCxt, graphURI);
+
+        if (textIndex.getDocDef().areQueriesCached()) {
+            // Cache-key does not matter if lang or graphURI are null
+            String cacheKey = uri + " " + limit + " " + property + " " + queryString + " " + lang + " " + graphURI ;
+            Cache<String, ListMultimap<String, TextHit>> queryCache = prepareCache(execCxt);
+
+            log.trace("Caching Text query: {} with key: >>{}<< in cache: {}", queryString, cacheKey, queryCache) ;
+
+            return queryCache.getOrFill(cacheKey, ()->performQuery(uri, property, queryString, graphURI, lang, limit, highlight));
+        } else {
+            log.trace("Executing w/o cache Text query: {}", queryString) ;
+            return performQuery(uri, property, queryString, graphURI, lang, limit, highlight);
+        }
+    }
+
+    private Cache<String, ListMultimap<String, TextHit>> prepareCache(ExecutionContext execCxt) {
+        @SuppressWarnings("unchecked")
+        Cache<String, ListMultimap<String, TextHit>> queryCache =
+                (Cache<String, ListMultimap<String, TextHit>>) execCxt.getContext().get(cacheSymbol);
+        if (queryCache == null) {
+            /* doesn't yet exist, need to create it */
+            queryCache = CacheFactory.createCache(CACHE_SIZE);
+            execCxt.getContext().put(cacheSymbol, queryCache);
+        }
+        return queryCache;
+    }
+
+    private void explainQuery(String queryString, int limit, ExecutionContext execCxt, String graphURI) {
         if ( graphURI == null ) {
             Explain.explain(execCxt.getContext(), "Text query: "+queryString) ;
             log.debug("Text query: {} ({})", queryString, limit) ;
@@ -270,30 +324,6 @@ public class TextQueryPF extends PropertyFunctionBase {
             Explain.explain(execCxt.getContext(), "Text query <"+graphURI+">: "+queryString) ;
             log.debug("Text query: {} <{}> ({})", queryString, graphURI, limit) ;
         }
-
-        ListMultimap<String,TextHit> results;
-        
-        if (textIndex.getDocDef().areQueriesCached()) {
-            // Cache-key does not matter if lang or graphURI are null
-            String cacheKey = limit + " " + property + " " + queryString + " " + lang + " " + graphURI ;
-            @SuppressWarnings("unchecked")
-            Cache<String,ListMultimap<String,TextHit>> queryCache = 
-                (Cache<String,ListMultimap<String,TextHit>>) execCxt.getContext().get(cacheSymbol);
-            if (queryCache == null) {
-                /* doesn't yet exist, need to create it */
-                queryCache = CacheFactory.createCache(CACHE_SIZE);
-                execCxt.getContext().put(cacheSymbol, queryCache);
-            }
-
-            log.trace("Caching Text query: {} with key: >>{}<< in cache: {}", queryString, cacheKey, queryCache) ;
-
-            results = queryCache.getOrFill(cacheKey, ()->performQuery(property, queryString, graphURI, lang, limit, highlight));
-        } else {
-            log.trace("Executing w/o cache Text query: {}", queryString) ;
-            results = performQuery(property, queryString, graphURI, lang, limit, highlight);
-        }
-
-        return results;
     }
 
     private String chooseGraphURI(ExecutionContext execCxt) {
@@ -314,13 +344,22 @@ public class TextQueryPF extends PropertyFunctionBase {
     
     private ListMultimap<String,TextHit> performQuery(Node property, String queryString, String graphURI, String lang, int limit, String highlight) {
         List<TextHit> resultList = textIndex.query(property, queryString, graphURI, lang, limit, highlight) ;
+        return mapResult(resultList);
+    }
+
+    private ListMultimap<String,TextHit> performQuery(String uri, Node property, String queryString, String graphURI, String lang, int limit, String highlight) {
+        List<TextHit> resultList = textIndex.query(uri, property, queryString, graphURI, lang, limit, highlight) ;
+        return mapResult(resultList);
+    }
+
+    private ListMultimap<String, TextHit> mapResult(List<TextHit> resultList) {
         ListMultimap<String,TextHit> results = LinkedListMultimap.create();
         for (TextHit result : resultList) {
             results.put(TextQueryFuncs.subjectToString(result.getNode()), result);
         }
         return results;
     }
-    
+
     /** Deconstruct the node or list object argument and make a StrMatch 
      * The 'executionTime' flag indicates whether this is for a build time
      * static check, or for runtime execution.

@@ -51,6 +51,9 @@ public class ResultSetLang {
         = LangBuilder.create("SPARQL-Results-Text", WebContent.contentTypeTextPlain)
                      .addFileExtensions("txt")
                      .build() ;
+    
+    public static final Lang SPARQLResultSetNone
+        = LangBuilder.create("SPARQL-Results-None", "application/sparql-results+none").build() ;
 
     private static boolean initialized = false ;
     public static void init() {
@@ -62,6 +65,7 @@ public class ResultSetLang {
         RDFLanguages.register(SPARQLResultSetCSV) ;
         RDFLanguages.register(SPARQLResultSetTSV) ;
         RDFLanguages.register(SPARQLResultSetThrift) ;
+        RDFLanguages.register(SPARQLResultSetNone) ;
         ResultSetReaderRegistry.init();
         ResultSetWriterRegistry.init();
     }    

@@ -18,6 +18,7 @@
 
 package org.apache.jena.sparql;
 
+import org.apache.jena.riot.system.Prologue;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.sparql.util.Symbol ;
@@ -259,6 +260,9 @@ public class ARQConstants
     
     /** Graphs forming the named graphs (List&lt;String&gt;) (Dynamic dataset) */
     public static final Symbol symDatasetNamedGraphs       = SystemARQ.allocSymbol("datasetNamedGraphs") ;
+    
+    /** Context symbol for a supplied {@link Prologue} (used for text out of result sets). */
+    public static final Symbol symPrologue                 = SystemARQ.allocSymbol("prologue");
     
     /** Context key for making all SELECT queries have DISTINCT applied, whether stated ot not */
     public static final Symbol autoDistinct             = SystemARQ.allocSymbol("autoDistinct") ;

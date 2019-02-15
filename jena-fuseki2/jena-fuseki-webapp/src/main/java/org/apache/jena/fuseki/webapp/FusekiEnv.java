@@ -26,7 +26,7 @@ import java.nio.file.Paths ;
  * FusekiLogging can use these values.
  * This code must not touch Jena.  
  * 
- * @see FusekiSystem 
+ * @see FusekiWebapp 
  */ 
 public class FusekiEnv {
     // Initialization logging happens via stdout/stderr directly.

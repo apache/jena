@@ -19,6 +19,7 @@
 package org.apache.jena.query.text.analyzer ;
 
 import org.apache.lucene.analysis.Analyzer ;
+import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.core.KeywordTokenizer ;
 import org.apache.lucene.analysis.core.LowerCaseFilter ;
 
@@ -35,6 +36,12 @@ public class LowerCaseKeywordAnalyzer extends Analyzer {
                 KeywordTokenizer source = new KeywordTokenizer();
                 LowerCaseFilter filter = new LowerCaseFilter(source);
                 return new TokenStreamComponents(source, filter);
+        }
+
+        // As a consequence of LUCENE-7355 now need to Override normalize
+        @Override
+        protected TokenStream normalize(String fieldName, TokenStream in) {
+          return new LowerCaseFilter(in);
         }
 
 }

@@ -83,6 +83,8 @@ public class DatasetGraphFilteredView extends DatasetGraphReadOnly implements Da
     }
 
     private Iterator<Quad> filter(Iterator<Quad> iter) {
+        if ( this.quadFilter == null )
+            return iter;
         return Iter.filter(iter, this::filter);
     }
     
@@ -152,8 +154,8 @@ public class DatasetGraphFilteredView extends DatasetGraphReadOnly implements Da
         return ! this.find().hasNext(); 
     }
     
-//    @Override public String toString() {
-//        return  
-//    }
+    @Override public String toString() {
+        return "Filtered:\n"+super.toString();  
+    }
 
 }

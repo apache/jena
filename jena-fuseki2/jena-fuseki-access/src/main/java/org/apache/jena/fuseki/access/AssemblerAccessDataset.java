@@ -48,16 +48,17 @@ public class AssemblerAccessDataset extends AssemblerBase {
         RDFNode rnDataset = root.getProperty(VocabSecurity.pDataset).getObject();
         
         AuthorizationService sr = (AuthorizationService)a.open(rnRegistry.asResource()) ;
-        Dataset ds = (Dataset)a.open(rnDataset.asResource()) ;
+        DatasetGraph dsgBase = ((Dataset)a.open(rnDataset.asResource())).asDatasetGraph();
         
-        DatasetGraph dsg = new DatasetGraphAccessControl(ds.asDatasetGraph(), sr);
-        ds = DatasetFactory.wrap(dsg);
+        DatasetGraph dsg = new DatasetGraphAccessControl(dsgBase, sr);
         
-//        // Add marker
-//        ds.getContext().set(DataAccessCtl.symControlledAccess, true);
-//        // Add security registry
-//        ds.getContext().set(DataAccessCtl.symSecurityRegistry, sr);
-        return ds;
+        // Add marker
+        // ds.getContext().set(DataAccessCtl.symControlledAccess, true);
+        
+        // Add security registry : if this dataset is wrapped then this means the AuthorizationService is still accessible.
+        // But adding to DatasetGraphAccessControl (currently) pushes it down to the wrapped base DSG. 
+        //dsg.getContext().set(DataAccessCtl.symAuthorizationService, sr);
+        return DatasetFactory.wrap(dsg);
     }
     
 }

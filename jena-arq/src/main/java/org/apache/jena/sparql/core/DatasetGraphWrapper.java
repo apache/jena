@@ -34,6 +34,7 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
 {
     // The wrapped DatasetGraph but all calls go via get() so this can be null.
     private final DatasetGraph dsg;
+    private Context context;
     
     /** Return the DatasetGraph being wrapped. */
     public final DatasetGraph getWrapped() { 
@@ -73,6 +74,7 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
      *  made based on that contract. 
      */
     protected DatasetGraph get() { return dsg; }
+    protected Context getCxt()   { return context; }
 
     /** For operations that only read the DatasetGraph. */ 
     protected DatasetGraph getR() { return get(); }
@@ -86,8 +88,20 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
     /** For operations that pass on transaction actions. */
     protected DatasetGraph getT() { return get(); }
 
+    /**
+     * Create a operations wrapper around {@code dsg}.
+     * The {@link Context} of the wrapper is the context of the {@code dsg}. 
+     */
     public DatasetGraphWrapper(DatasetGraph dsg) {
+        this(dsg, (dsg == null) ? null : dsg.getContext());
+    }
+
+    /**
+     * Create a operations wrapper around {@code dsg} with {@code context}.
+     */
+    public DatasetGraphWrapper(DatasetGraph dsg, Context context) {
         this.dsg = dsg;
+        this.context = context;
     }
 
     @Override
@@ -180,7 +194,7 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
 
     @Override
     public Context getContext()
-    { return getR().getContext(); }
+    { return getCxt(); }
 
     @Override
     public long size()

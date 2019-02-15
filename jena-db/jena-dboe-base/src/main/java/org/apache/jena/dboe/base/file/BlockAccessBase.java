@@ -166,6 +166,7 @@ public abstract class BlockAccessBase implements BlockAccess {
     @Override
     final public void close() {
         _close() ;
+        FileLib.close(file);
         file = null ;
     }
 

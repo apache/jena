@@ -31,7 +31,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
-import org.apache.jena.fuseki.webapp.FusekiSystem;
+import org.apache.jena.fuseki.webapp.FusekiWebapp;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
@@ -50,17 +50,23 @@ public class TestAdminAPI extends AbstractFusekiTest {
     }
     
     @Test public void add_delete_api_2() throws Exception {
+        // Deleted mmap files on Windows does not go away until the JVM exits. 
+        if ( org.apache.jena.tdb.sys.SystemTDB.isWindows )
+            return;
         testAddDelete("db_tdb", "tdb", true);
     }
 
     @Test public void add_delete_api_3() throws Exception {
+        // Deleted mmap files on Windows does not go away until the JVM exits. 
+        if ( org.apache.jena.tdb2.sys.SystemTDB.isWindows )
+            return;
         testAddDelete("db_tdb2", "tdb2", true);
     }
 
     private static void testAddDelete(String dbName, String dbType, boolean hasFiles) {
         String datasetURL = ServerCtl.urlRoot()+dbName;
         String admin = ServerCtl.urlRoot()+"$/";
-        HttpEntity e = createFormEntity(dbName, "tdb");
+        HttpEntity e = createFormEntity(dbName, dbType);
         
         assertFalse(exists(datasetURL));
         
@@ -71,7 +77,7 @@ public class TestAdminAPI extends AbstractFusekiTest {
         int x1 = count(conn);
         assertEquals(1, x1);
         
-        Path pathDB = FusekiSystem.dirDatabases.resolve(dbName);
+        Path pathDB = FusekiWebapp.dirDatabases.resolve(dbName);
             
         if ( hasFiles )
             assertTrue(Files.exists(pathDB));

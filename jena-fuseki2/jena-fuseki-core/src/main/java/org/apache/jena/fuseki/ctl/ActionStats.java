@@ -102,7 +102,7 @@ public class ActionStats extends ActionContainerItem
             
             for ( Endpoint endpoint : endpoints ) {
                 // Endpoint names are unique for a given service.
-                builder.key(endpoint.getEndpoint()) ;
+                builder.key(endpoint.getName()) ;
                 builder.startObject() ;
                 
                 operationCounters(builder, endpoint);

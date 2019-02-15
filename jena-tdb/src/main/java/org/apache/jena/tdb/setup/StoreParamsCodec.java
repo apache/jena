@@ -18,39 +18,14 @@
 
 package org.apache.jena.tdb.setup;
 
-import static org.apache.jena.tdb.setup.StoreParamsConst.TDB_CONFIG_FILE ;
-import static org.apache.jena.tdb.setup.StoreParamsConst.fBlockReadCacheSize ;
-import static org.apache.jena.tdb.setup.StoreParamsConst.fBlockSize ;
-import static org.apache.jena.tdb.setup.StoreParamsConst.fBlockWriteCacheSize ;
-import static org.apache.jena.tdb.setup.StoreParamsConst.fFileMode ;
-import static org.apache.jena.tdb.setup.StoreParamsConst.fIndexId2Node ;
-import static org.apache.jena.tdb.setup.StoreParamsConst.fIndexNode2Id ;
-import static org.apache.jena.tdb.setup.StoreParamsConst.fIndexPrefix ;
-import static org.apache.jena.tdb.setup.StoreParamsConst.fNode2NodeIdCacheSize ;
-import static org.apache.jena.tdb.setup.StoreParamsConst.fNodeId2NodeCacheSize ;
-import static org.apache.jena.tdb.setup.StoreParamsConst.fNodeMissCacheSize ;
-import static org.apache.jena.tdb.setup.StoreParamsConst.fPrefixId2Node ;
-import static org.apache.jena.tdb.setup.StoreParamsConst.fPrefixIndexes ;
-import static org.apache.jena.tdb.setup.StoreParamsConst.fPrefixNode2Id ;
-import static org.apache.jena.tdb.setup.StoreParamsConst.fPrimaryIndexPrefix ;
-import static org.apache.jena.tdb.setup.StoreParamsConst.fPrimaryIndexQuads ;
-import static org.apache.jena.tdb.setup.StoreParamsConst.fPrimaryIndexTriples ;
-import static org.apache.jena.tdb.setup.StoreParamsConst.fQuadIndexes ;
-import static org.apache.jena.tdb.setup.StoreParamsConst.fTripleIndexes ;
+import static org.apache.jena.tdb.setup.StoreParamsConst.*;
 
-import java.io.BufferedOutputStream ;
-import java.io.FileOutputStream ;
-import java.io.IOException ;
-import java.io.OutputStream ;
+import java.io.*;
 
-import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.json.JSON ;
-import org.apache.jena.atlas.json.JsonParseException;
-import org.apache.jena.atlas.json.JsonArray ;
-import org.apache.jena.atlas.json.JsonBuilder ;
-import org.apache.jena.atlas.json.JsonObject ;
+import org.apache.jena.atlas.json.*;
 import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.base.block.FileMode ;
 import org.apache.jena.tdb.base.file.Location ;
@@ -74,21 +49,38 @@ public class StoreParamsCodec {
         catch (IOException ex) { IO.exception(ex); }
     }
 
-    /** Read from a file */ 
+    /**
+     * Read from a file if possible.
+     * Return null for memory locations, file not found or syntax errors. 
+     */
     public static StoreParams read(Location location) {
+        if ( location.isMem() )
+            return null ;
         return read(location.getPath(TDB_CONFIG_FILE)) ;
     }
-    
-    /** Read from a file, if possible. */ 
+
+    /** 
+     * Read from a file if possible.
+     * Return null if the file is not found or has a syntax error. 
+     */
     public static StoreParams read(String filename) {
         try {
-            JsonObject obj = JSON.read(filename) ;
+            InputStream in = IO.openFileEx(filename);
+            if ( in == null )
+                return null;
+            JsonObject obj = JSON.parse(in) ;
             return StoreParamsCodec.decode(obj) ;
-        } 
-        catch (JsonParseException ex) { return null ; }
-        catch (AtlasException ex) { return null ; }
+        } catch (FileNotFoundException ex) { 
+            return null; 
+        } catch (JsonParseException ex) {
+            FmtLog.warn(StoreParamsCodec.class, "Ignoring store params : Syntax error in '%s': [line:%d, col:%d] %s", filename, ex.getLine(), ex.getColumn(), ex.getMessage());
+            return null ;
+        } catch (IOException e) {
+            IO.exception(e);
+            return null;
+        }
     }
-    
+
     public static JsonObject encodeToJson(StoreParams params) {
         JsonBuilder builder = new JsonBuilder() ;
         builder.startObject("StoreParams") ;    // "StoreParams" is an internal alignment marker - not in the JSON.

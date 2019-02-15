@@ -29,6 +29,7 @@ import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
 import org.apache.jena.ext.com.google.common.collect.ListMultimap;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
+import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.query.text.DatasetGraphText;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -38,6 +39,7 @@ public class DataService {
 
     private ListMultimap<Operation, Endpoint> operations  = ArrayListMultimap.create();
     private Map<String, Endpoint> endpoints               = new HashMap<>();
+    private AuthPolicy authPolicy                         = null;
 
     /**
      * Record which {@link DataAccessPoint DataAccessPoints} this {@code DataService} is
@@ -94,7 +96,11 @@ public class DataService {
     }
     
     public void addEndpoint(Operation operation, String endpointName) {
-        Endpoint endpoint = new Endpoint(operation, endpointName);
+        addEndpoint(operation, endpointName, null);
+    }
+    
+    public void addEndpoint(Operation operation, String endpointName, AuthPolicy authPolicy) {
+        Endpoint endpoint = new Endpoint(operation, endpointName, authPolicy);
         endpoints.put(endpointName, endpoint);
         operations.put(operation, endpoint);
     }
@@ -103,6 +109,10 @@ public class DataService {
         return endpoints.get(endpointName);
     }
 
+    public Collection<Endpoint> getEndpoints() {
+        return operations.values();
+    }
+    
     public List<Endpoint> getEndpoints(Operation operation) {
         List<Endpoint> x = operations.get(operation);
         if ( x == null )
@@ -212,5 +222,11 @@ public class DataService {
         } else
             dataset.close();
     }
+
+    public void setAuthPolicy(AuthPolicy authPolicy) { this.authPolicy = authPolicy; }
+    
+    /** Returning null implies no authorization control */
+    public AuthPolicy authPolicy() { return authPolicy; }
+
 }
 

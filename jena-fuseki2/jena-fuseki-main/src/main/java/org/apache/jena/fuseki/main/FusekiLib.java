@@ -21,23 +21,25 @@ package org.apache.jena.fuseki.main;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.servlet.ServletContext;
+
+import org.apache.jena.fuseki.access.*;
 import org.apache.jena.fuseki.build.FusekiBuilder;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.DataService;
-import org.apache.jena.fuseki.system.FusekiNetLib;
+import org.apache.jena.fuseki.server.Operation;
+import org.apache.jena.fuseki.servlets.ActionService;
+import org.apache.jena.fuseki.servlets.HttpAction;
+import org.apache.jena.fuseki.servlets.ServiceDispatchRegistry;
+import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.core.DatasetGraph;
 
-/** Actions on a {@link FusekiServer} */
+/** Actions on and about a {@link FusekiServer} */
 public class FusekiLib {
-
-    /** Choose a free port */
-    public static int choosePort() {
-        return FusekiNetLib.choosePort();
-    }
-
     /**
      * Return a collection of the names registered. This collection does not change as the
      * server changes.
@@ -70,5 +72,69 @@ public class FusekiLib {
         DataAccessPointRegistry dataAccessPoints = DataAccessPointRegistry.get(server.getServletContext());
         FusekiBuilder.removeDataset(dataAccessPoints, name);
         return server;
+    }
+    
+    /**
+     * Return a {@code FusekiServer.Builder} setup for data access control.
+     */
+    public static FusekiServer.Builder fusekiBuilder(Function<HttpAction, String> determineUser) {
+        FusekiServer.Builder builder = FusekiServer.create();
+        return fusekiBuilder(builder, determineUser);
+    }
+    
+    /**
+     * Modify a {@code FusekiServer.Builder} setup for data access control.
+     */
+    public static FusekiServer.Builder fusekiBuilder(FusekiServer.Builder builder, Function<HttpAction, String> determineUser) {
+        // Replace the standard operations with the SecurityRegistry processing ones. 
+        builder.registerOperation(Operation.Query, WebContent.contentTypeSPARQLQuery, new AccessCtl_SPARQL_QueryDataset(determineUser));
+        builder.registerOperation(Operation.GSP_R, new AccessCtl_SPARQL_GSP_R(determineUser));
+        builder.registerOperation(Operation.Quads_R, new AccessCtl_REST_Quads_R(determineUser));
+        
+        // Block updates (can just not register these operations).
+        builder.registerOperation(Operation.Update, WebContent.contentTypeSPARQLUpdate, new AccessCtl_SPARQL_Update(determineUser));
+        builder.registerOperation(Operation.GSP_RW, new AccessCtl_SPARQL_GSP_RW(determineUser));
+        builder.registerOperation(Operation.Quads_RW, new AccessCtl_REST_Quads_RW(determineUser));
+        return builder;
+    }
+
+    /**
+     * Modify in-place an existing {@link FusekiServer} so that the read-operations for
+     * query/GSP/Quads go to the data-filtering versions of the {@link ActionService ActionServices}.
+     */
+    public static void modifyForAccessCtl(FusekiServer server, Function<HttpAction, String> determineUser) {
+        /*
+         * Reconfigure standard Jena Fuseki, replacing the default implementations with
+         * filtering ones. This for this server only, not system-wide.
+         */
+        // The mapping operation to handler is in the ServiceDispatchRegistry and is per
+        // server (per servlet context). "registerOrReplace" might be a better name,
+        ServletContext cxt = server.getServletContext();
+        ServiceDispatchRegistry reg = ServiceDispatchRegistry.get(cxt);
+        modifyForAccessCtl(reg, determineUser);
+    }
+        
+    /**
+     * Modify in-place an existing {@link ServiceDispatchRegistry} so that the operations for
+     * query/GSP/Quads go to the data-filtering versions of the {@link ActionService ActionServices}
+     */
+    public static void modifyForAccessCtl(ServiceDispatchRegistry reg, Function<HttpAction, String> determineUser) {
+        resetOperation(reg, Operation.Query, WebContent.contentTypeSPARQLQuery, new AccessCtl_SPARQL_QueryDataset(determineUser));
+        resetOperation(reg, Operation.GSP_R, null, new AccessCtl_SPARQL_GSP_R(determineUser));
+        resetOperation(reg, Operation.Quads_R, null, new AccessCtl_REST_Quads_R(determineUser));
+
+        // Block updates
+        resetOperation(reg, Operation.Update, WebContent.contentTypeSPARQLUpdate, new AccessCtl_SPARQL_Update(determineUser));
+        resetOperation(reg, Operation.GSP_RW, null, new AccessCtl_SPARQL_GSP_RW(determineUser));
+        resetOperation(reg, Operation.Quads_RW, null, new AccessCtl_SPARQL_Update(determineUser));
+
+//        reg.unregister(Operation.Update);
+//        reg.unregister(Operation.GSP_RW);
+//        reg.unregister(Operation.Quads_RW);
+    }
+    
+    private static void resetOperation(ServiceDispatchRegistry reg, Operation operation, String contentType, ActionService service) {
+        if ( reg.isRegistered(operation) )
+            reg.register(operation, contentType, service);
     }
 }

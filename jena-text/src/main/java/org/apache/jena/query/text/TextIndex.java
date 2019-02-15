@@ -51,6 +51,10 @@ public interface TextIndex extends Closeable //, Transactional
     List<TextHit> query(Node property, String qs, String graphURI, String lang) ;
 
     List<TextHit> query(Node property, String qs, String graphURI, String lang, int limit, String highlight) ;
-    
+
+    default List<TextHit> query(String subjectUri, Node property, String qs, String graphURI, String lang, int limit, String highlight){
+        return query(property, qs, graphURI, lang, limit, highlight);
+    }
+
     EntityDefinition getDocDef() ;
 }

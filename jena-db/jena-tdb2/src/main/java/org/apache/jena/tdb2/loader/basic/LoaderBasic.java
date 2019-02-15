@@ -27,6 +27,8 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.loader.base.LoaderBase;
 import org.apache.jena.tdb2.loader.base.LoaderOps;
 import org.apache.jena.tdb2.loader.base.MonitorOutput;
+import org.apache.jena.tdb2.loader.base.ProgressMonitor;
+import org.apache.jena.tdb2.loader.base.ProgressMonitorOutput;
 
 /** Simple bulk loader. Algorithm: Parser to dataset. */ 
 public class LoaderBasic extends LoaderBase {
@@ -53,8 +55,8 @@ public class LoaderBasic extends LoaderBase {
     }
 
     @Override
-    protected void loadOne(String source) {
-        LoaderOps.inputFile(dest, source, output, DataTickPoint, DataSuperTick);
+    protected ProgressMonitor createProgressMonitor(MonitorOutput output) {
+        return ProgressMonitorOutput.create(output, "<unset>", DataTickPoint, DataSuperTick);
     }
 
     @Override

@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.web.HttpSC ;
 import org.eclipse.jetty.http.HttpMethod ;
@@ -58,19 +57,10 @@ public class FusekiErrorHandler extends ErrorHandler
         
         ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024) ;
         try ( Writer writer = IO.asUTF8(bytes) ) {
-            String reason=(response instanceof Response)?((Response)response).getReason():null;
+            String reason = (response instanceof Response) ? ((Response)response).getReason() : null;
             handleErrorPage(request, writer, response.getStatus(), reason) ;
-
-            if ( ! Fuseki.VERSION.equalsIgnoreCase("development") &&
-                 ! Fuseki.VERSION.equals("${project.version}") )
-            {
-                writer.write("\n") ;
-                writer.write("\n") ;
-                writer.write(format("Fuseki - version %s (Build date: %s)\n", Fuseki.VERSION, Fuseki.BUILD_DATE)) ;
-            }
             writer.flush();
             response.setContentLength(bytes.size()) ;
-            // Copy :-(
             response.getOutputStream().write(bytes.toByteArray()) ;
         }
     }

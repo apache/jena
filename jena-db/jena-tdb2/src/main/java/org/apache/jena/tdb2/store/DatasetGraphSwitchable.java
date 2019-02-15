@@ -48,7 +48,7 @@ public class DatasetGraphSwitchable extends DatasetGraphWrapper
     
     public DatasetGraphSwitchable(Path base, Location location, DatasetGraph dsg) {
         // Don't use the slot in datasetGraphWrapper - use the AtomicReference
-        super(null) ;
+        super(null, dsg.getContext()) ;
         dsgx.set(dsg);
         this.basePath = base;
         this.location = location; 

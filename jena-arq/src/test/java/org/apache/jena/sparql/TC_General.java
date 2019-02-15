@@ -27,6 +27,8 @@ import org.apache.jena.sparql.core.TS_Core ;
 import org.apache.jena.sparql.core.assembler.TS_Assembler ;
 import org.apache.jena.sparql.core.mem.TS_DatasetTxnMem ;
 import org.apache.jena.sparql.engine.TS_Engine ;
+import org.apache.jena.sparql.engine.index.TS_Minus;
+import org.apache.jena.sparql.engine.iterator.TS_QueryIterators;
 import org.apache.jena.sparql.engine.join.TS_Join ;
 import org.apache.jena.sparql.expr.E_Function ;
 import org.apache.jena.sparql.expr.NodeValue ;
@@ -70,6 +72,8 @@ import org.junit.runners.Suite ;
     , TS_Solver.class
     , TS_Algebra.class
     , TS_Join.class
+    , TS_Minus.class
+    , TS_QueryIterators.class
     , TS_Optimization.class
     , TS_ResultSet.class
     , TS_Syntax.class

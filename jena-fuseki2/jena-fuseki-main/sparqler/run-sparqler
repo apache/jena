@@ -1,0 +1,63 @@
+#!/bin/bash
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+## Configuration
+SPARQLER_PAGES="${SPARQLER_PAGES:-pages/}"
+SPARQLER_DATA="${SPARQLER_DATA:-file:data/books.ttl}"
+SPARQLER_DS="${SPARQLER_DS:-/books}"
+
+## Development
+FUSEKI_JAR1="$(echo jena-fuseki-basic-*-server.jar)"
+## Deployment
+FUSEKI_JAR2="fuseki-basic.jar"
+FUSEKI_JAR3=""
+
+# Choose which jar to run
+[[ -e $FUSEKI_JAR3 ]] && FUSEKI_JAR=$FUSEKI_JAR3
+[[ -e $FUSEKI_JAR2 ]] && FUSEKI_JAR=$FUSEKI_JAR2
+[[ -e $FUSEKI_JAR1 ]] && FUSEKI_JAR=$FUSEKI_JAR1
+
+if [ ! -e "$FUSEKI_JAR" ]
+then
+    echo "Can't find the Fuseki jar file: $FUSEKI_JAR" 1>&2
+    exit 1 
+fi
+
+BACKGROUND=${BACKGROUND:-1}
+if [ "$BACKGROUND" = 0 ]
+then
+    LOGCONFIG=${LOGCONFIG:-file:log4j-foreground.properties}
+else
+    LOGCONFIG=${LOGCONFIG:-file:log4j-server.properties}
+fi
+
+export FUSEKI_LOG="-Dlog4j.configuration=${LOGCONFIG}"
+export JVM_ARGS="${JVM_ARGS:--Xmx1200M}"
+
+## SPARQLER_ARGS="--base $SPARQLER_PAGES --file=$SPARQLER_DATA  $SPARQLER_DS"
+## 
+## if [[ $1 == "--help" ]]
+## then
+##     echo "$0"
+##     echo "SPARQLER_PAGES = $SPARQLER_PAGES"
+##     echo "SPARQLER_DATA  = $SPARQLER_DATA"
+##     echo "SPARQLER_DS    = $SPARQLER_DS"
+##     exit 0
+## fi
+
+SPARQLER_ARGS="--sparqler $SPARQLER_PAGES"
+
+set --
+
+if [ "$BACKGROUND" = 0 ]
+then
+    # Run in the foreground
+    exec java $JVM_ARGS $FUSEKI_LOG -jar "$FUSEKI_JAR" $SPARQLER_ARGS
+else
+    # Run in the background
+    # Linux / nohup
+    nohup java $JVM_ARGS $FUSEKI_LOG -jar "$FUSEKI_JAR" $SPARQLER_ARGS > nohup.log 2>&1 &
+    # Process ID ... of the script.
+    PROC=$!
+    echo "Server process = $PROC"
+fi

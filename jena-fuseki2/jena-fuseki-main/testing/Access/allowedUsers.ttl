@@ -1,0 +1,15 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+# Data for testing parsing "fuseki:allowedUsers" : TestAuthorized
+
+PREFIX :        <http://example/>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+
+:none :p 123 .
+
+:r1 fuseki:allowedUsers "user1" ,"user2" .
+:r2 fuseki:allowedUsers ( "user1" "user2" ) .
+
+:rLoggedIn fuseki:allowedUsers "*" .

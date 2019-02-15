@@ -103,7 +103,7 @@ public class DataToTuplesInline implements StreamRDFCounting, BulkStartFinish {
         }
         dispatchTriples(LoaderConst.END_TUPLES);
         if ( quads != null && ! quads.isEmpty() ) {
-            dispatchTriples(quads);
+            dispatchQuads(quads);
             quads = null;
         }
         dispatchQuads(LoaderConst.END_TUPLES);

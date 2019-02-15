@@ -43,7 +43,7 @@ public class Context {
     /** Create an empty context */
     public Context() {}
 
-    /* Create an empty context, mark it's readonly state */
+    /* Create an empty context, mark its read-only state */
     private Context(boolean readonly) {
         this.readonly = readonly ;
     }

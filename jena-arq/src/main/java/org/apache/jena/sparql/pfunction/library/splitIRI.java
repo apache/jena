@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.pfunction.library;
 
+import java.util.Objects;
+
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
@@ -36,7 +38,7 @@ import org.apache.jena.sparql.pfunction.PropertyFunctionEval ;
 import org.apache.jena.sparql.util.IterLib ;
 import org.apache.jena.sparql.util.NodeUtils ;
 
-public class splitIRI extends PropertyFunctionEval //PropertyFunctionBase
+public class splitIRI extends PropertyFunctionEval
 {
     public splitIRI()
     {
@@ -98,12 +100,13 @@ public class splitIRI extends PropertyFunctionEval //PropertyFunctionBase
         if ( Var.isVar(namespaceNode) || Var.isVar(localnameNode) )
             b = BindingFactory.create(binding) ;
         
-        if ( Var.isVar(namespaceNode) ) // .isVariable() )
+        if ( Var.isVar(namespaceNode) )
         {
             b.add(Var.alloc(namespaceNode), NodeFactory.createURI(namespace)) ;
             // Check for the case of (?x ?x) (very unlikely - and even more unlikely to cause a match)
             // but it's possible for strange URI schemes.
-            if ( localnameNode.isVariable() && namespaceNode.getName() == localnameNode.getName() )
+            if ( localnameNode.isVariable() && Objects.equals(namespaceNode, localnameNode) )
+                // Set localnameNode to a constant which will get checked below.
                 localnameNode = NodeFactory.createURI(namespace) ;
         }
         else
@@ -130,7 +133,7 @@ public class splitIRI extends PropertyFunctionEval //PropertyFunctionBase
         }
         
         Binding b2 = ( b == null ) ? binding : b ;
-        return IterLib.result(b, execCxt) ;
+        return IterLib.result(b2, execCxt) ;
     }
 
     private QueryIterator subjectIsVariable(Node arg, PropFuncArg argObject, ExecutionContext execCxt)

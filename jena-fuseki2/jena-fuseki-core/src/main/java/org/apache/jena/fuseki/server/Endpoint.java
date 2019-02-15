@@ -18,51 +18,66 @@
 
 package org.apache.jena.fuseki.server;
 
-import org.apache.jena.atlas.lib.InternalErrorException ;
+import java.util.Objects;
 
+import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.fuseki.auth.AuthPolicy;
+
+/*
+ * An {@code Endpoint} is an instance of an {@link Operation} within a {@link DataService} and has counters.
+ * An {@code Endpoint} may have a name which is a path component. 
+ */
 public class Endpoint implements Counters {
-    
-    public final Operation operation ;
-    public final String endpointName ;
-    // Endpoint-level counters.
-    private final CounterSet counters           = new CounterSet() ;
 
-    public Endpoint(Operation operation, String endpointName) {
-        this.operation = operation ;
+    public final Operation   operation;
+    public final String      endpointName;
+    private final AuthPolicy authPolicy;
+    // Endpoint-level counters.
+    private final CounterSet counters = new CounterSet();
+
+    public Endpoint(Operation operation, String endpointName, AuthPolicy requestAuth) {
+        this.operation = Objects.requireNonNull(operation, "operation");
         if ( operation == null )
-            throw new InternalErrorException("operation is null") ;
-        this.endpointName = endpointName ;
+            throw new InternalErrorException("operation is null");
+        this.endpointName = Objects.requireNonNull(endpointName, "endpointName");
+        this.authPolicy = requestAuth;
         // Standard counters - there may be others
-        counters.add(CounterName.Requests) ;
-        counters.add(CounterName.RequestsGood) ;
-        counters.add(CounterName.RequestsBad) ;
+        counters.add(CounterName.Requests);
+        counters.add(CounterName.RequestsGood);
+        counters.add(CounterName.RequestsBad);
     }
 
     @Override
-    public  CounterSet getCounters()    { return counters ; }
-
-    //@Override
-    public Operation getOperation()     { return operation ; }
-    
-    //@Override
-    public boolean isType(Operation operation) { 
-        return operation.equals(operation) ;
+    public CounterSet getCounters() {
+        return counters;
     }
 
-    public String getEndpoint()         { return endpointName ; }
-    
-    //@Override 
-    public long getRequests() { 
-        return counters.value(CounterName.Requests) ;
+    public Operation getOperation() {
+        return operation;
     }
-    //@Override
+
+    public boolean isType(Operation operation) {
+        return operation.equals(operation);
+    }
+
+    public String getName() {
+        return endpointName;
+    }
+
+    public AuthPolicy getAuthPolicy() {
+        return authPolicy;
+    }
+
+    public long getRequests() {
+        return counters.value(CounterName.Requests);
+    }
+
     public long getRequestsGood() {
-        return counters.value(CounterName.RequestsGood) ;
+        return counters.value(CounterName.RequestsGood);
     }
-    //@Override
+
     public long getRequestsBad() {
-        return counters.value(CounterName.RequestsBad) ;
+        return counters.value(CounterName.RequestsBad);
     }
 
 }
-

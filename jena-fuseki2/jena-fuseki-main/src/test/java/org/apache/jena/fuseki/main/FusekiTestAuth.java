@@ -77,6 +77,8 @@ import org.junit.Assert;
  * large test suite may end up quite slow.
  */
 public class FusekiTestAuth {
+    // Old tests 
+    // Predates full auth support in Fuseki.
     private static int currentPort = WebLib.choosePort() ;
     
     public static int port() {
@@ -168,7 +170,7 @@ public class FusekiTestAuth {
     }
 
     /** Assert that an {@code HttpException} ias an authorization failure.
-     * This is normally 403.  401 indicates no retryu with credentials.
+     * This is normally 403.  401 indicates no retry with credentials.
      */
     public static HttpException assertAuthHttpException(HttpException ex) {
         int rc = ex.getResponseCode();

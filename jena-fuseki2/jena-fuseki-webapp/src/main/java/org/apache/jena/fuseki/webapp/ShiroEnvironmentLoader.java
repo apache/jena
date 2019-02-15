@@ -47,7 +47,7 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
     
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        FusekiSystem.formatBaseArea() ; 
+        FusekiWebapp.formatBaseArea() ; 
         this.servletContext = sce.getServletContext() ;
         try { 
             // Shiro.

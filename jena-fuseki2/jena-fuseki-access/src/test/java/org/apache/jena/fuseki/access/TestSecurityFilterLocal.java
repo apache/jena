@@ -18,22 +18,20 @@
 
 package org.apache.jena.fuseki.access;
 
-import static org.apache.jena.fuseki.access.AccessTestLib.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.atlas.lib.SetUtils;
+import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.fuseki.access.DataAccessCtl;
+import org.apache.jena.fuseki.access.SecurityContext;
+import org.apache.jena.fuseki.access.SecurityRegistry;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
@@ -44,9 +42,12 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
 import org.apache.jena.tdb.TDB;
 import org.apache.jena.tdb.TDBFactory;
@@ -92,22 +93,23 @@ public class TestSecurityFilterLocal {
     
     public TestSecurityFilterLocal(String name, Creator<DatasetGraph> source, boolean applyFilterTDB) {
         DatasetGraph dsgBase = source.create();
-        AccessTestLib.addTestData(dsgBase);
+        addTestData(dsgBase);
         reg.put("userNone", SecurityContext.NONE);
-        reg.put("userDft", SecurityContext.DFT_GRAPH);
-        reg.put("user0", new SecurityContext(Quad.defaultGraphIRI.getURI()));
-        reg.put("user1", new SecurityContext("http://test/g1", Quad.defaultGraphIRI.getURI()));
-        reg.put("user2", new SecurityContext("http://test/g1", "http://test/g2", "http://test/g3"));
+        reg.put("userDft", SecurityContextView.DFT_GRAPH);
+        reg.put("user0", new SecurityContextView(Quad.defaultGraphIRI.getURI()));
+        reg.put("user1", new SecurityContextView("http://test/g1", Quad.defaultGraphIRI.getURI()));
+        reg.put("user2", new SecurityContextView("http://test/g1", "http://test/g2", "http://test/g3"));
+        
+        // and graphs "**", "*" 
+        reg.put("*", new SecurityContextView("http://test/g1"));
+        reg.put("_", new SecurityContextView("http://test/g1"));
+        
+        
         testdsg = DataAccessCtl.controlledDataset(dsgBase, reg);
         this.applyFilterTDB = applyFilterTDB;
         this.applyFilterDSG = ! applyFilterTDB;
     }
     
-    private static void assertSeen(Set<Node> visible, Node ... expected) {
-        Set<Node> expectedNodes = new HashSet<>(Arrays.asList(expected));
-        assertEquals(expectedNodes, visible);
-    }
-
     private static String queryAll        = "SELECT * { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }";
     private static String queryDft        = "SELECT * { ?s ?p ?o }";
     private static String queryNamed      = "SELECT * { GRAPH ?g { ?s ?p ?o } }";
@@ -123,6 +125,9 @@ public class TestSecurityFilterLocal {
         return
             Txn.calculateRead(ds, ()->{
                 try(QueryExecution qExec = QueryExecutionFactory.create(queryString, ds)) {
+//                    if ( applyFilterTDB && ! sCxt.equals(SecurityContext.NONE)) {
+//                        ((SecurityContextView)sCxt).filterTDB(dsg1, qExec);
+//                    }
                     if ( applyFilterTDB )
                         sCxt.filterTDB(dsg1, qExec);
                     List<QuerySolution> results = Iter.toList(qExec.execSelect());
@@ -140,6 +145,9 @@ public class TestSecurityFilterLocal {
             ? DataAccessCtl.filteredDataset(dsg, sCxt)
             : dsg;
         Graph graph = graphChoice.apply(dsg1);
+        if ( graph == null )
+            // Can't see the graph.
+            return Collections.emptySet();
         Model model = ModelFactory.createModelForGraph(graph);
         return
             Txn.calculateRead(testdsg, ()->{
@@ -154,6 +162,7 @@ public class TestSecurityFilterLocal {
     }
 
     private Set<Node> graphs(DatasetGraph dsg, SecurityContext sCxt) {
+        // Either applyFilterDSG or applyFilterTDB
         final DatasetGraph dsg1 = applyFilterDSG
             ? DataAccessCtl.filteredDataset(dsg, sCxt)
             : dsg;
@@ -351,5 +360,38 @@ public class TestSecurityFilterLocal {
         SecurityContext sCxt = reg.get(user);
         Set<Node> visible = subjects(dsg, graphChoice, queryDft, sCxt);
         assertSeen(visible, expected);
+    }
+    
+    private static String dataStr = StrUtils.strjoinNL 
+        ("PREFIX : <http://test/>"
+            ,""
+            ,":s0 :p 0 ."
+            ,":g1 { :s1 :p 1 }"
+            ,":g2 { :s2 :p 2 }"
+            ,":g3 { :s3 :p 3 }"
+            ,":g4 { :s4 :p 4 }"
+            );
+
+
+    public static Node s0 = SSE.parseNode("<http://test/s0>"); 
+    public static Node s1 = SSE.parseNode("<http://test/s1>"); 
+    public static Node s2 = SSE.parseNode("<http://test/s2>"); 
+    public static Node s3 = SSE.parseNode("<http://test/s3>"); 
+    public static Node s4 = SSE.parseNode("<http://test/s4>"); 
+
+    public static Node g1 = SSE.parseNode("<http://test/g1>"); 
+    public static Node g2 = SSE.parseNode("<http://test/g2>"); 
+    public static Node g3 = SSE.parseNode("<http://test/g3>"); 
+    public static Node g4 = SSE.parseNode("<http://test/g4>"); 
+
+    public static void addTestData(DatasetGraph dsg) {
+        Txn.executeWrite(dsg, ()->{
+            RDFParser.create().fromString(dataStr).lang(Lang.TRIG).parse(dsg);
+        });
+    }
+    
+    public static void assertSeen(Set<Node> visible, Node ... expected) {
+        Set<Node> expectedNodes = new HashSet<>(Arrays.asList(expected));
+        assertEquals(expectedNodes, visible);
     }
 }

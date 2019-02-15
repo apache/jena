@@ -38,9 +38,12 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.BindingHashMap;
 import org.apache.jena.sparql.expr.E_LessThan;
 import org.apache.jena.sparql.expr.E_Random;
+import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprVar;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
+import org.apache.jena.sparql.path.P_Link;
+import org.apache.jena.sparql.path.P_Seq;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.sparql.path.PathParser;
 import org.apache.jena.sparql.syntax.ElementBind;
@@ -89,9 +92,14 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addWhere("<one>",
 				"<two>", "three");
-		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
-				+ uri("two") + SPACE + quote("three") + presentStringType()
-				+ OPT_SPACE + CLOSE_CURLY, builder.buildString());
+		
+		ElementPathBlock epb = new ElementPathBlock();
+		Triple t = new Triple( NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createLiteral("three") );
+		epb.addTriple( t );
+		
+		WhereValidator visitor = new WhereValidator( epb );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
 	}
 
 	@ContractTest
@@ -99,10 +107,15 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addOptional("<one>",
 				"<two>", "three");
-		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
-				+ quote("three") + presentStringType() + OPT_SPACE
-				+ CLOSE_CURLY + CLOSE_CURLY, builder.buildString());
+		
+		ElementPathBlock epb = new ElementPathBlock();
+		ElementOptional optional = new ElementOptional(epb);
+		Triple t = new Triple( NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createLiteral("three") );
+		epb.addTriple( t );
+		
+		WhereValidator visitor = new WhereValidator( optional );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
 
 	}
 
@@ -111,11 +124,16 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addOptional("<one>",
 				"<two>/<dos>", "three");
-		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + uri("one") + SPACE + uri("two")+"/"+uri("dos") + SPACE
-				+ quote("three") + presentStringType() + OPT_SPACE
-				+ CLOSE_CURLY + CLOSE_CURLY, builder.buildString());
-
+		
+		Path path = new P_Seq( new P_Link( NodeFactory.createURI("two") ), new P_Link( NodeFactory.createURI("dos")));
+		ElementPathBlock epb = new ElementPathBlock();
+		ElementOptional optional = new ElementOptional(epb);
+		TriplePath tp = new TriplePath( NodeFactory.createURI("one"), path, NodeFactory.createLiteral("three") );
+		epb.addTriplePath( tp );
+		
+		WhereValidator visitor = new WhereValidator( optional );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
 	}
 	
 	@ContractTest
@@ -124,10 +142,15 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		AbstractQueryBuilder<?> builder = whereClause.addOptional(
 				NodeFactory.createURI("one"), NodeFactory.createURI("two"),
 				NodeFactory.createURI("three"));
-		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
-				+ uri("three") + OPT_SPACE + CLOSE_CURLY,
-				builder.buildString());
+		
+		ElementPathBlock epb = new ElementPathBlock();
+		ElementOptional optional = new ElementOptional(epb);
+		Triple t = new Triple( NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three") );
+		epb.addTriple( t );
+		
+		WhereValidator visitor = new WhereValidator( optional );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
 	}
 
 	@ContractTest
@@ -137,10 +160,14 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 				NodeFactory.createURI("one"), NodeFactory.createURI("two"),
 				NodeFactory.createURI("three"));
 
-		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
-				+ uri("three") + OPT_SPACE + CLOSE_CURLY,
-				builder.buildString());
+		ElementPathBlock epb = new ElementPathBlock();
+		ElementOptional optional = new ElementOptional(epb);
+		Triple t = new Triple( NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three") );
+		epb.addTriple( t );
+		
+		WhereValidator visitor = new WhereValidator( optional );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
 	}
 	
 	@ContractTest
@@ -153,10 +180,14 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 				NodeFactory.createURI("one"), path,
 				NodeFactory.createURI("three")));
 
-		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + uri("one") + SPACE + uri("urn:test:two")+"/"+uri("urn:test:dos") + SPACE
-				+ uri("three") + OPT_SPACE + CLOSE_CURLY,
-				builder.buildString());
+		ElementPathBlock epb = new ElementPathBlock();
+		ElementOptional optional = new ElementOptional(epb);
+		TriplePath tp = new TriplePath( NodeFactory.createURI("one"), path, NodeFactory.createURI("three") );
+		epb.addTriplePath( tp );
+		
+		WhereValidator visitor = new WhereValidator( optional );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
 	}
 	
 	@ContractTest
@@ -168,11 +199,16 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		AbstractQueryBuilder<?> builder = whereClause.addOptional(
 				NodeFactory.createURI("one"), path,
 				NodeFactory.createURI("three"));
-
-		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + uri("one") + SPACE + uri("urn:test:two")+"/"+uri("urn:test:dos") + SPACE
-				+ uri("three") + OPT_SPACE + CLOSE_CURLY,
-				builder.buildString());
+		
+		ElementPathBlock epb = new ElementPathBlock();
+		ElementOptional optional = new ElementOptional(epb);
+		TriplePath tp = new TriplePath( NodeFactory.createURI("one"), path, NodeFactory.createURI("three") );
+		epb.addTriplePath( tp );
+		
+		WhereValidator visitor = new WhereValidator( optional );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+		
 	}
 
 	@ContractTest
@@ -282,14 +318,27 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		whereClause.getWhereHandler().addWhere( new TriplePath(Triple.ANY));
 		AbstractQueryBuilder<?> builder = whereClause.addUnion(sb);
 
-		String str = builder.buildString();
-		assertContainsRegex(PREFIX + "pfx:" + SPACE + uri("uri") + SPACE, str );
-		assertContainsRegex( WHERE + OPEN_CURLY + OPEN_CURLY+"ANY"+SPACE+"ANY"+SPACE+"ANY"+CLOSE_CURLY
-				+ SPACE+UNION + OPEN_CURLY + SELECT + var("x") + SPACE + WHERE
-				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
-				+ quote("three") + presentStringType() + OPT_SPACE
-				+ CLOSE_CURLY + CLOSE_CURLY, str);
+		ElementUnion union = new ElementUnion();
+		ElementPathBlock epb = new ElementPathBlock();
+		union.addElement(epb);		
+		epb.addTriple( Triple.ANY );
 
+		Query subQuery = new Query();
+		ElementSubQuery esq = new ElementSubQuery(subQuery);
+		union.addElement( esq );
+		epb = new ElementPathBlock();
+		subQuery.setQuerySelectType();
+		subQuery.addProjectVars( Arrays.asList("x") );
+		subQuery.setQueryPattern(epb);
+		Triple t = new Triple( NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createLiteral("three") );
+		epb.addTriple( t );
+		
+		WhereValidator visitor = new WhereValidator( union );
+		Query result = builder.build();
+		result.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+
+		assertEquals( "uri", result.getPrefixMapping().getNsPrefixURI("pfx") );
 	}
 
 	@ContractTest
@@ -395,19 +444,26 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	public void testSetVarsInFilter() throws ParseException {
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addFilter("?one < ?v");
-		assertContainsRegex(WHERE + OPEN_CURLY + "FILTER" + OPT_SPACE
-				+ OPEN_PAREN + var("one") + OPT_SPACE + LT + OPT_SPACE
-				+ var("v") + CLOSE_PAREN + CLOSE_CURLY, builder.buildString());
+	
+		ExprVar one = new  ExprVar( NodeFactory.createVariable("one"));
+		ExprVar v = new ExprVar( NodeFactory.createVariable("v"));
+		Expr expr = new E_LessThan( one, v );
+		ElementFilter filter = new ElementFilter(expr);
+		
+		WhereValidator visitor = new WhereValidator( filter );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+		
+		Node literal = NodeFactory
+				.createLiteral(LiteralLabelFactory.createTypedLiteral(10));
+		builder.setVar(Var.alloc("v"), literal);
 
-		builder.setVar(Var.alloc("v"), NodeFactory
-				.createLiteral(LiteralLabelFactory.createTypedLiteral(10)));
-
-		assertContainsRegex(WHERE + OPEN_CURLY + "FILTER" + OPT_SPACE
-				+ OPEN_PAREN + var("one") + OPT_SPACE + LT + OPT_SPACE
-				+ quote("10") + "\\^\\^"
-				+ uri("http://www.w3.org/2001/XMLSchema#int") + CLOSE_PAREN
-				+ CLOSE_CURLY, builder.buildString());
-
+		NodeValueInteger lit = new NodeValueInteger(10);
+		expr = new E_LessThan( one, lit );
+		filter = new ElementFilter(expr);
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+		
 	}
 
 	@ContractTest
@@ -416,16 +472,26 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addOptional(new Triple(
 				NodeFactory.createURI("one"), NodeFactory.createURI("two"), v));
-		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
-				+ var("v") + OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY,
-				builder.buildString());
-
+		
+		ElementPathBlock epb = new ElementPathBlock();
+		ElementOptional optional = new ElementOptional(epb);
+		TriplePath tp = new TriplePath( NodeFactory.createURI("one"), new P_Link(NodeFactory.createURI("two")), v );
+		epb.addTriple( tp );
+		
+		WhereValidator visitor = new WhereValidator( optional );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+		
 		builder.setVar(v, NodeFactory.createURI("three"));
-		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
-				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
-				+ uri("three") + OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY,
-				builder.buildString());
+		
+		epb = new ElementPathBlock();
+		optional = new ElementOptional(epb);
+		Triple t = new Triple( NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three") );
+		epb.addTriple( t );
+		
+		visitor = new WhereValidator( optional );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
 	}
 	
 	@ContractTest
@@ -466,16 +532,33 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		SelectBuilder sb = new SelectBuilder();
 		sb.addPrefix("pfx", "uri").addWhere("<one>", "<two>", v);
 		WhereClause<?> whereClause = getProducer().newInstance();
-		AbstractQueryBuilder<?> builder = whereClause.addSubQuery(sb);
-
-		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
-				+ uri("two") + SPACE + var("v") + CLOSE_CURLY,
-				builder.buildString());
+		AbstractQueryBuilder<?> builder = whereClause.addSubQuery(sb);		
+		
+		Query subQuery = new Query();
+		ElementSubQuery esq = new ElementSubQuery(subQuery);		
+		ElementPathBlock epb = new ElementPathBlock();
+		subQuery.setQueryPattern(epb);
+		Triple t = new Triple( NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createVariable("v") );
+		epb.addTriple( t );
+		
+		WhereValidator visitor = new WhereValidator( esq );
+		Query result = builder.build();
+		result.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
 
 		builder.setVar(v, NodeFactory.createURI("three"));
-		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
-				+ uri("two") + SPACE + uri("three") + CLOSE_CURLY,
-				builder.buildString());
+		
+		subQuery = new Query();
+		esq = new ElementSubQuery(subQuery);		
+		epb = new ElementPathBlock();
+		subQuery.setQueryPattern(epb);
+		t = new Triple( NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three") );
+		epb.addTriple( t );
+		
+		visitor = new WhereValidator( esq );
+		result = builder.build();
+		result.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
 	}
 	
 	@ContractTest
@@ -485,15 +568,30 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		sb.addPrefix("pfx", "uri").addWhere("<one>", "<two>", v);
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addSubQuery(sb);
+		
+		Query subQuery = new Query();
+		ElementSubQuery esq = new ElementSubQuery(subQuery);		
+		ElementPathBlock epb = new ElementPathBlock();
+		subQuery.setQueryPattern(epb);
+		TriplePath tp = new TriplePath( NodeFactory.createURI("one"), new P_Link(NodeFactory.createURI("two")), NodeFactory.createVariable("v") );
+		epb.addTriple( tp );
 
-		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
-				+ uri("two") + SPACE + var("v") + CLOSE_CURLY,
-				builder.buildString());
-
+		WhereValidator visitor = new WhereValidator( esq );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+		
 		builder.setVar(v, NodeFactory.createURI("three"));
-		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
-				+ uri("two") + SPACE + uri("three") + CLOSE_CURLY,
-				builder.buildString());
+		
+		subQuery = new Query();
+		esq = new ElementSubQuery(subQuery);		
+		epb = new ElementPathBlock();
+		subQuery.setQueryPattern(epb);
+		tp = new TriplePath( NodeFactory.createURI("one"), new P_Link(NodeFactory.createURI("two")), NodeFactory.createURI("three") );
+		epb.addTriple( tp );
+		
+		visitor = new WhereValidator( esq );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
 	}
 
 	@ContractTest
@@ -892,6 +990,41 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		query.getQueryPattern().visit( visitor );
 		assertTrue( visitor.matching );
 	}	
+	
+	@ContractTest
+	public void testAddWhereValueVars_InSubQuery()
+	{
+		final Var v = Var.alloc("v");
+		Map<Object,List<?>> map = new HashMap<Object, List<?>>();
+		
+		map.put( Var.alloc("v"), Arrays.asList( "<one>", "<two>"));
+		map.put( "?x", Arrays.asList( "three", "four"));
+			
+		WhereClause<?> whereClause = getProducer().newInstance();
+		WhereClause<?> whereClause2 = getProducer().newInstance();
+		
+		AbstractQueryBuilder<?> builder =  whereClause.addWhereValueVars( map );
+		builder = whereClause2.addSubQuery(builder);
+		
+		Query query = builder.build();
+
+		Var x = Var.alloc("x");
+		ElementData edat = new ElementData();
+		edat.add( x );
+		edat.add( v );		
+		BindingHashMap binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "one" ));
+		binding.add( x, NodeFactory.createLiteral("three"));
+		edat.add( binding );
+		binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "two" ));
+		binding.add( x, NodeFactory.createLiteral("four"));
+		edat.add( binding );
+
+		WhereValidator visitor = new WhereValidator( edat );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}
 
 	@ContractTest
 	public void testAddWhereValueVars_Node_Variable()

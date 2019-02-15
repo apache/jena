@@ -217,6 +217,7 @@ public class LogCtl {
           ,"log4j.logger.com.hp.hpl.jena=WARN"
           ,"log4j.logger.org.apache.jena=WARN"
           ,"log4j.logger.org.apache.jena.tdb.loader=INFO"
+          ,"log4j.logger.org.apache.jena.tdb2.loader=INFO"
 
           , "## Parser output"
           , "log4j.additivity.org.apache.jena.riot=false"

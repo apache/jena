@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.engine.http;
 
 import java.io.ByteArrayInputStream ;
+import java.io.IOException;
 import java.io.InputStream ;
 import java.util.ArrayList ;
 import java.util.Iterator ;
@@ -345,8 +346,7 @@ public class QueryEngineHTTP implements QueryExecution {
         return new ResultSetCheckCondition(rs, this) ;
     }
     
-   private ResultSet execResultSetInner() {
-        
+	private ResultSet execResultSetInner() {
         HttpQuery httpQuery = makeHttpQuery();
         httpQuery.setAccept(chooseAcceptHeader(acceptHeader, selectContentType));
         InputStream in = httpQuery.exec();
@@ -383,7 +383,7 @@ public class QueryEngineHTTP implements QueryExecution {
         return result;
     }
 
-   // XXX Move
+    //  XXX Move
     private static String chooseAcceptHeader(String acceptHeader, String contentType) {
         if ( acceptHeader != null )
             return acceptHeader;
@@ -437,18 +437,20 @@ public class QueryEngineHTTP implements QueryExecution {
 
     private Model execModel(Model model) {
         Pair<InputStream, Lang> p = execConstructWorker(modelContentType) ;
-        InputStream in = p.getLeft() ;
-        Lang lang = p.getRight() ;
-        try { RDFDataMgr.read(model, in, lang); }
+        try(InputStream in = p.getLeft()) {
+            Lang lang = p.getRight() ;
+            RDFDataMgr.read(model, in, lang);
+        } catch (IOException ex) { IO.exception(ex); }
         finally { this.close(); }
         return model;
     }
 
     private Dataset execDataset(Dataset dataset) {
         Pair<InputStream, Lang> p = execConstructWorker(datasetContentType);
-        InputStream in = p.getLeft() ;
-        Lang lang = p.getRight() ;
-        try { RDFDataMgr.read(dataset, in, lang); }
+        try(InputStream in = p.getLeft()) {
+            Lang lang = p.getRight() ;
+            RDFDataMgr.read(dataset, in, lang);
+        } catch (IOException ex) { IO.exception(ex); }
         finally { this.close(); }
         return dataset;
     }
@@ -534,6 +536,7 @@ public class QueryEngineHTTP implements QueryExecution {
             log.warn("Failed to close connection", e);
             return false ;
         }
+        finally { this.close(); }
     }
 
     @Override
@@ -542,11 +545,15 @@ public class QueryEngineHTTP implements QueryExecution {
         checkNotClosed();
         HttpQuery httpQuery = makeHttpQuery();
         httpQuery.setAccept(WebContent.contentTypeJSON);
-        InputStream in = httpQuery.exec();
-        JsonValue v = JSON.parseAny(in);
-        if ( ! v.isArray() )
-            throw new QueryExecException("Return from a JSON query isn't an array");
-        return v.getAsArray();
+        JsonArray result = new JsonArray();
+        try(InputStream in = httpQuery.exec()) {
+            JsonValue v = JSON.parseAny(in);
+            if ( ! v.isArray() )
+                throw new QueryExecException("Return from a JSON query isn't an array");
+            result = v.getAsArray();
+        } catch (IOException e) { IO.exception(e); }
+        finally { this.close(); }
+        return result;
     }
 
     @Override
@@ -740,8 +747,7 @@ public class QueryEngineHTTP implements QueryExecution {
 
     @Override
     public void close() {
-        closed = true ;
-        
+        closed = true;
         if (retainedConnection != null) {
             try {
                 // JENA-1063 - WARNING

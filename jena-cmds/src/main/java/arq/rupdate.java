@@ -39,7 +39,7 @@ public class rupdate extends CmdARQ
 
     List<String> requestFiles = null ;
 
-    public static void main(String[] argv)
+    public static void main(String... argv)
     {
         new rupdate(argv).mainRun() ;
     }

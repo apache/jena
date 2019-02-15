@@ -26,15 +26,19 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-db</artifactId>
-    <version>3.10.0-SNAPSHOT</version>
+    <version>3.11.0-SNAPSHOT</version>
   </parent> 
+
+  <properties>
+    <automatic.module.name>org.apache.jena.dboe.transaction</automatic.module.name>
+  </properties>
 
   <dependencies>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-dboe-base</artifactId>
-      <version>3.10.0-SNAPSHOT</version>
+      <version>3.11.0-SNAPSHOT</version>
     </dependency>
 
   </dependencies>

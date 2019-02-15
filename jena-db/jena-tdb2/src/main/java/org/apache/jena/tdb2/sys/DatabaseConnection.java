@@ -68,7 +68,7 @@ public class DatabaseConnection {
     private synchronized static DatabaseConnection make(Location location, StoreParams params) {
         if ( location.isMemUnique() ) {
             // Uncached, in-memory. 
-            DatasetGraph dsg = DatabaseOps.create(location);
+            DatasetGraph dsg = DatabaseOps.create(location, params);
             DatabaseConnection dbConn = new DatabaseConnection(dsg, location, null);
             return dbConn;
         }
@@ -87,7 +87,7 @@ public class DatabaseConnection {
             // Take the lock.  This is atomic.
             lock.lockEx();
         }
-        DatasetGraph dsg = DatabaseOps.create(location);
+        DatasetGraph dsg = DatabaseOps.create(location, params);
         return new DatabaseConnection(dsg, location, lock) ;
     }
     

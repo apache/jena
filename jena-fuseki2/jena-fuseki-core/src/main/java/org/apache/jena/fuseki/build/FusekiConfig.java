@@ -30,9 +30,7 @@ import java.nio.file.DirectoryStream ;
 import java.nio.file.Files ;
 import java.nio.file.Path ;
 import java.nio.file.Paths ;
-import java.util.ArrayList ;
-import java.util.Collections ;
-import java.util.List ;
+import java.util.*;
 
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.JA ;
@@ -41,14 +39,16 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
-import org.apache.jena.fuseki.server.* ;
+import org.apache.jena.fuseki.auth.AuthPolicy;
+import org.apache.jena.fuseki.server.*;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.ResultSet ;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
+import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.FmtUtils;
 import org.apache.jena.sparql.util.graph.GraphUtils;
 import org.apache.jena.vocabulary.RDF;
@@ -59,27 +59,82 @@ public class FusekiConfig {
     
     private static Logger log = Fuseki.configLog ;
     
-    /** Process the server section, if any, of a configuration file.
-     * This includes setting global context and ja:loadClass.
-     * It does not include services - see {@link #servicesAndDatasets}
+    /**
+     * Process a configuration file and return the {@link DataAccessPoint
+     * DataAccessPoints}; set the context provided for server-wide settings.
+     * 
+     * This bundles together the steps:
+     * <ul>
+     * <li>{@link #findServer}
+     * <li>{@link #processContext}
+     * <li>{@link #processLoadClass} (legacy)
+     * <li>{@link #servicesAndDatasets}
+     * </ul>
      */ 
-    public static void processServerConfig(Model model) {
-        // Find one server.
+    public static List<DataAccessPoint> processServerConfiguration(Model configuration, Context context) {
+        Resource server = FusekiConfig.findServer(configuration);
+        FusekiConfig.processContext(server, context);
+        FusekiConfig.processLoadClass(server);
+        // Process services, whether via server ja:services or, if absent, by finding by type.
+        List<DataAccessPoint> x = FusekiConfig.servicesAndDatasets(configuration);
+        return x;
+    }
+
+    /**
+     * Process a configuration file, starting {@code server}.
+     * Return the {@link DataAccessPoint DataAccessPoints}
+     * set the context provided for server-wide settings.
+     * 
+     * This bundles together the steps:
+     * <ul>
+     * <li>{@link #findServer}
+     * <li>{@link #processContext}
+     * <li>{@link #processLoadClass} (legacy)
+     * <li>{@link #servicesAndDatasets}
+     * </ul>
+     */ 
+    public static List<DataAccessPoint> processServerConfiguration(Resource server, Context context) {
+        Objects.requireNonNull(server);
+        FusekiConfig.processContext(server, context);
+        FusekiConfig.processLoadClass(server);
+        // Process services, whether via server ja:services or, if absent, by finding by type.
+        List<DataAccessPoint> x = FusekiConfig.servicesAndDatasets(server);
+        return x;
+    }
+
+
+    /* Find the server resource in a configuration file.
+     * Returns null if there isn't one.
+     * Raises {@link FusekiConfigException} is there are more than one.
+     */
+    public static Resource findServer(Model model) {
         List<Resource> servers = GraphUtils.listResourcesByType(model, FusekiVocab.tServer) ;
         if ( servers.size() == 0 )
-            return ; 
+            // "No server" is fine.
+            return null;
         if ( servers.size() > 1 )
             throw new FusekiConfigException(servers.size()
                                             + " servers found (must be exactly one in a configuration file)") ;
         // ---- Server
         Resource server = servers.get(0) ;
-        processServer(server) ;
+        return server ; 
     }
-
-    private static void processServer(Resource server) {
-        // Global, currently.
-        AssemblerUtils.setContext(server, Fuseki.getContext()) ;
-
+    
+    /**
+     * Process the configuration file declarations for {@link Context} settings.   
+     */
+    public static void processContext(Resource server, Context cxt) {
+        if ( server == null )
+            return ;
+        AssemblerUtils.setContext(server, cxt) ;
+    }
+    
+    /**
+     * Process any {@code ja:loadClass}
+     */
+    public static void processLoadClass(Resource server) {
+        if ( server == null )
+            return ;
         StmtIterator sIter = server.listProperties(JA.loadClass) ;
         for ( ; sIter.hasNext() ; ) {
             Statement s = sIter.nextStatement() ;
@@ -107,19 +162,36 @@ public class FusekiConfig {
     /** Find and process datasets and services in a configuration file.
      * This can be a Fuseki server configuration file or a services-only configuration file.
      * It looks {@code fuseki:services ( .... )} then, if not found, all {@code rtdf:type fuseki:services}. 
+     * @see #processServerConfiguration
      */
     public static List<DataAccessPoint> servicesAndDatasets(Model model) {
-        // Old style configuration file : server to services.
+        Resource server = findServer(model);
+        return servicesAndDatasets$(server, model);
+    }
+    
+    /** Find and process datasets and services in a configuration file
+     * starting from {@code server} which can have a {@code fuseki:services ( .... )}
+     * but, if not found, all {@code rtdf:type fuseki:services} are processed. 
+     */
+    public static List<DataAccessPoint> servicesAndDatasets(Resource server) {
+        Objects.requireNonNull(server);
+        return servicesAndDatasets$(server, server.getModel());
+    }   
+    
+    private static List<DataAccessPoint> servicesAndDatasets$(Resource server, Model model) {        
         DatasetDescriptionRegistry dsDescMap = new DatasetDescriptionRegistry();
         // ---- Services
-        ResultSet rs = FusekiBuildLib.query("SELECT * { ?s fu:services [ list:member ?service ] }", model) ;
+        // Server to services.
+        ResultSet rs = FusekiBuildLib.query("SELECT * { ?s fu:services [ list:member ?service ] }", model, "s", server) ;
         List<DataAccessPoint> accessPoints = new ArrayList<>() ;
 
+        // If none, look for services by type.
         if ( ! rs.hasNext() )
             // No "fu:services ( .... )" so try looking for services directly.
             // This means Fuseki2, service configuration files (no server section) work for --conf. 
             rs = FusekiBuildLib.query("SELECT ?service { ?service a fu:Service }", model) ;
 
+        // rs is a result set of services to process.
         for ( ; rs.hasNext() ; ) {
             QuerySolution soln = rs.next() ;
             Resource svc = soln.getResource("service") ;
@@ -208,19 +280,21 @@ public class FusekiConfig {
         if ( ! n.isLiteral() )
             throw new FusekiConfigException("Not a literal for access point name: "+FmtUtils.stringForRDFNode(n));
         Literal object = n.asLiteral() ;
-
+        
         if ( object.getDatatype() != null && ! object.getDatatype().equals(XSDDatatype.XSDstring) )
             Fuseki.configLog.error(format("Service name '%s' is not a string", FmtUtils.stringForRDFNode(object)));
+
         String name = object.getLexicalForm() ;
         name = DataAccessPoint.canonical(name) ;
-
-        DataService dataService = buildDataServiceCustom(svc, dsDescMap) ;
+        DataService dataService = buildDataService(svc, dsDescMap) ;
+        AuthPolicy allowedUsers = FusekiBuilder.allowedUsers(svc);
+        dataService.setAuthPolicy(allowedUsers);
         DataAccessPoint dataAccess = new DataAccessPoint(name, dataService) ;
         return dataAccess ;
     }
-
+    
     /** Build a DatasetRef starting at Resource svc, having the services as described by the descriptions. */
-    private static DataService buildDataServiceCustom(Resource svc, DatasetDescriptionRegistry dsDescMap) {
+    private static DataService buildDataService(Resource svc, DatasetDescriptionRegistry dsDescMap) {
         Resource datasetDesc = ((Resource)FusekiBuildLib.getOne(svc, "fu:dataset")) ;
         Dataset ds = getDataset(datasetDesc, dsDescMap);
  
@@ -258,7 +332,6 @@ public class FusekiConfig {
 //                sDesc.maximumTimeoutOverride = (int)(svc.getProperty(FusekiVocab.pMaximumTimeoutOverride).getObject().asLiteral().getFloat() * 1000) ;
 //            }
 //        }
-
         return dataService ;
     }
     
@@ -281,6 +354,7 @@ public class FusekiConfig {
     // ---- System database
     /** Read the system database */
     public static List<DataAccessPoint> readSystemDatabase(Dataset ds) {
+        // Webapp only.
         DatasetDescriptionRegistry dsDescMap = new DatasetDescriptionRegistry() ;
         String qs = StrUtils.strjoinNL
             (FusekiConst.PREFIXES ,

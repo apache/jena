@@ -141,21 +141,37 @@ public class Txn {
         if ( outerTxnType == null ) 
             // Not in an outer transaction.
             return;
-        // innerTxnType must be "less than or equal to the outer.
+        // innerTxnType must be "less than or equal to the outer".
+        //    TxnType.level == int?
         // Inner is READ works with any outer.
         // Outer is WRITE works with any inner. 
         // Must match:
         // Outer is READ, then inner must be READ.
         // Promotion must be the same.
+        
+        // Outer any, inner READ 
         if ( TxnType.READ.equals(innerTxnType) )
             return;
+           // Outer WRITE, inner any 
         if ( TxnType.WRITE.equals(outerTxnType) )
             return;
+        if ( TxnType.READ.equals(outerTxnType) )
+            throw new JenaTransactionException("Already in a READ transaction: outer="+outerTxnType+" : inner="+innerTxnType);
+        
+        // Outer PROMOTE (either kind), inner is not READ.
+        // Try to promote outer if inner is WRITE.
+        if ( innerTxnType == TxnType.WRITE ) {
+            boolean x = txn.promote();
+            if ( x )
+                return ;
+            throw new JenaTransactionException("Can't promote outer transaction: "+"outer="+outerTxnType+" : inner="+innerTxnType);
+        }
+        
         if ( Objects.equals(innerTxnType, outerTxnType) )
             return;
-        throw new JenaTransactionException("Already in a transaction of an incompatable type: "
-                                          +"outer="+outerTxnType+" : inner="+innerTxnType);
-    }        
+        
+        throw new JenaTransactionException("Already in a transaction of an incompatable type: "+"outer="+outerTxnType+" : inner="+innerTxnType);
+    }
     
     // Attempt some kind of cleanup.
     private static <T extends Transactional> void onThrowable(Throwable th, T txn) {

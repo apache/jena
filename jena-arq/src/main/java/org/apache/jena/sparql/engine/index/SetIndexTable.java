@@ -27,9 +27,8 @@ import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 
 /**
- * An {@link IndexTable} implementation optimized for the case where there is
- * only a single common variable
- * 
+ * An {@link IndexTable} implementation optimized for the case where there is only a
+ * single common variable
  */
 public class SetIndexTable implements IndexTable {
 
@@ -62,9 +61,14 @@ public class SetIndexTable implements IndexTable {
     @Override
     public boolean containsCompatibleWithSharedDomain(Binding binding) {
         Node value = binding.get(this.var);
-        if (value == null)
-            return true;
+        if ( value == null )
+            // No shared domain.
+            return false;
         return this.values.contains(value);
     }
 
+    @Override
+    public String toString() {
+        return "SetIndexTable: "+var+" "+values;
+    }
 }

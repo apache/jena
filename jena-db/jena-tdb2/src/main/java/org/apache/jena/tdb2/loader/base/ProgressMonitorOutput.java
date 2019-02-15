@@ -23,6 +23,7 @@ import static org.apache.jena.atlas.lib.DateTimeUtils.nowAsString ;
 import java.util.Objects;
 
 import org.apache.jena.atlas.lib.Timer;
+import org.apache.jena.tdb2.TDBException;
 import org.slf4j.Logger ;
 
 /** Progress monitor - output lines to show the progress of some long running operation.
@@ -34,10 +35,22 @@ public class ProgressMonitorOutput implements ProgressMonitor {
     private final long   tickPoint;
     private final int    superTick;
     private final Timer  timer;
-    private final String label;
+    private Timer getTimer() { return timer; }
+    
+    //Section
+    private boolean inSection = false;
+    private int sectionCounter = 0;
+    private Timer sectionTimer = null; 
+    private long sectionTimeInMillis = -1;  
+    private long sectionTickCounter = 0;
 
+    // Current label.
+    private String label;
+
+    // Counters - this monitor.
     private long  counterBatch = 0;
     private long  counterTotal = 0;
+    //private final ProgressMonitorContext context;
 
     private long  lastTime     = -1;
     private long  timeTotalMillis = -1;
@@ -68,74 +81,80 @@ public class ProgressMonitorOutput implements ProgressMonitor {
      */
     public ProgressMonitorOutput(String label, long tickPoint, int superTick, MonitorOutput output) {
         this.output = output;
-        this.label = label;
+        setLabel(label);
         this.tickPoint = tickPoint;
         this.superTick = superTick;
         this.timer = new Timer();
     }
 
-    /** Print a start message using the label */
-    @Override
-    public void startMessage() {
-        startMessage(null) ;
-    }
+//    /** Print a start message using the label */
+//    @Override
+//    public void startMessage() {
+//        startMessage(null) ;
+//    }
     
     /** Print a start message using a different string. */
     @Override
     public void startMessage(String msg) {
         if ( msg != null )
             output.print(msg) ;
-        else
-            output.print("Start: "+label) ;
     }
+
+    //public void startSource(String msg) {
+    //public void finishSource(String msg) {
 
     @Override
     public void finishMessage(String msg) {
         // Elapsed.
-        long timePoint = timer.getTimeInterval();
-
-        // /1000L is milli to second conversion
+        long timePoint = getTimer().read();
         if ( timePoint != 0 ) {
             double time = timePoint / 1000.0;
-            long runAvgRate = (counterTotal * 1000L) / timePoint;
-
-            print("%s: %,d %s %.2fs (Avg: %,d)", msg, counterTotal, label, time, runAvgRate);
+            long runAvgRate = (getRunningTotal() * 1000L) / timePoint;
+            print("%s: %,d tuples in %.2fs (Avg: %,d)", msg, getTicks(), time, runAvgRate);
         } else
-            print("%s: %,d %s (Avg: ----)", msg, counterTotal, label);
+            print("%s: %,d (Avg: ----)", msg, getTicks());
     }
 
     @Override
     public void start() {
-        timer.startTimer();
+        // XXX
+        getTimer().startTimer();
         lastTime = 0;
     }
 
     @Override
     public void finish() {
-        timeTotalMillis = timer.endTimer();
+        // XXX
+        getTimer().endTimer();
+        timeTotalMillis = getTimer().getTimeInterval();
     }
 
     @Override
     public void tick() {
+        // The ticking
         counterBatch++;
         counterTotal++;
-    
-        if ( tickPoint(counterTotal, tickPoint) ) {
-            long timePoint = timer.readTimer();
+        if ( inSection )
+            sectionTickCounter++;
+        // Report overall progress
+        if ( tickPoint(getRunningTotal(), tickPoint) ) {
+            long timePoint = getTimer().readTimer();
             long thisTime = timePoint - lastTime;
     
             // *1000L is milli to second conversion
             if ( thisTime != 0 && timePoint != 0 ) {
                 long batchAvgRate = (counterBatch * 1000L) / thisTime;
-                long runAvgRate = (counterTotal * 1000L) / timePoint;
-                print("Add: %,d %s (Batch: %,d / Avg: %,d)", counterTotal, label, batchAvgRate, runAvgRate);
+                // XXX Too large : first after file switch. ???timePoint is wrong.
+                //System.err.printf("** %d %d\n",getRunningTotal(), timePoint );
+                long runAvgRate = (getRunningTotal() * 1000L) / timePoint;
+                print("Add: %,d %s (Batch: %,d / Avg: %,d)", getRunningTotal(), label, batchAvgRate, runAvgRate);
             } else {
-                print("Add: %,d %s (Batch: ---- / Avg: ----)", counterTotal, label);
+                print("Add: %,d %s (Batch: ---- / Avg: ----)", getRunningTotal(), label);
             }
     
             lastTime = timePoint;
     
-            if ( tickPoint(counterTotal, superTick * tickPoint) )
+            if ( tickPoint(getRunningTotal(), superTick * tickPoint) )
                 elapsed(timePoint);
             counterBatch = 0;
             lastTime = timePoint;
@@ -147,9 +166,43 @@ public class ProgressMonitorOutput implements ProgressMonitor {
         return counterTotal;
     }
 
+    private long getRunningTotal() {
+        return counterTotal;
+    }
+
     @Override
     public long getTime() {
         return timeTotalMillis;
+    }
+    
+    @Override
+    public void startSection() {
+        if ( inSection )
+            throw new TDBException("startSection: Already in section");
+        inSection = true;
+        sectionCounter++;
+        sectionTimer = new Timer();
+        sectionTimer.startTimer();
+        sectionTimeInMillis = 0;
+        sectionTickCounter = 0;
+    }
+
+    @Override
+    public void finishSection() {
+        if ( ! inSection )
+            throw new TDBException("finishSection: Not in section");
+        print("  End file: %s (triples/quads = %,d)", label, sectionTickCounter);
+        inSection = false;
+        sectionTimeInMillis = sectionTimer.endTimer();
+    }
+    
+    @Override
+    public long getSectionTicks() {
+        return sectionTickCounter;
+    }
+    @Override
+    public long getSectionTime() {
+        return sectionTimeInMillis;
     }
 
     protected void elapsed(long timerReading) {
@@ -165,6 +218,11 @@ public class ProgressMonitorOutput implements ProgressMonitor {
 
     static boolean tickPoint(long counter, long quantum) {
         return counter % quantum == 0;
+    }
+
+    @Override
+    public void setLabel(String label) {
+        this.label = label; 
     }
 
 }

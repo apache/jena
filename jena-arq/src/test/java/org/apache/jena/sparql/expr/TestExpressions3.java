@@ -21,7 +21,6 @@ package org.apache.jena.sparql.expr;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionEnvBase ;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderBinding ;
@@ -50,7 +49,7 @@ public class TestExpressions3 extends BaseTest
     private static void eval(String string, String bindingStr, boolean expected) {
         Binding binding = binding(bindingStr) ; 
         Expr expr = ExprUtils.parse(string) ;
-        NodeValue nv = expr.eval(binding, FunctionEnvBase.createTest()) ;
+        NodeValue nv = expr.eval(binding, LibTestExpr.createTest()) ;
         boolean b = XSDFuncOp.booleanEffectiveValue(nv) ;
         assertEquals(string, expected, b) ;
     }
@@ -59,7 +58,7 @@ public class TestExpressions3 extends BaseTest
     private static void evalExpr(String exprString, String bindingStr, boolean expected) {
         Binding binding = binding(bindingStr) ;
         Expr expr = SSE.parseExpr(exprString) ;
-        NodeValue nv = expr.eval(binding, FunctionEnvBase.createTest()) ;
+        NodeValue nv = expr.eval(binding, LibTestExpr.createTest()) ;
         boolean b = XSDFuncOp.booleanEffectiveValue(nv) ;
         assertEquals(exprString, expected, b) ;
     }

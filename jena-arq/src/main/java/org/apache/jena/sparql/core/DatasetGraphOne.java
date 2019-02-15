@@ -27,11 +27,11 @@ import org.apache.jena.atlas.iterator.NullIterator;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.graph.impl.WrappedGraph;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.reasoner.InfGraph;
-import org.apache.jena.sparql.graph.GraphWrapper;
+import org.apache.jena.sparql.graph.GraphOps;
+import org.apache.jena.sparql.graph.GraphZero;
 
 /** DatasetGraph of a single graph as default graph.
  * <p>
@@ -65,15 +65,10 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
                 graph = ((InfGraph)graph).getRawGraph();
                 continue;
             }
-            if ( graph instanceof GraphWrapper ) {
-                graph = ((GraphWrapper)graph).get();
-                continue;
-            }
-            if ( graph instanceof WrappedGraph ) {
-                graph = ((WrappedGraph)graph).getWrapped();
-                continue;
-            }
-            return graph;
+            Graph graph2 = GraphOps.unwrapOne(graph);
+            if ( graph2 == graph )
+                return graph;
+            graph = graph2;
         }
     }
     
@@ -123,11 +118,18 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
     public Graph getDefaultGraph() {
         return graph;
     }
+    
+    @Override
+    public Graph getUnionGraph() {
+        return GraphZero.instance();
+    }
 
     @Override
     public Graph getGraph(Node graphNode) {
         if ( isDefaultGraph(graphNode) )
-            return graph;
+            return getDefaultGraph();
+        if ( Quad.isUnionGraph(graphNode) )
+            return getUnionGraph();
         return null;
     }
 

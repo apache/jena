@@ -18,16 +18,24 @@
 
 package org.apache.jena.fuseki.build;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Literal ;
 import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.vocabulary.RDFS ;
 
-/** Library code for operations specific to building Fuseki servers and services. */
+/**
+ * Library code for operations related to building Fuseki servers and services.
+ */
 public class FusekiBuildLib {
 
     // ---- Helper code
@@ -56,7 +64,7 @@ public class FusekiBuildLib {
     public static ResultSet query(String string, Model m, String varName, RDFNode value) {
         Query query = QueryFactory.create(FusekiConst.PREFIXES + string) ;
         QuerySolutionMap initValues = null ;
-        if ( varName != null )
+        if ( varName != null && value != null )
             initValues = querySolution(varName, value) ;
         try ( QueryExecution qExec = QueryExecutionFactory.create(query, m, initValues) ) {
             return ResultSetFactory.copyResults(qExec.execSelect()) ;
@@ -66,7 +74,7 @@ public class FusekiBuildLib {
     public static ResultSet query(String string, Dataset ds, String varName, RDFNode value) {
         Query query = QueryFactory.create(FusekiConst.PREFIXES + string) ;
         QuerySolutionMap initValues = null ;
-        if ( varName != null )
+        if ( varName != null && value != null )
             initValues = querySolution(varName, value) ;
         try ( QueryExecution qExec = QueryExecutionFactory.create(query, ds, initValues) ) {
             return ResultSetFactory.copyResults(qExec.execSelect()) ;
@@ -92,6 +100,29 @@ public class FusekiBuildLib {
         if ( rs.hasNext() )
             throw new FusekiConfigException("Multiple properties '" + property + "' for service " + FusekiBuildLib.nodeLabel(svc)) ;
         return x ;
+    }
+
+    /**
+     * Get all object of a subject/property, whether repeated triples or RDF Lists or a
+     * mixture. If the subject/property isn't present, return null, so a caller can tell
+     * the difference between "not present" and an empty list value.
+     */
+    public static Collection<RDFNode> getAll(Resource svc, String property) {
+        ResultSet rs = FusekiBuildLib.query("SELECT * { ?svc " + property + " ?x}", svc.getModel(), "svc", svc) ;
+        if ( ! rs.hasNext() )
+            return null;
+        List<RDFNode> results = new ArrayList<>();
+        rs.forEachRemaining(qs->{
+            RDFNode n = qs.get("x");
+            try {
+                RDFList list = n.as(RDFList.class);
+                results.addAll(list.asJavaList());
+            } catch (JenaException x) {
+                // Not a list.
+                results.add(n);
+            }
+        });
+        return results ;
     }
 
     // Node presentation

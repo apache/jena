@@ -18,45 +18,43 @@
 
 package org.apache.jena.fuseki.access;
 
+import java.util.Collection;
 import java.util.function.Function;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.jena.fuseki.main.FusekiServer;
-import org.apache.jena.fuseki.server.Operation;
-import org.apache.jena.fuseki.servlets.ActionService;
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.fuseki.servlets.HttpAction;
-import org.apache.jena.fuseki.servlets.ServiceDispatchRegistry;
+import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFilteredView;
+import org.apache.jena.sparql.core.DatasetGraphZero;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.sys.JenaSystem;
-import org.eclipse.jetty.security.SecurityHandler;
 
 /** A library of operations related to data access security for Fuseki */  
 public class DataAccessCtl {
     static { JenaSystem.init(); }
     
-    /**
-     * Flag for whether this is data access controlled or not - boolean false or undef for "not
-     * controlled". This is an alternative to {@link DatasetGraphAccessControl}.
-     */
-    public static final Symbol   symControlledAccess        = Symbol.create(VocabSecurity.getURI() + "controlled");
+//    /**
+//     * Flag for whether this is data access controlled or not - boolean false or undef for "not
+//     * controlled". This is an alternative to {@link DatasetGraphAccessControl}.
+//     * @see #isAccessControlled(DatasetGraph)
+//     */
+//    public static final Symbol   symControlledAccess        = Symbol.create(VocabSecurity.getURI() + "controlled");
     
     /**
-     * Symbol for the {@link AuthorizationService}. Must be present if
-     * {@link #symControlledAccess} indicates data access control.
+     * Symbol for the {@link AuthorizationService}.
      * This is an alternative to {@link DatasetGraphAccessControl}.
+     * @see #isAccessControlled(DatasetGraph)
      */
     public static final Symbol   symAuthorizationService    = Symbol.create(VocabSecurity.getURI() + "authService");
 
     /** Get the user from the servlet context via {@link HttpServletRequest#getRemoteUser} */ 
-    public static final Function<HttpAction, String> requestUserServlet = (action)->action.request.getRemoteUser();
+    public static final Function<HttpAction, String> requestUserServlet = (action)->action.getUser();
 
     /**
      * Get the user from {@code ?user} query string parameter. Use carefully; for situations where the user name has
@@ -69,7 +67,7 @@ public class DataAccessCtl {
      * {@link DatasetGraph}'s {@link Context}.
      */
     private static void addAuthorizatonService(DatasetGraph dsg, AuthorizationService authService) {
-        dsg.getContext().set(symControlledAccess, true);
+        //dsg.getContext().set(symControlledAccess, true);
         dsg.getContext().set(symAuthorizationService, authService);
     }
 
@@ -99,56 +97,14 @@ public class DataAccessCtl {
     } 
 
     /**
-     * Return a {@code FusekiServer.Builder} setup for data access control
-     * but with no Jetty security handler.
-     */
-    public static FusekiServer.Builder fusekiBuilder(Function<HttpAction, String> determineUser) {
-        return fusekiBuilder(null, determineUser);
-    }
-
-    /**
-     * Return a {@code FusekiServer.Builder} setup for data access control and with a
-     * Jetty security handler.
-     */
-    public static FusekiServer.Builder fusekiBuilder(SecurityHandler securityHandler, Function<HttpAction, String> determineUser) {
-        FusekiServer.Builder builder = FusekiServer.create();
-        if ( securityHandler != null )
-            builder.securityHandler(securityHandler);
-        // Replace the standard operations with the SecurityRegistry processing ones. 
-        builder.registerOperation(Operation.Query, WebContent.contentTypeSPARQLQuery, new Filtered_SPARQL_QueryDataset(determineUser));
-        builder.registerOperation(Operation.GSP_R, new Filtered_SPARQL_GSP_R(determineUser));
-        builder.registerOperation(Operation.Quads_R, new Filtered_REST_Quads_R(determineUser));
-        return builder;
-    }
-
-    /**
-     * Modify in-place an existing {@link FusekiServer} so that the read-operations for
-     * query/GSP/Quads go to the data-filtering versions of the {@link ActionService ActionServices}.
-     * (It is better to create the server via {@link #DataAccessCtl.builder} first rather than modify afterwards.) 
-     */
-    public static void modifyForAccessCtl(FusekiServer server, Function<HttpAction, String> determineUser) {
-        /* 
-         * Reconfigure standard Jena Fuseki, replacing the default implementation of "query"
-         * with a filtering one.  This for this server only. 
-         */
-        // The mapping operation to handler is in the ServiceDispatchRegistry and is per
-        // server (per servlet context). "registerOrReplace" would be a better name,
-        ActionService queryServletAccessFilter = new Filtered_SPARQL_QueryDataset(determineUser);
-        ServletContext cxt = server.getServletContext();
-        ServiceDispatchRegistry.get(cxt).register(Operation.Query, WebContent.contentTypeSPARQLQuery, queryServletAccessFilter);
-        ServiceDispatchRegistry.get(cxt).register(Operation.GSP_R, null, new Filtered_SPARQL_GSP_R(determineUser));
-        ServiceDispatchRegistry.get(cxt).register(Operation.Quads_R, null, new Filtered_REST_Quads_R(determineUser));
-    }
-    
-    /**
      * Return whether a {@code DatasetGraph} has access control, either because it is wrapped in
      * {@link DatasetGraphAccessControl} or because it has the context settings.
      */
     public static boolean isAccessControlled(DatasetGraph dsg) {
         if ( dsg instanceof DatasetGraphAccessControl )
             return true;
-        if ( dsg.getContext().isDefined(DataAccessCtl.symControlledAccess) )
-            return true;
+//        if ( dsg.getContext().isDefined(DataAccessCtl.symControlledAccess) )
+//            return true;
         if ( dsg.getContext().isDefined(DataAccessCtl.symAuthorizationService) )
             return true;
         return false;
@@ -156,8 +112,25 @@ public class DataAccessCtl {
 
     /**
      * Return a read-only {@link DatasetGraphFilteredView} that fulfils the {@link SecurityContext}.
+     * See also {@link SecurityContext#filterTDB} which is more efficient.
+     * This code creates a general solution.
      */
-    public static DatasetGraphFilteredView filteredDataset(DatasetGraph dsg, SecurityContext sCxt) {
+    public static DatasetGraph filteredDataset(DatasetGraph dsg, SecurityContext sCxt) {
+        if ( sCxt instanceof SecurityContextAllowAll )
+            return dsg;
+        if ( sCxt instanceof SecurityContextAllowNone ) {
+            return new DatasetGraphZero();
+        }
+        // Nothing special done for SecurityContextAllowNamedGraphs currently.
+        // Unfortunately that means find all named graphs.
+//        if ( sCxt instanceof SecurityContextAllowNamedGraphs ) {
+//        }
+        
+        Collection<Node> names = sCxt.visibleGraphs();
+        if ( names == null )
+            // XXX does not scale.
+            names = Iter.toList(dsg.listGraphNodes());
+        
         return new DatasetGraphFilteredView(dsg, sCxt.predicateQuad(), sCxt.visibleGraphs());
     }
 }

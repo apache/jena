@@ -22,10 +22,10 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.apache.jena.tdb.TDBException ;
-import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.base.file.LocationLock ;
-import org.apache.jena.tdb.sys.ProcessUtils ;
+import org.apache.jena.tdb.TDBException;
+import org.apache.jena.tdb.base.file.Location;
+import org.apache.jena.tdb.base.file.LocationLock;
+import org.apache.jena.tdb.sys.ProcessUtils;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.BeforeClass;
@@ -39,10 +39,10 @@ import org.junit.rules.TemporaryFolder;
 public class TestLocationLock {
 
     private static boolean negativePidsTreatedAsAlive = false;
-    
+
     @Rule
     public TemporaryFolder tempDir = new TemporaryFolder();
-    
+
     @BeforeClass
     public static void setup() {
         negativePidsTreatedAsAlive = ProcessUtils.negativePidsTreatedAsAlive();
@@ -90,8 +90,9 @@ public class TestLocationLock {
         Assert.assertTrue(lock.canObtain());
 
         // Write a fake PID to the lock file
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock")))) {
-            writer.write(Integer.toString(-1234)); // Fake PID that would never be valid
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock")))) {
+            writer.write(Integer.toString(-1234)); // Fake PID that would never
+                                                   // be valid
         }
         Assert.assertTrue(lock.isLocked());
         Assert.assertFalse(lock.isOwned());
@@ -110,9 +111,9 @@ public class TestLocationLock {
         Assert.assertTrue(lock.canObtain());
 
         // Write a fake PID to the lock file
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock")))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock")))) {
             // Fake PID that would never be valid
-            writer.write(Integer.toString(-1234)); 
+            writer.write(Integer.toString(-1234));
         }
         Assert.assertTrue(lock.isLocked());
         Assert.assertFalse(lock.isOwned());
@@ -134,10 +135,9 @@ public class TestLocationLock {
         Assert.assertTrue(lock.canObtain());
 
         // Write a fake PID to the lock file
-        try(BufferedWriter writer = 
-            new BufferedWriter(new FileWriter(dir.getPath("tdb.lock")))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock")))) {
             // Fake PID that would never be valid
-            writer.write(Integer.toString(-1234)); 
+            writer.write(Integer.toString(-1234));
         }
         Assert.assertTrue(lock.isLocked());
         Assert.assertFalse(lock.isOwned());
@@ -145,5 +145,34 @@ public class TestLocationLock {
         // Attempting to release a lock we don't own should error
         Assert.assertFalse(lock.canObtain());
         lock.release();
+    }
+
+    @Test
+    public void location_lock_dir_error_03() throws IOException {
+        Assume.assumeTrue(negativePidsTreatedAsAlive);
+
+        Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
+        LocationLock lock = dir.getLock();
+        Assert.assertTrue(lock.canLock());
+        Assert.assertFalse(lock.isLocked());
+        Assert.assertFalse(lock.isOwned());
+        Assert.assertTrue(lock.canObtain());
+
+        // Write a TDB2 format lock file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock")))) {
+            // TDB2 format lock file, this writes a new line to the end of the lock file
+            writer.write(Integer.toString(-1234));
+            writer.write('\n');
+        }
+
+        // Trying to get the owner should error accordingly
+        try {
+            lock.canObtain();
+            Assert.fail("Expected the lock file to be considered invalid");
+        } catch (FileException e) {
+            String errMsg = e.getMessage();
+            Assert.assertNotNull(errMsg);
+            Assert.assertTrue(errMsg.contains("appear to be for a TDB2 database"));
+        }
     }
 }

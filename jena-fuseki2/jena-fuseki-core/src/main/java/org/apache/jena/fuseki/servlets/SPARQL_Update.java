@@ -205,7 +205,7 @@ public class SPARQL_Update extends SPARQL_Protocol
         ServletOps.successPage(action,"Update succeeded") ;
     }
 
-    private void execute(HttpAction action, InputStream input) {
+    protected void execute(HttpAction action, InputStream input) {
         // OPTIONS
         if ( action.request.getMethod().equals(HttpNames.METHOD_OPTIONS) ) {
             // Share with update via SPARQL_Protocol.

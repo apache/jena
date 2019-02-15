@@ -24,6 +24,7 @@ import java.util.function.BiFunction;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.tdb2.loader.main.LoaderPlans;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -41,11 +42,13 @@ public class TestLoaderStd extends AbstractTestLoader {
         BiFunction<DatasetGraph, Node, DataLoader> phased = (dsg, gn)->LoaderFactory.phasedLoader(dsg, gn, output);
         BiFunction<DatasetGraph, Node, DataLoader> sequential = (dsg, gn)->LoaderFactory.sequentialLoader(dsg, gn, output);
         BiFunction<DatasetGraph, Node, DataLoader> parallel = (dsg, gn)->LoaderFactory.parallelLoader(dsg, gn, output);
+        BiFunction<DatasetGraph, Node, DataLoader> light = (dsg, gn)->LoaderFactory.createLoader(LoaderPlans.loaderPlanLight, dsg, gn, output);
         
         x.add(new Object[]{"Basic loader", basic}) ;
         x.add(new Object[]{"Phased loader", phased}) ;
         x.add(new Object[]{"Sequential loader", sequential}) ;
         x.add(new Object[]{"Parallel loader", parallel}) ;
+        x.add(new Object[]{"Light loader", light}) ;
         return x ; 
     }
     

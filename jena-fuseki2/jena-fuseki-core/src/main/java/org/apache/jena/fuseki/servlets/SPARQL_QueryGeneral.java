@@ -23,6 +23,8 @@ import static java.lang.String.format ;
 import java.util.List ;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.fuseki.server.DataService;
+import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.system.GraphLoadUtils;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
@@ -31,6 +33,8 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.sparql.core.DatasetDescription ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphZero;
 
 public class SPARQL_QueryGeneral extends SPARQL_Query {
     final static int MaxTriples = 100 * 1000 ;
@@ -49,23 +53,32 @@ public class SPARQL_QueryGeneral extends SPARQL_Query {
     protected String mapRequestToDataset(HttpAction action) {
         return null ;
     }
+    
+    /** SPARQL_QueryGeneral is a servlet to be called directly.
+     * It declares it is own {@code Operation} to fit into {@link ActionService#execCommonWorker}.
+     * The Fuseki service handling continues; 
+     * {@link SPARQL_Query} will ask for a dataset which will return the fixed, empty dataset.
+     * 
+     */
+    @Override
+    protected Operation chooseOperation(HttpAction action, DataService dataService) {
+        return Operation.Query;
+    }
 
     @Override
-    protected Dataset decideDataset(HttpAction action, Query query, String queryStringLog) {
+    protected DatasetGraph decideDataset(HttpAction action, Query query, String queryStringLog) {
         DatasetDescription datasetDesc = getDatasetDescription(action, query) ;
         if ( datasetDesc == null )
             //ServletOps.errorBadRequest("No dataset description in protocol request or in the query string") ;
-            // Hope the query has something in it!
-            return DatasetFactory.createTxnMem();
+            return new DatasetGraphZero();
         return datasetFromDescriptionWeb(action, datasetDesc) ;
     }
 
     /**
-     * Construct a Dataset based on a dataset description. Loads graph from the
-     * web.
+     * Construct a Dataset based on a dataset description.
+     * Loads graph from the web.
      */
-
-    protected Dataset datasetFromDescriptionWeb(HttpAction action, DatasetDescription datasetDesc) {
+    protected DatasetGraph datasetFromDescriptionWeb(HttpAction action, DatasetDescription datasetDesc) {
         try {
             if ( datasetDesc == null )
                 return null ;
@@ -126,7 +139,7 @@ public class SPARQL_QueryGeneral extends SPARQL_Query {
                 }
             }
 
-            return dataset ;
+            return dataset.asDatasetGraph() ;
 
         }
         catch (ActionErrorException ex) {

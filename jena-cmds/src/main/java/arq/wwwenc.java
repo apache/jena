@@ -18,6 +18,9 @@
 
 package arq;
 
+import java.io.IOException;
+
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.StrUtils ;
 
 public class wwwenc
@@ -36,7 +39,7 @@ public class wwwenc
      *   
      *   
      */
-    public static void main(String...args)
+    public static void main(String...args) throws IOException
     {
         // Reserved characters + space
         char reserved[] = 
@@ -47,8 +50,13 @@ public class wwwenc
         
         char[] other = {'<', '>', '~', '.', '{', '}', '|', '\\', '-', '`', '_', '^'} ;        
         
-        for ( String x : args)
-        {
+        if ( args.length == 0 ) {
+            String x = IO.readWholeFileAsUTF8(System.in);
+            String y = StrUtils.encodeHex(x, '%', reserved) ;
+            System.out.println(y) ;
+            return;
+        }       
+        for ( String x : args) {
             // Not URLEncoder which does www-form-encoding.
             String y = StrUtils.encodeHex(x, '%', reserved) ;
             System.out.println(y) ;

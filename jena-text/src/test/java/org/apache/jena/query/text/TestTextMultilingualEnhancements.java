@@ -85,6 +85,7 @@ public class TestTextMultilingualEnhancements extends AbstractTestDatasetWithTex
                     "    text:storeValues true ;",
                     "    text:entityMap :entMap ;",
                     "    text:multilingualSupport true ;", 
+                    "    text:ignoreIndexErrors true ;", 
                     "    text:defineAnalyzers (",
                     "      [ text:defineAnalyzer :folding ;",
                     "        text:analyzer [",
@@ -128,7 +129,7 @@ public class TestTextMultilingualEnhancements extends AbstractTestDatasetWithTex
                     "    text:langField        \"lang\" ;",
                     "    text:graphField       \"graph\" ;",
                     "    text:map (",
-                    "         [ text:field \"label\" ; text:predicate rdfs:label ]",
+                    "         [ text:field \"label\" ; text:predicate rdfs:label ; text:noIndex true ]",
                     "         [ text:field \"comment\" ; text:predicate rdfs:comment ]",
                     "         ) ."
                     );

@@ -34,10 +34,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.riot.JsonLDWriteContext;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.RDFFormat;
-import org.apache.jena.riot.WriterDatasetRIOT;
+import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -550,11 +547,7 @@ public class TestJsonLDWriter extends BaseTest {
 
     private String toString(Model m, RDFFormat f, Context jenaContext) {
         try(ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            WriterDatasetRIOT w = RDFDataMgr.createDatasetWriter(f) ;
-            DatasetGraph g = DatasetFactory.wrap(m).asDatasetGraph();
-            PrefixMap pm = RiotLib.prefixMap(g);
-            String base = null;
-            w.write(out, g, pm, base, jenaContext) ;
+            RDFWriter.create().source(m).format(f).context(jenaContext).output(out);
             out.flush();
             return out.toString("UTF-8");
         } catch (IOException e) { throw new RuntimeException(e); }

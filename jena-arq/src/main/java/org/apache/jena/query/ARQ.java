@@ -28,7 +28,6 @@ import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.engine.http.Service ;
 import org.apache.jena.sparql.expr.aggregate.AggregateRegistry ;
 import org.apache.jena.sparql.function.FunctionRegistry ;
-import org.apache.jena.sparql.lib.Metadata ;
 import org.apache.jena.sparql.mgt.ARQMgt ;
 import org.apache.jena.sparql.mgt.Explain ;
 import org.apache.jena.sparql.mgt.Explain.InfoLevel ;
@@ -38,6 +37,7 @@ import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
 import org.apache.jena.sys.JenaSystem ;
+import org.apache.jena.util.Metadata;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

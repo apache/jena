@@ -125,6 +125,9 @@ public class schemagen {
     /** The output stream we write to */
     protected PrintStream m_output;
 
+    /** The language used to retrieve comments */
+    protected String m_lang;
+
     /** Option definitions */
     /** Stack of replacements to apply */
     protected List<Replacement> m_replacements = new ArrayList<>();
@@ -197,6 +200,7 @@ public class schemagen {
         addIncludes();
         determineLanguage();
         selectInput();
+        selectLang();
         selectOutput();
         setGlobalReplacements();
 
@@ -264,6 +268,14 @@ public class schemagen {
         }
         catch (JenaException e) {
             abort( "Failed to read input source " + input, e );
+        }
+    }
+
+    protected void selectLang() {
+        if (m_options.hasLangOption()) {
+            m_lang = m_options.getLangOption();
+        } else {
+            m_lang = null;
         }
     }
 
@@ -405,6 +417,7 @@ public class schemagen {
         System.err.println();
         System.err.println( "Commonly used options include:" );
         System.err.println( "   -i <input> the source document as a file or URL." );
+        System.err.println( "   -l <lang> the desired language to use to retrieve comments." );
         System.err.println( "   -n <name> the name of the created Java class." );
         System.err.println( "   -a <uri> the namespace URI of the source document." );
         System.err.println( "   -o <file> the file to write the generated class into." );
@@ -432,7 +445,7 @@ public class schemagen {
     }
 
     /** Add the appropriate indent to a buffer */
-    protected int indentTo( int i, StringBuffer buf ) {
+    protected int indentTo( int i, StringBuilder buf ) {
         int indent = i * m_indentStep;
         for (int j = 0;  j < indent; j++) {
             buf.append( ' ' );
@@ -463,7 +476,7 @@ public class schemagen {
 
     /** Determine the list of imports to include in the file */
     protected String getImports() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append( "import org.apache.jena.rdf.model.*;" );
         buf.append( m_nl );
 
@@ -538,7 +551,7 @@ public class schemagen {
 
     /** Converts to a legal Java identifier; capitalise first char if cap is true */
     protected String asLegalJavaID( String s, boolean cap ) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         int i = 0;
 
         // treat the first character specially - must be able to start a Java ID, may have to up-case
@@ -1159,13 +1172,19 @@ public class schemagen {
 
     /** Answer all of the commentary on the given resource, as a string */
     protected String getComment( Resource r ) {
-        StringBuffer comment = new StringBuffer();
+        StringBuilder comment = new StringBuilder();
 
         // collect any RDFS or DAML comments attached to the node
         for (NodeIterator ni = m_source.listObjectsOfProperty( r, RDFS.comment );  ni.hasNext(); ) {
             RDFNode n = ni.nextNode();
             if (n instanceof Literal) {
-                comment.append( ((Literal) n).getLexicalForm().trim() );
+                if (m_lang == null || m_lang.trim().equals("")) {
+                    // default behavior, where no language was specified
+                    comment.append( ((Literal) n).getLexicalForm().trim() );
+                } else if (((Literal) n).getLanguage().equals(m_lang)) {
+                    // otherwise only use comment that matches the language given
+                    comment.append( ((Literal) n).getLexicalForm().trim() );
+                }
             }
             else {
                 System.err.println( "Warning: Comment on resource <" + r.getURI() + "> is not a literal: " + n );
@@ -1177,7 +1196,7 @@ public class schemagen {
 
     /** Format the comment as Javadoc, and limit the line width */
     protected String formatComment( String comment ) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append( "/** <p>" );
 
         boolean inSpace = false;
@@ -1330,7 +1349,7 @@ public class schemagen {
 
     /** Answer the local name of resource r mapped to upper case */
     protected String getUCValueName( Resource r ) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         String localName = r.getLocalName();
         char lastChar = 0;
 
@@ -1407,6 +1426,9 @@ public class schemagen {
 
             /** Nominate the URL of the input document; use <code>-i &lt;URL&gt;</code> on command line;  use <code>sgen:input</code> in config file */
             INPUT,
+
+            /** Specify the language used to retrieve comments */
+            LANG,
 
             /** Specify that the language of the source is DAML+OIL; use <code>--daml</code> on command line;  use <code>sgen:daml</code> in config file */
             LANG_DAML,
@@ -1526,6 +1548,7 @@ public class schemagen {
                 {OPT.ROOT,                new OptionDefinition( "-r", "root" ) },
                 {OPT.NO_COMMENTS,         new OptionDefinition( "--nocomments", "noComments" ) },
                 {OPT.INPUT,               new OptionDefinition( "-i", "input" ) },
+                {OPT.LANG,                new OptionDefinition( "-l", "lang" ) },
                 {OPT.LANG_DAML,           new OptionDefinition( "--daml", "daml" ) },
                 {OPT.LANG_OWL,            new OptionDefinition( "--owl", "owl" ) },
                 {OPT.LANG_RDFS,           new OptionDefinition( "--rdfs", "rdfs" ) },
@@ -1572,6 +1595,8 @@ public class schemagen {
         public String getNoCommentsOption();
         public boolean hasInputOption();
         public Resource getInputOption();
+        public boolean hasLangOption();
+        public String getLangOption();
         public boolean hasLangOwlOption();
         public String getLangOwlOption();
         public boolean hasLangRdfsOption();
@@ -1803,6 +1828,10 @@ public class schemagen {
         @Override
         public Resource getInputOption() { return getResource( OPT.INPUT ); }
         @Override
+        public boolean hasLangOption() { return hasValue( OPT.LANG ); }
+        @Override
+        public String getLangOption() { return getStringValue( OPT.LANG ); }
+        @Override
         public boolean hasLangOwlOption() { return isTrue( OPT.LANG_OWL ); }
         @Override
         public String getLangOwlOption() { return getStringValue( OPT.LANG_OWL ); }
@@ -1815,7 +1844,7 @@ public class schemagen {
         @Override
         public String getOutputOption() { return getStringValue( OPT.OUTPUT ); }
         @Override
-        public boolean hasHeaderOption() { return isTrue( OPT.HEADER ); }
+        public boolean hasHeaderOption() { return hasValue( OPT.HEADER ); }
         @Override
         public String getHeaderOption() { return getStringValue( OPT.HEADER ); }
         @Override

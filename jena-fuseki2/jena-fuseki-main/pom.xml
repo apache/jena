@@ -25,22 +25,23 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-fuseki</artifactId>
-    <version>3.10.0-SNAPSHOT</version>
+    <version>3.11.0-SNAPSHOT</version>
   </parent> 
 
   <packaging>jar</packaging>
 
   <properties>
-    <automatic.module.name>org.apache.jena.jena-fuseki-main</automatic.module.name>
+    <automatic.module.name>org.apache.jena.fuseki.main</automatic.module.name>
   </properties>
   
   <dependencies> 
 
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-fuseki-core</artifactId>
-      <version>3.10.0-SNAPSHOT</version>
-
+      <!-- <artifactId>jena-fuseki-core</artifactId>-->
+      <!-- Depends on jena-fuseki-core -->
+      <artifactId>jena-fuseki-access</artifactId>
+      <version>3.11.0-SNAPSHOT</version>
       <exclusions>
         
         <!-- Parts of Jena not needed but picked up via jena-fuseki-core.
@@ -76,10 +77,17 @@
       
     </dependency>
 
+    <!-- For parsing Jetty configuration files -->
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-xml</artifactId>
+      <version>${ver.jetty}</version>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>3.10.0-SNAPSHOT</version>
+      <version>3.11.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -97,7 +105,39 @@
 
   <build>
     <plugins>
-      
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <!--<version>0.12</version>-->
+        <executions>
+          <execution>
+            <id>rat-checks</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <excludes>
+            <exclude>**/.project</exclude>
+            <exclude>**/.settings/**</exclude>
+            <exclude>**/.classpath</exclude>
+            <exclude>**/README.*</exclude>
+            <exclude>**/META-INF/services/*</exclude>
+            <exclude>**/dependency-reduced-pom.xml</exclude>
+
+            <exclude>fuseki.classpath</exclude>
+            <exclude>testing/**/*.ttl</exclude>
+            <exclude>testing/**/*.txt</exclude>
+            <exclude>sparqler/data/empty.nt</exclude>
+            <exclude>sparqler/pages/robots.txt</exclude>
+            <exclude>sparqler/pages/crossdomain.xml</exclude>
+
+          </excludes>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

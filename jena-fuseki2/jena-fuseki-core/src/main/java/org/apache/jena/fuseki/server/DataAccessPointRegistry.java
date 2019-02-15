@@ -53,7 +53,7 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
             System.out.printf("  (key=%s, ref=%s)\n", k, ref.getName()) ;
             ref.getDataService().getOperations().forEach((op)->{
                 ref.getDataService().getEndpoints(op).forEach(ep->{
-                    System.out.printf("     %s : %s\n", op, ep.getEndpoint()) ;
+                    System.out.printf("     %s : %s\n", op, ep.getName()) ;
                 });
             });
         }) ;

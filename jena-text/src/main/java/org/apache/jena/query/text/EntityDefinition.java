@@ -36,6 +36,7 @@ public class EntityDefinition {
     private final Map<Node, String>          predicateToField = new HashMap<>() ;
     private final Map<String, Analyzer>      fieldToAnalyzer  = new HashMap<>() ;
     private final ListMultimap<String, Node> fieldToPredicate = ArrayListMultimap.create() ;
+    private final Map<String, Boolean>       fieldToNoIndex   = new HashMap<>() ;
     private final Collection<String>         fields           = Collections.unmodifiableCollection(fieldToPredicate.keys()) ;
     // private final Collection<String> fields =
     // Collections.unmodifiableCollection(fieldToPredicate.keySet()) ;
@@ -147,6 +148,15 @@ public class EntityDefinition {
     
     public Analyzer getAnalyzer(String field) {
         return fieldToAnalyzer.get(field);
+    }
+    
+    public void setNoIndex(String field, boolean b) {
+        fieldToNoIndex.put(field, b);
+    }
+    
+    public boolean getNoIndex(String field) {
+        Boolean b = fieldToNoIndex.get(field);
+        return b != null ? b : false;
     }
 
     public String getPrimaryField() {

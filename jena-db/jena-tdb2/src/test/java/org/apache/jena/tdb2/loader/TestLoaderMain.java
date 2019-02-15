@@ -43,6 +43,7 @@ public class TestLoaderMain extends AbstractTestLoader {
         add(x, "Simple plan", LoaderPlans.loaderPlanSimple);
         add(x, "Minimal plan", LoaderPlans.loaderPlanMinimal);
         add(x, "Phased Plan", LoaderPlans.loaderPlanPhased);
+        add(x, "Light plan", LoaderPlans.loaderPlanLight);
         add(x, "Parallel plan", LoaderPlans.loaderPlanParallel);
         return x ; 
     }

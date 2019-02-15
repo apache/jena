@@ -581,9 +581,10 @@ public class Query extends Prologue implements Cloneable, Printable
     /** Does the query have a VALUES trailing block? */
     public boolean hasValues()                { return valuesDataBlock != null ; }
     
+    /** Variables from a VALUES trailing block */
     public List<Var> getValuesVariables()     { return valuesDataBlock==null ? null : valuesDataBlock.getVars() ; }
     
-    /** VALUES data - null for a Node means undef */ 
+    /** Data from a VALUES trailing block. null for a Node means undef */ 
     public List<Binding> getValuesData()      { return valuesDataBlock==null ? null : valuesDataBlock.getRows() ; }
 
     public void setValuesDataBlock(List<Var> variables, List<Binding> values)

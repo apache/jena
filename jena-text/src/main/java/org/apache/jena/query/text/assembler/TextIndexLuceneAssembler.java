@@ -152,6 +152,16 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 storeValues = svNode.asLiteral().getBoolean();
             }
 
+            boolean ignoreIndexErrs = false;
+            Statement ignoreIndexErrsStatement = root.getProperty(pIgnoreIndexErrors);
+            if (null != ignoreIndexErrsStatement) {
+                RDFNode iieNode = ignoreIndexErrsStatement.getObject();
+                if (! iieNode.isLiteral()) {
+                    throw new TextIndexException("text:ignoreIndexErrors property must be a boolean : " + iieNode);
+                }
+                ignoreIndexErrs = iieNode.asLiteral().getBoolean();
+            }
+
             // use query cache by default
             boolean cacheQueries = true;
             Statement cacheQueriesStatement = root.getProperty(pCacheQueries);
@@ -171,6 +181,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             config.setQueryParser(queryParser);
             config.setMultilingualSupport(isMultilingualSupport);
             config.setValueStored(storeValues);
+            config.setIgnoreIndexErrors(ignoreIndexErrs);
             docDef.setCacheQueries(cacheQueries);
 
             return TextDatasetFactory.createLuceneIndex(directory, config) ;

@@ -26,8 +26,11 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.tdb2.loader.base.MonitorOutput;
 import org.apache.jena.tdb2.loader.basic.LoaderBasic;
+import org.apache.jena.tdb2.loader.main.LoaderMain;
 import org.apache.jena.tdb2.loader.main.LoaderParallel;
 import org.apache.jena.tdb2.loader.main.LoaderPhased;
+import org.apache.jena.tdb2.loader.main.LoaderPlan;
+import org.apache.jena.tdb2.loader.main.LoaderPlans;
 import org.apache.jena.tdb2.loader.sequential.LoaderSequential;
 
 /** Obtain a {@link DataLoader}.
@@ -191,6 +194,24 @@ public class LoaderFactory {
     public static DataLoader parallelLoader(DatasetGraph dsg, Node graphName, MonitorOutput output) {
         Objects.requireNonNull(dsg);
         return new LoaderParallel(dsg, graphName, output);
+    }
+
+    /**
+     * Return a loader to load a dataset, using the provided plan.
+     * See {@link LoaderPlans} for the standard plans.
+     */  
+    public static DataLoader createLoader(LoaderPlan plan, DatasetGraph dsg, MonitorOutput output) {
+        Objects.requireNonNull(dsg);
+        return new LoaderMain(plan, dsg, output);
+    }
+
+    /**
+     * Return a loader to load a graph, using the provided plan.
+     * See {@link LoaderPlans} for the standard plans.
+     */  
+    public static DataLoader createLoader(LoaderPlan plan, DatasetGraph dsg, Node graphName, MonitorOutput output) {
+        Objects.requireNonNull(dsg);
+        return new LoaderMain(plan, dsg, graphName, output);
     }
 
     /**

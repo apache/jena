@@ -18,20 +18,17 @@
 
 package org.apache.jena.rdfconnection;
 
-import static java.util.Objects.requireNonNull;
-
 import java.io.File;
-import java.io.InputStream;
 import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.HttpClient;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.EntityTemplate;
+import org.apache.http.entity.FileEntity;
 import org.apache.http.protocol.HttpContext;
-import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.InternalErrorException;
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph;
@@ -97,77 +94,6 @@ public class RDFConnectionRemote implements RDFConnection {
      */
     public static RDFConnectionRemoteBuilder create(RDFConnectionRemote base) {
         return new RDFConnectionRemoteBuilder(base);
-    }
-
-    /**
-     * Create connection that will use the {@link HttpClient} using URL of the dataset and
-     * default service names
-     * 
-     * @deprecated Use {@link RDFConnectionRemoteBuilder}.
-     */
-    @Deprecated 
-    public RDFConnectionRemote(HttpClient httpClient, String destination) {
-        this(httpClient,
-             requireNonNull(destination),
-             fusekiDftSrvQuery, 
-             fusekiDftSrvUpdate,
-             fusekiDftSrvGSP);
-    }
-
-    /**
-     * Create connection, using URL of the dataset and default service names
-     * 
-     * @deprecated Use {@link RDFConnectionRemoteBuilder} or an
-     *             {@link RDFConnectionFactory} operation.
-     */
-    @Deprecated 
-    public RDFConnectionRemote(String destination) {
-        this(requireNonNull(destination),
-             fusekiDftSrvQuery, 
-             fusekiDftSrvUpdate,
-             fusekiDftSrvGSP);
-    }
-
-    /**
-     * Create connection, using full URLs for services. Pass a null for "no service
-     * endpoint".
-     * 
-     * @deprecated Use {@link RDFConnectionRemoteBuilder} or an
-     *             {@link RDFConnectionFactory} operation.
-     */
-    @Deprecated 
-    public RDFConnectionRemote(String sQuery, String sUpdate, String sGSP) {
-        this(null, sQuery, sUpdate, sGSP);
-    }
-
-    /**
-     * Create connection, using URL of the dataset and names for the services. Short names
-     * are expanded against the destination. Absolute URIs are left unchanged.
-     * 
-     * @deprecated Use {@link RDFConnectionRemoteBuilder} or an
-     *             {@link RDFConnectionFactory} operation.
-     */
-    @Deprecated
-    public RDFConnectionRemote(String destination, String sQuery, String sUpdate, String sGSP) {
-        this(null, destination, sQuery, sUpdate, sGSP);
-    }
-
-    /**
-     * Create connection, using URL of the dataset and names for the services. Short names
-     * are expanded against the destination. Absolute URIs are left unchanged.
-     * 
-     * @deprecated Use {@link RDFConnectionRemoteBuilder} or an
-     *             {@link RDFConnectionFactory} operation.
-     */
-    @Deprecated
-    public RDFConnectionRemote(HttpClient httpClient, String destination, String sQuery, String sUpdate, String sGSP) {
-        this(null, httpClient, null, destination, sQuery, sUpdate, sGSP,
-            RDFFormat.NQUADS, RDFFormat.NTRIPLES,
-            WebContent.defaultGraphAcceptHeader, WebContent.defaultDatasetAcceptHeader,
-            null,
-            QueryEngineHTTP.defaultSelectHeader(), QueryEngineHTTP.defaultAskHeader(),
-            true, true);
-        Log.warn(this, "** public RDFConnectionRemote constructors will be removed - use RDFConnectionRemoteBuilder **");
     }
 
     // Used by the builder.
@@ -379,14 +305,30 @@ public class RDFConnectionRemote implements RDFConnection {
     protected void doPutPost(String url, String file, Lang lang, boolean replace) {
         File f = new File(file);
         long length = f.length(); 
-        InputStream source = IO.openFile(file);
-        // Charset.
+        
+        // Leave RDF/XML to the XML parse, else it's UTF-8. 
+        String charset = (lang.equals(Lang.RDFXML) ? null : WebContent.charsetUTF8);  
+        // HttpClient Content type.
+        ContentType ct = ContentType.create(lang.getContentType().getContentType(), charset);
+        
         exec(()->{
+            HttpEntity entity = fileToHttpEntity(file, lang);
             if ( replace )
-                HttpOp.execHttpPut(url, lang.getContentType().getContentType(), source, length, httpClient, this.httpContext);
+                HttpOp.execHttpPut(url, entity, httpClient, httpContext);
             else
-                HttpOp.execHttpPost(url, lang.getContentType().getContentType(), source, length, null, null, httpClient, this.httpContext);
+                HttpOp.execHttpPost(url, entity, httpClient, httpContext);
         });
+        
+        // This is non-repeatable so does not work with authentication.  
+//        InputStream source = IO.openFile(file);
+//        exec(()->{
+//            HttpOp.execHttpPost(url, null);
+//            
+//            if ( replace )
+//                HttpOp.execHttpPut(url, lang.getContentType().getContentType(), source, length, httpClient, this.httpContext);
+//            else
+//                HttpOp.execHttpPost(url, lang.getContentType().getContentType(), source, length, null, null, httpClient, this.httpContext);
+//        });
     }
 
     /** Send a model to named graph (or "default" or null for the defaultl graph).
@@ -400,9 +342,9 @@ public class RDFConnectionRemote implements RDFConnection {
         exec(()->{
             Graph graph = model.getGraph();
             if ( replace )
-                HttpOp.execHttpPut(url, graphToHttpEntity(graph), httpClient, this.httpContext);
+                HttpOp.execHttpPut(url, graphToHttpEntity(graph), httpClient, httpContext);
             else
-                HttpOp.execHttpPost(url, graphToHttpEntity(graph), null, null, httpClient, this.httpContext);
+                HttpOp.execHttpPost(url, graphToHttpEntity(graph), null, null, httpClient, httpContext);
         });
     }
 
@@ -471,11 +413,11 @@ public class RDFConnectionRemote implements RDFConnection {
         File f = new File(file);
         long length = f.length();
         exec(()->{
-            InputStream source = IO.openFile(file);
+            HttpEntity entity = fileToHttpEntity(file, lang);
             if ( replace )
-                HttpOp.execHttpPut(destination, lang.getContentType().getContentType(), source, length, httpClient, httpContext);
+                HttpOp.execHttpPut(destination, entity, httpClient, httpContext);
             else
-                HttpOp.execHttpPost(destination, lang.getContentType().getContentType(), source, length, null, null, httpClient, httpContext);
+                HttpOp.execHttpPost(destination, entity, httpClient, httpContext);
         });
     }
 
@@ -533,6 +475,15 @@ public class RDFConnectionRemote implements RDFConnection {
         return ! isOpen;
     }
 
+    protected HttpEntity fileToHttpEntity(String filename, Lang lang) {
+        // Leave RDF/XML to the XML parse, else it's UTF-8. 
+        String charset = (lang.equals(Lang.RDFXML) ? null : WebContent.charsetUTF8);  
+        // HttpClient Content type.
+        ContentType ct = ContentType.create(lang.getContentType().getContentType(), charset);
+        // Repeatable.
+        return new FileEntity(new File(filename), ct);
+    }
+    
     /** Create an HttpEntity for the graph */  
     protected HttpEntity graphToHttpEntity(Graph graph) {
         return graphToHttpEntity(graph, outputTriples);

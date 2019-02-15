@@ -52,89 +52,8 @@ import org.apache.jena.riot.web.HttpNames;
  * It work in conjunction with {@link ActionService#execCommonWorker} to decide where to
  * route requests.
  */
-public abstract class ServiceRouter extends ActionService {
-    protected abstract boolean allowQuery(HttpAction action);
-
-    protected abstract boolean allowUpdate(HttpAction action);
-
-    protected abstract boolean allowGSP_R(HttpAction action);
-
-    protected abstract boolean allowGSP_RW(HttpAction action);
-
-    protected abstract boolean allowQuads_R(HttpAction action);
-
-    protected abstract boolean allowQuads_RW(HttpAction action);
-
-//    public static class ReadOnly extends ServiceRouterServlet {
-//        public ReadOnly() { super() ; }
-//        @Override protected boolean allowQuery(HttpAction action) { return true ; }
-//        @Override protected boolean allowUpdate(HttpAction action) { return false ; }
-//        @Override protected boolean allowGSP_R(HttpAction action) { return true ; }
-//        @Override protected boolean allowGSP_RW(HttpAction action) { return false ; }
-//        @Override protected boolean allowQuads_R(HttpAction action) { return true ; }
-//        @Override protected boolean allowQuads_RW(HttpAction action) { return false ; }
-//    }
-//
-//    public static class ReadWrite extends ServiceRouterServlet {
-//        public ReadWrite() { super() ; }
-//        @Override protected boolean allowQuery(HttpAction action) { return true ; }
-//        @Override protected boolean allowUpdate(HttpAction action) { return true ; }
-//        @Override protected boolean allowGSP_R(HttpAction action) { return true ; }
-//        @Override protected boolean allowGSP_RW(HttpAction action) { return true ; }
-//        @Override protected boolean allowQuads_R(HttpAction action) { return true ; }
-//        @Override protected boolean allowQuads_RW(HttpAction action) { return true ; }
-//    }
-
-    public static class AccessByConfig extends ServiceRouter {
-        public AccessByConfig() {
-            super();
-        }
-
-        @Override
-        protected boolean allowQuery(HttpAction action) {
-            return isEnabled(action, Operation.Query);
-        }
-
-        @Override
-        protected boolean allowUpdate(HttpAction action) {
-            return isEnabled(action, Operation.Update);
-        }
-
-        @Override
-        protected boolean allowGSP_R(HttpAction action) {
-            return isEnabled(action, Operation.GSP_R) || isEnabled(action, Operation.GSP_RW);
-        }
-
-        @Override
-        protected boolean allowGSP_RW(HttpAction action) {
-            return isEnabled(action, Operation.GSP_RW);
-        }
-
-        @Override
-        protected boolean allowQuads_R(HttpAction action) {
-            return isEnabled(action, Operation.Quads_R) || isEnabled(action, Operation.Quads_RW);
-        }
-
-        @Override
-        protected boolean allowQuads_RW(HttpAction action) {
-            return isEnabled(action, Operation.Quads_RW);
-        }
-
-        /**
-         * Test whether there is a configuration that allows this action as the operation
-         * given. Ignores the operation in the action which is set due to parsing - it
-         * might be "quads" which is the generic operation when just the dataset is
-         * specified.
-         */
-        private boolean isEnabled(HttpAction action, Operation operation) {
-            // Disregard the operation name of the action
-            DataService dSrv = action.getDataService();
-            if ( dSrv == null )
-                return false;
-            return !dSrv.getEndpoints(operation).isEmpty();
-        }
-    }
-
+public class ServiceRouter extends ActionService {
+    
     public ServiceRouter() {
         super();
     }
@@ -165,14 +84,19 @@ public abstract class ServiceRouter extends ActionService {
      * {@link Fuseki#GSP_DIRECT_NAMING}.
      */
     @Override
-    protected Operation chooseOperation(HttpAction action, DataService dataService, String serviceName) {
-        // Check enabled happens here. 
-        // Must be enabled by configuration to be in the lookup.
-        Endpoint ep = dataService.getEndpoint(serviceName);
+    protected Operation chooseOperation(HttpAction action, DataService dataService, String endpointName) {
+        // Default implementation in ActionService:
+//        Endpoint ep = dataService.getEndpoint(endpointName);
+//        Operation operation = ep.getOperation();
+//        action.setEndpoint(ep);
+        
+        Endpoint ep = dataService.getEndpoint(endpointName);
         if ( ep != null ) {
             Operation operation = ep.getOperation();
-            if ( operation != null ) {
-                // If GSP, no params means Quads operation.
+            action.setEndpoint(ep);
+            if ( operation != null ) { 
+                // Can this be null?
+                // If a GSP operation, then no params means Quads operation.
                 if ( operation.equals(Operation.GSP_R) || operation.equals(Operation.GSP_RW) ) {
                     // Look for special case. Quads on the GSP service endpoint.
                     boolean hasParamGraph = action.request.getParameter(HttpNames.paramGraph) != null;
@@ -186,12 +110,14 @@ public abstract class ServiceRouter extends ActionService {
                 }
                 return operation;
             }
+            System.err.printf("Notice: endpoint %s but no operation", endpointName);
         }
 
+        // No endpoint.
         // There is a trailing part - unrecognized service name ==> GSP direct naming.
         if ( !Fuseki.GSP_DIRECT_NAMING )
             ServletOps.errorNotFound(
-                "Not found: dataset='" + printName(action.getDataAccessPoint().getName()) + "' service='" + printName(serviceName) + "'");
+                "Not found: dataset='" + printName(action.getDataAccessPoint().getName()) + "' endpoint='" + printName(endpointName) + "'");
         // GSP Direct naming - the servlets handle direct and indirct naming.
         return gspOperation(action, action.request);
     }
@@ -207,9 +133,8 @@ public abstract class ServiceRouter extends ActionService {
      * <li>Content type</li>
      * </ul>
      */
-    @Override
+    @Override final
     protected Operation chooseOperation(HttpAction action, DataService dataService) {
-        Endpoint ep = dataService.getEndpoint("");
         HttpServletRequest request = action.getRequest();
 
         // ---- Dispatch based on HttpParams : Query, Update, GSP.
@@ -351,8 +276,8 @@ public abstract class ServiceRouter extends ActionService {
         boolean isHEAD = method.equals(HttpNames.METHOD_HEAD);
         return isGET || isHEAD;
     }
-
-    private String printName(String x) {
+    
+    private static String printName(String x) {
         if ( x.startsWith("/") )
             return x.substring(1);
         return x;
@@ -387,5 +312,49 @@ public abstract class ServiceRouter extends ActionService {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
         doCommon(request, response);
+    }
+
+    // Check whether an operation is allowed by the setup.
+    // This is used when the operation/endpoint is not named directly
+    // e.g. http://host:port/dataset?query= 
+    //   is implicitly a call on 
+    // http://host:port/dataset/sparql?query=
+    
+    protected boolean allowQuery(HttpAction action) {
+        return isEnabled(action, Operation.Query);
+    }
+
+    protected boolean allowUpdate(HttpAction action) {
+        return isEnabled(action, Operation.Update);
+    }
+
+    protected boolean allowGSP_R(HttpAction action) {
+        return isEnabled(action, Operation.GSP_R) || isEnabled(action, Operation.GSP_RW);
+    }
+
+    protected boolean allowGSP_RW(HttpAction action) {
+        return isEnabled(action, Operation.GSP_RW);
+    }
+
+    protected boolean allowQuads_R(HttpAction action) {
+        return isEnabled(action, Operation.Quads_R) || isEnabled(action, Operation.Quads_RW);
+    }
+
+    protected boolean allowQuads_RW(HttpAction action) {
+        return isEnabled(action, Operation.Quads_RW);
+    }
+
+    /**
+     * Test whether there is a configuration that allows this action as the operation
+     * given. Ignores the operation in the action which is set due to parsing - it
+     * might be "quads" which is the generic operation when just the dataset is
+     * specified.
+     */
+    private boolean isEnabled(HttpAction action, Operation operation) {
+        // Disregard the operation name of the action.
+        DataService dSrv = action.getDataService();
+        if ( dSrv == null )
+            return false;
+        return !dSrv.getEndpoints(operation).isEmpty();
     }
 }

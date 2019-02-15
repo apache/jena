@@ -28,7 +28,6 @@ import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker ;
-import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.graph.GraphUnionRead ;
 import org.apache.jena.sparql.graph.GraphZero;
 
@@ -51,7 +50,7 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
     private Graph defaultGraph ;
     private final Transactional txn;
     private final TxnDataset2Graph txnDsg2Graph;
-    private static GraphMaker dftGraphMaker = (name) -> GraphFactory.createDefaultGraph();
+    private static GraphMaker dftGraphMaker = DatasetGraphFactory.graphMakerMem;
 
     /**
      * Create a new {@code DatasetGraph} that copies the dataset structure of default

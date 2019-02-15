@@ -35,7 +35,7 @@ import org.apache.jena.fuseki.server.FusekiInitialConfig ;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.fuseki.webapp.FusekiEnv;
 import org.apache.jena.fuseki.webapp.FusekiServerListener;
-import org.apache.jena.fuseki.webapp.FusekiSystem;
+import org.apache.jena.fuseki.webapp.FusekiWebapp;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.riot.Lang ;
@@ -126,7 +126,7 @@ public class FusekiCmd {
             add(argFile, "--file=FILE",
                 "Create an in-memory, non-persistent dataset for the server, initialised with the contents of the file") ;
             add(argTDB2mode, "--tdb2",
-                "Create command line persistent datasets with TDB2");
+                "Use TDB2 for command line persistent datasets (default is TDB1)");
             add(argTDB, "--loc=DIR",
                 "Use an existing TDB database (or create if does not exist)") ;
             add(argMemTDB, "--memTDB",
@@ -224,7 +224,7 @@ public class FusekiCmd {
             if ( ! cmdlineConfigPresent && cmdLineConfig.fusekiCmdLineConfigFile == null ) {
                 // Turn command line argument into an absolute file name.
                 FusekiEnv.setEnvironment();
-                Path cfg = FusekiEnv.FUSEKI_BASE.resolve(FusekiSystem.DFT_CONFIG).toAbsolutePath() ;
+                Path cfg = FusekiEnv.FUSEKI_BASE.resolve(FusekiWebapp.DFT_CONFIG).toAbsolutePath() ;
                 if ( Files.exists(cfg) )
                     cmdLineConfig.fusekiServerConfigFile = cfg.toString() ;
             }
@@ -368,9 +368,9 @@ public class FusekiCmd {
     /** Configure and run a Fuseki server - this function does not return except for error starting up*/  
     public static void runFuseki(FusekiInitialConfig serverConfig, JettyServerConfig jettyConfig) {
         FusekiServerListener.initialSetup = serverConfig ;
-        JettyFuseki.initializeServer(jettyConfig) ;
-        JettyFuseki.instance.start() ;
-        JettyFuseki.instance.join() ;
+        JettyFusekiWebapp.initializeServer(jettyConfig) ;
+        JettyFusekiWebapp.instance.start() ;
+        JettyFusekiWebapp.instance.join() ;
     }
     
 

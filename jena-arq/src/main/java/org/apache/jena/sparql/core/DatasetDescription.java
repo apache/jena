@@ -106,4 +106,9 @@ public class DatasetDescription
 
     /** Create a DatasetGraph from the description - reads URLs into an in-memory DatasetGraph */ 
     public DatasetGraph createDatasetGraph() { return DatasetUtils.createDatasetGraph(this) ; }
+    
+    @Override
+    public String toString() {
+        return "DatasetDescription : "+defaultGraphURIs+" : "+namedGraphURIs; 
+    }
 }
