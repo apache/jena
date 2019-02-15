@@ -1,0 +1,51 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+
+<#service_tdb> rdf:type fuseki:Service ;
+    rdfs:label                      "Selection of TDB2 graphs" ;
+    fuseki:name                     "ds2" ;
+    fuseki:serviceQuery             "query" ;
+    fuseki:serviceQuery             "sparql" ;
+    fuseki:serviceUpdate            "update" ;
+    fuseki:serviceUpload            "upload" ;
+    fuseki:serviceReadWriteGraphStore      "data" ;
+    # A separate read-only graph store endpoint:
+    fuseki:serviceReadGraphStore       "get" ;
+    fuseki:dataset           <#dataset> ;
+    .
+
+
+<#dataset> rdf:type      ja:RDFDataset ;
+    ja:defaultGraph <#graph> ;
+    ja:namedGraph [
+          ja:graphName <https://example/ng1> ;
+          ja:graph <#graph2>
+      ];
+    ja:namedGraph [
+          ja:graphName <https://example/ng2> ;
+          ja:graph <#graph3>
+      ];
+    . 
+
+## Graphs out of DB2.
+
+<#graph> rdf:type tdb2:GraphTDB2 ;
+    tdb2:graphName "urn:x-arq:UnionGraph" ;
+    tdb2:location "DB2" ;
+    .
+
+<#graph2>  rdf:type tdb2:GraphTDB2 ;
+    tdb2:graphName "https://example/ng1" ;
+    tdb2:location "DB2" ;
+    .
+<#graph3>  rdf:type tdb2:GraphTDB2 ;
+    tdb2:graphName "https://example/ng" ;
+    tdb2:location "DB2" ;
+    .
