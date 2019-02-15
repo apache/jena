@@ -26,7 +26,7 @@ import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.web.HttpSC;
 
-public class CustomService extends ActionREST {
+public class CustomTestService extends ActionREST {
 
     // do* -- the operations to accept
     

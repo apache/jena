@@ -55,7 +55,7 @@ import org.apache.jena.riot.web.HttpNames;
 public class ServiceRouter extends ActionService {
     
     public ServiceRouter() {
-        super();
+        super((action, operation)->action.getServiceDispatchRegistry().findHandler(operation));
     }
 
     // These calls should not happen because ActionService calls chooseOperation(),

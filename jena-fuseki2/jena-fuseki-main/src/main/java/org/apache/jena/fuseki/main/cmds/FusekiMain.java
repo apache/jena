@@ -168,9 +168,8 @@ public class FusekiMain extends CmdARQ {
             add(argPasswdFile, "--passwd=FILE", "Password file");
             // put in the configuration file
 //            add(argRealm, "--realm=REALM", "Realm name");
-            
-//            add(argWithPing,    "--ping",   "Enable /$/ping");
-//            add(argWithStats,   "--stats",  "Enable /$/stats");
+           add(argWithPing,    "--ping",   "Enable /$/ping");
+           add(argWithStats,   "--stats",  "Enable /$/stats");
 
             super.modVersion.addClass(Fuseki.class);
         }

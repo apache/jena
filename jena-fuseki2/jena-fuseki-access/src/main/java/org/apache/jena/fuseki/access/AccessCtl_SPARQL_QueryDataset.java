@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
+import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.SPARQL_QueryDataset;
@@ -44,27 +45,28 @@ public class AccessCtl_SPARQL_QueryDataset extends SPARQL_QueryDataset {
     }
 
     private static boolean ALLOW_FROM = true; 
-    
+
     @Override
     protected Collection<String> customParams() {
         // The additional ?user.
         return Collections.singletonList("user");
     }
-    
+
     /** Decide the dataset - this modifies the query
      *  If the query has a dataset description.
      */
     @Override
-    protected DatasetGraph decideDataset(HttpAction action, Query query, String queryStringLog) {
+    protected Pair<DatasetGraph, Query> decideDataset(HttpAction action, Query query, String queryStringLog) {
         DatasetGraph dsg = action.getActiveDSG();
         if ( ! DataAccessCtl.isAccessControlled(dsg) )
             return super.decideDataset(action, query, queryStringLog);
-        
+
         DatasetDescription dsDesc0 = getDatasetDescription(action, query);
         SecurityContext sCxt = DataAccessLib.getSecurityContext(action, dsg, requestUser);
-        return dynamicDataset(action, query, dsg, dsDesc0, sCxt);
+        DatasetGraph dsg2 = dynamicDataset(action, query, dsg, dsDesc0, sCxt);
+        return Pair.create(dsg2,  query);
     }
-        
+
     private DatasetGraph dynamicDataset(HttpAction action, Query query, DatasetGraph dsg0, DatasetDescription dsDesc0, SecurityContext sCxt) {
         if ( dsDesc0 == null )
             return dsg0;

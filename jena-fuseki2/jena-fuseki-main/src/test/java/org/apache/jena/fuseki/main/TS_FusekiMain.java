@@ -32,20 +32,14 @@ import org.junit.runners.Suite.SuiteClasses ;
   , TestFusekiTestServer.class
   , TestFusekiTestAuth.class
   , TestFusekiCustomOperation.class
+  , TestFusekiMainCmd.class
 })
-public class TS_EmbeddedFuseki {
+public class TS_FusekiMain {
     @BeforeClass public static void setupForFusekiServer() {
         LogCtl.setLevel(Fuseki.serverLogName,        "WARN");
         LogCtl.setLevel(Fuseki.actionLogName,        "WARN");
         LogCtl.setLevel(Fuseki.requestLogName,       "WARN");
         LogCtl.setLevel(Fuseki.adminLogName,         "WARN");
         LogCtl.setLevel("org.eclipse.jetty",         "WARN");
-        
-        // Shouldn't see these in the embedded server.
-//        LogCtl.setLevel("org.apache.shiro",          "WARN") ;
-//        LogCtl.setLevel(Fuseki.configLogName,        "WARN");
-
-//        LogCtl.setLevel(Fuseki.builderLogName,       "WARN");
-//        LogCtl.setLevel(Fuseki.servletRequestLogName,"WARN");
     }
 }

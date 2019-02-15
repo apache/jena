@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.json.JsonObject;
+import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.system.FusekiNetLib;
@@ -279,8 +280,13 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         // Assumes finished whole thing by end of sendResult.
         try {
             action.beginRead() ;
-            DatasetGraph dataset = decideDataset(action, query, queryStringLog) ;
-            try ( QueryExecution qExec = createQueryExecution(action, query, dataset) ; ) {
+            Pair<DatasetGraph, Query> p = decideDataset(action, query, queryStringLog) ;
+            DatasetGraph dataset = p.getLeft();
+            Query q = p.getRight();
+            if ( q == null )
+                q = query;
+            
+            try ( QueryExecution qExec = createQueryExecution(action, q, dataset) ; ) {
                 SPARQLResult result = executeQuery(action, qExec, query, queryStringLog) ;
                 // Deals with exceptions itself.
                 sendResults(action, result, query.getPrologue()) ;
@@ -390,9 +396,9 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
      * @param action
      * @param query  Query - this may be modified to remove a DatasetDescription.
      * @param queryStringLog
-     * @return {@link Dataset}
+     * @return Pair of {@link Dataset} and {@link Query}. 
      */
-    protected abstract DatasetGraph decideDataset(HttpAction action, Query query, String queryStringLog) ;
+    protected abstract Pair<DatasetGraph, Query> decideDataset(HttpAction action, Query query, String queryStringLog) ;
 
     /** Ship the results to the remote caller.
      * @param action
