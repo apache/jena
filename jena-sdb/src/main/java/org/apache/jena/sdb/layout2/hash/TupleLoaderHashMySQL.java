@@ -19,10 +19,11 @@
 package org.apache.jena.sdb.layout2.hash;
 
 import org.apache.jena.sdb.layout2.TableDescNodes ;
+import org.apache.jena.sdb.layout2.TupleLoaderDirect;
 import org.apache.jena.sdb.sql.SDBConnection ;
 import org.apache.jena.sdb.store.TableDesc ;
 
-public class TupleLoaderHashMySQL extends TupleLoaderHashBase {
+public class TupleLoaderHashMySQL extends TupleLoaderHashBase implements TupleLoaderDirect {
 
 	public TupleLoaderHashMySQL(SDBConnection connection, TableDesc tableDesc,
 			int chunkSize) {
@@ -69,6 +70,34 @@ public class TupleLoaderHashMySQL extends TupleLoaderHashBase {
 		}
 		stmt.append("\nFROM ").append(getTupleLoader());
 		
+		return stmt.toString();
+	}
+
+	@Override
+	public String getDirectInsertNodes() {
+		StringBuilder stmt = new StringBuilder();
+
+		stmt.append("INSERT IGNORE INTO Nodes VALUES (");
+		for (int i = 0; i < getNodeColTypes().length; i++) {
+			if (i != 0) stmt.append(" , ");
+			stmt.append("?");
+		}
+		stmt.append(" )");
+
+		return stmt.toString();
+	}
+
+	@Override
+	public String getDirectInsertTuples() {
+		StringBuilder stmt = new StringBuilder();
+
+		stmt.append("INSERT IGNORE INTO ").append(this.getTableName()).append(" VALUES (");
+		for (int i = 0; i < this.getTableWidth(); i++) {
+			if (i != 0) stmt.append(" , ");
+			stmt.append("?");
+		}
+		stmt.append(" )");
+
 		return stmt.toString();
 	}
 }
