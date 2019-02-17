@@ -22,8 +22,10 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import org.apache.jena.atlas.lib.DateTimeUtils;
+import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.graph.Node;
 
 //import org.apache.commons.logging.*;
@@ -33,6 +35,7 @@ import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.function.FunctionBase0;
+import org.apache.jena.sparql.function.FunctionEnv;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 
@@ -46,19 +49,24 @@ public class nowtz extends FunctionBase0
 
     @Override
     public NodeValue exec() {
+        throw new InternalErrorException("nowtz: exec() Should not have been called");
+    }
+
+    @Override
+    public NodeValue exec(List<NodeValue> args, FunctionEnv functionEnv) {
         Context cxt = functionEnv.getContext();
         if ( cxt.isDefined(symNowTz) ) {
             NodeValue nvx = cxt.get(symNowTz);
             return nvx; 
         }
-        NodeValue nvx = execAdjust();
+        NodeValue nvx = execAdjust(functionEnv);
 //        String formattedDate = fromQueryTime(cxt);
 //        NodeValue nvx = NodeValue.makeNode(formattedDate, null, XSD.dateTime.getURI());
         cxt.set(symNowTz, nvx);
         return nvx;
     }
     
-    private NodeValue execAdjust() {
+    private NodeValue execAdjust(FunctionEnv functionEnv) {
         // NOW is UTC in Jena to make the same whoever is looking.
         // For presentation reasons, you may want it in the (server) local timezone. 
         // Calculate:
@@ -66,7 +74,7 @@ public class nowtz extends FunctionBase0
         //   fn:adjust-dateTime-to-timezone(NOW(), afn:timezone())
         
         // Query time, in UTC. 
-        NodeValue nv = SystemVar.get(ARQConstants.sysCurrentTime, super.functionEnv);
+        NodeValue nv = SystemVar.get(ARQConstants.sysCurrentTime, functionEnv);
         // Timezone as xsd:dayTimeDuration.
         NodeValue nvTz = XSDFuncOp.localTimezone();
         // Comes out as "Z", not "+00:00" because of cal.toXMLFormat() in NodeValue.makeDateTime
