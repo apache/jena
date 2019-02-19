@@ -72,9 +72,13 @@ public abstract class QueryCompiler2 extends QueryCompilerMain
         // (distinct ....
         op = rewriteDistinct(op, request) ;
 
+        // Order
+        op = rewriteOrder(op, request);
+
         // Look for (slice ...) or (slice (project ...))
         op = rewriteLimitOffset(op, request) ;
-        
+
+
         return op ;
     }
 

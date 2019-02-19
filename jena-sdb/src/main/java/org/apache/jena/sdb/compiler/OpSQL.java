@@ -19,7 +19,6 @@
 package org.apache.jena.sdb.compiler;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.query.SortCondition;
 import org.apache.jena.sdb.core.SDBRequest ;
 import org.apache.jena.sdb.core.sqlnode.SqlNode ;
 import org.apache.jena.sdb.store.SQLBridge ;
@@ -33,15 +32,12 @@ import org.apache.jena.sparql.engine.binding.BindingRoot ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 
-import java.util.List;
-
 public class OpSQL extends OpExt
 {
     private SqlNode sqlNode ;
     private Op originalOp ;
     private SQLBridge bridge = null ; 
     private SDBRequest request ;
-    private List<SortCondition> sortConditions;
     
     public OpSQL(SqlNode sqlNode, Op original, SDBRequest request)
     {
@@ -124,9 +120,6 @@ public class OpSQL extends OpExt
     public SQLBridge getBridge()            { return bridge ; }
 
     public void setBridge(SQLBridge bridge) { this.bridge = bridge ; }
-
-    public List<SortCondition> getSortConditions() { return this.sortConditions; }
-    public void setSortConditions(List<SortCondition> sortConditions) { this.sortConditions = sortConditions; }
 
     @Override
     public void outputArgs(IndentedWriter out, SerializationContext sCxt)

@@ -97,6 +97,12 @@ public class SqlSelectBlock extends SqlNodeBase1
         return block ;
     }
 
+    static public SqlNode order(SDBRequest request, SqlNode sqlNode, List<SortCondition> conditions) {
+        SqlSelectBlock block = blockNoView(request, sqlNode) ;
+        block.setSortConditions(conditions);
+        return block;
+    }
+
     static public SqlNode slice(SDBRequest request, SqlNode sqlNode, long start, long length)
     {
         SqlSelectBlock block = blockWithView(request, sqlNode) ;

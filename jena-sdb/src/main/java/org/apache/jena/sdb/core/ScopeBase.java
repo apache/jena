@@ -18,8 +18,6 @@
 
 package org.apache.jena.sdb.core;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -54,7 +52,7 @@ public class ScopeBase implements Scope
     @Override
     public Set<Var> getVars()
     {
-        Set<Var> x = new HashSet<Var>() ;
+        Set<Var> x = new LinkedHashSet<Var>() ;
         x.addAll(frame.keySet()) ;
         if ( parent != null )
             x.addAll(parent.getVars()) ;
