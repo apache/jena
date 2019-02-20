@@ -26,37 +26,49 @@ import org.apache.jena.atlas.lib.BitsLong;
  * Uses java's 64 bit long format (which is IEEE754 binary64) except that 2 bits are taken
  * from the exponent. This keeps the precision but reduces the range.
  * <p>
- * <b>Java
- * (<a href="https://en.wikipedia.org/wiki/Double-precision_floating-point_format">IEEE
- * 754 binary64</a>)</b>
+ * <b> 
+ * <a href="https://en.wikipedia.org/wiki/Double-precision_floating-point_format">IEEE 754 binary64</a>
+ * </b>
  * 
  * <pre>
- * bit 63 : sign bit
+ * bit  63    : sign bit
  * bits 52-62 : exponent, 11 bits, the power of 2, bias -1023.
  * bits 0-51  : mantissa (significand) 52 bits (the leading one is not stored).
  * 
  * Exponents are 11 bits, with values -1022 to +1023 held as 1 to 2046 (11 bits, bias -1023)
+ * Exponents 0x000 and 0x7ff have a special meaning: 
  *    0x000 is signed zero.
- *    0x7FF is +/- infinity.
+ *    0x7FF is +/- infinity when the mantissa is zero
+ *    0x7FF is NaN if the the mantissa is not zero
+ * The canonical NaN is 0x7FF8000000000000L, i.e. mantissa 0x8000...
+ * The different NaN values.
  * </pre>
  * 
- * for a maximum value of 1.797693e+308 = (2-2^-52)*2^1023 and smallest denormlized of
+ * The different NaN bit patterns are not distinguishable in Java 
+ * by floating point operations, only by {@link Double#doubleToRawLongBits}.
+ * 
+ * The maximum value is 1.797693e+308 = (2-2^-52)*2^1023 and smallest denormalized of
  * (1-2^-52)*2^-1022 = 2.225...e-308.
  * <p>
  * <b>DoubleNode62</b>
  * <p>
  * In a 62 bit double:
- * 
  * <pre>
- * bit 63 : pointer bit.
- * bit 62 : double type bit.
- * bit 61 : sign bit 
+ * <i>NodeId</i> 
+ * bit 63    : pointer or value bit.
+ * bit 62    : double type bit
+ * 
+ * <i>Double62</i>
+ * bit  61    : sign bit 
  * bits 52-60 : exponent, 9 bits, the power of 2, bias -255
  * bits 0-51  : mantissa (significand) 52 bits (the leading one is not stored).
  * 
  * Exponents are 9 bits, with values -254 to 255, held as 1 to 512 (9 bits, bias -255)
+ * Exponents 0x000 and 0x1ff have a special meaning: 
  *    0x000 is signed zero.
- *    0x1FF is +/- infinity.
+ *    0x1FF is +/- infinity if the mantissa is zero
+ *    0x1FF is NaN if the the mantissa is not zero
+ * The canonical NaN is 0x1FF8000000000000L, i.e. mantissa 0x8000...
  * </pre>
  * 
  * for a maximum value of (2-2^-52)*2^255 = 1.157921e+77 and smallest denormlized of
@@ -66,7 +78,7 @@ import org.apache.jena.atlas.lib.BitsLong;
  * <p>
  * "No encoding" is 0xFF00_0000_0000_0000L which would otherwise be the smallest (most negative) denormalized value: 
  *  -3.5336941295567687E72
- * <p>All unencodeable numbers will endup in the node table in full lexical form.  
+ * <p>All unencodeable numbers will end up in the node table in full lexical form.  
  */  
 public class DoubleNode62 {
     /**
@@ -80,7 +92,8 @@ public class DoubleNode62 {
      * The top two bits are zero if packing was possible.
      */
     public static long pack(double v) {
-        long x = Double.doubleToRawLongBits(v);
+        // Not "raw" , so NaNs end up as the same bit pattern when packed. 
+        long x = Double.doubleToLongBits(v);
         long sign = BitsLong.unpack(x, 63, 64);
         long exp11 = BitsLong.unpack(x, 52, 63);
         long exp9 = encode11to9(exp11);

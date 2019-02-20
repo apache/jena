@@ -257,6 +257,24 @@ public class TestNodeIdInline
     @Test public void nodeId_float_5()
     { test("'1.1E9'^^xsd:float") ; }
 
+    @Test public void nodeId_float_6()
+    { test("'-1'^^xsd:float", "'-1.0'^^xsd:float") ; }
+
+    @Test public void nodeId_float_7()
+    { test("'-1.0'^^xsd:float") ; }
+
+    @Test public void nodeId_float_8()
+    { test("'-0.0'^^xsd:float") ; }
+
+    @Test public void nodeId_float_9()
+    { test("'INF'^^xsd:float") ; }
+
+    @Test public void nodeId_float_10()
+    { test("'-INF'^^xsd:float") ; }
+
+    @Test public void nodeId_float_11()
+    { test("'NaN'^^xsd:float") ; }
+
     private void test(String x) { test(x, x) ; }
     
     private void test(String x, String expected) {

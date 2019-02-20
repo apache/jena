@@ -20,6 +20,7 @@ package org.apache.jena.tdb2.store;
 
 import org.apache.jena.dboe.base.block.FileMode;
 import org.apache.jena.tdb2.store.value.TestDoubleNode62;
+import org.apache.jena.tdb2.store.value.TestFloatNode;
 import org.apache.jena.tdb2.store.value.TestNodeIdInline;
 import org.apache.jena.tdb2.sys.SystemTDB;
 import org.apache.jena.tdb2.sys.TestOps;
@@ -33,6 +34,7 @@ import org.junit.runners.Suite ;
     TestNodeId.class
     , TestNodeIdInline.class
     , TestDoubleNode62.class
+    , TestFloatNode.class
     , TestTripleTable.class
     , TestGraphTDB.class
     , TestGraphNamedTDB.class
