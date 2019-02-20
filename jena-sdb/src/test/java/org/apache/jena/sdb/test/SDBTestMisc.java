@@ -32,7 +32,9 @@ import org.junit.runners.Suite;
     TestRegex.class,
     TestPrefixMappingSDB.class,
     TestRegistry.class,
-    TestTransformOptimizeSubqueryFragments.class
+    TestTransformOptimizeSubqueryFragments.class,
+    TestScope.class,
+    TestSQL.class
 } )
 
 public class SDBTestMisc

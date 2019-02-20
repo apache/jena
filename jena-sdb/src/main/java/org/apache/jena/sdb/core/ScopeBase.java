@@ -18,8 +18,8 @@
 
 package org.apache.jena.sdb.core;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 public class ScopeBase implements Scope
 {
-    private Map<Var, SqlColumn> frame = new HashMap<Var, SqlColumn>() ;
+    private Map<Var, SqlColumn> frame = new LinkedHashMap<Var, SqlColumn>() ;
     private Scope parent = null ;
     
     public ScopeBase() { parent = null ; }
@@ -52,7 +52,7 @@ public class ScopeBase implements Scope
     @Override
     public Set<Var> getVars()
     {
-        Set<Var> x = new HashSet<Var>() ;
+        Set<Var> x = new LinkedHashSet<Var>() ;
         x.addAll(frame.keySet()) ;
         if ( parent != null )
             x.addAll(parent.getVars()) ;
@@ -66,7 +66,7 @@ public class ScopeBase implements Scope
     @Override
     public Set<ScopeEntry> findScopes()
     {
-        Set<ScopeEntry> x = new HashSet<ScopeEntry>() ;
+        Set<ScopeEntry> x = new LinkedHashSet<>() ;
         for ( Var v : frame.keySet() )
         {
             ScopeEntry e = findScopeForVar(v) ;

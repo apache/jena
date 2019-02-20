@@ -124,6 +124,15 @@ public class SDBCompile
             request.LimitOffsetTranslation = true ;
             request.DistinctTranslation = true ;
         }
+
+        if (context.isTrue(SDB.optimizeOrderClause))
+        {
+            request.OrderTranslation = true;
+        }
+        else
+        {
+            request.OrderTranslation = false;
+        }
         
         QueryCompiler queryCompiler = store.getQueryCompilerFactory().createQueryCompiler(request) ;
         Op op2 = queryCompiler.compile(op) ;
