@@ -303,7 +303,9 @@ public abstract class QueryCompilerMain implements QueryCompiler
             if (orderInSQL) {
                 OpSQL opSQL = (OpSQL) subOp;
                 SqlNode node = SqlSelectBlock.order(request, opSQL.getSqlNode(), opOrder.getConditions());
-                return new OpSQL(node, opSQL, request) ;
+                OpSQL x = new OpSQL(node, opSQL, request) ;
+                x.setBridge(opSQL.getBridge()) ;
+                return x;
             }
 
             return super.transform(opOrder, subOp) ;
