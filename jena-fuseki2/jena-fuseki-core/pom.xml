@@ -90,6 +90,16 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- micrometer -->
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-registry-prometheus</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>

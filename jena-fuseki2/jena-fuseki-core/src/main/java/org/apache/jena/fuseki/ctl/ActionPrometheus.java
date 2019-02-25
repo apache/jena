@@ -17,23 +17,18 @@
  */
 package org.apache.jena.fuseki.ctl;
 
+import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
+import io.micrometer.prometheus.PrometheusConfig;
+import io.micrometer.prometheus.PrometheusMeterRegistry;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.Properties;
-import java.util.stream.Collectors;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.jena.fuseki.server.Counter;
-import org.apache.jena.fuseki.server.CounterName;
-import org.apache.jena.fuseki.server.CounterSet;
-import org.apache.jena.fuseki.server.DataAccessPoint;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.metrics.FusekiRequestsMetrics;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
-import org.apache.jena.fuseki.server.DataService;
-import org.apache.jena.fuseki.server.Endpoint;
-import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
 
@@ -42,6 +37,17 @@ import static org.apache.jena.riot.WebContent.contentTypeJSON;
 
 public class ActionPrometheus extends ActionCtl {
 
+    private PrometheusMeterRegistry meterRegistry;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        DataAccessPointRegistry dataAccessPointRegistry = (DataAccessPointRegistry)config.getServletContext().getAttribute(Fuseki.attrNameRegistry) ;
+
+        meterRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+        new JvmMemoryMetrics().bindTo( meterRegistry );
+        new FusekiRequestsMetrics(dataAccessPointRegistry).bindTo( meterRegistry );
+    }
+
     @Override
     final protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         doCommon(request, response);
@@ -49,58 +55,14 @@ public class ActionPrometheus extends ActionCtl {
 
     @Override
     protected void perform(HttpAction action) {
-        try {
-            DataAccessPointRegistry dataAccessPointRegistry = action.getDataAccessPointRegistry();
+        try (ServletOutputStream out = action.response.getOutputStream()) {
+            action.response.setContentType( contentTypeJSON );
+            action.response.setCharacterEncoding( charsetUTF8 );
 
-            try (ServletOutputStream out = action.response.getOutputStream()) {
-                action.response.setContentType( contentTypeJSON );
-                action.response.setCharacterEncoding( charsetUTF8 );
-
-                dataAccessPointRegistry
-                        .forEach( (name, access) -> writeMetricForDataAccessPoint( access, out ) );
-            }
+            out.write( meterRegistry.scrape().getBytes() );
         } catch (IOException e) {
-            ServletOps.errorOccurred(e);
-        }
-        finally {
-            action.endRead();
+            ServletOps.errorOccurred( e );
         }
     }
 
-    private void writeMetricForDataAccessPoint(DataAccessPoint access, OutputStream out) {
-        DataService dataService = access.getDataService();
-        for (Operation operation : dataService.getOperations()) {
-            List<Endpoint> endpoints = dataService.getEndpoints( operation );
-            for (Endpoint endpoint : endpoints) {
-                CounterSet counters = endpoint.getCounters();
-                for (CounterName counterName : counters.counters()) {
-                    Properties labels = new Properties();
-                    labels.setProperty( "dataset", access.getName() );
-                    labels.setProperty( "endpoint", endpoint.getName() );
-                    labels.setProperty( "operation", operation.getName());
-                    labels.setProperty( "description", operation.getDescription());
-
-                    Counter counter = counters.get( counterName );
-
-                    writeMetric( "fuseki." + counterName.getFullName(),
-                            labels, out, counter.value() );
-                }
-            }
-        }
-    }
-
-    private void writeMetric(String metricName, Properties labels, OutputStream out, long value) {
-        try {
-            out.write(
-                    String.format("%s{%s} %d%n",
-                            StringUtils.replaceChars(metricName, '.', '_'),
-                            labels.entrySet().stream()
-                                    .map( e -> e.getKey() + "=\"" + e.getValue() + "\"" )
-                                    .collect( Collectors.joining( ", " ) ),
-                            value
-                    ).getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException( e );
-        }
-    }
 }

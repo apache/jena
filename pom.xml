@@ -57,8 +57,8 @@
     <ver.libthrift>0.10.0</ver.libthrift>
 
     <!-- jsonld-java depends on depends on Jackson core
-         artifacts so the versions must align. Consult jsonld-java's 
-         POM for the correct dependency versions 
+         artifacts so the versions must align. Consult jsonld-java's
+         POM for the correct dependency versions
     -->
     <ver.jsonldjava>0.12.1</ver.jsonldjava>
     <ver.jackson>2.9.6</ver.jackson>
@@ -92,6 +92,7 @@
 
     <ver.mockito>1.9.5</ver.mockito>
     <ver.awaitility>3.1.0</ver.awaitility>
+    <ver.micrometer>1.1.3</ver.micrometer>
 
     <jdk.version>1.8</jdk.version>
     <targetJdk>${jdk.version}</targetJdk>
@@ -146,7 +147,7 @@
   <profiles>
     <profile>
       <!--
-          This is the dev profile, typically used locally with 
+          This is the dev profile, typically used locally with
           "mvn clean install -Pdev".
           It builds the modules shipped in apache-jena binaries
           but does not build these binaries.
@@ -157,12 +158,12 @@
         <module>jena-shaded-guava</module>
         <module>jena-iri</module>
         <module>jena-base</module>
-        
+
         <module>jena-core</module>
         <module>jena-arq</module>
         <module>jena-rdfconnection</module>
         <module>jena-tdb</module>
-        <module>jena-db</module> 
+        <module>jena-db</module>
         <module>apache-jena-libs</module>
 
         <module>jena-text</module>
@@ -229,13 +230,13 @@
         <module>jena-fuseki2</module>
 
         <!--
-            Tests of artifacts that require additional 
+            Tests of artifacts that require additional
             modules built later in the build process.
             For example, use Fuseki as a test server to
             test remote client APIs.
         -->
         <module>jena-integration-tests</module>
-        
+
         <!-- Binary distribution -->
         <module>apache-jena</module>
 
@@ -253,7 +254,7 @@
 
         <!-- Slow building modules -->
         <module>jena-jdbc</module>
-        <!--  Fails when building with Java9 JDK because it requires 
+        <!--  Fails when building with Java9 JDK because it requires
              system jar jdk.tools which is not available in Java9 onwards
         -->
         <module>jena-elephas</module>
@@ -302,19 +303,19 @@
         <artifactId>commons-codec</artifactId>
         <version>${ver.commons-codec}</version>
       </dependency>
-      
+
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <version>${ver.commonsio}</version>
       </dependency>
-      
+
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
         <version>${ver.commons-compress}</version>
       </dependency>
-      
+
       <dependency>
         <groupId>org.apache.thrift</groupId>
         <artifactId>libthrift</artifactId>
@@ -355,14 +356,14 @@
         <artifactId>commons-collections4</artifactId>
         <version>4.1</version>
       </dependency>
-      
+
       <!-- supports persistent data structures -->
       <dependency>
         <groupId>com.github.andrewoma.dexx</groupId>
         <artifactId>collection</artifactId>
         <version>${ver.dexxcollection}</version>
       </dependency>
-      
+
       <dependency>
         <groupId>com.github.jsonld-java</groupId>
         <artifactId>jsonld-java</artifactId>
@@ -395,7 +396,7 @@
           </exclusion>
         </exclusions>
       </dependency>
-      
+
       <!-- Lucene dependencies -->
       <dependency>
         <groupId>org.apache.lucene</groupId>
@@ -462,7 +463,7 @@
         <artifactId>log4j-api</artifactId>
         <version>${ver.log4j2}</version>
       </dependency>
-      
+
       <!-- Intercept direct use of log4j2 -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -495,8 +496,8 @@
         <version>${ver.log4j}</version>
       </dependency>
 
-      <!-- And intercept any uses of Jakarta Commons Logging 
-           e.g. Apache Common HTTP client. 
+      <!-- And intercept any uses of Jakarta Commons Logging
+           e.g. Apache Common HTTP client.
       -->
 
       <dependency>
@@ -523,7 +524,7 @@
           </exclusion>
         </exclusions>
       </dependency>
-      
+
       <dependency>
         <groupId>org.xenei</groupId>
         <artifactId>contract-test-maven-plugin</artifactId>
@@ -537,11 +538,22 @@
         <version>${ver.mockito}</version>
         <scope>test</scope>
       </dependency>
-      
+
       <dependency>
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
         <version>${ver.awaitility}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-core</artifactId>
+        <version>${ver.micrometer}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-registry-prometheus</artifactId>
+        <version>${ver.micrometer}</version>
       </dependency>
     </dependencies>
 
