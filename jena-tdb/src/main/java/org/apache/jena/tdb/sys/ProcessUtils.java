@@ -100,7 +100,7 @@ public class ProcessUtils {
             // alive
 
             SystemTDB.errlog
-                    .warn("Your platform does not support checking process liveness so TDB disk locations cannot be reliably locked to prevent possible corruption due to unsafe multi-JVM usage");
+                    .warn("Your platform does not support checking process liveness so TDB disk locations cannot be reliably locked to prevent possible corruption due to unsafe multi-JVM usage", e);
             return true;
         }
     }

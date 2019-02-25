@@ -25,6 +25,7 @@ import java.util.ArrayList ;
 import java.util.Collection ;
 import java.util.List ;
 
+import org.apache.jena.query.SortCondition;
 import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.compiler.rewrite.QuadBlockRewriteCompiler ;
 import org.apache.jena.sdb.core.SDBRequest ;
@@ -35,6 +36,7 @@ import org.apache.jena.sdb.store.SQLBridgeFactory ;
 import org.apache.jena.sparql.algebra.* ;
 import org.apache.jena.sparql.algebra.op.* ;
 import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.expr.ExprVar;
 
 public abstract class QueryCompilerMain implements QueryCompiler 
 {
@@ -264,5 +266,50 @@ public abstract class QueryCompilerMain implements QueryCompiler
 
     }
 
+    protected static Op rewriteOrder(Op op, SDBRequest request)
+    {
+        Transform t = new OrderOptimizer(request) ;
+        return Transformer.transform(t, op) ;
+    }
 
+    private static class OrderOptimizer extends TransformCopy
+    {
+        private final SDBRequest request ;
+
+        public OrderOptimizer(SDBRequest request)
+        {
+            this.request = request ;
+        }
+
+        @Override
+        public Op transform(OpOrder opOrder, Op subOp)
+        {
+            if ( ! request.OrderTranslation )
+                return super.transform(opOrder, subOp) ;
+
+            if ( ! SDB_QC.isOpSQL(subOp) )
+                return super.transform(opOrder, subOp) ;
+
+            // Check that all of the SortConditions are simple variable expressions
+            boolean orderInSQL = true;
+            for (SortCondition sc : opOrder.getConditions()) {
+                if (!(sc.getExpression() instanceof ExprVar)) {
+                    orderInSQL = false;
+                }
+            }
+
+            // Simple sorts, so copy them on to the OpSQL and drop the OpOrder
+            // (Ordering is then applied in the database, not in memory
+            if (orderInSQL) {
+                OpSQL opSQL = (OpSQL) subOp;
+                SqlNode node = SqlSelectBlock.order(request, opSQL.getSqlNode(), opOrder.getConditions());
+                OpSQL x = new OpSQL(node, opSQL, request) ;
+                x.setBridge(opSQL.getBridge()) ;
+                return x;
+            }
+
+            return super.transform(opOrder, subOp) ;
+        }
+
+    }
 }
