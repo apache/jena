@@ -127,7 +127,7 @@ public interface Transactional
      * transaction is still valid and in "read" mode. Any further calls to
      * {@code promote()} will also return false.
      * <p>
-     * This method throws a {@link JenaTransactionException} exception if there is an attempt to promote a "READ"
+     * This method throws an exception if there is an attempt to promote a "READ"
      * transaction.
      */
     public default boolean promote() {
@@ -138,7 +138,7 @@ public interface Transactional
             throw new JenaTransactionException("txnType");
         switch(txnType) {
             case WRITE :                  return true;
-            case READ :                   throw new JenaTransactionException("Attempt to promote a READ transaction");
+            case READ :                   return false;
             case READ_PROMOTE :           return promote(Promote.ISOLATED);
             case READ_COMMITTED_PROMOTE : return promote(Promote.READ_COMMITTED);
         }
