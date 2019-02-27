@@ -21,12 +21,12 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import org.apache.jena.fuseki.servlets.HttpAction;
 
-public abstract class ExtraAction {
+public interface ExtraAction {
 
-    public abstract String getPath();
+    String getPath();
 
-    public abstract void init(ServletConfig config) throws ServletException;
+    void init(ServletConfig config) throws ServletException;
 
-    protected abstract void perform(HttpAction action);
+    void perform(HttpAction action);
 
 }

@@ -17,9 +17,7 @@
  */
 package org.apache.jena.fuseki.extras.prometheus;
 
-import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
-import java.io.IOException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -32,7 +30,7 @@ import org.apache.jena.riot.WebContent;
 /**
  * Maps to $/extras/prometheus
  */
-public class ActionPrometheus extends ExtraAction {
+public class ActionPrometheus implements ExtraAction {
 
     @Override
     public String getPath() {

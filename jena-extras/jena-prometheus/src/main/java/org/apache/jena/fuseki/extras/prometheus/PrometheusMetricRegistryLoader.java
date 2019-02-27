@@ -18,7 +18,6 @@
 package org.apache.jena.fuseki.extras.prometheus;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics;
 import io.micrometer.core.instrument.binder.jvm.DiskSpaceMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics;
