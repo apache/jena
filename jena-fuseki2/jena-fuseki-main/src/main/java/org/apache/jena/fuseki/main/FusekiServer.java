@@ -18,16 +18,16 @@
 
 package org.apache.jena.fuseki.main;
 
-import static java.util.Objects.requireNonNull;
-
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
-
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
-
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.Fuseki;
@@ -43,7 +43,12 @@ import org.apache.jena.fuseki.ctl.ActionStats;
 import org.apache.jena.fuseki.jetty.FusekiErrorHandler1;
 import org.apache.jena.fuseki.jetty.JettyHttps;
 import org.apache.jena.fuseki.jetty.JettyLib;
-import org.apache.jena.fuseki.server.*;
+import org.apache.jena.fuseki.metrics.MetricRegistryProvider;
+import org.apache.jena.fuseki.server.DataAccessPoint;
+import org.apache.jena.fuseki.server.DataAccessPointRegistry;
+import org.apache.jena.fuseki.server.DataService;
+import org.apache.jena.fuseki.server.FusekiVocab;
+import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.fuseki.servlets.AuthFilter;
 import org.apache.jena.fuseki.servlets.FusekiFilter;
@@ -69,6 +74,8 @@ import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Embedded Fuseki server. This is a Fuseki server running with a pre-configured set of
@@ -231,7 +238,7 @@ public class FusekiServer {
 
     /** FusekiServer.Builder */
     public static class Builder {
-        private DataAccessPointRegistry  dataAccessPoints   = new DataAccessPointRegistry();
+        private final DataAccessPointRegistry  dataAccessPoints   = new DataAccessPointRegistry(MetricRegistryProvider.load());
         private final ServiceDispatchRegistry  serviceDispatch;
         // Default values.
         private int                      serverPort         = 3330;

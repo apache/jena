@@ -18,17 +18,17 @@
 
 package org.apache.jena.fuseki.webapp;
 
-import javax.servlet.ServletContext ;
-import javax.servlet.ServletContextEvent ;
-import javax.servlet.ServletContextListener ;
-
-import org.apache.jena.fuseki.Fuseki ;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
+import org.apache.jena.fuseki.metrics.MetricRegistryProvider;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.FusekiInfo;
 import org.apache.jena.fuseki.server.FusekiInitialConfig;
 import org.apache.jena.fuseki.servlets.ServiceDispatchRegistry;
-import org.apache.jena.tdb.StoreConnection ;
+import org.apache.jena.tdb.StoreConnection;
 
 /** Setup configuration.
  * The order is controlled by {@code web.xml}:
@@ -72,7 +72,7 @@ public class FusekiServerListener implements ServletContextListener {
 
         ServiceDispatchRegistry serviceDispatchRegistry = new ServiceDispatchRegistry(true);
         ServiceDispatchRegistry.set(servletContext, serviceDispatchRegistry);
-        DataAccessPointRegistry dataAccessPointRegistry = new DataAccessPointRegistry() ;
+        DataAccessPointRegistry dataAccessPointRegistry = new DataAccessPointRegistry(MetricRegistryProvider.get(servletContext));
         DataAccessPointRegistry.set(servletContext, dataAccessPointRegistry);
         
         try {

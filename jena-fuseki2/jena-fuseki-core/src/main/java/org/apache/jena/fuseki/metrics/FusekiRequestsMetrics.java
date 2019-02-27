@@ -25,26 +25,21 @@ import org.apache.jena.fuseki.server.Counter;
 import org.apache.jena.fuseki.server.CounterName;
 import org.apache.jena.fuseki.server.CounterSet;
 import org.apache.jena.fuseki.server.DataAccessPoint;
-import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Endpoint;
 import org.apache.jena.fuseki.server.Operation;
 
 public class FusekiRequestsMetrics implements MeterBinder {
 
-    private DataAccessPointRegistry dataAccessPointRegistry;
+    private DataAccessPoint dataAccessPoint;
 
-    public FusekiRequestsMetrics(DataAccessPointRegistry dataAccessPointRegistry) {
-        this.dataAccessPointRegistry = dataAccessPointRegistry;
+    public FusekiRequestsMetrics(DataAccessPoint dataAccessPoint) {
+        this.dataAccessPoint= dataAccessPoint;
     }
 
     @Override
     public void bindTo(MeterRegistry registry) {
-        dataAccessPointRegistry.forEach( (name, access) -> doMetric( registry, access ) );
-    }
-
-    private void doMetric(MeterRegistry registry, DataAccessPoint access) {
-        DataService dataService = access.getDataService();
+        DataService dataService = dataAccessPoint.getDataService();
         for (Operation operation : dataService.getOperations()) {
             List<Endpoint> endpoints = dataService.getEndpoints( operation );
             for (Endpoint endpoint : endpoints) {
@@ -55,7 +50,7 @@ public class FusekiRequestsMetrics implements MeterBinder {
                     Gauge.builder(
                             "fuseki_" + counterName.getFullName(), counter, Counter::value )
                             .tags( new String[] {
-                                    "dataset", access.getName(),
+                                    "dataset", dataAccessPoint.getName(),
                                     "endpoint", endpoint.getName(),
                                     "operation", operation.getName(),
                                     "description", operation.getDescription()

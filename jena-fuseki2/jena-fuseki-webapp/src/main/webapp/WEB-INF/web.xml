@@ -174,13 +174,13 @@
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>ActionPrometheus</servlet-name>
-    <servlet-class>org.apache.jena.fuseki.ctl.ActionPrometheus</servlet-class>
+    <servlet-name>ActionExtras</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.ctl.ActionExtras</servlet-class>
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>ActionPrometheus</servlet-name>
-    <url-pattern>/$/prometheus</url-pattern>
+    <servlet-name>ActionExtras</servlet-name>
+    <url-pattern>/$/extras/*</url-pattern>
   </servlet-mapping>
 
   <servlet>
