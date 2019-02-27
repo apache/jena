@@ -42,7 +42,7 @@ public class ActionPrometheus implements ExtraAction {
     }
 
     @Override
-    protected void perform(HttpAction action) {
+    public void perform(HttpAction action) {
         try (ServletOutputStream out = action.response.getOutputStream()) {
             action.response.setContentType( WebContent.contentTypeJSON );
             action.response.setCharacterEncoding( WebContent.charsetUTF8 );
