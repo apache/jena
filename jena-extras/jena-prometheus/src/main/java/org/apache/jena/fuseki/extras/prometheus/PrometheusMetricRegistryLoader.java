@@ -43,7 +43,7 @@ public class PrometheusMetricRegistryLoader implements MetricRegistryLoader {
         new ClassLoaderMetrics().bindTo( result );
         new UptimeMetrics().bindTo( result );
         for (File root : File.listRoots()) {
-            new DiskSpaceMetrics(root, Tags.of("root", root.getName())).bindTo( result );
+            new DiskSpaceMetrics(root).bindTo( result );
         }
         new JvmGcMetrics().bindTo( result );
         new JvmMemoryMetrics().bindTo( result );
