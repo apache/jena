@@ -20,7 +20,9 @@ package org.apache.jena.dboe.transaction.txn;
 
 import static org.apache.jena.dboe.transaction.txn.journal.JournalEntryType.UNDO;
 
+import java.io.IOException;
 import java.nio.ByteBuffer ;
+import java.nio.channels.ClosedByInterruptException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap ;
 import java.util.concurrent.Semaphore ;
@@ -30,6 +32,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock ;
 
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.dboe.base.file.FileException;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.sys.Sys;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
@@ -64,7 +67,8 @@ import org.slf4j.Logger ;
  */
 final
 public class TransactionCoordinator {
-    private static Logger log = Sys.syslog ;
+    private static Logger SysLog = Sys.syslog ;
+    private static Logger SysErr = Sys.errlog;
     
     private final Journal journal ;
     // Lock on configuration changes. 
@@ -220,7 +224,7 @@ public class TransactionCoordinator {
             return ;
         }
         
-        log.info("Journal recovery start") ;
+        SysLog.info("Journal recovery start") ;
         components.forEachComponent(c -> c.startRecovery()) ;
         
         // Group to commit
@@ -244,7 +248,7 @@ public class TransactionCoordinator {
     
         components.forEachComponent(c -> c.finishRecovery()) ;
         journal.reset() ;
-        log.info("Journal recovery end") ;
+        SysLog.info("Journal recovery end") ;
     }
 
     private void recover(List<JournalEntry> entries) {
@@ -296,7 +300,7 @@ public class TransactionCoordinator {
         if ( coordinatorLock == null )
             return ;
         if ( countActive() > 0 )
-            FmtLog.warn(log, "Transactions active: W=%d, R=%d", countActiveWriter(), countActiveReaders());
+            FmtLog.warn(SysErr, "Transactions active: W=%d, R=%d", countActiveWriter(), countActiveReaders());
         components.forEach((id, c) -> c.shutdown()) ;
         shutdownHooks.forEach((h)-> h.shutdown()) ;
         coordinatorLock = null ;
@@ -569,10 +573,10 @@ public class TransactionCoordinator {
         cg.forEach((id, c) -> {
             TransactionalComponent tcx = components.findComponent(id) ;
             if ( ! tcx.equals(c) )
-                log.warn("TransactionalComponent not in TransactionCoordinator's ComponentGroup") ; 
+                SysLog.warn("TransactionalComponent not in TransactionCoordinator's ComponentGroup") ; 
         }) ;
-        if ( log.isDebugEnabled() )
-            log.debug("Custom ComponentGroup for transaction "+txnType+": size="+cg.size()+" of "+components.size()) ;
+        if ( SysLog.isDebugEnabled() )
+            SysLog.debug("Custom ComponentGroup for transaction "+txnType+": size="+cg.size()+" of "+components.size()) ;
         return cg ;
     }
 
@@ -626,9 +630,9 @@ public class TransactionCoordinator {
         
         // Now a proto-writer. We need to confirm when inside the synchronized. 
         synchronized(coordinatorLock) {
-            // Not read commited.
+            // Not read committed.
             // Need to check the data version once we are the writer and all previous
-            // writers have commited or aborted.
+            // writers have committed or aborted.
             // Has there been an writer active since the transaction started?
             
             if ( ! checkNoInterveningCommits(transaction) ) {
@@ -683,28 +687,80 @@ public class TransactionCoordinator {
         // Do here because it needs access to the journal.
         notifyPrepareStart(transaction);
         transaction.getComponents().forEach(sysTrans -> {
-            TransactionalComponent c = sysTrans.getComponent() ;
-            ByteBuffer data = c.commitPrepare(transaction) ;
+            ByteBuffer data = sysTrans.commitPrepare() ;
             if ( data != null ) {
-                PrepareState s = new PrepareState(c.getComponentId(), data) ;
+                PrepareState s = new PrepareState(sysTrans.getComponentId(), data) ;
                 journal.write(s) ;
             }
         }) ;
         notifyPrepareFinish(transaction);
     }
-
-    /*package*/ void executeCommit(Transaction transaction, Runnable commit, Runnable finish) {
+    
+    /*package*/ void executeCommit(Transaction transaction, Runnable commit, Runnable finish, Runnable sysabort) {
         if ( transaction.getMode() == ReadWrite.READ ) {
             finish.run();
             notifyCommitFinish(transaction);
             return;
         }
-        
-        // This is the commit for a write transaction  
+        journal.startWrite();
+        try {
+            executeCommitWriter(transaction, commit, finish, sysabort);
+            journal.commitWrite();
+        } catch (TransactionException ex) {
+            throw ex;
+        } catch (Throwable th) {
+            throw th;
+        } finally { journal.endWrite(); }
+    }
+    
+    private void executeCommitWriter(Transaction transaction, Runnable commit, Runnable finish, Runnable sysabort) {
         synchronized(coordinatorLock) {
-            // *** COMMIT POINT
-            journal.sync() ;
-            // *** COMMIT POINT
+            try {
+                // Simulate a Thread.interrupt during I/O.
+//                if ( true )
+//                    throw new FileException(new ClosedByInterruptException());
+                
+                // *** COMMIT POINT
+                journal.writeJournal(JournalEntry.COMMIT);
+                journal.sync();
+                // *** COMMIT POINT
+            }
+            // catch (ClosedByInterruptException ex) {}
+            // Some low level system error - probably a sign of something serious like disk error.
+            catch(FileException ex)  {
+                if ( ex.getCause() instanceof ClosedByInterruptException ) {
+                    // Thread interrupt during java I/O.
+                    // File was closed by java.nio.
+                    // Reopen - this truncates to the last write start position.
+                    journal.reopen();
+                    // This call should clear up the transaction state.
+                    rollback(transaction, sysabort);
+                    SysLog.warn("Thread interrupt during I/O in 'commit' : executed transaction rollback: "+ex.getMessage());
+                    throw new TransactionException("Thread interrupt during I/O in 'commit' : transaction rollback.", ex);
+                }
+                if ( isIOException(ex) )
+                    SysErr.warn("IOException during 'commit' : transaction may have committed. Attempting rollback: "+ex.getMessage());
+                else
+                    SysErr.warn("Exception during 'commit' : transaction may have committed. Attempting rollback. Details:",ex);
+                if ( abandonTxn(transaction, sysabort) ) {
+                    SysErr.warn("Transaction rollback");
+                    throw new TransactionException("Exception during 'commit' - transaction rollback.", ex);
+                }
+                // Very bad. (This have been dealt with already and should get to here.)
+                SysErr.error("Transaction rollback failed. System unstable.");
+                throw new TransactionException("Exception during 'rollback' - System unstable.", ex);
+            }
+            catch (Throwable ex) {
+                SysErr.warn("Unexpected Throwable during 'commit' : transaction may have committed. Attempting rollback: ",ex);
+                if ( abandonTxn(transaction, sysabort) ) {
+                    SysErr.warn("Transaction rollback");
+                    throw new TransactionException("Exception during 'commit' - transaction rollback.", ex);
+                }
+                // Very bad. (This should not happen.)
+                SysErr.error("Transaction rollback failed. System unstable.");
+                throw new TransactionException("Exception during 'rollback' - System unstable.", ex);
+            }
+            
             // Now run the Transactions commit actions. 
             commit.run() ;
             journal.truncate(0) ;
@@ -713,12 +769,52 @@ public class TransactionCoordinator {
             // Bump global serialization point
             advanceDataVersion() ;
             notifyCommitFinish(transaction) ;
-        }
+        } 
     }
-    
+
     // Inside the global transaction start/commit lock.
     private void advanceDataVersion() {
         dataVersion.incrementAndGet();
+    }
+
+    /** Test whether the thread is interrupted and if it is, abort the transaction. */
+    private void abandonIfInterruped(Transaction txn, Runnable sysabort, String msg) {
+        // Clears interrupted status
+        if (Thread.interrupted()) {
+            abandonTxn(txn, sysabort);
+            Thread.currentThread().interrupt();
+            throw new TransactionException(msg);
+        }
+    }
+
+    /** 
+     * Try to abort, including removing the journal entries (including commit if written)
+     * Return true for succeeded and false for throwable, state unknown.
+     */
+    private boolean abandonTxn(Transaction txn, Runnable sysabort ) {
+        try {
+            journal.abortWrite();
+            rollback(txn, sysabort);
+            return true;
+        } catch (Throwable th) {
+            SysErr.warn("Exception during system rollback", th);
+            return false;
+        }
+    }
+
+    private void rollback(Transaction txn, Runnable sysabort) {
+        txn.setState(TxnState.ACTIVE);
+        sysabort.run();
+        txn.setState(TxnState.ABORTED);
+    }
+
+    private boolean isIOException(Throwable ex) {
+        while (ex != null) {
+            if ( ex instanceof IOException )
+                return true;
+            ex = ex.getCause();
+        }
+        return false;
     }
     
     /*package*/ void executeAbort(Transaction transaction, Runnable abort) {
