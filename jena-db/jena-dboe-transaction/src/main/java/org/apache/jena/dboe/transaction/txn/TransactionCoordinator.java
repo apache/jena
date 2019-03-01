@@ -747,8 +747,9 @@ public class TransactionCoordinator {
                     throw new TransactionException("Exception during 'commit' - transaction rollback.", ex);
                 }
                 // Very bad. (This have been dealt with already and should get to here.)
-                SysErr.error("Transaction rollback failed. System unstable.");
-                throw new TransactionException("Exception during 'rollback' - System unstable.", ex);
+                SysErr.error("Transaction rollback failed. System unstable."+
+                    "\nPlease contact users@jena.apache.org, giving details of the environment and this incident.");
+                throw new Error("Exception during 'rollback' - System unstable.", ex);
             }
             catch (Throwable ex) {
                 SysErr.warn("Unexpected Throwable during 'commit' : transaction may have committed. Attempting rollback: ",ex);

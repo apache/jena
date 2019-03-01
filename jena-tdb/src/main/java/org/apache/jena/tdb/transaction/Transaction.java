@@ -219,8 +219,9 @@ public class Transaction
                 throw new TDBTransactionException("Exception during 'commit' - transaction rollback.", ex);
             }
             // Very bad. (This should not happen and have been dealt with already.)
-            SystemTDB.errlog.error("Transaction rollback failed. System unstable.");
-            throw new TDBTransactionException("Exception during 'rollback' - System unstable.", ex);
+            SystemTDB.errlog.error("Transaction rollback failed. System unstable."+
+                "\nPlease contact users@jena.apache.org, giving details of the environment and this incident.");
+            throw new Error("Exception during 'rollback' - System unstable.", ex);
         }
         catch (Throwable ex) {
             SystemTDB.errlog.warn("Unexpected Throwable during 'commit' : transaction may have committed. Attempting rollback: ",ex);
@@ -302,7 +303,7 @@ public class Transaction
                 case WRITE :
                     if ( state != TxnState.ACTIVE )
                         throw new TDBTransactionException("Transaction has already committed or aborted");
-                    // Application abort. Didn't startwriing to the journal.
+                    // Application abort. Didn't start writing to the journal.
                     rollback();
                     break;
             }
