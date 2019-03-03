@@ -35,6 +35,13 @@ import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
+/** Test basic operations on a DatasetGraph
+ *
+ * @see AbstractDatasetGraphFind
+ * @see AbstractDatasetGraphFindPatterns
+ * @see AbstractDatasetGraphTests
+ * @see AbstractTestGraphOverDatasetGraph
+ */
 public abstract class AbstractDatasetGraphTests
 {
     protected abstract DatasetGraph emptyDataset() ;

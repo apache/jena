@@ -33,26 +33,29 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Before ;
 import org.junit.Test ;
 
-public abstract class AbstractTestGraphOverDataset extends BaseTest
+/**
+ * Tests of graphs as views of a DatasetGraph.
+ */
+public abstract class AbstractTestGraphOverDatasetGraph extends BaseTest
 {
     // See also: ARQ/GraphsTests, TestGraphsMem(enable tests?), UnionTransformTests
-    
+
     protected DatasetGraph baseDSG ;
     protected abstract DatasetGraph createBaseDSG() ;
-    
+
     private static Quad q0 = SSE.parseQuad("(_ <s> <p> 0)") ;
     private static Quad q1 = SSE.parseQuad("(<g1> <s> <p> 1)") ;
     private static Quad q2 = SSE.parseQuad("(<g2> <s> <p> 2)") ;    // same triple - different graph
     private static Quad q3 = SSE.parseQuad("(<g3> <s> <p> 2)") ;    // same triple - different graph
-    
+
     private static Node gn1 = SSE.parseNode("<g1>") ;
     private static Node gn2 = SSE.parseNode("<g2>") ;
     private static Node gn3 = SSE.parseNode("<g3>") ;
     private static Node gnNotSuchGraph = SSE.parseNode("<NoSuchGraph>") ;
-    
+
     protected abstract Graph makeNamedGraph(DatasetGraph dsg, Node gn) ;
     protected abstract Graph makeDefaultGraph(DatasetGraph dsg) ;
-    
+
     @Before public void before()
     {
         baseDSG = createBaseDSG() ;
@@ -61,21 +64,21 @@ public abstract class AbstractTestGraphOverDataset extends BaseTest
         baseDSG.add(q2) ;
         baseDSG.add(q3) ;
     }
-    
+
     @Test public void graphDSG_view_1()
     {
         Triple t = makeDefaultGraph(baseDSG).find(null, null, null).next() ;
         assertEquals(SSE.parseTriple("(<s> <p> 0)"), t) ;
         // Check exact iterator.
     }
-    
+
     @Test public void graphDSG_view_2()
     {
         Triple t = makeNamedGraph(baseDSG, gn1).find(null, null, null).next() ;
         assertEquals(SSE.parseTriple("(<s> <p> 1)"), t) ;
         // Check exact iterator.
     }
-    
+
     @Test public void graphDSG_view_3()
     {
         Graph g = makeDefaultGraph(baseDSG) ;
@@ -85,7 +88,7 @@ public abstract class AbstractTestGraphOverDataset extends BaseTest
         assertEquals(2, g.size()) ;
         // Check exact iterator.
     }
-    
+
     // non-existant graph
     @Test public void graphDSG_view_4()
     {
@@ -95,7 +98,7 @@ public abstract class AbstractTestGraphOverDataset extends BaseTest
         assertEquals(0, g.size()) ;
     }
 
-    // This test only works if the underlying dataset implements Quad.unionGraph   
+    // This test only works if the underlying dataset implements Quad.unionGraph
     @Test public void graphDSG_view_union_1()
     {
         Graph g = makeNamedGraph(baseDSG, Quad.unionGraph) ;
@@ -106,13 +109,13 @@ public abstract class AbstractTestGraphOverDataset extends BaseTest
     }
 
     // ---- contains
-    
+
     @Test public void graphDSG_contains_1()
     {
         boolean b = new DatasetGraphViewGraphs(baseDSG).containsGraph(gn1) ;
         assertTrue(b) ;
     }
-    
+
     @Test public void graphDSG_contains_2()
     {
         boolean b = new DatasetGraphViewGraphs(baseDSG).containsGraph(gnNotSuchGraph) ;
@@ -127,21 +130,21 @@ public abstract class AbstractTestGraphOverDataset extends BaseTest
         PrefixMapping pmap = g.getPrefixMapping() ;
         assertNotNull(pmap) ;
     }
-    
+
     @Test public void graphDSG_prefixes_2()
     {
         Graph g = makeNamedGraph(baseDSG, Quad.unionGraph) ;
         PrefixMapping pmap = g.getPrefixMapping() ;
         assertNotNull(pmap) ;
     }
-    
+
     @Test public void graphDSG_prefixes_3()
     {
         Graph g = makeDefaultGraph(baseDSG) ;
         PrefixMapping pmap = g.getPrefixMapping() ;
         assertNotNull(pmap) ;
     }
-    
+
     @Test public void graphDSG_prefixes_4()
     {
         // All graphs exist.
@@ -149,9 +152,9 @@ public abstract class AbstractTestGraphOverDataset extends BaseTest
         PrefixMapping pmap = g.getPrefixMapping() ;
         assertNotNull(pmap) ;
     }
-    
+
     // ---- update
-    
+
     @Test public void graphDGS_update_1()
     {
         Quad q9 = SSE.parseQuad("(<g3> <s> <p> 9)") ;
@@ -160,7 +163,7 @@ public abstract class AbstractTestGraphOverDataset extends BaseTest
         Triple t = SSE.parseTriple("(<s> <p> 9)") ;
         assertTrue(g.contains(t)) ;
     }
-    
+
     @Test public void graphDGS_update_2()
     {
         Triple t = SSE.parseTriple("(<s> <p> 9)") ;

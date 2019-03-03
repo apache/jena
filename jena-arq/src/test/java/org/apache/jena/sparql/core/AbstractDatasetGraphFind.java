@@ -45,7 +45,11 @@ import org.junit.Test ;
 /** Tests to cover cases of "find" on a dataset graph.
  *  The coverage should be so that it tests all the frameworks
  *  (DatasetGraphBaseFind, DatasetGraphQuad) and the ways they send
- *  find operations to different methods. 
+ *  find operations to different methods.
+ *
+ * @see AbstractDatasetGraphFindPatterns
+ * @see AbstractDatasetGraphTests
+ * @see AbstractTestGraphOverDatasetGraph
  */
 public abstract class AbstractDatasetGraphFind {
     

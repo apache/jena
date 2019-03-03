@@ -37,15 +37,14 @@ import org.slf4j.LoggerFactory ;
 
 import org.apache.jena.query.ReadWrite ;
 
-/** 
- * 
+/**
  * B-Tree taken from:
  * <pre>
  * Introduction to Algorithms, Second Edition
  * Chapter 18: B-Trees
- * by Thomas H. Cormen, Charles E. Leiserson, 
- *    Ronald L. Rivest and Clifford Stein 
- * </pre> 
+ * by Thomas H. Cormen, Charles E. Leiserson,
+ *    Ronald L. Rivest and Clifford Stein
+ * </pre>
  * Includes implementation of removal
  * then the B-Tree code converted to a B+Tree,
  * then made MVCC/transactional.
@@ -56,17 +55,17 @@ import org.apache.jena.query.ReadWrite ;
  * Stores "records", which are a key and value (the value may be absent).
  * <li>
  * In this B+Tree implementation, the (key,value) pairs are held in
- * RecordBuffer, which wraps a ByteBuffer that only has records in it.  
+ * RecordBuffer, which wraps a ByteBuffer that only has records in it.
  * BPTreeRecords provides the B+Tree view of a RecordBuffer. All records
  * are in RecordBuffer - the "tree" part is an index for finding the right
  * page. The tree only holds keys, copies from the (key, value) pairs in
- * the RecordBuffers. 
+ * the RecordBuffers.
  * <li>
  * The version above splits nodes on the way down when full,
  * not when needed where a split can bubble up from below.
  * It means it only ever walks down the tree on insert.
  * Similarly, the delete code ensures a node is suitable
- * before decending. 
+ * before descending.
  * </ul>
  */
 
@@ -75,15 +74,15 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     /*
      * Insertion:
      * There are two styles for handling node splitting.
-     * 
+     *
      * Classically, when a leaf is split, the separating key is inserted into
      * the parent, which may itself be full and so that is split, etc propagting
      * up to the root (splitting the root is the only time the depth of the
      * BTree increases). This involves walking back up the tree.
-     * 
+     *
      * It is more convenient to have a spare slot in a tree node, so that the
      * new key can be inserted, then the keys and child pointers split.
-     * 
+     *
      * Modification: during insertion, splitting is applied to any full node
      * traversed on the way down, resulting in any node passed through having
      * some space for a new key. When splitting starts at a leaf, only the
@@ -91,47 +90,47 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
      * There is no cascade back to the top of the tree (it would have happened on
      * the way down); in other words, splitting is done early. This is insertion
      * in a single downward pass.
-     * 
+     *
      * When compared to the classic approach including the extra slot for
      * convenient inserting, the space useage is approximately the same.
-     * 
-     * Deletion:    
+     *
+     * Deletion:
      * Deletion always occurs at a leaf; if it's an internal node, swap the key
      * with the right-most left key (predecessor) or left-most right key (successor),
      * and delete in the leaf.
-     * 
+     *
      * The classic way is to propagate node merging back up from the leaf.  The
      * book outlines a way that checks that a nod eis delte-suitable (min+1 in size)
-     * on the way down.  This is implemented here; this is one-pass(ish).  
-     * 
+     * on the way down.  This is implemented here; this is one-pass(ish).
+     *
      * Variants:
      * http://en.wikipedia.org/wiki/Btree
-     * 
+     *
      * B+Tree: Tree contains keys, and only the leaves have the values. Used for
      * secondary indexes (external pointers) but also for general on-disk usage
      * because more keys are packed into a level. Can chain the leaves for a
      * sorted-order traversal.
-     * 
+     *
      * B*Tree: Nodes are always 2/3 full. When a node is full, keys are shared adjacent
      * nodes and if all they are all full do 2 nodes get split into 3 nodes.
      * Implementation wise, it is more complicated; can cause more I/O.
-     * 
+     *
      * B#Tree: A B+Tree where the operations try to swap nodes between immediate
      * sibling nodes instead of immediately splitting (like delete, only on insert).
-     */ 
-    
+     */
+
     private static Logger log = LoggerFactory.getLogger(BPlusTree.class) ;
-    
+
     // Root id across transactions
-    // Changes as the tree evolves in write transactions. 
+    // Changes as the tree evolves in write transactions.
     private int rootIdx = -199 ;
     private BPTStateMgr stateManager ;
-    private BPTreeNodeMgr nodeManager ; 
-    private BPTreeRecordsMgr recordsMgr; 
+    private BPTreeNodeMgr nodeManager ;
+    private BPTreeRecordsMgr recordsMgr;
     private final BPlusTreeParams bpTreeParams ;
     private Mode mode = Mode.TRANSACTIONAL ;
-    private BptTxnState nonTxnState = null ; 
-    
+    private BptTxnState nonTxnState = null ;
+
     // Construction is a two stage process
     //    1/ Create the object, uninitialized
     //      (Setup data structures, without referring to any BPlusTree methods)
@@ -146,8 +145,8 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
 
     /*package*/ void init(BPTStateMgr stateManager, BPTreeNodeMgr  nodeManager, BPTreeRecordsMgr recordsMgr) {
         // Second part of creating.
-        // Some of these point to the BPlusTree object so we create te BPlusTree as 
-        // absic structure then initialize fully here.
+        // Some of these point to the BPlusTree object so we create the BPlusTree as
+        // basic structure then initialize fully here.
         this.rootIdx = stateManager.getRoot() ;
         this.stateManager = stateManager ;
         this.nodeManager = nodeManager ;
@@ -175,7 +174,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     private boolean isTransactional() {
         return mode == Mode.TRANSACTIONAL || mode == Mode.TRANSACTIONAL_AUTOCOMMIT ;
     }
-    
+
     private void releaseRootRead(BPTreeNode rootNode) {
         rootNode.release() ;
     }
@@ -192,10 +191,10 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         if ( isTransactional() )
             getDataState().setRoot(newRoot.getId()) ;
         else
-            rootIdx = newRoot.getId() ; 
+            rootIdx = newRoot.getId() ;
     }
 
-//    // Very, very dangerous operation. 
+//    // Very, very dangerous operation.
 //    public void $testForce$(int rootIdx) {
 //        this.rootIdx = rootIdx ;
 //    }
@@ -214,20 +213,20 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
             return null ;
         }
         return nonTxnState ;
-    }  
-    
+    }
+
     /** Get the parameters describing this B+Tree */
-    public BPlusTreeParams getParams()          { return bpTreeParams ; } 
+    public BPlusTreeParams getParams()          { return bpTreeParams ; }
 
     /** Only use for careful manipulation of structures */
-    public BPTStateMgr getStateManager()          { return stateManager ; } 
+    public BPTStateMgr getStateManager()          { return stateManager ; }
 
     /** Only use for careful manipulation of structures */
     public BPTreeNodeMgr getNodeManager()       { return nodeManager ; }
-    
+
     /** Only use for careful manipulation of structures */
     public BPTreeRecordsMgr getRecordsMgr()     { return recordsMgr ; }
-    
+
     @Override
     public RecordFactory getRecordFactory() {
         return bpTreeParams.recordFactory ;
@@ -283,7 +282,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         finishUpdateBlkMgr() ;
         return r ;
     }
-    
+
     @Override
     public boolean delete(Record record) {
         return deleteAndReturnOld(record) != null ;
@@ -298,12 +297,12 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         return r ;
     }
 
-    private static Record noMin = null ; 
-    private static Record noMax = null ; 
-    
+    private static Record noMin = null ;
+    private static Record noMax = null ;
+
     @Override
     public Iterator<Record> iterator() {
-        return iterator(noMin, noMax) ; 
+        return iterator(noMin, noMax) ;
     }
 
     @Override
@@ -315,7 +314,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         return BPTreeRangeIterator.create(root, fromRec, toRec) ;
         //return iterator(fromRec, toRec, RecordFactory.mapperRecord) ;
     }
-    
+
     /*
     @Override
     public <X> Iterator<X> iterator(Record minRec, Record maxRec, RecordMapper<X> mapper) {
@@ -332,16 +331,16 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     private static <X> Iterator<X> iterator(BPTreeNode node, Record fromRec, Record toRec, RecordMapper<X> mapper)
     {
         // Look for starting RecordsBufferPage id.
-        int id = BPTreeNode.recordsPageId(node, fromRec) ; 
+        int id = BPTreeNode.recordsPageId(node, fromRec) ;
         if ( id < 0 )
             return Iter.nullIter() ;
         RecordBufferPageMgr pageMgr = node.getBPlusTree().getRecordsMgr().getRecordBufferPageMgr() ;
         // No pages are active at this point.
         return RecordRangeIterator.iterator(id, fromRec, toRec, pageMgr, mapper) ;
     }
- 
+
      */
-    
+
     @Override
     public <X> Iterator<X> iterator(Record minRec, Record maxRec, RecordMapper<X> mapper) {
         startReadBlkMgr() ;
@@ -350,7 +349,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         finishReadBlkMgr() ;
         return iterator(root, minRec, maxRec, mapper);
     }
-    
+
     private <X> Iterator<X> iterator(BPTreeNode node, Record minRec, Record maxRec, RecordMapper<X> mapper) {
         int keyLen = recordsMgr.getRecordBufferPageMgr().getRecordFactory().keyLength();
         return BPTreeRangeIteratorMapper.create(node, minRec, maxRec, keyLen, mapper) ;
@@ -386,14 +385,14 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         finishReadBlkMgr() ;
         return b ;
     }
-    
+
     private static int SLICE = 10000 ;
     @Override
     public void clear() {
         Record[] records = new Record[SLICE] ;
         while(true) {
             Iterator<Record> iter = iterator() ;
-            int i = 0 ; 
+            int i = 0 ;
             for ( i = 0 ; i < SLICE ; i++ ) {
                 if ( ! iter.hasNext() )
                     break ;
@@ -408,7 +407,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
             }
         }
     }
-    
+
     @Override
     public void sync() {
         if ( nodeManager.getBlockMgr() != null )
@@ -423,7 +422,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         recordsMgr.close() ;
         stateManager.close() ;
     }
-    
+
 //    public void closeIterator(Iterator<Record> iter)
 //    {
 //    }
@@ -448,7 +447,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         boolean b = BPT.Logging ;
         BPT.Logging = false ;
         try { root.dump() ; }
-        finally { 
+        finally {
             releaseRootRead(root) ;
             BPT.Logging = b ;
             }
@@ -464,19 +463,19 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     public void nonTransactional() {
         setMode(Mode.MUTABLE) ;
     }
-    
-    private void setMode(Mode newMode) { 
-        
+
+    private void setMode(Mode newMode) {
+
         mode = newMode ;
-        
+
         switch(mode) {
-            case IMMUTABLE : 
-                nonTxnState = new BptTxnState(BPlusTreeParams.RootId, 
+            case IMMUTABLE :
+                nonTxnState = new BptTxnState(BPlusTreeParams.RootId,
                                               nodeManager.allocLimit(),
                                               recordsMgr.allocLimit()) ;
                 break ;
             case IMMUTABLE_ALL:
-                nonTxnState = new BptTxnState(BPlusTreeParams.RootId, 
+                nonTxnState = new BptTxnState(BPlusTreeParams.RootId,
                                               Long.MAX_VALUE,
                                               Long.MAX_VALUE) ;
                 break ;
@@ -495,7 +494,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
                 throw new NotImplementedException("TRANSACTIONAL_AUTOCOMMIT not implemented");
         }
     }
-    
+
     @Override
     public void startRecovery() {}
 
@@ -511,7 +510,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     public void finishRecovery() {
         stateManager.sync();
     }
-    
+
     @Override
     public void cleanStart() { }
 
@@ -521,15 +520,15 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     }
 
     private BptTxnState createState() {
-        return new BptTxnState(rootIdx, 
+        return new BptTxnState(rootIdx,
                                nodeManager.allocLimit(),
                                recordsMgr.allocLimit()) ;
     }
-    
+
     /* The persistent transactional state of a B+Tree is new root and the
      * allocation limits of both block managers.
      */
-    
+
     @Override
     protected BptTxnState _promote(TxnId txnId, BptTxnState oldState) {
         BptTxnState newState = createState();
@@ -540,11 +539,11 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     protected ByteBuffer _commitPrepare(TxnId txnId, BptTxnState state) {
         nodeManager.getBlockMgr().sync();
         recordsMgr.getBlockMgr().sync();
-        
+
         long nodeLimit = nodeManager.allocLimit() ;
         long recordsLimit = recordsMgr.allocLimit() ;
         // But don't write it yet.
-        stateManager.setState(state.getRoot(), nodeLimit, recordsLimit); 
+        stateManager.setState(state.getRoot(), nodeLimit, recordsLimit);
         return stateManager.getState() ;
     }
 
@@ -566,13 +565,13 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         // Truncate - logically in block manager space.
         nodeManager.resetAlloc(state.boundaryBlocksNode) ;
         recordsMgr.resetAlloc(state.boundaryBlocksRecord) ;
-        stateManager.setState(state.initialroot, state.boundaryBlocksNode, state.boundaryBlocksRecord); 
+        stateManager.setState(state.initialroot, state.boundaryBlocksNode, state.boundaryBlocksRecord);
         stateManager.sync();
     }
 
     @Override
     protected void _complete(TxnId txnId, BptTxnState state) {
-        
+
     }
 
     @Override
