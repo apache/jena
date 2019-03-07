@@ -20,12 +20,12 @@ package org.apache.jena.tdb.graph;
 
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.core.AbstractTestGraphOverDataset ;
+import org.apache.jena.sparql.core.AbstractTestGraphOverDatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.tdb.TDBFactory ;
 
 /** This is the view-graph test suite run over a TDB DatasetGraph to check compatibility */
-public class TestGraphOverDatasetTDB extends AbstractTestGraphOverDataset
+public class TestGraphOverDatasetTDB extends AbstractTestGraphOverDatasetGraph
 {
     @Override
     protected DatasetGraph createBaseDSG() { return TDBFactory.createDatasetGraph() ; }

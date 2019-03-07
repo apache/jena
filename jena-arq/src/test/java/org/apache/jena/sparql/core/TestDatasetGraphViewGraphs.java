@@ -28,7 +28,7 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
 /** Directly call the view mechanism */
-public class TestDatasetGraphViewGraphs extends AbstractTestGraphOverDataset
+public class TestDatasetGraphViewGraphs extends AbstractTestGraphOverDatasetGraph
 {
     @Override
     protected DatasetGraph createBaseDSG() { return DatasetGraphFactory.create() ; }

@@ -29,7 +29,7 @@ import org.apache.jena.dboe.transaction.txn.*;
 import org.apache.jena.query.ReadWrite ;
 
 /** Transactional {@link BinaryDataFile}.
- *  An binary file that is append-only and allows only one writer at a time.
+ *  A binary file that is append-only and allows only one writer at a time.
  *  All readers see the file up to the last commit point at the time 
  *  they started.  The sole writer sees more of the file.
  */

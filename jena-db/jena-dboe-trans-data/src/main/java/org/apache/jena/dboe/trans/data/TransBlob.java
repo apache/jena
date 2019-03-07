@@ -36,7 +36,7 @@ import org.apache.jena.query.ReadWrite ;
  */
 public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobState> {
 
-    // The last commited state.
+    // The last committed state.
     // Immutable ByteBuffer.
     private final AtomicReference<ByteBuffer> blobRef = new AtomicReference<>() ;
     private final BufferChannel file ;

@@ -26,13 +26,13 @@ import org.apache.jena.system.Txn;
 /** Interface that encapsulates the  begin/abort|commit/end operations.
  * <p>The read lifecycle is:
  * <pre> begin(READ) ... end()</pre>
- * <p>{@code commit} and {@code abort} are allowed. 
+ * <p>{@code commit} and {@code abort} are allowed.
  * <p>The write lifecycle is:
  * <pre> begin(WRITE) ... abort() or commit()</pre>
  * <p>{@code end()} is optional but preferred.
  * <p>
  * Helper code is available {@link Txn} so, for example:
- * <pre>Txn.executeRead(dataset, {@literal ()->} { ... sparql query ... });</pre> 
+ * <pre>Txn.executeRead(dataset, {@literal ()->} { ... sparql query ... });</pre>
  * <pre>Txn.executeWrite(dataset, {@literal ()->} { ... sparql update ... });</pre>
  * or use one of <tt>Txn.calculateRead</tt> and <tt>Txn.executeWrite</tt>
  * to return a value for the transaction block.
@@ -59,39 +59,39 @@ import org.apache.jena.system.Txn;
  * </pre>
  */
 
-public interface Transactional 
+public interface Transactional
 {
     /**
      * Start a transaction which is READ mode and which will switch to WRITE if an update
-     * is attempted but only if no intermediate transaction has performed an update. 
+     * is attempted but only if no intermediate transaction has performed an update.
      * <p>
      * See {@link #begin(TxnType)} for more details an options.
      * <p>
      * May not be implemented. See {@link #begin(ReadWrite)} is guaranteed to be provided.
      */
     public default void begin() { begin(TxnType.READ_PROMOTE); }
-    
+
     /**
      * Start a transaction.<br/>
      * READ or WRITE transactions start in that state and do not change for the
      * lifetime of the transaction.
      * <ul>
-     * 
+     *
      * <li>{@code WRITE}: this guarantees a WRITE will complete if {@code commit()} is
      * called. The same as {@code begin(ReadWrite.WRITE)}.
-     * 
+     *
      * <li>{@code READ}: the transaction can not promote to WRITE,ensuring read-only
      * access to the data. The same as {@code begin(ReadWrite.READ)}.
-     * 
+     *
      * <li>{@code READ_PROMOTE}: the transaction will go from "read" to "write" if an
      * update is attempted and if the dataset has not been changed by another write
      * transaction. See also {@link #promote}.
-     * 
+     *
      * <li>{@code READ_COMMITTED_PROMOTE}: Use this with care. The promotion will
      * succeed but changes from other transactions become visible.
-     * 
+     *
      * </ul>
-     * 
+     *
      * Read committed: at the point transaction attempts promotion from "read" to
      * "write", the system checks if the dataset has change since the transaction started
      * (called {@code begin}). If {@code READ_PROMOTE}, the dataset must not have
@@ -101,14 +101,14 @@ public interface Transactional
      * <p>
      * This operation is optional and some implementations may throw
      * a {@link JenaTransactionException} exception for some or all {@link TxnType} values.
-     * <p> 
+     * <p>
      * See {@link #begin(ReadWrite)} for a form that is required of implementations.
      */
     public void begin(TxnType type);
-    
-    /** Start either a READ or WRITE transaction. */ 
+
+    /** Start either a READ or WRITE transaction. */
     public void begin(ReadWrite readWrite) ;
-    
+
     /**
      * Attempt to promote a transaction from "read" to "write" when the transaction
      * started with a "promote" mode ({@code READ_PROMOTE} or
@@ -127,8 +127,8 @@ public interface Transactional
      * transaction is still valid and in "read" mode. Any further calls to
      * {@code promote()} will also return false.
      * <p>
-     * This method throws an exception if there is an attempt to promote a "READ"
-     * transaction.
+     * <p>
+     * This method returns false if there is an attempt to promote a "READ" transaction.
      */
     public default boolean promote() {
         if ( transactionMode() == ReadWrite.WRITE )
@@ -145,18 +145,18 @@ public interface Transactional
         throw new JenaTransactionException("Can't determine promote '"+txnType+"'transaction");
     }
 
-    public enum Promote { ISOLATED, READ_COMMITTED } ; 
-    
+    public enum Promote { ISOLATED, READ_COMMITTED } ;
+
     /**
      * Attempt to promote a transaction from "read" mode to "write" and the transaction. This
      * method allows the form of promotion to be specified. The transaction must not have been started
-     * with {@code READ}, which is read-only. 
+     * with {@code READ}, which is read-only.
      * <p>
      * An argument of {@code READ_PROMOTE} treats the promotion as if the transaction was started
      * with {@code READ_PROMOTE} (any other writer commiting since the transaction started
      * blocks promotion) and {@code READ_COMMITTED_PROMOTE} treats the promotion as if the transaction was started
      * with {@code READ_COMMITTED_PROMOTE} (intemediate writer commits become visible).
-     * <p> 
+     * <p>
      * Returns "true" if the transaction is in write mode after the call. The method
      * always succeeds of the transaction is already "write".
      * <p>
@@ -171,25 +171,25 @@ public interface Transactional
      */
     public boolean promote(Promote mode);
 
-    /** Commit a transaction - finish the transaction and make any changes permanent (if a "write" transaction) */  
+    /** Commit a transaction - finish the transaction and make any changes permanent (if a "write" transaction) */
     public void commit() ;
-    
-    /** Abort a transaction - finish the transaction and undo any changes (if a "write" transaction) */  
+
+    /** Abort a transaction - finish the transaction and undo any changes (if a "write" transaction) */
     public void abort() ;
 
-    /** Finish the transaction - if a write transaction and commit() has not been called, then abort */  
+    /** Finish the transaction - if a write transaction and commit() has not been called, then abort */
     public void end() ;
 
     /** Return the current mode of the transaction - "read" or "write".
-     * If the caller is not in a transaction, this method returns null. 
-     */ 
+     * If the caller is not in a transaction, this method returns null.
+     */
     public ReadWrite transactionMode();
 
-    /** Return the transaction type used in {@code begin(TxnType)}. 
-     * If the caller is not in a transaction, this method returns null. 
-     */ 
+    /** Return the transaction type used in {@code begin(TxnType)}.
+     * If the caller is not in a transaction, this method returns null.
+     */
     public TxnType transactionType();
 
-    /** Say whether inside a transaction. */ 
+    /** Say whether inside a transaction. */
     public boolean isInTransaction() ;
 }

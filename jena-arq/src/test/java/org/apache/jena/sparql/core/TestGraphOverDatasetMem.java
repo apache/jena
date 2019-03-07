@@ -25,7 +25,7 @@ import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.core.DatasetGraphViewGraphs ;
 
 /** Test using a view-generating dataset */  
-public class TestGraphOverDatasetMem extends AbstractTestGraphOverDataset
+public class TestGraphOverDatasetMem extends AbstractTestGraphOverDatasetGraph
 {
     @Override
     protected DatasetGraph createBaseDSG()

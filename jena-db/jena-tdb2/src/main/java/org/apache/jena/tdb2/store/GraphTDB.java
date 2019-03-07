@@ -81,32 +81,6 @@ public class GraphTDB extends GraphView implements Closeable, Sync {
         //super.close() ;
     }
 
-    protected static ExtendedIterator<Triple> graphBaseFindDft(DatasetGraphTDB dataset, Triple triple) {
-        Iterator<Quad> iterQuads = dataset.find(Quad.defaultGraphIRI, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
-        if ( iterQuads == null )
-            return org.apache.jena.util.iterator.NullIterator.instance() ;
-        // Can't be duplicates - fixed graph node..
-        Iterator<Triple> iterTriples = projectQuadsToTriples(Quad.defaultGraphIRI, iterQuads) ;
-        return WrappedIterator.createNoRemove(iterTriples) ;
-    }
-
-    protected static ExtendedIterator<Triple> graphBaseFindNG(DatasetGraphTDB dataset, Node graphNode, Triple m) {
-        Node gn = graphNode ;
-        // Explicitly named union graph.
-        if ( isUnionGraph(gn) )
-            gn = Node.ANY ;
-
-        Iterator<Quad> iter = dataset.getQuadTable().find(gn, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
-        if ( iter == null )
-            return org.apache.jena.util.iterator.NullIterator.instance() ;
-
-        Iterator<Triple> iterTriples = projectQuadsToTriples((gn == Node.ANY ? null : gn), iter) ;
-
-        if ( gn == Node.ANY )
-            iterTriples = Iter.distinct(iterTriples) ;
-        return WrappedIterator.createNoRemove(iterTriples) ;
-    }
-
     @Override
     protected ExtendedIterator<Triple> graphUnionFind(Node s, Node p, Node o) {
         Node g = Quad.unionGraph ;
@@ -141,18 +115,6 @@ public class GraphTDB extends GraphView implements Closeable, Sync {
 		return TupleFactory.tuple(item.get(1), item.get(2), item.get(3));
 	};
 	
-	private static Iterator<Triple> projectQuadsToTriples(Node graphNode, Iterator<Quad> iter) {
-	    // Checking.
-        Function<Quad, Triple> f = (q) -> {
-            if ( graphNode != null && !q.getGraph().equals(graphNode) )
-                throw new InternalError("projectQuadsToTriples: Quads from unexpected graph (expected=" + graphNode + ", got=" + q.getGraph() + ")");
-            return q.asTriple();
-        };
-        // Without checking
-        //Function<Quad, Triple> f = (q) -> q.asTriple();
-	    return Iter.map(iter, f);
-	}
-
     @Override
     public void clear() {
         dataset.deleteAny(getGraphName(), Node.ANY, Node.ANY, Node.ANY) ;
