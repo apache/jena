@@ -20,9 +20,8 @@ package org.apache.jena.dboe.transaction.txn;
 
 import org.apache.jena.query.TxnType;
 
-/** Generate a transaction quorum for a transaction as it begins */  
+/** Generate a transaction quorum for a transaction as it begins */
 public interface QuorumGenerator {
-    public ComponentGroup genQuorum(TxnType txnType) ;
+    public ComponentGroup genQuorum(TxnType txnType);
 }
-
 

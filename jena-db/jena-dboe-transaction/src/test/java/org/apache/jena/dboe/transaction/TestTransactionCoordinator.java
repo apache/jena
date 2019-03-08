@@ -18,161 +18,160 @@
 
 package org.apache.jena.dboe.transaction;
 
-import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.assertEquals;
 
-import org.apache.jena.query.ReadWrite ;
-import org.junit.Test ;
+import org.apache.jena.query.ReadWrite;
+import org.junit.Test;
 
 public class TestTransactionCoordinator extends AbstractTestTxn {
     @Test public void txn_coord_read_1() {
-        assertEquals(0, txnMgr.countActive()) ;
-        assertEquals(0, txnMgr.countFinished()) ;
-        assertEquals(0, txnMgr.countBegin()) ;
-        assertEquals(0, txnMgr.countBeginRead()) ;
-        assertEquals(0, txnMgr.countBeginWrite()) ;
-        assertEquals(0, txnMgr.countActiveReaders()) ;
-        assertEquals(0, txnMgr.countActiveWriter()) ;
+        assertEquals(0, txnMgr.countActive());
+        assertEquals(0, txnMgr.countFinished());
+        assertEquals(0, txnMgr.countBegin());
+        assertEquals(0, txnMgr.countBeginRead());
+        assertEquals(0, txnMgr.countBeginWrite());
+        assertEquals(0, txnMgr.countActiveReaders());
+        assertEquals(0, txnMgr.countActiveWriter());
 
         unit.begin(ReadWrite.READ);
 
-        assertEquals(1, txnMgr.countActive()) ;
-        assertEquals(0, txnMgr.countFinished()) ;
-        assertEquals(1, txnMgr.countBegin()) ;
-        assertEquals(1, txnMgr.countBeginRead()) ;
-        assertEquals(0, txnMgr.countBeginWrite()) ;
-        
-        assertEquals(1, txnMgr.countActiveReaders()) ;
-        assertEquals(0, txnMgr.countActiveWriter()) ;
+        assertEquals(1, txnMgr.countActive());
+        assertEquals(0, txnMgr.countFinished());
+        assertEquals(1, txnMgr.countBegin());
+        assertEquals(1, txnMgr.countBeginRead());
+        assertEquals(0, txnMgr.countBeginWrite());
 
-        unit.end() ;
+        assertEquals(1, txnMgr.countActiveReaders());
+        assertEquals(0, txnMgr.countActiveWriter());
 
-        assertEquals(0, txnMgr.countActive()) ;
-        assertEquals(1, txnMgr.countBeginRead()) ;
-        assertEquals(0, txnMgr.countBeginWrite()) ;
-        assertEquals(1, txnMgr.countFinished()) ;
-        assertEquals(1, txnMgr.countBegin()) ;
-        assertEquals(0, txnMgr.countActiveReaders()) ;
-        assertEquals(0, txnMgr.countActiveWriter()) ;
+        unit.end();
+
+        assertEquals(0, txnMgr.countActive());
+        assertEquals(1, txnMgr.countBeginRead());
+        assertEquals(0, txnMgr.countBeginWrite());
+        assertEquals(1, txnMgr.countFinished());
+        assertEquals(1, txnMgr.countBegin());
+        assertEquals(0, txnMgr.countActiveReaders());
+        assertEquals(0, txnMgr.countActiveWriter());
     }
-    
+
     @Test public void txn_coord_read_2() {
-        assertEquals(0, txnMgr.countActive()) ;
-        assertEquals(0, txnMgr.countFinished()) ;
-        assertEquals(0, txnMgr.countBegin()) ;
-        assertEquals(0, txnMgr.countBeginRead()) ;
-        assertEquals(0, txnMgr.countBeginWrite()) ;
+        assertEquals(0, txnMgr.countActive());
+        assertEquals(0, txnMgr.countFinished());
+        assertEquals(0, txnMgr.countBegin());
+        assertEquals(0, txnMgr.countBeginRead());
+        assertEquals(0, txnMgr.countBeginWrite());
 
         unit.begin(ReadWrite.READ);
 
-        assertEquals(1, txnMgr.countActive()) ;
-        assertEquals(0, txnMgr.countFinished()) ;
-        assertEquals(1, txnMgr.countBegin()) ;
-        assertEquals(1, txnMgr.countBeginRead()) ;
-        assertEquals(0, txnMgr.countBeginWrite()) ;
+        assertEquals(1, txnMgr.countActive());
+        assertEquals(0, txnMgr.countFinished());
+        assertEquals(1, txnMgr.countBegin());
+        assertEquals(1, txnMgr.countBeginRead());
+        assertEquals(0, txnMgr.countBeginWrite());
 
-        unit.commit() ;
-        
-        assertEquals(0, txnMgr.countActive()) ;
-        assertEquals(1, txnMgr.countBeginRead()) ;
-        assertEquals(0, txnMgr.countBeginWrite()) ;
-        assertEquals(1, txnMgr.countFinished()) ;
-        assertEquals(1, txnMgr.countBegin()) ;
+        unit.commit();
 
-        unit.end() ;
+        assertEquals(0, txnMgr.countActive());
+        assertEquals(1, txnMgr.countBeginRead());
+        assertEquals(0, txnMgr.countBeginWrite());
+        assertEquals(1, txnMgr.countFinished());
+        assertEquals(1, txnMgr.countBegin());
 
-        assertEquals(0, txnMgr.countActive()) ;
-        assertEquals(1, txnMgr.countBeginRead()) ;
-        assertEquals(0, txnMgr.countBeginWrite()) ;
-        assertEquals(1, txnMgr.countFinished()) ;
-        assertEquals(1, txnMgr.countBegin()) ;
+        unit.end();
+
+        assertEquals(0, txnMgr.countActive());
+        assertEquals(1, txnMgr.countBeginRead());
+        assertEquals(0, txnMgr.countBeginWrite());
+        assertEquals(1, txnMgr.countFinished());
+        assertEquals(1, txnMgr.countBegin());
     }
 
     @Test public void txn_coord_write_1() {
-        assertEquals(0, txnMgr.countActive()) ;
-        assertEquals(0, txnMgr.countFinished()) ;
-        assertEquals(0, txnMgr.countBegin()) ;
-        assertEquals(0, txnMgr.countBeginRead()) ;
-        assertEquals(0, txnMgr.countBeginWrite()) ;
+        assertEquals(0, txnMgr.countActive());
+        assertEquals(0, txnMgr.countFinished());
+        assertEquals(0, txnMgr.countBegin());
+        assertEquals(0, txnMgr.countBeginRead());
+        assertEquals(0, txnMgr.countBeginWrite());
 
-        assertEquals(0, txnMgr.countActiveReaders()) ;
-        assertEquals(0, txnMgr.countActiveWriter()) ;
+        assertEquals(0, txnMgr.countActiveReaders());
+        assertEquals(0, txnMgr.countActiveWriter());
 
-        
         unit.begin(ReadWrite.WRITE);
-        
-        assertEquals(1, txnMgr.countActive()) ;
-        assertEquals(0, txnMgr.countFinished()) ;
-        assertEquals(1, txnMgr.countBegin()) ;
-        assertEquals(0, txnMgr.countBeginRead()) ;
-        assertEquals(1, txnMgr.countBeginWrite()) ;
-        
-        assertEquals(0, txnMgr.countActiveReaders()) ;
-        assertEquals(1, txnMgr.countActiveWriter()) ;
 
-        unit.commit() ;
+        assertEquals(1, txnMgr.countActive());
+        assertEquals(0, txnMgr.countFinished());
+        assertEquals(1, txnMgr.countBegin());
+        assertEquals(0, txnMgr.countBeginRead());
+        assertEquals(1, txnMgr.countBeginWrite());
 
-        assertEquals(0, txnMgr.countActive()) ;
-        assertEquals(1, txnMgr.countFinished()) ;
-        assertEquals(1, txnMgr.countBegin()) ;
-        assertEquals(0, txnMgr.countBeginRead()) ;
-        assertEquals(1, txnMgr.countBeginWrite()) ;
+        assertEquals(0, txnMgr.countActiveReaders());
+        assertEquals(1, txnMgr.countActiveWriter());
 
-        assertEquals(0, txnMgr.countActiveReaders()) ;
-        assertEquals(0, txnMgr.countActiveWriter()) ;
+        unit.commit();
 
-        unit.end() ;
+        assertEquals(0, txnMgr.countActive());
+        assertEquals(1, txnMgr.countFinished());
+        assertEquals(1, txnMgr.countBegin());
+        assertEquals(0, txnMgr.countBeginRead());
+        assertEquals(1, txnMgr.countBeginWrite());
 
-        assertEquals(0, txnMgr.countActive()) ;
-        assertEquals(1, txnMgr.countFinished()) ;
-        assertEquals(1, txnMgr.countBegin()) ;
-        assertEquals(0, txnMgr.countBeginRead()) ;
-        assertEquals(1, txnMgr.countBeginWrite()) ;
+        assertEquals(0, txnMgr.countActiveReaders());
+        assertEquals(0, txnMgr.countActiveWriter());
 
-        assertEquals(0, txnMgr.countActiveReaders()) ;
-        assertEquals(0, txnMgr.countActiveWriter()) ;
+        unit.end();
+
+        assertEquals(0, txnMgr.countActive());
+        assertEquals(1, txnMgr.countFinished());
+        assertEquals(1, txnMgr.countBegin());
+        assertEquals(0, txnMgr.countBeginRead());
+        assertEquals(1, txnMgr.countBeginWrite());
+
+        assertEquals(0, txnMgr.countActiveReaders());
+        assertEquals(0, txnMgr.countActiveWriter());
     }
 
     @Test public void txn_coord_write_2() {
-        assertEquals(0, txnMgr.countActive()) ;
-        assertEquals(0, txnMgr.countFinished()) ;
-        assertEquals(0, txnMgr.countBegin()) ;
-        assertEquals(0, txnMgr.countBeginRead()) ;
-        assertEquals(0, txnMgr.countBeginWrite()) ;
-        assertEquals(0, txnMgr.countActiveReaders()) ;
-        assertEquals(0, txnMgr.countActiveWriter()) ;
-        
+        assertEquals(0, txnMgr.countActive());
+        assertEquals(0, txnMgr.countFinished());
+        assertEquals(0, txnMgr.countBegin());
+        assertEquals(0, txnMgr.countBeginRead());
+        assertEquals(0, txnMgr.countBeginWrite());
+        assertEquals(0, txnMgr.countActiveReaders());
+        assertEquals(0, txnMgr.countActiveWriter());
+
         unit.begin(ReadWrite.WRITE);
-        
-        assertEquals(1, txnMgr.countActive()) ;
-        assertEquals(0, txnMgr.countFinished()) ;
-        assertEquals(1, txnMgr.countBegin()) ;
-        assertEquals(0, txnMgr.countBeginRead()) ;
-        assertEquals(1, txnMgr.countBeginWrite()) ;
-        
-        assertEquals(0, txnMgr.countActiveReaders()) ;
-        assertEquals(1, txnMgr.countActiveWriter()) ;
-        
-        unit.abort() ;
 
-        assertEquals(0, txnMgr.countActive()) ;
-        assertEquals(1, txnMgr.countFinished()) ;
-        assertEquals(1, txnMgr.countBegin()) ;
-        assertEquals(0, txnMgr.countBeginRead()) ;
-        assertEquals(1, txnMgr.countBeginWrite()) ;
-        
-        assertEquals(0, txnMgr.countActiveReaders()) ;
-        assertEquals(0, txnMgr.countActiveWriter()) ;
-        
-        unit.end() ;
+        assertEquals(1, txnMgr.countActive());
+        assertEquals(0, txnMgr.countFinished());
+        assertEquals(1, txnMgr.countBegin());
+        assertEquals(0, txnMgr.countBeginRead());
+        assertEquals(1, txnMgr.countBeginWrite());
 
-        assertEquals(0, txnMgr.countActive()) ;
-        assertEquals(1, txnMgr.countFinished()) ;
-        assertEquals(1, txnMgr.countBegin()) ;
-        assertEquals(0, txnMgr.countBeginRead()) ;
-        assertEquals(1, txnMgr.countBeginWrite()) ;
+        assertEquals(0, txnMgr.countActiveReaders());
+        assertEquals(1, txnMgr.countActiveWriter());
 
-        assertEquals(0, txnMgr.countActiveReaders()) ;
-        assertEquals(0, txnMgr.countActiveWriter()) ;
+        unit.abort();
+
+        assertEquals(0, txnMgr.countActive());
+        assertEquals(1, txnMgr.countFinished());
+        assertEquals(1, txnMgr.countBegin());
+        assertEquals(0, txnMgr.countBeginRead());
+        assertEquals(1, txnMgr.countBeginWrite());
+
+        assertEquals(0, txnMgr.countActiveReaders());
+        assertEquals(0, txnMgr.countActiveWriter());
+
+        unit.end();
+
+        assertEquals(0, txnMgr.countActive());
+        assertEquals(1, txnMgr.countFinished());
+        assertEquals(1, txnMgr.countBegin());
+        assertEquals(0, txnMgr.countBeginRead());
+        assertEquals(1, txnMgr.countBeginWrite());
+
+        assertEquals(0, txnMgr.countActiveReaders());
+        assertEquals(0, txnMgr.countActiveWriter());
     }
 }
 

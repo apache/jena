@@ -19,10 +19,10 @@
 package org.apache.jena.dboe.trans.bplustree;
 
 /** Tree mode - changing the mode on an existing tree is not supported.
- * The normal mode of operation is {@link Mode#TRANSACTIONAL}  
+ * The normal mode of operation is {@link Mode#TRANSACTIONAL}
  */
 public enum Mode {
-    /** 
+    /**
      * B+Tree changes are applied in place. MRSW applies.
      */
     MUTABLE,

@@ -18,7 +18,7 @@
 
 package org.apache.jena.dboe.base.buffer;
 
-import static org.apache.jena.atlas.lib.Alg.decodeIndex ;
+import static org.apache.jena.atlas.lib.Alg.decodeIndex;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -28,72 +28,65 @@ import org.apache.jena.dboe.base.record.Record;
 public class RecordBufferIterator implements Iterator<Record>
 {
     private static final int END = -99;
-    private RecordBuffer rBuff ;
-    private int nextIdx ;
-    private Record slot = null ;
-    private final Record maxRec ;
-    private final Record minRec ;
-    
+    private RecordBuffer rBuff;
+    private int nextIdx;
+    private Record slot = null;
+    private final Record maxRec;
+    private final Record minRec;
+
     RecordBufferIterator(RecordBuffer rBuff)
     { this(rBuff, null, null); }
-    
-    RecordBufferIterator(RecordBuffer rBuff, Record minRecord, Record maxRecord)
-    {
-        this.rBuff = rBuff ;
-        nextIdx = 0 ;
-        minRec = minRecord ;
-        if ( minRec != null )
-        {
-            nextIdx = rBuff.find(minRec) ;
+
+    RecordBufferIterator(RecordBuffer rBuff, Record minRecord, Record maxRecord) {
+        this.rBuff = rBuff;
+        nextIdx = 0;
+        minRec = minRecord;
+        if ( minRec != null ) {
+            nextIdx = rBuff.find(minRec);
             if ( nextIdx < 0 )
-                nextIdx = decodeIndex(nextIdx) ;
+                nextIdx = decodeIndex(nextIdx);
         }
-        
-        maxRec = maxRecord ; 
+
+        maxRec = maxRecord;
     }
 
-    private void finish()
-    {
-        rBuff = null ;
-        nextIdx = END ;
-        slot = null ;
+    private void finish() {
+        rBuff = null;
+        nextIdx = END;
+        slot = null;
     }
-    
+
     @Override
-    public boolean hasNext()
-    {
+    public boolean hasNext() {
         if ( slot != null )
-            return true ;
+            return true;
         if ( nextIdx < 0 )
-            return false ;
-        if ( nextIdx >= rBuff.size() )
-        {
-            finish() ;
-            return false ;
+            return false;
+        if ( nextIdx >= rBuff.size() ) {
+            finish();
+            return false;
         }
-        
-        slot = rBuff.get(nextIdx) ;
-        if ( maxRec != null && Record.keyGE(slot, maxRec) )
-        {
+
+        slot = rBuff.get(nextIdx);
+        if ( maxRec != null && Record.keyGE(slot, maxRec) ) {
             // Finished - now to large
-            finish() ;
-            return false ;
+            finish();
+            return false;
         }
-        nextIdx ++ ;
-        return true ;
+        nextIdx ++;
+        return true;
     }
 
     @Override
-    public Record next()
-    {
+    public Record next() {
         if ( ! hasNext() )
-            throw new NoSuchElementException("RecordBufferIterator") ;
-        Record r = slot ;
-        slot = null ;
-        return r ;
+            throw new NoSuchElementException("RecordBufferIterator");
+        Record r = slot;
+        slot = null;
+        return r;
     }
 
     @Override
     public void remove()
-    { throw new UnsupportedOperationException("RecordBufferIterator.remove") ; }
+    { throw new UnsupportedOperationException("RecordBufferIterator.remove"); }
 }

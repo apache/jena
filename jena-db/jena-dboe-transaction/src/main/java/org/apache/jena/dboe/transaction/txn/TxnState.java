@@ -18,5 +18,5 @@
 
 package org.apache.jena.dboe.transaction.txn;
 
-/** The states of the transaction lifecycle */ 
+/** The states of the transaction lifecycle */
 public enum TxnState { INACTIVE, ACTIVE, DETACHED, PREPARE, COMMIT, COMMITTED, ABORTED, END_COMMITTED, END_ABORTED }

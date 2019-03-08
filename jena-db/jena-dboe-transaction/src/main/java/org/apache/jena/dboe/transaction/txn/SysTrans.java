@@ -18,25 +18,25 @@
 
 package org.apache.jena.dboe.transaction.txn;
 
-import java.nio.ByteBuffer ;
+import java.nio.ByteBuffer;
 
-/** Single component aspect of a transaction */  
-final 
+/** Single component aspect of a transaction */
+final
 class SysTrans {
-    private final TransactionalComponent elt ;
-    private final Transaction transaction ;
-    private final TxnId txnId ;
+    private final TransactionalComponent elt;
+    private final Transaction transaction;
+    private final TxnId txnId;
 
-    public SysTrans(TransactionalComponent elt, Transaction transaction, TxnId txnId) { 
-        this.elt = elt ;
-        this.transaction = transaction ;
-        this.txnId = txnId ;
+    public SysTrans(TransactionalComponent elt, Transaction transaction, TxnId txnId) {
+        this.elt = elt;
+        this.transaction = transaction;
+        this.txnId = txnId;
     }
 
     public void begin()                 { }
-    public boolean promote()            { return elt.promote(transaction) ; }
+    public boolean promote()            { return elt.promote(transaction); }
 
-    public ByteBuffer commitPrepare()   { return elt.commitPrepare(transaction) ; }
+    public ByteBuffer commitPrepare()   { return elt.commitPrepare(transaction); }
 
     public void commit()                { elt.commit(transaction); }
 
@@ -45,9 +45,9 @@ class SysTrans {
     public void abort()                 { elt.abort(transaction); }
 
     public void complete()              { elt.complete(transaction); }
-    
-    public Transaction getTransaction()             { return transaction ; } 
-    public TxnId getTxnId()                         { return txnId ; } 
-    public TransactionalComponent getComponent()    { return elt ; }
-    public ComponentId getComponentId()             { return elt.getComponentId() ; }
+
+    public Transaction getTransaction()             { return transaction; }
+    public TxnId getTxnId()                         { return txnId; }
+    public TransactionalComponent getComponent()    { return elt; }
+    public ComponentId getComponentId()             { return elt.getComponentId(); }
 }

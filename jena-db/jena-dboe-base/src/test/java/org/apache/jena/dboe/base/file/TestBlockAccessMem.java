@@ -23,16 +23,14 @@ import org.apache.jena.dboe.base.file.BlockAccessMem;
 
 public class TestBlockAccessMem extends AbstractTestBlockAccessFixedSize
 {
-    static final int BlockSize = 50 ;
-    public TestBlockAccessMem()
-    {
-        super(BlockSize) ;
+    static final int BlockSize = 50;
+    public TestBlockAccessMem() {
+        super(BlockSize);
     }
 
     @Override
-    protected BlockAccess make()
-    {
-        return new BlockAccessMem("test", BlockSize) ;
+    protected BlockAccess make() {
+        return new BlockAccessMem("test", BlockSize);
     }
 
 }

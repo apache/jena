@@ -22,7 +22,7 @@ import org.apache.jena.dboe.index.RangeIndex;
 
 public interface RangeIndexMaker extends IndexMaker
 {
-    RangeIndex makeRangeIndex() ;
+    RangeIndex makeRangeIndex();
     @Override
-    String getLabel() ;
+    String getLabel();
 }

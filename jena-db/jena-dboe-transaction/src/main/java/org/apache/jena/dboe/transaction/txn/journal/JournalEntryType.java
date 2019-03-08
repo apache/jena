@@ -18,41 +18,40 @@
 
 package org.apache.jena.dboe.transaction.txn.journal;
 
-import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.atlas.logging.Log;
 
-/** 
+/**
  * Types of Journal entry.
  * This set is quite general and so not all cases may be used in practice.
  * <p>
  * The id must be stable across new versions on the code as it ends up
  * in the journal on-disk so we are explicit about id even though there is
- * {@link Enum#ordinal} 
+ * {@link Enum#ordinal}
  */
-public enum JournalEntryType 
-{ 
+public enum JournalEntryType
+{
     /*
      * REDO, UNDO -- Actions (UNDO unused)
      * COMMIT, ABORT -- Transaction action (ABORT unused)
      * CHECKPOINT -- data written to the journal as a safe spill file (unused)
      */
-    REDO(1), UNDO(2), COMMIT(3), ABORT(4) 
+    REDO(1), UNDO(2), COMMIT(3), ABORT(4)
     /*, CHECKPOINT(6)*/
-    ;
+   ;
 
-    final int id ;
-    JournalEntryType(int x) { id = x ; }
-    int getId() { return id ; }
-    static public JournalEntryType type(int x)
-    {
-        if      ( x == REDO.id )            return REDO ;
-        else if ( x == UNDO.id )            return UNDO ;
-        else if ( x == COMMIT.id )          return COMMIT ;
-        else if ( x == ABORT.id )           return ABORT ;
-        //else if ( x == CHECKPOINT.id )      return CHECKPOINT ;
+    final int id;
+    JournalEntryType(int x) { id = x; }
+    int getId() { return id; }
+    static public JournalEntryType type(int x) {
+        if      ( x == REDO.id )            return REDO;
+        else if ( x == UNDO.id )            return UNDO;
+        else if ( x == COMMIT.id )          return COMMIT;
+        else if ( x == ABORT.id )           return ABORT;
+        //else if ( x == CHECKPOINT.id )      return CHECKPOINT;
         else {
-            Log.error(JournalEntryType.class, "Unknown type: "+x) ;
-            throw new InternalErrorException("Unknown type: "+x) ;
+            Log.error(JournalEntryType.class, "Unknown type: "+x);
+            throw new InternalErrorException("Unknown type: "+x);
         }
     }
 }

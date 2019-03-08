@@ -18,49 +18,49 @@
 
 package org.apache.jena.dboe.transaction;
 
-import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.system.Txn;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
-import org.junit.After ;
-import org.junit.Assert ;
-import org.junit.Before ;
-import org.junit.Test ;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /** Unusual ways to do things.
- *  Rather than a TransactionalComponent,   
- *  TransactionalInteger 
+ *  Rather than a TransactionalComponent,
+ *  TransactionalInteger
  */
 public class TestTxnLib2 extends Assert {
     // With setup/teardown / not from AbstractTestTxn
-    private final long InitValue = 7 ;  
-    TransactionalInteger integer ; 
-    
+    private final long InitValue = 7;
+    TransactionalInteger integer;
+
     @Before public void setup() {
-        TransactionCoordinator coord = new TransactionCoordinator(Location.mem()) ;
-        integer = new TransactionalInteger(coord, InitValue) ;
-        coord.start() ;
+        TransactionCoordinator coord = new TransactionCoordinator(Location.mem());
+        integer = new TransactionalInteger(coord, InitValue);
+        coord.start();
     }
-    
+
     @After public void clearup() {
-        integer.shutdown(); 
+        integer.shutdown();
     }
 
     @Test public void libTxn_10() {
-        Txn.executeWrite(integer, integer::inc) ;
-        long x = Txn.calculateRead(integer, integer::get) ;
-        assertEquals(InitValue+1, x) ;
+        Txn.executeWrite(integer, integer::inc);
+        long x = Txn.calculateRead(integer, integer::get);
+        assertEquals(InitValue+1, x);
     }
-    
+
     @Test public void libTxn_11() {
         Pair<Long, Long> p = Txn.calculateWrite(integer, () -> {
-            integer.inc() ;
-            return Pair.create(integer.value(), integer.get()) ;
-        }) ;
-        assertEquals(InitValue,     p.getLeft().longValue()) ;
-        assertEquals(InitValue+1,   p.getRight().longValue()) ;
-        assertEquals(InitValue+1,   integer.get()) ;
-        assertEquals(InitValue+1,   integer.value()) ;
+            integer.inc();
+            return Pair.create(integer.value(), integer.get());
+        });
+        assertEquals(InitValue,     p.getLeft().longValue());
+        assertEquals(InitValue+1,   p.getRight().longValue());
+        assertEquals(InitValue+1,   integer.get());
+        assertEquals(InitValue+1,   integer.value());
     }
 }
 

@@ -16,64 +16,64 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.base.file ;
+package org.apache.jena.dboe.base.file;
 
-import java.io.IOException ;
-import java.nio.ByteBuffer ;
-import java.nio.channels.FileChannel ;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 
-import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.dboe.sys.FileLib;
 
 public class BufferChannelFile implements BufferChannel {
-    private String      filename ;
-    private FileChannel file ;
+    private String      filename;
+    private FileChannel file;
 
     /** Create a BufferChannelFile */
     public static BufferChannelFile create(String filename) {
-        return create(filename, "rw") ;
+        return create(filename, "rw");
     }
 
     /** Create a BufferChannelFile */
     public static BufferChannelFile create(String filename, String mode) {
-        FileChannel base = ChannelManager.acquire(filename, mode) ;
-        return new BufferChannelFile(filename, base) ;
+        FileChannel base = ChannelManager.acquire(filename, mode);
+        return new BufferChannelFile(filename, base);
     }
 
     /** Create a BufferChannelFile with unmanaged file resources - use with care */
     public static BufferChannelFile createUnmanaged(String filename, String mode) {
-        FileChannel channel = FileLib.openUnmanaged(filename, mode) ;
-        return new BufferChannelFile(filename, channel) ;
+        FileChannel channel = FileLib.openUnmanaged(filename, mode);
+        return new BufferChannelFile(filename, channel);
     }
 
     private BufferChannelFile(String filename, FileChannel channel) {
-        this.filename = filename ;
-        this.file = channel ;
+        this.filename = filename;
+        this.file = channel;
     }
 
     @Override
     public BufferChannel duplicate() {
-        return new BufferChannelFile(filename, file) ;
+        return new BufferChannelFile(filename, file);
     }
 
     @Override
     public long position() {
         try {
-            return file.position() ;
+            return file.position();
         }
         catch (IOException e) {
-            IO.exception(e) ;
-            return -1 ;
+            IO.exception(e);
+            return -1;
         }
     }
 
     @Override
     public void position(long pos) {
         try {
-            file.position(pos) ;
+            file.position(pos);
         }
         catch (IOException e) {
-            IO.exception(e) ;
+            IO.exception(e);
         }
     }
 
@@ -82,91 +82,91 @@ public class BufferChannelFile implements BufferChannel {
         try {
             // http://bugs.sun.com/view_bug.do?bug_id=6191269
             if ( length < file.position() )
-                file.position(length) ;
-            file.truncate(length) ;
+                file.position(length);
+            file.truncate(length);
         }
         catch (IOException e) {
-            IO.exception(e) ;
+            IO.exception(e);
         }
     }
 
     @Override
     public int read(ByteBuffer buffer) {
         try {
-            return file.read(buffer) ;
+            return file.read(buffer);
         }
         catch (IOException e) {
-            IO.exception(e) ;
-            return -1 ;
+            IO.exception(e);
+            return -1;
         }
     }
 
     @Override
     public int read(ByteBuffer buffer, long loc) {
         try {
-            return file.read(buffer, loc) ;
+            return file.read(buffer, loc);
         }
         catch (IOException e) {
-            IO.exception(e) ;
-            return -1 ;
+            IO.exception(e);
+            return -1;
         }
     }
 
     @Override
     public int write(ByteBuffer buffer) {
         try {
-            return file.write(buffer) ;
+            return file.write(buffer);
         }
         catch (IOException e) {
-            IO.exception(e) ;
-            return -1 ;
+            IO.exception(e);
+            return -1;
         }
     }
 
     @Override
     public int write(ByteBuffer buffer, long loc) {
         try {
-            return file.write(buffer, loc) ;
+            return file.write(buffer, loc);
         }
         catch (IOException e) {
-            IO.exception(e) ;
-            return -1 ;
+            IO.exception(e);
+            return -1;
         }
     }
 
     @Override
     public long size() {
-        return FileLib.size(file) ; 
+        return FileLib.size(file);
     }
 
     @Override
     public boolean isEmpty() {
-        return size() == 0 ;
+        return size() == 0;
     }
 
     @Override
     public void sync() {
-        FileLib.sync(file) ;
+        FileLib.sync(file);
     }
 
     @Override
     public void close() {
-        FileLib.close(file) ;
+        FileLib.close(file);
     }
 
     @Override
     public String getLabel() {
-        return filename ;
+        return filename;
     }
 
     @Override
     public String toString() {
-        return filename ;
+        return filename;
     }
 
     @Override
     public String getFilename() {
-        return filename ;
+        return filename;
     }
 
 }

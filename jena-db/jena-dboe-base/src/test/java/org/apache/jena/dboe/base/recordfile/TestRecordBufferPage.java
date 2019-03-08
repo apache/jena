@@ -18,7 +18,7 @@
 
 package org.apache.jena.dboe.base.recordfile;
 
-import org.junit.Assert ;
+import org.junit.Assert;
 import org.apache.jena.dboe.base.block.BlockMgr;
 import org.apache.jena.dboe.base.block.BlockMgrFactory;
 import org.apache.jena.dboe.base.buffer.RecordBuffer;
@@ -27,99 +27,87 @@ import org.apache.jena.dboe.base.record.RecordFactory;
 import org.apache.jena.dboe.base.recordbuffer.RecordBufferPage;
 import org.apache.jena.dboe.base.recordbuffer.RecordBufferPageMgr;
 import org.apache.jena.dboe.sys.SystemIndex;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class TestRecordBufferPage extends Assert
 {
-    // Testing: records are 2 bytes, 3 records per block.  
-    
-    static final int TestRecordSize = 2 ;           // Size, in bytes.
-    static final int TestNumRecord  = 3 ;           // Size, in bytes.
-    static RecordFactory factory = new RecordFactory(2, 0) ; 
-    
-    static boolean originalNullOut ; 
-    @BeforeClass static public void beforeClass()
-    {
-        originalNullOut = SystemIndex.getNullOut() ;
-        SystemIndex.setNullOut(true) ;    
-    }
-    
-    @AfterClass static public void afterClass()
-    {
-        SystemIndex.setNullOut(originalNullOut) ;    
+    // Testing: records are 2 bytes, 3 records per block.
+
+    static final int TestRecordSize = 2;           // Size, in bytes.
+    static final int TestNumRecord  = 3;           // Size, in bytes.
+    static RecordFactory factory = new RecordFactory(2, 0);
+
+    static boolean originalNullOut;
+    @BeforeClass static public void beforeClass() {
+        originalNullOut = SystemIndex.getNullOut();
+        SystemIndex.setNullOut(true);
     }
 
-    @Test public void recBufferPage01()
-    {
-        BlockMgr blkMgr = makeBlockMgr() ;
-        blkMgr.beginUpdate() ;
-        RecordBufferPageMgr rpm = new RecordBufferPageMgr(factory, blkMgr) ;
-        RecordBufferPage page = rpm.create() ;
-        fill(page.getRecordBuffer(), 10, 20, 30) ;
-        assertEquals(10, get(page, 0)) ;
-        assertEquals(20, get(page, 1)) ;
-        assertEquals(30, get(page, 2)) ;
-        rpm.release(page) ;
-        blkMgr.endUpdate() ;
-    }
-    
-    @Test public void recBufferPage02()
-    {
-        BlockMgr blkMgr = makeBlockMgr() ;
-        blkMgr.beginUpdate() ;
-        RecordBufferPageMgr rpm = new RecordBufferPageMgr(factory, blkMgr) ;
-        int x = -99 ;
-        {
-            RecordBufferPage page1 = rpm.create() ;
-            fill(page1.getRecordBuffer(), 10, 20, 30) ;
-            x = page1.getId() ;
-            rpm.put(page1) ;
-            page1 = null ;
-        }
-        blkMgr.endUpdate() ;
-        blkMgr.beginRead() ;
-        {
-            RecordBufferPage page2 = rpm.getRead(x) ;
-            assertEquals(10, get(page2, 0)) ;
-            assertEquals(20, get(page2, 1)) ;
-            assertEquals(30, get(page2, 2)) ;
-            rpm.release(page2) ;
-        }
-        blkMgr.endRead() ;
+    @AfterClass static public void afterClass() {
+        SystemIndex.setNullOut(originalNullOut);
     }
 
-    
-    private static void fill(RecordBuffer rb, int ... nums)
-    {
-        for ( int num : nums )
-        {
+    @Test public void recBufferPage01() {
+        BlockMgr blkMgr = makeBlockMgr();
+        blkMgr.beginUpdate();
+        RecordBufferPageMgr rpm = new RecordBufferPageMgr(factory, blkMgr);
+        RecordBufferPage page = rpm.create();
+        fill(page.getRecordBuffer(), 10, 20, 30);
+        assertEquals(10, get(page, 0));
+        assertEquals(20, get(page, 1));
+        assertEquals(30, get(page, 2));
+        rpm.release(page);
+        blkMgr.endUpdate();
+    }
+
+    @Test public void recBufferPage02() {
+        BlockMgr blkMgr = makeBlockMgr();
+        blkMgr.beginUpdate();
+        RecordBufferPageMgr rpm = new RecordBufferPageMgr(factory, blkMgr);
+        int x = -99; {
+            RecordBufferPage page1 = rpm.create();
+            fill(page1.getRecordBuffer(), 10, 20, 30);
+            x = page1.getId();
+            rpm.put(page1);
+            page1 = null;
+        }
+        blkMgr.endUpdate();
+        blkMgr.beginRead(); {
+            RecordBufferPage page2 = rpm.getRead(x);
+            assertEquals(10, get(page2, 0));
+            assertEquals(20, get(page2, 1));
+            assertEquals(30, get(page2, 2));
+            rpm.release(page2);
+        }
+        blkMgr.endRead();
+    }
+
+    private static void fill(RecordBuffer rb, int ... nums) {
+        for ( int num : nums ) {
             Record rec = record( num );
             rb.add( rec );
         }
     }
-    
-    private static int get(RecordBufferPage rbp, int idx) { return get(rbp.getRecordBuffer(), idx) ; } 
-    
-    private static int get(RecordBuffer rb, int idx) 
-    {
-        Record r = rb.get(idx) ;
-        int v = (r.getKey()[0])<<8 | ((r.getKey()[1])&0xFF) ;
-        return v ;
-    }
-    
-    private static Record record(int i)
-    {
-        byte b[] = new byte[]{ 
-            (byte)((i>>8)&0xFF),
-            (byte)(i&0xFF)} ; 
-        Record r = factory.create(b) ;
-        return r ;
+
+    private static int get(RecordBufferPage rbp, int idx) { return get(rbp.getRecordBuffer(), idx); }
+
+    private static int get(RecordBuffer rb, int idx) {
+        Record r = rb.get(idx);
+        int v = (r.getKey()[0])<<8 | ((r.getKey()[1])&0xFF);
+        return v;
     }
 
-    private static BlockMgr makeBlockMgr()
-    {
-        return BlockMgrFactory.createMem("RecordBuffer", RecordBufferPage.calcBlockSize(factory, TestNumRecord)) ; 
+    private static Record record(int i) {
+        byte b[] = new byte[]{
+            (byte)((i>>8)&0xFF),
+            (byte)(i&0xFF)};
+        Record r = factory.create(b);
+        return r;
+    }
+
+    private static BlockMgr makeBlockMgr() {
+        return BlockMgrFactory.createMem("RecordBuffer", RecordBufferPage.calcBlockSize(factory, TestNumRecord));
     }
 }

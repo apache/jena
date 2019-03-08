@@ -18,55 +18,49 @@
 
 package org.apache.jena.dboe.index;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
 import org.apache.jena.dboe.base.record.Record;
-import org.slf4j.Logger ;
+import org.slf4j.Logger;
 
 public final class RangeIndexLogger extends RangeIndexWrapper
 {
-    private final Logger log ;
+    private final Logger log;
 
-    public RangeIndexLogger(RangeIndex rIdx, Logger log)
-    {
-        super(rIdx) ;
-        this.log = log ;
+    public RangeIndexLogger(RangeIndex rIdx, Logger log) {
+        super(rIdx);
+        this.log = log;
     }
 
     @Override
-    public boolean insert(Record record)
-    { 
-        log.info("Add: "+record) ;
-        return super.insert(record) ; 
+    public boolean insert(Record record) {
+        log.info("Add: "+record);
+        return super.insert(record);
     }
 
     @Override
-    public boolean delete(Record record)
-    { 
-        log.info("Delete: "+record) ;
-        return super.delete(record) ; 
+    public boolean delete(Record record) {
+        log.info("Delete: "+record);
+        return super.delete(record);
     }
 
     @Override
-    public Record find(Record record)
-    {
-        log.info("Find: "+record) ;
-        Record r2 = super.find(record) ;
-        log.info("Find: "+record+" ==> "+r2) ;
-        return r2 ;
+    public Record find(Record record) {
+        log.info("Find: "+record);
+        Record r2 = super.find(record);
+        log.info("Find: "+record+" ==> "+r2);
+        return r2;
     }
 
     @Override
-    public Iterator<Record> iterator()
-    {
-        log.info("iterator()") ;
-        return super.iterator() ;
+    public Iterator<Record> iterator() {
+        log.info("iterator()");
+        return super.iterator();
     }
 
     @Override
-    public Iterator<Record> iterator(Record minRec, Record maxRec)
-    {
-        log.info("iterator("+minRec+", "+maxRec+")") ;
-        return super.iterator(minRec, maxRec) ;
+    public Iterator<Record> iterator(Record minRec, Record maxRec) {
+        log.info("iterator("+minRec+", "+maxRec+")");
+        return super.iterator(minRec, maxRec);
     }
 }
