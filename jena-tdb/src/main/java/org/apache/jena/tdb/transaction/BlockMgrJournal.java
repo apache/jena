@@ -112,9 +112,9 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     @Override
     public void abort(Transaction txn)
     {
-        checkActive() ;
+        // Ignore checkActive. abort() may be called in rollback.
         this.active = false ;
-        // Do clearup of in-memory structures in clearup().
+        clear(txn);
     }
     
     /** Set, or reset, this BlockMgr.

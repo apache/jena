@@ -153,7 +153,7 @@ public class Transaction implements TransactionInfo {
     }
     
     public void commit() { 
-        // XXX Split into READ and WRITE forms.
+        // The commit point is in TransactionCoordinator.executeCommit().
         TxnState s = getState();
         if ( s == ACTIVE ) 
             // Auto exec prepare().
@@ -164,13 +164,17 @@ public class Transaction implements TransactionInfo {
             case WRITE:
                 txnMgr.executeCommit(this,
                                      ()->{components.forEach((c) -> c.commit()) ; } ,
-                                     ()->{components.forEach((c) -> c.commitEnd()) ; } ) ;
+                                     ()->{components.forEach((c) -> c.commitEnd()) ; },
+                                     ()->{components.forEach((c) -> c.abort()) ; }
+                                    ) ;
                 break ;
             case READ:
                 // Different lifecycle?
                 txnMgr.executeCommit(this, 
                                      ()->{components.forEach((c) -> c.commit()) ; } ,
-                                     ()->{components.forEach((c) -> c.commitEnd()) ; } ) ;
+                                     ()->{components.forEach((c) -> c.commitEnd()) ; } ,
+                                     ()->{components.forEach((c) -> c.abort()) ; }
+                                    ) ;
                 break ;
         }
         setState(COMMITTED) ;

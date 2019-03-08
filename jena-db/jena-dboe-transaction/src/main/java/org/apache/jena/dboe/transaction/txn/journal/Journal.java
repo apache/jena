@@ -66,6 +66,10 @@ class Journal implements Sync, Closeable
     
     private BufferChannel channel ;
     private long position ;
+    private final Location location;
+    private long journalWriteStart = -1;
+    private boolean journalWriteEnded = false;
+
     
     // Header: fixed, inc CRC
     //   length of data             4 bytes
@@ -88,32 +92,65 @@ class Journal implements Sync, Closeable
     private ByteBuffer header    = ByteBuffer.allocate(HeaderLen) ;
     
     public static boolean exists(Location location) {
-        if ( location.isMem() )
+        if ( location.isMemUnique() )
             return false ;
+        if ( location.isMem() )
+            return location.exists(Names.journalFile);
         return FileOps.exists(journalFilename(location)) ;
     }
 
-    public static Journal create(Location location) {
-        BufferChannel chan ;
-        String channelName = journalFilename(location) ;
-        if ( location.isMem() )
-            chan = BufferChannelMem.create(channelName) ;
-        else
-            chan = BufferChannelFile.create(channelName) ;
-        return create(chan) ;
+    public static Journal create(BufferChannel chan) {
+        return new Journal(chan, null);
     }
 
-    public static Journal create(BufferChannel chan) {
-        return new Journal(chan) ;
+    public static Journal create(Location location) {
+        return new Journal(location);
     }
 
     private static String journalFilename(Location location) {
-        return location.absolute(Names.journalFile) ;
+        return location.absolute(Names.journalFile);
     }
 
-    private Journal(BufferChannel channel) {
-        this.channel = channel ;
-        position = 0 ;
+    private Journal(Location location) {
+        this(openFromLocation(location), location);
+    }
+
+    private Journal(BufferChannel chan, Location location) {
+        this.channel = chan;
+        this.position = 0;
+        this.location = location;
+    }
+
+    /** 
+     * Forced reopen - Thread.interrupt causes java to close file.
+     * Attempt to close, open, and position. 
+     */
+    public void reopen() {
+        if ( location == null )
+            // Can't reopen.
+            return;
+        if ( channel != null ) {
+            try { channel.close(); }
+            catch (Exception ex) { /*ignore*/ }
+        }
+        channel = openFromLocation(location);
+        long posn = writeStartPosn();
+        if ( posn >= 0 ) {
+            truncate(posn);
+            position = posn;
+            sync();
+        } else {
+            position = channel.size();
+        }
+        writeReset();
+    }
+
+    private static BufferChannel openFromLocation(Location location) {
+        String channelName = journalFilename(location);
+        if ( location.isMem() )
+            return BufferChannelMem.create(channelName);
+        else
+            return BufferChannelFile.create(channelName);
     }
 
     // synchronized : excessive?
@@ -215,6 +252,44 @@ class Journal implements Sync, Closeable
         return entry ;
     }
 
+    // -- Journal write cycle used during Transaction.writerPrepareCommit.
+
+    public void startWrite() {
+        journalWriteStart = this.position;
+        journalWriteEnded = false;
+    }
+
+    public long writeStartPosn() { return journalWriteStart; }
+
+    public void commitWrite() {
+        journalWriteStart = -1;
+        journalWriteEnded = true;
+        channel.sync();
+    }
+
+    // Idempotent. Safe to call multiple times and after commit (when it has no effect).
+    public void abortWrite() {
+        if ( !journalWriteEnded && journalWriteStart > 0 ) {
+            truncate(journalWriteStart);
+            sync();
+        }
+        journalWriteEnded = true;
+    }
+
+    public void endWrite() {
+        if ( ! journalWriteEnded )
+            abortWrite();
+        writeReset();
+    }
+
+    private void writeReset() {
+        journalWriteStart = -1;
+        journalWriteEnded = false;
+    }
+    // -- Journal write cycle.
+
+
+    
     // read one entry at the channel position.
     // Move position to end of read.
     private JournalEntry _read() {

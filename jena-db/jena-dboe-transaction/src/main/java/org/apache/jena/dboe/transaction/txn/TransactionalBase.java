@@ -139,8 +139,8 @@ public class TransactionalBase implements TransactionalSystem {
     @Override
     public void commitExec() {
         Transaction txn = getValidTransaction() ;
-        txn.commit() ;
-        _end() ;
+        try { txn.commit(); }
+        finally { _end(); }
     }
 
 //    /** Signal end of commit phase */

@@ -72,7 +72,7 @@ public class Txn {
     /** Execute application code in a transaction with the given {@link TxnType trasnaction type}. */
     public static <T extends Transactional> void exec(T txn, TxnType txnType, Runnable r) {
         boolean b = txn.isInTransaction() ;
-        if (  b )
+        if ( b )
             checkCompatible(txn, txnType);
         else
             txn.begin(txnType) ;
@@ -92,7 +92,7 @@ public class Txn {
     /** Execute and return a value in a transaction with the given {@link TxnType trasnaction type}. */
     public static <T extends Transactional, X> X calc(T txn, TxnType txnType, Supplier<X> r) {
         boolean b = txn.isInTransaction() ;
-        if (  b )
+        if ( b )
             checkCompatible(txn, txnType);
         else
             txn.begin(txnType) ;
