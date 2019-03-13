@@ -105,7 +105,6 @@ public abstract class NodeValue extends ExprNode
      *    string: length(string) > 0 is true
      *    numeric: number != Nan && number != 0 is true
      * ref:  http://www.w3.org/TR/xquery/#dt-ebv
-     * 
      */
     
     private static Logger log = LoggerFactory.getLogger(NodeValue.class) ;
