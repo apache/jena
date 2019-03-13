@@ -18,68 +18,66 @@
 
 package org.apache.jena.dboe.base.file;
 
-import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.dboe.base.file.BinaryDataFile;
-import org.junit.After ;
-import org.junit.Before ;
-import org.junit.Test ;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.junit.Assert.* ;
+import static org.junit.Assert.*;
 
 public abstract class AbstractTestBinaryDataFile {
-    private BinaryDataFile file ;
-    protected abstract BinaryDataFile createBinaryDataFile() ;
-    
+    private BinaryDataFile file;
+    protected abstract BinaryDataFile createBinaryDataFile();
+
     static final String stringData = "Hello world\n";
-    static final byte[] data = StrUtils.asUTF8bytes(stringData) ;
-    
+    static final byte[] data = StrUtils.asUTF8bytes(stringData);
+
     // Default action.
     protected void releaseBinaryDataFile(BinaryDataFile file) {
-        file.close() ;
+        file.close();
     }
-    
+
     @Before public void before() {
-        file = createBinaryDataFile() ;
+        file = createBinaryDataFile();
         file.open();
-        file.truncate(0) ; 
+        file.truncate(0);
     }
-    
+
     @After public void after() {
-        releaseBinaryDataFile(file) ; 
+        releaseBinaryDataFile(file);
     }
 
-    @Test public void basic_open() { 
-        assertTrue(file.isOpen()) ;
+    @Test public void basic_open() {
+        assertTrue(file.isOpen());
     }
 
-    @Test public void basic_open_close() { 
-        assertTrue(file.isOpen()) ;
-        file.close() ;
-        assertFalse(file.isOpen()) ;
+    @Test public void basic_open_close() {
+        assertTrue(file.isOpen());
+        file.close();
+        assertFalse(file.isOpen());
     }
-    
-    @Test public void writeread_01() { 
-        assertEquals(0, file.length()) ;
+
+    @Test public void writeread_01() {
+        assertEquals(0, file.length());
     }
-    
-    @Test public void writeread_02() { 
-        assertEquals(0, file.length()) ;
+
+    @Test public void writeread_02() {
+        assertEquals(0, file.length());
         file.write(data);
-        assertNotEquals(0, file.length()) ;
-        assertEquals(data.length, file.length()) ;        
-    }
-    
-    @Test public void writeread_03() { 
-        long x = file.write(data);
-        byte[] data2 = new byte[data.length+100] ;
-        int x1 = file.read(x, data2) ;
-        assertEquals(data.length, x1) ;
-        int x2 = file.read(data.length, data2) ;
-        assertEquals(-1, x2) ;
+        assertNotEquals(0, file.length());
+        assertEquals(data.length, file.length());
     }
 
-    
+    @Test public void writeread_03() {
+        long x = file.write(data);
+        byte[] data2 = new byte[data.length+100];
+        int x1 = file.read(x, data2);
+        assertEquals(data.length, x1);
+        int x2 = file.read(data.length, data2);
+        assertEquals(-1, x2);
+    }
+
 
 }
-
 

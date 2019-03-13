@@ -27,31 +27,28 @@ import org.apache.jena.dboe.trans.bplustree.BPlusTreeFactory;
 
 public class BPlusTreeMaker implements RangeIndexMaker
 {
-    private int order ;
-    private int recordOrder ;
-    private boolean trackers ;
+    private int order;
+    private int recordOrder;
+    private boolean trackers;
 
-
-    public BPlusTreeMaker(int order, int recordOrder, boolean trackers)
-    { 
-        this.order = order ; 
-        this.recordOrder = recordOrder ;
-        this.trackers = trackers ;
+    public BPlusTreeMaker(int order, int recordOrder, boolean trackers) {
+        this.order = order;
+        this.recordOrder = recordOrder;
+        this.trackers = trackers;
     }
-    
-    @Override
-    public Index makeIndex() { return makeRangeIndex() ; }
 
     @Override
-    public RangeIndex makeRangeIndex()
-    {
-        BPlusTree bpTree = BPlusTreeFactory.makeMem(order, recordOrder, RecordLib.TestRecordLength, 0) ;
+    public Index makeIndex() { return makeRangeIndex(); }
+
+    @Override
+    public RangeIndex makeRangeIndex() {
+        BPlusTree bpTree = BPlusTreeFactory.makeMem(order, recordOrder, RecordLib.TestRecordLength, 0);
         if ( trackers )
-            bpTree = BPlusTreeFactory.addTracking(bpTree) ;
-        return bpTree ;
+            bpTree = BPlusTreeFactory.addTracking(bpTree);
+        return bpTree;
     }
 
     @Override
-    public String getLabel() { return "B+Tree order = "+order ; } 
+    public String getLabel() { return "B+Tree order = "+order; }
 
 }

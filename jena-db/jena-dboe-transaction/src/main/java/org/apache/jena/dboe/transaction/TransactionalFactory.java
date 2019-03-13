@@ -30,30 +30,30 @@ import org.apache.jena.dboe.transaction.txn.journal.Journal;
  */
 public class TransactionalFactory {
 
-    /** Create, and start, management of a number of {@link TransactionalComponent}s */ 
+    /** Create, and start, management of a number of {@link TransactionalComponent}s */
     public static Transactional createTransactional(Location location, TransactionalComponent ... elements) {
-        TransactionCoordinator coord = new TransactionCoordinator(location) ;
-        return createTransactional(coord, elements) ;
+        TransactionCoordinator coord = new TransactionCoordinator(location);
+        return createTransactional(coord, elements);
     }
 
-    /** Create, and start, management of a number of {@link TransactionalComponent}s */ 
+    /** Create, and start, management of a number of {@link TransactionalComponent}s */
     public static Transactional createTransactional(Journal journal, TransactionalComponent ... elements) {
-        TransactionCoordinator coord = new TransactionCoordinator(journal) ;
-        return createTransactional(coord, elements) ;
+        TransactionCoordinator coord = new TransactionCoordinator(journal);
+        return createTransactional(coord, elements);
     }
 
     private static Transactional createTransactional(TransactionCoordinator coord, TransactionalComponent[] elements) {
         for ( TransactionalComponent tc : elements ) {
-            coord.add(tc) ;
+            coord.add(tc);
         }
-        TransactionalBase base = new TransactionalBase(coord) ;
-        coord.start() ;
-        return base ;
+        TransactionalBase base = new TransactionalBase(coord);
+        coord.start();
+        return base;
     }
-    
+
     /** Create, but do not start, a {@link TransactionalSystem} from a {@link TransactionCoordinator} */
     public static TransactionalSystem createTransactionalSystem(TransactionCoordinator coord) {
-        return new TransactionalBase(coord) ;
+        return new TransactionalBase(coord);
     }
 
 }

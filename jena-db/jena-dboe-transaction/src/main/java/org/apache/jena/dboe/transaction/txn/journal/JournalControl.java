@@ -45,10 +45,10 @@ public class JournalControl {
         System.out.println("Size: " + journal.size());
         Iterator<JournalEntry> iter = journal.entries();
 
-        for ( ; iter.hasNext() ; ) {
+        for (; iter.hasNext() ; ) {
             JournalEntry e = iter.next();
             // System.out.println("Posn: "+journal.position()+" :
-            // ("+(journal.size()-journal.position())+")") ;
+            // ("+(journal.size()-journal.position())+")");
             System.out.println(JournalEntry.format(e));
         }
     }

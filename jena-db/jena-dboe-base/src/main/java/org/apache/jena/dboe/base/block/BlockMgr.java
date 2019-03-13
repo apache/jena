@@ -18,83 +18,82 @@
 
 package org.apache.jena.dboe.base.block;
 
-import org.apache.jena.atlas.lib.Closeable ;
-import org.apache.jena.atlas.lib.Sync ;
-
+import org.apache.jena.atlas.lib.Closeable;
+import org.apache.jena.atlas.lib.Sync;
 
 public interface BlockMgr extends Sync, Closeable /*UnitMgr<Block>*/
 {
-    /** Allocate an uninitialized block - writable - call only inside a update sequence. 
+    /** Allocate an uninitialized block - writable - call only inside a update sequence.
      *  If blockSize is -1, means "default/fixed size" for this BlockMgr
      */
-    public Block allocate(int blockSize) ;
-    
+    public Block allocate(int blockSize);
+
     /** Answer whether there are any blocks in the collection being managed */
-    public boolean isEmpty() ; 
-    
+    public boolean isEmpty();
+
     /** The fixed allocated blocks are in the range [0,allocLimit).
-     * Allocation units need not be +1 increments */ 
-    public long allocLimit() ; 
+     * Allocation units need not be +1 increments */
+    public long allocLimit();
 
     /** Reset the allocation limit, should be a number previously obtained from allocLimit */
-    public void resetAlloc(long boundary) ;
+    public void resetAlloc(long boundary);
 
     /** Fetch a block, use for read only */
     public Block getRead(long id);
-    
+
     /** Fetch a block, use for write and read - only inside "update" */
     public Block getWrite(long id);
 
     /** Release a block, unmodified or already written. */
-    public void release(Block block) ;
+    public void release(Block block);
 
-    /** Promote to writable : it's OK to promote an already writable block */ 
+    /** Promote to writable : it's OK to promote an already writable block */
     public Block promote(Block block);
 
-    // Bad name?  "endWrite", "put" -- for a mapped block, the changes are made directly, not on the write() */   
-    /** Write a block back - it still needs releasing. */ 
-    public void write(Block block) ;
-    
+    // Bad name?  "endWrite", "put" -- for a mapped block, the changes are made directly, not on the write() */
+    /** Write a block back - it still needs releasing. */
+    public void write(Block block);
+
     /** Replace the contents of a block slot with new contents. Block does not need releasing.
      * The write() operation may not do real work if the block is mapped - this operation
-     * really does replace the contents with the new contents.  
-     */ 
-    public void overwrite(Block blk) ;
-    
-   /** Announce a block is no longer in use (i.e it's now freed) */ 
+     * really does replace the contents with the new contents.
+     */
+    public void overwrite(Block blk);
+
+   /** Announce a block is no longer in use (i.e it's now freed) */
     public void free(Block block);
-  
+
     /** Is this a valid block id? (may be a free block)*/
-    public boolean valid(int id) ;
-    
+    public boolean valid(int id);
+
     /** Close the block manager */
     @Override
-    public void close() ;
-    
-    /** Is this block manager still usable?  Closed block managers can not perform any operations except this one. */  
-    public boolean isClosed() ; 
-    
+    public void close();
+
+    /** Is this block manager still usable?  Closed block managers can not perform any operations except this one. */
+    public boolean isClosed();
+
     /** Sync the block manager */
     @Override
-    public void sync() ;
-    
+    public void sync();
+
     /** Sync the block manager : system operation to ensure sync() is passed down */
-    public void syncForce() ;
+    public void syncForce();
 
     // begin/end markers.
 
     /** Start of update */
-    public void beginUpdate() ;
-    
+    public void beginUpdate();
+
     /** Completion of update */
-    public void endUpdate() ;
+    public void endUpdate();
 
     /** Start of read */
-    public void beginRead() ;
+    public void beginRead();
 
     /** Completion of read */
-    public void endRead() ;
+    public void endRead();
 
     /* Label for helping trace which BlockMgr is which */
-    public String getLabel() ;
+    public String getLabel();
 }

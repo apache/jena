@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.base.block ;
+package org.apache.jena.dboe.base.block;
 
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.dboe.DBOpEnvException;
 import org.apache.jena.dboe.base.file.*;
 import org.apache.jena.dboe.sys.SystemIndex;
@@ -27,19 +27,19 @@ public class BlockMgrFactory {
     // This isn't always helpful so be careful if setting the default to "true".
     // Sometimes the tracking is too strict
     // e.g. transactions keep blocks and not release them down the layers.
-    public/* final */static boolean AddTracker = false ;
+    public/* final */static boolean AddTracker = false;
 
     public static BlockMgr tracker(BlockMgr blockMgr) {
         if ( blockMgr instanceof BlockMgrTracker )
-            return blockMgr ;
-        return BlockMgrTracker.track(blockMgr) ;
+            return blockMgr;
+        return BlockMgrTracker.track(blockMgr);
     }
 
     /** Add a tracker if the system default is to do so */
     private static BlockMgr track(BlockMgr blockMgr) {
         if ( !AddTracker )
-            return blockMgr ;
-        return tracker(blockMgr) ;
+            return blockMgr;
+        return tracker(blockMgr);
     }
 
     public static BlockMgr create(FileSet fileSet, String ext, BlockParams params) {
@@ -47,71 +47,71 @@ public class BlockMgrFactory {
                       params.getFileMode(),
                       params.getBlockSize(),
                       params.getBlockReadCacheSize(),
-                      params.getBlockWriteCacheSize()) ;
+                      params.getBlockWriteCacheSize());
     }
-    
+
     public static BlockMgr create(FileSet fileSet, String ext, int blockSize, int readBlockCacheSize, int writeBlockCacheSize) {
-        return create(fileSet, ext, null, blockSize, readBlockCacheSize, writeBlockCacheSize) ;
+        return create(fileSet, ext, null, blockSize, readBlockCacheSize, writeBlockCacheSize);
     }
 
     // XXX Deprecate?
     public static BlockMgr create(FileSet fileSet, String ext, FileMode fileMode, int blockSize, int readBlockCacheSize, int writeBlockCacheSize) {
         if ( fileSet.isMem() )
-            return createMem(fileSet.filename(ext), blockSize) ;
+            return createMem(fileSet.filename(ext), blockSize);
         else
-            return createFile(fileSet.filename(ext), fileMode, blockSize, readBlockCacheSize, writeBlockCacheSize) ;
+            return createFile(fileSet.filename(ext), fileMode, blockSize, readBlockCacheSize, writeBlockCacheSize);
     }
 
     /** Create an in-memory block manager */
     public static BlockMgr createMem(String indexName, int blockSize) {
-        BlockAccess file = new BlockAccessMem(indexName, blockSize) ;
-        BlockMgr blockMgr = new BlockMgrFileAccess(file, blockSize) ;
-        blockMgr = new BlockMgrFreeChain(blockMgr) ;
+        BlockAccess file = new BlockAccessMem(indexName, blockSize);
+        BlockMgr blockMgr = new BlockMgrFileAccess(file, blockSize);
+        blockMgr = new BlockMgrFreeChain(blockMgr);
         // Small cache - testing.
-        blockMgr = BlockMgrCache.create(3, 3, blockMgr) ;
-        return track(blockMgr) ;
+        blockMgr = BlockMgrCache.create(3, 3, blockMgr);
+        return track(blockMgr);
     }
 
     /** Create a BlockMgr backed by a real file */
     public static BlockMgr createFile(String filename, BlockParams params) {
-        return createFile(filename, 
+        return createFile(filename,
                           params.getFileMode(), params.getBlockSize(),
-                          params.getBlockReadCacheSize(), params.getBlockWriteCacheSize()) ;
+                          params.getBlockReadCacheSize(), params.getBlockWriteCacheSize());
     }
 
         /** Create a BlockMgr backed by a real file */
     public static BlockMgr createFile(String filename, FileMode fileMode, int blockSize, int readBlockCacheSize, int writeBlockCacheSize) {
         if ( fileMode == null )
-            fileMode = SystemIndex.fileMode() ;
+            fileMode = SystemIndex.fileMode();
         switch (fileMode) {
             case mapped :
-                return createMMapFile(filename, blockSize) ;
+                return createMMapFile(filename, blockSize);
             case direct :
-                return createStdFile(filename, blockSize, readBlockCacheSize, writeBlockCacheSize) ;
+                return createStdFile(filename, blockSize, readBlockCacheSize, writeBlockCacheSize);
         }
-        throw new DBOpEnvException("Unknown file mode: " + fileMode) ;
+        throw new DBOpEnvException("Unknown file mode: " + fileMode);
     }
 
     /** Create a NIO Block Manager */
     public static BlockMgr createMMapFile(String filename, int blockSize) {
-        BlockAccess file = new BlockAccessMapped(filename, blockSize) ;
-        BlockMgr blockMgr = wrapFileAccess(file, blockSize) ;
-        return track(blockMgr) ;
+        BlockAccess file = new BlockAccessMapped(filename, blockSize);
+        BlockMgr blockMgr = wrapFileAccess(file, blockSize);
+        return track(blockMgr);
     }
 
     /** Create a Block Manager using direct access (and a cache) */
     public static BlockMgr createStdFile(String filename, int blockSize, int readBlockCacheSize, int writeBlockCacheSize) {
-        BlockAccess file = new BlockAccessDirect(filename, blockSize) ;
-        BlockMgr blockMgr = wrapFileAccess(file, blockSize) ;
-        blockMgr = addCache(blockMgr, readBlockCacheSize, writeBlockCacheSize) ;
-        return track(blockMgr) ;
+        BlockAccess file = new BlockAccessDirect(filename, blockSize);
+        BlockMgr blockMgr = wrapFileAccess(file, blockSize);
+        blockMgr = addCache(blockMgr, readBlockCacheSize, writeBlockCacheSize);
+        return track(blockMgr);
     }
 
     /** Create a Block Manager using direct access, no caching, no nothing. */
     public static BlockMgr createStdFileNoCache(String filename, int blockSize) {
-        BlockAccess blockAccess = new BlockAccessDirect(filename, blockSize) ;
-        BlockMgr blockMgr = new BlockMgrFileAccess(blockAccess, blockSize) ;
-        return blockMgr ;
+        BlockAccess blockAccess = new BlockAccessDirect(filename, blockSize);
+        BlockMgr blockMgr = new BlockMgrFileAccess(blockAccess, blockSize);
+        return blockMgr;
     }
 
     /**
@@ -119,13 +119,13 @@ public class BlockMgrFactory {
      * <p>
      * This does not make sense for memory BlockMgr or for memory mapper files.
      * This function always add the cache.
-     * 
+     *
      * @see #addCache(BlockMgr, FileSet, FileMode, int, int)
      */
     public static BlockMgr addCache(BlockMgr blockMgr, int readBlockCacheSize, int writeBlockCacheSize) {
         if ( blockMgr instanceof BlockMgrCache )
-            Log.warn(BlockMgrFactory.class, "BlockMgr already has a cache: " + blockMgr.getLabel()) ;
-        return BlockMgrCache.create(readBlockCacheSize, writeBlockCacheSize, blockMgr) ;
+            Log.warn(BlockMgrFactory.class, "BlockMgr already has a cache: " + blockMgr.getLabel());
+        return BlockMgrCache.create(readBlockCacheSize, writeBlockCacheSize, blockMgr);
     }
 
     /**
@@ -134,18 +134,18 @@ public class BlockMgrFactory {
      */
     public static BlockMgr addCache(BlockMgr blockMgr, FileSet fileSet, FileMode fileMode, int readBlockCacheSize, int writeBlockCacheSize) {
         if ( fileSet.isMem() )
-            return blockMgr ;
+            return blockMgr;
         if ( fileMode == null )
-            fileMode = SystemIndex.fileMode() ;
+            fileMode = SystemIndex.fileMode();
         if ( fileMode == FileMode.mapped )
-            return blockMgr ;
-        return addCache(blockMgr, readBlockCacheSize, writeBlockCacheSize) ;
+            return blockMgr;
+        return addCache(blockMgr, readBlockCacheSize, writeBlockCacheSize);
     }
 
     private static BlockMgr wrapFileAccess(BlockAccess blockAccess, int blockSize) {
-        BlockMgr blockMgr = new BlockMgrFileAccess(blockAccess, blockSize) ;
+        BlockMgr blockMgr = new BlockMgrFileAccess(blockAccess, blockSize);
         // This is a temporary fix to the problem
-        blockMgr = new BlockMgrFreeChain(blockMgr) ;
-        return blockMgr ;
+        blockMgr = new BlockMgrFreeChain(blockMgr);
+        return blockMgr;
     }
 }

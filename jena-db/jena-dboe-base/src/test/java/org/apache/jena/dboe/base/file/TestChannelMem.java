@@ -21,15 +21,13 @@ package org.apache.jena.dboe.base.file;
 import org.apache.jena.dboe.base.file.BufferChannel;
 import org.apache.jena.dboe.base.file.BufferChannelMem;
 
-
 public class TestChannelMem extends AbstractTestChannel
 {
-    static int counter = 0 ;
-    
+    static int counter = 0;
+
     @Override
-    protected BufferChannel open()
-    {
-        return BufferChannelMem.create("Test-"+(counter++)) ;
+    protected BufferChannel open() {
+        return BufferChannelMem.create("Test-"+(counter++));
     }
 
 }

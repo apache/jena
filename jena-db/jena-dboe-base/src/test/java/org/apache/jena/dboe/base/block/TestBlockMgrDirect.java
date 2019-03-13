@@ -18,7 +18,7 @@
 
 package org.apache.jena.dboe.base.block;
 
-import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.dboe.ConfigTestDBOE;
 import org.apache.jena.dboe.base.block.BlockMgr;
 import org.apache.jena.dboe.base.block.BlockMgrFactory;
@@ -30,20 +30,19 @@ import org.junit.BeforeClass;
 
 public class TestBlockMgrDirect extends AbstractTestBlockMgr
 {
-    static final String filename = ConfigTestDBOE.getTestingDir()+"/block-mgr" ;
-    
-    @BeforeClass static public void remove1() { FileOps.delete(filename) ; } 
-    @AfterClass  static public void remove2() { FileOps.delete(filename) ; }
-    
+    static final String filename = ConfigTestDBOE.getTestingDir()+"/block-mgr";
+
+    @BeforeClass static public void remove1() { FileOps.delete(filename); }
+    @AfterClass  static public void remove2() { FileOps.delete(filename); }
+
     @Override
-    protected BlockMgr make()
-    { 
+    protected BlockMgr make() {
         // Make directly - no wrapper, no cache, no free block mgt.
-        FileOps.delete(filename) ;
-        BlockAccess file = new BlockAccessDirect(filename, BlkSize) ;
-        BlockMgr mgr = new BlockMgrFileAccess(file, BlkSize) ;
+        FileOps.delete(filename);
+        BlockAccess file = new BlockAccessDirect(filename, BlkSize);
+        BlockMgr mgr = new BlockMgrFileAccess(file, BlkSize);
         if ( BlockMgrFactory.AddTracker )
-            mgr = BlockMgrFactory.tracker(mgr) ;
-        return mgr ;
+            mgr = BlockMgrFactory.tracker(mgr);
+        return mgr;
     }
 }

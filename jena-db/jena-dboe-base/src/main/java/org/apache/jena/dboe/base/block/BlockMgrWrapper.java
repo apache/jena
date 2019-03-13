@@ -16,134 +16,133 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.base.block ;
-
+package org.apache.jena.dboe.base.block;
 
 public class BlockMgrWrapper implements BlockMgr {
-    protected BlockMgr blockMgr ;
+    protected BlockMgr blockMgr;
 
     public BlockMgrWrapper(BlockMgr blockMgr) {
-        setBlockMgr(blockMgr) ;
+        setBlockMgr(blockMgr);
     }
 
     /** Set another BlockMgr as the target of the wrapper - return the old one */
     protected final BlockMgr setBlockMgr(BlockMgr blockMgr) {
-        BlockMgr old = this.blockMgr ;
-        this.blockMgr = blockMgr ;
-        return old ;
+        BlockMgr old = this.blockMgr;
+        this.blockMgr = blockMgr;
+        return old;
     }
 
     public BlockMgr getWrapped() {
-        return blockMgr ;
+        return blockMgr;
     }
 
     @Override
     public Block allocate(int blockSize) {
-        return blockMgr.allocate(blockSize) ;
+        return blockMgr.allocate(blockSize);
     }
 
     @Override
     public Block getRead(long id) {
-        return blockMgr.getRead(id) ;
+        return blockMgr.getRead(id);
     }
 
     @Override
     public Block getWrite(long id) {
-        return blockMgr.getWrite(id) ;
+        return blockMgr.getWrite(id);
     }
 
     @Override
     public Block promote(Block block) {
-        return blockMgr.promote(block) ;
+        return blockMgr.promote(block);
     }
 
     @Override
     public void release(Block block) {
-        blockMgr.release(block) ;
+        blockMgr.release(block);
     }
 
     @Override
     public void write(Block block) {
-        blockMgr.write(block) ;
+        blockMgr.write(block);
     }
 
     @Override
     public void overwrite(Block block) {
-        blockMgr.overwrite(block) ;
+        blockMgr.overwrite(block);
     }
 
     @Override
     public void free(Block block) {
-        blockMgr.free(block) ;
+        blockMgr.free(block);
     }
 
     @Override
     public boolean isEmpty() {
-        return blockMgr.isEmpty() ;
+        return blockMgr.isEmpty();
     }
-    
+
     @Override
     public long allocLimit() {
-        return blockMgr.allocLimit() ;
+        return blockMgr.allocLimit();
     }
-    
+
     @Override
     public void resetAlloc(long boundary) {
-        blockMgr.resetAlloc(boundary) ;
+        blockMgr.resetAlloc(boundary);
     }
-    
+
     @Override
     public void sync() {
-        blockMgr.sync() ;
+        blockMgr.sync();
     }
 
     @Override
     public void syncForce() {
-        blockMgr.syncForce() ;
+        blockMgr.syncForce();
     }
 
     @Override
     public boolean valid(int id) {
-        return blockMgr.valid(id) ;
+        return blockMgr.valid(id);
     }
 
     @Override
     public boolean isClosed() {
-        return blockMgr.isClosed() ;
+        return blockMgr.isClosed();
     }
 
     @Override
     public void close() {
-        blockMgr.close() ;
+        blockMgr.close();
     }
 
     @Override
     public void beginRead() {
-        blockMgr.beginRead() ;
+        blockMgr.beginRead();
     }
 
     @Override
     public void endRead() {
-        blockMgr.endRead() ;
+        blockMgr.endRead();
     }
 
     @Override
     public void beginUpdate() {
-        blockMgr.beginUpdate() ;
+        blockMgr.beginUpdate();
     }
 
     @Override
     public void endUpdate() {
-        blockMgr.endUpdate() ;
+        blockMgr.endUpdate();
     }
 
     @Override
     public String getLabel() {
-        return blockMgr.getLabel() ;
+        return blockMgr.getLabel();
     }
 
     @Override
     public String toString() {
-        return blockMgr.toString() ;
+        return blockMgr.toString();
     }
 }

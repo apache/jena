@@ -35,13 +35,13 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 public class TestProcessFileLock {
-    
+
     private String lockfile;
-    
+
     //Using a per-test rule is "doubly-safe" because we clear the process state.
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
-    
+
     @Before public void beforeTest() {
         try {
             File f = tempFolder.newFile(Names.TDB_LOCK_FILE);
@@ -51,13 +51,13 @@ public class TestProcessFileLock {
             IO.exception(e);
         }
     }
-    
+
     @Test public void process_lock_1() {
         ProcessFileLock lock = ProcessFileLock.create(lockfile);
         String fn = new File(lockfile).getAbsolutePath();
         assertEquals(fn, lock.getPath().toString());
     }
-    
+
     @Test public void process_lock_2() {
         ProcessFileLock lock1 = ProcessFileLock.create(lockfile);
         ProcessFileLock lock2 = ProcessFileLock.create(lockfile);
@@ -70,7 +70,7 @@ public class TestProcessFileLock {
         ProcessFileLock lock2 = ProcessFileLock.create(lockfile);
         assertNotSame(lock1, lock2);
     }
-    
+
     @Test public void process_lock_4() {
         ProcessFileLock lock = ProcessFileLock.create(lockfile);
         assertFalse(lock.isLockedHere());
@@ -86,7 +86,7 @@ public class TestProcessFileLock {
         lock.lockEx();
         lock.lockEx();
     }
-    
+
     @Test(expected=AlreadyLocked.class)
     public void process_lock_6() {
         ProcessFileLock lock = ProcessFileLock.create(lockfile);

@@ -23,23 +23,23 @@ import org.apache.jena.dboe.DBOpEnvException;
 public class BlockMgrReadonly extends BlockMgrWrapper
 {
     public BlockMgrReadonly(BlockMgr blockMgr) {
-        super(blockMgr) ;
+        super(blockMgr);
     }
 
-    @Override public void beginUpdate()                 { throw new DBOpEnvException("Read-only block manager") ; }
-    @Override public void endUpdate()                   { throw new DBOpEnvException("Read-only block manager") ; }
-    @Override public Block allocate(int blockSize)      { throw new DBOpEnvException("Read-only block manager") ; }
-    @Override public Block getWrite(long id)            { throw new DBOpEnvException("Read-only block manager") ; }
-    @Override public Block promote(Block block)         { throw new DBOpEnvException("Read-only block manager") ; }
-    @Override public void write(Block block)            { throw new DBOpEnvException("Read-only block manager") ; }
-    @Override public void overwrite(Block block)        { throw new DBOpEnvException("Read-only block manager") ; }
-    @Override public void free(Block block)             { throw new DBOpEnvException("Read-only block manager") ; }
-    
-//    @Override 
+    @Override public void beginUpdate()                 { throw new DBOpEnvException("Read-only block manager"); }
+    @Override public void endUpdate()                   { throw new DBOpEnvException("Read-only block manager"); }
+    @Override public Block allocate(int blockSize)      { throw new DBOpEnvException("Read-only block manager"); }
+    @Override public Block getWrite(long id)            { throw new DBOpEnvException("Read-only block manager"); }
+    @Override public Block promote(Block block)         { throw new DBOpEnvException("Read-only block manager"); }
+    @Override public void write(Block block)            { throw new DBOpEnvException("Read-only block manager"); }
+    @Override public void overwrite(Block block)        { throw new DBOpEnvException("Read-only block manager"); }
+    @Override public void free(Block block)             { throw new DBOpEnvException("Read-only block manager"); }
+
+//    @Override
 //    public void sync()
 //    {
-//        blockMgr.sync() ;
+//        blockMgr.sync();
 //    }
 
-    @Override public String toString()          { return "RO:"+super.toString() ; } 
+    @Override public String toString()          { return "RO:"+super.toString(); }
 }

@@ -18,8 +18,8 @@
 
 package org.apache.jena.dboe.base.file;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
@@ -27,23 +27,22 @@ import org.junit.runners.Suite ;
     , TestSegmentedMemBuffer.class
     , TestChannelMem.class
     , TestChannelFile.class
-    
+
     , TestBlockAccessMem.class
     , TestBlockAccessByteArray.class
     , TestBlockAccessDirect.class
     , TestBlockAccessMapped.class
-    
+
     , TestBinaryDataMem.class
     , TestBinaryDataFileWriteBufferedMem.class
     , TestBinaryDataRAFInitial.class
     , TestBinaryDataRAF.class
     , TestBinaryDataFileWriteBufferedFile.class
-    
+
     , TestProcessFileLock.class
 })
 
-
 public class TS_File
 {
-    public static String FILE = "target/test-read-append-file" ;
+    public static String FILE = "target/test-read-append-file";
 }

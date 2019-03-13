@@ -19,41 +19,41 @@
 package org.apache.jena.dboe.base.file;
 
 public class BinaryDataFileWrapper implements BinaryDataFile {
-    private final BinaryDataFile other ;
-    
+    private final BinaryDataFile other;
+
     public BinaryDataFileWrapper(BinaryDataFile other) {
-        this.other = other ;
+        this.other = other;
     }
-    
-    @Override
-    public void open() { other.open() ; } 
 
     @Override
-    public boolean isOpen() { return other.isOpen() ; }
+    public void open() { other.open(); }
+
+    @Override
+    public boolean isOpen() { return other.isOpen(); }
 
     @Override
     public int read(long posn, byte[] b) {
-        return other.read(posn, b) ;
+        return other.read(posn, b);
     }
 
     @Override
     public int read(long posn, byte[] b, int start, int length) {
-        return other.read(posn, b, start, length) ;
+        return other.read(posn, b, start, length);
     }
 
     @Override
     public long write(byte[] b) {
-        return other.write(b) ;
+        return other.write(b);
     }
-    
+
     @Override
     public long write(byte[] b, int start, int length) {
-        return other.write(b, start, length) ;
+        return other.write(b, start, length);
     }
 
     @Override
     public long length() {
-        return other.length() ;
+        return other.length();
     }
 
     @Override

@@ -18,35 +18,35 @@
 
 package org.apache.jena.dboe.transaction;
 
-import static org.junit.Assert.assertEquals ;
-import static org.junit.Assert.assertNotEquals ;
-import static org.junit.Assert.assertNotNull ;
-import static org.junit.Assert.assertNotSame ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 
 import org.apache.jena.dboe.transaction.txn.TxnId;
 import org.apache.jena.dboe.transaction.txn.TxnIdFactory;
 import org.apache.jena.dboe.transaction.txn.TxnIdSimple;
-import org.junit.Test ;
+import org.junit.Test;
 
 public class TestTxnId {
     @Test public void txnId_1() {
-        TxnId id1 = TxnIdFactory.createSimple() ;
-        assertNotNull(id1) ;
+        TxnId id1 = TxnIdFactory.createSimple();
+        assertNotNull(id1);
     }
 
     @Test public void txnId_2() {
-        TxnId id1 = TxnIdFactory.createSimple() ;
-        TxnId id2 = TxnIdFactory.createSimple() ;
-        assertNotSame(id1, id2) ;
-        assertNotEquals(id1, id2) ;
+        TxnId id1 = TxnIdFactory.createSimple();
+        TxnId id2 = TxnIdFactory.createSimple();
+        assertNotSame(id1, id2);
+        assertNotEquals(id1, id2);
     }
 
     @Test public void txnId_3() {
-        TxnId id1 = TxnIdFactory.createSimple() ;
-        TxnId id2 = TxnIdSimple.create(id1.bytes()) ;
-        assertNotSame(id1, id2) ;
-        assertEquals(id1, id2) ;
-        assertEquals(id1.name(), id2.name()) ;
+        TxnId id1 = TxnIdFactory.createSimple();
+        TxnId id2 = TxnIdSimple.create(id1.bytes());
+        assertNotSame(id1, id2);
+        assertEquals(id1, id2);
+        assertEquals(id1.name(), id2.name());
     }
 
 }

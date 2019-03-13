@@ -24,35 +24,33 @@ import org.apache.jena.dboe.base.block.Block;
 /** A page with a byte buffer */
 public abstract class PageBase implements Page
 {
-    private int id ;
-    private Block block ;
+    private int id;
+    private Block block;
 
-    protected PageBase(Block block)
-    {
-        this.block = block ;
-        long x = block.getId() ;
+    protected PageBase(Block block) {
+        this.block = block;
+        long x = block.getId();
         if ( x < 0 )
-            throw new DBOpEnvException("Page id is negative: "+x) ;
+            throw new DBOpEnvException("Page id is negative: "+x);
         if ( x > Integer.MAX_VALUE )
-            throw new DBOpEnvException("Page id is large than MAX_INT: "+x) ;
-        this.id = block.getId().intValue() ;
+            throw new DBOpEnvException("Page id is large than MAX_INT: "+x);
+        this.id = block.getId().intValue();
     }
-    
+
     @Override
-    final public void reset(Block block2)
-    { 
+    final public void reset(Block block2) {
 //        if ( block2.getId() != id )
-//            Log.warn(this, "Block id changed: "+id+" => "+block2.getId()) ;
-        id = block2.getId().intValue() ;
-        _reset(block2) ; 
-        this.block = block2 ;
-    } 
+//            Log.warn(this, "Block id changed: "+id+" => "+block2.getId());
+        id = block2.getId().intValue();
+        _reset(block2);
+        this.block = block2;
+    }
 
-    protected abstract void _reset(Block block) ;
-
-    @Override
-    final public Block getBackingBlock()    { return block ; }
+    protected abstract void _reset(Block block);
 
     @Override
-    final public int getId()                { return id ; }
+    final public Block getBackingBlock()    { return block; }
+
+    @Override
+    final public int getId()                { return id; }
 }

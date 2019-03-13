@@ -18,9 +18,9 @@
 
 package org.apache.jena.dboe.transaction.txn;
 
-import java.nio.ByteBuffer ;
+import java.nio.ByteBuffer;
 
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite;
 
 /**
  * A transaction component that does nothing - can be used as a helper for
@@ -28,11 +28,11 @@ import org.apache.jena.query.ReadWrite ;
  * are not stateful across restarts.
  */
 public class TransactionalComponentBase<X> extends TransactionalComponentLifecycle<X> {
-    
+
     public TransactionalComponentBase(ComponentId id) {
-        super(id) ;
+        super(id);
     }
-    
+
     @Override
     public void startRecovery() {}
 
@@ -41,18 +41,18 @@ public class TransactionalComponentBase<X> extends TransactionalComponentLifecyc
 
     @Override
     public void finishRecovery() {}
-    
-    @Override 
+
+    @Override
     public void cleanStart() {}
 
     @Override
     protected X _begin(ReadWrite readWrite, TxnId txnId) {
-        return null ;
+        return null;
     }
 
     @Override
     protected ByteBuffer _commitPrepare(TxnId txnId, X state) {
-        return null ;
+        return null;
     }
 
     @Override

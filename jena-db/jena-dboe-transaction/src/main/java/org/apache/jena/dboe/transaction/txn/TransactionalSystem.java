@@ -22,21 +22,21 @@ import org.apache.jena.dboe.transaction.Transactional;
 
 /** Implementation side of a {@link Transactional}.
  *  {@link Transactional} presents the application facing view
- *  whereas this has all the possible steps of an implementation.  
+ *  whereas this has all the possible steps of an implementation.
  *  Normally, the implementation of {@link #commit} is split up.
  */
 public interface TransactionalSystem extends Transactional {
-    
+
     @Override
     public default void commit() {
-        commitPrepare() ;
-        commitExec() ;
+        commitPrepare();
+        commitExec();
     }
-    
+
     /** Do the 2-phase "prepare" step after which
      *  the transaction coordinator decides whether to commit
      *  or abort.  A TransactionalSystem must be prepared for
-     *  both possibilities.   
+     *  both possibilities.
      */
     public void commitPrepare();
 
@@ -48,27 +48,27 @@ public interface TransactionalSystem extends Transactional {
      * transaction still exists and if it is a write transaction
      * it can still block other write transactions.
      */
-    public TransactionCoordinatorState detach() ;
-    
-    /** 
+    public TransactionCoordinatorState detach();
+
+    /**
      * Attach a transaction to this thread.
-     * A transaction system implementation usually imposes a rule that 
-     * only one thread can have a transaction attached at a time. 
+     * A transaction system implementation usually imposes a rule that
+     * only one thread can have a transaction attached at a time.
      */
-    public void attach(TransactionCoordinatorState coordinatorState) ;
+    public void attach(TransactionCoordinatorState coordinatorState);
 
     /** Get the associated {@link TransactionCoordinator} */
-    public TransactionCoordinator getTxnMgr() ; 
-    
+    public TransactionCoordinator getTxnMgr();
+
     /** Return an information view of the transaction for this thread, if any.
-     *  Returns null when there is no active transaction for this tread. 
+     *  Returns null when there is no active transaction for this tread.
      */
-    public TransactionInfo getTransactionInfo() ;
-    
-    /** Return the transaction object for this thread.  
+    public TransactionInfo getTransactionInfo();
+
+    /** Return the transaction object for this thread.
      *  Low-level use only.
      *  To get information about the current transaction, call {@link #getTransactionInfo}.
      */
-    public Transaction getThreadTransaction() ;
+    public Transaction getThreadTransaction();
 }
 

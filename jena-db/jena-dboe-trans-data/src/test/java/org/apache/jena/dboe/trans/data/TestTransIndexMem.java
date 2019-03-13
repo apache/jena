@@ -26,10 +26,9 @@ import org.apache.jena.dboe.index.test.AbstractTestIndex;
 public class TestTransIndexMem extends AbstractTestIndex
 {
     @Override
-    protected Index makeIndex(int kLen, int vLen)
-    {
-        RecordFactory rf = new RecordFactory(kLen, vLen) ;
-        return new IndexMap(rf) ;
+    protected Index makeIndex(int kLen, int vLen) {
+        RecordFactory rf = new RecordFactory(kLen, vLen);
+        return new IndexMap(rf);
     }
 
 }

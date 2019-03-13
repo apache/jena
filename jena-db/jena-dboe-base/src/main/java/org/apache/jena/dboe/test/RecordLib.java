@@ -18,13 +18,12 @@
 
 package org.apache.jena.dboe.test;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import java.util.ArrayList ;
-import java.util.Iterator ;
-import java.util.List ;
-
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.Bytes ;
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.base.record.RecordFactory;
 
@@ -33,78 +32,69 @@ import org.apache.jena.dboe.base.record.RecordFactory;
 public class RecordLib
 {
     // Size of a record when testing (one integer)
-    public final static int TestRecordLength = 4 ;
-    
-    public final static RecordFactory recordFactory    = new RecordFactory(TestRecordLength, 0) ; 
-    
-    public static Record intToRecord(int v) { return intToRecord(v, recordFactory) ; }
-    public static Record intToRecord(int v, int recLen) { return intToRecord(v, new RecordFactory(recLen, 0)) ; }
-    
-    public static Record intToRecord(int v, RecordFactory factory)
-    {
-        byte[] vb = Bytes.packInt(v) ;
+    public final static int TestRecordLength = 4;
 
-        int recLen = factory.recordLength() ;
-        byte[] bb = new byte[recLen] ;
-        int x = 0 ; // Start point in bb.
+    public final static RecordFactory recordFactory    = new RecordFactory(TestRecordLength, 0);
+
+    public static Record intToRecord(int v) { return intToRecord(v, recordFactory); }
+    public static Record intToRecord(int v, int recLen) { return intToRecord(v, new RecordFactory(recLen, 0)); }
+
+    public static Record intToRecord(int v, RecordFactory factory) {
+        byte[] vb = Bytes.packInt(v);
+
+        int recLen = factory.recordLength();
+        byte[] bb = new byte[recLen];
+        int x = 0; // Start point in bb.
         if ( recLen > 4 )
-            x = recLen-4 ;
-        
-        int len = Math.min(4, recLen) ;
-        int z = 4-len ; // Start point in vb
-    
+            x = recLen-4;
+
+        int len = Math.min(4, recLen);
+        int z = 4-len; // Start point in vb
+
         // Furthest right bytes.
-        for ( int i = len-1 ; i >= 0 ; i-- ) 
-           bb[x+i] = vb[z+i] ; 
-        
-        return factory.create(bb) ;
+        for ( int i = len-1; i >= 0 ; i-- )
+           bb[x+i] = vb[z+i];
+
+        return factory.create(bb);
     }
 
-    public static List<Record> intToRecord(int[] v) { return intToRecord(v, recordFactory) ; }
+    public static List<Record> intToRecord(int[] v) { return intToRecord(v, recordFactory); }
 
     public static List<Record> intToRecord(int[] v, int recLen)
-    { return intToRecord(v, new RecordFactory(recLen, 0)) ; }
-    
-    static List<Record> intToRecord(int[] v, RecordFactory factory)
-    {
-        List<Record> x = new ArrayList<>() ;
+    { return intToRecord(v, new RecordFactory(recLen, 0)); }
+
+    static List<Record> intToRecord(int[] v, RecordFactory factory) {
+        List<Record> x = new ArrayList<>();
         for ( int i : v )
-            x.add(intToRecord(i, factory)) ;
-        return x ;
+            x.add(intToRecord(i, factory));
+        return x;
     }
 
-    public static int recordToInt(Record key)
-    {
-        return Bytes.getInt(key.getKey()) ;
+    public static int recordToInt(Record key) {
+        return Bytes.getInt(key.getKey());
     }
 
-    public static List<Integer> toIntList(Iterator<Record> iter)
-    {
-        return Iter.toList(Iter.map(iter, item->recordToInt(item))) ;
-    }
-    
-    public static Record r(int v)
-    {
-        return RecordLib.intToRecord(v, RecordLib.TestRecordLength) ; 
+    public static List<Integer> toIntList(Iterator<Record> iter) {
+        return Iter.toList(Iter.map(iter, item->recordToInt(item)));
     }
 
-    public static int r(Record rec)
-    {
-        return RecordLib.recordToInt(rec) ; 
+    public static Record r(int v) {
+        return RecordLib.intToRecord(v, RecordLib.TestRecordLength);
     }
 
-    public static List<Integer> toIntList(int... vals)
-    {
-        List<Integer> x = new ArrayList<>() ;
+    public static int r(Record rec) {
+        return RecordLib.recordToInt(rec);
+    }
+
+    public static List<Integer> toIntList(int... vals) {
+        List<Integer> x = new ArrayList<>();
         for ( int i : vals )
-            x.add(i) ;
-        return x ;
+            x.add(i);
+        return x;
     }
 
-    public static List<Integer> r(Iterator<Record> iter)
-    {
-        return RecordLib.toIntList(iter) ;
+    public static List<Integer> r(Iterator<Record> iter) {
+        return RecordLib.toIntList(iter);
     }
-
 
 }

@@ -16,166 +16,166 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.base.block ;
+package org.apache.jena.dboe.base.block;
 
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BlockMgrLogger implements BlockMgr // extends BlockMgrWrapper
 {
-    private final BlockMgr  blockMgr ;
-    protected final Logger  log ;
-    protected final boolean logAllOperations ;
-    private final String    label ;
+    private final BlockMgr  blockMgr;
+    protected final Logger  log;
+    protected final boolean logAllOperations;
+    private final String    label;
 
     public BlockMgrLogger(BlockMgr blockMgr, boolean logAllOperations) {
-        this(null, blockMgr.getLabel(), blockMgr, logAllOperations) ;
+        this(null, blockMgr.getLabel(), blockMgr, logAllOperations);
     }
 
     public BlockMgrLogger(String label, BlockMgr blockMgr, boolean logAllOperations) {
-        this(null, label, blockMgr, logAllOperations) ;
+        this(null, label, blockMgr, logAllOperations);
     }
 
     public BlockMgrLogger(Logger log, String label, BlockMgr blockMgr, boolean logAllOperations) {
-        this.blockMgr = blockMgr ;
+        this.blockMgr = blockMgr;
         if ( log == null )
-            log = LoggerFactory.getLogger(BlockMgr.class) ;
-        this.log = log ;
-        this.logAllOperations = logAllOperations ;
+            log = LoggerFactory.getLogger(BlockMgr.class);
+        this.log = log;
+        this.logAllOperations = logAllOperations;
         if ( label == null )
-            label = blockMgr.getLabel() ; 
-        this.label = label ;
+            label = blockMgr.getLabel();
+        this.label = label;
     }
 
     @Override
     public String getLabel() {
-        return label ;
+        return label;
     }
 
     @Override
     public Block allocate(int blockSize) {
-        Block x = blockMgr.allocate(blockSize) ;
-        info("Allocate(" + x.getId() + ")") ;
-        return x ;
+        Block x = blockMgr.allocate(blockSize);
+        info("Allocate(" + x.getId() + ")");
+        return x;
     }
 
     @Override
     public boolean isEmpty() {
-        info("isEmpty()") ;
-        return blockMgr.isEmpty() ;
+        info("isEmpty()");
+        return blockMgr.isEmpty();
     }
 
     @Override
     public long allocLimit() {
-        info("limit()") ;
-        return blockMgr.allocLimit() ;
+        info("limit()");
+        return blockMgr.allocLimit();
     }
 
     @Override
     public void resetAlloc(long boundary) {
-        info("resetAlloc("+boundary+")") ;
-        blockMgr.resetAlloc(boundary) ;
+        info("resetAlloc("+boundary+")");
+        blockMgr.resetAlloc(boundary);
     }
-    
+
     @Override
     public Block getRead(long id) {
-        info("getRead(" + id + ")") ;
-        return blockMgr.getRead(id) ;
+        info("getRead(" + id + ")");
+        return blockMgr.getRead(id);
     }
 
     @Override
     public Block getWrite(long id) {
-        info("getWrite(" + id + ")") ;
-        return blockMgr.getWrite(id) ;
+        info("getWrite(" + id + ")");
+        return blockMgr.getWrite(id);
     }
 
     @Override
     public Block promote(Block block) {
-        info("promote(" + block.getId() + ")") ;
-        return blockMgr.promote(block) ;
+        info("promote(" + block.getId() + ")");
+        return blockMgr.promote(block);
     }
 
     @Override
     public void release(Block block) {
-        info("release(" + block.getId() + ")") ;
-        blockMgr.release(block) ;
+        info("release(" + block.getId() + ")");
+        blockMgr.release(block);
     }
 
     @Override
     public void write(Block block) {
-        info("write(" + block.getId() + ")") ;
-        blockMgr.write(block) ;
+        info("write(" + block.getId() + ")");
+        blockMgr.write(block);
     }
 
     @Override
     public void overwrite(Block block) {
-        info("overwrite(" + block.getId() + ")") ;
-        blockMgr.overwrite(block) ;
+        info("overwrite(" + block.getId() + ")");
+        blockMgr.overwrite(block);
     }
 
     @Override
     public void free(Block block) {
-        info("freeBlock(" + block.getId() + ")") ;
-        blockMgr.free(block) ;
+        info("freeBlock(" + block.getId() + ")");
+        blockMgr.free(block);
     }
 
     @Override
     public boolean valid(int id) {
-        info("valid(" + id + ")") ;
-        return blockMgr.valid(id) ;
+        info("valid(" + id + ")");
+        return blockMgr.valid(id);
     }
 
     @Override
     public void close() {
-        info("close") ;
-        blockMgr.close() ;
+        info("close");
+        blockMgr.close();
     }
 
     @Override
     public boolean isClosed() {
-        info("isClosed") ;
-        return blockMgr.isClosed() ;
+        info("isClosed");
+        return blockMgr.isClosed();
     }
 
     @Override
     public void sync() {
-        info("sync") ;
-        blockMgr.sync() ;
+        info("sync");
+        blockMgr.sync();
     }
 
     @Override
     public void syncForce() {
-        info("syncForce") ;
-        blockMgr.syncForce() ;
+        info("syncForce");
+        blockMgr.syncForce();
     }
 
     @Override
     public void beginRead() {
-        info("> start read") ;
-        blockMgr.beginRead() ;
+        info("> start read");
+        blockMgr.beginRead();
     }
 
     @Override
     public void endRead() {
-        info("< finish read") ;
-        blockMgr.endRead() ;
+        info("< finish read");
+        blockMgr.endRead();
     }
 
     @Override
     public void beginUpdate() {
-        info("> start update") ;
-        blockMgr.beginUpdate() ;
+        info("> start update");
+        blockMgr.beginUpdate();
     }
 
     @Override
     public void endUpdate() {
-        info("< finish update") ;
-        blockMgr.endUpdate() ;
+        info("< finish update");
+        blockMgr.endUpdate();
     }
 
     private void info(String string) {
         if ( label != null )
-            string = label + ": " + string ;
-        log.info(string) ;
+            string = label + ": " + string;
+        log.info(string);
     }
 }

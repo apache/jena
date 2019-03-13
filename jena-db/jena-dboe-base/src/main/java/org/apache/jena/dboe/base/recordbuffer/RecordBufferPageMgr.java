@@ -30,62 +30,61 @@ import org.apache.jena.dboe.base.page.PageBlockMgr;
 import org.apache.jena.dboe.base.record.RecordException;
 import org.apache.jena.dboe.base.record.RecordFactory;
 
-/** Manager for a block that is all records.  
- *  This must be compatible with B+Tree records nodes and with hash buckets. 
+/** Manager for a block that is all records.
+ *  This must be compatible with B+Tree records nodes and with hash buckets.
  */
 
 final
 public class RecordBufferPageMgr extends PageBlockMgr<RecordBufferPage>
 {
-    private final RecordFactory factory ;
-    
+    private final RecordFactory factory;
+
     public RecordBufferPageMgr(RecordFactory factory, BlockMgr blockMgr) {
-        super(new Block2RecordBufferPage(factory), blockMgr) ;
-        this.factory = factory ;
+        super(new Block2RecordBufferPage(factory), blockMgr);
+        this.factory = factory;
     }
 
-    public RecordFactory getRecordFactory() { return factory ; }
-    
+    public RecordFactory getRecordFactory() { return factory; }
+
     public RecordBufferPage create() {
-        return super.create(BlockType.RECORD_BLOCK) ;
+        return super.create(BlockType.RECORD_BLOCK);
     }
-    
+
     public static class Block2RecordBufferPage implements BlockConverter<RecordBufferPage> {
-        private RecordFactory factory ;
+        private RecordFactory factory;
 
         public Block2RecordBufferPage(RecordFactory factory) {
-            this.factory = factory ;
+            this.factory = factory;
         }
 
         @Override
         public RecordBufferPage createFromBlock(Block block, BlockType blkType) {
             if ( blkType != BlockType.RECORD_BLOCK )
-                throw new RecordException("Not RECORD_BLOCK: " + blkType) ;
+                throw new RecordException("Not RECORD_BLOCK: " + blkType);
             // Initially empty
-            RecordBufferPage rb = RecordBufferPage.createBlank(block, factory) ;
-            return rb ;
+            RecordBufferPage rb = RecordBufferPage.createBlank(block, factory);
+            return rb;
         }
 
         @Override
         public RecordBufferPage fromBlock(Block block) {
-            synchronized (block) // [[TxTDB:TODO] needed? Right place?
-            {
-                RecordBufferPage rb = RecordBufferPage.format(block, factory) ;
-                // int count = block.getByteBuffer().getInt(COUNT) ;
-                // int linkId = block.getByteBuffer().getInt(LINK) ;
+            synchronized (block) {
+                RecordBufferPage rb = RecordBufferPage.format(block, factory);
+                // int count = block.getByteBuffer().getInt(COUNT);
+                // int linkId = block.getByteBuffer().getInt(LINK);
                 // RecordBufferPage rb = new RecordBufferPage(block, linkId,
-                // factory, count) ;
-                return rb ;
+                // factory, count);
+                return rb;
             }
         }
 
         @Override
         public Block toBlock(RecordBufferPage rbp) {
-            int count = rbp.getRecordBuffer().size() ;
-            ByteBuffer bb = rbp.getBackingBlock().getByteBuffer() ;
-            bb.putInt(COUNT, rbp.getCount()) ;
-            bb.putInt(LINK, rbp.getLink()) ;
-            return rbp.getBackingBlock() ;
+            int count = rbp.getRecordBuffer().size();
+            ByteBuffer bb = rbp.getBackingBlock().getByteBuffer();
+            bb.putInt(COUNT, rbp.getCount());
+            bb.putInt(LINK, rbp.getLink());
+            return rbp.getBackingBlock();
         }
     }
 }

@@ -18,7 +18,7 @@
 
 package org.apache.jena.dboe.transaction.txn;
 
-import java.nio.ByteBuffer ;
+import java.nio.ByteBuffer;
 
 /** Interface that for components of a transaction system.
 * <p><br/>
@@ -65,10 +65,10 @@ import java.nio.ByteBuffer ;
 * <li>{@link #complete}
 * </ul>
 * <p>
-* {@link #complete} may be called out of sequence and it forces an abort if before 
+* {@link #complete} may be called out of sequence and it forces an abort if before
 * {@link #commitPrepare}. Once {@link #commitPrepare} has been called, the component
-* can not decide whether to commit finally or to cause a system abort; it must wait 
-* for the coordinator. After {@link #commitEnd}, the coordinator has definitely 
+* can not decide whether to commit finally or to cause a system abort; it must wait
+* for the coordinator. After {@link #commitEnd}, the coordinator has definitely
 * commited the overall transaction and local prepared state can be released, and changes
 * made to the permanent state of the component.
 *
@@ -80,73 +80,73 @@ public interface TransactionalComponent
 {
     /**
      * Every component <i>instance</i> must supplied a unique number.
-     * It is used to route journal entries to subsystems, including across restarts/recovery. 
+     * It is used to route journal entries to subsystems, including across restarts/recovery.
      * Uniqueness scope is within the same {@link TransactionCoordinator},
-     * and the same across restarts.  
+     * and the same across restarts.
      * <p>
      * If a component imposes the rule of one-per-{@link TransactionCoordinator},
      * the same number can be used (if different from all other component type instances).
      * <p>
      * If a component can have multiple instances per {@link TransactionCoordinator},
-     * for example indexes, each must have a unique instance id. 
+     * for example indexes, each must have a unique instance id.
      */
-    public ComponentId getComponentId() ;
+    public ComponentId getComponentId();
 
     // ---- Recovery phase
-    public void startRecovery() ;
-    
+    public void startRecovery();
+
     /** Notification that {@code ref} was really committed and is being recovered.
-     *  
+     *
      * @param ref Same bytes as were written during prepare originally.
      */
-    public void recover(ByteBuffer ref) ;
-    
+    public void recover(ByteBuffer ref);
+
     /** End of the recovery phase */
-    public void finishRecovery() ;
+    public void finishRecovery();
 
     /** Indicate that no recovery is being done (the journal thinks everything was completed last time) */
-    public void cleanStart() ;
+    public void cleanStart();
 
     // ---- Normal operation
-    
-    /** Start a transaction; return an identifier for this components use. */ 
-    public void begin(Transaction transaction) ;
-    
+
+    /** Start a transaction; return an identifier for this components use. */
+    public void begin(Transaction transaction);
+
     /** Promote a component in a transaction.
      * <p>
      *  May return "false" for "can't do that" if the transaction can not be promoted.
      *  <p>
      *  May throw {@link UnsupportedOperationException} if promotion is not supported.
      */
-    public boolean promote(Transaction transaction) ;
+    public boolean promote(Transaction transaction);
 
     /** Prepare for a commit.
      *  Returns some bytes that will be written to the journal.
      *  The journal remains valid until {@link #commitEnd} is called.
      */
-    public ByteBuffer commitPrepare(Transaction transaction) ;
+    public ByteBuffer commitPrepare(Transaction transaction);
 
     /** Commit a transaction (make durable).
      * Other components not have been commited yet and recovery may occur still.
      * Permanent state should not be finalised until {@link #commitEnd}.
      */
-    public void commit(Transaction transaction) ;
-    
-    /** Signal all commits on all components are done (the component can clearup now) */  
-    public void commitEnd(Transaction transaction) ;
+    public void commit(Transaction transaction);
 
-    /** Abort a transaction (undo the effect of a transaction) */   
-    public void abort(Transaction transaction) ;
+    /** Signal all commits on all components are done (the component can clearup now) */
+    public void commitEnd(Transaction transaction);
+
+    /** Abort a transaction (undo the effect of a transaction) */
+    public void abort(Transaction transaction);
 
     /** Finalization - the coordinator will not mention the transaction again
      *  although recovery after a crash may do so.
      */
-    public void complete(Transaction transaction) ;
-    
+    public void complete(Transaction transaction);
+
     // ---- End of operations
-    
+
     /** Detach this component from the transaction of the current thread
-     * and return some internal state that can be used in a future call of 
+     * and return some internal state that can be used in a future call of
      * {@link #attach(SysTransState)}
      * <p>
      * After this call, the component is not in a transaction but the
@@ -155,22 +155,22 @@ public interface TransactionalComponent
      * detached transaction.
      * <p>
      * Returns {@code null} if the current thread not in a transaction.
-     * The component may return null to indicate it has no state. 
+     * The component may return null to indicate it has no state.
      * The return system state should be used in a call to {@link #attach(SysTransState)}
-     * and the transaction ended in the usual way. 
-     *   
+     * and the transaction ended in the usual way.
+     *
      */
-    public SysTransState detach() ;
-    
+    public SysTransState detach();
+
     /** Set the current thread to be in the transaction.  The {@code systemState}
      * must be obtained from a call of {@link #detach()}.
      * This method can only be called once per {@code systemState}.
      */
-    public void attach(SysTransState systemState) ;
-    
+    public void attach(SysTransState systemState);
+
     /** Shutdown component, aborting any in-progress transactions.
      * This operation is not guaranteed to be called.
      */
-    public void shutdown() ;
-    
+    public void shutdown();
+
 }

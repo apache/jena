@@ -18,28 +18,26 @@
 
 package org.apache.jena.dboe.base.file;
 
-import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.dboe.ConfigTestDBOE;
 import org.apache.jena.dboe.base.file.BlockAccess;
 import org.apache.jena.dboe.base.file.BlockAccessDirect;
-import org.junit.AfterClass ;
+import org.junit.AfterClass;
 
 public class TestBlockAccessDirect extends AbstractTestBlockAccessFixedSize
 {
-    static String filename = ConfigTestDBOE.getTestingDir()+"/test-file-access-direct" ;
-    
-    static final int BlockSize = 50 ;
-    public TestBlockAccessDirect()
-    {
-        super(BlockSize) ;
+    static String filename = ConfigTestDBOE.getTestingDir()+"/test-file-access-direct";
+
+    static final int BlockSize = 50;
+    public TestBlockAccessDirect() {
+        super(BlockSize);
     }
 
-    @AfterClass public static void cleanup() { FileOps.deleteSilent(filename) ; } 
-    
+    @AfterClass public static void cleanup() { FileOps.deleteSilent(filename); }
+
     @Override
-    protected BlockAccess make()
-    {
-        FileOps.deleteSilent(filename) ;
-        return new BlockAccessDirect(filename, BlockSize) ;
+    protected BlockAccess make() {
+        FileOps.deleteSilent(filename);
+        return new BlockAccessDirect(filename, BlockSize);
     }
 }
