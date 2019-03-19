@@ -76,6 +76,7 @@ import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.shared.uuid.JenaUUID ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.util.FmtUtils ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 import org.apache.jena.update.UpdateAction ;
@@ -133,11 +134,8 @@ public class ActionDatasets extends ActionContainerItem {
         
         boolean hasParams = action.request.getParameterNames().hasMoreElements();
         
-        if ( ct == null && ! hasParams ) {
+        if ( ct == null && ! hasParams )
             ServletOps.errorBadRequest("Bad request - Content-Type or both parameters dbName and dbType required");
-            // Or do "GET over POST"
-            //return execGetContainer(action);
-        }
         
         boolean committed = false ;
         // Also acts as a concurrency lock
@@ -156,6 +154,8 @@ public class ActionDatasets extends ActionContainerItem {
                 assemblerFromUpload(action, dest) ;
             else
                 assemblerFromBody(action, dest) ;
+            
+            AssemblerUtils.addRegistered(model);
             
             // ----
             // Keep a persistent copy immediately.  This is not used for
@@ -415,7 +415,7 @@ public class ActionDatasets extends ActionContainerItem {
         String dbType = action.getRequest().getParameter(paramDatasetType) ;
         String dbName = action.getRequest().getParameter(paramDatasetName) ;
         if ( StringUtils.isBlank(dbType) || StringUtils.isBlank(dbName) )
-            ServletOps.errorBadRequest("Required parameters: dbName and dbType");
+            ServletOps.errorBadRequest("Received HTML form.  Both parameters 'dbName' and 'dbType' required");
         
         Map<String, String> params = new HashMap<>() ;
         
