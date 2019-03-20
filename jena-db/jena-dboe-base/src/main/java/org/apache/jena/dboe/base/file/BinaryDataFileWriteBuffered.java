@@ -21,7 +21,7 @@ package org.apache.jena.dboe.base.file;
 import org.apache.jena.atlas.RuntimeIOException;
 
 /** Implementation of {@link BinaryDataFile} adding write buffering to another
- * {@link BinaryDataFile} file such as a {@link BinaryDataFileRandomAccess}.
+ * {@link BinaryDataFile} file, such as a {@link BinaryDataFileRandomAccess}.
  *  <li>Thread-safe.
  *  <li>No read buffering provided.
  *  <li>The write buffer is flushed when switching to read.
@@ -30,9 +30,8 @@ import org.apache.jena.atlas.RuntimeIOException;
 public class BinaryDataFileWriteBuffered implements BinaryDataFile {
     private static final int SIZE = 128*1024;
     private final Object sync = new Object();
-    private byte[] buffer;
-    private int bufferLength;
-    private boolean pendingOutput;
+    private final byte[] buffer;
+    private volatile int bufferLength;
     private final BinaryDataFile other;
 
     public BinaryDataFileWriteBuffered(BinaryDataFile other) {
@@ -42,6 +41,7 @@ public class BinaryDataFileWriteBuffered implements BinaryDataFile {
     public BinaryDataFileWriteBuffered(BinaryDataFile other, int bufferSize) {
         this.other = other;
         buffer = new byte[bufferSize];
+        bufferLength = 0;
     }
 
     @Override
@@ -49,7 +49,6 @@ public class BinaryDataFileWriteBuffered implements BinaryDataFile {
         synchronized(sync) {
             other.open();
             bufferLength = 0;
-            pendingOutput = false;
         }
     }
 
@@ -81,8 +80,26 @@ public class BinaryDataFileWriteBuffered implements BinaryDataFile {
     public void truncate(long posn) {
         synchronized(sync) {
             checkOpen();
-            if ( pendingOutput && posn >= other.length() )
-                writeBuffer();
+            long otherLen = other.length();
+            if ( bufferLength > 0) { 
+                if ( posn >= otherLen ) {
+                    long bufLen = posn-otherLen;
+                    if ( bufLen < bufferLength ) {
+                        // If truncate is in the buffer area, just truncate the write buffer....
+                        bufferLength = (int)bufLen;
+                        return;
+                    }
+                    // Off the top end.
+                    // Write and do a real truncate so the underlying meaning of "truncate
+                    // above the current end" is used.
+                    writeBuffer();
+                    // and truncate "other".
+                } else {
+                    // Forget buffer.
+                    bufferLength = 0;
+                    // and truncate "other".
+                }
+            }
             other.truncate(posn);
         }
     }
@@ -112,21 +129,23 @@ public class BinaryDataFileWriteBuffered implements BinaryDataFile {
 
 //        if ( false ) {
 //            // No buffering
-//            try { file.write(buf, off, len); }
+//            try { other.write(buf, off, len); }
 //            catch (IOException e) { IO.exception(e); }
 //            bufferLength = 0;
 //            return;
 //        }
 
-            // No room.
-            if ( bufferLength + len >= SIZE )
+            // If no room, flush buffer.
+            if ( bufferLength + len > SIZE ) {
                 writeBuffer();
+                // bufferLength set to zero.
+            }
 
-            if ( bufferLength + len < SIZE ) {
+            // Is there room now?
+            if ( bufferLength + len <= SIZE ) {
                 // Room to buffer
                 System.arraycopy(buf, off, buffer, bufferLength, len);
                 bufferLength += len;
-                pendingOutput = true;
                 return x;
             }
             // Larger than the buffer space.  Write directly.
@@ -144,8 +163,7 @@ public class BinaryDataFileWriteBuffered implements BinaryDataFile {
     }
 
     private void writeBuffer() {
-        if ( pendingOutput ) {
-            pendingOutput = false;
+        if ( bufferLength > 0 ) {
             other.write(buffer, 0, bufferLength);
             bufferLength = 0;
         }
