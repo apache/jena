@@ -153,7 +153,7 @@ public class MultiUnion extends Polyadic
          this union.
     */
     private ExtendedIterator<Triple> singleGraphFind( final Triple t )
-        { return (m_subGraphs.get( 0 )).find(  t  ); }
+        { return (m_subGraphs.iterator().next()).find(  t  ); }
 
 
     /**
@@ -203,9 +203,10 @@ public class MultiUnion extends Polyadic
         public long getStatistic( Node S, Node P, Node O )
             {
             long result = 0;
-            for (int i = 0; i < mu.m_subGraphs.size(); i += 1)
+            Iterator<Graph> i = mu.m_subGraphs.iterator();
+            while (i.hasNext())
                 {
-                Graph g = mu.m_subGraphs.get( i );
+                Graph g = i.next();
                 GraphStatisticsHandler s = g.getStatisticsHandler();
                 long n = s.getStatistic( S, P, O );
                 if (n < 0) return n;

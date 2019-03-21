@@ -25,6 +25,7 @@ package org.apache.jena.graph.compose;
 ///////////////
 import java.util.ArrayList ;
 import java.util.Iterator ;
+import java.util.LinkedHashSet ;
 import java.util.List ;
 
 import org.apache.jena.graph.Capabilities ;
@@ -58,7 +59,7 @@ public abstract class Polyadic extends CompositionBase
     //////////////////////////////////
 
     /** A list of the sub-graphs that this composition contains */
-    protected List<Graph> m_subGraphs = new ArrayList<>();
+    protected LinkedHashSet<Graph> m_subGraphs = new LinkedHashSet<>();
 
     /** The distinguished graph for adding to. If null, use the 0'th graph in the list. */
     protected Graph m_baseGraph = null;
@@ -193,7 +194,7 @@ public abstract class Polyadic extends CompositionBase
     public Graph getBaseGraph() {
         if (m_baseGraph == null) {
             // no designated graph, so default to the first graph on the list
-            return (m_subGraphs.size() == 0) ? null : m_subGraphs.get( 0 );
+            return (m_subGraphs.size() == 0) ? null : m_subGraphs.iterator().next();
         }
         else {
             return m_baseGraph;
