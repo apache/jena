@@ -43,6 +43,10 @@ public class Node_URI extends Node_Concrete
         { return v.visitURI( this, (String) label ); }
         
     @Override
+    public Node_URI asURI()
+        { return this; }
+    
+    @Override
     public boolean isURI()
         { return true; }
         

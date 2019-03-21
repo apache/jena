@@ -50,6 +50,10 @@ public class Node_Variable extends Node_Fluid
         { return v.visitVariable( this, getName() ); }
         
     @Override
+    public Node_Variable asVariable()
+        { return this; }
+    
+    @Override
     public boolean isVariable()
         { return true; }
         

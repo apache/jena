@@ -68,6 +68,10 @@ public class Node_Literal extends Node_Concrete
         { return ((LiteralLabel) label).toString( quoting ); }
         
     @Override
+    public Node_Literal asLiteral()
+        { return this; }
+    
+    @Override
     public boolean isLiteral() 
         { return true; }    
         

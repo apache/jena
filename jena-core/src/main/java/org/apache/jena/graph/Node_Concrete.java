@@ -28,6 +28,10 @@ public abstract class Node_Concrete extends Node
         {  super( label ); }
         
     @Override
+    public Node_Concrete asConcrete()
+        { return this; }
+    
+    @Override
     public boolean isConcrete()
         { return true; }
     }

@@ -59,6 +59,41 @@ public abstract class Node implements Serializable {
     public abstract Object visitWith( NodeVisitor v );
      
     /**
+        Answer this node as a concrete node iff this node is a concrete node;
+        otherwise die horribly. [subclasses override]
+    */
+    public Node_Concrete asConcrete()
+        { throw new UnsupportedOperationException( this + " is not a concrete node" ); }
+    
+    /**
+         Answer this node as a literal node iff this node is a literal node;
+        otherwise die horribly. [subclasses override]
+    */
+    public Node_Literal asLiteral() 
+        { throw new UnsupportedOperationException( this + " is not a literal node" ); }
+    
+    /** 
+        Answer this node as a blank node iff this node is a blank node;
+        otherwise die horribly. [subclasses override]
+    */
+    public Node_Blank asBlank()
+        { throw new UnsupportedOperationException( this + " is not a blank node" ); }
+    
+    /** 
+        Answer this node as a URI node iff this node is a URI node;
+        otherwise die horribly. [subclasses override]
+    */
+    public Node_URI asURI()
+        { throw new UnsupportedOperationException( this + " is not a URI node" ); }
+    
+    /** 
+        Answer this node as a variable node iff this node is a variable node;
+        otherwise die horribly. [subclasses override]
+    */
+    public Node_Variable asVariable()
+        { throw new UnsupportedOperationException( this + " is not a variable node" ); }
+    
+    /**
         Answer true iff this node is concrete, ie not variable, ie URI, blank, or literal.
     */                     
     public abstract boolean isConcrete();

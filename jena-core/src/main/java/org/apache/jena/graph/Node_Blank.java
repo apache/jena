@@ -33,6 +33,10 @@ public class Node_Blank extends Node_Concrete
     /* package */ Node_Blank( BlankNodeId id ) { super( id ); } 
 
     @Override
+    public Node_Blank asBlank()
+        { return this; }
+    
+    @Override
     public boolean isBlank() { return true; }
 
     @Override
