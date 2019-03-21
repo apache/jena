@@ -84,13 +84,13 @@ public abstract class Dyadic extends CompositionBase
     /**
          Answer the left (first) operand of this Dyadic.
     */
-    public Object getL()
+    public Graph getL()
         { return L; }
 
     /**
          Answer the right (second) operand of this Dyadic.
     */
-    public Object getR()
+    public Graph getR()
         { return R; }
         
     }
