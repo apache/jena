@@ -38,19 +38,19 @@ public class NodeFactory {
     }
 
     /** Make a fresh blank node */
-    public static Node createBlankNode() {
+    public static Node_Blank createBlankNode() {
         return createBlankNode(BlankNodeId.create()) ;
     }
 
     /** make a blank node with the specified label
      */
-    public static Node createBlankNode(BlankNodeId id) {
+    public static Node_Blank createBlankNode(BlankNodeId id) {
         Objects.requireNonNull(id, "Argument to NodeFactory.createBlankNode is null") ;
         return new Node_Blank(id) ; 
     }
 
     /** make a blank node with the specified label */
-    public static Node createBlankNode(String string) {
+    public static Node_Blank createBlankNode(String string) {
         BlankNodeId id = BlankNodeId.create(string) ;
         return new Node_Blank(id) ; 
     }
@@ -59,7 +59,7 @@ public class NodeFactory {
      *  @deprecated Use {@link #createBlankNode()}
      */
     @Deprecated
-    public static Node createAnon() {
+    public static Node_Blank createAnon() {
         return createAnon(BlankNodeId.create()) ;
     }
 
@@ -67,7 +67,7 @@ public class NodeFactory {
      * @deprecated Use {@link #createBlankNode(BlankNodeId)}
      */
     @Deprecated
-    public static Node createAnon(BlankNodeId id) {
+    public static Node_Blank createAnon(BlankNodeId id) {
         Objects.requireNonNull(id, "Argument to NodeFactory.createAnon is null") ;
         return new Node_Blank(id) ; 
     }
@@ -76,31 +76,31 @@ public class NodeFactory {
      * @deprecated Use {@link #createBlankNode(String)}
      */
     @Deprecated
-    public static Node createAnon(String string) {
+    public static Node_Blank createAnon(String string) {
         Objects.requireNonNull(string, "Argument to NodeFactory.createAnon is null") ;
         BlankNodeId id = BlankNodeId.create(string) ;
         return new Node_Blank(id) ; 
     }
 
     /** make a literal node with the specified literal value */
-    public static Node createLiteral(LiteralLabel lit) {
+    public static Node_Literal createLiteral(LiteralLabel lit) {
         Objects.requireNonNull(lit, "Argument to NodeFactory.createLiteral is null") ;
         return new Node_Literal( lit ) ;
     }
 
     /** make a URI node with the specified URIref string */
-    public static Node createURI(String uri) {
+    public static Node_URI createURI(String uri) {
         Objects.requireNonNull(uri, "Argument to NodeFactory.createURI is null") ;
         return new Node_URI(uri) ;
     }
 
     /** make a variable node with a given name */
-    public static Node createVariable(String name) {
+    public static Node_Variable createVariable(String name) {
         Objects.requireNonNull(name, "Argument to NodeFactory.createVariable is null") ;
         return new Node_Variable(name) ;
     }
 
-    public static Node createLiteral(String value) {
+    public static Node_Literal createLiteral(String value) {
         Objects.requireNonNull(value, "Argument to NodeFactory.createLiteral is null") ;
         return createLiteral(value, "", false) ;
     }
@@ -115,7 +115,7 @@ public class NodeFactory {
      *            If true then lit is exclusive canonical XML of type
      *            rdf:XMLLiteral, and no checking will be invoked.
      */
-    public static Node createLiteral(String lex, String lang, boolean isXml) {
+    public static Node_Literal createLiteral(String lex, String lang, boolean isXml) {
         if ( lex == null )
             throw new NullPointerException("null lexical form for literal") ;
         return createLiteral(LiteralLabelFactory.create(lex, lang, isXml)) ;
@@ -129,7 +129,7 @@ public class NodeFactory {
      * @param lang
      *            the optional language tag
      */
-    public static Node createLiteral(String lex, String lang) {
+    public static Node_Literal createLiteral(String lex, String lang) {
         // Equivalent to create(lex, lang, false) except the XML flag is
         // hidden so client code does not see it unnecesarily.
         if ( lex == null )
@@ -151,7 +151,7 @@ public class NodeFactory {
      * @throws DatatypeFormatException
      *             if lex is not a legal form of dtype
      */
-    public static Node createLiteral(String lex, String lang, RDFDatatype dtype) throws DatatypeFormatException {
+    public static Node_Literal createLiteral(String lex, String lang, RDFDatatype dtype) throws DatatypeFormatException {
         return createLiteral(LiteralLabelFactory.createLiteralLabel(lex, lang, dtype)) ;
     }
 
@@ -167,7 +167,7 @@ public class NodeFactory {
      * @throws DatatypeFormatException
      *             if lex is not a legal form of dtype
      */
-    public static Node createLiteral(String lex, RDFDatatype dtype) throws DatatypeFormatException {
+    public static Node_Literal createLiteral(String lex, RDFDatatype dtype) throws DatatypeFormatException {
         return createLiteral(LiteralLabelFactory.create(lex, dtype)) ;
     }
 
@@ -181,7 +181,7 @@ public class NodeFactory {
      * @return Node
      * @throws DatatypeFormatException
      */
-    public static Node createLiteralByValue(Object value, RDFDatatype dtype) throws DatatypeFormatException {
+    public static Node_Literal createLiteralByValue(Object value, RDFDatatype dtype) throws DatatypeFormatException {
         Objects.requireNonNull(value, "Argument 'value' to NodeFactory.createLiteralByValue is null") ;
         return new Node_Literal(LiteralLabelFactory.createByValue(value, "", dtype)) ;
     }
@@ -198,21 +198,21 @@ public class NodeFactory {
      * @return Node
      * @throws DatatypeFormatException
      */
-    public static Node createLiteralByValue(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
+    public static Node_Literal createLiteralByValue(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
         Objects.requireNonNull(value, "Argument 'value' to NodeFactory.createLiteralByValue is null") ;
         return new Node_Literal(LiteralLabelFactory.createByValue(value, lang, dtype)) ;
     }
 
     /** @deprecated To be removed: Use {@link #createLiteralByValue(Object, RDFDatatype)} */ 
     @Deprecated
-    public static Node createUncachedLiteral(Object value, RDFDatatype dtype) throws DatatypeFormatException {
+    public static Node_Literal createUncachedLiteral(Object value, RDFDatatype dtype) throws DatatypeFormatException {
         Objects.requireNonNull(value, "Argument 'value' to NodeFactory.createLiteralByValue is null") ;
         return createLiteralByValue(value, dtype) ;
     }
 
     /** @deprecated To be removed: Use {@link #createLiteralByValue(Object, String, RDFDatatype)} */ 
     @Deprecated
-    public static Node createUncachedLiteral(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
+    public static Node_Literal createUncachedLiteral(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
         Objects.requireNonNull(value, "Argument 'value' to NodeFactory.createLiteralByValue is null") ;
         return createLiteralByValue(value, lang, dtype) ;
     }
