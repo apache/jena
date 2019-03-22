@@ -18,14 +18,20 @@
 
 package org.apache.jena.dboe.trans.data;
 
+import static java.lang.String.format;
+
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.dboe.base.file.BinaryDataFile;
 import org.apache.jena.dboe.base.file.BufferChannel;
-import org.apache.jena.dboe.transaction.txn.*;
+import org.apache.jena.dboe.transaction.txn.ComponentId;
+import org.apache.jena.dboe.transaction.txn.StateMgrData;
+import org.apache.jena.dboe.transaction.txn.TransactionalComponentLifecycle;
+import org.apache.jena.dboe.transaction.txn.TxnId;
 import org.apache.jena.query.ReadWrite;
 
 /** Transactional {@link BinaryDataFile}.
@@ -38,18 +44,19 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
     implements BinaryDataFile {
 
     /*
-     * The file is written to as we go along so abort requires some action. We
-     * can't recover from just the file, without any redo or undo recovery
-     * action.
+     * The file is written to as we go along but we might need to abort
+     * and reset to the starting state of a transaction, which is TxnBinFile
+     * or set a new prepare/commit intended state which is FileState
+     * as a ByteBuffer.
      */
-
-    private final FileState stateMgr;
+    private final FileState fileState;
 
     // The current committed position and the limit as seen by readers.
     // This is also the abort point.
+    // Global.s
     private final AtomicLong committedLength;
 
-    // The per thread runtime state
+    // The state of the file visible outside the transaction.
     static class TxnBinFile {
         final long length;
 
@@ -58,7 +65,9 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
         }
     }
 
-    // Prepare record
+    // This is the state of the file ahead of time at prepare/commit.
+    // It is set on prepare.
+    // It is only valid on the transaction thread in the transaction lifecycle.
     static class FileState extends StateMgrData {
         FileState(BufferChannel bufferChannel, long length, long position) {
             super(bufferChannel, length, position);
@@ -75,7 +84,7 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
      */
     public TransBinaryDataFile(BinaryDataFile binFile, ComponentId cid, BufferChannel bufferChannel) {
         super(cid);
-        stateMgr = new FileState(bufferChannel, 0L, 0L);
+        fileState = new FileState(bufferChannel, 0L, 0L);
         this.binFile = binFile;
         if ( ! binFile.isOpen() )
             binFile.open();
@@ -93,8 +102,8 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
 
     @Override
     public void recover(ByteBuffer ref) {
-        stateMgr.setState(ref);
-        committedLength.set(stateMgr.length());
+        fileState.setState(ref);
+        committedLength.set(fileState.length());
         recoveryAction = true;
     }
 
@@ -104,7 +113,8 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
             long length = committedLength.get();
             binFile.truncate(length);
             binFile.sync();
-            committedLength.set(length);
+            committedLength.set(binFile.length());
+            recoveryAction = false;
         }
     }
 
@@ -113,8 +123,6 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
 
     @Override
     protected TxnBinFile _begin(ReadWrite readWrite, TxnId txnId) {
-        // Atomic read across the two because it's called from within
-        // TransactionCoordinator.begin$ where there is a lock.
         return createState();
     }
 
@@ -124,36 +132,42 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
     }
 
     @Override
-    protected TxnBinFile _promote(TxnId txnId, TxnBinFile state) {
+    protected TxnBinFile _promote(TxnId txnId, TxnBinFile txnResetState) {
+        // New state object (may be PROMOTE-READ-COMMITTED and not the same as passed in).
         return createState();
     }
 
     @Override
-    protected ByteBuffer _commitPrepare(TxnId txnId, TxnBinFile state) {
-        // Force to disk but do not set the on disk state to record that.
+    protected ByteBuffer _commitPrepare(TxnId txnId, TxnBinFile txnResetState) {
+        // Force to disk but do not set the on-disk state to record that.
         binFile.sync();
-        stateMgr.length(binFile.length());
-        return stateMgr.getState();
+        fileState.length(binFile.length());
+        return fileState.getState();
     }
 
     @Override
-    protected void _commit(TxnId txnId, TxnBinFile state) {
+    protected void _commit(TxnId txnId, TxnBinFile txnResetState) {
         if ( isWriteTxn() ) {
-            // Force to disk happens in _commitPrepare
-            stateMgr.writeState();
-            // Move visible commit point forward (not strictly necessary - transaction is ending.
+            // Force data to disk happens in _commitPrepare
+            fileState.writeState();
             committedLength.set(binFile.length());
         }
     }
 
     @Override
     protected void _commitEnd(TxnId txnId, TxnBinFile state) {
+        // No clearup needed.
     }
 
     @Override
-    protected void _abort(TxnId txnId, TxnBinFile state) {
+    protected void _abort(TxnId txnId, TxnBinFile txnResetState) {
         if ( isWriteTxn() ) {
-            binFile.truncate(committedLength.get());
+            long x = committedLength.get();
+            // Internal consistency check.
+            // (Abort after commit would trigger the warning.) 
+            if ( txnResetState.length != x )
+                Log.warn(this, format("Mismatch: state.length = %d,  committedLength = %d", txnResetState.length != x));
+            binFile.truncate(x);
             binFile.sync();
         }
     }
@@ -163,8 +177,6 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
 
     @Override
     protected void _shutdown() {}
-
-    private void checkBoundsReader(long requestedPoint, TxnBinFile state) { }
 
     @Override
     public void open() {
@@ -187,7 +199,7 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
 
     private void checkRead(long posn) {
         if ( posn > getDataState().length )
-            IO.exception("Out of bounds: (limit "+getDataState().length+")"+posn);
+            IO.exception("Out of bounds: (limit "+getDataState().length+") "+posn);
     }
 
     @Override
@@ -198,7 +210,7 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
 
     /**
      * Truncate only supported for an abort - this transactional version of
-     * BinaryDataFile will not truncate to earlier than the committed length.
+     * {@link BinaryDataFile} will not truncate to earlier than the committed length.
      */
     @Override
     public void truncate(long size) {
@@ -217,7 +229,7 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
 
     @Override
     public void close() {
-        stateMgr.close();
+        fileState.close();
         binFile.close();
     }
 

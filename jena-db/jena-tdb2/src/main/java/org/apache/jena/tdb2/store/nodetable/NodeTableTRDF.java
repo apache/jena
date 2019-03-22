@@ -36,8 +36,8 @@ import org.apache.thrift.protocol.TProtocol ;
 
 public class NodeTableTRDF extends NodeTableNative {
     // Write buffering is done in the underlying BinaryDataFile
-    BinaryDataFile diskFile ;
-    private TReadAppendFileTransport transport ;
+    private final BinaryDataFile diskFile ;
+    private final TReadAppendFileTransport transport ;
     private final TProtocol protocol ;
 
     public NodeTableTRDF(Index nodeToId, BinaryDataFile objectFile) {
