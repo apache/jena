@@ -30,7 +30,10 @@ import java.nio.file.DirectoryStream ;
 import java.nio.file.Files ;
 import java.nio.file.Path ;
 import java.nio.file.Paths ;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.JA ;
@@ -296,6 +299,7 @@ public class FusekiConfig {
     /** Build a DatasetRef starting at Resource svc, having the services as described by the descriptions. */
     private static DataService buildDataService(Resource svc, DatasetDescriptionRegistry dsDescMap) {
         Resource datasetDesc = ((Resource)FusekiBuildLib.getOne(svc, "fu:dataset")) ;
+        
         Dataset ds = getDataset(datasetDesc, dsDescMap);
  
         // In case the assembler included ja:contents
@@ -342,6 +346,10 @@ public class FusekiConfig {
             // Check if the description is in the model.
             if ( !datasetDesc.hasProperty(RDF.type) )
                 throw new FusekiConfigException("No rdf:type for dataset " + FusekiBuildLib.nodeLabel(datasetDesc)) ;
+
+            // Should have been done already. e.g. ActionDatasets.execPostContainer, 
+            // Assemblerutils.readAssemblerFile < FusekiServer.parseConfigFile.
+            //AssemblerUtils.addRegistered(datasetDesc.getModel());
             ds = (Dataset)Assembler.general.open(datasetDesc) ;
         }
         // Some kind of check that it is "the same" dataset.  
