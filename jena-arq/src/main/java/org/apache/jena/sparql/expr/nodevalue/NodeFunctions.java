@@ -24,8 +24,8 @@ import java.util.Iterator ;
 import java.util.UUID ;
 
 import javax.xml.datatype.DatatypeConstants;
-import javax.xml.datatype.Duration;
 import javax.xml.datatype.DatatypeConstants.Field;
+import javax.xml.datatype.Duration;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
@@ -35,6 +35,7 @@ import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.Violation ;
 import org.apache.jena.riot.system.IRIResolver;
+import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.ExprTypeException ;
 import org.apache.jena.sparql.expr.NodeValue ;
@@ -376,20 +377,7 @@ public class NodeFunctions {
     public static boolean isLiteral(Node node) {
         return node.isLiteral() ;
     }
-
-    private static final IRIFactory iriFactory      = IRIResolver.iriFactory();
-    public static boolean           warningsForIRIs = false ;
-
-    // -------- IRI
-    /** "Skolemize": BlankNode to IRI else return node unchanged. */ 
-    public static Node blankNodeToIri(Node node) {
-        if ( node.isBlank() ) {
-            String x = node.getBlankNodeLabel() ;
-            return NodeFactory.createURI("_:" + x) ;
-        }
-        return node;
-    }
-
+    
     /** NodeValue to NodeValue, skolemizing, and converting strings to URIs. */
     public static NodeValue iri(NodeValue nv, String baseIRI) {
         if ( isIRI(nv.asNode()) )
@@ -398,9 +386,12 @@ public class NodeFunctions {
         return NodeValue.makeNode(n2) ;
     }
     
+    private static final IRIFactory iriFactory      = IRIResolver.iriFactory();
+    public static boolean           warningsForIRIs = false ;
+
     /** Node to Node, skolemizing, and converting strings to URIs. */
     public static Node iri(Node n, String baseIRI) {
-        Node node = blankNodeToIri(n);
+        Node node = RiotLib.blankNodeToIri(n);
         if ( node.isURI() )
             return node ;
         // Literals.

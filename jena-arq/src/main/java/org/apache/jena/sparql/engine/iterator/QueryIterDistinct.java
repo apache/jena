@@ -53,7 +53,7 @@ public class QueryIterDistinct extends QueryIter1
         if ( execCxt != null ) {
             memThreshold = execCxt.getContext().getLong(ARQ.spillToDiskThreshold, memThreshold) ;
             if ( memThreshold < 0 )
-                throw new ARQException("BAd spillToDiskThreshold: "+memThreshold) ;
+                throw new ARQException("Bad spillToDiskThreshold: "+memThreshold) ;
         }
     }
     

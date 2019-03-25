@@ -21,7 +21,6 @@ package org.apache.jena.dboe.trans.bplustree;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.InternalErrorException;
@@ -32,10 +31,9 @@ import org.apache.jena.dboe.index.RangeIndex;
 import org.apache.jena.dboe.transaction.txn.ComponentId;
 import org.apache.jena.dboe.transaction.txn.TransactionalComponentLifecycle;
 import org.apache.jena.dboe.transaction.txn.TxnId;
+import org.apache.jena.query.ReadWrite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.apache.jena.query.ReadWrite;
 
 /**
  * B-Tree taken from:
@@ -164,7 +162,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
 
     private BPTreeNode getRootWrite() {
         if ( isTransactional() ) {
-            super.checkWriteTxn();
+            super.requireWriteTxn();
             int rootId = super.getDataState().getRoot();
             return nodeManager.getRead(rootId, BPlusTreeParams.RootParent);
         }
@@ -172,7 +170,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     }
 
     private boolean isTransactional() {
-        return mode == Mode.TRANSACTIONAL || mode == Mode.TRANSACTIONAL_AUTOCOMMIT;
+        return mode == Mode.TRANSACTIONAL;
     }
 
     private void releaseRootRead(BPTreeNode rootNode) {
@@ -206,7 +204,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
             return rootIdx;
     }
 
-    BptTxnState state() {
+    /*package*/ BptTxnState state() {
         if ( mode == Mode.TRANSACTIONAL ) {
             if ( super.isActiveTxn() )
                 return super.getDataState();
@@ -468,29 +466,23 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         mode = newMode;
 
         switch(mode) {
+            case TRANSACTIONAL :
+                nonTxnState = null;
+                break;
+            case MUTABLE :
+                nonTxnState = new BptTxnState(BPlusTreeParams.RootId, 0, 0);
+                break;
+                
             case IMMUTABLE :
                 nonTxnState = new BptTxnState(BPlusTreeParams.RootId,
                                               nodeManager.allocLimit(),
                                               recordsMgr.allocLimit());
                 break;
-            case IMMUTABLE_ALL:
+            case IMMUTABLE_ALL :
                 nonTxnState = new BptTxnState(BPlusTreeParams.RootId,
                                               Long.MAX_VALUE,
                                               Long.MAX_VALUE);
                 break;
-            case MUTABLE :
-                nonTxnState = new BptTxnState(BPlusTreeParams.RootId, 0, 0);
-                break;
-            case MUTABLE_ROOT :
-                // Imperfect.
-                nonTxnState = new BptTxnState(BPlusTreeParams.RootId, 1, 1);
-                break;
-            case TRANSACTIONAL :
-                nonTxnState= null;
-                break;
-            case TRANSACTIONAL_AUTOCOMMIT :
-                // TODO TRANSACTIONAL_AUTOCOMMIT
-                throw new NotImplementedException("TRANSACTIONAL_AUTOCOMMIT not implemented");
         }
     }
 

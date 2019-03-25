@@ -46,6 +46,7 @@
     <module>jena-dboe-index</module>
     <module>jena-dboe-index-test</module>
     <module>jena-dboe-trans-data</module>
+    <module>jena-dboe-storage</module>
     <module>jena-tdb2</module>
   </modules>
 

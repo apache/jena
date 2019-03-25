@@ -16,16 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.store;
+package org.apache.jena.dboe.transaction.txn;
 
 import java.util.Iterator;
 import java.util.Objects;
 
 import org.apache.jena.atlas.iterator.IteratorWrapper;
-import org.apache.jena.dboe.transaction.txn.Transaction;
-import org.apache.jena.dboe.transaction.txn.TransactionException;
-import org.apache.jena.dboe.transaction.txn.TransactionalSystem;
-import org.apache.jena.dboe.transaction.txn.TxnId;
 
 /** Wrapper to check that an iterator is used inside its originating transaction. */
 public class IteratorTxnTracker<T> extends IteratorWrapper<T> {

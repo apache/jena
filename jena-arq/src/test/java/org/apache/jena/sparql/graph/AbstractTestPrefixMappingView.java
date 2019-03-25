@@ -22,7 +22,8 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.junit.Test ;
 
-public abstract class AbstractTestPrefixMapping2 extends BaseTest
+/** Tests for when the prefix mapping,of the graph it comes from, is view */ 
+public abstract class AbstractTestPrefixMappingView extends BaseTest
 {
     static final String defaultPrefixURI  = "" ;
 

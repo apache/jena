@@ -150,7 +150,7 @@ public abstract class AbstractTestDatasetGraphAccessor extends BaseTest
     }
     
     // Named graph, no side effects.
-    @Test public void delete_02() 
+    @Test public void delete_02()
     {
         DatasetGraphAccessor updater = getDatasetUpdater() ;
         //updater.httpDelete(n1) ;

@@ -23,13 +23,13 @@ import java.util.Map;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.TransactionHandler;
+import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.sparql.core.DatasetPrefixStorage;
 import org.apache.jena.sparql.core.GraphView;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.TransactionHandlerView;
-import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 
 /** 
  * A GraphView that is sensitive to {@link DatasetGraphSwitchable} switching.
@@ -120,7 +120,7 @@ public class GraphViewSwitchable extends GraphView {
         PrefixMappingImplTDB2(Node graphName) {
             this.graphName = graphName;
             if ( graphName != null ) {
-                graphName = NodeFunctions.blankNodeToIri(graphName);
+                graphName = RiotLib.blankNodeToIri(graphName);
                 gn = graphName.getURI();
             } else
                 gn = "";

@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.base.file.ProcessFileLock;
 import org.apache.jena.dboe.sys.Names;
@@ -145,7 +146,7 @@ public class DatabaseConnection {
         for (Location loc : x)
             internalExpel(loc, true) ;
         if ( ! cache.isEmpty() )
-            System.err.println("DatabaseConnection: Cache not empty!");
+            Log.error(DatabaseConnection.class, "DatabaseConnection: Expected the cache to be empty");
         cache.clear() ;
     }
     
