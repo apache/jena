@@ -404,24 +404,9 @@ public class TextIndexLucene implements TextIndex {
 
     private Query parseQuery(String queryString, Analyzer analyzer) throws ParseException {
         Query query = null;
+        QueryParser qp = null;
 
         switch(queryParserType) {
-            case "QueryParser":
-                QueryParser qp =  new QueryParser(docDef.getPrimaryField(), analyzer) ;
-                qp.setAllowLeadingWildcard(true) ;
-                query = qp.parse(queryString);
-                break;
-            case "AnalyzingQueryParser":
-                // AnalyzingQueryParser is deprecated in Lucene 7, switching to QueryParser
-                qp = new QueryParser(docDef.getPrimaryField(), analyzer) ;
-                qp.setAllowLeadingWildcard(true) ;
-                query = qp.parse(queryString);
-                break;
-            case "ComplexPhraseQueryParser":
-                qp = new ComplexPhraseQueryParser(docDef.getPrimaryField(), analyzer);
-                qp.setAllowLeadingWildcard(true) ;
-                query = qp.parse(queryString);
-                break;
             case "SurroundQueryParser":
                 try {
                     query = org.apache.lucene.queryparser.surround.parser.QueryParser.parse(queryString).makeLuceneQueryField(docDef.getPrimaryField(), new BasicQueryFactory());
@@ -429,10 +414,16 @@ public class TextIndexLucene implements TextIndex {
                     throw new ParseException(e.getMessage());
                 }
                 break;
+            case "ComplexPhraseQueryParser":
+                qp = new ComplexPhraseQueryParser(docDef.getPrimaryField(), analyzer);
+            case "QueryParser":
+                qp = new QueryParser(docDef.getPrimaryField(), analyzer);
             default:
-                log.warn("Unknown query parser type '" + queryParserType + "'. Defaulting to standard QueryParser") ;
-                qp = new QueryParser(docDef.getPrimaryField(), analyzer) ;
-                qp.setAllowLeadingWildcard(true) ;
+                if(qp  == null) {
+                    log.warn("Unknown query parser type '" + queryParserType + "'. Defaulting to standard QueryParser") ;
+                    qp = new QueryParser(docDef.getPrimaryField(), analyzer);
+                }
+                qp.setAllowLeadingWildcard(true);
                 query = qp.parse(queryString);
         }
         return query ;
