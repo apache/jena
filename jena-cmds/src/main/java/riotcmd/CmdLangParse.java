@@ -293,7 +293,12 @@ public abstract class CmdLangParse extends CmdGeneral
         try {
             parser.parse(sink);
             successful = true;
-        } catch (RiotException ex) {
+        } 
+        catch (RiotNotFoundException ex) {
+            errHandler.error(ex.getMessage(), -1, -1);
+            successful = false;
+        }
+        catch (RiotException ex) {
             successful = false;
         }
         sink.finish() ;

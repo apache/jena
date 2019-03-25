@@ -253,7 +253,7 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
 
     protected Transaction getTransaction()          { return threadTxn.get(); }
     protected void setTransaction(Transaction txn)  { threadTxn.set(txn); }
-
+    
     private void setTrackTxn(TxnState newState) {
         if ( ! CHECKING ) return;
         trackTxn.set(newState);
@@ -310,71 +310,6 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
      * Typically, an implementation does not need to take action in every call.
      */
 
-//    /**
-//     *
-//     * @param readWrite
-//     * @param txnId
-//     * @return
-//     */
-//    protected abstract X           _begin(ReadWrite readWrite, TxnId txnId);
-//
-//    /**
-//     *
-//     * @param txnId
-//     * @param state
-//     * @return
-//     */
-//    protected abstract ByteBuffer  _commitPrepareWrite(TxnId txnId, X  state);
-//
-//    /**
-//     *
-//     * @param txnId
-//     * @param state
-//     */
-//    protected abstract void        _commitWrite(TxnId txnId, X state);
-//
-//    /**
-//     *
-//     * @param txnId
-//     * @param state
-//     */
-//    protected abstract void        _commitEndWrite(TxnId txnId, X state);
-//
-//    /**
-//     *
-//     * @param txnId
-//     * @param state
-//     */
-//    protected abstract void        _abortWrite(TxnId txnId, X state);
-//
-//    /**
-//     *
-//     * @param txnId
-//     * @param state
-//     * @return
-//     */
-//    protected abstract ByteBuffer  _commitRead(TxnId txnId, X  state);
-//
-//    /**
-//     *
-//     * @param txnId
-//     * @param state
-//     * @return
-//     */
-//    protected abstract ByteBuffer  _abortRead(TxnId txnId, X  state);
-//
-//    /**
-//     *
-//     * @param txnId
-//     * @param state
-//     */
-//    protected abstract void        _complete(TxnId txnId, X state);
-//
-//    /**
-//     *
-//     */
-//    protected abstract void        _shutdown();
-
     protected abstract X           _begin(ReadWrite readWrite, TxnId txnId);
     protected abstract X           _promote(TxnId txnId, X oldState);
     protected abstract ByteBuffer  _commitPrepare(TxnId txnId, X  state);
@@ -417,21 +352,26 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
             throw new TransactionException("Not in a transaction");
     }
 
-//    protected void requireWriteTxn() {
-//        Transaction txn = getTransaction();
-//        if ( txn == null )
-//            throw new TransactionException("Not a transaction");
-//        else
-//            txn.requireWriteTxn();
-//    }
+    protected void requireTxn() { 
+        Transaction txn = getTransaction();
+        if ( txn == null )
+            throw new TransactionException("Not in a transaction");
+    }
 
-    protected void checkWriteTxn() {
+    protected void requireWriteTxn() {
         Transaction txn = getTransaction();
         if ( txn == null )
             throw new TransactionException("Not a transaction");
-        else
-            txn.requireWriteTxn();
+        txn.requireWriteTxn();
     }
+
+    // Better done 
+//    protected void ensureWriteTxn() {
+//        Transaction txn = getTransaction();
+//        if ( txn == null )
+//            throw new TransactionException("Not a transaction");
+//        txn.ensureWriteTxn();
+//    }
 
     // -- Access object members.
 

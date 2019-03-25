@@ -43,6 +43,6 @@ public class tdbcompact extends CmdTDB {
         long start = System.currentTimeMillis();
         DatabaseOps.compact(dsg) ;
         long finish = System.currentTimeMillis();
-        System.out.printf("Compacted in %.3fs", (finish-start)/1000.0);
+        System.out.printf("Compacted in %.3fs\n", (finish-start)/1000.0);
     }
 }

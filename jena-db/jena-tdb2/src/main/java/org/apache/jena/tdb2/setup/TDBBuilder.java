@@ -57,10 +57,10 @@ public class TDBBuilder extends AbstractTDBBuilder {
     public static DatasetGraphTxn build(Location location, StoreParams appParams) {
         StoreParams locParams = StoreParamsCodec.read(location);
         StoreParams dftParams = StoreParams.getDftStoreParams();
-        // This can write the chosen parameters if necessary (new database, appParams != null, locParams == null)
         boolean newArea = isNewDatabaseArea(location);
         if ( newArea ) {
         }
+        // This can write the chosen parameters if necessary (new database, appParams != null, locParams == null)
         StoreParams params = StoreParamsFactory.decideStoreParams(location, newArea, appParams, locParams, dftParams);
         return create(location, params).build$(); 
     }

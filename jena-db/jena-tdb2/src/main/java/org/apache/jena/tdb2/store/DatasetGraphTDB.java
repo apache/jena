@@ -29,10 +29,7 @@ import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.transaction.TransactionalMonitor;
-import org.apache.jena.dboe.transaction.txn.Transaction;
-import org.apache.jena.dboe.transaction.txn.TransactionException;
-import org.apache.jena.dboe.transaction.txn.TransactionalSystem;
-import org.apache.jena.dboe.transaction.txn.TxnId;
+import org.apache.jena.dboe.transaction.txn.*;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.GraphUtil ;
 import org.apache.jena.graph.Node ;
@@ -101,18 +98,21 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     @Override
     protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o) {
         checkNotClosed() ;
+        requireTxn();
         return isolate(triples2quadsDftGraph(getTripleTable().find(s, p, o))) ;
     }
 
     @Override
     protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o) {
         checkNotClosed();
+        requireTxn();
         return isolate(getQuadTable().find(g, s, p, o));
     }
 
     @Override
     protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o) {
         checkNotClosed();
+        requireTxn();
         return isolate(getQuadTable().find(Node.ANY, s, p, o));
     }
 
@@ -127,14 +127,13 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
             // Add transaction protection.
             return new IteratorTxnTracker<>(iterator, txnSystem, txnId);
         }
-        // Risk the hidden arraylist is copied on growth.
         return Iter.iterator(iterator);
     }
 
     @Override
     protected void addToDftGraph(Node s, Node p, Node o) { 
         checkNotClosed() ;
-        requireWriteTxn() ;
+        ensureWriteTxn() ;
         notifyAdd(null, s, p, o) ;
         getTripleTable().add(s,p,o) ;
     }
@@ -142,7 +141,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     @Override
     protected void addToNamedGraph(Node g, Node s, Node p, Node o) {
         checkNotClosed() ;
-        requireWriteTxn() ;
+        ensureWriteTxn() ;
         notifyAdd(g, s, p, o) ;
         getQuadTable().add(g, s, p, o) ; 
     }
@@ -150,7 +149,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     @Override
     protected void deleteFromDftGraph(Node s, Node p, Node o) {
         checkNotClosed() ;
-        requireWriteTxn() ;
+        ensureWriteTxn() ;
         notifyDelete(null, s, p, o) ;
         getTripleTable().delete(s, p, o) ;
     }
@@ -158,21 +157,22 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     @Override
     protected void deleteFromNamedGraph(Node g, Node s, Node p, Node o) {
         checkNotClosed() ;
-        requireWriteTxn() ;
+        ensureWriteTxn() ;
         notifyDelete(g, s, p, o) ;
         getQuadTable().delete(g, s, p, o) ;
     }
 
-    // Promotion
-    /*package*/ void requireWriteTxn() {
+    private void requireTxn() { 
         Transaction txn = txnSystem.getThreadTransaction() ;
         if ( txn == null )
             throw new TransactionException("Not in a transaction") ;
-        if ( txn.isWriteTxn() )
-            return ;
-        boolean b = promote() ;
-        if ( !b )
-            throw new TransactionException("Can't write") ;
+    }
+    
+    private void ensureWriteTxn() {
+        Transaction txn = txnSystem.getThreadTransaction() ;
+        if ( txn == null )
+            throw new TransactionException("Not in a transaction") ;
+        txn.ensureWriteTxn();
     }
 
     // TODO ?? Optimize by integrating with add/delete operations.
@@ -230,6 +230,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     // Empty graphs don't "exist" 
     public boolean containsGraph(Node graphNode) {
         checkNotClosed() ; 
+        requireTxn();
         if ( Quad.isDefaultGraphExplicit(graphNode) || Quad.isUnionGraph(graphNode)  )
             return true ;
         return _containsGraph(graphNode) ; 
@@ -248,7 +249,8 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     
     @Override
     public void addGraph(Node graphName, Graph graph) {
-        checkNotClosed() ; 
+        checkNotClosed() ;
+        ensureWriteTxn();
         removeGraph(graphName) ;
         GraphUtil.addInto(getGraph(graphName), graph) ;
     }
@@ -256,6 +258,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     @Override
     public final void removeGraph(Node graphName) {
         checkNotClosed() ; 
+        ensureWriteTxn();
         deleteAny(graphName, Node.ANY, Node.ANY, Node.ANY) ;
     }
 
@@ -312,18 +315,21 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     @Override
     public long size() {
         checkNotClosed();
+        requireTxn();
         return Iter.count(listGraphNodes());
     }
 
     @Override
     public boolean isEmpty() {
         checkNotClosed();
+        requireTxn();
         return getTripleTable().isEmpty() && getQuadTable().isEmpty();
     }
 
     @Override
     public void clear() {
         checkNotClosed() ; 
+        ensureWriteTxn();
         // Leave the node table alone.
         getTripleTable().clearTriples() ;
         getQuadTable().clearQuads() ;
@@ -347,6 +353,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         // That way, there is no active iterator when a delete
         // from the indexes happens.
         checkNotClosed() ;
+        ensureWriteTxn();
         
         if ( monitor != null ) {
             // Need to do by nodes because we will log the deletes.

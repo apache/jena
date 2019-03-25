@@ -204,7 +204,7 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
 
     @Override
     public long write(byte[] b, int start, int length) {
-        checkWriteTxn();
+        requireWriteTxn();
         return binFile.write(b, start, length);
     }
 
@@ -214,7 +214,7 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
      */
     @Override
     public void truncate(long size) {
-        checkWriteTxn();
+        requireWriteTxn();
         TxnBinFile state = getDataState();
         if ( size < state.length )
             throw new RuntimeIOException("truncate("+size+") to smaller than commited length "+state.length);
@@ -224,7 +224,7 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
     @Override
     public void sync() {
         // No-op in transactional mode.
-        checkWriteTxn();
+        requireWriteTxn();
     }
 
     @Override

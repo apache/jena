@@ -22,14 +22,14 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.graph.AbstractTestGraph2 ;
+import org.apache.jena.sparql.graph.AbstractTestGraphAddDelete ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.tdb2.junit.TL;
 import org.junit.After ;
 import org.junit.Before ;
 
 /** Programmatic tests on persistent graph */
-public class TestGraphNamedTDB extends AbstractTestGraph2
+public class TestGraphNamedTDB extends AbstractTestGraphAddDelete
 {
     static Node graphNode = NodeFactoryExtra.parseNode("<http://example/namedGraph>") ;
     private Dataset dataset ;
