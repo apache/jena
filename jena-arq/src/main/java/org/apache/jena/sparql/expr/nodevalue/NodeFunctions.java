@@ -397,7 +397,7 @@ public class NodeFunctions {
         Node n2 = iri(nv.asNode(), baseIRI) ;
         return NodeValue.makeNode(n2) ;
     }
-    
+
     /** Node to Node, skolemizing, and converting strings to URIs. */
     public static Node iri(Node n, String baseIRI) {
         Node node = blankNodeToIri(n);
@@ -421,16 +421,28 @@ public class NodeFunctions {
 
         if ( !iri.isAbsolute() )
             throw new ExprEvalException("Relative IRI string: " + iriStr) ;
-        if ( warningsForIRIs && iri.hasViolation(false) ) {
-            String msg = "unknown violation from IRI library" ;
-            Iterator<Violation> iter = iri.violations(false) ;
-            if ( iter.hasNext() ) {
-                Violation viol = iter.next() ;
-                msg = viol.getShortMessage() ;
+        
+        String msg = getOneViolation(iri, false);
+        if ( msg != null ) {
+            msg = "Bad IRI: " + msg + ": " + iri;
+            Log.error(NodeFunctions.class, msg);
+            //throw new ExprEvalException(msg);
+        } else {
+            if ( warningsForIRIs && iri.hasViolation(false) ) {
+                msg = getOneViolation(iri, true);
+                if ( msg != null )
+                    Log.warn(NodeFunctions.class, "Bad IRI: " + msg + ": " + iri) ;
             }
-            Log.warn(NodeFunctions.class, "Bad IRI: " + msg + ": " + iri) ;
         }
         return NodeFactory.createURI(iri.toString()) ;
+    }
+
+    private static String getOneViolation(IRI iri, boolean includeWarnings) {
+        Iterator<Violation> iter = iri.violations(includeWarnings);
+        if ( ! iter.hasNext() )
+            return null; 
+        Violation viol = iter.next() ;
+        return viol.getShortMessage() ;
     }
 
     // The Jena version can be slow to inityailise (but is pure java)
