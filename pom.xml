@@ -57,11 +57,15 @@
     <ver.libthrift>0.10.0</ver.libthrift>
 
     <!-- jsonld-java depends on depends on Jackson core
-         artifacts so the versions must align. Consult jsonld-java's 
-         POM for the correct dependency versions 
+         and Jackson databind. databind has had a few CVEs 
+         so we exclude from jsonldjava and select the version
+         ourselves.
+         When upgrading jsonld, consult jsonld-java's  
+         POM for the correct dependency versions
+         and use that or later.
     -->
-    <ver.jsonldjava>0.12.1</ver.jsonldjava>
-    <ver.jackson>2.9.6</ver.jackson>
+    <ver.jsonldjava>0.12.3</ver.jsonldjava>
+    <ver.jackson>2.9.8</ver.jackson>
 
     <ver.commonsio>2.6</ver.commonsio>
     <ver.commonscli>1.4</ver.commonscli>
@@ -316,6 +320,17 @@
       </dependency>
       
       <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${ver.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${ver.jackson}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.apache.thrift</groupId>
         <artifactId>libthrift</artifactId>
         <version>${ver.libthrift}</version>
@@ -368,6 +383,16 @@
         <artifactId>jsonld-java</artifactId>
         <version>${ver.jsonldjava}</version>
         <exclusions>
+
+          <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+          </exclusion>
+
           <exclusion>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>

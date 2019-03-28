@@ -78,6 +78,16 @@
       <artifactId>jsonld-java</artifactId>
     </dependency>
 
+    <!-- See parent POM. Our choice of version here. -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+
     <!-- replace that used via jsonld-java -->
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
