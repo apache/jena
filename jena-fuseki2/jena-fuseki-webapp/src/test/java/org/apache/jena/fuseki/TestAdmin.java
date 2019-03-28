@@ -53,8 +53,9 @@ import org.junit.Test ;
 public class TestAdmin extends AbstractFusekiTest {
     
     // Name of the dataset in the assembler file.
-    static String dsTest = "test-ds2" ;
-    static String fileBase = "testing/" ;
+    static String dsTest    = "test-ds2" ;
+    static String dsTestInf = "test-ds4" ;
+    static String fileBase  = "testing/" ;
     
     // --- Ping 
     
@@ -130,7 +131,7 @@ public class TestAdmin extends AbstractFusekiTest {
     @Test public void add_delete_dataset_2() {
         checkNotThere(dsTest) ;
 
-        File f = new File(fileBase+"config-ds-1.ttl") ;
+        File f = new File(fileBase+"config-ds-plain.ttl") ;
         { 
             org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.parse(WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8) ;
             HttpEntity e = new FileEntity(f, ct) ;
@@ -159,6 +160,20 @@ public class TestAdmin extends AbstractFusekiTest {
         addTestDataset() ;
         checkExists(dsTest) ;
         deleteDataset(dsTest) ;
+    }
+    
+    @Test public void add_delete_dataset_4() throws Exception {
+        checkNotThere(dsTest) ;
+        checkNotThere(dsTestInf) ;
+        addTestDatasetInf() ;
+        checkNotThere(dsTest) ;
+        checkExists(dsTestInf) ;
+        
+        deleteDataset(dsTestInf) ;
+        checkNotThere(dsTestInf) ;
+        addTestDatasetInf() ;
+        checkExists(dsTestInf) ;
+        deleteDataset(dsTestInf) ;
     }
     
     @Test public void add_error_1() {
@@ -322,7 +337,11 @@ public class TestAdmin extends AbstractFusekiTest {
     // -- Add
 
     private static void addTestDataset() {
-        addTestDataset(fileBase+"config-ds-1.ttl") ;
+        addTestDataset(fileBase+"config-ds-plain.ttl") ;
+    }
+    
+    private static void addTestDatasetInf() {
+        addTestDataset(fileBase+"config-ds-inf.ttl") ;
     }
     
     private static void addTestDataset(String filename) {

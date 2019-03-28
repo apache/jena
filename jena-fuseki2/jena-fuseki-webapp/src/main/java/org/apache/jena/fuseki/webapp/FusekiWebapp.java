@@ -447,7 +447,7 @@ public class FusekiWebapp
         return generateConfigurationFilename(dsName) ;
     }
 
-    /** New configuration file name - absiolute filename */
+    /** New configuration file name - absolute filename */
     public static String generateConfigurationFilename(String dsName) {
         String filename = dsName ;
         // Without "/"

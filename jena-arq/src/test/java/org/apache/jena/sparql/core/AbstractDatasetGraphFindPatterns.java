@@ -34,10 +34,11 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
 /** Tests to cover cases of "find" patterns on a dataset graph
- * and graoph from datasets.
- * @see AbstractDatasetGraphTests
+ * and graph from datasets.
+ *
  * @see AbstractDatasetGraphFind
- * @see AbstractTestGraphOverDataset
+ * @see AbstractDatasetGraphTests
+ * @see AbstractTestGraphOverDatasetGraph
  */
 public abstract class AbstractDatasetGraphFindPatterns {
     

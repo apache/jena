@@ -33,69 +33,63 @@ public final class RecordBufferPage extends RecordBufferPageBase
     // Why not straight to BPlusTreeRecords?
     // 1 - this may be useful in its own right as a sequence of records on-disk.
     // 2 - BPlusTreeRecords inherits from BPlusTreePage
-    
-    
+
     // To Constants
     // Offsets
-    //    final public static int COUNT      = 0 ;
+    //    final public static int COUNT      = 0;
     // Adds this field over RecordBufferPageBase
-    final public static int LINK            = 4 ;
-    final private static int FIELD_LENGTH   = Sys.SizeOfInt ; // Length of the space needed here (not count)
+    final public static int LINK            = 4;
+    final private static int FIELD_LENGTH   = Sys.SizeOfInt; // Length of the space needed here (not count)
 
-    private int link = Page.NO_ID ;
-    
-    public final int getLink() { return link ; }
-    
-    public void setLink(int link)
-    { 
-        this.link = link ;
-        getBackingBlock().getByteBuffer().putInt(LINK, link) ;
+    private int link = Page.NO_ID;
+
+    public final int getLink() { return link; }
+
+    public void setLink(int link) {
+        this.link = link;
+        getBackingBlock().getByteBuffer().putInt(LINK, link);
     }
-    
+
     @Override
-    protected void _reset(Block block)
-    { 
+    protected void _reset(Block block) {
         // TODO -- should this be format?
-        // Print this 
-        super.rebuild(block, this.getCount()) ;
+        // Print this
+        super.rebuild(block, this.getCount());
         //?? use .format
 //        // TODO WRONG : block is overlying.
-//        this.link = block.getByteBuffer().getInt(LINK) ;
+//        this.link = block.getByteBuffer().getInt(LINK);
     }
 
     public static int calcRecordSize(RecordFactory factory, int blkSize)
-    { return RecordBufferPageBase.calcRecordSize(factory, blkSize, FIELD_LENGTH) ; }
-    
+    { return RecordBufferPageBase.calcRecordSize(factory, blkSize, FIELD_LENGTH); }
+
     public static int calcBlockSize(RecordFactory factory, int maxRec)
-    { return RecordBufferPageBase.calcBlockSize(factory, maxRec, FIELD_LENGTH) ; }
-    
+    { return RecordBufferPageBase.calcBlockSize(factory, maxRec, FIELD_LENGTH); }
+
     /** The construction methods */
-    public static RecordBufferPage createBlank(Block block,RecordFactory factory)
-    {
-        int count = 0 ;
-        int linkId = NO_ID ;
-        return new RecordBufferPage(block, factory, count, linkId) ;
+    public static RecordBufferPage createBlank(Block block,RecordFactory factory) {
+        int count = 0;
+        int linkId = NO_ID;
+        return new RecordBufferPage(block, factory, count, linkId);
     }
 
-    public static RecordBufferPage format(Block block, RecordFactory factory)
-    {
-        int count = block.getByteBuffer().getInt(COUNT) ;
-        int linkId = block.getByteBuffer().getInt(LINK) ;
-        return new RecordBufferPage(block, factory, count, linkId) ;
-    } 
-    
-    private RecordBufferPage(Block block, RecordFactory factory, int count, int linkId)  
-    {
-        super(block, FIELD_LENGTH, factory, count) ;
-        this.link = linkId ;
+    public static RecordBufferPage format(Block block, RecordFactory factory) {
+        int count = block.getByteBuffer().getInt(COUNT);
+        int linkId = block.getByteBuffer().getInt(LINK);
+        return new RecordBufferPage(block, factory, count, linkId);
     }
-    
+
+    private RecordBufferPage(Block block, RecordFactory factory, int count, int linkId) {
+        super(block, FIELD_LENGTH, factory, count);
+        this.link = linkId;
+    }
+
     @Override
     public String toString()
-    { return String.format("RecordBufferPage[id=%d,link=%d]: %s", getBackingBlock().getId(), getLink(), recBuff) ; }
+    { return String.format("RecordBufferPage[id=%d,link=%d]: %s", getBackingBlock().getId(), getLink(), recBuff); }
 
     @Override
     public String getRefStr() {
-        return String.format("RecordBufferPage[id=%d]", getBackingBlock().getId()) ;
+        return String.format("RecordBufferPage[id=%d]", getBackingBlock().getId());
     }
 }

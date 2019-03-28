@@ -21,13 +21,13 @@ package org.apache.jena.tdb2.graph;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.core.AbstractTestGraphOverDataset ;
+import org.apache.jena.sparql.core.AbstractTestGraphOverDatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.tdb2.junit.TL;
 import org.junit.After ;
 
 /** This is the view-graph test suite run over a TDB DatasetGraph to check compatibility */
-public class TestGraphOverDatasetTDB extends AbstractTestGraphOverDataset
+public class TestGraphOverDatasetTDB extends AbstractTestGraphOverDatasetGraph
 {
     DatasetGraph dsg = null;
     @After public void after2() {

@@ -20,34 +20,34 @@ package org.apache.jena.dboe.trans.bplustree;
 
 /** Transactional state of a {@link BPlusTree} */
 final class BptTxnState {
-    final int initialroot ;
-    private int root = -1 ;
-    
+    final int initialroot;
+    private int root = -1;
+
     // Point at which we start adding blocks in a write transaction.
-    // The unmodifiable area is [0,boundary) and is different for each block manager. 
-    
-    final long boundaryBlocksNode ;
-    final long boundaryBlocksRecord ;
-    
+    // The unmodifiable area is [0,boundary) and is different for each block manager.
+
+    final long boundaryBlocksNode;
+    final long boundaryBlocksRecord;
+
     BptTxnState(int initRoot, long boundaryNode, long boundaryRecords) {
-        this.initialroot = initRoot ;
-        this.root = initRoot ;
-        this.boundaryBlocksNode = boundaryNode ;
-        this.boundaryBlocksRecord = boundaryRecords ;
+        this.initialroot = initRoot;
+        this.root = initRoot;
+        this.boundaryBlocksNode = boundaryNode;
+        this.boundaryBlocksRecord = boundaryRecords;
     }
-    
+
     boolean modifiableNodeBlock(int id) {
         if ( BPT.forcePromoteModes )
-            return ! BPT.promoteDuplicateNodes ;
-        return id >= boundaryBlocksNode ;
+            return ! BPT.promoteDuplicateNodes;
+        return id >= boundaryBlocksNode;
     }
 
     boolean modifiableRecordsBlock(int id) {
         if ( BPT.forcePromoteModes )
-            return ! BPT.promoteDuplicateRecords ;
-        return id >= boundaryBlocksRecord ;
+            return ! BPT.promoteDuplicateRecords;
+        return id >= boundaryBlocksRecord;
     }
-    
+
     @Override
     public String toString() {
         return "BptTxnState: [root="+root+", n="+boundaryBlocksNode+", r="+boundaryBlocksRecord+"]";

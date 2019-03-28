@@ -18,53 +18,53 @@
 
 package org.apache.jena.dboe.trans.bplustree;
 
-import java.util.ArrayList ;
-import java.util.List ;
-import java.util.stream.Collectors ;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.atlas.lib.InternalErrorException;
 
 public class AccessPath {
     static class AccessStep {
-        final BPTreeNode node ;
-        final int idx ;
-        final BPTreePage page ;
+        final BPTreeNode node;
+        final int idx;
+        final BPTreePage page;
         AccessStep(BPTreeNode node, int idx, BPTreePage page) {
-            this.node = node ;
-            this.idx = idx ;
-            this.page = page ;
+            this.node = node;
+            this.idx = idx;
+            this.page = page;
         }
-        
-        @Override 
+
+        @Override
         public String toString() {
-            return "("+node.label()+", "+idx+")->"+page.getId() ;
+            return "("+node.label()+", "+idx+")->"+page.getId();
         }
-    }
-    
-    private final BPTreeNode root ;
-    private List<AccessStep> traversed = new ArrayList<>() ;
-    
-    public AccessPath(BPTreeNode root) {
-        this.root = root ;
-    }
-    
-    public void add(BPTreeNode node, int idx, BPTreePage page) {
-        traversed.add(new AccessStep(node, idx, page)) ;
-    }
-    
-    public void reset(BPTreeNode node, int idx, BPTreePage page) {
-        AccessStep s = traversed.remove(traversed.size()-1) ;
-        AccessStep s2 = new AccessStep(node, idx, page) ;
-        if ( s.node != s2.node )
-            throw new InternalErrorException("Bad attempt to reset: "+this+" with "+s2) ; 
-        traversed.add(new AccessStep(node, idx, page)) ;
     }
 
-    public List<AccessStep> getPath() { return traversed ; }
-    
+    private final BPTreeNode root;
+    private List<AccessStep> traversed = new ArrayList<>();
+
+    public AccessPath(BPTreeNode root) {
+        this.root = root;
+    }
+
+    public void add(BPTreeNode node, int idx, BPTreePage page) {
+        traversed.add(new AccessStep(node, idx, page));
+    }
+
+    public void reset(BPTreeNode node, int idx, BPTreePage page) {
+        AccessStep s = traversed.remove(traversed.size()-1);
+        AccessStep s2 = new AccessStep(node, idx, page);
+        if ( s.node != s2.node )
+            throw new InternalErrorException("Bad attempt to reset: "+this+" with "+s2);
+        traversed.add(new AccessStep(node, idx, page));
+    }
+
+    public List<AccessStep> getPath() { return traversed; }
+
     @Override
     public String toString() {
-        return traversed.stream().map(x-> x.toString()).collect(Collectors.toList()).toString() ;
+        return traversed.stream().map(x-> x.toString()).collect(Collectors.toList()).toString();
     }
 }
 

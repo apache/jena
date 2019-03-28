@@ -691,6 +691,54 @@ public class TestNodeValue extends BaseTest
         assertTrue("Not EBV true: " + v, XSDFuncOp.booleanEffectiveValue(v));
     }
 
+    static boolean ebvDouble(double d) {
+        return XSDFuncOp.booleanEffectiveValue(NodeValue.makeDouble(d));
+    }
+    
+    @Test
+    public void testEBV9() {
+        assertTrue ( ebvDouble(0.01d) );
+        assertFalse( ebvDouble(0.0d) );
+        assertFalse( ebvDouble(-0.0d) );
+        
+        assertFalse( ebvDouble(Double.NaN) );
+        
+        assertTrue ( ebvDouble(Double.MIN_NORMAL) );
+        assertTrue ( ebvDouble(Double.MIN_VALUE) );
+        assertTrue ( ebvDouble(Double.MAX_VALUE) );
+        
+        assertTrue ( ebvDouble(Double.POSITIVE_INFINITY) );
+        assertTrue ( ebvDouble(Double.NEGATIVE_INFINITY) );
+        
+        Node x = NodeFactory.createLiteral("NaN", XSDDatatype.XSDdouble);
+        NodeValue v = NodeValue.makeNode(x);
+        assertFalse(XSDFuncOp.booleanEffectiveValue(v));
+    }
+
+    static boolean ebvFloat(float f) {
+        return XSDFuncOp.booleanEffectiveValue(NodeValue.makeFloat(f));
+    }
+    
+    @Test
+    public void testEBV10() {
+        assertTrue ( ebvFloat(0.01f) );
+        assertFalse( ebvFloat(0.0f) );
+        assertFalse( ebvFloat(-0.0f) );
+
+        assertFalse( ebvFloat(Float.NaN) );
+        
+        assertTrue ( ebvFloat(Float.MIN_NORMAL) );
+        assertTrue ( ebvFloat(Float.MIN_VALUE) );
+        assertTrue ( ebvFloat(Float.MAX_VALUE) );
+
+        assertTrue ( ebvFloat(Float.POSITIVE_INFINITY) );
+        assertTrue ( ebvFloat(Float.NEGATIVE_INFINITY) );
+        
+        Node x = NodeFactory.createLiteral("NaN", XSDDatatype.XSDfloat);
+        NodeValue v = NodeValue.makeNode(x);
+        assertFalse(XSDFuncOp.booleanEffectiveValue(v));
+    }
+    
     private static boolean filterEBV(NodeValue nv) {
         try {
             return XSDFuncOp.booleanEffectiveValue(nv);

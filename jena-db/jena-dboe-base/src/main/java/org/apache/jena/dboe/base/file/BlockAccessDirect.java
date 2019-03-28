@@ -18,114 +18,105 @@
 
 package org.apache.jena.dboe.base.file;
 
-import static java.lang.String.format ;
+import static java.lang.String.format;
 
-import java.io.IOException ;
-import java.nio.ByteBuffer ;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
-import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.dboe.base.block.Block;
 import org.apache.jena.dboe.sys.FileLib;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BlockAccessDirect extends BlockAccessBase
 {
     // Maybe layer BlockAccess on BufferChannel - retrofitting.
     // but need separate for memory mapped files anyway.
 
-    private static Logger log = LoggerFactory.getLogger(BlockAccessDirect.class) ;
-    
-    public BlockAccessDirect(String filename, int blockSize)
-    {
-        super(filename, blockSize) ;
+    private static Logger log = LoggerFactory.getLogger(BlockAccessDirect.class);
+
+    public BlockAccessDirect(String filename, int blockSize) {
+        super(filename, blockSize);
     }
 
     @Override
-    public Block allocate(int blkSize)
-    {
+    public Block allocate(int blkSize) {
         if ( blkSize > 0 && blkSize != this.blockSize )
-            throw new FileException("Fixed blocksize only: request= "+blkSize+"fixed size="+this.blockSize) ;
-        int x = allocateId() ;
-        ByteBuffer bb = ByteBuffer.allocate(blkSize) ;
-        Block block = new Block(x, bb) ;
+            throw new FileException("Fixed blocksize only: request= "+blkSize+"fixed size="+this.blockSize);
+        int x = allocateId();
+        ByteBuffer bb = ByteBuffer.allocate(blkSize);
+        Block block = new Block(x, bb);
         return block;
     }
-    
+
     @Override
-    public Block read(long id)
-    {
-        check(id) ;
-        checkIfClosed() ;
-        ByteBuffer bb = ByteBuffer.allocate(blockSize) ;
-        readByteBuffer(id, bb) ;
-        bb.rewind() ;
-        Block block = new Block(id, bb) ;
-        return block ;
+    public Block read(long id) {
+        check(id);
+        checkIfClosed();
+        ByteBuffer bb = ByteBuffer.allocate(blockSize);
+        readByteBuffer(id, bb);
+        bb.rewind();
+        Block block = new Block(id, bb);
+        return block;
     }
-    
-    private void readByteBuffer(long id, ByteBuffer dst)
-    {
+
+    private void readByteBuffer(long id, ByteBuffer dst) {
         try {
-            int len = file.read(dst, filePosition(id)) ;
+            int len = file.read(dst, filePosition(id));
             if ( len != blockSize )
-                throw new FileException(format("get: short read (%d, not %d)", len, blockSize)) ;   
+                throw new FileException(format("get: short read (%d, not %d)", len, blockSize));
         } catch (IOException ex)
-        { throw new FileException("FileAccessDirect", ex) ; }
+        { throw new FileException("FileAccessDirect", ex); }
     }
-    
-    private final long filePosition(long id)
-    {
-        return id*blockSize ;
+
+    private final long filePosition(long id) {
+        return id*blockSize;
     }
 
     @Override
-    public void write(Block block)
-    {
-        check(block) ;
-        checkIfClosed() ;
-        ByteBuffer bb = block.getByteBuffer() ;
+    public void write(Block block) {
+        check(block);
+        checkIfClosed();
+        ByteBuffer bb = block.getByteBuffer();
         // This .clear() except the javadoc suggests this is not the correct use of .clear()
-        // and the name does 
-        bb.limit(bb.capacity()) ;   // It shouldn't have been changed.
-        bb.rewind() ;
+        // and the name does
+        bb.limit(bb.capacity());   // It shouldn't have been changed.
+        bb.rewind();
         try {
-            int len = file.write(bb, filePosition(block.getId())) ;
+            int len = file.write(bb, filePosition(block.getId()));
             if ( len != blockSize )
-                throw new FileException(format("write: short write (%d, not %d)", len, blockSize)) ;   
+                throw new FileException(format("write: short write (%d, not %d)", len, blockSize));
         } catch (IOException ex)
-        { throw new FileException("FileAccessDirect", ex) ; }
-        writeNotification(block) ;
+        { throw new FileException("FileAccessDirect", ex); }
+        writeNotification(block);
     }
-    
+
     @Override
-    public void overwrite(Block block)
-    {
-        overwriteNotification(block) ;
-        write(block) ;
+    public void overwrite(Block block) {
+        overwriteNotification(block);
+        write(block);
     }
 
     @Override
     protected void _resetAllocBoundary(long boundary) {
-        FileLib.truncate(file, filePosition(boundary)) ;
+        FileLib.truncate(file, filePosition(boundary));
     }
 
     @Override
-    public void sync()
-    {
-        force() ;
+    public void sync() {
+        force();
     }
 
     @Override
     protected void _close()
-    { super.force() ; }
+    { super.force(); }
 
     @Override
-    protected Logger getLog()
-    {
-        return log ;
+    protected Logger getLog() {
+        return log;
     }
-    
+
     @Override
-    public String toString() { return "Direct:"+FileOps.basename(filename) ; }
+    public String toString() { return "Direct:"+FileOps.basename(filename); }
 }

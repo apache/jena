@@ -18,23 +18,21 @@
 
 package org.apache.jena.dboe.base.block;
 
-public class BlockMgrSwitcher extends BlockMgrWrapper 
+public class BlockMgrSwitcher extends BlockMgrWrapper
 {
-    protected final BlockMgr blockMgr1 ;
-    protected final BlockMgr blockMgr2 ;
+    protected final BlockMgr blockMgr1;
+    protected final BlockMgr blockMgr2;
 
-    public BlockMgrSwitcher(BlockMgr blockMgr1, BlockMgr blockMgr2)
-    {
-        super(blockMgr1) ;
-        this.blockMgr1 = blockMgr1 ;
-        this.blockMgr2 = blockMgr2 ;
+    public BlockMgrSwitcher(BlockMgr blockMgr1, BlockMgr blockMgr2) {
+        super(blockMgr1);
+        this.blockMgr1 = blockMgr1;
+        this.blockMgr2 = blockMgr2;
     }
 
-    public void switchover()
-    {
+    public void switchover() {
         if ( super.blockMgr == blockMgr1 )
-            setBlockMgr(blockMgr2) ;
+            setBlockMgr(blockMgr2);
         else
-            setBlockMgr(blockMgr1) ;
+            setBlockMgr(blockMgr1);
     }
 }

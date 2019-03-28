@@ -18,48 +18,48 @@
 
 package org.apache.jena.dboe.base.file;
 
-import org.apache.jena.atlas.lib.Closeable ;
-import org.apache.jena.atlas.lib.Sync ;
+import org.apache.jena.atlas.lib.Closeable;
+import org.apache.jena.atlas.lib.Sync;
 import org.apache.jena.dboe.base.block.Block;
 
 /**
- * Interface to concrete storage - read and write Blocks, addressed by id. 
+ * Interface to concrete storage - read and write Blocks, addressed by id.
  * Suitable for memory mapped I/O (returns
  * internally allocated space for read, not provided from outside; write() can
  * insist the block written comes from allocate()).
- * This interface can also be backed by an in-memory implementation 
+ * This interface can also be backed by an in-memory implementation
  * ({@link BlockAccessMem}, {@link BlockAccessByteArray}).
- * 
+ *
  * This is wrapped in a BlockMgr to provide a higher level abstraction.
- * 
+ *
  * @see BufferChannel
  */
 public interface BlockAccess extends Sync, Closeable
 {
-    public Block allocate(int size) ;
-    
-    public Block read(long id) ;
-    
-    public void write(Block block) ;
-    
-    public void overwrite(Block block) ;
-    
-    public boolean isEmpty() ; 
-    
+    public Block allocate(int size);
+
+    public Block read(long id);
+
+    public void write(Block block);
+
+    public void overwrite(Block block);
+
+    public boolean isEmpty();
+
     /* The limit of the current allocation space.
      * Allocated blocks have ids in [0, allocBoundary).
      * Allocation units need not be in +1 increments.
-      */  
-    public long allocBoundary() ;
+      */
+    public long allocBoundary();
 
     /** Reset the allocation space (i.e. truncate).
      * The boundary should be a number obtained from a previous
      * call of allocLimit. It can not be greater than the current
      * allocation boundary.
      */
-    public void resetAllocBoundary(long boundary) ;
-    
-    public boolean valid(long id) ;
+    public void resetAllocBoundary(long boundary);
 
-    public String getLabel() ;
+    public boolean valid(long id);
+
+    public String getLabel();
 }

@@ -1,0 +1,30 @@
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
+
+<#service2> rdf:type fuseki:Service ;
+    fuseki:name                        "test-ds4" ; 
+    fuseki:serviceQuery                "sparql" ;
+    fuseki:dataset                     <#infDataset> ;
+    .
+    
+<#infDataset> rdf:type      ja:RDFDataset ;
+     ja:defaultGraph <#infGraph> ;
+     . 
+
+<#infGraph> a ja:InfModel;
+    ja:reasoner [ja:reasonerURL <http://jena.hpl.hp.com/2003/OWLFBRuleReasoner>] ;
+    ja:baseModel <#tdb_graph> ;
+  .
+
+<#tdb_graph> rdf:type tdb2:GraphTDB ;
+    tdb2:dataset <#tdb_dataset> ;
+    .
+
+<#tdb_dataset> rdf:type tdb2:DatasetTDB ;
+    tdb2:location "--mem--" ;
+    .

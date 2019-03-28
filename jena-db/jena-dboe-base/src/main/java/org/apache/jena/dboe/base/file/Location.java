@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.base.file ;
+package org.apache.jena.dboe.base.file;
 
-import java.io.File ;
-import java.io.IOException ;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Objects ;
+import java.util.Objects;
 
 import org.apache.jena.dboe.sys.Names;
 
@@ -32,83 +32,83 @@ import org.apache.jena.dboe.sys.Names;
  */
 
 public class Location {
-    static String    pathSeparator = File.separator ; // Or just "/"
+    static String    pathSeparator = File.separator; // Or just "/"
 
-    private static String memNamePath = Names.memName+pathSeparator ;
-        
-    private String   pathname ;
-    private MetaFile metafile      = null ;
-    private boolean  isMem         = false ;
-    private boolean  isMemUnique   = false ;
+    private static String memNamePath = Names.memName+pathSeparator;
 
-    static int       memoryCount   = 0 ;
+    private String   pathname;
+    private MetaFile metafile      = null;
+    private boolean  isMem         = false;
+    private boolean  isMemUnique   = false;
+
+    static int       memoryCount   = 0;
 
     /**
      * Return a fresh memory location : always unique, never .equals to another
      * location.
      */
     static public Location mem() {
-        return mem(null) ;
+        return mem(null);
     }
 
     /** Return a memory location with a name */
     static public Location mem(String name) {
-        Location loc = new Location() ;
-        memInit(loc, name) ;
-        return loc ;
+        Location loc = new Location();
+        memInit(loc, name);
+        return loc;
     }
 
     /** Return a location for a directory on disk */
     static public Location create(String directoryName) {
         if ( directoryName == null )
-            // Fresh, anonymous, memory area 
-            return mem() ; 
-        Location loc = new Location(directoryName) ;
-        return loc ;
+            // Fresh, anonymous, memory area
+            return mem();
+        Location loc = new Location(directoryName);
+        return loc;
     }
 
     /** Return a location for a directory on disk */
     static public Location create(Path directoryName) {
         if ( directoryName == null )
-            // Fresh, anonymous, memory area 
-            return mem() ; 
-        Location loc = new Location(directoryName.toString()) ;
-        return loc ;
+            // Fresh, anonymous, memory area
+            return mem();
+        Location loc = new Location(directoryName.toString());
+        return loc;
     }
 
     private Location() {}
 
     private static void memInit(Location location, String name) {
-        location.pathname = Names.memName ;
+        location.pathname = Names.memName;
         if ( name != null ) {
-            name = name.replace('\\', '/') ;
-            location.pathname = location.pathname + '/' + name ;
+            name = name.replace('\\', '/');
+            location.pathname = location.pathname + '/' + name;
         } else
-            location.isMemUnique = true ;
+            location.isMemUnique = true;
         if ( !location.pathname.endsWith(pathSeparator) )
-            location.pathname = location.pathname + '/' ;
-        location.isMem = true ;
-        location.metafile = new MetaFile(Names.memName, Names.memName) ;
+            location.pathname = location.pathname + '/';
+        location.isMem = true;
+        location.metafile = new MetaFile(Names.memName, Names.memName);
     }
 
     private Location(String rootname) {
-        super() ;
+        super();
         if ( rootname.equals(Names.memName) ) {
-            memInit(this, null) ;
-            return ;
+            memInit(this, null);
+            return;
         }
         if ( rootname.startsWith(memNamePath) ) {
-            String name = rootname.substring(memNamePath.length()) ;
-            memInit(this, name) ;
-            return ;
+            String name = rootname.substring(memNamePath.length());
+            memInit(this, name);
+            return;
         }
 
-        ensure(rootname) ;
-        pathname = fixupName(rootname) ;
+        ensure(rootname);
+        pathname = fixupName(rootname);
         // Metafilename for a directory.
-        String metafileName = getPath(Names.directoryMetafile, Names.extMeta) ;
+        String metafileName = getPath(Names.directoryMetafile, Names.extMeta);
 
-        metafile = new MetaFile("Location: " + rootname, metafileName) ;
+        metafile = new MetaFile("Location: " + rootname, metafileName);
     }
 
     // MS Windows:
@@ -118,53 +118,53 @@ public class Location {
     // changes the exact string returned.
     private String fixupName(String fsName) {
         if (  isMem() )
-            return fsName ;
-        File file = new File(fsName) ;
+            return fsName;
+        File file = new File(fsName);
         try {
-            fsName = file.getCanonicalPath() ;
+            fsName = file.getCanonicalPath();
         } catch (IOException ex) {
-            throw new FileException("Failed to get canoncial path: " + file.getAbsolutePath(), ex) ;
+            throw new FileException("Failed to get canoncial path: " + file.getAbsolutePath(), ex);
         }
 
         if ( !fsName.endsWith(File.separator) && !fsName.endsWith(pathSeparator) )
-            fsName = fsName + pathSeparator ;
-        return fsName ;
+            fsName = fsName + pathSeparator;
+        return fsName;
     }
-    
+
     public String getDirectoryPath() {
-        return pathname ;
+        return pathname;
     }
 
     public MetaFile getMetaFile() {
-        return metafile ;
+        return metafile;
     }
 
     public boolean isMem() {
-        return isMem ;
+        return isMem;
     }
 
     public boolean isMemUnique() {
-        return isMemUnique ;
+        return isMemUnique;
     }
-    
+
     public Location getSubLocation(String dirname) {
-        String newName = pathname + dirname ;
-        ensure(newName) ;
-        return Location.create(newName) ;
+        String newName = pathname + dirname;
+        ensure(newName);
+        return Location.create(newName);
     }
 
     private void ensure(String dirname) {
         if ( isMem() )
-            return ;
-        File file = new File(dirname) ;
+            return;
+        File file = new File(dirname);
         if ( file.exists() && !file.isDirectory() )
-            throw new FileException("Existing file: " + file.getAbsolutePath()) ;
+            throw new FileException("Existing file: " + file.getAbsolutePath());
         if ( !file.exists() )
-            file.mkdir() ;
+            file.mkdir();
     }
-    
+
     public String getSubDirectory(String dirname) {
-        return getSubLocation(dirname).getDirectoryPath() ;
+        return getSubLocation(dirname).getDirectoryPath();
     }
 
     /**
@@ -172,7 +172,7 @@ public class Location {
      * location
      */
     public String absolute(String filename, String extension) {
-        return (extension == null) ? absolute(filename) : absolute(filename + "." + extension) ;
+        return (extension == null) ? absolute(filename) : absolute(filename + "." + extension);
     }
 
     /**
@@ -180,86 +180,86 @@ public class Location {
      * location
      */
     public String absolute(String filename) {
-        File f = new File(filename) ;
+        File f = new File(filename);
         // Location relative.
         if ( !f.isAbsolute() )
-            filename = pathname + filename ;
-        return filename ;
+            filename = pathname + filename;
+        return filename;
     }
 
     /** Does the location exist (and it a directory, and is accessible) */
     public boolean exists() {
-        File f = new File(getDirectoryPath()) ;
-        return f.exists() && f.isDirectory() && f.canRead() ;
+        File f = new File(getDirectoryPath());
+        return f.exists() && f.isDirectory() && f.canRead();
     }
 
     public boolean exists(String filename) {
-        return exists(filename, null) ;
+        return exists(filename, null);
     }
 
     public boolean exists(String filename, String ext) {
-        String fn = getPath(filename, ext) ;
-        File f = new File(fn) ;
-        return f.exists() ;
+        String fn = getPath(filename, ext);
+        File f = new File(fn);
+        return f.exists();
     }
 
     /** Return the name of the file relative to this location */
     public String getPath(String filename) {
-        return getPath(filename, null) ;
+        return getPath(filename, null);
     }
 
     /** Return the name of the file, and extension, relative to this location */
     public String getPath(String filename, String ext) {
-        check(filename, ext) ;
+        check(filename, ext);
         if ( ext == null )
-            return pathname + filename ;
-        return pathname + filename + "." + ext ;
+            return pathname + filename;
+        return pathname + filename + "." + ext;
     }
 
     private void check(String filename, String ext) {
         if ( filename == null )
-            throw new FileException("Location: null filename") ;
+            throw new FileException("Location: null filename");
         if ( filename.contains("/") || filename.contains("\\") )
-            throw new FileException("Illegal file component name: " + filename) ;
+            throw new FileException("Illegal file component name: " + filename);
         if ( filename.contains(".") && ext != null )
-            throw new FileException("Filename has an extension: " + filename) ;
+            throw new FileException("Filename has an extension: " + filename);
         if ( ext != null ) {
             if ( ext.contains(".") )
-                throw new FileException("Extension has an extension: " + filename) ;
+                throw new FileException("Extension has an extension: " + filename);
         }
     }
-    
+
     @Override
     public int hashCode() {
-        final int prime = 31 ;
-        int result = isMem ? 1 : 2 ;
-        result = prime * result + ((pathname == null) ? 0 : pathname.hashCode()) ;
-        return result ;
+        final int prime = 31;
+        int result = isMem ? 1 : 2;
+        result = prime * result + ((pathname == null) ? 0 : pathname.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
         if ( this == obj )
-            return true ;
+            return true;
         if ( obj == null )
-            return false ;
+            return false;
         if ( getClass() != obj.getClass() )
-            return false ;
+            return false;
 
-        Location other = (Location)obj ;
+        Location other = (Location)obj;
         if ( isMem && !other.isMem )
-            return false ;
+            return false;
         if ( !isMem && other.isMem )
-            return false ;
+            return false;
         // Not == so ...
         if ( isMemUnique )
-            return false ;
+            return false;
 
-        return Objects.equals(pathname, other.pathname) ;
+        return Objects.equals(pathname, other.pathname);
     }
 
     @Override
     public String toString() {
-        return "location:" + pathname ;
+        return "location:" + pathname;
     }
 }

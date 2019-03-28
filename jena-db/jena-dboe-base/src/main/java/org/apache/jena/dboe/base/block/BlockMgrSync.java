@@ -16,8 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.base.block ;
-
+package org.apache.jena.dboe.base.block;
 
 /**
  * Add synchronized to a BlockMgr. This is the same as BlockMgrWrapper but with
@@ -25,125 +24,124 @@ package org.apache.jena.dboe.base.block ;
  */
 
 public class BlockMgrSync implements BlockMgr {
-    protected final BlockMgr blockMgr ;
+    protected final BlockMgr blockMgr;
 
     public BlockMgrSync(BlockMgr blockMgr) {
-        this.blockMgr = blockMgr ;
+        this.blockMgr = blockMgr;
     }
 
     public BlockMgr getWrapped() {
-        return blockMgr ;
+        return blockMgr;
     }
 
     @Override
     synchronized public Block allocate(int blockSize) {
-        return blockMgr.allocate(blockSize) ;
+        return blockMgr.allocate(blockSize);
     }
 
     @Override
     synchronized public Block getRead(long id) {
-        return blockMgr.getRead(id) ;
+        return blockMgr.getRead(id);
     }
 
     @Override
     synchronized public Block getWrite(long id) {
-        return blockMgr.getWrite(id) ;
+        return blockMgr.getWrite(id);
     }
 
     @Override
     synchronized public Block promote(Block block) {
-        return blockMgr.promote(block) ;
+        return blockMgr.promote(block);
     }
 
     @Override
     synchronized public void release(Block block) {
-        blockMgr.release(block) ;
+        blockMgr.release(block);
     }
 
     @Override
     synchronized public void write(Block block) {
-        blockMgr.write(block) ;
+        blockMgr.write(block);
     }
 
     @Override
     synchronized public void overwrite(Block block) {
-        blockMgr.overwrite(block) ;
+        blockMgr.overwrite(block);
     }
 
     @Override
     synchronized public void free(Block block) {
-        blockMgr.free(block) ;
+        blockMgr.free(block);
     }
 
     @Override
     synchronized public void sync() {
-        blockMgr.sync() ;
+        blockMgr.sync();
     }
 
     @Override
     synchronized public void syncForce() {
-        blockMgr.syncForce() ;
+        blockMgr.syncForce();
     }
 
     @Override
     synchronized public void close() {
-        blockMgr.close() ;
+        blockMgr.close();
     }
 
     @Override
     synchronized public boolean isEmpty() {
-        return blockMgr.isEmpty() ;
+        return blockMgr.isEmpty();
     }
 
     @Override
     synchronized public long allocLimit() {
-        return blockMgr.allocLimit() ;
+        return blockMgr.allocLimit();
     }
 
-    
     @Override
     synchronized public void resetAlloc(long boundary) {
-        blockMgr.resetAlloc(boundary) ;
+        blockMgr.resetAlloc(boundary);
     }
-    
+
     @Override
     synchronized public void beginRead() {
-        blockMgr.beginRead() ;
+        blockMgr.beginRead();
     }
 
     @Override
     synchronized public void endRead() {
-        blockMgr.endRead() ;
+        blockMgr.endRead();
     }
 
     @Override
     synchronized public void beginUpdate() {
-        blockMgr.beginUpdate() ;
+        blockMgr.beginUpdate();
     }
 
     @Override
     synchronized public void endUpdate() {
-        blockMgr.endUpdate() ;
+        blockMgr.endUpdate();
     }
 
     @Override
     synchronized public boolean valid(int id) {
-        return blockMgr.valid(id) ;
+        return blockMgr.valid(id);
     }
 
     @Override
     synchronized public boolean isClosed() {
-        return blockMgr.isClosed() ;
+        return blockMgr.isClosed();
     }
 
     @Override
     synchronized public String getLabel() {
-        return blockMgr.getLabel() ;
+        return blockMgr.getLabel();
     }
 
     @Override
     public String toString() {
-        return "Sync:" + blockMgr.toString() ;
+        return "Sync:" + blockMgr.toString();
     }
 
 }

@@ -26,15 +26,15 @@ import org.apache.jena.tdb.base.objectfile.ObjectFileWrapper ;
  * single writer environment, we just need to manage a reset on abort. A crash in a
  * transaction will accumulate some junk in the file. This is now a tradeoff of speed and
  * space.
- * 
+ *
  * Speed : append to the original file directly and tolerate junk. This class.
- * 
- * Space : use a journal file and write to main file on commit. {@link ObjectFileTransComplex} 
- * 
- * {@link ObjectFileTransComplex} has an auxilliary file that it writes to, then copies to
+ *
+ * Space : use a journal file and write to main file on commit. {@link ObjectFileTransComplex}
+ *
+ * {@link ObjectFileTransComplex} has an auxiliary file that it writes to, then copies to
  * the main file on "commit". This avoids the possibility of junk from a failed
  * transaction on a crash but costs extra writes.
- * 
+ *
  * The normal choice is this class.
  */
 class ObjectFileTrans extends ObjectFileWrapper implements TransactionLifecycle {
@@ -43,7 +43,7 @@ class ObjectFileTrans extends ObjectFileWrapper implements TransactionLifecycle 
     }
 
     private long start = 0;
-    
+
     @Override
     public void begin(Transaction txn) {
         start = other.length();

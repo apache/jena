@@ -19,9 +19,9 @@
 package org.apache.jena.dboe.base.block;
 
 public interface BlockParams {
-    public FileMode getFileMode() ;
-    public Integer getBlockSize() ;
-    public Integer getBlockReadCacheSize() ;
-    public Integer getBlockWriteCacheSize() ;
+    public FileMode getFileMode();
+    public Integer getBlockSize();
+    public Integer getBlockReadCacheSize();
+    public Integer getBlockWriteCacheSize();
 }
 

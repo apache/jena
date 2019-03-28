@@ -18,38 +18,37 @@
 
 package org.apache.jena.dboe.base.file;
 
-import org.apache.jena.atlas.RuntimeIOException ;
+import org.apache.jena.atlas.RuntimeIOException;
 
-/** Implementation of {@link BinaryDataFile} adding write buffering to another 
- * {@link BinaryDataFile} file such as a {@link BinaryDataFileRandomAccess}.
+/** Implementation of {@link BinaryDataFile} adding write buffering to another
+ * {@link BinaryDataFile} file, such as a {@link BinaryDataFileRandomAccess}.
  *  <li>Thread-safe.
  *  <li>No read buffering provided.
  *  <li>The write buffer is flushed when switching to read.
  */
 
 public class BinaryDataFileWriteBuffered implements BinaryDataFile {
-    private static final int SIZE = 128*1024 ;
-    private final Object sync = new Object() ; 
-    private byte[] buffer ;
-    private int bufferLength ;
-    private boolean pendingOutput ;
-    private final BinaryDataFile other ;
-    
+    private static final int SIZE = 128*1024;
+    private final Object sync = new Object();
+    private final byte[] buffer;
+    private volatile int bufferLength;
+    private final BinaryDataFile other;
+
     public BinaryDataFileWriteBuffered(BinaryDataFile other) {
-        this(other, SIZE) ;
+        this(other, SIZE);
     }
-    
+
     public BinaryDataFileWriteBuffered(BinaryDataFile other, int bufferSize) {
-        this.other = other ;
-        buffer = new byte[bufferSize] ;
+        this.other = other;
+        buffer = new byte[bufferSize];
+        bufferLength = 0;
     }
-    
+
     @Override
     public void open() {
         synchronized(sync) {
-            other.open() ;
-            bufferLength = 0 ;
-            pendingOutput = false ;
+            other.open();
+            bufferLength = 0;
         }
     }
 
@@ -57,97 +56,116 @@ public class BinaryDataFileWriteBuffered implements BinaryDataFile {
     public void close() {
         synchronized(sync) {
             if ( ! isOpen() )
-                return ;
+                return;
             writeBuffer();
-            other.close() ;
+            other.close();
         }
-    }    
+    }
 
     @Override
     public boolean isOpen() {
         synchronized(sync) {
-            return other.isOpen() ;
+            return other.isOpen();
         }
-    }    
+    }
 
     @Override
     public long length() {
         synchronized(sync) {
-            return other.length()+bufferLength ;
+            return other.length()+bufferLength;
         }
-    }    
+    }
 
     @Override
     public void truncate(long posn) {
         synchronized(sync) {
-            checkOpen() ;
-            if ( pendingOutput && posn >= other.length() )
-                writeBuffer() ;
-            other.truncate(posn) ;
+            checkOpen();
+            long otherLen = other.length();
+            if ( bufferLength > 0) { 
+                if ( posn >= otherLen ) {
+                    long bufLen = posn-otherLen;
+                    if ( bufLen < bufferLength ) {
+                        // If truncate is in the buffer area, just truncate the write buffer....
+                        bufferLength = (int)bufLen;
+                        return;
+                    }
+                    // Off the top end.
+                    // Write and do a real truncate so the underlying meaning of "truncate
+                    // above the current end" is used.
+                    writeBuffer();
+                    // and truncate "other".
+                } else {
+                    // Forget buffer.
+                    bufferLength = 0;
+                    // and truncate "other".
+                }
+            }
+            other.truncate(posn);
         }
-    }    
+    }
 
     private void checkOpen() {
         if ( ! other.isOpen() )
-            throw new RuntimeIOException("Not open") ;
-    }    
+            throw new RuntimeIOException("Not open");
+    }
 
     @Override
     public int read(long posn, byte[] b, int start, int length) {
         synchronized(sync) {
             // Overlap with buffered area
             // We flush the write buffer for a read so no need to check.
-            checkOpen() ;
-            switchToReadMode() ;
-            return other.read(posn, b, start, length) ;
+            checkOpen();
+            switchToReadMode();
+            return other.read(posn, b, start, length);
         }
-    }    
+    }
 
     @Override
     public long write(byte[] buf, int off, int len) {
         synchronized(sync) {
-            checkOpen() ;
-            switchToWriteMode() ;
-            long x = length() ;
-        
+            checkOpen();
+            switchToWriteMode();
+            long x = length();
+
 //        if ( false ) {
 //            // No buffering
-//            try { file.write(buf, off, len) ; }
+//            try { other.write(buf, off, len); }
 //            catch (IOException e) { IO.exception(e); }
-//            bufferLength = 0 ;
-//            return ;
+//            bufferLength = 0;
+//            return;
 //        }
 
-            // No room.
-            if ( bufferLength + len >= SIZE )
-                writeBuffer() ;
+            // If no room, flush buffer.
+            if ( bufferLength + len > SIZE ) {
+                writeBuffer();
+                // bufferLength set to zero.
+            }
 
-            if ( bufferLength + len < SIZE ) {
+            // Is there room now?
+            if ( bufferLength + len <= SIZE ) {
                 // Room to buffer
                 System.arraycopy(buf, off, buffer, bufferLength, len);
-                bufferLength += len ;
-                pendingOutput = true ;
-                return x ;
-            } 
+                bufferLength += len;
+                return x;
+            }
             // Larger than the buffer space.  Write directly.
-            other.write(buf, off, len) ;
-            return x ;
+            other.write(buf, off, len);
+            return x;
         }
-    }    
+    }
 
     @Override
     public void sync()  {
         synchronized(sync) {
-            writeBuffer() ;
-            other.sync(); 
+            writeBuffer();
+            other.sync();
         }
     }
-    
+
     private void writeBuffer() {
-        if ( pendingOutput ) {
-            pendingOutput = false ;
-            other.write(buffer, 0, bufferLength) ;
-            bufferLength = 0 ;
+        if ( bufferLength > 0 ) {
+            other.write(buffer, 0, bufferLength);
+            bufferLength = 0;
         }
     }
 
@@ -157,7 +175,7 @@ public class BinaryDataFileWriteBuffered implements BinaryDataFile {
 
     // Inside synchronization
     protected void switchToReadMode() {
-        writeBuffer() ;
+        writeBuffer();
     }
 }
 

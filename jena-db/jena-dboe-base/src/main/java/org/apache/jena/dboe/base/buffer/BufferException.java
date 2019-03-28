@@ -20,8 +20,8 @@ package org.apache.jena.dboe.base.buffer;
 
 public class BufferException extends RuntimeException
 {
-    public BufferException()                            { super() ; }
-    public BufferException(String msg)                  { super(msg) ; }
-    public BufferException(Throwable th)                { super(th) ; }
-    public BufferException(String msg, Throwable th)    { super(msg, th) ; }
+    public BufferException()                            { super(); }
+    public BufferException(String msg)                  { super(msg); }
+    public BufferException(Throwable th)                { super(th); }
+    public BufferException(String msg, Throwable th)    { super(msg, th); }
 }

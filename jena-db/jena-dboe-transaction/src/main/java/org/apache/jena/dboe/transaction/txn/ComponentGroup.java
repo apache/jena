@@ -18,61 +18,61 @@
 
 package org.apache.jena.dboe.transaction.txn;
 
-import java.util.Arrays ;
-import java.util.HashMap ;
-import java.util.Map ;
-import java.util.Objects ;
-import java.util.function.BiConsumer ;
-import java.util.function.Consumer ;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log;
 
 final
 public class ComponentGroup {
-    private Map<ComponentId, TransactionalComponent> group = new HashMap<>() ;
-    
+    private Map<ComponentId, TransactionalComponent> group = new HashMap<>();
+
     public ComponentGroup(TransactionalComponent...components) {
         Arrays.asList(components).forEach(this::add);
     }
 
     private ComponentGroup(Map<ComponentId, TransactionalComponent> group) {
-        this.group.putAll(group); 
+        this.group.putAll(group);
     }
-    
+
     public void add(TransactionalComponent component) {
-        Objects.requireNonNull(component) ;
-        //Log.info(this, "add("+component.getComponentId()+")") ;
+        Objects.requireNonNull(component);
+        //Log.info(this, "add("+component.getComponentId()+")");
         if ( component.getComponentId() == null )
-            Log.warn(this,  "Null component id - likely to be overwritten: "+component) ;
-            
+            Log.warn(this,  "Null component id - likely to be overwritten: "+component);
+
         if ( group.containsKey(component.getComponentId()) ) {
-            Log.warn(this,  component.getComponentId().toString()) ;
-            Log.warn(this,  "Add component already in the group: "+component) ;
+            Log.warn(this,  component.getComponentId().toString());
+            Log.warn(this,  "Add component already in the group: "+component);
         }
-        
-        group.put(component.getComponentId(), component) ;
+
+        group.put(component.getComponentId(), component);
     }
-    
+
     /*package*/ void remove(ComponentId componentId) {
-        group.remove(componentId) ;
+        group.remove(componentId);
     }
 
     public TransactionalComponent findComponent(ComponentId componentId) {
-        return group.get(componentId) ;
+        return group.get(componentId);
     }
-    
+
     public void forEachComponent(Consumer<? super TransactionalComponent> action) {
-        group.values().forEach(action) ;
+        group.values().forEach(action);
     }
-    
+
     public void forEach(BiConsumer<ComponentId, TransactionalComponent> action) {
         group.forEach(action);
     }
 
     public void addAll(ComponentGroup components) {
-        this.group.putAll(components.group); 
+        this.group.putAll(components.group);
     }
-    
-    public int size() { return group.size() ; }
+
+    public int size() { return group.size(); }
 }
 

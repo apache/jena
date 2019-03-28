@@ -234,8 +234,14 @@ public class XSDFuncOp
             return !nv.getInteger().equals(BigInteger.ZERO) ;
         if ( nv.isDecimal() )
             return !nv.getDecimal().equals(BigDecimal.ZERO) ;
-        if ( nv.isDouble() )
-            return nv.getDouble() != 0.0 ;
+        if ( nv.isDouble() ) {
+            double v = nv.getDouble();
+            return v != 0.0d && ! Double.isNaN(v);
+        }
+        if ( nv.isFloat() ) { 
+            float v = nv.getFloat();
+            return v != 0.0f && ! Float.isNaN(v);
+        }
         NodeValue.raise(new ExprEvalException("Not a boolean effective value (wrong type): " + nv)) ;
         // Does not return
         return false ;

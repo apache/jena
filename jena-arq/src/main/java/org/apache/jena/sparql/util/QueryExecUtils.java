@@ -214,6 +214,11 @@ public class QueryExecUtils {
             return ;
         }
 
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_JSONLD) ) {
+            RDFDataMgr.write(System.out, model, Lang.JSONLD) ;
+            return ;
+        }
+
         System.err.println("Unknown format: " + outputFormat) ;
     }
 
@@ -238,6 +243,11 @@ public class QueryExecUtils {
 
         if ( outputFormat.equals(ResultsFormat.FMT_RDF_TRIG) ) {
             RDFDataMgr.write(System.out, dataset, Lang.TRIG);
+            return ;
+        }
+
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_JSONLD) ) {
+            RDFDataMgr.write(System.out, dataset, Lang.JSONLD);
             return ;
         }
 

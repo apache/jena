@@ -22,8 +22,8 @@ import org.apache.jena.shared.JenaException;
 
 public class DBOpEnvException extends JenaException
 {
-    public DBOpEnvException()                          { super() ; }
-    public DBOpEnvException(String msg)                { super(msg) ; }
-    public DBOpEnvException(Throwable th)              { super(th) ; }
-    public DBOpEnvException(String msg, Throwable th)  { super(msg, th) ; }
+    public DBOpEnvException()                          { super(); }
+    public DBOpEnvException(String msg)                { super(msg); }
+    public DBOpEnvException(Throwable th)              { super(th); }
+    public DBOpEnvException(String msg, Throwable th)  { super(msg, th); }
 }

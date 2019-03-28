@@ -18,28 +18,28 @@
 
 package org.apache.jena.dboe.base.page;
 
-import org.apache.jena.atlas.io.Printable ;
+import org.apache.jena.atlas.io.Printable;
 import org.apache.jena.dboe.base.block.Block;
 
 public interface Page extends Printable
 {
-    public static final int NO_ID   = -1 ;
-    
+    public static final int NO_ID   = -1;
+
     /** Pages are addressed ints (a page ref does in on-disk blocks)
      * although block are address in longs
-     */  
-    public int getId() ;
-    
+     */
+    public int getId();
+
     /** Return a string for display that identifies this Page */
-    public String getRefStr() ;
-    
-    /** Return the block associated with this page */ 
-    public Block getBackingBlock() ;
-    
+    public String getRefStr();
+
+    /** Return the block associated with this page */
+    public Block getBackingBlock();
+
     /**
      * The underlying block for this page has changed (e.g. it's been
      * promoted and the promotion may have caused the block to change).
      */
-    public void reset(Block block) ;
+    public void reset(Block block);
 
 }

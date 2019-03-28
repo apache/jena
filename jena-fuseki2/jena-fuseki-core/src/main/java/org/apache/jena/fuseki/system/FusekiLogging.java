@@ -66,7 +66,6 @@ public class FusekiLogging
     /** Set up logging - standalone and war packaging */
     public static synchronized void setLogging() {
         setLogging(null);
-        
     }
     
     /** Set up logging. Allow an extra location (string directory name without trailing "/"). This may be null 

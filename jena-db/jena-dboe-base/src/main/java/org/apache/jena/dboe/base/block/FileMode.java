@@ -23,5 +23,5 @@ public enum FileMode
     /** Use memory mapped files */
     mapped,
     /** Use in-JVM caching */
-    direct ;
+    direct;
 }

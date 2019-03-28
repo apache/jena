@@ -19,6 +19,6 @@
 package org.apache.jena.dboe.sys;
 
 public class SystemFile {
-    public static final int ObjectFileWriteBufferSize = 8*1024 ;
+    public static final int ObjectFileWriteBufferSize = 8*1024;
 }
 
