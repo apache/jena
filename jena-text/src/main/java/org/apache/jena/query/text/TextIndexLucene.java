@@ -416,8 +416,14 @@ public class TextIndexLucene implements TextIndex {
                 break;
             case "ComplexPhraseQueryParser":
                 qp = new ComplexPhraseQueryParser(docDef.getPrimaryField(), analyzer);
+            case "AnalyzingQueryParser":
+                if (qp == null) {
+                    log.warn("Deprecated query parser type '" + queryParserType + "'. Defaulting to standard QueryParser");
+                }
             case "QueryParser":
-                qp = new QueryParser(docDef.getPrimaryField(), analyzer);
+                if (qp == null) {
+                    qp = new QueryParser(docDef.getPrimaryField(), analyzer);
+                }
             default:
                 if(qp  == null) {
                     log.warn("Unknown query parser type '" + queryParserType + "'. Defaulting to standard QueryParser") ;
