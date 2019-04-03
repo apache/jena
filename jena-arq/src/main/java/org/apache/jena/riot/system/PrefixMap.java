@@ -30,7 +30,7 @@ import org.apache.jena.shared.PrefixMapping ;
  * functionality.
  * <p>
  * The contract also does not require an implementation to do any validation
- * unlike the Jena Core {@link PrefixMapping} which require validation of
+ * unlike the Jena Core {@link PrefixMapping} which requires validation of
  * prefixes.
  * </p>
  * <h3>Implementations</h3>
@@ -43,7 +43,6 @@ import org.apache.jena.shared.PrefixMapping ;
  * implementation.  See the javadoc for those classes for more explanation
  * of their differences.
  * </p>
- * 
  */
 public interface PrefixMap {
 
