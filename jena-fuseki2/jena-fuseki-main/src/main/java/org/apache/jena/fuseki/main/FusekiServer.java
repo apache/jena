@@ -43,7 +43,7 @@ import org.apache.jena.fuseki.ctl.ActionStats;
 import org.apache.jena.fuseki.jetty.FusekiErrorHandler1;
 import org.apache.jena.fuseki.jetty.JettyHttps;
 import org.apache.jena.fuseki.jetty.JettyLib;
-import org.apache.jena.fuseki.metrics.MetricRegistryProvider;
+import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.DataService;
@@ -238,7 +238,8 @@ public class FusekiServer {
 
     /** FusekiServer.Builder */
     public static class Builder {
-        private final DataAccessPointRegistry  dataAccessPoints   = new DataAccessPointRegistry(MetricRegistryProvider.load());
+        private final DataAccessPointRegistry  dataAccessPoints   = new DataAccessPointRegistry(
+                MetricsProviderRegistry.get().getMeterRegistry());
         private final ServiceDispatchRegistry  serviceDispatch;
         // Default values.
         private int                      serverPort         = 3330;

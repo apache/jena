@@ -15,13 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.fuseki.metrics;
+package org.apache.jena.fuseki.extras.prometheus;
 
-import io.micrometer.core.instrument.MeterRegistry;
+import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
+import org.apache.jena.sys.JenaSubsystemLifecycle;
 
-public interface MetricRegistryLoader {
+public class InitPrometheus implements JenaSubsystemLifecycle {
 
-    MeterRegistry load();
-    int getPriority();
+    @Override
+    public void start() {
+        MetricsProviderRegistry.put(new PrometheusMetricsProvider(), level());
+    }
 
+    @Override
+    public void stop() {
+    }
+
+    @Override
+    public int level() {
+        return 10;
+    }
 }

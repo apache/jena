@@ -23,7 +23,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
-import org.apache.jena.fuseki.metrics.MetricRegistryProvider;
+import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.FusekiInfo;
 import org.apache.jena.fuseki.server.FusekiInitialConfig;
@@ -72,7 +72,8 @@ public class FusekiServerListener implements ServletContextListener {
 
         ServiceDispatchRegistry serviceDispatchRegistry = new ServiceDispatchRegistry(true);
         ServiceDispatchRegistry.set(servletContext, serviceDispatchRegistry);
-        DataAccessPointRegistry dataAccessPointRegistry = new DataAccessPointRegistry(MetricRegistryProvider.get(servletContext));
+        DataAccessPointRegistry dataAccessPointRegistry = new DataAccessPointRegistry(
+                                                                    MetricsProviderRegistry.get().getMeterRegistry());
         DataAccessPointRegistry.set(servletContext, dataAccessPointRegistry);
         
         try {

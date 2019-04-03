@@ -18,20 +18,11 @@
 package org.apache.jena.fuseki.metrics;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import org.apache.jena.fuseki.servlets.HttpAction;
 
-public class SimpleMetricRegistryLoader implements MetricRegistryLoader {
+public interface MetricsProvider {
 
-    public MeterRegistry load() {
-        return new SimpleMeterRegistry();
-    }
-
-    /**
-     * Using max int as priority because if you've configured another MeterRegistry you won't want to use this one
-     * @return
-     */
-    public int getPriority() {
-        return Integer.MAX_VALUE;
-    }
+    MeterRegistry getMeterRegistry();
+    void scrape(HttpAction action);
 
 }

@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.fuseki.metrics.MetricRegistryProvider;
+import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.servlets.ActionBase;
 import org.apache.jena.fuseki.servlets.ServiceDispatchRegistry;
@@ -307,7 +307,7 @@ public class JettyServer {
             try {
                 Fuseki.setVerbose(cxt, verbose);
                 ServiceDispatchRegistry.set(cxt, new ServiceDispatchRegistry(false));
-                DataAccessPointRegistry.set(cxt, new DataAccessPointRegistry(MetricRegistryProvider.get(cxt)));
+                DataAccessPointRegistry.set(cxt, new DataAccessPointRegistry(MetricsProviderRegistry.get().getMeterRegistry()));
             } catch (NoClassDefFoundError err) {
                 LOG.info("Fuseki classes not found");
             }

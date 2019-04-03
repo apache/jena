@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,30 +29,49 @@ import io.micrometer.core.instrument.binder.system.UptimeMetrics;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import java.io.File;
-import org.apache.jena.fuseki.metrics.MetricRegistryLoader;
+import javax.servlet.ServletOutputStream;
+import org.apache.jena.fuseki.metrics.MetricsProvider;
+import org.apache.jena.fuseki.servlets.HttpAction;
+import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.riot.WebContent;
 
-public class PrometheusMetricRegistryLoader implements MetricRegistryLoader {
+/**
+ */
+public class PrometheusMetricsProvider implements MetricsProvider {
 
-    @Override
-    public MeterRegistry load() {
-        MeterRegistry result = new PrometheusMeterRegistry( PrometheusConfig.DEFAULT );
+    private PrometheusMeterRegistry meterRegistry;
 
-        new FileDescriptorMetrics().bindTo( result );
-        new ProcessorMetrics().bindTo( result );
-        new ClassLoaderMetrics().bindTo( result );
-        new UptimeMetrics().bindTo( result );
+    public PrometheusMetricsProvider() {
+        meterRegistry = new PrometheusMeterRegistry( PrometheusConfig.DEFAULT );
+        meterRegistry.config().commonTags( "application", "fuseki" );
+
+        new FileDescriptorMetrics().bindTo( meterRegistry );
+        new ProcessorMetrics().bindTo( meterRegistry );
+        new ClassLoaderMetrics().bindTo( meterRegistry );
+        new UptimeMetrics().bindTo( meterRegistry );
         for (File root : File.listRoots()) {
-            new DiskSpaceMetrics(root).bindTo( result );
+            new DiskSpaceMetrics(root).bindTo( meterRegistry );
         }
-        new JvmGcMetrics().bindTo( result );
-        new JvmMemoryMetrics().bindTo( result );
-        new JvmThreadMetrics().bindTo( result );
-
-        return result;
+        new JvmGcMetrics().bindTo( meterRegistry );
+        new JvmMemoryMetrics().bindTo( meterRegistry );
+        new JvmThreadMetrics().bindTo( meterRegistry );
     }
 
     @Override
-    public int getPriority() {
-        return 1;
+    public MeterRegistry getMeterRegistry() {
+        return meterRegistry;
     }
+
+    @Override
+    public void scrape(HttpAction action) {
+        try (ServletOutputStream out = action.response.getOutputStream()) {
+            action.response.setContentType( WebContent.contentTypeTextPlain );
+            action.response.setCharacterEncoding( WebContent.charsetUTF8 );
+
+            out.write( meterRegistry.scrape().getBytes() );
+        } catch (Throwable t) {
+            ServletOps.errorOccurred( t );
+        }
+    }
+
 }

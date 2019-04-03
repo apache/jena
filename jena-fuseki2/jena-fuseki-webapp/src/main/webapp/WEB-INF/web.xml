@@ -174,13 +174,13 @@
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>ActionExtras</servlet-name>
-    <servlet-class>org.apache.jena.fuseki.ctl.ActionExtras</servlet-class>
+    <servlet-name>ActionMetrics</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.ctl.ActionMetrics</servlet-class>
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>ActionExtras</servlet-name>
-    <url-pattern>/$/extras/*</url-pattern>
+    <servlet-name>ActionMetrics</servlet-name>
+    <url-pattern>/$/metrics</url-pattern>
   </servlet-mapping>
 
   <servlet>

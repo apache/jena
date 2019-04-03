@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,18 +15,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.fuseki.ctl;
+package org.apache.jena.fuseki.metrics;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.apache.jena.fuseki.servlets.HttpAction;
+import org.apache.jena.fuseki.servlets.ServletOps;
 
-public interface ExtraAction {
+public class SimpleMetricsProvider implements MetricsProvider {
 
-    String getPath();
+    private MeterRegistry meterRegistry = new SimpleMeterRegistry();
 
-    void init(ServletConfig config) throws ServletException;
+    @Override
+    public MeterRegistry getMeterRegistry() {
+        return meterRegistry;
+    }
 
-    void perform(HttpAction action);
+    @Override
+    public void scrape(HttpAction action) {
+        ServletOps.errorNotImplemented( "SimpleMeterRegistry isn't scrapeable" );
+    }
 
 }

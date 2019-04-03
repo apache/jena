@@ -15,41 +15,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.fuseki.extras.prometheus;
+package org.apache.jena.fuseki.ctl;
 
-import io.micrometer.prometheus.PrometheusMeterRegistry;
+import java.io.IOException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import org.apache.jena.fuseki.ctl.ExtraAction;
-import org.apache.jena.fuseki.metrics.MetricRegistryProvider;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.fuseki.servlets.HttpAction;
-import org.apache.jena.fuseki.servlets.ServletOps;
-import org.apache.jena.riot.WebContent;
 
-/**
- * Maps to $/extras/prometheus
- */
-public class ActionPrometheus implements ExtraAction {
-
-    @Override
-    public String getPath() {
-        return "prometheus";
-    }
+public class ActionMetrics extends ActionCtl {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
+        super.init( config );
+
     }
 
     @Override
-    public void perform(HttpAction action) {
-        try (ServletOutputStream out = action.response.getOutputStream()) {
-            action.response.setContentType( WebContent.contentTypeJSON );
-            action.response.setCharacterEncoding( WebContent.charsetUTF8 );
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        long id = allocRequestId(req, resp);
 
-            out.write( ((PrometheusMeterRegistry)MetricRegistryProvider.get(action.request.getServletContext())).scrape().getBytes() );
-        } catch (Throwable t) {
-            ServletOps.errorOccurred( t );
+        HttpAction action = allocHttpAction(id, req, resp) ;
+        try {
+            perform( action );
+        } finally {
+            action.setFinishTime() ;
+            finishRequest(action);
         }
+    }
+
+    @Override
+    protected void perform(HttpAction action) {
+        MetricsProviderRegistry.get().scrape( action );
     }
 }
