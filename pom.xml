@@ -54,21 +54,25 @@
     <ver.slf4j>1.7.26</ver.slf4j>
     <ver.log4j>1.2.17</ver.log4j>
     <ver.junit>4.12</ver.junit>
-    <ver.libthrift>0.10.0</ver.libthrift>
+    <ver.libthrift>0.12.0</ver.libthrift>
 
     <!-- jsonld-java depends on depends on Jackson core
-         artifacts so the versions must align. Consult jsonld-java's
+         and Jackson databind. databind has had a few CVEs
+         so we exclude from jsonldjava and select the version
+         ourselves.
+         When upgrading jsonld, consult jsonld-java's
          POM for the correct dependency versions
+         and use that or later.
     -->
-    <ver.jsonldjava>0.12.1</ver.jsonldjava>
-    <ver.jackson>2.9.6</ver.jackson>
+    <ver.jsonldjava>0.12.3</ver.jsonldjava>
+    <ver.jackson>2.9.8</ver.jackson>
 
     <ver.commonsio>2.6</ver.commonsio>
     <ver.commonscli>1.4</ver.commonscli>
     <ver.commonslang3>3.4</ver.commonslang3>
     <ver.commonscsv>1.5</ver.commonscsv>
     <ver.commons-codec>1.11</ver.commons-codec>
-    <ver.commons-compress>1.17</ver.commons-compress>
+    <ver.commons-compress>1.18</ver.commons-compress>
 
     <ver.dexxcollection>0.7</ver.dexxcollection>
 
@@ -147,7 +151,7 @@
   <profiles>
     <profile>
       <!--
-          This is the dev profile, typically used locally with
+          This is the dev profile, typically used locally with 
           "mvn clean install -Pdev".
           It builds the modules shipped in apache-jena binaries
           but does not build these binaries.
@@ -158,12 +162,12 @@
         <module>jena-shaded-guava</module>
         <module>jena-iri</module>
         <module>jena-base</module>
-
+        
         <module>jena-core</module>
         <module>jena-arq</module>
         <module>jena-rdfconnection</module>
         <module>jena-tdb</module>
-        <module>jena-db</module>
+        <module>jena-db</module> 
         <module>apache-jena-libs</module>
 
         <module>jena-text</module>
@@ -230,13 +234,13 @@
         <module>jena-fuseki2</module>
 
         <!--
-            Tests of artifacts that require additional
+            Tests of artifacts that require additional 
             modules built later in the build process.
             For example, use Fuseki as a test server to
             test remote client APIs.
         -->
         <module>jena-integration-tests</module>
-
+        
         <!-- Binary distribution -->
         <module>apache-jena</module>
 
@@ -254,7 +258,7 @@
 
         <!-- Slow building modules -->
         <module>jena-jdbc</module>
-        <!--  Fails when building with Java9 JDK because it requires
+        <!--  Fails when building with Java9 JDK because it requires 
              system jar jdk.tools which is not available in Java9 onwards
         -->
         <module>jena-elephas</module>
@@ -303,17 +307,28 @@
         <artifactId>commons-codec</artifactId>
         <version>${ver.commons-codec}</version>
       </dependency>
-
+      
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <version>${ver.commonsio}</version>
       </dependency>
-
+      
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
         <version>${ver.commons-compress}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${ver.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${ver.jackson}</version>
       </dependency>
 
       <dependency>
@@ -356,19 +371,29 @@
         <artifactId>commons-collections4</artifactId>
         <version>4.1</version>
       </dependency>
-
+      
       <!-- supports persistent data structures -->
       <dependency>
         <groupId>com.github.andrewoma.dexx</groupId>
         <artifactId>collection</artifactId>
         <version>${ver.dexxcollection}</version>
       </dependency>
-
+      
       <dependency>
         <groupId>com.github.jsonld-java</groupId>
         <artifactId>jsonld-java</artifactId>
         <version>${ver.jsonldjava}</version>
         <exclusions>
+
+          <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+          </exclusion>
+
           <exclusion>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
@@ -396,7 +421,7 @@
           </exclusion>
         </exclusions>
       </dependency>
-
+      
       <!-- Lucene dependencies -->
       <dependency>
         <groupId>org.apache.lucene</groupId>
@@ -463,7 +488,7 @@
         <artifactId>log4j-api</artifactId>
         <version>${ver.log4j2}</version>
       </dependency>
-
+      
       <!-- Intercept direct use of log4j2 -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -496,8 +521,8 @@
         <version>${ver.log4j}</version>
       </dependency>
 
-      <!-- And intercept any uses of Jakarta Commons Logging
-           e.g. Apache Common HTTP client.
+      <!-- And intercept any uses of Jakarta Commons Logging 
+           e.g. Apache Common HTTP client. 
       -->
 
       <dependency>
@@ -524,7 +549,7 @@
           </exclusion>
         </exclusions>
       </dependency>
-
+      
       <dependency>
         <groupId>org.xenei</groupId>
         <artifactId>contract-test-maven-plugin</artifactId>
@@ -538,7 +563,7 @@
         <version>${ver.mockito}</version>
         <scope>test</scope>
       </dependency>
-
+      
       <dependency>
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
