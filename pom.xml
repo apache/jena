@@ -575,6 +575,12 @@
         <artifactId>micrometer-core</artifactId>
         <version>${ver.micrometer}</version>
       </dependency>
+
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-registry-prometheus</artifactId>
+          <version>${ver.micrometer}</version>
+      </dependency>
     </dependencies>
 
   </dependencyManagement>
