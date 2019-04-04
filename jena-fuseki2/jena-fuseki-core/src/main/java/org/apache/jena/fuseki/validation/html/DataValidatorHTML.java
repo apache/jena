@@ -96,6 +96,7 @@ public class DataValidatorHTML
                 @SuppressWarnings("deprecation")
                 RDFParser parser = RDFParser.create()
                     .source(input)
+                    .strict(true)
                     .lang(language)
                     .errorHandler(errorHandler)
                     .resolveURIs(false)
@@ -109,7 +110,7 @@ public class DataValidatorHTML
                     outStream.flush(); 
                     System.err.flush() ;
                 } catch (RiotException ex) {
-                    ex.printStackTrace(stderr); 
+                    //ex.printStackTrace(stderr); 
                     exception = ex ;
                 }
             } finally 
