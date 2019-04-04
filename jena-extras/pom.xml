@@ -36,7 +36,6 @@
 
   <modules>
     <module>jena-querybuilder</module>
-      <module>jena-prometheus</module>
   </modules>
 
   <properties>

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.fuseki.extras.prometheus;
+package org.apache.jena.fuseki.metrics.prometheus;
 
 import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.sys.JenaSubsystemLifecycle;
