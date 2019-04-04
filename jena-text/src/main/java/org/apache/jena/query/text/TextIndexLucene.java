@@ -413,25 +413,21 @@ public class TextIndexLucene implements TextIndex {
                 } catch(org.apache.lucene.queryparser.surround.parser.ParseException e) {
                     throw new ParseException(e.getMessage());
                 }
-                break;
+                return query;
             case "ComplexPhraseQueryParser":
                 qp = new ComplexPhraseQueryParser(docDef.getPrimaryField(), analyzer);
-            case "AnalyzingQueryParser":
-                if (qp == null) {
-                    log.warn("Deprecated query parser type '" + queryParserType + "'. Defaulting to standard QueryParser");
-                }
-            case "QueryParser":
-                if (qp == null) {
-                    qp = new QueryParser(docDef.getPrimaryField(), analyzer);
-                }
+                break;
+            case "AnalyzingQueryParser": // since Lucene 7 analyzing is done by QueryParser
+                log.warn("Deprecated query parser type 'AnalyzingQueryParser'. Defaulting to standard QueryParser");
+                break;
             default:
-                if(qp  == null) {
-                    log.warn("Unknown query parser type '" + queryParserType + "'. Defaulting to standard QueryParser") ;
-                    qp = new QueryParser(docDef.getPrimaryField(), analyzer);
-                }
-                qp.setAllowLeadingWildcard(true);
-                query = qp.parse(queryString);
+                log.warn("Unknown query parser type '" + queryParserType + "'. Defaulting to standard QueryParser");
         }
+
+        if (qp == null) 
+            qp = new QueryParser(docDef.getPrimaryField(), analyzer);
+        qp.setAllowLeadingWildcard(true);
+        query = qp.parse(queryString);
         return query ;
     }
 
