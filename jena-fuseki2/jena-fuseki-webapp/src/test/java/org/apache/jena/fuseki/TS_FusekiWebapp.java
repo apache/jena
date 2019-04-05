@@ -44,6 +44,7 @@ import org.junit.runners.Suite ;
     , TestAdminAPI.class
     , TestServerReadOnly.class
     , TestBuilder.class
+    , TestMetrics.class
 })
 
 public class TS_FusekiWebapp extends ServerTest

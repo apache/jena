@@ -65,6 +65,7 @@ public class PrometheusMetricsProvider implements MetricsProvider {
     @Override
     public void scrape(HttpAction action) {
         try (ServletOutputStream out = action.response.getOutputStream()) {
+            ServletOps.success(action);
             action.response.setContentType( WebContent.contentTypeTextPlain );
             action.response.setCharacterEncoding( WebContent.charsetUTF8 );
 
