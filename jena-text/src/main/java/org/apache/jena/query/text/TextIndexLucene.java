@@ -58,6 +58,7 @@ import org.apache.lucene.queryparser.classic.ParseException ;
 import org.apache.lucene.queryparser.classic.QueryParser ;
 import org.apache.lucene.queryparser.classic.QueryParserBase ;
 import org.apache.lucene.queryparser.complexPhrase.ComplexPhraseQueryParser ;
+import org.apache.lucene.queryparser.surround.query.BasicQueryFactory;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher ;
@@ -401,25 +402,32 @@ public class TextIndexLucene implements TextIndex {
         }
     }
 
-    private QueryParser getQueryParser(Analyzer analyzer) {
-        switch(queryParserType) {
-            case "QueryParser":
-                return new QueryParser(docDef.getPrimaryField(), analyzer) ;
-            case "AnalyzingQueryParser":
-                // AnalyzingQueryParser is deprecated in Lucene 7, switching to QueryParser
-                return new QueryParser(docDef.getPrimaryField(), analyzer) ;
-            case "ComplexPhraseQueryParser":
-                return new ComplexPhraseQueryParser(docDef.getPrimaryField(), analyzer);
-            default:
-                log.warn("Unknown query parser type '" + queryParserType + "'. Defaulting to standard QueryParser") ;
-                return new QueryParser(docDef.getPrimaryField(), analyzer) ;
-        }
-    }
-
     private Query parseQuery(String queryString, Analyzer analyzer) throws ParseException {
-        QueryParser queryParser = getQueryParser(analyzer) ;
-        queryParser.setAllowLeadingWildcard(true) ;
-        Query query = queryParser.parse(queryString) ;
+        Query query = null;
+        QueryParser qp = null;
+
+        switch(queryParserType) {
+            case "SurroundQueryParser":
+                try {
+                    query = org.apache.lucene.queryparser.surround.parser.QueryParser.parse(queryString).makeLuceneQueryField(docDef.getPrimaryField(), new BasicQueryFactory());
+                } catch(org.apache.lucene.queryparser.surround.parser.ParseException e) {
+                    throw new ParseException(e.getMessage());
+                }
+                return query;
+            case "ComplexPhraseQueryParser":
+                qp = new ComplexPhraseQueryParser(docDef.getPrimaryField(), analyzer);
+                break;
+            case "AnalyzingQueryParser": // since Lucene 7 analyzing is done by QueryParser
+                log.warn("Deprecated query parser type 'AnalyzingQueryParser'. Defaulting to standard QueryParser");
+                break;
+            default:
+                log.warn("Unknown query parser type '" + queryParserType + "'. Defaulting to standard QueryParser");
+        }
+
+        if (qp == null) 
+            qp = new QueryParser(docDef.getPrimaryField(), analyzer);
+        qp.setAllowLeadingWildcard(true);
+        query = qp.parse(queryString);
         return query ;
     }
 
