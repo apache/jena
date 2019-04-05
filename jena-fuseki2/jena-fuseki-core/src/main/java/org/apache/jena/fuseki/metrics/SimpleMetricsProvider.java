@@ -21,7 +21,6 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
-import org.apache.jena.web.HttpSC;
 
 public class SimpleMetricsProvider implements MetricsProvider {
 
@@ -34,8 +33,7 @@ public class SimpleMetricsProvider implements MetricsProvider {
 
     @Override
     public void scrape(HttpAction action) {
-        ServletOps.responseSendError(action.response, HttpSC.NOT_IMPLEMENTED_501,
-                "SimpleMeterRegistry isn't scrapeable" );
+        ServletOps.errorNotImplemented("SimpleMeterRegistry isn't scrapeable");
     }
 
 }

@@ -35,15 +35,7 @@ public class ActionMetrics extends ActionCtl {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        long id = allocRequestId(req, resp);
-
-        HttpAction action = allocHttpAction(id, req, resp) ;
-        try {
-            perform( action );
-        } finally {
-            action.setFinishTime() ;
-            finishRequest(action);
-        }
+        super.doCommon(req, resp);
     }
 
     @Override
