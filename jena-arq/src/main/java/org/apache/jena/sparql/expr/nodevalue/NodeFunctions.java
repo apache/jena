@@ -445,23 +445,6 @@ public class NodeFunctions {
         return viol.getShortMessage() ;
     }
 
-    // The Jena version can be slow to inityailise (but is pure java)
-
-    // private static UUIDFactory factory = new UUID_V4_Gen() ;
-    // private static UUIDFactory factory = new UUID_V1_Gen() ;
-    // public static NodeValue uuid()
-    // {
-    // JenaUUID uuid = factory.generate() ;
-    // Node n = Node.createURI(uuid.asURN()) ;
-    // return NodeValue.makeNode(n) ;
-    // }
-    //
-    // public static NodeValue struuid()
-    // {
-    // JenaUUID uuid = factory.generate() ;
-    // return NodeValue.makeString(uuid.asString()) ;
-    // }
-
     public static NodeValue struuid() {
         return NodeValue.makeString(uuidString()) ;
     }
