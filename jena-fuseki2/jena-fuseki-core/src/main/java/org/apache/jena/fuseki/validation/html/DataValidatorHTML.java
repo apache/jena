@@ -110,7 +110,6 @@ public class DataValidatorHTML
                     outStream.flush(); 
                     System.err.flush() ;
                 } catch (RiotException ex) {
-                    //ex.printStackTrace(stderr); 
                     exception = ex ;
                 }
             } finally 
