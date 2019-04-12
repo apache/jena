@@ -56,14 +56,12 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlet</artifactId>
-      <version>${ver.jetty}</version>
     </dependency>
 
     <!-- Jetty's useful servlets, inc compression -->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlets</artifactId>
-      <version>${ver.jetty}</version>
     </dependency>
 
     <!-- Logging :  Needed because the Fuseki command line manages logging -->

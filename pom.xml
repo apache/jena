@@ -74,6 +74,9 @@
     <ver.commons-codec>1.11</ver.commons-codec>
     <ver.commons-compress>1.18</ver.commons-compress>
 
+    <ver.jetty>9.4.12.v20180830</ver.jetty>
+    <ver.shiro>1.2.6</ver.shiro>
+
     <ver.dexxcollection>0.7</ver.dexxcollection>
 
     <ver.httpclient>4.5.5</ver.httpclient>
@@ -447,6 +450,12 @@
         <version>${ver.lucene}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-backward-codecs</artifactId>
+        <version>${ver.lucene}</version>
+      </dependency>
+
       <!-- For jena-spatial -->
       <dependency>
         <groupId>org.apache.lucene</groupId>
@@ -466,6 +475,36 @@
         <version>${ver.spatial4j}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-servlet</artifactId>
+        <version>${ver.jetty}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-servlets</artifactId>
+        <version>${ver.jetty}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-webapp</artifactId>
+        <version>${ver.jetty}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.apache.shiro</groupId>
+        <artifactId>shiro-core</artifactId>
+        <version>${ver.shiro}</version>
+      </dependency>
+    
+      <dependency>
+        <groupId>org.apache.shiro</groupId>
+        <artifactId>shiro-web</artifactId>
+        <version>${ver.shiro}</version>
+      </dependency>
+    
       <!-- Elasticsearch dependencies -->
 
       <dependency>
