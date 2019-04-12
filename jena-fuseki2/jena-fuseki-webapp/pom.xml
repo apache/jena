@@ -46,16 +46,7 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
-      <version>${ver.jetty}</version>
     </dependency>
-
-    <!--
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-runner</artifactId>
-      <version>${ver.jetty}</version>
-    </dependency>
-    -->
 
     <!-- Text and spatial -->
     <dependency>
@@ -70,17 +61,14 @@
       <version>3.11.0-SNAPSHOT</version>
     </dependency>
 
-    <!-- Apache Shiro -->
     <dependency>
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-core</artifactId>
-      <version>${ver.shiro}</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-web</artifactId>
-      <version>${ver.shiro}</version>
     </dependency>
 
     <!-- Logging :  Needed because the Fuseki command line manages logging -->

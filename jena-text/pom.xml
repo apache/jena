@@ -85,13 +85,12 @@
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-highlighter</artifactId>
     </dependency>
-
+    
     <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-backward-codecs</artifactId>
-        <version>${ver.lucene}</version>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-backward-codecs</artifactId>
     </dependency>
-
+    
   </dependencies>
 
   <build>
