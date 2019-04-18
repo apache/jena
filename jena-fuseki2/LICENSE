@@ -266,3 +266,13 @@ This product bundles "YASR - Yet Another Sparql Resultset GUI"
 which is available under an MIT License.
 See http://yasr.yasgui.org/license.txt
 from https://github.com/YASGUI/YASR
+
+This product bundles "LatencyUtils"
+which is available under a "BSD 2-Clause License".
+See https://raw.githubusercontent.com/LatencyUtils/LatencyUtils/master/LICENSE
+from https://github.com/LatencyUtils/LatencyUtils
+
+This product bundles "HdrHistogram"
+which is available under a "BSD 2-Clause License".
+See https://raw.githubusercontent.com/HdrHistogram/HdrHistogram/master/LICENSE.txt
+from https://github.com/HdrHistogram/HdrHistogram
