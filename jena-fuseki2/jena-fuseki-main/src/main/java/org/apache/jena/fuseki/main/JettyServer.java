@@ -18,23 +18,19 @@
 
 package org.apache.jena.fuseki.main;
 
-import static java.lang.String.format;
-import static java.util.Objects.requireNonNull;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.servlets.ActionBase;
 import org.apache.jena.fuseki.servlets.ServiceDispatchRegistry;
@@ -55,6 +51,9 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Jetty server for servlets, including being able to run Fuseki {@link ActionBase} derived servlets.
@@ -308,7 +307,7 @@ public class JettyServer {
             try {
                 Fuseki.setVerbose(cxt, verbose);
                 ServiceDispatchRegistry.set(cxt, new ServiceDispatchRegistry(false));
-                DataAccessPointRegistry.set(cxt, new DataAccessPointRegistry());
+                DataAccessPointRegistry.set(cxt, new DataAccessPointRegistry(MetricsProviderRegistry.get().getMeterRegistry()));
             } catch (NoClassDefFoundError err) {
                 LOG.info("Fuseki classes not found");
             }

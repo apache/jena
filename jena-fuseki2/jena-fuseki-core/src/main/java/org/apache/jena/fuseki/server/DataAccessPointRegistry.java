@@ -18,19 +18,26 @@
 
 package org.apache.jena.fuseki.server;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import javax.servlet.ServletContext ;
 
 import org.apache.jena.atlas.lib.Registry ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException ;
+import org.apache.jena.fuseki.metrics.FusekiRequestsMetrics;
 
 public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
 {
-    public DataAccessPointRegistry() {}
+    private MeterRegistry meterRegistry;
+
+    public DataAccessPointRegistry(MeterRegistry meterRegistry) {
+        this.meterRegistry = meterRegistry;
+    }
     
     public DataAccessPointRegistry(DataAccessPointRegistry other) {
         other.forEach((name, accessPoint)->register(name, accessPoint));
+        this.meterRegistry = other.meterRegistry;
     }
     
     // Preferred way to register. Other method for legacy.
@@ -42,6 +49,9 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
         if ( isRegistered(name) )
             throw new FusekiException("Already registered: "+name) ;
         super.put(name, accessPt);
+        if (meterRegistry != null) {
+            new FusekiRequestsMetrics( accessPt ).bindTo( meterRegistry );
+        }
     }
     // Debugging
     public void print(String string) {
