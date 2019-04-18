@@ -24,6 +24,14 @@ Licensed under BSD-style license (see licenses/LICENSE_Scala.txt)
 
 - - - - - - - - - - - - - - - - - - - - - - -
 
+This product bundles "LatencyUtils"
+which is available under a "BSD 2-Clause License" (BSD-2-Clause).
+See https://github.com/LatencyUtils/LatencyUtils/blob/master/LICENSE
+
+This product bundles "HdrHistogram"
+which is available under a "BSD 2-Clause License" (BSD-2-Clause).
+See https://github.com/HdrHistogram/HdrHistogram/blob/master/LICENSE.txt
+
 This product bundles "Bootstrap", which is available under an
 MIT license.  See: https://github.com/twbs/bootstrap/blob/master/LICENSE
 

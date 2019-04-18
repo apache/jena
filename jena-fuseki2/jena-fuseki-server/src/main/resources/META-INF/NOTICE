@@ -5,6 +5,16 @@ MIT license (MIT).  See https://www.slf4j.org/license.html
 
 - - - - - - - - - - - - - - - - - - - - - - -
 
+This product bundles "LatencyUtils"
+which is available under a "BSD 2-Clause License" (BSD-2-Clause).
+See https://github.com/LatencyUtils/LatencyUtils/blob/master/LICENSE
+
+This product bundles "HdrHistogram"
+which is available under a "BSD 2-Clause License" (BSD-2-Clause).
+See https://github.com/HdrHistogram/HdrHistogram/blob/master/LICENSE.txt
+
+- - - - - - - - - - - - - - - - - - - - - - -
+
 This product bundles "jsonld-java" , which is available under a
 BSD licnese (BSD-3-Clause). See 
 https://github.com/jsonld-java/jsonld-java/blob/master/LICENCE
