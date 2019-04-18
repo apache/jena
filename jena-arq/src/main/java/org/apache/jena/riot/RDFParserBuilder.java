@@ -90,7 +90,6 @@ public class RDFParserBuilder {
     
     private Optional<Boolean> checking = Optional.empty();
     
-    // ---- Unused but left in case required in the future.
     private boolean strict = SysRIOT.isStrictMode();
     private boolean resolveURIs = true;
     private IRIResolver resolver = null;
@@ -234,6 +233,13 @@ public class RDFParserBuilder {
      * @return this
      */
     public RDFParserBuilder lang(Lang lang) { this.hintLang = lang ; return this; }
+    
+    /**
+     * Set the parser built to "strict" mode. The default is system wide setting of {@link SysRIOT#isStrictMode()}.
+     * @param strictMode
+     * @return this
+     */
+    public RDFParserBuilder strict(boolean strictMode) { this.strict = strictMode ; return this ; } 
 
     /**
      * Force the choice RDF syntax to be {@code lang}, and ignore any indications such as file extension
