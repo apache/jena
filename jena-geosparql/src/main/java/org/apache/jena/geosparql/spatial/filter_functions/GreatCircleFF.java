@@ -15,13 +15,14 @@
  */
 package org.apache.jena.geosparql.spatial.filter_functions;
 
+import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.geosparql.implementation.UnitsOfMeasure;
 import org.apache.jena.geosparql.implementation.great_circle.GreatCircleDistance;
 import org.apache.jena.geosparql.implementation.registry.UnitsRegistry;
 import org.apache.jena.geosparql.implementation.vocabulary.Unit_URI;
-import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase5;
 import org.apache.jena.sparql.util.FmtUtils;
 
 /**
