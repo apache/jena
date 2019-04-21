@@ -25,14 +25,14 @@
   <artifactId>jena-integration-tests</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - Integration Testing</name>
-  <version>3.11.0-SNAPSHOT</version>
+  <version>3.12.0-SNAPSHOT</version>
 
   <description>Apache Jena - Integration testing and test tools</description>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>3.11.0-SNAPSHOT</version>
+    <version>3.12.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
 
@@ -47,7 +47,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>3.12.0-SNAPSHOT</version>
       <type>pom</type>
     </dependency>
 
@@ -55,13 +55,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-rdfconnection</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>3.12.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-rdfconnection</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>3.12.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -69,7 +69,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>3.12.0-SNAPSHOT</version>
       
       <scope>test</scope>
     </dependency>
@@ -78,7 +78,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>3.12.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -86,13 +86,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-dboe-index-test</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>3.12.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-dboe-trans-data</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>3.12.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -101,14 +101,14 @@
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
       <classifier>tests</classifier>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>3.12.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>    
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>3.12.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -116,7 +116,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-main</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>3.12.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     

@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-fuseki</artifactId>
-    <version>3.11.0-SNAPSHOT</version>
+    <version>3.12.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -38,14 +38,14 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>3.12.0-SNAPSHOT</version>
       <type>pom</type>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-text</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>3.12.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -85,6 +85,17 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
+    </dependency>
+
+    <!-- micrometer -->
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-registry-prometheus</artifactId>
     </dependency>
 
   </dependencies>
