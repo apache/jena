@@ -1,4 +1,8 @@
 <configuration debug="false">
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
+
     <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
     <logger name="org.apache.jena" level="WARN" />
     <logger name="org.eclipse.jetty" level="WARN" />

@@ -26,6 +26,7 @@ import java.util.Arrays;
 import org.apache.jena.query.Dataset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 public class Main {
 
@@ -35,6 +36,10 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
+        //Apache SIS j.u.l logging redirection.
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
 
         LOGGER.info("Arguments Received: {}", Arrays.asList(args));
 
