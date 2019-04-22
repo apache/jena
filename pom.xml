@@ -176,7 +176,7 @@
         <!-- <module>jena-text-es</module>        -->
         <module>jena-spatial</module>
         <module>jena-geosparql</module>
-
+        <module>jena-fuseki-geosparql</module>
         <module>jena-cmds</module>
         <module>jena-fuseki2</module>
 
@@ -1075,7 +1075,7 @@
             </plugins>
         </pluginManagement>
     </build>
-    
+
     <reporting>
         <!-- <outputDirectory>${project.build.directory}/site</outputDirectory> -->
 
