@@ -271,7 +271,7 @@ public class QueryRewriteIndex {
      * Retrieve the QueryRewriteIndex from the Dataset Context.<br>
      * If no index has been setup then QueryRewriteIndex is created.
      *
-     * @param dataset
+     * @param context
      * @return QueryRewriteIndex contained in the Context.
      */
     public static final QueryRewriteIndex retrieve(Context context) {
