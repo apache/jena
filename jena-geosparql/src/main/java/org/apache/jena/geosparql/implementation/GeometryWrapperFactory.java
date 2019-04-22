@@ -1,5 +1,7 @@
 /*
- * Copyright 2019 .
+ * Copyright 2019 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +17,9 @@
  */
 package org.apache.jena.geosparql.implementation;
 
+import java.util.List;
 import org.apache.jena.geosparql.implementation.jts.CustomGeometryFactory;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
-import java.util.List;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;

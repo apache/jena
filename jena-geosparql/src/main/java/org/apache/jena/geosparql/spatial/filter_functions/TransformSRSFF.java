@@ -1,5 +1,7 @@
 /*
- * Copyright 2019 .
+ * Copyright 2019 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +17,9 @@
  */
 package org.apache.jena.geosparql.spatial.filter_functions;
 
+import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.index.GeometryLiteralIndex;
-import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase2;

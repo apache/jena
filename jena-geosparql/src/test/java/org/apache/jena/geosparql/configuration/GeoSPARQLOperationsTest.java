@@ -1,5 +1,7 @@
 /*
- * Copyright 2019 .
+ * Copyright 2019 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +17,16 @@
  */
 package org.apache.jena.geosparql.configuration;
 
-import org.apache.jena.geosparql.configuration.GeoSPARQLOperations;
+import java.util.Arrays;
+import java.util.List;
+import java.util.TreeSet;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.geosparql.implementation.datatype.GMLDatatype;
 import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
-import java.util.Arrays;
-import java.util.List;
-import java.util.TreeSet;
-import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Literal;

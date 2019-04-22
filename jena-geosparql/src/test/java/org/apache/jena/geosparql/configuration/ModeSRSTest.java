@@ -1,5 +1,7 @@
 /*
- * Copyright 2019 .
+ * Copyright 2019 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +17,12 @@
  */
 package org.apache.jena.geosparql.configuration;
 
-import org.apache.jena.geosparql.configuration.ModeSRS;
-import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
-import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
+import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
