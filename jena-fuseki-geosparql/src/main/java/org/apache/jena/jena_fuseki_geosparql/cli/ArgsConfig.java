@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import static org.apache.jena.jena_fuseki_geosparql.DatasetOperations.SPATIAL_INDEX_FILE;
 
 /**
  *

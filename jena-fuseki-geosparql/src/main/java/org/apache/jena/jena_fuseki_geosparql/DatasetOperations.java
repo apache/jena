@@ -17,21 +17,21 @@
  */
 package org.apache.jena.jena_fuseki_geosparql;
 
-import io.github.galbiston.geosparql_fuseki.cli.ArgsConfig;
-import io.github.galbiston.geosparql_fuseki.cli.FileGraphDelimiter;
-import io.github.galbiston.geosparql_fuseki.cli.FileGraphFormat;
-import io.github.galbiston.geosparql_jena.configuration.GeoSPARQLConfig;
-import io.github.galbiston.geosparql_jena.configuration.GeoSPARQLOperations;
-import io.github.galbiston.geosparql_jena.implementation.datatype.GMLDatatype;
-import io.github.galbiston.geosparql_jena.implementation.datatype.GeometryDatatype;
-import io.github.galbiston.geosparql_jena.implementation.datatype.WKTDatatype;
-import io.github.galbiston.geosparql_jena.spatial.SpatialIndexException;
 import io.github.galbiston.rdf_tables.cli.DelimiterValidator;
 import io.github.galbiston.rdf_tables.datatypes.DatatypeController;
 import io.github.galbiston.rdf_tables.file.FileReader;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
+import org.apache.jena.geosparql.configuration.GeoSPARQLOperations;
+import org.apache.jena.geosparql.implementation.datatype.GMLDatatype;
+import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
+import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
+import org.apache.jena.geosparql.spatial.SpatialIndexException;
+import org.apache.jena.jena_fuseki_geosparql.cli.ArgsConfig;
+import org.apache.jena.jena_fuseki_geosparql.cli.FileGraphDelimiter;
+import org.apache.jena.jena_fuseki_geosparql.cli.FileGraphFormat;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.ReadWrite;
