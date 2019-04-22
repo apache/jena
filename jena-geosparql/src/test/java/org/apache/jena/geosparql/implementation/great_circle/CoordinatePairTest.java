@@ -17,7 +17,6 @@
  */
 package org.apache.jena.geosparql.implementation.great_circle;
 
-import org.apache.jena.geosparql.implementation.great_circle.CoordinatePair;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.junit.After;

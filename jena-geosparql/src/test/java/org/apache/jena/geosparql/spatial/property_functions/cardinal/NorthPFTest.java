@@ -17,15 +17,14 @@
  */
 package org.apache.jena.geosparql.spatial.property_functions.cardinal;
 
-import org.apache.jena.geosparql.spatial.property_functions.cardinal.NorthPF;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.spatial.CardinalDirection;
 import org.apache.jena.geosparql.spatial.SearchEnvelope;
 import org.apache.jena.geosparql.spatial.SpatialIndexTestData;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -50,7 +49,7 @@ public class NorthPFTest {
 
     @BeforeClass
     public static void setUpClass() {
-         GeoSPARQLConfig.setupNoIndex();
+        GeoSPARQLConfig.setupNoIndex();
     }
 
     @AfterClass

@@ -17,7 +17,6 @@
  */
 package org.apache.jena.geosparql.geof.topological.filter_functions.simple_features;
 
-import org.apache.jena.geosparql.geof.topological.filter_functions.simple_features.SfContainsFF;
 import org.apache.jena.geosparql.implementation.DimensionInfo;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;

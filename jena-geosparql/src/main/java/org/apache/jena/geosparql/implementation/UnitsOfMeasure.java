@@ -17,13 +17,13 @@
  */
 package org.apache.jena.geosparql.implementation;
 
-import org.apache.jena.geosparql.implementation.registry.UnitsRegistry;
-import org.apache.jena.geosparql.implementation.vocabulary.Unit_URI;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Length;
+import org.apache.jena.geosparql.implementation.registry.UnitsRegistry;
+import org.apache.jena.geosparql.implementation.vocabulary.Unit_URI;
 import org.apache.sis.measure.Quantities;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -51,14 +51,14 @@ public class UnitsOfMeasure implements Serializable {
 
     @SuppressWarnings("unchecked")
     public UnitsOfMeasure(CoordinateReferenceSystem crs) {
-        this.unit = (Unit<Length>)crs.getCoordinateSystem().getAxis(0).getUnit();
+        this.unit = (Unit<Length>) crs.getCoordinateSystem().getAxis(0).getUnit();
         this.unitURI = UnitsRegistry.getUnitURI(unit);
         this.isLinearUnits = UnitsRegistry.isLinearUnits(unitURI);
     }
 
     @SuppressWarnings("unchecked")
     public UnitsOfMeasure(String unitURI) {
-        this.unit = (Unit<Length>)UnitsRegistry.getUnit(unitURI);
+        this.unit = (Unit<Length>) UnitsRegistry.getUnit(unitURI);
         this.unitURI = UnitsRegistry.getUnitURI(unit);
         this.isLinearUnits = UnitsRegistry.isLinearUnits(unitURI);
     }

@@ -17,16 +17,15 @@
  */
 package org.apache.jena.geosparql.spatial.property_functions.box;
 
-import org.apache.jena.geosparql.spatial.property_functions.box.WithinBoxPF;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
 import org.apache.jena.geosparql.spatial.ConvertLatLon;
 import org.apache.jena.geosparql.spatial.SpatialIndexTestData;
 import org.apache.jena.geosparql.spatial.property_functions.SpatialArguments;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Dataset;
@@ -56,7 +55,7 @@ public class WithinBoxPFTest {
 
     @BeforeClass
     public static void setUpClass() {
-         GeoSPARQLConfig.setupNoIndex();
+        GeoSPARQLConfig.setupNoIndex();
     }
 
     @AfterClass

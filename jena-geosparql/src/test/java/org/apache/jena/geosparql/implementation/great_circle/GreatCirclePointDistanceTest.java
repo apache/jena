@@ -17,8 +17,6 @@
  */
 package org.apache.jena.geosparql.implementation.great_circle;
 
-import org.apache.jena.geosparql.implementation.great_circle.GreatCirclePointDistance;
-import org.apache.jena.geosparql.implementation.great_circle.LatLonPoint;
 import org.apache.jena.geosparql.implementation.jts.CustomGeometryFactory;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -29,7 +27,6 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.locationtech.jts.geom.GeometryFactory;
-
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class GreatCirclePointDistanceTest {

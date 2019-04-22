@@ -17,7 +17,6 @@
  */
 package org.apache.jena.geosparql.implementation.great_circle;
 
-import org.apache.jena.geosparql.implementation.great_circle.Angle;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
