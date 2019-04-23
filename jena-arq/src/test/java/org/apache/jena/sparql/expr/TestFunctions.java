@@ -456,7 +456,7 @@ public class TestFunctions
     
     @Test public void localDateTime_1() { test("afn:nowtz()", nv-> nv.isDateTime()); }
     // Test field defined.
-    @Test public void localDateTime_2() { test("afn:nowtz()", nv-> nv.getDateTime().getTimezone() > -1 ); }
+    @Test public void localDateTime_2() { test("afn:nowtz()", nv-> nv.getDateTime().getTimezone() > -14 * 60 ); }
 
     @Test public void localDateTime_3() { test("afn:nowtz() = NOW()", NodeValue.TRUE); }
     
