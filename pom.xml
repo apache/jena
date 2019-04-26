@@ -878,6 +878,8 @@
             </execution>
           </executions>
           <configuration>
+            <!-- Java 11: explicitly define the source as Java8 -->
+            <source>8</source>
             <!-- Java 10
                  <additionalOptions>-html5</additionalOptions>
             -->
