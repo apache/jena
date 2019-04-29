@@ -248,12 +248,20 @@ public class FusekiServer {
         private boolean                  verbose            = false;
         private boolean                  withStats          = false;
         private boolean                  withPing           = false;
-        private AuthPolicy               serverAuth         = null;     // Server level policy.
+
+        // Server wide authorization policy.
+        // Endpoints, datasets and graphs within datasets may have addition policies.
+        private AuthPolicy               serverAuth         = null;
+
+        // HTTP authentication
         private String                   passwordFile       = null;
         private String                   realm              = null;
         private AuthScheme               authScheme             = null;
+
+        // HTTPS
         private String                   httpsKeystore          = null;
         private String                   httpsKeystorePasswd    = null;
+
         // Other servlets to add.
         private List<Pair<String, HttpServlet>> servlets    = new ArrayList<>();
         private List<Pair<String, Filter>> filters          = new ArrayList<>();
@@ -687,12 +695,13 @@ public class FusekiServer {
 
         // Only valid during the build() process.
         private boolean hasAuthenticationHandler = false;
-        private boolean hasAuthenticationUse = false;
-        private boolean hasDataAccessControl = false;
+        private boolean hasDataAccessControl     = false;
+        private boolean authenticateUser         = false;
+        
         private List<DatasetGraph> datasets = null;
         
         private void buildStart() {
-            // -- Server, dataset authentication 
+            // -- Server and dataset authentication
             hasAuthenticationHandler = (passwordFile != null) || (securityHandler != null) ;
 
             if ( realm == null )
@@ -705,25 +714,29 @@ public class FusekiServer {
                     .anyMatch(DataAccessCtl::isAccessControlled);
 
             // Server level.
-            hasAuthenticationUse = ( serverAuth != null );
+            authenticateUser = ( serverAuth != null );
             // Dataset level.
-            if ( ! hasAuthenticationUse ) {
+            if ( ! authenticateUser ) {
                 // Any datasets with allowedUsers?
-                hasAuthenticationUse = dataAccessPoints.keys().stream()
+                authenticateUser = dataAccessPoints.keys().stream()
                         .map(name-> dataAccessPoints.get(name).getDataService())
                         .anyMatch(dSvc->dSvc.authPolicy() != null);
             }
             // Endpoint level.
-            if ( ! hasAuthenticationUse ) {
-                hasAuthenticationUse = dataAccessPoints.keys().stream()
+            if ( ! authenticateUser ) {
+                authenticateUser = dataAccessPoints.keys().stream()
                     .map(name-> dataAccessPoints.get(name).getDataService())
                     .flatMap(dSrv->dSrv.getEndpoints().stream())
                     .anyMatch(ep->ep.getAuthPolicy()!=null);
             }
             
             // If only a password file given, and nothing else, set the server to allowedUsers="*" (must log in).  
-            if ( passwordFile != null && ! hasAuthenticationUse )
-                hasAuthenticationUse = true;
+            if ( passwordFile != null && ! authenticateUser ) {
+                authenticateUser = true;
+                if ( serverAuth == null )
+                    // Set server auth to "any logged in user" if it hasn't been set otherwise.
+                    serverAuth = Auth.ANY_USER;
+            }
         }
         
         private void buildFinish() {
@@ -735,13 +748,10 @@ public class FusekiServer {
         /** Do some checking to make sure setup is consistent. */ 
         private void validate() {
             if ( ! hasAuthenticationHandler ) {
-                if ( hasAuthenticationUse ) {
-                    Fuseki.configLog.warn("'allowedUsers' is set but there is no authentication setup (e.g. password file)");
-                }
-                
-                if ( hasDataAccessControl ) {
-                    Fuseki.configLog.warn("Data-level access control is configured but there is no authentication setup (e.g. password file)");
-                }
+                if ( authenticateUser )
+                    Fuseki.configLog.warn("Authetication iof users required (e.g. 'allowedUsers' is set) but there is no authentication setup (e.g. password file)");
+                if ( hasDataAccessControl )
+                    Fuseki.configLog.warn("Data-level access control in the configuration but there is no authentication setup (e.g. password file)");
             }
         }
 
@@ -781,7 +791,7 @@ public class FusekiServer {
                     if ( serverAuth != null )
                         JettyLib.addPathConstraint(csh, "/*");
                     else {
-                        // Find datatsets than need filters. 
+                        // Find datasets that need filters. 
                         DataAccessPointRegistry.get(cxt.getServletContext()).forEach((name, dap)-> {
                             DatasetGraph dsg = dap.getDataService().getDataset();
                             if ( dap.getDataService().authPolicy() != null ) {
@@ -839,7 +849,7 @@ public class FusekiServer {
             addFilter(context, "/*", ff);
 
             if ( withStats )
-                addServlet(context, "/$/stats", new ActionStats());
+                addServlet(context, "/$/stats/*", new ActionStats());
             if ( withPing )
                 addServlet(context, "/$/ping", new ActionPing());
 
