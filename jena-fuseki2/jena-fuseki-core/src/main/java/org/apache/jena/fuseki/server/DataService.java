@@ -101,7 +101,7 @@ public class DataService {
     }
     
     public void addEndpoint(Operation operation, String endpointName, AuthPolicy authPolicy) {
-        if ( endpoints.containsKey(endpointName) ) {
+        if ( endpointName != null && endpoints.containsKey(endpointName) ) {
             Operation existing = endpoints.get(endpointName).getOperation();
             FmtLog.warn(Fuseki.configLog, "Duplicate use of name '%s'. Overwriting operation %s with %s",
                                           endpointName, operation, existing);
@@ -109,6 +109,23 @@ public class DataService {
         Endpoint endpoint = new Endpoint(operation, endpointName, authPolicy);
         endpoints.put(endpointName, endpoint);
         operations.put(operation, endpoint);
+    }
+    
+//    /** Add an operation without a endpoint name */
+//    public void addEndpointNoName(Operation operation) {
+//        addEndpointNoName(operation, null);
+//    }
+//    
+//    /** Add an operation without a endpoint name */ 
+//    public void addEndpointNoName(Operation operation, AuthPolicy authPolicy) {
+//        Endpoint endpoint = new Endpoint(operation, null, authPolicy);
+//        operations.put(operation, endpoint);
+//    }
+    
+    public void removeEndpoint(Endpoint endpoint) {
+        if ( endpoint.endpointName != null )
+            endpoints.remove(endpoint.endpointName);
+        operations.remove(endpoint.getOperation(), endpoint);
     }
     
     public Endpoint getEndpoint(String endpointName) {
