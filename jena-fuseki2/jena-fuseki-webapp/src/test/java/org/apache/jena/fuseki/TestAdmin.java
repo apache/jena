@@ -26,6 +26,7 @@ import static org.apache.jena.fuseki.server.ServerConst.opStats;
 import static org.apache.jena.riot.web.HttpOp.execHttpDelete ;
 import static org.apache.jena.riot.web.HttpOp.execHttpGet ;
 import static org.apache.jena.riot.web.HttpOp.execHttpPost ;
+import static org.apache.jena.riot.web.HttpOp.execHttpPostStream ;
 
 import java.io.File ;
 import java.io.IOException ;
@@ -255,6 +256,18 @@ public class TestAdmin extends AbstractFusekiTest {
         deleteDataset(dsTest) ;
     }
 
+    @Test public void stats_4() {
+        JsonValue v = execPostJSON(ServerCtl.urlRoot()+"$/"+opStats) ;
+        checkJsonStatsAll(v); 
+    }
+    
+    @Test public void stats_5() {
+        addTestDataset() ;
+        JsonValue v = execPostJSON(ServerCtl.urlRoot()+"$/"+opStats+ServerCtl.datasetPath()) ;
+        checkJsonStatsAll(v); 
+        deleteDataset(dsTest) ;
+    }
+    
     // Sync task testing
     
     @Test public void task_1() {
@@ -506,14 +519,21 @@ public class TestAdmin extends AbstractFusekiTest {
         assertTrue(obj.hasKey("RequestsGood")) ;
         assertTrue(obj.hasKey("RequestsBad")) ;
     }
-    
+
     private static JsonValue execGetJSON(String url) {
         try ( TypedInputStream in = execHttpGet(url) ) {
             assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType()) ;
             return JSON.parse(in) ; 
         }
     }
-    
+
+    private static JsonValue execPostJSON(String url) {
+        try ( TypedInputStream in = execHttpPostStream(url, null, null, null) ) {
+            assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType()) ;
+            return JSON.parse(in) ; 
+        }
+    }
+
     /*
         GET     /$/ping 
         POST    /$/ping 
