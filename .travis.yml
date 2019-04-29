@@ -5,5 +5,8 @@ script: mvn -B clean install
 jdk:
   - openjdk8
   - oraclejdk8
+  - openjdk9
+  - openjdk10
+  - openjdk11
 env:
   - JAVA_OPTS="-Xmx3072M -Xms512M -XX:+UseG1GC"
