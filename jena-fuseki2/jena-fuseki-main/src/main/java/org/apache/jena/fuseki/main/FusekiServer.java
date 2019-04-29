@@ -836,27 +836,27 @@ public class FusekiServer {
 
         /** Add servlets and servlet filters, including the {@link FusekiFilter} */ 
         private void servletsAndFilters(ServletContextHandler context) {
-            // Fuseki dataset services filter
-            // First in chain.
+            // First in chain. Authentication.
             if ( serverAuth != null ) {
                 Predicate<String> auth = serverAuth::isAllowed; 
                 AuthFilter authFilter = new AuthFilter(auth);
                 addFilter(context, "/*", authFilter);
                 //JettyLib.addPathConstraint(null, contextPath);
             }
-            // Second in chain?.
+            // Second in chain. Looks for any URL that start with a dataset name.
             FusekiFilter ff = new FusekiFilter();
             addFilter(context, "/*", ff);
 
+            // and then any additional servlets and filters.
             if ( withStats )
                 addServlet(context, "/$/stats/*", new ActionStats());
             if ( withPing )
                 addServlet(context, "/$/ping", new ActionPing());
 
             servlets.forEach(p->addServlet(context, p.getLeft(), p.getRight()));
-            // Order/place?
             filters.forEach (p-> addFilter(context, p.getLeft(), p.getRight()));
 
+            // Finally, drop to state content if configured.
             if ( staticContentDir != null ) {
                 DefaultServlet staticServlet = new DefaultServlet();
                 ServletHolder staticContent = new ServletHolder(staticServlet);
