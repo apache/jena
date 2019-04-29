@@ -25,6 +25,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
 import org.apache.jena.ext.com.google.common.collect.ListMultimap;
 import org.apache.jena.fuseki.Fuseki;
@@ -100,6 +101,11 @@ public class DataService {
     }
     
     public void addEndpoint(Operation operation, String endpointName, AuthPolicy authPolicy) {
+        if ( endpoints.containsKey(endpointName) ) {
+            Operation existing = endpoints.get(endpointName).getOperation();
+            FmtLog.warn(Fuseki.configLog, "Duplicate use of name '%s'. Overwriting operation %s with %s",
+                                          endpointName, operation, existing);
+        }
         Endpoint endpoint = new Endpoint(operation, endpointName, authPolicy);
         endpoints.put(endpointName, endpoint);
         operations.put(operation, endpoint);
