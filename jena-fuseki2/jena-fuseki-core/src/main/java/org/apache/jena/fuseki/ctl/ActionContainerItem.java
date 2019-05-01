@@ -26,7 +26,7 @@ import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.web.HttpSC ;
 
-/** Base for actions that are container and also have actionss on items */ 
+/** Base for actions that are container and also have actions on items */ 
 public abstract class ActionContainerItem extends ActionCtl {
     
     public ActionContainerItem() { super() ; }

@@ -111,17 +111,6 @@ public class DataService {
         operations.put(operation, endpoint);
     }
     
-//    /** Add an operation without a endpoint name */
-//    public void addEndpointNoName(Operation operation) {
-//        addEndpointNoName(operation, null);
-//    }
-//    
-//    /** Add an operation without a endpoint name */ 
-//    public void addEndpointNoName(Operation operation, AuthPolicy authPolicy) {
-//        Endpoint endpoint = new Endpoint(operation, null, authPolicy);
-//        operations.put(operation, endpoint);
-//    }
-    
     public void removeEndpoint(Endpoint endpoint) {
         if ( endpoint.endpointName != null )
             endpoints.remove(endpoint.endpointName);

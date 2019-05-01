@@ -843,7 +843,7 @@ public class FusekiServer {
                 addFilter(context, "/*", authFilter);
                 //JettyLib.addPathConstraint(null, contextPath);
             }
-            // Second in chain. Looks for any URL that start with a dataset name.
+            // Second in chain. Looks for any URL that starts with a dataset name.
             FusekiFilter ff = new FusekiFilter();
             addFilter(context, "/*", ff);
 
