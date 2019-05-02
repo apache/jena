@@ -91,7 +91,7 @@ public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobSta
      * The byte buffer should be configured for read if used with {@link #getString}.
      */
     public void setBlob(ByteBuffer bb) {
-        checkWriteTxn();
+        requireWriteTxn();
         getDataState().setByteBuffer(bb);
     }
 
@@ -103,7 +103,7 @@ public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobSta
 
     /**  Set data from string - convenience operation */
     public void setString(String dataStr) {
-        checkWriteTxn();
+        requireWriteTxn();
         if ( dataStr == null ) {
             setBlob(null);
             return;

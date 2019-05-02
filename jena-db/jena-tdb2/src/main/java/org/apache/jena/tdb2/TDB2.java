@@ -140,7 +140,7 @@ public class TDB2 {
 
             wireIntoExecution() ;
             if ( JenaSystem.DEBUG_INIT )
-                System.err.println("TDB.init - finish") ;
+                System.err.println("TDB2.init - finish") ;
         }
     }
 
