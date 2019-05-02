@@ -38,10 +38,9 @@ import org.apache.jena.fuseki.servlets.HttpAction ;
 public class ActionStats extends ActionContainerItem
 {
     public ActionStats() { super() ; } 
-    
+
     // This does not consult the system database for dormant etc.
-    @Override
-    protected JsonValue execGetContainer(HttpAction action) { 
+    protected JsonValue execCommonContainer(HttpAction action) {            
         action.log.info(format("[%d] GET stats all", action.id)) ;
         return generateStats(action.getDataAccessPointRegistry()) ;
     }
@@ -57,8 +56,7 @@ public class ActionStats extends ActionContainerItem
         return builder.build().getAsObject() ;
     }
     
-    @Override
-    protected JsonValue execGetItem(HttpAction action) {
+    protected JsonValue execCommonItem(HttpAction action) {
         action.log.info(format("[%d] GET stats dataset %s", action.id, action.getDatasetName())) ;
         
         JsonBuilder builder = new JsonBuilder() ;
@@ -185,18 +183,26 @@ public class ActionStats extends ActionContainerItem
         return  counter(dSrv, Operation.GSP_RW, cn) +
                 counter(dSrv, Operation.GSP_R, cn) ;
     }
-
-    // We shouldn't get here - no doPost above.
     
     @Override
     protected JsonValue execPostContainer(HttpAction action) {
-        throw new InternalError(METHOD_POST+" container") ;
+        return execCommonContainer(action);
     }
 
     @Override
     protected JsonValue execPostItem(HttpAction action) {
-        throw new InternalError(METHOD_POST+" item") ;
+        return execCommonItem(action);
     }
+
+    @Override
+    protected JsonValue execGetContainer(HttpAction action) {
+        return execCommonContainer(action);
+    }
+    
+    @Override
+    protected JsonValue execGetItem(HttpAction action) {
+        return execCommonItem(action);
+    }    
 }
 
 
