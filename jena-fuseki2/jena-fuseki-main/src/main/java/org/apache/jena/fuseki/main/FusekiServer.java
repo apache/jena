@@ -749,7 +749,7 @@ public class FusekiServer {
         private void validate() {
             if ( ! hasAuthenticationHandler ) {
                 if ( authenticateUser )
-                    Fuseki.configLog.warn("Authetication iof users required (e.g. 'allowedUsers' is set) but there is no authentication setup (e.g. password file)");
+                    Fuseki.configLog.warn("Authetication of users required (e.g. 'allowedUsers' is set) but there is no authentication setup (e.g. password file)");
                 if ( hasDataAccessControl )
                     Fuseki.configLog.warn("Data-level access control in the configuration but there is no authentication setup (e.g. password file)");
             }
