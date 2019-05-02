@@ -62,7 +62,7 @@ public interface PrefixMapI extends Iterable<PrefixEntry> // replaces PrefixMap
     /** Abbreviate an IRI or return null */
     public default String abbreviate(String uriStr) {
         return PrefixLib.abbreviate(this, uriStr);
-    }    
+    }
 
     /** Abbreviate an IRI or return null */
     public default Pair<String, String> abbrev(String uriStr) {
@@ -86,8 +86,8 @@ public interface PrefixMapI extends Iterable<PrefixEntry> // replaces PrefixMap
     }
 
     /** Apply a {@link BiConsumer}{@code <String, String>} to each entry in the PrefixMap. */
-    public abstract void forEach(BiConsumer<String, String> action) ;
-    
+    public abstract void forEach(BiConsumer<String, String> action);
+
     /** Stream of over all prefix entries. */
     public Stream<PrefixEntry> stream();
 

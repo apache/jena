@@ -58,10 +58,10 @@ public class GraphViewStorage extends GraphView {
         PrefixMapping pm = PrefixesFactory.newPrefixMappingOverPrefixMapI(x);
         return pm;
     }
-    
+
     @Override
     public void clear() {
-        // GraphView uses null. 
+        // GraphView uses null.
         Node gn = getGraphName();
         if ( gn == null )
             gn = Quad.defaultGraphNodeGenerated;

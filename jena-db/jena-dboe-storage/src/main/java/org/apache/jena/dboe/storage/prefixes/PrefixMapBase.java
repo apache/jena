@@ -29,7 +29,7 @@ public class PrefixMapBase implements PrefixMapI {
     // Keep a cache of the map? Invalidate on update.
     private final StoragePrefixMap prefixes;
     protected StoragePrefixMap spm() { return prefixes; }
-    
+
     public PrefixMapBase(StoragePrefixMap storage) {
         this.prefixes = storage;
     }

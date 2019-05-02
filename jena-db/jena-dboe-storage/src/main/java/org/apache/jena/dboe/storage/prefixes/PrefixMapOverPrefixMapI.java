@@ -32,7 +32,7 @@ import org.apache.jena.riot.system.PrefixMapBase;
  * replacement {@link PrefixMapI}.
  */
 public class PrefixMapOverPrefixMapI extends PrefixMapBase implements PrefixMap {
-    
+
     private final PrefixMapI pmapi;
 
     public static PrefixMap create(PrefixMapI pmap) {
@@ -42,7 +42,7 @@ public class PrefixMapOverPrefixMapI extends PrefixMapBase implements PrefixMap 
     private PrefixMapOverPrefixMapI(PrefixMapI pmapi) {
         this.pmapi = pmapi;
     }
-    
+
     private static IRI iri(String iriStr) {
         return IRIResolver.iriFactory().create(iriStr);
     }

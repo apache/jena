@@ -36,7 +36,7 @@ public interface StoragePrefixes
     //     For compatibility reasons, in TDB2, this is the URI <> (empty string).
     //  "whole dataset" : <urn:x-arq:Dataset> (maybe reserved NodeFactory.createLiteral("") or URI <$>
 
-    // Name aside the default graph. 
+    // Name aside the default graph.
     // For backwards compatibility of TDB2 , this an (unresolved) URI <>.
     public static Node nodeDefaultGraph = NodeFactory.createURI("");
 
@@ -67,7 +67,7 @@ public interface StoragePrefixes
      */
     public default Iterator<Pair<Node, PrefixEntry>> listMappings() {
         return Iter.flatMap(listGraphNodes(),
-            // graph names to iterator of pairs for this name. 
+            // graph names to iterator of pairs for this name.
             n->Iter.map(get(n), prefixEntry -> Pair.create(n, prefixEntry))
             );
     }
