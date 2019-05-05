@@ -380,7 +380,7 @@ public class HttpOp {
         try {
             execHttpGet(url, acceptHeader, handler, httpClient, httpContext);
         } catch (HttpException ex) {
-            if (ex.getResponseCode() == HttpSC.NOT_FOUND_404)
+            if (ex.getStatusCode() == HttpSC.NOT_FOUND_404)
                 return null;
             throw ex;
         }
@@ -414,7 +414,7 @@ public class HttpOp {
         try {
             execHttpGet(url, acceptHeader, handler);
         } catch (HttpException ex) {
-            if (ex.getResponseCode() == HttpSC.NOT_FOUND_404)
+            if (ex.getStatusCode() == HttpSC.NOT_FOUND_404)
                 return null;
             throw ex;
         }
@@ -479,7 +479,7 @@ public class HttpOp {
         try {
             execHttpPost(url, contentType, content, acceptType, handler, httpClient, httpContext);
         } catch (HttpException ex) {
-            if (ex.getResponseCode() == HttpSC.NOT_FOUND_404)
+            if (ex.getStatusCode() == HttpSC.NOT_FOUND_404)
                 return null;
             throw ex;
         }
@@ -810,7 +810,7 @@ public class HttpOp {
         try {
             execHttpPostForm(url, params, acceptHeader, handler, httpClient, httpContext);
         } catch (HttpException ex) {
-            if (ex.getResponseCode() == HttpSC.NOT_FOUND_404)
+            if (ex.getStatusCode() == HttpSC.NOT_FOUND_404)
                 return null;
             throw ex;
         }

@@ -18,87 +18,88 @@
 
 package org.apache.jena.fuseki.mgt;
 
-import static org.apache.jena.riot.WebContent.charsetUTF8 ;
-import static org.apache.jena.riot.WebContent.contentTypeJSON ;
+import static org.apache.jena.riot.WebContent.charsetUTF8;
+import static org.apache.jena.riot.WebContent.contentTypeJSON;
 
-import java.io.IOException ;
+import java.io.IOException;
 
-import javax.servlet.ServletOutputStream ;
-import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
+import javax.servlet.ServletOutputStream;
 
-import org.apache.jena.atlas.json.JSON ;
-import org.apache.jena.atlas.json.JsonBuilder ;
-import org.apache.jena.atlas.json.JsonValue ;
-import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.atlas.json.JSON;
+import org.apache.jena.atlas.json.JsonBuilder;
+import org.apache.jena.atlas.json.JsonValue;
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.ctl.ActionCtl;
 import org.apache.jena.fuseki.ctl.JsonDescription;
-import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
+import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.ServerConst;
-import org.apache.jena.fuseki.servlets.HttpAction ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
+import org.apache.jena.fuseki.servlets.HttpAction;
+import org.apache.jena.fuseki.servlets.ServletOps;
 
-/** Description of datasets for a server */ 
+/** Description of datasets for a server */
 public class ActionServerStatus extends ActionCtl
 {
-    public ActionServerStatus() { super() ; }
-    
+    public ActionServerStatus() { super(); }
+
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        doCommon(req, resp) ;
+    public void validate(HttpAction action) {}
+
+    @Override
+    public void execGet(HttpAction action) {
+        executeLifecycle(action);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        doCommon(req, resp) ;
+    public void execPost(HttpAction action) {
+        executeLifecycle(action);
     }
 
     @Override
-    protected void perform(HttpAction action) {
+    public  void execute(HttpAction action) {
         try {
-            description(action) ;
-            ServletOps.success(action) ;
+            description(action);
+            ServletOps.success(action);
         } catch (IOException e) {
-            ServletOps.errorOccurred(e) ;
+            ServletOps.errorOccurred(e);
         }
     }
-    
+
     private void description(HttpAction action) throws IOException {
-        ServletOutputStream out = action.response.getOutputStream() ;
+        ServletOutputStream out = action.response.getOutputStream();
         action.response.setContentType(contentTypeJSON);
-        action.response.setCharacterEncoding(charsetUTF8) ;
-        
-        JsonBuilder builder = new JsonBuilder() ; 
-        builder.startObject() ;
-        describeServer(builder, action.request.getLocalPort()) ;
-        describeDatasets(builder, action.getDataAccessPointRegistry()) ;
-        builder.finishObject() ;
-        
-        JsonValue v = builder.build() ;
-        JSON.write(out, v) ;
-        out.println() ; 
-        out.flush() ;
+        action.response.setCharacterEncoding(charsetUTF8);
+
+        JsonBuilder builder = new JsonBuilder();
+        builder.startObject();
+        describeServer(builder, action.request.getLocalPort());
+        describeDatasets(builder, action.getDataAccessPointRegistry());
+        builder.finishObject();
+
+        JsonValue v = builder.build();
+        JSON.write(out, v);
+        out.println();
+        out.flush();
     }
 
     private void describeServer(JsonBuilder builder, int requestPort) {
-        String versionStr = Fuseki.VERSION ;
-        String builtDateStr = Fuseki.BUILD_DATE ;
+        String versionStr = Fuseki.VERSION;
+        String builtDateStr = Fuseki.BUILD_DATE;
         if ( versionStr == null || versionStr.startsWith("${") )
-            versionStr = "Development" ;
+            versionStr = "Development";
         if ( builtDateStr == null || builtDateStr.startsWith("${") )
-            builtDateStr = "Unknown" ;
+            builtDateStr = "Unknown";
 
         builder
             .pair(ServerMgtConst.version,   versionStr)
             .pair(ServerMgtConst.built,     builtDateStr)
             .pair(ServerMgtConst.startDT,   Fuseki.serverStartedAt())
             .pair(ServerMgtConst.uptime,    Fuseki.serverUptimeSeconds())
-            ;
-            
+;
+
     }
 
     private void describeDatasets(JsonBuilder builder, DataAccessPointRegistry registry) {
-        builder.key(ServerConst.datasets) ;
+        builder.key(ServerConst.datasets);
         JsonDescription.arrayDatasets(builder, registry);
     }
 

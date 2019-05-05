@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,20 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.server;
+package org.apache.jena.fuseki.main.access;
 
-public interface DatasetMXBean
-{
-    String getName() ;
-    
-    long getRequests() ;
-    long getRequestsGood() ;
-    long getRequestsBad() ;
-    
-//    void enable() ;
-//    void disable() ;
-//    void setReadOnly() ;
-//    boolean getReadOnly() ;
-    
+import org.apache.jena.atlas.web.WebLib;
+import org.apache.jena.fuseki.main.FusekiServer;
+import org.junit.BeforeClass;
+
+/**
+ * AbstractTestServiceDatasetAuth with a config file.
+ */
+public class TestServiceDataAuthBuild extends AbstractTestServiceDatasetAuth {
+    @BeforeClass public static void beforeClass () {
+        port = WebLib.choosePort();
+        server = FusekiServer.create()
+            //.verbose(true)
+            .port(port)
+            .parseConfigFile("testing/Access/config-auth.ttl")
+            .build();
+        server.start();
+    }
 }
-

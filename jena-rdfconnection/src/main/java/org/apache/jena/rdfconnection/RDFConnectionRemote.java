@@ -526,7 +526,7 @@ public class RDFConnectionRemote implements RDFConnection {
     }
 
     private static void handleHttpException(HttpException ex, boolean ignore404) {
-        if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 && ignore404 )
+        if ( ex.getStatusCode() == HttpSC.NOT_FOUND_404 && ignore404 )
             return ;
         throw ex;
     }

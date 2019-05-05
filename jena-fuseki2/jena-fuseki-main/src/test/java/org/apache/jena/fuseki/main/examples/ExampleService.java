@@ -29,7 +29,7 @@ import org.apache.jena.web.HttpSC;
 
 public class ExampleService extends ActionREST {
     static { LogCtl.setLog4j(); }
-    
+
     @Override
     protected void doGet(HttpAction action) {
         action.response.setStatus(HttpSC.OK_200);
@@ -73,8 +73,8 @@ public class ExampleService extends ActionREST {
     protected void doOptions(HttpAction action) { notSupported(action); }
 
     @Override
-    protected void validate(HttpAction action) { }
-    
+    public void validate(HttpAction action) { }
+
     private void notSupported(HttpAction action) {
         ServletOps.errorMethodNotAllowed(action.getMethod()+" "+action.getActionURI());
     }

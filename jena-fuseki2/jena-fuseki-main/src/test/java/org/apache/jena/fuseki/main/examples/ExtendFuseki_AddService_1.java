@@ -57,9 +57,9 @@ import org.apache.jena.web.HttpSC;
  *   // An implementation to call
  *   ActionService customHandler = new SpecialService();
  *   // Builder pattern ...
- *   FusekiServer server = 
+ *   FusekiServer server =
  *       FusekiServer.create().port (1122)
- *          // Register the operation with the server, together with implementation. 
+ *          // Register the operation with the server, together with implementation.
  *          .registerOperation(myOperation, customHandler)
  *          // Add a dataset
  *          .add("/dataset", DatasetGraphFactory.createTxnMem(), true)
@@ -74,57 +74,57 @@ public class ExtendFuseki_AddService_1 {
     static { LogCtl.setLog4j(); }
 
     // Endpoint dispatch only.
-    
+
     // Choose free port for the example
     // Normally, this is fixed and published, and fixed in URLs.
     // To make the example portable, we ask the OS for a free port.
     static int PORT             = WebLib.choosePort();
-    
+
     // The server
     static String SERVER_URL    = "http://localhost:"+PORT+"/";
-    
+
     static String DATASET       = "dataset";
-    
+
     public static void main(String ...args) {
         // Create a new operation: operations are really just names (symbols). The code to
         // run is found by looking up the operation in a per-server table that gives the server-specific
         // implementation as an ActionService.
 
         Operation myOperation = Operation.register("Special", "Custom operation");
-        
+
         // Service endpoint name.
         // This can be different for different datasets even in the same server.
         // c.f. {@code fuseki:serviceQuery}
-        
+
         String endpointName = "special";
 
         // The handled for the new operation.
-        
+
         ActionService customHandler = new ExampleService();
-        
-        FusekiServer server = 
+
+        FusekiServer server =
             FusekiServer.create().port(PORT)
                 .verbose(true)
 
                 // Register the new operation, and it's handler, but no Content-Type
                 .registerOperation(myOperation, customHandler)
-                
-                // Add a dataset with the normal, default naming services 
-                // (/sparql, /query, /update, /upload, /data, /get)  
+
+                // Add a dataset with the normal, default naming services
+                // (/sparql, /query, /update, /upload, /data, /get)
                 .add(DATASET, DatasetGraphFactory.createTxnMem(), true)
-                
+
                 // Add the custom service, mapping from endpoint to operation for a specific dataset.
-                .addOperation(DATASET, endpointName, myOperation)
-                
+                .addEndpoint(DATASET, endpointName, myOperation)
+
                 // And build the server.
                 .build();
-        
+
         // Start the server. This does not block this thread.
         server.start();
-        
-        // Try some operations on the server using the service URL. 
+
+        // Try some operations on the server using the service URL.
         String customOperationURL = SERVER_URL + DATASET + "/" + endpointName;
-        
+
         try {
 
             // Service endpoint name : GET
@@ -142,11 +142,11 @@ public class ExtendFuseki_AddService_1 {
             } catch (IOException ex) { IO.exception(ex); }
 
             // Service endpoint name. DELETE -> fails 405
-            try { 
+            try {
                 HttpOp.execHttpDelete(customOperationURL);
                 throw new IllegalStateException("DELETE succeeded");
             } catch (HttpException ex) {
-                if ( ex.getResponseCode() != HttpSC.METHOD_NOT_ALLOWED_405 )
+                if ( ex.getStatusCode() != HttpSC.METHOD_NOT_ALLOWED_405 )
                     System.err.println("Unexpected HTTP Response Code: "+ex.getMessage());
                 else
                     System.out.println("DELETE rejected correctly: "+ex.getMessage());

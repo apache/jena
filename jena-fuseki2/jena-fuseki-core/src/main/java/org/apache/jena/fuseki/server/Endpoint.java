@@ -25,7 +25,7 @@ import org.apache.jena.fuseki.auth.AuthPolicy;
 
 /*
  * An {@code Endpoint} is an instance of an {@link Operation} within a {@link DataService} and has counters.
- * An {@code Endpoint} may have a name which is a path component. 
+ * An {@code Endpoint} may have a name which is a path component.
  */
 public class Endpoint implements Counters {
 
@@ -39,7 +39,7 @@ public class Endpoint implements Counters {
         this.operation = Objects.requireNonNull(operation, "operation");
         if ( operation == null )
             throw new InternalErrorException("operation is null");
-        this.endpointName = Objects.requireNonNull(endpointName, "endpointName");
+        this.endpointName = endpointName;
         this.authPolicy = requestAuth;
         // Standard counters - there may be others
         counters.add(CounterName.Requests);
@@ -60,8 +60,12 @@ public class Endpoint implements Counters {
         return operation.equals(operation);
     }
 
+    public boolean isUnnamed() {
+        return endpointName == null || endpointName.isEmpty();
+    }
+
     public String getName() {
-        return endpointName;
+        return isUnnamed() ? "" : endpointName;
     }
 
     public AuthPolicy getAuthPolicy() {
@@ -80,4 +84,8 @@ public class Endpoint implements Counters {
         return counters.value(CounterName.RequestsBad);
     }
 
+    @Override
+    public String toString() {
+        return getName()+"["+operation+"]";
+    }
 }

@@ -18,75 +18,77 @@
 
 package org.apache.jena.fuseki.ctl;
 
-import static java.lang.String.format ;
+import static java.lang.String.format;
 
-import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
-
-import org.apache.jena.atlas.json.JsonValue ;
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.fuseki.async.AsyncPool ;
-import org.apache.jena.fuseki.async.AsyncTask ;
-import org.apache.jena.fuseki.servlets.HttpAction ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
-import org.slf4j.Logger ;
+import org.apache.jena.atlas.json.JsonValue;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.fuseki.async.AsyncPool;
+import org.apache.jena.fuseki.async.AsyncTask;
+import org.apache.jena.fuseki.servlets.ActionLib;
+import org.apache.jena.fuseki.servlets.HttpAction;
+import org.apache.jena.fuseki.servlets.ServletOps;
+import org.slf4j.Logger;
 
 /** A task that kicks off a asynchronous operation that simply waits and exits.  For testing. */
 public class ActionSleep extends ActionCtl /* Not ActionAsyncTask - that is a container-item based. */
 {
-    public ActionSleep() { super() ; }
-    
-    // And only POST
+    public ActionSleep() { super(); }
+
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        doCommon(request, response);
+    public void execOptions(HttpAction action) {
+        ActionLib.doOptionsPost(action);
+        ServletOps.success(action);
     }
 
     @Override
-    protected void perform(HttpAction action) {
-        Runnable task = createRunnable(action) ;
-        AsyncTask aTask = Async.execASyncTask(action, AsyncPool.get(), "sleep", task) ;
-        JsonValue v = Async.asJson(aTask) ;
+    public void execPost(HttpAction action) {
+        super.executeLifecycle(action);
+    }
+
+    @Override
+    public void validate(HttpAction action) {}
+
+    @Override
+    public void execute(HttpAction action) {
+        Runnable task = createRunnable(action);
+        AsyncTask aTask = Async.execASyncTask(action, AsyncPool.get(), "sleep", task);
+        JsonValue v = Async.asJson(aTask);
         Async.setLocationHeader(action, aTask);
         ServletOps.sendJsonReponse(action, v);
     }
 
     protected Runnable createRunnable(HttpAction action) {
-        String name = action.getDatasetName() ;
-        if ( name == null )
-            name = "''" ;
-        
-        String interval = action.request.getParameter("interval") ;
-        int sleepMilli = 5000 ;
+        String interval = action.request.getParameter("interval");
+        int sleepMilli = 5000;
         if ( interval != null )
             try {
-                sleepMilli = Integer.parseInt(interval) ;
+                sleepMilli = Integer.parseInt(interval);
             } catch (NumberFormatException ex) {
-                action.log.error(format("[%d] NumberFormatException: %s", action.id, interval)) ; 
+                action.log.error(format("[%d] NumberFormatException: %s", action.id, interval));
             }
-        action.log.info(format("[%d] Sleep %s %d ms", action.id, name, sleepMilli)) ;
-        return new SleepTask(action, sleepMilli) ;
+        action.log.info(format("[%d] Sleep %d ms", action.id, sleepMilli));
+        return new SleepTask(action, sleepMilli);
     }
 
     static class SleepTask implements Runnable {
-        private final Logger log ;
-        private final long actionId ;
-        private final int sleepMilli ;
-        
+        private final Logger log;
+        private final long actionId;
+        private final int sleepMilli;
+
         public SleepTask(HttpAction action, int sleepMilli ) {
-            this.log = action.log ;
-            this.actionId = action.id ;
-            this.sleepMilli = sleepMilli ;
+            this.log = action.log;
+            this.actionId = action.id;
+            this.sleepMilli = sleepMilli;
         }
 
         @Override
         public void run() {
             try {
-                log.info(format("[%d] >> Sleep start", actionId)) ;
-                Lib.sleep(sleepMilli) ;
-                log.info(format("[%d] << Sleep finish", actionId)) ;
+                log.info(format("[%d] >> Sleep start", actionId));
+                Lib.sleep(sleepMilli);
+                log.info(format("[%d] << Sleep finish", actionId));
             } catch (Exception ex) {
-                log.info(format("[%d] **** Exception", actionId), ex) ;
+                log.info(format("[%d] **** Exception", actionId), ex);
             }
         }
     }

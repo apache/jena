@@ -21,7 +21,7 @@ package org.apache.jena.fuseki;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-import org.apache.jena.fuseki.build.DatasetDescriptionRegistry;
+import org.apache.jena.fuseki.build.DatasetDescriptionMap;
 import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
@@ -36,7 +36,7 @@ public class TestBuilder {
 	private static final Model dsModel;
 	private static final Resource dsDesc1;
 	private static final Resource dsDesc2;
-	private DatasetDescriptionRegistry registry = new DatasetDescriptionRegistry() ; 
+	private DatasetDescriptionMap registry = new DatasetDescriptionMap();
 	
 	@Test
 	public void testVerifySameDatasetObjectForSameDescription() {
@@ -59,10 +59,10 @@ public class TestBuilder {
 		dsDesc1 = dsModel.createResource()
 		         .addProperty(RDF.type, VocabTDB.tDatasetTDB)
 		         .addProperty(VocabTDB.pLocation, "--mem--")
-		         ;
+		;
 		dsDesc2 = dsModel.createResource()
 		         .addProperty(RDF.type, VocabTDB.tDatasetTDB)
 		         .addProperty(VocabTDB.pLocation, "--mem--")
-		         ;
+		;
 	}
 }

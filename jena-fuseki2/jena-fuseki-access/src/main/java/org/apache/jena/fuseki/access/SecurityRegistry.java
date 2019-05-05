@@ -26,11 +26,11 @@ import org.apache.jena.atlas.lib.Registry;
  * A registry mapping from a string (typically a user name or role
  * name) to a {@link SecurityContext}, where the {@link SecurityContext}
  * is the access control operations for that user/role.
- */ 
+ */
 public class SecurityRegistry extends Registry<String, SecurityContext> implements AuthorizationService {
-    
+
     public SecurityRegistry() {}
-    
+
     @Override
     public SecurityContext get(String actor) {
         if ( actor == null )
@@ -40,12 +40,12 @@ public class SecurityRegistry extends Registry<String, SecurityContext> implemen
             sCxt = SecurityContext.NONE;
         return sCxt;
     }
-    
-    @Override 
+
+    @Override
     public String toString() {
         return "SecurityRegistry"+keys();
-    }        
- 
+    }
+
     public String toLongString() {
         // Long form.
         StringJoiner sj1 = new StringJoiner("\n", "{ SecurityRegistry\n", "\n}");

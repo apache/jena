@@ -135,6 +135,12 @@
               <goal>jar-no-fork</goal>
             </goals>
           </execution>
+          <execution>
+            <id>attach-sources-test</id>
+            <goals>
+              <goal>test-jar-no-fork</goal>
+            </goals>
+          </execution>
         </executions>
       </plugin>
 
@@ -156,7 +162,14 @@
               <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
             </manifestEntries>
           </archive>
-        </configuration>
+        </configuration> 
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       
       <plugin>

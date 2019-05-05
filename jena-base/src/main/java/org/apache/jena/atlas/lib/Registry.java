@@ -34,7 +34,6 @@ public class Registry<K,T>
     public boolean isRegistered(K key)  { return registry.containsKey(key) ; }
     public void remove(K key)           { registry.remove(key) ; } 
     public Collection<K> keys()         { return registry.keySet() ; }
-    //public Iterator<String> keys()      { return registry.keySet().iterator() ; }
     public int size()                   { return registry.size() ; }
     public boolean isEmpty()            { return registry.isEmpty() ; }
     public void clear()                 { registry.clear() ; }

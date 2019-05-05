@@ -18,52 +18,46 @@
 
 package org.apache.jena.fuseki.access;
 
-import java.io.InputStream;
 import java.util.function.Function;
 
+import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.fuseki.servlets.HttpAction;
-import org.apache.jena.fuseki.servlets.SPARQL_Update;
 import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.sparql.core.DatasetGraph;
 
-/** An Update {@link ActionService} that denies SPARQL Update in access controlled datasets. */
-final
-public class AccessCtl_SPARQL_Update extends SPARQL_Update {
+/**
+ * Wrapper for an {@link ActionService} that rejects a request to a graph-access-controlled dataset.
+ * Typically, that's one of the update operations -
+ * Graph-access-controlled dataset only support read (query and GSP GET).
+ */
+public class AccessCtl_DenyUpdate extends ActionService {
+
+    private final ActionService other;
     private final Function<HttpAction, String> requestUser;
+    private final String label;
 
-    public AccessCtl_SPARQL_Update(Function<HttpAction, String> requestUser) {
-        this.requestUser = requestUser; 
+    public AccessCtl_DenyUpdate(ActionService other, String label,
+                                Function<HttpAction, String> determineUser) {
+        this.other = other;
+        this.label = label;
+        this.requestUser = determineUser;
     }
 
     @Override
-    protected void validate(HttpAction action) {
-        super.validate(action);
-        
+    public void validate(HttpAction action) {
         DatasetGraph dsg = action.getDataset();
-        if ( ! DataAccessCtl.isAccessControlled(dsg) )
-            return;
-        ServletOps.errorBadRequest("SPARQL Update not supported");
-    }
-    
-    @Override
-    protected void perform(HttpAction action) {
-        DatasetGraph dsg = action.getDataset() ;
-        if ( ! DataAccessCtl.isAccessControlled(dsg) ) {
-            super.perform(action);
-            return;
+        if ( DataAccessCtl.isAccessControlled(dsg) ) {
+            if ( label == null )
+                ServletOps.errorBadRequest("Not supported");
+            ServletOps.errorBadRequest(label+" : not supported");
+            throw new InternalErrorException("AccessCtl_DenyUpdate: "+ "didn't reject request");
         }
-        ServletOps.errorBadRequest("SPARQL Update not supported");
+        other.validate(action);
     }
-    
+
     @Override
-    protected void execute(HttpAction action, InputStream input) {
-        DatasetGraph dsg = action.getDataset() ;
-        if ( ! DataAccessCtl.isAccessControlled(dsg) ) {
-            super.execute(action, input);
-            return;
-        }
-        ServletOps.errorBadRequest("SPARQL Update not supported");
+    public void execute(HttpAction action) {
+        other.execute(action);
     }
 }
-

@@ -16,29 +16,24 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.server;
+package org.apache.jena.fuseki.access;
 
-import org.apache.jena.fuseki.DEF;
+import java.util.function.Function;
+
+import org.apache.jena.fuseki.servlets.GSP_R;
+import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphSink;
 
-/** Configuration for a "no dataset" service */
-public class ServiceOnly {
-    
-    public static DataService dataService() {
-        return serviceOnlyDataService; 
-    }
-    
-    public static DataAccessPoint dataAccessPoint() {
-        return null;
+public class AccessCtl_GSP_R extends GSP_R {
+
+    private final Function<HttpAction, String> requestUser;
+
+    public AccessCtl_GSP_R(Function<HttpAction, String> determineUser) {
+        this.requestUser = determineUser;
     }
 
-    private static final DataService serviceOnlyDataService;
-    static {
-        DatasetGraph dsg = new DatasetGraphSink();
-        serviceOnlyDataService = new DataService(dsg);
-        serviceOnlyDataService.addEndpoint(Operation.Query, DEF.ServiceQuery);
-        serviceOnlyDataService.addEndpoint(Operation.Query, DEF.ServiceQueryAlt);
+    @Override
+    protected DatasetGraph decideDataset(HttpAction action) {
+        return DataAccessLib.decideDataset(action, requestUser);
     }
-    private static final DataAccessPoint serviceOnlyDataAccessPoint = new DataAccessPoint("", serviceOnlyDataService);
 }

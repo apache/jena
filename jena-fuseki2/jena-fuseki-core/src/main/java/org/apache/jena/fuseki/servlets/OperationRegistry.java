@@ -31,68 +31,64 @@ import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.riot.WebContent;
 
 /**
- * Mapping of dispatching operations. {@link Operation} is the operation reference (name)
- * but the {@link Operation} does not carry the implementation. The registry, which is
- * per-server, maps:
+ * Registry of operations.
+ *
+ * The registry (accessed via the servlet context) provides
  * <ul>
- * <li>Content-type to {@code Operation}.
- * <li>{@code Operation} to {@link ActionService} implementation
+ * <li>Content-type to {@code Operation} via {@link #findByContentType(String)}.
+ * <li>{@code Operation} to {@link ActionService} implementation via {@link #findHandler(Operation)}
  * </ul>
  */
-public class ServiceDispatchRegistry {
+public class OperationRegistry {
 
-    // XXX Change to the Access_* versions.
-    public static final ActionService queryServlet    = new SPARQL_QueryDataset() ;
-    public static final ActionService updateServlet   = new SPARQL_Update() ;
-    public static final ActionService uploadServlet   = new SPARQL_Upload() ;
-    public static final ActionService gspServlet_R    = new SPARQL_GSP_R() ;
-    public static final ActionService gspServlet_RW   = new SPARQL_GSP_RW() ;
-    public static final ActionService restQuads_R     = new REST_Quads_R() ;
-    public static final ActionService restQuads_RW    = new REST_Quads_RW() ;
-    
-    /** Map ContentType (lowercase, no charset) to the {@code Operation} for handling it. */  
+    // Standard, non-graph-level access control versions.
+    private static final ActionService queryServlet    = new SPARQL_QueryDataset();
+    private static final ActionService updateServlet   = new SPARQL_Update();
+    private static final ActionService uploadServlet   = new SPARQL_Upload();
+    private static final ActionService gspServlet_R    = new GSP_R();
+    private static final ActionService gspServlet_RW   = new GSP_RW();
+
+    /** Map ContentType (lowercase, no charset) to the {@code Operation} for handling it. */
     private final Map<String, Operation> contentTypeToOperation = new ConcurrentHashMap<>();
-    public Map<String, Operation> contentTypeToOperation() { return contentTypeToOperation; } 
-    
+    public Map<String, Operation> contentTypeToOperation() { return contentTypeToOperation; }
+
     /** Map {@link Operation} to servlet handler.
      * {@code Operation}s are the internal symbol identifying an operation,
-     * not the name used in the configuration file, 
-     * which is mapped by {@link DataService#getEndpoint(String)}. 
-     */  
+     * not the name used in the configuration file,
+     * which is mapped by {@link DataService#getEndpoint(String)}.
+     */
     private final Map<Operation, ActionService> operationToHandler = new ConcurrentHashMap<>();
-    public Map<Operation, ActionService> operationToHandler() { return operationToHandler; } 
-    
-    public ServiceDispatchRegistry(ServiceDispatchRegistry other) {
+    public Map<Operation, ActionService> operationToHandler() { return operationToHandler; }
+
+    public OperationRegistry(OperationRegistry other) {
         contentTypeToOperation.putAll(other.contentTypeToOperation);
         operationToHandler.putAll(other.operationToHandler);
     }
-    
-    public ServiceDispatchRegistry(boolean includeStdConfig) {
+
+    public OperationRegistry(boolean includeStdConfig) {
         if ( includeStdConfig ) {
             register(Operation.Query, WebContent.contentTypeSPARQLQuery, queryServlet);
             register(Operation.Update, WebContent.contentTypeSPARQLUpdate, updateServlet);
             register(Operation.Upload,   null, uploadServlet);
             register(Operation.GSP_R,    null, gspServlet_R);
             register(Operation.GSP_RW,   null, gspServlet_RW);
-            register(Operation.Quads_R,  null, restQuads_R);
-            register(Operation.Quads_RW, null, restQuads_RW);
         }
     }
-    
-    /** Find the {@link Operation} for a {@code Content-Type}, or return null. */ 
-    public Operation findOperation(String contentType) {
+
+    /** Find the {@link Operation} for a {@code Content-Type}, or return null. */
+    public Operation findByContentType(String contentType) {
         if ( contentType == null )
             return null;
         return contentTypeToOperation.get(contentType);
     }
-    
-    /** Find the {@link ActionService} implementation for an {@link Operation}, or return null..*/ 
+
+    /** Find the {@link ActionService} implementation for an {@link Operation}, or return null..*/
     public ActionService findHandler(Operation operation) {
         if ( operation == null )
             return null;
         return operationToHandler.get(operation);
     }
-    
+
     public boolean isRegistered(Operation operation) {
         return operationToHandler.containsKey(operation);
     }
@@ -103,7 +99,7 @@ public class ServiceDispatchRegistry {
      * <p>
      * The application needs to enable an operation on a service endpoint.
      * <p>
-     * Replaces any existing registration.  
+     * Replaces any existing registration.
      */
     public void register(Operation operation, String contentType, ActionService action) {
         Objects.requireNonNull(operation);
@@ -115,7 +111,7 @@ public class ServiceDispatchRegistry {
             contentTypeToOperation.values().remove(operation);
         operationToHandler.put(operation, action);
     }
-    
+
     /**
      * Remove the registration for an operation.
      */
@@ -126,14 +122,14 @@ public class ServiceDispatchRegistry {
     }
 
     // The server DataAccessPointRegistry is held in the ServletContext for the server.
-    public static ServiceDispatchRegistry get(ServletContext servletContext) {
-        ServiceDispatchRegistry registry = (ServiceDispatchRegistry)servletContext.getAttribute(Fuseki.attrServiceRegistry) ;
+    public static OperationRegistry get(ServletContext servletContext) {
+        OperationRegistry registry = (OperationRegistry)servletContext.getAttribute(Fuseki.attrOperationRegistry);
         if ( registry == null )
-            Log.warn(ServiceDispatchRegistry.class, "No service registry for ServletContext") ;
-        return registry ;
+            Log.warn(OperationRegistry.class, "No service registry for ServletContext");
+        return registry;
     }
-    
-    public static void set(ServletContext cxt, ServiceDispatchRegistry registry) {
-        cxt.setAttribute(Fuseki.attrServiceRegistry, registry) ;
+
+    public static void set(ServletContext cxt, OperationRegistry registry) {
+        cxt.setAttribute(Fuseki.attrOperationRegistry, registry);
     }
 }

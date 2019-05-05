@@ -306,14 +306,14 @@ public class RemoteEndpointDriver extends JenaDriver {
             // and recurse
             if (x.length() < y.length()) {
                 // y is longer so strip last component
-                y = this.stripLastComponent(y);
+                y = stripLastComponent(y);
             } else if (x.length() > y.length()) {
                 // x is longer so strip last component
-                x = this.stripLastComponent(x);
+                x = stripLastComponent(x);
             } else {
                 // Equal length so strip last component from both
-                x = this.stripLastComponent(x);
-                y = this.stripLastComponent(y);
+                x = stripLastComponent(x);
+                y = stripLastComponent(y);
             }
 
             // Be careful that if either returned null at this point bail out

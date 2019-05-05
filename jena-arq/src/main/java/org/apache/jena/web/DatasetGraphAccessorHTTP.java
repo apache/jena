@@ -115,7 +115,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
         try {
             HttpOp.execHttpGet(url, graphAcceptHeader, graph, client, null) ;
         } catch (HttpException ex) {
-            if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 )
+            if ( ex.getStatusCode() == HttpSC.NOT_FOUND_404 )
                 return null ;
             throw ex ;
         }
@@ -137,7 +137,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
             HttpOp.execHttpHead(url, WebContent.defaultGraphAcceptHeader, noResponse, client, null) ;
             return true ;
         } catch (HttpException ex) {
-            if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 )
+            if ( ex.getStatusCode() == HttpSC.NOT_FOUND_404 )
                 return false ;
             throw ex ;
         }
@@ -172,7 +172,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
         try {
             HttpOp.execHttpDelete(url, noResponse, client, null) ;
         } catch (HttpException ex) {
-            if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 )
+            if ( ex.getStatusCode() == HttpSC.NOT_FOUND_404 )
                 return ;
         }
     }

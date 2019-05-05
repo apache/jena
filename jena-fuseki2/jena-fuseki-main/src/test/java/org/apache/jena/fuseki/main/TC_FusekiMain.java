@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,10 +16,26 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.server;
+package org.apache.jena.fuseki.main;
 
-public interface CounterMXBean
-{
-    long getValue() ; 
+import org.apache.jena.atlas.logging.LogCtl;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.main.access.TS_SecurityFuseki;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+  TS_FusekiMain.class,
+  TS_SecurityFuseki.class
+})
+public class TC_FusekiMain {
+    @BeforeClass public static void setupForFusekiServer() {
+        LogCtl.setLevel(Fuseki.serverLogName,        "WARN");
+        LogCtl.setLevel(Fuseki.actionLogName,        "WARN");
+        LogCtl.setLevel(Fuseki.requestLogName,       "WARN");
+        LogCtl.setLevel(Fuseki.adminLogName,         "WARN");
+        LogCtl.setLevel("org.eclipse.jetty",         "WARN");
+    }
 }
-

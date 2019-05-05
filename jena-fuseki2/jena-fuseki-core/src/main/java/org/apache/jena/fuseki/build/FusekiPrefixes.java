@@ -20,8 +20,8 @@ package org.apache.jena.fuseki.build;
 
 import org.apache.jena.atlas.lib.StrUtils;
 
-/** Internal constants */
-public class FusekiConst {
+/** Convenience set of prefixes */
+public class FusekiPrefixes {
 
     public static String PREFIXES = StrUtils.strjoinNL
     ("BASE            <http://example/base#>",
@@ -37,6 +37,6 @@ public class FusekiConst {
      "PREFIX apf:     <http://jena.apache.org/ARQ/property#>",
      "PREFIX afn:     <http://jena.apache.org/ARQ/function#>",
      "",
-     "") ;
+     "");
 
 }

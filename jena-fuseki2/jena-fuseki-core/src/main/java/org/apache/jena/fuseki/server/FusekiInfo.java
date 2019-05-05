@@ -18,10 +18,10 @@
 
 package org.apache.jena.fuseki.server;
 
-import java.util.ArrayList ;
-import java.util.LinkedHashMap ;
-import java.util.List ;
-import java.util.Map ;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import org.apache.jena.atlas.logging.FmtLog;
@@ -29,7 +29,7 @@ import org.apache.jena.fuseki.Fuseki;
 import org.slf4j.Logger;
 
 public class FusekiInfo {
-    
+
     public static void info(FusekiInitialConfig serverConfig, DataAccessPointRegistry registry) {
         if ( ! serverConfig.verbose )
             return;
@@ -38,21 +38,21 @@ public class FusekiInfo {
 
         Logger log = Fuseki.serverLog;
         FmtLog.info(log,  "Apache Jena Fuseki");
-        
+
         // Dataset -> Endpoints
         Map<String, List<String>> z = description(registry);
-        
+
 //        if ( serverConfig.empty ) {
-//            FmtLog.info(log, "No SPARQL datasets services"); 
+//            FmtLog.info(log, "No SPARQL datasets services");
 //        } else {
 //            if ( serverConfig.datasetPath == null && serverConfig.serverConfig == null )
 //                log.error("No dataset path nor server configuration file");
 //        }
-        
+
         if ( serverConfig.datasetPath != null ) {
             if ( z.size() != 1 )
                 log.error("Expected only one dataset");
-            List<String> endpoints = z.get(serverConfig.datasetPath); 
+            List<String> endpoints = z.get(serverConfig.datasetPath);
             FmtLog.info(log,  "Dataset Type = %s", serverConfig.datasetDescription);
             FmtLog.info(log,  "Path = %s; Services = %s", serverConfig.datasetPath, endpoints);
         }
@@ -65,7 +65,7 @@ public class FusekiInfo {
         }
         FusekiInfo.logDetails(log);
     }
-    
+
     private static Map<String, List<String>> description(DataAccessPointRegistry reg) {
         Map<String, List<String>> desc = new LinkedHashMap<>();
         reg.forEach((ds,dap)->{
@@ -77,13 +77,13 @@ public class FusekiInfo {
                     String x = ep.getName();
                     if ( x.isEmpty() )
                         x = "quads";
-                    endpoints.add(x);   
+                    endpoints.add(x);
                 });
             });
         });
         return desc;
     }
-    
+
     public static void logDetails(Logger log) {
         long maxMem = Runtime.getRuntime().maxMemory();
         long totalMem = Runtime.getRuntime().totalMemory();
@@ -97,7 +97,7 @@ public class FusekiInfo {
         FmtLog.info(log, "  Memory: max=%s", f.apply(maxMem));
         FmtLog.info(log, "  OS:     %s %s %s", System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch"));
     }
-    
+
     public static void logDetailsVerbose(Logger log) {
         logDetails(log);
         logOne(log, "java.vendor");
@@ -111,7 +111,7 @@ public class FusekiInfo {
         logOne(log, "user.dir");
         //logOne(log, "file.encoding");
     }
-    
+
     private static void logOne(Logger log, String property) {
         FmtLog.info(log, "    %-20s = %s", property, System.getProperty(property));
     }
@@ -129,7 +129,7 @@ public class FusekiInfo {
             return String.format("%.1fG", x/(1024.0*1024*1024));
         return String.format("%.1fT", x/(1024.0*1024*1024*1024));
     }
-    
+
 
     /** Create a human-friendly string for a number based on Kilo/Mega/Giga/Tera (powers of 10) */
     public static String strNum10(long x) {
@@ -143,7 +143,7 @@ public class FusekiInfo {
             return String.format("%.1fG", x/(1000.0*1000*1000));
         return String.format("%.1fT", x/(1000.0*1000*1000*1000));
     }
-    
+
     /** Create a human-friendly string for a number based on Kibi/Mebi/Gibi/Tebi (powers of 2) */
     public static String strNum2(long x) {
         // https://en.wikipedia.org/wiki/Kibibyte

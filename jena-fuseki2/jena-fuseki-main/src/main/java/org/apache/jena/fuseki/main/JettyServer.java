@@ -33,7 +33,7 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.servlets.ActionBase;
-import org.apache.jena.fuseki.servlets.ServiceDispatchRegistry;
+import org.apache.jena.fuseki.servlets.OperationRegistry;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.web.HttpSC;
 import org.eclipse.jetty.http.HttpMethod;
@@ -60,7 +60,7 @@ import static java.util.Objects.requireNonNull;
  * Static RDF types by file extension can be enabled.
  */
 public class JettyServer {
-    // Possibility: Use this for the super class of FusekiServer or within FusekiServer.jettyServer 
+    // Possibility: Use this for the super class of FusekiServer or within FusekiServer.jettyServer
     // as implementation inheritance.
     // Caution : there are small differences e.g. in building where order matters.
 
@@ -138,21 +138,20 @@ public class JettyServer {
         public PlainErrorHandler() {}
 
         @Override
-        public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException
-        {
+        public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
             String method = request.getMethod();
 
             if ( !method.equals(HttpMethod.GET.asString())
                  && !method.equals(HttpMethod.POST.asString())
                  && !method.equals(HttpMethod.HEAD.asString()) )
-                return ;
+                return;
 
-            response.setContentType(MimeTypes.Type.TEXT_PLAIN_UTF_8.asString()) ;
+            response.setContentType(MimeTypes.Type.TEXT_PLAIN_UTF_8.asString());
             response.setHeader(HttpNames.hCacheControl, "must-revalidate,no-cache,no-store");
             response.setHeader(HttpNames.hPragma, "no-cache");
-            int code = response.getStatus() ;
-            String message=(response instanceof Response)?((Response)response).getReason(): HttpSC.getMessage(code) ;
-            response.getOutputStream().print(format("Error %d: %s\n", code, message)) ;
+            int code = response.getStatus();
+            String message=(response instanceof Response)?((Response)response).getReason(): HttpSC.getMessage(code);
+            response.getOutputStream().print(format("Error %d: %s\n", code, message));
         }
     }
 
@@ -172,7 +171,7 @@ public class JettyServer {
         private Map<String, Object>      servletAttr        = new HashMap<>();
 
         public Builder() {}
-        
+
         /** Set the port to run on. */
         public Builder port(int port) {
             if ( port < 0 )
@@ -306,7 +305,7 @@ public class JettyServer {
             // plain Jetty server, e.g. to use Fuseki logging.
             try {
                 Fuseki.setVerbose(cxt, verbose);
-                ServiceDispatchRegistry.set(cxt, new ServiceDispatchRegistry(false));
+                OperationRegistry.set(cxt, new OperationRegistry(false));
                 DataAccessPointRegistry.set(cxt, new DataAccessPointRegistry(MetricsProviderRegistry.get().getMeterRegistry()));
             } catch (NoClassDefFoundError err) {
                 LOG.info("Fuseki classes not found");
