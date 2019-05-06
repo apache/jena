@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.jena_fuseki_geosparql.cli;
+package org.apache.jena.fuseki.geosparql.cli;
 
 import com.beust.jcommander.IStringConverter;
 import java.util.ArrayList;
@@ -25,16 +25,16 @@ import java.util.List;
  *
  *
  */
-public class LongListConverter implements IStringConverter<List<Long>> {
+public class IntegerListConverter implements IStringConverter<List<Integer>> {
 
     @Override
-    public List<Long> convert(String longs) {
-        String[] values = longs.split(",");
-        List<Long> longList = new ArrayList<>();
+    public List<Integer> convert(String integers) {
+        String[] values = integers.split(",");
+        List<Integer> integerList = new ArrayList<>();
         for (String val : values) {
-            longList.add(Long.parseLong(val));
+            integerList.add(Integer.parseInt(val));
         }
-        return longList;
+        return integerList;
     }
 
 }

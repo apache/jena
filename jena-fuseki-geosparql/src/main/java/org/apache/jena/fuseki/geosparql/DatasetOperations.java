@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.jena_fuseki_geosparql;
+package org.apache.jena.fuseki.geosparql;
 
 import io.github.galbiston.rdf_tables.cli.DelimiterValidator;
 import io.github.galbiston.rdf_tables.datatypes.DatatypeController;
@@ -29,9 +29,9 @@ import org.apache.jena.geosparql.implementation.datatype.GMLDatatype;
 import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
-import org.apache.jena.jena_fuseki_geosparql.cli.ArgsConfig;
-import org.apache.jena.jena_fuseki_geosparql.cli.FileGraphDelimiter;
-import org.apache.jena.jena_fuseki_geosparql.cli.FileGraphFormat;
+import org.apache.jena.fuseki.geosparql.cli.ArgsConfig;
+import org.apache.jena.fuseki.geosparql.cli.FileGraphDelimiter;
+import org.apache.jena.fuseki.geosparql.cli.FileGraphFormat;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.ReadWrite;

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.jena_fuseki_geosparql.cli;
+package org.apache.jena.fuseki.geosparql.cli;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.converters.FileConverter;
@@ -23,7 +23,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import static org.apache.jena.jena_fuseki_geosparql.DatasetOperations.SPATIAL_INDEX_FILE;
+import static org.apache.jena.fuseki.geosparql.DatasetOperations.SPATIAL_INDEX_FILE;
 
 /**
  *

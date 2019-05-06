@@ -15,13 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.jena_fuseki_geosparql;
+package org.apache.jena.fuseki.geosparql;
 
 import com.beust.jcommander.JCommander;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.jena.fuseki.geosparql.cli.ArgsConfig;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
-import org.apache.jena.jena_fuseki_geosparql.cli.ArgsConfig;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;

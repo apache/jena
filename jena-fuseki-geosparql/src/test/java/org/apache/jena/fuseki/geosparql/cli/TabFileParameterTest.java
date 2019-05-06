@@ -15,13 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.jena_fuseki_geosparql.cli;
+package org.apache.jena.fuseki.geosparql.cli;
 
 import com.beust.jcommander.ParameterException;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.jena.riot.RDFFormat;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
@@ -31,11 +30,11 @@ import org.junit.Test;
 
 /**
  *
- *
+ * @author Gerg
  */
-public class RDFFileParameterTest {
+public class TabFileParameterTest {
 
-    public RDFFileParameterTest() {
+    public TabFileParameterTest() {
     }
 
     @BeforeClass
@@ -55,15 +54,15 @@ public class RDFFileParameterTest {
     }
 
     /**
-     * Test of convert method, of class RDFFileParameter.
+     * Test of convert method, of class TabFileParameter.
      */
     @Test
     public void testConvert() {
         System.out.println("convert");
-        String value = "test.rdf#test>xml,test2.rdf";
-        RDFFileParameter instance = new RDFFileParameter();
-        List<FileGraphFormat> expResult = Arrays.asList(new FileGraphFormat(new File("test.rdf"), "test", RDFFormat.RDFXML), new FileGraphFormat(new File("test2.rdf"), "", RDFFormat.TTL));
-        List<FileGraphFormat> result = instance.convert(value);
+        String value = "test.rdf#test|TAB,test2.rdf";
+        TabFileParameter instance = new TabFileParameter();
+        List<FileGraphDelimiter> expResult = Arrays.asList(new FileGraphDelimiter(new File("test.rdf"), "test", "TAB"), new FileGraphDelimiter(new File("test2.rdf"), "", "COMMA"));
+        List<FileGraphDelimiter> result = instance.convert(value);
 
         //System.out.println("Exp: " + expResult);
         //System.out.println("Res: " + result);
@@ -71,15 +70,15 @@ public class RDFFileParameterTest {
     }
 
     /**
-     * Test of build method, of class RDFFileParameter.
+     * Test of build method, of class TabFileParameter.
      */
     @Test
     public void testBuild() {
         System.out.println("build");
-        String value = "test.rdf>xml";
-        RDFFileParameter instance = new RDFFileParameter();
-        FileGraphFormat expResult = new FileGraphFormat(new File("test.rdf"), "", RDFFormat.RDFXML);
-        FileGraphFormat result = instance.build(value);
+        String value = "test.rdf|SPACE";
+        TabFileParameter instance = new TabFileParameter();
+        FileGraphDelimiter expResult = new FileGraphDelimiter(new File("test.rdf"), "", "SPACE");
+        FileGraphDelimiter result = instance.build(value);
 
         //System.out.println("Exp: " + expResult);
         //System.out.println("Res: " + result);
@@ -87,14 +86,14 @@ public class RDFFileParameterTest {
     }
 
     /**
-     * Test of validate method, of class RDFFileParameter.
+     * Test of validate method, of class TabFileParameter.
      */
     @Test(expected = ParameterException.class)
     public void testValidate() {
         System.out.println("validate");
-        String name = "--rdf_file";
-        String value = "test.rdf>xml#test";
-        RDFFileParameter instance = new RDFFileParameter();
+        String name = "--tab_file";
+        String value = "test.csv|COMMA#test";
+        TabFileParameter instance = new TabFileParameter();
         instance.validate(name, value);
     }
 

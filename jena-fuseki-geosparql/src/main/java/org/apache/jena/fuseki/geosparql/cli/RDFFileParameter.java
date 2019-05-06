@@ -15,47 +15,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.jena_fuseki_geosparql.cli;
+package org.apache.jena.fuseki.geosparql.cli;
 
 import com.beust.jcommander.IParameterValidator;
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.ParameterException;
-import io.github.galbiston.rdf_tables.cli.DelimiterValidator;
+import io.github.galbiston.rdf_tables.cli.FormatParameter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.jena.riot.RDFFormat;
 
 /**
  *
  *
  */
-public class TabFileParameter implements IStringConverter<List<FileGraphDelimiter>>, IParameterValidator {
+public class RDFFileParameter implements IStringConverter<List<FileGraphFormat>>, IParameterValidator {
 
-    private static final DelimiterValidator DELIMITER_VALIDATOR = new DelimiterValidator();
-    private static final String DELIMITER_SEP = "\\|";
-    private static final String DELIMITER_SEP_CHARACTER = "|";
+    private static final FormatParameter FORMAT_PARAMETER = new FormatParameter();
+    private static final String FORMAT_SEP = ">";
     private static final String NAME_SEP = "#";
 
     @Override
-    public List<FileGraphDelimiter> convert(String value) {
+    public List<FileGraphFormat> convert(String value) {
         String[] values = value.split(",");
-        List<FileGraphDelimiter> fileList = new ArrayList<>();
+        List<FileGraphFormat> fileList = new ArrayList<>();
         for (String val : values) {
-            FileGraphDelimiter file = build(val);
+            FileGraphFormat file = build(val);
             fileList.add(file);
         }
         return fileList;
     }
 
-    public FileGraphDelimiter build(String value) {
+    public FileGraphFormat build(String value) {
         File file;
         String name = "";
-        String delim = "COMMA";
+        RDFFormat format = RDFFormat.TTL;
 
         String target = value;
-        if (target.contains(DELIMITER_SEP_CHARACTER)) {
-            String[] parts = target.split(DELIMITER_SEP);
-            delim = parts[1];
+        if (target.contains(FORMAT_SEP)) {
+            String[] parts = target.split(FORMAT_SEP);
+            format = FORMAT_PARAMETER.convert(parts[1]);
             target = parts[0];
         }
 
@@ -67,27 +67,23 @@ public class TabFileParameter implements IStringConverter<List<FileGraphDelimite
 
         file = new File(target);
 
-        return new FileGraphDelimiter(file, name, delim);
+        return new FileGraphFormat(file, name, format);
 
     }
 
     @Override
     public void validate(String name, String value) throws ParameterException {
 
-        int delimIndex;
+        int formatIndex;
         int nameIndex;
         String[] values = value.split(",");
         for (String val : values) {
-            delimIndex = val.indexOf(DELIMITER_SEP_CHARACTER);
+            formatIndex = val.indexOf(FORMAT_SEP);
             nameIndex = val.indexOf(NAME_SEP);
-            if (delimIndex > -1 && nameIndex > -1) {
-                if (delimIndex < nameIndex) {
-                    throw new ParameterException("Parameter " + name + " and value " + val + " must have delimiter (" + delimIndex + ") after graph name (" + nameIndex + ").");
+            if (formatIndex > -1 && nameIndex > -1) {
+                if (formatIndex < nameIndex) {
+                    throw new ParameterException("Parameter " + name + " and value " + val + " must have format (" + formatIndex + ") after graph name (" + nameIndex + ").");
                 }
-            }
-
-            if (delimIndex > -1) {
-                DELIMITER_VALIDATOR.validate(name, val.substring(delimIndex));
             }
         }
     }

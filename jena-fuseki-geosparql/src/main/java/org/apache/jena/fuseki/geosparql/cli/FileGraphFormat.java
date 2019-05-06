@@ -15,50 +15,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.jena_fuseki_geosparql.cli;
+package org.apache.jena.fuseki.geosparql.cli;
 
 import java.io.File;
 import java.util.Objects;
+import org.apache.jena.riot.RDFFormat;
 
 /**
  *
  *
  */
-public class FileGraphDelimiter {
+public class FileGraphFormat {
 
-    private final File tabFile;
+    private final File rdfFile;
     private final String graphName;
-    private final String delimiter;
+    private final RDFFormat rdfFormat;
 
-    public FileGraphDelimiter(File tabFile, String graphName, String delimiter) {
-        this.tabFile = tabFile;
+    public FileGraphFormat(File rdfFile, String graphName, RDFFormat rdfFormat) {
+        this.rdfFile = rdfFile;
         this.graphName = graphName;
-        this.delimiter = delimiter;
+        this.rdfFormat = rdfFormat;
     }
 
-    public File getTabFile() {
-        return tabFile;
+    public File getRdfFile() {
+        return rdfFile;
     }
 
     public String getGraphName() {
         return graphName;
     }
 
-    public String getDelimiter() {
-        return delimiter;
+    public RDFFormat getRdfFormat() {
+        return rdfFormat;
     }
 
     @Override
     public String toString() {
-        return "FileGraphDelimiter{" + "tabFile=" + tabFile + ", graphName=" + graphName + ", delimiter=" + delimiter + '}';
+        return "FileGraphFormat{" + "rdfFile=" + rdfFile + ", graphName=" + graphName + ", rdfFormat=" + rdfFormat + '}';
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 83 * hash + Objects.hashCode(this.tabFile);
-        hash = 83 * hash + Objects.hashCode(this.graphName);
-        hash = 83 * hash + Objects.hashCode(this.delimiter);
+        hash = 73 * hash + Objects.hashCode(this.rdfFile);
+        hash = 73 * hash + Objects.hashCode(this.graphName);
+        hash = 73 * hash + Objects.hashCode(this.rdfFormat);
         return hash;
     }
 
@@ -73,14 +74,14 @@ public class FileGraphDelimiter {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final FileGraphDelimiter other = (FileGraphDelimiter) obj;
+        final FileGraphFormat other = (FileGraphFormat) obj;
         if (!Objects.equals(this.graphName, other.graphName)) {
             return false;
         }
-        if (!Objects.equals(this.delimiter, other.delimiter)) {
+        if (!Objects.equals(this.rdfFile, other.rdfFile)) {
             return false;
         }
-        return Objects.equals(this.tabFile, other.tabFile);
+        return Objects.equals(this.rdfFormat, other.rdfFormat);
     }
 
 }
