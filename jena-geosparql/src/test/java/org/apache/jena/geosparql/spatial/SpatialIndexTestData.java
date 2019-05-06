@@ -17,8 +17,6 @@
  */
 package org.apache.jena.geosparql.spatial;
 
-import org.apache.jena.geosparql.spatial.SpatialIndexException;
-import org.apache.jena.geosparql.spatial.SpatialIndex;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.SRSInfo;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;

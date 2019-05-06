@@ -17,7 +17,6 @@
  */
 package org.apache.jena.geosparql.implementation;
 
-import org.apache.jena.geosparql.implementation.GeometryReverse;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import org.junit.After;
 import org.junit.AfterClass;

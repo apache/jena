@@ -17,15 +17,14 @@
  */
 package org.apache.jena.geosparql.implementation.parsers.gml;
 
-import org.apache.jena.geosparql.implementation.parsers.gml.GMLReader;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.jena.geosparql.implementation.DimensionInfo;
 import org.apache.jena.geosparql.implementation.jts.CoordinateSequenceDimensions;
 import org.apache.jena.geosparql.implementation.jts.CustomCoordinateSequence;
 import org.apache.jena.geosparql.implementation.jts.CustomGeometryFactory;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import org.jdom2.JDOMException;
 import org.junit.After;
 import org.junit.AfterClass;

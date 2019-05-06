@@ -1,11 +1,13 @@
 /*
- * Copyright 2018 .
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,14 +17,14 @@
  */
 package org.apache.jena.geosparql.spatial;
 
+import java.lang.invoke.MethodHandles;
+import java.util.HashSet;
+import java.util.Objects;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.SRSInfo;
 import org.apache.jena.geosparql.implementation.UnitsOfMeasure;
 import org.apache.jena.geosparql.implementation.great_circle.GreatCirclePointDistance;
 import org.apache.jena.geosparql.implementation.great_circle.LatLonPoint;
-import java.lang.invoke.MethodHandles;
-import java.util.HashSet;
-import java.util.Objects;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.locationtech.jts.geom.Envelope;

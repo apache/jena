@@ -17,14 +17,13 @@
  */
 package org.apache.jena.geosparql.spatial.filter_functions;
 
-import org.apache.jena.geosparql.spatial.filter_functions.TransformDatatypeFF;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.implementation.datatype.GMLDatatype;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.geosparql.spatial.SpatialIndexTestData;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.QueryExecution;

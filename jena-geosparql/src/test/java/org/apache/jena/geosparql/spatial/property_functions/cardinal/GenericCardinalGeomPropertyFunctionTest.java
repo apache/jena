@@ -17,14 +17,13 @@
  */
 package org.apache.jena.geosparql.spatial.property_functions.cardinal;
 
-import org.apache.jena.geosparql.spatial.property_functions.cardinal.NorthPF;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
 import org.apache.jena.geosparql.spatial.ConvertLatLon;
 import org.apache.jena.geosparql.spatial.SpatialIndexTestData;
 import org.apache.jena.geosparql.spatial.property_functions.SpatialArguments;
-import java.util.Arrays;
-import java.util.List;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.rdf.model.Literal;

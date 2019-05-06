@@ -17,7 +17,6 @@
  */
 package org.apache.jena.geosparql.implementation.registry;
 
-import org.apache.jena.geosparql.implementation.registry.SRSRegistry;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import org.apache.sis.referencing.CRS;
 import org.junit.After;

@@ -17,6 +17,7 @@
  */
 package org.apache.jena.geosparql.configuration;
 
+import java.io.File;
 import org.apache.jena.geosparql.geof.topological.RelateFF;
 import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
 import org.apache.jena.geosparql.implementation.function_registration.Egenhofer;
@@ -33,7 +34,6 @@ import org.apache.jena.geosparql.implementation.registry.SRSRegistry;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.apache.jena.geosparql.spatial.SpatialIndex;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
-import java.io.File;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.sparql.function.FunctionRegistry;
 import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry;

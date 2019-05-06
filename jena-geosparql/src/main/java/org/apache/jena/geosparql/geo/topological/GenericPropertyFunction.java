@@ -17,6 +17,9 @@
  */
 package org.apache.jena.geosparql.geo.topological;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import org.apache.jena.geosparql.geof.topological.GenericFilterFunction;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.index.QueryRewriteIndex;
@@ -24,9 +27,6 @@ import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
 import org.apache.jena.geosparql.spatial.SpatialIndex;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;

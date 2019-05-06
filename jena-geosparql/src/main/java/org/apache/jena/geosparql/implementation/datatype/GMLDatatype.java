@@ -17,13 +17,13 @@
  */
 package org.apache.jena.geosparql.implementation.datatype;
 
+import java.io.IOException;
+import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.geosparql.implementation.DimensionInfo;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.parsers.gml.GMLReader;
 import org.apache.jena.geosparql.implementation.parsers.gml.GMLWriter;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
-import java.io.IOException;
-import org.apache.jena.datatypes.DatatypeFormatException;
 import org.jdom2.JDOMException;
 import org.locationtech.jts.geom.Geometry;
 import org.slf4j.Logger;

@@ -17,8 +17,6 @@
  */
 package org.apache.jena.geosparql.implementation;
 
-import org.apache.jena.geosparql.implementation.UnitsConversionException;
-import org.apache.jena.geosparql.implementation.UnitsOfMeasure;
 import org.apache.jena.geosparql.implementation.vocabulary.Unit_URI;
 import org.apache.sis.referencing.CRS;
 import org.junit.After;

@@ -17,7 +17,6 @@
  */
 package org.apache.jena.geosparql.implementation.parsers.wkt;
 
-import org.apache.jena.geosparql.implementation.parsers.wkt.WKTWriter;
 import org.apache.jena.geosparql.implementation.DimensionInfo;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;

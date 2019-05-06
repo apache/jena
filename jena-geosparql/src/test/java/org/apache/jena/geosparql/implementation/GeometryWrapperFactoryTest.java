@@ -17,12 +17,10 @@
  */
 package org.apache.jena.geosparql.implementation;
 
-import org.apache.jena.geosparql.implementation.GeometryWrapper;
-import org.apache.jena.geosparql.implementation.GeometryWrapperFactory;
-import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
-import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
+import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;

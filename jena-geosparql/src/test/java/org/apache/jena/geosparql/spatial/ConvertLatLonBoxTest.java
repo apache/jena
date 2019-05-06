@@ -17,7 +17,6 @@
  */
 package org.apache.jena.geosparql.spatial;
 
-import org.apache.jena.geosparql.spatial.ConvertLatLonBox;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;

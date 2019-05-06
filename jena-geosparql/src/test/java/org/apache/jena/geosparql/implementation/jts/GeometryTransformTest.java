@@ -17,7 +17,6 @@
  */
 package org.apache.jena.geosparql.implementation.jts;
 
-import org.apache.jena.geosparql.implementation.jts.GeometryTransformation;
 import org.apache.jena.geosparql.implementation.SRSInfo;
 import org.apache.jena.geosparql.implementation.parsers.wkt.WKTReader;
 import org.apache.jena.geosparql.implementation.registry.MathTransformRegistry;

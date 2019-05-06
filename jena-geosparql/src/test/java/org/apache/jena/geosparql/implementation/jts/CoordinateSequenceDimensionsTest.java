@@ -17,7 +17,6 @@
  */
 package org.apache.jena.geosparql.implementation.jts;
 
-import org.apache.jena.geosparql.implementation.jts.CoordinateSequenceDimensions;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;

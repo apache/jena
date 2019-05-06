@@ -17,13 +17,13 @@
  */
 package org.apache.jena.geosparql.implementation.datatype;
 
-import org.apache.jena.geosparql.implementation.GeometryWrapper;
-import org.apache.jena.geosparql.implementation.index.GeometryLiteralIndex;
-import org.apache.jena.geosparql.implementation.index.GeometryLiteralIndex.GeometryIndex;
 import org.apache.jena.datatypes.BaseDatatype;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.TypeMapper;
+import org.apache.jena.geosparql.implementation.GeometryWrapper;
+import org.apache.jena.geosparql.implementation.index.GeometryLiteralIndex;
+import org.apache.jena.geosparql.implementation.index.GeometryLiteralIndex.GeometryIndex;
 
 /**
  *

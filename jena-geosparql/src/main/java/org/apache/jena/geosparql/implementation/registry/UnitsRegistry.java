@@ -17,13 +17,13 @@
  */
 package org.apache.jena.geosparql.implementation.registry;
 
-import org.apache.jena.geosparql.implementation.UnitsOfMeasure;
-import org.apache.jena.geosparql.implementation.vocabulary.Unit_URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javax.measure.Unit;
 import javax.measure.quantity.Length;
+import org.apache.jena.geosparql.implementation.UnitsOfMeasure;
+import org.apache.jena.geosparql.implementation.vocabulary.Unit_URI;
 import org.apache.sis.measure.Units;
 
 /**

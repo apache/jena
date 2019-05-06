@@ -17,14 +17,6 @@
  */
 package org.apache.jena.geosparql.configuration;
 
-import org.apache.jena.geosparql.implementation.GeometryWrapper;
-import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
-import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
-import org.apache.jena.geosparql.implementation.index.GeometryLiteralIndex;
-import org.apache.jena.geosparql.implementation.vocabulary.Geo;
-import org.apache.jena.geosparql.implementation.vocabulary.GeoSPARQL_URI;
-import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
-import org.apache.jena.geosparql.spatial.ConvertLatLon;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -40,6 +32,14 @@ import java.util.TreeSet;
 import java.util.UUID;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.geosparql.implementation.GeometryWrapper;
+import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
+import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
+import org.apache.jena.geosparql.implementation.index.GeometryLiteralIndex;
+import org.apache.jena.geosparql.implementation.vocabulary.Geo;
+import org.apache.jena.geosparql.implementation.vocabulary.GeoSPARQL_URI;
+import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
+import org.apache.jena.geosparql.spatial.ConvertLatLon;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.ReadWrite;

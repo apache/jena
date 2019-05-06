@@ -17,9 +17,8 @@
  */
 package org.apache.jena.geosparql.spatial;
 
-import org.apache.jena.geosparql.spatial.ConvertLatLon;
-import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.datatypes.DatatypeFormatException;
+import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.rdf.model.Literal;

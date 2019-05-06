@@ -17,7 +17,6 @@
  */
 package org.apache.jena.geosparql.implementation.parsers.gml;
 
-import org.apache.jena.geosparql.implementation.parsers.gml.GMLWriter;
 import org.apache.jena.geosparql.implementation.DimensionInfo;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.datatype.GMLDatatype;

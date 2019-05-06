@@ -17,16 +17,14 @@
  */
 package org.apache.jena.geosparql.spatial.property_functions;
 
-import org.apache.jena.geosparql.spatial.property_functions.SpatialArguments;
-import org.apache.jena.geosparql.spatial.property_functions.GenericSpatialGeomPropertyFunction;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
 import org.apache.jena.geosparql.spatial.ConvertLatLon;
 import org.apache.jena.geosparql.spatial.SearchEnvelope;
 import org.apache.jena.geosparql.spatial.SpatialIndexTestData;
 import org.apache.jena.geosparql.spatial.property_functions.box.IntersectBoxGeomPF;
-import java.util.Arrays;
-import java.util.List;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.rdf.model.Literal;

@@ -17,8 +17,8 @@
  */
 package org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property;
 
-import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.datatypes.DatatypeFormatException;
+import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase1;

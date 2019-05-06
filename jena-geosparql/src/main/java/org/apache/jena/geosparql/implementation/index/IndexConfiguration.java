@@ -19,9 +19,9 @@ package org.apache.jena.geosparql.implementation.index;
 
 import static io.github.galbiston.expiring_map.MapDefaultValues.NO_MAP;
 import static io.github.galbiston.expiring_map.MapDefaultValues.UNLIMITED_MAP;
+import java.util.UUID;
 import org.apache.jena.geosparql.implementation.registry.MathTransformRegistry;
 import org.apache.jena.geosparql.implementation.registry.SRSRegistry;
-import java.util.UUID;
 
 /**
  *

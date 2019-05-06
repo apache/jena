@@ -17,7 +17,6 @@
  */
 package org.apache.jena.geosparql.geof.nontopological.filter_functions;
 
-import org.apache.jena.geosparql.geof.nontopological.filter_functions.BoundaryFF;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.junit.After;

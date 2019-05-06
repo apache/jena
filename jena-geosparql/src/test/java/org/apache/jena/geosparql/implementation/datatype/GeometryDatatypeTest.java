@@ -17,8 +17,6 @@
  */
 package org.apache.jena.geosparql.implementation.datatype;
 
-import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
-import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;

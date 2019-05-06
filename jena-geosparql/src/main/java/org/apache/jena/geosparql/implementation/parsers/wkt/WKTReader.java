@@ -17,15 +17,15 @@
  */
 package org.apache.jena.geosparql.implementation.parsers.wkt;
 
+import java.util.Arrays;
+import java.util.Objects;
+import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.geosparql.implementation.DimensionInfo;
 import org.apache.jena.geosparql.implementation.jts.CoordinateSequenceDimensions;
 import org.apache.jena.geosparql.implementation.jts.CustomCoordinateSequence;
 import org.apache.jena.geosparql.implementation.jts.CustomGeometryFactory;
 import org.apache.jena.geosparql.implementation.parsers.ParserReader;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
-import java.util.Arrays;
-import java.util.Objects;
-import org.apache.jena.datatypes.DatatypeFormatException;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;

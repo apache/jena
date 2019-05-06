@@ -17,10 +17,10 @@
  */
 package org.apache.jena.geosparql.implementation.jts;
 
-import static org.apache.jena.geosparql.implementation.WKTLiteralFactory.reducePrecision;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import static org.apache.jena.geosparql.implementation.WKTLiteralFactory.reducePrecision;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.Envelope;

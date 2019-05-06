@@ -17,7 +17,7 @@
  */
 package org.apache.jena.geosparql.implementation.datatype;
 
-import org.apache.jena.geosparql.implementation.datatype.GMLDatatype;
+import java.io.IOException;
 import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.implementation.DimensionInfo;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
@@ -25,7 +25,6 @@ import org.apache.jena.geosparql.implementation.jts.CoordinateSequenceDimensions
 import org.apache.jena.geosparql.implementation.jts.CustomCoordinateSequence;
 import org.apache.jena.geosparql.implementation.jts.CustomGeometryFactory;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
-import java.io.IOException;
 import static org.hamcrest.CoreMatchers.not;
 import org.jdom2.JDOMException;
 import org.junit.After;

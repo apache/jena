@@ -17,17 +17,17 @@
  */
 package org.apache.jena.geosparql.implementation.registry;
 
-import org.apache.jena.geosparql.implementation.SRSInfo;
-import org.apache.jena.geosparql.implementation.SRSInfoException;
-import org.apache.jena.geosparql.implementation.UnitsOfMeasure;
-import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
-import static org.apache.jena.geosparql.implementation.vocabulary.SRS_URI.EPSG_BASE_SRS_URI;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.jena.geosparql.implementation.SRSInfo;
+import org.apache.jena.geosparql.implementation.SRSInfoException;
+import org.apache.jena.geosparql.implementation.UnitsOfMeasure;
+import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
+import static org.apache.jena.geosparql.implementation.vocabulary.SRS_URI.EPSG_BASE_SRS_URI;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
