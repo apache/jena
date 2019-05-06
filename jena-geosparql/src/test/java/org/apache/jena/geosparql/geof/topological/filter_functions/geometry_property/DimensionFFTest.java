@@ -61,9 +61,6 @@ public class DimensionFFTest {
         DimensionFF instance = new DimensionFF();
         NodeValue expResult = NodeValue.makeNodeInteger(0);
         NodeValue result = instance.exec(geometryLiteral);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -77,9 +74,6 @@ public class DimensionFFTest {
         DimensionFF instance = new DimensionFF();
         NodeValue expResult = NodeValue.makeNodeInteger(1);
         NodeValue result = instance.exec(geometryLiteral);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -93,9 +87,6 @@ public class DimensionFFTest {
         DimensionFF instance = new DimensionFF();
         NodeValue expResult = NodeValue.makeNodeInteger(2);
         NodeValue result = instance.exec(geometryLiteral);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

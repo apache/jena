@@ -62,9 +62,6 @@ public class CoordinateDimensionPFTest {
         CoordinateDimensionPF instance = new CoordinateDimensionPF();
         NodeValue expResult = NodeValue.makeNodeInteger(2);
         NodeValue result = instance.applyPredicate(geometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -78,9 +75,6 @@ public class CoordinateDimensionPFTest {
         CoordinateDimensionPF instance = new CoordinateDimensionPF();
         NodeValue expResult = NodeValue.makeNodeInteger(3);
         NodeValue result = instance.applyPredicate(geometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -94,9 +88,6 @@ public class CoordinateDimensionPFTest {
         CoordinateDimensionPF instance = new CoordinateDimensionPF();
         NodeValue expResult = NodeValue.makeNodeInteger(3);
         NodeValue result = instance.applyPredicate(geometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -110,9 +101,6 @@ public class CoordinateDimensionPFTest {
         CoordinateDimensionPF instance = new CoordinateDimensionPF();
         NodeValue expResult = NodeValue.makeNodeInteger(4);
         NodeValue result = instance.applyPredicate(geometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

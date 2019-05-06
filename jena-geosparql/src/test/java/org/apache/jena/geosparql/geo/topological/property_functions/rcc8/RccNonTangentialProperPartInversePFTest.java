@@ -63,9 +63,6 @@ public class RccNonTangentialProperPartInversePFTest {
 
         Boolean expResult = true;
         Boolean result = instance.testFilterFunction(subjectGeometryLiteral.asNode(), objectGeometryLiteral.asNode());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -80,9 +77,6 @@ public class RccNonTangentialProperPartInversePFTest {
 
         Boolean expResult = false;
         Boolean result = instance.testFilterFunction(subjectGeometryLiteral.asNode(), objectGeometryLiteral.asNode());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

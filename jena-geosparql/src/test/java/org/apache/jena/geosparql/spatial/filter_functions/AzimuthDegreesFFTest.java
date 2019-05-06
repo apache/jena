@@ -77,9 +77,6 @@ public class AzimuthDegreesFFTest {
         AzimuthDegreesFF instance = new AzimuthDegreesFF();
         NodeValue expResult = NodeValue.makeDouble(90);
         NodeValue result = instance.exec(v1, v2, v3, v4);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

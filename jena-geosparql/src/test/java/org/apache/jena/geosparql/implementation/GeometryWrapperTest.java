@@ -87,9 +87,6 @@ public class GeometryWrapperTest {
         Geometry geometryTarget = GEOMETRY_FACTORY.createPoint(new Coordinate(2.0, 1.0));
         GeometryWrapper expResult = new GeometryWrapper(geometryTarget, targetSRSURI, WKTDatatype.URI, DimensionInfo.XY_POINT);
         GeometryWrapper result = instance.checkTransformSRS(sourceSRSGeometry);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -107,9 +104,6 @@ public class GeometryWrapperTest {
 
         CoordinateReferenceSystem expResult = CRS.forCode(sourceSRSURI);
         CoordinateReferenceSystem result = instance.getCRS();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -126,9 +120,6 @@ public class GeometryWrapperTest {
         //Expect the coordinates to be reversed as JTS is x,y and WGS84 is y,x
         Geometry expResult = GEOMETRY_FACTORY.createPoint(new Coordinate(2.0, 1.0));
         Geometry result = instance.getXYGeometry();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -146,9 +137,6 @@ public class GeometryWrapperTest {
         Coordinate[] coordinates = {new Coordinate(-180.0, 10.0), new Coordinate(-180.0, 20.0), new Coordinate(-170.0, 20.0), new Coordinate(-170.0, 10.0), new Coordinate(-180.0, 10.0)};
         Geometry expResult = GEOMETRY_FACTORY.createPolygon(coordinates);
         Geometry result = instance.getXYGeometry();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -165,9 +153,6 @@ public class GeometryWrapperTest {
         //Expect coordinates to be same as supplied.
         Geometry expResult = GEOMETRY_FACTORY.createPoint(new Coordinate(1.0, 2.0));
         Geometry result = instance.getParsingGeometry();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -183,9 +168,6 @@ public class GeometryWrapperTest {
 
         String expResult = SRS_URI.WGS84_CRS;
         String result = instance.getSrsURI();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -201,9 +183,6 @@ public class GeometryWrapperTest {
 
         String expResult = SRS_URI.WGS84_CRS;
         String result = instance.getSRID();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -219,9 +198,6 @@ public class GeometryWrapperTest {
 
         String expResult = WKTDatatype.URI;
         String result = instance.getGeometryDatatypeURI();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -247,9 +223,6 @@ public class GeometryWrapperTest {
 
         double expResult = 10.0;
         double result = instance.distanceEuclidean(targetGeometry, distanceUnitsURL);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0);
     }
 
@@ -275,9 +248,6 @@ public class GeometryWrapperTest {
 
         double expResult = 0.025656; //Degree: 1.47
         double result = instance.distanceEuclidean(targetGeometry, distanceUnitsURL);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.001);
     }
 
@@ -304,9 +274,6 @@ public class GeometryWrapperTest {
 
         double expResult = 10.0;
         double result = instance.distanceEuclidean(targetGeometry, distanceUnitsURL);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0);
     }
 
@@ -333,9 +300,6 @@ public class GeometryWrapperTest {
 
         double expResult = 111320; //1.0 degree of longigtude at the equator is approx 111.32km.
         double result = instance.distanceEuclidean(targetGeometry, distanceUnitsURL);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 1);
     }
 
@@ -351,9 +315,6 @@ public class GeometryWrapperTest {
         GeometryWrapper result = new GeometryWrapper(instanceGeo, instanceSRSURI, WKTDatatype.URI, DimensionInfo.XY_POINT);
 
         GeometryWrapper expResult = GeometryWrapper.getEmptyWKT();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -370,9 +331,6 @@ public class GeometryWrapperTest {
         GeometryWrapper result = new GeometryWrapper(instanceGeo, instanceSRSURI, WKTDatatype.URI, DimensionInfo.XY_POINT);
 
         GeometryWrapper expResult = GeometryWrapper.getEmptyWKT();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -389,9 +347,6 @@ public class GeometryWrapperTest {
         GeometryWrapper result = new GeometryWrapper(instanceGeo, instanceSRSURI, GMLDatatype.URI, DimensionInfo.XY_POINT);
 
         GeometryWrapper expResult = GeometryWrapper.getEmptyGML();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -408,9 +363,6 @@ public class GeometryWrapperTest {
 
         Literal result = instance.asLiteral();
         Literal expResult = ResourceFactory.createTypedLiteral(lexicalForm, WKTDatatype.INSTANCE);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -428,9 +380,6 @@ public class GeometryWrapperTest {
         Literal result = instance.asLiteral(GMLDatatype.URI);
         String gmlGeometryLiteral = "<gml:Point xmlns:gml=\"http://www.opengis.net/ont/gml\" srsName=\"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"><gml:pos>-83.38 33.95</gml:pos></gml:Point>";
         Literal expResult = ResourceFactory.createTypedLiteral(gmlGeometryLiteral, GMLDatatype.INSTANCE);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -448,9 +397,6 @@ public class GeometryWrapperTest {
         Literal result = instance.asLiteral(GMLDatatype.INSTANCE);
         String gmlGeometryLiteral = "<gml:Point xmlns:gml=\"http://www.opengis.net/ont/gml\" srsName=\"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"><gml:pos>-83.38 33.95</gml:pos></gml:Point>";
         Literal expResult = ResourceFactory.createTypedLiteral(gmlGeometryLiteral, GMLDatatype.INSTANCE);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -469,9 +415,6 @@ public class GeometryWrapperTest {
 
         double expResult = 343.77;
         double result = instance.distanceGreatCircle(testGeometryWrapper, unitsURI);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.1);
     }
 
@@ -490,9 +433,6 @@ public class GeometryWrapperTest {
 
         double expResult = 104.4890;
         double result = instance.distanceGreatCircle(testGeometryWrapper, unitsURI);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0001);
     }
 
@@ -511,9 +451,6 @@ public class GeometryWrapperTest {
 
         double expResult = 104.4890;
         double result = instance.distanceGreatCircle(testGeometryWrapper, unitsURI);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0001);
     }
 
@@ -530,9 +467,6 @@ public class GeometryWrapperTest {
         GeometryWrapper geometryWrapper = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 180.0, 20.0 180.0, 20.0 190.0, 10.0 190.0, 10.0 180.0))", WKTDatatype.URI);
         Geometry expResult = geometryWrapper.getXYGeometry();
         Geometry result = instance.translateXYGeometry();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -548,9 +482,6 @@ public class GeometryWrapperTest {
         //Exp Result is unchanged as only geographic SRS are translated.
         Geometry expResult = instance.getXYGeometry();
         Geometry result = instance.translateXYGeometry();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -569,9 +500,6 @@ public class GeometryWrapperTest {
 
         double expResult = 0.0;
         double result = instance.distanceGreatCircle(testGeometryWrapper, unitsURI);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0001);
     }
 

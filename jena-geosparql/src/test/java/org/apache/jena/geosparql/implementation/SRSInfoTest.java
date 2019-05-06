@@ -67,9 +67,6 @@ public class SRSInfoTest {
         Boolean isAxisXY = SRSInfo.checkAxisXY(crs);
         Envelope expResult = new Envelope(-180, 180, -90, 90);
         Envelope result = SRSInfo.buildDomainEnvelope(crs, isAxisXY);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -87,9 +84,6 @@ public class SRSInfoTest {
 
         Envelope expResult = new Envelope(-180, 180, -90, 90);
         Envelope result = SRSInfo.buildDomainEnvelope(crs, isAxisXY);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -107,9 +101,6 @@ public class SRSInfoTest {
 
         Envelope expResult = new Envelope(-118397.00138845091, 751441.7790901454, -16627.734375018626, 1272149.3463499574);
         Envelope result = SRSInfo.buildDomainEnvelope(crs, isAxisXY);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -124,9 +115,6 @@ public class SRSInfoTest {
         CoordinateReferenceSystem crs = CRS.forCode(SRS_URI.WGS84_CRS);
         Boolean expResult = false;
         Boolean result = SRSInfo.checkAxisXY(crs);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -141,9 +129,6 @@ public class SRSInfoTest {
         CoordinateReferenceSystem crs = CRS.forCode("CRS:84");
         Boolean expResult = true;
         Boolean result = SRSInfo.checkAxisXY(crs);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -158,9 +143,6 @@ public class SRSInfoTest {
         CoordinateReferenceSystem crs = CRS.forCode(SRS_URI.OSGB36_CRS);
         Boolean expResult = true;
         Boolean result = SRSInfo.checkAxisXY(crs);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 }

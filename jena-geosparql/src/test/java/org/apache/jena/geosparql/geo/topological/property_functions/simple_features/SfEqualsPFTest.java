@@ -64,9 +64,6 @@ public class SfEqualsPFTest {
 
         Boolean expResult = false; //The boundary of a point is empty. Therefore, the boundary intersection of two points would also be empty.
         Boolean result = instance.testFilterFunction(subjectGeometryLiteral.asNode(), objectGeometryLiteral.asNode());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -81,9 +78,6 @@ public class SfEqualsPFTest {
 
         Boolean expResult = true;
         Boolean result = instance.testFilterFunction(subjectGeometryLiteral.asNode(), objectGeometryLiteral.asNode());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -98,9 +92,6 @@ public class SfEqualsPFTest {
 
         Boolean expResult = true;
         Boolean result = instance.testFilterFunction(subjectGeometryLiteral.asNode(), objectGeometryLiteral.asNode());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -115,9 +106,6 @@ public class SfEqualsPFTest {
 
         Boolean expResult = false;
         Boolean result = instance.testFilterFunction(subjectGeometryLiteral.asNode(), objectGeometryLiteral.asNode());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -132,9 +120,6 @@ public class SfEqualsPFTest {
 
         Boolean expResult = false;
         Boolean result = instance.testFilterFunction(subjectGeometryLiteral.asNode(), objectGeometryLiteral.asNode());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -149,9 +134,6 @@ public class SfEqualsPFTest {
 
         Boolean expResult = false;
         Boolean result = instance.testFilterFunction(subjectGeometryLiteral.asNode(), objectGeometryLiteral.asNode());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -166,9 +148,6 @@ public class SfEqualsPFTest {
 
         Boolean expResult = false;
         Boolean result = instance.testFilterFunction(subjectGeometryLiteral.asNode(), objectGeometryLiteral.asNode());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -183,9 +162,6 @@ public class SfEqualsPFTest {
 
         Boolean expResult = false;
         Boolean result = instance.testFilterFunction(subjectGeometryLiteral.asNode(), objectGeometryLiteral.asNode());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -203,9 +179,6 @@ public class SfEqualsPFTest {
 
         Boolean expResult = false;
         Boolean result = instance.testFilterFunction(emptyWKT.asNode(), emptyGML.asNode());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -223,9 +196,6 @@ public class SfEqualsPFTest {
 
         Boolean expResult = false;
         Boolean result = instance.testFilterFunction(emptyWKT.asNode(), emptyWKT2.asNode());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

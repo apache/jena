@@ -65,9 +65,6 @@ public class DistanceFFTest {
         DistanceFF instance = new DistanceFF();
         double expResult = 30;
         double result = instance.exec(v1, v2, v3).getDouble();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0);
     }
 
@@ -83,9 +80,6 @@ public class DistanceFFTest {
         DistanceFF instance = new DistanceFF();
         double expResult = 7.2822E-6;
         double result = instance.exec(v1, v2, v3).getDouble();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0001);
     }
 

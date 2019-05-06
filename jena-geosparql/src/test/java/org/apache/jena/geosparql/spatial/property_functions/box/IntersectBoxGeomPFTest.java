@@ -103,9 +103,6 @@ public class IntersectBoxGeomPFTest {
         //Test arguments
         boolean expResult = true;
         boolean result = instance.checkSecondFilter(spatialArguments, targetGeometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -142,9 +139,6 @@ public class IntersectBoxGeomPFTest {
         //Test arguments
         boolean expResult = false;
         boolean result = instance.checkSecondFilter(spatialArguments, targetGeometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -176,9 +170,6 @@ public class IntersectBoxGeomPFTest {
         }
 
         List<Resource> expResult = Arrays.asList(SpatialIndexTestData.LONDON_FEATURE);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

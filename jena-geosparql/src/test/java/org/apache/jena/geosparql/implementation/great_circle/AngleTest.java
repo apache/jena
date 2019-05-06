@@ -61,9 +61,6 @@ public class AngleTest {
         double y2 = 100.0;
         double expResult = Math.toRadians(42.273689);
         double result = Angle.find(x1, y1, x2, y2);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.000001);
     }
 
@@ -79,9 +76,6 @@ public class AngleTest {
         double y2 = 100.0;
         double expResult = Math.toRadians(312.273689);
         double result = Angle.find(x1, y1, x2, y2);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.000001);
     }
 
@@ -97,9 +91,6 @@ public class AngleTest {
         double y2 = 45.0;
         double expResult = Math.toRadians(222.273689);
         double result = Angle.find(x1, y1, x2, y2);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.000001);
     }
 
@@ -115,9 +106,6 @@ public class AngleTest {
         double y2 = 45.0;
         double expResult = Math.toRadians(132.273689);
         double result = Angle.find(x1, y1, x2, y2);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.000001);
     }
 

@@ -76,9 +76,6 @@ public class ConvertLatLonFFTest {
         ConvertLatLonFF instance = new ConvertLatLonFF();
         NodeValue expResult = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10 20)", WKTDatatype.INSTANCE);
         NodeValue result = instance.exec(v1, v2);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -93,9 +90,6 @@ public class ConvertLatLonFFTest {
         ConvertLatLonFF instance = new ConvertLatLonFF();
         NodeValue expResult = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0)", WKTDatatype.INSTANCE);
         NodeValue result = instance.exec(v1, v2);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         //assertEquals(expResult, result);
     }
 
@@ -110,9 +104,6 @@ public class ConvertLatLonFFTest {
         ConvertLatLonFF instance = new ConvertLatLonFF();
         NodeValue expResult = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0)", WKTDatatype.INSTANCE);
         NodeValue result = instance.exec(v1, v2);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         //assertEquals(expResult, result);
     }
 

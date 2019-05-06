@@ -61,9 +61,6 @@ public class CoordinateDimensionFFTest {
         CoordinateDimensionFF instance = new CoordinateDimensionFF();
         NodeValue expResult = NodeValue.makeNodeInteger(2);
         NodeValue result = instance.exec(geometryLiteral);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -77,9 +74,6 @@ public class CoordinateDimensionFFTest {
         CoordinateDimensionFF instance = new CoordinateDimensionFF();
         NodeValue expResult = NodeValue.makeNodeInteger(3);
         NodeValue result = instance.exec(geometryLiteral);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -93,9 +87,6 @@ public class CoordinateDimensionFFTest {
         CoordinateDimensionFF instance = new CoordinateDimensionFF();
         NodeValue expResult = NodeValue.makeNodeInteger(3);
         NodeValue result = instance.exec(geometryLiteral);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -109,9 +100,6 @@ public class CoordinateDimensionFFTest {
         CoordinateDimensionFF instance = new CoordinateDimensionFF();
         NodeValue expResult = NodeValue.makeNodeInteger(4);
         NodeValue result = instance.exec(geometryLiteral);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

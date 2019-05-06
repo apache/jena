@@ -67,9 +67,6 @@ public class ConvertLatLonBoxTest {
         float lonMax = 11.0F;
         String expResult = "<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((0 1, 10 1, 10 11, 0 11, 0 1))";
         String result = ConvertLatLonBox.toWKT(latMin, lonMin, latMax, lonMax);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -85,9 +82,6 @@ public class ConvertLatLonBoxTest {
         float lonMax = 11.0F;
         Literal expResult = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((0 1, 10 1, 10 11, 0 11, 0 1))", WKTDatatype.INSTANCE);
         Literal result = ConvertLatLonBox.toLiteral(latMin, lonMin, latMax, lonMax);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -103,9 +97,6 @@ public class ConvertLatLonBoxTest {
         NodeValue v4 = NodeValue.makeFloat(11.0f);
         NodeValue expResult = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((0 1, 10 1, 10 11, 0 11, 0 1))", WKTDatatype.INSTANCE);
         NodeValue result = ConvertLatLonBox.toNodeValue(v1, v2, v3, v4);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -121,9 +112,6 @@ public class ConvertLatLonBoxTest {
         Node n4 = NodeValue.makeFloat(11.0f).asNode();
         Node expResult = NodeFactory.createLiteral("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((0 1, 10 1, 10 11, 0 11, 0 1))", WKTDatatype.INSTANCE);
         Node result = ConvertLatLonBox.toNode(n1, n2, n3, n4);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

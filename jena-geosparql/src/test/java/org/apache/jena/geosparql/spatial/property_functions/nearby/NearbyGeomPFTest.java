@@ -97,9 +97,6 @@ public class NearbyGeomPFTest {
         NearbyGeomPF instance = new NearbyGeomPF();
         SpatialArguments expResult = new SpatialArguments(limit, geometryWrapper, searchEnvelope);
         SpatialArguments result = instance.extractObjectArguments(predicate, object, SpatialIndexTestData.WGS_84_SRS_INFO);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -127,9 +124,6 @@ public class NearbyGeomPFTest {
         NearbyGeomPF instance = new NearbyGeomPF();
         SpatialArguments expResult = new SpatialArguments(limit, geometryWrapper, searchEnvelope);
         SpatialArguments result = instance.extractObjectArguments(predicate, object, SpatialIndexTestData.WGS_84_SRS_INFO);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -157,9 +151,6 @@ public class NearbyGeomPFTest {
         NearbyGeomPF instance = new NearbyGeomPF();
         SpatialArguments expResult = new SpatialArguments(limit, geometryWrapper, searchEnvelope);
         SpatialArguments result = instance.extractObjectArguments(predicate, object, SpatialIndexTestData.WGS_84_SRS_INFO);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -187,9 +178,6 @@ public class NearbyGeomPFTest {
         NearbyGeomPF instance = new NearbyGeomPF();
         SpatialArguments expResult = new SpatialArguments(limit, geometryWrapper, searchEnvelope);
         SpatialArguments result = instance.extractObjectArguments(predicate, object, SpatialIndexTestData.WGS_84_SRS_INFO);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         //assertEquals(expResult, result);
     }
 
@@ -217,9 +205,6 @@ public class NearbyGeomPFTest {
         NearbyGeomPF instance = new NearbyGeomPF();
         SpatialArguments expResult = new SpatialArguments(limit, geometryWrapper, searchEnvelope);
         SpatialArguments result = instance.extractObjectArguments(predicate, object, SpatialIndexTestData.WGS_84_SRS_INFO);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         //assertEquals(expResult, result);
     }
 
@@ -247,9 +232,6 @@ public class NearbyGeomPFTest {
         NearbyGeomPF instance = new NearbyGeomPF();
         SpatialArguments expResult = new SpatialArguments(limit, geometryWrapper, searchEnvelope);
         SpatialArguments result = instance.extractObjectArguments(predicate, object, SpatialIndexTestData.WGS_84_SRS_INFO);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         //assertEquals(expResult, result);
     }
 
@@ -277,9 +259,6 @@ public class NearbyGeomPFTest {
         NearbyGeomPF instance = new NearbyGeomPF();
         SpatialArguments expResult = new SpatialArguments(limit, geometryWrapper, searchEnvelope);
         SpatialArguments result = instance.extractObjectArguments(predicate, object, SpatialIndexTestData.WGS_84_SRS_INFO);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         //assertEquals(expResult, result);
     }
 
@@ -307,9 +286,6 @@ public class NearbyGeomPFTest {
         NearbyGeomPF instance = new NearbyGeomPF();
         SpatialArguments expResult = new SpatialArguments(limit, geometryWrapper, searchEnvelope);
         SpatialArguments result = instance.extractObjectArguments(predicate, object, SpatialIndexTestData.WGS_84_SRS_INFO);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         //assertEquals(expResult, result);
     }
 
@@ -337,9 +313,6 @@ public class NearbyGeomPFTest {
         NearbyGeomPF instance = new NearbyGeomPF();
         SpatialArguments expResult = new SpatialArguments(limit, geometryWrapper, searchEnvelope);
         SpatialArguments result = instance.extractObjectArguments(predicate, object, SpatialIndexTestData.WGS_84_SRS_INFO);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         //assertEquals(expResult, result);
     }
 
@@ -373,9 +346,6 @@ public class NearbyGeomPFTest {
         //Test arguments
         boolean expResult = true;
         boolean result = instance.checkSecondFilter(spatialArguments, targetGeometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -409,9 +379,6 @@ public class NearbyGeomPFTest {
         //Test arguments
         boolean expResult = false;
         boolean result = instance.checkSecondFilter(spatialArguments, targetGeometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -443,9 +410,6 @@ public class NearbyGeomPFTest {
         }
 
         List<Resource> expResult = Arrays.asList(SpatialIndexTestData.LONDON_FEATURE);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -478,9 +442,6 @@ public class NearbyGeomPFTest {
         }
 
         List<Resource> expResult = new ArrayList<>();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

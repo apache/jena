@@ -62,9 +62,6 @@ public class SymmetricDifferenceFFTest {
         SymmetricDifferenceFF instance = new SymmetricDifferenceFF();
         NodeValue expResult = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> MULTIPOLYGON(((30 40, 30 70, 90 70, 90 45, 80 45, 80 40, 30 40)), ((80 40, 90 40, 90 45, 140 45, 140 15, 80 15, 80 40)))", WKTDatatype.INSTANCE);
         NodeValue result = instance.exec(v1, v2);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

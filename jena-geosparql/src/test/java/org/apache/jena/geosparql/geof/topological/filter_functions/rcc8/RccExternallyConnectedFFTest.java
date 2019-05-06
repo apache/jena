@@ -67,9 +67,6 @@ public class RccExternallyConnectedFFTest {
 
         Boolean expResult = true;
         Boolean result = instance.relate(subjectGeometryWrapper, objectGeometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -84,9 +81,6 @@ public class RccExternallyConnectedFFTest {
 
         Boolean expResult = false;
         Boolean result = instance.relate(subjectGeometryWrapper, objectGeometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -99,9 +93,6 @@ public class RccExternallyConnectedFFTest {
         RccExternallyConnectedFF instance = new RccExternallyConnectedFF();
         boolean expResult = false;
         boolean result = instance.isDisjoint();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -114,9 +105,6 @@ public class RccExternallyConnectedFFTest {
         RccExternallyConnectedFF instance = new RccExternallyConnectedFF();
         boolean expResult = false;
         boolean result = instance.isDisconnected();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -131,9 +119,6 @@ public class RccExternallyConnectedFFTest {
         RccExternallyConnectedFF instance = new RccExternallyConnectedFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -148,9 +133,6 @@ public class RccExternallyConnectedFFTest {
         RccExternallyConnectedFF instance = new RccExternallyConnectedFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -165,9 +147,6 @@ public class RccExternallyConnectedFFTest {
         RccExternallyConnectedFF instance = new RccExternallyConnectedFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -182,9 +161,6 @@ public class RccExternallyConnectedFFTest {
         RccExternallyConnectedFF instance = new RccExternallyConnectedFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -199,9 +175,6 @@ public class RccExternallyConnectedFFTest {
         RccExternallyConnectedFF instance = new RccExternallyConnectedFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -216,9 +189,6 @@ public class RccExternallyConnectedFFTest {
         RccExternallyConnectedFF instance = new RccExternallyConnectedFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -233,9 +203,6 @@ public class RccExternallyConnectedFFTest {
         RccExternallyConnectedFF instance = new RccExternallyConnectedFF();
         boolean expResult = true;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -250,9 +217,6 @@ public class RccExternallyConnectedFFTest {
         RccExternallyConnectedFF instance = new RccExternallyConnectedFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -267,9 +231,6 @@ public class RccExternallyConnectedFFTest {
         RccExternallyConnectedFF instance = new RccExternallyConnectedFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 }

@@ -103,9 +103,6 @@ public class GenericPropertyFunctionTest {
         QueryRewriteIndex queryRewriteIndex = QueryRewriteIndex.createDefault();
         Boolean expResult = true;
         Boolean result = instance.queryRewrite(graph, subject, predicate, object, queryRewriteIndex);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -123,9 +120,6 @@ public class GenericPropertyFunctionTest {
         QueryRewriteIndex queryRewriteIndex = QueryRewriteIndex.createDefault();
         Boolean expResult = true;
         Boolean result = instance.queryRewrite(graph, subject, predicate, object, queryRewriteIndex);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -143,9 +137,6 @@ public class GenericPropertyFunctionTest {
         Node node = NodeFactory.createBlankNode(id);
 
         Boolean result = graph.contains(node, RDF.type.asNode(), Geo.GEOMETRY_NODE);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -166,8 +157,6 @@ public class GenericPropertyFunctionTest {
         Boolean result = instance.queryRewrite(graph, subject, predicate, object, queryRewriteIndex);
 
         GeoSPARQLConfig.setup(IndexOption.MEMORY, Boolean.TRUE);
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -185,9 +174,6 @@ public class GenericPropertyFunctionTest {
         QueryRewriteIndex queryRewriteIndex = QueryRewriteIndex.createDefault();
         Boolean expResult = true;
         Boolean result = instance.queryRewrite(graph, subject, predicate, object, queryRewriteIndex);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -205,9 +191,6 @@ public class GenericPropertyFunctionTest {
         QueryRewriteIndex queryRewriteIndex = QueryRewriteIndex.createDefault();
         Boolean expResult = true;
         Boolean result = instance.queryRewrite(graph, subject, predicate, object, queryRewriteIndex);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -225,9 +208,6 @@ public class GenericPropertyFunctionTest {
         QueryRewriteIndex queryRewriteIndex = QueryRewriteIndex.createDefault();
         Boolean expResult = true;
         Boolean result = instance.queryRewrite(graph, subject, predicate, object, queryRewriteIndex);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -248,8 +228,6 @@ public class GenericPropertyFunctionTest {
         Boolean result = instance.queryRewrite(graph, subject, predicate, object, queryRewriteIndex);
 
         GeoSPARQLConfig.setup(IndexOption.MEMORY, Boolean.TRUE);
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -267,9 +245,6 @@ public class GenericPropertyFunctionTest {
         QueryRewriteIndex queryRewriteIndex = QueryRewriteIndex.createDefault();
         Boolean expResult = false;
         Boolean result = instance.queryRewrite(graph, subject, predicate, object, queryRewriteIndex);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -287,9 +262,6 @@ public class GenericPropertyFunctionTest {
         QueryRewriteIndex queryRewriteIndex = QueryRewriteIndex.createDefault();
         Boolean expResult = false;
         Boolean result = instance.queryRewrite(graph, subject, predicate, object, queryRewriteIndex);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -307,9 +279,6 @@ public class GenericPropertyFunctionTest {
         QueryRewriteIndex queryRewriteIndex = QueryRewriteIndex.createDefault();
         Boolean expResult = false;
         Boolean result = instance.queryRewrite(graph, subject, predicate, object, queryRewriteIndex);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -327,9 +296,6 @@ public class GenericPropertyFunctionTest {
         QueryRewriteIndex queryRewriteIndex = QueryRewriteIndex.createDefault();
         Boolean expResult = false;
         Boolean result = instance.queryRewrite(graph, subject, predicate, object, queryRewriteIndex);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -348,9 +314,6 @@ public class GenericPropertyFunctionTest {
         QueryRewriteIndex queryRewriteIndex = QueryRewriteIndex.createDefault();
         Boolean expResult = true;
         Boolean result = instance.queryRewrite(graph, subject, predicate, object, queryRewriteIndex);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -371,8 +334,6 @@ public class GenericPropertyFunctionTest {
         Boolean result = instance.queryRewrite(graph, subject, predicate, object, queryRewriteIndex);
 
         GeoSPARQLConfig.setup(IndexOption.MEMORY, Boolean.TRUE);
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -390,9 +351,6 @@ public class GenericPropertyFunctionTest {
         QueryRewriteIndex queryRewriteIndex = QueryRewriteIndex.createDefault();
         Boolean expResult = true;
         Boolean result = instance.queryRewrite(graph, subject, predicate, object, queryRewriteIndex);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -410,9 +368,6 @@ public class GenericPropertyFunctionTest {
         QueryRewriteIndex queryRewriteIndex = QueryRewriteIndex.createDefault();
         Boolean expResult = false;
         Boolean result = instance.queryRewrite(graph, subject, predicate, object, queryRewriteIndex);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -447,9 +402,6 @@ public class GenericPropertyFunctionTest {
         //Blank nodes limit a value check.
         boolean expResult = true;
         boolean result = subjects.size() == 25 && objects.size() == 25;
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         //System.out.println("Subjects: " + subjects);
         //System.out.println("Objects: " + objects);
         assertEquals(expResult, result);
@@ -484,9 +436,6 @@ public class GenericPropertyFunctionTest {
         //Blank nodes limit a value check.
         int expResult = 6;
         int result = objects.size();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         //System.out.println("Objects: " + objects);
         assertEquals(expResult, result);
     }
@@ -594,9 +543,6 @@ public class GenericPropertyFunctionTest {
         List<Resource> expSubjects = Arrays.asList(FEATURE_A);
         List<Resource> expObjects = Arrays.asList(FEATURE_B);
         boolean result = subjects.equals(expSubjects) && objects.equals(expObjects);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -634,9 +580,6 @@ public class GenericPropertyFunctionTest {
         List<Resource> expSubjects = Arrays.asList(GEO_FEATURE_Y);
         List<Resource> expObjects = Arrays.asList(GEO_FEATURE_Z);
         boolean result = subjects.equals(expSubjects) && objects.equals(expObjects);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

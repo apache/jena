@@ -62,9 +62,6 @@ public class GetSRIDFFTest {
         GetSRIDFF instance = new GetSRIDFF();
         NodeValue expResult = NodeValue.makeString("http://www.opengis.net/def/crs/EPSG/0/27700");
         NodeValue result = instance.exec(v);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -78,9 +75,6 @@ public class GetSRIDFFTest {
         GetSRIDFF instance = new GetSRIDFF();
         NodeValue expResult = NodeValue.makeString(SRS_URI.DEFAULT_WKT_CRS84);
         NodeValue result = instance.exec(v);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

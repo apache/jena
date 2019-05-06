@@ -67,9 +67,6 @@ public class DimensionInfoTest {
         Geometry geometry = factory.createPoint(coordinate);
         DimensionInfo expResult = DimensionInfo.XY_POINT;
         DimensionInfo result = DimensionInfo.find(coordinate, geometry);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -84,9 +81,6 @@ public class DimensionInfoTest {
         Geometry geometry = factory.createLineString(coordinates.toArray(new Coordinate[coordinates.size()]));
         DimensionInfo expResult = DimensionInfo.XY_LINESTRING;
         DimensionInfo result = DimensionInfo.find(coordinates, geometry);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -102,9 +96,6 @@ public class DimensionInfoTest {
         Geometry geometry = factory.createMultiPoint(points.toArray(new Point[points.size()]));
         DimensionInfo expResult = DimensionInfo.XY_POINT;
         DimensionInfo result = DimensionInfo.findCollection(points, geometry);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

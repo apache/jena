@@ -74,9 +74,6 @@ public class SouthPFTest {
         SouthPF instance = new SouthPF();
         SearchEnvelope expResult = SearchEnvelope.build(geometryWrapper, SpatialIndexTestData.WGS_84_SRS_INFO, CardinalDirection.SOUTH);
         SearchEnvelope result = instance.buildSearchEnvelope(geometryWrapper, SpatialIndexTestData.WGS_84_SRS_INFO);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -107,9 +104,6 @@ public class SouthPFTest {
         }
 
         List<Resource> expResult = Arrays.asList(SpatialIndexTestData.AUCKLAND_FEATURE, SpatialIndexTestData.HONOLULU_FEATURE, SpatialIndexTestData.NEW_YORK_FEATURE, SpatialIndexTestData.PERTH_FEATURE);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 }

@@ -62,9 +62,6 @@ public class IsValidPFTest {
         IsValidPF instance = new IsValidPF();
         NodeValue expResult = NodeValue.makeNodeBoolean(true);
         NodeValue result = instance.applyPredicate(geometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -78,9 +75,6 @@ public class IsValidPFTest {
         IsValidPF instance = new IsValidPF();
         NodeValue expResult = NodeValue.makeNodeBoolean(false);
         NodeValue result = instance.applyPredicate(geometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

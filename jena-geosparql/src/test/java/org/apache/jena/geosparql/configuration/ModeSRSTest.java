@@ -85,9 +85,6 @@ public class ModeSRSTest {
         expResult.add(new SimpleEntry<>("http://www.opengis.net/def/crs/EPSG/0/27700", 1));
 
         List<Entry<String, Integer>> result = instance.getSrsList();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -101,9 +98,6 @@ public class ModeSRSTest {
         instance.search(MODEL);
         String expResult = "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
         String result = instance.getModeURI();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

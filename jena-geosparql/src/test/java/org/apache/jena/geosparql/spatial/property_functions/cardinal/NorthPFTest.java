@@ -74,9 +74,6 @@ public class NorthPFTest {
         NorthPF instance = new NorthPF();
         SearchEnvelope expResult = SearchEnvelope.build(geometryWrapper, SpatialIndexTestData.WGS_84_SRS_INFO, CardinalDirection.NORTH);
         SearchEnvelope result = instance.buildSearchEnvelope(geometryWrapper, SpatialIndexTestData.WGS_84_SRS_INFO);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -107,9 +104,6 @@ public class NorthPFTest {
         }
 
         List<Resource> expResult = Arrays.asList(SpatialIndexTestData.LONDON_FEATURE);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 }

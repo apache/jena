@@ -93,9 +93,6 @@ public class GMLDatatypeTest {
         GeometryWrapper geometry = new GeometryWrapper(point, srsURI, GMLDatatype.URI, dimensionInfo);
 
         String result = instance.unparse(geometry);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

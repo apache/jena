@@ -61,9 +61,6 @@ public class IsEmptyFFTest {
         IsEmptyFF instance = new IsEmptyFF();
         NodeValue expResult = NodeValue.makeNodeBoolean(false);
         NodeValue result = instance.exec(geometryLiteral);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -77,9 +74,6 @@ public class IsEmptyFFTest {
         IsEmptyFF instance = new IsEmptyFF();
         NodeValue expResult = NodeValue.makeNodeBoolean(true);
         NodeValue result = instance.exec(geometryLiteral);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

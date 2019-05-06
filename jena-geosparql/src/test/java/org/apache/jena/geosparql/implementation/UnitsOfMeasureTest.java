@@ -102,9 +102,6 @@ public class UnitsOfMeasureTest {
         UnitsOfMeasure targetUnitsOfMeasure = new UnitsOfMeasure(crs);
         double expResult = 100.0;
         double result = UnitsOfMeasure.conversion(distance, sourceDistanceUnitURI, targetUnitsOfMeasure.getUnitURI());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0);
     }
 
@@ -123,9 +120,6 @@ public class UnitsOfMeasureTest {
         UnitsOfMeasure targetUnitsOfMeasure = new UnitsOfMeasure(crs);
         double expResult = 100.0;
         double result = UnitsOfMeasure.conversion(distance, sourceDistanceUnitURI, targetUnitsOfMeasure.getUnitURI());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0);
     }
 
@@ -145,9 +139,6 @@ public class UnitsOfMeasureTest {
         double radsToDegrees = 180 / Math.PI;
         double expResult = distance * radsToDegrees;
         double result = UnitsOfMeasure.conversion(distance, sourceDistanceUnitURI, targetUnitsOfMeasure.getUnitURI());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0);
     }
 
@@ -180,9 +171,6 @@ public class UnitsOfMeasureTest {
         double latitude = 0.0;
         double expResult = 1.0;
         double result = UnitsOfMeasure.convertToDegrees(distance, unitsURI, latitude);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.00001);
     }
 
@@ -197,9 +185,6 @@ public class UnitsOfMeasureTest {
         double latitude = 23.0;
         double expResult = 1.0;
         double result = UnitsOfMeasure.convertToDegrees(distance, unitsURI, latitude);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.00001);
     }
 
@@ -214,9 +199,6 @@ public class UnitsOfMeasureTest {
         double latitude = 45.0;
         double expResult = 1.0;
         double result = UnitsOfMeasure.convertToDegrees(distance, unitsURI, latitude);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.00001);
     }
 
@@ -231,9 +213,6 @@ public class UnitsOfMeasureTest {
         double latitude = 67.0;
         double expResult = 1.0;
         double result = UnitsOfMeasure.convertToDegrees(distance, unitsURI, latitude);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.00001);
     }
 
@@ -248,9 +227,6 @@ public class UnitsOfMeasureTest {
         double latitude = 67.0;
         double expResult = 1.0;
         double result = UnitsOfMeasure.convertToDegrees(distance, unitsURI, latitude);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.00001);
     }
 
@@ -265,9 +241,6 @@ public class UnitsOfMeasureTest {
         double latitude = 0.0;
         double expResult = 111319.8922;
         double result = UnitsOfMeasure.convertToMetres(distance, unitsURI, latitude);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.001);
     }
 
@@ -282,9 +255,6 @@ public class UnitsOfMeasureTest {
         double latitude = 23.0;
         double expResult = 102470.501;
         double result = UnitsOfMeasure.convertToMetres(distance, unitsURI, latitude);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.001);
     }
 
@@ -299,9 +269,6 @@ public class UnitsOfMeasureTest {
         double latitude = 45.0;
         double expResult = 78715.050;
         double result = UnitsOfMeasure.convertToMetres(distance, unitsURI, latitude);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.001);
     }
 
@@ -316,9 +283,6 @@ public class UnitsOfMeasureTest {
         double latitude = 67.0;
         double expResult = 43496.147;
         double result = UnitsOfMeasure.convertToMetres(distance, unitsURI, latitude);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.001);
     }
 
@@ -333,9 +297,6 @@ public class UnitsOfMeasureTest {
         double latitude = 67.0;
         double expResult = 43496.15;
         double result = UnitsOfMeasure.convertToMetres(distance, unitsURI, latitude);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.001);
     }
 

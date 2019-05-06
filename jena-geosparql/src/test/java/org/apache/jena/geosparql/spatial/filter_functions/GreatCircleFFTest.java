@@ -81,9 +81,6 @@ public class GreatCircleFFTest {
         GreatCircleFF instance = new GreatCircleFF();
         double expResult = 109.5057;
         double result = instance.exec(v1, v2, v3, v4, v5).getDouble();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0001);
     }
 
@@ -101,9 +98,6 @@ public class GreatCircleFFTest {
         GreatCircleFF instance = new GreatCircleFF();
         double expResult = 111.1950;
         double result = instance.exec(v1, v2, v3, v4, v5).getDouble();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0001);
     }
 
@@ -122,9 +116,6 @@ public class GreatCircleFFTest {
         GreatCircleFF instance = new GreatCircleFF();
         double expResult = 343.7713;
         double result = instance.exec(v1, v2, v3, v4, v5).getDouble();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0001);
     }
 
@@ -142,9 +133,6 @@ public class GreatCircleFFTest {
         GreatCircleFF instance = new GreatCircleFF();
         NodeValue expResult = NodeValue.makeDouble(20);
         NodeValue result = instance.exec(v1, v2, v3, v4, v5);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -162,9 +150,6 @@ public class GreatCircleFFTest {
         GreatCircleFF instance = new GreatCircleFF();
         NodeValue expResult = NodeValue.makeDouble(20);
         NodeValue result = instance.exec(v1, v2, v3, v4, v5);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -182,9 +167,6 @@ public class GreatCircleFFTest {
         GreatCircleFF instance = new GreatCircleFF();
         NodeValue expResult = NodeValue.makeDouble(20);
         NodeValue result = instance.exec(v1, v2, v3, v4, v5);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -202,9 +184,6 @@ public class GreatCircleFFTest {
         GreatCircleFF instance = new GreatCircleFF();
         NodeValue expResult = NodeValue.makeDouble(20);
         NodeValue result = instance.exec(v1, v2, v3, v4, v5);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -222,9 +201,6 @@ public class GreatCircleFFTest {
         GreatCircleFF instance = new GreatCircleFF();
         NodeValue expResult = NodeValue.makeDouble(20);
         NodeValue result = instance.exec(v1, v2, v3, v4, v5);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

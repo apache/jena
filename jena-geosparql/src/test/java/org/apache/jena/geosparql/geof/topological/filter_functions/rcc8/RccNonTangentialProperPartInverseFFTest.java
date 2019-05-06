@@ -67,9 +67,6 @@ public class RccNonTangentialProperPartInverseFFTest {
 
         Boolean expResult = true;
         Boolean result = instance.relate(subjectGeometryWrapper, objectGeometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -84,9 +81,6 @@ public class RccNonTangentialProperPartInverseFFTest {
 
         Boolean expResult = false;
         Boolean result = instance.relate(subjectGeometryWrapper, objectGeometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -99,9 +93,6 @@ public class RccNonTangentialProperPartInverseFFTest {
         RccNonTangentialProperPartInverseFF instance = new RccNonTangentialProperPartInverseFF();
         boolean expResult = false;
         boolean result = instance.isDisjoint();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -115,9 +106,6 @@ public class RccNonTangentialProperPartInverseFFTest {
         RccNonTangentialProperPartInverseFF instance = new RccNonTangentialProperPartInverseFF();
         boolean expResult = false;
         boolean result = instance.isDisconnected();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -133,9 +121,6 @@ public class RccNonTangentialProperPartInverseFFTest {
         RccNonTangentialProperPartInverseFF instance = new RccNonTangentialProperPartInverseFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -151,9 +136,6 @@ public class RccNonTangentialProperPartInverseFFTest {
         RccNonTangentialProperPartInverseFF instance = new RccNonTangentialProperPartInverseFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -169,9 +151,6 @@ public class RccNonTangentialProperPartInverseFFTest {
         RccNonTangentialProperPartInverseFF instance = new RccNonTangentialProperPartInverseFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -187,9 +166,6 @@ public class RccNonTangentialProperPartInverseFFTest {
         RccNonTangentialProperPartInverseFF instance = new RccNonTangentialProperPartInverseFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -205,9 +181,6 @@ public class RccNonTangentialProperPartInverseFFTest {
         RccNonTangentialProperPartInverseFF instance = new RccNonTangentialProperPartInverseFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -223,9 +196,6 @@ public class RccNonTangentialProperPartInverseFFTest {
         RccNonTangentialProperPartInverseFF instance = new RccNonTangentialProperPartInverseFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -241,9 +211,6 @@ public class RccNonTangentialProperPartInverseFFTest {
         RccNonTangentialProperPartInverseFF instance = new RccNonTangentialProperPartInverseFF();
         boolean expResult = true;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -259,9 +226,6 @@ public class RccNonTangentialProperPartInverseFFTest {
         RccNonTangentialProperPartInverseFF instance = new RccNonTangentialProperPartInverseFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -277,9 +241,6 @@ public class RccNonTangentialProperPartInverseFFTest {
         RccNonTangentialProperPartInverseFF instance = new RccNonTangentialProperPartInverseFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 }

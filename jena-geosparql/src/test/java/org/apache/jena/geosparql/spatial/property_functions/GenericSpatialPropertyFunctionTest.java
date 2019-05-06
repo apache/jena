@@ -95,9 +95,6 @@ public class GenericSpatialPropertyFunctionTest {
         }
 
         List<Resource> expResult = new ArrayList<>();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -128,9 +125,6 @@ public class GenericSpatialPropertyFunctionTest {
         }
 
         List<Resource> expResult = Arrays.asList(SpatialIndexTestData.LONDON_FEATURE);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -162,9 +156,6 @@ public class GenericSpatialPropertyFunctionTest {
         }
 
         List<Resource> expResult = Arrays.asList(SpatialIndexTestData.LONDON_FEATURE);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -196,9 +187,6 @@ public class GenericSpatialPropertyFunctionTest {
         }
 
         List<Resource> expResult = new ArrayList<>();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -233,9 +221,6 @@ public class GenericSpatialPropertyFunctionTest {
         }
 
         List<Resource> expResult = Arrays.asList(geoFeature);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

@@ -77,9 +77,6 @@ public class AngleDegreesFFTest {
         AngleDegreesFF instance = new AngleDegreesFF();
         NodeValue expResult = NodeValue.makeDouble(42.27368900609373);
         NodeValue result = instance.exec(v1, v2, v3, v4);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

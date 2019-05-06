@@ -65,9 +65,6 @@ public class GreatCirclePointDistanceTest {
         GreatCirclePointDistance instance = new GreatCirclePointDistance(startLat, startLon, distance);
         double expResult = 0.868348;
         double result = instance.latitude(bearingRad);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.00001);
     }
 
@@ -85,9 +82,6 @@ public class GreatCirclePointDistanceTest {
         GreatCirclePointDistance instance = new GreatCirclePointDistance(startLat, startLon, distance);
         double expResult = -0.040994;
         double result = instance.longitude(endLatRad, bearingRad);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.00001);
     }
 
@@ -101,9 +95,6 @@ public class GreatCirclePointDistanceTest {
         double lonRad = 0.1;
         LatLonPoint expResult = new LatLonPoint(Math.toDegrees(latRad), Math.toDegrees(lonRad));
         LatLonPoint result = GreatCirclePointDistance.radToPoint(latRad, lonRad);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -118,9 +109,6 @@ public class GreatCirclePointDistanceTest {
         boolean isNormaliseLon = false;
         LatLonPoint expResult = new LatLonPoint(Math.toDegrees(latRad), Math.toDegrees(lonRad));
         LatLonPoint result = GreatCirclePointDistance.radToPoint(latRad, lonRad, isNormaliseLon);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -135,9 +123,6 @@ public class GreatCirclePointDistanceTest {
         boolean isNormaliseLon = true;
         LatLonPoint expResult = new LatLonPoint(Math.toDegrees(latRad), Math.toDegrees(-Math.PI + 0.2));
         LatLonPoint result = GreatCirclePointDistance.radToPoint(latRad, lonRad, isNormaliseLon);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -150,9 +135,6 @@ public class GreatCirclePointDistanceTest {
         double lonDegrees = 185;
         double expResult = -175;
         double result = GreatCirclePointDistance.normaliseLongitude(lonDegrees);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0);
     }
 
@@ -170,9 +152,6 @@ public class GreatCirclePointDistanceTest {
         double bearing = 0.0;
         LatLonPoint expResult = new LatLonPoint(49.752730367761664, -2.3488);
         LatLonPoint result = GreatCirclePointDistance.getPoint(startPoint, distance, bearing);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -188,9 +167,6 @@ public class GreatCirclePointDistanceTest {
         double bearing = 0.0;
         LatLonPoint expResult = new LatLonPoint(49.752730367761664, -2.3488);
         LatLonPoint result = GreatCirclePointDistance.getPoint(startLat, startLon, distance, bearing);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -208,9 +184,6 @@ public class GreatCirclePointDistanceTest {
         double bearing = 90.0;
         LatLonPoint expResult = new LatLonPoint(48.84533344929755, -0.9821733277296272);
         LatLonPoint result = GreatCirclePointDistance.getPoint(startPoint, distance, bearing);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -226,9 +199,6 @@ public class GreatCirclePointDistanceTest {
         double bearing = 90.0;
         LatLonPoint expResult = new LatLonPoint(48.84533344929755, -0.9821733277296272);
         LatLonPoint result = GreatCirclePointDistance.getPoint(startLat, startLon, distance, bearing);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

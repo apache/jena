@@ -62,9 +62,6 @@ public class GeometryDatatypeTest {
         RDFDatatype rdfDatatype = WKTDatatype.INSTANCE;
         GeometryDatatype expResult = WKTDatatype.INSTANCE;
         GeometryDatatype result = GeometryDatatype.get(rdfDatatype);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -88,9 +85,6 @@ public class GeometryDatatypeTest {
         String datatypeURI = WKTDatatype.URI;
         GeometryDatatype expResult = WKTDatatype.INSTANCE;
         GeometryDatatype result = GeometryDatatype.get(datatypeURI);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -103,9 +97,6 @@ public class GeometryDatatypeTest {
         String datatypeURI = WKTDatatype.URI;
         boolean expResult = true;
         boolean result = GeometryDatatype.checkURI(datatypeURI);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -119,9 +110,6 @@ public class GeometryDatatypeTest {
         GeometryDatatype.checkURI(datatypeURI);
         boolean expResult = false;
         boolean result = GeometryDatatype.checkURI(datatypeURI);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -134,9 +122,6 @@ public class GeometryDatatypeTest {
         RDFDatatype rdfDatatype = WKTDatatype.INSTANCE;
         boolean expResult = true;
         boolean result = GeometryDatatype.check(rdfDatatype);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -149,9 +134,6 @@ public class GeometryDatatypeTest {
         RDFDatatype rdfDatatype = XSDDatatype.XSDdouble;
         boolean expResult = false;
         boolean result = GeometryDatatype.check(rdfDatatype);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

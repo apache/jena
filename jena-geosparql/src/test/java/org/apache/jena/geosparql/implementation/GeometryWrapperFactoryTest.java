@@ -68,9 +68,6 @@ public class GeometryWrapperFactoryTest {
 
         String expResult = "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(2 1)";
         String result = instance.asLiteral().getLexicalForm();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -88,9 +85,6 @@ public class GeometryWrapperFactoryTest {
 
         String expResult = "POINT(1 2)";
         String result = instance.asLiteral().getLexicalForm();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -108,9 +102,6 @@ public class GeometryWrapperFactoryTest {
 
         String expResult = "<http://www.opengis.net/def/crs/EPSG/0/4326> LINESTRING(2 1, 20 10)";
         String result = instance.asLiteral().getLexicalForm();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -128,9 +119,6 @@ public class GeometryWrapperFactoryTest {
 
         String expResult = "LINESTRING(1 2, 10 20)";
         String result = instance.asLiteral().getLexicalForm();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -148,9 +136,6 @@ public class GeometryWrapperFactoryTest {
 
         String expResult = "<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((2 1, 2 10, 20 10, 20 1, 2 1))";
         String result = instance.asLiteral().getLexicalForm();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -168,9 +153,6 @@ public class GeometryWrapperFactoryTest {
 
         String expResult = "POLYGON((1 2, 10 2, 10 20, 1 20, 1 2))";
         String result = instance.asLiteral().getLexicalForm();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

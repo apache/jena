@@ -63,9 +63,6 @@ public class CoordinatePairTest {
 
         CoordinatePair expResult = new CoordinatePair(new Coordinate(180, 20), new Coordinate(179, 20));
         CoordinatePair result = CoordinatePair.findNearestPair(sourceGeometry, targetGeometry);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -80,9 +77,6 @@ public class CoordinatePairTest {
 
         CoordinatePair expResult = new CoordinatePair(new Coordinate(179, 20), new Coordinate(180, 20));
         CoordinatePair result = CoordinatePair.findNearestPair(sourceGeometry, targetGeometry);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -97,9 +91,6 @@ public class CoordinatePairTest {
 
         CoordinatePair expResult = new CoordinatePair(new Coordinate(1, 20), new Coordinate(-1, 20));
         CoordinatePair result = CoordinatePair.findNearestPair(sourceGeometry, targetGeometry);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -114,9 +105,6 @@ public class CoordinatePairTest {
 
         CoordinatePair expResult = new CoordinatePair(new Coordinate(179, 20), new Coordinate(178, 20));
         CoordinatePair result = CoordinatePair.findNearestPair(sourceGeometry, targetGeometry);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -131,9 +119,6 @@ public class CoordinatePairTest {
 
         CoordinatePair expResult = new CoordinatePair(new Coordinate(-179, 20), new Coordinate(-178, 20));
         CoordinatePair result = CoordinatePair.findNearestPair(sourceGeometry, targetGeometry);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -148,9 +133,6 @@ public class CoordinatePairTest {
 
         CoordinatePair expResult = new CoordinatePair(new Coordinate(179, 20), new Coordinate(1, 20));
         CoordinatePair result = CoordinatePair.findNearestPair(sourceGeometry, targetGeometry);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -165,9 +147,6 @@ public class CoordinatePairTest {
 
         CoordinatePair expResult = new CoordinatePair(new Coordinate(-179, 20), new Coordinate(-1, 20));
         CoordinatePair result = CoordinatePair.findNearestPair(sourceGeometry, targetGeometry);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -184,9 +163,6 @@ public class CoordinatePairTest {
 
         boolean expResult = true;
         boolean result = instance.isEqual();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -203,9 +179,6 @@ public class CoordinatePairTest {
 
         boolean expResult = false;
         boolean result = instance.isEqual();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -222,9 +195,6 @@ public class CoordinatePairTest {
 
         boolean expResult = true;
         boolean result = instance.isEqual();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -241,9 +211,6 @@ public class CoordinatePairTest {
 
         boolean expResult = false;
         boolean result = instance.isEqual();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 }

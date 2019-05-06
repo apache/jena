@@ -68,9 +68,6 @@ public class RccTangentialProperPartFFTest {
 
         Boolean expResult = true;
         Boolean result = instance.relate(subjectGeometryWrapper, objectGeometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -85,9 +82,6 @@ public class RccTangentialProperPartFFTest {
 
         Boolean expResult = false;
         Boolean result = instance.relate(subjectGeometryWrapper, objectGeometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -100,9 +94,6 @@ public class RccTangentialProperPartFFTest {
         RccTangentialProperPartFF instance = new RccTangentialProperPartFF();
         boolean expResult = false;
         boolean result = instance.isDisjoint();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -115,9 +106,6 @@ public class RccTangentialProperPartFFTest {
         RccTangentialProperPartFF instance = new RccTangentialProperPartFF();
         boolean expResult = false;
         boolean result = instance.isDisconnected();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -132,9 +120,6 @@ public class RccTangentialProperPartFFTest {
         RccTangentialProperPartFF instance = new RccTangentialProperPartFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -149,9 +134,6 @@ public class RccTangentialProperPartFFTest {
         RccTangentialProperPartFF instance = new RccTangentialProperPartFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -166,9 +148,6 @@ public class RccTangentialProperPartFFTest {
         RccTangentialProperPartFF instance = new RccTangentialProperPartFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -183,9 +162,6 @@ public class RccTangentialProperPartFFTest {
         RccTangentialProperPartFF instance = new RccTangentialProperPartFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -200,9 +176,6 @@ public class RccTangentialProperPartFFTest {
         RccTangentialProperPartFF instance = new RccTangentialProperPartFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -217,9 +190,6 @@ public class RccTangentialProperPartFFTest {
         RccTangentialProperPartFF instance = new RccTangentialProperPartFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -234,9 +204,6 @@ public class RccTangentialProperPartFFTest {
         RccTangentialProperPartFF instance = new RccTangentialProperPartFF();
         boolean expResult = true;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -251,9 +218,6 @@ public class RccTangentialProperPartFFTest {
         RccTangentialProperPartFF instance = new RccTangentialProperPartFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -268,9 +232,6 @@ public class RccTangentialProperPartFFTest {
         RccTangentialProperPartFF instance = new RccTangentialProperPartFF();
         boolean expResult = false;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 }

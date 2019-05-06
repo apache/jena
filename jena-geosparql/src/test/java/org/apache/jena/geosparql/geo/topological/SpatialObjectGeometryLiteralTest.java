@@ -75,9 +75,6 @@ public class SpatialObjectGeometryLiteralTest {
 
         boolean expResult = false;
         boolean result = instance.isValid();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -92,9 +89,6 @@ public class SpatialObjectGeometryLiteralTest {
         Resource targetSpatialObject = GEOMETRY_B;
         SpatialObjectGeometryLiteral expResult = new SpatialObjectGeometryLiteral(GEOMETRY_B.asNode(), LITERAL_B.asNode());
         SpatialObjectGeometryLiteral result = SpatialObjectGeometryLiteral.retrieve(graph, targetSpatialObject.asNode());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -108,9 +102,6 @@ public class SpatialObjectGeometryLiteralTest {
         Resource targetSpatialObject = FEATURE_B;
         SpatialObjectGeometryLiteral expResult = new SpatialObjectGeometryLiteral(FEATURE_B.asNode(), LITERAL_B.asNode());
         SpatialObjectGeometryLiteral result = SpatialObjectGeometryLiteral.retrieve(MODEL.getGraph(), targetSpatialObject.asNode());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -127,9 +118,6 @@ public class SpatialObjectGeometryLiteralTest {
 
         boolean expResult = false;
         boolean result = instance.isValid();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -146,9 +134,6 @@ public class SpatialObjectGeometryLiteralTest {
 
         boolean expResult = false;
         boolean result = instance.isValid();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -162,9 +147,6 @@ public class SpatialObjectGeometryLiteralTest {
         Resource targetSpatialObject = GEO_FEATURE_Y;
         SpatialObjectGeometryLiteral expResult = new SpatialObjectGeometryLiteral(GEO_FEATURE_Y.asNode(), GEO_FEATURE_LITERAL.asNode());
         SpatialObjectGeometryLiteral result = SpatialObjectGeometryLiteral.retrieve(MODEL.getGraph(), targetSpatialObject.asNode());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

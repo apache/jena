@@ -124,9 +124,6 @@ public class GeoSPARQLOperationsTest {
         TreeSet<String> expResult = extract(CONVERTED_SRS_DATA);
         Model instance = GeoSPARQLOperations.convert(inputModel);
         TreeSet<String> result = extract(instance);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -141,9 +138,6 @@ public class GeoSPARQLOperationsTest {
         TreeSet<String> expResult = extract(CONVERTED_SRS_DATA);
         Model instance = GeoSPARQLOperations.convert(inputModel, outputSrsURI);
         TreeSet<String> result = extract(instance);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -158,9 +152,6 @@ public class GeoSPARQLOperationsTest {
         TreeSet<String> expResult = extract(CONVERTED_DATATYPE_DATA);
         Model instance = GeoSPARQLOperations.convert(inputModel, outputDatatype);
         TreeSet<String> result = extract(instance);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -176,9 +167,6 @@ public class GeoSPARQLOperationsTest {
         TreeSet<String> expResult = extract(CONVERTED_SRS_DATATYPE_DATA);
         Model instance = GeoSPARQLOperations.convert(inputModel, outputSrsURI, outputDatatype);
         TreeSet<String> result = extract(instance);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -192,9 +180,6 @@ public class GeoSPARQLOperationsTest {
         TreeSet<String> expResult = extract(CONVERTED_SRS_DATASET);
         Dataset instance = GeoSPARQLOperations.convert(dataset);
         TreeSet<String> result = extract(instance);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -209,9 +194,6 @@ public class GeoSPARQLOperationsTest {
         TreeSet<String> expResult = extract(CONVERTED_SRS_DATASET);
         Dataset instance = GeoSPARQLOperations.convert(dataset, outputSrsURI);
         TreeSet<String> result = extract(instance);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -226,9 +208,6 @@ public class GeoSPARQLOperationsTest {
         TreeSet<String> expResult = extract(CONVERTED_DATATYPE_DATASET);
         Dataset instance = GeoSPARQLOperations.convert(dataset, outputDatatype);
         TreeSet<String> result = extract(instance);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -244,9 +223,6 @@ public class GeoSPARQLOperationsTest {
         TreeSet<String> expResult = extract(CONVERTED_SRS_DATATYPE_DATASET);
         Dataset instance = GeoSPARQLOperations.convert(inputDataset, outputSrsURI, outputDatatype);
         TreeSet<String> result = extract(instance);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -261,9 +237,6 @@ public class GeoSPARQLOperationsTest {
         GeometryDatatype outputDatatype = WKTDatatype.INSTANCE;
         List<String> expResult = Arrays.asList("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(1 0)", "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(3 2)");
         List<String> result = GeoSPARQLOperations.convertGeometryLiterals(geometryLiterals, outputSrsURI, outputDatatype);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -278,9 +251,6 @@ public class GeoSPARQLOperationsTest {
         GeometryDatatype outputDatatype = WKTDatatype.INSTANCE;
         String expResult = "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(1 0)";
         String result = GeoSPARQLOperations.convertGeometryLiteral(geometryLiteral, outputSrsURI, outputDatatype);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -295,9 +265,6 @@ public class GeoSPARQLOperationsTest {
         TreeSet<String> expResult = extract(CONVERTED_SRS_DATASET);
         Dataset instance = GeoSPARQLOperations.convertGeoPredicates(dataset, isRemoveGeoPredicate);
         TreeSet<String> result = extract(instance);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -312,9 +279,6 @@ public class GeoSPARQLOperationsTest {
         TreeSet<String> expResult = extract(CONVERTED_SRS_DATA);
         Model instance = GeoSPARQLOperations.convertGeoPredicates(model, isRemoveGeoPredicates);
         TreeSet<String> result = extract(instance);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -329,9 +293,6 @@ public class GeoSPARQLOperationsTest {
         TreeSet<String> expResult = extract(GEO_ALL_DATASET);
         Dataset instance = GeoSPARQLOperations.convertGeoPredicates(dataset, isRemoveGeoPredicate);
         TreeSet<String> result = extract(instance);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -346,9 +307,6 @@ public class GeoSPARQLOperationsTest {
         TreeSet<String> expResult = extract(GEO_ALL_DATA);
         Model instance = GeoSPARQLOperations.convertGeoPredicates(model, isRemoveGeoPredicates);
         TreeSet<String> result = extract(instance);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

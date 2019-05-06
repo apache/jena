@@ -61,9 +61,6 @@ public class AzimuthTest {
         double lon2 = 10.0;
         double expResult = Math.toRadians(90);
         double result = Azimuth.find(lat1, lon1, lat2, lon2);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0);
     }
 
@@ -79,9 +76,6 @@ public class AzimuthTest {
         double lon2 = 0.0;
         double expResult = Math.toRadians(0);
         double result = Azimuth.find(lat1, lon1, lat2, lon2);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0);
     }
 
@@ -97,9 +91,6 @@ public class AzimuthTest {
         double lon2 = 0.0;
         double expResult = Math.toRadians(180);
         double result = Azimuth.find(lat1, lon1, lat2, lon2);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0);
     }
 
@@ -115,9 +106,6 @@ public class AzimuthTest {
         double lon2 = -10.0;
         double expResult = Math.toRadians(270);
         double result = Azimuth.find(lat1, lon1, lat2, lon2);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0);
     }
 
@@ -133,9 +121,6 @@ public class AzimuthTest {
         double lon2 = -170.0;
         double expResult = Math.toRadians(90);
         double result = Azimuth.find(lat1, lon1, lat2, lon2);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0);
     }
 
@@ -151,9 +136,6 @@ public class AzimuthTest {
         double lon2 = 170.0;
         double expResult = Math.toRadians(270);
         double result = Azimuth.find(lat1, lon1, lat2, lon2);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0);
     }
 

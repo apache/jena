@@ -67,9 +67,6 @@ public class EqualsFFTest {
 
         Boolean expResult = true;
         Boolean result = instance.relate(subjectGeometryWrapper, objectGeometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -84,9 +81,6 @@ public class EqualsFFTest {
 
         Boolean expResult = true;
         Boolean result = instance.relate(subjectGeometryWrapper, objectGeometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -101,9 +95,6 @@ public class EqualsFFTest {
 
         Boolean expResult = true;
         Boolean result = instance.relate(subjectGeometryWrapper, objectGeometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -118,9 +109,6 @@ public class EqualsFFTest {
 
         Boolean expResult = false;
         Boolean result = instance.relate(subjectGeometryWrapper, objectGeometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -135,9 +123,6 @@ public class EqualsFFTest {
 
         Boolean expResult = false;
         Boolean result = instance.relate(subjectGeometryWrapper, objectGeometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -152,9 +137,6 @@ public class EqualsFFTest {
 
         Boolean expResult = false;
         Boolean result = instance.relate(subjectGeometryWrapper, objectGeometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -169,9 +151,6 @@ public class EqualsFFTest {
 
         Boolean expResult = false;
         Boolean result = instance.relate(subjectGeometryWrapper, objectGeometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -186,9 +165,6 @@ public class EqualsFFTest {
 
         Boolean expResult = false;
         Boolean result = instance.relate(subjectGeometryWrapper, objectGeometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -201,9 +177,6 @@ public class EqualsFFTest {
         EqualsFF instance = new EqualsFF();
         boolean expResult = false;
         boolean result = instance.isDisjoint();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -216,9 +189,6 @@ public class EqualsFFTest {
         EqualsFF instance = new EqualsFF();
         boolean expResult = false;
         boolean result = instance.isDisconnected();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -233,9 +203,6 @@ public class EqualsFFTest {
         EqualsFF instance = new EqualsFF();
         boolean expResult = true;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -250,9 +217,6 @@ public class EqualsFFTest {
         EqualsFF instance = new EqualsFF();
         boolean expResult = true;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -267,9 +231,6 @@ public class EqualsFFTest {
         EqualsFF instance = new EqualsFF();
         boolean expResult = true;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -284,9 +245,6 @@ public class EqualsFFTest {
         EqualsFF instance = new EqualsFF();
         boolean expResult = true;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -301,9 +259,6 @@ public class EqualsFFTest {
         EqualsFF instance = new EqualsFF();
         boolean expResult = true;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -318,9 +273,6 @@ public class EqualsFFTest {
         EqualsFF instance = new EqualsFF();
         boolean expResult = true;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -335,9 +287,6 @@ public class EqualsFFTest {
         EqualsFF instance = new EqualsFF();
         boolean expResult = true;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -352,9 +301,6 @@ public class EqualsFFTest {
         EqualsFF instance = new EqualsFF();
         boolean expResult = true;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -369,9 +315,6 @@ public class EqualsFFTest {
         EqualsFF instance = new EqualsFF();
         boolean expResult = true;
         boolean result = instance.permittedTopology(sourceDimensionInfo, targetDimensionInfo);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 }

@@ -80,9 +80,6 @@ public class GreatCircleGeomFFTest {
         GreatCircleGeomFF instance = new GreatCircleGeomFF();
         double expResult = 109.5057;
         double result = instance.exec(v1, v2, v3).getDouble();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0001);
     }
 
@@ -98,9 +95,6 @@ public class GreatCircleGeomFFTest {
         GreatCircleGeomFF instance = new GreatCircleGeomFF();
         double expResult = 111.1950;
         double result = instance.exec(v1, v2, v3).getDouble();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0001);
     }
 
@@ -116,9 +110,6 @@ public class GreatCircleGeomFFTest {
         GreatCircleGeomFF instance = new GreatCircleGeomFF();
         double expResult = 343.7713;
         double result = instance.exec(v1, v2, v3).getDouble();
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result, 0.0001);
     }
 
@@ -134,9 +125,6 @@ public class GreatCircleGeomFFTest {
         GreatCircleGeomFF instance = new GreatCircleGeomFF();
         NodeValue expResult = NodeValue.makeDouble(20);
         NodeValue result = instance.exec(v1, v2, v3);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -152,9 +140,6 @@ public class GreatCircleGeomFFTest {
         GreatCircleGeomFF instance = new GreatCircleGeomFF();
         NodeValue expResult = NodeValue.makeDouble(20);
         NodeValue result = instance.exec(v1, v2, v3);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -170,9 +155,6 @@ public class GreatCircleGeomFFTest {
         GreatCircleGeomFF instance = new GreatCircleGeomFF();
         NodeValue expResult = NodeValue.makeDouble(20);
         NodeValue result = instance.exec(v1, v2, v3);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

@@ -83,9 +83,6 @@ public class GenericGeometryPropertyFunctionTest {
         GenericGeometryPropertyFunction instance = new CoordinateDimensionPF();
         Node expResult = NodeFactory.createLiteral("2", XSDDatatype.XSDinteger);
         Node result = instance.getGeometryLiteral(subject, predicate, graph);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -103,9 +100,6 @@ public class GenericGeometryPropertyFunctionTest {
         GenericGeometryPropertyFunction instance = new CoordinateDimensionPF();
         Node expResult = null;
         Node result = instance.getGeometryLiteral(subject, predicate, graph);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -123,9 +117,6 @@ public class GenericGeometryPropertyFunctionTest {
         GenericGeometryPropertyFunction instance = new CoordinateDimensionPF();
         Node expResult = NodeFactory.createLiteral("3", XSDDatatype.XSDinteger);
         Node result = instance.getGeometryLiteral(subject, predicate, graph);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -143,9 +134,6 @@ public class GenericGeometryPropertyFunctionTest {
         GenericGeometryPropertyFunction instance = new CoordinateDimensionPF();
         Node expResult = NodeFactory.createLiteral("3", XSDDatatype.XSDinteger);
         Node result = instance.getGeometryLiteral(subject, predicate, graph);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

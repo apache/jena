@@ -86,9 +86,6 @@ public class GenericCardinalGeomPropertyFunctionTest {
 
         boolean expResult = true;
         boolean result = instance.checkSecondFilter(spatialArgumemts, targetGeometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -117,9 +114,6 @@ public class GenericCardinalGeomPropertyFunctionTest {
 
         boolean expResult = false;
         boolean result = instance.checkSecondFilter(spatialArgumemts, targetGeometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 

@@ -82,9 +82,6 @@ public class NearbyFFTest {
         NearbyFF instance = new NearbyFF();
         NodeValue expResult = NodeValue.makeBoolean(true);
         NodeValue result = instance.exec(v1, v2, v3, v4);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -101,9 +98,6 @@ public class NearbyFFTest {
         NearbyFF instance = new NearbyFF();
         NodeValue expResult = NodeValue.makeBoolean(true);
         NodeValue result = instance.exec(v1, v2, v3, v4);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -120,9 +114,6 @@ public class NearbyFFTest {
         NearbyFF instance = new NearbyFF();
         NodeValue expResult = NodeValue.makeBoolean(true);
         NodeValue result = instance.exec(v1, v2, v3, v4);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -139,9 +130,6 @@ public class NearbyFFTest {
         NearbyFF instance = new NearbyFF();
         NodeValue expResult = NodeValue.makeBoolean(false);
         NodeValue result = instance.exec(v1, v2, v3, v4);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -158,9 +146,6 @@ public class NearbyFFTest {
         NearbyFF instance = new NearbyFF();
         NodeValue expResult = NodeValue.makeBoolean(false);
         NodeValue result = instance.exec(v1, v2, v3, v4);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -176,9 +161,6 @@ public class NearbyFFTest {
         String unitsURI = Unit_URI.KILOMETER_URL;
         boolean expResult = true;
         boolean result = NearbyFF.relate(geometry1, geometry2, radius, unitsURI);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -194,9 +176,6 @@ public class NearbyFFTest {
         String unitsURI = Unit_URI.KILOMETER_URL;
         boolean expResult = true;
         boolean result = NearbyFF.relate(geometry1, geometry2, radius, unitsURI);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -212,9 +191,6 @@ public class NearbyFFTest {
         String unitsURI = Unit_URI.KILOMETER_URL;
         boolean expResult = false;
         boolean result = NearbyFF.relate(geometry1, geometry2, radius, unitsURI);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -230,9 +206,6 @@ public class NearbyFFTest {
         String unitsURI = Unit_URI.KILOMETER_URL;
         boolean expResult = false;
         boolean result = NearbyFF.relate(geometry1, geometry2, radius, unitsURI);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -249,9 +222,6 @@ public class NearbyFFTest {
         NearbyFF instance = new NearbyFF();
         NodeValue expResult = NodeValue.makeBoolean(true);
         NodeValue result = instance.exec(v1, v2, v3, v4);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         //assertEquals(expResult, result);
     }
 
@@ -268,9 +238,6 @@ public class NearbyFFTest {
         NearbyFF instance = new NearbyFF();
         NodeValue expResult = NodeValue.makeBoolean(true);
         NodeValue result = instance.exec(v1, v2, v3, v4);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         //assertEquals(expResult, result);
     }
 
@@ -287,9 +254,6 @@ public class NearbyFFTest {
         NearbyFF instance = new NearbyFF();
         NodeValue expResult = NodeValue.makeBoolean(true);
         NodeValue result = instance.exec(v1, v2, v3, v4);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         //assertEquals(expResult, result);
     }
 
@@ -306,9 +270,6 @@ public class NearbyFFTest {
         NearbyFF instance = new NearbyFF();
         NodeValue expResult = NodeValue.makeBoolean(true);
         NodeValue result = instance.exec(v1, v2, v3, v4);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         //assertEquals(expResult, result);
     }
 

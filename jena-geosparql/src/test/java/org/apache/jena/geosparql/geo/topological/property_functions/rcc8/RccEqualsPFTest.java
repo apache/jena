@@ -65,9 +65,6 @@ public class RccEqualsPFTest {
 
         Boolean expResult = true;
         Boolean result = instance.testFilterFunction(subjectGeometryLiteral.asNode(), objectGeometryLiteral.asNode());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -82,9 +79,6 @@ public class RccEqualsPFTest {
 
         Boolean expResult = false;
         Boolean result = instance.testFilterFunction(subjectGeometryLiteral.asNode(), objectGeometryLiteral.asNode());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -102,9 +96,6 @@ public class RccEqualsPFTest {
 
         Boolean expResult = false;
         Boolean result = instance.testFilterFunction(emptyWKT.asNode(), emptyGML.asNode());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -122,9 +113,6 @@ public class RccEqualsPFTest {
 
         Boolean expResult = false;
         Boolean result = instance.testFilterFunction(emptyWKT.asNode(), emptyWKT2.asNode());
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 }

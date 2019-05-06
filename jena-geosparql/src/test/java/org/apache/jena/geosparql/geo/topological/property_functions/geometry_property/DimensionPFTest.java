@@ -62,9 +62,6 @@ public class DimensionPFTest {
         DimensionPF instance = new DimensionPF();
         NodeValue expResult = NodeValue.makeNodeInteger(0);
         NodeValue result = instance.applyPredicate(geometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -78,9 +75,6 @@ public class DimensionPFTest {
         DimensionPF instance = new DimensionPF();
         NodeValue expResult = NodeValue.makeNodeInteger(1);
         NodeValue result = instance.applyPredicate(geometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -94,9 +88,6 @@ public class DimensionPFTest {
         DimensionPF instance = new DimensionPF();
         NodeValue expResult = NodeValue.makeNodeInteger(2);
         NodeValue result = instance.applyPredicate(geometryWrapper);
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
