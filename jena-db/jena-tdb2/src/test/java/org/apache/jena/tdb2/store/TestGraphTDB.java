@@ -21,13 +21,13 @@ package org.apache.jena.tdb2.store;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.graph.AbstractTestGraph2 ;
+import org.apache.jena.sparql.graph.AbstractTestGraphAddDelete ;
 import org.apache.jena.tdb2.junit.TL;
 import org.junit.After ;
 import org.junit.Before ;
 
 /** Programmatic tests on graphs */
-public class TestGraphTDB extends AbstractTestGraph2
+public class TestGraphTDB extends AbstractTestGraphAddDelete
 {
     private Dataset dataset ;
     private Graph   graph ;

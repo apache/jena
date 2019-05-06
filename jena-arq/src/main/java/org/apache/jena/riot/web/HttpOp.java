@@ -510,27 +510,16 @@ public class HttpOp {
                                     HttpResponseHandler handler, HttpClient httpClient, HttpContext httpContext) {
         StringEntity e = null;
         try {
-            e = new StringEntity(content, StandardCharsets.UTF_8);
-            e.setContentType(contentType);
+            if ( content != null ) {
+                e = new StringEntity(content, StandardCharsets.UTF_8);
+                e.setContentType(contentType);
+            }
             execHttpPost(url, e, acceptType, handler, httpClient, httpContext);
         }
         finally {
             closeEntity(e);
         }
     }
-
-    //    
-//        
-//        StringEntity e = null;
-//        try {
-//            e = new StringEntity(content, StandardCharsets.UTF_8);
-//            e.setContentType(contentType);
-//            return execHttpPostStream(url, e, acceptType, null, null, null) ;
-//        }
-//        finally {
-//            closeEntity(e);
-//        }
-//    }
 
     /**
      * Executes a HTTP POST with a request body from an input stream without

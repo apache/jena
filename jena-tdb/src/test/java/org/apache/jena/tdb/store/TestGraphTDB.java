@@ -20,7 +20,7 @@ package org.apache.jena.tdb.store;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Graph ;
-import org.apache.jena.sparql.graph.AbstractTestGraph2 ;
+import org.apache.jena.sparql.graph.AbstractTestGraphAddDelete ;
 import org.apache.jena.tdb.ConfigTest ;
 import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.base.file.Location ;
@@ -31,7 +31,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 
 /** Programmatic tests on persistent graph */
-public class TestGraphTDB extends AbstractTestGraph2
+public class TestGraphTDB extends AbstractTestGraphAddDelete
 {
     static GraphLocation graphLocation = null ;
     

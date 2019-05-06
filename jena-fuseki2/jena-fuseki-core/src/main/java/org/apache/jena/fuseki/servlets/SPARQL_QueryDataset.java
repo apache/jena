@@ -26,10 +26,7 @@ import org.apache.jena.sparql.core.DynamicDatasets ;
 
 public class SPARQL_QueryDataset extends SPARQL_Query
 {
-    public SPARQL_QueryDataset(boolean verbose)     { super() ; }
-
-    public SPARQL_QueryDataset()
-    { this(false) ; }
+    public SPARQL_QueryDataset() {}
 
     @Override
     protected void validateRequest(HttpAction action)

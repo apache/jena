@@ -36,6 +36,7 @@ public class FusekiConst {
      "PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>",
      "PREFIX apf:     <http://jena.apache.org/ARQ/property#>",
      "PREFIX afn:     <http://jena.apache.org/ARQ/function#>",
+     "",
      "") ;
 
 }

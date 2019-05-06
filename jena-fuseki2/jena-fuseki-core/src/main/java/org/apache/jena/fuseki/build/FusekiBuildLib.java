@@ -24,11 +24,7 @@ import java.util.List;
 
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.query.* ;
-import org.apache.jena.rdf.model.Literal ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.RDFList;
-import org.apache.jena.rdf.model.RDFNode ;
-import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.vocabulary.RDFS ;
@@ -107,8 +103,8 @@ public class FusekiBuildLib {
      * mixture. If the subject/property isn't present, return null, so a caller can tell
      * the difference between "not present" and an empty list value.
      */
-    public static Collection<RDFNode> getAll(Resource svc, String property) {
-        ResultSet rs = FusekiBuildLib.query("SELECT * { ?svc " + property + " ?x}", svc.getModel(), "svc", svc) ;
+    public static Collection<RDFNode> getAll(Resource resource, String property) {
+        ResultSet rs = FusekiBuildLib.query("SELECT * { ?subject " + property + " ?x}", resource.getModel(), "subject", resource) ;
         if ( ! rs.hasNext() )
             return null;
         List<RDFNode> results = new ArrayList<>();

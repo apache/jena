@@ -21,12 +21,12 @@ package org.apache.jena.tdb.store;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.graph.AbstractTestGraph2 ;
+import org.apache.jena.sparql.graph.AbstractTestGraphAddDelete ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.tdb.TDBFactory ;
 
 /** Programmatic tests on persistent graph */
-public class TestGraphNamedTDB extends AbstractTestGraph2
+public class TestGraphNamedTDB extends AbstractTestGraphAddDelete
 {
     Node graphNode = NodeFactoryExtra.parseNode("<http://example/namedGraph>") ;
 

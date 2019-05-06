@@ -22,13 +22,13 @@ import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.core.DatasetPrefixStorage ;
-import org.apache.jena.sparql.graph.AbstractTestPrefixMapping2 ;
+import org.apache.jena.sparql.graph.AbstractTestPrefixMappingView ;
 import org.apache.jena.tdb2.ConfigTest;
 import org.apache.jena.tdb2.junit.BuildTestLib;
 import org.apache.jena.tdb2.sys.TDBInternal;
 import org.junit.* ;
 
-public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
+public class TestPrefixMappingTDB extends AbstractTestPrefixMappingView
 {
     static DatasetPrefixStorage last = null ;
     

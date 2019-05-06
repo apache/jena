@@ -191,9 +191,6 @@ public class NodeTableCache implements NodeTable {
             if ( n != null )
                 return n ;
 
-            if ( baseTable == null )
-                System.err.println("" + this) ;
-
             n = baseTable.getNodeForNodeId(id) ;
             cacheUpdate(n, id) ;
             return n ;

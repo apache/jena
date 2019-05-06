@@ -813,7 +813,201 @@
         <pluginManagement>
             <plugins>
 
-                <plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.0</version>
+          <configuration>
+            <showDeprecation>false</showDeprecation>
+            <encoding>UTF-8</encoding>
+            <debug>true</debug>
+            <debuglevel>source,lines,vars</debuglevel>
+            <optimize>true</optimize>
+            <source>${jdk.version}</source>
+            <target>${jdk.version}</target>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.22.1</version>
+          <!-- 
+               Bug: SUREFIRE-1588
+               https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=911925
+          -->
+          <configuration>
+            <useSystemClassLoader>false</useSystemClassLoader>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+            </execution>
+            <!-- Only needed in some jars <execution> <id>attach-sources-test</id> 
+                 <goals> <goal>test-jar-no-fork</goal> </goals> </execution> -->
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.1.0</version>
+          <executions>
+            <execution>
+              <id>attach-javadocs</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <!-- Java 11: explicitly define the source as Java8 -->
+            <source>8</source>
+            <!-- Java 10
+                 <additionalOptions>-html5</additionalOptions>
+            -->
+            <quiet>true</quiet>
+            <doclint>none</doclint>
+            <!-- To allow the build to keep going despite javadoc problems:
+                 <failOnError>false</failOnError>
+            -->
+            <version>true</version>
+            <show>public</show>
+            <encoding>UTF-8</encoding>
+            <windowtitle>${project.name} ${project.version}</windowtitle>
+            <doctitle>${project.name} ${project.version}</doctitle>
+            <bottom>Licensed under the Apache License, Version 2.0</bottom>
+            <links>
+              <link>http://jena.apache.org/documentation/javadoc/jena/</link>
+              <link>http://jena.apache.org/documentation/javadoc/arq/</link>
+              <link>http://jena.apache.org/documentation/javadoc/tdb/</link>
+              <link>http://jena.apache.org/documentation/javadoc/text/</link>
+              <link>http://jena.apache.org/documentation/javadoc/rdfconnection/</link>
+              <link>http://jena.apache.org/documentation/javadoc/fuseki2/</link>
+              <link>http://jena.apache.org/documentation/javadoc/permissions/</link>
+              <link>http://jena.apache.org/documentation/javadoc/jdbc/</link>
+            </links>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <configuration>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+
+        <!-- Temp fix for remote-resources while waiting for remote-resources >1.5
+             1.6 should fix this - SNAPSHOT already does.
+        -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-remote-resources-plugin</artifactId>
+          <version>1.5</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.maven.shared</groupId>
+              <artifactId>maven-filtering</artifactId>
+              <version>1.2</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <configuration>
+            <overWriteReleases>false</overWriteReleases>
+            <overWriteIfNewer>true</overWriteIfNewer>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>3.0.0-M1</version>
+          <executions>
+            <execution>
+              <id>enforce</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <rules>
+              <requirePluginVersions>
+                <message>Best practice is to always define plugin versions!</message>
+                <banLatest>true</banLatest>
+                <banRelease>true</banRelease>
+              </requirePluginVersions>
+              <requireReleaseDeps>
+                <message>No SNAPSHOT dependencies are allowed!</message>
+                <onlyWhenRelease>true</onlyWhenRelease>
+              </requireReleaseDeps>
+              <DependencyConvergence />
+            </rules>
+            <fail>true</fail>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>4.2.0</version>
+          <extensions>true</extensions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.2.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>3.2.0</version>
+        </plugin>
+
+        <!--
+            Avoid the warnings and errors from m2e.
+            This plugin's configuration is used to store Eclipse m2e settings only. 
+            It has no influence on the Maven build itself.
+        -->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <!-- 
+                       Warning:
+                       "maven-remote-resources-plugin (goal "process") is ignored by m2e." 
+                  -->
+                  <pluginExecutionFilter>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>3.1.0</version>

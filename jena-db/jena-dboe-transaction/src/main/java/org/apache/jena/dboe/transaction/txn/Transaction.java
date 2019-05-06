@@ -237,10 +237,21 @@ public class Transaction implements TransactionInfo {
         setState(ACTIVE);
     }
 
+    /** Require a WRITE transaction - do not try to promote. */ 
     public void requireWriteTxn() {
         checkState(ACTIVE);
         if ( mode != ReadWrite.WRITE )
             throw new TransactionException("Not a write transaction");
+    }
+
+    /** Require a WRITE transaction - includes trying to promote. */ 
+    public void ensureWriteTxn() {
+        checkState(ACTIVE);
+        if ( mode != ReadWrite.WRITE ) {
+            boolean b = this.promote();
+            if ( ! b )
+                throw new TransactionException("Can't become a write transaction");
+        }
     }
 
     @Override

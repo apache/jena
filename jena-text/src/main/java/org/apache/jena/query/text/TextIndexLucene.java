@@ -407,6 +407,9 @@ public class TextIndexLucene implements TextIndex {
         QueryParser qp = null;
 
         switch(queryParserType) {
+            case "QueryParser":
+                // Drop to default
+                break;
             case "SurroundQueryParser":
                 try {
                     query = org.apache.lucene.queryparser.surround.parser.QueryParser.parse(queryString).makeLuceneQueryField(docDef.getPrimaryField(), new BasicQueryFactory());

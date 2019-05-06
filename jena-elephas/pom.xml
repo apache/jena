@@ -30,13 +30,6 @@ limitations under the License.
   <name>Apache Jena - Elephas</name>
   <description>A collection of tools for working with RDF on the Hadoop platform</description>
 
-  <modules>
-    <module>jena-elephas-io</module>
-    <module>jena-elephas-common</module>
-    <module>jena-elephas-mapreduce</module>
-    <module>jena-elephas-stats</module>
-  </modules>
-
   <!-- Properties common across all profiles -->
   <properties>
     <plugin.compiler.version>2.6.0</plugin.compiler.version>
@@ -48,14 +41,21 @@ limitations under the License.
   <!-- Profiles to allow building for different Hadoop versions -->
   <profiles>
     <!-- Hadoop 2.x Latest -->
+    <!-- Java8 only -->
     <profile>
       <id>hadoop_2x</id>
       <activation>
-        <activeByDefault>true</activeByDefault>
+        <jdk>1.8</jdk>
       </activation>
       <properties>
         <hadoop.version>2.6.0</hadoop.version>
       </properties>
+      <modules>
+        <module>jena-elephas-io</module>
+        <module>jena-elephas-common</module>
+        <module>jena-elephas-mapreduce</module>
+        <module>jena-elephas-stats</module>
+      </modules>
     </profile>
   </profiles>
 
