@@ -56,7 +56,7 @@ public class IsSimpleFFTest {
      */
     @Test
     public void testExec_true() {
-        System.out.println("exec_true");
+
         NodeValue geometryLiteral = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(90 60, 100 70)", WKTDatatype.INSTANCE);
         IsSimpleFF instance = new IsSimpleFF();
         NodeValue expResult = NodeValue.makeNodeBoolean(true);
@@ -69,7 +69,7 @@ public class IsSimpleFFTest {
      */
     @Test
     public void testExec_false() {
-        System.out.println("exec_false");
+
         NodeValue geometryLiteral = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(0 0, 10 10, 10 5, 0 5)", WKTDatatype.INSTANCE);
         IsSimpleFF instance = new IsSimpleFF();
         NodeValue expResult = NodeValue.makeNodeBoolean(false);

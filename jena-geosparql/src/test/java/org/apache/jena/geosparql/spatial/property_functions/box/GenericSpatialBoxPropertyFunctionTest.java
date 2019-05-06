@@ -69,7 +69,7 @@ public class GenericSpatialBoxPropertyFunctionTest {
      */
     @Test
     public void testExtractObjectArguments_5args() {
-        System.out.println("extractObjectArguments_5args");
+
 
         GenericSpatialBoxPropertyFunction instance = new WithinBoxPF();
 
@@ -101,7 +101,7 @@ public class GenericSpatialBoxPropertyFunctionTest {
      */
     @Test
     public void testExtractObjectArguments_4args() {
-        System.out.println("extractObjectArguments_4args");
+
 
         GenericSpatialBoxPropertyFunction instance = new WithinBoxPF();
 
@@ -133,7 +133,7 @@ public class GenericSpatialBoxPropertyFunctionTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_3args_fail() {
-        System.out.println("extractObjectArguments_3args_fail");
+
 
         GenericSpatialBoxPropertyFunction instance = new WithinBoxPF();
 
@@ -165,7 +165,7 @@ public class GenericSpatialBoxPropertyFunctionTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_6args_fail() {
-        System.out.println("extractObjectArguments_6args_fail");
+
 
         GenericSpatialBoxPropertyFunction instance = new WithinBoxPF();
 
@@ -197,7 +197,7 @@ public class GenericSpatialBoxPropertyFunctionTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_5args_pos0_fail() {
-        System.out.println("extractObjectArguments_5args_pos0_fail");
+
 
         GenericSpatialBoxPropertyFunction instance = new WithinBoxPF();
 
@@ -229,7 +229,7 @@ public class GenericSpatialBoxPropertyFunctionTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_5args_pos1_fail() {
-        System.out.println("extractObjectArguments_5args_pos1_fail");
+
 
         GenericSpatialBoxPropertyFunction instance = new WithinBoxPF();
 
@@ -261,7 +261,7 @@ public class GenericSpatialBoxPropertyFunctionTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_5args_pos2_fail() {
-        System.out.println("extractObjectArguments_5args_pos2_fail");
+
 
         GenericSpatialBoxPropertyFunction instance = new WithinBoxPF();
 
@@ -293,7 +293,7 @@ public class GenericSpatialBoxPropertyFunctionTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_5args_pos3_fail() {
-        System.out.println("extractObjectArguments_5args_pos3_fail");
+
 
         GenericSpatialBoxPropertyFunction instance = new WithinBoxPF();
 
@@ -325,7 +325,7 @@ public class GenericSpatialBoxPropertyFunctionTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_5args_pos4_fail() {
-        System.out.println("extractObjectArguments_5args_pos4_fail");
+
 
         GenericSpatialBoxPropertyFunction instance = new WithinBoxPF();
 

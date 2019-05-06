@@ -73,7 +73,7 @@ public class DistanceFFTest {
      */
     @Test
     public void testExec() {
-        System.out.println("exec");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 21.0)", WKTDatatype.INSTANCE);
         NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.KILOMETER_URL));
@@ -88,7 +88,7 @@ public class DistanceFFTest {
      */
     @Test
     public void testExec2() {
-        System.out.println("exec2");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(11.0 20.0)", WKTDatatype.INSTANCE);
         NodeValue v3 = NodeValue.makeString(Unit_URI.KILOMETER_URL);
@@ -103,7 +103,7 @@ public class DistanceFFTest {
      */
     @Test
     public void testExec_Paris_London() {
-        System.out.println("exec_Paris_London");
+
         NodeValue v1 = SpatialIndexTestData.PARIS_GEOMETRY_WRAPPER.asNodeValue();
         NodeValue v2 = SpatialIndexTestData.LONDON_GEOMETRY_WRAPPER.asNodeValue();
         NodeValue v3 = NodeValue.makeString(Unit_URI.KILOMETER_URL);
@@ -118,7 +118,7 @@ public class DistanceFFTest {
      */
     @Test
     public void testExec_OSGB() {
-        System.out.println("exec_OSGB");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(0.0 0.0)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(10000.0 0.0)", WKTDatatype.INSTANCE);
         NodeValue v3 = NodeValue.makeString(Unit_URI.KILOMETER_URL);
@@ -133,7 +133,7 @@ public class DistanceFFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_pos0_fail() {
-        System.out.println("exec_pos0_fail");
+
         NodeValue v1 = NodeValue.makeString("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0)");
         NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0001)", WKTDatatype.INSTANCE);
         NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.KILOMETER_URL));
@@ -148,7 +148,7 @@ public class DistanceFFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_pos1_fail() {
-        System.out.println("exec_pos1_fail");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeString("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0001)");
         NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.KILOMETER_URL));
@@ -163,7 +163,7 @@ public class DistanceFFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_pos2_fail() {
-        System.out.println("exec_pos2_fail");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0001)", WKTDatatype.INSTANCE);
         NodeValue v3 = NodeValue.makeInteger(20);
@@ -178,7 +178,7 @@ public class DistanceFFTest {
      */
     @Test
     public void testExec_query() {
-        System.out.println("exec_query");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 
@@ -203,8 +203,8 @@ public class DistanceFFTest {
 
         List<Literal> expResults = Arrays.asList(ResourceFactory.createTypedLiteral("344.2664230368865e0", XSDDatatype.XSDdouble));
 
-        //System.out.println("Exp: " + expResults);
-        //System.out.println("Res: " + results);
+        //
+        //
         assertEquals(expResults, results);
     }
 

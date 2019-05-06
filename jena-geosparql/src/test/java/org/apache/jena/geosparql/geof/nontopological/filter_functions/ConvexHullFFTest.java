@@ -56,7 +56,7 @@ public class ConvexHullFFTest {
      */
     @Test
     public void testExec() {
-        System.out.println("exec");
+
         NodeValue v = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(0 0, 10 10, 0 5)", WKTDatatype.INSTANCE);
         ConvexHullFF instance = new ConvexHullFF();
         NodeValue expResult = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((0 0, 0 5, 10 10, 0 0))", WKTDatatype.INSTANCE);
@@ -69,7 +69,7 @@ public class ConvexHullFFTest {
      */
     @Test
     public void testExec2() {
-        System.out.println("exec2");
+
         NodeValue v = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(0 0, 10 10, 5 5)", WKTDatatype.INSTANCE);
         ConvexHullFF instance = new ConvexHullFF();
         NodeValue expResult = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(0 0, 10 10)", WKTDatatype.INSTANCE);

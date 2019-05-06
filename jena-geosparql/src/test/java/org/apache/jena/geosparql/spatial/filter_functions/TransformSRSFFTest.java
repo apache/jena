@@ -72,7 +72,7 @@ public class TransformSRSFFTest {
      */
     @Test
     public void testExec_string() {
-        System.out.println("exec_string");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(0 10)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeString(SRS_URI.DEFAULT_WKT_CRS84);
         TransformSRSFF instance = new TransformSRSFF();
@@ -86,7 +86,7 @@ public class TransformSRSFFTest {
      */
     @Test
     public void testExec_URI() {
-        System.out.println("exec_URI");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(0 10)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode(NodeFactory.createURI(SRS_URI.DEFAULT_WKT_CRS84));
         TransformSRSFF instance = new TransformSRSFF();
@@ -100,7 +100,7 @@ public class TransformSRSFFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_fail() {
-        System.out.println("exec_fail");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(0 10)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeInteger(8);
         TransformSRSFF instance = new TransformSRSFF();
@@ -114,7 +114,7 @@ public class TransformSRSFFTest {
      */
     @Test
     public void testExec_query() {
-        System.out.println("exec_query");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 
@@ -139,8 +139,8 @@ public class TransformSRSFFTest {
 
         List<Literal> expResults = Arrays.asList(ResourceFactory.createTypedLiteral("POINT(10 0)", WKTDatatype.INSTANCE));
 
-        //System.out.println("Exp: " + expResults);
-        //System.out.println("Res: " + results);
+        //
+        //
         assertEquals(expResults, results);
     }
 }

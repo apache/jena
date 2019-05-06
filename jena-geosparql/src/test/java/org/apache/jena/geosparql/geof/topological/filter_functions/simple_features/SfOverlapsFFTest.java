@@ -60,7 +60,7 @@ public class SfOverlapsFFTest {
     //Point-Point returns false. Have to compare two sets of points.
     @Test
     public void testRelate_multipoint_multipoint() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_multipoint_multipoint");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> MULTIPOINT(60 60, 20 20)", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> MULTIPOINT(60 60, 10 10)", WKTDatatype.INSTANCE));
@@ -74,7 +74,7 @@ public class SfOverlapsFFTest {
 
     @Test
     public void testRelate_linestring_linestring() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_linestring_linestring");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(80 20, 80 50)", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(80 85, 80 30)", WKTDatatype.INSTANCE));
@@ -88,7 +88,7 @@ public class SfOverlapsFFTest {
 
     @Test
     public void testRelate_polygon_polygon() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_polygon_polygon");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((80 15, 80 45, 140 45, 140 15, 80 15))", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE));
@@ -102,7 +102,7 @@ public class SfOverlapsFFTest {
 
     @Test
     public void testRelate_point_point_false() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_point_point_false");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> MULTIPOINT(60 60, 20 20)", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> MULTIPOINT(60 60, 20 20)", WKTDatatype.INSTANCE));
@@ -116,7 +116,7 @@ public class SfOverlapsFFTest {
 
     @Test
     public void testRelate_linestring_linestring_false() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_linestring_linestring_false");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(80 20, 80 50)", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(75 60, 145 60)", WKTDatatype.INSTANCE));
@@ -130,7 +130,7 @@ public class SfOverlapsFFTest {
 
     @Test
     public void testRelate_polygon_polygon_false() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_polygon_polygon_false");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((140 15, 140 45, 200 45, 200 15, 140 15))", WKTDatatype.INSTANCE));
@@ -147,7 +147,7 @@ public class SfOverlapsFFTest {
      */
     @Test
     public void testIsDisjoint() {
-        System.out.println("isDisjoint");
+
         SfOverlapsFF instance = new SfOverlapsFF();
         boolean expResult = false;
         boolean result = instance.isDisjoint();
@@ -159,7 +159,7 @@ public class SfOverlapsFFTest {
      */
     @Test
     public void testIsDisconnected() {
-        System.out.println("isDisconnected");
+
         SfOverlapsFF instance = new SfOverlapsFF();
         boolean expResult = false;
         boolean result = instance.isDisconnected();
@@ -171,7 +171,7 @@ public class SfOverlapsFFTest {
      */
     @Test
     public void testPermittedTopology_point_point() {
-        System.out.println("permittedTopology_point_point");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POINT;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POINT;
         SfOverlapsFF instance = new SfOverlapsFF();
@@ -185,7 +185,7 @@ public class SfOverlapsFFTest {
      */
     @Test
     public void testPermittedTopology_point_linestring() {
-        System.out.println("permittedTopology_point_linestring");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POINT;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_LINESTRING;
         SfOverlapsFF instance = new SfOverlapsFF();
@@ -199,7 +199,7 @@ public class SfOverlapsFFTest {
      */
     @Test
     public void testPermittedTopology_point_polygon() {
-        System.out.println("permittedTopology_point_polygon");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POINT;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POLYGON;
         SfOverlapsFF instance = new SfOverlapsFF();
@@ -213,7 +213,7 @@ public class SfOverlapsFFTest {
      */
     @Test
     public void testPermittedTopology_linestring_linestring() {
-        System.out.println("permittedTopology_linestring_linestring");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_LINESTRING;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_LINESTRING;
         SfOverlapsFF instance = new SfOverlapsFF();
@@ -227,7 +227,7 @@ public class SfOverlapsFFTest {
      */
     @Test
     public void testPermittedTopology_linestring_point() {
-        System.out.println("permittedTopology_linestring_point");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_LINESTRING;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POINT;
         SfOverlapsFF instance = new SfOverlapsFF();
@@ -241,7 +241,7 @@ public class SfOverlapsFFTest {
      */
     @Test
     public void testPermittedTopology_linestring_polygon() {
-        System.out.println("permittedTopology_linestring_polygon");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_LINESTRING;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POLYGON;
         SfOverlapsFF instance = new SfOverlapsFF();
@@ -255,7 +255,7 @@ public class SfOverlapsFFTest {
      */
     @Test
     public void testPermittedTopology_polygon_polygon() {
-        System.out.println("permittedTopology_polygon_polygon");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POLYGON;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POLYGON;
         SfOverlapsFF instance = new SfOverlapsFF();
@@ -269,7 +269,7 @@ public class SfOverlapsFFTest {
      */
     @Test
     public void testPermittedTopology_polygon_linestring() {
-        System.out.println("permittedTopology_polygon_linestring");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POLYGON;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_LINESTRING;
         SfOverlapsFF instance = new SfOverlapsFF();
@@ -283,7 +283,7 @@ public class SfOverlapsFFTest {
      */
     @Test
     public void testPermittedTopology_polygon_point() {
-        System.out.println("permittedTopology_polygon_point");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POLYGON;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POINT;
         SfOverlapsFF instance = new SfOverlapsFF();

@@ -57,7 +57,7 @@ public class GetSRIDFFTest {
      */
     @Test
     public void testExec_asserted() {
-        System.out.println("exec_asserted");
+
         NodeValue v = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(10 10)", WKTDatatype.INSTANCE);
         GetSRIDFF instance = new GetSRIDFF();
         NodeValue expResult = NodeValue.makeString("http://www.opengis.net/def/crs/EPSG/0/27700");
@@ -70,7 +70,7 @@ public class GetSRIDFFTest {
      */
     @Test
     public void testExec_implied() {
-        System.out.println("exec_implied");
+
         NodeValue v = NodeValue.makeNode("POINT(10 10)", WKTDatatype.INSTANCE);
         GetSRIDFF instance = new GetSRIDFF();
         NodeValue expResult = NodeValue.makeString(SRS_URI.DEFAULT_WKT_CRS84);

@@ -74,7 +74,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testCheckTransformSRS() throws Exception {
-        System.out.println("checkTransformSRS");
+
         Geometry geometry = GEOMETRY_FACTORY.createPoint(new Coordinate(1.0, 2.0));
         String sourceSRSURI = SRS_URI.WGS84_CRS;
         GeometryWrapper sourceSRSGeometry = new GeometryWrapper(geometry, sourceSRSURI, WKTDatatype.URI, DimensionInfo.XY_POINT);
@@ -97,7 +97,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testGetCRS() throws FactoryException {
-        System.out.println("getCRS");
+
         Geometry geometry = GEOMETRY_FACTORY.createPoint(new Coordinate(1.0, 2.0));
         String sourceSRSURI = SRS_URI.WGS84_CRS;
         GeometryWrapper instance = new GeometryWrapper(geometry, sourceSRSURI, WKTDatatype.URI, DimensionInfo.XY_POINT);
@@ -112,7 +112,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testGetXYGeometry() {
-        System.out.println("getXYGeometry");
+
         Geometry geometry = GEOMETRY_FACTORY.createPoint(new Coordinate(1.0, 2.0));
         String sourceSRSURI = SRS_URI.WGS84_CRS;
         GeometryWrapper instance = new GeometryWrapper(geometry, sourceSRSURI, WKTDatatype.URI, DimensionInfo.XY_POINT);
@@ -131,7 +131,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testGetXYGeometry_polygon() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("getXYGeometry_polygon");
+
         GeometryWrapper instance = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 -180.0, 20.0 -180.0, 20.0 -170.0, 10.0 -170.0, 10.0 -180.0))", WKTDatatype.URI);
 
         Coordinate[] coordinates = {new Coordinate(-180.0, 10.0), new Coordinate(-180.0, 20.0), new Coordinate(-170.0, 20.0), new Coordinate(-170.0, 10.0), new Coordinate(-180.0, 10.0)};
@@ -145,7 +145,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testGetParsingGeometry() {
-        System.out.println("getParsingGeometry");
+
         Geometry geometry = GEOMETRY_FACTORY.createPoint(new Coordinate(1.0, 2.0));
         String sourceSRSURI = SRS_URI.WGS84_CRS;
         GeometryWrapper instance = new GeometryWrapper(geometry, sourceSRSURI, WKTDatatype.URI, DimensionInfo.XY_POINT);
@@ -161,7 +161,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testGetSrsURI() {
-        System.out.println("getSrsURI");
+
         Geometry geometry = GEOMETRY_FACTORY.createPoint(new Coordinate(1.0, 2.0));
         String sourceSRSURI = SRS_URI.WGS84_CRS;
         GeometryWrapper instance = new GeometryWrapper(geometry, sourceSRSURI, WKTDatatype.URI, DimensionInfo.XY_POINT);
@@ -176,7 +176,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testGetSRID() {
-        System.out.println("getSRID");
+
         Geometry geometry = GEOMETRY_FACTORY.createPoint(new Coordinate(1.0, 2.0));
         String sourceSRSURI = SRS_URI.WGS84_CRS;
         GeometryWrapper instance = new GeometryWrapper(geometry, sourceSRSURI, WKTDatatype.URI, DimensionInfo.XY_POINT);
@@ -191,7 +191,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testGetGeometryDatatypeURI() {
-        System.out.println("getGeometryDatatypeURI");
+
         Geometry geometry = GEOMETRY_FACTORY.createPoint(new Coordinate(1.0, 2.0));
         String sourceSRSURI = SRS_URI.WGS84_CRS;
         GeometryWrapper instance = new GeometryWrapper(geometry, sourceSRSURI, WKTDatatype.URI, DimensionInfo.XY_POINT);
@@ -208,7 +208,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testDistanceSameSRSSameUnit() throws Exception {
-        System.out.println("distanceEuclidean, same SRS, same Unit");
+
 
         Geometry targetGeo = GEOMETRY_FACTORY.createPoint(new Coordinate(2.0, 1.0));
         String targetSRSURI = SRS_URI.OSGB36_CRS;
@@ -233,7 +233,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testDistanceSameSRSDifferentUnit() throws Exception {
-        System.out.println("distanceEuclidean, same SRS, different Unit");
+
 
         Geometry targetGeo = GEOMETRY_FACTORY.createPoint(new Coordinate(385458, 156785)); //LatLon - 51.31, -2.21
         String targetSRSURI = SRS_URI.OSGB36_CRS;
@@ -259,7 +259,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testDistanceDifferentSRSSameUnit() throws Exception {
-        System.out.println("distanceEuclidean, different SRS, same Unit");
+
 
         Geometry targetGeo = GEOMETRY_FACTORY.createPoint(new Coordinate(2.0, 1.0));
         String targetSRSURI = SRS_URI.WGS84_CRS;
@@ -285,7 +285,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testDistanceDifferentSRSDifferentUnit() throws Exception {
-        System.out.println("distanceEuclidean, different SRS, different Unit");
+
 
         Geometry targetGeo = GEOMETRY_FACTORY.createPoint(new Coordinate(0.0, 1.0));
         String targetSRSURI = SRS_URI.WGS84_CRS;
@@ -309,7 +309,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testEmptyWKT() {
-        System.out.println("emptyWKT");
+
         Geometry instanceGeo = GEOMETRY_FACTORY.createPoint();
         String instanceSRSURI = SRS_URI.DEFAULT_WKT_CRS84;
         GeometryWrapper result = new GeometryWrapper(instanceGeo, instanceSRSURI, WKTDatatype.URI, DimensionInfo.XY_POINT);
@@ -324,7 +324,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testEmptyWKTGeometryWrapper() {
-        System.out.println("emptyWKTGeometryWrapper");
+
 
         Geometry instanceGeo = GEOMETRY_FACTORY.createPoint();
         String instanceSRSURI = SRS_URI.DEFAULT_WKT_CRS84;
@@ -340,7 +340,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testEmptyGMLGeometryWrapper() {
-        System.out.println("emptyGMLGeometryWrapper");
+
 
         Geometry instanceGeo = GEOMETRY_FACTORY.createPoint();
         String instanceSRSURI = SRS_URI.DEFAULT_WKT_CRS84;
@@ -356,7 +356,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testAsLiteral() {
-        System.out.println("asLiteral");
+
 
         String lexicalForm = "POINT(-83.38 33.95)";
         GeometryWrapper instance = WKTDatatype.INSTANCE.parse(lexicalForm);
@@ -372,7 +372,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testAsLiteralConversionURI() {
-        System.out.println("asLiteralConversionURI");
+
 
         String lexicalForm = "POINT(-83.38 33.95)";
         GeometryWrapper instance = WKTDatatype.INSTANCE.parse(lexicalForm);
@@ -389,7 +389,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testAsLiteralConversionDatatype() {
-        System.out.println("asLiteralConversionDatatype");
+
 
         String lexicalForm = "POINT(-83.38 33.95)";
         GeometryWrapper instance = WKTDatatype.INSTANCE.parse(lexicalForm);
@@ -408,7 +408,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testDistanceGreatCircle() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("distanceGreatCircle");
+
         GeometryWrapper instance = SpatialIndexTestData.PARIS_GEOMETRY_WRAPPER;
         GeometryWrapper testGeometryWrapper = SpatialIndexTestData.LONDON_GEOMETRY_WRAPPER;
         String unitsURI = Unit_URI.KILOMETER_URL;
@@ -426,7 +426,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testDistanceGreatCircle_polygon() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("distanceGreatCircle_polygon");
+
         GeometryWrapper instance = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 -180.0, 20.0 -180.0, 20.0 -170.0, 10.0 -170.0, 10.0 -180.0))", WKTDatatype.URI);
         GeometryWrapper testGeometryWrapper = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 170.0, 20.0 170.0, 20.0 179.0, 10.0 179.0, 10.0 170.0))", WKTDatatype.URI);
         String unitsURI = Unit_URI.KILOMETER_URL;
@@ -444,7 +444,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testDistanceGreatCircle_polygon2() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("distanceGreatCircle_polygon2");
+
         GeometryWrapper instance = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 0.0, 20.0 0.0, 20.0 10.0, 10.0 10.0, 10.0 0.0))", WKTDatatype.URI);
         GeometryWrapper testGeometryWrapper = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 -10.0, 20.0 -10.0, 20.0 -1.0, 10.0 -1.0, 10.0 -10.0))", WKTDatatype.URI);
         String unitsURI = Unit_URI.KILOMETER_URL;
@@ -460,7 +460,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testTranslateXYGeometry_geographic() {
-        System.out.println("translateXYGeometry_geographic");
+
         GeometryWrapper instance = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 -180.0, 20.0 -180.0, 20.0 -170.0, 10.0 -170.0, 10.0 -180.0))", WKTDatatype.URI);
 
         //Exp Result is based on the same WGS84 coordinates but shifted by 360 degrees along longitude.
@@ -476,7 +476,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testTranslateXYGeometry_non_geographic() {
-        System.out.println("translateXYGeometry_non_geographic");
+
         GeometryWrapper instance = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((10.0 -180.0, 20.0 -180.0, 20.0 -170.0, 10.0 -170.0, 10.0 -180.0))", WKTDatatype.URI);
 
         //Exp Result is unchanged as only geographic SRS are translated.
@@ -493,7 +493,7 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testDistanceGreatCircle_overlap() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("distanceGreatCircle_overlap");
+
         GeometryWrapper instance = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 0.0, 20.0 0.0, 20.0 10.0, 10.0 10.0, 10.0 0.0))", WKTDatatype.URI);
         GeometryWrapper testGeometryWrapper = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 0.0)", WKTDatatype.URI);
         String unitsURI = Unit_URI.KILOMETER_URL;

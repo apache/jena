@@ -54,7 +54,7 @@ public class AzimuthTest {
      */
     @Test
     public void testFind_East() {
-        System.out.println("find_East");
+
         double lat1 = 0.0;
         double lon1 = 0.0;
         double lat2 = 0.0;
@@ -69,7 +69,7 @@ public class AzimuthTest {
      */
     @Test
     public void testFind_North() {
-        System.out.println("find_North");
+
         double lat1 = 0.0;
         double lon1 = 0.0;
         double lat2 = 10.0;
@@ -84,7 +84,7 @@ public class AzimuthTest {
      */
     @Test
     public void testFind_South() {
-        System.out.println("find_South");
+
         double lat1 = 0.0;
         double lon1 = 0.0;
         double lat2 = -10.0;
@@ -99,7 +99,7 @@ public class AzimuthTest {
      */
     @Test
     public void testFind_West() {
-        System.out.println("find_West");
+
         double lat1 = 0.0;
         double lon1 = 0.0;
         double lat2 = 0.0;
@@ -114,7 +114,7 @@ public class AzimuthTest {
      */
     @Test
     public void testFind_East_cross_boundary() {
-        System.out.println("find_East_cross_boundary");
+
         double lat1 = 0.0;
         double lon1 = 170.0;
         double lat2 = 0.0;
@@ -129,7 +129,7 @@ public class AzimuthTest {
      */
     @Test
     public void testFind_West_cross_boundary() {
-        System.out.println("find_West_cross_boundary");
+
         double lat1 = 0.0;
         double lon1 = -170.0;
         double lat2 = 0.0;

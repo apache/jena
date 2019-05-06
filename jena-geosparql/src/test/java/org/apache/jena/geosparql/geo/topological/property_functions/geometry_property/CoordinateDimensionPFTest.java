@@ -57,7 +57,7 @@ public class CoordinateDimensionPFTest {
      */
     @Test
     public void testApplyPredicate_2_Dimension() {
-        System.out.println("applyPredicate_2_Dimension");
+
         GeometryWrapper geometryWrapper = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(90 60)", WKTDatatype.URI);
         CoordinateDimensionPF instance = new CoordinateDimensionPF();
         NodeValue expResult = NodeValue.makeNodeInteger(2);
@@ -70,7 +70,7 @@ public class CoordinateDimensionPFTest {
      */
     @Test
     public void testApplyPredicate_3Z_Dimension() {
-        System.out.println("applyPredicate_3Z_Dimension");
+
         GeometryWrapper geometryWrapper = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT Z (90 60 30)", WKTDatatype.URI);
         CoordinateDimensionPF instance = new CoordinateDimensionPF();
         NodeValue expResult = NodeValue.makeNodeInteger(3);
@@ -83,7 +83,7 @@ public class CoordinateDimensionPFTest {
      */
     @Test
     public void testApplyPredicate_3M_Dimension() {
-        System.out.println("applyPredicate_3M_Dimension");
+
         GeometryWrapper geometryWrapper = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT M (90 60 30)", WKTDatatype.URI);
         CoordinateDimensionPF instance = new CoordinateDimensionPF();
         NodeValue expResult = NodeValue.makeNodeInteger(3);
@@ -96,7 +96,7 @@ public class CoordinateDimensionPFTest {
      */
     @Test
     public void testApplyPredicate_4_Dimension() {
-        System.out.println("applyPredicate_4_Dimension");
+
         GeometryWrapper geometryWrapper = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT ZM (90 60 30 10)", WKTDatatype.URI);
         CoordinateDimensionPF instance = new CoordinateDimensionPF();
         NodeValue expResult = NodeValue.makeNodeInteger(4);

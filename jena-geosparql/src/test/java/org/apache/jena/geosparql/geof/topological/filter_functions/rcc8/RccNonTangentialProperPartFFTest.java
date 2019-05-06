@@ -58,7 +58,7 @@ public class RccNonTangentialProperPartFFTest {
     //Only Polygon-Polygon
     @Test
     public void testRelate_polygon_polygon() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_polygon_polygon");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((145 30, 145 40, 160 40, 160 30, 145 30))", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((140 15, 140 45, 200 45, 200 15, 140 15))", WKTDatatype.INSTANCE));
@@ -72,7 +72,7 @@ public class RccNonTangentialProperPartFFTest {
 
     @Test
     public void testRelate_polygon_polygon_false() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_polygon_polygon_false");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((80 15, 80 45, 140 45, 140 15, 80 15))", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((140 15, 140 45, 200 45, 200 15, 140 15))", WKTDatatype.INSTANCE));
@@ -89,7 +89,7 @@ public class RccNonTangentialProperPartFFTest {
      */
     @Test
     public void testIsDisjoint() {
-        System.out.println("isDisjoint");
+
         RccNonTangentialProperPartFF instance = new RccNonTangentialProperPartFF();
         boolean expResult = false;
         boolean result = instance.isDisjoint();
@@ -101,7 +101,7 @@ public class RccNonTangentialProperPartFFTest {
      */
     @Test
     public void testIsDisconnected() {
-        System.out.println("isDisconnected");
+
         RccNonTangentialProperPartFF instance = new RccNonTangentialProperPartFF();
         boolean expResult = false;
         boolean result = instance.isDisconnected();
@@ -113,7 +113,7 @@ public class RccNonTangentialProperPartFFTest {
      */
     @Test
     public void testPermittedTopology_point_point() {
-        System.out.println("permittedTopology_point_point");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POINT;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POINT;
         RccNonTangentialProperPartFF instance = new RccNonTangentialProperPartFF();
@@ -127,7 +127,7 @@ public class RccNonTangentialProperPartFFTest {
      */
     @Test
     public void testPermittedTopology_point_linestring() {
-        System.out.println("permittedTopology_point_linestring");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POINT;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_LINESTRING;
         RccNonTangentialProperPartFF instance = new RccNonTangentialProperPartFF();
@@ -141,7 +141,7 @@ public class RccNonTangentialProperPartFFTest {
      */
     @Test
     public void testPermittedTopology_point_polygon() {
-        System.out.println("permittedTopology_point_polygon");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POINT;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POLYGON;
         RccNonTangentialProperPartFF instance = new RccNonTangentialProperPartFF();
@@ -155,7 +155,7 @@ public class RccNonTangentialProperPartFFTest {
      */
     @Test
     public void testPermittedTopology_linestring_linestring() {
-        System.out.println("permittedTopology_linestring_linestring");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_LINESTRING;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_LINESTRING;
         RccNonTangentialProperPartFF instance = new RccNonTangentialProperPartFF();
@@ -169,7 +169,7 @@ public class RccNonTangentialProperPartFFTest {
      */
     @Test
     public void testPermittedTopology_linestring_point() {
-        System.out.println("permittedTopology_linestring_point");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_LINESTRING;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POINT;
         RccNonTangentialProperPartFF instance = new RccNonTangentialProperPartFF();
@@ -183,7 +183,7 @@ public class RccNonTangentialProperPartFFTest {
      */
     @Test
     public void testPermittedTopology_linestring_polygon() {
-        System.out.println("permittedTopology_linestring_polygon");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_LINESTRING;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POLYGON;
         RccNonTangentialProperPartFF instance = new RccNonTangentialProperPartFF();
@@ -197,7 +197,7 @@ public class RccNonTangentialProperPartFFTest {
      */
     @Test
     public void testPermittedTopology_polygon_polygon() {
-        System.out.println("permittedTopology_polygon_polygon");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POLYGON;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POLYGON;
         RccNonTangentialProperPartFF instance = new RccNonTangentialProperPartFF();
@@ -211,7 +211,7 @@ public class RccNonTangentialProperPartFFTest {
      */
     @Test
     public void testPermittedTopology_polygon_linestring() {
-        System.out.println("permittedTopology_polygon_linestring");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POLYGON;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_LINESTRING;
         RccNonTangentialProperPartFF instance = new RccNonTangentialProperPartFF();
@@ -225,7 +225,7 @@ public class RccNonTangentialProperPartFFTest {
      */
     @Test
     public void testPermittedTopology_polygon_point() {
-        System.out.println("permittedTopology_polygon_point");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POLYGON;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POINT;
         RccNonTangentialProperPartFF instance = new RccNonTangentialProperPartFF();

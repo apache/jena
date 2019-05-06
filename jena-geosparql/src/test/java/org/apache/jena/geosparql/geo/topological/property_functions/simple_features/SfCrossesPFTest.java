@@ -58,7 +58,7 @@ public class SfCrossesPFTest {
     //Point-Linestring returns false. Have to compare with a set of points.
     @Test
     public void testFilterFunction_multipoint_linestring() {
-        System.out.println("filterFunction_multipoint_linestring");
+
 
         Literal subjectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> MULTIPOINT(90 60, 10 60)", WKTDatatype.INSTANCE);
         Literal objectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(75 60, 145 60)", WKTDatatype.INSTANCE);
@@ -73,7 +73,7 @@ public class SfCrossesPFTest {
     //Point-Polygon returns false. Have to compare with a set of points.
     @Test
     public void testFilterFunction_multipoint_polygon() {
-        System.out.println("filterFunction_multipoint_polygon");
+
 
         Literal subjectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> MULTIPOINT(60 60, 20 20)", WKTDatatype.INSTANCE);
         Literal objectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE);
@@ -87,7 +87,7 @@ public class SfCrossesPFTest {
 
     @Test
     public void testFilterFunction_linestring_linestring() {
-        System.out.println("filterFunction_linestring_linestring");
+
 
         Literal subjectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(80 85, 80 30)", WKTDatatype.INSTANCE);
         Literal objectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(75 60, 145 60)", WKTDatatype.INSTANCE);
@@ -101,7 +101,7 @@ public class SfCrossesPFTest {
 
     @Test
     public void testFilterFunction_linestring_polygon() {
-        System.out.println("filterFunction_linestring_polygon");
+
 
         Literal subjectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(75 60, 145 60)", WKTDatatype.INSTANCE);
         Literal objectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE);
@@ -115,7 +115,7 @@ public class SfCrossesPFTest {
 
     @Test
     public void testFilterFunction_multipoint_linestring_false() {
-        System.out.println("filterFunction_multipoint_linestring_false");
+
 
         Literal subjectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> MULTIPOINT(90 60, 80 60)", WKTDatatype.INSTANCE);
         Literal objectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(75 60, 145 60)", WKTDatatype.INSTANCE);
@@ -129,7 +129,7 @@ public class SfCrossesPFTest {
 
     @Test
     public void testFilterFunction_multipoint_polygon_false() {
-        System.out.println("filterFunction_multipoint_polygon_false");
+
 
         Literal subjectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE);
         Literal objectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> MULTIPOINT(60 60, 65 65)", WKTDatatype.INSTANCE);
@@ -143,7 +143,7 @@ public class SfCrossesPFTest {
 
     @Test
     public void testFilterFunction_linestring_linestring_false() {
-        System.out.println("filterFunction_linestring_linestring_false");
+
 
         Literal subjectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE);
         Literal objectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(40 50, 80 50)", WKTDatatype.INSTANCE);
@@ -157,7 +157,7 @@ public class SfCrossesPFTest {
 
     @Test
     public void testFilterFunction_linestring_polygon_false() {
-        System.out.println("filterFunction_linestring_polygon_false");
+
 
         Literal subjectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE);
         Literal objectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(40 50, 80 50)", WKTDatatype.INSTANCE);

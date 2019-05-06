@@ -61,7 +61,7 @@ public class DimensionInfoTest {
      */
     @Test
     public void testFind_Coordinate_Geometry() {
-        System.out.println("find");
+
         Coordinate coordinate = new CoordinateXY(1.0, 2.0);
         GeometryFactory factory = new GeometryFactory();
         Geometry geometry = factory.createPoint(coordinate);
@@ -75,7 +75,7 @@ public class DimensionInfoTest {
      */
     @Test
     public void testFind_List_Geometry() {
-        System.out.println("find");
+
         List<Coordinate> coordinates = Arrays.asList(new CoordinateXY(1.0, 2.0), new CoordinateXY(10.0, 20.0));
         GeometryFactory factory = new GeometryFactory();
         Geometry geometry = factory.createLineString(coordinates.toArray(new Coordinate[coordinates.size()]));
@@ -89,7 +89,7 @@ public class DimensionInfoTest {
      */
     @Test
     public void testFindCollection() {
-        System.out.println("findCollection");
+
         GeometryFactory factory = new GeometryFactory();
         List<Point> points = Arrays.asList(factory.createPoint(new Coordinate(1.0, 2.0)), factory.createPoint(new Coordinate(10.0, 20.0)));
 

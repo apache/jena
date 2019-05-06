@@ -75,7 +75,7 @@ public class IntersectBoxGeomPFTest {
      */
     @Test
     public void testCheckSecondFilter() {
-        System.out.println("checkSecondFilter");
+
 
         IntersectBoxGeomPF instance = new IntersectBoxGeomPF();
 
@@ -111,7 +111,7 @@ public class IntersectBoxGeomPFTest {
      */
     @Test
     public void testCheckSecondFilter_fail() {
-        System.out.println("checkSecondFilter_fail");
+
 
         IntersectBoxGeomPF instance = new IntersectBoxGeomPF();
 
@@ -147,7 +147,7 @@ public class IntersectBoxGeomPFTest {
      */
     @Test
     public void testExecEvaluated() {
-        System.out.println("execEvaluated");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 

@@ -69,7 +69,7 @@ public class AngleFFTest {
      */
     @Test
     public void testExec() {
-        System.out.println("exec");
+
         NodeValue v1 = NodeValue.makeDouble(25);
         NodeValue v2 = NodeValue.makeDouble(45);
         NodeValue v3 = NodeValue.makeDouble(75);
@@ -85,7 +85,7 @@ public class AngleFFTest {
      */
     @Test
     public void testExec_query() {
-        System.out.println("exec_query");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 
@@ -108,8 +108,8 @@ public class AngleFFTest {
 
         List<Literal> expResults = Arrays.asList(ResourceFactory.createTypedLiteral("0.7378150601204649e0", XSDDatatype.XSDdouble));
 
-        //System.out.println("Exp: " + expResults);
-        //System.out.println("Res: " + results);
+        //
+        //
         assertEquals(expResults, results);
     }
 

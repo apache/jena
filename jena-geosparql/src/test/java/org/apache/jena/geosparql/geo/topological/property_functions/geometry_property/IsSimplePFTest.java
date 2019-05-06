@@ -57,7 +57,7 @@ public class IsSimplePFTest {
      */
     @Test
     public void testApplyPredicate_true() {
-        System.out.println("applyPredicate_true");
+
         GeometryWrapper geometryWrapper = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(90 60, 100 70)", WKTDatatype.URI);
         IsSimplePF instance = new IsSimplePF();
         NodeValue expResult = NodeValue.makeNodeBoolean(true);
@@ -70,7 +70,7 @@ public class IsSimplePFTest {
      */
     @Test
     public void testApplyPredicate_false() {
-        System.out.println("applyPredicate_false");
+
         GeometryWrapper geometryWrapper = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(0 0, 10 10, 10 5, 0 5)", WKTDatatype.URI);
         IsSimplePF instance = new IsSimplePF();
         NodeValue expResult = NodeValue.makeNodeBoolean(false);

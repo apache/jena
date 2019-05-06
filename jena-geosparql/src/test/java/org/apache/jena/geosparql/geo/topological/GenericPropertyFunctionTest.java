@@ -94,7 +94,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testQueryRewrite_geometry_geometry() {
-        System.out.println("queryRewrite_geometry_geometry");
+
         Graph graph = model.getGraph();
         Node subject = GEOMETRY_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
@@ -111,7 +111,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testQueryRewrite_geometry_geometry_blank() {
-        System.out.println("queryRewrite_geometry_geometry_blank");
+
         Graph graph = model.getGraph();
         Node subject = GEOMETRY_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
@@ -128,7 +128,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testQueryRewrite_blank() {
-        System.out.println("queryRewrite_blank");
+
 
         Graph graph = model.getGraph();
 
@@ -145,7 +145,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testQueryRewrite_geometry_geometry_disabled() {
-        System.out.println("queryRewrite_geometry_geometry_disabled");
+
         GeoSPARQLConfig.setup(IndexOption.MEMORY, Boolean.FALSE);
         Graph graph = model.getGraph();
         Node subject = GEOMETRY_A.asNode();
@@ -165,7 +165,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testQueryRewrite_feature_geometry() {
-        System.out.println("queryRewrite_feature_geometry");
+
         Graph graph = model.getGraph();
         Node subject = FEATURE_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
@@ -182,7 +182,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testQueryRewrite_feature_feature() {
-        System.out.println("queryRewrite_feature_feature");
+
         Graph graph = model.getGraph();
         Node subject = FEATURE_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
@@ -199,7 +199,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testQueryRewrite_geometry_feature() {
-        System.out.println("queryRewrite_geometry_feature");
+
         Graph graph = model.getGraph();
         Node subject = GEOMETRY_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
@@ -216,7 +216,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testQueryRewrite_geometry_feature_disabled() {
-        System.out.println("queryRewrite_geometry_feature_disabled");
+
         GeoSPARQLConfig.setup(IndexOption.MEMORY, Boolean.FALSE);
         Graph graph = model.getGraph();
         Node subject = GEOMETRY_A.asNode();
@@ -236,7 +236,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testQueryRewrite_geometry_geometry_false() {
-        System.out.println("queryRewrite_geometry_geometry_false");
+
         Graph graph = model.getGraph();
         Node subject = GEOMETRY_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
@@ -253,7 +253,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testQueryRewrite_feature_geometry_false() {
-        System.out.println("queryRewrite_feature_geometry_false");
+
         Graph graph = model.getGraph();
         Node subject = FEATURE_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
@@ -270,7 +270,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testQueryRewrite_feature_feature_false() {
-        System.out.println("queryRewrite_feature_feature_false");
+
         Graph graph = model.getGraph();
         Node subject = FEATURE_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
@@ -287,7 +287,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testQueryRewrite_geometry_feature_false() {
-        System.out.println("queryRewrite_geometry_feature_false");
+
         Graph graph = model.getGraph();
         Node subject = GEOMETRY_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
@@ -304,7 +304,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testQueryRewrite_geometry_geometry_asserted() {
-        System.out.println("queryRewrite_geometry__geometry_asserted");
+
 
         Graph graph = model.getGraph();
         Node subject = GEOMETRY_A.asNode();
@@ -322,7 +322,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testQueryRewrite_geometry_geometry_asserted_disabled() {
-        System.out.println("queryRewrite_geometry__geometry_asserted_disabled");
+
         GeoSPARQLConfig.setup(IndexOption.MEMORY, Boolean.FALSE);
         Graph graph = model.getGraph();
         Node subject = GEOMETRY_A.asNode();
@@ -342,7 +342,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testQueryRewrite_feature_feature_disjoint() {
-        System.out.println("queryRewrite_feature_feature_disjoint");
+
         Graph graph = model.getGraph();
         Node subject = FEATURE_A.asNode();
         Node predicate = Geo.SF_DISJOINT_NODE;
@@ -359,7 +359,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testQueryRewrite_feature_feature_disjoint_false() {
-        System.out.println("queryRewrite_feature_feature_disjoint_false");
+
         Graph graph = model.getGraph();
         Node subject = FEATURE_A.asNode();
         Node predicate = Geo.SF_DISJOINT_NODE;
@@ -376,7 +376,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testExecEvaluated_unbound() {
-        System.out.println("execEvaluated_unbound");
+
 
         String query = "PREFIX geo: <http://www.opengis.net/ont/geosparql#>\n"
                 + "\n"
@@ -402,8 +402,8 @@ public class GenericPropertyFunctionTest {
         //Blank nodes limit a value check.
         boolean expResult = true;
         boolean result = subjects.size() == 25 && objects.size() == 25;
-        //System.out.println("Subjects: " + subjects);
-        //System.out.println("Objects: " + objects);
+        //
+        //
         assertEquals(expResult, result);
     }
 
@@ -412,7 +412,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testExecEvaluated_subject_bound() {
-        System.out.println("execEvaluated_subject_bound");
+
 
         String query = "PREFIX geo: <http://www.opengis.net/ont/geosparql#>\n"
                 + "\n"
@@ -436,7 +436,7 @@ public class GenericPropertyFunctionTest {
         //Blank nodes limit a value check.
         int expResult = 6;
         int result = objects.size();
-        //System.out.println("Objects: " + objects);
+        //
         assertEquals(expResult, result);
     }
 
@@ -445,7 +445,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testExecEvaluated_subject_bound_geometry() {
-        System.out.println("execEvaluated_subject_bound");
+
 
         String query = "PREFIX geo: <http://www.opengis.net/ont/geosparql#>\n"
                 + "\n"
@@ -470,9 +470,9 @@ public class GenericPropertyFunctionTest {
         int expResult = 7;
         int result = objects.size();
 
-        System.out.println("Exp: " + expResult);
-        System.out.println("Res: " + result);
-        System.out.println("Objects: " + objects);
+
+
+
         assertEquals(expResult, result);
     }
 
@@ -481,7 +481,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testExecEvaluated_object_bound() {
-        System.out.println("execEvaluated_object_bound");
+
 
         String query = "PREFIX geo: <http://www.opengis.net/ont/geosparql#>\n"
                 + "\n"
@@ -504,8 +504,8 @@ public class GenericPropertyFunctionTest {
 
         List<Resource> expResults = Arrays.asList(FEATURE_A, FEATURE_B, GEOMETRY_A, GEOMETRY_B);
 
-        //System.out.println("Exp: " + expResults);
-        //System.out.println("Res: " + results);
+        //
+        //
         assertEquals(expResults, results);
     }
 
@@ -514,7 +514,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testExecEvaluated_both_bound() {
-        System.out.println("execEvaluated_both_bound");
+
 
         String query = "PREFIX geo: <http://www.opengis.net/ont/geosparql#>\n"
                 + "\n"
@@ -551,7 +551,7 @@ public class GenericPropertyFunctionTest {
      */
     @Test
     public void testExecEvaluated_both_bound_geo() {
-        System.out.println("execEvaluated_both_bound_geo");
+
 
         String query = "PREFIX geo: <http://www.opengis.net/ont/geosparql#>\n"
                 + "\n"

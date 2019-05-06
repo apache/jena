@@ -61,7 +61,7 @@ public class SRSInfoTest {
      */
     @Test
     public void testBuildDomainEnvelope_WGS84() throws FactoryException {
-        System.out.println("buildDomainEnvelope_WGS84");
+
         String srsURI = SRS_URI.WGS84_CRS;
         CoordinateReferenceSystem crs = CRS.forCode(srsURI);
         Boolean isAxisXY = SRSInfo.checkAxisXY(crs);
@@ -77,7 +77,7 @@ public class SRSInfoTest {
      */
     @Test
     public void testBuildDomainEnvelope_CRS84() throws FactoryException {
-        System.out.println("buildDomainEnvelope_CRS84");
+
         String srsURI = SRS_URI.DEFAULT_WKT_CRS84;
         CoordinateReferenceSystem crs = CRS.forCode(srsURI);
         Boolean isAxisXY = SRSInfo.checkAxisXY(crs);
@@ -94,7 +94,7 @@ public class SRSInfoTest {
      */
     @Test
     public void testBuildDomainEnvelope_OSGB36() throws FactoryException {
-        System.out.println("buildDomainEnvelope_OSGB36");
+
         String srsURI = SRS_URI.OSGB36_CRS;
         CoordinateReferenceSystem crs = CRS.forCode(srsURI);
         Boolean isAxisXY = SRSInfo.checkAxisXY(crs);
@@ -111,7 +111,7 @@ public class SRSInfoTest {
      */
     @Test
     public void testCheckAxisXY_WGS84() throws FactoryException {
-        System.out.println("checkAxisXY_WGS84");
+
         CoordinateReferenceSystem crs = CRS.forCode(SRS_URI.WGS84_CRS);
         Boolean expResult = false;
         Boolean result = SRSInfo.checkAxisXY(crs);
@@ -125,7 +125,7 @@ public class SRSInfoTest {
      */
     @Test
     public void testCheckAxisXY_CRS84() throws FactoryException {
-        System.out.println("checkAxisXY_CRS84");
+
         CoordinateReferenceSystem crs = CRS.forCode("CRS:84");
         Boolean expResult = true;
         Boolean result = SRSInfo.checkAxisXY(crs);
@@ -139,7 +139,7 @@ public class SRSInfoTest {
      */
     @Test
     public void testCheckAxisXY_OSGB36() throws FactoryException {
-        System.out.println("checkAxisXY_OSGB36");
+
         CoordinateReferenceSystem crs = CRS.forCode(SRS_URI.OSGB36_CRS);
         Boolean expResult = true;
         Boolean result = SRSInfo.checkAxisXY(crs);

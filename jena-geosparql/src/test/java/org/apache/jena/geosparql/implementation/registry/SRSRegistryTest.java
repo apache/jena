@@ -61,7 +61,7 @@ public class SRSRegistryTest {
      */
     @Test
     public void testGetCRS() throws FactoryException {
-        System.out.println("getCRS");
+
         String srsURI = "http://www.opengis.net/def/crs/EPSG/0/4326";
         CoordinateReferenceSystem expResult = CRS.forCode(srsURI);
         CoordinateReferenceSystem result = SRSRegistry.getCRS(srsURI);
@@ -74,7 +74,7 @@ public class SRSRegistryTest {
     @Test
     public void testGetDefaultWKTCRS() {
         try {
-            System.out.println("getDefaultWKTCRS");
+
             String srsURI = SRS_URI.DEFAULT_WKT_CRS84;
 
             String default_CRS_WKT = "GeodeticCRS[\"WGS 84\",\n"
@@ -93,7 +93,7 @@ public class SRSRegistryTest {
             CoordinateReferenceSystem result = SRSRegistry.getCRS(srsURI);
             assertEquals(expResult.toWKT(), result.toWKT());
         } catch (FactoryException ex) {
-            System.out.println("Default WKT CRS error: " + ex.getMessage());
+
         }
     }
 
@@ -103,7 +103,7 @@ public class SRSRegistryTest {
      */
     @Test
     public void testGetAxisXY_WGS84URI() {
-        System.out.println("getAxisXY_WGS84URI");
+
         String srsURI = SRS_URI.WGS84_CRS;
         Boolean expResult = false;
         Boolean result = SRSRegistry.getAxisXY(srsURI);
@@ -116,7 +116,7 @@ public class SRSRegistryTest {
      */
     @Test
     public void testGetAxisXY_CRS84URI() {
-        System.out.println("getAxisXY_CRS84URI");
+
         String srsURI = SRS_URI.DEFAULT_WKT_CRS84;
         Boolean expResult = true;
         Boolean result = SRSRegistry.getAxisXY(srsURI);
@@ -129,7 +129,7 @@ public class SRSRegistryTest {
      */
     @Test
     public void testGetAxisXY_OSGB36URI() {
-        System.out.println("getAxisXY_OSGB36URI");
+
         String srsURI = SRS_URI.OSGB36_CRS;
         Boolean expResult = true;
         Boolean result = SRSRegistry.getAxisXY(srsURI);

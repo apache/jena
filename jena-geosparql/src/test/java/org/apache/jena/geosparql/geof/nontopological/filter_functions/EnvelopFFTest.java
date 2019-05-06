@@ -56,7 +56,7 @@ public class EnvelopFFTest {
      */
     @Test
     public void testExec_point() {
-        System.out.println("exec_point");
+
         NodeValue v = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(10 10)", WKTDatatype.INSTANCE);
         EnvelopFF instance = new EnvelopFF();
         NodeValue expResult = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(10 10)", WKTDatatype.INSTANCE);
@@ -69,7 +69,7 @@ public class EnvelopFFTest {
      */
     @Test
     public void testExec_linestring() {
-        System.out.println("exec_linestring");
+
         NodeValue v = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(0 0, 10 10, 5 5)", WKTDatatype.INSTANCE);
         EnvelopFF instance = new EnvelopFF();
         NodeValue expResult = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))", WKTDatatype.INSTANCE);
@@ -82,7 +82,7 @@ public class EnvelopFFTest {
      */
     @Test
     public void testExec_polygon() {
-        System.out.println("exec_polygon");
+
         NodeValue v = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))", WKTDatatype.INSTANCE);
         EnvelopFF instance = new EnvelopFF();
         NodeValue expResult = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))", WKTDatatype.INSTANCE);

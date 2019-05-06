@@ -62,7 +62,7 @@ public class SfCrossesFFTest {
     //Point-Linestring returns false. Have to compare with a set of points.
     @Test
     public void testRelate_multipoint_linestring() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_multipoint_linestring");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> MULTIPOINT(90 60, 10 60)", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(75 60, 145 60)", WKTDatatype.INSTANCE));
@@ -77,7 +77,7 @@ public class SfCrossesFFTest {
     //Point-Polygon returns false. Have to compare with a set of points.
     @Test
     public void testRelate_multipoint_polygon() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_multipoint_polygon");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> MULTIPOINT(60 60, 20 20)", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE));
@@ -91,7 +91,7 @@ public class SfCrossesFFTest {
 
     @Test
     public void testRelate_linestring_linestring() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_linestring_linestring");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(80 85, 80 30)", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(75 60, 145 60)", WKTDatatype.INSTANCE));
@@ -105,7 +105,7 @@ public class SfCrossesFFTest {
 
     @Test
     public void testRelate_linestring_polygon() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_linestring_polygon");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(75 60, 145 60)", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE));
@@ -119,7 +119,7 @@ public class SfCrossesFFTest {
 
     @Test
     public void testRelate_multipoint_linestring_false() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_multipoint_linestring_false");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> MULTIPOINT(90 60, 80 60)", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(75 60, 145 60)", WKTDatatype.INSTANCE));
@@ -133,7 +133,7 @@ public class SfCrossesFFTest {
 
     @Test
     public void testRelate_multipoint_polygon_false() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_multipoint_polygon_false");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> MULTIPOINT(60 60, 65 65)", WKTDatatype.INSTANCE));
@@ -147,7 +147,7 @@ public class SfCrossesFFTest {
 
     @Test
     public void testRelate_linestring_linestring_false() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_linestring_linestring_false");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(40 50, 80 50)", WKTDatatype.INSTANCE));
@@ -161,7 +161,7 @@ public class SfCrossesFFTest {
 
     @Test
     public void testRelate_linestring_polygon_false() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_linestring_polygon_false");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(40 50, 80 50)", WKTDatatype.INSTANCE));
@@ -178,7 +178,7 @@ public class SfCrossesFFTest {
      */
     @Test
     public void testIsDisjoint() {
-        System.out.println("isDisjoint");
+
         SfCrossesFF instance = new SfCrossesFF();
         boolean expResult = false;
         boolean result = instance.isDisjoint();
@@ -190,7 +190,7 @@ public class SfCrossesFFTest {
      */
     @Test
     public void testIsDisconnected() {
-        System.out.println("isDisconnected");
+
         SfCrossesFF instance = new SfCrossesFF();
         boolean expResult = false;
         boolean result = instance.isDisconnected();
@@ -202,7 +202,7 @@ public class SfCrossesFFTest {
      */
     @Test
     public void testPermittedTopology_point_point() {
-        System.out.println("permittedTopology_point_point");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POINT;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POINT;
         SfCrossesFF instance = new SfCrossesFF();
@@ -216,7 +216,7 @@ public class SfCrossesFFTest {
      */
     @Test
     public void testPermittedTopology_point_linestring() {
-        System.out.println("permittedTopology_point_linestring");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POINT;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_LINESTRING;
         SfCrossesFF instance = new SfCrossesFF();
@@ -230,7 +230,7 @@ public class SfCrossesFFTest {
      */
     @Test
     public void testPermittedTopology_point_polygon() {
-        System.out.println("permittedTopology_point_polygon");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POINT;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POLYGON;
         SfCrossesFF instance = new SfCrossesFF();
@@ -244,7 +244,7 @@ public class SfCrossesFFTest {
      */
     @Test
     public void testPermittedTopology_linestring_linestring() {
-        System.out.println("permittedTopology_linestring_linestring");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_LINESTRING;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_LINESTRING;
         SfCrossesFF instance = new SfCrossesFF();
@@ -258,7 +258,7 @@ public class SfCrossesFFTest {
      */
     @Test
     public void testPermittedTopology_linestring_point() {
-        System.out.println("permittedTopology_linestring_point");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_LINESTRING;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POINT;
         SfCrossesFF instance = new SfCrossesFF();
@@ -272,7 +272,7 @@ public class SfCrossesFFTest {
      */
     @Test
     public void testPermittedTopology_linestring_polygon() {
-        System.out.println("permittedTopology_linestring_polygon");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_LINESTRING;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POLYGON;
         SfCrossesFF instance = new SfCrossesFF();
@@ -286,7 +286,7 @@ public class SfCrossesFFTest {
      */
     @Test
     public void testPermittedTopology_polygon_polygon() {
-        System.out.println("permittedTopology_polygon_polygon");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POLYGON;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POLYGON;
         SfCrossesFF instance = new SfCrossesFF();
@@ -300,7 +300,7 @@ public class SfCrossesFFTest {
      */
     @Test
     public void testPermittedTopology_polygon_linestring() {
-        System.out.println("permittedTopology_polygon_linestring");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POLYGON;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_LINESTRING;
         SfCrossesFF instance = new SfCrossesFF();
@@ -314,7 +314,7 @@ public class SfCrossesFFTest {
      */
     @Test
     public void testPermittedTopology_polygon_point() {
-        System.out.println("permittedTopology_polygon_point");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POLYGON;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POINT;
         SfCrossesFF instance = new SfCrossesFF();

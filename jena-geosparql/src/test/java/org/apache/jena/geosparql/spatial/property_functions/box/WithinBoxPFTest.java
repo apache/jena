@@ -75,7 +75,7 @@ public class WithinBoxPFTest {
      */
     @Test
     public void testCheckSecondFilter() {
-        System.out.println("checkSecondFilter");
+
 
         WithinBoxPF instance = new WithinBoxPF();
 
@@ -110,7 +110,7 @@ public class WithinBoxPFTest {
      */
     @Test
     public void testCheckSecondFilter_fail() {
-        System.out.println("checkSecondFilter_fail");
+
 
         WithinBoxPF instance = new WithinBoxPF();
 
@@ -145,7 +145,7 @@ public class WithinBoxPFTest {
      */
     @Test
     public void testExecEvaluated() {
-        System.out.println("execEvaluated");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 

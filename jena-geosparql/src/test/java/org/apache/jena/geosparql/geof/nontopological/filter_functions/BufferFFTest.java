@@ -64,7 +64,7 @@ public class BufferFFTest {
      */
     @Test
     public void testExec_Projection_Linear() {
-        System.out.println("exec_Projection_Linear");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(60 60)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeDecimal(20);
         NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.METRE_URL));
@@ -79,7 +79,7 @@ public class BufferFFTest {
      */
     @Test
     public void testExec_Projection_NonLinear() {
-        System.out.println("exec_Projection_NonLinear");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(60 60)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeDecimal(0.0002);
         NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.DEGREE_URL));
@@ -94,7 +94,7 @@ public class BufferFFTest {
      */
     @Test
     public void testExec_Geographic_Linear() {
-        System.out.println("exec_Geographic_Linear");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((49.9 -7.5, 50.0 -7.5, 50.0 -7.4, 49.9 -7.4, 49.9 -7.5))", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeDecimal(20);
         NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.METRE_URL));
@@ -112,7 +112,7 @@ public class BufferFFTest {
      */
     @Test
     public void testExec_Geographic_Linear2() throws MismatchedDimensionException, TransformException, FactoryException {
-        System.out.println("exec_Geographic_Linear2");
+
 
         //Test that buffering with Geographic geometry and Linear distance yields similar results to Projected geometry and Linear distance.
         GeometryWrapper originalGeometryWrapper = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((0.0 0.0, 0.0 100.0, 100.0 100.0, 100.0 0.0, 0.0 0.0))", WKTDatatype.URI);
@@ -156,8 +156,8 @@ public class BufferFFTest {
             j++;
         }
 
-        //System.out.println("Exp: " + Arrays.toString(expResults));
-        //System.out.println("Res: " + Arrays.toString(results));
+        //
+        //
         //Test accuracy of buffering to within 0.1m. Some error from coordinate transformations.
         Assert.assertArrayEquals(expResults, results, 0.1);
     }
@@ -167,7 +167,7 @@ public class BufferFFTest {
      */
     @Test
     public void testExec_Geographic_NonLinear() {
-        System.out.println("exec_Geographic_NonLinear");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((49.9 -7.5, 50.0 -7.5, 50.0 -7.4, 49.9 -7.4, 49.9 -7.5))", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeDecimal(0.0002);
         NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.DEGREE_URL));

@@ -72,7 +72,7 @@ public class TransformDatatypeFFTest {
      */
     @Test
     public void testExec_string() {
-        System.out.println("exec_string");
+
         NodeValue v1 = NodeValue.makeNode("<gml:Point xmlns:gml=\"http://www.opengis.net/ont/gml\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\"><gml:pos>0 10</gml:pos></gml:Point>", GMLDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeString(WKTDatatype.URI);
         TransformDatatypeFF instance = new TransformDatatypeFF();
@@ -86,7 +86,7 @@ public class TransformDatatypeFFTest {
      */
     @Test
     public void testExec_URI() {
-        System.out.println("exec_URI");
+
         NodeValue v1 = NodeValue.makeNode("<gml:Point xmlns:gml=\"http://www.opengis.net/ont/gml\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\"><gml:pos>0 10</gml:pos></gml:Point>", GMLDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode(NodeFactory.createURI(WKTDatatype.URI));
         TransformDatatypeFF instance = new TransformDatatypeFF();
@@ -100,7 +100,7 @@ public class TransformDatatypeFFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_fail() {
-        System.out.println("exec_fail");
+
         NodeValue v1 = NodeValue.makeNode("<gml:Point xmlns:gml=\"http://www.opengis.net/ont/gml\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\"><gml:pos>0 10</gml:pos></gml:Point>", GMLDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeInteger(8);
         TransformDatatypeFF instance = new TransformDatatypeFF();
@@ -114,7 +114,7 @@ public class TransformDatatypeFFTest {
      */
     @Test
     public void testExec_query() {
-        System.out.println("exec_query");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 
@@ -139,8 +139,8 @@ public class TransformDatatypeFFTest {
 
         List<Literal> expResults = Arrays.asList(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(0 10)", WKTDatatype.INSTANCE));
 
-        //System.out.println("Exp: " + expResults);
-        //System.out.println("Res: " + results);
+        //
+        //
         assertEquals(expResults, results);
     }
 }

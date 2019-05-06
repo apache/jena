@@ -57,7 +57,7 @@ public class CoordinatePairTest {
      */
     @Test
     public void testFindNearestPair_boundary() {
-        System.out.println("findNearestPair_boundary");
+
         GeometryWrapper sourceGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 -180.0, 20.0 -180.0, 20.0 -170.0, 10.0 -170.0, 10.0 -180.0))", WKTDatatype.URI);
         GeometryWrapper targetGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 170.0, 20.0 170.0, 20.0 179.0, 10.0 179.0, 10.0 170.0))", WKTDatatype.URI);
 
@@ -71,7 +71,7 @@ public class CoordinatePairTest {
      */
     @Test
     public void testFindNearestPair_boundary2() {
-        System.out.println("findNearestPair_boundary2");
+
         GeometryWrapper sourceGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 170.0, 20.0 170.0, 20.0 179.0, 10.0 179.0, 10.0 170.0))", WKTDatatype.URI);
         GeometryWrapper targetGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 -180.0, 20.0 -180.0, 20.0 -170.0, 10.0 -170.0, 10.0 -180.0))", WKTDatatype.URI);
 
@@ -85,7 +85,7 @@ public class CoordinatePairTest {
      */
     @Test
     public void testFindNearestPair_near() {
-        System.out.println("findNearestPair_near");
+
         GeometryWrapper sourceGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 1.0, 20.0 1.0, 20.0 2.0, 10.0 2.0, 10.0 1.0))", WKTDatatype.URI);
         GeometryWrapper targetGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 -2.0, 20.0 -2.0, 20.0 -1.0, 10.0 -1.0, 10.0 -2.0))", WKTDatatype.URI);
 
@@ -99,7 +99,7 @@ public class CoordinatePairTest {
      */
     @Test
     public void testFindNearestPair_near_postive() {
-        System.out.println("findNearestPair_near_positive");
+
         GeometryWrapper sourceGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 179.0, 20.0 179.0, 20.0 180.0, 10.0 180.0, 10.0 179.0))", WKTDatatype.URI);
         GeometryWrapper targetGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 177.0, 20.0 177.0, 20.0 178.0, 10.0 178.0, 10.0 177.0))", WKTDatatype.URI);
 
@@ -113,7 +113,7 @@ public class CoordinatePairTest {
      */
     @Test
     public void testFindNearestPair_near_negative() {
-        System.out.println("findNearestPair_near_negative");
+
         GeometryWrapper sourceGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 -180.0, 20.0 -180.0, 20.0 -179.0, 10.0 -179.0, 10.0 -180.0))", WKTDatatype.URI);
         GeometryWrapper targetGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 -178.0, 20.0 -178.0, 20.0 -177.0, 10.0 -177.0, 10.0 -178.0))", WKTDatatype.URI);
 
@@ -127,7 +127,7 @@ public class CoordinatePairTest {
      */
     @Test
     public void testFindNearestPair_same_positive_half() {
-        System.out.println("findNearestPair_same_positive_half");
+
         GeometryWrapper sourceGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 179.0, 20.0 179.0, 20.0 180.0, 10.0 180.0, 10.0 179.0))", WKTDatatype.URI);
         GeometryWrapper targetGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 0.0, 20.0 0.0, 20.0 1.0, 10.0 1.0, 10.0 0.0))", WKTDatatype.URI);
 
@@ -141,7 +141,7 @@ public class CoordinatePairTest {
      */
     @Test
     public void testFindNearestPair_same_negative_half() {
-        System.out.println("findNearestPair_same_negative_half");
+
         GeometryWrapper sourceGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 -180.0, 20.0 -180.0, 20.0 -179.0, 10.0 -179.0, 10.0 -180.0))", WKTDatatype.URI);
         GeometryWrapper targetGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((10.0 -1.0, 20.0 -1.0, 20.0 0.0, 10.0 0.0, 10.0 -1.0))", WKTDatatype.URI);
 
@@ -155,7 +155,7 @@ public class CoordinatePairTest {
      */
     @Test
     public void testIsEqual_overlap() {
-        System.out.println("isEqual_overlap");
+
         GeometryWrapper sourceGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((0.0 0.0, 10.0 0.0, 10.0 10.0, 0.0 10.0, 0.0 0.0))", WKTDatatype.URI);
         GeometryWrapper targetGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((5.0 5.0, 15.0 5.0, 15.0 15.0, 5.0 15.0, 5.0 5.0))", WKTDatatype.URI);
 
@@ -171,7 +171,7 @@ public class CoordinatePairTest {
      */
     @Test
     public void testIsEqual_no_overlap() {
-        System.out.println("isEqual_no_overlap");
+
         GeometryWrapper sourceGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((0.0 0.0, 10.0 0.0, 10.0 10.0, 0.0 10.0, 0.0 0.0))", WKTDatatype.URI);
         GeometryWrapper targetGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((15.0 15.0, 25.0 15.0, 25.0 25.0, 15.0 25.0, 15.0 15.0))", WKTDatatype.URI);
 
@@ -187,7 +187,7 @@ public class CoordinatePairTest {
      */
     @Test
     public void testIsEqual_within() {
-        System.out.println("isEqual_within");
+
         GeometryWrapper sourceGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((0.0 0.0, 10.0 0.0, 10.0 10.0, 0.0 10.0, 0.0 0.0))", WKTDatatype.URI);
         GeometryWrapper targetGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(5.0 5.0)", WKTDatatype.URI);
 
@@ -203,7 +203,7 @@ public class CoordinatePairTest {
      */
     @Test
     public void testIsEqual_no_within() {
-        System.out.println("isEqual_no_within");
+
         GeometryWrapper sourceGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((0.0 0.0, 10.0 0.0, 10.0 10.0, 0.0 10.0, 0.0 0.0))", WKTDatatype.URI);
         GeometryWrapper targetGeometry = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(15.0 15.0)", WKTDatatype.URI);
 

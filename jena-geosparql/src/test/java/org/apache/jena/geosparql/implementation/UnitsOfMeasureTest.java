@@ -60,7 +60,7 @@ public class UnitsOfMeasureTest {
      */
     @Test(expected = UnitsConversionException.class)
     public void testConversionRadianToMetre() throws FactoryException {
-        System.out.println("conversionRadianToMetre");
+
         double distance = 0.5;
         String sourceDistanceUnitURI = "http://www.opengis.net/def/uom/OGC/1.0/radian";
         CoordinateReferenceSystem crs = CRS.forCode("http://www.opengis.net/def/crs/EPSG/0/27700");  //OSGB - metres projected
@@ -77,7 +77,7 @@ public class UnitsOfMeasureTest {
      */
     @Test(expected = UnitsConversionException.class)
     public void testConversionMetreToDegree() throws FactoryException {
-        System.out.println("conversionMetreToDegree");
+
         double distance = 100.0;
         String sourceDistanceUnitURI = "http://www.opengis.net/def/uom/OGC/1.0/metre";
         CoordinateReferenceSystem crs = CRS.forCode("http://www.opengis.net/def/crs/EPSG/0/4326");  //OSGB - metres projected
@@ -94,7 +94,7 @@ public class UnitsOfMeasureTest {
      */
     @Test
     public void testConversionMetreToMetre() throws FactoryException {
-        System.out.println("conversionMetreToMetre");
+
         double distance = 100.0;
         String sourceDistanceUnitURI = "http://www.opengis.net/def/uom/OGC/1.0/metre";
         CoordinateReferenceSystem crs = CRS.forCode("http://www.opengis.net/def/crs/EPSG/0/27700");  //OSGB - metres projected
@@ -112,7 +112,7 @@ public class UnitsOfMeasureTest {
      */
     @Test
     public void testConversionDegreeToDegree() throws FactoryException {
-        System.out.println("conversionDegreeToDegree");
+
         double distance = 100.0;
         String sourceDistanceUnitURI = "http://www.opengis.net/def/uom/OGC/1.0/degree";
         CoordinateReferenceSystem crs = CRS.forCode("http://www.opengis.net/def/crs/EPSG/0/4326");  //WGS84 degrees non-projected
@@ -130,7 +130,7 @@ public class UnitsOfMeasureTest {
      */
     @Test
     public void testConversionRadianToDegree() throws FactoryException {
-        System.out.println("conversionRadianToDegree");
+
         double distance = 0.5;
         String sourceDistanceUnitURI = "http://www.opengis.net/def/uom/OGC/1.0/radian";
         CoordinateReferenceSystem crs = CRS.forCode("http://www.opengis.net/def/crs/EPSG/0/4326");  //WGS84 degrees non-projected
@@ -149,7 +149,7 @@ public class UnitsOfMeasureTest {
      */
     @Test(expected = UnitsConversionException.class)
     public void testConversionDegreeToMetre() throws FactoryException {
-        System.out.println("conversionDegreeToMetre");
+
         double distance = 10.0;
         String sourceDistanceUnitURI = "http://www.opengis.net/def/uom/OGC/1.0/degree";
         CoordinateReferenceSystem crs = CRS.forCode("http://www.opengis.net/def/crs/EPSG/0/27700");  //OSGB metres projected
@@ -165,7 +165,7 @@ public class UnitsOfMeasureTest {
      */
     @Test
     public void testConvert_0_degree() {
-        System.out.println("convert_0_degree");
+
         double distance = 111319.9;
         String unitsURI = Unit_URI.METRE_URL;
         double latitude = 0.0;
@@ -179,7 +179,7 @@ public class UnitsOfMeasureTest {
      */
     @Test
     public void testConvert_23_degree() {
-        System.out.println("convert_23_degree");
+
         double distance = 102470.508;
         String unitsURI = Unit_URI.METRE_URL;
         double latitude = 23.0;
@@ -193,7 +193,7 @@ public class UnitsOfMeasureTest {
      */
     @Test
     public void testConvert_45_degree() {
-        System.out.println("convert_45_degree");
+
         double distance = 78715.05;
         String unitsURI = Unit_URI.METRE_URL;
         double latitude = 45.0;
@@ -207,7 +207,7 @@ public class UnitsOfMeasureTest {
      */
     @Test
     public void testConvert_67_degree() {
-        System.out.println("convert_67_degree");
+
         double distance = 43496.15;
         String unitsURI = Unit_URI.METRE_URL;
         double latitude = 67.0;
@@ -221,7 +221,7 @@ public class UnitsOfMeasureTest {
      */
     @Test
     public void testConvert_67_degree2() {
-        System.out.println("convert_67_degree2");
+
         double distance = 1.0;
         String unitsURI = Unit_URI.DEGREE_URL;
         double latitude = 67.0;
@@ -235,7 +235,7 @@ public class UnitsOfMeasureTest {
      */
     @Test
     public void testConvert_0_degree_metres() {
-        System.out.println("convert_0_degree_metres");
+
         double distance = 1.0;
         String unitsURI = Unit_URI.DEGREE_URL;
         double latitude = 0.0;
@@ -249,7 +249,7 @@ public class UnitsOfMeasureTest {
      */
     @Test
     public void testConvert_23_degree_metres() {
-        System.out.println("convert_23_degree_metres");
+
         double distance = 1.0;
         String unitsURI = Unit_URI.DEGREE_URL;
         double latitude = 23.0;
@@ -263,7 +263,7 @@ public class UnitsOfMeasureTest {
      */
     @Test
     public void testConvert_45_degree_metres() {
-        System.out.println("convert_45_degree_metres");
+
         double distance = 1.0;
         String unitsURI = Unit_URI.DEGREE_URL;
         double latitude = 45.0;
@@ -277,7 +277,7 @@ public class UnitsOfMeasureTest {
      */
     @Test
     public void testConvert_67_degree_metres() {
-        System.out.println("convert_67_degree_metres");
+
         double distance = 1.0;
         String unitsURI = Unit_URI.DEGREE_URL;
         double latitude = 67.0;
@@ -291,7 +291,7 @@ public class UnitsOfMeasureTest {
      */
     @Test
     public void testConvert_67_degree2_metres() {
-        System.out.println("convert_67_degree2_metres");
+
         double distance = 43496.15;
         String unitsURI = Unit_URI.METRE_URL;
         double latitude = 67.0;

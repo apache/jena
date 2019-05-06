@@ -69,7 +69,7 @@ public class GenericCardinalPropertyFunctionTest {
      */
     @Test
     public void testExtractObjectArguments_3args() {
-        System.out.println("extractObjectArguments_3args");
+
 
         Node predicate = NodeFactory.createURI(SpatialExtension.NORTH_PROP);
 
@@ -96,7 +96,7 @@ public class GenericCardinalPropertyFunctionTest {
      */
     @Test
     public void testExtractObjectArguments_2args() {
-        System.out.println("extractObjectArguments_2args");
+
 
         Node predicate = NodeFactory.createURI(SpatialExtension.NORTH_PROP);
 
@@ -123,7 +123,7 @@ public class GenericCardinalPropertyFunctionTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_1args_fail() {
-        System.out.println("extractObjectArguments_1args_fail");
+
 
         Node predicate = NodeFactory.createURI(SpatialExtension.NORTH_PROP);
 
@@ -150,7 +150,7 @@ public class GenericCardinalPropertyFunctionTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_4args_fail() {
-        System.out.println("extractObjectArguments_4args_fail");
+
 
         Node predicate = NodeFactory.createURI(SpatialExtension.NORTH_PROP);
 
@@ -177,7 +177,7 @@ public class GenericCardinalPropertyFunctionTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_3args_pos0_fail() {
-        System.out.println("extractObjectArguments_3args_pos0_fail");
+
 
         Node predicate = NodeFactory.createURI(SpatialExtension.NORTH_PROP);
 
@@ -204,7 +204,7 @@ public class GenericCardinalPropertyFunctionTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_3args_pos1_fail() {
-        System.out.println("extractObjectArguments_3args_pos1_fail");
+
 
         Node predicate = NodeFactory.createURI(SpatialExtension.NORTH_PROP);
 
@@ -231,7 +231,7 @@ public class GenericCardinalPropertyFunctionTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_3args_pos2_fail() {
-        System.out.println("extractObjectArguments_3args_pos2_fail");
+
 
         Node predicate = NodeFactory.createURI(SpatialExtension.NORTH_PROP);
 

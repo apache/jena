@@ -69,7 +69,7 @@ public class GenericSpatialGeomPropertyFunctionTest {
      */
     @Test
     public void testExtractObjectArguments_2args() {
-        System.out.println("extractObjectArguments_2args");
+
 
         Node predicate = NodeFactory.createURI(SpatialExtension.INTERSECT_BOX_GEOM_PROP);
 
@@ -99,7 +99,7 @@ public class GenericSpatialGeomPropertyFunctionTest {
      */
     @Test
     public void testExtractObjectArguments_1args() {
-        System.out.println("extractObjectArguments_1args");
+
 
         Node predicate = NodeFactory.createURI(SpatialExtension.INTERSECT_BOX_GEOM_PROP);
 
@@ -129,7 +129,7 @@ public class GenericSpatialGeomPropertyFunctionTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_0args_fail() {
-        System.out.println("extractObjectArguments_0args_fail");
+
 
         Node predicate = NodeFactory.createURI(SpatialExtension.INTERSECT_BOX_GEOM_PROP);
 
@@ -159,7 +159,7 @@ public class GenericSpatialGeomPropertyFunctionTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_3args_fail() {
-        System.out.println("extractObjectArguments_3args_fail");
+
 
         Node predicate = NodeFactory.createURI(SpatialExtension.INTERSECT_BOX_GEOM_PROP);
 
@@ -189,7 +189,7 @@ public class GenericSpatialGeomPropertyFunctionTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_2args_pos0_fail() {
-        System.out.println("extractObjectArguments_2args_pos0_fail");
+
 
         Node predicate = NodeFactory.createURI(SpatialExtension.INTERSECT_BOX_GEOM_PROP);
 
@@ -219,7 +219,7 @@ public class GenericSpatialGeomPropertyFunctionTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_2args_pos1_fail() {
-        System.out.println("extractObjectArguments_2args_pos1_fail");
+
 
         Node predicate = NodeFactory.createURI(SpatialExtension.INTERSECT_BOX_GEOM_PROP);
 

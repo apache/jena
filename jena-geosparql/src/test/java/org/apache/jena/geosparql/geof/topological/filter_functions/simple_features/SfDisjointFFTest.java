@@ -58,7 +58,7 @@ public class SfDisjointFFTest {
 
     @Test
     public void testRelate_polygon_point() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_polygon_point");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(20 20)", WKTDatatype.INSTANCE));
@@ -72,7 +72,7 @@ public class SfDisjointFFTest {
 
     @Test
     public void testRelate_polygon_linestring() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_polygon_linestring");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(0 50, 0 50)", WKTDatatype.INSTANCE));
@@ -86,7 +86,7 @@ public class SfDisjointFFTest {
 
     @Test
     public void testRelate_polygon_polygon() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_polygon_polygon");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((140 15, 140 45, 200 45, 200 15, 140 15))", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE));
@@ -100,7 +100,7 @@ public class SfDisjointFFTest {
 
     @Test
     public void testRelate_polygon_point_false() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_polygon_point_false");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(60 60)", WKTDatatype.INSTANCE));
@@ -114,7 +114,7 @@ public class SfDisjointFFTest {
 
     @Test
     public void testRelate_polygon_linestring_false() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_polygon_linestring_false");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(75 60, 145 60)", WKTDatatype.INSTANCE));
@@ -128,7 +128,7 @@ public class SfDisjointFFTest {
 
     @Test
     public void testRelate_polygon_polygon_false() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_polygon_polygon_false");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((145 30, 145 40, 160 40, 160 30, 145 30))", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((140 15, 140 45, 200 45, 200 15, 140 15))", WKTDatatype.INSTANCE));
@@ -145,7 +145,7 @@ public class SfDisjointFFTest {
      */
     @Test
     public void testIsDisjoint() {
-        System.out.println("isDisjoint");
+
         SfDisjointFF instance = new SfDisjointFF();
         boolean expResult = true;
         boolean result = instance.isDisjoint();
@@ -157,7 +157,7 @@ public class SfDisjointFFTest {
      */
     @Test
     public void testIsDisconnected() {
-        System.out.println("isDisconnected");
+
         SfDisjointFF instance = new SfDisjointFF();
         boolean expResult = false;
         boolean result = instance.isDisconnected();
@@ -169,7 +169,7 @@ public class SfDisjointFFTest {
      */
     @Test
     public void testPermittedTopology_point_point() {
-        System.out.println("permittedTopology_point_point");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POINT;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POINT;
         SfDisjointFF instance = new SfDisjointFF();
@@ -183,7 +183,7 @@ public class SfDisjointFFTest {
      */
     @Test
     public void testPermittedTopology_point_linestring() {
-        System.out.println("permittedTopology_point_linestring");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POINT;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_LINESTRING;
         SfDisjointFF instance = new SfDisjointFF();
@@ -197,7 +197,7 @@ public class SfDisjointFFTest {
      */
     @Test
     public void testPermittedTopology_point_polygon() {
-        System.out.println("permittedTopology_point_polygon");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POINT;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POLYGON;
         SfDisjointFF instance = new SfDisjointFF();
@@ -211,7 +211,7 @@ public class SfDisjointFFTest {
      */
     @Test
     public void testPermittedTopology_linestring_linestring() {
-        System.out.println("permittedTopology_linestring_linestring");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_LINESTRING;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_LINESTRING;
         SfDisjointFF instance = new SfDisjointFF();
@@ -225,7 +225,7 @@ public class SfDisjointFFTest {
      */
     @Test
     public void testPermittedTopology_linestring_point() {
-        System.out.println("permittedTopology_linestring_point");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_LINESTRING;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POINT;
         SfDisjointFF instance = new SfDisjointFF();
@@ -239,7 +239,7 @@ public class SfDisjointFFTest {
      */
     @Test
     public void testPermittedTopology_linestring_polygon() {
-        System.out.println("permittedTopology_linestring_polygon");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_LINESTRING;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POLYGON;
         SfDisjointFF instance = new SfDisjointFF();
@@ -253,7 +253,7 @@ public class SfDisjointFFTest {
      */
     @Test
     public void testPermittedTopology_polygon_polygon() {
-        System.out.println("permittedTopology_polygon_polygon");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POLYGON;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POLYGON;
         SfDisjointFF instance = new SfDisjointFF();
@@ -267,7 +267,7 @@ public class SfDisjointFFTest {
      */
     @Test
     public void testPermittedTopology_polygon_linestring() {
-        System.out.println("permittedTopology_polygon_linestring");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POLYGON;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_LINESTRING;
         SfDisjointFF instance = new SfDisjointFF();
@@ -281,7 +281,7 @@ public class SfDisjointFFTest {
      */
     @Test
     public void testPermittedTopology_polygon_point() {
-        System.out.println("permittedTopology_polygon_point");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POLYGON;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POINT;
         SfDisjointFF instance = new SfDisjointFF();

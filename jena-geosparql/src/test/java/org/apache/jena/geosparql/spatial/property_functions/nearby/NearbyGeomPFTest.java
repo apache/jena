@@ -78,7 +78,7 @@ public class NearbyGeomPFTest {
      */
     @Test
     public void testExtractObjectArguments_4args() {
-        System.out.println("extractObjectArguments_4args");
+
         Node predicate = NodeFactory.createURI(SpatialExtension.NEARBY_GEOM_PROP);
 
         float lat = 0;
@@ -105,7 +105,7 @@ public class NearbyGeomPFTest {
      */
     @Test
     public void testExtractObjectArguments_3args() {
-        System.out.println("extractObjectArguments_3args");
+
         Node predicate = NodeFactory.createURI(SpatialExtension.NEARBY_GEOM_PROP);
 
         float lat = 0;
@@ -132,7 +132,7 @@ public class NearbyGeomPFTest {
      */
     @Test
     public void testExtractObjectArguments_2args() {
-        System.out.println("extractObjectArguments_2args");
+
         Node predicate = NodeFactory.createURI(SpatialExtension.NEARBY_GEOM_PROP);
 
         float lat = 0;
@@ -159,7 +159,7 @@ public class NearbyGeomPFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_1args_fail() {
-        System.out.println("extractObjectArguments_1args_fail");
+
         Node predicate = NodeFactory.createURI(SpatialExtension.NEARBY_GEOM_PROP);
 
         float lat = 0;
@@ -186,7 +186,7 @@ public class NearbyGeomPFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_5args_fail() {
-        System.out.println("extractObjectArguments_5args_fail");
+
         Node predicate = NodeFactory.createURI(SpatialExtension.NEARBY_GEOM_PROP);
 
         float lat = 0;
@@ -213,7 +213,7 @@ public class NearbyGeomPFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_4args_pos0_fail() {
-        System.out.println("extractObjectArguments_4args_pos0_fail");
+
         Node predicate = NodeFactory.createURI(SpatialExtension.NEARBY_GEOM_PROP);
 
         float lat = 0;
@@ -240,7 +240,7 @@ public class NearbyGeomPFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_4args_pos1_fail() {
-        System.out.println("extractObjectArguments_4args_pos1_fail");
+
         Node predicate = NodeFactory.createURI(SpatialExtension.NEARBY_GEOM_PROP);
 
         float lat = 0;
@@ -267,7 +267,7 @@ public class NearbyGeomPFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_4args_pos2_fail() {
-        System.out.println("extractObjectArguments_4args_pos2_fail");
+
         Node predicate = NodeFactory.createURI(SpatialExtension.NEARBY_GEOM_PROP);
 
         float lat = 0;
@@ -294,7 +294,7 @@ public class NearbyGeomPFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_4args_pos3_fail() {
-        System.out.println("extractObjectArguments_4args_pos3_fail");
+
         Node predicate = NodeFactory.createURI(SpatialExtension.NEARBY_GEOM_PROP);
 
         float lat = 0;
@@ -321,7 +321,7 @@ public class NearbyGeomPFTest {
      */
     @Test
     public void testCheckSecondFilter() {
-        System.out.println("checkSecondFilter");
+
 
         NearbyGeomPF instance = new NearbyGeomPF();
 
@@ -354,7 +354,7 @@ public class NearbyGeomPFTest {
      */
     @Test
     public void testCheckSecondFilter_fail() {
-        System.out.println("checkSecondFilter_fail");
+
 
         NearbyGeomPF instance = new NearbyGeomPF();
 
@@ -387,7 +387,7 @@ public class NearbyGeomPFTest {
      */
     @Test
     public void testExecEvaluated() {
-        System.out.println("execEvaluated");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 
@@ -419,7 +419,7 @@ public class NearbyGeomPFTest {
      */
     @Test
     public void testExecEvaluated_fail() {
-        System.out.println("execEvaluated_fail");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 

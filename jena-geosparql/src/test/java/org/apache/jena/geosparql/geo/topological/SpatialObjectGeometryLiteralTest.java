@@ -67,7 +67,7 @@ public class SpatialObjectGeometryLiteralTest {
      */
     @Test
     public void testRetrieve() {
-        System.out.println("retrieve");
+
 
         Graph graph = MODEL.getGraph();
         Node targetSpatialObject = null;
@@ -83,7 +83,7 @@ public class SpatialObjectGeometryLiteralTest {
      */
     @Test
     public void testRetrieveGeometryLiteral_geometry() {
-        System.out.println("retrieve_geometry");
+
 
         Graph graph = MODEL.getGraph();
         Resource targetSpatialObject = GEOMETRY_B;
@@ -97,7 +97,7 @@ public class SpatialObjectGeometryLiteralTest {
      */
     @Test
     public void testRetrieveGeometryLiteral_feature() {
-        System.out.println("retrieve_feature");
+
 
         Resource targetSpatialObject = FEATURE_B;
         SpatialObjectGeometryLiteral expResult = new SpatialObjectGeometryLiteral(FEATURE_B.asNode(), LITERAL_B.asNode());
@@ -110,7 +110,7 @@ public class SpatialObjectGeometryLiteralTest {
      */
     @Test
     public void testRetrieveGeometryLiteral_missing_property() {
-        System.out.println("retrieve_missing_property");
+
 
         Resource targetSpatialObject = ResourceFactory.createResource("http://example.org#GeometryE");
 
@@ -126,7 +126,7 @@ public class SpatialObjectGeometryLiteralTest {
      */
     @Test
     public void testRetrieveGeometryLiteral_not_feature_geometry() {
-        System.out.println("retrieve_not_feature_geometry");
+
 
         Resource targetSpatialObject = ResourceFactory.createResource("http://example.org#X");
 
@@ -142,7 +142,7 @@ public class SpatialObjectGeometryLiteralTest {
      */
     @Test
     public void testRetrieveGeometryLiteral_feature_lat_lon() {
-        System.out.println("retrieve_feature");
+
 
         Resource targetSpatialObject = GEO_FEATURE_Y;
         SpatialObjectGeometryLiteral expResult = new SpatialObjectGeometryLiteral(GEO_FEATURE_Y.asNode(), GEO_FEATURE_LITERAL.asNode());

@@ -61,7 +61,7 @@ public class ConvertLatLonTest {
      */
     @Test
     public void testConvert_NodeValue_NodeValue() {
-        System.out.println("convert");
+
         NodeValue v1 = NodeValue.makeFloat(10.0f);
         NodeValue v2 = NodeValue.makeFloat(20.0f);
         NodeValue expResult = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10 20)", WKTDatatype.INSTANCE);
@@ -74,7 +74,7 @@ public class ConvertLatLonTest {
      */
     @Test(expected = DatatypeFormatException.class)
     public void testCheckBounds_lat_too_big() {
-        System.out.println("checkBounds_lat_too_big");
+
         double latitude = 90.1;
         double longitude = 0.0;
         ConvertLatLon.checkBounds(latitude, longitude);
@@ -85,7 +85,7 @@ public class ConvertLatLonTest {
      */
     @Test(expected = DatatypeFormatException.class)
     public void testCheckBounds_lat_too_small() {
-        System.out.println("checkBounds_lat_too_small");
+
         double latitude = -90.1;
         double longitude = 0.0;
         ConvertLatLon.checkBounds(latitude, longitude);
@@ -96,7 +96,7 @@ public class ConvertLatLonTest {
      */
     @Test(expected = DatatypeFormatException.class)
     public void testCheckBounds_lon_too_big() {
-        System.out.println("checkBounds_lon_too_big");
+
         double latitude = 0.0;
         double longitude = 180.1;
         ConvertLatLon.checkBounds(latitude, longitude);
@@ -107,7 +107,7 @@ public class ConvertLatLonTest {
      */
     @Test(expected = DatatypeFormatException.class)
     public void testCheckBounds_lon_too_small() {
-        System.out.println("checkBounds_lon_too_small");
+
         double latitude = 0.0;
         double longitude = -180.1;
         ConvertLatLon.checkBounds(latitude, longitude);
@@ -118,7 +118,7 @@ public class ConvertLatLonTest {
      */
     @Test
     public void testCheckBounds_lat_big() {
-        System.out.println("checkBounds_lat_big");
+
         double latitude = 90.0;
         double longitude = 0.0;
         ConvertLatLon.checkBounds(latitude, longitude);
@@ -129,7 +129,7 @@ public class ConvertLatLonTest {
      */
     @Test
     public void testCheckBounds_lat_small() {
-        System.out.println("checkBounds_lat_small");
+
         double latitude = -90.0;
         double longitude = 0.0;
         ConvertLatLon.checkBounds(latitude, longitude);
@@ -140,7 +140,7 @@ public class ConvertLatLonTest {
      */
     @Test
     public void testCheckBounds_lon_big() {
-        System.out.println("checkBounds_lon_big");
+
         double latitude = 0.0;
         double longitude = 180.0;
         ConvertLatLon.checkBounds(latitude, longitude);
@@ -151,7 +151,7 @@ public class ConvertLatLonTest {
      */
     @Test
     public void testCheckBounds_lon_small() {
-        System.out.println("checkBounds_lon_small");
+
         double latitude = 0.0;
         double longitude = -180.0;
         ConvertLatLon.checkBounds(latitude, longitude);
@@ -162,7 +162,7 @@ public class ConvertLatLonTest {
      */
     @Test
     public void testToWKT() {
-        System.out.println("toWKT");
+
         float lat = 10.0F;
         float lon = 20.0F;
         String expResult = "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10 20)";
@@ -175,7 +175,7 @@ public class ConvertLatLonTest {
      */
     @Test
     public void testToLiteral() {
-        System.out.println("toLiteral");
+
         float lat = 10.0F;
         float lon = 20.0F;
         Literal expResult = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10 20)", WKTDatatype.INSTANCE);
@@ -188,7 +188,7 @@ public class ConvertLatLonTest {
      */
     @Test
     public void testConvert_Node_Node() {
-        System.out.println("convert");
+
         Node n1 = NodeValue.makeFloat(10.0f).asNode();
         Node n2 = NodeValue.makeFloat(20.0f).asNode();
         Node expResult = NodeFactory.createLiteral("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10 20)", WKTDatatype.INSTANCE);

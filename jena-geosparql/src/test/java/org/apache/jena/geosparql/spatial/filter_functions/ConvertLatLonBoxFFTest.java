@@ -70,7 +70,7 @@ public class ConvertLatLonBoxFFTest {
      */
     @Test
     public void testExec() {
-        System.out.println("exec");
+
         NodeValue v1 = NodeValue.makeFloat(0.0f);
         NodeValue v2 = NodeValue.makeFloat(1.0f);
         NodeValue v3 = NodeValue.makeFloat(10.0f);
@@ -86,7 +86,7 @@ public class ConvertLatLonBoxFFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_pos0_fail() {
-        System.out.println("exec_pos0_fail");
+
         NodeValue v1 = NodeValue.makeString("0.0");
         NodeValue v2 = NodeValue.makeFloat(1.0f);
         NodeValue v3 = NodeValue.makeFloat(10.0f);
@@ -102,7 +102,7 @@ public class ConvertLatLonBoxFFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_pos1_fail() {
-        System.out.println("exec_pos1_fail");
+
         NodeValue v1 = NodeValue.makeFloat(0.0f);
         NodeValue v2 = NodeValue.makeString("1.0");
         NodeValue v3 = NodeValue.makeFloat(10.0f);
@@ -118,7 +118,7 @@ public class ConvertLatLonBoxFFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_pos2_fail() {
-        System.out.println("exec_pos2_fail");
+
         NodeValue v1 = NodeValue.makeFloat(0.0f);
         NodeValue v2 = NodeValue.makeFloat(1.0f);
         NodeValue v3 = NodeValue.makeString("10.0");
@@ -134,7 +134,7 @@ public class ConvertLatLonBoxFFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_pos3_fail() {
-        System.out.println("exec_pos3_fail");
+
         NodeValue v1 = NodeValue.makeFloat(0.0f);
         NodeValue v2 = NodeValue.makeFloat(0.0f);
         NodeValue v3 = NodeValue.makeFloat(10.0f);
@@ -150,7 +150,7 @@ public class ConvertLatLonBoxFFTest {
      */
     @Test
     public void testExec_query() {
-        System.out.println("exec_query");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 
@@ -173,8 +173,8 @@ public class ConvertLatLonBoxFFTest {
 
         List<Literal> expResults = Arrays.asList(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((0 1, 10 1, 10 11, 0 11, 0 1))", WKTDatatype.INSTANCE));
 
-        //System.out.println("Exp: " + expResults);
-        //System.out.println("Res: " + results);
+        //
+        //
         assertEquals(expResults, results);
     }
 }

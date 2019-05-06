@@ -56,7 +56,7 @@ public class RccEqualsPFTest {
     //Only Polygon-Polygon
     @Test
     public void testFilterFunction_polygon_polygon() {
-        System.out.println("filterFunction_polygon_polygon");
+
 
         Literal subjectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((140 15, 140 45, 200 45, 200 15, 140 15))", WKTDatatype.INSTANCE);
         Literal objectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((140 15, 140 45, 200 45, 200 15, 140 15))", WKTDatatype.INSTANCE);
@@ -70,7 +70,7 @@ public class RccEqualsPFTest {
 
     @Test
     public void testFilterFunction_polygon_polygon_false() {
-        System.out.println("filterFunction_polygon_polygon_false");
+
 
         Literal subjectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE);
         Literal objectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((140 15, 140 45, 200 45, 200 15, 140 15))", WKTDatatype.INSTANCE);
@@ -87,7 +87,7 @@ public class RccEqualsPFTest {
      */
     @Test
     public void testFilterFunction_emptyWKT_emptyGML() {
-        System.out.println("filterFunction_emptyWKT_emptyGML");
+
 
         Literal emptyWKT = GeometryWrapper.getEmptyWKT().asLiteral();
         Literal emptyGML = GeometryWrapper.getEmptyGML().asLiteral();
@@ -104,7 +104,7 @@ public class RccEqualsPFTest {
      */
     @Test
     public void testFilterFunction_emptyWKT_emptyWKT() {
-        System.out.println("filterFunction_empty_empty");
+
 
         Literal emptyWKT = GeometryWrapper.getEmptyWKT().asLiteral();
         Literal emptyWKT2 = GeometryWrapper.getEmptyWKT().asLiteral();

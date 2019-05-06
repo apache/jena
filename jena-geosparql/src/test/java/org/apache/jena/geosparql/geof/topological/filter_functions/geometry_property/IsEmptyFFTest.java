@@ -56,7 +56,7 @@ public class IsEmptyFFTest {
      */
     @Test
     public void testExec_false() {
-        System.out.println("exec_false");
+
         NodeValue geometryLiteral = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(90 60)", WKTDatatype.INSTANCE);
         IsEmptyFF instance = new IsEmptyFF();
         NodeValue expResult = NodeValue.makeNodeBoolean(false);
@@ -69,7 +69,7 @@ public class IsEmptyFFTest {
      */
     @Test
     public void testExec_true() {
-        System.out.println("exec_true");
+
         NodeValue geometryLiteral = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT EMPTY", WKTDatatype.INSTANCE);
         IsEmptyFF instance = new IsEmptyFF();
         NodeValue expResult = NodeValue.makeNodeBoolean(true);

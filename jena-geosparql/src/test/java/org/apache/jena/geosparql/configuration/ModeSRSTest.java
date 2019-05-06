@@ -74,7 +74,6 @@ public class ModeSRSTest {
      */
     @Test
     public void testSearch() {
-        System.out.println("search");
 
         ModeSRS instance = new ModeSRS();
         instance.search(MODEL);
@@ -93,7 +92,7 @@ public class ModeSRSTest {
      */
     @Test
     public void testGetModeURI() {
-        System.out.println("getModeURI");
+
         ModeSRS instance = new ModeSRS();
         instance.search(MODEL);
         String expResult = "http://www.opengis.net/def/crs/OGC/1.3/CRS84";

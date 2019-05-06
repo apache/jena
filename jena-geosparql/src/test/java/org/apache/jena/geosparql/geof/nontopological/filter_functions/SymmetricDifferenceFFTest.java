@@ -56,7 +56,7 @@ public class SymmetricDifferenceFFTest {
      */
     @Test
     public void testExec() {
-        System.out.println("exec_linestring_polygon");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> Polygon((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> Polygon((80 15, 80 45, 140 45, 140 15, 80 15))", WKTDatatype.INSTANCE);
         SymmetricDifferenceFF instance = new SymmetricDifferenceFF();

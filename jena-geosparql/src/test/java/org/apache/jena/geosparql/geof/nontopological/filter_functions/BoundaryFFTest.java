@@ -56,7 +56,7 @@ public class BoundaryFFTest {
      */
     @Test
     public void testExec_CRS84() {
-        System.out.println("exec_CRS84");
+
 
         NodeValue v = NodeValue.makeNode("POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE);
         BoundaryFF instance = new BoundaryFF();
@@ -70,7 +70,7 @@ public class BoundaryFFTest {
      */
     @Test
     public void testExec_WGS84() {
-        System.out.println("exec_WGS84");
+
 
         NodeValue v = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE);
         BoundaryFF instance = new BoundaryFF();

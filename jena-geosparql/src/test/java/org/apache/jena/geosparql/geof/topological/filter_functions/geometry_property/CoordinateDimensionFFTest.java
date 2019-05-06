@@ -56,7 +56,7 @@ public class CoordinateDimensionFFTest {
      */
     @Test
     public void testExec_2_Dimension() {
-        System.out.println("exec_2_Dimension");
+
         NodeValue geometryLiteral = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(90 60)", WKTDatatype.INSTANCE);
         CoordinateDimensionFF instance = new CoordinateDimensionFF();
         NodeValue expResult = NodeValue.makeNodeInteger(2);
@@ -69,7 +69,7 @@ public class CoordinateDimensionFFTest {
      */
     @Test
     public void testExec_3Z_Dimension() {
-        System.out.println("exec_3Z_Dimension");
+
         NodeValue geometryLiteral = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT Z (90 60 30)", WKTDatatype.INSTANCE);
         CoordinateDimensionFF instance = new CoordinateDimensionFF();
         NodeValue expResult = NodeValue.makeNodeInteger(3);
@@ -82,7 +82,7 @@ public class CoordinateDimensionFFTest {
      */
     @Test
     public void testExec_3M_Dimension() {
-        System.out.println("exec_3M_Dimension");
+
         NodeValue geometryLiteral = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT M (90 60 30)", WKTDatatype.INSTANCE);
         CoordinateDimensionFF instance = new CoordinateDimensionFF();
         NodeValue expResult = NodeValue.makeNodeInteger(3);
@@ -95,7 +95,7 @@ public class CoordinateDimensionFFTest {
      */
     @Test
     public void testExec_4_Dimension() {
-        System.out.println("exec_4_Dimension");
+
         NodeValue geometryLiteral = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT ZM (90 60 30 10)", WKTDatatype.INSTANCE);
         CoordinateDimensionFF instance = new CoordinateDimensionFF();
         NodeValue expResult = NodeValue.makeNodeInteger(4);

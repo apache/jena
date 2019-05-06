@@ -59,7 +59,7 @@ public class RccTangentialProperPartInverseFFTest {
     //Only Polygon-Polygon
     @Test
     public void testRelate_polygon_polygon() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_polygon_polygon");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 48, 45 48, 45 40, 30 40))", WKTDatatype.INSTANCE));
@@ -73,7 +73,7 @@ public class RccTangentialProperPartInverseFFTest {
 
     @Test
     public void testRelate_polygon_polygon_false() throws FactoryException, MismatchedDimensionException, TransformException {
-        System.out.println("relate_polygon_polygon_false");
+
 
         GeometryWrapper subjectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE));
         GeometryWrapper objectGeometryWrapper = GeometryWrapper.extract(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((80 15, 80 45, 140 45, 140 15, 80 15))", WKTDatatype.INSTANCE));
@@ -90,7 +90,7 @@ public class RccTangentialProperPartInverseFFTest {
      */
     @Test
     public void testIsDisjoint() {
-        System.out.println("isDisjoint");
+
         RccTangentialProperPartInverseFF instance = new RccTangentialProperPartInverseFF();
         boolean expResult = false;
         boolean result = instance.isDisjoint();
@@ -102,7 +102,7 @@ public class RccTangentialProperPartInverseFFTest {
      */
     @Test
     public void testIsDisconnected() {
-        System.out.println("isDisconnected");
+
         RccTangentialProperPartInverseFF instance = new RccTangentialProperPartInverseFF();
         boolean expResult = false;
         boolean result = instance.isDisconnected();
@@ -115,7 +115,7 @@ public class RccTangentialProperPartInverseFFTest {
      */
     @Test
     public void testPermittedTopology_point_point() {
-        System.out.println("permittedTopology_point_point");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POINT;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POINT;
         RccTangentialProperPartInverseFF instance = new RccTangentialProperPartInverseFF();
@@ -130,7 +130,7 @@ public class RccTangentialProperPartInverseFFTest {
      */
     @Test
     public void testPermittedTopology_point_linestring() {
-        System.out.println("permittedTopology_point_linestring");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POINT;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_LINESTRING;
         RccTangentialProperPartInverseFF instance = new RccTangentialProperPartInverseFF();
@@ -145,7 +145,7 @@ public class RccTangentialProperPartInverseFFTest {
      */
     @Test
     public void testPermittedTopology_point_polygon() {
-        System.out.println("permittedTopology_point_polygon");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POINT;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POLYGON;
         RccTangentialProperPartInverseFF instance = new RccTangentialProperPartInverseFF();
@@ -160,7 +160,7 @@ public class RccTangentialProperPartInverseFFTest {
      */
     @Test
     public void testPermittedTopology_linestring_linestring() {
-        System.out.println("permittedTopology_linestring_linestring");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_LINESTRING;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_LINESTRING;
         RccTangentialProperPartInverseFF instance = new RccTangentialProperPartInverseFF();
@@ -175,7 +175,7 @@ public class RccTangentialProperPartInverseFFTest {
      */
     @Test
     public void testPermittedTopology_linestring_point() {
-        System.out.println("permittedTopology_linestring_point");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_LINESTRING;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POINT;
         RccTangentialProperPartInverseFF instance = new RccTangentialProperPartInverseFF();
@@ -190,7 +190,7 @@ public class RccTangentialProperPartInverseFFTest {
      */
     @Test
     public void testPermittedTopology_linestring_polygon() {
-        System.out.println("permittedTopology_linestring_polygon");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_LINESTRING;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POLYGON;
         RccTangentialProperPartInverseFF instance = new RccTangentialProperPartInverseFF();
@@ -205,7 +205,7 @@ public class RccTangentialProperPartInverseFFTest {
      */
     @Test
     public void testPermittedTopology_polygon_polygon() {
-        System.out.println("permittedTopology_polygon_polygon");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POLYGON;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POLYGON;
         RccTangentialProperPartInverseFF instance = new RccTangentialProperPartInverseFF();
@@ -220,7 +220,7 @@ public class RccTangentialProperPartInverseFFTest {
      */
     @Test
     public void testPermittedTopology_polygon_linestring() {
-        System.out.println("permittedTopology_polygon_linestring");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POLYGON;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_LINESTRING;
         RccTangentialProperPartInverseFF instance = new RccTangentialProperPartInverseFF();
@@ -235,7 +235,7 @@ public class RccTangentialProperPartInverseFFTest {
      */
     @Test
     public void testPermittedTopology_polygon_point() {
-        System.out.println("permittedTopology_polygon_point");
+
         DimensionInfo sourceDimensionInfo = DimensionInfo.XY_POLYGON;
         DimensionInfo targetDimensionInfo = DimensionInfo.XY_POINT;
         RccTangentialProperPartInverseFF instance = new RccTangentialProperPartInverseFF();

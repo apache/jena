@@ -78,7 +78,7 @@ public class NearbyPFTest {
      */
     @Test
     public void testExtractObjectArguments_5args() {
-        System.out.println("extractObjectArguments_5args");
+
         Node predicate = NodeFactory.createURI(SpatialExtension.NEARBY_PROP);
 
         float lat = 0;
@@ -105,7 +105,7 @@ public class NearbyPFTest {
      */
     @Test
     public void testExtractObjectArguments_4args() {
-        System.out.println("extractObjectArguments_4args");
+
         Node predicate = NodeFactory.createURI(SpatialExtension.NEARBY_PROP);
 
         float lat = 0;
@@ -132,7 +132,7 @@ public class NearbyPFTest {
      */
     @Test
     public void testExtractObjectArguments_3args() {
-        System.out.println("extractObjectArguments_3args");
+
         Node predicate = NodeFactory.createURI(SpatialExtension.NEARBY_PROP);
 
         float lat = 0;
@@ -159,7 +159,7 @@ public class NearbyPFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_2args_fail() {
-        System.out.println("extractObjectArguments_2args_fail");
+
         Node predicate = NodeFactory.createURI(SpatialExtension.NEARBY_PROP);
 
         float lat = 0;
@@ -186,7 +186,7 @@ public class NearbyPFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_6args_fail() {
-        System.out.println("extractObjectArguments_6args_fail");
+
         Node predicate = NodeFactory.createURI(SpatialExtension.NEARBY_PROP);
 
         float lat = 0;
@@ -213,7 +213,7 @@ public class NearbyPFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_5args_pos0_fail() {
-        System.out.println("extractObjectArguments_5args_pos0_fail");
+
         Node predicate = NodeFactory.createURI(SpatialExtension.NEARBY_PROP);
 
         float lat = 0;
@@ -240,7 +240,7 @@ public class NearbyPFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_5args_pos1_fail() {
-        System.out.println("extractObjectArguments_5args_pos1_fail");
+
         Node predicate = NodeFactory.createURI(SpatialExtension.NEARBY_PROP);
 
         float lat = 0;
@@ -267,7 +267,7 @@ public class NearbyPFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_5args_pos2_fail() {
-        System.out.println("extractObjectArguments_5args_pos2_fail");
+
         Node predicate = NodeFactory.createURI(SpatialExtension.NEARBY_PROP);
 
         float lat = 0;
@@ -294,7 +294,7 @@ public class NearbyPFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_5args_pos3_fail() {
-        System.out.println("extractObjectArguments_5args_pos3_fail");
+
         Node predicate = NodeFactory.createURI(SpatialExtension.NEARBY_PROP);
 
         float lat = 0;
@@ -321,7 +321,7 @@ public class NearbyPFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExtractObjectArguments_5args_pos4_fail() {
-        System.out.println("extractObjectArguments_5args_pos4_fail");
+
         Node predicate = NodeFactory.createURI(SpatialExtension.NEARBY_PROP);
 
         float lat = 0;
@@ -348,7 +348,7 @@ public class NearbyPFTest {
      */
     @Test
     public void testExecEvaluated() {
-        System.out.println("execEvaluated");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 
@@ -379,7 +379,7 @@ public class NearbyPFTest {
      */
     @Test
     public void testExecEvaluated_fail() {
-        System.out.println("execEvaluated_fail");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 

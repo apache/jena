@@ -56,7 +56,7 @@ public class DifferenceFFTest {
      */
     @Test
     public void testExec() {
-        System.out.println("exec");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((140 15, 140 45, 200 45, 200 15, 140 15))", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((145 30, 145 40, 160 40, 160 30, 145 30))", WKTDatatype.INSTANCE);
         DifferenceFF instance = new DifferenceFF();

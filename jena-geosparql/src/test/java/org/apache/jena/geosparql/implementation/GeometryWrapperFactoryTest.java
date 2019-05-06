@@ -59,7 +59,7 @@ public class GeometryWrapperFactoryTest {
      */
     @Test
     public void testCreatPoint() {
-        System.out.println("createPoint");
+
         Coordinate coordinate = new Coordinate(1, 2);
         String srsURI = SRS_URI.WGS84_CRS;
         String geometryDatatypeURI = WKTDatatype.URI;
@@ -76,7 +76,7 @@ public class GeometryWrapperFactoryTest {
      */
     @Test
     public void testCreatPoint_xy() {
-        System.out.println("createPoint_xy");
+
         Coordinate coordinate = new Coordinate(1, 2);
         String srsURI = SRS_URI.DEFAULT_WKT_CRS84;
         String geometryDatatypeURI = WKTDatatype.URI;
@@ -93,7 +93,7 @@ public class GeometryWrapperFactoryTest {
      */
     @Test
     public void testCreatLineString() {
-        System.out.println("createLineString");
+
         List<Coordinate> coordinates = Arrays.asList(new Coordinate(1, 2), new Coordinate(10, 20));
         String srsURI = SRS_URI.WGS84_CRS;
         String geometryDatatypeURI = WKTDatatype.URI;
@@ -110,7 +110,7 @@ public class GeometryWrapperFactoryTest {
      */
     @Test
     public void testCreatLineString_xy() {
-        System.out.println("createLineString_xy");
+
         List<Coordinate> coordinates = Arrays.asList(new Coordinate(1, 2), new Coordinate(10, 20));
         String srsURI = SRS_URI.DEFAULT_WKT_CRS84;
         String geometryDatatypeURI = WKTDatatype.URI;
@@ -127,7 +127,7 @@ public class GeometryWrapperFactoryTest {
      */
     @Test
     public void testCreatPolygon() {
-        System.out.println("createPolygon");
+
         List<Coordinate> coordinates = Arrays.asList(new Coordinate(1, 2), new Coordinate(10, 2), new Coordinate(10, 20), new Coordinate(1, 20), new Coordinate(1, 2));
         String srsURI = SRS_URI.WGS84_CRS;
         String geometryDatatypeURI = WKTDatatype.URI;
@@ -144,7 +144,7 @@ public class GeometryWrapperFactoryTest {
      */
     @Test
     public void testCreatPolygon_xy() {
-        System.out.println("createPolygon_xy");
+
         List<Coordinate> coordinates = Arrays.asList(new Coordinate(1, 2), new Coordinate(10, 2), new Coordinate(10, 20), new Coordinate(1, 20), new Coordinate(1, 2));
         String srsURI = SRS_URI.DEFAULT_WKT_CRS84;
         String geometryDatatypeURI = WKTDatatype.URI;

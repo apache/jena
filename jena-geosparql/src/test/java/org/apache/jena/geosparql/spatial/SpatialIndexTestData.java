@@ -77,7 +77,7 @@ public class SpatialIndexTestData {
                 spatialIndex.build();
                 TEST_SPATIAL_INDEX = spatialIndex;
             } catch (SpatialIndexException ex) {
-                System.out.println("Spatial Index Error: " + ex.getMessage());
+
             }
         }
 

@@ -67,7 +67,7 @@ public class GeometryReverseTest {
      */
     @Test
     public void testCheckPoint() throws FactoryException {
-        System.out.println("checkPoint");
+
 
         WKTReader reader = new WKTReader();
         try {
@@ -77,8 +77,8 @@ public class GeometryReverseTest {
             Geometry expResult = reader.read("POINT(0 2)");
             Geometry result = GeometryReverse.check(geometry, srsURI);
 
-            //System.out.println("Expected: " + expResult);
-            //System.out.println("Result: " + result);
+            //
+            //
             assertEquals(expResult, result);
         } catch (ParseException ex) {
             System.err.println("ParseException: " + ex.getMessage());
@@ -93,7 +93,7 @@ public class GeometryReverseTest {
      */
     @Test
     public void testCheckLineString() throws FactoryException {
-        System.out.println("checkLineString");
+
 
         WKTReader reader = new WKTReader();
         try {
@@ -103,8 +103,8 @@ public class GeometryReverseTest {
             Geometry expResult = reader.read("LINESTRING(0 0, 0 2, 0 5)");
             Geometry result = GeometryReverse.check(geometry, srsURI);
 
-            //System.out.println("Expected: " + expResult);
-            //System.out.println("Result: " + result);
+            //
+            //
             assertEquals(expResult, result);
         } catch (ParseException ex) {
             System.err.println("ParseException: " + ex.getMessage());
@@ -119,7 +119,7 @@ public class GeometryReverseTest {
      */
     @Test
     public void testCheckPolygon() throws FactoryException {
-        System.out.println("checkPolygon");
+
 
         WKTReader reader = new WKTReader();
         try {
@@ -129,8 +129,8 @@ public class GeometryReverseTest {
             Geometry expResult = reader.read("POLYGON ((10 30, 40 40, 40 20, 20 10, 10 30))");
             Geometry result = GeometryReverse.check(geometry, srsURI);
 
-            //System.out.println("Expected: " + expResult);
-            //System.out.println("Result: " + result);
+            //
+            //
             assertEquals(expResult, result);
         } catch (ParseException ex) {
             System.err.println("ParseException: " + ex.getMessage());
@@ -145,7 +145,7 @@ public class GeometryReverseTest {
      */
     @Test
     public void testCheckPolygonHoled() throws FactoryException {
-        System.out.println("checkPolygonHoled");
+
 
         WKTReader reader = new WKTReader();
         try {
@@ -155,8 +155,8 @@ public class GeometryReverseTest {
             Geometry expResult = reader.read("POLYGON ((10 35, 45 45, 40 15, 20 10, 10 35),(30 20, 35 35, 20 30, 30 20))");
             Geometry result = GeometryReverse.check(geometry, srsURI);
 
-            //System.out.println("Expected: " + expResult);
-            //System.out.println("Result: " + result);
+            //
+            //
             assertEquals(expResult, result);
         } catch (ParseException ex) {
             System.err.println("ParseException: " + ex.getMessage());
@@ -171,7 +171,7 @@ public class GeometryReverseTest {
      */
     @Test
     public void testCheckMultiPoint() throws FactoryException {
-        System.out.println("checkMultiPoint");
+
 
         WKTReader reader = new WKTReader();
         try {
@@ -181,8 +181,8 @@ public class GeometryReverseTest {
             Geometry expResult = reader.read("MULTIPOINT (40 10, 30 40, 20 20, 10 30)");
             Geometry result = GeometryReverse.check(geometry, srsURI);
 
-            //System.out.println("Expected: " + expResult);
-            //System.out.println("Result: " + result);
+            //
+            //
             assertEquals(expResult, result);
         } catch (ParseException ex) {
             System.err.println("ParseException: " + ex.getMessage());
@@ -197,7 +197,7 @@ public class GeometryReverseTest {
      */
     @Test
     public void testCheckMultiPolygon() throws FactoryException {
-        System.out.println("checkMultiPolygon");
+
 
         WKTReader reader = new WKTReader();
         try {
@@ -207,8 +207,8 @@ public class GeometryReverseTest {
             Geometry expResult = reader.read("MULTIPOLYGON (((20 30, 40 45, 40 10, 20 30)),((5 15, 10 40, 20 10, 10 5, 5 15)))");
             Geometry result = GeometryReverse.check(geometry, srsURI);
 
-            //System.out.println("Expected: " + expResult);
-            //System.out.println("Result: " + result);
+            //
+            //
             assertEquals(expResult, result);
         } catch (ParseException ex) {
             System.err.println("ParseException: " + ex.getMessage());
@@ -223,7 +223,7 @@ public class GeometryReverseTest {
      */
     @Test
     public void testCheckMultiLineString() throws FactoryException {
-        System.out.println("checkMultiLineString");
+
 
         WKTReader reader = new WKTReader();
         try {
@@ -233,8 +233,8 @@ public class GeometryReverseTest {
             Geometry expResult = reader.read("MULTILINESTRING ((10 10, 30 20, 40 10),(45 40, 35 30, 20 40, 10 30))");
             Geometry result = GeometryReverse.check(geometry, srsURI);
 
-            //System.out.println("Expected: " + expResult);
-            //System.out.println("Result: " + result);
+            //
+            //
             assertEquals(expResult, result);
         } catch (ParseException ex) {
             System.err.println("ParseException: " + ex.getMessage());
@@ -247,7 +247,7 @@ public class GeometryReverseTest {
      */
     @Test
     public void testCheckLineStringNotReversed() {
-        System.out.println("checkLineStringNotReversed");
+
 
         WKTReader reader = new WKTReader();
         try {
@@ -256,8 +256,8 @@ public class GeometryReverseTest {
             Geometry expResult = reader.read("LINESTRING(0 0, 2 0, 5 0)");
             Geometry result = GeometryReverse.check(geometry, srsURI);
 
-            //System.out.println("Expected: " + expResult);
-            //System.out.println("Result: " + result);
+            //
+            //
             assertEquals(expResult, result);
         } catch (ParseException ex) {
             System.err.println("ParseException: " + ex.getMessage());
@@ -272,7 +272,7 @@ public class GeometryReverseTest {
      */
     @Test
     public void testCheckMultiPolygonHoled() throws FactoryException {
-        System.out.println("checkMultiPolygonHoled");
+
 
         WKTReader reader = new WKTReader();
         try {
@@ -282,8 +282,8 @@ public class GeometryReverseTest {
             Geometry expResult = reader.read("MULTIPOLYGON (((10 35, 45 45, 40 15, 20 10, 10 35),(30 20, 35 35, 20 30, 30 20)),((5 15, 10 40, 20 10, 10 5, 5 15)))");
             Geometry result = GeometryReverse.check(geometry, srsURI);
 
-            //System.out.println("Expected: " + expResult);
-            //System.out.println("Result: " + result);
+            //
+            //
             assertEquals(expResult, result);
         } catch (ParseException ex) {
             System.err.println("ParseException: " + ex.getMessage());

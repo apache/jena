@@ -75,7 +75,7 @@ public class GenericGeometryPropertyFunctionTest {
      */
     @Test
     public void testGetGeometryLiteral() {
-        System.out.println("getGeometryLiteral");
+
         Graph graph = MODEL.getGraph();
         Node subject = GEOMETRY_A.asNode();
         Node predicate = Geo.COORDINATE_DIMENSION_NODE;
@@ -92,7 +92,7 @@ public class GenericGeometryPropertyFunctionTest {
      */
     @Test
     public void testGetGeometryLiteral_false() {
-        System.out.println("getGeometryLiteral_false");
+
         Graph graph = MODEL.getGraph();
         Node subject = GEOMETRY_B.asNode();
         Node predicate = Geo.COORDINATE_DIMENSION_NODE;
@@ -109,7 +109,7 @@ public class GenericGeometryPropertyFunctionTest {
      */
     @Test
     public void testGetGeometryLiteral_asserted() {
-        System.out.println("getGeometryLiteral_asserted");
+
         Graph graph = MODEL.getGraph();
         Node subject = GEOMETRY_C.asNode();
         Node predicate = Geo.COORDINATE_DIMENSION_NODE;
@@ -126,7 +126,7 @@ public class GenericGeometryPropertyFunctionTest {
      */
     @Test
     public void testGetGeometryLiteral_blank() {
-        System.out.println("getGeometryLiteral_blank");
+
         Graph graph = MODEL.getGraph();
         Node subject = GEOMETRY_D_BLANK.asNode();
         Node predicate = Geo.COORDINATE_DIMENSION_NODE;

@@ -56,7 +56,7 @@ public class SfOverlapsPFTest {
     //Point-Point returns false. Have to compare two sets of points.
     @Test
     public void testFilterFunction_multipoint_multipoint() {
-        System.out.println("filterFunction_multipoint_multipoint");
+
 
         Literal subjectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> MULTIPOINT(60 60, 20 20)", WKTDatatype.INSTANCE);
         Literal objectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> MULTIPOINT(60 60, 10 10)", WKTDatatype.INSTANCE);
@@ -70,7 +70,7 @@ public class SfOverlapsPFTest {
 
     @Test
     public void testFilterFunction_linestring_linestring() {
-        System.out.println("filterFunction_linestring_linestring");
+
 
         Literal subjectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(80 20, 80 50)", WKTDatatype.INSTANCE);
         Literal objectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(80 85, 80 30)", WKTDatatype.INSTANCE);
@@ -84,7 +84,7 @@ public class SfOverlapsPFTest {
 
     @Test
     public void testFilterFunction_polygon_polygon() {
-        System.out.println("filterFunction_polygon_polygon");
+
 
         Literal subjectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((80 15, 80 45, 140 45, 140 15, 80 15))", WKTDatatype.INSTANCE);
         Literal objectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE);
@@ -98,7 +98,7 @@ public class SfOverlapsPFTest {
 
     @Test
     public void testFilterFunction_point_point_false() {
-        System.out.println("filterFunction_point_point_false");
+
 
         Literal subjectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> MULTIPOINT(60 60, 20 20)", WKTDatatype.INSTANCE);
         Literal objectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> MULTIPOINT(60 60, 20 20)", WKTDatatype.INSTANCE);
@@ -112,7 +112,7 @@ public class SfOverlapsPFTest {
 
     @Test
     public void testFilterFunction_linestring_linestring_false() {
-        System.out.println("filterFunction_linestring_linestring_false");
+
 
         Literal subjectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(80 20, 80 50)", WKTDatatype.INSTANCE);
         Literal objectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(75 60, 145 60)", WKTDatatype.INSTANCE);
@@ -126,7 +126,7 @@ public class SfOverlapsPFTest {
 
     @Test
     public void testFilterFunction_polygon_polygon_false() {
-        System.out.println("filterFunction_polygon_polygon_false");
+
 
         Literal subjectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE);
         Literal objectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((140 15, 140 45, 200 45, 200 15, 140 15))", WKTDatatype.INSTANCE);

@@ -57,7 +57,7 @@ public class GreatCirclePointDistanceTest {
      */
     @Test
     public void testLatitude() {
-        System.out.println("latitude");
+
         double startLat = 48.85341;
         double startLon = -2.3488;
         double distance = 100000.0;
@@ -73,7 +73,7 @@ public class GreatCirclePointDistanceTest {
      */
     @Test
     public void testLongitude() {
-        System.out.println("longitude");
+
         double endLatRad = 0.86833;
         double startLat = 48.85341;
         double startLon = -2.3488;
@@ -90,7 +90,7 @@ public class GreatCirclePointDistanceTest {
      */
     @Test
     public void testRadToPoint_double_double() {
-        System.out.println("radToPoint");
+
         double latRad = 0.5;
         double lonRad = 0.1;
         LatLonPoint expResult = new LatLonPoint(Math.toDegrees(latRad), Math.toDegrees(lonRad));
@@ -103,7 +103,7 @@ public class GreatCirclePointDistanceTest {
      */
     @Test
     public void testRadToPoint_3args_false() {
-        System.out.println("radToPoint_false");
+
         double latRad = 0.5;
         double lonRad = Math.PI + 0.1;
         boolean isNormaliseLon = false;
@@ -117,7 +117,7 @@ public class GreatCirclePointDistanceTest {
      */
     @Test
     public void testRadToPoint_3args_true() {
-        System.out.println("radToPoint_true");
+
         double latRad = 0.5;
         double lonRad = Math.PI + 0.2;
         boolean isNormaliseLon = true;
@@ -131,7 +131,7 @@ public class GreatCirclePointDistanceTest {
      */
     @Test
     public void testNormaliseLongitude() {
-        System.out.println("normaliseLongitude");
+
         double lonDegrees = 185;
         double expResult = -175;
         double result = GreatCirclePointDistance.normaliseLongitude(lonDegrees);
@@ -143,7 +143,7 @@ public class GreatCirclePointDistanceTest {
      */
     @Test
     public void testGetPoint_3args_North() {
-        System.out.println("getPoint_North");
+
 
         double startLat = 48.85341;
         double startLon = -2.3488;
@@ -160,7 +160,7 @@ public class GreatCirclePointDistanceTest {
      */
     @Test
     public void testGetPoint_4args_North() {
-        System.out.println("getPoint_North");
+
         double startLat = 48.85341;
         double startLon = -2.3488;
         double distance = 100000.0;
@@ -175,7 +175,7 @@ public class GreatCirclePointDistanceTest {
      */
     @Test
     public void testGetPoint_3args_East() {
-        System.out.println("getPoint_East");
+
 
         double startLat = 48.85341;
         double startLon = -2.3488;
@@ -192,7 +192,7 @@ public class GreatCirclePointDistanceTest {
      */
     @Test
     public void testGetPoint_4args_East() {
-        System.out.println("getPoint_East");
+
         double startLat = 48.85341;
         double startLon = -2.3488;
         double distance = 100000.0;

@@ -54,7 +54,7 @@ public class RccNonTangentialProperPartPFTest {
     //Only Polygon-Polygon
     @Test
     public void testFilterFunction_polygon_polygon() {
-        System.out.println("filterFunction_polygon_polygon");
+
 
         Literal subjectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((145 30, 145 40, 160 40, 160 30, 145 30))", WKTDatatype.INSTANCE);
         Literal objectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((140 15, 140 45, 200 45, 200 15, 140 15))", WKTDatatype.INSTANCE);
@@ -68,7 +68,7 @@ public class RccNonTangentialProperPartPFTest {
 
     @Test
     public void testFilterFunction_polygon_polygon_false() {
-        System.out.println("filterFunction_polygon_polygon_false");
+
 
         Literal subjectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((80 15, 80 45, 140 45, 140 15, 80 15))", WKTDatatype.INSTANCE);
         Literal objectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((140 15, 140 45, 200 45, 200 15, 140 15))", WKTDatatype.INSTANCE);

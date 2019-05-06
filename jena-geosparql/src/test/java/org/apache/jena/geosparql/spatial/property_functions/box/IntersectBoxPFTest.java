@@ -75,7 +75,7 @@ public class IntersectBoxPFTest {
      */
     @Test
     public void testCheckSecondFilter() {
-        System.out.println("checkSecondFilter");
+
 
         IntersectBoxPF instance = new IntersectBoxPF();
 
@@ -110,7 +110,7 @@ public class IntersectBoxPFTest {
      */
     @Test
     public void testCheckSecondFilter_fail() {
-        System.out.println("checkSecondFilter_fail");
+
 
         IntersectBoxPF instance = new IntersectBoxPF();
 
@@ -145,7 +145,7 @@ public class IntersectBoxPFTest {
      */
     @Test
     public void testExecEvaluated() {
-        System.out.println("execEvaluated");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 

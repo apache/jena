@@ -55,7 +55,7 @@ public class RccTangentialProperPartInversePFTest {
     //Only Polygon-Polygon
     @Test
     public void testFilterFunction_polygon_polygon() {
-        System.out.println("filterFunction_polygon_polygon");
+
 
         Literal subjectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE);
         Literal objectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 48, 45 48, 45 40, 30 40))", WKTDatatype.INSTANCE);
@@ -69,7 +69,7 @@ public class RccTangentialProperPartInversePFTest {
 
     @Test
     public void testFilterFunction_polygon_polygon_false() {
-        System.out.println("filterFunction_polygon_polygon_false");
+
 
         Literal subjectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE);
         Literal objectGeometryLiteral = ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((80 15, 80 45, 140 45, 140 15, 80 15))", WKTDatatype.INSTANCE);

@@ -54,7 +54,7 @@ public class GreatCircleDistanceTest {
      */
     @Test
     public void testVincentyFormula_London_Paris() {
-        System.out.println("vincentyFormula_London_Paris");
+
         double lat1 = 51.50853;
         double lon1 = -0.12574;
         double lat2 = 48.85341;
@@ -69,7 +69,7 @@ public class GreatCircleDistanceTest {
      */
     @Test
     public void testVincentyFormula_Paris_London() {
-        System.out.println("vincentyFormula_Paris_London");
+
         double lat2 = 51.50853;
         double lon2 = -0.12574;
         double lat1 = 48.85341;

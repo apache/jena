@@ -57,7 +57,7 @@ public class IsValidPFTest {
      */
     @Test
     public void testApplyPredicate_true() {
-        System.out.println("applyPredicate_true");
+
         GeometryWrapper geometryWrapper = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(0 0, 1 1)", WKTDatatype.URI);
         IsValidPF instance = new IsValidPF();
         NodeValue expResult = NodeValue.makeNodeBoolean(true);
@@ -70,7 +70,7 @@ public class IsValidPFTest {
      */
     @Test
     public void testApplyPredicate_false() {
-        System.out.println("applyPredicate_false");
+
         GeometryWrapper geometryWrapper = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(0 0, 0 0, 0 0)", WKTDatatype.URI);
         IsValidPF instance = new IsValidPF();
         NodeValue expResult = NodeValue.makeNodeBoolean(false);

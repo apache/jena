@@ -72,7 +72,7 @@ public class GreatCircleFFTest {
      */
     @Test
     public void testExec() {
-        System.out.println("exec");
+
         NodeValue v1 = NodeValue.makeDouble(10.0);
         NodeValue v2 = NodeValue.makeDouble(20.0);
         NodeValue v3 = NodeValue.makeDouble(10.0);
@@ -89,7 +89,7 @@ public class GreatCircleFFTest {
      */
     @Test
     public void testExec2() {
-        System.out.println("exec2");
+
         NodeValue v1 = NodeValue.makeDouble(10.0);
         NodeValue v2 = NodeValue.makeDouble(20.0);
         NodeValue v3 = NodeValue.makeDouble(11.0);
@@ -106,7 +106,7 @@ public class GreatCircleFFTest {
      */
     @Test
     public void testExec_Paris_London() {
-        System.out.println("exec_Paris_London");
+
 
         NodeValue v1 = NodeValue.makeDouble(48.85341);
         NodeValue v2 = NodeValue.makeDouble(2.34880);
@@ -124,7 +124,7 @@ public class GreatCircleFFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_pos0_fail() {
-        System.out.println("exec_pos0_fail");
+
         NodeValue v1 = NodeValue.makeString("10.0");
         NodeValue v2 = NodeValue.makeDouble(20.0);
         NodeValue v3 = NodeValue.makeDouble(10.0);
@@ -141,7 +141,7 @@ public class GreatCircleFFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_pos1_fail() {
-        System.out.println("exec_pos1_fail");
+
         NodeValue v1 = NodeValue.makeDouble(10.0);
         NodeValue v2 = NodeValue.makeString("20.0");
         NodeValue v3 = NodeValue.makeDouble(10.0);
@@ -158,7 +158,7 @@ public class GreatCircleFFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_pos2_fail() {
-        System.out.println("exec_pos2_fail");
+
         NodeValue v1 = NodeValue.makeDouble(10.0);
         NodeValue v2 = NodeValue.makeDouble(20.0);
         NodeValue v3 = NodeValue.makeString("10.0");
@@ -175,7 +175,7 @@ public class GreatCircleFFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_pos3_fail() {
-        System.out.println("exec_pos3_fail");
+
         NodeValue v1 = NodeValue.makeDouble(10.0);
         NodeValue v2 = NodeValue.makeDouble(20.0);
         NodeValue v3 = NodeValue.makeDouble(10.0);
@@ -192,7 +192,7 @@ public class GreatCircleFFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_pos4_fail() {
-        System.out.println("exec_pos4_fail");
+
         NodeValue v1 = NodeValue.makeDouble(10.0);
         NodeValue v2 = NodeValue.makeDouble(20.0);
         NodeValue v3 = NodeValue.makeDouble(10.0);
@@ -209,7 +209,7 @@ public class GreatCircleFFTest {
      */
     @Test
     public void testExec_query() {
-        System.out.println("exec_query");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 
@@ -232,8 +232,8 @@ public class GreatCircleFFTest {
 
         List<Literal> expResults = Arrays.asList(ResourceFactory.createTypedLiteral("344.2664230368865e0", XSDDatatype.XSDdouble));
 
-        //System.out.println("Exp: " + expResults);
-        //System.out.println("Res: " + results);
+        //
+        //
         assertEquals(expResults, results);
     }
 

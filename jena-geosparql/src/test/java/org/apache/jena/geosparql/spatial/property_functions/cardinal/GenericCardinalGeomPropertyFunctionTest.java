@@ -67,7 +67,7 @@ public class GenericCardinalGeomPropertyFunctionTest {
      */
     @Test
     public void testCheckSecondFilter() {
-        System.out.println("checkSecondFilter");
+
 
         //Property Function
         Node predicate = NodeFactory.createURI(SpatialExtension.NORTH_GEOM_PROP);
@@ -95,7 +95,7 @@ public class GenericCardinalGeomPropertyFunctionTest {
      */
     @Test
     public void testCheckSecondFilter_fail() {
-        System.out.println("checkSecondFilter_fail");
+
 
         //Property Function
         Node predicate = NodeFactory.createURI(SpatialExtension.NORTH_GEOM_PROP);

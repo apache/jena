@@ -57,7 +57,7 @@ public class IsEmptyPFTest {
      */
     @Test
     public void testApplyPredicate_false() {
-        System.out.println("applyPredicate_false");
+
         GeometryWrapper geometryWrapper = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(90 60)", WKTDatatype.URI);
         IsEmptyPF instance = new IsEmptyPF();
         NodeValue expResult = NodeValue.makeNodeBoolean(false);
@@ -70,7 +70,7 @@ public class IsEmptyPFTest {
      */
     @Test
     public void testApplyPredicate_true() {
-        System.out.println("applyPredicate_true");
+
         GeometryWrapper geometryWrapper = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT EMPTY", WKTDatatype.URI);
         IsEmptyPF instance = new IsEmptyPF();
         NodeValue expResult = NodeValue.makeNodeBoolean(true);

@@ -58,7 +58,7 @@ public class GeometryDatatypeTest {
      */
     @Test
     public void testGetGeometryDatatype_RDFDatatype() {
-        System.out.println("getGeometryDatatype");
+
         RDFDatatype rdfDatatype = WKTDatatype.INSTANCE;
         GeometryDatatype expResult = WKTDatatype.INSTANCE;
         GeometryDatatype result = GeometryDatatype.get(rdfDatatype);
@@ -70,7 +70,7 @@ public class GeometryDatatypeTest {
      */
     @Test(expected = DatatypeFormatException.class)
     public void testGetGeometryDatatype_RDFDatatype_Fail() {
-        System.out.println("getGeometryDatatype_Fail");
+
         RDFDatatype rdfDatatype = XSDDatatype.XSDdouble;
         GeometryDatatype.get(rdfDatatype);
         fail("Exception not thrown when expected.");
@@ -81,7 +81,7 @@ public class GeometryDatatypeTest {
      */
     @Test
     public void testGetGeometryDatatype_String() {
-        System.out.println("getGeometryDatatype");
+
         String datatypeURI = WKTDatatype.URI;
         GeometryDatatype expResult = WKTDatatype.INSTANCE;
         GeometryDatatype result = GeometryDatatype.get(datatypeURI);
@@ -93,7 +93,7 @@ public class GeometryDatatypeTest {
      */
     @Test
     public void testCheckGeometryDatatypeURI() {
-        System.out.println("checkGeometryDatatypeURI");
+
         String datatypeURI = WKTDatatype.URI;
         boolean expResult = true;
         boolean result = GeometryDatatype.checkURI(datatypeURI);
@@ -105,7 +105,7 @@ public class GeometryDatatypeTest {
      */
     @Test
     public void testCheckGeometryDatatypeURI_Fail() {
-        System.out.println("checkGeometryDatatypeURI_Fail");
+
         String datatypeURI = XSDDatatype.XSDdouble.getURI();
         GeometryDatatype.checkURI(datatypeURI);
         boolean expResult = false;
@@ -118,7 +118,7 @@ public class GeometryDatatypeTest {
      */
     @Test
     public void testCheckGeometryDatatype() {
-        System.out.println("checkGeometryDatatype");
+
         RDFDatatype rdfDatatype = WKTDatatype.INSTANCE;
         boolean expResult = true;
         boolean result = GeometryDatatype.check(rdfDatatype);
@@ -130,7 +130,7 @@ public class GeometryDatatypeTest {
      */
     @Test
     public void testCheckGeometryDatatype_Fail() {
-        System.out.println("checkGeometryDatatype_Fail");
+
         RDFDatatype rdfDatatype = XSDDatatype.XSDdouble;
         boolean expResult = false;
         boolean result = GeometryDatatype.check(rdfDatatype);

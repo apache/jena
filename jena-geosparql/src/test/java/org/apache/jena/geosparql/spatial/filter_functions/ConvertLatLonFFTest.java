@@ -70,7 +70,7 @@ public class ConvertLatLonFFTest {
      */
     @Test
     public void testExec() {
-        System.out.println("exec");
+
         NodeValue v1 = NodeValue.makeFloat(10.0f);
         NodeValue v2 = NodeValue.makeFloat(20.0f);
         ConvertLatLonFF instance = new ConvertLatLonFF();
@@ -84,7 +84,7 @@ public class ConvertLatLonFFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_pos0_fail() {
-        System.out.println("exec_pos0_fail");
+
         NodeValue v1 = NodeValue.makeString("10.0");
         NodeValue v2 = NodeValue.makeFloat(20.0f);
         ConvertLatLonFF instance = new ConvertLatLonFF();
@@ -98,7 +98,7 @@ public class ConvertLatLonFFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_pos1_fail() {
-        System.out.println("exec_pos1_fail");
+
         NodeValue v1 = NodeValue.makeFloat(10.0f);
         NodeValue v2 = NodeValue.makeString("20.0");
         ConvertLatLonFF instance = new ConvertLatLonFF();
@@ -112,7 +112,7 @@ public class ConvertLatLonFFTest {
      */
     @Test
     public void testExec_query() {
-        System.out.println("exec_query");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 
@@ -135,8 +135,8 @@ public class ConvertLatLonFFTest {
 
         List<Literal> expResults = Arrays.asList(ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(0 10)", WKTDatatype.INSTANCE));
 
-        //System.out.println("Exp: " + expResults);
-        //System.out.println("Res: " + results);
+        //
+        //
         assertEquals(expResults, results);
     }
 

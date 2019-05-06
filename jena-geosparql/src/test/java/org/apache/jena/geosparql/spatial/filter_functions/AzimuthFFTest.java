@@ -69,7 +69,7 @@ public class AzimuthFFTest {
      */
     @Test
     public void testExec() {
-        System.out.println("exec");
+
         NodeValue v1 = NodeValue.makeDouble(0);
         NodeValue v2 = NodeValue.makeDouble(0);
         NodeValue v3 = NodeValue.makeDouble(0);
@@ -85,7 +85,7 @@ public class AzimuthFFTest {
      */
     @Test
     public void testExec_query() {
-        System.out.println("exec_query");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 
@@ -108,8 +108,8 @@ public class AzimuthFFTest {
 
         List<Literal> expResults = Arrays.asList(ResourceFactory.createTypedLiteral("1.5707963267948966e0", XSDDatatype.XSDdouble));
 
-        //System.out.println("Exp: " + expResults);
-        //System.out.println("Res: " + results);
+        //
+        //
         assertEquals(expResults, results);
     }
 }

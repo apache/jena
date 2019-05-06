@@ -69,7 +69,7 @@ public class NorthPFTest {
      */
     @Test
     public void testBuildSearchEnvelope() {
-        System.out.println("buildSearchEnvelope");
+
         GeometryWrapper geometryWrapper = SpatialIndexTestData.PARIS_GEOMETRY_WRAPPER;
         NorthPF instance = new NorthPF();
         SearchEnvelope expResult = SearchEnvelope.build(geometryWrapper, SpatialIndexTestData.WGS_84_SRS_INFO, CardinalDirection.NORTH);
@@ -82,7 +82,7 @@ public class NorthPFTest {
      */
     @Test
     public void testExecEvaluated() {
-        System.out.println("execEvaluated");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 

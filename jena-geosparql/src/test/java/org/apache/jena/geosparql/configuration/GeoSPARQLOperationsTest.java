@@ -119,7 +119,7 @@ public class GeoSPARQLOperationsTest {
      */
     @Test
     public void testConvert_Model() {
-        System.out.println("convert");
+
         Model inputModel = CONVERTED_DATATYPE_DATA;
         TreeSet<String> expResult = extract(CONVERTED_SRS_DATA);
         Model instance = GeoSPARQLOperations.convert(inputModel);
@@ -132,7 +132,7 @@ public class GeoSPARQLOperationsTest {
      */
     @Test
     public void testConvert_Model_String() {
-        System.out.println("convert");
+
         Model inputModel = ORIGINAL_DATA;
         String outputSrsURI = SRS_URI.WGS84_CRS;
         TreeSet<String> expResult = extract(CONVERTED_SRS_DATA);
@@ -146,7 +146,7 @@ public class GeoSPARQLOperationsTest {
      */
     @Test
     public void testConvert_Model_GeometryDatatype() {
-        System.out.println("convert");
+
         Model inputModel = CONVERTED_SRS_DATA;
         GeometryDatatype outputDatatype = GMLDatatype.INSTANCE;
         TreeSet<String> expResult = extract(CONVERTED_DATATYPE_DATA);
@@ -160,7 +160,7 @@ public class GeoSPARQLOperationsTest {
      */
     @Test
     public void testConvert_3args_1() {
-        System.out.println("convert");
+
         Model inputModel = ORIGINAL_DATA;
         String outputSrsURI = SRS_URI.WGS84_CRS;
         GeometryDatatype outputDatatype = GMLDatatype.INSTANCE;
@@ -175,7 +175,7 @@ public class GeoSPARQLOperationsTest {
      */
     @Test
     public void testConvert_Dataset() {
-        System.out.println("convert");
+
         Dataset dataset = CONVERTED_DATATYPE_DATASET;
         TreeSet<String> expResult = extract(CONVERTED_SRS_DATASET);
         Dataset instance = GeoSPARQLOperations.convert(dataset);
@@ -188,7 +188,7 @@ public class GeoSPARQLOperationsTest {
      */
     @Test
     public void testConvert_Dataset_String() {
-        System.out.println("convert");
+
         Dataset dataset = ORIGINAL_DATASET;
         String outputSrsURI = SRS_URI.WGS84_CRS;
         TreeSet<String> expResult = extract(CONVERTED_SRS_DATASET);
@@ -202,7 +202,7 @@ public class GeoSPARQLOperationsTest {
      */
     @Test
     public void testConvert_Dataset_GeometryDatatype() {
-        System.out.println("convert");
+
         Dataset dataset = CONVERTED_SRS_DATASET;
         GeometryDatatype outputDatatype = GMLDatatype.INSTANCE;
         TreeSet<String> expResult = extract(CONVERTED_DATATYPE_DATASET);
@@ -216,7 +216,7 @@ public class GeoSPARQLOperationsTest {
      */
     @Test
     public void testConvert_3args_2() {
-        System.out.println("convert");
+
         Dataset inputDataset = ORIGINAL_DATASET;
         String outputSrsURI = SRS_URI.WGS84_CRS;
         GeometryDatatype outputDatatype = GMLDatatype.INSTANCE;
@@ -231,7 +231,7 @@ public class GeoSPARQLOperationsTest {
      */
     @Test
     public void testConvertGeometryLiterals() {
-        System.out.println("convertGeometryLiterals");
+
         List<String> geometryLiterals = Arrays.asList("POINT(0 1)", "POINT(2 3)");
         String outputSrsURI = SRS_URI.WGS84_CRS;
         GeometryDatatype outputDatatype = WKTDatatype.INSTANCE;
@@ -245,7 +245,7 @@ public class GeoSPARQLOperationsTest {
      */
     @Test
     public void testConvertGeometryLiteral() {
-        System.out.println("convertGeometryLiteral");
+
         String geometryLiteral = "POINT(0 1)";
         String outputSrsURI = SRS_URI.WGS84_CRS;
         GeometryDatatype outputDatatype = WKTDatatype.INSTANCE;
@@ -259,7 +259,7 @@ public class GeoSPARQLOperationsTest {
      */
     @Test
     public void testConvertGeoPredicates_Dataset_remove() {
-        System.out.println("convertGeoPredicates_remove");
+
         Dataset dataset = GEO_DATASET;
         boolean isRemoveGeoPredicate = true;
         TreeSet<String> expResult = extract(CONVERTED_SRS_DATASET);
@@ -273,7 +273,7 @@ public class GeoSPARQLOperationsTest {
      */
     @Test
     public void testConvertGeoPredicates_Model_remove() {
-        System.out.println("convertGeoPredicates_remove");
+
         Model model = GEO_DATA;
         boolean isRemoveGeoPredicates = true;
         TreeSet<String> expResult = extract(CONVERTED_SRS_DATA);
@@ -287,7 +287,7 @@ public class GeoSPARQLOperationsTest {
      */
     @Test
     public void testConvertGeoPredicates_Dataset_keep() {
-        System.out.println("convertGeoPredicates_Dataset_keep");
+
         Dataset dataset = GEO_DATASET;
         boolean isRemoveGeoPredicate = false;
         TreeSet<String> expResult = extract(GEO_ALL_DATASET);
@@ -301,7 +301,7 @@ public class GeoSPARQLOperationsTest {
      */
     @Test
     public void testConvertGeoPredicates_Model_keep() {
-        System.out.println("convertGeoPredicates_Model_keep");
+
         Model model = GEO_DATA;
         boolean isRemoveGeoPredicates = false;
         TreeSet<String> expResult = extract(GEO_ALL_DATA);

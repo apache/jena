@@ -57,7 +57,7 @@ public class DimensionPFTest {
      */
     @Test
     public void testApplyPredicate_0_Dimension() {
-        System.out.println("applyPredicate_0_Dimension");
+
         GeometryWrapper geometryWrapper = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(90 60)", WKTDatatype.URI);
         DimensionPF instance = new DimensionPF();
         NodeValue expResult = NodeValue.makeNodeInteger(0);
@@ -70,7 +70,7 @@ public class DimensionPFTest {
      */
     @Test
     public void testApplyPredicate_1_Dimension() {
-        System.out.println("applyPredicate_1_Dimension");
+
         GeometryWrapper geometryWrapper = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(90 60, 100 70)", WKTDatatype.URI);
         DimensionPF instance = new DimensionPF();
         NodeValue expResult = NodeValue.makeNodeInteger(1);
@@ -83,7 +83,7 @@ public class DimensionPFTest {
      */
     @Test
     public void testApplyPredicate_2_Dimension() {
-        System.out.println("applyPredicate_2_Dimension");
+
         GeometryWrapper geometryWrapper = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))", WKTDatatype.URI);
         DimensionPF instance = new DimensionPF();
         NodeValue expResult = NodeValue.makeNodeInteger(2);

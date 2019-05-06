@@ -75,7 +75,7 @@ public class WithinBoxGeomPFTest {
      */
     @Test
     public void testCheckSecondFilter() {
-        System.out.println("checkSecondFilter");
+
 
         WithinBoxGeomPF instance = new WithinBoxGeomPF();
 
@@ -111,7 +111,7 @@ public class WithinBoxGeomPFTest {
      */
     @Test
     public void testCheckSecondFilter_fail() {
-        System.out.println("checkSecondFilter_fail");
+
 
         WithinBoxGeomPF instance = new WithinBoxGeomPF();
 
@@ -147,7 +147,7 @@ public class WithinBoxGeomPFTest {
      */
     @Test
     public void testExecEvaluated() {
-        System.out.println("execEvaluated");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 

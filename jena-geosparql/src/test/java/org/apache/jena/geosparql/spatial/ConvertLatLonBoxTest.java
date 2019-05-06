@@ -60,7 +60,7 @@ public class ConvertLatLonBoxTest {
      */
     @Test
     public void testToWKT() {
-        System.out.println("toWKT");
+
         float latMin = 0.0F;
         float lonMin = 1.0F;
         float latMax = 10.0F;
@@ -75,7 +75,7 @@ public class ConvertLatLonBoxTest {
      */
     @Test
     public void testToLiteral() {
-        System.out.println("toLiteral");
+
         float latMin = 0.0F;
         float lonMin = 1.0F;
         float latMax = 10.0F;
@@ -90,7 +90,7 @@ public class ConvertLatLonBoxTest {
      */
     @Test
     public void testConvert_4args_1() {
-        System.out.println("convert");
+
         NodeValue v1 = NodeValue.makeFloat(0.0f);
         NodeValue v2 = NodeValue.makeFloat(1.0f);
         NodeValue v3 = NodeValue.makeFloat(10.0f);
@@ -105,7 +105,7 @@ public class ConvertLatLonBoxTest {
      */
     @Test
     public void testConvert_4args_2() {
-        System.out.println("convert");
+
         Node n1 = NodeValue.makeFloat(0.0f).asNode();
         Node n2 = NodeValue.makeFloat(1.0f).asNode();
         Node n3 = NodeValue.makeFloat(10.0f).asNode();

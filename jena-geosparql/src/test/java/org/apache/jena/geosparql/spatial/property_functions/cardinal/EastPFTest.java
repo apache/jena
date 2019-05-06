@@ -71,7 +71,7 @@ public class EastPFTest {
      */
     @Test
     public void testBuildSearchEnvelope() {
-        System.out.println("buildSearchEnvelope");
+
         GeometryWrapper geometryWrapper = SpatialIndexTestData.PARIS_GEOMETRY_WRAPPER;
         EastPF instance = new EastPF();
         SearchEnvelope expResult = SearchEnvelope.build(geometryWrapper, SpatialIndexTestData.WGS_84_SRS_INFO, CardinalDirection.EAST);
@@ -84,7 +84,7 @@ public class EastPFTest {
      */
     @Test
     public void testCheckSearchEnvelope_no_wrap() {
-        System.out.println("checkSearchEnvelope_no_wrap");
+
         SpatialIndex spatialIndex = SpatialIndexTestData.createTestIndex();
 
         //Search Envelope
@@ -101,7 +101,7 @@ public class EastPFTest {
      */
     @Test
     public void testCheckSearchEnvelope_wrap() {
-        System.out.println("checkSearchEnvelope_wrap");
+
         SpatialIndex spatialIndex = SpatialIndexTestData.createTestIndex();
 
         //Search Envelope
@@ -118,7 +118,7 @@ public class EastPFTest {
      */
     @Test
     public void testExecEvaluated() {
-        System.out.println("execEvaluated");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 

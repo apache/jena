@@ -56,7 +56,7 @@ public class IntersectionFFTest {
      */
     @Test
     public void testExec_point_polygon() {
-        System.out.println("exec_point_polygon");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(30 70)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE);
         IntersectionFF instance = new IntersectionFF();
@@ -70,7 +70,7 @@ public class IntersectionFFTest {
      */
     @Test
     public void testExec_linestring_polygon() {
-        System.out.println("exec_linestring_polygon");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(80 85, 80 30)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE);
         IntersectionFF instance = new IntersectionFF();
@@ -84,7 +84,7 @@ public class IntersectionFFTest {
      */
     @Test
     public void testExec_linestring_polygon_empty() {
-        System.out.println("exec_linestring_polygon_empty");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(0 0, 0 30)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))", WKTDatatype.INSTANCE);
         IntersectionFF instance = new IntersectionFF();

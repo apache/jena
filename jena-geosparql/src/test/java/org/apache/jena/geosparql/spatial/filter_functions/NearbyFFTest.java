@@ -74,7 +74,7 @@ public class NearbyFFTest {
      */
     @Test
     public void testExec() {
-        System.out.println("exec");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0001)", WKTDatatype.INSTANCE);
         NodeValue v3 = NodeValue.makeFloat(50);
@@ -90,7 +90,7 @@ public class NearbyFFTest {
      */
     @Test
     public void testExec2() {
-        System.out.println("exec2");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0001)", WKTDatatype.INSTANCE);
         NodeValue v3 = NodeValue.makeFloat(50);
@@ -106,7 +106,7 @@ public class NearbyFFTest {
      */
     @Test
     public void testExec_Paris_London() {
-        System.out.println("exec_Paris_London");
+
         NodeValue v1 = SpatialIndexTestData.PARIS_GEOMETRY_WRAPPER.asNodeValue();
         NodeValue v2 = SpatialIndexTestData.LONDON_GEOMETRY_WRAPPER.asNodeValue();
         NodeValue v3 = NodeValue.makeFloat(345);
@@ -122,7 +122,7 @@ public class NearbyFFTest {
      */
     @Test
     public void testExec_Paris_London_fail() {
-        System.out.println("exec_Paris_London_fail");
+
         NodeValue v1 = SpatialIndexTestData.PARIS_GEOMETRY_WRAPPER.asNodeValue();
         NodeValue v2 = SpatialIndexTestData.LONDON_GEOMETRY_WRAPPER.asNodeValue();
         NodeValue v3 = NodeValue.makeFloat(200);
@@ -138,7 +138,7 @@ public class NearbyFFTest {
      */
     @Test
     public void testExec_fail() {
-        System.out.println("exec_fail");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 30.0)", WKTDatatype.INSTANCE);
         NodeValue v3 = NodeValue.makeFloat(50);
@@ -154,7 +154,7 @@ public class NearbyFFTest {
      */
     @Test
     public void testRelate() {
-        System.out.println("relate");
+
         GeometryWrapper geometry1 = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0)", WKTDatatype.URI);
         GeometryWrapper geometry2 = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0001)", WKTDatatype.URI);;
         double radius = 5.0;
@@ -169,7 +169,7 @@ public class NearbyFFTest {
      */
     @Test
     public void testRelate_OSGB() {
-        System.out.println("relate_OSGB");
+
         GeometryWrapper geometry1 = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(0.0 0.0)", WKTDatatype.URI);
         GeometryWrapper geometry2 = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(10000.0 0.0)", WKTDatatype.URI);;
         double radius = 10.1;
@@ -184,7 +184,7 @@ public class NearbyFFTest {
      */
     @Test
     public void testRelate_OSGB_fail() {
-        System.out.println("relate_OSGB_fail");
+
         GeometryWrapper geometry1 = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(0.0 0.0)", WKTDatatype.URI);
         GeometryWrapper geometry2 = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(10000.0 0.0)", WKTDatatype.URI);;
         double radius = 9.9;
@@ -199,7 +199,7 @@ public class NearbyFFTest {
      */
     @Test
     public void testRelate_fail() {
-        System.out.println("relate_fail");
+
         GeometryWrapper geometry1 = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0)", WKTDatatype.URI);
         GeometryWrapper geometry2 = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 30.0)", WKTDatatype.URI);;
         double radius = 5.0;
@@ -214,7 +214,7 @@ public class NearbyFFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_pos0_fail() {
-        System.out.println("exec_pos0_fail");
+
         NodeValue v1 = NodeValue.makeString("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0)");
         NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0001)", WKTDatatype.INSTANCE);
         NodeValue v3 = NodeValue.makeFloat(50);
@@ -230,7 +230,7 @@ public class NearbyFFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_pos1_fail() {
-        System.out.println("exec_pos1_fail");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeString("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0001)");
         NodeValue v3 = NodeValue.makeFloat(50);
@@ -246,7 +246,7 @@ public class NearbyFFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_pos2_fail() {
-        System.out.println("exec_pos2_fail");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0001)", WKTDatatype.INSTANCE);
         NodeValue v3 = NodeValue.makeString("50");
@@ -262,7 +262,7 @@ public class NearbyFFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_pos3_fail() {
-        System.out.println("exec_pos3_fail");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0001)", WKTDatatype.INSTANCE);
         NodeValue v3 = NodeValue.makeFloat(50);
@@ -278,7 +278,7 @@ public class NearbyFFTest {
      */
     @Test
     public void testExec_query() {
-        System.out.println("exec_query");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 
@@ -303,8 +303,8 @@ public class NearbyFFTest {
 
         List<Literal> expResults = Arrays.asList(ResourceFactory.createTypedLiteral(Boolean.TRUE.toString(), XSDDatatype.XSDboolean));
 
-        //System.out.println("Exp: " + expResults);
-        //System.out.println("Res: " + results);
+        //
+        //
         assertEquals(expResults, results);
     }
 
@@ -313,7 +313,7 @@ public class NearbyFFTest {
      */
     @Test
     public void testExec_query_false() {
-        System.out.println("exec_query_false");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 
@@ -338,8 +338,8 @@ public class NearbyFFTest {
 
         List<Literal> expResults = Arrays.asList(ResourceFactory.createTypedLiteral(Boolean.FALSE.toString(), XSDDatatype.XSDboolean));
 
-        //System.out.println("Exp: " + expResults);
-        //System.out.println("Res: " + results);
+        //
+        //
         assertEquals(expResults, results);
     }
 }

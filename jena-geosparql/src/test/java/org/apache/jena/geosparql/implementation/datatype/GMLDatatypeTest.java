@@ -78,7 +78,7 @@ public class GMLDatatypeTest {
      */
     @Test
     public void testUnparse() {
-        System.out.println("unparse");
+
 
         String expResult = "<gml:Point xmlns:gml=\"http://www.opengis.net/ont/gml\" srsName=\"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"><gml:pos>-83.38 33.95</gml:pos></gml:Point>";
 
@@ -101,7 +101,7 @@ public class GMLDatatypeTest {
      */
     @Test
     public void testParse() {
-        System.out.println("parse");
+
         String lexicalForm = "<gml:Point xmlns:gml=\"http://www.opengis.net/ont/gml\" srsName=\"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"><gml:pos>-83.38 33.95</gml:pos></gml:Point>";
 
         GMLDatatype instance = GMLDatatype.INSTANCE;
@@ -116,8 +116,8 @@ public class GMLDatatypeTest {
 
         GeometryWrapper expResult = new GeometryWrapper(expGeometry, expSRSName, GMLDatatype.URI, dimensionInfo);
 
-        //System.out.println("Expected: " + expResult);
-        //System.out.println("Result: " + geo);
+        //
+        //
         assertEquals(expResult, result);
     }
 
@@ -126,7 +126,7 @@ public class GMLDatatypeTest {
      */
     @Test
     public void testParseNotEqual() {
-        System.out.println("parseNotEqual");
+
         String lexicalForm = "<gml:Point xmlns:gml=\"http://www.opengis.net/ont/gml\" srsName=\"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"><gml:pos>-83.38 33.95</gml:pos></gml:Point>";
 
         GMLDatatype instance = GMLDatatype.INSTANCE;
@@ -142,8 +142,8 @@ public class GMLDatatypeTest {
 
         GeometryWrapper expResult = new GeometryWrapper(expGeometry, expSRSName, GMLDatatype.URI, dimensionInfo);
 
-        //System.out.println("Expected: " + expResult);
-        //System.out.println("Result: " + geo);
+        //
+        //
         assertThat(expResult, not(result));
     }
 
@@ -153,7 +153,7 @@ public class GMLDatatypeTest {
     @Test
 
     public void testParseNotEqual2() {
-        System.out.println("parseNotEqual2");
+
         String lexicalForm = "<gml:Point xmlns:gml=\"http://www.opengis.net/ont/gml\" srsName=\"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"><gml:pos>-83.38 33.95</gml:pos></gml:Point>";
 
         GMLDatatype instance = GMLDatatype.INSTANCE;
@@ -169,8 +169,8 @@ public class GMLDatatypeTest {
 
         GeometryWrapper expResult = new GeometryWrapper(expGeometry, expSRSName, GMLDatatype.URI, dimensionInfo);
 
-        //System.out.println("Expected: " + expResult);
-        //System.out.println("Result: " + geo);
+        //
+        //
         assertThat(expResult, not(result));
     }
 
@@ -180,8 +180,8 @@ public class GMLDatatypeTest {
         Geometry test = GEOMETRY_FACTORY.createPoint(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY, "-83.4 34.4"));
         GeometryWrapper expResult = new GeometryWrapper(test, URL_SRS_NAMESPACE, GMLDatatype.URI, new DimensionInfo(2, 2, 0));
 
-        //System.out.println("Expected: " + expResult);
-        //System.out.println("Result: " + geo);
+        //
+        //
         assertEquals(geo, expResult);
     }
 
@@ -191,8 +191,8 @@ public class GMLDatatypeTest {
         Geometry test = GEOMETRY_FACTORY.createPoint(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY, "-83.4 34.4"));
         GeometryWrapper expResult = new GeometryWrapper(test, URN_SRS_NAMESPACE, GMLDatatype.URI, new DimensionInfo(2, 2, 0));
 
-        //System.out.println("Expected: " + expResult);
-        //System.out.println("Result: " + geo);
+        //
+        //
         assertEquals(geo, expResult);
     }
 
@@ -202,8 +202,8 @@ public class GMLDatatypeTest {
         Geometry test = GEOMETRY_FACTORY.createLineString(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY, "-83.4 34.0, -83.3 34.3"));
         GeometryWrapper expResult = new GeometryWrapper(test, URN_SRS_NAMESPACE, GMLDatatype.URI, new DimensionInfo(2, 2, 1));
 
-        //System.out.println("Expected: " + expResult);
-        //System.out.println("Result: " + geo);
+        //
+        //
         assertEquals(geo, expResult);
     }
 
@@ -213,8 +213,8 @@ public class GMLDatatypeTest {
         Geometry test = GEOMETRY_FACTORY.createPolygon(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY, "30 10, 40 40, 20 40, 10 20, 30 10"));
         GeometryWrapper expResult = new GeometryWrapper(test, URN_SRS_NAMESPACE, GMLDatatype.URI, new DimensionInfo(2, 2, 2));
 
-        //System.out.println("Expected: " + expResult);
-        //System.out.println("Result: " + geo);
+        //
+        //
         assertEquals(geo, expResult);
     }
 
@@ -226,8 +226,8 @@ public class GMLDatatypeTest {
         Geometry test = GEOMETRY_FACTORY.createPolygon(shell, holes);
         GeometryWrapper expResult = new GeometryWrapper(test, URN_SRS_NAMESPACE, GMLDatatype.URI, new DimensionInfo(2, 2, 2));
 
-        //System.out.println("Expected: " + expResult);
-        //System.out.println("Result: " + geo);
+        //
+        //
         assertEquals(geo, expResult);
     }
 
@@ -237,8 +237,8 @@ public class GMLDatatypeTest {
         Geometry test = GEOMETRY_FACTORY.createMultiPoint(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY, "10 40, 40 30, 20 20, 30 10"));
         GeometryWrapper expResult = new GeometryWrapper(test, "urn:ogc:def:crs:EPSG::27700", GMLDatatype.URI, new DimensionInfo(2, 2, 0));
 
-        //System.out.println("Expected: " + expResult);
-        //System.out.println("Result: " + geo);
+        //
+        //
         assertEquals(geo, expResult);
     }
 
@@ -251,8 +251,8 @@ public class GMLDatatypeTest {
         Geometry test = GEOMETRY_FACTORY.createMultiLineString(lineStrings);
         GeometryWrapper expResult = new GeometryWrapper(test, URN_SRS_NAMESPACE, GMLDatatype.URI, new DimensionInfo(2, 2, 1));
 
-        //System.out.println("Expected: " + expResult);
-        //System.out.println("Result: " + geo);
+        //
+        //
         assertEquals(geo, expResult);
     }
 
@@ -267,8 +267,8 @@ public class GMLDatatypeTest {
         Geometry test = GEOMETRY_FACTORY.createMultiPolygon(polygons);
         GeometryWrapper expResult = new GeometryWrapper(test, URN_SRS_NAMESPACE, GMLDatatype.URI, new DimensionInfo(2, 2, 2));
 
-        //System.out.println("Expected: " + expResult);
-        //System.out.println("Result: " + geo);
+        //
+        //
         assertEquals(geo, expResult);
     }
 
@@ -281,8 +281,8 @@ public class GMLDatatypeTest {
         Geometry test = GEOMETRY_FACTORY.createGeometryCollection(geometries);
         GeometryWrapper expResult = new GeometryWrapper(test, URN_SRS_NAMESPACE, GMLDatatype.URI, new DimensionInfo(2, 2, 1));
 
-        //System.out.println("Expected: " + expResult);
-        //System.out.println("Result: " + geo);
+        //
+        //
         assertEquals(geo, expResult);
     }
 
@@ -296,8 +296,8 @@ public class GMLDatatypeTest {
         Geometry test = GEOMETRY_FACTORY.createPoint();
         GeometryWrapper expResult = new GeometryWrapper(test, SRS_URI.DEFAULT_WKT_CRS84, GMLDatatype.URI, new DimensionInfo(2, 2, 0));
 
-        //System.out.println("Expected: " + expResult);
-        //System.out.println("Result: " + geo);
+        //
+        //
         assertEquals(geo, expResult);
     }
 

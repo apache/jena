@@ -58,7 +58,7 @@ public class DistanceFFTest {
      */
     @Test
     public void testExec_metres() {
-        System.out.println("exec_metres");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(60 60)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(90 60)", WKTDatatype.INSTANCE);
         NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.METRE_URL));
@@ -73,7 +73,7 @@ public class DistanceFFTest {
      */
     @Test
     public void testExec_radians() {
-        System.out.println("exec_radians");
+
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(60 60)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(90 60)", WKTDatatype.INSTANCE);
         NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.RADIAN_URL));

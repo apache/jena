@@ -73,7 +73,7 @@ public class GenericSpatialPropertyFunctionTest {
      */
     @Test
     public void testExecEvaluated_Nearby_none() {
-        System.out.println("execEvaluated_Nearby_none");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 
@@ -103,7 +103,7 @@ public class GenericSpatialPropertyFunctionTest {
      */
     @Test
     public void testExecEvaluated_Nearby_one() {
-        System.out.println("execEvaluated_Nearby_one");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 
@@ -133,7 +133,7 @@ public class GenericSpatialPropertyFunctionTest {
      */
     @Test
     public void testExecEvaluated_Nearby_one_bound() {
-        System.out.println("execEvaluated_Nearby_one_bound");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 
@@ -164,7 +164,7 @@ public class GenericSpatialPropertyFunctionTest {
      */
     @Test
     public void testExecEvaluated_Nearby_one_bound_fail() {
-        System.out.println("execEvaluated_Nearby_one_bound_fail");
+
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 
@@ -195,7 +195,7 @@ public class GenericSpatialPropertyFunctionTest {
      */
     @Test
     public void testExecEvaluated_Nearby_geo() throws SpatialIndexException {
-        System.out.println("execEvaluated_Nearby_geo");
+
 
         Model model = ModelFactory.createDefaultModel();
         Resource geoFeature = ResourceFactory.createResource("http://example.org/GeoFeatureX");

@@ -58,7 +58,7 @@ public class CoordinateSequenceDimensionsTest {
      */
     @Test
     public void testFind_xy() {
-        System.out.println("find_xy");
+
         Coordinate coordinate = new Coordinate(1.0, 2.0);
         CoordinateSequenceDimensions expResult = CoordinateSequenceDimensions.XY;
         CoordinateSequenceDimensions result = CoordinateSequenceDimensions.find(coordinate);
@@ -70,7 +70,7 @@ public class CoordinateSequenceDimensionsTest {
      */
     @Test
     public void testFind_xy2() {
-        System.out.println("find_xy2");
+
         Coordinate coordinate = new CoordinateXY(1.0, 2.0);
         CoordinateSequenceDimensions expResult = CoordinateSequenceDimensions.XY;
         CoordinateSequenceDimensions result = CoordinateSequenceDimensions.find(coordinate);
@@ -82,7 +82,7 @@ public class CoordinateSequenceDimensionsTest {
      */
     @Test
     public void testFind_xyz() {
-        System.out.println("find_xyz");
+
         Coordinate coordinate = new Coordinate(1.0, 2.0, 3.0);
         CoordinateSequenceDimensions expResult = CoordinateSequenceDimensions.XYZ;
         CoordinateSequenceDimensions result = CoordinateSequenceDimensions.find(coordinate);
@@ -94,7 +94,7 @@ public class CoordinateSequenceDimensionsTest {
      */
     @Test
     public void testFind_xym() {
-        System.out.println("find_xym");
+
         Coordinate coordinate = new CoordinateXYM(1.0, 2.0, 3.0);
         CoordinateSequenceDimensions expResult = CoordinateSequenceDimensions.XYM;
         CoordinateSequenceDimensions result = CoordinateSequenceDimensions.find(coordinate);
@@ -106,7 +106,7 @@ public class CoordinateSequenceDimensionsTest {
      */
     @Test
     public void testFind_xyzm() {
-        System.out.println("find_xyzm");
+
         Coordinate coordinate = new CoordinateXYZM(1.0, 2.0, 3.0, 4.0);
         CoordinateSequenceDimensions expResult = CoordinateSequenceDimensions.XYZM;
         CoordinateSequenceDimensions result = CoordinateSequenceDimensions.find(coordinate);

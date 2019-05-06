@@ -54,7 +54,7 @@ public class AngleTest {
      */
     @Test
     public void testFind_upper_right() {
-        System.out.println("find_upper_right");
+
         double x1 = 25.0;
         double y1 = 45.0;
         double x2 = 75.0;
@@ -69,7 +69,7 @@ public class AngleTest {
      */
     @Test
     public void testFind_upper_left() {
-        System.out.println("find_upper_left");
+
         double x1 = 25.0;
         double y1 = 45.0;
         double x2 = -25.0;
@@ -84,7 +84,7 @@ public class AngleTest {
      */
     @Test
     public void testFind_lower_left() {
-        System.out.println("find_lower_left");
+
         double x1 = 75.0;
         double y1 = 100.0;
         double x2 = 25.0;
@@ -99,7 +99,7 @@ public class AngleTest {
      */
     @Test
     public void testFind_lower_right() {
-        System.out.println("find_lower_right");
+
         double x1 = 75.0;
         double y1 = 100.0;
         double x2 = 125.0;
