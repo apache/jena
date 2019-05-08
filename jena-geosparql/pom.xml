@@ -38,6 +38,20 @@
 
     <dependencies>
 
+      <!-- Non-free; testing only -->
+      <dependency>
+        <groupId>org.apache.sis.non-free</groupId>
+        <artifactId>sis-embedded-data</artifactId>
+        <version>0.8</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.xml.bind</groupId>
+        <artifactId>jaxb-api</artifactId>
+        <version>2.3.1</version>
+      </dependency>
+
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-arq</artifactId>
@@ -87,18 +101,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <includes>
-                        <!--
-                          The test collections TC_General, TC_Riot, TC_Atlas
-                          are development support that collect the relevant
-                          tests for partial testing during development.
-                        -->
-                        <include>**/TS_*.java</include>
-                        <include>**/TC_Scripted.java</include>
-                        <include>**/TC_DAWG.java</include>
-                    </includes>
-                </configuration>
             </plugin>
 
             <plugin>
