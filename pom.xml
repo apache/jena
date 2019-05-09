@@ -179,10 +179,10 @@
         <module>jena-cmds</module>
         <module>jena-fuseki2</module>
 
-        <module>jena-integration-tests</module>
-
         <module>jena-geosparql</module>
-        <module>jena-fuseki-geosparql</module>
+        <module>jena-fuseki2/jena-fuseki-geosparql</module>
+
+        <module>jena-integration-tests</module>
 
         <!-- Binary distribution -->
         <!-- <module>apache-jena</module>         -->
@@ -237,6 +237,9 @@
 
         <module>jena-cmds</module>
         <module>jena-fuseki2</module>
+
+        <module>jena-geosparql</module>
+        <module>jena-fuseki2/jena-fuseki-geosparql</module>
 
         <!--
             Tests of artifacts that require additional 
