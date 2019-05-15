@@ -179,5 +179,8 @@ public abstract class AggregatorBase implements Aggregator
     
     protected static final int HC_AggNull                   =  0x180 ;
     protected static final int HC_AggCustom                 =  0x181 ;
-    
+
+    protected static final int HC_AggMedian                 =  0x182 ;
+    protected static final int HC_AggMedianDistinct         =  0x183 ;
+
 }

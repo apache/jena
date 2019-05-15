@@ -2045,6 +2045,9 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
   | t = <AVG> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
     { agg = AggregatorFactory.createAvg(distinct, expr) ; }
 
+  | t = <MEDIAN> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
+    { agg = AggregatorFactory.createMedian(distinct, expr) ; }
+
   | t = <SAMPLE> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
     { agg = AggregatorFactory.createSample(distinct, expr) ; }
 
@@ -2358,6 +2361,7 @@ TOKEN [IGNORE_CASE] :
 |  < MAX:         "max" >
 |  < SUM:         "sum" >
 |  < AVG:         "avg" >
+|  < MEDIAN:      "median" >
 |  < STDEV:       "stdev" >
 |  < STDEV_SAMP:  "stdev_samp" >
 |  < STDEV_POP:   "stdev_pop" >
