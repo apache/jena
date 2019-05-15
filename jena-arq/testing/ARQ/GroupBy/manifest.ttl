@@ -265,14 +265,6 @@
         mf:result  <avg-01.srj>
       ]
 
-      [  mf:name    "Median - 1 - median(?v)" ;
-         rdf:type   mfx:TestQuery ;
-         mf:action
-            [ qt:query  <median-01.rq> ;
-              qt:data   <data-1.ttl> ] ;
-        mf:result  <median-01.srj>
-      ]
-
     ## HAVING
 
       [  mf:name    "Having - 1" ;
