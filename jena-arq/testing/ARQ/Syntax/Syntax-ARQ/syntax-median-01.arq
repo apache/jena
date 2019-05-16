@@ -1,0 +1,3 @@
+PREFIX : <http://example/>
+
+SELECT medians(?p) { ?x :p ?p .}

@@ -211,4 +211,9 @@
    mf:name    "syntax-let-bad-01.arq" ;
    mf:action  <syntax-let-bad-01.arq> ;.
 
+:test_34 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-median-01.arq" ;
+   mf:action  <syntax-median-01.arq> ;.
+
 
