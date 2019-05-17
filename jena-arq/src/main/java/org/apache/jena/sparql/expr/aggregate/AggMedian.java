@@ -117,7 +117,6 @@ public class AggMedian extends AggregatorBase
             for(int i=0; i<collection.size(); i++){
             	arrDouble[i] = collection.get(i).getDouble();	
             }
-            System.out.println(new Median().evaluate(arrDouble));
             return (NodeValue.makeDecimal((new Median().evaluate(arrDouble))));
         }
     }
