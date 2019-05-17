@@ -81,11 +81,14 @@ public class AggMedianDistinct extends AggregatorBase
             if ( nv.isNumber() )
             {
                 count++ ;
-                if ( total == noValuesToMedian )
+                if ( total == noValuesToMedian ) {
                     total = nv ;
-                else
+                }
+                else {
                     total = XSDFuncOp.numAdd(nv, total) ;
-            		collection.add(nv);
+                }
+            	
+                collection.add(nv);
             }
             else
                 throw new ExprEvalException("median: not a number: "+nv) ;
@@ -102,10 +105,10 @@ public class AggMedianDistinct extends AggregatorBase
             
             double[] arrDouble = new double[collection.size()];
             for(int i=0; i<collection.size(); i++){
-            	arrDouble[i] = Double.parseDouble(collection.get(i).toString());
+            	arrDouble[i] = collection.get(i).getDouble();            	
             }
             System.out.println(new Median().evaluate(arrDouble));
-            return (NodeValue.makeDecimal((new Median().evaluate(arrDouble ))));
+            return (NodeValue.makeDecimal((new Median().evaluate(arrDouble))));
         }
 
         @Override

@@ -83,10 +83,12 @@ public class AggMedian extends AggregatorBase
             if ( nv.isNumber() )
             {
                 count++ ;
-                if ( total == noValuesToMedian )
-                    total = nv ;
-                else
+                if ( total == noValuesToMedian ) {
+                	total = nv ;
+                }
+                else {
                     total = XSDFuncOp.numAdd(nv, total) ;
+                }
                 	collection.add(nv);
             }
             else
@@ -94,7 +96,7 @@ public class AggMedian extends AggregatorBase
                 //ARQ.getExecLogger().warn("Evaluation error: median() on "+nv) ;
                 throw new ExprEvalException("median: not a number: "+nv) ;
             }
-            
+
             if ( DEBUG ) System.out.println("median: ("+total+","+count+")") ;
         }
         
@@ -113,10 +115,10 @@ public class AggMedian extends AggregatorBase
                         
             double[] arrDouble = new double[collection.size()];
             for(int i=0; i<collection.size(); i++){
-            	arrDouble[i] = Double.parseDouble(collection.get(i).toString());
+            	arrDouble[i] = collection.get(i).getDouble();	
             }
             System.out.println(new Median().evaluate(arrDouble));
-            return (NodeValue.makeDecimal((new Median().evaluate(arrDouble ))));
+            return (NodeValue.makeDecimal((new Median().evaluate(arrDouble))));
         }
     }
 }
