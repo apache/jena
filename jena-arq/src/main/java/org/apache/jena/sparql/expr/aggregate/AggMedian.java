@@ -82,14 +82,8 @@ public class AggMedian extends AggregatorBase
 
             if ( nv.isNumber() )
             {
-                count++ ;
-                if ( total == noValuesToMedian ) {
-                	total = nv ;
-                }
-                else {
-                    total = XSDFuncOp.numAdd(nv, total) ;
-                }
-                	collection.add(nv);
+              count++ ;
+              collection.add(nv);
             }
             else
             {
@@ -97,7 +91,7 @@ public class AggMedian extends AggregatorBase
                 throw new ExprEvalException("median: not a number: "+nv) ;
             }
 
-            if ( DEBUG ) System.out.println("median: ("+total+","+count+")") ;
+            if ( DEBUG ) System.out.println("median: ("+count+")") ;
         }
         
         @Override
