@@ -277,3 +277,54 @@ CONSTRUCT {
 WHERE
    { }
 EOF
+
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-quad-construct-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+CONSTRUCT {
+    { ?s ?p ?o }
+   }
+WHERE
+   { }
+EOF
+
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-quad-construct-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+CONSTRUCT 
+WHERE
+   { 
+     ?s ?p ?o
+   }
+EOF
+
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-quad-construct-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+CONSTRUCT 
+WHERE
+   { 
+     GRAPH ?g { ?s ?p ?o }
+   }
+EOF
+
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-quad-construct-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+CONSTRUCT 
+WHERE
+   { 
+     { ?s ?p ?o }
+   }
+EOF
+
+N=0
+N=$((N+1)) ; testBad $ARQ $(fname "syntax-quad-construct-bad-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+CONSTRUCT 
+WHERE
+   { 
+     GRAPH ?g { ?s ?p ?o. FILTER isIRI(?o) }
+   }
+EOF

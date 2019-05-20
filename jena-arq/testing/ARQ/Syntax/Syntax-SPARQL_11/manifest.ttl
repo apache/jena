@@ -19,6 +19,7 @@
 @prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
 @prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
 
 <>  rdf:type mf:Manifest ;
     rdfs:comment "Syntax tests Syntax SPARQL 1.1" ;
@@ -79,206 +80,257 @@
 ) .
 
 :test_1 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-select-expr-01.rq" ;
    mf:action  <syntax-select-expr-01.rq> ;.
 
 :test_2 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-select-expr-02.rq" ;
    mf:action  <syntax-select-expr-02.rq> ;.
 
 :test_3 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-select-expr-03.rq" ;
    mf:action  <syntax-select-expr-03.rq> ;.
 
 :test_4 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-select-expr-04.rq" ;
    mf:action  <syntax-select-expr-04.rq> ;.
 
 :test_5 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-select-expr-05.rq" ;
    mf:action  <syntax-select-expr-05.rq> ;.
 
 :test_6 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-aggregate-01.rq" ;
    mf:action  <syntax-aggregate-01.rq> ;.
 
 :test_7 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-aggregate-02.rq" ;
    mf:action  <syntax-aggregate-02.rq> ;.
 
 :test_8 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-aggregate-03.rq" ;
    mf:action  <syntax-aggregate-03.rq> ;.
 
 :test_9 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-aggregate-04.rq" ;
    mf:action  <syntax-aggregate-04.rq> ;.
 
 :test_10 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-aggregate-05.rq" ;
    mf:action  <syntax-aggregate-05.rq> ;.
 
 :test_11 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-aggregate-06.rq" ;
    mf:action  <syntax-aggregate-06.rq> ;.
 
 :test_12 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-aggregate-07.rq" ;
    mf:action  <syntax-aggregate-07.rq> ;.
 
 :test_13 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-aggregate-08.rq" ;
    mf:action  <syntax-aggregate-08.rq> ;.
 
 :test_14 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-aggregate-09.rq" ;
    mf:action  <syntax-aggregate-09.rq> ;.
 
 :test_15 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-aggregate-10.rq" ;
    mf:action  <syntax-aggregate-10.rq> ;.
 
 :test_16 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-aggregate-11.rq" ;
    mf:action  <syntax-aggregate-11.rq> ;.
 
 :test_17 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-aggregate-12.rq" ;
    mf:action  <syntax-aggregate-12.rq> ;.
 
 :test_18 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-aggregate-13.rq" ;
    mf:action  <syntax-aggregate-13.rq> ;.
 
 :test_19 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-aggregate-14.rq" ;
    mf:action  <syntax-aggregate-14.rq> ;.
 
 :test_20 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-aggregate-15.rq" ;
    mf:action  <syntax-aggregate-15.rq> ;.
 
 :test_21 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-subquery-01.rq" ;
    mf:action  <syntax-subquery-01.rq> ;.
 
 :test_22 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-subquery-02.rq" ;
    mf:action  <syntax-subquery-02.rq> ;.
 
 :test_23 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-subquery-03.rq" ;
    mf:action  <syntax-subquery-03.rq> ;.
 
 :test_24 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-not-exists-01.rq" ;
    mf:action  <syntax-not-exists-01.rq> ;.
 
 :test_25 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-not-exists-02.rq" ;
    mf:action  <syntax-not-exists-02.rq> ;.
 
 :test_26 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-not-exists-03.rq" ;
    mf:action  <syntax-not-exists-03.rq> ;.
 
 :test_27 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-exists-01.rq" ;
    mf:action  <syntax-exists-01.rq> ;.
 
 :test_28 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-exists-02.rq" ;
    mf:action  <syntax-exists-02.rq> ;.
 
 :test_29 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-exists-03.rq" ;
    mf:action  <syntax-exists-03.rq> ;.
 
 :test_30 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-minus-01.rq" ;
    mf:action  <syntax-minus-01.rq> ;.
 
 :test_31 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-oneof-01.rq" ;
    mf:action  <syntax-oneof-01.rq> ;.
 
 :test_32 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-oneof-02.rq" ;
    mf:action  <syntax-oneof-02.rq> ;.
 
 :test_33 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-oneof-03.rq" ;
    mf:action  <syntax-oneof-03.rq> ;.
 
 :test_34 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-values-01.rq" ;
    mf:action  <syntax-values-01.rq> ;.
 
 :test_35 rdf:type   mf:PositiveSyntaxTest11 ;
-   mf:name    "syntax-values-02.rq" ;
-   mf:action  <syntax-values-02.rq> ;.
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-values-01.rq" ;
+   mf:action  <syntax-values-01.rq> ;.
 
 :test_36 rdf:type   mf:PositiveSyntaxTest11 ;
-   mf:name    "syntax-values-03.rq" ;
-   mf:action  <syntax-values-03.rq> ;.
-
-:test_37 rdf:type   mf:PositiveSyntaxTest11 ;
-   mf:name    "syntax-values-04.rq" ;
-   mf:action  <syntax-values-04.rq> ;.
-
-:test_38 rdf:type   mf:PositiveSyntaxTest11 ;
-   mf:name    "syntax-values-05.rq" ;
-   mf:action  <syntax-values-05.rq> ;.
-
-:test_39 rdf:type   mf:PositiveSyntaxTest11 ;
-   mf:name    "syntax-bind-01.rq" ;
-   mf:action  <syntax-bind-01.rq> ;.
-
-:test_40 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-bind-02.rq" ;
    mf:action  <syntax-bind-02.rq> ;.
 
-:test_41 rdf:type   mf:PositiveSyntaxTest11 ;
+:test_37 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-construct-where-01.rq" ;
    mf:action  <syntax-construct-where-01.rq> ;.
 
-:test_42 rdf:type   mf:PositiveSyntaxTest11 ;
+:test_38 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-construct-where-02.rq" ;
    mf:action  <syntax-construct-where-02.rq> ;.
 
+:test_39 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-values-bad-01.rq" ;
+   mf:action  <syntax-values-bad-01.rq> ;.
+
+:test_40 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-values-bad-02.rq" ;
+   mf:action  <syntax-values-bad-02.rq> ;.
+
+:test_41 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-values-bad-03.rq" ;
+   mf:action  <syntax-values-bad-03.rq> ;.
+
+:test_42 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-values-bad-04.rq" ;
+   mf:action  <syntax-values-bad-04.rq> ;.
+
 :test_43 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-01.rq" ;
    mf:action  <syn-bad-01.rq> ;.
 
 :test_44 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-02.rq" ;
    mf:action  <syn-bad-02.rq> ;.
 
 :test_45 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-03.rq" ;
    mf:action  <syn-bad-03.rq> ;.
 
 :test_46 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-04.rq" ;
    mf:action  <syn-bad-04.rq> ;.
 
 :test_47 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-05.rq" ;
    mf:action  <syn-bad-05.rq> ;.
 
 :test_48 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-06.rq" ;
    mf:action  <syn-bad-06.rq> ;.
 
 :test_49 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-07.rq" ;
    mf:action  <syn-bad-07.rq> ;.
 
 :test_50 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-08.rq" ;
    mf:action  <syn-bad-08.rq> ;.
 
 :test_51 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-values-09.rq" ;
    mf:action  <syntax-values-09.rq> ;.
 
