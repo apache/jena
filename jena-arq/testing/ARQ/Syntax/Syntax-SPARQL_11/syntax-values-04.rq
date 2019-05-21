@@ -1,6 +1,0 @@
-SELECT *
-{ }
-VALUES (?x ?y) {
- (1 2 )
-}
-
