@@ -328,3 +328,17 @@ WHERE
      GRAPH ?g { ?s ?p ?o. FILTER isIRI(?o) }
    }
 EOF
+
+#median
+N=0
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-median-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+SELECT median(?x)
+WHERE
+   {
+     VALUES ?x { 1 2 3 4 5 }
+     ?s ?p ?x.
+   }
+EOF
+

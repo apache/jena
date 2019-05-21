@@ -1,3 +1,8 @@
 PREFIX : <http://example/>
 
-SELECT medians(?p) { ?x :p ?p .}
+SELECT median(?x)
+WHERE
+   {
+     VALUES ?x { 1 2 3 4 5 }
+     ?s ?p ?x.
+   }
