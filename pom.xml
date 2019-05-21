@@ -179,6 +179,9 @@
         <module>jena-cmds</module>
         <module>jena-fuseki2</module>
 
+        <module>jena-geosparql</module>
+        <module>jena-fuseki2/jena-fuseki-geosparql</module>
+
         <module>jena-integration-tests</module>
 
         <!-- Binary distribution -->
@@ -234,6 +237,9 @@
 
         <module>jena-cmds</module>
         <module>jena-fuseki2</module>
+
+        <module>jena-geosparql</module>
+        <module>jena-fuseki2/jena-fuseki-geosparql</module>
 
         <!--
             Tests of artifacts that require additional 
@@ -797,6 +803,10 @@
             <exclude>**/dependency-reduced-pom.xml</exclude>
             <exclude>.travis.yml</exclude>
             <exclude>jena-examples/**</exclude>
+
+            <!-- This is OGC software licensed -->
+            <exclude>**/geosparql_vocab_all_v1_0_1_updated.rdf</exclude>
+
           </excludes>
         </configuration>
       </plugin>
