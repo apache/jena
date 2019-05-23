@@ -95,9 +95,9 @@
             ${project.version}</doctitle>
           <bottom>Licenced under the Apache License, Version 2.0</bottom>
           <links>
-            <link>http://jena.apache.org/documentation/javadoc/jena/</link>
-            <link>http://jena.apache.org/documentation/javadoc/arq/</link>
-            <link>http://jena.apahce.org/documentation/javadoc/elephas/common/</link>
+            <link>https://jena.apache.org/documentation/javadoc/jena/</link>
+            <link>https://jena.apache.org/documentation/javadoc/arq/</link>
+            <link>https://jena.apache.org/documentation/javadoc/elephas/common/</link>
           </links>
         </configuration>
       </plugin>

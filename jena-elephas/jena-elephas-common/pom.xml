@@ -66,8 +66,8 @@
           <doctitle>Apache Jena Elephas - Common API ${project.version}</doctitle>
           <bottom>Licenced under the Apache License, Version 2.0</bottom>
           <links>
-            <link>http://jena.apache.org/documentation/javadoc/jena/</link>
-            <link>http://jena.apache.org/documentation/javadoc/arq/</link>
+            <link>https://jena.apache.org/documentation/javadoc/jena/</link>
+            <link>https://jena.apache.org/documentation/javadoc/arq/</link>
           </links>
         </configuration>
       </plugin>

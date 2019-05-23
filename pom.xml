@@ -22,7 +22,7 @@
   <groupId>org.apache.jena</groupId>
   <artifactId>jena</artifactId>
   <packaging>pom</packaging>
-  <url>http://jena.apache.org/</url>
+  <url>https://jena.apache.org/</url>
   <version>3.12.0-SNAPSHOT</version>
 
   <parent>
@@ -34,13 +34,13 @@
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
     </license>
   </licenses>
 
   <organization>
     <name>The Apache Software Foundation</name>
-    <url>http://www.apache.org/</url>
+    <url>https://www.apache.org/</url>
   </organization>
 
   <scm>
@@ -110,7 +110,7 @@
 
   <issueManagement>
     <system>JIRA</system>
-    <url>http://issues.apache.org/jira/browse/JENA</url>
+    <url>https://issues.apache.org/jira/browse/JENA</url>
   </issueManagement>
 
   <mailingLists>
@@ -121,9 +121,9 @@
       <unsubscribe>users-unsubscribe@jena.apache.org</unsubscribe>
       <archive>https://lists.apache.org/list.html?users@jena.apache.org</archive>
       <otherArchives>
-        <otherArchive>http://mail-archives.apache.org/mod_mbox/jena-users/</otherArchive>
-        <otherArchive>http://www.mail-archive.com/users@jena.apache.org/</otherArchive>
-        <otherArchive>http://markmail.org/search/?q=list%3Aorg.apache.jena.users</otherArchive>
+        <otherArchive>https://mail-archives.apache.org/mod_mbox/jena-users/</otherArchive>
+        <otherArchive>https://www.mail-archive.com/users@jena.apache.org/</otherArchive>
+        <otherArchive>https://markmail.org/search/?q=list%3Aorg.apache.jena.users</otherArchive>
       </otherArchives>
     </mailingList>
     <mailingList>
@@ -133,9 +133,9 @@
       <unsubscribe>dev-unsubscribe@jena.apache.org</unsubscribe>
       <archive>https://lists.apache.org/list.html?dev@jena.apache.org</archive>
       <otherArchives>
-        <otherArchive>http://lists.apache.org/mod_mbox/jena-dev/</otherArchive>
-        <otherArchive>http://www.mail-archive.com/dev@jena.apache.org/</otherArchive>
-        <otherArchive>http://markmail.org/search/?q=list%3Aorg.apache.jena.dev</otherArchive>
+        <otherArchive>https://lists.apache.org/mod_mbox/jena-dev/</otherArchive>
+        <otherArchive>https://www.mail-archive.com/dev@jena.apache.org/</otherArchive>
+        <otherArchive>https://markmail.org/search/?q=list%3Aorg.apache.jena.dev</otherArchive>
       </otherArchives>
     </mailingList>
     <mailingList>
@@ -145,7 +145,7 @@
       <unsubscribe>commits-unsubscribe@jena.apache.org</unsubscribe>
       <archive>https://lists.apache.org/list.html?commits@jena.apache.org</archive>
       <otherArchives>
-        <otherArchive>http://mail-archives.apache.org/mod_mbox/jena-commits/</otherArchive>
+        <otherArchive>https://mail-archives.apache.org/mod_mbox/jena-commits/</otherArchive>
       </otherArchives>
     </mailingList>
   </mailingLists>
@@ -817,7 +817,7 @@
       </plugin>
     </plugins>
 
-    <!-- Plugin version list: http://maven.apache.org/plugins/index.html -->
+    <!-- Plugin version list: https://maven.apache.org/plugins/index.html -->
     <pluginManagement>
       <plugins>
 
@@ -905,14 +905,14 @@
             <doctitle>${project.name} ${project.version}</doctitle>
             <bottom>Licensed under the Apache License, Version 2.0</bottom>
             <links>
-              <link>http://jena.apache.org/documentation/javadoc/jena/</link>
-              <link>http://jena.apache.org/documentation/javadoc/arq/</link>
-              <link>http://jena.apache.org/documentation/javadoc/tdb/</link>
-              <link>http://jena.apache.org/documentation/javadoc/text/</link>
-              <link>http://jena.apache.org/documentation/javadoc/rdfconnection/</link>
-              <link>http://jena.apache.org/documentation/javadoc/fuseki2/</link>
-              <link>http://jena.apache.org/documentation/javadoc/permissions/</link>
-              <link>http://jena.apache.org/documentation/javadoc/jdbc/</link>
+              <link>https://jena.apache.org/documentation/javadoc/jena/</link>
+              <link>https://jena.apache.org/documentation/javadoc/arq/</link>
+              <link>https://jena.apache.org/documentation/javadoc/tdb/</link>
+              <link>https://jena.apache.org/documentation/javadoc/text/</link>
+              <link>https://jena.apache.org/documentation/javadoc/rdfconnection/</link>
+              <link>https://jena.apache.org/documentation/javadoc/fuseki2/</link>
+              <link>https://jena.apache.org/documentation/javadoc/permissions/</link>
+              <link>https://jena.apache.org/documentation/javadoc/jdbc/</link>
             </links>
           </configuration>
         </plugin>

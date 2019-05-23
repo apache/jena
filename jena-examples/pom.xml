@@ -28,7 +28,7 @@
 
   <name>Apache Jena - Code Examples</name>
   <description>A collection of example code illustrating uses of Apache Jena</description>
-  <url>http://jena.apache.org/</url>
+  <url>https://jena.apache.org/</url>
 
   <properties>
     <ver.jena>[3.1.0,)</ver.jena>
@@ -37,7 +37,7 @@
 
   <organization>
     <name>Apache Software Foundation</name>
-    <url>http://apache.org</url>
+    <url>https://apache.org/</url>
   </organization>
 
   <dependencies>

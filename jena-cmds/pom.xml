@@ -33,11 +33,11 @@
 
   <packaging>jar</packaging>
   
-  <url>http://jena.apache.org/</url>
+  <url>https://jena.apache.org/</url>
 
   <organization>
     <name>Apache Jena</name>
-    <url>http://jena.apache.org/</url>
+    <url>https://jena.apache.org/</url>
   </organization>
 
   <licenses>

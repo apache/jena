@@ -25,7 +25,7 @@
   <description>Plugins for Apache Maven to perform source management activities,
   such as generating Java files from RDF vocabulary sources using
   Jena's schemagen tool</description>
-  <url>http://apache.jena.org</url>
+  <url>https://apache.jena.org</url>
 
   <parent>
     <groupId>org.apache.jena</groupId>
@@ -51,14 +51,14 @@
   <licenses>
     <license>
       <name>Apache 2</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
       <distribution>repo</distribution>
       <comments>A business-friendly OSS license</comments>
     </license>
   </licenses>
   <organization>
     <name>Apache</name>
-    <url>http://www.apache.org</url>
+    <url>https://www.apache.org/</url>
   </organization>
 
   <properties>
@@ -72,7 +72,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
         <configuration>
-          <!-- see http://jira.codehaus.org/browse/MNG-5346 -->
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
         </configuration>
         <executions>
