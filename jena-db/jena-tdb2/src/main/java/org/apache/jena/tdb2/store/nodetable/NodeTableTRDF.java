@@ -16,57 +16,59 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.store.nodetable ;
+package org.apache.jena.tdb2.store.nodetable;
 
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.dboe.base.file.BinaryDataFile;
 import org.apache.jena.dboe.index.Index;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.riot.thrift.RiotThriftException ;
-import org.apache.jena.riot.thrift.TRDF ;
-import org.apache.jena.riot.thrift.ThriftConvert ;
-import org.apache.jena.riot.thrift.wire.RDF_Term ;
+import org.apache.jena.dboe.transaction.txn.TransactionException;
+import org.apache.jena.graph.Node;
+import org.apache.jena.riot.thrift.RiotThriftException;
+import org.apache.jena.riot.thrift.TRDF;
+import org.apache.jena.riot.thrift.ThriftConvert;
+import org.apache.jena.riot.thrift.wire.RDF_Term;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.NodeIdFactory;
-import org.apache.thrift.TException ;
-import org.apache.thrift.protocol.TProtocol ;
+import org.apache.thrift.TException;
+import org.apache.thrift.protocol.TProtocol;
 
 /** NodeTable using Thrift for the I/O and storage. */
 
 public class NodeTableTRDF extends NodeTableNative {
     // Write buffering is done in the underlying BinaryDataFile
-    private final BinaryDataFile diskFile ;
-    private final TReadAppendFileTransport transport ;
-    private final TProtocol protocol ;
+    private final BinaryDataFile diskFile;
+    private final TReadAppendFileTransport transport;
+    private final TProtocol protocol;
 
     public NodeTableTRDF(Index nodeToId, BinaryDataFile objectFile) {
-        super(nodeToId) ;
+        super(nodeToId);
         try {
-            this.diskFile = objectFile ;
-            transport = new TReadAppendFileTransport(diskFile) ;
+            this.diskFile = objectFile;
+            transport = new TReadAppendFileTransport(diskFile);
             if ( ! transport.isOpen() )
-                transport.open(); 
-            this.protocol = TRDF.protocol(transport) ;
+                transport.open();
+            this.protocol = TRDF.protocol(transport);
         }
         catch (Exception ex) {
-            throw new TDBException("NodeTableTRDF", ex) ;
+            throw new TDBException("NodeTableTRDF", ex);
         }
     }
 
     @Override
     protected NodeId writeNodeToTable(Node node) {
-        RDF_Term term = ThriftConvert.convert(node, true) ;
+        RDF_Term term = ThriftConvert.convert(node, true);
         try {
-            long x = diskFile.length() ;
+            long x = diskFile.length();
             // Paired : [*]
             NodeId nid = NodeIdFactory.createPtr(x);
-            term.write(protocol) ;
-            //transport.flush() ;
-            return nid ;
+            term.write(protocol);
+            //transport.flush();
+            return nid;
         }
+        catch(TransactionException ex) { throw ex; }
         catch (Exception ex) {
-            throw new TDBException("NodeTableThrift/Write", ex) ;
+            throw new TDBException("NodeTableThrift/Write", ex);
         }
     }
 
@@ -75,35 +77,35 @@ public class NodeTableTRDF extends NodeTableNative {
         try {
             // Paired : [*]
             long x = id.getPtrLocation();
-            transport.readPosition(x) ;
-            RDF_Term term = new RDF_Term() ;
-            term.read(protocol) ;
-            Node n = ThriftConvert.convert(term) ;
-            return n ;
+            transport.readPosition(x);
+            RDF_Term term = new RDF_Term();
+            term.read(protocol);
+            Node n = ThriftConvert.convert(term);
+            return n;
         }
         catch (TException ex) {
-            throw new TDBException("NodeTableTRDF/Read", ex) ;
+            throw new TDBException("NodeTableTRDF/Read", ex);
         }
         catch (RiotThriftException ex) {
-            Log.error(this, "Bad encoding: NodeId = "+id) ;
-            throw ex ;
+            Log.error(this, "Bad encoding: NodeId = "+id);
+            throw ex;
         }
     }
 
     @Override
     protected void syncSub() {
         try { transport.flush(); }
-        catch (Exception ex) { throw new TDBException("NodeTableTRDF", ex) ; }
+        catch (Exception ex) { throw new TDBException("NodeTableTRDF", ex); }
     }
 
     @Override
     protected void closeSub() {
         if ( transport.isOpen() ) {
-            try { transport.close() ; }
-            catch (Exception ex) { throw new TDBException("NodeTableTRDF", ex) ; }
+            try { transport.close(); }
+            catch (Exception ex) { throw new TDBException("NodeTableTRDF", ex); }
         }
     }
 
-    public Index getIndex()             { return nodeHashToId ; }
-    public BinaryDataFile getData()     { return diskFile ; }
+    public Index getIndex()             { return nodeHashToId; }
+    public BinaryDataFile getData()     { return diskFile; }
 }

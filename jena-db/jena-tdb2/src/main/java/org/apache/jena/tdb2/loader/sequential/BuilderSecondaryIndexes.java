@@ -35,17 +35,17 @@ public class BuilderSecondaryIndexes
         for ( TupleIndex index : secondaryIndexes ) {
             String msg = primaryIndex.getName()+"->"+index.getName();
             if ( index != null ) {
-                ProgressMonitor monitor = ProgressMonitorOutput.create(output, msg, 
+                ProgressMonitor monitor = ProgressMonitorOutput.create(output, msg,
                                                                        LoaderSequential.IndexTickPoint,
                                                                        LoaderSequential.IndexSuperTick);
                 monitor.startMessage(msg);
                 monitor.start();
 
-                LoaderOps.copyIndex(primaryIndex.all(), new TupleIndex[]{index}, monitor) ;
-                
+                LoaderOps.copyIndex(primaryIndex.all(), new TupleIndex[]{index}, monitor);
+
                 monitor.finish();
                 monitor.finishMessage(index.getName()+" indexing: ");
-            }  
-        }   
+            }
+        }
     }
 }

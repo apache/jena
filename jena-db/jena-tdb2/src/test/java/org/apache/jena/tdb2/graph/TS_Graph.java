@@ -18,16 +18,17 @@
 
 package org.apache.jena.tdb2.graph;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestPrefixMappingTDB.class
+    TestGraphViewSwitchable.class
+    , TestPrefixMappingTDB.class
+    , TestPrefixMappingTDBExtra.class
     , TestDatasetGraphTDB.class
-    , TestGraphsTDB1.class
-    , TestGraphsTDB2.class
-    , TestGraphViewSwitchable.class
+    , TestGraphsTDB_A.class
+    , TestGraphsTDB_B.class
     , TestDatasetGraphAccessorTDB.class
     , TestGraphOverDatasetTDB.class
 })

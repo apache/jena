@@ -19,9 +19,9 @@
 package org.apache.jena.tdb2.store;
 
 import org.apache.jena.dboe.transaction.Transactional;
-import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraph;
 
-/** Transaction representation of a DatasetGraph */ 
+/** Transaction representation of a DatasetGraph */
 public interface DatasetGraphTxn extends DatasetGraph, Transactional {
     // Combines org.apache.jena.dboe.transaction.Transactional and org.apache.jena.sparql.core.Transactional.
 }

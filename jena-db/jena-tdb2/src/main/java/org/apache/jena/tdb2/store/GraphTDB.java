@@ -16,121 +16,113 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.store ;
+package org.apache.jena.tdb2.store;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 import java.util.function.Function;
 
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.Closeable ;
-import org.apache.jena.atlas.lib.Sync ;
-import org.apache.jena.atlas.lib.tuple.Tuple ;
-import org.apache.jena.atlas.lib.tuple.TupleFactory ;
-import org.apache.jena.graph.GraphEvents;
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.lib.tuple.Tuple;
+import org.apache.jena.atlas.lib.tuple.TupleFactory;
+import org.apache.jena.dboe.DBOpEnvException;
+import org.apache.jena.dboe.storage.StoragePrefixes;
+import org.apache.jena.dboe.storage.system.GraphViewStorage;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.riot.other.GLib ;
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.sparql.core.GraphView ;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.riot.other.GLib;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
-import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.WrappedIterator ;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.WrappedIterator;
 
 /**
  * General operations for TDB graphs (free-standing graph, default graph and
  * named graphs)
  */
-public class GraphTDB extends GraphView implements Closeable, Sync {
-    private final DatasetGraphTDB    dataset ;
+public class GraphTDB extends GraphViewStorage {
 
-    public GraphTDB(DatasetGraphTDB dataset, Node graphName) {
-        super(dataset, graphName) ;
-        this.dataset = dataset ;
+    public /*package*/ static GraphTDB tdb_createDefaultGraph(DatasetGraphTDB dsg, StoragePrefixes prefixes)
+    { return new GraphTDB(dsg, Quad.defaultGraphNodeGenerated, prefixes); }
+
+    public /*package*/ static GraphTDB tdb_createNamedGraph(DatasetGraphTDB dsg, Node graphIRI, StoragePrefixes prefixes)
+    { return new GraphTDB(dsg, graphIRI, prefixes); }
+
+    public /*package*/ static GraphTDB tdb_createUnionGraph(DatasetGraphTDB dsg, StoragePrefixes prefixes)
+    { return new GraphTDB(dsg, Quad.unionGraph, prefixes); }
+
+    private final DatasetGraphTDB datasetTDB;
+
+    private GraphTDB(DatasetGraphTDB dataset, Node graphName, StoragePrefixes prefixes) {
+        super(dataset, graphName, prefixes);
+        this.datasetTDB = dataset;
     }
 
-    /** get the current TDB dataset graph - changes for transactions */
     public DatasetGraphTDB getDSG() {
-        return dataset ;
+        return datasetTDB;
     }
 
     /** The NodeTupleTable for this graph */
     public NodeTupleTable getNodeTupleTable() {
-        return getDSG().chooseNodeTupleTable(getGraphName()) ;
+        return getDSG().chooseNodeTupleTable(getGraphName());
     }
 
-    @Override
-    protected PrefixMapping createPrefixMapping() {
-        if ( isDefaultGraph() )
-            return getDSG().getPrefixes().getPrefixMapping() ;
-        if ( isUnionGraph() )
-            return getDSG().getPrefixes().getPrefixMapping() ;
-        return getDSG().getPrefixes().getPrefixMapping(getGraphName().getURI()) ;
-    }
-
-    @Override
-    public final void sync() {
-        dataset.sync() ;
-    }
-
-    @Override
-    final public void close() {
-        sync() ;
-        // Don't close the GraphBase.
-        //super.close() ;
-    }
-
-    @Override
-    protected ExtendedIterator<Triple> graphUnionFind(Node s, Node p, Node o) {
-        Node g = Quad.unionGraph ;
-        Iterator<Quad> iterQuads = getDSG().find(g, s, p, o) ;
-        Iterator<Triple> iter = GLib.quads2triples(iterQuads) ;
-        // Suppress duplicates after projecting to triples.
-        // TDB guarantees that duplicates are adjacent.
-        // See SolverLib.
-        iter = Iter.distinctAdjacent(iter) ;
-        return WrappedIterator.createNoRemove(iter) ;
-    }
+    // Better ways to execute.
 
     @Override
     protected final int graphBaseSize() {
         if ( isDefaultGraph() )
-            return (int)getNodeTupleTable().size() ;
-
-        Node gn = getGraphName() ;
-        boolean unionGraph = isUnionGraph(gn) ;
-        gn = unionGraph ? Node.ANY : gn ;
-        Iterator<Tuple<NodeId>> iter = getDSG().getQuadTable().getNodeTupleTable().findAsNodeIds(gn, null, null, null) ;
+            return (int)getNodeTupleTable().size();
+        Node gn = getGraphName();
+        boolean unionGraph = isUnionGraph(gn);
+        gn = unionGraph ? Node.ANY : gn;
+        Iterator<Tuple<NodeId>> iter = getDSG().getQuadTable().getNodeTupleTable().findAsNodeIds(gn, null, null, null);
         if ( unionGraph ) {
-            iter = Iter.map(iter, project4TupleTo3Tuple) ;
-            iter = Iter.distinctAdjacent(iter) ;
+            iter = Iter.map(iter, project4TupleTo3Tuple);
+            iter = Iter.distinctAdjacent(iter);
         }
-        return (int)Iter.count(iter) ;
+        return (int)Iter.count(iter);
     }
 
-	private static Function<Tuple<NodeId>, Tuple<NodeId>> project4TupleTo3Tuple = item -> {
-		if (item.len() != 4)
-			throw new TDBException("Expected a Tuple of 4, got: " + item);
-		return TupleFactory.tuple(item.get(1), item.get(2), item.get(3));
-	};
-	
-    @Override
-    public void clear() {
-        dataset.deleteAny(getGraphName(), Node.ANY, Node.ANY, Node.ANY) ;
-        getEventManager().notifyEvent(this, GraphEvents.removeAll) ;
+    private static Function<Tuple<NodeId>, Tuple<NodeId>> project4TupleTo3Tuple = item -> {
+        if (item.len() != 4)
+            throw new TDBException("Expected a Tuple of 4, got: " + item);
+        return TupleFactory.tuple(item.get(1), item.get(2), item.get(3));
+    };
+
+    private static Iterator<Triple> projectQuadsToTriples(Node graphNode, Iterator<Quad> iter) {
+        // Checking.
+        Function<Quad, Triple> f = (q) -> {
+            if ( graphNode != null && !q.getGraph().equals(graphNode) )
+                throw new DBOpEnvException("projectQuadsToTriples: Quads from unexpected graph (expected=" + graphNode + ", got=" + q.getGraph() + ")");
+            return q.asTriple();
+        };
+        // Without checking
+        //Function<Quad, Triple> f = (q) -> q.asTriple();
+        return Iter.map(iter, f);
     }
 
     @Override
-    public void remove(Node s, Node p, Node o) {
-        if ( getEventManager().listening() ) {
-            // Have to do it the hard way so that triple events happen.
-            super.remove(s, p, o) ;
-            return ;
-        }
+    protected ExtendedIterator<Triple> graphUnionFind(Node s, Node p, Node o) {
+        Node g = Quad.unionGraph;
+        Iterator<Quad> iterQuads = getDSG().find(g, s, p, o);
+        Iterator<Triple> iter = GLib.quads2triples(iterQuads);
+        // Suppress duplicates after projecting to triples.
+        // TDB guarantees that duplicates are adjacent.
+        // See SolverLib.
+        iter = Iter.distinctAdjacent(iter);
+        return WrappedIterator.createNoRemove(iter);
+    }
 
-        dataset.deleteAny(getGraphName(), s, p, o) ;
-        // We know no one is listening ...
-        // getEventManager().notifyEvent(this, GraphEvents.remove(s, p, o) ) ;
+    
+    @Override
+    public final void sync() {
+    }
+
+    @Override
+    final public void close() {
+        sync();
+        // Don't close the GraphBase.
+        //super.close();
     }
 }

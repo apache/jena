@@ -16,79 +16,79 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.store.nodetable ;
+package org.apache.jena.tdb2.store.nodetable;
 
-import java.util.Iterator ;
-import java.util.List ;
+import java.util.Iterator;
+import java.util.List;
 
-import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.graph.Node ;
+import org.apache.jena.atlas.lib.Pair;
+import org.apache.jena.graph.Node;
 import org.apache.jena.tdb2.store.NodeId;
 
 public class NodeTableWrapper implements NodeTable {
-    protected final NodeTable nodeTable ;
+    protected final NodeTable nodeTable;
 
     @Override
     public final NodeTable wrapped() {
-        return nodeTable ;
+        return nodeTable;
     }
 
     protected NodeTableWrapper(NodeTable nodeTable) {
-        this.nodeTable = nodeTable ;
+        this.nodeTable = nodeTable;
     }
 
     @Override
     public NodeId getAllocateNodeId(Node node) {
-        return nodeTable.getAllocateNodeId(node) ;
+        return nodeTable.getAllocateNodeId(node);
     }
 
     @Override
     public NodeId getNodeIdForNode(Node node) {
-        return nodeTable.getNodeIdForNode(node) ;
+        return nodeTable.getNodeIdForNode(node);
     }
 
     @Override
     public Node getNodeForNodeId(NodeId id) {
-        return nodeTable.getNodeForNodeId(id) ;
+        return nodeTable.getNodeForNodeId(id);
     }
 
     @Override
     public boolean containsNode(Node node) {
-        return nodeTable.containsNode(node) ;
+        return nodeTable.containsNode(node);
     }
 
     @Override
     public boolean containsNodeId(NodeId nodeId) {
-        return nodeTable.containsNodeId(nodeId) ;
+        return nodeTable.containsNodeId(nodeId);
     }
 
     @Override
     public List<NodeId> bulkNodeToNodeId(List<Node> nodes, boolean withAllocation) {
-        return nodeTable.bulkNodeToNodeId(nodes, withAllocation) ;
+        return nodeTable.bulkNodeToNodeId(nodes, withAllocation);
     }
 
     @Override
     public List<Node> bulkNodeIdToNode(List<NodeId> nodeIds) {
-        return nodeTable.bulkNodeIdToNode(nodeIds) ;
+        return nodeTable.bulkNodeIdToNode(nodeIds);
     }
 
     @Override
     public Iterator<Pair<NodeId, Node>> all() {
-        return nodeTable.all() ;
+        return nodeTable.all();
     }
 
     @Override
     public boolean isEmpty() {
-        return nodeTable.isEmpty() ;
+        return nodeTable.isEmpty();
     }
 
     @Override
     public void sync() {
-        nodeTable.sync() ;
+        nodeTable.sync();
     }
 
     @Override
     public void close() {
-        nodeTable.close() ;
+        nodeTable.close();
     }
 }

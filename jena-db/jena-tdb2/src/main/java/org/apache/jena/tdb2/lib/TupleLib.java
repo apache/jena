@@ -56,7 +56,7 @@ public class TupleLib {
     public static Tuple<Node> tupleNodes(NodeTable nodeTable, Tuple<NodeId> ids) {
         int N = ids.len();
         Node[] n = new Node[N];
-        for ( int i = 0 ; i < N ; i++ )
+        for ( int i = 0; i < N ; i++ )
             n[i] = nodeTable.getNodeForNodeId(ids.get(i));
         return TupleFactory.create(n);
     }
@@ -64,7 +64,7 @@ public class TupleLib {
     public static Tuple<NodeId> tupleNodeIds(NodeTable nodeTable, Tuple<Node> nodes) {
         int N = nodes.len();
         NodeId[] n = new NodeId[N];
-        for ( int i = 0 ; i < N ; i++ )
+        for ( int i = 0; i < N ; i++ )
             n[i] = nodeTable.getNodeIdForNode(nodes.get(i));
         return TupleFactory.create(n);
     }
@@ -121,7 +121,7 @@ public class TupleLib {
         // Unmapping.
         int N = r.getKey().length / NodeId.SIZE;
         NodeId[] nodeIds = new NodeId[N];
-        for ( int i = 0 ; i < N ; i++ ) {
+        for ( int i = 0; i < N ; i++ ) {
             int j = i;
             if ( tMap != null )
                 j = tMap.unmapIdx(i);
@@ -134,7 +134,7 @@ public class TupleLib {
     public static Record record(RecordFactory factory, Tuple<NodeId> tuple, TupleMap tMap) {
         // Mapping.
         byte[] b = new byte[tuple.len() * NodeId.SIZE];
-        for ( int i = 0 ; i < tuple.len() ; i++ ) {
+        for ( int i = 0; i < tuple.len() ; i++ ) {
             int j = tMap.getSlotIdx(i);
             // i'th Nodeid goes to j'th bytes slot.
             NodeIdFactory.set(tuple.get(j), b, i * NodeId.SIZE);

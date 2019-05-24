@@ -23,8 +23,8 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestLoaderStd.class ,
-    TestLoaderMain.class
+    TestLoaderStdSetups.class ,
+    TestLoaderMainPlan.class
 })
 
 public class TS_Loader {}

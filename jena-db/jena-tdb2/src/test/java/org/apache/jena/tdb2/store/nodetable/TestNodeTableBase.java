@@ -20,8 +20,8 @@ package org.apache.jena.tdb2.store.nodetable;
 
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.tdb2.junit.BuildTestLib;
-import org.apache.jena.tdb2.setup.StoreParams;
-import org.apache.jena.tdb2.setup.StoreParamsBuilder;
+import org.apache.jena.tdb2.params.StoreParams;
+import org.apache.jena.tdb2.params.StoreParamsBuilder;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 
 public class TestNodeTableBase extends AbstractTestNodeTable
@@ -29,13 +29,13 @@ public class TestNodeTableBase extends AbstractTestNodeTable
     @Override
     protected NodeTable createEmptyNodeTable()
     {
-        StoreParams params = 
+        StoreParams params =
             StoreParamsBuilder.create()
                 .nodeId2NodeCacheSize(-1)
                 .node2NodeIdCacheSize(-1)
-                .nodeMissCacheSize(-1).build() ;
+                .nodeMissCacheSize(-1).build();
 
         // No cache, no inlining.
-        return BuildTestLib.makeNodeTableBase(Location.mem(), "test", params) ;
+        return BuildTestLib.makeNodeTableBase(Location.mem(), "test", params);
     }
 }

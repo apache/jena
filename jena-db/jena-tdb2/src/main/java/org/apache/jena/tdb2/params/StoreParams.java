@@ -16,111 +16,111 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.setup;
+package org.apache.jena.tdb2.params;
 
-import java.util.Objects ;
+import java.util.Objects;
 
 import org.apache.jena.dboe.base.block.FileMode;
 import org.apache.jena.dboe.index.IndexParams;
-import org.apache.jena.tdb2.setup.StoreParamsBuilder.Item;
+import org.apache.jena.tdb2.params.StoreParamsBuilder.Item;
 
-/** System parameters for a TDB database instance. 
+/** System parameters for a TDB database instance.
  * <p>
  * Some parameters can be changed from run to run
  * and some parameters can only be changed at the point the database is
- * created.  
+ * created.
  * <p>
- * Getting paramters settings wrong can destroy a databse.   
+ * Getting paramters settings wrong can destroy a databse.
  * Alternating the block size is not encouraged and should only be
  * done if necessary.  It can silently destroy a database if set
  * to a different value than thatused to create the database.  The
  * default value of 8Kbytes is good for almost use.
- * 
+ *
  * @see StoreParamsBuilder  for constructing StoreParams
- * @see StoreParamsConst    for default values. 
+ * @see StoreParamsConst    for default values.
  */
 public class StoreParams implements IndexParams, StoreParamsDynamic
 {
     /* These are items you can change JVM to JVM */
-    
-    /*package*/ final Item<FileMode>           fileMode ;
-    /*package*/ final Item<Integer>            blockSize ;
-    /*package*/ final Item<Integer>            blockReadCacheSize ;
-    /*package*/ final Item<Integer>            blockWriteCacheSize ;
-    /*package*/ final Item<Integer>            Node2NodeIdCacheSize ;
-    /*package*/ final Item<Integer>            NodeId2NodeCacheSize ;
-    /*package*/ final Item<Integer>            NodeMissCacheSize ;
+
+    /*package*/ final Item<FileMode>           fileMode;
+    /*package*/ final Item<Integer>            blockSize;
+    /*package*/ final Item<Integer>            blockReadCacheSize;
+    /*package*/ final Item<Integer>            blockWriteCacheSize;
+    /*package*/ final Item<Integer>            Node2NodeIdCacheSize;
+    /*package*/ final Item<Integer>            NodeId2NodeCacheSize;
+    /*package*/ final Item<Integer>            NodeMissCacheSize;
 
     /* These are items affect database layout and
      * only can be applied when a database is created.
      * They do not affect existing databases.
      * If you want to, say, change the index structure,
-     * you'll need to use the index tools.  
+     * you'll need to use the index tools.
      */
-    
-    /*package*/ final Item<String>             nodeTableBaseName ;
-    
-    /*package*/ final Item<String>             primaryIndexTriples ;
-    /*package*/ final Item<String[]>           tripleIndexes ;
-    
-    /*package*/ final Item<String>             primaryIndexQuads ;
-    /*package*/ final Item<String[]>           quadIndexes ;
-    
-    /*package*/ final Item<String>             prefixTableBaseName ;
-    /*package*/ final Item<String>             primaryIndexPrefix ;
-    /*package*/ final Item<String[]>           prefixIndexes ;
+
+    /*package*/ final Item<String>             nodeTableBaseName;
+
+    /*package*/ final Item<String>             primaryIndexTriples;
+    /*package*/ final Item<String[]>           tripleIndexes;
+
+    /*package*/ final Item<String>             primaryIndexQuads;
+    /*package*/ final Item<String[]>           quadIndexes;
+
+    /*package*/ final Item<String>             prefixTableBaseName;
+    /*package*/ final Item<String>             primaryIndexPrefix;
+    /*package*/ final Item<String[]>           prefixIndexes;
 
     /** Build StoreParams, starting from system defaults.
-     * 
+     *
      * @return StoreParamsBuilder
      */
-    public static StoreParamsBuilder builder() { return StoreParamsBuilder.create() ; }
-    
+    public static StoreParamsBuilder builder() { return StoreParamsBuilder.create(); }
+
     /** Build StoreParams, starting from given default values.
-     * 
+     *
      * @return StoreParamsBuilder
      */
-    public static StoreParamsBuilder builder(StoreParams params) { return StoreParamsBuilder.create(params) ; }
-    
+    public static StoreParamsBuilder builder(StoreParams params) { return StoreParamsBuilder.create(params); }
+
     /*package*/ StoreParams(Item<FileMode> fileMode, Item<Integer> blockSize,
                             Item<Integer> blockReadCacheSize, Item<Integer> blockWriteCacheSize,
                             Item<Integer> node2NodeIdCacheSize, Item<Integer> nodeId2NodeCacheSize,
                             Item<Integer> nodeMissCacheSize,
-                            
-                            Item<String> nodeTableBaseName, 
+
+                            Item<String> nodeTableBaseName,
                             Item<String> primaryIndexTriples, Item<String[]> tripleIndexes,
                             Item<String> primaryIndexQuads, Item<String[]> quadIndexes,
-                            
+
                             Item<String> prefixTableBasename,
                             Item<String> primaryIndexPrefix, Item<String[]> prefixIndexes) {
-        this.fileMode               = fileMode ;
-        this.blockSize              = blockSize ;
-        this.blockReadCacheSize     = blockReadCacheSize ;
-        this.blockWriteCacheSize    = blockWriteCacheSize ;
-        this.Node2NodeIdCacheSize   = node2NodeIdCacheSize ;
-        this.NodeId2NodeCacheSize   = nodeId2NodeCacheSize ;
-        this.NodeMissCacheSize      = nodeMissCacheSize ;
+        this.fileMode               = fileMode;
+        this.blockSize              = blockSize;
+        this.blockReadCacheSize     = blockReadCacheSize;
+        this.blockWriteCacheSize    = blockWriteCacheSize;
+        this.Node2NodeIdCacheSize   = node2NodeIdCacheSize;
+        this.NodeId2NodeCacheSize   = nodeId2NodeCacheSize;
+        this.NodeMissCacheSize      = nodeMissCacheSize;
 
-        this.nodeTableBaseName      = nodeTableBaseName ;
-        
-        this.primaryIndexTriples    = primaryIndexTriples ;
-        this.tripleIndexes          = tripleIndexes ;
-        this.primaryIndexQuads      = primaryIndexQuads ;
-        this.quadIndexes            = quadIndexes ;
-        this.primaryIndexPrefix     = primaryIndexPrefix ;
-        this.prefixIndexes          = prefixIndexes ;
-        
-        this.prefixTableBaseName         = prefixTableBasename ;
+        this.nodeTableBaseName      = nodeTableBaseName;
+
+        this.primaryIndexTriples    = primaryIndexTriples;
+        this.tripleIndexes          = tripleIndexes;
+        this.primaryIndexQuads      = primaryIndexQuads;
+        this.quadIndexes            = quadIndexes;
+        this.primaryIndexPrefix     = primaryIndexPrefix;
+        this.prefixIndexes          = prefixIndexes;
+
+        this.prefixTableBaseName         = prefixTableBasename;
     }
-    
+
     /** The system default settings. This is the normal set to use.
      *  It is the set of values used when no StoreParams is provided,
      *  which is the normal usage.
      */
     public static StoreParams getDftStoreParams() {
-        return StoreParamsConst.dftStoreParams ;
+        return StoreParamsConst.dftStoreParams;
     }
-    
+
     /** A {@code StoreParams} that provides a smaller
      * in-JVM foot print.  This is compatible with
      * any database but it is wise to use this consistently,
@@ -130,313 +130,313 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
      * in addition to the JVM space.
      */
     public static StoreParams getSmallStoreParams() {
-        return StoreParamsConst.smallStoreParams ;
+        return StoreParamsConst.smallStoreParams;
     }
 
     @Override
     public FileMode getFileMode() {
-        return fileMode.value ;
+        return fileMode.value;
     }
 
     @Override
     public boolean isSetFileMode() {
-        return fileMode.isSet ;
+        return fileMode.isSet;
     }
 
     @Override
     public Integer getBlockSize() {
-        return blockSize.value ;
+        return blockSize.value;
     }
 
     @Override
     public Integer getBlockReadCacheSize() {
-        return blockReadCacheSize.value ;
+        return blockReadCacheSize.value;
     }
 
     @Override
     public boolean isSetBlockReadCacheSize() {
-        return blockReadCacheSize.isSet ;
+        return blockReadCacheSize.isSet;
     }
 
     @Override
     public Integer getBlockWriteCacheSize() {
-        return blockWriteCacheSize.value ;
+        return blockWriteCacheSize.value;
     }
 
     @Override
     public boolean isSetBlockWriteCacheSize() {
-        return blockWriteCacheSize.isSet ;
+        return blockWriteCacheSize.isSet;
     }
 
     @Override
     public Integer getNode2NodeIdCacheSize() {
-        return Node2NodeIdCacheSize.value ;
+        return Node2NodeIdCacheSize.value;
     }
 
     @Override
     public boolean isSetNodeId2NodeCacheSize() {
-        return NodeId2NodeCacheSize.isSet ;
+        return NodeId2NodeCacheSize.isSet;
     }
 
     @Override
     public boolean isSetNode2NodeIdCacheSize() {
-        return Node2NodeIdCacheSize.isSet ;
+        return Node2NodeIdCacheSize.isSet;
     }
 
     @Override
     public Integer getNodeId2NodeCacheSize() {
-        return NodeId2NodeCacheSize.value ;
+        return NodeId2NodeCacheSize.value;
     }
 
     @Override
     public Integer getNodeMissCacheSize() {
-        return NodeMissCacheSize.value ;
+        return NodeMissCacheSize.value;
     }
 
     @Override
     public boolean isSetNodeMissCacheSize() {
-        return NodeMissCacheSize.isSet ;
+        return NodeMissCacheSize.isSet;
     }
 
     public String getNodeTableBaseName() {
-        return nodeTableBaseName.value ;
+        return nodeTableBaseName.value;
     }
-    
+
     public boolean isSetNodeTableBaseName() {
-        return nodeTableBaseName.isSet ;
+        return nodeTableBaseName.isSet;
     }
 
     public String getPrimaryIndexTriples() {
-        return primaryIndexTriples.value ;
+        return primaryIndexTriples.value;
     }
 
     public String[] getTripleIndexes() {
-        return tripleIndexes.value ;
+        return tripleIndexes.value;
     }
 
     public String getPrimaryIndexQuads() {
-        return primaryIndexQuads.value ;
+        return primaryIndexQuads.value;
     }
 
     public String[] getQuadIndexes() {
-        return quadIndexes.value ;
+        return quadIndexes.value;
     }
 
     public String getPrefixTableBaseName() {
-        return prefixTableBaseName.value ;
+        return prefixTableBaseName.value;
     }
-    
+
     public boolean isSetPrefixBaseName() {
-        return prefixTableBaseName.isSet ;
+        return prefixTableBaseName.isSet;
     }
 
 
-    
+
     public String getPrimaryIndexPrefix() {
-        return primaryIndexPrefix.value ;
+        return primaryIndexPrefix.value;
     }
 
     public String[] getPrefixIndexes() {
-        return prefixIndexes.value ;
+        return prefixIndexes.value;
     }
 
     @Override
     public String toString() {
-        StringBuilder buff = new StringBuilder() ;
-        fmt(buff, "fileMode", getFileMode().toString(), fileMode.isSet) ;
-        fmt(buff, "blockSize", getBlockSize(), blockSize.isSet) ;
-        fmt(buff, "readCacheSize", getBlockReadCacheSize(), blockReadCacheSize.isSet) ;
-        fmt(buff, "writeCacheSize", getBlockWriteCacheSize(), blockWriteCacheSize.isSet) ;
-        fmt(buff, "Node2NodeIdCacheSize", getNode2NodeIdCacheSize(), Node2NodeIdCacheSize.isSet) ;
-        fmt(buff, "NodeId2NodeCacheSize", getNodeId2NodeCacheSize(), NodeId2NodeCacheSize.isSet) ;
-        fmt(buff, "NodeMissCacheSize", getNodeMissCacheSize(), NodeMissCacheSize.isSet) ;
+        StringBuilder buff = new StringBuilder();
+        fmt(buff, "fileMode", getFileMode().toString(), fileMode.isSet);
+        fmt(buff, "blockSize", getBlockSize(), blockSize.isSet);
+        fmt(buff, "readCacheSize", getBlockReadCacheSize(), blockReadCacheSize.isSet);
+        fmt(buff, "writeCacheSize", getBlockWriteCacheSize(), blockWriteCacheSize.isSet);
+        fmt(buff, "Node2NodeIdCacheSize", getNode2NodeIdCacheSize(), Node2NodeIdCacheSize.isSet);
+        fmt(buff, "NodeId2NodeCacheSize", getNodeId2NodeCacheSize(), NodeId2NodeCacheSize.isSet);
+        fmt(buff, "NodeMissCacheSize", getNodeMissCacheSize(), NodeMissCacheSize.isSet);
 
-        fmt(buff, "nodeTableBaseName", getNodeTableBaseName(), nodeTableBaseName.isSet) ;
-        fmt(buff, "primaryIndexTriples", getPrimaryIndexTriples(), primaryIndexTriples.isSet) ;
-        fmt(buff, "tripleIndexes", getTripleIndexes(), tripleIndexes.isSet) ;
-        fmt(buff, "primaryIndexQuads", getPrimaryIndexQuads(), primaryIndexQuads.isSet) ;
-        fmt(buff, "quadIndexes", getQuadIndexes(), quadIndexes.isSet) ;
-        
-        fmt(buff, "prefixTableBaseName", getPrefixTableBaseName(), prefixTableBaseName.isSet) ;
-        fmt(buff, "primaryIndexPrefix", getPrimaryIndexPrefix(), primaryIndexPrefix.isSet) ;
-        fmt(buff, "prefixIndexes", getPrefixIndexes(), prefixIndexes.isSet) ;
+        fmt(buff, "nodeTableBaseName", getNodeTableBaseName(), nodeTableBaseName.isSet);
+        fmt(buff, "primaryIndexTriples", getPrimaryIndexTriples(), primaryIndexTriples.isSet);
+        fmt(buff, "tripleIndexes", getTripleIndexes(), tripleIndexes.isSet);
+        fmt(buff, "primaryIndexQuads", getPrimaryIndexQuads(), primaryIndexQuads.isSet);
+        fmt(buff, "quadIndexes", getQuadIndexes(), quadIndexes.isSet);
 
-        return buff.toString() ;
+        fmt(buff, "prefixTableBaseName", getPrefixTableBaseName(), prefixTableBaseName.isSet);
+        fmt(buff, "primaryIndexPrefix", getPrimaryIndexPrefix(), primaryIndexPrefix.isSet);
+        fmt(buff, "prefixIndexes", getPrefixIndexes(), prefixIndexes.isSet);
+
+        return buff.toString();
     }
-    
+
     private void fmt(StringBuilder buff, String name, String[] strings, boolean isSet) {
-        String dftStr = "" ;
+        String dftStr = "";
         if ( ! isSet )
-            dftStr = "dft:" ;
-        buff.append(String.format("%-20s   %s[%s]\n", name, dftStr, String.join(", ", strings))) ;
+            dftStr = "dft:";
+        buff.append(String.format("%-20s   %s[%s]\n", name, dftStr, String.join(", ", strings)));
     }
 
     private void fmt(StringBuilder buff, String name, String value, boolean isSet) {
-        String dftStr = "" ;
+        String dftStr = "";
         if ( ! isSet )
-            dftStr = "dft:" ;
-        buff.append(String.format("%-20s   %s%s\n", name, dftStr, value)) ;
+            dftStr = "dft:";
+        buff.append(String.format("%-20s   %s%s\n", name, dftStr, value));
     }
 
     private void fmt(StringBuilder buff, String name, int value, boolean isSet) {
-        String dftStr = "" ;
+        String dftStr = "";
         if ( ! isSet )
-            dftStr = "dft:" ;
-        buff.append(String.format("%-20s   %s%s\n", name, dftStr, value)) ;
+            dftStr = "dft:";
+        buff.append(String.format("%-20s   %s%s\n", name, dftStr, value));
     }
 
     /** Equality but ignore "isSet" */
     public static boolean sameValues(StoreParams params1, StoreParams params2) {
         if ( params1 == null && params2 == null )
-            return true ;
+            return true;
         if ( params1 == null )
-            return false ;
+            return false;
         if ( params2 == null )
-            return false ;
+            return false;
         if ( !sameValues(params1.fileMode, params2.fileMode) )
-            return false ;
+            return false;
         if ( !sameValues(params1.blockSize, params2.blockSize) )
-            return false ;
+            return false;
         if ( !sameValues(params1.blockReadCacheSize, params2.blockReadCacheSize) )
-            return false ;
+            return false;
         if ( !sameValues(params1.blockWriteCacheSize, params2.blockWriteCacheSize) )
-            return false ;
+            return false;
         if ( !sameValues(params1.Node2NodeIdCacheSize, params2.Node2NodeIdCacheSize) )
-            return false ;
+            return false;
         if ( !sameValues(params1.NodeId2NodeCacheSize, params2.NodeId2NodeCacheSize) )
-            return false ;
+            return false;
         if ( !sameValues(params1.NodeMissCacheSize, params2.NodeMissCacheSize) )
-            return false ;
+            return false;
         if ( !sameValues(params1.nodeTableBaseName, params2.nodeTableBaseName) )
-            return false ;
+            return false;
         if ( !sameValues(params1.primaryIndexTriples, params2.primaryIndexTriples) )
-            return false ;
+            return false;
         if ( !sameValues(params1.tripleIndexes, params2.tripleIndexes) )
-            return false ;
+            return false;
         if ( !sameValues(params1.primaryIndexQuads, params2.primaryIndexQuads) )
-            return false ;
+            return false;
         if ( !sameValues(params1.quadIndexes, params2.quadIndexes) )
-            return false ;
+            return false;
         if ( !sameValues(params1.prefixTableBaseName, params2.prefixTableBaseName) )
-            return false ;
+            return false;
         if ( !sameValues(params1.primaryIndexPrefix, params2.primaryIndexPrefix) )
-            return false ;
+            return false;
         if ( !sameValues(params1.prefixIndexes, params2.prefixIndexes) )
-            return false ;
-        return true ;
+            return false;
+        return true;
     }
-    
+
     private static <X> boolean sameValues(Item<X> item1, Item<X> item2) {
-        return Objects.deepEquals(item1.value, item2.value) ; 
+        return Objects.deepEquals(item1.value, item2.value);
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31 ;
-        int result = 1 ;
-        result = prime * result + ((Node2NodeIdCacheSize == null) ? 0 : Node2NodeIdCacheSize.hashCode()) ;
-        result = prime * result + ((NodeId2NodeCacheSize == null) ? 0 : NodeId2NodeCacheSize.hashCode()) ;
-        result = prime * result + ((NodeMissCacheSize == null) ? 0 : NodeMissCacheSize.hashCode()) ;
-        result = prime * result + ((blockReadCacheSize == null) ? 0 : blockReadCacheSize.hashCode()) ;
-        result = prime * result + ((blockSize == null) ? 0 : blockSize.hashCode()) ;
-        result = prime * result + ((blockWriteCacheSize == null) ? 0 : blockWriteCacheSize.hashCode()) ;
-        result = prime * result + ((fileMode == null) ? 0 : fileMode.hashCode()) ;
-        result = prime * result + ((nodeTableBaseName == null) ? 0 : nodeTableBaseName.hashCode()) ;
-        result = prime * result + ((prefixTableBaseName == null) ? 0 : prefixTableBaseName.hashCode()) ;
-        result = prime * result + ((prefixIndexes == null) ? 0 : prefixIndexes.hashCode()) ;
-        result = prime * result + ((primaryIndexPrefix == null) ? 0 : primaryIndexPrefix.hashCode()) ;
-        result = prime * result + ((primaryIndexQuads == null) ? 0 : primaryIndexQuads.hashCode()) ;
-        result = prime * result + ((primaryIndexTriples == null) ? 0 : primaryIndexTriples.hashCode()) ;
-        result = prime * result + ((quadIndexes == null) ? 0 : quadIndexes.hashCode()) ;
-        result = prime * result + ((tripleIndexes == null) ? 0 : tripleIndexes.hashCode()) ;
-        return result ;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((Node2NodeIdCacheSize == null) ? 0 : Node2NodeIdCacheSize.hashCode());
+        result = prime * result + ((NodeId2NodeCacheSize == null) ? 0 : NodeId2NodeCacheSize.hashCode());
+        result = prime * result + ((NodeMissCacheSize == null) ? 0 : NodeMissCacheSize.hashCode());
+        result = prime * result + ((blockReadCacheSize == null) ? 0 : blockReadCacheSize.hashCode());
+        result = prime * result + ((blockSize == null) ? 0 : blockSize.hashCode());
+        result = prime * result + ((blockWriteCacheSize == null) ? 0 : blockWriteCacheSize.hashCode());
+        result = prime * result + ((fileMode == null) ? 0 : fileMode.hashCode());
+        result = prime * result + ((nodeTableBaseName == null) ? 0 : nodeTableBaseName.hashCode());
+        result = prime * result + ((prefixTableBaseName == null) ? 0 : prefixTableBaseName.hashCode());
+        result = prime * result + ((prefixIndexes == null) ? 0 : prefixIndexes.hashCode());
+        result = prime * result + ((primaryIndexPrefix == null) ? 0 : primaryIndexPrefix.hashCode());
+        result = prime * result + ((primaryIndexQuads == null) ? 0 : primaryIndexQuads.hashCode());
+        result = prime * result + ((primaryIndexTriples == null) ? 0 : primaryIndexTriples.hashCode());
+        result = prime * result + ((quadIndexes == null) ? 0 : quadIndexes.hashCode());
+        result = prime * result + ((tripleIndexes == null) ? 0 : tripleIndexes.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
         if ( this == obj )
-            return true ;
+            return true;
         if ( obj == null )
-            return false ;
+            return false;
         if ( getClass() != obj.getClass() )
-            return false ;
-        StoreParams other = (StoreParams)obj ;
+            return false;
+        StoreParams other = (StoreParams)obj;
         if ( Node2NodeIdCacheSize == null ) {
             if ( other.Node2NodeIdCacheSize != null )
-                return false ;
+                return false;
         } else if ( !Node2NodeIdCacheSize.equals(other.Node2NodeIdCacheSize) )
-            return false ;
+            return false;
         if ( NodeId2NodeCacheSize == null ) {
             if ( other.NodeId2NodeCacheSize != null )
-                return false ;
+                return false;
         } else if ( !NodeId2NodeCacheSize.equals(other.NodeId2NodeCacheSize) )
-            return false ;
+            return false;
         if ( NodeMissCacheSize == null ) {
             if ( other.NodeMissCacheSize != null )
-                return false ;
+                return false;
         } else if ( !NodeMissCacheSize.equals(other.NodeMissCacheSize) )
-            return false ;
+            return false;
         if ( blockReadCacheSize == null ) {
             if ( other.blockReadCacheSize != null )
-                return false ;
+                return false;
         } else if ( !blockReadCacheSize.equals(other.blockReadCacheSize) )
-            return false ;
+            return false;
         if ( blockSize == null ) {
             if ( other.blockSize != null )
-                return false ;
+                return false;
         } else if ( !blockSize.equals(other.blockSize) )
-            return false ;
+            return false;
         if ( blockWriteCacheSize == null ) {
             if ( other.blockWriteCacheSize != null )
-                return false ;
+                return false;
         } else if ( !blockWriteCacheSize.equals(other.blockWriteCacheSize) )
-            return false ;
+            return false;
         if ( fileMode == null ) {
             if ( other.fileMode != null )
-                return false ;
+                return false;
         } else if ( !fileMode.equals(other.fileMode) )
-            return false ;
+            return false;
         if ( nodeTableBaseName == null ) {
             if ( other.nodeTableBaseName != null )
-                return false ;
+                return false;
         } else if ( !nodeTableBaseName.equals(other.nodeTableBaseName) )
-            return false ;
+            return false;
         if ( prefixTableBaseName == null ) {
             if ( other.prefixTableBaseName != null )
-                return false ;
+                return false;
         } else if ( !prefixTableBaseName.equals(other.prefixTableBaseName) )
-            return false ;
+            return false;
         if ( prefixIndexes == null ) {
             if ( other.prefixIndexes != null )
-                return false ;
+                return false;
         } else if ( !prefixIndexes.equals(other.prefixIndexes) )
-            return false ;
+            return false;
         if ( primaryIndexPrefix == null ) {
             if ( other.primaryIndexPrefix != null )
-                return false ;
+                return false;
         } else if ( !primaryIndexPrefix.equals(other.primaryIndexPrefix) )
-            return false ;
+            return false;
         if ( primaryIndexQuads == null ) {
             if ( other.primaryIndexQuads != null )
-                return false ;
+                return false;
         } else if ( !primaryIndexQuads.equals(other.primaryIndexQuads) )
-            return false ;
+            return false;
         if ( primaryIndexTriples == null ) {
             if ( other.primaryIndexTriples != null )
-                return false ;
+                return false;
         } else if ( !primaryIndexTriples.equals(other.primaryIndexTriples) )
-            return false ;
+            return false;
         if ( quadIndexes == null ) {
             if ( other.quadIndexes != null )
-                return false ;
+                return false;
         } else if ( !quadIndexes.equals(other.quadIndexes) )
-            return false ;
+            return false;
         if ( tripleIndexes == null ) {
             if ( other.tripleIndexes != null )
-                return false ;
+                return false;
         } else if ( !tripleIndexes.equals(other.tripleIndexes) )
-            return false ;
-        return true ;
+            return false;
+        return true;
     }
 }
 

@@ -16,15 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.store ;
+package org.apache.jena.tdb2.store;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.lib.tuple.Tuple ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.atlas.lib.tuple.Tuple;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.tdb2.lib.TupleLib;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.tupletable.TupleIndex;
@@ -36,12 +36,12 @@ import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 
 public class QuadTable extends TableBase {
     public QuadTable(TupleIndex[] indexes, NodeTable nodeTable) {
-        super(4, indexes, nodeTable) ;
+        super(4, indexes, nodeTable);
     }
 
     /** Add a quad - return true if it was added, false if it already existed */
     public void add(Quad quad) {
-        add(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
+        add(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject());
     }
 
     /**
@@ -49,17 +49,17 @@ public class QuadTable extends TableBase {
      * false if it already existed
      */
     public void add(Node gn, Triple triple) {
-        add(gn, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+        add(gn, triple.getSubject(), triple.getPredicate(), triple.getObject());
     }
 
     /** Add a quad - return true if it was added, false if it already existed */
     public void add(Node g, Node s, Node p, Node o) {
-        table.addRow(g, s, p, o) ;
+        table.addRow(g, s, p, o);
     }
 
     /** Delete a quad - return true if it was deleted, false if it didn't exist */
     public void delete(Quad quad) {
-        delete(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
+        delete(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject());
     }
 
     /**
@@ -67,25 +67,25 @@ public class QuadTable extends TableBase {
      * false if it didn't exist
      */
     public void delete(Node gn, Triple triple) {
-        delete(gn, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+        delete(gn, triple.getSubject(), triple.getPredicate(), triple.getObject());
     }
 
     /** Delete a quad - return true if it was deleted, false if it didn't exist */
     public void delete(Node g, Node s, Node p, Node o) {
-        table.deleteRow(g, s, p, o) ;
+        table.deleteRow(g, s, p, o);
     }
 
     /** Find matching quads */
     public Iterator<Quad> find(Node g, Node s, Node p, Node o) {
-        Iterator<Tuple<NodeId>> iter = table.findAsNodeIds(g, s, p, o) ;
+        Iterator<Tuple<NodeId>> iter = table.findAsNodeIds(g, s, p, o);
         if ( iter == null )
-            return Iter.nullIterator() ;
-        Iterator<Quad> iter2 = TupleLib.convertToQuads(table.getNodeTable(), iter) ;
-        return iter2 ;
+            return Iter.nullIterator();
+        Iterator<Quad> iter2 = TupleLib.convertToQuads(table.getNodeTable(), iter);
+        return iter2;
     }
 
     /** Clear - does not clear the associated node tuple table */
     public void clearQuads() {
-        table.clear() ;
+        table.clear();
     }
 }

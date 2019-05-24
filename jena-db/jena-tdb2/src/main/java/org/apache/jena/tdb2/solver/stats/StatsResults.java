@@ -18,36 +18,36 @@
 
 package org.apache.jena.tdb2.solver.stats;
 
-import java.util.Map ;
+import java.util.Map;
 
-import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node;
 
 /** Statistics collector */
-public class StatsResults 
+public class StatsResults
 {
-    private final Map<Node, Integer> predicates ;
-    private final Map<Node, Integer> types ;
-    private final long count ;
+    private final Map<Node, Integer> predicates;
+    private final Map<Node, Integer> types;
+    private final long count;
 
     StatsResults(Map<Node, Integer> predicates, Map<Node, Integer> types, long count)
     {
-        this.count = count ;
-        this.predicates = predicates ;
-        this.types = types ;
+        this.count = count;
+        this.predicates = predicates;
+        this.types = types;
     }
 
     public Map<Node, Integer> getPredicates()
     {
-        return predicates ;
+        return predicates;
     }
 
     public Map<Node, Integer> getTypes()
     {
-        return types ;
+        return types;
     }
 
     public long getCount()
     {
-        return count ;
+        return count;
     }
 }

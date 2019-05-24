@@ -89,17 +89,11 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
     }
 
     // This is the root constructor. 
-    @SuppressWarnings("deprecation")
     /*package*/DatasetGraphMapLink(Graph dftGraph, GraphMaker graphMaker) {
         this.graphMaker = graphMaker;
         this.defaultGraph = dftGraph;
-        if ( TxnDataset2Graph.TXN_DSG_GRAPH ) {
-            txnDsg2Graph = new TxnDataset2Graph(dftGraph);
-            txn = txnDsg2Graph;
-        } else {
-            txnDsg2Graph = null;
-            txn = TransactionalLock.createMRSW();
-        }
+        txnDsg2Graph = new TxnDataset2Graph(dftGraph);
+        txn = txnDsg2Graph;
     }
 
     @Override

@@ -23,29 +23,29 @@ import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.tdb2.ConfigTest;
 import org.apache.jena.tdb2.sys.SystemTDB;
 import org.apache.jena.tdb2.sys.TestOps;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 /** Slow tests - complete cleaning of disk areas each time */
 public class TestStoreConnectionMapped extends AbstractTestStoreConnectionBasics
 {
-    static FileMode mode ;   
+    static FileMode mode;
 
     @BeforeClass
     public static void beforeClassFileMode()
     {
-        mode = SystemTDB.fileMode() ;
-        TestOps.setFileMode(FileMode.mapped) ;
+        mode = SystemTDB.fileMode();
+        TestOps.setFileMode(FileMode.mapped);
     }
 
     @AfterClass
     public static void afterClassFileMode()
     {
-        TestOps.setFileMode(mode) ;
+        TestOps.setFileMode(mode);
     }
 
     @Override
     protected Location getLocation() {
-        return Location.create(ConfigTest.getCleanDir()) ;
+        return Location.create(ConfigTest.getCleanDir());
     }
 }

@@ -19,53 +19,53 @@
 package org.apache.jena.tdb2.store.nodetable;
 
 
-import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node;
 import org.apache.jena.tdb2.store.NodeId;
 
 /** NodeTable wrapper to handle inline node ids.
  * If a node can be made inline, then the underlying table never sees it.
  * If an inline Nodeid is seen, it is decoded and returned without
- * the underlying table being called. 
+ * the underlying table being called.
  */
 
 public class NodeTableInline extends NodeTableWrapper
 {
     // Stack order: Inline > Cache > Actual
-    
+
     public static NodeTable create(NodeTable nodeTable)
     {
-        return new NodeTableInline(nodeTable) ;
+        return new NodeTableInline(nodeTable);
     }
-    
+
     private NodeTableInline(NodeTable nodeTable)
     {
-        super(nodeTable) ;
+        super(nodeTable);
     }
-    
+
     @Override
     public final NodeId getAllocateNodeId(Node node)
     {
-        NodeId nid = NodeId.inline(node) ;
-        if ( nid != null ) return nid ;
-        return super.getAllocateNodeId(node) ;
+        NodeId nid = NodeId.inline(node);
+        if ( nid != null ) return nid;
+        return super.getAllocateNodeId(node);
     }
 
     @Override
     public final NodeId getNodeIdForNode(Node node)
     {
-        NodeId nid = NodeId.inline(node) ;
-        if ( nid != null ) return nid ;
-        return super.getNodeIdForNode(node) ;
+        NodeId nid = NodeId.inline(node);
+        if ( nid != null ) return nid;
+        return super.getNodeIdForNode(node);
     }
     @Override
     public final Node getNodeForNodeId(NodeId id)
     {
-        Node n = NodeId.extract(id) ;
+        Node n = NodeId.extract(id);
         if ( n != null )
-            return n ;
-        return super.getNodeForNodeId(id) ;
+            return n;
+        return super.getNodeForNodeId(id);
     }
-    
+
     @Override
-    public String toString() { return "Inline("+nodeTable.toString()+")" ; }
+    public String toString() { return "Inline("+nodeTable.toString()+")"; }
 }

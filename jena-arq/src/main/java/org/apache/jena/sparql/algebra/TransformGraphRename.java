@@ -18,37 +18,37 @@
 
 package org.apache.jena.sparql.algebra;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.TransformCopy ;
-import org.apache.jena.sparql.algebra.op.OpGraph ;
-import org.apache.jena.sparql.algebra.op.OpQuadPattern ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.TransformCopy;
+import org.apache.jena.sparql.algebra.op.OpGraph;
+import org.apache.jena.sparql.algebra.op.OpQuadPattern;
 
 /** Rename quad form alegra */
 public class TransformGraphRename extends TransformCopy
-{ 
-    private Node oldGraphName ;
-    private Node newGraphName ;
+{
+    private Node oldGraphName;
+    private Node newGraphName;
 
     public TransformGraphRename(Node oldGraphName, Node newGraphName)
     {
-        this.oldGraphName = oldGraphName ;
-        this.newGraphName = newGraphName ;
+        this.oldGraphName = oldGraphName;
+        this.newGraphName = newGraphName;
     }
 
     @Override
     public Op transform(OpGraph opGraph, Op x)
-    { 
+    {
         if ( opGraph.getNode().equals(oldGraphName) )
-            opGraph = new OpGraph(newGraphName, x) ;
-        return super.transform(opGraph, x) ;
+            opGraph = new OpGraph(newGraphName, x);
+        return super.transform(opGraph, x);
     }
 
     @Override
     public Op transform(OpQuadPattern opQuadPattern)
     {
         if ( opQuadPattern.getGraphNode().equals(oldGraphName) )
-            opQuadPattern = new OpQuadPattern(newGraphName, opQuadPattern.getBasicPattern()) ;
-        return super.transform(opQuadPattern) ;
+            opQuadPattern = new OpQuadPattern(newGraphName, opQuadPattern.getBasicPattern());
+        return super.transform(opQuadPattern);
     }
 }

@@ -19,34 +19,34 @@
 package org.apache.jena.tdb2.graph;
 
 import org.apache.jena.system.Txn;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.tdb2.TDB2Factory;
-import org.junit.After ;
-import org.junit.Before ;
+import org.junit.After;
+import org.junit.Before;
 
-public class TestGraphsTDB2 extends AbstractTestGraphsTDB
+public class TestGraphsTDB_B extends AbstractTestGraphsTDB
 {
     // Transactional.
     @Before
     public void before() {
-        getDataset().begin(ReadWrite.READ) ;
+        getDataset().begin(ReadWrite.READ);
     }
 
     @After
     public void after() {
-        getDataset().end() ;
+        getDataset().end();
     }
 
     @Override
     protected void fillDataset(Dataset dataset) {
         Txn.executeWrite(dataset, ()->{
-            super.fillDataset(dataset) ;
+            super.fillDataset(dataset);
         });
     }
-    
+
     @Override
     protected Dataset createDataset() {
-        return TDB2Factory.createDataset() ;
+        return TDB2Factory.createDataset();
     }
 }

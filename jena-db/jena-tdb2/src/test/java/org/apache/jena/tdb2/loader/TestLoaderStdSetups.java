@@ -16,44 +16,43 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader ;
+package org.apache.jena.tdb2.loader;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 
-import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.tdb2.loader.main.LoaderMain;
-import org.apache.jena.tdb2.loader.main.LoaderPlan;
 import org.apache.jena.tdb2.loader.main.LoaderPlans;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Test of loading using a {@link LoaderPlan} and with {@link LoaderMain}.
+ * Test of loading using {@link LoaderFactory} operations.
  */
 @RunWith(Parameterized.class)
-public class TestLoaderMain extends AbstractTestLoader {
-    
+public class TestLoaderStdSetups extends AbstractTestLoader {
+
     @Parameters(name = "{index}: {0}")
     public static Iterable<Object[]> data() {
-        List<Object[]> x = new ArrayList<>() ;
-        add(x, "Simple plan", LoaderPlans.loaderPlanSimple);
-        add(x, "Minimal plan", LoaderPlans.loaderPlanMinimal);
-        add(x, "Phased Plan", LoaderPlans.loaderPlanPhased);
-        add(x, "Light plan", LoaderPlans.loaderPlanLight);
-        add(x, "Parallel plan", LoaderPlans.loaderPlanParallel);
-        return x ; 
+        List<Object[]> x = new ArrayList<>();
+        BiFunction<DatasetGraph, Node, DataLoader> basic =      (dsg, gn)->LoaderFactory.basicLoader(dsg, gn, output);
+        BiFunction<DatasetGraph, Node, DataLoader> phased =     (dsg, gn)->LoaderFactory.phasedLoader(dsg, gn, output);
+        BiFunction<DatasetGraph, Node, DataLoader> sequential = (dsg, gn)->LoaderFactory.sequentialLoader(dsg, gn, output);
+        BiFunction<DatasetGraph, Node, DataLoader> parallel =   (dsg, gn)->LoaderFactory.parallelLoader(dsg, gn, output);
+        BiFunction<DatasetGraph, Node, DataLoader> light =      (dsg, gn)->LoaderFactory.createLoader(LoaderPlans.loaderPlanLight, dsg, gn, output);
+
+        x.add(new Object[]{"Basic loader",      basic});
+        x.add(new Object[]{"Phased loader",     phased});
+        x.add(new Object[]{"Sequential loader", sequential});
+        x.add(new Object[]{"Parallel loader",   parallel});
+        x.add(new Object[]{"Light loader",      light});
+        return x;
     }
 
-    private static void add(List<Object[]> x, String name, LoaderPlan loaderPlan) {
-        BiFunction<DatasetGraph, Node, DataLoader> maker = (dsg, gn) -> new LoaderMain(loaderPlan, dsg, gn, output);
-        x.add(new Object[]{name, maker});
-    }
-
-    public TestLoaderMain(String name, BiFunction<DatasetGraph, Node, DataLoader> maker) {
+    public TestLoaderStdSetups(String name, BiFunction<DatasetGraph, Node, DataLoader> maker) {
         super(name, maker);
     }
 }
