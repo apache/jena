@@ -16,59 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.migrate;
+package org.apache.jena.atlas.lib;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.UUID;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 import java.util.function.Supplier;
 
-import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.lib.Bytes;
-import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.shared.uuid.JenaUUID;
-
 /** Misc class */
-public class L {
-
-    // Not to be confused with UUID.nameUUIDFromBytes (a helper for version 3 UUIDs)
-    /**
-     * Java UUID to bytes (most significant first)
-     */
-    public static byte[] uuidAsBytes(UUID uuid) {
-        return uuidAsBytes(uuid.getMostSignificantBits(), uuid.getLeastSignificantBits());
-    }
-
-    /**
-     * Jena UUID to bytes (most significant first)
-     */
-    public static byte[] uuidAsBytes(JenaUUID uuid) {
-        return uuidAsBytes(uuid.getMostSignificantBits(), uuid.getLeastSignificantBits());
-    }
-
-    /** UUID, as two longs, as bytes */
-    public static byte[] uuidAsBytes(long mostSignificantBits, long leastSignificantBits) {
-        byte[] bytes = new byte[16];
-        Bytes.setLong(mostSignificantBits, bytes, 0);
-        Bytes.setLong(leastSignificantBits, bytes, 8);
-        return bytes;
-    }
-
-    /** A UUID string to bytes */
-    public static byte[] uuidAsBytes(String str) {
-        return uuidAsBytes(UUID.fromString(str));
-    }
-
-    public static String uuidToString(long mostSignificantBits, long leastSignificantBits) {
-        return new UUID(mostSignificantBits, leastSignificantBits).toString();
-        //JenaUUID.toString(mostSignificantBits, leastSignificantBits)
-    }
+public class ThreadLib {
 
     private static ExecutorService executor = Executors.newCachedThreadPool();
 
@@ -157,49 +115,4 @@ public class L {
     public static void withLock(Lock lock, Runnable r) {
         withBeforeAfter(r, ()->lock.lock(), ()->lock.unlock());
     }
-
-    // ==> IO.writeWholeFileAsUTF8
-
-    /** Write a string to a file as UTF-8. The file is closed after the operation.
-     * @param filename
-     * @param content String to be written
-     * @throws IOException
-     */
-
-    public static void writeStringAsUTF8(String filename, String content) throws IOException {
-        try ( OutputStream out = IO.openOutputFileEx(filename) ) {
-            writeStringAsUTF8(out, content);
-            out.flush();
-        }
-    }
-
-    /** Write a string into an {@link OutputStream} as UTF-8.
-     *
-     * @param out       OutputStream destination.
-     * @param content   String to be written
-     * @throws  IOException
-     */
-    public static void writeStringAsUTF8(OutputStream out, String content) throws IOException {
-        Writer w = new OutputStreamWriter(out, StandardCharsets.UTF_8);
-        w.write(content);
-        w.flush();
-        // Not close.
-    }
-
-    // ==> IO.writeWholeFileAsUTF8
-
-    /** String to ByteBuffer as UTF-8 bytes */
-    public static ByteBuffer stringToByteBuffer(String str) {
-        byte[] b = StrUtils.asUTF8bytes(str);
-        return ByteBuffer.wrap(b);
-    }
-
-    /** ByteBuffer to String */
-    public static String byteBufferToString(ByteBuffer bb) {
-        byte[] b = new byte[bb.remaining()];
-        bb.get(b);
-        return StrUtils.fromUTF8bytes(b);
-    }
-
 }
-

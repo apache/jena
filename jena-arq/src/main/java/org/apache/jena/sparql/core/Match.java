@@ -15,25 +15,13 @@
  *  information regarding copyright ownership.
  */
 
-package org.apache.jena.dboe.storage.migrate;
+package org.apache.jena.sparql.core;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.sparql.core.Quad;
 
-/** Ways to match triples. quads */
-public class M {
-
-//    public static Stream<Triple> match(Collection<Triple> triples, Node s, Node p, Node o) {
-//        return triples.stream()
-//            .filter(t-> match(t, s,p,o));
-//    }
-//
-//    public static Stream<Quad> match(Collection<Quad> quads, Node g, Node s, Node p, Node o) {
-//        return quads.stream()
-//            .filter(q-> match(q, g,s,p,o));
-//    }
-
+/** Match triples, quads, with wioldcar rules (null or {@link Node#ANY} are wildcards).  */
+public class Match {
     public static boolean match(Quad quad, Node g, Node s, Node p, Node o) {
         return
             match(quad.getGraph(), g) &&
@@ -52,14 +40,4 @@ public class M {
     public static boolean match(Node node, Node pattern) {
         return pattern == null || pattern == Node.ANY || pattern.equals(node);
     }
-
-//    public static void checkConcrete(Node...nodes) {
-//        for ( Node n : nodes )
-//            checkConcrete(n);
-//    }
-//
-//    public static void checkConcrete(Node n) {
-//        if ( ! n.isConcrete() )
-//            throw new IllegalArgumentException("Not concrete: "+n);
-//    }
 }
