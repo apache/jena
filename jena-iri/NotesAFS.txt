@@ -5,6 +5,9 @@ PattenCompiler: remove entry using IP_V4_HAS_FOUR_COMPONENTS in for ipV4Address[
 
 === JFlex
 
+See src-dev to project.
+Add JFlex.jar: /home/afs/sys/jflex-1.4.3/lib/JFlex.jar
+
 Build:
 See dev.buildlexer.MainGenerateLexers which does step 1-3
 

@@ -56,7 +56,13 @@ public abstract class IRIResolver
             printSetting(iriFactoryInst);
         }
         
+        // Accept any scheme.
         setErrorWarning(iriFactoryInst, ViolationCodes.UNREGISTERED_IANA_SCHEME, false, false);
+        
+        // These are a warning from jena-iri motivated by problems in RDF/XML and also internal processing by IRI
+        // (IRI.relativize).  
+        // The IRI is valid and does correct resolve when relative.
+        setErrorWarning(iriFactoryInst, ViolationCodes.NON_INITIAL_DOT_SEGMENT, false, false);
 
         // Turn off?? (ignored in CheckerIRI.iriViolations anyway).
         // setErrorWarning(iriFactory, ViolationCodes.LOWERCASE_PREFERRED, false, false);
@@ -105,6 +111,7 @@ public abstract class IRIResolver
     private static void printSetting(IRIFactory factory) {
         PrintStream ps = System.out;
         printErrorWarning(ps, factory, ViolationCodes.UNREGISTERED_IANA_SCHEME);
+        printErrorWarning(ps, factory, ViolationCodes.NON_INITIAL_DOT_SEGMENT);
         printErrorWarning(ps, factory, ViolationCodes.NOT_NFC);
         printErrorWarning(ps, factory, ViolationCodes.NOT_NFKC);
         printErrorWarning(ps, factory, ViolationCodes.UNWISE_CHARACTER);
