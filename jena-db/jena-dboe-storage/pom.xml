@@ -25,11 +25,11 @@
   <artifactId>jena-dboe-storage</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - DBOE Storage</name>
-  <version>3.12.0</version>
+  <version>3.13.0-SNAPSHOT</version>
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-db</artifactId>
-    <version>3.12.0</version>
+    <version>3.13.0-SNAPSHOT</version>
   </parent> 
 
   <description>Triplestore database storage</description>
@@ -54,14 +54,14 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-dboe-trans-data</artifactId>
-      <version>3.12.0</version>
+      <version>3.13.0-SNAPSHOT</version>
     </dependency>
 
     <!-- testing -->
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>3.12.0</version>
+      <version>3.13.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -69,7 +69,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.12.0</version>
+      <version>3.13.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
