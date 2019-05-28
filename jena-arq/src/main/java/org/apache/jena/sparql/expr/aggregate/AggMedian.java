@@ -30,10 +30,14 @@ import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.function.FunctionEnv ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 public class AggMedian extends AggregatorBase
 {
     // ---- MEDIAN(?var)
+    private static Logger log = LoggerFactory.getLogger("Median") ;
+
     public AggMedian(Expr expr) { super("MEDIAN", false, expr) ; } 
     @Override
     public Aggregator copy(ExprList expr) { return new AggMedian(expr.get(0)) ; }
@@ -78,7 +82,7 @@ public class AggMedian extends AggregatorBase
         @Override
         protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
         { 
-            if ( DEBUG ) System.out.println("median: "+nv) ;
+			log.debug("median  "+ nv);
 
             if ( nv.isNumber() )
             {
@@ -91,7 +95,7 @@ public class AggMedian extends AggregatorBase
                 throw new ExprEvalException("median: not a number: "+nv) ;
             }
 
-            if ( DEBUG ) System.out.println("median: ("+count+")") ;
+            log.debug("median: ("+count+")");
         }
         
         @Override
