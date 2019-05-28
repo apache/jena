@@ -82,7 +82,7 @@ public class AggMedianDistinct extends AggregatorBase
         @Override
         protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
         { 
-			log.debug("median  "+ nv);
+			log.debug("median {}", nv);
 
             if ( nv.isNumber() )
             {
@@ -92,7 +92,7 @@ public class AggMedianDistinct extends AggregatorBase
             else
                 throw new ExprEvalException("median: not a number: "+nv) ;
 
-            log.debug("median: ("+count+")");
+            log.debug("median count {}", count);
         }
 
         @Override
