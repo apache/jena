@@ -496,7 +496,6 @@ class LexerPath extends AbsLexer implements org.apache.jena.iri.ViolationCodes, 
    * @exception   java.io.IOException  if any I/O-Error occurs
    */
   @Override
-  @SuppressWarnings("fallthrough")
   public int yylex() throws java.io.IOException {
     int zzInput;
     int zzAction;

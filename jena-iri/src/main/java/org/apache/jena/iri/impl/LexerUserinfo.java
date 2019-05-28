@@ -490,8 +490,7 @@ class LexerUserinfo extends AbsLexer implements org.apache.jena.iri.ViolationCod
    * @return      the next token
    * @exception   java.io.IOException  if any I/O-Error occurs
    */
-  @SuppressWarnings("fallthrough")
-@Override
+  @Override
 public int yylex() throws java.io.IOException {
     int zzInput;
     int zzAction;
