@@ -24,8 +24,8 @@ import java.util.stream.Stream;
 
 import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.atlas.lib.tuple.Tuple;
-import org.apache.jena.dboe.storage.migrate.M;
 import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.core.Match;
 
 /** Tuple of Nodes */
 public class StorageTuplesN {
@@ -65,7 +65,7 @@ public class StorageTuplesN {
 
     private boolean match(Tuple<Node> terms, Tuple<Node> pattern) {
         for (int i = 0; i < terms.len(); i++ ) {
-            if ( ! M.match(terms.get(i), pattern.get(i) ) ) {
+            if ( ! Match.match(terms.get(i), pattern.get(i) ) ) {
                 return false;
             }
         }
@@ -74,7 +74,7 @@ public class StorageTuplesN {
 
     private static boolean match(Node node, Node pattern) {
         // This is the only use of M
-        return M.match(node, pattern);
+        return Match.match(node, pattern);
         //return pattern == null || pattern == Node.ANY || pattern.equals(node);
     }
 

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb.migrate;
+package org.apache.jena.sparql.algebra;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.algebra.Op ;
@@ -24,6 +24,7 @@ import org.apache.jena.sparql.algebra.TransformCopy ;
 import org.apache.jena.sparql.algebra.op.OpGraph ;
 import org.apache.jena.sparql.algebra.op.OpQuadPattern ;
 
+/** Rename quad form alegra */
 public class TransformGraphRename extends TransformCopy
 { 
     private Node oldGraphName ;
@@ -35,7 +36,6 @@ public class TransformGraphRename extends TransformCopy
         this.newGraphName = newGraphName ;
     }
 
-    // Does not affect variables.
     @Override
     public Op transform(OpGraph opGraph, Op x)
     { 

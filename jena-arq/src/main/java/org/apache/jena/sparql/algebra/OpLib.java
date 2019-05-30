@@ -18,31 +18,18 @@
 
 package org.apache.jena.sparql.algebra;
 
-import org.apache.jena.sparql.algebra.op.* ;
-
-// NB Operations take and return nulls for convenience.
+import org.apache.jena.sparql.core.Quad;
 
 public class OpLib
 {
-    public static Op sub(Op1 op) { return op==null ? null : op.getSubOp() ; }
-    
-    public static boolean isProject(Op op) { return op instanceof OpProject ; } 
-    public static OpProject asProject(Op op)
-    {  return isProject(op) ? (OpProject)op : null ; }
-    
-    public static boolean isDistinct(Op op) { return op instanceof OpDistinct ; } 
-    public static OpDistinct asDistinct(Op op)
-    {  return isDistinct(op) ? (OpDistinct)op : null ; }
-
-    public static boolean isReduced(Op op) { return op instanceof OpReduced ; } 
-    public static OpReduced asReduced(Op op)
-    {  return isReduced(op) ? (OpReduced)op : null ; }
-
-    public static boolean isOrder(Op op) { return op instanceof OpOrder ; } 
-    public static OpOrder asOrder(Op op)
-    {  return isOrder(op) ? (OpOrder)op : null ; }
-
-    public static boolean isSlice(Op op) { return op instanceof OpSlice ; } 
-    public static OpSlice asSlice(Op op)
-    {  return isSlice(op) ? (OpSlice)op : null ; }
+    /** Convert a pattern, assumed to be quad form, 
+     * so that the default graph is the union of named graphs.  
+     */
+    public static Op unionDefaultGraphQuads(Op op)
+    {
+        // Rewrite so that any explicitly named "default graph" is union graph.
+        Transform t = new TransformGraphRename(Quad.defaultGraphNodeGenerated, Quad.unionGraph)  ;
+        op = Transformer.transform(t, op) ;
+        return op ;
+    }
 }

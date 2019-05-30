@@ -26,7 +26,6 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.dboe.migrate.L;
 import org.apache.jena.dboe.transaction.txn.ComponentId;
 import org.apache.jena.dboe.transaction.txn.TransactionalComponentLifecycle;
 import org.apache.jena.dboe.transaction.txn.TxnId;
@@ -121,7 +120,7 @@ public class TransInteger extends TransactionalComponentLifecycle<TransInteger.I
     }
 
     private static void write(String filename, long value) {
-        try { L.writeStringAsUTF8(filename, Long.toString(value)); }
+        try { IO.writeStringAsUTF8(filename, Long.toString(value)); }
         catch (IOException ex) {}
         catch (NumberFormatException ex) {}
     }

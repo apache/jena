@@ -29,7 +29,7 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.WriterGraphRIOT ;
 import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.StreamOps ;
+import org.apache.jena.riot.system.StreamRDFOps ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.util.Context ;
 
@@ -52,7 +52,7 @@ public class WriterGraphThrift implements WriterGraphRIOT
     public void write(OutputStream out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
         StreamRDF stream = BinRDF.streamToOutputStream(out, withValues) ;
         stream.start() ;
-        StreamOps.graphToStream(graph, stream) ;
+        StreamRDFOps.graphToStream(graph, stream) ;
         stream.finish() ;
     }
 }

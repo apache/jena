@@ -29,7 +29,7 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.StreamOps ;
+import org.apache.jena.riot.system.StreamRDFOps ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.sparql.util.Context ;
@@ -61,7 +61,7 @@ public class NTriplesWriter extends WriterGraphRIOTBase
     private static void write$(StreamRDF s, Iterator<Triple> iter)
     {
         s.start() ;
-        StreamOps.sendTriplesToStream(iter, s) ;
+        StreamRDFOps.sendTriplesToStream(iter, s) ;
         s.finish();
     }
 

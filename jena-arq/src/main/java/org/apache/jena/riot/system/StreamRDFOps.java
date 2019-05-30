@@ -39,7 +39,7 @@ import org.apache.jena.sparql.core.Quad ;
  *  whereas other operations do.
  */
 
-public class StreamOps {
+public class StreamRDFOps {
     
     /** Send a dataset to a StreamRDF as prefixes, triples and quads, enclosed in stream.start()/stream.finish() */
     public static void datasetToStream(DatasetGraph datasetGraph, StreamRDF stream) {
@@ -90,10 +90,10 @@ public class StreamOps {
 
         // Default graph
         Iterator<Triple> iter1 = datasetGraph.getDefaultGraph().find(null, null, null) ;
-        StreamOps.sendTriplesToStream(iter1, stream) ;
+        StreamRDFOps.sendTriplesToStream(iter1, stream) ;
         
         Iterator<Quad> iter2 = datasetGraph.findNG(null, null, null, null) ;
-        StreamOps.sendQuadsToStream(iter2, stream) ;
+        StreamRDFOps.sendQuadsToStream(iter2, stream) ;
     }
 
     
@@ -108,7 +108,7 @@ public class StreamOps {
         if ( prefixMap != null )
             sendPrefixesToStream(prefixMap, stream) ;
         Iterator<Triple> iter = graph.find(null, null, null) ;
-        StreamOps.sendTriplesToStream(iter, stream) ;
+        StreamRDFOps.sendTriplesToStream(iter, stream) ;
     }
 
     /** Send the triples of graph to a StreamRDF (no prefix mapping) */
@@ -129,7 +129,7 @@ public class StreamOps {
     /** Send quads of a dataset (including default graph as quads) to a StreamRDF, without prefixes */
     public static void sendQuadsToStream(DatasetGraph datasetGraph, StreamRDF stream) {
         Iterator<Quad> iter2 = datasetGraph.find(null, null, null, null) ;
-        StreamOps.sendQuadsToStream(iter2, stream) ;
+        StreamRDFOps.sendQuadsToStream(iter2, stream) ;
     }
 
     /** Set quads to a StreamRDF - does not call .start/.finish */ 
@@ -141,5 +141,4 @@ public class StreamOps {
             dest.quad(q) ;
         }
     }
-
 }
