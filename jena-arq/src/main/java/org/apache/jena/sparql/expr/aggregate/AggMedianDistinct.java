@@ -19,8 +19,8 @@
 package org.apache.jena.sparql.expr.aggregate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
-import org.apache.commons.math3.stat.descriptive.rank.Median;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.Expr ;
@@ -75,8 +75,6 @@ public class AggMedianDistinct extends AggregatorBase
         private int count = 0 ;
         ArrayList<NodeValue> collection=new ArrayList<NodeValue>(); 
         
-        static final boolean DEBUG = false ;
-        
         public AccMedianDistinct(Expr expr) { super(expr, true) ; }
 
         @Override
@@ -98,21 +96,31 @@ public class AggMedianDistinct extends AggregatorBase
         @Override
         public NodeValue getAccValue()
         {
+            double median;
             if ( count == 0 ) return noValuesToMedian ;
             if ( super.errorCount != 0 )
                 return null ;
             
-            double[] arrDouble = new double[collection.size()];
-            for(int i=0; i<collection.size(); i++){
-            	arrDouble[i] = collection.get(i).getDouble();            	
+            int indexsize = collection.size();
+            double[] arrDouble = new double[indexsize];
+            for(int i=0; i<indexsize; i++){
+            	arrDouble[i] = collection.get(i).getDouble();	
+            }
+            
+            Arrays.sort(arrDouble);
+            if(indexsize==0) {
+            	median = Double.NaN;
+            }else if(indexsize%2!=0) {
+            	median = arrDouble[(indexsize/2)];
+            }else {	
+            	median = (arrDouble[(indexsize/2)]+arrDouble[((indexsize/2)-1)])/2;
             }
 
-            return (NodeValue.makeDecimal((new Median().evaluate(arrDouble))));
+            return (NodeValue.makeDecimal((median)));
         }
-
+        
         @Override
         protected void accumulateError(Binding binding, FunctionEnv functionEnv)
         {}
     }
 }
-

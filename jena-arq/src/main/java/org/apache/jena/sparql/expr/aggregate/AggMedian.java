@@ -18,17 +18,15 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
-import org.apache.commons.math3.stat.descriptive.rank.Median;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.function.FunctionEnv ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -74,9 +72,7 @@ public class AggMedian extends AggregatorBase
         private NodeValue total = noValuesToMedian ;
         private int count = 0 ;
         ArrayList<NodeValue> collection=new ArrayList<NodeValue>(); 
-        
-        static final boolean DEBUG = false ;
-        
+                
         public AccMedian(Expr expr) { super(expr, false) ; }
 
         @Override
@@ -97,26 +93,35 @@ public class AggMedian extends AggregatorBase
 
             log.debug("median count {}", count);
         }
-        
-        @Override
-        protected void accumulateError(Binding binding, FunctionEnv functionEnv)
-        {}
 
         @Override
         public NodeValue getAccValue()
         {
+            double median;
             if ( count == 0 ) return noValuesToMedian ;
             if ( super.errorCount != 0 )
-                //throw new ExprEvalException("median: error in group") ; 
                 return null ;
-            //NodeValue nvCount = NodeValue.makeInteger(count) ;
-                        
-            double[] arrDouble = new double[collection.size()];
-            for(int i=0; i<collection.size(); i++){
+            
+            int indexsize = collection.size();
+            double[] arrDouble = new double[indexsize];
+            for(int i=0; i<indexsize; i++){
             	arrDouble[i] = collection.get(i).getDouble();	
             }
-            return (NodeValue.makeDecimal((new Median().evaluate(arrDouble))));
+            
+            Arrays.sort(arrDouble);
+            if(indexsize==0) {
+            	median = Double.NaN;
+            }else if(indexsize%2!=0) {
+            	median = arrDouble[(indexsize/2)];
+            }else {	
+            	median = (arrDouble[(indexsize/2)]+arrDouble[((indexsize/2)-1)])/2;
+            }
+
+            return (NodeValue.makeDecimal((median)));
         }
+    	
+        @Override
+        protected void accumulateError(Binding binding, FunctionEnv functionEnv)
+        {}
     }
 }
-
