@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.expr;
 
+import java.math.BigDecimal;
+
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
@@ -35,6 +37,56 @@ public class TestXSDFuncOp extends BaseTest
     private static final double accuracyClose_D = 0.000001d ;
     private static final double accuracyClose_F = 0.000001f ;
     
+    
+    @Test public void lex_decimal_1() {
+        lex_decimal(BigDecimal.valueOf(0), "0.0");
+    }
+    
+    @Test public void lex_decimal_2() {
+        lex_decimal(BigDecimal.valueOf(1), "1.0");
+    }
+    
+    @Test public void lex_decimal_3() {
+        lex_decimal(BigDecimal.valueOf(0.5), "0.5");
+    }
+    
+    @Test public void lex_decimal_4() {
+        lex_decimal(BigDecimal.valueOf(-0.5), "-0.5");
+    }
+    
+    @Test public void lex_decimal_5() {
+        lex_decimal(BigDecimal.valueOf(1_000_000_000_000_000L), "1000000000000000.0");
+    }
+    
+    @Test public void lex_decimal_6() {
+        lex_decimal(BigDecimal.valueOf(-1_000_000_000_000_000L), "-1000000000000000.0");
+    }
+
+    @Test public void lex_decimal_7() {
+        lex_decimal("0.0","0.0");
+    }
+    
+    @Test public void lex_decimal_8() {
+        // As input.
+        lex_decimal("0.","0.");
+    }
+    
+    @Test public void lex_decimal_9() {
+        // As input.
+        lex_decimal("+.0","+.0");
+    }
+    
+    private static void lex_decimal(BigDecimal decimal, String expected) {
+        String lex = XSDFuncOp.canonicalDecimalStr(decimal);
+        assertEquals(expected, lex);
+    }
+    
+    private static void lex_decimal(String input, String expected) {
+        NodeValue nv = NodeValue.makeDecimal(input);
+        String lex = nv.asString(); 
+        assertEquals(expected, lex);
+    }
+
     // These add tests also test that the right kind of operation was done.
     
     @Test public void testAddIntegerInteger()

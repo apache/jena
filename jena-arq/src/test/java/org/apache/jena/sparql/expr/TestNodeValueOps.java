@@ -30,7 +30,7 @@ public class TestNodeValueOps extends BaseTest
     // ** Addition
     // Numerics
     @Test public void nv_add_1() { testAdd("12", "13", "'25'^^xsd:integer" ) ; }
-    @Test public void nv_add_2() { testAdd("'12'^^xsd:decimal", "13", "'25'^^xsd:decimal" ) ; }
+    @Test public void nv_add_2() { testAdd("'12'^^xsd:decimal", "13", "'25.0'^^xsd:decimal" ) ; }
     @Test public void nv_add_3() { testAdd("'12.0'^^xsd:decimal", "13", "'25.0'^^xsd:decimal" ) ; }
     @Test public void nv_add_4() { testAdd("12e0", "13", "25.0e0" ) ; }
     
