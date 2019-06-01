@@ -109,9 +109,8 @@ public class AggMedian extends AggregatorBase
             }
             
             Arrays.sort(arrDouble);
-            if(indexsize==0) {
-            	median = Double.NaN;
-            }else if(indexsize%2!=0) {
+
+            if(indexsize%2!=0) {
             	median = arrDouble[(indexsize/2)];
             }else {	
             	median = (arrDouble[(indexsize/2)]+arrDouble[((indexsize/2)-1)])/2;
