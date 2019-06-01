@@ -174,7 +174,6 @@
 
         <module>jena-text</module>
         <!-- <module>jena-text-es</module>        -->
-        <module>jena-spatial</module>
 
         <module>jena-cmds</module>
         <module>jena-fuseki2</module>
@@ -233,7 +232,6 @@
 
         <module>jena-text</module>
         <module>jena-text-es</module>
-        <module>jena-spatial</module>
 
         <module>jena-cmds</module>
         <module>jena-fuseki2</module>
@@ -490,13 +488,6 @@
       <dependency>
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-backward-codecs</artifactId>
-        <version>${ver.lucene}</version>
-      </dependency>
-
-      <!-- For jena-spatial -->
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-spatial</artifactId>
         <version>${ver.lucene}</version>
       </dependency>
 
