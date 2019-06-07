@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.engine.http;
 
+import static org.apache.jena.web.HttpSC.*;
+
 import java.io.InputStream ;
 import java.net.MalformedURLException ;
 import java.net.URL ;
@@ -34,9 +36,12 @@ import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.QueryExecException ;
 import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.web.HttpCaptureResponse;
 import org.apache.jena.riot.web.HttpOp ;
+import org.apache.jena.riot.web.HttpOp.CaptureInput;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -322,19 +327,26 @@ public class HttpQuery extends Params {
         try {
             try {
                 // Get the actual response stream
-                TypedInputStream stream = HttpOp.execHttpGet(target.toString(), contentTypeResult, client, getContext());
+                TypedInputStream stream = execHttpGet(target.toString(), contentTypeResult, client, getContext());
                 if (stream == null)
-                    throw new QueryExceptionHTTP(404);
+                    throw new QueryExceptionHTTP(NOT_FOUND_404, HttpSC.getMessage(NOT_FOUND_404));
                 return execCommon(stream);
             } catch (HttpException httpEx) {
                 // Back-off and try POST if something complain about long URIs
-                if (httpEx.getResponseCode() == 414)
+                if (httpEx.getStatusCode() == REQUEST_URI_TOO_LONG_414)
                     return execPost();
                 throw httpEx;
             }
         } catch (HttpException httpEx) {
             throw rewrap(httpEx);
         }
+    }
+    
+    // With exception.
+    private static TypedInputStream execHttpGet(String url, String acceptHeader, HttpClient httpClient, HttpContext httpContext) {
+        HttpCaptureResponse<TypedInputStream> handler = new CaptureInput();
+        HttpOp.execHttpGet(url, acceptHeader, handler, httpClient, httpContext);
+        return handler.get();
     }
 
     private InputStream execPost() throws QueryExceptionHTTP {
@@ -363,11 +375,11 @@ public class HttpQuery extends Params {
         // The historical contract of HTTP Queries has been to throw QueryExceptionHTTP however using the standard
         // ARQ HttpOp machinery we use these days means the internal HTTP errors come back as HttpException
         // Therefore we need to wrap appropriately
-        responseCode = httpEx.getResponseCode();
+        responseCode = httpEx.getStatusCode();
         if (responseCode != -1) {
         	// Was an actual HTTP error
         	String responseLine = httpEx.getStatusLine() != null ? httpEx.getStatusLine() : "No Status Line";
-        	return new QueryExceptionHTTP(responseCode, "HTTP " + responseCode + " error making the query: " + responseLine, httpEx);
+        	return new QueryExceptionHTTP(responseCode, responseLine, httpEx);
         } else if (httpEx.getMessage() != null) {
         	// Some non-HTTP error with a valid message e.g. Socket Communications failed, IO error
         	return new QueryExceptionHTTP(responseCode, "Unexpected error making the query: " + httpEx.getMessage(), httpEx);

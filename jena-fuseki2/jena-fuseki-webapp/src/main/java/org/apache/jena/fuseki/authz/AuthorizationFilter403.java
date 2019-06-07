@@ -18,42 +18,42 @@
 
 package org.apache.jena.fuseki.authz;
 
-import java.io.IOException ;
+import java.io.IOException;
 
-import javax.servlet.ServletRequest ;
-import javax.servlet.ServletResponse ;
-import javax.servlet.http.HttpServletResponse ;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 
-import org.apache.jena.web.HttpSC ;
-import org.apache.shiro.web.filter.authz.AuthorizationFilter ;
-import org.apache.shiro.web.util.WebUtils ;
+import org.apache.jena.web.HttpSC;
+import org.apache.shiro.web.filter.authz.AuthorizationFilter;
+import org.apache.shiro.web.util.WebUtils;
 
-/** Specialise AuthorizationFilter to yield HTTP 403 on access denied */ 
+/** Specialise AuthorizationFilter to yield HTTP 403 on access denied */
 public abstract class AuthorizationFilter403 extends AuthorizationFilter
-{    
-    private String message ;
+{
+    private String message;
 
-    protected AuthorizationFilter403(String text)   { setMessage(text) ; }
-    protected AuthorizationFilter403()              { this(null) ; }
-    
+    protected AuthorizationFilter403(String text)   { setMessage(text); }
+    protected AuthorizationFilter403()              { this(null); }
+
     /** Set the message used in HTTP 403 responses */
-    public void setMessage(String msg) { message = msg ; }
-    
-    public String getMessage() { return message ; }
+    public void setMessage(String msg) { message = msg; }
+
+    public String getMessage() { return message; }
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws IOException {
-        HttpServletResponse httpResponse ;
+        HttpServletResponse httpResponse;
         try { httpResponse = WebUtils.toHttp(response); }
-        catch (ClassCastException ex) { 
+        catch (ClassCastException ex) {
             // Not a HTTP Servlet operation
-            return super.onAccessDenied(request, response) ;
+            return super.onAccessDenied(request, response);
         }
         if ( message == null )
-            httpResponse.sendError(HttpSC.FORBIDDEN_403) ;
+            httpResponse.sendError(HttpSC.FORBIDDEN_403);
         else
-            httpResponse.sendError(HttpSC.FORBIDDEN_403, message) ;
-        return false ;  // No further processing.
+            httpResponse.sendError(HttpSC.FORBIDDEN_403, message);
+        return false;  // No further processing.
     }
 }
 

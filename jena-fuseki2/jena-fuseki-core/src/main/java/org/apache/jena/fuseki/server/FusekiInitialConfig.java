@@ -18,45 +18,45 @@
 
 package org.apache.jena.fuseki.server;
 
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraph;
 
 /** Dataset setup (command line, config file) for a dataset (or several if config file) */
 public class FusekiInitialConfig {
-    public boolean quiet = false ;
-    public boolean verbose = Fuseki.verboseLogging ;
-    
-    // Priority order : --conf, templated  
+    public boolean quiet = false;
+    public boolean verbose = Fuseki.verboseLogging;
+
+    // Priority order : --conf, templated
     // through the command line processing should not allow --conf and a templated /dataset.
-    
+
     // Label for dataset setup (command line).
-    public String datasetDescription  = null ;
+    public String datasetDescription  = null;
     // Either this ... command line ...
-    public String    argTemplateFile  = null ;              // Command list args --mem, --loc, --memtdb
-    public String    datasetPath      = null ;              // Dataset name on the command line.
-    public boolean   allowUpdate      = false ;             // Command line --update.
+    public String    argTemplateFile  = null;              // Command list args --mem, --loc, --memtdb
+    public String    datasetPath      = null;              // Dataset name on the command line.
+    public boolean   allowUpdate      = false;             // Command line --update.
     // Special case - prebuilt dataset.  Uses datasetPath.
-    public DatasetGraph dsg           = null ;             // Embedded or command line --file)
-    
-    // Or configuration file from command line 
-    public String    fusekiCmdLineConfigFile = null ;       // Command line --conf.
+    public DatasetGraph dsg           = null;             // Embedded or command line --file)
+
+    // Or configuration file from command line
+    public String    fusekiCmdLineConfigFile = null;       // Command line --conf.
     // Or configuration from run area (lowest priority)
-    public String    fusekiServerConfigFile = null ;        // "run" area
-    
+    public String    fusekiServerConfigFile = null;        // "run" area
+
     // Additional information.
-    public Map<String,String> params  = new HashMap<>() ;
-    
+    public Map<String,String> params  = new HashMap<>();
+
     public FusekiInitialConfig() {}
-    
+
     public void reset() {
-        argTemplateFile  = null ;
-        datasetPath = null ;
-        allowUpdate = false ;
-        dsg = null ;
-        fusekiCmdLineConfigFile = null ;       // Command line --conf.
-        fusekiServerConfigFile = null ;    
+        argTemplateFile  = null;
+        datasetPath = null;
+        allowUpdate = false;
+        dsg = null;
+        fusekiCmdLineConfigFile = null;       // Command line --conf.
+        fusekiServerConfigFile = null;
     }
 }

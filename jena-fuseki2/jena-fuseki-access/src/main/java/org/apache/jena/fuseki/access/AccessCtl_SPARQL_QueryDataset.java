@@ -26,10 +26,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.apache.jena.atlas.lib.Pair;
-import org.apache.jena.fuseki.servlets.ActionService;
-import org.apache.jena.fuseki.servlets.HttpAction;
-import org.apache.jena.fuseki.servlets.SPARQL_QueryDataset;
-import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.fuseki.servlets.*;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.sparql.core.*;
@@ -41,10 +38,10 @@ public class AccessCtl_SPARQL_QueryDataset extends SPARQL_QueryDataset {
     private final Function<HttpAction, String> requestUser;
 
     public AccessCtl_SPARQL_QueryDataset(Function<HttpAction, String> requestUser) {
-        this.requestUser = requestUser; 
+        this.requestUser = requestUser;
     }
 
-    private static boolean ALLOW_FROM = true; 
+    private static boolean ALLOW_FROM = true;
 
     @Override
     protected Collection<String> customParams() {
@@ -61,7 +58,7 @@ public class AccessCtl_SPARQL_QueryDataset extends SPARQL_QueryDataset {
         if ( ! DataAccessCtl.isAccessControlled(dsg) )
             return super.decideDataset(action, query, queryStringLog);
 
-        DatasetDescription dsDesc0 = getDatasetDescription(action, query);
+        DatasetDescription dsDesc0 = SPARQLProtocol.getDatasetDescription(action, query);
         SecurityContext sCxt = DataAccessLib.getSecurityContext(action, dsg, requestUser);
         DatasetGraph dsg2 = dynamicDataset(action, query, dsg, dsDesc0, sCxt);
         return Pair.create(dsg2,  query);
@@ -72,7 +69,7 @@ public class AccessCtl_SPARQL_QueryDataset extends SPARQL_QueryDataset {
             return dsg0;
         if ( ! ALLOW_FROM )
             ServletOps.errorBadRequest("Use GRAPH. (FROM/FROM NAMED is not compatible with data access control.)");
-        
+
         DatasetDescription dsDesc1 = DatasetDescription.create(
             mask(dsDesc0.getDefaultGraphURIs(), sCxt),
             mask(dsDesc0.getNamedGraphURIs(),   sCxt));
@@ -85,26 +82,26 @@ public class AccessCtl_SPARQL_QueryDataset extends SPARQL_QueryDataset {
             dsDesc1.getDefaultGraphURIs().remove(Quad.unionGraph.getURI());
             dsDesc1.getDefaultGraphURIs().addAll(sCxt.visibleGraphNames());
         }
-        
-        DatasetGraph dsg1 = DynamicDatasets.dynamicDataset(dsDesc1, dsg0, false) ;
+
+        DatasetGraph dsg1 = DynamicDatasets.dynamicDataset(dsDesc1, dsg0, false);
         if ( query.hasDatasetDescription() ) {
-             query.getGraphURIs().clear() ;
-             query.getNamedGraphURIs().clear() ;
+             query.getGraphURIs().clear();
+             query.getNamedGraphURIs().clear();
         }
-        return dsg1 ;
+        return dsg1;
     }
 
     // Pass only those graphURIs in the security context.
     private List<String> mask(List<String> graphURIs, SecurityContext sCxt) {
         Collection<String> names = sCxt.visibleGraphNames();
         if ( names == null )
-            return graphURIs; 
+            return graphURIs;
         return graphURIs.stream()
             .filter(gn->names.contains(gn)
                         || ( sCxt.visableDefaultGraph() && Quad.defaultGraphIRI.getURI().equals(gn))
                         || ( Quad.unionGraph.getURI().equals(gn) )
                         )
-            .collect(toList()) ;
+            .collect(toList());
     }
 
     @Override
@@ -115,7 +112,7 @@ public class AccessCtl_SPARQL_QueryDataset extends SPARQL_QueryDataset {
                 // but specialised setups might have DynamicDatasetGraph as the base dataset.
                 ServletOps.errorBadRequest("FROM/FROM NAMED is not compatible with data access control.");
         }
-        
+
         // Dataset of the service, not computed by decideDataset.
         DatasetGraph dsg = action.getActiveDSG();
         if ( dsg == null )

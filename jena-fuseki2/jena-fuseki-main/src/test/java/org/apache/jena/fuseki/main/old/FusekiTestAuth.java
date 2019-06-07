@@ -16,14 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.main;
+package org.apache.jena.fuseki.main.old;
 
 import java.util.Objects;
 
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.jetty.JettyLib;
-import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.web.HttpSC;
 import org.eclipse.jetty.security.*;
@@ -32,25 +33,25 @@ import org.eclipse.jetty.util.security.Constraint;
 import org.junit.Assert;
 
 /**
- * Testing HTTP athentication.
+ * Testing HTTP authentication.
  * <p>
  * {@code FusekiTestAuth} provides helper code for before/after (any of suite/class/test).
  * The pattern of usage is:
  * <pre>
- * 
+ *
  * &#64;BeforeClass
  * public static void beforeClassAuth() {
  *     SecurityHandler sh = FusekiTestAuth.makeSimpleSecurityHandler("/*", "USER", "PASSWORD");
  *     FusekiTestAuth.setupServer(true, sh);
  * }
- * 
+ *
  * &#64;AfterClass
  * public static void afterClassAuth() {
  *     FusekiTestAuth.teardownServer();
  *     // Clear up any pooled connections.
  *     HttpOp.setDefaultHttpClient(HttpOp.createPoolingHttpClient());
  * }
- * 
+ *
  * &#64;Test
  * public void myAuthTest() {
  *     BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
@@ -59,7 +60,7 @@ import org.junit.Assert;
  *     HttpClient client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
  *     try (TypedInputStream in = HttpOp.execHttpGet(ServerCtl.urlDataset(), "* /*", client, null)) {}
  * }
- * 
+ *
  * &#64;Test
  * public void myAuthTestRejected() {
  *     BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
@@ -72,42 +73,42 @@ import org.junit.Assert;
  *     }
  * }
  * </pre>
- * 
+ *
  * {@code @BeforeClass} can be {@code @Before} but server stop-start is expensive so a
  * large test suite may end up quite slow.
  */
 public class FusekiTestAuth {
-    // Old tests 
+    // Old tests
     // Predates full auth support in Fuseki.
-    private static int currentPort = WebLib.choosePort() ;
-    
-    public static int port() {
-        return currentPort ;
-    }
-    
-    static boolean CLEAR_DSG_DIRECTLY = true ;
-    static private DatasetGraph dsgTesting ;
-    
-    // Abstraction that runs a SPARQL server for tests.
-    public static final String urlRoot()            { return "http://localhost:"+port()+"/" ; }
-    public static final String datasetPath()        { return "/dataset" ; }
-    public static final String urlDataset()         { return "http://localhost:"+port()+datasetPath() ; }
-    public static final DatasetGraph getDataset()   { return dsgTesting ; }
-    
-    public static final String serviceUpdate()      { return "http://localhost:"+port()+datasetPath()+"/update" ; } 
-    public static final String serviceQuery()       { return "http://localhost:"+port()+datasetPath()+"/query" ; }
-    public static final String serviceGSP()         { return "http://localhost:"+port()+datasetPath()+"/data" ; }
-    
-    private static FusekiServer server ;
+    private static int currentPort = WebLib.choosePort();
 
-    /** Setup a testing server, using the given  Jetty {@link SecurityHandler} for authentication. 
+    public static int port() {
+        return currentPort;
+    }
+
+    static boolean CLEAR_DSG_DIRECTLY = true;
+    static private DatasetGraph dsgTesting;
+
+    // Abstraction that runs a SPARQL server for tests.
+    public static final String urlRoot()            { return "http://localhost:"+port()+"/"; }
+    public static final String datasetPath()        { return "/dataset"; }
+    public static final String urlDataset()         { return "http://localhost:"+port()+datasetPath(); }
+    public static final DatasetGraph getDataset()   { return dsgTesting; }
+
+    public static final String serviceUpdate()      { return "http://localhost:"+port()+datasetPath()+"/update"; }
+    public static final String serviceQuery()       { return "http://localhost:"+port()+datasetPath()+"/query"; }
+    public static final String serviceGSP()         { return "http://localhost:"+port()+datasetPath()+"/data"; }
+
+    private static FusekiServer server;
+
+    /** Setup a testing server, using the given  Jetty {@link SecurityHandler} for authentication.
      * The server will have an empty, in-emory transactional dataset.
      */
     public static void setupServer(boolean updateable, SecurityHandler sh) {
         setupServer(updateable, sh, DatasetGraphFactory.createTxnMem());
     }
-    
-    /** Setup a testing server, using the given  Jetty {@link SecurityHandler} for authentication. 
+
+    /** Setup a testing server, using the given  Jetty {@link SecurityHandler} for authentication.
      */
     public static void setupServer(boolean updateable, SecurityHandler sh, DatasetGraph dsg) {
         dsgTesting = dsg;
@@ -118,12 +119,12 @@ public class FusekiTestAuth {
             .build()
             .start();
     }
-    
+
     /** Shutdown the server.*/
     public static void teardownServer() {
         if ( server != null ) {
-            server.stop() ;
-            server = null ;
+            server.stop();
+            server = null;
             dsgTesting = null;
         }
     }
@@ -138,34 +139,34 @@ public class FusekiTestAuth {
         Objects.requireNonNull(user);
         Objects.requireNonNull(password);
         Objects.requireNonNull(role);
-        
-        Constraint constraint = new Constraint() ;
-        constraint.setName(Constraint.__BASIC_AUTH) ;
+
+        Constraint constraint = new Constraint();
+        constraint.setName(Constraint.__BASIC_AUTH);
         String[] roles = new String[]{role};
-        constraint.setRoles(roles) ;
-        constraint.setAuthenticate(true) ;
+        constraint.setRoles(roles);
+        constraint.setAuthenticate(true);
 
-        ConstraintMapping mapping = new ConstraintMapping() ;
-        mapping.setConstraint(constraint) ;
-        mapping.setPathSpec("/*") ;
+        ConstraintMapping mapping = new ConstraintMapping();
+        mapping.setConstraint(constraint);
+        mapping.setPathSpec("/*");
 
-        IdentityService identService = new DefaultIdentityService() ;
-        
-        ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler() ;
-        securityHandler.addConstraintMapping(mapping) ;
-        securityHandler.setIdentityService(identService) ;
-        
+        IdentityService identService = new DefaultIdentityService();
+
+        ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
+        securityHandler.addConstraintMapping(mapping);
+        securityHandler.setIdentityService(identService);
+
         UserStore userStore = JettyLib.makeUserStore(user, password, role);
-        
-        HashLoginService loginService = new HashLoginService("Fuseki Authentication") ;
+
+        HashLoginService loginService = new HashLoginService("Fuseki Authentication");
         loginService.setUserStore(userStore);
-        loginService.setIdentityService(identService) ;
-        
-        securityHandler.setLoginService(loginService) ;
-        securityHandler.setAuthenticator(new BasicAuthenticator()) ;
+        loginService.setIdentityService(identService);
+
+        securityHandler.setLoginService(loginService);
+        securityHandler.setAuthenticator(new BasicAuthenticator());
         if ( realm != null )
             securityHandler.setRealmName(realm);
-        
+
         return securityHandler;
     }
 
@@ -173,7 +174,7 @@ public class FusekiTestAuth {
      * This is normally 403.  401 indicates no retry with credentials.
      */
     public static HttpException assertAuthHttpException(HttpException ex) {
-        int rc = ex.getResponseCode();
+        int rc = ex.getStatusCode();
         Assert.assertTrue(rc == HttpSC.FORBIDDEN_403 || rc == HttpSC.UNAUTHORIZED_401 );
         return ex;
     }

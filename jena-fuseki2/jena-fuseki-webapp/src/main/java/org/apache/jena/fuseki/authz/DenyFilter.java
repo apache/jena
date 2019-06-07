@@ -18,16 +18,16 @@
 
 package org.apache.jena.fuseki.authz;
 
-import javax.servlet.ServletRequest ;
-import javax.servlet.ServletResponse ;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 /** An authorization filter that always denies access and sends back HTTP 403 */
 public class DenyFilter extends AuthorizationFilter403 {
 
-    public DenyFilter() { super("Access denied") ; }
+    public DenyFilter() { super("Access denied"); }
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
-        return false ;
+        return false;
     }
 }

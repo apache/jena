@@ -16,9 +16,10 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.main;
+package org.apache.jena.fuseki.main.old;
 
-import static org.apache.jena.fuseki.main.FusekiTestAuth.assertAuthHttpException;
+import static org.apache.jena.fuseki.main.FusekiTestLib.expectQuery401;
+import static org.apache.jena.fuseki.main.old.FusekiTestAuth.assertAuthHttpException;
 
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
@@ -26,31 +27,22 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
-import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.riot.web.HttpOp;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestFusekiTestAuth {
-    // ** Old tests 
+public class TestFusekiTestAuthOld {
+    // ** Old tests
     // Predates full access control support in Fuseki.
     // Superseded.
-    static {
-        LogCtl.setLevel(Fuseki.serverLogName, "WARN");
-        LogCtl.setLevel(Fuseki.actionLogName, "WARN");
-        LogCtl.setLevel(Fuseki.requestLogName, "WARN");
-        LogCtl.setLevel(Fuseki.adminLogName, "WARN");
-        LogCtl.setLevel("org.eclipse.jetty", "WARN");
-    }
-    
+
     private static String USER      = "user1234";
     private static String PASSWORD  = "password1234";
-    
+
     @BeforeClass
     public static void ctlBeforeClass() {
         SecurityHandler sh = FusekiTestAuth.makeSimpleSecurityHandler("/*", USER, PASSWORD);
@@ -63,13 +55,13 @@ public class TestFusekiTestAuth {
         HttpOp.setDefaultHttpClient(HttpOp.createPoolingHttpClient());
     }
 
-    @Test(expected=HttpException.class) 
+    @Test(expected=HttpException.class)
     public void testServer_auth_no_auth() {
-      // No Auth
-      try ( TypedInputStream in = HttpOp.execHttpGet(FusekiTestAuth.urlDataset(), "*/*") ) {}
-      catch (HttpException ex) { throw assertAuthHttpException(ex); }
+        expectQuery401(()->{
+            try ( TypedInputStream in = HttpOp.execHttpGet(FusekiTestAuth.urlDataset(), "*/*") ){}
+        });
     }
-    
+
     @Test public void testServer_auth() {
         BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
         Credentials credentials = new UsernamePasswordCredentials(USER, PASSWORD);
@@ -77,7 +69,7 @@ public class TestFusekiTestAuth {
         HttpClient client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
         try ( TypedInputStream in = HttpOp.execHttpGet(FusekiTestAuth.urlDataset(), "*/*", client, null) ) {}
     }
-    
+
     @Test(expected=HttpException.class)
     public void testServer_auth_bad_user() {
         BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
@@ -87,13 +79,13 @@ public class TestFusekiTestAuth {
         try ( TypedInputStream in = HttpOp.execHttpGet(FusekiTestAuth.urlDataset(), "*/*", client, null) ) {}
         catch (HttpException ex) { throw assertAuthHttpException(ex); }
     }
-        
+
     @Test(expected=HttpException.class)
     public void testServer_auth_bad_password() {
         BasicCredentialsProvider credsProv = new BasicCredentialsProvider();
         credsProv.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(USER, "WRONG"));
         HttpClient client = HttpClients.custom().setDefaultCredentialsProvider(credsProv).build();
-        
+
         try ( TypedInputStream in = HttpOp.execHttpGet(FusekiTestAuth.urlDataset(), "*/*", client, null) ) {}
         catch (HttpException ex) { throw assertAuthHttpException(ex); }
     }

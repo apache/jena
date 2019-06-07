@@ -21,30 +21,26 @@ package org.apache.jena.fuseki.build;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Resource;
 
 /**
- * Registry of Datasets created from descriptions.
- * 
- * <p>
- *   Provides a registry for use in building the Fuseki configuration to
- *   ensure that each dataset description resource in configuration graphs
- *   corresponds to one dataset object when multiple services refer to the
- *   same dataset.
- * </p>
- * 
+ * Record of datasets created from descriptions.
  *
+ * Provides a registry for use in building one Fuseki configuration to
+ * ensure that each dataset description resource in configuration graphs
+ * corresponds to one dataset object when multiple services refer to the
+ * same dataset.
  */
-public class DatasetDescriptionRegistry  {
+public class DatasetDescriptionMap  {
 	
 	private Map<Resource, Dataset> map = new HashMap<>();
 	
-	public DatasetDescriptionRegistry() {}
+	public DatasetDescriptionMap() {}
 	
     public void register(Resource node, Dataset ds) {
-        Dataset dsCurrent = map.get(node) ;
+        Dataset dsCurrent = map.get(node);
         if ( dsCurrent != null ) {
             if ( ! dsCurrent.equals(ds) )
                 Log.warn(this.getClass(), "Replacing registered dataset for "+node);
@@ -55,7 +51,7 @@ public class DatasetDescriptionRegistry  {
     public Dataset get(Resource node) {
         return map.get(node);
     }
-    
+
     public void clear() {
         map.clear();
     }

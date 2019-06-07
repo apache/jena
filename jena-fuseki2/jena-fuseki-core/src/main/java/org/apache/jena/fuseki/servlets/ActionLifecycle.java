@@ -16,24 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.access;
+package org.apache.jena.fuseki.servlets;
 
-import java.util.function.Function;
+public interface ActionLifecycle {
 
-import org.apache.jena.fuseki.servlets.HttpAction;
-import org.apache.jena.fuseki.servlets.SPARQL_GSP_R;
-import org.apache.jena.sparql.core.DatasetGraph;
+    /** The validation step of a request */
+    public void validate(HttpAction action);
 
-public class AccessCtl_SPARQL_GSP_R extends SPARQL_GSP_R {
-    
-    private final Function<HttpAction, String> requestUser;
-
-    public AccessCtl_SPARQL_GSP_R(Function<HttpAction, String> determineUser) {
-        this.requestUser = determineUser;
-    }
-
-    @Override
-    protected DatasetGraph decideDataset(HttpAction action) {
-        return DataAccessLib.decideDataset(action, requestUser);
-    }
+    /** The perform step of a request */
+    public void execute(HttpAction action);
 }

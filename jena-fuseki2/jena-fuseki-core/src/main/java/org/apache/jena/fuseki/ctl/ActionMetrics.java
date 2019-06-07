@@ -17,29 +17,32 @@
  */
 package org.apache.jena.fuseki.ctl;
 
-import java.io.IOException;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
+import org.apache.jena.fuseki.servlets.ActionLib;
 import org.apache.jena.fuseki.servlets.HttpAction;
+import org.apache.jena.fuseki.servlets.ServletOps;
 
 public class ActionMetrics extends ActionCtl {
 
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init( config );
+    public ActionMetrics() { super(); }
 
+    @Override
+    public void execGet(HttpAction action) {
+        super.executeLifecycle(action);
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doCommon(req, resp);
+    public void execOptions(HttpAction action) {
+        ActionLib.doOptionsGet(action);
+        ServletOps.success(action);
     }
 
     @Override
-    protected void perform(HttpAction action) {
+    public void validate(HttpAction action) {}
+
+    @Override
+    public void execute(HttpAction action) {
         MetricsProviderRegistry.get().scrape( action );
+        ServletOps.success(action);
     }
 }

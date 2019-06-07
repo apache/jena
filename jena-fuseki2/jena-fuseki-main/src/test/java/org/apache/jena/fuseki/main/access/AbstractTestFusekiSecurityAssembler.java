@@ -32,6 +32,7 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.SetUtils;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.web.HttpException;
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.FusekiLib;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.system.FusekiNetLib;
@@ -55,10 +56,10 @@ import org.junit.Test;
 /**
  * Tests on the assembler for data access control.
  * <ul>
- * <li>assem-security.ttl - two services "/database" and "/plain" each with their own dataset. 
+ * <li>assem-security.ttl - two services "/database" and "/plain" each with their own dataset.
  * <li>assem-security-shared.ttl - two services "/database" and "/plain" with a shared dataset.
  * </ul>
- * 
+ *
  * @see TestSecurityFilterFuseki TestSecurityFilterFuseki for other HTTP tests.
  */
 
@@ -71,7 +72,7 @@ public abstract class AbstractTestFusekiSecurityAssembler {
 
     private boolean sharedDatabase;
 
-    // Parameterized tests don't provide a convenient way to run code at the start and end of each parameter run and access the parameters. 
+    // Parameterized tests don't provide a convenient way to run code at the start and end of each parameter run and access the parameters.
     private static FusekiServer server;
     private FusekiServer getServer() {
         if ( server == null )
@@ -83,29 +84,31 @@ public abstract class AbstractTestFusekiSecurityAssembler {
         server = null;
         user.set(null);
     }
-    
+
     @Before
     public void before() {
         user.set(null);
     }
-    
+
     private String getURL() {
         getServer();
         int port = server.getPort();
         return "http://localhost:"+port+"/database";
     }
-    
+
     private static FusekiServer setup(String assembler, boolean sharedDatabase) {
         int port = FusekiNetLib.choosePort();
-        
+
+        // This will have a warning (no passwd set but there is authentication)- and that's correct 
+        Fuseki.configLog.warn("  (Expect one warning here)");
         FusekiServer server = FusekiServer.create()
             .port(port)
             .parseConfigFile(assembler)
             .build();
-        // Special way to get the servelty remote user (the authorized principle). 
+        // Special way to get the servlet remote user (the authorized principle).
         FusekiLib.modifyForAccessCtl(server, (a)->user.get());
         server.start();
-        
+
         if ( sharedDatabase ) {
             String data = StrUtils.strjoinNL
                 ("PREFIX : <http://example/>"
@@ -130,16 +133,16 @@ public abstract class AbstractTestFusekiSecurityAssembler {
         }
         return server;
     }
-    
+
     protected AbstractTestFusekiSecurityAssembler(String assemberFile, boolean sharedDatabase) {
         this.assemblerFile = assemberFile;
-        this.sharedDatabase = sharedDatabase ;
+        this.sharedDatabase = sharedDatabase;
     }
 
-    private static Node s1 = SSE.parseNode(":s1"); 
-    private static Node s2 = SSE.parseNode(":s2"); 
+    private static Node s1 = SSE.parseNode(":s1");
+    private static Node s2 = SSE.parseNode(":s2");
     private static Node s3 = SSE.parseNode(":s3");
-    private static Node s9 = SSE.parseNode(":s9"); 
+    private static Node s9 = SSE.parseNode(":s9");
 
         // The access controlled dataset.
 
@@ -149,9 +152,9 @@ public abstract class AbstractTestFusekiSecurityAssembler {
 //            userZ -> dft:false / [http://host/graphnameZ]
 //            user3 -> dft:false / [http://host/graphname4, http://host/graphname3, http://host/graphname5]
 //          }
-        
-        
-    @Test public void query_user1() {         
+
+
+    @Test public void query_user1() {
         user.set("user1");
         try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
             Set<Node> visible = query(conn, "SELECT * { GRAPH ?g { ?s ?p ?o }}");
@@ -166,7 +169,7 @@ public abstract class AbstractTestFusekiSecurityAssembler {
             assertSeen(visible);
         }
     }
-    
+
     @Test public void query_no_user() {
         user.set(null); // No user.
         try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
@@ -174,7 +177,7 @@ public abstract class AbstractTestFusekiSecurityAssembler {
             assertSeen(visible);
         }
     }
-    
+
     @Test public void query_user2() {
         user.set("user2");
         try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
@@ -182,7 +185,7 @@ public abstract class AbstractTestFusekiSecurityAssembler {
             assertSeen(visible, s9);
         }
     }
-    
+
     @Test public void query_userZ() {
         user.set("userZ"); // No graphs with data.
         try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
@@ -190,7 +193,7 @@ public abstract class AbstractTestFusekiSecurityAssembler {
             assertSeen(visible);
         }
     }
-    
+
     // GSP. "http://host/graphname1"
     @Test public void gsp_dft_user1() {
         user.set("user1");
@@ -199,7 +202,7 @@ public abstract class AbstractTestFusekiSecurityAssembler {
             assertSeen(visible);
         }
     }
-    
+
     @Test public void gsp_ng_user1() {
         user.set("user1");
         try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
@@ -207,28 +210,28 @@ public abstract class AbstractTestFusekiSecurityAssembler {
             assertSeen(visible, s1);
         }
     }
-    
+
     @Test public void gsp_dft_user2() {
         user.set("user2");
         try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
             gsp404(conn, null);
         }
     }
-    
+
     @Test public void gsp_ng_user2() {
         user.set("user2");
         try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
             gsp404(conn, "http://host/graphname1");
         }
     }
-    
+
     @Test public void gsp_dft_userX() {
         user.set("userX");
         try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
             gsp404(conn, null);
         }
     }
-    
+
     @Test public void gsp_ng_userX() {
         user.set("userX");
         try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
@@ -242,13 +245,13 @@ public abstract class AbstractTestFusekiSecurityAssembler {
             gsp404(conn, null);
         }
     }
-    
+
     @Test public void gsp_ng_user_null() {
         try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
             gsp404(conn, "http://host/graphname1");
         }
     }
-    
+
 //        // Quads
 //        user.set("user1");
 //        try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
@@ -276,7 +279,7 @@ public abstract class AbstractTestFusekiSecurityAssembler {
         Set<Node> results = new HashSet<>();
         Model model = graphName == null ? conn.fetch() : conn.fetch(graphName);
         // Extract subjects.
-        Set<Node> seen = 
+        Set<Node> seen =
             SetUtils.toSet(
                 Iter.asStream(model.listSubjects())
                     .map(Resource::asNode)
@@ -291,21 +294,21 @@ public abstract class AbstractTestFusekiSecurityAssembler {
     private void gspHttp(RDFConnection conn, int statusCode, String graphName) {
         try {
             gsp(conn, graphName);
-            if ( statusCode < 200 && statusCode > 299 ) 
+            if ( statusCode < 200 && statusCode > 299 )
                 fail("Should have responded with "+statusCode);
         } catch (HttpException ex) {
-            assertEquals(statusCode, ex.getResponseCode());
+            assertEquals(statusCode, ex.getStatusCode());
         }
     }
-    
+
     private Set<Node> dataset(RDFConnection conn) {
         Dataset ds = conn.fetchDataset();
-        Set<Node> seen = 
+        Set<Node> seen =
             SetUtils.toSet(
                 Iter.asStream(ds.asDatasetGraph().find())
                     .map(Quad::getSubject)
                     );
-        return seen;     
+        return seen;
     }
 
     private Set<Node> query(RDFConnection conn, String queryString) {

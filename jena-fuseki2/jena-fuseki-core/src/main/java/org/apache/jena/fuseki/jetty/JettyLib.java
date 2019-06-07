@@ -43,14 +43,14 @@ import org.eclipse.jetty.util.security.Password;
  *  </pre>
  */
 public class JettyLib {
-    
+
     /** Create a Jetty {@link SecurityHandler} for a specific pathSpace, e.g {@code /database}. */
     public static SecurityHandler makeSecurityHandlerForPathspec(String pathSpec, String realm, UserStore userStore) {
         ConstraintSecurityHandler sh = makeSecurityHandler(realm, userStore);
         addPathConstraint(sh, pathSpec);
         return sh;
     }
-    
+
 //    /** Create a Jetty {@link SecurityHandler} for basic authentication. */
 //    @Deprecated
 //    public static SecurityHandler makeSecurityHandlerForPathspec(String pathSpec, String realm, UserStore userStore, String role) {
@@ -59,7 +59,7 @@ public class JettyLib {
 //        addDatasetConstraint(securityHandler, pathSpec);
 //        return securityHandler;
 //    }
-    
+
     /**
      * Digest requires an extra round trip so it is unfriendly to API
      * or scripts that stream.
@@ -68,7 +68,7 @@ public class JettyLib {
     /** Current auth mode */
     public static AuthScheme authMode = dftAuthMode;
 
-    /** Create a Jetty {@link SecurityHandler} for basic authentication. 
+    /** Create a Jetty {@link SecurityHandler} for basic authentication.
      * See {@linkplain #addPathConstraint(ConstraintSecurityHandler, String)}
      * for adding the {@code pathspec} to apply it to.
      */
@@ -76,7 +76,7 @@ public class JettyLib {
          return makeSecurityHandler(realm, userStore, "**", authMode);
      }
 
-     /** Create a Jetty {@link SecurityHandler} for basic authentication. 
+     /** Create a Jetty {@link SecurityHandler} for basic authentication.
       * See {@linkplain #addPathConstraint(ConstraintSecurityHandler, String)}
       * for adding the {@code pathspec} to apply it to.
       */
@@ -84,7 +84,7 @@ public class JettyLib {
           return makeSecurityHandler(realm, userStore, "**", authMode);
       }
 
-      /** Create a Jetty {@link SecurityHandler} for basic authentication. 
+      /** Create a Jetty {@link SecurityHandler} for basic authentication.
      * See {@linkplain #addPathConstraint(ConstraintSecurityHandler, String)}
      * for adding the {@code pathspec} to apply it to.
      */
@@ -92,10 +92,10 @@ public class JettyLib {
         // role can be "**" for any authenticated user.
         Objects.requireNonNull(userStore);
         Objects.requireNonNull(role);
-        
+
         if ( authMode == null )
             authMode = dftAuthMode;
-        
+
         ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
 
         IdentityService identService = new DefaultIdentityService();
@@ -105,22 +105,22 @@ public class JettyLib {
         HashLoginService loginService = new HashLoginService(realm);
         loginService.setUserStore(userStore);
         loginService.setIdentityService(identService);
-        
+
         securityHandler.setLoginService(loginService);
         securityHandler.setAuthenticator( authMode == AuthScheme.BASIC ? new BasicAuthenticator() : new DigestAuthenticator() );
         if ( realm != null )
             securityHandler.setRealmName(realm);
         return securityHandler;
     }
-    
+
      public static void addPathConstraint(ConstraintSecurityHandler securityHandler, String pathSpec) {
          addPathConstraint(securityHandler, pathSpec, "**");
      }
-     
+
     public static void addPathConstraint(ConstraintSecurityHandler securityHandler, String pathSpec, String role) {
         Objects.requireNonNull(securityHandler);
         Objects.requireNonNull(pathSpec);
-        
+
         ConstraintMapping mapping = new ConstraintMapping();
         Constraint constraint = new Constraint();
         String[] roles = new String[]{role};
@@ -134,7 +134,7 @@ public class JettyLib {
 
     /**
      * Make a {@link UserStore} from a password file.
-     * {@link PropertyUserStore} for details.  
+     * {@link PropertyUserStore} for details.
      */
     public static UserStore makeUserStore(String passwordFile) {
         PropertyUserStore propertyUserStore = new PropertyUserStore();
@@ -149,7 +149,7 @@ public class JettyLib {
     public static UserStore makeUserStore(String user, String password) {
         return makeUserStore(user, password, "**");
     }
-    
+
     /** Make a {@link UserStore} for a single user,password,role*/
     public static UserStore makeUserStore(String user, String password, String role) {
         Objects.requireNonNull(user);
@@ -173,9 +173,9 @@ public class JettyLib {
         return userStore;
 
     }
-    
-    
-    
+
+
+
     /** Add or append a {@link Handler} to a Jetty {@link Server}. */
     public static void addHandler(Server server, Handler handler) {
         final Handler currentHandler = server.getHandler();

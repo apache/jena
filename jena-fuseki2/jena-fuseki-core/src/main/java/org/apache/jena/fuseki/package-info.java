@@ -34,13 +34,13 @@
  * <li><em>FusekiFilter</em> :: Routes requests to Fuseki (handles the dynamic nature dataset naming) by calling ServiceRouter.</li>
  * <li><em>ServiceRouterServlet</em> :: Routes requests to the appropriate service (i.e. implementing servlet).</li>
  * <li><em>ActionBase</em> :: Creates a basic {@code HttpAction} and defines {@code execCommonWorker}.</li>
- * <li><em>ActionService</em> :: Fills in {@code HttpAction} with dataset and endpoint. Calls {@code setRequest} on an {@code HttpAction}. 
+ * <li><em>ActionService</em> :: Fills in {@code HttpAction} with dataset and endpoint. Calls {@code setRequest} on an {@code HttpAction}.
  * It implements {@code execCommonWorker} as a lifecycle =&gt; {@code executeAction} =&gt; {@code executeLifecycle} =&gt; {@code validate - perform}
  * <li><em>ServiceRouter</em> :: Routing of request to the cocrete servlet implementations.
- * </ul> 
+ * </ul>
  * <p>
  * <pre>
- * ServiceDispatchServlet &lt; ActionService &lt; ActionBase 
+ * ServiceDispatchServlet &lt; ActionService &lt; ActionBase
  * Services               &lt; ActionService &lt; ActionBase
  * Admin operations       &lt; ActionCtl    &lt; ActionBase
  * Task management        &lt; ActionTasks  &lt; ActionBase
@@ -52,7 +52,7 @@
  * <ul>
  * <li><em>ContentTypeToOperation</em>:: Map&lt;content-type, Operation&gt;</li>
  * <li><em>ContentTypeToOperation</em>:: Map&lt;String, Operation&gt;</li>
- * <li><em>Dispatch</em> :: {@literal Map<Operation, ActionService>}</li> 
+ * <li><em>Dispatch</em> :: {@literal Map<Operation, ActionService>}</li>
  * </ul>
  * <p>
  */

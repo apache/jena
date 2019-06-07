@@ -40,25 +40,25 @@ public class TestFusekiMainCmd {
     // Fuseki Main server
     private FusekiServer server = null;
     private String serverURL = null;
-    
+
     private void server(String... cmdline) {
         int port = WebLib.choosePort();
-        
+
         String[] a = Stream.concat(
-            Stream.of("--port="+port), 
+            Stream.of("--port="+port),
             Arrays.stream(cmdline))
-            .toArray(String[]::new); 
-        
+            .toArray(String[]::new);
+
         FusekiServer server = FusekiMain.build(a);
         server.start();
         serverURL = "http://localhost:"+port;
     }
-    
+
     @After public void after() {
         if ( server != null )
             server.stop();
     }
-    
+
     @Test public void general_01() {
         server("--general=/q", "--empty");
         String string = "SELECT * { VALUES ?x {1 2 3} }";
@@ -69,13 +69,13 @@ public class TestFusekiMainCmd {
             });
         }
     }
-    
+
     @Test public void ping_01() {
         server("--mem", "--ping", "/ds");
         String x = HttpOp.execHttpGetString(serverURL+"/$/ping");
         assertNotNull(x);
     }
-    
+
     @Test public void stats_01() {
         server("--mem", "--stats", "/ds");
         String x = HttpOp.execHttpGetString(serverURL+"/$/stats");
