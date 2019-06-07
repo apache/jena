@@ -29,27 +29,27 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /**
- * Tests for {@link ProcessFileLock} in conjunction with {@link StoreConnection}s 
+ * Tests for {@link ProcessFileLock} in conjunction with {@link StoreConnection}s
  */
 public class TestStoreConnectionLock {
     @Rule
     public TemporaryFolder tempDir = new TemporaryFolder();
-    
+
     @Test
     public void lock_store_connection_01() {
         Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
         ProcessFileLock lock = StoreConnection.lockForLocation(dir);
         assertFalse(lock.isLockedHere());
-        
+
         StoreConnection sConn = StoreConnection.connectCreate(dir);
         assertEquals(dir, sConn.getLocation());
         assertEquals(lock, sConn.getLock());
         assertTrue(lock.isLockedHere());
-        
+
         StoreConnection.release(dir);
         assertFalse(lock.isLockedHere());
     }
-    
+
     @Test(expected=AlreadyLocked.class)
     public void lock_store_connection_02() {
         Location dir = Location.create(tempDir.getRoot().getAbsolutePath());

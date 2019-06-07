@@ -18,18 +18,21 @@
 
 package org.apache.jena.sparql.algebra;
 
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.algebra.Transformer;
 import org.apache.jena.sparql.core.Quad;
 
 public class OpLib
 {
-    /** Convert a pattern, assumed to be quad form, 
-     * so that the default graph is the union of named graphs.  
+    /** Convert a pattern, assumed to be quad form,
+     * so that the default graph is the union of named graphs.
      */
     public static Op unionDefaultGraphQuads(Op op)
     {
         // Rewrite so that any explicitly named "default graph" is union graph.
-        Transform t = new TransformGraphRename(Quad.defaultGraphNodeGenerated, Quad.unionGraph)  ;
-        op = Transformer.transform(t, op) ;
-        return op ;
+        Transform t = new TransformGraphRename(Quad.defaultGraphNodeGenerated, Quad.unionGraph) ;
+        op = Transformer.transform(t, op);
+        return op;
     }
 }

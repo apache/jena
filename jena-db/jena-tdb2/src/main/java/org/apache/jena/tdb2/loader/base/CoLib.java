@@ -26,17 +26,17 @@ import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 
 /** Per-thread TransactionCoordinator helpers. */
 public class CoLib {
-    
+
     public static TransactionCoordinator newCoordinator() {
         Journal journal = Journal.create(Location.mem());
         return new TransactionCoordinator(journal);
     }
-    
+
     public static void add(TransactionCoordinator coordinator, NodeTable nodeTable) {
         coordinator.add(LoaderOps.ntDataFile(nodeTable));
         coordinator.add(LoaderOps.ntBPTree(nodeTable));
     }
-    
+
     public static void add(TransactionCoordinator coordinator, TupleIndex... indexes) {
         for ( TupleIndex pIdx : indexes ) {
             coordinator.add(LoaderOps.idxBTree(pIdx));
@@ -46,7 +46,7 @@ public class CoLib {
     public static void start(TransactionCoordinator coordinator) {
         coordinator.start();
     }
-    
+
     public static void finish(TransactionCoordinator coordinator) {
         // Do not do this - it will shutdown the TransactionComponents as well.
         //coordinator.shutdown();

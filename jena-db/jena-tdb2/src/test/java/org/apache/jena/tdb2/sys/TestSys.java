@@ -22,13 +22,13 @@ package org.apache.jena.tdb2.sys;
 import static org.junit.Assert.*;
 
 import org.apache.jena.tdb2.TDB2;
-import org.junit.Test ;
+import org.junit.Test;
 
 public class TestSys
 {
     @Test public void sys1()
     {
-        assertNotNull(TDB2.VERSION) ;
-        assertNotNull(TDB2.BUILD_DATE) ;
+        assertNotNull(TDB2.VERSION);
+        assertNotNull(TDB2.BUILD_DATE);
     }
 }

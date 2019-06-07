@@ -24,24 +24,24 @@ public interface ProgressMonitor {
      * The format is implementation dependent.
      */
     public void startMessage(String message);
-    
-    /** 
+
+    /**
      * Output the finishing message.
      * The format is implementation dependent.
      */
     public void finishMessage(String message);
 
-    public void setLabel(String label); 
-    
+    public void setLabel(String label);
+
     /** Start and start timing. This should be paired with a call to {@link #finish()}. */
     public void start();
-    
+
     /** Start a section within the overall start-finish. */
     public void startSection();
 
     /** Finish a section within the overall start-finish. */
     public void finishSection();
-    
+
     /**
      * Finish and stop timing. The total time is available with {@link #getTime} and the
      * number of items processes with {@link #getTicks()}.
@@ -53,13 +53,13 @@ public interface ProgressMonitor {
 
     /** Return the number of ticks. Valid after {@link #start()} has been called. */
     public long getTicks();
-    
-    /** Return the elapsed time taken - this is only valid after {@link #finish()} has been called. */ 
+
+    /** Return the elapsed time taken - this is only valid after {@link #finish()} has been called. */
     public long getTime();
 
     /** Return the number of ticks. Valid after {@link #startSection()} has been called. */
     public long getSectionTicks();
-    
+
     /** Return the elapsed section time taken. */
     public long getSectionTime();
 }

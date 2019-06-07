@@ -38,24 +38,24 @@ import org.apache.jena.tdb2.loader.sequential.LoaderSequential;
  * To use a loader,
  * <pre>
  *   loader.startBulk();
- *   send data ... either stream() or load(files) or a mixture.    
+ *   send data ... either stream() or load(files) or a mixture.
  *   loader.finishBulk();
  * </pre>
- */  
+ */
 public class LoaderFactory {
-    
-    /** 
+
+    /**
      * A simple loader that streams data into a dataset as a plain "read" operation.
      * Data is read inside a transaction.
      * <p>
      * Supply a {@link MonitorOutput} for the desirable progress and summary output messages
-     * or {@code null} for no output. 
+     * or {@code null} for no output.
      */
     public static DataLoader basicLoader(DatasetGraph dsg, MonitorOutput output) {
         Objects.requireNonNull(dsg);
         return new LoaderBasic(dsg, null, output);
     }
-    
+
     /**
      * A simple loader loader to load a single graph in the destination {@code DatasetGraph}.
      * <p>
@@ -65,10 +65,10 @@ public class LoaderFactory {
      * data is read, default graph data is sent to the destination named graph but all
      * other quad data is discarded.
      * <p>
-     * For other behaviours, use {@link #basicLoader(DatasetGraph, MonitorOutput)} 
+     * For other behaviours, use {@link #basicLoader(DatasetGraph, MonitorOutput)}
      * and wrap the {@linkStreamRDF} from {@link DataLoader#stream()}) with the required
-     * transformation.  
-     * 
+     * transformation.
+     *
      * @see #basicLoader(DatasetGraph, MonitorOutput)
      */
     public static DataLoader basicLoader(DatasetGraph dsg, Node graphName, MonitorOutput output) {
@@ -76,24 +76,24 @@ public class LoaderFactory {
         return new LoaderBasic(dsg, graphName, output);
     }
 
-    /** A loader that takes all the data into the primary indexes in one phase, then 
+    /** A loader that takes all the data into the primary indexes in one phase, then
      * calculates/updates secondary indexes. This can make more efficient use of memory
-     * so that one datastructure is being worked on at a time. 
+     * so that one datastructure is being worked on at a time.
      * <p>
      * This loader uses one thread.
      * <p>
      * The dataset can not be used for other operations - the code will block other transactions
      * as necessary and release then when loading has finished.
-     * <p> 
+     * <p>
      * Supply a {@link MonitorOutput} for the desirable progress and summary output messages
-     * or {@code null} for no output. 
+     * or {@code null} for no output.
      */
     public static DataLoader sequentialLoader(DatasetGraph dsg, MonitorOutput output) {
         Objects.requireNonNull(dsg);
         return new LoaderSequential(dsg, null, output);
     }
 
-    /** 
+    /**
      * A sequential loader to load a single graph in the destination {@code DatasetGraph}.
      * See {@link #sequentialLoader(DatasetGraph, MonitorOutput)} for loader characteristics.
      * <p>
@@ -103,22 +103,22 @@ public class LoaderFactory {
      * data is read, default graph data is sent to the destination named graph but all
      * other quad data is discarded.
      * <p>
-     * For other behaviours, use {@link #basicLoader(DatasetGraph, MonitorOutput)} 
+     * For other behaviours, use {@link #basicLoader(DatasetGraph, MonitorOutput)}
      * and wrap the {@linkStreamRDF} from {@link DataLoader#stream()}) with the required
      * transformation.
-     * 
+     *
      * @see #sequentialLoader(DatasetGraph, MonitorOutput)
      */
-     
+
     public static DataLoader sequentialLoader(DatasetGraph dsg, Node graphName, MonitorOutput output) {
         Objects.requireNonNull(dsg);
         return new LoaderSequential(dsg, graphName, output);
     }
 
-    /** 
+    /**
      * A loader that uses multiple threads to reduce loading time,
      * and makes parallel writes to persistent storage (disk or SSD).
-     * <p> 
+     * <p>
      * This loader will use all available resources of the machine,
      * making other actions on the machine unresponsive.
      * <p>
@@ -128,13 +128,13 @@ public class LoaderFactory {
      * Supply a {@link MonitorOutput} for the desirable progress and summary output messages
      * or {@code null} for no output.
      */
-    
+
     public static DataLoader phasedLoader(DatasetGraph dsg, MonitorOutput output) {
         Objects.requireNonNull(dsg);
         return new LoaderPhased(dsg, null, output);
     }
 
-    /** 
+    /**
      * A phased loader to load a single graph in the destination {@code DatasetGraph}.
      * See {@link #phasedLoader(DatasetGraph, MonitorOutput)} for loader characteristics.
      * <p>
@@ -144,22 +144,22 @@ public class LoaderFactory {
      * data is read, default graph data is sent to the destination named graph but all
      * other quad data is discarded.
      * <p>
-     * For other behaviours, use {@link #phasedLoader(DatasetGraph, MonitorOutput)} 
+     * For other behaviours, use {@link #phasedLoader(DatasetGraph, MonitorOutput)}
      * and wrap the {@link StreamRDF} from {@link DataLoader#stream()}) with the required
      * transformation.
-     * 
+     *
      * @see #phasedLoader(DatasetGraph, MonitorOutput)
      */
-    
+
     public static DataLoader phasedLoader(DatasetGraph dsg, Node graphName, MonitorOutput output) {
         Objects.requireNonNull(dsg);
         return new LoaderPhased(dsg, graphName, output);
     }
 
-    /** 
+    /**
      * A loader that uses multiple threads to reduce loading time,
      * and makes parallel writes to persistent storage (disk or SSD).
-     * <p> 
+     * <p>
      * This loader will use all available resources of the machine,
      * making other actions on the machine unresponsive.
      * <p>
@@ -173,8 +173,8 @@ public class LoaderFactory {
         Objects.requireNonNull(dsg);
         return new LoaderParallel(dsg, null, output);
     }
-    
-    /** 
+
+    /**
      * A parallel loader to load a single graph in the destination {@code DatasetGraph}.
      * See {@link #parallelLoader(DatasetGraph, MonitorOutput)} for loader characteristics.
      * <p>
@@ -184,10 +184,10 @@ public class LoaderFactory {
      * data is read, default graph data is sent to the destination named graph but all
      * other quad data is discarded.
      * <p>
-     * For other behaviours, use {@link #parallelLoader(DatasetGraph, MonitorOutput)} 
+     * For other behaviours, use {@link #parallelLoader(DatasetGraph, MonitorOutput)}
      * and wrap the {@link StreamRDF} from {@link DataLoader#stream()}) with the required
      * transformation.
-     * 
+     *
      * @see #parallelLoader(DatasetGraph, MonitorOutput)
      */
 
@@ -199,7 +199,7 @@ public class LoaderFactory {
     /**
      * Return a loader to load a dataset, using the provided plan.
      * See {@link LoaderPlans} for the standard plans.
-     */  
+     */
     public static DataLoader createLoader(LoaderPlan plan, DatasetGraph dsg, MonitorOutput output) {
         Objects.requireNonNull(dsg);
         return new LoaderMain(plan, dsg, output);
@@ -208,7 +208,7 @@ public class LoaderFactory {
     /**
      * Return a loader to load a graph, using the provided plan.
      * See {@link LoaderPlans} for the standard plans.
-     */  
+     */
     public static DataLoader createLoader(LoaderPlan plan, DatasetGraph dsg, Node graphName, MonitorOutput output) {
         Objects.requireNonNull(dsg);
         return new LoaderMain(plan, dsg, graphName, output);
@@ -217,7 +217,7 @@ public class LoaderFactory {
     /**
      * Return a general purpose loader to load a dataset.
      * This default may change between versions.
-     */  
+     */
     public static DataLoader createLoader(DatasetGraph dsg, MonitorOutput output) {
         Objects.requireNonNull(dsg);
         return createDft(dsg, null, output);
@@ -238,7 +238,7 @@ public class LoaderFactory {
         Objects.requireNonNull(graphName);
         return createDft(dsg, graphName, output);
     }
-    
+
     // Choice of default loader.
     private static DataLoader createDft(DatasetGraph dsg, Node graphName, MonitorOutput output) {
         // The LoaderPhased does not swamp the machine and copes with lower spec hardware

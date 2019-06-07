@@ -18,45 +18,45 @@
 
 package org.apache.jena.tdb2.sys;
 
-import java.util.Properties ;
-import java.util.Set ;
+import java.util.Properties;
+import java.util.Set;
 
-import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.sparql.util.Symbol ;
+import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.tdb2.TDB2;
 
 public class EnvTDB
 {
     public static void processGlobalSystemProperties()
     {
-        Context context = processProperties(System.getProperties()) ;
-        TDB2.getContext().putAll(context) ;
+        Context context = processProperties(System.getProperties());
+        TDB2.getContext().putAll(context);
     }
-    
-    static final String prefix = SystemTDB.tdbSymbolPrefix+":" ;
+
+    static final String prefix = SystemTDB.tdbSymbolPrefix+":";
     public static Context processProperties(Properties properties)
     {
-        Context context = new Context() ;
-        Set<Object> keys = properties.keySet() ;
+        Context context = new Context();
+        Set<Object> keys = properties.keySet();
         for ( Object key : keys )
         {
             if ( key instanceof String )
             {
-                String keyStr = (String)key ;
+                String keyStr = (String)key;
                 if ( keyStr.startsWith(prefix) )
-                    keyStr = SystemTDB.symbolNamespace+keyStr.substring(prefix.length()) ;
-                
-                
+                    keyStr = SystemTDB.symbolNamespace+keyStr.substring(prefix.length());
+
+
                 if ( ! keyStr.startsWith(SystemTDB.symbolNamespace) )
-                    continue ;
-                
-                Object value = properties.get(key) ;
-                
-                Symbol symbol = Symbol.create(keyStr) ;
-                
-                context.set(symbol, value) ;
+                    continue;
+
+                Object value = properties.get(key);
+
+                Symbol symbol = Symbol.create(keyStr);
+
+                context.set(symbol, value);
             }
         }
-        return context ;
+        return context;
     }
 }

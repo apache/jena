@@ -30,15 +30,15 @@ public class ProgressMonitorContext {
     /*package*/ long ticks;
     /*package*/ Timer timer;
     private int depth = 0;
-    
+
     public ProgressMonitorContext(long ticks, Timer timer) {
         super();
         this.ticks = ticks;
         this.timer = timer;
     }
-    
+
     public void tick() { ticks++; }
-    
+
     public void start() {
         if ( depth == 0 )
             timer.startTimer();
@@ -54,8 +54,8 @@ public class ProgressMonitorContext {
             timer.endTimer();
     }
 
-    //public int getDepth() { return depth; } 
-    
+    //public int getDepth() { return depth; }
+
     public long getElapsed() { return depth < 0 ? -1 : timer.readTimer(); }
 
 }

@@ -33,7 +33,7 @@ import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 /**
  * Build index(es).
  * <p>
- * This is an inline indexer, it loads each Tuple<NodeId> on the calling thread. 
+ * This is an inline indexer, it loads each Tuple<NodeId> on the calling thread.
  */
 public class IndexerInline implements BulkStartFinish {
     private final int N;
@@ -41,28 +41,28 @@ public class IndexerInline implements BulkStartFinish {
     private TupleIndex[] indexes;
     private TransactionCoordinator coordinator;
     private Transaction transaction;
-    
+
     public IndexerInline(MonitorOutput output, TupleIndex... idxTriples) {
         this.N = idxTriples.length;
-        this.indexes = Arrays.copyOf(idxTriples, N); 
-        this.output = output; 
+        this.indexes = Arrays.copyOf(idxTriples, N);
+        this.output = output;
     }
-    
+
     @Override
-    public void startBulk() { 
+    public void startBulk() {
         TransactionCoordinator coordinator = CoLib.newCoordinator();
         Arrays.stream(indexes).forEach(idx->CoLib.add(coordinator, idx));
         CoLib.start(coordinator);
         transaction = coordinator.begin(TxnType.WRITE);
     }
-    
+
     @Override
-    public void finishBulk() { 
+    public void finishBulk() {
         transaction.commit();
         transaction.end();
         CoLib.finish(coordinator);
     }
-    
+
     public void load(Tuple<NodeId> tuple) {
         for ( TupleIndex idx : indexes )
             idx.add(tuple);

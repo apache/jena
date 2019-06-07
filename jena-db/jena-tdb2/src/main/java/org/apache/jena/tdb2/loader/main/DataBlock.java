@@ -23,11 +23,11 @@ import java.util.List;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.Quad;
 
-/** Unit of output from the data batcher */ 
+/** Unit of output from the data batcher */
 public class DataBlock {
-    /** Unique end marker object */ 
+    /** Unique end marker object */
     static DataBlock END = new DataBlock(null, null);
-     
+
     List<Triple> triples = null;
     List<Quad> quads = null;
     DataBlock( List<Triple> triples, List<Quad> quads) {

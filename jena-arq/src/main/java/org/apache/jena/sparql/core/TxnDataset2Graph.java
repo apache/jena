@@ -55,20 +55,6 @@ import org.apache.jena.sparql.JenaTransactionException;
  * @see DatasetGraphOne
  */
 public class TxnDataset2Graph extends TransactionalLock {
-    /**
-     * Control whether to pass down transactions from the dataset to the graph in the
-     * dataset. This should be set to "true"; setting it "false" causes the old,
-     * non-transaction passing behaviour.
-     * <p>
-     * This is temporary flag during the transition because the change at Jena 3.7.0 needs
-     * to be proven in real deployments as well as testing. "false" restores the Jena
-     * 3.6.0 and before behaviour (transactions not passed down). See JENA-1492.
-     * 
-     * @deprecated This flag will be removed.
-     */
-    @Deprecated
-    public static boolean TXN_DSG_GRAPH = true;
-    
     private Graph primary;
     // Object key may be a graph or a DSG is the graph is a GraphView.
     // This avoids starting a tranasction on the same storage unit twice. 

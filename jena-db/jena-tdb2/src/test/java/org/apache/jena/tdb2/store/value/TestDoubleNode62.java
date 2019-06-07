@@ -36,7 +36,7 @@ public class TestDoubleNode62 {
     @Test public void double_07() { testNoEncoding(1e78); }
     @Test public void double_08() { testNoEncoding(2e77); }
     @Test public void double_09() { testRoundTripDouble(1e77); }
-    
+
     @Test public void double_10() { testNoEncoding(3e-300); }
     @Test public void double_11() { testNoEncoding(3e-100); }
     @Test public void double_12() { testNoEncoding(3e-77); }
@@ -44,7 +44,7 @@ public class TestDoubleNode62 {
     @Test public void double_14() { testRoundTripDouble(4e-77); }
     @Test public void double_15() { testRoundTripDouble(1e-76); }
     @Test public void double_16() { testRoundTripDouble(1e-75); }
-    
+
     @Test public void double_20() { testRoundTripDouble(Double.POSITIVE_INFINITY); }
     @Test public void double_21() { testRoundTripDouble(Double.NEGATIVE_INFINITY); }
     @Test public void double_22() { testRoundTripDouble(Double.NaN); }
@@ -58,7 +58,7 @@ public class TestDoubleNode62 {
     @Test public void double_30() { testRoundTripDouble(DoubleNode62.POSITIVE_INFINITY); }
     @Test public void double_31() { testRoundTripDouble(DoubleNode62.NEGATIVE_INFINITY); }
     @Test public void double_32() { testRoundTripDouble(DoubleNode62.NaN); }
-    
+
     @Test public void double_33() { testRoundTripDouble(DoubleNode62.MAX_VALUE); }
     @Test public void double_34() { testRoundTripDouble(DoubleNode62.MIN_NORMAL); }
     @Test public void double_35() { testRoundTripDouble(DoubleNode62.MIN_VALUE); }
@@ -73,19 +73,19 @@ public class TestDoubleNode62 {
     @Test public void double_53() { testConst(DoubleNode62.MAX_VALUE_BITS,  0x3fefffffffffffffL); }
     @Test public void double_54() { testConst(DoubleNode62.MIN_NORMAL_BITS, 0x0010000000000000L); }
     @Test public void double_55() { testConst(DoubleNode62.MIN_VALUE_BITS,  0x01L); }
-    
+
     private void sameValue(double d1, double d2) {
-        // Not d1 == d2 because NaN != NaN 
-        assertEquals(Double.valueOf(d1), Double.valueOf(d2));  
+        // Not d1 == d2 because NaN != NaN
+        assertEquals(Double.valueOf(d1), Double.valueOf(d2));
     }
-    
+
     private static void testConst(long x, long expected) {
         assertEquals(expected, x);
         double d = DoubleNode62.unpack(x);
         long z = DoubleNode62.pack(d);
         assertEquals(expected, z);
     }
-    
+
     private void testNoEncoding(double d) {
         long x = DoubleNode62.pack(d);
         assertEquals("Expected no encoding", x, DoubleNode62.NO_ENCODING);
@@ -100,8 +100,8 @@ public class TestDoubleNode62 {
 
     private static void print(long x) {
         long z[] = new long[4];
-        for ( int i = 0 ; i < 4 ; i++ ) {
-             z[3-i] = BitsLong.unpack(x, i*16, (i+1)*16) ;
+        for ( int i = 0; i < 4 ; i++ ) {
+             z[3-i] = BitsLong.unpack(x, i*16, (i+1)*16);
         }
         System.out.printf("0x%04X %04X %04X %04X\n", z[0], z[1], z[2], z[3]);
     }

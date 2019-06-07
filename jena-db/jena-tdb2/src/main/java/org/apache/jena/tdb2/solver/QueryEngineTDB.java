@@ -18,6 +18,7 @@
 
 package org.apache.jena.tdb2.solver;
 
+
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.sparql.algebra.Algebra ;
@@ -43,54 +44,54 @@ import org.apache.jena.tdb2.sys.TDBInternal;
 // This exists to intercept the query execution setup.
 //  e.g choose the transformation optimizations
 // then to make the quad form.
-// TDB also uses a custom OpExecutor to intercept certain parts 
+// TDB also uses a custom OpExecutor to intercept certain parts
 // of the Op evaluations
 
 public class QueryEngineTDB extends QueryEngineMain
 {
     // ---- Wiring
-    static public QueryEngineFactory getFactory() { return factory ; } 
-    static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
-    static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
-    
+    static public QueryEngineFactory getFactory() { return factory; }
+    static public void register()       { QueryEngineRegistry.addFactory(factory); }
+    static public void unregister()     { QueryEngineRegistry.removeFactory(factory); }
+
     // ---- Object
-    
+
     protected QueryEngineTDB(Op op, DatasetGraphTDB dataset, Binding input, Context context)
     {
-        super(op, dataset, input, context) ;
+        super(op, dataset, input, context);
     }
-    
+
     protected QueryEngineTDB(Query query, DatasetGraphTDB dataset, Binding input, Context cxt)
-    { 
-        super(query, dataset, input, cxt) ; 
+    {
+        super(query, dataset, input, cxt);
     }
-    
+
     private static boolean isUnionDefaultGraph(Context cxt) {
         return cxt.isTrue(TDB2.symUnionDefaultGraph1) || cxt.isTrue(TDB2.symUnionDefaultGraph2);
     }
-    
+
     @Override
     protected DatasetGraph dynamicDataset(DatasetDescription dsDesc, DatasetGraph dataset, boolean unionDftGraph) {
         boolean union = unionDftGraph || isUnionDefaultGraph(context);
-        return DynamicDatasets.dynamicDataset(dsDesc, dataset, union ) ;
+        return DynamicDatasets.dynamicDataset(dsDesc, dataset, union );
     }
-    
-    // Choose the algebra-level optimizations to invoke. 
+
+    // Choose the algebra-level optimizations to invoke.
     @Override
     protected Op modifyOp(Op op)
     {
-        op = Substitute.substitute(op, getStartBinding()) ;
+        op = Substitute.substitute(op, getStartBinding());
         // Optimize (high-level)
-        op = super.modifyOp(op) ;
+        op = super.modifyOp(op);
 
         // Quadification
         // Only apply if not a rewritten DynamicDataset
         if ( ! isDynamicDataset() )
-            op = Algebra.toQuadForm(op) ;
-        
+            op = Algebra.toQuadForm(op);
+
         // Record it.
-        setOp(op) ;
-        return op ;
+        setOp(op);
+        return op;
     }
 
     @Override
@@ -98,55 +99,54 @@ public class QueryEngineTDB extends QueryEngineMain
     {
         // Top of execution of a query.
         // Op is quad'ed by now but there still may be some (graph ....) forms e.g. paths
-        
+
         // Fix DatasetGraph for global union.
-        if ( isUnionDefaultGraph(context) && ! isDynamicDataset() ) 
-        {
+        if ( isUnionDefaultGraph(context) && ! isDynamicDataset() ) {
             op = OpLib.unionDefaultGraphQuads(op) ;
-            Explain.explain("REWRITE(Union default graph)", op, context) ;
+            Explain.explain("REWRITE(Union default graph)", op, context);
         }
-        QueryIterator results = super.eval(op, dsg, input, context) ;
-        return results ; 
+        QueryIterator results = super.eval(op, dsg, input, context);
+        return results;
     }
-    
+
     // ---- Factory
-    protected static QueryEngineFactory factory = new QueryEngineFactoryTDB() ;
-        
+    protected static QueryEngineFactory factory = new QueryEngineFactoryTDB();
+
     protected static class QueryEngineFactoryTDB implements QueryEngineFactory
     {
         private static boolean isHandledByTDB(DatasetGraph dataset) {
             return TDBInternal.isBackedByTDB(dataset);
         }
-        
+
         protected DatasetGraphTDB dsgToQuery(DatasetGraph dataset) {
-            try { 
+            try {
                 return TDBInternal.requireStorage(dataset);
             } catch (TDBException ex) {
-                // Check to a more specific message. 
-                throw new TDBException("Internal inconsistency: trying to execute query on unrecognized kind of DatasetGraph: "+Lib.className(dataset)) ;
+                // Check to a more specific message.
+                throw new TDBException("Internal inconsistency: trying to execute query on unrecognized kind of DatasetGraph: "+Lib.className(dataset));
             }
         }
-        
+
         @Override
-        public boolean accept(Query query, DatasetGraph dataset, Context context) 
-        { return isHandledByTDB(dataset) ; }
+        public boolean accept(Query query, DatasetGraph dataset, Context context)
+        { return isHandledByTDB(dataset); }
 
         @Override
         public Plan create(Query query, DatasetGraph dataset, Binding input, Context context)
         {
-            QueryEngineTDB engine = new QueryEngineTDB(query, dsgToQuery(dataset), input, context) ;
-            return engine.getPlan() ;
+            QueryEngineTDB engine = new QueryEngineTDB(query, dsgToQuery(dataset), input, context);
+            return engine.getPlan();
         }
-        
+
         @Override
-        public boolean accept(Op op, DatasetGraph dataset, Context context) 
-        { return isHandledByTDB(dataset) ; }
+        public boolean accept(Op op, DatasetGraph dataset, Context context)
+        { return isHandledByTDB(dataset); }
 
         @Override
         public Plan create(Op op, DatasetGraph dataset, Binding binding, Context context)
         {
-            QueryEngineTDB engine = new QueryEngineTDB(op, dsgToQuery(dataset), binding, context) ;
-            return engine.getPlan() ;
+            QueryEngineTDB engine = new QueryEngineTDB(op, dsgToQuery(dataset), binding, context);
+            return engine.getPlan();
         }
     }
 }

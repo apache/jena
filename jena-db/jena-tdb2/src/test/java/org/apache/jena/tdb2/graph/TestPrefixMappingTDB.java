@@ -18,90 +18,51 @@
 
 package org.apache.jena.tdb2.graph;
 
-import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.sparql.core.DatasetPrefixStorage ;
-import org.apache.jena.sparql.graph.AbstractTestPrefixMappingView ;
-import org.apache.jena.tdb2.ConfigTest;
-import org.apache.jena.tdb2.junit.BuildTestLib;
+import org.apache.jena.query.TxnType;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.graph.AbstractTestPrefixMappingView;
+import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.junit.* ;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
 public class TestPrefixMappingTDB extends AbstractTestPrefixMappingView
 {
-    static DatasetPrefixStorage last = null ;
-    
-    @BeforeClass public static void beforeClass() {}
-    @AfterClass public static void afterClass()   { TDBInternal.reset() ; ConfigTest.deleteTestingDir() ; }
+    static DatasetGraph dsg = null;
+    static PrefixMapping last = null;
 
-    @Before public void before() { TDBInternal.reset() ; }
-    @After public  void after()  { }
+    @BeforeClass public static void beforeClass() { }
+    @AfterClass  public static void afterClass()  { TDBInternal.reset(); }
 
-    
+    @Before
+    public void before() {
+        dsg = createTestingMem();
+        dsg.begin(TxnType.READ_PROMOTE);
+    }
+
+    @After
+    public void after() {
+        dsg.commit();
+        dsg.end();
+        last = null;
+        dsg = null;
+    }
+
     @Override
     protected PrefixMapping create() {
-        last = createTestingMem() ;
-        return view() ;
-    }
-
-    static DatasetPrefixStorage createTestingMem() { 
-        return createTesting(Location.mem()) ;
-    }
-    
-    static DatasetPrefixStorage createTesting(Location location) {
-        return BuildTestLib.makePrefixes(location) ;
+        last = dsg.getDefaultGraph().getPrefixMapping();
+        return view();
     }
 
     @Override
     protected PrefixMapping view() {
-        return last.getPrefixMapping() ; 
+        return last;
     }
 
-    @Test public void multiple1() {
-        DatasetPrefixStorage prefixes = createTestingMem() ;
-        PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
-        PrefixMapping pmap2 = prefixes.getPrefixMapping("http://graph/") ;
-        pmap1.setNsPrefix("x", "http://foo/") ;
-        assertNull(pmap2.getNsPrefixURI("x")) ;
-        assertNotNull(pmap1.getNsPrefixURI("x")) ;
+    static DatasetGraph createTestingMem() {
+        return DatabaseMgr.createDatasetGraph();
     }
-    
-    @Test public void multiple2() {
-        DatasetPrefixStorage prefixes = createTestingMem() ;
-        PrefixMapping pmap1 = prefixes.getPrefixMapping("http://graph/") ;  // Same
-        PrefixMapping pmap2 = prefixes.getPrefixMapping("http://graph/") ;
-        pmap1.setNsPrefix("x", "http://foo/") ;
-        assertNotNull(pmap2.getNsPrefixURI("x")) ;
-        assertNotNull(pmap1.getNsPrefixURI("x")) ;
-    }
-    
-    // Persistent.
-    @Test
-    public void persistent1() {
-        String dir = ConfigTest.getTestingDir() ;
-        FileOps.clearDirectory(dir) ;
-
-        DatasetPrefixStorage prefixes = createTesting(Location.create(dir)) ;
-        PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
-
-        String x = pmap1.getNsPrefixURI("x") ;
-        assertNull(x) ;
-        prefixes.close() ;
-    }
-    
-    // Persistent.
-    @Test
-    public void persistent2() {
-        String dir = ConfigTest.getTestingDir() ;
-        FileOps.clearDirectory(dir) ;
-
-        DatasetPrefixStorage prefixes = createTesting(Location.create(dir)) ;
-        PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
-
-        pmap1.setNsPrefix("x", "http://foo/") ;
-        assertEquals("http://foo/", pmap1.getNsPrefixURI("x")) ;
-        prefixes.close() ;
-    }
-    
 }

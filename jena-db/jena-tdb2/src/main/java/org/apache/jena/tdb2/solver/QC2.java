@@ -20,8 +20,8 @@ package org.apache.jena.tdb2.solver;
 
 import java.util.function.Predicate;
 
-import org.apache.jena.atlas.lib.tuple.Tuple ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.atlas.lib.tuple.Tuple;
+import org.apache.jena.sparql.util.Context;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.sys.SystemTDB;
@@ -30,20 +30,20 @@ public class QC2
 {
     public static Predicate<Tuple<NodeId>> getFilter(Context context)
     {
-        Object x = context.get(SystemTDB.symTupleFilter) ;
+        Object x = context.get(SystemTDB.symTupleFilter);
 
         try {
             @SuppressWarnings("unchecked")
-            Predicate<Tuple<NodeId>> f = (Predicate<Tuple<NodeId>>)x ;
-            return f ;
+            Predicate<Tuple<NodeId>> f = (Predicate<Tuple<NodeId>>)x;
+            return f;
         } catch (ClassCastException ex)
         {
-            throw new TDBException("Not a Filter<Tuple<NodeId>>:"+x, ex) ;
+            throw new TDBException("Not a Filter<Tuple<NodeId>>:"+x, ex);
         }
     }
 
     public static void setFilter(Context context, Predicate<Tuple<NodeId>> filter)
     {
-        context.set(SystemTDB.symTupleFilter, filter) ;
+        context.set(SystemTDB.symTupleFilter, filter);
     }
 }

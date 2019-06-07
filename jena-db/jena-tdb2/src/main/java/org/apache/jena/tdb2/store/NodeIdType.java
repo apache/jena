@@ -25,7 +25,7 @@ import static org.apache.jena.tdb2.store.NodeIdType.TYPES.*;
  * Note that "XSD_DOUBLE" is special - it sets the high bit (value/ptr)
  * and the next bit only, leaving 62 bits of value.
  * Otherwise a type is encoded as the high byte.
- * 
+ *
  *  @see NodeIdInline
  */
 public enum NodeIdType {
@@ -56,14 +56,14 @@ public enum NodeIdType {
     XSD_UNSIGNEDINT(T_UNSIGNEDINT, "UnsignedInt"),
     XSD_UNSIGNEDSHORT(T_UNSIGNEDSHORT, "UnsignedShort"),
     XSD_UNSIGNEDBYTE(T_UNSIGNEDBYTE, "UnsignedByte"),
-    
+
     // Never stored.
     SPECIAL(T_SPECIAL, "Special"),
     // Used here only.
     INVALID$(T_INVALID, "Invalid")
-    
+
     //, EXTENSION(T_EXTENSION, "Extension")
-    ;
+   ;
     /** The type values - must be stable as many of these go on disk.
      * enum ordinals are not enough.
      *
@@ -77,22 +77,22 @@ public enum NodeIdType {
      * The {@code T_*} constants do not include the high bit.
      */
     public static class TYPES {
-        public static final int T_PTR = 0 ;
+        public static final int T_PTR = 0;
 
         public static final int T_DOUBLE = enc(0x40);
 
-        // Value types : 1 to 100  
+        // Value types : 1 to 100
         public static final int T_INTEGER = enc(1);
         public static final int T_DECIMAL = enc(2);
         public static final int T_FLOAT = enc(3);
         //private static final int T_DOUBLE_X = enc(4);
-        
+
         public static final int T_DATETIME = enc(5);
         public static final int T_DATETIMESTAMP = enc(6);
         public static final int T_DATE = enc(7);
         public static final int T_BOOLEAN = enc(8);
         public static final int T_SHORTSTRING = enc(9);
-        
+
         public static final int T_POSITIVE_INTEGER = enc(10);
         public static final int T_NEGATIVE_INTEGER = enc(11);
         public static final int T_NON_NEGATIVE_INTEGER = enc(12);
@@ -104,28 +104,28 @@ public enum NodeIdType {
         public static final int T_UNSIGNEDLONG = enc(18);
         public static final int T_UNSIGNEDINT = enc(19);
         public static final int T_UNSIGNEDSHORT = enc(20);
-        public static final int T_UNSIGNEDBYTE = enc(21); 
+        public static final int T_UNSIGNEDBYTE = enc(21);
         // 21 is 00010101
-        
+
         // Never stored : bits 1011 0000 so as not to look like a double.
         public static final int T_SPECIAL = enc(0x30);
         public static final int T_INVALID = enc(0x31);
         public static final int T_EXTENSION = enc(0x3F);
-        
+
         // Encode/decode of the type value.
         static int enc(int v) { return v; }
         static int dec(int v) { return v; }
     }
-    
+
     // We provide lots of natural questions to ask of an NodeId type.
-    // All are efficient. There is redundancy but limited to this file. 
+    // All are efficient. There is redundancy but limited to this file.
 
     static boolean isStorable(NodeIdType type) {
-        return !isSpecial(type); 
+        return !isSpecial(type);
     }
-    
+
     // For numbers, an out-of-range number maybe stored a PTR.
-    
+
     static boolean isInteger(NodeIdType type) {
         switch(type) {
             case XSD_INTEGER:
@@ -146,15 +146,15 @@ public enum NodeIdType {
                 return false;
         }
     }
-    
+
     static boolean isDecimal(NodeIdType type) {
         return type == XSD_DECIMAL;
     }
-    
+
     static boolean isDouble(NodeIdType type) {
         return type == XSD_DOUBLE;
     }
-    
+
     static boolean isFloat(NodeIdType type) {
         return type == XSD_FLOAT;
     }
@@ -162,7 +162,7 @@ public enum NodeIdType {
     static boolean isNumber(NodeIdType type) {
         return isInteger(type) || isDecimal(type) || isDouble(type) || isFloat(type);
     }
-    
+
     static boolean isSpecial(NodeIdType type) {
         return type == SPECIAL;
     }
@@ -173,13 +173,13 @@ public enum NodeIdType {
             case XSD_DECIMAL:
             case XSD_DOUBLE:
             case XSD_FLOAT:
-                
+
             case XSD_DATETIME:
             case XSD_DATETIMESTAMP:
             case XSD_DATE:
             case XSD_BOOLEAN:
             case XSD_SHORTSTRING:
-                
+
             case XSD_POSITIVE_INTEGER:
             case XSD_NEGATIVE_INTEGER:
             case XSD_NON_NEGATIVE_INTEGER:
@@ -200,8 +200,8 @@ public enum NodeIdType {
 
     private final int value;
     private final String displayName;
-    
-    public int type() { return TYPES.dec(value); } 
+
+    public int type() { return TYPES.dec(value); }
 
     @Override
     public String toString() { return displayName != null ? displayName : name(); }
@@ -222,39 +222,39 @@ public enum NodeIdType {
         NodeIdType t = intToEnum$(x);
         if ( t == INVALID$ )
             throw new IllegalArgumentException("Value '"+x+"' not legal for "+NodeIdType.class.getSimpleName());
-        return t ;
+        return t;
     }
-    
+
     private static NodeIdType intToEnum$(int x) {
         //x = TYPES.enc(x);
         if (x == PTR.value )                        return PTR;
         // XSD_DOUBL is special encoded - handled elsewhere.
-        if (x == XSD_DOUBLE.value )                 return XSD_DOUBLE ;
-        if (x == XSD_INTEGER.value )                return XSD_INTEGER ;
-        if (x == XSD_DECIMAL.value )                return XSD_DECIMAL ;
-        if (x == XSD_FLOAT.value )                  return XSD_FLOAT ;
-        
-        if (x == XSD_DATETIME.value )               return XSD_DATETIME ;
-        if (x == XSD_DATETIMESTAMP.value )          return XSD_DATETIMESTAMP ;
-        if (x == XSD_DATE.value )                   return XSD_DATE ;
+        if (x == XSD_DOUBLE.value )                 return XSD_DOUBLE;
+        if (x == XSD_INTEGER.value )                return XSD_INTEGER;
+        if (x == XSD_DECIMAL.value )                return XSD_DECIMAL;
+        if (x == XSD_FLOAT.value )                  return XSD_FLOAT;
 
-        if (x == XSD_BOOLEAN.value )                return XSD_BOOLEAN ;
-        if (x == XSD_SHORTSTRING.value )            return XSD_SHORTSTRING ;
-        
+        if (x == XSD_DATETIME.value )               return XSD_DATETIME;
+        if (x == XSD_DATETIMESTAMP.value )          return XSD_DATETIMESTAMP;
+        if (x == XSD_DATE.value )                   return XSD_DATE;
+
+        if (x == XSD_BOOLEAN.value )                return XSD_BOOLEAN;
+        if (x == XSD_SHORTSTRING.value )            return XSD_SHORTSTRING;
+
         if (x == XSD_POSITIVE_INTEGER.value )       return XSD_POSITIVE_INTEGER;
-        if (x == XSD_NEGATIVE_INTEGER.value )       return XSD_NEGATIVE_INTEGER ;
-        if (x == XSD_NON_NEGATIVE_INTEGER.value )   return XSD_NON_NEGATIVE_INTEGER ;
-        if (x == XSD_NON_POSITIVE_INTEGER.value )   return XSD_NON_POSITIVE_INTEGER ;
-        
-        if (x == XSD_LONG.value )                   return XSD_LONG ;
-        if (x == XSD_INT.value )                    return XSD_INT ;
-        if (x == XSD_SHORT.value )                  return XSD_SHORT ;
-        if (x == XSD_BYTE.value )                   return XSD_BYTE ;
-        if (x == XSD_UNSIGNEDLONG.value )           return XSD_UNSIGNEDLONG ;
-        if (x == XSD_UNSIGNEDINT.value )            return XSD_UNSIGNEDINT ;
-        if (x == XSD_UNSIGNEDSHORT.value )          return XSD_UNSIGNEDSHORT ;
-        if (x == XSD_UNSIGNEDBYTE.value )           return XSD_UNSIGNEDBYTE ;
-        //if (x == EXTENSION.value )                  return EXTENSION ;
+        if (x == XSD_NEGATIVE_INTEGER.value )       return XSD_NEGATIVE_INTEGER;
+        if (x == XSD_NON_NEGATIVE_INTEGER.value )   return XSD_NON_NEGATIVE_INTEGER;
+        if (x == XSD_NON_POSITIVE_INTEGER.value )   return XSD_NON_POSITIVE_INTEGER;
+
+        if (x == XSD_LONG.value )                   return XSD_LONG;
+        if (x == XSD_INT.value )                    return XSD_INT;
+        if (x == XSD_SHORT.value )                  return XSD_SHORT;
+        if (x == XSD_BYTE.value )                   return XSD_BYTE;
+        if (x == XSD_UNSIGNEDLONG.value )           return XSD_UNSIGNEDLONG;
+        if (x == XSD_UNSIGNEDINT.value )            return XSD_UNSIGNEDINT;
+        if (x == XSD_UNSIGNEDSHORT.value )          return XSD_UNSIGNEDSHORT;
+        if (x == XSD_UNSIGNEDBYTE.value )           return XSD_UNSIGNEDBYTE;
+        //if (x == EXTENSION.value )                  return EXTENSION;
         return INVALID$;
     }
 }

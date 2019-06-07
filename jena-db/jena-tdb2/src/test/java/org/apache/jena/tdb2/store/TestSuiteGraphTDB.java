@@ -18,23 +18,23 @@
 
 package org.apache.jena.tdb2.store;
 
-import junit.framework.TestSuite ;
+import junit.framework.TestSuite;
 import org.apache.jena.tdb2.ConfigTest;
 import org.apache.jena.tdb2.junit.TestFactoryTDB;
-import org.junit.runner.RunWith ;
-import org.junit.runners.AllTests ;
+import org.junit.runner.RunWith;
+import org.junit.runners.AllTests;
 
 /** Scripted test generation */
 
 @RunWith(AllTests.class)
 public class TestSuiteGraphTDB extends TestSuite
 {
-    static public TestSuite suite() { return new TestSuiteGraphTDB() ; }
-    
+    static public TestSuite suite() { return new TestSuiteGraphTDB(); }
+
     private TestSuiteGraphTDB()
     {
-        super("TDB-Scripts") ;
-        String manifestMain = ConfigTest.getTestingDataRoot()+"/manifest.ttl" ;
-        TestFactoryTDB.make(this, manifestMain, "TDB-") ;
+        super("TDB-Scripts");
+        String manifestMain = ConfigTest.getTestingDataRoot()+"/manifest.ttl";
+        TestFactoryTDB.make(this, manifestMain, "TDB-");
     }
 }

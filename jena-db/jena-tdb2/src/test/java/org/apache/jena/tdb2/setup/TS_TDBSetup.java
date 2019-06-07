@@ -18,8 +18,8 @@
 
 package org.apache.jena.tdb2.setup;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
@@ -28,6 +28,6 @@ import org.junit.runners.Suite ;
     , TestStoreParamsCreate.class
 })
 public class TS_TDBSetup {
-    
+
 }
 

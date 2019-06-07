@@ -18,66 +18,66 @@
 
 package org.apache.jena.tdb2.sys;
 
-import java.io.IOException ;
-import java.nio.file.Path ;
-import java.nio.file.Paths ;
-import java.util.HashSet ;
-import java.util.Map ;
-import java.util.Set ;
-import java.util.concurrent.ConcurrentHashMap ;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.base.file.ProcessFileLock;
 import org.apache.jena.dboe.sys.Names;
-import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.tdb2.TDBException;
-import org.apache.jena.tdb2.setup.StoreParams;
+import org.apache.jena.tdb2.params.StoreParams;
 import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
 
-// StoreConnection, DatabaseConnection < Connection<X> 
+// StoreConnection, DatabaseConnection < Connection<X>
 
 public class DatabaseConnection {
     static { JenaSystem.init(); }
 
-    // ConnectionTracker<X> 
-    
-    private static Map<Location, DatabaseConnection> cache = new ConcurrentHashMap<>() ;
-    
-    /** Get the {@code DatabaseConnection} to a location, 
-     *  creating the storage structures if it does not exist. */ 
+    // ConnectionTracker<X>
+
+    private static Map<Location, DatabaseConnection> cache = new ConcurrentHashMap<>();
+
+    /** Get the {@code DatabaseConnection} to a location,
+     *  creating the storage structures if it does not exist. */
     public synchronized static DatabaseConnection connectCreate(Location location) {
-        return connectCreate(location, null) ;
+        return connectCreate(location, null);
     }
 
-    /** Get the {@code DatabaseConnection} to a location, 
+    /** Get the {@code DatabaseConnection} to a location,
      *  creating the storage structures if it does not exist.
-     *  Use the provided {@link StoreParams} - any persistent setting 
+     *  Use the provided {@link StoreParams} - any persistent setting
      *  already at the location take precedence.
-     */ 
+     */
     public synchronized static DatabaseConnection connectCreate(Location location, StoreParams params) {
-        return make(location, params) ;
+        return make(location, params);
     }
-    
+
     /**
      * Return a {@code StoreConnection} for a particular location,
      * creating it if it does not exist in storage.
      */
     private synchronized static DatabaseConnection make(Location location, StoreParams params) {
         if ( location.isMemUnique() ) {
-            // Uncached, in-memory. 
+            // Uncached, in-memory.
             DatasetGraph dsg = DatabaseOps.create(location, params);
             DatabaseConnection dbConn = new DatabaseConnection(dsg, location, null);
             return dbConn;
         }
         // Cached by Location. Named in-memory or on-disk.
         DatabaseConnection dbConn = cache.computeIfAbsent(location, (loc)->buildForCache(loc, params));
-        return dbConn ;
+        return dbConn;
     }
-    
+
     private static DatabaseConnection buildForCache(Location location, StoreParams params) {
         if ( location.isMemUnique() ) {
             throw new TDBException("Can't buildForCache a memory-unique location");
@@ -89,11 +89,11 @@ public class DatabaseConnection {
             lock.lockEx();
         }
         DatasetGraph dsg = DatabaseOps.create(location, params);
-        return new DatabaseConnection(dsg, location, lock) ;
+        return new DatabaseConnection(dsg, location, lock);
     }
-    
+
 //    private static DatasetGraph buildMem(Location location, StoreParams params) {
-//        return StoreConnection.connectCreate(location, params).getDatasetGraph(); 
+//        return StoreConnection.connectCreate(location, params).getDatasetGraph();
 //    }
 //
 //    private static DatasetGraph buildDisk(Location location, StoreParams params) {
@@ -111,21 +111,21 @@ public class DatabaseConnection {
         } catch(IOException ex) { IO.exception(ex); return null; }
         return ProcessFileLock.create(lockFilename);
     }
-    
+
     /** Use via {@link TDBInternal#expel} wherever possible.
      * <p>
      * Stop managing a location. Use with great care (testing only).<br/>
      * Does not expel from {@link StoreConnection}.
      */
     public static synchronized void internalExpel(Location location, boolean force) {
-        // ** Check it is a container location 
-        DatabaseConnection dbConn = cache.get(location) ;
+        // ** Check it is a container location
+        DatabaseConnection dbConn = cache.get(location);
         if ( dbConn == null )
-            return ;
+            return;
         dbConn.isValid = false;
         //dbConn.datasetGraph = null;
         //dbConn.datasetGraphSwitchable = null;
-        cache.remove(location) ;
+        cache.remove(location);
         // Release the lock after the cache is emptied.
         if (SystemTDB.DiskLocationMultiJvmUsagePrevention && ! location.isMem() ) {
             if ( ! dbConn.lock.isLockedHere() )
@@ -134,35 +134,35 @@ public class DatabaseConnection {
             ProcessFileLock.release(dbConn.lock);
         }
     }
-    
-    /** 
-     * Stop managing all locations. 
+
+    /**
+     * Stop managing all locations.
      * Use with extreme care.
      * This is intended to support internal testing.
      */
     public static synchronized void internalReset() {
         // Copy to avoid potential CME.
-        Set<Location> x = new HashSet<>(cache.keySet()) ;
+        Set<Location> x = new HashSet<>(cache.keySet());
         for (Location loc : x)
-            internalExpel(loc, true) ;
+            internalExpel(loc, true);
         if ( ! cache.isEmpty() )
             Log.error(DatabaseConnection.class, "DatabaseConnection: Expected the cache to be empty");
-        cache.clear() ;
+        cache.clear();
     }
-    
+
     // One of the other.
     private final DatasetGraphSwitchable   datasetGraphSwitchable;
     private final DatasetGraph             datasetGraph;
-    // This is the location of the TDB2 container directory. 
-    private final Location          location ;
-    private final ProcessFileLock   lock ;
-    private boolean                 isValid = true ;
-    
+    // This is the location of the TDB2 container directory.
+    private final Location          location;
+    private final ProcessFileLock   lock;
+    private boolean                 isValid = true;
+
     private DatabaseConnection(DatasetGraph dsg, Location location, ProcessFileLock fileLock)
     {
         this.datasetGraph = dsg;
         this.datasetGraphSwitchable =  ( dsg instanceof DatasetGraphSwitchable ) ? (DatasetGraphSwitchable )dsg : null;
-        this.location = location ;
+        this.location = location;
         this.lock = fileLock;
     }
 
@@ -173,12 +173,12 @@ public class DatabaseConnection {
     public DatasetGraphSwitchable getDatasetGraphSwitchable() {
         return datasetGraphSwitchable;
     }
-    
+
     public Location getLocation() {
-        return location ;
+        return location;
     }
-    
+
     public ProcessFileLock getLock() {
-        return lock ;
+        return lock;
     }
 }

@@ -18,19 +18,19 @@
 
 package org.apache.jena.tdb2.graph;
 
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.tdb2.junit.TL;
-import org.junit.After ;
-import org.junit.Before ;
+import org.junit.After;
+import org.junit.Before;
 
-public class TestGraphsTDB1 extends AbstractTestGraphsTDB
+public class TestGraphsTDB_A extends AbstractTestGraphsTDB
 {
     Dataset ds = TL.createTestDatasetMem();
     @Before public void before() {
         ds.begin(ReadWrite.WRITE);
     }
-    
+
     @After public void after() {
         ds.abort();
         ds.end();
@@ -38,6 +38,6 @@ public class TestGraphsTDB1 extends AbstractTestGraphsTDB
     }
     @Override
     protected Dataset createDataset() {
-        return ds ;
+        return ds;
     }
 }

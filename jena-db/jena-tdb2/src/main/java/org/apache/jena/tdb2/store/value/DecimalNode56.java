@@ -21,16 +21,16 @@ package org.apache.jena.tdb2.store.value;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.apache.jena.atlas.lib.BitsLong ;
+import org.apache.jena.atlas.lib.BitsLong;
 
 
 // Decimal packed into 56 bits.
 public class DecimalNode56
 {
-    //private static Logger log = LoggerFactory.getLogger(DecimalNode.class) ;
-    
-    BigDecimal decimal = null ;
-    
+    //private static Logger log = LoggerFactory.getLogger(DecimalNode.class);
+
+    BigDecimal decimal = null;
+
     // signed 8 bits of scale, signed 48 bits of value.
     // Decimal precision is 47 bits (it's signed) or around 14 places.
     // Not finance industry accuracy nor XSD (18 places minimum) but still useful.
@@ -62,7 +62,7 @@ public class DecimalNode56
     public static DecimalNode56 valueOf(BigDecimal decimal) {
         int scale = decimal.scale();
         BigInteger bigInt = decimal.unscaledValue();
-        
+
         //decimal.longValueExact(); // Throws exception
         //new BigDecimal(long);
 
@@ -74,12 +74,12 @@ public class DecimalNode56
 
     public static DecimalNode56 valueOf(long binValue, int scale) {
         if ( scale < MIN_SCALE || scale > MAX_SCALE ) {
-            // log.warn("Scale out of range: ("+binValue+","+scale+")") ;
+            // log.warn("Scale out of range: ("+binValue+","+scale+")");
             return null;
         }
 
         if ( binValue < MIN_VALUE || binValue > MAX_VALUE ) {
-            // log.warn("Value out of range: ("+binValue+","+scale+")") ;
+            // log.warn("Value out of range: ("+binValue+","+scale+")");
             return null;
         }
 

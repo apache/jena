@@ -23,11 +23,11 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.loader.base.MonitorOutput;
 
 public class LoaderPhased extends LoaderMain {
-    
+
     public LoaderPhased(DatasetGraph dsg, MonitorOutput output) {
         this(dsg, null, output);
     }
-    
+
     public LoaderPhased(DatasetGraph dsg, Node graphName, MonitorOutput output) {
         super(LoaderPlans.loaderPlanPhased, dsg, graphName, output);
     }
