@@ -113,7 +113,7 @@ public class AggMedianDistinct extends AggregatorBase
             }else if(indexsize%2!=0) {
             	median = arrDouble[(indexsize/2)];
             }else {	
-            	median = (arrDouble[(indexsize/2)]+arrDouble[((indexsize/2)-1)])/2;
+            	median = ((arrDouble[(indexsize/2)]+arrDouble[((indexsize/2)-1)])/2);
             }
 
             return (NodeValue.makeDecimal((median)));
