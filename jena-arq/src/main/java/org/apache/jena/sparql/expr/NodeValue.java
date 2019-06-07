@@ -338,7 +338,7 @@ public abstract class NodeValue extends ExprNode
     
     public static NodeValue makeNodeDecimal(BigDecimal decimal)
     {
-        NodeValue nv = makeNode(Utils.stringForm(decimal), null, XSDdecimal.getURI()) ;
+        NodeValue nv = XSDFuncOp.canonicalDecimalNV(decimal) ;
         return nv ;
     }
 

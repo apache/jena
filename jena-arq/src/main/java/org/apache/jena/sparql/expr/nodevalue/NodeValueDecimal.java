@@ -24,8 +24,6 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.util.Utils ;
-
 
 public class NodeValueDecimal extends NodeValue
 {
@@ -33,7 +31,7 @@ public class NodeValueDecimal extends NodeValue
     
     public NodeValueDecimal(BigDecimal d)         { decimal = d ; }
     public NodeValueDecimal(BigDecimal d, Node n) { super(n) ; decimal = d ; }
-    
+
     @Override
     public boolean isNumber() { return true ; }
     @Override
@@ -51,23 +49,21 @@ public class NodeValueDecimal extends NodeValue
     public double getDouble()  { return decimal.doubleValue() ; }
 
     @Override
-    protected Node makeNode()
-    { 
-        int s = decimal.scale() ;
-        return NodeFactory.createLiteral(Utils.stringForm(decimal), XSDDatatype.XSDdecimal) ;
+    protected Node makeNode() {
+        return NodeFactory.createLiteral(XSDFuncOp.canonicalDecimalStr(decimal), XSDDatatype.XSDdecimal) ;
     }
-    
+
     @Override
     public String asString() { return toString() ; }
-    
+
     @Override
     public String toString()
     { 
         // Preserve lexical form.
         if ( getNode() != null ) return super.asString() ;
-        return Utils.stringForm(decimal) ;
+        return XSDFuncOp.canonicalDecimalStr(decimal);
     }
-    
+
     @Override
     public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
 }
