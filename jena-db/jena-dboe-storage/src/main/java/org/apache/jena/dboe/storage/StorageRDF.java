@@ -29,8 +29,6 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 
-// Need to incorporate prefixes so transactions are announced atomically.
-
 /**
  * A minimal interface for RDF storage. This is less that {@link DatasetGraph} or any of it's
  * derived classes and it just concerned with {@link Triple}s and {@link Quad}s, not
@@ -144,9 +142,9 @@ public interface StorageRDF {
      * intermediate operation</a></i>. Without additional internal knowledge,
      * it is necessary to remember all triples in the stream
      * so far to know whether the next triple is a duplicate or not.
-     * This can be a signiifcant amount of intermediate space.
+     * This can be a significant amount of intermediate space.
      * <p>
-     * An implmentation may be able to exploit its internal representation to
+     * An implementation may be able to exploit its internal representation to
      * means that this operation can be implemented more efficient, for example,
      * knowing that duplicate triples (same triple, from different graphs) will
      * be adjacent in the stream so not requires the full cost of {@code distinct}
