@@ -28,12 +28,11 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.core.DatasetPrefixStorage ;
 import org.apache.jena.sparql.graph.GraphPrefixesProjection ;
-import org.apache.jena.tdb.base.record.RecordFactory ;
 import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 
 /**
- * Dataset prefixes; a table of nodes with prefix-centric operations. The table
- * is G-P-U where G is a graph name ("" is used for the default graph), P is a
+ * Dataset prefixes; a table of nodes with prefix-centric operations. The table is G-P-U
+ * where G is a graph name as a URI (a URI for <> is used for the default graph), P is a
  * string (the prefix) and U is the IRI.
  */
 public class DatasetPrefixesTDB implements DatasetPrefixStorage
@@ -44,7 +43,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
      * does not need a cache of it's own.   
      */
     
-    static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
+    //static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
     static final String unnamedGraphURI = "" ;
     
     private final NodeTupleTable nodeTupleTable ;

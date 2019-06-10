@@ -18,36 +18,36 @@
 
 package org.apache.jena.tdb2.modify;
 
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.modify.UpdateEngine ;
-import org.apache.jena.sparql.modify.UpdateEngineFactory ;
-import org.apache.jena.sparql.modify.UpdateEngineMain ;
-import org.apache.jena.sparql.modify.UpdateEngineRegistry ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.modify.UpdateEngine;
+import org.apache.jena.sparql.modify.UpdateEngineFactory;
+import org.apache.jena.sparql.modify.UpdateEngineMain;
+import org.apache.jena.sparql.modify.UpdateEngineRegistry;
+import org.apache.jena.sparql.util.Context;
 import org.apache.jena.tdb2.store.DatasetGraphTxn;
 
 public class UpdateEngineTDB extends UpdateEngineMain
 {
     public UpdateEngineTDB(DatasetGraphTxn graphStore, Binding inputBinding, Context context)
-    { super(graphStore, inputBinding, context) ; }
-    
+    { super(graphStore, inputBinding, context); }
+
 
     // ---- Factory
-    public static UpdateEngineFactory getFactory() { 
+    public static UpdateEngineFactory getFactory() {
         return new UpdateEngineFactory()
         {
             @Override
             public boolean accept(DatasetGraph dataset, Context context) {
-                return (dataset instanceof DatasetGraphTxn) ;
+                return (dataset instanceof DatasetGraphTxn);
             }
-            
+
             @Override
             public UpdateEngine create(DatasetGraph dataset, Binding inputBinding, Context context) {
                 return new UpdateEngineTDB((DatasetGraphTxn)dataset, inputBinding, context);
             }
-        } ;
+        };
     }
 
-    public static void register() { UpdateEngineRegistry.get().add(getFactory()) ; }
+    public static void register() { UpdateEngineRegistry.get().add(getFactory()); }
 }

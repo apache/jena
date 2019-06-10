@@ -18,40 +18,40 @@
 
 package org.apache.jena.tdb2.store;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.graph.AbstractTestGraph2 ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.ReadWrite;
+import org.apache.jena.sparql.graph.AbstractTestGraphAddDelete;
 import org.apache.jena.tdb2.junit.TL;
-import org.junit.After ;
-import org.junit.Before ;
+import org.junit.After;
+import org.junit.Before;
 
 /** Programmatic tests on graphs */
-public class TestGraphTDB extends AbstractTestGraph2
+public class TestGraphTDB extends AbstractTestGraphAddDelete
 {
-    private Dataset dataset ;
-    private Graph   graph ;
+    private Dataset dataset;
+    private Graph   graph;
 
     @Before
     public void before() {
-        dataset = TL.createTestDatasetMem() ;
+        dataset = TL.createTestDatasetMem();
         dataset.begin(ReadWrite.WRITE);
-        graph = dataset.getDefaultModel().getGraph() ;
+        graph = dataset.getDefaultModel().getGraph();
     }
 
     @After
     public void after() {
         dataset.abort();
         dataset.end();
-        TL.expel(dataset) ;
+        TL.expel(dataset);
     }
 
     @Override
     protected Graph emptyGraph() {
-        graph.clear() ;
-        return graph ;
+        graph.clear();
+        return graph;
     }
-    
+
     @Override
     protected void returnGraph(Graph g)
     {}

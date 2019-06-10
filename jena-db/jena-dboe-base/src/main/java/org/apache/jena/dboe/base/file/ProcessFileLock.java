@@ -49,17 +49,17 @@ import org.apache.jena.dboe.sys.ProcessUtils;
 public class ProcessFileLock {
     // Static (process-wide) sync.
     private static Object sync = new Object();
-    
+
     // Map from path of the file to a ProcessFileLock
     private static ConcurrentHashMap<Path, ProcessFileLock> locks =  new ConcurrentHashMap<>();
-    /*package-testing*/ static void clearLocksProcessState() { 
+    /*package-testing*/ static void clearLocksProcessState() {
         synchronized(sync) {
-            try { 
+            try {
                 locks.forEach((path,lock)->lock.free());
-                locks.clear(); 
+                locks.clear();
             }
             catch (Exception ex) {
-                // Shouldn't happen - trace and then ignore. 
+                // Shouldn't happen - trace and then ignore.
                 ex.printStackTrace();
             }
         }
@@ -73,7 +73,7 @@ public class ProcessFileLock {
     private enum NoLockAction { EXCEPTION, RETURN, WAIT }
 
     /** Create a {@code ProcessFileLock} using the named file.
-     *  Locks are JVM-wide; each filename is associated with one lock object.  
+     *  Locks are JVM-wide; each filename is associated with one lock object.
      */
     public static ProcessFileLock create(String filename) {
         try {
@@ -82,26 +82,26 @@ public class ProcessFileLock {
         }
         catch (IOException e) { IO.exception(e); return null; }
     }
-    
+
     /** Return the lock, unlocking the file if this process has it locked. */
     public static void release(ProcessFileLock lockFile) {
         if ( lockFile == null )
-            return ;
+            return;
         locks.remove(lockFile.getPath());
         lockFile.free();
     }
-    
+
     /** Create the structure for a ProcessFileLock on file {@code filename}.
      * This does not take the lock
-     * 
+     *
      * @see #lockEx()
      * @see #tryLock()
      * @see #unlock()
      */
     private ProcessFileLock(Path filename) {
         try {
-            this.filepath = filename ;
-            // Much the same as ... 
+            this.filepath = filename;
+            // Much the same as ...
 //            randomAccessFile = new RandomAccessFile(filename, "rw");
 //            fileChannel = randomAccessFile.getChannel();
             // Quite heavy weight but only used to lock long-term objects.
@@ -113,28 +113,28 @@ public class ProcessFileLock {
             throw new RuntimeIOException("No such file '"+filename+"'", ex);
         }
         catch (IOException ex) {
-            throw new RuntimeIOException("Failed to open '"+filename+"'", ex); 
+            throw new RuntimeIOException("Failed to open '"+filename+"'", ex);
         }
     }
 
     /** Lock the file or throw {@link DBOpEnvException}.
-     * 
+     *
      * @throws AlreadyLocked if the lock is already held by this process.
      */
     public void lockEx() {
         lockOperation(NoLockAction.EXCEPTION);
     }
-    
+
     /** Lock the file or wait.
-     * 
+     *
      * @throws AlreadyLocked if the lock is already held by this process.
      */
     public void lockWait() {
         lockOperation(NoLockAction.WAIT);
     }
-    
+
     /** Lock a file, return true on success else false.
-     * 
+     *
      * @throws AlreadyLocked if the lock is already held by this process.
      */
     public boolean tryLock() {
@@ -160,21 +160,21 @@ public class ProcessFileLock {
             return false;
         return fileLock.isValid();
     }
-    
+
     public Path getPath() {
         return filepath;
     }
-    
+
     // Release ProcessFileLock. Applications use ProcessFileLock.release(lock)
     private void free() {
-        try { 
+        try {
             if ( fileLock != null )
                 fileLock.release();
             fileChannel.close();
             fileLock = null;
         } catch (IOException ex) { IO.exception(ex); }
     }
-    
+
     /** Take the lock.
      * <p>
      * Write our PID into the file and return true if it succeeds.
@@ -185,9 +185,9 @@ public class ProcessFileLock {
         synchronized(sync) {
             if ( fileLock != null )
                 throw new AlreadyLocked("Failed to get a lock: file='"+filepath+"': Lock already held");
-            
+
             try {
-                fileLock = (action != NoLockAction.WAIT) ? fileChannel.tryLock() : fileChannel.lock(); 
+                fileLock = (action != NoLockAction.WAIT) ? fileChannel.tryLock() : fileChannel.lock();
                 if ( fileLock == null ) {
                     switch(action) {
                         case EXCEPTION: {
@@ -198,9 +198,9 @@ public class ProcessFileLock {
                             if ( pid >= 0 )
                                 throw new DBOpEnvException("Failed to get a lock: file='"+filepath+"': held by process "+pid);
                             throw new DBOpEnvException("Failed to get a lock: file='"+filepath+"': failed to get the holder's process id");
-                        }   
+                        }
                         case RETURN:
-                            return false ;
+                            return false;
                         case WAIT:
                             throw new InternalError("FileChannel.lock returned null");
                     }
@@ -210,14 +210,14 @@ public class ProcessFileLock {
                 writeProcessId(pid);
                 return true;
             } catch (IOException ex) {
-                if ( action == NoLockAction.RETURN ) 
+                if ( action == NoLockAction.RETURN )
                     return false;
                 throw new DBOpEnvException("Failed to get a lock: file='"+filepath+"'", ex);
             }
         }
     }
-    
-    // I/O for a process id. 
+
+    // I/O for a process id.
     /** Read the file to get a process id */
     private int readProcessId(int dft) throws IOException {
         ByteBuffer bb = ByteBuffer.allocate(128);
@@ -234,7 +234,7 @@ public class ProcessFileLock {
         bb.flip();
         byte[] b = new byte[len];
         bb.get(b);
-        
+
         String pidStr = StrUtils.fromUTF8bytes(b);
         // Remove all leading and trailing (vertical and horizontal) whitespace.
         pidStr = pidStr.replaceAll("[\\s\\t\\n\\r]+$", "");
@@ -245,7 +245,7 @@ public class ProcessFileLock {
         } catch (NumberFormatException ex) {
             ex.printStackTrace();
             Log.warn(this, "Bad process id: file='"+filepath+"': read='"+pidStr+"'");
-            return dft; 
+            return dft;
         }
     }
 

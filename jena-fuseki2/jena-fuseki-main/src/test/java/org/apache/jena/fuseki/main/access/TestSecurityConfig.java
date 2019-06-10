@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki.main.access;
 
+import static org.apache.jena.fuseki.test.FusekiTest.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -32,7 +33,6 @@ import org.apache.jena.rdfconnection.LibSec;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionRemote;
 import org.apache.jena.riot.web.HttpOp;
-import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.web.AuthSetup;
 import org.apache.jena.web.HttpSC;
 import org.junit.After;
@@ -86,24 +86,6 @@ public class TestSecurityConfig {
         HttpOp.setDefaultHttpClient(hc);
     }
 
-    private static void expectQuery403(Runnable action) {
-        expectQuery(action, HttpSC.FORBIDDEN_403);
-    }
-
-    private static void expectQuery401(Runnable action) {
-        expectQuery(action, HttpSC.UNAUTHORIZED_401);
-    }
-
-    private static void expectQuery(Runnable action, int expected) {
-        try {
-            action.run();
-            throw new HttpException("action completed");
-        } catch (QueryExceptionHTTP ex) {
-            if ( ex.getResponseCode() != expected )
-                throw ex;
-        }
-    }
-
     private static void test(String configFile, Consumer<FusekiServer> action) {
         FusekiServer fusekiServer = fusekiServer(configFile);
         try {
@@ -122,11 +104,11 @@ public class TestSecurityConfig {
                 assertNotNull(in);
             } catch (HttpException ex) {
                 // 404 is OK - no static file area.
-                if ( ex.getResponseCode() != HttpSC.NOT_FOUND_404 )
+                if ( ex.getStatusCode() != HttpSC.NOT_FOUND_404 )
                     throw ex;
             }
         });
-    }    
+    }
 
     @Test public void access_serverNone_db1() {
         test("testing/Access/config-server-0.ttl", (fusekiServer)->{
@@ -142,7 +124,7 @@ public class TestSecurityConfig {
                     .build() ) {
                 expectQuery403(()->conn.queryAsk("ASK{}"));
             }
-            
+
             // db1 - secured - with user
             HttpClient hcUser1 = LibSec.httpClient(authSetup1(fusekiServer));
             try ( RDFConnection conn = RDFConnectionRemote.create().destination(datasetURL(fusekiServer, "database1"))
@@ -172,8 +154,8 @@ public class TestSecurityConfig {
             try( TypedInputStream in = HttpOp.execHttpGet(serverURL(fusekiServer), null, hc, null) ) {
                 assertNull(in);
             } catch (HttpException ex) {
-                // 404 is OK - no static file area. 
-                if ( ex.getResponseCode() != HttpSC.NOT_FOUND_404 )
+                // 404 is OK - no static file area.
+                if ( ex.getStatusCode() != HttpSC.NOT_FOUND_404 )
                     throw ex;
             }
         });
@@ -226,8 +208,8 @@ public class TestSecurityConfig {
 
     // Specific server user.
     @Test public void access_dataset_user2() {
-        test("testing/Access/config-server-2.ttl", fusekiServer->{ 
-            // user2 does not have service access 
+        test("testing/Access/config-server-2.ttl", fusekiServer->{
+            // user2 does not have service access
             HttpClient hc = LibSec.httpClient(authSetup2(fusekiServer));
             try ( RDFConnection conn = RDFConnectionRemote
                     .create().destination(datasetURL(fusekiServer, "database1")).httpClient(hc).build() ) {
@@ -239,7 +221,7 @@ public class TestSecurityConfig {
     // Specific server user.
     @Test public void access_dataset_user3() {
         test("testing/Access/config-server-2.ttl", fusekiServer->{
-            // user3 does not have server access 
+            // user3 does not have server access
             HttpClient hc = LibSec.httpClient(authSetup3(fusekiServer));
             try ( RDFConnection conn = RDFConnectionRemote
                     .create().destination(datasetURL(fusekiServer, "database1")).httpClient(hc).build() ) {
@@ -280,12 +262,12 @@ public class TestSecurityConfig {
             }
         });
     }
-    
+
     // Go to endpoint.
     @Test public void serviceAndEndpointDirect_user1() {
         test("testing/Access/config-server-3.ttl", fusekiServer->{
             HttpClient hc1 = LibSec.httpClient(authSetup1(fusekiServer));
-            
+
             try ( RDFConnection conn = RDFConnectionRemote
                     .create().destination(datasetURL(fusekiServer, "db"))
                     .queryEndpoint(datasetURL(fusekiServer, "db")+"/query1")
@@ -305,7 +287,7 @@ public class TestSecurityConfig {
             }
         });
     }
-    
+
     // Still "no" - dataset excludes.
     @Test public void serviceAndEndpointDirect_user2() {
         test("testing/Access/config-server-3.ttl", fusekiServer->{
@@ -330,7 +312,7 @@ public class TestSecurityConfig {
             }
         });
     }
-    
+
     // config-server-4.ttl : endpoint only.
     // Deny - not in every endpoint
     @Test public void endpoint_user1() {
@@ -343,13 +325,13 @@ public class TestSecurityConfig {
             }
         });
     }
-    
+
 
     // Go to endpoint.
     @Test public void endpointDirect_user1() {
         test("testing/Access/config-server-4.ttl", fusekiServer->{
             HttpClient hc1 = LibSec.httpClient(authSetup1(fusekiServer));
-            
+
             try ( RDFConnection conn = RDFConnectionRemote
                     .create().destination(datasetURL(fusekiServer, "db2"))
                     .queryEndpoint(datasetURL(fusekiServer, "db2")+"/query1")
@@ -369,7 +351,7 @@ public class TestSecurityConfig {
             }
         });
     }
-    
+
     // Yes by endpoint only.
     @Test public void endpointDirect_user2() {
         test("testing/Access/config-server-4.ttl", fusekiServer->{
@@ -383,7 +365,7 @@ public class TestSecurityConfig {
             }
         });
     }
-    
+
     // No - not at this endpoint.
     @Test public void endpointDirect_user2a() {
         test("testing/Access/config-server-4.ttl", fusekiServer->{

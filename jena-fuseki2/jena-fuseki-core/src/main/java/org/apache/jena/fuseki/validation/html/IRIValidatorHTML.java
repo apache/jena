@@ -20,84 +20,81 @@ package org.apache.jena.fuseki.validation.html;
 
 import static org.apache.jena.fuseki.validation.html.ValidatorHtmlLib.*;
 
-import java.io.IOException ;
-import java.io.PrintStream ;
-import java.util.Iterator ;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Iterator;
 
-import javax.servlet.ServletOutputStream ;
-import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIFactory ;
-import org.apache.jena.iri.Violation ;
-import org.apache.jena.riot.system.IRIResolver ;
+import org.apache.jena.iri.IRI;
+import org.apache.jena.iri.IRIFactory;
+import org.apache.jena.iri.Violation;
+import org.apache.jena.riot.system.IRIResolver;
 
 public class IRIValidatorHTML
 {
-    public IRIValidatorHTML() 
+    public IRIValidatorHTML()
     { }
-  
-    static final String paramIRI      = "iri" ;
-    //static IRIFactory iriFactory = IRIFactory.iriImplementation() ;
-    static IRIFactory iriFactory = IRIResolver.iriFactory() ;
-    
-    public static void executeHTML(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
-    {
+
+    static final String paramIRI      = "iri";
+    //static IRIFactory iriFactory = IRIFactory.iriImplementation();
+    static IRIFactory iriFactory = IRIResolver.iriFactory();
+
+    public static void executeHTML(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         try {
-            String[] args = httpRequest.getParameterValues(paramIRI) ;
-                
-            if ( args == null || args.length==0 )
-                httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "No ?iri= parameter") ;
-            
-            ServletOutputStream outStream = httpResponse.getOutputStream() ;
-            PrintStream stdout = System.out ;
-            PrintStream stderr = System.err ;
-            System.setOut(new PrintStream(outStream)) ;
-            System.setErr(new PrintStream(outStream)) ;
+            String[] args = httpRequest.getParameterValues(paramIRI);
 
-            setHeaders(httpResponse) ;
+            if ( args == null || args.length == 0 )
+                httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "No ?iri= parameter");
 
-            outStream.println("<html>") ;
-            printHead(outStream, "Jena IRI Validator Report") ;
-            outStream.println("<body>") ;
+            ServletOutputStream outStream = httpResponse.getOutputStream();
+            PrintStream stdout = System.out;
+            PrintStream stderr = System.err;
+            System.setOut(new PrintStream(outStream));
+            System.setErr(new PrintStream(outStream));
 
-            outStream.println("<h1>IRI Report</h1>") ;
-            startFixed(outStream) ;
+            setHeaders(httpResponse);
+
+            outStream.println("<html>");
+            printHead(outStream, "Jena IRI Validator Report");
+            outStream.println("<body>");
+
+            outStream.println("<h1>IRI Report</h1>");
+            startFixed(outStream);
 
             try {
-                boolean first = true ;
-                for ( String iriStr : args )
-                {
-                    if ( ! first )
-                        System.out.println() ;
-                    first = false ;
+                boolean first = true;
+                for ( String iriStr : args ) {
+                    if ( !first )
+                        System.out.println();
+                    first = false;
 
-                    IRI iri = iriFactory.create(iriStr) ;
-                    System.out.println(iriStr + " ==> "+iri) ;
+                    IRI iri = iriFactory.create(iriStr);
+                    System.out.println(iriStr + " ==> " + iri);
                     if ( iri.isRelative() )
-                        System.out.println("Relative IRI: "+iriStr) ;
+                        System.out.println("Relative IRI: " + iriStr);
 
-                    Iterator<Violation> vIter = iri.violations(true) ;
-                    for ( ; vIter.hasNext() ; )
-                    {
-                        String str = vIter.next().getShortMessage() ;
-                        str = htmlQuote(str) ;
-                        
-                        System.out.println(str) ;
+                    Iterator<Violation> vIter = iri.violations(true);
+                    for (; vIter.hasNext(); ) {
+                        String str = vIter.next().getShortMessage();
+                        str = htmlQuote(str);
+
+                        System.out.println(str);
                     }
                 }
-            } finally 
-            {
-                finishFixed(outStream) ;
-                System.out.flush() ;
-                System.err.flush() ;
-                System.setOut(stdout) ;
-                System.setErr(stdout) ;
+            }
+            finally {
+                finishFixed(outStream);
+                System.out.flush();
+                System.err.flush();
+                System.setOut(stdout);
+                System.setErr(stdout);
             }
 
-            outStream.println("</body>") ;
-            outStream.println("</html>") ;
+            outStream.println("</body>");
+            outStream.println("</html>");
         } catch (IOException ex) {}
-    } 
+    }
 }

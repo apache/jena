@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.trans.bplustree.rewriter ;
+package org.apache.jena.dboe.trans.bplustree.rewriter;
 
-import java.util.Iterator ;
-import java.util.NoSuchElementException ;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-import org.apache.jena.atlas.iterator.PeekIterator ;
+import org.apache.jena.atlas.iterator.PeekIterator;
 import org.apache.jena.dboe.base.recordbuffer.RecordBufferPage;
 
 /**
@@ -31,52 +31,52 @@ import org.apache.jena.dboe.base.recordbuffer.RecordBufferPage;
  *
  */
 class RecordBufferPageLinker implements Iterator<RecordBufferPage> {
-    PeekIterator<RecordBufferPage> peekIter ;
+    PeekIterator<RecordBufferPage> peekIter;
 
-    RecordBufferPage               slot = null ;
+    RecordBufferPage               slot = null;
 
     RecordBufferPageLinker(Iterator<RecordBufferPage> iter) {
         if ( !iter.hasNext() ) {
-            peekIter = null ;
-            return ;
+            peekIter = null;
+            return;
         }
 
-        peekIter = new PeekIterator<>(iter) ;
+        peekIter = new PeekIterator<>(iter);
     }
 
     @Override
     public boolean hasNext() {
         if ( slot != null )
-            return true ;
+            return true;
 
         if ( peekIter == null )
-            return false ;
+            return false;
 
         if ( !peekIter.hasNext() ) {
-            peekIter = null ;
-            return false ;
+            peekIter = null;
+            return false;
         }
 
-        slot = peekIter.next() ;
-        RecordBufferPage nextSlot = peekIter.peek() ;
+        slot = peekIter.next();
+        RecordBufferPage nextSlot = peekIter.peek();
         // If null, no slot ahead so no linkage field to set.
         if ( nextSlot != null )
             // Set the slot to the id of the next one
-            slot.setLink(nextSlot.getId()) ;
-        return true ;
+            slot.setLink(nextSlot.getId());
+        return true;
     }
 
     @Override
     public RecordBufferPage next() {
         if ( !hasNext() )
-            throw new NoSuchElementException() ;
-        RecordBufferPage rbp = slot ;
-        slot = null ;
-        return rbp ;
+            throw new NoSuchElementException();
+        RecordBufferPage rbp = slot;
+        slot = null;
+        return rbp;
     }
 
     @Override
     public void remove() {
-        throw new UnsupportedOperationException() ;
+        throw new UnsupportedOperationException();
     }
 }

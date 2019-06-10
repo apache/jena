@@ -24,13 +24,11 @@ import java.util.HashMap ;
 import java.util.Locale ;
 import java.util.Map ;
 
-import org.apache.jena.graph.Graph ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdf.model.RDFWriter ;
 import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler ;
 import org.apache.jena.riot.* ;
-import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol ;
 
@@ -51,7 +49,6 @@ public class RDFWriterRIOT implements RDFWriter
     private final String jenaName ; 
     private Context context = new Context() ;
     private Map<String, Object> properties = new HashMap<>() ;
-    private WriterGraphRIOT writer ;
     private RDFErrorHandler errorHandler = new RDFDefaultErrorHandler();
     
     public RDFWriterRIOT(String jenaName) {
@@ -60,35 +57,33 @@ public class RDFWriterRIOT implements RDFWriter
         context.put(SysRIOT.sysRdfWriterProperties, properties);
     }
 
-    protected WriterGraphRIOT writer() {
-        if ( writer != null )
-            return writer;
+    protected RDFWriterBuilder writer() {
         if ( jenaName == null )
             throw new IllegalArgumentException("Jena writer name is null");
         // For writing via model.write(), use any old names for jena writers. (As of 2107-03 - there are none)
         RDFFormat format = RDFWriterRegistry.getFormatForJenaWriter(jenaName) ;
+        RDFWriterBuilder builder = org.apache.jena.riot.RDFWriter.create();
         if ( format != null )
-            return RDFDataMgr.createGraphWriter(format) ;
+            return builder.format(format);
         Lang lang = RDFLanguages.nameToLang(jenaName);
         if ( lang != null )
-            return RDFDataMgr.createGraphWriter(lang);
+            return builder.lang(lang);
         throw new RiotException("No graph writer for '" + jenaName + "'");
     }
-
+    
+    @SuppressWarnings("deprecation")
     @Override
     public void write(Model model, Writer out, String base) {
         if ( base != null && base.equals("") )
             base = null;
-        Graph graph = model.getGraph();
-        writer().write(out, graph, RiotLib.prefixMap(graph), base, context);
+        writer().source(model).context(context).base(base).build().output(out);
     }
     
     @Override
     public void write(Model model, OutputStream out, String base) {
         if ( base != null && base.equals("") )
             base = null;
-        Graph graph = model.getGraph();
-        writer().write(out, graph, RiotLib.prefixMap(graph), base, context);
+        writer().source(model).context(context).base(base).output(out);
     }
 
     @Override

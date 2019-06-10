@@ -22,6 +22,6 @@ import org.apache.jena.dboe.index.Index;
 
 public interface IndexMaker
 {
-    Index makeIndex() ;
-    String getLabel() ;
+    Index makeIndex();
+    String getLabel();
 }

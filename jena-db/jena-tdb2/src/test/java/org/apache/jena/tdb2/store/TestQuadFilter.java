@@ -18,14 +18,14 @@
 
 package org.apache.jena.tdb2.store;
 
-import java.util.function.Predicate ;
+import java.util.function.Predicate;
 
 import static org.junit.Assert.*;
-import org.apache.jena.atlas.lib.tuple.Tuple ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.query.* ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.atlas.lib.tuple.Tuple;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.query.*;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.tdb2.TDB2Factory;
@@ -33,56 +33,56 @@ import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.sys.SystemTDB;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
-import org.junit.Test ;
+import org.junit.Test;
 
 @Ignore("Quad filter tests not ready (transactions)")
 public class TestQuadFilter
 {
-    private static String graphToHide = "http://example/g2" ;
-    private static Dataset ds = setup() ;  
-    
+    private static String graphToHide = "http://example/g2";
+    private static Dataset ds = setup();
+
 
     @BeforeClass public static void beforeClass()
     {
-        
+
     }
-    
+
     @AfterClass public static void afterClass() {}
-    
+
     /** Example setup - in-memory dataset with two graphs, one triple in each */
     private static Dataset setup()
     {
-        Dataset ds = TDB2Factory.createDataset() ;
-        DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
+        Dataset ds = TDB2Factory.createDataset();
+        DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph());
         Txn.executeWrite(dsg,  ()->{
-            Quad q1 = SSE.parseQuad("(<http://example/g1> <http://example/s> <http://example/p> <http://example/o1>)") ;
-            Quad q2 = SSE.parseQuad("(<http://example/g2> <http://example/s> <http://example/p> <http://example/o2>)") ;
-            dsg.add(q1) ;
-            dsg.add(q2) ;
+            Quad q1 = SSE.parseQuad("(<http://example/g1> <http://example/s> <http://example/p> <http://example/o1>)");
+            Quad q2 = SSE.parseQuad("(<http://example/g2> <http://example/s> <http://example/p> <http://example/o2>)");
+            dsg.add(q1);
+            dsg.add(q2);
         });
-        return ds ;
+        return ds;
     }
-    
+
     /** Create a filter to exclude the graph http://example/g2 */
     private static Predicate<Tuple<NodeId>> createFilter(Dataset ds)
     {
-        DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
-        final NodeTable nodeTable = dsg.getQuadTable().getNodeTupleTable().getNodeTable() ;
-        final NodeId target = nodeTable.getNodeIdForNode(NodeFactory.createURI(graphToHide)) ;
+        DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph());
+        final NodeTable nodeTable = dsg.getQuadTable().getNodeTupleTable().getNodeTable();
+        final NodeId target = nodeTable.getNodeIdForNode(NodeFactory.createURI(graphToHide));
         return item -> !( item.len() == 4 && item.get(0).equals(target) );
-    }            
+    }
 
-    @Test public void quad_filter_1()   { test("SELECT * { GRAPH ?g { ?s ?p ?o } }", 1, 2) ; }
-    @Test public void quad_filter_2()   { test("SELECT * { ?s ?p ?o }", 1, 2) ; }
-    @Test public void quad_filter_3()   { test("SELECT * { GRAPH ?g { } }", 1, 2) ; }
-    
+    @Test public void quad_filter_1()   { test("SELECT * { GRAPH ?g { ?s ?p ?o } }", 1, 2); }
+    @Test public void quad_filter_2()   { test("SELECT * { ?s ?p ?o }", 1, 2); }
+    @Test public void quad_filter_3()   { test("SELECT * { GRAPH ?g { } }", 1, 2); }
+
     private void test(String qs, int withFilter, int withoutFilter)
     {
-        Predicate<Tuple<NodeId>> filter = createFilter(ds) ;
-        
+        Predicate<Tuple<NodeId>> filter = createFilter(ds);
+
 //    private static void example(Dataset ds, Filter<Tuple<NodeId>> filter)
 //    {
 //        String[] x = {
@@ -90,24 +90,24 @@ public class TestQuadFilter
 //            "SELECT * { ?s ?p ?o }",
 //            // THis filter does not hide the graph itself, just the quads associated with the graph.
 //            "SELECT * { GRAPH ?g {} }"
-//            } ;
-        Query query = QueryFactory.create(qs) ;
-        
+//            };
+        Query query = QueryFactory.create(qs);
+
         try(QueryExecution qExec = QueryExecutionFactory.create(query, ds)) {
             // Install filter for this query only.
-            qExec.getContext().set(SystemTDB.symTupleFilter, filter) ;
-            qExec.getContext().setTrue(TDB2.symUnionDefaultGraph) ;
-            long x1 = ResultSetFormatter.consume(qExec.execSelect()) ;
-            assertEquals(withFilter, x1) ;
+            qExec.getContext().set(SystemTDB.symTupleFilter, filter);
+            qExec.getContext().setTrue(TDB2.symUnionDefaultGraph);
+            long x1 = ResultSetFormatter.consume(qExec.execSelect());
+            assertEquals(withFilter, x1);
         }
         // No filter.
         try(QueryExecution qExec = QueryExecutionFactory.create(query, ds)) {
-            qExec.getContext().setTrue(TDB2.symUnionDefaultGraph) ;
-            long x2 = ResultSetFormatter.consume(qExec.execSelect()) ;
-            assertEquals(withoutFilter, x2) ;
+            qExec.getContext().setTrue(TDB2.symUnionDefaultGraph);
+            long x2 = ResultSetFormatter.consume(qExec.execSelect());
+            assertEquals(withoutFilter, x2);
         }
 
     }
-        
-    
+
+
 }

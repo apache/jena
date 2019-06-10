@@ -101,8 +101,20 @@ public class AssemblerUtils
             spec = RDFDataMgr.loadModel(assemblerFile) ;
         } catch (Exception ex)
         { throw new ARQException("Failed reading assembler description: "+ex.getMessage()) ; }
-        spec.add(modelExtras) ;
+        addRegistered(spec);
         return spec ;
+    }
+    
+    /** Add any extra information to the model.
+     * Such information includes registration of datasets (e.g. TDB1, TDB2)
+     * done by {@link #register} ({@link #registerDataset}, {@link #registerModel}.
+     * It avoids directly modifying {@link Assembler#general}.
+     * @param model
+     * @return Model The same model after modification.
+     */
+    public static Model addRegistered(Model model) {
+        model.add(modelExtras) ;
+        return model ;
     }
     
     public static Object build(String assemblerFile, String typeURI) {

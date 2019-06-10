@@ -25,14 +25,14 @@ public class InitSecurity implements JenaSubsystemLifecycle {
 
     @Override
     public void start() {
-        JenaSystem.logLifecycle("InitSecurity - start") ;
+        JenaSystem.logLifecycle("InitSecurity - start");
         VocabSecurity.init();
-        JenaSystem.logLifecycle("InitSecurity - finish") ;
+        JenaSystem.logLifecycle("InitSecurity - finish");
     }
 
     @Override
     public void stop() {}
-    
+
     @Override
     public int level() { return 100; }
 }

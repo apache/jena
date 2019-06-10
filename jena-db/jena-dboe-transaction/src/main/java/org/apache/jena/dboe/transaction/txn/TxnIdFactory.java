@@ -18,42 +18,42 @@
 
 package org.apache.jena.dboe.transaction.txn;
 
-import org.apache.commons.lang3.NotImplementedException ;
+import org.apache.commons.lang3.NotImplementedException;
 
 /** Factory for some forms of {@link TxnId}.
- * This is ony some possible {@link TxnIdGenerator} 
- * 
+ * This is ony some possible {@link TxnIdGenerator}
+ *
  * @see TxnId
  */
 public class TxnIdFactory {
     /** Generator for {@link TxnId}s for the counter based implementation. */
-    public static final TxnIdGenerator txnIdGenSimple = ()->TxnIdSimple.create() ;
+    public static final TxnIdGenerator txnIdGenSimple = ()->TxnIdSimple.create();
     /** Generator for {@link TxnId}s for the UUID based implementation. */
-    public static final TxnIdGenerator txnIdGenUuid   = ()->TxnIdUuid.create() ;
-    
+    public static final TxnIdGenerator txnIdGenUuid   = ()->TxnIdUuid.create();
+
     /** Return the default, good enough for one JVM
-     * (usually the simple counter based implementation) 
+     * (usually the simple counter based implementation)
      */
     public static TxnId create() {
-        return createSimple() ;
+        return createSimple();
     }
-    
+
     /** Return a TxnId from the counter based implementation. */
     public static TxnId createSimple() {
-        return txnIdGenSimple.generate() ; 
+        return txnIdGenSimple.generate();
     }
-    
+
     /** Return a TxnId from the UUID based implementation. */
     public static TxnId createUuid() {
-        return txnIdGenUuid.generate() ; 
+        return txnIdGenUuid.generate();
     }
-    
+
     public static TxnId create(byte[] bytes) {
         switch(bytes.length) {
-            case 8 : return TxnIdSimple.create(bytes) ;
-            case 16 :return TxnIdUuid.create(bytes) ;
+            case 8 : return TxnIdSimple.create(bytes);
+            case 16 :return TxnIdUuid.create(bytes);
             default:
-                throw new NotImplementedException("Unrcognized bytes length: "+bytes.length) ;
+                throw new NotImplementedException("Unrcognized bytes length: "+bytes.length);
         }
     }
 

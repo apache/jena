@@ -18,4 +18,4 @@
 
 package org.apache.jena.tdb2.solver;
 
-interface Abortable { public void abort() ; }
+interface Abortable { public void abort(); }

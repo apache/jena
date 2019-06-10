@@ -68,10 +68,10 @@ abstract public class DatasetGraphBase implements DatasetGraph
     
     @Override
     public Graph getUnionGraph() {
-        // Implementations are encouraged to implement an efficent
-        // named graph for Quad.unionGraph, and this operation that
-        // does not require the full "distinct()" used by the general purpose
-        // GraphUnionRead. See also
+        // Implementations are encouraged to implement an efficient named graph for
+        // Quad.unionGraph that does not require the full "distinct()" used by this
+        // general purpose implementation.
+        // See also
         // {@code DatasetGraphBase.findQuadsInUnionGraph} and
         // {@code findNG(Quad.unionGraph, Node.ANY, Node.ANY, Node.ANY)}
         return GraphOps.unionGraph(this);
@@ -101,16 +101,19 @@ abstract public class DatasetGraphBase implements DatasetGraph
     @Override
     public void delete(Node g, Node s, Node p, Node o)  { delete(new Quad(g,s,p,o)) ; }
     
-    private static final int DeleteBufferSize = 1000 ;
     @Override
     /** Simple implementation but done without assuming iterator.remove() */
     public void deleteAny(Node g, Node s, Node p, Node o) {
-        // Delete in slices rather than assume .remove() on the iterator is
-        // implemented.
+        deleteAny(this, g, s, p, o);
+    }
+    
+    private static final int DeleteBufferSize = 1000 ;
+    public static void deleteAny(DatasetGraph dsg, Node g, Node s, Node p, Node o) {
+        // Delete in slices rather than assume .remove() on the iterator is implemented.
         // We keep executing find(g, s, p, o) until we don't get a full slice.
         Quad[] buffer = new Quad[DeleteBufferSize];
         while (true) {
-            Iterator<Quad> iter = find(g, s, p, o);
+            Iterator<Quad> iter = dsg.find(g, s, p, o);
             // Get a slice
             int len = 0;
             for ( ; len < DeleteBufferSize ; len++ ) {
@@ -120,7 +123,7 @@ abstract public class DatasetGraphBase implements DatasetGraph
             }
             // Delete them.
             for ( int i = 0 ; i < len ; i++ ) {
-                delete(buffer[i]);
+                dsg.delete(buffer[i]);
                 buffer[i] = null;
             }
             // Finished?

@@ -18,31 +18,31 @@
 
 package org.apache.jena.tdb2.graph;
 
-import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.core.AbstractDatasetGraphTests ;
-import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.query.ReadWrite;
+import org.apache.jena.sparql.core.AbstractDatasetGraphTests;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.junit.TL;
-import org.junit.After ;
-import org.junit.Before ;
-import org.junit.Test ;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 // Quad tests
 public class TestDatasetGraphTDB extends AbstractDatasetGraphTests
 {
-    DatasetGraph dsg = TL.createTestDatasetGraphMem() ;
+    DatasetGraph dsg = TL.createTestDatasetGraphMem();
     @Before public void before() {
         dsg.begin(ReadWrite.WRITE);
     }
-    
+
     @After public void after() {
         dsg.abort();
         dsg.end();
         TL.expel(dsg);
     }
-    
+
     @Override
     protected DatasetGraph emptyDataset() {
-        return dsg ;
+        return dsg;
     }
 
     @Override

@@ -18,29 +18,29 @@
 
 package org.apache.jena.fuseki.server;
 
-import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.Resource;
 
 public enum DataServiceStatus {
-    
+
     UNINITIALIZED("Uninitialized"),
     ACTIVE("Active"),
     OFFLINE("Offline"),
     CLOSING("Closing"),
-    CLOSED("Closed") ;
-    
-    public final String name ; 
-    DataServiceStatus(String string) { name = string ; }
-    
+    CLOSED("Closed");
+
+    public final String name;
+    DataServiceStatus(String string) { name = string; }
+
     public static DataServiceStatus status(Resource r) {
         if ( FusekiVocab.stateActive.equals(r) )
-            return ACTIVE ;
+            return ACTIVE;
         if ( FusekiVocab.stateOffline.equals(r) )
-            return OFFLINE ;
+            return OFFLINE;
         if ( FusekiVocab.stateClosing.equals(r) )
-            return CLOSING ;
+            return CLOSING;
         if ( FusekiVocab.stateClosed.equals(r) )
-            return CLOSED ;
-        return null ;
+            return CLOSED;
+        return null;
     }
 }
 

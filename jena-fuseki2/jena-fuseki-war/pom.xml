@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-fuseki</artifactId>
-    <version>3.11.0-SNAPSHOT</version>
+    <version>3.13.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent> 
 
@@ -58,7 +58,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>2.4</version>
         <executions> 
           <execution>
             <id>generate-webapp</id>
@@ -69,6 +68,14 @@
         <configuration>
           <warSourceDirectory>../jena-fuseki-webapp/src/main/webapp</warSourceDirectory>
           <webXml>../jena-fuseki-webapp/src/main/webapp/WEB-INF/web.xml</webXml>
+
+          <webResources>
+            <resource>
+              <directory>war-inclusions/</directory>
+              <targetPath>/</targetPath>
+            </resource>
+          </webResources>
+
           <!-- Safe: Don't put in the Jetty dependency nor javax.servlet -->
           <packagingExcludes>WEB-INF/lib/jetty-*,WEB-INF/lib/javax.servlet*</packagingExcludes>
         </configuration>

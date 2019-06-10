@@ -46,16 +46,16 @@ class PhasedOps {
               .forEach(idx->indexMap.put(idx.getName(), idx));
         return indexMap;
     }
-    
+
     static TupleIndex[][] indexSetsFromNames(String[][] indexNames, Map<String, TupleIndex> indexMap) {
         // Bad error message!
-        //return deepMap(indexNames, indexMap::get, TupleIndex[]::new, TupleIndex[][]::new);  
+        //return deepMap(indexNames, indexMap::get, TupleIndex[]::new, TupleIndex[][]::new);
         TupleIndex[][] z = Arrays.stream(indexNames)
             .map(indexSetNames->indexSetFromNames(indexSetNames, indexMap))
             .toArray(TupleIndex[][]::new);
         return z;
     }
-    
+
     static TupleIndex[] indexSetFromNames(String[] indexNames, Map<String, TupleIndex> indexMap) {
         return Arrays.stream(indexNames)
             .map(name-> findInIndexMap(name, indexMap))
@@ -68,8 +68,8 @@ class PhasedOps {
             throw new IllegalArgumentException("No such index: "+name);
         return tIdx;
     }
-    
-    /** Check the loader plan makes sense. */ 
+
+    /** Check the loader plan makes sense. */
     private static void checkLoaderPlan(LoaderPlan loaderPlan, Map<String, TupleIndex> indexMap) {
         Consumer<String> checker3 = name -> {
             if ( name == null ) throw new BulkLoaderException("Null index name");
@@ -81,21 +81,21 @@ class PhasedOps {
             if ( name.length() != 4 ) throw new BulkLoaderException("Bad length (expected 4): "+name);
             if ( !indexMap.containsKey(name) ) throw new BulkLoaderException("No such index: "+name);
         };
-        
+
         // -- Checking for nulls and bad index names.
         arrayApply1(loaderPlan.primaryLoad3(), checker3);
         arrayApply1(loaderPlan.primaryLoad4(), checker4);
-        
+
         arrayApply2(loaderPlan.secondaryIndex3(), checker3);
         arrayApply2(loaderPlan.secondaryIndex4(), checker4);
-        
+
         // -- Checking for duplicates
         checkUnique("Primary triples",loaderPlan.primaryLoad3());
         checkUnique("Primary quads", loaderPlan.primaryLoad4());
-        
+
         String[] secondary3 = flatten(loaderPlan.secondaryIndex3(), String[]::new);
         String[] secondary4 = flatten(loaderPlan.secondaryIndex4(), String[]::new);
-        
+
         checkUnique("Secondary triples", secondary3);
         checkUnique("Secondary quads", secondary4);
     }
@@ -116,8 +116,8 @@ class PhasedOps {
         return sj.toString();
     }
 
-    // Hide java noise with specific function implementations of some operations. 
-    
+    // Hide java noise with specific function implementations of some operations.
+
     private static <X> void arrayApply2(X[][] array, Consumer<X> action) {
         if ( array == null )
             return;
@@ -127,7 +127,7 @@ class PhasedOps {
             }
         }
     }
-    
+
     private static <X> void arrayApply1(X[] array, Consumer<X> action) {
         if ( array == null )
             return;
@@ -139,13 +139,13 @@ class PhasedOps {
     private static <X> X[] flatten(X[][] array, IntFunction<X[]> generator) {
         return flatten(array).toArray(generator);
     }
-    
+
     private static <X> Stream<X> flatten(X[][] array) {
         if ( array == null )
             return null;
         return Arrays.stream(array).flatMap(Arrays::stream);
     }
-    
+
     static class ReplayResult {
         final long items;
         final long elapsed;
@@ -156,15 +156,15 @@ class PhasedOps {
     }
 
     /** Return (Number, Time in ms) */
-    
+
     static ReplayResult replay(TupleIndex srcIdx, Destination<Tuple<NodeId>> dest, MonitorOutput output) {
-        ProgressMonitor monitor = 
+        ProgressMonitor monitor =
             ProgressMonitorFactory.progressMonitor("Index", output, LoaderMain.IndexTickPoint, LoaderMain.IndexSuperTick);
-        
+
         List<Tuple<NodeId>> block = null;
 
         int len = srcIdx.getTupleLength();
-        
+
         monitor.start();
         Iterator<Tuple<NodeId>> iter = srcIdx.all();
         while (iter.hasNext()) {

@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.base.file ;
+package org.apache.jena.dboe.base.file;
 
-import java.io.File ;
+import java.io.File;
 
-import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.lib.tuple.Tuple ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.atlas.lib.tuple.Tuple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Naming metadata management to a collection of related files (same directory,
@@ -32,15 +32,15 @@ import org.slf4j.LoggerFactory ;
 public class FileSet {
     // Cope with "in-memory" fileset (location == null)
 
-    private static Logger log = LoggerFactory.getLogger(FileSet.class) ;
+    private static Logger log = LoggerFactory.getLogger(FileSet.class);
 
-    private Location      location ;
-    private String        basename ;
+    private Location      location;
+    private String        basename;
 
     /** FileSet for "in-memory" */
     public static FileSet mem() {
-        FileSet fs = new FileSet(Location.mem(), "mem") ;
-        return fs ;
+        FileSet fs = new FileSet(Location.mem(), "mem");
+        return fs;
     }
 
     // private FileSet() {} // Uninitialized.
@@ -49,68 +49,68 @@ public class FileSet {
      * Create a FileSet given Location (directory) and name within the directory
      */
     public FileSet(String directory, String basename) {
-        initFileSet(Location.create(directory), basename) ;
+        initFileSet(Location.create(directory), basename);
     }
 
     /**
      * Create a FileSet given Location (directory) and name within the directory
      */
     public FileSet(String filename) {
-        Tuple<String> t = FileOps.splitDirFile(filename) ;
-        String dir = t.get(0) ;
-        String fn = t.get(1) ;
+        Tuple<String> t = FileOps.splitDirFile(filename);
+        String dir = t.get(0);
+        String fn = t.get(1);
         if ( dir == null )
-            dir = "." ;
-        initFileSet(Location.create(dir), fn) ;
+            dir = ".";
+        initFileSet(Location.create(dir), fn);
     }
 
     /**
      * Create a FileSet given Location (directory) and name within the directory
      */
     public FileSet(Location directory, String basename) {
-        initFileSet(directory, basename) ;
+        initFileSet(directory, basename);
     }
 
     private void initFileSet(Location directory, String basename) {
         // Default - don't use the locations metadata
-        initFileSet(directory, basename, false) ;
+        initFileSet(directory, basename, false);
     }
 
     private void initFileSet(Location directory, String basename, boolean useLocationMetadata) {
-        this.location = directory ;
-        this.basename = basename ;
+        this.location = directory;
+        this.basename = basename;
     }
 
     public Location getLocation() {
-        return location ;
+        return location;
     }
 
     public String getBasename() {
-        return basename ;
+        return basename;
     }
 
-    // public MetaFile getMetaFile() { return metafile ; }
+    // public MetaFile getMetaFile() { return metafile; }
 
     public boolean isMem() {
-        return location.isMem() ;
+        return location.isMem();
     }
 
     public boolean exists(String ext) {
         if ( location.isMem() )
-            return true ;
-        String fn = filename(ext) ;
-        File f = new File(fn) ;
+            return true;
+        String fn = filename(ext);
+        File f = new File(fn);
         if ( f.isDirectory() )
-            log.warn("File clashes with a directory") ;
-        return f.exists() && f.isFile() ;
+            log.warn("File clashes with a directory");
+        return f.exists() && f.isFile();
     }
 
     @Override
     public String toString() {
-        return "FileSet:" + filename(null) ;
+        return "FileSet:" + filename(null);
     }
 
     public String filename(String ext) {
-        return location.getPath(basename, ext) ;
+        return location.getPath(basename, ext);
     }
 }

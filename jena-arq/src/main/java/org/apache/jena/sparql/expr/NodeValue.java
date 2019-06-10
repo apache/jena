@@ -105,7 +105,6 @@ public abstract class NodeValue extends ExprNode
      *    string: length(string) > 0 is true
      *    numeric: number != Nan && number != 0 is true
      * ref:  http://www.w3.org/TR/xquery/#dt-ebv
-     * 
      */
     
     private static Logger log = LoggerFactory.getLogger(NodeValue.class) ;
@@ -115,9 +114,6 @@ public abstract class NodeValue extends ExprNode
     public static boolean VerboseWarnings = true ;
     public static boolean VerboseExceptions = false ;
     
-    public static final BigInteger IntegerZERO = BigInteger.ZERO ;
-    public static final BigDecimal DecimalZERO = BigDecimal.ZERO ;
-
     public static final NodeValue TRUE   = NodeValue.makeNode("true", XSDboolean) ;
     public static final NodeValue FALSE  = NodeValue.makeNode("false", XSDboolean) ;
     
@@ -342,7 +338,7 @@ public abstract class NodeValue extends ExprNode
     
     public static NodeValue makeNodeDecimal(BigDecimal decimal)
     {
-        NodeValue nv = makeNode(Utils.stringForm(decimal), null, XSDdecimal.getURI()) ;
+        NodeValue nv = XSDFuncOp.canonicalDecimalNV(decimal) ;
         return nv ;
     }
 
@@ -1041,28 +1037,23 @@ public abstract class NodeValue extends ExprNode
             }
 
             if ( (datatype.equals(XSDdateTime) || datatype.equals(XSDdateTimeStamp)) && XSDdateTime.isValid(lex) ) {
-                XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
 
             if ( datatype.equals(XSDdate) && XSDdate.isValidLiteral(lit) ) {
                 // Jena datatype support works on masked dataTimes.
-                XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
+                //XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
 
             if ( datatype.equals(XSDtime) && XSDtime.isValidLiteral(lit) ) {
-                // Jena datatype support works on masked dataTimes.
-                XSDDateTime time = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
 
             if ( datatype.equals(XSDgYear) && XSDgYear.isValidLiteral(lit) ) {
-                XSDDateTime time = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
             if ( datatype.equals(XSDgYearMonth) && XSDgYearMonth.isValidLiteral(lit) ) {
-                XSDDateTime time = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
             if ( datatype.equals(XSDgMonth) && XSDgMonth.isValidLiteral(lit) ) {

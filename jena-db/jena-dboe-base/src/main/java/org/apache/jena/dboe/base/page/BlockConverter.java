@@ -21,15 +21,15 @@ package org.apache.jena.dboe.base.page;
 import org.apache.jena.dboe.base.block.Block;
 import org.apache.jena.dboe.base.block.BlockType;
 
-/** Convert between Blocks and typed Pages */ 
+/** Convert between Blocks and typed Pages */
 public interface BlockConverter<T extends Page>
 {
     /** Create a T, given an existing Block */
-    public T fromBlock(Block block) ;
-    
+    public T fromBlock(Block block);
+
     /** Make a block, given a T */
-    public Block toBlock(T t) ;
-    
-    /** Create a new T from an uninitialized Block */ 
-    public T createFromBlock(Block block, BlockType bType) ;
+    public Block toBlock(T t);
+
+    /** Create a new T from an uninitialized Block */
+    public T createFromBlock(Block block, BlockType bType);
 }

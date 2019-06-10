@@ -18,53 +18,52 @@
 
 package org.apache.jena.fuseki.mgt;
 
-import java.nio.file.Path ;
+import java.nio.file.Path;
 
 import org.apache.jena.fuseki.webapp.FusekiEnv;
 
 public class Template
 {
     public static Path getPath(String templateName) {
-        return FusekiEnv.FUSEKI_BASE.resolve(templateName) ;
+        return FusekiEnv.FUSEKI_BASE.resolve(templateName);
     }
-    
-    public static final String templateDir          = "templates" ;
-    
+
+    public static final String templateDir          = "templates";
+
     // These are used by the command line start up.
-    public static final String templateServiceFN    = templateDir+"/config-service" ;       // Dummy used by dataset-less service.
+    public static final String templateServiceFN    = templateDir+"/config-service";       // Dummy used by dataset-less service.
 
     // TDB1 - for backwards compatibility, the files are called "tdb"
-    public static final String templateTDB1_FN        = templateDir+"/config-tdb" ;
-    public static final String templateTDB1_MemFN     = templateDir+"/config-tdb-mem" ; 
-    public static final String templateTDB1_DirFN     = templateDir+"/config-tdb-dir" ;
-    public static final String templateTDB1_DirReadFN = templateDir+"/config-tdb-dir-read-only" ;
-    
-    public static final String templateTDB2_FN        = templateDir+"/config-tdb2" ;
-    public static final String templateTDB2_MemFN     = templateDir+"/config-tdb2-mem" ; 
-    public static final String templateTDB2_DirFN     = templateDir+"/config-tdb2-dir" ;
-    public static final String templateTDB2_DirReadFN = templateDir+"/config-tdb2-dir-read-only" ;
-    
-    
-    public static final String templateTIM_MemFN      = templateDir+"/config-mem" ;
+    public static final String templateTDB1_FN        = templateDir+"/config-tdb";
+    public static final String templateTDB1_MemFN     = templateDir+"/config-tdb-mem";
+    public static final String templateTDB1_DirFN     = templateDir+"/config-tdb-dir";
+    public static final String templateTDB1_DirReadFN = templateDir+"/config-tdb-dir-read-only";
+
+    public static final String templateTDB2_FN        = templateDir+"/config-tdb2";
+    public static final String templateTDB2_MemFN     = templateDir+"/config-tdb2-mem";
+    public static final String templateTDB2_DirFN     = templateDir+"/config-tdb2-dir";
+    public static final String templateTDB2_DirReadFN = templateDir+"/config-tdb2-dir-read-only";
+
+
+    public static final String templateTIM_MemFN      = templateDir+"/config-mem";
 
     // Template may be in a resources area of a jar file so you can't do a directory listing.
     public static final String[] templateNames = {
         templateTIM_MemFN,
-        templateServiceFN,
-        
+
         templateTDB1_FN ,
         templateTDB1_MemFN ,
         templateTDB1_DirFN ,
         //templateTDB1_DirReadFN,
-        
+
         templateTDB2_FN ,
         templateTDB2_MemFN ,
         templateTDB2_DirFN ,
         //templateTDB2_DirReadFN
-    } ;
-    
-    public static final String NAME = "NAME" ;
-    public static final String DATA = "DATA" ;
-    public static final String DIR =  "DIR" ;
+    };
+
+    public static final String NAME = "NAME";
+    public static final String DATA = "DATA";
+    public static final String DIR =  "DIR";
 }
 

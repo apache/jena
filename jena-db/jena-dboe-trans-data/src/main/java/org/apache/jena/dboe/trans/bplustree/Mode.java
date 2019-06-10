@@ -19,36 +19,28 @@
 package org.apache.jena.dboe.trans.bplustree;
 
 /** Tree mode - changing the mode on an existing tree is not supported.
- * The normal mode of operation is {@link Mode#TRANSACTIONAL}  
+ * The normal mode of operation is {@link Mode#TRANSACTIONAL}
  */
-public enum Mode {
-    /** 
-     * B+Tree changes are applied in place. MRSW applies.
-     */
-    MUTABLE,
-    /**
-     * All operations create new replicated blocks; a replicated block
-     * within the operation is not replicated.
-     */
-    IMMUTABLE,
-    /**
-     * All changes create new replicated blocks; replicated blocks
-     * are re-replicated.  (testing)
-     */
-    IMMUTABLE_ALL,
-    /**
-     * As above except the root alone is mutated, hence it is a fixed, known
-     * id. (testing)
-     */
-    MUTABLE_ROOT,
+/*package*/ enum Mode {
     /**
      * Transactional lifecycle, where blocks below the water marks are
      * immutable.
      */
-    TRANSACTIONAL,
+    TRANSACTIONAL
     /**
-     * Transactional lifecycle, with automatic transactions for update
-     * operations outside an explicit transaction.
+     * B+Tree changes are applied in place. MRSW applies.
      */
-    TRANSACTIONAL_AUTOCOMMIT
+    , MUTABLE
+
+    // Unused modes.
+    /**
+     * All operations create new replicated blocks; a replicated block
+     * within the operation is not replicated.
+     */
+    , IMMUTABLE
+    /**
+     * All changes create new replicated blocks; replicated blocks
+     * are re-replicated. (testing)
+     */
+    , IMMUTABLE_ALL
 }

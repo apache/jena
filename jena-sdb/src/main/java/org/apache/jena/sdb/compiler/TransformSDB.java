@@ -190,16 +190,16 @@ public class TransformSDB extends TransformCopy
     
     @Override
     public Op transform(OpProject opProject, Op subOp)
-    { 
+    {
         //request.getStore().getSQLBridgeFactory().create(request, null, null)
         if ( ! SDB_QC.isOpSQL(subOp) )
             return super.transform(opProject, subOp) ;
-        
+
         // Need to not do bridge elsewhere.
         List<Var> vars = opProject.getVars() ;
         return doBridge(request, (OpSQL)subOp, vars, opProject) ;
     }
-    
+
     @Override
     public Op transform(OpService opService, Op subOp)
     {
@@ -207,7 +207,7 @@ public class TransformSDB extends TransformCopy
         // See ARQ Optimize class for a better way to do this.
         return opService ;
     }
-    
+
     // See QueryCompilerMain.SqlNodesFinisher.visit(OpExt op)
     // Be careful about being done twice.
     // XXX SHARE CODE!

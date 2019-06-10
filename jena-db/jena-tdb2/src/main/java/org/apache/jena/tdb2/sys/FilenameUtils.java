@@ -36,7 +36,7 @@ public class FilenameUtils {
 
     static Logger LOG = LoggerFactory.getLogger(FilenameUtils.class);
 
-    /** Find the files in this directory that have namebase as a prefix and 
+    /** Find the files in this directory that have namebase as a prefix and
      *  are then numbered.
      *  <p>
      *  Returns a sorted list from, low to high index.
@@ -50,7 +50,7 @@ public class FilenameUtils {
             for ( Path entry : stream ) {
                 if ( !pattern.matcher(entry.getFileName().toString()).matches() ) {
                     throw new DBOpEnvException("Invalid filename for matching: "+entry.getFileName());
-                    // Alternative: Skip bad trailing parts but more likely there is a naming problem.  
+                    // Alternative: Skip bad trailing parts but more likely there is a naming problem.
                     //   LOG.warn("Invalid filename for matching: {} skipped", entry.getFileName());
                     //   continue;
                 }
@@ -75,7 +75,7 @@ public class FilenameUtils {
     }
 
     /**
-     * Extract the index from a version-ed filename. (Base-NNNN format). 
+     * Extract the index from a version-ed filename. (Base-NNNN format).
      * @param name
      * @param namebase
      * @param nameSep
@@ -86,17 +86,17 @@ public class FilenameUtils {
         int num = Integer.parseInt(numStr);
         return num;
     }
-    
+
     /** Construct a filename */
     public static String filename(String prefix, String sep, int N) {
         return String.format("%s%s%04d", prefix, sep, N);
     }
-    
+
     /** Construct a filename */
     public static String filename(String prefix, String sep, String index) {
         return String.format("%s%s%s", prefix, sep, index);
     }
-    
+
 
 
 }

@@ -79,15 +79,11 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
         txn = backing;
     }
     
-    @SuppressWarnings("deprecation")
     private DatasetGraphOne(Graph graph) {
         // Not GraphView which was hanled in create(Graph). 
         this.graph = graph;
-        // JENA-1492 - pass down transactions.
-        if ( TxnDataset2Graph.TXN_DSG_GRAPH )
-            txn = new TxnDataset2Graph(graph);
-        else
-            txn = TransactionalLock.createMRSW();
+        txn = new TxnDataset2Graph(graph);
+        //txn = TransactionalLock.createMRSW();
         backingDGS = null;
         // Don't advertise the fact but TxnDataset2Graph tries to provide abort.
         // We can not guarantee it though because a plain, non-TIM, 

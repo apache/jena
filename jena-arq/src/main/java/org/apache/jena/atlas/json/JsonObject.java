@@ -18,9 +18,10 @@
 
 package org.apache.jena.atlas.json;
 
-import java.util.* ;
+import java.util.*;
 import java.util.Map.Entry ;
 import java.util.function.BiConsumer ;
+import java.util.stream.Stream;
 
 public class JsonObject extends JsonValue
 {
@@ -69,6 +70,31 @@ public class JsonObject extends JsonValue
     /** For walking structures */
     public JsonObject getObj(String key) {
         return get(key).getAsObject() ;
+    }
+
+    /** For walking structures */
+    public Number getNumber(String key) {
+        return get(key).getAsNumber().value();
+    }
+
+    /** For walking structures */
+    public String getString(String key) {
+        return get(key).getAsString().value();
+    }
+
+    /** For walking structures */
+    public boolean getBoolean(String key) {
+        return get(key).getAsBoolean().value();
+    }
+
+    /** For walking structures */
+    public Stream<JsonValue> getArray(String key) {
+        return get(key).getAsArray().stream();
+    }
+
+    /** For walking structures */
+    public Iterator<JsonValue> getIterator(String key) {
+        return get(key).getAsArray().iterator();
     }
 
     public boolean isEmpty() {

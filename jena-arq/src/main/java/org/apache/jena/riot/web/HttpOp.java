@@ -380,7 +380,7 @@ public class HttpOp {
         try {
             execHttpGet(url, acceptHeader, handler, httpClient, httpContext);
         } catch (HttpException ex) {
-            if (ex.getResponseCode() == HttpSC.NOT_FOUND_404)
+            if (ex.getStatusCode() == HttpSC.NOT_FOUND_404)
                 return null;
             throw ex;
         }
@@ -414,7 +414,7 @@ public class HttpOp {
         try {
             execHttpGet(url, acceptHeader, handler);
         } catch (HttpException ex) {
-            if (ex.getResponseCode() == HttpSC.NOT_FOUND_404)
+            if (ex.getStatusCode() == HttpSC.NOT_FOUND_404)
                 return null;
             throw ex;
         }
@@ -479,7 +479,7 @@ public class HttpOp {
         try {
             execHttpPost(url, contentType, content, acceptType, handler, httpClient, httpContext);
         } catch (HttpException ex) {
-            if (ex.getResponseCode() == HttpSC.NOT_FOUND_404)
+            if (ex.getStatusCode() == HttpSC.NOT_FOUND_404)
                 return null;
             throw ex;
         }
@@ -510,27 +510,16 @@ public class HttpOp {
                                     HttpResponseHandler handler, HttpClient httpClient, HttpContext httpContext) {
         StringEntity e = null;
         try {
-            e = new StringEntity(content, StandardCharsets.UTF_8);
-            e.setContentType(contentType);
+            if ( content != null ) {
+                e = new StringEntity(content, StandardCharsets.UTF_8);
+                e.setContentType(contentType);
+            }
             execHttpPost(url, e, acceptType, handler, httpClient, httpContext);
         }
         finally {
             closeEntity(e);
         }
     }
-
-    //    
-//        
-//        StringEntity e = null;
-//        try {
-//            e = new StringEntity(content, StandardCharsets.UTF_8);
-//            e.setContentType(contentType);
-//            return execHttpPostStream(url, e, acceptType, null, null, null) ;
-//        }
-//        finally {
-//            closeEntity(e);
-//        }
-//    }
 
     /**
      * Executes a HTTP POST with a request body from an input stream without
@@ -821,7 +810,7 @@ public class HttpOp {
         try {
             execHttpPostForm(url, params, acceptHeader, handler, httpClient, httpContext);
         } catch (HttpException ex) {
-            if (ex.getResponseCode() == HttpSC.NOT_FOUND_404)
+            if (ex.getStatusCode() == HttpSC.NOT_FOUND_404)
                 return null;
             throw ex;
         }

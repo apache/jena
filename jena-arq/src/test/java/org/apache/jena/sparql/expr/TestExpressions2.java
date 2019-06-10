@@ -20,11 +20,7 @@ package org.apache.jena.sparql.expr;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.query.QueryParseException ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionEnvBase ;
 import org.apache.jena.sparql.util.ExprUtils ;
 import org.junit.Test ;
 
@@ -152,7 +148,7 @@ public class TestExpressions2 extends BaseTest
     /*package*/ static void eval(String string, boolean result)
     {
         Expr expr = ExprUtils.parse(string) ;
-        NodeValue nv = expr.eval(null, FunctionEnvBase.createTest()) ;
+        NodeValue nv = expr.eval(null, LibTestExpr.createTest()) ;
         boolean b = XSDFuncOp.booleanEffectiveValue(nv) ;
         assertEquals(string, result, b) ;
     }

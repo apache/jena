@@ -35,13 +35,6 @@ public abstract class FunctionBase implements Function {
         // Rename for legacy reasons.
         checkBuild(uri, args) ;
     }
-
-    // Valid during execution.
-    // Only specialised uses need these values 
-    // e.g. fn:apply which is a meta-function - it looks up a URI to get a function to call.
-    protected FunctionEnv functionEnv = null;
-    // Not needed so hide but keep for debugging.
-    private Binding binding = null;
     
     @Override
     public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env) {
@@ -49,24 +42,25 @@ public abstract class FunctionBase implements Function {
             // The contract on the function interface is that this should not happen.
             throw new ARQInternalErrorException("FunctionBase: Null args list") ;
         
-        List<NodeValue> evalArgs = new ArrayList<>() ;
-        for ( Expr e : args )
-        {
-            NodeValue x = e.eval( binding, env );
-            evalArgs.add( x );
+        List<NodeValue> evalArgs = evalArgs(binding, args, env);
+        return exec(evalArgs, env) ;
+    }
+
+    public static List<NodeValue> evalArgs(Binding binding, ExprList args, FunctionEnv env) {
+        List<NodeValue> evalArgs = new ArrayList<>();
+        for ( Expr e : args ) {
+            NodeValue x = e.eval(binding, env);
+            evalArgs.add(x);
         }
-        
-        // Cature
-        try {
-            this.functionEnv = env ;
-            this.binding = binding;
-            NodeValue nv = exec(evalArgs) ;
-            return nv ;
-        } finally {
-            this.functionEnv = null ;
-            this.binding = null;
-        }
-        
+        return evalArgs;
+    }
+
+    /** Evaluation with access to the environment. 
+     * Special and careful use only! 
+     * Arity will have been checked if using a fixed-count FunctionBase subclass.
+     */ 
+    protected NodeValue exec(List<NodeValue> args, FunctionEnv env) {
+        return exec(args);
     }
     
     /** Function call to a list of evaluated argument values */ 

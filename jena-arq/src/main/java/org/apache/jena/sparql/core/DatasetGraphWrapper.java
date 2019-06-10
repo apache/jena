@@ -69,11 +69,12 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
     }
 
     /** The dataset to use for redirection - can be overridden.
-     *  It is also guarantee that this is called only once per
+     *  It is also guaranteed that this is called only once per
      *  delegated call.  Changes to the wrapped object can be
-     *  made based on that contract. 
+     *  made based on that contract.
      */
     protected DatasetGraph get() { return dsg; }
+    
     protected Context getCxt()   { return context; }
 
     /** For operations that only read the DatasetGraph. */ 
@@ -213,7 +214,7 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
     @Override
     public void sync() {
         // Pass down sync.
-        SystemARQ.sync(getW()); 
+        SystemARQ.sync(getW());
     }
 
     @Override

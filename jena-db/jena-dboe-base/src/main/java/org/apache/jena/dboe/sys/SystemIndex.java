@@ -24,127 +24,117 @@ import org.apache.jena.dboe.base.block.FileMode;
 public class SystemIndex
 {
     /** Size, in bytes, of a pointer between blocks */
-    public static final int SizeOfPointer           = Sys.SizeOfInt ;
-    
-    public static final boolean is64bitSystem       = Sys.is64bitSystem ;
+    public static final int SizeOfPointer           = Sys.SizeOfInt;
+
+    public static final boolean is64bitSystem       = Sys.is64bitSystem;
 
     // To make the class initialize
     static public void init() {}
-    
+
     /** Size, in bytes, of a block */
-    public static final int BlockSize               = 8*1024 ; // intValue("BlockSize", 8*1024) ;
+    public static final int BlockSize               = 8*1024; // intValue("BlockSize", 8*1024) ;
 
     /** Size, in bytes, of a block for testing */
-    public static final int BlockSizeTest           = 1024 ; // intValue("BlockSizeTest", 1024) ;
+    public static final int BlockSizeTest           = 1024; // intValue("BlockSizeTest", 1024) ;
 
     /** Size, in bytes, of a block for testing */
-    public static final int BlockSizeTestMem         = 500 ;
+    public static final int BlockSizeTestMem         = 500;
 
 //    /** Size, in bytes, of a memory block */
-//    public static final int BlockSizeMem            = 32*8 ; //intValue("BlockSizeMem", 32*8 ) ;
+//    public static final int BlockSizeMem            = 32*8; //intValue("BlockSizeMem", 32*8 ) ;
 
     /** Order of an in-memory BTree or B+Tree */
-    public static final int OrderMem                = 5 ; // intValue("OrderMem", 5) ;
-    
+    public static final int OrderMem                = 5; // intValue("OrderMem", 5) ;
+
     /** Size, in bytes, of a segment (used for memory mapped files) */
-    public static final int SegmentSize             = 8*1024*1024 ; // intValue("SegmentSize", 8*1024*1024) ;
-    
+    public static final int SegmentSize             = 8*1024*1024; // intValue("SegmentSize", 8*1024*1024) ;
+
     // ---- Cache sizes (within the JVM)
 
     /** Size of Node to NodeId cache.
      *  Used to map from Node to NodeId spaces.
      *  Used for loading and for query preparation.
      */
-    public static final int Node2NodeIdCacheSize    = intValue("Node2NodeIdCacheSize", ( is64bitSystem ? 100*1000 : 50*1000 )) ;
+    public static final int Node2NodeIdCacheSize    = intValue("Node2NodeIdCacheSize", ( is64bitSystem ? 100*1000 : 50*1000 ));
 
     /** Size of NodeId to Node cache.
      *  Used to map from NodeId to Node spaces.
      *  Used for retriveing results.
      */
-    public static final int NodeId2NodeCacheSize    = intValue("NodeId2NodeCacheSize", ( is64bitSystem ? 500*1000 : 50*1000 ) ) ;
-    
+    public static final int NodeId2NodeCacheSize    = intValue("NodeId2NodeCacheSize", ( is64bitSystem ? 500*1000 : 50*1000 ) );
+
     /** Size of Node lookup miss cache. */
-    public static final int NodeMissCacheSize       = 100 ;
-    
+    public static final int NodeMissCacheSize       = 100;
+
     /** Size of the delayed-write block cache (32 bit systems only) (per file) */
-    public static final int BlockWriteCacheSize     = intValue("BlockWriteCacheSize", 2*1000) ;
+    public static final int BlockWriteCacheSize     = intValue("BlockWriteCacheSize", 2*1000);
 
     /** Size of read block cache (32 bit systems only).  Increase JVM size as necessary. Per file. */
-    public static final int BlockReadCacheSize      = intValue("BlockReadCacheSize", 10*1000) ;
-    
-    private static int intValue(String name, int dft) { return dft ; }
-    
-    
-    public static void setNullOut(boolean nullOut)
-    { NullOut = nullOut ; }
+    public static final int BlockReadCacheSize      = intValue("BlockReadCacheSize", 10*1000);
 
-    /** Are we nulling out unused space in bytebuffers (records, points etc) */ 
+    private static int intValue(String name, int dft) { return dft; }
+
+    public static void setNullOut(boolean nullOut)
+    { NullOut = nullOut; }
+
+    /** Are we nulling out unused space in bytebuffers (records, points etc) */
     public static boolean getNullOut()
-    { return NullOut ; }
+    { return NullOut; }
 
     /** null out (with the FillByte) freed up space in buffers */
-    public static boolean NullOut = false ;
-    
+    public static boolean NullOut = false;
+
     /** FillByte value for NullOut */
-    public static final byte FillByte = (byte)0xFF ;
+    public static final byte FillByte = (byte)0xFF;
 
-    public static boolean Checking = false ;       // This isn't used enough!
-    
+    public static boolean Checking = false;       // This isn't used enough!
+
     // ---- File mode
-    
-    private static FileMode fileMode = null ;
-    public static FileMode fileMode()
-    { 
+
+    private static FileMode fileMode = null;
+    public static FileMode fileMode() {
         if ( fileMode == null )
-            fileMode = determineFileMode() ;
-        return fileMode ;
+            fileMode = determineFileMode();
+        return fileMode;
     }
 
-    public static void setFileMode(FileMode newFileMode)
-    {
-        if ( fileMode != null )
-        {
-            Sys.log.warn("System file mode already determined - setting it has no effect") ;
-            return ;
+    public static void setFileMode(FileMode newFileMode) {
+        if ( fileMode != null ) {
+            Sys.log.warn("System file mode already determined - setting it has no effect");
+            return;
         }
-        fileMode = newFileMode ;
+        fileMode = newFileMode;
     }
-    
+
     // So the test suite can setup thing up ... very carefully.
-    /*package*/ static void internalSetFileMode(FileMode newFileMode)
-    {
-        fileMode = newFileMode ;
+    /*package*/ static void internalSetFileMode(FileMode newFileMode) {
+        fileMode = newFileMode;
     }
-    
-    private static FileMode determineFileMode()
-    {
+
+    private static FileMode determineFileMode() {
         // Be careful that this is not called very, very early, before --set might be seen.
         // Hence delayed access above in fileMode().
-        
-        //String x = ARQ.getContext().getAsString(SystemTDB.symFileMode, "default") ;
-        String x = "default" ;
-        
-        if ( x.equalsIgnoreCase("direct") )
-        {
-            Sys.syslog.info("File mode: direct (forced)") ;
-            return FileMode.direct ;
+
+        //String x = ARQ.getContext().getAsString(SystemTDB.symFileMode, "default");
+        String x = "default";
+
+        if ( x.equalsIgnoreCase("direct") ) {
+            Sys.syslog.info("File mode: direct (forced)");
+            return FileMode.direct;
         }
-        if ( x.equalsIgnoreCase("mapped") )
-        {
-            Sys.syslog.info("File mode: mapped (forced)") ;
-            return FileMode.mapped ;
+        if ( x.equalsIgnoreCase("mapped") ) {
+            Sys.syslog.info("File mode: mapped (forced)");
+            return FileMode.mapped;
         }
-        
-        if ( x.equalsIgnoreCase("default") )
-        {
-            if ( is64bitSystem )
-            {
-                Sys.syslog.debug("File mode: Mapped") ;
-                return FileMode.mapped ;
+
+        if ( x.equalsIgnoreCase("default") ) {
+            if ( is64bitSystem ) {
+                Sys.syslog.debug("File mode: Mapped");
+                return FileMode.mapped;
             }
-            Sys.syslog.debug("File mode: Direct") ;
-            return FileMode.direct ;
+            Sys.syslog.debug("File mode: Direct");
+            return FileMode.direct;
         }
-        throw new DBOpEnvException("Unrecognized file mode (not one of 'default', 'direct' or 'mapped': "+x) ;
+        throw new DBOpEnvException("Unrecognized file mode (not one of 'default', 'direct' or 'mapped': "+x);
     }
 }

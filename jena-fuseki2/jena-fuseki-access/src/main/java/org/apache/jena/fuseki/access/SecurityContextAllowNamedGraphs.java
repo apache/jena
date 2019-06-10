@@ -28,23 +28,23 @@ import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 
-/** A {@link SecurityContext} that allow to named graph but not the default graph. */ 
+/** A {@link SecurityContext} that allow to named graph but not the default graph. */
 public class SecurityContextAllowNamedGraphs implements SecurityContext {
-    
+
     public SecurityContextAllowNamedGraphs() {}
-    
+
     @Override
     public Collection<Node> visibleGraphs() {
         // null means "all".
         return null;
     }
-    
+
     @Override
-    public boolean visableDefaultGraph() { return true; }  
+    public boolean visableDefaultGraph() { return true; }
 
     @Override
     public QueryExecution createQueryExecution(Query query, DatasetGraph dsg) {
-        
+
         return QueryExecutionFactory.create(query, dsg);
     }
 

@@ -27,6 +27,5 @@ import org.junit.runners.Suite;
     , TestPtrBuffer.class
 })
 
-
 public class TS_Buffer
 {}

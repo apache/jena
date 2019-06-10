@@ -16,77 +16,77 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.index ;
+package org.apache.jena.dboe.index;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
 import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.base.record.RecordFactory;
 
 public class IndexWrapper implements Index {
-    protected final Index index ;
+    protected final Index index;
 
     public IndexWrapper(Index idx) {
-        this.index = idx ;
+        this.index = idx;
     }
 
     @Override
     public Record find(Record record) {
-        return index.find(record) ;
+        return index.find(record);
     }
 
     @Override
     public boolean contains(Record record) {
-        return index.contains(record) ;
+        return index.contains(record);
     }
 
     @Override
     public boolean insert(Record record) {
-        return index.insert(record) ;
+        return index.insert(record);
     }
 
     @Override
     public boolean delete(Record record) {
-        return index.delete(record) ;
+        return index.delete(record);
     }
 
     @Override
     public Iterator<Record> iterator() {
-        return index.iterator() ;
+        return index.iterator();
     }
 
     @Override
     public boolean isEmpty() {
-        return index.isEmpty() ;
+        return index.isEmpty();
     }
 
     @Override
     public void clear() {
-        index.clear() ;
+        index.clear();
     }
 
     @Override
     public void sync() {
-        index.sync() ;
+        index.sync();
     }
 
     @Override
     public void close() {
-        index.close() ;
+        index.close();
     }
 
     @Override
     public RecordFactory getRecordFactory() {
-        return index.getRecordFactory() ;
+        return index.getRecordFactory();
     }
 
     @Override
     public void check() {
-        index.check() ;
+        index.check();
     }
 
     @Override
     public long size() {
-        return index.size() ;
+        return index.size();
     }
 }

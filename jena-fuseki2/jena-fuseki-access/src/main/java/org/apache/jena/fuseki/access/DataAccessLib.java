@@ -29,8 +29,8 @@ import org.apache.jena.sparql.core.DatasetGraph;
 
 /** Package-only operations */
 class DataAccessLib {
-    
-    /** Determine the {@link SecurityContext} for this request */  
+
+    /** Determine the {@link SecurityContext} for this request */
     static SecurityContext getSecurityContext(HttpAction action, DatasetGraph dataset, Function<HttpAction, String> requestUser) {
         AuthorizationService registry = getAuthorizationService(action, dataset);
         if ( registry == null )
@@ -38,15 +38,15 @@ class DataAccessLib {
 
         SecurityContext sCxt = null;
         String user = requestUser.apply(action);
-        
+
         // User "*", users "_";
-        
+
         sCxt = registry.get(user);
         if ( sCxt == null )
             sCxt = noSecurityPolicy();
         return sCxt;
     }
-    
+
     /** Get the {@link AuthorizationService} for an action/query/dataset */
     static AuthorizationService getAuthorizationService(HttpAction action, DatasetGraph dsg) {
         if ( dsg instanceof DatasetGraphAccessControl )
@@ -59,7 +59,7 @@ class DataAccessLib {
         // Should not get here.
         throw new InternalError();
     }
-    
+
     static DatasetGraph decideDataset(HttpAction action, Function<HttpAction, String> requestUser) {
         DatasetGraph dsg = action.getDataset();
         if ( dsg == null )

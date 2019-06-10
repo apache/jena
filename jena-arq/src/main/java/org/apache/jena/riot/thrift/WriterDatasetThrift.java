@@ -27,7 +27,7 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.WriterDatasetRIOT ;
 import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.StreamOps ;
+import org.apache.jena.riot.system.StreamRDFOps ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
@@ -51,7 +51,7 @@ public class WriterDatasetThrift implements WriterDatasetRIOT
     public void write(OutputStream out, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context) {
         StreamRDF stream = BinRDF.streamToOutputStream(out, withValues) ;
         stream.start();
-        StreamOps.sendDatasetToStream(dsg, stream, prefixMap) ;
+        StreamRDFOps.sendDatasetToStream(dsg, stream, prefixMap) ;
         stream.finish();
     }
 }

@@ -16,10 +16,10 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.trans.bplustree.rewriter ;
+package org.apache.jena.dboe.trans.bplustree.rewriter;
 
-import java.util.Iterator ;
-import java.util.NoSuchElementException ;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.apache.jena.dboe.base.buffer.RecordBuffer;
 import org.apache.jena.dboe.base.record.Record;
@@ -30,62 +30,62 @@ import org.apache.jena.dboe.base.recordbuffer.RecordBufferPageMgr;
  * Iterate over a stream of records, packing them into RecordBufferPage -- the
  * leaf of a B+Tree This class does not write the blocks back to the block
  * manager. This class does allocate block ids and blocks.
- * 
+ *
  * @see RecordBufferPageLinker
  */
 
 class RecordBufferPagePacker implements Iterator<RecordBufferPage> {
-    Iterator<Record>    records          = null ;
-    RecordBufferPage    recordBufferPage = null ;
-    RecordBufferPageMgr rbMgr            = null ;
+    Iterator<Record>    records          = null;
+    RecordBufferPage    recordBufferPage = null;
+    RecordBufferPageMgr rbMgr            = null;
 
     RecordBufferPagePacker(Iterator<Record> records, RecordBufferPageMgr rbMgr) {
-        this.records = records ;
-        this.rbMgr = rbMgr ;
+        this.records = records;
+        this.rbMgr = rbMgr;
     }
 
     @Override
     public boolean hasNext() {
         if ( recordBufferPage == null ) {
             if ( records == null )
-                return false ;
+                return false;
 
             if ( !records.hasNext() ) {
-                records = null ;
-                return false ;
+                records = null;
+                return false;
             }
             // At least one record to be processed.
             // No pending RecordBufferPage
             // ==> There will be a RecordBufferPage to yield.
 
-            // int id = rbMgr.allocateId() ;
-            // //System.out.println("Allocate : "+id) ;
-            recordBufferPage = rbMgr.create() ;
+            // int id = rbMgr.allocateId();
+            // //System.out.println("Allocate : "+id);
+            recordBufferPage = rbMgr.create();
 
-            RecordBuffer rb = recordBufferPage.getRecordBuffer() ;
+            RecordBuffer rb = recordBufferPage.getRecordBuffer();
             while (!rb.isFull() && records.hasNext()) {
-                Record r = records.next() ;
-                rb.add(r) ;
+                Record r = records.next();
+                rb.add(r);
             }
             if ( !records.hasNext() )
-                records = null ;
-            return true ;
+                records = null;
+            return true;
         }
-        return true ;
+        return true;
 
     }
 
     @Override
     public RecordBufferPage next() {
         if ( !hasNext() )
-            throw new NoSuchElementException() ;
-        RecordBufferPage rbp = recordBufferPage ;
-        recordBufferPage = null ;
-        return rbp ;
+            throw new NoSuchElementException();
+        RecordBufferPage rbp = recordBufferPage;
+        recordBufferPage = null;
+        return rbp;
     }
 
     @Override
     public void remove() {
-        throw new UnsupportedOperationException() ;
+        throw new UnsupportedOperationException();
     }
 }

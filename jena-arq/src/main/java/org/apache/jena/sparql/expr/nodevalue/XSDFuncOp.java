@@ -37,6 +37,7 @@ import java.text.DecimalFormat ;
 import java.text.DecimalFormatSymbols ;
 import java.text.Normalizer;
 import java.text.NumberFormat ;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;
@@ -157,25 +158,29 @@ public class XSDFuncOp
     private static NodeValue decimalDivide(BigDecimal d1, BigDecimal d2) {
         try {
             BigDecimal d3 = d1.divide(d2, DIVIDE_PRECISION, BigDecimal.ROUND_FLOOR) ;
-            return messAroundWithBigDecimalFormat(d3) ;
+            return canonicalDecimalNV(d3) ;
         } catch (ArithmeticException ex) {
             Log.warn(XSDFuncOp.class, "ArithmeticException in decimal divide - attempting to treat as doubles") ;
             BigDecimal d3 = new BigDecimal(d1.doubleValue() / d2.doubleValue()) ;
             return NodeValue.makeDecimal(d3) ;
         }
     }
-    
-    private static NodeValue messAroundWithBigDecimalFormat(BigDecimal d) {
+
+    public static NodeValue canonicalDecimalNV(BigDecimal d) {
+        String x = canonicalDecimalStr(d);
+        return NodeValue.makeNode(x, XSDDatatype.XSDdecimal) ;
+    }
+
+    public static String canonicalDecimalStr(BigDecimal d) {
         String x = d.toPlainString() ;
 
         // The part after the "."
         int dotIdx = x.indexOf('.') ;
         if ( dotIdx < 0 )
             // No DOT.
-            return NodeValue.makeNode(x, XSDDatatype.XSDdecimal) ;
+            return x+".0";
 
         // Has a DOT.
-
         int i = x.length() - 1 ;
         // dotIdx+1 to leave at least ".0"
         while ((i > dotIdx + 1) && x.charAt(i) == '0')
@@ -183,12 +188,21 @@ public class XSDFuncOp
         if ( i < x.length() - 1 )
             // And trailing zeros.
             x = x.substring(0, i + 1) ;
-
-        // Avoid as expensive.
-        // x = x.replaceAll("0+$", "") ;
-        return NodeValue.makeNode(x, XSDDatatype.XSDdecimal) ;
+        // Avoid replaceAll as it is expensive.
+        // Leading zeros.
+        int j = 0;
+        for ( ; j < x.length() ; j++ ) {
+            if ( x.charAt(j) != '0')
+                break;
+        }
+        // At least one zero before dot.
+        if ( j == dotIdx )
+            j--;
+        if ( j > 0 )
+            x = x.substring(j, x.length());
+        return x;
     }
-    
+
     public static NodeValue max(NodeValue nv1, NodeValue nv2) {
         int x = compareNumeric(nv1, nv2) ;
         if ( x == Expr.CMP_LESS )
@@ -230,11 +244,17 @@ public class XSDFuncOp
             // Plain literals.
             return ! nv.getString().isEmpty() ;
         if ( nv.isInteger() )
-            return !nv.getInteger().equals(NodeValue.IntegerZERO) ;
+            return !nv.getInteger().equals(BigInteger.ZERO) ;
         if ( nv.isDecimal() )
-            return !nv.getDecimal().equals(NodeValue.DecimalZERO) ;
-        if ( nv.isDouble() )
-            return nv.getDouble() != 0.0 ;
+            return !nv.getDecimal().equals(BigDecimal.ZERO) ;
+        if ( nv.isDouble() ) {
+            double v = nv.getDouble();
+            return v != 0.0d && ! Double.isNaN(v);
+        }
+        if ( nv.isFloat() ) { 
+            float v = nv.getFloat();
+            return v != 0.0f && ! Float.isNaN(v);
+        }
         NodeValue.raise(new ExprEvalException("Not a boolean effective value (wrong type): " + nv)) ;
         // Does not return
         return false ;
@@ -1542,7 +1562,7 @@ public class XSDFuncOp
     }
 
     private static NodeValue accessDuration(NodeValue nv, Field field) {
-        Duration dur = valueCanonicalDuration(nv) ;
+        Duration dur = nv.getDuration();
         // if ( ! nv.isDuration() )
         // throw new ExprEvalException("Not a duration: "+nv) ;
         Number x = dur.getField(field) ;
@@ -1558,34 +1578,28 @@ public class XSDFuncOp
         return NodeValue.makeInteger((BigInteger)x) ;
     }
     
-    private static Duration zeroDuration = NodeValue.xmlDatatypeFactory.newDuration(0) ;
-    private static Duration valueCanonicalDuration(NodeValue nv) {
-        // Unclear.
-        /* This semi-normalizes a duration value - the time part is normalized.
-         * Maybe > 24 hours -> set days, but not done here.
-         * Because months are variable, XSD F&O does not define 
-         */
-        // TODO - note that the accessors return 0 for unset fields.
-        Duration dur = nv.getDuration() ;
-//        Number xHours = dur.getField(DatatypeConstants.HOURS) ;
-//        Number xMins = dur.getField(DatatypeConstants.MINUTES) ;
-//        Number xSeconds = dur.getField(DatatypeConstants.SECONDS) ;
-//        boolean normalize = 
-//            ( xHours == null || xHours.longValue() >= 24 ) ||  
-//            ( xMins == null || xMins.longValue() >= 60 ) ||
-//            ( xSeconds == null || xSeconds.longValue() >= 60 ) ;
-//        if ( normalize )
-//            dur = ... 
-        return dur ;
+    public static Duration zeroDuration = NodeValue.xmlDatatypeFactory.newDuration(true, null, null, null, null, null, BigDecimal.ZERO) ;
+    
+    public static NodeValue localTimezone() {
+        Duration dur = localTimezoneDuration();
+        NodeValue nv = NodeValue.makeDuration(dur);
+        return nv;
     }
-
+    
+    /** Local (query engine) timezone including DST */ 
+    private static Duration localTimezoneDuration() {
+        ZonedDateTime zdt = ZonedDateTime.now();
+        int tzDurationInSeconds = zdt.getOffset().getTotalSeconds();
+        Duration dur = NodeFunctions.duration(tzDurationInSeconds);
+        return dur; 
+    }
+    
     public static NodeValue adjustDatetimeToTimezone(NodeValue nv1,NodeValue nv2){
         if(nv1 == null)
             return null;
 
-        if(!nv1.isDateTime() && !nv1.isDate() && !nv1.isTime()){
+        if(!nv1.isDateTime() && !nv1.isDate() && !nv1.isTime())
             throw new ExprEvalException("Not a valid date, datetime or time:"+nv1);
-        }
 
         XMLGregorianCalendar calValue = nv1.getDateTime();
         Boolean hasTz = calValue.getTimezone() != DatatypeConstants.FIELD_UNDEFINED;

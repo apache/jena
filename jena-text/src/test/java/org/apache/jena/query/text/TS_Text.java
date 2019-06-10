@@ -54,6 +54,7 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestDatasetWithConfigurableAnalyzer.class
     , TestDatasetWithAnalyzingQueryParser.class
     , TestDatasetWithComplexPhraseQueryParser.class
+    , TestDatasetWithSurroundQueryParser.class
     , TestGenericAnalyzerAssembler.class
     , TestTextGraphIndexExtra.class
     , TestTextGraphIndexExtra2.class

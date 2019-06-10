@@ -18,69 +18,69 @@
 
 package org.apache.jena.dboe.base.file;
 
-import org.apache.jena.atlas.RuntimeIOException ;
-import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.RuntimeIOException;
+import org.apache.jena.atlas.io.IO;
 
 /** Implementation of {@link BinaryDataFile} in memory for testing
  * and development use. Raw performance is not an objective.
- * 
- * <li>This implementation is thread-safe. 
+ *
+ * <li>This implementation is thread-safe.
  */
 public class BinaryDataFileMem implements BinaryDataFile {
 
-    private boolean readMode ;
-    private SegmentedMemBuffer storage ;
-    
-    public BinaryDataFileMem() { 
+    private boolean readMode;
+    private SegmentedMemBuffer storage;
+
+    public BinaryDataFileMem() {
     }
-    
+
     @Override
     synchronized
     public void open() {
         if ( storage != null )
-            throw new RuntimeIOException("Already open") ;
-        storage = new SegmentedMemBuffer() ;
-        readMode = true ;
+            throw new RuntimeIOException("Already open");
+        storage = new SegmentedMemBuffer();
+        readMode = true;
     }
 
     @Override
     synchronized
     public boolean isOpen() {
-        return storage != null ;
+        return storage != null;
     }
-    
+
     @Override
     synchronized
     public int read(long posn, byte[] b, int start, int length) {
-        checkOpen() ;
-        switchToReadMode() ;
-        return storage.read(posn, b, start, length) ;
+        checkOpen();
+        switchToReadMode();
+        return storage.read(posn, b, start, length);
     }
 
     @Override
     synchronized
     public long write(byte[] b, int start, int length) {
-        checkOpen() ;
-        switchToWriteMode() ;
-        long x = storage.length() ;
-        storage.write(x, b, start, length) ;
-        return x ; 
+        checkOpen();
+        switchToWriteMode();
+        long x = storage.length();
+        storage.write(x, b, start, length);
+        return x;
     }
 
     @Override
     synchronized
     public void truncate(long length) {
         if ( length < 0 )
-            IO.exception(String.format("truncate: bad length : %d", length)) ;
-        checkOpen() ;
-        switchToWriteMode() ;
-        storage.truncate(length); 
+            IO.exception(String.format("truncate: bad length : %d", length));
+        checkOpen();
+        switchToWriteMode();
+        storage.truncate(length);
     }
 
     @Override
     synchronized
     public void sync() {
-        checkOpen() ;
+        checkOpen();
         storage.sync();
     }
 
@@ -88,28 +88,28 @@ public class BinaryDataFileMem implements BinaryDataFile {
     synchronized
     public void close() {
         if ( ! isOpen() )
-            return ;
+            return;
         storage.close();
-        storage = null ;
+        storage = null;
     }
 
     @Override
     synchronized
     public long length() {
-        return storage.length() ;
+        return storage.length();
     }
-    
+
     private void switchToReadMode() {
-        readMode = true ;
+        readMode = true;
     }
 
     private void switchToWriteMode() {
-        readMode = false ;
+        readMode = false;
     }
 
     private void checkOpen() {
-        if ( ! isOpen() ) 
-            throw new RuntimeIOException("Not open") ;
+        if ( ! isOpen() )
+            throw new RuntimeIOException("Not open");
     }
 }
 

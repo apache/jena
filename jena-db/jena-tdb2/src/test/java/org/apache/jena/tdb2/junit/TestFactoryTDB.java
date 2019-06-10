@@ -18,71 +18,71 @@
 
 package org.apache.jena.tdb2.junit;
 
-import junit.framework.Test ;
-import junit.framework.TestCase ;
-import junit.framework.TestSuite ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.sparql.junit.EarlReport ;
-import org.apache.jena.sparql.junit.SurpressedTest ;
-import org.apache.jena.sparql.junit.TestItem ;
-import org.apache.jena.sparql.vocabulary.TestManifestX ;
-import org.apache.jena.util.junit.TestFactoryManifest ;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.sparql.junit.EarlReport;
+import org.apache.jena.sparql.junit.SurpressedTest;
+import org.apache.jena.sparql.junit.TestItem;
+import org.apache.jena.sparql.vocabulary.TestManifestX;
+import org.apache.jena.util.junit.TestFactoryManifest;
 
 public class TestFactoryTDB extends TestFactoryManifest
 {
-    public static EarlReport report = null ;
-    
+    public static EarlReport report = null;
+
     public static void make(TestSuite ts, String manifestFile, String testRootName)
     {
         // for each graph type do
-        TestSuite ts2 = makeSuite(manifestFile, testRootName) ;
-        ts.addTest(ts2) ;
+        TestSuite ts2 = makeSuite(manifestFile, testRootName);
+        ts.addTest(ts2);
     }
-    
+
     public static TestSuite makeSuite(String manifestFile, String testRootName)
     {
-        TestFactoryTDB f = new TestFactoryTDB(testRootName) ;
-        TestSuite ts = f.process(manifestFile) ;
+        TestFactoryTDB f = new TestFactoryTDB(testRootName);
+        TestSuite ts = f.process(manifestFile);
         if ( testRootName != null )
-            ts.setName(testRootName+ts.getName()) ;
-        return ts ;
+            ts.setName(testRootName+ts.getName());
+        return ts;
     }
-    
+
     // Factory
-    
-    public String testRootName ;
+
+    public String testRootName;
 
     public TestFactoryTDB(String testRootName)
     {
-        this.testRootName = testRootName ;
+        this.testRootName = testRootName;
     }
-    
+
     @Override
     protected Test makeTest(Resource manifest, Resource entry, String testName, Resource action, Resource result)
     {
         if ( testRootName != null )
-            testName = testRootName+testName ;
-        
-        TestItem testItem = TestItem.create(entry, null) ;
-        
-        TestCase test = null ;
-        
+            testName = testRootName+testName;
+
+        TestItem testItem = TestItem.create(entry, null);
+
+        TestCase test = null;
+
         if ( testItem.getTestType() != null )
         {
             if ( testItem.getTestType().equals(TestManifestX.TestQuery) )
-                test = new QueryTestTDB(testName, report, testItem) ;
-            
-            if ( testItem.getTestType().equals(TestManifestX.TestSurpressed) )
-                test = new SurpressedTest(testName, report, testItem) ;
-            
-            if ( test == null )
-                System.err.println("Unrecognized test type: "+testItem.getTestType()) ;
-        }
-        // Default 
-        if ( test == null )
-            test = new QueryTestTDB(testName, report, testItem) ;
+                test = new QueryTestTDB(testName, report, testItem);
 
-        return test ;
+            if ( testItem.getTestType().equals(TestManifestX.TestSurpressed) )
+                test = new SurpressedTest(testName, report, testItem);
+
+            if ( test == null )
+                System.err.println("Unrecognized test type: "+testItem.getTestType());
+        }
+        // Default
+        if ( test == null )
+            test = new QueryTestTDB(testName, report, testItem);
+
+        return test;
     }
 
 }

@@ -292,6 +292,15 @@ public abstract class AbstractTestPrefixMap extends BaseTest {
         pmTest("http://example/a", "q1:");
     }
 
+    @Test
+    public void prefixMap_abbrev_20() {
+        PrefixMap pmap = PrefixMapFactory.create();
+        pmap.add("ex", "http://example/");
+        pmap.delete("ex");
+        String x = pmap.abbreviate("http://example/s");
+        assertNull(x);
+    }
+
     public void pmTest(String iriStr, String... expected) {
         PrefixMap pm = create();
         String x = pm.abbreviate(iriStr);

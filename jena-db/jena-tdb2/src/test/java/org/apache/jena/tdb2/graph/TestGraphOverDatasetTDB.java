@@ -18,16 +18,16 @@
 
 package org.apache.jena.tdb2.graph;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.core.AbstractTestGraphOverDataset ;
-import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.query.ReadWrite;
+import org.apache.jena.sparql.core.AbstractTestGraphOverDatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.junit.TL;
-import org.junit.After ;
+import org.junit.After;
 
 /** This is the view-graph test suite run over a TDB DatasetGraph to check compatibility */
-public class TestGraphOverDatasetTDB extends AbstractTestGraphOverDataset
+public class TestGraphOverDatasetTDB extends AbstractTestGraphOverDatasetGraph
 {
     DatasetGraph dsg = null;
     @After public void after2() {
@@ -37,27 +37,27 @@ public class TestGraphOverDatasetTDB extends AbstractTestGraphOverDataset
         dsg.end();
         TL.expel(dsg);
     }
-    
+
     @Override
     protected DatasetGraph createBaseDSG() {
         // Called in initialization.
         if ( dsg == null ) {
-            dsg = TL.createTestDatasetGraphMem() ;
+            dsg = TL.createTestDatasetGraphMem();
             dsg.begin(ReadWrite.WRITE);
         }
-        return dsg ;
+        return dsg;
     }
-    
+
     @Override
     protected Graph makeNamedGraph(DatasetGraph dsg, Node gn)
     {
-        return dsg.getGraph(gn) ;
+        return dsg.getGraph(gn);
     }
 
     @Override
     protected Graph makeDefaultGraph(DatasetGraph dsg)
     {
-        return  dsg.getDefaultGraph() ;
+        return  dsg.getDefaultGraph();
     }
 }
 

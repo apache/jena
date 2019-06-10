@@ -36,18 +36,18 @@ import org.apache.jena.sparql.util.NodeUtils;
 import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.tdb2.DatabaseMgr;
 
-/** A {@link SecurityContextView} is the things actor (user, role) is allowed to do. 
+/** A {@link SecurityContextView} is the things actor (user, role) is allowed to do.
  * Currently version: the set of graphs, by graph name, they can access.
  * It can be inverted into a "deny" policy with {@link Predicate#negate()}.
- */ 
+ */
 public class SecurityContextView implements SecurityContext {
-    
+
     public static SecurityContextView NONE = new SecurityContextView();
     public static SecurityContextView DFT_GRAPH = new SecurityContextView(true);
 
     private final Collection<Node> graphNames;
     private final boolean matchDefaultGraph;
-    
+
     private SecurityContextView() {
         this(false);
     }
@@ -75,12 +75,12 @@ public class SecurityContextView implements SecurityContext {
         }
         this.graphNames = Collections.unmodifiableCollection(x);
     }
-    
+
     @Override
     public Collection<Node> visibleGraphs() {
         return graphNames;
     }
-    
+
     @Override
     public boolean visableDefaultGraph() {
         return matchDefaultGraph;
@@ -90,7 +90,7 @@ public class SecurityContextView implements SecurityContext {
     public QueryExecution createQueryExecution(String queryString, DatasetGraph dsg) {
         return createQueryExecution(QueryFactory.create(queryString), dsg);
     }
-    
+
     @Override
     public QueryExecution createQueryExecution(Query query, DatasetGraph dsg) {
         if ( isAccessControlledTDB(dsg) ) {
@@ -102,7 +102,7 @@ public class SecurityContextView implements SecurityContext {
         DatasetGraph dsgA = DataAccessCtl.filteredDataset(dsg, this);
         return QueryExecutionFactory.create(query, dsgA);
     }
-    
+
     /**
      * Apply a filter suitable for the TDB-backed {@link DatasetGraph}, to the {@link Context} of the
      * {@link QueryExecution}. This does not modify the {@link DatasetGraph}.
@@ -123,7 +123,7 @@ public class SecurityContextView implements SecurityContext {
         return quad -> {
             if ( quad.isDefaultGraph() )
                 return matchDefaultGraph;
-            if ( quad.isUnionGraph() ) 
+            if ( quad.isUnionGraph() )
                 // Union graph is automatically there but its visible contents are different.
                 return true;
             return graphNames.contains(quad.getGraph());
@@ -132,7 +132,7 @@ public class SecurityContextView implements SecurityContext {
 
     /**
      * Create a GraphFilter for a TDB backed dataset.
-     * 
+     *
      * @return GraphFilter
      * @throws IllegalArgumentException
      *             if not a TDB database, or a {@link DatasetGraphAccessControl} wrapped
@@ -141,7 +141,7 @@ public class SecurityContextView implements SecurityContext {
     protected GraphFilter<?> predicate(DatasetGraph dsg) {
         dsg = DatasetGraphAccessControl.removeWrapper(dsg);
         // dsg has to be the database dataset, not wrapped.
-        //  DatasetGraphSwitchable is wrapped but should not be unwrapped. 
+        //  DatasetGraphSwitchable is wrapped but should not be unwrapped.
         if ( TDBFactory.isTDB1(dsg) )
             return GraphFilterTDB1.graphFilter(dsg, graphNames, matchDefaultGraph);
         if ( DatabaseMgr.isTDB2(dsg) )
@@ -159,7 +159,7 @@ public class SecurityContextView implements SecurityContext {
             return true;
         return false;
     }
-    
+
     @Override
     public String toString() {
         return "dft:"+matchDefaultGraph+" / "+graphNames.toString();

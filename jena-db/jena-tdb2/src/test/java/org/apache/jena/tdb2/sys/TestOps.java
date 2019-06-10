@@ -25,8 +25,8 @@ public class TestOps
 {
     public static void setFileMode(FileMode mode)
     {
-        SystemTDB.internalSetFileMode(mode) ;
+        SystemTDB.internalSetFileMode(mode);
     }
-    
+
 }
 

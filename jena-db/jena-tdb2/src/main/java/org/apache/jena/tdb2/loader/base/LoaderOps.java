@@ -49,7 +49,7 @@ import org.slf4j.Logger;
  * considered to be in the public API.
  */
 public class LoaderOps {
-    /** Get the node storage for a {@Link NodeTable} */ 
+    /** Get the node storage for a {@Link NodeTable} */
     public static TransBinaryDataFile ntDataFile(NodeTable nt) {
         NodeTableTRDF ntt = (NodeTableTRDF)(nt.baseNodeTable());
         BinaryDataFile bdf = ntt.getData();
@@ -57,14 +57,14 @@ public class LoaderOps {
         return tbdf;
     }
 
-    /** Get the BPlusTree index for a {@Link NodeTable} */ 
+    /** Get the BPlusTree index for a {@Link NodeTable} */
     public static BPlusTree ntBPTree(NodeTable nt) {
         NodeTableTRDF ntt = (NodeTableTRDF)(nt.baseNodeTable());
         Index idx = ntt.getIndex();
         return (BPlusTree)idx;
     }
 
-    /** Get the BPlusTree index for a {@Link TupleIndex} */ 
+    /** Get the BPlusTree index for a {@Link TupleIndex} */
     public static BPlusTree idxBTree(TupleIndex idx) {
         TupleIndexRecord idxr = (TupleIndexRecord)idx;
         RangeIndex rIndex = idxr.getRangeIndex();
@@ -116,7 +116,7 @@ public class LoaderOps {
     /** Copy a stream to several indexes (sequential version) */
     public static void copyIndex(Iterator<Tuple<NodeId>> srcIter, TupleIndex[] destIndexes, ProgressMonitor monitor) {
         long counter = 0;
-        for ( ; srcIter.hasNext() ; ) {
+        for (; srcIter.hasNext() ; ) {
             counter++;
             Tuple<NodeId> tuple = srcIter.next();
             monitor.tick();

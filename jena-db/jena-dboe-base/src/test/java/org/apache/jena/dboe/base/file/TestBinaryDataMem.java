@@ -25,7 +25,7 @@ public class TestBinaryDataMem extends AbstractTestBinaryDataFile {
 
     @Override
     protected BinaryDataFile createBinaryDataFile() {
-        return new BinaryDataFileMem() ;
+        return new BinaryDataFileMem();
     }
 
 }

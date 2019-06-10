@@ -69,6 +69,7 @@ public class ResultsFormat extends Symbol
     static public ResultsFormat FMT_RDF_NT       = new ResultsFormat(contentTypeNTriples) ;
     static public ResultsFormat FMT_RDF_TRIG     = new ResultsFormat(contentTypeTriG) ;
     static public ResultsFormat FMT_RDF_NQ       = new ResultsFormat(contentTypeNQuads) ;
+    static public ResultsFormat FMT_RDF_JSONLD   = new ResultsFormat(contentTypeJSONLD) ;
     static public ResultsFormat FMT_UNKNOWN      = new ResultsFormat("unknown") ;
     
     // ---- Compatibility
@@ -82,7 +83,6 @@ public class ResultsFormat extends Symbol
         names.put("json",        FMT_RS_JSON) ;
         names.put("srj",         FMT_RS_JSON) ;
         names.put("srt",         FMT_RS_THRIFT) ;
-        names.put("thrift",      FMT_RS_THRIFT) ;
         
         names.put("sse",         FMT_RS_SSE) ;
         names.put("csv",         FMT_RS_CSV) ;
@@ -102,12 +102,13 @@ public class ResultsFormat extends Symbol
         names.put("nt",          FMT_RDF_NT) ;
         names.put("n-triples",   FMT_RDF_NT) ;
         names.put("ntriples",    FMT_RDF_NT) ;
+        names.put("jsonld",      FMT_RDF_JSONLD) ;
+        names.put("json-ld",     FMT_RDF_JSONLD) ;
         
         names.put("nq",          FMT_RDF_NQ) ;
         names.put("nquads",      FMT_RDF_NQ) ;
         names.put("n-quads",     FMT_RDF_NQ) ;
         names.put("trig",        FMT_RDF_TRIG) ;
-
     }
 
     public static ResultsFormat guessSyntax(String url) {
@@ -234,6 +235,11 @@ public class ResultsFormat extends Symbol
 
         if ( outputFormat.equals(ResultsFormat.FMT_RDF_NT) ) {
             RDFOutput.outputAsRDF(out, "N-TRIPLES", resultSet) ;
+            return true;
+        }
+        
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_JSONLD) ) {
+            RDFOutput.outputAsRDF(out, "JSONLD", resultSet) ;
             return true;
         }
         

@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-elephas</artifactId>
-    <version>3.11.0-SNAPSHOT</version>
+    <version>3.13.0-SNAPSHOT</version>
   </parent>
   <artifactId>jena-elephas-common</artifactId>
   <name>Apache Jena - Elephas - Common API</name>
@@ -66,8 +66,8 @@
           <doctitle>Apache Jena Elephas - Common API ${project.version}</doctitle>
           <bottom>Licenced under the Apache License, Version 2.0</bottom>
           <links>
-            <link>http://jena.apache.org/documentation/javadoc/jena/</link>
-            <link>http://jena.apache.org/documentation/javadoc/arq/</link>
+            <link>https://jena.apache.org/documentation/javadoc/jena/</link>
+            <link>https://jena.apache.org/documentation/javadoc/arq/</link>
           </links>
         </configuration>
       </plugin>

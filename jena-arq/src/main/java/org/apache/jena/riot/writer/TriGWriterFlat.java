@@ -20,7 +20,7 @@ package org.apache.jena.riot.writer;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.StreamOps ;
+import org.apache.jena.riot.system.StreamRDFOps ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
@@ -36,7 +36,7 @@ public class TriGWriterFlat extends TriGWriterBase
         StreamRDF dest = new WriterStreamRDFFlat(iOut) ;
         dest.start() ;
         dest.base(baseURI) ;
-        StreamOps.sendDatasetToStream(datasetGraph, dest, prefixMap) ;
+        StreamRDFOps.sendDatasetToStream(datasetGraph, dest, prefixMap) ;
         dest.finish() ;
     }
 }

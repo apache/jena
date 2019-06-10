@@ -19,20 +19,20 @@
 package org.apache.jena.tdb2.setup;
 
 import static org.junit.Assert.*;
-import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.sys.Names;
 import org.apache.jena.tdb2.ConfigTest;
-import org.apache.jena.tdb2.setup.StoreParams;
-import org.apache.jena.tdb2.setup.StoreParamsCodec;
-import org.apache.jena.tdb2.setup.StoreParamsFactory;
-import org.junit.Test ;
+import org.apache.jena.tdb2.params.StoreParams;
+import org.apache.jena.tdb2.params.StoreParamsCodec;
+import org.apache.jena.tdb2.params.StoreParamsFactory;
+import org.junit.Test;
 
 //TestParamsCreate
-/** This test suite uses on-disk structures and can be slow */ 
+/** This test suite uses on-disk structures and can be slow */
 public class TestStoreParamsChoose {
-    private String DIR = ConfigTest.getCleanDir() ;
-    
+    private String DIR = ConfigTest.getCleanDir();
+
     static final StoreParams pApp = StoreParams.builder()
         .blockSize(12)              // Not dynamic
         .nodeMissCacheSize(12)      // Dynamic
@@ -40,121 +40,121 @@ public class TestStoreParamsChoose {
     static final StoreParams pLoc = StoreParams.builder()
         .blockSize(0)
         .nodeMissCacheSize(0).build();
-    
-    static final StoreParams pDft = StoreParams.getDftStoreParams() ;
+
+    static final StoreParams pDft = StoreParams.getDftStoreParams();
 
     @Test public void params_choose_new_1() {
-        StoreParams p = StoreParamsFactory.decideStoreParams(Location.mem(), true, null, null, pDft) ;
+        StoreParams p = StoreParamsFactory.decideStoreParams(Location.mem(), true, null, null, pDft);
         // New store, no pLoc, no pApp so pDft.
-        assertTrue(StoreParams.sameValues(p, pDft)) ;
+        assertTrue(StoreParams.sameValues(p, pDft));
     }
-    
+
     @Test public void params_choose_new_2() {
-        StoreParams p = StoreParamsFactory.decideStoreParams(Location.mem(), true, pApp, null, pDft) ;
+        StoreParams p = StoreParamsFactory.decideStoreParams(Location.mem(), true, pApp, null, pDft);
         // New store, no pLoc, so pApp is the enire settings.
-        assertEquals(12, p.getBlockSize().intValue()) ;
-        assertTrue(StoreParams.sameValues(p, pApp)) ;
+        assertEquals(12, p.getBlockSize().intValue());
+        assertTrue(StoreParams.sameValues(p, pApp));
     }
 
     @Test public void params_choose_new_3() {
-        StoreParams p = StoreParamsFactory.decideStoreParams(Location.mem(), true, null, pLoc, pDft) ;
+        StoreParams p = StoreParamsFactory.decideStoreParams(Location.mem(), true, null, pLoc, pDft);
         // New store, pLoc, no pApp, so pLoc is the entire settings.
-        assertEquals(0, p.getBlockSize().intValue()) ;
-        assertTrue(StoreParams.sameValues(p, pLoc)) ;
+        assertEquals(0, p.getBlockSize().intValue());
+        assertTrue(StoreParams.sameValues(p, pLoc));
     }
 
     @Test public void params_choose_new_4() {
-        StoreParams p = StoreParamsFactory.decideStoreParams(Location.mem(), true, pApp, pLoc, pDft) ;
+        StoreParams p = StoreParamsFactory.decideStoreParams(Location.mem(), true, pApp, pLoc, pDft);
         // New store, pLoc, no pApp, so pLoc is the entire settings.
-        
-        assertFalse(StoreParams.sameValues(p, pApp)) ;
-        assertFalse(StoreParams.sameValues(p, pLoc)) ;
-        assertFalse(StoreParams.sameValues(p, pDft)) ;
-        
-        assertEquals(0, p.getBlockSize().intValue()) ;
-        assertEquals(12,  p.getNodeMissCacheSize().intValue()) ;
+
+        assertFalse(StoreParams.sameValues(p, pApp));
+        assertFalse(StoreParams.sameValues(p, pLoc));
+        assertFalse(StoreParams.sameValues(p, pDft));
+
+        assertEquals(0, p.getBlockSize().intValue());
+        assertEquals(12,  p.getNodeMissCacheSize().intValue());
     }
 
     @Test public void params_choose_existing_1() {
-        StoreParams p = StoreParamsFactory.decideStoreParams(Location.mem(), false, null, null, pDft) ;
+        StoreParams p = StoreParamsFactory.decideStoreParams(Location.mem(), false, null, null, pDft);
         // p is pDft.
-        assertTrue(StoreParams.sameValues(p, pDft)) ;
+        assertTrue(StoreParams.sameValues(p, pDft));
     }
 
     @Test public void params_choose_existing_2() {
-        StoreParams p = StoreParamsFactory.decideStoreParams(Location.mem(), false, pApp, null, pDft) ;
+        StoreParams p = StoreParamsFactory.decideStoreParams(Location.mem(), false, pApp, null, pDft);
         // p is pLoc modified by pApp
-        assertFalse(StoreParams.sameValues(p, pApp)) ;
-        assertFalse(StoreParams.sameValues(p, pDft)) ;
-        // Existing store, no pLoc, so pDft is implicit pLoc and fixed the block size.  
-        assertEquals(pDft.getBlockSize(), p.getBlockSize()) ;
-        assertEquals(12, p.getNodeMissCacheSize().intValue()) ;
+        assertFalse(StoreParams.sameValues(p, pApp));
+        assertFalse(StoreParams.sameValues(p, pDft));
+        // Existing store, no pLoc, so pDft is implicit pLoc and fixed the block size.
+        assertEquals(pDft.getBlockSize(), p.getBlockSize());
+        assertEquals(12, p.getNodeMissCacheSize().intValue());
     }
-    
+
     @Test public void params_choose_existing_3() {
-        StoreParams p = StoreParamsFactory.decideStoreParams(Location.mem(), false, null, pLoc, pDft) ;
+        StoreParams p = StoreParamsFactory.decideStoreParams(Location.mem(), false, null, pLoc, pDft);
         // p is pLoc
-        assertTrue(StoreParams.sameValues(p, pLoc)) ;
-        
+        assertTrue(StoreParams.sameValues(p, pLoc));
+
     }
 
     @Test public void params_choose_existing_4() {
-        StoreParams p = StoreParamsFactory.decideStoreParams(Location.mem(), false, pApp, pLoc, pDft) ;
+        StoreParams p = StoreParamsFactory.decideStoreParams(Location.mem(), false, pApp, pLoc, pDft);
         // p is pLoc modifed by pApp.
-        assertFalse(StoreParams.sameValues(p, pApp)) ;
-        assertFalse(StoreParams.sameValues(p, pLoc)) ;
-        assertFalse(StoreParams.sameValues(p, pDft)) ;
-        
-        assertEquals(0, p.getBlockSize().intValue()) ;
-        assertEquals(12,  p.getNodeMissCacheSize().intValue()) ;
+        assertFalse(StoreParams.sameValues(p, pApp));
+        assertFalse(StoreParams.sameValues(p, pLoc));
+        assertFalse(StoreParams.sameValues(p, pDft));
+
+        assertEquals(0, p.getBlockSize().intValue());
+        assertEquals(12,  p.getNodeMissCacheSize().intValue());
     }
-    
+
     @Test public void params_choose_new_persist_1() {
         // new database, app defined.
-        Location loc = Location.create(DIR) ;
+        Location loc = Location.create(DIR);
         FileOps.clearAll(loc.getDirectoryPath());
         // Clear.
-        StoreParams p = StoreParamsFactory.decideStoreParams(loc, true, pApp, null, pDft) ;
+        StoreParams p = StoreParamsFactory.decideStoreParams(loc, true, pApp, null, pDft);
         // Check location now has a pLoc.
-        String fn = loc.getPath(Names.TDB_CONFIG_FILE) ;
-        assertTrue(FileOps.exists(fn)) ;
+        String fn = loc.getPath(Names.TDB_CONFIG_FILE);
+        assertTrue(FileOps.exists(fn));
 
-        StoreParams pLoc2 = StoreParamsCodec.read(loc) ;
-        assertTrue(StoreParams.sameValues(pLoc2, p)) ;
+        StoreParams pLoc2 = StoreParamsCodec.read(loc);
+        assertTrue(StoreParams.sameValues(pLoc2, p));
     }
-    
+
     @Test public void params_choose_new_persist_2() {
         // new database, location defined.
-        Location loc = Location.create(DIR) ;
+        Location loc = Location.create(DIR);
         FileOps.clearAll(loc.getDirectoryPath());
-        StoreParamsCodec.write(loc, pLoc); 
-        
-        // Clear.
-        StoreParams p = StoreParamsFactory.decideStoreParams(loc, true, null, pLoc, pDft) ;
-        // Check location still has a pLoc.
-        String fn = loc.getPath(Names.TDB_CONFIG_FILE) ;
-        assertTrue(FileOps.exists(fn)) ;
+        StoreParamsCodec.write(loc, pLoc);
 
-        StoreParams pLoc2 = StoreParamsCodec.read(loc) ;
-        assertTrue(StoreParams.sameValues(pLoc, p)) ;
+        // Clear.
+        StoreParams p = StoreParamsFactory.decideStoreParams(loc, true, null, pLoc, pDft);
+        // Check location still has a pLoc.
+        String fn = loc.getPath(Names.TDB_CONFIG_FILE);
+        assertTrue(FileOps.exists(fn));
+
+        StoreParams pLoc2 = StoreParamsCodec.read(loc);
+        assertTrue(StoreParams.sameValues(pLoc, p));
     }
 
     @Test public void params_choose_new_persist_3() {
         // new database, location defined, application modified.
-        Location loc = Location.create(DIR) ;
+        Location loc = Location.create(DIR);
         FileOps.clearAll(loc.getDirectoryPath());
-        StoreParamsCodec.write(loc, pLoc); 
-        
-        // Clear.
-        StoreParams p = StoreParamsFactory.decideStoreParams(loc, true, pApp, pLoc, pDft) ;
-        // Check location still has a pLoc.
-        String fn = loc.getPath(Names.TDB_CONFIG_FILE) ;
-        assertTrue(FileOps.exists(fn)) ;
+        StoreParamsCodec.write(loc, pLoc);
 
-        StoreParams pLoc2 = StoreParamsCodec.read(loc) ;
-        assertFalse(StoreParams.sameValues(pLoc, p)) ;
-        assertEquals(0, p.getBlockSize().intValue()) ;  // Location
-        assertEquals(12, p.getNodeMissCacheSize().intValue()) ;  // Application
+        // Clear.
+        StoreParams p = StoreParamsFactory.decideStoreParams(loc, true, pApp, pLoc, pDft);
+        // Check location still has a pLoc.
+        String fn = loc.getPath(Names.TDB_CONFIG_FILE);
+        assertTrue(FileOps.exists(fn));
+
+        StoreParams pLoc2 = StoreParamsCodec.read(loc);
+        assertFalse(StoreParams.sameValues(pLoc, p));
+        assertEquals(0, p.getBlockSize().intValue());  // Location
+        assertEquals(12, p.getNodeMissCacheSize().intValue());  // Application
     }
 
 }

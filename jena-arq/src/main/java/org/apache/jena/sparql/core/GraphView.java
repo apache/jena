@@ -22,10 +22,7 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Sync ;
-import org.apache.jena.graph.Capabilities;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.TransactionHandler;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.*;
 import org.apache.jena.graph.impl.GraphBase ;
 import org.apache.jena.riot.other.GLib ;
 import org.apache.jena.shared.AddDeniedException;
@@ -161,6 +158,19 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
         Node p = t.getPredicate() ;
         Node o = t.getObject() ;
         dsg.delete(g, s, p, o) ;
+    }
+    
+    @Override
+    public void remove(Node s, Node p, Node o) {
+        if ( getEventManager().listening() ) {
+            // Have to do it the hard way so that triple events happen.
+            super.remove(s, p, o);
+            return;
+        }
+
+        dsg.deleteAny(getGraphName(), s, p, o);
+        // We know no one is listening ...
+        // getEventManager().notifyEvent(this, GraphEvents.remove(s, p, o) );
     }
     
     /** 

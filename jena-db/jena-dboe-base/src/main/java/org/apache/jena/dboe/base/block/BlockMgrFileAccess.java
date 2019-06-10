@@ -16,15 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.base.block ;
+package org.apache.jena.dboe.base.block;
 
-import static java.lang.String.format ;
+import static java.lang.String.format;
 
-import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.dboe.base.file.BlockAccess;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Block manager that maps from the FileAccess layer to a BlockMgr. Add free
@@ -32,138 +32,138 @@ import org.slf4j.LoggerFactory ;
  */
 
 final public class BlockMgrFileAccess extends BlockMgrBase {
-    private static Logger     log        = LoggerFactory.getLogger(BlockMgrFileAccess.class) ;
+    private static Logger     log        = LoggerFactory.getLogger(BlockMgrFileAccess.class);
 
-    private final BlockAccess file ;
-    private boolean           closed     = false ;
+    private final BlockAccess file;
+    private boolean           closed     = false;
     // Set on any write operations.
-    private boolean           syncNeeded = false ;
+    private boolean           syncNeeded = false;
 
     // Create via the BlockMgrFactory.
     /* package */BlockMgrFileAccess(BlockAccess blockAccess, int blockSize) {
-        super(blockAccess.getLabel(), blockSize) ;
-        file = blockAccess ;
+        super(blockAccess.getLabel(), blockSize);
+        file = blockAccess;
     }
 
     @Override
     protected Block allocate() {
-        syncNeeded = true ;
-        return file.allocate(blockSize) ;
+        syncNeeded = true;
+        return file.allocate(blockSize);
     }
 
     @Override
     public Block promote(Block block) {
-        return block ;
+        return block;
     }
 
     @Override
     public Block getRead(long id) {
-        return getBlock(id, true) ;
+        return getBlock(id, true);
     }
 
     @Override
     public Block getWrite(long id) {
-        return getBlock(id, false) ;
+        return getBlock(id, false);
     }
 
     private Block getBlock(long id, boolean readOnly) {
-        checkNotClosed() ;
-        Block block = file.read(id) ;
-        block.setReadOnly(readOnly) ;
-        return block ;
+        checkNotClosed();
+        Block block = file.read(id);
+        block.setReadOnly(readOnly);
+        return block;
     }
 
     private void checkNotClosed() {
         if ( closed )
-            throw new InternalErrorException(Lib.className(this)+" : already closed") ;
+            throw new InternalErrorException(Lib.className(this)+" : already closed");
     }
 
     @Override
     public void release(Block block) {
-        checkNotClosed() ;
+        checkNotClosed();
     }
 
     @Override
     public void write(Block block) {
-        checkNotClosed() ;
+        checkNotClosed();
         if ( block.isReadOnly() )
-            throw new BlockException("Attempt to write a read-only block ("+block.getId()+")" ) ;
-        syncNeeded = true ;
-        file.write(block) ;
+            throw new BlockException("Attempt to write a read-only block ("+block.getId()+")" );
+        syncNeeded = true;
+        file.write(block);
     }
 
     @Override
     public void overwrite(Block block) {
-        checkNotClosed() ;
-        syncNeeded = true ;
-        file.overwrite(block) ;
+        checkNotClosed();
+        syncNeeded = true;
+        file.overwrite(block);
     }
 
     @Override
     public void free(Block block) {
-        checkNotClosed() ;
-        // syncNeeded = true ;
+        checkNotClosed();
+        // syncNeeded = true;
         // We do nothing about free blocks currently.
     }
 
     @Override
     public boolean valid(int id) {
-        checkNotClosed() ;
-        return file.valid(id) ;
+        checkNotClosed();
+        return file.valid(id);
     }
 
     @Override
     public void sync() {
-        checkNotClosed() ;
+        checkNotClosed();
         if ( syncNeeded )
-            file.sync() ;
+            file.sync();
         else
-            syncNeeded = true ;
-        syncNeeded = false ;
+            syncNeeded = true;
+        syncNeeded = false;
     }
 
     @Override
     public void syncForce() {
-        checkNotClosed() ;
-        file.sync() ;
+        checkNotClosed();
+        file.sync();
     }
 
     @Override
     public boolean isClosed() {
-        return closed ;
+        return closed;
     }
 
     @Override
     public void close() {
-        closed = true ;
-        file.close() ;
+        closed = true;
+        file.close();
     }
 
     @Override
     public boolean isEmpty() {
-        checkNotClosed() ;
-        return file.isEmpty() ;
+        checkNotClosed();
+        return file.isEmpty();
     }
-    
+
     @Override
     public long allocLimit() {
-        checkNotClosed() ;
-        return file.allocBoundary() ;
+        checkNotClosed();
+        return file.allocBoundary();
     }
-    
+
     @Override
     public void resetAlloc(long boundary) {
-        checkNotClosed() ;
+        checkNotClosed();
         file.resetAllocBoundary(boundary);
     }
 
     @Override
     public String toString() {
-        return format("BlockMgrFileAccess[%d bytes]:%s", blockSize, file) ;
+        return format("BlockMgrFileAccess[%d bytes]:%s", blockSize, file);
     }
 
     @Override
     protected Logger log() {
-        return log ;
+        return log;
     }
 }

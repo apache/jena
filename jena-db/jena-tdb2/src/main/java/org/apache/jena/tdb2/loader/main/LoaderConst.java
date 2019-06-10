@@ -26,14 +26,14 @@ import org.apache.jena.tdb2.store.NodeId;
 
 public class LoaderConst {
 
-    /** Chunk size for the triple->tuples output pipe */  
-    public final static int ChunkSize = 100_000 ;
+    /** Chunk size for the triple->tuples output pipe */
+    public static final int ChunkSize = 100_000;
 
     /** Queue size for chunks of tuples Tuples */
-    public final static int QueueSizeTuples = 10;
+    public static final int QueueSizeTuples = 10;
 
-    //public final static int pipeSize = 10;
-    
+    //public static final int pipeSize = 10;
+
     /* package */ static final List<Tuple<NodeId>> END_TUPLES      = Collections.emptyList();
 
     /*package*/ static final int QueueSizeData = 10;

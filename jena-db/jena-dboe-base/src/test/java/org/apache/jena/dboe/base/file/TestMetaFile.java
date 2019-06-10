@@ -18,58 +18,54 @@
 
 package org.apache.jena.dboe.base.file;
 
-import java.io.File ;
+import java.io.File;
 
-import org.junit.Assert ;
+import org.junit.Assert;
 import org.apache.jena.dboe.ConfigTestDBOE;
 import org.apache.jena.dboe.base.file.MetaFile;
 import org.apache.jena.dboe.sys.Names;
-import org.junit.After ;
-import org.junit.Before ;
-import org.junit.Test ;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TestMetaFile extends Assert
 {
-    String testfile = null ;
-    String testfileMeta = null ;
-    
-    @Before public void before()
-    {
-        testfile = ConfigTestDBOE.getTestingDir()+"/file" ;
-        testfileMeta = ConfigTestDBOE.getTestingDir()+"/file."+Names.extMeta ;
-        File f = new File(testfileMeta) ;
-        f.delete() ;
+    String testfile = null;
+    String testfileMeta = null;
+
+    @Before public void before() {
+        testfile = ConfigTestDBOE.getTestingDir()+"/file";
+        testfileMeta = ConfigTestDBOE.getTestingDir()+"/file."+Names.extMeta;
+        File f = new File(testfileMeta);
+        f.delete();
     }
-    
-    @Test public void meta1()
-    {
-        clear() ;
-        MetaFile f = new MetaFile("META", testfile) ;
-        assertFalse(new File(testfileMeta).exists()) ;
-        f.setProperty("key", "value") ;
-        f.flush() ;
-        assertTrue(new File(f.getFilename()).exists()) ;
-    }
-    
-    @Test public void meta2()
-    {
-        clear() ;
-        MetaFile f = new MetaFile("META", testfile) ;
-        f.setProperty("test.value1", "1") ;
+
+    @Test public void meta1() {
+        clear();
+        MetaFile f = new MetaFile("META", testfile);
+        assertFalse(new File(testfileMeta).exists());
+        f.setProperty("key", "value");
         f.flush();
-        MetaFile f2 = new MetaFile("META", testfile) ;
-        assertEquals("1", f2.getProperty("test.value1")) ;
-        assertNull(f2.getProperty("test.value.other")) ;
+        assertTrue(new File(f.getFilename()).exists());
+    }
+
+    @Test public void meta2() {
+        clear();
+        MetaFile f = new MetaFile("META", testfile);
+        f.setProperty("test.value1", "1");
+        f.flush();
+        MetaFile f2 = new MetaFile("META", testfile);
+        assertEquals("1", f2.getProperty("test.value1"));
+        assertNull(f2.getProperty("test.value.other"));
     }
 
     // Test MetaBase
-    
+
     @After public void afterClass()
-    { clear() ; }
-    
-    private void clear()
-    {
-        File f = new File(testfileMeta) ;
-        f.delete() ;
+    { clear(); }
+
+    private void clear() {
+        File f = new File(testfileMeta);
+        f.delete();
     }
 }

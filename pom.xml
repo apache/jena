@@ -22,8 +22,8 @@
   <groupId>org.apache.jena</groupId>
   <artifactId>jena</artifactId>
   <packaging>pom</packaging>
-  <url>http://jena.apache.org/</url>
-  <version>3.11.0-SNAPSHOT</version>
+  <url>https://jena.apache.org/</url>
+  <version>3.13.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache</groupId>
@@ -34,13 +34,13 @@
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
     </license>
   </licenses>
 
   <organization>
     <name>The Apache Software Foundation</name>
-    <url>http://www.apache.org/</url>
+    <url>https://www.apache.org/</url>
   </organization>
 
   <scm>
@@ -51,24 +51,30 @@
   </scm>
 
    <properties>
-    <ver.slf4j>1.7.25</ver.slf4j>
+    <ver.slf4j>1.7.26</ver.slf4j>
     <ver.log4j>1.2.17</ver.log4j>
-    <ver.junit>4.12</ver.junit>
-    <ver.libthrift>0.10.0</ver.libthrift>
+    <ver.junit>4.12</ver.junit>  
+
+    <ver.jetty>9.4.12.v20180830</ver.jetty>
+    <ver.libthrift>0.12.0</ver.libthrift>
 
     <!-- jsonld-java depends on depends on Jackson core
-         artifacts so the versions must align. Consult jsonld-java's 
-         POM for the correct dependency versions 
+         and Jackson databind. databind has had a few CVEs
+         so we exclude from jsonldjava and select the version
+         ourselves.
+         When upgrading jsonld, consult jsonld-java's
+         POM for the correct dependency versions
+         and use that or later.
     -->
-    <ver.jsonldjava>0.12.1</ver.jsonldjava>
-    <ver.jackson>2.9.6</ver.jackson>
+    <ver.jsonldjava>0.12.3</ver.jsonldjava>
+    <ver.jackson>2.9.9</ver.jackson>
 
     <ver.commonsio>2.6</ver.commonsio>
     <ver.commonscli>1.4</ver.commonscli>
     <ver.commonslang3>3.4</ver.commonslang3>
     <ver.commonscsv>1.5</ver.commonscsv>
     <ver.commons-codec>1.11</ver.commons-codec>
-    <ver.commons-compress>1.17</ver.commons-compress>
+    <ver.commons-compress>1.18</ver.commons-compress>
 
     <ver.dexxcollection>0.7</ver.dexxcollection>
 
@@ -79,7 +85,7 @@
     -->
     <ver.httpcore-osgi>${ver.httpcore}</ver.httpcore-osgi>
     <ver.httpclient-osgi>${ver.httpclient}</ver.httpclient-osgi>
-
+    <ver.shiro>1.2.6</ver.shiro>
     <ver.lucene>7.4.0</ver.lucene>
 
     <ver.elasticsearch>6.4.2</ver.elasticsearch>
@@ -92,6 +98,7 @@
 
     <ver.mockito>1.9.5</ver.mockito>
     <ver.awaitility>3.1.0</ver.awaitility>
+    <ver.micrometer>1.1.3</ver.micrometer>
 
     <jdk.version>1.8</jdk.version>
     <targetJdk>${jdk.version}</targetJdk>
@@ -103,7 +110,7 @@
 
   <issueManagement>
     <system>JIRA</system>
-    <url>http://issues.apache.org/jira/browse/JENA</url>
+    <url>https://issues.apache.org/jira/browse/JENA</url>
   </issueManagement>
 
   <mailingLists>
@@ -114,9 +121,9 @@
       <unsubscribe>users-unsubscribe@jena.apache.org</unsubscribe>
       <archive>https://lists.apache.org/list.html?users@jena.apache.org</archive>
       <otherArchives>
-        <otherArchive>http://mail-archives.apache.org/mod_mbox/jena-users/</otherArchive>
-        <otherArchive>http://www.mail-archive.com/users@jena.apache.org/</otherArchive>
-        <otherArchive>http://markmail.org/search/?q=list%3Aorg.apache.jena.users</otherArchive>
+        <otherArchive>https://mail-archives.apache.org/mod_mbox/jena-users/</otherArchive>
+        <otherArchive>https://www.mail-archive.com/users@jena.apache.org/</otherArchive>
+        <otherArchive>https://markmail.org/search/?q=list%3Aorg.apache.jena.users</otherArchive>
       </otherArchives>
     </mailingList>
     <mailingList>
@@ -126,9 +133,9 @@
       <unsubscribe>dev-unsubscribe@jena.apache.org</unsubscribe>
       <archive>https://lists.apache.org/list.html?dev@jena.apache.org</archive>
       <otherArchives>
-        <otherArchive>http://lists.apache.org/mod_mbox/jena-dev/</otherArchive>
-        <otherArchive>http://www.mail-archive.com/dev@jena.apache.org/</otherArchive>
-        <otherArchive>http://markmail.org/search/?q=list%3Aorg.apache.jena.dev</otherArchive>
+        <otherArchive>https://lists.apache.org/mod_mbox/jena-dev/</otherArchive>
+        <otherArchive>https://www.mail-archive.com/dev@jena.apache.org/</otherArchive>
+        <otherArchive>https://markmail.org/search/?q=list%3Aorg.apache.jena.dev</otherArchive>
       </otherArchives>
     </mailingList>
     <mailingList>
@@ -138,7 +145,7 @@
       <unsubscribe>commits-unsubscribe@jena.apache.org</unsubscribe>
       <archive>https://lists.apache.org/list.html?commits@jena.apache.org</archive>
       <otherArchives>
-        <otherArchive>http://mail-archives.apache.org/mod_mbox/jena-commits/</otherArchive>
+        <otherArchive>https://mail-archives.apache.org/mod_mbox/jena-commits/</otherArchive>
       </otherArchives>
     </mailingList>
   </mailingLists>
@@ -167,10 +174,12 @@
 
         <module>jena-text</module>
         <!-- <module>jena-text-es</module>        -->
-        <module>jena-spatial</module>
 
         <module>jena-cmds</module>
         <module>jena-fuseki2</module>
+
+        <module>jena-geosparql</module>
+        <module>jena-fuseki2/jena-fuseki-geosparql</module>
 
         <module>jena-integration-tests</module>
 
@@ -223,10 +232,12 @@
 
         <module>jena-text</module>
         <module>jena-text-es</module>
-        <module>jena-spatial</module>
 
         <module>jena-cmds</module>
         <module>jena-fuseki2</module>
+
+        <module>jena-geosparql</module>
+        <module>jena-fuseki2/jena-fuseki-geosparql</module>
 
         <!--
             Tests of artifacts that require additional 
@@ -314,7 +325,18 @@
         <artifactId>commons-compress</artifactId>
         <version>${ver.commons-compress}</version>
       </dependency>
-      
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${ver.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${ver.jackson}</version>
+      </dependency>
+
       <dependency>
         <groupId>org.apache.thrift</groupId>
         <artifactId>libthrift</artifactId>
@@ -347,7 +369,7 @@
       <dependency>
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
-        <version>1.3.3</version>
+        <version>1.4</version>
       </dependency>
 
       <dependency>
@@ -368,6 +390,16 @@
         <artifactId>jsonld-java</artifactId>
         <version>${ver.jsonldjava}</version>
         <exclusions>
+
+          <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+          </exclusion>
+
           <exclusion>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
@@ -396,6 +428,37 @@
         </exclusions>
       </dependency>
       
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-servlet</artifactId>
+        <version>${ver.jetty}</version>
+      </dependency>
+      
+      <!-- Jetty's useful servlets, inc compression -->
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-servlets</artifactId>
+        <version>${ver.jetty}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-webapp</artifactId>
+        <version>${ver.jetty}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.shiro</groupId>
+        <artifactId>shiro-core</artifactId>
+        <version>${ver.shiro}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.shiro</groupId>
+        <artifactId>shiro-web</artifactId>
+        <version>${ver.shiro}</version>
+      </dependency>
+
       <!-- Lucene dependencies -->
       <dependency>
         <groupId>org.apache.lucene</groupId>
@@ -422,10 +485,9 @@
         <version>${ver.lucene}</version>
       </dependency>
 
-      <!-- For jena-spatial -->
       <dependency>
         <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-spatial</artifactId>
+        <artifactId>lucene-backward-codecs</artifactId>
         <version>${ver.lucene}</version>
       </dependency>
 
@@ -542,6 +604,18 @@
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
         <version>${ver.awaitility}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-core</artifactId>
+        <version>${ver.micrometer}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-registry-prometheus</artifactId>
+          <version>${ver.micrometer}</version>
       </dependency>
     </dependencies>
 
@@ -720,6 +794,10 @@
             <exclude>**/dependency-reduced-pom.xml</exclude>
             <exclude>.travis.yml</exclude>
             <exclude>jena-examples/**</exclude>
+
+            <!-- This is OGC software licensed -->
+            <exclude>**/geosparql_vocab_all_v1_0_1_updated.rdf</exclude>
+
           </excludes>
         </configuration>
       </plugin>
@@ -730,7 +808,7 @@
       </plugin>
     </plugins>
 
-    <!-- Plugin version list: http://maven.apache.org/plugins/index.html -->
+    <!-- Plugin version list: https://maven.apache.org/plugins/index.html -->
     <pluginManagement>
       <plugins>
 
@@ -791,7 +869,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.0.1</version>
+          <version>3.1.0</version>
           <executions>
             <execution>
               <id>attach-javadocs</id>
@@ -801,6 +879,8 @@
             </execution>
           </executions>
           <configuration>
+            <!-- Java 11: explicitly define the source as Java8 -->
+            <source>8</source>
             <!-- Java 10
                  <additionalOptions>-html5</additionalOptions>
             -->
@@ -816,14 +896,14 @@
             <doctitle>${project.name} ${project.version}</doctitle>
             <bottom>Licensed under the Apache License, Version 2.0</bottom>
             <links>
-              <link>http://jena.apache.org/documentation/javadoc/jena/</link>
-              <link>http://jena.apache.org/documentation/javadoc/arq/</link>
-              <link>http://jena.apache.org/documentation/javadoc/tdb/</link>
-              <link>http://jena.apache.org/documentation/javadoc/text/</link>
-              <link>http://jena.apache.org/documentation/javadoc/rdfconnection/</link>
-              <link>http://jena.apache.org/documentation/javadoc/fuseki2/</link>
-              <link>http://jena.apache.org/documentation/javadoc/permissions/</link>
-              <link>http://jena.apache.org/documentation/javadoc/jdbc/</link>
+              <link>https://jena.apache.org/documentation/javadoc/jena/</link>
+              <link>https://jena.apache.org/documentation/javadoc/arq/</link>
+              <link>https://jena.apache.org/documentation/javadoc/tdb/</link>
+              <link>https://jena.apache.org/documentation/javadoc/text/</link>
+              <link>https://jena.apache.org/documentation/javadoc/rdfconnection/</link>
+              <link>https://jena.apache.org/documentation/javadoc/fuseki2/</link>
+              <link>https://jena.apache.org/documentation/javadoc/permissions/</link>
+              <link>https://jena.apache.org/documentation/javadoc/jdbc/</link>
             </links>
           </configuration>
         </plugin>
@@ -893,7 +973,7 @@
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>2.5.3</version>
+          <version>4.2.0</version>
           <extensions>true</extensions>
         </plugin>
 

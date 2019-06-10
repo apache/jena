@@ -18,9 +18,8 @@
 
 package org.apache.jena.dboe.transaction.txn;
 
-
 /**
- * Generator of {@link TxnId}s. 
+ * Generator of {@link TxnId}s.
  * {@code TxnId} is a identifier for a transaction.
  * A component in a transaction can use it as a unique key.
  * The {@code TxnId}
@@ -28,12 +27,12 @@ package org.apache.jena.dboe.transaction.txn;
  * <li>must be unique across a JVM run
  * <li>unique across JVm runs if used as a persistent name
  * <li>Must provide value equality semantics (two {@code TxnId} are {@code .equals}
- * if 
+ * if
  * </ul>
  * <p>
  * It is preferrable that the TxnId is global unique over time and space.
  */
 public interface TxnIdGenerator {
-    public TxnId generate() ;
+    public TxnId generate();
 }
 

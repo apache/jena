@@ -28,7 +28,7 @@ package org.apache.jena.fuseki.servlets;
 //   Logger switched to SLF4j
 //   Add @Overides
 //   Suppress warnings.
-//   POST removed from SIMPLE_HTTP_HEADERS (NB it's the same code effect either way). 
+//   POST removed from SIMPLE_HTTP_HEADERS (NB it's the same code effect either way).
 
 //========================================================================
 //Copyright (c) 1995-2014 Mort Bay Consulting Pty. Ltd.
@@ -66,8 +66,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //import org.eclipse.jetty.util.log.Log;
 //import org.eclipse.jetty.util.log.Logger;
@@ -128,7 +128,7 @@ import org.slf4j.LoggerFactory ;
 public class CrossOriginFilter implements Filter
 {
     //private static final Logger LOG = Log.getLogger(CrossOriginFilter.class);
-    private static final Logger LOG = LoggerFactory.getLogger(CrossOriginFilter.class) ;
+    private static final Logger LOG = LoggerFactory.getLogger(CrossOriginFilter.class);
 
     // Request headers
     private static final String ORIGIN_HEADER = "Origin";
@@ -241,7 +241,7 @@ public class CrossOriginFilter implements Filter
                 );
         }
     }
-    
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
     {

@@ -18,24 +18,24 @@
 
 package org.apache.jena.fuseki.server;
 
-/** Various constants used in the API functions and JSON responses. */ 
+/** Various constants used in the API functions and JSON responses. */
 public class ServerConst {
     // Location under /$/
-    public static final String  opDump          = "dump" ;  
-    public static final String  opPing          = "ping" ;
-    public static final String  opStats         = "stats" ;
-    
-//    // JSON constants
-    public static final String datasets         = "datasets" ;
-    public static final String operation        = "operation" ;
-    public static final String description      = "description" ;
-    public static final String endpoints        = "endpoints" ;
+    public static final String  opDump          = "dump";
+    public static final String  opPing          = "ping";
+    public static final String  opStats         = "stats";
 
-    public static final String dsName           = "ds.name" ;
-    public static final String dsState          = "ds.state" ;
-    public static final String dsService        = "ds.services" ;
-    public static final String srvType          = "srv.type" ;
-    public static final String srvDescription   = "srv.description" ;
-    public static final String srvEndpoints     = "srv.endpoints" ;
+//    // JSON constants
+    public static final String datasets         = "datasets";
+    public static final String operation        = "operation";
+    public static final String description      = "description";
+    public static final String endpoints        = "endpoints";
+
+    public static final String dsName           = "ds.name";
+    public static final String dsState          = "ds.state";
+    public static final String dsService        = "ds.services";
+    public static final String srvType          = "srv.type";
+    public static final String srvDescription   = "srv.description";
+    public static final String srvEndpoints     = "srv.endpoints";
 
 }

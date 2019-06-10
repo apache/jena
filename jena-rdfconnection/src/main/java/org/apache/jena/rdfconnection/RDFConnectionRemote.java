@@ -38,6 +38,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.web.HttpCaptureResponse;
 import org.apache.jena.riot.web.HttpOp;
+import org.apache.jena.riot.web.HttpOp.CaptureInput;
 import org.apache.jena.riot.web.HttpResponseLib;
 import org.apache.jena.sparql.ARQException;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -49,8 +50,8 @@ import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 import org.apache.jena.web.HttpSC;
 
-/** 
- * Implementation of the {@link RDFConnection} interface using remote SPARQL operations.  
+/**
+ * Implementation of the {@link RDFConnection} interface using remote SPARQL operations.
  */
 public class RDFConnectionRemote implements RDFConnection {
     // Adds a Builder to help with HTTP details.
@@ -59,7 +60,7 @@ public class RDFConnectionRemote implements RDFConnection {
     private static final String fusekiDftSrvUpdate  = "update";
     private static final String fusekiDftSrvGSP     = "data";
 
-    private boolean isOpen = true; 
+    private boolean isOpen = true;
     protected final String destination;
     protected final String svcQuery;
     protected final String svcUpdate;
@@ -70,7 +71,7 @@ public class RDFConnectionRemote implements RDFConnection {
     protected final HttpContext httpContext;
 
     // On-the-wire settings.
-    protected final RDFFormat outputQuads; 
+    protected final RDFFormat outputQuads;
     protected final RDFFormat outputTriples;
     protected final String acceptGraph;
     protected final String acceptDataset;
@@ -88,9 +89,9 @@ public class RDFConnectionRemote implements RDFConnection {
         return new RDFConnectionRemoteBuilder();
     }
 
-    /** 
+    /**
      * Create a {@link RDFConnectionRemoteBuilder} initialized with the
-     * settings of another {@code RDFConnectionRemote}.  
+     * settings of another {@code RDFConnectionRemote}.
      */
     public static RDFConnectionRemoteBuilder create(RDFConnectionRemote base) {
         return new RDFConnectionRemoteBuilder(base);
@@ -123,12 +124,12 @@ public class RDFConnectionRemote implements RDFConnection {
         this.parseCheckUpdates = parseCheckUpdates;
     }
 
-    /** Return the {@link HttpClient} in-use. */ 
+    /** Return the {@link HttpClient} in-use. */
     public HttpClient getHttpClient() {
         return httpClient;
     }
 
-    /** Return the {@link HttpContext} in-use. */ 
+    /** Return the {@link HttpContext} in-use. */
     public HttpContext getHttpContext() {
         return httpContext;
     }
@@ -153,12 +154,12 @@ public class RDFConnectionRemote implements RDFConnection {
     private QueryExecution queryExec(Query query, String queryString) {
         checkQuery();
         if ( query == null && queryString == null )
-            throw new InternalErrorException("Both query and query string are null"); 
+            throw new InternalErrorException("Both query and query string are null");
         if ( query == null ) {
             if ( parseCheckQueries )
                 QueryFactory.create(queryString);
         }
-    
+
         // Use the query string as provided if possible, otherwise serialize the query.
         String queryStringToSend = ( queryString != null ) ?  queryString : query.toString();
         return exec(()-> createQueryExecution(query, queryStringToSend));
@@ -168,7 +169,7 @@ public class RDFConnectionRemote implements RDFConnection {
     private QueryExecution createQueryExecution(Query query, String queryStringToSend) {
         QueryExecution qExec = new QueryEngineHTTP(svcQuery, queryStringToSend, httpClient, httpContext);
         QueryEngineHTTP qEngine = (QueryEngineHTTP)qExec;
-        // Set the accept header - use the most specific method. 
+        // Set the accept header - use the most specific method.
         if ( query != null ) {
             if ( query.isSelectType() && acceptSelectResult != null )
                 qEngine.setAcceptHeader(acceptSelectResult);
@@ -184,7 +185,7 @@ public class RDFConnectionRemote implements RDFConnection {
             qEngine.setAcceptHeader(acceptSparqlResults);
         // Make sure it was set somehow.
         if ( qEngine.getAcceptHeader() == null )
-            throw new JenaConnectionException("No Accept header");   
+            throw new JenaConnectionException("No Accept header");
         return qExec ;
     }
 
@@ -203,7 +204,7 @@ public class RDFConnectionRemote implements RDFConnection {
     private void updateExec(UpdateRequest update, String updateString ) {
         checkUpdate();
         if ( update == null && updateString == null )
-            throw new InternalErrorException("Both update request and update string are null"); 
+            throw new InternalErrorException("Both update request and update string are null");
         if ( update == null ) {
             if ( parseCheckUpdates )
                 UpdateFactory.create(updateString);
@@ -262,9 +263,9 @@ public class RDFConnectionRemote implements RDFConnection {
     }
 
     @Override
-    public void put(String file) { 
+    public void put(String file) {
         checkGSP();
-        upload(null, file, true); 
+        upload(null, file, true);
     }
 
     @Override
@@ -304,13 +305,13 @@ public class RDFConnectionRemote implements RDFConnection {
      */
     protected void doPutPost(String url, String file, Lang lang, boolean replace) {
         File f = new File(file);
-        long length = f.length(); 
-        
-        // Leave RDF/XML to the XML parse, else it's UTF-8. 
-        String charset = (lang.equals(Lang.RDFXML) ? null : WebContent.charsetUTF8);  
+        long length = f.length();
+
+        // Leave RDF/XML to the XML parse, else it's UTF-8.
+        String charset = (lang.equals(Lang.RDFXML) ? null : WebContent.charsetUTF8);
         // HttpClient Content type.
         ContentType ct = ContentType.create(lang.getContentType().getContentType(), charset);
-        
+
         exec(()->{
             HttpEntity entity = fileToHttpEntity(file, lang);
             if ( replace )
@@ -318,12 +319,12 @@ public class RDFConnectionRemote implements RDFConnection {
             else
                 HttpOp.execHttpPost(url, entity, httpClient, httpContext);
         });
-        
-        // This is non-repeatable so does not work with authentication.  
+
+        // This is non-repeatable so does not work with authentication.
 //        InputStream source = IO.openFile(file);
 //        exec(()->{
 //            HttpOp.execHttpPost(url, null);
-//            
+//
 //            if ( replace )
 //                HttpOp.execHttpPut(url, lang.getContentType().getContentType(), source, length, httpClient, this.httpContext);
 //            else
@@ -364,10 +365,12 @@ public class RDFConnectionRemote implements RDFConnection {
     @Override
     public Dataset fetchDataset() {
         if ( destination == null )
-            throw new ARQException("Dataset operations not available - no dataset URL provided"); 
+            throw new ARQException("Dataset operations not available - no dataset URL provided");
         Dataset ds = DatasetFactory.createTxnMem();
         Txn.executeWrite(ds, ()->{
-            TypedInputStream s = exec(()->HttpOp.execHttpGet(destination, acceptDataset, this.httpClient, this.httpContext));
+            HttpCaptureResponse<TypedInputStream> handler = new CaptureInput();
+            exec(()->HttpOp.execHttpGet(destination, acceptDataset, handler, this.httpClient, this.httpContext));
+            TypedInputStream s = handler.get();
             Lang lang = RDFLanguages.contentTypeToLang(s.getContentType());
             RDFDataMgr.read(ds, s, lang);
         });
@@ -375,31 +378,31 @@ public class RDFConnectionRemote implements RDFConnection {
     }
 
     @Override
-    public void loadDataset(String file) { 
+    public void loadDataset(String file) {
         if ( destination == null )
-            throw new ARQException("Dataset operations not available - no dataset URl provided"); 
-        doPutPostDataset(file, false); 
+            throw new ARQException("Dataset operations not available - no dataset URL provided");
+        doPutPostDataset(file, false);
     }
 
     @Override
     public void loadDataset(Dataset dataset) {
         if ( destination == null )
-            throw new ARQException("Dataset operations not available - no dataset URl provided"); 
-        doPutPostDataset(dataset, false); 
+            throw new ARQException("Dataset operations not available - no dataset URL provided");
+        doPutPostDataset(dataset, false);
     }
 
     @Override
     public void putDataset(String file) {
         if ( destination == null )
-            throw new ARQException("Dataset operations not available - no dataset URl provided"); 
+            throw new ARQException("Dataset operations not available - no dataset URL provided");
         doPutPostDataset(file, true);
     }
 
     @Override
     public void putDataset(Dataset dataset) {
         if ( destination == null )
-            throw new ARQException("Dataset operations not available - no dataset URl provided"); 
-        doPutPostDataset(dataset, true); 
+            throw new ARQException("Dataset operations not available - no dataset URL provided");
+        doPutPostDataset(dataset, true);
     }
 
     /** Do a PUT or POST to a dataset, sending the contents of the file.
@@ -457,7 +460,7 @@ public class RDFConnectionRemote implements RDFConnection {
     protected void checkDataset() {
         checkOpen();
         if ( destination == null )
-            throw new ARQException("Dataset operations not available - no dataset URL provided"); 
+            throw new ARQException("Dataset operations not available - no dataset URL provided");
     }
 
     protected void checkOpen() {
@@ -476,15 +479,15 @@ public class RDFConnectionRemote implements RDFConnection {
     }
 
     protected HttpEntity fileToHttpEntity(String filename, Lang lang) {
-        // Leave RDF/XML to the XML parse, else it's UTF-8. 
-        String charset = (lang.equals(Lang.RDFXML) ? null : WebContent.charsetUTF8);  
+        // Leave RDF/XML to the XML parse, else it's UTF-8.
+        String charset = (lang.equals(Lang.RDFXML) ? null : WebContent.charsetUTF8);
         // HttpClient Content type.
         ContentType ct = ContentType.create(lang.getContentType().getContentType(), charset);
         // Repeatable.
         return new FileEntity(new File(filename), ct);
     }
-    
-    /** Create an HttpEntity for the graph */  
+
+    /** Create an HttpEntity for the graph */
     protected HttpEntity graphToHttpEntity(Graph graph) {
         return graphToHttpEntity(graph, outputTriples);
     }
@@ -497,12 +500,12 @@ public class RDFConnectionRemote implements RDFConnection {
         return entity;
     }
 
-    /** Create an HttpEntity for the dataset */  
+    /** Create an HttpEntity for the dataset */
     protected HttpEntity datasetToHttpEntity(DatasetGraph dataset) {
         return datasetToHttpEntity(dataset, outputQuads);
     }
 
-    /** Create an HttpEntity for the dataset */  
+    /** Create an HttpEntity for the dataset */
     protected HttpEntity datasetToHttpEntity(DatasetGraph dataset, RDFFormat syntax) {
         EntityTemplate entity = new EntityTemplate((out)->RDFDataMgr.write(out, dataset, syntax));
         String ct = syntax.getLang().getContentType().getContentType();
@@ -510,20 +513,20 @@ public class RDFConnectionRemote implements RDFConnection {
         return entity;
     }
 
-    /** Convert HTTP status codes to exceptions */ 
+    /** Convert HTTP status codes to exceptions */
     static protected void exec(Runnable action)  {
         try { action.run(); }
         catch (HttpException ex) { handleHttpException(ex, false); }
     }
 
-    /** Convert HTTP status codes to exceptions */ 
+    /** Convert HTTP status codes to exceptions */
     static protected <X> X exec(Supplier<X> action)  {
         try { return action.get(); }
         catch (HttpException ex) { handleHttpException(ex, true); return null;}
     }
 
     private static void handleHttpException(HttpException ex, boolean ignore404) {
-        if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 && ignore404 )
+        if ( ex.getStatusCode() == HttpSC.NOT_FOUND_404 && ignore404 )
             return ;
         throw ex;
     }

@@ -32,11 +32,11 @@ import java.util.function.Function;
  */
 public class NameMgr<T> {
     private final Map<String, T> registered = new ConcurrentHashMap<>();
-    
+
     /** register, creating an object is necessary */
     public T register(String name, Function<String, T> maker) {
         return registered.computeIfAbsent(name, maker);
     }
-    
+
     public NameMgr() { }
 }

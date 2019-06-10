@@ -18,10 +18,10 @@
 
 package org.apache.jena.dboe.transaction;
 
-import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays ;
-import java.util.List ;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.transaction.TransInteger;
@@ -29,35 +29,34 @@ import org.apache.jena.dboe.transaction.TransMonitor;
 import org.apache.jena.dboe.transaction.Transactional;
 import org.apache.jena.dboe.transaction.txn.*;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
-import org.junit.After ;
-import org.junit.Before ;
+import org.junit.After;
+import org.junit.Before;
 
 public abstract class AbstractTestTxn {
-    protected TransactionCoordinator txnMgr ;
-    protected TransInteger counter1 = new TransInteger(0) ; 
-    protected TransInteger counter2 = new TransInteger(0) ;
-    protected TransMonitor monitor  = new TransMonitor(ComponentId.allocLocal()) ;
-    protected Transactional unit ;
-    
+    protected TransactionCoordinator txnMgr;
+    protected TransInteger counter1 = new TransInteger(0);
+    protected TransInteger counter2 = new TransInteger(0);
+    protected TransMonitor monitor  = new TransMonitor(ComponentId.allocLocal());
+    protected Transactional unit;
+
     @Before public void setup() {
-        Journal jrnl = Journal.create(Location.mem()) ;
+        Journal jrnl = Journal.create(Location.mem());
         List<TransactionalComponent> cg = Arrays.asList
-            (counter1, new TransactionalComponentWrapper(counter2), monitor) ;
-        txnMgr = new TransactionCoordinator(jrnl, cg) ;
-        unit = new TransactionalBase(txnMgr) ;
-        txnMgr.start() ;
+            (counter1, new TransactionalComponentWrapper(counter2), monitor);
+        txnMgr = new TransactionCoordinator(jrnl, cg);
+        unit = new TransactionalBase(txnMgr);
+        txnMgr.start();
     }
-    
+
     @After public void clearup() {
-        txnMgr.shutdown(); 
+        txnMgr.shutdown();
     }
-    
+
     protected void checkClear() {
-        assertEquals(0, txnMgr.countActive()) ;
-        assertEquals(0, txnMgr.countBegin()-txnMgr.countFinished()) ;
-        assertEquals(0, txnMgr.countActiveReaders()) ;
-        assertEquals(0, txnMgr.countActiveWriter()) ;
-        
+        assertEquals(0, txnMgr.countActive());
+        assertEquals(0, txnMgr.countBegin()-txnMgr.countFinished());
+        assertEquals(0, txnMgr.countActiveReaders());
+        assertEquals(0, txnMgr.countActiveWriter());
 
     }
 }

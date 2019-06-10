@@ -18,6 +18,7 @@
 
 package org.apache.jena.sdb.test;
 
+import org.apache.jena.sdb.test.compiler.TestTransformOptimizeSubqueryFragments;
 import org.apache.jena.sdb.test.misc.* ;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -30,7 +31,10 @@ import org.junit.runners.Suite;
     TestExprMatch.class,
     TestRegex.class,
     TestPrefixMappingSDB.class,
-    TestRegistry.class
+    TestRegistry.class,
+    TestTransformOptimizeSubqueryFragments.class,
+    TestScope.class,
+    TestSQL.class
 } )
 
 public class SDBTestMisc

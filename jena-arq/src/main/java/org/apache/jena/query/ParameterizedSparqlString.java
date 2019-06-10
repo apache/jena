@@ -34,22 +34,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.jena.atlas.lib.Pair;
-import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.iri.IRI;
-import org.apache.jena.rdf.model.Literal ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.RDFNode ;
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.shared.impl.PrefixMappingImpl ;
-import org.apache.jena.sparql.ARQException ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.FmtUtils ;
-import org.apache.jena.sparql.util.NodeFactoryExtra ;
-import org.apache.jena.update.UpdateFactory ;
-import org.apache.jena.update.UpdateRequest ;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.shared.impl.PrefixMappingImpl;
+import org.apache.jena.sparql.ARQException;
+import org.apache.jena.sparql.serializer.SerializationContext;
+import org.apache.jena.sparql.util.FmtUtils;
+import org.apache.jena.sparql.util.NodeFactoryExtra;
+import org.apache.jena.update.UpdateFactory;
+import org.apache.jena.update.UpdateRequest;
 
 /**
  * <p>
@@ -70,7 +70,8 @@ import org.apache.jena.update.UpdateRequest ;
  * Any variable in the command may have a value injected to it, injecting a
  * value replaces all usages of that variable in the command i.e. substitutes
  * the variable for a constant, injection is done by textual substitution.
- * </p> <h4>Positional Parameters</h4>
+ * </p>
+ * <h4>Positional Parameters</h4>
  * <p>
  * You can use JDBC style positional parameters if you prefer, a JDBC style
  * parameter is a single {@code ?} followed by whitespace or certain punctuation
@@ -78,10 +79,13 @@ import org.apache.jena.update.UpdateRequest ;
  * index which reflects the order in which they appear in the string. Positional
  * parameters use a zero based index.
  * </p>
- * <h4>Buffer Usage</h3> </p> Additionally you may use this purely as a
- * {@link StringBuffer} replacement for creating queries since it provides a
- * large variety of convenience methods for appending things either as-is or as
- * nodes (which causes appropriate formatting to be applied). </p>
+ * <h4>Buffer Usage</h3>
+ * </p>
+ * Additionally you may use this purely as a {@link StringBuffer} replacement
+ * for creating queries since it provides a large variety of convenience methods
+ * for appending things either as-is or as nodes (which causes appropriate
+ * formatting to be applied).
+ * </p>
  * <h3>Intended Usage</h3>
  * <p>
  * The intended usage of this is where using a {@link QuerySolutionMap} as
@@ -96,7 +100,8 @@ import org.apache.jena.update.UpdateRequest ;
  * variables</li>
  * <li>Defending against SPARQL injection when creating a query/update using
  * some external input, see SPARQL Injection notes for limitations.</li>
- * <li>Provide a more convenient way to prepend common prefixes to your query</li>
+ * <li>Provide a more convenient way to prepend common prefixes to your
+ * query</li>
  * </ul>
  * <p>
  * This class is useful for preparing both queries and updates hence the generic
@@ -144,6 +149,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     private Map<Integer, Node> positionalParams = new HashMap<>();
     private PrefixMapping prefixes;
     private Map<String, ValueReplacement> valuesReplacements = new HashMap<>();
+    private Syntax syntax = Syntax.defaultQuerySyntax;
 
     /**
      * Creates a new parameterized string
@@ -292,6 +298,31 @@ public class ParameterizedSparqlString implements PrefixMapping {
      */
     public ParameterizedSparqlString() {
         this("", null, null, null);
+    }
+
+    /**
+     * Gets the syntax used for parsing when calling {@link #asQuery()} or
+     * {@link #asUpdate()}
+     * 
+     * 
+     * @return Syntax
+     */
+    public Syntax getSyntax() {
+        return this.syntax;
+    }
+
+    /**
+     * Sets the syntax used for parsing when calling {@link #asQuery()} or
+     * {@link #asUpdate()}
+     * 
+     * @param syntax
+     *            Syntax
+     */
+    public void setSyntax(Syntax syntax) {
+        if (syntax == null)
+            return;
+
+        this.syntax = syntax;
     }
 
     /**
@@ -1160,7 +1191,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Clears the value for a variable or values parameter so the given variable
-     * will not     * have a value injected
+     * will not * have a value injected
      * 
      * @param var
      *            Variable
@@ -1212,10 +1243,8 @@ public class ParameterizedSparqlString implements PrefixMapping {
         Pattern p = Pattern.compile("\"[?$]" + var + "\"|'[?$]" + var + "'");
 
         if (p.matcher(command).find() && n.isLiteral()) {
-            throw new ARQException(
-                    "Command string is vunerable to injection attack, variable ?"
-                            + var
-                            + " appears surrounded directly by quotes and is bound to a literal which provides a SPARQL injection attack vector");
+            throw new ARQException("Command string is vunerable to injection attack, variable ?" + var
+                    + " appears surrounded directly by quotes and is bound to a literal which provides a SPARQL injection attack vector");
         }
 
         // Parse out delimiter info
@@ -1229,10 +1258,8 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
             if (n.isLiteral()) {
                 if (delims.isInsideLiteral(posMatch.start(1), posMatch.end(1))) {
-                    throw new ARQException(
-                            "Command string is vunerable to injection attack, variable ?"
-                                    + var
-                                    + " appears inside of a literal and is bound to a literal which provides a SPARQL injection attack vector");
+                    throw new ARQException("Command string is vunerable to injection attack, variable ?" + var
+                            + " appears inside of a literal and is bound to a literal which provides a SPARQL injection attack vector");
                 }
             }
         }
@@ -1262,10 +1289,9 @@ public class ParameterizedSparqlString implements PrefixMapping {
         // Check each occurrence of the variable for safety
         if (n.isLiteral()) {
             if (delims.isInsideLiteral(position, position)) {
-                throw new ARQException(
-                        "Command string is vunerable to injection attack, a positional paramter (index "
-                                + index
-                                + ") appears inside of a literal and is bound to a literal which provides a SPARQL injection attack vector");
+                throw new ARQException("Command string is vunerable to injection attack, a positional paramter (index "
+                        + index
+                        + ") appears inside of a literal and is bound to a literal which provides a SPARQL injection attack vector");
             }
         }
     }
@@ -1335,7 +1361,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
         // Inject Values Parameters
         command = applyValues(command, context);
-        
+
         // Then inject Positional Parameters
         // To do this we need to find the ? we will replace
         p = Pattern.compile("(\\?)[\\s;,.]");
@@ -1393,7 +1419,20 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *                Thrown if the command text does not parse
      */
     public Query asQuery() throws QueryException {
-        return QueryFactory.create(this.toString());
+        return asQuery(this.syntax);
+    }
+
+    /**
+     * Attempts to take the command text with parameters injected from the
+     * {@link #toString()} method and parse it as a {@link Query} using the
+     * given {@link Syntax} syntax
+     * 
+     * @return Query if the command text is a valid SPARQL query
+     * @exception QueryException
+     *                Thrown if the command text does not parse
+     */
+    public Query asQuery(Syntax syntax) {
+        return QueryFactory.create(this.toString(), syntax);
     }
 
     /**
@@ -1404,7 +1443,19 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *         (one/more update commands)
      */
     public UpdateRequest asUpdate() {
-        return UpdateFactory.create(this.toString());
+        return asUpdate(this.syntax);
+    }
+
+    /**
+     * Attempts to take the command text with parameters injected from the
+     * {@link #toString()} method and parse it as a {@link UpdateRequest} using
+     * the given {@link Syntax}
+     * 
+     * @return Update if the command text is a valid SPARQL Update request
+     *         (one/more update commands)
+     */
+    public UpdateRequest asUpdate(Syntax syntax) {
+        return UpdateFactory.create(this.toString(), syntax);
     }
 
     /**
@@ -1452,6 +1503,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
                 copy.setParam(entry.getKey(), entry.getValue());
             }
         }
+        copy.setSyntax(copy.getSyntax());
         return copy;
     }
 
@@ -1467,9 +1519,9 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     @Override
     public PrefixMapping clearNsPrefixMap() {
-        return this.prefixes.clearNsPrefixMap() ;
+        return this.prefixes.clearNsPrefixMap();
     }
-    
+
     @Override
     public PrefixMapping setNsPrefixes(PrefixMapping other) {
         return this.prefixes.setNsPrefixes(other);
@@ -1519,12 +1571,12 @@ public class ParameterizedSparqlString implements PrefixMapping {
     public boolean hasNoMappings() {
         return this.prefixes.hasNoMappings();
     }
-    
+
     @Override
     public int numPrefixes() {
         return this.prefixes.numPrefixes();
-    }    
-    
+    }
+
     @Override
     public PrefixMapping lock() {
         return this.prefixes.lock();
@@ -1725,7 +1777,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
                 return false;
             }
         }
-        
+
         @Override
         public String toString() {
             StringBuilder builder = new StringBuilder();
@@ -1742,14 +1794,14 @@ public class ParameterizedSparqlString implements PrefixMapping {
         }
 
     }
-    
+
     /**
      * Assign a VALUES valueName with a multiple items.<br>
      * Can be used to assign multiple values to a single variable or single
      * value to multiple variables (if using a List) in the SPARQL query.<br>
      * See setRowValues to assign multiple values to multiple variables.<br>
      * Using "valueName" with list(prop_A, obj_A) on query "VALUES (?p ?o)
-     * {?valueName}"     * would produce "VALUES (?p ?o) {(prop_A obj_A)}".
+     * {?valueName}" * would produce "VALUES (?p ?o) {(prop_A obj_A)}".
      *
      *
      * @param valueName
@@ -1758,10 +1810,10 @@ public class ParameterizedSparqlString implements PrefixMapping {
     public void setValues(String valueName, Collection<? extends RDFNode> items) {
         items.forEach(item -> validateParameterValue(item.asNode()));
 
-        //Ensure that a list is used for the items.
+        // Ensure that a list is used for the items.
         Collection<List<? extends RDFNode>> rowItems = new ArrayList<>();
         if (items instanceof List) {
-            rowItems.add((List<? extends RDFNode>)items);
+            rowItems.add((List<? extends RDFNode>) items);
         } else {
             rowItems.add(new ArrayList<>(items));
         }
@@ -1771,7 +1823,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Assign a VALUES valueName with a single item.<br>
      * Using "valueName" with Literal obj_A on query "VALUES ?o {?valueName}"
-     * would produce     * "VALUES ?o {obj_A}".
+     * would produce * "VALUES ?o {obj_A}".
      *
      * @param valueName
      * @param item
@@ -1781,8 +1833,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     }
 
     /**
-     * **
-     * Sets a map of VALUES valueNames and their items.<br>
+     * ** Sets a map of VALUES valueNames and their items.<br>
      * Can be used to assign multiple values to a single variable or single
      * value to multiple variables (if using a List) in the SPARQL query.<br>
      * See setRowValues to assign multiple values to multiple variables.
@@ -1797,7 +1848,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Allocate multiple lists of variables to a single VALUES valueName.<br>
      * Using "valuesName" with list(list(prop_A, obj_A), list(prop_B, obj_B)) on
      * query "VALUES (?p ?o) {?valuesName}" would produce "VALUES (?p ?o)
-     * {(prop_A obj_A)     * (prop_B obj_B)}".
+     * {(prop_A obj_A) * (prop_B obj_B)}".
      *
      * @param valueName
      * @param rowItems
@@ -1818,15 +1869,21 @@ public class ParameterizedSparqlString implements PrefixMapping {
     private static final String VALUES_KEYWORD = "values";
 
     protected static String[] extractTargetVars(String command, String valueName) {
-        String[] targetVars = new String[]{};
+        String[] targetVars = new String[] {};
 
         int valueIndex = command.indexOf(valueName);
         if (valueIndex > -1) {
-            String subCmd = command.substring(0, valueIndex).toLowerCase(); //Truncate the command at the valueName. Lowercase to search both cases of VALUES keyword.
+            // Truncate the command at the valueName.
+            // Lowercase to search both cases of VALUES keyword.
+            String subCmd = command.substring(0, valueIndex).toLowerCase();
             int valuesIndex = subCmd.lastIndexOf(VALUES_KEYWORD);
             int openBracesIndex = subCmd.lastIndexOf("{");
             int closeBracesIndex = subCmd.lastIndexOf("}");
-            if (valuesIndex > -1 && valuesIndex < openBracesIndex && closeBracesIndex < valuesIndex) { //Ensure that VALUES keyword is found, open braces index is located after the VALUES and any close braces is located before the VALUES.
+
+            // Ensure that VALUES keyword is found, open braces index is located
+            // after the VALUES and any close braces is located before the
+            // VALUES.
+            if (valuesIndex > -1 && valuesIndex < openBracesIndex && closeBracesIndex < valuesIndex) {
                 String vars = command.substring(valuesIndex + VALUES_KEYWORD.length(), openBracesIndex);
                 targetVars = vars.replaceAll("[(?$)]", "").trim().split(" ");
             }
@@ -1856,7 +1913,8 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
             String[] targetVars = extractTargetVars(command, valueName);
             if (targetVars.length == 0) {
-                //VALUES keyword has not been found or there is another issue so do not modify the command.
+                // VALUES keyword has not been found or there is another issue
+                // so do not modify the command.
                 return command;
             }
 
@@ -1921,7 +1979,8 @@ public class ParameterizedSparqlString implements PrefixMapping {
         protected void validateValuesSafeToInject(String command, String[] targetVars) {
 
             if (targetVars.length == 1) {
-                //Single var with one or more items so all checked against the same var.
+                // Single var with one or more items so all checked against the
+                // same var.
                 String targetVar = targetVars[0];
                 for (List<? extends RDFNode> row : rowItems) {
                     for (RDFNode item : row) {
@@ -1929,7 +1988,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
                     }
                 }
             } else {
-                //Multiple var with one or more rows.
+                // Multiple var with one or more rows.
                 for (int i = 0; i < targetVars.length; i++) {
                     String targetVar = targetVars[i];
                     for (List<? extends RDFNode> row : rowItems) {
@@ -1938,12 +1997,13 @@ public class ParameterizedSparqlString implements PrefixMapping {
                             validateSafeToInject(command, targetVar, item.asNode());
                         } else {
                             String rowString = row.stream().map(RDFNode::toString).collect(Collectors.joining(","));
-                            throw new ARQException("Number of VALUES variables (" + String.join(", ", targetVars) + ") does not equal replacement row (" + rowString + ").");
+                            throw new ARQException("Number of VALUES variables (" + String.join(", ", targetVars)
+                                    + ") does not equal replacement row (" + rowString + ").");
                         }
                     }
                 }
             }
         }
     }
-    
+
 }

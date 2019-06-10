@@ -22,10 +22,10 @@ import org.apache.jena.atlas.lib.BitsLong;
 
 public class IntegerNode {
     // 56 bits of value, including sign bit.
-    public static int  LEN   = 56;
-    public static int  LBITS = Long.SIZE;
-    public static long MAX   = (1L << (LEN - 1)) - 1;
-    public static long MIN   = -(1L << (LEN - 1));
+    public static final int  LEN   = 56;
+    public static final int  LBITS = Long.SIZE;
+    public static final long MAX   = (1L << (LEN - 1)) - 1;
+    public static final long MIN   = -(1L << (LEN - 1));
 
     public static long pack(long v) {
         if ( v >= MIN && v <= MAX ) {
@@ -42,9 +42,9 @@ public class IntegerNode {
             val = BitsLong.set(v, LEN, LBITS);
         return val;
     }
-    
+
     // Same - renamed.
-    
+
     public static long pack56(long v) {
         if ( v >= MIN && v <= MAX ) {
             v = BitsLong.clear(v, LEN, LBITS);

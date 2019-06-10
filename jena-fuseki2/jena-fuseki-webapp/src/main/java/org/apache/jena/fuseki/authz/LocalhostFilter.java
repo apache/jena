@@ -18,10 +18,10 @@
 
 package org.apache.jena.fuseki.authz;
 
-import javax.servlet.ServletRequest ;
-import javax.servlet.ServletResponse ;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
-import org.apache.shiro.web.filter.authz.PortFilter ;
+import org.apache.shiro.web.filter.authz.PortFilter;
 
 /**
  * A Filter that can allow or deny access based on whether the
@@ -29,7 +29,7 @@ import org.apache.shiro.web.filter.authz.PortFilter ;
  * Use of the external IP address of the local machine does not permit access,
  * only the loopback interface is authorized.
  * Responds with HTTP 403 on any denied request.
- * 
+ *
  * Example:
  * <pre>
  * [main]
@@ -42,20 +42,20 @@ import org.apache.shiro.web.filter.authz.PortFilter ;
  */
 
 public class LocalhostFilter extends AuthorizationFilter403 {
-    
-    private static final String message = "Access denied : only localhost access allowed" ;   
-    
-    public LocalhostFilter() { super(message); } 
 
-    private static String LOCALHOST_IpV6 =  "0:0:0:0:0:0:0:1" ;
-    private static String LOCALHOST_IpV4 =  "127.0.0.1" ;   // Strictly, 127.*.*.*
-    
+    private static final String message = "Access denied : only localhost access allowed";
+
+    public LocalhostFilter() { super(message); }
+
+    private static String LOCALHOST_IpV6 =  "0:0:0:0:0:0:0:1";
+    private static String LOCALHOST_IpV4 =  "127.0.0.1";   // Strictly, 127.*.*.*
+
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
-        String remoteAddr = request.getRemoteAddr() ;
+        String remoteAddr = request.getRemoteAddr();
         if ( LOCALHOST_IpV6.equals(remoteAddr) || LOCALHOST_IpV4.equals(remoteAddr) )
-            return true ;
-        return false ;
+            return true;
+        return false;
     }
 }
 

@@ -18,87 +18,85 @@
 
 package org.apache.jena.fuseki.validation.json;
 
-import java.util.ArrayList ;
-import java.util.Iterator ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import org.apache.jena.atlas.json.JsonBuilder ;
-import org.apache.jena.atlas.json.JsonObject ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIFactory ;
-import org.apache.jena.iri.Violation ;
-import org.apache.jena.riot.system.IRIResolver ;
+import org.apache.jena.atlas.json.JsonBuilder;
+import org.apache.jena.atlas.json.JsonObject;
+import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.iri.IRI;
+import org.apache.jena.iri.IRIFactory;
+import org.apache.jena.iri.Violation;
+import org.apache.jena.riot.system.IRIResolver;
 import static org.apache.jena.fuseki.validation.json.ValidatorJsonLib.*;
 
 public class IRIValidatorJSON {
 
     public IRIValidatorJSON() { }
-    
-    static IRIFactory iriFactory = IRIResolver.iriFactory() ;
-    
-    static final String paramIRI           = "iri" ;
+
+    static IRIFactory iriFactory = IRIResolver.iriFactory();
+
+    static final String paramIRI           = "iri";
 
     // Output is an object  { "iris" : [ ] }
     // { "iri": "" , "error": [], "warnings": [] }
-    static final String jIRIs    = "iris" ;
-    static final String jIRI     = "iri" ;
+    static final String jIRIs    = "iris";
+    static final String jIRI     = "iri";
 
     public static JsonObject execute(ValidationAction action) {
-        JsonBuilder obj = new JsonBuilder() ;
-        obj.startObject() ;
-        
-        String args[] = getArgs(action, paramIRI) ;
+        JsonBuilder obj = new JsonBuilder();
+        obj.startObject();
+
+        String args[] = getArgs(action, paramIRI);
         if ( args.length == 0 )
             ServletOps.errorBadRequest("No IRIs supplied");
-        
-        obj.key(jIRIs) ;
-        obj.startArray() ;
-        
-        for ( String iriStr : args )
-        {
-            obj.startObject() ;
-            obj.key(jIRI).value(iriStr) ;
 
-            IRI iri = iriFactory.create(iriStr) ;
+        obj.key(jIRIs);
+        obj.startArray();
+
+        for ( String iriStr : args ) {
+            obj.startObject();
+            obj.key(jIRI).value(iriStr);
+
+            IRI iri = iriFactory.create(iriStr);
 
 
-            List<String> errors = new ArrayList<>() ;
-            List<String> warnings = new ArrayList<>() ;
+            List<String> errors = new ArrayList<>();
+            List<String> warnings = new ArrayList<>();
 
             if ( iri.isRelative() )
-                warnings.add("Relative IRI: "+iriStr) ;
+                warnings.add("Relative IRI: " + iriStr);
 
-            Iterator<Violation> vIter = iri.violations(true) ;
-            for ( ; vIter.hasNext() ; )
-            {
-                Violation v = vIter.next() ;
-                String str = v.getShortMessage() ;
+            Iterator<Violation> vIter = iri.violations(true);
+            for (; vIter.hasNext(); ) {
+                Violation v = vIter.next();
+                String str = v.getShortMessage();
                 if ( v.isError() )
-                    errors.add(str) ;
+                    errors.add(str);
                 else
-                    warnings.add(str) ;
+                    warnings.add(str);
             }
-            
-            obj.key(jErrors) ;
-            obj.startArray() ;
-            for ( String msg : errors )
-                obj.value(msg) ;
-            obj.finishArray() ;
-                
-            obj.key(jWarnings) ;
-            obj.startArray() ;
-            for ( String msg : warnings )
-                obj.value(msg) ;
-            obj.finishArray() ;
 
-            obj.finishObject() ;
+            obj.key(jErrors);
+            obj.startArray();
+            for ( String msg : errors )
+                obj.value(msg);
+            obj.finishArray();
+
+            obj.key(jWarnings);
+            obj.startArray();
+            for ( String msg : warnings )
+                obj.value(msg);
+            obj.finishArray();
+
+            obj.finishObject();
         }
-          
-        
-       obj.finishArray() ;
-        
-        obj.finishObject() ;
-        return obj.build().getAsObject() ;
+
+
+       obj.finishArray();
+
+        obj.finishObject();
+        return obj.build().getAsObject();
     }
 }

@@ -18,10 +18,10 @@
 
 package org.apache.jena.fuseki;
 
-/** 
+/**
  * Tests in jena-fuseki-main and jena-fuseki-webapp
  * because so many rely on having a server to run.
- */  
+ */
 public class Dummy {
 
 }

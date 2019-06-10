@@ -18,34 +18,34 @@
 
 package org.apache.jena.tdb2.graph;
 
-import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
-import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
-import org.apache.jena.sparql.graph.GraphsTests ;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation;
+import org.apache.jena.sparql.graph.GraphsTests;
 import org.apache.jena.tdb2.sys.SystemTDB;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.Ignore ;
-import org.junit.Test ;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 
 public abstract class AbstractTestGraphsTDB extends GraphsTests
 {
-    private static ReorderTransformation reorder  ;
-    
+    private static ReorderTransformation reorder ;
+
     @BeforeClass public static void setupClass()
     {
-        reorder = SystemTDB.defaultReorderTransform ;
-        SystemTDB.defaultReorderTransform = ReorderLib.identity() ;
+        reorder = SystemTDB.getDefaultReorderTransform();
+        SystemTDB.setDefaultReorderTransform(ReorderLib.identity());
     }
-    
-    @AfterClass public static void afterClass() {  SystemTDB.defaultReorderTransform = reorder ; }
+
+    @AfterClass public static void afterClass() {  SystemTDB.setDefaultReorderTransform(reorder); }
 
     // These don't pass ... not quite clear if the test is right.  Investigate.
-    
+
     @Override
-    @Ignore @Test public void graph_count5() {} 
-    
+    @Ignore @Test public void graph_count5() {}
+
     @Override
-    @Ignore @Test public void graph_count6() {} 
-    
+    @Ignore @Test public void graph_count6() {}
+
 
 }

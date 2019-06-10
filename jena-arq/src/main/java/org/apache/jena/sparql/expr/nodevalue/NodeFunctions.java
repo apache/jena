@@ -18,8 +18,14 @@
 
 package org.apache.jena.sparql.expr.nodevalue ;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Iterator ;
 import java.util.UUID ;
+
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeConstants.Field;
+import javax.xml.datatype.Duration;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
@@ -29,6 +35,7 @@ import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.Violation ;
 import org.apache.jena.riot.system.IRIResolver;
+import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.ExprTypeException ;
 import org.apache.jena.sparql.expr.NodeValue ;
@@ -370,20 +377,7 @@ public class NodeFunctions {
     public static boolean isLiteral(Node node) {
         return node.isLiteral() ;
     }
-
-    private static final IRIFactory iriFactory      = IRIResolver.iriFactory();
-    public static boolean           warningsForIRIs = false ;
-
-    // -------- IRI
-    /** "Skolemize": BlankNode to IRI else return node unchanged. */ 
-    public static Node blankNodeToIri(Node node) {
-        if ( node.isBlank() ) {
-            String x = node.getBlankNodeLabel() ;
-            return NodeFactory.createURI("_:" + x) ;
-        }
-        return node;
-    }
-
+    
     /** NodeValue to NodeValue, skolemizing, and converting strings to URIs. */
     public static NodeValue iri(NodeValue nv, String baseIRI) {
         if ( isIRI(nv.asNode()) )
@@ -392,9 +386,12 @@ public class NodeFunctions {
         return NodeValue.makeNode(n2) ;
     }
     
+    private static final IRIFactory iriFactory      = IRIResolver.iriFactory();
+    public static boolean           warningsForIRIs = false ;
+
     /** Node to Node, skolemizing, and converting strings to URIs. */
     public static Node iri(Node n, String baseIRI) {
-        Node node = blankNodeToIri(n);
+        Node node = RiotLib.blankNodeToIri(n);
         if ( node.isURI() )
             return node ;
         // Literals.
@@ -415,34 +412,29 @@ public class NodeFunctions {
 
         if ( !iri.isAbsolute() )
             throw new ExprEvalException("Relative IRI string: " + iriStr) ;
-        if ( warningsForIRIs && iri.hasViolation(false) ) {
-            String msg = "unknown violation from IRI library" ;
-            Iterator<Violation> iter = iri.violations(false) ;
-            if ( iter.hasNext() ) {
-                Violation viol = iter.next() ;
-                msg = viol.getShortMessage() ;
+        
+        String msg = getOneViolation(iri, false);
+        if ( msg != null ) {
+            msg = "Bad IRI: " + msg + ": " + iri;
+            Log.error(NodeFunctions.class, msg);
+            //throw new ExprEvalException(msg);
+        } else {
+            if ( warningsForIRIs && iri.hasViolation(false) ) {
+                msg = getOneViolation(iri, true);
+                if ( msg != null )
+                    Log.warn(NodeFunctions.class, "Bad IRI: " + msg + ": " + iri) ;
             }
-            Log.warn(NodeFunctions.class, "Bad IRI: " + msg + ": " + iri) ;
         }
         return NodeFactory.createURI(iri.toString()) ;
     }
 
-    // The Jena version can be slow to inityailise (but is pure java)
-
-    // private static UUIDFactory factory = new UUID_V4_Gen() ;
-    // private static UUIDFactory factory = new UUID_V1_Gen() ;
-    // public static NodeValue uuid()
-    // {
-    // JenaUUID uuid = factory.generate() ;
-    // Node n = Node.createURI(uuid.asURN()) ;
-    // return NodeValue.makeNode(n) ;
-    // }
-    //
-    // public static NodeValue struuid()
-    // {
-    // JenaUUID uuid = factory.generate() ;
-    // return NodeValue.makeString(uuid.asString()) ;
-    // }
+    private static String getOneViolation(IRI iri, boolean includeWarnings) {
+        Iterator<Violation> iter = iri.violations(includeWarnings);
+        if ( ! iter.hasNext() )
+            return null; 
+        Violation viol = iter.next() ;
+        return viol.getShortMessage() ;
+    }
 
     public static NodeValue struuid() {
         return NodeValue.makeString(uuidString()) ;
@@ -496,5 +488,36 @@ public class NodeFunctions {
             throw new ExprEvalException("Empty lang tag") ;
         return NodeValue.makeLangString(lex, lang) ;
     }
+    
+    /** A duration, tided */ 
+    public static Duration duration(int seconds) {
+        if ( seconds == 0 )
+            return XSDFuncOp.zeroDuration;
+        Duration dur = NodeValue.xmlDatatypeFactory.newDuration(1000*seconds);
+        // Neaten the duration. Not all the fields ar zero.
+        dur = NodeValue.xmlDatatypeFactory.newDuration(dur.getSign()>=0, 
+                                                       field(dur, DatatypeConstants.YEARS), 
+                                                       field(dur, DatatypeConstants.MONTHS),
+                                                       field(dur, DatatypeConstants.DAYS),
+                                                       field(dur, DatatypeConstants.HOURS),
+                                                       field(dur, DatatypeConstants.MINUTES),
+                                                       field2(dur, DatatypeConstants.SECONDS));
+        return dur;
+    }
 
+    //Don't set field if zero.
+    private static BigInteger field(Duration dur, Field field) {
+        BigInteger i = (BigInteger)dur.getField(field);
+        if ( i == null || i.equals(BigInteger.ZERO) )
+            return null;
+        return i;
+    }
+
+    private static BigDecimal field2(Duration dur, Field field) {
+        BigDecimal x = (BigDecimal)dur.getField(field);
+        //x = x.setScale(0);
+        if ( x.compareTo(BigDecimal.ZERO) == 0 )
+            return null;
+        return x;
+    }
 }

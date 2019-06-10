@@ -21,7 +21,7 @@ package org.apache.jena.fuseki.auth;
 import java.util.*;
 
 /**
- * Policy for allowing users to execute a request. 
+ * Policy for allowing users to execute a request.
  * Assumes the user has been authenticated.
  */
 class AuthUserList implements AuthPolicy {
@@ -31,7 +31,7 @@ class AuthUserList implements AuthPolicy {
     /*package*/ AuthUserList(Collection<String> allowed) {
         this.allowedUsers = (allowed == null) ? Collections.emptySet() : new HashSet<>(allowed);
     }
-    
+
     @Override
     public boolean isAllowed(String user) {
         if ( user == null )
@@ -49,12 +49,12 @@ class AuthUserList implements AuthPolicy {
     static <T> boolean isNullOrEmpty(Collection<T> collection) {
         if ( collection == null )
             return true;
-        return collection.isEmpty(); 
+        return collection.isEmpty();
     }
-    
+
     static <T> boolean contains(Collection<T> collection, T obj) {
         if ( collection == null )
             return false;
-        return collection.contains(obj); 
+        return collection.contains(obj);
     }
 }

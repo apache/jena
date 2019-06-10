@@ -18,50 +18,52 @@
 
 package org.apache.jena.fuseki.mgt;
 
-import static java.lang.String.format ;
+import static java.lang.String.format;
 
 import org.apache.jena.fuseki.ctl.ActionAsyncTask;
 import org.apache.jena.fuseki.ctl.TaskBase;
-import org.apache.jena.fuseki.servlets.HttpAction ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.fuseki.servlets.HttpAction;
+import org.apache.jena.fuseki.servlets.ServletOps;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ActionBackup extends ActionAsyncTask
 {
-    public ActionBackup() { super() ; }
+    public ActionBackup() { super("Backup"); }
+
+    @Override
+    public void validate(HttpAction action) {}
 
     @Override
     protected Runnable createRunnable(HttpAction action) {
-        String name = action.getDatasetName() ;
+        String name = getItemName(action);
         if ( name == null ) {
-            action.log.error("Null for dataset name in item request") ;  
+            action.log.error("Null for dataset name in item request");
             ServletOps.errorOccurred("Null for dataset name in item request");
-            return null ;
+            return null;
         }
-        
-        action.log.info(format("[%d] Backup dataset %s", action.id, name)) ;
-        return new BackupTask(action) ;
+
+        action.log.info(format("[%d] Backup dataset %s", action.id, name));
+        return new BackupTask(action);
     }
 
     static class BackupTask extends TaskBase {
-        static private Logger log = LoggerFactory.getLogger("Backup") ;
-        
+        static private Logger log = LoggerFactory.getLogger("Backup");
+
         public BackupTask(HttpAction action) {
-            super(action) ;
+            super(action);
         }
 
         @Override
         public void run() {
             try {
-                String backupFilename = Backup.chooseFileName(datasetName) ;
-                log.info(format("[%d] >>>> Start backup %s -> %s", actionId, datasetName, backupFilename)) ;
-                Backup.backup(transactional, dataset, backupFilename) ;
-                log.info(format("[%d] <<<< Finish backup %s -> %s", actionId, datasetName, backupFilename)) ;
+                String backupFilename = Backup.chooseFileName(datasetName);
+                log.info(format("[%d] >>>> Start backup %s -> %s", actionId, datasetName, backupFilename));
+                Backup.backup(transactional, dataset, backupFilename);
+                log.info(format("[%d] <<<< Finish backup %s -> %s", actionId, datasetName, backupFilename));
             } catch (Exception ex) {
-                log.info(format("[%d] **** Exception in backup", actionId), ex) ;
+                log.info(format("[%d] **** Exception in backup", actionId), ex);
             }
         }
     }
 }
-    

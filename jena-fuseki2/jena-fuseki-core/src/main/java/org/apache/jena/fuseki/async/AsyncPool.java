@@ -18,83 +18,83 @@
 
 package org.apache.jena.fuseki.async;
 
-import static java.lang.String.format ;
+import static java.lang.String.format;
 
-import java.util.* ;
-import java.util.concurrent.* ;
+import java.util.*;
+import java.util.concurrent.*;
 
-import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.server.DataService ;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.server.DataService;
 
 /** The set of currently active and recently completed tasks. */
 public class AsyncPool
 {
     // Max concurrent tasks.
-    private static int nMaxThreads = 4 ;
+    private static int nMaxThreads = 4;
     // Number of finished tasks kept.
-    private static int MAX_FINISHED = 20 ;
-    
-    // See Executors.newCachedThreadPool and Executors.newFixedThreadPool 
+    private static int MAX_FINISHED = 20;
+
+    // See Executors.newCachedThreadPool and Executors.newFixedThreadPool
     private ExecutorService executor = new ThreadPoolExecutor(0, nMaxThreads,
                                                               120L, TimeUnit.SECONDS,
-                                                              new LinkedBlockingQueue<Runnable>()) ;
-    private final Object mutex = new Object() ; 
-    private long counter = 0 ;
-    private Map<String, AsyncTask> runningTasks = new LinkedHashMap<>() ;
-    private Map<String, AsyncTask> finishedTasks = new LinkedHashMap<>() ;
-    // Finite FIFO of finished tasks. 
+                                                              new LinkedBlockingQueue<Runnable>());
+    private final Object mutex = new Object();
+    private long counter = 0;
+    private Map<String, AsyncTask> runningTasks = new LinkedHashMap<>();
+    private Map<String, AsyncTask> finishedTasks = new LinkedHashMap<>();
+    // Finite FIFO of finished tasks.
     private LinkedList<AsyncTask> finishedTasksList = new LinkedList<>();
-    
-    private static AsyncPool instance = new AsyncPool() ;
 
-    public static AsyncPool get() { return instance ; }
+    private static AsyncPool instance = new AsyncPool();
+
+    public static AsyncPool get() { return instance; }
 
     private AsyncPool() { }
-    
-    public AsyncTask submit(Runnable task, String displayName, DataService dataService, long requestId) { 
+
+    public AsyncTask submit(Runnable task, String displayName, DataService dataService, long requestId) {
         synchronized(mutex) {
-            String taskId = Long.toString(++counter) ;
-            Fuseki.serverLog.info(format("Task : %s : %s",taskId, displayName)) ;
+            String taskId = Long.toString(++counter);
+            Fuseki.serverLog.info(format("Task : %s : %s",taskId, displayName));
             Callable<Object> c = ()->{
-                try { task.run(); } 
+                try { task.run(); }
                 catch (Throwable th) {
                     Fuseki.serverLog.error(format("Exception in task %s execution", taskId), th);
                 }
-                return null; 
+                return null;
             };
-            AsyncTask asyncTask = new AsyncTask(c, this, taskId, displayName, dataService, requestId) ;
+            AsyncTask asyncTask = new AsyncTask(c, this, taskId, displayName, dataService, requestId);
             /* Future<Object> future = */ executor.submit(asyncTask);
-            runningTasks.put(taskId, asyncTask) ;
-            return asyncTask ;
+            runningTasks.put(taskId, asyncTask);
+            return asyncTask;
         }
     }
-    
+
     public Collection<AsyncTask> tasks() {
         synchronized(mutex) {
-            List<AsyncTask> x = new ArrayList<>(runningTasks.size()+finishedTasks.size()) ;
-            x.addAll(runningTasks.values()) ;
-            x.addAll(finishedTasks.values()) ;
-            return x ;
+            List<AsyncTask> x = new ArrayList<>(runningTasks.size()+finishedTasks.size());
+            x.addAll(runningTasks.values());
+            x.addAll(finishedTasks.values());
+            return x;
         }
     }
-    
-    public void finished(AsyncTask task) { 
+
+    public void finished(AsyncTask task) {
         synchronized(mutex) {
-            String id = task.getTaskId() ;
-            runningTasks.remove(id) ;
+            String id = task.getTaskId();
+            runningTasks.remove(id);
             // Reduce old tasks list
             while ( finishedTasksList.size() >= MAX_FINISHED ) {
                 AsyncTask oldTask = finishedTasksList.removeFirst();
                 finishedTasks.remove(oldTask.getTaskId());
             }
-            finishedTasks.put(id, task) ;
+            finishedTasks.put(id, task);
             finishedTasksList.add(task);
         }
     }
 
     public AsyncTask getRunningTask(String taskId) {
         synchronized(mutex) {
-            return runningTasks.get(taskId) ;
+            return runningTasks.get(taskId);
         }
     }
 
@@ -104,10 +104,10 @@ public class AsyncPool
      */
     public AsyncTask getTask(String taskId) {
         synchronized(mutex) {
-            AsyncTask task = runningTasks.get(taskId) ;
+            AsyncTask task = runningTasks.get(taskId);
             if ( task != null )
-                return task ;
-            return finishedTasks.get(taskId) ;
+                return task;
+            return finishedTasks.get(taskId);
         }
     }
 }

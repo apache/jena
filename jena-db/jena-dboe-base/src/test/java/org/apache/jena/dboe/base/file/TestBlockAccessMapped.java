@@ -18,32 +18,30 @@
 
 package org.apache.jena.dboe.base.file;
 
-import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.dboe.ConfigTestDBOE;
 import org.apache.jena.dboe.base.file.BlockAccess;
 import org.apache.jena.dboe.base.file.BlockAccessMapped;
-import org.junit.AfterClass ;
+import org.junit.AfterClass;
 
 public class TestBlockAccessMapped extends AbstractTestBlockAccessFixedSize
 {
-    static String filename = ConfigTestDBOE.getTestingDir()+"/test-file-access-mapped" ;
-    
-    static final int BlockSize = 64 ;
-    public TestBlockAccessMapped()
-    {
-        super(BlockSize) ;
+    static String filename = ConfigTestDBOE.getTestingDir()+"/test-file-access-mapped";
+
+    static final int BlockSize = 64;
+    public TestBlockAccessMapped() {
+        super(BlockSize);
     }
 
-    @AfterClass public static void cleanup() { FileOps.deleteSilent(filename) ; } 
-    
-    static int counter = 0 ;
-    
+    @AfterClass public static void cleanup() { FileOps.deleteSilent(filename); }
+
+    static int counter = 0;
+
     @Override
-    protected BlockAccess make()
-    {
-    	String fn = filename + "-"+(counter++) ;
-    	FileOps.deleteSilent(fn) ;
-        return new BlockAccessMapped(fn, BlockSize) ;
-        
+    protected BlockAccess make() {
+    	String fn = filename + "-"+(counter++);
+    	FileOps.deleteSilent(fn);
+        return new BlockAccessMapped(fn, BlockSize);
+
     }
 }

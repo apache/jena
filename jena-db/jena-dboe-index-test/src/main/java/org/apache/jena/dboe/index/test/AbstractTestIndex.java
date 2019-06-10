@@ -24,138 +24,123 @@ import static org.apache.jena.dboe.test.RecordLib.intToRecord;
 import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.index.Index;
 import org.apache.jena.dboe.test.RecordLib;
-import org.junit.Assert ;
+import org.junit.Assert;
 import org.junit.After;
 import org.junit.Test;
 
 //import org.apache.jena.tdb.base.record.RecordLib;
 
-public abstract class AbstractTestIndex extends Assert 
+public abstract class AbstractTestIndex extends Assert
 {
-    Index index = null ;
-    
-    @After public void afterTest()
-    { 
+    Index index = null;
+
+    @After public void afterTest() {
         if ( index != null )
             index.close();
-        index = null ;
+        index = null;
     }
-    
+
     // ---- Overridable maker
-    protected abstract Index makeIndex(int kLen, int vLen) ;
-    
+    protected abstract Index makeIndex(int kLen, int vLen);
+
     @Test public void __basic() {
-        makeIndex(4,0) ;
+        makeIndex(4,0);
     }
-    
-    @Test public void index_ins_0()
-    {
+
+    @Test public void index_ins_0() {
         // Empty tree
         int[] keys = {};
-        test(keys) ;
-    }
-    
-    @Test public void index_ins_1()
-    {
-        int[] keys = {1};
-        test(keys) ;
-    }
-    
-    @Test public void index_ins_2()
-    {
-        int[] keys = new int[20] ; 
-        for ( int i = 0 ; i < keys.length ; i++ )
-            keys[i] = i ;
-        test(keys) ;
-    }
-    
-    @Test public void index_ins_3()
-    {
-        int[] keys = new int[20] ; 
-        for ( int i = keys.length-1 ; i >= 0 ; i-- )
-            keys[i] = i ;
-        test(keys) ;
+        test(keys);
     }
 
-    @Test public void index_ins_4()
-    {
-        int[] keys = new int[10] ; 
-        for ( int i = 0 ; i < keys.length ; i++ )
-            keys[i] = 1<<i ;
-        test(keys) ;
-    }
-    
-    @Test public void index_ins_5()
-    {
-        int[] keys = new int[10] ; 
-        for ( int i = keys.length-1 ; i >= 0 ; i-- )
-            keys[i] = 1<<i ;
-        test(keys) ;
-    }
-    
-    @Test public void index_find_1()
-    {
+    @Test public void index_ins_1() {
         int[] keys = {1};
-        Index index = test(keys) ;
-        Record r = intToRecord(1, RecordLib.TestRecordLength) ;
-        r = index.find(r) ;
-        assertNotNull(r) ;
+        test(keys);
     }
-    
-    @Test public void index_find_2()
-    {
+
+    @Test public void index_ins_2() {
+        int[] keys = new int[20];
+        for ( int i = 0; i < keys.length ; i++ )
+            keys[i] = i;
+        test(keys);
+    }
+
+    @Test public void index_ins_3() {
+        int[] keys = new int[20];
+        for ( int i = keys.length-1; i >= 0 ; i-- )
+            keys[i] = i;
+        test(keys);
+    }
+
+    @Test public void index_ins_4() {
+        int[] keys = new int[10];
+        for ( int i = 0; i < keys.length ; i++ )
+            keys[i] = 1<<i;
+        test(keys);
+    }
+
+    @Test public void index_ins_5() {
+        int[] keys = new int[10];
+        for ( int i = keys.length-1; i >= 0 ; i-- )
+            keys[i] = 1<<i;
+        test(keys);
+    }
+
+    @Test public void index_find_1() {
+        int[] keys = {1};
+        Index index = test(keys);
+        Record r = intToRecord(1, RecordLib.TestRecordLength);
+        r = index.find(r);
+        assertNotNull(r);
+    }
+
+    @Test public void index_find_2() {
         int[] keys = {1,2,3,4,5,6,7,8,9};
-        Index index = test(keys) ;
-        Record r = intToRecord(20, RecordLib.TestRecordLength) ;
-        r = index.find(r) ;
-        assertNull(r) ;
+        Index index = test(keys);
+        Record r = intToRecord(20, RecordLib.TestRecordLength);
+        r = index.find(r);
+        assertNull(r);
     }
-    
-    @Test public void index_del_1()
-    {
+
+    @Test public void index_del_1() {
         int[] keys1 = {0, 1, 2};
         int[] keys2 = {0, 1, 2};
-        int[] keys3 = {} ;
-        test(keys1, keys2, keys3) ;
+        int[] keys3 = {};
+        test(keys1, keys2, keys3);
     }
 
-    @Test public void index_del_2()
-    {
+    @Test public void index_del_2() {
         int[] keys1 = {0, 1, 2};
         int[] keys2 = {0, 1};
-        int[] keys3 = {2} ;
-        test(keys1, keys2, keys3) ;
+        int[] keys3 = {2};
+        test(keys1, keys2, keys3);
     }
 
-    @Test public void index_del_3()
-    {
+    @Test public void index_del_3() {
         int[] keys1 = {0, 1, 2};
         int[] keys2 = {0, 99};
-        int[] keys3 = {2, 1} ;
-        test(keys1, keys2, keys3) ;
+        int[] keys3 = {2, 1};
+        test(keys1, keys2, keys3);
     }
 
-    private Index test(int[] insKeys, int[] delKeys, int[] expected)
-    {
-        index = makeIndex(4,0) ;
-        testInsert(index, insKeys) ;
-        long x = index.size() ;
+    private Index test(int[] insKeys, int[] delKeys, int[] expected) {
+        index = makeIndex(4,0);
+        testInsert(index, insKeys);
+        long x = index.size();
         if ( x >= 0 )
-            assertEquals(insKeys.length, x) ;
-        
-        if ( delKeys != null )
-        {
-            testDelete(index, delKeys) ;
-            
+            assertEquals(insKeys.length, x);
+
+        if ( delKeys != null ) {
+            testDelete(index, delKeys);
+
         }
-        
-        if ( expected != null ) 
-            testIndexContents(index, expected) ;
-        return index ;
+
+        if ( expected != null )
+            testIndexContents(index, expected);
+        return index;
     }
 
-    private Index test(int[] keys)
-    {
-        return test(keys, null, keys) ;
+    private Index test(int[] keys) {
+        return test(keys, null, keys);
     }
 }

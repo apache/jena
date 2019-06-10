@@ -23,7 +23,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.assembler.exceptions.AssemblerException;
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.TxnType;
@@ -33,13 +32,10 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.core.DatasetOne;
-import org.apache.jena.sparql.core.TxnDataset2Graph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.Txn;
-import org.apache.jena.test.txn.TestDataset2Graph;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -47,12 +43,6 @@ import org.junit.Test;
  */
 public class TestDatasetAssembler {
     static { JenaSystem.init(); } 
-    
-    @SuppressWarnings("deprecation")
-    @BeforeClass public static void beforeClass() {
-        if ( ! TxnDataset2Graph.TXN_DSG_GRAPH )
-            Log.warn(TestDataset2Graph.class, "**** TxnDataset2Graph.TXN_DSG_GRAPH is false in the system setup ****");
-    }
     
     protected static String DIR = "testing/Assembler/";
     
