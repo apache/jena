@@ -18,8 +18,10 @@
 package org.apache.jena.fuseki.geosparql;
 
 import java.lang.invoke.MethodHandles;
+
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.FusekiServer.Builder;
+import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.query.Dataset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 public class GeosparqlServer extends Thread {
 
+    static { FusekiLogging.setLogging(); }
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final int port;
@@ -41,7 +44,6 @@ public class GeosparqlServer extends Thread {
     private Thread shutdownThread = null;
 
     public GeosparqlServer(int port, String datasetName, boolean loopbackOnly, Dataset dataset, boolean allowUpdate) {
-
         this.port = port;
         this.datasetName = checkDatasetName(datasetName);
         this.localServiceURL = "http://localhost:" + port + "/" + datasetName;

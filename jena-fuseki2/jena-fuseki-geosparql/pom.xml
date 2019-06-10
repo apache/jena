@@ -88,6 +88,20 @@
             <version>1.7.26</version>
         </dependency>
 
+        <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+          <optional>false</optional>
+          <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+          <optional>false</optional>
+          <scope>compile</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -179,7 +193,7 @@
                     <transformers>
                         <!-- @@@ TODO @@ -->
                         <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                            <mainClass>io.github.galbiston.geosparql_fuseki.Main</mainClass>
+                            <mainClass>org.apache.jena.fuseki.geosparql.Main</mainClass>
                         </transformer>
                         <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                         <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />

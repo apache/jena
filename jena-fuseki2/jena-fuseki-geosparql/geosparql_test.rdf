@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<rdf:RDF xmlns:geo="http://www.opengis.net/ont/geosparql#"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+         xmlns:ex="http://example.org/Schema#"
+         xmlns:feat="http://example.org/Feature#"
+         xmlns:geom="http://example.org/Geometry#"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:sf="http://www.opengis.net/ont/sf#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#">
+
+    <rdfs:Class rdf:about="http://example.org/Schema#PlaceOfInterest">
+        <rdfs:subClassOf rdf:resource="http://www.opengis.net/ont/geosparql#Feature"/>
+    </rdfs:Class>
+    <rdf:Property rdf:about="http://example.org/Schema#hasExactGeometry">
+        <rdfs:subPropertyOf rdf:resource="http://www.opengis.net/ont/geosparql#hasGeometry"/>
+        <rdfs:subPropertyOf rdf:resource="http://www.opengis.net/ont/geosparql#hasDefaultGeometry"/>
+    </rdf:Property>
+
+    <!-- Point A -->
+    <ex:PlaceOfInterest rdf:about="http://example.org/Feature#A">
+        <ex:hasExactGeometry rdf:resource="http://example.org/Geometry#PointA"/>
+        <ex:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PlaceA</ex:name>
+    </ex:PlaceOfInterest>
+    <sf:Point rdf:about="http://example.org/Geometry#PointA">
+        <geo:asWKT rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral"><![CDATA[<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(60 60)]]></geo:asWKT>
+    </sf:Point>
+
+    <!-- Point B -->
+    <ex:PlaceOfInterest rdf:about="http://example.org/Feature#B">
+        <ex:hasExactGeometry rdf:resource="http://example.org/Geometry#PointB"/>
+        <ex:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PlaceB</ex:name>
+    </ex:PlaceOfInterest>
+    <sf:Point rdf:about="http://example.org/Geometry#PointB">
+        <geo:asWKT rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral"><![CDATA[<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(90 60)]]></geo:asWKT>
+    </sf:Point>	
+
+    <!-- Point C -->
+    <ex:PlaceOfInterest rdf:about="http://example.org/Feature#C">
+        <ex:hasExactGeometry rdf:resource="http://example.org/Geometry#PointC"/>
+        <ex:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PlaceC</ex:name>
+    </ex:PlaceOfInterest>
+    <sf:Point rdf:about="http://example.org/Geometry#PointC">
+        <geo:asWKT rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral"><![CDATA[<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(30 20)]]></geo:asWKT>
+    </sf:Point>
+
+    <!-- Point C2 -->
+    <ex:PlaceOfInterest rdf:about="http://example.org/Feature#C2">
+        <ex:hasExactGeometry rdf:resource="http://example.org/Geometry#PointC2"/>
+        <ex:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PlaceC2</ex:name>
+    </ex:PlaceOfInterest>
+    <sf:Point rdf:about="http://example.org/Geometry#PointC2">
+        <geo:asWKT rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral"><![CDATA[<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(30 20)]]></geo:asWKT>
+    </sf:Point>
+	
+	<!-- Point M -->
+    <ex:PlaceOfInterest rdf:about="http://example.org/Feature#M">
+        <ex:hasExactGeometry rdf:resource="http://example.org/Geometry#PointM"/>
+        <ex:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PlaceM</ex:name>
+    </ex:PlaceOfInterest>
+    <sf:Point rdf:about="http://example.org/Geometry#PointM">
+        <geo:asWKT rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral"><![CDATA[<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(300 200)]]></geo:asWKT>
+    </sf:Point>
+
+    <!-- LineString D -->
+    <ex:PlaceOfInterest rdf:about="http://example.org/Feature#D">
+        <ex:hasExactGeometry rdf:resource="http://example.org/Geometry#LineStringD"/>
+        <ex:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PlaceD</ex:name>
+    </ex:PlaceOfInterest>
+    <sf:LineString rdf:about="http://example.org/Geometry#LineStringD">
+        <geo:asWKT rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral"><![CDATA[<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(40 50, 80 50)]]></geo:asWKT>
+    </sf:LineString>
+
+    <!-- LineString E -->
+    <ex:PlaceOfInterest rdf:about="http://example.org/Feature#E">
+        <ex:hasExactGeometry rdf:resource="http://example.org/Geometry#LineStringE"/>
+        <ex:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PlaceE</ex:name>
+    </ex:PlaceOfInterest>
+    <sf:LineString rdf:about="http://example.org/Geometry#LineStringE">
+        <geo:asWKT rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral"><![CDATA[<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(75 60, 145 60)]]></geo:asWKT>
+    </sf:LineString>
+
+    <!-- LineString F -->
+    <ex:PlaceOfInterest rdf:about="http://example.org/Feature#F">
+        <ex:hasExactGeometry rdf:resource="http://example.org/Geometry#LineStringF"/>
+        <ex:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PlaceF</ex:name>
+    </ex:PlaceOfInterest>
+    <sf:LineString rdf:about="http://example.org/Geometry#LineStringF">
+        <geo:asWKT rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral"><![CDATA[<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(10 25, 50 25)]]></geo:asWKT>
+    </sf:LineString>
+
+    <!-- LineString G -->
+    <ex:PlaceOfInterest rdf:about="http://example.org/Feature#G">
+        <ex:hasExactGeometry rdf:resource="http://example.org/Geometry#LineStringG"/>
+        <ex:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PlaceG</ex:name>
+    </ex:PlaceOfInterest>
+    <sf:LineString rdf:about="http://example.org/Geometry#LineStringG">
+        <geo:asWKT rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral"><![CDATA[<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING(80 85, 80 30)]]></geo:asWKT>
+    </sf:LineString>
+
+    <!-- Polygon H -->
+    <ex:PlaceOfInterest rdf:about="http://example.org/Feature#H">
+        <ex:hasExactGeometry rdf:resource="http://example.org/Geometry#PolygonH"/>
+        <ex:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PlaceH</ex:name>
+    </ex:PlaceOfInterest>
+    <sf:Polygon rdf:about="http://example.org/Geometry#PolygonH">
+        <geo:asWKT rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral"><![CDATA[<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 70, 90 70, 90 40, 30 40))]]></geo:asWKT>
+    </sf:Polygon>
+
+    <!-- Polygon I -->
+    <ex:PlaceOfInterest rdf:about="http://example.org/Feature#I">
+        <ex:hasExactGeometry rdf:resource="http://example.org/Geometry#PolygonI"/>
+        <ex:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PlaceI</ex:name>
+    </ex:PlaceOfInterest>
+    <sf:Polygon rdf:about="http://example.org/Geometry#PolygonI">
+        <geo:asWKT rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral"><![CDATA[<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((80 15, 80 45, 140 45, 140 15, 80 15))]]></geo:asWKT>
+    </sf:Polygon>
+
+    <!-- Polygon J -->
+    <ex:PlaceOfInterest rdf:about="http://example.org/Feature#J">
+        <ex:hasExactGeometry rdf:resource="http://example.org/Geometry#PolygonJ"/>
+        <ex:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PlaceJ</ex:name>
+    </ex:PlaceOfInterest>
+    <sf:Polygon rdf:about="http://example.org/Geometry#PolygonJ">
+        <geo:asWKT rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral"><![CDATA[<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((140 15, 140 45, 200 45, 200 15, 140 15))]]></geo:asWKT>
+    </sf:Polygon>
+
+    <!-- Polygon K -->
+    <ex:PlaceOfInterest rdf:about="http://example.org/Feature#K">
+        <ex:hasExactGeometry rdf:resource="http://example.org/Geometry#PolygonK"/>
+        <ex:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PlaceK</ex:name>
+    </ex:PlaceOfInterest>
+    <sf:Polygon rdf:about="http://example.org/Geometry#PolygonK">
+        <geo:asWKT rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral"><![CDATA[<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((30 40, 30 48, 45 48, 45 40, 30 40))]]></geo:asWKT>
+    </sf:Polygon>
+
+    <!-- Polygon L -->
+    <ex:PlaceOfInterest rdf:about="http://example.org/Feature#L">
+        <ex:hasExactGeometry rdf:resource="http://example.org/Geometry#PolygonL"/>
+        <ex:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PlaceL</ex:name>
+    </ex:PlaceOfInterest>
+    <sf:Polygon rdf:about="http://example.org/Geometry#PolygonL">
+        <geo:asWKT rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral"><![CDATA[<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((145 30, 145 40, 160 40, 160 30, 145 30))]]></geo:asWKT>
+    </sf:Polygon>
+
+    <!-- Point Empty -->
+    <ex:PlaceOfInterest rdf:about="http://example.org/Feature#Empty">
+        <ex:hasExactGeometry rdf:resource="http://example.org/Geometry#PointEmpty"/>
+        <ex:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PlaceEmpty</ex:name>
+    </ex:PlaceOfInterest>
+    <sf:Point rdf:about="http://example.org/Geometry#PointEmpty">
+        <geo:asWKT rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral"><![CDATA[]]></geo:asWKT>
+    </sf:Point>
+
+    <!-- Asserted statements to check query rewriting. - Not coherent logic. -->
+    <ex:PlaceOfInterest rdf:about="http://example.org/Feature#X">
+        <geo:sfContains rdf:resource="http://example.org/Feature#Y" />
+        <geo:sfCrosses rdf:resource="http://example.org/Feature#Y" />
+        <geo:sfDisjoint rdf:resource="http://example.org/Feature#Y" />
+        <geo:sfEquals rdf:resource="http://example.org/Feature#Y" />
+        <geo:sfIntersects rdf:resource="http://example.org/Feature#Y" />
+        <geo:sfOverlaps rdf:resource="http://example.org/Feature#Y" />
+        <geo:sfTouches rdf:resource="http://example.org/Feature#Y" />
+        <geo:sfWithin rdf:resource="http://example.org/Feature#Y" />
+        <geo:rcc8eq rdf:resource="http://example.org/Feature#Y" />
+        <geo:rcc8dc rdf:resource="http://example.org/Feature#Y" />
+        <geo:rcc8ec rdf:resource="http://example.org/Feature#Y" />
+        <geo:rcc8po rdf:resource="http://example.org/Feature#Y" />
+        <geo:rcc8tppi rdf:resource="http://example.org/Feature#Y" />
+        <geo:rcc8tpp rdf:resource="http://example.org/Feature#Y" />
+        <geo:rcc8ntpp rdf:resource="http://example.org/Feature#Y" />
+        <geo:rcc8ntppi rdf:resource="http://example.org/Feature#Y" />
+        <geo:ehEquals rdf:resource="http://example.org/Feature#Y" />
+        <geo:ehDisjoint rdf:resource="http://example.org/Feature#Y" />
+        <geo:ehMeet rdf:resource="http://example.org/Feature#Y" />
+        <geo:ehOverlap rdf:resource="http://example.org/Feature#Y" />
+        <geo:ehCovers rdf:resource="http://example.org/Feature#Y" />
+        <geo:ehCoveredBy rdf:resource="http://example.org/Feature#Y" />
+        <geo:ehInside rdf:resource="http://example.org/Feature#Y" />
+        <geo:ehContains rdf:resource="http://example.org/Feature#Y" />
+    </ex:PlaceOfInterest>
+
+</rdf:RDF>

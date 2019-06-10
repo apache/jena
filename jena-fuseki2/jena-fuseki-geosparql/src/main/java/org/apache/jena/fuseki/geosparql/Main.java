@@ -23,12 +23,14 @@ import java.util.Arrays;
 import org.apache.jena.geosparql.configuration.SrsException;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
 import org.apache.jena.fuseki.geosparql.cli.ArgsConfig;
+import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.query.Dataset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 public class Main {
+    static { FusekiLogging.setLogging(); }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -40,7 +42,8 @@ public class Main {
         //Apache SIS j.u.l logging redirection.
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
-
+        
+        
         LOGGER.info("Arguments Received: {}", Arrays.asList(args));
 
         ArgsConfig argsConfig = new ArgsConfig();
