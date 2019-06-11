@@ -131,14 +131,6 @@ public class AggMode extends AggregatorBase
     	            }
     	        }
     	    }
-    	    
-    	    for (Map.Entry<Double, Integer> entry: amode.entrySet())
-    	    {
-    	        if (entry.getValue() == max)
-    	        {
-    	    	    System.out.println("Print all max: "+entry.getKey()+" Count: "+entry.getValue());
-    	        }
-    	    }
 
             return (NodeValue.makeDecimal(mode));
         }

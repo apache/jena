@@ -20,6 +20,7 @@ package org.apache.jena.sparql.expr.aggregate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.engine.binding.Binding ;
@@ -96,7 +97,7 @@ public class AggModeDistinct extends AggregatorBase
         @Override
         public NodeValue getAccValue()
         {
-            double mode;
+            double mode= Double.NaN;
             if ( count == 0 ) return noValuesToMode ;
             if ( super.errorCount != 0 )
                 return null ;
@@ -106,17 +107,30 @@ public class AggModeDistinct extends AggregatorBase
             for(int i=0; i<indexsize; i++){
             	arrDouble[i] = collection.get(i).getDouble();	
             }
-            
-            Arrays.sort(arrDouble);
-            if(indexsize==0) {
-            	mode = Double.NaN;
-            }else if(indexsize%2!=0) {
-            	mode = arrDouble[(indexsize/2)];
-            }else {	
-            	mode = ((arrDouble[(indexsize/2)]+arrDouble[((indexsize/2)-1)])/2);
-            }
 
-            return (NodeValue.makeDecimal((mode)));
+    	    HashMap<Double,Integer> amode = new HashMap<Double,Integer>();
+    	    int max  = 0;
+
+    	    for(int i = 0; i < arrDouble.length; i++) {
+    	        if (amode.get(arrDouble[i]) != null) {
+    	            int count = amode.get(arrDouble[i]);
+    	            count++;
+    	            amode.put(arrDouble[i], count);
+
+    	            if(count > max) {
+    	                max  = count;
+    	                mode = arrDouble[i];
+    	            }
+    	        }
+    	        else {
+    	            amode.put(arrDouble[i],1);
+    	            if(mode==0) {
+    	            	mode = arrDouble[i];
+    	            }
+    	        }
+    	    }
+
+            return (NodeValue.makeDecimal(mode));
         }
         
         @Override
