@@ -300,5 +300,15 @@
               qt:data   <data-1.ttl> ] ;
         mf:result  <median-01.srj>
       ]
+
+    ##MODE
+              [  mf:name    "Mode - 1 - mode(?v)" ;
+         rdf:type   mfx:TestQuery ;
+         mf:action
+            [ qt:query  <mode-01.arq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <mode-01.srj>
+      ]
+
       
     ).
