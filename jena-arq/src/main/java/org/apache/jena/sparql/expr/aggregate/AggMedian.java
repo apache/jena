@@ -101,7 +101,7 @@ public class AggMedian extends AggregatorBase
             if ( count == 0 ) return noValuesToMedian ;
             if ( super.errorCount != 0 )
                 return null ;
-            
+
             int indexsize = collection.size();
             double[] arrDouble = new double[indexsize];
             for(int i=0; i<indexsize; i++){

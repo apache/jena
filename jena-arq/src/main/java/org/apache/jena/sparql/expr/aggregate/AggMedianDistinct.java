@@ -100,17 +100,16 @@ public class AggMedianDistinct extends AggregatorBase
             if ( count == 0 ) return noValuesToMedian ;
             if ( super.errorCount != 0 )
                 return null ;
-            
+
             int indexsize = collection.size();
             double[] arrDouble = new double[indexsize];
             for(int i=0; i<indexsize; i++){
             	arrDouble[i] = collection.get(i).getDouble();	
             }
-            
+
             Arrays.sort(arrDouble);
-            if(indexsize==0) {
-            	median = Double.NaN;
-            }else if(indexsize%2!=0) {
+
+            if(indexsize%2!=0) {
             	median = arrDouble[(indexsize/2)];
             }else {	
             	median = ((arrDouble[(indexsize/2)]+arrDouble[((indexsize/2)-1)])/2);
