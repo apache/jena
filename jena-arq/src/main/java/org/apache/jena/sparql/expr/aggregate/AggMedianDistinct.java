@@ -115,7 +115,7 @@ public class AggMedianDistinct extends AggregatorBase
             	median = ((arrDouble[(indexsize/2)]+arrDouble[((indexsize/2)-1)])/2);
             }
 
-            return (NodeValue.makeDecimal((median)));
+            return (NodeValue.makeDecimal(median));
         }
         
         @Override
