@@ -19,7 +19,6 @@
 package org.apache.jena.sparql.expr.aggregate;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import org.apache.jena.graph.Node ;
@@ -28,7 +27,6 @@ import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.function.FunctionEnv ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
