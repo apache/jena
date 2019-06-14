@@ -49,6 +49,14 @@ public class AggregatorFactory {
         return distinct ? new AggAvgDistinct(expr) : new AggAvg(expr) ;
     }
 
+    public static Aggregator createMedian(boolean distinct, Expr expr) {
+        return distinct ? new AggMedianDistinct(expr) : new AggMedian(expr) ;
+    }
+
+    public static Aggregator createMode(boolean distinct, Expr expr) {
+        return distinct ? new AggModeDistinct(expr) : new AggMode(expr) ;
+    }
+
     public static Aggregator createSample(boolean distinct, Expr expr) {
         return distinct ? new AggSampleDistinct(expr) : new AggSample(expr) ;
     }

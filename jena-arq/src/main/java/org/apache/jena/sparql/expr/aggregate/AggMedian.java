@@ -18,97 +18,109 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.function.FunctionEnv ;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-public class AggAvg extends AggregatorBase
+public class AggMedian extends AggregatorBase
 {
-    // ---- AVG(?var)
-    public AggAvg(Expr expr) { super("AVG", false, expr) ; } 
-    
-    private static Logger log = LoggerFactory.getLogger("AVG") ;
+    // ---- MEDIAN(?var)
+    private static Logger log = LoggerFactory.getLogger("Median") ;
 
+    public AggMedian(Expr expr) { super("MEDIAN", false, expr) ; } 
     @Override
-    public Aggregator copy(ExprList expr) { return new AggAvg(expr.get(0)) ; }
+    public Aggregator copy(ExprList expr) { return new AggMedian(expr.get(0)) ; }
 
     // XQuery/XPath Functions&Operators suggests zero
     // SQL suggests null.
-    private static final NodeValue noValuesToAvg = NodeValue.nvZERO ; // null 
+    private static final NodeValue noValuesToMedian = NodeValue.nvZERO ; // null 
 
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccAvg(getExpr()) ;
+        return new AccMedian(getExpr()) ;
     }
 
     @Override
-    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToAvg) ; } 
+    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToMedian) ; } 
     
     @Override
-    public int hashCode()   { return HC_AggAvg ^ getExprList().hashCode() ; }
+    public int hashCode()   { return HC_AggMedian ^ getExprList().hashCode() ; }
 
     @Override
     public boolean equals(Aggregator other, boolean bySyntax) {
         if ( other == null ) return false ;
         if ( this == other ) return true ;
-        if ( ! ( other instanceof AggAvg ) ) return false ;
-        AggAvg a = (AggAvg)other ;
+        if ( ! ( other instanceof AggMedian ) ) return false ;
+        AggMedian a = (AggMedian)other ;
         return exprList.equals(a.exprList, bySyntax) ;
     }
     
     // ---- Accumulator
-    private static class AccAvg extends AccumulatorExpr
+    private static class AccMedian extends AccumulatorExpr
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
-        private NodeValue total = noValuesToAvg ;
+        private NodeValue total = noValuesToMedian ;
         private int count = 0 ;
-
-        public AccAvg(Expr expr) { super(expr, false) ; }
+        ArrayList<NodeValue> collection=new ArrayList<NodeValue>(); 
+                
+        public AccMedian(Expr expr) { super(expr, false) ; }
 
         @Override
         protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
         { 
-			log.debug("avg {}", nv);
+			log.debug("median {}", nv);
 
             if ( nv.isNumber() )
             {
-                count++ ;
-                if ( total == noValuesToAvg )
-                    total = nv ;
-                else
-                    total = XSDFuncOp.numAdd(nv, total) ;
+              count++ ;
+              collection.add(nv);
             }
             else
             {
-                //ARQ.getExecLogger().warn("Evaluation error: avg() on "+nv) ;
-                throw new ExprEvalException("avg: not a number: "+nv) ;
+                //ARQ.getExecLogger().warn("Evaluation error: median() on "+nv) ;
+                throw new ExprEvalException("median: not a number: "+nv) ;
             }
 
-            log.debug("avg count {}", count);
-
+            log.debug("median count {}", count);
         }
-        
-        @Override
-        protected void accumulateError(Binding binding, FunctionEnv functionEnv)
-        {}
 
         @Override
         public NodeValue getAccValue()
         {
-            if ( count == 0 ) return noValuesToAvg ;
+            double median;
+            if ( count == 0 ) return noValuesToMedian ;
             if ( super.errorCount != 0 )
-                //throw new ExprEvalException("avg: error in group") ; 
                 return null ;
-            NodeValue nvCount = NodeValue.makeInteger(count) ;
-            return XSDFuncOp.numDivide(total, nvCount) ;
+
+            int indexsize = collection.size();
+            double[] arrDouble = new double[indexsize];
+            for(int i=0; i<indexsize; i++){
+            	arrDouble[i] = collection.get(i).getDouble();	
+            }
+
+            Arrays.sort(arrDouble);
+
+            if(indexsize%2!=0) {
+            	median = arrDouble[(indexsize/2)];
+            }else {	
+            	median = ((arrDouble[(indexsize/2)]+arrDouble[((indexsize/2)-1)])/2);
+            }
+
+            return NodeValue.makeDecimal(median);
         }
+    	
+        @Override
+        protected void accumulateError(Binding binding, FunctionEnv functionEnv)
+        {}
     }
 }

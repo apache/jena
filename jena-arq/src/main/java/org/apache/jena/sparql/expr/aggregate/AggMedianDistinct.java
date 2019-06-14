@@ -18,6 +18,9 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.Expr ;
@@ -26,77 +29,95 @@ import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.function.FunctionEnv ;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-public class AggAvgDistinct extends AggregatorBase
+public class AggMedianDistinct extends AggregatorBase
 {
-    private static Logger log = LoggerFactory.getLogger("AVG DISTINCT") ;
+    // ---- Median(DISTINCT expr)
+    private static Logger log = LoggerFactory.getLogger("MedianDistinct") ;
 
-    // ---- AVG(DISTINCT expr)
-    public AggAvgDistinct(Expr expr) { super("AVG", true, expr) ; } 
+    public AggMedianDistinct(Expr expr) { super("Median", true, expr) ; } 
     @Override
-    public Aggregator copy(ExprList expr) { return new AggAvgDistinct(expr.get(0)) ; }
+    public Aggregator copy(ExprList expr) { return new AggMedianDistinct(expr.get(0)) ; }
 
-    private static final NodeValue noValuesToAvg = NodeValue.nvZERO ; 
+    private static final NodeValue noValuesToMedian = NodeValue.nvZERO ; 
 
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccAvgDistinct(getExpr()) ;
+        return new AccMedianDistinct(getExpr()) ;
     }
 
     @Override
-    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToAvg) ; } 
+    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToMedian) ; } 
 
     @Override
     public int hashCode()   {
-        return HC_AggAvgDistinct ^ getExprList().hashCode() ;
+        return HC_AggMedianDistinct ^ getExprList().hashCode() ;
     }
 
     @Override
     public boolean equals(Aggregator other, boolean bySyntax) {
         if ( other == null ) return false ;
         if ( this == other ) return true ;
-        if ( ! ( other instanceof AggAvgDistinct ) ) return false ;
-        AggAvgDistinct a = (AggAvgDistinct)other ;
+        if ( ! ( other instanceof AggMedianDistinct ) ) return false ;
+        AggMedianDistinct a = (AggMedianDistinct)other ;
         return exprList.equals(a.exprList, bySyntax) ;
     }
 
     
     // ---- Accumulator
-    class AccAvgDistinct extends AccumulatorExpr
+    class AccMedianDistinct extends AccumulatorExpr
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
-        private NodeValue total = noValuesToAvg ;
+        private NodeValue total = noValuesToMedian ;
         private int count = 0 ;
-
-        public AccAvgDistinct(Expr expr) { super(expr, true) ; }
+        ArrayList<NodeValue> collection=new ArrayList<NodeValue>(); 
+        
+        public AccMedianDistinct(Expr expr) { super(expr, true) ; }
 
         @Override
         protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
         { 
+			log.debug("median {}", nv);
+
             if ( nv.isNumber() )
             {
                 count++ ;
-                if ( total == noValuesToAvg )
-                    total = nv ;
-                else
-                    total = XSDFuncOp.numAdd(nv, total) ;
+                collection.add(nv);
             }
             else
-                throw new ExprEvalException("avg: not a number: "+nv) ;
-            log.debug("avg count {}", count);
+                throw new ExprEvalException("median: not a number: "+nv) ;
+
+            log.debug("median count {}", count);
         }
 
         @Override
         public NodeValue getAccValue()
         {
-            if ( count == 0 ) return noValuesToAvg ;
-            NodeValue nvCount = NodeValue.makeInteger(count) ;
-            return XSDFuncOp.numDivide(total, nvCount) ;
-        }
+            double median;
+            if ( count == 0 ) return noValuesToMedian ;
+            if ( super.errorCount != 0 )
+                return null ;
 
+            int indexsize = collection.size();
+            double[] arrDouble = new double[indexsize];
+            for(int i=0; i<indexsize; i++){
+            	arrDouble[i] = collection.get(i).getDouble();	
+            }
+
+            Arrays.sort(arrDouble);
+
+            if(indexsize%2!=0) {
+            	median = arrDouble[(indexsize/2)];
+            }else {	
+            	median = ((arrDouble[(indexsize/2)]+arrDouble[((indexsize/2)-1)])/2);
+            }
+
+            return NodeValue.makeDecimal(median);
+        }
+        
         @Override
         protected void accumulateError(Binding binding, FunctionEnv functionEnv)
         {}
