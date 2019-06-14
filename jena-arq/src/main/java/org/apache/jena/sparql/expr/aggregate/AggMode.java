@@ -132,7 +132,7 @@ public class AggMode extends AggregatorBase
     	        }
     	    }
 
-            return (NodeValue.makeDecimal(mode));
+            return NodeValue.makeDecimal(mode);
         }
     	
         @Override

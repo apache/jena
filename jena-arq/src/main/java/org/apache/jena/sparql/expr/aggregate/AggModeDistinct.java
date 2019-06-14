@@ -130,7 +130,7 @@ public class AggModeDistinct extends AggregatorBase
     	        }
     	    }
 
-            return (NodeValue.makeDecimal(mode));
+            return NodeValue.makeDecimal(mode);
         }
         
         @Override
