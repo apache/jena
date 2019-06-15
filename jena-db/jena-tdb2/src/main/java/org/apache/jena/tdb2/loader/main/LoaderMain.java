@@ -132,20 +132,6 @@ public class LoaderMain extends LoaderBase implements DataLoader {
         stream = LoaderOps.toNamedGraph(dataInput, graphName);
     }
 
-    // Extract:
-//    // Phase 2.
-//    TupleIndex[] idx3 = PhasedOps.indexSetFromNames(loaderPlan.primaryLoad3(), indexMap);
-//    Indexer indexer3 = new Indexer(output, idx3);
-//    TupleIndex[] idx4 = PhasedOps.indexSetFromNames(loaderPlan.primaryLoad4(), indexMap);
-//    Indexer indexer4 = new Indexer(output, idx4);
-//
-//    dataProcess.add(indexer4);
-//    dataProcess.add(indexer3);
-//
-//    Destination<Tuple<NodeId>> functionIndexer3 = indexer3.index();
-//    Destination<Tuple<NodeId>> functionIndexer4 = indexer4.index();
-    
-    
     /**
      * Create data ingestion and primary index building of a {@link LoaderPlan}.
      * In phase 1, separate threads for parsing, node table loading and primary index building,
@@ -157,9 +143,6 @@ public class LoaderMain extends LoaderBase implements DataLoader {
         PrefixHandlerBulk prefixHandler = new PrefixHandlerBulk(dps, output);
         dataProcess.add(prefixHandler);
 
-        // XXX Is this a comment about phase one?
-        // Must be one index at least of each triples and quads.
-        
         // -- Phase 2 block. Indexer and Destination (blocks of Tuple<NodeId>)
         TupleIndex[] idx3 = PhasedOps.indexSetFromNames(loaderPlan.primaryLoad3(), indexMap);
         Indexer indexer3 = new Indexer(output, idx3);
@@ -323,17 +306,6 @@ public class LoaderMain extends LoaderBase implements DataLoader {
         }
         output.print("Index set:  %s => %s [%,d items, %s seconds]", srcIdx.getName(), indexSetLabel, result.items, timeStr);
     }
-
-
-//    private static Map<String, TupleIndex> indexMap(DatasetGraphTDB dsgtdb) {
-//        Map<String, TupleIndex> indexMap = new HashMap<>();
-//        // All triple/quad indexes.
-//        Arrays.stream(dsgtdb.getTripleTable().getNodeTupleTable().getTupleTable().getIndexes())
-//              .forEach(idx->indexMap.put(idx.getName(), idx));
-//        Arrays.stream(dsgtdb.getQuadTable().getNodeTupleTable().getTupleTable().getIndexes())
-//              .forEach(idx->indexMap.put(idx.getName(), idx));
-//        return indexMap;
-//    }
 
     @Override
     public void finishException(Exception ex) {
