@@ -27,7 +27,7 @@ import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.JenaTransactionException ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphTrackActive ;
+import org.apache.jena.sparql.core.DatasetGraphWrapper;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.tdb.StoreConnection ;
@@ -43,13 +43,10 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
  * {@link DatasetGraphTxn} holds the {@link Transaction} object.
  *
  * This is analogous to a "connection" in JDBC.
- * It is a holder of a {@link StoreConnection} combined with the machinary from
- * {@link DatasetGraphTrackActive}.
  *
  * Not considered to be in the public API.
  */
-
- public class DatasetGraphTransaction extends DatasetGraphTrackActive implements Sync {
+ public class DatasetGraphTransaction extends DatasetGraphWrapper implements Sync {
     /*
      * Initially, the app can use this DatasetGraph non-transactionally. But as
      * soon as it starts a transaction, the dataset can only be used inside
@@ -73,6 +70,7 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     }
 
     public DatasetGraphTransaction(StoreConnection sConn) {
+        super(null);
         this.sConn = sConn;
     }
 
@@ -144,21 +142,19 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
         return sConn.getBaseDataset() ;
     }
 
-    @Override
-    protected void checkActive() {
+    private void checkActive() {
         checkNotClosed() ;
         if ( !isInTransaction() )
             throw new JenaTransactionException("Not in a transaction (" + getLocation() + ")") ;
     }
 
-    @Override
-    protected void checkNotActive() {
+    private void checkNotActive() {
         checkNotClosed() ;
         if ( sConn.haveUsedInTransaction() && isInTransaction() )
             throw new JenaTransactionException("Currently in a transaction (" + getLocation() + ")") ;
     }
 
-    protected void checkNotClosed() {
+    private void checkNotClosed() {
         if ( isClosed )
             throw new JenaTransactionException("Already closed") ;
     }
@@ -210,7 +206,12 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     }
 
     @Override
-    protected void _begin(TxnType txnType) {
+    public void begin(ReadWrite txnType) {
+        begin(TxnType.convert(txnType));
+    }
+    
+    @Override
+    public void begin(TxnType txnType) {
         checkNotClosed() ;
         DatasetGraphTxn dsgTxn = sConn.begin(txnType) ;
         dsgtxn.set(dsgTxn) ;
@@ -218,7 +219,17 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     }
 
     @Override
-    protected boolean _promote(Promote promoteMode) {
+    public boolean promote() {
+          // Safe choice for READ and WRITE. 
+          Promote promoteMode = Promote.ISOLATED;
+          TxnType txnType = transactionType();
+          if ( txnType == TxnType.READ_COMMITTED_PROMOTE )
+              promoteMode = Promote.READ_COMMITTED;
+          return promote(promoteMode);
+      }
+    
+    @Override
+    public boolean promote(Promote promoteMode) {
         // Promotion (TDB1) is a reset of the DatasetGraphTxn.
         checkNotClosed() ;
         DatasetGraphTxn dsgTxn = dsgtxn.get();
@@ -231,21 +242,21 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     }
 
     @Override
-    protected void _commit() {
+    public void commit() {
         checkNotClosed() ;
         dsgtxn.get().commit() ;
         inTransaction.set(false) ;
     }
 
     @Override
-    protected void _abort() {
+    public void abort() {
         checkNotClosed() ;
         dsgtxn.get().abort() ;
         inTransaction.set(false) ;
     }
 
     @Override
-    protected void _end() {
+    public void end() {
         checkNotClosed() ;
         DatasetGraphTxn dsg = dsgtxn.get() ;
         // It's null if end() already called.
@@ -284,7 +295,7 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     }
 
     @Override
-    protected synchronized void _close() {
+    public synchronized void close() {
         if ( isClosed )
             return ;
         if ( sConn.haveUsedInTransaction() ) {
@@ -295,22 +306,19 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
             // Otherwise ignore - close() while transactional is meaningless.
             return ;
         }
-        synchronized(this) {
-            if ( ! sConn.isValid() ) {
-                // There may be another DatasetGraphTransaction using this location
-                // and that DatasetGraphTransaction has been closed, invalidating
-                // the StoreConnection.
-                return ;
-            }
-            DatasetGraphTDB dsg = sConn.getBaseDataset() ;
-            dsg.sync() ;
-            dsg.close() ;
-            StoreConnection.release(getLocation()) ;
-            dsgtxn.remove() ;
-            inTransaction.remove() ;
-            isClosed = true ;
+        if ( ! sConn.isValid() ) {
+            // There may be another DatasetGraphTransaction using this location
+            // and that DatasetGraphTransaction has been closed, invalidating
+            // the StoreConnection.
             return ;
         }
+        DatasetGraphTDB dsg = sConn.getBaseDataset() ;
+        dsg.sync() ;
+        dsg.close() ;
+        StoreConnection.release(getLocation()) ;
+        dsgtxn.remove() ;
+        inTransaction.remove() ;
+        isClosed = true ;
     }
 
     @Override
