@@ -36,6 +36,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.params.StoreParams;
+import org.apache.jena.tdb2.params.StoreParamsDynamic;
 import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
 
 // StoreConnection, DatabaseConnection < Connection<X>
@@ -67,28 +68,40 @@ public class DatabaseConnection {
      * creating it if it does not exist in storage.
      */
     private synchronized static DatabaseConnection make(Location location, StoreParams params) {
-        if ( location.isMemUnique() ) {
-            // Uncached, in-memory.
-            DatasetGraph dsg = DatabaseOps.create(location, params);
-            DatabaseConnection dbConn = new DatabaseConnection(dsg, location, null);
-            return dbConn;
-        }
+        if ( location.isMemUnique() )
+            return buildUniqueMem(location, params);
         // Cached by Location. Named in-memory or on-disk.
-        DatabaseConnection dbConn = cache.computeIfAbsent(location, (loc)->buildForCache(loc, params));
+        DatabaseConnection dbConn = cache.computeIfAbsent(location, (loc)->build(loc, params));
         return dbConn;
     }
+    
+    /**
+     * Create a fresh {@link DatabaseConnection}. This new object is independent of
+     * any other {@link DatabaseConnection} for the same location. This function must
+     * be used with care. If any other {@link DatabaseConnection} for this location has been created,
+     * only {@link StoreParamsDynamic} will apply.
+     */
+    public static DatabaseConnection createDirect(Location location, StoreParams params) {
+        if ( location.isMemUnique() )
+            return buildUniqueMem(location, params);
+        return build(location, params);
+    }
 
-    private static DatabaseConnection buildForCache(Location location, StoreParams params) {
+    private static DatabaseConnection build(Location location, StoreParams params) {
         if ( location.isMemUnique() ) {
             throw new TDBException("Can't buildForCache a memory-unique location");
         }
         ProcessFileLock lock = null;
         if (SystemTDB.DiskLocationMultiJvmUsagePrevention && ! location.isMem() ) {
+            // Take the lock for the swithable.
+            // StoreConnection will take a lock for the storage.
             lock = lockForLocation(location);
-            // Take the lock.  This is atomic.
+            // Take the lock.  This is atomic and non-reentrant.
             lock.lockEx();
         }
+        // c.f. StoreConnection.make
         DatasetGraph dsg = DatabaseOps.create(location, params);
+        
         return new DatabaseConnection(dsg, location, lock);
     }
 
@@ -99,6 +112,13 @@ public class DatabaseConnection {
 //    private static DatasetGraph buildDisk(Location location, StoreParams params) {
 //        return DatabaseOps.create(location);
 //    }
+
+    private static DatabaseConnection buildUniqueMem(Location location, StoreParams params) {
+        // Uncached, in-memory.
+        DatasetGraph dsg = DatabaseOps.create(location, params);
+        DatabaseConnection dbConn = new DatabaseConnection(dsg, location, null);
+        return dbConn;
+    }
 
     // DRY
     /** Create or fetch a {@link ProcessFileLock} for a Location */

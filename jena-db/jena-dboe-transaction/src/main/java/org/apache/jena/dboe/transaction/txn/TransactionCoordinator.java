@@ -277,6 +277,10 @@ public class TransactionCoordinator {
         return journal;
     }
 
+    public Location getLocation() {
+        return getJournal().getLocation();
+    }
+
     public TransactionCoordinatorState detach(Transaction txn) {
         txn.detach();
         TransactionCoordinatorState coordinatorState = new TransactionCoordinatorState(txn);
