@@ -16,37 +16,21 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb.transaction;
+package org.apache.jena.tdb.graph;
 
-import java.io.File ;
-
-import org.apache.jena.tdb.ConfigTest ;
-import org.apache.jena.tdb.StoreConnection ;
-import org.apache.jena.tdb.sys.TDBInternal;
+import org.apache.jena.query.ReadWrite ;
 import org.junit.After ;
 import org.junit.Before ;
 
-/** Basic tests and tests of ordering (single thread) */
-public abstract class AbstractTestTransSequentialDisk extends AbstractTestTransSeq
+public class TestGraphsTDBinsideTxn extends AbstractTestGraphsTDB
 {
-    protected String DIR = null ;
-    
-    // Subclasses must implement.
-//    @BeforeClass public static void beforeClass() {}
-//    @AfterClass  public static void afterClass()  {}
-    
-    @Before public void before()
+    @Before public void before() 
     {
-        TDBInternal.reset() ;
-        DIR = ConfigTest.getCleanDir() ;
-        File d = new File(DIR) ;
+        getDataset().begin(ReadWrite.READ) ;
     }
 
-    @After public void after() {} 
-
-    @Override
-    protected StoreConnection getStoreConnection()
+    @After public void after() 
     {
-        return StoreConnection.make(DIR) ;
+        getDataset().end() ;
     }
 }

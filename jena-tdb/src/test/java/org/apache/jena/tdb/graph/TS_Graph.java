@@ -25,8 +25,8 @@ import org.junit.runners.Suite ;
 @Suite.SuiteClasses( {
     TestPrefixMappingTDB.class
     , TestDatasetGraphTDB.class
-    , TestGraphsTDB1.class
-    , TestGraphsTDB2.class
+    , TestGraphsTDBnonTxn.class
+    , TestGraphsTDBinsideTxn.class
     , TestDatasetGraphAccessorTDB.class
     , TestGraphOverDatasetTDB.class
 })

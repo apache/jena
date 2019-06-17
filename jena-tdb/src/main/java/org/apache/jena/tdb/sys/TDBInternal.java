@@ -174,17 +174,20 @@ public class TDBInternal
         return entries.length == 0 ;
     }
 
-    static FileFilter fileFilterNewDB = 
-        (pathname) -> {
-            String fn = pathname.getName() ;
-            if ( fn.equals(".") || fn.equals("..") )
-                return false ;
-            if ( pathname.isDirectory() )
-                return true ;
-
-            if ( fn.equals(StoreParamsConst.TDB_CONFIG_FILE) )
-                return false ;
+    static FileFilter fileFilterNewDB = (pathname) -> {
+        String fn = pathname.getName() ;
+        if ( fn.equals(".") || fn.equals("..") )
+            return false ;
+        if ( pathname.isDirectory() )
             return true ;
-        } ;
 
+        if ( fn.equals(StoreParamsConst.TDB_CONFIG_FILE) )
+            return false ;
+        return true ;
+    } ;
+        
+    public static void reset() {
+        StoreConnection.reset();
+        TDBMaker.resetCache();
+    }
 }

@@ -29,9 +29,9 @@ import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab ;
 import org.apache.jena.tdb.ConfigTest ;
-import org.apache.jena.tdb.StoreConnection ;
-import org.apache.jena.tdb.assembler.VocabTDB ;
-import org.apache.jena.tdb.store.* ;
+import org.apache.jena.tdb.store.DatasetGraphTDB;
+import org.apache.jena.tdb.store.GraphTDB;
+import org.apache.jena.tdb.sys.TDBInternal;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 import org.junit.AfterClass ;
 import org.junit.Before ;
@@ -52,13 +52,13 @@ public class TestTDBAssembler extends BaseTest
     
     @Before public void before()
     {
-        StoreConnection.reset() ;
+        TDBInternal.reset() ;
         FileOps.clearDirectory(dirDB) ;
     }
     
     @AfterClass static public void afterClass()
     {
-        StoreConnection.reset() ;
+        TDBInternal.reset() ;
         FileOps.clearDirectory(dirDB) ;
     }
     
