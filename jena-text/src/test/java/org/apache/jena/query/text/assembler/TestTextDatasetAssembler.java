@@ -35,7 +35,10 @@ import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.QuadAction ;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.tdb.assembler.AssemblerTDB ;
+import org.apache.jena.tdb.sys.TDBInternal;
 import org.apache.jena.vocabulary.RDF ;
+import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.Test ;
 
 
@@ -52,6 +55,14 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
     private static final Resource customTextDocProducerSpec;
     private static final Resource customDyadicTextDocProducerSpec;
 
+    @Before public void clearBefore() {
+        TDBInternal.reset();
+    }
+    
+    @AfterClass public static void clearAfter() {
+        TDBInternal.reset();
+    }
+    
     @Test
     public void testSimpleDatasetAssembler() {
         Dataset dataset = (Dataset) Assembler.general.open(spec1);
@@ -82,7 +93,7 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
         DatasetGraphText dsgText = (DatasetGraphText)dataset.asDatasetGraph() ;
         assertTrue(dsgText.getMonitor() instanceof CustomDyadicTextDocProducer) ;
 
-        Node G= NodeFactory.createURI("http://example.com/G");
+        Node G = NodeFactory.createURI("http://example.com/G");
         Node S = NodeFactory.createURI("http://example.com/S");
         Node P = NodeFactory.createURI("http://example.com/P");
         Node O = NodeFactory.createLiteral("http://example.com/O");

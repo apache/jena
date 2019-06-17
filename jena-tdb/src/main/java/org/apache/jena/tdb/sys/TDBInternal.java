@@ -154,6 +154,8 @@ public class TDBInternal
         DatasetGraphTDB dsgtdb = Txn.calculate(dsg, ()->getDatasetGraphTDB(dsg));
         if ( dsgtdb == null )
             return;
+        Location loc = dsgtdb.getLocation();
+        TDBMaker.releaseLocation(loc);
         StoreConnection.expel(dsgtdb.getLocation(), false);
         // No longer valid.
     }
