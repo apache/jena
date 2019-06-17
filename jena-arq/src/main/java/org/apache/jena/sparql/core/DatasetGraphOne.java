@@ -80,7 +80,7 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
     }
     
     private DatasetGraphOne(Graph graph) {
-        // Not GraphView which was hanled in create(Graph). 
+        // Not GraphView which was handled in create(Graph). 
         this.graph = graph;
         txn = new TxnDataset2Graph(graph);
         //txn = TransactionalLock.createMRSW();

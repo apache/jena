@@ -18,11 +18,9 @@
 
 package org.apache.jena.system;
 
-import java.util.Objects;
 import java.util.function.Supplier ;
 
 import org.apache.jena.query.TxnType;
-import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.Transactional ;
 
 /** Application utilities for executing code in transactions.
@@ -73,7 +71,7 @@ public class Txn {
     public static <T extends Transactional> void exec(T txn, TxnType txnType, Runnable r) {
         boolean b = txn.isInTransaction() ;
         if ( b )
-            checkCompatible(txn, txnType);
+            TxnOp.compatibleWithPromote(txnType, txn);
         else
             txn.begin(txnType) ;
         try { r.run() ; }
@@ -93,7 +91,7 @@ public class Txn {
     public static <T extends Transactional, X> X calc(T txn, TxnType txnType, Supplier<X> r) {
         boolean b = txn.isInTransaction() ;
         if ( b )
-            checkCompatible(txn, txnType);
+            TxnOp.compatibleWithPromote(txnType, txn);
         else
             txn.begin(txnType) ;
         X x;
@@ -130,47 +128,6 @@ public class Txn {
     /** Execute and return a value in a write transaction. */
     public static <T extends Transactional, X> X calculateWrite(T txn, Supplier<X> r) {
         return calc(txn, TxnType.WRITE, r);
-    }
-    
-    /** Check the requested transaction {@code innerTxnType} is compatible with the transactional.
-     * @param txn
-     * @param innerTxnType
-     */
-    private static void checkCompatible(Transactional txn, TxnType innerTxnType) {
-        TxnType outerTxnType = txn.transactionType();
-        if ( outerTxnType == null ) 
-            // Not in an outer transaction.
-            return;
-        // innerTxnType must be "less than or equal to the outer".
-        //    TxnType.level == int?
-        // Inner is READ works with any outer.
-        // Outer is WRITE works with any inner. 
-        // Must match:
-        // Outer is READ, then inner must be READ.
-        // Promotion must be the same.
-        
-        // Outer any, inner READ 
-        if ( TxnType.READ.equals(innerTxnType) )
-            return;
-           // Outer WRITE, inner any 
-        if ( TxnType.WRITE.equals(outerTxnType) )
-            return;
-        if ( TxnType.READ.equals(outerTxnType) )
-            throw new JenaTransactionException("Already in a READ transaction: outer="+outerTxnType+" : inner="+innerTxnType);
-        
-        // Outer PROMOTE (either kind), inner is not READ.
-        // Try to promote outer if inner is WRITE.
-        if ( innerTxnType == TxnType.WRITE ) {
-            boolean x = txn.promote();
-            if ( x )
-                return ;
-            throw new JenaTransactionException("Can't promote outer transaction: "+"outer="+outerTxnType+" : inner="+innerTxnType);
-        }
-        
-        if ( Objects.equals(innerTxnType, outerTxnType) )
-            return;
-        
-        throw new JenaTransactionException("Already in a transaction of an incompatable type: "+"outer="+outerTxnType+" : inner="+innerTxnType);
     }
     
     // Attempt some kind of cleanup.
