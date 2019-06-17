@@ -142,54 +142,6 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
         return sConn.getBaseDataset() ;
     }
 
-    private void checkActive() {
-        checkNotClosed() ;
-        if ( !isInTransaction() )
-            throw new JenaTransactionException("Not in a transaction (" + getLocation() + ")") ;
-    }
-
-    private void checkNotActive() {
-        checkNotClosed() ;
-        if ( sConn.haveUsedInTransaction() && isInTransaction() )
-            throw new JenaTransactionException("Currently in a transaction (" + getLocation() + ")") ;
-    }
-
-    private void checkNotClosed() {
-        if ( isClosed )
-            throw new JenaTransactionException("Already closed") ;
-    }
-
-    @Override
-    public boolean isInTransaction() {
-        checkNotClosed() ;
-        return inTransaction.get() ;
-    }
-
-    @Override
-    public ReadWrite transactionMode() {
-        checkNotClosed() ;
-        if ( ! isInTransaction() )
-            return null;
-        return dsgtxn.get().getTransaction().getTxnMode();
-    }
-
-    @Override
-    public TxnType transactionType() {
-        checkNotClosed() ;
-        if ( ! isInTransaction() )
-            return null;
-        return dsgtxn.get().getTransaction().getTxnType();
-    }
-
-    public boolean isClosed() {
-        return isClosed ;
-    }
-
-    public void syncIfNotTransactional() {
-        if ( !sConn.haveUsedInTransaction() )
-            sConn.getBaseDataset().sync() ;
-    }
-
     @Override
     public Graph getDefaultGraph() {
         return new GraphTxnTDB(this, null);
@@ -213,6 +165,7 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     @Override
     public void begin(TxnType txnType) {
         checkNotClosed() ;
+        checkNotActive();
         DatasetGraphTxn dsgTxn = sConn.begin(txnType) ;
         dsgtxn.set(dsgTxn) ;
         inTransaction.set(true) ;
@@ -220,7 +173,6 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
 
     @Override
     public boolean promote() {
-          // Safe choice for READ and WRITE. 
           Promote promoteMode = Promote.ISOLATED;
           TxnType txnType = transactionType();
           if ( txnType == TxnType.READ_COMMITTED_PROMOTE )
@@ -244,6 +196,7 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     @Override
     public void commit() {
         checkNotClosed() ;
+        checkActive();
         dsgtxn.get().commit() ;
         inTransaction.set(false) ;
     }
@@ -251,6 +204,7 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     @Override
     public void abort() {
         checkNotClosed() ;
+        checkActive();
         dsgtxn.get().abort() ;
         inTransaction.set(false) ;
     }
@@ -275,6 +229,28 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     }
 
     @Override
+    public boolean isInTransaction() {
+        checkNotClosed() ;
+        return inTransaction.get() ;
+    }
+
+    @Override
+    public ReadWrite transactionMode() {
+        checkNotClosed() ;
+        if ( ! isInTransaction() )
+            return null;
+        return dsgtxn.get().getTransaction().getTxnMode();
+    }
+
+    @Override
+    public TxnType transactionType() {
+        checkNotClosed() ;
+        if ( ! isInTransaction() )
+            return null;
+        return dsgtxn.get().getTransaction().getTxnType();
+    }
+
+    @Override
     public boolean supportsTransactions()       { return true ; }
 
     @Override
@@ -292,6 +268,10 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
         catch (Throwable th) {
             return "DatasetGraphTransaction" ;
         }
+    }
+
+    public boolean isClosed() {
+        return isClosed ;
     }
 
     @Override
@@ -331,9 +311,29 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
         return sConn ;
     }
 
+    public void syncIfNotTransactional() {
+        if ( !sConn.haveUsedInTransaction() )
+            sConn.getBaseDataset().sync() ;
+    }
+
     @Override
     public void sync() {
         if ( !sConn.haveUsedInTransaction() && get() != null )
             get().sync() ;
+    }
+
+    private void checkActive() {
+        if ( !isInTransaction() )
+            throw new JenaTransactionException("Not in a transaction (" + getLocation() + ")") ;
+    }
+
+    private void checkNotActive() {
+        if ( sConn.haveUsedInTransaction() && isInTransaction() )
+            throw new JenaTransactionException("Currently in a transaction (" + getLocation() + ")") ;
+    }
+
+    private void checkNotClosed() {
+        if ( isClosed )
+            throw new JenaTransactionException("Already closed") ;
     }
 }
