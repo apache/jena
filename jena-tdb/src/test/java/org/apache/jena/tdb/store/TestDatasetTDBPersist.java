@@ -30,10 +30,9 @@ import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.tdb.ConfigTest ;
-import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.junit.GraphLocation ;
-import org.apache.jena.tdb.store.GraphTDB ;
+import org.apache.jena.tdb.sys.TDBInternal;
 import org.junit.After ;
 import org.junit.AfterClass ;
 import org.junit.Before ;
@@ -55,7 +54,7 @@ public class TestDatasetTDBPersist extends BaseTest
     @Before public void before()
     {   
     	String dirname = ConfigTest.getCleanDir() ;
-    	StoreConnection.reset() ;
+    	TDBInternal.reset() ;
 		graphLocation = new GraphLocation(Location.create(dirname)) ;
         graphLocation.createDataset() ;
     }
@@ -67,7 +66,7 @@ public class TestDatasetTDBPersist extends BaseTest
     	graphLocation.clearDirectory() ;	// Does not have the desired effect on Windows.
     }
     
-    @AfterClass public static void afterClass() { StoreConnection.reset() ; }
+    @AfterClass public static void afterClass() { TDBInternal.reset() ; }
 
     @Test public void dataset1()
     {

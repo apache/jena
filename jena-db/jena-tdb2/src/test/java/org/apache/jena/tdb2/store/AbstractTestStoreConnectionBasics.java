@@ -33,7 +33,7 @@ import org.junit.Test;
 
 /** StoreConnection and transactions - basic wiring.
  *  These tests are slow on rotational disk.
- *  Complet cleaning of file areas is done.
+ *  Complete cleaning of file areas is done.
  */
 public abstract class AbstractTestStoreConnectionBasics
 {

@@ -20,6 +20,7 @@ package org.apache.jena.tdb.transaction;
 
 import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.sys.TDBInternal;
 import org.junit.After ;
 import org.junit.Before ;
 
@@ -28,7 +29,7 @@ public class TestTransMem extends AbstractTestTransSeq
 {
     @Before public void before()
     {
-        StoreConnection.reset() ;
+        TDBInternal.reset() ;
     }
   
     @After public void after() {}

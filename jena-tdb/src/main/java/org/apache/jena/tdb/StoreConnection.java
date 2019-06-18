@@ -34,6 +34,7 @@ import org.apache.jena.tdb.setup.StoreParams ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.sys.ProcessUtils;
 import org.apache.jena.tdb.sys.SystemTDB ;
+import org.apache.jena.tdb.sys.TDBMaker;
 import org.apache.jena.tdb.transaction.* ;
 
 /** A StoreConnection is the reference to the underlying storage.
@@ -103,10 +104,7 @@ public class StoreConnection
      * Terminate a write transaction with {@link Transaction#close()}.
      */
     public DatasetGraphTxn begin(TxnType mode) {
-        checkValid();
-        checkTransactional();
-        haveUsedInTransaction = true;
-        return transactionManager.begin(mode, null);
+        return begin(mode, null);
     }
 
     /**
@@ -125,6 +123,7 @@ public class StoreConnection
     public DatasetGraphTxn begin(TxnType mode, String label) {
         checkValid();
         checkTransactional();
+        haveUsedInTransaction = true;
         return transactionManager.begin(mode, label);
     }
 
@@ -187,6 +186,8 @@ public class StoreConnection
         for (Location loc : x)
             expel(loc, true) ;
         cache.clear() ;
+        // Compatibility: so that StoreConnecion.reset is all of TDBInternal.reset(); 
+        TDBMaker.resetCache();
     }
 
     /** Stop managing a location. There should be no transactions running. */

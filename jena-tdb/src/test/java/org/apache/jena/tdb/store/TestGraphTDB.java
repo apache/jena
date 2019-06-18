@@ -22,9 +22,9 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.sparql.graph.AbstractTestGraphAddDelete ;
 import org.apache.jena.tdb.ConfigTest ;
-import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.junit.GraphLocation ;
+import org.apache.jena.tdb.sys.TDBInternal;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -37,7 +37,7 @@ public class TestGraphTDB extends AbstractTestGraphAddDelete
     
     @BeforeClass public static void beforeClass()
     {
-        StoreConnection.reset() ;
+        TDBInternal.reset() ;
         graphLocation = new GraphLocation(Location.create(ConfigTest.getCleanDir())) ;
         graphLocation.release() ;
         graphLocation.clearDirectory() ;

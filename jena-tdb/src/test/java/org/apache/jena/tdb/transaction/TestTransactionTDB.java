@@ -18,23 +18,18 @@
 
 package org.apache.jena.tdb.transaction;
 
-import static org.apache.jena.query.ReadWrite.READ ;
-import static org.apache.jena.query.ReadWrite.WRITE ;
-
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.logging.LogCtl ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.transaction.AbstractTestTransactionLifecycle ;
 import org.apache.jena.tdb.ConfigTest ;
-import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.TDBFactory ;
-import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.sys.SystemTDB ;
-import org.junit.* ;
+import org.apache.jena.tdb.sys.TDBInternal;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
 public class TestTransactionTDB extends AbstractTestTransactionLifecycle
 {
@@ -46,52 +41,18 @@ public class TestTransactionTDB extends AbstractTestTransactionLifecycle
     @Before
     public void before() {
         DIR = ConfigTest.getCleanDir();
-        StoreConnection.release(Location.create(DIR));
+        TDBInternal.reset();
     }
 
     @After
     public void after() {
+        
         FileOps.clearDirectory(DIR);
     }
 
     @Override
     protected Dataset create() {
         return TDBFactory.createDataset(DIR);
-    }
-    
-    private static Triple triple1 = SSE.parseTriple("(<s> <p> <o>)") ;  
-
-    @Test 
-    public void transaction_50() {
-        // This assumes you have two datasets on the same location.
-        // That's not necessarily true for uncached memory datasets, 
-        // where you get two separate datasets so changes to one are
-        // not seen by the other at all.
-        
-        Dataset ds1 = create() ;
-        Dataset ds2 = create() ;
-        
-        ds1.begin(WRITE) ;
-        ds1.getDefaultModel().getGraph().add(triple1) ; 
-        
-        ds2.begin(READ) ;
-        assertTrue(ds2.getDefaultModel().isEmpty()) ;
-        ds2.commit() ;
-        
-        ds1.commit() ;
-
-        ds2.begin(READ) ;
-        // See ds1 updates
-        Graph g = ds2.getDefaultModel().getGraph() ;
-        DatasetGraph dsg = ds2.asDatasetGraph() ; 
-        g = dsg.getDefaultGraph() ;
-        
-        boolean b0 = g.isEmpty() ;
-        boolean b1 = ds2.getDefaultModel().isEmpty() ;
-        
-        assertFalse(ds2.getDefaultModel().isEmpty()) ;
-        assertEquals(1, ds2.getDefaultModel().size()) ;
-        ds2.commit() ;
     }
 }
 
