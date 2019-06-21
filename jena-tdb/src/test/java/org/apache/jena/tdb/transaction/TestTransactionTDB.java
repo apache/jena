@@ -40,13 +40,13 @@ public class TestTransactionTDB extends AbstractTestTransactionLifecycle
     
     @Before
     public void before() {
-        DIR = ConfigTest.getCleanDir();
         TDBInternal.reset();
+        DIR = ConfigTest.getCleanDir();
     }
 
     @After
     public void after() {
-        
+        TDBInternal.reset();
         FileOps.clearDirectory(DIR);
     }
 

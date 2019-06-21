@@ -46,6 +46,7 @@ public class TestTDBFactory extends BaseTest
 
     @After
     public void after() {
+        TDBInternal.reset();
         FileOps.clearDirectory(DIR);
     }
 

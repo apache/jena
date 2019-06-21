@@ -53,8 +53,8 @@ public class TestDatasetTDBPersist extends BaseTest
     
     @Before public void before()
     {   
+        TDBInternal.reset() ;
     	String dirname = ConfigTest.getCleanDir() ;
-    	TDBInternal.reset() ;
 		graphLocation = new GraphLocation(Location.create(dirname)) ;
         graphLocation.createDataset() ;
     }

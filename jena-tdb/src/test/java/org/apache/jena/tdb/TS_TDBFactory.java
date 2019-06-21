@@ -27,7 +27,7 @@ import org.junit.runners.Suite;
     TestTDBFactory.class
 })
 
-public class TS_Factory
+public class TS_TDBFactory
 {
 
 }
