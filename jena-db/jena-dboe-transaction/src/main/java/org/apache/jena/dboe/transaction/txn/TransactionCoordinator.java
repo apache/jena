@@ -301,9 +301,13 @@ public class TransactionCoordinator {
     }
 
     public void shutdown() {
+        shutdown(false);
+    }
+    
+    public void shutdown(boolean silent) {
         if ( coordinatorLock == null )
             return;
-        if ( countActive() > 0 )
+        if ( ! silent && countActive() > 0 )
             FmtLog.warn(SysErr, "Transactions active: W=%d, R=%d", countActiveWriter(), countActiveReaders());
         components.forEach((id, c) -> c.shutdown());
         shutdownHooks.forEach((h)-> h.shutdown());
