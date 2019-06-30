@@ -29,7 +29,7 @@ public class TopLevelTripleMatchFrame extends GenericChoiceFrame {
     protected Triple lastMatch;
     
     /** An iterator over triples matching a goal */
-    ExtendedIterator<Triple> matchIterator;
+    SafeTripleIterator matchIterator;
 
     /** Used for debug/tracing only */
     protected TriplePattern goal;
@@ -42,7 +42,7 @@ public class TopLevelTripleMatchFrame extends GenericChoiceFrame {
      */
     public TopLevelTripleMatchFrame(LPInterpreter interpreter, TriplePattern goal) {
         init(interpreter);
-        this.matchIterator = interpreter.getEngine().getInfGraph().findDataMatches(goal);
+        this.matchIterator = new SafeTripleIterator(interpreter, goal);
         this.goal = goal;
     }
 
