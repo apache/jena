@@ -32,7 +32,7 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
 public class TripleMatchFrame extends GenericTripleMatchFrame {
     
     /** An iterator over triples matching a goal */
-    ExtendedIterator<Triple> matchIterator;
+    protected SafeTripleIterator matchIterator;
     
     /**
      * Constructor.
@@ -65,7 +65,7 @@ public class TripleMatchFrame extends GenericTripleMatchFrame {
      */
     @Override public void init(LPInterpreter interpreter) {
         super.init(interpreter);
-        this.matchIterator = interpreter.getEngine().getInfGraph().findDataMatches(goal);
+        this.matchIterator = new SafeTripleIterator(interpreter, goal);
     }
     
     /**
