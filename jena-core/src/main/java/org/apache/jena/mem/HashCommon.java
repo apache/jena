@@ -198,6 +198,7 @@ public abstract class HashCommon<Key>
     // are for storing about 1/3 of that number of items. 
     // The larger sizes are added so that the system has "soft failure"
     // rather implying guaranteed performance. 
+    // https://primes.utm.edu/lists/small/millions/
     static final int [] primes =
         {
         7, 19, 37, 79, 149, 307, 617, 1237, 2477, 4957, 9923,
@@ -206,10 +207,11 @@ public abstract class HashCommon<Key>
         , 10_166_857
         , 20_333_759   
         , 40_667_527
-        // Impractical?
         , 81_335_047
         , 162_670_111
         , 325_340_233
+        , 650_680_469
+        , 982_451_653 // 50 millionth prime - Largest at primes.utm.edu.
         };
     
     protected static int nextSize(int atLeast) {
