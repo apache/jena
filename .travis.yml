@@ -4,7 +4,6 @@ install: true
 script: mvn -B clean install
 jdk:
   - openjdk8
-  - oraclejdk8
   - openjdk9
   - openjdk10
   - openjdk11
