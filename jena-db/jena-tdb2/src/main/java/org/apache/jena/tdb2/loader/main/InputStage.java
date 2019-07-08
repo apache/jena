@@ -18,7 +18,7 @@
 
 package org.apache.jena.tdb2.loader.main;
 
-/** 
+/**
  * The first phase, parsing to at least one index each of triples and quads
  * can be done in several ways.
  * <ul>
@@ -32,8 +32,8 @@ package org.apache.jena.tdb2.loader.main;
  * <br/>
  * {@code PARSE_NODE_INDEX} uses only the caller thread for all steps.
  */
-enum InputStage { 
-    MULTI,
-    PARSE_NODE, 
+enum InputStage {
+    MULTI ,
+    PARSE_NODE ,
     PARSE_NODE_INDEX
 }

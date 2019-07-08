@@ -18,16 +18,14 @@
 
 package org.apache.jena.fuseki.servlets;
 
-public class ActionErrorException extends RuntimeException
-{
-    private final int rc ;
-    
-    public ActionErrorException(Throwable ex, String message, int rc)
-    {
-        super(message, ex) ;
-        this.rc = rc ;
+public class ActionErrorException extends RuntimeException {
+    private final int rc;
+
+    public ActionErrorException(Throwable ex, String message, int rc) {
+        super(message, ex);
+        this.rc = rc;
     }
-    
+
     public int getRC() {
         return rc;
     }

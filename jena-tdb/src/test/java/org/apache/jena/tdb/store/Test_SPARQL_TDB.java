@@ -27,6 +27,7 @@ import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.system.Txn;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.base.file.Location ;
@@ -165,30 +166,50 @@ public class Test_SPARQL_TDB extends BaseTest
         Dataset dataset1 = create(Location.mem("foo")) ;
         Dataset dataset2 = create(Location.mem("foo")) ;
         
-        // Test the test setup.
-        update(dataset1, "INSERT DATA { <x:s> <x:p> <x:o> }") ;
-        //TDB.sync(dataset1) ;
-        assertEquals(1, count(dataset2)) ;
+        Txn.executeWrite(dataset1, ()->{
+            update(dataset1, "INSERT DATA { <x:s> <x:p> <x:o> }");
+        });
+
+        Txn.executeRead(dataset1, ()->{
+            assertEquals(1, count(dataset1));
+        });
+
+        // Same location.
+        Txn.executeRead(dataset2, ()->{
+            assertEquals(1, count(dataset2));
+        });
         
-        dataset1.begin(ReadWrite.READ) ;
         
-        dataset2.begin(ReadWrite.WRITE) ;
-        update(dataset2, "INSERT DATA { <x:s> <x:p> <x:o2> }") ;
+        // No longer support two transactions interleaved on the same thread.
+        // This never worked in all cases - one had to be a READ transaction
+        // or a non-promoting PROMOTE otherwise deadlocks occurred.
+        // WRITE-WRITE always locked up.
+        // READ-WRITE is OK but PROMOTE-WRITE is a problem. 
         
-        assertEquals(1, count(dataset1)) ;
-        assertEquals(2, count(dataset2)) ;
-        dataset2.commit();
-        dataset2.end() ;
-        
-        // This is 2 if dataset1 is not in a transaction
-        // but that replies on dataset2 commit doing the write back.
-        assertEquals(1, count(dataset1)) ;  
-        
-        dataset1.end() ;
-        
-        dataset1.begin(ReadWrite.READ) ;
-        assertEquals(2, count(dataset1)) ;
-        dataset1.end() ;
+//        // Test the test setup.
+//        update(dataset1, "INSERT DATA { <x:s> <x:p> <x:o> }") ;
+//        //TDB.sync(dataset1) ;
+//        assertEquals(1, count(dataset2)) ;
+//        
+//        dataset1.begin(ReadWrite.READ) ;
+//        
+//        dataset2.begin(ReadWrite.WRITE) ;
+//        update(dataset2, "INSERT DATA { <x:s> <x:p> <x:o2> }") ;
+//        
+//        assertEquals(1, count(dataset1)) ;
+//        assertEquals(2, count(dataset2)) ;
+//        dataset2.commit();
+//        dataset2.end() ;
+//        
+//        // This is 2 if dataset1 is not in a transaction
+//        // but that replies on dataset2 commit doing the write back.
+//        assertEquals(1, count(dataset1)) ;  
+//        
+//        dataset1.end() ;
+//        
+//        dataset1.begin(ReadWrite.READ) ;
+//        assertEquals(2, count(dataset1)) ;
+//        dataset1.end() ;
     }
 
     @Test public void sparql_update_unionGraph()

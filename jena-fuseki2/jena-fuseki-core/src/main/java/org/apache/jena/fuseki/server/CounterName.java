@@ -20,24 +20,24 @@ package org.apache.jena.fuseki.server;
 
 import java.util.Objects;
 
-/** Names for all counters */ 
+/** Names for all counters */
 public class CounterName {
- // Create intern'ed symbols. 
+ // Create intern'ed symbols.
     static private NameMgr<CounterName> mgr = new NameMgr<>();
     static public CounterName register(String name, String hierarchicalName) {
         Objects.requireNonNull(name, "name");
         Objects.requireNonNull(hierarchicalName, "hierarchicalName");
         return mgr.register(name, (n)->new CounterName(name, hierarchicalName));
     }
-    
+
     // The "name" is used as a JSON key string.
     // Legacy from when this was an enum and the name() was used for the UI.
     // The better hierarchicalName is not used but becuse this has
-    // leaked to the jaavscript, we're a bit stuck. 
+    // leaked to the jaavscript, we're a bit stuck.
 
-    private final String name ;
-    private final String hierarchicalName ;
-    
+    private final String name;
+    private final String hierarchicalName;
+
     // There are generic names - apply to all services and datasets.
     // Total request received
     public static final CounterName Requests         = register("Requests", "requests");
@@ -91,16 +91,16 @@ public class CounterName {
     public static final CounterName HTTPoptions      = register("HTTPoptions", "http.options.requests");
     public static final CounterName HTTPoptionsGood  = register("HTTPoptionsGood", "http.options.requests.good");
     public static final CounterName HTTPoptionsBad   = register("HTTPoptionsBad", "http.options.requests.bad");
-    
+
     private CounterName(String name, String hierarchicalName) {
         this.name = name;
         this.hierarchicalName = hierarchicalName;
     }
-    
+
     public String getName() {
         return name;
     }
-    
+
     public String getFullName() {
         return hierarchicalName;
     }

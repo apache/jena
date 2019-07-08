@@ -23,27 +23,27 @@ import java.util.Objects;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphWrapper;
 
-/** DatasetGraph layer that carries an {@link AuthorizationService}. */ 
+/** DatasetGraph layer that carries an {@link AuthorizationService}. */
 public class DatasetGraphAccessControl extends DatasetGraphWrapper {
-    
-    private AuthorizationService registry = null; 
+
+    private AuthorizationService registry = null;
 
     /*package*/ DatasetGraphAccessControl(DatasetGraph dsg, AuthorizationService authService) {
         super(Objects.requireNonNull(dsg));
-        this.registry = Objects.requireNonNull(authService); 
+        this.registry = Objects.requireNonNull(authService);
    }
-    
+
     public AuthorizationService getAuthService() {
         return registry;
     }
 
-    // XXX Settings will be pushed down to the wrapped dataset.
+    // TODO Settings will be pushed down to the wrapped dataset.
     // A problem for DataAccessCtl.symAuthorizationService.
 //    @Override
 //    public Context getContext() {
 //        return super.getContext();
 //    }
-    
+
     /**
      * Return the underlying {@code DatasetGraph}. If the argument is not a
      * {@code DatasetGraphAccessControl}, return the argument.
@@ -53,7 +53,7 @@ public class DatasetGraphAccessControl extends DatasetGraphWrapper {
             return dsg;
         return ((DatasetGraphAccessControl)dsg).getWrapped();
     }
-    
+
     /**
      * Return the underlying {@code DatasetGraph}. If the argument is not a
      * {@code DatasetGraphAccessControl}, return null.

@@ -18,22 +18,22 @@
 
 package org.apache.jena.fuseki;
 
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.junit.After ;
-import org.junit.AfterClass ;
-import org.junit.Before ;
-import org.junit.BeforeClass ;
+import org.apache.jena.atlas.junit.BaseTest;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
 /**
  * This package has the Fuseki full server tests.  ServerCtl manages a full server for tetsing.
- *  
+ *
  * Tests on the server also test the client-side operation
  * It is testing various client APIs.
- * 
+ *
  * jena-integration-tests tests RDFConnection with the basic Fuseki server and
  * RDFConnection calls the different client APIs. So both servers get tested with the
  * client APIs, by different means.
- * 
+ *
  * See {@link org.apache.jena.fuseki.AbstractFusekiTest}.
  *
  * Framework for tests using client-side operation onto a forked Fuseki server. Not

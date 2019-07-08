@@ -18,35 +18,30 @@
 
 package org.apache.jena.fuseki.servlets;
 
-import java.util.Locale ;
+import static org.apache.jena.fuseki.servlets.ActionExecLib.incCounter;
+import static org.apache.jena.riot.web.HttpNames.*;
 
-import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
+import java.util.Locale;
 
-import org.apache.jena.fuseki.server.CounterName ;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.jena.fuseki.server.CounterName;
 import org.apache.jena.sparql.core.DatasetGraph;
 
-/** Common point for operations that are "REST"ish (use GET/PUT etc as operations). */ 
+/** Common point for operations that are "REST"ish (use GET/PUT etc as operations). */
 public abstract class ActionREST extends ActionService
 {
-    public ActionREST()
-    { super() ; }
-
-    @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response) {
-        // Direct all verbs to our common framework.
-        doCommon(request, response) ;
-    }
-    
-    @Override
-    protected void perform(HttpAction action) {
-        dispatch(action) ;
+    public ActionREST() {
+        super();
     }
 
-    private void dispatch(HttpAction action) {
-        HttpServletRequest req = action.request ;
-        HttpServletResponse resp = action.response ;
-        String method = req.getMethod().toUpperCase(Locale.ROOT) ;
+    @Override
+    public void execute(HttpAction action) {
+        // Intercept to put counters around calls.
+        HttpServletRequest req = action.request;
+        HttpServletResponse resp = action.response;
+        String method = req.getMethod().toUpperCase(Locale.ROOT);
 
         if (method.equals(METHOD_GET))
             doGet$(action);
@@ -55,112 +50,123 @@ public abstract class ActionREST extends ActionService
         else if (method.equals(METHOD_POST))
             doPost$(action);
         else if (method.equals(METHOD_PATCH))
-            doPatch$(action) ;
+            doPatch$(action);
         else if (method.equals(METHOD_OPTIONS))
-            doOptions$(action) ;
+            doOptions$(action);
         else if (method.equals(METHOD_TRACE))
-            //doTrace(action) ;
-            ServletOps.errorMethodNotAllowed("TRACE") ;
+            //doTrace(action);
+            ServletOps.errorMethodNotAllowed("TRACE");
         else if (method.equals(METHOD_PUT))
-            doPut$(action) ;   
+            doPut$(action);
         else if (method.equals(METHOD_DELETE))
-            doDelete$(action) ;
+            doDelete$(action);
         else
-            ServletOps.errorNotImplemented("Unknown method: "+method) ;
+            ServletOps.errorNotImplemented("Unknown method: "+method);
     }
 
     /**
      * Decide on the dataset to use for the operation. This can be overridden
-     * by specialist subclasses e.g. data access control. 
+     * by specialist subclasses e.g. data access control.
      */
     protected DatasetGraph decideDataset(HttpAction action) {
-        return action.getActiveDSG() ;
+        return action.getActiveDSG();
     }
-    
+
     // Counter wrappers
-    
+
     private final void doGet$(HttpAction action) {
-        incCounter(action.getEndpoint(), CounterName.HTTPget) ;
+        incCounter(action.getEndpoint(), CounterName.HTTPget);
         try {
-            doGet(action) ;
-            incCounter(action.getEndpoint(), CounterName.HTTPgetGood) ;
+            doGet(action);
+            incCounter(action.getEndpoint(), CounterName.HTTPgetGood);
         } catch ( ActionErrorException ex) {
-            incCounter(action.getEndpoint(), CounterName.HTTPgetBad) ;
-            throw ex ;
+            incCounter(action.getEndpoint(), CounterName.HTTPgetBad);
+            throw ex;
         }
     }
 
     private final void doHead$(HttpAction action) {
-        incCounter(action.getEndpoint(), CounterName.HTTPhead) ;
+        incCounter(action.getEndpoint(), CounterName.HTTPhead);
         try {
-            doHead(action) ;
-            incCounter(action.getEndpoint(), CounterName.HTTPheadGood) ;
+            doHead(action);
+            incCounter(action.getEndpoint(), CounterName.HTTPheadGood);
         } catch ( ActionErrorException ex) {
-            incCounter(action.getEndpoint(), CounterName.HTTPheadBad) ;
-            throw ex ;
+            incCounter(action.getEndpoint(), CounterName.HTTPheadBad);
+            throw ex;
         }
     }
 
     private final void doPost$(HttpAction action) {
-        incCounter(action.getEndpoint(), CounterName.HTTPpost) ;
+        incCounter(action.getEndpoint(), CounterName.HTTPpost);
         try {
-            doPost(action) ;
-            incCounter(action.getEndpoint(), CounterName.HTTPpostGood) ;
+            doPost(action);
+            incCounter(action.getEndpoint(), CounterName.HTTPpostGood);
         } catch ( ActionErrorException ex) {
-            incCounter(action.getEndpoint(), CounterName.HTTPpostBad) ;
-            throw ex ;
+            incCounter(action.getEndpoint(), CounterName.HTTPpostBad);
+            throw ex;
         }
     }
 
     private final void doPatch$(HttpAction action) {
-        incCounter(action.getEndpoint(), CounterName.HTTPpatch) ;
+        incCounter(action.getEndpoint(), CounterName.HTTPpatch);
         try {
-            doPatch(action) ;
-            incCounter(action.getEndpoint(), CounterName.HTTPpatchGood) ;
+            doPatch(action);
+            incCounter(action.getEndpoint(), CounterName.HTTPpatchGood);
         } catch ( ActionErrorException ex) {
-            incCounter(action.getEndpoint(), CounterName.HTTPpatchBad) ;
-            throw ex ;
+            incCounter(action.getEndpoint(), CounterName.HTTPpatchBad);
+            throw ex;
         }
     }
 
     private final void doDelete$(HttpAction action) {
-        incCounter(action.getEndpoint(), CounterName.HTTPdelete) ;
+        incCounter(action.getEndpoint(), CounterName.HTTPdelete);
         try {
-            doDelete(action) ;
-            incCounter(action.getEndpoint(), CounterName.HTTPdeleteGood) ;
+            doDelete(action);
+            incCounter(action.getEndpoint(), CounterName.HTTPdeleteGood);
         } catch ( ActionErrorException ex) {
-            incCounter(action.getEndpoint(), CounterName.HTTPdeleteBad) ;
-            throw ex ;
+            incCounter(action.getEndpoint(), CounterName.HTTPdeleteBad);
+            throw ex;
         }
     }
 
     private final void doPut$(HttpAction action) {
-        incCounter(action.getEndpoint(), CounterName.HTTPput) ;
+        incCounter(action.getEndpoint(), CounterName.HTTPput);
         try {
-            doPut(action) ;
-            incCounter(action.getEndpoint(), CounterName.HTTPputGood) ;
+            doPut(action);
+            incCounter(action.getEndpoint(), CounterName.HTTPputGood);
         } catch ( ActionErrorException ex) {
-            incCounter(action.getEndpoint(), CounterName.HTTPputBad) ;
-            throw ex ;
+            incCounter(action.getEndpoint(), CounterName.HTTPputBad);
+            throw ex;
         }
     }
 
     private final void doOptions$(HttpAction action) {
-        incCounter(action.getEndpoint(), CounterName.HTTPoptions) ;
+        incCounter(action.getEndpoint(), CounterName.HTTPoptions);
         try {
-            doOptions(action) ;
-            incCounter(action.getEndpoint(), CounterName.HTTPoptionsGood) ;
+            doOptions(action);
+            incCounter(action.getEndpoint(), CounterName.HTTPoptionsGood);
         } catch ( ActionErrorException ex) {
-            incCounter(action.getEndpoint(), CounterName.HTTPoptionsBad) ;
-            throw ex ;
+            incCounter(action.getEndpoint(), CounterName.HTTPoptionsBad);
+            throw ex;
         }
     }
-    
-    protected abstract void doGet(HttpAction action) ;
-    protected abstract void doHead(HttpAction action) ;
-    protected abstract void doPost(HttpAction action) ;
-    protected abstract void doPatch(HttpAction action) ;
-    protected abstract void doDelete(HttpAction action) ;
-    protected abstract void doPut(HttpAction action) ;
-    protected abstract void doOptions(HttpAction action) ;
+
+  protected abstract void doGet(HttpAction action);
+  protected abstract void doHead(HttpAction action);
+  protected abstract void doPost(HttpAction action);
+  protected abstract void doPut(HttpAction action);
+  protected abstract void doDelete(HttpAction action);
+  protected abstract void doPatch(HttpAction action);
+  protected abstract void doOptions(HttpAction action);
+
+  // If not final in ActionBase
+  //@Override public void process(HttpAction action)      { executeLifecycle(action); }
+
+  @Override public void execHead(HttpAction action)     { executeLifecycle(action); }
+  @Override public void execGet(HttpAction action)      { executeLifecycle(action); }
+  @Override public void execPost(HttpAction action)     { executeLifecycle(action); }
+  @Override public void execPatch(HttpAction action)    { executeLifecycle(action); }
+  @Override public void execPut(HttpAction action)      { executeLifecycle(action); }
+  @Override public void execDelete(HttpAction action)   { executeLifecycle(action); }
+  @Override public void execOptions(HttpAction action)  { executeLifecycle(action); }
 }

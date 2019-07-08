@@ -159,32 +159,33 @@ N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-oneof-" $N) <<EOF
 SELECT * { ?s ?p ?o FILTER(?o IN(1,<x>)) }
 EOF
 
-## ---- BINDINGS
+## ---- VALUES
 
 N=0
-N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-bindings-" $N) <<EOF
-SELECT * { } BINDINGS ?x ?y { }
+N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-values-" $N) <<EOF
+SELECT * { } VALUES ?x ?y { }
 EOF
 
-N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-bindings-" $N) <<EOF
-SELECT * { } BINDINGS { }
+N=0
+N=$((N+1)) ; testBad $SPARQL11 $(fname "syntax-values-bad-" $N) <<EOF
+SELECT * { } VALUES { }
 EOF
 
-N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-bindings-" $N) <<EOF
-SELECT * { } BINDINGS { () }
+N=$((N+1)) ; testBad $SPARQL11 $(fname "syntax-values-bad-" $N) <<EOF
+SELECT * { } VALUES { () }
 EOF
 
-N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-bindings-" $N) <<EOF
-SELECT * { } BINDINGS { }
+N=$((N+1)) ; testBad $SPARQL11 $(fname "syntax-values-bad-" $N) <<EOF
+SELECT * { } VALUES { }
 EOF
 
-N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-bindings-" $N) <<EOF
-SELECT * { } BINDINGS ?x ?y { (1 2) }
+N=$((N+1)) ; testBad $SPARQL11 $(fname "syntax-values-bad-" $N) <<EOF
+SELECT * { } VALUES ?x ?y { (1 2) }
 EOF
 
 ##  ---- BIND
 N=0
-N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-bindings-" $N) <<EOF
+N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-values-" $N) <<EOF
 SELECT ?Z { ?s ?p ?o . BIND(?o+1 AS ?Z) }
 EOF
 
@@ -245,6 +246,6 @@ N=$((N+1)) ; testBad $SPARQL11 $(fname "syn-bad-" $N) <<EOF
 SELECT * { ?s ?p ?o UNION ?s ?p ?o  }
 EOF
 
-N=$((N+1)) ; testBad $SPARQL11 $(fname "syntax-bindings-" $N) <<EOF
-SELECT * { } BINDINGS ?x ?y { (1 2) (3) }
+N=$((N+1)) ; testBad $SPARQL11 $(fname "syntax-values-" $N) <<EOF
+SELECT * { } VALUES ?x ?y { (1 2) (3) }
 EOF

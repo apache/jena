@@ -18,8 +18,8 @@
 
 package org.apache.jena.fuseki.server;
 
-/** Objects that have a counter set */ 
+/** Objects that have a counter set */
 public interface Counters {
-    public  CounterSet getCounters() ;
+    public  CounterSet getCounters();
 }
 

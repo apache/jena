@@ -31,7 +31,7 @@ import org.apache.jena.riot.lang.ReaderTriX ;
 import org.apache.jena.riot.lang.TriX ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.RiotLib ;
-import org.apache.jena.riot.system.StreamOps ;
+import org.apache.jena.riot.system.StreamRDFOps ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
 
@@ -66,7 +66,7 @@ public class WriterTriX implements WriterDatasetRIOT, WriterGraphRIOT {
 
     private void write(IndentedWriter out, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context) {
         StreamWriterTriX w = new StreamWriterTriX(out) ;
-        StreamOps.datasetToStream(datasetGraph, w) ;
+        StreamRDFOps.datasetToStream(datasetGraph, w) ;
     }
 
     // Graph
@@ -84,7 +84,7 @@ public class WriterTriX implements WriterDatasetRIOT, WriterGraphRIOT {
     
     private static void write(IndentedWriter out, Graph graph, PrefixMap prefixMap, String baseURI, Object context) {
         StreamWriterTriX w = new StreamWriterTriX(out) ;
-        StreamOps.graphToStream(graph, w) ;
+        StreamRDFOps.graphToStream(graph, w) ;
     }
 }
 

@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-elephas</artifactId>
-    <version>3.12.0-SNAPSHOT</version>
+    <version>3.13.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
   <artifactId>jena-elephas-io</artifactId>
@@ -34,7 +34,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-elephas-common</artifactId>
-      <version>3.12.0-SNAPSHOT</version>
+      <version>3.13.0-SNAPSHOT</version>
     </dependency>
     
     <!-- Hadoop Dependencies -->
@@ -81,9 +81,9 @@
           <doctitle>Apache Jena Elephas - IO API ${project.version}</doctitle>
           <bottom>Licenced under the Apache License, Version 2.0</bottom>
           <links>
-            <link>http://jena.apache.org/documentation/javadoc/jena/</link>
-            <link>http://jena.apache.org/documentation/javadoc/arq/</link>
-            <link>http://jena.apache.org/documentation/javadoc/elephas/common/</link>
+            <link>https://jena.apache.org/documentation/javadoc/jena/</link>
+            <link>https://jena.apache.org/documentation/javadoc/arq/</link>
+            <link>https://jena.apache.org/documentation/javadoc/elephas/common/</link>
           </links>
         </configuration>
       </plugin>

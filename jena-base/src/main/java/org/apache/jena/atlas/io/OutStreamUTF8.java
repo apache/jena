@@ -24,9 +24,9 @@ import java.io.Writer ;
 
 /** Output UTF-8 encoded data.
  *  This class implements the "Modified UTF8" encoding rules (null {@literal ->} C0 80)
- *  It will encode any 16 bit value.  
- *  It can be used as a pure UTf-8 encoder. 
- * 
+ *  It will encode any 16 bit value.
+ *  It can be used as a pure UTF-8 encoder.
+ *
  *  @see InStreamUTF8
  */
 public final class OutStreamUTF8 extends Writer
@@ -38,26 +38,26 @@ public final class OutStreamUTF8 extends Writer
         // Buffer?
         this.out = out ;
     }
-    
+
     @Override
     public void write(char[] cbuf, int off, int len) throws IOException
     {
         for ( int i = 0 ; i < len; i++ )
             write(cbuf[off+i]) ;
     }
-    
+
     @Override
     public void write(int ch) throws IOException
     { output(out, ch) ; }
-    
+
     @Override
     public void write(char[] b) throws IOException
     { write(b, 0, b.length) ; }
-    
+
     @Override
     public void write(String str) throws IOException
     { write(str,0, str.length()) ; }
-    
+
     @Override
     public void write(String str, int idx, int len) throws IOException
     {
@@ -66,15 +66,15 @@ public final class OutStreamUTF8 extends Writer
     }
 
     public void output(int x)
-    { 
-        try { 
+    {
+        try {
             output(out, x) ;
         } catch (IOException ex) { IO.exception(ex) ; }
     }
-    
+
     /*
-     * Bits 
-     * 7    U+007F      1 to 127              0xxxxxxx 
+     * Bits
+     * 7    U+007F      1 to 127              0xxxxxxx
      * 11   U+07FF      128 to 2,047          110xxxxx 10xxxxxx
      * 16   U+FFFF      2,048 to 65,535       1110xxxx 10xxxxxx 10xxxxxx
      * 21   U+1FFFFF    65,536 to 1,114,111   11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
@@ -89,7 +89,7 @@ public final class OutStreamUTF8 extends Writer
             out.write(ch) ;
             return ;
         }
-        
+
         if ( ch == 0 )
         {
             // Modified UTF-8.
@@ -97,14 +97,14 @@ public final class OutStreamUTF8 extends Writer
             out.write(0x80) ;
             return ;
         }
-        
-        // Better? output(int HiMask, int byte length, int value) 
-        
+
+        // Better? output(int HiMask, int byte length, int value)
+
         if ( ch <= 0x07FF )
         {
             // 11 bits : 110yyyyy 10xxxxxx
             // int x1 = ( ((ch>>(11-5))&0x7) | 0xC0 ) ; outputBytes(out, x1, 2, ch) ; return ;
-            int x1 = ( ((ch>>(11-5))&0x01F ) | 0xC0 ) ; 
+            int x1 = ( ((ch>>(11-5))&0x01F ) | 0xC0 ) ;
             int x2 = ( (ch&0x3F)  | 0x80 ) ;
             out.write(x1) ;
             out.write(x2) ;
@@ -122,12 +122,12 @@ public final class OutStreamUTF8 extends Writer
             out.write(x3) ;
             return ;
         }
-        
+
 //        if ( Character.isDefined(ch) )
 //            throw new AtlasException("not a character") ;
-        
+
         //if ( true ) throw new InternalErrorException("Valid code point for Java but not encodable") ;
-        
+
         // Not java, where chars are 16 bit.
         if ( ch <= 0x1FFFFF )
         {
@@ -152,15 +152,25 @@ public final class OutStreamUTF8 extends Writer
             return ;
         }
     }
-    
+
+    /**
+     * Write a total of {@code byteLength bytes}; first, value {@code x1}, then the
+     * remaining bytes of {@code ch}.
+     * <pre>
+     *   byte x1
+     *   10xxxxxx
+     *   10xxxxxx
+     *   ...
+     * </pre>
+     */
     private static void outputBytes(OutputStream out, int x1, int byteLength, int ch) throws IOException
     {
-        // ByteLength = 3 => 2 byteLenth => shift=6 and shift=0  
+        // ByteLength = 3 => 2 byteLength => shift=6 and shift=0
         out.write(x1) ;
         byteLength-- ; // remaining bytes
         for ( int i = 0 ; i < byteLength ; i++ )
         {
-            // 6 Bits, loop from high to low  
+            // 6 Bits, loop from high to low
             int shift = 6*(byteLength-i-1) ;
             int x =  (ch>>shift) & 0x3F ;
             x = x | 0x80 ;  // 10xxxxxx

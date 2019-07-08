@@ -31,7 +31,7 @@ import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.FusekiConfigException;
-import org.apache.jena.fuseki.build.FusekiBuilder;
+import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.servlets.ActionService;
@@ -83,20 +83,20 @@ public class TestFusekiCustomOperation {
             }
         }
     };
-    
+
     private final int port = WebLib.choosePort();
     private final String url = "http://localhost:"+port;
 
     @Test
     public void cfg_dataservice() {
         // Create a DataService and add the endpoint -> operation association.
-        // This still needs the server to have the operation registered.  
+        // This still needs the server to have the operation registered.
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         DataService dataService = new DataService(dsg);
-        FusekiBuilder.populateStdServices(dataService, true);
-        FusekiBuilder.addServiceEP(dataService, newOp, endpointName);
-        
-        FusekiServer server = 
+        FusekiConfig.populateStdServices(dataService, true);
+        FusekiConfig.addServiceEP(dataService, newOp, endpointName);
+
+        FusekiServer server =
             FusekiServer.create()
                 .port(port)
                 .registerOperation(newOp, contentType, customHandler)
@@ -104,40 +104,40 @@ public class TestFusekiCustomOperation {
                 .build();
         testServer(server, true, true);
     }
-        
+
     @Test
     public void cfg_builder_CT() {
-        FusekiServer server = 
+        FusekiServer server =
             FusekiServer.create()
                 .port(port)
                 .registerOperation(newOp, contentType, customHandler)
                 .add("/ds", DatasetGraphFactory.createTxnMem(), true)
-                .addOperation("/ds", endpointName, newOp)
+                .addEndpoint("/ds", endpointName, newOp)
                 .build();
         testServer(server, true, true);
     }
 
     @Test
     public void cfg_builder_noCT() {
-        FusekiServer server = 
+        FusekiServer server =
             FusekiServer.create()
                 .port(port)
                 .registerOperation(newOp, null, customHandler)
                 .add("/ds", DatasetGraphFactory.createTxnMem(), true)
-                .addOperation("/ds", endpointName, newOp)
+                .addEndpoint("/ds", endpointName, newOp)
                 .build();
         testServer(server, true, false);
     }
-    
+
     @Test(expected=FusekiConfigException.class)
     public void cfg_bad_01() {
         FusekiServer.create()
         .port(port)
         .registerOperation(newOp, null, customHandler)
-        .addOperation("/UNKNOWN", endpointName, newOp);
+        .addEndpoint("/UNKNOWN", endpointName, newOp);
         //.build();
     }
-    
+
     @Test(expected=FusekiConfigException.class)
     public void cfg_bad_02() {
         FusekiServer.create()
@@ -145,24 +145,24 @@ public class TestFusekiCustomOperation {
         //.registerOperation(newOp, null, customHandler)
         .add("/ds", DatasetGraphFactory.createTxnMem(), true)
         // Unregistered.
-        .addOperation("/ds", endpointName, newOp);
+        .addEndpoint("/ds", endpointName, newOp);
         //.build();
     }
-    
+
     public void cfg_bad_ct_not_enabkled_here() {
         FusekiServer server = FusekiServer.create()
             .port(port)
             .registerOperation(newOp, "app/special", customHandler)
             .add("/ds", DatasetGraphFactory.createTxnMem(), true)
             // Unregistered.
-            .addOperation("/ds", endpointName, newOp)
+            .addEndpoint("/ds", endpointName, newOp)
             .build();
         testServer(server, false, false);
     }
 
 
     private void testServer(FusekiServer server, boolean withEndpoint, boolean withContentType) {
-        try { 
+        try {
             server.start();
             // Try query (no extension required)
             try(RDFConnection rconn = RDFConnectionFactory.connect(url+"/ds")) {
@@ -174,7 +174,7 @@ public class TestFusekiCustomOperation {
             if ( withEndpoint ) {
                 // Service endpoint name : GET
                 String s1 = HttpOp.execHttpGetString(url+"/ds/"+endpointName);
-    
+
                 // Service endpoint name : POST
                 try ( TypedInputStream stream = HttpOp.execHttpPostStream(url+"/ds/"+endpointName, "ignored", "", "text/plain") ) {
                     String x = IOUtils.toString(stream, StandardCharsets.UTF_8);
@@ -189,10 +189,10 @@ public class TestFusekiCustomOperation {
                     HttpOp.execHttpGet(url+"/ds/"+endpointName);
                     fail("Expected to fail HTTP GET");
                 } catch (HttpException ex) {
-                    assertEquals(404, ex.getResponseCode());   
-                }   
+                    assertEquals(404, ex.getStatusCode());
+                }
             }
-             
+
             if ( withContentType ) {
                 // Content-type
                 try ( TypedInputStream stream = HttpOp.execHttpPostStream(url+"/ds", contentType, "", "text/plain") ) {
@@ -205,14 +205,14 @@ public class TestFusekiCustomOperation {
                 // No Content-Type
                 try ( TypedInputStream stream = HttpOp.execHttpPostStream(url+"/ds", contentType, "", "text/plain") ) {
                     fail("Expected to fail HTTP POST using Content-Type");
-                } catch (HttpException ex) {} 
+                } catch (HttpException ex) {}
 
                 // Service endpoint name. DELETE -> fails 405
-                try { 
+                try {
                     HttpOp.execHttpDelete(url+"/ds/"+endpointName);
                     throw new IllegalStateException("DELETE succeeded");
                 } catch (HttpException ex) {
-                    assertEquals(405, ex.getResponseCode());   
+                    assertEquals(405, ex.getStatusCode());
                 }
             }
         } finally {

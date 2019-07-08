@@ -25,6 +25,7 @@ import java.util.Random;
 
 import org.apache.jena.JenaRuntime ;
 
+/** Internal */
 class LibUUID
 {
     //static boolean warningSent = false ;

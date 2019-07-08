@@ -1478,6 +1478,10 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
     { agg = AggregatorFactory.createMax(distinct, expr) ; }
   | t = <AVG> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
     { agg = AggregatorFactory.createAvg(distinct, expr) ; }
+  | t = <MEDIAN> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
+    { agg = AggregatorFactory.createMedian(distinct, expr) ; }
+  | t = <MODE> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
+    { agg = AggregatorFactory.createMode(distinct, expr) ; }
   | t = <SAMPLE> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
     { agg = AggregatorFactory.createSample(distinct, expr) ; }
   | t = <GROUP_CONCAT>
@@ -1592,17 +1596,6 @@ String String() : { Token t ; String lex ; }
       return lex ;
     }
 }
-Number Number() : { Token t ; Number number ; }
-{
-  (
-    t = < INTEGER > { number = integerValue(t.image) ; }
-  | t = < DECIMAL > { number = doubleValue(t.image) ; }
-  | t = < DOUBLE > { number = doubleValue(t.image) ; }
-  )
-  {
-    return number ;
-  }
-}
 String iri() : { String iri ; }
 {
   iri = IRIREF() { return iri ; }
@@ -1696,6 +1689,8 @@ TOKEN [IGNORE_CASE] :
 | < MAX: "max" >
 | < SUM: "sum" >
 | < AVG: "avg" >
+| < MEDIAN: "median" >
+| < MODE: "mode" >
 | < STDEV: "stdev" >
 | < STDEV_SAMP: "stdev_samp" >
 | < STDEV_POP: "stdev_pop" >

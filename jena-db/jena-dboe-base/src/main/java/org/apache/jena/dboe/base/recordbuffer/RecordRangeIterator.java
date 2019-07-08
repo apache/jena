@@ -37,8 +37,6 @@ class RecordRangeIterator<X> implements Iterator<X>, Closeable
     public static <X> Iterator<X> iterator(int pageId, Record fromRec, Record toRec, RecordBufferPageMgr pageMgr, RecordMapper<X> mapper) {
         if ( ! pageMgr.valid(pageId) ) {
             String msg = "RecordRangeIterator.iterator -- No such block (pageId="+pageId+", fromRec="+fromRec+", toRec="+toRec+ ")";
-//            System.err.println(msg);
-//            System.exit(0);
             throw new BlockException(msg);
         }
         return new RecordRangeIterator<>(pageId, fromRec, toRec, pageMgr, mapper);

@@ -159,8 +159,8 @@ public class StreamRDFWriter {
      * @param output OutputStream
      * @param lang   The syntax 
      * @return       StreamRDF, or null if Lang does not have a streaming format.
-     * @see StreamOps#graphToStream
-     * @see StreamOps#datasetToStream
+     * @see StreamRDFOps#graphToStream
+     * @see StreamRDFOps#datasetToStream
      */
     public static StreamRDF getWriterStream(OutputStream output, Lang lang) {
         RDFFormat fmt = registry.choose(lang) ;
@@ -172,8 +172,8 @@ public class StreamRDFWriter {
      * @param output OutputStream
      * @param format  The syntax (as an {@link RDFFormat}) 
      * @return       StreamRDF, or null if format is not registered for streaming.
-     * @see StreamOps#graphToStream
-     * @see StreamOps#datasetToStream
+     * @see StreamRDFOps#graphToStream
+     * @see StreamRDFOps#datasetToStream
      */
     public static StreamRDF getWriterStream(OutputStream output, RDFFormat format) {
         StreamRDFWriterFactory x = registry.get(format) ;
@@ -218,7 +218,7 @@ public class StreamRDFWriter {
      */
     public static void write(OutputStream output, Graph graph, RDFFormat lang) {
         StreamRDF stream = getWriterStream(output, lang) ;
-        StreamOps.graphToStream(graph, stream) ;
+        StreamRDFOps.graphToStream(graph, stream) ;
     }
 
     /** Write a DatasetGraph in streaming fashion
@@ -240,7 +240,7 @@ public class StreamRDFWriter {
      */
     public static void write(OutputStream output, DatasetGraph datasetGraph, RDFFormat format) {
         StreamRDF stream = getWriterStream(output, format) ;
-        StreamOps.datasetToStream(datasetGraph, stream) ;
+        StreamRDFOps.datasetToStream(datasetGraph, stream) ;
     }
     
     private static class StreamTriplesOnly extends StreamRDFWrapper {

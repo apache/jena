@@ -21,23 +21,23 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>3.12.0-SNAPSHOT</version>
+    <version>3.13.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent> 
 
   <name>Apache Jena - Command line tools</name>
   <artifactId>jena-cmds</artifactId>
-  <version>3.12.0-SNAPSHOT</version>
+  <version>3.13.0-SNAPSHOT</version>
 
   <description>Command line tools</description>
 
   <packaging>jar</packaging>
   
-  <url>http://jena.apache.org/</url>
+  <url>https://jena.apache.org/</url>
 
   <organization>
     <name>Apache Jena</name>
-    <url>http://jena.apache.org/</url>
+    <url>https://jena.apache.org/</url>
   </organization>
 
   <licenses>
@@ -57,7 +57,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
-      <version>3.12.0-SNAPSHOT</version>
+      <version>3.13.0-SNAPSHOT</version>
       <type>pom</type>
     </dependency>
 
@@ -88,7 +88,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.12.0-SNAPSHOT</version>
+      <version>3.13.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -96,7 +96,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>3.12.0-SNAPSHOT</version>
+      <version>3.13.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -104,7 +104,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>3.12.0-SNAPSHOT</version>
+      <version>3.13.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>

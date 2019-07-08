@@ -154,6 +154,8 @@ public class TDBInternal
         DatasetGraphTDB dsgtdb = Txn.calculate(dsg, ()->getDatasetGraphTDB(dsg));
         if ( dsgtdb == null )
             return;
+        Location loc = dsgtdb.getLocation();
+        TDBMaker.releaseLocation(loc);
         StoreConnection.expel(dsgtdb.getLocation(), false);
         // No longer valid.
     }
@@ -174,17 +176,20 @@ public class TDBInternal
         return entries.length == 0 ;
     }
 
-    static FileFilter fileFilterNewDB = 
-        (pathname) -> {
-            String fn = pathname.getName() ;
-            if ( fn.equals(".") || fn.equals("..") )
-                return false ;
-            if ( pathname.isDirectory() )
-                return true ;
-
-            if ( fn.equals(StoreParamsConst.TDB_CONFIG_FILE) )
-                return false ;
+    static FileFilter fileFilterNewDB = (pathname) -> {
+        String fn = pathname.getName() ;
+        if ( fn.equals(".") || fn.equals("..") )
+            return false ;
+        if ( pathname.isDirectory() )
             return true ;
-        } ;
 
+        if ( fn.equals(StoreParamsConst.TDB_CONFIG_FILE) )
+            return false ;
+        return true ;
+    } ;
+        
+    public static void reset() {
+        StoreConnection.reset();
+        TDBMaker.resetCache();
+    }
 }

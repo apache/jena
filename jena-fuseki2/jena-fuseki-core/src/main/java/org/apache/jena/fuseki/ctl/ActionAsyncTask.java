@@ -18,39 +18,37 @@
 
 package org.apache.jena.fuseki.ctl;
 
-import org.apache.jena.atlas.json.JsonValue ;
-import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.fuseki.async.AsyncPool ;
-import org.apache.jena.fuseki.async.AsyncTask ;
-import org.apache.jena.fuseki.servlets.HttpAction ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
+import org.apache.jena.atlas.json.JsonValue;
+import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.fuseki.async.AsyncPool;
+import org.apache.jena.fuseki.async.AsyncTask;
+import org.apache.jena.fuseki.servlets.HttpAction;
 
-/** Base helper class for creating async tasks on "items", based on POST  */ 
+/** Base helper class for creating async tasks on "items", based on POST  */
 public abstract class ActionAsyncTask extends ActionItem
 {
-    public ActionAsyncTask() { super() ; }
-    
-    @Override
-    final
-    protected void execGet(HttpAction action) {
-        ServletOps.errorMethodNotAllowed(METHOD_GET);
+    private String name;
+
+    public ActionAsyncTask(String name) {
+        super();
+        this.name = name;
     }
 
     @Override
     final
-    protected JsonValue execGetItem(HttpAction action) { 
-        throw new InternalErrorException("GET for AsyncTask -- Should not be here!") ;
+    protected JsonValue execGetItem(HttpAction action) {
+        throw new InternalErrorException("GET for AsyncTask -- Should not be here!");
     }
 
     @Override
     final
     protected JsonValue execPostItem(HttpAction action) {
-        Runnable task = createRunnable(action) ;
-        AsyncTask aTask = Async.execASyncTask(action, AsyncPool.get(), "backup", task) ;
+        Runnable task = createRunnable(action);
+        AsyncTask aTask = Async.execASyncTask(action, AsyncPool.get(), name, task);
         Async.setLocationHeader(action, aTask);
-        return Async.asJson(aTask) ;
+        return Async.asJson(aTask);
     }
-    
-    protected abstract Runnable createRunnable(HttpAction action) ;
+
+    protected abstract Runnable createRunnable(HttpAction action);
 }
 

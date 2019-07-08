@@ -23,5 +23,5 @@ import java.util.List;
 /** Unit of delivery to a processing stage. */
 @FunctionalInterface
 public interface Destination<X> {
-    void deliver(List<X> block); 
+    void deliver(List<X> block);
 }

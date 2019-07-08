@@ -18,27 +18,27 @@
 
 package org.apache.jena.tdb2.store.tupletable;
 
-import org.apache.jena.atlas.lib.tuple.TupleMap ;
+import org.apache.jena.atlas.lib.tuple.TupleMap;
 import org.apache.jena.dboe.base.file.FileSet;
 import org.apache.jena.dboe.base.record.RecordFactory;
 import org.apache.jena.dboe.index.IndexParams;
 import org.apache.jena.dboe.index.RangeIndex;
 import org.apache.jena.tdb2.junit.BuildTestLib;
-import org.apache.jena.tdb2.setup.StoreParams;
+import org.apache.jena.tdb2.params.StoreParams;
 import org.apache.jena.tdb2.store.tupletable.TupleIndexRecord;
 import org.apache.jena.tdb2.sys.SystemTDB;
 
 public class TestTupleIndexRecord extends AbstractTestTupleIndex
 {
-    static RecordFactory factory = new RecordFactory(3*SystemTDB.SizeOfNodeId, 0) ;
-    
+    static RecordFactory factory = new RecordFactory(3*SystemTDB.SizeOfNodeId, 0);
+
     @Override
     protected TupleIndexRecord create(String description)
     {
-        IndexParams indexParams = StoreParams.getDftStoreParams() ; 
-        RangeIndex rIdx = BuildTestLib.buildRangeIndex(FileSet.mem(), factory, indexParams) ;
-        TupleMap tmap = TupleMap.create("SPO", description) ;
-        TupleIndexRecord index = new TupleIndexRecord(3, tmap, description, factory, rIdx) ;
-        return index ;
+        IndexParams indexParams = StoreParams.getDftStoreParams();
+        RangeIndex rIdx = BuildTestLib.buildRangeIndex(FileSet.mem(), factory, indexParams);
+        TupleMap tmap = TupleMap.create("SPO", description);
+        TupleIndexRecord index = new TupleIndexRecord(3, tmap, description, factory, rIdx);
+        return index;
     }
 }

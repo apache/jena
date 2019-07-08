@@ -22,8 +22,8 @@ import static org.junit.Assert.*;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.jena.atlas.lib.ThreadLib;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.dboe.migrate.L;
 import org.apache.jena.dboe.transaction.txn.Transaction;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.dboe.transaction.txn.TransactionException;
@@ -228,7 +228,7 @@ public class TestTransactionLifecycle2 {
     @Test
     public void txn_promote_thread_writer_1() {
         Transaction txn1 = txnMgr.begin(TxnType.READ_PROMOTE);
-        L.syncOtherThread(()->{
+        ThreadLib.syncOtherThread(()->{
             Transaction txn2 = txnMgr.begin(TxnType.WRITE);
             txn2.commit();
             txn2.end();
@@ -243,7 +243,7 @@ public class TestTransactionLifecycle2 {
     @Test
     public void txn_promote_thread_writer_2() {
         Transaction txn1 = txnMgr.begin(TxnType.READ_PROMOTE);
-        L.syncOtherThread(()->{
+        ThreadLib.syncOtherThread(()->{
             Transaction txn2 = txnMgr.begin(TxnType.WRITE);
             txn2.abort();
             txn2.end();
@@ -263,7 +263,7 @@ public class TestTransactionLifecycle2 {
         boolean b = txn1.promote();
         assertTrue(b);
         AtomicReference<Transaction> ref = new AtomicReference<>(txn1);
-        L.syncOtherThread(()->{
+        ThreadLib.syncOtherThread(()->{
             // Should fail.
             Transaction txn2 = txnMgr.begin(TxnType.WRITE, false);
             ref.set(txn2);
@@ -279,7 +279,7 @@ public class TestTransactionLifecycle2 {
         boolean b = txn1.promote();
         assertTrue(b);
         AtomicReference<Transaction> ref = new AtomicReference<>(txn1);
-        L.syncOtherThread(()->{
+        ThreadLib.syncOtherThread(()->{
             // Should fail.
             Transaction txn2 = txnMgr.begin(TxnType.WRITE, false);
             ref.set(txn2);
@@ -288,7 +288,7 @@ public class TestTransactionLifecycle2 {
         txn1.abort();
         txn1.end();
 
-        L.syncOtherThread(()->{
+        ThreadLib.syncOtherThread(()->{
             // Should suceed
             Transaction txn2 = txnMgr.begin(TxnType.WRITE, false);
             ref.set(txn2);

@@ -1529,7 +1529,6 @@ class LexerHost implements org.apache.jena.iri.ViolationCodes, org.apache.jena.i
    * @return      the next token
    * @exception   java.io.IOException  if any I/O-Error occurs
    */
-  @SuppressWarnings("fallthrough")
   private int yylex() throws java.io.IOException {
     int zzInput;
     int zzAction;

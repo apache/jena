@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.atlas.lib.tuple.TupleFactory;
+import org.apache.jena.dboe.storage.StoragePrefixes;
 import org.apache.jena.dboe.transaction.txn.Transaction;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.graph.Node;
@@ -30,32 +31,31 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.riot.lang.StreamRDFCounting;
 import org.apache.jena.riot.system.StreamRDF;
-import org.apache.jena.sparql.core.DatasetPrefixStorage;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.tdb2.loader.BulkLoaderException;
 import org.apache.jena.tdb2.loader.base.BulkStartFinish;
 import org.apache.jena.tdb2.loader.base.CoLib;
 import org.apache.jena.tdb2.loader.base.MonitorOutput;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
-import org.apache.jena.tdb2.store.DatasetPrefixesTDB;
 import org.apache.jena.tdb2.store.NodeId;
+import org.apache.jena.tdb2.store.StoragePrefixesTDB;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
 
-/** Triple to chunks of Tuples.  
+/** Triple to chunks of Tuples.
  *  Same thread version.
  *  This is a {@link StreamRDF}.
  *  Also loads prefixes.
- */ 
+ */
 public class DataToTuplesInline implements StreamRDFCounting, BulkStartFinish {
     public static final int DataTickPoint   = 100_000;
     public static final int DataSuperTick   = 10;
-    
+
     private final Destination<Tuple<NodeId>> dest3;
     private final Destination<Tuple<NodeId>> dest4;
     private final DatasetGraphTDB dsgtdb;
     private final NodeTable nodeTable;
-    private final DatasetPrefixStorage prefixes;
+    private final StoragePrefixesTDB prefixes;
 
     private final MonitorOutput output;
     // Chunk accumulators.
@@ -63,32 +63,31 @@ public class DataToTuplesInline implements StreamRDFCounting, BulkStartFinish {
     private long countQuads = 0;
     private List<Tuple<NodeId>> quads = null;
     private List<Tuple<NodeId>> triples = null;
-    // Prefix handler.
     public DataToTuplesInline(DatasetGraphTDB dsgtdb,
                               Destination<Tuple<NodeId>> dest3,
-                              Destination<Tuple<NodeId>> dest4, 
+                              Destination<Tuple<NodeId>> dest4,
                               MonitorOutput output) {
         this.dsgtdb = dsgtdb;
         this.dest3 = dest3;
         this.dest4 = dest4;
         this.output = output;
         this.nodeTable = dsgtdb.getTripleTable().getNodeTupleTable().getNodeTable();
-        this.prefixes = dsgtdb.getPrefixes();
+        this.prefixes = (StoragePrefixesTDB)dsgtdb.getPrefixes();
         NodeTable nodeTable2 = dsgtdb.getQuadTable().getNodeTupleTable().getNodeTable();
         if ( nodeTable != nodeTable2 )
             throw new BulkLoaderException("Different node tables");
     }
-    
+
     // StreamRDF
     private TransactionCoordinator coordinator;
-    private Transaction transaction; 
+    private Transaction transaction;
     @Override
     public void startBulk() {
         coordinator = CoLib.newCoordinator();
         CoLib.add(coordinator, nodeTable);
-        
+
         // Prefixes
-        NodeTupleTable p = ((DatasetPrefixesTDB)prefixes).getNodeTupleTable();
+        NodeTupleTable p = prefixes.getNodeTupleTable();
         CoLib.add(coordinator, p.getNodeTable());
         CoLib.add(coordinator, p.getTupleTable().getIndexes());
         CoLib.start(coordinator);
@@ -149,7 +148,7 @@ public class DataToTuplesInline implements StreamRDFCounting, BulkStartFinish {
             quads = null;
         }
     }
-    
+
     private void dispatchQuads(List<Tuple<NodeId>> chunk) {
         dest4.deliver(chunk);
     }
@@ -157,31 +156,30 @@ public class DataToTuplesInline implements StreamRDFCounting, BulkStartFinish {
     private void dispatchTriples(List<Tuple<NodeId>> chunk) {
         dest3.deliver(chunk);
     }
-    
+
     @Override
     public void base(String base) {}
 
     @Override
     public void prefix(String prefix, String iri) {
-        // Clean constant handling.
-        prefixes.insertPrefix("", prefix, iri);
+        prefixes.add_ext(StoragePrefixes.nodeDataset, prefix, iri);
     }
 
     private static void accTuples(Triple triple, NodeTable nodeTable, List<Tuple<NodeId>> acc) {
         acc.add(nodes(nodeTable, triple));
     }
-    
+
     private static void accTuples(Quad quad, NodeTable nodeTable, List<Tuple<NodeId>> acc) {
         acc.add(nodes(nodeTable, quad));
     }
-    
+
     // Recycle?
     private List<Tuple<NodeId>> allocChunkTriples() {
-        return new ArrayList<>(LoaderConst.ChunkSize); 
-    } 
+        return new ArrayList<>(LoaderConst.ChunkSize);
+    }
 
     private List<Tuple<NodeId>> allocChunkQuads() {
-        return new ArrayList<>(LoaderConst.ChunkSize); 
+        return new ArrayList<>(LoaderConst.ChunkSize);
     }
 
     private static Tuple<NodeId> nodes(NodeTable nt, Triple triple) {
@@ -190,7 +188,7 @@ public class DataToTuplesInline implements StreamRDFCounting, BulkStartFinish {
         NodeId o = idForNode(nt, triple.getObject());
         return TupleFactory.tuple(s,p,o);
     }
-    
+
    private static Tuple<NodeId> nodes(NodeTable nt, Quad quad) {
         NodeId g = idForNode(nt, quad.getGraph());
         NodeId s = idForNode(nt, quad.getSubject());
@@ -198,9 +196,9 @@ public class DataToTuplesInline implements StreamRDFCounting, BulkStartFinish {
         NodeId o = idForNode(nt, quad.getObject());
         return TupleFactory.tuple(g,s,p,o);
     }
-    
+
     private static final NodeId idForNode(NodeTable nodeTable, Node node) {
         return nodeTable.getAllocateNodeId(node);
     }
-    
+
 }

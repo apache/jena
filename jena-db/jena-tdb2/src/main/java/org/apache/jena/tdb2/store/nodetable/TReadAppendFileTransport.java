@@ -18,10 +18,10 @@
 
 package org.apache.jena.tdb2.store.nodetable;
 
-import java.util.Objects ;
+import java.util.Objects;
 
 import org.apache.jena.dboe.base.file.BinaryDataFile;
-import org.apache.thrift.transport.TTransport ;
+import org.apache.thrift.transport.TTransport;
 
 /** A file transport that supports random access read and
  *  buffered append write.
@@ -29,58 +29,58 @@ import org.apache.thrift.transport.TTransport ;
  *  Adapter TTransport -&gt; BinaryDataFile
  */
 public class TReadAppendFileTransport extends TTransport {
-    private BinaryDataFile file ;
-    private long readPosn = -1 ;
-    
+    private BinaryDataFile file;
+    private long readPosn = -1;
+
     public TReadAppendFileTransport(BinaryDataFile file) {
-        Objects.requireNonNull(file) ;
-        this.file = file ;
+        Objects.requireNonNull(file);
+        this.file = file;
     }
-    
+
     @Override
     public boolean isOpen() {
-        return file.isOpen() ;
+        return file.isOpen();
     }
 
     @Override
     public void open() {
-        file.open() ; 
+        file.open();
     }
 
     @Override
     public void close() {
-        file.close() ; 
-    }
-    
-    public void truncate(long posn) {
-        file.truncate(posn); 
+        file.close();
     }
 
-    public BinaryDataFile getBinaryDataFile() { return file ; }
+    public void truncate(long posn) {
+        file.truncate(posn);
+    }
+
+    public BinaryDataFile getBinaryDataFile() { return file; }
 
     public long readPosition() {
-        return readPosn ;
+        return readPosn;
     }
 
     public void readPosition(long posn) {
-        readPosn = posn ;
+        readPosn = posn;
     }
-    
+
     @Override
     public int read(byte[] buf, int off, int len) {
-        int x = file.read(readPosn, buf, off, len) ;
-        readPosn += x ;
-        return x ;
+        int x = file.read(readPosn, buf, off, len);
+        readPosn += x;
+        return x;
     }
 
     @Override
     public void write(byte[] buf, int off, int len) {
-        file.write(buf, off, len) ;
+        file.write(buf, off, len);
     }
-    
+
     @Override
     public void flush()  {
-        file.sync(); 
+        file.sync();
     }
 }
 

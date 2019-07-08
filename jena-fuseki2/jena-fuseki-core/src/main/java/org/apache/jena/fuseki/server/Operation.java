@@ -18,46 +18,41 @@
 
 package org.apache.jena.fuseki.server;
 
-import org.apache.jena.fuseki.servlets.ServiceDispatchRegistry;
+import org.apache.jena.fuseki.servlets.OperationRegistry;
 
 /**
- * Operations are symbol to look up in the {@link ServiceDispatchRegistry#operationToHandler} map. The name
+ * Operations are symbol to look up in the {@link OperationRegistry#operationToHandler} map. The name
  * of an {@code Operation} is not related to the service name used to invoke the operation
  * which is determined by the {@link Endpoint}.
  */
 public class Operation {
-    
-    /** Create/intern. */ 
-    static private NameMgr<Operation> mgr = new NameMgr<>(); 
+
+    /** Create/intern. */
+    static private NameMgr<Operation> mgr = new NameMgr<>();
     static public Operation register(String name, String description) {
         return mgr.register(name, (x)->create(x, description));
     }
-    
+
     /** Create; not registered */
     static private Operation create(String name, String description) {
         return new Operation(name, description);
     }
-    
+
     public static final Operation Query          = register("Query", "SPARQL Query");
     public static final Operation Update         = register("Update", "SPARQL Update");
     public static final Operation Upload         = register("Upload", "File Upload");
+    public static final Operation Patch          = register("Patch", "RDF Patch");
     public static final Operation GSP_R          = register("GSP_R", "Graph Store Protocol (Read)");
     public static final Operation GSP_RW         = register("GSP_RW", "Graph Store Protocol");
-    public static final Operation Quads_R        = register("Quads_R", "HTTP Quads (Read)");
-    public static final Operation Quads_RW       = register("Quads_RW", "HTTP Quads");
-    
-    // Plain REST operations on the dataset URL 
-    public static final Operation DatasetRequest_R  = Quads_R;
-    public static final Operation DatasetRequest_RW = Quads_RW;
-    
-    private final String description ;
-    private final String name ;
+
+    private final String description;
+    private final String name;
 
     private Operation(String name, String description) {
         this.name = name;
         this.description = description;
     }
-    
+
     public String getName() {
         return name;
     }
@@ -65,7 +60,7 @@ public class Operation {
     public String getDescription() {
         return description;
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -73,10 +68,10 @@ public class Operation {
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
     }
-    
+
     // Could be this == obj
     // because we intern'ed the object
-    
+
     @Override
     public boolean equals(Object obj) {
         if ( this == obj )
@@ -93,7 +88,7 @@ public class Operation {
             return false;
         return true;
     }
- 
+
     @Override
     public String toString() {
         return name;

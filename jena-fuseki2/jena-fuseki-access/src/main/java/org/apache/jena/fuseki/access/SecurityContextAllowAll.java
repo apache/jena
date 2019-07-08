@@ -28,19 +28,19 @@ import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 
-/** A {@link SecurityContext} that allow any graph, default or named. */ 
+/** A {@link SecurityContext} that allow any graph, default or named. */
 public class SecurityContextAllowAll implements SecurityContext {
-    
+
     public SecurityContextAllowAll() {}
-    
+
     @Override
     public Collection<Node> visibleGraphs() {
         // null means "all".
         return null;
     }
-    
+
     @Override
-    public boolean visableDefaultGraph() { return true; }  
+    public boolean visableDefaultGraph() { return true; }
 
     @Override
     public QueryExecution createQueryExecution(Query query, DatasetGraph dsg) {
@@ -54,7 +54,7 @@ public class SecurityContextAllowAll implements SecurityContext {
      */
     @Override
     public Predicate<Quad> predicateQuad() { return q->true; }
-    
+
     @Override
     public void filterTDB(DatasetGraph dsg, QueryExecution qExec) {
         // No filter necessary.

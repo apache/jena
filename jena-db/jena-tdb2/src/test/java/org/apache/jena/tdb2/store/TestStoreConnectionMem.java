@@ -24,6 +24,6 @@ public class TestStoreConnectionMem extends AbstractTestStoreConnectionBasics
 {
     @Override
     protected Location getLocation() {
-        return Location.mem("TestStoreConnection") ;
+        return Location.mem("TestStoreConnection");
     }
 }

@@ -21,7 +21,7 @@ package org.apache.jena.dboe.transaction.txn;
 import java.util.UUID;
 
 import org.apache.jena.atlas.lib.Bytes;
-import org.apache.jena.dboe.migrate.L;
+import org.apache.jena.dboe.sys.LibUUID;
 import org.apache.jena.shared.uuid.JenaUUID;
 
 /** {@link TxnId} based on a {@link UUID}.
@@ -57,14 +57,14 @@ public class TxnIdUuid implements TxnId {
     @Override
     public String name() {
         if ( name == null )
-            name = L.uuidToString(mostSignificantBits, leastSignificantBits);
+            name = LibUUID.uuidToString(mostSignificantBits, leastSignificantBits);
         return name;
     }
 
     @Override
     public byte[] bytes() {
         if ( bytes == null )
-            bytes = L.uuidAsBytes(mostSignificantBits, leastSignificantBits);
+            bytes = LibUUID.uuidAsBytes(mostSignificantBits, leastSignificantBits);
         return bytes;
     }
 

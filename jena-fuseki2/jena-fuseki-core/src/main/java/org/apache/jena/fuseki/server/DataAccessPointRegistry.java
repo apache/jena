@@ -19,12 +19,12 @@
 package org.apache.jena.fuseki.server;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import javax.servlet.ServletContext ;
+import javax.servlet.ServletContext;
 
-import org.apache.jena.atlas.lib.Registry ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.lib.Registry;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.fuseki.FusekiException ;
+import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.metrics.FusekiRequestsMetrics;
 
 public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
@@ -34,20 +34,20 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
     public DataAccessPointRegistry(MeterRegistry meterRegistry) {
         this.meterRegistry = meterRegistry;
     }
-    
+
     public DataAccessPointRegistry(DataAccessPointRegistry other) {
         other.forEach((name, accessPoint)->register(name, accessPoint));
         this.meterRegistry = other.meterRegistry;
     }
-    
+
     // Preferred way to register. Other method for legacy.
     public void register(DataAccessPoint accessPt) {
         register(accessPt.getName(), accessPt);
     }
-    
+
     private void register(String name, DataAccessPoint accessPt) {
         if ( isRegistered(name) )
-            throw new FusekiException("Already registered: "+name) ;
+            throw new FusekiException("Already registered: "+name);
         super.put(name, accessPt);
         if (meterRegistry != null) {
             new FusekiRequestsMetrics( accessPt ).bindTo( meterRegistry );
@@ -55,30 +55,30 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
     }
     // Debugging
     public void print(String string) {
-        System.out.flush() ;
+        System.out.flush();
         if ( string == null )
-            string = "DataAccessPointRegistry" ;
-        System.out.println("== "+string) ;
+            string = "DataAccessPointRegistry";
+        System.out.println("== "+string);
         this.forEach((k,ref)->{
-            System.out.printf("  (key=%s, ref=%s)\n", k, ref.getName()) ;
+            System.out.printf("  (key=%s, ref=%s)\n", k, ref.getName());
             ref.getDataService().getOperations().forEach((op)->{
                 ref.getDataService().getEndpoints(op).forEach(ep->{
-                    System.out.printf("     %s : %s\n", op, ep.getName()) ;
+                    System.out.printf("     %s : %s\n", op, ep.getName());
                 });
             });
-        }) ;
+        });
     }
 
     // The server DataAccessPointRegistry is held in the ServletContext for the server.
-    
+
     public static DataAccessPointRegistry get(ServletContext cxt) {
-        DataAccessPointRegistry registry = (DataAccessPointRegistry)cxt.getAttribute(Fuseki.attrNameRegistry) ;
+        DataAccessPointRegistry registry = (DataAccessPointRegistry)cxt.getAttribute(Fuseki.attrNameRegistry);
         if ( registry == null )
-            Log.warn(DataAccessPointRegistry.class, "No data access point registry for ServletContext") ;
-        return registry ;
+            Log.warn(DataAccessPointRegistry.class, "No data access point registry for ServletContext");
+        return registry;
     }
-    
+
     public static void set(ServletContext cxt, DataAccessPointRegistry registry) {
-        cxt.setAttribute(Fuseki.attrNameRegistry, registry) ;
+        cxt.setAttribute(Fuseki.attrNameRegistry, registry);
     }
 }

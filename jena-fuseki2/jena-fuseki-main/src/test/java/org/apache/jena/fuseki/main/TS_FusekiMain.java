@@ -18,23 +18,24 @@
 
 package org.apache.jena.fuseki.main;
 
-import org.apache.jena.atlas.logging.LogCtl ;
-import org.apache.jena.fuseki.Fuseki ;
-import org.junit.BeforeClass ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
+import org.apache.jena.atlas.logging.LogCtl;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.main.old.TestFusekiTestAuthOld;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
   TestEmbeddedFuseki.class
   , TestMultipleEmbedded.class
-  , TestFusekiTestServer.class
-  , TestFusekiTestAuth.class
+  , TestFusekiTestAuthOld.class
   , TestFusekiCustomOperation.class
   , TestFusekiMainCmd.class
+  , TestStdSetup.class 
 })
-public class TS_FusekiMain {
+public class TS_FusekiMain { 
     @BeforeClass public static void setupForFusekiServer() {
         LogCtl.setLevel(Fuseki.serverLogName,        "WARN");
         LogCtl.setLevel(Fuseki.actionLogName,        "WARN");

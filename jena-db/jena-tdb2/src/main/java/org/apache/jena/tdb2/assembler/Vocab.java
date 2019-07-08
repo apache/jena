@@ -16,22 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.assembler ;
+package org.apache.jena.tdb2.assembler;
 
-import org.apache.jena.rdf.model.Property ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.rdf.model.ResourceFactory ;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 
 public class Vocab {
+    
+    private Vocab() {}
+    
     public static Resource type(String namespace, String localName) {
-        return ResourceFactory.createResource(namespace + localName) ;
+        return ResourceFactory.createResource(namespace + localName);
     }
 
     public static Resource resource(String namespace, String localName) {
-        return ResourceFactory.createResource(namespace + localName) ;
+        return ResourceFactory.createResource(namespace + localName);
     }
 
     public static Property property(String namespace, String localName) {
-        return ResourceFactory.createProperty(namespace + localName) ;
+        return ResourceFactory.createProperty(namespace + localName);
     }
 }

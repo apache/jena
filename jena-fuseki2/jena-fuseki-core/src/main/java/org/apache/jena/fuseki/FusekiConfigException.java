@@ -20,8 +20,8 @@ package org.apache.jena.fuseki;
 
 public class FusekiConfigException extends FusekiException
 {
-    public FusekiConfigException(String msg, Throwable cause)    { super(msg, cause) ; }
-    public FusekiConfigException(String msg)                     { super(msg) ; }
-    public FusekiConfigException(Throwable cause)                { super(cause) ; }
-    public FusekiConfigException()                               { super() ; }
+    public FusekiConfigException(String msg, Throwable cause)    { super(msg, cause); }
+    public FusekiConfigException(String msg)                     { super(msg); }
+    public FusekiConfigException(Throwable cause)                { super(cause); }
+    public FusekiConfigException()                               { super(); }
 }

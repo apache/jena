@@ -23,14 +23,13 @@ package org.apache.jena.atlas.web;
  * 
  */
 public class HttpException extends RuntimeException {
-    private static final long serialVersionUID = -7224224620679594095L;
-    private int responseCode = -1;
+    private int statusCode = -1;
     private String statusLine = null ;
 	private String response;
 
-	public HttpException(int responseCode, String statusLine, String response) {
-		super(responseCode + " - " + statusLine);
-		this.responseCode = responseCode;
+	public HttpException(int statusCode, String statusLine, String response) {
+		super(statusCode + " - " + statusLine);
+		this.statusCode = statusCode;
 		this.statusLine = statusLine ;
 		this.response = response;
 	}
@@ -49,11 +48,21 @@ public class HttpException extends RuntimeException {
     }
     
     /**
+     * Gets the status code, may be -1 if unknown
+     * @return Status Code if known, -1 otherwise
+     */
+    public int getStatusCode() {
+        return this.statusCode;
+    }
+
+    /**
      * Gets the response code, may be -1 if unknown
      * @return Response Code if known, -1 otherwise
+     * @deprecated Use {@link #getStatusCode()}
      */
+    @Deprecated
     public int getResponseCode() {
-        return this.responseCode;
+        return getStatusCode();
     }
     
     /**

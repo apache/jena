@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue ;
 import java.util.Iterator;
 
 import org.apache.jena.assembler.Assembler ;
-import org.apache.jena.assembler.exceptions.AssemblerException ;
+import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Dataset ;
@@ -35,7 +35,10 @@ import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.QuadAction ;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.tdb.assembler.AssemblerTDB ;
+import org.apache.jena.tdb.sys.TDBInternal;
 import org.apache.jena.vocabulary.RDF ;
+import org.junit.After;
+import org.junit.BeforeClass;
 import org.junit.Test ;
 
 
@@ -52,10 +55,19 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
     private static final Resource customTextDocProducerSpec;
     private static final Resource customDyadicTextDocProducerSpec;
 
+    @BeforeClass public static void clearBefore() {
+        TDBInternal.reset();
+    }
+    
+    @After public void clearAfter() {
+        TDBInternal.reset();
+    }
+    
     @Test
     public void testSimpleDatasetAssembler() {
         Dataset dataset = (Dataset) Assembler.general.open(spec1);
         assertTrue(dataset.getContext().get(TextQuery.textIndex) instanceof TextIndexLucene);
+        dataset.close();
     }
 
     @Test(expected = AssemblerException.class)
@@ -82,7 +94,7 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
         DatasetGraphText dsgText = (DatasetGraphText)dataset.asDatasetGraph() ;
         assertTrue(dsgText.getMonitor() instanceof CustomDyadicTextDocProducer) ;
 
-        Node G= NodeFactory.createURI("http://example.com/G");
+        Node G = NodeFactory.createURI("http://example.com/G");
         Node S = NodeFactory.createURI("http://example.com/S");
         Node P = NodeFactory.createURI("http://example.com/P");
         Node O = NodeFactory.createLiteral("http://example.com/O");
@@ -90,7 +102,6 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
         dsgText.begin(ReadWrite.WRITE);
         dsgText.add(G, S, P, O);
         dsgText.commit();
-        dataset.close();
     }
 
     static {

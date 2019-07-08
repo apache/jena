@@ -18,26 +18,26 @@
 
 package org.apache.jena.fuseki.ctl;
 
-import org.apache.jena.fuseki.servlets.HttpAction ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.Transactional ;
+import org.apache.jena.fuseki.servlets.HttpAction;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.Transactional;
 
 /** Base of async tasks - this carries some useful information around, leaving the
  * implementation of Callable.run() to the specific task.
  */
 public abstract class TaskBase implements Runnable {
-    public final long actionId ;
-    public final DatasetGraph dataset ;
-    public final String datasetName ;
-    public final Transactional transactional ;
-    
+    public final long actionId;
+    public final DatasetGraph dataset;
+    public final String datasetName;
+    public final Transactional transactional;
+
     protected TaskBase(HttpAction action) {
         // The action is closed as part of action processing so is not
         // available in the async task. Anything from it that is needed,
         // taken out here.
-        this.actionId = action.id ;
-        this.dataset = action.getDataset() ;
-        this.transactional = action.getTransactional() ; 
-        this.datasetName = action.getDatasetName() ;
+        this.actionId = action.id;
+        this.dataset = ActionCtl.getItemDataset(action);
+        this.transactional = dataset;
+        this.datasetName = ActionCtl.getItemDatasetName(action);
     }
 }

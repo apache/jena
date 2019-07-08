@@ -35,21 +35,21 @@ public class IteratorTxnTracker<T> extends IteratorWrapper<T> {
     public IteratorTxnTracker(Iterator<T> iterator, TransactionalSystem txnSystem, TxnId txnId) {
         super(iterator);
         this.txnSystem = Objects.requireNonNull(txnSystem, "TransactionalSystem");
-        this.txnId = Objects.requireNonNull(txnId, "TxnId") ;
+        this.txnId = Objects.requireNonNull(txnId, "TxnId");
     }
 
-    @Override public boolean hasNext()  { check() ; return super.hasNext() ; }
+    @Override public boolean hasNext()  { check(); return super.hasNext() ; }
 
-    @Override public T next()           { check() ; return super.next() ; }
-    
-    @Override public void remove()      { check() ; super.remove() ; }
+    @Override public T next()           { check(); return super.next() ; }
+
+    @Override public void remove()      { check(); super.remove() ; }
 
     private void check() {
         Transaction txn = txnSystem.getThreadTransaction();
         if ( txn == null )
             throw new TransactionException("Iterator used outside its original transaction");
         if ( txn != null && txnId.equals(txn.getTxnId()) )
-            return ;
+            return;
         throw new TransactionException("Iterator used inside a different transaction");
     }
 }

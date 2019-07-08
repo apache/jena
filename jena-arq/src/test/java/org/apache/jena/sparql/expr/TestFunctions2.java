@@ -86,9 +86,9 @@ public class TestFunctions2 extends BaseTest
     // of the implementation.
     
     @Test public void round_01()    { test("round(123)",    "123") ; }
-    @Test public void round_02()    { test("round(123.5)",  "'124'^^xsd:decimal") ; }
+    @Test public void round_02()    { test("round(123.5)",  "'124.0'^^xsd:decimal") ; }
     @Test public void round_03()    { test("round(-0.5e0)", "0.0e0") ; }
-    @Test public void round_04()    { test("round(-1.5)",   "'-1'^^xsd:decimal") ; }
+    @Test public void round_04()    { test("round(-1.5)",   "'-1.0'^^xsd:decimal") ; }
     @Test public void round_05()    { test("round(-0)",     "-0") ; }
     
     @Test public void abs_01()    { test("abs(1)",      "1") ; }
@@ -100,22 +100,22 @@ public class TestFunctions2 extends BaseTest
     
     // CEIL
     @Test public void ceil_01()    { test("ceil(1)",        "1") ; }
-    @Test public void ceil_02()    { test("ceil(1.0)",      "'1'^^xsd:decimal") ; }
+    @Test public void ceil_02()    { test("ceil(1.0)",      "'1.0'^^xsd:decimal") ; }
     @Test public void ceil_03()    { test("ceil(1e0)",      "1.0e0") ; }
     @Test public void ceil_04()    { test("ceil(1.5e0)",    "2.0e0") ; }
-    @Test public void ceil_05()    { test("ceil(-0.9)",     "'0'^^xsd:decimal") ; }
+    @Test public void ceil_05()    { test("ceil(-0.9)",     "'0.0'^^xsd:decimal") ; }
     @Test public void ceil_06()    { test("ceil(-9)",       "-9") ; }
-    @Test public void ceil_07()    { test("ceil(-9.5)",     "'-9'^^xsd:decimal") ; }
+    @Test public void ceil_07()    { test("ceil(-9.5)",     "'-9.0'^^xsd:decimal") ; }
     @Test public void ceil_08()    { test("ceil(0)",        "0") ; }
 
     // FLOOR
     @Test public void floor_01()    { test("floor(1)",      "1") ; }
-    @Test public void floor_02()    { test("floor(1.0)",    "'1'^^xsd:decimal") ; }
+    @Test public void floor_02()    { test("floor(1.0)",    "'1.0'^^xsd:decimal") ; }
     @Test public void floor_03()    { test("floor(1e0)",    "1.0e0") ; }
     @Test public void floor_04()    { test("floor(1.5e0)",  "1.0e0") ; }
-    @Test public void floor_05()    { test("floor(-0.9)",   "'-1'^^xsd:decimal") ; }
+    @Test public void floor_05()    { test("floor(-0.9)",   "'-1.0'^^xsd:decimal") ; }
     @Test public void floor_06()    { test("floor(-9)",     "-9") ; }
-    @Test public void floor_07()    { test("floor(-9.5)",   "'-10'^^xsd:decimal") ; }
+    @Test public void floor_07()    { test("floor(-9.5)",   "'-10.0'^^xsd:decimal") ; }
     @Test public void floor_08()    { test("floor(0)",      "0") ; }
 
     // simple, PLWL, xsd:string.
@@ -441,7 +441,7 @@ public class TestFunctions2 extends BaseTest
     @Test public void seconds_20()        { test("seconds('2010-12-24T16:24:35.123-08:00'^^xsd:dateTime)", "35.123") ; }
     @Test public void seconds_21()        { test("seconds('16:24:01.01-08:00'^^xsd:time)", "'01.01'^^xsd:decimal") ; }
     
-    @Test public void seconds_dur_01()    { test("seconds('P1Y2M3DT4H5M6S'^^xsd:duration)", "'6'^^xsd:decimal") ; }
+    @Test public void seconds_dur_01()    { test("seconds('P1Y2M3DT4H5M6S'^^xsd:duration)", "'6.0'^^xsd:decimal") ; }
 
     // TIMEZONE
     @Test public void timezone_01()       { test("timezone('2010-12-24T16:24:35.123Z'^^xsd:dateTime)", "'PT0S'^^xsd:dayTimeDuration") ; }

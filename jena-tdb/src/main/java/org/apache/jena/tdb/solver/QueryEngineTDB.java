@@ -22,6 +22,7 @@ import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.sparql.algebra.Algebra ;
 import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.OpLib;
 import org.apache.jena.sparql.core.DatasetDescription ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DynamicDatasets ;
@@ -36,7 +37,6 @@ import org.apache.jena.sparql.mgt.Explain ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBException ;
-import org.apache.jena.tdb.migrate.A2 ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 
@@ -96,7 +96,7 @@ public class QueryEngineTDB extends QueryEngineMain
         // Fix DatasetGraph for global union.
         if ( context.isTrue(TDB.symUnionDefaultGraph) && ! isDynamicDataset() ) 
         {
-            op = A2.unionDefaultGraphQuads(op) ;
+            op = OpLib.unionDefaultGraphQuads(op) ;
             Explain.explain("REWRITE(Union default graph)", op, context) ;
         }
         QueryIterator results = super.eval(op, dsg, input, context) ;

@@ -30,7 +30,7 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
  * It sets up "http" to redirect to "https".
  */
 public class JettyHttps {
-    
+
     /*
     * Useful documentation:
     *   http://www.eclipse.org/jetty/documentation/current/configuring-ssl.html
@@ -46,8 +46,8 @@ public class JettyHttps {
 
     /**
      * Create a HTTPS Jetty server for the {@link ServletContextHandler}
-     * <p>  
-     * If httpPort is -1, don't add http otherwise make http redirect to https. 
+     * <p>
+     * If httpPort is -1, don't add http otherwise make http redirect to https.
      */
     public static Server jettyServerHttps(ServletContextHandler handler, String keystore, String certPassword, int httpPort, int httpsPort) {
         // Server handling http and https.
@@ -61,10 +61,10 @@ public class JettyHttps {
         JettyLib.addHandler(jettyServer, handler);
         return jettyServer;
     }
-    
+
     /** Build the server - http and https connectors.
      * If httpPort is -1, don't add http.
-     */ 
+     */
     private static Server server(String keystore, String certPassword, int httpPort, int httpsPort) {
         Server server = new Server();
         if ( httpPort > 0 ) {
@@ -88,13 +88,13 @@ public class JettyHttps {
         plainConnector.setPort(httpPort);
         return plainConnector;
     }
-    
+
     /** Add HTTPS to a {@link Server}. */
     private static ServerConnector httpsConnector(Server server, int httpsPort, String keystore, String certPassword) {
         SslContextFactory sslContextFactory = new SslContextFactory();
         sslContextFactory.setKeyStorePath(keystore);
         sslContextFactory.setKeyStorePassword(certPassword);
-        
+
         SecureRequestCustomizer src = new SecureRequestCustomizer();
         src.setStsMaxAge(2000);
         src.setStsIncludeSubDomains(true);
@@ -112,7 +112,7 @@ public class JettyHttps {
         return sslConnector;
     }
 
-    /** HTTP configuration with setting for Fuseki workload. No "secure" settings. */ 
+    /** HTTP configuration with setting for Fuseki workload. No "secure" settings. */
     private static HttpConfiguration httpConfiguration() {
         HttpConfiguration http_config = new HttpConfiguration();
         // Some people do try very large operations ... really, should use POST.

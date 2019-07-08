@@ -22,15 +22,17 @@ import java.util.Objects;
 
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.dboe.transaction.Transactional;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
 
 /**
- * Framework for implementing a Transactional.
+ * Framework for implementing a {@link Transactional} via {@link TransactionalSystem}.
+ * This base class provides the "per thread" aspect - the {@link TransactionCoordinator} itself
+ * is not thread aware.
  */
-
 public class TransactionalBase implements TransactionalSystem {
-    // Help debugging by generating names for Transactionals.
+    // Optional labelling - development/debugging aid.
     private final String label;
     protected boolean isShutdown = false;
     protected final TransactionCoordinator txnMgr;

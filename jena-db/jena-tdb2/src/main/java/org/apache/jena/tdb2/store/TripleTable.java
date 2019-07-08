@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.store ;
+package org.apache.jena.tdb2.store;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.lib.tuple.Tuple ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.atlas.lib.tuple.Tuple;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.tdb2.lib.TupleLib;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.tupletable.TupleIndex;
@@ -36,40 +36,40 @@ import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 
 public class TripleTable extends TableBase {
     public TripleTable(TupleIndex[] indexes, NodeTable nodeTable) {
-        super(3, indexes, nodeTable) ;
+        super(3, indexes, nodeTable);
     }
 
     /** Add triple */
     public void add(Triple triple) {
-        add(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+        add(triple.getSubject(), triple.getPredicate(), triple.getObject());
     }
 
     /** Add triple */
     public void add(Node s, Node p, Node o) {
-        table.addRow(s, p, o) ;
+        table.addRow(s, p, o);
     }
 
     /** Delete a triple */
     public void delete(Triple triple) {
-        delete(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+        delete(triple.getSubject(), triple.getPredicate(), triple.getObject());
     }
 
     /** Delete a triple */
     public void delete(Node s, Node p, Node o) {
-        table.deleteRow(s, p, o) ;
+        table.deleteRow(s, p, o);
     }
 
     /** Find matching triples */
     public Iterator<Triple> find(Node s, Node p, Node o) {
-        Iterator<Tuple<NodeId>> iter = table.findAsNodeIds(s, p, o) ;
+        Iterator<Tuple<NodeId>> iter = table.findAsNodeIds(s, p, o);
         if ( iter == null )
-            return Iter.nullIterator() ;
-        Iterator<Triple> iter2 = TupleLib.convertToTriples(table.getNodeTable(), iter) ;
-        return iter2 ;
+            return Iter.nullIterator();
+        Iterator<Triple> iter2 = TupleLib.convertToTriples(table.getNodeTable(), iter);
+        return iter2;
     }
 
     /** Clear - does not clear the associated node tuple table */
     public void clearTriples() {
-        table.clear() ;
+        table.clear();
     }
 }

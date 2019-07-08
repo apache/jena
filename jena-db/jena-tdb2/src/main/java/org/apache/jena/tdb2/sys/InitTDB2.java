@@ -18,24 +18,24 @@
 
 package org.apache.jena.tdb2.sys;
 
-import org.apache.jena.sys.JenaSubsystemLifecycle ;
+import org.apache.jena.sys.JenaSubsystemLifecycle;
 import org.apache.jena.tdb2.TDB2;
 
 public class InitTDB2 implements JenaSubsystemLifecycle {
 
     @Override
     public void start() {
-        TDB2.init() ;
+        TDB2.init();
     }
 
     @Override
     public void stop() {
         // This is savage and does not take account of in-flight transactions.
-        TDB2.closedown() ; 
+        TDB2.closedown();
     }
-    
+
     @Override
     public int level() {
-        return 42 ;
+        return 42;
     }
 }

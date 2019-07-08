@@ -23,63 +23,62 @@ import static org.apache.jena.riot.WebContent.contentTypeJSON;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.servlet.http.HttpServletResponse ;
+import javax.servlet.http.HttpServletResponse;
 
-import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
-import org.apache.jena.web.HttpSC ;
-import org.slf4j.Logger ;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.web.HttpSC;
+import org.slf4j.Logger;
 
-/** Validation operations for JSON output */ 
+/** Validation operations for JSON output */
 public abstract class ValidatorJsonLib
 {
-    private static Logger vLog = Fuseki.validationLog ;
-    public static final String jErrors          = "errors" ;
-    public static final String jWarnings        = "warning" ;
+    private static Logger vLog = Fuseki.validationLog;
+    public static final String jErrors          = "errors";
+    public static final String jWarnings        = "warning";
 
-    public static final String jParseError      = "parse-error" ;
-    public static final String jParseErrorLine  = "parse-error-line" ;
-    public static final String jParseErrorCol   = "parse-error-column" ;
+    public static final String jParseError      = "parse-error";
+    public static final String jParseErrorLine  = "parse-error-line";
+    public static final String jParseErrorCol   = "parse-error-column";
 
-    public static final String respService      = "X-Service" ;
-    
+    public static final String respService      = "X-Service";
+
     protected static AtomicLong counter = new AtomicLong(0);
-    
-    static void setHeaders(HttpServletResponse httpResponse)
-    {
-        httpResponse.setCharacterEncoding(charsetUTF8) ;
-        httpResponse.setContentType(contentTypeJSON) ;
-        httpResponse.setHeader(respService, "Jena Fuseki Validator : http://jena.apache.org/") ;
+
+    static void setHeaders(HttpServletResponse httpResponse) {
+        httpResponse.setCharacterEncoding(charsetUTF8);
+        httpResponse.setContentType(contentTypeJSON);
+        httpResponse.setHeader(respService, "Jena Fuseki Validator : http://jena.apache.org/");
     }
 
     static String getArg(ValidationAction action, String paramName) {
-        String arg = getArgOrNull(action, paramName) ;
+        String arg = getArgOrNull(action, paramName);
         if ( arg == null ) {
-            ServletOps.error(HttpSC.BAD_REQUEST_400, "No parameter given: " + paramName) ;
-            return null ;
+            ServletOps.error(HttpSC.BAD_REQUEST_400, "No parameter given: " + paramName);
+            return null;
         }
-        return arg ;
+        return arg;
     }
 
     static String getArgOrNull(ValidationAction action, String paramName) {
-        String[] args = getArgs(action, paramName) ;
+        String[] args = getArgs(action, paramName);
 
         if ( args == null || args.length == 0 )
-            return null ;
+            return null;
 
         if ( args.length > 1 ) {
-            ServletOps.error(HttpSC.BAD_REQUEST_400, "Too many ("+args.length+") parameter values: "+paramName) ;
-            return null ;
+            ServletOps.error(HttpSC.BAD_REQUEST_400, "Too many ("+args.length+") parameter values: "+paramName);
+            return null;
         }
-        
-        return args[0] ;
+
+        return args[0];
     }
-    
+
     static String[] getArgs(ValidationAction action, String paramName) {
-        String[] args = action.request.getParameterValues(paramName) ;
+        String[] args = action.request.getParameterValues(paramName);
         if ( args == null || args.length == 0 )
-            return null ;
-        return args ;
+            return null;
+        return args;
     }
-}    
+}
 

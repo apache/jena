@@ -19,10 +19,10 @@
 package org.apache.jena.tdb2.solver.stats;
 
 
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node;
 
 /** Statistics collector, general purpose */
 abstract class StatsCollectorBase<T> {

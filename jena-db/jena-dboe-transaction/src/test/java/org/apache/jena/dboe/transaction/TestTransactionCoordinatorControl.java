@@ -23,9 +23,9 @@ import static org.junit.Assert.*;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.jena.atlas.lib.ThreadLib;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.system.Txn;
-import org.apache.jena.dboe.migrate.L;
 import org.apache.jena.dboe.transaction.txn.Transaction;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.dboe.transaction.txn.TransactionException;
@@ -67,10 +67,10 @@ public class TestTransactionCoordinatorControl {
 
     @Test public void txn_coord_disable_writers_2() {
         txnMgr.blockWriters();
-        Transaction txn = L.syncCallThread(()->txnMgr.begin(TxnType.WRITE, false));
+        Transaction txn = ThreadLib.syncCallThread(()->txnMgr.begin(TxnType.WRITE, false));
         assertNull(txn);
         txnMgr.enableWriters();
-        Transaction txn2 = L.syncCallThread(()-> {
+        Transaction txn2 = ThreadLib.syncCallThread(()-> {
             Transaction txn1 = txnMgr.begin(TxnType.WRITE, false);
             assertNotNull(txn1);
             txn1.abort(); txn1.end();
@@ -81,21 +81,21 @@ public class TestTransactionCoordinatorControl {
 
     @Test public void txn_coord_disable_writers_3() {
         txnMgr.blockWriters();
-        Transaction txn = L.syncCallThread(() -> {
+        Transaction txn = ThreadLib.syncCallThread(() -> {
             Transaction tx = txnMgr.begin(TxnType.READ, false);
             tx.end();
             return tx;
         });
         assertNotNull(txn);
         txnMgr.enableWriters();
-        Transaction txn1 = L.syncCallThread(() -> {
+        Transaction txn1 = ThreadLib.syncCallThread(() -> {
             Transaction tx = txnMgr.begin(TxnType.WRITE, false);
             tx.commit();
             tx.end();
             return tx;
         });
         assertNotNull(txn1);
-        Transaction txn2 = L.syncCallThread(() -> {
+        Transaction txn2 = ThreadLib.syncCallThread(() -> {
             Transaction tx = txnMgr.begin(TxnType.READ, false);
             tx.end();
             return tx;
@@ -120,7 +120,7 @@ public class TestTransactionCoordinatorControl {
 
     @Test public void txn_coord_exclusive_1() {
         txnMgr.startExclusiveMode();
-        L.syncOtherThread(()->{
+        ThreadLib.syncOtherThread(()->{
             Transaction txn1 = txnMgr.begin(TxnType.WRITE, false);
             assertNull(txn1);
             Transaction txn2 = txnMgr.begin(TxnType.READ, false);
@@ -128,7 +128,7 @@ public class TestTransactionCoordinatorControl {
         });
 
         txnMgr.finishExclusiveMode();
-        L.syncOtherThread(()->{
+        ThreadLib.syncOtherThread(()->{
             Transaction txn1 = txnMgr.begin(TxnType.WRITE, false);
             assertNotNull(txn1);
             Transaction txn2 = txnMgr.begin(TxnType.READ, false);
