@@ -18,9 +18,6 @@
 
 package org.apache.jena.reasoner.rulesys.impl;
 
-import org.apache.jena.graph.* ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
-
 /**
  * Frame on the choice point stack used to represent the state of a direct
  * graph triple match.
