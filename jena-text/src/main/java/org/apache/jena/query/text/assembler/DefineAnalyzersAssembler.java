@@ -21,6 +21,7 @@ package org.apache.jena.query.text.assembler;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.query.text.TextIndexException;
 import org.apache.jena.query.text.analyzer.Util;
@@ -118,46 +119,48 @@ public class DefineAnalyzersAssembler {
                     if (id.getURI() != null) {
                         Util.defineAnalyzer(id, analyzer);
                     } else {
-                        throw new TextIndexException("addAnalyzers text:defineAnalyzer property must be a non-blank resource: " + adding);
+                        throw new TextIndexException("addAnalyzers text:defineAnalyzer property must be a uri resource: " + adding);
                     }
                 }
                 
-                String langCode = null;
-                
                 if (adding.hasProperty(TextVocab.pAddLang)) {
                     Statement langStmt = adding.getProperty(TextVocab.pAddLang);
-                    langCode = langStmt.getString();
-                    Util.addAnalyzer(langCode, analyzer);
-                    isMultilingualSupport = true;
-                }
-                
-                if (langCode != null && adding.hasProperty(TextVocab.pSearchFor)) {
-                    Statement searchForStmt = adding.getProperty(TextVocab.pSearchFor);
-                    List<String> tags = getStringList(searchForStmt, "text:searchFor");
-                    Util.addSearchForTags(langCode, tags);
-                }
-                
-                if (langCode != null && adding.hasProperty(TextVocab.pAuxIndex)) {
-                    Statement searchForStmt = adding.getProperty(TextVocab.pAuxIndex);
-                    List<String> tags = getStringList(searchForStmt, "text:auxIndex");
-                    Util.addAuxIndexes(langCode, tags);
-                    log.trace("addAuxIndexes for {} with tags: {}", langCode, tags);
-                }
-                               
-                if (adding.hasProperty(TextVocab.pIndexAnalyzer)) {
-                    Statement indexStmt = adding.getProperty(TextVocab.pIndexAnalyzer);
-                    Resource key = indexStmt.getResource();
-                    Analyzer indexer = Util.getDefinedAnalyzer(key);
-                    Util.addIndexAnalyzer(langCode, indexer);
-                    log.trace("addIndexAnalyzer lang: {} with analyzer: {}", langCode, indexer);
+                    String langCode = langStmt.getString();
+                    if (StringUtils.isNotBlank(langCode)) {
+                        Util.addAnalyzer(langCode, analyzer);
+                        isMultilingualSupport = true;
+
+                        if (adding.hasProperty(TextVocab.pSearchFor)) {
+                            Statement searchForStmt = adding.getProperty(TextVocab.pSearchFor);
+                            List<String> tags = getStringList(searchForStmt, "text:searchFor");
+                            Util.addSearchForTags(langCode, tags);
+                        }
+
+                        if (adding.hasProperty(TextVocab.pAuxIndex)) {
+                            Statement auxIndexStmt = adding.getProperty(TextVocab.pAuxIndex);
+                            List<String> tags = getStringList(auxIndexStmt, "text:auxIndex");
+                            Util.addAuxIndexes(langCode, tags);
+                            log.trace("addAuxIndexes for {} with tags: {}", langCode, tags);
+                        }
+
+                        if (adding.hasProperty(TextVocab.pIndexAnalyzer)) {
+                            Statement indexStmt = adding.getProperty(TextVocab.pIndexAnalyzer);
+                            Resource key = indexStmt.getResource();
+                            Analyzer indexer = Util.getDefinedAnalyzer(key);
+                            Util.addIndexAnalyzer(langCode, indexer);
+                            log.trace("addIndexAnalyzer lang: {} with analyzer: {}", langCode, indexer);
+                        }
+                    } else {
+                        throw new TextIndexException("text:addLang property must be a non-blank string: " + adding);
+                    }
                 }
             }
-            
+
             Statement restStmt = current.getProperty(RDF.rest);
             if (restStmt == null) {
                 throw new TextIndexException("parameter list not terminated by rdf:nil");
             }
-            
+
             RDFNode rest = restStmt.getObject();
             if (! rest.isResource()) {
                 throw new TextIndexException("parameter list node is not a resource : " + rest);

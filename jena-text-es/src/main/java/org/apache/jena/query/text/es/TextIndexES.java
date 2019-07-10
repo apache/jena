@@ -22,6 +22,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.text.*;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.lucene.queryparser.classic.QueryParserBase;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
@@ -415,6 +416,24 @@ public class TextIndexES implements TextIndex {
 
         }
         return results;
+    }
+
+    @Override
+    public List<TextHit> query(List<Resource> props, String qs, String graphURI, String lang, int limit, String highlight) {
+        LOGGER.warn("TextIndexES.query called with list of property list which is not yet implemented");
+        return null;
+    }
+
+    @Override
+    public List<TextHit> query(String uri, List<Resource> props, String qs, String graphURI, String lang, int limit, String highlight) {
+        LOGGER.warn("TextIndexES.query called with list of property list which is not yet implemented");
+        return null;
+    }
+
+    @Override
+    public List<TextHit> query(Node subj, List<Resource> props, String qs, String graphURI, String lang, int limit, String highlight) {
+        LOGGER.warn("TextIndexES.query called with list of property list which is not yet implemented");
+        return null;
     }
 
     @Override

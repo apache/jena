@@ -20,6 +20,7 @@ package org.apache.jena.query.text ;
 
 import java.io.IOException ;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,9 @@ import org.apache.jena.query.text.analyzer.IndexingMultilingualAnalyzer;
 import org.apache.jena.query.text.analyzer.MultilingualAnalyzer;
 import org.apache.jena.query.text.analyzer.QueryMultilingualAnalyzer;
 import org.apache.jena.query.text.analyzer.Util;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.analysis.TokenStream;
@@ -427,8 +431,9 @@ public class TextIndexLucene implements TextIndex {
                 log.warn("Unknown query parser type '" + queryParserType + "'. Defaulting to standard QueryParser");
         }
 
-        if (qp == null) 
+        if (qp == null) {
             qp = new QueryParser(docDef.getPrimaryField(), analyzer);
+        }
         qp.setAllowLeadingWildcard(true);
         query = qp.parse(queryString);
         return query ;
@@ -471,13 +476,41 @@ public class TextIndexLucene implements TextIndex {
 
     @Override
     public List<TextHit> query(Node property, String qs, String graphURI, String lang, int limit) {
-        return query(property, qs, graphURI, lang, MAX_N, null) ;
+        return query(property, qs, graphURI, lang, limit, null) ;
     }
 
     @Override
-    public List<TextHit> query(Node property, String qs, String graphURI, String lang, int limit, String highlight) {
+    public List<TextHit> query(Node propNode, String qs, String graphURI, String lang, int limit, String highlight) {
+        List<Resource> props = new ArrayList<>();
+        if (propNode != null) {
+            props.add(ResourceFactory.createProperty(propNode.getURI()));
+        }
+        return query((String) null, props, qs, graphURI, lang, limit, highlight);    }
+
+    @Override
+    public List<TextHit> query(String subjectUri, Node propNode, String qs, String graphURI, String lang, int limit, String highlight) {
+        List<Resource> props = new ArrayList<>();
+        if (propNode != null) {
+            props.add(ResourceFactory.createProperty(propNode.getURI()));
+        }
+        return query(subjectUri, props, qs, graphURI, lang, limit, highlight);
+    }
+
+    @Override
+    public List<TextHit> query(List<Resource> props, String qs, String graphURI, String lang, int limit, String highlight) {
+        return query((String) null, props, qs, graphURI, lang, limit, highlight);
+    }
+
+    @Override
+    public List<TextHit> query(Node subj, List<Resource> props, String qs, String graphURI, String lang, int limit, String highlight) {
+        String subjectUri = subj == null || Var.isVar(subj) ? null : subj.getURI();
+        return query(subjectUri, props, qs, graphURI, lang, limit, highlight);
+    }
+
+    @Override
+    public List<TextHit> query(String subjectUri, List<Resource> props, String qs, String graphURI, String lang, int limit, String highlight) {
         try (IndexReader indexReader = DirectoryReader.open(directory)) {
-            return query$(indexReader, property, qs, UnaryOperator.identity(), graphURI, lang, limit, highlight) ;
+            return query$(indexReader, props, qs, addUriPredicate(subjectUri), graphURI, lang, limit, highlight) ;
         }
         catch (ParseException ex) {
             throw new TextIndexParseException(qs, ex.getMessage()) ;
@@ -487,43 +520,48 @@ public class TextIndexLucene implements TextIndex {
         }
     }
 
-    @Override
-    public List<TextHit> query(String subjectUri, Node property, String qs, String graphURI, String lang, int limit, String highlight) {
-        try (IndexReader indexReader = DirectoryReader.open(directory)) {
-            return query$(indexReader, property, qs, addUriPredicate(subjectUri), graphURI, lang, limit, highlight) ;
-        }
-        catch (ParseException ex) {
-            throw new TextIndexParseException(qs, ex.getMessage()) ;
-        }
-        catch (Exception ex) {
-            throw new TextIndexException("query", ex) ;
-        }
-    }
-
-    //In a case of making text search query for concrete subject
+    //In case of making text search query for concrete subject
     //adding uri predicate will make query much more efficient
     private UnaryOperator<Query> addUriPredicate(String subjectUri) {
-        return (Query textQuery) -> {
-            String uriField = docDef.getEntityField();
-            return new BooleanQuery.Builder()
-                    .add(textQuery, BooleanClause.Occur.MUST)
-                    .add(new TermQuery(new Term(uriField, subjectUri)), BooleanClause.Occur.FILTER)
-                    .build();
-        };
+        if (subjectUri != null) {
+            return (Query textQuery) -> {
+                String uriField = docDef.getEntityField();
+                return new BooleanQuery.Builder()
+                        .add(textQuery, BooleanClause.Occur.MUST)
+                        .add(new TermQuery(new Term(uriField, subjectUri)), BooleanClause.Occur.FILTER)
+                        .build();
+            };
+        } else {
+            return  UnaryOperator.identity();
+        }
+    }
+    
+    private String getDocField(Document doc, List<String> fields) {
+        for (String field : fields) {
+            if (doc.get(field) != null) {
+                return field;
+            }
+        }
+        
+        return null;
     }
 
-    private List<TextHit> simpleResults(ScoreDoc[] sDocs, IndexSearcher indexSearcher, Query query, String field) 
-            throws IOException {
+    private List<TextHit> simpleResults(ScoreDoc[] sDocs, IndexSearcher indexSearcher, Query query, List<String> fields) 
+            throws IOException 
+    {
         List<TextHit> results = new ArrayList<>() ;
 
         for ( ScoreDoc sd : sDocs ) {
             Document doc = indexSearcher.doc(sd.doc) ;
-            log.trace("simpleResults[{}]: field: {} doc: {}", sd.doc, field, doc) ;
+            log.trace("simpleResults[{}]: fields: {} doc: {}", sd.doc, fields, doc) ;
             String entity = doc.get(docDef.getEntityField()) ;
 
             Node literal = null;
-            //            String field = (property != null) ? docDef.getField(property) : docDef.getPrimaryField();
-            String lexical = doc.get(field) ;
+
+            String field = getDocField(doc, fields) ;
+            String lexical = doc.get(field);
+            Collection<Node> props = docDef.getPredicates(field);
+            Node prop = props.isEmpty() ? null : props.iterator().next();
 
             if (lexical != null) {
                 String doclang = doc.get(docDef.getLangField()) ;
@@ -544,7 +582,7 @@ public class TextIndexLucene implements TextIndex {
             Node graph = graf != null ? TextQueryFuncs.stringToNode(graf) : null;
 
             Node subject = TextQueryFuncs.stringToNode(entity) ;
-            TextHit hit = new TextHit(subject, sd.score, literal, graph);
+            TextHit hit = new TextHit(subject, sd.score, literal, graph, prop);
             results.add(hit) ;
         }
         
@@ -610,7 +648,7 @@ public class TextIndexLucene implements TextIndex {
         return sb.toString();
     }
     
-    private List<TextHit> highlightResults(ScoreDoc[] sDocs, IndexSearcher indexSearcher, Query query, String field, String highlight, boolean useDocLang, String queryLang) 
+    private List<TextHit> highlightResults(ScoreDoc[] sDocs, IndexSearcher indexSearcher, Query query, List<String> fields, String highlight, boolean useDocLang, String queryLang) 
             throws IOException, InvalidTokenOffsetsException { 
         List<TextHit> results = new ArrayList<>() ;
         
@@ -625,7 +663,12 @@ public class TextIndexLucene implements TextIndex {
             String entity = doc.get(docDef.getEntityField()) ;
 
             Node literal = null;
-            String lexical = doc.get(field) ;
+            
+            String field = getDocField(doc, fields) ;
+            String lexical = doc.get(field);
+            Collection<Node> props = docDef.getPredicates(field);
+            Node prop = props.isEmpty() ? null : props.iterator().next(); // pick one - should be only one normally         
+            
             String docLang = doc.get(docDef.getLangField()) ;
             String effectiveField = useDocLang ? field + "_" + Util.getEffectiveLang(docLang, queryLang) : field;
             log.trace("highlightResults[{}]: {}, field: {}, lexical: {}, docLang: {}, effectiveField: {}", sd.doc, doc, field, lexical, docLang, effectiveField) ;
@@ -642,7 +685,7 @@ public class TextIndexLucene implements TextIndex {
             Node graph = graf != null ? TextQueryFuncs.stringToNode(graf) : null;
 
             Node subject = TextQueryFuncs.stringToNode(entity) ;
-            TextHit hit = new TextHit(subject, sd.score, literal, graph);
+            TextHit hit = new TextHit(subject, sd.score, literal, graph, prop);
             results.add(hit) ;
         }
         return results ;
@@ -660,15 +703,10 @@ public class TextIndexLucene implements TextIndex {
             return queryAnalyzer;
         }
     }
-
-    private List<TextHit> query$(IndexReader indexReader, Node property, String qs, UnaryOperator<Query> textQueryExtender, String graphURI, String lang, int limit, String highlight) throws ParseException, IOException, InvalidTokenOffsetsException {
-        String litField = docDef.getField(property) != null ?  docDef.getField(property) : docDef.getPrimaryField();
-        String textField = litField;
-        String textClause = "";               
-        String langField = getDocDef().getLangField();
+    
+    private String composeQField(String qs, String textField, String lang, boolean usingSearchFor, List<String> searchForTags) {
+        String textClause = "";
         
-        List<String> searchForTags = Util.getSearchForTags(lang);
-        boolean usingSearchFor = !searchForTags.isEmpty();
         if (usingSearchFor) {            
             for (String tag : searchForTags) {
                 String tf = textField + "_" + tag;
@@ -677,43 +715,80 @@ public class TextIndexLucene implements TextIndex {
         } else {
             if (this.isMultilingual && StringUtils.isNotEmpty(lang) && !lang.equals("none")) {
                 textField += "_" + lang;
-                textClause = textField + ":" + qs;
-            } else if (docDef.getField(property) != null) {
-                textClause = textField + ":" + qs;
-            } else {
-                textClause = qs;
             }
-            
-            if (langField != null && StringUtils.isNotEmpty(lang)) {
-                textClause = "(" + textClause + ") AND " + (!lang.equals("none") ? langField + ":" + lang : "-" + langField + ":*");
+            textClause = textField + ":" + qs + " ";
+        }
+        
+        return textClause;
+    }
+
+    private List<TextHit> query$(IndexReader indexReader, List<Resource> props, String qs, UnaryOperator<Query> textQueryExtender, String graphURI, String lang, int limit, String highlight) 
+            throws ParseException, IOException, InvalidTokenOffsetsException 
+    {
+        List<String> textFields = new ArrayList<>();
+        String qString = "";               
+        String langField = getDocDef().getLangField();
+
+        // the list will have at least the lang as an element
+        // UNLESS lang is not present in the original PF call
+        List<String> searchForTags = Util.getSearchForTags(lang);
+        boolean usingSearchFor = Util.usingSearchFor(lang);
+
+        if (props.isEmpty()) {
+            // we got here via
+            //    ?s text:query "some query string"
+            // or
+            //    ?s text:query ( "some query string" ... )
+            // so we just need the qs and process additional args below
+            // we add the text:defaultField
+            textFields.add(docDef.getPrimaryField());
+            log.trace("query$ processed EMPTY LIST of properties: {}; Lucene queryString: {}; textFields: {}", props, qString, textFields) ;
+        } else {
+            // otherwise there are one or more properties to search over
+            // possibly with a searchFor list for each property
+            // we are guaranteed that the props are all indexed by the way things are called from
+            // TextQueryPF which is the only way into this code - DatasetGraphText isn't used anywhere
+            // or documented as far as I can tell
+            for (Resource prop : props) {
+                String textField = docDef.getField(prop.asNode());
+                textFields.add(textField);
             }
         }
         
-        
-        String queryString = textClause ;
+        log.trace("query$ PROCESSING LIST of properties: {}; Lucene queryString: {}; textFields: {} ", props, qString, textFields) ;
+        for (String textField : textFields) {
+            qString += composeQField(qs, textField, lang, usingSearchFor, searchForTags);
+        }
+        log.trace("query$ PROCESSED LIST of properties: {} with resulting qString: {} ", props, qString) ;
+
+        // add a clause for the lang if not usingSearchFor and there is a defined langFIeld in the config
+        if (!usingSearchFor && langField != null && StringUtils.isNotBlank(lang)) {
+            qString = "(" + qString + ") AND " + (!lang.equals("none") ? langField+":"+lang : "-"+langField+":*");
+            log.trace("query$ ADDING LANG qString: {} ", qString) ;
+        }
 
         if (graphURI != null) {
             String escaped = QueryParserBase.escape(graphURI) ;
-            queryString = "(" + queryString + ") AND " + getDocDef().getGraphField() + ":" + escaped ;
+            qString = "(" + qString + ") AND " + getDocDef().getGraphField() + ":" + escaped ;
         }
         
         Analyzer qa = getQueryAnalyzer(usingSearchFor, lang);
-        Query textQuery = parseQuery(queryString, qa);
+        Query textQuery = parseQuery(qString, qa);
         Query query = textQueryExtender.apply(textQuery);
 
         if ( limit <= 0 )
             limit = MAX_N ;
 
-        log.debug("Lucene queryString: {}, parsed query: {}, limit:{}", queryString, query, limit) ;
+        log.debug("query$ with LIST: {}; INPUT qString: {}; with queryParserType: {}; parseQuery with {} YIELDS: {}; parsed query: {}; limit: {}", props, qString, queryParserType, qa, textQuery, query, limit) ;
 
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
 
         ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;
         
         if (highlight != null) {
-            return highlightResults(sDocs, indexSearcher, query, litField, highlight, usingSearchFor, lang);
+            return highlightResults(sDocs, indexSearcher, query, textFields, highlight, usingSearchFor, lang);
         } else {
-            return simpleResults(sDocs, indexSearcher, query, litField);
+            return simpleResults(sDocs, indexSearcher, query, textFields);
         }
     }
 

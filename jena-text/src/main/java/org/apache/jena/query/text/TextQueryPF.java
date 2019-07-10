@@ -21,6 +21,7 @@ package org.apache.jena.query.text ;
 import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.ArrayList ;
 import java.util.function.Function ;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer;
@@ -38,6 +39,10 @@ import org.apache.jena.ext.com.google.common.collect.ListMultimap;
 import org.apache.jena.graph.Node_URI;
 import org.apache.jena.query.QueryBuildException ;
 import org.apache.jena.query.QueryExecException ;
+import org.apache.jena.query.text.analyzer.Util;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.core.* ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
@@ -54,6 +59,8 @@ import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.sparql.util.Symbol ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
+
+import static org.apache.jena.query.text.assembler.TextVocab.*;
 
 /** property function that accesses a text index */
 public class TextQueryPF extends PropertyFunctionBase {
@@ -78,19 +85,30 @@ public class TextQueryPF extends PropertyFunctionBase {
 
         if (argSubject.isList()) {
             int size = argSubject.getArgListSize();
-            if (size == 0 || size > 4) {
+            if (size == 0 || size > 5) {
                 throw new QueryBuildException("Subject has "+argSubject.getArgList().size()+" elements, must be at least 1 and not greater than 4: "+argSubject);
             }
         }
 
         if (argObject.isList()) {
             List<Node> list = argObject.getArgList() ;
+            int sz = list.size();
 
-            if (list.size() == 0)
+            if (sz == 0)
                 throw new QueryBuildException("Zero-length argument list") ;
 
-            if (list.size() > 5)
+            int numProps = 0 ;
+            while (numProps < sz && list.get(numProps).isURI()) {
+                numProps++ ;
+            }
+
+            if (sz-numProps < 1) {
+                throw new QueryBuildException("No query string just properties in list : " + list) ;
+            }
+
+            if (sz-numProps > 4) {
                 throw new QueryBuildException("Too many arguments in list : " + list) ;
+            }
         }
     }
 
@@ -169,6 +187,7 @@ public class TextQueryPF extends PropertyFunctionBase {
         Node score = null;
         Node literal = null;
         Node graph = null;
+        Node prop = null;
 
         if (argSubject.isList()) {
             // Length checked in build()
@@ -191,6 +210,12 @@ public class TextQueryPF extends PropertyFunctionBase {
                 if (!graph.isVariable())
                     throw new QueryExecException("Hit graph is not a variable: "+argSubject) ;
             }
+
+            if (argSubject.getArgListSize() > 4) {
+                prop = argSubject.getArg(4);
+                if (!prop.isVariable())
+                    throw new QueryExecException("Hit prop is not a variable: "+argSubject) ;
+            }
         } else {
             s = argSubject.getArg() ;
         }
@@ -204,23 +229,20 @@ public class TextQueryPF extends PropertyFunctionBase {
             // can't match
             return IterLib.noResults(execCxt) ;
         }
-
-        // ----
-
-        QueryIterator qIter = (Var.isVar(s)) 
-            ? variableSubject(binding, s, score, literal, graph, match, execCxt)
-            : concreteSubject(binding, s, score, literal, graph, match, execCxt) ;
+            
+        QueryIterator qIter = prepareQuery(binding, s, score, literal, graph, prop, match, execCxt) ;
         if (match.getLimit() >= 0)
             qIter = new QueryIterSlice(qIter, 0, match.getLimit(), execCxt) ;
         return qIter ;
     }
 
-    private QueryIterator resultsToQueryIterator(Binding binding, Node s, Node score, Node literal, Node graph, Collection<TextHit> results, ExecutionContext execCxt) {
-        log.trace("resultsToQueryIterator: {}", results) ;
-        Var sVar = Var.isVar(s) ? Var.alloc(s) : null ;
+    private QueryIterator resultsToQueryIterator(Binding binding, Node subj, Node score, Node literal, Node graph, Node prop, Collection<TextHit> results, ExecutionContext execCxt) {
+        log.trace("resultsToQueryIterator CALLED with results: {}", results) ;
+        Var sVar = Var.isVar(subj) ? Var.alloc(subj) : null ;
         Var scoreVar = (score==null) ? null : Var.alloc(score) ;
         Var literalVar = (literal==null) ? null : Var.alloc(literal) ;
         Var graphVar = (graph==null) ? null : Var.alloc(graph) ;
+        Var propVar = (prop==null) ? null : Var.alloc(prop) ;
 
         Function<TextHit,Binding> converter = (TextHit hit) -> {
             if (score == null && literal == null)
@@ -234,6 +256,9 @@ public class TextQueryPF extends PropertyFunctionBase {
                 bmap.add(literalVar, hit.getLiteral());
             if (graphVar != null && hit.getGraph() != null)
                 bmap.add(graphVar, hit.getGraph());
+            if (propVar != null && hit.getProp() != null)
+                bmap.add(propVar, hit.getProp());
+            log.trace("resultsToQueryIterator RETURNING bmap: {}", bmap) ;
             return bmap;
         } ;
         
@@ -242,65 +267,53 @@ public class TextQueryPF extends PropertyFunctionBase {
         return qIter ;
     }
 
-    private QueryIterator variableSubject(Binding binding, Node s, Node score, Node literal, Node graph, StrMatch match, ExecutionContext execCxt) {
-        log.trace("variableSubject: {}", match) ;
-        ListMultimap<String,TextHit> results = query(match.getProperty(), match.getQueryString(), match.getLang(), match.getLimit(), match.getHighlight(), execCxt) ;
-        Collection<TextHit> r = results.values();
-        return resultsToQueryIterator(binding, s, score, literal, graph, r, execCxt);
-    }
+    private QueryIterator prepareQuery(Binding binding, Node subj, Node score, Node literal, Node graph, Node prop, StrMatch match, ExecutionContext execCxt) {
+        log.trace("prepareQuery with subject: {}; params: {}", subj, match) ;
+        ListMultimap<String,TextHit> rezList;
 
-    private QueryIterator concreteSubject(Binding binding, Node s, Node score, Node literal, Node graph, StrMatch match, ExecutionContext execCxt) {
-        log.trace("concreteSubject: {}", match) ;
-        ListMultimap<String,TextHit> x;
-
-        if (s instanceof Node_URI) {
-            x = query(s.getURI(), match.getProperty(), match.getQueryString(), match.getLang(), -1, match.getHighlight(), execCxt);
-        } else {
-            x = query(match.getProperty(), match.getQueryString(), match.getLang(), -1, match.getHighlight(), execCxt);
-        }
-        if ( x == null ) // null return value - empty result
-            return IterLib.noResults(execCxt) ;
+        if (!Var.isVar(subj))
+            match.setQueryLimit(-1);
         
-        List<TextHit> r = x.get(TextQueryFuncs.subjectToString(s));
-
-        return resultsToQueryIterator(binding, s, score, literal, graph, r, execCxt);
-    }
-
-    private ListMultimap<String,TextHit> query(Node property, String queryString, String lang, int limit, String highlight, ExecutionContext execCxt) {
-        String graphURI = chooseGraphURI(execCxt);
-
-        explainQuery(queryString, limit, execCxt, graphURI);
-
-        if (textIndex.getDocDef().areQueriesCached()) {
-            // Cache-key does not matter if lang or graphURI are null
-            String cacheKey = limit + " " + property + " " + queryString + " " + lang + " " + graphURI ;
-            Cache<String, ListMultimap<String, TextHit>> queryCache = prepareCache(execCxt);
-
-            log.trace("Caching Text query: {} with key: >>{}<< in cache: {}", queryString, cacheKey, queryCache) ;
-
-            return queryCache.getOrFill(cacheKey, ()->performQuery(property, queryString, graphURI, lang, limit, highlight));
+        if (subj instanceof Node_URI) {
+            rezList = query(subj, match, execCxt);
         } else {
-            log.trace("Executing w/o cache Text query: {}", queryString) ;
-            return performQuery(property, queryString, graphURI, lang, limit, highlight);
+            rezList = query(null, match, execCxt);
         }
+        
+        if ( rezList == null ) // null return value - empty result
+            return IterLib.noResults(execCxt) ;
+
+        Collection<TextHit> hits ;
+        if (Var.isVar(subj)) {
+            hits = rezList.values();
+        } else {
+            hits = rezList.get(TextQueryFuncs.subjectToString(subj));
+        }
+
+        return resultsToQueryIterator(binding, subj, score, literal, graph, prop, hits, execCxt);
     }
 
-    private ListMultimap<String,TextHit> query(String uri, Node property, String queryString, String lang, int limit, String highlight, ExecutionContext execCxt) {
+    private ListMultimap<String,TextHit> query(Node subj, StrMatch match, ExecutionContext execCxt) {
         String graphURI = chooseGraphURI(execCxt);
 
-        explainQuery(queryString, limit, execCxt, graphURI);
+        String qs = match.getQueryString();
+        int limit = match.getQueryLimit();
+        String lang = match.getLang();
+        String highlight = match.getHighlight();
+
+        explainQuery(qs, limit, execCxt, graphURI);
 
         if (textIndex.getDocDef().areQueriesCached()) {
             // Cache-key does not matter if lang or graphURI are null
-            String cacheKey = uri + " " + limit + " " + property + " " + queryString + " " + lang + " " + graphURI ;
+            String cacheKey = subj + " " + limit + " " + match.getProps() + " " + qs + " " + lang + " " + graphURI ;
             Cache<String, ListMultimap<String, TextHit>> queryCache = prepareCache(execCxt);
 
-            log.trace("Caching Text query: {} with key: >>{}<< in cache: {}", queryString, cacheKey, queryCache) ;
+            log.trace("Caching Text query: {} with key: >>{}<< in cache: {}", qs, cacheKey, queryCache) ;
 
-            return queryCache.getOrFill(cacheKey, ()->performQuery(uri, property, queryString, graphURI, lang, limit, highlight));
+            return queryCache.getOrFill(cacheKey, ()->performQuery(subj, match, qs, graphURI, lang, limit, highlight));
         } else {
-            log.trace("Executing w/o cache Text query: {}", queryString) ;
-            return performQuery(uri, property, queryString, graphURI, lang, limit, highlight);
+            log.trace("Executing w/o cache Text query: {}", qs) ;
+            return performQuery(subj, match, qs, graphURI, lang, limit, highlight);
         }
     }
 
@@ -341,14 +354,10 @@ public class TextQueryPF extends PropertyFunctionBase {
         }
         return graphURI;
     }
-    
-    private ListMultimap<String,TextHit> performQuery(Node property, String queryString, String graphURI, String lang, int limit, String highlight) {
-        List<TextHit> resultList = textIndex.query(property, queryString, graphURI, lang, limit, highlight) ;
-        return mapResult(resultList);
-    }
 
-    private ListMultimap<String,TextHit> performQuery(String uri, Node property, String queryString, String graphURI, String lang, int limit, String highlight) {
-        List<TextHit> resultList = textIndex.query(uri, property, queryString, graphURI, lang, limit, highlight) ;
+    private ListMultimap<String,TextHit> performQuery(Node subj, StrMatch match, String queryString, String graphURI, String lang, int limit, String highlight) {
+        List<TextHit> resultList = null ;
+        resultList = textIndex.query(subj, match.getProps(), queryString, graphURI, lang, limit, highlight) ;
         return mapResult(resultList);
     }
 
@@ -360,17 +369,39 @@ public class TextQueryPF extends PropertyFunctionBase {
         return results;
     }
 
-    /** Deconstruct the node or list object argument and make a StrMatch 
+    private boolean isIndexed(List<Resource> props) {
+        for (Resource prop : props) {
+            if (! isIndexed(prop.asNode())) {
+                return false ;
+            }
+        }        
+        return true ;
+    }
+
+    private boolean isIndexed(Node predicate) {
+        EntityDefinition docDef = textIndex.getDocDef() ;
+        String field = docDef.getField(predicate) ;
+        if (field == null) {
+            log.warn("Predicate not indexed: " + predicate) ;
+            return false ;
+        }
+        return true ;
+    }
+
+    /** 
+     * Deconstruct the node or list object argument and make a StrMatch 
      * The 'executionTime' flag indicates whether this is for a build time
      * static check, or for runtime execution.
      */
     private StrMatch objectToStruct(PropFuncArg argObject, boolean executionTime) {
-        EntityDefinition docDef = textIndex.getDocDef() ;
+        List<Resource> props = new ArrayList<>() ;
+        
         if (argObject.isNode()) {
+            // should be a single query string that will be searched on the text:defaultField
             Node o = argObject.getArg() ;
             if (!o.isLiteral()) {
                 if ( executionTime )
-                    log.warn("Object to text query is not a literal") ;
+                    log.warn("Object to text:query is not a literal " + argObject) ;
                 return null ;
             }
 
@@ -385,35 +416,41 @@ public class TextQueryPF extends PropertyFunctionBase {
             lang = Strings.emptyToNull(lang);
 
             String qs = o.getLiteralLexicalForm() ;
-            return new StrMatch(null, qs, lang, -1, 0, null) ;
+            return new StrMatch(props, qs, lang, -1, 0, null) ;
         }
 
         List<Node> list = argObject.getArgList() ;
-        if (list.size() == 0 || list.size() > 5)
-            throw new TextIndexException("Change in object list size") ;
 
-        Node predicate = null ;
-        String field = null ;       // Do not prepend the field name - rely on default field
+        if (list.size() == 0)
+            throw new TextIndexException("text:query object list can not be empty") ;
+       
         int idx = 0 ;
-        Node x = list.get(0) ;
+        Node x = list.get(idx) ;
         // Property?
-        if (x.isURI()) {
-            predicate = x ;
+        while (x.isURI()) {
+            Property prop = ResourceFactory.createProperty(x.getURI()) ;
+            log.trace("objectToStruct: x.isURI(), prop: " + prop + " at idx: " + (idx)) ;
+            List<Resource> pList = Util.getPropList(prop) ;
+            log.trace("objectToStruct: PROPERTY at " + idx + " IS " + prop + " WITH pList: " + pList) ;
+            if (pList != null) {
+                props.addAll(pList) ;
+            } else {
+                props.add(prop) ;
+            }
             idx++ ;
             if (idx >= list.size())
-                throw new TextIndexException("Property specificed but no query string : " + list) ;
-            x = list.get(idx) ;
-            field = docDef.getField(predicate) ;
-            if (field == null) {
-                log.warn("Predicate not indexed: " + predicate) ;
+                throw new TextIndexException("List of properties specified but no query string : " + list) ;
+            if (! isIndexed(props)) {
+                log.warn("objectToStruct: props are not indexed " + props) ;
                 return null ;
             }
+            x = list.get(idx) ;
         }
 
         // String!
         if (!x.isLiteral()) {
             if ( executionTime )
-                log.warn("Text query string is not a literal " + list) ;
+                log.warn("Text query string is not a literal " + list + " AT idx: " + idx) ;
             return null ;
         }
         String lang = x.getLiteralLanguage();
@@ -452,30 +489,36 @@ public class TextQueryPF extends PropertyFunctionBase {
             log.warn("lang argument is ignored if langField not set in the index configuration");
 
         String highlight = extractArg("highlight", list);
-
-        return new StrMatch(predicate, queryString, lang, limit, score, highlight) ;
+        
+        return new StrMatch(props, queryString, lang, limit, score, highlight) ;
     }
 
     class StrMatch {
-        private final Node   property ;
+        private final List<Resource>   props ;
         private final String queryString ;
         private final String lang ;
         private final int    limit ;
+        private       int    queryLimit ;
         private final float  scoreLimit ;
         private final String highlight ;
 
-        public StrMatch(Node property, String queryString, String lang, int limit, float scoreLimit, String highlight) {
+        public StrMatch(List<Resource> props, String queryString, String lang, int limit, float scoreLimit, String highlight) {
             super() ;
-            this.property = property ;
+            this.props = props ;
             this.queryString = queryString ;
             this.lang = lang ;
             this.limit = limit ;
+            this.queryLimit = limit ;
             this.scoreLimit = scoreLimit ;
             this.highlight = highlight;
         }
 
-        public Node getProperty() {
-            return property ;
+        public List<Resource> getProps() {
+            return props ;
+        }
+        
+        public boolean hasProps() {
+            return props.size() > 0;
         }
 
         public String getQueryString() {
@@ -490,6 +533,14 @@ public class TextQueryPF extends PropertyFunctionBase {
             return limit ;
         }
 
+        public void setQueryLimit(int qLimit) {
+            queryLimit = qLimit ;
+        }
+
+        public int getQueryLimit() {
+            return queryLimit ;
+        }
+
         public float getScoreLimit() {
             return scoreLimit ;
         }
@@ -500,7 +551,7 @@ public class TextQueryPF extends PropertyFunctionBase {
         
         @Override
         public String toString() {
-            return "( property: " + property + "; query: " + queryString + "; limit: " + limit + "; lang: " + lang + "; maxFrags: " + highlight + " )";
+            return "( properties: " + props + "; query: " + queryString + "; limit: " + limit + "; lang: " + lang + "; highlight: " + highlight + " )";
         }
     }
 }
