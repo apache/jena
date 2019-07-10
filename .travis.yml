@@ -7,5 +7,6 @@ jdk:
   - openjdk9
   - openjdk10
   - openjdk11
+  - openjdk12
 env:
   - JAVA_OPTS="-Xmx3072M -Xms512M -XX:+UseG1GC"
