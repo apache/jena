@@ -1,4 +1,4 @@
-Jena README 
+Jena README
 ===========
 
 Welcome to Apache Jena, a Java framework for writing Semantic Web applications.
