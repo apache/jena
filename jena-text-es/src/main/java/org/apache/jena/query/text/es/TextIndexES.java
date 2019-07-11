@@ -23,6 +23,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.text.*;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.lucene.queryparser.classic.QueryParserBase;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
@@ -420,20 +421,19 @@ public class TextIndexES implements TextIndex {
 
     @Override
     public List<TextHit> query(List<Resource> props, String qs, String graphURI, String lang, int limit, String highlight) {
-        LOGGER.warn("TextIndexES.query called with list of property list which is not yet implemented");
-        return null;
-    }
-
-    @Override
-    public List<TextHit> query(String uri, List<Resource> props, String qs, String graphURI, String lang, int limit, String highlight) {
-        LOGGER.warn("TextIndexES.query called with list of property list which is not yet implemented");
-        return null;
+        return query((String) null, props, qs, graphURI, lang, limit, highlight);
     }
 
     @Override
     public List<TextHit> query(Node subj, List<Resource> props, String qs, String graphURI, String lang, int limit, String highlight) {
-        LOGGER.warn("TextIndexES.query called with list of property list which is not yet implemented");
-        return null;
+        String subjectUri = subj == null || Var.isVar(subj) ? null : subj.getURI();
+        return query(subjectUri, props, qs, graphURI, lang, limit, highlight);
+    }
+
+    @Override
+    public List<TextHit> query(String uri, List<Resource> props, String qs, String graphURI, String lang, int limit, String highlight) {
+        Node property = props.isEmpty() ? null : props.get(0).asNode();
+        return query(property, qs, graphURI, lang, limit);
     }
 
     @Override
