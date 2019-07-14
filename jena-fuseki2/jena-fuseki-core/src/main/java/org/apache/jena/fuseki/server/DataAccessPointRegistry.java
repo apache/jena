@@ -53,6 +53,12 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
             new FusekiRequestsMetrics( accessPt ).bindTo( meterRegistry );
         }
     }
+
+    @Override
+    public DataAccessPoint get(String key) {
+        return super.get(key);
+    }
+
     // Debugging
     public void print(String string) {
         System.out.flush();

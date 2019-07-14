@@ -258,6 +258,8 @@ public class HttpAction
      * @param endpoint {@link Endpoint}
      */
     public void setEndpoint(Endpoint endpoint) {
+        if ( endpoint != null )
+            this.context = Context.mergeCopy(getContext(), endpoint.getContext());
         this.endpoint = endpoint;
     }
 

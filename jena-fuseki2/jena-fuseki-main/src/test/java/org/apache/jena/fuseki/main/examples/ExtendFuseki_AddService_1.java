@@ -90,7 +90,7 @@ public class ExtendFuseki_AddService_1 {
         // run is found by looking up the operation in a per-server table that gives the server-specific
         // implementation as an ActionService.
 
-        Operation myOperation = Operation.register("Special", "Custom operation");
+        Operation myOperation = Operation.alloc("http://example/special1", "special1", "Custom operation");
 
         // Service endpoint name.
         // This can be different for different datasets even in the same server.

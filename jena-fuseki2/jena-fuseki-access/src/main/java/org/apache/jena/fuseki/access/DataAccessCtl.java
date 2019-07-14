@@ -89,7 +89,7 @@ public class DataAccessCtl {
             DatasetGraphAccessControl dsgx = (DatasetGraphAccessControl)dsgBase;
             if ( reg == dsgx.getAuthService() )
                 return dsgx;
-            throw new IllegalArgumentException("DatasetGraph is alerady wrapped on a DatasetGraphAccessControl with a different AuthorizationService");
+            throw new IllegalArgumentException("DatasetGraph is already wrapped on a DatasetGraphAccessControl with a different AuthorizationService");
         }
 
         DatasetGraphAccessControl dsg1 = new DatasetGraphAccessControl(dsgBase, reg);

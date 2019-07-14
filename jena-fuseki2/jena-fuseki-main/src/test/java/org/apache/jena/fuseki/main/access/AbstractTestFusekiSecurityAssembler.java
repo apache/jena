@@ -106,7 +106,8 @@ public abstract class AbstractTestFusekiSecurityAssembler {
             .parseConfigFile(assembler)
             .build();
         // Special way to get the servlet remote user (the authorized principle).
-        FusekiLib.modifyForAccessCtl(server, (a)->user.get());
+        //FusekiLib.modifyForAccessCtl(server, (a)->user.get());
+        FusekiLib.modifyForAccessCtl(server.getDataAccessPointRegistry(), (a)->user.get());
         server.start();
 
         if ( sharedDatabase ) {

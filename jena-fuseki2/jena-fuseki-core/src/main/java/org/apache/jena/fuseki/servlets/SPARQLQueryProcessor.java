@@ -49,6 +49,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.engine.EngineLib;
 import org.apache.jena.sparql.resultset.SPARQLResult;
+import org.apache.jena.sparql.util.Context;
 import org.apache.jena.web.HttpSC;
 
 /**
@@ -303,20 +304,29 @@ public abstract class SPARQLQueryProcessor extends ActionService
      * @return QueryExecution
      */
     protected QueryExecution createQueryExecution(HttpAction action, Query query, DatasetGraph dataset) {
-        return QueryExecutionFactory.create(query, dataset);
+        QueryExecution queryExecution = QueryExecutionFactory.create(query, dataset);
+        // The QueryExecution already has the global and dataset context already.
+        // We just need to overlay the endpoint details.
+        // The action has a merged context but QueryExecutionFactory does it's own thing.
+        // Revisit for QueryExecutionBuilder
+        if ( action.getEndpoint() != null ) {
+            Context cxt = action.getEndpoint().getContext();
+            queryExecution.getContext().putAll(cxt);
+        }
+        return queryExecution;
     }
 
     /** Perform the {@link QueryExecution} once.
      * @param action
      * @param queryExecution
-     * @param query
+     * @param requestQuery Original query; queryExecution query may have been modified. 
      * @param queryStringLog Informational string created from the initial query.
      * @return
      */
-    protected SPARQLResult executeQuery(HttpAction action, QueryExecution queryExecution, Query query, String queryStringLog) {
+    protected SPARQLResult executeQuery(HttpAction action, QueryExecution queryExecution, Query requestQuery, String queryStringLog) {
         setAnyProtocolTimeouts(queryExecution, action);
 
-        if ( query.isSelectType() ) {
+        if ( requestQuery.isSelectType() ) {
             ResultSet rs = queryExecution.execSelect();
 
             // Force some query execution now.
@@ -333,25 +343,25 @@ public abstract class SPARQLQueryProcessor extends ActionService
             return new SPARQLResult(rs);
         }
 
-        if ( query.isConstructType() ) {
+        if ( requestQuery.isConstructType() ) {
             Dataset dataset = queryExecution.execConstructDataset();
             //action.log.info(format("[%d] exec/construct", action.id));
             return new SPARQLResult(dataset);
         }
 
-        if ( query.isDescribeType() ) {
+        if ( requestQuery.isDescribeType() ) {
             Model model = queryExecution.execDescribe();
             //action.log.info(format("[%d] exec/describe", action.id));
             return new SPARQLResult(model);
         }
 
-        if ( query.isAskType() ) {
+        if ( requestQuery.isAskType() ) {
             boolean b = queryExecution.execAsk();
             //action.log.info(format("[%d] exec/ask", action.id));
             return new SPARQLResult(b);
         }
 
-        if ( query.isJsonType() ) {
+        if ( requestQuery.isJsonType() ) {
             Iterator<JsonObject> jsonIterator = queryExecution.execJsonItems();
             //JsonArray jsonArray = queryExecution.execJson();
             action.log.info(format("[%d] exec/json", action.id));

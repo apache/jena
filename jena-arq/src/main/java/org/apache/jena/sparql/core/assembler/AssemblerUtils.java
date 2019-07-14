@@ -150,6 +150,8 @@ public class AssemblerUtils
      */
     public static void setContext(Resource r, Context context)
     {
+        if ( ! r.hasProperty(JA.context ) )
+            return ;
         String qs = "PREFIX ja: <"+JA.getURI()+">\nSELECT * { ?x ja:context [ ja:cxtName ?name ; ja:cxtValue ?value ] }" ;
         QuerySolutionMap qsm = new QuerySolutionMap() ;
         qsm.add("x", r) ;

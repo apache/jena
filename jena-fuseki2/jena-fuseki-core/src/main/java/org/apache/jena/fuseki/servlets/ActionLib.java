@@ -54,7 +54,7 @@ public class ActionLib {
      */
     public static String mapRequestToDataset(HttpAction action) {
          String uri = action.getActionURI();
-         return mapActionRequestToDataset(uri);
+         return mapRequestToDataset(uri);
      }
 
     /** Map request to uri in the registry.
@@ -64,7 +64,7 @@ public class ActionLib {
      *  The URI must be the action URI (no contact path)
      */
 
-    public static String mapActionRequestToDataset(String uri) {
+    public static String mapRequestToDataset(String uri) {
         // Chop off trailing part - the service selector
         // e.g. /dataset/sparql => /dataset
         int i = uri.lastIndexOf('/');
@@ -79,7 +79,7 @@ public class ActionLib {
     }
 
     /** Calculate the operation, given action and data access point */
-    public static String mapRequestToOperation(HttpAction action, DataAccessPoint dsRef) {
+    public static String mapRequestToEndpointName(HttpAction action, DataAccessPoint dsRef) {
         if ( dsRef == null )
             return "";
         String uri = action.getActionURI();

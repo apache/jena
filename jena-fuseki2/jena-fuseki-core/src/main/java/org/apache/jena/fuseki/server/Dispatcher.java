@@ -16,11 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.servlets;
+package org.apache.jena.fuseki.server;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.jena.fuseki.server.Operation.*;
+import static org.apache.jena.fuseki.server.Operation.GSP_R;
+import static org.apache.jena.fuseki.server.Operation.GSP_RW;
+import static org.apache.jena.fuseki.server.Operation.Query;
+import static org.apache.jena.fuseki.server.Operation.Update;
 import static org.apache.jena.fuseki.servlets.ActionExecLib.allocHttpAction;
 
 import java.util.Collection;
@@ -32,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.auth.Auth;
-import org.apache.jena.fuseki.server.*;
+import org.apache.jena.fuseki.servlets.*;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger;
@@ -75,7 +78,7 @@ public class Dispatcher {
     public static boolean dispatch(HttpServletRequest request, HttpServletResponse response) {
         // Path component of the URI, without context path
         String uri = ActionLib.actionURI(request);
-        String datasetUri = ActionLib.mapActionRequestToDataset(uri);
+        String datasetUri = ActionLib.mapRequestToDataset(uri);
 
         if ( LogDispatch ) {
             LOG.info("Filter: Request URI = " + request.getRequestURI());
@@ -112,12 +115,18 @@ public class Dispatcher {
     }
 
     /**
-     * Find the ActionProcessor or return null if there can't determine one. This
-     * function does NOT return null; it throws ActionErrorException after sending an
-     * HTTP error response.
+     * Find the ActionProcessor or return null if there can't determine one.
      * 
-     * Returning null indicates an error, and the HTTP response
-     * has been done.
+     * This function sends the appropriate HTTP error response.
+     * 
+     * Returning null indicates an HTTP error response, and the HTTP response has been done.
+     * 
+     * Process
+     * <li> mapRequestToEndpointName -> endpoint name 
+     * <li> chooseEndpoint(action, dataService, endpointName) -> Endpoint.
+     * <li> Endpoint to Operation (endpoint carries Operation).
+     * <li> target(action, operation) -> ActionProcess. 
+     * 
      */
     private static ActionProcessor chooseProcessor(HttpAction action) {
         // "return null" indicates that processing failed to find a ActionProcessor
@@ -130,10 +139,10 @@ public class Dispatcher {
         }
 
         // ---- Determine Endpoint.
-        String endpointName = mapRequestToOperation(action, dataAccessPoint);
+        String endpointName = mapRequestToEndpointName(action, dataAccessPoint);
 
-        Endpoint ep = chooseEndpoint(action, dataService, endpointName);
-        if ( ep == null ) {
+        Endpoint endpoint = chooseEndpoint(action, dataService, endpointName);
+        if ( endpoint == null ) {
             if ( isEmpty(endpointName) )
                 ServletOps.errorBadRequest("No operation for request: "+action.getActionURI());
             else
@@ -141,13 +150,13 @@ public class Dispatcher {
             return null;
         }
 
-        Operation operation = ep.getOperation();
+        Operation operation = endpoint.getOperation();
         if ( operation == null ) {
             ServletOps.errorNotFound("No operation: "+action.getActionURI());
             return null;
         }
 
-        action.setEndpoint(ep);
+        action.setEndpoint(endpoint);
         
         // ---- Authorization
         // -- Server-level authorization.
@@ -164,7 +173,7 @@ public class Dispatcher {
         // -- Endpoint level authorization
         // Make sure all contribute authentication.
         Auth.allow(user, action.getEndpoint().getAuthPolicy(), ServletOps::errorForbidden);
-        if ( isEmpty(endpointName) && ! ep.isUnnamed() ) {
+        if ( isEmpty(endpointName) && ! endpoint.isUnnamed() ) {
             // [DISPATCH LEGACY]
             // If choice was by looking in all named endpoints for a unnamed endpoint
             // request, ensure all choices allow access.
@@ -180,30 +189,23 @@ public class Dispatcher {
 
         // ---- Handler.
         // Decide the code to execute the request.
-        // ActionProcessor handler = target(action, operation);
-        ActionProcessor processor = target(action, operation);
+        ActionProcessor processor = endpoint.getProcessor();
         if ( processor == null )
-            ServletOps.errorBadRequest(format("dataset=%s: op=%s", dataAccessPoint.getName(), operation.getName()));
+            ServletOps.errorBadRequest(format("No processor: dataset=%s: op=%s", dataAccessPoint.getName(), operation.getName()));
         return processor;
-    }
-
-    // operation to code for operation.
-    private static ActionProcessor target(HttpAction action, Operation operation) {
-        return action.getOperationRegistry().findHandler(operation);
     }
 
     /**
      * Map request to operation name.
      * Returns the service name (the part after the "/" of the dataset part) or "".
      */
-    protected static String mapRequestToOperation(HttpAction action, DataAccessPoint dataAccessPoint) {
-        return ActionLib.mapRequestToOperation(action, dataAccessPoint);
+    protected static String mapRequestToEndpointName(HttpAction action, DataAccessPoint dataAccessPoint) {
+        return ActionLib.mapRequestToEndpointName(action, dataAccessPoint);
     }
 
     // Find the endpoints for an operation.
-    // This is GSP_R/GSP_RW and Quads_R/Quads_RW aware.
+    // This is GSP_R/GSP_RW aware.
     // If asked for GSP_R and there are no endpoints for GSP_R, try GSP_RW.
-    // Ditto Quads_R -> Quads_RW.
     private static Collection<Endpoint> getEndpoints(DataService dataService, Operation operation) {
         Collection<Endpoint> x = dataService.getEndpoints(operation);
         if ( x == null || x.isEmpty() ) {
@@ -225,6 +227,7 @@ public class Dispatcher {
         if ( ! isEmpty(endpointName) )
             return ep;
         // [DISPATCH LEGACY]
+        // request: empty endpoint, can we find a named service?
         Operation operation = chooseOperation(action);
         // Search for an endpoint that provides the operation.
         // No guarantee it has the access controls for the operation
@@ -316,7 +319,7 @@ public class Dispatcher {
     /**
      * Identify the operation being requested.
      * It is analysing the HTTP request using global configuration. 
-     * The decision is is based on
+     * The decision is based on
      * <ul>
      * <li>Query parameters (URL query string or HTML form)</li>
      * <li>Content-Type header</li>

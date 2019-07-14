@@ -25,17 +25,18 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.servlet.ServletContext;
-
 import org.apache.jena.fuseki.access.AccessCtl_AllowGET;
-import org.apache.jena.fuseki.access.AccessCtl_DenyUpdate;
+import org.apache.jena.fuseki.access.AccessCtl_Deny;
 import org.apache.jena.fuseki.access.AccessCtl_GSP_R;
 import org.apache.jena.fuseki.access.AccessCtl_SPARQL_QueryDataset;
 import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.DataService;
+import org.apache.jena.fuseki.server.Endpoint;
 import org.apache.jena.fuseki.server.Operation;
-import org.apache.jena.fuseki.servlets.*;
+import org.apache.jena.fuseki.servlets.ActionService;
+import org.apache.jena.fuseki.servlets.GSP_RW;
+import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.core.DatasetGraph;
 
@@ -92,49 +93,40 @@ public class FusekiLib {
         builder.registerOperation(Operation.GSP_R, new AccessCtl_GSP_R(determineUser));
 
         // Block updates (can just not register these operations).
-        builder.registerOperation(Operation.Update, WebContent.contentTypeSPARQLUpdate, 
-            new AccessCtl_DenyUpdate(new SPARQL_Update(), "SPARQL Update", determineUser));
-        // Insert POST/PUT/PATCH/DELETE filter.
+        builder.registerOperation(Operation.Update, WebContent.contentTypeSPARQLUpdate, new AccessCtl_Deny("Update"));
         builder.registerOperation(Operation.GSP_RW, new AccessCtl_AllowGET(new GSP_RW(), "GSP Write", determineUser));
         return builder;
     }
 
     /**
-     * Modify in-place an existing {@link FusekiServer} so that the read-operations for
+     * Modify in-place existing {@link Endpoint Endpoints} so that the read-operations for
      * query/GSP/Quads go to the data-filtering versions of the {@link ActionService ActionServices}.
      */
-    public static void modifyForAccessCtl(FusekiServer server, Function<HttpAction, String> determineUser) {
-        /*
-         * Reconfigure standard Jena Fuseki, replacing the default implementations with
-         * filtering ones. This for this server only, not system-wide.
-         */
-        // The mapping operation to handler is in the OperationRegistry and is per
-        // server (per servlet context). "registerOrReplace" might be a better name,
-        ServletContext cxt = server.getServletContext();
-        OperationRegistry reg = OperationRegistry.get(cxt);
-        modifyForAccessCtl(reg, determineUser);
+    public static void modifyForAccessCtl(DataAccessPointRegistry dapRegistry, Function<HttpAction, String> determineUser) {
+        dapRegistry.forEach((name, dap) -> {
+            dap.getDataService().forEachEndpoint(ep->{
+                Operation op = ep.getOperation();
+                modifyForAccessCtl(ep, determineUser);
+            });
+        });
     }
 
     /**
-     * Modify in-place an existing {@link OperationRegistry} so that the operations for
-     * query/GSP/Quads go to the data-filtering versions of the {@link ActionService ActionServices}
+     * Modify in-place existing an {@link Endpoint} so that the read-operations for
+     * query/GSP/Quads go to the data-filtering versions of the {@link ActionService ActionServices}.
+     * Any other operations are replaced with "access denied".
      */
-    public static void modifyForAccessCtl(OperationRegistry reg, Function<HttpAction, String> determineUser) {
-        resetOperation(reg, Operation.Query, WebContent.contentTypeSPARQLQuery, new AccessCtl_SPARQL_QueryDataset(determineUser));
-        resetOperation(reg, Operation.GSP_R, null, new AccessCtl_GSP_R(determineUser));
-
-        // Block updates
-        resetOperation(reg, Operation.Update, WebContent.contentTypeSPARQLUpdate, 
-            new AccessCtl_DenyUpdate(new SPARQL_Update(), "SPARQL Update", determineUser));
-        resetOperation(reg, Operation.GSP_RW, null, new AccessCtl_AllowGET(new GSP_RW(), "GSP Write", determineUser));
-
-//        reg.unregister(Operation.Update);
-//        reg.unregister(Operation.GSP_RW);
-//        reg.unregister(Operation.Quads_RW);
+    public static void modifyForAccessCtl(Endpoint endpoint, Function<HttpAction, String> determineUser) {
+        endpoint.setProcessor( controlledProc(endpoint.getOperation(), determineUser));
     }
 
-    private static void resetOperation(OperationRegistry reg, Operation operation, String contentType, ActionService service) {
-        if ( reg.isRegistered(operation) )
-            reg.register(operation, contentType, service);
+    private static ActionService controlledProc(Operation op, Function<HttpAction, String> determineUser) {
+        if ( Operation.Query.equals(op) )
+            return new AccessCtl_SPARQL_QueryDataset(determineUser);
+       if ( Operation.GSP_R.equals(op) )
+           return new AccessCtl_GSP_R(determineUser);
+       if ( Operation.GSP_RW.equals(op) )
+           return new AccessCtl_AllowGET(new GSP_RW(), "GSP Read-only", determineUser);
+       return new AccessCtl_Deny("Not supported for graph level access control: "+op.getDescription());
     }
 }

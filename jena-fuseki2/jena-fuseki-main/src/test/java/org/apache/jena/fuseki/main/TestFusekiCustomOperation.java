@@ -32,6 +32,7 @@ import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.build.FusekiConfig;
+import org.apache.jena.fuseki.build.FusekiExt;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.servlets.ActionService;
@@ -48,7 +49,7 @@ import org.junit.Test;
 
 /** Test for adding a new operation */
 public class TestFusekiCustomOperation {
-    private static final Operation newOp = Operation.register("Special", "Custom operation");
+    private static final Operation newOp = Operation.alloc("http://example/special", "special", "Custom operation");
     private static final String contentType = "application/special";
     private static final String endpointName = "special";
 
@@ -94,6 +95,7 @@ public class TestFusekiCustomOperation {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         DataService dataService = new DataService(dsg);
         FusekiConfig.populateStdServices(dataService, true);
+        FusekiExt.registerOperation(newOp, customHandler);
         FusekiConfig.addServiceEP(dataService, newOp, endpointName);
 
         FusekiServer server =

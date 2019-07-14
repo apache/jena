@@ -23,6 +23,7 @@ import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataService;
+import org.apache.jena.fuseki.server.Endpoint;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -46,8 +47,8 @@ public class TestServiceDataAuthConfig extends AbstractTestServiceDatasetAuth {
         
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         DataService dSrv = new DataService(dsg);
-        dSrv.addEndpointNoName(Operation.Query, policy12);
-        dSrv.addEndpointNoName(Operation.Update, policy13);
+        dSrv.addEndpoint(new Endpoint(Operation.Query, null, policy12));
+        dSrv.addEndpoint(new Endpoint(Operation.Update, null, policy13));
         FusekiServer server = FusekiServer.create()
             //.verbose(true)
             .port(port)

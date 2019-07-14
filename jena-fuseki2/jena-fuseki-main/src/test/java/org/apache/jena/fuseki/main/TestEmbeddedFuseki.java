@@ -123,9 +123,9 @@ public class TestEmbeddedFuseki {
         });
 
         DataService dataService = new DataService(dsg);
-        dataService.addEndpointNoName(Operation.GSP_RW);
-        dataService.addEndpointNoName(Operation.Query);
-        dataService.addEndpointNoName(Operation.Update);
+        dataService.addEndpoint(Operation.GSP_RW);
+        dataService.addEndpoint(Operation.Query);
+        dataService.addEndpoint(Operation.Update);
         int port = WebLib.choosePort();
 
         FusekiServer server = FusekiServer.create()

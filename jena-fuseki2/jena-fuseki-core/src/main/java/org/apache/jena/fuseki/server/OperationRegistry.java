@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.servlets;
+package org.apache.jena.fuseki.server;
 
 import java.util.Map;
 import java.util.Objects;
@@ -26,8 +26,7 @@ import javax.servlet.ServletContext;
 
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.fuseki.server.DataService;
-import org.apache.jena.fuseki.server.Operation;
+import org.apache.jena.fuseki.servlets.*;
 import org.apache.jena.riot.WebContent;
 
 /**
@@ -47,33 +46,64 @@ public class OperationRegistry {
     private static final ActionService uploadServlet   = new SPARQL_Upload();
     private static final ActionService gspServlet_R    = new GSP_R();
     private static final ActionService gspServlet_RW   = new GSP_RW();
+    
+    /** The server-wide standard configuration. */
+    private static final OperationRegistry stdConfig   = stdConfig();
+    
+    /**
+     * Return the current server-wide standard configuration. It is copied into each
+     * new FusekiServer created. Changing it after a server is created does not
+     * affect that server.
+     */
+    public static OperationRegistry get() { return stdConfig; }
+
+    private static OperationRegistry stdConfig() {
+        OperationRegistry stdOpReg = new OperationRegistry();
+        stdOpReg.register(Operation.Query, WebContent.contentTypeSPARQLQuery, queryServlet);
+        stdOpReg.register(Operation.Update, WebContent.contentTypeSPARQLUpdate, updateServlet);
+        stdOpReg.register(Operation.Upload,   null, uploadServlet);
+        stdOpReg.register(Operation.GSP_R,    null, gspServlet_R);
+        stdOpReg.register(Operation.GSP_RW,   null, gspServlet_RW);
+        return stdOpReg;
+    }
+
+    /** Copy the configuration from {@code src} into {@code dst}. */
+    public static void copyConfig(OperationRegistry src, OperationRegistry dst) {
+        dst.contentTypeToOperation.putAll(src.contentTypeToOperation);
+        dst.operationToHandler.putAll(src.operationToHandler);
+    }
 
     /** Map ContentType (lowercase, no charset) to the {@code Operation} for handling it. */
     private final Map<String, Operation> contentTypeToOperation = new ConcurrentHashMap<>();
-    public Map<String, Operation> contentTypeToOperation() { return contentTypeToOperation; }
-
+    
     /** Map {@link Operation} to servlet handler.
      * {@code Operation}s are the internal symbol identifying an operation,
      * not the name used in the configuration file,
      * which is mapped by {@link DataService#getEndpoint(String)}.
      */
     private final Map<Operation, ActionService> operationToHandler = new ConcurrentHashMap<>();
-    public Map<Operation, ActionService> operationToHandler() { return operationToHandler; }
 
     public OperationRegistry(OperationRegistry other) {
-        contentTypeToOperation.putAll(other.contentTypeToOperation);
-        operationToHandler.putAll(other.operationToHandler);
+        copyConfig(other, this);
     }
 
-    public OperationRegistry(boolean includeStdConfig) {
-        if ( includeStdConfig ) {
-            register(Operation.Query, WebContent.contentTypeSPARQLQuery, queryServlet);
-            register(Operation.Update, WebContent.contentTypeSPARQLUpdate, updateServlet);
-            register(Operation.Upload,   null, uploadServlet);
-            register(Operation.GSP_R,    null, gspServlet_R);
-            register(Operation.GSP_RW,   null, gspServlet_RW);
-        }
+    /** Create a {@code OperationRegistry} with the standard operations included. */
+    public static OperationRegistry createStd() {
+        OperationRegistry registry = new OperationRegistry();
+        copyConfig(stdConfig, registry);
+        return registry;
     }
+
+    /** Create an empty {@code OperationRegistry}. */
+    public static OperationRegistry createEmpty() {
+        return new OperationRegistry();
+    }
+
+    private OperationRegistry() { }
+
+//    public Map<String, Operation> contentTypeToOperation() { return contentTypeToOperation; }
+//
+//    public Map<Operation, ActionService> operationToHandler() { return operationToHandler; }
 
     /** Find the {@link Operation} for a {@code Content-Type}, or return null. */
     public Operation findByContentType(String contentType) {
@@ -91,6 +121,19 @@ public class OperationRegistry {
 
     public boolean isRegistered(Operation operation) {
         return operationToHandler.containsKey(operation);
+    }
+
+    /**
+     * Register a new {@link Operation} and the implementation handler.
+     * <p>
+     * The application needs to enable an operation on a service endpoint.
+     * <p>
+     * Replaces any existing registration.
+     */
+    public void register(Operation operation, ActionService action) {
+        Objects.requireNonNull(operation);
+        Objects.requireNonNull(action);
+        register(operation, null, action);
     }
 
     /**

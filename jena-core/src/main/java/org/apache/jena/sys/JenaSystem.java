@@ -28,14 +28,15 @@ import java.util.function.Consumer ;
  * All initialization should be concurrent and thread-safe.  In particular,
  * some subsystems need initialization in some sort of order (e.g. ARQ before TDB).
  * <p>
- * This is achieved by "levels": levels less than 100 are considered "jena system levels" 
- * and are reserved. 
+ * This is achieved by "levels": levels less than 100 are considered "Jena system levels" 
+ * and are reserved.
  * <ul>
  * <li>0 - reserved
  * <li>10 - jena-core
  * <li>20 - RIOT
  * <li>30 - ARQ
  * <li>40 - TDB
+ * <li>100-500 - Fuseki initialization, including customizations
  * <li>9999 - other
  * </ul>
  * See also the <a href="http://jena.apache.org/documentation/notes/system-initialization.html">notes on Jena initialization</a>.

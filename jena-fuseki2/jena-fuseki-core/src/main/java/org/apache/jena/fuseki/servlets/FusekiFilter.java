@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.server.Dispatcher;
 import org.slf4j.Logger;
 
 /** Look at all requests and see if they match a registered dataset name;

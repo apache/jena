@@ -18,26 +18,9 @@
 
 package org.apache.jena.fuseki.server;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-
 /**
- * Management of intern'ed names {@code T} that can be used as keys. {@link #alloc}
- * creates an intern'ed {@code T}; if the object with the same name has already been
- * created, return the original. There is only ever one object for a given name.
- * <p>
- * {@code T ==} can be used to test of name match, though providing
- * {@code .hashCode} and {@code .equals} is preferred.
+ * 
  */
-public class NameMgr<T> {
-    private final Map<String, T> registered = new ConcurrentHashMap<>();
-    
-    public NameMgr() { }
-    
-    /** register, creating an object if necessary */
-    public T alloc(String name, Function<String, T> maker) {
-        return registered.computeIfAbsent(name, maker);
-    }
+public class EndpointFactoryRegistry {
 
 }

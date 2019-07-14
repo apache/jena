@@ -25,12 +25,15 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 
 import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
 import org.apache.jena.ext.com.google.common.collect.ListMultimap;
 import org.apache.jena.ext.com.google.common.collect.Multimaps;
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.auth.AuthPolicy;
+import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.query.text.DatasetGraphText;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -38,15 +41,12 @@ import org.apache.jena.sparql.core.DatasetGraph;
 public class DataService {
     private DatasetGraph dataset;
     
-    private EndpointSet unnamedEndpoints                      = new EndpointSet(null);
-    private Map<String, EndpointSet> namedEndpoints           = new ConcurrentHashMap<>();
-    private Map<String, Endpoint> endpoints                   = new HashMap<>();
-    // Keep a single multimap of operation->endpoints. 
+    private Map<String, EndpointSet> endpoints                = new ConcurrentHashMap<>();
     private ListMultimap<Operation, Endpoint> operationsMap   = Multimaps.synchronizedListMultimap(ArrayListMultimap.create());
     
     
     // Dataset-level authorization policy.
-    private AuthPolicy authPolicy                         = null;
+    private AuthPolicy authPolicy                       = null;
 
     /**
      * Record which {@link DataAccessPoint DataAccessPoints} this {@code DataService} is
@@ -68,8 +68,8 @@ public class DataService {
         counters.add(CounterName.Requests);
         counters.add(CounterName.RequestsGood);
         counters.add(CounterName.RequestsBad);
-        // Start ACTIVE. Registration controls visibility.
-        goActive();
+        // Need to call goActive(). Not automatic.
+        //goActive();
     }
 
     /*package*/ void noteDataAccessPoint(DataAccessPoint dap) {
@@ -89,11 +89,13 @@ public class DataService {
         return dataset;
     }
 
-   public void addEndpointNoName(Operation operation) {
-       addEndpointNoName(operation, null);
+    // Convenience 
+    
+   public void addEndpoint(Operation operation) {
+       addEndpoint(operation, null, null);
    }
 
-   public void addEndpointNoName(Operation operation, AuthPolicy authPolicy) {
+   public void addEndpoint(Operation operation, AuthPolicy authPolicy) {
        addEndpoint(operation, null, authPolicy);
    }
 
@@ -102,33 +104,59 @@ public class DataService {
     }
 
     public void addEndpoint(Operation operation, String endpointName, AuthPolicy authPolicy) {
-        //  Operation -> endpoint.
         Endpoint endpoint = new Endpoint(operation, endpointName, authPolicy);
         addEndpoint(endpoint);
     }
 
+    public void addEndpoint(Endpoint endpoint) {
+        addEndpoint$(endpoint);
+    }
+
+    private void addEndpoint$(Endpoint endpoint) {
+        EndpointSet eps = endpoints.computeIfAbsent(endpoint.getName(), (k)->new EndpointSet(k));
+        eps.put(endpoint);
+        // Cleaner not to have duplicates. But nice to have a (short) list that keeps the create order. 
+        if ( ! operationsMap.containsEntry(endpoint.getOperation(), endpoint) )
+            operationsMap.put(endpoint.getOperation(), endpoint);
+    }
+
+    private void removeEndpoint$(Endpoint endpoint) {
+        EndpointSet eps = endpoints.get(endpoint.getName());
+        if ( eps == null )
+            return;
+        eps.remove(endpoint);
+        operationsMap.remove(endpoint.getOperation(), endpoint);
+    }
+
     /** Return the {@linkplain EndpointSet} for the operations for named use. */
     public EndpointSet getEndpointSet(String endpointName) {
-        return namedEndpoints.get(endpointName);
+        return endpoints.get(endpointName);
     }
 
     /** Return the {@linkplain EndpointSet} for the operations for unnamed use. */
     public EndpointSet getEndpointSet() {
-        return unnamedEndpoints;
+        return endpoints.get("");
     }
 
-    /**
-     * Return a collection of all endpoints for this {@linkplain DataService}.
-     * This operation is for debug and development - it is not efficient.   
-     */
+    /** Return a collection of all endpoints for this {@linkplain DataService}. */
     public Collection<Endpoint> getEndpoints() {
-        // Keep separately?
+        // A copy :-(
         Set<Endpoint> x = new HashSet<>();
-        unnamedEndpoints.forEach((op,ep)->x.add(ep));
-        namedEndpoints.forEach((k,eps)->{
+        endpoints.forEach((k,eps)->{
             eps.forEach((op,ep)->x.add(ep));
         });
         return x;
+    }
+
+    /** Execute an action for each {@link Endpoint}. */
+    public void forEachEndpoint(Consumer<Endpoint> action) {
+        endpoints.forEach((k,eps)->{
+            eps.forEach((op,ep)->action.accept(ep));
+        });
+        Set<Endpoint> x = new HashSet<>();
+        endpoints.forEach((k,eps)->{
+            eps.forEach((op,ep)->x.add(ep));
+        });
     }
 
     public List<Endpoint> getEndpoints(Operation operation) {
@@ -150,34 +178,6 @@ public class DataService {
         return operationsMap.keySet().contains(operation);
     }
 
-    public void addEndpoint(Endpoint endpoint) {
-        addEndpoint$(endpoint);
-    }
-        
-    private void addEndpoint$(Endpoint endpoint) {
-        if ( endpoint.isUnnamed() )
-            unnamedEndpoints.put(endpoint);
-        else {
-            EndpointSet eps = namedEndpoints.computeIfAbsent(endpoint.getName(), (k)->new EndpointSet(k));
-            eps.put(endpoint);
-        }
-        // Cleaner not to have duplicates. But nice to have a (short) list that keeps the create order. 
-        if ( ! operationsMap.containsEntry(endpoint.getOperation(), endpoint) )
-            operationsMap.put(endpoint.getOperation(), endpoint);
-    }
-    
-    private void removeEndpoint$(Endpoint endpoint) {
-        if ( endpoint.isUnnamed() )
-            unnamedEndpoints.remove(endpoint);
-        else {
-            EndpointSet eps = namedEndpoints.get(endpoint.getName());
-            if ( eps == null )
-                return;
-            eps.remove(endpoint);
-        }
-        operationsMap.remove(endpoint.getOperation(), endpoint);
-    }
-
     //@Override
     public boolean allowUpdate()    { return true; }
 
@@ -187,7 +187,25 @@ public class DataService {
         state = OFFLINE;
     }
 
+    /** Set any {@link ActionService} processors is currently unset. */
+    public void setEndpointProcessors(OperationRegistry operationRegistry) {
+        // Make sure the processor is set for each endpoint.
+        forEachEndpoint(ep->{
+            if ( ep.getProcessor() == null )
+                ep.setProcessor(operationRegistry.findHandler(ep.getOperation()));
+        });
+    }
+
+    private void ensureEnpointProcessors() {
+        // Better is to havee then set purposefully.
+        forEachEndpoint(ep->{
+            if ( ep.getProcessor() == null )
+                Fuseki.configLog.warn("No processor for "+ep.getName());
+        });
+    }
+    
     public void goActive() {
+        ensureEnpointProcessors();
         offlineInProgress.set(false);
         acceptingRequests.set(true);
         state = ACTIVE;

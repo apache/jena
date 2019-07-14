@@ -25,10 +25,7 @@ import javax.servlet.ServletContextListener;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
-import org.apache.jena.fuseki.server.DataAccessPointRegistry;
-import org.apache.jena.fuseki.server.FusekiInfo;
-import org.apache.jena.fuseki.server.FusekiInitialConfig;
-import org.apache.jena.fuseki.servlets.OperationRegistry;
+import org.apache.jena.fuseki.server.*;
 
 /** Setup configuration.
  * The order is controlled by {@code web.xml}:
@@ -67,8 +64,8 @@ public class FusekiServerListener implements ServletContextListener {
             return;
         initialized = true;
 
-        OperationRegistry serviceDispatchRegistry = new OperationRegistry(true);
-        OperationRegistry.set(servletContext, serviceDispatchRegistry);
+        OperationRegistry operationRegistry = OperationRegistry.createStd();
+        OperationRegistry.set(servletContext, operationRegistry);
         DataAccessPointRegistry dataAccessPointRegistry = new DataAccessPointRegistry(
                                                                     MetricsProviderRegistry.get().getMeterRegistry());
         DataAccessPointRegistry.set(servletContext, dataAccessPointRegistry);
@@ -95,6 +92,12 @@ public class FusekiServerListener implements ServletContextListener {
             Fuseki.setVerbose(servletContext, initialSetup.verbose);
             FusekiWebapp.initializeDataAccessPoints(dataAccessPointRegistry,
                                                     initialSetup, FusekiWebapp.dirConfiguration.toString());
+            // Bind endpoints, go active.
+            dataAccessPointRegistry.forEach((name, dap)->{
+                dap.getDataService().setEndpointProcessors(operationRegistry);
+                dap.getDataService().goActive();
+                Fuseki.configLog.info("Register: "+dap.getName());
+            });
         } catch (Throwable th) {
             Fuseki.serverLog.error("Exception in initialization: {}", th.getMessage());
             throw th;

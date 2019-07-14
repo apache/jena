@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki.server;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.jena.fuseki.servlets.HttpAction;
@@ -32,6 +33,8 @@ public class DataAccessPoint {
     private AtomicLong requests = new AtomicLong(0);
 
     public DataAccessPoint(String name, DataService dataService) {
+        Objects.requireNonNull(name, "DataAccessPoint name");
+        Objects.requireNonNull(dataService, "DataService");
         this.name = canonical(name);
         this.dataService = dataService;
         dataService.noteDataAccessPoint(this);
