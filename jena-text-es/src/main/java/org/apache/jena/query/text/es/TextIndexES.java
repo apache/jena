@@ -426,13 +426,13 @@ public class TextIndexES implements TextIndex {
 
     @Override
     public List<TextHit> query(Node subj, List<Resource> props, String qs, String graphURI, String lang, int limit, String highlight) {
-        String subjectUri = subj == null || Var.isVar(subj) ? null : subj.getURI();
+        String subjectUri = subj == null || Var.isVar(subj) || !subj.isURI() ? null : subj.getURI();
         return query(subjectUri, props, qs, graphURI, lang, limit, highlight);
     }
 
     @Override
     public List<TextHit> query(String uri, List<Resource> props, String qs, String graphURI, String lang, int limit, String highlight) {
-        Node property = props.isEmpty() ? null : props.get(0).asNode();
+        Node property = props == null || props.isEmpty() ? null : props.get(0).asNode();
         return query(property, qs, graphURI, lang, limit);
     }
 

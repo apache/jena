@@ -503,7 +503,7 @@ public class TextIndexLucene implements TextIndex {
 
     @Override
     public List<TextHit> query(Node subj, List<Resource> props, String qs, String graphURI, String lang, int limit, String highlight) {
-        String subjectUri = subj == null || Var.isVar(subj) ? null : subj.getURI();
+        String subjectUri = subj == null || Var.isVar(subj) || !subj.isURI() ? null : subj.getURI();
         return query(subjectUri, props, qs, graphURI, lang, limit, highlight);
     }
 

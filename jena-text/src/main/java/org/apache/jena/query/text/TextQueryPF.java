@@ -273,13 +273,9 @@ public class TextQueryPF extends PropertyFunctionBase {
 
         if (!Var.isVar(subj))
             match.setQueryLimit(-1);
-        
-        if (subj instanceof Node_URI) {
-            rezList = query(subj, match, execCxt);
-        } else {
-            rezList = query(null, match, execCxt);
-        }
-        
+
+        rezList = query(subj, match, execCxt);
+
         if ( rezList == null ) // null return value - empty result
             return IterLib.noResults(execCxt) ;
 
