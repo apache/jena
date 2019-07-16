@@ -1,0 +1,74 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/property/pattern-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:InvalidInstance1
+  rdf:type ex:TestShape ;
+  ex:property "Maria" ;
+  rdfs:label "Invalid instance1" ;
+.
+ex:InvalidInstance2
+  rdf:type ex:TestShape ;
+  ex:property "john" ;
+  rdfs:label "Invalid instance2" ;
+.
+ex:TestShape
+  rdf:type rdfs:Class ;
+  rdf:type sh:NodeShape ;
+  rdfs:label "Test shape" ;
+  sh:property ex:TestShape-property ;
+.
+ex:TestShape-property
+  sh:path ex:property ;
+  sh:datatype xsd:string ;
+  sh:pattern "Joh" ;
+.
+ex:ValidInstance1
+  rdf:type ex:TestShape ;
+  ex:property "Hi Joh" ;
+  ex:property "John" ;
+  rdfs:label "Valid instance1" ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <pattern-001>
+    ) ;
+.
+<pattern-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:pattern at property shape 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidInstance1 ;
+          sh:resultPath ex:property ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:PatternConstraintComponent ;
+          sh:sourceShape ex:TestShape-property ;
+          sh:value "Maria" ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidInstance2 ;
+          sh:resultPath ex:property ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:PatternConstraintComponent ;
+          sh:sourceShape ex:TestShape-property ;
+          sh:value "john" ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

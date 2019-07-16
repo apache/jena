@@ -1,0 +1,61 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/node/minInclusive-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:TestShape a sh:NodeShape ;
+  sh:minInclusive "2002-10-10T12:00:00-05:00"^^xsd:dateTime ;
+  sh:targetNode "2002-10-10T12:00:00-05:00"^^xsd:dateTime ;
+  sh:targetNode "2002-10-10T12:00:01-05:00"^^xsd:dateTime ;
+  sh:targetNode "2002-10-09T12:00:00-05:00"^^xsd:dateTime ;
+  sh:targetNode "2002-10-10T12:00:00"^^xsd:dateTime ;
+  sh:targetNode ex:TestShape ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <minInclusive-002>
+    ) ;
+.
+<minInclusive-002>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:minInclusive at node shape 002 - dateTime with timezone" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode "2002-10-10T12:00:00"^^xsd:dateTime ;
+          sh:value     "2002-10-10T12:00:00"^^xsd:dateTime ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:MinInclusiveConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode "2002-10-09T12:00:00-05:00"^^xsd:dateTime ;
+          sh:value     "2002-10-09T12:00:00-05:00"^^xsd:dateTime ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:MinInclusiveConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:TestShape ;
+          sh:value     ex:TestShape ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:MinInclusiveConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

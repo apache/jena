@@ -1,0 +1,128 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/property/qualifiedValueShapesDisjoint-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:Finger
+  rdf:type rdfs:Class ;
+  rdf:type sh:NodeShape ;
+  rdfs:label "Finger" ;
+  rdfs:subClassOf rdfs:Resource ;
+.
+ex:Finger1
+  rdf:type ex:Finger ;
+  rdfs:label "Finger1" ;
+.
+ex:Finger2
+  rdf:type ex:Finger ;
+  rdfs:label "Finger2" ;
+.
+ex:Finger3
+  rdf:type ex:Finger ;
+  rdfs:label "Finger3" ;
+.
+ex:Finger4
+  rdf:type ex:Finger ;
+  rdfs:label "Finger4" ;
+.
+ex:FingerAndThumb
+  rdf:type ex:Finger ;
+  rdf:type ex:Thumb ;
+  rdfs:label "Finger and thumb" ;
+.
+ex:Hand
+  rdf:type rdfs:Class ;
+  rdf:type sh:NodeShape ;
+  rdfs:label "Hand" ;
+  rdfs:subClassOf rdfs:Resource ;
+.
+ex:HandShape
+  rdf:type sh:NodeShape ;
+  sh:property ex:HandShape-digit1 ;
+  sh:property ex:HandShape-digit4 ;
+  sh:targetClass ex:Hand ;
+.
+ex:HandShape-digit1
+  sh:path ex:digit ;
+  sh:qualifiedMaxCount 1 ;
+  sh:qualifiedMinCount 1 ;
+  sh:qualifiedValueShape [
+      sh:class ex:Thumb ;
+    ] ;
+  sh:qualifiedValueShapesDisjoint "true"^^xsd:boolean ;
+.
+ex:HandShape-digit4
+  sh:path ex:digit ;
+  sh:qualifiedMaxCount 4 ;
+  sh:qualifiedMinCount 4 ;
+  sh:qualifiedValueShape [
+      sh:class ex:Finger ;
+    ] ;
+  sh:qualifiedValueShapesDisjoint "true"^^xsd:boolean ;
+.
+ex:InvalidHand1
+  rdf:type ex:Hand ;
+  ex:digit ex:Finger1 ;
+  ex:digit ex:Finger2 ;
+  ex:digit ex:Finger3 ;
+  ex:digit ex:FingerAndThumb ;
+.
+ex:Thumb
+  rdf:type rdfs:Class ;
+  rdf:type sh:NodeShape ;
+  rdfs:label "Thumb" ;
+  rdfs:subClassOf rdfs:Resource ;
+.
+ex:Thumb1
+  rdf:type ex:Thumb ;
+  rdfs:label "Thumb1" ;
+.
+ex:ValidHand
+  rdf:type ex:Hand ;
+  ex:digit ex:Finger1 ;
+  ex:digit ex:Finger2 ;
+  ex:digit ex:Finger3 ;
+  ex:digit ex:Finger4 ;
+  ex:digit ex:Thumb1 ;
+  rdfs:label "Valid hand" ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <qualifiedValueShapesDisjoint-001>
+    ) ;
+.
+<qualifiedValueShapesDisjoint-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:qualifiedValueShapesDisjoint at property shape 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidHand1 ;
+          sh:resultPath ex:digit ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:QualifiedMinCountConstraintComponent ;
+          sh:sourceShape ex:HandShape-digit1 ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidHand1 ;
+          sh:resultPath ex:digit ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:QualifiedMinCountConstraintComponent ;
+          sh:sourceShape ex:HandShape-digit4 ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

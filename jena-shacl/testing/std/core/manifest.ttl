@@ -1,0 +1,14 @@
+@prefix mf:      <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sht:     <http://www.w3.org/ns/shacl-test#> .
+
+<>
+	a mf:Manifest ;
+	mf:include <complex/manifest.ttl> ;
+	mf:include <misc/manifest.ttl> ;
+	mf:include <node/manifest.ttl> ;
+	mf:include <path/manifest.ttl> ;
+	mf:include <property/manifest.ttl> ;
+	mf:include <targets/manifest.ttl> ;
+	mf:include <validation-reports/manifest.ttl> ;
+	.

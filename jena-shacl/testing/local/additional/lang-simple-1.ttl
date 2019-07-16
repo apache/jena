@@ -1,0 +1,45 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX ex: <http://jena.apache.org/shacl/tests/>
+PREFIX mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX sht: <http://www.w3.org/ns/shacl-test#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ex:ExtLanguage01
+  rdf:type sh:NodeShape ;
+  sh:languageIn ("" "en");
+  sh:targetNode "abc" , "def"@en, 5, "xyz"@xx
+.
+
+<>
+  rdf:type mf:Manifest ;
+  mf:entries ( <ext-language-001> )
+.
+
+<ext-language-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of extension sh:languageIn" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result <report> .
+
+<report>
+    a            sh:ValidationReport ;
+    sh:conforms  false ;
+    sh:result    [ sh:focusNode                  5 ;
+                   sh:resultSeverity             sh:Violation ;
+                   sh:sourceConstraintComponent  sh:LanguageInConstraintComponent ;
+                   sh:value                      5
+                 ] ;
+    sh:result    [ sh:focusNode                  "xyz"@xx ;
+                   sh:resultSeverity             sh:Violation ;
+                   sh:sourceConstraintComponent  sh:LanguageInConstraintComponent ;
+                   sh:value                      "xyz"@xx
+                 ]
+    .

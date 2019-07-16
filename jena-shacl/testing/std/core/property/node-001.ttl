@@ -1,0 +1,113 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/property/node-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:Anon
+  rdf:type ex:Person ;
+  ex:firstName "Anon" ;
+.
+ex:Issue
+  rdf:type rdfs:Class ;
+  rdf:type sh:NodeShape ;
+  rdfs:label "Issue" ;
+  rdfs:subClassOf rdfs:Resource ;
+  sh:property ex:Issue-assignedTo ;
+  sh:property ex:Issue-submittedBy ;
+.
+ex:Issue-assignedTo
+  sh:path ex:assignedTo ;
+  sh:class ex:Person ;
+  sh:node [
+      rdfs:comment "All assignees must have an email and a last name." ;
+      sh:property [
+          sh:path ex:email ;
+          sh:maxCount 1 ;
+          sh:minCount 1 ;
+        ] ;
+      sh:property [
+          sh:path ex:lastName ;
+          sh:maxCount 1 ;
+          sh:minCount 1 ;
+        ] ;
+    ] ;
+.
+ex:Issue-submittedBy
+  sh:path ex:submittedBy ;
+  sh:class ex:Person ;
+  sh:minCount 1 ;
+.
+ex:Issue_1
+  rdf:type ex:Issue ;
+  ex:assignedTo ex:Anon ;
+  ex:submittedBy ex:Anon ;
+  rdfs:label "Issue 1" ;
+.
+ex:Issue_2
+  rdf:type ex:Issue ;
+  ex:assignedTo ex:JohnDoeWithEmail ;
+  ex:submittedBy ex:Anon ;
+  rdfs:label "Issue 2" ;
+.
+ex:JohnDoeWithEmail
+  rdf:type ex:Person ;
+  ex:email "john@doe.com" ;
+  ex:firstName "John" ;
+  ex:lastName "Doe" ;
+.
+ex:Person
+  rdf:type rdfs:Class ;
+  rdf:type sh:NodeShape ;
+  rdfs:label "Person" ;
+  rdfs:subClassOf rdfs:Resource ;
+  sh:property [
+      sh:path ex:email ;
+      ex:datatype xsd:string ;
+      rdfs:label "email" ;
+    ] ;
+  sh:property [
+      sh:path ex:firstName ;
+      rdfs:label "first name" ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+    ] ;
+  sh:property [
+      sh:path ex:lastName ;
+      rdfs:label "last name" ;
+      sh:datatype xsd:string ;
+    ] ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <node-001>
+    ) ;
+.
+<node-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:node at property shape 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:Issue_1 ;
+          sh:resultPath ex:assignedTo ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:NodeConstraintComponent ;
+          sh:sourceShape ex:Issue-assignedTo ;
+          sh:value ex:Anon ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

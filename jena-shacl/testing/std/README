@@ -1,0 +1,10 @@
+This is a copy of the W3C SHACL test suite from:
+
+Copy: 2019-06-09
+https://github.com/w3c/data-shapes
+https://github.com/w3c/data-shapes/tree/gh-pages/data-shapes-test-suite/tests
+
+with the following differences:
+
+Changes (see file for details)
+File:  sparql/pre-binding/manifest.ttl

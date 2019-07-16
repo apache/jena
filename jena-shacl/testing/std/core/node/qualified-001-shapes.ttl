@@ -1,0 +1,10 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix ex: <http://example.org/shacl-test/> .
+
+ex:s1 a sh:NodeShape ;
+  sh:targetClass ex:C1 ;
+  sh:class ex:C2 ;
+  sh:qualifiedValueShapesDisjoint "1"^^xsd:boolean ;
+  sh:qualifiedMinCount 5 ;
+  sh:qualifiedMaxCount 2 .

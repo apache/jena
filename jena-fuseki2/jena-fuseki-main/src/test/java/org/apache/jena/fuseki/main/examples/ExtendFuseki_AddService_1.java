@@ -36,7 +36,7 @@ import org.apache.jena.web.HttpSC;
 /**
  * This example show adding a custom operation to Fuseki.
  * <p>
- * There are two ways operations are routed: for a datset {@code /dataset}:
+ * There are two ways operations are routed: for a dataset {@code /dataset}:
  * <ol>
  * <li>By endpoint name: {@code /dataset/endpoint}</li>
  * <li>By content type, when a POST is made on the {@code /dataset}.</li>

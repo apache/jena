@@ -1,0 +1,89 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/sparql/node/sparql-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:InvalidResource1
+  rdf:type rdfs:Resource ;
+  rdfs:label "Invalid resource 1" ;
+.
+ex:InvalidResource2
+  rdf:type rdfs:Resource ;
+  rdfs:label "Invalid label 1" ;
+  rdfs:label "Invalid label 2" ;
+.
+ex:TestShape
+  rdf:type sh:NodeShape ;
+  rdfs:label "Test shape" ;
+  sh:sparql ex:TestShape-sparql ;
+  sh:targetNode ex:InvalidResource1 ;
+  sh:targetNode ex:InvalidResource2 ;
+  sh:targetNode ex:ValidResource1 ;
+.
+ex:TestShape-sparql
+  sh:message "Cannot have a label" ;
+  sh:prefixes <http://datashapes.org/sh/tests/sparql/node/sparql-001.test> ;
+  sh:select """
+  	SELECT $this ?path ?value
+	WHERE {
+		$this ?path ?value .
+		FILTER (?path = <http://www.w3.org/2000/01/rdf-schema#label>) .
+	}""" ;
+.
+ex:ValidResource1
+  rdf:type rdfs:Resource ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <sparql-001>
+    ) ;
+.
+<sparql-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:sparql at node shape 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource1 ;
+          sh:resultPath rdfs:label ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraint ex:TestShape-sparql ;
+          sh:sourceConstraintComponent sh:SPARQLConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value "Invalid resource 1" ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource2 ;
+          sh:resultPath rdfs:label ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraint ex:TestShape-sparql ;
+          sh:sourceConstraintComponent sh:SPARQLConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value "Invalid label 1" ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource2 ;
+          sh:resultPath rdfs:label ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraint ex:TestShape-sparql ;
+          sh:sourceConstraintComponent sh:SPARQLConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value "Invalid label 2" ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

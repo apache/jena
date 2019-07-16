@@ -36,5 +36,5 @@ import org.junit.runners.Suite;
     , TestServiceDataAuthBuild.class
 })
 
-public class TS_SecurityFuseki {
-}
+public class TS_SecurityFuseki {}
+

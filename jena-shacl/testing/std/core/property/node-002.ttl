@@ -1,0 +1,75 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/property/node-002.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:AddressShape
+  rdf:type sh:NodeShape ;
+  sh:property ex:AddressShape-postalCode ;
+.
+ex:AddressShape-postalCode
+  sh:path ex:postalCode ;
+  sh:datatype xsd:string ;
+  sh:maxCount 1 ;
+.
+ex:Bob
+  rdf:type ex:Person ;
+  ex:address ex:BobsAddress ;
+.
+ex:BobsAddress
+  ex:postalCode "1234" ;
+.
+ex:Person
+  rdf:type rdfs:Class ;
+  rdfs:label "Person" ;
+.
+ex:PersonShape
+  rdf:type sh:NodeShape ;
+  sh:property ex:PersonShape-address ;
+  sh:targetClass ex:Person ;
+.
+ex:PersonShape-address
+  sh:path ex:address ;
+  sh:minCount 1 ;
+  sh:node ex:AddressShape ;
+.
+ex:Reto
+  rdf:type ex:Person ;
+  ex:address ex:RetosAddress ;
+.
+ex:RetosAddress
+  ex:postalCode 5678 ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <node-002>
+    ) ;
+.
+<node-002>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:node at property shape 002" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:Reto ;
+          sh:resultPath ex:address ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:NodeConstraintComponent ;
+          sh:sourceShape ex:PersonShape-address ;
+          sh:value ex:RetosAddress ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

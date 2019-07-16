@@ -1,0 +1,19 @@
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+
+<> a mf:Manifest ;
+  mf:entries (
+      <shacl-shacl>
+    ) .
+
+<shacl-shacl> a sht:Validate ;
+  rdfs:label "frozen eat your own ( eat your own frozen dogfood )" ;
+  mf:action [
+      sht:dataGraph <shacl-shacl-data-shapes.ttl> ;
+      sht:shapesGraph <shacl-shacl-data-shapes.ttl> ] ;
+  mf:result [a sh:ValidationReport ;
+      sh:conforms "true"^^xsd:boolean ] ;
+  mf:status sht:approved .

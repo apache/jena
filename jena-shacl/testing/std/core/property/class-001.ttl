@@ -1,0 +1,91 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/property/class-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:InvalidResource1
+  rdf:type rdfs:Resource ;
+  ex:testProperty ex:InvalidResource1 ;
+  ex:testProperty "A string" ;
+.
+ex:SubClass
+  rdf:type rdfs:Class ;
+  rdfs:subClassOf ex:SuperClass ;
+.
+ex:SubClassInstance
+  rdf:type ex:SubClass ;
+.
+ex:SuperClass
+  rdf:type rdfs:Class ;
+.
+ex:SuperClassInstance
+  rdf:type ex:SuperClass ;
+.
+ex:TestShape
+  rdf:type sh:NodeShape ;
+  sh:property ex:TestShape-testProperty ;
+  sh:targetNode ex:InvalidResource1 ;
+  sh:targetNode ex:ValidResource1 ;
+  sh:targetNode ex:ValidResource2 ;
+.
+ex:TestShape-testProperty
+  sh:path ex:testProperty ;
+  rdfs:label "test property" ;
+  sh:class ex:SuperClass ;
+.
+ex:ValidResource1
+  rdf:type rdfs:Resource ;
+  ex:testProperty ex:SubClassInstance ;
+  ex:testProperty ex:SuperClassInstance ;
+.
+ex:ValidResource2
+  rdf:type rdfs:Resource ;
+  ex:testProperty [
+      rdf:type ex:SubClass ;
+    ] ;
+  ex:testProperty [
+      rdf:type ex:SuperClass ;
+    ] ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <class-001>
+    ) ;
+.
+<class-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:class at property shape 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource1 ;
+          sh:resultPath ex:testProperty ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:ClassConstraintComponent ;
+          sh:sourceShape ex:TestShape-testProperty ;
+          sh:value ex:InvalidResource1 ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource1 ;
+          sh:resultPath ex:testProperty ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:ClassConstraintComponent ;
+          sh:sourceShape ex:TestShape-testProperty ;
+          sh:value "A string" ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

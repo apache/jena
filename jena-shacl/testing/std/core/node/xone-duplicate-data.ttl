@@ -1,0 +1,4 @@
+@prefix ex: <http://example.org/shacl-test/> .
+
+ex:i a ex:C1 .
+ex:j a ex:C1 , ex:C2 .

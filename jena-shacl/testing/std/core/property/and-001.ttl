@@ -1,0 +1,107 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/property/and-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:AddressShape
+  rdf:type sh:NodeShape ;
+  rdfs:label "Address shape" ;
+  sh:property ex:AddressShape-address ;
+  sh:targetNode ex:InvalidResource1 ;
+  sh:targetNode ex:InvalidResource2 ;
+  sh:targetNode ex:InvalidResource3 ;
+  sh:targetNode ex:ValidResource1 ;
+.
+ex:AddressShape-address
+  sh:path ex:address ;
+  sh:and (
+      [
+        sh:property [
+            sh:path ex:suburb ;
+            sh:minCount 1 ;
+          ] ;
+      ]
+      [
+        sh:property [
+            sh:path ex:postalCode ;
+            sh:minCount 1 ;
+          ] ;
+      ]
+    ) ;
+.
+ex:InvalidResource1
+  rdf:type rdfs:Resource ;
+  ex:address _:b61065 ;
+.
+ex:InvalidResource2
+  rdf:type rdfs:Resource ;
+  ex:address _:b31477 ;
+.
+ex:InvalidResource3
+  rdf:type rdfs:Resource ;
+  ex:address _:b94057 ;
+.
+ex:ValidResource1
+  rdf:type rdfs:Resource ;
+  ex:address [
+      ex:postalCode 4879 ;
+      ex:suburb ex:KewarraBeach ;
+    ] ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <and-001>
+    ) ;
+.
+<and-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:and at property shape 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource1 ;
+          sh:resultPath ex:address ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:AndConstraintComponent ;
+          sh:sourceShape ex:AddressShape-address ;
+          sh:value _:b61065 ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource2 ;
+          sh:resultPath ex:address ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:AndConstraintComponent ;
+          sh:sourceShape ex:AddressShape-address ;
+          sh:value _:b31477 ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource3 ;
+          sh:resultPath ex:address ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:AndConstraintComponent ;
+          sh:sourceShape ex:AddressShape-address ;
+          sh:value _:b94057 ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.
+_:b31477
+  ex:suburb ex:KewarraBeach ;
+.
+_:b61065
+  ex:postalCode 4879 ;
+.

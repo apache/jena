@@ -66,12 +66,4 @@ public class FusekiExt {
     public static void registerOperation(Operation op, ActionService handler) {
         OperationRegistry.get().register(op, null, handler);
     }
-
-//    /**
-//     * Make a new operation available. The {@link EndpointFactory} is called with the
-//     * endpoint description when an endpoint with the operation is created.
-//     */
-//    public static void registerOperation(Operation op, EndpointFactory endpointFactory) {
-//        OperationRegistry.get().register(op, null, endpointFactory);
-//    }
 }

@@ -1,0 +1,80 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/property/qualifiedValueShape-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:APGARObservationShape
+  rdf:type sh:NodeShape ;
+  sh:property ex:APGARObservationShape-related ;
+  sh:targetNode ex:Observation1 ;
+.
+ex:APGARObservationShape-related
+  sh:path ex:related ;
+  sh:qualifiedMaxCount 3 ;
+  sh:qualifiedMinCount 3 ;
+  sh:qualifiedValueShape [
+      sh:property [
+          sh:path ex:related_target ;
+          sh:node [
+              sh:property [
+                  sh:path ex:reference ;
+                  sh:hasValue ex:something ;
+                ] ;
+            ] ;
+        ] ;
+    ] ;
+.
+ex:Observation1
+  rdf:type ex:Observation ;
+  ex:related [
+      ex:related_target [
+          ex:reference ex:something ;
+        ] ;
+      ex:related_type "has-component"^^ex:code ;
+    ] ;
+  ex:related [
+      ex:related_target [
+          ex:reference ex:something ;
+        ] ;
+      ex:related_type "has-component"^^ex:code ;
+    ] ;
+  ex:related [
+      ex:related_target [
+          ex:reference ex:unrelated ;
+        ] ;
+      ex:related_type "has-component"^^ex:code ;
+    ] ;
+  sh:nodeShape ex:APGARObservationShape ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <qualifiedValueShape-001>
+    ) ;
+.
+<qualifiedValueShape-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:qualifiedValueShape at property shape 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:Observation1 ;
+          sh:resultPath ex:related ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:QualifiedMinCountConstraintComponent ;
+          sh:sourceShape ex:APGARObservationShape-related ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.
