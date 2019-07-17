@@ -80,7 +80,8 @@ fi
 
 JVM_ARGS=${JVM_ARGS:--Xmx1200M}
 
-exec $JAVA $JVM_ARGS -jar "$JAR" "$@"
+exec $JAVA $JVM_ARGS -cp "$JAR:$FUSEKI_BASE/extra/*" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
+
 
 ## Adding custom code to the Fuseki server:
 ##
