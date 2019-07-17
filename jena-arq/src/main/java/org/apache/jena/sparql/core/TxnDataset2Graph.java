@@ -43,8 +43,8 @@ import org.apache.jena.sparql.JenaTransactionException;
  * graph is an InfGraph and should work when the graphs in the dataset is not changing or
  * when a new memory graph is added mid-transaction.
  * <p>
- * This is not "nested transactions" - theer is no overall "commit" or "abort". If
- * failure/restart occurs, some graphs may have commited and others not. It is the best
+ * This is not "nested transactions" - there is no overall "commit" or "abort". If
+ * failure/restart occurs, some graphs may have committed and others not. It is the best
  * that can be done given for an arbitrary collection of graphs, backed by different
  * storage and having different capabilities.
  * <p>
@@ -57,7 +57,7 @@ import org.apache.jena.sparql.JenaTransactionException;
 public class TxnDataset2Graph extends TransactionalLock {
     private Graph primary;
     // Object key may be a graph or a DSG is the graph is a GraphView.
-    // This avoids starting a tranasction on the same storage unit twice. 
+    // This avoids starting a transaction on the same storage unit twice. 
     private Map<Object, TransactionHandler> handlers = new HashMap<>();
         
     private Object lock = new Object();
