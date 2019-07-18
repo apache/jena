@@ -78,9 +78,15 @@ then
   exit 1
 fi
 
+CP=$JAR
+if [ -d $FUSEKI_BASE/extra ]
+then
+   CP="${CP}:${FUSEKI_BASE}/extra/*" 
+fi
+
 JVM_ARGS=${JVM_ARGS:--Xmx1200M}
 
-exec $JAVA $JVM_ARGS -cp "$JAR:$FUSEKI_BASE/extra/*" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
+exec $JAVA $JVM_ARGS -cp "$CP" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
 
 
 ## Adding custom code to the Fuseki server:
