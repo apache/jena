@@ -33,7 +33,6 @@ public class TxnOp {
      * So
      *   Inner is READ works with any outer.
      *   Outer is WRITE works with any inner.
-     *    
      */
 
     /**
@@ -61,7 +60,7 @@ public class TxnOp {
      * 
      * A TxnType is compatible with (can run inside) another TxnType (for an an existing or outer transaction) if:
      * the outer one covers the needs of the inner one <br/>
-     * READ < PROMOTE (either) < WRITE < no outer
+     * READ &lt; PROMOTE (either) &lt; WRITE &lt; no outer
      * 
      * In particular:
      *   Inner is READ works with any outer.

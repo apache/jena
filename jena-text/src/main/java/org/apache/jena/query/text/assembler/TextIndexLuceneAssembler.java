@@ -45,7 +45,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
         #text:directory "mem" ;
         #text:directory "DIR" ;
         text:directory <file:DIR> ;
-        text:entityMap <#endMap> ;
+        text:entityMap <#entMap> ;
         .
     */
     
@@ -93,6 +93,18 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                     throw new TextIndexException("text:multilingualSupport property must be a boolean : " + mlsNode);
                 }
                 isMultilingualSupport = mlsNode.asLiteral().getBoolean();
+            }
+            
+            // define any property lists for text:query
+            Statement propListsStmt = root.getProperty(pPropLists);
+            if (null != propListsStmt) {
+                RDFNode aNode = propListsStmt.getObject();
+                
+                if (! aNode.isResource()) {
+                    throw new TextIndexException("text:propLists property is not a resource (list) : " + aNode);
+                }
+                
+                PropListsAssembler.open(a, (Resource) aNode);
             }
             
             //define any filters and tokenizers first so they can be referenced in analyzer definitions if need be
