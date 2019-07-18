@@ -23,9 +23,11 @@ import static org.junit.Assert.assertFalse ;
 import static org.junit.Assert.assertTrue ;
 import static org.junit.Assert.fail ;
 
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException ;
 import java.text.SimpleDateFormat ;
 import java.util.Date ;
+import java.util.Locale;
 import java.util.TimeZone ;
 import java.util.function.Predicate;
 
@@ -467,6 +469,15 @@ public class TestFunctions
         Assert.assertEquals(expected, r.getString()) ;
     }
     
+    /* The French grouping separator changed at Java13 because OpenJDK updated
+     * CLDR - Unicode Common Locale Data Repository.
+     * https://bugs.openjdk.java.net/browse/JDK-8225247
+     * 
+     * In the French locale, the grouping separator changes from U+00A0 ==> U+202F
+     * Portable tests ...
+     */
+    private static String GroupSepFR = Character.toString(DecimalFormatSymbols.getInstance(Locale.FRENCH).getGroupingSeparator());
+    
     @Test public void formatNumber_01()     { testNumberFormat("fn:format-number(0,'#')", "0") ; }
     @Test public void formatNumber_02()     { testNumberFormat("fn:format-number(1234, '#')", "1234") ; }
     @Test public void formatNumber_03()     { testNumberFormat("fn:format-number(1234, '#,###')", "1,234") ; }
@@ -477,11 +488,11 @@ public class TestFunctions
     
     @Test public void formatNumber_11()     { testNumberFormat("fn:format-number(0, '#', 'fr')", "0") ; }
     // No-break space
-    @Test public void formatNumber_12()     { testNumberFormat("fn:format-number(1234.5,'#,###.#', 'fr')", "1\u00A0234,5") ; }
+    @Test public void formatNumber_12()     { testNumberFormat("fn:format-number(1234.5,'#,###.#', 'fr')", "1"+GroupSepFR+"234,5") ; }
     @Test public void formatNumber_13()     { testNumberFormat("fn:format-number(1234.5,'#,###.#', 'de')", "1.234,5") ; }
     
     @Test public void formatNumber_14()     { testNumberFormat("fn:format-number(12, '0,000.0', 'en')", "0,012.0") ; }
-    @Test public void formatNumber_15()     { testNumberFormat("fn:format-number(0, '00,000', 'fr')", "00\u00A0000") ; }
+    @Test public void formatNumber_15()     { testNumberFormat("fn:format-number(0, '00,000', 'fr')", "00"+GroupSepFR+"000") ; }
 
     @Test(expected=ExprEvalException.class)
     public void formatNumber_20() {
