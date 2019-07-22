@@ -23,15 +23,15 @@ import io.github.galbiston.rdf_tables.file.FileReader;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import org.apache.jena.fuseki.geosparql.cli.ArgsConfig;
+import org.apache.jena.fuseki.geosparql.cli.FileGraphDelimiter;
+import org.apache.jena.fuseki.geosparql.cli.FileGraphFormat;
 import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.configuration.GeoSPARQLOperations;
 import org.apache.jena.geosparql.implementation.datatype.GMLDatatype;
 import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
-import org.apache.jena.fuseki.geosparql.cli.ArgsConfig;
-import org.apache.jena.fuseki.geosparql.cli.FileGraphDelimiter;
-import org.apache.jena.fuseki.geosparql.cli.FileGraphFormat;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.ReadWrite;
@@ -92,14 +92,18 @@ public class DatasetOperations {
         }
 
         //Setup Spatial Extension
-        if (argsConfig.getSpatialIndexFile() != null) {
-            File spatialIndexFile = argsConfig.getSpatialIndexFile();
-            GeoSPARQLConfig.setupSpatialIndex(dataset, spatialIndexFile);
-        } else if (argsConfig.isTDBFileSetup()) {
-            File spatialIndexFile = new File(argsConfig.getTdbFile(), SPATIAL_INDEX_FILE);
-            GeoSPARQLConfig.setupSpatialIndex(dataset, spatialIndexFile);
+        if (!dataset.isEmpty()) {
+            if (argsConfig.getSpatialIndexFile() != null) {
+                File spatialIndexFile = argsConfig.getSpatialIndexFile();
+                GeoSPARQLConfig.setupSpatialIndex(dataset, spatialIndexFile);
+            } else if (argsConfig.isTDBFileSetup()) {
+                File spatialIndexFile = new File(argsConfig.getTdbFile(), SPATIAL_INDEX_FILE);
+                GeoSPARQLConfig.setupSpatialIndex(dataset, spatialIndexFile);
+            } else {
+                GeoSPARQLConfig.setupSpatialIndex(dataset);
+            }
         } else {
-            GeoSPARQLConfig.setupSpatialIndex(dataset);
+            LOGGER.warn("Datset empty. Spatial Index not constructed. Server will require restarting after adding data and any updates to build Spatial Index.");
         }
 
         return dataset;
