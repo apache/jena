@@ -68,12 +68,13 @@
     -->
     <ver.jsonldjava>0.12.3</ver.jsonldjava>
     <ver.jackson>2.9.9</ver.jackson>
+    <ver.jackson-databind>2.9.9.1</ver.jackson-databind>
 
     <ver.commonsio>2.6</ver.commonsio>
     <ver.commonscli>1.4</ver.commonscli>
     <ver.commonslang3>3.4</ver.commonslang3>
     <ver.commonscsv>1.5</ver.commonscsv>
-    <ver.commons-codec>1.11</ver.commons-codec>
+    <ver.commons-codec>1.13</ver.commons-codec>
     <ver.commons-compress>1.18</ver.commons-compress>
 
     <ver.dexxcollection>0.7</ver.dexxcollection>
@@ -334,7 +335,7 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>${ver.jackson}</version>
+        <version>${ver.jackson-databind}</version>
       </dependency>
 
       <dependency>
