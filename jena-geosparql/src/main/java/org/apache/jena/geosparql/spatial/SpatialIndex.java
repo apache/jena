@@ -42,6 +42,7 @@ import org.apache.jena.query.ReadWrite;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.NodeIterator;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
@@ -49,6 +50,7 @@ import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
+import org.apache.jena.util.iterator.ExtendedIterator;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.index.strtree.STRtree;
 import org.opengis.geometry.MismatchedDimensionException;
@@ -402,9 +404,15 @@ public class SpatialIndex {
             Resource feature = stmt.getSubject();
             Resource geometry = stmt.getResource();
 
-            NodeIterator nodeIt = model.listObjectsOfProperty(geometry, Geo.HAS_SERIALIZATION_PROP);
-            while (nodeIt.hasNext()) {
-                Literal geometryLiteral = nodeIt.nextNode().asLiteral();
+            ExtendedIterator<RDFNode> nodeIter = model.listObjectsOfProperty(geometry, Geo.HAS_SERIALIZATION_PROP);
+            if (!nodeIter.hasNext()) {
+                NodeIterator wktNodeIter = model.listObjectsOfProperty(geometry, Geo.AS_WKT_PROP);
+                NodeIterator gmlNodeIter = model.listObjectsOfProperty(geometry, Geo.AS_GML_PROP);
+                nodeIter = wktNodeIter.andThen(gmlNodeIter);
+            }
+
+            while (nodeIter.hasNext()) {
+                Literal geometryLiteral = nodeIter.next().asLiteral();
                 GeometryWrapper geometryWrapper = GeometryWrapper.extract(geometryLiteral);
 
                 try {

@@ -17,9 +17,9 @@
  */
 package org.apache.jena.geosparql.geo.topological;
 
+import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
-import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -75,16 +75,25 @@ public abstract class GenericGeometryPropertyFunction extends PFuncSimple {
             }
 
             //Check that the Geometry has a serialisation to use.
-            if (graph.contains(subject, Geo.HAS_SERIALIZATION_NODE, null)) {
-                ExtendedIterator<Triple> iter = graph.find(subject, Geo.HAS_SERIALIZATION_NODE, null);
-                Node geomLiteral = extractObject(iter);
+            ExtendedIterator<Triple> iter = graph.find(subject, Geo.HAS_SERIALIZATION_NODE, null);
+            Node geomLiteral = extractObject(iter);
 
-                if (geomLiteral != null) {
-                    GeometryWrapper geometryWrapper = GeometryWrapper.extract(geomLiteral);
-                    NodeValue predicateResult = applyPredicate(geometryWrapper);
-                    return predicateResult.asNode();
+            // If hasSerialization not found then check asWKT and asGML.
+            if (geomLiteral == null) {
+                iter = graph.find(subject, Geo.AS_WKT_NODE, null);
+                geomLiteral = extractObject(iter);
+                if (geomLiteral == null) {
+                    iter = graph.find(subject, Geo.AS_GML_NODE, null);
+                    geomLiteral = extractObject(iter);
                 }
             }
+
+            if (geomLiteral != null) {
+                GeometryWrapper geometryWrapper = GeometryWrapper.extract(geomLiteral);
+                NodeValue predicateResult = applyPredicate(geometryWrapper);
+                return predicateResult.asNode();
+            }
+
             return null;
 
         } catch (DatatypeFormatException ex) {

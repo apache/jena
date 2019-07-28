@@ -114,6 +114,18 @@ public class SpatialObjectGeometryLiteral {
             //Find the Geometry Literal of the Geometry.
             ExtendedIterator<Triple> iter = graph.find(geometry, Geo.HAS_SERIALIZATION_NODE, null);
             Node literalNode = extractObject(iter);
+
+            // If hasSerialization not found then check asWKT.
+            if (literalNode == null) {
+                iter = graph.find(geometry, Geo.AS_WKT_NODE, null);
+                literalNode = extractObject(iter);
+            }
+            // If asWKT not found then check asGML.
+            if (literalNode == null) {
+                iter = graph.find(geometry, Geo.AS_GML_NODE, null);
+                literalNode = extractObject(iter);
+            }
+
             if (literalNode != null) {
                 return new SpatialObjectGeometryLiteral(targetSpatialObject, literalNode);
             }
