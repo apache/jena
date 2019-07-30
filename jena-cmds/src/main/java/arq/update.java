@@ -86,7 +86,7 @@ public class update extends CmdUpdate
             SystemARQ.sync(graphStore);
 
         if ( dump )
-            RDFDataMgr.write(System.out, graphStore, Lang.NQUADS);
+            Txn.executeRead(transactional, ()->RDFDataMgr.write(System.out, graphStore, Lang.NQUADS) );
     }
 
     protected void execOneFile(String filename, DatasetGraph store) {
