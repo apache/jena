@@ -78,18 +78,27 @@ then
   exit 1
 fi
 
+CP=$JAR
+if [ -d $FUSEKI_BASE/extra ]
+then
+   CP="${CP}:${FUSEKI_BASE}/extra/*" 
+fi
+
 JVM_ARGS=${JVM_ARGS:--Xmx1200M}
 
-exec $JAVA $JVM_ARGS -jar "$JAR" "$@"
+exec $JAVA $JVM_ARGS -cp "$CP" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
 
 ## Adding custom code to the Fuseki server:
 ##
-## It is also possible to launch Fuseki using 
-##   java $JVM_ARGS -cp "$JAR" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
+## The recommended way to add custom jars to the Fuseki server is to create an
+## "extra" directory under FUSEKI_BASE and place any jars in there. 
 ##
+## It is also possible to add more jars to the CP environment variable before 
+## the exec call:
+##
+##   CP="${CP}:MyCode.jar
+## 
 ## "exec" is optional - it simply frees up an OS process.
 ## In this way, you can add custom java to the classpath:
 ## 
-##   APPJAR=MyCode.jar
-##   java $JVM_ARGS -cp "$JAR:$APPJAR" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
 
