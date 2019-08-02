@@ -29,8 +29,7 @@ import tdb.cmdline.ModTDBDataset ;
 public class tdbupdate extends arq.update
 {
     // Inherits from arq.update so is not a CmdTDB.  Mixins for Java!
-    public static void main(String...argv)
- {
+    public static void main(String...argv) {
         CmdTDB.init();
         // Do everything with flushing transactions.
         TransactionManager.QueueBatchSize = 0;

@@ -38,12 +38,6 @@ public abstract class CmdUpdate extends CmdARQ
         return new ModDatasetGeneralAssembler() ;
     }
 
-    /** @deprecated Use {@link setModDataset} */ 
-    @Deprecated
-    protected ModDataset setModeDataset() {
-        return setModDataset();
-    }
-
     @Override
     protected void processModulesAndArgs()
     {
