@@ -104,6 +104,7 @@ public class SpatialIndex {
      *
      * @param spatialIndexItems
      * @param srsURI
+     * @throws SpatialIndexException
      */
     public SpatialIndex(Collection<SpatialIndexItem> spatialIndexItems, String srsURI) throws SpatialIndexException {
         int indexCapacity = spatialIndexItems.size() < MINIMUM_CAPACITY ? MINIMUM_CAPACITY : spatialIndexItems.size();
@@ -152,6 +153,7 @@ public class SpatialIndex {
      * Items to add to an unbuilt Spatial Index.
      *
      * @param indexItems
+     * @throws SpatialIndexException
      */
     public final void insertItems(Collection<SpatialIndexItem> indexItems) throws SpatialIndexException {
 
@@ -165,6 +167,7 @@ public class SpatialIndex {
      *
      * @param envelope
      * @param item
+     * @throws SpatialIndexException
      */
     public final void insertItem(Envelope envelope, Resource item) throws SpatialIndexException {
         if (!isBuilt) {
@@ -238,6 +241,7 @@ public class SpatialIndex {
      * @param srsURI
      * @param spatialIndexFile
      * @return SpatialIndex constructed.
+     * @throws SpatialIndexException
      */
     public static SpatialIndex buildSpatialIndex(Dataset dataset, String srsURI, File spatialIndexFile) throws SpatialIndexException {
 
@@ -263,6 +267,7 @@ public class SpatialIndex {
      * @param dataset
      * @param spatialIndexFile
      * @return SpatialIndex constructed.
+     * @throws SpatialIndexException
      */
     public static SpatialIndex buildSpatialIndex(Dataset dataset, File spatialIndexFile) throws SpatialIndexException {
         String srsURI = GeoSPARQLOperations.findModeSRS(dataset);
@@ -277,6 +282,7 @@ public class SpatialIndex {
      * @param dataset
      * @param srsURI
      * @return SpatialIndex constructed.
+     * @throws SpatialIndexException
      */
     public static SpatialIndex buildSpatialIndex(Dataset dataset, String srsURI) throws SpatialIndexException {
         LOGGER.info("Building Spatial Index - Started");
@@ -295,6 +301,7 @@ public class SpatialIndex {
      * @param dataset
      * @param srsURI
      * @return SpatialIndexItems found.
+     * @throws SpatialIndexException
      */
     public static Collection<SpatialIndexItem> findSpatialIndexItems(Dataset dataset, String srsURI) throws SpatialIndexException {
         //Default Model
@@ -323,6 +330,7 @@ public class SpatialIndex {
      *
      * @param dataset
      * @return SpatialIndex constructed.
+     * @throws SpatialIndexException
      */
     public static SpatialIndex buildSpatialIndex(Dataset dataset) throws SpatialIndexException {
         String srsURI = GeoSPARQLOperations.findModeSRS(dataset);
@@ -336,6 +344,7 @@ public class SpatialIndex {
      * @param model
      * @param srsURI
      * @return Dataset with default Model and SpatialIndex in Context.
+     * @throws SpatialIndexException
      */
     public static final Dataset wrapModel(Model model, String srsURI) throws SpatialIndexException {
 
@@ -351,6 +360,7 @@ public class SpatialIndex {
      *
      * @param model
      * @return Dataset with default Model and SpatialIndex in Context.
+     * @throws SpatialIndexException
      */
     public static final Dataset wrapModel(Model model) throws SpatialIndexException {
         Dataset dataset = DatasetFactory.createTxnMem();
@@ -367,6 +377,7 @@ public class SpatialIndex {
      * @param model
      * @param srsURI
      * @return Items found in the Model in the SRS URI.
+     * @throws SpatialIndexException
      */
     public static final Collection<SpatialIndexItem> getSpatialIndexItems(Model model, String srsURI) throws SpatialIndexException {
 
@@ -394,6 +405,7 @@ public class SpatialIndex {
      * @param model
      * @param srsURI
      * @return GeometryLiteral items prepared for adding to SpatialIndex.
+     * @throws SpatialIndexException
      */
     private static Collection<SpatialIndexItem> getGeometryLiteralIndexItems(Model model, String srsURI) throws SpatialIndexException {
         List<SpatialIndexItem> items = new ArrayList<>();
@@ -497,6 +509,7 @@ public class SpatialIndex {
      * @param spatialIndexFileURI
      * @param spatialIndexItems
      * @param srsURI
+     * @throws SpatialIndexException
      */
     public static final void save(String spatialIndexFileURI, Collection<SpatialIndexItem> spatialIndexItems, String srsURI) throws SpatialIndexException {
         save(new File(spatialIndexFileURI), spatialIndexItems, srsURI);
@@ -508,6 +521,7 @@ public class SpatialIndex {
      * @param spatialIndexFile
      * @param spatialIndexItems
      * @param srsURI
+     * @throws SpatialIndexException
      */
     public static final void save(File spatialIndexFile, Collection<SpatialIndexItem> spatialIndexItems, String srsURI) throws SpatialIndexException {
 

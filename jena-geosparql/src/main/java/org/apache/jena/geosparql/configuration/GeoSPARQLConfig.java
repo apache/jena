@@ -245,6 +245,7 @@ public class GeoSPARQLConfig {
      * Setup Spatial Index using Dataset and most frequent SRS URI in Dataset.
      *
      * @param dataset
+     * @throws SpatialIndexException
      */
     public static final void setupSpatialIndex(Dataset dataset) throws SpatialIndexException {
         SpatialIndex.buildSpatialIndex(dataset);
@@ -257,6 +258,7 @@ public class GeoSPARQLConfig {
      *
      * @param dataset
      * @param spatialIndexFile
+     * @throws SpatialIndexException
      */
     public static final void setupSpatialIndex(Dataset dataset, File spatialIndexFile) throws SpatialIndexException {
         SpatialIndex.buildSpatialIndex(dataset, spatialIndexFile);
@@ -269,6 +271,7 @@ public class GeoSPARQLConfig {
      * @param dataset
      * @param srsURI
      * @param spatialIndexFile
+     * @throws SpatialIndexException
      */
     public static final void setupSpatialIndex(Dataset dataset, String srsURI, File spatialIndexFile) throws SpatialIndexException {
         SpatialIndex.buildSpatialIndex(dataset, srsURI, spatialIndexFile);
