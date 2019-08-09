@@ -31,6 +31,7 @@ import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.NodeIterator;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.util.iterator.ExtendedIterator;
 
 /**
  *
@@ -46,8 +47,14 @@ public class ModeSRS {
 
     public void search(Model model) {
 
-        NodeIterator nodeIter = model.listObjectsOfProperty(Geo.HAS_SERIALIZATION_PROP);
+        ExtendedIterator<RDFNode> nodeIter = model.listObjectsOfProperty(Geo.HAS_SERIALIZATION_PROP);
         boolean isGeometryLiteralsFound = nodeIter.hasNext();
+        if (!isGeometryLiteralsFound) {
+            NodeIterator wktNodeIter = model.listObjectsOfProperty(Geo.AS_WKT_PROP);
+            NodeIterator gmlNodeIter = model.listObjectsOfProperty(Geo.AS_GML_PROP);
+            nodeIter = wktNodeIter.andThen(gmlNodeIter);
+        }
+
         while (nodeIter.hasNext()) {
             RDFNode node = nodeIter.next();
             if (node.isLiteral()) {

@@ -45,6 +45,7 @@ import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.pfunction.PFuncSimpleAndList;
 import org.apache.jena.sparql.pfunction.PropFuncArg;
 import org.apache.jena.sparql.util.FmtUtils;
+import org.apache.jena.util.iterator.ExtendedIterator;
 
 /**
  *
@@ -112,7 +113,16 @@ public abstract class GenericSpatialPropertyFunction extends PFuncSimpleAndList 
                 Iterator<Triple> geometryTriples = graph.find(subject, Geo.HAS_GEOMETRY_NODE, null);
                 while (geometryTriples.hasNext()) {
                     Node geometry = geometryTriples.next().getObject();
-                    spatialTriples.addIterator(graph.find(geometry, Geo.HAS_SERIALIZATION_NODE, null));
+                    ExtendedIterator<Triple> iter = graph.find(geometry, Geo.HAS_SERIALIZATION_NODE, null);
+                    // Check for asWKT
+                    if (!iter.hasNext()) {
+                        iter = graph.find(geometry, Geo.AS_WKT_NODE, null);
+                    }
+                    // Check for asGML
+                    if (!iter.hasNext()) {
+                        iter = graph.find(geometry, Geo.AS_GML_NODE, null);
+                    }
+                    spatialTriples.addIterator(iter);
                 }
             } else {
                 //Check for Geo predicates against the feature when no geometry literals found.

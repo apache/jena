@@ -33,6 +33,7 @@ import java.util.UUID;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
+import org.apache.jena.geosparql.implementation.datatype.GMLDatatype;
 import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.geosparql.implementation.index.GeometryLiteralIndex;
@@ -59,6 +60,8 @@ import org.apache.jena.reasoner.Reasoner;
 import org.apache.jena.reasoner.ReasonerRegistry;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.NiceIterator;
 import org.apache.jena.vocabulary.RDFS;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.operation.TransformException;
@@ -664,7 +667,16 @@ public class GeoSPARQLOperations {
                 outputDatatype = GeometryDatatype.get(datatype);
             }
             Literal convertedGeometryLiteral = convertedGeom.asLiteral(outputDatatype);
-            Statement outputStatement = ResourceFactory.createStatement(statement.getSubject(), statement.getPredicate(), convertedGeometryLiteral);
+
+            // Assign the existing property unless it needs to be switched for asGML and asWKT.
+            Property outputProperty = statement.getPredicate();
+            if (outputProperty.equals(Geo.AS_GML_PROP) && outputDatatype.equals(WKTDatatype.INSTANCE)) {
+                outputProperty = Geo.AS_WKT_PROP;
+            } else if (outputProperty.equals(Geo.AS_WKT_PROP) && outputDatatype.equals(GMLDatatype.INSTANCE)) {
+                outputProperty = Geo.AS_GML_PROP;
+            }
+
+            Statement outputStatement = ResourceFactory.createStatement(statement.getSubject(), outputProperty, convertedGeometryLiteral);
             outputModel.add(outputStatement);
         } else {
             //Not a statement of interest so store for output.
@@ -790,6 +802,7 @@ public class GeoSPARQLOperations {
                         //Add Geometry to Feature and GeometryLiteral to Geometry.
                         outputModel.add(feature, Geo.HAS_GEOMETRY_PROP, geometry);
                         outputModel.add(geometry, Geo.HAS_SERIALIZATION_PROP, latLonPoint);
+                        outputModel.add(geometry, Geo.AS_WKT_PROP, latLonPoint);
                     } catch (DatatypeFormatException ex) {
                         LOGGER.error("Feature: {} has geo lat/lon out of bounds. Lat: {}, Lon: {}", feature, lat, lon);
                     }
@@ -1108,10 +1121,15 @@ public class GeoSPARQLOperations {
      */
     public static final int countGeometryLiterals(Model model, String graphName) {
         Set<String> literalStrings = new TreeSet<>();
-        Iterator<Statement> iterator = model.listStatements(null, Geo.HAS_SERIALIZATION_PROP, (RDFNode) null);
+        Iterator<Statement> hasSerializationIterator = model.listStatements(null, Geo.HAS_SERIALIZATION_PROP, (RDFNode) null);
+        Iterator<Statement> asWKTIterator = model.listStatements(null, Geo.AS_WKT_PROP, (RDFNode) null);
+        Iterator<Statement> asGMLIterator = model.listStatements(null, Geo.AS_GML_PROP, (RDFNode) null);
+
+        NiceIterator niceIterator = new NiceIterator();
+        ExtendedIterator<Statement> allIterator = niceIterator.andThen(hasSerializationIterator).andThen(asWKTIterator).andThen(asGMLIterator);
         int count = 0;
-        while (iterator.hasNext()) {
-            Statement st = iterator.next();
+        while (allIterator.hasNext()) {
+            Statement st = allIterator.next();
             String literalString = st.getLiteral().getString();
             literalStrings.add(literalString);
             count++;

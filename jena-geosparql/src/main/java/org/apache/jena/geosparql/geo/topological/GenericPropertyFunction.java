@@ -107,13 +107,17 @@ public abstract class GenericPropertyFunction extends PFuncSimple {
 
         Graph graph = execCxt.getActiveGraph();
 
+        //Search for both Features and Geometry in the Graph. Reliant upon consistent usage of SpatialObject (which is base class of Feature and Geometry) if present.
         ExtendedIterator<Triple> subjectTriples;
         if (graph.contains(null, RDF.type.asNode(), Geo.SPATIAL_OBJECT_NODE)) {
             subjectTriples = graph.find(null, RDF.type.asNode(), Geo.SPATIAL_OBJECT_NODE);
+        } else if (graph.contains(null, RDF.type.asNode(), Geo.FEATURE_NODE) || graph.contains(null, RDF.type.asNode(), Geo.GEOMETRY_NODE)) {
+            ExtendedIterator<Triple> featureTriples = graph.find(null, RDF.type.asNode(), Geo.FEATURE_NODE);
+            ExtendedIterator<Triple> geometryTriples = graph.find(null, RDF.type.asNode(), Geo.GEOMETRY_NODE);
+            subjectTriples = featureTriples.andThen(geometryTriples);
         } else {
             //Check for Geo Predicate Features in the Graph if no GeometryLiterals found.
             subjectTriples = graph.find(null, SpatialExtension.GEO_LAT_NODE, null);
-
         }
 
         //Bind all the Spatial Objects or Geo Predicates once as the subject and search for corresponding Objects.
@@ -146,7 +150,7 @@ public abstract class GenericPropertyFunction extends PFuncSimple {
             isSubjectBound = false;
         }
 
-        if (!graph.contains(boundNode, RDF.type.asNode(), Geo.SPATIAL_OBJECT_NODE)) {
+        if (!(graph.contains(boundNode, RDF.type.asNode(), Geo.SPATIAL_OBJECT_NODE) || graph.contains(boundNode, RDF.type.asNode(), Geo.FEATURE_NODE) || graph.contains(boundNode, RDF.type.asNode(), Geo.GEOMETRY_NODE))) {
             if (!graph.contains(boundNode, SpatialExtension.GEO_LAT_NODE, null)) {
                 //Bound node is not a Feature or a Geometry or has Geo predicates so exit.
                 return QueryIterNullIterator.create(execCxt);
@@ -172,10 +176,14 @@ public abstract class GenericPropertyFunction extends PFuncSimple {
         Var unboundVar = Var.alloc(unboundNode.getName());
         QueryIterConcat queryIterConcat = new QueryIterConcat(execCxt);
 
-        //Search for both Features and Geometry in the Graph.
+        //Search for both Features and Geometry in the Graph. Reliant upon consistent usage of SpatialObject (which is base class of Feature and Geometry) if present.
         ExtendedIterator<Triple> spatialTriples;
         if (graph.contains(null, RDF.type.asNode(), Geo.SPATIAL_OBJECT_NODE)) {
             spatialTriples = graph.find(null, RDF.type.asNode(), Geo.SPATIAL_OBJECT_NODE);
+        } else if (graph.contains(null, RDF.type.asNode(), Geo.FEATURE_NODE) || graph.contains(null, RDF.type.asNode(), Geo.GEOMETRY_NODE)) {
+            ExtendedIterator<Triple> featureTriples = graph.find(null, RDF.type.asNode(), Geo.FEATURE_NODE);
+            ExtendedIterator<Triple> geometryTriples = graph.find(null, RDF.type.asNode(), Geo.GEOMETRY_NODE);
+            spatialTriples = featureTriples.andThen(geometryTriples);
         } else {
             //Check for Geo Predicate Features in the Graph if no GeometryLiterals found.
             spatialTriples = graph.find(null, SpatialExtension.GEO_LAT_NODE, null);
