@@ -96,7 +96,7 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 		return makeNodeOrPath(o, query.getPrefixMapping() );
 	}
 
-	private Object makeNodeOrPath(Object o, PrefixMapping pMapping)
+	public static Object makeNodeOrPath(Object o, PrefixMapping pMapping)
 	{
 		if (o == null) {
 			return Node.ANY;

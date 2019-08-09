@@ -55,6 +55,7 @@ import org.apache.jena.sparql.modify.request.UpdateDataDelete;
 import org.apache.jena.sparql.modify.request.UpdateDataInsert;
 import org.apache.jena.sparql.modify.request.UpdateDeleteWhere;
 import org.apache.jena.sparql.modify.request.UpdateModify;
+import org.apache.jena.sparql.path.Path;
 import org.apache.jena.update.Update;
 import org.apache.jena.update.UpdateRequest;
 import org.apache.jena.util.iterator.ExtendedIterator;
@@ -233,6 +234,41 @@ public class UpdateBuilder {
 
 	}
 
+	/**
+	 * Make a triple path from the objects.
+	 * 
+	 * For subject, predicate and objects nodes
+	 * <ul>
+	 * <li>Will return Node.ANY if object is null.</li>
+	 * <li>Will return the enclosed Node from a FrontsNode</li>
+	 * <li>Will return the object if it is a Node.</li>
+	 * <li>If the object is a String
+	 * 	<ul>
+	 * <li>For <code>predicate</code> only will attempt to parse as a path</li>
+	 * <li>for subject, predicate and object will call NodeFactoryExtra.parseNode() 
+	 * using the currently defined prefixes if the object is a String</li>
+	 * </ul></li>
+	 * <li>Will create a literal representation if the parseNode() fails or for
+	 * any other object type.</li>
+	 * </ul>
+	 * 
+	 * @param s The subject object
+	 * @param p the predicate object
+	 * @param o the object object.
+	 * @return a TriplePath
+	 */
+	public TriplePath makeTriplePath(Object s, Object p, Object o) {
+		final Object po = AbstractQueryBuilder.makeNodeOrPath( p, prefixHandler.getPrefixes() );
+		if (po instanceof Path)
+		{
+			return new TriplePath(makeNode(s), (Path)po, makeNode(o));
+		} else
+		{
+			return new TriplePath( new Triple( makeNode(s), (Node)po, makeNode(o)));
+		}
+
+	}
+	
 	/**
 	 * Convert the object to a node.
 	 * 
@@ -1009,7 +1045,7 @@ public class UpdateBuilder {
 	 * @return The Builder for chaining.
 	 */
 	public UpdateBuilder addWhere(Object s, Object p, Object o) {
-		return addWhere(new Triple(makeNode(s), makeNode(p), makeNode(o)));
+		return addWhere(makeTriplePath(s, p, o));
 	}
 
 	/**
@@ -1049,7 +1085,7 @@ public class UpdateBuilder {
 	 * @return The Builder for chaining.
 	 */
 	public UpdateBuilder addOptional(Object s, Object p, Object o) {
-		return addOptional(new Triple(makeNode(s), makeNode(p), makeNode(o)));
+		return addOptional(makeTriplePath( s, p, o ));
 	}
 
 	/**

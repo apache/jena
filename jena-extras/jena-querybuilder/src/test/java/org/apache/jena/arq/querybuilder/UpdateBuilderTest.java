@@ -39,6 +39,8 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.modify.request.UpdateDataDelete;
 import org.apache.jena.sparql.modify.request.UpdateDataInsert;
 import org.apache.jena.sparql.modify.request.UpdateModify;
+import org.apache.jena.sparql.path.P_Link;
+import org.apache.jena.sparql.path.Path;
 import org.apache.jena.sparql.syntax.Element;
 import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.syntax.ElementPathBlock;
@@ -490,4 +492,23 @@ public class UpdateBuilderTest {
 		
 	}
 	
+	@Test
+	public void testPathInWhereClause() {
+		Node p = NodeFactory.createURI("http://example.com/p");
+		Path path = new P_Link( p );
+				
+		// JENA-1739 fails here
+		new UpdateBuilder().addDelete( "?s", "<x>", "?p")
+		.addWhere( "?s", path, "?p").build();
+	}
+	
+	@Test
+	public void testPathInOptionalClause() {
+		Node p = NodeFactory.createURI("http://example.com/p");
+		Path path = new P_Link( p );
+				
+		// JENA-1739 fails here
+		new UpdateBuilder().addDelete( "?s", "<x>", "?p")
+		.addOptional( "?s", path, "?p").build();
+	}
 }
