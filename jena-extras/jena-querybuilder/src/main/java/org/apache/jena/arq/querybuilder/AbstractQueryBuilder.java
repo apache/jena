@@ -75,8 +75,7 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 	 * <li>Will return Node.ANY if object is null.</li>
 	 * <li>Will return the enclosed Node from a FrontsNode</li>
 	 * <li>Will return the object if it is a Node.</li>
-	 * <li>Will call NodeFactoryExtra.parseNode() using the currently defined
-	 * prefixes if the object is a String</li>
+	 * <li>Will call NodeFactoryExtra.parseNode() using the prefix mapping if the object is a String</li>
 	 * <li>Will create a literal representation if the parseNode() fails or for
 	 * any other object type.</li>
 	 * </ul>
@@ -96,7 +95,24 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 		return makeNodeOrPath(o, query.getPrefixMapping() );
 	}
 
-	private Object makeNodeOrPath(Object o, PrefixMapping pMapping)
+	/**
+	 * Creates a Path or Node as appropriate.
+	 * <ul>
+	 * <li>Will return Node.ANY if object is null.</li>
+	 * <li>Will return the object if it is a Path
+	 * <li>Will return the enclosed Node from a FrontsNode</li>
+	 * <li>Will return the object if it is a Node.</li>
+	 * <li>Will call PathParser.parse() using the prefix mapping if the object is a String</li>
+	 * <li>Will call NodeFactoryExtra.parseNode() using the currently defined
+	 * prefixes if the object is a String and the PathParser.parse() fails.</li>
+	 * <li>Will create a literal representation if the parseNode() fails or for
+	 * any other object type.</li>
+	 * </ul>
+	 * @param o the object that should be interpreted as a path or a node.
+	 * @param pMapping the prefix mapping to resolve path or node with
+	 * @return the Path or Node 
+	 */
+	public static Object makeNodeOrPath(Object o, PrefixMapping pMapping)
 	{
 		if (o == null) {
 			return Node.ANY;
