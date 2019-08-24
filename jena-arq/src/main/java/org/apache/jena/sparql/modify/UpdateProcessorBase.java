@@ -45,7 +45,8 @@ public class UpdateProcessorBase implements UpdateProcessor
         this.request = request ;
         this.datasetGraph = datasetGraph ;
         this.inputBinding = inputBinding;
-        this.context = Context.setupContextExec(context, datasetGraph) ;
+        this.context = context;
+        Context.setCurrentDateTime(this.context) ;
         this.factory = factory ;
     }
 

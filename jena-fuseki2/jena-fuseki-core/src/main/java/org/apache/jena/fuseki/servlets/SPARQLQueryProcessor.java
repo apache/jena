@@ -49,7 +49,6 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.engine.EngineLib;
 import org.apache.jena.sparql.resultset.SPARQLResult;
-import org.apache.jena.sparql.util.Context;
 import org.apache.jena.web.HttpSC;
 
 /**
@@ -304,16 +303,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
      * @return QueryExecution
      */
     protected QueryExecution createQueryExecution(HttpAction action, Query query, DatasetGraph dataset) {
-        QueryExecution queryExecution = QueryExecutionFactory.create(query, dataset);
-        // The QueryExecution already has the global and dataset context already.
-        // We just need to overlay the endpoint details.
-        // The action has a merged context but QueryExecutionFactory does it's own thing.
-        // Revisit for QueryExecutionBuilder
-        if ( action.getEndpoint() != null ) {
-            Context cxt = action.getEndpoint().getContext();
-            queryExecution.getContext().putAll(cxt);
-        }
-        return queryExecution;
+        return QueryExecution.create().query(query).dataset(dataset).context(action.getContext()).build();
     }
 
     /** Perform the {@link QueryExecution} once.
