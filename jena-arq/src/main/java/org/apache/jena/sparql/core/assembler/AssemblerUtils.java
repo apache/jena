@@ -138,7 +138,27 @@ public class AssemblerUtils
         return Assembler.general.open(root) ;
     }
     
-    /** Look for and set context declarations. 
+    /** Look for and build context declarations. 
+     * e.g.
+     * <pre>
+     * root ... ;
+     *   ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000" ] ;
+     *   ...
+     * </pre>
+     * Short name forms of context parameters can be used.  
+     * Setting as string "undef" will remove the context setting.
+     * Returns null when there is no {@link JA#context} on the resource.
+     */
+    public static Context parseContext(Resource r)
+    {
+        if ( ! r.hasProperty(JA.context ) )
+            return null;
+        Context context = new Context();
+        mergeContext(r, context);
+        return context;
+    }
+        
+    /** Look for and merge in context declarations. 
      * e.g.
      * <pre>
      * root ... ;
@@ -148,10 +168,7 @@ public class AssemblerUtils
      * Short name forms of context parameters can be used.  
      * Setting as string "undef" will remove the context setting.
      */
-    public static void setContext(Resource r, Context context)
-    {
-        if ( ! r.hasProperty(JA.context ) )
-            return ;
+    public static void mergeContext(Resource r, Context context) {
         String qs = "PREFIX ja: <"+JA.getURI()+">\nSELECT * { ?x ja:context [ ja:cxtName ?name ; ja:cxtValue ?value ] }" ;
         QuerySolutionMap qsm = new QuerySolutionMap() ;
         qsm.add("x", r) ;

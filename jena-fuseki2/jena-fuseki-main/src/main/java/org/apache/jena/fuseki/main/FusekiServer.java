@@ -740,7 +740,11 @@ public class FusekiServer {
             if ( ! dataAccessPoints.isRegistered(name) )
                 throw new FusekiConfigException("Dataset not registered: "+datasetName);
             DataAccessPoint dap = dataAccessPoints.get(name);
-            Endpoint endpoint = new Endpoint(operation, endpointName, authPolicy);
+            Endpoint endpoint = Endpoint.create()
+                .operation(operation)
+                .endpointName(endpointName)
+                .authPolicy(authPolicy)
+                .build();
             dap.getDataService().addEndpoint(endpoint);
         }
 

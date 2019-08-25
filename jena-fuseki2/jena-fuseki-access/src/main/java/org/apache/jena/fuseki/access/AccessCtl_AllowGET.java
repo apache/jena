@@ -18,10 +18,6 @@
 
 package org.apache.jena.fuseki.access;
 
-import static org.apache.jena.riot.web.HttpNames.*;
-
-import java.util.function.Function;
-
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.fuseki.servlets.HttpAction;
@@ -30,40 +26,20 @@ import org.apache.jena.fuseki.servlets.ServletOps;
 /**
  * Wrapper for an {@link ActionService} that rejects a request with a "write" HTTP
  * method to an graph-access-controlled dataset. Graph-access-controlled dataset only
- * support read (query and GSP GET).
+ * support reads (query and GSP GET).
  */
 public class AccessCtl_AllowGET extends ActionService {
 
     private final ActionService other;
-    private final Function<HttpAction, String> requestUser;
     private final String label;
 
-    public AccessCtl_AllowGET(ActionService other, String label,
-                              Function<HttpAction, String> determineUser) {
+    public AccessCtl_AllowGET(ActionService other, String label) {
         this.other = other;
         this.label = label;
-        this.requestUser = determineUser;
     }
 
     @Override
     public void validate(HttpAction action) {
-        String requestMethod = action.getMethod();
-        switch ( requestMethod ) {
-            case METHOD_GET:
-            case METHOD_HEAD:
-            case METHOD_OPTIONS:
-                break;
-            case METHOD_DELETE:
-            case METHOD_PATCH:
-            case METHOD_POST:
-            case METHOD_PUT:
-            case METHOD_TRACE: {
-                if ( label == null )
-                    ServletOps.errorBadRequest("Not supported");
-                ServletOps.errorBadRequest(label+" : not supported");
-                throw new InternalErrorException("AccessCtl_DenyUpdate: "+ "didn't reject request");
-            }
-        }
         other.validate(action);
     }
 
@@ -71,4 +47,28 @@ public class AccessCtl_AllowGET extends ActionService {
     public void execute(HttpAction action) {
         other.execute(action);
     }
+    
+    // Allow
+    @Override
+    public void execHead(HttpAction action) {
+        executeLifecycle(action);
+    }
+
+    // Allow
+    @Override
+    public void execGet(HttpAction action) {
+        executeLifecycle(action);
+    }
+    
+    // Deny all others.
+    @Override
+    public void execAny(String methodName, HttpAction action) {
+        if ( label == null )
+            ServletOps.errorBadRequest("Not supported");
+        ServletOps.errorBadRequest(label+" : not supported");
+        throw new InternalErrorException("AccessCtl_AllowGET: "+ "didn't reject request");
+    }
+
+    
+    
 }

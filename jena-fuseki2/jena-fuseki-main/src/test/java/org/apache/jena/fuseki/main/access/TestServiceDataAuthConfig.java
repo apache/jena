@@ -41,14 +41,12 @@ public class TestServiceDataAuthConfig extends AbstractTestServiceDatasetAuth {
     }        
         
     public static FusekiServer build(int port, AuthPolicy policy) { 
-
         AuthPolicy policy12 = Auth.policyAllowSpecific("user1", "user2");
         AuthPolicy policy13 = Auth.policyAllowSpecific("user1", "user3");
-        
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         DataService dSrv = new DataService(dsg);
-        dSrv.addEndpoint(new Endpoint(Operation.Query, null, policy12));
-        dSrv.addEndpoint(new Endpoint(Operation.Update, null, policy13));
+        dSrv.addEndpoint(Endpoint.create(Operation.Query, null, policy12));
+        dSrv.addEndpoint(Endpoint.create(Operation.Update, null, policy13));
         FusekiServer server = FusekiServer.create()
             //.verbose(true)
             .port(port)

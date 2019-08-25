@@ -104,7 +104,10 @@ public class SystemTDB
 
     /** Root of TDB-defined parameter short names */  
     public static final String tdbSymbolPrefix      = "tdb" ;
-    
+
+    /** Root of TDB-defined parameter short names, alternate name */  
+    public static final String tdbSymbolPrefix1     = "tdb1" ;
+
     /** Root of any TDB-defined Java system properties */   
     public static final String tdbPropertyRoot      = "org.apache.jena.tdb" ;
 

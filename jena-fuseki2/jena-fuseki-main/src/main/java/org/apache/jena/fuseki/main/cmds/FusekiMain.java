@@ -566,9 +566,10 @@ public class FusekiMain extends CmdARQ {
                 dSrv.getOperations().forEach((op)->{
                     dSrv.getEndpoints(op).forEach(ep-> {
                         String x = ep.getName();
-                        if ( x.isEmpty() )
-                            x = "quads";
-                        endpoints.add(x);
+                        x = "\""+x+"\"";
+                        String opName = ep.getOperation().getName();
+                        String str = x+"=>"+opName;
+                        endpoints.add(str);
                     });
                 });
             });

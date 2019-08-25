@@ -66,10 +66,19 @@ public class QueryExecutionBuilder {
         Objects.requireNonNull(query, "Query for QueryExecution");
 
         query.setResultVars();
-        if ( context == null )
-            context = ARQ.getContext();
+        Context cxt;
+        
+        if ( context == null ) {
+            // Default is to take the global context, the copy it and merge in the dataset context.
+            // If a context is specified by context(Context), use that as given.
+            // The query context is modified to insert the current time.
+            cxt = ARQ.getContext();
+            cxt = Context.setupContextForDataset(cxt, dataset) ;
+        } else {
+            // Isolate to snapshot it and to allow it to be  modified.
+            cxt = context.copy();
+        }
 
-        Context cxt = Context.setupContextForDataset(context, dataset) ;
         QueryEngineFactory f = QueryEngineRegistry.get().find(query, dataset, cxt);
         if ( f == null ) {
             Log.warn(QueryExecutionBuilder.class, "Failed to find a QueryEngineFactory");

@@ -123,14 +123,13 @@ public class FusekiConfig {
             stdDatasetRead.forEach(op -> accEndpoint(endpoints, op));
             if ( FusekiExt.extraOperationServicesRead != null )
                 FusekiExt.extraOperationServicesRead.forEach((name, op) -> accEndpoint(endpoints, op, name));
-            
         }
         // Add to DataService.
         endpoints.forEach(dataService::addEndpoint);
     }
 
     public static void addServiceEP(DataService dataService, Operation operation, String endpointName) {
-        Endpoint endpoint = new Endpoint(operation, endpointName, null);
+        Endpoint endpoint = Endpoint.create(operation, endpointName, null);
         dataService.addEndpoint(endpoint);
     }
 
@@ -207,7 +206,7 @@ public class FusekiConfig {
      */
     public static List<DataAccessPoint> processServerConfiguration(Model configuration, Context context) {
         Resource server = findServer(configuration);
-        parseContext(server, context);
+        mergeContext(server, context);
         processLoadClass(server);
         // Process services, whether via server ja:services or, if absent, by finding by type.
         List<DataAccessPoint> x = servicesAndDatasets(configuration);
@@ -229,7 +228,7 @@ public class FusekiConfig {
      */
     public static List<DataAccessPoint> processServerConfiguration(Resource server, Context context) {
         Objects.requireNonNull(server);
-        parseContext(server, context);
+        mergeContext(server, context);
         processLoadClass(server);
         // Process services, whether via server ja:services or, if absent, by finding by type.
         List<DataAccessPoint> x = servicesAndDatasets(server);
@@ -256,11 +255,22 @@ public class FusekiConfig {
 
     /**
      * Process the resource for {@link Context} settings.
+     * Return a new {@link Context}
      */
-    private static void parseContext(Resource resource, Context cxt) {
+    private static Context parseContext(Resource resource) {
         if ( resource == null )
-            return;
-        AssemblerUtils.setContext(resource, cxt);
+            return null;
+        return AssemblerUtils.parseContext(resource);
+    }
+
+    /**
+     * Process the resource for {@link Context} settings
+     * and update an existing {@link Context}.
+     */
+    private static void mergeContext(Resource resource, Context context) {
+        if ( resource == null )
+            return ;
+        AssemblerUtils.mergeContext(resource, context);
     }
 
     /**
@@ -530,13 +540,21 @@ public class FusekiConfig {
             epName = epNameR.asLiteral().getLexicalForm();
         }
 
+
+        Context cxt = parseContext(endpoint);
+
         // Per-endpoint context.  
         // Could add special names:
         //   fuseki:timeout
         //   fuseki:queryLimit
         //   fuseki:unionDefaultGraph
-        Endpoint ep = new Endpoint(op, epName, authPolicy);
-        parseContext(endpoint, ep.getContext());
+        
+        Endpoint ep = EndpointBuilder.create()
+            .operation(op)
+            .endpointName(epName)
+            .authPolicy(authPolicy)
+            .context(cxt)
+            .build();
         return ep;
     }
 
@@ -586,7 +604,7 @@ public class FusekiConfig {
             
             if ( StringUtils.isEmpty(endpointName) )
                 endpointName = null;
-            Endpoint endpoint = new Endpoint(operation, endpointName, authPolicy);
+            Endpoint endpoint = Endpoint.create(operation, endpointName, authPolicy);
             endpoints.add(endpoint);
         }
     }
@@ -602,7 +620,7 @@ public class FusekiConfig {
     private static void accEndpoint(Collection<Endpoint> endpoints, Operation operation, String endpointName, AuthPolicy authPolicy) {
         if ( StringUtils.isEmpty(endpointName) )
             endpointName = null;
-        Endpoint endpoint = new Endpoint(operation, endpointName, authPolicy);
+        Endpoint endpoint = Endpoint.create(operation, endpointName, authPolicy);
         endpoints.add(endpoint);
     }
 

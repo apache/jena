@@ -104,7 +104,7 @@ public class DataService {
     }
 
     public void addEndpoint(Operation operation, String endpointName, AuthPolicy authPolicy) {
-        Endpoint endpoint = new Endpoint(operation, endpointName, authPolicy);
+        Endpoint endpoint = Endpoint.create(operation, endpointName, authPolicy);
         addEndpoint(endpoint);
     }
 

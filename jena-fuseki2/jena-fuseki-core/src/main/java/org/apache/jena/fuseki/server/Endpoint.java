@@ -43,11 +43,13 @@ public class Endpoint implements Counters {
 
     public static EndpointBuilder create() { return EndpointBuilder.create(); }
     
-    public Endpoint(Operation operation, String endpointName, AuthPolicy requestAuth) {
-        this(operation, endpointName, requestAuth, null, new Context());
+    /** Build an endpoint */
+    public static Endpoint create(Operation operation, String endpointName, AuthPolicy requestAuth) {
+        // Common case.
+        return EndpointBuilder.create().operation(operation).endpointName(endpointName).authPolicy(requestAuth).build(); 
     }
     
-    public Endpoint(Operation operation, String endpointName, AuthPolicy requestAuth, ActionProcessor processor, Context context) {
+    /*package*/ Endpoint(Operation operation, String endpointName, AuthPolicy requestAuth, ActionProcessor processor, Context context) {
         this.operation = Objects.requireNonNull(operation, "operation");
         // Canonicalise to "" for dataset-level operations.
         this.endpointName = endpointName==null? DatasetEP : endpointName;

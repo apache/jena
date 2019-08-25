@@ -37,7 +37,7 @@ public class DatasetStoreAssembler extends AssemblerBase implements Assembler
     {
         StoreDesc desc = openStore(a, root, mode) ;
         Dataset ds = SDBFactory.connectDataset(desc) ;
-        AssemblerUtils.setContext(root, ds.getContext());
+        AssemblerUtils.mergeContext(root, ds.getContext());
         return ds ;
     }
     

@@ -52,7 +52,6 @@ public class FusekiVocab
     public static final Property pUnionDefaultGraph         = property("unionDefaultGraph");
     public static final Property pAllowTimeoutOverride      = property("allowTimeoutOverride");
     public static final Property pMaximumTimeoutOverride    = property("maximumTimeoutOverride");
-    
 
     // Server endpoints.
     public static final Property pServerPing        = property("pingEP");
@@ -67,13 +66,17 @@ public class FusekiVocab
     public static final Property pServiceReadWriteQuadsEP       = property("serviceReadWriteQuads");
     public static final Property pServiceReadQuadsEP            = property("serviceReadQuads");
 
-    // Operation names : the standard SPARQL operations. 
+    // Operation names : the standard operations. 
+    // "alt" names are the same but using "-" not "_".
     public static final Resource opQuery       = resource("query");
     public static final Resource opUpdate      = resource("update");
     public static final Resource opUpload      = resource("upload");
-    public static final Resource opGSP_r       = resource("gsp_r");
-    public static final Resource opGSP_rw      = resource("gsp_rw");
-    
+    public static final Resource opGSP_r       = resource("gsp-r");
+    public static final Resource opGSP_r_alt   = resource("gsp_r");
+    public static final Resource opGSP_rw      = resource("gsp-rw");
+    public static final Resource opGSP_rw_alt  = resource("gsp_rw");
+    public static final Resource opNoOp        = resource("no_op");
+    public static final Resource opNoOp_alt    = resource("no-op");
     
     // Internal
     private static final String stateNameActive     = DataServiceStatus.ACTIVE.name;

@@ -20,7 +20,7 @@ package org.apache.jena.fuseki.server;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.jena.fuseki.server.Operation.GSP_R;
+import static org.apache.jena.fuseki.server.Operation.*;
 import static org.apache.jena.fuseki.server.Operation.GSP_RW;
 import static org.apache.jena.fuseki.server.Operation.Query;
 import static org.apache.jena.fuseki.server.Operation.Update;
@@ -224,10 +224,14 @@ public class Dispatcher {
         Endpoint ep = chooseEndpointNoLegacy(action, dataService, endpointName);
         if ( ep != null )
             return ep;
+        // No dispatch so far.
+        
         if ( ! isEmpty(endpointName) )
             return ep;
         // [DISPATCH LEGACY]
-        // request: empty endpoint, can we find a named service?
+
+        // When it is a unnamed service request (operation on the dataset) and there
+        // is no match, search the named services.
         Operation operation = chooseOperation(action);
         // Search for an endpoint that provides the operation.
         // No guarantee it has the access controls for the operation
@@ -235,57 +239,51 @@ public class Dispatcher {
         ep = findEndpointForOperation(action, dataService, operation, true);
         return ep;
     }
-
-    /** Choose an endpoint. */
+    
+    /**
+     * Choose an endpoint.
+     * <ul>
+     * <li>Look by service name to get the EndpointSet</li>
+     * <li>If empty set, return null.</li>
+     * <li>If there is only one choice, return that (may even be the wrong operation
+     *       - processor implmentations must be defensive).</li>
+     * <li>If multiple choices, classify the operation
+     *     (includes custom content-type) and look up by operation.</li>
+     * <li>Return a match wit a r 
+     * </ul>
+     */
     private static Endpoint chooseEndpointNoLegacy(HttpAction action, DataService dataService, String endpointName) {
         EndpointSet epSet = isEmpty(endpointName) ? dataService.getEndpointSet() : dataService.getEndpointSet(endpointName);
+        
         if ( epSet == null || epSet.isEmpty() )
+            // No matches by name.
             return null;
+        
         // If there is one endpoint, dispatch there directly.
         Endpoint ep = epSet.getOnly();
         if ( ep != null )
             return ep;
-
-//        if ( ep != null ) {
-//            if ( ! isGSP(ep.getOperation()) )
-//                return ep;
-//            // GSP but if not valid, let it upgrade to quads.
-//            if ( hasGSPParams(action) )
-//                return ep;
-//            ep = null;
-//        }
-        // No single direct dispatch.
+        // No single direct dispatch. Multiple choices (different operation, same endpoint name)
         // Work out which operation we are looking for.
         Operation operation = chooseOperation(action);
         ep = epSet.get(operation);
-        if ( ep != null )
-            return ep;
-        return null;
+        // This also happens in findEndpointForOperation
+        // If a GSP-R request, try for GSP-RW
+        if ( ep == null && Operation.GSP_R.equals(operation) )
+            ep = epSet.get(Operation.GSP_RW);
+        return ep;
     }
 
-   private static boolean isGSP(Operation operation) {
-        return operation.equals(GSP_R) || operation.equals(GSP_RW);
-    }
-
-    private static boolean hasGSPParams(HttpAction action) {
-        boolean hasParamGraphDefault = action.request.getParameter(HttpNames.paramGraphDefault) != null;
-        if ( hasParamGraphDefault )
-            return true;
-        boolean hasParamGraph = action.request.getParameter(HttpNames.paramGraph) != null;
-        if ( hasParamGraph )
-            return true;
-        return false;
-    }
-
-    /** Find an endpoint for an operation.
-     *  This returns all endpoints of a {@link DataService} that provide the {@link Operation}. 
-     *  This understands that Quads_RW can service Quads_R and GSP_RW can service GSP_R.
+    /** 
+     *  Find an endpoint for an operation.
+     *  This searches all endpoints of a {@link DataService} that provide the {@link Operation}. 
+     *  This understands that GSP_RW can service GSP_R.
+     *  Used for legacy dispatch.
      */
     private static Endpoint findEndpointForOperation(HttpAction action, DataService dataService, Operation operation, boolean preferUnnamed) {
         Endpoint ep = findEndpointForOperationExact(dataService, operation, preferUnnamed);
         if ( ep != null )
             return ep;
-        // [DISPATCH LEGACY]
         // Try to find "R" functionality from an RW. 
         if ( GSP_R.equals(operation) ) 
             return findEndpointForOperationExact(dataService, GSP_RW, preferUnnamed);
@@ -295,13 +293,16 @@ public class Dispatcher {
         return null;
     }
 
-    /** Find a matching endpoint for exactly this operation. */ 
+    /** Find a matching endpoint for exactly this operation.
+     * If multiple choices, prefer either named or unnamed according
+     * to the flag {@code preferUnnamed}.
+     */ 
     private static Endpoint findEndpointForOperationExact(DataService dataService, Operation operation, boolean preferUnnamed) {
         List<Endpoint> eps = dataService.getEndpoints(operation);
         if ( eps == null || eps.isEmpty() )
             return null;
         // ==== Legacy compatibility.
-        // Find a named service if an unnamed one is not available.
+        // Find a named service, with preference for named/unnamed.
         Endpoint epAlt = null;
         for ( Endpoint ep : eps ) {
             if ( operation.equals(ep.getOperation()) ) {

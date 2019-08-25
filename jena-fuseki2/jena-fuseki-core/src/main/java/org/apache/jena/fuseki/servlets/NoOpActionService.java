@@ -16,25 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.main;
+package org.apache.jena.fuseki.servlets;
 
-import org.apache.jena.fuseki.main.access.TS_SecurityFuseki;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+/** An {@link ActionService} that denies service. 
+ *  Used to turn things off.
+ */ 
+public class NoOpActionService extends ActionService {
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-  TS_FusekiMain.class,
-  TS_SecurityFuseki.class
-})
-public class TC_FusekiMain {
-    @BeforeClass public static void setupForFusekiServer() {
-        // controlled by src/test/resources/log4j.properties.
-//        LogCtl.setLevel(Fuseki.serverLogName,        "WARN");
-//        LogCtl.setLevel(Fuseki.actionLogName,        "WARN");
-//        LogCtl.setLevel(Fuseki.requestLogName,       "WARN");
-//        LogCtl.setLevel(Fuseki.adminLogName,         "WARN");
-//        LogCtl.setLevel("org.eclipse.jetty",         "WARN");
+    @Override
+    public void validate(HttpAction action) {
+        ServletOps.errorBadRequest(action.getActionURI());
     }
+
+    @Override
+    public void execute(HttpAction action) {
+        ServletOps.errorBadRequest(action.getActionURI());
+    }
+    
+    @Override public void execAny(String methodName, HttpAction action)     { executeLifecycle(action); }
 }

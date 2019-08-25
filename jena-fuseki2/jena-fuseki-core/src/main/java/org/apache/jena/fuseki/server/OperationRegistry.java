@@ -46,6 +46,8 @@ public class OperationRegistry {
     private static final ActionService uploadServlet   = new SPARQL_Upload();
     private static final ActionService gspServlet_R    = new GSP_R();
     private static final ActionService gspServlet_RW   = new GSP_RW();
+    private static final ActionService noOperation     = new NoOpActionService();
+    
     
     /** The server-wide standard configuration. */
     private static final OperationRegistry stdConfig   = stdConfig();
@@ -59,11 +61,12 @@ public class OperationRegistry {
 
     private static OperationRegistry stdConfig() {
         OperationRegistry stdOpReg = new OperationRegistry();
-        stdOpReg.register(Operation.Query, WebContent.contentTypeSPARQLQuery, queryServlet);
-        stdOpReg.register(Operation.Update, WebContent.contentTypeSPARQLUpdate, updateServlet);
-        stdOpReg.register(Operation.Upload,   null, uploadServlet);
-        stdOpReg.register(Operation.GSP_R,    null, gspServlet_R);
-        stdOpReg.register(Operation.GSP_RW,   null, gspServlet_RW);
+        stdOpReg.register(Operation.Query,   WebContent.contentTypeSPARQLQuery, queryServlet);
+        stdOpReg.register(Operation.Update,  WebContent.contentTypeSPARQLUpdate, updateServlet);
+        stdOpReg.register(Operation.Upload,  null, uploadServlet);
+        stdOpReg.register(Operation.GSP_R,   null, gspServlet_R);
+        stdOpReg.register(Operation.GSP_RW,  null, gspServlet_RW);
+        stdOpReg.register(Operation.NoOp,    null, noOperation);
         return stdOpReg;
     }
 

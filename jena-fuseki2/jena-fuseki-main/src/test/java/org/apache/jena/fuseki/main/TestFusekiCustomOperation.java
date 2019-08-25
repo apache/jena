@@ -89,7 +89,7 @@ public class TestFusekiCustomOperation {
     private final String url = "http://localhost:"+port;
 
     @Test
-    public void cfg_dataservice() {
+    public void cfg_dataservice_named() {
         // Create a DataService and add the endpoint -> operation association.
         // This still needs the server to have the operation registered.
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
@@ -104,11 +104,31 @@ public class TestFusekiCustomOperation {
                 .registerOperation(newOp, contentType, customHandler)
                 .add("/ds", dataService)
                 .build();
-        testServer(server, true, true);
+        testServer(server, url, endpointName, true);
     }
 
     @Test
-    public void cfg_builder_CT() {
+    public void cfg_dataservice_unnamed() {
+        // Create a DataService and add the endpoint -> operation association.
+        // This still needs the server to have the operation registered.
+        DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
+        DataService dataService = new DataService(dsg);
+        FusekiConfig.populateStdServices(dataService, true);
+        FusekiExt.registerOperation(newOp, customHandler);
+        FusekiConfig.addServiceEP(dataService, newOp, null);
+
+        FusekiServer server =
+            FusekiServer.create()
+                .port(port)
+                .registerOperation(newOp, contentType, customHandler)
+                .add("/ds", dataService)
+                .build();
+        // No endpoint name dispatch - content-type required.
+        testServer(server, url, null, true);
+    }
+
+    @Test
+    public void cfg_builder_CT_named() {
         FusekiServer server =
             FusekiServer.create()
                 .port(port)
@@ -116,7 +136,19 @@ public class TestFusekiCustomOperation {
                 .add("/ds", DatasetGraphFactory.createTxnMem(), true)
                 .addEndpoint("/ds", endpointName, newOp)
                 .build();
-        testServer(server, true, true);
+        testServer(server, url, endpointName, true);
+    }
+
+    @Test
+    public void cfg_builder_CT_noName() {
+        FusekiServer server =
+            FusekiServer.create()
+                .port(port)
+                .registerOperation(newOp, contentType, customHandler)
+                .add("/ds", DatasetGraphFactory.createTxnMem(), true)
+                .addEndpoint("/ds", "", newOp)
+                .build();
+        testServer(server, url, null, true);
     }
 
     @Test
@@ -128,7 +160,7 @@ public class TestFusekiCustomOperation {
                 .add("/ds", DatasetGraphFactory.createTxnMem(), true)
                 .addEndpoint("/ds", endpointName, newOp)
                 .build();
-        testServer(server, true, false);
+        testServer(server, url, endpointName, false);
     }
 
     @Test(expected=FusekiConfigException.class)
@@ -151,7 +183,7 @@ public class TestFusekiCustomOperation {
         //.build();
     }
 
-    public void cfg_bad_ct_not_enabkled_here() {
+    public void cfg_bad_ct_not_enabled_here() {
         FusekiServer server = FusekiServer.create()
             .port(port)
             .registerOperation(newOp, "app/special", customHandler)
@@ -159,11 +191,11 @@ public class TestFusekiCustomOperation {
             // Unregistered.
             .addEndpoint("/ds", endpointName, newOp)
             .build();
-        testServer(server, false, false);
+        testServer(server, url, null, false);
     }
 
 
-    private void testServer(FusekiServer server, boolean withEndpoint, boolean withContentType) {
+    private static void testServer(FusekiServer server, String url, String epName, boolean withContentType) {
         try {
             server.start();
             // Try query (no extension required)
@@ -173,16 +205,21 @@ public class TestFusekiCustomOperation {
                 }
             }
 
-            if ( withEndpoint ) {
-                // Service endpoint name : GET
-                String s1 = HttpOp.execHttpGetString(url+"/ds/"+endpointName);
+            if ( epName != null ) {
+                if ( ! epName.isEmpty() ) {
+                    // Service endpoint name : GET
+                    String svcCall = url+"/ds/"+epName;
 
-                // Service endpoint name : POST
-                try ( TypedInputStream stream = HttpOp.execHttpPostStream(url+"/ds/"+endpointName, "ignored", "", "text/plain") ) {
-                    String x = IOUtils.toString(stream, StandardCharsets.UTF_8);
-                    assertNotNull(x);
-                } catch (IOException ex) {
-                    IO.exception(ex);
+                    String s1 = HttpOp.execHttpGetString(svcCall);
+
+                    // Service endpoint name : POST
+                    try ( TypedInputStream stream = HttpOp.execHttpPostStream(svcCall, "ignored", "", "text/plain") ) {
+                        assertNotNull(stream);
+                        String x = IOUtils.toString(stream, StandardCharsets.UTF_8);
+                        assertNotNull(x);
+                    } catch (IOException ex) {
+                        IO.exception(ex);
+                    }
                 }
             } else {
                 // No endpoint so we expect a 404.
@@ -198,6 +235,7 @@ public class TestFusekiCustomOperation {
             if ( withContentType ) {
                 // Content-type
                 try ( TypedInputStream stream = HttpOp.execHttpPostStream(url+"/ds", contentType, "", "text/plain") ) {
+                    assertNotNull(stream);
                     String x = IOUtils.toString(stream, StandardCharsets.UTF_8);
                     assertNotNull(x);
                 } catch (IOException ex) {

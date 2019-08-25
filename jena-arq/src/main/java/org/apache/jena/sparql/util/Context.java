@@ -364,8 +364,9 @@ public class Context {
         context.set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime()) ;
     }
     
-    /** Merge an outer (global) and local context to produce a new context
-     * The new context is always a separate copy.  
+    /** Merge an outer (defaults to the system global context)
+     *  and local context to produce a new context
+     *  The new context is always a separate copy.  
      */
     public static Context mergeCopy(Context contextGlobal, Context contextLocal) {
         if ( contextGlobal == null )

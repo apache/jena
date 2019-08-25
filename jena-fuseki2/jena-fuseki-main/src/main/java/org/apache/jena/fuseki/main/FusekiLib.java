@@ -94,7 +94,8 @@ public class FusekiLib {
 
         // Block updates (can just not register these operations).
         builder.registerOperation(Operation.Update, WebContent.contentTypeSPARQLUpdate, new AccessCtl_Deny("Update"));
-        builder.registerOperation(Operation.GSP_RW, new AccessCtl_AllowGET(new GSP_RW(), "GSP Write", determineUser));
+        builder.registerOperation(Operation.GSP_RW, new AccessCtl_AllowGET(new GSP_RW(), "GSP Write"));
+        builder.registerOperation(Operation.GSP_RW, new AccessCtl_GSP_R(determineUser));
         return builder;
     }
 
@@ -126,7 +127,7 @@ public class FusekiLib {
        if ( Operation.GSP_R.equals(op) )
            return new AccessCtl_GSP_R(determineUser);
        if ( Operation.GSP_RW.equals(op) )
-           return new AccessCtl_AllowGET(new GSP_RW(), "GSP Read-only", determineUser);
+           return new AccessCtl_GSP_R(determineUser);
        return new AccessCtl_Deny("Not supported for graph level access control: "+op.getDescription());
     }
 }

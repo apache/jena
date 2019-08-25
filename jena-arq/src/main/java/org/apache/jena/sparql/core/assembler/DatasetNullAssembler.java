@@ -53,7 +53,7 @@ public class DatasetNullAssembler extends AssemblerBase {
         else
             throw new InternalErrorException();
         Dataset ds = DatasetFactory.wrap(dsg);
-        AssemblerUtils.setContext(root, ds.getContext());
+        AssemblerUtils.mergeContext(root, ds.getContext());
         return ds;
     }
 }

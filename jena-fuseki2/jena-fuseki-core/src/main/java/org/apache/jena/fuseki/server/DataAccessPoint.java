@@ -42,14 +42,19 @@ public class DataAccessPoint {
 
     public String getName()     { return name; }
 
+    /** Canonical name (path) for a dataset.
+     * This always starts with "/".
+     * It is the name within the Fuseki server, no servlet context path. 
+     */
     public static String canonical(String datasetPath) {
         if ( datasetPath == null )
             return datasetPath;
         if ( datasetPath.equals("/") )
-            datasetPath = "";
-        else
-            if ( !datasetPath.startsWith("/") )
-                datasetPath = "/" + datasetPath;
+            return datasetPath;
+        if ( datasetPath.equals("") )
+            return "/";
+        if ( !datasetPath.startsWith("/") )
+            datasetPath = "/" + datasetPath;
         if ( datasetPath.endsWith("/") )
             datasetPath = datasetPath.substring(0, datasetPath.length() - 1);
         return datasetPath;

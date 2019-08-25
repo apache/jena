@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.SetUtils;
 import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.FusekiLib;
@@ -95,20 +96,36 @@ public abstract class AbstractTestFusekiSecurityAssembler {
         int port = server.getPort();
         return "http://localhost:"+port+"/database";
     }
-
+    
     private static FusekiServer setup(String assembler, boolean sharedDatabase) {
         int port = FusekiNetLib.choosePort();
+        
+        // This will have a warning because authentication is not set (no password
+        // file, no security handler) and that's what we want - no authentication -
+        // because we use "user.get()"in the tests.
+        //
+        // Altering the logging level is simply to avoid the Fuseki.configLog message
+        // in "build()" without turning warnings off everywhere.
 
-        // This will have a warning (no passwd set but there is authentication)- and that's correct 
+        // -- Start log manipulation.
+        org.apache.log4j.Logger logger = org.apache.log4j.LogManager.getLogger(Fuseki.configLog.getName());
+        org.apache.log4j.Level level = logger.getLevel() ;
+        LogCtl.disable(Fuseki.configLog);
+        
+        // In case Fuseki.configLog is active - make sure the test log shows the build()
+        // message is expected.
         Fuseki.configLog.warn("  (Expect one warning here)");
         FusekiServer server = FusekiServer.create()
             .port(port)
             .parseConfigFile(assembler)
             .build();
         // Special way to get the servlet remote user (the authorized principle).
-        //FusekiLib.modifyForAccessCtl(server, (a)->user.get());
         FusekiLib.modifyForAccessCtl(server.getDataAccessPointRegistry(), (a)->user.get());
         server.start();
+
+        
+        LogCtl.disable(Fuseki.configLog);
+        // -- End log manipulation.
 
         if ( sharedDatabase ) {
             String data = StrUtils.strjoinNL

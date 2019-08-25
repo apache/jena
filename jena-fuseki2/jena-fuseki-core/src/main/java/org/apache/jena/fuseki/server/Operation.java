@@ -27,6 +27,7 @@ import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.iri.IRI;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.system.IRIResolver;
 
 /**
@@ -52,7 +53,7 @@ public class Operation {
     
     /**
      * Create an Operation - this operation interns operations so there is only
-     * object for each operation. It is an extensible enum.
+     * one object for each operation. It is an extensible enum.
      */
     static public Operation alloc(String iriStr, String shortName, String description) {
         IRI iri = IRIResolver.parseIRI(iriStr);
@@ -82,7 +83,15 @@ public class Operation {
     public static final Operation Upload   = alloc(FusekiVocab.opUpload.asNode(), "upload", "File Upload");
     public static final Operation GSP_R    = alloc(FusekiVocab.opGSP_r.asNode(),  "gsp-r",  "Graph Store Protocol (Read)");
     public static final Operation GSP_RW   = alloc(FusekiVocab.opGSP_rw.asNode(), "gsp-rw", "Graph Store Protocol");
-
+    public static final Operation NoOp     = alloc(FusekiVocab.opNoOp.asNode(),   "no-op",  "No Op");
+    
+    static {
+        // Not everyone will remember "_" vs "-" so ...
+        altName(FusekiVocab.opNoOp_alt,   FusekiVocab.opNoOp); 
+        altName(FusekiVocab.opGSP_r_alt,  FusekiVocab.opGSP_r);
+        altName(FusekiVocab.opGSP_rw_alt, FusekiVocab.opGSP_rw);
+    }
+    
     private final Node id;
     private final String name;
     private final String description;
@@ -126,6 +135,15 @@ public class Operation {
     @Override
     public String toString() {
         return name;
+    }
+
+    private static void altName(Resource altName, Resource properName) {
+        altName(altName.asNode(), properName.asNode());
+    }
+
+    private static void altName(Node altName, Node properName) {
+        Operation op = mgr.get(properName);
+        mgr.put(altName, op);
     }
 }
 

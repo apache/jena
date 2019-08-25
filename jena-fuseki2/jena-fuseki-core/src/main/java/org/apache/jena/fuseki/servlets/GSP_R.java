@@ -33,6 +33,9 @@ import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 public class GSP_R extends GSP_Base {
+    
+    public GSP_R() {}
+    
     @Override
     protected void doGet(HttpAction action) {
         if ( isQuads(action) )
@@ -41,7 +44,6 @@ public class GSP_R extends GSP_Base {
             execGetGSP(action);
     }
 
-    // XXX Generalize and combine by generalizing target.
     protected void execGetQuads(HttpAction action) {
         MediaType mediaType = ActionLib.contentNegotationQuads(action);
         ServletOutputStream output;

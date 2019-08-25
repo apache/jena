@@ -41,12 +41,17 @@ public interface ActionProcessor {
         }
     }
 
-    public default void execHead(HttpAction action)     { ServletOps.errorMethodNotAllowed(METHOD_HEAD); }
-    public default void execGet(HttpAction action)      { ServletOps.errorMethodNotAllowed(METHOD_GET); }
-    public default void execPost(HttpAction action)     { ServletOps.errorMethodNotAllowed(METHOD_POST); }
-    public default void execPatch(HttpAction action)    { ServletOps.errorMethodNotAllowed(METHOD_PATCH); }
-    public default void execPut(HttpAction action)      { ServletOps.errorMethodNotAllowed(METHOD_PUT); }
-    public default void execDelete(HttpAction action)   { ServletOps.errorMethodNotAllowed(METHOD_DELETE); }
-    public default void execOptions(HttpAction action)  { ServletOps.errorMethodNotAllowed(METHOD_OPTIONS); }
-    public default void execTrace(HttpAction action)    { ServletOps.errorMethodNotAllowed(METHOD_TRACE); }
+    public default void execHead(HttpAction action)     { execAny(METHOD_HEAD,    action); }
+    public default void execGet(HttpAction action)      { execAny(METHOD_GET,     action); }
+    public default void execPost(HttpAction action)     { execAny(METHOD_POST,    action); }
+    public default void execPatch(HttpAction action)    { execAny(METHOD_PATCH,   action); }
+    public default void execPut(HttpAction action)      { execAny(METHOD_PUT,     action); }
+    public default void execDelete(HttpAction action)   { execAny(METHOD_DELETE,  action); }
+    public default void execOptions(HttpAction action)  { execAny(METHOD_OPTIONS, action); }
+    public default void execTrace(HttpAction action)    { execAny(METHOD_TRACE,   action); }
+    
+    // Override this for all HTTP verbs.
+    public default void execAny(String methodName, HttpAction action) {
+        ServletOps.errorMethodNotAllowed(methodName);
+    }
 }
