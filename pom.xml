@@ -68,7 +68,7 @@
     -->
     <ver.jsonldjava>0.12.3</ver.jsonldjava>
     <ver.jackson>2.9.9</ver.jackson>
-    <ver.jackson-databind>2.9.9.2</ver.jackson-databind>
+    <ver.jackson-databind>2.9.9.3</ver.jackson-databind>
 
     <ver.commonsio>2.6</ver.commonsio>
     <ver.commonscli>1.4</ver.commonscli>
