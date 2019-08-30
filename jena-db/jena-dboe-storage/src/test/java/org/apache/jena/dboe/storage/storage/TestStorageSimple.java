@@ -26,5 +26,4 @@ public class TestStorageSimple extends BaseTestStorageRDF {
     protected StorageRDF create() {
         return new StorageMem();
     }
-
 }

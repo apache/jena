@@ -22,11 +22,13 @@ import static org.junit.Assert.assertFalse ;
 import static org.junit.Assert.assertNotNull ;
 import static org.junit.Assert.assertTrue ;
 
+import java.util.Arrays;
 import java.util.Iterator ;
 import java.util.List ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -39,7 +41,6 @@ import org.junit.Test ;
  *
  * @see AbstractDatasetGraphFind
  * @see AbstractDatasetGraphFindPatterns
- * @see AbstractDatasetGraphTests
  * @see AbstractTestGraphOverDatasetGraph
  */
 public abstract class AbstractDatasetGraphTests
@@ -305,4 +306,45 @@ public abstract class AbstractDatasetGraphTests
         dsg.delete(q);
         assertFalse(dsg.containsGraph(gn));
     }
+    
+    @Test public void listGraphNodes_1() {
+        DatasetGraph dsg = emptyDataset();
+        Quad quad = SSE.parseQuad("(quad <g> <s> <p> <o>)") ;
+        Node gn = SSE.parseNode("<g>") ;
+        dsg.add(quad) ;
+        List<Node> x = Iter.toList(dsg.listGraphNodes());
+        assertEquals(1,x.size());
+        Node gn2 = x.get(0);
+        assertEquals(gn, gn2);
+    }
+    
+    @Test public void listGraphNodes_2() {
+        DatasetGraph dsg = emptyDataset();
+        Quad quad1 = SSE.parseQuad("(quad <g1> <s> <p> <o>)") ;
+        Quad quad2 = SSE.parseQuad("(quad <g2> <s> <p> <o>)") ;
+        Node gn1 = SSE.parseNode("<g1>") ;
+        Node gn2 = SSE.parseNode("<g2>") ;
+        dsg.add(quad1) ;
+        dsg.add(quad2) ;
+        List<Node> x = Iter.toList(dsg.listGraphNodes());
+        List<Node> e = Arrays.asList(gn1, gn2);
+        assertEquals(2,x.size());
+        boolean b = ListUtils.equalsUnordered(e, x);
+        assertTrue(b);
+    }
+    
+    @Test public void listGraphNodes_3() {
+        DatasetGraph dsg = emptyDataset();
+        Quad quad1 = SSE.parseQuad("(quad _ <s> <p> <o>)") ;
+        Quad quad2 = SSE.parseQuad("(quad <g> <s> <p> <o>)") ;
+        Node gn = SSE.parseNode("<g>") ;
+        dsg.add(quad1) ;
+        dsg.add(quad2) ;
+        List<Node> x = Iter.toList(dsg.listGraphNodes());
+        List<Node> e = Arrays.asList(gn);
+        boolean b = ListUtils.equalsUnordered(e, x);
+        assertTrue(b);
+    }
+
+
 }
