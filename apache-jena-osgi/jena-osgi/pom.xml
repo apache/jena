@@ -261,6 +261,8 @@
               !org.apache.jena.ext.*,
               !org.checkerframework.checker.*,
               !com.google.errorprone.annotations.*,
+              !com.google.appengine.api,
+              !com.google.apphosting.api,
               sun.misc;resolution:=optional,
               *
             </Import-Package>
