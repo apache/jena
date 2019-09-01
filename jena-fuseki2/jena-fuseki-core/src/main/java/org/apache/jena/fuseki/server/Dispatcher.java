@@ -16,11 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.servlets;
+package org.apache.jena.fuseki.server;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.jena.fuseki.server.Operation.*;
+import static org.apache.jena.fuseki.server.Operation.GSP_RW;
+import static org.apache.jena.fuseki.server.Operation.Query;
+import static org.apache.jena.fuseki.server.Operation.Update;
 import static org.apache.jena.fuseki.servlets.ActionExecLib.allocHttpAction;
 
 import java.util.Collection;
@@ -32,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.auth.Auth;
-import org.apache.jena.fuseki.server.*;
+import org.apache.jena.fuseki.servlets.*;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger;
@@ -75,7 +78,7 @@ public class Dispatcher {
     public static boolean dispatch(HttpServletRequest request, HttpServletResponse response) {
         // Path component of the URI, without context path
         String uri = ActionLib.actionURI(request);
-        String datasetUri = ActionLib.mapActionRequestToDataset(uri);
+        String datasetUri = ActionLib.mapRequestToDataset(uri);
 
         if ( LogDispatch ) {
             LOG.info("Filter: Request URI = " + request.getRequestURI());
@@ -112,12 +115,18 @@ public class Dispatcher {
     }
 
     /**
-     * Find the ActionProcessor or return null if there can't determine one. This
-     * function does NOT return null; it throws ActionErrorException after sending an
-     * HTTP error response.
+     * Find the ActionProcessor or return null if there can't determine one.
      * 
-     * Returning null indicates an error, and the HTTP response
-     * has been done.
+     * This function sends the appropriate HTTP error response.
+     * 
+     * Returning null indicates an HTTP error response, and the HTTP response has been done.
+     * 
+     * Process
+     * <li> mapRequestToEndpointName -> endpoint name 
+     * <li> chooseEndpoint(action, dataService, endpointName) -> Endpoint.
+     * <li> Endpoint to Operation (endpoint carries Operation).
+     * <li> target(action, operation) -> ActionProcess. 
+     * 
      */
     private static ActionProcessor chooseProcessor(HttpAction action) {
         // "return null" indicates that processing failed to find a ActionProcessor
@@ -130,10 +139,10 @@ public class Dispatcher {
         }
 
         // ---- Determine Endpoint.
-        String endpointName = mapRequestToOperation(action, dataAccessPoint);
+        String endpointName = mapRequestToEndpointName(action, dataAccessPoint);
 
-        Endpoint ep = chooseEndpoint(action, dataService, endpointName);
-        if ( ep == null ) {
+        Endpoint endpoint = chooseEndpoint(action, dataService, endpointName);
+        if ( endpoint == null ) {
             if ( isEmpty(endpointName) )
                 ServletOps.errorBadRequest("No operation for request: "+action.getActionURI());
             else
@@ -141,13 +150,13 @@ public class Dispatcher {
             return null;
         }
 
-        Operation operation = ep.getOperation();
+        Operation operation = endpoint.getOperation();
         if ( operation == null ) {
             ServletOps.errorNotFound("No operation: "+action.getActionURI());
             return null;
         }
 
-        action.setEndpoint(ep);
+        action.setEndpoint(endpoint);
         
         // ---- Authorization
         // -- Server-level authorization.
@@ -164,7 +173,7 @@ public class Dispatcher {
         // -- Endpoint level authorization
         // Make sure all contribute authentication.
         Auth.allow(user, action.getEndpoint().getAuthPolicy(), ServletOps::errorForbidden);
-        if ( isEmpty(endpointName) && ! ep.isUnnamed() ) {
+        if ( isEmpty(endpointName) && ! endpoint.isUnnamed() ) {
             // [DISPATCH LEGACY]
             // If choice was by looking in all named endpoints for a unnamed endpoint
             // request, ensure all choices allow access.
@@ -180,30 +189,23 @@ public class Dispatcher {
 
         // ---- Handler.
         // Decide the code to execute the request.
-        // ActionProcessor handler = target(action, operation);
-        ActionProcessor processor = target(action, operation);
+        ActionProcessor processor = endpoint.getProcessor();
         if ( processor == null )
-            ServletOps.errorBadRequest(format("dataset=%s: op=%s", dataAccessPoint.getName(), operation.getName()));
+            ServletOps.errorBadRequest(format("No processor: dataset=%s: op=%s", dataAccessPoint.getName(), operation.getName()));
         return processor;
-    }
-
-    // operation to code for operation.
-    private static ActionProcessor target(HttpAction action, Operation operation) {
-        return action.getOperationRegistry().findHandler(operation);
     }
 
     /**
      * Map request to operation name.
      * Returns the service name (the part after the "/" of the dataset part) or "".
      */
-    protected static String mapRequestToOperation(HttpAction action, DataAccessPoint dataAccessPoint) {
-        return ActionLib.mapRequestToOperation(action, dataAccessPoint);
+    protected static String mapRequestToEndpointName(HttpAction action, DataAccessPoint dataAccessPoint) {
+        return ActionLib.mapRequestToEndpointName(action, dataAccessPoint);
     }
 
     // Find the endpoints for an operation.
-    // This is GSP_R/GSP_RW and Quads_R/Quads_RW aware.
+    // This is GSP_R/GSP_RW aware.
     // If asked for GSP_R and there are no endpoints for GSP_R, try GSP_RW.
-    // Ditto Quads_R -> Quads_RW.
     private static Collection<Endpoint> getEndpoints(DataService dataService, Operation operation) {
         Collection<Endpoint> x = dataService.getEndpoints(operation);
         if ( x == null || x.isEmpty() ) {
@@ -222,9 +224,14 @@ public class Dispatcher {
         Endpoint ep = chooseEndpointNoLegacy(action, dataService, endpointName);
         if ( ep != null )
             return ep;
+        // No dispatch so far.
+        
         if ( ! isEmpty(endpointName) )
             return ep;
         // [DISPATCH LEGACY]
+
+        // When it is a unnamed service request (operation on the dataset) and there
+        // is no match, search the named services.
         Operation operation = chooseOperation(action);
         // Search for an endpoint that provides the operation.
         // No guarantee it has the access controls for the operation
@@ -232,57 +239,51 @@ public class Dispatcher {
         ep = findEndpointForOperation(action, dataService, operation, true);
         return ep;
     }
-
-    /** Choose an endpoint. */
+    
+    /**
+     * Choose an endpoint.
+     * <ul>
+     * <li>Look by service name to get the EndpointSet</li>
+     * <li>If empty set, return null.</li>
+     * <li>If there is only one choice, return that (may even be the wrong operation
+     *       - processor implmentations must be defensive).</li>
+     * <li>If multiple choices, classify the operation
+     *     (includes custom content-type) and look up by operation.</li>
+     * <li>Return a match wit a r 
+     * </ul>
+     */
     private static Endpoint chooseEndpointNoLegacy(HttpAction action, DataService dataService, String endpointName) {
         EndpointSet epSet = isEmpty(endpointName) ? dataService.getEndpointSet() : dataService.getEndpointSet(endpointName);
+        
         if ( epSet == null || epSet.isEmpty() )
+            // No matches by name.
             return null;
+        
         // If there is one endpoint, dispatch there directly.
         Endpoint ep = epSet.getOnly();
         if ( ep != null )
             return ep;
-
-//        if ( ep != null ) {
-//            if ( ! isGSP(ep.getOperation()) )
-//                return ep;
-//            // GSP but if not valid, let it upgrade to quads.
-//            if ( hasGSPParams(action) )
-//                return ep;
-//            ep = null;
-//        }
-        // No single direct dispatch.
+        // No single direct dispatch. Multiple choices (different operation, same endpoint name)
         // Work out which operation we are looking for.
         Operation operation = chooseOperation(action);
         ep = epSet.get(operation);
-        if ( ep != null )
-            return ep;
-        return null;
+        // This also happens in findEndpointForOperation
+        // If a GSP-R request, try for GSP-RW
+        if ( ep == null && Operation.GSP_R.equals(operation) )
+            ep = epSet.get(Operation.GSP_RW);
+        return ep;
     }
 
-   private static boolean isGSP(Operation operation) {
-        return operation.equals(GSP_R) || operation.equals(GSP_RW);
-    }
-
-    private static boolean hasGSPParams(HttpAction action) {
-        boolean hasParamGraphDefault = action.request.getParameter(HttpNames.paramGraphDefault) != null;
-        if ( hasParamGraphDefault )
-            return true;
-        boolean hasParamGraph = action.request.getParameter(HttpNames.paramGraph) != null;
-        if ( hasParamGraph )
-            return true;
-        return false;
-    }
-
-    /** Find an endpoint for an operation.
-     *  This returns all endpoints of a {@link DataService} that provide the {@link Operation}. 
-     *  This understands that Quads_RW can service Quads_R and GSP_RW can service GSP_R.
+    /** 
+     *  Find an endpoint for an operation.
+     *  This searches all endpoints of a {@link DataService} that provide the {@link Operation}. 
+     *  This understands that GSP_RW can service GSP_R.
+     *  Used for legacy dispatch.
      */
     private static Endpoint findEndpointForOperation(HttpAction action, DataService dataService, Operation operation, boolean preferUnnamed) {
         Endpoint ep = findEndpointForOperationExact(dataService, operation, preferUnnamed);
         if ( ep != null )
             return ep;
-        // [DISPATCH LEGACY]
         // Try to find "R" functionality from an RW. 
         if ( GSP_R.equals(operation) ) 
             return findEndpointForOperationExact(dataService, GSP_RW, preferUnnamed);
@@ -292,13 +293,16 @@ public class Dispatcher {
         return null;
     }
 
-    /** Find a matching endpoint for exactly this operation. */ 
+    /** Find a matching endpoint for exactly this operation.
+     * If multiple choices, prefer either named or unnamed according
+     * to the flag {@code preferUnnamed}.
+     */ 
     private static Endpoint findEndpointForOperationExact(DataService dataService, Operation operation, boolean preferUnnamed) {
         List<Endpoint> eps = dataService.getEndpoints(operation);
         if ( eps == null || eps.isEmpty() )
             return null;
         // ==== Legacy compatibility.
-        // Find a named service if an unnamed one is not available.
+        // Find a named service, with preference for named/unnamed.
         Endpoint epAlt = null;
         for ( Endpoint ep : eps ) {
             if ( operation.equals(ep.getOperation()) ) {
@@ -316,7 +320,7 @@ public class Dispatcher {
     /**
      * Identify the operation being requested.
      * It is analysing the HTTP request using global configuration. 
-     * The decision is is based on
+     * The decision is based on
      * <ul>
      * <li>Query parameters (URL query string or HTML form)</li>
      * <li>Content-Type header</li>

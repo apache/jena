@@ -43,7 +43,8 @@ import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.web.HttpSC;
 
 public class GSP_RW extends GSP_R {
-    // XXX Convert to GSPLib. 
+    
+    public GSP_RW() {}
     
     @Override
     protected void doOptions(HttpAction action) {
@@ -139,14 +140,14 @@ public class GSP_RW extends GSP_R {
     }
 
     /** Test whether the operation has exactly one GSP parameter and no other parameters. */ 
-    public static boolean hasGSPParamsStrict(HttpAction action) {
+    public static boolean xasGSPParamsStrict(HttpAction action) {
         if ( action.request.getQueryString() == null )
             return false;
         Map<String, String[]> params = action.request.getParameterMap();
         if ( params.size() != 1 )
             return false;
-        boolean hasParamGraphDefault = hasExactlyOneValue(action, HttpNames.paramGraphDefault);
-        boolean hasParamGraph = hasExactlyOneValue(action, HttpNames.paramGraph);
+        boolean hasParamGraphDefault = GSPLib.hasExactlyOneValue(action, HttpNames.paramGraphDefault);
+        boolean hasParamGraph = GSPLib.hasExactlyOneValue(action, HttpNames.paramGraph);
         // Java XOR
         return hasParamGraph ^ hasParamGraphDefault;
     }

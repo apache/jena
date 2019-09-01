@@ -18,7 +18,17 @@
 
 package org.apache.jena.fuseki.server;
 
-import org.apache.jena.fuseki.servlets.OperationRegistry;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import org.apache.jena.atlas.lib.IRILib;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.iri.IRI;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.riot.system.IRIResolver;
 
 /**
  * Operations are symbol to look up in the {@link OperationRegistry#operationToHandler} map. The name
@@ -27,32 +37,75 @@ import org.apache.jena.fuseki.servlets.OperationRegistry;
  */
 public class Operation {
 
-    /** Create/intern. */
-    static private NameMgr<Operation> mgr = new NameMgr<>();
-    static public Operation register(String name, String description) {
-        return mgr.register(name, (x)->create(x, description));
-    }
+    private static String NS = FusekiVocab.NS;
+    
+    /** Create/intern. Maps short name to operation. */
+    static private Map<Node, Operation> mgr = new HashMap<>();
 
+    static public Operation get(Node node) { return mgr.get(node); }
+    
+    /** @deprecated Use {@link #alloc(Node, String, String)}. */
+    @Deprecated
+    static public Operation register(String shortName, String description) {
+        String x = IRILib.encodeUriPath(shortName); 
+        return alloc("http://migration/"+x, shortName, description);
+    }
+    
+    /**
+     * Create an Operation - this operation interns operations so there is only
+     * one object for each operation. It is an extensible enum.
+     */
+    static public Operation alloc(String iriStr, String shortName, String description) {
+        IRI iri = IRIResolver.parseIRI(iriStr);
+        if ( iri.hasViolation(false) )
+            Log.warn(Operation.class, "Poor Operation name: "+iriStr+" : Not an IRI");
+        if ( iri.isRelative() )
+            Log.warn(Operation.class, "Poor Operation name: "+iriStr+" : Relative IRI");
+        Node node = NodeFactory.createURI(iriStr);
+        return alloc(node, shortName, description);
+    }
+    
+    /**
+     * Create an Operation - this operation interns operations so there is only
+     * object for each operation. It is an extensible enum.
+     */
+    static public Operation alloc(Node op, String shortName, String description) {
+        return mgr.computeIfAbsent(op, (x)->create(x, shortName, description));
+    }
+    
     /** Create; not registered */
-    static private Operation create(String name, String description) {
-        return new Operation(name, description);
+    static private Operation create(Node id, String shortName, String description) {
+        return new Operation(id, shortName, description);
     }
 
-    public static final Operation Query          = register("Query", "SPARQL Query");
-    public static final Operation Update         = register("Update", "SPARQL Update");
-    public static final Operation Upload         = register("Upload", "File Upload");
-    public static final Operation Patch          = register("Patch", "RDF Patch");
-    public static final Operation GSP_R          = register("GSP_R", "Graph Store Protocol (Read)");
-    public static final Operation GSP_RW         = register("GSP_RW", "Graph Store Protocol");
-
-    private final String description;
+    public static final Operation Query    = alloc(FusekiVocab.opQuery.asNode(),  "query",  "SPARQL Query");
+    public static final Operation Update   = alloc(FusekiVocab.opUpdate.asNode(), "update", "SPARQL Update");
+    public static final Operation Upload   = alloc(FusekiVocab.opUpload.asNode(), "upload", "File Upload");
+    public static final Operation GSP_R    = alloc(FusekiVocab.opGSP_r.asNode(),  "gsp-r",  "Graph Store Protocol (Read)");
+    public static final Operation GSP_RW   = alloc(FusekiVocab.opGSP_rw.asNode(), "gsp-rw", "Graph Store Protocol");
+    public static final Operation NoOp     = alloc(FusekiVocab.opNoOp.asNode(),   "no-op",  "No Op");
+    
+    static {
+        // Not everyone will remember "_" vs "-" so ...
+        altName(FusekiVocab.opNoOp_alt,   FusekiVocab.opNoOp); 
+        altName(FusekiVocab.opGSP_r_alt,  FusekiVocab.opGSP_r);
+        altName(FusekiVocab.opGSP_rw_alt, FusekiVocab.opGSP_rw);
+    }
+    
+    private final Node id;
     private final String name;
-
-    private Operation(String name, String description) {
+    private final String description;
+    
+    private Operation(Node fullName, String name, String description) {
+        this.id = fullName;
         this.name = name;
         this.description = description;
     }
 
+    public Node getId() {
+        return id;
+    }
+    
     public String getName() {
         return name;
     }
@@ -63,35 +116,34 @@ public class Operation {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
+        return Objects.hash(id);
     }
 
     // Could be this == obj
     // because we intern'ed the object
-
+    
     @Override
     public boolean equals(Object obj) {
         if ( this == obj )
             return true;
-        if ( obj == null )
-            return false;
-        if ( getClass() != obj.getClass() )
+        if ( !(obj instanceof Operation) )
             return false;
         Operation other = (Operation)obj;
-        if ( name == null ) {
-            if ( other.name != null )
-                return false;
-        } else if ( !name.equals(other.name) )
-            return false;
-        return true;
+        return Objects.equals(id, other.id);
     }
 
     @Override
     public String toString() {
         return name;
+    }
+
+    private static void altName(Resource altName, Resource properName) {
+        altName(altName.asNode(), properName.asNode());
+    }
+
+    private static void altName(Node altName, Node properName) {
+        Operation op = mgr.get(properName);
+        mgr.put(altName, op);
     }
 }
 

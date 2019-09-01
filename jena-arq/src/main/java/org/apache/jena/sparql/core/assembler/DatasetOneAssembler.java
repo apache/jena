@@ -76,7 +76,7 @@ public class DatasetOneAssembler extends AssemblerBase {
             String x = DatasetAssemblerVocab.tDatasetOne.getLocalName();
             throw new AssemblerException(root, "A "+x+" dataset can only hold a default graph, and no named graphs");
         }
-        AssemblerUtils.setContext(root, ds.getContext());
+        AssemblerUtils.mergeContext(root, ds.getContext());
         return ds;
     }
 }

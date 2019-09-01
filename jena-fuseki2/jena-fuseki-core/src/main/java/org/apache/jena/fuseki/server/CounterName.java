@@ -27,7 +27,7 @@ public class CounterName {
     static public CounterName register(String name, String hierarchicalName) {
         Objects.requireNonNull(name, "name");
         Objects.requireNonNull(hierarchicalName, "hierarchicalName");
-        return mgr.register(name, (n)->new CounterName(name, hierarchicalName));
+        return mgr.alloc(name, (n)->new CounterName(name, hierarchicalName));
     }
 
     // The "name" is used as a JSON key string.

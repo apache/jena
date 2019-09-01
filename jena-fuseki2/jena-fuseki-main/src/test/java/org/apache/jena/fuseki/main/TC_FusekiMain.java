@@ -18,8 +18,6 @@
 
 package org.apache.jena.fuseki.main;
 
-import org.apache.jena.atlas.logging.LogCtl;
-import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.access.TS_SecurityFuseki;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -32,10 +30,11 @@ import org.junit.runners.Suite;
 })
 public class TC_FusekiMain {
     @BeforeClass public static void setupForFusekiServer() {
-        LogCtl.setLevel(Fuseki.serverLogName,        "WARN");
-        LogCtl.setLevel(Fuseki.actionLogName,        "WARN");
-        LogCtl.setLevel(Fuseki.requestLogName,       "WARN");
-        LogCtl.setLevel(Fuseki.adminLogName,         "WARN");
-        LogCtl.setLevel("org.eclipse.jetty",         "WARN");
+        // controlled by src/test/resources/log4j.properties.
+//        LogCtl.setLevel(Fuseki.serverLogName,        "WARN");
+//        LogCtl.setLevel(Fuseki.actionLogName,        "WARN");
+//        LogCtl.setLevel(Fuseki.requestLogName,       "WARN");
+//        LogCtl.setLevel(Fuseki.adminLogName,         "WARN");
+//        LogCtl.setLevel("org.eclipse.jetty",         "WARN");
     }
 }

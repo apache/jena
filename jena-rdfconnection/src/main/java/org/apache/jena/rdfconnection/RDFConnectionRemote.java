@@ -301,7 +301,7 @@ public class RDFConnectionRemote implements RDFConnection {
      * <p>
      * The Content-Type is taken from the given {@code Lang}.
      * <p>
-     * "Replace" means overwrite existing data, othewise the date is added to the target.
+     * "Replace" means overwrite existing data, otherwise the date is added to the target.
      */
     protected void doPutPost(String url, String file, Lang lang, boolean replace) {
         File f = new File(file);

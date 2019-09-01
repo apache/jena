@@ -303,20 +303,20 @@ public abstract class SPARQLQueryProcessor extends ActionService
      * @return QueryExecution
      */
     protected QueryExecution createQueryExecution(HttpAction action, Query query, DatasetGraph dataset) {
-        return QueryExecutionFactory.create(query, dataset);
+        return QueryExecution.create().query(query).dataset(dataset).context(action.getContext()).build();
     }
 
     /** Perform the {@link QueryExecution} once.
      * @param action
      * @param queryExecution
-     * @param query
+     * @param requestQuery Original query; queryExecution query may have been modified. 
      * @param queryStringLog Informational string created from the initial query.
      * @return
      */
-    protected SPARQLResult executeQuery(HttpAction action, QueryExecution queryExecution, Query query, String queryStringLog) {
+    protected SPARQLResult executeQuery(HttpAction action, QueryExecution queryExecution, Query requestQuery, String queryStringLog) {
         setAnyProtocolTimeouts(queryExecution, action);
 
-        if ( query.isSelectType() ) {
+        if ( requestQuery.isSelectType() ) {
             ResultSet rs = queryExecution.execSelect();
 
             // Force some query execution now.
@@ -333,25 +333,25 @@ public abstract class SPARQLQueryProcessor extends ActionService
             return new SPARQLResult(rs);
         }
 
-        if ( query.isConstructType() ) {
+        if ( requestQuery.isConstructType() ) {
             Dataset dataset = queryExecution.execConstructDataset();
             //action.log.info(format("[%d] exec/construct", action.id));
             return new SPARQLResult(dataset);
         }
 
-        if ( query.isDescribeType() ) {
+        if ( requestQuery.isDescribeType() ) {
             Model model = queryExecution.execDescribe();
             //action.log.info(format("[%d] exec/describe", action.id));
             return new SPARQLResult(model);
         }
 
-        if ( query.isAskType() ) {
+        if ( requestQuery.isAskType() ) {
             boolean b = queryExecution.execAsk();
             //action.log.info(format("[%d] exec/ask", action.id));
             return new SPARQLResult(b);
         }
 
-        if ( query.isJsonType() ) {
+        if ( requestQuery.isJsonType() ) {
             Iterator<JsonObject> jsonIterator = queryExecution.execJsonItems();
             //JsonArray jsonArray = queryExecution.execJson();
             action.log.info(format("[%d] exec/json", action.id));

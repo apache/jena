@@ -82,7 +82,13 @@ public class JA
     public static final Property data = property( "data" );
 
     public static final Property content = property( "content" );
+    
+    public static final Property context = property( "context" );
 
+    public static final Property cxtName = property( "cxtName" );
+
+    public static final Property cxtValue = property( "cxtValue" );
+    
     public static final Resource ExternalContent = resource( "ExternalContent" );
 
     public static final Property externalContent = property( "externalContent" );

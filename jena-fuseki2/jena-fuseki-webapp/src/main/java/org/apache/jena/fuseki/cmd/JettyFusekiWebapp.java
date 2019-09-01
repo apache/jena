@@ -173,7 +173,7 @@ public class JettyFusekiWebapp {
     public static WebAppContext createWebApp(String contextPath) {
         FusekiEnv.setEnvironment();
         WebAppContext webapp = new WebAppContext();
-        webapp.getServletContext().getContextHandler().setMaxFormContentSize(10 * 1000 * 1000);
+        webapp.getServletContext().getContextHandler().setMaxFormContentSize(20 * 1000 * 1000);
 
         // Hunt for the webapp for the standalone jar (or development system).
         // Note that Path FUSEKI_HOME is not initialized until the webapp starts

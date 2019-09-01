@@ -20,7 +20,10 @@ package org.apache.jena.fuseki.server;
 
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.iri.IRI;
-import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.system.IRIResolver;
 
 public class FusekiVocab
@@ -33,17 +36,28 @@ public class FusekiVocab
     public static final Resource fusekiService      = resource("Service");
 
     public static final Property pServices          = property("services");
-    public static final Property pServiceName       = property("name");
 
-    public static final Property pAllowedUsers      = property("allowedUsers");
-    public static final Property pPasswordFile      = property("passwd");
-    public static final Property pRealm             = property("realm");
-    public static final Property pAuth              = property("auth");
+    // Endpoint description.
+    public static final Property pServiceName               = property("name");
+    public static final Property pEndpointName              = property("name");
+    public static final Property pPasswordFile              = property("passwd");
+    public static final Property pRealm                     = property("realm");
+    public static final Property pAuth                      = property("auth");
+    public static final Property pEndpoint                  = property("endpoint");
+    public static final Property pOperation                 = property("operation");
+    public static final Property pAllowedUsers              = property("allowedUsers");
+    public static final Property pTimeout                   = property("timeout");
+    public static final Property pImplementation            = property("implementation");
+    public static final Property pQueryLimit                = property("queryLimit");
+    public static final Property pUnionDefaultGraph         = property("unionDefaultGraph");
+    public static final Property pAllowTimeoutOverride      = property("allowTimeoutOverride");
+    public static final Property pMaximumTimeoutOverride    = property("maximumTimeoutOverride");
 
     // Server endpoints.
     public static final Property pServerPing        = property("pingEP");
     public static final Property pServerStats       = property("statsEP");
 
+    // Endpoint description - old style.
     public static final Property pServiceQueryEP                = property("serviceQuery");
     public static final Property pServiceUpdateEP               = property("serviceUpdate");
     public static final Property pServiceUploadEP               = property("serviceUpload");
@@ -52,11 +66,19 @@ public class FusekiVocab
     public static final Property pServiceReadWriteQuadsEP       = property("serviceReadWriteQuads");
     public static final Property pServiceReadQuadsEP            = property("serviceReadQuads");
 
-    public static final Property pAllowTimeoutOverride          = property("allowTimeoutOverride");
-    public static final Property pMaximumTimeoutOverride        = property("maximumTimeoutOverride");
-
+    // Operation names : the standard operations. 
+    // "alt" names are the same but using "-" not "_".
+    public static final Resource opQuery       = resource("query");
+    public static final Resource opUpdate      = resource("update");
+    public static final Resource opUpload      = resource("upload");
+    public static final Resource opGSP_r       = resource("gsp-r");
+    public static final Resource opGSP_r_alt   = resource("gsp_r");
+    public static final Resource opGSP_rw      = resource("gsp-rw");
+    public static final Resource opGSP_rw_alt  = resource("gsp_rw");
+    public static final Resource opNoOp        = resource("no_op");
+    public static final Resource opNoOp_alt    = resource("no-op");
+    
     // Internal
-
     private static final String stateNameActive     = DataServiceStatus.ACTIVE.name;
     private static final String stateNameOffline    = DataServiceStatus.OFFLINE.name;
     private static final String stateNameClosing    = DataServiceStatus.CLOSING.name;

@@ -33,7 +33,7 @@ import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.FusekiException;
-import org.apache.jena.fuseki.access.DataAccessCtl;
+import org.apache.jena.fuseki.access.*;
 import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.build.FusekiConfig;
@@ -92,8 +92,8 @@ import org.slf4j.Logger;
  * <pre>
  *    FusekiServer.make(1234, "/ds", dsg).start();
  * </pre>
- *
  */
+
 public class FusekiServer {
     static { JenaSystem.init(); }
     
@@ -232,9 +232,9 @@ public class FusekiServer {
 
     /** FusekiServer.Builder */
     public static class Builder {
-        private final DataAccessPointRegistry  dataAccessPoints   = new DataAccessPointRegistry(
-                MetricsProviderRegistry.get().getMeterRegistry());
-        private final OperationRegistry  serviceDispatch;
+        private final DataAccessPointRegistry  dataAccessPoints = 
+            new DataAccessPointRegistry( MetricsProviderRegistry.get().getMeterRegistry() );
+        private final OperationRegistry  operationRegistry;
         // Default values.
         private int                      serverPort         = 3330;
         private int                      serverHttpsPort    = -1;
@@ -266,13 +266,14 @@ public class FusekiServer {
         private Map<String, Object>      servletAttr        = new HashMap<>();
         // Builder with standard operation-action mapping.
         Builder() {
-            this.serviceDispatch = new OperationRegistry(true);
+            this.operationRegistry = OperationRegistry.createStd();
         }
 
         // Builder with provided operation-action mapping.
-        Builder(OperationRegistry  serviceDispatch) {
+        Builder(OperationRegistry  operationRegistry) {
             // Isolate.
-            this.serviceDispatch = new OperationRegistry(serviceDispatch);
+            this.operationRegistry = OperationRegistry.createEmpty();
+            OperationRegistry.copyConfig(operationRegistry, this.operationRegistry);
         }
 
         /** Set the port to run on.
@@ -676,9 +677,9 @@ public class FusekiServer {
         public Builder registerOperation(Operation operation, String contentType, ActionService handler) {
             Objects.requireNonNull(operation, "operation");
             if ( handler == null )
-                serviceDispatch.unregister(operation);
+                operationRegistry.unregister(operation);
             else
-                serviceDispatch.register(operation, contentType, handler);
+                operationRegistry.register(operation, contentType, handler);
             return this;
         }
 
@@ -690,7 +691,7 @@ public class FusekiServer {
         public Builder addEndpoint(String datasetName, String endpointName, Operation operation) {
             return addEndpoint(datasetName, endpointName, operation, null);
         }
-        
+
         /**
          * Create an endpoint as a service of the dataset (i.e. {@code /dataset/endpointName}).
          * The operation must already be registered with the builder.
@@ -703,7 +704,7 @@ public class FusekiServer {
             serviceEndpointOperation(datasetName, endpointName, operation, authPolicy);
             return this;
         }
-            
+
         /**
          * Create an endpoint on the dataset i.e. {@code /dataset/} for an operation that has other query parameters
          * or a Content-Type that distinguishes it.  
@@ -714,10 +715,12 @@ public class FusekiServer {
             addOperation(datasetName, operation, null);
             return this;
         }
-        
+
         /**
          * Create an endpoint on the dataset i.e. {@code /dataset/} for an operation that has other query parameters
-         * or a Content-Type that distinguishes it.  
+         * or a Content-Type that distinguishes it.  Use {@link #addEndpoint(String, String, Operation)} when
+         * the functionality is invoked by presence of a name in the URL after the dataset name.  
+         * 
          * The operation must already be registered with the builder.
          * @see #registerOperation(Operation, ActionService)
          */
@@ -731,13 +734,18 @@ public class FusekiServer {
         private void serviceEndpointOperation(String datasetName, String endpointName, Operation operation, AuthPolicy authPolicy) {
             String name = DataAccessPoint.canonical(datasetName);
 
-            if ( ! serviceDispatch.isRegistered(operation) )
+            if ( ! operationRegistry.isRegistered(operation) )
                 throw new FusekiConfigException("Operation not registered: "+operation.getName());
 
             if ( ! dataAccessPoints.isRegistered(name) )
                 throw new FusekiConfigException("Dataset not registered: "+datasetName);
             DataAccessPoint dap = dataAccessPoints.get(name);
-            FusekiConfig.addServiceEP(dap.getDataService(), operation, endpointName, authPolicy);
+            Endpoint endpoint = Endpoint.create()
+                .operation(operation)
+                .endpointName(endpointName)
+                .authPolicy(authPolicy)
+                .build();
+            dap.getDataService().addEndpoint(endpoint);
         }
 
         /**
@@ -776,7 +784,7 @@ public class FusekiServer {
 
         // These booleans are only for validation.
         // They do not affect the build() step. 
-        
+
         // Triggers some checking.
         private boolean hasAuthenticationHandler = false;
         
@@ -864,18 +872,23 @@ public class FusekiServer {
 
             // Clone to isolate from any future changes (reusing the builder).
             DataAccessPointRegistry dapRegistry = new DataAccessPointRegistry(dataAccessPoints);
-            OperationRegistry svcRegistry = new OperationRegistry(serviceDispatch);
-
-            OperationRegistry.set(cxt, svcRegistry);
+            OperationRegistry operationReg = new OperationRegistry(operationRegistry);
+            OperationRegistry.set(cxt, operationReg);
             DataAccessPointRegistry.set(cxt, dapRegistry);
             JettyLib.setMimeTypes(handler);
             servletsAndFilters(handler);
             buildAccessControl(handler);
-
-            if ( hasDataAccessControl ) {
-                // Consider making this "always" and changing the standard operation bindings.
-                FusekiLib.modifyForAccessCtl(svcRegistry, DataAccessCtl.requestUserServlet);
-            }
+            
+            dapRegistry.forEach((name, dap) -> {
+                // Custom processors (endpoint specific,fuseki:implementation) will have already
+                // been set; all others need setting from the OperationRegistry in scope. 
+                dap.getDataService().setEndpointProcessors(operationReg);
+                dap.getDataService().forEachEndpoint(ep->{
+                    // Override for graph-level access control. 
+                    if ( DataAccessCtl.isAccessControlled(dap.getDataService().getDataset()) )
+                        FusekiLib.modifyForAccessCtl(ep, DataAccessCtl.requestUserServlet);
+                });
+            });
 
             // Start services.
             dapRegistry.forEach((name, dap)->dap.getDataService().goActive());
@@ -901,9 +914,8 @@ public class FusekiServer {
                                 JettyLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/*");
                             }
                             else {
-                                // TODO Rethink/check.
                                 // Need to to a pass to find the "right" set to install.
-                                dap.getDataService().getEndpoints().forEach(ep->{
+                                dap.getDataService().forEachEndpoint(ep->{
                                     // repeats.
                                     if ( ! authAny(ep.getAuthPolicy()) ) {
                                         // Unnamed - applies to the dataset. Yuk.  

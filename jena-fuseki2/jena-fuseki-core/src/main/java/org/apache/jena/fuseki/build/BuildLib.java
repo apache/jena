@@ -19,12 +19,22 @@
 package org.apache.jena.fuseki.build;
 
 import static org.apache.jena.fuseki.build.FusekiPrefixes.PREFIXES;
+import static org.apache.jena.riot.out.NodeFmtLib.displayStr;
 
+import java.lang.reflect.Constructor;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
+import org.apache.jena.atlas.lib.Pair;
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
+import org.apache.jena.fuseki.server.Operation;
+import org.apache.jena.fuseki.servlets.ActionService;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.shared.JenaException;
@@ -34,7 +44,9 @@ import org.apache.jena.vocabulary.RDFS;
 /**
  * Library code for operations related to building Fuseki servers and services.
  */
-class BuildLib {
+/*package*/ class BuildLib {
+    
+    private BuildLib() {}
 
     // ---- Helper code
     /*package*/ static ResultSet query(String string, Model m) {
@@ -164,5 +176,56 @@ class BuildLib {
                 return x;
         }
         return "<" + uri + ">";
+    }
+    
+    /*package*/ static RDFNode getZeroOrOne(Resource ep, Property property) {
+        StmtIterator iter = ep.listProperties(property);
+        try {
+            if ( ! iter.hasNext() )
+                return null;
+            RDFNode x = iter.next().getObject();
+            if ( iter.hasNext() )
+                throw new FusekiConfigException("Multiple triples for "+displayStr(ep)+" "+displayStr(property));
+            return x;
+        } finally { iter.close(); }
+    }
+    
+    /** Load a class (an {@link ActionService}) and create an {@link Operation} for it. */
+    /*package*/ static Pair<Operation, ActionService> loadOperationActionService(RDFNode implementation) {
+        String classURI = implementation.isLiteral()
+            ? implementation.asLiteral().getLexicalForm()
+            : ((Resource)implementation).getURI();
+        String javaScheme = "java:";
+        String fileScheme = "file:";
+        String scheme = null;
+        if ( classURI.startsWith(javaScheme) ) {
+            scheme = javaScheme;
+        } else if ( classURI.startsWith(fileScheme) ) {
+            scheme = fileScheme;
+        } else {
+            Fuseki.configLog.error("Class to load is not 'java:' or 'file:': " + classURI);
+            throw new FusekiConfigException("Not a 'java:' or 'file:' class reference: "+classURI);
+        }
+        String className = classURI.substring(scheme.length());
+
+        ActionService action = null;
+        try {
+            Class<?> cls;
+            if ( Objects.equals(scheme, fileScheme) ) {
+                try ( URLClassLoader urlClassLoader = new URLClassLoader(new URL[] {new URL(classURI)}) ){
+                    cls = Class.forName(className, true, urlClassLoader);
+                }
+            } else {
+                cls = Class.forName(className);
+            }
+            Constructor<?> x = cls.getConstructor();
+            action = (ActionService)x.newInstance();
+        } catch (ClassNotFoundException ex) {
+            throw new FusekiConfigException("Class not found: " + className);
+        } catch (Exception ex) {
+            throw new FusekiConfigException("Can't create object from " + className);
+        }
+        Operation op = Operation.alloc(NodeFactory.createBlankNode(), classURI, classURI);
+        return Pair.create(op, action);
     }
 }

@@ -32,6 +32,8 @@ import org.apache.jena.sparql.core.DatasetGraph;
 
 public abstract class GSP_Base extends ActionREST {
 
+    protected GSP_Base() {}
+    
     @Override
     public void validate(HttpAction action) {
         if ( isQuads(action) )
@@ -91,8 +93,8 @@ public abstract class GSP_Base extends ActionREST {
 //        if ( ! dsg.isInTransaction() )
 //            ServletOps.errorOccurred("Internal error : No transaction");
 
-        boolean dftGraph = getOneOnly(action.request, HttpNames.paramGraphDefault) != null;
-        String uri = getOneOnly(action.request, HttpNames.paramGraph);
+        boolean dftGraph = GSPLib.getOneOnly(action.request, HttpNames.paramGraphDefault) != null;
+        String uri = GSPLib.getOneOnly(action.request, HttpNames.paramGraph);
 
         if ( !dftGraph && uri == null ) {
             // No params - direct naming.
@@ -136,29 +138,5 @@ public abstract class GSP_Base extends ActionREST {
     private static GSPTarget namedTarget(DatasetGraph dsg, String graphName) {
         Node gn = NodeFactory.createURI(graphName);
         return GSPTarget.createNamed(dsg, graphName, gn);
-    }
-
-    // XXX --> SPARQLProtocol
-    protected static boolean hasExactlyOneValue(HttpAction action, String name) {
-        String[] values = action.request.getParameterValues(name);
-        if ( values == null )
-            return false;
-        if ( values.length == 0 )
-            return false;
-        if ( values.length > 1 )
-            return false;
-        return true;
-    }
-
-    // XXX To a library. 
-    protected static String getOneOnly(HttpServletRequest request, String name) {
-        String[] values = request.getParameterValues(name);
-        if ( values == null )
-            return null;
-        if ( values.length == 0 )
-            return null;
-        if ( values.length > 1 )
-            ServletOps.errorBadRequest("Multiple occurrences of '" + name + "'");
-        return values[0];
     }
 }

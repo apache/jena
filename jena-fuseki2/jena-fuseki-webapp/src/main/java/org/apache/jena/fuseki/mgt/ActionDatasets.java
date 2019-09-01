@@ -232,6 +232,7 @@ public class ActionDatasets extends ActionContainerItem {
 
             // Need to be in Resource space at this point.
             DataAccessPoint dataAccessPoint = FusekiConfig.buildDataAccessPoint(subject, registry);
+            dataAccessPoint.getDataService().setEndpointProcessors(action.getOperationRegistry());
             dataAccessPoint.getDataService().goActive();
             if ( ! datasetPath.equals(dataAccessPoint.getName()) )
                 FmtLog.warn(action.log, "Inconsistent names: datasetPath = %s; DataAccessPoint name = %s", datasetPath, dataAccessPoint);

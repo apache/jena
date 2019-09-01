@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
 import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.fuseki.servlets.Dispatcher;
 import org.apache.jena.fuseki.servlets.HttpAction;
 
 /** Collection of endpoints for a dispatch point.

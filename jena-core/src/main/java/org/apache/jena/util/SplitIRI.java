@@ -72,7 +72,7 @@ public class SplitIRI
         return namespace(string) ;
     }
 
-    /** Calculate a localname - enforce legal Turle
+    /** Calculate a localname - enforce legal Turtle
      * escape PN_LOCAL_ESC, check for final '.'
      * Use with {@link #namespaceTTL}
      */

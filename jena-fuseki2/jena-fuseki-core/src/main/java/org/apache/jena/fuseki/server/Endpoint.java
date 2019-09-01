@@ -20,8 +20,9 @@ package org.apache.jena.fuseki.server;
 
 import java.util.Objects;
 
-import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.fuseki.auth.AuthPolicy;
+import org.apache.jena.fuseki.servlets.ActionProcessor;
+import org.apache.jena.sparql.util.Context;
 
 /*
  * An {@code Endpoint} is an instance of an {@link Operation} within a {@link DataService} and has counters.
@@ -29,22 +30,39 @@ import org.apache.jena.fuseki.auth.AuthPolicy;
  */
 public class Endpoint implements Counters {
 
-    public final Operation   operation;
-    public final String      endpointName;
-    private final AuthPolicy authPolicy;
+    /** The endpoint name used for a dataset-level endpoint. */  
+    public static final String    DatasetEP = "";  
+    
+    private final Operation       operation;
+    private       ActionProcessor processor = null;
+    private final String          endpointName;
+    private final AuthPolicy      authPolicy;
+    private final Context         context;
     // Endpoint-level counters.
-    private final CounterSet counters = new CounterSet();
+    private final CounterSet      counters = new CounterSet();
 
-    public Endpoint(Operation operation, String endpointName, AuthPolicy requestAuth) {
+    public static EndpointBuilder create() { return EndpointBuilder.create(); }
+    
+    /** Build an endpoint */
+    public static Endpoint create(Operation operation, String endpointName, AuthPolicy requestAuth) {
+        // Common case.
+        return EndpointBuilder.create().operation(operation).endpointName(endpointName).authPolicy(requestAuth).build(); 
+    }
+    
+    /*package*/ Endpoint(Operation operation, String endpointName, AuthPolicy requestAuth, ActionProcessor processor, Context context) {
         this.operation = Objects.requireNonNull(operation, "operation");
-        if ( operation == null )
-            throw new InternalErrorException("operation is null");
-        this.endpointName = endpointName;
+        // Canonicalise to "" for dataset-level operations.
+        this.endpointName = endpointName==null? DatasetEP : endpointName;
         this.authPolicy = requestAuth;
+        this.context = context;
+        this.processor = processor;
+        
         // Standard counters - there may be others
         counters.add(CounterName.Requests);
         counters.add(CounterName.RequestsGood);
         counters.add(CounterName.RequestsBad);
+        // Default. Better to explicitly set later.
+        //processor = OperationRegistry.get().findHandler(operation);
     }
 
     @Override
@@ -56,16 +74,28 @@ public class Endpoint implements Counters {
         return operation;
     }
 
-    public boolean isType(Operation operation) {
-        return operation.equals(operation);
+    public ActionProcessor getProcessor() {
+        return processor;
     }
 
+    /** Directly replace the {@link ActionProcessor}.
+     * This allows an endpoint to be created, and then latest have the ActionProcessor set,
+     * such as applying a default (normal case) or a security version injected.
+     */  
+    public void setProcessor(ActionProcessor proc) {
+        processor = proc;
+    }
+    
+    public Context getContext() {
+        return context;
+    }
+    
     public boolean isUnnamed() {
         return endpointName == null || endpointName.isEmpty();
     }
 
     public String getName() {
-        return isUnnamed() ? "" : endpointName;
+        return isUnnamed() ? DatasetEP : endpointName;
     }
 
     public AuthPolicy getAuthPolicy() {

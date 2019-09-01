@@ -46,6 +46,7 @@ import org.apache.jena.riot.resultset.ResultSetReaderRegistry;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.ResultSetCheckCondition ;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.resultset.ResultSetException;
 import org.apache.jena.sparql.util.Context ;
@@ -242,11 +243,11 @@ public class QueryEngineHTTP implements QueryExecution {
                 "Initial bindings not supported for remote queries, consider using a ParameterizedSparqlString to prepare a query for remote execution");
     }
 
-    public void setInitialBindings(ResultSet table) {
+    @Override
+    public void setInitialBinding(Binding binding) {
         throw new UnsupportedOperationException(
                 "Initial bindings not supported for remote queries, consider using a ParameterizedSparqlString to prepare a query for remote execution");
     }
-
     /**
      * @param defaultGraphURIs
      *            The defaultGraphURIs to set.

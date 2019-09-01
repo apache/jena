@@ -18,6 +18,8 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import org.apache.jena.fuseki.server.Dispatcher;
+
 /**
  * Base of all implementations of service {@link HttpAction}. This class provides the
  * two steps execution of "validate" and "perform". 

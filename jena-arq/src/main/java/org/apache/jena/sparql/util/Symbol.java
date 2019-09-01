@@ -18,46 +18,55 @@
 
 package org.apache.jena.sparql.util;
 
+import java.util.Objects;
+
 /** A way to write constants */
 
-public class Symbol
-{
-    protected final static String nilSymbolName = "nil" ;
-    protected String symbol ;
+public class Symbol {
+    protected final static String nilSymbolName = "nil";
     
-    static public Symbol create(String symbolStr) { return new Symbol(symbolStr) ; }
-    static public Symbol create(Symbol other) { return new Symbol(other) ; }
-    
-    protected Symbol(String symbol)
-    { 
+    protected String symbol;
+
+    static public Symbol create(String symbolStr) {
+        return new Symbol(symbolStr);
+    }
+
+    static public Symbol create(Symbol other) {
+        return new Symbol(other);
+    }
+
+    protected Symbol(String symbol) {
         if ( symbol == null )
-            symbol = nilSymbolName ;
-        else
-            symbol = symbol.intern();
-        this.symbol = symbol ;
+            symbol = nilSymbolName;
+        this.symbol = symbol;
     }
 
-    protected Symbol(Symbol other)  { this.symbol = other.symbol ; }
-    
-    @Override
-    public int hashCode() { return symbol.hashCode() ; } 
-    
-    //public boolean isCompatibleWith(Symbol other) { return equals(other) ; }
-    
-    @Override
-    public boolean equals(Object other)
-    {
-        if ( this == other ) return true ;
-
-        if ( ! ( other instanceof Symbol ) )
-            return false ;
-
-        Symbol otherSymbol = (Symbol)other ;
-        return this.symbol == otherSymbol.symbol ; // String interning.
-        //return this.symbol.equals(otherSymbol.symbol) ;
+    protected Symbol(Symbol other) {
+        this.symbol = other.symbol;
     }
 
-    public String getSymbol() { return symbol ; }
+
+    public String getSymbol() {
+        return symbol;
+    }
+
     @Override
-    public String toString()  { return "symbol:"+symbol ; }
+    public String toString() {
+        return "symbol:" + symbol;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(symbol);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( !(obj instanceof Symbol) )
+            return false;
+        Symbol other = (Symbol)obj;
+        return Objects.equals(symbol, other.symbol);
+    }
 }

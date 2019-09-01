@@ -32,8 +32,8 @@ import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
+import org.apache.jena.fuseki.server.OperationRegistry;
 import org.apache.jena.fuseki.servlets.ActionBase;
-import org.apache.jena.fuseki.servlets.OperationRegistry;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.web.HttpSC;
 import org.eclipse.jetty.http.HttpMethod;
@@ -305,7 +305,7 @@ public class JettyServer {
             // plain Jetty server, e.g. to use Fuseki logging.
             try {
                 Fuseki.setVerbose(cxt, verbose);
-                OperationRegistry.set(cxt, new OperationRegistry(false));
+                OperationRegistry.set(cxt, OperationRegistry.createEmpty());
                 DataAccessPointRegistry.set(cxt, new DataAccessPointRegistry(MetricsProviderRegistry.get().getMeterRegistry()));
             } catch (NoClassDefFoundError err) {
                 LOG.info("Fuseki classes not found");

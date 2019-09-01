@@ -162,11 +162,5 @@ public abstract class ActionREST extends ActionService
   // If not final in ActionBase
   //@Override public void process(HttpAction action)      { executeLifecycle(action); }
 
-  @Override public void execHead(HttpAction action)     { executeLifecycle(action); }
-  @Override public void execGet(HttpAction action)      { executeLifecycle(action); }
-  @Override public void execPost(HttpAction action)     { executeLifecycle(action); }
-  @Override public void execPatch(HttpAction action)    { executeLifecycle(action); }
-  @Override public void execPut(HttpAction action)      { executeLifecycle(action); }
-  @Override public void execDelete(HttpAction action)   { executeLifecycle(action); }
-  @Override public void execOptions(HttpAction action)  { executeLifecycle(action); }
+  @Override public void execAny(String methodName, HttpAction action)     { executeLifecycle(action); }
 }

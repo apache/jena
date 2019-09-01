@@ -54,7 +54,7 @@ public class ExtendFuseki_AddService_2 {
     public static void main(String ...args) {
         // Register a new operation
 
-        Operation myOperation = Operation.register("Special", "Custom operation");
+        Operation myOperation = Operation.alloc("http://example/special2", "special2", "Custom operation");
 
         // Service endpoint names.
 

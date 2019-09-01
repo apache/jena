@@ -87,7 +87,7 @@ public class Txn {
         }
     }
 
-    /** Execute and return a value in a transaction with the given {@link TxnType trasnaction type}. */
+    /** Execute and return a value in a transaction with the given {@link TxnType transaction type}. */
     public static <T extends Transactional, X> X calc(T txn, TxnType txnType, Supplier<X> r) {
         boolean b = txn.isInTransaction() ;
         if ( b )

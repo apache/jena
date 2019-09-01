@@ -54,9 +54,15 @@ public class SPARQL_QueryGeneral extends ServletAction {
 
         public SPARQL_QueryProc() { super(); }
 
-        static private DataService dSrv = new DataService(new DatasetGraphZero());
-        static private DataAccessPoint dap = new DataAccessPoint(null, dSrv);
+        static private DataService dSrv = emptyDataService();
+        static private DataAccessPoint dap = new DataAccessPoint("SPARQL General", dSrv);
 
+        static DataService emptyDataService() {
+            DataService dSrv = new DataService(new DatasetGraphZero());
+            dSrv.goActive();
+            return dSrv;
+        } 
+        
         @Override
         public void executeLifecycle(HttpAction action) {
             action.setRequest(dap, dSrv);

@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki.server;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.jena.fuseki.servlets.HttpAction;
@@ -32,6 +33,8 @@ public class DataAccessPoint {
     private AtomicLong requests = new AtomicLong(0);
 
     public DataAccessPoint(String name, DataService dataService) {
+        Objects.requireNonNull(name, "DataAccessPoint name");
+        Objects.requireNonNull(dataService, "DataService");
         this.name = canonical(name);
         this.dataService = dataService;
         dataService.noteDataAccessPoint(this);
@@ -39,14 +42,19 @@ public class DataAccessPoint {
 
     public String getName()     { return name; }
 
+    /** Canonical name (path) for a dataset.
+     * This always starts with "/".
+     * It is the name within the Fuseki server, no servlet context path. 
+     */
     public static String canonical(String datasetPath) {
         if ( datasetPath == null )
             return datasetPath;
         if ( datasetPath.equals("/") )
-            datasetPath = "";
-        else
-            if ( !datasetPath.startsWith("/") )
-                datasetPath = "/" + datasetPath;
+            return datasetPath;
+        if ( datasetPath.equals("") )
+            return "/";
+        if ( !datasetPath.startsWith("/") )
+            datasetPath = "/" + datasetPath;
         if ( datasetPath.endsWith("/") )
             datasetPath = datasetPath.substring(0, datasetPath.length() - 1);
         return datasetPath;

@@ -26,23 +26,26 @@ import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.util.Context;
 
 /** A interface for a single execution of a query. */
 public interface QueryExecution extends AutoCloseable 
 {
+    public static QueryExecutionBuilder create() { return QueryExecutionBuilder.create(); }
+    
     /** Set the initial association of variables and values.
      * May not be supported by all QueryExecution implementations.
      * @param binding
      */
     public void setInitialBinding(QuerySolution binding) ;
 
-//    /** Set a table of initial associations of variables and values.
-//     * May not be supported by all QueryExecution implementations.
-//     * @param binding
-//     */
-//    public void setInitialBindings(ResultSet table) ;
-    
+    /** Set the initial association of variables and values.
+     * May not be supported by all QueryExecution implementations.
+     * @param binding
+     */
+    void setInitialBinding(Binding binding);
+
     /**
      * The dataset against which the query will execute.
      * May be null, implying it is expected that the query itself

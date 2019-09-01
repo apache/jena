@@ -72,7 +72,7 @@ public class QueryExecutionBase implements QueryExecution
     
     private QueryIterator            queryIterator    = null;
     private Plan                     plan             = null;
-    private QuerySolution            initialBinding   = null;
+    private Binding                  initialBinding   = null;
 
     // Set if QueryIterator.cancel has been called
     private AtomicBoolean            isCancelled      = new AtomicBoolean(false);
@@ -98,13 +98,15 @@ public class QueryExecutionBase implements QueryExecution
         this(query, null, datasetGraph, context, qeFactory);
     }
 
+    /** This will become a protected constructor */
+    @Deprecated
     public QueryExecutionBase(Query query, Dataset dataset, DatasetGraph datasetGraph, 
-                              Context context, QueryEngineFactory qeFactory) {
+                              Context cxt, QueryEngineFactory qeFactory) {
         this.query = query;
         this.dataset = formDataset(dataset, datasetGraph);
-        this.qeFactory = qeFactory ;
+        this.qeFactory = qeFactory;
         this.dsg = formDatasetGraph(datasetGraph, dataset);
-        this.context = Context.setupContextExec(context, dsg) ;
+        this.context = (cxt == null) ? Context.setupContextForDataset(cxt, datasetGraph) : cxt;
         init() ;
     }
     
@@ -125,12 +127,13 @@ public class QueryExecutionBase implements QueryExecution
     }
     
     private void init() {
+        Context.setCurrentDateTime(context);
         if ( query != null )
-            context.put(ARQConstants.sysCurrentQuery, query) ;
+            context.put(ARQConstants.sysCurrentQuery, query);
         // NB: Setting timeouts via the context after creating a QueryExecutionBase 
         // will not work. But we can't move it until the point the execution starts because of
         // get and set timeout operations on this object.   
-        setAnyTimeouts() ;
+        setAnyTimeouts();
     }
 
     private void setAnyTimeouts() {
@@ -591,10 +594,8 @@ public class QueryExecutionBase implements QueryExecution
 
     public Plan getPlan() {
         if ( plan == null ) {
-            Binding inputBinding = null;
-            if ( initialBinding != null )
-                inputBinding = BindingUtils.asBinding(initialBinding);
-            if ( inputBinding == null )
+            Binding inputBinding = initialBinding;
+            if ( initialBinding == null )
                 inputBinding = BindingRoot.create();
 
             plan = qeFactory.create(query, dsg, inputBinding, getContext());
@@ -643,7 +644,12 @@ public class QueryExecutionBase implements QueryExecution
 
     @Override
     public void setInitialBinding(QuerySolution startSolution) {
-        initialBinding = startSolution ;
+        initialBinding = BindingUtils.asBinding(startSolution);
+    }
+    
+    @Override
+    public void setInitialBinding(Binding startSolution) {
+        initialBinding = startSolution;
     }
     
     //protected QuerySolution getInputBindings() { return initialBinding ; }
