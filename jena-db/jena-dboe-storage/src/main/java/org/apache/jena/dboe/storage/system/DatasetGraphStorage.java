@@ -83,7 +83,7 @@ public class DatasetGraphStorage extends DatasetGraphBaseFind implements Databas
 
     @Override
     public Iterator<Node> listGraphNodes() {
-        Iterator<Quad> iter = find(null, null, null, null);
+        Iterator<Quad> iter = findNG(null, null, null, null);
         return Iter.iter(iter).map(Quad::getGraph).distinct();
     }
 
