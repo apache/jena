@@ -1,0 +1,7 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix ex: <http://example.org/shacl-test/> .
+
+ex:s1 a sh:NodeShape ;
+  sh:targetClass ex:C1 ;
+  sh:xone ( ex:s2 ex:s2 ) .
+ex:s2 sh:class ex:C2 .

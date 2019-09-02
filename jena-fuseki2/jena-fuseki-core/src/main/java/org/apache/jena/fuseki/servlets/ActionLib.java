@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.CharacterCodingException;
 
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.jena.atlas.RuntimeIOException;
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.web.AcceptList;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.MediaType;
@@ -34,14 +36,14 @@ import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.system.ConNeg;
 import org.apache.jena.fuseki.system.FusekiNetLib;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFParser;
-import org.apache.jena.riot.RDFParserRegistry;
-import org.apache.jena.riot.RiotException;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.riot.web.HttpNames;
+import org.apache.jena.sparql.graph.GraphFactory;
 
 /** Operations related to servlets */
 
@@ -74,7 +76,6 @@ public class ActionLib {
             // started with '/' - leave.
             return uri;
         }
-
         return uri.substring(0, i);
     }
 
@@ -87,7 +88,6 @@ public class ActionLib {
         if ( name.length() >= uri.length() )
             return "";
         return uri.substring(name.length()+1);   // Skip the separating "/"
-
     }
 
     /**
@@ -213,6 +213,59 @@ public class ActionLib {
         catch (RiotException ex) { ServletOps.errorBadRequest("Parse error: "+ex.getMessage()); }
     }
 
+    /*
+     * Parse RDF content using content negotiation.
+     */
+    public static Graph readFromRequest(HttpAction action, Lang defaultLang) {
+        ContentType ct = ActionLib.getContentType(action);
+        Lang lang;
+
+        if ( ct == null || ct.getContentType().isEmpty() ) {
+            // head "Content-type:", no value.
+            lang = RDFLanguages.TURTLE;
+        } else if ( ct.equals(WebContent.ctHTMLForm)) {
+            ServletOps.errorBadRequest("HTML Form data sent to SAHCL valdiation server");
+            return null;
+        } else {
+            lang = RDFLanguages.contentTypeToLang(ct.getContentType());
+            if ( lang == null ) {
+                lang = defaultLang;
+//            ServletOps.errorBadRequest("Unknown content type for triples: " + ct);
+//            return null;
+            }
+        }
+        InputStream input = null;
+        try { input = action.request.getInputStream(); }
+        catch (IOException ex) { IO.exception(ex); }
+
+        Graph graph = GraphFactory.createDefaultGraph();
+        StreamRDF dest = StreamRDFLib.graph(graph);
+        ActionLib.parse(action, dest, input, lang, null);
+        return graph;
+    }
+
+    /** Output a graph to the HTTP response */
+    public static void graphResponse(HttpAction action, Graph graph, Lang lang) {
+        action.response.setContentType(lang.getContentType().getContentType());
+        try {
+            RDFDataMgr.write(action.response.getOutputStream(), graph, lang);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /** Get one or zero strings from an HTTP header */
+    public static String getOneHeader(HttpServletRequest request, String name) {
+        String[] values = request.getParameterValues(name);
+        if ( values == null )
+            return null;
+        if ( values.length == 0 )
+            return null;
+        if ( values.length > 1 )
+            ServletOps.errorBadRequest("Multiple occurrences of '"+name+"'");
+        return values[0];
+    }
+
     /** Get the content type of an action or return the default.
      * @param  action
      * @return ContentType
@@ -302,4 +355,3 @@ public class ActionLib {
         action.response.setHeader(HttpNames.hAllow, "POST,OPTIONS");
     }
 }
-

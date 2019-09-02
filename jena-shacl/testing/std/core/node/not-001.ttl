@@ -1,0 +1,59 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/node/not-001#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:InvalidResource1
+  rdf:type rdfs:Resource ;
+  ex:property "some value" ;
+.
+ex:TestShape
+  rdf:type rdfs:Class ;
+  rdf:type sh:NodeShape ;
+  rdfs:label "Test shape" ;
+  rdfs:subClassOf rdfs:Resource ;
+  sh:not [
+      rdf:type sh:NodeShape ;
+      sh:property [
+          sh:path ex:property ;
+          sh:minCount 1 ;
+        ] ;
+    ] ;
+  sh:targetNode ex:InvalidResource1 ;
+  sh:targetNode ex:ValidResource1 ;
+.
+ex:ValidResource1
+  rdf:type rdfs:Resource ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <not-001>
+    ) ;
+.
+<not-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:not at node shape 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource1 ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:NotConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value ex:InvalidResource1 ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

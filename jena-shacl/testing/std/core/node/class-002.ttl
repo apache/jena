@@ -1,0 +1,62 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/node/class-002.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:NamedInstance
+  rdf:type ex:TestClass ;
+.
+ex:TestShape
+  rdf:type sh:NodeShape ;
+  sh:class ex:TestClass ;
+  sh:targetClass ex:BNodeClass ;
+  sh:targetNode ex:NamedInstance ;
+  sh:targetNode "String" ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <class-002>
+    ) ;
+.
+<class-002>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:class at node shape 002" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode "String" ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:ClassConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value "String" ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode _:b9751 ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:ClassConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value _:b9751 ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.
+_:b9751
+  rdf:type ex:BNodeClass ;
+.
+[
+  rdf:type ex:BNodeClass ;
+  rdf:type ex:TestClass ;
+].

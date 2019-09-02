@@ -52,6 +52,7 @@ riotcmd.trig
 riotcmd.infer
 riotcmd.utf8
 riotcmd.rdfxml
+shacl.shacl
 tdb.tdbbackup
 tdb.tdbdump
 tdb.tdbloader
@@ -119,5 +120,3 @@ do
     make_bin_full $cmd
     make_bat_full $cmd
 done
-
-

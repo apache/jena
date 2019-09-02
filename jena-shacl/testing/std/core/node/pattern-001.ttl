@@ -1,0 +1,76 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/node/pattern-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:TestShape
+  rdf:type sh:NodeShape ;
+  sh:pattern "^[2-8][0-9]*$" ;
+  sh:targetClass ex:TestClass ;
+  sh:targetNode ex:Test ;
+  sh:targetNode 20000123 ;
+  sh:targetNode "3456" ;
+  sh:targetNode 39 ;
+  sh:targetNode "777777"@mi ;
+  sh:targetNode 9 ;
+  sh:targetNode "John" ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <pattern-001>
+    ) ;
+.
+<pattern-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:pattern at node shape 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:Test ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:PatternConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value ex:Test ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode 9 ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:PatternConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value 9 ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode "John" ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:PatternConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value "John" ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode _:b22415 ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:PatternConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value _:b22415 ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.
+_:b22415
+  rdf:type ex:TestClass ;
+.

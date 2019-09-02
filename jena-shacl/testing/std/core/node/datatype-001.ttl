@@ -1,0 +1,64 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/node/datatype-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:TestShape
+  rdf:type sh:NodeShape ;
+  sh:datatype xsd:integer ;
+  sh:targetClass ex:TestClass ;
+  sh:targetNode xsd:integer ;
+  sh:targetNode 42 ;
+  sh:targetNode "aldi"^^xsd:integer ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <datatype-001>
+    ) ;
+.
+<datatype-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:datatype at node shape 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode xsd:integer ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:DatatypeConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value xsd:integer ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode "aldi"^^xsd:integer ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:DatatypeConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value "aldi"^^xsd:integer ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode _:b30507 ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:DatatypeConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value _:b30507 ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.
+_:b30507
+  rdf:type ex:TestClass ;
+.

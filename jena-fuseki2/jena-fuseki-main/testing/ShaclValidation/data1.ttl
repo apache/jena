@@ -1,0 +1,16 @@
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+PREFIX sh: 	    <http://www.w3.org/ns/shacl#>
+PREFIX :        <http://example/>
+PREFIX ns:        <http://example/ns#>
+PREFIX ex:      <http://example/>
+
+## Invalid
+:s1 rdf:type ex:Data ;
+    ns:p "abc" ; #^^xsd:int ;
+    ns:p 60 ;
+    .
+
+# Valid.
+:s2 ns:p "a string";.

@@ -1,0 +1,40 @@
+@prefix mf:      <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sht:     <http://www.w3.org/ns/shacl-test#> .
+
+<>
+	a mf:Manifest ;
+	rdfs:label "Tests converted from http://datashapes.org/sh/tests/tests/core/node" ;
+	mf:include <and-001.ttl> ;
+	mf:include <and-002.ttl> ;
+	mf:include <class-001.ttl> ;
+	mf:include <class-002.ttl> ;
+	mf:include <class-003.ttl> ;
+	mf:include <closed-001.ttl> ;
+	mf:include <closed-002.ttl> ;
+	mf:include <datatype-001.ttl> ;
+	mf:include <datatype-002.ttl> ;
+	mf:include <disjoint-001.ttl> ;
+	mf:include <equals-001.ttl> ;
+	mf:include <hasValue-001.ttl> ;
+	mf:include <in-001.ttl> ;
+	mf:include <languageIn-001.ttl> ;
+	mf:include <maxExclusive-001.ttl> ;
+	mf:include <maxInclusive-001.ttl> ;
+	mf:include <maxLength-001.ttl> ;
+	mf:include <minExclusive-001.ttl> ;
+	mf:include <minInclusive-001.ttl> ;
+	mf:include <minInclusive-002.ttl> ;
+	mf:include <minInclusive-003.ttl> ;
+	mf:include <minLength-001.ttl> ;
+	mf:include <node-001.ttl> ;
+	mf:include <nodeKind-001.ttl> ;
+	mf:include <not-001.ttl> ;
+	mf:include <not-002.ttl> ;
+	mf:include <or-001.ttl> ;
+	mf:include <pattern-001.ttl> ;
+	mf:include <pattern-002.ttl> ;
+	mf:include <xone-001.ttl> ;
+	mf:include <xone-duplicate.ttl> ;
+	mf:include <qualified-001.ttl> ;
+	.

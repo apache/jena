@@ -168,6 +168,7 @@
         
         <module>jena-core</module>
         <module>jena-arq</module>
+        <module>jena-shacl</module>
         <module>jena-rdfconnection</module>
         <module>jena-tdb</module>
         <module>jena-db</module> 
@@ -175,7 +176,7 @@
 
         <module>jena-text</module>
         <!-- <module>jena-text-es</module>        -->
-
+        
         <module>jena-cmds</module>
         <module>jena-fuseki2</module>
 
@@ -226,6 +227,7 @@
         <!-- Main modules -->
         <module>jena-core</module>
         <module>jena-arq</module>
+        <module>jena-shacl</module>
         <module>jena-rdfconnection</module>
         <module>jena-tdb</module>
         <module>jena-db</module>
@@ -798,6 +800,9 @@
 
             <!-- This is OGC software licensed -->
             <exclude>**/geosparql_vocab_all_v1_0_1_updated.rdf</exclude>
+
+            <!-- W3C SHACL vocabulary and shapes for SHACL itself -->
+            <exclude>**/src/main/resources/std/*</exclude>
 
           </excludes>
         </configuration>

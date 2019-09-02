@@ -47,15 +47,15 @@ public class OperationRegistry {
     private static final ActionService gspServlet_R    = new GSP_R();
     private static final ActionService gspServlet_RW   = new GSP_RW();
     private static final ActionService noOperation     = new NoOpActionService();
-    
-    
+    private static final ActionService shaclValidation = new SHACL_Validation();
+
     /** The server-wide standard configuration. */
     private static final OperationRegistry stdConfig   = stdConfig();
-    
+
     /**
      * Return the current server-wide standard configuration. It is copied into each
-     * new FusekiServer created. Changing it after a server is created does not
-     * affect that server.
+     * new FusekiServer created. Changing it after a server has been created does not
+     * affect the server.
      */
     public static OperationRegistry get() { return stdConfig; }
 
@@ -64,6 +64,7 @@ public class OperationRegistry {
         stdOpReg.register(Operation.Query,   WebContent.contentTypeSPARQLQuery, queryServlet);
         stdOpReg.register(Operation.Update,  WebContent.contentTypeSPARQLUpdate, updateServlet);
         stdOpReg.register(Operation.Upload,  null, uploadServlet);
+        stdOpReg.register(Operation.Shacl,   null, shaclValidation); 
         stdOpReg.register(Operation.GSP_R,   null, gspServlet_R);
         stdOpReg.register(Operation.GSP_RW,  null, gspServlet_RW);
         stdOpReg.register(Operation.NoOp,    null, noOperation);

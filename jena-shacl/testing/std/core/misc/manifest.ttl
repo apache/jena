@@ -1,0 +1,13 @@
+@prefix mf:      <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sht:     <http://www.w3.org/ns/shacl-test#> .
+
+<>
+	a mf:Manifest ;
+	rdfs:label "Tests converted from http://datashapes.org/sh/tests/tests/core/misc" ;
+	mf:include <deactivated-001.ttl> ;
+	mf:include <deactivated-002.ttl> ;
+	mf:include <message-001.ttl> ;
+	mf:include <severity-001.ttl> ;
+	mf:include <severity-002.ttl> ;
+	.

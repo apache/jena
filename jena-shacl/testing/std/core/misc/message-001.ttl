@@ -1,0 +1,48 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/misc/message-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:TestShape
+  rdf:type sh:NodeShape ;
+  sh:datatype xsd:integer ;
+  sh:message "Test message"@en ;
+  sh:targetNode ex:InvalidNode ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <message-001>
+    ) ;
+.
+<message-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of custom sh:message 001" ;
+  rdfs:comment """
+  		Note: This test verifies that the sh:message is copied into sh:resultMessage.
+  		To pass this test, the test harness needs to preserve all sh:resultMessage triples
+  		that are mentioned in the 'expected' results graph.""" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidNode ;
+          sh:resultMessage "Test message"@en ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:DatatypeConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value ex:InvalidNode ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

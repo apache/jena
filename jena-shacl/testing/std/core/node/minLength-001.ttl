@@ -1,0 +1,79 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/node/minLength-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:TestShape
+  rdf:type sh:NodeShape ;
+  sh:minLength 4 ;
+  sh:targetClass ex:TestClass ;
+  sh:targetNode <a:b> ;
+  sh:targetNode ex:John ;
+  sh:targetNode 123 ;
+  sh:targetNode 1234 ;
+  sh:targetNode 12345 ;
+  sh:targetNode "2017-03-29"^^xsd:date ;
+  sh:targetNode "Hel" ;
+  sh:targetNode "Hell" ;
+  sh:targetNode "Hell"@en ;
+  sh:targetNode "Hello" ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <minLength-001>
+    ) ;
+.
+<minLength-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:minLength at node shape 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode <a:b> ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:MinLengthConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value <a:b> ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode 123 ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:MinLengthConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value 123 ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode "Hel" ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:MinLengthConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value "Hel" ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode _:b19019 ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:MinLengthConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value _:b19019 ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.
+_:b19019
+  rdf:type ex:TestClass ;
+.

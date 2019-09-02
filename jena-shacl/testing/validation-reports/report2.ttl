@@ -1,0 +1,33 @@
+PREFIX sh:    <http://www.w3.org/ns/shacl#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+
+[ a            sh:ValidationReport ;
+  sh:conforms  false ;
+  sh:result    [ a                             sh:ValidationResult ;
+                 sh:focusNode                  <http://example/s1> ;
+                 sh:resultMessage              "Invalid cardinality: expected max 1: Got count = 2 : Subject = <http://example/s1>" ;
+                 sh:resultPath                 <http://example/ns#p> ;
+                 sh:resultSeverity             sh:Violation ;
+                 sh:sourceConstraintComponent  sh:MaxCountConstraintComponent ;
+                 sh:sourceShape                <urn:sh:ex:max_p> ;
+                 sh:value                      <http://example/s1>
+               ] ;
+  sh:result    [ a                             sh:ValidationResult ;
+                 sh:focusNode                  "abc" ;
+                 sh:resultMessage              "DatatypeConstraint[xsd:integer] : Got <http://www.w3.org/2001/XMLSchema#string> : Node \"abc\"" ;
+                 sh:resultPath                 <http://example/ns#p> ;
+                 sh:resultSeverity             sh:Violation ;
+                 sh:sourceConstraintComponent  sh:DatatypeConstraintComponent ;
+                 sh:sourceShape                <urn:sh:ex:range2> ;
+                 sh:value                      "abc"
+               ] ;
+  sh:result    [ a                             sh:ValidationResult ;
+                 sh:focusNode                  "abc" ;
+                 sh:resultMessage              "DatatypeConstraint[xsd:integer] : Got <http://www.w3.org/2001/XMLSchema#string> : Node \"abc\"" ;
+                 sh:resultSeverity             sh:Violation ;
+                 sh:sourceConstraintComponent  sh:DatatypeConstraintComponent ;
+                 sh:sourceShape                <urn:sh:ex:range1> ;
+                 sh:value                      "abc"
+               ]
+] .

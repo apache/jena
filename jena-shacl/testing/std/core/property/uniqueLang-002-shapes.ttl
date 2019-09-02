@@ -1,0 +1,12 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix ex: <http://example.org/shacl-test/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:s1 a sh:PropertyShape ;
+  sh:targetNode ex:i ;
+  sh:path ex:message ;
+  sh:uniqueLang "1"^^xsd:boolean .
+
+# Note that the value above is "1"^^xsd:boolean, which is distinct from "true"^^xsd:boolean.
+# Only true is mentioned in the spec, meaning that "1" will not activate the constraint
+# and the constraint is being ignored.
