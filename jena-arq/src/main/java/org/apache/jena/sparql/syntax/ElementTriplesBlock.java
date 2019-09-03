@@ -42,6 +42,14 @@ public class ElementTriplesBlock extends Element implements TripleCollectorMark
         pattern = bgp ;
     }
 
+    public ElementTriplesBlock(Triple... triples)
+    {
+        this() ;
+        for(Triple t : triples) {
+            this.addTriple(t) ;
+        }
+    }
+
     public boolean isEmpty() { return pattern.isEmpty() ; }
     
     @Override

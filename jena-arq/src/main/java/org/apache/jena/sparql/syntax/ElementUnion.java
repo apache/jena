@@ -37,6 +37,14 @@ public class ElementUnion extends Element
         addElement(el) ;
     }
 
+    public ElementUnion(Element... elements)
+    {
+        this() ;
+        for (Element el : elements) {
+            this.addElement(el) ;
+        }
+    }
+
     
     public void addElement(Element el) { elements.add(el) ; }
     public List<Element> getElements() { return elements ; }

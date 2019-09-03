@@ -34,6 +34,14 @@ public class ElementGroup extends Element
     public ElementGroup()
     {  }
 
+    public ElementGroup(Element... elements)
+    {
+        this() ;
+        for (Element el : elements) {
+            this.elements.add(el) ;
+        }
+    }
+
     public void addElement(Element el)
     { 
         elements.add(el) ;

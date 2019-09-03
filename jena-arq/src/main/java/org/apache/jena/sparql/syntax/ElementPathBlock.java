@@ -41,6 +41,22 @@ public class ElementPathBlock extends Element implements TripleCollectorMark
             addTriple(t) ;
     }
 
+    public ElementPathBlock(Triple... triples)
+    {
+        this() ;
+        for(Triple t : triples) {
+            this.addTriple(t) ;
+        }
+    }
+
+    public ElementPathBlock(TriplePath... triplePaths)
+    {
+        this() ;
+        for(TriplePath t : triplePaths) {
+            this.addTriplePath(t) ;
+        }
+    }
+
     public boolean isEmpty() { return pattern.isEmpty() ; }
     
     public void addTriple(TriplePath tp)
