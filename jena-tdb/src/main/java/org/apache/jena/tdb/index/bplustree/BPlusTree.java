@@ -206,8 +206,6 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
         //if ( ! nodeManager.getBlockMgr().isEmpty() )
         {
             // Create as does not exist.
-            // [TxTDB:PATCH-UP]
-            // ** Better: seperate "does it exist? - create statics used in factory"
             startUpdateBlkMgr() ;
             // Fresh BPlusTree
             rootIdx = nodeManager.createEmptyBPT() ;
@@ -241,7 +239,6 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
 
     private void releaseRoot(BPTreeNode rootNode)
     {
-//        // [TxTDB:PATCH-UP]
 //        if ( root != null )
 //        {
 //            root.release() ;

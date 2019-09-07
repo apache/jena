@@ -81,8 +81,7 @@ public class FusekiNetLib {
         return sb.toString();
     }
 
-
-    /** Helper function for displayign an HttpServletRequest */
+    /** Helper function for displaying an HttpServletRequest */
     public static String fmtRequest(HttpServletRequest request) {
         StringBuffer sbuff = new StringBuffer();
         sbuff.append(request.getMethod());

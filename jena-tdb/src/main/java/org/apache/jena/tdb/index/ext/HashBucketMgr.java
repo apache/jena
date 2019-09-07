@@ -32,7 +32,6 @@ import org.apache.jena.tdb.base.page.PageBlockMgr ;
 import org.apache.jena.tdb.base.record.RecordException ;
 import org.apache.jena.tdb.base.record.RecordFactory ;
 
-
 public class HashBucketMgr extends PageBlockMgr<HashBucket>
 {
     public HashBucketMgr(RecordFactory factory, BlockMgr blockMgr)
@@ -49,8 +48,7 @@ public class HashBucketMgr extends PageBlockMgr<HashBucket>
         bucket.setTrieLength(hashBitLen) ;
         return bucket ;
     }
-    
-    // [TxTDB:PATCH-UP]
+
     @Override
     public HashBucket getWrite(int id)
     { 
@@ -58,23 +56,20 @@ public class HashBucketMgr extends PageBlockMgr<HashBucket>
         page.getBackingBlock().setModified(true) ;
         return page ;
     }
-    // [TxTDB:PATCH-UP]
+
     @Override
     public HashBucket getRead(int id)        { return _get(id) ; }
-    
-    // [TxTDB:PATCH-UP]
+
     //@Override
     public HashBucket get(int id)        { return getWrite(id) ; }
-    
-   
+
     public HashBucket _get(int id)
     {
-        // [TxTDB:PATCH-UP]
         HashBucket bucket = super.getWrite(id) ;
         // Link and Count are in the block and got done by the converter.
         return bucket ;
     }
-    
+
     private static class Block2HashBucketMgr implements BlockConverter<HashBucket>
     {
         private RecordFactory factory ;
@@ -83,7 +78,7 @@ public class HashBucketMgr extends PageBlockMgr<HashBucket>
         {
             this.factory = factory ;
         }
-        
+
         @Override
         public HashBucket createFromBlock(Block block, BlockType blkType)
         {

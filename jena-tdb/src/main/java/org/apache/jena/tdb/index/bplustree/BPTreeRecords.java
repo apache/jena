@@ -126,7 +126,6 @@ public final class BPTreeRecords extends BPTreePage
     @Override
     public Record internalInsert(Record record)
     {
-        // [TxTDB:PATCH-UP]
         promote() ;
         int i = rBuff.find(record) ;
         Record r2 = null ;
