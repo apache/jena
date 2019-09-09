@@ -96,7 +96,7 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
             // Does not overlap with the ids used by TDB2.
             byte[] componentID = { 2,4,6,10 } ;
             TransactionalComponent tc = new TextIndexDB(ComponentId.create(null, componentID), textIndex);
-            coord.modify(()->coord.add(tc));
+            coord.modifyConfig(()->coord.add(tc));
             commitAction = delegateCommit;
             abortAction = delegateAbort;
         } else {

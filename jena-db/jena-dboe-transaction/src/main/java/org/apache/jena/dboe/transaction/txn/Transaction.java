@@ -121,7 +121,7 @@ public class Transaction implements TransactionInfo {
         checkState(ACTIVE);
         if ( txnType == TxnType.READ )
             return false;
-        boolean b = txnMgr.promoteTxn(this, readCommitted);
+        boolean b = txnMgr.executePromote(this, readCommitted);
         if ( !b )
             return false;
         mode = ReadWrite.WRITE;
@@ -160,6 +160,7 @@ public class Transaction implements TransactionInfo {
             prepare();
         checkState(PREPARE);
         setState(COMMIT);
+        // Sys abort -> state?
         switch(mode) {
             case WRITE:
                 txnMgr.executeCommit(this,
@@ -195,10 +196,12 @@ public class Transaction implements TransactionInfo {
     }
 
     public void end() {
+        // [1746]
+        // txnMgr.executeEnd(thus, ()->{});
         txnMgr.notifyEndStart(this);
         if ( isWriteTxn() && getState() == ACTIVE ) {
             //Log.warn(this, "Write transaction with no commit() or abort() before end()");
-            // Just the abort process.
+            // Just abort process.
             abort$();
             endInternal();
             throw new TransactionException("Write transaction with no commit() or abort() before end() - forced abort");

@@ -84,7 +84,7 @@ public class Operation {
     public static final Operation GSP_R    = alloc(FusekiVocab.opGSP_r.asNode(),  "gsp-r",  "Graph Store Protocol (Read)");
     public static final Operation GSP_RW   = alloc(FusekiVocab.opGSP_rw.asNode(), "gsp-rw", "Graph Store Protocol");
     public static final Operation NoOp     = alloc(FusekiVocab.opNoOp.asNode(),   "no-op",  "No Op");
-    public static final Operation Shacl    = alloc(FusekiVocab.opShacl.asNode(),  "shacl",  "SHACL Validation");
+    public static final Operation Shacl    = alloc(FusekiVocab.opShacl.asNode(),  "SHACL",  "SHACL Validation");
     static {
         // Not everyone will remember "_" vs "-" so ...
         altName(FusekiVocab.opNoOp_alt,   FusekiVocab.opNoOp); 
