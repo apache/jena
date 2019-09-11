@@ -40,7 +40,7 @@ public class TestTxnSwitching {
 
     //Transactional transactional = TransactionalFactory.create(jrnl, integer);
     TransactionalBase transactional;
-    TransactionCoordinator txnMgr = new  TransactionCoordinator(jrnl); {
+    TransactionCoordinator txnMgr = new TransactionCoordinator(jrnl); {
         txnMgr.add(integer);
         transactional = new TransactionalBase(txnMgr);
         txnMgr.start();

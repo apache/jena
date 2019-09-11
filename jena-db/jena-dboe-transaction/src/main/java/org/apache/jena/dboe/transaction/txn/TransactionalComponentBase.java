@@ -51,6 +51,9 @@ public class TransactionalComponentBase<X> extends TransactionalComponentLifecyc
     }
 
     @Override
+    protected X _promote(TxnId txnId, X state) { return null; }
+
+    @Override
     protected ByteBuffer _commitPrepare(TxnId txnId, X state) {
         return null;
     }
@@ -69,9 +72,5 @@ public class TransactionalComponentBase<X> extends TransactionalComponentLifecyc
 
     @Override
     protected void _shutdown() {}
-
-    @Override
-    protected X _promote(TxnId txnId, X state) { return null; }
-
 }
 

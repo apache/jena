@@ -105,6 +105,7 @@ public class TDB2StorageBuilder {
 
         // Finalize.
         builder.components.forEach(txnCoord::add);
+        builder.listeners.forEach(txnCoord::addListener);
         // Freezes the TransactionCoordinator components
         txnCoord.start();
         ReorderTransformation reorderTranform = chooseReorderTransformation(location);
@@ -186,6 +187,7 @@ public class TDB2StorageBuilder {
     private final ComponentIdMgr componentIdMgr;
     // Accumulate TransactionalComponents as they are used to build the database.
     private final Collection<TransactionalComponent> components = new ArrayList<>();
+    private final Collection<TransactionListener> listeners = new ArrayList<>();
 
     private TDB2StorageBuilder(TransactionalSystem txnSystem,
                         Location location, StoreParams params, ComponentIdMgr componentIdMgr) {
@@ -298,7 +300,109 @@ public class TDB2StorageBuilder {
 
     private NodeTable buildNodeTable(String name) {
         NodeTable nodeTable = buildBaseNodeTable(name);
+        
         nodeTable = NodeTableCache.create(nodeTable, params);
+        
+        if ( nodeTable instanceof NodeTableCache ) {
+            NodeTableCache nodeTableCache = (NodeTableCache)nodeTable;
+            
+            // [1746] A "notification" - better way to do this?
+            // Need to go before the storage of the node table commits. 
+//            TransactionalComponent tc = new TransactionalComponentBase<Object>(ComponentId.allocLocal()) {
+//                
+//                private Object state = new Object();
+//                private TxnId activeWriter = null;
+//                
+//                @Override
+//                protected Object _begin(ReadWrite readWrite, TxnId txnId) {
+//                    System.out.println("_begin");
+////                    // XXX OK?
+////                    if ( isWriteTxn() ) {
+////                        nodeTableCache.updateBegin(txnId);
+////                        activeWriter = txnId;
+////                    }
+//                    return state;
+//                }
+//                
+//                @Override
+//                protected Object _promote(TxnId txnId, Object state) {
+//                    System.out.println("_promote");
+////                    if ( isWriteTxn() ) {
+////                        nodeTableCache.updateBegin(txnId);
+////                        activeWriter = txnId;
+////                    }
+//                    return state;
+//                }
+//                
+////                @Override
+////                protected void _commit(TxnId txnId, Object state) {}
+//
+//                @Override
+//                protected void _commitEnd(TxnId txnId, Object state) {
+//                    System.out.println("_commitEnd");
+////                    if ( activeWriter == txnId ) {
+////                        nodeTableCache.updateCommit();
+////                        activeWriter = null;
+////                    }
+//                }
+//
+//                @Override
+//                protected void _abort(TxnId txnId, Object state) {
+//                    System.out.println("_abort");
+////                    if ( activeWriter == txnId ) {
+////                        nodeTableCache.updateAbort();
+////                        activeWriter = null;
+////                    }
+//                }
+//            };
+//            components.add(tc);
+
+            // [1746]
+            
+            TransactionListener listener = new TransactionListener() {
+                private final boolean PRT = false;
+                
+                @Override public void notifyTxnStart(Transaction transaction) { 
+                    if ( PRT ) System.out.println("notifyTxnStart");
+                    if ( transaction.isWriteTxn() )
+                        nodeTableCache.updateStart();
+                }   
+                
+                
+                @Override public void notifyPromoteFinish(Transaction transaction) {
+                    if ( transaction.isWriteTxn() )
+                        nodeTableCache.updateStart();
+                    if ( PRT ) System.out.println("notifyPromoteFinish");
+                }
+                
+                @Override public void notifyAbortStart(Transaction transaction) {
+                    if ( PRT ) System.out.println("notifyAbortStart");
+                    if ( transaction.isWriteTxn() ) {
+                        //System.out.println("    "+transaction.getTxnId());
+                        //System.out.println("    "+transaction.getMode());
+                        nodeTableCache.updateAbort();
+                    }
+                }
+                //@Override public void notifyAbortFinish(Transaction transaction) {} 
+
+                /** Start prepare during a commit */
+                @Override
+                public void notifyPrepareStart(Transaction transaction) {
+                    if ( PRT ) System.out.println("notifyPrepareStart");
+                }
+                
+                @Override public void notifyCommitFinish(Transaction transaction) { 
+                    // Tell the NodeTableCache to update the main caches. 
+                    // This must be after the underlying NodeTableNative has committed. 
+                    if ( transaction.isWriteTxn() ) {
+                        // This is before "prepare" is called on components. 
+                        nodeTableCache.updateCommit();
+                    }
+                }
+            };
+            listeners.add(listener);
+        }
+        
         nodeTable = NodeTableInline.create(nodeTable);
         return nodeTable;
     }

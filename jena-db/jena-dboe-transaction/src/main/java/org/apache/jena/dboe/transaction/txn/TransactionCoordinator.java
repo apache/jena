@@ -29,6 +29,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.logging.Log;
@@ -75,8 +76,9 @@ public class TransactionCoordinator {
     private boolean configurable = true;
 
     private final ComponentGroup components = new ComponentGroup();
+    private final List<TransactionListener> listeners = new ArrayList<>();
+    
     // Components
-    private ComponentGroup txnComponents = null;
     private List<ShutdownHook> shutdownHooks;
     private TxnIdGenerator txnIdGenerator = TxnIdFactory.txnIdGenSimple;
 
@@ -138,10 +140,8 @@ public class TransactionCoordinator {
     private TransactionCoordinator(Journal journal, List<TransactionalComponent> txnComp, List<ShutdownHook> shutdownHooks) {
         this.journal = journal;
         this.shutdownHooks = new ArrayList<>(shutdownHooks);
-        if ( txnComp != null ) {
-            //txnComp.forEach(x-> System.out.println(x.getComponentId().label()+" :: "+Bytes.asHex(x.getComponentId().bytes()) ) );
-            txnComp.forEach(components::add);
-        }
+        if ( txnComp != null )
+            components.addAll(txnComp);
     }
 
     /** Add a {@link TransactionalComponent}.
@@ -167,6 +167,18 @@ public class TransactionCoordinator {
         return this;
     }
 
+    public TransactionCoordinator addListener(TransactionListener listener) {
+        checklAllowModification();
+        listeners.add(listener);
+        return this;
+    }
+
+    public TransactionCoordinator removeListener(TransactionListener listener) {
+        checklAllowModification();
+        listeners.remove(listener);
+        return this;
+    }
+    
     /**
      * Perform modification of this {@code TransactionCoordiator} after it has been
      * started.
@@ -179,7 +191,7 @@ public class TransactionCoordinator {
      * <p>
      * Use with care!
      */
-    public void modify(Runnable action) {
+    public void modifyConfig(Runnable action) {
         try {
             startExclusiveMode();
             configurable = true;
@@ -190,6 +202,11 @@ public class TransactionCoordinator {
         }
     }
 
+    /** Call the action for each listener */ 
+    private void listeners(Consumer<TransactionListener> action) {
+        listeners.forEach(x->action.accept(x));
+    }
+    
     /**
      * Add a shutdown hook. Shutdown is not guaranteed to be called
      * and hence hooks may not get called.
@@ -533,6 +550,7 @@ public class TransactionCoordinator {
         Transaction transaction = begin$(txnType);
         startActiveTransaction(transaction);
         transaction.begin();
+        notifyBegin(transaction);
         return transaction;
     }
 
@@ -589,17 +607,21 @@ public class TransactionCoordinator {
     }
 
     /** Attempt to promote a transaction from READ mode to WRITE mode based.
-     *  Whether intevening commits are seen is determined by the boolean flag.
-     * Return true if the transaction is already a writer.
+     *  Whether intervening commits are seen is determined by the boolean flag.
+     *  Return true if the transaction is already a writer.
      */
-    /*package*/ boolean promoteTxn(Transaction transaction, boolean readCommittedPromotion) {
+    /*package*/ boolean executePromote(Transaction transaction, boolean readCommittedPromotion) {
         if ( transaction.getMode() == ReadWrite.WRITE )
             return true;
-        // While this code allows promotion of TxnType.READ, this ability is usually rejected
+        // Even if promotion of TxnType.READ allowed, this ability is usually rejected
         // by the transaction system around it. e.g. TransactionalBase.
         if ( transaction.getTxnType() == TxnType.READ )
             throw new TransactionException("promote: can't promote a READ transaction");
-        return promoteTxn$(transaction, readCommittedPromotion);
+        
+        notifyPromoteStart(transaction);
+        boolean b = promoteTxn$(transaction, readCommittedPromotion);
+        notifyPromoteFinish(transaction);
+        return b;
     }
 
     private boolean promoteTxn$(Transaction transaction, boolean readCommittedPromotion) {
@@ -689,8 +711,11 @@ public class TransactionCoordinator {
     /*package*/ void completed(Transaction transaction) {
         finishActiveTransaction(transaction);
         journal.reset();
+        notifyEnd(transaction);
     }
 
+    // Internally, an APi call "commit" is "prepare then commit". 
+    
     /*package*/ void executePrepare(Transaction transaction) {
         // Do here because it needs access to the journal.
         notifyPrepareStart(transaction);
@@ -705,7 +730,13 @@ public class TransactionCoordinator {
     }
 
     /*package*/ void executeCommit(Transaction transaction, Runnable commit, Runnable finish, Runnable sysabort) {
+        notifyCommitStart(transaction);
         if ( transaction.getMode() == ReadWrite.READ ) {
+
+            //[1746]
+            //executeCommitReader();
+            // No commit on components, all "end".
+            // Make abort the same?
             finish.run();
             notifyCommitFinish(transaction);
             return;
@@ -719,6 +750,7 @@ public class TransactionCoordinator {
         } catch (Throwable th) {
             throw th;
         } finally { journal.endWrite(); }
+        notifyCommitFinish(transaction);
     }
 
     private void executeCommitWriter(Transaction transaction, Runnable commit, Runnable finish, Runnable sysabort) {
@@ -777,7 +809,6 @@ public class TransactionCoordinator {
             finish.run();
             // Bump global serialization point
             advanceDataVersion();
-            notifyCommitFinish(transaction);
         }
     }
 
@@ -879,38 +910,70 @@ public class TransactionCoordinator {
     public long countActive()           { return activeTransactionCount.get(); }
 
     // notify*Start/Finish called round each transaction lifecycle step
-    // Called in cooperation between Transaction and TransactionCoordinator
-    // depending on who is actually do the work of each step.
 
-    /*package*/ void notifyPrepareStart(Transaction transaction) {}
+    private void notifyBegin(Transaction transaction) {
+        listeners(x -> x.notifyTxnStart(transaction));
+    }
 
-    /*package*/ void notifyPrepareFinish(Transaction transaction) {}
+    private void notifyEnd(Transaction transaction) {
+        listeners(x -> x.notifyTxnFinish(transaction));
+    }
+
+    private void notifyPromoteStart(Transaction transaction) {
+        listeners(x -> x.notifyPromoteStart(transaction));
+    }
+
+    private void notifyPromoteFinish(Transaction transaction) {
+        listeners(x -> x.notifyPromoteFinish(transaction));
+    }
+
+    private void notifyPrepareStart(Transaction transaction) {
+        listeners(x -> x.notifyPrepareStart(transaction));
+    }
+
+    private void notifyPrepareFinish(Transaction transaction) {
+        listeners(x -> x.notifyPrepareFinish(transaction));
+    }
 
     // Writers released here - can happen because of commit() or abort().
 
-    private void notifyCommitStart(Transaction transaction) {}
+    private void notifyCommitStart(Transaction transaction) {
+        listeners(x -> x.notifyCommitStart(transaction));
+    }
 
-    private void notifyCommitFinish(Transaction transaction) {
+    private void notifyCommitFinish(Transaction transaction)    {
+        listeners(x->x.notifyCommitFinish(transaction));
         if ( transaction.getMode() == ReadWrite.WRITE )
             releaseWriterLock();
     }
 
-    private void notifyAbortStart(Transaction transaction) { }
+    private void notifyAbortStart(Transaction transaction) { 
+        listeners(x->x.notifyAbortStart(transaction));
+    }
 
     private void notifyAbortFinish(Transaction transaction) {
+        listeners(x->x.notifyAbortFinish(transaction));
         if ( transaction.getMode() == ReadWrite.WRITE )
             releaseWriterLock();
     }
 
-    /*package*/ void notifyEndStart(Transaction transaction) { }
+    /*package*/ void notifyEndStart(Transaction transaction) {
+        listeners(x->x.notifyEndStart(transaction));
+    }
 
-    /*package*/ void notifyEndFinish(Transaction transaction) {}
+    /*package*/ void notifyEndFinish(Transaction transaction) {
+        listeners(x->x.notifyEndFinish(transaction));
+    }
 
     // Called by Transaction once at the end of first commit()/abort() or end()
 
-    /*package*/ void notifyCompleteStart(Transaction transaction) { }
+    /*package*/ void notifyCompleteStart(Transaction transaction) {
+        listeners(x -> x.notifyCompleteStart(transaction));
+    }
 
-    /*package*/ void notifyCompleteFinish(Transaction transaction) { }
+    /*package*/ void notifyCompleteFinish(Transaction transaction) {
+        listeners(x -> x.notifyCompleteFinish(transaction));
+    }
 
     // Coordinator state.
     private final AtomicLong countBegin         = new AtomicLong(0);

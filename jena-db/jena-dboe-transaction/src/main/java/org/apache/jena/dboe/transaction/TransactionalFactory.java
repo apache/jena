@@ -42,7 +42,7 @@ public class TransactionalFactory {
         return createTransactional(coord, elements);
     }
 
-    private static Transactional createTransactional(TransactionCoordinator coord, TransactionalComponent[] elements) {
+    private static Transactional createTransactional(TransactionCoordinator coord, TransactionalComponent... elements) {
         for ( TransactionalComponent tc : elements ) {
             coord.add(tc);
         }

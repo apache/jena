@@ -18,10 +18,7 @@
 
 package org.apache.jena.dboe.transaction.txn;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -39,6 +36,10 @@ public class ComponentGroup {
         this.group.putAll(group);
     }
 
+    public void addAll(Collection<TransactionalComponent> components) {
+        components.forEach(this::add);
+    }
+    
     public void add(TransactionalComponent component) {
         Objects.requireNonNull(component);
         //Log.info(this, "add("+component.getComponentId()+")");
