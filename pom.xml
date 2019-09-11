@@ -66,20 +66,20 @@
          POM for the correct dependency versions
          and use that or later.
     -->
-    <ver.jsonldjava>0.12.3</ver.jsonldjava>
+    <ver.jsonldjava>0.12.5</ver.jsonldjava>
     <ver.jackson>2.9.9</ver.jackson>
     <ver.jackson-databind>2.9.9.3</ver.jackson-databind>
 
     <ver.commonsio>2.6</ver.commonsio>
     <ver.commonscli>1.4</ver.commonscli>
-    <ver.commonslang3>3.4</ver.commonslang3>
-    <ver.commonscsv>1.5</ver.commonscsv>
+    <ver.commonslang3>3.9</ver.commonslang3>
+    <ver.commonscsv>1.7</ver.commonscsv>
     <ver.commons-codec>1.13</ver.commons-codec>
     <ver.commons-compress>1.19</ver.commons-compress>
 
     <ver.dexxcollection>0.7</ver.dexxcollection>
 
-    <ver.httpclient>4.5.5</ver.httpclient>
+    <ver.httpclient>4.5.10</ver.httpclient>
     <ver.httpcore>4.4.9</ver.httpcore>
     <!-- Normally, these are the same as the above
          In the case of 4.2.6, there isn't a httpcore-osgi.
@@ -99,7 +99,7 @@
 
     <ver.mockito>1.9.5</ver.mockito>
     <ver.awaitility>3.1.0</ver.awaitility>
-    <ver.micrometer>1.1.3</ver.micrometer>
+    <ver.micrometer>1.2.1</ver.micrometer>
 
     <jdk.version>1.8</jdk.version>
     <targetJdk>${jdk.version}</targetJdk>
@@ -378,7 +378,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-collections4</artifactId>
-        <version>4.1</version>
+        <version>4.4</version>
       </dependency>
       
       <!-- supports persistent data structures -->
@@ -933,7 +933,7 @@
             <dependency>
               <groupId>org.apache.maven.shared</groupId>
               <artifactId>maven-filtering</artifactId>
-              <version>1.2</version>
+              <version>3.1.1</version>
             </dependency>
           </dependencies>
         </plugin>
