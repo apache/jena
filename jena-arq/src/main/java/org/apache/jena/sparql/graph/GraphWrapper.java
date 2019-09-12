@@ -62,9 +62,9 @@ public class GraphWrapper implements Graph
         return graph.getEventManager() ;
     }
 
+    @Deprecated
     @Override
-    public GraphStatisticsHandler getStatisticsHandler()
-    {
+    public GraphStatisticsHandler getStatisticsHandler() {
         return graph.getStatisticsHandler() ;
     }
 

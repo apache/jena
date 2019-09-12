@@ -139,6 +139,7 @@ public class FRuleEngineIFactoryTest extends TestCase {
         @Override
         public GraphEventManager getEventManager() { return null; }
 
+        @SuppressWarnings("deprecation")
         @Override
         public GraphStatisticsHandler getStatisticsHandler() { return null; }
 

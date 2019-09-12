@@ -87,14 +87,17 @@ public abstract class GraphBase implements GraphWithPerform
         { return this == other; }
 
     @Override
+    @Deprecated
     public GraphStatisticsHandler getStatisticsHandler()
         {
         if (statisticsHandler == null) statisticsHandler = createStatisticsHandler();
         return statisticsHandler;
         }
     
+    @SuppressWarnings("deprecation")
     protected GraphStatisticsHandler statisticsHandler;
     
+    @SuppressWarnings("deprecation")
     protected GraphStatisticsHandler createStatisticsHandler()
         { return null; }
     

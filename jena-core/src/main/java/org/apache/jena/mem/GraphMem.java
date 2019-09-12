@@ -42,14 +42,17 @@ public class GraphMem extends GraphMemBase
     @Override public int graphBaseSize()  
     { return store.size(); }
 
+    @Deprecated
     @Override protected GraphStatisticsHandler createStatisticsHandler()
     { return new GraphMemStatisticsHandler( (GraphTripleStoreMem) store ); }
 
     /**
         The GraphMemStatisticsHandler exploits the existing TripleStoreMem
         indexes to deliver statistics information for single-concrete-node queries
-        and for trivial cases of two-concrete-node queries.        
+        and for trivial cases of two-concrete-node queries.  
+        @deprecated      
      */
+    @Deprecated
     protected static class GraphMemStatisticsHandler implements GraphStatisticsHandler
     {
         protected final GraphTripleStoreMem store;
