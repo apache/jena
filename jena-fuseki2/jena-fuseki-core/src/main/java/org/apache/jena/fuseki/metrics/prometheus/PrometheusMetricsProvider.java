@@ -41,6 +41,7 @@ public class PrometheusMetricsProvider implements MetricsProvider {
 
     private PrometheusMeterRegistry meterRegistry;
 
+    @SuppressWarnings("resource")
     public PrometheusMetricsProvider() {
         meterRegistry = new PrometheusMeterRegistry( PrometheusConfig.DEFAULT );
         meterRegistry.config().commonTags( "application", "fuseki" );
@@ -52,6 +53,7 @@ public class PrometheusMetricsProvider implements MetricsProvider {
         for (File root : File.listRoots()) {
             new DiskSpaceMetrics(root).bindTo( meterRegistry );
         }
+        // Has a warning about resource closing.
         new JvmGcMetrics().bindTo( meterRegistry );
         new JvmMemoryMetrics().bindTo( meterRegistry );
         new JvmThreadMetrics().bindTo( meterRegistry );
