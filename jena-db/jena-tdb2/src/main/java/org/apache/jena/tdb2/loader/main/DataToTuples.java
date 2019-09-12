@@ -69,6 +69,8 @@ public class DataToTuples implements BulkStartFinish {
     private final MonitorOutput output;
     private BlockingQueue<DataBlock> input;
 
+    private Thread thread;
+
     public DataToTuples(DatasetGraphTDB dsgtdb,
                         Destination<Tuple<NodeId>> tuples3,
                         Destination<Tuple<NodeId>> tuples4,
@@ -101,11 +103,18 @@ public class DataToTuples implements BulkStartFinish {
 
     @Override
     public void startBulk() {
-        new Thread(()->action()).start();
+        thread = new Thread(()->action());
+        thread.start();
     }
 
     @Override
-    public void finishBulk() { }
+    public void finishBulk() {
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            throw new BulkLoaderException("InterruptedException", e);
+        }
+    }
 
     // Triples.
     private void action() {
