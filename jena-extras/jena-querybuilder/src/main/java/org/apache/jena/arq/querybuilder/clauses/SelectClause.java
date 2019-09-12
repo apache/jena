@@ -34,30 +34,28 @@ import org.apache.jena.sparql.lang.sparql_11.ParseException;
  */
 public interface SelectClause<T extends AbstractQueryBuilder<T>> {
 	/**
-	 * Get the select handler for this clause
+	 * Returns the select handler for this clause
 	 * 
 	 * @return The SelectHandler that the clause is using
 	 */
 	public SelectHandler getSelectHandler();
 
-	
-
 	/**
-	 * Add a variable to the select statement.
+	 * Adds a variable to the select clause.
 	 * 
 	 * A variable may only be added once. Attempting to add the same variable
 	 * multiple times will be silently ignored.
 	 * 
 	 * @param var
 	 *            The variable to add.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T addVar(Object var);
 
 	/**
-	 * Add an expression as variable to the select statement.
+	 * Adds an expression as variable to the select statement.
 	 * 
-	 * creates an '(Expression as Var)' to the select statement.
+	 * Creates an '(Expression as Var)' to the select statement.
 	 * 
 	 * A variable may only be added once. Attempting to add the same variable
 	 * multiple times will be silently ignored.
@@ -66,14 +64,14 @@ public interface SelectClause<T extends AbstractQueryBuilder<T>> {
 	 *            The expression to be added
 	 * @param var
 	 *            The variable to add.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T addVar(Expr expr, Object var);
 
 	/**
-	 * Add an expression as variable to the select statement.
+	 * Adds an expression as variable to the select statement.
 	 * 
-	 * creates an '(Expression as Var)' to the select statement.
+	 * Creates an '(Expression as Var)' to the select statement.
 	 * 
 	 * A variable may only be added once. Attempting to add the same variable
 	 * multiple times will be silently ignored.
@@ -82,8 +80,9 @@ public interface SelectClause<T extends AbstractQueryBuilder<T>> {
 	 *            The expression to be added
 	 * @param var
 	 *            The variable to add.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 * @throws ParseException
+	 *            If the expression can not be parsed.
 	 */
 	public T addVar(String expr, Object var) throws ParseException;
 
