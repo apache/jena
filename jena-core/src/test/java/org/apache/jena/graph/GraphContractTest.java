@@ -1076,19 +1076,6 @@ public class GraphContractTest<T extends Graph>
 	}
 
 	@ContractTest
-	public void testGetStatisticsHandler()
-	{
-		Graph g = producer.newInstance();
-		GraphStatisticsHandler sh = g.getStatisticsHandler();
-		if (sh != null)
-		{
-			assertSame(
-					"getStatisticsHandler must always return the same object",
-					sh, g.getStatisticsHandler());
-		}
-	}
-
-	@ContractTest
 	public void testGetTransactionHandler()
 	{
 		Graph g = producer.newInstance();
@@ -1845,104 +1832,6 @@ public class GraphContractTest<T extends Graph>
 		} catch (UnsupportedOperationException e)
 		{
 			// No Iterator.remove
-		}
-	}
-
-	@ContractTest
-	public void testSingletonStatisticsWithSingleTriple()
-	{
-
-		Graph g = graphWith(producer.newInstance(), "a P b");
-		GraphStatisticsHandler h = g.getStatisticsHandler();
-		if (h != null)
-		{
-			assertEquals(1L, h.getStatistic(node("a"), Node.ANY, Node.ANY));
-			assertEquals(0L, h.getStatistic(node("x"), Node.ANY, Node.ANY));
-			//
-			assertEquals(1L, h.getStatistic(Node.ANY, node("P"), Node.ANY));
-			assertEquals(0L, h.getStatistic(Node.ANY, node("Q"), Node.ANY));
-			//
-			assertEquals(1L, h.getStatistic(Node.ANY, Node.ANY, node("b")));
-			assertEquals(0L, h.getStatistic(Node.ANY, Node.ANY, node("y")));
-		}
-	}
-
-	@ContractTest
-	public void testSingletonStatisticsWithSeveralTriples()
-	{
-
-		Graph g = graphWith(producer.newInstance(),
-				"a P b; a P c; a Q b; x S y");
-		GraphStatisticsHandler h = g.getStatisticsHandler();
-		if (h != null)
-		{
-			assertEquals(3L, h.getStatistic(node("a"), Node.ANY, Node.ANY));
-			assertEquals(1L, h.getStatistic(node("x"), Node.ANY, Node.ANY));
-			assertEquals(0L, h.getStatistic(node("y"), Node.ANY, Node.ANY));
-			//
-			assertEquals(2L, h.getStatistic(Node.ANY, node("P"), Node.ANY));
-			assertEquals(1L, h.getStatistic(Node.ANY, node("Q"), Node.ANY));
-			assertEquals(0L, h.getStatistic(Node.ANY, node("R"), Node.ANY));
-			//
-			assertEquals(2L, h.getStatistic(Node.ANY, Node.ANY, node("b")));
-			assertEquals(1L, h.getStatistic(Node.ANY, Node.ANY, node("c")));
-			assertEquals(0L, h.getStatistic(Node.ANY, Node.ANY, node("d")));
-		}
-	}
-
-	@ContractTest
-	public void testDoubletonStatisticsWithTriples()
-	{
-
-		Graph g = graphWith(producer.newInstance(),
-				"a P b; a P c; a Q b; x S y");
-		GraphStatisticsHandler h = g.getStatisticsHandler();
-		if (h != null)
-		{
-			assertEquals(-1L, h.getStatistic(node("a"), node("P"), Node.ANY));
-			assertEquals(-1L, h.getStatistic(Node.ANY, node("P"), node("b")));
-			assertEquals(-1L, h.getStatistic(node("a"), Node.ANY, node("b")));
-			//
-			assertEquals(0L, h.getStatistic(node("no"), node("P"), Node.ANY));
-		}
-	}
-
-	@ContractTest
-	public void testStatisticsWithOnlyVariables()
-	{
-		testStatsWithAllVariables("");
-		testStatsWithAllVariables("a P b");
-		testStatsWithAllVariables("a P b; a P c");
-		testStatsWithAllVariables("a P b; a P c; a Q b; x S y");
-	}
-
-	private void testStatsWithAllVariables(String triples)
-	{
-		Graph g = graphWith(producer.newInstance(), triples);
-		GraphStatisticsHandler h = g.getStatisticsHandler();
-		if (h != null)
-		{
-			assertEquals(g.size(),
-					h.getStatistic(Node.ANY, Node.ANY, Node.ANY));
-		}
-	}
-
-	@ContractTest
-	public void testStatsWithConcreteTriple()
-	{
-		testStatsWithConcreteTriple(0, "x P y", "");
-	}
-
-	private void testStatsWithConcreteTriple(int expect, String triple,
-			String graph)
-	{
-		Graph g = graphWith(producer.newInstance(), graph);
-		GraphStatisticsHandler h = g.getStatisticsHandler();
-		if (h != null)
-		{
-			Triple t = triple(triple);
-			assertEquals(expect, h.getStatistic(t.getSubject(),
-					t.getPredicate(), t.getObject()));
 		}
 	}
 
