@@ -33,7 +33,7 @@ import org.apache.jena.tdb2.TDBException;
  *  With the default setting of a thread pool of one, operations are
  *  executed in the order submitted.
  *  <p>
- *  If the far end is the bottleneck, a longer queeue is no help.
+ *  If the far end is the bottleneck, a longer queue is of no help.
  */
 public final class Async {
     // Currently specific to ThriftRunnable
