@@ -48,9 +48,7 @@ import org.apache.jena.vocabulary.XSD ;
  * Implementation of node-centric functions.
  */
 public class NodeFunctions {
-    private static final NodeValue xsdString = NodeValue.makeNode(XSD.xstring.asNode()) ;
 
-    // Helper functions
     /**
      * check and get a string (may be a simple literal, literal with language
      * tag or an XSD string).
