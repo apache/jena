@@ -21,8 +21,9 @@ package org.apache.jena.graph;
 /**
     A graph's StatisticsHandler offers access to some statistics about that
     graph's contents that might be useful for optimisation.
-    
+    @deprecated To be removed.
  */
+@Deprecated
 public interface GraphStatisticsHandler
     {
     /**

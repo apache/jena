@@ -81,7 +81,6 @@ public class TestPackage extends TestCase {
         result.addTest( TestDisjointUnion.suite() );
         result.addTest( TestDifference.suite() );
         result.addTest( TestIntersection.suite() );
-        result.addTestSuite( TestUnionStatistics.class );
         result.addTest( TestMultiUnion.suite() );
     /* */
         result.addTest( TestPolyadicPrefixMapping.suite() );

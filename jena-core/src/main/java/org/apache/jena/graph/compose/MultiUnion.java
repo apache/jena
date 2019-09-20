@@ -82,6 +82,7 @@ public class MultiUnion extends Polyadic
     
     private boolean optimising = JenaRuntime.getSystemProperty( "jena.union.optimise", "yes" ).equals( "yes" );
     
+    @Deprecated
     @Override  protected GraphStatisticsHandler createStatisticsHandler()
         { return new MultiUnionStatisticsHandler( this ); }
     
@@ -192,6 +193,7 @@ public class MultiUnion extends Polyadic
         }
     }
     
+    @Deprecated
     public static class MultiUnionStatisticsHandler implements GraphStatisticsHandler
         {
         protected final MultiUnion mu;

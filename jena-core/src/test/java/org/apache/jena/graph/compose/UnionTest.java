@@ -19,25 +19,15 @@
 package org.apache.jena.graph.compose;
 
 import static org.apache.jena.testing_framework.GraphHelper.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.runner.RunWith;
-import org.xenei.junit.contract.Contract;
-import org.xenei.junit.contract.ContractImpl;
-import org.xenei.junit.contract.ContractSuite;
-import org.xenei.junit.contract.ContractTest;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.GraphStatisticsHandler;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
-import org.apache.jena.graph.compose.Union;
-import org.apache.jena.graph.impl.GraphBase;
 import org.apache.jena.testing_framework.AbstractGraphProducer;
-import org.xenei.junit.contract.IProducer;
-import org.apache.jena.util.iterator.ExtendedIterator;
+import org.junit.runner.RunWith;
+import org.xenei.junit.contract.*;
 
 @RunWith(ContractSuite.class)
 @ContractImpl(Union.class)
@@ -99,87 +89,5 @@ public class UnionTest {
 		if (contains(g1, "cats eat cheese") == false
 				&& contains(g2, "cats eat cheese") == false)
 			fail("oops: neither g1 nor g2 contains `cats eat cheese`");
-	}
-
-	static class AnInteger {
-		public int value = 0;
-
-		public AnInteger(int value) {
-			this.value = value;
-		}
-	}
-
-	@ContractTest
-	public void testUnionValues() {
-		testUnion(0, 0, 0, 0);
-	}
-
-	@ContractTest
-	public void testCopiesSingleNonZeroResult() {
-		testUnion(1, 1, 0, 0);
-		testUnion(1, 0, 1, 0);
-		testUnion(1, 0, 0, 1);
-		testUnion(1, 1, 0, 0);
-		testUnion(2, 0, 2, 0);
-		testUnion(4, 0, 0, 4);
-	}
-
-	@ContractTest
-	public void testResultIsSumOfBaseResults() {
-		testUnion(3, 1, 2, 0);
-		testUnion(5, 1, 0, 4);
-		testUnion(6, 0, 2, 4);
-		testUnion(7, 1, 2, 4);
-		testUnion(3, 0, 2, 1);
-		testUnion(5, 4, 1, 0);
-		testUnion(6, 2, 2, 2);
-		testUnion(7, 6, 0, 1);
-	}
-
-	@ContractTest
-	public void testUnknownOverrulesAll() {
-		testUnion(-1, -1, 0, 0);
-		testUnion(-1, 0, -1, 0);
-		testUnion(-1, 0, 0, -1);
-		testUnion(-1, -1, 1, 1);
-		testUnion(-1, 1, -1, 1);
-		testUnion(-1, 1, 1, -1);
-	}
-
-	/**
-	 * Asserts that the statistic obtained by probing the three-element union
-	 * with statistics <code>av</code>, <code>bv</code>, and <code>cv</code> is
-	 * <code>expected</code>.
-	 */
-	private void testUnion(int expected, int av, int bv, int cv) {
-		AnInteger a = new AnInteger(av), b = new AnInteger(bv), c = new AnInteger(
-				cv);
-		Graph g1 = graphWithGivenStatistic(a);
-		Graph g2 = graphWithGivenStatistic(b);
-		Graph g3 = graphWithGivenStatistic(c);
-		Graph[] graphs = new Graph[] { g1, g2, g3 };
-		MultiUnion mu = new MultiUnion(graphs);
-		GraphStatisticsHandler gs = new MultiUnion.MultiUnionStatisticsHandler(
-				mu);
-		assertEquals(expected, gs.getStatistic(Node.ANY, Node.ANY, Node.ANY));
-	}
-
-	static Graph graphWithGivenStatistic(final AnInteger x) {
-		return new GraphBase() {
-			@Override
-			protected ExtendedIterator<Triple> graphBaseFind(Triple t) {
-				throw new RuntimeException("should never be called");
-			}
-
-			@Override
-			protected GraphStatisticsHandler createStatisticsHandler() {
-				return new GraphStatisticsHandler() {
-					@Override
-					public long getStatistic(Node S, Node P, Node O) {
-						return x.value;
-					}
-				};
-			}
-		};
 	}
 }

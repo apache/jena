@@ -30,9 +30,7 @@ import java.util.List;
 
 import junit.framework.TestSuite;
 import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.GraphStatisticsHandler ;
 import org.apache.jena.graph.compose.MultiUnion ;
-import org.apache.jena.graph.compose.MultiUnion.MultiUnionStatisticsHandler ;
 import org.apache.jena.graph.test.AbstractTestGraph ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
@@ -71,27 +69,6 @@ public class TestMultiUnion extends AbstractTestGraph
         assertFalse( "Empty model should not contain another graph", m.dependsOn( g0 ) );
     }
     
-    /**
-        A MultiUnion graph should have a MultiUnionStatisticsHandler, and that
-        handler should point right back to that graph.
-    */
-    public void testMultiUnionHasMultiUnionStatisticsHandler()
-        {
-        MultiUnion mu = new MultiUnion();
-        GraphStatisticsHandler sh = mu.getStatisticsHandler();
-        assertInstanceOf( MultiUnionStatisticsHandler.class, sh );
-        assertSame( mu, ((MultiUnionStatisticsHandler) sh).getUnion() );
-        }
-    
-//    public void testDeferredReifier()
-//        {
-//        Graph g1 = graphWith( "" ), g2 = graphWith( "" );
-//        MultiUnion m = new MultiUnion( new Graph[] {g1, g2} );
-//        m.setBaseGraph( g1 );
-//        assertSame( m.getReifier(), g1.getReifier() );
-//        }
-    
-
     public void testGraphSize1() {
         Graph g0 = graphWith( "x p y" );
         Graph g1 = graphWith( "x p z; z p zz" );        // disjoint with g0

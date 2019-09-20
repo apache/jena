@@ -17,10 +17,7 @@
  */
 package org.apache.jena.permissions.graph;
 
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.GraphStatisticsHandler;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.*;
 import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.shared.AddDeniedException;
@@ -142,7 +139,9 @@ public interface SecuredGraph extends Graph, SecuredItem {
 	 * @throws ReadDeniedException
 	 * @throws AuthenticationRequiredException
 	 *             if user is not authenticated and is required to be.
+	 * @deprecated            
 	 */
+	@Deprecated
 	@Override
 	public GraphStatisticsHandler getStatisticsHandler()
 			throws ReadDeniedException, AuthenticationRequiredException;
