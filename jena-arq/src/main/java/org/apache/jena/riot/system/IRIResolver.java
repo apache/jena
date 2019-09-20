@@ -71,13 +71,18 @@ public abstract class IRIResolver
         
         // NFC tests are not well understood by general developers and these cause confusion.
         // See JENA-864
-        //iriFactory.setIsError(ViolationCodes.NOT_NFC, false);
-        //iriFactory.setIsError(ViolationCodes.NOT_NFKC, false);
-        //iriFactory.setIsWarning(ViolationCodes.NOT_NFC, false);
-        //iriFactory.setIsWarning(ViolationCodes.NOT_NFKC, false);
+        
+        // NFC is in RDF 1.1 so do test for that.
+        // https://www.w3.org/TR/rdf11-concepts/#section-IRIs
+        // Leave switched on as a warning.
+        //setErrorWarning(iriFactoryInst, ViolationCodes.NOT_NFC,  false, false);
 
-        // ** Applies to various unicode blocks. 
-        // setErrorWarning(iriFactory, ViolationCodes.COMPATIBILITY_CHARACTER, false, false);
+        // NFKC is not mentioned in RDF 1.1. Switch off.
+        setErrorWarning(iriFactoryInst, ViolationCodes.NOT_NFKC, false, false);
+        
+        // ** Applies to various unicode blocks.
+        // Don't apply these tests.
+        setErrorWarning(iriFactoryInst, ViolationCodes.COMPATIBILITY_CHARACTER, false, false);
 
         // This causes test failures.
         // The tests catch warnings and a warning is expected.
