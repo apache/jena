@@ -146,6 +146,8 @@
           <httpPort>9400</httpPort>
           <timeout>${es.startup.timeout}</timeout>
           <version>${ver.elasticsearch}</version>
+          <!-- Console logger -->
+          <logLevel>WARN</logLevel>
         </configuration>
         <executions>
           <!--
