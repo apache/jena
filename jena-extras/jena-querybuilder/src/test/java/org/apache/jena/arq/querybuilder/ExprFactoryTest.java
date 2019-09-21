@@ -442,22 +442,19 @@ public class ExprFactoryTest {
 	@Test
 	public void exprListTest() {
 		ExprList e = factory.list();
-		assertTrue(e instanceof ExprList);
-
+		assertNotNull(e);
 	}
 
 	@Test
 	public void exprListTest_OneArg() {
 		ExprList e = factory.asList(factory.none());
-		assertTrue(e instanceof ExprList);
-
+        assertNotNull(e);
 	}
 
 	@Test
 	public void exprListTest_MultipleArg() {
 		ExprList e = factory.asList(factory.none(), factory.none());
-		assertTrue(e instanceof ExprList);
-
+        assertNotNull(e);
 	}
 
 	@Test

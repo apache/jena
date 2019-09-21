@@ -381,7 +381,7 @@ public class Iter<T> implements Iterator<T> {
     }
 
     /** Take the first N elements of an iterator - stop early if too few 
-     * @See {@link #limit(Iterator, long)}
+     * @see #limit(Iterator, long)
      */
     public static <T> List<T> take(Iterator<T> iter, int N) {
         iter = new IteratorN<>(iter, N) ;
@@ -438,8 +438,8 @@ public class Iter<T> implements Iterator<T> {
     }
     
     /** Return an iterator that is limited to the given number of elements.
-     * If it is shorter,  (or less). 
-     * @See {@link #take(Iterator, int)} 
+     * If it is shorter than the limit, stop at the end. 
+     * @see #take(Iterator, int) 
      */
     public static <X> Iterator<X> limit(Iterator<X> iterator, long limit) {
         final Iterator<X> iter = new Iterator<X>() {

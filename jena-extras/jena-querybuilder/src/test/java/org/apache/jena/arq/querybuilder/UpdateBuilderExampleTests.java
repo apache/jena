@@ -78,7 +78,7 @@ public class UpdateBuilderExampleTests {
 	/**
 	 * Example 1: Adding some triples to a graph
 	 * 
-	 * @see https://www.w3.org/TR/sparql11-update/#example_1
+	 * @see <a href="https://www.w3.org/TR/sparql11-update/#example_1">sparql11-update example_1</a>
 	 */
 	@Test
 	public void example1() {
@@ -107,7 +107,7 @@ public class UpdateBuilderExampleTests {
 	/**
 	 * Example 2: Adding some triples to a graph
 	 * 
-	 * @see https://www.w3.org/TR/sparql11-update/#example_2
+     * @see <a href="https://www.w3.org/TR/sparql11-update/#example_2">sparql11-update example_2</a>
 	 */
 	@Test
 	public void example2() {
@@ -134,7 +134,7 @@ public class UpdateBuilderExampleTests {
 	/**
 	 * Example 3: Removing triples from a graph
 	 * 
-	 * @see https://www.w3.org/TR/sparql11-update/#example_3
+     * @see <a href="https://www.w3.org/TR/sparql11-update/#example_3">sparql11-update example_3</a>
 	 */
 	@Test
 	public void example3() {
@@ -163,7 +163,7 @@ public class UpdateBuilderExampleTests {
 	/**
 	 * Example 4:
 	 * 
-	 * @see https://www.w3.org/TR/sparql11-update/#example_4
+     * @see <a href="https://www.w3.org/TR/sparql11-update/#example_4">sparql11-update example_4</a>
 	 */
 	@Test
 	public void example4() {
@@ -201,7 +201,7 @@ public class UpdateBuilderExampleTests {
 	/**
 	 * Example 5:
 	 * 
-	 * @see https://www.w3.org/TR/sparql11-update/#example_5
+     * @see <a href="https://www.w3.org/TR/sparql11-update/#example_5">sparql11-update example_5</a>
 	 */
 	@Test
 	public void example5() {
@@ -239,7 +239,7 @@ public class UpdateBuilderExampleTests {
 	/**
 	 * Example 6:
 	 * 
-	 * @see https://www.w3.org/TR/sparql11-update/#example_6
+     * @see <a href="https://www.w3.org/TR/sparql11-update/#example_6">sparql11-update example_6</a>
 	 */
 	@Test
 	public void example6() {
@@ -292,7 +292,7 @@ public class UpdateBuilderExampleTests {
 	/**
 	 * Example 7:
 	 * 
-	 * @see https://www.w3.org/TR/sparql11-update/#example_7
+     * @see <a href="https://www.w3.org/TR/sparql11-update/#example_7">sparql11-update example_7</a>
 	 */
 	@Test
 	public void example7() {
@@ -331,7 +331,7 @@ public class UpdateBuilderExampleTests {
 	/**
 	 * Example 8:
 	 * 
-	 * @see https://www.w3.org/TR/sparql11-update/#example_8
+     * @see <a href="https://www.w3.org/TR/sparql11-update/#example_8">sparql11-update example_8</a>
 	 */
 	@Test
 	public void example8() {
@@ -412,7 +412,7 @@ public class UpdateBuilderExampleTests {
 	/**
 	 * Example 9:
 	 * 
-	 * @see https://www.w3.org/TR/sparql11-update/#example_9
+     * @see <a href="https://www.w3.org/TR/sparql11-update/#example_9">sparql11-update example_9</a>
 	 */
 	@Test
 	public void example9() {
@@ -474,7 +474,7 @@ public class UpdateBuilderExampleTests {
 	/**
 	 * Example 10:
 	 * 
-	 * @see https://www.w3.org/TR/sparql11-update/#example_10
+     * @see <a href="https://www.w3.org/TR/sparql11-update/#example_10">sparql11-update example_10</a>
 	 */
 	@Test
 	public void example10() {
@@ -545,7 +545,7 @@ public class UpdateBuilderExampleTests {
 	/**
 	 * Example 11:
 	 * 
-	 * @see https://www.w3.org/TR/sparql11-update/#example_11
+     * @see <a href="https://www.w3.org/TR/sparql11-update/#example_11">sparql11-update example_11</a>
 	 */
 	@Test
 	public void example11() {
@@ -577,7 +577,7 @@ public class UpdateBuilderExampleTests {
 	/**
 	 * Example 12:
 	 * 
-	 * @see https://www.w3.org/TR/sparql11-update/#example_12
+     * @see <a href="https://www.w3.org/TR/sparql11-update/#example_12">sparql11-update example_12</a>
 	 */
 	@Test
 	public void example12() {

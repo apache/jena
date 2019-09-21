@@ -851,10 +851,9 @@ public class UpdateBuilder {
 	}
 
 	/**
-	 * Add the triple path to the where clause
+	 * Add the WhereClause 
 	 * 
-	 * @param t
-	 *            The triple path to add.
+	 * @param whereClause
 	 * @throws IllegalArgumentException
 	 *             If the triple path is not a valid triple path for a where
 	 *             clause.
@@ -981,9 +980,6 @@ public class UpdateBuilder {
 	 * <li>addOptional( list( param1, param2, param3, ... ), p, o )</li>
 	 * </ul>
 	 * </p>
-	 * 
-	 * @param objs
-	 *            the list of objects for the list.
 	 * 
 	 * @param objs
 	 *            the list of objects for the list.
