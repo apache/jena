@@ -38,15 +38,29 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
+/**
+ * Builder for SPARQL Describe Queries.
+ * <p>
+ * The DescribeBuilder provides chainable methods to programmatically generate SPARQL Describe Queries.
+ * The application order of the methods is not relevant for the resulting query.
+ * An {@link ExprFactory} is intended for use along with the DescribeBuilder to generate needed {@link Expr} parameter values.
+ * An {@link ExprFactory} that works with the same prefixes can be obtained with {@link DescribeBuilder#getExprFactory()}.
+ * <p>
+ * The DescribeBuilder can be used as <b>prepared query</b>.
+ * Values for variables in the created query can be set with {@link DescribeBuilder#setVar(Object, Object)} and {@link DescribeBuilder#setVar(Var, Node)}.
+ * The method {@link DescribeBuilder#clearWhereValues()} allows to clear the set values. 
+ * 
+ * @see AskBuilder
+ * @see ConstructBuilder
+ * @see SelectBuilder
+ * @see UpdateBuilder
+ */
 public class DescribeBuilder extends AbstractQueryBuilder<DescribeBuilder> implements 
 DatasetClause<DescribeBuilder>,
 	WhereClause<DescribeBuilder>, SolutionModifierClause<DescribeBuilder>, SelectClause<DescribeBuilder>{
 
 	private final HandlerBlock handlerBlock;
 
-	/**
-	 * Constructor.
-	 */
 	public DescribeBuilder() {
 		super();
 		query.setQueryDescribeType();

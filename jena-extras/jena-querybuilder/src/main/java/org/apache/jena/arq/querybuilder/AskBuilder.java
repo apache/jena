@@ -37,17 +37,27 @@ import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
 /**
- * Build an ASK query.
+ * Builder for SPARQL Ask Queries.
+ * <p>
+ * The AskBuilder provides chainable methods to programmatically generate SPARQL Ask Queries.
+ * The application order of the methods is not relevant for the resulting query.
+ * An {@link ExprFactory} is intended for use along with the AskBuilder to generate needed {@link Expr} parameter values.
+ * An {@link ExprFactory} that works with the same prefixes can be obtained with {@link AskBuilder#getExprFactory()}.
+ * <p>
+ * The AskBuilder can be used as <b>prepared query</b>.
+ * Values for variables in the created query can be set with {@link AskBuilder#setVar(Object, Object)} and {@link AskBuilder#setVar(Var, Node)}.
+ * The method {@link AskBuilder#clearWhereValues()} allows to clear the set values. 
  * 
+ * @see ConstructBuilder
+ * @see DescribeBuilder
+ * @see SelectBuilder
+ * @see UpdateBuilder
  */
 public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 		implements DatasetClause<AskBuilder>, WhereClause<AskBuilder>, SolutionModifierClause<AskBuilder> {
 
 	private final HandlerBlock handlerBlock;
 
-	/**
-	 * The constructor
-	 */
 	public AskBuilder() {
 		super();
 		query.setQueryAskType();
