@@ -40,6 +40,7 @@ import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.Symbol;
 
 /**
  * An {@link RDFParser} is a process that will generate triples; 
@@ -487,10 +488,43 @@ public class RDFParserBuilder {
 //        return this;
 //    }
     
+    private void ensureContext() {
+        if ( context == null )
+            context = new Context();
+    }
+    
+    /**
+     * Set the context for the parser when built.
+     * 
+     * If a context is already partly set
+     * for this builder, merge the new settings 
+     * into the outstanding context.
+     * 
+     * If the context argument is null, do nothing.
+     * 
+     * @param context
+     * @return this
+     * @see Context
+     */
     public RDFParserBuilder context(Context context) {
-        if ( context != null )
-            context = context.copy();
-        this.context = context;
+        if ( context == null )
+            return this;
+        ensureContext();
+        this.context.putAll(context);
+        return this; 
+    }
+    
+    /** 
+     * Added a setting to the context for the parser when built.
+     * A value of "null" removes a previous setting.
+     * @param symbol
+     * @param value
+     * @return this
+     * @see Context
+     */
+    public RDFParserBuilder set(Symbol symbol, Object value) {
+        ensureContext();
+        context.put(symbol, value);
         return this;
     }
     
