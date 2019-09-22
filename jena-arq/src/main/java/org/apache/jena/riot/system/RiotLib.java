@@ -311,8 +311,26 @@ public class RiotLib
     public static boolean strSafeFor(String str, char ch) {
         return str.indexOf(ch) == -1;
     }
+    
+    public static void writeBase(IndentedWriter out, String base, boolean newStyle) {
+        if ( newStyle )
+            writeBaseNewStyle(out, base);
+        else
+            writeBaseOldStyle(out, base);
+    }
 
-    public static void writeBase(IndentedWriter out, String base) {
+    private static void writeBaseNewStyle(IndentedWriter out, String base) {
+        if ( base != null ) {
+            out.print("BASE ");
+            out.pad(PREFIX_IRI);
+            out.print("<");
+            out.print(base);
+            out.print(">");
+            out.println();
+        }
+    }
+
+    private static void writeBaseOldStyle(IndentedWriter out, String base) {
         if ( base != null ) {
             out.print("@base ");
             out.pad(PREFIX_IRI);
@@ -324,7 +342,32 @@ public class RiotLib
         }
     }
 
-    public static void writePrefixes(IndentedWriter out, PrefixMap prefixMap) {
+    /** Write prefixes, using {@code PREFIX} */ 
+    public static void writePrefixes(IndentedWriter out, PrefixMap prefixMap, boolean newStyle) {
+        if ( newStyle )
+            writePrefixesNewStyle(out, prefixMap);
+        else
+            writePrefixesOldStyle(out, prefixMap);
+    }
+    
+    /** Write prefixes, using {@code PREFIX} */ 
+    private static void writePrefixesNewStyle(IndentedWriter out, PrefixMap prefixMap) {
+        if ( prefixMap != null && !prefixMap.isEmpty() ) {
+            for ( Map.Entry<String, String> e : prefixMap.getMappingCopyStr().entrySet() ) {
+                out.print("PREFIX ");
+                out.print(e.getKey());
+                out.print(": ");
+                out.pad(PREFIX_IRI);
+                out.print("<");
+                out.print(e.getValue());
+                out.print(">");
+                out.println();
+            }
+        }
+    }
+
+    /** Write prefixes, using {@code @prefix} */ 
+    public static void writePrefixesOldStyle(IndentedWriter out, PrefixMap prefixMap) {
         if ( prefixMap != null && !prefixMap.isEmpty() ) {
             for ( Map.Entry<String, String> e : prefixMap.getMappingCopyStr().entrySet() ) {
                 out.print("@prefix ");

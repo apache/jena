@@ -67,6 +67,23 @@ public abstract class TurtleShell {
     protected final NodeFormatter  nodeFmt ;
     protected final PrefixMap      prefixMap ;
     protected final String         baseURI ;
+    protected final Context        context ;
+    protected final PrefixStyle    prefixStyle;
+    
+    static PrefixStyle dftPrefixStyle = PrefixStyle.AT;
+    enum PrefixStyle { 
+        AT, SPARQL ;
+        public static PrefixStyle create(String label) {
+            String s = label.toLowerCase() ;
+            switch(s) {
+                case "rdf_10": case "rdf10": case "n3": case "at":
+                    return PrefixStyle.AT ;
+                case "rdf_11": case "rdf11": case "sparql":
+                    return PrefixStyle.SPARQL ;
+            }
+            return null;
+        }
+    };
 
     protected TurtleShell(IndentedWriter out, PrefixMap pmap, String baseURI, NodeFormatter nodeFmt, Context context) {
         this.out = out ;
@@ -75,6 +92,22 @@ public abstract class TurtleShell {
         this.prefixMap = pmap ;
         this.baseURI = baseURI ;
         this.nodeFmt = nodeFmt ;
+        this.context = context;
+        this.prefixStyle = prefixStyle(context) ;
+    }
+    
+    // Determine the prefix style (applies to BASE as well).
+    private static PrefixStyle prefixStyle(Context context) {
+        Object x = context.get(RIOT.symTurtlePrefixStyle) ;
+        if ( x instanceof String ) {
+            String s = (String)x ;
+            PrefixStyle style = PrefixStyle.create(s);
+            return style == null ? dftPrefixStyle : style;
+        } 
+        if ( x instanceof PrefixStyle )
+            return (PrefixStyle)x ;
+        // Default choice; includes null in context. 
+        return dftPrefixStyle;
     }
 
     protected TurtleShell(IndentedWriter out, PrefixMap pmap, String baseURI, Context context) {
@@ -89,11 +122,11 @@ public abstract class TurtleShell {
     }
 
     protected void writeBase(String base) {
-        RiotLib.writeBase(out, base) ;
+        RiotLib.writeBase(out, base, prefixStyle==PrefixStyle.SPARQL) ;
     }
 
     protected void writePrefixes(PrefixMap prefixMap) {
-        RiotLib.writePrefixes(out, prefixMap) ;
+        RiotLib.writePrefixes(out, prefixMap, prefixStyle==PrefixStyle.SPARQL) ;
     }
 
     /** Write graph in Turtle syntax (or part of TriG) */

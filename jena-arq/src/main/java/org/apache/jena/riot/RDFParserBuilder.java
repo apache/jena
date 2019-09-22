@@ -511,7 +511,7 @@ public class RDFParserBuilder {
             return this;
         ensureContext();
         this.context.putAll(context);
-        return this; 
+        return this;
     }
     
     /** 
@@ -603,7 +603,8 @@ public class RDFParserBuilder {
         // Build what we can now - some things have to be built in the parser.
         if ( uri == null && path == null && content == null && inputStream == null && javaReader == null )
             throw new RiotException("No source specified");
-        
+        if ( context == null )
+            context = RIOT.getContext().copy();
         // Setup the HTTP client.
         HttpClient client = buildHttpClient();
         FactoryRDF factory$ = buildFactoryRDF();
