@@ -297,7 +297,7 @@ public class GraphUtil
      *  <p>  
      *  It is not designed for a large {@code srcGraph} and large {@code dstGraph} 
      *  with only a few triples in common to delete from {@code dstGraph}. It is better to
-     *  calculate the difference in some way, and copy into a small graph to use as the {@srcGraph}.  
+     *  calculate the difference in some way, and copy into a small graph to use as the {@code srcGraph}.  
      *  <p>
      *  To force delete by looping on {@code srcGraph}, use {@link #deleteLoopSrc(Graph, Graph)}.
      *  <p>

@@ -34,17 +34,7 @@ import javax.xml.datatype.Duration;
 
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.NodeValue;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueBoolean;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueDT;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueDecimal;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueDouble;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueDuration;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueFloat;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueLang;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueNode;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueSortKey;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueString;
+import org.apache.jena.sparql.expr.nodevalue.*;
 import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.sparql.util.Utils;
 import org.junit.Test;
@@ -82,7 +72,7 @@ public class NodeValueRewriterTest {
 
 	@Test
 	public void visitNodeValueDecimalNodeTest() {
-		Node n = NodeFactory.createLiteral(Utils.stringForm(new BigDecimal( 3.14 )), XSDDatatype.XSDdecimal) ;
+		Node n = NodeFactory.createLiteral(XSDFuncOp.canonicalDecimalStr(new BigDecimal( 3.14 )), XSDDatatype.XSDdecimal) ;
 		NodeValue nv = new NodeValueDecimal( new BigDecimal( 3.14 ), n );		
 		nv.visit( rewriter );
 		NodeValue result = rewriter.getResult();

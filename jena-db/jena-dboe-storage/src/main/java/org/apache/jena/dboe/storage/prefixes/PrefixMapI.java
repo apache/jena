@@ -26,7 +26,7 @@ import org.apache.jena.atlas.lib.Pair;
 
 /** Implementation-view of prefix mappings.
  *
- * @apiNotes
+ * @apiNote
  * <p>See {@link StoragePrefixMap} for the storage implementation view.
  * <p>See {@link PrefixMapBase} for an implementation over {@link StoragePrefixMap}
  */

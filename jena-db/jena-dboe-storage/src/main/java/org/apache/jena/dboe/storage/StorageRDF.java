@@ -44,14 +44,14 @@ import org.apache.jena.sparql.core.Quad;
  * Various API operations work on "concrete" terms. For example, {@code add}. These are
  * marked "concrete operation" in their javadoc. They are not matching operations. A
  * concrete term is one of a URI, blank node or literal. It is not {@code null},
- * {@code Node.ANY} nor a named variable. Any {@code Triple} or {@code Quad} must be
+ * {@code Node#ANY} nor a named variable. Any {@code Triple} or {@code Quad} must be
  * composed of concrete terms.
  * <p>
  * A pattern operation is one where the arguments are concrete terms or wildcard
- * {@code.ANY}. Such an operation will match zero or more triples or quads.
+ * {@code ANY}. Such an operation will match zero or more triples or quads.
  * Any {@code Triple} or {@code Quad} can use {@code.ANY}.
  * <p>Pattern operations do not match named variables.
- * Using {@code Node.ANY} rather than {@code null} is preferred in pattern operations but
+ * Using {@code Node#ANY} rather than {@code null} is preferred in pattern operations but
  * both are acceptable.
  */
 public interface StorageRDF {
@@ -73,7 +73,7 @@ public interface StorageRDF {
     public default void delete(Triple triple)
     { delete(triple.getSubject(), triple.getPredicate(), triple.getObject()); }
 
-    /** Delete a quad from the default graph. All terms are concrete, and not {@code Node.ANY}.
+    /** Delete a quad from the default graph. All terms are concrete, and not {@code Node#ANY}.
      * For delete-by-pattern, see {@link #removeAll(Node, Node, Node, Node)}.
      * <p>Concrete operation.
      */

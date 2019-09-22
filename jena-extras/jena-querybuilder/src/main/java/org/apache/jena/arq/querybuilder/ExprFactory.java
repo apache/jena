@@ -1656,8 +1656,8 @@ public class ExprFactory {
 	 * 
 	 * @see org.apache.jena.sparql.expr.E_NotExists
 	 * 
-	 * @param args
-	 *            the arguments to the function.
+	 * @param whereClause
+	 *            the argument to the function.
 	 * @return an E_NotExists instance.
 	 */
 	public final E_NotExists notexists(WhereClause<?> whereClause) {
@@ -1685,7 +1685,7 @@ public class ExprFactory {
 	 * <li>otherwise create an ExprVar from {AbstractQuerybuilder.makeVar}
 	 * </ul>
 	 * 
-	 * @see {@link AbstractQueryBuilder#makeVar(Object)}
+	 * @see AbstractQueryBuilder#makeVar(Object)
 	 * 
 	 * @param o
 	 *            the object to convert.
@@ -1757,8 +1757,8 @@ public class ExprFactory {
 	 * <li>otherwise calls var()</li>
 	 * </ul>
 	 * 
-	 * @see {@link #asVar(Object)}
-	 * @see {@link AbstractQueryBuilder#makeVar(Object)}
+	 * @see #asVar(Object)
+	 * @see AbstractQueryBuilder#makeVar(Object)
 	 * 
 	 * @param o
 	 *            the object to create the expression from

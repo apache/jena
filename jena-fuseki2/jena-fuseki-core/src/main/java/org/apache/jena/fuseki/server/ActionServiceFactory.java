@@ -36,7 +36,7 @@ import org.apache.jena.rdf.model.Resource;
 @FunctionalInterface 
 public interface ActionServiceFactory {
     /**
-     * Create an {@linkService} (which can be shared with endpoints), given the description 
+     * Create an {@link ActionServiceFactory} (it can be shared with endpoints), given the description 
      * which is a link into the server configuration graph.
      */
     public ActionService newActionService(Operation operation, Resource endpoint);  
