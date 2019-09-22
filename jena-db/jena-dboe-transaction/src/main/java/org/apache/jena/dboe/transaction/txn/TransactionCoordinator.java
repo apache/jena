@@ -48,7 +48,7 @@ import org.slf4j.Logger;
  * <p>
  * This is a general engine although tested and most used for multiple-reader
  * and single-writer (MR+SW). {@link TransactionalComponentLifecycle} provides the
- * per-threadstyle.
+ * per-thread style.
  * <p>
  * Contrast to MRSW: multiple-reader or single-writer.
  * <h3>Block writers</h3>
