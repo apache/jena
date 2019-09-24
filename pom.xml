@@ -23,7 +23,7 @@
   <artifactId>jena</artifactId>
   <packaging>pom</packaging>
   <url>https://jena.apache.org/</url>
-  <version>3.14.0-SNAPSHOT</version>
+  <version>3.13.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache</groupId>
