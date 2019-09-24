@@ -19,12 +19,12 @@
     <artifactId>jena-fuseki-geosparql</artifactId>
     <packaging>jar</packaging>
     <name>Apache Jena - Fuseki with GeoSPARQL Engine </name>
-    <version>3.13.0-SNAPSHOT</version>
+    <version>3.13.0</version>
 
     <parent>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki</artifactId>
-      <version>3.13.0-SNAPSHOT</version>
+      <version>3.13.0</version>
       <relativePath>../</relativePath>
     </parent>
     
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-geosparql</artifactId>
-            <version>3.13.0-SNAPSHOT</version>
+            <version>3.13.0</version>
         </dependency>
 
         <dependency>
@@ -68,7 +68,7 @@
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-fuseki-main</artifactId>
-            <version>3.13.0-SNAPSHOT</version>
+            <version>3.13.0</version>
         </dependency>
 
         <dependency>
