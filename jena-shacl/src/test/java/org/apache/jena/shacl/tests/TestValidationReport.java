@@ -33,12 +33,12 @@ public class TestValidationReport {
 
     // Round trip :: RDF -> Validation Report -> RDF
     @Test public void rtRDF_1() {
-        Graph graph = RDFDataMgr.loadGraph("testing/validation-reports/report1-conforms.ttl");
+        Graph graph = RDFDataMgr.loadGraph("src/test/resources/validation-reports/report1-conforms.ttl");
         testRoundTripGraph("conforms", graph);
     }
 
     @Test public void rtRDF_2() {
-        Graph graph = RDFDataMgr.loadGraph("testing/validation-reports/report2.ttl");
+        Graph graph = RDFDataMgr.loadGraph("src/test/resources/validation-reports/report2.ttl");
         testRoundTripGraph("report2", graph);
     }
 
