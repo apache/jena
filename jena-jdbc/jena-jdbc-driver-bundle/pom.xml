@@ -30,6 +30,7 @@
 
 	<properties>
 		<plugin.license.headerPath>${project.parent.basedir}</plugin.license.headerPath>
+		<automatic.module.name>org.apache.jena.jdbc.driver.bundle</automatic.module.name>
 		<!-- Note that we actually skip tests in this module because this module 
 			simply bundles up the other modules BUT it contains a JUnit suite primarily 
 			as a convenience for being able to perform code coverage analysis easily 

@@ -27,6 +27,10 @@
   <name>Apache Jena - Elephas - I/O</name>
   <description>RDF Input/Output formats library for Hadoop</description>
 
+  <properties>
+    <automatic.module.name>org.apache.jena.elephas.io</automatic.module.name>
+  </properties>
+
   <!-- Note that versions are managed by parent POMs -->
   <dependencies>
     <!-- Internal Project Dependencies -->

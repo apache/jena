@@ -35,7 +35,7 @@
   <properties>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
-    <automatic.module.name>org.apache.jena.tdb</automatic.module.name>
+    <automatic.module.name>org.apache.jena.shacl</automatic.module.name>
   </properties>
 
   <dependencies>

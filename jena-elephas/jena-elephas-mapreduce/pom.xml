@@ -26,6 +26,10 @@
   <name>Apache Jena - Elephas - Map/Reduce</name>
   <description>Contains some basic Map/Reduce implementations for working with RDF on Hadoop</description>
 
+  <properties>
+    <automatic.module.name>org.apache.jena.elephas.mapreduce</automatic.module.name>
+  </properties>
+
   <dependencies>
 		<!-- Internal Project Dependencies -->
     <dependency>
