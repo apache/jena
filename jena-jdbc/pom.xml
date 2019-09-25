@@ -21,7 +21,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.apache.jena</groupId>
 	<artifactId>jena-jdbc</artifactId>
-	<version>3.13.0-SNAPSHOT</version>
+	<version>3.13.0</version>
 	<packaging>pom</packaging>
 	<name>Apache Jena - JDBC Parent</name>
 	<description>This is the parent module for the Jena JDBC modules.  These modules provide JDBC Type 4 drivers for in-memory and TDB datasets as well as remote SPARQL endpoints.</description>
@@ -29,7 +29,7 @@
 	<parent>
 		<groupId>org.apache.jena</groupId>
 		<artifactId>jena</artifactId>
-		<version>3.13.0-SNAPSHOT</version>
+		<version>3.13.0</version>
 		<relativePath>..</relativePath>
 	</parent>
 
