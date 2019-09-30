@@ -26,6 +26,10 @@
   <name>Apache Jena - Elephas - Statistics Demo App</name>
   <description>A demo application that can be run on Hadoop to produce a statistical analysis on arbitrary RDF inputs</description>
 
+  <properties>
+    <automatic.module.name>org.apache.jena.elephas.stats</automatic.module.name>
+  </properties>
+
   <dependencies>
 		<!-- Internal Project Dependencies -->
     <dependency>

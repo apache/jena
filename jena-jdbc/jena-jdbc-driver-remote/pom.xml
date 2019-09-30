@@ -30,6 +30,7 @@
 
   <properties>
     <plugin.license.headerPath>${project.parent.basedir}</plugin.license.headerPath>
+    <automatic.module.name>org.apache.jena.jdbc.driver.remote</automatic.module.name>
   </properties>
 
   <dependencies>

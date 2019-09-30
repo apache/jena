@@ -34,6 +34,10 @@
 
   <description>Triplestore database storage</description>
 
+  <properties>
+    <automatic.module.name>org.apache.jena.dboe.storage</automatic.module.name>
+  </properties>
+
   <dependencies>
 
     <dependency>

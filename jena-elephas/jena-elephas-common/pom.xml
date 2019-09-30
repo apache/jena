@@ -26,6 +26,10 @@
   <name>Apache Jena - Elephas - Common API</name>
   <description>Common code for RDF on Hadoop such as writable types for RDF primitives</description>
 
+  <properties>
+    <automatic.module.name>org.apache.jena.elephas.common</automatic.module.name>
+  </properties>
+
   <!-- Note that versions are managed by parent POMs -->
   <dependencies>
     <!-- Hadoop Dependencies -->
