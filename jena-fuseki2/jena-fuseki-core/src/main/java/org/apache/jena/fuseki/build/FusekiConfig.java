@@ -80,14 +80,14 @@ public class FusekiConfig {
 
     private static void initStandardSetup() {
         stdRead = new HashMap<>();
-        stdRead.put("query",    Operation.Query);
         stdRead.put("sparql",   Operation.Query);
+        stdRead.put("query",    Operation.Query);
         stdRead.put("data",     Operation.GSP_R);
         stdRead.put("get",      Operation.GSP_R);
 
         stdWrite = new HashMap<>();
-        stdWrite.put("query",    Operation.Query);
         stdWrite.put("sparql",   Operation.Query);
+        stdWrite.put("query",    Operation.Query);
         stdWrite.put("update",  Operation.Update);
         stdWrite.put("upload",  Operation.Upload);
         stdWrite.put("data",    Operation.GSP_RW);

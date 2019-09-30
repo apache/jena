@@ -59,7 +59,7 @@ public class JsonDescription {
     private static void describe(JsonBuilder builder, Operation operation, List<Endpoint> endpoints) {
         builder.startObject();
 
-        builder.key(ServerConst.srvType).value(operation.getName());
+        builder.key(ServerConst.srvType).value(operation.getJsonName());
         builder.key(ServerConst.srvDescription).value(operation.getDescription());
         builder.key(ServerConst.srvEndpoints);
         builder.startArray();

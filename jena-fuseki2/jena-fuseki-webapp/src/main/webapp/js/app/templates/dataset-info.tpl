@@ -33,8 +33,9 @@
 </dl>
 
 <% } %>
-
+<!--
 <h2>Ongoing operations</h2>
 
 <p><em>TBD. Will list any long-lasting operations that are ongoing or recently completed,
 e.g. backups.</em></p>
+-->
