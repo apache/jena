@@ -67,16 +67,27 @@ public class TDBMaker
     private static final Map<Location, DatasetGraphTransaction> cache = CACHING ? new ConcurrentHashMap<>() : null ;
     
     /**
-     * Release a {@code Location}.
+     * Release a {@code Location} and also release its {@link StoreConnection}.
      * Do not use a {@code Dataset} at this location without
      * remaking it via {@link TDBFactory}.
+     * This operation is primarily for tests.
      */
-    public static void releaseLocation(Location location) {
-        if ( CACHING && ! location.isMemUnique() )
-            cache.remove(location);
+    static void releaseLocation(Location location) {
+        uncache(location);
         StoreConnection.release(location) ;
     }
 
+    /**
+     * Release a {@code Location}.
+     * This operation does not release the {@link StoreConnection}.
+     * Use {@link #releaseLocation(Location)} where possible.
+     * This operation is for internal use.
+     */
+    static void uncache(Location location) {
+        if ( CACHING && ! location.isMemUnique() )
+            cache.remove(location);
+    }
+    
     /** 
      * Reset the making and caching of datasets.
      * Applications should not use this operation.

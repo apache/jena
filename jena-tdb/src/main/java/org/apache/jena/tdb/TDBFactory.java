@@ -77,14 +77,18 @@ public class TDBFactory
     
     /** Release from the JVM. All caching is lost. */
     public static void release(Dataset dataset) {
-        _release(location(dataset)) ;
+        release(dataset.asDatasetGraph());
     }
     
     /** Release from the JVM.  All caching is lost. */
     public static void release(DatasetGraph dataset) {
-        _release(location(dataset)) ;
+        _release(dataset) ;
     }
     
+    private static void _release(DatasetGraph dataset) {
+        TDBInternal.expel(dataset);
+    }
+
     private static DatasetGraph _createDatasetGraph(Location location) {
         return TDBMaker.createDatasetGraphTransaction(location) ;
     }
@@ -93,12 +97,6 @@ public class TDBFactory
         return TDBMaker.createDatasetGraphTransaction() ;
     }
     
-    private static void _release(Location location) {
-        if ( location == null )
-            return ;
-        TDBMaker.releaseLocation(location) ;
-    }
-
     /** Test whether a dataset is backed by TDB.
      * @deprecated Use {@link #isTDB1(Dataset)}
      */

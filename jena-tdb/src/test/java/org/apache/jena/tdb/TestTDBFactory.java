@@ -113,7 +113,7 @@ public class TestTDBFactory extends BaseTest
         TDBFactory.createDataset(DIR) ;
         b = TDBFactory.inUseLocation(DIR) ;
         assertTrue("Expected true after creation attempted", b) ;
-        StoreConnection.expel(Location.create(DIR), true); 
+        TDBInternal.expel(Location.create(DIR), true); 
     }
     
     @Test public void testTDBFresh03() {
@@ -122,7 +122,7 @@ public class TestTDBFactory extends BaseTest
         TDBFactory.createDataset(DIR) ;
         b = TDBFactory.inUseLocation(DIR) ;
         assertTrue("Expected true after creation attempted", b) ;
-        StoreConnection.expel(Location.create(DIR), true);
+        TDBInternal.expel(Location.create(DIR), true);
         b = TDBFactory.inUseLocation(DIR) ;
         assertTrue("Expected true even after StoreConenction reset", b) ;
     }
