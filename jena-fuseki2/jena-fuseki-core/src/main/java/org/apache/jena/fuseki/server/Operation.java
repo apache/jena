@@ -19,6 +19,7 @@
 package org.apache.jena.fuseki.server;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -38,19 +39,19 @@ import org.apache.jena.riot.system.IRIResolver;
 public class Operation {
 
     private static String NS = FusekiVocab.NS;
-    
+
     /** Create/intern. Maps short name to operation. */
     static private Map<Node, Operation> mgr = new HashMap<>();
 
     static public Operation get(Node node) { return mgr.get(node); }
-    
+
     /** @deprecated Use {@link #alloc(Node, String, String)}. */
     @Deprecated
     static public Operation register(String shortName, String description) {
         String x = IRILib.encodeUriPath(shortName); 
         return alloc("http://migration/"+x, shortName, description);
     }
-    
+
     /**
      * Create an Operation - this operation interns operations so there is only
      * one object for each operation. It is an extensible enum.
@@ -64,7 +65,7 @@ public class Operation {
         Node node = NodeFactory.createURI(iriStr);
         return alloc(node, shortName, description);
     }
-    
+
     /**
      * Create an Operation - this operation interns operations so there is only
      * object for each operation. It is an extensible enum.
@@ -72,10 +73,13 @@ public class Operation {
     static public Operation alloc(Node op, String shortName, String description) {
         return mgr.computeIfAbsent(op, (x)->create(x, shortName, description));
     }
-    
+
     /** Create; not registered */
     static private Operation create(Node id, String shortName, String description) {
-        return new Operation(id, shortName, description);
+        // Currently, (3.13.0) the JS name is the short display name in lower
+        // case. Just in case it diverges in the future, leave provision for
+        // a different setting.
+        return new Operation(id, shortName, shortName.toLowerCase(Locale.ROOT), description);
     }
 
     public static final Operation Query    = alloc(FusekiVocab.opQuery.asNode(),  "query",  "SPARQL Query");
@@ -95,22 +99,39 @@ public class Operation {
     // -- Object
     private final Node id;
     private final String name;
+    // Name used in JSON in the "server" description and "stats" details. 
+    // This name is know to the JS code (e.g. dataset.js).
+    private final String jsName;
+
     private final String description;
-    
-    private Operation(Node fullName, String name, String description) {
+
+    private Operation(Node fullName, String name, String jsName, String description) {
         this.id = fullName;
         this.name = name;
+        // Currently, this 
+        this.jsName = jsName;
         this.description = description;
     }
 
     public Node getId() {
         return id;
     }
-    
+
+    /** Return the display name for this operation. */ 
     public String getName() {
         return name;
     }
 
+    /** 
+     * Name used in JSON in the "server" description and "stats" details. 
+     * Highlighted by JENA-1766.
+     * This name is know to the JS code.
+     */   
+    public String getJsonName() {
+        return jsName;
+    }
+
+    /** Return the description for this operation. */
     public String getDescription() {
         return description;
     }
@@ -122,7 +143,7 @@ public class Operation {
 
     // Could be this == obj
     // because we intern'ed the object
-    
+
     @Override
     public boolean equals(Object obj) {
         if ( this == obj )

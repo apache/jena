@@ -41,6 +41,8 @@ public interface ActionProcessor {
         }
     }
 
+    // Override to support the operation. 
+    // A common override is "executeLifecycle(action);"
     public default void execHead(HttpAction action)     { execAny(METHOD_HEAD,    action); }
     public default void execGet(HttpAction action)      { execAny(METHOD_GET,     action); }
     public default void execPost(HttpAction action)     { execAny(METHOD_POST,    action); }
