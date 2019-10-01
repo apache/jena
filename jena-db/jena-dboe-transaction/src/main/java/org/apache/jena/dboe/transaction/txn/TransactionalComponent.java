@@ -126,20 +126,24 @@ public interface TransactionalComponent
      */
     public ByteBuffer commitPrepare(Transaction transaction);
 
-    /** Commit a transaction (make durable).
-     * Other components not have been commited yet and recovery may occur still.
-     * Permanent state should not be finalised until {@link #commitEnd}.
+    /**
+     * Commit a transaction (make durable). The transaction will commit and not abort.
+     * Other components may not have committed yet and recovery may occur
+     * still causing replay of the commit step.
      */
     public void commit(Transaction transaction);
 
-    /** Signal all commits on all components are done (the component can clearup now) */
+    /**
+     *  Signal all commits on all components are done and replay from the journal will not happen.
+     *  The component can clear up now.
+     */
     public void commitEnd(Transaction transaction);
 
     /** Abort a transaction (undo the effect of a transaction) */
     public void abort(Transaction transaction);
 
-    /** Finalization - the coordinator will not mention the transaction again
-     *  although recovery after a crash may do so.
+    /** 
+     * Finalization - the coordinator will not mention the transaction again.
      */
     public void complete(Transaction transaction);
 
@@ -172,5 +176,4 @@ public interface TransactionalComponent
      * This operation is not guaranteed to be called.
      */
     public void shutdown();
-
 }
