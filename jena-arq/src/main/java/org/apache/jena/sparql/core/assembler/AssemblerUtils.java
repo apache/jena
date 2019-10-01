@@ -158,6 +158,11 @@ public class AssemblerUtils
         return context;
     }
         
+    /** @deprecated Use {@link #mergeContext(Resource, Context)} */
+    public static void setContext(Resource r, Context context) {
+        mergeContext(r, context);
+    }
+    
     /** Look for and merge in context declarations. 
      * e.g.
      * <pre>

@@ -198,6 +198,7 @@ public class StoreConnection
     /** Stop managing a location. Use with great care (testing only). */
     public static synchronized void expel(Location location, boolean force) {
         StoreConnection sConn = cache.get(location) ;
+        TDBMaker.releaseLocation(location);
         if (sConn == null)
             return ;
         if (!force && sConn.transactionManager.activeTransactions()) 
