@@ -37,7 +37,7 @@ public class DebugTdbConnection extends TDBConnection {
      * @throws SQLException
      */
     public DebugTdbConnection() throws SQLException {
-        this(DatasetFactory.createMem());
+        this(DatasetFactory.create());
     }
 
     /**
