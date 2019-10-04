@@ -236,6 +236,12 @@ public class TextQueryPF extends PropertyFunctionBase {
         return qIter ;
     }
 
+    private static void addIf(BindingMap bmap, Var var, Node node) {
+        if (var != null && node != null) {
+            bmap.add(var, node);
+        }
+    }
+    
     private QueryIterator resultsToQueryIterator(Binding binding, Node subj, Node score, Node literal, Node graph, Node prop, Collection<TextHit> results, ExecutionContext execCxt) {
         log.trace("resultsToQueryIterator CALLED with results: {}", results) ;
         Var sVar = Var.isVar(subj) ? Var.alloc(subj) : null ;
@@ -248,16 +254,11 @@ public class TextQueryPF extends PropertyFunctionBase {
             if (score == null && literal == null)
                 return sVar != null ? BindingFactory.binding(binding, sVar, hit.getNode()) : BindingFactory.binding(binding);
             BindingMap bmap = BindingFactory.create(binding);
-            if (sVar != null)
-                bmap.add(sVar, hit.getNode());
-            if (scoreVar != null)
-                bmap.add(scoreVar, NodeFactoryExtra.floatToNode(hit.getScore()));
-            if (literalVar != null)
-                bmap.add(literalVar, hit.getLiteral());
-            if (graphVar != null && hit.getGraph() != null)
-                bmap.add(graphVar, hit.getGraph());
-            if (propVar != null && hit.getProp() != null)
-                bmap.add(propVar, hit.getProp());
+            addIf(bmap, sVar, hit.getNode());
+            addIf(bmap, scoreVar, NodeFactoryExtra.floatToNode(hit.getScore()));
+            addIf(bmap, literalVar, hit.getLiteral());
+            addIf(bmap, graphVar, hit.getGraph());
+            addIf(bmap, propVar, hit.getProp());
             log.trace("resultsToQueryIterator RETURNING bmap: {}", bmap) ;
             return bmap;
         } ;

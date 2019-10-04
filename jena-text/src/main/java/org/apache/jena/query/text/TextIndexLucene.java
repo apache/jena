@@ -740,8 +740,8 @@ public class TextIndexLucene implements TextIndex {
             // or
             //    ?s text:query ( "some query string" ... )
             // so we just need the qs and process additional args below
-            // we add the text:defaultField
-            textFields.add(docDef.getPrimaryField());
+            // the qs may be a mutli-field query or just a simple query
+            qString = qs + " ";
             log.trace("query$ processed EMPTY LIST of properties: {}; Lucene queryString: {}; textFields: {}", props, qString, textFields) ;
         } else {
             // otherwise there are one or more properties to search over
@@ -759,6 +759,14 @@ public class TextIndexLucene implements TextIndex {
         for (String textField : textFields) {
             qString += composeQField(qs, textField, lang, usingSearchFor, searchForTags);
         }
+        
+        // we need to check whether there was a lang arg either on the query string
+        // or explicitly as an input arg and add it to the qString; otherwise, Lucene 
+        // won't be able to properly process the query
+        if (textFields.isEmpty() && lang != null) {
+            qString += composeQField(qs, docDef.getPrimaryField(), lang, usingSearchFor, searchForTags);
+        }
+        
         log.trace("query$ PROCESSED LIST of properties: {} with resulting qString: {} ", props, qString) ;
 
         // add a clause for the lang if not usingSearchFor and there is a defined langFIeld in the config
@@ -784,6 +792,15 @@ public class TextIndexLucene implements TextIndex {
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
 
         ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;
+        
+        // if there were no explicit textFields supplied then Lucene used
+        // the default field if defined otherwise Lucene simply interpreted the qs
+        // as presented - perhaps with multiple fields indexed on a separate system.
+        // In order to handle the results we need to supply the default field to
+        // complete the processing in TextQueryPF
+        if (textFields.isEmpty()) {
+            textFields.add(docDef.getPrimaryField());
+        }
         
         if (highlight != null) {
             return highlightResults(sDocs, indexSearcher, query, textFields, highlight, usingSearchFor, lang);
