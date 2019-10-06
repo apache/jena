@@ -21,12 +21,12 @@
   <artifactId>jena-tdb</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - TDB1 (Native Triple Store)</name>
-  <version>3.14.0-SNAPSHOT</version>
+  <version>3.13.1</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>3.14.0-SNAPSHOT</version>
+    <version>3.13.1</version>
     <relativePath>..</relativePath>
   </parent> 
 
@@ -43,14 +43,14 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.14.0-SNAPSHOT</version>
+      <version>3.13.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
       <classifier>tests</classifier>
-      <version>3.14.0-SNAPSHOT</version>
+      <version>3.13.1</version>
       <scope>test</scope>
     </dependency>
 
@@ -58,7 +58,7 @@
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
       <classifier>tests</classifier>
-      <version>3.14.0-SNAPSHOT</version>
+      <version>3.13.1</version>
       <scope>test</scope>
     </dependency>
 
@@ -66,7 +66,7 @@
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
       <classifier>tests</classifier>
-      <version>3.14.0-SNAPSHOT</version>
+      <version>3.13.1</version>
       <scope>test</scope>
     </dependency>
 
