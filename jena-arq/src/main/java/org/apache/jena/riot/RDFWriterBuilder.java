@@ -25,6 +25,7 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.Symbol;
 
 public class RDFWriterBuilder {
     private DatasetGraph dataset = null;
@@ -97,16 +98,42 @@ public class RDFWriterBuilder {
 //    // Not implemented
 //    public RDFWriterBuilder formatter(NodeFormatter nodeFormatter) { return this; }
 
-    /** Set the context for the writer when built.
-     *  
+    private void ensureContext() {
+        if ( context == null )
+            context = new Context();
+    }
+    
+    /**
+     * Set the context for the writer when built.
+     * 
+     * If a context is already partly set
+     * for this builder, merge the new settings 
+     * into the outstanding context.
+     * 
      * @param context
      * @return this
+     * @see Context
      */
-    public RDFWriterBuilder context(Context context) { 
-        if ( context != null )
-            context = context.copy();
-        this.context = context;
+    public RDFWriterBuilder context(Context context) {
+        if ( context == null )
+            return this;
+        ensureContext();
+        this.context.putAll(context);
         return this; 
+    }
+    
+    /** 
+     * Added a setting to the context for the writer when built.
+     * A value of "null" removes a previous setting.
+     * @param symbol
+     * @param value
+     * @return this
+     * @see Context
+     */
+    public RDFWriterBuilder set(Symbol symbol, Object value) {
+        ensureContext();
+        context.put(symbol, value);
+        return this;
     }
     
     /**

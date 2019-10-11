@@ -49,28 +49,59 @@ import org.apache.jena.sys.JenaSystem ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-/** <p>General purpose reader framework for RDF (triples and quads) syntaxes.</p>   
- *  <ul>
- *  <li>HTTP Content negotiation</li>
- *  <li>File type hint by the extension</li>
- *  <li>Application language hint</li>
- *  </ul>
+/**
  * <p>
- *  It also provides a way to lookup names in different
- *  locations and to remap URIs to other URIs. 
- *  </p>
- *  <p>
- *  Extensible - a new syntax can be added to the framework. 
- *  </p>
- *  <p>Operations fall into the following categories:</p>
- *  <ul>
- *  <li>{@code read}    -- Read data from a location into a Model, Dataset, etc. The methods in this class treat all types of Model in the same way. For behavior specific to a subtype of Model, use the methods of that specific class.</li>
- *  <li>{@code loadXXX} -- Read data and return an in-memory object holding the data.</li>
- *  <li>{@code parse}   -- Read data and send to an {@link StreamRDF}</li>
- *  <li>{@code open}    -- Open a typed input stream to the location, using any alternative locations</li>
- *  <li>{@code write}   -- Write Model/Dataset etc</li> 
- *  <li>{@code create}  -- Create a reader or writer explicitly</li> 
- *  </ul> 
+ * General purpose reader framework for RDF (triples and quads) syntaxes.
+ * </p>
+ * <ul>
+ * <li>HTTP Content negotiation</li>
+ * <li>File type hint by the extension</li>
+ * <li>Application language hint</li>
+ * </ul>
+ * <p>
+ * It also provides a way to lookup names in different locations and to remap URIs to
+ * other URIs.
+ * </p>
+ * <p>
+ * Extensible - a new syntax can be added to the framework.
+ * </p>
+ * <p>
+ * Operations fall into the following categories:
+ * </p>
+ * <ul>
+ * <li>{@code read} -- Read data from a location into a Model, Dataset, etc. The
+ * methods in this class treat all types of Model in the same way. For behavior
+ * specific to a subtype of Model, use the methods of that specific class.</li>
+ * <li>{@code loadXXX} -- Read data and return an in-memory object holding the
+ * data.</li>
+ * <li>{@code parse} -- Read data and send to an {@link StreamRDF}</li>
+ * <li>{@code open} -- Open a typed input stream to the location, using any
+ * alternative locations</li>
+ * <li>{@code write} -- Write Model/Dataset etc</li>
+ * <li>{@code create} -- Create a reader or writer explicitly</li>
+ * </ul>
+ * <p>
+ * {@code RDFDataMgr} provides single functions for many of the common application
+ * patterns. It is built on top of {@link RDFParser} for reading and
+ * {@link RDFWriter} for output. Each of these classes has an associated builder that
+ * provides complete control over the parsing process. For example, to translate
+ * language tags to lower case on input:
+ * 
+ * <pre>
+ *     RDFParser.create()
+ *         .source("myData.ttl")
+ *         .langTagLowerCase()
+ *         .parse(graph);
+ * </pre>
+ * 
+ * or to have Turtle written with {@code BASE} and {@code PREFIX} rather than
+ * {@code @base} and {@code @prefix} (both are legal Turtle):
+ * <pre>
+ *     RDFWriter.create()
+ *         .set(RIOT.symTurtlePrefixStyle, "rdf11")
+ *         .source(model)
+ *         .output(System.out);
+ * </pre>   
  */
 
 public class RDFDataMgr
