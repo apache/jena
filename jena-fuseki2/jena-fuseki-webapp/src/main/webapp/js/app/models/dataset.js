@@ -103,24 +103,24 @@ define(
       /** Return the first endpoint of the first service that has the given type */
       endpointOfType: function( serviceType ) {
           var service = this.serviceOfType( serviceType );
-	  if ( ! service )
-	      return null;
-	  var x = service["srv.endpoints"];
-	  x = x.filter(function(v){return v!==''});
-	  var ep = _.first(x);
-	  return ep;
-          /* return service && _.first( service["srv.endpoints"] );*/
+          if ( ! service )
+              return null;
+          var x = service["srv.endpoints"];
+          var ep = _.first(x);
+          return ep;
       },
 
       /* Return URL for a service of a given type or null, if no such service */
       endpointURL: function( serviceType ) {
-        var endpoint = this.endpointOfType( serviceType );
-        return endpoint ? this.datasetEndpointURL( endpoint ) : null;
+          var endpoint = this.endpointOfType( serviceType );
+          return endpoint != null  ? this.datasetEndpointURL( endpoint ) : null ;
       },
 
       /** Return the URL for the given endpoint */
       datasetEndpointURL: function( endpoint ) {
-        return sprintf( "%s%s/%s", this.baseURL(), this.name(), endpoint );
+	  return endpoint == ""
+	      ? sprintf( "%s%s", this.baseURL(), this.name() )
+              : sprintf( "%s%s/%s", this.baseURL(), this.name(), endpoint );
       },
 
       /** Return the sparql query URL for this dataset, if it has one, or null */

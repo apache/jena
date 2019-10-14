@@ -56,22 +56,22 @@ public class Operation {
      * Create an Operation - this operation interns operations so there is only
      * one object for each operation. It is an extensible enum.
      */
-    static public Operation alloc(String iriStr, String shortName, String description) {
+    static public Operation alloc(String iriStr, String name, String description) {
         IRI iri = IRIResolver.parseIRI(iriStr);
         if ( iri.hasViolation(false) )
             Log.warn(Operation.class, "Poor Operation name: "+iriStr+" : Not an IRI");
         if ( iri.isRelative() )
             Log.warn(Operation.class, "Poor Operation name: "+iriStr+" : Relative IRI");
         Node node = NodeFactory.createURI(iriStr);
-        return alloc(node, shortName, description);
+        return alloc(node, name, description);
     }
 
     /**
      * Create an Operation - this operation interns operations so there is only
      * object for each operation. It is an extensible enum.
      */
-    static public Operation alloc(Node op, String shortName, String description) {
-        return mgr.computeIfAbsent(op, (x)->create(x, shortName, description));
+    static public Operation alloc(Node op, String name, String description) {
+        return mgr.computeIfAbsent(op, (x)->create(x, name, description));
     }
 
     /** Create; not registered */
