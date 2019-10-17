@@ -18,6 +18,10 @@
 
 package org.apache.jena.tdb2.store;
 
+import java.util.Iterator;
+
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.storage.StoragePrefixes;
 import org.apache.jena.dboe.storage.system.DatasetGraphStorage;
@@ -27,6 +31,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation;
 import org.apache.jena.tdb2.TDBException;
+import org.apache.jena.tdb2.lib.NodeLib;
 import org.apache.jena.tdb2.params.StoreParams;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
 
@@ -125,6 +130,18 @@ public class DatasetGraphTDB extends DatasetGraphStorage
     public GraphTDB getUnionGraphTDB() {
         checkNotClosed();
         return GraphTDB.tdb_createUnionGraph(this, getPrefixes());
+    }
+
+    @Override
+    public Iterator<Node> listGraphNodes() {
+        checkNotClosed();
+        NodeTupleTable quads = getQuadTable().getNodeTupleTable();
+        Iterator<Tuple<NodeId>> x = quads.findAll();
+        // XXX Future: Ensure we scan a G??? index and use distinctAdjacent.
+        // See TupleTable.chooseScanAllIndex
+        Iterator<NodeId> z = Iter.iter(x).map(t -> t.get(0)).distinct();
+        Iterator<Node> r = NodeLib.nodes(quads.getNodeTable(), z);
+        return r;
     }
 
     public NodeTupleTable chooseNodeTupleTable(Node graphNode) {

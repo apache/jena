@@ -81,6 +81,10 @@ public class DatasetGraphStorage extends DatasetGraphBaseFind implements Databas
     @Override public StoragePrefixes getPrefixes()    { return prefixes; }
     @Override public Transactional getTransactional() { return txn; }
 
+    /**
+     * Provide a general implementation of "listGraphNodes". Implementations may wish
+     * to override and do this operation in a more efficient manner.
+     */
     @Override
     public Iterator<Node> listGraphNodes() {
         Iterator<Quad> iter = findNG(null, null, null, null);
