@@ -57,7 +57,7 @@ public class TestTextMultilingualEnhancements02 extends AbstractTestDatasetWithT
     private static final String SPEC_ROOT_URI = SPEC_BASE + SPEC_ROOT_LOCAL;
     private static final String SPEC;
 
-    protected static final String TURTLE_PROLOG = 
+    protected static final String TURTLE_PROLOG2 = 
             StrUtils.strjoinNL(
                     "@prefix  res:  <" + RES_BASE + "> .",
                     "@prefix  spec: <" + SPEC_BASE + "> .",
@@ -65,7 +65,7 @@ public class TestTextMultilingualEnhancements02 extends AbstractTestDatasetWithT
                     "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .",
                     "@prefix skos: <http://www.w3.org/2004/02/skos/core#> ."
                     );    
-    protected static final String QUERY_PROLOG = 
+    protected static final String QUERY_PROLOG2 = 
             StrUtils.strjoinNL(
                     "prefix res:  <" + RES_BASE + "> ",
                     "prefix spec: <" + SPEC_BASE + "> ",
@@ -228,7 +228,7 @@ public class TestTextMultilingualEnhancements02 extends AbstractTestDatasetWithT
     @Test
     public void test02TextSearchFor1() {
         final String turtleA = StrUtils.strjoinNL(
-                TURTLE_PROLOG,
+                TURTLE_PROLOG2,
                 "<" + RESOURCE_BASE + "testResultOneInModelA>",
                 "  rdfs:label \"one green flower\"@en-01",
                 ".",
@@ -238,7 +238,7 @@ public class TestTextMultilingualEnhancements02 extends AbstractTestDatasetWithT
                 );
         putTurtleInModel(turtleA, "http://example.org/modelA") ;
         String queryString = StrUtils.strjoinNL(
-                QUERY_PROLOG,
+                QUERY_PROLOG2,
                 "SELECT ?s ?lit",
                 "WHERE {",
                 "  (?s ?sc ?lit ?g) text:query ( spec:labels \"green\"@en-02 ) . ",
@@ -259,7 +259,7 @@ public class TestTextMultilingualEnhancements02 extends AbstractTestDatasetWithT
     @Test
     public void test02TextSearchFor2() {
         final String turtleA = StrUtils.strjoinNL(
-                TURTLE_PROLOG,
+                TURTLE_PROLOG2,
                 "<" + RESOURCE_BASE + "testResultOneInModelA>",
                 "  skos:prefLabel \"one green flower\"@en-01",
                 ".",
@@ -269,7 +269,7 @@ public class TestTextMultilingualEnhancements02 extends AbstractTestDatasetWithT
                 );
         putTurtleInModel(turtleA, "http://example.org/modelA") ;
         String queryString = StrUtils.strjoinNL(
-                QUERY_PROLOG,
+                QUERY_PROLOG2,
                 "SELECT ?s ?lit",
                 "WHERE {",
                 "  (?s ?sc ?lit ?g) text:query ( spec:labels \"flower\"@en-01 ) . ",
@@ -288,7 +288,7 @@ public class TestTextMultilingualEnhancements02 extends AbstractTestDatasetWithT
     @Test
     public void test02TextSimple1() {
         final String turtleA = StrUtils.strjoinNL(
-                TURTLE_PROLOG,
+                TURTLE_PROLOG2,
                 "<" + RESOURCE_BASE + "testResultOneInModelA>",
                 "  skos:altLabel \"one green flower\"@en-03",
                 ".",
@@ -298,7 +298,7 @@ public class TestTextMultilingualEnhancements02 extends AbstractTestDatasetWithT
                 );
         putTurtleInModel(turtleA, "http://example.org/modelA") ;
         String queryString = StrUtils.strjoinNL(
-                QUERY_PROLOG,
+                QUERY_PROLOG2,
                 "SELECT ?s ?lit",
                 "WHERE {",
                 "  (?s ?sc ?lit ?g) text:query ( spec:labels \"green\"@en-03 ) . ",
@@ -317,7 +317,7 @@ public class TestTextMultilingualEnhancements02 extends AbstractTestDatasetWithT
     @Test
     public void test02TextAux1() {
         final String turtleA = StrUtils.strjoinNL(
-                TURTLE_PROLOG,
+                TURTLE_PROLOG2,
                 "<" + RESOURCE_BASE + "testResultOneInModelA>",
                 "  skos:altLabel \"one Green flower\"@en-05",
                 ".",
@@ -327,7 +327,7 @@ public class TestTextMultilingualEnhancements02 extends AbstractTestDatasetWithT
                 );
         putTurtleInModel(turtleA, "http://example.org/modelA") ;
         String queryString = StrUtils.strjoinNL(
-                QUERY_PROLOG,
+                QUERY_PROLOG2,
                 "SELECT ?s ?lit",
                 "WHERE {",
                 "  (?s ?sc ?lit ?g) text:query ( spec:labels \"green\"@en-aux ) . ",
