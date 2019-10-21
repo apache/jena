@@ -26,7 +26,7 @@ import org.apache.jena.graph.Graph;
  * <pre>
  *      Shapes shapes = ...
  *      try {
- *        GraphValidation.updateEx(shapes, graph, ()->{
+ *        GraphValidation.updateEx(shapes, graph, ()-&gt;{
  *            ... application code ...
  *        });
  *     } catch (ShaclValidationException ex) {
@@ -38,7 +38,7 @@ import org.apache.jena.graph.Graph;
  * Example: update with report:
  * <pre>
  *     Shapes shapes = ...
- *     ValidationReport report = GraphValidation.updateEx(shapes, graph, ()->{
+ *     ValidationReport report = GraphValidation.updateEx(shapes, graph, ()-&gt;{
  *         ... application code ...
  *     });
  *     if ( ! report.conforms() ) {
