@@ -32,12 +32,10 @@ import org.apache.jena.query.text.assembler.TextAssembler ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.vocabulary.SKOS;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
-
-import org.apache.jena.vocabulary.RDFS;
-import org.apache.jena.vocabulary.SKOS;
 
 /**
  * This class defines a setup configuration for a dataset that uses a standard analyzer with a Lucene index.
@@ -51,7 +49,7 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
     private static final String SPEC_ROOT_LOCAL = "lucene_text_dataset";
     private static final String SPEC_ROOT_URI = SPEC_BASE + SPEC_ROOT_LOCAL;
 
-    protected static final String TURTLE_PROLOG = 
+    protected static final String TURTLE_PROLOG2 = 
             StrUtils.strjoinNL(
                     "@prefix  res:  <" + RES_BASE + "> .",
                     "@prefix  spec: <" + SPEC_BASE + "> .",
@@ -59,7 +57,7 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
                     "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .",
                     "@prefix skos: <http://www.w3.org/2004/02/skos/core#> ."
                     );    
-    protected static final String QUERY_PROLOG = 
+    protected static final String QUERY_PROLOG2 = 
             StrUtils.strjoinNL(
                     "prefix res:  <" + RES_BASE + "> ",
                     "prefix spec: <" + SPEC_BASE + "> ",
@@ -164,12 +162,12 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
     @Test
     public void testForSanity01() {
         final String turtle = StrUtils.strjoinNL(
-                TURTLE_PROLOG,
+                TURTLE_PROLOG2,
                 "res:oneThing rdfs:label 'bar the barfoo foo'",
                 "."
                 );
         String qyString = StrUtils.strjoinNL(
-                QUERY_PROLOG,
+                QUERY_PROLOG2,
                 "SELECT ?s",
                 "WHERE {",
                 "    ?s text:query 'bar' .",
@@ -183,13 +181,13 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
     @Test
     public void testForSanity02() {
         final String turtle = StrUtils.strjoinNL(
-                TURTLE_PROLOG,
+                TURTLE_PROLOG2,
                 "res:oneThing rdfs:label 'bar the barfoo foo'",
                 "."
                 );
         // the standard analyzer not to have 'the' as a stop word
         String qyString = StrUtils.strjoinNL(
-                QUERY_PROLOG,
+                QUERY_PROLOG2,
                 "SELECT ?s",
                 "WHERE {",
                 "    ?s text:query ( rdfs:label 'bar' 10 ) .",
@@ -203,13 +201,13 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
     @Test
     public void testForSanity03() {
         final String turtle = StrUtils.strjoinNL(
-                TURTLE_PROLOG,
+                TURTLE_PROLOG2,
                 "res:oneThing skos:prefLabel 'bar the barfoo foo'",
                 "."
                 );
         // the standard analyzer not to have 'the' as a stop word
         String qyString = StrUtils.strjoinNL(
-                QUERY_PROLOG,
+                QUERY_PROLOG2,
                 "SELECT ?s",
                 "WHERE {",
                 "    ?s text:query ( skos:prefLabel 'bar' 10 ) .",
@@ -223,13 +221,13 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
     @Test
     public void testSingleTextProp01() {
         final String turtle = StrUtils.strjoinNL(
-                TURTLE_PROLOG,
+                TURTLE_PROLOG2,
                 "res:oneThing skos:altLabel 'bar is surely the barfoo foo for me and you'",
                 "."
                 );
         // the standard analyzer not to have 'the' as a stop word
         String qyString = StrUtils.strjoinNL(
-                QUERY_PROLOG,
+                QUERY_PROLOG2,
                 "SELECT ?s",
                 "WHERE {",
                 "    (?ss ?sc ?lit ?g ?s) text:query ( skos:altLabel 'surely' 10 ) .",
@@ -243,13 +241,13 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
     @Test
     public void testSingleTextProp02() {
         final String turtle = StrUtils.strjoinNL(
-                TURTLE_PROLOG,
+                TURTLE_PROLOG2,
                 "res:oneThing skos:altLabel 'bar is surely the barfoo foo for me and you'",
                 "."
                 );
         // the standard analyzer not to have 'the' as a stop word
         String qyString = StrUtils.strjoinNL(
-                QUERY_PROLOG,
+                QUERY_PROLOG2,
                 "SELECT ?s",
                 "WHERE {",
                 "    (?ss ?sc ?lit ?g ?s) text:query ( skos:altLabel 'surely' 10 'highlight:' ) .",
@@ -263,12 +261,12 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
     @Test
     public void testListTextProp01() {
         final String turtle = StrUtils.strjoinNL(
-                TURTLE_PROLOG,
+                TURTLE_PROLOG2,
                 "res:oneThing skos:prefLabel \"bar the barfoo foo is hidden\"",
                 "."
                 );
         String qyString = StrUtils.strjoinNL(
-                QUERY_PROLOG,
+                QUERY_PROLOG2,
                 "SELECT ?s",
                 "WHERE {",
                 "    (?ss ?sc ?lit ?g ?s) text:query ( spec:labels 'foo' 10 ) .",
@@ -282,7 +280,7 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
     @Test
     public void testListTextProp02() {
         final String turtle = StrUtils.strjoinNL(
-                TURTLE_PROLOG,
+                TURTLE_PROLOG2,
                 "",
                 "res:oneThing skos:prefLabel \"bar the barfoo foo is hidden\" ",
                 ".",
@@ -292,7 +290,7 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
                 "."
                 );
         String qyString = StrUtils.strjoinNL(
-                QUERY_PROLOG,
+                QUERY_PROLOG2,
                 "",
                 "SELECT ?s",
                 "WHERE {",
@@ -307,7 +305,7 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
     @Test
     public void testListTextProp03() {
         final String turtle = StrUtils.strjoinNL(
-                TURTLE_PROLOG,
+                TURTLE_PROLOG2,
                 "",
                 "res:oneThing skos:prefLabel \"bar the barfoo foo is hidden\" ",
                 ".",
@@ -317,7 +315,7 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
                 "."
                 );
         String qyString = StrUtils.strjoinNL(
-                QUERY_PROLOG,
+                QUERY_PROLOG2,
                 "",
                 "SELECT ?s",
                 "WHERE {",

@@ -36,18 +36,24 @@ public class TextIndexESIT extends BaseESTest {
 
     @Test
     public void testAddEntity() {
-
         addSpecialCharacterString("label", "this is a sample Label");
-
     }
 
     @Test
     public void testAddDateEntity() {
-
         addSpecialCharacterString("label", "2016-12-01T15:31:10-05:00");
-
     }
 
+    @Test
+    public void testUnsetLimitQuery() {
+        addSpecialCharacterString("label", "some string");
+        String queryString = "string";
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, null, -1, 1);
+        querySpecialCharacterQuery(null, queryString, null, -1, 1);
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, "en", -1, 0);
+        
+    }
+    
     @Test
     public void testPlusInSearchQuery() {
         //Test + character string

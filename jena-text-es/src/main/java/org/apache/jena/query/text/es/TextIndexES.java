@@ -113,7 +113,7 @@ public class TextIndexES implements TextIndex {
     /**
      * Number of maximum results to return in case no limit is specified on the search operation
      */
-    static final Integer MAX_RESULTS = 10000;
+    public static final int MAX_RESULTS = 10000;
 
     private static final Logger LOGGER      = LoggerFactory.getLogger(TextIndexES.class) ;
 
@@ -384,11 +384,14 @@ public class TextIndexES implements TextIndex {
      * Query the ElasticSearch for the given Node, with the given query String and limit.
      * @param property the node property to make a search for
      * @param qs the query string
-     * @param limit limit on the number of records to return
+     * @param limit limit on the number of records to return (default to {@link #MAX_RESULTS})
      * @return List of {@link TextHit}s containing the documents that have been found
      */
     @Override
     public List<TextHit> query(Node property, String qs, String graphURI, String lang, int limit) {
+        if ( limit < 0 )
+            limit = MAX_RESULTS;
+        
         if(property != null) {
             qs = parse(property.getLocalName(), qs, lang);
         } else {
@@ -402,7 +405,8 @@ public class TextIndexES implements TextIndex {
                 // Not fetching the source because we are currently not interested
                 // in the actual values but only Id of the document. This will also speed up search
                 .setFetchSource(false)
-                .setFrom(0).setSize(limit)
+                .setFrom(0)
+                .setSize(limit)
                 .get();
 
         List<TextHit> results = new ArrayList<>() ;
@@ -411,7 +415,7 @@ public class TextIndexES implements TextIndex {
             //It has been decided to return NULL literal values for now.
             String entityField = hit.getId();
             Node entityNode = TextQueryFuncs.stringToNode(entityField);
-            Float score = hit.getScore();
+            float score = hit.getScore();
             TextHit textHit = new TextHit(entityNode, score, null);
             results.add(textHit);
 

@@ -36,7 +36,6 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.ext.com.google.common.base.Strings;
 import org.apache.jena.ext.com.google.common.collect.LinkedListMultimap;
 import org.apache.jena.ext.com.google.common.collect.ListMultimap;
-import org.apache.jena.graph.Node_URI;
 import org.apache.jena.query.QueryBuildException ;
 import org.apache.jena.query.QueryExecException ;
 import org.apache.jena.query.text.analyzer.Util;
@@ -59,8 +58,6 @@ import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.sparql.util.Symbol ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import static org.apache.jena.query.text.assembler.TextVocab.*;
 
 /** property function that accesses a text index */
 public class TextQueryPF extends PropertyFunctionBase {
