@@ -128,8 +128,8 @@ public class TestOptimizer extends AbstractTestTransform
         String queryString = "SELECT DISTINCT * { ?s ?p ?o } ORDER BY ?p ?o LIMIT 4242"  ;  
         String opExpectedString = 
             "(slice _ 4242\n" + 
-            "  (distinct\n" +
-            "    (order (?p ?o)\n" +
+            "  (order (?p ?o)\n" +
+            "    (distinct\n" +
             "      (bgp (triple ?s ?p ?o)))))" ; 
         check(queryString, opExpectedString) ;
     }
