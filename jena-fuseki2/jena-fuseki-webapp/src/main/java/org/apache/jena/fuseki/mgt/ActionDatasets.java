@@ -340,7 +340,7 @@ public class ActionDatasets extends ActionContainerItem {
                 ServletOps.errorOccurred(
                     format(
                         "There are %d configuration files, not one. Delete not performed; clearup of the filesystem needed.",
-                        action.id, configurationFiles.size()));
+                        configurationFiles.size()));
             }
 
             String cfgPathname = configurationFiles.get(0);
