@@ -91,6 +91,8 @@ public class StoragePrefixesTDB implements StoragePrefixes {
         graphNode = PrefixLib.canonicalGraphName(graphNode);
         Node p = NodeFactory.createLiteral(prefix);
         Node u = NodeFactory.createURI(iriStr);
+        // Delete any existing old mapping of prefix.
+        remove_ext(graphNode, p, Node.ANY);
         prefixTable.addRow(graphNode,p,u);
     }
 
@@ -111,7 +113,7 @@ public class StoragePrefixesTDB implements StoragePrefixes {
     }
 
     /** Remove without checks - used by the bulkloader when it takes control of the transaction. */  
-    public void remove_ext(Node g, Node p, Node u) {
+    private void remove_ext(Node g, Node p, Node u) {
         // See add_ext
         g = PrefixLib.canonicalGraphName(g);
         Iterator<Tuple<Node>> iter = prefixTable.find(g, p, u);
