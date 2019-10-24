@@ -39,4 +39,9 @@ public class PrefixEntry {
     public String getUri() {
         return uri;
     }
+
+    @Override
+    public String toString() {
+        return "PrefixEntry["+prefix+": <"+uri+">]";
+    }
 }

@@ -17,6 +17,8 @@
 
 package org.apache.jena.dboe.storage.prefixes;
 
+import java.util.Objects;
+
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.dboe.storage.StoragePrefixes;
 import org.apache.jena.graph.Node;
@@ -40,9 +42,21 @@ public class PrefixLib {
 
     /** Canonical name for graphs */
     public static Node canonicalGraphName(Node graphName) {
+        if ( graphName == StoragePrefixes.nodeDefaultGraph) 
+            return graphName;
         if ( graphName == null || Quad.isDefaultGraph(graphName) )
             return StoragePrefixes.nodeDefaultGraph;
         return graphName;
+    }
+
+    /**
+     * Is this the canonical, internal marker for the default graph for storage
+     * prefixes? ({@link StoragePrefixes#nodeDefaultGraph})
+     * 
+     * @param graphName
+     */
+    public static boolean isNodeDefaultGraph(Node graphName) {
+        return Objects.equals(StoragePrefixes.nodeDefaultGraph, graphName);
     }
 
     /** abbreviate a uriStr, giving a string as a short form. If not possible return null.
