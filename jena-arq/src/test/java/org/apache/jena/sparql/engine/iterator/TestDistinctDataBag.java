@@ -29,7 +29,7 @@ public class TestDistinctDataBag extends AbstractTestDistinctReduced {
     protected QueryIterator createQueryIter(List<Binding> data) {
         QueryIterator qIter = new QueryIterPlainWrapper(data.iterator()) ;
         // Default setting - no threshold.
-        return new QueryIterDistinct(qIter, null) ;
+        return new QueryIterDistinct(qIter, null, null) ;
     }
 
 }
