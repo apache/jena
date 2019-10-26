@@ -136,7 +136,7 @@ public class GraphViewSwitchable extends GraphView {
         @Override
         protected StoragePrefixMap spm() {
             StoragePrefixes prefixes = getDSG().getPrefixes();
-            StoragePrefixMap view = Quad.isDefaultGraph(graphName)
+            StoragePrefixMap view = PrefixLib.isNodeDefaultGraph(graphName)
                 ? StoragePrefixesView.viewDefaultGraph(prefixes)
                 : StoragePrefixesView.viewGraph(prefixes, graphName);
             return view;
