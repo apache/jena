@@ -27,6 +27,7 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.QueryExecException ;
+import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.ARQNotImplemented ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVars ;
@@ -409,7 +410,18 @@ public class OpExecutor
 
     protected QueryIterator execute(OpDistinct opDistinct, QueryIterator input) {
         QueryIterator qIter = exec(opDistinct.getSubOp(), input) ;
-        qIter = new QueryIterDistinct(qIter, execCxt) ;
+        List<SortCondition> conditions = null;
+        if ( opDistinct.getSubOp() instanceof OpOrder ) {
+            // For DISTINCT-ORDER, and if DISTINCT spills
+            // then we need to take account of the ORDER.
+            // The normal (non-spill case) already preserves the input order,
+            // passing through the first occurence. It is only if a spill happens that
+            // we need to ensure the spill buckets respect sort order. 
+            OpOrder subOrder = (OpOrder)opDistinct.getSubOp();
+            conditions = subOrder.getConditions();
+        }
+        
+        qIter = new QueryIterDistinct(qIter, conditions, execCxt) ;
         return qIter ;
     }
 

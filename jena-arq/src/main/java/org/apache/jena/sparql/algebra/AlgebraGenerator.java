@@ -293,53 +293,9 @@ public class AlgebraGenerator
         return Pair.create(filters, groupElts) ;
     }
     
-//    /** Flush the op accumulator - and clear it */
-//    private void accumulate(Deque<Op> acc, Op op) { acc.addLast(op) ; }
-//
-//    /** Accumulate stored ops, return unit if none. */
-//    private Op popAccumulated(Deque<Op> acc)
-//    {
-//        if ( acc.size() == 0 )
-//            return OpTable.unit() ; 
-//        
-//        Op joined = null ;
-//        // First first to last.
-//        for ( Op op : acc )
-//            joined = OpJoin.create(joined,op) ;
-//        acc.clear() ;
-//        return joined ; 
-//    }
-//    
-//    /** Join stored ops to the current state */
-//    private Op joinOpAcc(Op current, Deque<Op> acc)
-//    {
-//        if ( acc.size() == 0 ) return current ;
-//        Op joined = current ;
-//        // First first to last.
-//        for ( Op op : acc )
-//            joined = OpJoin.create(joined,op) ;
-//        acc.clear() ;
-//        return joined ; 
-//    }
-    
     protected Op compileOneInGroup(Element elt, Op current, Deque<Op> acc)
     {
-//            // Coming into the general block.
-//            if ( elt instanceof ElementTriplesBlock )
-//            {
-//                ElementTriplesBlock etb = (ElementTriplesBlock)elt ;
-//                Op op = compileBasicPattern(etb.getPattern()) ;
-//                return join(current, op) ;
-//            }
-//
-//            if ( elt instanceof ElementPathBlock )
-//            {
-//                ElementPathBlock epb = (ElementPathBlock)elt ;
-//                Op op = compilePathBlock(epb.getPattern()) ;
-//                return join(current, op) ;
-//            }
-//            
-        // Elements that group so far and evaluate over that. 
+        // Elements that operate over their left hand size (query syntax). 
         
         if ( elt instanceof ElementAssign )
         {

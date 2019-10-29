@@ -91,7 +91,7 @@ public class TestCancelDistinct {
         ExecutionContext c = null;
         QueryIteratorBase base = new MockQueryIterator();
             
-        QueryIterDistinct d = new QueryIterDistinct(base, c);
+        QueryIterDistinct d = new QueryIterDistinct(base, null, c);
         assertFalse(base.getRequestingCancel());
         d.cancel();
         assertTrue(base.getRequestingCancel());
@@ -113,7 +113,7 @@ public class TestCancelDistinct {
         params.set(ARQ.spillToDiskThreshold, 0);
         
         QueryIteratorBase base = new MockQueryIterator(BindingFactory.create());
-        QueryIterDistinct d = new QueryIterDistinct(base, c);
+        QueryIterDistinct d = new QueryIterDistinct(base, null, c);
         
         assertNull(d.db);
        
@@ -132,7 +132,7 @@ public class TestCancelDistinct {
         params.set(ARQ.spillToDiskThreshold, 0);
         
         QueryIteratorBase base = new MockQueryIterator(BindingFactory.create());
-        QueryIterDistinct d = new QueryIterDistinct(base, c);
+        QueryIterDistinct d = new QueryIterDistinct(base, null, c);
         
         // when there is no databag, close leaves it null
         assertNull(d.db);
@@ -144,7 +144,7 @@ public class TestCancelDistinct {
         params.set(ARQ.spillToDiskThreshold, 0);
         
         QueryIteratorBase base = new MockQueryIterator(BindingFactory.create());
-        QueryIterDistinct d = new QueryIterDistinct(base, c);
+        QueryIterDistinct d = new QueryIterDistinct(base, null, c);
         
         assertNull(d.db);
         Binding ignored = d.next();

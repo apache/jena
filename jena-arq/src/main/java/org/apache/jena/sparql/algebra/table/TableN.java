@@ -39,6 +39,11 @@ public class TableN extends TableBase {
             this.vars = vars ;
     }
 
+    /**
+     * Build table from an iterator. 
+     * This operation reads the QueryIterator to
+     * completion when creating the table.
+     */
     public TableN(QueryIterator qIter) {
         materialize(qIter) ;
     }
