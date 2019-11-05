@@ -648,7 +648,7 @@ public class TextIndexLucene implements TextIndex {
         return sb.toString();
     }
     
-    private List<TextHit> highlightResults(ScoreDoc[] sDocs, IndexSearcher indexSearcher, Query query, List<String> fields, String highlight, boolean useDocLang, String queryLang) 
+    private List<TextHit> highlightResults(ScoreDoc[] sDocs, IndexSearcher indexSearcher, Query query, List<String> fields, String highlight, String queryLang) 
             throws IOException, InvalidTokenOffsetsException { 
         List<TextHit> results = new ArrayList<>() ;
         
@@ -803,7 +803,7 @@ public class TextIndexLucene implements TextIndex {
         }
         
         if (highlight != null) {
-            return highlightResults(sDocs, indexSearcher, query, textFields, highlight, usingSearchFor, lang);
+            return highlightResults(sDocs, indexSearcher, query, textFields, highlight, lang);
         } else {
             return simpleResults(sDocs, indexSearcher, query, textFields);
         }
