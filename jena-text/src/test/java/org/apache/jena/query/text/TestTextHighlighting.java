@@ -59,6 +59,7 @@ public class TestTextHighlighting extends AbstractTestDatasetWithTextIndexBase {
     static {
         SPEC = StrUtils.strjoinNL(
                     "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ",
+                    "prefix skos: <http://www.w3.org/2004/02/skos/core#> ",
                     "prefix ja:   <http://jena.hpl.hp.com/2005/11/Assembler#> ",
                     "prefix tdb:  <http://jena.hpl.hp.com/2008/tdb#>",
                     "prefix text: <http://jena.apache.org/text#>",
@@ -84,6 +85,7 @@ public class TestTextHighlighting extends AbstractTestDatasetWithTextIndexBase {
                     "    a text:TextIndexLucene ;",
                     "    text:directory \"mem\" ;",
                     "    text:storeValues true ;",
+                    "    text:multilingualSupport true ;",
                     "    text:entityMap :entMap ;",
                     "    .",
                     "",
@@ -96,6 +98,7 @@ public class TestTextHighlighting extends AbstractTestDatasetWithTextIndexBase {
                     "    text:map (",
                     "         [ text:field \"label\" ; text:predicate rdfs:label ]",
                     "         [ text:field \"comment\" ; text:predicate rdfs:comment ]",
+                    "         [ text:field \"prefLabel\" ; text:predicate skos:prefLabel ]",
                     "         ) ."
                     );
     }
@@ -234,5 +237,45 @@ public class TestTextHighlighting extends AbstractTestDatasetWithTextIndexBase {
         value = literals.get(RESOURCE_BASE + "testResultOneInModelB");
         assertNotNull(value);
         assertEquals(NodeFactory.createLiteral("bar <em class='hilite'>testResultOne</em> barfoo foo"), value.asNode());
+    }
+
+    @Test
+    public void testTextQueryPFHighlighting3() {
+        final String turtleA = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "testResultOneInModelA>",
+                "  rdfs:label 'bar testResultOne barfoo foo'@en",
+                ".",
+                "<" + RESOURCE_BASE + "testResultTwoInModelA>",
+                "  rdfs:label 'bar testResultTwo barfoo foo'@en",
+                ".",
+                "<" + RESOURCE_BASE + "testResultThreeInModelA>",
+                "  rdfs:label 'bar testResultThree barfoo foo'@en",
+                "."
+                );
+                putTurtleInModel(turtleA, "http://example.org/modelA") ;
+        final String turtleB = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "testResultOneInModelB>",
+                "  rdfs:label 'bar testResultOne barfoo foo'@en",
+                "."
+                );
+                putTurtleInModel(turtleB, "http://example.org/modelB") ;
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s ?lit",
+                "WHERE {",
+                "  (?s ?sc ?lit ?g) text:query ( rdfs:label 'testResultThree'@en 10 \"highlight:\") . ",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + "testResultThreeInModelA")) ;
+        
+        Map<String, Literal> literals = doTestSearchWithLiterals(queryString, expectedURIs) ;
+        assertEquals(1, literals.size());
+        
+        Literal value = literals.get(RESOURCE_BASE + "testResultThreeInModelA");
+        assertNotNull(value);
+        assertEquals(NodeFactory.createLiteral("bar ↦testResultThree↤ barfoo foo", "en"), value.asNode());
     }
 }

@@ -648,7 +648,7 @@ public class TextIndexLucene implements TextIndex {
         return sb.toString();
     }
     
-    private List<TextHit> highlightResults(ScoreDoc[] sDocs, IndexSearcher indexSearcher, Query query, List<String> fields, String highlight, boolean useDocLang, String queryLang) 
+    private List<TextHit> highlightResults(ScoreDoc[] sDocs, IndexSearcher indexSearcher, Query query, List<String> fields, String highlight, String queryLang) 
             throws IOException, InvalidTokenOffsetsException { 
         List<TextHit> results = new ArrayList<>() ;
         
@@ -670,7 +670,7 @@ public class TextIndexLucene implements TextIndex {
             Node prop = props.isEmpty() ? null : props.iterator().next(); // pick one - should be only one normally         
             
             String docLang = doc.get(docDef.getLangField()) ;
-            String effectiveField = useDocLang ? field + "_" + Util.getEffectiveLang(docLang, queryLang) : field;
+            String effectiveField = queryLang != null ? field + "_" + Util.getEffectiveLang(docLang, queryLang) : field;
             log.trace("highlightResults[{}]: {}, field: {}, lexical: {}, docLang: {}, effectiveField: {}", sd.doc, doc, field, lexical, docLang, effectiveField) ;
             if (lexical != null) {
                 TokenStream tokenStream = indexAnalyzer.tokenStream(effectiveField, lexical);
@@ -803,7 +803,7 @@ public class TextIndexLucene implements TextIndex {
         }
         
         if (highlight != null) {
-            return highlightResults(sDocs, indexSearcher, query, textFields, highlight, usingSearchFor, lang);
+            return highlightResults(sDocs, indexSearcher, query, textFields, highlight, lang);
         } else {
             return simpleResults(sDocs, indexSearcher, query, textFields);
         }
