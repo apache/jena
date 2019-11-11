@@ -18,6 +18,9 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.Expr ;
@@ -36,7 +39,7 @@ public class AggCountVarDistinct extends AggregatorBase
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccCountVarDistinct() ; 
+        return new AccCountDistinctVar(getExpr()) ; 
     }
 
     @Override
@@ -56,27 +59,30 @@ public class AggCountVarDistinct extends AggregatorBase
     }
 
     // ---- Accumulator
-    class AccCountVarDistinct extends AccumulatorExpr
-    {
-        private long count = 0 ;
+    private static class AccCountDistinctVar extends AccumulatorExpr {
+        private Set<NodeValue> seen = new HashSet<>();
 
-        public AccCountVarDistinct() { super(getExpr(), true) ; } 
+        public AccCountDistinctVar(Expr expr) {
+            super(expr, false);
+        }
 
         @Override
-        public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
-        { count++ ; } 
+        public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv) {
+            seen.add(nv);
+        }
 
         // Ignore errors.
         @Override
-        protected void accumulateError(Binding binding, FunctionEnv functionEnv)
-        {}
+        protected void accumulateError(Binding binding, FunctionEnv functionEnv) {}
 
         @Override
-        public NodeValue getValue()
-        { return getAccValue() ; }
+        public NodeValue getValue() {
+            return getAccValue();
+        }
 
         @Override
-        public NodeValue getAccValue()            
-        { return NodeValue.makeInteger(count) ; }
+        public NodeValue getAccValue() {
+            return NodeValue.makeInteger(seen.size());
+        }
     }
 }

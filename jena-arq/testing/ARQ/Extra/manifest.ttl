@@ -33,8 +33,15 @@
       [  mf:name    "count-distinct-star (JENA-1778)" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <count-distinct.rq> ;
-              qt:data   <data-count-distinct.ttl> ] ;
-        mf:result  <count-distinct.srj>
+            [ qt:query  <count-distinct-star.rq> ;
+              qt:data   <data-count-distinct-star.ttl> ] ;
+        mf:result  <count-distinct-star.srj>
+      ]
+      [  mf:name    "count-distinct-expr" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-distinct-expr.rq> ;
+              qt:data   <data-count-distinct-expr.ttl> ] ;
+        mf:result  <count-distinct-expr.srj>
       ]
     ).
