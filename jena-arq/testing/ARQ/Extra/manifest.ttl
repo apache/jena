@@ -30,4 +30,11 @@
               qt:data   <data-sub-select-project.ttl> ] ;
         mf:result  <sub-select-project-01.srj>
       ]
+      [  mf:name    "count-distinct-star (JENA-1778)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-distinct.rq> ;
+              qt:data   <data-count-distinct.ttl> ] ;
+        mf:result  <count-distinct.srj>
+      ]
     ).
