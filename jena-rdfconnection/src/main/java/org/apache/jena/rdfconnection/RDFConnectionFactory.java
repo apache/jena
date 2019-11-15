@@ -107,7 +107,6 @@ public class RDFConnectionFactory {
             .build();
     }
 
-
     /**
      * Connect to a local (same JVM) dataset.
      * The default isolation is {@code NONE}. 

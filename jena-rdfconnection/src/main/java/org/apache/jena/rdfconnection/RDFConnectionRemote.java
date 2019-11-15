@@ -18,16 +18,19 @@
 
 package org.apache.jena.rdfconnection;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.HttpClient;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.EntityTemplate;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.protocol.HttpContext;
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
@@ -492,8 +495,33 @@ public class RDFConnectionRemote implements RDFConnection {
         return graphToHttpEntity(graph, outputTriples);
     }
 
-    /** Create an HttpEntity for the graph */
+    /** Create an HttpEntity for the graph. */
     protected HttpEntity graphToHttpEntity(Graph graph, RDFFormat syntax) {
+        // Length - leaves connection reusable. 
+        return graphToHttpEntityWithLength(graph, syntax);
+    }
+    
+    /** 
+     * Create an HttpEntity for the graph. The HTTP entity will have the length but this
+     * requires serialising the graph at the point when this function is called.  
+     */
+    private HttpEntity graphToHttpEntityWithLength(Graph graph, RDFFormat syntax) {
+        String ct = syntax.getLang().getContentType().getContentType();
+        ByteArrayOutputStream out = new ByteArrayOutputStream(128*1024);
+        RDFDataMgr.write(out, graph, syntax);
+        IO.close(out);
+        ByteArrayEntity entity = new ByteArrayEntity(out.toByteArray());
+        entity.setContentType(ct);
+        return entity;
+    }
+
+    /**
+     * Create an HttpEntity for the graph. The bytes for the graph are written
+     * directly the HTTP stream but the length of the entity will be -1 (unknown).
+     * This does not work over cached connections which need to know when
+     * a request body is finished.
+     */
+    private HttpEntity graphToHttpEntityStream(Graph graph, RDFFormat syntax) {
         EntityTemplate entity = new EntityTemplate((out)->RDFDataMgr.write(out, graph, syntax));
         String ct = syntax.getLang().getContentType().getContentType();
         entity.setContentType(ct);
@@ -507,6 +535,21 @@ public class RDFConnectionRemote implements RDFConnection {
 
     /** Create an HttpEntity for the dataset */
     protected HttpEntity datasetToHttpEntity(DatasetGraph dataset, RDFFormat syntax) {
+        // Length - leaves connection reusable. 
+        return datasetToHttpEntityWithLength(dataset, syntax);
+    }
+        
+    private HttpEntity datasetToHttpEntityWithLength(DatasetGraph dataset, RDFFormat syntax) {
+        String ct = syntax.getLang().getContentType().getContentType();
+        ByteArrayOutputStream out = new ByteArrayOutputStream(128*1024);
+        RDFDataMgr.write(out, dataset, syntax);
+        IO.close(out);
+        ByteArrayEntity entity = new ByteArrayEntity(out.toByteArray());
+        entity.setContentType(ct);
+        return entity;
+    }
+
+    private HttpEntity datasetToHttpEntityStream(DatasetGraph dataset, RDFFormat syntax) {
         EntityTemplate entity = new EntityTemplate((out)->RDFDataMgr.write(out, dataset, syntax));
         String ct = syntax.getLang().getContentType().getContentType();
         entity.setContentType(ct);
