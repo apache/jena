@@ -1,0 +1,11 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+BASE <http://example/>
+
+<s1> <p> "abc" .
+<s2> <p> "def" .
+<s3> <p> "abc" .
+<s4> <p> "abc" .
+<s5> <p> "xyz" .
+
+
