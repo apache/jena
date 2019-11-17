@@ -30,7 +30,7 @@ import org.apache.jena.sparql.util.graph.GNode;
 import org.apache.jena.sparql.util.graph.GraphList;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-/** Library of functions for convenience using {@link GNode}. */
+/** Library of functions for convenience wokring direction with Graph and Node. */
 public class G {
         // Node filter tests.
 //    public static boolean isURI(GNode n)         { return n != null && isURI(n.getNode()); }
