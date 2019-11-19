@@ -29,11 +29,10 @@ import org.apache.jena.shacl.validation.ValidationProc;
 import org.apache.jena.shacl.vocabulary.SHACL;
 
 /** sh:node */
-public class ShNode extends ConstraintOp {
-    private Shape other;
-
+public class ShNode extends ConstraintOp1 {
+    
     public ShNode(Shape other) {
-        this.other = other;
+        super(other);
     }
 
     @Override
@@ -54,6 +53,6 @@ public class ShNode extends ConstraintOp {
 
     @Override
     public String toString() {
-        return "Node["+other+"]";
+        return "Node";
     }
 }

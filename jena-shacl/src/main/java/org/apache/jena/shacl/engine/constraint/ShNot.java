@@ -29,11 +29,10 @@ import org.apache.jena.shacl.validation.ValidationProc;
 import org.apache.jena.shacl.vocabulary.SHACL;
 
 /** sh:not */
-public class ShNot extends ConstraintOp {
-    private Shape other;
+public class ShNot extends ConstraintOp1 {
 
     public ShNot(Shape other) {
-        this.other = other;
+        super(other);
     }
 
     @Override
@@ -54,6 +53,6 @@ public class ShNot extends ConstraintOp {
 
     @Override
     public String toString() {
-        return "Not["+other+"]";
+        return "Not";
     }
 }

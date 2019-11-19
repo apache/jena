@@ -31,12 +31,10 @@ import org.apache.jena.shacl.validation.ValidationProc;
 import org.apache.jena.shacl.vocabulary.SHACL;
 
 /** sh:xone */
-public class ShXone extends ConstraintOp {
-
-    private List<Shape> others;
+public class ShXone extends ConstraintOpN {
 
     public ShXone(List<Shape> others) {
-        this.others = others;
+        super(others);
     }
 
     @Override
@@ -65,6 +63,6 @@ public class ShXone extends ConstraintOp {
 
     @Override
     public String toString() {
-        return "Or"+others;
+        return "Xone";
     }
 }

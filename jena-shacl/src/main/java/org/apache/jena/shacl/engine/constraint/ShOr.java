@@ -31,12 +31,10 @@ import org.apache.jena.shacl.validation.ValidationProc;
 import org.apache.jena.shacl.vocabulary.SHACL;
 
 /** sh:or */
-public class ShOr extends ConstraintOp {
-
-    private List<Shape> others;
+public class ShOr extends ConstraintOpN {
 
     public ShOr(List<Shape> others) {
-        this.others = others;
+        super(others);
     }
 
     @Override
@@ -59,6 +57,6 @@ public class ShOr extends ConstraintOp {
 
     @Override
     public String toString() {
-        return "Or"+others;
+        return "Or";
     }
 }

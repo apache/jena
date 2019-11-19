@@ -31,12 +31,10 @@ import org.apache.jena.shacl.validation.ValidationProc;
 import org.apache.jena.shacl.vocabulary.SHACL;
 
 /** sh:and */
-public class ShAnd extends ConstraintOp {
-
-    private List<Shape> others;
+public class ShAnd extends ConstraintOpN {
 
     public ShAnd(List<Shape> others) {
-        this.others = others;
+        super(others);
     }
 
     @Override
@@ -60,6 +58,6 @@ public class ShAnd extends ConstraintOp {
 
     @Override
     public String toString() {
-        return "And"+others;
+        return "And";
     }
 }
