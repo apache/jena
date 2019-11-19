@@ -785,7 +785,7 @@ public abstract class TurtleShell {
             return x ;
         }
 
-        // Compact if one triples, or one predicate and several non-pretty objects.
+        // Compact if one triple, or one predicate and several non-pretty objects.
         private boolean isCompact(Collection<Triple> cluster) {
             Node predicate = null;
             for ( Triple t : cluster ) {
@@ -968,42 +968,28 @@ public abstract class TurtleShell {
     }
 
     // Order of properties.
-    // rdf:type ("a")
-    // RDF and RDFS
-    // Other.
-    // Sorted by URI.
+    //   rdf:type ("a")
+    //    RDF and RDFS
+    //    Other.
+    // Sor0ted by URI.
 
-    private static final class ComparePredicates implements Comparator<Node> {
-        private static int classification(Node p) {
-            if ( p.equals(RDF_type) )
-                return 0 ;
-
-            if ( p.getURI().startsWith(RDF.getURI()) || p.getURI().startsWith(RDFS.getURI()) )
-                return 1 ;
-
-            return 2 ;
-        }
-
-        @Override
-        public int compare(Node t1, Node t2) {
-            int class1 = classification(t1) ;
-            int class2 = classification(t2) ;
-            if ( class1 != class2 ) {
-                // Java 1.7
-                // return Integer.compare(class1, class2) ;
-                if ( class1 < class2 )
-                    return -1 ;
-                if ( class1 > class2 )
-                    return 1 ;
-                return 0 ;
-            }
-            String p1 = t1.getURI() ;
-            String p2 = t2.getURI() ;
-            return p1.compareTo(p2) ;
-        }
+    private static int classification(Node p) {
+        if ( p.equals(RDF_type) )
+            return 0 ;
+        if ( p.getURI().startsWith(RDF.getURI()) || p.getURI().startsWith(RDFS.getURI()) )
+            return 1 ;
+        return 2 ;
     }
 
-    private static Comparator<Node> compPredicates = new ComparePredicates() ;
+    private static Comparator<Node> compPredicates = (t1,t2) -> {
+        int class1 = classification(t1) ;
+        int class2 = classification(t2) ;
+        if ( class1 != class2 )
+            return Integer.compare(class1, class2) ;
+        String p1 = t1.getURI() ;
+        String p2 = t2.getURI() ;
+        return p1.compareTo(p2) ;
+    };
 
     protected final void writeNode(Node node) {
         nodeFmt.format(out, node) ;
