@@ -710,7 +710,6 @@ public abstract class TurtleShell {
                     writePredicateObjectList(p, rdfSimpleNodes, predicateMaxWidth, first) ;
                     first = false ;
                 }
-
                 for ( Node o : rdfComplexNodes ) {
                     writePredicateObject(p, o, predicateMaxWidth, first) ;
                     first = false ;
@@ -752,9 +751,7 @@ public abstract class TurtleShell {
 
         /** Write a predicate - jump to next line if deemed long */
         private void writePredicate(Node p, int predicateMaxWidth, boolean first) {
-            if ( first )
-                first = false ;
-            else {
+            if ( ! first ) {
                 print(" ;") ;
                 println() ;
             }
@@ -788,13 +785,22 @@ public abstract class TurtleShell {
             return x ;
         }
 
-        private int countPredicates(Collection<Triple> cluster) {
-            Set<Node> x = new HashSet<>() ;
+        // Compact if one triple, or one predicate and several non-pretty objects.
+        private boolean isCompact(Collection<Triple> cluster) {
+            Node predicate = null;
             for ( Triple t : cluster ) {
                 Node p = t.getPredicate() ;
-                x.add(p) ;
+                Node o = t.getObject();
+                if ( isPrettyNode(o) )
+                    return false;
+                if ( predicate != null ) {
+                    if ( ! predicate.equals(p))
+                        // 2+ different predicates.
+                        return false ;
+                } else 
+                    predicate = p;
             }
-            return x.size() ;
+            return true;
         }
 
         // [ :p "abc" ] .  or    [] : "abc" .
@@ -817,10 +823,8 @@ public abstract class TurtleShell {
                 print("[] ") ;
                 return ;
             }
-
-            int pCount = countPredicates(x) ;
-
-            if ( pCount == 1 ) {
+            
+            if ( isCompact(x) ) {
                 print("[ ") ;
                 out.incIndent(2) ;
                 writePredicateObjectList(x) ;
@@ -829,7 +833,6 @@ public abstract class TurtleShell {
                 return ;
             }
 
-            // Two or more.
             int indent0 = out.getAbsoluteIndent() ;
             int here = out.getCol() ;
             out.setAbsoluteIndent(here) ;
@@ -920,6 +923,7 @@ public abstract class TurtleShell {
         }
 
         private boolean isPrettyNode(Node n) {
+            // Maybe ought to be the same test as writePredicateObjectList
             // Order matters? - one connected objects may include list elements.
             if ( allowDeepPretty ) {
                 if ( lists.containsKey(n) )
@@ -964,42 +968,28 @@ public abstract class TurtleShell {
     }
 
     // Order of properties.
-    // rdf:type ("a")
-    // RDF and RDFS
-    // Other.
-    // Sorted by URI.
+    //   rdf:type ("a")
+    //    RDF and RDFS
+    //    Other.
+    // Sor0ted by URI.
 
-    private static final class ComparePredicates implements Comparator<Node> {
-        private static int classification(Node p) {
-            if ( p.equals(RDF_type) )
-                return 0 ;
-
-            if ( p.getURI().startsWith(RDF.getURI()) || p.getURI().startsWith(RDFS.getURI()) )
-                return 1 ;
-
-            return 2 ;
-        }
-
-        @Override
-        public int compare(Node t1, Node t2) {
-            int class1 = classification(t1) ;
-            int class2 = classification(t2) ;
-            if ( class1 != class2 ) {
-                // Java 1.7
-                // return Integer.compare(class1, class2) ;
-                if ( class1 < class2 )
-                    return -1 ;
-                if ( class1 > class2 )
-                    return 1 ;
-                return 0 ;
-            }
-            String p1 = t1.getURI() ;
-            String p2 = t2.getURI() ;
-            return p1.compareTo(p2) ;
-        }
+    private static int classification(Node p) {
+        if ( p.equals(RDF_type) )
+            return 0 ;
+        if ( p.getURI().startsWith(RDF.getURI()) || p.getURI().startsWith(RDFS.getURI()) )
+            return 1 ;
+        return 2 ;
     }
 
-    private static Comparator<Node> compPredicates = new ComparePredicates() ;
+    private static Comparator<Node> compPredicates = (t1,t2) -> {
+        int class1 = classification(t1) ;
+        int class2 = classification(t2) ;
+        if ( class1 != class2 )
+            return Integer.compare(class1, class2) ;
+        String p1 = t1.getURI() ;
+        String p2 = t2.getURI() ;
+        return p1.compareTo(p2) ;
+    };
 
     protected final void writeNode(Node node) {
         nodeFmt.format(out, node) ;

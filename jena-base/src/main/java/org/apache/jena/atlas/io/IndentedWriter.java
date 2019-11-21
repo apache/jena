@@ -384,6 +384,6 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
 
     @Override
     public String toString() {
-        return String.format("Indent = %d : [%d, %d]", currentIndent, row, column) ;
+        return String.format("Indent = %d : Row = %d : Col = %d", currentIndent, row, column) ;
     }
 }
