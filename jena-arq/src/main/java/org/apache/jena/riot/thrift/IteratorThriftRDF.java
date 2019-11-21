@@ -51,8 +51,9 @@ public class IteratorThriftRDF extends IteratorStreamRDF implements Iterator<Str
 
     @Override
     protected StreamRowRDF moveToNext() {
-        if ( ! protocol.getTransport().isOpen() )
-            return null ;
+        // THRIFT-5022 : isOpen for TIOStreamTransport is broken.
+//        if ( ! protocol.getTransport().isOpen() )
+//            return null ;
 
         try { row.read(protocol) ; }
         catch (TTransportException e) {
