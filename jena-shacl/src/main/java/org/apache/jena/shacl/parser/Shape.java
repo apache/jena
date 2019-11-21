@@ -95,12 +95,8 @@ public abstract class Shape {
         if ( !(out instanceof BufferedOutputStream) )
             out = new BufferedOutputStream(out, 128 * 1024);
         IndentedWriter w = new IndentedWriter(out);
-        try {
-            print(w);
-        }
-        finally {
-            // w.flush();
-        }
+        try { print(w); }
+        finally { w.flush(); }
     }
 
     protected abstract void printHeader(IndentedWriter out);
@@ -119,7 +115,8 @@ public abstract class Shape {
         try {
             for ( Constraint c : constraints ) {
                 c.print(out);
-                out.println();
+                if ( ! out.atLineStart() )
+                    out.println();
             }
             for ( PropertyShape ps : getPropertyShapes() ) {
                 ps.print(out);
