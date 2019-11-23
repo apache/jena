@@ -82,7 +82,14 @@ public class TestStreamRDFThrift extends BaseTest {
         BinRDF.inputStreamToStream(in, stream2) ;
         
         //assertTrue(graph.isIsomorphicWith(g2)) ;
-        boolean b = IsoMatcher.isomorphic(graph, g2) ; //****
+        boolean b = IsoMatcher.isomorphic(graph, g2) ;
+        if ( !b ) {
+            RDFDataMgr.write(System.out, graph, Lang.TTL);
+            System.out.println("---------");
+            RDFDataMgr.write(System.out, g2, Lang.TTL);
+            System.out.println("=========");
+        }
+        
         assertTrue(b) ;
         
         // Stronger - same bNodes.
