@@ -62,9 +62,9 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
         if ( c == null )
             throw new NoWriterForLangException("Writer not found: " + lang);
         try {
-            return c.newInstance();
+            return c.getConstructor().newInstance();
         }
-        catch (InstantiationException | IllegalAccessException e) {
+        catch (Exception e) {
             throw new JenaException(e);
         }
     }
