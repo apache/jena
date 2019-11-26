@@ -20,8 +20,7 @@ package org.apache.jena.atlas.lib.cache;
 
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.IntStream.rangeClosed;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 import org.apache.jena.atlas.lib.Cache;
 import org.junit.Test;
@@ -44,9 +43,17 @@ public class CacheSimpleTest {
 
 	@Test
 	public void testSameHash() {
-		Cache<String, Integer> cache = new CacheSimple<>(10);
-		assertEquals("Aa".hashCode(), "BB".hashCode());
-		cache.put("Aa", 1);
-		assertFalse("Keys with same hash code should not be considered equal", cache.containsKey("BB"));
+		Object key1 = new Object() {
+			@Override public int hashCode() { return 1; }
+		};
+		Object key2 = new Object() {
+			@Override public int hashCode() { return 1; }
+		};
+		assertEquals(key1.hashCode(), key2.hashCode());
+		assertNotEquals(key1, key2);
+		Cache<Object, Integer> cache = new CacheSimple<>(10);
+		cache.put(key1, 1);
+		assertTrue("Same key, expected in cache", cache.containsKey(key1));
+		assertFalse("Keys with same hash code should not be considered equal", cache.containsKey(key2));
 	}
 }
