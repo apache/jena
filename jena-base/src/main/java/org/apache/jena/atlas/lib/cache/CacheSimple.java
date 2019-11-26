@@ -76,7 +76,7 @@ public class CacheSimple<K,V> implements Cache<K,V>
     private final int index(K key)
     { 
         int x = (key.hashCode()&0x7fffffff) % size ;
-        if ( keys[x] != null )
+        if (key.equals(keys[x]))
             return x ; 
         return -x-1 ;
     }

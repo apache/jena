@@ -21,6 +21,7 @@ package org.apache.jena.atlas.lib.cache;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.IntStream.rangeClosed;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.apache.jena.atlas.lib.Cache;
 import org.junit.Test;
@@ -39,5 +40,13 @@ public class CacheSimpleTest {
 		rangeClosed(1, submittedEntries).boxed().collect(toMap(k -> k, v -> 1))
 				.forEach(testCache::put);
 		assertEquals("Test cache failed to maintain fixed size!", maxSize, testCache.size());
+	}
+
+	@Test
+	public void testSameHash() {
+		Cache<String, Integer> cache = new CacheSimple<>(10);
+		assertEquals("Aa".hashCode(), "BB".hashCode());
+		cache.put("Aa", 1);
+		assertFalse("Keys with same hash code should not be considered equal", cache.containsKey("BB"));
 	}
 }
