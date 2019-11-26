@@ -61,9 +61,9 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
             throw new NoReaderForLangException("Reader not found: " + lang);
 
         try {
-            return c.newInstance();
+            return c.getConstructor().newInstance();
         }
-        catch (InstantiationException | IllegalAccessException e) {
+        catch (Exception e) {
             throw new JenaException(e);
         }
     }

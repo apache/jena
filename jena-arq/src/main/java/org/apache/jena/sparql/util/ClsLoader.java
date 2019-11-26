@@ -105,7 +105,7 @@ public class ClsLoader {
 
         Object module = null;
         try {
-            module = classObj.newInstance();
+            module = classObj.getConstructor().newInstance();
         } catch (Exception ex) {
             String className = uri.substring(ARQConstants.javaClassURIScheme.length());
             Log.warn(ClsLoader.class, "Exception during instantiation '" + className + "': " + ex.getMessage());

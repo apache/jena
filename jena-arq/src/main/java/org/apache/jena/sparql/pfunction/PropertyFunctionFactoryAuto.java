@@ -38,7 +38,7 @@ class PropertyFunctionFactoryAuto implements PropertyFunctionFactory
     @Override
     public PropertyFunction create(String uri) {
         try {
-            return (PropertyFunction)extClass.newInstance();
+            return (PropertyFunction)extClass.getConstructor().newInstance();
         }
         catch (Exception e) {
             throw new QueryBuildException("Can't instantiate PropertyFunction for " + uri, e);

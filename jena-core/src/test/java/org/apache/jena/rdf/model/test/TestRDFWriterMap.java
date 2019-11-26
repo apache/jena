@@ -63,7 +63,7 @@ public class TestRDFWriterMap extends JenaTestBase
 			}
 			try
 			{
-				return result.newInstance();
+				return result.getConstructor().newInstance();
 			}
 			catch (final Exception e)
 			{

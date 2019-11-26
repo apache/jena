@@ -33,7 +33,7 @@ class FunctionFactoryAuto implements FunctionFactory
     @Override
     public Function create(String uri) {
         try {
-            return (Function)extClass.newInstance();
+            return (Function)extClass.getConstructor().newInstance();
         }
         catch (Exception e) {
             throw new QueryBuildException("Can't instantiate function for " + uri, e);
