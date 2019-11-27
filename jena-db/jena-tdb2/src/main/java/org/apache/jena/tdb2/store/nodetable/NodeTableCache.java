@@ -55,10 +55,6 @@ public class NodeTableCache implements NodeTable {
     
     private ThreadBufferingCache<Node, NodeId> node2id_Cache = null;
     private ThreadBufferingCache<NodeId, Node> id2node_Cache = null;
-
-    // A small cache of "known unknowns" to speed up searching for impossible things.
-    // Cache update needed on NodeTable changes because a node may become "known"
-    private ThreadBufferingCache<Node, Object> notPresent    = null;
     private NodeTable           baseTable;
     private final Object        lock          = new Object();
     
@@ -67,23 +63,21 @@ public class NodeTableCache implements NodeTable {
         int idToNodeCacheSize = params.getNodeId2NodeCacheSize();
         if ( nodeToIdCacheSize <= 0 && idToNodeCacheSize <= 0 )
             return nodeTable;
-        return create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, params.getNodeMissCacheSize());
+        return create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize);
     }
 
-    private static NodeTable create(NodeTable nodeTable, int nodeToIdCacheSize, int idToNodeCacheSize, int nodeMissesCacheSize) {
+    private static NodeTable create(NodeTable nodeTable, int nodeToIdCacheSize, int idToNodeCacheSize) {
         if ( nodeToIdCacheSize <= 0 && idToNodeCacheSize <= 0 )
             return nodeTable;
-        return new NodeTableCache(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, nodeMissesCacheSize);
+        return new NodeTableCache(nodeTable, nodeToIdCacheSize, idToNodeCacheSize);
     }
 
-    private NodeTableCache(NodeTable baseTable, int nodeToIdCacheSize, int idToNodeCacheSize, int nodeMissesCacheSize) {
+    private NodeTableCache(NodeTable baseTable, int nodeToIdCacheSize, int idToNodeCacheSize) {
         this.baseTable = baseTable;
         if ( nodeToIdCacheSize > 0 )
             node2id_Cache = createCache("nodeToId", nodeToIdCacheSize, 1000);
         if ( idToNodeCacheSize > 0 )
-            id2node_Cache = createCache("idToNode", idToNodeCacheSize, 1000);
-        if ( nodeMissesCacheSize > 0 )
-            notPresent = createCache("notPresent", nodeMissesCacheSize, 100);
+            id2node_Cache = createCache("idToNode", idToNodeCacheSize, 1000);;
     }
 
     private static <Key, Value> ThreadBufferingCache<Key, Value> createCache(String label, int mainCachesize, int bufferSize) {
@@ -219,11 +213,7 @@ public class NodeTableCache implements NodeTable {
             if ( allocate )
                 nodeId = baseTable.getAllocateNodeId(node);
             else {
-                if ( notPresent(node) )
-                    // Known not be in the baseTable. 
-                    return NodeId.NodeDoesNotExist;
-                else
-                    nodeId = baseTable.getNodeIdForNode(node);
+                nodeId = baseTable.getNodeIdForNode(node);
             }
             // Ensure caches have it. Includes recording "no such node"
             cacheUpdate(node, nodeId);
@@ -234,15 +224,6 @@ public class NodeTableCache implements NodeTable {
     // ----------------
     // ---- Only places that the caches are touched
 
-    /** 
-     * Test whether in the "not present" cache.
-     * True means "known to be absent from the baseTable".
-     */
-    private boolean notPresent(Node node) {
-        if ( notPresent == null )
-            return false;
-        return notPresent.containsKey(node);
-    }
 
     /**
      * Check caches to see if we can map a NodeId to a Node. Returns null on no
@@ -282,8 +263,6 @@ public class NodeTableCache implements NodeTable {
         // is known not to exist in the baseTable..
         // This must be specially handled later if the node is added.
         if ( NodeId.isDoesNotExist(id) ) {
-            if ( notPresent != null )
-                notPresent.put(node, Boolean.TRUE);
             return;
         }
 
@@ -296,9 +275,6 @@ public class NodeTableCache implements NodeTable {
             node2id_Cache.put(node, id);
         if ( id2node_Cache != null )
             id2node_Cache.put(id, node);
-        // Remove if previously marked "not present"
-        if ( notPresent != null )
-            notPresent.remove(node);
     }
 
     // ----
@@ -316,14 +292,12 @@ public class NodeTableCache implements NodeTable {
         //System.out.println("updateStart: "+baseTable.toString());
         node2id_Cache.enableBuffering();
         id2node_Cache.enableBuffering();
-        notPresent.enableBuffering();
     }
     
     public void updateAbort() {
         //System.out.println("updateAbort: "+baseTable.toString());
         node2id_Cache.dropBuffer();
         id2node_Cache.dropBuffer();
-        notPresent.dropBuffer();
     }
     
     public void updateCommit() {
@@ -332,7 +306,6 @@ public class NodeTableCache implements NodeTable {
         // Write to main caches.
         node2id_Cache.flushBuffer();
         id2node_Cache.flushBuffer();
-        notPresent.flushBuffer();
     }
     
     @Override
@@ -355,7 +328,6 @@ public class NodeTableCache implements NodeTable {
         baseTable.close();
         node2id_Cache = null;
         id2node_Cache = null;
-        notPresent = null;
         baseTable = null;
     }
 
@@ -380,8 +352,6 @@ public class NodeTableCache implements NodeTable {
             NodeId nId = node2id_Cache.getIfPresent(n);
             if ( !id2node_Cache.containsKey(nId) )
                 throw new TDBException("Inconsistent: " + n + " => " + nId);
-            if ( notPresent.containsKey(n) )
-                throw new TDBException("Inconsistent: " + n + " in notPresent cache (1)");
         }
         Iterator<NodeId> iter2 = Iter.toList(id2node_Cache.keys()).iterator();
         for (; iter2.hasNext() ; ) {
@@ -389,8 +359,6 @@ public class NodeTableCache implements NodeTable {
             Node n = id2node_Cache.getIfPresent(nId);
             if ( !node2id_Cache.containsKey(n) )
                 throw new TDBException("Inconsistent: " + nId + " => " + n);
-            if ( notPresent.containsKey(n) )
-                throw new TDBException("Inconsistent: " + n + " in notPresent cache (2)");
         }
     }
 

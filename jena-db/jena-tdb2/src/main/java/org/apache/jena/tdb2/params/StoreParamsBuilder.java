@@ -224,10 +224,14 @@ public class StoreParamsBuilder {
        return this;
    }
 
+    // Unused. See JENA-1785
+    @Deprecated
     public int getNodeMissCacheSize() {
         return NodeMissCacheSize.value;
     }
 
+   // Unused. See JENA-1785
+   @Deprecated
    public StoreParamsBuilder nodeMissCacheSize(int nodeMissCacheSize) {
        NodeMissCacheSize = new Item<>(nodeMissCacheSize, true);
        return this;

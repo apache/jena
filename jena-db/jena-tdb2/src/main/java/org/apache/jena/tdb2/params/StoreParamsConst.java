@@ -44,7 +44,10 @@ public class StoreParamsConst {
     public static final String   fNodeId2NodeCacheSize = "nodeid2node_cache_size";
     public static final int      NodeId2NodeCacheSize  = SystemTDB.NodeId2NodeCacheSize;
 
+    // Unused. See JENA-1785
+    @Deprecated
     public static final String   fNodeMissCacheSize    = "node_miss_cache_size";
+    @Deprecated
     public static final int      NodeMissCacheSize     = SystemTDB.NodeMissCacheSize;
 
     /** Database layout - ignored after a database is created */

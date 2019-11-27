@@ -188,11 +188,15 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
         return NodeId2NodeCacheSize.value;
     }
 
+    // Unused. See JENA-1785
+    @Deprecated
     @Override
     public Integer getNodeMissCacheSize() {
         return NodeMissCacheSize.value;
     }
 
+    // Unused. See JENA-1785
+    @Deprecated
     @Override
     public boolean isSetNodeMissCacheSize() {
         return NodeMissCacheSize.isSet;
