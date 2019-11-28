@@ -27,9 +27,7 @@ import java.util.List ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.graph.Factory;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
@@ -40,17 +38,17 @@ public class TestDatasetMonitor extends BaseTest
     static Quad quad2 = SSE.parseQuad("(<g> <s> <p> 2)") ;
     static Quad quad3 = SSE.parseQuad("(<g> <s> <p> 3)") ;
     static Quad quad4 = SSE.parseQuad("(<g> <s> <p> 4)") ;
-    
+
     @Test public void countChanges_01() {
         DatasetGraph dsgBase = DatasetGraphFactory.create() ;
         DatasetChangesCounter dsgChanges = new DatasetChangesCounter() ;
         DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgChanges) ;
-        
+
         check(dsgChanges, 0, 0, 0, 0) ;
         dsg.add(quad1) ;
         check(dsgChanges, 1, 0, 0, 0) ;
     }
-    
+
     @Test public void countChanges_02() {
         DatasetGraph dsgBase = DatasetGraphFactory.create() ;
         DatasetChangesCounter dsgChanges = new DatasetChangesCounter() ;
@@ -66,7 +64,7 @@ public class TestDatasetMonitor extends BaseTest
         DatasetGraph dsgBase = DatasetGraphFactory.create() ;
         DatasetChangesCounter dsgChanges = new DatasetChangesCounter() ;
         DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgChanges) ;
-        
+
         check(dsgChanges, 0, 0, 0, 0) ;
         dsg.add(quad1) ;
         dsg.add(quad1) ;
@@ -74,7 +72,7 @@ public class TestDatasetMonitor extends BaseTest
         dsg.delete(quad1) ;
         check(dsgChanges, 1, 1, 1, 1) ;
     }
-    
+
     @Test public void countChanges_04() {
         DatasetGraph dsgBase = DatasetGraphFactory.create() ;
         DatasetChangesCounter dsgChanges = new DatasetChangesCounter() ;
@@ -185,7 +183,7 @@ public class TestDatasetMonitor extends BaseTest
         assertEquals("NoAdds",      noAdds, changes.countNoAdd) ;
         assertEquals("NoDeletes",   noDeletes, changes.countNoDelete) ;
     }
-    
+
     private static void check(List<Pair<QuadAction, Quad>> record, int indx, QuadAction quadAction, Quad quad)
     {
         assertTrue("Index "+indx+" out of range [0,"+record.size()+")", 0 <= indx && indx < record.size() ) ;
