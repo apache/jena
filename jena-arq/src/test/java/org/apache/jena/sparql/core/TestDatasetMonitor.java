@@ -27,6 +27,10 @@ import java.util.List ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.graph.Factory;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
@@ -82,6 +86,58 @@ public class TestDatasetMonitor extends BaseTest
         dsg.add(quad1) ;
         dsg.delete(quad1) ;
         check(dsgChanges, 2, 2, 0, 0) ;
+    }
+
+    @Test public void countChanges_05() {
+        DatasetGraph dsgBase = DatasetGraphFactory.create() ;
+        DatasetChangesCounter dsgChanges = new DatasetChangesCounter() ;
+        DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgChanges) ;
+
+        check(dsgChanges, 0, 0, 0, 0) ;
+        Graph g = dsg.getDefaultGraph();
+        g.add(quad1.asTriple()) ;
+        g.delete(quad1.asTriple()) ;
+        g.add(quad1.asTriple()) ;
+        g.delete(quad1.asTriple()) ;
+        check(dsgChanges, 2, 2, 0, 0) ;
+    }
+
+    @Test public void countChanges_06() {
+        DatasetGraph dsgBase = DatasetGraphFactory.create() ;
+        DatasetChangesCounter dsgChanges = new DatasetChangesCounter() ;
+        DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgChanges) ;
+
+        check(dsgChanges, 0, 0, 0, 0) ;
+        Graph g = dsg.getGraph(NodeFactory.createURI("http://example.com/g1"));
+        g.add(quad1.asTriple()) ;
+        g.delete(quad1.asTriple()) ;
+        g.add(quad1.asTriple()) ;
+        g.delete(quad1.asTriple()) ;
+        check(dsgChanges, 2, 2, 0, 0) ;
+    }
+
+    @Test public void countChanges_07() {
+        DatasetGraph dsgBase = DatasetGraphFactory.create() ;
+        DatasetChangesCounter dsgChanges = new DatasetChangesCounter() ;
+        DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgChanges) ;
+
+        check(dsgChanges, 0, 0, 0, 0) ;
+        Graph g = dsg.getDefaultGraph();
+        g.add(quad1.asTriple()) ;
+        dsg.removeGraph(Quad.defaultGraphIRI);
+        check(dsgChanges, 1, 1, 0, 0) ;
+    }
+
+    @Test public void countChanges_08() {
+        DatasetGraph dsgBase = DatasetGraphFactory.create() ;
+        DatasetChangesCounter dsgChanges = new DatasetChangesCounter() ;
+        DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgChanges) ;
+
+        check(dsgChanges, 0, 0, 0, 0) ;
+        Graph g = dsg.getDefaultGraph();
+        g.add(quad1.asTriple()) ;
+        dsg.removeGraph(Quad.defaultGraphNodeGenerated);
+        check(dsgChanges, 1, 1, 0, 0) ;
     }
 
     @Test public void captureChanges_01() {
