@@ -55,7 +55,7 @@ public class ShaclTest {
             boolean generalFailure = test.isGeneralFailure();
             if ( generalFailure ) {
                 try {
-                    ValidationReport testReport = ValidationProc.simpleValidatation(shapesGraph, dataGraph, verbose);
+                    ValidationReport testReport = ValidationProc.simpleValidation(shapesGraph, dataGraph, verbose);
                     if ( testReport.conforms() )
                         fail("Expect a test failure: "+test.origin());
                 } catch (RuntimeException ex) {
@@ -68,7 +68,7 @@ public class ShaclTest {
             ValidationReport vReportGot;
 
             try {
-                vReportGot = ValidationProc.simpleValidatation(shapesGraph, dataGraph, verbose);
+                vReportGot = ValidationProc.simpleValidation(shapesGraph, dataGraph, verbose);
             } catch (Throwable th) {
                 System.out.println("** Test : "+test.origin());
                 throw th;

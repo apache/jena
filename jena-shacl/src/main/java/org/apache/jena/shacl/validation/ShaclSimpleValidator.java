@@ -76,13 +76,13 @@ public class ShaclSimpleValidator implements ShaclValidator {
     /** Produce a full validation report. */
     @Override
     public ValidationReport validate(Shapes shapes, Graph data) {
-        return ValidationProc.simpleValidatation(shapes, data, false);
+        return ValidationProc.simpleValidation(shapes, data, false);
     }
 
     /** Produce a full validation report for this node in the data. */
     @Override
     public ValidationReport validate(Shapes shapes, Graph data, Node node) {
-        return ValidationProc.simpleValidatationNode(shapes, data, node, false);
+        return ValidationProc.simpleValidationNode(shapes, data, node, false);
     }
 
     /** Produce a full validation report. */

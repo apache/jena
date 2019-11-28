@@ -128,7 +128,7 @@ public class ValidationGraph extends GraphWrapper {
 
         // Execute. If there are any validation results of any severity, abort, and return the ValidationReport.
         private ValidationReport validateCommit() {
-            ValidationReport report = ValidationProc.simpleValidatation(graphValidate.shapes, graphValidate.get(), false);
+            ValidationReport report = ValidationProc.simpleValidation(graphValidate.shapes, graphValidate.get(), false);
             if ( report.conforms() ) {
                 other.commit();
                 return null;
