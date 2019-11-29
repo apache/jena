@@ -33,7 +33,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class TestVisibilityOfChanges {
-    Dataset dataset;
+    private Dataset dataset;
 
     @Before
     public void before() {
@@ -56,6 +56,8 @@ public class TestVisibilityOfChanges {
                 Resource newResource = ResourceFactory.createResource();
                 dataset.getDefaultModel().add(newResource, RDFS.label, "I'm here to pollute the cache");
             }
+            assertTrue("A newly created resource should be visible within the write transaction",
+                    dataset.getDefaultModel().containsResource(resource));
         });
         assertTrue("A newly created resource should be visible after commit",
                 Txn.calculateRead(dataset, () -> dataset.getDefaultModel().containsResource(resource)));
