@@ -19,6 +19,7 @@
 package org.apache.jena.common;
 
 import java.util.ArrayList ;
+import java.util.Collection;
 import java.util.List ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
@@ -30,7 +31,10 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderNode ;
+import org.apache.jena.sparql.util.Iso;
+import org.apache.jena.sparql.util.IsoAlg;
 import org.apache.jena.sparql.util.IsoMatcher ;
+import org.apache.jena.sparql.util.NodeUtils;
 import org.junit.Test ;
 
 public class TestIsoMatcher extends BaseTest
@@ -39,83 +43,115 @@ public class TestIsoMatcher extends BaseTest
                                            "",
                                            true) ; }
 
+    @Test public void iso_graph_01() { testGraph("(<x> <p> 1)",
+                                                 "(<x> <p> 1)",
+                                                 true) ; }
 
-    @Test public void iso_01() { testGraph("(<x> <p> 1)",
-                                           "(<x> <p> 1)",
-                                           true) ; }
+    @Test public void iso_graph_02() { testGraph("(<x> <p> 1)",
+                                                 "(<x> <p> 2)",
+                                                 false) ; }
 
-    @Test public void iso_02() { testGraph("(<x> <p> 1)",
-                                           "(<x> <p> 2)",
-                                           false) ; }
+    @Test public void iso_graph_03() { testGraph("(<x> <p> 1) (<x> <p> 2)",
+                                                 "(<x> <p> 2)",
+                                                 false) ; }
 
-    @Test public void iso_03() { testGraph("(<x> <p> 1) (<x> <p> 2)",
-                                           "(<x> <p> 2)",
-                                           false) ; }
+    @Test public void iso_graph_04() { testGraph("(<x> <p> _:a)",
+                                                 "(<x> <p> 2)",
+                                                 false) ; }
 
-    @Test public void iso_04() { testGraph("(<x> <p> _:a)",
-                                           "(<x> <p> 2)",
-                                           false) ; }
+    @Test public void iso_graph_05() { testGraph("(<x> <p> _:a)",
+                                                 "(<x> <p> _:b)",
+                                                 true) ; }
 
-    @Test public void iso_05() { testGraph("(<x> <p> _:a)",
-                                           "(<x> <p> _:b)",
-                                           true) ; }
-
-    @Test public void iso_06() { testGraph("(_:a <p> _:a)",
-                                           "(_:b <p> _:b)",
+    @Test public void iso_graph_06() { testGraph("(_:a <p> _:a)",
+                                                   "(_:b <p> _:b)",
                                            true)  ; }
 
-    @Test public void iso_07() { testGraph("(_:a1 <p> _:a2)",
-                                           "(_:bb <p> _:bb)",
-                                           false)  ; }
+    @Test public void iso_graph_07() { testGraph("(_:a1 <p> _:a2)",
+                                                 "(_:bb <p> _:bb)",
+                                                 false)  ; }
 
-    @Test public void iso_10() { testGraph("(_:a _:a _:a)",
-                                           "(_:b _:b _:b)",
-                                           true)  ; }
+    @Test public void iso_graph_10() { testGraph("(_:a _:a _:a)",
+                                                 "(_:b _:b _:b)",
+                                                 true)  ; }
 
-    @Test public void iso_11() { testGraph("(_:a _:a _:a)",
-                                           "(_:z _:b _:b)",
-                                           false)  ; }
+    @Test public void iso_graph_11() { testGraph("(_:a _:a _:a)",
+                                                 "(_:z _:b _:b)",
+                                                 false) ; }
 
-    @Test public void iso_12() { testGraph("(_:a _:a _:a)",
-                                           "(_:b _:z _:b)",
-                                           false)  ; }
+    @Test public void iso_graph_12() { testGraph("(_:a _:a _:a)",
+                                                 "(_:b _:z _:b)",
+                                                 false)  ; }
 
-    @Test public void iso_13() { testGraph("(_:a _:a _:a)",
-                                           "(_:b _:b _:z)",
-                                           false)  ; }
+    @Test public void iso_graph_13() { testGraph("(_:a _:a _:a)",
+                                                 "(_:b _:b _:z)",
+                                                 false)  ; }
 
-    @Test public void iso_14() { testGraph("(_:a _:a _:b)",
-                                           "(_:b _:b _:z)",
-                                           true)  ; }
+    @Test public void iso_graph_14() { testGraph("(_:a _:a _:b)",
+                                                 "(_:b _:b _:z)",
+                                                 true)  ; }
 
-    @Test public void iso_15() { testGraph("(_:a _:x _:a)",
-                                           "(_:b _:z _:b)",
-                                           true)  ; }
+    @Test public void iso_graph_15() { testGraph("(_:a _:x _:a)",
+                                                 "(_:b _:z _:b)",
+                                                 true)  ; }
 
-    @Test public void iso_16() { testGraph("(_:x _:a _:a)",
-                                           "(_:z _:b _:b)",
-                                           true)  ; }
+    @Test public void iso_graph_16() { testGraph("(_:x _:a _:a)",
+                                                 "(_:z _:b _:b)",
+                                                 true)  ; }
 
-    @Test public void iso_20() { testGraph("(<x> <p> _:a) (<z> <p> _:a)",
-                                           "(<x> <p> _:b) (<z> <p> _:b)",
-                                           true)  ; }
+    @Test public void iso_graph_20() { testGraph("(<x> <p> _:a) (<z> <p> _:a)",
+                                                 "(<x> <p> _:b) (<z> <p> _:b)",
+                                                 true)  ; }
 
-    @Test public void iso_21() { testGraph("(<x> <p> _:a1) (<z> <p> _:a2)",
-                                           "(<x> <p> _:b) (<z> <p> _:b)",
-                                           false)  ; }
+    @Test public void iso_graph_21() { testGraph("(<x> <p> _:a1) (<z> <p> _:a2)",
+                                                 "(<x> <p> _:b) (<z> <p> _:b)",
+                                                 false)  ; }
 
-    @Test public void iso_22() { testGraph("(_:a <p> _:a) (<s> <q> _:a)",
-                                           "(_:b <p> _:b) (<s> <q> _:b)",
-                                           true)  ; }
+    @Test public void iso_graph_22() { testGraph("(_:a <p> _:a) (<s> <q> _:a)",
+                                                 "(_:b <p> _:b) (<s> <q> _:b)",
+                                                 true)  ; }
 
-    @Test public void iso_23() { testGraph("(_:a <p> _:a) (<s> <q> _:a)",
-                                           "(_:b <p> _:b) (<s> <q> _:c)",
-                                           false)  ; }
+    @Test public void iso_graph_23() { testGraph("(_:a <p> _:a) (<s> <q> _:a)",
+                                                 "(_:b <p> _:b) (<s> <q> _:c)",
+                                                 false)  ; }
 
-    @Test public void iso_24() { testGraph("(_:a <p> _:a) (<s> <q> _:a) (_:b <q> _:b)",
-                                           "(_:b <p> _:b) (<s> <q> _:b) (_:b <q> _:b)",
-                                           false)  ; }
+    @Test public void iso_graph_24() { testGraph("(_:a <p> _:a) (<s> <q> _:a) (_:b <q> _:b)",
+                                                 "(_:b <p> _:b) (<s> <q> _:b) (_:b <q> _:b)",
+                                                 false)  ; }
 
+    @Test public void iso_graph_30() { testGraphVar("(?A :p1 ?B)  (?B :p2 ?A)",
+                                                    "(?A :p1 ?B1) (?A :p2 ?B1)",
+                                                    false); }
+    
+    //JENA-1789
+    @Test public void iso_graph_31() { testGraphVar("(?A :p1 ?B) (?B :p2 ?A)",
+                                                    "(?A :p1 ?B) (?A :p2 ?B)",
+                                                    false); }
+
+    //JENA-1789
+    @Test public void iso_graph_32() { testGraphVar("(?X :p1 ?Y) (?Y :p2 ?X)",
+                                                    "(?A :p1 ?B) (?A :p2 ?B)",
+                                                    false); }
+    
+    @Test public void iso_graph_33() { testGraphVar("(?X :p1 ?Y) (?Y :p2 ?X)",
+                                                    "(?A :p1 ?B) (?B :p2 ?A)",
+                                                    true); }
+
+    @Test public void iso_graph_34() { testGraphVar("(?X :p1 ?Y) (?X :p2 ?Y)",
+                                                    "(?A :p1 ?B) (?A :p2 ?B)",
+                                                    true); }
+
+    //JENA-1789
+    @Test public void iso_graph_35() { testGraph("(<_:a> :p1 <_:b>) (<_:b> :p2 <_:a>)",
+                                                 "(<_:a> :p1 <_:b>) (<_:a> :p2 <_:b>)",
+                                                 false); }
+
+    //JENA-1789
+    @Test public void iso_graph_36() { testGraph("(<_:a> :p1 <_:b>) (<_:b> :p2 <_:a>)",
+                                                 "(<_:a> :p1 <_:b>) (<_:b> :p2 <_:a>)",
+                                                 true); }
+
+    
     @Test public void iso_50() { testDSG("(graph (_:a <p> _:a)) (graph <g> (<s> <q> _:a))" ,
                                          "(graph (_:a <p> _:a)) (graph <g> (<s> <q> _:a))" ,
                                          true)  ; }
@@ -124,6 +160,7 @@ public class TestIsoMatcher extends BaseTest
     @Test public void iso_51() { testDSG("(graph (_:a <p> _:a)) (graph <g> (<s> <q> _:a))" ,
                                          "(graph (_:a <p> _:a)) (graph <g> (<s> <q> _:b))" ,
                                          false)  ; }
+    
     
     // List based tests
     @Test public void iso_61() { 
@@ -183,7 +220,6 @@ public class TestIsoMatcher extends BaseTest
         assertEquals(iso, b) ;
     }
 
-
     private static Node[] T = new Node[0] ;
     private List<Tuple<Node>> tuples(String[] strings)
     {
@@ -198,31 +234,58 @@ public class TestIsoMatcher extends BaseTest
         return tuples ;
     }
 
-    private void testGraph(String s1, String s2, boolean iso) {
-        testGraph$(s1, s2, iso) ;
-        testGraph$(s2, s1, iso) ;
+    private void testGraph(String s1, String s2, boolean result) {
+        testGraph$(s1, s2, result) ;
+        testGraph$(s2, s1, result) ;
     }
     
-    private void testGraph$(String s1, String s2, boolean iso) {
+    private void testGraph$(String s1, String s2, boolean expected) {
         s1 = "(graph "+s1+")" ;
         s2 = "(graph "+s2+")" ;
-        
+
         Graph g1 = SSE.parseGraph(s1) ;
         Graph g2 = SSE.parseGraph(s2) ;
+
         boolean b = IsoMatcher.isomorphic(g1, g2) ;
-            
-        if ( b != iso ) {
+
+        if ( b != expected ) {
             System.out.println("====") ;
             SSE.write(g1) ;
             System.out.println("----") ;
             SSE.write(g2) ;
-            System.out.println("Expected: "+iso+" ; got: "+b) ;
+            System.out.println("Expected: "+expected+" ; got: "+b) ;
         }
-        assertEquals(iso, b) ;
+        assertEquals(expected, b) ;
         // Check with the other code.
         assertEquals(b, g1.isIsomorphicWith(g2)) ;
     }
-    
+
+    private void testGraphVar(String s1, String s2, boolean result) {
+        testGraphVar$(s1, s2, result);
+        testGraphVar$(s2, s1, result);
+    }
+
+    private void testGraphVar$(String s1, String s2, boolean expected) {
+        s1 = "(graph "+s1+")" ;
+        s2 = "(graph "+s2+")" ;
+
+        Graph g1 = SSE.parseGraph(s1) ;
+        Graph g2 = SSE.parseGraph(s2) ;
+        
+        Collection<Tuple<Node>> x1 = IsoMatcher.tuplesTriples(g1.find());
+        Collection<Tuple<Node>> x2 = IsoMatcher.tuplesTriples(g2.find());
+        
+        boolean b = IsoAlg.isIsomorphic(x1, x2, Iso.mappableBlankNodesVariables, NodeUtils.sameRdfTerm);
+        if ( b != expected ) {
+            System.out.println("====") ;
+            SSE.write(g1) ;
+            System.out.println("----") ;
+            SSE.write(g2) ;
+            System.out.println("Expected: "+expected+" ; got: "+b) ;
+        }
+        assertEquals(expected, b) ;
+    }
+
     private void testDSG(String s1, String s2, boolean iso) {
         testDSG$(s1, s2, iso) ;
         testDSG$(s2, s1, iso) ;

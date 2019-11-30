@@ -92,7 +92,7 @@ public class TestDistinctDataNet
         }
         
         assertEquals(control.size(), distinct.size());
-        assertTrue(ResultSetCompare.equalsByTest(control, distinct, NodeUtils.sameTerm));
+        assertTrue(ResultSetCompare.equalsByTest(control, distinct, NodeUtils.sameNode));
     }
     
     @Test
@@ -139,7 +139,7 @@ public class TestDistinctDataNet
         }
         
         assertEquals(control.size(), distinct.size());
-        assertTrue(ResultSetCompare.equalsByTest(control, distinct, NodeUtils.sameTerm));
+        assertTrue(ResultSetCompare.equalsByTest(control, distinct, NodeUtils.sameNode));
     }
     
     @Test

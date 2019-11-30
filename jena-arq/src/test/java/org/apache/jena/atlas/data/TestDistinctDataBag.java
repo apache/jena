@@ -91,7 +91,7 @@ public class TestDistinctDataBag
         }
         
         assertEquals(control.size(), distinct.size());
-        assertTrue(ResultSetCompare.equalsByTest(control, distinct, NodeUtils.sameTerm));
+        assertTrue(ResultSetCompare.equalsByTest(control, distinct, NodeUtils.sameNode));
     }
     
     @Test public void testTemporaryFilesAreCleanedUpAfterCompletion()
@@ -220,6 +220,6 @@ public class TestDistinctDataBag
         }
 
         assertEquals(control.size(), distinct.size());
-        assertTrue(ResultSetCompare.equalsByTest(control, distinct, NodeUtils.sameTerm));
+        assertTrue(ResultSetCompare.equalsByTest(control, distinct, NodeUtils.sameNode));
     }
 }

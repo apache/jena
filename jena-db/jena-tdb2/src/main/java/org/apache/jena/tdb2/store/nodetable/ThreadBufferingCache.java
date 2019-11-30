@@ -53,7 +53,7 @@ public class ThreadBufferingCache<Key,Value> implements Cache<Key,Value> {
     private final AtomicReference<Thread> bufferingThread = new AtomicReference<>();
     private Object lock = new Object();
     private String label;
-    // This turns the feature off. Development only. Do not release with this set "true".
+    // This turns the feature off. Development only. Do not release with this set "false".
     private static final boolean BUFFERING = true;
     
     public ThreadBufferingCache(String label, Cache<Key,Value> mainCache, int size) {

@@ -173,7 +173,7 @@ public class TestBindingStreams extends BaseTest
     private static boolean equalBindings(Binding binding1, Binding binding2)
     {
         // Need to have the exact same terms coming back (therefore we can't use BNodeIso to compare values)
-        return ResultSetCompare.equal(binding1, binding2, NodeUtils.sameTerm) ;
+        return ResultSetCompare.equal(binding1, binding2, NodeUtils.sameNode) ;
     }
 
 
