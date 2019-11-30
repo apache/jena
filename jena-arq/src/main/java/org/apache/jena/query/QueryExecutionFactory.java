@@ -611,8 +611,10 @@ public class QueryExecutionFactory
         }
     }
 
-    protected static QueryExecution make(Query query, Dataset dataset)
-    { return make(query, dataset.asDatasetGraph()); }
+    protected static QueryExecution make(Query query, Dataset dataset) {
+        DatasetGraph dsg = dataset==null ? null : dataset.asDatasetGraph();
+        return make(query, dsg);
+    }
 
     protected static QueryExecution make(Query query, DatasetGraph datasetGraph)
     { return QueryExecution.create().query(query).dataset(datasetGraph).build(); }
