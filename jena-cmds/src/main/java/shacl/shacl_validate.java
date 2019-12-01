@@ -91,7 +91,7 @@ public class shacl_validate extends CmdGeneral {
             dataGraph = shapesGraph;
         else
             dataGraph = RDFDataMgr.loadGraph(datafile);
-        ValidationReport report = ValidationProc.simpleValidatation(shapesGraph, dataGraph, isVerbose());
+        ValidationReport report = ValidationProc.simpleValidation(shapesGraph, dataGraph, isVerbose());
         if ( textOutput )
             ShLib.printReport(report);
         else

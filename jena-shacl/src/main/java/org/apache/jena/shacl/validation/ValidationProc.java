@@ -37,6 +37,9 @@ import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.vocabulary.RDF;
 
+import static org.apache.jena.shacl.lib.G.hasType;
+import static org.apache.jena.shacl.lib.G.isOfType;
+
 public class ValidationProc {
     /* 3.4 Validation
      *
@@ -83,56 +86,56 @@ public class ValidationProc {
 
     private static IndentedWriter out  = IndentedWriter.stdout;
 
-    public static ValidationReport simpleValidatation(Graph shapesGraph, Graph data) {
-        return simpleValidatation(shapesGraph, data, false);
+    public static ValidationReport simpleValidation(Graph shapesGraph, Graph data) {
+        return simpleValidation(shapesGraph, data, false);
     }
 
-    public static ValidationReport simpleValidatation(Graph shapesGraph, Graph data, boolean verbose) {
+    public static ValidationReport simpleValidation(Graph shapesGraph, Graph data, boolean verbose) {
         Shapes shapes = Shapes.parse(shapesGraph);
-        return simpleValidatation(shapes, data, verbose);
+        return simpleValidation(shapes, data, verbose);
     }
 
-    public static ValidationReport simpleValidatation(Shapes shapes, Graph data, boolean verbose) {
+    public static ValidationReport simpleValidation(Shapes shapes, Graph data, boolean verbose) {
         int x = out.getAbsoluteIndent();
         try {
             ValidationContext vCxt = new ValidationContext(shapes, data);
             vCxt.setVerbose(verbose);
-            return simpleValidatation(vCxt, shapes, data);
+            return simpleValidation(vCxt, shapes, data);
         //} catch (ShaclParseException ex) {
         } finally { out.setAbsoluteIndent(x); }
     }
 
-    public static ValidationReport simpleValidatation(ValidationContext vCxt, Iterable<Shape> shapes, Graph data) {
+    public static ValidationReport simpleValidation(ValidationContext vCxt, Iterable<Shape> shapes, Graph data) {
         //vCxt.setVerbose(true);
         for ( Shape shape : shapes ) {
-            simpleValidatation(vCxt, data, shape);
+            simpleValidation(vCxt, data, shape);
         }
         if ( vCxt.isVerbose() )
             out.ensureStartOfLine();
         return vCxt.generateReport();
     }
 
-    public static void simpleValidatation(ValidationContext vCxt, Graph data, Shape shape) {
-        simpleValidatationInternal(vCxt, data, null, shape);
+    public static void simpleValidation(ValidationContext vCxt, Graph data, Shape shape) {
+        simpleValidationInternal(vCxt, data, getFocusNodes(data, shape), shape);
     }
     
     // ---- Single node.
     
-    public static ValidationReport simpleValidatationNode(Shapes shapes, Graph data, Node node, boolean verbose) {
+    public static ValidationReport simpleValidationNode(Shapes shapes, Graph data, Node node, boolean verbose) {
         int x = out.getAbsoluteIndent();
         try {
             ValidationContext vCxt = new ValidationContext(shapes, data);
             vCxt.setVerbose(verbose);
-            return simpleValidatationNode(vCxt, shapes, node, data);
+            return simpleValidationNode(vCxt, shapes, node, data);
         //} catch (ShaclParseException ex) {
         } finally { out.setAbsoluteIndent(x); }
     }
 
     
-    private static ValidationReport simpleValidatationNode(ValidationContext vCxt, Shapes shapes, Node node, Graph data) {
+    private static ValidationReport simpleValidationNode(ValidationContext vCxt, Shapes shapes, Node node, Graph data) {
         //vCxt.setVerbose(true);
         for ( Shape shape : shapes ) {
-            simpleValidatationNode(vCxt, data, node, shape);
+            simpleValidationNode(vCxt, data, node, shape);
         }
         if ( vCxt.isVerbose() )
             out.ensureStartOfLine();
@@ -140,19 +143,15 @@ public class ValidationProc {
 
     }
 
-    private static void simpleValidatationNode(ValidationContext vCxt, Graph data, Node node, Shape shape) {
-        simpleValidatationInternal(vCxt, data, node, shape);
+    private static void simpleValidationNode(ValidationContext vCxt, Graph data, Node node, Shape shape) {
+        if (isFocusNode(shape, node, data)) {
+            simpleValidationInternal(vCxt, data, Collections.singleton(node), shape);
+        }
+
     }
 
     // --- Top of process
-    private static void simpleValidatationInternal(ValidationContext vCxt, Graph data, Node node, Shape shape) {
-        Collection<Node> focusNodes = getFocusNodes(data, shape);
-        if ( node != null ) { 
-            if ( ! focusNodes.contains(node) )
-                return ;
-            focusNodes = Collections.singleton(node);
-        }
-        
+    private static void simpleValidationInternal(ValidationContext vCxt, Graph data, Collection<Node> focusNodes, Shape shape) {
         if ( vCxt.isVerbose() ) {
             out.println(shape.toString());
             out.printf("N: FocusNodes(%d): %s\n", focusNodes.size(), focusNodes);
@@ -254,11 +253,11 @@ public class ValidationProc {
     private static Collection<Node> getFocusNodes(Graph data, Shape shape) {
         Collection<Node> acc = new HashSet<>();
         shape.getTargets().forEach(target->
-            acc.addAll(getFocusNodes(data, shape, target)));
+            acc.addAll(getFocusNodes(data, target)));
         return acc;
     }
 
-    private static Collection<Node> getFocusNodes(Graph data, Shape shape, Target target) {
+    private static Collection<Node> getFocusNodes(Graph data, Target target) {
         Node targetObj = target.getObject();
         switch(target.getTargetType()) {
             case targetClass:
@@ -274,6 +273,30 @@ public class ValidationProc {
                 return G.listAllNodesOfType(data, targetObj);
             default:
                 return Collections.emptyList();
+        }
+    }
+
+    private static boolean isFocusNode(Shape shape, Node node, Graph data) {
+        return shape.getTargets()
+                .stream()
+                .anyMatch(target -> isFocusNode(target, node, data));
+    }
+
+    private static boolean isFocusNode(Target target, Node node, Graph data) {
+        Node targetObject = target.getObject();
+        switch (target.getTargetType()) {
+            case targetClass:
+                return hasType(data, node, targetObject);
+            case targetNode:
+                return targetObject.equals(node);
+            case targetObjectsOf:
+                return data.contains(null, targetObject, node);
+            case targetSubjectsOf:
+                return data.contains(node, targetObject, null);
+            case implicitClass:
+                return isOfType(data, node, targetObject);
+            default:
+                return false;
         }
     }
 }
