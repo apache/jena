@@ -48,6 +48,11 @@ public class DCAT {
 	public static final Resource Dataset = m.createResource(NS + "Dataset");
 	public static final Resource Distribution = m.createResource(NS + "Distribution");
 	
+	// Classes added in DCAT version 2
+	public static final Resource DataService = m.createResource(NS + "DataService");
+	public static final Resource Relationship = m.createResource(NS + "Relationship");
+	public static final Resource Role = m.createResource(NS + "Role");
+	
 	// Properties
 	public static final Property accessURL = m.createProperty(NS + "accessURL");
 	public static final Property byteSize = m.createProperty(NS + "byteSize");
@@ -61,4 +66,22 @@ public class DCAT {
 	public static final Property record = m.createProperty(NS + "record");
 	public static final Property theme = m.createProperty(NS + "theme");
 	public static final Property themeTaxonomy = m.createProperty(NS + "themeTaxonomy");
+	
+	// Properties added in DCAT version 2
+	public static final Property accessService = m.createProperty(NS + "");
+	public static final Property bbox = m.createProperty(NS + "");
+	public static final Property catalog = m.createProperty(NS + "");
+	public static final Property centroid = m.createProperty(NS + "");
+	public static final Property compressFormat = m.createProperty(NS + "");
+	public static final Property endDate = m.createProperty(NS + "");
+	public static final Property endpointDescription = m.createProperty(NS + "");
+	public static final Property endpointURL = m.createProperty(NS + "");
+	public static final Property hadRole = m.createProperty(NS + "");
+	public static final Property packageFormat = m.createProperty(NS + "");
+	public static final Property qualifiedRelation = m.createProperty(NS + "");
+	public static final Property servesDataset = m.createProperty(NS + "");
+	public static final Property service = m.createProperty(NS + "");
+	public static final Property spatialResolutionInMeters = m.createProperty(NS + "");
+	public static final Property startDate = m.createProperty(NS + "");
+	public static final Property temporalResolution = m.createProperty(NS + "");
 }
