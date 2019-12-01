@@ -116,11 +116,11 @@ public class ValidationProc {
     }
 
     public static void simpleValidation(ValidationContext vCxt, Graph data, Shape shape) {
-        simpleValidationInternal(vCxt, data, getFocusNodes(data, shape), shape);
+        simpleValidationInternal(vCxt, data, null, shape);
     }
     
     // ---- Single node.
-    
+
     public static ValidationReport simpleValidationNode(Shapes shapes, Graph data, Node node, boolean verbose) {
         int x = out.getAbsoluteIndent();
         try {
@@ -131,7 +131,6 @@ public class ValidationProc {
         } finally { out.setAbsoluteIndent(x); }
     }
 
-    
     private static ValidationReport simpleValidationNode(ValidationContext vCxt, Shapes shapes, Node node, Graph data) {
         //vCxt.setVerbose(true);
         for ( Shape shape : shapes ) {
@@ -144,14 +143,27 @@ public class ValidationProc {
     }
 
     private static void simpleValidationNode(ValidationContext vCxt, Graph data, Node node, Shape shape) {
-        if (isFocusNode(shape, node, data)) {
-            simpleValidationInternal(vCxt, data, Collections.singleton(node), shape);
-        }
-
+        simpleValidationInternal(vCxt, data, node, shape);
     }
 
     // --- Top of process
-    private static void simpleValidationInternal(ValidationContext vCxt, Graph data, Collection<Node> focusNodes, Shape shape) {
+    
+    /**
+     * Validation process.
+     * Either all focusNode for the shape (argument node == null)
+     * or just for one node of the focusNodes of the shape.
+     */
+    private static void simpleValidationInternal(ValidationContext vCxt, Graph data, Node node, Shape shape) {
+        Collection<Node> focusNodes;
+   
+        if ( node != null ) {
+            if (! isFocusNode(shape, node, data))
+                return ;
+            focusNodes = Collections.singleton(node);
+        } else {
+            focusNodes = getFocusNodes(data, shape);
+        }
+        
         if ( vCxt.isVerbose() ) {
             out.println(shape.toString());
             out.printf("N: FocusNodes(%d): %s\n", focusNodes.size(), focusNodes);
