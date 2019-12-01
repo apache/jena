@@ -68,20 +68,20 @@ public class DCAT {
 	public static final Property themeTaxonomy = m.createProperty(NS + "themeTaxonomy");
 	
 	// Properties added in DCAT version 2
-	public static final Property accessService = m.createProperty(NS + "");
-	public static final Property bbox = m.createProperty(NS + "");
-	public static final Property catalog = m.createProperty(NS + "");
-	public static final Property centroid = m.createProperty(NS + "");
-	public static final Property compressFormat = m.createProperty(NS + "");
-	public static final Property endDate = m.createProperty(NS + "");
-	public static final Property endpointDescription = m.createProperty(NS + "");
-	public static final Property endpointURL = m.createProperty(NS + "");
-	public static final Property hadRole = m.createProperty(NS + "");
-	public static final Property packageFormat = m.createProperty(NS + "");
-	public static final Property qualifiedRelation = m.createProperty(NS + "");
-	public static final Property servesDataset = m.createProperty(NS + "");
-	public static final Property service = m.createProperty(NS + "");
-	public static final Property spatialResolutionInMeters = m.createProperty(NS + "");
-	public static final Property startDate = m.createProperty(NS + "");
-	public static final Property temporalResolution = m.createProperty(NS + "");
+	public static final Property accessService = m.createProperty(NS + "accessService");
+	public static final Property bbox = m.createProperty(NS + "bbox");
+	public static final Property catalog = m.createProperty(NS + "catalog");
+	public static final Property centroid = m.createProperty(NS + "centroid");
+	public static final Property compressFormat = m.createProperty(NS + "compressFormat");
+	public static final Property endDate = m.createProperty(NS + "endDate");
+	public static final Property endpointDescription = m.createProperty(NS + "endpointDescription");
+	public static final Property endpointURL = m.createProperty(NS + "endpointURL");
+	public static final Property hadRole = m.createProperty(NS + "hadRole");
+	public static final Property packageFormat = m.createProperty(NS + "packageFormat");
+	public static final Property qualifiedRelation = m.createProperty(NS + "qualifiedRelation");
+	public static final Property servesDataset = m.createProperty(NS + "servesDataset");
+	public static final Property service = m.createProperty(NS + "service");
+	public static final Property spatialResolutionInMeters = m.createProperty(NS + "spatialResolutionInMeters");
+	public static final Property startDate = m.createProperty(NS + "startDate");
+	public static final Property temporalResolution = m.createProperty(NS + "temporalResolution");
 }
