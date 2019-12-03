@@ -358,49 +358,7 @@ public class TDB2StorageBuilder {
 //            components.add(tc);
 
             // [1746]
-            
-            TransactionListener listener = new TransactionListener() {
-                private final boolean PRT = false;
-                
-                @Override public void notifyTxnStart(Transaction transaction) { 
-                    if ( PRT ) System.out.println("notifyTxnStart");
-                    if ( transaction.isWriteTxn() )
-                        nodeTableCache.updateStart();
-                }   
-                
-                
-                @Override public void notifyPromoteFinish(Transaction transaction) {
-                    if ( transaction.isWriteTxn() )
-                        nodeTableCache.updateStart();
-                    if ( PRT ) System.out.println("notifyPromoteFinish");
-                }
-                
-                @Override public void notifyAbortStart(Transaction transaction) {
-                    if ( PRT ) System.out.println("notifyAbortStart");
-                    if ( transaction.isWriteTxn() ) {
-                        //System.out.println("    "+transaction.getTxnId());
-                        //System.out.println("    "+transaction.getMode());
-                        nodeTableCache.updateAbort();
-                    }
-                }
-                //@Override public void notifyAbortFinish(Transaction transaction) {} 
-
-                /** Start prepare during a commit */
-                @Override
-                public void notifyPrepareStart(Transaction transaction) {
-                    if ( PRT ) System.out.println("notifyPrepareStart");
-                }
-                
-                @Override public void notifyCommitFinish(Transaction transaction) { 
-                    // Tell the NodeTableCache to update the main caches. 
-                    // This must be after the underlying NodeTableNative has committed. 
-                    if ( transaction.isWriteTxn() ) {
-                        // This is before "prepare" is called on components. 
-                        nodeTableCache.updateCommit();
-                    }
-                }
-            };
-            listeners.add(listener);
+            listeners.add(nodeTableCache);
         }
         
         nodeTable = NodeTableInline.create(nodeTable);

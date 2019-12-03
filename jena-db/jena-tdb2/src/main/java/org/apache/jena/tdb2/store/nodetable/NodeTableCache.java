@@ -27,6 +27,8 @@ import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.dboe.transaction.txn.Transaction;
+import org.apache.jena.dboe.transaction.txn.TransactionListener;
 import org.apache.jena.graph.Node;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.params.StoreParams;
@@ -37,7 +39,7 @@ import org.apache.jena.tdb2.store.NodeId;
  * wrapper. Read-cache - write caching is done via the object file used by the
  * base NodeTable.
  */
-public class NodeTableCache implements NodeTable {
+public class NodeTableCache implements NodeTable, TransactionListener {
     // These caches are updated together.
     // See synchronization in _retrieveNodeByNodeId and _idForNode
     // The cache is assumed to be single operation-thread-safe.
@@ -58,9 +60,12 @@ public class NodeTableCache implements NodeTable {
 
     // A small cache of "known unknowns" to speed up searching for impossible things.
     // Cache update needed on NodeTable changes because a node may become "known"
-    private ThreadBufferingCache<Node, Object> notPresent    = null;
+    private Cache<Node, Object> notPresent    = null;
     private NodeTable           baseTable;
     private final Object        lock          = new Object();
+    private final ThreadLocal<Transaction> txn = new ThreadLocal<>();
+    private long maxDataVersion;
+    private boolean hasActiveWriteTransaction;
     
     public static NodeTable create(NodeTable nodeTable, StoreParams params) {
         int nodeToIdCacheSize = params.getNode2NodeIdCacheSize();
@@ -83,7 +88,7 @@ public class NodeTableCache implements NodeTable {
         if ( idToNodeCacheSize > 0 )
             id2node_Cache = createCache("idToNode", idToNodeCacheSize, 1000);
         if ( nodeMissesCacheSize > 0 )
-            notPresent = createCache("notPresent", nodeMissesCacheSize, 100);
+            notPresent = CacheFactory.createCache(nodeMissesCacheSize);
     }
 
     private static <Key, Value> ThreadBufferingCache<Key, Value> createCache(String label, int mainCachesize, int bufferSize) {
@@ -281,8 +286,9 @@ public class NodeTableCache implements NodeTable {
         // The "notPresent" cache is used to note whether a node
         // is known not to exist in the baseTable..
         // This must be specially handled later if the node is added.
+        // Only top-level transactions can add nodes to the "notPresent" cache.
         if ( NodeId.isDoesNotExist(id) ) {
-            if ( notPresent != null )
+            if ( notPresent != null && inTopLevelTxn())
                 notPresent.put(node, Boolean.TRUE);
             return;
         }
@@ -301,6 +307,70 @@ public class NodeTableCache implements NodeTable {
             notPresent.remove(node);
     }
 
+    // A top-level transaction is either
+    // - a write transaction or
+    // - a read transaction with most recent data version given that there's no active write transaction.
+    private boolean inTopLevelTxn() {
+        Transaction t = txn.get();
+        return (t != null) && (t.isWriteTxn() || (!hasActiveWriteTransaction && t.getDataVersion() == maxDataVersion));
+    }
+
+    @Override
+    public void notifyTxnStart(Transaction transaction) {
+        txn.set(transaction);
+
+        synchronized (lock) {
+            maxDataVersion = Math.max(maxDataVersion, transaction.getDataVersion());
+            hasActiveWriteTransaction |= transaction.isWriteTxn();
+        }
+
+        if (transaction.isWriteTxn()) {
+            updateStart();
+        }
+
+    }
+
+    @Override
+    public void notifyPromoteFinish(Transaction transaction) {
+        if(transaction.isWriteTxn()) {
+            updateStart();
+            synchronized (lock) {
+                hasActiveWriteTransaction = true;
+            }
+        }
+    }
+
+    @Override
+    public void notifyCommitStart(Transaction transaction) {
+        if(transaction.isWriteTxn()) {
+            synchronized (lock) {
+                hasActiveWriteTransaction = false;
+            }
+        }
+    }
+
+    @Override
+    public void notifyCompleteFinish(Transaction transaction) {
+        if(transaction.isWriteTxn()) {
+            updateCommit();
+        }
+    }
+
+    @Override
+    public void notifyAbortStart(Transaction transaction) {
+        if(transaction.isWriteTxn()) {
+            synchronized (lock) {
+                hasActiveWriteTransaction = false;
+            }
+            updateAbort();
+        }
+    }
+
+    @Override
+    public void notifyTxnFinish(Transaction transaction) {
+        txn.remove();
+    }
+
     // ----
 
     // The cache is "optimistic" - nodes are added during the transaction.
@@ -312,27 +382,24 @@ public class NodeTableCache implements NodeTable {
     // On abort, it does need to be undone because the underlying NodeTable
     // being cached will not have them.
     
-    public void updateStart() {
+    private void updateStart() {
         //System.out.println("updateStart: "+baseTable.toString());
         node2id_Cache.enableBuffering();
         id2node_Cache.enableBuffering();
-        notPresent.enableBuffering();
     }
     
-    public void updateAbort() {
+    private void updateAbort() {
         //System.out.println("updateAbort: "+baseTable.toString());
         node2id_Cache.dropBuffer();
         id2node_Cache.dropBuffer();
-        notPresent.dropBuffer();
     }
     
-    public void updateCommit() {
+    private void updateCommit() {
         //System.out.println("updateCommit: "+baseTable.toString());
         // Already in the baseTable.
         // Write to main caches.
         node2id_Cache.flushBuffer();
         id2node_Cache.flushBuffer();
-        notPresent.flushBuffer();
     }
     
     @Override
