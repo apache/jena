@@ -24,13 +24,13 @@ import java.util.Objects;
  *  This class and any subclasses exist for experimentation and custom extensions.
  *  There is no support for them within Apache Jena.
  *  <p>
- *  Extension nodes exist so that the machinary of datastructures (graphs, triples)
+ *  Extension nodes exist so that the machinery of datastructures (graphs, triples)
  *  can be used.  There is no guarantee that processing Nodes (e.g. writing) will handle
- *  extensions. For the usual RDF syntaxes, {@code NodeExt} are not handled. 
+ *  extensions. For the usual RDF syntaxes, {@code Node_Ext} are not handled. 
  */
 public abstract class Node_Ext<X> extends Node {
 
-    Node_Ext(X label) {
+    protected Node_Ext(X label) {
         super(label);
     }
 
@@ -49,19 +49,24 @@ public abstract class Node_Ext<X> extends Node {
         return (X)label;
     }
 
-    // Super is OK : it is based on label. 
-//    @Override
-//    public int hashCode() {
-//    }
+    // Only based on label.
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Objects.hash(label);
+        return result;
+    }
 
     @Override
-    public boolean equals(Object o) {
-        if ( o == this )
+    public boolean equals(Object obj) {
+        if ( this == obj )
             return true;
-        if ( !(o instanceof Node_Ext<? >) )
+        if ( obj == null )
             return false;
-        @SuppressWarnings("unchecked")
-        Node_Ext<X> other = (Node_Ext<X>)o;
-        return Objects.equals(this.get(), other.get());
+        if ( getClass() != obj.getClass() )
+            return false;
+        Node_Ext<?> other = (Node_Ext<?>)obj;
+        return Objects.equals(label, other.label);
     }
 }

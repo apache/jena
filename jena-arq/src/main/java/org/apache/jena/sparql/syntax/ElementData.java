@@ -74,7 +74,7 @@ public class ElementData extends Element
         ElementData f2 = (ElementData)el2 ;
         if ( ! vars.equals(f2.vars) )
             return false ;
-        if ( ! ResultSetCompare.equalsByTest(rows, f2.rows, new ResultSetCompare.BNodeIso(NodeUtils.sameTerm)) )
+        if ( ! ResultSetCompare.equalsByTest(rows, f2.rows, new ResultSetCompare.BNodeIso(NodeUtils.sameNode)) )
             return false ;
         return true ;
     }
