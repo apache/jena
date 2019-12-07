@@ -51,6 +51,7 @@ public class DCAT {
 	// Classes added in DCAT version 2
 	public static final Resource DataService = m.createResource(NS + "DataService");
 	public static final Resource Relationship = m.createResource(NS + "Relationship");
+	public static final Resource Resource = m.createResource(NS + "Resource");
 	public static final Resource Role = m.createResource(NS + "Role");
 	
 	// Properties
