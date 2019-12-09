@@ -44,7 +44,7 @@ public class NodeTableCache implements NodeTable, TransactionListener {
     // See synchronization in _retrieveNodeByNodeId and _idForNode
     // The cache is assumed to be single operation-thread-safe.
 
-    // The buffering is for updates. Only the updating thread will see changes due to new nodes   
+    // The buffering is for updates. Only the updating thread will see changes due to new nodes
     // Case 1: Not in main "not-present"
     //  Add to local "not-present", flush down.
 
@@ -53,8 +53,8 @@ public class NodeTableCache implements NodeTable, TransactionListener {
     //   Write back updates "not-present"
     //   Depends on "not-rpesent" used to protect the underlying "not-present"
 
-    
-    
+
+
     private ThreadBufferingCache<Node, NodeId> node2id_Cache = null;
     private ThreadBufferingCache<NodeId, Node> id2node_Cache = null;
 
@@ -63,10 +63,8 @@ public class NodeTableCache implements NodeTable, TransactionListener {
     private Cache<Node, Object> notPresent    = null;
     private NodeTable           baseTable;
     private final Object        lock          = new Object();
-    private final ThreadLocal<Transaction> txn = new ThreadLocal<>();
-    private long maxDataVersion;
-    private boolean hasActiveWriteTransaction;
-    
+    private volatile Thread     writingThread;
+
     public static NodeTable create(NodeTable nodeTable, StoreParams params) {
         int nodeToIdCacheSize = params.getNode2NodeIdCacheSize();
         int idToNodeCacheSize = params.getNodeId2NodeCacheSize();
@@ -95,7 +93,7 @@ public class NodeTableCache implements NodeTable, TransactionListener {
         Cache<Key, Value> cache = CacheFactory.createCache(mainCachesize);
         return new ThreadBufferingCache<>(label, cache, bufferSize);
     }
-    
+
     // ---- Cache access, no going to underlying table.
 
     public Node getNodeForNodeIdCache(NodeId id) {
@@ -225,7 +223,7 @@ public class NodeTableCache implements NodeTable, TransactionListener {
                 nodeId = baseTable.getAllocateNodeId(node);
             else {
                 if ( notPresent(node) )
-                    // Known not be in the baseTable. 
+                    // Known not be in the baseTable.
                     return NodeId.NodeDoesNotExist;
                 else
                     nodeId = baseTable.getNodeIdForNode(node);
@@ -239,7 +237,7 @@ public class NodeTableCache implements NodeTable, TransactionListener {
     // ----------------
     // ---- Only places that the caches are touched
 
-    /** 
+    /**
      * Test whether in the "not present" cache.
      * True means "known to be absent from the baseTable".
      */
@@ -267,14 +265,6 @@ public class NodeTableCache implements NodeTable, TransactionListener {
         // Remember things known (currently) not to exist.
         // Does not matter if notPresent is being updated elsewhere.
         return node2id_Cache.getIfPresent(node);
-
-        // XXX [467]
-        // Pre JENA-1467 - can be deleted.
-//        if ( notPresent != null && notPresent.containsKey(node) )
-//            return null;
-//        if ( node2id_Cache == null )
-//            return null;
-//        return node2id_Cache.getIfPresent(node);
     }
 
     /** Update the Node&lt;-&gt;NodeId caches */
@@ -311,42 +301,20 @@ public class NodeTableCache implements NodeTable, TransactionListener {
     // - a write transaction or
     // - a read transaction with most recent data version given that there's no active write transaction.
     private boolean inTopLevelTxn() {
-        Transaction t = txn.get();
-        return (t != null) && (t.isWriteTxn() || (!hasActiveWriteTransaction && t.getDataVersion() == maxDataVersion));
+        Thread writer = writingThread;
+        return (writer == null) || (writer == Thread.currentThread());
     }
 
     @Override
     public void notifyTxnStart(Transaction transaction) {
-        txn.set(transaction);
-
-        synchronized (lock) {
-            maxDataVersion = Math.max(maxDataVersion, transaction.getDataVersion());
-            hasActiveWriteTransaction |= transaction.isWriteTxn();
-        }
-
-        if (transaction.isWriteTxn()) {
+        if (transaction.isWriteTxn())
             updateStart();
-        }
-
     }
 
     @Override
     public void notifyPromoteFinish(Transaction transaction) {
-        if(transaction.isWriteTxn()) {
+        if(transaction.isWriteTxn())
             updateStart();
-            synchronized (lock) {
-                hasActiveWriteTransaction = true;
-            }
-        }
-    }
-
-    @Override
-    public void notifyCommitStart(Transaction transaction) {
-        if(transaction.isWriteTxn()) {
-            synchronized (lock) {
-                hasActiveWriteTransaction = false;
-            }
-        }
     }
 
     @Override
@@ -358,50 +326,41 @@ public class NodeTableCache implements NodeTable, TransactionListener {
 
     @Override
     public void notifyAbortStart(Transaction transaction) {
-        if(transaction.isWriteTxn()) {
-            synchronized (lock) {
-                hasActiveWriteTransaction = false;
-            }
+        if(transaction.isWriteTxn())
             updateAbort();
-        }
-    }
-
-    @Override
-    public void notifyTxnFinish(Transaction transaction) {
-        txn.remove();
     }
 
     // ----
 
     // The cache is "optimistic" - nodes are added during the transaction.
-    // It does not matter if they get added (and visible earlier) 
+    // It does not matter if they get added (and visible earlier)
     // because this is nothing more than "preallocation". Triples (Tuple of NodeIds) don't match.
-    
+
     // Underlying file has them "transactionally".
-    
+
     // On abort, it does need to be undone because the underlying NodeTable
     // being cached will not have them.
-    
+
     private void updateStart() {
-        //System.out.println("updateStart: "+baseTable.toString());
         node2id_Cache.enableBuffering();
         id2node_Cache.enableBuffering();
+        writingThread = Thread.currentThread();
     }
-    
+
     private void updateAbort() {
-        //System.out.println("updateAbort: "+baseTable.toString());
+        writingThread = null;
+
         node2id_Cache.dropBuffer();
         id2node_Cache.dropBuffer();
     }
-    
+
     private void updateCommit() {
-        //System.out.println("updateCommit: "+baseTable.toString());
-        // Already in the baseTable.
+        writingThread = null;
         // Write to main caches.
         node2id_Cache.flushBuffer();
         id2node_Cache.flushBuffer();
     }
-    
+
     @Override
     public boolean isEmpty() {
         synchronized (lock) {
