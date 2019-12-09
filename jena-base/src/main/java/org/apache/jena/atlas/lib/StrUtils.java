@@ -22,6 +22,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.stream ;
 import static java.util.stream.Collectors.toList;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -200,33 +201,38 @@ public class StrUtils //extends StringUtils
     /**
      * Decode a string using marked hex values e.g. %20
      * 
-     * @param str String to decode
-     * @param marker The marker charcater
+     * @param str String to decode : characters should be ASCII (<127)
+     * @param marker The marker character
      * @return Decoded string (returns input object on no change)
      */
     public static String decodeHex(String str, char marker) {
-        int idx = str.indexOf(marker);
-        if ( idx == -1 )
+        if ( str.indexOf(marker) < 0 ) 
             return str;
-        StringBuilder buff = new StringBuilder();
-
-        buff.append(str, 0, idx);
-        int N = str.length();
-
-        for ( ; idx < N ; idx++ ) {
-            char ch = str.charAt(idx);
-            // First time through this is true, always.
-            if ( ch != marker )
-                buff.append(ch);
-            else {
-                char hi = str.charAt(idx + 1);
-                char lo = str.charAt(idx + 2);
-                char ch2 = (char)(hexDecode(hi) << 4 | hexDecode(lo));
-                buff.append(ch2);
-                idx += 2;
+        // This function does work if input str is not pure ASCII.
+        // The tricky part is if an %-encoded part is a UTF-8 sequence.
+        // An alternative algorithm is to work in chars from the string, and handle
+        // that case %-endocded when value has the high bit set.
+        byte[] strBytes = StrUtils.asUTF8bytes(str);
+        final int N = strBytes.length;
+        // Max length
+        byte[] bytes = new byte[strBytes.length];
+        int i = 0;
+        for ( int j = 0 ; j < N ; j++ ) {
+            byte b = strBytes[j];
+            if ( b != marker ) {
+                bytes[i++] = b;
+                continue;
             }
+            // Marker.
+            char hi = str.charAt(j + 1);
+            char lo = str.charAt(j + 2);
+            j += 2;
+            int x1 = hexDecode(hi);
+            int x2 = hexDecode(lo);
+            int ch2 = (hexDecode(hi) << 4 | hexDecode(lo));
+            bytes[i++] = (byte)ch2;
         }
-        return buff.toString();
+        return new String(bytes, 0, i, StandardCharsets.UTF_8); 
     }
 
     // Encoding is table-driven but for decode, we use code.

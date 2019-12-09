@@ -85,7 +85,7 @@ public class IO
         if ( filename.startsWith("file:") )
         {
             filename = filename.substring("file:".length());
-            filename = IRILib.decode(filename);
+            filename = IRILib.decodeHex(filename);
         }
         InputStream in = new FileInputStream(filename);
         String ext = FilenameUtils.getExtension(filename);
@@ -180,7 +180,7 @@ public class IO
         if ( filename.startsWith("file:") )
         {
             filename = filename.substring("file:".length());
-            filename = IRILib.decode(filename);
+            filename = IRILib.decodeHex(filename);
         }
         OutputStream out = new FileOutputStream(filename);
         String ext = FilenameUtils.getExtension(filename);
