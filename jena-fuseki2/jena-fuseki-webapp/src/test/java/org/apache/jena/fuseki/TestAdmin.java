@@ -55,7 +55,7 @@ import org.junit.Test;
 public class TestAdmin extends AbstractFusekiTest {
 
     // Name of the dataset in the assembler file.
-    static String dsTest    = "test-ds2";
+    static String dsTest    = "test-ds1";
     static String dsTestInf = "test-ds4";
     static String fileBase  = "testing/";
 
@@ -133,7 +133,7 @@ public class TestAdmin extends AbstractFusekiTest {
     @Test public void add_delete_dataset_2() {
         checkNotThere(dsTest);
 
-        File f = new File(fileBase+"config-ds-plain.ttl");
+        File f = new File(fileBase+"config-ds-plain-1.ttl");
         {
             org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.parse(WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8);
             HttpEntity e = new FileEntity(f, ct);
@@ -153,7 +153,7 @@ public class TestAdmin extends AbstractFusekiTest {
         deleteDataset(dsTest);
     }
 
-    @Test public void add_delete_dataset_3() throws Exception {
+    @Test public void add_delete_dataset_3() {
         checkNotThere(dsTest);
         addTestDataset();
         checkExists(dsTest);
@@ -164,7 +164,7 @@ public class TestAdmin extends AbstractFusekiTest {
         deleteDataset(dsTest);
     }
 
-    @Test public void add_delete_dataset_4() throws Exception {
+    @Test public void add_delete_dataset_4() {
         checkNotThere(dsTest);
         checkNotThere(dsTestInf);
         addTestDatasetInf();
@@ -176,6 +176,12 @@ public class TestAdmin extends AbstractFusekiTest {
         addTestDatasetInf();
         checkExists(dsTestInf);
         deleteDataset(dsTestInf);
+    }
+
+    @Test public void add_delete_dataset_5() {
+        // New style operations : cause two fuseki:names
+        addTestDataset(fileBase+"config-ds-plain-2.ttl");
+        checkExists("test-ds2");
     }
 
     @Test public void add_error_1() {
@@ -354,7 +360,7 @@ public class TestAdmin extends AbstractFusekiTest {
     // -- Add
 
     private static void addTestDataset() {
-        addTestDataset(fileBase+"config-ds-plain.ttl");
+        addTestDataset(fileBase+"config-ds-plain-1.ttl");
     }
 
     private static void addTestDatasetInf() {
