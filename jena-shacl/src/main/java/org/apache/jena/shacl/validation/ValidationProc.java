@@ -273,16 +273,14 @@ public class ValidationProc {
         Node targetObj = target.getObject();
         switch(target.getTargetType()) {
             case targetClass:
-                return G.listPO(data, RDF.Nodes.type, targetObj);
+            case implicitClass:
+                return G.listAllNodesOfType(data, targetObj);
             case targetNode:
                 return Collections.singletonList(targetObj);
             case targetObjectsOf:
                 return G.setSP(data, null, targetObj);
             case targetSubjectsOf:
                 return G.setPO(data, targetObj, null);
-            case implicitClass:
-                // Instances of the class and its subtypes.
-                return G.listAllNodesOfType(data, targetObj);
             default:
                 return Collections.emptyList();
         }
@@ -298,15 +296,14 @@ public class ValidationProc {
         Node targetObject = target.getObject();
         switch (target.getTargetType()) {
             case targetClass:
-                return hasType(data, node, targetObject);
+            case implicitClass:
+                return isOfType(data, node, targetObject);
             case targetNode:
                 return targetObject.equals(node);
             case targetObjectsOf:
                 return data.contains(null, targetObject, node);
             case targetSubjectsOf:
                 return data.contains(node, targetObject, null);
-            case implicitClass:
-                return isOfType(data, node, targetObject);
             default:
                 return false;
         }
