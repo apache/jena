@@ -18,41 +18,27 @@
 
 package org.apache.jena.atlas.lib;
 
+import static org.junit.Assert.assertEquals;
 
-import org.apache.jena.atlas.lib.cache.TestCacheSimple;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.Test;
 
-/**
- * Tests for the Atlas lib package
- */
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestAlg.class
-    , TestBitsLong.class
-    , TestBitsInt.class
-    , TestBytes.class
-    , TestEscapeStr.class
-    , TestHex.class
-    , TestListUtils.class
-    , TestSetUtils.class
-    , TestCollectionUtils.class
-    , TestCache.class
-    , TestCache2.class
-    , TestFileOps.class
-    , TestStrUtils.class
-    , TestIRILib.class
-    , TestXMLLib.class
-    , TestAlarmClock.class
-    , TestTrie.class
-    , TestFilenameProcessing.class
-    , TestNumberUtils.class
-    , TestDateTimeUtils.class
-    , TestCacheSimple.class
-    , TestRefCountingMap.class
-} )
+public class TestIRILib {
 
-public class TS_Lib
-{
+    @Test public void encodeDecode01() { encodeDecode(""); }
+
+    @Test public void encodeDecode02() { encodeDecode("aa"); }
+
+    @Test public void encodeDecode03() { encodeDecode("aa"); }
+
+    @Test public void encodeDecode04() { encodeDecode("Größe"); }
+    
+    private void encodeDecode(String testString) {
+        String encoded = IRILib.encodeNonASCII(testString);
+        String decoded = IRILib.decodeHex(encoded);
+        if ( ! testString.equals(decoded) ) {
+            System.out.println(encoded);
+        }
+        assertEquals(testString, decoded);
+    }
 
 }
