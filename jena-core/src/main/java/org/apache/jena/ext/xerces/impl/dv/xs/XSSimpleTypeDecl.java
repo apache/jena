@@ -79,6 +79,7 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
     protected static final short DV_YEARMONTHDURATION = DV_NOTATION + 7;
     protected static final short DV_DAYTIMEDURATION	= DV_NOTATION + 8;
     protected static final short DV_ANYATOMICTYPE = DV_NOTATION + 9;
+    protected static final short DV_DATETIMESTAMP = DV_NOTATION + 10;
 
     private static final TypeValidator[] gDVs = {
         new AnySimpleDV(),
@@ -110,7 +111,8 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
         new UnionDV(),
         new YearMonthDurationDV(),  // XML Schema 1.1 type
         new DayTimeDurationDV(),    // XML Schema 1.1 type
-        new AnyAtomicDV()           // XML Schema 1.1 type
+        new AnyAtomicDV(),          // XML Schema 1.1 type
+        new DateTimeStampDV()       // XML Schema 1.1 type
     };
 
     static final short NORMALIZE_NONE = 0;
@@ -170,6 +172,7 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
     public static final short DAYTIMEDURATION_DT        = 47;   
     public static final short PRECISIONDECIMAL_DT       = 48;
     public static final short ANYATOMICTYPE_DT          = 49;
+    public static final short DATETIMESTAMP_DT          = 50;
 
     // DOM Level 3 TypeInfo Derivation Method constants
     static final int DERIVATION_ANY = 0;
