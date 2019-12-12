@@ -41,25 +41,31 @@ import org.apache.jena.tdb2.store.NodeId;
  */
 public class NodeTableCache implements NodeTable, TransactionListener {
     // These caches are updated together.
-    // See synchronization in _retrieveNodeByNodeId and _idForNode
+    // See synchronization in _retrieveNodeByNodeId and _idForNode.
     // The cache is assumed to be single operation-thread-safe.
-
-    // The buffering is for updates. Only the updating thread will see changes due to new nodes
-    // Case 1: Not in main "not-present"
-    //  Add to local "not-present", flush down.
-
-    // Case 2: In main "not-present"
-    //   May be goes into local cache.
-    //   Write back updates "not-present"
-    //   Depends on "not-rpesent" used to protect the underlying "not-present"
-
-
+    // The buffering is for updates so that if it aborts, the changes are not made;
+    // the underlying node table, being transactional, also does not make the changes.
+    //
+    // It does not matter if a readers can see nodes from a completed now-finished
+    // writer transaction. Nodes in the node table do not mean triples exist and only triples detemine
+    // the state of the data.
+    //
+    // Where there are only readers active the ThreadBufferingCache caches act as
+    // pass-through and the not-present cache can be updated by any reader.
+    //
+    // When there is an active writer, the ThreadBufferingCache caches add a
+    // write-visible-only caching and only the writer can update the "not-present"
+    // cache. Because the node table is append-only (nodes are not deleted), it can
+    // mean a node which was not-present is added and the not-present cache now does
+    // not catch that for a previous version reader. This does not matter, the small
+    // not-present cache is only a speed-up and does not have to be correct
+    // for missing nodes (it can't have entries for nodes that do exist in visible
+    // data).
 
     private ThreadBufferingCache<Node, NodeId> node2id_Cache = null;
     private ThreadBufferingCache<NodeId, Node> id2node_Cache = null;
 
     // A small cache of "known unknowns" to speed up searching for impossible things.
-    // Cache update needed on NodeTable changes because a node may become "known"
     private Cache<Node, Object> notPresent    = null;
     private NodeTable           baseTable;
     private final Object        lock          = new Object();
@@ -297,14 +303,16 @@ public class NodeTableCache implements NodeTable, TransactionListener {
             notPresent.remove(node);
     }
 
-    // A top-level transaction is either
+    // A top-level transaction can update the not-present cache.
+    // It is either
     // - a write transaction or
-    // - a read transaction with most recent data version given that there's no active write transaction.
+    // - a read transaction and no active writer.
     private boolean inTopLevelTxn() {
         Thread writer = writingThread;
         return (writer == null) || (writer == Thread.currentThread());
     }
 
+    // -- TransactionListener
     @Override
     public void notifyTxnStart(Transaction transaction) {
         if (transaction.isWriteTxn())
@@ -329,18 +337,17 @@ public class NodeTableCache implements NodeTable, TransactionListener {
         if(transaction.isWriteTxn())
             updateAbort();
     }
-
-    // ----
+    // -- TransactionListener
 
     // The cache is "optimistic" - nodes are added during the transaction.
-    // It does not matter if they get added (and visible earlier)
-    // because this is nothing more than "preallocation". Triples (Tuple of NodeIds) don't match.
-
-    // Underlying file has them "transactionally".
-
+    // The underlying file has them "transactionally".
+    //
     // On abort, it does need to be undone because the underlying NodeTable
     // being cached will not have them.
-
+    //
+    // We don't "undo" for abort because it would mean keeping an data structure that
+    // is related to the size of the transaction and if in-memory, a limitation of
+    // scale.
     private void updateStart() {
         node2id_Cache.enableBuffering();
         id2node_Cache.enableBuffering();
@@ -383,6 +390,7 @@ public class NodeTableCache implements NodeTable, TransactionListener {
         id2node_Cache = null;
         notPresent = null;
         baseTable = null;
+        writingThread = null;
     }
 
     @Override

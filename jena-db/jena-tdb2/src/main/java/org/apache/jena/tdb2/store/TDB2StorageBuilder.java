@@ -62,9 +62,9 @@ import org.apache.jena.tdb2.sys.SystemTDB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Build TDB2 databases based on {@linkplain DatabaseRDF}. 
+/** Build TDB2 databases based on {@linkplain DatabaseRDF}.
  * This builds the storage database, not the switchable.
- * 
+ *
  * {@link DatabaseOps#createSwitchable} adds the switching layer
  * and is called by {@link DatabaseConnection#make}.
  */
@@ -300,67 +300,15 @@ public class TDB2StorageBuilder {
 
     private NodeTable buildNodeTable(String name) {
         NodeTable nodeTable = buildBaseNodeTable(name);
-        
+
         nodeTable = NodeTableCache.create(nodeTable, params);
-        
+
         if ( nodeTable instanceof NodeTableCache ) {
             NodeTableCache nodeTableCache = (NodeTableCache)nodeTable;
-            
-            // [1746] A "notification" - better way to do this?
-            // Need to go before the storage of the node table commits. 
-//            TransactionalComponent tc = new TransactionalComponentBase<Object>(ComponentId.allocLocal()) {
-//                
-//                private Object state = new Object();
-//                private TxnId activeWriter = null;
-//                
-//                @Override
-//                protected Object _begin(ReadWrite readWrite, TxnId txnId) {
-//                    System.out.println("_begin");
-////                    // XXX OK?
-////                    if ( isWriteTxn() ) {
-////                        nodeTableCache.updateBegin(txnId);
-////                        activeWriter = txnId;
-////                    }
-//                    return state;
-//                }
-//                
-//                @Override
-//                protected Object _promote(TxnId txnId, Object state) {
-//                    System.out.println("_promote");
-////                    if ( isWriteTxn() ) {
-////                        nodeTableCache.updateBegin(txnId);
-////                        activeWriter = txnId;
-////                    }
-//                    return state;
-//                }
-//                
-////                @Override
-////                protected void _commit(TxnId txnId, Object state) {}
-//
-//                @Override
-//                protected void _commitEnd(TxnId txnId, Object state) {
-//                    System.out.println("_commitEnd");
-////                    if ( activeWriter == txnId ) {
-////                        nodeTableCache.updateCommit();
-////                        activeWriter = null;
-////                    }
-//                }
-//
-//                @Override
-//                protected void _abort(TxnId txnId, Object state) {
-//                    System.out.println("_abort");
-////                    if ( activeWriter == txnId ) {
-////                        nodeTableCache.updateAbort();
-////                        activeWriter = null;
-////                    }
-//                }
-//            };
-//            components.add(tc);
 
-            // [1746]
             listeners.add(nodeTableCache);
         }
-        
+
         nodeTable = NodeTableInline.create(nodeTable);
         return nodeTable;
     }
@@ -384,7 +332,7 @@ public class TDB2StorageBuilder {
         TransBinaryDataFile transBinFile = new TransBinaryDataFile(binFile, cid, pState);
         return transBinFile;
     }
-    
+
     private static boolean warnAboutOptimizer = true ;
     public static ReorderTransformation chooseReorderTransformation(Location location) {
         if ( location == null )

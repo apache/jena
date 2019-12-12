@@ -63,7 +63,7 @@ public interface TransactionInfo {
      */
     public ReadWrite getMode();
 
-    /** Is this currently a READ transaction? Promotion may chnage the mode.
+    /** Is this currently a READ transaction? Promotion may change the mode.
      * Convenience operation equivalent to {@code (getMode() == ReadWrite.READ)}
      */
     public default boolean isReadTxn()  { return getMode() == ReadWrite.READ; }
@@ -81,4 +81,3 @@ public interface TransactionInfo {
     }
 
 }
-

@@ -55,7 +55,7 @@ public class ThreadBufferingCache<Key,Value> implements Cache<Key,Value> {
     private String label;
     // This turns the feature off. Development only. Do not release with this set "false".
     private static final boolean BUFFERING = true;
-    
+
     public ThreadBufferingCache(String label, Cache<Key,Value> mainCache, int size) {
         this.localCache = CacheFactory.createCache(size);
         this.baseCache = mainCache;
@@ -72,14 +72,13 @@ public class ThreadBufferingCache<Key,Value> implements Cache<Key,Value> {
         return bufferingThread.get() == currentThread;
     }
 
-    // XXX [1746] Can replace by direct use.
     private Cache<Key, Value> localCache() {
         return localCache;
     }
 
     // ---- Buffer management.
     // Only one thread can be using the additional caches.
-    
+
     public void enableBuffering() {
         if ( ! BUFFERING )
             return;
@@ -89,7 +88,7 @@ public class ThreadBufferingCache<Key,Value> implements Cache<Key,Value> {
             throw new TDBException(Lib.className(this)+": already buffering");
         }
     }
-    
+
     /** Write the local cache to the main cache, and reset the local cache. */
     public void flushBuffer() {
         if ( ! buffering() )
@@ -116,7 +115,7 @@ public class ThreadBufferingCache<Key,Value> implements Cache<Key,Value> {
         localCache().clear();
         bufferingThread.set(null);
     }
-    
+
     public Cache<Key, Value> getBuffer() {
         return localCache();
     }
@@ -167,7 +166,7 @@ public class ThreadBufferingCache<Key,Value> implements Cache<Key,Value> {
 
     // ---- Flush changes, reset.
 
-    
+
 
     // ---- Updates to buffering, local cache.
 
