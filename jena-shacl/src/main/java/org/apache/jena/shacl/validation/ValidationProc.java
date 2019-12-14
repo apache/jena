@@ -35,9 +35,7 @@ import org.apache.jena.shacl.parser.NodeShape;
 import org.apache.jena.shacl.parser.PropertyShape;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.sparql.path.Path;
-import org.apache.jena.vocabulary.RDF;
 
-import static org.apache.jena.shacl.lib.G.hasType;
 import static org.apache.jena.shacl.lib.G.isOfType;
 
 public class ValidationProc {
