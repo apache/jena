@@ -11,4 +11,5 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
   rdf:type mf:Manifest ;
   mf:include <additional/lang-simple-1.ttl> ;
   mf:include <additional/implicit-subclass-1.ttl> ;
+  mf:include <additional/target-class-subclass-1.ttl> ;
 .
