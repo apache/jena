@@ -13,17 +13,8 @@ ex:InvalidInstance1
   ex:myProperty "A" ;
   ex:myProperty "B" ;
 .
-ex:InvalidInstance2
-    rdf:type ex:MySubClass ;
-    ex:myProperty "A" ;
-    ex:myProperty "B" ;
-.
 ex:MyClass
   rdf:type rdfs:Class ;
-.
-ex:MySubClass
-    rdf:type rdfs:Class ;
-    rdfs:subClassOf ex:MyClass ;
 .
 ex:MyShape
   rdf:type sh:NodeShape ;
@@ -41,10 +32,6 @@ ex:ValidInstance1
 ex:ValidInstance2
   ex:myProperty "A" ;
   ex:myProperty "B" ;
-.
-ex:ValidInstance3
-    rdf:type ex:MySubClass ;
-    ex:myProperty "A" ;
 .
 <>
   rdf:type mf:Manifest ;
@@ -65,14 +52,6 @@ ex:ValidInstance3
       sh:result [
           rdf:type sh:ValidationResult ;
           sh:focusNode ex:InvalidInstance1 ;
-          sh:resultPath ex:myProperty ;
-          sh:resultSeverity sh:Violation ;
-          sh:sourceConstraintComponent sh:MaxCountConstraintComponent ;
-          sh:sourceShape ex:MyShape-myProperty ;
-        ] ;
-      sh:result [
-          rdf:type sh:ValidationResult ;
-          sh:focusNode ex:InvalidInstance2 ;
           sh:resultPath ex:myProperty ;
           sh:resultSeverity sh:Violation ;
           sh:sourceConstraintComponent sh:MaxCountConstraintComponent ;
