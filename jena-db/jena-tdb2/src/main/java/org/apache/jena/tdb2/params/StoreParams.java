@@ -30,10 +30,10 @@ import org.apache.jena.tdb2.params.StoreParamsBuilder.Item;
  * and some parameters can only be changed at the point the database is
  * created.
  * <p>
- * Getting paramters settings wrong can destroy a databse.
+ * Getting parameters settings wrong can destroy a databse.
  * Alternating the block size is not encouraged and should only be
  * done if necessary.  It can silently destroy a database if set
- * to a different value than thatused to create the database.  The
+ * to a different value than that used to create the database.  The
  * default value of 8Kbytes is good for almost use.
  *
  * @see StoreParamsBuilder  for constructing StoreParams
