@@ -33,9 +33,9 @@ import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 public class GSP_R extends GSP_Base {
-    
+
     public GSP_R() {}
-    
+
     @Override
     protected void doGet(HttpAction action) {
         if ( isQuads(action) )
@@ -45,6 +45,7 @@ public class GSP_R extends GSP_Base {
     }
 
     protected void execGetQuads(HttpAction action) {
+        ActionLib.setCommonHeaders(action.response);
         MediaType mediaType = ActionLib.contentNegotationQuads(action);
         ServletOutputStream output;
         try { output = action.response.getOutputStream(); }
@@ -85,6 +86,7 @@ public class GSP_R extends GSP_Base {
     }
 
     protected void execGetGSP(HttpAction action) {
+        ActionLib.setCommonHeaders(action.response);
         MediaType mediaType = ActionLib.contentNegotationRDF(action);
 
         ServletOutputStream output;
@@ -98,7 +100,6 @@ public class GSP_R extends GSP_Base {
         if ( action.verbose )
             action.log.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s",
                             action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName()));
-        ActionLib.setCommonHeaders(action.response);
         try {
             DatasetGraph dsg = decideDataset(action);
             GSPTarget target = determineTarget(dsg, action);
@@ -141,23 +142,37 @@ public class GSP_R extends GSP_Base {
 
     @Override
     protected void doHead(HttpAction action) {
-        action.beginRead();
+        if ( isQuads(action) )
+            execHeadQuads(action);
+        else
+            execHeadGSP(action);
+    }
+
+    protected void execHeadQuads(HttpAction action) {
         ActionLib.setCommonHeaders(action.response);
+        MediaType mediaType = ActionLib.contentNegotationQuads(action);
+        if ( action.verbose )
+            action.log.info(format("[%d]   Head: Content-Type=%s", action.id, mediaType.getContentType()));
+        ServletOps.success(action);
+    }
+
+    protected void execHeadGSP(HttpAction action) {
+        ActionLib.setCommonHeaders(action.response);
+        MediaType mediaType = ActionLib.contentNegotationRDF(action);
+        if ( action.verbose )
+            action.log.info(format("[%d]   Head: Content-Type=%s", action.id, mediaType.getContentType()));
+        // Check graph not 404.
+        action.beginRead();
         try {
             DatasetGraph dsg = decideDataset(action);
             GSPTarget target = determineTarget(dsg, action);
             if ( action.log.isDebugEnabled() )
-                action.log.debug("HEAD->" + target);
-            if ( !target.exists() ) {
-                ServletOps.successNotFound(action);
-                return;
-            }
-            MediaType mediaType = ActionLib.contentNegotationRDF(action);
+                action.log.debug("HEAD->"+target);
+            boolean exists = target.exists();
+            if ( ! exists )
+                ServletOps.errorNotFound("No such graph: <"+target.name+">");
             ServletOps.success(action);
-        }
-        finally {
-            action.endRead();
-        }
+        } finally { action.endRead(); }
     }
 
     @Override
