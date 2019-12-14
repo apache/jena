@@ -27,11 +27,7 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -66,11 +62,7 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.RDFLanguages;
-import org.apache.jena.riot.RDFParser;
-import org.apache.jena.riot.WebContent;
+import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.shared.uuid.JenaUUID;
@@ -82,6 +74,7 @@ import org.apache.jena.tdb.transaction.DatasetGraphTransaction;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.web.HttpSC;
 
 public class ActionDatasets extends ActionContainerItem {
@@ -169,21 +162,10 @@ public class ActionDatasets extends ActionContainerItem {
                 RDFDataMgr.write(outCopy, model, Lang.TURTLE);
             }
             // ----
-
             // Process configuration.
-            Statement stmt = getOne(model, null, pServiceName, null);
-            if ( stmt == null ) {
-                StmtIterator sIter = model.listStatements(null, pServiceName, (RDFNode)null );
-                if ( ! sIter.hasNext() )
-                    ServletOps.errorBadRequest("No name given in description of Fuseki service");
-                sIter.next();
-                if ( sIter.hasNext() )
-                    ServletOps.errorBadRequest("Multiple names given in description of Fuseki service");
-                throw new InternalErrorException("Inconsistent: getOne didn't fail the second time");
-            }
 
-            if ( ! stmt.getObject().isLiteral() )
-                ServletOps.errorBadRequest("Found "+FmtUtils.stringForRDFNode(stmt.getObject())+" : Service names are strings, then used to build the external URI");
+            // Returns the "service fu:name NAME" statement
+            Statement stmt = findService(model);
 
             Resource subject = stmt.getSubject();
             Literal object = stmt.getObject().asLiteral();
@@ -255,6 +237,45 @@ public class ActionDatasets extends ActionContainerItem {
         return null;
     }
 
+    /** Find the service resource. There must be only one in the configuration. */
+    private Statement findService(Model model) {
+        // Try to find by unique pServiceName (max backwards compatibility)
+        // then try to find by rdf:type fuseki:Service.
+
+        // JENA-1794
+        Statement stmt = getOne(model, null, pServiceName, null);
+        // null means 0 or many, not one.
+
+        if ( stmt == null ) {
+            // This calculates { ?x rdf:type fu:Service ; ?x fu:name ?name }
+            // One and only one service.
+            Statement stmt2 = getOne(model, null, RDF.type, FusekiVocab.fusekiService);
+            if ( stmt2 == null ) {
+                int count = model.listStatements(null, RDF.type, FusekiVocab.fusekiService).toList().size();
+                if ( count == 0 )
+                    ServletOps.errorBadRequest("No triple rdf:type fuseki:Service found");
+                else
+                    ServletOps.errorBadRequest("Multiple Fuseki service descriptions");
+            }
+            Statement stmt3 = getOne(model, stmt2.getSubject(), pServiceName, null);
+            if ( stmt3 == null ) {
+                StmtIterator sIter = model.listStatements(stmt2.getSubject(), pServiceName, (RDFNode)null );
+                if ( ! sIter.hasNext() )
+                    ServletOps.errorBadRequest("No name given in description of Fuseki service");
+                sIter.next();
+                if ( sIter.hasNext() )
+                    ServletOps.errorBadRequest("Multiple names given in description of Fuseki service");
+                throw new InternalErrorException("Inconsistent: getOne didn't fail the second time");
+            }
+            stmt = stmt3;
+        }
+
+        if ( ! stmt.getObject().isLiteral() )
+            ServletOps.errorBadRequest("Found "+FmtUtils.stringForRDFNode(stmt.getObject())+" : Service names are strings, then used to build the external URI");
+
+        return stmt;
+    }
+
     @Override
     protected JsonValue execPostItem(HttpAction action) {
         String name = getItemDatasetName(action);
@@ -312,7 +333,7 @@ public class ActionDatasets extends ActionContainerItem {
         String name = getItemDatasetName(action);
         if ( name == null )
             name = "";
-        action.log.info(format("[%d] DELETE ds=%s", action.id, name));
+        action.log.info(format("[%d] DELETE dataset=%s", action.id, name));
 
         if ( ! action.getDataAccessPointRegistry().isRegistered(name) )
             ServletOps.errorNotFound("No such dataset registered: "+name);
