@@ -79,9 +79,9 @@ public class RDFConnectionRemote implements RDFConnection {
     protected final RDFFormat outputTriples;
     protected final String acceptGraph;
     protected final String acceptDataset;
-    // All purpose SPARQL results header.
     protected final String acceptSelectResult;
     protected final String acceptAskResult;
+    // All purpose SPARQL results header used if above specific cases do not apply. 
     protected final String acceptSparqlResults;
 
     // Whether to check SPARQL queries given as strings by parsing them.
