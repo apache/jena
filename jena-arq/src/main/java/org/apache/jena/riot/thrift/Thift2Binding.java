@@ -64,16 +64,13 @@ public class Thift2Binding extends IteratorSlotted<Binding> implements Iterator<
         RDF_VarTuple vrow = new RDF_VarTuple() ;
         try { vrow.read(protocol) ; }
         catch (TException e) { TRDF.exception(e) ; }
-        // ** Java8
-//        vrow.getVars().forEach(rv -> {
-//            String vn = rv.getName() ;
-//            Var v = Var.alloc(rv.getName()) ;
-//            varNames.add(vn) ;
-//        }) ;
-        for ( RDF_VAR rv : vrow.getVars() ) {
-            String vn = rv.getName() ;
-            Var v = Var.alloc(rv.getName()) ;
-            varNames.add(vn) ;
+        if ( vrow.getVars() != null ) {
+            // It can be null if there are no variables and both the encoder
+            // and the allocation above used RDF_VarTuple().
+            for ( RDF_VAR rv : vrow.getVars() ) {
+                String vn = rv.getName() ;
+                varNames.add(vn) ;
+            }
         }
         vars = Var.varList(varNames) ;
     }
@@ -81,7 +78,6 @@ public class Thift2Binding extends IteratorSlotted<Binding> implements Iterator<
     public List<Var> getVars()              { return vars ; }
 
     public List<String> getVarNames()       { return varNames ; }
-
     
     @Override
     protected Binding moveToNext() {
