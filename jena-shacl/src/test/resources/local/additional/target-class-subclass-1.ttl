@@ -1,0 +1,51 @@
+PREFIX ex:       <http://example/>
+
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+
+PREFIX sh:      <http://www.w3.org/ns/shacl#>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+
+PREFIX sht:     <http://www.w3.org/ns/shacl-test#>
+PREFIX mf:      <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+
+ex:A rdf:type rdfs:Class .
+
+ex:B #rdf:type rdfs:Class ;
+     rdfs:subClassOf ex:A .
+     
+ex:x rdf:type ex:B .
+
+ex:ShapeDef
+    rdf:type sh:NodeShape ;
+    sh:targetClass ex:A;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:minCount 1 ;
+    ] .
+
+<>
+  rdf:type mf:Manifest ;
+  mf:entries ( <target-class-subclass-1> )
+  .
+
+<target-class-subclass-1>
+  rdf:type sht:Validate ;
+  rdfs:label "Instance of implicit class target and subclass test" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type     sh:ValidationReport ;
+      sh:conforms  false ;
+      sh:result [
+          rdf:type           sh:ValidationResult ;
+          sh:focusNode       ex:x ;
+          sh:resultMessage              "minCount[1]: Invalid cardinality: expected min 1: Got count = 0" ;
+          sh:resultPath                 rdfs:label ;
+          sh:resultSeverity             sh:Violation ;
+          sh:sourceConstraintComponent  sh:MinCountConstraintComponent ;
+          sh:sourceShape                [] 
+      ]
+    ] .
