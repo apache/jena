@@ -33,6 +33,7 @@ import org.apache.jena.graph.impl.LiteralLabelFactory ;
 import org.apache.jena.reasoner.rulesys.Node_RuleVariable ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.ExprVar ;
+import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.apache.jena.vocabulary.RDF ;
 import org.junit.Before;
 import org.junit.Test;
@@ -108,6 +109,9 @@ public class AbstractQueryBuilderTest {
 		assertEquals( "foo", n.getName());
 		assertTrue( n instanceof Var );
 
+		n = builder.makeNode( "'text'@en");
+		assertEquals( "text", n.getLiteralLexicalForm());
+		assertEquals( "en", n.getLiteralLanguage());
 	}
 
 	@Test
@@ -168,4 +172,5 @@ public class AbstractQueryBuilderTest {
 		assertTrue( result.contains(NodeFactory.createURI("one")));
 
 	}
+	
 }

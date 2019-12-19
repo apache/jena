@@ -23,7 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
+import org.apache.jena.arq.querybuilder.ExprFactory;
 import org.apache.jena.arq.querybuilder.SelectBuilder;
+import org.apache.jena.arq.querybuilder.WhereBuilder;
 import org.apache.jena.arq.querybuilder.WhereValidator;
 import org.apache.jena.graph.FrontsTriple;
 import org.apache.jena.graph.Node;
@@ -58,6 +60,7 @@ import org.apache.jena.sparql.syntax.ElementTriplesBlock;
 import org.apache.jena.sparql.syntax.ElementUnion;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.After;
+import org.junit.Test;
 
 import static org.junit.Assert.*;
 
@@ -95,6 +98,24 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		
 		ElementPathBlock epb = new ElementPathBlock();
 		Triple t = new Triple( NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createLiteral("three") );
+		epb.addTriple( t );
+		
+		WhereValidator visitor = new WhereValidator( epb );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}
+	
+	@ContractTest
+	public void testAddWhereWhereClause() {
+		WhereBuilder whereBuilder = new WhereBuilder()
+			.addWhere(new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+						NodeFactory.createURI("three"))));
+		
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = whereClause.addWhere( whereBuilder );
+		
+		ElementPathBlock epb = new ElementPathBlock();
+		Triple t = new Triple( NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three") );
 		epb.addTriple( t );
 		
 		WhereValidator visitor = new WhereValidator( epb );

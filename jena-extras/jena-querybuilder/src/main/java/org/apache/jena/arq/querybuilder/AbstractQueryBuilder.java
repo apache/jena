@@ -349,7 +349,13 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 	public final WhereHandler getWhereHandler() {
 		return getHandlerBlock().getWhereHandler();
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	public final T addWhere( AbstractQueryBuilder<?> whereClause) {
+		getWhereHandler().addAll( whereClause.getWhereHandler());
+		return (T) this;
+	}
+	
 	@Override
 	public final ExprFactory getExprFactory() {
 		return getHandlerBlock().getPrologHandler().getExprFactory();
