@@ -27,7 +27,8 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 /** 
  * General implementation of operations for the SPARQL HTTP Update protocol
  * over a DatasetGraph.
- */
+/** @deprecated This will be replaced by the {@code RDFConnection} style at the Graph/Triple level. */
+@Deprecated
 public class DatasetGraphAccessorBasic implements DatasetGraphAccessor
 {
     private DatasetGraph dataset ;

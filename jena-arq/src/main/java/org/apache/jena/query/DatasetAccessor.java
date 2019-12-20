@@ -28,7 +28,9 @@ import org.apache.jena.rdf.model.Model ;
  *  {@code DatasetAccessor}s to local and remote (over HTTP) data.
  *  
  *  @see DatasetAccessorFactory
+ *  @deprecated Use {@code RDFConnection}.
  */
+@Deprecated
 public interface DatasetAccessor
 {
     /** Get the default model of a Dataset */

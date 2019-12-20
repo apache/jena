@@ -34,10 +34,6 @@ public class TypedInputStream extends FilterInputStream
     private boolean isClosed = false ;
     
     public static TypedInputStream wrap(InputStream in) {
-        //Sometimes this is used to intentional loose the content type (in tests).
-//        if ( in instanceof TypedInputStream ) {
-//            return (TypedInputStream)in;
-//        }
         return new TypedInputStream(in);
     }
     
@@ -47,11 +43,11 @@ public class TypedInputStream extends FilterInputStream
     public TypedInputStream(InputStream in, String contentType)
     { this(in, ContentType.create(contentType), null) ; }
 
-    public TypedInputStream(InputStream in, String mediaType, String charset)
-    { this(in, mediaType, charset, null) ; }
-    
-    public TypedInputStream(InputStream in, String mediaType, String charset, String baseURI)
-    { this(in, ContentType.create(mediaType, charset), baseURI) ; }
+//    public TypedInputStream(InputStream in, String mediaType, String charset)
+//    { this(in, mediaType, charset, null) ; }
+//    
+//    public TypedInputStream(InputStream in, String mediaType, String charset, String baseURI)
+//    { this(in, ContentType.create(mediaType, charset), baseURI) ; }
     
     public TypedInputStream(InputStream in, ContentType ct)
     { this(in, ct, null) ; }
@@ -63,7 +59,7 @@ public class TypedInputStream extends FilterInputStream
         this.baseURI = baseURI ;
     }
     
-    public String getContentType()          { return mediaType == null ? null : mediaType.getContentType() ; }
+    public String getContentType()          { return mediaType == null ? null : mediaType.getContentTypeStr() ; }
     public String getCharset()              { return mediaType == null ? null : mediaType.getCharset() ; }
     public ContentType getMediaType()       { return mediaType ; }
     public String getBaseURI()              { return baseURI ; }

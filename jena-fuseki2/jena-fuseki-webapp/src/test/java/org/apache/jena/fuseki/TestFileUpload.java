@@ -36,6 +36,7 @@ import org.junit.Test;
  * @see TestDatasetAccessorHTTP
  * @see TestHttpOp
  */
+@SuppressWarnings("deprecation")
 public class TestFileUpload extends AbstractFusekiTest {
     @Test
     public void upload_gsp_01() {

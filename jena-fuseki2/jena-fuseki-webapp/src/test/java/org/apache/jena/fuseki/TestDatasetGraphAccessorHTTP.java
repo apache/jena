@@ -26,6 +26,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+@SuppressWarnings("deprecation")
 public class TestDatasetGraphAccessorHTTP extends AbstractTestDatasetGraphAccessor
 {
     @BeforeClass public static void ctlBeforeClass() { ServerCtl.ctlBeforeClass(); }

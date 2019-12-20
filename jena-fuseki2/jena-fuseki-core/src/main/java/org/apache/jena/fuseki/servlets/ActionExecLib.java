@@ -127,7 +127,7 @@ public class ActionExecLib {
                 else
                     ServletOps.responseSendError(response, ex.getStatusCode(), ex.getMessage());
             } catch (RuntimeIOException ex) {
-                FmtLog.warn(action.log, ex, "[%d] Runtime IO Exception (client left?) RC = %d : %s", action.id, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage());
+                FmtLog.warn(action.log, /*ex,*/ "[%d] Runtime IO Exception (client left?) RC = %d : %s", action.id, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage());
                 ServletOps.responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage());
             } catch (Throwable ex) {
                 // This should not happen.
@@ -225,12 +225,12 @@ public class ActionExecLib {
             if ( action.responseContentType != null )
                 FmtLog.info(action.log,"[%d]   <= %-20s %s", action.id, HttpNames.hContentType+":", action.responseContentType);
             if ( action.responseContentLength != -1 )
-                FmtLog.info(action.log,"[%d]   <= %-20s %d", action.id, HttpNames.hContentLengh+":", action.responseContentLength);
+                FmtLog.info(action.log,"[%d]   <= %-20s %d", action.id, HttpNames.hContentLength+":", action.responseContentLength);
             for (Map.Entry<String, String> e : action.headers.entrySet()) {
                 // Skip already printed.
                 if ( e.getKey().equalsIgnoreCase(HttpNames.hContentType) && action.responseContentType != null)
                     continue;
-                if ( e.getKey().equalsIgnoreCase(HttpNames.hContentLengh) && action.responseContentLength != -1)
+                if ( e.getKey().equalsIgnoreCase(HttpNames.hContentLength) && action.responseContentLength != -1)
                     continue;
                 FmtLog.info(action.log,"[%d]   <= %-20s %s", action.id, e.getKey()+":", e.getValue());
             }

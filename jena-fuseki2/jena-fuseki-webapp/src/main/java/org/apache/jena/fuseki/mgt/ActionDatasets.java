@@ -526,7 +526,7 @@ public class ActionDatasets extends ActionContainerItem {
         HttpServletRequest request = action.request;
         String base = ActionLib.wholeRequestURL(request);
         ContentType ct = FusekiNetLib.getContentType(request);
-        Lang lang = RDFLanguages.contentTypeToLang(ct.getContentType());
+        Lang lang = RDFLanguages.contentTypeToLang(ct.getContentTypeStr());
         if ( lang == null ) {
             ServletOps.errorBadRequest("Unknown content type for triples: " + ct);
             return;

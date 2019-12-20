@@ -171,22 +171,22 @@ public class WebContent
     
     /** Accept header when looking for a graph */
     // Catches aplication/xml and application.json
-    public static final String defaultGraphAcceptHeader     =  defaultGraphAccept+",*/*;q=0.5" ; 
+    public static final String defaultGraphAcceptHeader     =  defaultGraphAccept+",*/*;q=0.3" ; 
 
     /** Accept header part when looking for a dataset */
     private static final String defaultDatasetAccept         
-        =  "application/trig,application/n-quads;q=0.9,text/x-nquads;q=0.8,application/x-trig;q=0.7,application/ld+json;q=0.5" ;
+        =  "application/trig,application/n-quads;q=0.9,application/ld+json;q=0.8" ;
     
     /** Accept header when looking for a dataset */
-    public static final String defaultDatasetAcceptHeader   =  defaultDatasetAccept+",*/*;q=0.5" ;
+    public static final String defaultDatasetAcceptHeader   =  defaultDatasetAccept+",*/*;q=0.3" ;
     
-    // This is  defaultGraphAccept+","+defaultDatasetAccept+",*/*;q=0.5" ; but cleaned for duplicate JSON-LD.
+    // This is the essence of defaultGraphAccept+","+defaultDatasetAccept+",*/*;q=0.5" cleaned up (e.g.de-duplicate JSON-LD).
     /** Accept header when looking for a graph or dataset */
     public static final String defaultRDFAcceptHeader       =  
             "text/turtle,application/n-triples;q=0.9,application/rdf+xml;q=0.7," +
-            "application/trig,application/n-quads;q=0.9,text/x-nquads;q=0.8,application/x-trig;q=0.7,application/ld+json;q=0.6," +
+            "application/trig,application/n-quads;q=0.9,application/ld+json;q=0.8," +
             "*/*;q=0.5" ;
-    
+
     /** Return our "canonical" name for a Content Type.
      * This should be the standard one, no X-*
      */
@@ -204,7 +204,7 @@ public class WebContent
         if ( ct1 == null || ct2 == null )
             return false ;
         
-        return matchContentType(ct1.getContentType(), ct2.getContentType()) ;
+        return matchContentType(ct1.getContentTypeStr(), ct2.getContentTypeStr()) ;
     }
     
     public static boolean matchContentType(String ct1, String ct2)  {
@@ -214,11 +214,11 @@ public class WebContent
     public static boolean isHtmlForm(ContentType ct) {
         if ( ct == null )
             return false ;
-        return contentTypeHTMLForm.equalsIgnoreCase(ct.getContentType()) ;
+        return contentTypeHTMLForm.equalsIgnoreCase(ct.getContentTypeStr()) ;
     }
 
     public static boolean isMultiPartForm(ContentType ct) {
-        return contentTypeMultipartFormData.equalsIgnoreCase(ct.getContentType()) ;
+        return contentTypeMultipartFormData.equalsIgnoreCase(ct.getContentTypeStr()) ;
     }
 
     /**

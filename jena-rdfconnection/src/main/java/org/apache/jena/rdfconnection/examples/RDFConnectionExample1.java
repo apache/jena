@@ -42,4 +42,3 @@ public class RDFConnectionExample1 {
         conn.queryResultSet(query, ResultSetFormatter::out);
     }
 }
-

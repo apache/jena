@@ -27,6 +27,7 @@ import org.apache.jena.web.DatasetGraphAccessor;
 import org.junit.After;
 import org.junit.Before;
 
+@SuppressWarnings("deprecation")
 public class TestDatasetGraphAccessorTDB extends AbstractTestDatasetGraphAccessor
 {
     DatasetGraph dsg = TL.createTestDatasetGraphMem();

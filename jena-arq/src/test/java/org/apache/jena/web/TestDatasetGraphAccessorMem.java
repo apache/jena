@@ -23,6 +23,7 @@ import org.apache.jena.query.DatasetAccessorFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 
+@SuppressWarnings("deprecation")
 public class TestDatasetGraphAccessorMem extends AbstractTestDatasetGraphAccessor
 {
     @Override

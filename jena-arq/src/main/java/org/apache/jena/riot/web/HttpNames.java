@@ -28,8 +28,9 @@ public class HttpNames
     public static final String hAcceptRanges        = "Accept-Ranges" ;
     
     public static final String hAllow               = "Allow" ;
+    public static final String hAuthorization       = "Authorization";
     public static final String hContentEncoding     = "Content-Encoding" ;
-    public static final String hContentLengh        = "Content-Length" ;
+    public static final String hContentLength       = "Content-Length" ;
     public static final String hContentLocation     = "Content-Location" ;
     public static final String hContentRange        = "Content-Range" ;
     public static final String hContentType         = "Content-Type" ;

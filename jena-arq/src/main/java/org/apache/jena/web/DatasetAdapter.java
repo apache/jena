@@ -25,7 +25,10 @@ import org.apache.jena.query.DatasetAccessor ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 
-/** Adapter between Dataset/Model level and DatasetGraph/Graph level */ 
+/** Adapter between Dataset/Model level and DatasetGraph/Graph level.
+ *  @deprecated Use {@code RDFConnectionFactory}.
+ */
+@Deprecated
 public class DatasetAdapter implements DatasetAccessor
 {
     private final DatasetGraphAccessor updater ;

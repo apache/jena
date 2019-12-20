@@ -24,6 +24,7 @@ import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.web.DatasetGraphAccessor ;
 import org.apache.jena.web.AbstractTestDatasetGraphAccessor ;
 
+@SuppressWarnings("deprecation")
 public class TestDatasetGraphAccessorTDB extends AbstractTestDatasetGraphAccessor
 {
     @Override

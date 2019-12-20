@@ -28,7 +28,9 @@ import org.apache.jena.web.DatasetGraphAccessorHTTP ;
 /**
  * Factory which produces dataset accessors
  *
+ *  @deprecated Use {@code RDFConnectionFactory}.
  */
+@Deprecated
 public class DatasetAccessorFactory
 {
     /**
@@ -36,6 +38,7 @@ public class DatasetAccessorFactory
      * @param serviceURI Service URI
      * @return Accessor
      */
+
     public static DatasetAccessor createHTTP(String serviceURI)
     {
         return adapt(new DatasetGraphAccessorHTTP(serviceURI)) ;
