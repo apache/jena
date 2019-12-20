@@ -108,6 +108,9 @@ public class AbstractQueryBuilderTest {
 		assertEquals( "foo", n.getName());
 		assertTrue( n instanceof Var );
 
+		n = builder.makeNode( "'text'@en");
+		assertEquals( "text", n.getLiteralLexicalForm());
+		assertEquals( "en", n.getLiteralLanguage());
 	}
 
 	@Test
@@ -168,4 +171,5 @@ public class AbstractQueryBuilderTest {
 		assertTrue( result.contains(NodeFactory.createURI("one")));
 
 	}
+	
 }

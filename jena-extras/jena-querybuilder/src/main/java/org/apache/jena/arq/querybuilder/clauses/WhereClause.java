@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.ExprFactory;
+import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.graph.FrontsTriple;
 import org.apache.jena.graph.Node;
@@ -83,6 +84,15 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 * @return This Builder for chaining.
 	 */
 	public T addWhere(Object s, Object p, Object o);
+	
+	/**
+	 * Adds the elements from the whereClause to this where Clause.
+	 * 
+	 * @param whereClause
+	 *            The whereClause to add to this statement.
+	 * @return This Builder for chaining.
+	 */
+	public T addWhere( AbstractQueryBuilder<?> whereClause);
 	
 	/**
 	 * Add a variable or variable and values to the value statement.
