@@ -95,8 +95,7 @@ public class CollectionQuadHolder implements QuadHolder {
     	if (n.isVariable())
     	{
     		Var v = Var.alloc(n);
-    		Node n2 = values.get( v );
-    		return n2==null?n:n2;
+    		return values.getOrDefault(v, n);
     	}
     	return n;
     }
