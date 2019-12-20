@@ -121,10 +121,19 @@ public class ExprFactory {
 
 	private final PrefixMapping pMap;
 
+	/**
+	 * Constructs an expression factor with the specified prefix definitions.
+	 * @param pMap the PrefixMapping to use in the expressions.
+	 */
 	public ExprFactory(PrefixMapping pMap) {
 		this.pMap = pMap;
 	}
 
+	/**
+	 * Constructs an expression factory with the prefix definitions found in
+	 * {@code PrefixMapping.Extended}
+	 * @see PrefixMapping#Extended
+	 */
 	public ExprFactory() {
 		this(PrefixMapping.Extended);
 	}

@@ -76,7 +76,7 @@ public class UpdateBuilder {
 	private Node with;
 
 	/**
-	 * Constructor.
+	 * Creates an UpdateBuilder with an empty prefix mapping.
 	 */
 	public UpdateBuilder() {
 		this.prefixHandler = new PrefixHandler();
@@ -86,7 +86,8 @@ public class UpdateBuilder {
 	}
 
 	/**
-	 * Constructor. Uses the prefixes from the prolog clause. <b>May modify the
+	 * Creates an UpdateBuilder with the prefixes defined in the prolog clause.
+	 *  <b>May modify the
 	 * contents of the prefix mapping in the prolog handler</b>
 	 * 
 	 * @param prologClause
@@ -97,8 +98,8 @@ public class UpdateBuilder {
 	}
 
 	/**
-	 * Constructor. Uses the specified prefix mapping. <b>May modify the
-	 * contents of the prefix mapping</b>
+	 * Creates an UpdateBuilder with the specified PrefixMapping.
+	 * <b>May modify the contents of the prefix mapping</b>
 	 * 
 	 * @param pMap
 	 *            the prefix mapping to use.
@@ -108,7 +109,11 @@ public class UpdateBuilder {
 		this.whereProcessor = new WhereQuadHolder(prefixHandler);
 	}
 
-	// conver a collection of QuadHolder to an iterator on quads.
+	/**
+	 * Convert a collection of QuadHolder to an iterator on Quads.
+	 * @param holders the Collection of QuadHolder objects
+	 * @return an iterator over the Quads.
+	 */
 	private ExtendedIterator<Quad> getQuads(Collection<QuadHolder> holders) {
 		ExtendedIterator<Quad> result = NiceIterator.emptyIterator();
 		for (QuadHolder holder : holders) {
@@ -191,12 +196,6 @@ public class UpdateBuilder {
 
 	// build updates with where clauses
 	private Update buildWhere() {
-
-		// if (inserts.isEmpty()) {
-		// QuadAcc quadAcc = new QuadAcc(getQuads(deletes).toList());
-		// UpdateDeleteWhere retval = new UpdateDeleteWhere(quadAcc);
-		// return retval;
-		// }
 
 		UpdateModify retval = new UpdateModify();
 		if (with != null)
