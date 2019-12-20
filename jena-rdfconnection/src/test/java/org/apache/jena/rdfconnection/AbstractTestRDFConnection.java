@@ -23,12 +23,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.query.ReadWrite;
+import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.sse.SSE;
@@ -41,10 +38,10 @@ import org.junit.Test;
 public abstract class AbstractTestRDFConnection extends BaseTest {
     // Testing data.
     static String DIR = "testing/RDFConnection/";
-    
+
     protected abstract RDFConnection connection();
     // Not all connection types support abort.
-    protected abstract boolean supportsAbort(); 
+    protected abstract boolean supportsAbort();
 
     // ---- Data
     static String dsgdata = StrUtils.strjoinNL
@@ -54,7 +51,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
         ,"  (graph :g2 (:s :p :o) (:s2 :p2 :o))"
         ,")"
         );
-    
+
     static String dsgdata2 = StrUtils.strjoinNL
         ("(dataset"
         ,"  (graph (:x :y :z))"
@@ -62,7 +59,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
         ,")"
         );
 
-    
+
     static String graph1 = StrUtils.strjoinNL
         ("(graph (:s :p :o) (:s1 :p1 :o))"
         );
@@ -70,7 +67,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
     static String graph2 = StrUtils.strjoinNL
         ("(graph (:s :p :o) (:s2 :p2 :o))"
         );
-    
+
     static DatasetGraph dsg        = SSE.parseDatasetGraph(dsgdata);
     static Dataset      dataset    = DatasetFactory.wrap(dsg);
     static DatasetGraph dsg2       = SSE.parseDatasetGraph(dsgdata2);
@@ -91,9 +88,9 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
         // Allow multiple close()
         conn.close();
     }
-    
+
     @Test public void dataset_load_1() {
-        String testDataFile = DIR+"data.trig"; 
+        String testDataFile = DIR+"data.trig";
         try ( RDFConnection conn = connection() ) {
             conn.loadDataset(testDataFile);
             Dataset ds0 = RDFDataMgr.loadDataset(testDataFile);
@@ -104,7 +101,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
 
     @Test public void dataset_put_1() {
         try ( RDFConnection conn = connection() ) {
-            conn.putDataset(dataset); 
+            conn.putDataset(dataset);
             Dataset ds1 = conn.fetchDataset();
             assertTrue("Datasets not isomorphic", isomorphic(dataset, ds1));
         }
@@ -112,7 +109,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
 
     @Test public void dataset_put_2() {
         try ( RDFConnection conn = connection() ) {
-            conn.putDataset(dataset); 
+            conn.putDataset(dataset);
             conn.putDataset(dataset2);
             Dataset ds1 = conn.fetchDataset();
             assertTrue("Datasets not isomorphic", isomorphic(dataset2, ds1));
@@ -126,7 +123,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
             assertTrue("Datasets not isomorphic", isomorphic(dataset, ds1));
         }
     }
-    
+
     @Test public void dataset_post_2() {
         try ( RDFConnection conn = connection() ) {
             conn.loadDataset(dataset);
@@ -140,9 +137,9 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
     }
 
     // Default graph
-    
+
     @Test public void graph_load_1() {
-        String testDataFile = DIR+"data.ttl"; 
+        String testDataFile = DIR+"data.ttl";
         Model m0 = RDFDataMgr.loadModel(testDataFile);
         try ( RDFConnection conn = connection() ) {
             conn.load(testDataFile);
@@ -153,7 +150,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
 
     @Test public void graph_put_1() {
         try ( RDFConnection conn = connection() ) {
-            conn.put(model1); 
+            conn.put(model1);
             Dataset ds1 = conn.fetchDataset();
             Model m0 = conn.fetch();
             assertTrue("Models not isomorphic", isomorphic(model1, ds1.getDefaultModel()));
@@ -164,7 +161,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
 
     @Test public void graph_put_2() {
         try ( RDFConnection conn = connection() ) {
-            conn.put(model1); 
+            conn.put(model1);
             conn.put(model2);
             Model m = conn.fetch();
             assertTrue("Models not isomorphic", isomorphic(m, model2));
@@ -179,7 +176,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
             assertTrue("Models not isomorphic", isomorphic(m, model1));
         }
     }
-    
+
     @Test public void graph_post_2() {
         try ( RDFConnection conn = connection() ) {
             conn.load(model1);
@@ -191,11 +188,11 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
     }
 
     // DELETE
-    
+
     // Named graphs
-    
+
     @Test public void named_graph_load_1() {
-        String testDataFile = DIR+"data.ttl"; 
+        String testDataFile = DIR+"data.ttl";
         Model m0 = RDFDataMgr.loadModel(testDataFile);
         try ( RDFConnection conn = connection() ) {
             conn.load(graphName, testDataFile);
@@ -208,7 +205,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
 
     @Test public void named_graph_put_1() {
         try ( RDFConnection conn = connection() ) {
-            conn.put(graphName, model1); 
+            conn.put(graphName, model1);
             Dataset ds1 = conn.fetchDataset();
             Model m0 = conn.fetch(graphName);
             assertTrue("Models not isomorphic", isomorphic(model1, ds1.getNamedModel(graphName)));
@@ -219,7 +216,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
 
     @Test public void named_graph_put_2() {
         try ( RDFConnection conn = connection() ) {
-            conn.put(graphName, model1); 
+            conn.put(graphName, model1);
             conn.put(graphName, model2);
             Model m = conn.fetch(graphName);
             assertTrue("Models not isomorphic", isomorphic(m, model2));
@@ -229,7 +226,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
 
     @Test public void named_graph_put_2_different() {
         try ( RDFConnection conn = connection() ) {
-            conn.put(graphName, model1); 
+            conn.put(graphName, model1);
             conn.put(graphName2, model2);
             Model m1 = conn.fetch(graphName);
             Model m2 = conn.fetch(graphName2);
@@ -245,7 +242,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
             assertTrue("Models not isomorphic", isomorphic(m, model1));
         }
     }
-    
+
     @Test public void named_graph_post_2() {
         try ( RDFConnection conn = connection() ) {
             conn.load(graphName, model1);
@@ -257,18 +254,39 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
     }
 
     // DELETE
-    
-    // Remote connections don't support transactions fully.  
-    //@Test public void transaction_01() 
+
+    // Remote connections don't support transactions fully.
+    //@Test public void transaction_01()
 
     private static boolean isomorphic(Dataset ds1, Dataset ds2) {
         return IsoMatcher.isomorphic(ds1.asDatasetGraph(), ds2.asDatasetGraph());
     }
-    
+
     private static boolean isomorphic(Model model1, Model model2) {
         return model1.isIsomorphicWith(model2);
     }
-    
+
+    @Test public void query_01() {
+        try ( RDFConnection conn = connection() ) {
+            Txn.executeRead(conn, ()->{
+                try ( QueryExecution qExec = conn.query("SELECT ?x {}") ) {
+                    ResultSet rs = qExec.execSelect();
+                    ResultSetFormatter.consume(rs);
+                }
+            });
+        }
+    }
+
+    @Test public void query_02() {
+        try ( RDFConnection conn = connection() ) {
+            Txn.executeRead(conn, ()->{
+                try ( QueryExecution qExec = conn.query("ASK{}") ) {
+                    boolean b = qExec.execAsk();
+                    assertTrue(b);
+                }
+            });
+        }
+    }
 
     @Test public void query_ask_01() {
         try ( RDFConnection conn = connection() ) {
@@ -322,7 +340,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
             assertEquals(2, m.size());
         }
     }
-    
+
     @Test public void update_01() {
         try ( RDFConnection conn = connection() ) {
             conn.update("INSERT DATA { <urn:x:s> <urn:x:p> <urn:x:o>}");
@@ -352,32 +370,32 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
     }
     // Not all Transactional support abort.
     @Test public void transaction_commit_read_01() {
-        String testDataFile = DIR+"data.trig"; 
+        String testDataFile = DIR+"data.trig";
         try ( RDFConnection conn = connection() ) {
 
             conn.begin(ReadWrite.WRITE);
             conn.loadDataset(dataset);
             conn.commit();
             conn.end();
-            
+
             conn.begin(ReadWrite.READ);
             Model m = conn.fetch();
             assertTrue(isomorphic(m, dataset.getDefaultModel()));
             conn.end();
         }
     }
-    
+
     // Not all RDFConnections support abort.
     @Test public void transaction_abort_read02() {
         Assume.assumeTrue(supportsAbort());
-        
-        String testDataFile = DIR+"data.trig"; 
+
+        String testDataFile = DIR+"data.trig";
         try ( RDFConnection conn = connection() ) {
             conn.begin(ReadWrite.WRITE);
             conn.loadDataset(testDataFile);
             conn.abort();
             conn.end();
-            
+
             conn.begin(ReadWrite.READ);
             Model m = conn.fetch();
             assertTrue(m.isEmpty());

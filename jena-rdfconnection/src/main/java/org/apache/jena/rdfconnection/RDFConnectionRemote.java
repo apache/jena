@@ -21,6 +21,7 @@ package org.apache.jena.rdfconnection;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.apache.http.HttpEntity;
@@ -78,9 +79,10 @@ public class RDFConnectionRemote implements RDFConnection {
     protected final RDFFormat outputTriples;
     protected final String acceptGraph;
     protected final String acceptDataset;
-    protected final String acceptSparqlResults;
     protected final String acceptSelectResult;
     protected final String acceptAskResult;
+    // All purpose SPARQL results header used if above specific cases do not apply. 
+    protected final String acceptSparqlResults;
 
     // Whether to check SPARQL queries given as strings by parsing them.
     protected final boolean parseCheckQueries;
@@ -142,19 +144,99 @@ public class RDFConnectionRemote implements RDFConnection {
         return destination;
     }
 
+    // For custom content negotiation.
+
+    // This class overrides each of these to pass down the query type as well.
+    // Then we can derive the accept header if customized without needing to parse
+    // the query. This allows an arbitrary string for a query and allows the remote
+    // server to have custom syntax extensions or interpretations of comments.
+
+    /**
+     * Execute a SELECT query and process the ResultSet with the handler code.
+     * @param queryString
+     * @param resultSetAction
+     */
+    @Override
+    public void queryResultSet(String queryString, Consumer<ResultSet> resultSetAction) {
+        Txn.executeRead(this, ()->{
+            try ( QueryExecution qExec = query(queryString, QueryType.SELECT) ) {
+                ResultSet rs = qExec.execSelect();
+                resultSetAction.accept(rs);
+            }
+        } );
+    }
+
+    /**
+     * Execute a SELECT query and process the rows of the results with the handler code.
+     * @param queryString
+     * @param rowAction
+     */
+    @Override
+    public void querySelect(String queryString, Consumer<QuerySolution> rowAction) {
+        Txn.executeRead(this, ()->{
+            try ( QueryExecution qExec = query(queryString, QueryType.SELECT) ) {
+                qExec.execSelect().forEachRemaining(rowAction);
+            }
+        } );
+    }
+
+    /** Execute a CONSTRUCT query and return as a Model */
+    @Override
+    public Model queryConstruct(String queryString) {
+        return
+            Txn.calculateRead(this, ()->{
+                try ( QueryExecution qExec = query(queryString, QueryType.CONSTRUCT) ) {
+                    return qExec.execConstruct();
+                }
+            } );
+    }
+
+    /** Execute a DESCRIBE query and return as a Model */
+    @Override
+    public Model queryDescribe(String queryString) {
+        return
+            Txn.calculateRead(this, ()->{
+                try ( QueryExecution qExec = query(queryString, QueryType.DESCRIBE) ) {
+                    return qExec.execDescribe();
+                }
+            } );
+    }
+
+    /** Execute a ASK query and return a boolean */
+    @Override
+    public boolean queryAsk(String queryString) {
+        return
+            Txn.calculateRead(this, ()->{
+                try ( QueryExecution qExec = query(queryString, QueryType.ASK) ) {
+                    return qExec.execAsk();
+                }
+            } );
+    }
+
+    /**
+     * Operation that passed down the query type so the accept header can be set without parsing the query string.
+     * @param queryString
+     * @param queryType
+     * @return QueryExecution
+     */
+    protected QueryExecution query(String queryString, QueryType queryType) {
+        Objects.requireNonNull(queryString);
+        return queryExec(null, queryString, queryType);
+    }
+
     @Override
     public QueryExecution query(String queryString) {
         Objects.requireNonNull(queryString);
-        return queryExec(null, queryString);
+        return queryExec(null, queryString, null);
     }
 
     @Override
     public QueryExecution query(Query query) {
         Objects.requireNonNull(query);
-        return queryExec(query, null);
+        return queryExec(query, null, null);
     }
 
-    private QueryExecution queryExec(Query query, String queryString) {
+    private QueryExecution queryExec(Query query, String queryString, QueryType queryType) {
         checkQuery();
         if ( query == null && queryString == null )
             throw new InternalErrorException("Both query and query string are null");
@@ -164,32 +246,57 @@ public class RDFConnectionRemote implements RDFConnection {
         }
 
         // Use the query string as provided if possible, otherwise serialize the query.
-        String queryStringToSend = ( queryString != null ) ?  queryString : query.toString();
-        return exec(()-> createQueryExecution(query, queryStringToSend));
+        String queryStringToSend = ( queryString != null ) ? queryString : query.toString();
+        return exec(()-> createQueryExecution(query, queryStringToSend, queryType));
     }
 
     // Create the QueryExecution
-    private QueryExecution createQueryExecution(Query query, String queryStringToSend) {
+    private QueryExecution createQueryExecution(Query query, String queryStringToSend, QueryType queryType) {
         QueryExecution qExec = new QueryEngineHTTP(svcQuery, queryStringToSend, httpClient, httpContext);
         QueryEngineHTTP qEngine = (QueryEngineHTTP)qExec;
+        QueryType qt = queryType;
+        if ( query != null && qt == null )
+            qt = query.queryType();
+        if ( qt == null )
+            qt = QueryType.UNKNOWN;
         // Set the accept header - use the most specific method.
-        if ( query != null ) {
-            if ( query.isSelectType() && acceptSelectResult != null )
-                qEngine.setAcceptHeader(acceptSelectResult);
-            if ( query.isAskType() && acceptAskResult != null )
-                qEngine.setAcceptHeader(acceptAskResult);
-            if ( ( query.isConstructType() || query.isDescribeType() ) && acceptGraph != null )
-                qEngine.setAcceptHeader(acceptGraph);
-            if ( query.isConstructQuad() )
-                qEngine.setDatasetContentType(acceptDataset);
+        switch(qt) {
+            case SELECT :
+                if ( acceptSelectResult != null )
+                    qEngine.setAcceptHeader(acceptSelectResult);
+                break;
+            case ASK :
+                if ( acceptAskResult != null )
+                    qEngine.setAcceptHeader(acceptAskResult);
+                break;
+            case DESCRIBE :
+            case CONSTRUCT :
+                if ( acceptGraph != null )
+                    qEngine.setAcceptHeader(acceptGraph);
+                break;
+            case UNKNOWN:
+                // All-purpose content type.
+                if ( acceptSparqlResults != null )
+                    qEngine.setAcceptHeader(acceptSparqlResults);
+                else
+                    // No idea! Set an "anything" and hope.
+                    // (Reasonable chance this is going to end up as HTML though.)
+                    qEngine.setAcceptHeader("*/*");
+            default :
+                break;
         }
-        // Use the general one.
-        if ( qEngine.getAcceptHeader() == null && acceptSparqlResults != null )
-            qEngine.setAcceptHeader(acceptSparqlResults);
         // Make sure it was set somehow.
         if ( qEngine.getAcceptHeader() == null )
             throw new JenaConnectionException("No Accept header");
         return qExec ;
+    }
+
+    private void acc(StringBuilder sBuff, String acceptString) {
+        if ( acceptString == null )
+            return;
+        if ( sBuff.length() != 0 )
+            sBuff.append(", ");
+        sBuff.append(acceptString);
     }
 
     @Override
@@ -427,7 +534,7 @@ public class RDFConnectionRemote implements RDFConnection {
         });
     }
 
-    /** Do a PUT or POST to a dataset, sending the contents of a daatsets.
+    /** Do a PUT or POST to a dataset, sending the contents of a dataset.
      * The Content-Type is {@code application/n-quads}.
      * <p>
      * "Replace" implies PUT, otherwise a POST is used.
@@ -497,13 +604,13 @@ public class RDFConnectionRemote implements RDFConnection {
 
     /** Create an HttpEntity for the graph. */
     protected HttpEntity graphToHttpEntity(Graph graph, RDFFormat syntax) {
-        // Length - leaves connection reusable. 
+        // Length - leaves connection reusable.
         return graphToHttpEntityWithLength(graph, syntax);
     }
-    
-    /** 
+
+    /**
      * Create an HttpEntity for the graph. The HTTP entity will have the length but this
-     * requires serialising the graph at the point when this function is called.  
+     * requires serialising the graph at the point when this function is called.
      */
     private HttpEntity graphToHttpEntityWithLength(Graph graph, RDFFormat syntax) {
         String ct = syntax.getLang().getContentType().getContentType();
@@ -535,10 +642,10 @@ public class RDFConnectionRemote implements RDFConnection {
 
     /** Create an HttpEntity for the dataset */
     protected HttpEntity datasetToHttpEntity(DatasetGraph dataset, RDFFormat syntax) {
-        // Length - leaves connection reusable. 
+        // Length - leaves connection reusable.
         return datasetToHttpEntityWithLength(dataset, syntax);
     }
-        
+
     private HttpEntity datasetToHttpEntityWithLength(DatasetGraph dataset, RDFFormat syntax) {
         String ct = syntax.getLang().getContentType().getContentType();
         ByteArrayOutputStream out = new ByteArrayOutputStream(128*1024);

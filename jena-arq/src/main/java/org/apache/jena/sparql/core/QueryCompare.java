@@ -61,7 +61,7 @@ public class QueryCompare implements QueryVisitor
 
     @Override
     public void visitResultForm(Query query1)
-    { check("Query result form", query1.getQueryType() == query2.getQueryType()) ; }
+    { check("Query result form", query1.queryType() == query2.queryType()) ; }
 
     @Override
     public void visitPrologue(Prologue query1)
