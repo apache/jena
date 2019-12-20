@@ -64,9 +64,13 @@ import org.apache.jena.sparql.util.NodeFactoryExtra ;
 public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 implements Cloneable, PrologClause<T>, ValuesClause<T> {
 
-	// the query this builder is building
+	/**
+	 *  the query this builder is building
+	 */
 	protected Query query;
-	// a map of vars to nodes for replacement during build.
+	/**
+	 * a map of vars to nodes for replacement during build.
+	 */
 	private final Map<Var, Node> values;
 
 	/**
@@ -90,6 +94,12 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 		return makeNode( o, query.getPrefixMapping() );
 	}
 
+	/**
+	 * Make a node or path from the object using the query prefix mapping.
+	 * @param o the object to make the node or path from.
+	 * @return A node or path.
+	 * @see #makeNodeOrPath(Object, PrefixMapping)
+	 */
 	private Object makeNodeOrPath(Object o)
 	{
 		return makeNodeOrPath(o, query.getPrefixMapping() );
@@ -346,6 +356,10 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 		return getHandlerBlock().getValueHandler();
 	}
 
+	/**
+	 * Gets the where handler used by this QueryBuilder.
+	 * @return the where handler used by this QueryBuilder.
+	 */
 	public final WhereHandler getWhereHandler() {
 		return getHandlerBlock().getWhereHandler();
 	}
@@ -441,6 +455,12 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 
 	// --- VALUES
 
+	/**
+	 * Creates a collection of nodes from an iterator of Objects.
+	 * @param iter the iterator of objects, may be null or empty.
+	 * @param prefixMapping the PrefixMapping to use when nodes are created.
+	 * @return a Collection of nodes or null if iter is null or empty.
+	 */
 	public static Collection<Node> makeValueNodes( Iterator<?> iter, PrefixMapping prefixMapping )
 	{
 		if (iter == null || !iter.hasNext())
@@ -463,6 +483,12 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 		return values;
 	}
 
+	/**
+	 * Creates a collection of nodes from an iterator of Objects.
+	 * Uses the prefix mapping from the PrologHandler.
+	 * @param iter the iterator of objects, may be null or empty.
+	 * @return a Collection of nodes or null if iter is null or empty.
+	 */
 	public Collection<Node> makeValueNodes( Iterator<?> iter )
 	{
 		return makeValueNodes( iter, getPrologHandler().getPrefixes() );
