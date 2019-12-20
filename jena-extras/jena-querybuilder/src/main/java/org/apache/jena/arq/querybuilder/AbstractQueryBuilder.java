@@ -364,6 +364,12 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 		return getHandlerBlock().getWhereHandler();
 	}
 	
+	/**
+	 * Adds the contents of the whereClause to the where clause of this 
+	 * builder.
+	 * @param whereClause the where clause to add.
+	 * @return this builder for chaining.
+	 */
 	@SuppressWarnings("unchecked")
 	public final T addWhere( AbstractQueryBuilder<?> whereClause) {
 		getWhereHandler().addAll( whereClause.getWhereHandler());
