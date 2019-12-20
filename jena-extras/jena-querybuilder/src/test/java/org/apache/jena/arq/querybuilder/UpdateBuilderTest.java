@@ -21,7 +21,6 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 import org.apache.jena.arq.querybuilder.UpdateBuilder;
