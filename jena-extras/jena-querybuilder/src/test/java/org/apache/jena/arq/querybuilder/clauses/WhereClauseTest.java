@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
-import org.apache.jena.arq.querybuilder.ExprFactory;
 import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.arq.querybuilder.WhereBuilder;
 import org.apache.jena.arq.querybuilder.WhereValidator;
@@ -60,8 +59,6 @@ import org.apache.jena.sparql.syntax.ElementTriplesBlock;
 import org.apache.jena.sparql.syntax.ElementUnion;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.After;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
 
 import org.xenei.junit.contract.Contract;
