@@ -44,6 +44,7 @@ public class DateTimeStampDV extends DateTimeDV {
     * @return normalized dateTime representation
     * @exception SchemaDateTimeException Invalid lexical representation
     */
+   @Override
    protected DateTimeData parse(String str) throws SchemaDateTimeException {
       DateTimeData dateTimeData = super.parse( str );
       if (dateTimeData.hasTimeZone()) {
