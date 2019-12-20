@@ -22,7 +22,7 @@ import org.apache.jena.ext.xerces.util.SymbolHash;
 
 /**
  * A special factory to create/return built-in schema DVs and create user-defined DVs
- * that includes anyAtomicType, yearMonthDuration and dayTimeDuration
+ * that includes anyAtomicType, yearMonthDuration, dayTimeDuration and dateTimeStamp
  * 
  * {@literal @xerces.internal} 
  *
@@ -40,9 +40,9 @@ public class ExtendedSchemaDVFactoryImpl extends BaseSchemaDVFactory {
     // create all built-in types
     static void createBuiltInTypes() {
         final String ANYATOMICTYPE     = "anyAtomicType";
-        final String DURATION          = "duration";
         final String YEARMONTHDURATION = "yearMonthDuration";
         final String DAYTIMEDURATION   = "dayTimeDuration";
+        final String DATETIMESTAMP     = "dateTimeStamp";
 
     	createBuiltInTypes(fBuiltInTypes, XSSimpleTypeDecl.fAnyAtomicType);
 
@@ -53,6 +53,9 @@ public class ExtendedSchemaDVFactoryImpl extends BaseSchemaDVFactory {
         XSSimpleTypeDecl durationDV = (XSSimpleTypeDecl)fBuiltInTypes.get(DURATION);
         fBuiltInTypes.put(YEARMONTHDURATION, new XSSimpleTypeDecl(durationDV, YEARMONTHDURATION, XSSimpleTypeDecl.DV_YEARMONTHDURATION, XSSimpleType.ORDERED_PARTIAL, false, false, false, true, XSSimpleTypeDecl.YEARMONTHDURATION_DT));
         fBuiltInTypes.put(DAYTIMEDURATION, new XSSimpleTypeDecl(durationDV, DAYTIMEDURATION, XSSimpleTypeDecl.DV_DAYTIMEDURATION, XSSimpleType.ORDERED_PARTIAL, false, false, false, true, XSSimpleTypeDecl.DAYTIMEDURATION_DT));
+
+        XSSimpleTypeDecl dateTimeDV = (XSSimpleTypeDecl) fBuiltInTypes.get( DATETIME );
+        fBuiltInTypes.put( DATETIMESTAMP, new XSSimpleTypeDecl(dateTimeDV, DATETIMESTAMP, XSSimpleTypeDecl.DV_DATETIMESTAMP, XSSimpleType.ORDERED_PARTIAL, false, false, false, true, XSSimpleTypeDecl.DATETIMESTAMP_DT) );
     } //createBuiltInTypes()
 
     /**
