@@ -26,15 +26,17 @@ import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.clauses.PrologClause;
 import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.query.Query;
 import org.apache.jena.rdf.model.ResourceFactory ;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.junit.After;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractTest;
 import org.xenei.junit.contract.IProducer;
 
 @Contract(PrologClause.class)
-public class PrologClauseTest<T extends PrologClause<?>> extends
-		AbstractClauseTest {
+public class PrologClauseTest<T extends PrologClause<?>>  {
 
 	// the producer we will user
 	private IProducer<T> producer;
@@ -66,9 +68,10 @@ public class PrologClauseTest<T extends PrologClause<?>> extends
 		PrologClause<?> prologClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = prologClause.addPrefix("pfx",
 				ResourceFactory.createResource("uri"));
-
-		String[] s = byLine(builder);
-		assertContainsRegex("PREFIX\\s+pfx:\\s+\\<uri\\>", s);
+		Query q = builder.build();
+		PrefixMapping map = q.getPrefixMapping();
+		assertEquals( "uri", map.getNsPrefixURI("pfx"));
+		assertEquals( 1, map.getNsPrefixMap().size() );
 	}
 
 	@ContractTest
@@ -77,39 +80,59 @@ public class PrologClauseTest<T extends PrologClause<?>> extends
 		AbstractQueryBuilder<?> builder = prologClause.addPrefix("pfx",
 				NodeFactory.createURI("uri"));
 
-		String[] s = byLine(builder);
-		assertContainsRegex("PREFIX\\s+pfx:\\s+\\<uri\\>", s);
+		Query q = builder.build();
+		PrefixMapping map = q.getPrefixMapping();
+		assertEquals( "uri", map.getNsPrefixURI("pfx"));
+		assertEquals( 1, map.getNsPrefixMap().size() );
 	}
 
 	@ContractTest
 	public void testAddPrefixString() {
 		PrologClause<?> prologClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = prologClause.addPrefix("pfx", "uri");
-
-		String[] s = byLine(builder);
-		assertContainsRegex("PREFIX\\s+pfx:\\s+\\<uri\\>", s);
+		Query q = builder.build();
+		PrefixMapping map = q.getPrefixMapping();
+		assertEquals( "uri", map.getNsPrefixURI("pfx"));
+		assertEquals( 1, map.getNsPrefixMap().size() );
 	}
 
 	@ContractTest
-	public void testAddPrefixes() {
+	public void testAddPrefixes_Map() {
 		Map<String, String> map = new HashMap<>();
 		map.put("pfx", "uri");
 		map.put("pfx2", "uri2");
 		PrologClause<?> prologClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = prologClause.addPrefixes(map);
-		String[] s = byLine(builder);
-		assertContainsRegex("PREFIX\\s+pfx:\\s+\\<uri\\>", s);
-		assertContainsRegex("PREFIX\\s+pfx2:\\s+\\<uri2\\>", s);
+		Query q = builder.build();
+		PrefixMapping map2 = q.getPrefixMapping();
+		assertEquals( "uri", map2.getNsPrefixURI("pfx"));
+		assertEquals( "uri2", map2.getNsPrefixURI("pfx2"));
+		assertEquals( 2, map2.getNsPrefixMap().size() );
 	}
 
+	@ContractTest
+	public void testAddPrefixes_PrefixMapping() {
+		PrefixMapping map = new PrefixMappingImpl();
+		map.setNsPrefix("pfx", "uri");
+		map.setNsPrefix("pfx2", "uri2");
+		PrologClause<?> prologClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = prologClause.addPrefixes(map);
+		Query q = builder.build();
+		PrefixMapping map2 = q.getPrefixMapping();
+		assertEquals( map.getNsPrefixURI("pfx"), map2.getNsPrefixURI("pfx"));
+		assertEquals( map.getNsPrefixURI("pfx2"), map2.getNsPrefixURI("pfx2"));
+		assertEquals( 2, map2.getNsPrefixMap().size() );
+	}
+
+	
 	@ContractTest
 	public void testSetBaseResource() {
 		PrologClause<?> prologClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = prologClause.setBase(ResourceFactory
 				.createResource("http://example.com/uri"));
 
-		String[] s = byLine(builder);
-		assertContainsRegex("BASE\\s+\\<http://example\\.com/uri\\>", s);
+		Query q = builder.build();
+		assertEquals( "http://example.com/uri", q.getResolver().getBaseIRIasString());
 	}
 
 	@ContractTest
@@ -118,27 +141,27 @@ public class PrologClauseTest<T extends PrologClause<?>> extends
 		AbstractQueryBuilder<?> builder = prologClause.setBase(NodeFactory
 				.createURI("http://example.com/uri"));
 
-		String[] s = byLine(builder);
-		assertContainsRegex("BASE\\s+\\<http://example\\.com/uri\\>", s);
+		Query q = builder.build();
+		assertEquals( "http://example.com/uri", q.getResolver().getBaseIRIasString());
 	}
 
 	@ContractTest
 	public void testSetBaseString() {
 		PrologClause<?> prologClause = getProducer().newInstance();
-		AbstractQueryBuilder<?> builder = prologClause.setBase("uri");
+		AbstractQueryBuilder<?> builder = prologClause.setBase("http://example.com/uri");
 
-		String[] s = byLine(builder);
-		assertContainsRegex("BASE\\s+\\<file:\\S+/uri\\>", s);
+		Query q = builder.build();
+		assertEquals( "http://example.com/uri", q.getResolver().getBaseIRIasString());
 	}
 
 	@ContractTest
 	public void testSetBaseTwice() {
 		PrologClause<?> prologClause = getProducer().newInstance();
-		prologClause.setBase("uri");
-		AbstractQueryBuilder<?> builder = prologClause.setBase("uri2");
+		prologClause.setBase("http://example.com/uri");
+		AbstractQueryBuilder<?> builder = prologClause.setBase("http://example.com/uri2");
 
-		String[] s = byLine(builder);
-		assertContainsRegex("BASE\\s+\\<file:\\S+/uri2\\>", s);
+		Query q = builder.build();
+		assertEquals( "http://example.com/uri2", q.getResolver().getBaseIRIasString());
 	}
 
 }

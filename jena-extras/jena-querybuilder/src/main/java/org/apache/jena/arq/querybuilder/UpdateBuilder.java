@@ -33,6 +33,7 @@ import org.apache.jena.arq.querybuilder.updatebuilder.CollectionQuadHolder;
 import org.apache.jena.arq.querybuilder.updatebuilder.ModelQuadHolder;
 import org.apache.jena.arq.querybuilder.updatebuilder.PrefixHandler;
 import org.apache.jena.arq.querybuilder.updatebuilder.QBQuadHolder;
+import org.apache.jena.arq.querybuilder.updatebuilder.QuadCollectionHolder;
 import org.apache.jena.arq.querybuilder.updatebuilder.QuadHolder;
 import org.apache.jena.arq.querybuilder.updatebuilder.SingleQuadHolder;
 import org.apache.jena.arq.querybuilder.updatebuilder.WhereQuadHolder;
@@ -76,7 +77,7 @@ public class UpdateBuilder {
 	private Node with;
 
 	/**
-	 * Constructor.
+	 * Creates an UpdateBuilder with an empty prefix mapping.
 	 */
 	public UpdateBuilder() {
 		this.prefixHandler = new PrefixHandler();
@@ -86,7 +87,8 @@ public class UpdateBuilder {
 	}
 
 	/**
-	 * Constructor. Uses the prefixes from the prolog clause. <b>May modify the
+	 * Creates an UpdateBuilder with the prefixes defined in the prolog clause.
+	 *  <b>May modify the
 	 * contents of the prefix mapping in the prolog handler</b>
 	 * 
 	 * @param prologClause
@@ -97,8 +99,8 @@ public class UpdateBuilder {
 	}
 
 	/**
-	 * Constructor. Uses the specified prefix mapping. <b>May modify the
-	 * contents of the prefix mapping</b>
+	 * Creates an UpdateBuilder with the specified PrefixMapping.
+	 * <b>May modify the contents of the prefix mapping</b>
 	 * 
 	 * @param pMap
 	 *            the prefix mapping to use.
@@ -108,7 +110,11 @@ public class UpdateBuilder {
 		this.whereProcessor = new WhereQuadHolder(prefixHandler);
 	}
 
-	// conver a collection of QuadHolder to an iterator on quads.
+	/**
+	 * Convert a collection of QuadHolder to an iterator on Quads.
+	 * @param holders the Collection of QuadHolder objects
+	 * @return an iterator over the Quads.
+	 */
 	private ExtendedIterator<Quad> getQuads(Collection<QuadHolder> holders) {
 		ExtendedIterator<Quad> result = NiceIterator.emptyIterator();
 		for (QuadHolder holder : holders) {
@@ -191,12 +197,6 @@ public class UpdateBuilder {
 
 	// build updates with where clauses
 	private Update buildWhere() {
-
-		// if (inserts.isEmpty()) {
-		// QuadAcc quadAcc = new QuadAcc(getQuads(deletes).toList());
-		// UpdateDeleteWhere retval = new UpdateDeleteWhere(quadAcc);
-		// return retval;
-		// }
 
 		UpdateModify retval = new UpdateModify();
 		if (with != null)
@@ -400,6 +400,7 @@ public class UpdateBuilder {
 	
 	/**
 	 * Add all the statements in the model to the insert statement.
+	 * Uses Quad.defaultGraphNodeGenerated as the graph name.
 	 * 
 	 * @param model The model to insert.
 	 * @return this builder for chaining.
@@ -410,10 +411,12 @@ public class UpdateBuilder {
 	}
 
 	/**
-	 * Add all the statements in the model to the insert statement.
+	 * Add all the triples in the model to the insert statement.
+	 * Uses Quad.defaultGraphNodeGenerated as the graph name.
 	 * 
 	 * @param collection The triples to insert.
 	 * @return this builder for chaining.
+	 * @see Quad#defaultGraphNodeGenerated
 	 */
 	public UpdateBuilder addInsert(Collection<Triple> collection) {
 		inserts.add(new CollectionQuadHolder( collection ));
@@ -421,10 +424,23 @@ public class UpdateBuilder {
 	}
 	
 	/**
-	 * Add all the statements in the model to the insert statement.
+	 * Add all the quads in the collection to the insert statement.
+	 * 
+	 * @param collection The quads to insert.
+	 * @return this builder for chaining.
+	 */
+	public UpdateBuilder addInsertQuads(Collection<Quad> collection) {
+		inserts.add(new QuadCollectionHolder( collection ));
+		return this;
+	}
+	
+	/**
+	 * Add all the triples to the insert statement.
+	 * Uses Quad.defaultGraphNodeGenerated as the graph name.
 	 * 
 	 * @param iter The iterator of triples to insert.
 	 * @return this builder for chaining.
+	 * @see Quad#defaultGraphNodeGenerated
 	 */
 	public UpdateBuilder addInsert(Iterator<Triple> iter) {
 		inserts.add(new CollectionQuadHolder( iter ));
@@ -451,8 +467,9 @@ public class UpdateBuilder {
 	}
 
 	/**
-	 * Add all the statements in the model to the insert statement.
+	 * Add triples to the insert statement.
 	 * 
+	 * @param g the name of the graph to add the triples to.
 	 * @param collection The triples to insert.
 	 * @return this builder for chaining.
 	 */
@@ -464,8 +481,8 @@ public class UpdateBuilder {
 	}
 	
 	/**
-	 * Add all the statements in the model to the insert statement.
-	 * 
+	 * Add triples to the insert statement.
+	 * @param  g the name of the  graph to add the triples to.
 	 * @param iter The iterator of triples to insert.
 	 * @return this builder for chaining.
 	 */
@@ -479,8 +496,9 @@ public class UpdateBuilder {
 	/**
 	 * Add the statements from the where clause in the specified query builder
 	 * to the insert statement.
-	 * 
+ 	 * Uses Quad.defaultGraphNodeGenerated as the graph name.
 	 * @see #makeNode(Object)
+	 * @see Quad#defaultGraphNodeGenerated
 	 * @param queryBuilder
 	 *            The query builder to extract the where clause from.
 	 * @return this builder for chaining.
@@ -534,13 +552,23 @@ public class UpdateBuilder {
 	/**
 	 * Add a quad to the delete statement.
 	 * 
-	 * 
 	 * @param quad
 	 *            the quad to add.
 	 * @return this builder for chaining.
 	 */
 	public UpdateBuilder addDelete(Quad quad) {
 		deletes.add(new SingleQuadHolder(quad));
+		return this;
+	}
+	
+	/**
+	 * Add all the quads collection to the delete statement.
+	 * 
+	 * @param collection The quads to insert.
+	 * @return this builder for chaining.
+	 */
+	public UpdateBuilder addDeleteQuads(Collection<Quad> collection) {
+		deletes.add(new QuadCollectionHolder( collection ));
 		return this;
 	}
 
@@ -567,11 +595,12 @@ public class UpdateBuilder {
 
 	/**
 	 * Add a triple to the delete statement.
-	 * 
+	 * Uses Quad.defaultGraphNodeGenerated as the graph name.
 	 * 
 	 * @param t
 	 *            the triple to add.
 	 * @return this builder for chaining.
+	 * @see Quad#defaultGraphNodeGenerated
 	 */
 	public UpdateBuilder addDelete(Triple t) {
 		deletes.add(new SingleQuadHolder(t));
@@ -579,7 +608,7 @@ public class UpdateBuilder {
 	}
 
 	/**
-	 * Add a triple in a specified graph to the delete statement.
+	 * Add a triple to the delete statement.
 	 * 
 	 * The graph object is converted by a call to makeNode().
 	 * 
@@ -598,9 +627,11 @@ public class UpdateBuilder {
 
 	/**
 	 * Add all the statements in the model to the delete statement.
+	 * Uses Quad.defaultGraphNodeGenerated as the graph name.
 	 * 
 	 * @param model The model to insert.
 	 * @return this builder for chaining.
+	 * @see Quad#defaultGraphNodeGenerated
 	 */
 	public UpdateBuilder addDelete(Model model) {
 		deletes.add(new ModelQuadHolder( model ));
@@ -608,10 +639,12 @@ public class UpdateBuilder {
 	}
 
 	/**
-	 * Add all the statements in the model to the delete statement.
+	 * Add all triples to the delete statement.
+	 * Uses Quad.defaultGraphNodeGenerated as the graph name.
 	 * 
 	 * @param collection The collection of triples to insert.
 	 * @return this builder for chaining.
+	 * @see Quad#defaultGraphNodeGenerated
 	 */
 	public UpdateBuilder addDelete(Collection<Triple> collection) {
 		deletes.add(new CollectionQuadHolder( collection ));
@@ -619,10 +652,12 @@ public class UpdateBuilder {
 	}
 	
 	/**
-	 * Add all the statements in the model to the delete statement.
+	 * Add all the triples in the iterator to the delete statement.
+	 * Uses Quad.defaultGraphNodeGenerated as the graph name.
 	 * 
 	 * @param iter The iterator of triples to insert.
 	 * @return this builder for chaining.
+	 * @see Quad#defaultGraphNodeGenerated
 	 */
 	public UpdateBuilder addDelete(Iterator<Triple> iter) {
 		deletes.add(new CollectionQuadHolder( iter ));
@@ -682,8 +717,10 @@ public class UpdateBuilder {
 	/**
 	 * Add the statements from the where clause in the specified query builder
 	 * to the delete statement.
+	 * Uses Quad.defaultGraphNodeGenerated as the graph name.
 	 * 
 	 * @see #makeNode(Object)
+	 * @see Quad#defaultGraphNodeGenerated
 	 * @param queryBuilder
 	 *            The query builder to extract the where clause from.
 	 * @return this builder for chaining.
@@ -760,6 +797,19 @@ public class UpdateBuilder {
 	 */
 
 	public UpdateBuilder addPrefixes(Map<String, String> prefixes) {
+		prefixHandler.addPrefixes(prefixes);
+		return this;
+	}
+	
+	/**
+	 * Add the prefixes to the prefix mapping.
+	 * 
+	 * @param prefixes
+	 *            the prefix mapping to add.
+	 * @return this builder for chaining
+	 */
+
+	public UpdateBuilder addPrefixes(PrefixMapping prefixes) {
 		prefixHandler.addPrefixes(prefixes);
 		return this;
 	}

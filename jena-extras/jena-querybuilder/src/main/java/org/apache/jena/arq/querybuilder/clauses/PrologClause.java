@@ -24,6 +24,7 @@ import org.apache.jena.arq.querybuilder.ExprFactory;
 import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.shared.PrefixMapping;
 
 /**
  * Interface that defines the PrologClause as per
@@ -80,7 +81,7 @@ public interface PrologClause<T extends AbstractQueryBuilder<T>> {
 	public T addPrefix(String pfx, String uri);
 
 	/**
-	 * Adds a prefix.
+	 * Adds prefixes.
 	 * 
 	 * @param prefixes
 	 *            A mapping of prefix to URI to add.
@@ -88,6 +89,15 @@ public interface PrologClause<T extends AbstractQueryBuilder<T>> {
 	 */
 	public T addPrefixes(Map<String, String> prefixes);
 
+	/**
+	 * Adds prefixes.
+	 * 
+	 * @param prefixes
+	 *            A PrefixMapping instance..
+	 * @return This builder for chaining.
+	 */
+	public T addPrefixes(PrefixMapping prefixes);
+	
 	/**
 	 * Sets the base URI.
 	 * 

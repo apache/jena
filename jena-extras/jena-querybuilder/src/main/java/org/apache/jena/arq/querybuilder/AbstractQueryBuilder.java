@@ -444,6 +444,13 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 		getPrologHandler().addPrefixes(prefixes);
 		return (T) this;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public T addPrefixes(PrefixMapping prefixMapping) {
+		getPrologHandler().addPrefixes( prefixMapping );
+		return (T) this;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
