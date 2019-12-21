@@ -27,7 +27,7 @@ import org.apache.jena.sparql.core.Transactional ;
  * <p>
  * Nested transaction are not supported but calling inside an existing transaction, 
  * which must be compatible, (i.e. a write needs a WRITE transaction).
- * causes the exising transaction to be used.
+ * causes the existing transaction to be used.
  */
 
 public class Txn {

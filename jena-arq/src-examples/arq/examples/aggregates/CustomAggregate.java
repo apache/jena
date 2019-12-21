@@ -40,7 +40,7 @@ import org.apache.jena.sparql.sse.SSE ;
  * <p>
  * Custom aggregates must be registered before parsing the query; custom
  * aggregates and custom functions have the same syntax so the to tell the
- * differenc, the parser needs to know which IRIs are custom aggregates.
+ * difference, the parser needs to know which IRIs are custom aggregates.
  * <p>
  * The aggregate is registered as a URI, AccumulatorFactory and default value
  * for the "no groups" case.

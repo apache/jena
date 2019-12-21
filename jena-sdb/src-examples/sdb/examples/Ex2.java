@@ -51,11 +51,10 @@ public class Ex2
         Store store = SDBFactory.connectStore(conn, storeDesc) ;
         
         Dataset ds = DatasetStore.create(store) ;
-        QueryExecution qe = QueryExecutionFactory.create(query, ds) ;
-        try {
+        try ( QueryExecution qe = QueryExecutionFactory.create(query, ds) ) {
             ResultSet rs = qe.execSelect() ;
             ResultSetFormatter.out(rs) ;
-        } finally { qe.close() ; }
+        }
         store.close() ;
     }
 }

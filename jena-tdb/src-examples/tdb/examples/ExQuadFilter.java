@@ -18,9 +18,9 @@
 
 package tdb.examples;
 
-import org.apache.jena.atlas.iterator.Filter ;
-import org.apache.jena.atlas.lib.Tuple ;
+import java.util.function.Predicate;
 
+import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.* ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -36,7 +36,7 @@ import org.apache.jena.tdb.sys.TDBInternal ;
  * Can be used to exclude data from specific graphs.   
  * This mechanism is not limited to graphs - it works for properties or anything
  * where the visibility of otherwise is determined by the elements of the quad. 
- * See <a href="http://incubator.apache.org/jena/documentation/tdb/quadfilter.html">QuadFiltering</a>
+ * See <a href="http://jena.apache.org/documentation/tdb/quadfilter.html">QuadFiltering</a>
  * for further details.
  */
 
@@ -50,7 +50,7 @@ public class ExQuadFilter
         TDB.getContext().setTrue(TDB.symUnionDefaultGraph) ;
         
         Dataset ds = setup() ;
-        Filter<Tuple<NodeId>> filter = createFilter(ds) ;
+        Predicate<Tuple<NodeId>> filter = createFilter(ds) ;
         example(ds, filter) ;
     }
     
@@ -67,7 +67,7 @@ public class ExQuadFilter
     }
         
     /** Create a filter to exclude the graph http://example/g2 */
-    private static Filter<Tuple<NodeId>> createFilter(Dataset ds)
+    private static Predicate<Tuple<NodeId>> createFilter(Dataset ds)
     {
         // Filtering operates at a very low level: 
         // Need to know the internal identifier for the graph name. 
@@ -77,26 +77,24 @@ public class ExQuadFilter
         
         // Filter for accept/reject as quad as being visible.
         // Return true for "accept", false for "reject"
-        Filter<Tuple<NodeId>> filter = new Filter<Tuple<NodeId>>() {
-            @Override
-            public boolean accept(Tuple<NodeId> item)
+        Predicate<Tuple<NodeId>> filter = item ->
             {
                 // Reverse the lookup as a demo
                 //Node n = TDBInternal.getNode(target) ;
                 //System.err.println(item) ;
-                if ( item.size() == 4 && item.get(0).equals(target) )
+                if ( item.len() == 4 && item.get(0).equals(target) )
                 {
                     //System.out.println("Reject: "+item) ;
                     return false ;
                 }
                 //System.out.println("Accept: "+item) ;
                 return true ;
-            } } ;
+            } ;
             
         return filter ;
     }            
         
-    private static void example(Dataset ds, Filter<Tuple<NodeId>> filter)
+    private static void example(Dataset ds, Predicate<Tuple<NodeId>> filter)
     {
         String[] x = {
             "SELECT * { GRAPH ?g { ?s ?p ?o } }",
@@ -113,23 +111,21 @@ public class ExQuadFilter
         
     }
 
-    private static void example(Dataset ds, String qs, Filter<Tuple<NodeId>> filter)
+    private static void example(Dataset ds, String qs, Predicate<Tuple<NodeId>> filter)
     {
         System.out.println() ;
         Query query = QueryFactory.create(qs) ;
         System.out.println(qs) ;
-        QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
-        // Install filter for this query only.
-        if ( filter != null )
-        {
-            System.out.println("Install quad-level filter") ;
-            qExec.getContext().set(SystemTDB.symTupleFilter, filter) ;
+        try ( QueryExecution qExec = QueryExecutionFactory.create(query, ds) ) {
+            // Install filter for this query only.
+            if ( filter != null )
+            {
+                System.out.println("Install quad-level filter") ;
+                qExec.getContext().set(SystemTDB.symTupleFilter, filter) ;
+            }
+            else
+                System.out.println("No quad-level filter") ;
+            ResultSetFormatter.out(qExec.execSelect()) ;
         }
-        else
-            System.out.println("No quad-level filter") ;
-        ResultSetFormatter.out(qExec.execSelect()) ;
-        qExec.close() ;
-
     }
-        
 }
