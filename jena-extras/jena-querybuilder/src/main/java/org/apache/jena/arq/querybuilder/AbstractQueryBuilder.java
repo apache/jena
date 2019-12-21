@@ -616,25 +616,25 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 		final Query q = new Query();
 
 		// set the query type
-		switch (query.getQueryType())
+		switch (query.queryType())
 		{
-			case Query.QueryTypeAsk:
+			case ASK:
 				q.setQueryAskType();
 				break;
-			case Query.QueryTypeConstruct:
+			case CONSTRUCT:
 				q.setQueryConstructType();
 				break;
-			case Query.QueryTypeDescribe:
+			case DESCRIBE:
 				q.setQueryDescribeType();
 				break;
-			case Query.QueryTypeSelect:
+			case SELECT:
 				q.setQuerySelectType();
 				break;
-			case Query.QueryTypeUnknown:
+			case UNKNOWN:
 				// do nothing
 				break;
 			default:
-				throw new IllegalStateException( "Internal query is not a known type: "+q.getQueryType());			
+				throw new IllegalStateException( "Internal query is not a known type: "+q.queryType());			
 		}
 
 		// use the HandlerBlock implementation to copy the data.
