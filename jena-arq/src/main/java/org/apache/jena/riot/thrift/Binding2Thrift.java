@@ -19,6 +19,7 @@
 package org.apache.jena.riot.thrift;
 
 import java.io.OutputStream ;
+import java.util.ArrayList;
 import java.util.Collection ;
 import java.util.Iterator ;
 
@@ -51,13 +52,7 @@ public class Binding2Thrift implements AutoCloseable {
     }
 
     private void varsRow() {
-        RDF_VarTuple vrow = new RDF_VarTuple() ;
-        // ** Java8
-//        vars.iterator().forEachRemaining( v -> {
-//            RDF_VAR rv = new RDF_VAR() ;
-//            rv.setName(v.getName()) ;
-//            vrow.addToVars(rv) ;
-//        }) ;
+        RDF_VarTuple vrow = new RDF_VarTuple(new ArrayList<>(vars.size())) ;
         for ( Var v : vars ) {
             RDF_VAR rv = new RDF_VAR() ;
             rv.setName(v.getName()) ;
