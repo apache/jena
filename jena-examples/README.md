@@ -1,7 +1,6 @@
 # Jena Examples
 
-A collection of complete, runnable Jena examples to illustrate various
-aspects of programming using RDF with Jena.
+A collection of complete, runnable Jena examples to illustrate various aspects of programming using RDF with Jena.
 
 ## Cheese ontology examples
 
@@ -25,3 +24,7 @@ examples use that ontology as an illustration.
 
 Using SPARQL to query the class expressions in the Pizza ontology without relying on
 RDF inference.
+
+## Streaming
+
+Example of how to use a StreamRDF to write to an RDFConnection.
