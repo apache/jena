@@ -43,13 +43,12 @@ public class Ex1
         // The right answers will be obtained but slowly.
         
         Dataset ds = DatasetStore.create(store) ;
-        QueryExecution qe = QueryExecutionFactory.create(query, ds) ;
-        try {
+        try ( QueryExecution qe = QueryExecutionFactory.create(query, ds) ) {
             ResultSet rs = qe.execSelect() ;
             ResultSetFormatter.out(rs) ;
-        } finally { qe.close() ; }
+        }
         
-        // Close the SDB conenction which also closes the underlying JDBC connection.
+        // Close the SDB connection which also closes the underlying JDBC connection.
         store.getConnection().close() ;
         store.close() ;
     }

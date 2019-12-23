@@ -18,23 +18,20 @@
 
 package tdb.examples;
 
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.Query ;
-import org.apache.jena.query.QueryExecution ;
-import org.apache.jena.query.QueryExecutionFactory ;
-import org.apache.jena.query.QueryFactory ;
-import org.apache.jena.query.QuerySolution ;
-import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.query.ResultSet ;
+import org.apache.jena.query.*;
+import org.apache.jena.system.Txn;
 import org.apache.jena.tdb.TDBFactory ;
 
-/** Example of a READ transaction. */
+/**
+ * Example of a READ transaction.
+ * See {@link Txn#executeRead}.
+ */
 public class ExTDB_Txn1
 {
     public static void main(String... argv)
     {
-        String directory = "MyDatabases/DB1" ;
-        Dataset dataset = TDBFactory.createDataset(directory) ;
+        String directory = "MyDatabases/DB1";
+        Dataset dataset = TDBFactory.createDataset(directory);
 
         // Start READ transaction. 
         //   No updates or changes to the dataset are possible while this
@@ -42,41 +39,36 @@ public class ExTDB_Txn1
         //   An application can have other Datasets, in the same JVM, 
         //   tied to the same TDB database performing read or write
         //   transactions concurrently.
+
+        // A READ transaction is
+        // dataset.begin(ReadWrite.READ);
+        // try {
+        // ...
+        // ... The app can also call dataset.abort() or dataset.commit() here; commit is not necessary
+        // } finally { dataset.end();}
         
-        dataset.begin(ReadWrite.READ) ;
-        try
-        {
+        // Use Txn.executeRead when the app knows there are no updates.
+        // Can use Txn.execute when a write is possible.
+        Txn.executeRead(dataset, ()-> {
             // Do some queries
-            String sparqlQueryString1 = "SELECT (count(*) AS ?count) { ?s ?p ?o }" ;
-            execQuery(sparqlQueryString1, dataset) ;
-            
-            String sparqlQueryString2 = "SELECT * { ?s ?p ?o }" ;
-            execQuery(sparqlQueryString2, dataset) ;
-            
-            // Can also call dataset.abort() or dataset.commit() here 
-        } finally
-        {
-            // Notify the end of the READ transaction.
-            // Any use of dataset.abort() or dataset.commit() or dataset.end()
-            // .end() can be called multiple times for the same .begin(READ)
-            dataset.end() ;
-        }
+            String sparqlQueryString1 = "SELECT (count(*) AS ?count) { ?s ?p ?o }";
+            execQuery(sparqlQueryString1, dataset);
+
+            String sparqlQueryString2 = "SELECT * { ?s ?p ?o }";
+            execQuery(sparqlQueryString2, dataset);
+        });
     }
     
     public static void execQuery(String sparqlQueryString, Dataset dataset)
     {
-        Query query = QueryFactory.create(sparqlQueryString) ;
-        QueryExecution qexec = QueryExecutionFactory.create(query, dataset) ;
-        try {
-            ResultSet results = qexec.execSelect() ;
-            for ( ; results.hasNext() ; )
-            {
-                QuerySolution soln = results.nextSolution() ;
-                int count = soln.getLiteral("count").getInt() ;
-                System.out.println("count = "+count) ;
+        Query query = QueryFactory.create(sparqlQueryString);
+        try ( QueryExecution qexec = QueryExecutionFactory.create(query, dataset) ) {
+            ResultSet results = qexec.execSelect();
+            for ( ; results.hasNext() ; ) {
+                QuerySolution soln = results.nextSolution();
+                int count = soln.getLiteral("count").getInt();
+                System.out.println("count = " + count);
             }
-          } finally { qexec.close() ; }
+        }
     }
-    
 }
-

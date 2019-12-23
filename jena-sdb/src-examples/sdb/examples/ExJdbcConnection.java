@@ -73,11 +73,10 @@ public class ExJdbcConnection
         Store store = StoreFactory.create(storeDesc, conn) ;
         
         Dataset ds = DatasetStore.create(store) ;
-        QueryExecution qe = QueryExecutionFactory.create(query, ds) ;
-        try {
+        try ( QueryExecution qe = QueryExecutionFactory.create(query, ds) ) {
             ResultSet rs = qe.execSelect() ;
             ResultSetFormatter.out(rs) ;
-        } finally { qe.close() ; }
+        }
         // Does not close the JDBC connection.
         // Do not call : store.getConnection().close() , which does close the underlying connection.
         store.close() ;

@@ -50,11 +50,9 @@ public class ExTDB4
         // See http://incubator.apache.org/jena/documentation/query/app_api.html
         
         Query query = QueryFactory.create(sparqlQueryString) ;
-        QueryExecution qexec = QueryExecutionFactory.create(query, dataset) ;
-        ResultSet results = qexec.execSelect() ;
-        ResultSetFormatter.out(results) ;
-        qexec.close() ;
-
-        dataset.close();
+        try ( QueryExecution qexec = QueryExecutionFactory.create(query, dataset) ) {
+            ResultSet results = qexec.execSelect() ;
+            ResultSetFormatter.out(results) ;
+        }
     }
 }
