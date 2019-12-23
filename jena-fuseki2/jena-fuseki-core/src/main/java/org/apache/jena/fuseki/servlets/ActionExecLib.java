@@ -75,12 +75,15 @@ public class ActionExecLib {
      * @param action
      * @param processor
      */
-    public static void execAction(HttpAction action, ActionProcessor processor) {
-        execAction(action, ()->processor);
+    public static boolean execAction(HttpAction action, ActionProcessor processor) {
+        boolean b = execAction(action, ()->processor);
+        if ( !b )
+            ServletOps.errorNotFound("Not found: "+action.getActionURI());
+        return true;
     }
 
     /** execAction, allowing for a choice of {@link ActionProcessor} within the logging and error handling. */
-    public static void execAction(HttpAction action, Supplier<ActionProcessor> processor) {
+    public static boolean execAction(HttpAction action, Supplier<ActionProcessor> processor) {
         try {
             logRequest(action);
             action.setStartTime();
@@ -88,10 +91,18 @@ public class ActionExecLib {
             HttpServletResponse response = action.response;
 
             startRequest(action);
-            
+
             try {
-                // Get the processor inside the startRequest - error handling - finishRequest sequence. 
+                // Get the processor inside the startRequest - error handling - finishRequest sequence.
                 ActionProcessor proc = processor.get();
+                if ( proc == null ) {
+                    // Only for the logging.
+                    finishRequest(action);
+                    logNoResponse(action);
+                    archiveHttpAction(action);
+                    // Can't find the URL (the /dataset/service case) - not handled here.
+                    return false;
+                }
                 proc.process(action);
             } catch (QueryCancelledException ex) {
                 // To put in the action timeout, need (1) global, (2) dataset and (3) protocol settings.
@@ -127,10 +138,14 @@ public class ActionExecLib {
                 action.setFinishTime();
                 finishRequest(action);
             }
+            // Handled - including sending back errors.
             logResponse(action);
             archiveHttpAction(action);
+            return true;
         } catch (Throwable th) {
+            // This really should not catch anything.
             FmtLog.error(action.log, th, "Internal error");
+            return true;
         }
     }
 
@@ -198,7 +213,10 @@ public class ActionExecLib {
         }
     }
 
-    /** Log an {@link HttpAction} response. */
+    /**
+     * Log an {@link HttpAction} response.
+     * This includes a message to the action log and also on to the standard format Combined NCSA log.
+     */
     public static void logResponse(HttpAction action) {
         long time = action.getTime();
 
@@ -225,8 +243,20 @@ public class ActionExecLib {
                 action.id, action.statusCode, HttpSC.getMessage(action.statusCode), timeStr);
         else
             FmtLog.info(action.log,"[%d] %d %s (%s)", action.id, action.statusCode, action.message, timeStr);
+        // Standard format NCSA log.
+        if ( Fuseki.requestLog != null && Fuseki.requestLog.isInfoEnabled() ) {
+            String s = RequestLog.combinedNCSA(action);
+            Fuseki.requestLog.info(s);
+        }
 
         // See also HttpAction.finishRequest - request logging happens there.
+    }
+
+    /**
+     * Log when we don't handle this request.
+     */
+    public static void logNoResponse(HttpAction action) {
+        FmtLog.info(action.log,"[%d] No Fuseki dispatch %s", action.id, action.getActionURI());
     }
 
     /** Set headers for the response. */

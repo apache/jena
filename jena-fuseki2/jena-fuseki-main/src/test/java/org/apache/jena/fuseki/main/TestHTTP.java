@@ -20,6 +20,13 @@ package org.apache.jena.fuseki.main;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.web.WebLib;
@@ -67,8 +74,20 @@ public class TestHTTP {
         FusekiServer server = FusekiServer.create()
             .add("/ds", dsg)
             .port(port)
+            .addServlet("/ds/myServlet", new MyServlet())
+            .staticFileBase("testing/Files")
             .build();
         server.start();
+    }
+
+    // Test : responds to GET
+    private static class MyServlet extends HttpServlet {
+        @Override
+        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+            resp.setContentType("text/plain");
+            resp.getOutputStream().print("SERVLET");
+            resp.setStatus(200);
+        }
     }
 
     @AfterClass
@@ -157,5 +176,17 @@ public class TestHTTP {
             assertNotNull(h);
             assertEquals(ct, h);
         });
+    }
+
+    // Servlet - mounted at /ds/myServlet, but not a service that Fuseki dispatches.
+    @Test public void plainServlet() {
+        String x = HttpOp.execHttpGetString(URL+"/myServlet");
+        assertEquals(x, "SERVLET");
+    }
+
+    // Files - a static file /ds/file.txt is visible.
+    @Test public void plainFile() {
+        String x = HttpOp.execHttpGetString(URL+"/file.txt");
+        assertTrue(x.contains("CONTENT"));
     }
 }

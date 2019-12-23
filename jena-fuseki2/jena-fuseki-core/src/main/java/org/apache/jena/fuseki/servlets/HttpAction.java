@@ -122,7 +122,7 @@ public class HttpAction
      * Initialization after action creation, during lifecycle setup. This is "set
      * once" (in other words, constructor-like but delayed because the information is
      * not yet available at the point we want to create the HttpAction).
-     * 
+     *
      * This method sets the action dataset for service requests. Does not apply to "admin" and
      * "ctl" servlets. Setting will replace any existing {@link DataAccessPoint} and
      * {@link DataService}, as the {@link DatasetGraph} of the current HTTP Action.
@@ -150,7 +150,7 @@ public class HttpAction
         this.dataService = dService;
         setDataset(dService.getDataset());
     }
-    
+
     /** Minimum initialization using just a dataset.
      * <p>
      * the HTTP Action will change its transactional state and
@@ -347,11 +347,6 @@ public class HttpAction
     public final void finishRequest() {
         if ( dataAccessPoint != null )
             dataAccessPoint.finishRequest(this);
-        // Standard logging goes here.
-        if ( Fuseki.requestLog != null && Fuseki.requestLog.isInfoEnabled() ) {
-            String s = RequestLog.combinedNCSA(this);
-            Fuseki.requestLog.info(s);
-        }
     }
 
     /** If inside the transaction for the action, return the active {@link DatasetGraph},
