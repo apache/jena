@@ -19,7 +19,6 @@
 package org.apache.jena.tdb.solver;
 
 import static org.apache.jena.atlas.lib.tuple.TupleFactory.tuple ;
-import static org.apache.jena.tdb.lib.Lib2.printAbbrev ;
 
 import java.util.* ;
 import java.util.function.Function;
@@ -314,14 +313,6 @@ public class SolverLib
         return new QueryIterTDB(iterBinding, killList, input, execCxt) ;
     }
     
-    /** Turn a BasicPattern into an abbreviated string for debugging */  
-    public static String strPattern(BasicPattern pattern)
-    {
-        List<Triple> triples = pattern.getList() ;
-        String x = Iter.asString(triples, "\n  ") ;
-        return printAbbrev(x) ; 
-    }
-
     public static Set<NodeId> convertToNodeIds(Collection<Node> nodes, DatasetGraphTDB dataset)
     {
         Set<NodeId> graphIds = new HashSet<>() ;

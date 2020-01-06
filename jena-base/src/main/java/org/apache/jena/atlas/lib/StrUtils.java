@@ -26,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /** Some functions that act on strings */
 public class StrUtils //extends StringUtils
@@ -42,28 +43,11 @@ public class StrUtils //extends StringUtils
         return String.join("\n", args);
     }
 
-    /** 
-     * Concatentate strings, using a separator
-     * 
-     * This function will be removed - do not use.
-     * 
-     * @deprecated Prefer String.join(sep, args)
-     */
-    @Deprecated
-    public static String strjoin(String sep, String... args) {
-        return String.join(sep, args);
-    }
-
     /**
-     * Concatentate strings, using a separator
-     * 
-     * This function will be removed - do not use.
-     * 
-     * @deprecated Prefer String.join(sep, args)
+     * Concatentate stringified objects, using a separator.
      */
-    @Deprecated
-    public static String strjoin(String sep, List<String> args) {
-        return String.join(sep, args);
+    public static <X> String strjoin(List<X> args, String sep) {
+        return args.stream().map(obj->obj.toString()).collect(Collectors.joining(sep));
     }
 
     public static final int CMP_GREATER  = +1 ;

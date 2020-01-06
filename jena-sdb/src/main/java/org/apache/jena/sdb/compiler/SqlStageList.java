@@ -20,7 +20,7 @@ package org.apache.jena.sdb.compiler;
 
 import java.util.ArrayList;
 
-import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.sdb.core.SDBRequest ;
 import org.apache.jena.sdb.core.sqlnode.SqlNode ;
 
@@ -49,7 +49,7 @@ public class SqlStageList extends ArrayList<SqlStage>
         if ( isEmpty() )
             str = str + " (empty)" ;
         else
-            str = str + " "+ Iter.asString(this, " // " ) ;
+            str = str + " "+ StrUtils.strjoin(this, " // " ) ;
         //str = str + "\n" ;
         return str ;
     }

@@ -20,9 +20,9 @@ package org.apache.jena.atlas.iterator ;
 
 import java.io.PrintStream ;
 import java.util.* ;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream ;
 import java.util.stream.StreamSupport ;
 
@@ -53,6 +53,12 @@ import org.apache.jena.atlas.lib.Sink ;
  * @param <T> the type of element over which an instance of {@code Iter} iterates,
  */
 public class Iter<T> implements Iterator<T> {
+    
+    /** Shorter form of "forEachRemaining" */
+    public static <T> void forEach(Iterator<T> iter, Consumer<T> action) {
+        iter.forEachRemaining(action);
+    }
+    
     // IteratorSlotted needed? IteratorPeek
     //   IteratorSlotted.inspect
     
@@ -82,21 +88,12 @@ public class Iter<T> implements Iterator<T> {
     
     /** Collect an iterator into a set. */
     public static <T> Set<T> toSet(Iterator<? extends T> stream) {
-        Set<T> acc = new HashSet<>() ;
-        collect(acc, stream) ;
-        return acc ;
+        return collect(stream, Collectors.toSet());
     }
     
     /** Collect an iterator into a list. */
     public static <T> List<T> toList(Iterator<? extends T> stream) {
-        List<T> acc = new ArrayList<>() ;
-        collect(acc, stream) ;
-        return acc ;
-    }
-
-    /** Collect an iterator. */
-    private static <T> void collect(Collection<T> acc, Iterator<? extends T> stream) {
-        stream.forEachRemaining((x)->acc.add(x)) ;
+        return collect(stream, Collectors.toList());
     }
 
     /**
@@ -108,61 +105,95 @@ public class Iter<T> implements Iterator<T> {
         return x.iterator() ;
     }
     
+    // Note fold-left and fold-right
+    // http://en.wikipedia.org/wiki/Fold_%28higher-order_function%29
+
+    // This reduce is a kind of fold-left (take first element, apply to rest of list)
+    // and can deal with lists of zero elements.
+    
     // -- Operations on iterators.
 
-    public interface Folder<X, Y> {
-        Y eval(Y acc, X arg) ;
-    }
+    @FunctionalInterface
+    public interface Folder<X, Y> extends BiFunction<Y,X,Y> {}
 
-    public static <T, R> R foldLeft(Iterable<? extends T> stream, Folder<T, R> function, R value) {
-        return foldLeft(stream.iterator(), function, value) ;
-    }
-
-    public static <T, R> R foldLeft(Iterator<? extends T> stream, Folder<T, R> function, R value) {
+    public static <T, R> R foldLeft(Iterator<? extends T> stream, R value, Folder<T, R> function) {
         // Tail recursion, unwound
         for (; stream.hasNext();) {
             T item = stream.next() ;
-            value = function.eval(value, item) ;
+            value = function.apply(value, item) ;
         }
         return value ;
     }
 
-    public static <T, R> R foldRight(Iterable<? extends T> stream, Folder<T, R> function, R value) {
-        return foldRight(stream.iterator(), function, value) ;
-    }
-
-    public static <T, R> R foldRight(Iterator<? extends T> stream, Folder<T, R> function, R value) {
+    public static <T, R> R foldRight(Iterator<? extends T> stream, R value, Folder<T, R> function) {
         // Recursive.
         if ( !stream.hasNext() )
             return value ;
         T item = stream.next() ;
-        return function.eval(foldRight(stream, function, value), item) ;
+        return function.apply(foldRight(stream, value, function), item) ;
     }
 
-    // Note fold-left and fold-right
-    // http://en.wikipedia.org/wiki/Fold_%28higher-order_function%29
-
-    // This reduce is fold-left (take first element, apply to rest of list)
-    // which copes with infinite lists.
-    // Fold-left starts by combining the first element, then moves on.
-
-    /** Reduce by aggregator.
-     * This reduce is fold-left (take first element, apply to rest of list)
-     */
-    public static <T, R> R reduce(Iterable<? extends T> stream, Accumulate<T, R> aggregator) {
-        return reduce(stream.iterator(), aggregator) ;
+    public static <T> Optional<T> reduce(Iterator<T> iter, BinaryOperator<T> accumulator) {
+        T r = reduce(iter, null, accumulator);
+        return Optional.ofNullable(r);
     }
-    /** Reduce by aggregator.
-     * This reduce is fold-left (take first element, apply to rest of list)
-     */
-    public static <T, R> R reduce(Iterator<? extends T> stream, Accumulate<T, R> aggregator) {
-        aggregator.start() ;
-        for (; stream.hasNext();) {
-            T item = stream.next() ;
-            aggregator.accumulate(item) ;
+
+    public static <T> T reduce(Iterator<T> iter, T identity, BinaryOperator<T> accumulator) {
+        T result = identity;
+        while(iter.hasNext()) {
+            T elt = iter.next();
+            result = (result == null) ? elt : accumulator.apply(result, elt);
         }
-        aggregator.finish() ;
-        return aggregator.get() ;
+        return result;
+    }
+
+    // ---- min and max
+    public static <T> Optional<T> min(Iterator<T> iter, Comparator<T> comparator) {
+        T x = null;
+        while(iter.hasNext()) {
+            T elt = iter.next();
+            if ( x == null )
+                x = elt;
+            else {
+                int cmp = comparator.compare(x, elt);
+                if ( cmp > 0 )
+                    x = elt;
+            }
+        }
+        return Optional.ofNullable(x);
+    }
+
+    public static <T> Optional<T> max(Iterator<T> iter, Comparator<T> comparator) {
+        // Or min(iter, comparator.reversed())
+        T x = null;
+        while(iter.hasNext()) {
+            T elt = iter.next();
+            if ( x == null )
+                x = elt;
+            else {
+                int cmp = comparator.compare(x, elt);
+                if ( cmp < 0 )
+                    x = elt;
+            }
+        }
+        return Optional.ofNullable(x);
+    }
+
+    // ---- collect
+    /** See {@link Stream#collect(Supplier, BiConsumer, BiConsumer)}, except without the {@code BiConsumer<R, R> combiner} */
+    public static <T,R> R collect(Iterator<T> iter, Supplier<R> supplier, BiConsumer<R, ? super T> accumulator) {
+        R result = supplier.get();
+        while(iter.hasNext()) {
+            T elt = iter.next();
+            accumulator.accept(result, elt);
+        }
+        return result;
+    }
+
+    /** See {@link Stream#collect(Collector)} */
+    public static <T, R, A> R collect(Iterator<T> iter, Collector<? super T, A, R> collector) {
+        A a = collect(iter, collector.supplier(), collector.accumulator());
+        return collector.finisher().apply(a);
     }
 
     /** Act on elements of an iterator.
@@ -230,27 +261,78 @@ public class Iter<T> implements Iterator<T> {
     /**
      * Return true if every element of stream passes the filter (reads the
      * stream until the first element not passing the filter)
+     * @deprecated Use {@link #allMatch}
      */
-    public static <T> boolean every(Iterator<? extends T> stream, Predicate<T> filter) {
-        while ( stream.hasNext() ) {
-            T item = stream.next() ;
-            if ( !filter.test(item) )
+    @Deprecated
+    public static <T> boolean every(Iterator<? extends T> iter, Predicate<T> predicate) {
+        return Iter.allMatch(iter, predicate);
+    }
+
+    /**
+     * Return true if every element of stream passes the filter (reads the
+     * stream until the first element not passing the filter)
+     */
+    public static <T> boolean allMatch(Iterator<T> iter, Predicate<? super T> predicate) {
+        while ( iter.hasNext() ) {
+            T item = iter.next() ;
+            if ( !predicate.test(item) )
                 return false ;
         }
         return true ;
+    }
+    
+    /**
+     * Return true if one or more elements of stream passes the filter (reads
+     * the stream to first element passing the filter)
+     * @deprecated Use {@link #anyMatch}
+     */
+    @Deprecated
+    public static <T> boolean some(Iterator<T> iter, Predicate<? super T> predicate) {
+        return Iter.anyMatch(iter, predicate);
     }
 
     /**
      * Return true if one or more elements of stream passes the filter (reads
      * the stream to first element passing the filter)
      */
-    public static <T> boolean some(Iterator<? extends T> stream, Predicate<T> filter) {
-        while ( stream.hasNext() ) {
-            T item = stream.next() ;
-            if ( filter.test(item) )
+    public static <T> boolean anyMatch(Iterator<T> iter, Predicate<? super T> predicate) {
+        while ( iter.hasNext() ) {
+            T item = iter.next() ;
+            if ( predicate.test(item) )
                 return true ;
         }
         return false ;
+    }
+
+    /**
+     * Return true if none of the elements of the iterator passes the predicate test  reads
+     * the stream to first element passing the filter)
+     */
+    public static <T> boolean noneMatch(Iterator<T> iter, Predicate<? super T> predicate) {
+        return ! anyMatch(iter, predicate);
+    }
+
+    /**
+     * Return an Optional with the first element of an iterator that matches the predicate.
+     * Return {@code Optional.empty} if none match.
+     * Reads the iterator until the first match.
+     */
+    public static <T> Optional<T> findFirst(Iterator<T> iter, Predicate<? super T> predicate) {
+        while ( iter.hasNext() ) {
+            T item = iter.next() ;
+            if ( predicate.test(item) )
+                return Optional.of(item);
+        }
+        return Optional.empty() ;
+    }
+
+    /**
+     * Return an Optional with an element of an iterator that matches the predicate.
+     * Return {@code Optional.empty} if none match.
+     * The element returned is not specified by the API contract. 
+     */
+    public static <T> Optional<T> findAny(Iterator<T> iter, Predicate<? super T> predicate) {
+        return findFirst(iter, predicate);
     }
 
     // ---- Map
@@ -525,35 +607,16 @@ public class Iter<T> implements Iterator<T> {
         count(iterator) ;
     }
 
-    // ---- String related helpers
-    // Java8 has StringJoin
-
-    public static <T> String asString(Iterable<T> stream) {
-        return asString(stream, new AccString<T>()) ;
-    }
-
-    public static <T> String asString(Iterator<T> stream) {
-        return asString(stream, new AccString<T>()) ;
-    }
-
-    public static <T> String asString(Iterable<T> stream, String sep) {
-        return asString(stream, new AccString<T>(sep)) ;
-    }
-
+    /** Create a string from an iterator, using the separator. Note: this consumes the iterator. */
     public static <T> String asString(Iterator<T> stream, String sep) {
-        return asString(stream, new AccString<T>(sep)) ;
+        return Iter.iter(stream).map(x->x.toString()).collect(Collectors.joining(sep));
     }
-
-    public static <T> String asString(Iterable<T> stream, AccString<T> formatter) {
-        return asString(stream.iterator(), formatter) ;
+    
+    /** Create a string from an iterator, using the separator, prefix and suffix. Note: this consumes the iterator. */
+    public static <T> String asString(Iterator<T> stream, CharSequence sep, CharSequence prefix, CharSequence suffix) {
+        return Iter.iter(stream).map(x->x.toString()).collect(Collectors.joining(sep, prefix, suffix));
     }
-
-    public static <T> String asString(Iterator<T> stream, AccString<T> formatter) {
-        return reduce(stream, formatter) ;
-    }
-
-    // ----
-
+    
     public static <T> void close(Iterator<T> iter) {
         if ( iter instanceof Closeable )
             ((Closeable)iter).close() ;
@@ -618,6 +681,7 @@ public class Iter<T> implements Iterator<T> {
     }
 
     /** Send the elements of the iterable to a sink */
+    @Deprecated
     public static <T> void sendToSink(Iterable<T> stream, Sink<T> sink) {
         sendToSink(stream.iterator(), sink) ;
     }
@@ -762,6 +826,11 @@ public class Iter<T> implements Iterator<T> {
     private Iter(Iterator<T> iterator) {
         this.iterator = iterator ;
     }
+    
+    /** Apply the Consumer to each element of the iterator */
+    public void forEach(Consumer<T> action) {
+        iterator.forEachRemaining(action);
+    }
 
     /** Consume the {@code Iter} and produce a {@code Set} */
     public Set<T> toSet() {
@@ -776,7 +845,7 @@ public class Iter<T> implements Iterator<T> {
     public void sendToSink(Sink<T> sink) {
         sendToSink(iterator, sink) ;
     }
-
+    
     public T first() {
         return first(iterator) ;
     }
@@ -811,13 +880,33 @@ public class Iter<T> implements Iterator<T> {
     }
 
     /** Return true if every element satisfies a predicate */ 
-    public boolean every(Predicate<T> predciate) {
-        return every(iterator, predciate) ;
+    public boolean every(Predicate<T> predicate) {
+        return every(iterator, predicate) ;
     }
 
     /** Return true if some element satisfies a predicate */ 
     public boolean some(Predicate<T> filter) {
         return some(iterator, filter) ;
+    }
+
+    public boolean allMatch(Predicate<? super T> predicate) {
+        return allMatch(iterator, predicate);
+    }
+
+    public boolean anyMatch(Predicate<? super T> predicate) {
+        return anyMatch(iterator, predicate);
+    }
+
+    public boolean noneMatch(Predicate<? super T> predicate) {
+        return noneMatch(iterator, predicate);
+    }
+
+    public Optional<T> findFirst(Predicate<? super T> predicate) {
+        return findFirst(iterator, predicate);
+    }
+
+    public Optional<T> findAny(Predicate<? super T> predicate) {
+        return findAny(iterator, predicate);
     }
 
     /** Remove nulls */
@@ -842,13 +931,43 @@ public class Iter<T> implements Iterator<T> {
         return iter(operate(iterator, action)) ;
     }
 
-    /** Reduce by aggregator.
+    public <R> R foldLeft(R initial, Folder<T, R> accumulator) {
+        return foldLeft(iterator, initial, accumulator) ;
+    }
+    
+    public <R> R foldRight(R initial, Folder<T, R> accumulator) {
+        return foldRight(iterator, initial, accumulator) ;
+    }
+    
+    /** Reduce.
      * This reduce is fold-left (take first element, apply to rest of list)
      */
-    public <R> R reduce(Accumulate<T, R> aggregator) {
-        return reduce(iterator, aggregator) ;
+    public Optional<T> reduce(BinaryOperator<T> accumulator) {
+        return reduce(iterator, accumulator) ;
     }
 
+    public T reduce(T identity, BinaryOperator<T> accumulator) {
+        return Iter.reduce(iterator, identity, accumulator);
+    }
+
+    public Optional<T> min(Comparator<T> comparator) {
+        return min(iterator, comparator);
+    }
+
+    public Optional<T> max(Comparator<T> comparator) {
+        return max(iterator, comparator);
+    }
+    
+    /** See {@link Stream#collect(Supplier, BiConsumer, BiConsumer)}, except without the {@code BiConsumer<R, R> combiner} */
+    public <R> R collect(Supplier<R> supplier, BiConsumer<R, T> accumulator/*, BiConsumer<R, R> combiner*/) {
+        return Iter.collect(iterator, supplier, accumulator);
+    }
+
+    /** See {@link Stream#collect(Collector)} */
+    public <R, A> R collect(Collector<? super T, A, R> collector) {
+        return collect(iterator, collector);
+    }
+    
     /** Apply an action to every element of an iterator */ 
     public void apply(Consumer<T> action) {
         apply(iterator, action) ;
@@ -925,15 +1044,8 @@ public class Iter<T> implements Iterator<T> {
         return action.getCount() ;
     }
 
-    public String asString() {
-        return asString(iterator) ;
-    }
-
-    public String asString(String sep) {
-        return asString(iterator, sep) ;
-    }
-
-    /** Return an {:@code Iter} that will see each element of the underlying iterator only once.
+    /**
+     * Return an {@code Iter} that will see each element of the underlying iterator only once.
      * Note that this need working memory to remember the elements already seen.
      */
     public Iter<T> distinct() {

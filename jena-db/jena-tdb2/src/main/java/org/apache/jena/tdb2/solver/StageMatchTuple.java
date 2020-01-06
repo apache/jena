@@ -25,6 +25,7 @@ import java.util.function.Predicate;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.iterator.RepeatApplyIterator;
+import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.atlas.lib.tuple.TupleFactory;
 import org.apache.jena.graph.Node;
@@ -151,7 +152,7 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         else
         {
             List<Tuple<NodeId>> r = Iter.toList(iter);
-            String str = Iter.asString(r, "\n");
+            String str = StrUtils.strjoin(r, "\n");
             System.err.println(str);
             // Reset iter
             iter = Iter.iter(r);

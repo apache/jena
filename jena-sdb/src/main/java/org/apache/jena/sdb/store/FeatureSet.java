@@ -21,10 +21,10 @@ package org.apache.jena.sdb.store;
 import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.stream.Collectors;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.io.PrintableBase ;
-import org.apache.jena.atlas.iterator.Iter ;
 
 /** A set of features (order retained */
 
@@ -61,6 +61,7 @@ public class FeatureSet extends PrintableBase implements Iterable<Feature>
     @Override
     public void output(IndentedWriter out)
     {
-        out.print(Iter.asString(features)) ;
+        String x = features.stream().map(f->f.toString()).collect(Collectors.joining(" ")) ;
+        out.print(x) ;
     }
 }
