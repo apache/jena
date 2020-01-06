@@ -236,7 +236,7 @@ public class XSDDatatype extends BaseDatatype {
      * @param typeName the name of the XSD type to be instantiated, this is
      * used to lookup a type definition from the Xerces schema factory.
      * @param javaClass the java class for which this xsd type is to be
-     * treated as the cannonical representation
+     * treated as the canonical representation
      */
     public XSDDatatype(String typeName, Class<?> javaClass) {
         this(typeName);
