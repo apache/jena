@@ -47,7 +47,7 @@ import org.apache.jena.graph.NodeFactory;
  */
 
 public class BlankNodeAllocatorHash implements BlankNodeAllocator {
-    private static String       DigestAlgorithm = "MD5";
+    private static String       DigestAlgorithm = "SHA-256";
     private static int          CacheSize       = 1000;
     private MessageDigest       mDigest;
     private byte[]              seedBytes;
@@ -121,7 +121,7 @@ public class BlankNodeAllocatorHash implements BlankNodeAllocator {
     }
 
     private Node alloc(byte[] labelBytes) {
-        // UUID.nameUUIDFromBytes(seedBytes+labelBytes) uses MD5 but creates the digester
+        // UUID.nameUUIDFromBytes(seedBytes+labelBytes) uses SHA-256 but creates the digester
         // each time. It also stamps in the UUID version/variant bits.
         mDigest.update(seedBytes);
         mDigest.update(labelBytes);
