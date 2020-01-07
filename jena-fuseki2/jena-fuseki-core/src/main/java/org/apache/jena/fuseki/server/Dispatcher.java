@@ -345,6 +345,7 @@ public class Dispatcher {
         boolean isQuery = request.getParameter(HttpNames.paramQuery) != null;
         if ( isQuery )
             return Query;
+
         // -- Update
         // Standards name "update", non-standard name "request" (old use by Fuseki)
         boolean isUpdate = request.getParameter(HttpNames.paramUpdate) != null || request.getParameter(HttpNames.paramRequest) != null;
@@ -352,24 +353,7 @@ public class Dispatcher {
             // The SPARQL_Update servlet will deal with using GET.
             return Update;
 
-        // -- SPARQL Graph Store Protocol
-        boolean hasParamGraph = request.getParameter(HttpNames.paramGraph) != null;
-        boolean hasParamGraphDefault = request.getParameter(HttpNames.paramGraphDefault) != null;
-        if ( hasParamGraph || hasParamGraphDefault )
-            return gspOperation(action, request);
-
-        // -- Any other queryString
-        // Place for an extension point.
-        boolean hasParams = request.getParameterMap().size() > 0;
-        if ( hasParams ) {
-            // Unrecognized ?key=value
-            ServletOps.errorBadRequest("Malformed request: unrecognized query string parameters: " + request.getQueryString());
-        }
-
         // ---- Content-type
-        // We don't wire in all the RDF syntaxes.
-        // Instead, "Quads" drops through to the default operation.
-
         // This does not have the ";charset="
         String ct = request.getContentType();
         if ( ct != null ) {
@@ -377,6 +361,24 @@ public class Dispatcher {
             if ( operation != null )
                 return operation;
         }
+        // We don't wire in all the RDF syntaxes.
+        // Instead, "Quads" drops through to the default operation.
+        
+        // -- SPARQL Graph Store Protocol
+        boolean hasParamGraph = request.getParameter(HttpNames.paramGraph) != null;
+        boolean hasParamGraphDefault = request.getParameter(HttpNames.paramGraphDefault) != null;
+        if ( hasParamGraph || hasParamGraphDefault )
+            return gspOperation(action, request);
+
+        // -- Any other queryString
+        // Query string now unexpected.
+        // Place for an extension point.
+        boolean hasParams = request.getParameterMap().size() > 0;
+        if ( hasParams ) {
+            // Unrecognized ?key=value
+            ServletOps.errorBadRequest("Malformed request: unrecognized query string parameters: " + request.getQueryString());
+        }
+
 
         // ---- No registered content type, no query parameters.
         // Plain HTTP operation on the dataset handled as quads or rejected.
