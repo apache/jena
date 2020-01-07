@@ -303,7 +303,7 @@ public class GraphUtil
      *  <p>
      *  For large {@code srcGraph} and small {@code dstGraph}, use {@link #deleteLoopDst}.
      *  
-     * See discussion on <a href=""https://github.com/apache/jena/pull/212">jena/pull/212</a>, 
+     * See discussion on <a href="https://github.com/apache/jena/pull/212">jena/pull/212</a>, 
      * (archived at <a href="https://issues.apache.org/jira/browse/JENA-1284">JENA-1284</a>).
      */
     public static void deleteFrom(Graph dstGraph, Graph srcGraph) {
