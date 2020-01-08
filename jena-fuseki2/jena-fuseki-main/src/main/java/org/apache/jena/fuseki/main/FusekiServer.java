@@ -575,7 +575,7 @@ public class FusekiServer {
         /**
          * Set the password file. This will be used to build a {@link #securityHandler
          * security handler} if one is not supplied. Setting null clears any previous entry.
-         * The file should be
+         * The file should be in the format of 
          * <a href="https://www.eclipse.org/jetty/documentation/current/configuring-security.html#hash-login-service">Eclipse jetty password file</a>.
          */
         public Builder passwordFile(String passwordFile) {

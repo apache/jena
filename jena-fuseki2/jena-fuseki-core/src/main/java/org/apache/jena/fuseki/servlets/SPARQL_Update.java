@@ -147,7 +147,7 @@ public class SPARQL_Update extends ActionService
             return;
         }
 
-        ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Must be "+contentTypeSPARQLUpdate+" or "+contentTypeHTMLForm+" (got "+ct.getContentType()+")");
+        ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Must be "+contentTypeSPARQLUpdate+" or "+contentTypeHTMLForm+" (got "+ct.getContentTypeStr()+")");
     }
 
     protected void validate(HttpAction action, Collection<String> params) {
@@ -205,7 +205,7 @@ public class SPARQL_Update extends ActionService
 
         // If the dsg is transactional, then we can parse and execute the update in a streaming fashion.
         // If it isn't, we need to read the entire update request before performing any updates, because
-        // we have to attempt to make the request atomic in the face of malformed updates
+        // we have to attempt to make the request atomic in the face of malformed updates.
         UpdateRequest req = null;
         if (!action.isTransactional()) {
             try {

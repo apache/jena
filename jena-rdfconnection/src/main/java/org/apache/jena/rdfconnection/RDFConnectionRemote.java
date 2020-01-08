@@ -420,7 +420,7 @@ public class RDFConnectionRemote implements RDFConnection {
         // Leave RDF/XML to the XML parse, else it's UTF-8.
         String charset = (lang.equals(Lang.RDFXML) ? null : WebContent.charsetUTF8);
         // HttpClient Content type.
-        ContentType ct = ContentType.create(lang.getContentType().getContentType(), charset);
+        ContentType ct = ContentType.create(lang.getContentType().getContentTypeStr(), charset);
 
         exec(()->{
             HttpEntity entity = fileToHttpEntity(file, lang);
@@ -592,7 +592,7 @@ public class RDFConnectionRemote implements RDFConnection {
         // Leave RDF/XML to the XML parse, else it's UTF-8.
         String charset = (lang.equals(Lang.RDFXML) ? null : WebContent.charsetUTF8);
         // HttpClient Content type.
-        ContentType ct = ContentType.create(lang.getContentType().getContentType(), charset);
+        ContentType ct = ContentType.create(lang.getContentType().getContentTypeStr(), charset);
         // Repeatable.
         return new FileEntity(new File(filename), ct);
     }
@@ -613,7 +613,7 @@ public class RDFConnectionRemote implements RDFConnection {
      * requires serialising the graph at the point when this function is called.
      */
     private HttpEntity graphToHttpEntityWithLength(Graph graph, RDFFormat syntax) {
-        String ct = syntax.getLang().getContentType().getContentType();
+        String ct = syntax.getLang().getContentType().toHeaderString();
         ByteArrayOutputStream out = new ByteArrayOutputStream(128*1024);
         RDFDataMgr.write(out, graph, syntax);
         IO.close(out);
@@ -630,7 +630,7 @@ public class RDFConnectionRemote implements RDFConnection {
      */
     private HttpEntity graphToHttpEntityStream(Graph graph, RDFFormat syntax) {
         EntityTemplate entity = new EntityTemplate((out)->RDFDataMgr.write(out, graph, syntax));
-        String ct = syntax.getLang().getContentType().getContentType();
+        String ct = syntax.getLang().getContentType().toHeaderString();
         entity.setContentType(ct);
         return entity;
     }
@@ -647,7 +647,7 @@ public class RDFConnectionRemote implements RDFConnection {
     }
 
     private HttpEntity datasetToHttpEntityWithLength(DatasetGraph dataset, RDFFormat syntax) {
-        String ct = syntax.getLang().getContentType().getContentType();
+        String ct = syntax.getLang().getContentType().toHeaderString();
         ByteArrayOutputStream out = new ByteArrayOutputStream(128*1024);
         RDFDataMgr.write(out, dataset, syntax);
         IO.close(out);
@@ -658,7 +658,7 @@ public class RDFConnectionRemote implements RDFConnection {
 
     private HttpEntity datasetToHttpEntityStream(DatasetGraph dataset, RDFFormat syntax) {
         EntityTemplate entity = new EntityTemplate((out)->RDFDataMgr.write(out, dataset, syntax));
-        String ct = syntax.getLang().getContentType().getContentType();
+        String ct = syntax.getLang().getContentType().toHeaderString();
         entity.setContentType(ct);
         return entity;
     }

@@ -19,6 +19,7 @@
 package org.apache.jena.fuseki.auth;
 
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -102,5 +103,21 @@ public class Auth {
             return true;
         notAllowed.run();
         return false;
+    }
+
+    /**
+     * Calculate the value of the "Authentication" HTTP header for basic auth. Basic
+     * auth is not secure when used over HTTP (the password can be extracted). Use
+     * with HTTPS is better.
+     * <p>
+     * Unlike digest auth, basic auth can be setup without an extra round trip to the
+     * server, making it easier for scripts where the body is not replayable.
+     * 
+     * @param username
+     * @param password
+     * @return String
+     */
+    private static String basicAuth(String username, String password) {
+        return "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
     }
 }

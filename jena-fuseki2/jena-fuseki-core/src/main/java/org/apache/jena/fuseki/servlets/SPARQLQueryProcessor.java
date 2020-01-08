@@ -151,7 +151,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
         ContentType ct = FusekiNetLib.getContentType(request);
         boolean mustHaveQueryParam = true;
         if ( ct != null ) {
-            String incoming = ct.getContentType();
+            String incoming = ct.getContentTypeStr();
 
             if ( matchContentType(ctSPARQLQuery, ct) ) {
                 mustHaveQueryParam = false;
@@ -216,7 +216,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
             return;
         }
 
-        ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + ct.getContentType());
+        ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + ct.getContentTypeStr());
     }
 
     protected void executeWithParameter(HttpAction action) {

@@ -88,7 +88,7 @@ public abstract class ServletBase extends HttpServlet {
     public static void setCommonHeadersForOptions(HttpServletResponse httpResponse) {
         if ( CORS_ENABLED )
             httpResponse.setHeader(HttpNames.hAccessControlAllowHeaders, "X-Requested-With, Content-Type, Authorization");
-        httpResponse.setHeader(HttpNames.hContentLengh, "0");
+        httpResponse.setHeader(HttpNames.hContentLength, "0");
         setCommonHeaders(httpResponse);
     }
 

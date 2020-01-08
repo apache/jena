@@ -31,6 +31,7 @@ import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
+@SuppressWarnings("deprecation")
 public abstract class AbstractTestDatasetGraphAccessor extends BaseTest
 {
     protected static final String gn1       = "http://graph/1" ;

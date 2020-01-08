@@ -316,7 +316,7 @@ public class RDFParser {
                     throw new RiotException("Failed to determine the content type: (URI=" + baseUri + " : stream=" + input.getContentType()+")");
                 reader = createReader(ct);
                 if ( reader == null )
-                    throw new RiotException("No parser registered for content type: " + ct.getContentType());
+                    throw new RiotException("No parser registered for content type: " + ct.getContentTypeStr());
             }
             read(reader, input, null, baseUri, context, ct, destination);
         }
@@ -334,7 +334,7 @@ public class RDFParser {
     
         ReaderRIOT readerRiot = createReader(ct);
         if ( readerRiot == null )
-            throw new RiotException("No parser registered for content type: " + ct.getContentType());
+            throw new RiotException("No parser registered for content type: " + ct.getContentTypeStr());
         Reader jr = javaReader;
         if ( content != null )
             jr = new StringReader(content);

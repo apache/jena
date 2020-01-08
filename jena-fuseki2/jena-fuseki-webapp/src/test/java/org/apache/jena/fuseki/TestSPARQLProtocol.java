@@ -35,6 +35,7 @@ import org.apache.jena.update.UpdateRequest;
 import org.junit.Before;
 import org.junit.Test;
 
+@SuppressWarnings("deprecation")
 public class TestSPARQLProtocol extends AbstractFusekiTest
 {
     @Before

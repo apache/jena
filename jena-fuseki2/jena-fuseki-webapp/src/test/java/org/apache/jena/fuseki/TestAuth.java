@@ -57,6 +57,7 @@ import org.junit.Test;
  * This is as much a test of the Jena client libraries handling authentication.
  * These tests use Jetty-supplied authentication, not Apache Shiro.
  */
+@SuppressWarnings("deprecation")
 public class TestAuth {
 
     // Use different port etc because sometimes the previous testing servers

@@ -220,14 +220,14 @@ public class ActionLib {
         ContentType ct = ActionLib.getContentType(action);
         Lang lang;
 
-        if ( ct == null || ct.getContentType().isEmpty() ) {
+        if ( ct == null || ct.getContentTypeStr().isEmpty() ) {
             // head "Content-type:", no value.
             lang = RDFLanguages.TURTLE;
         } else if ( ct.equals(WebContent.ctHTMLForm)) {
-            ServletOps.errorBadRequest("HTML Form data sent to SAHCL valdiation server");
+            ServletOps.errorBadRequest("HTML Form data sent to SHACL valdiation server");
             return null;
         } else {
-            lang = RDFLanguages.contentTypeToLang(ct.getContentType());
+            lang = RDFLanguages.contentTypeToLang(ct.getContentTypeStr());
             if ( lang == null ) {
                 lang = defaultLang;
 //            ServletOps.errorBadRequest("Unknown content type for triples: " + ct);
@@ -246,7 +246,7 @@ public class ActionLib {
 
     /** Output a graph to the HTTP response */
     public static void graphResponse(HttpAction action, Graph graph, Lang lang) {
-        action.response.setContentType(lang.getContentType().getContentType());
+        action.response.setContentType(lang.getContentType().getContentTypeStr());
         try {
             RDFDataMgr.write(action.response.getOutputStream(), graph, lang);
         } catch (IOException e) {

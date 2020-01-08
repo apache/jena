@@ -68,7 +68,7 @@ public class Upload {
         // Single graph (or quads) in body.
 
         String base = ActionLib.wholeRequestURL(action.request);
-        Lang lang = RDFLanguages.contentTypeToLang(ct.getContentType());
+        Lang lang = RDFLanguages.contentTypeToLang(ct.getContentTypeStr());
         if ( lang == null ) {
             ServletOps.errorBadRequest("Unknown content type for triples: " + ct);
             return null;
@@ -84,12 +84,12 @@ public class Upload {
             ActionLib.parse(action, countingDest, input, lang, base);
             UploadDetails details = new UploadDetails(countingDest.count(), countingDest.countTriples(),countingDest.countQuads());
             action.log.info(format("[%d] Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s : %s",
-                                   action.id, len, ct.getContentType(), ct.getCharset(), lang.getName(),
+                                   action.id, len, ct.getContentTypeStr(), ct.getCharset(), lang.getName(),
                                    details.detailsStr()));
             return details;
         } catch (RiotParseException ex) {
             action.log.info(format("[%d] Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s : %s",
-                                   action.id, len, ct.getContentType(), ct.getCharset(), lang.getName(),
+                                   action.id, len, ct.getContentTypeStr(), ct.getCharset(), lang.getName(),
                                    ex.getMessage()));
             throw ex;
         }
@@ -128,7 +128,7 @@ public class Upload {
                 ContentType ct = ContentType.create(contentTypeHeader);
                 Lang lang = null;
                 if ( ! matchContentType(ctTextPlain, ct) )
-                    lang = RDFLanguages.contentTypeToLang(ct.getContentType());
+                    lang = RDFLanguages.contentTypeToLang(ct.getContentTypeStr());
 
                 if ( lang == null ) {
                     String name = fileStream.getName();
@@ -156,11 +156,11 @@ public class Upload {
                     ActionLib.parse(action, countingDest2, stream, lang, base);
                     UploadDetails details1 = new UploadDetails(countingDest2.count(), countingDest2.countTriples(),countingDest2.countQuads());
                     action.log.info(format("[%d] Filename: %s, Content-Type=%s, Charset=%s => %s : %s",
-                                           action.id, printfilename,  ct.getContentType(), ct.getCharset(), lang.getName(),
+                                           action.id, printfilename,  ct.getContentTypeStr(), ct.getCharset(), lang.getName(),
                                            details1.detailsStr()));
                 } catch (RiotParseException ex) {
                     action.log.info(format("[%d] Filename: %s, Content-Type=%s, Charset=%s => %s : %s",
-                                           action.id, printfilename,  ct.getContentType(), ct.getCharset(), lang.getName(),
+                                           action.id, printfilename,  ct.getContentTypeStr(), ct.getCharset(), lang.getName(),
                                            ex.getMessage()));
                     throw ex;
                 }
@@ -237,7 +237,7 @@ public class Upload {
                     String contentTypeHeader = item.getContentType();
                     ct = ContentType.create(contentTypeHeader);
 
-                    lang = RDFLanguages.contentTypeToLang(ct.getContentType());
+                    lang = RDFLanguages.contentTypeToLang(ct.getContentTypeStr());
                     if ( lang == null ) {
                         lang = RDFLanguages.filenameToLang(name);
 
@@ -256,7 +256,7 @@ public class Upload {
                     isQuads = RDFLanguages.isQuads(lang);
 
                     action.log.info(format("[%d] Upload: Filename: %s, Content-Type=%s, Charset=%s => %s", action.id, name,
-                                           ct.getContentType(), ct.getCharset(), lang.getName()));
+                                           ct.getContentTypeStr(), ct.getCharset(), lang.getName()));
 
                     StreamRDF x = StreamRDFLib.dataset(dsgTmp);
                     StreamRDFCounting dest = StreamRDFLib.count(x);

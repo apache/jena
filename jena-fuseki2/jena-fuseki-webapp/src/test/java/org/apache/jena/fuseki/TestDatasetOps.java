@@ -46,7 +46,7 @@ public class TestDatasetOps extends AbstractFusekiTest {
     protected HttpEntity datasetToHttpEntity(final DatasetGraph dsg) {
         final RDFFormat syntax = RDFFormat.NQUADS;
         EntityTemplate entity = new EntityTemplate((out) -> RDFDataMgr.write(out, dsg, syntax));
-        String ct = syntax.getLang().getContentType().getContentType();
+        String ct = syntax.getLang().getContentType().getContentTypeStr();
         entity.setContentType(ct);
         return entity;
     }

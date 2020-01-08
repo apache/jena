@@ -262,7 +262,7 @@ public class RDFLanguages
         for (String altName : lang.getAltNames() )
             mapLabelToLang.put(canonicalKey(altName), lang) ;
         
-        mapContentTypeToLang.put(canonicalKey(lang.getContentType().getContentType()), lang) ;
+        mapContentTypeToLang.put(canonicalKey(lang.getContentType().getContentTypeStr()), lang) ;
         for ( String ct : lang.getAltContentTypes() )
             mapContentTypeToLang.put(canonicalKey(ct), lang) ;
         for ( String ext : lang.getFileExtensions() )
@@ -285,9 +285,9 @@ public class RDFLanguages
             return ;
         
         // Content type.
-        if ( mapContentTypeToLang.containsKey(lang.getContentType().getContentType()))
+        if ( mapContentTypeToLang.containsKey(lang.getContentType().getContentTypeStr()))
         {
-            String k = lang.getContentType().getContentType() ;
+            String k = lang.getContentType().getContentTypeStr() ;
             error("Language overlap: " +lang+" and "+mapContentTypeToLang.get(k)+" on content type "+k) ;
         }
         for (String altName : lang.getAltNames() )
@@ -311,7 +311,7 @@ public class RDFLanguages
             throw new IllegalArgumentException("null for language") ;
         checkRegistration(lang) ; 
         mapLabelToLang.remove(canonicalKey(lang.getLabel())) ;
-        mapContentTypeToLang.remove(canonicalKey(lang.getContentType().getContentType())) ;
+        mapContentTypeToLang.remove(canonicalKey(lang.getContentType().getContentTypeStr())) ;
         
         for ( String ct : lang.getAltContentTypes() )
             mapContentTypeToLang.remove(canonicalKey(ct)) ;
@@ -354,7 +354,7 @@ public class RDFLanguages
     {
         if ( ct == null )
             return null ;
-        String key = canonicalKey(ct.getContentType()) ;
+        String key = canonicalKey(ct.getContentTypeStr()) ;
         return mapContentTypeToLang.get(key) ;
     }
 

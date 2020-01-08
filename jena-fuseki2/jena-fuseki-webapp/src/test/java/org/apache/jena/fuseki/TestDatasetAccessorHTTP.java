@@ -38,6 +38,7 @@ import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.web.HttpSC;
 import org.junit.Test;
 
+@SuppressWarnings("deprecation")
 public class TestDatasetAccessorHTTP extends AbstractFusekiTest {
     // Model level testing.
 

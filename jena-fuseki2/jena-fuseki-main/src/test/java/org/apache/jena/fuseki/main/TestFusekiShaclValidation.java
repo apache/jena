@@ -136,7 +136,7 @@ public class TestFusekiShaclValidation {
     private static ValidationReport validateReport(String url, String shapesFile) {
         Graph shapesGraph = RDFDataMgr.loadGraph(shapesFile);
         EntityTemplate entity = new EntityTemplate((out)->RDFDataMgr.write(out, shapesGraph, Lang.TTL));
-        String ct = Lang.TTL.getContentType().getContentType();
+        String ct = Lang.TTL.getContentType().getContentTypeStr();
         entity.setContentType(ct);
 
         HttpCaptureResponse<Graph> graphResponse = HttpResponseLib.graphHandler();

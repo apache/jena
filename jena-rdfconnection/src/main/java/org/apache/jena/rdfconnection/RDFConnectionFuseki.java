@@ -54,7 +54,7 @@ public class RDFConnectionFuseki extends RDFConnectionRemote {
     
     /** Fuseki settings */
     private static RDFConnectionRemoteBuilder setupForFuseki(RDFConnectionRemoteBuilder builder) {
-        String ctRDFThrift = Lang.RDFTHRIFT.getContentType().getContentType();
+        String ctRDFThrift = Lang.RDFTHRIFT.getContentType().getContentTypeStr();
         String acceptHeaderSPARQL = String.join("," 
                             , ResultSetLang.SPARQLResultSetThrift.getHeaderString()
                             , ResultSetLang.SPARQLResultSetJSON.getHeaderString()+";q=0.9"

@@ -315,7 +315,7 @@ public class TestEmbeddedFuseki {
         };
         EntityTemplate entity = new EntityTemplate(producer);
         ContentType ct = syntax.getLang().getContentType();
-        entity.setContentType(ct.getContentType());
+        entity.setContentType(ct.getContentTypeStr());
         return entity;
     }
 
