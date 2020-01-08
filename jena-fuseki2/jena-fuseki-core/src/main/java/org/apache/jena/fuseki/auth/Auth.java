@@ -111,7 +111,7 @@ public class Auth {
      * with HTTPS is better.
      * <p>
      * Unlike digest auth, basic auth can be setup without an extra round trip to the
-     * server, making it easier for scripts where teh body is not replayable.
+     * server, making it easier for scripts where the body is not replayable.
      * 
      * @param username
      * @param password

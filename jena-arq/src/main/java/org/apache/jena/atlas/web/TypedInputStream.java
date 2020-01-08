@@ -43,12 +43,6 @@ public class TypedInputStream extends FilterInputStream
     public TypedInputStream(InputStream in, String contentType)
     { this(in, ContentType.create(contentType), null) ; }
 
-//    public TypedInputStream(InputStream in, String mediaType, String charset)
-//    { this(in, mediaType, charset, null) ; }
-//    
-//    public TypedInputStream(InputStream in, String mediaType, String charset, String baseURI)
-//    { this(in, ContentType.create(mediaType, charset), baseURI) ; }
-    
     public TypedInputStream(InputStream in, ContentType ct)
     { this(in, ct, null) ; }
     
@@ -62,7 +56,7 @@ public class TypedInputStream extends FilterInputStream
     public String getContentType()          { return mediaType == null ? null : mediaType.getContentTypeStr() ; }
     public String getCharset()              { return mediaType == null ? null : mediaType.getCharset() ; }
     public ContentType getMediaType()       { return mediaType ; }
-    public String getBaseURI()              { return baseURI ; }
+    public String getBaseURI()             { return baseURI ; }
     public InputStream getInputStream()     { return super.in ; }
     
     @Override
