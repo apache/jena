@@ -31,7 +31,7 @@
   </parent> 
 
   <properties>
-    <automatic.module.name>org.apache.jena.dboe</automatic.module.name>
+    <automatic.module.name>org.apache.jena.dboe.base</automatic.module.name>
   </properties>
 
   <dependencies>

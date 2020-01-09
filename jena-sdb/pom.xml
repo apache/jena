@@ -21,8 +21,6 @@
   <artifactId>jena-sdb</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - SDB (SQL based triple store)</name>
-  <version>3.14.0-SNAPSHOT</version>
-
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
