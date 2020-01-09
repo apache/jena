@@ -201,7 +201,7 @@ public class StrUtils //extends StringUtils
     /**
      * Decode a string using marked hex values e.g. %20
      * 
-     * @param str String to decode : characters should be ASCII (<127)
+     * @param str String to decode : characters should be ASCII (&lt;127)
      * @param marker The marker character
      * @return Decoded string (returns input object on no change)
      */
