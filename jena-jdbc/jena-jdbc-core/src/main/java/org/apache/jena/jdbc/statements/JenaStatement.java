@@ -881,17 +881,15 @@ public abstract class JenaStatement implements Statement {
         }
     }
 
-    // Java 6/7 compatibility
-    @SuppressWarnings("javadoc")
+    @Override
     public boolean isCloseOnCompletion() {
         // Statements do not automatically close
         return false;
     }
 
-    @SuppressWarnings("javadoc")
+    @Override
     public void closeOnCompletion() throws SQLException {
-        // We don't support the JDBC 4.1 feature of closing statements
-        // automatically
+        // We don't support the JDBC 4.1 feature of closing statements automatically
         throw new SQLFeatureNotSupportedException();
     }
 }

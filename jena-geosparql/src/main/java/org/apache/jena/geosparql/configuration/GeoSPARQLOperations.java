@@ -61,7 +61,6 @@ import org.apache.jena.reasoner.ReasonerRegistry;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.util.iterator.ExtendedIterator;
-import org.apache.jena.util.iterator.NiceIterator;
 import org.apache.jena.vocabulary.RDFS;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.operation.TransformException;
@@ -1121,12 +1120,11 @@ public class GeoSPARQLOperations {
      */
     public static final int countGeometryLiterals(Model model, String graphName) {
         Set<String> literalStrings = new TreeSet<>();
-        Iterator<Statement> hasSerializationIterator = model.listStatements(null, Geo.HAS_SERIALIZATION_PROP, (RDFNode) null);
-        Iterator<Statement> asWKTIterator = model.listStatements(null, Geo.AS_WKT_PROP, (RDFNode) null);
-        Iterator<Statement> asGMLIterator = model.listStatements(null, Geo.AS_GML_PROP, (RDFNode) null);
+        ExtendedIterator<Statement> hasSerializationIterator = model.listStatements(null, Geo.HAS_SERIALIZATION_PROP, (RDFNode) null);
+        ExtendedIterator<Statement> asWKTIterator = model.listStatements(null, Geo.AS_WKT_PROP, (RDFNode) null);
+        ExtendedIterator<Statement> asGMLIterator = model.listStatements(null, Geo.AS_GML_PROP, (RDFNode) null);
 
-        NiceIterator niceIterator = new NiceIterator();
-        ExtendedIterator<Statement> allIterator = niceIterator.andThen(hasSerializationIterator).andThen(asWKTIterator).andThen(asGMLIterator);
+        ExtendedIterator<Statement> allIterator = hasSerializationIterator.andThen(asWKTIterator).andThen(asGMLIterator);
         int count = 0;
         while (allIterator.hasNext()) {
             Statement st = allIterator.next();
