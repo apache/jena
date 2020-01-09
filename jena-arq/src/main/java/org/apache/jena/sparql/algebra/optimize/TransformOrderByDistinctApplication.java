@@ -111,6 +111,13 @@ public class TransformOrderByDistinctApplication extends TransformCopy {
                     return new OpOrder(newDistinct, order.getConditions());
                 }
             }
+        } else {
+            if ( subOp instanceof OpOrder) {
+                // (distinct * (order ...)) ==> (order (distinct ...))  
+                OpOrder order = (OpOrder)subOp;
+                OpDistinct newDistinct = new OpDistinct(order.getSubOp());
+                return new OpOrder(newDistinct, order.getConditions());
+            }
         }
 
         // If we reach here then this transform is not applicable

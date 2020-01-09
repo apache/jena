@@ -27,7 +27,7 @@ import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Function ;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import org.apache.jena.atlas.RuntimeIOException;
@@ -41,9 +41,9 @@ import org.slf4j.LoggerFactory;
  *  PathX
  */
 public class IOX {
-    
-    public static Path currentDirectory = Paths.get(".");
-    
+
+    public static final Path currentDirectory = Paths.get(".");
+
     /** A Consumer that can throw {@link IOException}. */
     public interface IOConsumer<X> {
         void actionEx(X arg) throws IOException;
@@ -53,7 +53,7 @@ public class IOX {
      * <p>
      * Idiom:
      * <pre>
-     *     catch(IOException ex) { throw new exception(ex); } 
+     *     catch(IOException ex) { throw new exception(ex); }
      * </pre>
      * @param ioException
      * @return RuntimeIOException
@@ -61,12 +61,12 @@ public class IOX {
     public static RuntimeIOException exception(IOException ioException) {
         return new RuntimeIOException(ioException);
     }
-    
+
     /** Convert an {@link IOException} into a {@link RuntimeIOException}.
      * <p>
      * Idiom:
      * <pre>
-     *     catch(IOException ex) { throw new exception("Oh dear", ex); } 
+     *     catch(IOException ex) { throw new exception("Oh dear", ex); }
      * </pre>
      * @param message
      * @param ioException
@@ -75,10 +75,10 @@ public class IOX {
     public static RuntimeIOException exception(String message, IOException ioException) {
         return new RuntimeIOException(message, ioException);
     }
-    
+
     /** Write a file safely - the change happens (the function returns true) or
      * something went wrong (the function throws a runtime exception) and the file is not changed.
-     * Note that the tempfile must be in the same direct as the actual file so an OS-atomic rename can be done.  
+     * Note that the tempfile must be in the same direct as the actual file so an OS-atomic rename can be done.
      */
     public static boolean safeWrite(Path file, IOConsumer<OutputStream> writerAction) {
         Path tmp = createTempFile(file.getParent(), file.getFileName().toString(), ".tmp");
@@ -87,7 +87,7 @@ public class IOX {
 
     /** Write a file safely - the change happens (the function returns true) or
      * something went wrong (the function throws a runtime exception) and the file is not changed.
-     * Note that the tempfile must be in the same direct as the actual file so an OS-atomic rename can be done.  
+     * Note that the tempfile must be in the same direct as the actual file so an OS-atomic rename can be done.
      */
     public static boolean safeWrite(Path file, Path tmpFile, IOConsumer<OutputStream> writerAction) {
         try {
@@ -107,16 +107,16 @@ public class IOX {
             throw IOX.exception(ex);
         }
     }
-    
+
     /** Atomically move a file. */
     public static void move(Path src, Path dst) {
-        try { Files.move(src, dst, StandardCopyOption.ATOMIC_MOVE) ; }
+        try { Files.move(src, dst, StandardCopyOption.ATOMIC_MOVE); }
         catch (IOException ex) {
             FmtLog.error(IOX.class, ex, "IOException moving %s to %s", src, dst);
             throw IOX.exception(ex);
         }
     }
-    
+
     /** Copy a file, not atomic. *
      * Can copy to a directory or over an existing file.
      * @param srcFilename
@@ -126,18 +126,18 @@ public class IOX {
         Path src = Paths.get(srcFilename);
         if ( ! Files.exists(src) )
             throw new RuntimeIOException("No such file: "+srcFilename);
-        
+
         Path dst = Paths.get(dstFilename);
         if ( Files.isDirectory(dst) )
             dst = dst.resolve(src.getFileName());
-        
+
         try { Files.copy(src, dst); }
         catch (IOException ex) {
             FmtLog.error(IOX.class, ex, "IOException copying %s to %s", srcFilename, dstFilename);
             throw IOX.exception(ex);
         }
     }
-    
+
     /** Create a directory - thgrow a runtime exception if there are any problems.
      * This function wraps {@code Files.createDirectory}.
      */
@@ -152,7 +152,7 @@ public class IOX {
             throw new RuntimeIOException("Path is not naming a directory: "+path);
         return Location.create(path.toString());
     }
-    
+
 //    /** Convert a {@link org.apache.jena.tdb.base.file.Location} to a {@link Path}. */
 //    public static Path asPath(org.apache.jena.tdb.base.file.Location location) {
 //        if ( location.isMem() )
@@ -178,7 +178,7 @@ public class IOX {
             return Files.readAllBytes(pathname);
         } catch (IOException ex) { throw IOX.exception(ex); }
     }
-    
+
     /** Write the whole of a file */
     public static void writeAll(Path pathname, byte[] value) {
         try {
@@ -198,7 +198,7 @@ public class IOX {
 //        try { Files.createDirectories(dir, attrs); }
 //        catch (IOException ex) { new DeltaFileException("Failed to create directory: "+dir, ex);}
 //    }
-//    
+//
 //    /**
 //     * Ensure a file exists - create an empty one if not. This operation does
 //     * not create a directory path to the file.
@@ -222,28 +222,28 @@ public class IOX {
             return Files.createTempFile(dir, prefix, suffix, attrs);
         } catch (IOException ex) { throw IOX.exception(ex); }
     }
-    
-    /** Generate a unique place related to path; 
+
+    /** Generate a unique place related to path;
      * Optionally, provide a mapping of old name to new namebase.
-     * This method always adds "-1", "-2" etc. 
-     */  
+     * This method always adds "-1", "-2" etc.
+     */
     public static Path uniqueDerivedPath(Path path, Function<String, String> basenameMapping) {
         String base = path.getFileName().toString();
         if ( basenameMapping != null )
             base = basenameMapping.apply(base);
         // Some large limit "just in case"
-        for(int x = 0 ; x < 10_000 ; x++ ) {
-            String destname = base+"-"+x; 
+        for(int x = 0; x < 10_000 ; x++ ) {
+            String destname = base+"-"+x;
             Path destpath = path.resolveSibling(destname);
             if ( ! Files.exists(destpath) )
                 return destpath;
         }
-        return null ;
+        return null;
     }
-    
+
     private static Logger LOG = LoggerFactory.getLogger(Util.class);
-    
-    /** Find the files in this directory that have namebase as a prefix and 
+
+    /** Find the files in this directory that have namebase as a prefix and
      *  are then numbered.
      *  <p>
      *  Returns a sorted list from, low to high index.
@@ -257,7 +257,7 @@ public class IOX {
             for ( Path entry : stream ) {
                 if ( !pattern.matcher(entry.getFileName().toString()).matches() ) {
                     throw new DBOpEnvException("Invalid filename for matching: "+entry.getFileName());
-                    // Alternative: Skip bad trailing parts but more likely there is a naming problem.  
+                    // Alternative: Skip bad trailing parts but more likely there is a naming problem.
                     //   LOG.warn("Invalid filename for matching: {} skipped", entry.getFileName());
                     //   continue;
                 }

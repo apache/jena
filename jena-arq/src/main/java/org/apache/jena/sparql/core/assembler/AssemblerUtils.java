@@ -101,8 +101,20 @@ public class AssemblerUtils
             spec = RDFDataMgr.loadModel(assemblerFile) ;
         } catch (Exception ex)
         { throw new ARQException("Failed reading assembler description: "+ex.getMessage()) ; }
-        spec.add(modelExtras) ;
+        addRegistered(spec);
         return spec ;
+    }
+    
+    /** Add any extra information to the model.
+     * Such information includes registration of datasets (e.g. TDB1, TDB2)
+     * done by {@link #register} ({@link #registerDataset}, {@link #registerModel}.
+     * It avoids directly modifying {@link Assembler#general}.
+     * @param model
+     * @return Model The same model after modification.
+     */
+    public static Model addRegistered(Model model) {
+        model.add(modelExtras) ;
+        return model ;
     }
     
     public static Object build(String assemblerFile, String typeURI) {
@@ -126,7 +138,32 @@ public class AssemblerUtils
         return Assembler.general.open(root) ;
     }
     
-    /** Look for and set context declarations. 
+    /** Look for and build context declarations. 
+     * e.g.
+     * <pre>
+     * root ... ;
+     *   ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000" ] ;
+     *   ...
+     * </pre>
+     * Short name forms of context parameters can be used.  
+     * Setting as string "undef" will remove the context setting.
+     * Returns null when there is no {@link JA#context} on the resource.
+     */
+    public static Context parseContext(Resource r)
+    {
+        if ( ! r.hasProperty(JA.context ) )
+            return null;
+        Context context = new Context();
+        mergeContext(r, context);
+        return context;
+    }
+        
+    /** @deprecated Use {@link #mergeContext(Resource, Context)} */
+    public static void setContext(Resource r, Context context) {
+        mergeContext(r, context);
+    }
+    
+    /** Look for and merge in context declarations. 
      * e.g.
      * <pre>
      * root ... ;
@@ -136,8 +173,7 @@ public class AssemblerUtils
      * Short name forms of context parameters can be used.  
      * Setting as string "undef" will remove the context setting.
      */
-    public static void setContext(Resource r, Context context)
-    {
+    public static void mergeContext(Resource r, Context context) {
         String qs = "PREFIX ja: <"+JA.getURI()+">\nSELECT * { ?x ja:context [ ja:cxtName ?name ; ja:cxtValue ?value ] }" ;
         QuerySolutionMap qsm = new QuerySolutionMap() ;
         qsm.add("x", r) ;

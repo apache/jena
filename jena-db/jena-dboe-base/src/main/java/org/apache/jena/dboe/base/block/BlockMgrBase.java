@@ -18,32 +18,30 @@
 
 package org.apache.jena.dboe.base.block;
 
-import org.slf4j.Logger ;
+import org.slf4j.Logger;
 
 public abstract class BlockMgrBase implements BlockMgr
 {
-    protected final int blockSize ;
-    private String label ;
-    protected abstract Logger log() ;
+    protected final int blockSize;
+    private String label;
+    protected abstract Logger log();
 
     // Fixed size, fixed block type.
-    protected BlockMgrBase(String label, int blockSize)
-    {
-        this.label = label ;
-        this.blockSize = blockSize ;
+    protected BlockMgrBase(String label, int blockSize) {
+        this.label = label;
+        this.blockSize = blockSize;
     }
 
     @Override
-    public final Block allocate(int blkSize)
-    {
+    public final Block allocate(int blkSize) {
         if ( blkSize > 0 && blkSize != this.blockSize )
-            throw new BlockException("Fixed blocksize BlockMgr: request= "+blkSize+"  fixed size="+this.blockSize) ;
-        return allocate() ;
+            throw new BlockException("Fixed blocksize BlockMgr: request= "+blkSize+"  fixed size="+this.blockSize);
+        return allocate();
     }
-    
-    protected abstract Block allocate() ;
-    
-    @Override final public String getLabel() { return label ; } 
+
+    protected abstract Block allocate();
+
+    @Override final public String getLabel() { return label; }
 
     @Override public void endUpdate()       {}
     @Override public void beginUpdate()     {}

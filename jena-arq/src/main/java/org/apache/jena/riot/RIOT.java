@@ -107,6 +107,8 @@ public class RIOT {
         return ARQ.BUILD_DATE ;
     }
     
+    // ---- Symbols
+    
     /**
      * Symbol to use to pass (in a Context object) the "@context" to be used when reading jsonld
      * (overriding the actual @context in the jsonld)
@@ -114,4 +116,11 @@ public class RIOT {
      * as expected by the JSONLD-java API (a Map) */
     public static final Symbol JSONLD_CONTEXT = Symbol.create("http://jena.apache.org/riot/jsonld#JSONLD_CONTEXT");
 
+    private static String TURTLE_SYMBOL_BASE = "http://jena.apache.org/riot/turtle#";
+    
+    /** 
+     * Printing style. One of "RDF11" or RDF10". Controls {@literal @prefix} vs PREFIX. 
+     * Values causing SPARQL-style keyword output are "sparql","keyword" and "rdf11".
+     */
+    public static final Symbol symTurtlePrefixStyle = SystemARQ.allocSymbol(TURTLE_SYMBOL_BASE, "prefixStyle");
 }

@@ -18,69 +18,69 @@
 
 package org.apache.jena.fuseki.system;
 
-import org.apache.jena.atlas.json.JsonBuilder ;
-import org.apache.jena.atlas.json.JsonValue ;
+import org.apache.jena.atlas.json.JsonBuilder;
+import org.apache.jena.atlas.json.JsonValue;
 
 /** Record of an upload */
 public class UploadDetails {
-    public enum PreState { EXISTED, ABSENT, UNKNOWN } 
-    
-    private final long count ;
-    private final long tripleCount ;
-    private final long quadCount ;
-    private PreState state = PreState.UNKNOWN ;
-    
+    public enum PreState { EXISTED, ABSENT, UNKNOWN }
+
+    private final long count;
+    private final long tripleCount;
+    private final long quadCount;
+    private PreState state = PreState.UNKNOWN;
+
     /*package*/ UploadDetails(long parserCount, long parserTripleCount, long parserQuadCount) {
-        this.count = parserCount ;
-        this.tripleCount = parserTripleCount ;
-        this.quadCount = parserQuadCount ;
+        this.count = parserCount;
+        this.tripleCount = parserTripleCount;
+        this.quadCount = parserQuadCount;
     }
-    
+
     public static String detailsStr(long count, long tripleCount, long quadCount) {
-        return String.format("Count=%d Triples=%d Quads=%d", count, tripleCount, quadCount) ;
+        return String.format("Count=%d Triples=%d Quads=%d", count, tripleCount, quadCount);
     }
-    
+
     public String detailsStr() {
-        return detailsStr(count, tripleCount, quadCount) ;
+        return detailsStr(count, tripleCount, quadCount);
     }
-    
-    public static String jCount = "count" ; 
-    public static String jTriplesCount = "tripleCount" ; 
-    public static String jQuadsCount = "quadCount" ; 
-    
+
+    public static String jCount = "count";
+    public static String jTriplesCount = "tripleCount";
+    public static String jQuadsCount = "quadCount";
+
     public static JsonValue detailsJson(long count, long tripleCount, long quadCount) {
-        JsonBuilder b = new JsonBuilder() ;
-        b.startObject("details") ;
-        b.key(jCount).value(count) ;
-        b.key(jTriplesCount).value(tripleCount) ;
-        b.key(jQuadsCount).value(quadCount) ;
-        b.finishObject("details") ;
-        return b.build() ;
+        JsonBuilder b = new JsonBuilder();
+        b.startObject("details");
+        b.key(jCount).value(count);
+        b.key(jTriplesCount).value(tripleCount);
+        b.key(jQuadsCount).value(quadCount);
+        b.finishObject("details");
+        return b.build();
     }
 
     public JsonValue detailsJson() {
-        return detailsJson(count, tripleCount, quadCount) ;
+        return detailsJson(count, tripleCount, quadCount);
     }
 
     public long getCount() {
-        return count ;
+        return count;
     }
 
     public long getTripleCount() {
-        return tripleCount ;
+        return tripleCount;
     }
 
     public long getQuadCount() {
-        return quadCount ;
+        return quadCount;
     }
 
     public void setExistedBefore(boolean existedBefore) {
         if ( existedBefore )
-            setExistedBefore(PreState.EXISTED) ;
+            setExistedBefore(PreState.EXISTED);
         else
-            setExistedBefore(PreState.ABSENT) ;
+            setExistedBefore(PreState.ABSENT);
     }
-    public void setExistedBefore(PreState state) { this.state = state ; }
-    
-    public PreState getExistedBefore() { return state ; }
+    public void setExistedBefore(PreState state) { this.state = state; }
+
+    public PreState getExistedBefore() { return state; }
 }

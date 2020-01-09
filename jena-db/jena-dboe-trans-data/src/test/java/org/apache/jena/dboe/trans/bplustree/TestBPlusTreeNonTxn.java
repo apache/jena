@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.trans.bplustree ;
+package org.apache.jena.dboe.trans.bplustree;
 
 import static org.apache.jena.dboe.index.test.IndexTestLib.add;
 import static org.apache.jena.dboe.test.RecordLib.intToRecord;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.dboe.base.block.BlockMgr;
 import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.index.test.AbstractTestRangeIndex;
@@ -32,63 +32,63 @@ import org.apache.jena.dboe.test.RecordLib;
 import org.apache.jena.dboe.trans.bplustree.BPT;
 import org.apache.jena.dboe.trans.bplustree.BPlusTree;
 import org.apache.jena.dboe.trans.bplustree.BPlusTreeFactory;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
-/** Run the tests in default settings for a tree in "non-transactional" mode */ 
+/** Run the tests in default settings for a tree in "non-transactional" mode */
 public class TestBPlusTreeNonTxn extends AbstractTestRangeIndex {
     // See TestBPTreeModes for parameterised tests for the duplication modes.
-    
+
     // Add tracker or not (usually not)
     // The tracker checking can impose more constraints than are needed
     // giving false negatives.  Iterator aren't tracked (they may not
     // be consumed; don't release pages properly)
-    static boolean addTracker = false  ;
+    static boolean addTracker = false ;
     // Panic.
-    static boolean addLogger  = false  ;
+    static boolean addLogger  = false ;
 
-    static boolean originalNullOut ;
+    static boolean originalNullOut;
     @BeforeClass
     static public void beforeClass() {
-        BPT.CheckingNode = true ;
-        originalNullOut = SystemIndex.getNullOut() ;
-        SystemIndex.setNullOut(true) ;
+        BPT.CheckingNode = true;
+        originalNullOut = SystemIndex.getNullOut();
+        SystemIndex.setNullOut(true);
     }
 
     @AfterClass
     static public void afterClass() {
-        SystemIndex.setNullOut(originalNullOut) ;
+        SystemIndex.setNullOut(originalNullOut);
     }
-    
+
     protected void testClearX(int N) {
-        int[] keys = new int[N] ; // Slice is 1000.
-        for ( int i = 0 ; i < keys.length ; i++ )
-            keys[i] = i ;
-        BPlusTree rIndex = makeRangeIndex(2, 2) ;
-        add(rIndex, keys) ;
-        rIndex.dump() ;
+        int[] keys = new int[N]; // Slice is 1000.
+        for ( int i = 0; i < keys.length ; i++ )
+            keys[i] = i;
+        BPlusTree rIndex = makeRangeIndex(2, 2);
+        add(rIndex, keys);
+        rIndex.dump();
         if ( N > 0 )
-            assertFalse(rIndex.isEmpty()) ;
-        List<Record> x = intToRecord(keys, RecordLib.TestRecordLength) ;
-        for ( int i = 0 ; i < keys.length ; i++ ) {
-            System.out.println(i+": "+x.get(i)) ;
-            rIndex.delete(x.get(i)) ;
+            assertFalse(rIndex.isEmpty());
+        List<Record> x = intToRecord(keys, RecordLib.TestRecordLength);
+        for ( int i = 0; i < keys.length ; i++ ) {
+            System.out.println(i+": "+x.get(i));
+            rIndex.delete(x.get(i));
         }
-        assertTrue(rIndex.isEmpty()) ;
+        assertTrue(rIndex.isEmpty());
     }
-    
+
     @Override
     protected BPlusTree makeRangeIndex(int order, int minRecords) {
-        BPlusTree bpt = BPlusTreeFactory.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
+        BPlusTree bpt = BPlusTreeFactory.makeMem(order, minRecords, RecordLib.TestRecordLength, 0);
         if ( addLogger ) {
             // Put it in but disable it so that it can be enabled
             // in the middle of a complex operation.
-            LogCtl.disable(BlockMgr.class) ;
-            bpt = BPlusTreeFactory.addLogging(bpt) ;
+            LogCtl.disable(BlockMgr.class);
+            bpt = BPlusTreeFactory.addLogging(bpt);
         }
         if ( addTracker )
-            bpt = BPlusTreeFactory.addTracking(bpt) ;
-        bpt.nonTransactional() ;
-        return bpt ;
+            bpt = BPlusTreeFactory.addTracking(bpt);
+        bpt.nonTransactional();
+        return bpt;
     }
 }

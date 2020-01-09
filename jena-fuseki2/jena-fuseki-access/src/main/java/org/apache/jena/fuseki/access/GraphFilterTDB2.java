@@ -43,7 +43,7 @@ class GraphFilterTDB2 extends GraphFilter<NodeId> {
     public Symbol getContextKey() {
         return SystemTDB.symTupleFilter;
     }
-    
+
     /**
      * Create a graph filter for a TDB2 {@link DatasetGraph}. The filter matches (returns
      * true) for Tuples where the graph slot in quad is in the collection or for triples in the default
@@ -52,10 +52,10 @@ class GraphFilterTDB2 extends GraphFilter<NodeId> {
     public static GraphFilterTDB2 graphFilter(DatasetGraph dsg, Collection<Node> namedGraphs, boolean matchDefaultGraph) {
         if ( ! TDBInternal.isTDB2(dsg) )
             throw new IllegalArgumentException("DatasetGraph is not TDB2-backed");
-        List<NodeId> x =  
+        List<NodeId> x =
             Txn.calculateRead(dsg, ()->{
                 NodeTable nt = TDBInternal.getDatasetGraphTDB(dsg).getQuadTable().getNodeTupleTable().getNodeTable();
-                return 
+                return
                     ListUtils.toList(
                         namedGraphs.stream()
                         .map(n->nt.getNodeIdForNode(n))

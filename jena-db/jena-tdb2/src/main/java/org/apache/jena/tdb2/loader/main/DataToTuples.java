@@ -27,12 +27,12 @@ import java.util.function.Function;
 
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.atlas.lib.tuple.TupleFactory;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.dboe.transaction.txn.Transaction;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.TxnType;
-import org.apache.jena.sparql.core.DatasetPrefixStorage;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.tdb2.loader.BulkLoaderException;
 import org.apache.jena.tdb2.loader.base.BulkStartFinish;
@@ -42,16 +42,18 @@ import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 
-/** Batch processing of {@link DataBlock}s (triples or Quads) converting them to two outputs of
+/**
+ * Batch processing of {@link DataBlock}s (triples or Quads)
+ * converting them to two outputs of
  * blocks of {@code Tuple<NodeId>}.
  * <p>
- * This class runs one task thread.
+ * This class runs one task thread which updates
  * <p>
  * Data is deliver into the process by calling the provided functions for {@code Destination<Tuple<NodeId>}.
  * <p>
  * Assumes triples and quads share a node table.
- */ 
- 
+ */
+
 public class DataToTuples implements BulkStartFinish {
     private long countTriples;
     private long countQuads;
@@ -60,7 +62,6 @@ public class DataToTuples implements BulkStartFinish {
     private final Destination<Tuple<NodeId>> dest4;
     private final DatasetGraphTDB dsgtdb;
     private final NodeTable nodeTable;
-    private final DatasetPrefixStorage prefixes;
 
     // Chunk accumulators.
     private List<Tuple<NodeId>> quads = null;
@@ -68,41 +69,52 @@ public class DataToTuples implements BulkStartFinish {
     private final MonitorOutput output;
     private BlockingQueue<DataBlock> input;
 
-    public DataToTuples(DatasetGraphTDB dsgtdb, Destination<Tuple<NodeId>> tuples3, Destination<Tuple<NodeId>> tuples4, MonitorOutput output) {
+    private Thread thread;
+
+    public DataToTuples(DatasetGraphTDB dsgtdb,
+                        Destination<Tuple<NodeId>> tuples3,
+                        Destination<Tuple<NodeId>> tuples4,
+                        MonitorOutput output) {
         this.dsgtdb = dsgtdb;
         this.dest3 = tuples3;
         this.dest4 = tuples4;
         this.input = new ArrayBlockingQueue<>(LoaderConst.QueueSizeData);
         this.nodeTable = dsgtdb.getQuadTable().getNodeTupleTable().getNodeTable();
-        this.prefixes = dsgtdb.getPrefixes();
         this.output = output;
-        
+
         NodeTable nodeTable2 = dsgtdb.getTripleTable().getNodeTupleTable().getNodeTable();
         if ( nodeTable != nodeTable2 )
             throw new BulkLoaderException("Different node tables");
     }
-    
+
     private TransactionCoordinator coordinator;
-    private Transaction transaction; 
-    
+    private Transaction transaction;
+
     public Consumer<DataBlock> data() {
-        return this::index; 
+        return this::index;
     }
-    
+
     private void index(DataBlock dataBlock) {
         try { input.put(dataBlock); }
         catch (InterruptedException e) {
             throw new BulkLoaderException("InterruptedException", e);
         }
     }
-    
+
     @Override
     public void startBulk() {
-        new Thread(()->action()).start();
+        thread = new Thread(()->action());
+        thread.start();
     }
-     
+
     @Override
-    public void finishBulk() { }
+    public void finishBulk() {
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            throw new BulkLoaderException("InterruptedException", e);
+        }
+    }
 
     // Triples.
     private void action() {
@@ -113,7 +125,7 @@ public class DataToTuples implements BulkStartFinish {
 
         try {
             for (;;) {
-                
+
                 DataBlock data = input.take();
                 if ( data == DataBlock.END )
                     break;
@@ -138,7 +150,7 @@ public class DataToTuples implements BulkStartFinish {
             dispatchTuples4(LoaderConst.END_TUPLES);
             transaction.commit();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Log.error(this, "Exception during data loading", ex);
             transaction.abort();
         }
         transaction.end();
@@ -153,7 +165,7 @@ public class DataToTuples implements BulkStartFinish {
     private void dispatchTuples3(List<Tuple<NodeId>> chunk) {
         dest3.deliver(chunk);
     }
-    
+
     private void dispatchTuples4(List<Tuple<NodeId>> chunk) {
         dest4.deliver(chunk);
     }
@@ -161,18 +173,18 @@ public class DataToTuples implements BulkStartFinish {
     private static void accTuples(Triple triple, NodeTable nodeTable, List<Tuple<NodeId>> acc) {
         acc.add(nodes(nodeTable, triple));
     }
-    
+
     private static void accTuples(Quad quad, NodeTable nodeTable, List<Tuple<NodeId>> acc) {
         acc.add(nodes(nodeTable, quad));
     }
-    
+
     // Recycle?
     private List<Tuple<NodeId>> allocChunkTriples() {
-        return new ArrayList<>(LoaderConst.ChunkSize); 
-    } 
+        return new ArrayList<>(LoaderConst.ChunkSize);
+    }
 
     private List<Tuple<NodeId>> allocChunkQuads() {
-        return new ArrayList<>(LoaderConst.ChunkSize); 
+        return new ArrayList<>(LoaderConst.ChunkSize);
     }
 
     private static Tuple<NodeId> nodes(NodeTable nt, Triple triple) {
@@ -181,10 +193,10 @@ public class DataToTuples implements BulkStartFinish {
         NodeId o = idForNode(nt, triple.getObject());
         return TupleFactory.tuple(s,p,o);
     }
-    
+
     private Function<List<Quad>, List<Tuple<NodeId>>> quadsToNodeIds(NodeTable nodeTable) {
         return (List<Quad> quads) -> {
-            List<Tuple<NodeId>> x = new ArrayList<>(quads.size()); 
+            List<Tuple<NodeId>> x = new ArrayList<>(quads.size());
             for(Quad quad: quads) {
                 x.add(nodes(nodeTable, quad));
             }
@@ -199,9 +211,9 @@ public class DataToTuples implements BulkStartFinish {
         NodeId o = idForNode(nt, quad.getObject());
         return TupleFactory.tuple(g,s,p,o);
     }
-    
+
     private static final NodeId idForNode(NodeTable nodeTable, Node node) {
         return nodeTable.getAllocateNodeId(node);
     }
-    
+
 }

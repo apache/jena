@@ -30,14 +30,14 @@ import org.apache.jena.tdb2.loader.base.MonitorOutput;
 import org.apache.jena.tdb2.loader.base.ProgressMonitor;
 import org.apache.jena.tdb2.loader.base.ProgressMonitorOutput;
 
-/** Simple bulk loader. Algorithm: Parser to dataset. */ 
+/** Simple bulk loader. Algorithm: Parser to dataset. */
 public class LoaderBasic extends LoaderBase {
     private static int DataTickPoint = 100_000;
     private static int DataSuperTick = 10;
     // The destination for loading data.
     private final StreamRDFCounting dest;
     private final StreamRDF baseDest;
-    
+
     public LoaderBasic(DatasetGraph dsg, Node graphName, MonitorOutput output) {
         super(dsg, graphName, output);
         baseDest = LoaderOps.toNamedGraph(StreamRDFLib.dataset(dsg), graphName);

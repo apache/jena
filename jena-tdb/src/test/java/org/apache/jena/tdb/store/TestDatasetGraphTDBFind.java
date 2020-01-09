@@ -28,6 +28,6 @@ public class TestDatasetGraphTDBFind extends AbstractDatasetGraphFind {
     @Override
     public DatasetGraph create() {
         // Get the underlying storage, not the transactional support. 
-        return ((DatasetGraphTransaction)TDBFactory.createDatasetGraph()).get();
+        return ((DatasetGraphTransaction)TDBFactory.createDatasetGraph()).getBaseDatasetGraph();
     }
 }

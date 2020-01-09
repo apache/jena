@@ -30,27 +30,27 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphSink;
 import org.apache.jena.sparql.core.Quad;
 
-/** A {@link SecurityContext} that does not allow any access. */ 
+/** A {@link SecurityContext} that does not allow any access. */
 public class SecurityContextAllowNone implements SecurityContext {
-    
+
     public SecurityContextAllowNone() {}
-    
+
     @Override
     public Collection<Node> visibleGraphs() {
         return Collections.emptyList();
     }
-    
+
     @Override
-    public boolean visableDefaultGraph() { return false; }  
+    public boolean visableDefaultGraph() { return false; }
 
     @Override
     public QueryExecution createQueryExecution(Query query, DatasetGraph dsg) {
         return QueryExecutionFactory.create(query, new DatasetGraphSink());
     }
-    
+
     @Override
-    public Predicate<Quad> predicateQuad() { return q -> false ; }
-    
+    public Predicate<Quad> predicateQuad() { return q -> false; }
+
     @Override
     public void filterTDB(DatasetGraph dsg, QueryExecution qExec) {
         Predicate<?> pred = tuple->false;

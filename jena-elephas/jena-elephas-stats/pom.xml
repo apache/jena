@@ -20,11 +20,15 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-elephas</artifactId>
-    <version>3.11.0-SNAPSHOT</version>
+    <version>3.14.0-SNAPSHOT</version>
   </parent>
   <artifactId>jena-elephas-stats</artifactId>
   <name>Apache Jena - Elephas - Statistics Demo App</name>
   <description>A demo application that can be run on Hadoop to produce a statistical analysis on arbitrary RDF inputs</description>
+
+  <properties>
+    <automatic.module.name>org.apache.jena.elephas.stats</automatic.module.name>
+  </properties>
 
   <dependencies>
 		<!-- Internal Project Dependencies -->

@@ -232,10 +232,6 @@ public class IRILib
         return uri ;
     }
 
-    public static String decode(String string) {
-        return StrUtils.decodeHex(string, '%') ;
-    }
-
     public static String encodeNonASCII(String string) {
         if ( ! containsNonASCII(string) )
             return string ;
@@ -248,7 +244,7 @@ public class IRILib
                 sw.append( (char) b );
                 continue;
             }
-
+    
             int hi = ( b & 0xF0 ) >> 4;
             int lo = b & 0xF;
             sw.append( '%' );
@@ -265,5 +261,24 @@ public class IRILib
                 return true;
         }
         return false ;
+    }
+
+    /** @deprecated Use {@link #decodeHex} */ 
+    @Deprecated
+    public static String decode(String string) { return decodeHex(string); }
+
+    /**
+     * Decode a string that may have %-encoded sequences.
+     * <p>
+     * This function will reverse 
+     * {@link #encodeNonASCII(String)},
+     * {@link #encodeUriPath(String)},
+     * {@link #encodeFileURL(String)} and
+     * {@link #encodeUriComponent(String)}.
+     * 
+     * It will not decode '+' used for space (application/x-www-form-urlencoded). 
+     */ 
+    public static String decodeHex(String string) {
+        return StrUtils.decodeHex(string, '%') ;
     } 
 }

@@ -40,6 +40,7 @@ import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.Symbol;
 
 /**
  * An {@link RDFParser} is a process that will generate triples; 
@@ -90,7 +91,6 @@ public class RDFParserBuilder {
     
     private Optional<Boolean> checking = Optional.empty();
     
-    // ---- Unused but left in case required in the future.
     private boolean strict = SysRIOT.isStrictMode();
     private boolean resolveURIs = true;
     private IRIResolver resolver = null;
@@ -234,6 +234,13 @@ public class RDFParserBuilder {
      * @return this
      */
     public RDFParserBuilder lang(Lang lang) { this.hintLang = lang ; return this; }
+    
+    /**
+     * Set the parser built to "strict" mode. The default is system wide setting of {@link SysRIOT#isStrictMode()}.
+     * @param strictMode
+     * @return this
+     */
+    public RDFParserBuilder strict(boolean strictMode) { this.strict = strictMode ; return this ; } 
 
     /**
      * Force the choice RDF syntax to be {@code lang}, and ignore any indications such as file extension
@@ -481,10 +488,43 @@ public class RDFParserBuilder {
 //        return this;
 //    }
     
+    private void ensureContext() {
+        if ( context == null )
+            context = new Context();
+    }
+    
+    /**
+     * Set the context for the parser when built.
+     * 
+     * If a context is already partly set
+     * for this builder, merge the new settings 
+     * into the outstanding context.
+     * 
+     * If the context argument is null, do nothing.
+     * 
+     * @param context
+     * @return this
+     * @see Context
+     */
     public RDFParserBuilder context(Context context) {
-        if ( context != null )
-            context = context.copy();
-        this.context = context;
+        if ( context == null )
+            return this;
+        ensureContext();
+        this.context.putAll(context);
+        return this;
+    }
+    
+    /** 
+     * Added a setting to the context for the parser when built.
+     * A value of "null" removes a previous setting.
+     * @param symbol
+     * @param value
+     * @return this
+     * @see Context
+     */
+    public RDFParserBuilder set(Symbol symbol, Object value) {
+        ensureContext();
+        context.put(symbol, value);
         return this;
     }
     
@@ -563,7 +603,8 @@ public class RDFParserBuilder {
         // Build what we can now - some things have to be built in the parser.
         if ( uri == null && path == null && content == null && inputStream == null && javaReader == null )
             throw new RiotException("No source specified");
-        
+        if ( context == null )
+            context = RIOT.getContext().copy();
         // Setup the HTTP client.
         HttpClient client = buildHttpClient();
         FactoryRDF factory$ = buildFactoryRDF();

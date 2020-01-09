@@ -18,23 +18,23 @@
 
 package org.apache.jena.dboe.index;
 
-import java.util.Objects ;
+import java.util.Objects;
 
 import org.apache.jena.dboe.base.record.Record;
-import org.apache.jena.sparql.core.DatasetChanges ;
+import org.apache.jena.sparql.core.DatasetChanges;
 
 /** Temporary class to refine what to put into Jena itself.
  * @see DatasetChanges
  */
 public class IndexChange {
     enum Action { ADD, DELETE }
-    final Action action ;
-    final Record record ;
+    final Action action;
+    final Record record;
     public IndexChange(Action action, Record record) {
-        Objects.requireNonNull(action, "Action can not be null") ; 
-        Objects.requireNonNull(record, "Record can not be null") ;
-        this.action = action ;
-        this.record = record ;
+        Objects.requireNonNull(action, "Action can not be null");
+        Objects.requireNonNull(record, "Record can not be null");
+        this.action = action;
+        this.record = record;
     }
 }
 

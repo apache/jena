@@ -22,6 +22,7 @@ import org.apache.jena.query.text.assembler.TestEntityMapAssembler;
 import org.apache.jena.query.text.assembler.TestTextDatasetAssembler;
 import org.apache.jena.query.text.assembler.TestTextIndexLuceneAssembler;
 import org.apache.jena.query.text.assembler.TestGenericAnalyzerAssembler;
+import org.apache.jena.query.text.assembler.TestPropListsAssembler;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -54,12 +55,18 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestDatasetWithConfigurableAnalyzer.class
     , TestDatasetWithAnalyzingQueryParser.class
     , TestDatasetWithComplexPhraseQueryParser.class
+    , TestDatasetWithSurroundQueryParser.class
     , TestGenericAnalyzerAssembler.class
     , TestTextGraphIndexExtra.class
     , TestTextGraphIndexExtra2.class
     , TestTextHighlighting.class
     , TestTextDefineAnalyzers.class
     , TestTextMultilingualEnhancements.class
+    
+    , TestPropListsAssembler.class
+    , TestTextPropLists.class
+    , TestTextPropLists02.class
+    , TestTextMultilingualEnhancements02.class
 })
 
 public class TS_Text

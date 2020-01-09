@@ -22,40 +22,40 @@ import org.apache.jena.dboe.transaction.TransInteger;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.dboe.transaction.txn.TransactionalBase;
 
-/** 
+/**
  * A Transactional (unit of begin/commit) of a single integer component.
  * Testing support.  Use {@link TransInteger} for application code.
  * @see TransInteger
  */
 public class TransactionalInteger extends TransactionalBase {
-    final private TransInteger integer ;
+    final private TransInteger integer;
 
     public TransactionalInteger(TransactionCoordinator coord, long v) {
-        super(coord) ;
-        integer = new TransInteger(v) ;
-        coord.add(integer) ;
+        super(coord);
+        integer = new TransInteger(v);
+        coord.add(integer);
     }
 
     public void inc() {
-        integer.inc() ;
+        integer.inc();
     }
 
     /** Return the current value.
      * If inside a transaction, return the tarnsaction view of the value.
      * If not in a transaction return the state value (effectively
-     * a fast read transaction).   
+     * a fast read transaction).
      */
     public long get() {
-        return integer.get() ;
+        return integer.get();
     }
-    
+
     public void set(long v) {
-        integer.set(v) ;
+        integer.set(v);
     }
-    
-    /** Return the currently commited value */ 
+
+    /** Return the currently commited value */
     public long value() {
-        return integer.value() ;
+        return integer.value();
     }
 }
 

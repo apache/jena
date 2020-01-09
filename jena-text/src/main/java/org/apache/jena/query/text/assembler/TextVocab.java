@@ -116,5 +116,10 @@ public class TextVocab
     
     // Query Cache
     public static final Property pCacheQueries      = Vocab.property(NS, "cacheQueries");
+    
+    // Property Lists
+    public static final Property pPropLists         = Vocab.property(NS, "propLists");
+    public static final Property pPropListProp      = Vocab.property(NS, "propListProp");
+    public static final Property pProps             = Vocab.property(NS, "props");
 }
 

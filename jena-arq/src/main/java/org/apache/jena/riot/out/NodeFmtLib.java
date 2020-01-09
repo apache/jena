@@ -97,6 +97,10 @@ public class NodeFmtLib
             if ( ! first )
                 sw.append(" ") ;
             first = false ;
+            if ( n == null ) {
+                sw.append("null") ;
+                continue;
+            }
             str(sw, n) ;
         }
         return sw.toString() ; 

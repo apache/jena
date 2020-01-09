@@ -18,7 +18,7 @@
 
 package org.apache.jena.dboe.index;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
 import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.base.record.RecordFactory;
@@ -27,80 +27,80 @@ import org.apache.jena.dboe.base.record.RecordMapper;
 public class RangeIndexWrapper implements RangeIndex
 {
     // Could extend IndexWrapper but it's nice to have one place to look and set breakpoints.
-    protected final RangeIndex rIndex ;
-    
-    public RangeIndexWrapper(RangeIndex rIdx) { this.rIndex = rIdx ; }
-    
+    protected final RangeIndex rIndex;
+
+    public RangeIndexWrapper(RangeIndex rIdx) { this.rIndex = rIdx; }
+
     @Override
     public Record find(Record record)
-    { return rIndex.find(record) ; }
-    
+    { return rIndex.find(record); }
+
     @Override
     public boolean contains(Record record)
-    { return rIndex.contains(record) ; }
-    
+    { return rIndex.contains(record); }
+
     @Override
     public Record minKey()
-    { return rIndex.minKey() ; }
-    
+    { return rIndex.minKey(); }
+
     @Override
     public Record maxKey()
-    { return rIndex.maxKey() ; }
-    
+    { return rIndex.maxKey(); }
+
     @Override
     public boolean insert(Record record)
-    { return rIndex.insert(record) ; }
-    
+    { return rIndex.insert(record); }
+
     @Override
     public boolean delete(Record record)
-    { return rIndex.delete(record) ; }
-    
+    { return rIndex.delete(record); }
+
 //  public Record addAndReturnOld(Record record)
-//  { return bpt.addAndReturnOld(record) ; }
-  
+//  { return bpt.addAndReturnOld(record); }
+
 //    public Record deleteAndReturnOld(Record record)
-//    { return bpt.deleteAndReturnOld(record) ; }
-    
+//    { return bpt.deleteAndReturnOld(record); }
+
     @Override
     public Iterator<Record> iterator()
-    { return rIndex.iterator() ; }
-    
+    { return rIndex.iterator(); }
+
     @Override
     public Iterator<Record> iterator(Record minRec, Record maxRec)
-    { return rIndex.iterator(minRec, maxRec) ; }
-    
+    { return rIndex.iterator(minRec, maxRec); }
+
     @Override
     public <X> Iterator<X> iterator(Record minRec, Record maxRec, RecordMapper<X> mapper)
-    { return rIndex.iterator(minRec, maxRec, mapper) ; }
+    { return rIndex.iterator(minRec, maxRec, mapper); }
 
     @Override
     public boolean isEmpty()
-    { return rIndex.isEmpty() ; }
-    
+    { return rIndex.isEmpty(); }
+
     @Override
     public void clear()
-    { rIndex.clear() ; }
-    
+    { rIndex.clear(); }
+
     @Override
     public void sync()
-    { rIndex.sync() ; }
-    
+    { rIndex.sync(); }
+
     @Override
     public void close()
-    { rIndex.close() ; }
+    { rIndex.close(); }
 
     public RangeIndex getWrapped()
-    { return rIndex ; }
-    
+    { return rIndex; }
+
     @Override
     public RecordFactory getRecordFactory()
-    { return rIndex.getRecordFactory() ; }
+    { return rIndex.getRecordFactory(); }
 
     @Override
     public void check()
-    { rIndex.check() ; }
+    { rIndex.check(); }
 
     @Override
     public long size()
-    { return rIndex.size() ; }
+    { return rIndex.size(); }
 }

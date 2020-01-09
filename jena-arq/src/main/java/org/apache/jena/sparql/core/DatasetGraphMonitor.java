@@ -19,6 +19,8 @@
 package org.apache.jena.sparql.core ;
 
 import static org.apache.jena.atlas.iterator.Iter.take ;
+import static org.apache.jena.sparql.core.GraphView.createDefaultGraph;
+import static org.apache.jena.sparql.core.GraphView.createNamedGraph;
 
 import java.util.Iterator ;
 import java.util.List ;
@@ -198,6 +200,16 @@ public class DatasetGraphMonitor extends DatasetGraphWrapper
     public void sync() {
         SystemARQ.syncObject(monitor) ;
         super.sync() ;
+    }
+
+    @Override
+    public Graph getDefaultGraph() {
+        return createDefaultGraph(this);
+    }
+
+    @Override
+    public Graph getGraph(Node graphNode) {
+        return createNamedGraph(this, graphNode);
     }
 }
 

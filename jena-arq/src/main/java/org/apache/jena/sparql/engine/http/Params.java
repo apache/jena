@@ -118,6 +118,11 @@ public class Params
         return URLEncodedUtils.format(paramList, StandardCharsets.UTF_8) ;
     }
     
+    @Override
+    public String toString() {
+        return paramList.toString();
+    }
+
     private List<String> getMV(String name)
     {
         return params.get(name) ;

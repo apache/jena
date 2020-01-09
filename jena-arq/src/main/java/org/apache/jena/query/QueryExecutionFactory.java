@@ -22,16 +22,15 @@ import java.util.Objects;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.protocol.HttpContext;
-import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.impl.WrappedGraph;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.GraphView;
 import org.apache.jena.sparql.engine.Plan ;
 import org.apache.jena.sparql.engine.QueryEngineFactory ;
 import org.apache.jena.sparql.engine.QueryEngineRegistry ;
-import org.apache.jena.sparql.engine.QueryExecutionBase ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingRoot ;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP ;
@@ -107,6 +106,7 @@ public class QueryExecutionFactory
         Objects.requireNonNull(datasetGraph, "DatasetGraph is null") ;
         return make(query, datasetGraph) ;
     }
+    
     /** Create a QueryExecution to execute over the Dataset.
      * 
      * @param queryStr     Query string
@@ -570,7 +570,7 @@ public class QueryExecutionFactory
             context = new Context(ARQ.getContext()) ;
         if ( input == null )
             input = BindingRoot.create() ; 
-        QueryEngineFactory f = findFactory(query, dataset, context) ;
+        QueryEngineFactory f = QueryEngineRegistry.get().find(query, dataset, context);
         if ( f == null )
             return null ;
         return f.create(query, dataset, input, context) ;
@@ -586,12 +586,13 @@ public class QueryExecutionFactory
     }
     
     static protected QueryExecution make(Query query) {
-        return make(query, (Dataset)null) ;
+        return QueryExecution.create().query(query).build();
     }
 
-    protected  static QueryExecution make(Query query, Model model) { 
-        Dataset dataset = DatasetFactory.wrap(model);
-        Graph g = unwrap(model.getGraph());
+    protected  static QueryExecution make(Query query, Model model) {
+        Graph graph = model.getGraph();
+        DatasetGraph dataset = DatasetGraphFactory.wrap(graph);
+        Graph g = unwrap(graph);
         if ( g instanceof GraphView ) {
             GraphView gv = (GraphView)g;
             // Copy context of the storage dataset to the wrapper dataset. 
@@ -610,34 +611,16 @@ public class QueryExecutionFactory
         }
     }
 
-    protected static QueryExecution make(Query query, Dataset dataset)
-    { return make(query, dataset, null, null) ; }
+    protected static QueryExecution make(Query query, Dataset dataset) {
+        DatasetGraph dsg = dataset==null ? null : dataset.asDatasetGraph();
+        return make(query, dsg);
+    }
 
     protected static QueryExecution make(Query query, DatasetGraph datasetGraph)
-    { return make(query, null, datasetGraph, null) ; }
+    { return QueryExecution.create().query(query).dataset(datasetGraph).build(); }
 
-    // Both Dataset and DatasetGraph for full backwards compatibility 
-    protected static QueryExecution make(Query query, Dataset dataset, DatasetGraph dsg, Context context) {
-        if ( dsg == null && dataset != null )
-            dsg = dataset.asDatasetGraph();
-        query.setResultVars() ;
-        if ( context == null )
-            context = ARQ.getContext() ;  // .copy done in QueryExecutionBase -> Context.setupContext.
-        QueryEngineFactory f = findFactory(query, dsg, context) ;
-        if ( f == null ) {
-            Log.warn(QueryExecutionFactory.class, "Failed to find a QueryEngineFactory") ;
-            return null ;
-        }
-        return new QueryExecutionBase(query, dataset, dsg, context, f) ;
-    }
-
-    static private QueryEngineFactory findFactory(Query query, DatasetGraph dataset, Context context) {
-        return QueryEngineRegistry.get().find(query, dataset, context) ;
-    }
-
-    static private void checkNotNull(Object obj, String msg) {
-        if ( obj == null )
-            throw new IllegalArgumentException(msg) ;
+    static private <X> void checkNotNull(X obj, String msg) {
+        Objects.requireNonNull(obj, msg);
     }
     
     static private void checkArg(Model model)

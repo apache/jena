@@ -19,53 +19,48 @@
 
 package org.apache.jena.fuseki.system;
 
-import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.graph.Factory ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.riot.RDFParser ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.graph.Factory;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.RDFParser;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFLib;
 
 /** A packaging of code to do a controlled read of a graph or model */
 
 public class GraphLoadUtils
 {
     // ---- Model level
-    
-    public static Model readModel(String uri, int limit)
-    {
-        Graph g = Factory.createGraphMem() ;
-        readUtil(g, uri, limit) ;
-        return ModelFactory.createModelForGraph(g) ;
+
+    public static Model readModel(String uri, int limit) {
+        Graph g = Factory.createGraphMem();
+        readUtil(g, uri, limit);
+        return ModelFactory.createModelForGraph(g);
     }
-    
-    public static void loadModel(Model model, String uri, int limit) 
-    {
-        Graph g = model.getGraph() ;
-        readUtil(g, uri, limit) ;
+
+    public static void loadModel(Model model, String uri, int limit) {
+        Graph g = model.getGraph();
+        readUtil(g, uri, limit);
     }
 
     // ---- Graph level
-    
-    public static Graph readGraph(String uri, int limit)
-    {
-        Graph g = Factory.createGraphMem() ;
-        readUtil(g, uri, limit) ;
-        return g ;
+
+    public static Graph readGraph(String uri, int limit) {
+        Graph g = Factory.createGraphMem();
+        readUtil(g, uri, limit);
+        return g;
     }
-    
-    public static void loadGraph(Graph g, String uri, int limit) 
-    {
-        readUtil(g, uri, limit) ;
+
+    public static void loadGraph(Graph g, String uri, int limit) {
+        readUtil(g, uri, limit);
     }
-    
+
     // ** Worker.
-    private static void readUtil(Graph graph, String uri, int limit)
-    {
-        StreamRDF sink = StreamRDFLib.graph(graph) ;
-        sink = new StreamRDFLimited(sink, limit) ;
+    private static void readUtil(Graph graph, String uri, int limit) {
+        StreamRDF sink = StreamRDFLib.graph(graph);
+        sink = new StreamRDFLimited(sink, limit);
         RDFParser.source(uri).streamManager(Fuseki.webStreamManager).parse(sink);
     }
 }

@@ -30,7 +30,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.system.StreamOps ;
+import org.apache.jena.riot.system.StreamRDFOps ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.system.StreamRDFWriter ;
@@ -72,7 +72,7 @@ public class TestStreamRDFThrift extends BaseTest {
     @Test public void graph_01() {
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
         StreamRDF stream = BinRDF.streamToOutputStream(out, true) ; // With values.
-        StreamOps.graphToStream(graph, stream) ;
+        StreamRDFOps.graphToStream(graph, stream) ;
         
         byte[] bytes = out.toByteArray() ;
         ByteArrayInputStream in = new ByteArrayInputStream(bytes) ;
@@ -82,7 +82,14 @@ public class TestStreamRDFThrift extends BaseTest {
         BinRDF.inputStreamToStream(in, stream2) ;
         
         //assertTrue(graph.isIsomorphicWith(g2)) ;
-        boolean b = IsoMatcher.isomorphic(graph, g2) ; //****
+        boolean b = IsoMatcher.isomorphic(graph, g2) ;
+        if ( !b ) {
+            RDFDataMgr.write(System.out, graph, Lang.TTL);
+            System.out.println("---------");
+            RDFDataMgr.write(System.out, g2, Lang.TTL);
+            System.out.println("=========");
+        }
+        
         assertTrue(b) ;
         
         // Stronger - same bNodes.
@@ -114,7 +121,7 @@ public class TestStreamRDFThrift extends BaseTest {
         DatasetGraph dsg1 = datasetGraph ;
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
         StreamRDF stream = BinRDF.streamToOutputStream(out) ;
-        StreamOps.datasetToStream(dsg1, stream) ;
+        StreamRDFOps.datasetToStream(dsg1, stream) ;
         
         byte[] bytes = out.toByteArray() ;
         ByteArrayInputStream in = new ByteArrayInputStream(bytes) ;

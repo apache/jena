@@ -41,7 +41,16 @@ public class ContentType
         mediaType = m ;
     }
 
-    public String getContentType() {
+    /** @deprecated Use {@link #getContentTypeStr} */
+    @Deprecated
+    public String getContentType() { return getContentTypeStr(); }
+    
+    /**
+     * Get the type/subtype as a string.
+     * @see #toHeaderString toHeaderString for use in HTTP headers.
+     */
+    
+    public String getContentTypeStr() {
         return mediaType.getContentType() ;
     }
 

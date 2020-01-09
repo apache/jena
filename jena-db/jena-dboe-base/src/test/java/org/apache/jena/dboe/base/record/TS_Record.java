@@ -27,9 +27,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses( {
     TestRecord.class ,
     TestPtrBuffer.class ,
-    TestRecordBuffer.class 
+    TestRecordBuffer.class
 })
-
 
 public class TS_Record
 {}

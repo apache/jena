@@ -129,11 +129,13 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     }
     
     @Override
-    public void print(char ch) { printOneChar(ch) ; }
+    public void print(char ch)      { printOneChar(ch) ; }
+    public void print(Object obj)   { print(String.valueOf(obj)); }
     
     @Override
     public void println(String str) { print(str) ; newline() ; }
-    public void println(char ch)  { print(ch) ; newline() ; }
+    public void println(char ch)    { print(ch) ; newline() ; }
+    public void println(Object obj) { print(String.valueOf(obj)); newline(); }
 
     @Override
     public void println() { newline() ; }
@@ -382,6 +384,6 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
 
     @Override
     public String toString() {
-        return String.format("Indent = %d : [%d, %d]", currentIndent, row, column) ;
+        return String.format("Indent = %d : Row = %d : Col = %d", currentIndent, row, column) ;
     }
 }

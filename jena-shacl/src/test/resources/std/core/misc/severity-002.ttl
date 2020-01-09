@@ -1,0 +1,60 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/misc/severity-002.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:InvalidResource1
+  ex:property "true"^^xsd:boolean ;
+.
+ex:TestShape1
+  sh:nodeKind sh:BlankNode ;
+  sh:property ex:TestShape2 ;
+  sh:severity ex:MySeverity ;
+  sh:targetNode ex:InvalidResource1 ;
+.
+ex:TestShape2
+  sh:path ex:property ;
+  sh:datatype xsd:integer ;
+  sh:severity sh:Info ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <severity-002>
+    ) ;
+.
+<severity-002>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:severity 002" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource1 ;
+          sh:resultPath ex:property ;
+          sh:resultSeverity sh:Info ;
+          sh:sourceConstraintComponent sh:DatatypeConstraintComponent ;
+          sh:sourceShape ex:TestShape2 ;
+          sh:value "true"^^xsd:boolean ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource1 ;
+          sh:resultSeverity ex:MySeverity ;
+          sh:sourceConstraintComponent sh:NodeKindConstraintComponent ;
+          sh:sourceShape ex:TestShape1 ;
+          sh:value ex:InvalidResource1 ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

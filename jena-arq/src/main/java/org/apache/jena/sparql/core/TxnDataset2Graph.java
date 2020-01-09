@@ -43,8 +43,8 @@ import org.apache.jena.sparql.JenaTransactionException;
  * graph is an InfGraph and should work when the graphs in the dataset is not changing or
  * when a new memory graph is added mid-transaction.
  * <p>
- * This is not "nested transactions" - theer is no overall "commit" or "abort". If
- * failure/restart occurs, some graphs may have commited and others not. It is the best
+ * This is not "nested transactions" - there is no overall "commit" or "abort". If
+ * failure/restart occurs, some graphs may have committed and others not. It is the best
  * that can be done given for an arbitrary collection of graphs, backed by different
  * storage and having different capabilities.
  * <p>
@@ -55,23 +55,9 @@ import org.apache.jena.sparql.JenaTransactionException;
  * @see DatasetGraphOne
  */
 public class TxnDataset2Graph extends TransactionalLock {
-    /**
-     * Control whether to pass down transactions from the dataset to the graph in the
-     * dataset. This should be set to "true"; setting it "false" causes the old,
-     * non-transaction passing behaviour.
-     * <p>
-     * This is temporary flag during the transition because the change at Jena 3.7.0 needs
-     * to be proven in real deployments as well as testing. "false" restores the Jena
-     * 3.6.0 and before behaviour (transactions not passed down). See JENA-1492.
-     * 
-     * @deprecated This flag will be removed.
-     */
-    @Deprecated
-    public static boolean TXN_DSG_GRAPH = true;
-    
     private Graph primary;
     // Object key may be a graph or a DSG is the graph is a GraphView.
-    // This avoids starting a tranasction on the same storage unit twice. 
+    // This avoids starting a transaction on the same storage unit twice. 
     private Map<Object, TransactionHandler> handlers = new HashMap<>();
         
     private Object lock = new Object();

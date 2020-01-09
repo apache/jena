@@ -28,8 +28,8 @@
   <artifactId>apache-jena</artifactId>
   <packaging>pom</packaging>
   <name>Apache Jena - Distribution</name>
-  <url>http://jena.apache.org/</url>
-  <version>3.11.0-SNAPSHOT</version>
+  <url>https://jena.apache.org/</url>
+  <version>3.14.0-SNAPSHOT</version>
   <description>
     Apache Jena is a API and toolkit for working with semantic web technologies such as RDF and SPARQL using Java.  This artifact represents the source and binary distribution packages generated for releases.
   </description>
@@ -37,58 +37,36 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>3.11.0-SNAPSHOT</version>
+    <version>3.14.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
 
   <organization>
     <name>Apache Jena</name>
-    <url>http://jena.apache.org/</url>
+    <url>https://jena.apache.org/</url>
   </organization>
 
   <licenses>
     <license>
       <name>Apache 2.0 License</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
     </license>
   </licenses>
 
   <dependencies>
     <!-- 
-      Enumerate dependencies explicitly to get source and javadoc as well.
+      Enumerate dependencies explicitly to get source as well.
     -->
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>3.14.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
-      <classifier>sources</classifier>
-      <optional>true</optional>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-arq</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
-      <classifier>javadoc</classifier>
-      <optional>true</optional>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-core</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-core</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>3.14.0-SNAPSHOT</version>
       <classifier>sources</classifier>
       <optional>true</optional>
     </dependency>
@@ -96,21 +74,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
-      <classifier>javadoc</classifier>
-      <optional>true</optional>
+      <version>3.14.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-tdb</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-tdb</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <artifactId>jena-core</artifactId>
+      <version>3.14.0-SNAPSHOT</version>
       <classifier>sources</classifier>
       <optional>true</optional>
     </dependency>
@@ -118,21 +88,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
-      <classifier>javadoc</classifier>
-      <optional>true</optional>
+      <version>3.14.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-rdfconnection</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-rdfconnection</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <artifactId>jena-tdb</artifactId>
+      <version>3.14.0-SNAPSHOT</version>
       <classifier>sources</classifier>
       <optional>true</optional>
     </dependency>
@@ -140,15 +102,35 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-rdfconnection</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
-      <classifier>javadoc</classifier>
+      <version>3.14.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-rdfconnection</artifactId>
+      <version>3.14.0-SNAPSHOT</version>
+      <classifier>sources</classifier>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-shacl</artifactId>
+      <version>3.14.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-shacl</artifactId>
+      <version>3.14.0-SNAPSHOT</version>
+      <classifier>sources</classifier>
       <optional>true</optional>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>3.14.0-SNAPSHOT</version>
     </dependency>
 
     <!-- Require a logging implementation for command line tools -->
@@ -168,16 +150,8 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>3.14.0-SNAPSHOT</version>
       <classifier>sources</classifier>
-      <optional>true</optional>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-cmds</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
-      <classifier>javadoc</classifier>
       <optional>true</optional>
     </dependency>
 

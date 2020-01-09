@@ -18,7 +18,7 @@
 
 package org.apache.jena.tdb2.store;
 
-import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.Dataset;
 import org.apache.jena.sparql.transaction.AbstractTestTransactionLifecycle;
 import org.apache.jena.tdb2.TDB2Factory;
 
@@ -27,7 +27,7 @@ public class TestTransactionLifecycleTDB extends AbstractTestTransactionLifecycl
 {
     @Override
     protected Dataset create() {
-        return TDB2Factory.createDataset() ;
+        return TDB2Factory.createDataset();
     }
 }
 

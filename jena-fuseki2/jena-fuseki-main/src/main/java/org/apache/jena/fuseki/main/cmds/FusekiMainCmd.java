@@ -22,7 +22,7 @@ import org.apache.jena.fuseki.system.FusekiLogging;
 
 /** Fuseki command that runs a Fuseki server without the admin UI, just SPARQL services.
  * <p>
- * Use {@code --conf=} for multiple datasets and specific service names. 
+ * Use {@code --conf=} for multiple datasets and specific service names.
  * <p>
  * The command line dataset setup only supports a single dataset.
  */
@@ -30,12 +30,12 @@ import org.apache.jena.fuseki.system.FusekiLogging;
 public class FusekiMainCmd {
     // This class wraps FusekiBasicMain so that it can take control of logging setup.
     // This class does not depend via inheritance on any Jena code
-    // and does not trigger Jena initialization. 
+    // and does not trigger Jena initialization.
     // FusekiLogging runs before any Jena code can trigger logging setup.
     //
     // Inheritance causes initialization in the super class first, before class
     // initialization code in this class.
-    
+
     static { FusekiLogging.setLogging(); }
 
     /**

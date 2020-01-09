@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.servlets ;
+package org.apache.jena.fuseki.servlets;
 
 public interface ResponseCallback
 {
-    public void callback(boolean successfulOperation) ;
+    public void callback(boolean successfulOperation);
 }

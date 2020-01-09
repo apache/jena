@@ -40,17 +40,27 @@ import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
 /**
- * Build a select query.
- *
+ * Builder for SPARQL Select Queries.
+ * <p>
+ * The SelectBuilder provides chainable methods to programmatically generate SPARQL Select Queries.
+ * The application order of the methods is not relevant for the resulting query.
+ * An {@link ExprFactory} is intended for use along with the SelectBuilder to generate needed {@link Expr} parameter values.
+ * An {@link ExprFactory} that works with the same prefixes can be obtained with {@link SelectBuilder#getExprFactory()}.
+ * <p>
+ * The SelectBuilder can be used as <b>prepared query</b>.
+ * Values for variables in the created query can be set with {@link SelectBuilder#setVar(Object, Object)} and {@link SelectBuilder#setVar(Var, Node)}.
+ * The method {@link SelectBuilder#clearWhereValues()} allows to clear the set values. 
+ * 
+ * @see AskBuilder
+ * @see ConstructBuilder
+ * @see DescribeBuilder
+ * @see UpdateBuilder
  */
 public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implements DatasetClause<SelectBuilder>,
 		WhereClause<SelectBuilder>, SolutionModifierClause<SelectBuilder>, SelectClause<SelectBuilder> {
 
 	private final HandlerBlock handlerBlock;
 
-	/**
-	 * Constructor.
-	 */
 	public SelectBuilder() {
 		super();
 		query.setQuerySelectType();
@@ -75,13 +85,13 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 	}
 
 	/**
-	 * Set the distinct flag.
+	 * Sets the distinct flag.
 	 * 
 	 * Setting the select distinct will unset reduced if it was set.
 	 * 
 	 * @param state
 	 *            if true results will be distinct.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public SelectBuilder setDistinct(boolean state) {
 		getSelectHandler().setDistinct(state);
@@ -89,13 +99,13 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 	}
 
 	/**
-	 * Set the reduced flag.
+	 * Sets the reduced flag.
 	 * 
 	 * Setting the select reduced will unset distinct if it was set.
 	 * 
 	 * @param state
 	 *            if true results will be reduced.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public SelectBuilder setReduced(boolean state) {
 		getSelectHandler().setReduced(state);
@@ -108,14 +118,6 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 		return this;
 	}
 
-	/**
-	 * Add an expression string as a filter.
-	 * 
-	 * @param expression
-	 *            The expression string to add.
-	 * @throws ParseException
-	 *             If the expression can not be parsed.
-	 */
 	@Override
 	public SelectBuilder addVar(String expression, Object var) throws ParseException {
 		getSelectHandler().addVar(expression, makeVar(var));
@@ -247,9 +249,9 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 	}
 
 	/**
-	 * Convert a node to a string. If the node is a literal return the literal
+	 * Converts a node to a string. If the node is a literal return the literal
 	 * value. If the node is a URI return the URI enclosed with &lt; and &gt; If
-	 * the node is a variable return the name preceeded by '?'
+	 * the node is a variable return the name preceded by '?'
 	 * 
 	 * @param node
 	 *            The node to convert.
@@ -272,12 +274,12 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 	}
 
 	/**
-	 * Convert the object to a string. If the object is a node or fronts a node
+	 * Converts the object to a string. If the object is a node or fronts a node
 	 * then
 	 * <ul>
 	 * <li>If the node is a literal return the literal value.</li>
 	 * <li>If the node is a URI return the URI enclosed with &lt; and &gt;</li>
-	 * <li>If the node is a variable return the name preceeded by '?'</li>
+	 * <li>If the node is a variable return the name preceded by '?'</li>
 	 * </ul>
 	 * otherwise return the toString() method of the object.
 	 * 

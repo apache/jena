@@ -36,7 +36,6 @@ import org.apache.jena.util.iterator.WrappedIterator;
  *
  */
 public class CollectionQuadHolder implements QuadHolder {
-
     private final Set<Triple> collection;
     private final Node defaultGraphName;
     private Map<Var, Node> values;
@@ -64,7 +63,8 @@ public class CollectionQuadHolder implements QuadHolder {
      *            the iterator of triples.
      */
     public CollectionQuadHolder(final Node graph, Iterator<Triple> triples) {
-        this.collection = WrappedIterator.create( triples ).toSet();
+    	this.collection = new HashSet<Triple>();
+    	triples.forEachRemaining( this.collection::add );
         defaultGraphName = graph;
     }
 
@@ -85,9 +85,8 @@ public class CollectionQuadHolder implements QuadHolder {
      * @param triples
      *            the iterator of triples.
      */
-    public CollectionQuadHolder(Iterator<Triple> triples) {
-        this.collection = WrappedIterator.create( triples ).toSet();
-        defaultGraphName =  Quad.defaultGraphNodeGenerated;
+    public CollectionQuadHolder(final Iterator<Triple> triples) {
+    	this( Quad.defaultGraphNodeGenerated, triples );
     }
     
     private Node valueMap( Node n )
@@ -95,8 +94,7 @@ public class CollectionQuadHolder implements QuadHolder {
     	if (n.isVariable())
     	{
     		Var v = Var.alloc(n);
-    		Node n2 = values.get( n );
-    		return n2==null?n:n2;
+    		return values.getOrDefault(v, n);
     	}
     	return n;
     }
@@ -126,5 +124,4 @@ public class CollectionQuadHolder implements QuadHolder {
     	this.values = values;
         return this;
     }
-
 }

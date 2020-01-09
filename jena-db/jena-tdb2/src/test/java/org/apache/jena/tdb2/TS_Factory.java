@@ -26,6 +26,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses( {
     TestDatabaseMgr.class
     , TestTDBFactory.class
+    , TestTDB2.class
 
 })
 

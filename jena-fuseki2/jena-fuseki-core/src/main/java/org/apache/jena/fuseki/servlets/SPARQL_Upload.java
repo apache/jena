@@ -18,149 +18,145 @@
 
 package org.apache.jena.fuseki.servlets;
 
-import static java.lang.String.format ;
+import static java.lang.String.format;
 
-import java.io.PrintWriter ;
+import java.io.PrintWriter;
 
-import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
-
-import org.apache.commons.fileupload.servlet.ServletFileUpload ;
-import org.apache.jena.fuseki.Fuseki ;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.fuseki.system.Upload;
 import org.apache.jena.fuseki.system.UploadDetailsWithName;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.riot.web.HttpNames ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.web.HttpSC ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.riot.web.HttpNames;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.web.HttpSC;
 
 /**
  * Upload data into a graph within a dataset. This is {@code fuseki:serviceUpload}.
- * 
- * It is better to use GSP POST with the body being the content.
- * 
+ *
+ * It is better to use GSP or quads POST with the body being the content.
+ *
  * This class works with general HTML form file upload where the name is somewhere in the form and that may be
  * after the data.
- * 
- * Consider this service useful for small files and use GSP POST for large ones.
+ *
+ * Consider this service useful for small files and use GSP or quads POST for large ones.
  */
 public class SPARQL_Upload extends ActionService
 {
     public SPARQL_Upload() {
-        super() ;
-    }
-
-    // Methods to respond to.
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        doCommon(request, response) ;
+        super();
     }
 
     @Override
-    protected void doOptions(HttpServletRequest request, HttpServletResponse response) {
-        setCommonHeadersForOptions(response) ;
-        response.setHeader(HttpNames.hAllow, "OPTIONS,POST") ;
-        response.setHeader(HttpNames.hContentLengh, "0") ;
+    public void execPost(HttpAction action) {
+        executeLifecycle(action);
     }
 
     @Override
-    protected void validate(HttpAction action)
+    public void execOptions(HttpAction action) {
+        ServletBase.setCommonHeadersForOptions(action.response);
+        action.response.setHeader(HttpNames.hAllow, "POST,PATCH,OPTIONS");
+        ServletOps.success(action);
+    }
+
+    @Override
+    public void validate(HttpAction action)
     {}
 
     @Override
-    protected void perform(HttpAction action) {
+    public void execute(HttpAction action) {
+
         // Only allows one file in the upload.
         boolean isMultipart = ServletFileUpload.isMultipartContent(action.request);
         if ( ! isMultipart )
-            ServletOps.error(HttpSC.BAD_REQUEST_400 , "Not a file upload") ;
+            ServletOps.error(HttpSC.BAD_REQUEST_400 , "Not a file upload");
 
-        long count = upload(action, Fuseki.BaseUpload) ;
-        ServletOps.success(action) ;
+        long count = upload(action, Fuseki.BaseUpload);
+        ServletOps.success(action);
         try {
-            action.response.setContentType("text/html") ;
+            action.response.setContentType("text/html");
             action.response.setStatus(HttpSC.OK_200);
-            PrintWriter out = action.response.getWriter() ;
-            out.println("<html>") ;
-            out.println("<head>") ;
-            out.println("</head>") ;
-            out.println("<body>") ;
+            PrintWriter out = action.response.getWriter();
+            out.println("<html>");
+            out.println("<head>");
+            out.println("</head>");
+            out.println("<body>");
             out.println("<h1>Success</h1>");
-            out.println("<p>") ;
+            out.println("<p>");
             out.println("Triples = "+count + "\n");
-            out.println("<p>") ;
-            out.println("</p>") ;
+            out.println("<p>");
+            out.println("</p>");
             out.println("<button onclick=\"timeFunction()\">Back to Fuseki</button>");
-            out.println("</p>") ;
+            out.println("</p>");
             out.println("<script type=\"text/javascript\">");
             out.println("function timeFunction(){");
             out.println("window.location.href = \"/fuseki.html\";}");
             out.println("</script>");
-            out.println("</body>") ;
-            out.println("</html>") ;
-            out.flush() ;
-            ServletOps.success(action) ;
+            out.println("</body>");
+            out.println("</html>");
+            out.flush();
+            ServletOps.success(action);
         }
-        catch (Exception ex) { ServletOps.errorOccurred(ex) ; }
+        catch (Exception ex) { ServletOps.errorOccurred(ex); }
     }
 
     // Also used by SPARQL_REST
     static public long upload(HttpAction action, String base) {
         if ( action.isTransactional() )
-            return uploadTxn(action, base) ;
+            return uploadTxn(action, base);
         else
-            return uploadNonTxn(action, base) ;
+            return uploadNonTxn(action, base);
     }
 
     /** Non-transaction - buffer to a temporary graph so that parse errors
      * are caught before inserting any data.
      */
     private static long uploadNonTxn(HttpAction action, String base) {
-        UploadDetailsWithName upload = Upload.multipartUploadWorker(action, base) ;
-        String graphName = upload.graphName ;
-        DatasetGraph dataTmp = upload.data ;
-        long count = upload.count ;
+        UploadDetailsWithName upload = Upload.multipartUploadWorker(action, base);
+        String graphName = upload.graphName;
+        DatasetGraph dataTmp = upload.data;
+        long count = upload.count;
 
         if ( graphName == null )
-            action.log.info(format("[%d] Upload: %d Quads(s)",action.id, count)) ;
+            action.log.info(format("[%d] Upload: %d Quads(s)",action.id, count));
         else
-            action.log.info(format("[%d] Upload: Graph: %s, %d triple(s)", action.id, graphName,  count)) ;
+            action.log.info(format("[%d] Upload: Graph: %s, %d triple(s)", action.id, graphName,  count));
 
-        Node gn = null ;
+        Node gn = null;
         if ( graphName != null ) {
             gn = graphName.equals(HttpNames.valueDefault)
                 ? Quad.defaultGraphNodeGenerated
-                : NodeFactory.createURI(graphName) ;
+                : NodeFactory.createURI(graphName);
         }
 
-        action.beginWrite() ;
+        action.beginWrite();
         try {
             if ( gn != null )
-                FusekiNetLib.addDataInto(dataTmp.getDefaultGraph(), action.getActiveDSG(), gn) ;
+                FusekiNetLib.addDataInto(dataTmp.getDefaultGraph(), action.getActiveDSG(), gn);
             else
-                FusekiNetLib.addDataInto(dataTmp, action.getActiveDSG()) ;
+                FusekiNetLib.addDataInto(dataTmp, action.getActiveDSG());
 
-            action.commit() ;
-            return count ;
-        } catch (RuntimeException ex)
-        {
+            action.commit();
+            return count;
+        } catch (RuntimeException ex) {
             // If anything went wrong, try to backout.
-            try { action.abort() ; } catch (Exception ex2) {}
-            ServletOps.errorOccurred(ex.getMessage()) ;
-            return -1 ;
+            try { action.abort(); } catch (Exception ex2) {}
+            ServletOps.errorOccurred(ex.getMessage());
+            return -1;
         }
-        finally { action.end() ; }
+        finally { action.end(); }
     }
 
-    // XXX Improve.  Needs Upload code rework.
-    /** 
+    // TODO Improve.  Needs Upload code rework.
+    /**
      * Transactional - we'd like better handle the data and go straight to the destination, with an abort on parse error.
      * Use Graph Store protocol for bulk uploads.
      */
     private static long uploadTxn(HttpAction action, String base) {
-        return uploadNonTxn(action, base) ;
+        return uploadNonTxn(action, base);
     }
 
 }

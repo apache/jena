@@ -30,35 +30,35 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.graph.GraphUtils;
 
 public class AssemblerAccessDataset extends AssemblerBase {
-    
+
     /*
-     * <#access_dataset>  rdf:type access:AccessControlledDataset ;
-     *    access:registry   <#securityRegistry> ;
-     *    access:dataset    <#tdb_dataset_read> ;
+     * <#access_dataset>  rdf:type access:AccessControlledDataset;
+     *    access:registry   <#securityRegistry>;
+     *    access:dataset    <#tdb_dataset_read>;
      *    .
      */
     @Override
     public Dataset open(Assembler a, Resource root, Mode mode) {
         if ( ! GraphUtils.exactlyOneProperty(root, VocabSecurity.pSecurityRegistry) )
-            throw new AssemblerException(root, "Expected exactly one access:registry property"); 
+            throw new AssemblerException(root, "Expected exactly one access:registry property");
         if ( ! GraphUtils.exactlyOneProperty(root, VocabSecurity.pDataset) )
-            throw new AssemblerException(root, "Expected exactly one access:dataset property"); 
-        
+            throw new AssemblerException(root, "Expected exactly one access:dataset property");
+
         RDFNode rnRegistry = root.getProperty(VocabSecurity.pSecurityRegistry).getObject();
         RDFNode rnDataset = root.getProperty(VocabSecurity.pDataset).getObject();
-        
-        AuthorizationService sr = (AuthorizationService)a.open(rnRegistry.asResource()) ;
+
+        AuthorizationService sr = (AuthorizationService)a.open(rnRegistry.asResource());
         DatasetGraph dsgBase = ((Dataset)a.open(rnDataset.asResource())).asDatasetGraph();
-        
+
         DatasetGraph dsg = new DatasetGraphAccessControl(dsgBase, sr);
-        
+
         // Add marker
         // ds.getContext().set(DataAccessCtl.symControlledAccess, true);
-        
+
         // Add security registry : if this dataset is wrapped then this means the AuthorizationService is still accessible.
-        // But adding to DatasetGraphAccessControl (currently) pushes it down to the wrapped base DSG. 
+        // But adding to DatasetGraphAccessControl (currently) pushes it down to the wrapped base DSG.
         //dsg.getContext().set(DataAccessCtl.symAuthorizationService, sr);
         return DatasetFactory.wrap(dsg);
     }
-    
+
 }

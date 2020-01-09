@@ -42,55 +42,55 @@ public class ExtendFuseki_AddService_3 {
     static { LogCtl.setLog4j(); }
 
     static int PORT             = WebLib.choosePort();
-    
+
     // The server
     static String SERVER_URL    = "http://localhost:"+PORT+"/";
-    
+
     static String DATASET       = "dataset";
-    
+
     public static void main(String ...args) {
         // Create a new operation: operations are really just names (symbols). The code to
         // run is found by looking up the operation in a per-server table that gives the server-specific
         // implementation as an ActionService.
 
-        Operation myOperation = Operation.register("Special", "Custom operation");
-        
+        Operation myOperation = Operation.alloc("http://example/special3", "special3", "Custom operation");
+
         // Service endpoint name.
         // This can be different for different datasets even in the same server.
         // c.f. {@code fuseki:serviceQuery}
-        
+
         String endpointName = "special";
         String contentType = "application/special";
 
         // The handled for the new operation.
-        
+
         ActionService customHandler = new ExampleService();
-        
-        FusekiServer server = 
+
+        FusekiServer server =
             FusekiServer.create().port(PORT)
                 .verbose(true)
 
                 // Register the new operation, with content type and handler
                 .registerOperation(myOperation, contentType, customHandler)
-                
-                // Add a dataset with the normal, default naming services 
-                // (/sparql, /query, /update, /upload, /data, /get)  
+
+                // Add a dataset with the normal, default naming services
+                // (/sparql, /query, /update, /upload, /data, /get)
                 .add(DATASET, DatasetGraphFactory.createTxnMem(), true)
-                
+
                 // Add the custom service, mapping from endpoint to operation for a specific dataset.
-                // Required when when routing via Content-Type. 
-                .addOperation(DATASET, endpointName, myOperation)
-                
+                // Required when when routing via Content-Type.
+                .addEndpoint(DATASET, endpointName, myOperation)
+
                 // And build the server.
                 .build();
-        
+
         // Start the server. This does not block this thread.
         server.start();
-        
+
         // Try some operations on the server using the service URL.
         String datasetURL = SERVER_URL + DATASET;
         //String customOperationURL = SERVER_URL + DATASET + "/" + endpointName;
-        
+
         try {
 
             // Dataset endpoint name : POST, with Content-type.

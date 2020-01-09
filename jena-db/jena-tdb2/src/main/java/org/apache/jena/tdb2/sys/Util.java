@@ -23,7 +23,7 @@ import java.util.NoSuchElementException;
 
 /** Utility code that should go somewhere */
 public class Util {
-    
+
     /** Get the last element of a list, or throw NoSuchElementException
      * @param list
      * @return T
@@ -33,9 +33,9 @@ public class Util {
         T elt = getLastOrNull(list);
         if ( elt == null )
             throw new NoSuchElementException();
-        return elt;  
+        return elt;
     }
-    
+
     /**
      * Get the last element of a list, or return null.
      * @param list
@@ -44,6 +44,6 @@ public class Util {
     public static <T> T getLastOrNull(List<T> list) {
         if ( list.isEmpty() )
             return null;
-        return list.get(list.size()-1);  
+        return list.get(list.size()-1);
     }
 }

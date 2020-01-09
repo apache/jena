@@ -58,7 +58,8 @@ public class LocatorClassLoader  implements Locator
         if ( classLoader == null )
             return null ;
             
-        InputStream in = classLoader.getResourceAsStream(resourceName) ;
+        InputStream in = null;
+        try { in = classLoader.getResourceAsStream(resourceName) ; } catch (Exception ex) {}
         if ( in == null )
         {
             if ( StreamManager.logAllLookups && log.isTraceEnabled() )

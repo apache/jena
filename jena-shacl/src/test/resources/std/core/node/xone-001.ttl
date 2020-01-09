@@ -1,0 +1,74 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/node/xone-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:Bob
+  rdf:type ex:Person ;
+  ex:firstName "Robert" ;
+  ex:lastName "Coin" ;
+.
+ex:Carla
+  rdf:type ex:Person ;
+  ex:fullName "Carla Miller" ;
+.
+ex:Dory
+  rdf:type ex:Person ;
+  ex:firstName "Dory" ;
+  ex:fullName "Dory Dunce" ;
+  ex:lastName "Dunce" ;
+.
+ex:XoneConstraintExampleShape
+  rdf:type sh:NodeShape ;
+  sh:targetClass ex:Person ;
+  sh:xone (
+      [
+        sh:property [
+            sh:path ex:fullName ;
+            sh:minCount 1 ;
+          ] ;
+      ]
+      [
+        sh:property [
+            sh:path ex:firstName ;
+            sh:minCount 1 ;
+          ] ;
+        sh:property [
+            sh:path ex:lastName ;
+            sh:minCount 1 ;
+          ] ;
+      ]
+    ) ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <xone-001>
+    ) ;
+.
+<xone-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:xone at node shape 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:Dory ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:XoneConstraintComponent ;
+          sh:sourceShape ex:XoneConstraintExampleShape ;
+          sh:value ex:Dory ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

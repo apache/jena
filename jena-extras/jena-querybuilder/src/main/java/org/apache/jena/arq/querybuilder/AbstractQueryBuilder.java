@@ -64,9 +64,13 @@ import org.apache.jena.sparql.util.NodeFactoryExtra ;
 public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 implements Cloneable, PrologClause<T>, ValuesClause<T> {
 
-	// the query this builder is building
+	/**
+	 *  the query this builder is building
+	 */
 	protected Query query;
-	// a map of vars to nodes for replacement during build.
+	/**
+	 * a map of vars to nodes for replacement during build.
+	 */
 	private final Map<Var, Node> values;
 
 	/**
@@ -75,8 +79,7 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 	 * <li>Will return Node.ANY if object is null.</li>
 	 * <li>Will return the enclosed Node from a FrontsNode</li>
 	 * <li>Will return the object if it is a Node.</li>
-	 * <li>Will call NodeFactoryExtra.parseNode() using the currently defined
-	 * prefixes if the object is a String</li>
+	 * <li>Will call NodeFactoryExtra.parseNode() using the prefix mapping if the object is a String</li>
 	 * <li>Will create a literal representation if the parseNode() fails or for
 	 * any other object type.</li>
 	 * </ul>
@@ -91,12 +94,35 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 		return makeNode( o, query.getPrefixMapping() );
 	}
 
+	/**
+	 * Make a node or path from the object using the query prefix mapping.
+	 * @param o the object to make the node or path from.
+	 * @return A node or path.
+	 * @see #makeNodeOrPath(Object, PrefixMapping)
+	 */
 	private Object makeNodeOrPath(Object o)
 	{
 		return makeNodeOrPath(o, query.getPrefixMapping() );
 	}
 
-	private Object makeNodeOrPath(Object o, PrefixMapping pMapping)
+	/**
+	 * Creates a Path or Node as appropriate.
+	 * <ul>
+	 * <li>Will return Node.ANY if object is null.</li>
+	 * <li>Will return the object if it is a Path
+	 * <li>Will return the enclosed Node from a FrontsNode</li>
+	 * <li>Will return the object if it is a Node.</li>
+	 * <li>Will call PathParser.parse() using the prefix mapping if the object is a String</li>
+	 * <li>Will call NodeFactoryExtra.parseNode() using the currently defined
+	 * prefixes if the object is a String and the PathParser.parse() fails.</li>
+	 * <li>Will create a literal representation if the parseNode() fails or for
+	 * any other object type.</li>
+	 * </ul>
+	 * @param o the object that should be interpreted as a path or a node.
+	 * @param pMapping the prefix mapping to resolve path or node with
+	 * @return the Path or Node 
+	 */
+	public static Object makeNodeOrPath(Object o, PrefixMapping pMapping)
 	{
 		if (o == null) {
 			return Node.ANY;
@@ -330,10 +356,26 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 		return getHandlerBlock().getValueHandler();
 	}
 
+	/**
+	 * Gets the where handler used by this QueryBuilder.
+	 * @return the where handler used by this QueryBuilder.
+	 */
 	public final WhereHandler getWhereHandler() {
 		return getHandlerBlock().getWhereHandler();
 	}
-
+	
+	/**
+	 * Adds the contents of the whereClause to the where clause of this 
+	 * builder.
+	 * @param whereClause the where clause to add.
+	 * @return this builder for chaining.
+	 */
+	@SuppressWarnings("unchecked")
+	public final T addWhere( AbstractQueryBuilder<?> whereClause) {
+		getWhereHandler().addAll( whereClause.getWhereHandler());
+		return (T) this;
+	}
+	
 	@Override
 	public final ExprFactory getExprFactory() {
 		return getHandlerBlock().getPrologHandler().getExprFactory();
@@ -402,6 +444,13 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 		getPrologHandler().addPrefixes(prefixes);
 		return (T) this;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public T addPrefixes(PrefixMapping prefixMapping) {
+		getPrologHandler().addPrefixes( prefixMapping );
+		return (T) this;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -419,6 +468,12 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 
 	// --- VALUES
 
+	/**
+	 * Creates a collection of nodes from an iterator of Objects.
+	 * @param iter the iterator of objects, may be null or empty.
+	 * @param prefixMapping the PrefixMapping to use when nodes are created.
+	 * @return a Collection of nodes or null if iter is null or empty.
+	 */
 	public static Collection<Node> makeValueNodes( Iterator<?> iter, PrefixMapping prefixMapping )
 	{
 		if (iter == null || !iter.hasNext())
@@ -441,6 +496,12 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 		return values;
 	}
 
+	/**
+	 * Creates a collection of nodes from an iterator of Objects.
+	 * Uses the prefix mapping from the PrologHandler.
+	 * @param iter the iterator of objects, may be null or empty.
+	 * @return a Collection of nodes or null if iter is null or empty.
+	 */
 	public Collection<Node> makeValueNodes( Iterator<?> iter )
 	{
 		return makeValueNodes( iter, getPrologHandler().getPrefixes() );
@@ -555,25 +616,25 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 		final Query q = new Query();
 
 		// set the query type
-		switch (query.getQueryType())
+		switch (query.queryType())
 		{
-			case Query.QueryTypeAsk:
+			case ASK:
 				q.setQueryAskType();
 				break;
-			case Query.QueryTypeConstruct:
+			case CONSTRUCT:
 				q.setQueryConstructType();
 				break;
-			case Query.QueryTypeDescribe:
+			case DESCRIBE:
 				q.setQueryDescribeType();
 				break;
-			case Query.QueryTypeSelect:
+			case SELECT:
 				q.setQuerySelectType();
 				break;
-			case Query.QueryTypeUnknown:
+			case UNKNOWN:
 				// do nothing
 				break;
 			default:
-				throw new IllegalStateException( "Internal query is not a known type: "+q.getQueryType());			
+				throw new IllegalStateException( "Internal query is not a known type: "+q.queryType());			
 		}
 
 		// use the HandlerBlock implementation to copy the data.

@@ -23,29 +23,29 @@ import org.apache.jena.dboe.sys.SystemIndex;
 
 public class IndexConst {
 
-    private static IndexParams stdParams = new IndexParamsStd() ;
-    public static IndexParams getDftParams() { return stdParams ; }
-    
+    private static IndexParams stdParams = new IndexParamsStd();
+    public static IndexParams getDftParams() { return stdParams; }
+
     private static class IndexParamsStd implements IndexParams {
 
         @Override
         public FileMode getFileMode() {
-            return SystemIndex.fileMode() ;
+            return SystemIndex.fileMode();
         }
 
         @Override
         public Integer getBlockSize() {
-            return SystemIndex.BlockSize ;
+            return SystemIndex.BlockSize;
         }
 
         @Override
         public Integer getBlockReadCacheSize() {
-            return SystemIndex.BlockReadCacheSize ;
+            return SystemIndex.BlockReadCacheSize;
         }
 
         @Override
         public Integer getBlockWriteCacheSize() {
-            return SystemIndex.BlockWriteCacheSize ;
+            return SystemIndex.BlockWriteCacheSize;
         }
 
     }

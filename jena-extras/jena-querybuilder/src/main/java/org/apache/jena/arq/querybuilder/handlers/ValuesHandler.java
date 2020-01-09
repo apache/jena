@@ -48,9 +48,6 @@ public class ValuesHandler implements Handler {
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param query
-	 *            The query to manipulate.
 	 */
 	public ValuesHandler() {
 		this( null );
@@ -152,7 +149,6 @@ public class ValuesHandler implements Handler {
 	 * 
 	 * @param values
 	 *            the collection of values to add.
-	 * @return The builder for chaining.
 	 */
 	public void addValueRow(Collection<Node> values) {
 		if (values.size() != valuesTable.size()) {

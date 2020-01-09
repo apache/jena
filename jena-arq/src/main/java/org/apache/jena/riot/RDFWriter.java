@@ -140,7 +140,7 @@ public class RDFWriter {
                 throw new RiotException("Lang and RDFformat unset and can't determine syntax from '"+filename+"'");
             Lang lang = RDFLanguages.contentTypeToLang(ct);
             if ( lang == null )
-                throw new RiotException("No syntax registered for '"+ct.getContentType()+"'"); 
+                throw new RiotException("No syntax registered for '"+ct.getContentTypeStr()+"'"); 
             fmt = RDFWriterRegistry.defaultSerialization(lang);
         }
         if ( filename.equals("-") ) {

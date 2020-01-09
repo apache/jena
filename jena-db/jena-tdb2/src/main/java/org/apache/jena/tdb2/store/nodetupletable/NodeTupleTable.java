@@ -16,57 +16,54 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.store.nodetupletable ;
+package org.apache.jena.tdb2.store.nodetupletable;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
-import org.apache.jena.atlas.lib.Closeable ;
-import org.apache.jena.atlas.lib.Sync ;
-import org.apache.jena.atlas.lib.tuple.Tuple ;
-import org.apache.jena.graph.Node ;
+import org.apache.jena.atlas.lib.Closeable;
+import org.apache.jena.atlas.lib.Sync;
+import org.apache.jena.atlas.lib.tuple.Tuple;
+import org.apache.jena.graph.Node;
 import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.tupletable.TupleTable;
 
 public interface NodeTupleTable extends Sync, Closeable
 {
-    public void addRow(Node... nodes) ;
+    public void addRow(Node... nodes);
 
-    public void deleteRow(Node... nodes) ;
+    public void deleteRow(Node... nodes);
 
     /** Find by node. */
-    public Iterator<Tuple<Node>> find(Node... nodes) ;
+    public Iterator<Tuple<Node>> find(Node... nodes);
 
     /** Find by node - return an iterator of NodeIds. Can return "null" for not found as well as NullIterator */
-    public Iterator<Tuple<NodeId>> findAsNodeIds(Node... nodes) ;
+    public Iterator<Tuple<NodeId>> findAsNodeIds(Node... nodes);
 
     /** Find by NodeId. */
-    public Iterator<Tuple<NodeId>> find(NodeId... ids) ;
-    
-    /** Find by NodeId. */
-    public Iterator<Tuple<NodeId>> find(Tuple<NodeId> ids) ;
+    public Iterator<Tuple<NodeId>> find(NodeId... ids);
 
-    /** Find all tuples */ 
-    public Iterator<Tuple<NodeId>> findAll() ;
+    /** Find by NodeId. */
+    public Iterator<Tuple<NodeId>> find(Tuple<NodeId> ids);
+
+    /** Find all tuples */
+    public Iterator<Tuple<NodeId>> findAll();
 
     /** Return the underlying tuple table - used with great care by tools
-     * that directly manipulate internal structures. 
+     * that directly manipulate internal structures.
      */
-    public TupleTable getTupleTable() ;
+    public TupleTable getTupleTable();
 
     /** Return the node table */
-    public NodeTable getNodeTable() ;
+    public NodeTable getNodeTable();
 
-    public boolean isEmpty() ;
-    
+    public boolean isEmpty();
+
     /** Clear the tuple table.  After this operation, find* will find  nothing.
      * This does not mean all data has been removed - for example, it does not mean
      * that any node table has been emptied.
      */
-    public void clear() ;
+    public void clear();
 
-    // No clear operation - need to manage the tuple table 
-    // and node tables separately.
-    
-    public long size() ;
+    public long size();
 }

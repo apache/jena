@@ -21,7 +21,7 @@ package org.apache.jena.sparql.core.assembler;
 import static org.apache.jena.assembler.JA.data;
 import static org.apache.jena.query.DatasetFactory.createTxnMem;
 import static org.apache.jena.riot.RDFDataMgr.read;
-import static org.apache.jena.sparql.core.assembler.AssemblerUtils.setContext;
+import static org.apache.jena.sparql.core.assembler.AssemblerUtils.mergeContext;
 import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.pGraphName;
 import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.pNamedGraph;
 import static org.apache.jena.sparql.util.graph.GraphUtils.getAsStringValue;
@@ -51,7 +51,7 @@ public class InMemDatasetAssembler extends AssemblerBase implements Assembler {
         if ( ! root.hasProperty( RDF.type, DatasetAssemblerVocab.tDatasetTxnMem ) )
             checkType(root, DatasetAssemblerVocab.tMemoryDataset);
         final Dataset dataset = createTxnMem();
-        setContext(root, dataset.getContext());
+        mergeContext(root, dataset.getContext());
 
         Txn.executeWrite(dataset, ()->{ 
             // Load data into the default graph

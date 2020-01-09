@@ -19,10 +19,15 @@
 package org.apache.jena.tdb2.store.value;
 
 public class FloatNode {
+    // Floats,being 32 bits are always encodable.
+    //public static long NO_ENCODING = 0xFF00_0000_0000_0000L;
+
     // 32 bits of value; collapses NaNs to a single value.
 
     public static long pack(float v) {
-        return Float.floatToIntBits(v);
+        // Not "raw" , so NaNs end up as the same bit pattern when packed.
+        int x = Float.floatToIntBits(v);
+        return Integer.toUnsignedLong(x);
     }
 
     public static float unpack(long v) {

@@ -26,7 +26,6 @@ import java.util.Collection;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Creator;
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
@@ -35,14 +34,10 @@ import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
 import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.sparql.core.TxnDataset2Graph;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
 import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.tdb2.TDB2Factory;
-import org.apache.jena.tdb2.store.DatasetGraphTDB;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -58,26 +53,6 @@ import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class TestDataset2Graph {
-    private static boolean txn_dsg_graph; 
-    private static boolean tdb2_no_sync;
-    // TXN_DSG_GRAPH must be true.
-    @SuppressWarnings("deprecation")
-    @BeforeClass public static void beforeClass() {
-        if ( ! TxnDataset2Graph.TXN_DSG_GRAPH )
-            Log.warn(TestDataset2Graph.class, "**** TxnDataset2Graph.TXN_DSG_GRAPH is false in the system setup ****");
-        
-        txn_dsg_graph = TxnDataset2Graph.TXN_DSG_GRAPH;
-        TxnDataset2Graph.TXN_DSG_GRAPH = true;
-        // Make sure sync isn't called.
-        tdb2_no_sync = DatasetGraphTDB.exceptionOnSync;
-        DatasetGraphTDB.exceptionOnSync = true;
-    }
-    
-    @SuppressWarnings("deprecation")
-    @AfterClass public static void afterClass() {
-        TxnDataset2Graph.TXN_DSG_GRAPH = txn_dsg_graph;
-        DatasetGraphTDB.exceptionOnSync = tdb2_no_sync;
-    }
 
     @Parameters(name = "{index}: {0}")
     public static Collection<Object[]> data() {
@@ -116,7 +91,7 @@ public class TestDataset2Graph {
         Model baseModel = ds0.getDefaultModel(); 
         Model model = ModelFactory.createInfModel(RDFSRuleReasonerFactory.theInstance().create(null), baseModel);
         if ( model.getGraph().getTransactionHandler().transactionsSupported() ) {
-            // InfModels do not support transactions per se - they particpate if includes in a suitabel dataset.
+            // InfModels do not support transactions per se - they particpate if includes in a suitable dataset.
             model.begin();
             long x = Iter.count(model.listStatements());
             model.commit();

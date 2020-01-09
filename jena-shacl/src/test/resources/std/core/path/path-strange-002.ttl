@@ -1,0 +1,52 @@
+@prefix ex: <http://example.org/test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:i a ex:C ;
+  ex:p ex:ip .
+ex:ip ex:q ex:ipq .
+ex:ipq a ex:C .
+ex:pi ex:p ex:i .
+
+ex:j a ex:C ;
+  ex:p ex:jp .
+ex:jp ex:q ex:jpq .
+
+ex:s1 a sh:PropertyShape ;
+  sh:targetClass ex:C ;
+  sh:path [ rdf:first ex:p ; rdf:rest [ rdf:first ex:q ; rdf:rest rdf:nil ] ;
+  	    sh:inversePath ( ex:p ) ] ;
+  sh:class ex:C .
+
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <path-strange-002>
+    ) ;
+.
+
+<path-strange-002>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of strange path 002 valid and invalid paths together" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [ a sh:ValidationResult ;
+          sh:focusNode ex:j ;
+          sh:value ex:jpq ;
+          sh:resultPath ( ex:p ex:q ) ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:ClassConstraintComponent ;
+          sh:sourceShape ex:s1 ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

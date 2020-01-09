@@ -31,6 +31,7 @@ import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.sys.TDBInternal;
 import org.apache.jena.tdb.transaction.DatasetGraphTxn ;
 import org.apache.jena.tdb.transaction.TDBTransactionException ;
 import org.junit.After ;
@@ -55,7 +56,7 @@ public abstract class AbstractStoreConnections extends BaseTest
 
     @Before public void before()
     {
-        StoreConnection.reset() ;
+        TDBInternal.reset() ;
         DIR = ConfigTest.getCleanDir() ;
     }
 
@@ -81,12 +82,10 @@ public abstract class AbstractStoreConnections extends BaseTest
     public void store_1() {
         // Expel.
         StoreConnection sConn = getStoreConnection() ;
-        DatasetGraphTxn dsgR1 = sConn.begin(TxnType.READ) ;
         DatasetGraphTxn dsgW1 = sConn.begin(TxnType.WRITE) ;
         dsgW1.add(q1) ;
         dsgW1.commit() ;
         dsgW1.end() ;
-        dsgR1.end() ;
 
         assertTrue(sConn.isValid());
         StoreConnection.release(sConn.getLocation()) ;
@@ -116,12 +115,10 @@ public abstract class AbstractStoreConnections extends BaseTest
     @Test
     public void store_4() {
         StoreConnection sConn = getStoreConnection() ;
-        DatasetGraphTxn dsgR1 = sConn.begin(TxnType.READ) ;
         DatasetGraphTxn dsgW1 = sConn.begin(TxnType.WRITE) ;
         dsgW1.add(q1) ;
         dsgW1.commit() ;
         dsgW1.end() ;
-        dsgR1.end() ;
 
         StoreConnection.release(sConn.getLocation()) ;
         sConn = null ;

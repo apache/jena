@@ -45,15 +45,10 @@ public class EnvTDB
                 String keyStr = (String)key ;
                 if ( keyStr.startsWith(prefix) )
                     keyStr = SystemTDB.symbolNamespace+keyStr.substring(prefix.length()) ;
-                
-                
                 if ( ! keyStr.startsWith(SystemTDB.symbolNamespace) )
                     continue ;
-                
                 Object value = properties.get(key) ;
-                
                 Symbol symbol = Symbol.create(keyStr) ;
-                
                 context.set(symbol, value) ;
             }
         }

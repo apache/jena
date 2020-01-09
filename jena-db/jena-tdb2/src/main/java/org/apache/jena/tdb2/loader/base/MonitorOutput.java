@@ -18,7 +18,7 @@
 
 package org.apache.jena.tdb2.loader.base;
 
-/** Output abstraction for the {@link ProgressMonitor}. */ 
+/** Output abstraction for the {@link ProgressMonitor}. */
 @FunctionalInterface
 public interface MonitorOutput {
     public void print(String fmt, Object... args);

@@ -51,10 +51,8 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
         
         BPTreePage recordsPage = bpTree.getRecordsMgr().create() ;
         if ( recordsPage.getId() != BPlusTreeParams.RootId )
-            // [TxTDB:PATCH-UP]
             throw new TDBException("Root blocks must be at position zero (got "+recordsPage.getId()+")") ;
         // Empty data block.
-        // [TxTDB:PATCH-UP]
         recordsPage.write();
         recordsPage.release() ;
         
@@ -101,7 +99,6 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
     /** Fetch a block - fill in the parent id, which is not in the on-disk bytes */
     public BPTreeNode getRead(int id, int parent)
     {
-        // [TxTDB:PATCH-UP]
         BPTreeNode n = super.getRead(id) ;
         n.parent = parent ;
         return n ;
@@ -110,7 +107,6 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
     /** Fetch a block - fill in the parent id, which is not in the on-disk bytes */
     public BPTreeNode getWrite(int id, int parent)
     {
-        // [TxTDB:PATCH-UP]
         BPTreeNode n = super.getWrite(id) ;
         n.parent = parent ;
         return n ;
@@ -131,7 +127,6 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
         @Override
         public BPTreeNode fromBlock(Block block)
         {
-            // [TxTDB:PATCH-UP]
             // synchronized - needed for multiple reader? 
             synchronized (block)
             {

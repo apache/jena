@@ -46,7 +46,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param t
 	 *            The triple path to add
-	 * @return The Builder for chaining.
+	 * @return This Builder for chaining.
 	 */
 	public T addWhere(Triple t);
 
@@ -55,7 +55,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param t
 	 *            The triple path to add
-	 * @return The Builder for chaining.
+	 * @return This Builder for chaining.
 	 */
 	public T addWhere(TriplePath t);
 
@@ -64,7 +64,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param t
 	 *            The triple to add
-	 * @return The Builder for chaining.
+	 * @return This Builder for chaining.
 	 */
 	public T addWhere(FrontsTriple t);
 
@@ -80,9 +80,18 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 *            The predicate.
 	 * @param o
 	 *            The object.
-	 * @return The Builder for chaining.
+	 * @return This Builder for chaining.
 	 */
 	public T addWhere(Object s, Object p, Object o);
+	
+	/**
+	 * Adds the elements from the whereClause to this where Clause.
+	 * 
+	 * @param whereClause
+	 *            The whereClause to add to this statement.
+	 * @return This Builder for chaining.
+	 */
+	public T addWhere( AbstractQueryBuilder<?> whereClause);
 	
 	/**
 	 * Add a variable or variable and values to the value statement.
@@ -215,7 +224,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param t
 	 *            The triple to add
-	 * @return The Builder for chaining.
+	 * @return This Builder for chaining.
 	 */
 	public T addOptional(Triple t);
 
@@ -224,7 +233,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param t
 	 *            The triple path to add
-	 * @return The Builder for chaining.
+	 * @return This Builder for chaining.
 	 */
 	public T addOptional(TriplePath t);
 
@@ -233,7 +242,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param t
 	 *            The triple to add
-	 * @return The Builder for chaining.
+	 * @return This Builder for chaining.
 	 */
 	public T addOptional(FrontsTriple t);
 
@@ -249,7 +258,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 *            The predicate.
 	 * @param o
 	 *            The object.
-	 * @return The Builder for chaining.
+	 * @return This Builder for chaining.
 	 */
 	public T addOptional(Object s, Object p, Object o);
 
@@ -258,7 +267,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param t
 	 *            The select builder to add as an optional pattern
-	 * @return The Builder for chaining.
+	 * @return This Builder for chaining.
 	 */
 	public T addOptional(AbstractQueryBuilder<?> t);
 
@@ -267,7 +276,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param expression
 	 *            the expression to evaluate for the filter.
-	 * @return @return The Builder for chaining.
+	 * @return @return This Builder for chaining.
 	 * @throws ParseException
 	 *             If the expression can not be parsed.
 	 */
@@ -285,7 +294,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param expression
 	 *            the expression to evaluate for the filter.
-	 * @return @return The Builder for chaining.
+	 * @return @return This Builder for chaining.
 	 */
 	public T addFilter(Expr expression);
 

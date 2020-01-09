@@ -166,7 +166,7 @@ public class AssemblerHelp
             Resource type = s.getSubject();
             Constructor<?> con = getResourcedConstructor( c );
             if (con == null)
-                establish( group, type, c.newInstance() );
+                establish( group, type, c.getConstructor().newInstance() );
             else
                 establish( group, type, con.newInstance( s.getSubject() ) );
             }

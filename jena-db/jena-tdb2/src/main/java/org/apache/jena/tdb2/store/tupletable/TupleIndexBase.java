@@ -18,63 +18,63 @@
 
 package org.apache.jena.tdb2.store.tupletable;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
-import org.apache.jena.atlas.lib.tuple.Tuple ;
-import org.apache.jena.atlas.lib.tuple.TupleMap ;
+import org.apache.jena.atlas.lib.tuple.Tuple;
+import org.apache.jena.atlas.lib.tuple.TupleMap;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.store.NodeId;
 
 public abstract class TupleIndexBase implements TupleIndex
 {
-    private static final boolean Check = false ;
+    private static final boolean Check = false;
 
-    protected final TupleMap tupleMap ;
-    protected final int tupleLength ;
+    protected final TupleMap tupleMap;
+    protected final int tupleLength;
 
-    private final String name ;
-    
+    private final String name;
+
     protected TupleIndexBase(int N, TupleMap indexMapping, String name)
     {
-        this.tupleLength = N ;
-        this.tupleMap = indexMapping ;
-        this.name = name ;
+        this.tupleLength = N;
+        this.tupleMap = indexMapping;
+        this.name = name;
     }
-    
+
     @Override
     public TupleIndex wrapped() {
-        return null ;
+        return null;
     }
-    
+
     /** Add tuple worker: Tuple passed in unmapped (untouched) order */
-    protected abstract void performAdd(Tuple<NodeId> tuple) ;
-    
+    protected abstract void performAdd(Tuple<NodeId> tuple);
+
     /** Delete tuple worker: Tuple passed in unmapped (untouched) order */
-    protected abstract void performDelete(Tuple<NodeId> tuple) ;
-    
+    protected abstract void performDelete(Tuple<NodeId> tuple);
+
     /** Find tuples worker: Tuple passed in unmaped (untouched) order */
-    protected abstract Iterator<Tuple<NodeId>> performFind(Tuple<NodeId> tuple) ;
+    protected abstract Iterator<Tuple<NodeId>> performFind(Tuple<NodeId> tuple);
 
     /** Insert a tuple */
     @Override
-    public final void add(Tuple<NodeId> tuple) 
-    { 
+    public final void add(Tuple<NodeId> tuple)
+    {
         if ( Check ) {
             if ( tupleLength != tuple.len() )
                 throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", tuple.len(), tupleLength));
         }
-        performAdd(tuple) ;
+        performAdd(tuple);
     }
     /** Delete a tuple */
     @Override
-    public final void delete(Tuple<NodeId> tuple) 
-    { 
+    public final void delete(Tuple<NodeId> tuple)
+    {
         if ( Check ) {
             if ( tupleLength != tuple.len() )
                 throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", tuple.len(), tupleLength));
         }
 
-        performDelete(tuple) ;
+        performDelete(tuple);
     }
 
     /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any.
@@ -88,37 +88,37 @@ public abstract class TupleIndexBase implements TupleIndex
                 throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", pattern.len(), tupleLength));
         }
         // null to NodeId.NodIdAny ??
-        return performFind(pattern) ;
+        return performFind(pattern);
     }
-    
+
     @Override
     public final int weight(Tuple<NodeId> pattern)
     {
-        for ( int i = 0 ; i < tupleLength ; i++ )
+        for ( int i = 0; i < tupleLength ; i++ )
         {
-            NodeId X = tupleMap.mapSlot(i, pattern) ;
+            NodeId X = tupleMap.mapSlot(i, pattern);
             if ( undef(X) )
                 // End of fixed terms
-                return i ;
+                return i;
         }
-        return tupleLength ;
+        return tupleLength;
     }
-    
-    @Override
-    public final String getMappingStr()     { return tupleMap.getLabel() ; }
 
     @Override
-    public final String getName()           { return name ; }
+    public final String getMappingStr()     { return tupleMap.getLabel(); }
 
     @Override
-    public final int getTupleLength()       { return tupleLength ; }
+    public final String getName()           { return name; }
 
     @Override
-    public final TupleMap getMapping()      { return tupleMap ;  }
-    
+    public final int getTupleLength()       { return tupleLength; }
+
+    @Override
+    public final TupleMap getMapping()      { return tupleMap;  }
+
     protected final boolean undef(NodeId x)
-    { return NodeId.isAny(x) ; }
-    
+    { return NodeId.isAny(x); }
+
     @Override
-    public String toString() { return "index:"+getName() ; }
+    public String toString() { return "index:"+getName(); }
 }

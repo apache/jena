@@ -18,12 +18,12 @@
 
 package org.apache.jena.tdb2.junit;
 
-import java.util.function.Consumer ;
+import java.util.function.Consumer;
 
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.system.Txn ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.ConfigTest;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.TDB2Factory;
@@ -31,22 +31,22 @@ import org.apache.jena.tdb2.sys.TDBInternal;
 
 /** Support for tests to be less "transaction-y" */
 public class TL {
-    
+
     public static void exec(Consumer<Dataset> action) {
         Dataset dataset = createTestDataset();
-        try { 
+        try {
             Txn.executeWrite(dataset, ()->action.accept(dataset));
             //TDBInternal.reset();
-            
-        } finally { expel(dataset); } 
+
+        } finally { expel(dataset); }
     }
-    
+
     public static void execMem(Consumer<Dataset> action) {
-        Dataset dataset = createTestDatasetMem() ;
+        Dataset dataset = createTestDatasetMem();
         Txn.executeWrite(dataset, ()->action.accept(dataset));
         expel(dataset);
     }
-    
+
     public static void expel(Dataset dataset) {
         expel(dataset.asDatasetGraph());
     }
@@ -56,35 +56,35 @@ public class TL {
     }
 
     // Or use these for @Before, @After style.
-    
+
     public static Location cleanLocation() {
         // To avoid the problems on MS Windows where memory mapped files
-        // can't be deleted from a running JVM, we use a different, cleaned 
+        // can't be deleted from a running JVM, we use a different, cleaned
         // directory each time.
-        String dirname = ConfigTest.getCleanDir() ;
-        Location location = Location.create(dirname) ;
-        return location ;
+        String dirname = ConfigTest.getCleanDir();
+        Location location = Location.create(dirname);
+        return location;
     }
-    
+
     private static void releaseDataset(Dataset dataset) {
-        dataset.abort() ;
+        dataset.abort();
         expel(dataset);
     }
 
     private static Dataset createTestDataset() {
-        Location location = cleanLocation() ;
-        Dataset dataset = TDB2Factory.connectDataset(location) ;
-        return dataset ;
+        Location location = cleanLocation();
+        Dataset dataset = TDB2Factory.connectDataset(location);
+        return dataset;
     }
-    
+
     public static Dataset createTestDatasetMem() {
-        Dataset dataset = TDB2Factory.createDataset() ;
-        return dataset ;
+        Dataset dataset = TDB2Factory.createDataset();
+        return dataset;
     }
 
     public static DatasetGraph createTestDatasetGraphMem() {
-        DatasetGraph dataset = DatabaseMgr.createDatasetGraph() ;
-        return dataset ;
+        DatasetGraph dataset = DatabaseMgr.createDatasetGraph();
+        return dataset;
     }
 }
 

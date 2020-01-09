@@ -65,7 +65,9 @@ public interface Graph
     /**
         Answer this Graph's statistics handler, or null if there isn't one. Every
         call to this method on a particular graph delivers the same (==) answer.
+        @deprecated To be removed.
     */
+    @Deprecated
     GraphStatisticsHandler getStatisticsHandler();
     
     /**

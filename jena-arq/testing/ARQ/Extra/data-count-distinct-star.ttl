@@ -1,0 +1,11 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+BASE <https://superfell.com/>
+
+<child3>	<p>		<child2> ;
+			<label>	"child"@en .
+<child2>	<p>		<child1> ;
+			<label>	"child"@en .
+<child1>	<p>		<root> ;
+			<label>	"child"@en .
+<root>		<label>	"root"@en .

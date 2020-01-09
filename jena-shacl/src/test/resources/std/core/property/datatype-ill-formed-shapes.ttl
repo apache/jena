@@ -1,0 +1,8 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ex: <http://example.org/shacl-test/> .
+
+ex:s a sh:PropertyShape ;
+  sh:targetNode ex:i ;
+  sh:path ex:p ;
+  sh:datatype xsd:byte .

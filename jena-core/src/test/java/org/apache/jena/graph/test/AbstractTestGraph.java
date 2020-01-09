@@ -870,13 +870,6 @@ public abstract class AbstractTestGraph extends GraphTestBase
         }
     }
 
-    public void testGetStatisticsHandler()
-    {
-        Graph g = getGraph();
-        GraphStatisticsHandler h = g.getStatisticsHandler();
-        assertSame( h, g.getStatisticsHandler() );
-    }
-
     /**
      	Test cases for RemoveSPO(); each entry is a triple (add, remove, result).
      	<ul>

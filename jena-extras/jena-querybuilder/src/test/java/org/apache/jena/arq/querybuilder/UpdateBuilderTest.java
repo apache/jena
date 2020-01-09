@@ -20,6 +20,7 @@ package org.apache.jena.arq.querybuilder;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.jena.arq.querybuilder.UpdateBuilder;
@@ -39,6 +40,8 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.modify.request.UpdateDataDelete;
 import org.apache.jena.sparql.modify.request.UpdateDataInsert;
 import org.apache.jena.sparql.modify.request.UpdateModify;
+import org.apache.jena.sparql.path.P_Link;
+import org.apache.jena.sparql.path.Path;
 import org.apache.jena.sparql.syntax.Element;
 import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.syntax.ElementPathBlock;
@@ -142,6 +145,40 @@ public class UpdateBuilderTest {
 		assertEquals( o, q.getObject());
 	}
 
+	@Test
+	public  void testInsert_QuadCollection()
+	{
+		UpdateBuilder builder = new UpdateBuilder();
+		Collection<Quad> quads = new ArrayList<Quad>();
+		
+		quads.add( new Quad( g, s, p, o) );
+		
+		Node g2 = NodeFactory.createURI("http://example.com/graph2");
+		Node s2 = NodeFactory.createURI("http://example.com/subject2");
+		Node p2 = NodeFactory.createURI("http://example.com/predicate2");
+		Node o2 = NodeFactory.createURI("http://example.com/object2");
+
+		quads.add( new Quad( g2, s2, p2, o2) );
+		
+		builder.addInsertQuads(quads);
+		Update update = builder.build();
+		assertTrue( update instanceof UpdateDataInsert);
+		UpdateDataInsert udi = (UpdateDataInsert)update;
+		List<Quad> quads2 = udi.getQuads();
+		assertEquals( 2, quads2.size());
+		Quad q = quads2.get(0);
+		assertEquals( g, q.getGraph());
+		assertEquals( s, q.getSubject());
+		assertEquals( p, q.getPredicate());
+		assertEquals( o, q.getObject());
+		
+		q = quads2.get(1);
+		assertEquals( g2, q.getGraph());
+		assertEquals( s2, q.getSubject());
+		assertEquals( p2, q.getPredicate());
+		assertEquals( o2, q.getObject());
+	}
+	
 	@Test
 	public void testInsertValueReplacement()
 	{
@@ -248,6 +285,40 @@ public class UpdateBuilderTest {
 		assertEquals( s, q.getSubject());
 		assertEquals( p, q.getPredicate());
 		assertEquals( o, q.getObject());
+	}
+	
+	@Test
+	public  void testDelete_QuadCollection()
+	{
+		UpdateBuilder builder = new UpdateBuilder();
+		Collection<Quad> quads = new ArrayList<Quad>();
+		
+		quads.add( new Quad( g, s, p, o) );
+		
+		Node g2 = NodeFactory.createURI("http://example.com/graph2");
+		Node s2 = NodeFactory.createURI("http://example.com/subject2");
+		Node p2 = NodeFactory.createURI("http://example.com/predicate2");
+		Node o2 = NodeFactory.createURI("http://example.com/object2");
+
+		quads.add( new Quad( g2, s2, p2, o2) );
+		
+		builder.addDeleteQuads(quads);
+		Update update = builder.build();
+		assertTrue( update instanceof UpdateDataDelete);
+		UpdateDataDelete udd = (UpdateDataDelete)update;
+		List<Quad> quads2 = udd.getQuads();
+		assertEquals( 2, quads2.size());
+		Quad q = quads2.get(0);
+		assertEquals( g, q.getGraph());
+		assertEquals( s, q.getSubject());
+		assertEquals( p, q.getPredicate());
+		assertEquals( o, q.getObject());
+		
+		q = quads2.get(1);
+		assertEquals( g2, q.getGraph());
+		assertEquals( s2, q.getSubject());
+		assertEquals( p2, q.getPredicate());
+		assertEquals( o2, q.getObject());
 	}
 
 	@Test
@@ -490,4 +561,23 @@ public class UpdateBuilderTest {
 		
 	}
 	
+	@Test
+	public void testPathInWhereClause() {
+		Node p = NodeFactory.createURI("http://example.com/p");
+		Path path = new P_Link( p );
+				
+		// JENA-1739 fails here
+		new UpdateBuilder().addDelete( "?s", "<x>", "?p")
+		.addWhere( "?s", path, "?p").build();
+	}
+	
+	@Test
+	public void testPathInOptionalClause() {
+		Node p = NodeFactory.createURI("http://example.com/p");
+		Path path = new P_Link( p );
+				
+		// JENA-1739 fails here
+		new UpdateBuilder().addDelete( "?s", "<x>", "?p")
+		.addOptional( "?s", path, "?p").build();
+	}
 }

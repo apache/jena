@@ -20,7 +20,6 @@ package org.apache.jena.update;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.protocol.HttpContext;
-import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -245,34 +244,26 @@ public class UpdateExecutionFactory
     // Everything comes through one of these two make methods
     private static UpdateProcessor make(UpdateRequest updateRequest, DatasetGraph datasetGraph, Binding inputBinding, Context context)
     {
-        if ( context == null )
-        {
-            context = ARQ.getContext().copy();
-            context.putAll(datasetGraph.getContext()) ;
-        }
+        Context cxt = Context.setupContextForDataset(context, datasetGraph) ;
         
-        UpdateEngineFactory f = UpdateEngineRegistry.get().find(datasetGraph, context) ;
+        UpdateEngineFactory f = UpdateEngineRegistry.get().find(datasetGraph, cxt) ;
         if ( f == null )
             return null ;
         
-        UpdateProcessorBase uProc = new UpdateProcessorBase(updateRequest, datasetGraph, inputBinding, context, f) ;
+        UpdateProcessorBase uProc = new UpdateProcessorBase(updateRequest, datasetGraph, inputBinding, cxt, f) ;
         return uProc ;
     }
     
     // Everything comes through one of these two make methods
     private static UpdateProcessorStreaming makeStreaming(DatasetGraph datasetGraph, Binding inputBinding, Context context)
     {
-        if ( context == null )
-        {
-            context = ARQ.getContext().copy();
-            context.putAll(datasetGraph.getContext()) ;
-        }
+        Context cxt = Context.setupContextForDataset(context, datasetGraph) ;
         
-        UpdateEngineFactory f = UpdateEngineRegistry.get().find(datasetGraph, context) ;
+        UpdateEngineFactory f = UpdateEngineRegistry.get().find(datasetGraph, cxt) ;
         if ( f == null )
             return null ;
         
-        UpdateProcessorStreamingBase uProc = new UpdateProcessorStreamingBase(datasetGraph, inputBinding, context, f) ;
+        UpdateProcessorStreamingBase uProc = new UpdateProcessorStreamingBase(datasetGraph, inputBinding, cxt, f) ;
         return uProc;
     }
     

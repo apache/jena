@@ -16,33 +16,33 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.store ;
+package org.apache.jena.tdb2.store;
 
 import org.apache.jena.dboe.base.block.FileMode;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.tdb2.ConfigTest;
 import org.apache.jena.tdb2.sys.SystemTDB;
 import org.apache.jena.tdb2.sys.TestOps;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 /** Slow tests - complete cleaning of disk areas each time */
 public class TestStoreConnectionDirect extends AbstractTestStoreConnectionBasics {
-    static FileMode mode ;
+    static FileMode mode;
 
     @BeforeClass
     public static void beforeClassFileMode() {
-        mode = SystemTDB.fileMode() ;
-        TestOps.setFileMode(FileMode.direct) ;
+        mode = SystemTDB.fileMode();
+        TestOps.setFileMode(FileMode.direct);
     }
 
     @AfterClass
     public static void afterClassFileMode() {
-        TestOps.setFileMode(mode) ;
+        TestOps.setFileMode(mode);
     }
 
     @Override
     protected Location getLocation() {
-        return Location.create(ConfigTest.getCleanDir()) ;
+        return Location.create(ConfigTest.getCleanDir());
     }
 }

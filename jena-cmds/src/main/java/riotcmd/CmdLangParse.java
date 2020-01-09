@@ -82,7 +82,7 @@ public abstract class CmdLangParse extends CmdGeneral
 
     @Override
     protected String getSummary() {
-        return getCommandName()+" [--time] [--check|--noCheck] [--sink] [--base=IRI] [--out=FORMAT] [--compress] file ..." ;
+        return getCommandName()+" [--help] [--time] [--base=IRI] [-syntax=FORMAT] [--out=FORMAT] [--count] file ..." ;
     }
 
     protected List<ParseRecord> outcomes = new ArrayList<>(); 
@@ -170,7 +170,7 @@ public abstract class CmdLangParse extends CmdGeneral
                 postParse.postParse();
             // Post parse information.
             // Total if more than one file.
-            if ( super.getPositional().size() > 1 && modTime.timingEnabled() ) {
+            if ( super.getPositional().size() > 1 && ( modTime.timingEnabled() || modLangParse.outputCount() ) ) { 
                 long totalMillis = 0; 
                 long totalTriples = 0;
                 long totalQuads = 0;
@@ -207,6 +207,14 @@ public abstract class CmdLangParse extends CmdGeneral
     }
     
     public void outcome(ParseRecord rtn) {
+        if ( modLangParse.outputCount() ) {
+            System.err.printf("%-15s", rtn.filename);
+            if ( rtn.triples > 0 )
+                System.err.printf(" : Triples = %,d", rtn.triples);
+            if ( rtn.quads > 0 )
+                System.err.printf(" : Quads = %,d", rtn.quads);
+            System.err.println();
+        }
         outcomes.add(rtn);
         if ( modTime.timingEnabled() )
             output(rtn);
@@ -235,6 +243,7 @@ public abstract class CmdLangParse extends CmdGeneral
                 baseURI = "http://base/";
                 builder.base(baseURI);
             }
+            filename = "stdin";
             builder.source(System.in);
         } else {
             builder.source(filename);
@@ -246,7 +255,7 @@ public abstract class CmdLangParse extends CmdGeneral
     // Contrast with --syntax=.. which forces the language.
     protected abstract Lang dftLang() ;
 
-    protected ParseRecord parseRIOT(RDFParserBuilder builder, /*Info for the ProcessOutcome*/ String filename) {
+    protected ParseRecord parseRIOT(RDFParserBuilder builder, String filename) {
         boolean checking = true ;
         if ( modLangParse.explicitChecking() )
             checking = true;
@@ -293,12 +302,16 @@ public abstract class CmdLangParse extends CmdGeneral
         try {
             parser.parse(sink);
             successful = true;
-        } catch (RiotException ex) {
+        } 
+        catch (RiotNotFoundException ex) {
+            errHandler.error(ex.getMessage(), -1, -1);
+            successful = false;
+        }
+        catch (RiotException ex) {
             successful = false;
         }
         sink.finish() ;
         long x = modTime.endTimer() ;
-        // TEMP
         ParseRecord outcome = new ParseRecord(filename, successful, x, sink.countTriples(), sink.countQuads(), errHandler);
         return outcome;
     }
@@ -357,14 +370,14 @@ public abstract class CmdLangParse extends CmdGeneral
         long total = numberTriples + numberQuads + numberTuples;
         StringBuilder sb = new StringBuilder();
         if ( total > 0 ) {
-            sb.append(label);
+            sb.append(String.format("%-15s", label));
             if ( success )
-                appendFmt(sb, " : %,5.2f sec", timeSec);
+                appendFmt(sb, " : %,4.2f sec", timeSec);
             appendCount(sb, numberTriples, "Triple", "Triples", "TPS");
             appendCount(sb, numberQuads,   "Quad",   "Quads",   "QPS");
             appendCount(sb, numberTuples,  "Tuple",  "Tuples",  "TPS");
             if ( success && timeMillis > 0 )
-                appendFmt(sb," : %,.2f %s", numberTriples/timeSec, "per second");
+                appendFmt(sb," : %,.2f %s", total/timeSec, "per second");
         } else {
             appendFmt(sb, "%s :  (No Output)", label) ;
         }

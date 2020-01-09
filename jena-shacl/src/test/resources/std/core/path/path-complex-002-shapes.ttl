@@ -1,0 +1,14 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix ex: <http://example.org/shacl/tests/> .
+
+ex:s1 a sh:PropertyShape ;
+ sh:targetNode ex:i ;
+ sh:path ( _:pinv _:pinv ) ;
+ sh:class ex:C .
+
+_:pinv sh:inversePath ex:p .
+
+ex:s2 a sh:PropertyShape ;
+ sh:targetNode ex:i ;
+ sh:path ( [ sh:inversePath ex:p ] [ sh:inversePath ex:p ] ) ;
+ sh:class ex:C .

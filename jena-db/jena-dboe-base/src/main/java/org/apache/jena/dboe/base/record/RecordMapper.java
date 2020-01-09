@@ -18,7 +18,7 @@
 
 package org.apache.jena.dboe.base.record;
 
-import java.nio.ByteBuffer ;
+import java.nio.ByteBuffer;
 
 /** Allow bytes to pull directly out of storage with no copy to record;
  *  also extract the key bytes into an array.
@@ -27,5 +27,5 @@ import java.nio.ByteBuffer ;
  *  which churns objects (GC issue) and avoids a copy.
  */
 public interface RecordMapper<X> {
-    X map(ByteBuffer bb, int entryIdx, byte key[], RecordFactory recFactory) ;
+    X map(ByteBuffer bb, int entryIdx, byte key[], RecordFactory recFactory);
 }

@@ -18,71 +18,71 @@
 
 package org.apache.jena.dboe.trans.data;
 
-import java.nio.ByteBuffer ;
-import java.util.concurrent.atomic.AtomicReference ;
+import java.nio.ByteBuffer;
+import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.jena.atlas.RuntimeIOException ;
-import org.apache.jena.atlas.lib.Bytes ;
+import org.apache.jena.atlas.RuntimeIOException;
+import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.dboe.base.file.BufferChannel;
 import org.apache.jena.dboe.transaction.txn.ComponentId;
 import org.apache.jena.dboe.transaction.txn.TransactionalComponentLifecycle;
 import org.apache.jena.dboe.transaction.txn.TxnId;
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite;
 
 /** Manage a single binary (not too large) object.
- * It is written and read from a file in one action, 
+ * It is written and read from a file in one action,
  * so changes completely replace the original contents.
- * The whole object is written to the journal during prepare.  
+ * The whole object is written to the journal during prepare.
  */
 public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobState> {
 
-    // The last commited state.
+    // The last committed state.
     // Immutable ByteBuffer.
-    private final AtomicReference<ByteBuffer> blobRef = new AtomicReference<>() ;
-    private final BufferChannel file ;
+    private final AtomicReference<ByteBuffer> blobRef = new AtomicReference<>();
+    private final BufferChannel file;
 
     static class BlobState {
-        boolean hasChanged = false; 
-        ByteBuffer $txnBlob ;
-        
+        boolean hasChanged = false;
+        ByteBuffer $txnBlob;
+
         BlobState(ByteBuffer bb) {
-            setByteBuffer(bb) ;
+            setByteBuffer(bb);
         }
         void setByteBuffer(ByteBuffer bb) {
-            $txnBlob = bb ;
+            $txnBlob = bb;
             // Could compare - seems like added complexity.
             hasChanged = true;
         }
 
-        ByteBuffer getByteBuffer() { return $txnBlob ; } 
+        ByteBuffer getByteBuffer() { return $txnBlob; }
     }
-    
+
     public TransBlob(ComponentId cid, BufferChannel file) {
-        super(cid) ;
-        this.file = file ;
-        read() ;
+        super(cid);
+        this.file = file;
+        read();
     }
-    
+
     private void read() {
-        long x = file.size() ;
-        ByteBuffer blob = ByteBuffer.allocate((int)x) ;
-        int len = file.read(blob) ;
+        long x = file.size();
+        ByteBuffer blob = ByteBuffer.allocate((int)x);
+        int len = file.read(blob);
         if ( len != x )
-            throw new RuntimeIOException("Short read: "+len+" of "+x) ;
-        blob.rewind() ;
-        blobRef.set(blob) ; 
+            throw new RuntimeIOException("Short read: "+len+" of "+x);
+        blob.rewind();
+        blobRef.set(blob);
     }
 
     private void write() {
         ByteBuffer blob = blobRef.get();
-        blob.rewind() ;
-        int x = blob.remaining() ;
+        blob.rewind();
+        int x = blob.remaining();
         file.truncate(0);
-        int len = file.write(blob) ;
+        int len = file.write(blob);
         if ( len != x )
-            throw new RuntimeIOException("Short write: "+len+" of "+x) ;
-        file.sync(); 
-        blob.rewind() ;
+            throw new RuntimeIOException("Short write: "+len+" of "+x);
+        file.sync();
+        blob.rewind();
     }
 
     /** Set the byte buffer.
@@ -91,104 +91,104 @@ public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobSta
      * The byte buffer should be configured for read if used with {@link #getString}.
      */
     public void setBlob(ByteBuffer bb) {
-        checkWriteTxn();
+        requireWriteTxn();
         getDataState().setByteBuffer(bb);
     }
-    
+
     public ByteBuffer getBlob() {
         if ( isActiveTxn() )
-            return getDataState().getByteBuffer() ;
-        return blobRef.get() ;
+            return getDataState().getByteBuffer();
+        return blobRef.get();
     }
 
-    /**  Set data from string - convenience operation */ 
+    /**  Set data from string - convenience operation */
     public void setString(String dataStr) {
-        checkWriteTxn();
+        requireWriteTxn();
         if ( dataStr == null ) {
             setBlob(null);
-            return ;
+            return;
         }
 
         // Attempt to reuse the write-transaction byte buffer
         // We can't reuse if it's the blobRef (shared by other transactions)
         // but if it's a new to this write transaction buffer we can reuse.
-        
-        int maxNeeded = dataStr.length()*4 ;
-        ByteBuffer bb = getDataState().getByteBuffer() ;
+
+        int maxNeeded = dataStr.length()*4;
+        ByteBuffer bb = getDataState().getByteBuffer();
         if ( bb == blobRef.get() )
-            bb = ByteBuffer.allocate(maxNeeded) ;
+            bb = ByteBuffer.allocate(maxNeeded);
         else if ( bb.capacity() >= maxNeeded )
-            bb.clear() ;
+            bb.clear();
         else
-            bb = ByteBuffer.allocate(maxNeeded) ;
-        Bytes.toByteBuffer(dataStr, bb) ;
-        bb.flip() ;
+            bb = ByteBuffer.allocate(maxNeeded);
+        Bytes.toByteBuffer(dataStr, bb);
+        bb.flip();
         setBlob(bb);
     }
-    
-    /**  Get data as string - convenience operation */ 
+
+    /**  Get data as string - convenience operation */
     public String getString() {
-        ByteBuffer bb = getBlob() ;
+        ByteBuffer bb = getBlob();
         if (bb == null )
-            return null ;
-        int x = bb.position() ;
-        String s = Bytes.fromByteBuffer(bb) ;
-        bb.position(x) ;
-        return s ;
+            return null;
+        int x = bb.position();
+        String s = Bytes.fromByteBuffer(bb);
+        bb.position(x);
+        return s;
     }
 
-    private boolean recoveryChange = false ; 
+    private boolean recoveryChange = false;
     @Override
     public void startRecovery() {
-        recoveryChange = false ;
+        recoveryChange = false;
     }
 
     @Override
     public void recover(ByteBuffer ref) {
-        blobRef.set(ref) ;
-        recoveryChange = true ;
+        blobRef.set(ref);
+        recoveryChange = true;
     }
 
     @Override
     public void finishRecovery() {
         if ( recoveryChange )
-            write() ;
+            write();
     }
 
     @Override
     public void cleanStart() { }
-    
+
     @Override
     protected BlobState _begin(ReadWrite readWrite, TxnId txnId) {
         return createState();
     }
 
     private BlobState createState() {
-        ByteBuffer blob = blobRef.get() ;
+        ByteBuffer blob = blobRef.get();
         // Save reference to ByteBuffer into the transaction state.
-        return new BlobState(blob) ;
+        return new BlobState(blob);
     }
-    
+
     @Override
     protected BlobState _promote(TxnId txnId, BlobState state) {
         // Our write state is the read state.
         return createState();
     }
-    
+
     @Override
     protected ByteBuffer _commitPrepare(TxnId txnId, BlobState state) {
         if ( ! state.hasChanged )
             return null;
-        return state.getByteBuffer() ;
+        return state.getByteBuffer();
     }
 
     @Override
     protected void _commit(TxnId txnId, BlobState state) {
         if ( ! state.hasChanged )
             return;
-        // NB Change reference. 
-        blobRef.set(state.getByteBuffer()) ;
-        write() ;
+        // NB Change reference.
+        blobRef.set(state.getByteBuffer());
+        write();
     }
 
     @Override
@@ -202,9 +202,9 @@ public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobSta
 
     @Override
     protected void _shutdown() {}
-    
+
     @Override
-    public String toString()    { return getComponentId().label() ; } 
+    public String toString()    { return getComponentId().label(); }
 
 }
 

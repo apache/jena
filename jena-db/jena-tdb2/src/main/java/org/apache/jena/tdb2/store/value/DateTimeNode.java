@@ -18,15 +18,15 @@
 
 package org.apache.jena.tdb2.store.value;
 
-import java.math.BigDecimal ;
+import java.math.BigDecimal;
 
-import javax.xml.datatype.DatatypeConstants ;
-import javax.xml.datatype.DatatypeFactory ;
-import javax.xml.datatype.XMLGregorianCalendar ;
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.apache.jena.atlas.lib.BitsInt ;
-import org.apache.jena.atlas.lib.BitsLong ;
-import org.apache.jena.atlas.lib.NumberUtils ;
+import org.apache.jena.atlas.lib.BitsInt;
+import org.apache.jena.atlas.lib.BitsLong;
+import org.apache.jena.atlas.lib.NumberUtils;
 import org.apache.jena.ext.xerces.DatatypeFactoryInst;
 
 public class DateTimeNode
@@ -36,10 +36,10 @@ public class DateTimeNode
 
     // Layout:
     // Bits 56-63 : type
-    
+
     // Bits 49-55 (7 bits)  : timezone -- 15 min precision + special for Z and no timezone.
     // Bits 27-48 (22 bits) : date, year is 13 bits = 8000 years  (0 to 7999)
-    // Bits 0-26  (27 bits) : time, to milliseconds 
+    // Bits 0-26  (27 bits) : time, to milliseconds
 
     // Layout:
     // Hi: TZ YYYY MM DD HH MM SS.sss Lo:
@@ -75,7 +75,7 @@ public class DateTimeNode
     static final int       TZ_Z            = 0x7F;
     // Value for no timezone.
     static final int       TZ_NONE         = 0x7E;
-    
+
     // JENA-1537: The Xerces 2.11.0 DatatypeFactory gets T24:00:00 right.
     static DatatypeFactory datatypeFactory = DatatypeFactoryInst.newDatatypeFactory();
 

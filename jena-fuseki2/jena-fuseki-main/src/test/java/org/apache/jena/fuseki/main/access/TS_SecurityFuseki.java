@@ -18,9 +18,6 @@
 
 package org.apache.jena.fuseki.main.access;
 
-import org.apache.jena.atlas.logging.LogCtl;
-import org.apache.jena.fuseki.Fuseki;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -30,18 +27,14 @@ import org.junit.runners.Suite;
     , TestSecurityFilterFuseki.class
     , TestFusekiSecurityAssemblerSeparate.class
     , TestFusekiSecurityAssemblerShared.class
-    
+
     , TestSecurityConfig.class
     , TestSecurityBuilderSetup.class
+    
+    , TestPasswdOnly.class
+    , TestServiceDataAuthConfig.class
+    , TestServiceDataAuthBuild.class
 })
 
-public class TS_SecurityFuseki {
-    @BeforeClass public static void setupForFusekiServer() {
-        LogCtl.setLevel(Fuseki.configLogName,   "ERROR");
-        LogCtl.setLevel(Fuseki.serverLogName,   "WARN");
-        LogCtl.setLevel(Fuseki.actionLogName,   "WARN");
-        LogCtl.setLevel(Fuseki.requestLogName,  "WARN");
-        LogCtl.setLevel(Fuseki.adminLogName,    "WARN");
-        LogCtl.setLevel("org.eclipse.jetty",    "WARN");
-    }
-}
+public class TS_SecurityFuseki {}
+

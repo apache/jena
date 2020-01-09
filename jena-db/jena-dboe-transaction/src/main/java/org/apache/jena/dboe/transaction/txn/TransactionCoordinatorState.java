@@ -18,17 +18,17 @@
 
 package org.apache.jena.dboe.transaction.txn;
 
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TransactionCoordinatorState {
-    /*package*/final Transaction transaction ;
+    /*package*/final Transaction transaction;
     /*package*/Map<ComponentId, SysTransState> componentStates = new HashMap<>();
     /*package*/ TransactionCoordinatorState(Transaction transaction) {
-        this.transaction = transaction ;
+        this.transaction = transaction;
     }
-    
+
     public Transaction getTransaction() {
-        return transaction ;
+        return transaction;
     }
 }

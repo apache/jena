@@ -54,6 +54,7 @@ public class TestTdbDiskResultSets extends Assert {
         Dataset ds = createDataset(tempDir.getRoot().getAbsolutePath());
         try (DebugTdbConnection connection = new DebugTdbConnection(ds)) {
             Statement stmt = connection.createStatement(TYPE_FORWARD_ONLY, CONCUR_READ_ONLY);
+            @SuppressWarnings("resource")
             ResultSet rset = stmt.executeQuery("ASK { }");
             assertNotNull(rset);
             assertFalse(rset.isClosed());
@@ -85,6 +86,7 @@ public class TestTdbDiskResultSets extends Assert {
         Dataset ds = createDataset(tempDir.getRoot().getAbsolutePath());
         try (DebugTdbConnection connection = new DebugTdbConnection(ds)) {
             Statement stmt = connection.createStatement(TYPE_FORWARD_ONLY, CONCUR_READ_ONLY);
+            @SuppressWarnings("resource")
             ResultSet rset = stmt.executeQuery("ASK { FILTER(false) }");
             assertNotNull(rset);
             assertFalse(rset.isClosed());

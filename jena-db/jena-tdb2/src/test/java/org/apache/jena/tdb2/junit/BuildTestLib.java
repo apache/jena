@@ -25,11 +25,7 @@ import org.apache.jena.dboe.index.IndexParams;
 import org.apache.jena.dboe.index.RangeIndex;
 import org.apache.jena.dboe.trans.bplustree.BPlusTree;
 import org.apache.jena.dboe.trans.bplustree.BPlusTreeFactory;
-import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.core.DatasetPrefixStorage ;
-import org.apache.jena.tdb2.setup.StoreParams;
-import org.apache.jena.tdb2.setup.TDBBuilder;
-import org.apache.jena.tdb2.store.DatasetGraphTDB;
+import org.apache.jena.tdb2.params.StoreParams;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.nodetable.NodeTableCache;
 import org.apache.jena.tdb2.store.nodetable.NodeTableInline;
@@ -37,45 +33,39 @@ import org.apache.jena.tdb2.store.nodetable.NodeTableTRDF;
 import org.apache.jena.tdb2.sys.SystemTDB;
 
 /** Build things for non-transactional tests.
- * Sometimes, create a daatset and find the relevant part. 
+ * Sometimes, create a dataset and find the relevant part.
  */
 public class BuildTestLib {
 
     public static RangeIndex buildRangeIndex(FileSet mem, RecordFactory factory, IndexParams indexParams) {
-        BPlusTree bpt = BPlusTreeFactory.makeMem(5, factory.keyLength(), factory.valueLength()) ;
-        bpt.nonTransactional() ;
-        return bpt ; 
+        BPlusTree bpt = BPlusTreeFactory.makeMem(5, factory.keyLength(), factory.valueLength());
+        bpt.nonTransactional();
+        return bpt;
     }
 
     public static NodeTable makeNodeTable(Location location, String basename, StoreParams params) {
-        NodeTable nt = makeNodeTableBase(location, basename, params) ;
-        nt = NodeTableCache.create(nt, params) ;
-        nt = NodeTableInline.create(nt) ;
-        return nt ;
-    }
-    
-    public static NodeTable makeNodeTableBase(Location location, String basename, StoreParams params) {
-        RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
-        FileSet fs = new FileSet(location, basename) ;
-                
-        Index index = buildRangeIndex(fs, recordFactory, params) ;
-        BinaryDataFile bdf = createBinaryDataFile(location, basename+"-data") ;
-        NodeTable nt = new NodeTableTRDF(index, bdf) ;
-        return nt ;
+        NodeTable nt = makeNodeTableBase(location, basename, params);
+        nt = NodeTableCache.create(nt, params);
+        nt = NodeTableInline.create(nt);
+        return nt;
     }
 
-    public static DatasetPrefixStorage makePrefixes(Location location) {
-        DatasetGraphTDB ds = (DatasetGraphTDB)TDBBuilder.build(location) ;
-        ds.begin(ReadWrite.WRITE);
-        return ds.getPrefixes() ; 
+    public static NodeTable makeNodeTableBase(Location location, String basename, StoreParams params) {
+        RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId);
+        FileSet fs = new FileSet(location, basename);
+
+        Index index = buildRangeIndex(fs, recordFactory, params);
+        BinaryDataFile bdf = createBinaryDataFile(location, basename+"-data");
+        NodeTable nt = new NodeTableTRDF(index, bdf);
+        return nt;
     }
-    
-    /** Create a non-thread-safe BinaryDataFile*/ 
+
+    /** Create a non-thread-safe BinaryDataFile*/
     public static BinaryDataFile createBinaryDataFile(Location loc, String name) {
         if ( loc.isMem() )
-            return new BinaryDataFileMem() ;
-        String filename = loc.getPath(name) ;
-        return new BinaryDataFileRandomAccess(filename) ;
+            return new BinaryDataFileMem();
+        String filename = loc.getPath(name);
+        return new BinaryDataFileRandomAccess(filename);
     }
 
 }

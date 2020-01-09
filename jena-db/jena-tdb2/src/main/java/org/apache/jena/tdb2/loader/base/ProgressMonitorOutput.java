@@ -18,17 +18,17 @@
 
 package org.apache.jena.tdb2.loader.base;
 
-import static org.apache.jena.atlas.lib.DateTimeUtils.nowAsString ;
+import static org.apache.jena.atlas.lib.DateTimeUtils.nowAsString;
 
 import java.util.Objects;
 
 import org.apache.jena.atlas.lib.Timer;
 import org.apache.jena.tdb2.TDBException;
-import org.slf4j.Logger ;
+import org.slf4j.Logger;
 
 /** Progress monitor - output lines to show the progress of some long running operation.
  * This is based on "ticks", not time.
- * Once per item processed, call the {@link #tick()} operation.  
+ * Once per item processed, call the {@link #tick()} operation.
  */
 public class ProgressMonitorOutput implements ProgressMonitor {
     private final MonitorOutput output;
@@ -36,12 +36,12 @@ public class ProgressMonitorOutput implements ProgressMonitor {
     private final int    superTick;
     private final Timer  timer;
     private Timer getTimer() { return timer; }
-    
+
     //Section
     private boolean inSection = false;
     private int sectionCounter = 0;
-    private Timer sectionTimer = null; 
-    private long sectionTimeInMillis = -1;  
+    private Timer sectionTimer = null;
+    private long sectionTimeInMillis = -1;
     private long sectionTickCounter = 0;
 
     // Current label.
@@ -55,25 +55,25 @@ public class ProgressMonitorOutput implements ProgressMonitor {
     private long  lastTime     = -1;
     private long  timeTotalMillis = -1;
 
-    /** ProgressMonitor that outputs to a {@link Logger} */ 
+    /** ProgressMonitor that outputs to a {@link Logger} */
     public static ProgressMonitorOutput create(Logger log, String label, long tickPoint, int superTick) {
         Objects.requireNonNull(log);
-        return create(LoaderOps.outputToLog(log), label, tickPoint, superTick) ;
+        return create(LoaderOps.outputToLog(log), label, tickPoint, superTick);
     }
-    
-    /** ProgressMonitor that outputs to on a {@link MonitorOutput} */ 
+
+    /** ProgressMonitor that outputs to on a {@link MonitorOutput} */
     public static ProgressMonitorOutput create(MonitorOutput output, String label, long tickPoint, int superTick) {
         Objects.requireNonNull(output);
-        return new ProgressMonitorOutput(label, tickPoint, superTick, output) ;
+        return new ProgressMonitorOutput(label, tickPoint, superTick, output);
     }
 
     /**
-     * @param label      
-     *      Label added to output strings. 
+     * @param label
+     *      Label added to output strings.
      *      Usually related to the kind of things being monitored.
-     *      e.g "tuples 
+     *      e.g "tuples
      * @param tickPoint
-     *      Frequent of output messages 
+     *      Frequent of output messages
      * @param superTick
      *      Frequent of "Elapsed" additional message
      * @param output
@@ -90,14 +90,14 @@ public class ProgressMonitorOutput implements ProgressMonitor {
 //    /** Print a start message using the label */
 //    @Override
 //    public void startMessage() {
-//        startMessage(null) ;
+//        startMessage(null);
 //    }
-    
+
     /** Print a start message using a different string. */
     @Override
     public void startMessage(String msg) {
         if ( msg != null )
-            output.print(msg) ;
+            output.print(msg);
     }
 
     //public void startSource(String msg) {
@@ -140,7 +140,7 @@ public class ProgressMonitorOutput implements ProgressMonitor {
         if ( tickPoint(getRunningTotal(), tickPoint) ) {
             long timePoint = getTimer().readTimer();
             long thisTime = timePoint - lastTime;
-    
+
             // *1000L is milli to second conversion
             if ( thisTime != 0 && timePoint != 0 ) {
                 long batchAvgRate = (counterBatch * 1000L) / thisTime;
@@ -151,9 +151,9 @@ public class ProgressMonitorOutput implements ProgressMonitor {
             } else {
                 print("Add: %,d %s (Batch: ---- / Avg: ----)", getRunningTotal(), label);
             }
-    
+
             lastTime = timePoint;
-    
+
             if ( tickPoint(getRunningTotal(), superTick * tickPoint) )
                 elapsed(timePoint);
             counterBatch = 0;
@@ -174,7 +174,7 @@ public class ProgressMonitorOutput implements ProgressMonitor {
     public long getTime() {
         return timeTotalMillis;
     }
-    
+
     @Override
     public void startSection() {
         if ( inSection )
@@ -195,7 +195,7 @@ public class ProgressMonitorOutput implements ProgressMonitor {
         inSection = false;
         sectionTimeInMillis = sectionTimer.endTimer();
     }
-    
+
     @Override
     public long getSectionTicks() {
         return sectionTickCounter;
@@ -222,7 +222,7 @@ public class ProgressMonitorOutput implements ProgressMonitor {
 
     @Override
     public void setLabel(String label) {
-        this.label = label; 
+        this.label = label;
     }
 
 }

@@ -18,45 +18,60 @@
 
 package org.apache.jena.fuseki.server;
 
-import java.util.concurrent.atomic.AtomicLong ;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.jena.fuseki.servlets.HttpAction ;
+import org.apache.jena.fuseki.servlets.HttpAction;
 
-/** A name in the URL space of the server */
+/**
+ * A pairing of name and {@link DataService}, a dataset and its endpoints (which may
+ * in turn be named), in the URL space of the server
+ */
 public class DataAccessPoint {
-    private final String name ;
-    private final DataService dataService ;
-    private AtomicLong requests = new AtomicLong(0) ;
-    
+    private final String name;
+    private final DataService dataService;
+    private AtomicLong requests = new AtomicLong(0);
+
     public DataAccessPoint(String name, DataService dataService) {
-        this.name = canonical(name) ;
-        this.dataService = dataService ;
+        Objects.requireNonNull(name, "DataAccessPoint name");
+        Objects.requireNonNull(dataService, "DataService");
+        this.name = canonical(name);
+        this.dataService = dataService;
         dataService.noteDataAccessPoint(this);
     }
-    
-    public String getName()     { return name ; }
-    
+
+    public String getName()     { return name; }
+
+    /** Canonical name (path) for a dataset.
+     * This always starts with "/".
+     * It is the name within the Fuseki server, no servlet context path. 
+     */
     public static String canonical(String datasetPath) {
         if ( datasetPath == null )
-            return datasetPath ;
+            return datasetPath;
         if ( datasetPath.equals("/") )
-            datasetPath = "" ;
-        else
-            if ( !datasetPath.startsWith("/") )
-                datasetPath = "/" + datasetPath ;
+            return datasetPath;
+        if ( datasetPath.equals("") )
+            return "/";
+        if ( !datasetPath.startsWith("/") )
+            datasetPath = "/" + datasetPath;
         if ( datasetPath.endsWith("/") )
-            datasetPath = datasetPath.substring(0, datasetPath.length() - 1) ;
-        return datasetPath ;
+            datasetPath = datasetPath.substring(0, datasetPath.length() - 1);
+        return datasetPath;
     }
 
     public DataService getDataService() {
         return dataService;
     }
 
-    public long requestCount()                          { return requests.get() ; }
-    
-    public void startRequest(HttpAction httpAction)     { requests.incrementAndGet() ; }
+    public long requestCount()                          { return requests.get(); }
 
-    public void finishRequest(HttpAction httpAction)    { requests.getAndDecrement() ; }
+    public void startRequest(HttpAction httpAction)     { requests.incrementAndGet(); }
+
+    public void finishRequest(HttpAction httpAction)    { requests.getAndDecrement(); }
+    
+    @Override public String toString() {
+        return "DataAccessPoint["+name+"]";
+    }
 }
 

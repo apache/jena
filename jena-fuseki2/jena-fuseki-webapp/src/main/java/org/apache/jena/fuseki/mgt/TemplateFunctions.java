@@ -18,69 +18,69 @@
 
 package org.apache.jena.fuseki.mgt;
 
-import java.io.IOException ;
-import java.io.InputStream ;
-import java.util.Map ;
-import java.util.Map.Entry ;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.util.FileUtils ;
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.util.FileUtils;
 
 public class TemplateFunctions
 {
     /** Read in a template from a file, substitute for {NAME} and return the string. */
     public static String templateFile(String templateName, Map<String, String> params, Lang lang) {
-        String templateFilename = Template.getPath(templateName).toString() ;
-        String template ;
-        try { template = FileUtils.readWholeFileAsUTF8(templateFilename) ; }
-        catch (IOException ex) { 
+        String templateFilename = Template.getPath(templateName).toString();
+        String template;
+        try { template = FileUtils.readWholeFileAsUTF8(templateFilename); }
+        catch (IOException ex) {
             Fuseki.serverLog.error("File not found: "+templateFilename);
-            IO.exception(ex); return null ;
+            IO.exception(ex); return null;
         }
-        return templateString(template, params, lang) ;
-    }
-    
-    /** Read a template file, substitute for {NAME} and return the model. */
-    public static String templateResource(String resourceName, Map<String, String> params, Lang lang) {
-        String template ;
-        try {
-            InputStream in = TemplateFunctions.class.getClassLoader().getResourceAsStream(resourceName) ;
-            if ( in == null )
-                Fuseki.serverLog.error("Resource not found: "+resourceName);
-            template = FileUtils.readWholeFileAsUTF8(in) ;
-        }
-        catch (IOException ex) { 
-            Fuseki.serverLog.error("Error reading resource: "+resourceName);
-            IO.exception(ex); return null ;
-        }
-        return templateString(template, params, lang) ;
+        return templateString(template, params, lang);
     }
 
-    /** Create a template from a String */ 
+    /** Read a template file, substitute for {NAME} and return the model. */
+    public static String templateResource(String resourceName, Map<String, String> params, Lang lang) {
+        String template;
+        try {
+            InputStream in = TemplateFunctions.class.getClassLoader().getResourceAsStream(resourceName);
+            if ( in == null )
+                Fuseki.serverLog.error("Resource not found: "+resourceName);
+            template = FileUtils.readWholeFileAsUTF8(in);
+        }
+        catch (IOException ex) {
+            Fuseki.serverLog.error("Error reading resource: "+resourceName);
+            IO.exception(ex); return null;
+        }
+        return templateString(template, params, lang);
+    }
+
+    /** Create a template from a String */
     public static String templateString(String template, Map<String, String> params, Lang lang) {
         for ( Entry<String, String> e : params.entrySet() ) {
             // Literal string replacement.
             // If using .replaceAll, need to use Match.quoteReplacement on the value.
-            String x = e.getValue() ;
-            String k = "{"+e.getKey()+"}" ;
-            
+            String x = e.getValue();
+            String k = "{"+e.getKey()+"}";
+
             if ( lang != null ) {
                 if ( Lang.TTL.equals(lang)     ||
                      Lang.TRIG.equals(lang)    ||
                      Lang.NT.equals(lang)      ||
                      Lang.NQ.equals(lang)      ||
                      Lang.JSONLD.equals(lang)  ||
-                     Lang.RDFJSON.equals(lang) 
+                     Lang.RDFJSON.equals(lang)
                     ) {
                     // Make safe for a RDF language ""-string - especially MS Windows \ path separators.
-                    x = x.replace("\\", "\\\\") ;
-                    x = x.replace("\"", "\\\"") ;
+                    x = x.replace("\\", "\\\\");
+                    x = x.replace("\"", "\\\"");
                 }
             }
-            template = template.replace(k, x) ;
+            template = template.replace(k, x);
         }
-        return template ;
+        return template;
     }
 }

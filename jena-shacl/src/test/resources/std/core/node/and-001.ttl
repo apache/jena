@@ -1,0 +1,77 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/node/and-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:InvalidRectangle1
+  rdf:type ex:Rectangle ;
+  ex:height 3 ;
+.
+ex:InvalidRectangle2
+  rdf:type ex:Rectangle ;
+  ex:width 2 ;
+.
+ex:Rectangle
+  rdf:type rdfs:Class ;
+  rdf:type sh:NodeShape ;
+  rdfs:subClassOf rdfs:Resource ;
+  sh:and (
+      [
+        sh:property [
+            sh:path ex:width ;
+            sh:minCount 1 ;
+          ] ;
+      ]
+      [
+        sh:property [
+            sh:path ex:height ;
+            sh:minCount 1 ;
+          ] ;
+      ]
+    ) ;
+.
+ex:ValidRectangle1
+  rdf:type ex:Rectangle ;
+  ex:height 3 ;
+  ex:width 2 ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <and-001>
+    ) ;
+.
+<and-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:and at node shape 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidRectangle1 ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:AndConstraintComponent ;
+          sh:sourceShape ex:Rectangle ;
+          sh:value ex:InvalidRectangle1 ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidRectangle2 ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:AndConstraintComponent ;
+          sh:sourceShape ex:Rectangle ;
+          sh:value ex:InvalidRectangle2 ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

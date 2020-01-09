@@ -18,10 +18,10 @@
 
 package tdb.examples;
 
-import org.apache.jena.query.* ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.tdb.TDBFactory ;
-import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
+import org.apache.jena.query.*;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.system.Txn;
+import org.apache.jena.tdb.TDBFactory;
 
 /** Illustration of working at the DatasetGraph level.
  *  Normally, applications work with {@link Dataset}.
@@ -32,40 +32,31 @@ public class ExTDB_Txn3
 {
     public static void main(String... argv)
     {
-        DatasetGraphTransaction dsg = (DatasetGraphTransaction)TDBFactory.createDatasetGraph() ;
+        DatasetGraph dsg = TDBFactory.createDatasetGraph();
 
-        // Start READ transaction. 
-        dsg.begin(ReadWrite.READ) ;
-        
-        try
-        {
+        // Start a transaction. It starts in "read" mode and promotes to "write" mode if necessary. 
+        Txn.execute(dsg, ()->{
             // Do some queries
-            String sparqlQueryString1 = "SELECT (count(*) AS ?count) { ?s ?p ?o }" ;
-            execQuery(sparqlQueryString1, dsg) ;
-        } finally
-        {
-            dsg.end() ;
-        }
+            String sparqlQueryString1 = "SELECT (count(*) AS ?count) { ?s ?p ?o }";
+            execQuery(sparqlQueryString1, dsg);
+        });
     }
     
     public static void execQuery(String sparqlQueryString, DatasetGraph dsg)
     {
-        // Add a datset wrapper to conform with the query interface.
+        // Add a dataset wrapper to conform with the query interface.
         // This should not be very expensive.
-        Dataset dataset = DatasetFactory.create(dsg) ;
+        Dataset dataset = DatasetFactory.wrap(dsg);
         
-        Query query = QueryFactory.create(sparqlQueryString) ;
-        QueryExecution qexec = QueryExecutionFactory.create(query, dataset) ;
-        try {
-            ResultSet results = qexec.execSelect() ;
-            for ( ; results.hasNext() ; )
+        Query query = QueryFactory.create(sparqlQueryString);
+        try ( QueryExecution qexec = QueryExecutionFactory.create(query, dataset) ) {
+            ResultSet results = qexec.execSelect();
+            for (; results.hasNext(); )
             {
-                QuerySolution soln = results.nextSolution() ;
-                int count = soln.getLiteral("count").getInt() ;
-                System.out.println("count = "+count) ;
+                QuerySolution soln = results.nextSolution();
+                int count = soln.getLiteral("count").getInt();
+                System.out.println("count = "+count);
             }
-          } finally { qexec.close() ; }
+        }
     }
-    
 }
-

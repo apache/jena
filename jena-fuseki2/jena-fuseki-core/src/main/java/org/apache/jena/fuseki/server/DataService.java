@@ -22,24 +22,31 @@ import static java.lang.String.format;
 import static org.apache.jena.fuseki.server.DataServiceStatus.*;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 
 import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
 import org.apache.jena.ext.com.google.common.collect.ListMultimap;
+import org.apache.jena.ext.com.google.common.collect.Multimaps;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.auth.AuthPolicy;
+import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.query.text.DatasetGraphText;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 public class DataService {
     private DatasetGraph dataset;
-
-    private ListMultimap<Operation, Endpoint> operations  = ArrayListMultimap.create();
-    private Map<String, Endpoint> endpoints               = new HashMap<>();
-    private AuthPolicy authPolicy                         = null;
+    
+    private Map<String, EndpointSet> endpoints                = new ConcurrentHashMap<>();
+    private ListMultimap<Operation, Endpoint> operationsMap   = Multimaps.synchronizedListMultimap(ArrayListMultimap.create());
+    
+    
+    // Dataset-level authorization policy.
+    private AuthPolicy authPolicy                       = null;
 
     /**
      * Record which {@link DataAccessPoint DataAccessPoints} this {@code DataService} is
@@ -61,27 +68,14 @@ public class DataService {
         counters.add(CounterName.Requests);
         counters.add(CounterName.RequestsGood);
         counters.add(CounterName.RequestsBad);
-        // Start ACTIVE. Registration controls visibility. 
-        goActive();
-    }
-
-    /**
-     * Create a {@code DataService} that has the same dataset, same operations and
-     * endpoints as another {@code DataService}. Counters are not copied, not
-     * DataAccessPoint associations.
-     */
-    private DataService(int dummy, DataService other) {
-        // Copy non-counter state of 'other'.
-        this.dataset = other.dataset;
-        this.operations = ArrayListMultimap.create(other.operations);
-        this.endpoints = new HashMap<>(other.endpoints);
-        this.state = UNINITIALIZED;
+        // Need to call goActive(). Not automatic.
+        //goActive();
     }
 
     /*package*/ void noteDataAccessPoint(DataAccessPoint dap) {
         this.dataAccessPoints.add(dap);
     }
-    
+
     private String label() {
         StringJoiner sj = new StringJoiner(", ", "[", "]");
         dataAccessPoints.stream()
@@ -90,41 +84,98 @@ public class DataService {
             .forEach(sj::add);
         return sj.toString();
     }
-    
+
     public DatasetGraph getDataset() {
-        return dataset; 
+        return dataset;
     }
+
+    // Convenience 
     
+   public void addEndpoint(Operation operation) {
+       addEndpoint(operation, null, null);
+   }
+
+   public void addEndpoint(Operation operation, AuthPolicy authPolicy) {
+       addEndpoint(operation, null, authPolicy);
+   }
+
     public void addEndpoint(Operation operation, String endpointName) {
         addEndpoint(operation, endpointName, null);
     }
-    
+
     public void addEndpoint(Operation operation, String endpointName, AuthPolicy authPolicy) {
-        Endpoint endpoint = new Endpoint(operation, endpointName, authPolicy);
-        endpoints.put(endpointName, endpoint);
-        operations.put(operation, endpoint);
+        Endpoint endpoint = Endpoint.create(operation, endpointName, authPolicy);
+        addEndpoint(endpoint);
     }
-    
-    public Endpoint getEndpoint(String endpointName) {
+
+    public void addEndpoint(Endpoint endpoint) {
+        addEndpoint$(endpoint);
+    }
+
+    private void addEndpoint$(Endpoint endpoint) {
+        EndpointSet eps = endpoints.computeIfAbsent(endpoint.getName(), (k)->new EndpointSet(k));
+        eps.put(endpoint);
+        // Cleaner not to have duplicates. But nice to have a (short) list that keeps the create order. 
+        if ( ! operationsMap.containsEntry(endpoint.getOperation(), endpoint) )
+            operationsMap.put(endpoint.getOperation(), endpoint);
+    }
+
+    private void removeEndpoint$(Endpoint endpoint) {
+        EndpointSet eps = endpoints.get(endpoint.getName());
+        if ( eps == null )
+            return;
+        eps.remove(endpoint);
+        operationsMap.remove(endpoint.getOperation(), endpoint);
+    }
+
+    /** Return the {@linkplain EndpointSet} for the operations for named use. */
+    public EndpointSet getEndpointSet(String endpointName) {
         return endpoints.get(endpointName);
     }
 
-    public Collection<Endpoint> getEndpoints() {
-        return operations.values();
+    /** Return the {@linkplain EndpointSet} for the operations for unnamed use. */
+    public EndpointSet getEndpointSet() {
+        return endpoints.get("");
     }
-    
+
+    /** Return a collection of all endpoints for this {@linkplain DataService}. */
+    public Collection<Endpoint> getEndpoints() {
+        // A copy :-(
+        Set<Endpoint> x = new HashSet<>();
+        endpoints.forEach((k,eps)->{
+            eps.forEach((op,ep)->x.add(ep));
+        });
+        return x;
+    }
+
+    /** Execute an action for each {@link Endpoint}. */
+    public void forEachEndpoint(Consumer<Endpoint> action) {
+        endpoints.forEach((k,eps)->{
+            eps.forEach((op,ep)->action.accept(ep));
+        });
+        Set<Endpoint> x = new HashSet<>();
+        endpoints.forEach((k,eps)->{
+            eps.forEach((op,ep)->x.add(ep));
+        });
+    }
+
     public List<Endpoint> getEndpoints(Operation operation) {
-        List<Endpoint> x = operations.get(operation);
-        if ( x == null )
-            x = Collections.emptyList();
-        return x;  
+        List<Endpoint> x = operationsMap.get(operation);
+        return x;
     }
 
     /** Return the operations available here.
      *  @see #getEndpoints(Operation) to get the endpoint list
      */
     public Collection<Operation> getOperations() {
-        return operations.keySet();
+        return operationsMap.keySet();
+    }
+
+    /** Return the operations available here.
+     *  @see #getEndpoints(Operation) to get the endpoint list
+     */
+    public boolean hasOperation(Operation operation) {
+        return operationsMap.keySet().contains(operation);
     }
 
     //@Override
@@ -136,7 +187,25 @@ public class DataService {
         state = OFFLINE;
     }
 
+    /** Set any {@link ActionService} processors is currently unset. */
+    public void setEndpointProcessors(OperationRegistry operationRegistry) {
+        // Make sure the processor is set for each endpoint.
+        forEachEndpoint(ep->{
+            if ( ep.getProcessor() == null )
+                ep.setProcessor(operationRegistry.findHandler(ep.getOperation()));
+        });
+    }
+
+    private void ensureEnpointProcessors() {
+        // Better is to havee then set purposefully.
+        forEachEndpoint(ep->{
+            if ( ep.getProcessor() == null )
+                Fuseki.configLog.warn("No processor for "+ep.getName());
+        });
+    }
+    
     public void goActive() {
+        ensureEnpointProcessors();
         offlineInProgress.set(false);
         acceptingRequests.set(true);
         state = ACTIVE;
@@ -150,12 +219,12 @@ public class DataService {
     public boolean isAcceptingRequests() {
         return acceptingRequests.get();
     }
-    
+
     //@Override
     public  CounterSet getCounters() { return counters; }
-    
-    //@Override 
-    public long getRequests() { 
+
+    //@Override
+    public long getRequests() {
         return counters.value(CounterName.Requests);
     }
 
@@ -195,24 +264,23 @@ public class DataService {
     public synchronized void shutdown() {
         if ( state == CLOSING )
             return;
-        Fuseki.serverLog.info(format("Shutting down data service for %s", endpoints.keySet()));
         expel(dataset);
-        dataset = null; 
+        dataset = null;
         state = CLOSED;
     }
-    
+
     private void expel(DatasetGraph database) {
         // Text databases.
-        // Close the in-JVM objects for Lucene index and databases. 
+        // Close the in-JVM objects for Lucene index and databases.
         if ( database instanceof DatasetGraphText ) {
             DatasetGraphText dbtext = (DatasetGraphText)database;
             database = dbtext.getBase();
             dbtext.getTextIndex().close();
         }
-    
+
         boolean isTDB1 = org.apache.jena.tdb.sys.TDBInternal.isTDB1(database);
         boolean isTDB2 = org.apache.jena.tdb2.sys.TDBInternal.isTDB2(database);
-        
+
         if ( ( isTDB1 || isTDB2 ) ) {
             // JENA-1586: Remove database from the process.
             if ( isTDB1 )
@@ -224,9 +292,8 @@ public class DataService {
     }
 
     public void setAuthPolicy(AuthPolicy authPolicy) { this.authPolicy = authPolicy; }
-    
+
     /** Returning null implies no authorization control */
     public AuthPolicy authPolicy() { return authPolicy; }
-
 }
 

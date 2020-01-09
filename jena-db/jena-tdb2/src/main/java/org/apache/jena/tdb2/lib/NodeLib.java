@@ -73,12 +73,12 @@ public class NodeLib {
     private static Pool<MessageDigest> digesters       = PoolSync.create(new PoolBase<MessageDigest>());
     static {
         try {
-            for ( int i = 0 ; i < InitialPoolSize ; i++ )
+            for ( int i = 0; i < InitialPoolSize ; i++ )
                 digesters.put(MessageDigest.getInstance("MD5"));
         }
         catch (NoSuchAlgorithmException e) {
             Log.warn(NodeLib.class, "NoSuchAlgorithmException", e);
-            throw new RuntimeException(e);  
+            throw new RuntimeException(e);
         }
     }
 
@@ -90,8 +90,7 @@ public class NodeLib {
             return disgest;
         }
         catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 

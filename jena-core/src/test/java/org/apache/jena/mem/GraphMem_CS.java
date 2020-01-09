@@ -17,26 +17,29 @@
  */
 package org.apache.jena.mem;
 
-import static org.apache.jena.testing_framework.GraphHelper.*;
-import static org.junit.Assert.*;
+import static org.apache.jena.testing_framework.GraphHelper.graphAdd;
+import static org.apache.jena.testing_framework.GraphHelper.graphWith;
+import static org.apache.jena.testing_framework.GraphHelper.memGraph;
+import static org.apache.jena.testing_framework.GraphHelper.triple;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Iterator;
 
-import org.junit.runner.RunWith;
-import org.xenei.junit.contract.Contract.Inject;
-import org.xenei.junit.contract.ContractImpl;
-import org.xenei.junit.contract.ContractSuite;
-import org.xenei.junit.contract.ContractTest;
-
 import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.GraphStatisticsHandler;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Node_URI;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.testing_framework.AbstractGraphProducer;
-import org.xenei.junit.contract.IProducer;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.junit.runner.RunWith;
+import org.xenei.junit.contract.Contract.Inject;
+import org.xenei.junit.contract.ContractImpl;
+import org.xenei.junit.contract.ContractSuite;
+import org.xenei.junit.contract.ContractTest;
+import org.xenei.junit.contract.IProducer;
 
 @RunWith(ContractSuite.class)
 @ContractImpl(GraphMem.class)
@@ -64,13 +67,6 @@ public class GraphMem_CS {
 	@Inject
 	public IProducer<GraphMem> getGraphProducer() {
 		return graphProducer;
-	}
-
-	@ContractTest
-	public void testHasStatistics() {
-		GraphStatisticsHandler h = graphProducer.newInstance()
-				.getStatisticsHandler();
-		assertNotNull(h);
 	}
 
 	@ContractTest

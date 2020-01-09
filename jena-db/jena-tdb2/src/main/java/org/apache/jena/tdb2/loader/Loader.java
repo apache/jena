@@ -28,7 +28,7 @@ import org.apache.jena.tdb2.loader.base.MonitorOutput;
 
 /** TDB2 loader operations.
  *  These operations only work on TDB2 datasets.
- *  
+ *
  * @see LoaderFactory
  * @see DataLoader
  */
@@ -62,27 +62,27 @@ public class Loader {
      * interface as well as an operation to load data from files or URLs.
      * <p>
      * To use the loader:
-     * 
+     *
      * <pre>
      *  loader.startBulk();
-     *    send data ... 
+     *    send data ...
      *        use stream()
      *        or load(files)
-     *        or a mixture.    
+     *        or a mixture.
      *  loader.finishBulk();
      * </pre>
-     */ 
+     */
     public static DataLoader create(DatasetGraph dataset, boolean showProgress) {
         MonitorOutput output = showProgress ? LoaderOps.outputToLog() : LoaderOps.nullOutput();
         DataLoader loader = LoaderFactory.createLoader(dataset, output);
         return loader;
     }
-    
+
     /** Load the contents of files or remote web data into a dataset using the basic data loader. */
     public static void read(DatasetGraph dataset, String...dataURLs) {
         read(dataset, false, dataURLs);
     }
-    
+
     /** Load the contents of files or remote web data into a dataset using the basic data loader.. */
     public static void read(DatasetGraph dataset, boolean showProgress, String...dataURLs) {
         read(dataset, asList(dataURLs), showProgress);

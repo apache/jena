@@ -239,7 +239,7 @@ fi
 # Log directory
 if [ -n "$FUSEKI_LOGS" ]
 then
-    log_daemon_message "FUSEKI_LOGS can not be set externally - ignored" 1>&2
+    log_daemon_msg "FUSEKI_LOGS can not be set externally - ignored" 1>&2 
 fi
 FUSEKI_LOGS="$FUSEKI_BASE/logs"
 

@@ -158,25 +158,29 @@ public class XSDFuncOp
     private static NodeValue decimalDivide(BigDecimal d1, BigDecimal d2) {
         try {
             BigDecimal d3 = d1.divide(d2, DIVIDE_PRECISION, BigDecimal.ROUND_FLOOR) ;
-            return messAroundWithBigDecimalFormat(d3) ;
+            return canonicalDecimalNV(d3) ;
         } catch (ArithmeticException ex) {
             Log.warn(XSDFuncOp.class, "ArithmeticException in decimal divide - attempting to treat as doubles") ;
             BigDecimal d3 = new BigDecimal(d1.doubleValue() / d2.doubleValue()) ;
             return NodeValue.makeDecimal(d3) ;
         }
     }
-    
-    private static NodeValue messAroundWithBigDecimalFormat(BigDecimal d) {
+
+    public static NodeValue canonicalDecimalNV(BigDecimal d) {
+        String x = canonicalDecimalStr(d);
+        return NodeValue.makeNode(x, XSDDatatype.XSDdecimal) ;
+    }
+
+    public static String canonicalDecimalStr(BigDecimal d) {
         String x = d.toPlainString() ;
 
         // The part after the "."
         int dotIdx = x.indexOf('.') ;
         if ( dotIdx < 0 )
             // No DOT.
-            return NodeValue.makeNode(x, XSDDatatype.XSDdecimal) ;
+            return x+".0";
 
         // Has a DOT.
-
         int i = x.length() - 1 ;
         // dotIdx+1 to leave at least ".0"
         while ((i > dotIdx + 1) && x.charAt(i) == '0')
@@ -184,12 +188,21 @@ public class XSDFuncOp
         if ( i < x.length() - 1 )
             // And trailing zeros.
             x = x.substring(0, i + 1) ;
-
-        // Avoid as expensive.
-        // x = x.replaceAll("0+$", "") ;
-        return NodeValue.makeNode(x, XSDDatatype.XSDdecimal) ;
+        // Avoid replaceAll as it is expensive.
+        // Leading zeros.
+        int j = 0;
+        for ( ; j < x.length() ; j++ ) {
+            if ( x.charAt(j) != '0')
+                break;
+        }
+        // At least one zero before dot.
+        if ( j == dotIdx )
+            j--;
+        if ( j > 0 )
+            x = x.substring(j, x.length());
+        return x;
     }
-    
+
     public static NodeValue max(NodeValue nv1, NodeValue nv2) {
         int x = compareNumeric(nv1, nv2) ;
         if ( x == Expr.CMP_LESS )
@@ -234,8 +247,14 @@ public class XSDFuncOp
             return !nv.getInteger().equals(BigInteger.ZERO) ;
         if ( nv.isDecimal() )
             return !nv.getDecimal().equals(BigDecimal.ZERO) ;
-        if ( nv.isDouble() )
-            return nv.getDouble() != 0.0 ;
+        if ( nv.isDouble() ) {
+            double v = nv.getDouble();
+            return v != 0.0d && ! Double.isNaN(v);
+        }
+        if ( nv.isFloat() ) { 
+            float v = nv.getFloat();
+            return v != 0.0f && ! Float.isNaN(v);
+        }
         NodeValue.raise(new ExprEvalException("Not a boolean effective value (wrong type): " + nv)) ;
         // Does not return
         return false ;

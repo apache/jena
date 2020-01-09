@@ -18,17 +18,17 @@
 
 package org.apache.jena.tdb2.junit;
 
-import org.apache.jena.graph.test.AbstractTestGraph ;
+import org.apache.jena.graph.test.AbstractTestGraph;
 
 public abstract class AbstractTestGraphTDB extends AbstractTestGraph
 {
     public AbstractTestGraphTDB(String name)
     {
-        super(name) ;
+        super(name);
     }
-    
+
     @Override public void testIsomorphismFile() {}
-    
-    // Meaning less - graphs (and hence models) are not indpenedent of their datasets. 
+
+    // Meaning less - graphs (and hence models) are not independent of their datasets.
     @Override public void testCloseSetsIsClosed() {}
 }

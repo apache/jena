@@ -19,6 +19,7 @@
 package org.apache.jena.fuseki.auth;
 
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -29,7 +30,7 @@ import org.apache.jena.fuseki.FusekiConfigException;
  * See {@link Users} for special user names.
  */
 public class Auth {
-    public static final String dftRealm = "TripleStore";   
+    public static final String dftRealm = "TripleStore";
 
     /** Any authenticated user. */
     public static AuthPolicy ANY_USER = (user) -> user != null;
@@ -40,18 +41,18 @@ public class Auth {
     /** Never allow. */
     public static AuthPolicy DENY     = (user) -> false;
 
-    /** A policy that allows specific users (convenience wrapped for {@link #policyAllowSpecific(Collection)}). */ 
+    /** A policy that allows specific users (convenience wrapped for {@link #policyAllowSpecific(Collection)}). */
     public static AuthPolicy policyAllowSpecific(String... allowedUsers) {
         return Auth.policyAllowSpecific(Arrays.asList(allowedUsers));
     }
-    
-    /** 
+
+    /**
      * A policy that allows specific users.
      * <ul>
      * <li>If any user is {@linkplain Users#UserAnyLoggedIn}, then this policy is the same as {@linkplain #ANY_USER}.
      * <li>If any user is {@linkplain Users#UserAnyAnon}, then this policy is the same as {@linkplain #ANY_ANON}.
      * </ul>
-     */ 
+     */
     public static AuthPolicy policyAllowSpecific(Collection<String> allowedUsers) {
         Objects.requireNonNull(allowedUsers, "allowedUsers");
         if ( allowedUsers.contains(Users.UserAnyLoggedIn) ) {
@@ -66,14 +67,16 @@ public class Auth {
         }
 
         if ( allowedUsers.stream().anyMatch(Objects::isNull) )
-            throw new FusekiConfigException("null user found : "+allowedUsers);  
+            throw new FusekiConfigException("null user found : "+allowedUsers);
+        if ( allowedUsers.isEmpty() )
+            return Auth.DENY;
         return new AuthUserList(allowedUsers);
     }
 
     /**
-     * Test whether a user (principal) is allowed by a authorization policy.  
+     * Test whether a user (principal) is allowed by a authorization policy.
      * The policy can be null, meaning no restrictions, and the function returns true.
-     * {@code user} maybe null, meaning unauthenticated and any policy must deal with this. 
+     * {@code user} maybe null, meaning unauthenticated and any policy must deal with this.
      * @param user
      * @param policy
      * @return boolean True if the policy is null or allows the user.
@@ -83,14 +86,14 @@ public class Auth {
             return true;
         return policy.isAllowed(user);
     }
-    
+
     /**
      * Test whether a user (principal) is allowed by a authorization policy
      * and perform an action if the policy does not allow the user.
      * The action can throw an exception.
      * Additional, return true/false - see {@link #allow(String, AuthPolicy)}.
      * The policy can be null, meaning no restrictions, and the function returns true.
-     * {@code user} maybe null, meaning unauthenticated and any policy must deal with this. 
+     * {@code user} maybe null, meaning unauthenticated and any policy must deal with this.
      * @param user
      * @param policy
      * @param notAllowed Runnable to execute if the policy does not allow the user.
@@ -100,5 +103,21 @@ public class Auth {
             return true;
         notAllowed.run();
         return false;
+    }
+
+    /**
+     * Calculate the value of the "Authentication" HTTP header for basic auth. Basic
+     * auth is not secure when used over HTTP (the password can be extracted). Use
+     * with HTTPS is better.
+     * <p>
+     * Unlike digest auth, basic auth can be setup without an extra round trip to the
+     * server, making it easier for scripts where the body is not replayable.
+     * 
+     * @param username
+     * @param password
+     * @return String
+     */
+    private static String basicAuth(String username, String password) {
+        return "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
     }
 }

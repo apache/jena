@@ -25,210 +25,186 @@ import static org.apache.jena.fuseki.validation.html.ValidatorHtmlLib.serviceLog
 import static org.apache.jena.fuseki.validation.html.ValidatorHtmlLib.setHeaders;
 import static org.apache.jena.fuseki.validation.html.ValidatorHtmlLib.startFixed;
 
-import java.io.IOException ;
+import java.io.IOException;
 
-import javax.servlet.ServletOutputStream ;
-import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.apache.jena.query.Query ;
-import org.apache.jena.query.QueryFactory ;
-import org.apache.jena.query.Syntax ;
-import org.apache.jena.sparql.ARQException ;
-import org.apache.jena.sparql.algebra.Algebra ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.Syntax;
+import org.apache.jena.sparql.ARQException;
+import org.apache.jena.sparql.algebra.Algebra;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.serializer.SerializationContext;
 
-public class QueryValidatorHTML 
-{
-    private QueryValidatorHTML() { }
+public class QueryValidatorHTML {
+    private QueryValidatorHTML() {}
 
-    static final String paramLineNumbers      = "linenumbers" ;
-    static final String paramFormat           = "outputFormat" ;
-    static final String paramQuery            = "query" ;
-    static final String paramSyntax           = "languageSyntax" ;
-    //static final String paramSyntaxExtended   = "extendedSyntax" ;
-    
-    public static void executeHTML(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
-    {
+    static final String paramLineNumbers = "linenumbers";
+    static final String paramFormat      = "outputFormat";
+    static final String paramQuery       = "query";
+    static final String paramSyntax      = "languageSyntax";
+    // static final String paramSyntaxExtended = "extendedSyntax";
+
+    public static void executeHTML(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         try {
-            String[] args = httpRequest.getParameterValues(paramQuery) ;
-            
-            if ( args == null || args.length == 0 )
-            {
-                httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "No query parameter to validator") ;
-                return ;
-            }
-            
-            if ( args.length > 1 )
-            {
-                httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Too many query parameters") ;
-                return ;
+            String[] args = httpRequest.getParameterValues(paramQuery);
+
+            if ( args == null || args.length == 0 ) {
+                httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "No query parameter to validator");
+                return;
             }
 
-            final String queryString = httpRequest.getParameter(paramQuery).replaceAll("(\r|\n| )*$", "") ;
-//            queryString = queryString.replace("\r\n", "\n") ;
-//            queryString.replaceAll("(\r|\n| )*$", "") ;
-            
-            String querySyntax = httpRequest.getParameter(paramSyntax) ;
+            if ( args.length > 1 ) {
+                httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Too many query parameters");
+                return;
+            }
+
+            final String queryString = httpRequest.getParameter(paramQuery).replaceAll("(\r|\n| )*$", "");
+// queryString = queryString.replace("\r\n", "\n");
+// queryString.replaceAll("(\r|\n| )*$", "");
+
+            String querySyntax = httpRequest.getParameter(paramSyntax);
             if ( querySyntax == null || querySyntax.equals("") )
-                querySyntax = "SPARQL" ;
+                querySyntax = "SPARQL";
 
-            Syntax language = Syntax.lookup(querySyntax) ;
-            if ( language == null )
-            {
-                httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown syntax: "+querySyntax) ;
-                return ;
+            Syntax language = Syntax.lookup(querySyntax);
+            if ( language == null ) {
+                httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown syntax: " + querySyntax);
+                return;
             }
-            
-            String lineNumbersArg = httpRequest.getParameter(paramLineNumbers) ; 
 
-            String a[] = httpRequest.getParameterValues(paramFormat) ;
-            
-            boolean outputSPARQL = false ;
-            boolean outputPrefix = false ;
-            boolean outputAlgebra = false ;
-            boolean outputQuads = false ;
-            boolean outputOptimized = false ;
-            boolean outputOptimizedQuads = false ;
-            
-            if ( a != null )
-            {
-                for ( String anA : a )
-                {
-                    if ( anA.equals( "sparql" ) )
-                    {
+            String lineNumbersArg = httpRequest.getParameter(paramLineNumbers);
+
+            String a[] = httpRequest.getParameterValues(paramFormat);
+
+            boolean outputSPARQL = false;
+            boolean outputPrefix = false;
+            boolean outputAlgebra = false;
+            boolean outputQuads = false;
+            boolean outputOptimized = false;
+            boolean outputOptimizedQuads = false;
+
+            if ( a != null ) {
+                for ( String anA : a ) {
+                    if ( anA.equals("sparql") ) {
                         outputSPARQL = true;
                     }
-                    if ( anA.equals( "prefix" ) )
-                    {
+                    if ( anA.equals("prefix") ) {
                         outputPrefix = true;
                     }
-                    if ( anA.equals( "algebra" ) )
-                    {
+                    if ( anA.equals("algebra") ) {
                         outputAlgebra = true;
                     }
-                    if ( anA.equals( "quads" ) )
-                    {
+                    if ( anA.equals("quads") ) {
                         outputQuads = true;
                     }
-                    if ( anA.equals( "opt" ) )
-                    {
+                    if ( anA.equals("opt") ) {
                         outputOptimized = true;
                     }
-                    if ( anA.equals( "optquads" ) )
-                    {
+                    if ( anA.equals("optquads") ) {
                         outputOptimizedQuads = true;
                     }
                 }
             }
-            
-//            if ( ! outputSPARQL && ! outputPrefix )
-//                outputSPARQL = true ;
-            
-            boolean lineNumbers = true ;
-            
-            if ( lineNumbersArg != null )
-                lineNumbers = lineNumbersArg.equalsIgnoreCase("true") || lineNumbersArg.equalsIgnoreCase("yes") ;
-            
-            setHeaders(httpResponse) ;
-            
-            ServletOutputStream outStream = httpResponse.getOutputStream() ;
 
-            outStream.println("<html>") ;
-            
-            printHead(outStream, "SPARQL Query Validation Report") ;
-            
-            outStream.println("<body>") ;
-            outStream.println("<h1>SPARQL Query Validator</h1>") ;
+            // if ( ! outputSPARQL && ! outputPrefix )
+            //     outputSPARQL = true;
+
+            boolean lineNumbers = true;
+
+            if ( lineNumbersArg != null )
+                lineNumbers = lineNumbersArg.equalsIgnoreCase("true") || lineNumbersArg.equalsIgnoreCase("yes");
+
+            setHeaders(httpResponse);
+
+            ServletOutputStream outStream = httpResponse.getOutputStream();
+
+            outStream.println("<html>");
+
+            printHead(outStream, "SPARQL Query Validation Report");
+
+            outStream.println("<body>");
+            outStream.println("<h1>SPARQL Query Validator</h1>");
             // Print query as received
-            outStream.println("<p>Input:</p>") ;
-            output(outStream, (out)->out.print(queryString), lineNumbers) ;
-            
+            outStream.println("<p>Input:</p>");
+            output(outStream, (out) -> out.print(queryString), lineNumbers);
+
             // Attempt to parse it.
-            Query query = null ;
+            Query query = null;
             try {
-                query = QueryFactory.create(queryString, "http://example/base/", language) ;
-            } catch (ARQException ex)
-            {
+                query = QueryFactory.create(queryString, "http://example/base/", language);
+            } catch (ARQException ex) {
                 // Over generous exception (should be QueryException)
                 // but this makes the code robust.
-                outStream.println("<p>Syntax error:</p>") ;
-                startFixed(outStream) ;
-                outStream.println(ex.getMessage()) ;
-                finishFixed(outStream) ;
+                outStream.println("<p>Syntax error:</p>");
+                startFixed(outStream);
+                outStream.println(ex.getMessage());
+                finishFixed(outStream);
+            } catch (RuntimeException ex) {
+                outStream.println("<p>Internal error:</p>");
+                startFixed(outStream);
+                outStream.println(ex.getMessage());
+                finishFixed(outStream);
             }
-            catch (RuntimeException ex)
-            { 
-                outStream.println("<p>Internal error:</p>") ;
-                startFixed(outStream) ;
-                outStream.println(ex.getMessage()) ;
-                finishFixed(outStream) ;
-            }
-            
-            if ( query != null )
-            {
+
+            if ( query != null ) {
                 if ( outputSPARQL )
-                    outputSyntax(outStream, query, lineNumbers) ;
-                
+                    outputSyntax(outStream, query, lineNumbers);
+
                 if ( outputAlgebra )
-                    outputAlgebra(outStream, query, lineNumbers) ;
-                
+                    outputAlgebra(outStream, query, lineNumbers);
+
                 if ( outputQuads )
-                    outputAlgebraQuads(outStream, query, lineNumbers) ;
-                
+                    outputAlgebraQuads(outStream, query, lineNumbers);
+
                 if ( outputOptimized )
-                    outputAlgebraOpt(outStream, query, lineNumbers) ;
+                    outputAlgebraOpt(outStream, query, lineNumbers);
 
                 if ( outputOptimizedQuads )
-                    outputAlgebraOptQuads(outStream, query, lineNumbers) ;
+                    outputAlgebraOptQuads(outStream, query, lineNumbers);
             }
-            
-            outStream.println("</body>") ;
-            outStream.println("</html>") ;
-            
-        } catch (Exception ex)
-        {
-            serviceLog.warn("Exception in doGet",ex) ;
+
+            outStream.println("</body>");
+            outStream.println("</html>");
+
+        } catch (Exception ex) {
+            serviceLog.warn("Exception in doGet", ex);
         }
     }
-    
-    private static void outputSyntax(ServletOutputStream outStream, final Query query, boolean lineNumbers) throws IOException
-    {
-        output(outStream, (out)->query.serialize(out), lineNumbers) ;
-    }
-    
-    private static void outputAlgebra(ServletOutputStream outStream, final Query query, boolean lineNumbers) throws IOException
-    {
-        outStream.println("<p>Algebra structure:</p>") ;
-        final Op op = Algebra.compile(query) ;   // No optimization
-        outputQueryOp(outStream, query, op, lineNumbers) ;
-    }
-        
-    private static void outputAlgebraOpt(ServletOutputStream outStream, final Query query, boolean lineNumbers) throws IOException
-    {
-        outStream.println("<p>Alebgra, with general triple optimizations:</p>") ;
-        final Op op = Algebra.optimize(Algebra.compile(query)) ;
-        outputQueryOp(outStream, query, op, lineNumbers) ;
-    }
-        
-    private static void outputAlgebraQuads(ServletOutputStream outStream, final Query query, boolean lineNumbers) throws IOException
-    {
-        outStream.println("<p>Quad structure:</p>") ;
-        final Op op = Algebra.toQuadForm(Algebra.compile(query)) ;
-        outputQueryOp(outStream, query, op, lineNumbers) ;
+
+    private static void outputSyntax(ServletOutputStream outStream, final Query query, boolean lineNumbers) throws IOException {
+        output(outStream, (out) -> query.serialize(out), lineNumbers);
     }
 
-    private static void outputAlgebraOptQuads(ServletOutputStream outStream, final Query query, boolean lineNumbers) throws IOException
-    {
-        outStream.println("<p>Alebgra, with general quads optimizations:</p>") ;
-        final Op op = Algebra.optimize(Algebra.toQuadForm(Algebra.compile(query))) ;
-        outputQueryOp(outStream, query, op, lineNumbers) ;
+    private static void outputAlgebra(ServletOutputStream outStream, final Query query, boolean lineNumbers) throws IOException {
+        outStream.println("<p>Algebra structure:</p>");
+        final Op op = Algebra.compile(query);   // No optimization
+        outputQueryOp(outStream, query, op, lineNumbers);
     }
-    
-    private static void outputQueryOp(ServletOutputStream outStream, Query query, final Op op, boolean lineNumbers) throws IOException
-    {
-        final SerializationContext sCxt = new SerializationContext(query) ;
-        output(outStream, out->op.output(out, sCxt) , lineNumbers) ;
+
+    private static void outputAlgebraOpt(ServletOutputStream outStream, final Query query, boolean lineNumbers) throws IOException {
+        outStream.println("<p>Alebgra, with general triple optimizations:</p>");
+        final Op op = Algebra.optimize(Algebra.compile(query));
+        outputQueryOp(outStream, query, op, lineNumbers);
+    }
+
+    private static void outputAlgebraQuads(ServletOutputStream outStream, final Query query, boolean lineNumbers) throws IOException {
+        outStream.println("<p>Quad structure:</p>");
+        final Op op = Algebra.toQuadForm(Algebra.compile(query));
+        outputQueryOp(outStream, query, op, lineNumbers);
+    }
+
+    private static void outputAlgebraOptQuads(ServletOutputStream outStream, final Query query, boolean lineNumbers) throws IOException {
+        outStream.println("<p>Alebgra, with general quads optimizations:</p>");
+        final Op op = Algebra.optimize(Algebra.toQuadForm(Algebra.compile(query)));
+        outputQueryOp(outStream, query, op, lineNumbers);
+    }
+
+    private static void outputQueryOp(ServletOutputStream outStream, Query query, final Op op, boolean lineNumbers) throws IOException {
+        final SerializationContext sCxt = new SerializationContext(query);
+        output(outStream, out -> op.output(out, sCxt), lineNumbers);
     }
 }

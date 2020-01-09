@@ -1,0 +1,95 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/property/or-datatypes-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:InvalidResource1
+  rdf:type rdfs:Resource ;
+  rdfs:comment owl:Thing ;
+  rdfs:comment 42 ;
+  rdfs:comment "A string" ;
+  rdfs:comment "none"^^xsd:boolean ;
+  rdfs:label "Invalid resource1" ;
+.
+ex:TestShape
+  rdf:type sh:NodeShape ;
+  rdfs:label "Test shape" ;
+  sh:property ex:TestShape-comment ;
+  sh:targetNode ex:InvalidResource1 ;
+  sh:targetNode ex:ValidResource1 ;
+.
+ex:TestShape-comment
+  sh:path rdfs:comment ;
+  sh:or (
+      [
+        sh:datatype xsd:string ;
+      ]
+      [
+        sh:datatype rdf:HTML ;
+      ]
+      [
+        sh:datatype rdf:langString ;
+      ]
+      [
+        sh:datatype xsd:boolean ;
+      ]
+    ) ;
+.
+ex:ValidResource1
+  rdf:type rdfs:Resource ;
+  rdfs:comment "<div>HTML</div>"^^rdf:HTML ;
+  rdfs:comment "A language string"@en ;
+  rdfs:comment "A string" ;
+  rdfs:label "Valid resource1" ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <or-datatypes-001>
+    ) ;
+.
+<or-datatypes-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:or of sh:datatypes at property shape 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource1 ;
+          sh:resultPath rdfs:comment ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:OrConstraintComponent ;
+          sh:sourceShape ex:TestShape-comment ;
+          sh:value owl:Thing ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource1 ;
+          sh:resultPath rdfs:comment ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:OrConstraintComponent ;
+          sh:sourceShape ex:TestShape-comment ;
+          sh:value 42 ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource1 ;
+          sh:resultPath rdfs:comment ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:OrConstraintComponent ;
+          sh:sourceShape ex:TestShape-comment ;
+          sh:value "none"^^xsd:boolean ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

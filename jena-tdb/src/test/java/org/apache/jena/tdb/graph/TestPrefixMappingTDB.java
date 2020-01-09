@@ -23,9 +23,8 @@ import java.util.Map ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.sparql.graph.AbstractTestPrefixMapping2 ;
+import org.apache.jena.sparql.graph.AbstractTestPrefixMappingView ;
 import org.apache.jena.tdb.ConfigTest ;
-import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.base.file.Location ;
@@ -34,16 +33,17 @@ import org.apache.jena.tdb.store.DatasetPrefixesTDB ;
 import org.apache.jena.tdb.sys.DatasetControl ;
 import org.apache.jena.tdb.sys.DatasetControlMRSW ;
 import org.apache.jena.tdb.sys.SystemTDB ;
+import org.apache.jena.tdb.sys.TDBInternal;
 import org.junit.* ;
 
-public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
+public class TestPrefixMappingTDB extends AbstractTestPrefixMappingView
 {
     static DatasetPrefixesTDB last = null ;
     
     @BeforeClass public static void beforeClass() {}
-    @AfterClass public static void afterClass()   { StoreConnection.reset() ; ConfigTest.deleteTestingDir() ; }
+    @AfterClass public static void afterClass()   { TDBInternal.reset() ; ConfigTest.deleteTestingDir() ; }
 
-    @Before public void before() { StoreConnection.reset() ; }
+    @Before public void before() { TDBInternal.reset() ; }
     @After public  void after()  { }
 
     

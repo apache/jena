@@ -380,7 +380,9 @@ public class Iter<T> implements Iterator<T> {
         return steps;
     }
 
-    /** Take the first N elements of an iterator - stop early if too few */
+    /** Take the first N elements of an iterator - stop early if too few 
+     * @see #limit(Iterator, long)
+     */
     public static <T> List<T> take(Iterator<T> iter, int N) {
         iter = new IteratorN<>(iter, N) ;
         List<T> x = new ArrayList<>(N) ;
@@ -435,6 +437,44 @@ public class Iter<T> implements Iterator<T> {
         return dropWhile(iter, predicate.negate()) ;
     }
     
+    /** Return an iterator that is limited to the given number of elements.
+     * If it is shorter than the limit, stop at the end. 
+     * @see #take(Iterator, int) 
+     */
+    public static <X> Iterator<X> limit(Iterator<X> iterator, long limit) {
+        final Iterator<X> iter = new Iterator<X>() {
+            private long count = 0;
+            @Override
+            public boolean hasNext() {
+                if ( count < limit )
+                    return iterator.hasNext();
+                return false;
+            }
+
+            @Override
+            public X next() {
+                 if ( ! hasNext() )
+                     throw new NoSuchElementException();
+                 X t = next();
+                 count++;
+                 return t;
+            }
+        };
+        return iter;
+    }
+
+    /** Skip over a number of elements of an iterator */ 
+    public static <X> Iterator<X> skip(Iterator<X> iterator, long limit) {
+        for ( long i = 0; i < limit; i++ ) {
+            if ( iterator.hasNext() )
+                iterator.next();
+            else
+                // Now exhausted.
+                break;
+        }
+        return iterator;
+    }
+
     /** Iterator that only returns upto N items */
     static class IteratorN<T> implements Iterator<T> {
         private final Iterator<T> iter ;
@@ -865,6 +905,18 @@ public class Iter<T> implements Iterator<T> {
     public Iter<T> dropUntil(Predicate<T> predicate) {
         return iter(dropWhile(iterator, predicate.negate())) ;
     }
+
+    /** Limit the number of elements. */
+    public Iter<T> limit(long N) {
+        return Iter.iter(limit(null, N));
+    }
+
+    /** Skip over a number of elements. */
+    public Iter<T> skip(long N) {
+        return Iter.iter(skip(null, N));
+    }
+
+
     
     /** Count the iterator (this is destructive on the iterator) */
     public long count() {

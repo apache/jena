@@ -1,0 +1,119 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/property/equals-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:InvalidResource1
+  ex:property1 "A" ;
+  ex:property2 "B" ;
+.
+ex:InvalidResource2
+  ex:property1 "A" ;
+.
+ex:InvalidResource3
+  ex:property2 "A" ;
+.
+ex:InvalidResource4
+  ex:property1 "A" ;
+  ex:property1 "B" ;
+  ex:property2 "A" ;
+.
+ex:TestShape
+  rdf:type sh:NodeShape ;
+  sh:property ex:TestShape-property1 ;
+  sh:targetNode ex:InvalidResource1 ;
+  sh:targetNode ex:InvalidResource2 ;
+  sh:targetNode ex:InvalidResource3 ;
+  sh:targetNode ex:InvalidResource4 ;
+  sh:targetNode ex:ValidResource1 ;
+  sh:targetNode ex:ValidResource2 ;
+.
+ex:TestShape-property1
+  sh:path ex:property1 ;
+  sh:equals ex:property2 ;
+.
+ex:ValidResource1
+  ex:property1 "A" ;
+  ex:property2 "A" ;
+.
+ex:ValidResource2
+  ex:property1 "A" ;
+  ex:property1 "B" ;
+  ex:property2 "A" ;
+  ex:property2 "B" ;
+.
+ex:property1
+  rdf:type rdf:Property ;
+.
+ex:property2
+  rdf:type rdf:Property ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <equals-001>
+    ) ;
+.
+<equals-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:equals at property shape 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource1 ;
+          sh:resultPath ex:property1 ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:EqualsConstraintComponent ;
+          sh:sourceShape ex:TestShape-property1 ;
+          sh:value "A" ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource1 ;
+          sh:resultPath ex:property1 ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:EqualsConstraintComponent ;
+          sh:sourceShape ex:TestShape-property1 ;
+          sh:value "B" ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource2 ;
+          sh:resultPath ex:property1 ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:EqualsConstraintComponent ;
+          sh:sourceShape ex:TestShape-property1 ;
+          sh:value "A" ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource3 ;
+          sh:resultPath ex:property1 ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:EqualsConstraintComponent ;
+          sh:sourceShape ex:TestShape-property1 ;
+          sh:value "A" ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource4 ;
+          sh:resultPath ex:property1 ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:EqualsConstraintComponent ;
+          sh:sourceShape ex:TestShape-property1 ;
+          sh:value "B" ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

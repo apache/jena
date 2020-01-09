@@ -74,7 +74,7 @@ public class ManifestSuite extends ParentRunner<Runner> {
 			throw new IllegalStateException(
 					"ManifestSuite requries ManifestFile annotation");
 		}
-		itemHandler = cls.newInstance();
+		itemHandler = cls.getConstructor().newInstance();
 
 		Runner[] runner = new Runner[1];
 		try {

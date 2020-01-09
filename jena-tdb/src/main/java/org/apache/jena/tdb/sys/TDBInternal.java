@@ -36,8 +36,10 @@ import org.apache.jena.tdb.store.nodetable.NodeTable ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 import org.apache.jena.tdb.transaction.TransactionManager ;
 
-/** A collection of helpers to abstract away from internal details of TDB. 
+/** 
+ * A collection of helpers to abstract away from internal details of TDB. 
  * Use with care.
+ * These are not general purpose operations. 
  */
 public class TDBInternal
 {
@@ -148,16 +150,50 @@ public class TDBInternal
             return ((DatasetGraphTransaction)dsg).getStoreConnection() ;
         throw new TDBException("Not a suitable TDB-backed DatasetGraph: " + Lib.classShortName(dsg.getClass())) ;
     }
-    
-    /** Stop managing a DatasetGraph. Use with great care. */
+
+    /**
+     * Stop managing a TDB1 {@link DatasetGraph}.
+     * This function does nothing if it is not a TDB1 database. 
+     * Use with great care. 
+     * Don't call while transactions are active. 
+     */
     public static synchronized void expel(DatasetGraph dsg) {
         DatasetGraphTDB dsgtdb = Txn.calculate(dsg, ()->getDatasetGraphTDB(dsg));
         if ( dsgtdb == null )
             return;
-        StoreConnection.expel(dsgtdb.getLocation(), false);
+        expel(dsgtdb.getLocation());
+    }
+
+    /**
+     * Stop managing a TDB1 database at {@link Location}. 
+     * Use with great care. 
+     * Assumes no transactions are active. 
+     */
+    public static synchronized void expel(Location location) {
+        expel(location, false);
+    }
+
+    /**
+     * Stop managing a TDB1 database at {@link Location}. 
+     * Use with very great care. 
+     * Using "force" will orphan any active transactions.
+     */
+    public static synchronized void expel(Location location, boolean force) {
+        releaseDSG(location);
+        StoreConnection.expel(location, force);
         // No longer valid.
     }
-    
+
+    /**     
+     * Stop managing the {@link DatasetGraphTransaction} for the location.
+     * This operation does not release the {@link StoreConnection}.
+     * Use with great care. 
+     * Don't call while transactions are active. 
+     */
+    public static synchronized void releaseDSG(Location location) {
+        TDBMaker.uncache(location);
+    }
+
     /** Look at a directory and see if it is a new area */
     public static boolean isNewDatabaseArea(Location location) {
         StoreConnection sConn = StoreConnection.getExisting(location) ;
@@ -174,17 +210,20 @@ public class TDBInternal
         return entries.length == 0 ;
     }
 
-    static FileFilter fileFilterNewDB = 
-        (pathname) -> {
-            String fn = pathname.getName() ;
-            if ( fn.equals(".") || fn.equals("..") )
-                return false ;
-            if ( pathname.isDirectory() )
-                return true ;
-
-            if ( fn.equals(StoreParamsConst.TDB_CONFIG_FILE) )
-                return false ;
+    static FileFilter fileFilterNewDB = (pathname) -> {
+        String fn = pathname.getName() ;
+        if ( fn.equals(".") || fn.equals("..") )
+            return false ;
+        if ( pathname.isDirectory() )
             return true ;
-        } ;
 
+        if ( fn.equals(StoreParamsConst.TDB_CONFIG_FILE) )
+            return false ;
+        return true ;
+    } ;
+        
+    public synchronized static void reset() {
+        StoreConnection.reset();
+        TDBMaker.resetCache();
+    }
 }

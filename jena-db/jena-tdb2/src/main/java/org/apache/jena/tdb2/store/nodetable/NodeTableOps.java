@@ -18,34 +18,34 @@
 
 package org.apache.jena.tdb2.store.nodetable;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node;
 import org.apache.jena.tdb2.store.NodeId;
 
 public class NodeTableOps {
-    
-    /** Convert a bulk operation into a loop */  
+
+    /** Convert a bulk operation into a loop */
     public static List<NodeId> bulkNodeToNodeIdImpl(NodeTable nt, List<Node> nodes, boolean withAllocation) {
-        List<NodeId> nodeIds = new ArrayList<>(nodes.size()) ;
+        List<NodeId> nodeIds = new ArrayList<>(nodes.size());
         for ( Node node : nodes ) {
-            NodeId nid = withAllocation ? nt.getAllocateNodeId(node) : nt.getNodeIdForNode(node) ;
-            nodeIds.add(nid) ;
+            NodeId nid = withAllocation ? nt.getAllocateNodeId(node) : nt.getNodeIdForNode(node);
+            nodeIds.add(nid);
         }
-        return nodeIds ;
+        return nodeIds;
     }
-    
-    /** Convert a bulk operation into a loop */  
+
+    /** Convert a bulk operation into a loop */
     public static List<Node> bulkNodeIdToNodeImpl(NodeTable nt, List<NodeId> nodeIds) {
-        List<Node> nodes = new ArrayList<>(nodeIds.size()) ;
+        List<Node> nodes = new ArrayList<>(nodeIds.size());
         for ( NodeId nodeId : nodeIds ) {
-            Node n = nt.getNodeForNodeId(nodeId) ;
-            nodes.add(n) ;
+            Node n = nt.getNodeForNodeId(nodeId);
+            nodes.add(n);
         }
-        return nodes ;
+        return nodes;
     }
-    
+
 
 }
 

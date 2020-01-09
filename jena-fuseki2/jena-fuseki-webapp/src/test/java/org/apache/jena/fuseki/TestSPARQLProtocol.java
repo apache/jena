@@ -18,11 +18,11 @@
 
 package org.apache.jena.fuseki;
 
-import static org.apache.jena.fuseki.ServerCtl.serviceQuery ;
-import static org.apache.jena.fuseki.ServerCtl.serviceUpdate ;
-import static org.apache.jena.fuseki.ServerTest.gn1 ;
-import static org.apache.jena.fuseki.ServerTest.model1 ;
-import static org.apache.jena.fuseki.ServerTest.model2 ;
+import static org.apache.jena.fuseki.ServerCtl.serviceQuery;
+import static org.apache.jena.fuseki.ServerCtl.serviceUpdate;
+import static org.apache.jena.fuseki.ServerTest.gn1;
+import static org.apache.jena.fuseki.ServerTest.model1;
+import static org.apache.jena.fuseki.ServerTest.model2;
 
 import org.apache.jena.query.*;
 import org.apache.jena.riot.WebContent;
@@ -32,9 +32,10 @@ import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateProcessor;
 import org.apache.jena.update.UpdateRequest;
-import org.junit.Before ;
+import org.junit.Before;
 import org.junit.Test;
 
+@SuppressWarnings("deprecation")
 public class TestSPARQLProtocol extends AbstractFusekiTest
 {
     @Before

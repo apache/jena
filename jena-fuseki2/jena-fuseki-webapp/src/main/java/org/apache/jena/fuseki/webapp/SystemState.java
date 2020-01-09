@@ -18,49 +18,49 @@
 
 package org.apache.jena.fuseki.webapp;
 
-import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.tdb.StoreConnection ;
-import org.apache.jena.tdb.TDB ;
-import org.apache.jena.tdb.TDBFactory ;
-import org.apache.jena.tdb.base.block.FileMode ;
-import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.setup.StoreParams ;
-import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
+import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.tdb.StoreConnection;
+import org.apache.jena.tdb.TDB;
+import org.apache.jena.tdb.TDBFactory;
+import org.apache.jena.tdb.base.block.FileMode;
+import org.apache.jena.tdb.base.file.Location;
+import org.apache.jena.tdb.setup.StoreParams;
+import org.apache.jena.tdb.transaction.DatasetGraphTransaction;
 
-/** 
+/**
  * Small database to record the system state.
  * Used in the Full Fuseki server.
  */
 public class SystemState {
-    private static String SystemDatabaseLocation ;
+    private static String SystemDatabaseLocation;
     // Testing may reset this.
-    public static Location location ; 
-    
-    private  static Dataset                 dataset   = null ;
-    private  static DatasetGraphTransaction dsg       = null ;
-    
+    public static Location location;
+
+    private  static Dataset                 dataset   = null;
+    private  static DatasetGraphTransaction dsg       = null;
+
     public static Dataset getDataset() {
-        init() ;
-        return dataset ;
+        init();
+        return dataset;
     }
-    
+
     public static DatasetGraphTransaction getDatasetGraph() {
-        init() ;
-        return dsg ;
+        init();
+        return dsg;
     }
-    
-    private static boolean initialized = false ; 
+
+    private static boolean initialized = false;
     private static void init() {
-        init$() ;
+        init$();
     }
-    
+
     /** Small footprint database.  The system database records the server state.
      * It should not be performance critical, mainly being used for system admin
      * functions.
      * <p>Direct mode so that it is not competing for OS file cache space.
-     * <p>Small caches - 
+     * <p>Small caches -
      */
     private static final StoreParams systemDatabaseParams = StoreParams.builder()
         .fileMode(FileMode.direct)
@@ -70,27 +70,27 @@ public class SystemState {
         .node2NodeIdCacheSize(500)
         .nodeId2NodeCacheSize(500)
         .nodeMissCacheSize(100)
-        .build() ;
-    
+        .build();
+
     public /* for testing */ static void init$() {
         if ( initialized )
-            return ;
-        initialized = true ;
-        
+            return;
+        initialized = true;
+
         if ( location == null )
-            location = Location.create(FusekiWebapp.dirSystemDatabase.toString()) ;
-        
+            location = Location.create(FusekiWebapp.dirSystemDatabase.toString());
+
         if ( ! location.isMem() )
-            FileOps.ensureDir(location.getDirectoryPath()) ;
-        
+            FileOps.ensureDir(location.getDirectoryPath());
+
         // Force it into the store connection as a low footprint
         if ( StoreConnection.getExisting(location) != null )
-            Fuseki.serverLog.warn("System database already in the StoreConnection cache") ;
-        StoreConnection.make(location, systemDatabaseParams) ;
-        
-        dataset = TDBFactory.createDataset(location) ;
-        dsg     = (DatasetGraphTransaction)(dataset.asDatasetGraph()) ;
-        dsg.getContext().set(TDB.symUnionDefaultGraph, false) ;
+            Fuseki.serverLog.warn("System database already in the StoreConnection cache");
+        StoreConnection.make(location, systemDatabaseParams);
+
+        dataset = TDBFactory.createDataset(location);
+        dsg     = (DatasetGraphTransaction)(dataset.asDatasetGraph());
+        dsg.getContext().set(TDB.symUnionDefaultGraph, false);
     }
 }
 

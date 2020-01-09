@@ -19,6 +19,7 @@
 package org.apache.jena.atlas.logging.java;
 
 import java.io.OutputStream ;
+import java.lang.reflect.Constructor;
 import java.nio.charset.StandardCharsets ;
 import java.util.logging.* ;
 
@@ -82,25 +83,29 @@ public class ConsoleHandlerStream extends StreamHandler {
         if ( pFormatter != null ) {
             try {
                 Class<?> cls = classLoader.loadClass(pFormatter);
-                setFormatter((Formatter) cls.newInstance());
+                Constructor<?> constructor = cls.getConstructor();
+                Object obj = constructor.newInstance();
+                setFormatter((Formatter)obj);
             } catch (Exception ex) {
-                System.err.println("Problems setting the logging formatter") ;
+                System.err.println("Problems setting the logging formatter");
                 ex.printStackTrace(System.err);
             }
         }
-        
+
         // -- Filter
         String pFilter = getProperty(manager, cname, "filter") ;
         if ( pFilter != null ) {
             try {
                 Class<?> cls = classLoader.loadClass(pFilter);
-                setFilter((Filter) cls.newInstance());
+                Constructor<?> constructor = cls.getConstructor();
+                Object obj = constructor.newInstance();
+                setFilter((Filter)obj);
             } catch (Exception ex) {
                 System.err.println("Problems setting the logging filter") ;
                 ex.printStackTrace(System.err);
             }
         }
-        
+
         // -- Encoding : Default UTF-8
         String pEncoding = getProperty(manager, cname, "encoding") ;
         if ( pEncoding == null )

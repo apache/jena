@@ -23,5 +23,5 @@ import org.apache.jena.dboe.DBOpEnvException;
 public class BPTreeException extends DBOpEnvException
 {
     public BPTreeException() {}
-    public BPTreeException(String msg) { super(msg) ; }
+    public BPTreeException(String msg) { super(msg); }
 }

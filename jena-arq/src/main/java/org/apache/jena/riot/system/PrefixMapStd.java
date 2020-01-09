@@ -81,6 +81,8 @@ public class PrefixMapStd extends PrefixMapBase {
     public void delete(String prefix) {
         prefix = canonicalPrefix(prefix);
         prefixes.remove(prefix);
+        // Remove from the abbreviation map.
+        uriToPrefix.values().remove(prefix);
     }
 
     @Override

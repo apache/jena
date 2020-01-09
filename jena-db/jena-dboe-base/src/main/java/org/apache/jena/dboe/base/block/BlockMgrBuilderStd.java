@@ -23,7 +23,7 @@ import org.apache.jena.dboe.base.file.FileSet;
 public class BlockMgrBuilderStd implements BlockMgrBuilder {
     @Override
     public BlockMgr buildBlockMgr(FileSet fileSet, String ext, BlockParams indexParams) {
-        return BlockMgrFactory.create(fileSet, ext, indexParams) ;
+        return BlockMgrFactory.create(fileSet, ext, indexParams);
     }
 }
 

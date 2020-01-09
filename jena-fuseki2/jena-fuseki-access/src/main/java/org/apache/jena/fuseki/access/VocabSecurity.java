@@ -25,8 +25,8 @@ import org.apache.jena.tdb.assembler.Vocab;
 
 public class VocabSecurity {
     private static final String NS = "http://jena.apache.org/access#";
-    
-    public static String getURI() { return NS ; } 
+
+    public static String getURI() { return NS; }
 
     // Types
     public static final Resource tAccessControlledDataset = Vocab.type(NS, "AccessControlledDataset");
@@ -40,10 +40,10 @@ public class VocabSecurity {
     public static final Property pUser                    = Vocab.property(NS, "user");
     public static final Property pGraphs                  = Vocab.property(NS, "graphs");
 
-    private static boolean initialized = false ; 
-    
-    static { init() ; }
-    
+    private static boolean initialized = false;
+
+    static { init(); }
+
     static synchronized public void init() {
         if ( initialized )
             return;

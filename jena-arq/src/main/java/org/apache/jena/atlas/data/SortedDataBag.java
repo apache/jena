@@ -156,11 +156,9 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
             }
 
             // Sort the tuples as an array. The CanAbortComparator will sort
-            // that
-            // array using Arrays.sort. The cast to E[] is safe. If the sort is
+            // the array using Arrays.sort. The cast to E[] is safe. If the sort is
             // aborted, don't bother messing around with the serialisation.
-            // We'll
-            // never get around to using it anyway.
+            // We'll never get around to using it anyway.
 
             E[] array = (E[]) memory.toArray();
             if (comparator.abortableSort(array) == Finish.COMPLETED) {

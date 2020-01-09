@@ -20,11 +20,15 @@ package org.apache.jena.sparql.util ;
 
 import java.math.BigDecimal ;
 
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+
 /** Miscellaneous operations - not query specific */
 
 public class Utils {
+    /** @deprecated Use {@link XSDFuncOp#canonicalDecimalStr}. */
+    @Deprecated
     static public String stringForm(BigDecimal decimal) {
-        return decimal.toPlainString() ;
+        return XSDFuncOp.canonicalDecimalStr(decimal);
     }
 
     static public String stringForm(double d) {

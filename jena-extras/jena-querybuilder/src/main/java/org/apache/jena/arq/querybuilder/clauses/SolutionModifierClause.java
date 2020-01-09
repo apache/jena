@@ -46,7 +46,7 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param orderBy
 	 *            The expression to order by.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T addOrderBy(Expr orderBy);
 
@@ -55,7 +55,7 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param orderBy
 	 *            The object to order by.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T addOrderBy(Object orderBy);
 
@@ -64,7 +64,7 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param orderBy
 	 *            The SortCondition to order by.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T addOrderBy(SortCondition orderBy);
 
@@ -75,7 +75,7 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 	 *            The expression to order by.
 	 * @param order
 	 *            The direction to order.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T addOrderBy(Expr orderBy, Order order);
 
@@ -86,7 +86,7 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 	 *            The object to order by.
 	 * @param order
 	 *            The direction to order.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T addOrderBy(Object orderBy, Order order);
 
@@ -95,7 +95,7 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param groupBy
 	 *            The object to group by.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T addGroupBy(Object groupBy);
 
@@ -133,7 +133,7 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param expression
 	 *            Expression to evaluate for the having.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T addHaving(String expression) throws ParseException;
 
@@ -149,7 +149,7 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param expression
 	 *            Expression to evaluate for the having.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T addHaving(Expr expression) throws ParseException;
 
@@ -158,7 +158,7 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param var
 	 *            the variable to have.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T addHaving(Object var) throws ParseException;
 
@@ -169,7 +169,7 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param limit
 	 *            the maximum number of results to return.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T setLimit(int limit);
 
@@ -180,7 +180,7 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param offset
 	 *            the number of results to skip before returning results..
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T setOffset(int offset);
 

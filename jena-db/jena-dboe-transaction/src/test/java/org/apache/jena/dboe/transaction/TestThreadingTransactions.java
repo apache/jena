@@ -18,106 +18,106 @@
 
 package org.apache.jena.dboe.transaction;
 
-import java.util.concurrent.Semaphore ;
+import java.util.concurrent.Semaphore;
 
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.system.Txn;
 import org.apache.jena.system.ThreadAction;
 import org.apache.jena.system.ThreadTxn;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
-import org.apache.jena.query.ReadWrite ;
-import org.junit.After ;
-import org.junit.Assert ;
-import org.junit.Before ;
-import org.junit.Test ;
+import org.apache.jena.query.ReadWrite;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TestThreadingTransactions {
-    static final long InitValue = 3 ;
-    private TransactionalInteger transInt ; 
-    
+    static final long InitValue = 3;
+    private TransactionalInteger transInt;
+
     @Before public void init() {
-        TransactionCoordinator coord = new TransactionCoordinator(Location.mem()) ;
-        transInt = new TransactionalInteger(coord, InitValue) ;
+        TransactionCoordinator coord = new TransactionCoordinator(Location.mem());
+        transInt = new TransactionalInteger(coord, InitValue);
         coord.start();
     }
 
     @After public void after() {
-        transInt.getTxnMgr().shutdown();
+        transInt.getTxnMgr().shutdown(true);
     }
 
     // Read synchronously in a transaction.
     void readTxn(String label, TransactionalInteger trans, long expected) {
         Txn.executeRead(trans, () -> {
-            read(label, trans, expected) ;
-        }) ;
+            read(label, trans, expected);
+        });
     }
 
     void read(String label, TransactionalInteger trans, long expected) {
-        long x = trans.get() ;
-        Assert.assertEquals(label, expected, x); 
+        long x = trans.get();
+        Assert.assertEquals(label, expected, x);
     }
 
     ThreadAction threadRead(String label, TransactionalInteger trans, long expectedValue) {
         return ThreadTxn.threadTxnRead(trans, ()->{
-            read(label, trans, expectedValue) ;
-        }) ;
+            read(label, trans, expectedValue);
+        });
     }
-    
+
     @Test public void threadTrans_01() {
-        transInt.begin(ReadWrite.READ) ;
-        read("[01]", transInt, InitValue) ;
+        transInt.begin(ReadWrite.READ);
+        read("[01]", transInt, InitValue);
         transInt.end();
     }
-    
+
     @Test public void threadTrans_02() {
-        transInt.begin(ReadWrite.READ) ;
-        threadRead("[02]", transInt, InitValue).run() ;
+        transInt.begin(ReadWrite.READ);
+        threadRead("[02]", transInt, InitValue).run();
         transInt.end();
     }
 
     @Test public void threadTrans_03() {
-        Semaphore semaBefore = new Semaphore(0, true) ;
-        Semaphore semaAfter  = new Semaphore(0, true) ;
+        Semaphore semaBefore = new Semaphore(0, true);
+        Semaphore semaAfter  = new Semaphore(0, true);
         ThreadAction async1 = threadRead("[03/1]", transInt, InitValue);
         ThreadAction async2 = threadRead("[03/2]", transInt, InitValue);
-        
-        transInt.begin(ReadWrite.WRITE) ;
-        read("[03/3]", transInt, InitValue) ;
-        transInt.inc(); 
-        read("[03/4]", transInt, InitValue+1) ;
-        
-        async1.run() ;
-       
-        threadRead("[03/5]", transInt, InitValue) ;
-        
+
+        transInt.begin(ReadWrite.WRITE);
+        read("[03/3]", transInt, InitValue);
+        transInt.inc();
+        read("[03/4]", transInt, InitValue+1);
+
+        async1.run();
+
+        threadRead("[03/5]", transInt, InitValue);
+
         transInt.commit();
         transInt.end();
         async2.run();
-        readTxn("[03/6]", transInt, InitValue+1) ;
+        readTxn("[03/6]", transInt, InitValue+1);
     }
-    
+
     @Test public void threadTrans_04() {
-        Semaphore semaBefore1 = new Semaphore(0, true) ;
-        Semaphore semaBefore2 = new Semaphore(0, true) ;
-        Semaphore semaAfter  = new Semaphore(0, true) ;
-        
+        Semaphore semaBefore1 = new Semaphore(0, true);
+        Semaphore semaBefore2 = new Semaphore(0, true);
+        Semaphore semaAfter  = new Semaphore(0, true);
+
         ThreadAction async1 = threadRead("[04/1]", transInt, InitValue);
         ThreadAction async2 = threadRead("[04/2]", transInt, InitValue);
         ThreadAction async3 = threadRead("[04/3]", transInt, InitValue);
-        
+
         Txn.executeWrite(transInt, transInt::inc);
 
         ThreadAction async4 = threadRead("[04/3]", transInt, InitValue+1);
-        async1.run() ;
+        async1.run();
 
         Txn.executeWrite(transInt, transInt::inc);  // ++
-        async2.run() ;
-        async4.run() ;
+        async2.run();
+        async4.run();
 
         Txn.executeWrite(transInt, transInt::inc);  // ++
-        async3.run() ;
-        
-        readTxn("[04/4]", transInt, InitValue+3) ;
+        async3.run();
+
+        readTxn("[04/4]", transInt, InitValue+3);
     }
 }
 

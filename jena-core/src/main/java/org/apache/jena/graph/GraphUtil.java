@@ -297,13 +297,13 @@ public class GraphUtil
      *  <p>  
      *  It is not designed for a large {@code srcGraph} and large {@code dstGraph} 
      *  with only a few triples in common to delete from {@code dstGraph}. It is better to
-     *  calculate the difference in some way, and copy into a small graph to use as the {@srcGraph}.  
+     *  calculate the difference in some way, and copy into a small graph to use as the {@code srcGraph}.  
      *  <p>
      *  To force delete by looping on {@code srcGraph}, use {@link #deleteLoopSrc(Graph, Graph)}.
      *  <p>
      *  For large {@code srcGraph} and small {@code dstGraph}, use {@link #deleteLoopDst}.
      *  
-     * See discussion on <a href=""https://github.com/apache/jena/pull/212">jena/pull/212</a>, 
+     * See discussion on <a href="https://github.com/apache/jena/pull/212">jena/pull/212</a>, 
      * (archived at <a href="https://issues.apache.org/jira/browse/JENA-1284">JENA-1284</a>).
      */
     public static void deleteFrom(Graph dstGraph, Graph srcGraph) {

@@ -50,35 +50,48 @@ import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
 /** Misc RIOT code */
 public class RiotLib
 {
+    // ---- BlankNode skolemization as IRIs
+    private final static boolean skolomizedBNodes = ARQ.isTrueOrUndef(ARQ.constantBNodeLabels);
+    /** "Skolemize" to a node. 
+     * Returns a Node_URI.
+     */
+    public static Node blankNodeToIri(Node node) {
+        if ( node.isBlank() )
+            return NodeFactory.createURI(blankNodeToIriString(node));
+        return node;
+    }
+
+    /** "Skolemize" to a string. */ 
+    public static String blankNodeToIriString(Node node) {
+        if ( node.isBlank() ) {
+            String x = node.getBlankNodeLabel();
+            return "_:" + x;
+        }
+        if ( node.isURI())
+            return node.getURI();
+        throw new RiotException("Not a blank node or URI");
+    }
+
     private final static String bNodeLabelStart = "_:";
-    private final static boolean skolomizedBNodes = ARQ.isTrue(ARQ.constantBNodeLabels);
-    
     /** Implement {@code <_:....>} as a "Node IRI"
      * that is, use the given label as the BNode internal label.
      * Use with care.
+     * Returns a Node_URI.
      */
-    public static Node createIRIorBNode(String iri)
-    {
+    public static Node createIRIorBNode(String str) {
         // Is it a bNode label? i.e. <_:xyz>
-        if ( isBNodeIRI(iri) )
-        {
-            String s = iri.substring(bNodeLabelStart.length());
+        if ( isBNodeIRI(str) ) {
+            String s = str.substring(bNodeLabelStart.length());
             Node n = NodeFactory.createBlankNode(s);
             return n;
         }
-        return NodeFactory.createURI(iri);
-    }
-    
-    /** "Skolemize": BlankNode to IRI else return node unchanged. */ 
-    public static Node blankNodeToIri(Node node) {
-        return NodeFunctions.blankNodeToIri(node);
+        return NodeFactory.createURI(str);
     }
 
     /** Test whether a IRI is a ARQ-encoded blank node. */
@@ -298,8 +311,26 @@ public class RiotLib
     public static boolean strSafeFor(String str, char ch) {
         return str.indexOf(ch) == -1;
     }
+    
+    public static void writeBase(IndentedWriter out, String base, boolean newStyle) {
+        if ( newStyle )
+            writeBaseNewStyle(out, base);
+        else
+            writeBaseOldStyle(out, base);
+    }
 
-    public static void writeBase(IndentedWriter out, String base) {
+    private static void writeBaseNewStyle(IndentedWriter out, String base) {
+        if ( base != null ) {
+            out.print("BASE ");
+            out.pad(PREFIX_IRI);
+            out.print("<");
+            out.print(base);
+            out.print(">");
+            out.println();
+        }
+    }
+
+    private static void writeBaseOldStyle(IndentedWriter out, String base) {
         if ( base != null ) {
             out.print("@base ");
             out.pad(PREFIX_IRI);
@@ -311,7 +342,32 @@ public class RiotLib
         }
     }
 
-    public static void writePrefixes(IndentedWriter out, PrefixMap prefixMap) {
+    /** Write prefixes, using {@code PREFIX} */ 
+    public static void writePrefixes(IndentedWriter out, PrefixMap prefixMap, boolean newStyle) {
+        if ( newStyle )
+            writePrefixesNewStyle(out, prefixMap);
+        else
+            writePrefixesOldStyle(out, prefixMap);
+    }
+    
+    /** Write prefixes, using {@code PREFIX} */ 
+    private static void writePrefixesNewStyle(IndentedWriter out, PrefixMap prefixMap) {
+        if ( prefixMap != null && !prefixMap.isEmpty() ) {
+            for ( Map.Entry<String, String> e : prefixMap.getMappingCopyStr().entrySet() ) {
+                out.print("PREFIX ");
+                out.print(e.getKey());
+                out.print(": ");
+                out.pad(PREFIX_IRI);
+                out.print("<");
+                out.print(e.getValue());
+                out.print(">");
+                out.println();
+            }
+        }
+    }
+
+    /** Write prefixes, using {@code @prefix} */ 
+    public static void writePrefixesOldStyle(IndentedWriter out, PrefixMap prefixMap) {
         if ( prefixMap != null && !prefixMap.isEmpty() ) {
             for ( Map.Entry<String, String> e : prefixMap.getMappingCopyStr().entrySet() ) {
                 out.print("@prefix ");

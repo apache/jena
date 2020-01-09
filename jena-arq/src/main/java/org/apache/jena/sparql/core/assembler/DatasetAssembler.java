@@ -79,7 +79,7 @@ public class DatasetAssembler extends AssemblerBase implements Assembler {
             Model m = a.openModel(g);
             ds.addNamedModel(gName, m);
         }
-        AssemblerUtils.setContext(root, ds.getContext()) ;
+        AssemblerUtils.mergeContext(root, ds.getContext()) ;
         return ds ;
     }
 }

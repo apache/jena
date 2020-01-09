@@ -233,7 +233,8 @@ public class EvaluatorSimple implements Evaluator
     public Table distinct(Table table)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
-        qIter = new QueryIterDistinct(qIter, getExecContext()) ;
+        // Use the simple-and-clear implementation of DISTINCT. 
+        qIter = new QueryIterDistinctMem(qIter, getExecContext()) ;
         return new TableN(qIter) ;
     }
 

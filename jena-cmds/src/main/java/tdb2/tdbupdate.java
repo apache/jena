@@ -45,7 +45,7 @@ public class tdbupdate extends arq.update {
     }
 
     @Override
-    protected ModDataset setModeDataset() {
+    protected ModDataset setModDataset() {
         return new ModTDBDataset();
     }
 

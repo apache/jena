@@ -1,0 +1,81 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/property/lessThan-002.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:InvalidInstance1
+  ex:first 1 ;
+  ex:first 2 ;
+  ex:second "a" ;
+  ex:second "b" ;
+.
+ex:TestShape
+  rdf:type sh:NodeShape ;
+  rdfs:label "Test shape" ;
+  sh:property ex:TestShape-first ;
+  sh:targetNode ex:InvalidInstance1 ;
+.
+ex:TestShape-first
+  sh:path ex:first ;
+  sh:lessThan ex:second ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <lessThan-002>
+    ) ;
+.
+<lessThan-002>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:lessThan at property shape 002" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidInstance1 ;
+          sh:resultPath ex:first ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:LessThanConstraintComponent ;
+          sh:sourceShape ex:TestShape-first ;
+          sh:value 1 ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidInstance1 ;
+          sh:resultPath ex:first ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:LessThanConstraintComponent ;
+          sh:sourceShape ex:TestShape-first ;
+          sh:value 1 ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidInstance1 ;
+          sh:resultPath ex:first ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:LessThanConstraintComponent ;
+          sh:sourceShape ex:TestShape-first ;
+          sh:value 2 ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidInstance1 ;
+          sh:resultPath ex:first ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:LessThanConstraintComponent ;
+          sh:sourceShape ex:TestShape-first ;
+          sh:value 2 ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

@@ -34,16 +34,16 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.loader.DataLoader;
 import org.apache.jena.tdb2.loader.base.*;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
-import org.apache.jena.tdb2.store.DatasetPrefixesTDB;
 import org.apache.jena.tdb2.store.NodeId;
+import org.apache.jena.tdb2.store.StoragePrefixesTDB;
 import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 import org.apache.jena.tdb2.sys.TDBInternal;
 
 /**
- * The phased {@link DataLoader}, which runs loading in a number of phases. 
- * Options are controlled by a {@link LoaderPlan}. 
+ * The phased {@link DataLoader}, which runs loading in a number of phases.
+ * Options are controlled by a {@link LoaderPlan}.
  * <p>
- * The first phase is data to primary indexes, and maybe some additional indexes. 
+ * The first phase is data to primary indexes, and maybe some additional indexes.
  * Then phases of replaying an index (triples or quads) to drive creating more secondary
  * indexes.
  * </p>
@@ -51,12 +51,12 @@ import org.apache.jena.tdb2.sys.TDBInternal;
  * {@link LoaderPlans#loaderPlanParallel} is the parallel loader - do everything in
  * the first phase, one thread for pasring, for node table insertion and one for each index built.
  * </p>
- * <p>  
- * {@link LoaderPlans#loaderPlanPhased} is the phased loader. 
+ * <p>
+ * {@link LoaderPlans#loaderPlanPhased} is the phased loader.
  * </p>
  * <p>
- * The process is: 
- * <blockquote> 
+ * The process is:
+ * <blockquote>
  * Data phase: {@code parser -> to NodeIds/Tuples -> TupleIndex+}
  * <br/>
  * Additional index phases: {@code primary index -> Indexer*}
@@ -109,7 +109,7 @@ public class LoaderMain extends LoaderBase implements DataLoader {
     public LoaderMain(LoaderPlan loaderPlan, DatasetGraph dsg, MonitorOutput output) {
         this(loaderPlan, dsg, null, output);
     }
-    
+
     public LoaderMain(LoaderPlan loaderPlan, DatasetGraph dsg, Node graphName, MonitorOutput output) {
         super(dsg, graphName, output);
         this.loaderPlan = loaderPlan;
@@ -134,31 +134,32 @@ public class LoaderMain extends LoaderBase implements DataLoader {
 
     /**
      * Create data ingestion and primary index building of a {@link LoaderPlan}.
-     * Separate threads for parsing, node table loading and primary index building.  
+     * In phase 1, separate threads for parsing, node table loading and primary index building,
+     * 
+     * Used by {@link InputStage#MULTI}.
      */
     private static StreamRDFCounting executeData(LoaderPlan loaderPlan, DatasetGraphTDB dsgtdb, Map<String, TupleIndex> indexMap, List<BulkStartFinish> dataProcess, MonitorOutput output) {
-        DatasetPrefixesTDB dps = (DatasetPrefixesTDB)dsgtdb.getPrefixes();
-        PrefixHandler prefixHandler = new PrefixHandler(dps, output);
+        StoragePrefixesTDB dps = (StoragePrefixesTDB)dsgtdb.getPrefixes();
+        PrefixHandlerBulk prefixHandler = new PrefixHandlerBulk(dps, output);
         dataProcess.add(prefixHandler);
-    
-        // Must be one index at least of each triples and quads.
-            
+
+        // -- Phase 2 block. Indexer and Destination (blocks of Tuple<NodeId>)
         TupleIndex[] idx3 = PhasedOps.indexSetFromNames(loaderPlan.primaryLoad3(), indexMap);
         Indexer indexer3 = new Indexer(output, idx3);
         TupleIndex[] idx4 = PhasedOps.indexSetFromNames(loaderPlan.primaryLoad4(), indexMap);
         Indexer indexer4 = new Indexer(output, idx4);
-    
-        dataProcess.add(indexer4);
         dataProcess.add(indexer3);
-        
+        dataProcess.add(indexer4);
+
         Destination<Tuple<NodeId>> functionIndexer3 = indexer3.index();
         Destination<Tuple<NodeId>> functionIndexer4 = indexer4.index();
-        
+        // -- Phase 2 block.
+
+        // -- Phase 1.
         DataToTuples dtt = new DataToTuples(dsgtdb, functionIndexer3, functionIndexer4, output);
-        Consumer<DataBlock> dest = dtt.data();
-        DataBatcher dataBatcher = new DataBatcher(dest, prefixHandler.handler(), output);
+        DataBatcher dataBatcher = new DataBatcher(dtt.data(), prefixHandler.handler(), output);
         StreamRDF baseInput = dataBatcher;
-        
+
         dataProcess.add(dtt);
         dataProcess.add(dataBatcher);
         return dataBatcher;
@@ -166,57 +167,67 @@ public class LoaderMain extends LoaderBase implements DataLoader {
 
     /**
      * Create data ingestion and primary index building of a {@link LoaderPlan}.
-     * One thread for parsing and node table building and one for each primary index building.  
-     * This version uses a thread for parse/NodeTable/Tuple and a thread for each of triple and quad index for phase one.  
+     * One thread for parsing and node table building and one for each primary index building.
+     * This version uses a thread for parse/NodeTable/Tuple and a thread for each of triple and quad index for phase one.
+     * 
+     * Used by {@link InputStage#PARSE_NODE}. 
      */
     private static StreamRDFCounting executeDataParseId(LoaderPlan loaderPlan, DatasetGraphTDB dsgtdb, Map<String, TupleIndex> indexMap, List<BulkStartFinish> dataProcess, MonitorOutput output) {
         // One thread for parse/NodeTable.
         // Two steps of phase one on the invoking thread.
         // Chunk and dispatch to indexers for the tuple loading.
-        
+
+        // -- Phase 2 block.
         TupleIndex[] idx3 = PhasedOps.indexSetFromNames(loaderPlan.primaryLoad3(), indexMap);
         Indexer indexer3 = new Indexer(output, idx3);
         TupleIndex[] idx4 = PhasedOps.indexSetFromNames(loaderPlan.primaryLoad4(), indexMap);
         Indexer indexer4 = new Indexer(output, idx4);
-        
-        DataToTuplesInline dttInline = new DataToTuplesInline(dsgtdb, indexer3.index(), indexer4.index(), output);
         dataProcess.add(indexer3);
         dataProcess.add(indexer4);
+        Destination<Tuple<NodeId>> functionIndexer3 = indexer3.index();
+        Destination<Tuple<NodeId>> functionIndexer4 = indexer4.index();
+        // -- Phase 2 block.
+
+        // -- Phase 1.
+        DataToTuplesInline dttInline = new DataToTuplesInline(dsgtdb, functionIndexer3, functionIndexer4, output);
         dataProcess.add(dttInline);
         return dttInline;
     }
 
     /**
      * Create data ingestion and primary index building of a {@link LoaderPlan}.
-     * This version uses a thread for parse/NodeTable/Tuple/Index.  
+     * This version uses a thread for parse/NodeTable/Tuple/Index.
+     * 
+     * Used by {@link InputStage#PARSE_NODE_INDEX}. 
      */
     private static StreamRDFCounting executeDataOneThread(LoaderPlan loaderPlan, DatasetGraphTDB dsgtdb, Map<String, TupleIndex> indexMap, List<BulkStartFinish> dataProcess, MonitorOutput output) {
         // One thread input stage.
         // All three phase one steps on the invoking thread.
 
+        // -- Not Phase 2 block :  IndexerInline; Consumer<Tuple<NodeId>>
         TupleIndex[] idx3 = PhasedOps.indexSetFromNames(loaderPlan.primaryLoad3(), indexMap);
         IndexerInline indexer3 = new IndexerInline(output, idx3);
         Consumer<Tuple<NodeId>> dest3 = tuple->indexer3.load(tuple);
-        
+
         TupleIndex[] idx4 = PhasedOps.indexSetFromNames(loaderPlan.primaryLoad4(), indexMap);
         IndexerInline indexer4 = new IndexerInline(output, idx4);
         Consumer<Tuple<NodeId>> dest4 = tuple->indexer4.load(tuple);
-        
+
         DataToTuplesInlineSingle dataToTuples = new DataToTuplesInlineSingle(dsgtdb, dest3, dest4, output);
         dataProcess.add(indexer3);
         dataProcess.add(indexer4);
         dataProcess.add(dataToTuples);
         return dataToTuples;
     }
-    
+
     @Override
     public StreamRDF stream() {
         return stream;
     }
-    
+
     @Override
     public boolean bulkUseTransaction() {
-        // Manipulate the transactions directly by component. 
+        // Manipulate the transactions directly by component.
         return false;
     }
 
@@ -233,16 +244,16 @@ public class LoaderMain extends LoaderBase implements DataLoader {
     public void finishBulk() {
         // Close off the data pipeline
         BulkProcesses.finish(dataProcess);
-        
+
         boolean doTriples = countTriples() != 0;
-        boolean doQuads = countQuads() != 0 ;
-        
+        boolean doQuads = countQuads() != 0;
+
         if ( doTriples ) {
             TupleIndex srcIdx3 = PhasedOps.findInIndexMap(loaderPlan.primaryLoad3()[0], indexMap);
             TupleIndex[][] indexSets3 = PhasedOps.indexSetsFromNames(loaderPlan.secondaryIndex3(), indexMap);
             executeSecondary(srcIdx3, indexSets3, dsgtdb, output);
         }
-        
+
         if ( doQuads ) {
             TupleIndex srcIdx4 = PhasedOps.findInIndexMap(loaderPlan.primaryLoad4()[0], indexMap);
             TupleIndex[][] indexSets4 = PhasedOps.indexSetsFromNames(loaderPlan.secondaryIndex4(), indexMap);
@@ -251,7 +262,7 @@ public class LoaderMain extends LoaderBase implements DataLoader {
         super.finishBulk();
         dsgtdb.getTxnSystem().getTxnMgr().finishExclusiveMode();
     }
-    
+
     /** Execute secondary index building of a {@link LoaderPlan} */
     private static void executeSecondary(TupleIndex srcIdx, TupleIndex[][] indexSets, DatasetGraphTDB dsgtdb, MonitorOutput output) {
         if ( indexSets.length == 0 )
@@ -261,7 +272,7 @@ public class LoaderMain extends LoaderBase implements DataLoader {
         // For each phase.
         for ( TupleIndex[] indexes : indexSets ) {
             if ( indexes.length == 0 )
-                // Nothing in this phase. 
+                // Nothing in this phase.
                 continue;
             indexPhase(processes, srcIdx, indexes, output);
             // processes - wait now or wait later?
@@ -286,7 +297,7 @@ public class LoaderMain extends LoaderBase implements DataLoader {
         PhasedOps.ReplayResult result = PhasedOps.replay(srcIdx, dest, output);
         // End read transaction on srcIdx
         transaction.end();
-        
+
         String timeStr = "---";
         if ( result.elapsed != 0 ) {
             double time = result.elapsed / 1000.0;
@@ -296,26 +307,15 @@ public class LoaderMain extends LoaderBase implements DataLoader {
         output.print("Index set:  %s => %s [%,d items, %s seconds]", srcIdx.getName(), indexSetLabel, result.items, timeStr);
     }
 
-    
-//    private static Map<String, TupleIndex> indexMap(DatasetGraphTDB dsgtdb) {
-//        Map<String, TupleIndex> indexMap = new HashMap<>();
-//        // All triple/quad indexes.
-//        Arrays.stream(dsgtdb.getTripleTable().getNodeTupleTable().getTupleTable().getIndexes())
-//              .forEach(idx->indexMap.put(idx.getName(), idx));
-//        Arrays.stream(dsgtdb.getQuadTable().getNodeTupleTable().getTupleTable().getIndexes())
-//              .forEach(idx->indexMap.put(idx.getName(), idx));
-//        return indexMap;
-//    }
-    
     @Override
     public void finishException(Exception ex) {
-        try { 
+        try {
             dsgtdb.getTxnSystem().getTxnMgr().finishExclusiveMode();
         } catch (Exception ex2) {
             ex.addSuppressed(ex2);
         }
     }
-    
+
     @Override
     public long countTriples() {
         return dataInput.countTriples();

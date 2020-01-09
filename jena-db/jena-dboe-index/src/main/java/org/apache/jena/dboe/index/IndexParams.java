@@ -23,16 +23,16 @@ import org.apache.jena.dboe.base.block.FileMode;
 
 public interface IndexParams extends BlockParams {
     /** File Mode */
-    @Override public FileMode getFileMode() ;
+    @Override public FileMode getFileMode();
 
     /** Block size - this is only configurable when the on-disk are created.
      * After that, the same value as at creation must be used each time.
      */
-    @Override public Integer getBlockSize() ;
-    
+    @Override public Integer getBlockSize();
+
     /** Block read cache size (mmap'ed files do not have a block cache)*/
-    @Override public Integer getBlockReadCacheSize() ;
-    
+    @Override public Integer getBlockReadCacheSize();
+
     /** Block write cache size (mmap'ed files do not have a block cache)*/
-    @Override public Integer getBlockWriteCacheSize() ;
+    @Override public Integer getBlockWriteCacheSize();
 }

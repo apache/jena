@@ -23,5 +23,5 @@ import org.apache.jena.dboe.DBOpEnvException;
 public class RecordException extends DBOpEnvException
 {
     public RecordException() {}
-    public RecordException(String msg) { super(msg) ; }
+    public RecordException(String msg) { super(msg); }
 }

@@ -20,24 +20,24 @@ package org.apache.jena.dboe.transaction.txn;
 
 import org.apache.jena.dboe.base.file.BufferChannel;
 
-/** StateManagement for a number of long values, 
+/** StateManagement for a number of long values,
  *  state accessed by index.
  */
 public final class StateMgrDataIdx extends StateMgrData {
     public StateMgrDataIdx(BufferChannel storage, long... initialData) {
-        super(storage, initialData) ;
+        super(storage, initialData);
     }
 
     // Expose these operations as public
-    
+
     @Override
-    public long[] getData()              { return super.getData() ; }
+    public long[] getData()              { return super.getData(); }
 
     @Override
     public void setData(long... newData) { super.setData(newData); }
 
     @Override
-    public long get(int i)           { return super.get(i) ; }
+    public long get(int i)           { return super.get(i); }
 
     @Override
     public void set(int i, long v)   { super.set(i, v); }

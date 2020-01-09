@@ -18,103 +18,103 @@
 
 package org.apache.jena.fuseki.async;
 
-import static java.lang.String.format ;
+import static java.lang.String.format;
 
-import java.util.concurrent.Callable ;
+import java.util.concurrent.Callable;
 
-import org.apache.jena.atlas.lib.DateTimeUtils ;
-import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.server.DataService ;
-import org.slf4j.Logger ;
+import org.apache.jena.atlas.lib.DateTimeUtils;
+import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.server.DataService;
+import org.slf4j.Logger;
 
-/** An asynchronous task */ 
-public class AsyncTask implements Callable<Object>  
+/** An asynchronous task */
+public class AsyncTask implements Callable<Object>
 {
-    private static Logger log = Fuseki.serverLog ; 
-    
-    private final Callable<Object> callable ;
-    private final AsyncPool pool ;
+    private static Logger log = Fuseki.serverLog;
 
-    private final String displayName ;
-    private final DataService dataService ;
+    private final Callable<Object> callable;
+    private final AsyncPool pool;
 
-    private String startPoint = null ;
-    private String finishPoint = null ;
+    private final String displayName;
+    private final DataService dataService;
 
-    private final String taskId ;
+    private String startPoint = null;
+    private String finishPoint = null;
 
-    private long requestId ;
+    private final String taskId;
 
-    /*package*/ AsyncTask(Callable<Object> callable, 
+    private long requestId;
+
+    /*package*/ AsyncTask(Callable<Object> callable,
                           AsyncPool pool,
                           String taskId,
                           String displayName,
                           DataService dataService,
                           long requestId) {
-        this.callable = callable ;
-        this.pool = pool ;
-        this.taskId = taskId ; 
-        this.displayName = displayName ;
-        this.dataService = dataService ;
-        this.requestId = requestId ;
+        this.callable = callable;
+        this.pool = pool;
+        this.taskId = taskId;
+        this.displayName = displayName;
+        this.dataService = dataService;
+        this.requestId = requestId;
     }
 
     /** Unique task id */
-    public String getTaskId() { return taskId ; }
-    
+    public String getTaskId() { return taskId; }
+
     /** Request id that caused this task (may be -1 for N/A) */
-    public long getOriginatingRequestId() { return requestId ; }
+    public long getOriginatingRequestId() { return requestId; }
 
     /** Display name - no newlines */
-    public String displayName() { return displayName ; }
-    
-    public DataService getDataService() { return dataService ; }
+    public String displayName() { return displayName; }
+
+    public DataService getDataService() { return dataService; }
 
     private void start() {
         if ( startPoint != null ) {
-            String msg = format("[Task %s] Async task has already been started", taskId) ;
-            Log.warn(Fuseki.serverLog, msg) ;
-            throw new InternalErrorException("Finish has already been called ["+getTaskId()+"]") ; 
+            String msg = format("[Task %s] Async task has already been started", taskId);
+            Log.warn(Fuseki.serverLog, msg);
+            throw new InternalErrorException("Finish has already been called ["+getTaskId()+"]");
         }
-            
-        Fuseki.serverLog.info(format("[Task %s] starts : %s",taskId, displayName)) ;
-        startPoint = DateTimeUtils.nowAsXSDDateTimeString() ;
+
+        Fuseki.serverLog.info(format("[Task %s] starts : %s",taskId, displayName));
+        startPoint = DateTimeUtils.nowAsXSDDateTimeString();
     }
-    
+
     public void finish() {
         if ( finishPoint != null ) {
-            String msg = format("[Task %s] Async task has already been finished", taskId) ;
-            Log.warn(Fuseki.serverLog, msg) ;
-            throw new InternalErrorException("Finish has already been called ["+getTaskId()+"]") ; 
+            String msg = format("[Task %s] Async task has already been finished", taskId);
+            Log.warn(Fuseki.serverLog, msg);
+            throw new InternalErrorException("Finish has already been called ["+getTaskId()+"]");
         }
-        finishPoint = DateTimeUtils.nowAsXSDDateTimeString() ;
-        Fuseki.serverLog.info(format("[Task %s] finishes : %s",taskId, displayName)) ;
+        finishPoint = DateTimeUtils.nowAsXSDDateTimeString();
+        Fuseki.serverLog.info(format("[Task %s] finishes : %s",taskId, displayName));
     }
-    
+
     @Override
     public Object call() {
         try {
-            start() ;
-            return callable.call() ;
+            start();
+            return callable.call();
         }
         catch (Exception ex) {
-            log.error("Async task threw an expection", ex) ;
-            return null ;
+            log.error("Async task threw an expection", ex);
+            return null;
         }
         finally {
-            finish() ;
-            pool.finished(this) ;
+            finish();
+            pool.finished(this);
         }
     }
 
     public String getStartPoint() {
-        return startPoint ;
+        return startPoint;
     }
 
     public String getFinishPoint() {
-        return finishPoint ;
+        return finishPoint;
     }
 }
 

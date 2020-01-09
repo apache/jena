@@ -35,17 +35,17 @@ import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.sys.JenaSystem;
 
-/** A library of operations related to data access security for Fuseki */  
+/** A library of operations related to data access security for Fuseki */
 public class DataAccessCtl {
     static { JenaSystem.init(); }
-    
+
 //    /**
 //     * Flag for whether this is data access controlled or not - boolean false or undef for "not
 //     * controlled". This is an alternative to {@link DatasetGraphAccessControl}.
 //     * @see #isAccessControlled(DatasetGraph)
 //     */
 //    public static final Symbol   symControlledAccess        = Symbol.create(VocabSecurity.getURI() + "controlled");
-    
+
     /**
      * Symbol for the {@link AuthorizationService}.
      * This is an alternative to {@link DatasetGraphAccessControl}.
@@ -53,7 +53,7 @@ public class DataAccessCtl {
      */
     public static final Symbol   symAuthorizationService    = Symbol.create(VocabSecurity.getURI() + "authService");
 
-    /** Get the user from the servlet context via {@link HttpServletRequest#getRemoteUser} */ 
+    /** Get the user from the servlet context via {@link HttpServletRequest#getRemoteUser} */
     public static final Function<HttpAction, String> requestUserServlet = (action)->action.getUser();
 
     /**
@@ -72,14 +72,14 @@ public class DataAccessCtl {
     }
 
     /**
-     * Return a {@link DatasetGraph} with added data access control. 
+     * Return a {@link DatasetGraph} with added data access control.
      * Use of the original {@code DatasetGraph} is not controlled.
      */
     public static Dataset controlledDataset(Dataset dsBase, AuthorizationService reg) {
         DatasetGraph dsg = controlledDataset(dsBase.asDatasetGraph(), reg);
         return DatasetFactory.wrap(dsg);
     }
-    
+
     /**
      * Return a {@link DatasetGraph} with added data access control. Use of the original
      * {@code DatasetGraph} is not controlled.
@@ -89,12 +89,12 @@ public class DataAccessCtl {
             DatasetGraphAccessControl dsgx = (DatasetGraphAccessControl)dsgBase;
             if ( reg == dsgx.getAuthService() )
                 return dsgx;
-            throw new IllegalArgumentException("DatasetGraph is alerady wrapped on a DatasetGraphAccessControl with a different AuthorizationService");
+            throw new IllegalArgumentException("DatasetGraph is already wrapped on a DatasetGraphAccessControl with a different AuthorizationService");
         }
-        
+
         DatasetGraphAccessControl dsg1 = new DatasetGraphAccessControl(dsgBase, reg);
         return dsg1;
-    } 
+    }
 
     /**
      * Return whether a {@code DatasetGraph} has access control, either because it is wrapped in
@@ -125,12 +125,12 @@ public class DataAccessCtl {
         // Unfortunately that means find all named graphs.
 //        if ( sCxt instanceof SecurityContextAllowNamedGraphs ) {
 //        }
-        
+
         Collection<Node> names = sCxt.visibleGraphs();
         if ( names == null )
-            // XXX does not scale.
+            // TODO does not scale.
             names = Iter.toList(dsg.listGraphNodes());
-        
+
         return new DatasetGraphFilteredView(dsg, sCxt.predicateQuad(), sCxt.visibleGraphs());
     }
 }

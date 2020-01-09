@@ -22,58 +22,53 @@ import static org.apache.jena.dboe.test.RecordLib.intToRecord;
 import static org.apache.jena.dboe.test.RecordLib.recordToInt;
 
 import org.apache.jena.dboe.base.record.Record;
-import org.junit.Assert ;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TestRecord extends Assert
 {
-    static final public int RecLen = 4 ;
-    
-    @Test public void int1()
-    {
-        Record r = intToRecord(1234, 4) ;
-        int v = recordToInt(r) ;
-        assertEquals(v , 1234) ;
-    }
-    
-    @Test public void int2()
-    {
-        // Negative numbers only work for length 4.
-        Record r = intToRecord(-99, 4) ;
-        int v = recordToInt(r) ;
-        assertEquals(v , -99) ;
-    }
-    
-    @Test public void record1()
-    {
-        Record r1 = intToRecord(1, RecLen) ;
-        Record r2 = intToRecord(1, RecLen) ;
-        assertTrue(Record.keyEQ(r1,r2)) ;
-        assertTrue(Record.keyGE(r1,r2)) ;
-        assertTrue(Record.keyLE(r1,r2)) ;
-        assertFalse(Record.keyLT(r1,r2)) ;
-        assertFalse(Record.keyGT(r1,r2)) ;
-    }
-    
-    @Test public void record2()
-    {
-        Record r1 = intToRecord(1000, RecLen) ;
-        Record r2 = intToRecord(2222, RecLen) ;
-        assertFalse(Record.keyEQ(r1,r2)) ;
-        assertFalse(Record.keyGE(r1,r2)) ;
-        assertTrue(Record.keyLE(r1,r2)) ;
-        assertTrue(Record.keyLT(r1,r2)) ;
-        assertFalse(Record.keyGT(r1,r2)) ;
+    static final public int RecLen = 4;
+
+    @Test public void int1() {
+        Record r = intToRecord(1234, 4);
+        int v = recordToInt(r);
+        assertEquals(v , 1234);
     }
 
-    @Test public void record3()
-    {
-        Record r1 = intToRecord(1000, RecLen)  ;
-        Record r2 = intToRecord(0, RecLen) ;
-        assertFalse(Record.keyEQ(r1,r2)) ;
-        assertTrue(Record.keyGE(r1,r2)) ;
-        assertFalse(Record.keyLE(r1,r2)) ;
-        assertFalse(Record.keyLT(r1,r2)) ;
-        assertTrue(Record.keyGT(r1,r2)) ;
+    @Test public void int2() {
+        // Negative numbers only work for length 4.
+        Record r = intToRecord(-99, 4);
+        int v = recordToInt(r);
+        assertEquals(v , -99);
+    }
+
+    @Test public void record1() {
+        Record r1 = intToRecord(1, RecLen);
+        Record r2 = intToRecord(1, RecLen);
+        assertTrue(Record.keyEQ(r1,r2));
+        assertTrue(Record.keyGE(r1,r2));
+        assertTrue(Record.keyLE(r1,r2));
+        assertFalse(Record.keyLT(r1,r2));
+        assertFalse(Record.keyGT(r1,r2));
+    }
+
+    @Test public void record2() {
+        Record r1 = intToRecord(1000, RecLen);
+        Record r2 = intToRecord(2222, RecLen);
+        assertFalse(Record.keyEQ(r1,r2));
+        assertFalse(Record.keyGE(r1,r2));
+        assertTrue(Record.keyLE(r1,r2));
+        assertTrue(Record.keyLT(r1,r2));
+        assertFalse(Record.keyGT(r1,r2));
+    }
+
+    @Test public void record3() {
+        Record r1 = intToRecord(1000, RecLen) ;
+        Record r2 = intToRecord(0, RecLen);
+        assertFalse(Record.keyEQ(r1,r2));
+        assertTrue(Record.keyGE(r1,r2));
+        assertFalse(Record.keyLE(r1,r2));
+        assertFalse(Record.keyLT(r1,r2));
+        assertTrue(Record.keyGT(r1,r2));
     }
 }

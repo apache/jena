@@ -36,17 +36,27 @@ import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
 /**
- * Build an Construct query.
+ * Builder for SPARQL Construct Queries.
+ * <p>
+ * The ConstructBuilder provides chainable methods to programmatically generate SPARQL Construct Queries.
+ * The application order of the methods is not relevant for the resulting query.
+ * An {@link ExprFactory} is intended for use along with the ConstructBuilder to generate needed {@link Expr} parameter values.
+ * An {@link ExprFactory} that works with the same prefixes can be obtained with {@link ConstructBuilder#getExprFactory()}.
+ * <p>
+ * The ConstructBuilder can be used as<b>prepared query</b>.
+ * Values for variables in the created query can be set with {@link ConstructBuilder#setVar(Object, Object)} and {@link ConstructBuilder#setVar(Var, Node)}.
+ * The method {@link ConstructBuilder#clearWhereValues()} allows to clear the set values. 
  * 
+ * @see AskBuilder
+ * @see DescribeBuilder
+ * @see SelectBuilder
+ * @see UpdateBuilder
  */
 public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> implements DatasetClause<ConstructBuilder>,
 		WhereClause<ConstructBuilder>, SolutionModifierClause<ConstructBuilder>, ConstructClause<ConstructBuilder> {
 
 	private final HandlerBlock handlerBlock;
 
-	/**
-	 * Constructor
-	 */
 	public ConstructBuilder() {
 		super();
 		query.setQueryConstructType();

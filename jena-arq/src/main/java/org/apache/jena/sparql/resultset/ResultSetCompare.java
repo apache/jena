@@ -27,9 +27,9 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingUtils ;
+import org.apache.jena.sparql.util.EqualityTest;
 import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 import org.apache.jena.sparql.util.NodeUtils ;
-import org.apache.jena.sparql.util.NodeUtils.EqualityTest ;
 
 /** Comparison of ResultSets.
  *  Note that reading ResultSets is destructive so consider using {@link ResultSetRewindable}
@@ -134,7 +134,7 @@ public class ResultSetCompare
         ResultSetRewindable rs2a = ResultSetFactory.makeRewindable(rs2) ;
         
         // Aligned rows
-        if ( equivalent(convert(rs1a), convert(rs2a), new BNodeIso(NodeUtils.sameTerm)) )
+        if ( equivalent(convert(rs1a), convert(rs2a), new BNodeIso(NodeUtils.sameNode)) )
             return true ;
         rs1a.reset() ;    
         rs2a.reset() ;
@@ -161,7 +161,7 @@ public class ResultSetCompare
     }
 
     /** compare two result sets for equivalence.  Equivalence means:
-     * Each row in rs1 matchs the same index row in rs2.
+     * Each row in rs1 matches the same index row in rs2.
      * Rows match if they have the same variables with the same values, 
      * bNodes must map to a consistent other bNodes.  
      * RDF term comparisons of nodes.   
@@ -172,8 +172,9 @@ public class ResultSetCompare
      * @return true if they are equivalent
      */
     public static boolean equalsByTermAndOrder(ResultSet rs1, ResultSet rs2) {
-        if ( ! compareHeader(rs1, rs2) ) return false ;
-        return equivalentByOrder(convert(rs1) , convert(rs2), new BNodeIso(NodeUtils.sameTerm)) ;
+        if ( ! compareHeader(rs1, rs2) )
+            return false ;
+        return equivalentByOrder(convert(rs1) , convert(rs2), new BNodeIso(NodeUtils.sameNode)) ;
     }
 
     /** compare two result sets for exact equality equivalence.
@@ -187,11 +188,10 @@ public class ResultSetCompare
      * @param rs2
      * @return true if they are equivalent
      */
-    public static boolean equalsExact(ResultSet rs1, ResultSet rs2)
-    {
-        if ( ! compareHeader(rs1, rs2) ) return false ;
-
-        return equivalentByOrder(convert(rs1) , convert(rs2), new EqualityTest(){}) ;
+    public static boolean equalsExact(ResultSet rs1, ResultSet rs2) {
+        if ( !compareHeader(rs1, rs2) )
+            return false;
+        return equivalentByOrder(convert(rs1) , convert(rs2), NodeUtils.sameNode);
     }
 
     /** Compare two result sets for bNode isomorphism equivalence.
@@ -204,7 +204,7 @@ public class ResultSetCompare
     }
     
     /** Compare two bindings, use the node equality test provided */
-    static public boolean equal(Binding bind1, Binding bind2, NodeUtils.EqualityTest test) {
+    static public boolean equal(Binding bind1, Binding bind2, EqualityTest test) {
         if ( bind1 == bind2 ) 
             return true ;
         if ( bind1.size() != bind2.size() )
@@ -323,6 +323,9 @@ public class ResultSetCompare
                 return literalTest.equal(n1, n2) ;
             
             if ( n1.isBlank() && n2.isBlank() )
+                return mapping.makeIsomorphic(n1, n2) ;
+            
+            if ( n1.isVariable() && n2.isVariable() )
                 return mapping.makeIsomorphic(n1, n2) ;
             
             return false ;

@@ -26,11 +26,16 @@ import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.function.FunctionEnv ;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AggAvg extends AggregatorBase
 {
     // ---- AVG(?var)
     public AggAvg(Expr expr) { super("AVG", false, expr) ; } 
+    
+    private static Logger log = LoggerFactory.getLogger("AVG") ;
+
     @Override
     public Aggregator copy(ExprList expr) { return new AggAvg(expr.get(0)) ; }
 
@@ -65,15 +70,13 @@ public class AggAvg extends AggregatorBase
         // Non-empty case but still can be nothing because the expression may be undefined.
         private NodeValue total = noValuesToAvg ;
         private int count = 0 ;
-        
-        static final boolean DEBUG = false ;
-        
+
         public AccAvg(Expr expr) { super(expr, false) ; }
 
         @Override
         protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
         { 
-            if ( DEBUG ) System.out.println("avg: "+nv) ;
+			log.debug("avg {}", nv);
 
             if ( nv.isNumber() )
             {
@@ -88,8 +91,9 @@ public class AggAvg extends AggregatorBase
                 //ARQ.getExecLogger().warn("Evaluation error: avg() on "+nv) ;
                 throw new ExprEvalException("avg: not a number: "+nv) ;
             }
-            
-            if ( DEBUG ) System.out.println("avg: ("+total+","+count+")") ;
+
+            log.debug("avg count {}", count);
+
         }
         
         @Override

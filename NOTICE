@@ -1,5 +1,5 @@
 Apache Jena
-Copyright 2011-2019 The Apache Software Foundation
+Copyright 2011-2020 The Apache Software Foundation
 
 This product includes software developed at
 The Apache Software Foundation (http://www.apache.org/).
@@ -19,3 +19,6 @@ This product includes software developed by Mort Bay Consulting Pty. Ltd.
 Portions of this software are from Apache Xerces and were originally based on the following:
   - software copyright (c) 1999, IBM Corporation., http://www.ibm.com.
   - software copyright (c) 1999, Sun Microsystems., http://www.sun.com.
+
+This product includes software developed at the Open Geospatial Consortium:
+http://www.opengeospatial.org/ogc/software

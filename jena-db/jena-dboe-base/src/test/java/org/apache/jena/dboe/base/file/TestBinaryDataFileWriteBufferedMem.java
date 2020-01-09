@@ -25,8 +25,8 @@ import org.apache.jena.dboe.base.file.BinaryDataFileWriteBuffered;
 public class TestBinaryDataFileWriteBufferedMem extends AbstractTestBinaryDataFile {
     @Override
     protected BinaryDataFile createBinaryDataFile() {
-        BinaryDataFileMem file = new BinaryDataFileMem() ;
-        return new BinaryDataFileWriteBuffered(file) ;
+        BinaryDataFileMem file = new BinaryDataFileMem();
+        return new BinaryDataFileWriteBuffered(file);
     }
 }
 

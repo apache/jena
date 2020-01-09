@@ -136,8 +136,8 @@ public class TestUtils {
      *            Source Dataset
      * @param service
      *            Remote Graph Store protocol service
-     * @param authenticator
-     *            HTTP Authenticator
+     * @param client
+     *            HTTP Client
      */
     public static void copyToRemoteDataset(Dataset source, String service, HttpClient client) {
         DatasetAccessor target = DatasetAccessorFactory.createHTTP(service, client);

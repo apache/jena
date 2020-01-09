@@ -18,15 +18,15 @@
 
 package org.apache.jena.dboe.transaction;
 
-import java.nio.ByteBuffer ;
+import java.nio.ByteBuffer;
 
-import org.apache.jena.atlas.logging.FmtLog ;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.dboe.transaction.txn.ComponentId;
 import org.apache.jena.dboe.transaction.txn.SysTransState;
 import org.apache.jena.dboe.transaction.txn.Transaction;
 import org.apache.jena.dboe.transaction.txn.TransactionalComponent;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Logging for transaction steps. This class is stateless in the transaction.
@@ -35,117 +35,117 @@ import org.slf4j.LoggerFactory ;
  */
 
 public class TransLogger implements TransactionalComponent {
-    private final Logger log ;
-    private final boolean everyEvent ; 
-    
-    /** Create a logger for begin-commit/abort-end */ 
+    private final Logger log;
+    private final boolean everyEvent;
+
+    /** Create a logger for begin-commit/abort-end */
     public TransLogger() {
-        this(null, false) ;
+        this(null, false);
     }
-    
+
     /** Create a logger, either just  begin-commit/abort-end or all steps */
     public TransLogger(Logger logger) {
-        this(logger, false) ;
+        this(logger, false);
     }
 
     /** Create a logger, either just  begin-commit/abort-end or all steps */
     public TransLogger(Logger logger, boolean all) {
         if ( logger == null )
-            logger = LoggerFactory.getLogger(TransLogger.class) ;
-        this.log = logger ;
-        this.everyEvent = all ;
+            logger = LoggerFactory.getLogger(TransLogger.class);
+        this.log = logger;
+        this.everyEvent = all;
     }
 
     @Override
     public ComponentId getComponentId() {
 //        if ( everyEvent )
-//            log.info("getComponentId") ; 
-        return null ;
+//            log.info("getComponentId");
+        return null;
     }
 
     @Override
     public void startRecovery() {
         if ( everyEvent )
-            log.info("startRecovery") ;
+            log.info("startRecovery");
     }
 
     @Override
     public void recover(ByteBuffer ref) {
         // Is not called because this compoent vener writes a redo/undo action to the log.
         if ( everyEvent )
-            log.info("recover") ;
+            log.info("recover");
     }
 
     @Override
     public void finishRecovery() {
         if ( everyEvent )
-            log.info("finishRecovery") ;
+            log.info("finishRecovery");
     }
 
     @Override
     public void cleanStart() {
         if ( everyEvent )
-            log.info("cleanStart") ;
+            log.info("cleanStart");
     }
 
     @Override
     public void begin(Transaction transaction) {
-        txnStep("begin", transaction) ;
+        txnStep("begin", transaction);
     }
 
     @Override
     public boolean promote(Transaction transaction) {
-        txnStep("promote", transaction) ;
-        return true ;
+        txnStep("promote", transaction);
+        return true;
     }
 
     @Override
     public ByteBuffer commitPrepare(Transaction transaction) {
         if ( everyEvent )
-            txnStep("commitPrepare", transaction) ;
-        return null ;
+            txnStep("commitPrepare", transaction);
+        return null;
     }
 
     @Override
     public void commit(Transaction transaction) {
-        txnStep("commit", transaction) ;
+        txnStep("commit", transaction);
     }
 
     @Override
     public void commitEnd(Transaction transaction) {
         if ( everyEvent )
-            txnStep("commitEnd", transaction) ;
+            txnStep("commitEnd", transaction);
     }
 
     @Override
     public void abort(Transaction transaction) {
-        txnStep("abort", transaction) ;
+        txnStep("abort", transaction);
     }
 
     @Override
     public void complete(Transaction transaction) {
-        txnStep("complete", transaction) ;
+        txnStep("complete", transaction);
     }
 
     @Override
     public SysTransState detach() {
-        log.info("detach") ;
-        return null ;
+        log.info("detach");
+        return null;
     }
 
     @Override
     public void attach(SysTransState systemState) {
-        log.info("attach") ;
+        log.info("attach");
     }
 
     @Override
     public void shutdown() {
         if ( everyEvent )
-            log.info("shutdown") ;
+            log.info("shutdown");
     }
-    
+
     private void txnStep(String opName, Transaction transaction) {
-        FmtLog.info(log, "%-8s %s", transaction.getTxnId(), opName) ;
+        FmtLog.info(log, "%-8s %s", transaction.getTxnId(), opName);
     }
 
 }

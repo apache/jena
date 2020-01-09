@@ -36,8 +36,9 @@ import org.apache.jena.shared.JenaException ;
 
 /**
  * A dataset graph accessor that talks to stores that implement the SPARQL 1.1
- * Graph Store Protocol
- */
+ * Graph Store Protocol.
+/** @deprecated This will be replaced by the {@code RDFConnection} style at the Graph/Triple level. */
+@Deprecated
 public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
     // Test for this class are in Fuseki so they can be run with a server.
 
@@ -46,7 +47,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
     private static final RDFFormat           defaultSendLang   = RDFFormat.RDFXML_PLAIN ;
 
     private final String                     remote ;
-    private HttpClient                client ;
+    private HttpClient                       client ;
 
     private RDFFormat                        formatPutPost     = defaultSendLang ;
 
@@ -115,7 +116,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
         try {
             HttpOp.execHttpGet(url, graphAcceptHeader, graph, client, null) ;
         } catch (HttpException ex) {
-            if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 )
+            if ( ex.getStatusCode() == HttpSC.NOT_FOUND_404 )
                 return null ;
             throw ex ;
         }
@@ -137,7 +138,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
             HttpOp.execHttpHead(url, WebContent.defaultGraphAcceptHeader, noResponse, client, null) ;
             return true ;
         } catch (HttpException ex) {
-            if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 )
+            if ( ex.getStatusCode() == HttpSC.NOT_FOUND_404 )
                 return false ;
             throw ex ;
         }
@@ -172,7 +173,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
         try {
             HttpOp.execHttpDelete(url, noResponse, client, null) ;
         } catch (HttpException ex) {
-            if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 )
+            if ( ex.getStatusCode() == HttpSC.NOT_FOUND_404 )
                 return ;
         }
     }
@@ -227,7 +228,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
         } ;
 
         EntityTemplate entity = new EntityTemplate(producer) ;
-        String ct = syntax.getLang().getContentType().getContentType() ;
+        String ct = syntax.getLang().getContentType().getContentTypeStr() ;
         entity.setContentType(ct) ;
         return entity ;
     }

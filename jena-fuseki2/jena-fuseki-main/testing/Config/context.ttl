@@ -1,0 +1,47 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+
+[] rdf:type fuseki:Server ;
+   ja:context [ ja:cxtName "CONTEXT:SERVER" ; ja:cxtValue "server" ] ;
+   ja:context [ ja:cxtName "CONTEXT:ABC"    ; ja:cxtValue "server-abc" ] ;
+.
+
+<#service1> rdf:type fuseki:Service ;
+    fuseki:name         "ds-server" ;
+    fuseki:endpoint     [
+       fuseki:operation  fuseki:query;
+       fuseki:name       "" ;
+    ] ;
+    fuseki:dataset      [  rdf:type ja:RDFDataset ]
+    .
+
+<#service2> rdf:type fuseki:Service ;
+    fuseki:name         "ds-dataset" ;
+    fuseki:endpoint     [
+       fuseki:operation  fuseki:query;
+       fuseki:name       "" ;
+    ] ;
+    fuseki:dataset      <#datasetCxt>
+    .
+    
+<#service3> rdf:type fuseki:Service ;
+    fuseki:name         "ds-endpoint" ;
+    fuseki:endpoint     [
+       fuseki:operation  fuseki:query;
+       fuseki:name       "" ;
+       ja:context [ ja:cxtName "CONTEXT:ENDPOINT" ; ja:cxtValue "endpoint" ] ;
+       ja:context [ ja:cxtName "CONTEXT:ABC"      ; ja:cxtValue "endpoint-abc" ] ;
+    ] ;
+    fuseki:dataset      <#datasetCxt>
+    .
+
+<#datasetCxt> rdf:type ja:RDFDataset ;
+    ja:context [ ja:cxtName "CONTEXT:DATASET" ; ja:cxtValue "dataset" ] ;
+    ja:context [ ja:cxtName "CONTEXT:ABC"     ; ja:cxtValue "dataset-abc" ] ;
+    .

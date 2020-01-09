@@ -18,22 +18,21 @@
 
 package org.apache.jena.dboe.index;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
 import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.base.record.RecordMapper;
 
-
 public interface RangeIndex extends Index
 {
     /** Return records between min (inclusive) and max (exclusive), based on the record keys */
-    public Iterator<Record> iterator(Record recordMin, Record recordMax) ;
-    
-    public <X> Iterator<X> iterator(Record recordMin, Record recordMax, RecordMapper<X> mapper) ;
-    
+    public Iterator<Record> iterator(Record recordMin, Record recordMax);
+
+    public <X> Iterator<X> iterator(Record recordMin, Record recordMax, RecordMapper<X> mapper);
+
     /** Return the record containing the least key - may or may not have the associated value */
-    public Record minKey() ;
+    public Record minKey();
 
     /** Return the record containing the greatest key - may or may not have the associated value */
-    public Record maxKey() ;
+    public Record maxKey();
 }

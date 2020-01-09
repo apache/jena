@@ -27,6 +27,7 @@ import org.junit.runners.Suite ;
     , TestDistinctMem.class
     , TestDistinctDataBag.class 
     , TestDistinctDataBagLimited.class 
+    , TestDataBagDistinctOrder.class
     , TestCancelDistinct.class
 })
 public class TS_QueryIterators {

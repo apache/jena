@@ -49,7 +49,7 @@ public class NTripleReader extends Object implements RDFReader {
      */
     private String base;
 
-    NTripleReader() {
+    public NTripleReader() {
     }
     @Override
     public void read(Model model, InputStream in, String base)

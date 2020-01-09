@@ -18,13 +18,12 @@
 
 package org.apache.jena.tdb.sys;
 
-import org.apache.jena.sparql.core.DatasetGraph;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.setup.DatasetBuilderStd;
-import org.apache.jena.tdb.setup.StoreParams ;
-import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 
 /** Make datasets in various ways. */
@@ -52,42 +51,90 @@ public class TDBMaker
         return createDatasetGraphTransaction(Location.mem()) ;
     }
 
+    /* Caching here means that the same DatasetGraphTransaction is handed out by
+     * TDBFactory for each location. It can then can check for multiple attempts to
+     * start a transaction on the same thread. We don't support full nested
+     * transactions; we only supported nested calls on the same transaction where the
+     * inner transaction is compatible with the outer one. The inner one is not a
+     * transaction context and the application will be using the outer one.
+     * 
+     * If CACHING is false, each TDBFactory call creates a new
+     * DatasetGraphTransaction, and each acts independently, but safely for the
+     * location.
+     */
+    
+    private static final boolean CACHING = true;
+    private static final Map<Location, DatasetGraphTransaction> cache = CACHING ? new ConcurrentHashMap<>() : null ;
+    
     /**
-     * Release a {@code Location}.
+     * Release a {@code Location} and also release its {@link StoreConnection}.
      * Do not use a {@code Dataset} at this location without
      * remaking it via {@link TDBFactory}.
+     * This operation is primarily for tests.
      */
-    public static void releaseLocation(Location location) {
+    static void releaseLocation(Location location) {
+        uncache(location);
         StoreConnection.release(location) ;
     }
 
+    /**
+     * Release a {@code Location}.
+     * This operation does not release the {@link StoreConnection}.
+     * Use {@link #releaseLocation(Location)} where possible.
+     * This operation is for internal use.
+     */
+    static void uncache(Location location) {
+        if ( CACHING && ! location.isMemUnique() )
+            cache.remove(location);
+    }
+    
     /** 
      * Reset the making and caching of datasets.
      * Applications should not use this operation.
      * All dataset must be rebuild with {@link TDBFactory}
      * after calling this operation.
-     * Use {@link TDBFactory#release(DatasetGraph)} with care.  
-     * @deprecated
+     * @deprecated Use TDBInternal.reset()
      */
     @Deprecated
     public static void reset() {
-        StoreConnection.reset() ;
+        TDBInternal.reset();
+    }
+    
+    public static void resetCache() {
+        if ( CACHING )
+            cache.clear();
     }
     
     // Make a DatasetGraphTransaction
     private static DatasetGraphTransaction _create(Location location) {
-        // No need to cache StoreConnection does all that.
+        if ( ! CACHING || location.isMemUnique() )
+            return createDirect(location);
+        return cache.computeIfAbsent(location, TDBMaker::createDirect);
+    }
+
+    /**
+     * Create new {@link DatasetGraphTransaction}. A {@link DatasetGraphTransaction}
+     * is analogous to a JDBC connection and it forms a context for the MR+SW
+     * transaction behaviour. Normally, there is one {@link DatasetGraphTransaction}
+     * per location. A directly created one allows independent transactions from the
+     * same thread for specialized usage and testing.
+     * 
+     * @param location
+     * @return DatasetGraphTransaction
+     */
+    public static DatasetGraphTransaction createDirect(Location location) {
         return new DatasetGraphTransaction(location) ;
     }
 
-    // ---- Raw non-transactional
-    /** 
-     * Create a non-transactional TDB dataset graph.
-     * <b>Use at your own risk.</b>
-     * <i>This function does not attempt to share databases at the same location.</i> 
-     * @deprecated Use {@link TDBFactory} or {@link StoreConnection}.
-     */
-    @Deprecated
-    public static DatasetGraphTDB createDatasetGraphTDB(Location loc, StoreParams params)
-    { return DatasetBuilderStd.create(loc, params) ; }
+    
+//    // ---- Raw non-transactional
+//    /** 
+//     * Create a non-transactional TDB dataset graph.
+//     * <b>Use at your own risk.</b>
+//     * <i>This function does not attempt to share databases at the same location.</i> 
+//     * @deprecated Use {@link TDBFactory} or {@link StoreConnection}.
+//     */
+//    @Deprecated
+//    public static DatasetGraphTDB createDatasetGraphTDB(Location loc, StoreParams params)
+//    { return DatasetBuilderStd.create(loc, params) ; }
 }

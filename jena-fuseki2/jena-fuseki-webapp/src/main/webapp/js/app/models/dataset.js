@@ -102,47 +102,45 @@ define(
 
       /** Return the first endpoint of the first service that has the given type */
       endpointOfType: function( serviceType ) {
-        var service = this.serviceOfType( serviceType );
-        return service && _.first( service["srv.endpoints"] );
+          var service = this.serviceOfType( serviceType );
+          if ( ! service )
+              return null;
+          var x = service["srv.endpoints"];
+          var ep = _.first(x);
+          return ep;
       },
 
       /* Return URL for a service of a given type or null, if no such service */
       endpointURL: function( serviceType ) {
-        var endpoint = this.endpointOfType( serviceType );
-        return endpoint ? this.datasetEndpointURL( endpoint ) : null;
+          var endpoint = this.endpointOfType( serviceType );
+          return endpoint != null  ? this.datasetEndpointURL( endpoint ) : null ;
       },
 
       /** Return the URL for the given endpoint */
       datasetEndpointURL: function( endpoint ) {
-        return sprintf( "%s%s/%s", this.baseURL(), this.name(), endpoint );
+	  return endpoint == ""
+	      ? sprintf( "%s%s", this.baseURL(), this.name() )
+              : sprintf( "%s%s/%s", this.baseURL(), this.name(), endpoint );
       },
 
       /** Return the sparql query URL for this dataset, if it has one, or null */
       queryURL: function() {
-        return this.endpointURL( "Query" ) ;
-      },
-
-      /** Return the sparql query URL for this dataset, if it has one, or null */
-      quadsURL: function() {
-        return this.endpointURL( "Quads" ) ;
+        return this.endpointURL( "query" ) ;
       },
 
       /** Return the sparql update URL for this dataset, if it has one, or null */
       updateURL: function() {
-        return this.endpointURL( "Update" ) ;
+        return this.endpointURL( "update" ) ;
       },
 
       /** Return the GSP write URL for this dataset, if it has one, or null */
       graphStoreProtocolURL: function() {
-        if ( this.endpointURL( "GSP" ) )
-            // Old name
-            return this.endpointURL( "GSP" ) ;
-        return this.endpointURL( "GSP_RW" ) ;
+        return this.endpointURL( "gsp-rw" ) ;
       },
 
       /** Return the GSP read URL for this dataset, if it has one, or null */
       graphStoreProtocolReadURL: function() {
-        return this.endpointURL( "GSP_R" ) ;
+        return this.endpointURL( "gsp-r" ) ;
       },
 
       /** Return the upload URL for this dataset, if it has one, or null */

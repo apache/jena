@@ -25,16 +25,18 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.servlet.ServletContext;
-
-import org.apache.jena.fuseki.access.*;
-import org.apache.jena.fuseki.build.FusekiBuilder;
+import org.apache.jena.fuseki.access.AccessCtl_AllowGET;
+import org.apache.jena.fuseki.access.AccessCtl_Deny;
+import org.apache.jena.fuseki.access.AccessCtl_GSP_R;
+import org.apache.jena.fuseki.access.AccessCtl_SPARQL_QueryDataset;
+import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.DataService;
+import org.apache.jena.fuseki.server.Endpoint;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.servlets.ActionService;
+import org.apache.jena.fuseki.servlets.GSP_RW;
 import org.apache.jena.fuseki.servlets.HttpAction;
-import org.apache.jena.fuseki.servlets.ServiceDispatchRegistry;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.core.DatasetGraph;
 
@@ -56,85 +58,76 @@ public class FusekiLib {
     /** Add a dataset to a server */
     public static FusekiServer addDataset(FusekiServer server, String name, DatasetGraph dsg, boolean withUpdate) {
         DataAccessPointRegistry dataAccessPoints = DataAccessPointRegistry.get(server.getServletContext());
-        FusekiBuilder.addDataset(dataAccessPoints, name, dsg, withUpdate);
+        FusekiConfig.addDataset(dataAccessPoints, name, dsg, withUpdate);
         return server;
     }
 
     /** Add a {@link DataService} to a server */
     public static FusekiServer addDataset(FusekiServer server, String name, DataService dataService) {
         DataAccessPointRegistry dataAccessPoints = DataAccessPointRegistry.get(server.getServletContext());
-        FusekiBuilder.addDataService(dataAccessPoints, name, dataService);
+        FusekiConfig.addDataService(dataAccessPoints, name, dataService);
         return server;
     }
 
     /** Remove dataset from a server */
     public static FusekiServer removeDataset(FusekiServer server, String name) {
         DataAccessPointRegistry dataAccessPoints = DataAccessPointRegistry.get(server.getServletContext());
-        FusekiBuilder.removeDataset(dataAccessPoints, name);
+        FusekiConfig.removeDataset(dataAccessPoints, name);
         return server;
     }
-    
+
     /**
      * Return a {@code FusekiServer.Builder} setup for data access control.
      */
-    public static FusekiServer.Builder fusekiBuilder(Function<HttpAction, String> determineUser) {
+    public static FusekiServer.Builder fusekiBuilderAccessCtl(Function<HttpAction, String> determineUser) {
         FusekiServer.Builder builder = FusekiServer.create();
-        return fusekiBuilder(builder, determineUser);
+        return fusekiBuilderAccessCtl(builder, determineUser);
     }
-    
+
     /**
      * Modify a {@code FusekiServer.Builder} setup for data access control.
      */
-    public static FusekiServer.Builder fusekiBuilder(FusekiServer.Builder builder, Function<HttpAction, String> determineUser) {
-        // Replace the standard operations with the SecurityRegistry processing ones. 
+    public static FusekiServer.Builder fusekiBuilderAccessCtl(FusekiServer.Builder builder, Function<HttpAction, String> determineUser) {
+        // Replace the standard operations with the SecurityRegistry processing ones.
         builder.registerOperation(Operation.Query, WebContent.contentTypeSPARQLQuery, new AccessCtl_SPARQL_QueryDataset(determineUser));
-        builder.registerOperation(Operation.GSP_R, new AccessCtl_SPARQL_GSP_R(determineUser));
-        builder.registerOperation(Operation.Quads_R, new AccessCtl_REST_Quads_R(determineUser));
-        
+        builder.registerOperation(Operation.GSP_R, new AccessCtl_GSP_R(determineUser));
+
         // Block updates (can just not register these operations).
-        builder.registerOperation(Operation.Update, WebContent.contentTypeSPARQLUpdate, new AccessCtl_SPARQL_Update(determineUser));
-        builder.registerOperation(Operation.GSP_RW, new AccessCtl_SPARQL_GSP_RW(determineUser));
-        builder.registerOperation(Operation.Quads_RW, new AccessCtl_REST_Quads_RW(determineUser));
+        builder.registerOperation(Operation.Update, WebContent.contentTypeSPARQLUpdate, new AccessCtl_Deny("Update"));
+        builder.registerOperation(Operation.GSP_RW, new AccessCtl_AllowGET(new GSP_RW(), "GSP Write"));
+        builder.registerOperation(Operation.GSP_RW, new AccessCtl_GSP_R(determineUser));
         return builder;
     }
 
     /**
-     * Modify in-place an existing {@link FusekiServer} so that the read-operations for
+     * Modify in-place existing {@link Endpoint Endpoints} so that the read-operations for
      * query/GSP/Quads go to the data-filtering versions of the {@link ActionService ActionServices}.
      */
-    public static void modifyForAccessCtl(FusekiServer server, Function<HttpAction, String> determineUser) {
-        /*
-         * Reconfigure standard Jena Fuseki, replacing the default implementations with
-         * filtering ones. This for this server only, not system-wide.
-         */
-        // The mapping operation to handler is in the ServiceDispatchRegistry and is per
-        // server (per servlet context). "registerOrReplace" might be a better name,
-        ServletContext cxt = server.getServletContext();
-        ServiceDispatchRegistry reg = ServiceDispatchRegistry.get(cxt);
-        modifyForAccessCtl(reg, determineUser);
+    public static void modifyForAccessCtl(DataAccessPointRegistry dapRegistry, Function<HttpAction, String> determineUser) {
+        dapRegistry.forEach((name, dap) -> {
+            dap.getDataService().forEachEndpoint(ep->{
+                Operation op = ep.getOperation();
+                modifyForAccessCtl(ep, determineUser);
+            });
+        });
     }
-        
+
     /**
-     * Modify in-place an existing {@link ServiceDispatchRegistry} so that the operations for
-     * query/GSP/Quads go to the data-filtering versions of the {@link ActionService ActionServices}
+     * Modify in-place existing an {@link Endpoint} so that the read-operations for
+     * query/GSP/Quads go to the data-filtering versions of the {@link ActionService ActionServices}.
+     * Any other operations are replaced with "access denied".
      */
-    public static void modifyForAccessCtl(ServiceDispatchRegistry reg, Function<HttpAction, String> determineUser) {
-        resetOperation(reg, Operation.Query, WebContent.contentTypeSPARQLQuery, new AccessCtl_SPARQL_QueryDataset(determineUser));
-        resetOperation(reg, Operation.GSP_R, null, new AccessCtl_SPARQL_GSP_R(determineUser));
-        resetOperation(reg, Operation.Quads_R, null, new AccessCtl_REST_Quads_R(determineUser));
-
-        // Block updates
-        resetOperation(reg, Operation.Update, WebContent.contentTypeSPARQLUpdate, new AccessCtl_SPARQL_Update(determineUser));
-        resetOperation(reg, Operation.GSP_RW, null, new AccessCtl_SPARQL_GSP_RW(determineUser));
-        resetOperation(reg, Operation.Quads_RW, null, new AccessCtl_SPARQL_Update(determineUser));
-
-//        reg.unregister(Operation.Update);
-//        reg.unregister(Operation.GSP_RW);
-//        reg.unregister(Operation.Quads_RW);
+    public static void modifyForAccessCtl(Endpoint endpoint, Function<HttpAction, String> determineUser) {
+        endpoint.setProcessor( controlledProc(endpoint.getOperation(), determineUser));
     }
-    
-    private static void resetOperation(ServiceDispatchRegistry reg, Operation operation, String contentType, ActionService service) {
-        if ( reg.isRegistered(operation) )
-            reg.register(operation, contentType, service);
+
+    private static ActionService controlledProc(Operation op, Function<HttpAction, String> determineUser) {
+        if ( Operation.Query.equals(op) )
+            return new AccessCtl_SPARQL_QueryDataset(determineUser);
+       if ( Operation.GSP_R.equals(op) )
+           return new AccessCtl_GSP_R(determineUser);
+       if ( Operation.GSP_RW.equals(op) )
+           return new AccessCtl_GSP_R(determineUser);
+       return new AccessCtl_Deny("Not supported for graph level access control: "+op.getDescription());
     }
 }

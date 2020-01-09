@@ -25,7 +25,7 @@ import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.graph.GraphOps ;
 
 /** This is the test suite run over a regular DatasetGraph to check compatibility */
-public class TestDatasetGraphsRegular extends AbstractTestGraphOverDataset
+public class TestDatasetGraphsRegular extends AbstractTestGraphOverDatasetGraph
 {
     @Override
     protected DatasetGraph createBaseDSG() { return DatasetGraphFactory.create() ; }

@@ -16,10 +16,10 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.base.block ;
+package org.apache.jena.dboe.base.block;
 
-import java.util.ArrayDeque ;
-import java.util.Deque ;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * Recycle blocks - but only in-session. At the end of JVM run, the blocks are
@@ -27,37 +27,37 @@ import java.util.Deque ;
  */
 final public class BlockMgrFreeChain extends BlockMgrWrapper {
     // Could keep Pair<Integer, ByteBuffer>
-    // List<Block> freeBlocks = new ArrayList<Block>() ;
-    private final Deque<Block> freeBlocks = new ArrayDeque<>() ;    // Keep as heap?
+    // List<Block> freeBlocks = new ArrayList<Block>();
+    private final Deque<Block> freeBlocks = new ArrayDeque<>();    // Keep as heap?
 
     public BlockMgrFreeChain(BlockMgr blockMgr) {
-        super(blockMgr) ;
+        super(blockMgr);
     }
 
     @Override
     public Block allocate(int blockSize) {
         if ( !freeBlocks.isEmpty() ) {
-            Block block = freeBlocks.removeFirst() ;
-            block.getByteBuffer().position(0) ;
-            return block ;
+            Block block = freeBlocks.removeFirst();
+            block.getByteBuffer().position(0);
+            return block;
         }
-        return super.allocate(blockSize) ;
+        return super.allocate(blockSize);
     }
 
     @Override
     public void free(Block block) {
         if ( block.getId() >= blockMgr.allocLimit() )
-            freeBlocks.add(block) ;
+            freeBlocks.add(block);
     }
 
     @Override
     public void resetAlloc(long boundary) {
         super.resetAlloc(boundary);
         // Just clear - assumes this is effectively a transaction boundary.
-        freeBlocks.clear(); 
-//        Iterator<Block> iter = freeBlocks.iterator() ;
+        freeBlocks.clear();
+//        Iterator<Block> iter = freeBlocks.iterator();
 //        while(iter.hasNext()) {
-//            Block blk = iter.next() ;
+//            Block blk = iter.next();
 //            if ( blk.getId() < boundary )
 //                iter.remove();
 //        }
@@ -66,19 +66,19 @@ final public class BlockMgrFreeChain extends BlockMgrWrapper {
     public boolean valid(int id) {
         for ( Block blk : freeBlocks ) {
             if ( blk.getId() == id )
-                return true ;
+                return true;
         }
-        return super.valid(id) ;
+        return super.valid(id);
     }
 
     @Override
     public void sync() {
         // Flush free blocks?
-        super.sync() ;
+        super.sync();
     }
 
     @Override
     public String toString() {
-        return "Free:" + super.toString() ;
+        return "Free:" + super.toString();
     }
 }

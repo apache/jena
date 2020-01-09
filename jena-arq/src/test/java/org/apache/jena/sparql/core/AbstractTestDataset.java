@@ -29,6 +29,7 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.junit.Test;
 
+/** Basic testing of the Dataset API */
 public abstract class AbstractTestDataset extends BaseTest
 {
     protected abstract Dataset createDataset();

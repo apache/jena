@@ -27,16 +27,14 @@ import org.apache.jena.atlas.iterator.IteratorConcat ;
 import org.apache.jena.atlas.lib.CollectionUtils;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.TransactionHandler;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.impl.GraphBase ;
 import org.apache.jena.shared.AddDeniedException ;
 import org.apache.jena.shared.DeleteDeniedException ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphMap ;
-import org.apache.jena.sparql.core.GraphView ;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.*;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.NullIterator;
 import org.apache.jena.util.iterator.WrappedIterator ;
@@ -131,6 +129,10 @@ public class GraphUnionRead extends GraphBase {
           // For the explicit name of the default graph.
           .map(gn -> Quad.isDefaultGraph(gn) ? dataset.getDefaultGraph() : dataset.getGraph(gn))
           .forEach(action);
+    }
+    
+    @Override public TransactionHandler getTransactionHandler() {
+        return new TransactionHandlerView(dataset);
     }
     
     // Override to give more specific message.

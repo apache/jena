@@ -18,12 +18,12 @@
 
 package org.apache.jena.tdb2;
 
-import org.apache.jena.shared.JenaException ;
+import org.apache.jena.shared.JenaException;
 
 public class TDBException extends JenaException
 {
-    public TDBException()                          { super() ; }
-    public TDBException(String msg)                { super(msg) ; }
-    public TDBException(Throwable th)              { super(th) ; }
-    public TDBException(String msg, Throwable th)  { super(msg, th) ; }
+    public TDBException()                          { super(); }
+    public TDBException(String msg)                { super(msg); }
+    public TDBException(Throwable th)              { super(th); }
+    public TDBException(String msg, Throwable th)  { super(msg, th); }
 }

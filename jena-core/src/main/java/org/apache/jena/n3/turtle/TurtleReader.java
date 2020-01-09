@@ -26,6 +26,9 @@ import org.apache.jena.rdf.model.Model ;
 
 public class TurtleReader extends JenaReaderBase
 {
+    
+    public TurtleReader() {}
+    
     @Override
     protected void readWorker(Model model, Reader reader, String base)
     {

@@ -71,7 +71,7 @@ public class DatasetAssemblerTDB extends DatasetAssembler
             //ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000" ] ;
             tdb:unionGraph true ; # or "true"
         */
-        AssemblerUtils.setContext(root, dsg.getContext());
+        AssemblerUtils.mergeContext(root, dsg.getContext());
         return DatasetFactory.wrap(dsg) ; 
     }
     

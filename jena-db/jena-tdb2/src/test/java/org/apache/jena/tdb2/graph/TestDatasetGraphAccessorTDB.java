@@ -18,22 +18,23 @@
 
 package org.apache.jena.tdb2.graph;
 
-import org.apache.jena.query.DatasetAccessorFactory ;
-import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.query.DatasetAccessorFactory;
+import org.apache.jena.query.ReadWrite;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.junit.TL;
-import org.apache.jena.web.AbstractTestDatasetGraphAccessor ;
-import org.apache.jena.web.DatasetGraphAccessor ;
-import org.junit.After ;
-import org.junit.Before ;
+import org.apache.jena.web.AbstractTestDatasetGraphAccessor;
+import org.apache.jena.web.DatasetGraphAccessor;
+import org.junit.After;
+import org.junit.Before;
 
+@SuppressWarnings("deprecation")
 public class TestDatasetGraphAccessorTDB extends AbstractTestDatasetGraphAccessor
 {
-    DatasetGraph dsg = TL.createTestDatasetGraphMem() ;
+    DatasetGraph dsg = TL.createTestDatasetGraphMem();
     @Before public void before() {
         dsg.begin(ReadWrite.WRITE);
     }
-    
+
     @After public void after() {
         dsg.abort();
         dsg.end();
@@ -43,6 +44,6 @@ public class TestDatasetGraphAccessorTDB extends AbstractTestDatasetGraphAccesso
     @Override
     protected DatasetGraphAccessor getDatasetUpdater()
     {
-        return DatasetAccessorFactory.make(dsg) ;
+        return DatasetAccessorFactory.make(dsg);
     }
 }

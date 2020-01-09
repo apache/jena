@@ -18,9 +18,9 @@
 
 package org.apache.jena.tdb2.store;
 
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.core.AbstractTestDynamicDataset ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.ReadWrite;
+import org.apache.jena.sparql.core.AbstractTestDynamicDataset;
 import org.apache.jena.tdb2.junit.TL;
 
 public class TestDynamicDatasetTDB extends AbstractTestDynamicDataset
@@ -28,11 +28,11 @@ public class TestDynamicDatasetTDB extends AbstractTestDynamicDataset
     @Override
     protected Dataset createDataset()
     {
-        Dataset ds = TL.createTestDatasetMem() ;
+        Dataset ds = TL.createTestDatasetMem();
         ds.begin(ReadWrite.WRITE);
         return ds;
     }
-    
+
     @Override
     protected void releaseDataset(Dataset ds) { ds.abort(); TL.expel(ds); }
 }

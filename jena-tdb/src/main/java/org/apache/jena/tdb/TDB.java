@@ -48,6 +48,7 @@ import org.apache.jena.tdb.solver.StageGeneratorDirectTDB ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.sys.EnvTDB ;
 import org.apache.jena.tdb.sys.SystemTDB ;
+import org.apache.jena.tdb.sys.TDBInternal;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 import org.apache.jena.util.Metadata;
 import org.slf4j.Logger ;
@@ -121,7 +122,7 @@ public class TDB {
      * release datasets or graphs held by client code.
      */
     public static void closedown() {
-        StoreConnection.reset() ;
+        TDBInternal.reset() ;
     }
 
     /**
@@ -251,7 +252,8 @@ public class TDB {
             ReaderRIOTRDFXML.RiotUniformCompatibility = true ;
             EnvTDB.processGlobalSystemProperties() ;
             
-            MappingRegistry.addPrefixMapping(SystemTDB.tdbSymbolPrefix, SystemTDB.symbolNamespace) ;
+            MappingRegistry.addPrefixMapping(SystemTDB.tdbSymbolPrefix,  SystemTDB.symbolNamespace) ;
+            MappingRegistry.addPrefixMapping(SystemTDB.tdbSymbolPrefix1, SystemTDB.symbolNamespace) ;
             AssemblerTDB.init() ;
             QueryEngineTDB.register() ;
             UpdateEngineTDB.register() ;

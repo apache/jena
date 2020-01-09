@@ -142,9 +142,6 @@ public final class BPTreeNode extends BPTreePage
         BPTreeNodeMgr.formatBPTreeNode(this, bpTree, block, isLeaf, parent, count) ;
     }
     
-    // [TxTDB:PATCH-UP] REMOVE
-    //private BPTreePage get(int idx) { return get(idx, WRITE) ; }
-    
     /** Get the page at slot idx - switch between B+Tree and records files */ 
     private BPTreePage get(int idx, short state)
     {
@@ -167,7 +164,6 @@ public final class BPTreeNode extends BPTreePage
     
     private BPTreePage getMgrWrite(int subId)
     {
-        // [TxTDB:PATCH-UP]
         if ( isLeaf )
             return bpTree.getRecordsMgr().getWrite(subId) ;
         else
@@ -190,7 +186,6 @@ public final class BPTreeNode extends BPTreePage
     /** Insert a record - return existing value if any, else null */
     public static Record insert(BPTreeNode root, Record record)
     {
-        // [TxTDB:PATCH-UP] - put in BPlusTree.
         if ( logging() )
         {
             log.debug(format("** insert(%s) / start", record)) ;
@@ -814,7 +809,6 @@ public final class BPTreeNode extends BPTreePage
         
         BPTreePage left = null ;
         if ( idx > 0 )
-            // [TxTDB:PATCH-UP] 
             // release on left
             left = get(idx-1, WRITE) ;
         

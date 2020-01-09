@@ -47,6 +47,7 @@ import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol;
+import org.apache.jena.util.SplitIRI;
 import org.apache.jena.vocabulary.RDF ;
 
 import com.fasterxml.jackson.core.JsonGenerationException ;
@@ -318,7 +319,9 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
 
                 if ( p.equals(RDF.type.asNode()) )
                     return ;
-                String x = p.getLocalName() ;
+                // JENA-1744 : split as a "Curie" (at the last / or #, regardless of th characters in a lcoal name). 
+                // Curie : https://www.w3.org/TR/curie/
+                String x = SplitIRI.localname(p.getURI());
 
                 if ( ctx.containsKey(x) ) {
                 } else if ( o.isBlank() || o.isURI() ) {

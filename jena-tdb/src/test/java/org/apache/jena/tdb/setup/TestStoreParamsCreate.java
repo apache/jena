@@ -39,7 +39,7 @@ import org.junit.Test ;
 
 /**
  * This test suite uses on-disk structures, does a lot of clean/create/sync
- * calls and can be noticably slow.
+ * calls and can be noticeably slow.
  */
 public class TestStoreParamsCreate extends BaseTest {
     private final String DB_DIR = ConfigTest.getCleanDir() ;

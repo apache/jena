@@ -34,6 +34,8 @@ import org.apache.jena.tdb.setup.StoreParams ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.sys.ProcessUtils;
 import org.apache.jena.tdb.sys.SystemTDB ;
+import org.apache.jena.tdb.sys.TDBInternal;
+import org.apache.jena.tdb.sys.TDBMaker;
 import org.apache.jena.tdb.transaction.* ;
 
 /** A StoreConnection is the reference to the underlying storage.
@@ -103,10 +105,7 @@ public class StoreConnection
      * Terminate a write transaction with {@link Transaction#close()}.
      */
     public DatasetGraphTxn begin(TxnType mode) {
-        checkValid();
-        checkTransactional();
-        haveUsedInTransaction = true;
-        return transactionManager.begin(mode, null);
+        return begin(mode, null);
     }
 
     /**
@@ -125,6 +124,7 @@ public class StoreConnection
     public DatasetGraphTxn begin(TxnType mode, String label) {
         checkValid();
         checkTransactional();
+        haveUsedInTransaction = true;
         return transactionManager.begin(mode, label);
     }
 
@@ -180,25 +180,38 @@ public class StoreConnection
         return make(Location.create(location));
     }
 
-    /** Stop managing all locations. Use with great care. */
+    /**
+     * Stop managing all locations. Use with great care.
+     * Use via {@link TDBInternal#expel} wherever possible.
+     */
     public static synchronized void reset() {
         // Copy to avoid potential CME.
         Set<Location> x = new HashSet<>(cache.keySet()) ;
         for (Location loc : x)
             expel(loc, true) ;
         cache.clear() ;
+        // Compatibility: so that StoreConnecion.reset is all of TDBInternal.reset(); 
+        TDBMaker.resetCache();
     }
 
-    /** Stop managing a location. There should be no transactions running. */
+    /** 
+     * Stop managing a location. There should be no transactions running. 
+     * Use via {@link TDBInternal#expel} wherever possible.
+     */
     public static synchronized void release(Location location) {
         expel(location, false);
     }
 
-    /** Stop managing a location. Use with great care (testing only). */
+    /**
+     * Stop managing a location. Use with great care (testing only).
+     * Use via {@link TDBInternal#expel} wherever possible.
+     */
     public static synchronized void expel(Location location, boolean force) {
+        // Evict from TBDMaker cache otherwise that wil retain a reference to this StoreConnection. 
         StoreConnection sConn = cache.get(location) ;
         if (sConn == null)
             return ;
+        TDBInternal.releaseDSG(location);
         if (!force && sConn.transactionManager.activeTransactions()) 
             throw new TDBTransactionException("Can't expel: Active transactions for location: " + location) ;
 

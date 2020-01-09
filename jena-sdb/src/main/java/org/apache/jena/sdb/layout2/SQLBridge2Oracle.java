@@ -73,7 +73,7 @@ public class SQLBridge2Oracle extends SQLBridge2 {
     {
         String lex = rs.getString(SQLUtils.gen(codename, "lexNChar"));
         if (lex == null)            
-            rs.getString(SQLUtils.gen(codename,"lex")) ;                
+            lex = rs.getString(SQLUtils.gen(codename,"lex")) ;                
         if ( lex == null )
             lex = "" ;
         return lex;

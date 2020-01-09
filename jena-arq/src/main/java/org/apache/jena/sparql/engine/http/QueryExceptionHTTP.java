@@ -25,9 +25,8 @@ import org.apache.jena.query.QueryException ;
  *  Error codes are as HTTP status codes. */
 public class QueryExceptionHTTP extends QueryException
 {
-    private static final long serialVersionUID = 99L;  // Serializable.
-    public static final int noResponseCode = -1234 ;
-    private int responseCode = noResponseCode ;
+    public static final int noStatusCode = -1234 ;
+    private int statusCode = noStatusCode ;
     private final String responseMessage ;
     private String statusLine ;
     private String response;
@@ -44,7 +43,7 @@ public class QueryExceptionHTTP extends QueryException
     public QueryExceptionHTTP(int responseCode, String responseMessage)
     {
         super(responseMessage) ;
-        this.responseCode = responseCode ;
+        this.statusCode = responseCode ;
         this.responseMessage = responseMessage ;
     }
     
@@ -56,15 +55,21 @@ public class QueryExceptionHTTP extends QueryException
     public QueryExceptionHTTP(int responseCode)
     {
         super() ;
-        this.responseCode = responseCode ;
+        this.statusCode = responseCode ;
         this.responseMessage = null ;
     }
     
     /** The code for the reason for this exception
-     * @return responseCode
+     * @return statusCode
      */  
-    public int getResponseCode() { return responseCode ; }
-    
+    public int getStatusCode() { return statusCode ; }
+
+    /** The code for the reason for this exception
+     * @return responseCode
+     * @deprecated Use {@link #getStatusCode()}
+     */  
+    @Deprecated
+    public int getResponseCode() { return getStatusCode(); }
     
     /** The message for the reason for this exception
      * @return message
@@ -88,20 +93,20 @@ public class QueryExceptionHTTP extends QueryException
     public QueryExceptionHTTP(Throwable cause)
     {
         super(cause);
-        this.responseCode = noResponseCode ;
+        this.statusCode = noStatusCode ;
         this.responseMessage = null ;
     }
     
     public QueryExceptionHTTP(String msg, Throwable cause)
     {
         super(msg, cause);
-        this.responseCode = noResponseCode ;
+        this.statusCode = noStatusCode ;
         this.responseMessage = msg ;
     }
     
     public QueryExceptionHTTP(int responseCode, String message, Throwable cause) {
         this(message, cause);
-        this.responseCode = responseCode;
+        this.statusCode = responseCode;
     }
 
     public QueryExceptionHTTP(int responseCode, String message, final HttpException ex) {
@@ -115,8 +120,8 @@ public class QueryExceptionHTTP extends QueryException
     {
         StringBuilder sb = new StringBuilder() ;
         sb.append("HttpException: ") ;
-        int code = getResponseCode() ;
-        if ( code != QueryExceptionHTTP.noResponseCode )
+        int code = getStatusCode() ;
+        if ( code != QueryExceptionHTTP.noStatusCode )
         {
             sb.append(code) ;
             if ( getResponseMessage() != null )

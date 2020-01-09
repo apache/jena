@@ -37,6 +37,7 @@ public class ModLangParse extends ModBase
     private ArgDecl argCheck    = new ArgDecl(ArgDecl.NoValue, "check") ;
     private ArgDecl argNoCheck  = new ArgDecl(ArgDecl.NoValue, "nocheck", "noCheck") ;
     private ArgDecl argSink     = new ArgDecl(ArgDecl.NoValue, "sink", "null") ;
+    private ArgDecl argCount    = new ArgDecl(ArgDecl.NoValue, "count") ;
 
     private ArgDecl argStrict   = new ArgDecl(ArgDecl.NoValue, "strict") ;
     private ArgDecl argValidate = new ArgDecl(ArgDecl.NoValue, "validate") ;
@@ -63,6 +64,7 @@ public class ModLangParse extends ModBase
     private boolean bitbucket           = false ; 
     private boolean strict              = false ;
     private boolean validate            = false ;
+    private boolean outputCount         = false ;
     private Lang lang                   = null ;
     
     @Override
@@ -74,6 +76,7 @@ public class ModLangParse extends ModBase
         cmdLine.add(argCheck,   "--check",          "Addition checking of RDF terms") ; // (default: off for N-triples, N-Quads, on for Turtle and TriG)") ;
         cmdLine.add(argStrict,  "--strict",         "Run with in strict mode") ;
         cmdLine.add(argValidate,"--validate",       "Same as --sink --check --strict") ;
+        cmdLine.add(argCount,   "--count",          "Count triples/quads parsed, not output them") ;
         cmdLine.add(argRDFS,    "--rdfs=file",      "Apply some RDFS inference using the vocabulary in the file") ;
         
         cmdLine.add(argNoCheck, "--nocheck",        "Turn off checking of RDF terms") ;
@@ -131,6 +134,11 @@ public class ModLangParse extends ModBase
 
         if ( cmdLine.contains(argSink) )
             bitbucket = true ;
+        
+        if ( cmdLine.contains(argCount) ) {
+            bitbucket = true ;
+            outputCount = true ;
+        }
 
         if ( cmdLine.contains(argRDFS) ) {
             try {
@@ -158,6 +166,10 @@ public class ModLangParse extends ModBase
 
     public boolean validate() {
         return validate ;
+    }
+
+    public boolean outputCount() {
+        return outputCount ;
     }
 
     public boolean skipOnBadTerm() {

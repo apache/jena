@@ -1,0 +1,21 @@
+@prefix mf:      <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sht:     <http://www.w3.org/ns/shacl-test#> .
+
+<>
+	a mf:Manifest ;
+	rdfs:label "Tests converted from http://datashapes.org/sh/tests/tests/core/path" ;
+	mf:include <path-alternative-001.ttl> ;
+	mf:include <path-complex-001.ttl> ;
+	mf:include <path-complex-002.ttl> ;
+	mf:include <path-inverse-001.ttl> ;
+	mf:include <path-oneOrMore-001.ttl> ;
+	mf:include <path-sequence-001.ttl> ;
+	mf:include <path-sequence-002.ttl> ;
+	mf:include <path-sequence-duplicate-001.ttl> ;
+	mf:include <path-strange-001.ttl> ;
+	mf:include <path-strange-002.ttl> ;
+	mf:include <path-zeroOrMore-001.ttl> ;
+	mf:include <path-zeroOrOne-001.ttl> ;
+	mf:include <path-unused-001.ttl> ;
+	.

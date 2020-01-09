@@ -21,15 +21,17 @@
 package jena.examples.ontology.classHierarchy;
 
 
-// Imports
-///////////////
-import org.apache.jena.ontology.*;
-import org.apache.jena.rdf.model.*;
-import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.util.iterator.Filter;
-
 import java.io.PrintStream;
 import java.util.*;
+
+// Imports
+///////////////
+import org.apache.jena.ontology.OntClass;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.Restriction;
+import org.apache.jena.rdf.model.AnonId;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.shared.PrefixMapping;
 
 
 /**
@@ -65,11 +67,7 @@ public class ClassHierarchy {
     public void showHierarchy( PrintStream out, OntModel m ) {
         // create an iterator over the root classes that are not anonymous class expressions
         Iterator<OntClass> i = m.listHierarchyRootClasses()
-                      .filterDrop( new Filter<OntClass>() {
-                                    @Override
-                                    public boolean accept( OntClass r ) {
-                                        return r.isAnon();
-                                    }} );
+                      .filterDrop( OntClass::isAnon );
 
         while (i.hasNext()) {
             showClass( out, i.next(), new ArrayList<OntClass>(), 0 );

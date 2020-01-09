@@ -56,7 +56,13 @@ public abstract class IRIResolver
             printSetting(iriFactoryInst);
         }
         
+        // Accept any scheme.
         setErrorWarning(iriFactoryInst, ViolationCodes.UNREGISTERED_IANA_SCHEME, false, false);
+        
+        // These are a warning from jena-iri motivated by problems in RDF/XML and also internal processing by IRI
+        // (IRI.relativize).  
+        // The IRI is valid and does correct resolve when relative.
+        setErrorWarning(iriFactoryInst, ViolationCodes.NON_INITIAL_DOT_SEGMENT, false, false);
 
         // Turn off?? (ignored in CheckerIRI.iriViolations anyway).
         // setErrorWarning(iriFactory, ViolationCodes.LOWERCASE_PREFERRED, false, false);
@@ -65,13 +71,18 @@ public abstract class IRIResolver
         
         // NFC tests are not well understood by general developers and these cause confusion.
         // See JENA-864
-        //iriFactory.setIsError(ViolationCodes.NOT_NFC, false);
-        //iriFactory.setIsError(ViolationCodes.NOT_NFKC, false);
-        //iriFactory.setIsWarning(ViolationCodes.NOT_NFC, false);
-        //iriFactory.setIsWarning(ViolationCodes.NOT_NFKC, false);
+        
+        // NFC is in RDF 1.1 so do test for that.
+        // https://www.w3.org/TR/rdf11-concepts/#section-IRIs
+        // Leave switched on as a warning.
+        //setErrorWarning(iriFactoryInst, ViolationCodes.NOT_NFC,  false, false);
 
-        // ** Applies to various unicode blocks. 
-        // setErrorWarning(iriFactory, ViolationCodes.COMPATIBILITY_CHARACTER, false, false);
+        // NFKC is not mentioned in RDF 1.1. Switch off.
+        setErrorWarning(iriFactoryInst, ViolationCodes.NOT_NFKC, false, false);
+        
+        // ** Applies to various unicode blocks.
+        // Don't apply these tests.
+        setErrorWarning(iriFactoryInst, ViolationCodes.COMPATIBILITY_CHARACTER, false, false);
 
         // This causes test failures.
         // The tests catch warnings and a warning is expected.
@@ -105,6 +116,7 @@ public abstract class IRIResolver
     private static void printSetting(IRIFactory factory) {
         PrintStream ps = System.out;
         printErrorWarning(ps, factory, ViolationCodes.UNREGISTERED_IANA_SCHEME);
+        printErrorWarning(ps, factory, ViolationCodes.NON_INITIAL_DOT_SEGMENT);
         printErrorWarning(ps, factory, ViolationCodes.NOT_NFC);
         printErrorWarning(ps, factory, ViolationCodes.NOT_NFKC);
         printErrorWarning(ps, factory, ViolationCodes.UNWISE_CHARACTER);

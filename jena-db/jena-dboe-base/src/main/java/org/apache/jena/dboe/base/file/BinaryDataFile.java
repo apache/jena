@@ -18,40 +18,40 @@
 
 package org.apache.jena.dboe.base.file;
 
-import java.io.RandomAccessFile ;
+import java.io.RandomAccessFile;
 
-import org.apache.jena.atlas.lib.Closeable ;
-import org.apache.jena.atlas.lib.Sync ;
+import org.apache.jena.atlas.lib.Closeable;
+import org.apache.jena.atlas.lib.Sync;
 
 /** An append-only, read-anywhere, binary file.
  * A {@code BinaryDataFile} does not record the length and assumes the
  * entries are self-defining.
- * 
+ *
  *  @see RandomAccessFile
  */
 public interface BinaryDataFile extends Closeable, Sync {
     // What about java.nio.channels.FileChannel?
     // On OpenJDK,  RandomAccessFile and FileChannelImpl both dive into native code.
-    //  
+    //
     // The choice seems to come down to ByteBuffers vs byte[]
     // which in turn is a small/large data (scattered data)
     // issue.  We are currently expecting small(er) I/O so byte[]
     // and being like Thrift is better.
 
     // byte[] vs ByteBuffer
-    
+
     /** Open the file */
-    public void open() ;
-    
-    /** Is it open? */ 
-    public boolean isOpen() ;
-    
-    /** Read into a byte array, returning the number of bytes read. 
+    public void open();
+
+    /** Is it open? */
+    public boolean isOpen();
+
+    /** Read into a byte array, returning the number of bytes read.
      * Reads are at an absolute position and a read is atomic/thread-safe.
-     * 
+     *
      * @param posn Location of the read operation.
      * @param b byte array
-     * 
+     *
      * @return The number of bytes read
      */
     public default int read(long posn, byte b[]) {
@@ -60,41 +60,41 @@ public interface BinaryDataFile extends Closeable, Sync {
 
     /** Read into a byte array, returning the number of bytes read.
      * Reads are at an absolute position and a read is atomic/thread-safe.
-     * 
+     *
      * @param posn Location of the read operation.
      * @param b
      * @param start of bytesarray to read into
-     * @param length Maximum number of bytes to read. 
+     * @param length Maximum number of bytes to read.
      * @return The number of bytes read
      */
- 
-    public int read(long posn, byte b[], int start, int length) ;
+
+    public int read(long posn, byte b[], int start, int length);
 
     /** Write bytes - bytes are always written to the end of the file.
      * Return the location where the write started.
-     */ 
+     */
     public default long write(byte b[]) {
-        return write(b, 0, b.length) ;
+        return write(b, 0, b.length);
     }
-    
+
     /** Write bytes - bytes are always written to the end of the file.
      * Return the location where the write started.
-     */ 
-    public long write(byte b[], int start, int length) ;
-    
+     */
+    public long write(byte b[], int start, int length);
+
     /** Return the length of the file (including any buffered writes) */
-    public long length() ;
+    public long length();
 
-    /** Truncate the file */ 
-    public void truncate(long length) ; 
+    /** Truncate the file */
+    public void truncate(long length);
 
-    /** Return whether this is an empty file or not */ 
-    public default boolean isEmpty() { return length() == 0 ; } 
+    /** Return whether this is an empty file or not */
+    public default boolean isEmpty() { return length() == 0; }
 
     @Override
-    public void sync() ;
-    
+    public void sync();
+
     @Override
-    public void close() ;
+    public void close();
 }
 

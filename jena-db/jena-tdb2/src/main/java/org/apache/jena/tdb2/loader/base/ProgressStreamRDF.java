@@ -18,22 +18,22 @@
 
 package org.apache.jena.tdb2.loader.base;
 
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFWrapper;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.Quad;
 
 /** Send ticks to a {@link ProgressMonitor} as triples and quads
  * are sent along the {@link StreamRDF}.
  */
- 
+
 public class ProgressStreamRDF extends StreamRDFWrapper {
 
-    private final ProgressMonitor monitor ;
-    
+    private final ProgressMonitor monitor;
+
     public ProgressStreamRDF(StreamRDF other, ProgressMonitor monitor) {
         super(other);
-        this.monitor = monitor ;
+        this.monitor = monitor;
     }
 
     @Override

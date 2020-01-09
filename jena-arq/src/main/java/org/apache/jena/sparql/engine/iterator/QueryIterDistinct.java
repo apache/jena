@@ -47,13 +47,15 @@ public class QueryIterDistinct extends QueryIter1
     private Iterator<Binding> iterator = null ;
     private Set<Binding> seen = new HashSet<>() ;
     private Binding slot = null ;
+    private final  List<SortCondition> preserveOrder;
 
-    public QueryIterDistinct(QueryIterator qIter, ExecutionContext execCxt) {
+    public QueryIterDistinct(QueryIterator qIter, List<SortCondition> preserveOrder, ExecutionContext execCxt) {
         super(qIter, execCxt) ;
+        this.preserveOrder = (preserveOrder!=null) ? preserveOrder : Collections.emptyList();
         if ( execCxt != null ) {
             memThreshold = execCxt.getContext().getLong(ARQ.spillToDiskThreshold, memThreshold) ;
             if ( memThreshold < 0 )
-                throw new ARQException("BAd spillToDiskThreshold: "+memThreshold) ;
+                throw new ARQException("Bad spillToDiskThreshold: "+memThreshold) ;
         }
     }
     
@@ -83,10 +85,17 @@ public class QueryIterDistinct extends QueryIter1
         return iterator.hasNext() ;
     }
     
-    /** Load the data bag with. Filter incoming by the already seen in-memory elements */  
+    /**
+     * Load the data bag with. Filter incoming by the already seen in-memory elements. 
+     * 
+     * For DISTINCT-ORDER, and if DISTINCT spills then we need to take
+     * account of the ORDER. The normal (non-spill case) already preserves the input
+     * order, passing through the first occurence. It is only if a spill happens that
+     * we need to ensure the spill buckets respect sort order.
+     */  
     private void loadDataBag() {
         ThresholdPolicy<Binding> policy = ThresholdPolicyFactory.policyFromContext(super.getExecContext().getContext()) ;
-        Comparator<Binding> comparator = new BindingComparator(new ArrayList<SortCondition>(), super.getExecContext()) ;
+        Comparator<Binding> comparator = new BindingComparator(preserveOrder, super.getExecContext()) ;
         this.db = BagFactory.newDistinctBag(policy, SerializationFactoryFinder.bindingSerializationFactory(), comparator) ;
         for(;;) {
             Binding b = getInputNextUnseen() ;

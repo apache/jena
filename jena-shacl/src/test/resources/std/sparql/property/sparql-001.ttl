@@ -1,0 +1,68 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/sparql/property/sparql-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:Country
+  rdf:type rdfs:Class ;
+.
+ex:InvalidCountry
+  rdf:type ex:Country ;
+  ex:germanLabel "Spain"@en ;
+.
+ex:LanguageExamplePropertyShape
+  rdf:type sh:PropertyShape ;
+  sh:path ex:germanLabel ;
+  sh:sparql ex:LanguageExamplePropertyShape-sparql ;
+  sh:targetClass ex:Country ;
+.
+ex:LanguageExamplePropertyShape-sparql
+  rdf:type sh:SPARQLConstraint ;
+  sh:message "Values are literals with German language tag." ;
+  sh:prefixes ex: ;
+  sh:select """
+		SELECT $this ?value
+		WHERE {
+			$this $PATH ?value .
+			FILTER (!isLiteral(?value) || !langMatches(lang(?value), \"de\"))
+		}
+		""" ;
+.
+ex:ValidCountry
+  rdf:type ex:Country ;
+  ex:germanLabel "Spanien"@de ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <sparql-001>
+    ) ;
+.
+<sparql-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:sparql at property shape 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidCountry ;
+          sh:resultPath ex:germanLabel ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraint ex:LanguageExamplePropertyShape-sparql ;
+          sh:sourceConstraintComponent sh:SPARQLConstraintComponent ;
+          sh:sourceShape ex:LanguageExamplePropertyShape ;
+          sh:value "Spain"@en ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

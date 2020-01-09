@@ -156,20 +156,11 @@ public class BinRDF {
         PrefixMap pmap = PrefixMapFactory.create() ;
         final Thrift2StreamRDF s = new Thrift2StreamRDF(pmap, dest) ;
         dest.start() ;
-        // ** Java8
-        //apply(protocol, z -> TRDF.visit(z, s)) ;
-        
-        applyVisitor(protocol, s)  ;
-        
+        apply(protocol, z -> TRDF.visit(z, s)) ;
         dest.finish() ;
         // No need to flush - we read from the protocol ; 
     }
 
-    // ** Java7 support
-    public static void applyVisitor(TProtocol protocol, final VisitorStreamRowTRDF visitor) {
-        apply(protocol, z -> TRDF.visit(z, visitor)) ;
-    }
-    
     /**
      * Send the contents of a RDF-encoded Thrift file to an "action" 
      * @param protocol TProtocol
@@ -177,11 +168,14 @@ public class BinRDF {
      */
     public static void apply(TProtocol protocol, Consumer<RDF_StreamRow> action) {
         RDF_StreamRow row = new RDF_StreamRow() ;
-        while(protocol.getTransport().isOpen()) {
+        // Bug in 0.13.0 / TIOStreamTransport.isOpen / THRIFT-5022
+        //while(protocol.getTransport().isOpen()) {
+        while(true) {
             try { row.read(protocol) ; }
             catch (TTransportException e) {
                 if ( e.getType() == TTransportException.END_OF_FILE )
-                    break ;
+                    // THRIFT-5022 // break;
+                    return;
             }
             catch (TException ex) { TRDF.exception(ex) ; }
             action.accept(row) ;
@@ -198,7 +192,7 @@ public class BinRDF {
         IndentedWriter iOut = new IndentedWriter(out) ;
         StreamRowTRDFPrinter printer = new StreamRowTRDFPrinter(iOut) ;
         TProtocol protocol = TRDF.protocol(in) ;
-        BinRDF.applyVisitor(protocol, printer) ;
+        apply(protocol, z -> TRDF.visit(z, printer));
         iOut.flush() ;
     }
 

@@ -178,7 +178,8 @@ public class SecuredGraphImpl extends SecuredItemImpl implements SecuredGraph {
 		return prefixMapping;
 	}
 
-	@Override
+	@SuppressWarnings("deprecation")
+    @Override
 	public GraphStatisticsHandler getStatisticsHandler()
 			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();

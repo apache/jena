@@ -35,7 +35,7 @@ public interface DatasetClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param graphName
 	 *            the graph name to add.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T fromNamed(String graphName);
 
@@ -44,7 +44,7 @@ public interface DatasetClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param graphNames
 	 *            the collection graph names to add.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T fromNamed(Collection<String> graphNames);
 
@@ -53,7 +53,7 @@ public interface DatasetClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param graphName
 	 *            the graph name to add.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T from(String graphName);
 
@@ -62,7 +62,7 @@ public interface DatasetClause<T extends AbstractQueryBuilder<T>> {
 	 * 
 	 * @param graphName
 	 *            the collection graph names to add.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T from(Collection<String> graphName);
 

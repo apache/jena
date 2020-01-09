@@ -18,9 +18,13 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.binding.BindingProjectNamed;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
@@ -51,9 +55,8 @@ public class AggCountDistinct extends AggregatorBase
     public Expr getExpr()           { return null ; }
     
     @Override
-    public Accumulator createAccumulator()
-    { 
-        return new AccCountDistinct() ; 
+    public Accumulator createAccumulator() {
+        return new AccumulatorDistinctAll() ;
     }
 
     @Override
@@ -70,18 +73,31 @@ public class AggCountDistinct extends AggregatorBase
         return true ;
     }
 
-    static class AccCountDistinct extends AccumulatorDistinctAll
-    {
-        private long count = 0 ;
-        public AccCountDistinct()   { }
+    /** Accumulator that only passes down the first unique binding */
+    static class AccumulatorDistinctAll implements Accumulator {
+        // COUNT(DISTINCT *)
+        private final Set<Binding> rows  = new HashSet<>() ;
+        private long               count = 0 ;
 
-        @Override public void accumulateDistinct(Binding binding, FunctionEnv functionEnv)
-        { count++ ; }
+        @Override
+        final public void accumulate(Binding binding, FunctionEnv functionEnv) {
+            // Hide system vars.
+            binding = new BindingProjectNamed(binding) ;
+            if ( rows.contains(binding) )
+                return ;
+            rows.add(binding) ;
+            accumulateDistinct(binding, functionEnv) ;
+        }
+
+        public void accumulateDistinct(Binding binding, FunctionEnv functionEnv) {
+            count++ ;
+        }
 
         // Errors can't occur.
 
         @Override
-        public NodeValue getValue()
-        { return NodeValue.makeInteger(count) ; }
+        public NodeValue getValue() {
+            return NodeValue.makeInteger(count) ;
+        }
     }
 }

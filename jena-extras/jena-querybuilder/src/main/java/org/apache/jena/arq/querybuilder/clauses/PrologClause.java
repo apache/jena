@@ -24,6 +24,7 @@ import org.apache.jena.arq.querybuilder.ExprFactory;
 import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.shared.PrefixMapping;
 
 /**
  * Interface that defines the PrologClause as per
@@ -47,65 +48,74 @@ public interface PrologClause<T extends AbstractQueryBuilder<T>> {
 	
 
 	/**
-	 * Add a prefix.
+	 * Adds a prefix.
 	 * 
 	 * @param pfx
 	 *            The prefix.
 	 * @param uri
 	 *            The URI for the prefix
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T addPrefix(String pfx, Resource uri);
 
 	/**
-	 * Add a prefix.
+	 * Adds a prefix.
 	 * 
 	 * @param pfx
 	 *            The prefix.
 	 * @param uri
 	 *            The URI for the prefix
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T addPrefix(String pfx, Node uri);
 
 	/**
-	 * Add a prefix.
+	 * Adds a prefix.
 	 * 
 	 * @param pfx
 	 *            The prefix.
 	 * @param uri
 	 *            The URI for the prefix
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T addPrefix(String pfx, String uri);
 
 	/**
-	 * Add a prefix.
+	 * Adds prefixes.
 	 * 
 	 * @param prefixes
 	 *            A mapping of prefix to URI to add.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T addPrefixes(Map<String, String> prefixes);
 
 	/**
-	 * Set the base URI.
+	 * Adds prefixes.
+	 * 
+	 * @param prefixes
+	 *            A PrefixMapping instance..
+	 * @return This builder for chaining.
+	 */
+	public T addPrefixes(PrefixMapping prefixes);
+	
+	/**
+	 * Sets the base URI.
 	 * 
 	 * See {@link AbstractQueryBuilder#makeNode} for conversion of the uri param. The resulting Node
 	 * must be a URI.
 	 * 
 	 * @param uri
 	 *            The base URI to use.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T setBase(Object uri);
 
 	/**
-	 * Set the base URI.
+	 * Sets the base URI.
 	 * 
 	 * @param uri
 	 *            The base URI to use.
-	 * @return The builder for chaining.
+	 * @return This builder for chaining.
 	 */
 	public T setBase(String uri);
 

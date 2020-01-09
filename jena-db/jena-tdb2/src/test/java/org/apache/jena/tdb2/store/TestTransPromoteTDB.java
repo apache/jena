@@ -32,9 +32,9 @@ public class TestTransPromoteTDB extends AbstractTestTransPromote {
     }
 
     private static Logger[] getLoggers() {
-        return new Logger[]{ Logger.getLogger(Transaction.class) } ;
+        return new Logger[]{ Logger.getLogger(Transaction.class) };
     }
-    
+
     @Override
     protected Class<? extends Exception> getTransactionExceptionClass() {
         return TransactionException.class;

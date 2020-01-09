@@ -59,7 +59,7 @@ import org.junit.runners.Suite ;
     , TS_SolverTDB.class
     , TS_Sys.class
     , TS_Graph.class
-    , TS_Factory.class
+    , TS_TDBFactory.class
     , TS_TDBAssembler.class
     , TS_TransactionTDB.class
     , TS_ObjectFile.class

@@ -19,21 +19,21 @@
 package org.apache.jena.dboe.trans.bplustree;
 
 import org.apache.jena.dboe.trans.bplustree.rewriter.TestBPlusTreeRewriterNonTxn;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    
-    // Non-transactional tests -- that is, algorithms and machinary. 
+
+    // Non-transactional tests -- that is, algorithms and machinary.
     TestBPTreeRecordsNonTxn.class,
     TestBPlusTreeIndexNonTxn.class,
     TestBPlusTreeNonTxn.class,
     TestBPTreeModes.class,
-    
+
     // Transactional tests
     TestBPlusTreeTxn.class,
-    
+
     // Rewriter
     TestBPlusTreeRewriterNonTxn.class
 } )

@@ -18,12 +18,7 @@
 
 package org.apache.jena.sparql.util;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.atlas.lib.SetUtils;
@@ -47,12 +42,6 @@ import org.apache.jena.util.iterator.WrappedIterator ;
 /** Node utilities */ 
 public class NodeUtils
 {
-    public interface EqualityTest {
-        default boolean equal(Node n1, Node n2) {
-			return Objects.equals(n1, n2) ;
-		}
-    }
-
     /** IRI to Node */ 
     public static Node asNode(IRI iri) {
         return NodeFactory.createURI(iri.toString()) ;
@@ -284,29 +273,36 @@ public class NodeUtils
      * (RDF 1.0 and RDF 1.1)
      */
     public static boolean isLangString(Node n) { return Util.isLangString(n) ; }
+    
+    
+    // --- Equality tests.
+    
+    /** Both null or same node : {@code Node.equals} */
+    public static EqualityTest sameNode  = (n1,n2) -> Objects.equals(n1, n2);
 
-    // This is term comparison.
-    public static EqualityTest sameTerm = new EqualityTest() {
-        @Override
-        public boolean equal(Node n1, Node n2)
+    /**
+     * Term comparison. Node.equals or lang tags are case insensitive 
+     */
+    public static EqualityTest sameRdfTerm  = (n1,n2) -> NodeFunctions.sameTerm(n1,n2);
+    
+    /** @deprecated Use {@link NodeUtils#sameRdfTerm} */
+    @Deprecated 
+    public static EqualityTest sameTerm  = sameRdfTerm;
+
+    /** sameValue by SPARQL rules */ 
+    public static EqualityTest sameValue = (n1,n2) -> {
+        if ( Objects.equals(n1, n2) )
+            return true;
+        if ( ! n1.isLiteral() || ! n2.isLiteral() )
+            return false;
+        // 2 literals.
+        NodeValue nv1 = NodeValue.makeNode(n1);
+        NodeValue nv2 = NodeValue.makeNode(n2);
+        try { return NodeValue.sameAs(nv1, nv2); } 
+        catch(ExprEvalException ex)
         {
-            return NodeFunctions.sameTerm(n1, n2) ;
+            // Incomparable as values - must be different for our purposes.
+            return false; 
         }
-    } ;
-    // This is value comparison
-    public static EqualityTest sameValue = new EqualityTest() {
-        @Override
-        public boolean equal(Node n1, Node n2)
-        {
-            NodeValue nv1 = NodeValue.makeNode(n1) ;
-            NodeValue nv2 = NodeValue.makeNode(n2) ;
-            try {
-                return NodeValue.sameAs(nv1, nv2) ;
-            } catch(ExprEvalException ex)
-            {
-                // Incomparible as values - must be different for our purposes.
-                return false ; 
-            }
-        }
-    } ;
+    };
 }

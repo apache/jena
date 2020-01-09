@@ -23,7 +23,7 @@ package org.apache.jena.fuseki.auth;
  * Assumes the user has already been authenticated.
  */
 public interface AuthPolicy {
-    /** 
+    /**
      * Is the use authorized for this resource?
      */
     public boolean isAllowed(String user);

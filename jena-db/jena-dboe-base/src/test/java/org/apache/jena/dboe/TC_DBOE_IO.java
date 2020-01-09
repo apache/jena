@@ -25,12 +25,12 @@ import org.apache.jena.dboe.base.file.TS_File;
 import org.apache.jena.dboe.base.record.TS_Record;
 import org.apache.jena.dboe.base.recordfile.TS_RecordFile;
 import org.apache.jena.dboe.sys.SystemIndex;
-import org.apache.log4j.Level ;
-import org.apache.log4j.Logger ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
@@ -44,15 +44,14 @@ import org.junit.runners.Suite ;
 public class TC_DBOE_IO {
     static {
         if ( false )
-            SystemIndex.setFileMode(FileMode.direct) ;
+            SystemIndex.setFileMode(FileMode.direct);
     }
-    
-    @BeforeClass static public void beforeClass()   
-    {
-        //org.apache.log4j.LogManager.resetConfiguration() ;
-        //org.apache.log4j.PropertyConfigurator.configure("log4j.properties") ;
-        Logger.getLogger("org.apache.jena.tdb.info").setLevel(Level.WARN) ;
-        //Logger.getLogger("com.hp.hpl.jena.tdb.exec").setLevel(Level.WARN) ;
+
+    @BeforeClass static public void beforeClass() {
+        //org.apache.log4j.LogManager.resetConfiguration();
+        //org.apache.log4j.PropertyConfigurator.configure("log4j.properties");
+        Logger.getLogger("org.apache.jena.tdb.info").setLevel(Level.WARN);
+        //Logger.getLogger("com.hp.hpl.jena.tdb.exec").setLevel(Level.WARN);
     }
 
     @AfterClass static public void afterClass() {
