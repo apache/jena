@@ -176,7 +176,7 @@ public class UpdateWriterVisitor implements UpdateVisitor
     @Override
     public void visit(UpdateDataInsert update)
     {
-        Iter.sendToSink(update.getQuads(), createInsertDataSink());  // Iter.sendToSink() will call close() on the sink
+        Iter.sendToSink(update.getQuads().iterator(), createInsertDataSink());  // Iter.sendToSink() will call close() on the sink
     }
     
     @Override
@@ -190,7 +190,7 @@ public class UpdateWriterVisitor implements UpdateVisitor
     @Override
     public void visit(UpdateDataDelete update)
     {
-        Iter.sendToSink(update.getQuads(), createDeleteDataSink()); // Iter.sendToSink() will call close() on the sink
+        Iter.sendToSink(update.getQuads().iterator(), createDeleteDataSink()); // Iter.sendToSink() will call close() on the sink
     }
 
     // Prettier later.
@@ -205,7 +205,7 @@ public class UpdateWriterVisitor implements UpdateVisitor
         
         SinkQuadBracedOutput sink = new SinkQuadBracedOutput(out, sCxt);
         sink.open();
-        Iter.sendToSink(quads, sink);
+        Iter.sendToSink(quads.iterator(), sink);
     }
     
     protected void output(Node node)

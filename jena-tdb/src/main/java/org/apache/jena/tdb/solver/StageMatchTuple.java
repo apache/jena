@@ -19,10 +19,9 @@
 package org.apache.jena.tdb.solver;
 
 
-import static org.apache.jena.atlas.lib.tuple.TupleFactory.* ;
+import static org.apache.jena.atlas.lib.tuple.TupleFactory.asTuple;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -144,21 +143,6 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         } ;
         
         return Iter.iter(iterMatches).map(binder).removeNulls() ;
-    }
-    
-    private static Iterator<Tuple<NodeId>> print(Iterator<Tuple<NodeId>> iter)
-    {
-        if ( ! iter.hasNext() )
-            System.err.println("<empty>") ;
-        else
-        {
-            List<Tuple<NodeId>> r = Iter.toList(iter) ;
-            String str = Iter.asString(r, "\n") ;
-            System.err.println(str) ;
-            // Reset iter
-            iter = Iter.iter(r) ;
-        }
-        return iter ;
     }
     
     private static boolean reject(BindingNodeId output , Var var, NodeId value)

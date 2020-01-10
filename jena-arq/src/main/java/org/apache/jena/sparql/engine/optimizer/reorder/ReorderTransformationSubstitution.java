@@ -22,7 +22,8 @@ import static org.apache.jena.sparql.util.StringUtils.printAbbrev ;
 
 import java.util.ArrayList ;
 import java.util.List ;
-import org.apache.jena.atlas.iterator.AccString ;
+import java.util.stream.Collectors;
+
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Node ;
@@ -74,13 +75,8 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
         return components ;
     }
 
-    private AccString<PatternTriple> formatter() { 
-        return new AccString<PatternTriple>() { 
-            @Override
-            protected String toString(PatternTriple pt) {
-                return "(" + printAbbrev(pt.toString()) + ")" ;
-            }
-        } ;
+    private String formatted(List<PatternTriple> components) {
+        return components.stream().map(c->"(" + printAbbrev(c.toString()) + ")").collect(Collectors.joining(" "));
     }
     
     protected ReorderProc reorder(List<Triple> triples, List<PatternTriple> components) {
@@ -89,7 +85,7 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
         int indexes[] = new int[N] ;
 
         if ( DEBUG )
-            log.debug("Reorder: " + Iter.asString(components, formatter())) ;
+            log.debug("Reorder: " + formatted(components));
 
         int idx = 0 ;
         for ( ; idx < numReorder ; idx++ ) {

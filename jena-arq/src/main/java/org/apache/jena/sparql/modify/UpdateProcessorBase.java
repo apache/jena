@@ -57,7 +57,7 @@ public class UpdateProcessorBase implements UpdateProcessor
         
         try {
             UpdateSink sink = uProc.getUpdateSink();
-            Iter.sendToSink(request, sink);     // Will call close on sink if there are no exceptions
+            Iter.sendToSink(request.iterator(), sink);     // Will call close on sink if there are no exceptions
         } finally {
             uProc.finishRequest() ;
         }
