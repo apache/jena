@@ -26,7 +26,6 @@
     <relativePath>..</relativePath>
   </parent>
   <artifactId>jena-base</artifactId>
-  <version>3.14.0-SNAPSHOT</version>
   <name>Apache Jena - Base Common Environment</name>
   <description>
     This module contains non-RDF library code and the common system runtime.

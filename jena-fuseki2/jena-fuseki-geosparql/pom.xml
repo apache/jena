@@ -19,7 +19,6 @@
     <artifactId>jena-fuseki-geosparql</artifactId>
     <packaging>jar</packaging>
     <name>Apache Jena - Fuseki with GeoSPARQL Engine </name>
-    <version>3.14.0-SNAPSHOT</version>
 
     <parent>
       <groupId>org.apache.jena</groupId>

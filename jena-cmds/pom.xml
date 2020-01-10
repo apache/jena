@@ -27,8 +27,6 @@
 
   <name>Apache Jena - Command line tools</name>
   <artifactId>jena-cmds</artifactId>
-  <version>3.14.0-SNAPSHOT</version>
-
   <description>Command line tools</description>
 
   <packaging>jar</packaging>

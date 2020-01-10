@@ -94,8 +94,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-	      <!-- versions 2.20 and 2.20.1 result in test failures -->
-	      <version>2.19.1</version>
         <configuration>
           <parallel>classes</parallel>
           <threadCount>2</threadCount>
