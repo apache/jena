@@ -94,7 +94,17 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 }
                 isMultilingualSupport = mlsNode.asLiteral().getBoolean();
             }
-            
+
+            int maxBasicQueries = 1024;
+            Statement maxBasicQueriesStatement = root.getProperty(pMaxBasicQueries);
+            if (null != maxBasicQueriesStatement) {
+                RDFNode mbqNode = maxBasicQueriesStatement.getObject();
+                if (! mbqNode.isLiteral()) {
+                    throw new TextIndexException("text:maxBasicQueries property must be a int : " + mbqNode);
+                }
+                maxBasicQueries = mbqNode.asLiteral().getInt();
+            }
+
             // define any property lists for text:query
             Statement propListsStmt = root.getProperty(pPropLists);
             if (null != propListsStmt) {
@@ -192,6 +202,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             config.setQueryAnalyzer(queryAnalyzer);
             config.setQueryParser(queryParser);
             config.setMultilingualSupport(isMultilingualSupport);
+            config.setMaxBasicQueries(maxBasicQueries);
             config.setValueStored(storeValues);
             config.setIgnoreIndexErrors(ignoreIndexErrs);
             docDef.setCacheQueries(cacheQueries);
