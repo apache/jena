@@ -159,6 +159,12 @@ public class TestClassify extends BaseTest
         TestClassify.classifyJ(x1, false);
     }
 
+    // JENA-1813
+    @Test public void testClassify_Join_54() {
+         String x1 = "{ ?s  ?p  ?V GRAPH ?g { SELECT (?w AS ?V) { ?t  ?q  ?w } GROUP BY ?w } }";
+          TestClassify.classifyJ(x1, false);
+    }
+    
     public static void classifyJ(String pattern, boolean expected)
     {
         String qs1 = "PREFIX : <http://example/>\n" ;
