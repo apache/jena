@@ -203,13 +203,19 @@ public class JoinClassifier
         return result ;
     }
 
-    /** Find the "effective op" - ie. the one that may be sensitive to linearization */
+    /** Find the "effective op" - i.e. the one that may be sensitive to linearization */
     private static Op effectiveOp(Op op) {
-        if ( op instanceof OpExt )
-            op = ((OpExt)op).effectiveOp() ;
-        while (safeModifier(op))
-            op = ((OpModifier)op).getSubOp() ;
-        return op ;
+        for (;;) {
+            if ( op instanceof OpExt )
+                op = ((OpExt)op).effectiveOp() ;
+            else if (safeModifier(op))
+                op = ((OpModifier)op).getSubOp() ;
+            // JENA-1813, temporary fix.
+            else if (op instanceof OpGraph )
+                op = ((OpGraph)op).getSubOp() ;
+            else
+                return op;
+        }
     }
 
     /** Helper - test for "safe" modifiers */
