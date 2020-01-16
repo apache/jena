@@ -32,8 +32,8 @@ import org.apache.jena.tdb2.TDBException;
 /**
  * A cache that buffers changes.
  * <p>
- * It has two modes, when active it captures updates and the underlying main cache is
- * only updated when {@link #flushBuffer} is called. When not active, it passes
+ * It has two modes: when active, it captures updates and the underlying main cache is
+ * only updated when {@link #flushBuffer} is called; when not active, it passes
  * updates straight through.
  * <p>
  * For access operations, it looks in the buffered cache and the underlying cache as
@@ -65,8 +65,8 @@ public class ThreadBufferingCache<Key,Value> implements Cache<Key,Value> {
     private boolean buffering() {
         if ( ! BUFFERING )
             return false;
-        // Changes are sync'ed and the only way to change this value is via a sync'ed method.
-        if ( bufferingThread == null )
+        // Changes are sync'ed externally and the only way to change this value is via a sync'ed method.
+        if ( bufferingThread.get() == null )
             return false;
         Thread currentThread = Thread.currentThread();
         return bufferingThread.get() == currentThread;
@@ -93,16 +93,11 @@ public class ThreadBufferingCache<Key,Value> implements Cache<Key,Value> {
     public void flushBuffer() {
         if ( ! buffering() )
             return ;
-        //System.out.println(label+": Flush:1 L: "+localCache().size());
-        //System.out.println(label+": Flush:1 M: "+baseCache.size());
-
         localCache().keys().forEachRemaining(k->{
             Value value = localCache().getIfPresent(k);
             baseCache.put(k, value);
         });
         localCache().clear();
-        //System.out.println(label+": Flush:2 L: "+localCache().size());
-        //System.out.println(label+": Flush:2 M: "+baseCache.size());
         bufferingThread.set(null);
     }
 
@@ -110,8 +105,6 @@ public class ThreadBufferingCache<Key,Value> implements Cache<Key,Value> {
     public void dropBuffer() {
         if ( ! buffering() )
             return ;
-        //System.out.println(label+": Drop: L: "+localCache().size());
-        //System.out.println(label+": Drop: M: "+baseCache.size());
         localCache().clear();
         bufferingThread.set(null);
     }
@@ -164,12 +157,6 @@ public class ThreadBufferingCache<Key,Value> implements Cache<Key,Value> {
         return item;
     }
 
-    // ---- Flush changes, reset.
-
-
-
-    // ---- Updates to buffering, local cache.
-
     /** Goes into local cache. */
     @Override
     public void put(Key key, Value value) {
@@ -188,7 +175,6 @@ public class ThreadBufferingCache<Key,Value> implements Cache<Key,Value> {
         }
         localCache().remove(key);
     }
-
 
     @Override
     public Iterator<Key> keys() {
