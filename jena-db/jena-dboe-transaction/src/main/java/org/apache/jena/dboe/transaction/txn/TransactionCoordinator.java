@@ -122,20 +122,15 @@ public class TransactionCoordinator {
         this(Journal.create(location));
     }
 
-    /** Create a TransactionCoordinator, initially with no associated {@link TransactionalComponent}s */
+    /** Create a TransactionCoordinator, initially with no associated {@link TransactionalComponent TransactionalComponents}. */
     public TransactionCoordinator(Journal journal) {
         this(journal, null , new ArrayList<>());
     }
 
-    /** Create a TransactionCoordinator, initially with {@link TransactionalComponent} in the ComponentGroup */
+    /** Create a TransactionCoordinator, initially with {@link TransactionalComponent TransactionalComponents} in the ComponentGroup */
     public TransactionCoordinator(Journal journal, List<TransactionalComponent> components) {
         this(journal, components , new ArrayList<>());
     }
-
-    //    /** Create a TransactionCoordinator, initially with no associated {@link TransactionalComponent}s */
-//    public TransactionCoordinator(Location journalLocation) {
-//        this(Journal.create(journalLocation), new ArrayList<>() , new ArrayList<>());
-//    }
 
     private TransactionCoordinator(Journal journal, List<TransactionalComponent> txnComp, List<ShutdownHook> shutdownHooks) {
         this.journal = journal;
@@ -467,7 +462,7 @@ public class TransactionCoordinator {
     /**
      * Block until no writers are active, optionally blocking or returning if can't at the moment.
      * <p>
-     * Unlike a write transction, there is no associated transaction.
+     * Unlike a write transaction, there is no associated transaction.
      * <p>
      * If it returns true, the application must call {@link #enableWriters} later.
      * @param canBlock
@@ -732,11 +727,6 @@ public class TransactionCoordinator {
     /*package*/ void executeCommit(Transaction transaction, Runnable commit, Runnable finish, Runnable sysabort) {
         notifyCommitStart(transaction);
         if ( transaction.getMode() == ReadWrite.READ ) {
-
-            //[1746]
-            //executeCommitReader();
-            // No commit on components, all "end".
-            // Make abort the same?
             finish.run();
             notifyCommitFinish(transaction);
             return;

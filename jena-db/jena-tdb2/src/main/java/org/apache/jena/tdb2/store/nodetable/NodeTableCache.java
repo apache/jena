@@ -326,7 +326,7 @@ public class NodeTableCache implements NodeTable, TransactionListener {
     }
 
     @Override
-    public void notifyCompleteFinish(Transaction transaction) {
+    public void notifyCommitFinish(Transaction transaction) {
         if(transaction.isWriteTxn()) {
             updateCommit();
         }
@@ -363,7 +363,6 @@ public class NodeTableCache implements NodeTable, TransactionListener {
 
     private void updateCommit() {
         writingThread = null;
-        // Write to main caches.
         node2id_Cache.flushBuffer();
         id2node_Cache.flushBuffer();
     }
