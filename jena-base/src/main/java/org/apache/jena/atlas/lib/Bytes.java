@@ -326,7 +326,7 @@ public class Bytes
     }
 
     public static String asHex(byte[] bytes, int start, int finish, char[] hexDigits) {
-        StringBuilder sw = new StringBuilder() ;
+        StringBuilder sw = new StringBuilder(bytes.length*2) ;
         for ( int i = start ; i < finish ; i++ ) {
             byte b = bytes[i] ;
             int hi = (b & 0xF0) >> 4 ;
@@ -338,7 +338,7 @@ public class Bytes
         return sw.toString() ;
     }
     
-    /** Return a hex string representing the bytes, zero padded to length of byte array. */
+    /** Return a hex string representing the byte. */
     public static String asHex(byte b)
     {
         return asHexUC(b) ; 
