@@ -135,7 +135,7 @@ public class BlankNodeAllocatorHash implements BlankNodeAllocator {
 
         String hexString;
         if ( true ) {
-            long[] x = MurmurHash3.hash128(input);
+            long[] x = MurmurHash3.hash128x64(input);
             // dev: String xs = String.format("%016x%016x", Long.reverseBytes(x[0]), Long.reverseBytes(x[1]));
             char[] chars = new char[32];
             longAsHexLC(x[0], chars, 0);
@@ -143,8 +143,8 @@ public class BlankNodeAllocatorHash implements BlankNodeAllocator {
             hexString = new String(chars);
         } else {
             // Guava. Several objects created.
-            // Using 104729 makes it agree with Apache Commons Codec value.
-            byte[] bytes = Hashing.murmur3_128(104729).hashBytes(input).asBytes();
+            // Using MurmurHash3.DEFAULT_SEED (which is 104729) makes it agree with Apache Commons Codec value.
+            byte[] bytes = Hashing.murmur3_128(MurmurHash3.DEFAULT_SEED).hashBytes(input).asBytes();
             hexString = Bytes.asHexLC(bytes);
         }
         return NodeFactory.createBlankNode(hexString);
