@@ -66,7 +66,7 @@ public class DateTimeUtils {
     public static String calendarToXSDDateTimeString(Calendar cal) {
         DateTimeFormatter fmt = hasZeroMilliSeconds(cal)
             ? dateTimeFmt_XSD_ms0
-                : dateTimeFmt_XSD_ms ;
+            : dateTimeFmt_XSD_ms ;
         return calendarToXSDString(cal, fmt) ;
     }
 
@@ -77,18 +77,17 @@ public class DateTimeUtils {
         return x;
     }
 
-    // Canonical fom : if ms == 0, don't include in the string.
+    // Canonical form : if ms == 0, don't include in the string.
     public static String calendarToXSDTimeString(Calendar cal) {
         DateTimeFormatter fmt = hasZeroMilliSeconds(cal)
             ? timeFmt_XSD_ms0
-                : timeFmt_XSD_ms ;
+            : timeFmt_XSD_ms ;
         return calendarToXSDString(cal, fmt) ;
     }
 
     private static String calendarToXSDString(Calendar cal, DateTimeFormatter fmt) {
         ZonedDateTime zdt = ((GregorianCalendar)cal).toZonedDateTime();
         String lex = fmt.format(zdt) ;
-        // lex = lex + calcTimezone(cal) ;
         return lex ;
     }
 }
