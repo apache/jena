@@ -75,7 +75,7 @@ public class AngleDegreesFFTest {
         NodeValue v3 = NodeValue.makeDouble(75);
         NodeValue v4 = NodeValue.makeDouble(100);
         AngleDegreesFF instance = new AngleDegreesFF();
-        NodeValue expResult = NodeValue.makeDouble(42.27368900609373);
+        NodeValue expResult = NodeValue.makeDouble(42.273689);
         NodeValue result = instance.exec(v1, v2, v3, v4);
         assertEquals(expResult, result);
     }
@@ -85,7 +85,6 @@ public class AngleDegreesFFTest {
      */
     @Test
     public void testExec_query() {
-
 
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 
@@ -106,10 +105,7 @@ public class AngleDegreesFFTest {
             }
         }
 
-        List<Literal> expResults = Arrays.asList(ResourceFactory.createTypedLiteral("42.27368900609373e0", XSDDatatype.XSDdouble));
-
-        //
-        //
+        List<Literal> expResults = Arrays.asList(ResourceFactory.createTypedLiteral("42.273689e0", XSDDatatype.XSDdouble));
         assertEquals(expResults, results);
     }
 

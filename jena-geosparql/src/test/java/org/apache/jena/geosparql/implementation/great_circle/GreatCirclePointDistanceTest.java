@@ -144,13 +144,12 @@ public class GreatCirclePointDistanceTest {
     @Test
     public void testGetPoint_3args_North() {
 
-
         double startLat = 48.85341;
         double startLon = -2.3488;
         double distance = 100000.0;
         LatLonPoint startPoint = new LatLonPoint(startLat, startLon);
         double bearing = 0.0;
-        LatLonPoint expResult = new LatLonPoint(49.752730367761664, -2.3488);
+        LatLonPoint expResult = new LatLonPoint(49.752730, -2.3488);
         LatLonPoint result = GreatCirclePointDistance.getPoint(startPoint, distance, bearing);
         assertEquals(expResult, result);
     }
@@ -165,7 +164,7 @@ public class GreatCirclePointDistanceTest {
         double startLon = -2.3488;
         double distance = 100000.0;
         double bearing = 0.0;
-        LatLonPoint expResult = new LatLonPoint(49.752730367761664, -2.3488);
+        LatLonPoint expResult = new LatLonPoint(49.752730, -2.3488);
         LatLonPoint result = GreatCirclePointDistance.getPoint(startLat, startLon, distance, bearing);
         assertEquals(expResult, result);
     }
@@ -176,13 +175,12 @@ public class GreatCirclePointDistanceTest {
     @Test
     public void testGetPoint_3args_East() {
 
-
         double startLat = 48.85341;
         double startLon = -2.3488;
         double distance = 100000.0;
         LatLonPoint startPoint = new LatLonPoint(startLat, startLon);
         double bearing = 90.0;
-        LatLonPoint expResult = new LatLonPoint(48.84533344929755, -0.9821733277296272);
+        LatLonPoint expResult = new LatLonPoint(48.845333, -0.982173);
         LatLonPoint result = GreatCirclePointDistance.getPoint(startPoint, distance, bearing);
         assertEquals(expResult, result);
     }
@@ -197,7 +195,7 @@ public class GreatCirclePointDistanceTest {
         double startLon = -2.3488;
         double distance = 100000.0;
         double bearing = 90.0;
-        LatLonPoint expResult = new LatLonPoint(48.84533344929755, -0.9821733277296272);
+        LatLonPoint expResult = new LatLonPoint(48.845333, -0.982173);
         LatLonPoint result = GreatCirclePointDistance.getPoint(startLat, startLon, distance, bearing);
         assertEquals(expResult, result);
     }
