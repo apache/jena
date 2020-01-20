@@ -209,7 +209,6 @@ public class GeometryWrapperTest {
     @Test
     public void testDistanceSameSRSSameUnit() throws Exception {
 
-
         Geometry targetGeo = GEOMETRY_FACTORY.createPoint(new Coordinate(2.0, 1.0));
         String targetSRSURI = SRS_URI.OSGB36_CRS;
         GeometryWrapper targetGeometry = new GeometryWrapper(targetGeo, targetSRSURI, WKTDatatype.URI, DimensionInfo.XY_POINT);
@@ -233,7 +232,6 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testDistanceSameSRSDifferentUnit() throws Exception {
-
 
         Geometry targetGeo = GEOMETRY_FACTORY.createPoint(new Coordinate(385458, 156785)); //LatLon - 51.31, -2.21
         String targetSRSURI = SRS_URI.OSGB36_CRS;
@@ -260,7 +258,6 @@ public class GeometryWrapperTest {
     @Test
     public void testDistanceDifferentSRSSameUnit() throws Exception {
 
-
         Geometry targetGeo = GEOMETRY_FACTORY.createPoint(new Coordinate(2.0, 1.0));
         String targetSRSURI = SRS_URI.WGS84_CRS;
         GeometryWrapper targetGeometry = new GeometryWrapper(targetGeo, targetSRSURI, WKTDatatype.URI, DimensionInfo.XY_POINT);
@@ -285,7 +282,6 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testDistanceDifferentSRSDifferentUnit() throws Exception {
-
 
         Geometry targetGeo = GEOMETRY_FACTORY.createPoint(new Coordinate(0.0, 1.0));
         String targetSRSURI = SRS_URI.WGS84_CRS;
@@ -325,7 +321,6 @@ public class GeometryWrapperTest {
     @Test
     public void testEmptyWKTGeometryWrapper() {
 
-
         Geometry instanceGeo = GEOMETRY_FACTORY.createPoint();
         String instanceSRSURI = SRS_URI.DEFAULT_WKT_CRS84;
         GeometryWrapper result = new GeometryWrapper(instanceGeo, instanceSRSURI, WKTDatatype.URI, DimensionInfo.XY_POINT);
@@ -340,7 +335,6 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testEmptyGMLGeometryWrapper() {
-
 
         Geometry instanceGeo = GEOMETRY_FACTORY.createPoint();
         String instanceSRSURI = SRS_URI.DEFAULT_WKT_CRS84;
@@ -357,7 +351,6 @@ public class GeometryWrapperTest {
     @Test
     public void testAsLiteral() {
 
-
         String lexicalForm = "POINT(-83.38 33.95)";
         GeometryWrapper instance = WKTDatatype.INSTANCE.parse(lexicalForm);
 
@@ -372,7 +365,6 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testAsLiteralConversionURI() {
-
 
         String lexicalForm = "POINT(-83.38 33.95)";
         GeometryWrapper instance = WKTDatatype.INSTANCE.parse(lexicalForm);
@@ -389,7 +381,6 @@ public class GeometryWrapperTest {
      */
     @Test
     public void testAsLiteralConversionDatatype() {
-
 
         String lexicalForm = "POINT(-83.38 33.95)";
         GeometryWrapper instance = WKTDatatype.INSTANCE.parse(lexicalForm);

@@ -443,12 +443,16 @@ public class CustomCoordinateSequence implements CoordinateSequence, Serializabl
         switch (ordinateIndex) {
             case X:
                 x[index] = value;
+                break;
             case Y:
                 y[index] = value;
+                break;
             case Z:
                 z[index] = value;
+                break;
             case M:
                 m[index] = value;
+                break;
         }
     }
 
