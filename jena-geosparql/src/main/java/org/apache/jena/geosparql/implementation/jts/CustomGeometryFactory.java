@@ -19,6 +19,7 @@ package org.apache.jena.geosparql.implementation.jts;
 
 import java.io.Serializable;
 import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.PrecisionModel;
 
 /**
  *
@@ -26,7 +27,7 @@ import org.locationtech.jts.geom.GeometryFactory;
  */
 public class CustomGeometryFactory implements Serializable {
 
-    private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new CustomCoordinateSequenceFactory());
+    private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(1000000), 0, new CustomCoordinateSequenceFactory());
 
     public static final GeometryFactory theInstance() {
         return GEOMETRY_FACTORY;
