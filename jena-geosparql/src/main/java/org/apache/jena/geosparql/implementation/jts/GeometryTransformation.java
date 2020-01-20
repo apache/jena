@@ -18,6 +18,8 @@
 package org.apache.jena.geosparql.implementation.jts;
 
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.locationtech.jts.geom.Coordinate;
@@ -210,13 +212,13 @@ public class GeometryTransformation {
         for (int i = 0; i < size; i++) {
             Coordinate coord = coordSeq.getCoordinate(i);
             int j = i * targetDims;
-            x[i] = targetPts[j];
-            y[i] = targetPts[j + 1];
+            x[i] = cleanUpPrecision(targetPts[j]);
+            y[i] = cleanUpPrecision(targetPts[j + 1]);
             if (isZTransformed) {
-                z[i] = targetPts[j + 2];
+                z[i] = cleanUpPrecision(targetPts[j + 2]);
             } else {
                 if (coordSeq.hasZ()) {
-                    z[i] = coord.getZ();
+                    z[i] = cleanUpPrecision(coord.getZ());
                 } else {
                     z[i] = Double.NaN;
                 }
@@ -230,6 +232,12 @@ public class GeometryTransformation {
         }
 
         return new CustomCoordinateSequence(x, y, z, m);
+    }
+
+    private static double cleanUpPrecision(double value) {
+        BigDecimal bigDecimal = new BigDecimal(Double.toString(value));
+        bigDecimal = bigDecimal.setScale(6, RoundingMode.HALF_UP);
+        return bigDecimal.doubleValue();
     }
 
 }
