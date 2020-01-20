@@ -18,12 +18,11 @@
 package org.apache.jena.geosparql.implementation;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Objects;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Length;
+import static org.apache.jena.geosparql.configuration.GeoSPARQLOperations.cleanUpPrecision;
 import org.apache.jena.geosparql.implementation.registry.UnitsRegistry;
 import org.apache.jena.geosparql.implementation.vocabulary.Unit_URI;
 import org.apache.sis.measure.Quantities;
@@ -185,13 +184,6 @@ public class UnitsOfMeasure implements Serializable {
         } else {
             return UnitsOfMeasure.conversion(distance, units, METRE_UNITS);
         }
-    }
-
-    private static double cleanUpPrecision(double value) {
-        int places = 6;
-        BigDecimal bigDecimal = new BigDecimal(Double.toString(value));
-        bigDecimal = bigDecimal.setScale(places, RoundingMode.HALF_UP);
-        return bigDecimal.doubleValue();
     }
 
     @Override

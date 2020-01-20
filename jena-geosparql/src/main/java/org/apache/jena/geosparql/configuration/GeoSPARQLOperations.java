@@ -23,6 +23,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,6 +34,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.RDFDatatype;
+import static org.apache.jena.geosparql.configuration.GeoSPARQLConfig.DECIMAL_PLACES_PRECISION;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.datatype.GMLDatatype;
 import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
@@ -1183,6 +1186,18 @@ public class GeoSPARQLOperations {
         }
         dataset.commit();
         dataset.end();
+    }
+
+    /**
+     * Converts value according to the configured precision.
+     *
+     * @param value
+     * @return
+     */
+    public static double cleanUpPrecision(double value) {
+        BigDecimal bigDecimal = new BigDecimal(Double.toString(value));
+        bigDecimal = bigDecimal.setScale(DECIMAL_PLACES_PRECISION, RoundingMode.HALF_UP);
+        return bigDecimal.doubleValue();
     }
 
 }

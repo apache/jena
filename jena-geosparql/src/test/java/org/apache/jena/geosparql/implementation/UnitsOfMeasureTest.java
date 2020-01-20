@@ -17,8 +17,7 @@
  */
 package org.apache.jena.geosparql.implementation;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import static org.apache.jena.geosparql.configuration.GeoSPARQLOperations.cleanUpPrecision;
 import org.apache.jena.geosparql.implementation.vocabulary.Unit_URI;
 import org.apache.sis.referencing.CRS;
 import org.junit.After;
@@ -140,9 +139,8 @@ public class UnitsOfMeasureTest {
         UnitsOfMeasure targetUnitsOfMeasure = new UnitsOfMeasure(crs);
         double radsToDegrees = 180 / Math.PI;
         double value = distance * radsToDegrees;
-        BigDecimal bigDecimal = new BigDecimal(Double.toString(value));
-        bigDecimal = bigDecimal.setScale(6, RoundingMode.HALF_UP);
-        double expResult = bigDecimal.doubleValue();
+
+        double expResult = cleanUpPrecision(value);
         double result = UnitsOfMeasure.conversion(distance, sourceDistanceUnitURI, targetUnitsOfMeasure.getUnitURI());
         assertEquals(expResult, result, 0.0);
     }

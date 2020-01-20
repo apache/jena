@@ -51,6 +51,18 @@ public class GeoSPARQLConfig {
     private static Boolean IS_QUERY_REWRITE_ENABLED = true;
 
     /**
+     * Precision of calculations. Inaccuracies exist in these calculations and a
+     * higher value may not improve results.
+     */
+    public static int DECIMAL_PLACES_PRECISION = 6;
+
+    /**
+     * Precision of created coordinates. Determines the coordinates of certain
+     * JTS geometry calculations, e.g. buffer.
+     */
+    public static int PRECISION_MODEL_SCALE_FACTOR = 1000000;
+
+    /**
      * Initialise all GeoSPARQL property and filter functions with memory
      * indexing.
      * <br>Use this for in-memory indexing GeoSPARQL setup. Query re-write
@@ -275,6 +287,27 @@ public class GeoSPARQLConfig {
      */
     public static final void setupSpatialIndex(Dataset dataset, String srsURI, File spatialIndexFile) throws SpatialIndexException {
         SpatialIndex.buildSpatialIndex(dataset, srsURI, spatialIndexFile);
+    }
+
+    /**
+     * Set the number of decimal places precision used in calculations and
+     * coordinate transformations. Inaccuracies exist in these calculations and
+     * a higher value may not improve results.
+     *
+     * @param decimalPlaces
+     */
+    public static final void setCalculationPrecision(int decimalPlaces) {
+        DECIMAL_PLACES_PRECISION = decimalPlaces;
+    }
+
+    /**
+     * Set the scale factor of the precision model used to create coordinate
+     * sequences used in Geometries. Default: 1000000 for 6 d.p. precision.
+     *
+     * @param scaleFactor
+     */
+    public static final void setPrecisionModelScaleFactor(int scaleFactor) {
+        PRECISION_MODEL_SCALE_FACTOR = scaleFactor;
     }
 
 }

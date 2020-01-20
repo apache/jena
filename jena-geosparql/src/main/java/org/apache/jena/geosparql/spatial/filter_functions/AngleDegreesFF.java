@@ -17,9 +17,8 @@
  */
 package org.apache.jena.geosparql.spatial.filter_functions;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import org.apache.jena.datatypes.DatatypeFormatException;
+import static org.apache.jena.geosparql.configuration.GeoSPARQLOperations.cleanUpPrecision;
 import org.apache.jena.geosparql.implementation.great_circle.Angle;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
@@ -59,11 +58,7 @@ public class AngleDegreesFF extends FunctionBase4 {
 
             double radians = Angle.find(x1, y1, x2, y2);
 
-            double value = Math.toDegrees(radians);
-
-            BigDecimal bigDecimal = new BigDecimal(Double.toString(value));
-            bigDecimal = bigDecimal.setScale(6, RoundingMode.HALF_UP);
-            double degrees = bigDecimal.doubleValue();
+            double degrees = cleanUpPrecision(Math.toDegrees(radians));
             return NodeValue.makeDouble(degrees);
         } catch (DatatypeFormatException ex) {
             throw new ExprEvalException(ex.getMessage(), ex);

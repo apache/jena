@@ -18,10 +18,9 @@
 package org.apache.jena.geosparql.implementation.jts;
 
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import org.apache.jena.datatypes.DatatypeFormatException;
+import static org.apache.jena.geosparql.configuration.GeoSPARQLOperations.cleanUpPrecision;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.Geometry;
@@ -232,12 +231,6 @@ public class GeometryTransformation {
         }
 
         return new CustomCoordinateSequence(x, y, z, m);
-    }
-
-    private static double cleanUpPrecision(double value) {
-        BigDecimal bigDecimal = new BigDecimal(Double.toString(value));
-        bigDecimal = bigDecimal.setScale(6, RoundingMode.HALF_UP);
-        return bigDecimal.doubleValue();
     }
 
 }
