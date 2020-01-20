@@ -145,9 +145,11 @@ public class GMLWriter {
 
             //Find exterior shell
             Element exterior = new Element("exterior", GML_NAMESPACE);
+            Element exteriorLinearRing = new Element("LinearRing", GML_NAMESPACE);
             Element exteriorPosList = new Element("posList", GML_NAMESPACE);
             exteriorPosList.addContent(convertToGMLText(coordSequence));
-            exterior.addContent(exteriorPosList);
+            exteriorLinearRing.addContent(exteriorPosList);
+            exterior.addContent(exteriorLinearRing);
             gmlRoot.addContent(exterior);
 
             //Find inner holes
@@ -156,11 +158,13 @@ public class GMLWriter {
             for (int i = 0; i < interiorRings; i++) {
                 //flush all content
                 Element interior = new Element("interior", GML_NAMESPACE);
+                Element interiorLinearRing = new Element("LinearRing", GML_NAMESPACE);
                 Element innerPosList = new Element("posList", GML_NAMESPACE);
                 LineString innerLineString = polygon.getInteriorRingN(i);
                 CustomCoordinateSequence innerCoordSequence = (CustomCoordinateSequence) innerLineString.getCoordinateSequence();
                 innerPosList.addContent(convertToGMLText(innerCoordSequence));
-                interior.addContent(innerPosList);
+                interiorLinearRing.addContent(innerPosList);
+                interior.addContent(interiorLinearRing);
                 gmlRoot.addContent(interior);
             }
 
