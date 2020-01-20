@@ -17,6 +17,9 @@
  */
 package org.apache.jena.geosparql.implementation.great_circle;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 /**
  *
  *
@@ -27,8 +30,21 @@ public class LatLonPoint {
     private final double lon;
 
     public LatLonPoint(double lat, double lon) {
-        this.lat = lat;
-        this.lon = lon;
+        this.lat = cleanUpPrecision(lat);
+        this.lon = cleanUpPrecision(lon);
+    }
+
+    /**
+     * Store the values to 6 decimal places precision.
+     *
+     * @param value
+     * @return
+     */
+    private double cleanUpPrecision(double value) {
+        int places = 6;
+        BigDecimal bigDecimal = new BigDecimal(Double.toString(value));
+        bigDecimal = bigDecimal.setScale(places, RoundingMode.HALF_UP);
+        return bigDecimal.doubleValue();
     }
 
     public double getLat() {
