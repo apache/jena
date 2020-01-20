@@ -186,31 +186,3 @@
   </build>
 
 </project>
-  </archive>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>test-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <version>true</version>
-                    <show>public</show>
-                    <quiet>true</quiet>
-                    <encoding>UTF-8</encoding>
-                    <windowtitle>Apache Jena GeoSPARQL</windowtitle>
-                    <doctitle>Apache Jena GeoSPARQL ${project.version}</doctitle>
-                    <bottom>Licenced under the Apache License, Version 2.0</bottom>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-</project>
