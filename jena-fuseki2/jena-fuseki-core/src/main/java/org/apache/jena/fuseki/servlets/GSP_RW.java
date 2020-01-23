@@ -92,7 +92,6 @@ public class GSP_RW extends GSP_R {
     }
 
     public void execDeleteGSP(HttpAction action) {
-
         action.beginWrite();
         boolean haveCommited = false;
         try {
@@ -121,10 +120,6 @@ public class GSP_RW extends GSP_R {
         // Don't allow whole-database DELETE. 
         ServletOps.errorMethodNotAllowed("DELETE");
     }
-
-// ---- Misc
-
-// Used by Dispatcher.hasGSPParams
 
     /** Test whether the operation has either of the GSP parameters. */ 
     public static boolean hasGSPParams(HttpAction action) {
@@ -230,7 +225,6 @@ public class GSP_RW extends GSP_R {
      * @param cleanDest Whether to remove data first (true = PUT, false = POST)
      * @return whether the target existed beforehand.
      */
-
     protected UploadDetails addDataIntoNonTxn(HttpAction action, boolean overwrite) {
         Graph graphTmp = GraphFactory.createGraphMem();
         StreamRDF dest = StreamRDFLib.graph(graphTmp);
@@ -367,5 +361,4 @@ public class GSP_RW extends GSP_R {
         }
         ServletOps.uploadResponse(action, details);
     }
-
 }
