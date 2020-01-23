@@ -40,6 +40,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Convert;
 
+/** Library of HTTP/network related functions. */
 public class FusekiNetLib {
     /** Get the content type of an action or return the default.
      * @param  request
