@@ -19,37 +19,27 @@
 package org.apache.jena.tdb2.sys;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.system.Txn;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.system.Txn;
+import org.apache.jena.tdb2.ConfigTest;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
-import org.apache.jena.tdb2.sys.IOX;
-import org.apache.jena.tdb2.sys.StoreConnection;
-import org.apache.jena.tdb2.sys.TDBInternal;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 public class TestDatabaseOps
 {
-    @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
-
     private Location dir = null;
 
     static Quad quad1 = SSE.parseQuad("(_ <s> <p> 1)");
@@ -60,21 +50,16 @@ public class TestDatabaseOps
 
     @Before
     public void before() {
-        //dir = Location.create(tempFolder.getRoot().getAbsolutePath());
-
-        String DIR = "target/DBC";
+        String DIR = ConfigTest.getCleanDir();
         FileOps.ensureDir(DIR);
         FileOps.clearAll(DIR);
         dir = Location.create(DIR);
-
-        FileUtils.deleteQuietly(IOX.asFile(dir));
-        FileOps.ensureDir(dir.getDirectoryPath());
     }
 
     @After
     public void after() {
         TDBInternal.reset();
-        //FileUtils.deleteQuietly(IOX.asFile(dir));
+        FileUtils.deleteQuietly(IOX.asFile(dir));
     }
 
     @Test public void compact_dsg_1() {
