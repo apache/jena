@@ -293,13 +293,13 @@ public class GSP_RW extends GSP_R {
         if ( action.isTransactional() )
             quadsPutPostTxn(action, overwrite);
         else
-            quadsPutPostTxn(action, overwrite);
+            quadsPutPostNonTxn(action, overwrite);
     }        
 
-    
-    // These are very similar to SPARQL_REST_RW.addDataIntoTxn/nonTxn
-    // Maybe can be usually DRYed.
-
+    /**
+     * Load data using a transaction into the dataset of an action. if the data is bad,
+     * abort the transaction.
+     */
     private void quadsPutPostTxn(HttpAction action, boolean clearFirst) {
         UploadDetails details = null;
         action.beginWrite();
@@ -328,6 +328,12 @@ public class GSP_RW extends GSP_R {
         ServletOps.uploadResponse(action, details);
     }
 
+    /**
+     * Load data, without assuming the dataset of an action is transactional -
+     * specifically, whether it supports "abort". This requires loading the data into
+     * a temporary dataset, which means we check the data is legal RDF, then copying
+     * it into the finally destination.
+     */
     private void quadsPutPostNonTxn(HttpAction action, boolean clearFirst) {
         DatasetGraph dsgTmp = DatasetGraphFactory.create();
         StreamRDF dest = StreamRDFLib.dataset(dsgTmp);
@@ -349,9 +355,9 @@ public class GSP_RW extends GSP_R {
             action.commit();
             ServletOps.success(action);
         } catch (Exception ex) {
-            // We're in the non-transactional branch, this probably will not
-            // work
-            // but it might and there is no harm safely trying.
+            // We're in a non-transactional upload so this probably will not
+            // work but there still may be transaction state tracking.
+            // There is no harm safely trying.
             try {
                 action.abort();
             } catch (Exception ex2) {}
