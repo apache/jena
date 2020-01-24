@@ -115,7 +115,7 @@ public class ResponseDataset
         Lang lang = RDFLanguages.contentTypeToLang(contentType);
         if ( lang == null )
             ServletOps.errorBadRequest("Can't determine output content type: "+contentType);
-        // Choose the serialization. For RDX/XML use the fast, plain variant.
+        // Choose the serialization. For RDF/XML use the fast, plain variant.
         RDFFormat fmt =
             ( lang == Lang.RDFXML ) ? RDFFormat.RDFXML_PLAIN : RDFWriterRegistry.defaultSerialization(lang);
 
