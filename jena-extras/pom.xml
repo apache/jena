@@ -36,6 +36,7 @@
 
   <modules>
     <module>jena-querybuilder</module>
+    <module>jena-commonsrdf</module>
   </modules>
 
   <properties>
