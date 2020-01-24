@@ -159,7 +159,7 @@ public class FusekiMain extends CmdARQ {
             add(argSparqler, "--sparqler=DIR",
                 "Run with SPARQLer services Directory for static content");
             add(argValidators, "--validators",      "Install validators");
-            add(argGeneralQuerySvc, "--general=",    "Add a general SPARQL endpoint (without a dataset)");
+            add(argGeneralQuerySvc, "--general=PATH",    "Add a general SPARQL endpoint (without a dataset) at /PATH");
 
             add(argAuth, "--auth=[basic|Digest]", "Run the server using basic or digest authentication (dft: digest).");
             add(argHttps, "--https=CONF", "https certificate access details. JSON file { \"cert\":FILE , \"passwd\"; SECRET } ");

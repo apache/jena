@@ -111,7 +111,8 @@ public class SPARQL_Upload extends ActionService
             return uploadNonTxn(action, base);
     }
 
-    /** Non-transaction - buffer to a temporary graph so that parse errors
+    /** 
+     * Non-transaction - buffer to a temporary graph so that parse errors
      * are caught before inserting any data.
      */
     private static long uploadNonTxn(HttpAction action, String base) {
@@ -150,9 +151,9 @@ public class SPARQL_Upload extends ActionService
         finally { action.end(); }
     }
 
-    // TODO Improve.  Needs Upload code rework.
     /**
      * Transactional - we'd like better handle the data and go straight to the destination, with an abort on parse error.
+     * For an HTML file upload that's not so simple in the general case.
      * Use Graph Store protocol for bulk uploads.
      */
     private static long uploadTxn(HttpAction action, String base) {

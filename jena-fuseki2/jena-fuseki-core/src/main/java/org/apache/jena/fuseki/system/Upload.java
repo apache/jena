@@ -52,7 +52,7 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 public class Upload {
 
     /** Parse the body contents to the {@link StreamRDF}.
-     *  This function is used by GSP.
+     *  This function is used by GSP_RW.
      */
     public static UploadDetails incomingData(HttpAction action, StreamRDF dest) {
         ContentType ct = ActionLib.getContentType(action);
@@ -96,9 +96,9 @@ public class Upload {
     }
 
     /**
-     * Process an HTTP upload of RDF files (triples or quads)
-     * Stream straight into the destination graph or dataset, ignoring any
-     * headers in the form parts. This function is used by GSP.
+     * Process an HTTP upload of RDF files (triples or quads) in an HTML multipart
+     * form (Content-type "multipart/form-data"). Stream straight into the
+     * destination graph or dataset.
      */
 
     public static UploadDetails fileUploadWorker(HttpAction action, StreamRDF dest) {
@@ -116,8 +116,10 @@ public class Upload {
                     InputStream stream = fileStream.openStream();
                     String value = Streams.asString(stream, "UTF-8");
                     // This code is currently used to put multiple files into a single destination.
-                    // Additonal field/values do not make sense.
+                    // Additional field/values do not make sense.
                     ServletOps.errorBadRequest(format("Only files accepted in multipart file upload (got %s=%s)",fieldName, value));
+                    // errorBadRequest does not return.
+                    return null;
                 }
                 //Ignore the field name.
                 //String fieldName = fileStream.getFieldName();

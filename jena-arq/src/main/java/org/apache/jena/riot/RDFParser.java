@@ -96,7 +96,8 @@ public class RDFParser {
     private final ErrorHandler      errorHandler;
     private final Context           context;
 
-    private boolean                 canUse = true;
+    // Some cases the parser is reusable (read a file), some are not (input streams).
+    private boolean                 canUseThisParser = true;
 
     // ---- Builder creation
     
@@ -265,10 +266,10 @@ public class RDFParser {
      * Parse the source, sending the results to a {@link StreamRDF}.
      */
     public void parse(StreamRDF destination) {
-        if ( !canUse )
+        if ( !canUseThisParser )
             throw new RiotException("Parser has been used once and can not be used again");
         // Consuming mode.
-        canUse = (inputStream == null && javaReader == null);
+        canUseThisParser = (inputStream == null && javaReader == null);
         // FactoryRDF is stateful in the LabelToNode mapping.
         // NB FactoryRDFCaching does not need to reset its cache.
         factory.reset() ;
