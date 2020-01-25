@@ -39,6 +39,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <ver.commonsrdf>0.5.0</ver.commonsrdf>
+    <automatic.module.name>org.apache.jena.commonsrdf</automatic.module.name>
   </properties>
 
   <dependencies>
@@ -68,6 +69,7 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-rdf-simple</artifactId>
       <version>${ver.commonsrdf}</version>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>

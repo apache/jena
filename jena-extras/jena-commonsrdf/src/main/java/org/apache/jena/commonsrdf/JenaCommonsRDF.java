@@ -21,8 +21,6 @@ package org.apache.jena.commonsrdf;
 import java.util.Optional;
 
 import org.apache.commons.rdf.api.*;
-import org.apache.jena.commonsrdf.examples.Ex_JenaGraphToCommonsRDFGraph;
-import org.apache.jena.commonsrdf.examples.Ex_ParseIntoCommonsRDFGraph;
 import org.apache.jena.commonsrdf.impl.*;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
@@ -31,6 +29,7 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.web.LangTag;
 import org.apache.jena.sparql.graph.GraphFactory;
+import org.apache.jena.sys.JenaSystem;
 
 /**
  * A set of utilities for moving between CommonsRDF and Jena.
@@ -43,19 +42,10 @@ import org.apache.jena.sparql.graph.GraphFactory;
  * <p>
  * <pre>
  * </pre>
- *  See {@link JenaCommonsRDF} for other conversions of existing objects.
- *
- * Examples:
- * <ul>
- * <li>{@link Ex_JenaGraphToCommonsRDFGraph} Use a jena graph in CommonsRDF.
- * <li>{@link Ex_ParseIntoCommonsRDFGraph} Use Jena parsers to load data into any CommonsRDF graph.
- * </ul>
- *
-
- *
  */
 public class JenaCommonsRDF {
-
+    static { JenaSystem.init(); }
+    
     /** Convert a CommonsRDF RDFTerm to a Jena Node.
      * If the RDFTerm was from Jena originally, return that original object else
      * create a copy using Jena objects.
