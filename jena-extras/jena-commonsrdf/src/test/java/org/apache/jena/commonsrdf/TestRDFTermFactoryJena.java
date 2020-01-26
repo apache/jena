@@ -21,6 +21,7 @@ package org.apache.jena.commonsrdf;
 import org.apache.commons.rdf.api.AbstractRDFTest;
 import org.apache.commons.rdf.api.RDF;
 
+/* org.apache.commons.rdf.api AbstractRDFTest tests. */
 public class TestRDFTermFactoryJena extends AbstractRDFTest {
 
     @Override

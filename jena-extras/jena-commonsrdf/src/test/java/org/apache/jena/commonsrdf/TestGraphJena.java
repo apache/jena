@@ -22,6 +22,7 @@ import org.apache.commons.rdf.api.AbstractGraphTest;
 import org.apache.commons.rdf.api.RDF;
 import org.apache.jena.commonsrdf.JenaRDF;
 
+/** org.apache.commons.rdf.api Graph tests */
 public class TestGraphJena extends AbstractGraphTest {
 
     @Override
@@ -30,4 +31,3 @@ public class TestGraphJena extends AbstractGraphTest {
     }
 
 }
-

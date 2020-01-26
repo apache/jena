@@ -32,6 +32,7 @@ import org.junit.runners.Suite;
     , TestDatasetJena.class
     // Additional tests.
     , TestJenaSimple.class
+    , TestServiceLoaderCommonsRDF.class
 })
 
 public class TS_JenaCommonsRDF {

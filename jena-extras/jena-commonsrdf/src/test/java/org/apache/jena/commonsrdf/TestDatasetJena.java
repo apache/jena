@@ -21,6 +21,7 @@ package org.apache.jena.commonsrdf;
 import org.apache.commons.rdf.api.AbstractDatasetTest;
 import org.apache.commons.rdf.api.RDF;
 
+/** org.apache.commons.rdf.api Dataset tests */
 public class TestDatasetJena extends AbstractDatasetTest {
 
     @Override
@@ -29,4 +30,3 @@ public class TestDatasetJena extends AbstractDatasetTest {
     }
 
 }
-

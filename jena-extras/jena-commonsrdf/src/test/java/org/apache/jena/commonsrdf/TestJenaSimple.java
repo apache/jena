@@ -30,15 +30,14 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.system.StreamRDF;
 import org.junit.Test;
 
-/** Tests of working to/from another ComonsRDF implementation, in thsi case, commonsrdf-simple. */ 
+/** Tests of working to/from another ComonsRDF implementation, in this case, commonsrdf-simple. */ 
 public class TestJenaSimple {
     @Test public void jenaParserToAlienRDF() {
         RDF rft = new SimpleRDF();
         parse(rft);
     }
-    
 
-    @Test public void jenaWruteFromAlienRDF() {
+    @Test public void jenaWriteFromAlienRDF() {
         RDF rft = new SimpleRDF();
         Graph crdf_graph = parse(rft);
         

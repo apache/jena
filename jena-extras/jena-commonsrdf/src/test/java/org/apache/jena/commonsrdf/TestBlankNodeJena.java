@@ -22,6 +22,7 @@ import org.apache.commons.rdf.api.AbstractBlankNodeTest;
 import org.apache.commons.rdf.api.BlankNode;
 import org.apache.jena.commonsrdf.impl.JCR_Factory;
 
+/** org.apache.commons.rdf.api BlankNode tests */
 public class TestBlankNodeJena extends AbstractBlankNodeTest {
     @Override
     protected BlankNode getBlankNode() {
@@ -33,4 +34,3 @@ public class TestBlankNodeJena extends AbstractBlankNodeTest {
         return JCR_Factory.createBlankNode(identifier);
     }
 }
-
