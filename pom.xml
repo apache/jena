@@ -28,7 +28,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>22</version>
+    <version>23</version>
   </parent>
 
   <licenses>
@@ -936,22 +936,6 @@
           <configuration>
             <encoding>UTF-8</encoding>
           </configuration>
-        </plugin>
-
-        <!-- Temp fix for remote-resources while waiting for remote-resources >1.5
-             1.6 should fix this - SNAPSHOT already does.
-        -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-remote-resources-plugin</artifactId>
-          <version>1.5</version>
-          <dependencies>
-            <dependency>
-              <groupId>org.apache.maven.shared</groupId>
-              <artifactId>maven-filtering</artifactId>
-              <version>3.1.1</version>
-            </dependency>
-          </dependencies>
         </plugin>
 
         <plugin>
