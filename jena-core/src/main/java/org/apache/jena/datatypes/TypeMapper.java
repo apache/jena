@@ -20,8 +20,8 @@ package org.apache.jena.datatypes;
 
 import java.net.URI;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.datatypes.xsd.impl.RDFLangString ;
@@ -96,10 +96,10 @@ public class TypeMapper {
 // Variables
 
     /** Map from uri to datatype */
-    private final HashMap<String, RDFDatatype> uriToDT = new HashMap<>();
+    private final ConcurrentHashMap<String, RDFDatatype> uriToDT = new ConcurrentHashMap<>();
 
     /** Map from java class to datatype */
-    private final HashMap<Class<?>, RDFDatatype> classToDT = new HashMap<>();
+    private final ConcurrentHashMap<Class<?>, RDFDatatype> classToDT = new ConcurrentHashMap<>();
 
 //=======================================================================
 // Methods
@@ -120,20 +120,19 @@ public class TypeMapper {
      *         literal).
      */
     public RDFDatatype getSafeTypeByName(final String uri) {
+        if (uri == null) {
+            // Plain literal
+            return null;
+        }
         RDFDatatype dtype = uriToDT.get(uri);
         if (dtype == null) {
-            if (uri == null) {
-                // Plain literal
-                return null;
+            // Unknown datatype
+            if (JenaParameters.enableSilentAcceptanceOfUnknownDatatypes) {
+                dtype = new BaseDatatype(uri);
+                registerDatatype(dtype);
             } else {
-                // Unknown datatype
-                if (JenaParameters.enableSilentAcceptanceOfUnknownDatatypes) {
-                    dtype = new BaseDatatype(uri);
-                    registerDatatype(dtype);
-                } else {
-                    throw new DatatypeFormatException(
-                        "Attempted to created typed literal using an unknown datatype - " + uri);
-                }
+                throw new DatatypeFormatException(
+                    "Attempted to created typed literal using an unknown datatype - " + uri);
             }
         }
         return dtype;
@@ -147,7 +146,7 @@ public class TypeMapper {
      * @return Datatype the datatype definition of null if not known.
      */
     public RDFDatatype getTypeByName(final String uri) {
-        return uriToDT.get(uri);
+        return uri == null ? null : uriToDT.get(uri);
     }
 
     /**
@@ -177,7 +176,7 @@ public class TypeMapper {
      * @return a datatype whose value space matches the given java class
      */
     public RDFDatatype getTypeByClass(final Class<?> clazz) {
-        return classToDT.get(clazz);
+        return clazz == null ? null : classToDT.get(clazz);
     }
 
     /**

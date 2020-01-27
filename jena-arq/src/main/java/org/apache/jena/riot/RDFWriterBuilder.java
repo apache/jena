@@ -205,7 +205,7 @@ public class RDFWriterBuilder {
         build().output(outputStream);
     }
         
-    /** Short form for {@code build().output(v)}.
+    /** Short form for {@code build().output(filename)}.
      * 
      * @param filename
      */
@@ -213,7 +213,7 @@ public class RDFWriterBuilder {
         build().output(filename);
     }
     
-    /** Short form for {@code build().output(v)}.
+    /** Short form for {@code build().asString()}.
      */
     public String asString() {
         return build().asString();

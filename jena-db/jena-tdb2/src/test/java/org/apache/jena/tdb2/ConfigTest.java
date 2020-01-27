@@ -52,8 +52,8 @@ public class ConfigTest
         FileOps.clearDirectory(dir);
         return dir;
     }
-    /** Get a empty directory name that has not been used before in this JVM */
 
+    /** Get a empty directory name that has not been used before in this JVM */
     private static final String getTestingDirUnique()
     {
         init();
