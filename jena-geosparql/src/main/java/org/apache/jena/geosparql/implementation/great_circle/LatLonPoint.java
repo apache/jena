@@ -17,6 +17,8 @@
  */
 package org.apache.jena.geosparql.implementation.great_circle;
 
+import static org.apache.jena.geosparql.configuration.GeoSPARQLOperations.cleanUpPrecision;
+
 /**
  *
  *
@@ -27,8 +29,8 @@ public class LatLonPoint {
     private final double lon;
 
     public LatLonPoint(double lat, double lon) {
-        this.lat = lat;
-        this.lon = lon;
+        this.lat = cleanUpPrecision(lat);
+        this.lon = cleanUpPrecision(lon);
     }
 
     public double getLat() {

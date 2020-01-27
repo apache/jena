@@ -20,6 +20,7 @@ package org.apache.jena.geosparql.implementation.jts;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import org.apache.jena.datatypes.DatatypeFormatException;
+import static org.apache.jena.geosparql.configuration.GeoSPARQLOperations.cleanUpPrecision;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.Geometry;
@@ -210,13 +211,13 @@ public class GeometryTransformation {
         for (int i = 0; i < size; i++) {
             Coordinate coord = coordSeq.getCoordinate(i);
             int j = i * targetDims;
-            x[i] = targetPts[j];
-            y[i] = targetPts[j + 1];
+            x[i] = cleanUpPrecision(targetPts[j]);
+            y[i] = cleanUpPrecision(targetPts[j + 1]);
             if (isZTransformed) {
-                z[i] = targetPts[j + 2];
+                z[i] = cleanUpPrecision(targetPts[j + 2]);
             } else {
                 if (coordSeq.hasZ()) {
-                    z[i] = coord.getZ();
+                    z[i] = cleanUpPrecision(coord.getZ());
                 } else {
                     z[i] = Double.NaN;
                 }

@@ -304,7 +304,7 @@ public class SearchEnvelopeTest {
         GeometryWrapper geometryWrapper = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(0 0)", WKTDatatype.URI);
         double radius = 10;
         String unitsURI = Unit_URI.KILOMETER_URL;
-        SearchEnvelope expResult = new SearchEnvelope(new Envelope(-0.08993203677616635, 0.08993203677616635, -0.08993203677616635, 0.08993203677616635), SpatialIndexTestData.WGS_84_SRS_INFO);
+        SearchEnvelope expResult = new SearchEnvelope(new Envelope(-0.089932, 0.089932, -0.089932, 0.0899320), SpatialIndexTestData.WGS_84_SRS_INFO);
         SearchEnvelope result = SearchEnvelope.build(geometryWrapper, SpatialIndexTestData.WGS_84_SRS_INFO, radius, unitsURI);
         assertEquals(expResult, result);
     }

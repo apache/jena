@@ -107,7 +107,6 @@ public class GreatCircleFFTest {
     @Test
     public void testExec_Paris_London() {
 
-
         NodeValue v1 = NodeValue.makeDouble(48.85341);
         NodeValue v2 = NodeValue.makeDouble(2.34880);
         NodeValue v3 = NodeValue.makeDouble(51.50853);
@@ -210,7 +209,6 @@ public class GreatCircleFFTest {
     @Test
     public void testExec_query() {
 
-
         Dataset dataset = SpatialIndexTestData.createTestDataset();
 
         String query = "PREFIX spatialF: <http://jena.apache.org/function/spatial#>\n"
@@ -230,7 +228,7 @@ public class GreatCircleFFTest {
             }
         }
 
-        List<Literal> expResults = Arrays.asList(ResourceFactory.createTypedLiteral("344.2664230368865e0", XSDDatatype.XSDdouble));
+        List<Literal> expResults = Arrays.asList(ResourceFactory.createTypedLiteral("344.266423e0", XSDDatatype.XSDdouble));
 
         //
         //

@@ -390,6 +390,8 @@ public class GeometryWrapper implements Serializable {
     }
 
     /**
+     * Transformations between SRS and Units will increase the inaccuracy of the
+     * results.
      *
      * @param distance
      * @param targetDistanceUnitsURI

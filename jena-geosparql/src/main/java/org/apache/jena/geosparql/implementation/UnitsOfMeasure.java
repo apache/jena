@@ -22,6 +22,7 @@ import java.util.Objects;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Length;
+import static org.apache.jena.geosparql.configuration.GeoSPARQLOperations.cleanUpPrecision;
 import org.apache.jena.geosparql.implementation.registry.UnitsRegistry;
 import org.apache.jena.geosparql.implementation.vocabulary.Unit_URI;
 import org.apache.sis.measure.Quantities;
@@ -118,8 +119,8 @@ public class UnitsOfMeasure implements Serializable {
         Quantity<Length> distance = Quantities.create(sourceDistance, sourceUnit);
         Quantity<Length> targetDistance = distance.to(targetUnit);
 
-        return targetDistance.getValue().doubleValue();
-
+        double convertedDistance = cleanUpPrecision(targetDistance.getValue().doubleValue());
+        return convertedDistance;
     }
 
     /**
@@ -166,7 +167,7 @@ public class UnitsOfMeasure implements Serializable {
             double latitudeRadians = Math.toRadians(latitude);
             double longitudeRatio = Math.cos(latitudeRadians) * EQUATORIAL_DEGREE_TO_METRES;
             double metreDistance = UnitsOfMeasure.conversion(distance, units, METRE_UNITS);
-            return metreDistance / longitudeRatio;
+            return cleanUpPrecision(metreDistance / longitudeRatio);
         } else {
             return UnitsOfMeasure.conversion(distance, units, DEGREE_UNITS);
         }
@@ -179,7 +180,7 @@ public class UnitsOfMeasure implements Serializable {
             double latitudeRadians = Math.toRadians(latitude);
             double longitudeRatio = Math.cos(latitudeRadians) * EQUATORIAL_DEGREE_TO_METRES;
             double degreeDistance = UnitsOfMeasure.conversion(distance, units, DEGREE_UNITS);
-            return degreeDistance * longitudeRatio;
+            return cleanUpPrecision(degreeDistance * longitudeRatio);
         } else {
             return UnitsOfMeasure.conversion(distance, units, METRE_UNITS);
         }
