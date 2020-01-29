@@ -181,7 +181,10 @@ public class TestTransformOptimizeSubqueryFragments {
     }
 
     @Test
-    public void testUnionRestriction() {
+    public void testOptionalWithUnionRestriction() {
+        // It was possible to pass all other tests, but still generate incorrect algebra
+        // when a query contained an OPTIONAL pattern, and was also retricted by a UNION of patterns
+        // This test ensures this specific edge case is validated
         testTransform(
                 // SPARQL to Test
                 "CONSTRUCT {\n" +
@@ -190,20 +193,17 @@ public class TestTransformOptimizeSubqueryFragments {
                         "} WHERE {\n" +
                         "  ?publication a ?type .\n" +
                         "  OPTIONAL { ?publication <http://localhost/access> ?access . }\n" +
-                        "  ?publication <http://localhost/dateTimeValue>  ?dateTimeObj .\n" +
-                        "  ?dateTimeObj  <http://localhost/dateTime> ?dateTime .\n" +
-                        "    {\n" +
-                        "\t\t ?publication a <http://localhost/Report>  .\n" +
-                        "\t }\n" +
-                        "\t UNION\n" +
-                        "\t  {\n" +
-                        "\t\t ?publication a <http://localhost/AcademicArticle>  .\n" +
-                        "\t }\n" +
+                        "  {\n" +
+                        "    ?publication a <http://localhost/Report>  .\n" +
+                        "  }\n" +
+                        "  UNION\n" +
+                        "  {\n" +
+                        "    ?publication a <http://localhost/AcademicArticle>  .\n" +
+                        "  }\n" +
                         "}\n",
 
                 // Target Op
                 "(join\n" +
-                        "  (join\n" +
                         "    (leftjoin\n" +
                         "      (bgp\n" +
                         "        (triple ?publication <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type)\n" +
@@ -211,10 +211,6 @@ public class TestTransformOptimizeSubqueryFragments {
                         "      (bgp\n" +
                         "        (triple ?publication <http://localhost/access> ?access)\n" +
                         "      ))\n" +
-                        "    (bgp\n" +
-                        "      (triple ?publication <http://localhost/dateTimeValue> ?dateTimeObj)\n" +
-                        "      (triple ?dateTimeObj <http://localhost/dateTime> ?dateTime)\n" +
-                        "    ))\n" +
                         "  (union\n" +
                         "    (bgp (triple ?publication <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost/Report>))\n" +
                         "    (bgp (triple ?publication <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost/AcademicArticle>))\n" +
