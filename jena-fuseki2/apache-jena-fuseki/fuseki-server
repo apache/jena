@@ -102,7 +102,7 @@ then
    CP="${CP}:${FUSEKI_BASE}/extra/*" 
 fi
 
-JVM_ARGS=${JVM_ARGS:--Xmx1200M}
+JVM_ARGS=${JVM_ARGS:--Xmx4G}
 
 exec $JAVA $JVM_ARGS -cp "$CP" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
 

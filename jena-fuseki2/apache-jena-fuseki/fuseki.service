@@ -35,7 +35,7 @@ Description=Fuseki
 Environment=FUSEKI_HOME=/opt/fuseki
 Environment=FUSEKI_BASE=/etc/fuseki
 # Edit the line below to adjust the amount of memory allocated to Fuseki
-Environment=JVM_ARGS=-Xmx2G
+Environment=JVM_ARGS=-Xmx4G
 # Edit to match your installation
 ExecStart=/opt/fuseki/fuseki-server
 # Run as user "fuseki"
