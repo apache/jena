@@ -37,7 +37,9 @@ import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RDFWriterRegistry;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.web.HttpSC;
@@ -113,6 +115,9 @@ public class ResponseDataset
         Lang lang = RDFLanguages.contentTypeToLang(contentType);
         if ( lang == null )
             ServletOps.errorBadRequest("Can't determine output content type: "+contentType);
+        // Choose the serialization. For RDF/XML use the fast, plain variant.
+        RDFFormat fmt =
+            ( lang == Lang.RDFXML ) ? RDFFormat.RDFXML_PLAIN : RDFWriterRegistry.defaultSerialization(lang);
 
         try {
             ResponseOps.setHttpResponse(action, contentType, charset);
@@ -120,9 +125,9 @@ public class ResponseDataset
             ServletOutputStream out = response.getOutputStream();
             try {
                 if ( RDFLanguages.isQuads(lang) )
-                    RDFDataMgr.write(out, dataset, lang);
+                    RDFDataMgr.write(out, dataset, fmt);
                 else
-                    RDFDataMgr.write(out, dataset.getDefaultModel(), lang);
+                    RDFDataMgr.write(out, dataset.getDefaultModel(), fmt);
                 out.flush();
             } catch (JenaException ex) {
                 // Some RDF/XML data is unwritable. All we can do is pretend it's a bad
