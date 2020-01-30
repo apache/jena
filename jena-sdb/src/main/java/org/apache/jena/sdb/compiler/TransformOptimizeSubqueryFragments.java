@@ -169,7 +169,8 @@ public class TransformOptimizeSubqueryFragments extends TransformCopy {
         private Op addStatements(Op dest, Op src, BasicPattern potentialAdditions) {
             // Only needed if destination is a Basic Graph Pattern
             if (OpBGP.isBGP(dest)) {
-                if (src instanceof Op2) {
+                // Only add statements from an Op2 if it is not a Union
+                if (src instanceof Op2 && !(src instanceof OpUnion)) {
                     // Get the left side of an Op2 from src
                     Op opLeft = ((Op2) src).getLeft();
 

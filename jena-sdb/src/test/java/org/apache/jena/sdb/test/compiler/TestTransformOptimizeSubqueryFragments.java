@@ -180,6 +180,45 @@ public class TestTransformOptimizeSubqueryFragments {
         );
     }
 
+    @Test
+    public void testOptionalWithUnionRestriction() {
+        // It was possible to pass all other tests, but still generate incorrect algebra
+        // when a query contained an OPTIONAL pattern, and was also retricted by a UNION of patterns
+        // This test ensures this specific edge case is validated
+        testTransform(
+                // SPARQL to Test
+                "CONSTRUCT {\n" +
+                        "  ?publication a ?type .\n" +
+                        "  ?publication <http://localhost/access> ?access .\n" +
+                        "} WHERE {\n" +
+                        "  ?publication a ?type .\n" +
+                        "  OPTIONAL { ?publication <http://localhost/access> ?access . }\n" +
+                        "  {\n" +
+                        "    ?publication a <http://localhost/Report>  .\n" +
+                        "  }\n" +
+                        "  UNION\n" +
+                        "  {\n" +
+                        "    ?publication a <http://localhost/AcademicArticle>  .\n" +
+                        "  }\n" +
+                        "}\n",
+
+                // Target Op
+                "(join\n" +
+                        "    (leftjoin\n" +
+                        "      (bgp\n" +
+                        "        (triple ?publication <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type)\n" +
+                        "      )\n" +
+                        "      (bgp\n" +
+                        "        (triple ?publication <http://localhost/access> ?access)\n" +
+                        "      ))\n" +
+                        "  (union\n" +
+                        "    (bgp (triple ?publication <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost/Report>))\n" +
+                        "    (bgp (triple ?publication <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost/AcademicArticle>))\n" +
+                        "    ))\n\n"
+        );
+    }
+
+
     private void testTransform(String sparql, String targetOp) {
         // Generate Op
         Op op = Algebra.compile(QueryFactory.create(sparql));
