@@ -123,7 +123,14 @@
       <version>3.15.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
-    
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-commonsrdf</artifactId>
+      <version>3.15.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
@@ -233,6 +240,10 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-rdf-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
       <version>5.0.0</version>
@@ -271,6 +282,8 @@
             -->
             <Private-Package>org.apache.jena.ext.*</Private-Package>
             <Bundle-Activator>org.apache.jena.osgi.Activator</Bundle-Activator>
+            <Provide-Capability>osgi.serviceloader; osgi.serviceloader=org.apache.commons.rdf.api.RDF</Provide-Capability>
+            <Require-Capability>osgi.extender; filter:="(osgi.extender=osgi.serviceloader.registrar)";resolution:=optional</Require-Capability>
           </instructions>
         </configuration>
       </plugin>
