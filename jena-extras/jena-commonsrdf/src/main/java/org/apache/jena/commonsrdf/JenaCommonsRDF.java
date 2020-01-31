@@ -26,8 +26,11 @@ import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.web.LangTag;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sys.JenaSystem;
 
@@ -45,7 +48,7 @@ import org.apache.jena.sys.JenaSystem;
  */
 public class JenaCommonsRDF {
     static { JenaSystem.init(); }
-    
+
     /** Convert a CommonsRDF RDFTerm to a Jena Node.
      * If the RDFTerm was from Jena originally, return that original object else
      * create a copy using Jena objects.
@@ -118,7 +121,8 @@ public class JenaCommonsRDF {
         return JenaCommonsRDF.toJena(term);
     }
 
-    /** Convert a CommonsRDF Graph to a Jena Graph.
+    /**
+     * Convert a CommonsRDF Graph to a Jena Graph.
      * If the Graph was from Jena originally, return that original object else
      * create a copy using Jena objects.
      */
@@ -128,6 +132,29 @@ public class JenaCommonsRDF {
         org.apache.jena.graph.Graph g = GraphFactory.createGraphMem();
         graph.stream().forEach(t->g.add(toJena(t)));
         return g;
+    }
+
+    /**
+     * Convert a CommonsRDF Dataset to a Jena DatasetGraph.
+     * If the Dataset was from Jena originally, return that original object else
+     * create a copy using Jena objects.
+     */
+    public static org.apache.jena.sparql.core.DatasetGraph toJena(Dataset dataset) {
+        if ( dataset instanceof JenaDataset )
+            return ((JenaDataset)dataset).getDataset();
+        org.apache.jena.sparql.core.DatasetGraph d = DatasetGraphFactory.createTxnMem();
+        dataset.stream().forEach(q->d.add(toJena(q)));
+        return d;
+    }
+
+    /** Adapt a CommonsRDF Syntax to a Jena {@link Lang} */
+    public static Optional<Lang> toJena(RDFSyntax syntax) {
+        return Optional.ofNullable(RDFLanguages.contentTypeToLang(syntax.mediaType()));
+    }
+
+    /** Adapt a Jena Lang to a CommonsRDF {@link RDFSyntax} */
+    public static Optional<RDFSyntax> fromJena(final Lang lang) {
+        return RDFSyntax.byMediaType(lang.getContentType().getContentTypeStr());
     }
 
     /** Adapt an existing Jena Node to CommonsRDF {@link RDFTerm}. */
@@ -145,7 +172,8 @@ public class JenaCommonsRDF {
         return JCR_Factory.fromJena(quad);
     }
 
-    /** Adapt an existing Jena Graph to CommonsRDF {@link Graph}.
+    /**
+     * Adapt an existing Jena Graph to CommonsRDF {@link Graph}.
      * This does not take a copy.
      * Changes to the CommonsRDF Graph are reflected in the jena graph.
      */
@@ -153,7 +181,8 @@ public class JenaCommonsRDF {
         return JCR_Factory.fromJena(graph);
     }
 
-    /** Adapt an existing Jena Graph to CommonsRDF {@link Graph}.
+    /**
+     * Adapt an existing Jena Graph to CommonsRDF {@link Graph}.
      * This does not take a copy.
      * Changes to the CommonsRDF Graph are reflected in the jena graph.
      */
@@ -187,6 +216,16 @@ public class JenaCommonsRDF {
         return factory.createTriple(subject, predicate, object);
     }
 
+
+   /** Convert from Jena {@link org.apache.jena.sparql.core.Quad} to any RDFCommons implementation */
+   public static Quad fromJena(RDF factory, org.apache.jena.sparql.core.Quad quad) {
+       BlankNodeOrIRI graph =  (BlankNodeOrIRI)(fromJena(factory, quad.getGraph()));
+       BlankNodeOrIRI subject = (BlankNodeOrIRI)(fromJena(factory, quad.getSubject()));
+       IRI predicate = (IRI)(fromJena(factory, quad.getPredicate()));
+       RDFTerm object = fromJena(factory, quad.getObject());
+       return factory.createQuad(graph, subject, predicate, object);
+   }
+
    /** Convert from Jena to any RDFCommons implementation.
     *  This is a copy, even if the factory is a RDFJena.
     *  Use {@link #fromJena(org.apache.jena.graph.Graph)} for a wrapper.
@@ -202,6 +241,11 @@ public class JenaCommonsRDF {
    /** Create a {@link StreamRDF} that inserts into any RDFCommons implementation of Graph */
    public static StreamRDF streamJenaToCommonsRDF(RDF rft, Graph graph) {
        return new ToGraph(rft, graph);
+   }
+
+   /** Create a {@link StreamRDF} that inserts into any RDFCommons implementation of Graph */
+   public static StreamRDF streamJenaToCommonsRDF(RDF rft, Dataset dataset) {
+       return new ToDataset(rft, dataset);
    }
 
    public static void conversionError(String msg) {
