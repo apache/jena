@@ -32,7 +32,7 @@
     <relativePath>../..</relativePath>
   </parent>
 
-  <name>CommonsRDF for Jena</name>
+  <name>Apache Jena - CommonsRDF for Jena</name>
   <description>Apache CommonsRDF Java library for Apache Jena</description>
 
   <properties>
