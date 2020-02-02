@@ -87,12 +87,20 @@
         <include>log4j.properties</include>
         <include>fuseki</include>
         <include>fuseki.service</include>
-        <include>fuseki-server</include>
-        <include>fuseki-backup</include>
         <include>fuseki-server.bat</include>
-        <include>bin/*</include>
       </includes>
     </fileSet>
+
+    <fileSet>
+       <!-- Exeutables -->
+       <outputDirectory></outputDirectory>
+       <fileMode>0755</fileMode>
+       <includes>
+         <include>fuseki-server</include>
+         <include>fuseki-backup</include>
+         <include>bin/*</include>
+       </includes>
+     </fileSet>
 
     <fileSet>
       <directory>../jena-fuseki-webapp/src/main/webapp</directory>
