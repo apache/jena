@@ -242,6 +242,7 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-rdf-api</artifactId>
+      <version>${ver.commonsrdf}</version>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>

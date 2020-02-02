@@ -576,12 +576,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-rdf-api</artifactId>
-        <version>${ver.commonsrdf}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.xenei</groupId>
         <artifactId>junit-contracts</artifactId>
         <version>${ver.contract.tests}</version>
