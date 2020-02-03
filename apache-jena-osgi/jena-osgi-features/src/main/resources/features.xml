@@ -34,6 +34,7 @@
 		<bundle dependency="true">mvn:org.apache.commons/commons-compress/${ver.commons-compress}</bundle>
 		<bundle dependency="true">mvn:org.apache.commons/commons-csv/${ver.commonscsv}</bundle>
 		<bundle dependency="true">mvn:org.apache.commons/commons-lang3/${ver.commonslang3}</bundle>
+		<bundle dependency="true">mvn:org.apache.commons/commons-rdf-api/${ver.commonsrdf}</bundle>
 		<bundle dependency="true">mvn:commons-codec/commons-codec/${ver.commons-codec}</bundle>
 		<bundle dependency="true">mvn:commons-io/commons-io/${ver.commonsio}</bundle>
 		<bundle dependency="true">mvn:org.apache.thrift/libthrift/${ver.libthrift}</bundle>
