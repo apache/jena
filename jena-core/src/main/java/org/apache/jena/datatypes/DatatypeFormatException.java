@@ -74,7 +74,7 @@ public class DatatypeFormatException extends JenaException
     /**
      * The datatype that has an invalid lexical form.
      *
-     * @return the datatype that this excpetion is related to. Maybe null depending on how the exception was constructed.
+     * @return the datatype that this exception is related to. Maybe null depending on how the exception was constructed.
      */
     public RDFDatatype getDataType() {
         return this.dataType;
