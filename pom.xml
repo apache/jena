@@ -87,7 +87,7 @@
     -->
     <ver.httpcore-osgi>${ver.httpcore}</ver.httpcore-osgi>
     <ver.httpclient-osgi>${ver.httpclient}</ver.httpclient-osgi>
-    <ver.shiro>1.2.6</ver.shiro>
+    <ver.shiro>1.5.0</ver.shiro>
     <ver.lucene>7.4.0</ver.lucene>
 
     <ver.elasticsearch>6.4.2</ver.elasticsearch>
