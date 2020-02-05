@@ -95,12 +95,6 @@ public class StoragePrefixesView implements StoragePrefixMap
         return sj.toString();
     }
 
-//    @Override
-//    public void sync() {}
-//
-//    @Override
-//    public void close() {}
-
     // The default graph : preferred name is the explicitly used name.
     private static final Node dftGraph =  Quad.defaultGraphIRI;
     // Also seen as:

@@ -18,7 +18,7 @@
 
 package org.apache.jena.tdb2.loader.main;
 
-import org.apache.jena.dboe.storage.StoragePrefixes;
+import org.apache.jena.dboe.storage.Prefixes;
 import org.apache.jena.dboe.transaction.txn.Transaction;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.graph.Node;
@@ -69,7 +69,7 @@ public class PrefixHandlerBulk implements BulkStartFinish {
         return (prefix, uriStr) -> {
             Node p = NodeFactory.createLiteral(prefix);
             Node u = NodeFactory.createURI(uriStr);
-            prefixes.add_ext(StoragePrefixes.nodeDefaultGraph, prefix, uriStr);
+            prefixes.add_ext(Prefixes.nodeDefaultGraph, prefix, uriStr);
         };
     }
 }

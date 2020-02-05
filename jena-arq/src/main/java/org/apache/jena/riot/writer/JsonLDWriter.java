@@ -31,13 +31,18 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 
+import com.fasterxml.jackson.core.JsonGenerationException ;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException ;
+import com.github.jsonldjava.core.*;
+import com.github.jsonldjava.utils.JsonUtils ;
+
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Chars ;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.RiotException ;
@@ -49,16 +54,6 @@ import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.util.SplitIRI;
 import org.apache.jena.vocabulary.RDF ;
-
-import com.fasterxml.jackson.core.JsonGenerationException ;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException ;
-import com.github.jsonldjava.core.JsonLdApi;
-import com.github.jsonldjava.core.JsonLdError ;
-import com.github.jsonldjava.core.JsonLdOptions ;
-import com.github.jsonldjava.core.JsonLdProcessor ;
-import com.github.jsonldjava.core.RDFDataset;
-import com.github.jsonldjava.utils.JsonUtils ;
 
 /**
  * Writer that prints out JSON-LD.
@@ -368,10 +363,10 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
     // hence the addAllPrefixesToContext param
     private static void addPrefixes(Map<String, Object> ctx, Graph g, PrefixMap prefixMap, boolean addAllPrefixesToContext) {
         if (prefixMap != null) {
-            Map<String, IRI> mapping = prefixMap.getMapping();
+            Map<String, String> mapping = prefixMap.getMapping();
             if (addAllPrefixesToContext) {
-                for ( Entry<String, IRI> e : mapping.entrySet() ) {
-                    addOnePrefix(ctx, e.getKey(), e.getValue().toString());
+                for ( Entry<String, String> e : mapping.entrySet() ) {
+                    addOnePrefix(ctx, e.getKey(), e.getValue());
                 }
             } else {
                 // only add those that are actually used

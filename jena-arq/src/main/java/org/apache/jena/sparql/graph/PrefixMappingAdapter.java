@@ -23,7 +23,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
-import org.apache.jena.iri.IRI;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.shared.PrefixMapping;
 
@@ -63,10 +62,7 @@ public class PrefixMappingAdapter extends PrefixMappingBase {
 
     @Override
     protected String prefixToUri(String prefix) {
-        IRI iri = pmap.getMapping().get(prefix);
-        if ( iri == null )
-            return null;
-        return iri.toString();
+        return pmap.getMapping().get(prefix);
     }
 
     @Override
@@ -80,20 +76,16 @@ public class PrefixMappingAdapter extends PrefixMappingBase {
 
     @Override
     protected Map<String, String> asMap() {
-        return pmap.getMappingCopyStr();
+        return pmap.getMapping();
     }
 
     @Override
     protected Map<String, String> asMapCopy() {
-        return pmap.getMappingCopyStr();
+        return pmap.getMappingCopy();
     }
 
     @Override
     protected void apply(BiConsumer<String, String> action) {
-        BiConsumer<String, IRI> a = (p, iri)->action.accept(p, iri.toString());
-        pmap.forEach(a);
+        pmap.forEach(action);
     }
-
-    
-    
 }

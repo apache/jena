@@ -757,7 +757,7 @@ public abstract class TurtleShell {
             }
             int colPredicateStart = out.getAbsoluteIndent() ;
 
-            if ( !prefixMap.contains(rdfNS) && RDF_type.equals(p) )
+            if ( !prefixMap.containsPrefix(rdfNS) && RDF_type.equals(p) )
                 print("a") ;
             else
                 writeNode(p) ;

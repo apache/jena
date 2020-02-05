@@ -21,7 +21,6 @@ package org.apache.jena.riot.system;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.iri.IRI;
 import org.apache.jena.riot.tokens.Token;
 import org.apache.jena.sparql.core.Quad;
 
@@ -55,12 +54,7 @@ public class ParserProfileWrapper implements ParserProfile
     }
 
     @Override
-    public IRI makeIRI(String uriStr, long line, long col) {
-        return get().makeIRI(uriStr, line, col);
-    }
-
-    @Override
-    public void setIRIResolver(IRIResolver resolver) { get().setIRIResolver(resolver); }
+    public void setBaseIRI(String baseIRI) { get().setBaseIRI(baseIRI); }
 
     @Override
     public Triple createTriple(Node subject, Node predicate, Node object, long line, long col) {

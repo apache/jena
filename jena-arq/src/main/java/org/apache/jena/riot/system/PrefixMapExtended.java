@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.iri.IRI;
 
 // UNUSED
 /**
@@ -38,8 +37,8 @@ import org.apache.jena.iri.IRI;
  * </p>
  */
 public class PrefixMapExtended extends PrefixMapBase {
-    PrefixMap parent;
-    PrefixMap local;
+    protected PrefixMap parent;
+    protected PrefixMap local;
 
     /**
      * Creates an extended prefix map
@@ -55,7 +54,7 @@ public class PrefixMapExtended extends PrefixMapBase {
     }
 
     @Override
-    public void add(String prefix, IRI iri) {
+    public void add(String prefix, String iri) {
         prefix = canonicalPrefix(prefix);
         // Add to local always.
         local.add(prefix, iri);
@@ -65,7 +64,7 @@ public class PrefixMapExtended extends PrefixMapBase {
     public void delete(String prefix) {
         prefix = canonicalPrefix(prefix);
         local.delete(prefix);
-        if (parent.contains(prefix))
+        if (parent.containsPrefix(prefix))
             Log.warn(this, "Attempt to delete a prefix in the parent");
     }
 
@@ -86,16 +85,16 @@ public class PrefixMapExtended extends PrefixMapBase {
     }
 
     @Override
-    public Map<String, IRI> getMapping() {
-        Map<String, IRI> mapping = new HashMap<>();
+    public Map<String, String> getMapping() {
+        Map<String, String> mapping = new HashMap<>();
         mapping.putAll(parent.getMapping());
         mapping.putAll(local.getMapping());
         return Collections.unmodifiableMap(mapping);
     }
 
     @Override
-    public boolean contains(String prefix) {
-        return local.contains(prefix) || parent.contains(prefix);
+    public boolean containsPrefix(String prefix) {
+        return local.containsPrefix(prefix) || parent.containsPrefix(prefix);
     }
 
     @Override

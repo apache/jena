@@ -30,7 +30,7 @@ public class PrefixMapUnmodifiable extends PrefixMapWrapper
     public PrefixMapUnmodifiable(PrefixMap other) { super(other) ; }
 
     @Override
-    public Map<String, IRI> getMapping()
+    public Map<String, String> getMapping()
     { return Collections.unmodifiableMap(get().getMapping()) ; }
 
     @Override

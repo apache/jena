@@ -32,7 +32,6 @@ import org.apache.jena.atlas.iterator.IteratorSlotted ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.lang.LangEngine ;
 import org.apache.jena.riot.out.NodeFmtLib ;
@@ -242,7 +241,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
             if ( ! lookingAt(IRI) )
                 exception(peekToken(), "@prefix requires an IRI (found '"+peekToken()+"')") ;
             String iriStr = peekToken().getImage() ;
-            IRI iri = profile.makeIRI(iriStr, currLine, currCol) ;
+            String iri = profile.resolveIRI(iriStr, currLine, currCol) ;
             profile.getPrefixMap().add(prefix, iri) ;
             nextToken() ;
             expect("PREFIX directive not terminated by a dot", DOT) ;

@@ -20,7 +20,7 @@ package org.apache.jena.dboe.storage.prefixes;
 import java.util.Objects;
 
 import org.apache.jena.atlas.lib.Pair;
-import org.apache.jena.dboe.storage.StoragePrefixes;
+import org.apache.jena.dboe.storage.Prefixes;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.Quad;
 
@@ -42,21 +42,21 @@ public class PrefixLib {
 
     /** Canonical name for graphs */
     public static Node canonicalGraphName(Node graphName) {
-        if ( graphName == StoragePrefixes.nodeDefaultGraph) 
+        if ( graphName == Prefixes.nodeDefaultGraph) 
             return graphName;
         if ( graphName == null || Quad.isDefaultGraph(graphName) )
-            return StoragePrefixes.nodeDefaultGraph;
+            return Prefixes.nodeDefaultGraph;
         return graphName;
     }
 
     /**
      * Is this the canonical, internal marker for the default graph for storage
-     * prefixes? ({@link StoragePrefixes#nodeDefaultGraph})
+     * prefixes? ({@link Prefixes#nodeDefaultGraph})
      * 
      * @param graphName
      */
     public static boolean isNodeDefaultGraph(Node graphName) {
-        return Objects.equals(StoragePrefixes.nodeDefaultGraph, graphName);
+        return Objects.equals(Prefixes.nodeDefaultGraph, graphName);
     }
 
     /** abbreviate a uriStr, giving a string as a short form. If not possible return null.
@@ -74,10 +74,6 @@ public class PrefixLib {
             }
         }
         return null;
-    }
-
-    private static boolean strSafeFor(String str, char ch) {
-        return str.indexOf(ch) == -1;
     }
 
     /**
@@ -109,5 +105,40 @@ public class PrefixLib {
             return null;
         return x + localName;
     }
+    
+    /**
+     * Takes a guess for the String string to use in abbreviation.
+     * 
+     * @param iriString String string
+     * @return String or null
+     */
+    protected static String getPossibleKey(String iriString) {
+        int index = iriString.lastIndexOf('#');
+        if (index > -1)
+            return iriString.substring(0, index + 1);
+        index = iriString.lastIndexOf('/');
+        if (index > -1)
+            return iriString.substring(0, index + 1);
+        // We could add ':' here, it is used as a separator in URNs.
+        // But it is a multiple use character and always present in the scheme name.
+        // This is a fast-track guess so don't try guessing based on ':'.
+        return null;
+    }
 
-}
+    /**
+     * Is a local name safe? This is a partial, fast check for Turtle-like local names.
+     * @param localName Local name
+     * @return True if safe, false otherwise
+     */
+    public boolean isSafeLocalPart(String localName) {
+        // This test isn't complete but covers the common issues that arise. 
+        // Does not consider possible escaping.
+        // There needs to be a further, stronger check for output.
+        // About ':' -- Turtle RDF 1.1 allows this in a local part of a prefix name. 
+        return strSafeFor(localName, '/') && strSafeFor(localName, '#');
+    }
+
+    private static boolean strSafeFor(String str, char ch) {
+        return str.indexOf(ch) == -1;
+    }
+    }

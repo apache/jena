@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.atlas.lib.tuple.TupleFactory;
-import org.apache.jena.dboe.storage.StoragePrefixes;
+import org.apache.jena.dboe.storage.Prefixes;
 import org.apache.jena.dboe.transaction.txn.Transaction;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.graph.Node;
@@ -135,7 +135,7 @@ public class DataToTuplesInlineSingle implements StreamRDFCounting, BulkStartFin
 
     @Override
     public void prefix(String prefix, String iri) {
-        prefixes.add_ext(StoragePrefixes.nodeDataset, prefix, iri);
+        prefixes.add_ext(Prefixes.nodeDataset, prefix, iri);
     }
 
     private static Tuple<NodeId> nodes(NodeTable nt, Triple triple) {

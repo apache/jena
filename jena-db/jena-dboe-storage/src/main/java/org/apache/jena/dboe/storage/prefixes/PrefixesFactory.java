@@ -23,10 +23,8 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.shared.PrefixMapping;
 
 /** Factory for some in-memory prefix impls */
-// PrefixesFactory -> "Prefixes"?
 public class PrefixesFactory
 {
-
     public static PrefixMapI createMem() { return newPrefixMap(newPrefixMapStorageMem() ); }
 
     /** Create a memory-backed {@link StoragePrefixes} */
@@ -51,7 +49,7 @@ public class PrefixesFactory
 
     /** Create a {@link PrefixMapI} over a {@link StoragePrefixMap}. */
     public static PrefixMapI newPrefixMap(StoragePrefixMap storage)
-    { return new PrefixMapBase(storage); }
+    { return new PrefixMapIOverStorage(storage); }
 
     /** Return an empty immutable {@link PrefixMapI}. */
     public static PrefixMapI empty() { return emptyPrefixMap; }

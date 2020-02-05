@@ -18,25 +18,13 @@
 
 package org.apache.jena.riot.lang ;
 
-import static org.apache.jena.riot.tokens.TokenType.COMMA ;
-import static org.apache.jena.riot.tokens.TokenType.DIRECTIVE ;
-import static org.apache.jena.riot.tokens.TokenType.DOT ;
-import static org.apache.jena.riot.tokens.TokenType.EOF ;
-import static org.apache.jena.riot.tokens.TokenType.IRI ;
-import static org.apache.jena.riot.tokens.TokenType.KEYWORD ;
-import static org.apache.jena.riot.tokens.TokenType.LBRACE ;
-import static org.apache.jena.riot.tokens.TokenType.LBRACKET ;
-import static org.apache.jena.riot.tokens.TokenType.LPAREN ;
-import static org.apache.jena.riot.tokens.TokenType.NODE ;
-import static org.apache.jena.riot.tokens.TokenType.PREFIXED_NAME ;
-import static org.apache.jena.riot.tokens.TokenType.RBRACKET ;
-import static org.apache.jena.riot.tokens.TokenType.RPAREN ;
-import static org.apache.jena.riot.tokens.TokenType.SEMICOLON ;
+import static org.apache.jena.riot.tokens.TokenType.*;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.riot.system.*;
+import org.apache.jena.riot.system.ParserProfile;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -152,30 +140,29 @@ public abstract class LangTurtleBase extends LangBase {
     protected final void directivePrefix() {
         // Raw - unresolved prefix name.
         if ( !lookingAt(PREFIXED_NAME) )
-            exception(peekToken(), "@prefix or PREFIX requires a prefix (found '" + peekToken() + "')") ;
+            exception(peekToken(), "PREFIX or @prefix requires a prefix (found '" + peekToken() + "')") ;
         if ( peekToken().getImage2().length() != 0 )
-            exception(peekToken(), "@prefix or PREFIX requires a prefix with no suffix (found '" + peekToken() + "')") ;
+            exception(peekToken(), "PREFIX or @prefix requires a prefix with no suffix (found '" + peekToken() + "')") ;
         String prefix = peekToken().getImage() ;
         nextToken() ;
         if ( !lookingAt(IRI) )
             exception(peekToken(), "@prefix requires an IRI (found '" + peekToken() + "')") ;
-        String iriStr = peekToken().getImage() ;
-        IRI iri = profile.makeIRI(iriStr, currLine, currCol) ;
+        String str = peekToken().getImage() ;
+        String iri = profile.resolveIRI(str, currLine, currCol) ;
         prefixMap.add(prefix, iri) ;
-        emitPrefix(prefix, iri.toString()) ;
+        emitPrefix(prefix, iri) ;
         nextToken() ;
     }
 
     protected final void directiveBase() {
         Token token = peekToken() ;
         if ( !lookingAt(IRI) )
-            exception(token, "@base requires an IRI (found '" + token + "')") ;
-        String baseStr = token.getImage() ;
-        IRI baseIRI = profile.makeIRI(baseStr, currLine, currCol) ;
-        emitBase(baseIRI.toString()) ;
+            exception(token, "BASE or @base requires an IRI (found '" + token + "')") ;
+        String str = token.getImage() ;
+        String baseIRI = profile.resolveIRI(str, currLine, currCol) ;
+        profile.setBaseIRI(baseIRI);
+        emitBase(baseIRI) ;
         nextToken() ;
-        IRIResolver newResolver = IRIResolver.create(baseIRI) ;
-        profile.setIRIResolver(newResolver);
     }
 
     // Unlike many operations in this parser suite

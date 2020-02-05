@@ -23,7 +23,6 @@ import java.util.Map ;
 import java.util.function.BiConsumer ;
 
 import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.iri.IRI ;
 import org.apache.jena.shared.PrefixMapping ;
 
 /** Always empty prefix map */
@@ -33,30 +32,20 @@ public class PrefixMapNull implements PrefixMap {
     private PrefixMapNull() {}
 
     @Override
-    public Map<String, IRI> getMapping() {
+    public Map<String, String> getMapping() {
         return Collections.emptyMap() ;
     }
 
     @Override
-    public Map<String, IRI> getMappingCopy() {
+    public Map<String, String> getMappingCopy() {
         return Collections.emptyMap() ;
     }
 
     @Override
-    public Map<String, String> getMappingCopyStr() {
-        return Collections.emptyMap() ;
-    }
+    public void forEach(BiConsumer<String, String> action) {}
 
     @Override
-    public void forEach(BiConsumer<String, IRI> action) {}
-
-    @Override
-    public void add(String prefix, String iriString) {
-        throw new UnsupportedOperationException("Unmodifiable PrefixMap") ;
-    }
-
-    @Override
-    public void add(String prefix, IRI iri) {
+    public void add(String prefix, String iri) {
         throw new UnsupportedOperationException("Unmodifiable PrefixMap") ;
     }
 
@@ -86,7 +75,7 @@ public class PrefixMapNull implements PrefixMap {
     }
 
     @Override
-    public boolean contains(String prefix) {
+    public boolean containsPrefix(String prefix) {
         return false ;
     }
 
