@@ -26,10 +26,6 @@ import org.apache.jena.shared.* ;
  */
 public class DatatypeFormatException extends JenaException 
 {
-    
-    // TODO Could consider storing the lexical form and datatype in locals
-    // with accessors.
-    
     /**
      * Preferred constructor.
      * @param lexicalForm the illegal string discovered
@@ -39,15 +35,22 @@ public class DatatypeFormatException extends JenaException
     public DatatypeFormatException(String lexicalForm, RDFDatatype dtype, String msg) {
         super("Lexical form '" + lexicalForm +
                "' is not a legal instance of " + dtype + " " + msg);
+        this.lexicalForm = lexicalForm;
+        this.dataType = dtype;
     }
-                  
+
+    private final String lexicalForm;
+    private final RDFDatatype dataType;
+
     /**
      * Creates a new instance of <code>DatatypeFormatException</code> 
      * without detail message.
      */
     public DatatypeFormatException() {
+        this.lexicalForm = null;
+        this.dataType = null;
     }
-    
+
     /**
      * Constructs an instance of <code>DatatypeFormatException</code> 
      * with the specified detail message.
@@ -55,6 +58,25 @@ public class DatatypeFormatException extends JenaException
      */
     public DatatypeFormatException(String msg) {
         super(msg);
+        this.lexicalForm = null;
+        this.dataType = null;
     }
 
+    /**
+     * The invalid lexical form that caused this exception.
+     *
+     * @return the lexical form that caused the exception. Maybe null depending on how the exception was constructed.
+     */
+    public String getLexicalForm() {
+        return this.lexicalForm;
+    }
+
+    /**
+     * The datatype that has an invalid lexical form.
+     *
+     * @return the datatype that this exception is related to. Maybe null depending on how the exception was constructed.
+     */
+    public RDFDatatype getDataType() {
+        return this.dataType;
+    }
 }
