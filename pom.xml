@@ -74,7 +74,7 @@
     <ver.commonscli>1.4</ver.commonscli>
     <ver.commonslang3>3.9</ver.commonslang3>
     <ver.commonsrdf>0.5.0</ver.commonsrdf>
-    <ver.commonscsv>1.7</ver.commonscsv>
+    <ver.commonscsv>1.8</ver.commonscsv>
     <ver.commons-codec>1.14</ver.commons-codec>
     <ver.commons-compress>1.19</ver.commons-compress>
 
