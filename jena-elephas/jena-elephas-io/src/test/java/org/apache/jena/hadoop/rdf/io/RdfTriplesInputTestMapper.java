@@ -24,17 +24,16 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * A test mapper which takes in line based RDF triple input and just produces triples
- * 
- *
  */
 public class RdfTriplesInputTestMapper extends Mapper<LongWritable, TripleWritable, NullWritable, TripleWritable> {
     
-    private static final Logger LOG = Logger.getLogger(RdfTriplesInputTestMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RdfTriplesInputTestMapper.class);
 
     @Override
     protected void map(LongWritable key, TripleWritable value, Context context)
@@ -42,6 +41,4 @@ public class RdfTriplesInputTestMapper extends Mapper<LongWritable, TripleWritab
         LOG.info("Line " + key.toString() + " => " + value.toString());
         context.write(NullWritable.get(), value);
     }
-
-    
 }

@@ -141,7 +141,7 @@
 						<additionalDependency>
 							<groupId>log4j</groupId>
 							<artifactId>log4j</artifactId>
-							<version>${ver.log4j}</version>
+							<version>${ver.log4j1}</version>
 						</additionalDependency>
 					</additionalDependencies>
 					<!-- Include only JDBC dependencies -->

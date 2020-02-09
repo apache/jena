@@ -18,32 +18,30 @@
 
 package org.apache.jena.tdb.junit;
 
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.tdb.sys.SystemTDB ;
-import org.apache.log4j.Level ;
-import org.apache.log4j.Logger ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 
 public class Base_TS
 {
-    static Level level = null ;
+    static String level = null ;
     static ReorderTransformation rt = null ;
     
     @BeforeClass static public void beforeClass()   
     {
         rt = SystemTDB.defaultReorderTransform ;
-        level = Logger.getLogger("org.apache.jena.tdb.info").getLevel() ;
-        Logger.getLogger("org.apache.jena.tdb.info").setLevel(Level.FATAL) ;
+        level = LogCtl.getLevel("org.apache.jena.tdb.info") ;
+        LogCtl.setLevel("org.apache.jena.tdb.info", "FATAL");
         SystemTDB.defaultReorderTransform = ReorderLib.identity() ;
         rt = SystemTDB.defaultReorderTransform ;
     }
     
     @AfterClass static public void afterClass()
     {
-        if ( level != null )
-            Logger.getLogger("org.apache.jena.tdb.info").setLevel(level) ;
+        LogCtl.setLevel("org.apache.jena.tdb.info", level) ;
         SystemTDB.defaultReorderTransform = rt ;
     }
 }

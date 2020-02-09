@@ -23,7 +23,6 @@ import org.apache.jena.dboe.transaction.txn.TransactionException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.transaction.AbstractTestTransPromote;
 import org.apache.jena.tdb2.DatabaseMgr;
-import org.apache.log4j.Logger;
 
 public class TestTransPromoteTDB extends AbstractTestTransPromote {
 
@@ -31,10 +30,10 @@ public class TestTransPromoteTDB extends AbstractTestTransPromote {
         super(getLoggers());
     }
 
-    private static Logger[] getLoggers() {
-        return new Logger[]{ Logger.getLogger(Transaction.class) };
+    private static String[] getLoggers() {
+        return new String[]{ Transaction.class.getName() };
     }
-
+    
     @Override
     protected Class<? extends Exception> getTransactionExceptionClass() {
         return TransactionException.class;

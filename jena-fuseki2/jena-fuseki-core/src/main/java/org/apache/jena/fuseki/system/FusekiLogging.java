@@ -45,7 +45,6 @@ public class FusekiLogging
 
     /** Places for the log4j properties file at (3) */
     private static final String[] resourcesForLog4jProperties = {
-        // Hmm -
         "log4j.properties",
         "org/apache/jena/fuseki/log4j.properties"
     };

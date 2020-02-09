@@ -248,8 +248,6 @@ public class DatasetBuilderStd {
         // error(log,
         // "Wrong number of triple table indexes: "+StrUtils.strjoin(",",
         // indexes)) ;
-        log.debug("Triple table: " + primary + " :: " + String.join(",", indexes)) ;
-
         TupleIndex tripleIndexes[] = makeTupleIndexes(location, primary, indexes, params) ;
 
         if ( tripleIndexes.length != indexes.length )
@@ -267,8 +265,6 @@ public class DatasetBuilderStd {
         // error(log,
         // "Wrong number of quad table indexes: "+StrUtils.strjoin(",",
         // indexes)) ;
-
-        log.debug("Quad table: " + primary + " :: " + String.join(",", indexes)) ;
 
         TupleIndex quadIndexes[] = makeTupleIndexes(location, primary, indexes, params) ;
         if ( quadIndexes.length != indexes.length )
@@ -294,9 +290,6 @@ public class DatasetBuilderStd {
                                                                 prefixIndexes,
                                                                 prefixNodes, policy) ;
         DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixTable) ;
-
-        log.debug("Prefixes: " + primary + " :: " + String.join(",", indexes)) ;
-
         return prefixes ;
     }
 
@@ -402,7 +395,6 @@ public class DatasetBuilderStd {
         if ( location.exists(Names.optStats) ) {
             try {
                 reorder = ReorderLib.weighted(location.getPath(Names.optStats)) ;
-                log.debug("Statistics-based BGP optimizer") ;
             }
             catch (SSEParseException ex) {
                 log.warn("Error in stats file: " + ex.getMessage()) ;

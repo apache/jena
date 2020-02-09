@@ -34,9 +34,18 @@ import org.junit.BeforeClass;
 public class TestTransactionTDB extends AbstractTestTransactionLifecycle
 {
     private String DIR = null ; 
+    private static String level = null ;
     
-    @BeforeClass public static void beforeClassLoggingOff() { LogCtl.disable(SystemTDB.errlog.getName()) ; } 
-    @AfterClass public static void afterClassLoggingOn()    { LogCtl.setInfo(SystemTDB.errlog.getName()) ; }
+    @BeforeClass
+    public static void beforeClassLoggingOff() {
+        level = LogCtl.getLevel(SystemTDB.errlog.getName());
+        LogCtl.setLevel(SystemTDB.errlog.getName(), "OFF");
+    }
+
+    @AfterClass
+    public static void afterClassLoggingOn() {
+        LogCtl.setLevel(SystemTDB.errlog.getName(), level);
+    }
     
     @Before
     public void before() {

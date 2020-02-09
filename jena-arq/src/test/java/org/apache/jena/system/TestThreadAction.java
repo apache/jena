@@ -22,29 +22,26 @@ import static org.junit.Assert.assertEquals ;
 
 import java.util.concurrent.atomic.AtomicInteger ;
 
-import org.apache.log4j.Level ;
-import org.apache.log4j.Logger ;
+import org.apache.jena.atlas.logging.LogCtl;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 public class TestThreadAction {
     
-    private static Logger logger = Logger.getLogger(ThreadAction.class) ; 
-    private static Level  level ;
-    
+    private static String  level ;
 
     @BeforeClass
     static public void beforeClass() {
-        level = logger.getLevel() ;
+        level = LogCtl.getLevel(ThreadAction.class) ;
         // ThreadAction logs warning on exceptions in before and after.
-        logger.setLevel(Level.ERROR) ;
+        LogCtl.setLevel(ThreadAction.class, "ERROR");
     }
 
     @AfterClass
     static public void afterClass() {
         // Restore logging setting.
-        logger.setLevel(level) ;
+        LogCtl.setLevel(ThreadAction.class, level) ;
     }
     
     @Test public void action_01() {

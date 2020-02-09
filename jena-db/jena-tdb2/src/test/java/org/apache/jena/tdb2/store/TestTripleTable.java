@@ -25,13 +25,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
 
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -40,9 +41,20 @@ import org.junit.Test;
  */
 public class TestTripleTable
 {
-    static {
-        Logger.getLogger("org.apache.jena.tdb.info").setLevel(Level.WARN);
-        Logger.getLogger("org.apache.jena.tdb.exec").setLevel(Level.WARN);
+    private static String levelInfo;  
+    private static String levelExec;  
+    
+    @BeforeClass public static void beforeClass() {
+        levelInfo = LogCtl.getLevel("org.apache.jena.tdb.info");
+        levelExec = LogCtl.getLevel("org.apache.jena.tdb.exec");
+        
+        LogCtl.setLevel("org.apache.jena.tdb.info", "WARN");
+        LogCtl.setLevel("org.apache.jena.tdb.exec", "WARN");
+        
+    }
+    @AfterClass public static void afterClass() {
+        LogCtl.setLevel("org.apache.jena.tdb.info", levelInfo);
+        LogCtl.setLevel("org.apache.jena.tdb.exec", levelExec);
     }
 
     private static void add(TripleTable table, Node s, Node p, Node o)

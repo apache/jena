@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.JenaTransactionException;
@@ -35,8 +36,6 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.system.ThreadAction ;
 import org.apache.jena.system.ThreadTxn ;
 import org.apache.jena.system.Txn ;
-import org.apache.log4j.Level ;
-import org.apache.log4j.Logger ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
@@ -44,45 +43,42 @@ import org.junit.Test ;
 /** Tests for transactions that start read and then promote to write */
 public abstract class AbstractTestTransPromote {
 
-    // Currently, this feature is off in the relevant uses in TIM and TDB.
-    // It needs to be enabled via setPromotion.
-    // Promotion happenes implicitly when a write happens.
-
-    // See before() / after().
-
-    // Loggers.
-    private final Logger[] loggers ;
-    private Level[] levels ;
+    // Dynamically adjust the loggingso warnings are supressed for this test suite only.
+    private final String[] loggerNames;
+    private String[] loggerLevelNames;
+    
     private boolean stdPromotion ;
     private boolean stdReadCommitted ;
     
     @Before
     public void beforeLoggersNoWarnings() {
-        int N = loggers.length ;
-        levels = new Level[N] ;
+        int N = loggerNames.length ;
+        loggerLevelNames = new String[N] ;
         for ( int i = 0 ; i < N ; i++ ) {
-            levels[i] = loggers[i].getLevel() ;
-            loggers[i].setLevel(Level.ERROR) ;
+            loggerLevelNames[i] = LogCtl.getLevel(loggerNames[i]);
+            // Level ERROR.
+            LogCtl.setLevel(loggerNames[i], "ERROR");
         }
     }
 
     @After
     public void afterResetLoggers() {
-        int N = loggers.length ;
+        int N = loggerNames.length ;
         for ( int i = 0 ; i < N ; i++ ) {
-            loggers[i].setLevel(levels[i]) ;
+            // Reset to original setting.
+            LogCtl.setLevel(loggerNames[i], loggerLevelNames[i]);
         }
     }
 
     // The exact class used by exceptions of the system under test.
-    // TDB transctions are in the TDBException hierarchy
+    // TDB transactions are in the TDBException hierarchy
     // so can't be JenaTransactionException.
     protected abstract Class<? extends Exception> getTransactionExceptionClass() ;
     
-    protected AbstractTestTransPromote(Logger[] loggers) {
-        this.loggers = loggers ;
+    protected AbstractTestTransPromote(String[] loggerNames) {
+        this.loggerNames = loggerNames ;
     }
-    
+
     protected final static Quad q1 = SSE.parseQuad("(_ :s :p1 1)") ;
     protected final static Quad q2 = SSE.parseQuad("(_ :s :p2 2)") ;
     protected final static Quad q3 = SSE.parseQuad("(_ :s :p3 3)") ;
@@ -96,11 +92,6 @@ public abstract class AbstractTestTransPromote {
         assertEquals(expected, x) ;
     }
 
-    // "strict" = don't see intermedioate changes.
-    // "readCommitted" = do see
-
-    // Subclass / parameterized
-    
     @Test public void promote_snapshot_01()         { run_01(TxnType.READ_PROMOTE) ; }
     @Test public void promote_readCommitted_01()    { run_01(TxnType.READ_COMMITTED_PROMOTE) ; }
     
@@ -229,7 +220,7 @@ public abstract class AbstractTestTransPromote {
     @Test public void promote_snapshot_08()         { run_08(TxnType.READ_PROMOTE); }
     @Test public void promote_readCommitted_08()    { run_08(TxnType.READ_COMMITTED_PROMOTE) ; }
     
-    // Async writer after promotion trasnaction ends.
+    // Async writer after promotion transaction ends.
     private void run_08(TxnType txnType) {
         DatasetGraph dsg = create() ;
         // Start R->W here
@@ -288,7 +279,7 @@ public abstract class AbstractTestTransPromote {
         dsg.add(q1) ;
         if ( txnType == TxnType.READ_PROMOTE && asyncCommit )
             fail("Should not be here") ;
-        // read commited - we should see the ThreadAction change.
+        // read committed - we should see the ThreadAction change.
         assertEquals(asyncCommit, dsg.contains(q3)) ;
         dsg.commit() ;
         dsg.end() ;
@@ -433,5 +424,4 @@ public abstract class AbstractTestTransPromote {
         dsg.commit();
         dsg.end();
     }
-
 }
