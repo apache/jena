@@ -16,16 +16,24 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.storage.prefixes;
+package org.apache.jena.dboe.storage;
 
-import org.apache.jena.riot.system.AbstractTestPrefixMap;
-import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 
-public class TestPrefixMapOverPrefixMapI extends AbstractTestPrefixMap {
+public class Prefixes {
+    //Distinguished nodes:
+    //  Default graph   : Quad.defaultGraphNodeGenerated would have been preferred.
+    //     For compatibility reasons, in TDB2, this is the URI <> (empty string).
+    //  "whole dataset" : <urn:x-arq:Dataset> (maybe reserved NodeFactory.createLiteral("") or URI <$>
 
-    @Override
-    protected PrefixMap getPrefixMap() {
-        PrefixMapI pmapi = PrefixesFactory.createMem();
-        return pmapi;
-    }
+    // Name assigned to the default graph.
+    // For backwards compatibility of TDB2 , this an (unresolved) URI <>.
+    /** Name assigned to the default graph. */
+    public static Node nodeDefaultGraph = NodeFactory.createURI("");
+
+    /** Name for dataset prefixes. */
+    public static Node nodeDataset = nodeDefaultGraph; //NodeFactory.createURI("urn:x-arq:Dataset");
+
+
 }

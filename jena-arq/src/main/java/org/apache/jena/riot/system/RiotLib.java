@@ -353,7 +353,7 @@ public class RiotLib
     /** Write prefixes, using {@code PREFIX} */ 
     private static void writePrefixesNewStyle(IndentedWriter out, PrefixMap prefixMap) {
         if ( prefixMap != null && !prefixMap.isEmpty() ) {
-            for ( Map.Entry<String, String> e : prefixMap.getMappingCopyStr().entrySet() ) {
+            for ( Map.Entry<String, String> e : prefixMap.getMapping().entrySet() ) {
                 out.print("PREFIX ");
                 out.print(e.getKey());
                 out.print(": ");
@@ -369,7 +369,7 @@ public class RiotLib
     /** Write prefixes, using {@code @prefix} */ 
     public static void writePrefixesOldStyle(IndentedWriter out, PrefixMap prefixMap) {
         if ( prefixMap != null && !prefixMap.isEmpty() ) {
-            for ( Map.Entry<String, String> e : prefixMap.getMappingCopyStr().entrySet() ) {
+            for ( Map.Entry<String, String> e : prefixMap.getMapping().entrySet() ) {
                 out.print("@prefix ");
                 out.print(e.getKey());
                 out.print(": ");
@@ -399,7 +399,7 @@ public class RiotLib
 
     public static int calcWidth(PrefixMap prefixMap, String baseURI, Node p)
     {
-        if ( ! prefixMap.contains(rdfNS) && RDF_type.equals(p) )
+        if ( ! prefixMap.containsPrefix(rdfNS) && RDF_type.equals(p) )
             return 1;
         
         String x = prefixMap.abbreviate(p.getURI());

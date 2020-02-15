@@ -37,9 +37,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestPrefixMap.class
     , TestPrefixMapWrapper.class
     , TestPrefixMapOther.class
-    , TestFastAbbreviatingPrefixMap.class
     , TestPrefixMapExtended1.class
-    , TestPrefixMapExtended2.class
     
     , TestIO_JenaReaders.class
     , TestIO_JenaWriters.class
@@ -47,10 +45,6 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestFormatRegistration.class
     , TestJsonLDReadWrite.class         // Some simple testing of the jsonld-java engine.
     , TestSerializable.class
-    
-    // May be subject to performance vagaries, with the improvements made
-    // to the fast implementation this should be fairly safe
-    //, TestAbbreviationPerformance.class
 })
 
 public class TS_RiotSystem

@@ -63,11 +63,6 @@ public interface StoragePrefixMap extends Iterable<PrefixEntry> {
     @Override
     public Iterator<PrefixEntry> iterator();
 
-//    @Override
-//    public default Iterator<PrefixEntry> iterator() {
-//        return stream().iterator();
-//    }
-
     /** Stream of over all prefix entries. */
     public Stream<PrefixEntry> stream();
 

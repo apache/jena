@@ -160,7 +160,7 @@ public class PrefixMapFactory {
      * @return Prefix Map
      */
     public static PrefixMap createForOutput() {
-        return new FastAbbreviatingPrefixMap();
+        return new PrefixMapStd();
     }
 
     /**
@@ -177,7 +177,7 @@ public class PrefixMapFactory {
      * @return Prefix Map
      */
     public static PrefixMap createForOutput(PrefixMap pmap) {
-        return new FastAbbreviatingPrefixMap(pmap);
+        return new PrefixMapStd(pmap);
     }
 
     /**

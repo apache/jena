@@ -23,26 +23,13 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.dboe.storage.prefixes.PrefixEntry;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
 
 /** Like PrefixMapping, only for a dataset which can have different prefix maps for different graphs.
- * There is a distinguished name {@linkplain #nodeDataset} that means the prefixes
+ * There is a distinguished name {@linkplain Prefixes#nodeDataset} that means the prefixes
  * apply to the dataset as a whole, not a specific graph.
  */
 public interface StoragePrefixes
 {
-    //Distinguished nodes:
-    //  Default graph   : Quad.defaultGraphNodeGenerated would have been preferred.
-    //     For compatibility reasons, in TDB2, this is the URI <> (empty string).
-    //  "whole dataset" : <urn:x-arq:Dataset> (maybe reserved NodeFactory.createLiteral("") or URI <$>
-
-    // Name aside the default graph.
-    // For backwards compatibility of TDB2 , this an (unresolved) URI <>.
-    public static Node nodeDefaultGraph = NodeFactory.createURI("");
-
-    // Name for the where to put dataset prefixes.
-    public static Node nodeDataset = nodeDefaultGraph; //NodeFactory.createURI("urn:x-arq:Dataset");
-
     /* Get the prefix mapping of a prefix */
     public String get(Node graphNode, String prefix);
 
@@ -63,7 +50,7 @@ public interface StoragePrefixes
 
     /**
      * All the mappings.
-     * This includes the "dataset" mapping with Node {@link #nodeDataset}.
+     * This includes the "dataset" mapping with Node {@link Prefixes#nodeDataset}.
      */
     public default Iterator<Pair<Node, PrefixEntry>> listMappings() {
         return Iter.flatMap(listGraphNodes(),

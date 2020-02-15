@@ -34,8 +34,8 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.FmtUtils;
 
-/** 
- * {@link ParserProfileStd} uses a {@link FactoryRDF} to 
+/**
+ * {@link ParserProfileStd} uses a {@link FactoryRDF} to
  * create items in the parsing process.
  */
 public class ParserProfileStd implements ParserProfile
@@ -48,7 +48,7 @@ public class ParserProfileStd implements ParserProfile
     private final boolean      strictMode;
     private final boolean      checking;
 
-    public ParserProfileStd(FactoryRDF factory, ErrorHandler errorHandler, 
+    public ParserProfileStd(FactoryRDF factory, ErrorHandler errorHandler,
                             IRIResolver resolver, PrefixMap prefixMap,
                             Context context, boolean checking, boolean strictMode) {
         this.factory = factory;
@@ -59,7 +59,7 @@ public class ParserProfileStd implements ParserProfile
         this.checking = checking;
         this.strictMode = strictMode;
     }
-    
+
     @Override
     public FactoryRDF getFactorRDF() {
         return factory;
@@ -77,16 +77,17 @@ public class ParserProfileStd implements ParserProfile
 
     @Override
     public String resolveIRI(String uriStr, long line, long col) {
-        return makeIRI(uriStr, line, col).toString();
+        return internalMakeIRI(uriStr, line, col).toString();
     }
 
     @Override
-    public void setIRIResolver(IRIResolver resolver) {
-        this.resolver = resolver; 
+    public void setBaseIRI(String baseIRI) {
+        IRI iri = resolver.resolve(baseIRI);
+        this.resolver = IRIResolver.create(iri);
+
     }
 
-    @Override
-    public IRI makeIRI(String uriStr, long line, long col) {
+    private IRI internalMakeIRI(String uriStr, long line, long col) {
         IRI iri = resolver.resolveSilent(uriStr);
         // Some specific problems and specific error messages,.
         if ( uriStr.contains(" ") ) {
@@ -104,7 +105,7 @@ public class ParserProfileStd implements ParserProfile
         return iri;
     }
 
-    /** Create a triple - this operation call {@link #checkTriple} if checking is enabled. */ 
+    /** Create a triple - this operation call {@link #checkTriple} if checking is enabled. */
     @Override
     public Triple createTriple(Node subject, Node predicate, Node object, long line, long col) {
         if ( checking )
@@ -127,7 +128,7 @@ public class ParserProfileStd implements ParserProfile
         }
     }
 
-    /** Create a quad - this operation call {@link #checkTriple} if checking is enabled. */ 
+    /** Create a quad - this operation call {@link #checkTriple} if checking is enabled. */
     @Override
     public Quad createQuad(Node graph, Node subject, Node predicate, Node object, long line, long col) {
         if ( checking )
@@ -148,7 +149,7 @@ public class ParserProfileStd implements ParserProfile
     public Node createURI(String x, long line, long col) {
         // Special cases that don't resolve.
         //   <_:....> is a blank node.
-        //   <::...> is "don't touch" used for a fixed-up prefix name 
+        //   <::...> is "don't touch" used for a fixed-up prefix name
         if ( !RiotLib.isBNodeIRI(x) && !RiotLib.isPrefixIRI(x) )
             // Really is an URI!
             x = resolveIRI(x, line, col);
@@ -249,10 +250,10 @@ public class ParserProfileStd implements ParserProfile
 
             case STRING :
                 return createStringLiteral(str, line, col);
-                
+
             case BOOLEAN :
                 return createTypedLiteral(str, XSDDatatype.XSDboolean, line, col);
-                
+
             default : {
                 Node x = createNodeFromToken(currentGraph, token, line, col);
                 if ( x != null )

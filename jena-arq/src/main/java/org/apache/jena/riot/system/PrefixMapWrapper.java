@@ -22,7 +22,6 @@ import java.util.Map ;
 import java.util.function.BiConsumer ;
 
 import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.iri.IRI ;
 import org.apache.jena.shared.PrefixMapping ;
 
 public class PrefixMapWrapper implements PrefixMap
@@ -33,28 +32,20 @@ public class PrefixMapWrapper implements PrefixMap
     public PrefixMapWrapper(PrefixMap other) { this.other = other ; }
 
     @Override
-    public Map<String, IRI> getMapping()
+    public Map<String, String> getMapping()
     { return get().getMapping() ; }
 
     @Override
-    public Map<String, IRI> getMappingCopy()
+    public Map<String, String> getMappingCopy()
     { return get().getMappingCopy() ; }
 
     @Override
-    public Map<String, String> getMappingCopyStr()
-    { return get().getMappingCopyStr() ; } 
-
-    @Override
-    public void forEach(BiConsumer<String, IRI> action) {
+    public void forEach(BiConsumer<String, String> action) {
         get().forEach(action);
     }
 
     @Override
-    public void add(String prefix, String iriString)
-    { get().add(prefix, iriString) ; }
-
-    @Override
-    public void add(String prefix, IRI iri)
+    public void add(String prefix, String iri)
     { get().add(prefix, iri) ; }
 
     @Override
@@ -78,8 +69,8 @@ public class PrefixMapWrapper implements PrefixMap
     { get().clear(); }
 
     @Override
-    public boolean contains(String prefix)
-    { return get().contains(prefix) ; }
+    public boolean containsPrefix(String prefix)
+    { return get().containsPrefix(prefix) ; }
 
     @Override
     public String abbreviate(String uriStr)

@@ -123,7 +123,7 @@ public class GraphViewSwitchable extends GraphView {
         return PrefixesFactory.newPrefixMappingOverPrefixMapI(pmap);
     }
 
-    class PrefixMapTDB2 extends PrefixMapBase {
+    class PrefixMapTDB2 extends PrefixMapIOverStorage {
         
         private final Node graphName;
     

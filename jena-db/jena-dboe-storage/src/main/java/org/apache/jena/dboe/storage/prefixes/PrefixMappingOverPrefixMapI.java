@@ -73,7 +73,7 @@ public class PrefixMappingOverPrefixMapI implements PrefixMapping {
         for ( Map.Entry<String, String> e : emap.entrySet() ) {
             String prefix = e.getKey();
             String iriStr = e.getValue();
-            if ( !pmap.containPrefix(prefix) )
+            if ( !pmap.containsPrefix(prefix) )
                 pmap.add(prefix, iriStr);
         }
         return this;
@@ -81,7 +81,7 @@ public class PrefixMappingOverPrefixMapI implements PrefixMapping {
 
     @Override
     public String getNsPrefixURI(String prefix) {
-        return pmap.getMapping().get(prefix);
+        return pmap.get(prefix);
     }
 
     @Override

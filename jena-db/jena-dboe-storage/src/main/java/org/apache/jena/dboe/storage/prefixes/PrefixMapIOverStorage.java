@@ -18,19 +18,17 @@
 package org.apache.jena.dboe.storage.prefixes;
 
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /** {@link PrefixMapI} implemented using {@link StoragePrefixMap} */
-public class PrefixMapBase implements PrefixMapI {
+public class PrefixMapIOverStorage implements PrefixMapI {
 
-    // Keep a cache of the map? Invalidate on update.
     private final StoragePrefixMap prefixes;
     protected StoragePrefixMap spm() { return prefixes; }
 
-    public PrefixMapBase(StoragePrefixMap storage) {
+    public PrefixMapIOverStorage(StoragePrefixMap storage) {
         this.prefixes = storage;
     }
 
@@ -56,13 +54,6 @@ public class PrefixMapBase implements PrefixMapI {
     }
 
     @Override
-    public void putAll(PrefixMapI pmap) {
-        Map<String, String> map = pmap.getMapping();
-        for ( Entry<String, String> e : map.entrySet() )
-            add(e.getKey(), e.getValue());
-    }
-
-    @Override
     public void delete(String prefix) {
         prefix = PrefixLib.canonicalPrefix(prefix);
         spm().remove(prefix);
@@ -74,7 +65,9 @@ public class PrefixMapBase implements PrefixMapI {
     }
 
     @Override
-    public void forEach(BiConsumer<String, String> action) {}
+    public void forEach(BiConsumer<String, String> action) {
+        spm().forEach(entry->action.accept(entry.getPrefix(), entry.getUri()));
+    }
 
     @Override
     public void clear() {
@@ -98,7 +91,7 @@ public class PrefixMapBase implements PrefixMapI {
     }
 
     @Override
-    public boolean containPrefix(String prefix) {
+    public boolean containsPrefix(String prefix) {
         prefix = PrefixLib.canonicalPrefix(prefix);
         return spm().containsPrefix(prefix);
     }
