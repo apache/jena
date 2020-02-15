@@ -29,6 +29,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ARQ ;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.tdb.ConfigTest ;
 import org.apache.jena.tdb.TDB ;
@@ -77,7 +78,7 @@ public class TestLoader extends BaseTest {
     public void load_dataset_02() {
         DatasetGraphTDB dsg = fresh() ;
         InputStream in = IO.openFile(DIR + "data-1.nq") ;
-        TDBLoader.load(dsg, in, false) ;
+        TDBLoader.load(dsg, in, Lang.NQUADS, false, false) ;
         assertTrue(dsg.getDefaultGraph().isEmpty()) ;
         assertEquals(1, dsg.getGraph(g).size()) ;
     }
@@ -89,7 +90,6 @@ public class TestLoader extends BaseTest {
         String uri = dsg.getDefaultGraph().getPrefixMapping().getNsPrefixURI("") ;
         assertEquals("http://example/", uri) ;
     }
-    
 
     @Test
     public void load_graph_01() {
