@@ -18,6 +18,7 @@
 package org.apache.jena.geosparql.geo.topological;
 
 import java.util.Objects;
+import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
 import org.apache.jena.geosparql.spatial.ConvertLatLon;
@@ -132,8 +133,22 @@ public class SpatialObjectGeometryLiteral {
         } else {
             //Target is not a Feature or Geometry but could have Geo Predicates.
             if (graph.contains(targetSpatialObject, SpatialExtension.GEO_LAT_NODE, null) && graph.contains(targetSpatialObject, SpatialExtension.GEO_LON_NODE, null)) {
-                Node lat = graph.find(targetSpatialObject, SpatialExtension.GEO_LAT_NODE, null).next().getObject();
-                Node lon = graph.find(targetSpatialObject, SpatialExtension.GEO_LON_NODE, null).next().getObject();
+
+                //Extract Lat coordinate.
+                ExtendedIterator<Triple> latIter = graph.find(targetSpatialObject, SpatialExtension.GEO_LAT_NODE, null);
+                Node lat = latIter.next().getObject();
+
+                //Extract Lon coordinate.
+                ExtendedIterator<Triple> lonIter = graph.find(targetSpatialObject, SpatialExtension.GEO_LON_NODE, null);
+                Node lon = lonIter.next().getObject();
+
+                //Ensure that only a single Latitude and Longitude are present for the subject.
+                if (latIter.hasNext() || lonIter.hasNext()) {
+                    latIter.close();
+                    lonIter.close();
+                    throw new DatatypeFormatException(targetSpatialObject.getURI() + " has more than one geo:lat or geo:lon property.");
+                }
+
                 Node latLonGeometryLiteral = ConvertLatLon.toNode(lat, lon);
                 return new SpatialObjectGeometryLiteral(targetSpatialObject, latLonGeometryLiteral);
             }
