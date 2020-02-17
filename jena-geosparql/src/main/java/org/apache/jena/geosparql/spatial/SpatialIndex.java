@@ -456,8 +456,8 @@ public class SpatialIndex {
         while (resIt.hasNext()) {
             Resource feature = resIt.nextResource();
 
-            Literal lat = feature.getProperty(SpatialExtension.GEO_LAT_PROP).getLiteral();
-            Literal lon = feature.getProperty(SpatialExtension.GEO_LON_PROP).getLiteral();
+            Literal lat = feature.getRequiredProperty(SpatialExtension.GEO_LAT_PROP).getLiteral();
+            Literal lon = feature.getRequiredProperty(SpatialExtension.GEO_LON_PROP).getLiteral();
 
             Literal latLonPoint = ConvertLatLon.toLiteral(lat.getFloat(), lon.getFloat());
             GeometryWrapper geometryWrapper = GeometryWrapper.extract(latLonPoint);
