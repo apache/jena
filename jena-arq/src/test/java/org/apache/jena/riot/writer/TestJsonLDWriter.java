@@ -25,29 +25,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.github.jsonldjava.core.JsonLdError;
+import com.github.jsonldjava.core.JsonLdOptions;
+import com.github.jsonldjava.utils.JsonUtils;
+
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.json.JsonString;
 import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.riot.*;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.riot.JsonLDWriteContext;
+import org.apache.jena.riot.RDFFormat;
+import org.apache.jena.riot.RDFWriter;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.vocabulary.FOAF;
 import org.apache.jena.vocabulary.RDF;
-import org.apache.log4j.Logger;
 import org.junit.Test;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.github.jsonldjava.core.JsonLdError;
-import com.github.jsonldjava.core.JsonLdOptions;
-import com.github.jsonldjava.utils.JsonUtils;
+import org.slf4j.LoggerFactory;
 
 public class TestJsonLDWriter extends BaseTest {
 
@@ -271,10 +269,10 @@ public class TestJsonLDWriter extends BaseTest {
             // assertTrue(m2.isIsomorphicWith(m)); // It should be the case, but no.
 
         } catch (Throwable e) {
-            // maybe test run in a setting wo external connectivity - not a real problem
+            // maybe test run in a setting without external connectivity - not a real problem
             String mess = e.getMessage();
             if ((mess != null) && (mess.contains("loading remote context failed"))) {
-                Logger.getLogger(getClass()).info(mess);
+                LoggerFactory.getLogger(getClass()).info(mess);
                 e.printStackTrace();
             } else {
                 throw e;

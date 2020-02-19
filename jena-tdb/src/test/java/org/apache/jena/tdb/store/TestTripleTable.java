@@ -21,6 +21,7 @@ package org.apache.jena.tdb.store;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
@@ -28,17 +29,28 @@ import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.setup.DatasetBuilderStd ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.store.TripleTable ;
-import org.apache.log4j.Level ;
-import org.apache.log4j.Logger ;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test ;
 
 public class TestTripleTable extends BaseTest
 {
-    static {
-        Logger.getLogger("org.apache.jena.tdb.info").setLevel(Level.WARN) ;
-        Logger.getLogger("org.apache.jena.tdb.exec").setLevel(Level.WARN) ;
+    private static String levelInfo;  
+    private static String levelExec;  
+    
+    @BeforeClass public static void beforeClass() {
+        levelInfo = LogCtl.getLevel("org.apache.jena.tdb.info");
+        levelExec = LogCtl.getLevel("org.apache.jena.tdb.exec");
+        
+        LogCtl.setLevel("org.apache.jena.tdb.info", "WARN");
+        LogCtl.setLevel("org.apache.jena.tdb.exec", "WARN");
+        
     }
-
+    @AfterClass public static void afterClass() {
+        LogCtl.setLevel("org.apache.jena.tdb.info", levelInfo);
+        LogCtl.setLevel("org.apache.jena.tdb.exec", levelExec);
+    }
+    
     private static void add(TripleTable table, Node s, Node p, Node o)
     {
         table.add(new Triple(s,p,o)) ;

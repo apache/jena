@@ -95,8 +95,7 @@ public class TDB {
     // /** Logger for execution information */
     // public static final String logExecName = "org.apache.jena.tdb.exec" ;
     // /** Logger for execution information */
-    // public static final Logger logExec = LoggerFactory.getLogger(logExecName)
-    // ;
+    // public static final Logger logExec = LoggerFactory.getLogger(logExecName) ;
 
     public final static String  namespace                        = "http://jena.hpl.hp.com/2008/tdb#" ;
 

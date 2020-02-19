@@ -35,8 +35,6 @@ import org.apache.jena.tdb.store.tupletable.TS_TupleTable ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 import org.apache.jena.tdb.sys.TS_Sys ;
 import org.apache.jena.tdb.transaction.TS_TransactionTDB ;
-import org.apache.log4j.Level ;
-import org.apache.log4j.Logger ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
@@ -73,14 +71,15 @@ public class TC_TDB
     }
     static ReorderTransformation dftReorder = null ; 
         
-    @BeforeClass static public void beforeClass() {
-        Logger.getLogger("org.apache.jena.tdb.info").setLevel(Level.WARN) ;
-        // Turn off general reorderign (turned on for specific reorder tests)  
-        dftReorder = SystemTDB.defaultReorderTransform ;
-        SystemTDB.defaultReorderTransform = ReorderLib.identity() ;
+    @BeforeClass
+    static public void beforeClass() {
+        // Turn off general reordering (turned on for specific reorder tests)
+        dftReorder = SystemTDB.defaultReorderTransform;
+        SystemTDB.defaultReorderTransform = ReorderLib.identity();
     }
-    
-    @AfterClass static public void afterClass() {
-        SystemTDB.defaultReorderTransform = dftReorder ;
+
+    @AfterClass
+    static public void afterClass() {
+        SystemTDB.defaultReorderTransform = dftReorder;
     }
 }

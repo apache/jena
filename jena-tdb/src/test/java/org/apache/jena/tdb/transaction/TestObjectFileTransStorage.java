@@ -28,26 +28,14 @@ public class TestObjectFileTransStorage extends AbstractTestObjectFileTrans
     @Override
     ObjectFile createFile(String basename)
     {
-//        String dir = ConfigTest.getTestingDir() ;
-//        Location loc = Location.create(dir) ;
-//        String fn = loc.getPath(basename) ;
-//        FileOps.deleteSilent(fn) ;
-//        BufferChannel chan = new BufferChannelFile(fn) ;
-//        return new ObjectFileStorage(chan) ;
-        
+        // Memory storage.
         BufferChannel chan = BufferChannelMem.create() ;
         // Small buffer
         return new ObjectFileStorage(chan,10) ;
-        
     }
 
 
     @Override
     void deleteFile(String basename)
-    {
-//        String dir = ConfigTest.getTestingDir() ;
-//        Location loc = Location.create(dir) ;
-//        String fn = loc.getPath(basename) ;
-//        FileOps.delete(fn) ;
-    }
+    {}
 }
