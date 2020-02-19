@@ -1364,7 +1364,6 @@ public class XSDFuncOp
         return dtGetSeconds(nv) ;
     }
 
-    private static int F_UNDEF = DatatypeConstants.FIELD_UNDEFINED; 
     public static NodeValue dtDateTime(NodeValue nv1, NodeValue nv2) {
         if ( ! nv1.isDate() )
             throw new ExprEvalException("fn:dateTime: arg1: Not an xsd:date: "+nv1) ;
@@ -1390,7 +1389,7 @@ public class XSDFuncOp
         return NodeValue.makeDateTime(lex);
     }
     
-    // Datetime accessors
+    // Accessors: datetime, date, Gregorian.
     public static NodeValue dtGetYear(NodeValue nv) {
         if ( nv.isDateTime() || nv.isDate() || nv.isGYear() || nv.isGYearMonth() ) {
             DateTimeStruct dts = parseAnyDT(nv) ;
@@ -1412,7 +1411,7 @@ public class XSDFuncOp
             DateTimeStruct dts = parseAnyDT(nv) ;
             return NodeValue.makeNode(dts.day, XSDDatatype.XSDinteger) ;
         }
-        throw new ExprEvalException("Not a month datatype") ;
+        throw new ExprEvalException("Not a day datatype") ;
     }
 
     private static DateTimeStruct parseAnyDT(NodeValue nv) {

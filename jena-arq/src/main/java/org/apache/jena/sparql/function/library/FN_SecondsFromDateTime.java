@@ -18,16 +18,17 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionBase1 ;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase1;
 
-public class FN_SecondsFromDateTime extends FunctionBase1
-{
+public class FN_SecondsFromDateTime extends FunctionBase1 {
     @Override
-    public NodeValue exec(NodeValue v)
-    {
-        return XSDFuncOp.dtGetSeconds(v) ;
+    public NodeValue exec(NodeValue v) {
+        if ( ARQ.isStrictMode() && !v.isDateTime() )
+            throw new ExprEvalException("Not an xsd:dateTime : " + v);
+        return XSDFuncOp.dtGetSeconds(v);
     }
 }
-
