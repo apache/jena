@@ -84,8 +84,6 @@ public class tdbloader extends CmdTDBGraph {
                 loader = LoaderEnum.Sequential;
             else if ( loadername.matches("para.*") )
                 loader = LoaderEnum.Parallel;
-            else if ( loadername.matches("para.*") )
-                loader = LoaderEnum.Parallel;
             else if ( loadername.matches("light") )
                 loader = LoaderEnum.Light;
             else
@@ -98,6 +96,9 @@ public class tdbloader extends CmdTDBGraph {
             generateStats = super.hasValueOfTrue(argStats);
         }
         
+        if ( super.graphName != null )
+            lang = Lang.NTRIPLES;
+        
         if ( super.contains(argSyntax) ) {
             String syntax = super.getValue(argSyntax) ;
             Lang lang$ = RDFLanguages.nameToLang(syntax) ;
@@ -105,9 +106,6 @@ public class tdbloader extends CmdTDBGraph {
                 throw new CmdException("Can not detemine the syntax from '" + syntax + "'") ;
             this.lang = lang$ ;
         }
-        
-        if ( super.graphName != null )
-            lang = Lang.NTRIPLES;
     }
 
     @Override
