@@ -34,6 +34,8 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RDFParser;
+import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.loader.DataLoader;
@@ -45,15 +47,17 @@ import tdb2.cmdline.CmdTDB;
 import tdb2.cmdline.CmdTDBGraph;
 
 public class tdbloader extends CmdTDBGraph {
-    private static final ArgDecl argStats = new ArgDecl(ArgDecl.HasValue,  "stats");
-    private static final ArgDecl argLoader = new ArgDecl(ArgDecl.HasValue, "loader");
+    private static final ArgDecl argStats   = new ArgDecl(ArgDecl.HasValue, "stats");
+    private static final ArgDecl argLoader  = new ArgDecl(ArgDecl.HasValue, "loader");
+    private static final ArgDecl argSyntax  = new ArgDecl(ArgDecl.HasValue, "syntax");
     
     private enum LoaderEnum { Basic, Parallel, Sequential, Light, Phased }
     
-    private boolean showProgress = true;
-    private boolean generateStats = false;
-    private LoaderEnum loader = null;
-    
+    private boolean    showProgress  = true;
+    private boolean    generateStats = false;
+    private LoaderEnum loader        = null;
+    private Lang       lang          = Lang.NQUADS;
+        
     public static void main(String... args) {
         CmdTDB.init();
         new tdbloader(args).mainRun();
@@ -63,6 +67,7 @@ public class tdbloader extends CmdTDBGraph {
         super(argv);
 //        super.add(argStats, "Generate statistics");
         super.add(argLoader, "--loader=", "Loader to use: 'basic', 'phased' (default), 'sequential', 'parallel' or 'light'");
+        super.add(argSyntax, "--syntax=LANG", "Syntax of data from stdin");
     }
 
     @Override
@@ -79,8 +84,6 @@ public class tdbloader extends CmdTDBGraph {
                 loader = LoaderEnum.Sequential;
             else if ( loadername.matches("para.*") )
                 loader = LoaderEnum.Parallel;
-            else if ( loadername.matches("para.*") )
-                loader = LoaderEnum.Parallel;
             else if ( loadername.matches("light") )
                 loader = LoaderEnum.Light;
             else
@@ -91,6 +94,17 @@ public class tdbloader extends CmdTDBGraph {
             if ( ! hasValueOfTrue(argStats) && ! hasValueOfFalse(argStats) )
                 throw new CmdException("Not a boolean value: "+getValue(argStats));
             generateStats = super.hasValueOfTrue(argStats);
+        }
+        
+        if ( super.graphName != null )
+            lang = Lang.NTRIPLES;
+        
+        if ( super.contains(argSyntax) ) {
+            String syntax = super.getValue(argSyntax) ;
+            Lang lang$ = RDFLanguages.nameToLang(syntax) ;
+            if ( lang$ == null )
+                throw new CmdException("Can not detemine the syntax from '" + syntax + "'") ;
+            this.lang = lang$ ;
         }
     }
 
@@ -111,13 +125,14 @@ public class tdbloader extends CmdTDBGraph {
             showProgress = false;
         
         List<String> urls = getPositional();
-        if ( urls.size() == 0 )
-            urls.add("-");
-        else
+        if ( urls.size() != 0 )
             checkFiles(urls);
 
         if ( graphName == null ) {
-            loadQuads(urls);
+            if ( urls.size() == 0 )
+                loadQuadsStdin();
+            else
+                loadQuads(urls);
             return;
         }
         
@@ -157,6 +172,20 @@ public class tdbloader extends CmdTDBGraph {
         execBulkLoad(super.getDatasetGraph(), null, urls, showProgress);
     }
     
+    private void loadQuadsStdin() {
+        DataLoader loader = chooseLoader(super.getDatasetGraph(), graphName);
+        StreamRDF dest = loader.stream();
+        if ( lang == null )
+            lang = Lang.NQUADS;
+        RDFParser parser = RDFParser.create().lang(lang).source(System.in).build();
+        long elapsed = Timer.time(()->{
+                    loader.startBulk();
+                    parser.parse(dest);
+                    loader.finishBulk();
+        });
+        //return elapsed;
+    }
+
     private long execBulkLoad(DatasetGraph dsg, String graphName, List<String> urls, boolean showProgress) {
         DataLoader loader = chooseLoader(dsg, graphName);
         long elapsed = Timer.time(()->{

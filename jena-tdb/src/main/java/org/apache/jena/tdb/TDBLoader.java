@@ -25,6 +25,7 @@ import java.util.List ;
 import org.apache.jena.atlas.lib.Timer ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.store.GraphTDB ;
 import org.apache.jena.tdb.store.bulkloader.BulkLoader ;
@@ -70,14 +71,22 @@ public class TDBLoader
     
     /**
      *  Load the contents of URL into a dataset.  Input is N-Quads format.
+     * @deprecated Use {@link #load(DatasetGraphTDB, InputStream, Lang, boolean, boolean)}
      */
+    @Deprecated
     public static void load(DatasetGraphTDB dataset, InputStream input, boolean showProgress)
     {
-        TDBLoader loader = new TDBLoader() ;
-        loader.setShowProgress(showProgress) ;
-        loader.loadDataset(dataset, input) ;
+        load(dataset, input, Lang.NQUADS, showProgress, false);
     }
     
+    /** Load a dataset from an input stream which must be in N-Quads form */
+    public static void load(DatasetGraphTDB dataset, InputStream input,  Lang lang, boolean showProgress, boolean generateStats) {
+        TDBLoader loader = new TDBLoader() ;
+        loader.setShowProgress(showProgress) ;
+        loader.setGenerateStats(generateStats) ;
+        loader.loadDataset(dataset, input, lang) ;
+    }
+
     /** Load the contents of URL into a graph */
     public static void load(GraphTDB graph, String url)
     {
@@ -176,11 +185,20 @@ public class TDBLoader
         loadDataset$(dataset, urls, showProgress, generateStats) ;
     }
     
-    /** Load a dataset from an input stream which must be in N-Quads form */
+    /** 
+     * Load a dataset from an input stream which must be in N-Quads form.
+     * @deprecated Use {@link #loadDataset(DatasetGraphTDB, InputStream, Lang)}
+     */
+    @Deprecated
     public void loadDataset(DatasetGraphTDB dataset, InputStream input)
     {
-        // Triples languages are quads languages so no test for quad-ness needed.
-        loadDataset$(dataset, input, showProgress, generateStats) ;
+        loadDataset(dataset, input, Lang.NQUADS);
+    }
+    
+    /** Load a dataset from an input stream */
+    public void loadDataset(DatasetGraphTDB dataset, InputStream input, Lang lang)
+    {
+        loadDataset$(dataset, input, lang, showProgress, generateStats) ;
     }
 
     public boolean getChecking()  
@@ -241,8 +259,8 @@ public class TDBLoader
         BulkLoader.loadDataset(dataset, urls, showProgress, collectStats) ;
     }
 
-    private static void loadDataset$(DatasetGraphTDB dataset, InputStream input, boolean showProgress, boolean collectStats) {
-        BulkLoader.loadDataset(dataset, input, showProgress, collectStats) ;
+    private static void loadDataset$(DatasetGraphTDB dataset, InputStream input, Lang lang, boolean showProgress, boolean collectStats) {
+        BulkLoader.loadDataset(dataset, input, lang, showProgress, collectStats) ;
     }
 
     /** Load any model, not necessarily efficiently. */
