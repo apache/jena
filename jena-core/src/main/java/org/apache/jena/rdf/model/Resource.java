@@ -82,13 +82,25 @@ public interface Resource extends RDFNode {
      */
     public String getURI();
 
-    /** Returns the namespace associated with this resource.
-     * @return The namespace for this property.
+    /** Returns the namespace associated with this resource if it is a URI, else return null. 
+     * <p> 
+     * The namespace is suitable for use with localname in in RDF/XML.
+     * XML does not allow QNames to start with a digit and this method
+     * reflects that restriction in the values for namespace and localname.
+     * <p>
+     * See functions in {@code SplitIRI} for other split algorithms.
+     *  
+     * @return The namespace for this resource or null.
      */
     public String getNameSpace();
 
-    /** Returns the name of this resource within its namespace.
-     * @return The name of this property within its namespace.
+    /** Returns the localname of this resource within its namespace if it is a URI else null.
+     * <p>
+     * Note: XML requires QNames to start with a letter, not a digit,
+     * and this method reflects that restriction.
+     * <p>
+     * See functions in {@code SplitIRI} for other split algorithms.
+     * @return The localname of this property within its namespace.
      */
     public String getLocalName();
 
