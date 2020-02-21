@@ -86,6 +86,7 @@ public class FusekiMain extends CmdARQ {
         private static ArgDecl  argGZip         = new ArgDecl(ArgDecl.HasValue, "gzip");
         private static ArgDecl  argBase         = new ArgDecl(ArgDecl.HasValue, "base", "files");
 
+        private static ArgDecl  argCORS         = new ArgDecl(ArgDecl.NoValue, "withCORS", "cors", "CORS");
         private static ArgDecl  argWithPing     = new ArgDecl(ArgDecl.NoValue, "withPing", "ping");
         private static ArgDecl  argWithStats    = new ArgDecl(ArgDecl.NoValue, "withStats", "stats");
 
@@ -166,6 +167,7 @@ public class FusekiMain extends CmdARQ {
             add(argHttpsPort, "--httpsPort=NUM", "https port (default port is 3043)");
 
             add(argPasswdFile, "--passwd=FILE", "Password file");
+            add(argCORS, "--cors", "Enable CORS");
             // put in the configuration file
 //            add(argRealm, "--realm=REALM", "Realm name");
            add(argWithPing,    "--ping",   "Enable /$/ping");
@@ -387,6 +389,7 @@ public class FusekiMain extends CmdARQ {
                 serverConfig.authScheme = AuthScheme.scheme(schemeStr);
             }
 
+            serverConfig.withCORS = contains(argCORS);
             serverConfig.withPing = contains(argWithPing);
             serverConfig.withStats = contains(argWithStats);
 
@@ -489,6 +492,9 @@ public class FusekiMain extends CmdARQ {
 
             if ( serverConfig.authScheme != null )
                 builder.auth(serverConfig.authScheme);
+
+            if ( serverConfig.withCORS )
+                builder.enableCors(true);
 
             if ( serverConfig.withPing )
                 builder.enablePing(true);
