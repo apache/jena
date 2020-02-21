@@ -19,11 +19,14 @@
 package org.apache.jena.tdb2.loader.main;
 
 import java.util.*;
+import java.util.concurrent.Semaphore;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.stream.Stream;
 
+import org.apache.jena.atlas.lib.Timer;
 import org.apache.jena.atlas.lib.tuple.Tuple;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.tdb2.loader.BulkLoaderException;
 import org.apache.jena.tdb2.loader.base.MonitorOutput;
 import org.apache.jena.tdb2.loader.base.ProgressMonitor;
@@ -36,6 +39,22 @@ import org.apache.jena.tdb2.store.tupletable.TupleIndex;
  * Library of operations used by {@link LoaderMain}.
  */
 class PhasedOps {
+
+    /** Acquire one permit from a semaphore. Return the time spent waiting. */
+    /* package */ static long acquire(Semaphore termination) {
+        return acquire(termination, 1);
+    }
+
+    /** Acquire permits from a semaphore. Return the time spent waiting. */
+    /* package */ static long acquire(Semaphore semaphore, int numPermits) {
+        return Timer.time(()->{
+            try { semaphore.acquire(numPermits); }
+            catch (InterruptedException e) {
+                Log.error(Indexer.class, "Interrupted", e);
+                throw new RuntimeException(e);
+            }
+        });
+    }
 
     static Map<String, TupleIndex> indexMap(DatasetGraphTDB dsgtdb) {
         Map<String, TupleIndex> indexMap = new HashMap<>();

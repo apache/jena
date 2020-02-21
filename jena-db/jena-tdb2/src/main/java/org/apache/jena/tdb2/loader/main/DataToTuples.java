@@ -18,10 +18,13 @@
 
 package org.apache.jena.tdb2.loader.main;
 
+import static org.apache.jena.tdb2.loader.main.PhasedOps.acquire;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Semaphore;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -101,6 +104,9 @@ public class DataToTuples implements BulkStartFinish {
         }
     }
 
+    /** Semaphore for the other thread to indicate it has finished. */
+    private final Semaphore termination = new Semaphore(0);
+
     @Override
     public void startBulk() {
         thread = new Thread(()->action());
@@ -109,11 +115,7 @@ public class DataToTuples implements BulkStartFinish {
 
     @Override
     public void finishBulk() {
-        try {
-            thread.join();
-        } catch (InterruptedException e) {
-            throw new BulkLoaderException("InterruptedException", e);
-        }
+        acquire(termination);
     }
 
     // Triples.
@@ -155,6 +157,7 @@ public class DataToTuples implements BulkStartFinish {
         }
         transaction.end();
         CoLib.finish(coordinator);
+        termination.release();
     }
 
     //@Override

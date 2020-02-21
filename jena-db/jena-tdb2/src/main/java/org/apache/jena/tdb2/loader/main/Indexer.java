@@ -18,6 +18,8 @@
 
 package org.apache.jena.tdb2.loader.main;
 
+import static org.apache.jena.tdb2.loader.main.PhasedOps.acquire;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -25,7 +27,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Semaphore;
 
 import org.apache.jena.atlas.lib.ArrayUtils;
-import org.apache.jena.atlas.lib.Timer;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.dboe.transaction.txn.Transaction;
@@ -63,16 +64,6 @@ public class Indexer implements BulkStartFinish {
         for ( int i = 0; i < N ; i++ ) {
             pipesTripleIndexers[i] = new ArrayBlockingQueue<List<Tuple<NodeId>>>(LoaderConst.QueueSizeTuples);
         }
-    }
-
-    private static long acquire(Semaphore semaphore, int numPermits) {
-        return Timer.time(()->{
-            try { semaphore.acquire(numPermits); }
-            catch (InterruptedException e) {
-                Log.error(Indexer.class, "Interrupted", e);
-                throw new RuntimeException(e);
-            }
-        });
     }
 
     /** Return a function that delivers multiple {@code List<Tuple<NodeId>>>} to this indexer */
