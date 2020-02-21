@@ -24,6 +24,7 @@ import java.util.concurrent.Callable;
 import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.atlas.lib.IRILib;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.iri.IRI;
 import org.apache.jena.iri.IRIException;
 import org.apache.jena.iri.IRIFactory;
@@ -186,7 +187,7 @@ public abstract class IRIResolver
         try {
             cwd = iriFactory().construct(globalBase);
         } catch (IRIException e) {
-            System.err.println("Unexpected IRIException in initializer: " + e.getMessage());
+            Log.error(IRIResolver.class, "Unexpected IRIException in initializer: " + e.getMessage());
             cwd = iriFactory().create("file:///");
             e.printStackTrace(System.err);
         }

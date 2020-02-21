@@ -745,7 +745,6 @@ public class TokenizerJSON implements Tokenizer
             }
             int inChar = reader.readChar() ;
             if ( inChar != want ) {
-                // System.err.println("N-triple reader error");
                 exception("expected \"" + str + "\"") ;
                 return false ;
             }

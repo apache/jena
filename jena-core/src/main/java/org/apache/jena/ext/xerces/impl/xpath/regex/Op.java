@@ -70,7 +70,6 @@ class Op {
     }
     static UnionOp createUnion(int size) {
         if (Op.COUNT)  Op.nofinstances ++;
-        //System.err.println("Creates UnionOp");
         return new UnionOp(Op.UNION, size);
     }
     static ChildOp createClosure(int id) {

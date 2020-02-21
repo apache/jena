@@ -22,6 +22,7 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.*;
@@ -199,14 +200,9 @@ public class N3JenaWriterCommon implements RDFWriter
 	@Override
     public synchronized void write(Model model, OutputStream output, String base) 
 	{
-		try {
-			Writer w =  new BufferedWriter(new OutputStreamWriter(output, "UTF-8")) ;
-			write(model, w, base) ;
-			try { w.flush() ; } catch (IOException ioEx) { throw new JenaException(ioEx) ; }
-		} catch (java.io.UnsupportedEncodingException ex)
-		{
-			System.err.println("Failed to create UTF-8 writer") ;
-		}
+	    Writer w =  new BufferedWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8)) ;
+	    write(model, w, base) ;
+	    try { w.flush() ; } catch (IOException ioEx) { throw new JenaException(ioEx) ; }
 	}
 
     // ----------------------------------------------------

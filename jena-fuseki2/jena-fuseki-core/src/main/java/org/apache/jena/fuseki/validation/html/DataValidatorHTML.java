@@ -136,7 +136,6 @@ public class DataValidatorHTML
 
         @Override
         public void write(int b) throws IOException {
-            //System.err.printf("0x%02X\n", b);
             if ( b == '&' )      writeEsc(escAmp);
             else if ( b == '>' ) writeEsc(escGT);
             else if ( b == '<' ) writeEsc(escLT);

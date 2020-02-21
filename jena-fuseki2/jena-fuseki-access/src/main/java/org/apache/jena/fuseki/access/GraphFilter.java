@@ -75,13 +75,5 @@ public abstract class GraphFilter<X> implements Predicate<Tuple<X>> {
     // The per graph test.
     private boolean perGraphTest(X g) {
         return graphs.contains(g);
-//        if ( g == slot ) {
-//            System.err.println("Slot hit");
-//            return true;
-//        }
-//        boolean b = matches.contains(g);
-//        if ( b )
-//            slot = g;
-//        return b;
     }
 }

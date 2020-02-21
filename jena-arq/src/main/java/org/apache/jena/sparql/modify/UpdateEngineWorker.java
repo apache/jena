@@ -33,6 +33,7 @@ import org.apache.jena.atlas.data.ThresholdPolicyFactory ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.GraphUtil ;
@@ -544,7 +545,7 @@ public class UpdateEngineWorker implements UpdateVisitor
     // Catch all individual deletes of quads
     private static void deleteFromDatasetGraph(DatasetGraph datasetGraph, Quad quad) {
         if ( datasetGraph instanceof DatasetGraphReadOnly )
-            System.err.println("READ ONLY") ;
+            Log.warn(UpdateEngineWorker.class, "Read only dataset");
         datasetGraph.delete(quad);
     }
 

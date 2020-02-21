@@ -326,7 +326,6 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
         this.requirePrepared();
         int baseSize = fdata.getGraph().size();
         int dedSize = fdeductions.getGraph().size();
-        // System.err.println( ">> BasicForwardRuleInfGraph::size = " + baseSize + "(base) + " + dedSize + "(deductions)" );
         return baseSize + dedSize;
     }
     

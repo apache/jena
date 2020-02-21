@@ -625,7 +625,6 @@ public class AlgebraGenerator
     
     protected final void broken(String msg)
     {
-        //System.err.println("AlgebraGenerator: "+msg) ;
         throw new ARQInternalErrorException(msg) ;
     }
 }

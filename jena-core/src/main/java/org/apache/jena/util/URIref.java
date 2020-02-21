@@ -24,6 +24,9 @@
 
 package org.apache.jena.util;
 
+import javax.xml.crypto.URIReference;
+
+import org.apache.jena.atlas.logging.Log;
 
 /**
  * This class provides methods to encode and decode URI References
@@ -79,7 +82,7 @@ public class URIref extends Object {
                         } catch (IllegalArgumentException e)
                         {
                             // Illformed - should issue message ....
-                            System.err.println("Confusing IRI to encode - contains literal '%': " + unicode) ;
+                            Log.error(URIReference.class, "Confusing IRI to encode - contains literal '%': " + unicode) ;
                             // Fall through.
                         }
                     }

@@ -93,7 +93,6 @@ abstract public class QNameLexer implements Names, ARPErrorNumbers {
             // How disgusting.
             // When xmlns="eg:a"
             // xmlns is the prefix ...
-//            System.err.println(getUri());
             if (this.getUri().equals(xmlnsns)) 
                 return A_XMLNS;
             throw e;

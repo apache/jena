@@ -22,6 +22,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.Locale ;
 
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 
@@ -92,7 +93,7 @@ public class Turtle2NTriples implements TurtleEventHandler
             }
             return ; 
         }
-        System.err.println("Illegal node: "+node) ;
+        Log.error(this, "Illegal node: "+node) ;
     }
 
     @Override

@@ -138,7 +138,6 @@ public class SAX2Model extends SAX2RDF {
 
     @Override
     public void close() {
-        // System.err.println("closing;");
         if (!closed) {
             super.close();
             closed = true;

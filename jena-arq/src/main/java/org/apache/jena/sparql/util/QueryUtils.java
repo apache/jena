@@ -64,10 +64,8 @@ public class QueryUtils
             }
         } catch (SSEParseException | BuildException ex)
         { 
-            System.err.println(str);
             throw ex ; 
-        }      // Breakpoint
-
+        }
     }
     
     private static void dump(Op op, Op op2)

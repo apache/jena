@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.tdb.base.buffer.PtrBuffer ;
 import org.apache.jena.tdb.base.buffer.RecordBuffer ;
 import org.apache.jena.tdb.base.record.Record ;
@@ -72,10 +73,8 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
         recBuff.setSize(0) ;
         ptrBuff.setSize(0) ;    // Creation leaves this junk.
         
-        final boolean debug = false ;
         int rMax = recBuff.maxSize() ;
         int pMax = ptrBuff.maxSize() ;
-        if ( debug ) System.out.printf("Max: (%d, %d)\n", rMax, pMax) ;
 
         for ( ; iter.hasNext() ; )
         {
@@ -91,7 +90,6 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
             //System.out.printf("N: %d/%d : P %d/%d : R %d/%d\n", X, X2, P, P2, R, R2) ;
             
             Pair<Integer, Record> pair = iter.next() ;
-            if ( debug ) System.out.println("** Item: "+pair) ;
             Record r = pair.cdr() ;
             
             // [Issue: FREC]
@@ -107,7 +105,7 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
             // Always add - so ptrBuff is one ahead when we finish.
             // There is always one more ptr than record in a B+Tree node.
             if ( ptrBuff.isFull() )
-                System.err.println("PtrBuffer is full") ;
+               Log.error(this, "PtrBuffer is full") ;
             
             // Add pointer.
             ptrBuff.add(pair.car()) ;
@@ -126,14 +124,11 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
                 
                 // Internal consistency check.
                 if ( ! ptrBuff.isFull() )
-                    System.err.println("PtrBuffer is not full") ;
+                    Log.error(this, "PtrBuffer is not full") ;
                 
                 // The split point for the next level up.
                 slot = new Pair<>(bptNode.getId(), pair.cdr()) ;
 
-                if ( debug ) System.out.printf("Write(1): %d\n", bptNode.getId()) ;
-                if ( debug ) System.out.println(bptNode) ;
-                if ( debug ) System.out.println("Slot = "+slot) ;
                 mgr.put(bptNode) ;
                 // No count increment needed.
                 return true ;
@@ -153,9 +148,6 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
         bptNode.setCount(bptNode.getCount()-1) ;
         slot = new Pair<>(bptNode.getId(), r) ;
         
-        if ( debug ) System.out.printf("Write(2): %d\n", bptNode.getId()) ;
-        if ( debug ) System.out.println(bptNode) ;
-        if ( debug ) System.out.println("Slot = "+slot) ;
         mgr.put(bptNode) ;
         return true ;
     }
