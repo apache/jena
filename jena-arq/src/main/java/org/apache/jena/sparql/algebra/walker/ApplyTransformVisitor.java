@@ -65,21 +65,6 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
         return pop(exprStack) ;
     }
     
-//    protected Op transform(Op op) {
-//        int x1 = opStack.size() ;
-//        int x2 = exprStack.size() ;
-//        try {
-//            return Walker.transform(op, this, beforeVisitor, afterVisitor) ;
-//        } finally {
-//            int y1 = opStack.size() ;
-//            int y2 = exprStack.size() ;
-//            if ( x1 != y1 )
-//                System.err.println("Misaligned opStack") ;
-//            if ( x2 != y2 )
-//                System.err.println("Misaligned exprStack") ;
-//        }
-//    }
-
     // These three could be calls within WalkerVisitor followed by "collect".
     protected Expr transform(Expr expr) {
         int x1 = opStack.size() ;
@@ -90,9 +75,9 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
             int y1 = opStack.size() ;
             int y2 = exprStack.size() ;
             if ( x1 != y1 )
-                System.err.println("Misaligned opStack") ;
+                Log.error(ApplyTransformVisitor.class, "Misaligned opStack") ;
             if ( x2 != y2 )
-                System.err.println("Misaligned exprStack") ;
+                Log.error(ApplyTransformVisitor.class, "Misaligned exprStack") ;
         }
     }
     

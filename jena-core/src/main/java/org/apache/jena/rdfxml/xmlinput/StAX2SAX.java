@@ -89,8 +89,7 @@ public class StAX2SAX {
             else if (e instanceof Comment) emitComment((Comment) e);
             else if (e instanceof DTD) emitDTD((DTD) e);
             else {
-                //System.err.println("Unknown / unhandled event type " + e);
-                //throw new SAXException("Unknown / unhandled event type " + e);
+                throw new SAXException("Unknown / unhandled event type " + e);
             }            
         }
     }

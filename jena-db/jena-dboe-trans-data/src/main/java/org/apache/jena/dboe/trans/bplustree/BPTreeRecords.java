@@ -214,8 +214,6 @@ public final class BPTreeRecords extends BPTreePage {
 
         if ( CheckingNode ) {
             if ( !Record.keyEQ(r, maxRecord()) ) {
-                System.err.println(rBuff);
-                System.err.println(other.rBuff);
                 error("BPTreeRecords.split: Not returning expected record");
             }
         }

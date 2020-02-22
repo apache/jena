@@ -112,7 +112,6 @@ public class ParserSPARQL11 extends SPARQLParser
         catch (JenaException ex)  { throw new QueryException(ex.getMessage(), ex) ; }
         catch (Error err)
         {
-            System.err.println(err.getMessage()) ;
             // The token stream can throw errors.
             throw new QueryParseException(err.getMessage(), err, -1, -1) ;
         }

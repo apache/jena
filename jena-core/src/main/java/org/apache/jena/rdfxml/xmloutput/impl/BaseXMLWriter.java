@@ -395,11 +395,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		return tag( uriref.substring( 0, split ), uriref.substring( split ), type, true );
     }
     
-	static public boolean dbg = false;
-    
 	String tag( String namespace, String local, int type, boolean localIsQname)  {
-		if (dbg)
-			System.err.println(namespace + " - " + local);
 		String prefix = ns.get( namespace );
 		if (type != FAST && type != FASTATTR) {
 			if ((!localIsQname) && !XMLChar.isValidNCName(local))
@@ -577,7 +573,6 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		String decl = null;
 		if (out instanceof OutputStreamWriter) {
 			String javaEnc = ((OutputStreamWriter) out).getEncoding();
-			// System.err.println(javaEnc);
 			if (!(javaEnc.equals("UTF8") || javaEnc.equals("UTF-16"))) {
 			    CharEncoding encodingInfo = CharEncoding.create(javaEnc);
 		        
@@ -781,7 +776,6 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			Vector<Resource> v = new Vector<>();
 			while (tkn.hasMoreElements()) {
 				String frag = tkn.nextToken();
-				//  System.err.println("Blocking " + frag);
 				v.add(new ResourceImpl(RDFSyntax.getURI() + frag));
 			}
 

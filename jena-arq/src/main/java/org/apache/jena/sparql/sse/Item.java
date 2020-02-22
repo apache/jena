@@ -20,6 +20,7 @@ package org.apache.jena.sparql.sse;
 
 
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.core.Var ;
@@ -344,7 +345,7 @@ public class Item extends ItemLocation
         else if ( isNil() )
             visitor.visitNil() ;
         else
-            System.err.println("broken item") ;
+            Log.error(Item.class, "broken item") ;
     }
     
     public Item transform(ItemTransform transformer)

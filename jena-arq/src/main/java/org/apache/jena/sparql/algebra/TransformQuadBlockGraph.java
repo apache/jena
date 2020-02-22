@@ -47,8 +47,6 @@ public class TransformQuadBlockGraph extends TransformCopy
     @Override
     public Op transform(OpGraph opGraph, Op op) {
         
-        //System.err.println("transform(OpGraph)\n"+opGraph+op) ;
-        
         // ?? Could just leave the (graph) in place always - just rewrite BGPs. 
         boolean noPattern = false ;
         

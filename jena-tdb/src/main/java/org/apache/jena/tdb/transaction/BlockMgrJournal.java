@@ -76,7 +76,7 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
         
         reset(txn, fileRef, underlyingBlockMgr) ;
         if ( txn.getTxnMode() == ReadWrite.READ &&  underlyingBlockMgr instanceof BlockMgrJournal )
-            System.err.println("Two level BlockMgrJournal") ;
+            log.error("Two level BlockMgrJournal") ;
     }
 
     @Override

@@ -258,12 +258,9 @@ public abstract class HashCommon<Key>
                     { /* Nothing. We'd have preferred an `unless` statement. */}
                 else
                     {
-                    // System.err.println( ">> move from " + scan + " to " + here + " [original = " + original + ", r = " + r + "]" );
-                    if (here <= original && scan > original) 
-                        {
-                        // System.err.println( "]] recording wrapped " );
+                    if (here <= original && scan > original) {
                         wrappedAround = keys[scan];
-                        }
+                    }
                     keys[here] = keys[scan];
                     moveAssociatedValues( here, scan );
                     here = scan;

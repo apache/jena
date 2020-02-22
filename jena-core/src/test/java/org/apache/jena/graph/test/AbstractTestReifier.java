@@ -122,7 +122,6 @@ public abstract class AbstractTestReifier extends GraphTestBase
         assertTrue( ReifierStd.hasTriple( g , SPO ) );
         graphAdd( g,  clashingStatement );
         assertEquals( null, ReifierStd.getTriple( g , node( "x" ) ) );
-        // System.err.println( ">> tRC: clashing = " + clashingStatement );
         assertFalse( ReifierStd.hasTriple(g, SPO ) );
     }
 

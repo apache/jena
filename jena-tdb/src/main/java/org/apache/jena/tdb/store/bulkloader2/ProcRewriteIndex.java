@@ -20,6 +20,7 @@ package org.apache.jena.tdb.store.bulkloader2;
 
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.tdb.base.block.BlockMgr ;
 import org.apache.jena.tdb.base.block.BlockMgrFactory ;
 import org.apache.jena.tdb.base.file.FileSet ;
@@ -51,7 +52,7 @@ public class ProcRewriteIndex {
             dftKeyLength = SystemTDB.LenIndexQuadRecord;
             dftValueLength = 0;
         } else {
-            System.err.printf("Can't determine record size for %s\n", indexName);
+            FmtLog.error(ProcRewriteIndex.class, "Can't determine record size for %s\n", indexName);
             return;
         }
 

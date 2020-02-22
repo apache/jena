@@ -507,7 +507,7 @@ public class TransformFilterPlacement extends TransformCopy {
         Collection<Var> leftVars = fixedVars(left) ;
         Collection<Var> rightVars = fixedVars(right) ;
 
-        // More sophisticated - consider optionl variables as well.
+        // More sophisticated - consider optional variables as well.
         // This code check the two ways to get fixed vars yields the same
         // and it does for the test suite. 
 //        //---

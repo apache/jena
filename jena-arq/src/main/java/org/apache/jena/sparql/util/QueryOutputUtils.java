@@ -21,6 +21,7 @@ package org.apache.jena.sparql.util;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryExecution ;
@@ -55,7 +56,7 @@ public class QueryOutputUtils
     {
         QueryEngineFactory f = QueryEngineRegistry.findFactory(query, qe.getDataset().asDatasetGraph(), ARQ.getContext()) ;
         if ( f == null )
-            System.err.println("printPlan: Unknown engine type: "+Lib.className(qe)) ;
+            Log.error(QueryOutputUtils.class, "printPlan: Unknown engine type: "+Lib.className(qe)) ;
         
         Plan plan = f.create(query, qe.getDataset().asDatasetGraph(), BindingRoot.create(), ARQ.getContext()) ;
         SerializationContext sCxt = new SerializationContext(query) ;

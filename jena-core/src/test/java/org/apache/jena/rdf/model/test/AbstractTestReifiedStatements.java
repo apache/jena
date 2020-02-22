@@ -117,9 +117,7 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
 		{
 			try
 			{
-				// System.err.println( "| hello. mask = " + mask );
 				final ReifiedStatement rs = R.as(ReifiedStatement.class);
-				// System.err.println( "+  we constructed " + rs );
 
 				if ((mask & 15) != 15)
 				{
@@ -129,10 +127,9 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
 				Assert.assertTrue(
 						"should not reify: not all components present [" + mask
 								+ "]: " + rs, (mask & 15) == 15);
-				// System.err.println( "+  and we passed the assertion." );
 			}
 			catch (final DoesNotReifyException e)
-			{ // System.err.println( "+  we exploded" );
+			{
 				Assert.assertFalse("should reify: all components present",
 						mask == 15);
 			}

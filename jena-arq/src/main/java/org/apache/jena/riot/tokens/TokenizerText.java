@@ -1222,7 +1222,6 @@ public final class TokenizerText implements Tokenizer
             }
             int inChar = reader.peekChar();
             if ( inChar != want ) {
-                // System.err.println("N-triple reader error");
                 error("expected \"" + str + "\"");
                 return false;
             }

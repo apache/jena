@@ -55,7 +55,6 @@ public class ParseHandlerLink extends ParseHandlerResolver
     {
         if ( list.getFirst().isSymbol(tagLink) )
         {
-            System.err.println("Not written: "+item) ;
             super.declItem(list, item) ;
             return ;
         }

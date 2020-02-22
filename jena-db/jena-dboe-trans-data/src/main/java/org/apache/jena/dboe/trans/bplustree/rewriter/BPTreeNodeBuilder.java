@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.apache.jena.atlas.lib.Pair;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.dboe.base.buffer.PtrBuffer;
 import org.apache.jena.dboe.base.buffer.RecordBuffer;
 import org.apache.jena.dboe.base.record.Record;
@@ -108,7 +109,7 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>> {
             // Always add - so ptrBuff is one ahead when we finish.
             // There is always one more ptr than record in a B+Tree node.
             if ( ptrBuff.isFull() )
-                System.err.println("PtrBuffer is full");
+                Log.error(this, "PtrBuffer is full");
 
             // Add pointer.
             ptrBuff.add(pair.car());
@@ -127,7 +128,7 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>> {
 
                 // Internal consistency check.
                 if ( !ptrBuff.isFull() )
-                    System.err.println("PtrBuffer is not full");
+                    Log.error(this, "PtrBuffer is not full");
 
                 // The split point for the next level up.
                 slot = new Pair<>(bptNode.getId(), pair.cdr());

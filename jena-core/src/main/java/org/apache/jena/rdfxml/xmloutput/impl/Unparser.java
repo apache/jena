@@ -944,10 +944,6 @@ class Unparser {
      */
     private void wIdAttrReified(Statement s) {
         if (wantReification(s)) {
-            /*
-             * if ( prettyWriter.sReification ) System.err.println("???"); else
-             * System.err.println("!!!");
-             */
             Statement reify[] = reification(s);
             Resource res = statement2res.get(s);
             idDone.add(res);

@@ -465,7 +465,6 @@ public class DatasetBuilderStd {
         public BlockMgr buildBlockMgr(FileSet fileSet, String ext, IndexParams params) {
             BlockMgr blkMgr = builder.buildBlockMgr(fileSet, ext, params) ;
             FileRef ref = FileRef.create(fileSet, ext) ;
-            //System.err.println("Record (BlockMgr)   = "+ref);
             recorder.record(ref, blkMgr) ;
             return blkMgr ;
         }

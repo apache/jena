@@ -18,6 +18,7 @@
 
 package org.apache.jena.reasoner.rulesys.impl;
 
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.reasoner.* ;
 import org.apache.jena.util.FileManager ;
@@ -55,10 +56,7 @@ public final class WrappedReasonerFactory implements ReasonerFactory
         {
         StmtIterator schemas = R.listProperties( schemaURL );
         if (schemas.hasNext())
-            {
-            System.err.println( "WARNING: detected obsolete use of jms:schemaURL when wrapping a reasoner factory" );
-            System.err.println( "  This will fail to work in the next release of Jena" );
-            }
+            Log.error(WrappedReasonerFactory.class, "ERROR: detected obsolete use of jms:schemaURL when wrapping a reasoner factory" );
         while (schemas.hasNext())
             {
             Statement s = schemas.nextStatement();

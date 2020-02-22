@@ -42,9 +42,9 @@ public class CmdLineArgs extends CommandLineBase {
     }
 
     private boolean processedArgs = false ;
-    protected Map<String, ArgDecl> argMap = new HashMap<>() ;          // Map from string name to ArgDecl
-    protected Map<String, Arg> args = new HashMap<>() ;            // Name to Arg
-    protected List<String> positionals = new ArrayList<>() ;  // Positional arguments as strings.
+    protected Map<String, ArgDecl> argMap = new HashMap<>() ;   // Map from string name to ArgDecl
+    protected Map<String, Arg> args = new HashMap<>() ;         // Name to Arg
+    protected List<String> positionals = new ArrayList<>() ;    // Positional arguments as strings.
     
     public void process() throws IllegalArgumentException
     {
