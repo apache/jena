@@ -18,9 +18,8 @@
 
 package org.apache.jena.fuseki.servlets;
 
-// This is a copy of Jettys CrossOriginFilter - Fuseki need something
+// This is a copy of Jetty's CrossOriginFilter - Fuseki need something
 // that works without Jetty on the classpath when running as a WAR file.
-
 
 // We elect to use and distribute under The Apache License v2.0.
 

@@ -79,7 +79,7 @@ public class Fuseki {
 
     /** Add CORS header */
     static public final boolean CORS_ENABLED = false;
-    
+
     /**
      * A relative resources path to the location of
      * <code>fuseki-properties.xml</code> file.

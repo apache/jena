@@ -37,6 +37,7 @@ class ServerConfig {
 
     public boolean   verboseLogging   = false;
 
+    public boolean withCORS           = false;
     public boolean withPing           = false;
     public boolean withStats          = false;
 
