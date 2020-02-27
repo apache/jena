@@ -33,9 +33,7 @@ import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.rdf.model.Statement ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
 import org.apache.lucene.analysis.Analyzer ;
-import org.apache.lucene.store.Directory ;
-import org.apache.lucene.store.FSDirectory ;
-import org.apache.lucene.store.RAMDirectory ;
+import org.apache.lucene.store.*;
 
 import static org.apache.jena.query.text.assembler.TextVocab.*;
 
@@ -62,7 +60,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             if ( n.isLiteral() ) {
                 String literalValue = n.asLiteral().getLexicalForm() ; 
                 if (literalValue.equals("mem")) {
-                    directory = new RAMDirectory() ;
+                    directory = new ByteBuffersDirectory() ;
                 } else {
                     File dir = new File(literalValue) ;
                     directory = FSDirectory.open(dir.toPath()) ;

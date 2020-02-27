@@ -42,8 +42,8 @@ import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory ;
-import org.apache.lucene.store.RAMDirectory ;
 import org.junit.Test ;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -83,7 +83,7 @@ public class TestTextTxnTDB
     
     private Dataset create() {
         Dataset ds1 = factory.create();
-        Directory dir = new RAMDirectory() ;
+        Directory dir = new ByteBuffersDirectory() ;
         EntityDefinition eDef = new EntityDefinition("iri", "text");
         eDef.setPrimaryPredicate(RDFS.label);
         TextIndex tidx = new TextIndexLucene(dir, new TextIndexConfig(eDef)) ;

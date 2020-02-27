@@ -28,8 +28,8 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
 import org.apache.jena.vocabulary.RDFS ;
+import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory ;
-import org.apache.lucene.store.RAMDirectory ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -61,7 +61,7 @@ public class JenaTextExample1
         entDef.setPrimaryPredicate(RDFS.label.asNode());
 
         // Lucene, in memory.
-        Directory dir =  new RAMDirectory();
+        Directory dir =  new ByteBuffersDirectory();
         
         // Join together into a dataset
         Dataset ds = TextDatasetFactory.createLucene(ds1, dir, new TextIndexConfig(entDef)) ;

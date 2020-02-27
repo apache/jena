@@ -26,7 +26,7 @@ import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.store.Directory ;
-import org.apache.lucene.store.RAMDirectory ;
+import org.apache.lucene.store.ByteBuffersDirectory ;
 import org.junit.Test ;
 
 /** Test the examples of building a test dataset */
@@ -107,7 +107,7 @@ public class TestBuildTextDataset extends BaseTest
         entDef.setPrimaryPredicate(RDFS.label);
 
         // Lucene, in memory.
-        Directory dir = new RAMDirectory() ;
+        Directory dir = new ByteBuffersDirectory() ;
 
         // Join together into a dataset
         Dataset ds = TextDatasetFactory.createLucene(ds1, dir, new TextIndexConfig(entDef)) ;

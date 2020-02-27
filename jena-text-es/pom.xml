@@ -34,8 +34,6 @@
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
     <es.startup.timeout>90</es.startup.timeout>
     <automatic.module.name>org.apache.jena.text.es</automatic.module.name>
-
-    <ver.elasticsearch>6.4.2</ver.elasticsearch>
   </properties>
 
   <dependencies>
