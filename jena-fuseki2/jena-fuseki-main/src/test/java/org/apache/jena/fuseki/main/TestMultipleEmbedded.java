@@ -62,7 +62,12 @@ public class TestMultipleEmbedded {
         try {
             server2.start();
         } catch (FusekiException ex) {
-            assertTrue(ex.getCause() instanceof java.net.BindException );
+            // Jetty 9.4.12 throws BindException
+            // Jetty 9.4.26 throws IOException cause BindException
+            Throwable cause = ex.getCause();
+            if ( cause instanceof java.io.IOException )
+                cause = cause.getCause();
+            assertTrue(cause instanceof java.net.BindException);
             throw ex;
         } finally {
             try { server1.stop(); } catch (Exception ex) {}

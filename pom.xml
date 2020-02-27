@@ -57,7 +57,9 @@
     <ver.log4j1>1.2.17</ver.log4j1>
     <ver.log4j2>2.13.0</ver.log4j2>
 
-    <ver.jetty>9.4.12.v20180830</ver.jetty>
+    <ver.jetty>9.4.26.v20200117</ver.jetty>
+    <ver.shiro>1.2.6</ver.shiro>
+
     <ver.libthrift>0.13.0</ver.libthrift>
 
     <!-- jsonld-java depends on depends on Jackson core
@@ -89,7 +91,6 @@
     -->
     <ver.httpcore-osgi>${ver.httpcore}</ver.httpcore-osgi>
     <ver.httpclient-osgi>${ver.httpclient}</ver.httpclient-osgi>
-    <ver.shiro>1.5.0</ver.shiro>
     <ver.lucene>7.4.0</ver.lucene>
     <ver.spatial4j>0.6</ver.spatial4j>
 
