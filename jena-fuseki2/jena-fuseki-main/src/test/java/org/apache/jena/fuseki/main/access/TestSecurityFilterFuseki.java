@@ -47,7 +47,6 @@ import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
-import org.eclipse.jetty.security.PropertyUserStore;
 import org.eclipse.jetty.security.UserStore;
 import org.eclipse.jetty.util.security.Credential;
 import org.eclipse.jetty.util.security.Password;
@@ -114,18 +113,18 @@ public class TestSecurityFilterFuseki {
     }
 
     private static UserStore userStore() {
-        PropertyUserStore propertyUserStore = new PropertyUserStore();
+        UserStore userStore = new UserStore();
         String[] roles = new String[]{"**"};
-        addUserPassword(propertyUserStore, "userNone", "pwNone", roles);
-        addUserPassword(propertyUserStore, "userDft",  "pwDft",  roles);
-        addUserPassword(propertyUserStore, "user0",    "pw0",    roles);
-        addUserPassword(propertyUserStore, "user1",    "pw1",    roles);
-        addUserPassword(propertyUserStore, "user2",    "pw2",    roles);
-        addUserPassword(propertyUserStore, "user3",    "pw3",    roles);
-        return propertyUserStore;
+        addUserPassword(userStore, "userNone", "pwNone", roles);
+        addUserPassword(userStore, "userDft",  "pwDft",  roles);
+        addUserPassword(userStore, "user0",    "pw0",    roles);
+        addUserPassword(userStore, "user1",    "pw1",    roles);
+        addUserPassword(userStore, "user2",    "pw2",    roles);
+        addUserPassword(userStore, "user3",    "pw3",    roles);
+        return userStore;
     }
 
-    private static void addUserPassword(PropertyUserStore propertyUserStore, String user, String password, String[] roles) {
+    private static void addUserPassword(UserStore propertyUserStore, String user, String password, String[] roles) {
         Credential cred  = new Password(password);
         propertyUserStore.addUser(user, cred, roles);
     }
