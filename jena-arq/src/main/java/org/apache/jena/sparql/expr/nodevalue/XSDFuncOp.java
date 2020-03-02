@@ -62,7 +62,8 @@ import org.apache.jena.sparql.expr.*;
 import org.apache.jena.sparql.util.DateTimeStruct ;
 /**
  * Implementation of XQuery/XPath functions and operators.
- * http://www.w3.org/TR/xpath-functions/ */
+ * http://www.w3.org/TR/xpath-functions/
+ */
 public class XSDFuncOp
 {
     private XSDFuncOp() {}
@@ -960,8 +961,6 @@ public class XSDFuncOp
     
     // --------------------------------
     // Date/DateTime operations
-    // http://www.w3.org/TR/xpath-functions/#comp.duration.datetime
-    //  dateTimeCompare
     // works for dates as well because they are implemented as dateTimes on their start point.
 
     public static int compareDateTime(NodeValue nv1, NodeValue nv2) {
