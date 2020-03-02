@@ -29,6 +29,10 @@
     <version>3.15.0-SNAPSHOT</version>
   </parent>
 
+  <properties>
+    <automatic.module.name>org.apache.jena.querybuilder</automatic.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.jena</groupId>
@@ -44,5 +48,35 @@
     	<artifactId>mockito-all</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <!-- <phase>package</phase> package is the default -->
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
