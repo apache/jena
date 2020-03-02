@@ -44,7 +44,28 @@ public class TestOpAsQuery {
     @Test public void testBasic02() { test_roundTripQuery("SELECT * { ?s ?p ?o }") ; }
     @Test public void testBasic03() { test_roundTripQuery("SELECT * { ?s ?p ?o FILTER(?o > 5) }") ; }
     @Test public void testBasic04() { test_roundTripQuery("SELECT ?s { ?s ?p ?o FILTER(?o > 5) }") ; }
-    @Test public void testBasic05() { test_roundTripQuery("SELECT ?s (?o + 5 AS ?B) { ?s ?p ?o }") ; }
+    
+    // 01, 02: Same algebra.  
+    @Test public void testBind01() { test_roundTripQuery("SELECT ?s (?o + 5 AS ?B) { ?s ?p ?o }") ; }
+    @Test public void testBind02() { test_roundTripAlegbra("SELECT ?o ?B  { ?s ?p ?o BIND (?o + 5 AS ?B) }") ; }
+    // No project
+    @Test public void testBind03() { test_roundTripQuery("SELECT * { ?s ?p ?o BIND (?o + 5 AS ?B)  }") ; }
+    
+    // Over nested.
+    @Test public void testBind04() { 
+        test_roundTripQuery("SELECT * { ?s ?p ?o BIND(?o+1 AS ?a1) ?x ?q ?v BIND(?v+2 AS ?a2) }",
+                            "SELECT * { { ?s ?p ?o BIND(( ?o + 1 ) AS ?a1) } ?x ?q ?v BIND(( ?v + 2 ) AS ?a2) } "); 
+    }
+    
+    // Over nested.
+    @Test public void testBind05() { 
+        test_roundTripQuery("SELECT * { ?s ?p ?o BIND(?o+1 AS ?a1) ?x ?q ?v BIND(2 AS ?a2) } ORDER BY ?s",
+                            "SELECT * { { { ?s ?p ?o BIND(( ?o + 1 ) AS ?a1) } ?x ?q ?v } BIND(2 AS ?a2) } ORDER BY ?s"); 
+    }
+    
+    // https://issues.apache.org/jira/browse/JENA-1843
+    @Test public void testBind06() { test_roundTripQuery("SELECT * { ?s ?p ?o BIND(?o + 1 AS ?a1) BIND(?v+2 as ?a2) }"); }
+    @Test public void testBind07() { test_roundTripQuery("SELECT * { BIND(?o + 1 AS ?a1) BIND(?v+2 as ?a2) }"); }
     
     @Test public void testOptional01() 
     { test_roundTripQuery("SELECT * WHERE { ?s ?p ?o OPTIONAL { ?s ?q ?z FILTER (?foo) } }") ; }
@@ -125,6 +146,10 @@ public class TestOpAsQuery {
     
     @Test public void testGroupBy_12()
     { test_roundTripQuery("SELECT * { ?s ?q ?z {SELECT DISTINCT * { ?s ?p ?o }} }"); } 
+    
+    // https://issues.apache.org/jira/browse/JENA-1844
+    @Test public void testGroupBy_13()
+    { test_roundTripQuery("SELECT * { ?s ?p ?o BIND(?o+1 AS ?a1) } ORDER BY ?s"); }
     
     @Test public void testSubQuery_01()
     { test_roundTripQuery("SELECT ?s { SELECT (count(*) as ?cp) { ?s ?p ?o } }") ; }
@@ -464,11 +489,23 @@ public class TestOpAsQuery {
     // to produce an output that is .equals the input.
     /** query->algebra->OpAsQuery->query */
     public static Query[] test_roundTripQuery(String query) {
+        // [original, got]
         Query[] r = roundTripQuery(query) ;
         stripNamespacesAndBase(r[0]) ; 
         stripNamespacesAndBase(r[1]) ;
         assertEquals(r[0], r[1]) ;
         return r ;
+    }
+    
+    public static void test_roundTripQuery(String query, String outcome) {
+        Query[] r = roundTripQuery(query) ;
+        Query orig = r[0];
+        Query output = r[1];
+        Query q2 = QueryFactory.create(outcome);
+        stripNamespacesAndBase(orig) ; 
+        stripNamespacesAndBase(output) ;
+        stripNamespacesAndBase(q2) ;
+        assertEquals(q2, output) ;
     }
     
     // Test via quads  
