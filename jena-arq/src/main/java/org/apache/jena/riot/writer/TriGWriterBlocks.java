@@ -39,4 +39,3 @@ public class TriGWriterBlocks extends TriGWriterBase
         dest.finish() ;
     }
 }
-

@@ -19,45 +19,34 @@
 
 package org.apache.jena.riot.writer ;
 
-import static org.apache.jena.riot.writer.WriterConst.GAP_P_O ;
-import static org.apache.jena.riot.writer.WriterConst.GAP_S_P ;
-import static org.apache.jena.riot.writer.WriterConst.INDENT_OBJECT ;
-import static org.apache.jena.riot.writer.WriterConst.INDENT_PREDICATE ;
-import static org.apache.jena.riot.writer.WriterConst.LONG_PREDICATE ;
-import static org.apache.jena.riot.writer.WriterConst.LONG_SUBJECT ;
-import static org.apache.jena.riot.writer.WriterConst.MIN_PREDICATE ;
-import static org.apache.jena.riot.writer.WriterConst.OBJECT_LISTS ;
-import static org.apache.jena.riot.writer.WriterConst.RDF_First ;
-import static org.apache.jena.riot.writer.WriterConst.RDF_Nil ;
-import static org.apache.jena.riot.writer.WriterConst.RDF_Rest ;
-import static org.apache.jena.riot.writer.WriterConst.RDF_type ;
-import static org.apache.jena.riot.writer.WriterConst.rdfNS ;
+import static org.apache.jena.graph.Node.ANY;
+import static org.apache.jena.riot.writer.WriterConst.*;
 
-import java.util.* ;
+import java.util.*;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.atlas.lib.SetUtils ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.RIOT ;
-import org.apache.jena.riot.other.GLib ;
-import org.apache.jena.riot.out.NodeFormatter ;
-import org.apache.jena.riot.out.NodeFormatterTTL ;
-import org.apache.jena.riot.out.NodeFormatterTTL_MultiLine ;
-import org.apache.jena.riot.out.NodeToLabel ;
-import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.PrefixMapFactory ;
-import org.apache.jena.riot.system.RiotLib ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.vocabulary.RDF ;
-import org.apache.jena.vocabulary.RDFS ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.atlas.lib.Pair;
+import org.apache.jena.atlas.lib.SetUtils;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.RIOT;
+import org.apache.jena.riot.other.GLib;
+import org.apache.jena.riot.out.NodeFormatter;
+import org.apache.jena.riot.out.NodeFormatterTTL;
+import org.apache.jena.riot.out.NodeFormatterTTL_MultiLine;
+import org.apache.jena.riot.out.NodeToLabel;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapFactory;
+import org.apache.jena.riot.system.RiotLib;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.util.Context;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 
 /**
  * Base class to support the pretty forms of Turtle-related languages (Turtle, TriG)
@@ -69,9 +58,9 @@ public abstract class TurtleShell {
     protected final String         baseURI ;
     protected final Context        context ;
     protected final PrefixStyle    prefixStyle;
-    
+
     static PrefixStyle dftPrefixStyle = PrefixStyle.AT;
-    enum PrefixStyle { 
+    enum PrefixStyle {
         AT, SPARQL ;
         public static PrefixStyle create(String label) {
             String s = label.toLowerCase() ;
@@ -95,7 +84,7 @@ public abstract class TurtleShell {
         this.context = context;
         this.prefixStyle = prefixStyle(context) ;
     }
-    
+
     // Determine the prefix style (applies to BASE as well).
     private static PrefixStyle prefixStyle(Context context) {
         Object x = context.get(RIOT.symTurtlePrefixStyle) ;
@@ -103,17 +92,17 @@ public abstract class TurtleShell {
             String s = (String)x ;
             PrefixStyle style = PrefixStyle.create(s);
             return style == null ? dftPrefixStyle : style;
-        } 
+        }
         if ( x instanceof PrefixStyle )
             return (PrefixStyle)x ;
-        // Default choice; includes null in context. 
+        // Default choice; includes null in context.
         return dftPrefixStyle;
     }
 
     protected TurtleShell(IndentedWriter out, PrefixMap pmap, String baseURI, Context context) {
         this(out, pmap, baseURI, createNodeFormatter(pmap,baseURI,context), context) ;
     }
-    
+
     static public NodeFormatter createNodeFormatter(PrefixMap pmap, String baseURI, Context context) {
         if ( context != null && context.isTrue(RIOT.multilineLiterals) )
             return new NodeFormatterTTL_MultiLine(baseURI, pmap, NodeToLabel.createScopeByDocument()) ;
@@ -129,61 +118,60 @@ public abstract class TurtleShell {
         RiotLib.writePrefixes(out, prefixMap, prefixStyle==PrefixStyle.SPARQL) ;
     }
 
+    // XXX
     /** Write graph in Turtle syntax (or part of TriG) */
     protected void writeGraphTTL(Graph graph) {
-        ShellGraph x = new ShellGraph(graph, null, null) ;
+        ShellGraph x = new ShellGraph(graph, null, null, null) ;
         x.writeGraph() ;
-    }    
+    }
 
     /** Write graph in Turtle syntax (or part of TriG). graphName is null for default graph. */
-    protected void writeGraphTTL(DatasetGraph dsg, Node graphName) {
-        Graph g = (graphName == null || Quad.isDefaultGraph(graphName)) 
+    protected void writeGraphTTL(DatasetGraph dsg, Node graphName, Set<Node> graphNames) {
+        Graph g = (graphName == null || Quad.isDefaultGraph(graphName))
             ? dsg.getDefaultGraph()
-            : dsg.getGraph(graphName) ; 
-        ShellGraph x = new ShellGraph(g, graphName, dsg) ;
+            : dsg.getGraph(graphName) ;
+        ShellGraph x = new ShellGraph(g, graphName, dsg, graphNames) ;
         x.writeGraph() ;
     }
 
     // Write one graph - using an inner object class to isolate
     // the state variables for writing a single graph.
     private final class ShellGraph {
-        // Dataset (for writing graphs indatasets) -- may be null
-        private final DatasetGraph          dsg ;  
-        private final Collection<Node>      graphNames ; 
+        // Dataset (for writing graphs in datasets) -- may be null
+        private final DatasetGraph          dsg ;
+        private final Collection<Node>      graphNames ;
         private final Node                  graphName ;
         private final Graph                 graph ;
-        
+
         // Blank nodes that have one incoming triple
-        private /*final*/ Set<Node>             nestedObjects ; 
+        private /*final*/ Set<Node>             nestedObjects ;
         private final Set<Node>             nestedObjectsWritten ;
 
         // Blank node subjects that are not referenced as objects or graph names
-        // excluding unlnked lists. 
-        private final Set<Node>             freeBnodes ;  
+        // excluding unlinked lists.
+        private final Set<Node>             freeBnodes ;
 
         // The head node in each well-formed list -> list elements
-        private final Map<Node, List<Node>> lists ;   
+        private final Map<Node, List<Node>> lists ;
 
         // List that do not have any incoming triples
-        private final Map<Node, List<Node>> freeLists ; 
+        private final Map<Node, List<Node>> freeLists ;
 
         // Lists that have more than one incoming triple
-        private final Map<Node, List<Node>> nLinkedLists ; 
+        private final Map<Node, List<Node>> nLinkedLists ;
 
         // All nodes that are part of list structures.
-        private final Collection<Node>      listElts ;  
-        
+        private final Collection<Node>      listElts ;
+
         // Allow lists and nest bnode objects.
         // This is true for the main pretty printing then
-        // false when we are clearing up unwritten triples. 
+        // false when we are clearing up unwritten triples.
         private boolean allowDeepPretty = true ;
 
-        private ShellGraph(Graph graph, Node graphName, DatasetGraph dsg) {
+        private ShellGraph(Graph graph, Node graphName, DatasetGraph dsg, Set<Node> graphNames) {
             this.dsg = dsg ;
             this.graphName = graphName ;
-            
-            this.graphNames = (dsg != null) ? Iter.toSet(dsg.listGraphNodes()) : null ; 
-            
+            this.graphNames = graphNames;
             this.graph = graph ;
             this.nestedObjects = new HashSet<>() ;
             this.nestedObjectsWritten = new HashSet<>() ;
@@ -194,7 +182,7 @@ public abstract class TurtleShell {
             this.nLinkedLists = new HashMap<>() ;
             this.listElts = new HashSet<>() ;
             this.allowDeepPretty = true ;
-            
+
             // Must be in this order.
             findLists() ;
             findBNodesSyntax1() ;
@@ -233,7 +221,7 @@ public abstract class TurtleShell {
         // Debug
 
         private ShellGraph(Graph graph) {
-            this(graph, null, null) ;
+            this(graph, null, null, null) ;
         }
 
         // ---- Data access
@@ -254,7 +242,7 @@ public abstract class TurtleShell {
 
         /** Get exactly one triple, or null for none or more than one. */
         private Triple triple1(DatasetGraph dsg, Node s, Node p, Node o) {
-            Iterator<Quad> iter = dsg.find(Node.ANY, s, p, o) ;
+            Iterator<Quad> iter = dsg.find(ANY, s, p, o) ;
             if ( !iter.hasNext() )
                 return null ;
             Quad q = iter.next() ;
@@ -277,27 +265,28 @@ public abstract class TurtleShell {
         /** returns 0,1,2 (where 2 really means "more than 1") */
         private int inLinks(Node obj) {
             if ( dsg != null ) {
-                Iterator<Quad> iter = dsg.find(Node.ANY, Node.ANY, Node.ANY, obj) ;
+                Iterator<Quad> iter = dsg.find(ANY, ANY, ANY, obj) ;
                 return count012(iter) ;
             } else {
-                ExtendedIterator<Triple> iter = graph.find(Node.ANY, Node.ANY, obj) ;
+                ExtendedIterator<Triple> iter = graph.find(ANY, ANY, obj) ;
                 try { return count012(iter) ; }
                 finally { iter.close() ; }
             }
         }
 
-        /** returns 0,1,2 (where 2 really means "more than 1") */
-        private int occursAsSubject(Node subj) {
-            if ( dsg != null ) {
-                Iterator<Quad> iter = dsg.find(Node.ANY, subj, Node.ANY, Node.ANY) ;
-                return count012(iter) ;
-            } else {
-                ExtendedIterator<Triple> iter = graph.find(subj, Node.ANY, Node.ANY) ;
-                try { return count012(iter) ; }
-                finally { iter.close() ; }
-            }
-        }
-        
+        // Unused
+//        /** returns 0,1,2 (where 2 really means "more than 1") */
+//        private int outLinks(Node subj) {
+//            if ( dsg != null ) {
+//                Iterator<Quad> iter = dsg.find(ANY, subj, ANY, ANY) ;
+//                return count012(iter) ;
+//            } else {
+//                ExtendedIterator<Triple> iter = graph.find(subj, ANY, ANY) ;
+//                try { return count012(iter) ; }
+//                finally { iter.close() ; }
+//            }
+//        }
+
         private int count012(Iterator<? > iter) {
             if ( !iter.hasNext() )
                 return 0 ;
@@ -307,31 +296,31 @@ public abstract class TurtleShell {
             return 2 ;
         }
 
-        /** Check whether a node is used only in the graph we're working on */ 
+        /** Check whether a node is used only in the graph we're working on */
         private boolean containedInOneGraph(Node node) {
             if ( dsg == null )
                 // Single graph
                 return true ;
-            
+
             if ( graphNames.contains(node) )
                 // Used as a graph name.
                 return false ;
-            
-            Iterator<Quad> iter = dsg.find(Node.ANY, node, Node.ANY, Node.ANY) ;
-            if ( ! quadsThisGraph(iter) ) 
+
+            Iterator<Quad> iter = dsg.find(ANY, node, ANY, ANY) ;
+            if ( ! quadsThisGraph(iter) )
                 return false ;
 
-            iter = dsg.find(Node.ANY, Node.ANY, node, Node.ANY) ;
-            if ( ! quadsThisGraph(iter) ) 
+            iter = dsg.find(ANY, ANY, node, ANY) ;
+            if ( ! quadsThisGraph(iter) )
                 return false ;
-            
-            iter = dsg.find(Node.ANY, Node.ANY, Node.ANY, node) ;
-            if ( ! quadsThisGraph(iter) ) 
+
+            iter = dsg.find(ANY, ANY, ANY, node) ;
+            if ( ! quadsThisGraph(iter) )
                 return false ;
             return true ;
         }
 
-        /** Check whether an iterator of quads is all in the same graph (dataset assumed) */ 
+        /** Check whether an iterator of quads is all in the same graph (dataset assumed) */
         private boolean quadsThisGraph(Iterator<Quad> iter) {
             if ( ! iter.hasNext() )
                 // Empty iterator
@@ -343,7 +332,7 @@ public abstract class TurtleShell {
             if ( isDefaultGraph(gn) ) {
                 if ( ! isDefaultGraph(graphName) )
                     return false ;
-            } else { 
+            } else {
                 if ( ! Objects.equals(gn, graphName) )
                     // Not both same named graph
                     return false ;
@@ -352,15 +341,15 @@ public abstract class TurtleShell {
             for ( ; iter.hasNext() ; ) {
                 Quad q2 = iter.next() ;
                 if ( ! Objects.equals(gn, q2.getGraph()) )
-                    return false ;    
+                    return false ;
             }
             return true ;
         }
-        
+
         private boolean isDefaultGraph(Node node) {
             return node == null || Quad.isDefaultGraph(node) ;
         }
-        
+
         /** Get triples with the same subject */
         private Collection<Triple> triplesOfSubject(Node subj) {
             return RiotLib.triplesOfSubject(graph, subj) ;
@@ -379,21 +368,21 @@ public abstract class TurtleShell {
         private void findBNodesSyntax1() {
             Set<Node> rejects = new HashSet<>() ; // Nodes known not to meet the requirement.
 
-            ExtendedIterator<Triple> iter = find(Node.ANY, Node.ANY, Node.ANY) ;
+            ExtendedIterator<Triple> iter = find(ANY, ANY, ANY) ;
             try {
                 for ( ; iter.hasNext() ; ) {
                     Triple t = iter.next() ;
                     Node subj = t.getSubject() ;
                     Node obj = t.getObject() ;
-                    
+
                     if ( subj.isBlank() )
                     {
                         int sConn = inLinks(subj) ;
-                        if ( sConn == 0 && containedInOneGraph(subj) )  
+                        if ( sConn == 0 && containedInOneGraph(subj) )
                             // Not used as an object in this graph.
                             freeBnodes.add(subj) ;
                     }
-                    
+
                     if ( ! obj.isBlank() )
                         continue ;
                     if ( rejects.contains(obj) )
@@ -405,19 +394,19 @@ public abstract class TurtleShell {
                         nestedObjects.add(obj) ;
                     }
                     else
-                        // Uninteresting object connected multiple times. 
+                        // Uninteresting object connected multiple times.
                         rejects.add(obj) ;
                 }
             } finally { iter.close() ; }
         }
-        
+
         // --- Lists setup
         /*
          * Find all list heads and all nodes in well-formed lists. Return a
          * (list head -> Elements map), list elements)
          */
         private void findLists() {
-            List<Triple> tails = triples(Node.ANY, RDF_Rest, RDF_Nil) ;
+            List<Triple> tails = triples(ANY, RDF_Rest, RDF_Nil) ;
             for ( Triple t : tails ) {
                 // Returns the elements, reversed.
                 Collection<Node> listElts2 = new HashSet<>() ;
@@ -512,10 +501,10 @@ public abstract class TurtleShell {
             // Write remainders
             // 1 - Shared lists
             somethingWritten = writeRemainingNLinkedLists(somethingWritten) ;
-            
+
             // 2 - Free standing lists
             somethingWritten = writeRemainingFreeLists(somethingWritten) ;
-            
+
             // 3 - Blank nodes that are unwrittern single objects.
             //            System.err.println("## ## ##") ;
             //            printDetails("nestedObjects", nestedObjects) ;
@@ -538,7 +527,7 @@ public abstract class TurtleShell {
 
                 write_S_P_Gap();
                 out.pad() ;
-                
+
                 writeNode(RDF_First) ;
                 print(" ") ;
                 writeNode(x.get(0)) ;
@@ -583,18 +572,18 @@ public abstract class TurtleShell {
         }
 
         // Write any left over nested objects
-        // These come from blank node cycles : _:a <p> _:b . _b: <p> _:a .  
+        // These come from blank node cycles : _:a <p> _:b . _b: <p> _:a .
         // Also from from blank node cycles + tail: _:a <p> _:b . _:a <p> "" .  _b: <p> _:a .
         private boolean writeRemainingNestedObjects(Set<Node> objects, boolean somethingWritten) {
             for ( Node n : objects ) {
                 if ( somethingWritten )
                     out.println() ;
                 somethingWritten = true ;
-                
+
                 Triple t = triple1(null, null, n) ;
                 if ( t == null )
                     throw new InternalErrorException("Expected exactly one triple") ;
-              
+
                 Node subj = t.getSubject() ;
                 boolean b = allowDeepPretty ;
                 try {
@@ -608,7 +597,7 @@ public abstract class TurtleShell {
         }
 
         // Write triples, flat and simply.
-        // Reset the state variables so "isPretty" return false. 
+        // Reset the state variables so "isPretty" return false.
         private void writeTriples(Node subj, Iterator<Triple> iter) {
             allowDeepPretty = false;
             writeCluster(subj, Iter.toList(iter));
@@ -684,11 +673,11 @@ public abstract class TurtleShell {
 
             for ( Node p : predicates ) {
                 // Literals in the group
-                List<Node> rdfLiterals = new ArrayList<>() ; 
+                List<Node> rdfLiterals = new ArrayList<>() ;
                 // Non-literals, printed
-                List<Node> rdfSimpleNodes = new ArrayList<>() ; 
+                List<Node> rdfSimpleNodes = new ArrayList<>() ;
                 // Non-literals, printed (), or []-embedded
-                List<Node> rdfComplexNodes = new ArrayList<>() ; 
+                List<Node> rdfComplexNodes = new ArrayList<>() ;
 
                 for ( Node o : pGroups.get(p) ) {
                     if ( o.isLiteral() ) {
@@ -727,7 +716,7 @@ public abstract class TurtleShell {
         private void writePredicateObjectList(Node p, List<Node> objects, int predicateMaxWidth, boolean first) {
             writePredicate(p, predicateMaxWidth, first) ;
             out.incIndent(INDENT_OBJECT) ;
-            
+
             boolean lastObjectMultiLine = false ;
             boolean firstObject = true ;
             for ( Node o : objects ) {
@@ -736,7 +725,7 @@ public abstract class TurtleShell {
                         out.print(" , ") ;
                     else
                         // Before the current indent, due to a multiline literal being written raw.
-                        // We will pad spaces to indent on output spaces.  Don't add a first " " 
+                        // We will pad spaces to indent on output spaces.  Don't add a first " "
                         out.print(", ") ;
                 }
                 else
@@ -797,7 +786,7 @@ public abstract class TurtleShell {
                     if ( ! predicate.equals(p))
                         // 2+ different predicates.
                         return false ;
-                } else 
+                } else
                     predicate = p;
             }
             return true;
@@ -815,7 +804,7 @@ public abstract class TurtleShell {
                 writeClusterPredicateObjectList(0, cluster) ;
             }
         }
-        
+
         private void writeNestedObject(Node node) {
             Collection<Triple> x = triplesOfSubject(node) ;
 
@@ -823,7 +812,7 @@ public abstract class TurtleShell {
                 print("[] ") ;
                 return ;
             }
-            
+
             if ( isCompact(x) ) {
                 print("[ ") ;
                 out.incIndent(2) ;
@@ -855,7 +844,7 @@ public abstract class TurtleShell {
                 out.print("()") ;
                 return ;
             }
-            
+
             if ( false ) {
                 out.print("(") ;
                 for ( Node n : elts ) {
@@ -863,14 +852,14 @@ public abstract class TurtleShell {
                     writeNodePretty(n) ;
                 }
                 out.print(" )") ;
-            } 
+            }
 
             if ( true ) {
-                // "fresh line mode" means printed one on new line 
+                // "fresh line mode" means printed one on new line
                 // Multi line items are ones that can be multiple lines. Non-literals.
-                // Was the previous row a multiLine? 
+                // Was the previous row a multiLine?
                 boolean lastItemFreshLine = false ;
-                // Have there been any items that causes "fresh line" mode? 
+                // Have there been any items that causes "fresh line" mode?
                 boolean multiLineAny = false ;
                 boolean first = true ;
 
@@ -881,9 +870,9 @@ public abstract class TurtleShell {
                 out.setAbsoluteIndent(x);
 
                 out.print("(") ;
-                out.incIndent(2); 
+                out.incIndent(2);
                 for ( Node n : elts ) {
-                    
+
                     // Print this item on a fresh line? (still to check: first line)
                     boolean thisItemFreshLine = /* multiLineAny | */ n.isBlank() ;
 
@@ -891,12 +880,12 @@ public abstract class TurtleShell {
                     // Start on this line if last item was on this line.
                     if ( lists.containsKey(n) )
                         thisItemFreshLine = lastItemFreshLine ;
-                
+
                     // Starting point.
                     if ( ! first ) {
                         if ( lastItemFreshLine | thisItemFreshLine )
                             out.println() ;
-                        else 
+                        else
                             out.print(" ") ;
                     }
 
@@ -906,14 +895,14 @@ public abstract class TurtleShell {
                     // Special case [ one triple ]??
                     writeNodePretty(n) ;
                     //Literals with newlines:int x2 = out.getRow() ;
-                    //Literals with newlines: boolean multiLineAnyway = ( x1 != x2 ) ; 
+                    //Literals with newlines: boolean multiLineAnyway = ( x1 != x2 ) ;
                     lastItemFreshLine = thisItemFreshLine ;
                     multiLineAny  = multiLineAny | thisItemFreshLine ;
-                    
+
                 }
                 if ( multiLineAny )
                     out.println() ;
-                else 
+                else
                     out.print(" ") ;
                 out.decIndent(2);
                 out.setAbsoluteIndent(x);
@@ -958,7 +947,7 @@ public abstract class TurtleShell {
         // RDF and RDFS
         // Other.
         // Sorted by URI.
-        
+
         private void write_S_P_Gap() {
             if ( out.getCol() > LONG_SUBJECT )
                 out.println() ;
