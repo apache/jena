@@ -232,6 +232,7 @@ public class FusekiTestServer {
         server = FusekiServer.create()
             .add(datasetPath(), dsgTesting)
             .port(port())
+            .loopback(true)
             .build()
             .start();
     }

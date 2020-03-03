@@ -40,7 +40,7 @@ public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
     @BeforeClass
     public static void beforeClass() {
         PORT = WebLib.choosePort();
-        server = FusekiServer.create()
+        server = FusekiServer.create().loopback(true)
             .port(PORT)
             .add("/ds", serverdsg)
             .build() ;
