@@ -261,7 +261,7 @@ public class ServerCtl {
 
         FusekiServerListener.initialSetup = params;
 
-        JettyServerConfig config = make(port, true, true);
+        JettyServerConfig config = make(port, true);
         config.authConfigFile = authConfigFile;
         JettyFusekiWebapp.initializeServer(config);
         JettyFusekiWebapp.instance.start();
@@ -278,12 +278,13 @@ public class ServerCtl {
         server = null;
     }
 
-    /*package*/ static JettyServerConfig make(int port, boolean allowUpdate, boolean listenLocal) {
+    /*package*/ static JettyServerConfig make(int port, boolean allowUpdate) {
         JettyServerConfig config = new JettyServerConfig();
         // Avoid any persistent record.
         config.port = port;
         config.contextPath = "/";
-        config.loopback = listenLocal;
+        // Always execute tests with localhost only access.
+        config.loopback = true;
         config.jettyConfigFile = null;
         config.enableCompression = true;
         config.verboseLogging = false;
