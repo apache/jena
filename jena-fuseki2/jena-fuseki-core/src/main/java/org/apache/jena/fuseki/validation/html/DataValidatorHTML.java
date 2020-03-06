@@ -37,6 +37,7 @@ import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFWriter;
 
+/** Validate data - report in HTML */
 public class DataValidatorHTML
 {
     private DataValidatorHTML()

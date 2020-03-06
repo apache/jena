@@ -28,6 +28,7 @@ import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 import static org.apache.jena.fuseki.validation.json.ValidatorJsonLib.*;
 
+/** Validate data - report in JSON */
 public class DataValidatorJSON {
 
     public DataValidatorJSON() { }

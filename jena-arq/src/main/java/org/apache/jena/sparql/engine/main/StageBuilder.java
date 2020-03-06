@@ -79,12 +79,12 @@ public class StageBuilder
         
     // -------- Manage StageGenerator registration
     
-    public static void setGenerator(Context context, StageGenerator builder)
+    public static void setGenerator(Context context, StageGenerator stageGenerator)
     {
         if ( ARQ.stageGenerator == null )
             // Indicator of initialization problems
             Log.warn(StageBuilder.class, "ARQ.stageGenerator = null") ;
-        context.set(ARQ.stageGenerator, builder) ;
+        context.set(ARQ.stageGenerator, stageGenerator) ;
     }
     
     public static StageGenerator getGenerator(Context context)
