@@ -57,7 +57,9 @@
     <ver.log4j1>1.2.17</ver.log4j1>
     <ver.log4j2>2.13.0</ver.log4j2>
 
-    <ver.jetty>9.4.12.v20180830</ver.jetty>
+    <ver.jetty>9.4.26.v20200117</ver.jetty>
+    <ver.shiro>1.5.0</ver.shiro>
+
     <ver.libthrift>0.13.0</ver.libthrift>
 
     <!-- jsonld-java depends on depends on Jackson core
@@ -78,7 +80,7 @@
     <ver.commonsrdf>0.5.0</ver.commonsrdf>
     <ver.commonscsv>1.8</ver.commonscsv>
     <ver.commons-codec>1.14</ver.commons-codec>
-    <ver.commons-compress>1.19</ver.commons-compress>
+    <ver.commons-compress>1.20</ver.commons-compress>
 
     <ver.dexxcollection>0.7</ver.dexxcollection>
 
@@ -89,8 +91,11 @@
     -->
     <ver.httpcore-osgi>${ver.httpcore}</ver.httpcore-osgi>
     <ver.httpclient-osgi>${ver.httpclient}</ver.httpclient-osgi>
-    <ver.shiro>1.5.0</ver.shiro>
-    <ver.lucene>7.4.0</ver.lucene>
+    
+    <ver.lucene>7.7.2</ver.lucene>
+    <!-- Align to Lucene version -->
+    <ver.elasticsearch>6.8.6</ver.elasticsearch>
+
     <ver.spatial4j>0.6</ver.spatial4j>
 
     <ver.mockito>1.9.5</ver.mockito>

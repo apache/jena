@@ -21,8 +21,6 @@ package org.apache.jena.fuseki.cmd;
 import static java.lang.String.format;
 import static org.apache.jena.fuseki.Fuseki.serverLog;
 
-import java.io.FileInputStream;
-
 import javax.servlet.ServletContext;
 
 import org.apache.jena.atlas.lib.DateTimeUtils;
@@ -42,6 +40,7 @@ import org.eclipse.jetty.server.handler.AllowSymLinkAliasChecker;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.xml.XmlConfiguration;
@@ -292,7 +291,8 @@ public class JettyFusekiWebapp {
         try {
             serverLog.info("Jetty server config file = " + jettyConfig);
             server = new Server();
-            XmlConfiguration configuration = new XmlConfiguration(new FileInputStream(jettyConfig));
+            Resource configXml = Resource.newResource(jettyConfig);
+            XmlConfiguration configuration = new XmlConfiguration(configXml);
             configuration.configure(server);
             serverConnector = (ServerConnector)server.getConnectors()[0];
         } catch (Exception ex) {

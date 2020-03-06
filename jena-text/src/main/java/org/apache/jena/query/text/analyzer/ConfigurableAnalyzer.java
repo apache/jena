@@ -45,6 +45,7 @@ import org.apache.lucene.analysis.standard.StandardTokenizer;
  * Tokenizer and (optionally) TokenFilter implementations.
  */
 
+@SuppressWarnings("deprecation")
 public class ConfigurableAnalyzer extends Analyzer {
         private final String tokenizer;
         private final List<String> filters;
