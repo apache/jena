@@ -21,14 +21,14 @@ package org.apache.jena.sparql.function.library;
 import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertTrue ;
 
-import org.apache.jena.graph.Node ;
+import java.util.function.Predicate;
+
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.expr.LibTestExpr;
 import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionEnvBase ;
 import org.apache.jena.sparql.util.ExprUtils ;
-import org.apache.jena.sparql.util.NodeFactoryExtra ;
 
 public class LibTest {
     private static PrefixMapping pmap = ARQConstants.getGlobalPrefixMap() ;
@@ -37,13 +37,21 @@ public class LibTest {
         test(string, "true");
     }
 
-    static void test(String string, String result) {
-        Expr expr = ExprUtils.parse(string, pmap) ;
-        NodeValue nv = expr.eval(null, new FunctionEnvBase()) ;
-        Node r = NodeFactoryExtra.parseNode(result) ;
-        NodeValue nvr = NodeValue.makeNode(r) ;
-        assertTrue("Not same value: Expected: " + nvr + " : Actual = " + nv, NodeValue.sameAs(nvr, nv)) ;
-        // test result must be lexical form exact.
-        assertEquals(r, nv.asNode()) ;
+    static void test(String exprStr, NodeValue result) {
+        Expr expr = ExprUtils.parse(exprStr) ;
+        NodeValue r = expr.eval(null, LibTestExpr.createTest()) ;
+        assertEquals(result, r) ;
+    }
+
+    static void test(String exprStr, String exprStrExpected) {
+        Expr expr = ExprUtils.parse(exprStrExpected) ;
+        NodeValue rExpected = expr.eval(null, LibTestExpr.createTest()) ;
+        test(exprStr, rExpected) ;
+    }
+    
+    static void test(String exprStr, Predicate<NodeValue> test) {
+        Expr expr = ExprUtils.parse(exprStr) ;
+        NodeValue r = expr.eval(null, LibTestExpr.createTest()) ;
+        assertTrue(exprStr, test.test(r));
     }
 }

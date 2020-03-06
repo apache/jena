@@ -166,10 +166,20 @@ public class StandardFunctions
         
         add(registry, xfn+"encode-for-uri", FN_StrEncodeForURI.class) ;
 
+        add(registry, xfn+"years-from-date",        FN_YearsFromDate.class) ;
+        add(registry, xfn+"months-from-date",       FN_MonthsFromDate.class) ;
+        add(registry, xfn+"days-from-date",         FN_DaysFromDate.class) ;
+        add(registry, xfn+"timezone-from-date",     FN_TimezoneFromDate.class) ;
+
+        add(registry, xfn+"hours-from-time",        FN_HoursFromTime.class) ;
+        add(registry, xfn+"minutes-from-time",      FN_MinutesFromTime.class) ;
+        add(registry, xfn+"seconds-from-time",      FN_SecondsFromTime.class) ;
+        add(registry, xfn+"timezone-from-time",     FN_TimezoneFromTime.class) ;
+        
         add(registry, xfn+"dateTime",               FN_DateTime.class) ;
-        add(registry, xfn+"year-from-dateTime",     FN_YearFromDateTime.class) ;
-        add(registry, xfn+"month-from-dateTime",    FN_MonthFromDateTime.class) ;
-        add(registry, xfn+"day-from-dateTime",      FN_DayFromDateTime.class) ;
+        add(registry, xfn+"years-from-dateTime",    FN_YearsFromDateTime.class) ;
+        add(registry, xfn+"months-from-dateTime",   FN_MonthsFromDateTime.class) ;
+        add(registry, xfn+"days-from-dateTime",     FN_DaysFromDateTime.class) ;
         add(registry, xfn+"hours-from-dateTime",    FN_HoursFromDateTime.class) ;
         add(registry, xfn+"minutes-from-dateTime",  FN_MinutesFromDateTime.class) ;
         add(registry, xfn+"seconds-from-dateTime",  FN_SecondsFromDateTime.class) ;
@@ -191,9 +201,9 @@ public class StandardFunctions
 //        9.6.1 fn:adjust-dateTime-to-timezone
         add(registry, xfn+"adjust-dateTime-to-timezone",  FN_AdjustDatetimeToTimezone.class) ;
 //        9.6.2 fn:adjust-date-to-timezone
-        add(registry, xfn+"adjust-date-to-timezone",  FN_AdjustDatetimeToTimezone.class) ;
+        add(registry, xfn+"adjust-date-to-timezone",  FN_AdjustDateToTimezone.class) ;
 //        9.6.3 fn:adjust-time-to-timezone
-        add(registry, xfn+"adjust-time-to-timezone",  FN_AdjustDatetimeToTimezone.class) ;
+        add(registry, xfn+"adjust-time-to-timezone",  FN_AdjustTimeToTimezone.class) ;
 //        9.8.1 fn:format-dateTime
 //        9.8.2 fn:format-date
 //        9.8.3 fn:format-time

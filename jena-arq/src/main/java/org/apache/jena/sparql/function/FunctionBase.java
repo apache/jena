@@ -27,7 +27,7 @@ import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
 
-/** Implementation root for custom function evaluation. */  
+/** Implementation root for custom function evaluation. */
 public abstract class FunctionBase implements Function {
 
     @Override
@@ -35,14 +35,15 @@ public abstract class FunctionBase implements Function {
         // Rename for legacy reasons.
         checkBuild(uri, args) ;
     }
-    
+
     @Override
     public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env) {
         if ( args == null )
             // The contract on the function interface is that this should not happen.
             throw new ARQInternalErrorException("FunctionBase: Null args list") ;
-        
+
         List<NodeValue> evalArgs = evalArgs(binding, args, env);
+
         return exec(evalArgs, env) ;
     }
 
@@ -55,15 +56,15 @@ public abstract class FunctionBase implements Function {
         return evalArgs;
     }
 
-    /** Evaluation with access to the environment. 
-     * Special and careful use only! 
+    /** Evaluation with access to the environment.
+     * Special and careful use only!
      * Arity will have been checked if using a fixed-count FunctionBase subclass.
-     */ 
+     */
     protected NodeValue exec(List<NodeValue> args, FunctionEnv env) {
         return exec(args);
     }
-    
-    /** Function call to a list of evaluated argument values */ 
+
+    /** Function call to a list of evaluated argument values */
     public abstract NodeValue exec(List<NodeValue> args) ;
 
     public abstract void checkBuild(String uri, ExprList args) ;
