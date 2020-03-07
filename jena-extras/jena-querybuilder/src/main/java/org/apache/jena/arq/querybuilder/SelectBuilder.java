@@ -114,19 +114,19 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 
 	@Override
 	public SelectBuilder addVar(Object var) {
-		getSelectHandler().addVar(makeVar(var));
+		getSelectHandler().addVar(Converters.makeVar(var));
 		return this;
 	}
 
 	@Override
 	public SelectBuilder addVar(String expression, Object var) throws ParseException {
-		getSelectHandler().addVar(expression, makeVar(var));
+		getSelectHandler().addVar(expression, Converters.makeVar(var));
 		return this;
 	}
 
 	@Override
 	public SelectBuilder addVar(Expr expr, Object var) {
-		getSelectHandler().addVar(expr, makeVar(var));
+		getSelectHandler().addVar(expr, Converters.makeVar(var));
 		return this;
 	}
 
@@ -167,7 +167,7 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 
 	@Override
 	public SelectBuilder addOrderBy(Object orderBy) {
-		getSolutionModifierHandler().addOrderBy(makeVar(orderBy));
+		getSolutionModifierHandler().addOrderBy(Converters.makeVar(orderBy));
 		return this;
 	}
 
@@ -185,13 +185,13 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 
 	@Override
 	public SelectBuilder addOrderBy(Object orderBy, Order order) {
-		getSolutionModifierHandler().addOrderBy(makeVar(orderBy), order);
+		getSolutionModifierHandler().addOrderBy(Converters.makeVar(orderBy), order);
 		return this;
 	}
 
 	@Override
 	public SelectBuilder addGroupBy(Object groupBy) {
-		getSolutionModifierHandler().addGroupBy(makeVar(groupBy));
+		getSolutionModifierHandler().addGroupBy(Converters.makeVar(groupBy));
 		return this;
 	}
 
@@ -203,13 +203,13 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 
 	@Override
 	public SelectBuilder addGroupBy(Object var, Expr expr) {
-		getSolutionModifierHandler().addGroupBy(makeVar(var), expr);
+		getSolutionModifierHandler().addGroupBy(Converters.makeVar(var), expr);
 		return this;
 	}
 
 	@Override
 	public SelectBuilder addGroupBy(Object var, String expr) {
-		getSolutionModifierHandler().addGroupBy(makeVar(var), makeExpr(expr));
+		getSolutionModifierHandler().addGroupBy(Converters.makeVar(var), makeExpr(expr));
 		return this;
 	}
 
@@ -232,7 +232,7 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 
 	@Override
 	public SelectBuilder addHaving(Object var) throws ParseException {
-		getSolutionModifierHandler().addHaving(makeVar(var));
+		getSolutionModifierHandler().addHaving(Converters.makeVar(var));
 		return this;
 	}
 
@@ -456,13 +456,13 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 
 	@Override
 	public SelectBuilder addBind(Expr expression, Object var) {
-		getWhereHandler().addBind(expression, makeVar(var));
+		getWhereHandler().addBind(expression, Converters.makeVar(var));
 		return this;
 	}
 
 	@Override
 	public SelectBuilder addBind(String expression, Object var) throws ParseException {
-		getWhereHandler().addBind(expression, makeVar(var));
+		getWhereHandler().addBind(expression, Converters.makeVar(var));
 		return this;
 	}
 

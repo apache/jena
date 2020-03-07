@@ -19,7 +19,7 @@ package org.apache.jena.arq.querybuilder.updatebuilder;
 
 import java.util.function.Function;
 
-import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
+import org.apache.jena.arq.querybuilder.Converters;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
@@ -64,9 +64,9 @@ class QuadIteratorBuilder implements ElementVisitor {
 		@Override
 		public Quad apply(Triple triple) {
 			return new Quad( defaultGraph, 
-					AbstractQueryBuilder.checkVar( triple.getSubject()),
-					AbstractQueryBuilder.checkVar( triple.getPredicate()),
-					AbstractQueryBuilder.checkVar( triple.getObject()));
+					Converters.checkVar( triple.getSubject()),
+					Converters.checkVar( triple.getPredicate()),
+					Converters.checkVar( triple.getObject()));
 		}
 	};
 

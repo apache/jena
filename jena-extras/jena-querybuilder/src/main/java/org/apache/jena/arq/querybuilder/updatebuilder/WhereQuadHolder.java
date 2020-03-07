@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
+import org.apache.jena.arq.querybuilder.Converters;
 import org.apache.jena.arq.querybuilder.clauses.SelectClause;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.arq.querybuilder.rewriters.BuildElementVisitor;
@@ -406,7 +407,7 @@ public class WhereQuadHolder implements QuadHolder {
 		Node retval = NodeFactory.createBlankNode();
 		Node lastObject = retval;
 		for (int i = 0; i < objs.length; i++) {
-			Node n = AbstractQueryBuilder.makeNode(objs[i], prefixHandler.getPrefixes());
+			Node n = Converters.makeNode(objs[i], prefixHandler.getPrefixes());
 			addWhere(new TriplePath(new Triple(lastObject, RDF.first.asNode(), n)));
 			if (i + 1 < objs.length) {
 				Node nextObject = NodeFactory.createBlankNode();

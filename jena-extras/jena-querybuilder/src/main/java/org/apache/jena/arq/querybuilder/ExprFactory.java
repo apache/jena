@@ -1694,7 +1694,7 @@ public class ExprFactory {
 	 * <li>otherwise create an ExprVar from {AbstractQuerybuilder.makeVar}
 	 * </ul>
 	 * 
-	 * @see AbstractQueryBuilder#makeVar(Object)
+	 * @see Converters#makeVar(Object)
 	 * 
 	 * @param o
 	 *            the object to convert.
@@ -1704,7 +1704,7 @@ public class ExprFactory {
 		if (o instanceof ExprVar) {
 			return (ExprVar) o;
 		}
-		Var v = AbstractQueryBuilder.makeVar(o);
+		Var v = Converters.makeVar(o);
 		return v == null ? null : new ExprVar(v);
 	}
 
@@ -1744,13 +1744,15 @@ public class ExprFactory {
 	/**
 	 * Convenience method to call AbstractQueryBuilder.quote
 	 * 
-	 * @see AbstractQueryBuilder#quote(String)
+	 * @see Converters#quoted(String)
 	 * @param s
 	 *            the string to quote
 	 * @return the quotes string.
+	 * @deprecated use {@link Converters#quoted(String)}
 	 */
+	@Deprecated
 	public final String quote(String s) {
-		return AbstractQueryBuilder.quote(s);
+		return Converters.quoted(s);
 	}
 
 	/**
@@ -1767,7 +1769,7 @@ public class ExprFactory {
 	 * </ul>
 	 * 
 	 * @see #asVar(Object)
-	 * @see AbstractQueryBuilder#makeVar(Object)
+	 * @see Converters#makeVar(Object)
 	 * 
 	 * @param o
 	 *            the object to create the expression from
@@ -1780,7 +1782,7 @@ public class ExprFactory {
 		if (o instanceof Expr) {
 			return (Expr) o;
 		}
-		Node n = AbstractQueryBuilder.makeNode(o, pMap);
+		Node n = Converters.makeNode(o, pMap);
 
 		if (n.isVariable()) {
 			return new ExprVar(Var.alloc(n));

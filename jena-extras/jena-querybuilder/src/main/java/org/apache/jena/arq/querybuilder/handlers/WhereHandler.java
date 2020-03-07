@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
+import org.apache.jena.arq.querybuilder.Converters;
 import org.apache.jena.arq.querybuilder.clauses.SelectClause;
 import org.apache.jena.arq.querybuilder.rewriters.BuildElementVisitor;
 import org.apache.jena.arq.querybuilder.rewriters.ElementRewriter;
@@ -483,7 +484,7 @@ public class WhereHandler implements Handler {
 		Node retval = NodeFactory.createBlankNode();
 		Node lastObject = retval;
 		for (int i = 0; i < objs.length; i++) {
-			Node n = AbstractQueryBuilder.makeNode(objs[i], query.getPrefixMapping());
+			Node n = Converters.makeNode(objs[i], query.getPrefixMapping());
 			addWhere(new TriplePath(new Triple(lastObject, RDF.first.asNode(), n)));
 			if (i + 1 < objs.length) {
 				Node nextObject = NodeFactory.createBlankNode();
@@ -526,10 +527,10 @@ public class WhereHandler implements Handler {
 				throw new IllegalArgumentException( "column must have at least one entry.");
 			}
 			Iterator<?> iter = column.iterator();
-			Var v = AbstractQueryBuilder.makeVar( iter.next() );
-			valuesHandler.addValueVar(v, AbstractQueryBuilder.makeValueNodes(iter,prefixMapping));
+			Var v = Converters.makeVar( iter.next() );
+			valuesHandler.addValueVar(v, Converters.makeValueNodes(iter,prefixMapping));
 		} else {
-			valuesHandler.addValueVar(AbstractQueryBuilder.makeVar(var), null );
+			valuesHandler.addValueVar(Converters.makeVar(var), null );
 		}		
 	}
 
@@ -538,10 +539,10 @@ public class WhereHandler implements Handler {
 		Collection<Node> values = null;
 		if (objects != null)
 		{
-			values = AbstractQueryBuilder.makeValueNodes( Arrays.asList(objects).iterator(), prefixMapping);
+			values = Converters.makeValueNodes( Arrays.asList(objects).iterator(), prefixMapping);
 		}
 		
-		valuesHandler.addValueVar(AbstractQueryBuilder.makeVar(var), values );
+		valuesHandler.addValueVar(Converters.makeVar(var), values );
 	}
 	
 	public <K extends Collection<?>> void addValueVars(PrefixMapping prefixMapping, Map<?,K> dataTable) {
@@ -551,19 +552,19 @@ public class WhereHandler implements Handler {
 			Collection<Node> values = null;
 			if (entry.getValue() != null)
 			{
-				values = AbstractQueryBuilder.makeValueNodes( entry.getValue().iterator(), prefixMapping );
+				values = Converters.makeValueNodes( entry.getValue().iterator(), prefixMapping );
 			}
-			hdlr.addValueVar(AbstractQueryBuilder.makeVar(entry.getKey()), values );
+			hdlr.addValueVar(Converters.makeVar(entry.getKey()), values );
 		}
 		valuesHandler.addAll( hdlr );
 	}
 	
 	public void addValueRow(PrefixMapping prefixMapping, Object... values) {
-		valuesHandler.addValueRow( AbstractQueryBuilder.makeValueNodes( Arrays.asList(values).iterator(), prefixMapping));
+		valuesHandler.addValueRow( Converters.makeValueNodes( Arrays.asList(values).iterator(), prefixMapping));
 	}
 
 	public void addValueRow(PrefixMapping prefixMapping, Collection<?> values) {
-		valuesHandler.addValueRow( AbstractQueryBuilder.makeValueNodes( values.iterator(), prefixMapping));
+		valuesHandler.addValueRow( Converters.makeValueNodes( values.iterator(), prefixMapping));
 	}
 	
 	

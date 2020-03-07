@@ -65,7 +65,7 @@ public interface ValuesClause<T extends AbstractQueryBuilder<T>> {
 	 *            The variable or collection to add.
 	 * @return The builder for chaining.
 	 * @see AbstractQueryBuilder#makeNode(Object)
-	 * @see AbstractQueryBuilder#makeVar(Object)
+	 * @see Converters#makeVar(Object)
 	 */
 	public T addValueVar(Object var);
 	
@@ -85,7 +85,7 @@ public interface ValuesClause<T extends AbstractQueryBuilder<T>> {
 	 * @param values The values for the variable          
 	 * @return The builder for chaining.
 	 * @see AbstractQueryBuilder#makeNode(Object)
-	 * @see AbstractQueryBuilder#makeVar(Object)
+	 * @see Converters#makeVar(Object)
 	 */
 	public T addValueVar(Object var, Object... values);
 	
@@ -113,7 +113,7 @@ public interface ValuesClause<T extends AbstractQueryBuilder<T>> {
 	 *            The data table to add.
 	 * @return The builder for chaining.
 	 * @see AbstractQueryBuilder#makeNode(Object)
-	 * @see AbstractQueryBuilder#makeVar(Object)
+	 * @see Converters#makeVar(Object)
 	 */
 	public <K extends Collection<?>> T addValueVars(Map<?,K> dataTable);
 	

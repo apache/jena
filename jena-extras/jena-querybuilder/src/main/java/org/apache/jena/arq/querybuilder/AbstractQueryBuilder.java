@@ -17,7 +17,6 @@
  */
 package org.apache.jena.arq.querybuilder;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,29 +30,20 @@ import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
 import org.apache.jena.arq.querybuilder.handlers.ValuesHandler;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
-import org.apache.jena.graph.FrontsNode ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.graph.impl.LiteralLabelFactory ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.riot.RiotException;
-import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.expr.ExprVar ;
-import org.apache.jena.sparql.path.P_Link;
 import org.apache.jena.sparql.path.Path;
-import org.apache.jena.sparql.path.PathParser;
 import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.syntax.ElementSubQuery;
 import org.apache.jena.sparql.util.ExprUtils;
-import org.apache.jena.sparql.util.NodeFactoryExtra ;
 
 /**
  * Base class for all QueryBuilders.
@@ -91,18 +81,18 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 	 * @return The Node value.
 	 */
 	public Node makeNode(Object o) {
-		return makeNode( o, query.getPrefixMapping() );
+		return Converters.makeNode( o, query.getPrefixMapping() );
 	}
 
 	/**
 	 * Make a node or path from the object using the query prefix mapping.
 	 * @param o the object to make the node or path from.
 	 * @return A node or path.
-	 * @see #makeNodeOrPath(Object, PrefixMapping)
+	 * @see #Converters#makeNodeOrPath(Object, PrefixMapping)
 	 */
 	private Object makeNodeOrPath(Object o)
 	{
-		return makeNodeOrPath(o, query.getPrefixMapping() );
+		return Converters.makeNodeOrPath(o, query.getPrefixMapping() );
 	}
 
 	/**
@@ -121,43 +111,12 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 	 * @param o the object that should be interpreted as a path or a node.
 	 * @param pMapping the prefix mapping to resolve path or node with
 	 * @return the Path or Node 
+	 * @deprecated use {@link Converters#makeNodeOrPath(Object, PrefixMapping)}
 	 */
+	@Deprecated
 	public static Object makeNodeOrPath(Object o, PrefixMapping pMapping)
 	{
-		if (o == null) {
-			return Node.ANY;
-		}
-		if (o instanceof Path)
-		{
-			return o;
-		}
-		if (o instanceof FrontsNode) {
-			return ((FrontsNode) o).asNode();
-		}
-
-		if (o instanceof Node) {
-			return o;
-		}
-		if (o instanceof String) {
-			try {			
-				final Path p = PathParser.parse((String) o, pMapping);
-				if (p instanceof P_Link)
-				{
-					return ((P_Link)p).getNode();
-				}
-				return p;
-			}
-			catch (final QueryParseException e)
-			{	// try to parse vars
-				return makeNode( o, pMapping );		
-			}
-			catch (final Exception e)
-			{
-				// expected in some cases -- do nothing
-			}
-
-		}
-		return NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(o));
+		return Converters.makeNodeOrPath(o, pMapping);
 	}
 
 	public ElementSubQuery asSubQuery() {
@@ -223,30 +182,23 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 	 * Will use double quote otherwise.
 	 * 
 	 * @return the quoted string. 
+	 * @deprecated {@link Converters#quoted(String)}
 	 */
+	@Deprecated
 	public static String quote(String q) {
-		final int qt = q.indexOf('"');
-		final int sqt = q.indexOf("'");
-
-		if (sqt == -1 || qt<sqt)
-		{
-			return String.format( "'%s'", q);
-		}
-		return String.format( "\"%s\"", q);
+		return Converters.quoted(q);
 	}
 
 	/**
 	 * Verify that any Node_Variable nodes are returned as Var nodes.
 	 * @param n the node to check
 	 * @return the node n or a new Var if n is an instance of Node_Variable
+	 * @deprecated use {@link Converters#checkVar(Node)}
 	 */
+	@Deprecated
 	public static Node checkVar(Node n )
 	{
-		if (n.isVariable())
-		{
-			return Var.alloc( n );
-		}
-		return n;
+		return Converters.checkVar(n);
 	}
 
 	/**
@@ -263,28 +215,11 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 	 * @param o The object to convert (may be null).
 	 * @param pMapping The prefix mapping to use for prefix resolution.
 	 * @return The Node value.
+	 * @deprecated use {@link Converters#makeNode(Object, PrefixMapping)}
 	 */
+	@Deprecated
 	public static Node makeNode(Object o, PrefixMapping pMapping) {
-		if (o == null) {
-			return Node.ANY;
-		}
-		if (o instanceof FrontsNode) {
-			return checkVar(((FrontsNode) o).asNode());
-		}
-
-		if (o instanceof Node) {
-			return checkVar( (Node) o );
-		}
-		if (o instanceof String) {
-			try {
-				return checkVar(NodeFactoryExtra.parseNode((String) o, PrefixMapFactory
-						.createForInput(pMapping)));
-			} catch (final RiotException e) {
-				// expected in some cases -- do nothing
-			}
-
-		}
-		return NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(o));
+		return Converters.makeNode(o, pMapping);
 	}
 
 	/**
@@ -308,28 +243,11 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 	 *            The object to convert.
 	 * @return the Var value.
 	 * @throws ARQInternalErrorException
+	 * @deprecated use {@link Converters#makeVar(Object)}
 	 */
+	@Deprecated
 	public static Var makeVar(Object o) throws ARQInternalErrorException {
-		if (o == null) {
-			return Var.ANON;
-		}
-		if (o instanceof Var) {
-			return (Var) o;
-		}
-		Var retval = null;
-		if (o instanceof FrontsNode) {
-			retval = Var.alloc(((FrontsNode) o).asNode());
-		} else if (o instanceof Node) {
-			retval = Var.alloc((Node) o);
-		} else if (o instanceof ExprVar) {
-			retval = Var.alloc((ExprVar) o);
-		} else {
-			retval = Var.alloc(Var.canonical(o.toString()));
-		}
-		if ("*".equals(Var.canonical(retval.toString()))) {
-			return null;
-		}
-		return retval;
+		return Converters.makeVar(o);
 	}
 
 	/**
@@ -380,6 +298,7 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 	public final ExprFactory getExprFactory() {
 		return getHandlerBlock().getPrologHandler().getExprFactory();
 	}
+	
 	/**
 	 * Set a variable replacement. During build all instances of var in the
 	 * query will be replaced with value. If value is null the replacement is
@@ -415,9 +334,9 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 	 */
 	public void setVar(Object var, Object value) {
 		if (value == null) {
-			setVar(makeVar(var), null);
+			setVar(Converters.makeVar(var), null);
 		} else {
-			setVar(makeVar(var), makeNode(value));
+			setVar(Converters.makeVar(var), makeNode(value));
 		}
 	}
 
@@ -473,27 +392,12 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 	 * @param iter the iterator of objects, may be null or empty.
 	 * @param prefixMapping the PrefixMapping to use when nodes are created.
 	 * @return a Collection of nodes or null if iter is null or empty.
+	 * @deprecated use {@link Converters#makeValueNodes(Iterator, PrefixMapping)}
 	 */
+	@Deprecated
 	public static Collection<Node> makeValueNodes( Iterator<?> iter, PrefixMapping prefixMapping )
 	{
-		if (iter == null || !iter.hasNext())
-		{
-			return null;
-		}
-		final List<Node> values = new ArrayList<Node>();
-		while (iter.hasNext())
-		{
-			final Object o = iter.next();
-			// handle null as UNDEF
-			if (o == null)
-			{
-				values.add( null );
-			} else 
-			{
-				values.add( makeNode( o, prefixMapping ));
-			}
-		}
-		return values;
+		return Converters.makeValueNodes(iter, prefixMapping);
 	}
 
 	/**
@@ -504,7 +408,7 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 	 */
 	public Collection<Node> makeValueNodes( Iterator<?> iter )
 	{
-		return makeValueNodes( iter, getPrologHandler().getPrefixes() );
+		return Converters.makeValueNodes( iter, getPrologHandler().getPrefixes() );
 	}
 
 	@SuppressWarnings("unchecked")
@@ -522,10 +426,10 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 				throw new IllegalArgumentException( "column must have at least one entry.");
 			}
 			final Iterator<?> iter = column.iterator();
-			final Var v = makeVar( iter.next() );
+			final Var v = Converters.makeVar( iter.next() );
 			getValuesHandler().addValueVar(v, makeValueNodes(iter));
 		} else {
-			getValuesHandler().addValueVar(makeVar(var), null );
+			getValuesHandler().addValueVar(Converters.makeVar(var), null );
 		}
 		return (T) this;
 	}
@@ -540,7 +444,7 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 			values = makeValueNodes( Arrays.asList(objects).iterator());
 		}
 
-		getValuesHandler().addValueVar(makeVar(var), values );
+		getValuesHandler().addValueVar(Converters.makeVar(var), values );
 		return (T) this;
 	}
 
@@ -555,7 +459,7 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 			{
 				values = makeValueNodes( entry.getValue().iterator() );
 			}
-			hdlr.addValueVar(makeVar(entry.getKey()), values );
+			hdlr.addValueVar(Converters.makeVar(entry.getKey()), values );
 		}
 		getValuesHandler().addAll( hdlr );
 		return (T) this;

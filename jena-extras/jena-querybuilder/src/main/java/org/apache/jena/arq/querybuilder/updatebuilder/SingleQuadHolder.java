@@ -19,7 +19,7 @@ package org.apache.jena.arq.querybuilder.updatebuilder;
 
 import java.util.Map;
 
-import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
+import org.apache.jena.arq.querybuilder.Converters;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.Quad;
@@ -44,10 +44,10 @@ public class SingleQuadHolder implements QuadHolder{
 		if (quad.getGraph().isVariable() || quad.getSubject().isVariable() || quad.getPredicate().isVariable() ||
 				quad.getObject().isVariable())
 		{
-			this.quad = new Quad( AbstractQueryBuilder.checkVar( quad.getGraph()),
-					AbstractQueryBuilder.checkVar( quad.getSubject() ),
-					AbstractQueryBuilder.checkVar( quad.getPredicate()),
-					AbstractQueryBuilder.checkVar( quad.getObject()));
+			this.quad = new Quad( Converters.checkVar( quad.getGraph()),
+					Converters.checkVar( quad.getSubject() ),
+					Converters.checkVar( quad.getPredicate()),
+					Converters.checkVar( quad.getObject()));
 		} else {
 			this.quad = quad;
 		}
@@ -63,9 +63,9 @@ public class SingleQuadHolder implements QuadHolder{
 	public SingleQuadHolder( Triple triple )
 	{
 		this.quad = new Quad( Quad.defaultGraphNodeGenerated, 
-				AbstractQueryBuilder.checkVar( triple.getSubject()),
-				AbstractQueryBuilder.checkVar( triple.getPredicate()),
-				AbstractQueryBuilder.checkVar( triple.getObject())				
+				Converters.checkVar( triple.getSubject()),
+				Converters.checkVar( triple.getPredicate()),
+				Converters.checkVar( triple.getObject())				
 				);
 	}
 

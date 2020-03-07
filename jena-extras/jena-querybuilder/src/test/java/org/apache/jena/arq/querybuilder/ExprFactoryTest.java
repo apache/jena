@@ -682,7 +682,7 @@ public class ExprFactoryTest {
 	
 	@Test
 	public void asListTest() {
-		ExprList lst = factory.asList("?foo", "http://example.com", factory.quote("hello"), 1, 5L, 3.14f, 6.28d, Var.alloc( "bar" ), null, factory.rand() );
+		ExprList lst = factory.asList("?foo", "http://example.com", Converters.quoted("hello"), 1, 5L, 3.14f, 6.28d, Var.alloc( "bar" ), null, factory.rand() );
 		assertEquals( 10, lst.size() );
 		assertEquals( new ExprVar( "foo" ), lst.get(0));
 		//assertEquals( new ExprVar( "foo" ), lst.get(0));
