@@ -25,15 +25,12 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import org.apache.jena.atlas.web.ContentType;
-import org.apache.jena.atlas.web.MediaType;
-import org.apache.jena.fuseki.DEF;
-import org.apache.jena.fuseki.system.ConNeg;
 import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.fuseki.system.Upload;
 import org.apache.jena.fuseki.system.UploadDetails;
-import org.apache.jena.fuseki.system.UploadDetails.PreState;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.RiotParseException;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.riot.web.HttpNames;
@@ -135,7 +132,7 @@ public class GSP_RW extends GSP_R {
     }
 
     /** Test whether the operation has exactly one GSP parameter and no other parameters. */ 
-    public static boolean xasGSPParamsStrict(HttpAction action) {
+    public static boolean hasGSPParamsStrict(HttpAction action) {
         if ( action.request.getQueryString() == null )
             return false;
         Map<String, String[]> params = action.request.getParameterMap();
@@ -162,18 +159,12 @@ public class GSP_RW extends GSP_R {
         else
             details = addDataIntoNonTxn(action, overwrite);
 
-        MediaType mt = ConNeg.chooseCharset(action.request, DEF.jsonOffer, DEF.acceptJSON);
-
-        if ( mt == null ) {
-            // No return body.
-            if ( details.getExistedBefore().equals(PreState.ABSENT) )
-                ServletOps.successCreated(action);
-            else
-                ServletOps.successNoContent(action);
-            return;
-        }
         ServletOps.uploadResponse(action, details);
     }
+    
+    // Refcatoring:
+    //   Make doPutPost and doPustPosyQuads teh same pattern.
+    //   addDataInto*: Extract commonality in error handling. 
 
     /** Directly add data in a transaction.
      * Assumes recovery from parse errors by transaction abort.
@@ -202,6 +193,10 @@ public class GSP_RW extends GSP_R {
             // Any ServletOps.error from calls in the try{} block.
             action.abort();
             throw ex;
+        } catch (RiotParseException ex) {
+            action.abort();
+            ServletOps.errorParseError(ex);
+            return null;
         } catch (RiotException ex) {
             // Parse error
             action.abort();
@@ -231,8 +226,8 @@ public class GSP_RW extends GSP_R {
 
         UploadDetails details;
         try { details = Upload.incomingData(action, dest); }
-        catch (RiotException ex) {
-            ServletOps.errorBadRequest(ex.getMessage());
+        catch (RiotParseException ex) {
+            ServletOps.errorParseError(ex);
             return null;
         }
         // Now insert into dataset
@@ -279,6 +274,7 @@ public class GSP_RW extends GSP_R {
     }
 
     // ---- Quads
+    // XXX Make like doPutPost
     
     protected void doPutPostQuads(HttpAction action, boolean overwrite) {
         // See doPutPostGSP
