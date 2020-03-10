@@ -400,7 +400,9 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
 
     @Override
     public long size() {
-        return quadsIndex().listGraphNodes().count() ;
+        return isInTransaction() 
+                ? quadsIndex().listGraphNodes().count()
+                : calculateRead(this, ()->quadsIndex().listGraphNodes().count());
     }
 
     @Override

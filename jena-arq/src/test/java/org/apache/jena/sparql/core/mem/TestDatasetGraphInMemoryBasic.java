@@ -121,6 +121,24 @@ public class TestDatasetGraphInMemoryBasic extends AbstractDatasetGraphTests {
         assertFalse("Too many named graphs!", graphNodes.hasNext());
     }
 
+    @Test
+    public void datasetSize() {
+        // JENA-1857
+        final DatasetGraph dsg = emptyDataset();
+        final Quad qDft = parseQuad("(_ :s :p 0)");
+        final Quad q1 = parseQuad("(:g :s :p 1)");
+        final Quad q2 = parseQuad("(:g :s :p 1)");
+        assertEquals(0, dsg.size());
+        dsg.add(qDft);
+        assertEquals(0, dsg.size());
+        dsg.add(q1);
+        dsg.add(q2);
+        assertEquals(1, dsg.size());
+        dsg.delete(q1);
+        dsg.delete(q2);
+        assertEquals(0, dsg.size());
+    }
+
 	@Override
 	protected DatasetGraph emptyDataset() {
 		return DatasetGraphFactory.createTxnMem();
