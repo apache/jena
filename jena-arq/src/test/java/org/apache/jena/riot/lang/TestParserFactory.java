@@ -19,11 +19,9 @@
 package org.apache.jena.riot.lang;
 
 import java.io.StringReader ;
-import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFParser ;
@@ -38,30 +36,6 @@ import org.junit.Test ;
 /** System-level testing of the parsers - testing the parser plumbing, not the language details */
 public class TestParserFactory extends BaseTest
 {
-    static class CatchParserOutput implements StreamRDF
-    {
-        List<Triple>      triples     = new ArrayList<>() ;
-        List<Quad>        quads       = new ArrayList<>() ;
-        List<Pair<String,String>>     prefixes     = new ArrayList<>() ;
-        List<String>     bases       = new ArrayList<>() ;
-        
-        int startCalled = 0 ;
-        
-        int finishCalled = 0 ;
-        
-        @Override public void start()   { startCalled++ ; }
-        
-        @Override public void triple(Triple triple)     { triples.add(triple) ; }
-        
-        @Override public void quad(Quad quad)           { quads.add(quad) ; }
-        
-        @Override public void base(String base)         { bases.add(base) ; }
-        
-        @Override public void prefix(String prefix, String iri) { prefixes.add(Pair.create(prefix, iri)) ; }
-        
-        @Override public void finish()  { finishCalled++ ; }
-    }
-
     @Test public void ntriples_01() 
     {
         {
@@ -154,8 +128,23 @@ public class TestParserFactory extends BaseTest
         assertEquals(q, last(sink.quads)) ;
     }
 
-    @Test public void trig_01() 
-    {
+    @Test public void nquads_dft_triple() {
+        // JENA-1854
+        String s = "<x> <p> <q> ." ; 
+        CatchParserOutput sink = parseCapture(s, Lang.NQ) ;
+        assertEquals(1, sink.startCalled) ;
+        assertEquals(1, sink.finishCalled) ;
+        assertEquals(0, sink.triples.size()) ;
+        assertEquals(1, sink.quads.size()) ;
+        
+        Triple t = SSE.parseTriple("(<x> <p> <q>)") ;
+        Quad q = new Quad(Quad.defaultGraphNodeGenerated, t) ;
+        assertEquals(q, last(sink.quads)) ;
+    }
+
+    
+    @Test public void trig_dft_triple() {
+        // JENA-1854
         String s = "{ <x> <p> <q> }" ; 
         CatchParserOutput sink = parseCapture(s, Lang.TRIG) ;
         assertEquals(1, sink.startCalled) ;
@@ -164,7 +153,7 @@ public class TestParserFactory extends BaseTest
         assertEquals(1, sink.quads.size()) ;
         
         Triple t = SSE.parseTriple("(<http://base/x> <http://base/p> <http://base/q>)") ;
-        Quad q = new Quad(Quad.tripleInQuad, t) ;
+        Quad q = new Quad(Quad.defaultGraphNodeGenerated, t) ;
         assertEquals(q, last(sink.quads)) ;
     }
     
