@@ -259,8 +259,8 @@ public class LangTriG extends LangTurtleBase {
     protected void emit(Node subject, Node predicate, Node object) {
         Node graph = getCurrentGraph() ;
 
-        if ( graph == Quad.defaultGraphNodeGenerated )
-            graph = Quad.tripleInQuad ;
+        if ( graph == Quad.tripleInQuad )
+            graph = Quad.defaultGraphNodeGenerated;
 
         Quad quad = profile.createQuad(graph, subject, predicate, object, currLine, currCol) ;
         dest.quad(quad) ;
