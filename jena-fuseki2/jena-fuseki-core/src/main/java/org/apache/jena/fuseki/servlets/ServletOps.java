@@ -29,6 +29,7 @@ import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonValue;
 import org.apache.jena.fuseki.system.UploadDetails;
 import org.apache.jena.fuseki.system.UploadDetails.PreState;
+import org.apache.jena.riot.RiotParseException;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.web.HttpSC;
@@ -103,6 +104,10 @@ public class ServletOps {
 
     public static void warning(HttpAction action, String string, Throwable thorwable) {
         action.log.warn(string, thorwable);
+    }
+
+    public static void errorParseError(RiotParseException ex) {
+        error(HttpSC.BAD_REQUEST_400, "Parse Error: "+ex.getMessage());
     }
 
     public static void errorBadRequest(String string) {

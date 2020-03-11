@@ -67,7 +67,6 @@ public class SHACL_Validation extends BaseActionREST { //ActionREST {
             action.response.setStatus(HttpSC.OK_200);
             MediaType mt = ActionLib.contentNegotationRDF(action);
             ActionLib.graphResponse(action, report.getGraph(), lang);
-            //} catch (Throwable th) {
         } finally {
             action.endRead();
         }

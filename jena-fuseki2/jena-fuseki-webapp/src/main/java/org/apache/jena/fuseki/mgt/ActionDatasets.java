@@ -22,7 +22,6 @@ import static java.lang.String.format;
 import static org.apache.jena.fuseki.build.FusekiPrefixes.PREFIXES;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.nio.file.Files;
@@ -531,10 +530,6 @@ public class ActionDatasets extends ActionContainerItem {
             ServletOps.errorBadRequest("Unknown content type for triples: " + ct);
             return;
         }
-        InputStream input = null;
-        try { input = request.getInputStream(); }
-        catch (IOException ex) { IO.exception(ex); }
-
         // Don't log - assemblers are typically small.
         // Adding this to the log confuses things.
         // Reserve logging for data uploads.
@@ -548,6 +543,6 @@ public class ActionDatasets extends ActionContainerItem {
 //                                ct.getCharset(), lang.getName()));
 //        }
         dest.prefix("root", base+"#");
-        ActionLib.parse(action, dest, input, lang, base);
+        ActionLib.parseOrError(action, dest, lang, base);
     }
 }

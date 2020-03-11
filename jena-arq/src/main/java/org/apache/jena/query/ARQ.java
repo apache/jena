@@ -467,7 +467,7 @@ public class ARQ
     public static final Symbol optMergeExtends = SystemARQ.allocSymbol("optMergeExtends");
 
     /**
-     * Context key controlling whether the standard optimizater applies the optimization
+     * Context key controlling whether the standard optimizer applies the optimization
      * to reorder basic graph patterns.
      * <p>By default, this transformation is NOT applied.
      * It is left to the specific engines to decide.

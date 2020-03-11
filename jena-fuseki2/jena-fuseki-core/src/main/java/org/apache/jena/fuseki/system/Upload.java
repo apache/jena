@@ -23,7 +23,6 @@ import static org.apache.jena.riot.WebContent.ctMultipartFormData;
 import static org.apache.jena.riot.WebContent.ctTextPlain;
 import static org.apache.jena.riot.WebContent.matchContentType;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
@@ -53,6 +52,7 @@ public class Upload {
 
     /** Parse the body contents to the {@link StreamRDF}.
      *  This function is used by GSP_RW.
+     *  @throws RiotParseException
      */
     public static UploadDetails incomingData(HttpAction action, StreamRDF dest) {
         ContentType ct = ActionLib.getContentType(action);
@@ -73,15 +73,11 @@ public class Upload {
             ServletOps.errorBadRequest("Unknown content type for triples: " + ct);
             return null;
         }
-        InputStream input = null;
-        try { input = action.request.getInputStream(); }
-        catch (IOException ex) { IO.exception(ex); }
-
         long len = action.request.getContentLengthLong();
 
         StreamRDFCounting countingDest = StreamRDFLib.count(dest);
         try {
-            ActionLib.parse(action, countingDest, input, lang, base);
+            ActionLib.parse(action, countingDest, lang, base);
             UploadDetails details = new UploadDetails(countingDest.count(), countingDest.countTriples(),countingDest.countQuads());
             action.log.info(format("[%d] Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s : %s",
                                    action.id, len, ct.getContentTypeStr(), ct.getCharset(), lang.getName(),
@@ -91,6 +87,8 @@ public class Upload {
             action.log.info(format("[%d] Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s : %s",
                                    action.id, len, ct.getContentTypeStr(), ct.getCharset(), lang.getName(),
                                    ex.getMessage()));
+            // Exhaust input.
+            ActionLib.consumeBody(action);
             throw ex;
         }
     }
@@ -124,7 +122,7 @@ public class Upload {
                 //Ignore the field name.
                 //String fieldName = fileStream.getFieldName();
 
-                InputStream stream = fileStream.openStream();
+                InputStream input = fileStream.openStream();
                 // Process the input stream
                 String contentTypeHeader = fileStream.getContentType();
                 ContentType ct = ContentType.create(contentTypeHeader);
@@ -138,7 +136,7 @@ public class Upload {
                         ServletOps.errorBadRequest("No name for content - can't determine RDF syntax");
                     lang = RDFLanguages.filenameToLang(name);
                     if (name.endsWith(".gz"))
-                        stream = new GZIPInputStream(stream);
+                        input = new GZIPInputStream(input);
                 }
                 if ( lang == null )
                     // Desperate.
@@ -155,7 +153,7 @@ public class Upload {
                 // count just this step
                 StreamRDFCounting countingDest2 =  StreamRDFLib.count(countingDest);
                 try {
-                    ActionLib.parse(action, countingDest2, stream, lang, base);
+                    ActionLib.parse(action, countingDest2, input, lang, base);
                     UploadDetails details1 = new UploadDetails(countingDest2.count(), countingDest2.countTriples(),countingDest2.countQuads());
                     action.log.info(format("[%d] Filename: %s, Content-Type=%s, Charset=%s => %s : %s",
                                            action.id, printfilename,  ct.getContentTypeStr(), ct.getCharset(), lang.getName(),
@@ -164,6 +162,7 @@ public class Upload {
                     action.log.info(format("[%d] Filename: %s, Content-Type=%s, Charset=%s => %s : %s",
                                            action.id, printfilename,  ct.getContentTypeStr(), ct.getCharset(), lang.getName(),
                                            ex.getMessage()));
+                    ActionLib.consumeBody(action);
                     throw ex;
                 }
             }
@@ -201,10 +200,10 @@ public class Upload {
             while (iter.hasNext()) {
                 FileItemStream item = iter.next();
                 String fieldName = item.getFieldName();
-                InputStream stream = item.openStream();
+                InputStream input = item.openStream();
                 if ( item.isFormField() ) {
                     // Graph name.
-                    String value = Streams.asString(stream, "UTF-8");
+                    String value = Streams.asString(input, "UTF-8");
                     if ( fieldName.equals(HttpNames.paramGraph) ) {
                         graphName = value;
                         if ( graphName != null && !graphName.equals("") && !graphName.equals(HttpNames.valueDefault) ) {
@@ -248,7 +247,7 @@ public class Upload {
                         // we need to ensure that if there was a .gz extension
                         // present we wrap the stream accordingly
                         if ( name.endsWith(".gz") )
-                            stream = new GZIPInputStream(stream);
+                            input = new GZIPInputStream(input);
                     }
 
                     if ( lang == null )
@@ -262,7 +261,12 @@ public class Upload {
 
                     StreamRDF x = StreamRDFLib.dataset(dsgTmp);
                     StreamRDFCounting dest = StreamRDFLib.count(x);
-                    ActionLib.parse(action, dest, stream, lang, base);
+                    try { 
+                        ActionLib.parse(action, dest, input, lang, base);   
+                    } catch (RiotParseException ex) {
+                        IO.skipToEnd(input);
+                        ServletOps.errorParseError(ex);
+                    }
                     count = dest.count();
                 }
             }

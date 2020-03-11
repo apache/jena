@@ -139,7 +139,6 @@ public class SPARQL_Upload extends ActionService
                 FusekiNetLib.addDataInto(dataTmp.getDefaultGraph(), action.getActiveDSG(), gn);
             else
                 FusekiNetLib.addDataInto(dataTmp, action.getActiveDSG());
-
             action.commit();
             return count;
         } catch (RuntimeException ex) {

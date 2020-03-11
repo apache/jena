@@ -191,8 +191,36 @@ public class ActionLib {
         return contentNegotation(action, DEF.quadsOffer, DEF.acceptNQuads);
     }
 
+    
     /**
-     * Parse RDF content
+     * Parse RDF content from the body of the request of the action, ends the
+     * request, and sends a 400 if there is a parse error.
+     * 
+     * @throws ActionErrorException
+     */
+    public static void parseOrError(HttpAction action, StreamRDF dest, Lang lang, String base) {
+        try {
+            parse(action, dest, lang, base);
+        } catch (RiotParseException ex) {
+            ActionLib.consumeBody(action);
+            ServletOps.errorParseError(ex);
+        }
+    }
+    
+    /**
+     * Parse RDF content. This wraps up the parse step reading from an action.   
+     * @throws RiotParseException
+     */
+    public static void parse(HttpAction action, StreamRDF dest, Lang lang, String base) {
+        InputStream input = null;
+        try { input = action.request.getInputStream(); }
+        catch (IOException ex) { IO.exception(ex); }
+        parse(action, dest, input, lang, base);
+    }
+    
+    /**
+     * Parse RDF content. This wraps up the parse step reading from an input stream.   
+     * @throws RiotParseException
      */
     public static void parse(HttpAction action, StreamRDF dest, InputStream input, Lang lang, String base) {
         try {
@@ -210,9 +238,21 @@ public class ActionLib {
                 throw new RiotException("Character Coding Error: "+ex.getMessage());
             throw ex;
         }
-        catch (RiotException ex) { ServletOps.errorBadRequest("Parse error: "+ex.getMessage()); }
     }
 
+    /**
+     * Reset the request input stream for an {@link HttpAction} if necessary.
+     * If there is a {@code Content-Length} header, throw away input to exhaust this request.
+     * If there is a no {@code Content-Length} header, no need to do anything - the connection is not reusable. 
+     */ 
+    public static void consumeBody(HttpAction action) {
+        if ( action.request.getContentLengthLong() > 0 ) {
+            try { 
+                IO.skipToEnd(action.request.getInputStream());
+            } catch (IOException ex) {}
+        }    
+    }
+    
     /*
      * Parse RDF content using content negotiation.
      */
@@ -234,13 +274,9 @@ public class ActionLib {
 //            return null;
             }
         }
-        InputStream input = null;
-        try { input = action.request.getInputStream(); }
-        catch (IOException ex) { IO.exception(ex); }
-
         Graph graph = GraphFactory.createDefaultGraph();
         StreamRDF dest = StreamRDFLib.graph(graph);
-        ActionLib.parse(action, dest, input, lang, null);
+        ActionLib.parseOrError(action, dest, lang, null);
         return graph;
     }
 

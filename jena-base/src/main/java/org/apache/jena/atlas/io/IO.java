@@ -437,4 +437,22 @@ public class IO
         }
         catch (IOException ex) { IO.exception(ex); return; }
     }
+
+    // Do nothing buffer.  Never read from this, it may be corrupt because it is shared.
+    private static int SKIP_BUFFER_LEN = 64*1024;
+    private static byte[] SKIP_BUFFER = null;
+    /** Skip to the end of the InputStream, discarding input. */
+    public static void skipToEnd(InputStream input) {
+        if ( SKIP_BUFFER == null )
+            // No harm in concurrent assignment.
+            SKIP_BUFFER = new byte[SKIP_BUFFER_LEN];
+        try {
+            for(;;) {
+                // Skip does not guarantee to go to end of file.
+                long rLen = input.read(SKIP_BUFFER, 0, SKIP_BUFFER_LEN);
+                if (rLen < 0) // EOF
+                    break;
+            }
+        } catch (IOException ex) {}
+    }
 }

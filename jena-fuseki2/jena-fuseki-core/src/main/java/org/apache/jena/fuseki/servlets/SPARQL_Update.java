@@ -223,14 +223,17 @@ public class SPARQL_Update extends ActionService
                 UpdateAction.execute(req, action.getActiveDSG());
             action.commit();
         } catch (UpdateException ex) {
+            IO.skipToEnd(input);
             action.abort();
             incCounter(action.getEndpoint().getCounters(), UpdateExecErrors);
             ServletOps.errorOccurred(ex.getMessage());
         } catch (QueryParseException|QueryBuildException ex) {
+            IO.skipToEnd(input);
             action.abort();
             // Counter inc'ed further out.
             ServletOps.errorBadRequest(messageForException(ex));
         } catch (Throwable ex) {
+            IO.skipToEnd(input);
             if ( ! ( ex instanceof ActionErrorException ) ) {
                 try { action.abort(); } catch (Exception ex2) {}
                 ServletOps.errorOccurred(ex.getMessage(), ex);
