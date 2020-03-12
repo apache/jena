@@ -299,7 +299,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
         }
     }
     
-    private <T> Iterator<T> access(final Supplier<Iterator<T>> source) {
+    private <T> T access(final Supplier<T> source) {
         return isInTransaction() ? source.get() : calculateRead(this, source::get);
     }
 
@@ -400,9 +400,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
 
     @Override
     public long size() {
-        return isInTransaction() 
-                ? quadsIndex().listGraphNodes().count()
-                : calculateRead(this, ()->quadsIndex().listGraphNodes().count());
+        return access(() -> quadsIndex().listGraphNodes().count());
     }
 
     @Override
