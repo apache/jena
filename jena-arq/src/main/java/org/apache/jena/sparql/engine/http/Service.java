@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.engine.http;
 
 import java.io.InputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -169,16 +170,18 @@ public class Service {
         Explain.explain("HTTP", query, context);
         String uri = op.getService().getURI();
         HttpQuery httpQuery = configureQuery(uri, context, query);
-        InputStream in = httpQuery.exec();
+        QueryIterator qIter;
+        try (InputStream in = httpQuery.exec()) {
+            // Read the whole of the results now.
+            // Avoids the problems with calling back into the same system e.g.
+            // Fuseki+SERVICE <http://localhost:3030/...>
 
-        // Read the whole of the results now.
-        // Avoids the problems with calling back into the same system e.g.
-        // Fuseki+SERVICE <http://localhost:3030/...>
-
-        ResultSet rs = ResultSetFactory.fromXML(in);
-        QueryIterator qIter = QueryIter.materialize(new QueryIteratorResultSet(rs));
-        // And close connection now, not when qIter is closed.
-        IO.close(in);
+            ResultSet rs = ResultSetFactory.fromXML(in);
+            qIter = QueryIter.materialize(new QueryIteratorResultSet(rs));
+            // And close connection now, not when qIter is closed.
+        } catch (IOException e) {
+            throw new QueryExecException("Could not parse result set from XML", e);
+        }
 
         // In some cases we may need to apply a re-mapping
         // This solves JENA-494 the naive way and may be brittle for complex
