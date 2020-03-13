@@ -21,7 +21,6 @@ package tdb.cmdline;
 import arq.cmdline.CmdARQ ;
 import org.apache.jena.Jena ;
 import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -54,7 +53,6 @@ public abstract class CmdTDB extends CmdARQ
             return ;
         // attempt once.
         initialized = true ;
-        LogCtl.setCmdLogging() ;
         DatasetBuilderStd.setOptimizerWarningFlag(false) ;
     }
 

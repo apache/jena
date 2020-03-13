@@ -88,7 +88,7 @@
     <fileSet>
       <outputDirectory></outputDirectory>
       <includes>
-        <include>jena-log4j.properties</include>
+        <include>log4j2.properties</include>
       </includes> 
       <fileMode>0644</fileMode>
     </fileSet>

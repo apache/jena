@@ -34,7 +34,8 @@
 	</parent>
 
   <properties>
-    <automatic.module.name>org.apache.jena.jdbc</automatic.module.name>
+    <automatic.module.name>org.apache.jena.jdbc</automatic.module.name> 
+    <ver.log4j1>1.2.17</ver.log4j1>
   </properties>
 
 	<modules>
@@ -44,6 +45,22 @@
 		<module>jena-jdbc-driver-mem</module>
 		<module>jena-jdbc-driver-bundle</module>
 	</modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Log4j1 -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${ver.slf4j}</version>
+      </dependency>
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>${ver.log4j1}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
 	<build>
 		<plugins>

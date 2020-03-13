@@ -43,7 +43,7 @@ CPF="$FUSEKI_HOME/fuseki.classpath"
 if [ ! -e "$CPF" ]; then
     echo "Need to create Fuseki classpath file"
     echo "Ensure maven is upto date with the latest snapshots and then run"
-    echo -e "( cd $FUSEKI_HOME ; \n  mvn dependency:build-classpath -Dmdep.outputFile=fuseki.classpath )"
+    echo -e "( cd $FUSEKI_HOME ; \n  mvn dependency:build-classpath -DincludeScope=runtime -Dmdep.outputFile=fuseki.classpath )"
     exit 1
 fi
 CP="$(cat $CPF)"

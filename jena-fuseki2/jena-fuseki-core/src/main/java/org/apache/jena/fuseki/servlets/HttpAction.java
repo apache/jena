@@ -35,7 +35,6 @@ import org.apache.jena.fuseki.server.*;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphWrapper;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.core.TransactionalLock;
 import org.apache.jena.sparql.util.Context;
@@ -210,21 +209,6 @@ public class HttpAction
 
     public Transactional getTransactional() {
         return transactional;
-    }
-
-    /**
-     * A {@link DatasetGraph} may contain other <strong>wrapped DatasetGraph's</strong>. This method will return
-     * the first instance (including the argument to this method) that <strong>is not</strong> an instance of
-     * {@link DatasetGraphWrapper}.
-     *
-     * @param dsg a {@link DatasetGraph}
-     * @return the first found {@link DatasetGraph} that is not an instance of {@link DatasetGraphWrapper}
-     */
-    // Unused currently.
-   private static DatasetGraph x_unwrap(DatasetGraph dsg) {
-       if ( dsg instanceof DatasetGraphWrapper)
-            dsg = ((DatasetGraphWrapper)dsg).getBase();
-        return dsg;
     }
 
     /** This is the requestURI with the context path removed.

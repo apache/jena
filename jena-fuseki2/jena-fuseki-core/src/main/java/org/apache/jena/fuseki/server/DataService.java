@@ -20,6 +20,8 @@ package org.apache.jena.fuseki.server;
 
 import static java.lang.String.format;
 import static org.apache.jena.fuseki.server.DataServiceStatus.*;
+import static org.apache.jena.tdb.sys.TDBInternal.isTDB1;
+import static org.apache.jena.tdb2.sys.TDBInternal.isTDB2;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,8 +37,8 @@ import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.query.TxnType;
-import org.apache.jena.query.text.DatasetGraphText;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphWrapper;
 
 public class DataService {
     private DatasetGraph dataset;
@@ -269,28 +271,47 @@ public class DataService {
         state = CLOSED;
     }
 
-    private void expel(DatasetGraph database) {
-        // Text databases.
-        // Close the in-JVM objects for Lucene index and databases.
-        if ( database instanceof DatasetGraphText ) {
-            DatasetGraphText dbtext = (DatasetGraphText)database;
-            database = dbtext.getBase();
-            dbtext.getTextIndex().close();
-        }
+    private static void expel(DatasetGraph database) {
+        // This should not be necessary.
+        // When created by assembler, "closeIndexOnClose" should be set true.
+        // so this happen automatically (otherwise we need either reflection
+        // or make jena-text a dependency).
+//        // Close the in-JVM objects for Lucene index and databases.
+//        if ( database instanceof DatasetGraphText ) {
+//            DatasetGraphText dbtext = (DatasetGraphText)database;
+//            database = dbtext.getBase();
+//            dbtext.getTextIndex().close();
+//        }
 
-        boolean isTDB1 = org.apache.jena.tdb.sys.TDBInternal.isTDB1(database);
-        boolean isTDB2 = org.apache.jena.tdb2.sys.TDBInternal.isTDB2(database);
+        // Find possible TDB1, TDB2.
+        DatasetGraph base = findTDB(database);
+        database.close();
+        
+        boolean isTDB1 = isTDB1(base);
+        boolean isTDB2 = isTDB2(base);
 
         if ( ( isTDB1 || isTDB2 ) ) {
             // JENA-1586: Remove database from the process.
             if ( isTDB1 )
-                org.apache.jena.tdb.sys.TDBInternal.expel(database);
+                org.apache.jena.tdb.sys.TDBInternal.expel(base);
             if ( isTDB2 )
-                org.apache.jena.tdb2.sys.TDBInternal.expel(database);
-        } else
-            dataset.close();
+                org.apache.jena.tdb2.sys.TDBInternal.expel(base);
+        }
     }
 
+    /** Unwrap until a TDB database is encountered */ 
+    private static DatasetGraph findTDB(DatasetGraph dsg) {
+        DatasetGraph dsgw = dsg;
+        while (dsgw instanceof DatasetGraphWrapper) {
+            if ( isTDB1(dsgw) )
+                return dsgw;
+            if ( isTDB2(dsgw) )
+                return dsgw;
+            dsgw = ((DatasetGraphWrapper)dsgw).getWrapped();
+        }
+        return dsgw;
+    }
+    
     public void setAuthPolicy(AuthPolicy authPolicy) { this.authPolicy = authPolicy; }
 
     /** Returning null implies no authorization control */

@@ -27,19 +27,18 @@ import java.util.Arrays;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.dboe.base.file.BufferChannel;
 import org.apache.jena.dboe.base.file.BufferChannelFile;
 import org.apache.jena.dboe.base.file.Location;
+import org.apache.jena.dboe.sys.Sys;
 import org.apache.jena.dboe.trans.data.TransBlob;
 import org.apache.jena.dboe.transaction.txn.ComponentId;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
 import org.apache.jena.dboe.transaction.txn.journal.JournalEntry;
 import org.apache.jena.dboe.transaction.txn.journal.JournalEntryType;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 
 // We need something to recover io order to test recovery.
@@ -53,7 +52,16 @@ public class TestRecovery {
     private String data;
     private String data1;
     private String data2;
-
+    private static String loggerLevel; 
+    
+    @BeforeClass public static void beforeClass() {
+        loggerLevel = LogCtl.getLevel(Sys.syslog);
+        LogCtl.setLevel(Sys.syslog, "WARNING");
+    }
+    @AfterClass public static void afterClass() {
+        LogCtl.setLevel(Sys.syslog, loggerLevel);
+    }
+    
     @Before public void before() {
         journal  = dir.getRoot().getAbsolutePath() + "/journal.jrnl";
         data  = dir.getRoot().getAbsolutePath() + "/blob.data";

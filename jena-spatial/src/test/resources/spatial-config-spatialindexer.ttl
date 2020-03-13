@@ -1,3 +1,4 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 ## Example of a TDB dataset and spatial index
 
 @prefix :        <http://localhost/jena_example/#> .

@@ -21,14 +21,29 @@ package org.apache.jena.query.text;
 import java.util.Set ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.ext.com.google.common.collect.Sets ;
+import org.junit.AfterClass;
 import org.junit.Before ;
+import org.junit.BeforeClass;
 import org.junit.Test ;
 
 /**
  * This class defines a setup configuration for a dataset that uses an ASCII folding lowercase keyword analyzer with a Lucene index.
  */
 public class TestDatasetWithAnalyzingQueryParser extends TestDatasetWithConfigurableAnalyzer {
+
+    private static String loggerLevel; 
+
+    /** Suppress a warning message - see {@link TextIndexLucene#parseQuery} */
+    @BeforeClass public static void beforeClass() {
+        loggerLevel = LogCtl.getLevel(TextIndexLucene.class);
+        LogCtl.setLevel(TextIndexLucene.class, "ERROR");
+    }
+    @AfterClass public static void afterClass() {
+        LogCtl.setLevel(TextIndexLucene.class, loggerLevel);
+    }
+
     @Override
     @Before
     public void before() {
