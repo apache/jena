@@ -21,7 +21,6 @@ package org.apache.jena.assembler.test;
 import java.util.*;
 
 import org.apache.jena.assembler.* ;
-import org.apache.jena.assembler.exceptions.TransactionAbortedException ;
 import org.apache.jena.rdf.model.* ;
 
 public class TestModelContent extends AssemblerTestBase
@@ -94,9 +93,8 @@ public class TestModelContent extends AssemblerTestBase
             a.open( Assembler.content, root  );
             fail( "should throw (wrapped) failing exception" );
             }
-        catch (TransactionAbortedException  e)
+        catch (Exception  e)
             {
-            assertEquals( resource( "x" ), e.getRoot() );
             assertEquals( listOfStrings( "supports[true] begin add abort" ), history );
             assertIsoModels( expected, toDeliver );
             }        
