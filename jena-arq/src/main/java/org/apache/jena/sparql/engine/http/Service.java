@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.http.client.HttpClient;
-import org.apache.jena.atlas.io.IO;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryExecException ;
 import org.apache.jena.query.ResultSet ;
