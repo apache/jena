@@ -45,14 +45,14 @@ import org.apache.jena.sparql.syntax.ElementGroup;
 
 /** Support for transformation of query abstract syntax. */
 public class QueryTransformOps {
-    /** Transform a query based on a mapping from {@link Var} variable to replacement {@link Node}. */ 
+    /** Transform a query based on a mapping from {@link Var} variable to replacement {@link Node}. */
     public static Query transform(Query query, Map<Var, ? extends Node> substitutions) {
         ElementTransform eltrans = new ElementTransformSubst(substitutions);
         NodeTransform nodeTransform = new NodeTransformSubst(substitutions);
         ExprTransform exprTrans = new ExprTransformNodeElement(nodeTransform, eltrans);
         return transform(query, eltrans, exprTrans);
     }
-    
+
     /**
      * Transform a query based on a mapping from variable name to replacement
      * {@link RDFNode} (a {@link Resource} (or blank node) or a {@link Literal}).
@@ -65,7 +65,7 @@ public class QueryTransformOps {
 
     /** Transform a query using {@link ElementTransform} and {@link ExprTransform}.
      *  It is the responsibility of these transforms to transform to a legal SPARQL query.
-     */ 
+     */
     public static Query transform(Query query, ElementTransform transform, ExprTransform exprTransform) {
         Query q2 = QueryTransformOps.shallowCopy(query);
 
@@ -166,7 +166,7 @@ public class QueryTransformOps {
                 DatasetDescription desc = query.getDatasetDescription();
                 for (String x : desc.getDefaultGraphURIs())
                     newQuery.addGraphURI(x);
-                for (String x : desc.getDefaultGraphURIs())
+                for (String x : desc.getNamedGraphURIs())
                     newQuery.addNamedGraphURI(x);
             }
 
