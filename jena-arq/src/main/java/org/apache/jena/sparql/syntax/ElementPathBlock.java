@@ -30,25 +30,30 @@ import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 
 public class ElementPathBlock extends Element implements TripleCollectorMark
 {
-    private PathBlock pattern = new PathBlock() ; 
+    private PathBlock pattern = new PathBlock() ;
 
     public ElementPathBlock()
     {  }
-    
+
+    public ElementPathBlock(PathBlock pattern)
+    {
+        this.pattern = pattern;
+    }
+
     public ElementPathBlock(BasicPattern bgp)
-    {  
+    {
         for ( Triple t : bgp.getList() )
             addTriple(t) ;
     }
 
     public boolean isEmpty() { return pattern.isEmpty() ; }
-    
+
     public void addTriple(TriplePath tp)
     { pattern.add(tp) ; }
-    
+
     @Override
     public int mark() { return pattern.size() ; }
-    
+
     @Override
     public void addTriple(Triple t)
     { addTriplePath(new TriplePath(t)) ; }
@@ -64,15 +69,15 @@ public class ElementPathBlock extends Element implements TripleCollectorMark
     @Override
     public void addTriplePath(int index, TriplePath tPath)
     { pattern.add(index, tPath) ; }
-    
+
     public PathBlock getPattern() { return pattern ; }
     public Iterator<TriplePath> patternElts() { return pattern.iterator(); }
-    
+
     @Override
     public int hashCode()
-    { 
+    {
         int calcHashCode = Element.HashBasicGraphPattern ;
-        calcHashCode ^= pattern.hashCode() ; 
+        calcHashCode ^= pattern.hashCode() ;
         return calcHashCode ;
     }
 
@@ -82,7 +87,7 @@ public class ElementPathBlock extends Element implements TripleCollectorMark
         if ( ! ( el2 instanceof ElementPathBlock) )
             return false ;
         ElementPathBlock eg2 = (ElementPathBlock)el2 ;
-        return this.pattern.equiv(eg2.pattern, isoMap) ; 
+        return this.pattern.equiv(eg2.pattern, isoMap) ;
     }
 
     @Override
