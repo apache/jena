@@ -20,8 +20,6 @@ package org.apache.jena.sparql.algebra.optimize;
 
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.algebra.optimize.TransformDistinctToReduced ;
-import org.apache.jena.sparql.algebra.optimize.TransformOrderByDistinctApplication ;
 import org.junit.Test ;
 
 public class TestOptDistinctReduced extends AbstractTestTransform

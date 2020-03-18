@@ -19,7 +19,6 @@
 package org.apache.jena.dboe.trans.data;
 
 import org.apache.jena.dboe.base.file.*;
-import org.apache.jena.dboe.trans.data.TransBinaryDataFile;
 import org.apache.jena.dboe.transaction.Transactional;
 import org.apache.jena.dboe.transaction.TransactionalFactory;
 import org.apache.jena.dboe.transaction.txn.ComponentId;

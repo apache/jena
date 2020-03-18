@@ -20,9 +20,6 @@ package org.apache.jena.hadoop.rdf.io.input.util;
 
 import java.io.InputStream;
 
-import org.apache.jena.hadoop.rdf.io.input.util.TrackableInputStream;
-import org.apache.jena.hadoop.rdf.io.input.util.TrackedInputStream;
-
 /**
  * Tests for the {@link TrackedInputStream}
  * 

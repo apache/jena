@@ -38,7 +38,6 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.graph.NodeConst ;
-import org.apache.jena.sparql.path.Path ;
 import org.apache.jena.sparql.path.eval.PathEval ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.AfterClass ;

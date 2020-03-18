@@ -25,7 +25,6 @@ import org.apache.jena.system.Txn;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
-import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.sys.TDBInternal;
 import org.junit.Test;
 

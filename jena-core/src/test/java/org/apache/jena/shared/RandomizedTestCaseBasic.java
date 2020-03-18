@@ -18,8 +18,6 @@
 
 package org.apache.jena.shared;
 
-import org.apache.jena.shared.RandomOrderGraph ;
-
 public class RandomizedTestCaseBasic extends org.apache.jena.regression.TestCaseBasic {
 
     public RandomizedTestCaseBasic(String name) {

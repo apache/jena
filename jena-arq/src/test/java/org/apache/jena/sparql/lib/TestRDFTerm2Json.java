@@ -24,7 +24,6 @@ import java.math.BigDecimal;
 
 import org.apache.jena.atlas.json.*;
 import org.apache.jena.graph.Node;
-import org.apache.jena.sparql.lib.RDFTerm2Json;
 import org.apache.jena.sparql.sse.SSE;
 import org.junit.Test;
 

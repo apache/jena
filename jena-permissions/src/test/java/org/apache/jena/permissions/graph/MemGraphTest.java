@@ -25,7 +25,6 @@ import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluatorParameters;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
-import org.apache.jena.permissions.graph.SecuredGraph;
 import org.apache.jena.shared.AccessDeniedException;
 import org.apache.jena.shared.ReadDeniedException;
 import org.apache.jena.sparql.graph.GraphFactory;

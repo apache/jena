@@ -28,7 +28,6 @@ import org.apache.jena.atlas.iterator.Iter;
 import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.tdb2.store.NodeId;
-import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 import org.junit.Test;
 
 /** Test TupleIndexes (general) */

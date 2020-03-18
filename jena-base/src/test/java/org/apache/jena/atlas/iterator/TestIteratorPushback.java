@@ -21,8 +21,6 @@ package org.apache.jena.atlas.iterator;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.PushbackIterator ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 

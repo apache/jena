@@ -25,7 +25,6 @@ import java.util.List;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.graph.Node;
-import org.apache.jena.sparql.util.EqualityTest;
 
 /**
  * Simple isomorphism testing for collections of tuples of nodes. This can be used

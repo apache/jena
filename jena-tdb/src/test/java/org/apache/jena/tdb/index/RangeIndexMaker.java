@@ -18,8 +18,6 @@
 
 package org.apache.jena.tdb.index;
 
-import org.apache.jena.tdb.index.RangeIndex ;
-
 public interface RangeIndexMaker extends IndexMaker
 {
     RangeIndex makeRangeIndex() ;

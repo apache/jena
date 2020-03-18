@@ -20,7 +20,6 @@ package org.apache.jena.riot.out;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.riot.out.NodeFmtLib ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.vocabulary.RDF ;
 import org.junit.Test ;

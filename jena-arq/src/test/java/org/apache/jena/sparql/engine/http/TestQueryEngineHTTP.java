@@ -20,7 +20,6 @@ package org.apache.jena.sparql.engine.http;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.WebContent ;
-import org.apache.jena.sparql.engine.http.QueryEngineHTTP ;
 import org.junit.Test ;
 
 /** A few tests of QueryEngineHTTP - mostly it gets tested in Fuseki */

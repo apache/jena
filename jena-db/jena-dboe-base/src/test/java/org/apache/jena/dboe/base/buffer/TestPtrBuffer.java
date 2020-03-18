@@ -20,8 +20,6 @@ package org.apache.jena.dboe.base.buffer;
 
 import java.nio.ByteBuffer;
 
-import org.apache.jena.dboe.base.buffer.BufferException;
-import org.apache.jena.dboe.base.buffer.PtrBuffer;
 import org.apache.jena.dboe.sys.SystemIndex;
 import org.junit.AfterClass;
 import org.junit.Assert;

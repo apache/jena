@@ -23,7 +23,6 @@ import java.io.IOException ;
 import java.io.OutputStreamWriter ;
 import java.io.Writer ;
 
-import org.apache.jena.atlas.io.OutputUtils ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 

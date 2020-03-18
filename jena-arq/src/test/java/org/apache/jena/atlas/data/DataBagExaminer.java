@@ -20,8 +20,6 @@ package org.apache.jena.atlas.data;
 
 import java.io.File ;
 
-import org.apache.jena.atlas.data.AbstractDataBag ;
-
 /**
  * This class exists so that we can examine the internals of a DataBag during testing (which we can do here since it is in the same package).
  */

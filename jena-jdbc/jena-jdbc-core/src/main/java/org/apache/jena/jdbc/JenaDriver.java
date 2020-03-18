@@ -867,6 +867,7 @@ public abstract class JenaDriver implements Driver {
         return this.majorVer;
     }
 
+    @Override
     public final DriverPropertyInfo[] getPropertyInfo(String url, Properties props) throws SQLException {
         Properties ps = this.getEffectiveProperties(url, props);
 
@@ -1045,7 +1046,8 @@ public abstract class JenaDriver implements Driver {
     }
 
 	// Java6/7 compatibility
-	public java.util.logging.Logger getParentLogger() throws SQLFeatureNotSupportedException {
+	@Override
+    public java.util.logging.Logger getParentLogger() throws SQLFeatureNotSupportedException {
 		throw new SQLFeatureNotSupportedException() ;
 	}
 }

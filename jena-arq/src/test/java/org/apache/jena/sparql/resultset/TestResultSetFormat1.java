@@ -28,7 +28,6 @@ import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
 import org.apache.jena.query.ResultSetFormatter ;
 import org.apache.jena.query.ResultSetRewindable ;
-import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderResultSet ;

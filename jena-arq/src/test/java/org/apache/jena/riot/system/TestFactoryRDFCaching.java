@@ -21,7 +21,6 @@ package org.apache.jena.riot.system;
 import static org.junit.Assert. * ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.lang.LabelToNode ;
-import org.apache.jena.riot.system.FactoryRDFCaching ;
 import org.junit.Test ;
 
 public class TestFactoryRDFCaching extends TestFactoryRDF {

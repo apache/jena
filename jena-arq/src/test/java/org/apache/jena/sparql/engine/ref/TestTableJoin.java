@@ -31,7 +31,6 @@ import org.apache.jena.sparql.algebra.table.TableN ;
 import org.apache.jena.sparql.algebra.table.TableUnit ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.ref.TableJoin ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.sse.SSE ;

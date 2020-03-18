@@ -25,7 +25,6 @@ import java.io.PrintStream;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.rdfxml.xmlinput.NTriple ;
 
 public class MemoryLeakTest extends TestCase {
 

@@ -1192,7 +1192,7 @@ public class GeoSPARQLOperations {
      * Converts value according to the configured precision.
      *
      * @param value
-     * @return
+     * @return double
      */
     public static double cleanUpPrecision(double value) {
         BigDecimal bigDecimal = new BigDecimal(Double.toString(value));

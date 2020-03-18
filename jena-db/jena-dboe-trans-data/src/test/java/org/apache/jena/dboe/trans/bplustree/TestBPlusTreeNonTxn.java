@@ -29,9 +29,7 @@ import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.index.test.AbstractTestRangeIndex;
 import org.apache.jena.dboe.sys.SystemIndex;
 import org.apache.jena.dboe.test.RecordLib;
-import org.apache.jena.dboe.trans.bplustree.BPT;
 import org.apache.jena.dboe.trans.bplustree.BPlusTree;
-import org.apache.jena.dboe.trans.bplustree.BPlusTreeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 

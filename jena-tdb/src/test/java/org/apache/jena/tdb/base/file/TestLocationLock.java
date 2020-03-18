@@ -23,8 +23,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.apache.jena.tdb.TDBException;
-import org.apache.jena.tdb.base.file.Location;
-import org.apache.jena.tdb.base.file.LocationLock;
 import org.apache.jena.tdb.sys.ProcessUtils;
 import org.junit.Assert;
 import org.junit.Assume;

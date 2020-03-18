@@ -19,9 +19,6 @@
 package org.apache.jena.dboe.base.file;
 
 import org.apache.jena.atlas.lib.FileOps;
-import org.apache.jena.dboe.base.file.BinaryDataFile;
-import org.apache.jena.dboe.base.file.BinaryDataFileRandomAccess;
-import org.apache.jena.dboe.base.file.BinaryDataFileWriteBuffered;
 
 public class TestBinaryDataFileWriteBufferedFile extends AbstractTestBinaryDataFile {
     public static String FILE = TS_File.FILE;

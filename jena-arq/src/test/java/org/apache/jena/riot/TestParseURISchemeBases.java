@@ -34,8 +34,6 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.ResourceFactory.Interface;
 import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.RDFS;
 import org.junit.Test;
 

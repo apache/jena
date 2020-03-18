@@ -21,7 +21,6 @@ import org.apache.jena.permissions.Factory;
 import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.model.SecuredModel;
-import org.apache.jena.permissions.query.SecuredQueryEngineFactory;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.QueryExecution;

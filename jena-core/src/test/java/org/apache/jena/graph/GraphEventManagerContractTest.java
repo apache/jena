@@ -30,9 +30,7 @@ import org.xenei.junit.contract.ContractTest;
 
 import static org.junit.Assert.*;
 
-import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphEventManager;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.testing_framework.GraphHelper;
 import org.xenei.junit.contract.IProducer;
 import org.apache.jena.testing_framework.NodeCreateUtils;

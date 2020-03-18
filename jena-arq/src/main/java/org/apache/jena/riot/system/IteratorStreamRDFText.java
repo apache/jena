@@ -30,7 +30,6 @@ import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.system.StreamRowRDF ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.Tokenizer ;

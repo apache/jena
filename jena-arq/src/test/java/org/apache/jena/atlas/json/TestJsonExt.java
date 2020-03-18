@@ -20,9 +20,6 @@ package org.apache.jena.atlas.json;
 
 import static org.apache.jena.atlas.json.LibJsonTest.read ;
 import static org.apache.jena.atlas.json.LibJsonTest.writeRead ;
-import org.apache.jena.atlas.json.JsonNumber ;
-import org.apache.jena.atlas.json.JsonObject ;
-import org.apache.jena.atlas.json.JsonString ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 

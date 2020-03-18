@@ -18,7 +18,6 @@
 
 package org.apache.jena.atlas.data;
 
-import org.apache.jena.atlas.data.ThresholdPolicyCount ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 

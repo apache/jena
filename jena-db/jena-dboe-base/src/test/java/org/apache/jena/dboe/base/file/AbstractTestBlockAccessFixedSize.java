@@ -23,8 +23,6 @@ import org.junit.Assert;
 import static org.apache.jena.dboe.test.BufferTestLib.sameValue;
 
 import org.apache.jena.dboe.base.block.Block;
-import org.apache.jena.dboe.base.file.BlockAccess;
-import org.apache.jena.dboe.base.file.FileException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

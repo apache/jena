@@ -19,7 +19,6 @@
 package org.apache.jena.tdb.base.objectfile;
 
 import org.apache.jena.tdb.base.file.FileFactory ;
-import org.apache.jena.tdb.base.objectfile.ObjectFile ;
 
 public class TestObjectFileMem extends AbstractTestObjectFile
 {

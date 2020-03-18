@@ -20,7 +20,6 @@ package org.apache.jena.sparql.lang;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.query.QueryParseException ;
-import org.apache.jena.sparql.lang.ParserBase ;
 import org.junit.Test ;
 
 public class TestUnescape extends BaseTest

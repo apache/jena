@@ -29,7 +29,6 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab;
 import org.apache.jena.tdb2.ConfigTest;
-import org.apache.jena.tdb2.assembler.VocabTDB2;
 import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
 import org.apache.jena.tdb2.store.GraphViewSwitchable;
 import org.apache.jena.tdb2.sys.TDBInternal;

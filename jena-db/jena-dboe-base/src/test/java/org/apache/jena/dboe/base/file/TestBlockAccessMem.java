@@ -18,9 +18,6 @@
 
 package org.apache.jena.dboe.base.file;
 
-import org.apache.jena.dboe.base.file.BlockAccess;
-import org.apache.jena.dboe.base.file.BlockAccessMem;
-
 public class TestBlockAccessMem extends AbstractTestBlockAccessFixedSize
 {
     static final int BlockSize = 50;

@@ -20,7 +20,6 @@ package org.apache.jena.atlas.lib;
 
 import static org.apache.jena.atlas.lib.DateTimeUtils.nowAsString ;
 
-import org.apache.jena.atlas.lib.Timer;
 import org.slf4j.Logger ;
 
 /** Progress monitor - output lines to show the progress of some long running operation.

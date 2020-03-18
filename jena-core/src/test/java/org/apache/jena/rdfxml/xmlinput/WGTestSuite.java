@@ -39,8 +39,6 @@ import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.impl.PropertyImpl ;
 import org.apache.jena.rdf.model.impl.ResourceImpl ;
 import org.apache.jena.rdfxml.xmlinput.ARPErrorNumbers ;
-import org.apache.jena.rdfxml.xmlinput.JenaReader ;
-import org.apache.jena.rdfxml.xmlinput.ParseException ;
 import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory ;
 import org.apache.jena.reasoner.test.WGReasonerTester ;
 import org.apache.jena.shared.BrokenException ;

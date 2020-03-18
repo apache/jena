@@ -21,7 +21,6 @@ package org.apache.jena.dboe.trans.bplustree;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.apache.jena.dboe.trans.bplustree.BPT;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

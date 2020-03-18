@@ -25,8 +25,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.tdb.base.buffer.BufferException ;
-import org.apache.jena.tdb.base.buffer.RecordBuffer ;
 import org.apache.jena.tdb.base.record.Record ;
 import org.apache.jena.tdb.base.record.RecordFactory ;
 import org.apache.jena.tdb.base.record.RecordLib ;

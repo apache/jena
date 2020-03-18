@@ -30,7 +30,6 @@ import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.sys.SystemTDB ;
-import org.apache.jena.tdb.transaction.DatasetGraphTxn ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;

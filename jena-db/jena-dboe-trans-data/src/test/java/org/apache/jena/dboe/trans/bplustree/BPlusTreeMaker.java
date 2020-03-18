@@ -22,8 +22,6 @@ import org.apache.jena.dboe.index.Index;
 import org.apache.jena.dboe.index.RangeIndex;
 import org.apache.jena.dboe.index.test.RangeIndexMaker;
 import org.apache.jena.dboe.test.RecordLib;
-import org.apache.jena.dboe.trans.bplustree.BPlusTree;
-import org.apache.jena.dboe.trans.bplustree.BPlusTreeFactory;
 
 public class BPlusTreeMaker implements RangeIndexMaker
 {

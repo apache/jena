@@ -25,7 +25,6 @@ import static org.junit.Assert.assertNotNull;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.tdb2.store.NodeId;
-import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.junit.Test;
 
 public abstract class AbstractTestNodeTable

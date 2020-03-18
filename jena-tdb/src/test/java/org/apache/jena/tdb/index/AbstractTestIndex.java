@@ -23,7 +23,6 @@ import static org.apache.jena.tdb.index.IndexTestLib.* ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.tdb.base.record.Record ;
 import org.apache.jena.tdb.base.record.RecordLib ;
-import org.apache.jena.tdb.index.Index ;
 import org.junit.After;
 import org.junit.Test;
 

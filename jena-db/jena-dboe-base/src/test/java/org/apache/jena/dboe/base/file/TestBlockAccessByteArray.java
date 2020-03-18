@@ -18,9 +18,6 @@
 
 package org.apache.jena.dboe.base.file;
 
-import org.apache.jena.dboe.base.file.BlockAccess;
-import org.apache.jena.dboe.base.file.BlockAccessByteArray;
-
 public class TestBlockAccessByteArray extends AbstractTestBlockAccessVarSize
 {
 

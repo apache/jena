@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Query ;

@@ -23,7 +23,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.algebra.walker.ApplyTransformVisitor;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.*;
-import org.apache.jena.sparql.graph.NodeTransform;
 
 /** An {@link ExprTransform} that applies a {@link NodeTransform}
  * to {@link NodeValue} and {@link ExprVar} inside expressions.

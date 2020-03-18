@@ -18,8 +18,6 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprLib ;
 import org.apache.jena.sparql.util.ExprUtils ;
 import org.junit.Assert ;
 import org.junit.Test ;

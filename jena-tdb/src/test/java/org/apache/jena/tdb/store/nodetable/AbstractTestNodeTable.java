@@ -23,7 +23,6 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.store.NodeId ;
-import org.apache.jena.tdb.store.nodetable.NodeTable ;
 import org.junit.Test ;
 
 public abstract class AbstractTestNodeTable extends BaseTest

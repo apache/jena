@@ -21,8 +21,6 @@ package org.apache.jena.tdb.base.buffer;
 import java.nio.ByteBuffer;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.tdb.base.buffer.BufferException ;
-import org.apache.jena.tdb.base.buffer.PtrBuffer ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass;

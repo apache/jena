@@ -21,7 +21,6 @@ package org.apache.jena.reasoner.rulesys;
 
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.reasoner.* ;
-import org.apache.jena.reasoner.rulesys.Util ;
 import org.apache.jena.reasoner.transitiveReasoner.TransitiveReasoner ;
 import org.apache.jena.vocabulary.* ;
 

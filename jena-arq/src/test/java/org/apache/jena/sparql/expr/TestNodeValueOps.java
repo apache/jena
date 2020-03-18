@@ -20,8 +20,6 @@ package org.apache.jena.sparql.expr;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueOps ;
 import org.junit.Test ;
 

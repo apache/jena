@@ -19,7 +19,6 @@
 package org.apache.jena.fuseki.servlets;
 
 import org.apache.jena.atlas.lib.Pair;
-import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.query.Query;
 import org.apache.jena.sparql.core.DatasetDescription;
 import org.apache.jena.sparql.core.DatasetGraph;

@@ -285,20 +285,13 @@ public class TestQuery extends AbstractFusekiTest {
         HttpURLConnection conn = (HttpURLConnection)u.openConnection();
         String result = null;
         StringBuffer sb = new StringBuffer();
-        InputStream is = null;
-        try {
-            is = new BufferedInputStream(conn.getInputStream());
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        try ( InputStream is = new BufferedInputStream(conn.getInputStream());
+              BufferedReader br = new BufferedReader(new InputStreamReader(is)) ) {
             String inputLine = "";
             while ((inputLine = br.readLine()) != null) {
                 sb.append(inputLine);
             }
             result = sb.toString();
-        }
-        finally {
-            if (is != null) {
-                is.close();
-            }
         }
         Assert.assertNotNull(result);
         Assert.assertTrue(result.contains("http://example/x"));

@@ -23,7 +23,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.jena.hadoop.rdf.io.input.util.TrackableInputStream;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -22,8 +22,6 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.util.NodeUtils ;
 import org.junit.Test ;
 

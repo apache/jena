@@ -19,7 +19,6 @@
 package org.apache.jena.shared;
 
 import junit.framework.TestSuite;
-import org.apache.jena.shared.JenaException ;
 import org.apache.jena.test.JenaTestBase ;
 
 /**

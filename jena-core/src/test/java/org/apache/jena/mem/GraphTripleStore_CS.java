@@ -24,7 +24,6 @@ import org.xenei.junit.contract.ContractImpl;
 import org.xenei.junit.contract.ContractSuite;
 
 import org.apache.jena.graph.Graph;
-import org.apache.jena.mem.GraphTripleStore;
 import org.xenei.junit.contract.IProducer;
 
 @RunWith(ContractSuite.class)

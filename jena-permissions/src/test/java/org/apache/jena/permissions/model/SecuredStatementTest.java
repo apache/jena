@@ -24,8 +24,6 @@ import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluatorParameters;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
-import org.apache.jena.permissions.model.SecuredModel;
-import org.apache.jena.permissions.model.SecuredStatement;
 import org.apache.jena.permissions.model.impl.SecuredStatementImpl;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.shared.AccessDeniedException;

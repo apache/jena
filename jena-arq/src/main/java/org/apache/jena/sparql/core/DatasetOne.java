@@ -22,7 +22,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.sparql.core.DatasetGraphOne;
 import org.apache.jena.sparql.core.DatasetImpl;
 
 /**

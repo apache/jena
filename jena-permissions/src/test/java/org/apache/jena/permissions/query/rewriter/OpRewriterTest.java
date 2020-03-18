@@ -23,8 +23,6 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator;
-import org.apache.jena.permissions.query.rewriter.OpRewriter;
-import org.apache.jena.permissions.query.rewriter.SecuredFunction;
 import org.apache.jena.shared.ReadDeniedException;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.op.OpBGP;

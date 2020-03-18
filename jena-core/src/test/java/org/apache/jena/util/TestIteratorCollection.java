@@ -27,8 +27,6 @@ import java.util.Set;
 
 import junit.framework.TestSuite;
 import org.apache.jena.graph.test.GraphTestBase ;
-import org.apache.jena.util.CollectionFactory ;
-import org.apache.jena.util.IteratorCollection ;
 import org.apache.jena.util.iterator.NullIterator ;
 import org.apache.jena.util.iterator.SingletonIterator ;
 import org.apache.jena.util.iterator.WrappedIterator ;

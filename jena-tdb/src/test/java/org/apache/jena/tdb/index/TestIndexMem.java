@@ -19,8 +19,6 @@
 package org.apache.jena.tdb.index;
 
 import org.apache.jena.tdb.base.record.RecordFactory ;
-import org.apache.jena.tdb.index.Index ;
-import org.apache.jena.tdb.index.IndexMap ;
 
 public class TestIndexMem extends AbstractTestIndex
 {

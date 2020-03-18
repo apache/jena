@@ -25,7 +25,6 @@ import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mrunit.mapreduce.MapReduceDriver;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.hadoop.rdf.mapreduce.AbstractMapReduceTests;
-import org.apache.jena.hadoop.rdf.mapreduce.characteristics.AbstractCharacteristicSetGeneratingReducer;
 import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
 import org.apache.jena.hadoop.rdf.types.CharacteristicSetWritable;
 import org.apache.jena.hadoop.rdf.types.CharacteristicWritable;

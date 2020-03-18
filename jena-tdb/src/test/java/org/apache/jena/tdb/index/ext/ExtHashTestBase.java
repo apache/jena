@@ -36,7 +36,6 @@ import org.apache.jena.atlas.test.ExecGenerator ;
 import org.apache.jena.atlas.test.RepeatExecution ;
 import org.apache.jena.tdb.base.record.Record ;
 import org.apache.jena.tdb.base.record.RecordFactory ;
-import org.apache.jena.tdb.index.ext.ExtHash ;
 
 public class ExtHashTestBase
 {

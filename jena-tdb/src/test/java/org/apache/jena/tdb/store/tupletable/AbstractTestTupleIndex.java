@@ -26,7 +26,6 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.tdb.store.NodeId ;
-import org.apache.jena.tdb.store.tupletable.TupleIndex ;
 import org.junit.Test ;
 
 /** Test TupleIndexes (general) */

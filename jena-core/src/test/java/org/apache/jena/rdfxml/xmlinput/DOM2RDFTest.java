@@ -26,7 +26,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdfxml.xmlinput.DOM2Model ;
 import org.apache.jena.shared.JenaException ;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;

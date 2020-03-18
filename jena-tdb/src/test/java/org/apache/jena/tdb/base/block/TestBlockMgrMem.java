@@ -18,9 +18,6 @@
 
 package org.apache.jena.tdb.base.block;
 
-import org.apache.jena.tdb.base.block.BlockMgr ;
-import org.apache.jena.tdb.base.block.BlockMgrFactory ;
-
 
 public class TestBlockMgrMem extends AbstractTestBlockMgr
 {

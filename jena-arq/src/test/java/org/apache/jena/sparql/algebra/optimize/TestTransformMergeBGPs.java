@@ -21,7 +21,6 @@ package org.apache.jena.sparql.algebra.optimize;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.Transformer ;
-import org.apache.jena.sparql.algebra.optimize.TransformMergeBGPs ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 

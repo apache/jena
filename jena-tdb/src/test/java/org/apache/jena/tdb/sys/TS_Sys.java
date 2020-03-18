@@ -19,7 +19,6 @@
 package org.apache.jena.tdb.sys;
 
 
-import org.apache.jena.tdb.sys.TestSys ;
 import org.apache.jena.test.TestSystemSetup;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

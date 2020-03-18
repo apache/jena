@@ -20,7 +20,6 @@ package org.apache.jena.hadoop.rdf.mapreduce.group;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.jena.hadoop.rdf.mapreduce.group.QuadGroupByPredicateMapper;
 import org.apache.jena.hadoop.rdf.types.NodeWritable;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
 

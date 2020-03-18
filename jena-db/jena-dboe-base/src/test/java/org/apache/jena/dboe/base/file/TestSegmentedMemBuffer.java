@@ -21,7 +21,6 @@ package org.apache.jena.dboe.base.file;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-import org.apache.jena.dboe.base.file.SegmentedMemBuffer;
 import org.junit.Assert;
 import org.junit.Test;
 

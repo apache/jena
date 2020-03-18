@@ -27,8 +27,6 @@ import org.xenei.junit.contract.ContractTest;
 
 import static org.junit.Assert.*;
 
-import org.apache.jena.graph.TransactionHandler;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.shared.Command;
 import org.apache.jena.shared.JenaException;
 import org.xenei.junit.contract.IProducer;
