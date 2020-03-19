@@ -212,13 +212,13 @@ public class WhereBuilder extends AbstractQueryBuilder<WhereBuilder> implements 
 
 	@Override
 	public WhereBuilder addBind(Expr expression, Object var) {
-		getWhereHandler().addBind(expression, makeVar(var));
+		getWhereHandler().addBind(expression, Converters.makeVar(var));
 		return this;
 	}
 
 	@Override
 	public WhereBuilder addBind(String expression, Object var) throws ParseException {
-		getWhereHandler().addBind(expression, makeVar(var));
+		getWhereHandler().addBind(expression, Converters.makeVar(var));
 		return this;
 	}
 

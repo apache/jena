@@ -258,7 +258,7 @@ public class UpdateBuilder {
 	 * @return a TriplePath
 	 */
 	public TriplePath makeTriplePath(Object s, Object p, Object o) {
-		final Object po = AbstractQueryBuilder.makeNodeOrPath( p, prefixHandler.getPrefixes() );
+		final Object po = Converters.makeNodeOrPath( p, prefixHandler.getPrefixes() );
 		if (po instanceof Path)
 		{
 			return new TriplePath(makeNode(s), (Path)po, makeNode(o));
@@ -281,7 +281,7 @@ public class UpdateBuilder {
 	 * @return the Node.
 	 */
 	public Node makeNode(Object o) {
-		return AbstractQueryBuilder.makeNode(o, prefixHandler.getPrefixes());
+		return Converters.makeNode(o, prefixHandler.getPrefixes());
 	}
 
 	/**
@@ -289,15 +289,16 @@ public class UpdateBuilder {
 	 * 
 	 * Shorthand for AbstractQueryBuilder.makeVar( o )
 	 * 
-	 * @see AbstractQueryBuilder#makeVar(Object)
+	 * @see Converters#makeVar(Object)
 	 * 
 	 * @param o
 	 *            the object to convert to a var.
 	 * @return the Var.
+	 * @deprecated use {@link Converters#makeVar(Object)}
 	 */
-
+	@Deprecated
 	public Var makeVar(Object o) {
-		return AbstractQueryBuilder.makeVar(o);
+		return Converters.makeVar(o);
 	}
 
 	/**
@@ -305,15 +306,17 @@ public class UpdateBuilder {
 	 * 
 	 * Shorthand for AbstractQueryBuilder.quote( s )
 	 * 
-	 * @see AbstractQueryBuilder#quote(String)
+	 * @see #quoted(String)
 	 * 
-	 * 
+	 * @deprecated Use quoted()
 	 * @param s
 	 *            the string to quote.
 	 * @return the quoted string.
+	 * @deprecated use {@link Converters#quoted(String)}
 	 */
+	@Deprecated
 	public String quote(String s) {
-		return AbstractQueryBuilder.quote(s);
+		return Converters.quoted(s);
 	}
 
 	/**
@@ -393,7 +396,7 @@ public class UpdateBuilder {
 	 * @return this builder for chaining.
 	 */
 	public UpdateBuilder addInsert(Object g, Triple t) {
-		Quad q = new Quad(AbstractQueryBuilder.makeNode(g, prefixHandler.getPrefixes()), t);
+		Quad q = new Quad(makeNode(g), t);
 		inserts.add(new SingleQuadHolder(q));
 		return this;
 	}
@@ -460,9 +463,7 @@ public class UpdateBuilder {
 	 * @return this builder for chaining.
 	 */
 	public UpdateBuilder addInsert(Object g, Model model) {
-		inserts.add( new ModelQuadHolder(
-				AbstractQueryBuilder.makeNode(g, prefixHandler.getPrefixes()),
-				model));
+		inserts.add( new ModelQuadHolder( makeNode(g), model));
 		return this;
 	}
 
@@ -474,9 +475,7 @@ public class UpdateBuilder {
 	 * @return this builder for chaining.
 	 */
 	public UpdateBuilder addInsert(Object g, Collection<Triple> collection) {
-		inserts.add(new CollectionQuadHolder( 
-				AbstractQueryBuilder.makeNode(g, prefixHandler.getPrefixes()),
-				collection ));
+		inserts.add(new CollectionQuadHolder( makeNode(g), collection ));
 		return this;
 	}
 	
@@ -487,9 +486,7 @@ public class UpdateBuilder {
 	 * @return this builder for chaining.
 	 */
 	public UpdateBuilder addInsert(Object g, Iterator<Triple> iter) {
-		inserts.add(new CollectionQuadHolder( 
-				AbstractQueryBuilder.makeNode(g, prefixHandler.getPrefixes()),
-				iter ));
+		inserts.add(new CollectionQuadHolder( makeNode(g), iter ));
 		return this;
 	}
 	
@@ -522,7 +519,7 @@ public class UpdateBuilder {
 	 * @return this builder for chaining.
 	 */
 	public UpdateBuilder addInsert(Object graph, AbstractQueryBuilder<?> queryBuilder) {
-		inserts.add(new QBQuadHolder(AbstractQueryBuilder.makeNode(graph, prefixHandler.getPrefixes()), queryBuilder));
+		inserts.add(new QBQuadHolder(makeNode(graph), queryBuilder));
 		return this;
 	}
 
@@ -543,10 +540,10 @@ public class UpdateBuilder {
 	 * @return this builder for chaining.
 	 */
 	public UpdateBuilder addDelete(Object g, Object s, Object p, Object o) {
-		return addDelete(new Quad(AbstractQueryBuilder.makeNode(g, prefixHandler.getPrefixes()),
-				AbstractQueryBuilder.makeNode(s, prefixHandler.getPrefixes()),
-				AbstractQueryBuilder.makeNode(p, prefixHandler.getPrefixes()),
-				AbstractQueryBuilder.makeNode(o, prefixHandler.getPrefixes())));
+		return addDelete(new Quad(makeNode(g),
+				makeNode(s),
+				makeNode(p),
+				makeNode(o)));
 	}
 
 	/**
@@ -587,9 +584,7 @@ public class UpdateBuilder {
 	 * @return this builder for chaining.
 	 */
 	public UpdateBuilder addDelete(Object s, Object p, Object o) {
-		addDelete(new Triple(AbstractQueryBuilder.makeNode(s, prefixHandler.getPrefixes()),
-				AbstractQueryBuilder.makeNode(p, prefixHandler.getPrefixes()),
-				AbstractQueryBuilder.makeNode(o, prefixHandler.getPrefixes())));
+		addDelete(new Triple(makeNode(s), makeNode(p), makeNode(o)));
 		return this;
 	}
 
@@ -620,7 +615,7 @@ public class UpdateBuilder {
 	 * @return this builder for chaining.
 	 */
 	public UpdateBuilder addDelete(Object g, Triple t) {
-		Quad q = new Quad(AbstractQueryBuilder.makeNode(g, prefixHandler.getPrefixes()), t);
+		Quad q = new Quad(makeNode(g), t);
 		deletes.add(new SingleQuadHolder(q));
 		return this;
 	}
@@ -677,9 +672,7 @@ public class UpdateBuilder {
 	 * @return this builder for chaining.
 	 */
 	public UpdateBuilder addDelete(Object g, Model model) {
-		deletes.add( new ModelQuadHolder(
-				AbstractQueryBuilder.makeNode(g, prefixHandler.getPrefixes()),
-				model));
+		deletes.add( new ModelQuadHolder( makeNode(g), model));
 		return this;
 	}
 
@@ -693,9 +686,7 @@ public class UpdateBuilder {
 	 * @return this builder for chaining.
 	 */
 	public UpdateBuilder addDelete(Object g, Collection<Triple> collection) {
-		deletes.add(new CollectionQuadHolder( 
-				AbstractQueryBuilder.makeNode(g, prefixHandler.getPrefixes()),
-				collection ));
+		deletes.add(new CollectionQuadHolder( makeNode(g), collection ));
 		return this;
 	}
 	
@@ -708,9 +699,7 @@ public class UpdateBuilder {
 	 * @return this builder for chaining.
 	 */
 	public UpdateBuilder addDelete(Object g, Iterator<Triple> iter) {
-		deletes.add(new CollectionQuadHolder( 
-				AbstractQueryBuilder.makeNode(g, prefixHandler.getPrefixes()),
-				iter ));
+		deletes.add(new CollectionQuadHolder( makeNode(g), iter ));
 		return this;
 	}
 
@@ -744,7 +733,7 @@ public class UpdateBuilder {
 	 * @return this builder for chaining.
 	 */
 	public UpdateBuilder addDelete(Object graph, AbstractQueryBuilder<?> queryBuilder) {
-		deletes.add(new QBQuadHolder(AbstractQueryBuilder.makeNode(graph, prefixHandler.getPrefixes()), queryBuilder));
+		deletes.add(new QBQuadHolder(makeNode(graph), queryBuilder));
 		return this;
 	}
 
@@ -858,10 +847,9 @@ public class UpdateBuilder {
 	 */
 	public void setVar(Object var, Object value) {
 		if (value == null) {
-			setVar(AbstractQueryBuilder.makeVar(var), null);
+			setVar(Converters.makeVar(var), null);
 		} else {
-			setVar(AbstractQueryBuilder.makeVar(var),
-					AbstractQueryBuilder.makeNode(value, prefixHandler.getPrefixes()));
+			setVar(Converters.makeVar(var), makeNode(value));
 		}
 	}
 
