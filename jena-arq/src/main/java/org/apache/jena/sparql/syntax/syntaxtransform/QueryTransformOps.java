@@ -81,9 +81,11 @@ public class QueryTransformOps {
         // if ( q2.hasAggregators() ) {}
 
         Element el = q2.getQueryPattern();
-        Element el2 = ElementTransformer.transform(el, transform, exprTransform);
+
+        // Explicit null check to prevent warning in ElementTransformer
+        Element el2 = el == null ? null : ElementTransformer.transform(el, transform, exprTransform);
         // Top level is always a group.
-        if (!(el2 instanceof ElementGroup)) {
+        if (el2 != null && !(el2 instanceof ElementGroup)) {
             ElementGroup eg = new ElementGroup();
             eg.addElement(el2);
             el2 = eg;
@@ -189,14 +191,7 @@ public class QueryTransformOps {
         public void visitSelectResultForm(Query query) {
             newQuery.setQuerySelectType();
             newQuery.setDistinct(query.isDistinct());
-            VarExprList x = query.getProject();
-            for (Var v : x.getVars()) {
-                Expr expr = x.getExpr(v);
-                if (expr == null)
-                    newQuery.addResultVar(v);
-                else
-                    newQuery.addResultVar(v, expr);
-            }
+            copyProjection(query);
         }
 
         @Override
@@ -210,6 +205,7 @@ public class QueryTransformOps {
             newQuery.setQueryDescribeType();
             for (Node x : query.getResultURIs())
                 newQuery.addDescribeNode(x);
+            copyProjection(query);
         }
 
         @Override
@@ -281,6 +277,19 @@ public class QueryTransformOps {
         @Override
         public void finishVisit(Query query) {
         }
+
+        // In some (legacy?) cases, describe queries make use of projection instead
+        // of result nodes
+		public void copyProjection(Query query) {
+			VarExprList x = query.getProject();
+            for (Var v : x.getVars()) {
+                Expr expr = x.getExpr(v);
+                if (expr == null)
+                    newQuery.addResultVar(v);
+                else
+                    newQuery.addResultVar(v, expr);
+            }
+		}
     }
 
     public static Query shallowCopy(Query query) {
