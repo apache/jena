@@ -23,7 +23,6 @@ import java.nio.ByteOrder ;
 import java.nio.IntBuffer ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.Alg ;
 import org.junit.Test ;
 
 public class TestAlg extends BaseTest

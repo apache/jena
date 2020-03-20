@@ -23,7 +23,6 @@ import java.io.IOException;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mrunit.mapreduce.MapDriver;
 import org.apache.jena.hadoop.rdf.mapreduce.AbstractMapperTests;
-import org.apache.jena.hadoop.rdf.mapreduce.filter.AbstractNodeTupleFilterMapper;
 import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
 import org.junit.Test;
 

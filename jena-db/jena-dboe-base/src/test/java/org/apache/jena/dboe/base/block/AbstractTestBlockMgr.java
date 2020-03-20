@@ -22,8 +22,6 @@ import java.nio.ByteBuffer;
 
 import static org.apache.jena.atlas.lib.ByteBufferLib.fill;
 import org.junit.Assert;
-import org.apache.jena.dboe.base.block.Block;
-import org.apache.jena.dboe.base.block.BlockMgr;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

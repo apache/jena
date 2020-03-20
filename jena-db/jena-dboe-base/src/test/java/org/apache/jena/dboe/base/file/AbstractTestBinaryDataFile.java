@@ -19,7 +19,6 @@
 package org.apache.jena.dboe.base.file;
 
 import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.dboe.base.file.BinaryDataFile;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Lib;
-import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryException;
 import org.apache.jena.sparql.core.DatasetDescription;

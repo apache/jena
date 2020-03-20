@@ -23,7 +23,6 @@ import java.util.function.Consumer;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.WebLib;
-import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;

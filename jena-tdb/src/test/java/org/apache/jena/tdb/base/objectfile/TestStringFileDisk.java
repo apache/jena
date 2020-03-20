@@ -23,7 +23,6 @@ import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.tdb.ConfigTest ;
 import org.apache.jena.tdb.base.file.FileFactory ;
 import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.base.objectfile.StringFile ;
 
 public class TestStringFileDisk extends AbstractTestStringFile
 {

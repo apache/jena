@@ -21,7 +21,6 @@ import java.net.URL;
 
 import org.junit.Assert;
 import org.apache.jena.assembler.Assembler ;
-import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;

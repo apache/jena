@@ -21,7 +21,6 @@ package org.apache.jena.n3 ;
 import java.io.* ;
 
 import junit.framework.* ;
-import org.apache.jena.n3.N3JenaWriter ;
 import org.apache.jena.rdf.model.* ;
 
 public class N3JenaWriterTests extends N3ExternalTestsCom

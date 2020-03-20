@@ -22,8 +22,6 @@ import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.index.test.IndexTestLib;
 import org.apache.jena.system.Txn;
 import org.apache.jena.dboe.test.RecordLib;
-import org.apache.jena.dboe.trans.bplustree.BPlusTree;
-import org.apache.jena.dboe.trans.bplustree.BPlusTreeFactory;
 import org.apache.jena.dboe.transaction.Transactional;
 import org.apache.jena.dboe.transaction.TransactionalFactory;
 import org.apache.jena.dboe.transaction.txn.TransactionalComponent;

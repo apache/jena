@@ -20,7 +20,6 @@ package org.apache.jena.sparql.modify;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.sparql.modify.UpdateCompare ;
 import org.apache.jena.update.UpdateFactory ;
 import org.apache.jena.update.UpdateRequest ;
 import org.junit.Test ;

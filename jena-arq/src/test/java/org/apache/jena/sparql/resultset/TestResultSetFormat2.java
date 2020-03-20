@@ -25,9 +25,6 @@ import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
 import org.apache.jena.sparql.ARQException ;
-import org.apache.jena.sparql.resultset.CSVInput ;
-import org.apache.jena.sparql.resultset.ResultSetException ;
-import org.apache.jena.sparql.resultset.TSVInput ;
 import org.junit.Test;
 
 public class TestResultSetFormat2 {

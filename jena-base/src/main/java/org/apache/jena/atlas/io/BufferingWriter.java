@@ -21,8 +21,6 @@ package org.apache.jena.atlas.io ;
 import java.io.IOException ;
 import java.io.Writer ;
 
-import org.apache.jena.atlas.io.IO ;
-
 /**
  * A buffering writer. Like BufferedWriter but with no synchronization. A
  * "synchronized" per character can be expensive.

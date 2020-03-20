@@ -19,7 +19,6 @@
 package org.apache.jena.tdb.base.objectfile;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.tdb.base.objectfile.StringFile ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;

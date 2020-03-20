@@ -18,7 +18,6 @@
 
 package org.apache.jena.sparql.function.user;
 
-import org.apache.jena.sparql.function.user.UserDefinedFunctionDefinition ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;

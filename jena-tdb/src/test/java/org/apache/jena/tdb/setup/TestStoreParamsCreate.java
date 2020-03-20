@@ -31,8 +31,6 @@ import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.tdb.ConfigTest ;
 import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.setup.StoreParams ;
-import org.apache.jena.tdb.setup.StoreParamsCodec ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;

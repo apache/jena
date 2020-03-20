@@ -21,7 +21,6 @@ package org.apache.jena.dboe.base.file;
 import java.nio.ByteBuffer;
 
 import org.junit.Assert;
-import org.apache.jena.dboe.base.file.BufferChannel;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

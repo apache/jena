@@ -28,7 +28,6 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.E_Multiply ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprVar ;
-import org.apache.jena.sparql.function.user.UserDefinedFunctionFactory ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.Assert;
 import org.junit.AfterClass;

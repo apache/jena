@@ -18,8 +18,6 @@
 
 package org.apache.jena.shacl.tests.std;
 
-import org.apache.jena.shacl.tests.std.TestShaclCoreWG;
-import org.apache.jena.shacl.tests.std.TestShaclSparqlWG;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

@@ -18,8 +18,6 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.expr.E_Function ;
-import org.apache.jena.sparql.expr.NodeValue ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;

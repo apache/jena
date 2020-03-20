@@ -27,9 +27,6 @@ import org.apache.jena.tdb.base.block.Block ;
 import org.apache.jena.tdb.base.file.BufferChannel ;
 import org.apache.jena.tdb.base.file.BufferChannelMem ;
 import org.apache.jena.tdb.sys.FileRef ;
-import org.apache.jena.tdb.transaction.Journal ;
-import org.apache.jena.tdb.transaction.JournalEntry ;
-import org.apache.jena.tdb.transaction.JournalEntryType ;
 import org.junit.Before ;
 import org.junit.Test ;
 

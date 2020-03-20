@@ -18,9 +18,6 @@
 
 package org.apache.jena.sparql.core;
 
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
-
 public class TestDatasetGraphBaseFind_Mem extends AbstractDatasetGraphFind {
     @Override
     public DatasetGraph create() {

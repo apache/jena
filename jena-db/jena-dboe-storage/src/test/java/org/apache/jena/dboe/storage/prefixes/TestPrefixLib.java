@@ -22,9 +22,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.apache.jena.atlas.lib.Pair;
-import org.apache.jena.dboe.storage.prefixes.PrefixLib;
-import org.apache.jena.dboe.storage.prefixes.PrefixMapI;
-import org.apache.jena.dboe.storage.prefixes.PrefixesFactory;
 import org.junit.Test;
 
 public class TestPrefixLib {

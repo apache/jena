@@ -18,9 +18,6 @@
 
 package org.apache.jena.sparql.algebra;
 
-import org.apache.jena.sparql.algebra.Op;
-import org.apache.jena.sparql.algebra.Transform;
-import org.apache.jena.sparql.algebra.Transformer;
 import org.apache.jena.sparql.core.Quad;
 
 public class OpLib

@@ -18,9 +18,6 @@
 
 package org.apache.jena.tdb.base.file;
 
-import org.apache.jena.tdb.base.file.BlockAccess ;
-import org.apache.jena.tdb.base.file.BlockAccessMem ;
-
 public class TestBlockAccessMem extends AbstractTestBlockAccessFixedSize
 {
     static final int BlockSize = 50 ;

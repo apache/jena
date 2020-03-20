@@ -23,7 +23,6 @@ import static org.apache.jena.atlas.lib.Chars.CH_QUOTE2 ;
 
 import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.riot.out.NodeFormatter ;
 import org.apache.jena.riot.out.NodeFormatterTTL ;
 import org.apache.jena.riot.out.quoted.QuotedStringOutput ;
 import org.apache.jena.riot.out.quoted.QuotedStringOutputTTL_MultiLine ;

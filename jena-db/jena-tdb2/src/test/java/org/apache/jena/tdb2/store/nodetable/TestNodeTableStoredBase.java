@@ -24,7 +24,6 @@ import org.apache.jena.tdb2.ConfigTest;
 import org.apache.jena.tdb2.junit.BuildTestLib;
 import org.apache.jena.tdb2.params.StoreParams;
 import org.apache.jena.tdb2.params.StoreParamsBuilder;
-import org.apache.jena.tdb2.store.nodetable.NodeTable;
 
 
 public class TestNodeTableStoredBase extends AbstractTestNodeTable

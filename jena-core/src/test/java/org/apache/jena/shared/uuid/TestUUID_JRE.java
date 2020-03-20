@@ -24,9 +24,6 @@ import static org.apache.jena.shared.uuid.UUIDTestSuite.factory4 ;
 import java.util.UUID ;
 
 import junit.framework.TestCase ;
-import org.apache.jena.shared.uuid.JenaUUID ;
-import org.apache.jena.shared.uuid.UUID_V1 ;
-import org.apache.jena.shared.uuid.UUID_V4 ;
 
 /** Test comparing Java JRE UUID and Jena's for parsing existing UUIDs. */
 

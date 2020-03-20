@@ -21,8 +21,6 @@ package org.apache.jena.tdb.index.bplustree;
 import org.apache.jena.tdb.base.record.RecordLib ;
 import org.apache.jena.tdb.index.AbstractTestRangeIndex ;
 import org.apache.jena.tdb.index.RangeIndex ;
-import org.apache.jena.tdb.index.bplustree.BPlusTree ;
-import org.apache.jena.tdb.index.bplustree.BPlusTreeParams ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;

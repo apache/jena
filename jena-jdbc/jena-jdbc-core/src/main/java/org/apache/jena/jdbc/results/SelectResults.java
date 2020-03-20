@@ -97,6 +97,7 @@ public class SelectResults extends StreamedResults<Binding> {
         }
     }
 
+    @Override
     public int findColumn(String columnLabel) throws SQLException {
         if (this.isClosed())
             throw new SQLException("Result Set is closed");

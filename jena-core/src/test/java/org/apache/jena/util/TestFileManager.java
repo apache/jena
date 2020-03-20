@@ -24,8 +24,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.shared.NotFoundException ;
-import org.apache.jena.util.FileManager ;
-import org.apache.jena.util.LocationMapper ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

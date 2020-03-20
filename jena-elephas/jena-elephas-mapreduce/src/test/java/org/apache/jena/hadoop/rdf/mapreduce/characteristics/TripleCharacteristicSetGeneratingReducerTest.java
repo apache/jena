@@ -25,7 +25,6 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.hadoop.rdf.mapreduce.characteristics.TripleCharacteristicSetGeneratingReducer;
 import org.apache.jena.hadoop.rdf.mapreduce.group.TripleGroupBySubjectMapper;
 import org.apache.jena.hadoop.rdf.types.CharacteristicSetWritable;
 import org.apache.jena.hadoop.rdf.types.NodeWritable;

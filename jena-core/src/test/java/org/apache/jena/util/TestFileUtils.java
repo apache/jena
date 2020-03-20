@@ -19,7 +19,6 @@
 package org.apache.jena.util;
 
 import junit.framework.*;
-import org.apache.jena.util.FileUtils ;
 
 /**
  * TestFileUtils

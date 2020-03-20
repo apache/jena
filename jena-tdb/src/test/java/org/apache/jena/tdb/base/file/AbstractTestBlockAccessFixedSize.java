@@ -21,8 +21,6 @@ package org.apache.jena.tdb.base.file;
 import static org.apache.jena.tdb.base.BufferTestLib.sameValue ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.tdb.base.block.Block ;
-import org.apache.jena.tdb.base.file.BlockAccess ;
-import org.apache.jena.tdb.base.file.FileException ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;

@@ -23,7 +23,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryFactory ;
-import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps ;
 
 public class TestQueryOps
 {

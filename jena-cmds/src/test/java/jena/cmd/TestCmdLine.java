@@ -19,9 +19,6 @@
 package jena.cmd;
 import java.util.Iterator ;
 
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdLineArgs;
-
 import org.junit.Test ;
 import static org.junit.Assert.* ;
 

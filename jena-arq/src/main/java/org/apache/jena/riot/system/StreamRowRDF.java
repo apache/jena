@@ -19,7 +19,6 @@
 package org.apache.jena.riot.system;
 
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.core.Quad ;
 
 /** An item in a stream of RDF data.

@@ -22,7 +22,6 @@ import junit.framework.* ;
 
 import java.io.* ;
 
-import org.apache.jena.n3.turtle.TurtleEventNull ;
 import org.apache.jena.n3.turtle.parser.TurtleParser ;
 import org.apache.jena.util.junit.TestUtils ;
 

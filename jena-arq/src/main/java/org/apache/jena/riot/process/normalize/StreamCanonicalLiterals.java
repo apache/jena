@@ -21,7 +21,6 @@ package org.apache.jena.riot.process.normalize;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.riot.process.StreamRDFApplyObject;
-import org.apache.jena.riot.process.normalize.CanonicalizeLiteral;
 import org.apache.jena.riot.system.StreamRDF;
 
 /** Canonicalize literal lexcial forms (in the object position).

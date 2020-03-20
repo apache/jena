@@ -21,7 +21,6 @@ import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluatorParameters;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
-import org.apache.jena.permissions.model.SecuredLiteral;
 import org.apache.jena.permissions.model.impl.SecuredLiteralImpl;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.ResourceFactory;

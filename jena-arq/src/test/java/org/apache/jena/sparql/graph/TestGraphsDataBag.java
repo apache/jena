@@ -27,8 +27,6 @@ import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.shared.DeleteDeniedException ;
-import org.apache.jena.sparql.graph.GraphDefaultDataBag ;
-import org.apache.jena.sparql.graph.GraphDistinctDataBag ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.junit.After ;

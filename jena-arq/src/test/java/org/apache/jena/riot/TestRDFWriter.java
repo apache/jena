@@ -26,9 +26,6 @@ import java.io.Writer;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFWriter;
-import org.apache.jena.riot.RiotException;
 import org.apache.jena.sparql.sse.SSE;
 import org.junit.Test;
 

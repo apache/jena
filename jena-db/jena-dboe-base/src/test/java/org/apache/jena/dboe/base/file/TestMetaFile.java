@@ -22,7 +22,6 @@ import java.io.File;
 
 import org.junit.Assert;
 import org.apache.jena.dboe.ConfigTestDBOE;
-import org.apache.jena.dboe.base.file.MetaFile;
 import org.apache.jena.dboe.sys.Names;
 import org.junit.After;
 import org.junit.Before;

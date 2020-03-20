@@ -24,7 +24,6 @@ import jena.cmd.CmdArgModule;
 import jena.cmd.CmdException;
 import jena.cmd.CmdGeneral;
 import org.apache.jena.dboe.base.file.Location;
-import tdb2.cmdline.ModLocation;
 import arq.cmdline.ModAssembler;
 
 /**  Extends ModAssembler to include --tdb.

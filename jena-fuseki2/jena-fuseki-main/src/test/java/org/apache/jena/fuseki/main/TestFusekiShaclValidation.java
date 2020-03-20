@@ -23,7 +23,6 @@ import static org.junit.Assert.assertNotNull;
 
 import org.apache.http.entity.EntityTemplate;
 import org.apache.jena.atlas.web.WebLib;
-import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;

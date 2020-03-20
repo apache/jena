@@ -19,7 +19,6 @@
 package org.apache.jena.atlas.lib;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.junit.Test ;
 

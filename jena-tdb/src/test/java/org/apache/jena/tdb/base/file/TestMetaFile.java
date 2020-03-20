@@ -22,7 +22,6 @@ import java.io.File ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.tdb.ConfigTest ;
-import org.apache.jena.tdb.base.file.MetaFile ;
 import org.apache.jena.tdb.sys.Names ;
 import org.junit.After ;
 import org.junit.Before ;

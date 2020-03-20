@@ -21,9 +21,6 @@ package org.apache.jena.system;
 import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.fail;
 
-import org.apache.jena.system.ThreadTxn ;
-import org.apache.jena.system.Txn ;
-import org.apache.jena.system.TxnCounter ;
 import org.junit.Test ;
 
 public class TestTxnThread {

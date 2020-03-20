@@ -18,9 +18,6 @@
 
 package org.apache.jena.tdb.base.file;
 
-import org.apache.jena.tdb.base.file.BufferChannel ;
-import org.apache.jena.tdb.base.file.BufferChannelMem ;
-
 
 public class TestChannelMem extends AbstractTestChannel
 {

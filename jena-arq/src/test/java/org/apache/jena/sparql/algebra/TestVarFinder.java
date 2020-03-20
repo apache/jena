@@ -24,7 +24,6 @@ import java.util.List ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.main.VarFinder ;
 import org.apache.jena.sparql.sse.SSE ;

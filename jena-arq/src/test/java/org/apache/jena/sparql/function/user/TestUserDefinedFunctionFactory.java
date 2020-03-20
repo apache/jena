@@ -23,7 +23,6 @@ import java.util.ArrayList ;
 import org.apache.jena.sparql.expr.E_Multiply ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprVar ;
-import org.apache.jena.sparql.function.user.UserDefinedFunctionFactory ;
 import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 import org.junit.AfterClass ;
 import org.junit.Assert ;

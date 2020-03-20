@@ -22,10 +22,6 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.tdb.ConfigTest ;
 import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.setup.Build ;
-import org.apache.jena.tdb.setup.StoreParams ;
-import org.apache.jena.tdb.setup.StoreParamsCodec ;
-import org.apache.jena.tdb.setup.StoreParamsConst ;
 import org.junit.Test ;
 
 //TestParamsCreate

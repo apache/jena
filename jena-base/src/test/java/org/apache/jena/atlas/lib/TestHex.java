@@ -20,7 +20,6 @@ package org.apache.jena.atlas.lib;
 
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.Hex ;
 import org.junit.Test ;
 
 public class TestHex extends BaseTest

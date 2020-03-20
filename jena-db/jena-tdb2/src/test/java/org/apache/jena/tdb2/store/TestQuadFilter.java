@@ -29,8 +29,6 @@ import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.tdb2.TDB2Factory;
-import org.apache.jena.tdb2.store.DatasetGraphTDB;
-import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.sys.SystemTDB;
 import org.junit.AfterClass;

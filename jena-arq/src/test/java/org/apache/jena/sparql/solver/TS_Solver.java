@@ -18,7 +18,6 @@
 
 package org.apache.jena.sparql.solver;
 
-import org.apache.jena.sparql.solver.TestReorder ;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

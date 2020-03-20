@@ -26,7 +26,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.tdb2.junit.TL;
-import org.apache.jena.tdb2.store.GraphViewSwitchable;
 import org.junit.Test;
 
 /** Testing persistence  */

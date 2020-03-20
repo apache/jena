@@ -29,7 +29,6 @@ import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.iterator.QueryIter2 ;
 import org.apache.jena.sparql.engine.iterator.QueryIterPeek ;
-import org.apache.jena.sparql.engine.join.JoinKey ;
 
 /** Hash join algorithm
  *  

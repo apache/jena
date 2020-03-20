@@ -20,8 +20,6 @@ package org.apache.jena.sparql.engine.join;
 
 import org.apache.jena.sparql.algebra.Table ;
 import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.join.Join ;
-import org.apache.jena.sparql.engine.join.JoinKey ;
 import org.apache.jena.sparql.expr.ExprList ;
 
 public class TestJoinNestedLoopSimple extends AbstractTestInnerJoin {

@@ -19,7 +19,6 @@
 package org.apache.jena.sparql.algebra.optimize;
 
 import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.sparql.algebra.optimize.TransformEliminateAssignments;
 import org.junit.Assert;
 import org.junit.Test;
 

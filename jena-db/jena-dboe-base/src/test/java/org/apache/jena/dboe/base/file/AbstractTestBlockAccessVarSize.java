@@ -21,7 +21,6 @@ package org.apache.jena.dboe.base.file;
 import static org.apache.jena.dboe.test.BufferTestLib.*;
 
 import org.apache.jena.dboe.base.block.Block;
-import org.apache.jena.dboe.base.file.BlockAccess;
 import org.junit.Test;
 
 public abstract class AbstractTestBlockAccessVarSize extends AbstractTestBlockAccessFixedSize

@@ -59,6 +59,7 @@ public class AskResults extends JenaResultSet {
         this.columnLabel = this.metadata.getColumnLabel(AskResultsMetadata.COLUMN_INDEX_ASK);
     }
 
+    @Override
     public boolean absolute(int row) throws SQLException {
         // We can move backwards and forwards in an ASK result but there
         // is only ever a single row
@@ -75,14 +76,17 @@ public class AskResults extends JenaResultSet {
         }
     }
 
+    @Override
     public void afterLast() {
         this.currRow = 2;
     }
 
+    @Override
     public void beforeFirst() {
         this.currRow = 0;
     }
 
+    @Override
     public void close() throws SQLException {
         if (this.closed) return;
         this.closed = true;
@@ -92,63 +96,76 @@ public class AskResults extends JenaResultSet {
         }
     }
 
+    @Override
     public int findColumn(String columnLabel) throws SQLException {
         if (this.columnLabel.equals(columnLabel)) return 1;
         throw new SQLException("The given column does not exist in this result set");
     }
 
+    @Override
     public boolean first() throws SQLException {
         if (this.isClosed()) throw new SQLException("Cannot move to a row after the result set has been closed");
         this.currRow = 1;
         return true;
     }
 
+    @Override
     public int getFetchDirection() {
         return ResultSet.FETCH_FORWARD;
     }
 
+    @Override
     public int getFetchSize() {
         return 1;
     }
 
+    @Override
     public int getRow() {
         return this.currRow;
     }
 
+    @Override
     public int getType() {
         return ResultSet.TYPE_SCROLL_INSENSITIVE;
     }
 
+    @Override
     public boolean isAfterLast() throws SQLException {
         if (this.isClosed()) throw new SQLException("Result Set is closed");
         return this.currRow == 2;
     }
 
+    @Override
     public boolean isBeforeFirst() throws SQLException {
         if (this.isClosed()) throw new SQLException("Result Set is closed");
         return this.currRow == 0;
     }
 
+    @Override
     public boolean isClosed() {
         return this.closed;
     }
 
+    @Override
     public boolean isFirst() throws SQLException {
         if (this.isClosed()) throw new SQLException("Result Set is closed");
         return this.currRow == 1;
     }
 
+    @Override
     public boolean isLast() throws SQLException {
         if (this.isClosed()) throw new SQLException("Result Set is closed");
         return this.currRow == 1;
     }
 
+    @Override
     public boolean last() throws SQLException {
         if (this.isClosed()) throw new SQLException("Cannot move to a row after the result set has been closed");
         this.currRow = 1;
         return true;
     }
 
+    @Override
     public boolean next() throws SQLException {
         if (this.isClosed()) throw new SQLException("Cannot move to a row after the result set has been closed");
         if (this.currRow < 2) {
@@ -157,6 +174,7 @@ public class AskResults extends JenaResultSet {
         return this.currRow == 1;
     }
 
+    @Override
     public boolean relative(int rows) throws SQLException {
         if (this.isClosed()) {
             throw new SQLException("Cannot move to a row after the result set has been closed");
@@ -174,10 +192,12 @@ public class AskResults extends JenaResultSet {
         }
     }
 
+    @Override
     public void setFetchDirection(int direction) throws SQLException {
         if (direction != ResultSet.FETCH_FORWARD) throw new SQLFeatureNotSupportedException("Jena JDBC Result Sets only support forward fetch");
     }
 
+    @Override
     public void setFetchSize(int rows) throws SQLException {
         throw new SQLFeatureNotSupportedException("Fetch Size is not relevant for ASK results");
     }

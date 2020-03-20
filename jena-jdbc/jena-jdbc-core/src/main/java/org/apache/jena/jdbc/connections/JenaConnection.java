@@ -859,23 +859,28 @@ public abstract class JenaConnection implements Connection {
     }
 
 	//--- Java6/7 compatibility.
-	public void setSchema(String schema) throws SQLException {
+	@Override
+    public void setSchema(String schema) throws SQLException {
 		throw new SQLFeatureNotSupportedException();	
 	}
 
-	public String getSchema() throws SQLException {
+	@Override
+    public String getSchema() throws SQLException {
 		throw new SQLFeatureNotSupportedException();	
 	}
 
-	public void abort(java.util.concurrent.Executor executor) throws SQLException {
+	@Override
+    public void abort(java.util.concurrent.Executor executor) throws SQLException {
 		throw new SQLFeatureNotSupportedException();	
 	}
 
-	public int getNetworkTimeout() throws SQLException {
+	@Override
+    public int getNetworkTimeout() throws SQLException {
 		throw new SQLFeatureNotSupportedException();	
 	}
 
-	public void setNetworkTimeout(java.util.concurrent.Executor executor, int milliseconds) throws SQLException {
+	@Override
+    public void setNetworkTimeout(java.util.concurrent.Executor executor, int milliseconds) throws SQLException {
 		throw new SQLFeatureNotSupportedException();	
 	}
 }

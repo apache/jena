@@ -18,8 +18,6 @@
 
 package org.apache.jena.tdb.index;
 
-import org.apache.jena.tdb.index.Index ;
-
 public interface IndexMaker
 {
     Index makeIndex() ;

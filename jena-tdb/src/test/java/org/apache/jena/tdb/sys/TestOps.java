@@ -19,7 +19,6 @@
 package org.apache.jena.tdb.sys;
 
 import org.apache.jena.tdb.base.block.FileMode ;
-import org.apache.jena.tdb.sys.SystemTDB ;
 
 public class TestOps
 {

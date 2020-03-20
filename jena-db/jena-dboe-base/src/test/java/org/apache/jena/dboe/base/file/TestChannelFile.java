@@ -20,8 +20,6 @@ package org.apache.jena.dboe.base.file;
 
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.dboe.ConfigTestDBOE;
-import org.apache.jena.dboe.base.file.BufferChannel;
-import org.apache.jena.dboe.base.file.BufferChannelFile;
 import org.junit.AfterClass;
 
 public class TestChannelFile extends AbstractTestChannel

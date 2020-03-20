@@ -28,8 +28,6 @@ import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBFactory ;
-import org.apache.jena.tdb.store.DatasetGraphTDB ;
-import org.apache.jena.tdb.store.NodeId ;
 import org.apache.jena.tdb.store.nodetable.NodeTable ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 import org.junit.AfterClass ;

@@ -22,8 +22,6 @@ import java.net.MalformedURLException;
 
 import junit.framework.JUnit4TestAdapter;
 
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIFactory ;
 import org.junit.Assert;
 import org.junit.Test;
 

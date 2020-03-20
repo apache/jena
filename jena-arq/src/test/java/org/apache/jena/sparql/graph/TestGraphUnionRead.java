@@ -28,7 +28,6 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.graph.GraphUnionRead;
 import org.apache.jena.sparql.sse.Item;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.sse.builders.BuilderGraph;

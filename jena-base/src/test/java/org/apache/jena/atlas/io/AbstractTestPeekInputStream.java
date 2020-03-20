@@ -18,7 +18,6 @@
 
 package org.apache.jena.atlas.io;
 
-import org.apache.jena.atlas.io.PeekInputStream ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 

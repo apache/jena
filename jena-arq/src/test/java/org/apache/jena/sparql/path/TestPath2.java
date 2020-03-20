@@ -27,8 +27,6 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ARQ ;
-import org.apache.jena.sparql.path.Path ;
-import org.apache.jena.sparql.path.PathFactory ;
 import org.apache.jena.sparql.path.eval.PathEval ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.AfterClass ;

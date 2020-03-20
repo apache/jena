@@ -32,8 +32,6 @@ import org.apache.jena.ontology.OntDocumentManager ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdfxml.xmlinput.ARPErrorNumbers ;
-import org.apache.jena.rdfxml.xmlinput.NTriple ;
-import org.apache.jena.rdfxml.xmlinput.ParseException ;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
 

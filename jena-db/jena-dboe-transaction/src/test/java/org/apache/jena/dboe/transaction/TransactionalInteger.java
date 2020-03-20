@@ -18,7 +18,6 @@
 
 package org.apache.jena.dboe.transaction;
 
-import org.apache.jena.dboe.transaction.TransInteger;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.dboe.transaction.txn.TransactionalBase;
 

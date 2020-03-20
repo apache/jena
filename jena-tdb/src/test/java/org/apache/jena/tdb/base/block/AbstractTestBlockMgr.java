@@ -23,8 +23,6 @@ import java.nio.ByteBuffer ;
 
 import static org.apache.jena.atlas.lib.ByteBufferLib.fill ;
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.tdb.base.block.Block ;
-import org.apache.jena.tdb.base.block.BlockMgr ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;

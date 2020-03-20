@@ -29,7 +29,6 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
 import org.apache.jena.query.ResultSetRewindable ;
-import org.apache.jena.riot.thrift.BinRDF ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;

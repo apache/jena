@@ -23,9 +23,6 @@ import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.base.block.FileMode ;
-import org.apache.jena.tdb.setup.StoreParams ;
-import org.apache.jena.tdb.setup.StoreParamsBuilder ;
-import org.apache.jena.tdb.setup.StoreParamsCodec ;
 import org.junit.Test ;
 
 public class TestStoreParams extends BaseTest {

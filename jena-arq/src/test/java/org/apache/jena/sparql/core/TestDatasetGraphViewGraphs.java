@@ -21,9 +21,6 @@ package org.apache.jena.sparql.core;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
-import org.apache.jena.sparql.core.GraphView ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 

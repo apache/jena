@@ -20,9 +20,6 @@ package org.apache.jena.tdb.base.block;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.tdb.ConfigTest ;
-import org.apache.jena.tdb.base.block.BlockMgr ;
-import org.apache.jena.tdb.base.block.BlockMgrFactory ;
-import org.apache.jena.tdb.base.block.BlockMgrFileAccess ;
 import org.apache.jena.tdb.base.file.BlockAccess ;
 import org.apache.jena.tdb.base.file.BlockAccessDirect ;
 import org.junit.AfterClass;

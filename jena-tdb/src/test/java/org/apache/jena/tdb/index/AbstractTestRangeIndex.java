@@ -29,7 +29,6 @@ import java.util.List ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.tdb.base.record.RecordLib ;
-import org.apache.jena.tdb.index.RangeIndex ;
 import org.junit.After ;
 import org.junit.Test ;
 

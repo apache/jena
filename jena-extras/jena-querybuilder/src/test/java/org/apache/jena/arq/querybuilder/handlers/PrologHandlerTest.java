@@ -20,7 +20,6 @@ package org.apache.jena.arq.querybuilder.handlers;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
 import org.apache.jena.query.Query ;
 import org.junit.Before;
 import org.junit.Test;

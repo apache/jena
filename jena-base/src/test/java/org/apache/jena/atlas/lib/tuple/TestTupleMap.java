@@ -23,9 +23,6 @@ import static org.junit.Assert.*;
 import java.util.Arrays ;
 import java.util.List ;
 
-import org.apache.jena.atlas.lib.tuple.Tuple ;
-import org.apache.jena.atlas.lib.tuple.TupleFactory ;
-import org.apache.jena.atlas.lib.tuple.TupleMap ;
 import org.junit.Test;
 
 public class TestTupleMap {

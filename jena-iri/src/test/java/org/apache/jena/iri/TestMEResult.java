@@ -20,7 +20,6 @@ package org.apache.jena.iri;
 
 import junit.framework.TestSuite;
 
-import org.apache.jena.iri.IRI ;
 import org.xml.sax.Attributes;
 
 

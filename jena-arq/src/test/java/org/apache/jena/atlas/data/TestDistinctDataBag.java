@@ -21,8 +21,6 @@ package org.apache.jena.atlas.data;
 import java.io.File ;
 import java.util.*;
 
-import org.apache.jena.atlas.data.DistinctDataBag ;
-import org.apache.jena.atlas.data.ThresholdPolicyCount ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.NodeFactory ;

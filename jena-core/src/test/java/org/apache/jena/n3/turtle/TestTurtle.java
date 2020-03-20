@@ -20,8 +20,6 @@ package org.apache.jena.n3.turtle;
 
 
 import junit.framework.TestCase;
-import org.apache.jena.n3.turtle.TurtleParseException ;
-import org.apache.jena.n3.turtle.TurtleReader ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.RDFReader ;

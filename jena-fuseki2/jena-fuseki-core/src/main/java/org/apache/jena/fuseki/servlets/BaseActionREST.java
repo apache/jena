@@ -19,8 +19,6 @@
 package org.apache.jena.fuseki.servlets;
 
 import org.apache.jena.fuseki.servlets.ActionREST;
-import org.apache.jena.fuseki.servlets.HttpAction;
-import org.apache.jena.fuseki.servlets.ServletOps;
 
 /** The "everything unsupported" ActionREST implemenation */
 public class BaseActionREST extends ActionREST {

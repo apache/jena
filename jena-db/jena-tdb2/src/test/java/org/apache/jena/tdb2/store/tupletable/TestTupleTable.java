@@ -29,8 +29,6 @@ import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.dboe.base.record.RecordFactory;
 import org.apache.jena.tdb2.store.NodeId;
-import org.apache.jena.tdb2.store.tupletable.TupleIndex;
-import org.apache.jena.tdb2.store.tupletable.TupleTable;
 import org.apache.jena.tdb2.sys.SystemTDB;
 import org.junit.Test;
 

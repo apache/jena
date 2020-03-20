@@ -18,8 +18,6 @@
 
 package org.apache.jena.atlas.io;
 
-import org.apache.jena.atlas.io.PeekReader ;
-
 
 
 public class TestPeekReaderCharSequence extends AbstractTestPeekReader

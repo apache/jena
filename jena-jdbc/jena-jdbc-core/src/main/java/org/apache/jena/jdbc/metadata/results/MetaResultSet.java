@@ -624,11 +624,13 @@ public class MetaResultSet implements ResultSet {
     }
 
 	// Java 6/7 compatibility
-	public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
+	@Override
+    public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }
 	
-	public <T> T getObject(String columnLabel,  Class<T> type) throws SQLException {
+	@Override
+    public <T> T getObject(String columnLabel,  Class<T> type) throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }
 

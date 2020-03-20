@@ -18,9 +18,6 @@
 
 package org.apache.jena.tdb.base.file;
 
-import org.apache.jena.tdb.base.file.BlockAccess ;
-import org.apache.jena.tdb.base.file.BlockAccessByteArray ;
-
 public class TestBlockAccessByteArray extends AbstractTestBlockAccessVarSize
 {
 

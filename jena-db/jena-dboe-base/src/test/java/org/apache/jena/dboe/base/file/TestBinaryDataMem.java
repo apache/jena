@@ -18,9 +18,6 @@
 
 package org.apache.jena.dboe.base.file;
 
-import org.apache.jena.dboe.base.file.BinaryDataFile;
-import org.apache.jena.dboe.base.file.BinaryDataFileMem;
-
 public class TestBinaryDataMem extends AbstractTestBinaryDataFile {
 
     @Override

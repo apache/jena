@@ -24,7 +24,6 @@ import org.apache.jena.dboe.base.file.BufferChannel;
 import org.apache.jena.dboe.base.file.BufferChannelMem;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.system.Txn;
-import org.apache.jena.dboe.trans.data.TransBlob;
 import org.apache.jena.dboe.transaction.Transactional;
 import org.apache.jena.dboe.transaction.TransactionalFactory;
 import org.apache.jena.dboe.transaction.txn.ComponentId;

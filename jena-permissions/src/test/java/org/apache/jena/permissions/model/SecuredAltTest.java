@@ -23,7 +23,6 @@ import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluatorParameters;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
-import org.apache.jena.permissions.model.SecuredAlt;
 import org.apache.jena.permissions.model.impl.SecuredAltImpl;
 import org.apache.jena.rdf.model.Alt;
 import org.apache.jena.rdf.model.ResourceFactory;

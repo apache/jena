@@ -18,7 +18,6 @@
 
 package org.apache.jena.atlas.lib;
 
-import org.apache.jena.atlas.lib.XMLLib ;
 import org.junit.Assert ;
 import org.junit.Test ;
 

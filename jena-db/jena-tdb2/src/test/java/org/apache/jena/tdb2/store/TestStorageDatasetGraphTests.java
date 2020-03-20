@@ -22,7 +22,6 @@ import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.sparql.core.AbstractDatasetGraphTests;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.tdb2.store.TDB2StorageBuilder;
 import org.apache.jena.tdb2.sys.StoreConnection;
 import org.junit.After;
 import org.junit.Before;

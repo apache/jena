@@ -34,7 +34,6 @@ import org.apache.jena.permissions.*;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.graph.SecuredGraph;
 import org.apache.jena.permissions.graph.SecuredPrefixMappingTest;
-import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.shared.AccessDeniedException;
 import org.apache.jena.shared.ReadDeniedException;

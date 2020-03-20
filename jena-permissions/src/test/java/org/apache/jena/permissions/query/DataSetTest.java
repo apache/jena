@@ -20,8 +20,6 @@ package org.apache.jena.permissions.query;
 import org.apache.jena.permissions.Factory;
 import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.model.SecuredModel;
-import org.apache.jena.permissions.query.SecuredQueryEngineFactory;
-
 import java.util.Set;
 
 import org.apache.jena.graph.Node;

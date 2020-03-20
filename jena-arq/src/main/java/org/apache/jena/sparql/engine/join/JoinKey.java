@@ -17,11 +17,7 @@
  */
 
 package org.apache.jena.sparql.engine.join;
-import java.util.ArrayList;
-import java.util.Collection ;
-import java.util.Collections;
-import java.util.Iterator ;
-import java.util.List ;
+import java.util.*;
 
 import org.apache.jena.sparql.core.Var ;
 

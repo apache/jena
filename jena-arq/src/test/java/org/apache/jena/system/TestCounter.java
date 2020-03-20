@@ -20,7 +20,6 @@ package org.apache.jena.system;
 
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.JenaTransactionException ;
-import org.apache.jena.system.TxnCounter ;
 import org.junit.Test ;
 
 import static org.junit.Assert.* ;

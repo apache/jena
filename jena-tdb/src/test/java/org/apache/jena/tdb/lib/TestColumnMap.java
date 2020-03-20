@@ -22,7 +22,6 @@ import static org.apache.jena.atlas.lib.tuple.TupleFactory.* ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
-import org.apache.jena.tdb.lib.ColumnMap ;
 import org.junit.Test ;
 
 public class TestColumnMap extends BaseTest

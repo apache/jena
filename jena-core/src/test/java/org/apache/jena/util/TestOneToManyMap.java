@@ -26,7 +26,6 @@ package org.apache.jena.util;
 import java.util.*;
 
 import junit.framework.TestCase;
-import org.apache.jena.util.OneToManyMap ;
 
 
 

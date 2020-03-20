@@ -19,7 +19,6 @@
 package org.apache.jena.dboe.base.file;
 
 import org.apache.jena.atlas.RuntimeIOException;
-import org.apache.jena.dboe.base.file.BinaryDataFileRandomAccess;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

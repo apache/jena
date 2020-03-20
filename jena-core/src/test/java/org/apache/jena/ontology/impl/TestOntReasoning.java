@@ -28,7 +28,6 @@ import java.util.*;
 
 import org.apache.jena.enhanced.EnhGraph ;
 import org.apache.jena.ontology.* ;
-import org.apache.jena.ontology.impl.OntClassImpl ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.reasoner.Reasoner ;
 import org.apache.jena.reasoner.ReasonerRegistry ;

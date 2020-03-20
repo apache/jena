@@ -24,7 +24,6 @@ import java.util.HashSet;
 
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.CollectionGraph ;
 import org.apache.jena.testing_framework.AbstractGraphProducer;
 import org.junit.runner.RunWith;
 import org.xenei.junit.contract.Contract;

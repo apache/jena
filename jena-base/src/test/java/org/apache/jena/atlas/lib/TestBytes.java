@@ -21,7 +21,6 @@ package org.apache.jena.atlas.lib;
 import java.nio.ByteBuffer ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.Bytes ;
 import org.junit.Test ;
 
 public class TestBytes extends BaseTest

@@ -22,7 +22,6 @@ import java.util.List;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.dboe.storage.StoragePrefixes;
-import org.apache.jena.dboe.storage.prefixes.PrefixEntry;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.junit.Test;

@@ -31,7 +31,6 @@ import org.apache.jena.ontology.* ;
 import org.apache.jena.ontology.impl.OWLDLProfile ;
 import org.apache.jena.ontology.impl.OWLLiteProfile ;
 import org.apache.jena.ontology.impl.OWLProfile ;
-import org.apache.jena.ontology.impl.OntModelImpl ;
 import org.apache.jena.ontology.impl.OWLProfile.SupportsCheck ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.test.ModelTestBase ;

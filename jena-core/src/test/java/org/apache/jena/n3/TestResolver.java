@@ -20,8 +20,6 @@ package org.apache.jena.n3;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.n3.N3IRIResolver ;
-import org.apache.jena.n3.JenaURIException ;
 @SuppressWarnings("deprecation")
 // Tests the old N3IRIResolver which is now only used for tests. 
 public class TestResolver extends TestCase

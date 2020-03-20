@@ -21,8 +21,6 @@ package org.apache.jena.atlas.lib;
 import java.util.concurrent.Callable ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.Cache ;
-import org.apache.jena.atlas.lib.CacheFactory ;
 import org.junit.Test ;
 
 // Non-parameterized tests

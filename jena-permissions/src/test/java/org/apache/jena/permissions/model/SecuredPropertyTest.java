@@ -20,7 +20,6 @@ package org.apache.jena.permissions.model;
 import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluatorParameters;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
-import org.apache.jena.permissions.model.SecuredProperty;
 import org.apache.jena.permissions.model.impl.SecuredPropertyImpl;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.ResourceFactory;

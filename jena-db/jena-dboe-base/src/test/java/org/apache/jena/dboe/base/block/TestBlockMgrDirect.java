@@ -20,9 +20,6 @@ package org.apache.jena.dboe.base.block;
 
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.dboe.ConfigTestDBOE;
-import org.apache.jena.dboe.base.block.BlockMgr;
-import org.apache.jena.dboe.base.block.BlockMgrFactory;
-import org.apache.jena.dboe.base.block.BlockMgrFileAccess;
 import org.apache.jena.dboe.base.file.BlockAccess;
 import org.apache.jena.dboe.base.file.BlockAccessDirect;
 import org.junit.AfterClass;

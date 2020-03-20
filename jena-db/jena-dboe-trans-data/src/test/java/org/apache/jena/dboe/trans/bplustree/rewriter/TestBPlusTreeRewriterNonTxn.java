@@ -34,8 +34,6 @@ import org.apache.jena.dboe.sys.Names;
 import org.apache.jena.dboe.trans.bplustree.BPTreeException;
 import org.apache.jena.dboe.trans.bplustree.BPlusTree;
 import org.apache.jena.dboe.trans.bplustree.BPlusTreeParams;
-import org.apache.jena.dboe.trans.bplustree.rewriter.BPlusTreeRewriter;
-import org.apache.jena.dboe.trans.bplustree.rewriter.BPlusTreeRewriterUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;

@@ -25,7 +25,6 @@ import org.apache.jena.dboe.index.IndexParams;
 import org.apache.jena.dboe.index.RangeIndex;
 import org.apache.jena.tdb2.junit.BuildTestLib;
 import org.apache.jena.tdb2.params.StoreParams;
-import org.apache.jena.tdb2.store.tupletable.TupleIndexRecord;
 import org.apache.jena.tdb2.sys.SystemTDB;
 
 public class TestTupleIndexRecord extends AbstractTestTupleIndex

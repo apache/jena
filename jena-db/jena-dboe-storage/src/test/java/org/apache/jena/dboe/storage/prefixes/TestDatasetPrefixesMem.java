@@ -18,7 +18,6 @@
 package org.apache.jena.dboe.storage.prefixes;
 
 import org.apache.jena.dboe.storage.StoragePrefixes;
-import org.apache.jena.dboe.storage.prefixes.PrefixesFactory;
 
 public class TestDatasetPrefixesMem extends AbstractTestDatasetPrefixesStorage {
 

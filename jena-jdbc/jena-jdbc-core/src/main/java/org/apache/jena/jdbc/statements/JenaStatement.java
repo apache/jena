@@ -78,7 +78,6 @@ public abstract class JenaStatement implements Statement {
     private boolean autoCommit = DEFAULT_AUTO_COMMIT;
     private int transactionLevel = DEFAULT_TRANSACTION_LEVEL;
     private int maxRows = NO_LIMIT;
-    @SuppressWarnings("unused")
     private boolean escapeProcessing = false;
     private int timeout = NO_LIMIT;
     private int compatibilityLevel = USE_CONNECTION_COMPATIBILITY;

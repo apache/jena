@@ -21,7 +21,6 @@ package org.apache.jena.dboe.base.record;
 import static org.apache.jena.dboe.test.RecordLib.intToRecord;
 import static org.apache.jena.dboe.test.RecordLib.recordToInt;
 
-import org.apache.jena.dboe.base.record.Record;
 import org.junit.Assert;
 import org.junit.Test;
 

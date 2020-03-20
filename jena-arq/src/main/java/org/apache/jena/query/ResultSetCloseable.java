@@ -20,8 +20,6 @@ package org.apache.jena.query;
 
 import java.io.Closeable ;
 
-import org.apache.jena.query.QueryExecution ;
-import org.apache.jena.query.ResultSet ;
 import org.apache.jena.sparql.resultset.ResultSetWrapper ;
 
 /** A {@link ResultSet} that closes the associated {@link QueryExecution} 

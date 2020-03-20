@@ -24,7 +24,6 @@ import org.apache.jena.sparql.algebra.Transform ;
 import org.apache.jena.sparql.algebra.Transformer ;
 import org.apache.jena.sparql.algebra.op.OpExtend ;
 import org.apache.jena.sparql.algebra.op.OpTable ;
-import org.apache.jena.sparql.algebra.optimize.TransformPromoteTableEmpty ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger ;

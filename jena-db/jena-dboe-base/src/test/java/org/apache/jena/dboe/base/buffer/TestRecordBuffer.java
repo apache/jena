@@ -25,8 +25,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Assert;
-import org.apache.jena.dboe.base.buffer.BufferException;
-import org.apache.jena.dboe.base.buffer.RecordBuffer;
 import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.base.record.RecordFactory;
 import org.apache.jena.dboe.sys.SystemIndex;

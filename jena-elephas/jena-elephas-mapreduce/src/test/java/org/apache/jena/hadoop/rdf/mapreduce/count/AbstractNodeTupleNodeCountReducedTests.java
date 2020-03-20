@@ -26,7 +26,6 @@ import java.util.Map.Entry;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mrunit.mapreduce.MapReduceDriver;
 import org.apache.jena.hadoop.rdf.mapreduce.AbstractMapReduceTests;
-import org.apache.jena.hadoop.rdf.mapreduce.count.AbstractNodeTupleNodeCountMapper;
 import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
 import org.apache.jena.hadoop.rdf.types.NodeWritable;
 import org.junit.Test;

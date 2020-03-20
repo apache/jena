@@ -20,9 +20,6 @@ package org.apache.jena.sparql.core;
 
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
-import org.apache.jena.sparql.core.DatasetGraphViewGraphs ;
 
 /** Test using a view-generating dataset */  
 public class TestGraphOverDatasetMem extends AbstractTestGraphOverDatasetGraph

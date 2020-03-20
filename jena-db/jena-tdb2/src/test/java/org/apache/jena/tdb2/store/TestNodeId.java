@@ -26,10 +26,6 @@ import java.nio.ByteBuffer;
 import org.apache.jena.atlas.lib.BitsLong;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
-import org.apache.jena.tdb2.store.NodeId;
-import org.apache.jena.tdb2.store.NodeIdFactory;
-import org.apache.jena.tdb2.store.NodeIdInline;
-import org.apache.jena.tdb2.store.NodeIdType;
 import org.junit.Test;
 
 public class TestNodeId

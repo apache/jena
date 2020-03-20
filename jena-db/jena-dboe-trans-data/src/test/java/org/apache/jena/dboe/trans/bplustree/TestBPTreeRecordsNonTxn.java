@@ -27,10 +27,6 @@ import org.apache.jena.dboe.base.recordbuffer.RecordBufferPage;
 import org.apache.jena.dboe.base.recordbuffer.RecordBufferPageMgr;
 import org.apache.jena.dboe.sys.SystemIndex;
 import org.apache.jena.dboe.test.RecordLib;
-import org.apache.jena.dboe.trans.bplustree.BPT;
-import org.apache.jena.dboe.trans.bplustree.BPTreePage;
-import org.apache.jena.dboe.trans.bplustree.BPTreeRecords;
-import org.apache.jena.dboe.trans.bplustree.BPTreeRecordsMgr;
 import org.junit.*;
 
 public class TestBPTreeRecordsNonTxn extends Assert {

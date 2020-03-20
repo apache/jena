@@ -18,7 +18,6 @@
 
 package org.apache.jena.tdb2.lib;
 
-import org.apache.jena.tdb2.lib.TestNodeLib;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
