@@ -1,3 +1,5 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
 PREFIX : <http://example/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX geoarq: <http://jena.apache.org/GeoARQ/property#>

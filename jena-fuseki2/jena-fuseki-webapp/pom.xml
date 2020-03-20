@@ -52,14 +52,14 @@
     </dependency>
    
     <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-webapp</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-text</artifactId>
       <version>3.15.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-webapp</artifactId>
     </dependency>
 
     <dependency>
@@ -72,23 +72,15 @@
       <artifactId>shiro-web</artifactId>
     </dependency>
 
-    <!-- Logging :  Needed because the Fuseki command line manages logging -->
+    <!-- Logging :  Needed because the Fuseki command line manages logging -->  
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-
-    <!-- The jena parent POM has <optional>true</optional> -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <optional>false</optional>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <optional>false</optional>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-web</artifactId>
     </dependency>
 
     <!-- Testing -->

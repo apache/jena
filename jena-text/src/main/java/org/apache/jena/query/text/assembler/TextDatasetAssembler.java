@@ -83,6 +83,7 @@ public class TextDatasetAssembler extends AssemblerBase implements Assembler
             }
         }
 
+        // "true" -> closeIndexOnDSGClose
         Dataset dst = TextDatasetFactory.create(ds, textIndex, true, textDocProducer) ;
         return dst ;
     }

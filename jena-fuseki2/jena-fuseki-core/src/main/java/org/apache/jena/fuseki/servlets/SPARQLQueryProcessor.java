@@ -370,7 +370,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
         if ( timeoutParameter != null )
             desiredTimeoutStr = timeoutParameter;
 
-        // Merge (new timeoutw can't be greater than current settings for qExec
+        // Merge (new timeout can't be greater than current settings for qExec)
         EngineLib.parseSetTimeout(qExec, desiredTimeoutStr, TimeUnit.SECONDS, true);
     }
 

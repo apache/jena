@@ -47,7 +47,6 @@ import org.apache.jena.vocabulary.DCTerms ;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.XSD ;
 
-
 /** A program to execute query test suites
  * 
  * <pre>

@@ -48,8 +48,13 @@ import org.junit.Assert ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
+/** This test suite does external network traffic.
+ *  It causes INFO level messages if the network interface is not reachable.
+ *  It does not cause tests to fail. 
+ */
 public class TestService {
-    private static final String SERVICE = "http://example.com:40000";
+    // TODO Move to jena-integration-tests and use a Fuskei server as target.
+    private static final String SERVICE = "http://example.com:40000/";
 
     private static Object value ;
     

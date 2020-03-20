@@ -84,21 +84,18 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jul-to-slf4j</artifactId>
-            <version>1.7.26</version>
+            <version>${ver.slf4j}</version>
         </dependency>
 
         <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
-          <optional>false</optional>
-          <scope>compile</scope>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-slf4j-impl</artifactId>
         </dependency>
 
         <dependency>
-          <groupId>log4j</groupId>
-          <artifactId>log4j</artifactId>
-          <optional>false</optional>
-          <scope>compile</scope>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <scope>test</scope>
         </dependency>
 
     </dependencies>

@@ -41,16 +41,38 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
         return get();
     }
     
-    /** Recursively unwrap a {@link DatasetGraphWrapper}.
+    /**
+     * Recursively unwrap a {@link DatasetGraphWrapper}.
+     * <p>
+     * Note 1: Some use of DatasetGraphWrapper does not use
+     * the wrapped dataset stored in this object.
+     * <p>
+     * Note 2: TDB datasets require a  transaction to unwrap.
      * 
-     * @return the first found {@link DatasetGraph} that is not an instance of {@link DatasetGraphWrapper}
+     * @return the first found {@link DatasetGraph} that is not an instance of
+     *     {@link DatasetGraphWrapper}
      */
     public final DatasetGraph getBase() { 
-        DatasetGraph dsgw = dsg;
+        DatasetGraph dsgw = get();
         while (dsgw instanceof DatasetGraphWrapper) {
-            dsgw = ((DatasetGraphWrapper)dsg).getWrapped();
+            dsgw = ((DatasetGraphWrapper)dsgw).getWrapped();
         }
         return dsgw;
+    }
+
+    /** 
+     * Unwrap a {@code DatasetGraph} to find the base {@code DatasetGraph}.
+     * Calls {@link #getBase} if the argument is a {@code DatasetGraphWrapper}.
+     * <p>
+     * Note 1: Some use of DatasetGraphWrapper does not use
+     * the wrapped dataset stored in this object.
+     * <p>
+     * Note 2: TDB datasets require a  transaction to unwrap.
+     */
+    public static DatasetGraph unwrap(DatasetGraph dsg) {
+        if ( ! ( dsg instanceof DatasetGraphWrapper) )
+            return dsg;
+        return ((DatasetGraphWrapper)dsg).getBase();
     }
     
     /** Recursively unwrap a {@link DatasetGraphWrapper}, stopping at a {@link DatasetGraphWrapper}

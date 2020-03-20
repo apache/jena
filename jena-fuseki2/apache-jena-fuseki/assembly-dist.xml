@@ -84,7 +84,7 @@
     <fileSet>
       <outputDirectory></outputDirectory>
       <includes>
-        <include>log4j.properties</include>
+        <include>log4j2.properties</include>
         <include>fuseki</include>
         <include>fuseki.service</include>
         <include>fuseki-server.bat</include>

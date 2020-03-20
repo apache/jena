@@ -33,48 +33,13 @@
   <properties>
     <automatic.module.name>org.apache.jena.fuseki.main</automatic.module.name>
   </properties>
-  
+
   <dependencies> 
 
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <!-- <artifactId>jena-fuseki-core</artifactId>-->
-      <!-- Depends on jena-fuseki-core -->
-      <artifactId>jena-fuseki-access</artifactId>
+      <artifactId>jena-fuseki-core</artifactId>
       <version>3.15.0-SNAPSHOT</version>
-      <exclusions>
-        
-        <!-- Parts of Jena not needed but picked up via jena-fuseki-core.
-             The application can put back any of these if it wants to use
-             them, e.g. a text-indexed dataset, providing the version is compatible.
-	      -->
-
-        <exclusion>
-          <groupId>org.apache.jena</groupId>
-          <artifactId>jena-text</artifactId>
-        </exclusion>
-
-        <!-- Jena uses SLF4J as its API. Exclude any logging bindings picked up via Jena.
-          For example, jena-fuseki-core has logging output and so some logging provider.
-          For embedded use, it is the enclosing application that chooses the kind of
-          logging system.    
-        --> 
-        <!--
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>log4j</groupId>
-          <artifactId>log4j</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-jdk14</artifactId>
-        </exclusion>
-        -->
-      </exclusions>
-      
     </dependency>
 
     <dependency>
@@ -84,12 +49,11 @@
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
-    
-    <!-- For parsing Jetty configuration files -->
+
     <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-xml</artifactId>
-      <version>${ver.jetty}</version>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-fuseki-access</artifactId>
+      <version>3.15.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -98,17 +62,40 @@
       <version>3.15.0-SNAPSHOT</version>
     </dependency>
 
+    <!-- For parsing Jetty configuration files -->
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <optional>true</optional>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-xml</artifactId>
+      <version>${ver.jetty}</version>
     </dependency>
+
     <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId> 
-      <optional>true</optional>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
-    
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <optional>true</optional>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <optional>true</optional>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <optional>true</optional>
+      <scope>compile</scope>
+    </dependency>
+
   </dependencies>
 
   <build>

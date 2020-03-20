@@ -41,12 +41,27 @@
     </dependency>
     <dependency>
       <groupId>org.xenei</groupId>
-      <artifactId>junit-contracts</artifactId>
+      <artifactId>junit-contracts</artifactId> 
+      <scope>test</scope>
     </dependency>
     <dependency>
     	<groupId>org.mockito</groupId>
-    	<artifactId>mockito-all</artifactId>
+    	<artifactId>mockito-all</artifactId> 
+      <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <build>

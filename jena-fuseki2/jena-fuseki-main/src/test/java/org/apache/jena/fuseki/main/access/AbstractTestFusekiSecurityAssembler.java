@@ -108,8 +108,7 @@ public abstract class AbstractTestFusekiSecurityAssembler {
         // in "build()" without turning warnings off everywhere.
 
         // -- Start log manipulation.
-        org.apache.log4j.Logger logger = org.apache.log4j.LogManager.getLogger(Fuseki.configLog.getName());
-        org.apache.log4j.Level level = logger.getLevel() ;
+        String level = LogCtl.getLevel(Fuseki.configLog.getName());
         LogCtl.disable(Fuseki.configLog);
         
         // In case Fuseki.configLog is active - make sure the test log shows the build()
@@ -124,7 +123,7 @@ public abstract class AbstractTestFusekiSecurityAssembler {
         server.start();
 
         
-        LogCtl.disable(Fuseki.configLog);
+        LogCtl.setLevel(Fuseki.configLog, level);
         // -- End log manipulation.
 
         if ( sharedDatabase ) {

@@ -59,73 +59,52 @@
       <type>pom</type>
     </dependency>
 
+    <!-- Pull test code into scope -->
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-base</artifactId>
+      <version>3.15.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <optional>true</optional>
+    </dependency>     
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-core</artifactId>
+      <version>3.15.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-arq</artifactId>
+      <version>3.15.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <optional>true</optional>
+    </dependency>
+
     <!-- Command Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
     
-    <!-- Require a logging implementation 
-         It is <scope>test</scope> from the parent otherwise.
-    -->
+    <!-- Require a logging implementation -->
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <optional>false</optional>
-      <scope>compile</scope>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <!-- This module can be used as a dependency downstream -->
+      <optional>true</optional>
     </dependency>
 
     <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <optional>false</optional>
-      <scope>compile</scope>
-    </dependency>
-
-    <!-- Testing -->
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-arq</artifactId>
-      <version>3.15.0-SNAPSHOT</version>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-core</artifactId>
-      <version>3.15.0-SNAPSHOT</version>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-base</artifactId>
-      <version>3.15.0-SNAPSHOT</version>
-      <classifier>tests</classifier>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
 
   </dependencies>
-  <build>
-    <resources>
-      <resource>
-        <filtering>true</filtering>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>org/apache/jena/arq/arq-properties.xml</include>
-        </includes>
-      </resource>
-      <resource>
-        <filtering>false</filtering>
-        <directory>src/main/resources</directory>
-        <excludes>
-          <exclude>org/apache/jena/arq/arq-properties.xml</exclude>
-        </excludes>
-      </resource>
-    </resources>
 
+  <build>
     <plugins>
 
       <plugin>
@@ -187,13 +166,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
-          <version>true</version>
-          <show>public</show>
-          <quiet>true</quiet>
-          <encoding>UTF-8</encoding>
-          <windowtitle>Apache Jena ARQ</windowtitle>
-          <doctitle>Apache Jena ARQ ${project.version}</doctitle>
-          <bottom>Licenced under the Apache License, Version 2.0</bottom>
+          <skip>true</skip>
         </configuration>
       </plugin>
 

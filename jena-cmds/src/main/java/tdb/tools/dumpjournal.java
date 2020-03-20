@@ -33,7 +33,7 @@ public class dumpjournal extends CmdARQ {
     ModLocation modLocation = new ModLocation() ;
 
     static public void main(String... argv) {
-        LogCtl.setLog4j() ;
+        LogCtl.setCmdLogging();
         new dumpjournal(argv).mainRun() ;
     }
 
