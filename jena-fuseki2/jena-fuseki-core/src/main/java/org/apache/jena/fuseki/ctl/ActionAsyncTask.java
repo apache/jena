@@ -45,7 +45,6 @@ public abstract class ActionAsyncTask extends ActionItem
     protected JsonValue execPostItem(HttpAction action) {
         Runnable task = createRunnable(action);
         AsyncTask aTask = Async.execASyncTask(action, AsyncPool.get(), name, task);
-        Async.setLocationHeader(action, aTask);
         return Async.asJson(aTask);
     }
 
