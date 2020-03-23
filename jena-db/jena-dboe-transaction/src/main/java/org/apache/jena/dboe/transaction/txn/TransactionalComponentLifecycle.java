@@ -41,12 +41,12 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
     // ---- Normal operation
 
     private static final boolean CHECKING = false;
-    private ThreadLocal<TxnState> trackTxn = CHECKING ? ThreadLocal.withInitial(() -> INACTIVE) : null;
+    private volatile ThreadLocal<TxnState> trackTxn = CHECKING ? ThreadLocal.withInitial(() -> INACTIVE) : null;
 
     // Access to these two must be via the getter/setters below only.
     // Allows stuff for thread switching.
-    private ThreadLocal<Transaction> threadTxn = new ThreadLocal<>();
-    private ThreadLocal<X> componentState = new ThreadLocal<>();
+    private volatile ThreadLocal<Transaction> threadTxn = new ThreadLocal<>();
+    private volatile ThreadLocal<X> componentState = new ThreadLocal<>();
     private final ComponentId componentId;
 
     protected TransactionalComponentLifecycle(ComponentId componentId) {
