@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,26 +16,33 @@
  * limitations under the License.
  */
 
-package org.apache.jena.graph;
+package org.apache.jena.riot.system;
 
-/** RDF triples as RDF terms. */
-public class Node_Triple extends Node_Ext<Triple>{
+import java.util.function.Consumer;
 
-    public Node_Triple(Node s, Node p, Node o) {
-        this(Triple.create(s, p, o));
-    }
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.sparql.core.Quad ;
 
-    public Node_Triple(Triple triple) {
-        super(triple);
+/**
+ * Apply a function to every triple and quad.
+ */
+public class StreamRDFApply extends StreamRDFReject {
+
+    private final Consumer<Triple> tripleAction;
+    private final Consumer<Quad> quadAction;
+
+    public StreamRDFApply(Consumer<Triple> tripleAction, Consumer<Quad> quadAction) {
+        this.tripleAction = tripleAction == null ? x->{} : tripleAction;
+        this.quadAction = quadAction == null ? x->{} : quadAction;
     }
 
     @Override
-    public boolean isNodeTriple() {
-        return true;
+    public void triple(Triple triple) {
+        tripleAction.accept(triple);
     }
 
     @Override
-    public String toString() {
-        return "<< "+super.label+ " >>";
+    public void quad(Quad quad) {
+        quadAction.accept(quad);
     }
 }

@@ -34,7 +34,7 @@ import org.apache.jena.atlas.lib.Chars ;
 public final class PeekReader extends Reader {
     // Remember to apply fixes to PeekInputStream as well.
 
-    // Buffering is done by a CharStream - does it make adifference?
+    // Buffering is done by a CharStream - does it make difference?
     // Yes. A lot (Java6).
 
     // Using a Reader here seems to have zero cost or benefit but CharStream

@@ -30,17 +30,15 @@ import org.apache.jena.sparql.core.Quad ;
  * Split up StreamRDFLib into factory and operations
  * Check start/finish policies.
  * org.apache.jena.riot.stream?
- * 
+ *
  */
-
-
 /** Utilities for sending to StreamRDF.
  *  Unless otherwise stated, send* operations do not call stream.start()/stream.finish()
  *  whereas other operations do.
  */
 
 public class StreamRDFOps {
-    
+
     /** Send a dataset to a StreamRDF as prefixes, triples and quads, enclosed in stream.start()/stream.finish() */
     public static void datasetToStream(DatasetGraph datasetGraph, StreamRDF stream) {
         stream.start() ;
@@ -59,7 +57,7 @@ public class StreamRDFOps {
     public static void sendPrefixesToStream(PrefixMap prefixMap, StreamRDF stream) {
         prefixMap.forEach((p,u) -> stream.prefix(p, u.toString())) ;
     }
-    
+
     public static void sendPrefixesToStream(PrefixMapping prefixMap, StreamRDF stream) {
         prefixMap.getNsPrefixMap().forEach(stream::prefix);
     }
@@ -80,11 +78,10 @@ public class StreamRDFOps {
     /**
      * @deprecated prefer {@link #sendDatasetToStream(DatasetGraph, StreamRDF, String, PrefixMap)} with a null base URI.
      */
-    @Deprecated
     public static void sendDatasetToStream(DatasetGraph datasetGraph, StreamRDF stream, PrefixMap prefixMap) {
         sendDatasetToStream(datasetGraph, stream, null, prefixMap);
     }
-    
+
     /** Send a dataset to a StreamRDF as triples and quads, using the explicitly given prefix map */
     public static void sendDatasetToStream(DatasetGraph datasetGraph, StreamRDF stream, String baseURI, PrefixMap prefixMap) {
         if ( baseURI != null )
@@ -95,26 +92,28 @@ public class StreamRDFOps {
         // Default graph
         Iterator<Triple> iter1 = datasetGraph.getDefaultGraph().find(null, null, null) ;
         StreamRDFOps.sendTriplesToStream(iter1, stream) ;
-        
+
         Iterator<Quad> iter2 = datasetGraph.findNG(null, null, null, null) ;
         StreamRDFOps.sendQuadsToStream(iter2, stream) ;
     }
 
-    
-    /** Send the triples of graph and an explicitly given prefix mapping, to a StreamRDF */
+
+    /**
+     * Send the triples of graph and an explicitly given prefix mapping, to a StreamRDF.
+     * This operation does not include start/finish nesting - see {@link #graphToStream}.
+     */
     public static void sendGraphToStream(Graph graph, StreamRDF stream) {
         PrefixMap prefixMap = PrefixMapFactory.create(graph.getPrefixMapping()) ;
         sendGraphToStream(graph, stream, prefixMap) ;
     }
-    
     /**
      * @deprecated prefer {@link #sendGraphToStream(Graph, StreamRDF, String, PrefixMap)} with a null base URI.
      */
-    @Deprecated 
+    @Deprecated
     public static void sendGraphToStream(Graph graph, StreamRDF stream, PrefixMap prefixMap) {
         sendGraphToStream(graph, stream, null, prefixMap);
     }
-    
+
     /** Send the triples of graph, and an explicitly given prefix mapping, to a StreamRDF */
     public static void sendGraphToStream(Graph graph, StreamRDF stream, String baseURI, PrefixMap prefixMap) {
         if ( baseURI != null )
@@ -130,7 +129,7 @@ public class StreamRDFOps {
         sendGraphToStream(graph, stream, null) ;
     }
 
-    /** Set triples to a StreamRDF - does not call .start/.finish */ 
+    /** Set triples to a StreamRDF - does not call .start/.finish */
     public static void sendTriplesToStream(Iterator<Triple> iter, StreamRDF dest)
     {
         for ( ; iter.hasNext() ; )
@@ -146,7 +145,7 @@ public class StreamRDFOps {
         StreamRDFOps.sendQuadsToStream(iter2, stream) ;
     }
 
-    /** Set quads to a StreamRDF - does not call .start/.finish */ 
+    /** Set quads to a StreamRDF - does not call .start/.finish */
     public static void sendQuadsToStream(Iterator<Quad> iter, StreamRDF dest)
     {
         for ( ; iter.hasNext() ; )

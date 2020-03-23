@@ -26,7 +26,7 @@ import java.util.Objects;
  *  <p>
  *  Extension nodes exist so that the machinery of datastructures (graphs, triples)
  *  can be used.  There is no guarantee that processing Nodes (e.g. writing) will handle
- *  extensions. For the usual RDF syntaxes, {@code Node_Ext} are not handled. 
+ *  extensions.
  */
 public abstract class Node_Ext<X> extends Node {
 

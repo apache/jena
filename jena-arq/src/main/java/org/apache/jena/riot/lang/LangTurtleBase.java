@@ -44,7 +44,7 @@ public abstract class LangTurtleBase extends LangBase {
     // protected final static boolean CHECKING = true ;
     // Current graph - null for default graph
     private Node                   currentGraph   = null ;
-    
+
     protected final PrefixMap prefixMap;
 
     protected final Node getCurrentGraph() {
@@ -87,8 +87,8 @@ public abstract class LangTurtleBase extends LangBase {
     protected abstract void oneTopLevelElement() ;
 
     /**
-     * Emit a triple - nodes have been checked as has legality of node type in
-     * location
+     * Emit a triple - nodes have been checked as has legality of
+     * node type in location.
      */
     protected abstract void emit(Node subject, Node predicate, Node object) ;
 
@@ -129,7 +129,7 @@ public abstract class LangTurtleBase extends LangBase {
             directivePrefix() ;
             if ( isStrictMode )
                 // The line number is probably one ahead due to the newline
-                expect("Prefix directive not terminated by a dot", DOT) ;   
+                expect("Prefix directive not terminated by a dot", DOT) ;
             else
                 skipIf(DOT) ;
             return ;
@@ -180,7 +180,7 @@ public abstract class LangTurtleBase extends LangBase {
         }
 
         boolean maybeList = lookingAt(LPAREN) ;
-        
+
         // Turtle: TriplesSameSubject -> TriplesNode PropertyList?
         // TriG:   (blankNodePropertyList | collection) predicateObjectList? '.'
         //         labelOrSubject (wrappedGraph | predicateObjectList '.')
@@ -223,7 +223,64 @@ public abstract class LangTurtleBase extends LangBase {
             //exception(peekToken(), "Unexpected token : %s", peekToken()) ;
             return ;
         }
+
+        // <<>> subject position. Rule [10]
+        if ( lookingAt(LT2) ) {
+            Node subject = parseTripleNode();
+            predicateObjectList(subject) ;
+            expectEndOfTriples() ;
+            return;
+        }
+
         exception(peekToken(), "Out of place: %s", peekToken()) ;
+    }
+
+    // Parse a << >> : RDF*
+    // Assumes looking at << (LT2) omn entry
+
+    /* The Turtle grammar is:
+            tripleX ::= ’<<’ subjectX predicate objectX ’>>’
+            subjectX ::= iri | BlankNode | tripleX
+            objectX ::= iri | BlankNode | literal | tripleX
+            [10x]    subject ::= iri | BlankNode | collection | tripleX
+            [12x]    object ::= iri | BlankNode | collection | blankNodePropertyList | literal | tripleX
+       i.e. no compounds inside <<>>
+     */
+
+    //node() or nodeX
+    private Node parseTripleNode() {
+        Token token = nextToken();
+        // subjectX()
+        Node s = nodeX("subject");
+
+        Node p = predicate();         // predicate() == node();nextToken();
+        nextToken();
+
+        // objectX()
+        Node o = nodeX("object");
+
+        if ( ! lookingAt(GT2) )
+            exception(peekToken(), "Expected >>, found %s", peekToken().text()) ;
+        nextToken();
+
+        // XXX Emit target triple. Need to suppress duplicates
+        //emitTriple(s, p, o);
+
+        return profile.createTripleNode(s, p, o, token.getLine(), token.getColumn());
+    }
+
+    // Does consume the token.
+    private Node nodeX(String posnLabel) {
+
+        if ( lookingAt(LT2) )
+            return parseTripleNode();
+        if ( ! lookingAt(NODE) )
+            // XXX Move to nodeX?
+            exception(peekToken(), "Bad %s in RDF* triple", posnLabel, peekToken().text()) ;
+
+        Node node = node();
+        nextToken();
+        return node;
     }
 
     // Must be at least one triple.
@@ -241,17 +298,17 @@ public abstract class LangTurtleBase extends LangBase {
     // Differs between Turtle and TriG.
     // TriG, inside {} does not need the trailing DOT
     protected abstract void expectEndOfTriples() ;
-    
+
     // The DOT is required by Turtle (strictly).
     // It is not in N3 and SPARQL.
-    
+
     protected void expectEndOfTriplesTurtle() {
         if ( isStrictMode )
             expect("Triples not terminated by DOT", DOT) ;
         else
             expectOrEOF("Triples not terminated by DOT", DOT) ;
     }
-        
+
     protected final void predicateObjectList(Node subject) {
         predicateObjectItem(subject) ;
 
@@ -324,7 +381,11 @@ public abstract class LangTurtleBase extends LangBase {
         return false ;
     }
 
-    /** Maybe "null" for not-a-node. */
+    /** Create a Node for the current token.
+     *  Does not create nodes/triples for compound structures.
+     *  May return "null" for not-a-node.
+     *  Does not consume the token.
+     */
     protected final Node node() {
         // Token to Node
         Node n = tokenAsNode(peekToken()) ;
@@ -350,7 +411,7 @@ public abstract class LangTurtleBase extends LangBase {
     // A structure of triples that itself generates a node.
     // Special checks for [] and ().
 
-    protected final Node triplesNode() {
+    protected final Node triplesNode() { // == [12] object in the grammar.
         if ( lookingAt(NODE) ) {
             Node n = node() ;
             nextToken() ;
@@ -372,6 +433,9 @@ public abstract class LangTurtleBase extends LangBase {
 
             exception(tErr, "Unrecognized keyword: " + image) ;
         }
+
+        if ( lookingAt(LT2) )
+            return parseTripleNode();
 
         return triplesNodeCompound() ;
     }
@@ -439,7 +503,7 @@ public abstract class LangTurtleBase extends LangBase {
             if ( n == null )
                 exception(errorToken, "Malformed list") ;
 
-            // Node for the list structre.
+            // Node for the list structure.
             Node nextCell = NodeFactory.createBlankNode() ;
             if ( listHead == null )
                 listHead = nextCell ;
@@ -474,10 +538,10 @@ public abstract class LangTurtleBase extends LangBase {
     }
 
     private final void emitPrefix(String prefix, String iriStr) {
-        dest.prefix(prefix, iriStr) ; 
+        dest.prefix(prefix, iriStr) ;
     }
 
-    private final void emitBase(String baseStr) { 
+    private final void emitBase(String baseStr) {
         dest.base(baseStr);
     }
 

@@ -23,16 +23,20 @@ import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node_Triple;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 
-/** Provide implementations of the operations of NodeFormatter in terms
- * of core operations for each node type.
+/**
+ * Provide implementations of the operations of {@link NodeFormatter} in terms
+ * of core operations for each node type. N-Triples/N-Quads format.
  */
 public abstract class NodeFormatterBase implements NodeFormatter
 {
     @Override
     public void format(AWriter w, Node n)
     {
+        // Can't use a fixed visitor because of the writer?
         if ( n.isBlank() )
             formatBNode(w, n) ;
         else if ( n.isURI() )
@@ -43,10 +47,26 @@ public abstract class NodeFormatterBase implements NodeFormatter
             formatVar(w, n) ;
         else if ( Node.ANY.equals(n) )
             w.print("ANY") ;
+        else if ( n instanceof Node_Triple )
+            formatNodeTriple(w, (Node_Triple)n);
+//        else if ( n instanceof Node_Graph )
+//            formatNodeGraph(w, (Node_Graph)n);
         else
-            throw new ARQInternalErrorException("Unknow node type: "+n) ;
+            throw new ARQInternalErrorException("Unknown node type: "+n) ;
     }
-    
+
+    private void formatNodeTriple(AWriter w, Node_Triple n) {
+        // XXX Improve
+        Triple t = n.get();
+        w.print("<< ");
+        format(w, t.getSubject());
+        w.print(" ");
+        format(w, t.getPredicate());
+        w.print(" ");
+        format(w, t.getObject());
+        w.print(" >>");
+    }
+
     @Override
     public void formatURI(AWriter w, Node n)         { formatURI(w, n.getURI()) ; }
 
@@ -59,7 +79,7 @@ public abstract class NodeFormatterBase implements NodeFormatter
         RDFDatatype dt = n.getLiteralDatatype() ;
         String lang = n.getLiteralLanguage() ;
         String lex = n.getLiteralLexicalForm() ;
-        
+
         if ( lang != null && ! lang.equals("") ) {
             formatLitLang(w, lex, lang) ;
         } else if ( dt == null ) {

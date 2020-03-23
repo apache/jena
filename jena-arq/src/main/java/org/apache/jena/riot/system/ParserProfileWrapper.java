@@ -19,6 +19,7 @@
 package org.apache.jena.riot.system;
 
 import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.tokens.Token;
@@ -28,11 +29,11 @@ public class ParserProfileWrapper implements ParserProfile
 {
     private final ParserProfile other;
     protected ParserProfile get() { return other; }
-    
+
     public ParserProfileWrapper(ParserProfile other) {
         this.other = other;
     }
-    
+
     @Override
     public FactoryRDF getFactorRDF() {
         return get().getFactorRDF();
@@ -94,6 +95,16 @@ public class ParserProfileWrapper implements ParserProfile
     @Override
     public Node createBlankNode(Node scope, long line, long col) {
         return get().createBlankNode(scope, line, col);
+    }
+
+    @Override
+    public Node createTripleNode(Node s, Node p, Node o, long line, long col) {
+        return get().createTripleNode(s, p, o, line, col);
+    }
+
+    @Override
+    public Node createGraphNode(Graph graph, long line, long col) {
+        return get().createGraphNode(graph, line, col);
     }
 
     @Override
