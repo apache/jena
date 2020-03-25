@@ -75,11 +75,19 @@ public class shacl_validate extends CmdGeneral {
          datafile = super.getValue(argData);
          shapesfile = super.getValue(argShapes);
 
+         // No -- arguments, use act on single file of shapes and data.
+         if ( datafile == null && shapesfile == null ) {
+             if ( positionals.size() == 1 ) {
+                 datafile = positionals.get(0);
+                 shapesfile = positionals.get(0);
+             }
+         }
+
          if ( datafile == null )
              throw new CmdException("Usage: "+getSummary());
          if ( shapesfile == null )
              shapesfile = datafile;
-         
+
          textOutput = super.hasArg(argOutputText);
     }
 
