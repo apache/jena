@@ -65,7 +65,6 @@ public class ShapesParser {
     public static Collection<Shape> parseShapes(Graph shapesGraph, Targets targets, Map<Node, Shape> shapesMap) {
         Targets rootShapes = targets;
         
-        // Fast "nothing check"-> null.
         if ( DEBUG )
             OUT.println("SparqlConstraintComponents");
         ConstraintComponents sparqlConstraintComponents = ConstraintComponents.parseSparqlConstraintComponents(shapesGraph);
@@ -107,15 +106,17 @@ public class ShapesParser {
         if ( sparqlConstraintComponents != null && ! sparqlConstraintComponents.isEmpty() ) {
             // Deep for all shapes.
             shapesMap.values().forEach(shape->{
-                //System.out.println(shape);
                 List<Constraint> x = ConstraintComponents.processShape(shapesGraph, sparqlConstraintComponents, shape);
                 if ( x != null && !x.isEmpty() ) {
-    //                System.out.println("-- "+shape);
-    //                System.out.println(">> "+x);
                     shape.getConstraints().addAll(x);
                 }
             });
         }
+        
+        // Syntax rules for well-formed shapes.
+        //https://www.w3.org/TR/shacl/#syntax-rules
+        // Note - we only have the reachable shapes in "shapesMap". 
+        
         return acc ;
     }
 

@@ -44,7 +44,6 @@ public class QualifiedValueShape implements Constraint {
         this.qMin = qMin;
         this.qMax = qMax;
         this.qDisjoint = qDisjoint;
-//            throw new NotImplemented(QualifiedValueShape.class.getSimpleName());
     }
 
     @Override
