@@ -129,7 +129,7 @@ public class FusekiMain extends CmdARQ {
                 TransactionManager.QueueBatchSize = TransactionManager.QueueBatchSize / 2;
 
             getUsage().startCategory("Fuseki Main");
-            addModule(modDataset);
+            // Control the order!
             add(argMem, "--mem",
                 "Create an in-memory, non-persistent dataset for the server");
             add(argFile, "--file=FILE",
@@ -142,6 +142,9 @@ public class FusekiMain extends CmdARQ {
                 "Create an in-memory, non-persistent dataset using TDB (testing only)");
 //            add(argEmpty, "--empty",
 //                "Run with no datasets and services (validators only)");
+            add(argConfig, "--config=",
+                "Use a configuration file to determine the services");
+            addModule(modDataset);
             add(argEmpty); // Hidden for now.
             add(argPort, "--port",
                 "Listen on this port number");
@@ -151,8 +154,6 @@ public class FusekiMain extends CmdARQ {
                 "Global timeout applied to queries (value in ms) -- format is X[,Y] ");
             add(argUpdate, "--update",
                 "Allow updates (via SPARQL Update and SPARQL HTTP Update)");
-            add(argConfig, "--config=",
-                "Use a configuration file to determine the services");
             add(argGZip, "--gzip=on|off",
                 "Enable GZip compression (HTTP Accept-Encoding) if request header set");
             add(argBase, "--base=DIR",
