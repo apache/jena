@@ -22,7 +22,6 @@ import java.util.Set;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.shacl.ShaclException;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.Shape;
@@ -33,9 +32,7 @@ import org.apache.jena.sparql.path.Path;
 public abstract class ConstraintEntity implements Constraint {
 
     @Override
-    public void validateNodeShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode) {
-        throw new ShaclException("Unexpected call (no path, no path nodes)");
-    }
+    public abstract void validateNodeShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode);
 
     @Override
     final
