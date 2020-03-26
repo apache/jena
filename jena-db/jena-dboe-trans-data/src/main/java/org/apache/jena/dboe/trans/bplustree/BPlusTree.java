@@ -552,12 +552,14 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
 
     @Override
     protected void _abort(TxnId txnId, BptTxnState state) {
-        rootIdx = state.initialroot;
-        // Truncate - logically in block manager space.
-        nodeManager.resetAlloc(state.boundaryBlocksNode);
-        recordsMgr.resetAlloc(state.boundaryBlocksRecord);
-        stateManager.setState(state.initialroot, state.boundaryBlocksNode, state.boundaryBlocksRecord);
-        stateManager.sync();
+        if ( isWriteTxn() ) {
+            rootIdx = state.initialroot;
+            // Truncate - logically in block manager space.
+            nodeManager.resetAlloc(state.boundaryBlocksNode);
+            recordsMgr.resetAlloc(state.boundaryBlocksRecord);
+            stateManager.setState(state.initialroot, state.boundaryBlocksNode, state.boundaryBlocksRecord);
+            stateManager.sync();
+        }
     }
 
     @Override

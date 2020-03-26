@@ -268,8 +268,6 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
     }
     // -- Access object members.
 
-    // XXX Align to javadoc in TransactionalComponent.
-
     /* There are two lifecycles, one for write transaction, one
      * for read transactions. This affects how transaction end so
      * when/if promoted read->write transactions happen, a promoted
@@ -281,31 +279,39 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
      *
      * Read lifecycle:
      * A read transaction be be just begin(READ)-end() but may also
-     * have commit or abort before end. The _commitRead and _abortRead
+     * have commit or abort before end. The _commit and _abort
      * calls note if an explicit commit or abort occurs but may not be
      * called. _endRead is always called exactly once.
      *
-     * _commitRead
-     * _abortRead
-     * _endRead
+     * _commit
+     * _abort
+     * _end
      * _complete
+     *
+     * Promote:
+     * 
+     * _promote
+     * 
+     * and the ReadWrite mode becomes "WRITE".
+     * The transaction system manages whether the "promote " is legal,
+     * components do not have to check.  
      *
      * Write lifecycle:
      * A write transaction must have a commit() or abort() before end().
-     * The fraemwork will check this.
+     * The framework will check this.
      *
      * If the transaction commits:
      * _commitPrepareWrite
-     * _commitWrite -- The transaction is
+     * _commit -- The transaction is committed
      * _commitEndWrite
      *
      * If the transaction aborts:
-     * _abortWrite
+     * _abort
      *
      * After any lifecycle, a final call of
      * _complete()
      *
-     * indicates ths transaction has fully finished.
+     * indicates that the transaction has fully finished.
      *
      * Typically, an implementation does not need to take action in every call.
      */
@@ -319,6 +325,7 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
     protected abstract void        _complete(TxnId txnId, X state);
     protected abstract void        _shutdown();
 
+    /** Current READ/WRITE mode. */
     protected ReadWrite getReadWriteMode() {
         Transaction txn = getTransaction();
         return txn.getMode();
