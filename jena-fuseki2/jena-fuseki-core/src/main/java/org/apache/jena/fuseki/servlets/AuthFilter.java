@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.web.HttpSC;
-import org.eclipse.jetty.security.SecurityHandler;
 
 /**
  * Servlet filter that applies a predicate to incoming requests and rejects with with 403
@@ -35,9 +34,8 @@ import org.eclipse.jetty.security.SecurityHandler;
  * filter chain.
  * <p>
  * Either the user from {@link HttpServletRequest#getRemoteUser() getRemoteUser} is null,
- * no authentication, or it has been validated. Failed authentication will have been
- * handled and rejected by the {@link SecurityHandler security handler} before they get to
- * the filter chain.
+ * no authentication, or it has been validated. Failed authentication attempts will have been
+ * handled and rejected by the servlet container before they get to the filter chain.
  */
 public class AuthFilter implements Filter {
 

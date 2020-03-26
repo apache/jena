@@ -24,7 +24,6 @@ import org.apache.jena.dboe.transaction.txn.ComponentId;
 import org.apache.jena.dboe.transaction.txn.TransactionalComponentBase;
 import org.apache.jena.dboe.transaction.txn.TxnId;
 import org.apache.jena.query.ReadWrite;
-import org.apache.jena.query.text.TextIndex;
 
 /** 
  * Adapter to put Lucene into DBOE transactions.
