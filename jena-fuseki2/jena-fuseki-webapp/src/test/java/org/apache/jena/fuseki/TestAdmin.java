@@ -278,7 +278,29 @@ public class TestAdmin extends AbstractFusekiTest {
         deleteDataset(dsTest);
     }
 
-    // Sync task testing
+    @Test public void sleep_1() {
+        String x = execSleepTask(null, 1);
+    }
+
+    @Test public void sleep_2() {
+        try {
+            String x = execSleepTask(null, -1);
+            fail("Sleep call unexpectedly succeed");
+        } catch (HttpException ex) {
+            assertEquals(400, ex.getStatusCode());
+        }
+    }
+
+    @Test public void sleep_3() {
+        try {
+            String x = execSleepTask(null, 20*1000+1);
+            fail("Sleep call unexpectedly succeed");
+        } catch (HttpException ex) {
+            assertEquals(400, ex.getStatusCode());
+        }
+    }
+
+    // Async task testing
 
     @Test public void task_1() {
         String x = execSleepTask(null, 10);
