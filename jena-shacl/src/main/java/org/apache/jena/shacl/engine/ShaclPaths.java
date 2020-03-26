@@ -165,11 +165,6 @@ public class ShaclPaths {
                 return path;
             }
         }
-
-        //RDFDataMgr.write(System.out,  graph, Lang.TTL);
-
-//        List<Node> x = G.find(graph, node, null, null).mapWith(Triple::getPredicate).toList();
-//        throw new ShaclParseException("Bad list: "+ShLib.displayStr(node)+" : "+x);
         throw new ShaclParseException("Bad list: "+ShLib.displayStr(node));
     }
 

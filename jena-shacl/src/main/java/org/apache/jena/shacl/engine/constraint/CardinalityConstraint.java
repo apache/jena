@@ -21,8 +21,11 @@ package org.apache.jena.shacl.engine.constraint;
 import java.util.Objects;
 import java.util.Set;
 
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.shacl.engine.ValidationContext;
+import org.apache.jena.shacl.parser.ShaclParseException;
+import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.validation.ReportItem;
 
 public abstract class CardinalityConstraint extends ConstraintEntity {
@@ -30,6 +33,12 @@ public abstract class CardinalityConstraint extends ConstraintEntity {
     protected final int minCount;
     protected final int maxCount;
 
+    @Override
+    public void validateNodeShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode) {
+        // Node shape with cardinality. Can this usefully be checked for in the parser?
+        throw new ShaclParseException("Cardinality constraint on a node shape");
+    }
+    
     // -1 => no test
     protected CardinalityConstraint(int minCardinality, int maxCardinality) {
         this.minCount = minCardinality;

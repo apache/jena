@@ -201,7 +201,7 @@ public class Constraints {
         int vMax = intValue(qMax, -1);
         Node qDisjoint = G.getZeroOrOneSP(g, s, SHACL.qualifiedValueShapesDisjoint);
         if ( vMin < 0 && vMax < 0 )
-            throw new ShaclParseException("At least on of sh:qualifiedMinCount and sh:qualifiedMaxCount required");
+            throw new ShaclParseException("At least one of sh:qualifiedMinCount and sh:qualifiedMaxCount required");
         return new QualifiedValueShape(sub, intValue(qMin, -1), intValue(qMax, -1), booleanValueStrict(qDisjoint)) ;
     }
 

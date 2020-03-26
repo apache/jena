@@ -73,8 +73,6 @@ class ConstraintComponents {
         G.listAllNodesOfType(shapesGraph, SHACL.ConstraintComponent).forEach(sccNode->{
             SparqlComponent c = sparqlConstraintComponent(shapesGraph, sccNode);
             if ( c != null ) {
-//                System.out.print(c);
-//                System.out.println(c.getSparqlString());
                 for ( Parameter p : c.getParams() ) {
                     x.paramPathToComponents.put(p.getParameterPath(), c);
                     x.parameters.add(p);
@@ -100,7 +98,6 @@ class ConstraintComponents {
                 continue;
             // The parameter's property node
             Node paramPath = param.getParameterPath();
-            //System.out.printf("Param: ?%s %s\n", param.getSparqlName(), param.getParameterPath());
 
             // Does the shape use the parameter?
             boolean b = G.contains(shapesGraph, shape.getShapeNode(), paramPath, null);
@@ -111,7 +108,6 @@ class ConstraintComponents {
 //            // Find all shapes uses the parameter.
 //            List<Node> shapes = G.find(shapesGraph, null, paramPath, null).mapWith(Triple::getSubject).toList();
             Node shNode = shape.getShapeNode();
-            //System.out.println("Shapes with param: "+shapes);
 
             // All components with this parameter.
             Collection<SparqlComponent> sccs = components.paramPathToComponents.get(paramPath);
@@ -123,7 +119,6 @@ class ConstraintComponents {
                 // Check not seen.
                 Set<Node> x = new HashSet<>(required);
                 if ( seen.contains(x) ) {
-                    //System.out.println("++++ Skip: "+scc);
                     return;
                 }
                 seen.add(x);
@@ -161,7 +156,6 @@ class ConstraintComponents {
         Node validatorNode = G.getZeroOrOneSP(shapesGraph, shNode, SHACL.validator);
         Node vNode = firstNonNull(nodeValidatorNode, propertyValidatorNode, validatorNode);
         Multimap<Parameter, Node> parameterValues = Parameters.parameterValues(shapesGraph, shNode, scc);
-        //parameterValues.forEach((p,v)->System.out.printf("   ?%s -- %s\n", p.getSparqlName(), v));
         return parameterValues;
     }
 

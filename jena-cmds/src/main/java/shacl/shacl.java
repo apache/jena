@@ -70,7 +70,7 @@ public class shacl {
             case "val": case "validate": case "v":
                 cmdExec = "validate";
                 break;
-            case "parse": case "p":
+            case "parse": case "p": case "print":
                 cmdExec = "parse";
                 break;
 

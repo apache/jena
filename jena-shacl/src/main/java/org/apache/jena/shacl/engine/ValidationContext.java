@@ -40,6 +40,8 @@ public class ValidationContext {
     public ValidationContext(ValidationContext vCxt) {
         this.shapes = vCxt.shapes;
         this.dataGraph = vCxt.dataGraph;
+        this.verbose = vCxt.verbose;
+        this.strict = vCxt.strict;
     }
 
     public ValidationContext(Shapes shapes, Graph data) {
