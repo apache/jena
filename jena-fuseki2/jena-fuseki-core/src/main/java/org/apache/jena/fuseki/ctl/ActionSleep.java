@@ -32,8 +32,8 @@ import org.slf4j.Logger;
 /** A task that kicks off a asynchronous operation that simply waits and exits.  For testing. */
 public class ActionSleep extends ActionCtl /* Not ActionAsyncTask - that is a container-item based. */
 {
-    private static int MaxSleepMillis = 20*1000;
-    
+    public static final int MaxSleepMillis = 20*1000;
+
     public ActionSleep() { super(); }
 
     @Override
@@ -66,16 +66,16 @@ public class ActionSleep extends ActionCtl /* Not ActionAsyncTask - that is a co
             try {
                 sleepMilli = Integer.parseInt(interval);
             } catch (NumberFormatException ex) {
-                ServletOps.errorBadRequest("Bad format for 'interval': integer required");
+                ServletOps.errorBadRequest("Bad value for 'interval': integer required");
                 return null;
             }
         }
         if ( sleepMilli < 0 ) {
-            ServletOps.errorBadRequest("Negative sleep interval");
+            ServletOps.errorBadRequest("Bad value for 'interval': negative sleep interval");
             return null;
         }
         if ( sleepMilli > MaxSleepMillis ) {
-            ServletOps.errorBadRequest("Sleep internal greater than maximum allowed");
+            ServletOps.errorBadRequest("Bad value for 'interval': sleep internal greater than maximum allowed");
             return null;
         }
         return new SleepTask(action, sleepMilli, AsyncPool.get());
@@ -91,15 +91,14 @@ public class ActionSleep extends ActionCtl /* Not ActionAsyncTask - that is a co
             this.log = action.log;
             this.actionId = action.id;
             this.sleepMilli = sleepMilli;
-            this.asyncPool = asyncPool; 
+            this.asyncPool = asyncPool;
         }
 
         @Override
         public void run() {
             try {
                 log.info(format("[Task %d] >> Sleep start", actionId));
-                for ( int i = 0 ; i < 10 ; i++ )
-                    Lib.sleep(sleepMilli/10);
+                Lib.sleep(sleepMilli);
                 log.info(format("[Task %d] << Sleep finish", actionId));
             } catch (Exception ex) {
                 log.info(format("[Task %d] **** Exception", actionId), ex);

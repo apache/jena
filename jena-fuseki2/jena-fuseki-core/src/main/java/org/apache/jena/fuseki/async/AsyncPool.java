@@ -37,7 +37,7 @@ public class AsyncPool
 
     // A ThreadPoolExecutor with
     // * 0 to nMaxThreads
-    // * no queue of waiting tasks 9tasks execute or are rejected)
+    // * no queue of waiting tasks (tasks execute or are rejected)
     // * dormant threads released after 120s.
     //
     // SynchronousQueue is a BlockingQueue that has zero length - it accepts and
@@ -70,12 +70,12 @@ public class AsyncPool
                 return null;
             };
             AsyncTask asyncTask = new AsyncTask(c, this, taskId, displayName, dataService, requestId);
-            try { 
+            try {
                 /* Future<Object> future = */ executor.submit(asyncTask);
                 runningTasks.put(taskId, asyncTask);
                 return asyncTask;
             } catch (RejectedExecutionException ex) {
-                ServletOps.errorBadRequest("Async task request rejected");
+                ServletOps.errorBadRequest("Async task request rejected - exceeds the limit of "+nMaxThreads+" tasks");
                 return null;
             }
         }
