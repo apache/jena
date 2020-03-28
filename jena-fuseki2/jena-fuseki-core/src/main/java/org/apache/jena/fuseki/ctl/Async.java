@@ -43,12 +43,11 @@ public class Async
         return builder.build();
     }
 
-    public static void setLocationHeader(HttpAction action, AsyncTask asyncTask) {
+    private static void setLocationHeader(HttpAction action, AsyncTask asyncTask) {
         String x = action.getRequest().getRequestURI();
         if ( ! x.endsWith("/") )
             x += "/";
         x += asyncTask.getTaskId();
-        //String x = "/$/tasks/"+asyncTask.getTaskId();
         action.getResponse().setHeader(HttpHeaders.LOCATION, x);
     }
 

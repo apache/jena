@@ -25,6 +25,7 @@ import java.util.concurrent.*;
 
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.server.DataService;
+import org.apache.jena.fuseki.servlets.ServletOps;
 
 /** The set of currently active and recently completed tasks. */
 public class AsyncPool
@@ -34,10 +35,16 @@ public class AsyncPool
     // Number of finished tasks kept.
     private static int MAX_FINISHED = 20;
 
-    // See Executors.newCachedThreadPool and Executors.newFixedThreadPool
+    // A ThreadPoolExecutor with
+    // * 0 to nMaxThreads
+    // * no queue of waiting tasks (tasks execute or are rejected)
+    // * dormant threads released after 120s.
+    //
+    // SynchronousQueue is a BlockingQueue that has zero length - it accepts and
+    // delivers an item or rejects immediately, no delay by queueing.
     private ExecutorService executor = new ThreadPoolExecutor(0, nMaxThreads,
                                                               120L, TimeUnit.SECONDS,
-                                                              new LinkedBlockingQueue<Runnable>());
+                                                              new SynchronousQueue<Runnable>(true));
     private final Object mutex = new Object();
     private long counter = 0;
     private Map<String, AsyncTask> runningTasks = new LinkedHashMap<>();
@@ -63,9 +70,14 @@ public class AsyncPool
                 return null;
             };
             AsyncTask asyncTask = new AsyncTask(c, this, taskId, displayName, dataService, requestId);
-            /* Future<Object> future = */ executor.submit(asyncTask);
-            runningTasks.put(taskId, asyncTask);
-            return asyncTask;
+            try {
+                /* Future<Object> future = */ executor.submit(asyncTask);
+                runningTasks.put(taskId, asyncTask);
+                return asyncTask;
+            } catch (RejectedExecutionException ex) {
+                ServletOps.errorBadRequest("Async task request rejected - exceeds the limit of "+nMaxThreads+" tasks");
+                return null;
+            }
         }
     }
 

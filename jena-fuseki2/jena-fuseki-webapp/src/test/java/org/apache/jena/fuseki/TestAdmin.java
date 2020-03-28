@@ -31,6 +31,8 @@ import static org.apache.jena.riot.web.HttpOp.execHttpPostStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -278,7 +280,29 @@ public class TestAdmin extends AbstractFusekiTest {
         deleteDataset(dsTest);
     }
 
-    // Sync task testing
+    @Test public void sleep_1() {
+        String x = execSleepTask(null, 1);
+    }
+
+    @Test public void sleep_2() {
+        try {
+            String x = execSleepTask(null, -1);
+            fail("Sleep call unexpectedly succeed");
+        } catch (HttpException ex) {
+            assertEquals(400, ex.getStatusCode());
+        }
+    }
+
+    @Test public void sleep_3() {
+        try {
+            String x = execSleepTask(null, 20*1000+1);
+            fail("Sleep call unexpectedly succeed");
+        } catch (HttpException ex) {
+            assertEquals(400, ex.getStatusCode());
+        }
+    }
+
+    // Async task testing
 
     @Test public void task_1() {
         String x = execSleepTask(null, 10);
@@ -334,6 +358,37 @@ public class TestAdmin extends AbstractFusekiTest {
         // Short running task - still in info API call.
         String x = execSleepTask(null, 1);
         checkInTasks(x);
+    }
+
+    @Test public void task_6() {
+        String x1 = execSleepTask(null, 1000);
+        String x2 = execSleepTask(null, 1000);
+        List<String> running = runningTasks();
+        assertTrue(running.size()>1);
+        waitForTasksToFinish(1000, 2000);
+    }
+
+    @Test public void task_7() {
+        try {
+            String x1 = execSleepTask(null, 1000);
+            String x2 = execSleepTask(null, 1000);
+            String x3 = execSleepTask(null, 1000);
+            String x4 = execSleepTask(null, 1000);
+            try {
+                // Try to make test more stable on a loaded CI server.
+                // Unloaded the first sleep will fail but due to slowness/burstiness
+                // some tasks above may have completed.
+                String x5 = execSleepTask(null, 4000);
+                String x6 = execSleepTask(null, 4000);
+                String x7 = execSleepTask(null, 4000);
+                String x8 = execSleepTask(null, 10);
+                fail("Managed to add a 5th test");
+            } catch (HttpException ex) {
+                assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
+            }
+        } finally {
+            waitForTasksToFinish(1000, 4000);
+        }
     }
 
     @Test public void list_backups_1() {
@@ -405,7 +460,7 @@ public class TestAdmin extends AbstractFusekiTest {
         JsonResponseHandler x = new JsonResponseHandler();
         HttpOp.execHttpPost(url+"?interval="+millis, null, WebContent.contentTypeJSON, x);
         JsonValue v = x.getJSON();
-        String id = v.getAsObject().get("taskId").getAsString().value();
+        String id = v.getAsObject().getString("taskId");
         return id;
     }
 
@@ -447,12 +502,58 @@ public class TestAdmin extends AbstractFusekiTest {
            assertTrue(jv.isObject());
            JsonObject obj = jv.getAsObject();
            checkTask(obj);
-           if ( obj.get("taskId").getAsString().value().equals(x) ) {
+           if ( obj.getString("taskId").equals(x) ) {
                found++;
            }
         }
-       assertEquals("Occurence of taskId count", 1, found);
+       assertEquals("Occurrence of taskId count", 1, found);
     }
+
+   private static List<String> runningTasks(String... x) {
+       String url = ServerCtl.urlRoot()+"$/tasks";
+       JsonValue v = httpGetJson(url);
+       assertTrue(v.isArray());
+       JsonArray array = v.getAsArray();
+       List<String> running = new ArrayList<>();
+       for ( int i = 0; i < array.size(); i++ ) {
+           JsonValue jv = array.get(i);
+           assertTrue(jv.isObject());
+           JsonObject obj = jv.getAsObject();
+           if ( isRunning(obj) )
+               running.add(obj.getString("taskId"));
+       }
+       return running;
+   }
+
+   /**
+    * Wait for tasks to all finish.
+    * Algorithm: wait for {@code pause}, then start polling for upto {@code maxWaitMillis}.
+    * Intervals in milliseconds.
+    * @param pauseMillis
+    * @param maxWaitMillis
+    * @return
+    */
+   private static boolean waitForTasksToFinish(int pauseMillis, int maxWaitMillis) {
+       // Wait for them to finish.
+       // Divide into
+       if ( pauseMillis > 0 )
+           Lib.sleep(pauseMillis);
+       int waited = 0;
+       final int INTERVALS = 10;
+       for (int i = 0 ; i < INTERVALS ; i++ ) {
+           System.err.println("Wait: "+i);
+           List<String> x = runningTasks();
+           if ( x.isEmpty() )
+               return true;
+           Lib.sleep(maxWaitMillis/INTERVALS);
+       }
+       return false;
+   }
+
+   private static boolean isRunning(JsonObject taskObj) {
+       checkTask(taskObj);
+       return taskObj.hasKey("started") &&  ! taskObj.hasKey("finished");
+   }
 
     // Auxilary
 

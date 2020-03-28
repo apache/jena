@@ -32,6 +32,8 @@ import org.slf4j.Logger;
 /** A task that kicks off a asynchronous operation that simply waits and exits.  For testing. */
 public class ActionSleep extends ActionCtl /* Not ActionAsyncTask - that is a container-item based. */
 {
+    public static final int MaxSleepMillis = 20*1000;
+
     public ActionSleep() { super(); }
 
     @Override
@@ -50,45 +52,56 @@ public class ActionSleep extends ActionCtl /* Not ActionAsyncTask - that is a co
 
     @Override
     public void execute(HttpAction action) {
-        Runnable task = createRunnable(action);
+        SleepTask task = createRunnable(action);
         AsyncTask aTask = Async.execASyncTask(action, AsyncPool.get(), "sleep", task);
+        action.log.info(format("[%d] Sleep %d ms.", action.id, task.sleepMilli));
         JsonValue v = Async.asJson(aTask);
-        Async.setLocationHeader(action, aTask);
         ServletOps.sendJsonReponse(action, v);
     }
 
-    protected Runnable createRunnable(HttpAction action) {
+    protected SleepTask createRunnable(HttpAction action) {
         String interval = action.request.getParameter("interval");
         int sleepMilli = 5000;
-        if ( interval != null )
+        if ( interval != null ) {
             try {
                 sleepMilli = Integer.parseInt(interval);
             } catch (NumberFormatException ex) {
-                action.log.error(format("[%d] NumberFormatException: %s", action.id, interval));
+                ServletOps.errorBadRequest("Bad value for 'interval': integer required");
+                return null;
             }
-        action.log.info(format("[%d] Sleep %d ms", action.id, sleepMilli));
-        return new SleepTask(action, sleepMilli);
+        }
+        if ( sleepMilli < 0 ) {
+            ServletOps.errorBadRequest("Bad value for 'interval': negative sleep interval");
+            return null;
+        }
+        if ( sleepMilli > MaxSleepMillis ) {
+            ServletOps.errorBadRequest("Bad value for 'interval': sleep internal greater than maximum allowed");
+            return null;
+        }
+        return new SleepTask(action, sleepMilli, AsyncPool.get());
     }
 
     static class SleepTask implements Runnable {
         private final Logger log;
         private final long actionId;
-        private final int sleepMilli;
+        public  final int sleepMilli;
+        private final AsyncPool asyncPool;
 
-        public SleepTask(HttpAction action, int sleepMilli ) {
+        public SleepTask(HttpAction action, int sleepMilli, AsyncPool asyncPool ) {
             this.log = action.log;
             this.actionId = action.id;
             this.sleepMilli = sleepMilli;
+            this.asyncPool = asyncPool;
         }
 
         @Override
         public void run() {
             try {
-                log.info(format("[%d] >> Sleep start", actionId));
+                log.info(format("[Task %d] >> Sleep start", actionId));
                 Lib.sleep(sleepMilli);
-                log.info(format("[%d] << Sleep finish", actionId));
+                log.info(format("[Task %d] << Sleep finish", actionId));
             } catch (Exception ex) {
-                log.info(format("[%d] **** Exception", actionId), ex);
+                log.info(format("[Task %d] **** Exception", actionId), ex);
             }
         }
     }
