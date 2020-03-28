@@ -123,6 +123,11 @@ public abstract class WriterStreamRDFBase implements StreamRDF
     {
         baseURI = base ;
         setFormatter() ;
+        if(base != null) {
+            out.print("@base  <") ;
+            out.print(base) ;
+            out.println("> .") ;
+        }
     }
         
     @Override

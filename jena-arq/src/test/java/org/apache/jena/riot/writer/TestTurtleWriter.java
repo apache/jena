@@ -20,6 +20,8 @@ package org.apache.jena.riot.writer;
 
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringReader ;
 
 import org.apache.jena.rdf.model.Model ;
@@ -28,6 +30,7 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RDFWriter;
 import org.junit.Assert ;
 import org.junit.Test ;
 
@@ -35,6 +38,10 @@ public class TestTurtleWriter {
     // Tests data.
     static String cycle1 = "_:a <urn:p> _:b . _:b <urn:q> _:a ." ;
     static String cycle2 = "_:a <urn:p> _:b . _:b <urn:q> _:a . _:a <urn:r> \"abc\" . " ;
+    static String basetester = "@base <http://example.org/> .   " +
+                               "@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .   " +
+                               "@prefix foaf:  <http://xmlns.com/foaf/0.1/> .  " +
+                               "<green-goblin> rdf:type foaf:Person ." ;
     
     
     /** Read in N-Triples data, which is not empty,
@@ -101,5 +108,17 @@ public class TestTurtleWriter {
         Assert.assertTrue(m.isIsomorphicWith(m2));
     }
     
+    @Test
+    public void test_base() {
+        InputStream r = new ByteArrayInputStream(TestTurtleWriter.basetester.getBytes()) ;
+        String b = "http://example.org/" ;
+        Model m = ModelFactory.createDefaultModel() ;
+        m.read(r, b, "TTL") ;
+
+        OutputStream o = new ByteArrayOutputStream() ;
+        RDFWriter.create().source(m).format(RDFFormat.TURTLE_BLOCKS).base(b).output(o) ;
+        String k = o.toString() ;
+        Assert.assertTrue(k.contains("@base")) ;
+    }
 }
 
