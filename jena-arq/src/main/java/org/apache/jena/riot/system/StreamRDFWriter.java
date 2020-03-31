@@ -41,12 +41,12 @@ import org.apache.jena.sparql.util.Context;
 
 /** Write RDF in a streaming fashion.
  *  {@link RDFDataMgr} operations do not provide this guarantee.
- *  See {@link RDFWriterRegistry} for general purpose writers. 
+ *  See {@link RDFWriterRegistry} for general purpose writers.
  *  {@link StreamRDFWriter} returns the same writer as {@link RDFWriterRegistry}
- *  if the {@link RDFFormat} is a streaming format. 
- *  
- * @see RDFDataMgr 
- * @see RDFWriterRegistry 
+ *  if the {@link RDFFormat} is a streaming format.
+ *
+ * @see RDFDataMgr
+ * @see RDFWriterRegistry
  */
 public class StreamRDFWriter {
 
@@ -56,14 +56,14 @@ public class StreamRDFWriter {
             return new WriterStreamRDFBlocks(output, context) ;
         }
     } ;
-    
+
     private static StreamRDFWriterFactory streamWriterFactoryFlat = new StreamRDFWriterFactory() {
         @Override
         public StreamRDF create(OutputStream output, RDFFormat format, Context context) {
             return new WriterStreamRDFFlat(output, context) ;
         }
     } ;
-    
+
     private static StreamRDFWriterFactory streamWriterFactoryTriplesQuads = new StreamRDFWriterFactory() {
         @Override
         public StreamRDF create(OutputStream output, RDFFormat format, Context context) {
@@ -71,7 +71,7 @@ public class StreamRDFWriter {
             return new WriterStreamRDFPlain(w, CharSpace.UTF8) ;     // N-Quads and N-Triples.
         }
     } ;
-    
+
     private static StreamRDFWriterFactory streamWriterFactoryTriplesQuadsAscii = new StreamRDFWriterFactory() {
         @Override
         public StreamRDF create(OutputStream output, RDFFormat format, Context context) {
@@ -79,15 +79,15 @@ public class StreamRDFWriter {
             return new WriterStreamRDFPlain(w, CharSpace.ASCII) ;     // N-Quads and N-Triples.
         }
     } ;
-    
+
     private static StreamRDFWriterFactory streamWriterFactoryThrift = new StreamRDFWriterFactory() {
         @Override
         public StreamRDF create(OutputStream output, RDFFormat format, Context context) {
-            boolean withValues = RDFFormat.RDF_THRIFT_VALUES.equals(format) ; 
+            boolean withValues = RDFFormat.RDF_THRIFT_VALUES.equals(format) ;
             return BinRDF.streamToOutputStream(output, withValues) ;
         }
     } ;
-    
+
     private static StreamRDFWriterFactory streamWriterFactoryTriX = new StreamRDFWriterFactory() {
         @Override
         public StreamRDF create(OutputStream output, RDFFormat format, Context context) {
@@ -101,8 +101,8 @@ public class StreamRDFWriter {
             return StreamRDFLib.sinkNull() ;
         }
     } ;
-    
-    
+
+
     private static WriterRegistry<StreamRDFWriterFactory> registry = new WriterRegistry<>() ;
 
     /** Register the default serialization for the language (replace any existing registration).
@@ -112,7 +112,7 @@ public class StreamRDFWriter {
     public static void register(Lang lang, RDFFormat format) {
         registry.register(lang, format) ;
     }
-    
+
     /** Register the serialization for datasets and it's associated factory
      * @param serialization         RDFFormat for the output format.
      * @param streamWriterFactory    Source of writer engines
@@ -120,12 +120,12 @@ public class StreamRDFWriter {
     public static void register(RDFFormat serialization, StreamRDFWriterFactory streamWriterFactory) {
         registry.register(serialization, streamWriterFactory) ;
     }
-    
-    /** Return the format registered as the default for the language */ 
+
+    /** Return the format registered as the default for the language */
     public static RDFFormat defaultSerialization(Lang lang) {
         return registry.defaultSerialization(lang) ;
     }
-    
+
     static {
         register(Lang.TURTLE,       RDFFormat.TURTLE_BLOCKS) ;
         register(Lang.TRIG,         RDFFormat.TRIG_BLOCKS) ;
@@ -134,12 +134,12 @@ public class StreamRDFWriter {
         register(Lang.RDFTHRIFT,    RDFFormat.RDF_THRIFT) ;
         register(Lang.TRIX,         RDFFormat.TRIX) ;
         register(Lang.RDFNULL,      RDFFormat.RDFNULL) ;
-        
+
         register(RDFFormat.TURTLE_BLOCKS,   streamWriterFactoryBlocks) ;
         register(RDFFormat.TURTLE_FLAT,     streamWriterFactoryFlat) ;
         register(RDFFormat.TRIG_BLOCKS,     streamWriterFactoryBlocks) ;
         register(RDFFormat.TRIG_FLAT,       streamWriterFactoryFlat) ;
-        
+
         register(RDFFormat.NTRIPLES,        streamWriterFactoryTriplesQuads) ;
         register(RDFFormat.NTRIPLES_UTF8,   streamWriterFactoryTriplesQuads) ;
         register(RDFFormat.NTRIPLES_ASCII,  streamWriterFactoryTriplesQuadsAscii) ;
@@ -150,15 +150,15 @@ public class StreamRDFWriter {
 
         register(RDFFormat.RDF_THRIFT,          streamWriterFactoryThrift) ;
         register(RDFFormat.RDF_THRIFT_VALUES,   streamWriterFactoryThrift) ;
-        
+
         register(RDFFormat.TRIX,            streamWriterFactoryTriX) ;
         register(RDFFormat.RDFNULL,         streamWriterFactoryNull) ;
     }
 
     /** Get a StreamRDF destination that will output in syntax {@code Lang}
-     *  and is guaranteed to do so in a scaling, streaming fashion.    
+     *  and is guaranteed to do so in a scaling, streaming fashion.
      * @param output OutputStream
-     * @param lang   The syntax 
+     * @param lang   The syntax
      * @return       StreamRDF, or null if Lang does not have a streaming format.
      * @see StreamRDFOps#graphToStream
      * @see StreamRDFOps#datasetToStream
@@ -167,15 +167,24 @@ public class StreamRDFWriter {
         return getWriterStream(output, lang, null);
     }
 
+    /** Get a StreamRDF destination that will output in syntax {@code Lang}
+     *  and is guaranteed to do so in a scaling, streaming fashion.
+     * @param output OutputStream
+     * @param lang   The syntax
+     * @param context
+     * @return       StreamRDF, or null if Lang does not have a streaming format.
+     * @see StreamRDFOps#graphToStream
+     * @see StreamRDFOps#datasetToStream
+     */
     public static StreamRDF getWriterStream(OutputStream output, Lang lang, Context context) {
         RDFFormat fmt = registry.choose(lang) ;
         return getWriterStream(output, fmt, context) ;
     }
 
     /** Get a StreamRDF destination that will output in syntax {@link RDFFormat}
-     *  and is guaranteed to do so in a scaling, streaming fashion.    
+     *  and is guaranteed to do so in a scaling, streaming fashion.
      * @param output   OutputStream
-     * @param format   The syntax (as an {@link RDFFormat}) 
+     * @param format   The syntax (as an {@link RDFFormat})
      * @param context  Context
      * @return         StreamRDF, or null if format is not registered for streaming.
      * @see StreamRDFOps#graphToStream
@@ -193,22 +202,22 @@ public class StreamRDFWriter {
             stream = new StreamTriplesOnly(stream) ;
         return stream ;
     }
-    
+
     public static boolean registered(Lang lang) {
         RDFFormat fmt = registry.defaultSerialization(lang) ;
         return registry.contains(fmt) ;
     }
-    
+
     public static boolean registered(RDFFormat format) {
         return registry.contains(format) ;
     }
-    
+
     public static Collection<RDFFormat> registered() {
        return Collections.unmodifiableSet(registry.formatRegistry.keySet()) ;
     }
-    
+
     /** Write a Graph in streaming fashion
-     * 
+     *
      * @param output   OutputStream
      * @param graph    Graph to write
      * @param lang     Syntax
@@ -220,7 +229,7 @@ public class StreamRDFWriter {
     }
 
     /** Write a Graph in streaming fashion
-     * 
+     *
      * @param output OutputStream
      * @param graph  Graph to write
      * @param lang   Syntax
@@ -230,7 +239,7 @@ public class StreamRDFWriter {
     }
 
     /** Write a Graph in streaming fashion
-     * 
+     *
      * @param output OutputStream
      * @param graph  Graph to write
      * @param lang   Syntax
@@ -241,7 +250,7 @@ public class StreamRDFWriter {
         StreamRDFOps.graphToStream(graph, stream) ;
     }
     /** Write a DatasetGraph in streaming fashion
-     *  
+     *
      * @param output        OutputStream
      * @param datasetGraph  DatasetGraph to write
      * @param lang          Syntax
@@ -251,7 +260,7 @@ public class StreamRDFWriter {
     }
 
     /** Write a DatasetGraph in streaming fashion
-     *  
+     *
      * @param output        OutputStream
      * @param datasetGraph  DatasetGraph to write
      * @param lang          Syntax
@@ -263,7 +272,7 @@ public class StreamRDFWriter {
     }
 
     /** Write a DatasetGraph in streaming fashion
-     *  
+     *
      * @param output        OutputStream
      * @param datasetGraph  DatasetGraph to write
      * @param format        Syntax
@@ -273,28 +282,28 @@ public class StreamRDFWriter {
         StreamRDF stream = getWriterStream(output, format, context) ;
         StreamRDFOps.datasetToStream(datasetGraph, stream) ;
     }
-    
+
     private static class StreamTriplesOnly extends StreamRDFWrapper {
 
         public StreamTriplesOnly(StreamRDF sink) {
             super(sink) ;
         }
-        
+
         @Override public void quad(Quad quad) {
             if ( quad.isTriple() || quad.isDefaultGraph() || quad.isUnionGraph() ) {
                 triple(quad.asTriple()) ;
             }
         }
-        
-        @Override public void triple(Triple triple) 
+
+        @Override public void triple(Triple triple)
         { other.triple(triple) ; }
     }
-    
+
     /** Writer registry */
     public static class WriterRegistry<T> {
         // But RDFWriterregistry is two registries with shared Map<Lang, RDFFormat>
         // Coudl refator but the benefit is not so great.
-        
+
         private Map<RDFFormat, T>     formatRegistry  = new HashMap<>() ;
         private Map<Lang, RDFFormat>  langToFormat    = new HashMap<>() ;
 
@@ -307,7 +316,7 @@ public class StreamRDFWriter {
             //register(format) ;
             langToFormat.put(lang, format) ;
         }
-        
+
         /** Register the serialization for datasets and it's associated factory
          * @param serialization         RDFFormat for the output format.
          * @param streamWriterFactory    Source of writer engines
@@ -315,17 +324,17 @@ public class StreamRDFWriter {
         public void register(RDFFormat serialization, T streamWriterFactory) {
             formatRegistry.put(serialization, streamWriterFactory) ;
         }
-        
+
         /** Return the T for a given RDFFormat.
          * @param serialization     RDFFormat for the output format.
-         * @return T                Registered thing or null. 
+         * @return T                Registered thing or null.
          */
         public T get(RDFFormat serialization) {
             return formatRegistry.get(serialization) ;
         }
 
-        /** Return true if the format is registered 
-         * 
+        /** Return true if the format is registered
+         *
          * @param serialization
          * @return boolean
          */
@@ -333,11 +342,11 @@ public class StreamRDFWriter {
             return formatRegistry.containsKey(serialization) ;
         }
 
-        /** Return the format registered as the default for the language */ 
+        /** Return the format registered as the default for the language */
         public RDFFormat defaultSerialization(Lang lang) {
             return langToFormat.get(lang) ;
         }
-        
+
         /**
          * @param lang
          * @return The RDFFormat for the lang

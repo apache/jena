@@ -342,45 +342,51 @@ public class RiotLib
         }
     }
 
-    /** Write prefixes, using {@code PREFIX} */ 
+    /** Write prefixes */ 
     public static void writePrefixes(IndentedWriter out, PrefixMap prefixMap, boolean newStyle) {
-        if ( newStyle )
-            writePrefixesNewStyle(out, prefixMap);
-        else
-            writePrefixesOldStyle(out, prefixMap);
-    }
-    
-    /** Write prefixes, using {@code PREFIX} */ 
-    private static void writePrefixesNewStyle(IndentedWriter out, PrefixMap prefixMap) {
         if ( prefixMap != null && !prefixMap.isEmpty() ) {
             for ( Map.Entry<String, String> e : prefixMap.getMapping().entrySet() ) {
-                out.print("PREFIX ");
-                out.print(e.getKey());
-                out.print(": ");
-                out.pad(PREFIX_IRI);
-                out.print("<");
-                out.print(e.getValue());
-                out.print(">");
-                out.println();
+                if ( newStyle )
+                    writePrefixNewStyle(out, e.getKey(), e.getValue());
+                else
+                    writePrefixOldStyle(out, e.getKey(), e.getValue());
             }
         }
+    }
+    
+    /** Write a prefix.
+     * Write using {@code @prefix} or {@code PREFIX}.
+     */ 
+    public static void writePrefix(IndentedWriter out, String prefix, String uri, boolean newStyle) {
+        if ( newStyle )
+            writePrefixNewStyle(out, prefix, uri);
+        else
+            writePrefixOldStyle(out, prefix, uri);
+    }
+
+    /** Write prefix, using {@code PREFIX} */ 
+    private static void writePrefixNewStyle(IndentedWriter out, String prefix, String uri) {
+        out.print("PREFIX ");
+        out.print(prefix);
+        out.print(": ");
+        out.pad(PREFIX_IRI);
+        out.print("<");
+        out.print(uri);
+        out.print(">");
+        out.println();
     }
 
     /** Write prefixes, using {@code @prefix} */ 
-    public static void writePrefixesOldStyle(IndentedWriter out, PrefixMap prefixMap) {
-        if ( prefixMap != null && !prefixMap.isEmpty() ) {
-            for ( Map.Entry<String, String> e : prefixMap.getMapping().entrySet() ) {
-                out.print("@prefix ");
-                out.print(e.getKey());
-                out.print(": ");
-                out.pad(PREFIX_IRI);
-                out.print("<");
-                out.print(e.getValue());
-                out.print(">");
-                out.print(" .");
-                out.println();
-            }
-        }
+    public static void writePrefixOldStyle(IndentedWriter out, String prefix, String uri) {
+        out.print("@prefix ");
+        out.print(prefix);
+        out.print(": ");
+        out.pad(PREFIX_IRI);
+        out.print("<");
+        out.print(uri);
+        out.print(">");
+        out.print(" .");
+        out.println();
     }
 
     /** Returns dataset that wraps a graph

@@ -77,14 +77,18 @@ public class StreamRDFOps {
         sendDatasetToStream(datasetGraph, stream, prefixMap) ;
     }
 
-    //        
-//    /** Send a dataset to a StreamRDF as triples and quads, using the explicitly given prefix map */
-//    public static void datasetToStream(DatasetGraph datasetGraph, StreamRDF stream, PrefixMap prefixMap) {
-//        
-//    }
-//    
-    /** Send a dataset to a StreamRDF as triples and quads, using the explicitly given prefix map */
+    /**
+     * @deprecated prefer {@link #sendDatasetToStream(DatasetGraph, StreamRDF, String, PrefixMap)} with a null base URI.
+     */
+    @Deprecated
     public static void sendDatasetToStream(DatasetGraph datasetGraph, StreamRDF stream, PrefixMap prefixMap) {
+        sendDatasetToStream(datasetGraph, stream, null, prefixMap);
+    }
+    
+    /** Send a dataset to a StreamRDF as triples and quads, using the explicitly given prefix map */
+    public static void sendDatasetToStream(DatasetGraph datasetGraph, StreamRDF stream, String baseURI, PrefixMap prefixMap) {
+        if ( baseURI != null )
+            stream.base(baseURI);
         if ( prefixMap != null )
             sendPrefixesToStream(prefixMap, stream) ;
 
@@ -103,8 +107,18 @@ public class StreamRDFOps {
         sendGraphToStream(graph, stream, prefixMap) ;
     }
     
-    /** Send the triples of graph and an explicitly given prefix mapping, to a StreamRDF */
+    /**
+     * @deprecated prefer {@link #sendGraphToStream(Graph, StreamRDF, String, PrefixMap)} with a null base URI.
+     */
+    @Deprecated 
     public static void sendGraphToStream(Graph graph, StreamRDF stream, PrefixMap prefixMap) {
+        sendGraphToStream(graph, stream, null, prefixMap);
+    }
+    
+    /** Send the triples of graph, and an explicitly given prefix mapping, to a StreamRDF */
+    public static void sendGraphToStream(Graph graph, StreamRDF stream, String baseURI, PrefixMap prefixMap) {
+        if ( baseURI != null )
+            stream.base(baseURI);
         if ( prefixMap != null )
             sendPrefixesToStream(prefixMap, stream) ;
         Iterator<Triple> iter = graph.find(null, null, null) ;

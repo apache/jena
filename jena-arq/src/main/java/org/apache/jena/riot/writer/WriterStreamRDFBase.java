@@ -54,7 +54,7 @@ public abstract class WriterStreamRDFBase implements StreamRDF
 
     protected NodeFormatterTTL fmt ;
     protected final IndentedWriter out ;
-    protected final PrefixStyle prefixStyle;
+    protected final DirectiveStyle prefixStyle;
 
     public WriterStreamRDFBase(OutputStream output, Context context)
     {
@@ -71,7 +71,7 @@ public abstract class WriterStreamRDFBase implements StreamRDF
         baseURI = null ;
         pMap = PrefixMapFactory.create() ;
         nodeToLabel = NodeToLabel.createScopeByDocument() ;
-        prefixStyle = WriterLib.prefixStyle(context);
+        prefixStyle = WriterLib.directiveStyle(context);
         setFormatter() ;
     }
 
@@ -125,15 +125,10 @@ public abstract class WriterStreamRDFBase implements StreamRDF
     @Override
     public final void base(String base)
     {
-        RiotLib.writeBase(out, base, prefixStyle==PrefixStyle.SPARQL) ;
         baseURI = base ;
         lastWasDirective = true ;
         setFormatter() ;
-        if(base != null) {
-            out.print("@base  <") ;
-            out.print(base) ;
-            out.println("> .") ;
-        }
+        RiotLib.writeBase(out, base, prefixStyle==DirectiveStyle.SPARQL) ;
     }
 
     @Override
@@ -142,7 +137,7 @@ public abstract class WriterStreamRDFBase implements StreamRDF
         endData() ;
         lastWasDirective = true ;
         pMap.add(prefix, iri) ;
-        RiotLib.writePrefix(out, prefix, iri, prefixStyle==PrefixStyle.SPARQL);
+        RiotLib.writePrefix(out, prefix, iri, prefixStyle==DirectiveStyle.SPARQL);
     }
 
     protected void outputNode(Node n)
