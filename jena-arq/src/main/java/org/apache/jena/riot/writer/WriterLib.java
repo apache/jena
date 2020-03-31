@@ -24,10 +24,12 @@ import org.apache.jena.sparql.util.Context;
 /** Package-scoped utilities */
 /*package*/ class WriterLib {
 
-    static DirectiveStyle dftDirectiveStyle = DirectiveStyle.AT;
+    private static final DirectiveStyle dftDirectiveStyle = DirectiveStyle.AT;
 
     // Determine the directive style (applies to PREFIX and BASE).
     /*package*/ static DirectiveStyle directiveStyle(Context context) {
+        if ( context == null )
+            return dftDirectiveStyle;
         Object x = context.get(RIOT.symTurtleDirectiveStyle) ;
         if ( x == null ) {
             @SuppressWarnings("deprecation")

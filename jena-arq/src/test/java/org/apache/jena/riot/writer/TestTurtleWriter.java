@@ -20,9 +20,11 @@ package org.apache.jena.riot.writer;
 
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
+import java.io.IOException;
 import java.io.StringReader ;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
@@ -160,10 +162,11 @@ public class TestTurtleWriter {
     }
 
     private String modelToString(Model model, RDFFormat format, Context context) {
-        ByteArrayOutputStream o = new ByteArrayOutputStream();
-        RDFWriter.create().source(baseTestData).format(format).base(base).context(context).output(o);
-        String result = Bytes.bytes2string(o.toByteArray());
-        return result;
+        try(ByteArrayOutputStream o = new ByteArrayOutputStream()) {
+            RDFWriter.create().source(baseTestData).format(format).base(base).context(context).output(o);
+            String result = Bytes.bytes2string(o.toByteArray());
+            return result;
+        } catch (IOException ex) { IO.exception(ex); return null;}
     }
 }
 
