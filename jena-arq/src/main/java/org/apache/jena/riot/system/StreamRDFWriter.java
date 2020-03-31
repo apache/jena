@@ -37,6 +37,7 @@ import org.apache.jena.riot.writer.WriterStreamRDFFlat ;
 import org.apache.jena.riot.writer.WriterStreamRDFPlain ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.util.Context;
 
 /** Write RDF in a streaming fashion.
  *  {@link RDFDataMgr} operations do not provide this guarantee.
@@ -51,21 +52,21 @@ public class StreamRDFWriter {
 
     private static StreamRDFWriterFactory streamWriterFactoryBlocks = new StreamRDFWriterFactory() {
         @Override
-        public StreamRDF create(OutputStream output, RDFFormat format) {
-            return new WriterStreamRDFBlocks(output) ;
+        public StreamRDF create(OutputStream output, RDFFormat format, Context context) {
+            return new WriterStreamRDFBlocks(output, context) ;
         }
     } ;
     
     private static StreamRDFWriterFactory streamWriterFactoryFlat = new StreamRDFWriterFactory() {
         @Override
-        public StreamRDF create(OutputStream output, RDFFormat format) {
-            return new WriterStreamRDFFlat(output) ;
+        public StreamRDF create(OutputStream output, RDFFormat format, Context context) {
+            return new WriterStreamRDFFlat(output, context) ;
         }
     } ;
     
     private static StreamRDFWriterFactory streamWriterFactoryTriplesQuads = new StreamRDFWriterFactory() {
         @Override
-        public StreamRDF create(OutputStream output, RDFFormat format) {
+        public StreamRDF create(OutputStream output, RDFFormat format, Context context) {
             AWriter w = IO.wrapUTF8(output) ;
             return new WriterStreamRDFPlain(w, CharSpace.UTF8) ;     // N-Quads and N-Triples.
         }
@@ -73,7 +74,7 @@ public class StreamRDFWriter {
     
     private static StreamRDFWriterFactory streamWriterFactoryTriplesQuadsAscii = new StreamRDFWriterFactory() {
         @Override
-        public StreamRDF create(OutputStream output, RDFFormat format) {
+        public StreamRDF create(OutputStream output, RDFFormat format, Context context) {
             AWriter w = IO.wrapUTF8(output) ;
             return new WriterStreamRDFPlain(w, CharSpace.ASCII) ;     // N-Quads and N-Triples.
         }
@@ -81,7 +82,7 @@ public class StreamRDFWriter {
     
     private static StreamRDFWriterFactory streamWriterFactoryThrift = new StreamRDFWriterFactory() {
         @Override
-        public StreamRDF create(OutputStream output, RDFFormat format) {
+        public StreamRDF create(OutputStream output, RDFFormat format, Context context) {
             boolean withValues = RDFFormat.RDF_THRIFT_VALUES.equals(format) ; 
             return BinRDF.streamToOutputStream(output, withValues) ;
         }
@@ -89,14 +90,14 @@ public class StreamRDFWriter {
     
     private static StreamRDFWriterFactory streamWriterFactoryTriX = new StreamRDFWriterFactory() {
         @Override
-        public StreamRDF create(OutputStream output, RDFFormat format) {
+        public StreamRDF create(OutputStream output, RDFFormat format, Context context) {
             return new StreamWriterTriX(output) ;
         }
     } ;
 
     private static StreamRDFWriterFactory streamWriterFactoryNull = new StreamRDFWriterFactory() {
         @Override
-        public StreamRDF create(OutputStream output, RDFFormat format) {
+        public StreamRDF create(OutputStream output, RDFFormat format, Context context) {
             return StreamRDFLib.sinkNull() ;
         }
     } ;
@@ -163,23 +164,30 @@ public class StreamRDFWriter {
      * @see StreamRDFOps#datasetToStream
      */
     public static StreamRDF getWriterStream(OutputStream output, Lang lang) {
-        RDFFormat fmt = registry.choose(lang) ;
-        return getWriterStream(output, fmt) ;
+        return getWriterStream(output, lang, null);
     }
 
-    /** Get a StreamRDF destination that will output in syntax {@code RDFFormat}
+    public static StreamRDF getWriterStream(OutputStream output, Lang lang, Context context) {
+        RDFFormat fmt = registry.choose(lang) ;
+        return getWriterStream(output, fmt, context) ;
+    }
+
+    /** Get a StreamRDF destination that will output in syntax {@link RDFFormat}
      *  and is guaranteed to do so in a scaling, streaming fashion.    
-     * @param output OutputStream
-     * @param format  The syntax (as an {@link RDFFormat}) 
-     * @return       StreamRDF, or null if format is not registered for streaming.
+     * @param output   OutputStream
+     * @param format   The syntax (as an {@link RDFFormat}) 
+     * @param context  Context
+     * @return         StreamRDF, or null if format is not registered for streaming.
      * @see StreamRDFOps#graphToStream
      * @see StreamRDFOps#datasetToStream
      */
-    public static StreamRDF getWriterStream(OutputStream output, RDFFormat format) {
+    public static StreamRDF getWriterStream(OutputStream output, RDFFormat format, Context context) {
         StreamRDFWriterFactory x = registry.get(format) ;
         if ( x == null )
             throw new RiotException("Failed to find a writer factory for "+format) ;
-        StreamRDF stream = x.create(output, format) ;
+        if ( context == null )
+            context = RIOT.getContext().copy();
+        StreamRDF stream = x.create(output, format, context) ;
         if ( ! RDFLanguages.isQuads(format.getLang()) )
             // Only pass through triples.
             stream = new StreamTriplesOnly(stream) ;
@@ -201,13 +209,14 @@ public class StreamRDFWriter {
     
     /** Write a Graph in streaming fashion
      * 
-     * @param output OutputStream
-     * @param graph  Graph to write
-     * @param lang   Syntax
+     * @param output   OutputStream
+     * @param graph    Graph to write
+     * @param lang     Syntax
+     * @param context  Context
      */
-    public static void write(OutputStream output, Graph graph, Lang lang) {
+    public static void write(OutputStream output, Graph graph, Lang lang, Context context) {
         RDFFormat fmt = registry.choose(lang) ;
-        write(output, graph, fmt) ;
+        write(output, graph, fmt, context) ;
     }
 
     /** Write a Graph in streaming fashion
@@ -217,10 +226,20 @@ public class StreamRDFWriter {
      * @param lang   Syntax
      */
     public static void write(OutputStream output, Graph graph, RDFFormat lang) {
-        StreamRDF stream = getWriterStream(output, lang) ;
-        StreamRDFOps.graphToStream(graph, stream) ;
+        write(output, graph, lang, null);
     }
 
+    /** Write a Graph in streaming fashion
+     * 
+     * @param output OutputStream
+     * @param graph  Graph to write
+     * @param lang   Syntax
+     * @param context Context
+     */
+    public static void write(OutputStream output, Graph graph, RDFFormat lang, Context context) {
+        StreamRDF stream = getWriterStream(output, lang, context) ;
+        StreamRDFOps.graphToStream(graph, stream) ;
+    }
     /** Write a DatasetGraph in streaming fashion
      *  
      * @param output        OutputStream
@@ -228,18 +247,30 @@ public class StreamRDFWriter {
      * @param lang          Syntax
      */
     public static void write(OutputStream output, DatasetGraph datasetGraph, Lang lang) {
-        RDFFormat fmt = registry.choose(lang) ;
-        write(output, datasetGraph, fmt) ;
+        write(output, datasetGraph, lang, null);
     }
 
     /** Write a DatasetGraph in streaming fashion
      *  
      * @param output        OutputStream
      * @param datasetGraph  DatasetGraph to write
-     * @param format          Syntax
+     * @param lang          Syntax
+     * @param context       Context
      */
-    public static void write(OutputStream output, DatasetGraph datasetGraph, RDFFormat format) {
-        StreamRDF stream = getWriterStream(output, format) ;
+    public static void write(OutputStream output, DatasetGraph datasetGraph, Lang lang, Context context) {
+        RDFFormat fmt = registry.choose(lang) ;
+        write(output, datasetGraph, fmt, context) ;
+    }
+
+    /** Write a DatasetGraph in streaming fashion
+     *  
+     * @param output        OutputStream
+     * @param datasetGraph  DatasetGraph to write
+     * @param format        Syntax
+     * @param context       Context
+     */
+    public static void write(OutputStream output, DatasetGraph datasetGraph, RDFFormat format, Context context) {
+        StreamRDF stream = getWriterStream(output, format, context) ;
         StreamRDFOps.datasetToStream(datasetGraph, stream) ;
     }
     

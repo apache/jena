@@ -30,10 +30,9 @@ public class TurtleWriterFlat extends TurtleWriterBase
 {
     @Override
     protected void output(IndentedWriter out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
-        StreamRDF dest = new WriterStreamRDFFlat(out) ;
+        StreamRDF dest = new WriterStreamRDFFlat(out, context) ;
         dest.start() ;
-        dest.base(baseURI) ;
-        StreamRDFOps.sendGraphToStream(graph, dest, prefixMap) ;
+        StreamRDFOps.sendGraphToStream(graph, dest, baseURI, prefixMap) ;
         dest.finish() ;
     }
 }

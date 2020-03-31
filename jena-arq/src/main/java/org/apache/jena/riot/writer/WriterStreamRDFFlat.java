@@ -25,6 +25,7 @@ import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.util.Context;
 
 /** An output of triples / quads that is streaming.
  *  It writes one line per triple/quads, with prefixes and literal short forms.
@@ -32,19 +33,16 @@ import org.apache.jena.sparql.core.Quad ;
 
 public class WriterStreamRDFFlat extends WriterStreamRDFBase
 {
-    public WriterStreamRDFFlat(OutputStream output)
-    { 
-        super(output) ;
+    public WriterStreamRDFFlat(OutputStream output, Context context) {
+        super(output, context);
     }
 
-    public WriterStreamRDFFlat(IndentedWriter output)
-    { 
-        super(output) ;
+    public WriterStreamRDFFlat(IndentedWriter output, Context context) {
+        super(output, context);
     }
 
-    public WriterStreamRDFFlat(Writer output)
-    { 
-        super(output) ;
+    public WriterStreamRDFFlat(Writer output, Context context) {
+        super(output, context);
     }
 
     @Override

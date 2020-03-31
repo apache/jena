@@ -32,10 +32,9 @@ public class TriGWriterBlocks extends TriGWriterBase
 {
     @Override
     protected void output(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context) {
-        StreamRDF dest = new WriterStreamRDFBlocks(iOut) ;
+        StreamRDF dest = new WriterStreamRDFBlocks(iOut, context) ;
         dest.start() ;
-        dest.base(baseURI) ;
-        StreamRDFOps.sendDatasetToStream(dsg, dest, prefixMap) ;
+        StreamRDFOps.sendDatasetToStream(dsg, dest, baseURI, prefixMap) ;
         dest.finish() ;
     }
 }
