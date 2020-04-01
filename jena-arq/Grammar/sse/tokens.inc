@@ -93,7 +93,6 @@ TOKEN :
   < LPAREN:    "(" >
 | < RPAREN:    ")" >
 
-
 | < LBRACE:    "{" >
 | < RBRACE:    "}" >
 
@@ -147,12 +146,12 @@ TOKEN:
 TOKEN:
 {
   // Anything left that isn't structural
-  // LPAREN and RPAREN / LBRACKET/RBRACKET
+  // LPAREN and RPAREN / LBRACKET/RBRACKET / LBRACE/BRCAE
   // Quotes
-  <#SYM:  (~["(", ")", "[", "]", "'", "\"", " ", "\t","\n","\r","\f" ])>
+  <#SYM:  (~["(", ")", "[", "]", "{", "}", "'", "\"", " ", "\t","\n","\r","\f" ])>
 |
-  <#SYM1: (~["^", "@", 
-             "(", ")", "[", "]", "'", "\"", " ", "\t","\n","\r","\f" ])>
+  <#SYM1: (~["^", "@",
+             "(", ")", "[", "]", "{", "}", "'", "\"", " ", "\t","\n","\r","\f" ])>
 | <#SYM_ESC: "\\" ( " " | "'" | "\"" ) >
 |
   <SYMBOL: <SYM1> (<SYM>)*>

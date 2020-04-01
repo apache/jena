@@ -21,13 +21,14 @@ package org.apache.jena.sparql.sse.lang;
 import org.apache.jena.sparql.sse.Item ;
 
 /** Splitter for parser handlers.
- *  Calls both, first one first. */
+ *  Calls both, first one first.
+ */
 
 public class ParseHandler2 implements ParseHandler
 {
     private ParseHandler handler1 ;
     private ParseHandler handler2 ;
-    
+
     public ParseHandler2(ParseHandler handler1, ParseHandler handler2)
     {
         this.handler1 = handler1 ;
@@ -47,15 +48,15 @@ public class ParseHandler2 implements ParseHandler
     public void parseStart()
     {
         handler1.parseStart() ;
-        handler2.parseStart() ; 
-        
+        handler2.parseStart() ;
+
     }
 
     @Override
     public void parseFinish()
     {
         handler1.parseFinish() ;
-        handler2.parseFinish() ; 
+        handler2.parseFinish() ;
     }
 
     @Override
@@ -63,7 +64,7 @@ public class ParseHandler2 implements ParseHandler
     {
         handler1.listStart(line, column) ;
         handler2.listStart(line, column) ;
-        
+
     }
 
     @Override
@@ -75,7 +76,7 @@ public class ParseHandler2 implements ParseHandler
 
     @Override
     public void emitBNode(int line, int column, String label)
-    { 
+    {
         handler1.emitBNode(line, column, label) ;
         handler2.emitBNode(line, column, label) ;
     }
@@ -114,5 +115,16 @@ public class ParseHandler2 implements ParseHandler
         handler1.emitVar(line, column, varName) ;
         handler2.emitVar(line, column, varName) ;
     }
-    
+
+    @Override
+    public void tripleTermStart(int line, int column) {
+        handler1.tripleTermStart(line, column) ;
+        handler2.tripleTermStart(line, column) ;
+    }
+
+    @Override
+    public void tripleTermFinish(int line, int column) {
+        handler1.tripleTermFinish(line, column) ;
+        handler2.tripleTermFinish(line, column) ;
+    }
 }

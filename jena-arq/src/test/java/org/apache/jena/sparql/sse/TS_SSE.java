@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.syntax;
+package org.apache.jena.sparql.sse;
 
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;

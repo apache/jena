@@ -24,23 +24,23 @@ import java.util.Deque ;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.ItemList ;
 
-/** Habdle forms like (base ...) and (prefix...)
+/** Handle forms like (base ...) and (prefix...)
  *  where the syntax modifies the enclosed sub term.
  */
-public abstract class ParseHandlerForm extends ParseHandlerPlain 
+public abstract class ParseHandlerForm extends ParseHandlerPlain
 {
     // generally: (FORM DECL* TERM?)
     // TERM may be absent, in which case the FORM makes
     // no contribution to the output (it just disappears).
-    
+
     // Stackable to enable multiple forms??
     // Or "FormHandler" with a dispatch on registered tags?
-    
+
     private boolean             inDecl      = false ;
     private FrameStack          frameStack  = new FrameStack() ;
 
     public ParseHandlerForm() {}
-    
+
     @Override
     public void listStart(int line, int column)
     { super.listStart(line, column) ; }
@@ -56,34 +56,34 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
             super.listFinish(line, column) ;
             return ;
         }
-        
+
         if ( inDecl )
             throwException("Inconsistent form: Still in DECL at end of the form", line, column) ;
-        
+
         // For later: no exception: ensure this is cleared.
         inDecl = false ;
 
         finishForm(list) ;
-        
+
         // Frame
         Frame f = frameStack.pop() ;
-        
+
         // Drop the form list.
         popList() ;
         //setCurrentItem(null) ;  // Clear, in case top level item is a form of nothing.
-        
+
         // Form output skipped if no result registered.
         Item item = f.result ;
 
         // If all forms at least evaluate to nil.
 //        if ( item == null )
 //            item = Item.createNil(list.getLine(), list.getColumn()) ;
-        
+
         // And emit a result as a listAdd.
         // Must go through our listAdd() here to handle nested forms.
-        
+
         // item==null : remove nil code above to allow forms that have no output.
-        
+
 //        if ( item != null )
             listAdd(item) ;
     }
@@ -94,16 +94,16 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
         // Always add to the current list, even for (base...) and (prefix...)
         // Then change the result list later.
         super.listAdd(item) ;
-        
+
         ItemList list = super.currentList() ;
-        
+
         if ( list == null )
             // Top level is outside a list.  Can't be a form.
             return ;
 
         Frame lastFrame = frameStack.getCurrent()  ;
-        
-        if ( ! inDecl && /*! sameAsLast &&*/ list.size() == 1 && isForm(list.getFirst() ) ) 
+
+        if ( ! inDecl && /*! sameAsLast &&*/ list.size() == 1 && isForm(list.getFirst() ) )
         {
             startForm(list) ;
             Frame f = new Frame(list) ;
@@ -128,11 +128,11 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
             }
         }
     }
-    
+
     protected boolean inFormDecl()  { return inDecl; }
-    
+
     abstract protected void declItem(ItemList list, Item item) ;
-    
+
     abstract protected boolean isForm(Item tag) ;
 
     abstract protected boolean endOfDecl(ItemList list, Item item) ;
@@ -151,7 +151,7 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
     {
         ItemList listItem ;
         Item result ;
-        
+
         Frame(ItemList listItem)
         {
             this.listItem = listItem ;
@@ -159,28 +159,28 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
     }
 
     // ----------------
-    
+
     private static class FrameStack
     {
         private Deque<Frame> frames    = new ArrayDeque<>() ;
-    
+
         boolean isCurrent(ItemList list)
         {
             if ( frames.size() == 0 )
                 return false ;
-    
+
             Frame f = frames.peek();
-    
+
             return f.listItem == list ;
         }
-    
+
         Frame getCurrent()
         {
             if ( frames.size() == 0 )
                 return null ;
             return frames.peek() ;
         }
-    
+
         void push(Frame f) { frames.push(f) ; }
         Frame pop() { return frames.pop() ; }
     }

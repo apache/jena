@@ -18,8 +18,41 @@
 
 package org.apache.jena.graph;
 
+import java.util.Objects;
+
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.shared.PrefixMapping;
+
 /** RDF triples as RDF terms. */
 public class Node_Triple extends Node_Ext<Triple>{
+
+    public static Triple tripleOrNull(Node n) {
+        if ( n instanceof Node_Triple ) {
+            Node_Triple nt = (Node_Triple)n;
+            return nt.get();
+        }
+        return null;
+    }
+
+    /**
+     * Return the triple from a Node_Triple.
+     * Throws a {@link JenaException} if not a {@code Node_Triple}.
+     * Pairs with {@link Node#isNodeTriple()}
+     */
+    public static Triple triple(Node n) {
+        Objects.requireNonNull(n);
+        try {
+            // Instead of adding getTriple() to Node
+            Node_Triple nt = (Node_Triple)n;
+            return nt.get();
+        } catch (ClassCastException ex) {
+            throw new JenaNodeException("Not a Node_Triple: "+n);
+        }
+    }
+
+    public static Node_Triple cast(Node n) {
+        return (Node_Triple)n;
+    }
 
     public Node_Triple(Node s, Node p, Node o) {
         this(Triple.create(s, p, o));
@@ -30,12 +63,17 @@ public class Node_Triple extends Node_Ext<Triple>{
     }
 
     @Override
+    public boolean isConcrete() {
+        return triple(this).isConcrete();
+    }
+
+    @Override
     public boolean isNodeTriple() {
         return true;
     }
 
     @Override
-    public String toString() {
-        return "<< "+super.label+ " >>";
+    public String toString(PrefixMapping pm, boolean quoting) {
+        return "<< " + label.toString() + " >>";
     }
 }

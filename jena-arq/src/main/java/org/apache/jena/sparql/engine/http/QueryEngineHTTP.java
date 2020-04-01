@@ -375,7 +375,7 @@ public class QueryEngineHTTP implements QueryExecution {
         // Map to lang, with pragmatic alternatives. 
         Lang lang = WebContent.contentTypeToLangResultSet(actualContentType);
         if ( lang == null )
-            throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not rcognized for SELECT queries");
+            throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not recognized for SELECT queries");
         if ( !ResultSetReaderRegistry.isRegistered(lang) )
             throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not supported for SELECT queries");
         // This returns a streaming result set for some formats.

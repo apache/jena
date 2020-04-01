@@ -53,21 +53,19 @@ public class TestExpressions
     public final static int NO_FAILURE    = 100 ;
     public final static int PARSE_FAIL    = 250 ;   // Parser should catch it.
     public final static int EVAL_FAIL     = 200 ;   // Parser should pass it but eval should fail it
-    
+
     static boolean flagVerboseWarning ;
-    @BeforeClass static public void beforeClass() {  
+    @BeforeClass static public void beforeClass() {
         flagVerboseWarning = NodeValue.VerboseWarnings ;
         NodeValue.VerboseWarnings = false ;
     }
-    
+
     @AfterClass static public void afterClass() { NodeValue.VerboseWarnings = flagVerboseWarning ; }
-    
+
     @Test public void testVar_1() { testVar("?x", "x") ; }
     @Test public void testVar_2() { testVar("$x", "x") ; }
     @Test public void testVar_3() { testVar("?name", "name") ; }
     @Test public void testVar_4() { testVar("$name", "name") ; }
-    @Test public void testSyntax_1() { testSyntax("?x11") ; }
-
 
     @Test public void testVar_5() { testVar("?x_", "x_") ; }
     @Test public void testVar_6() { testVar("?x.", "x") ; }
@@ -76,12 +74,18 @@ public class TestExpressions
     @Test public void testVar_9() { testVar("?0x", "0x") ; }
     @Test public void testVar_10() { testVar("?x0", "x0") ; }
     @Test public void testVar_11() { testVar("?_", "_") ; }
-    
-    
-    @Test(expected=QueryParseException.class) public void testVar_12() { testVar("?", "") ; }
-    @Test(expected=QueryParseException.class) public void testSyntax_2() { testSyntax("??") ; }
-    @Test(expected=QueryParseException.class) public void testSyntax_3() { testSyntax("?.") ; }
-    @Test(expected=QueryParseException.class) public void testSyntax_4() { testSyntax("?#") ; }
+
+    @Test public void testSyntax_good_1()  { testSyntax("?x11") ; }
+    @Test public void testSyntax_good_2()  { testSyntax("1+2") ; }
+
+    @Test(expected=QueryParseException.class) public void testSyntax_bad_2()  { testSyntax("1:b") ; }
+    @Test(expected=QueryParseException.class) public void testSyntax_bad_3()  { testSyntax("?") ; }
+    @Test(expected=QueryParseException.class) public void testSyntax_bad_4()  { testSyntax("??") ; }
+    @Test(expected=QueryParseException.class) public void testSyntax_bad_5()  { testSyntax("?.") ; }
+    @Test(expected=QueryParseException.class) public void testSyntax_bad_6()  { testSyntax("?#") ; }
+    @Test(expected=QueryParseException.class) public void testSyntax_bad_7()  { testSyntax("_:") ; }
+    @Test(expected=QueryParseException.class) public void testSyntax_bad_8()  { testSyntax("[]") ; }
+
     @Test public void testNumeric_1() { testNumeric("7", 7) ; }
     @Test public void testNumeric_2() { testNumeric("-3", -3) ; }
     @Test public void testNumeric_3() { testNumeric("+2", 2) ; }
@@ -109,12 +113,12 @@ public class TestExpressions
     @Test public void testNumeric_25() { testNumeric("1.5 + 2", 1.5+2) ; }
     @Test public void testNumeric_26() { testNumeric("4111222333444", 4111222333444L) ; }
     @Test public void testNumeric_27() { testNumeric("1234 + 4111222333444", 1234 + 4111222333444L) ; }
-    
+
     @Test public void testNumeric_28() { testNumeric("+2.5", new BigDecimal("+2.5")) ; }
     @Test public void testNumeric_29() { testNumeric("-2.5", new BigDecimal("-2.5")) ; }
     @Test public void testNumeric_30() { testNumeric("10000000000000000000000000000+1", new BigInteger("10000000000000000000000000001")) ; }
     @Test public void testNumeric_31() { testNumeric("-10000000000000000000000000000+1", new BigInteger("-9999999999999999999999999999")) ; }
-    
+
     @Test public void testBoolean_1() { testBoolean("4111222333444 > 1234", 4111222333444L > 1234) ; }
     @Test public void testBoolean_2() { testBoolean("4111222333444 < 1234", 4111222333444L < 1234L) ; }
     @Test public void testBoolean_3() { testBoolean("1.5 < 2", 1.5 < 2 ) ; }
@@ -135,7 +139,7 @@ public class TestExpressions
     @Test public void testBoolean_18() { testBoolean("(2 < 3) && (3<4)", (2 < 3) && (3<4)) ; }
     @Test public void testBoolean_19() { testBoolean("(2 < 3) && (3>=4)", (2 < 3) && (3>=4)) ; }
     @Test public void testBoolean_20() { testBoolean("(2 < 3) || (3>=4)", (2 < 3) || (3>=4)) ; }
-    
+
     // ?x is unbound in the next few tests
     @Test public void testBoolean_21() { testBoolean("(2 < 3) || ?x > 2", true) ; }
     @Test(expected=ExprEvalException.class) public void testBoolean_22() { testEval("(2 > 3) || ?x > 2") ; }
@@ -185,15 +189,15 @@ public class TestExpressions
     @Test public void testBoolean_65() { testBoolean(time3+" > "+time2, true) ; }
     @Test public void testBoolean_66() { testBoolean(time4+" < "+time2, true) ; }
     @Test public void testBoolean_67() { testBoolean(time4+" > "+time2, false) ; }
-    
+
     @Test public void testBoolean_68() { testBoolean("isNumeric(12)", true) ; }
     @Test public void testBoolean_69() { testBoolean("isNumeric('12')", false) ; }
     @Test public void testBoolean_70() { testBoolean("isNumeric('12'^^<"+XSDDatatype.XSDbyte.getURI()+">)", true) ; }
     @Test public void testBoolean_71() { testBoolean("isNumeric('1200'^^<"+XSDDatatype.XSDbyte.getURI()+">)", false) ; }
-    
+
     @Test(expected=ExprEvalException.class)
-    public void testBoolean_72()       { testBoolean("isNumeric(?x)", true) ; } 
-    
+    public void testBoolean_72()       { testBoolean("isNumeric(?x)", true) ; }
+
     @Test public void testDuration_01() { testBoolean(duration1+" = "+duration1, true) ; }
     @Test public void testDuration_02() { testBoolean(duration1+" < "+duration2, true) ; }
     @Test public void testDuration_03() { testBoolean(duration1+" > "+duration2, false) ; }
@@ -201,22 +205,22 @@ public class TestExpressions
     @Test public void testDuration_05() { testBoolean(duration1+" = "+duration3, true) ; }
     @Test public void testDuration_06() { testBoolean(duration1+" <= "+duration3, true) ; }
     @Test public void testDuration_07() { testBoolean(duration1+" >= "+duration3, true) ; }
-    
+
     // Jena bug (<=2.6.2) for durations with fractional seconds.
     // @Test public void testDuration_08() { testBoolean(duration5+" > "+duration4, true) ; }
-    
+
     @Test public void testDuration_09() { testBoolean(duration7+" < "+duration8, true) ; }
-    
+
     @Test public void testURI_1()       { testURI("<a>",     baseNS+"a" ) ; }
     @Test public void testURI_2()       { testURI("<a\\u00E9>",     baseNS+"a\u00E9" ) ; }
     @Test public void testURI_3()       { testURI("ex:b",     exNS+"b" ) ; }
     @Test public void testURI_4()       { testURI("ex:b_",    exNS+"b_" ) ; }
     @Test public void testURI_5()       { testURI("ex:a_b",   exNS+"a_b" ) ; }
     @Test public void testURI_6()       { testURI("ex:", exNS ) ; }
-    
+
     @Test(expected=QueryParseException.class)
     public void testURI_7()             { testURI("x.:", xNS) ; }
-    
+
     @Test public void testURI_8()       { testURI("rdf:_2",   rdfNS+"_2" ) ; }
     @Test public void testURI_9()       { testURI("rdf:__2",  rdfNS+"__2" ) ; }
     @Test public void testURI_10()      { testURI(":b",       dftNS+"b" ) ; }
@@ -224,17 +228,13 @@ public class TestExpressions
     @Test public void testURI_12()      { testURI(":\\u00E9", dftNS+"\u00E9" ) ; }
     @Test public void testURI_13()      { testURI("\\u0065\\u0078:", exNS ) ; }
     @Test public void testURI_14()      { testURI("select:a", selNS+"a" ) ; }
-    
-    @Test(expected=QueryParseException.class)
-    public void testSyntax_5()          { testSyntax("_:") ; }
-    
+
     @Test public void testURI_15()      { testURI("ex:a.",   exNS+"a") ; }
     @Test public void testURI_16()      { testURI("ex:a.a",  exNS+"a.a") ; }
-    
+
     @Test(expected=QueryParseException.class)
     public void testURI_17()      { testURI("x.:a.a",  xNS+"a.a") ; }
-    
-    @Test public void testNumeric_50()  { testNumeric("1:b", 1) ; }
+
     @Test public void testURI_18()      { testURI("ex:2",    exNS+"2" ) ; }
     @Test public void testURI_19()      { testURI("ex:2ab_c",    exNS+"2ab_c" ) ; }
     @Test public void testBoolean_76()  { testBoolean("'fred'@en = 'fred'", false ) ; }
@@ -250,12 +250,10 @@ public class TestExpressions
     @Test public void testBoolean_86()  { testBoolean("'chat'@en != 'chat'@EN", false ) ; }
     @Test public void testBoolean_87()  { testBoolean("'chat'@en != 'chat'@en-uk", true ) ; }
     @Test public void testBoolean_88()  { testBoolean("'chat'@en = <http://example/>", false ) ; }
-    
-    @Test(expected=QueryParseException.class) 
+
+    @Test(expected=QueryParseException.class)
     public void testURI_20()      { testURI("()", RDF.nil.getURI()) ; }
-    
-    @Test(expected=QueryParseException.class) public void testSyntax_6() { testSyntax("[]") ; }
-    
+
     @Test public void testBoolean_89() { testBoolean("'fred'^^<type1> = 'fred'^^<type1>", true ) ; }
     @Test(expected=ExprEvalException.class) public void testBoolean_90() { testEval("'fred'^^<type1> != 'joe'^^<type1>" ) ; }
     @Test(expected=ExprEvalException.class) public void testBoolean_91() { testEval("'fred'^^<type1> = 'fred'^^<type2>" ) ; }
@@ -287,19 +285,19 @@ public class TestExpressions
     @Test public void testString_8() { testString("'a\\\\b'", "a\\b") ; }
     @Test public void testString_9() { testString("'a\\u0020a'", "a a") ; }
     @Test public void testString_10() { testString("'a\\uF021'", "a\uF021") ; }
-    
-    @Test(expected=QueryParseException.class) 
+
+    @Test(expected=QueryParseException.class)
     public void testString_11() { testString("'a\\X'") ; }
 
-    @Test(expected=QueryParseException.class) 
+    @Test(expected=QueryParseException.class)
     public void testString_12() { testString("'aaa\\'") ; }
-    
-    @Test(expected=QueryParseException.class) 
+
+    @Test(expected=QueryParseException.class)
     public void testString_13() { testString("'\\u'") ; }
-    
-    @Test(expected=QueryParseException.class) 
+
+    @Test(expected=QueryParseException.class)
     public void testString_14() { testString("'\\u111'") ; }
-    
+
 //    @Test public void testBoolean_109() { testBoolean("\"fred\\1\" = 'fred1'", false ) ; }
 //    @Test public void testBoolean_110() { testBoolean("\"fred2\" = 'fred\\2'", true ) ; }
     @Test public void testBoolean_111() { testBoolean("'fred\\\\3' != \"fred3\"", true ) ; }
@@ -326,7 +324,7 @@ public class TestExpressions
     @Test public void testBoolean_129() { testBoolean("isURI(?x)", true, env) ; }
     @Test public void testBoolean_130() { testBoolean("isURI(?a)", false, env) ; }
     @Test public void testBoolean_131() { testBoolean("isURI(?b)", false, env) ; }
-    
+
     // ?y is unbound
     @Test(expected=ExprEvalException.class) public void testBoolean_132() { testBoolean("isURI(?y)", false, env) ; }
     @Test public void testBoolean_133() { testBoolean("isURI(<urn:foo>)", true, env) ; }
@@ -357,14 +355,12 @@ public class TestExpressions
     @Test public void testBoolean_150() { testBoolean("<"+xsd+"float>('3') = 3", true) ; }
     @Test public void testBoolean_151() { testBoolean("<"+xsd+"double>('3') = <"+xsd+"float>('3')", true) ; }
     @Test public void testBoolean_152() { testBoolean("<"+xsd+"double>(str('3')) = 3", true) ; }
-    
+
     @Test public void testString_23()   { testString("'a'+'b'", "ab") ; }
     @Test(expected=ExprEvalException.class)
     public void testString_24()         { testString("'a'+12") ; }
     public void testString_25()         { testString("12+'a'") ; }
     public void testString_26()         { testString("<uri>+'a'") ; }
-
-
 
     static String duration1 = "'P1Y1M1DT1H1M1S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
     static String duration2 = "'P2Y1M1DT1H1M1S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
@@ -392,7 +388,7 @@ public class TestExpressions
     static Query query = QueryFactory.make() ;
     static {
         query.setBaseURI(baseNS) ;
-        
+
         query.setPrefix("ex",      exNS) ;
         query.setPrefix("rdf",     RDF.getURI()) ;
         query.setPrefix("x.",      xNS) ;
@@ -400,7 +396,7 @@ public class TestExpressions
         query.setPrefix("select",  selNS) ;
     }
     static String xsd = XSDDatatype.XSD+"#" ;
-    static Binding env ; 
+    static Binding env ;
     static {
         BindingMap b = BindingFactory.create() ;
         b.add(Var.alloc("a"), NodeFactory.createLiteral("A")) ;
@@ -409,95 +405,91 @@ public class TestExpressions
         env = b ;
     }
 
-    private static Expr parse(String exprString)
-    {
-        return ExprUtils.parse(query, exprString, false) ;
+    // Parse and ensure the whole string was used.
+    private static Expr parseToEnd(String exprString) {
+        return ExprUtils.parse(query, exprString, true);
     }
 
-    private static void testVar(String string, String rightVarName)
-    {
-        Expr expr = parse(string) ;
-        assertTrue("Not a NodeVar: "+expr, expr.isVariable()) ;
-        ExprVar v = (ExprVar)expr ;
-        assertEquals("Different variable names", rightVarName, v.getVarName()) ;
+    // Parse, stopping when the expression ends.
+    private static Expr parseAny(String exprString) {
+        return ExprUtils.parse(query, exprString, false);
     }
 
-    private static void testSyntax(String exprString)
-    {
-        ExprUtils.parse(query, exprString, false) ;
+    private static void testVar(String string, String rightVarName) {
+        Expr expr = parseAny(string);
+        assertTrue("Not a NodeVar: " + expr, expr.isVariable());
+        ExprVar v = (ExprVar)expr;
+        assertEquals("Different variable names", rightVarName, v.getVarName());
     }
 
-    private static void testNumeric(String string, int i)
-    {
-        Expr expr = parse(string) ;
-        NodeValue v = expr.eval( BindingFactory.binding() , new FunctionEnvBase()) ;
-        assertTrue(v.isInteger()) ;
-        assertEquals(i, v.getInteger().intValue()) ;
-    }
-    
-    private static void testNumeric(String string, BigDecimal decimal)
-    {
-        Expr expr = parse(string) ;
-        NodeValue v = expr.eval( BindingFactory.binding() , new FunctionEnvBase()) ;
-        assertTrue(v.isDecimal()) ;
-        assertEquals(decimal, v.getDecimal()) ;
+    private static void testSyntax(String exprString) {
+        parseToEnd(exprString);
     }
 
-    private static void testNumeric(String string, BigInteger integer)
-    {
-        Expr expr = parse(string) ;
-        NodeValue v = expr.eval( BindingFactory.binding() , new FunctionEnvBase()) ;
-        assertTrue(v.isInteger()) ;
-        assertEquals(integer, v.getInteger()) ;
-    }
-    private static void testNumeric(String string, double d)
-    {
-        Expr expr = parse(string) ;
-        NodeValue v = expr.eval( BindingFactory.binding(), new FunctionEnvBase()) ;
-        assertTrue(v.isDouble()) ;
-        assertEquals(d, v.getDouble(),0) ;
+    // "should evaluate", don't care what the result is.
+    private static void testEval(String string) {
+        Expr expr = parseToEnd(string);
+        NodeValue v = expr.eval(BindingFactory.binding(), new FunctionEnvBase());
     }
 
-    private static void testEval(String string)
-    {
-        Expr expr = parse(string) ;
-        NodeValue v = expr.eval( BindingFactory.binding(), new FunctionEnvBase()) ;
+    // All value testing should be parseToEnd
+    private static void testNumeric(String string, int i) {
+        Expr expr = parseToEnd(string);
+        NodeValue v = expr.eval(BindingFactory.binding(), new FunctionEnvBase());
+        assertTrue(v.isInteger());
+        assertEquals(i, v.getInteger().intValue());
     }
 
-    private static void testBoolean(String string, boolean b)
-    {
-        testBoolean(string, b, BindingFactory.binding()) ;
+    private static void testNumeric(String string, BigDecimal decimal) {
+        Expr expr = parseToEnd(string);
+        NodeValue v = expr.eval(BindingFactory.binding(), new FunctionEnvBase());
+        assertTrue(v.isDecimal());
+        assertEquals(decimal, v.getDecimal());
     }
 
-    private static void testBoolean(String string, boolean b, Binding env)
-    {
-        Expr expr = parse(string) ;
-        NodeValue v = expr.eval( env, new FunctionEnvBase()) ;
-        assertTrue(v.isBoolean()) ;
-        assertEquals(b, v.getBoolean()) ;
+    private static void testNumeric(String string, BigInteger integer) {
+        Expr expr = parseToEnd(string);
+        NodeValue v = expr.eval(BindingFactory.binding(), new FunctionEnvBase());
+        assertTrue(v.isInteger());
+        assertEquals(integer, v.getInteger());
     }
 
-    private static void testURI(String string, String uri)
-    {
-        Expr expr = parse(string) ;
-        NodeValue v = expr.eval( env, new FunctionEnvBase()) ;
-        assertTrue(v.isIRI()) ;
-        assertEquals(uri, v.getNode().getURI()) ;
+    private static void testNumeric(String string, double d) {
+        Expr expr = parseToEnd(string);
+        NodeValue v = expr.eval(BindingFactory.binding(), new FunctionEnvBase());
+        assertTrue(v.isDouble());
+        assertEquals(d, v.getDouble(), 0);
     }
 
-    private static void testString(String string, String string2)
-    {
-        Expr expr = parse(string) ;
-        NodeValue v = expr.eval( env, new FunctionEnvBase()) ;
-        assertTrue(v.isString()) ;
-        assertEquals(string2, v.getString()) ;
+    private static void testBoolean(String string, boolean b) {
+        testBoolean(string, b, BindingFactory.binding());
     }
 
-    private static void testString(String string)
-    {
-        Expr expr = parse(string) ;
-        NodeValue v = expr.eval( env, new FunctionEnvBase()) ;
-        assertTrue(v.isString()) ;
+    private static void testBoolean(String string, boolean b, Binding env) {
+        Expr expr = parseToEnd(string);
+        NodeValue v = expr.eval(env, new FunctionEnvBase());
+        assertTrue(v.isBoolean());
+        assertEquals(b, v.getBoolean());
     }
 
+    private static void testURI(String string, String uri) {
+        // Exception to the rule - parseAny
+        Expr expr = parseAny(string);
+        NodeValue v = expr.eval(env, new FunctionEnvBase());
+        assertTrue(v.isIRI());
+        assertEquals(uri, v.getNode().getURI());
+    }
+
+    private static void testString(String string, String string2) {
+        Expr expr = parseToEnd(string);
+        NodeValue v = expr.eval(env, new FunctionEnvBase());
+        assertTrue(v.isString());
+        assertEquals(string2, v.getString());
+    }
+
+    private static void testString(String string) {
+        Expr expr = parseToEnd(string);
+        NodeValue v = expr.eval(env, new FunctionEnvBase());
+        assertTrue(v.isString());
+    }
 }

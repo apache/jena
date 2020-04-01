@@ -16,22 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql;
+package org.apache.jena.graph;
 
-import junit.framework.TestSuite ;
+import org.apache.jena.shared.JenaException;
 
-/**
- * The test suite for all SPARQL (the second SPARQL working group) approved tests.
- * These are actually covered by TC_Scripted.
- */
-public class TC_SPARQL11 extends TestSuite
-{
-    static public TestSuite suite() { return new TC_SPARQL11(); }
-
-    // SPARQL 1.1 test suite (when ready)
-
-    public TC_SPARQL11()
-    {
-        super(TC_SPARQL11.class.getName()) ;
+public class JenaNodeException extends JenaException {
+    public JenaNodeException(String message) {
+        super(message);
     }
 }

@@ -56,57 +56,57 @@ import org.apache.jena.vocabulary.RDF ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-/** Base class parsers, mainly SPARQL related */ 
+/** Base class parsers, mainly SPARQL related */
 public class ParserBase
 {
     // NodeConst
     protected final Node XSD_TRUE       = NodeConst.nodeTrue ;
-    protected final Node XSD_FALSE      = NodeConst.nodeFalse ; 
-    
+    protected final Node XSD_FALSE      = NodeConst.nodeFalse ;
+
     protected final Node nRDFtype       = NodeConst.nodeRDFType ;
-    
+
     protected final Node nRDFnil        = NodeConst.nodeNil ;
     protected final Node nRDFfirst      = NodeConst.nodeFirst ;
     protected final Node nRDFrest       = NodeConst.nodeRest ;
-    
+
     protected final Node nRDFsubject    = RDF.Nodes.subject ;
     protected final Node nRDFpredicate  = RDF.Nodes.predicate ;
     protected final Node nRDFobject     = RDF.Nodes.object ;
-    
+
     // ----
     // Graph patterns, true; in templates, false.
     private boolean bNodesAreVariables = true ;
     // In DELETE, false.
     private boolean bNodesAreAllowed = true ;
-    
+
     // label => bNode for construct templates patterns
     @SuppressWarnings("deprecation")
     final LabelToNodeMap bNodeLabels = LabelToNodeMap.createBNodeMap() ;
-    
+
     // label => bNode (as variable) for graph patterns
     final LabelToNodeMap anonVarLabels = LabelToNodeMap.createVarMap() ;
-    
+
     // This is the map used allocate blank node labels during parsing.
     // 1/ It is different between CONSTRUCT and the query pattern
     // 2/ Each BasicGraphPattern is a scope for blank node labels so each
     //    BGP causes the map to be cleared at the start of the BGP
-    
+
     LabelToNodeMap activeLabelMap = anonVarLabels ;
     Set<String> previousLabels = new HashSet<>() ;
-    
+
     // Aggregates are only allowed in places where grouping can happen.
-    // e.g. SELECT clause but not a FILTER. 
+    // e.g. SELECT clause but not a FILTER.
     private boolean allowAggregatesInExpressions = false ;
-    
+
     //LabelToNodeMap listLabelMap = new LabelToNodeMap(true, new VarAlloc("L")) ;
     // ----
-    
+
     public ParserBase() {}
-    
+
     protected Prologue prologue ;
     public void setPrologue(Prologue prologue) { this.prologue = prologue ; }
     public Prologue getPrologue() { return prologue ; }
-    
+
     protected void setInConstructTemplate(boolean b) {
         setBNodesAreVariables(!b) ;
     }
@@ -120,7 +120,7 @@ public class ParserBase
         else
             activeLabelMap = bNodeLabels ;
     }
-    
+
     protected boolean getBNodesAreAllowed()   { return bNodesAreAllowed ; }
 
     protected void setBNodesAreAllowed(boolean bNodesAreAllowed) {
@@ -183,7 +183,7 @@ public class ParserBase
             n = NodeFactory.createLiteral(lexicalForm) ;
         return n ;
     }
-    
+
     protected long integerValue(String s) {
         try {
             if ( s.startsWith("+") )
@@ -238,7 +238,7 @@ public class ParserBase
     }
 
     // ---- IRIs and Nodes
-    
+
     protected String resolveQuotedIRI(String iriStr, int line, int column) {
         iriStr = stripQuotes(iriStr) ;
         return resolveIRI(iriStr, line, column) ;
@@ -268,7 +268,7 @@ public class ParserBase
         }
         return iriStr ;
     }
-    
+
     protected String resolvePName(String prefixedName, int line, int column) {
         // It's legal.
         int idx = prefixedName.indexOf(':') ;
@@ -288,7 +288,7 @@ public class ParserBase
         }
         return s ;
     }
-    
+
     private boolean skolomizedBNodes = ARQ.isTrue(ARQ.constantBNodeLabels) ;
 
     protected Node createNode(String iri) {
@@ -301,23 +301,23 @@ public class ParserBase
     protected boolean isBNodeIRI(String iri) {
         return skolomizedBNodes && RiotLib.isBNodeIRI(iri) ;
     }
-    
+
     // -------- Basic Graph Patterns and Blank Node label scopes
-    
+
     // A BasicGraphPattern is any sequence of TripleBlocks, separated by filters,
-    // but not by other graph patterns. 
-    
+    // but not by other graph patterns.
+
     protected void startBasicGraphPattern()
     { activeLabelMap.clear() ; }
 
     protected void endBasicGraphPattern()
     { previousLabels.addAll(activeLabelMap.getLabels()) ; }
-    
+
     protected void startTriplesBlock()
     { }
-    
+
     protected void endTriplesBlock()
-    { } 
+    { }
 
     // On entry to a new group, the current BGP is ended.
     protected void startGroup(ElementGroup elg) {
@@ -328,13 +328,13 @@ public class ParserBase
     protected void endGroup(ElementGroup elg) {
         endBasicGraphPattern() ;
     }
-    
+
     // --------
-    
+
     // BNode from a list
 //    protected Node createListNode()
 //    { return listLabelMap.allocNode() ; }
-    
+
     protected Node createListNode(int line, int column) { return createBNode(line, column) ; }
 
     // Unlabelled bNode.
@@ -353,6 +353,10 @@ public class ParserBase
 
         // label = unescapeCodePoint(label, line, column) ;
         return activeLabelMap.asNode(label) ;
+    }
+
+    protected Node createTripleTerm(Node s, Node p, Node o) {
+        return NodeFactory.createTripleNode(s, p, o);
     }
 
     protected Expr createExprExists(Element element) {
@@ -420,7 +424,7 @@ public class ParserBase
     }
 
     // Utilities to remove escapes in strings.
-    
+
     public static String unescapeStr(String s)
     { return unescape(s, '\\', false, 1, 1) ; }
 
@@ -430,13 +434,13 @@ public class ParserBase
 //    protected String unescapeCodePoint(String s, int line, int column)
 //    { return unescape(s, '\\', true, line, column) ; }
 
-    
-    // Do we nee dthe line/column versions?  
+
+    // Do we nee dthe line/column versions?
     // Why not catch exceptions and comvert to  QueryParseException
-    
+
     public static String unescapeStr(String s, int line, int column)
     { return unescape(s, '\\', false, line, column) ; }
-    
+
     // Worker function
     public static String unescape(String s, char escape, boolean pointCodeOnly, int line, int column) {
         try {
@@ -446,7 +450,7 @@ public class ParserBase
             return null ;
         }
     }
-    
+
     public static String unescapePName(String s, int line, int column) {
         char escape = '\\' ;
         int idx = s.indexOf(escape) ;

@@ -31,14 +31,24 @@ public class JSONResultsKW
     public static String kBindings      = "bindings" ;
     public static String kType          = "type" ;
     public static String kUri           = "uri"  ;
+    public static String kObject        = "object" ;
+    
     public static String kValue         = "value" ;
     public static String kLiteral       = "literal" ;
     public static String kUnbound       = "undef" ;
-    // Legacy.
+    
+    // Legacy: kTypedLiteral
     public static String kTypedLiteral  = "typed-literal" ;
     public static String kXmlLang       = "xml:lang" ;
     public static String kDatatype      = "datatype" ;
     public static String kBnode         = "bnode" ;
     public static String kBoolean       = "boolean" ;
+
+    // RDF* Triple terms
+    public static String kTriple        = "triple" ;
+    public static String kSubject       = "subject" ;
+    public static String kPredicate     = "predicate" ;
+    public static String kProperty      = "property" ;
+
 }
 

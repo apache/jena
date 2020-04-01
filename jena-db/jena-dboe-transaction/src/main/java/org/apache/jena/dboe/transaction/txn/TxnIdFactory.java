@@ -53,7 +53,7 @@ public class TxnIdFactory {
             case 8 : return TxnIdSimple.create(bytes);
             case 16 :return TxnIdUuid.create(bytes);
             default:
-                throw new NotImplementedException("Unrcognized bytes length: "+bytes.length);
+                throw new NotImplementedException("Unrecognized bytes length: "+bytes.length);
         }
     }
 

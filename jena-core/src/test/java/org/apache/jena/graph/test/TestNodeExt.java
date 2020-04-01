@@ -38,6 +38,8 @@ public class TestNodeExt {
     @Test public void ext_triple_1() {
         Node_Triple nt = new Node_Triple(s,p,o);
         assertNotNull(nt.get());
+        assertNotNull(Node_Triple.tripleOrNull(nt));
+        assertNotNull(Node_Triple.triple(nt));
         assertEquals(triple1, nt.get());
 
         assertEquals(nt, nt);
@@ -71,4 +73,23 @@ public class TestNodeExt {
         assertNotEquals(nt1, nt9);
         assertFalse(nt1.sameValueAs(nt9));
     }
+
+    @Test public void ext_triple_bad_1() {
+        Node n = NodeFactory.createLiteral("abc");
+        assertNull(Node_Triple.tripleOrNull(n));
+    }
+
+    @Test
+    public void ext_triple_bad_2() {
+        Node n = NodeFactory.createLiteral("abc");
+        assertNull(Node_Triple.tripleOrNull(n));
+    }
+
+    @Test(expected=JenaNodeException.class)
+    public void ext_triple_bad_3() {
+        Node n = NodeFactory.createLiteral("abc");
+        Node_Triple.triple(n);
+    }
+
+
 }

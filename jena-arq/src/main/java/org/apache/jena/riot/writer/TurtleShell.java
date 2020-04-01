@@ -89,7 +89,6 @@ public abstract class TurtleShell {
         RiotLib.writePrefixes(out, prefixMap, prefixStyle==DirectiveStyle.SPARQL) ;
     }
 
-    // XXX
     /** Write graph in Turtle syntax (or part of TriG) */
     protected void writeGraphTTL(Graph graph) {
         ShellGraph x = new ShellGraph(graph, null, null, null) ;
@@ -115,7 +114,7 @@ public abstract class TurtleShell {
         private final Graph                 graph ;
 
         // Blank nodes that have one incoming triple
-        private /*final*/ Set<Node>             nestedObjects ;
+        private final Set<Node>             nestedObjects ;
         private final Set<Node>             nestedObjectsWritten ;
 
         // Blank node subjects that are not referenced as objects or graph names
@@ -188,11 +187,6 @@ public abstract class TurtleShell {
             System.err.print(label) ;
             System.err.print(" = ") ;
             System.err.println(nodes) ;
-        }
-        // Debug
-
-        private ShellGraph(Graph graph) {
-            this(graph, null, null, null) ;
         }
 
         // ---- Data access
@@ -476,7 +470,7 @@ public abstract class TurtleShell {
             // 2 - Free standing lists
             somethingWritten = writeRemainingFreeLists(somethingWritten) ;
 
-            // 3 - Blank nodes that are unwrittern single objects.
+            // 3 - Blank nodes that are unwritten single objects.
             //            System.err.println("## ## ##") ;
             //            printDetails("nestedObjects", nestedObjects) ;
             //            printDetails("nestedObjectsWritten", nestedObjectsWritten) ;

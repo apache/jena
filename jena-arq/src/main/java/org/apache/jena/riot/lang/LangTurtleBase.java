@@ -251,13 +251,13 @@ public abstract class LangTurtleBase extends LangBase {
     private Node parseTripleNode() {
         Token token = nextToken();
         // subjectX()
-        Node s = nodeX("subject");
+        Node s = subjectX();
 
         Node p = predicate();         // predicate() == node();nextToken();
         nextToken();
 
         // objectX()
-        Node o = nodeX("object");
+        Node o = objectX();
 
         if ( ! lookingAt(GT2) )
             exception(peekToken(), "Expected >>, found %s", peekToken().text()) ;
@@ -269,15 +269,24 @@ public abstract class LangTurtleBase extends LangBase {
         return profile.createTripleNode(s, p, o, token.getLine(), token.getColumn());
     }
 
+    private Node subjectX() {
+        Node node = nodeX("subject");
+        if ( node.isLiteral() )
+            exception(peekToken(), "Literal as subject in RDF* triple") ;
+        return node ;
+    }
+
+    private Node objectX() {
+        Node node = nodeX("object");
+        return node ;
+    }
+
     // Does consume the token.
     private Node nodeX(String posnLabel) {
-
         if ( lookingAt(LT2) )
             return parseTripleNode();
         if ( ! lookingAt(NODE) )
-            // XXX Move to nodeX?
             exception(peekToken(), "Bad %s in RDF* triple", posnLabel, peekToken().text()) ;
-
         Node node = node();
         nextToken();
         return node;

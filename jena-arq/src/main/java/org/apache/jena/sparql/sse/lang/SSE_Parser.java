@@ -36,15 +36,15 @@ public class SSE_Parser
         try
         {
             p.term() ;
-            // Checks for EOF 
+            // Checks for EOF
 //            //<EOF> test : EOF is always token 0.
 //            if ( p.token_source.getNextToken().kind != 0 )
 //                throw new SSEParseException("Trailing characters after "+item, item.getLine(), item.getColumn()) ;
-       } 
+       }
        catch (ParseException ex)
        { throw new SSEParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }
        catch (TokenMgrError tErr)
-       { 
+       {
            // Last valid token : not the same as token error message - but this should not happen
            int col = p.token.endColumn ;
            int line = p.token.endLine ;
@@ -60,11 +60,11 @@ public class SSE_Parser
         try
         {
             p.parse() ;
-       } 
+       }
        catch (ParseException ex)
        { throw new SSEParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }
        catch (TokenMgrError tErr)
-       { 
+       {
            // Last valid token : not the same as token error message - but this should not happen
            int col = p.token.endColumn ;
            int line = p.token.endLine ;

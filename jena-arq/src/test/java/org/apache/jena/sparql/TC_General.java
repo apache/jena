@@ -44,7 +44,7 @@ import org.apache.jena.sparql.path.TS_Path ;
 import org.apache.jena.sparql.pfunction.library.TS_PFunction ;
 import org.apache.jena.sparql.resultset.TS_ResultSet ;
 import org.apache.jena.sparql.solver.TS_Solver ;
-import org.apache.jena.sparql.syntax.TS_SSE ;
+import org.apache.jena.sparql.sse.TS_SSE;
 import org.apache.jena.sparql.syntax.TS_Syntax ;
 import org.apache.jena.sparql.transaction.TS_Transaction ;
 import org.apache.jena.sparql.util.TS_Util ;

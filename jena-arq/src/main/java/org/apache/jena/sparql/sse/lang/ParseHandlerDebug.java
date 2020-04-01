@@ -21,26 +21,26 @@ package org.apache.jena.sparql.sse.lang;
 import org.apache.jena.sparql.sse.Item ;
 
 
-/** Tracing parser handler - logs what the core parse sees */ 
+/** Tracing parser handler - logs what the core parse sees */
 
 public class ParseHandlerDebug implements ParseHandler
 {
     int count = 0 ;
-    
+
     private void indent()
     {
         for ( int i = 0 ; i < count ; i++ ) System.out.print("  ") ;
     }
 
-    private void start(int line, int column)
-    { 
-        System.out.print("["+line+", "+column+"]  ") ; 
+    private void line(int line, int column)
+    {
+        System.out.print("["+line+", "+column+"]  ") ;
         indent() ;
     }
 
     @Override
     public Item getItem()       { return null ; }
-    
+
     @Override
     public void parseStart()
     { System.out.println("<<<<") ; }
@@ -51,8 +51,8 @@ public class ParseHandlerDebug implements ParseHandler
 
     @Override
     public void listStart(int line, int column)
-    { 
-        start(line, column) ;
+    {
+        line(line, column) ;
         count++ ;
         System.out.println("(") ;
     }
@@ -60,8 +60,8 @@ public class ParseHandlerDebug implements ParseHandler
     @Override
     public void listFinish(int line, int column)
     {
-        count-- ;         
-        start(line, column) ;
+        count-- ;
+        line(line, column) ;
         System.out.println(")") ;
     }
 
@@ -69,23 +69,23 @@ public class ParseHandlerDebug implements ParseHandler
 
     @Override
     public void emitBNode(int line, int column, String label)
-    { 
-        start(line, column) ;
+    {
+        line(line, column) ;
         System.out.println("BNode: "+label) ;
     }
 
 
     @Override
     public void emitIRI(int line, int column, String iriStr)
-    { 
-        start(line, column) ;
+    {
+        line(line, column) ;
         System.out.println("IRI: "+iriStr) ;
     }
 
     @Override
     public void emitLiteral(int line, int column, String lex, String lang, String datatype_iri, String datatype_pn)
-    { 
-        start(line, column) ;
+    {
+        line(line, column) ;
         if ( lang != null )
             System.out.println("Literal: "+lex+" @"+lang) ;
         else if ( datatype_iri != null )
@@ -96,23 +96,35 @@ public class ParseHandlerDebug implements ParseHandler
 
     @Override
     public void emitPName(int line, int column, String pname)
-    { 
-        start(line, column) ;
+    {
+        line(line, column) ;
         System.out.println("PName: "+pname) ;
     }
 
     @Override
     public void emitSymbol(int line, int column, String symbol)
-    { 
-        start(line, column) ;
+    {
+        line(line, column) ;
         System.out.println("Symbol: "+symbol) ;
     }
 
     @Override
     public void emitVar(int line, int column, String varName)
-    { 
-        start(line, column) ;
+    {
+        line(line, column) ;
         System.out.println("Var: "+varName) ;
+    }
+
+    @Override
+    public void tripleTermStart(int line, int column) {
+        line(line, column) ;
+        System.out.println("<<") ;
+    }
+
+    @Override
+    public void tripleTermFinish(int line, int column) {
+        line(line, column) ;
+        System.out.println(">>") ;
     }
 
 }

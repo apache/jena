@@ -1519,13 +1519,13 @@ Node BlankNodePropertyListPath(TripleCollector acc) : { Token t ; }
     { return n ; }
 }
 
+// << >> as reification. Allows any subject/predicate/object nodes.
 #if 0
 Node Reification(Node id, TripleCollectorMark acc) : 
     { Node s , p , o ; int mark ; Token t ; }
 {
-  // For generality, should be AndNode for s/p/o
   // Insert reification triple before the resulting subtriples (if any)
-  t = "<<"
+  t = <LT2>
     { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
     { if ( id == null )
         id = createBNode(beginLine, beginColumn() ;
@@ -1540,7 +1540,7 @@ Node Reification(Node id, TripleCollectorMark acc) :
     }
   o = GraphNode(acc)
     { insert(acc, mark, id, nRDFobject, o) ; }
-  ">>"
+  <GT2>
     { return id ; }
 }
 #endif
@@ -1615,11 +1615,32 @@ Node GraphNodePath(TripleCollectorMark acc) : { Node n ; }
   n = TriplesNodePath(acc) { return n ; }
 }
 
+#ifdef SPARQL_11
 Node VarOrTerm() : {Node n = null ; }
 {
   ( n = Var() | n = GraphTerm() )
   { return n ; }
 }
+#endif
+#ifdef ARQ
+// RDF* Triple as term.
+Node VarOrTerm() : { Node n = null ; Token t = null; Node s , p , o ; }
+{
+  (
+    t = <LT2>
+    s = VarOrTerm()
+    p = Verb()
+    o = VarOrTerm()
+    { n = createTripleTerm(s,p,o); }
+    <GT2>
+  | n = Var()
+  | n = GraphTerm()
+  )
+  { return n ; }
+}
+
+#endif
+
 
 // e.g. Property (if no bNodes) + DESCRIBE
 Node VarOrIri() : {Node n = null ; String iri ; }
@@ -2564,6 +2585,10 @@ TOKEN :
 | < LE:      "<=" >    // Maybe: | "=>" >
 | < GE:      ">=" >    // Maybe: | "=<" >
 
+#ifdef ARQ
+| < GT2:     ">>" >
+| < LT2:     "<<" >
+#endif
 | < BANG:    "!" >
 | < TILDE:   "~" >
 | < COLON:   ":" >

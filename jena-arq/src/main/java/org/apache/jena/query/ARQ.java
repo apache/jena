@@ -460,7 +460,7 @@ public class ARQ
     public static final Symbol optMergeBGPs = SystemARQ.allocSymbol("optMergeBGPs");
 
     /**
-     * Context key controlling whether the standard optimizater applies the optimization
+     * Context key controlling whether the standard optimizer applies the optimization
      * to combine stacks of (extend) into one compound operation.  Ditto (assign).
      * <p>By default, this transformation is applied.
      */

@@ -39,6 +39,8 @@ public abstract class Node_Ext<X> extends Node {
         return null;
     }
 
+    // If the extension wants the node to match in memory graphs, this must be true
+    // and extension type X must support value-based .equals() and .hashCode().
     @Override
     public boolean isConcrete() {
         return false;
