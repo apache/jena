@@ -98,7 +98,7 @@ public class TestStreamRDFThrift extends BaseTest {
 
     @Test public void graph_02() {
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-        StreamRDFWriter.write(out, graph, Lang.RDFTHRIFT) ;
+        StreamRDFWriter.write(out, graph, Lang.RDFTHRIFT, null) ;
 
         byte[] bytes = out.toByteArray() ;
         ByteArrayInputStream in = new ByteArrayInputStream(bytes) ;

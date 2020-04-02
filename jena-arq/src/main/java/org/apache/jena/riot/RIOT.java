@@ -31,7 +31,7 @@ public class RIOT {
     // problems with recursive initialization.
     private static volatile boolean initialized = false ;
     private static Object           initLock    = new Object() ;
-    
+
     /** IRI for RIOT */
     public static final String riotIRI = "http://jena.apache.org/#riot" ;
 
@@ -48,10 +48,10 @@ public class RIOT {
 
     /** The root package name for RIOT */
     public static final String PATH    = "org.apache.jena.riot" ;
-    
-    /** Control of multiline literals */ 
+
+    /** Control of multiline literals */
     public static final Symbol multilineLiterals = Symbol.create("riot.multiline_literals") ;
-    
+
     /** The system-wide context */
     public static Context getContext() {
         return ARQ.getContext();
@@ -106,21 +106,25 @@ public class RIOT {
     public static String getBuildDate() {
         return ARQ.BUILD_DATE ;
     }
-    
+
     // ---- Symbols
-    
+
     /**
      * Symbol to use to pass (in a Context object) the "@context" to be used when reading jsonld
      * (overriding the actual @context in the jsonld)
-     * Expected value: the value of the "@context", 
+     * Expected value: the value of the "@context",
      * as expected by the JSONLD-java API (a Map) */
     public static final Symbol JSONLD_CONTEXT = Symbol.create("http://jena.apache.org/riot/jsonld#JSONLD_CONTEXT");
 
     private static String TURTLE_SYMBOL_BASE = "http://jena.apache.org/riot/turtle#";
-    
-    /** 
-     * Printing style. One of "RDF11" or RDF10". Controls {@literal @prefix} vs PREFIX. 
+
+    /**
+     * Printing style. One of "RDF11" or RDF10". Controls {@literal @prefix} vs PREFIX.
      * Values causing SPARQL-style keyword output are "sparql","keyword" and "rdf11".
      */
+    public static final Symbol symTurtleDirectiveStyle = SystemARQ.allocSymbol(TURTLE_SYMBOL_BASE, "directiveStyle");
+
+    /** @deprecated Use {@link #symTurtleDirectiveStyle}. */
+    @Deprecated
     public static final Symbol symTurtlePrefixStyle = SystemARQ.allocSymbol(TURTLE_SYMBOL_BASE, "prefixStyle");
 }

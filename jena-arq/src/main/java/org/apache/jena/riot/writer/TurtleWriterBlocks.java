@@ -32,10 +32,9 @@ public class TurtleWriterBlocks extends TurtleWriterBase
 {
     @Override
     protected void output(IndentedWriter out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
-        StreamRDF dest = new WriterStreamRDFBlocks(out) ;
+        StreamRDF dest = new WriterStreamRDFBlocks(out, context) ;
         dest.start() ;
-        dest.base(baseURI) ;
-        StreamRDFOps.sendGraphToStream(graph, dest, prefixMap) ;
+        StreamRDFOps.sendGraphToStream(graph, dest, baseURI, prefixMap) ;
         dest.finish() ;
     }
 }

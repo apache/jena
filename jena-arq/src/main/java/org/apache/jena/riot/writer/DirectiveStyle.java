@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,23 +18,16 @@
 
 package org.apache.jena.riot.writer;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.StreamRDFOps ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.util.Context ;
-
-/** TriG writer that streams - print in blocks of quads clustered
- *  by adjacent same graph and same subject
- */
-public class TriGWriterBlocks extends TriGWriterBase
-{
-    @Override
-    protected void output(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context) {
-        StreamRDF dest = new WriterStreamRDFBlocks(iOut, context) ;
-        dest.start() ;
-        StreamRDFOps.sendDatasetToStream(dsg, dest, baseURI, prefixMap) ;
-        dest.finish() ;
+enum DirectiveStyle {
+    AT, SPARQL ;
+    public static DirectiveStyle create(String label) {
+        String s = label.toLowerCase() ;
+        switch(s) {
+            case "rdf_10": case "rdf10": case "n3": case "at":
+                return DirectiveStyle.AT ;
+            case "rdf_11": case "rdf11": case "sparql":
+                return DirectiveStyle.SPARQL ;
+        }
+        return null;
     }
 }

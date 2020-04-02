@@ -36,14 +36,16 @@ import org.apache.jena.Jena ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
 import org.apache.jena.riot.process.inf.InfFactory ;
 import org.apache.jena.riot.process.inf.InferenceSetupRDFS ;
-import org.apache.jena.riot.system.* ;
+import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.ErrorHandlerFactory.ErrorHandlerTracking;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFLib;
+import org.apache.jena.riot.system.StreamRDFWriter;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -72,12 +74,7 @@ public abstract class CmdLangParse extends CmdGeneral
         addModule(modLangParse) ;
         
         super.modVersion.addClass(Jena.class) ;
-        // Force - sometimes initialization does not cause these
-        // to initialized early enough for reflection.
-        String x1 = ARQ.VERSION ;
-        String x2 = ARQ.BUILD_DATE ;
-        super.modVersion.addClass(RIOT.class) ;
-        
+        //super.modVersion.addClass(RIOT.class) ;
     }
 
     @Override
@@ -325,7 +322,7 @@ public abstract class CmdLangParse extends CmdGeneral
         if ( fmt == null )
             return null ;
         /** Create an accumulating output stream for later pretty printing */        
-        return StreamRDFWriter.getWriterStream(outputWrite, fmt) ;
+        return StreamRDFWriter.getWriterStream(outputWrite, fmt, RIOT.getContext()) ;
     }
     
     /** Create an accumulating output stream for later pretty printing */

@@ -30,6 +30,7 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.other.GLib ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.util.Context;
 
 /** An output of triples / quads that print batches of same subject / same graph, same subject. 
  *  It writes something that is easier to read than
@@ -66,16 +67,16 @@ public class WriterStreamRDFBlocks extends WriterStreamRDFBatched
     protected Node lastSubject          = null ;
     protected int currentGraphIndent    = 0;
 
-    public WriterStreamRDFBlocks(OutputStream output) {
-        super(output) ;
+    public WriterStreamRDFBlocks(OutputStream output, Context context) {
+        super(output, context) ;
     }
 
-    public WriterStreamRDFBlocks(Writer output) {
-        super(output) ;
+    public WriterStreamRDFBlocks(Writer output, Context context) {
+        super(output, context) ;
     }
 
-    public WriterStreamRDFBlocks(IndentedWriter output) {
-        super(output) ;
+    public WriterStreamRDFBlocks(IndentedWriter output, Context context) {
+        super(output, context) ;
     }
 
     @Override

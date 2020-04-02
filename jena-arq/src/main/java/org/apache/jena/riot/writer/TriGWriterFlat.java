@@ -33,10 +33,9 @@ public class TriGWriterFlat extends TriGWriterBase
 {
     @Override
     protected void output(IndentedWriter iOut, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context) {
-        StreamRDF dest = new WriterStreamRDFFlat(iOut) ;
+        StreamRDF dest = new WriterStreamRDFFlat(iOut, context) ;
         dest.start() ;
-        dest.base(baseURI) ;
-        StreamRDFOps.sendDatasetToStream(datasetGraph, dest, prefixMap) ;
+        StreamRDFOps.sendDatasetToStream(datasetGraph, dest, baseURI, prefixMap) ;
         dest.finish() ;
     }
 }
