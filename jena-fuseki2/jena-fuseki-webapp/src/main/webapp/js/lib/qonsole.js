@@ -514,7 +514,7 @@ var qonsole = function() {
         $("#inputURI").val("");
 
         if (prefix) {
-            $.getJSON(sprintf("http://prefix.cc/%s.file.json", prefix),
+            $.getJSON(sprintf("https://prefix.cc/%s.file.json", prefix),
                     function(data) {
                         $("#inputURI").val(data[prefix]);
                     });
