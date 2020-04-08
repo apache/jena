@@ -86,7 +86,7 @@ public class RiotLib
      */
     public static Node createIRIorBNode(String str) {
         // Is it a bNode label? i.e. <_:xyz>
-        if ( isBNodeIRI(str) ) {
+        if ( skolomizedBNodes && isBNodeIRI(str) ) {
             String s = str.substring(bNodeLabelStart.length());
             Node n = NodeFactory.createBlankNode(s);
             return n;
@@ -96,7 +96,7 @@ public class RiotLib
 
     /** Test whether a IRI is a ARQ-encoded blank node. */
     public static boolean isBNodeIRI(String iri) {
-        return skolomizedBNodes && iri.startsWith(bNodeLabelStart);
+        return iri.startsWith(bNodeLabelStart);
     }
     
     private static final String URI_PREFIX_FIXUP = "::";
