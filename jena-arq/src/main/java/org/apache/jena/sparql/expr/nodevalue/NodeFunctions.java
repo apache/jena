@@ -398,8 +398,19 @@ public class NodeFunctions {
         if ( str == null )
             throw new ExprEvalException("Can't make an IRI from " + node) ;
 
-        IRI iri = null ;
         String iriStr = node.getLiteralLexicalForm() ;
+        if ( RiotLib.isBNodeIRI(iriStr) ) {
+            // Jena's "Blank node URI" <_:...>
+            // Pass through as an IRI.
+            return NodeFactory.createURI(iriStr) ;
+        }
+        IRI iri = resolveCheckIRI(iriStr, baseIRI);
+        return NodeFactory.createURI(iri.toString()) ;
+    }
+
+    // 
+    private static IRI resolveCheckIRI(String iriStr, String baseIRI) {
+        IRI iri = null ;
 
         // Level of checking?
         if ( baseIRI != null ) {
@@ -423,7 +434,7 @@ public class NodeFunctions {
                     Log.warn(NodeFunctions.class, "Bad IRI: " + msg + ": " + iri) ;
             }
         }
-        return NodeFactory.createURI(iri.toString()) ;
+        return iri;
     }
 
     private static String getOneViolation(IRI iri, boolean includeWarnings) {

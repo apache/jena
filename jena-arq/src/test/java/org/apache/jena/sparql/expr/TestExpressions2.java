@@ -89,6 +89,10 @@ public class TestExpressions2 extends BaseTest
     @Test public void term_constructor_iri_04()     { eval("isIRI(IRI(BNODE()))", true) ; }            // SPARQL extension
     @Test public void term_constructor_iri_05()     { eval("regex(str(IRI(BNODE())), '^_:' )", true) ; } // SPARQL extension
 
+    // BNODE -> IRI (<_:....>) => string => IRI 
+    @Test public void term_constructor_iri_06()     { eval("isIRI(IRI(str(IRI(BNODE()))))", true); }
+
+    
     @Test  public void term_constructor_bnode_01()  { eval("isBlank(BNODE())", true) ; }
     @Test public void term_constructor_bnode_02()   { eval("isBlank(BNODE('abc'))", true) ; }
     @Test public void term_constructor_bnode_03()   { eval("isBlank(BNODE('abc'))", true) ; }
