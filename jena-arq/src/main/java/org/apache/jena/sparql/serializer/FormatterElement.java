@@ -605,7 +605,7 @@ public class FormatterElement extends FormatterBase implements ElementVisitor {
             if ( s.length() > subjectWidth )
                 subjectWidth = s.length();
 
-            String p = slotToString(t.getPredicate());
+            String p = slotToStringProperty(t.getPredicate());
             if ( p.length() > predicateWidth )
                 predicateWidth = p.length();
         }
@@ -620,17 +620,23 @@ public class FormatterElement extends FormatterBase implements ElementVisitor {
         return printNoCol(s);
     }
 
-    // Assumes the indent is TRIPLES_SUBJECT_COLUMN+GAP
+    // Unadorned "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"
     private static String RDFTYPE = FmtUtils.stringForNode(RDF.Nodes.type, new SerializationContext());
 
     private int printProperty(Node p) {
-        String str = slotToString(p);
-        if ( p.equals(RDF.Nodes.type) && str.equals(RDFTYPE) )
-            out.print("a");
-        else
-            out.print(str);
+        String str = slotToStringProperty(p);
+        out.print(str);
         out.pad(predicateWidth);
-        return str.length();
+        return out.getCol();
+    }
+
+    // String for property - includes the rule for whether to use "a" or not. 
+    private String slotToStringProperty(Node p) {
+        String str = slotToString(p);
+        // If rdf:type but no rdf: then str is full URI and we use the "a" form 
+        if ( str.equals(RDFTYPE) )
+            return "a";
+        return str;
     }
 
     private int printObject(Node obj) {
