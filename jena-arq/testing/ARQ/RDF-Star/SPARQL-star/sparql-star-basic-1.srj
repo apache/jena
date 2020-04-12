@@ -1,0 +1,25 @@
+{ "head": {
+    "vars": [ "s" , "p" , "o" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "s": {
+          "type": "triple" , 
+          "value": {
+            "subject":   { "type": "uri" , "value": "http://example/s" } ,
+            "predicate": { "type": "uri" , "value": "http://example/p" } ,
+            "object":    { "type": "uri" , "value": "http://example/o" }
+          }
+        } ,
+        "p": { "type": "uri" , "value": "http://example/q" } ,
+        "o": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+      } ,
+      { 
+        "s": { "type": "uri" , "value": "http://example/s" } ,
+        "p": { "type": "uri" , "value": "http://example/p" } ,
+        "o": { "type": "uri" , "value": "http://example/o" }
+      }
+    ]
+  }
+}

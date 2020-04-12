@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,26 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot;
+package org.apache.jena.atlas.csv;
 
-import junit.framework.TestSuite ;
-import org.apache.jena.riot.langsuite.FactoryTestRiot ;
-import org.apache.jena.sys.JenaSystem ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.AllTests ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-/** The test suites - these are driven by a manifest file and use external files for tests */
-
-@RunWith(AllTests.class)
-public class TS_LangSuite
-{
-    private static final String manifest1 = "testing/RIOT/Lang/manifest-all.ttl" ;
-
-    static public TestSuite suite()
-    {
-        JenaSystem.init() ;
-        TestSuite ts = new TestSuite(TS_LangSuite.class.getName()) ;
-        ts.addTest(FactoryTestRiot.make(manifest1)) ;
-        return ts ;
-    }
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestCSVParser.class
+})
+public class TS_CSVParser {
 }

@@ -36,9 +36,12 @@ public class FactoryTestRiot extends TestFactoryManifest
     
     public static EarlReport report = null ;
     
-    public static TestSuite make(String manifest, Resource dftTestType, String labelPrefix)
-    {
-        return new FactoryTestRiot(dftTestType, labelPrefix).process(manifest) ;
+    public static TestSuite make(String manifest) {
+        return make(manifest, null, null);
+    }
+    
+    public static TestSuite make(String manifest, Resource dftTestType, String labelPrefix) {
+        return new FactoryTestRiot(dftTestType, labelPrefix).process(manifest);
     }
 
     private Resource dftTestType ;

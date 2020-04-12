@@ -16,26 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot;
+package org.apache.jena.rdf_star;
 
 import junit.framework.TestSuite ;
-import org.apache.jena.riot.langsuite.FactoryTestRiot ;
-import org.apache.jena.sys.JenaSystem ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.AllTests ;
+import org.apache.jena.riot.langsuite.FactoryTestRiot;
+import org.apache.jena.sparql.junit.ScriptTestSuiteFactory;
 
-/** The test suites - these are driven by a manifest file and use external files for tests */
-
-@RunWith(AllTests.class)
-public class TS_LangSuite
+public class RDF_Star_Scripts extends TestSuite
 {
-    private static final String manifest1 = "testing/RIOT/Lang/manifest-all.ttl" ;
+    static public TestSuite suite() {
+        String testDirARQ = "testing/ARQ/RDF-Star";
+        TestSuite ts = new RDF_Star_Scripts() ;
 
-    static public TestSuite suite()
-    {
-        JenaSystem.init() ;
-        TestSuite ts = new TestSuite(TS_LangSuite.class.getName()) ;
-        ts.addTest(FactoryTestRiot.make(manifest1)) ;
+        ts.addTest(FactoryTestRiot.make(testDirARQ+"/Turtle-star/manifest.ttl"));
+        ts.addTest(ScriptTestSuiteFactory.make(testDirARQ+"/SPARQL-star/manifest.ttl")) ;
+
         return ts ;
+    }
+
+    public RDF_Star_Scripts() {
+        super("Scripted - RDF*");
     }
 }

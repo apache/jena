@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,26 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot;
+package org.apache.jena.rdf_star;
 
-import junit.framework.TestSuite ;
-import org.apache.jena.riot.langsuite.FactoryTestRiot ;
-import org.apache.jena.sys.JenaSystem ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.AllTests ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-/** The test suites - these are driven by a manifest file and use external files for tests */
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestTurtleStarParse.class,
+    TestSPARQLStarParse.class,
 
-@RunWith(AllTests.class)
-public class TS_LangSuite
-{
-    private static final String manifest1 = "testing/RIOT/Lang/manifest-all.ttl" ;
+    RDF_Star_Scripts.class
+})
+public class TS_RDF_Star {
 
-    static public TestSuite suite()
-    {
-        JenaSystem.init() ;
-        TestSuite ts = new TestSuite(TS_LangSuite.class.getName()) ;
-        ts.addTest(FactoryTestRiot.make(manifest1)) ;
-        return ts ;
-    }
 }

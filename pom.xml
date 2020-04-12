@@ -702,6 +702,9 @@
             -->
             <exclude>**/*.txt</exclude>
             <exclude>**/*.md</exclude>
+            <!-- No comments in JSON -->
+            <exclude>**/*.json</exclude>
+            <exclude>**/*.srj</exclude>
             
             <!--
                 META-INF services files can include comments but a license header would be
