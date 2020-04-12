@@ -19,34 +19,34 @@
 package org.apache.jena.sparql.engine.iterator;
 
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.BasicPattern ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.BasicPattern;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.serializer.SerializationContext;
+import org.apache.jena.sparql.util.FmtUtils;
 
 public class QueryIterBlockTriples extends QueryIter1
 {
-    private BasicPattern pattern ;
-    private QueryIterator output ;
-
     public static QueryIterator create(QueryIterator input, BasicPattern pattern,
                                        ExecutionContext execContext) {
         return new QueryIterBlockTriples(input, pattern, execContext);
     }
 
+    private BasicPattern pattern;
+    private QueryIterator output;
+
     private QueryIterBlockTriples(QueryIterator input, BasicPattern pattern ,
                                   ExecutionContext execContext) {
-        super(input, execContext) ;
-        this.pattern = pattern ;
-        QueryIterator chain = getInput() ;
+        super(input, execContext);
+        this.pattern = pattern;
+        QueryIterator chain = getInput();
         for (Triple triple : pattern)
-            chain = new QueryIterTriplePattern(chain, triple, execContext) ;
-        output = chain ;
+            chain = new QueryIterTriplePattern(chain, triple, execContext);
+        output = chain;
     }
 
     @Override
