@@ -55,38 +55,18 @@ public final class LangNTriples extends LangNTuple<Triple>
                 dest.triple(x);
         }
     }
-    
-    @Override
-    protected final Triple parseOne() { 
-        Token sToken = nextToken() ;
-        if ( sToken.isEOF() )
-            exception(sToken, "Premature end of file: %s", sToken) ;
-        
-        Token pToken = nextToken() ;
-        if ( pToken.isEOF() )
-            exception(pToken, "Premature end of file: %s", pToken) ;
-        
-        Token oToken = nextToken() ;
-        if ( oToken.isEOF() )
-            exception(oToken, "Premature end of file: %s", oToken) ;
 
-        // Check in createTriple - but this is cheap so do it anyway.
-        checkIRIOrBNode(sToken) ;
-        checkIRI(pToken) ;
-        checkRDFTerm(oToken) ;
-        Token x = nextToken() ;
-        
+    @Override
+    protected final Triple parseOne() {
+        Triple triple = parseTriple();
+        Token x = nextToken();
         if ( x.getType() != TokenType.DOT )
-            exception(x, "Triple not terminated by DOT: %s", x) ;
-        
-        Node s = tokenAsNode(sToken) ;
-        Node p = tokenAsNode(pToken) ;
-        Node o = tokenAsNode(oToken) ;
-        return profile.createTriple(s, p, o, sToken.getLine(), sToken.getColumn()) ;
+            exception(x, "Triple not terminated by DOT: %s", x);
+        return triple;
     }
-    
+
     @Override
     protected final Node tokenAsNode(Token token) {
-        return profile.create(null, token) ;
+        return profile.create(null, token);
     }
 }

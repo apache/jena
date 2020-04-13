@@ -226,7 +226,7 @@ public abstract class LangTurtleBase extends LangBase {
 
         // <<>> subject position. Rule [10]
         if ( lookingAt(LT2) ) {
-            Node subject = parseTripleNode();
+            Node subject = parseTripleTerm();
             predicateObjectList(subject) ;
             expectEndOfTriples() ;
             return;
@@ -236,8 +236,6 @@ public abstract class LangTurtleBase extends LangBase {
     }
 
     // Parse a << >> : RDF*
-    // Assumes looking at << (LT2) omn entry
-
     /* The Turtle grammar is:
             tripleX ::= ’<<’ subjectX predicate objectX ’>>’
             subjectX ::= iri | BlankNode | tripleX
@@ -247,13 +245,14 @@ public abstract class LangTurtleBase extends LangBase {
        i.e. no compounds inside <<>>
      */
 
-    //node() or nodeX
-    private Node parseTripleNode() {
+    // Assumes looking at << (LT2) on entry
+    // node() or nodeX
+    private Node parseTripleTerm() {
         Token token = nextToken();
         // subjectX()
         Node s = subjectX();
 
-        Node p = predicate();         // predicate() == node();nextToken();
+        Node p = predicate();  // predicate() == node();nextToken();
         nextToken();
 
         // objectX()
@@ -284,7 +283,23 @@ public abstract class LangTurtleBase extends LangBase {
     // Does consume the token.
     private Node nodeX(String posnLabel) {
         if ( lookingAt(LT2) )
-            return parseTripleNode();
+            return parseTripleTerm();
+        
+        // ANON
+        // [14]     blankNodePropertyList   ::=     '[' predicateObjectList ']'
+        //    is at least one predicate /object.
+        // Method triplesNodeCompound ()-> triplesBlankNode(subject)
+        //    can cope with zero length, covering grammar token ANON and rule [7] predicateObjectList cases
+        // But here, in RDF*, only [] is legal.
+        if ( lookingAt(LBRACKET) ) {
+            nextToken();
+            Token t = peekToken();
+            if ( ! lookingAt(RBRACKET) )
+                exception(peekToken(), "Bad %s in RDF* triple after [, expected ]", posnLabel, peekToken().text()) ;
+            nextToken();
+            return profile.createBlankNode(currentGraph, t.getLine(), t.getColumn()) ;
+        }
+        
         if ( ! lookingAt(NODE) )
             exception(peekToken(), "Bad %s in RDF* triple", posnLabel, peekToken().text()) ;
         Node node = node();
@@ -444,7 +459,7 @@ public abstract class LangTurtleBase extends LangBase {
         }
 
         if ( lookingAt(LT2) )
-            return parseTripleNode();
+            return parseTripleTerm();
 
         return triplesNodeCompound() ;
     }

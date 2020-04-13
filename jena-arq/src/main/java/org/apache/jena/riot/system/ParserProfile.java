@@ -79,7 +79,10 @@ public interface ParserProfile {
     public Node createBlankNode(Node scope, long line, long col);
 
     /** Create a triple node (RDF*) */
-    public Node createTripleNode(Node s, Node p, Node o, long line, long col);
+    public Node createTripleNode(Node subject, Node predicate, Node object, long line, long col);
+
+    /** Create a triple node (RDF*) */
+    public Node createTripleNode(Triple triple, long line, long col);
 
     /** Create a graph node. This is an N3-formula and not named graphs */
     public Node createGraphNode(Graph graph, long line, long col);

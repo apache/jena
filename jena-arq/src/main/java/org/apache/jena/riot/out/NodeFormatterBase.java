@@ -48,16 +48,15 @@ public abstract class NodeFormatterBase implements NodeFormatter
         else if ( Node.ANY.equals(n) )
             w.print("ANY") ;
         else if ( n instanceof Node_Triple )
-            formatNodeTriple(w, (Node_Triple)n);
+            formatNodeTriple(w, n);
 //        else if ( n instanceof Node_Graph )
 //            formatNodeGraph(w, (Node_Graph)n);
         else
             throw new ARQInternalErrorException("Unknown node type: "+n) ;
     }
 
-    private void formatNodeTriple(AWriter w, Node_Triple n) {
-        // XXX Improve
-        Triple t = n.get();
+    protected void formatNodeTriple(AWriter w, Node n) {
+        Triple t = Node_Triple.triple(n);
         w.print("<< ");
         format(w, t.getSubject());
         w.print(" ");

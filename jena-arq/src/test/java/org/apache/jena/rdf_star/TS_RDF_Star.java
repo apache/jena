@@ -23,6 +23,9 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
+    TestNQuadsStarParse.class,
+    TestNTriplesStarParse.class,
+    TestTrigStarParse.class,
     TestTurtleStarParse.class,
     TestSPARQLStarParse.class,
 

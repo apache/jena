@@ -21,6 +21,8 @@ package org.apache.jena.riot.lang;
 import java.util.Iterator ;
 
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.tokens.StringType;
@@ -80,6 +82,47 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
     }
 
     protected abstract Node tokenAsNode(Token token) ;
+    
+    // One triple, not include terminator.
+    protected final Triple parseTriple() {
+        Token sToken = nextToken();
+        if ( sToken.isEOF() )
+            exception(sToken, "Premature end of file: %s", sToken);
+        Node s;
+        if ( sToken.hasType(TokenType.LT2) )
+            s = parseTripleTerm();
+        else {
+            checkIRIOrBNode(sToken);
+            s = tokenAsNode(sToken);
+        }
+
+        Token pToken = nextToken();
+        if ( pToken.isEOF() )
+            exception(pToken, "Premature end of file: %s", pToken);
+        checkIRI(pToken);
+        Node p = tokenAsNode(pToken);
+
+        Token oToken = nextToken();
+        if ( oToken.isEOF() )
+            exception(oToken, "Premature end of file: %s", oToken);
+        Node o;
+        if ( oToken.hasType(TokenType.LT2) )
+            o = parseTripleTerm();
+        else {
+            checkRDFTerm(oToken);
+            o = tokenAsNode(oToken);
+        }
+        return profile.createTriple(s, p, o, sToken.getLine(), sToken.getColumn());
+    }
+
+    // Looking at "<<" (LT2)
+    final protected Node parseTripleTerm() {
+        Triple t = parseTriple();
+        Token x = nextToken();
+        if ( x.getType() != TokenType.GT2 )
+            exception(x, "Triple term not terminated by >>: %s", x);
+        return NodeFactory.createTripleNode(t);
+    }
 
     protected final void checkIRIOrBNode(Token token) {
         if ( token.hasType(TokenType.IRI) )

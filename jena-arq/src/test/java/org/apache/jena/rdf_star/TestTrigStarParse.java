@@ -28,45 +28,36 @@ import org.apache.jena.riot.system.StreamRDFLib;
 import org.junit.Test;
 
 /**
- * Test parsing of RDF* constructs for Turtle.
+ * Test parsing of RDF* constructs for TriG.
  */
-public class TestTurtleStarParse {
+public class TestTrigStarParse {
 
     private ErrorHandler silent = ErrorHandlerFactory.errorHandlerStrictNoLogging;
     private static StreamRDF sink = StreamRDFLib.sinkNull();
 
-    @Test public void parse_turtle_good_1()    { parse("<<:s :p :o>> :q 1 . "); }
+    @Test public void parse_trig_good_1()    { parse("<<:s :p :o>> :q 1 . "); }
 
-    @Test public void parse_turtle_good_2()    { parse(":x :p <<:s :p :o>> . "); }
+    @Test public void parse_trig_good_2()    { parse(":x :p <<:s :p :o>> . "); }
 
-    @Test public void parse_turtle_good_3()    { parse(":x :p [ :q <<:s :p :o>> ]. "); }
+    @Test public void parse_trig_good_3()    { parse(":x :p [ :q <<:s :p :o>> ]. "); }
 
-    @Test public void parse_turtle_good_4()    { parse("( <<:s :p :o>> ) :p :z . "); }
+    @Test public void parse_trig_good_4()    { parse("( <<:s :p :o>> ) :p :z . "); }
 
-    @Test public void parse_turtle_good_5()    { parse("( <<[] :p []>> ) :p :z . "); }
+    @Test public void parse_trig_good_10()   { parse("<<:s :p <<:x :r :z >>>> :q 1 . "); }
 
-    @Test public void parse_turtle_good_10()   { parse("<<:s :p <<:x :r :z >>>> :q 1 . "); }
-
-    @Test public void parse_turtle_good_20()   { parse(":a :p <<:s :p <<:x :r :z >>>> . "); }
-
+    @Test public void parse_trig_good_20()   { parse(":a :p <<:s :p <<:x :r :z >>>> . "); }
 
     @Test(expected=RiotException.class)
-    public void parse_turtle_bad_1()           { parse("<<:s :p :o>> . "); }
+    public void parse_trig_bad_1()           { parse("<<:s :p :o>> . "); }
 
     @Test(expected=RiotException.class)
-    public void parse_turtle_bad_2()           { parse("<<:s <<:x :y :z>> :o >> :q 1 . "); }
+    public void parse_trig_bad_2()           { parse("GRAPH <<:s :p :o>> {} "); }
 
     @Test(expected=RiotException.class)
-    public void parse_turtle_bad_3()           { parse("<<:s :p (3) >> :q 1 . "); }
-
-    @Test(expected=RiotException.class)
-    public void parse_turtle_bad_4()           { parse("<< 3 :p :o >> :q 1 . "); }
-
-    @Test(expected=RiotException.class)
-    public void parse_turtle_bad_5()           { parse(":s << :x :y :z >> :o . "); }
+    public void parse_trig_bad_3()           { parse("<<:s :p :o>> { :s :p :o } "); }
 
     private void parse(String string) {
         string = "PREFIX : <http://example/>\n"+string;
-        RDFParser.fromString(string).lang(Lang.TURTLE).errorHandler(silent).parse(sink);
+        RDFParser.fromString(string).lang(Lang.TRIG).errorHandler(silent).parse(sink);
     }
 }

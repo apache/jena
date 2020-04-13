@@ -110,7 +110,6 @@ public class LangTriG extends LangTurtleBase {
                 expectEndOfTriplesTurtle() ;
                 return ;
             }
-
         } else if ( token.isNode() ) {
             // Either :s :p :o or :g { ... }
             Node n = node() ;
@@ -128,7 +127,11 @@ public class LangTriG extends LangTurtleBase {
             // Turtle - list
             turtle() ;
             return ;
-        }
+        } else if ( lookingAt(LT2) ) {
+            // <<:s :p :o>> :q :z -- Turtle*
+            turtle() ;
+            return;
+        }            
 
         if ( mustBeNamedGraph && graphNode == null )
             exception(t, "Keyword 'GRAPH' must be followed by a graph name") ;
