@@ -4,17 +4,6 @@ PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX :       <http://example/>
 
-:s :p1 :o .
-<<:s :p1 :o>> :q :z .
-
-# pattern-3
-:a1 :b <<:s :p1 :o>>  .
-<<:s :p1 :o>> :b :a2 .
-
-# pattern-5
-:s :p2 :o .
-<<:s :p2 :o>> :sym <<:s :p2 :o>> .
-
-# pattern-6
-<<:s :p2 :o>> :p3 :z .
-<< <<:s :p2 :o>> :p3 :z >> :q :o .
+INSERT DATA {
+   :a <<:s :p :o>> :b .
+}

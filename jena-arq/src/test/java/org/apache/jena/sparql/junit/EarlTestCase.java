@@ -77,7 +77,10 @@ public abstract class EarlTestCase extends TestCase
             return null ;
         }
 
-        UpdateRequest request = UpdateFactory.read(testItem.getQueryFile(), Syntax.syntaxSPARQL_11) ;
+        String fn = testItem.getQueryFile();
+        Syntax syntax = ( fn.endsWith(".aru") )? Syntax.syntaxARQ : Syntax.syntaxSPARQL_11;
+        
+        UpdateRequest request = UpdateFactory.read(fn, syntax);
         return request ;
     }
 

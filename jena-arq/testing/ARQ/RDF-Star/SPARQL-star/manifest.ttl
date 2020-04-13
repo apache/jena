@@ -47,6 +47,11 @@ PREFIX :       <#>
         :sparql-pattern-6
         :sparql-pattern-7
         :sparql-pattern-8
+
+        :sparql-update-syntax-1
+        :sparql-update-syntax-2
+        :sparql-update-bad-syntax-1
+        :sparql-update-bad-syntax-2
     ) .
 
 ## Good syntax
@@ -200,3 +205,29 @@ PREFIX :       <#>
           qt:data   <data2.ttl> ] ;
     mf:result  <sparql-star-pattern-08.srj>
 .
+
+## SPARQL* Update
+
+:sparql-update-syntax-1
+    rdf:type mf:PositiveUpdateSyntaxTest11;
+    mf:name    "sparql-star-update-syntax-01" ;
+    mf:action  <sparql-star-update-syntax-01.aru>
+    .
+    
+:sparql-update-syntax-2
+    rdf:type mf:PositiveUpdateSyntaxTest11;
+    mf:name    "sparql-star-update-syntax-02" ;
+    mf:action  <sparql-star-update-syntax-02.aru>
+    .
+    
+:sparql-update-bad-syntax-1
+    rdf:type mf:NegativeUpdateSyntaxTest11;
+    mf:name    "sparql-star-update-bad-syntax-01" ;
+    mf:action  <sparql-star-update-bad-syntax-01.aru>
+    .
+    
+:sparql-update-bad-syntax-2
+    rdf:type mf:NegativeUpdateSyntaxTest11;
+    mf:name    "sparql-star-update-bad-syntax-02" ;
+    mf:action  <sparql-star-update-bad-syntax-02.aru>
+    .
