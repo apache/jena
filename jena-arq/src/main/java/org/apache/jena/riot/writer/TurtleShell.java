@@ -155,8 +155,8 @@ public abstract class TurtleShell {
             this.allowDeepPretty = true ;
 
             // ?? Single pass?
-            // <<>> - and nested - bnodes can't be PP. 
-            
+            // <<>> - and nested - bnodes can't be PP.
+
             // Must be in this order.
             findLists() ;
             findBNodesSyntax1() ;
@@ -336,21 +336,20 @@ public abstract class TurtleShell {
          * Not used in triple terms.
          *   These must be written with _: syntax or [] no contents.
          *   We do not cover the latter case (and it is not legal in PG mode where the
-         *   triple termmust refer to a triple in the graph so blank node used elsewhere.) 
+         *   triple term must refer to a triple in the graph so blank node used elsewhere.)
          */
         private void findBNodesSyntax1() {
-            Set<Node> rejects = new HashSet<>() ; // Nodes known not to meet the requirement.
-            
-            // 
+            // Set of all bnodes used into triple terms (RDF*)
             Set<Node> blankNodesInTripleTerms = new HashSet<>();
-            // *** Look inside Triple terms
+            // Nodes known not to meet the requirement.
+            Set<Node> rejects = new HashSet<>() ;
             ExtendedIterator<Triple> iter = find(ANY, ANY, ANY) ;
             try {
                 for ( ; iter.hasNext() ; ) {
                     Triple t = iter.next() ;
                     Node subj = t.getSubject() ;
                     Node obj = t.getObject() ;
-                    
+
                     if ( subj.isBlank() )
                     {
                         int sConn = inLinks(subj) ;
@@ -358,14 +357,14 @@ public abstract class TurtleShell {
                             // Not used as an object in this graph.
                             freeBnodes.add(subj) ;
                     } else if ( subj.isNodeTriple() ) {
-                        extractBlankNodes(blankNodesInTripleTerms, subj);
+                        extractBlankNodesInTripleTerms(blankNodesInTripleTerms, subj);
                     }
 
                     if ( obj.isNodeTriple() ) {
-                        extractBlankNodes(blankNodesInTripleTerms, obj);
+                        extractBlankNodesInTripleTerms(blankNodesInTripleTerms, obj);
                         continue;
                     }
-                    
+
                     if ( ! obj.isBlank() )
                         continue ;
                     if ( rejects.contains(obj) )
@@ -388,21 +387,21 @@ public abstract class TurtleShell {
         }
 
         // Helper for findBNodeSyntax1
-        private void extractBlankNodes(Set<Node> blankNodesInTripleTerms, Node nodeTriple) {
+        private void extractBlankNodesInTripleTerms(Set<Node> blankNodesInTripleTerms, Node nodeTriple) {
             // Needs to recurse.
             Triple triple = Node_Triple.triple(nodeTriple);
             Node tSubj = triple.getSubject();
             Node tObj = triple.getObject();
-            
+
             if ( tSubj.isBlank() )
                 blankNodesInTripleTerms.add(tSubj);
             else if ( tSubj.isNodeTriple() )
-                extractBlankNodes(blankNodesInTripleTerms, tSubj);
-                
+                extractBlankNodesInTripleTerms(blankNodesInTripleTerms, tSubj);
+
             if ( tObj.isBlank() )
                 blankNodesInTripleTerms.add(tObj);
             else if ( tObj.isNodeTriple() )
-                extractBlankNodes(blankNodesInTripleTerms, tObj);
+                extractBlankNodesInTripleTerms(blankNodesInTripleTerms, tObj);
         }
 
         // --- Lists setup

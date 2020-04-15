@@ -31,7 +31,6 @@ public abstract class FunctionTripleTerm extends FunctionBase1 {
 
     @Override
     public NodeValue exec(NodeValue nv) {
-        System.out.println(nv);
         Node n = nv.asNode();
         if ( ! n.isNodeTriple() )
             throw new ExprEvalException(getClass().getSimpleName()+": Not a triple term: "+nv);

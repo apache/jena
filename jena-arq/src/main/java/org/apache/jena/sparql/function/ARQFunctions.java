@@ -25,7 +25,7 @@ import org.apache.jena.sparql.function.library.triple.TripleTermFunctions;
  * The one in package {@link org.apache.jena.sparql.function.library}
  * can be invoked by afn:name without registration because afn:->java: is built-in
  * in MappedLoader.
- * 
+ *
  * @see ARQConstants#ARQFunctionLibraryURI
  * @see ARQConstants#ARQFunctionLibrary
  */
@@ -34,5 +34,4 @@ public class ARQFunctions {
     public static void load(FunctionRegistry reg) {
         TripleTermFunctions.register(reg);
     }
-
 }

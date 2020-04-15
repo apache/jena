@@ -146,8 +146,9 @@ TOKEN:
 TOKEN:
 {
   // Anything left that isn't structural
-  // LPAREN and RPAREN / LBRACKET/RBRACKET / LBRACE/BRCAE
-  // Quotes
+  // Excludes:
+  //   LPAREN and RPAREN / LBRACKET/RBRACKET / LBRACE/RBRACE
+  //   Quotes, Whitespace
   <#SYM:  (~["(", ")", "[", "]", "{", "}", "'", "\"", " ", "\t","\n","\r","\f" ])>
 |
   <#SYM1: (~["^", "@",

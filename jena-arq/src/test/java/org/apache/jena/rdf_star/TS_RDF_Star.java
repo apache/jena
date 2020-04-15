@@ -32,5 +32,4 @@ import org.junit.runners.Suite;
     RDF_Star_Scripts.class
 })
 public class TS_RDF_Star {
-
 }
