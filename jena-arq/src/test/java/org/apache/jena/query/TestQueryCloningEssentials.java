@@ -76,14 +76,7 @@ public class TestQueryCloningEssentials {
     @Parameters(name = "Query.clone {0}")
     public static Collection<Object[]> generateTestParams() throws Exception
     {
-        List<String> exclusions = Arrays.asList(
-                // QueryTransformOps states: top level element is always an ElementGroup
-                // However, sub-select-02.rq parsed top level's element is a ElementSubQuery
-                "ARQ/SubQuery/sub-select-02.rq",
-                "ARQ/Serialization/syntax-subselect-02.rq",
-                "ARQ/Serialization/syntax-subselect-01.rq",
-                "ARQ/Syntax/Syntax-SPARQL_11/syntax-subquery-01.rq"
-        );
+        List<String> exclusions = Arrays.asList(/* no exclusions as all test cases work */);
 
         Path startPath = Paths.get("./testing").toAbsolutePath().normalize();
         PathMatcher pathMatcher = startPath.getFileSystem().getPathMatcher("glob:**/*.rq");

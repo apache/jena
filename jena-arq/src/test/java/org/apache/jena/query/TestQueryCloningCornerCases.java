@@ -21,7 +21,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.ext.com.google.common.base.Stopwatch;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
+import org.apache.jena.sparql.engine.binding.BindingHashMap;
 import org.apache.jena.sparql.syntax.ElementData;
 import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.syntax.ElementPathBlock;
@@ -31,34 +34,34 @@ import org.junit.Test;
 
 public class TestQueryCloningCornerCases {
 
-	// @Test
-	public void benchmarkQueryClone() {
-		String str = "SELECT * { ?s ?p ?o }";
-		int n = 1000000;
+    // @Test
+    public void benchmarkQueryClone() {
+        String str = "SELECT * { ?s ?p ?o }";
+        int n = 1000000;
 
-		// Warmup runs
-		Query q = QueryFactory.create(str);
-		for(int i = 0; i < n; ++i) {
-			TestQueryCloningEssentials.slowClone(q);
-			q.cloneQuery();
-		}
+        // Warmup runs
+        Query q = QueryFactory.create(str);
+        for(int i = 0; i < n; ++i) {
+            TestQueryCloningEssentials.slowClone(q);
+            q.cloneQuery();
+        }
 
-		Stopwatch printParseSw = Stopwatch.createStarted();
-		for(int i = 0; i < n; ++i) {
-			TestQueryCloningEssentials.slowClone(q);
-		}
-		printParseSw.stop();
+        Stopwatch printParseSw = Stopwatch.createStarted();
+        for(int i = 0; i < n; ++i) {
+            TestQueryCloningEssentials.slowClone(q);
+        }
+        printParseSw.stop();
 
-		Stopwatch transformSw = Stopwatch.createStarted();
-		for(int i = 0; i < n; ++i) {
-			q.cloneQuery();
-		}
-		transformSw.stop();
+        Stopwatch transformSw = Stopwatch.createStarted();
+        for(int i = 0; i < n; ++i) {
+            q.cloneQuery();
+        }
+        transformSw.stop();
 
-		double qpsPrintParse = n / (double)(printParseSw.elapsed(TimeUnit.MILLISECONDS) * 0.001);
-		double qpsTransform = n / (double)(transformSw.elapsed(TimeUnit.MILLISECONDS) * 0.001);
-		System.out.println("Queries/Second [Print-Parse: " + qpsPrintParse + "], [Transform: " + qpsTransform + "]");
-	}
+        double qpsPrintParse = n / (double)(printParseSw.elapsed(TimeUnit.MILLISECONDS) * 0.001);
+        double qpsTransform = n / (double)(transformSw.elapsed(TimeUnit.MILLISECONDS) * 0.001);
+        System.out.println("Queries/Second [Print-Parse: " + qpsPrintParse + "], [Transform: " + qpsTransform + "]");
+    }
 
     /**
      * Tests for the {@link Query} clone method.
@@ -69,28 +72,19 @@ public class TestQueryCloningCornerCases {
     @Test
     public void testCloneOfDataAndPathBlocks()
     {
-
-
-        // FIXME Query.valuesDataBlock is not passed through the copy machinery and is thus not copied
-        // Who is responsible for the copy? Wrapping as an ElementData and passing it through the ElementTransform
-        // is not ideal, as the transform is free to yield an element of another - incompatible - type
-        // String str = "PREFIX eg: <http://www.example.org/> "
-        //        + "SELECT * { ?s eg:foo/eg:bar ?o } VALUES (?s ?o) { (eg:baz 1) }";
-
         String str = "PREFIX eg: <http://www.example.org/> "
           + "SELECT * { ?s eg:foo/eg:bar ?o VALUES (?s ?o) { (eg:baz 1) } }";
 
         Query query = QueryFactory.create(str);
-
         Query clone = TestQueryCloningEssentials.checkedClone(query);
 
         // Modification of the query pattern must not change the original query
         {
             Query cloneOfClone = clone.cloneQuery();
-	        ElementPathBlock elt = (ElementPathBlock)((ElementGroup)cloneOfClone.getQueryPattern()).get(0);
-	        elt.addTriple(new Triple(RDF.Nodes.type, RDF.Nodes.type, RDF.Nodes.Property));
+            ElementPathBlock elt = (ElementPathBlock)((ElementGroup)cloneOfClone.getQueryPattern()).get(0);
+            elt.addTriple(new Triple(RDF.Nodes.type, RDF.Nodes.type, RDF.Nodes.Property));
 
-	        Assert.assertNotEquals(elt, query);
+            Assert.assertNotEquals(elt, query);
         }
 
         // After modifying the clone of a clone the initial clone must match the original query
@@ -105,5 +99,41 @@ public class TestQueryCloningCornerCases {
         }
 
         Assert.assertEquals(query, clone);
+    }
+
+    @Test
+    public void testCloneOfValuesDataBlock() {
+        String str = "PREFIX eg: <http://www.example.org/> "
+                + "SELECT * { ?s eg:foo/eg:bar ?o } VALUES (?s ?o) { (eg:baz 1) }";
+
+        Query query = QueryFactory.create(str);
+
+        // Modifications of a query's values data block
+        // The cloned query's lists of variables and bindings are independent
+        // from those from the original query
+        {
+            Query clone = TestQueryCloningEssentials.checkedClone(query);
+
+            clone.getValuesData().clear();
+            Assert.assertEquals(0, clone.getValuesData().size());
+            Assert.assertNotEquals(0, query.getValuesData().size());
+
+            clone.getValuesVariables().clear();
+            Assert.assertEquals(0, clone.getValuesVariables().size());
+            Assert.assertNotEquals(0, query.getValuesVariables().size());
+        }
+
+        // Modifications of a values data block's bindings
+        // Cloning does not clone the binding objects themselves
+        {
+            Query clone = TestQueryCloningEssentials.checkedClone(query);
+
+            Binding originalBinding = query.getValuesData().iterator().next();
+            Binding cloneBinding = clone.getValuesData().iterator().next();
+            BindingHashMap downcast = (BindingHashMap)cloneBinding;
+            downcast.add(Var.alloc("s"), RDF.Nodes.type);
+
+            Assert.assertEquals(originalBinding, cloneBinding);
+        }
     }
 }
