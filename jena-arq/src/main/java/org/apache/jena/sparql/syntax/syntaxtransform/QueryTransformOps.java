@@ -20,6 +20,7 @@ package org.apache.jena.sparql.syntax.syntaxtransform;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
@@ -41,18 +42,20 @@ import org.apache.jena.sparql.expr.ExprTransformer;
 import org.apache.jena.sparql.expr.ExprVar;
 import org.apache.jena.sparql.graph.NodeTransform;
 import org.apache.jena.sparql.syntax.Element;
+import org.apache.jena.sparql.syntax.ElementData;
 import org.apache.jena.sparql.syntax.ElementGroup;
+import org.apache.jena.sparql.syntax.ElementSubQuery;
 
 /** Support for transformation of query abstract syntax. */
 public class QueryTransformOps {
-    /** Transform a query based on a mapping from {@link Var} variable to replacement {@link Node}. */ 
+    /** Transform a query based on a mapping from {@link Var} variable to replacement {@link Node}. */
     public static Query transform(Query query, Map<Var, ? extends Node> substitutions) {
         ElementTransform eltrans = new ElementTransformSubst(substitutions);
         NodeTransform nodeTransform = new NodeTransformSubst(substitutions);
         ExprTransform exprTrans = new ExprTransformNodeElement(nodeTransform, eltrans);
         return transform(query, eltrans, exprTrans);
     }
-    
+
     /**
      * Transform a query based on a mapping from variable name to replacement
      * {@link RDFNode} (a {@link Resource} (or blank node) or a {@link Literal}).
@@ -65,7 +68,7 @@ public class QueryTransformOps {
 
     /** Transform a query using {@link ElementTransform} and {@link ExprTransform}.
      *  It is the responsibility of these transforms to transform to a legal SPARQL query.
-     */ 
+     */
     public static Query transform(Query query, ElementTransform transform, ExprTransform exprTransform) {
         Query q2 = QueryTransformOps.shallowCopy(query);
 
@@ -81,14 +84,30 @@ public class QueryTransformOps {
         // if ( q2.hasAggregators() ) {}
 
         Element el = q2.getQueryPattern();
-        Element el2 = ElementTransformer.transform(el, transform, exprTransform);
-        // Top level is always a group.
-        if (!(el2 instanceof ElementGroup)) {
+
+        // Explicit null check to prevent warning in ElementTransformer
+        Element el2 = el == null ? null : ElementTransformer.transform(el, transform, exprTransform);
+        // Top level is always a group or a subquery
+        if (el2 != null && !(el2 instanceof ElementGroup) && !(el2 instanceof ElementSubQuery)) {
             ElementGroup eg = new ElementGroup();
             eg.addElement(el2);
             el2 = eg;
         }
         q2.setQueryPattern(el2);
+
+        // Pass a values data block through the transform by wrapping it as an ElementData
+        if(q2.hasValues()) {
+            ElementData elData = new ElementData(q2.getValuesVariables(), q2.getValuesData());
+            Element rawElData2 = ElementTransformer.transform(elData, transform, exprTransform);
+            if(!(rawElData2 instanceof ElementData)) {
+                throw new ARQException("Can't transform a values data block to a different type other than ElementData. "
+                        + "Transform yeld type " + Objects.toString(rawElData2.getClass()));
+            }
+
+            ElementData elData2 = (ElementData)rawElData2;
+            q2.setValuesDataBlock(elData2.getVars(), elData2.getRows());
+        }
+
         return q2;
     }
 
@@ -166,7 +185,7 @@ public class QueryTransformOps {
                 DatasetDescription desc = query.getDatasetDescription();
                 for (String x : desc.getDefaultGraphURIs())
                     newQuery.addGraphURI(x);
-                for (String x : desc.getDefaultGraphURIs())
+                for (String x : desc.getNamedGraphURIs())
                     newQuery.addNamedGraphURI(x);
             }
 
@@ -189,14 +208,7 @@ public class QueryTransformOps {
         public void visitSelectResultForm(Query query) {
             newQuery.setQuerySelectType();
             newQuery.setDistinct(query.isDistinct());
-            VarExprList x = query.getProject();
-            for (Var v : x.getVars()) {
-                Expr expr = x.getExpr(v);
-                if (expr == null)
-                    newQuery.addResultVar(v);
-                else
-                    newQuery.addResultVar(v, expr);
-            }
+            copyProjection(query);
         }
 
         @Override
@@ -210,6 +222,7 @@ public class QueryTransformOps {
             newQuery.setQueryDescribeType();
             for (Node x : query.getResultURIs())
                 newQuery.addDescribeNode(x);
+            copyProjection(query);
         }
 
         @Override
@@ -280,6 +293,19 @@ public class QueryTransformOps {
 
         @Override
         public void finishVisit(Query query) {
+        }
+
+        // In some (legacy?) cases, describe queries make use of projection instead
+        // of result nodes
+        public void copyProjection(Query query) {
+            VarExprList x = query.getProject();
+            for (Var v : x.getVars()) {
+                Expr expr = x.getExpr(v);
+                if (expr == null)
+                    newQuery.addResultVar(v);
+                else
+                    newQuery.addResultVar(v, expr);
+            }
         }
     }
 

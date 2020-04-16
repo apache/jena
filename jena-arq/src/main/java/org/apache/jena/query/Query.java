@@ -32,6 +32,7 @@ import org.apache.jena.sparql.core.* ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprAggregator ;
+import org.apache.jena.sparql.expr.ExprTransform ;
 import org.apache.jena.sparql.expr.ExprVar ;
 import org.apache.jena.sparql.expr.aggregate.Aggregator ;
 import org.apache.jena.sparql.serializer.QuerySerializerFactory ;
@@ -39,6 +40,7 @@ import org.apache.jena.sparql.serializer.SerializerRegistry ;
 import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.syntax.PatternVars ;
 import org.apache.jena.sparql.syntax.Template ;
+import org.apache.jena.sparql.syntax.syntaxtransform.* ;
 import org.apache.jena.sparql.util.FmtUtils ;
 import org.apache.jena.sys.JenaSystem ;
 
@@ -765,14 +767,15 @@ public class Query extends Prologue implements Cloneable, Printable
     public Object clone() { return cloneQuery() ; }
 
     /**
-     * Makes a copy of this query.  Copies by parsing a query from the serialized form of this query
+     * Makes a copy of this query using the syntax transform machinery.
      * @return Copy of this query
      */
     public Query cloneQuery() {
-        // A little crude.
-        // Must use toString() rather than serialize() because we may not know how to serialize extended syntaxes
-        String qs = this.toString();
-        return QueryFactory.create(qs, getSyntax()) ;
+        ElementTransform eltTransform = new ElementTransformCopyBase(true);
+        ExprTransform exprTransform = new ExprTransformApplyElementTransform(eltTransform, true);
+
+        Query result = QueryTransformOps.transform(this, eltTransform, exprTransform);
+        return result;
     }
 
     // ---- Query canonical syntax

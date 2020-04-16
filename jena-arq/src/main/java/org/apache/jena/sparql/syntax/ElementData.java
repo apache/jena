@@ -33,11 +33,18 @@ import org.apache.jena.sparql.util.NodeUtils ;
 
 public class ElementData extends Element
 {
-    private List<Var> vars = new ArrayList<>() ;
-    private List<Binding> rows = new ArrayList<>() ;
-    
+    private List<Var> vars ;
+    private List<Binding> rows ;
+
     public ElementData()
     {
+        this(new ArrayList<>(), new ArrayList<>()) ;
+    }
+
+    public ElementData(List<Var> vars, List<Binding> rows)
+    {
+        this.vars = vars ;
+        this.rows = rows ;
     }
 
     public Table getTable()
@@ -47,13 +54,13 @@ public class ElementData extends Element
 
     public List<Var> getVars()      { return vars ; }
     public List<Binding> getRows()  { return rows ; }
-    
+
     public void add(Var var)
-    { 
-        if ( ! vars.contains(var) ) 
-            vars.add(var) ; 
+    {
+        if ( ! vars.contains(var) )
+            vars.add(var) ;
     }
-    
+
     public void add(Binding binding)
     {
         Iterator<Var> iter = binding.vars() ;
@@ -65,7 +72,7 @@ public class ElementData extends Element
         }
         rows.add(binding) ;
     }
-    
+
     @Override
     public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
