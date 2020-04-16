@@ -29,7 +29,7 @@ import org.apache.jena.shared.uuid.JenaUUID.UUIDFormatException ;
    ftp://ftp.rfc-editor.org/in-notes/rfc4122.txt
    Originally: http://www.opengroup.org/onlinepubs/009629399/apdxa.htm
    http://en.wikipedia.org/wiki/Universally_unique_identifier
-    
+
 Version 1: hardware address and timebased:
 60 bits of time
 48 bits of nodeId
@@ -67,13 +67,13 @@ Most significant long:
 
 Least significant long:
 
-0xC000000000000000 variant     C = 1100 (base 2) 
+0xC000000000000000 variant     C = 1100 (base 2)
 0x3FFF000000000000 clock_seq   3 = 0011 (base 2)
 0x0000FFFFFFFFFFFF node
 
 Note on variant: despite the javadoc document, the variant is defined as the
 top 3 bits of octet 8.  But the low bit is a "don't care" in this variant
-and is used by the clock. 
+and is used by the clock.
 
  */
 
@@ -89,29 +89,29 @@ public class UUID_V1_Gen implements UUIDFactory
 	// Constants
     static final int versionHere = 1 ;	      // Version 1: time-based. This is one character hex string.
     static final int variantHere = 2 ;		  // DCE varient
-    
+
     static final long maskTimeLow    = 0xFFFFFFFF00000000L ;
     static final long maskTimeMid    = 0x00000000FFFF0000L ;
     static final long maskTimeHigh   = 0x0000000000000FFFL ;
     static final long maskVersion    = 0x000000000000F000L ;
-        
+
     static final long maskVariant    = 0xC000000000000000L ;
     static final long maskClockSeq   = 0x3FFF000000000000L ;
     static final long maskNode       = 0x0000FFFFFFFFFFFFL ;
-    
+
 	// Generator variables.
-    long gregorianTime = 0 ;
+    long gregorianTime = 0 ;                    // Called uuid_time in RFC
     static final long UUIDS_PER_TICK = 100 ;
     long uuids_this_tick = UUIDS_PER_TICK+1 ;	// Force reset first time.
-    
+
     // Generator initial state
     int clockSeq = 0 ;
-    private static final int CLOCK_BITS = 8 ; 
+    private static final int CLOCK_BITS = 8 ;
     long node = 0 ;
 
 	// Time control
-    private long lastTime = 0 ;
-    private long DELAY = 10 ; // Milliseconds
+    private long lastTime = 0 ; // Microseconds
+    private long DELAY = 10 ;   // Milliseconds
 
     public UUID_V1_Gen() {
         reset() ;
@@ -128,7 +128,7 @@ public class UUID_V1_Gen implements UUIDFactory
     @Override
     public JenaUUID generate()
     { return generateV1() ; }
-        
+
     public UUID_V1 generateV1() {
         long timestamp = 0 ;
         synchronized (this) {
@@ -139,7 +139,7 @@ public class UUID_V1_Gen implements UUIDFactory
         }
         return generate(timestamp) ;
     }
-    
+
     /*  8-4-4-4-12 = 32+4 dashes = 36 chars
 
     UUID                   = <time_low> "-" <time_mid> "-"
@@ -175,7 +175,7 @@ public class UUID_V1_Gen implements UUIDFactory
     static UUID_V1 parse$(String s) {
         // The UUID broken up into parts.
         //       00000000-0000-0000-0000-000000000000
-        //       ^        ^    ^    ^    ^           
+        //       ^        ^    ^    ^    ^
         // Byte: 0        4    6    8    10
         // Char: 0        9    14   19   24  including hyphens
         int x = (int)BitsLong.unpack(s, 19, 23) ;
@@ -190,7 +190,7 @@ public class UUID_V1_Gen implements UUIDFactory
         int version = (int)BitsLong.unpack(s, 14, 15) ;
         return generate(version, variant, timeHigh, timeMid, timeLow, clockSeq, node) ;
     }
-    
+
     // See LibUUID.toString(JenaUUID)
     // The code here works on the specific fields and is kept for reference only.
     private static String unparse(UUID_V1 uuid) {
@@ -224,7 +224,7 @@ public class UUID_V1_Gen implements UUIDFactory
     // Testing.
     /*package*/ static UUID_V1 generate(int version, int variant, long timestamp, long clockSeq, long node) {
         long timeHigh = timestamp >>> (60 - 12) ;       // Top 12 bits of 60 bit number.
-        long timeMid = (timestamp >>> 32) & 0xFFFFL ;   // 16 bits, bits 32-47 
+        long timeMid = (timestamp >>> 32) & 0xFFFFL ;   // 16 bits, bits 32-47
         long timeLow = timestamp & 0xFFFFFFFFL ;        // Low 32 bits
 
         return generate(version, variant, timeHigh, timeMid, timeLow, clockSeq, node) ;
@@ -237,17 +237,17 @@ public class UUID_V1_Gen implements UUIDFactory
     }
 
     private void setTime() {
-        long time = 0 ;
+        long time = 0 ; // Time, in microseconds (as best we can in Java8).
 
         // Wait for a clock tick.
         synchronized (this) {
             if ( lastTime == 0 )
-                lastTime = System.currentTimeMillis() ;
+                lastTime = 1000*System.currentTimeMillis() ;
 
             boolean done = false ;
             while (!done) {
-                time = System.currentTimeMillis() ;
-                if ( time < lastTime + DELAY ) {
+                time = 1000*System.currentTimeMillis() ;
+                if ( time < lastTime + 1000*DELAY ) {
                     // pause for a while to wait for time to change
                     try {
                         Thread.sleep(DELAY) ;
@@ -259,9 +259,10 @@ public class UUID_V1_Gen implements UUIDFactory
             }
         }
 
-        // We claim this tick just passed! 1 UUID per 100ns so ...
-        // UUIDS_PER_TICK = (time-lastTime)*10 ;
         lastTime = time ;
+
+        // We claim this tick just passed!
+        // Reset the ticks counter.
         uuids_this_tick = 0 ;
 
         // Convert to the UUID base time (00:00:00.00, 15 October 1582)
@@ -282,7 +283,7 @@ public class UUID_V1_Gen implements UUIDFactory
         // The loopback I/F does not have a MAC address.
         try {
             Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces() ;
-            
+
             byte[] hwAddr = null ;
             while(en.hasMoreElements()) {
                 NetworkInterface ni = en.nextElement() ;
@@ -300,8 +301,6 @@ public class UUID_V1_Gen implements UUIDFactory
                 return ;
             }
         } catch (Exception ex) { }                      // Failed in some way.  Fallback.
-
-        
 
         node = BitsLong.unpack(random, 0, 47) ; // Low 48bits, except groups address bit
         node = BitsLong.set(node, 47) ;         // Set group address bit
