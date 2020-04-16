@@ -24,12 +24,10 @@
   -->
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.jena</groupId>
   <artifactId>apache-jena</artifactId>
   <packaging>pom</packaging>
   <name>Apache Jena - Distribution</name>
   <url>https://jena.apache.org/</url>
-  <version>3.15.0-SNAPSHOT</version>
   <description>
     Apache Jena is a API and toolkit for working with semantic web technologies such as RDF and SPARQL using Java.  This artifact represents the source and binary distribution packages generated for releases.
   </description>
