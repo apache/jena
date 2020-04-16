@@ -44,6 +44,7 @@ public class FunctionRegistry //extends HashMap<String, Function>
     public static void init() {
         // Intialize if there is no registry already set 
         FunctionRegistry reg = new FunctionRegistry() ;
+        ARQFunctions.load(reg);
         StandardFunctions.loadStdDefs(reg) ;
         set(ARQ.getContext(), reg) ;
     }

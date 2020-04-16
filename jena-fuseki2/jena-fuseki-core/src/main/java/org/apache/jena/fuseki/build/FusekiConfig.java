@@ -65,16 +65,16 @@ import org.apache.jena.sparql.util.graph.GraphUtils;
 import org.apache.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 
-/** Functions to setup and act on the configuration of a Fuseki server */  
+/** Functions to setup and act on the configuration of a Fuseki server */
 public class FusekiConfig {
     static { Fuseki.init(); initStandardSetup(); }
 
     private static Logger log = Fuseki.configLog;
-    
+
     // The default setup of a DataService.
     private static Map<String, Operation> stdRead;
     private static Map<String, Operation> stdWrite;
-    
+
     private static Set<Operation> stdDatasetWrite;
     private static Set<Operation> stdDatasetRead;
 
@@ -96,7 +96,7 @@ public class FusekiConfig {
         stdDatasetRead = new HashSet<>();
         stdDatasetRead.add(Operation.Query);
         stdDatasetRead.add(Operation.GSP_R);
-        
+
         stdDatasetWrite = new HashSet<>();
         stdDatasetWrite.add(Operation.Query);
         stdDatasetWrite.add(Operation.Update);
@@ -447,8 +447,8 @@ public class FusekiConfig {
 
         // Old style.
         //    fuseki:serviceQuery "sparql";
-        //or 
-        //    fuseki:serviceQuery [ fuseki:name "sparql" ; fusei:allowedUsers (..) ];   
+        //or
+        //    fuseki:serviceQuery [ fuseki:name "sparql" ; fuseki:allowedUsers (..) ];
         accEndpointOldStyle(endpoints1, Operation.Query,    fusekiService,  pServiceQueryEP);
         accEndpointOldStyle(endpoints1, Operation.Update,   fusekiService,  pServiceUpdateEP);
         accEndpointOldStyle(endpoints1, Operation.Upload,   fusekiService,  pServiceUploadEP);
@@ -459,7 +459,7 @@ public class FusekiConfig {
         // fuseki:endpoint [ fuseki:operation fuseki:query ; fuseki:name "" ; fuseki:allowedUsers (....) ] ;
         //   and more.
         accFusekiEndpoints(endpoints2, fusekiService, dsDescMap);
-        
+
         endpoints1.forEach(dataService::addEndpoint);
         // This will overwrite old style entries of the same fuseki:name.
         endpoints2.forEach(dataService::addEndpoint);
@@ -467,12 +467,12 @@ public class FusekiConfig {
     }
 
     /** Find and parse {@code fuseki:endpoint} descriptions. */
-    private 
+    private
     static void accFusekiEndpoints(Set<Endpoint> endpoints, Resource fusekiService, DatasetDescriptionMap dsDescMap) {
         StmtIterator endpointsDesc = fusekiService.listProperties(pEndpoint);
         endpointsDesc.forEachRemaining(ep-> {
             if ( ! ep.getObject().isResource() )
-                throw new FusekiConfigException("Literal for fuseki:endpoint: expected blank node or resource: "+FmtUtils.stringForRDFNode(fusekiService)); 
+                throw new FusekiConfigException("Literal for fuseki:endpoint: expected blank node or resource: "+FmtUtils.stringForRDFNode(fusekiService));
             Endpoint endpoint = buildEndpoint(fusekiService, ep.getObject().asResource());
             endpoints.add(endpoint);
         });
@@ -484,11 +484,11 @@ public class FusekiConfig {
      *     fuseki:operation fuseki:Query ;
      *     fuseki:opImplementation <java:package.Class>
      *     fuseki:allowedUsers (....) ;
-     *     
+     *
      *     ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "1000" ] ;
      *     ja:context [ ja:cxtName "arq:queryLimit" ;  ja:cxtValue "10000" ] ;
      *     ja:context [ ja:cxtName "tdb:defaultUnionGraph" ;  ja:cxtValue "true" ] ;
-     *     
+     *
      *     and specials:
      *         fuseki:timeout "1000,1000" ;
      *         fuseki:queryLimit 1000;
@@ -514,7 +514,7 @@ public class FusekiConfig {
             if ( rImpl == null )
                 throw exception("No fuseki:operation", fusekiService, endpoint, pOperation);
             // Global registry. Replace existing registry.
-            Pair<Operation, ActionService> x = BuildLib.loadOperationActionService(rImpl); 
+            Pair<Operation, ActionService> x = BuildLib.loadOperationActionService(rImpl);
             Operation op2 = x.getLeft();
             ActionService proc = x.getRight();
             if ( op2 == null )
@@ -528,7 +528,7 @@ public class FusekiConfig {
         AuthPolicy authPolicy = FusekiConfig.allowedUsers(endpoint);
 
         // fuseki:name
-        RDFNode epNameR = getZeroOrOne(endpoint, pServiceName);
+        RDFNode epNameR = getZeroOrOne(endpoint, pEndpointName);
         String epName = null;
         if ( epNameR == null ) {
 //            // Make required to give "" for dataset, not default to dataset if missing.
@@ -536,19 +536,19 @@ public class FusekiConfig {
             epName = Endpoint.DatasetEP;
         } else {
             if ( ! epNameR.isLiteral() )
-                throw exception("Not a literal for service name for endpoint", fusekiService, endpoint, pServiceName);
+                throw exception("Not a literal for service name for endpoint", fusekiService, endpoint, pEndpointName);
             epName = epNameR.asLiteral().getLexicalForm();
         }
 
 
         Context cxt = parseContext(endpoint);
 
-        // Per-endpoint context.  
+        // Per-endpoint context.
         // Could add special names:
         //   fuseki:timeout
         //   fuseki:queryLimit
         //   fuseki:unionDefaultGraph
-        
+
         Endpoint ep = EndpointBuilder.create()
             .operation(op)
             .endpointName(epName)
@@ -568,11 +568,15 @@ public class FusekiConfig {
         else
             return new FusekiConfigException(msg+": "+nodeLabel(fusekiService)+" fuseki:endpoint "+nodeLabel(ep), th);
     }
-   
+
 //    private static boolean endpointsContains(Collection<Endpoint> endpoints, Operation operation) {
 //        return endpoints.stream().anyMatch(ep->operation.equals(ep.getOperation()));
 //    }
 
+    // Old style.
+    //    fuseki:serviceQuery "sparql";
+    //or
+    //    fuseki:serviceQuery [ fuseki:name "sparql" ; fuseki:allowedUsers (..) ];
     private static void accEndpointOldStyle(Collection<Endpoint> endpoints, Operation operation, Resource svc, Property property) {
         String p = "<"+property.getURI()+">";
         ResultSet rs = BuildLib.query("SELECT * { ?svc " + p + " ?ep}", svc.getModel(), "svc", svc);
@@ -589,7 +593,7 @@ public class FusekiConfig {
                 try {
                     // Look for possible:
                     // [ fuseki:name ""; fuseki:allowedUsers ( "" "" ) ]
-                    endpointName = r.getProperty(FusekiVocab.pServiceName).getString();
+                    endpointName = r.getProperty(FusekiVocab.pEndpointName).getString();
                     List<RDFNode> x = GraphUtils.multiValue(r, FusekiVocab.pAllowedUsers);
                     if ( x.size() > 1 )
                         throw new FusekiConfigException("Multiple fuseki:"+FusekiVocab.pAllowedUsers.getLocalName()+" for "+r);
@@ -601,14 +605,14 @@ public class FusekiConfig {
             } else {
                 throw new FusekiConfigException("Unrecognized: "+ep);
             }
-            
+
             if ( StringUtils.isEmpty(endpointName) )
                 endpointName = null;
             Endpoint endpoint = Endpoint.create(operation, endpointName, authPolicy);
             endpoints.add(endpoint);
         }
     }
-    
+
     private static void accEndpoint(Collection<Endpoint> endpoints, Operation operation) {
         accEndpoint(endpoints, operation, null);
     }

@@ -35,7 +35,7 @@ public class TS_LangSuite
     {
         JenaSystem.init() ;
         TestSuite ts = new TestSuite(TS_LangSuite.class.getName()) ;
-        ts.addTest(FactoryTestRiot.make(manifest1, null, null)) ;
+        ts.addTest(FactoryTestRiot.make(manifest1)) ;
         return ts ;
     }
 }

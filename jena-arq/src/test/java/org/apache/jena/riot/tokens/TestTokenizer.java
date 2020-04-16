@@ -62,7 +62,7 @@ public class TestTokenizer extends BaseTest {
 
     private static Token tokenizeAndTestExact(String input, StringType stringType, String tokenImage) {
         Token token = tokenizeAndTestExact(input, TokenType.STRING, tokenImage, null) ;
-        assertEquals(stringType, token.getStringType()); 
+        assertEquals(stringType, token.getStringType());
         return token;
     }
 
@@ -185,17 +185,17 @@ public class TestTokenizer extends BaseTest {
     public void tokenUnit_iri12() {
         tokenFirst("<abc{def>") ;
     }
-    
+
     @Test(expected=RiotException.class)
     public void tokenUnit_iri13() {
         tokenFirst("<abc}def>") ;
     }
-    
+
     @Test(expected=RiotException.class)
     public void tokenUnit_iri14() {
         tokenFirst("<abc|def>") ;
     }
-    
+
     @Test(expected=RiotException.class)
     public void tokenUnit_iri15() {
         tokenFirst("<abc^def>") ;
@@ -205,7 +205,7 @@ public class TestTokenizer extends BaseTest {
     public void tokenUnit_iri16() {
         tokenFirst("<abc`def>") ;
     }
-    
+
     @Test(expected=RiotException.class)
     public void tokenUnit_iri17() {
         tokenFirst("<abc\tdef>") ;          // Java escae - real tab
@@ -213,17 +213,17 @@ public class TestTokenizer extends BaseTest {
 
     @Test(expected=RiotException.class)
     public void tokenUnit_iri18() {
-        tokenFirst("<abc\u0007def>") ;      // Java escape - codepoint 7 
+        tokenFirst("<abc\u0007def>") ;      // Java escape - codepoint 7
     }
 
     @Test(expected=RiotException.class)
     public void tokenUnit_iri19() {
-        tokenFirst("<abc\\>") ;          
+        tokenFirst("<abc\\>") ;
     }
 
     @Test(expected=RiotException.class)
     public void tokenUnit_iri20() {
-        tokenFirst("<abc\\def>") ;          
+        tokenFirst("<abc\\def>") ;
     }
 
     @Test(expected=RiotException.class)
@@ -758,7 +758,7 @@ public class TestTokenizer extends BaseTest {
     public void tokenLiteralDT_4() {
         tokenizeAndTestLiteralDT("'123'  ^^<xyz>", StringType.STRING1, "123", TokenType.IRI, "xyz", null) ;
     }
-    
+
     public void tokenLiteralDT_5() {
         tokenizeAndTestLiteralDT("'123'^^  <xyz>", StringType.STRING1, "123", TokenType.IRI, "xyz", null) ;
     }
@@ -1007,7 +1007,7 @@ public class TestTokenizer extends BaseTest {
     @Test
     public void tokenUnit_symbol_11() {
         Tokenizer tokenizer = tokenizeAndTestFirst("+A", TokenType.PLUS, null) ;
-        
+
     }
 
     @Test
@@ -1087,6 +1087,7 @@ public class TestTokenizer extends BaseTest {
         assertFalse(tokenizer.hasNext()) ;
     }
 
+    @Test
     public void token_newlines_5() {
         Tokenizer tokenizer = tokenizer("abc\n\n", true) ;
         testNextToken(tokenizer, TokenType.KEYWORD, "abc") ;
@@ -1094,10 +1095,49 @@ public class TestTokenizer extends BaseTest {
         assertFalse(tokenizer.hasNext()) ;
     }
 
+    @Test
     public void token_newlines_6() {
         Tokenizer tokenizer = tokenizer("\n \n", true) ;
         testNextToken(tokenizer, TokenType.NL) ;
         testNextToken(tokenizer, TokenType.NL) ;
+        assertFalse(tokenizer.hasNext()) ;
+    }
+
+    @Test
+    public void token_rdf_star_1() {
+        Tokenizer tokenizer = tokenizer("<<>>", true) ;
+        testNextToken(tokenizer, TokenType.LT2) ;
+        testNextToken(tokenizer, TokenType.GT2) ;
+        assertFalse(tokenizer.hasNext()) ;
+    }
+
+    @Test
+    public void token_rdf_star_2() {
+        Tokenizer tokenizer = tokenizer("<< >>", true) ;
+        testNextToken(tokenizer, TokenType.LT2) ;
+        testNextToken(tokenizer, TokenType.GT2) ;
+        assertFalse(tokenizer.hasNext()) ;
+    }
+
+    @Test
+    public void token_rdf_star_3() {
+        Tokenizer tokenizer = tokenizer("<<:s x:p 123>> :q ", true) ;
+        testNextToken(tokenizer, TokenType.LT2) ;
+        testNextToken(tokenizer, TokenType.PREFIXED_NAME, "", "s") ;
+        testNextToken(tokenizer, TokenType.PREFIXED_NAME, "x", "p") ;
+        testNextToken(tokenizer, TokenType.INTEGER, "123", null);
+        testNextToken(tokenizer, TokenType.GT2) ;
+        testNextToken(tokenizer, TokenType.PREFIXED_NAME, "", "q") ;
+        assertFalse(tokenizer.hasNext()) ;
+    }
+
+    @Test
+    public void token_rdf_star_4() {
+        Tokenizer tokenizer = tokenizer("<<<>>>", true) ;
+        testNextToken(tokenizer, TokenType.LT2) ;
+        Token t = testNextToken(tokenizer, TokenType.IRI) ;
+        assertEquals("", t.getImage());
+        testNextToken(tokenizer, TokenType.GT2) ;
         assertFalse(tokenizer.hasNext()) ;
     }
 }

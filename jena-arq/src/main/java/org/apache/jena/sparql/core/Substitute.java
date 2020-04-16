@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.TransformCopy;
@@ -113,8 +115,40 @@ public class Substitute {
         return q;
     }
 
-    public static Node substitute(Node n, Binding b) {
-        return Var.lookup(b, n);
+    public static Node substitute(Node n, Binding binding) {
+        if ( ! n.isNodeTriple() )
+            return Var.lookup(binding, n);
+        if ( n.isConcrete() )
+            return n;
+        // Node_Triple with variables.
+        Triple triple = Node_Triple.triple(n);
+        Node s = triple.getSubject();
+        Node p = triple.getPredicate();
+        Node o = triple.getObject();
+
+        // New values.
+        Node s1 = subTripleTermNode(s, binding);
+        Node p1 = subTripleTermNode(p, binding);
+        Node o1 = subTripleTermNode(o, binding);
+
+        // No change - return original
+        if ( s1 == s && o1 == o && p1 == p )
+            return n;
+
+        // Change. Create new.
+        return NodeFactory.createTripleNode(s1, p1, o1);
+    }
+
+    /** Substitue for a node that makes up a triple in a Node_Triple. Recursively. */
+    private static Node subTripleTermNode(Node n, Binding binding) {
+        if ( n.isNodeTriple() ) {
+            if ( ! n.isConcrete() )
+                n = substitute(n, binding);
+        } else if ( Var.isVar(n) ) {
+            Var var = Var.alloc(n);
+            n = Var.lookup(binding, n);
+        }
+        return n;
     }
 
     public static PropFuncArg substitute(PropFuncArg propFuncArg, Binding binding) {

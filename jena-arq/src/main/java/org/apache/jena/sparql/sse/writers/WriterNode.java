@@ -22,6 +22,7 @@ import java.util.List ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.Var ;
@@ -88,7 +89,18 @@ public class WriterNode
     
     public static void output(IndentedWriter out, Node node, SerializationContext naming)
     {
-        out.print(FmtUtils.stringForNode(node, naming)) ;
+        if ( node.isNodeTriple() ) {
+            Triple t = Node_Triple.triple(node);
+            // special syntax.
+            out.print("{ ");
+            output(out, t.getSubject(), naming);
+            out.print(" ");
+            output(out, t.getPredicate(), naming);
+            out.print(" ");
+            output(out, t.getObject(), naming);
+            out.print(" }");
+        } else
+            out.print(FmtUtils.stringForNode(node, naming)) ;
     }
     
     public static void output(IndentedWriter out, List<Node> nodeList, SerializationContext naming)
@@ -99,7 +111,7 @@ public class WriterNode
         {
             if ( ! first )
                 out.print(" ") ;
-            out.print(FmtUtils.stringForNode(node, naming)) ;
+            output(out, node, naming);
             first = false ;
         }
         out.print(")") ;

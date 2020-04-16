@@ -16,10 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.syntax;
+package org.apache.jena.sparql.sse;
 
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.TableFactory;
@@ -31,8 +34,6 @@ import org.apache.jena.sparql.expr.E_IsNumeric ;
 import org.apache.jena.sparql.expr.E_SameTerm ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.graph.NodeConst;
-import org.apache.jena.sparql.sse.Item ;
-import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderNode ;
 import org.apache.jena.sparql.sse.builders.ExprBuildException;
 import org.apache.jena.vocabulary.XSD;
@@ -44,19 +45,19 @@ public class TestSSE_Builder
     @Test public void test_02() { SSE.parseTriple("[?s ?p ?o]") ; }
     @Test public void test_03() { SSE.parseTriple("[?s ?p ?o]") ; }
     @Test public void test_04() { SSE.parseTriple("(?s ?p ?o)") ; }
-    
+
     @Test public void test_05() { SSE.parseQuad("(_ ?s ?p ?o)") ; }
     @Test public void test_06() { SSE.parseQuad("(quad _ ?s ?p ?o)") ; }
-    
+
     @Test public void test_10() { SSE.parseExpr("1") ; }
     @Test public void test_11() { SSE.parseExpr("(+ 1 2)") ; }
-    
+
     @Test public void testOp_01() { opSame("(null)") ; }
     @Test public void testOp_02() { opSame("(null)", OpNull.create()) ; }
     @Test public void testOp_03() { opSame("(bgp [triple ?s ?p ?o])") ; }
 
     @Test public void testOp_04() { opSame("(label 'ABC' (table unit))", OpLabel.create("ABC", OpTable.unit())) ; }
-    
+
     private static void opSame(String str) {
         opSame(str, SSE.parseOp(str)) ;
     }
@@ -100,7 +101,7 @@ public class TestSSE_Builder
         Node n = BuilderNode.buildNode(item);
         assertSame(Node.ANY, n);
     }
-    
+
     @Test
     public void testBuildNode_03() {
         Item item = SSE.parseItem("<http://example/>") ;
@@ -125,7 +126,7 @@ public class TestSSE_Builder
         assertTrue(Var.isVar(n));
         assertEquals("variable", ((Var)n).getVarName());
     }
-    
+
     @Test
     public void testBuildNode_06() {
         Item item = SSE.parseItem("true");
@@ -167,82 +168,82 @@ public class TestSSE_Builder
         Expr e = SSE.parseExpr("(isNumeric ?x)") ;
         assertTrue(e instanceof E_IsNumeric) ;
     }
-    
+
     private static void testExprForms(String str1, String str2) {
         Expr e1 = SSE.parseExpr(str1) ;
         Expr e2 = SSE.parseExpr(str2) ;
         assertEquals(str1+" "+str2, e1, e2) ;
     }
-    
+
     @Test
-    public void testBuildExpr_03()  { 
+    public void testBuildExpr_03()  {
         testExprForms("(add ?x ?y)",
                       "(+ ?x ?y)") ;
     }
-    
+
     @Test
     public void testBuildExpr_04() {
         testExprForms("(subtract ?x ?y)",
                       "(- ?x ?y)") ;
     }
-    
+
     @Test
     public void testBuildExpr_05() {
         testExprForms("(multiply ?x ?y)",
                       "(* ?x ?y)") ;
     }
-    
+
     @Test
     public void testBuildExpr_06() {
-        testExprForms("(divide ?x ?y)", 
+        testExprForms("(divide ?x ?y)",
                       "(/ ?x ?y)") ;
     }
-    
+
     @Test
     public void testBuildExpr_07() {
-        testExprForms("(lt ?x ?y)", 
+        testExprForms("(lt ?x ?y)",
                       "(< ?x ?y)") ;
     }
-    
+
     @Test
     public void testBuildExpr_08() {
-        testExprForms("(le ?x ?y)", 
+        testExprForms("(le ?x ?y)",
                       "(<= ?x ?y)") ;
     }
-    
+
     @Test
     public void testBuildExpr_09() {
-        testExprForms("(gt ?x ?y)", 
+        testExprForms("(gt ?x ?y)",
                       "(> ?x ?y)") ;
     }
-    
+
     @Test
     public void testBuildExpr_10() {
-        testExprForms("(ge ?x ?y)", 
+        testExprForms("(ge ?x ?y)",
                       "(>= ?x ?y)") ;
     }
-    
+
     @Test
     public void testBuildExpr_11() {
-        testExprForms("(unaryplus ?x)", 
+        testExprForms("(unaryplus ?x)",
                       "(+ ?x)") ;
     }
 
     @Test
     public void testBuildExpr_12() {
-        testExprForms("(unaryminus ?x)", 
+        testExprForms("(unaryminus ?x)",
                       "(- ?x)") ;
     }
 
     @Test
     public void testBuildExpr_13() {
-        testExprForms("(eq ?x ?y)", 
+        testExprForms("(eq ?x ?y)",
                       "(= ?x ?y)") ;
     }
 
     @Test
     public void testBuildExpr_14() {
-        testExprForms("(ne ?x ?y)", 
+        testExprForms("(ne ?x ?y)",
                       "(!= ?x ?y)") ;
     }
 
@@ -266,7 +267,7 @@ public class TestSSE_Builder
         Op actual = SSE.parseOp("(table (vars ?x) (row (?x true)))");
         assertEquals(expected, actual);
     }
-    
+
     @Test
     public void testBuildTable_04() {
         // Can't test for equality because can't create a BNode in a way that equality will

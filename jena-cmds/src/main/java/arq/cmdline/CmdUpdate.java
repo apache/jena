@@ -25,7 +25,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 public abstract class CmdUpdate extends CmdARQ
 {
     protected ModDataset modDataset = null ;
-    protected Syntax updateSyntax = Syntax.defaultUpdateSyntax ;
+    protected Syntax updateSyntax = Syntax.syntaxARQ ;
 
     protected CmdUpdate(String[] argv)
     {

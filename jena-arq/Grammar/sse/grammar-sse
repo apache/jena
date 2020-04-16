@@ -46,7 +46,8 @@ function grammar
     # Fix unnecessary imports
     echo "---- Fixing Java warnings in ${CLASS}TokenManager ..."
     F="$DIR/${CLASS}TokenManager.java"
-    sed -e 's/import .*//' -e 's/MatchLoop: do/do/' \
+    sed -e 's/@SuppressWarnings."unused".//' \
+        -e 's/import .*//' -e 's/MatchLoop: do/do/' \
         -e 's/int hiByte = (int)(curChar/int hiByte = (curChar/' \
 	< $F > F
     mv F $F

@@ -25,12 +25,12 @@ import org.apache.jena.sparql.sse.SSEParseException ;
 public class ParserSSEBase extends ParserBase
 {
     private ParseHandler handler = null ;
-    
+
     public void setHandler(ParseHandler handler) { this.handler = handler ; }
-    
+
     protected void parseStart()
     { handler.parseStart() ; }
-    
+
     protected void parseFinish()
     { handler.parseFinish() ; }
 
@@ -57,9 +57,9 @@ public class ParserSSEBase extends ParserBase
 
     protected void emitVar(int line, int column, String varName)
     { handler.emitVar(line, column, varName) ; }
-    
+
     protected void emitLiteral(int currLine, int currColumn, String lex, String lang, String dt_iri, String dt_pname)
-    { 
+    {
         if ( lang != null )
         {
             if ( dt_iri != null || dt_pname != null )
@@ -74,7 +74,7 @@ public class ParserSSEBase extends ParserBase
     }
 
     protected void emitLiteralInteger(int beginLine, int beginColumn, String image)
-    { 
+    {
         emitLiteral(beginLine, beginColumn, image, null, XSDDatatype.XSDinteger.getURI(), null) ;
     }
 
@@ -86,6 +86,14 @@ public class ParserSSEBase extends ParserBase
     protected void emitLiteralDouble(int beginLine, int beginColumn, String image)
     {
         emitLiteral(beginLine, beginColumn, image, null, XSDDatatype.XSDdouble.getURI(), null) ;
+    }
+
+    protected void tripleTermStart(int line, int column) {
+        handler.tripleTermStart(line, column);
+    }
+
+    protected void tripleTermFinish(int line, int column) {
+        handler.tripleTermFinish(line, column);
     }
 
     public static void throwParseException(String msg, int line, int column)

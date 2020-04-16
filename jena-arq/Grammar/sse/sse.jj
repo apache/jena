@@ -115,10 +115,13 @@ void BareList() : { }
   )*
 }
 
-void Term() : { Token t ; }
+void Term() : { }
 {
-    Symbol()
-  |
+  Symbol() | RDFTerm()
+}
+
+void RDFTerm() : { }
+{
     IRIref()
   |
     PrefixedName()
@@ -128,6 +131,8 @@ void Term() : { Token t ; }
     Literal()
   |
     BlankNode()
+  |
+    TripleTerm()
 }
 
 
@@ -186,6 +191,21 @@ void BlankNode() : { Token t ; }
 //|
 //  t = <LBRACKET> <RBRACKET> { return emitBNode(t.beginLine, t.beginColumn) ; }
 //  t = <ANON> { return emitBNode(t.beginLine, t.beginColumn) ; }
+}
+
+void TripleTerm() :     { Token t1 = null ; Token t2 = null ; }
+{
+    t1 = <LBRACE> // "{"
+    (<WS>)*
+    { tripleTermStart(t1.beginLine, t1.beginColumn); }
+    RDFTerm()
+    (<WS>)*
+    RDFTerm()
+    (<WS>)*
+    RDFTerm()
+    (<WS>)*
+    t2 = <RBRACE>
+    { tripleTermFinish(t2.beginLine, t2.beginColumn); }
 }
 
 void RDFLiteral() : { Token t = null ; int currLine ; int currColumn ;

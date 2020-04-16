@@ -375,61 +375,65 @@ public interface ARQParserConstants {
   /** RegularExpression Id. */
   int GE = 187;
   /** RegularExpression Id. */
-  int BANG = 188;
+  int GT2 = 188;
   /** RegularExpression Id. */
-  int TILDE = 189;
+  int LT2 = 189;
   /** RegularExpression Id. */
-  int COLON = 190;
+  int BANG = 190;
   /** RegularExpression Id. */
-  int SC_OR = 191;
+  int TILDE = 191;
   /** RegularExpression Id. */
-  int SC_AND = 192;
+  int COLON = 192;
   /** RegularExpression Id. */
-  int PLUS = 193;
+  int SC_OR = 193;
   /** RegularExpression Id. */
-  int MINUS = 194;
+  int SC_AND = 194;
   /** RegularExpression Id. */
-  int STAR = 195;
+  int PLUS = 195;
   /** RegularExpression Id. */
-  int SLASH = 196;
+  int MINUS = 196;
   /** RegularExpression Id. */
-  int DATATYPE = 197;
+  int STAR = 197;
   /** RegularExpression Id. */
-  int AT = 198;
+  int SLASH = 198;
   /** RegularExpression Id. */
-  int ASSIGN = 199;
+  int DATATYPE = 199;
   /** RegularExpression Id. */
-  int VBAR = 200;
+  int AT = 200;
   /** RegularExpression Id. */
-  int CARAT = 201;
+  int ASSIGN = 201;
   /** RegularExpression Id. */
-  int FPATH = 202;
+  int VBAR = 202;
   /** RegularExpression Id. */
-  int RPATH = 203;
+  int CARAT = 203;
   /** RegularExpression Id. */
-  int QMARK = 204;
+  int FPATH = 204;
   /** RegularExpression Id. */
-  int PN_CHARS_BASE = 205;
+  int RPATH = 205;
   /** RegularExpression Id. */
-  int PN_CHARS_U = 206;
+  int QMARK = 206;
   /** RegularExpression Id. */
-  int PN_CHARS = 207;
+  int PN_CHARS_BASE = 207;
   /** RegularExpression Id. */
-  int PN_PREFIX = 208;
+  int PN_CHARS_U = 208;
   /** RegularExpression Id. */
-  int PN_LOCAL = 209;
+  int PN_CHARS = 209;
   /** RegularExpression Id. */
-  int VARNAME = 210;
+  int PN_PREFIX = 210;
   /** RegularExpression Id. */
-  int PN_LOCAL_ESC = 211;
+  int PN_LOCAL = 211;
   /** RegularExpression Id. */
-  int PLX = 212;
+  int VARNAME = 212;
   /** RegularExpression Id. */
-  int HEX = 213;
+  int PN_LOCAL_ESC = 213;
   /** RegularExpression Id. */
-  int PERCENT = 214;
+  int PLX = 214;
   /** RegularExpression Id. */
-  int UNKNOWN = 215;
+  int HEX = 215;
+  /** RegularExpression Id. */
+  int PERCENT = 216;
+  /** RegularExpression Id. */
+  int UNKNOWN = 217;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -624,6 +628,8 @@ public interface ARQParserConstants {
     "\"<\"",
     "\"<=\"",
     "\">=\"",
+    "\">>\"",
+    "\"<<\"",
     "\"!\"",
     "\"~\"",
     "\":\"",

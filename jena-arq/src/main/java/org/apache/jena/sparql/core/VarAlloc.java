@@ -30,29 +30,29 @@ public class VarAlloc
     private long counter = 0 ;
 
     // Globals
-    // Try to avoid their use because of clashes/vry large allocated names.
+    // Try to avoid their use because of clashes/very large allocated names.
     //private static VarAlloc varAnonAllocator  = new VarAlloc(ARQConstants.allocGlobalVarAnonMarker) ;
     //public static VarAlloc getVarAnonAllocator() { return bNodeAllocator ; }
 
     private static VarAlloc varAllocator    = new VarAlloc(ARQConstants.allocGlobalVarMarker) ;
     public static VarAlloc getVarAllocator() { return varAllocator ; }
-    
+
     public static VarAlloc get(Context context, Symbol name)
-    { 
+    {
         return (VarAlloc)context.get(name) ;
     }
-    
+
     public VarAlloc(String baseMarker)
     {
         this.baseMarker = baseMarker ;
     }
-    
-    
-    
+
+
+
     public Var allocVar()
     { return alloc(baseMarker, counter ++) ; }
-    
+
     static private Var alloc(String base, long number)
     { return Var.alloc(base+number) ; }
-    
+
 }

@@ -20,9 +20,7 @@ package org.apache.jena.riot.system;
 
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.*;
 import org.apache.jena.iri.IRI;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.RiotException;
@@ -47,6 +45,7 @@ public class ParserProfileStd implements ParserProfile
     private final PrefixMap    prefixMap;
     private final boolean      strictMode;
     private final boolean      checking;
+    private boolean allowNodeExtentions;
 
     public ParserProfileStd(FactoryRDF factory, ErrorHandler errorHandler,
                             IRIResolver resolver, PrefixMap prefixMap,
@@ -58,6 +57,7 @@ public class ParserProfileStd implements ParserProfile
         this.context = context;
         this.checking = checking;
         this.strictMode = strictMode;
+        this.allowNodeExtentions = true; //(context.isTrue(RIOT.ALLOW_NODE_EXT)) ;
     }
 
     @Override
@@ -113,18 +113,26 @@ public class ParserProfileStd implements ParserProfile
         return factory.createTriple(subject, predicate, object);
     }
 
+    private boolean allowSpecialNode(Node node) {
+        return this.allowNodeExtentions && node instanceof Node_Ext<?>;
+    }
+
     protected void checkTriple(Node subject, Node predicate, Node object, long line, long col) {
         if ( subject == null || (!subject.isURI() && !subject.isBlank()) ) {
-            errorHandler.error("Subject is not a URI or blank node", line, col);
-            throw new RiotException("Bad subject: " + subject);
+            if ( ! allowSpecialNode(subject) ) {
+                errorHandler.error("Subject is not a URI or blank node", line, col);
+                throw new RiotException("Bad subject: " + subject);
+            }
         }
         if ( predicate == null || (!predicate.isURI()) ) {
             errorHandler.error("Predicate not a URI", line, col);
             throw new RiotException("Bad predicate: " + predicate);
         }
         if ( object == null || (!object.isURI() && !object.isBlank() && !object.isLiteral()) ) {
-            errorHandler.error("Object is not a URI, blank node or literal", line, col);
-            throw new RiotException("Bad object: " + object);
+            if ( ! allowSpecialNode(object) ) {
+                errorHandler.error("Object is not a URI, blank node or literal", line, col);
+                throw new RiotException("Bad object: " + object);
+            }
         }
     }
 
@@ -176,17 +184,6 @@ public class ParserProfileStd implements ParserProfile
         return factory.createStringLiteral(lexical);
     }
 
-    /** Special token forms */
-    @Override
-    public Node createNodeFromToken(Node scope, Token token, long line, long col) {
-        // OFF - Don't produce Node.ANY by default.
-        if ( false && token.getType() == TokenType.KEYWORD ) {
-            if ( Token.ImageANY.equals(token.getImage()) )
-                return Node.ANY;
-        }
-        return null;
-    }
-
     @Override
     public Node createBlankNode(Node scope, String label, long line, long col) {
         // No checks
@@ -197,6 +194,32 @@ public class ParserProfileStd implements ParserProfile
     public Node createBlankNode(Node scope, long line, long col) {
         // No checks
         return factory.createBlankNode();
+    }
+
+    @Override
+    public Node createTripleNode(Node subject, Node predicate, Node object, long line, long col) {
+        return NodeFactory.createTripleNode(subject, predicate, object);
+    }
+
+    @Override
+    public Node createTripleNode(Triple triple, long line, long col) {
+        return NodeFactory.createTripleNode(triple);
+    }
+
+    @Override
+    public Node createGraphNode(Graph graph, long line, long col) {
+        return NodeFactory.createGraphNode(graph);
+    }
+
+    /** Special token forms */
+    @Override
+    public Node createNodeFromToken(Node scope, Token token, long line, long col) {
+        // OFF - Don't produce Node.ANY by default.
+        if ( false && token.getType() == TokenType.KEYWORD ) {
+            if ( Token.ImageANY.equals(token.getImage()) )
+                return Node.ANY;
+        }
+        return null;
     }
 
     @Override
@@ -225,7 +248,6 @@ public class ParserProfileStd implements ParserProfile
             case LITERAL_DT : {
                 Token tokenDT = token.getSubToken2();
                 String uriStr;
-
                 switch (tokenDT.getType()) {
                     case IRI :
                         uriStr = tokenDT.getImage();
@@ -239,7 +261,6 @@ public class ParserProfileStd implements ParserProfile
                     default :
                         throw new RiotException("Expected IRI for datatype: " + token);
                 }
-
                 uriStr = resolveIRI(uriStr, tokenDT.getLine(), tokenDT.getColumn());
                 RDFDatatype dt = NodeFactory.getType(uriStr);
                 return createTypedLiteral(str, dt, line, col);

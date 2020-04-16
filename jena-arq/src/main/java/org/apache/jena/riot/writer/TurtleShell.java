@@ -31,6 +31,7 @@ import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.lib.SetUtils;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.RIOT;
 import org.apache.jena.riot.other.GLib;
@@ -89,7 +90,6 @@ public abstract class TurtleShell {
         RiotLib.writePrefixes(out, prefixMap, prefixStyle==DirectiveStyle.SPARQL) ;
     }
 
-    // XXX
     /** Write graph in Turtle syntax (or part of TriG) */
     protected void writeGraphTTL(Graph graph) {
         ShellGraph x = new ShellGraph(graph, null, null, null) ;
@@ -115,7 +115,7 @@ public abstract class TurtleShell {
         private final Graph                 graph ;
 
         // Blank nodes that have one incoming triple
-        private /*final*/ Set<Node>             nestedObjects ;
+        private final Set<Node>             nestedObjects ;
         private final Set<Node>             nestedObjectsWritten ;
 
         // Blank node subjects that are not referenced as objects or graph names
@@ -154,6 +154,9 @@ public abstract class TurtleShell {
             this.listElts = new HashSet<>() ;
             this.allowDeepPretty = true ;
 
+            // ?? Single pass?
+            // <<>> - and nested - bnodes can't be PP.
+
             // Must be in this order.
             findLists() ;
             findBNodesSyntax1() ;
@@ -188,11 +191,6 @@ public abstract class TurtleShell {
             System.err.print(label) ;
             System.err.print(" = ") ;
             System.err.println(nodes) ;
-        }
-        // Debug
-
-        private ShellGraph(Graph graph) {
-            this(graph, null, null, null) ;
         }
 
         // ---- Data access
@@ -335,10 +333,16 @@ public abstract class TurtleShell {
         /** Find Bnodes that can written as []
          * Subject position (top level) - only used for subject position anywhere in the dataset
          * Object position (any level) - only used as object once anywhere in the dataset
+         * Not used in triple terms.
+         *   These must be written with _: syntax or [] no contents.
+         *   We do not cover the latter case (and it is not legal in PG mode where the
+         *   triple term must refer to a triple in the graph so blank node used elsewhere.)
          */
         private void findBNodesSyntax1() {
-            Set<Node> rejects = new HashSet<>() ; // Nodes known not to meet the requirement.
-
+            // Set of all bnodes used into triple terms (RDF*)
+            Set<Node> blankNodesInTripleTerms = new HashSet<>();
+            // Nodes known not to meet the requirement.
+            Set<Node> rejects = new HashSet<>() ;
             ExtendedIterator<Triple> iter = find(ANY, ANY, ANY) ;
             try {
                 for ( ; iter.hasNext() ; ) {
@@ -352,6 +356,13 @@ public abstract class TurtleShell {
                         if ( sConn == 0 && containedInOneGraph(subj) )
                             // Not used as an object in this graph.
                             freeBnodes.add(subj) ;
+                    } else if ( subj.isNodeTriple() ) {
+                        extractBlankNodesInTripleTerms(blankNodesInTripleTerms, subj);
+                    }
+
+                    if ( obj.isNodeTriple() ) {
+                        extractBlankNodesInTripleTerms(blankNodesInTripleTerms, obj);
+                        continue;
                     }
 
                     if ( ! obj.isBlank() )
@@ -368,7 +379,29 @@ public abstract class TurtleShell {
                         // Uninteresting object connected multiple times.
                         rejects.add(obj) ;
                 }
+                // Remove any blank nodes in triple terms. These have to be done
+                // without nesting' we also do not abbreviate as [],.
+                freeBnodes.removeAll(blankNodesInTripleTerms);
+                nestedObjects.removeAll(blankNodesInTripleTerms);
             } finally { iter.close() ; }
+        }
+
+        // Helper for findBNodeSyntax1
+        private void extractBlankNodesInTripleTerms(Set<Node> blankNodesInTripleTerms, Node nodeTriple) {
+            // Needs to recurse.
+            Triple triple = Node_Triple.triple(nodeTriple);
+            Node tSubj = triple.getSubject();
+            Node tObj = triple.getObject();
+
+            if ( tSubj.isBlank() )
+                blankNodesInTripleTerms.add(tSubj);
+            else if ( tSubj.isNodeTriple() )
+                extractBlankNodesInTripleTerms(blankNodesInTripleTerms, tSubj);
+
+            if ( tObj.isBlank() )
+                blankNodesInTripleTerms.add(tObj);
+            else if ( tObj.isNodeTriple() )
+                extractBlankNodesInTripleTerms(blankNodesInTripleTerms, tObj);
         }
 
         // --- Lists setup
@@ -476,7 +509,7 @@ public abstract class TurtleShell {
             // 2 - Free standing lists
             somethingWritten = writeRemainingFreeLists(somethingWritten) ;
 
-            // 3 - Blank nodes that are unwrittern single objects.
+            // 3 - Blank nodes that are unwritten single objects.
             //            System.err.println("## ## ##") ;
             //            printDetails("nestedObjects", nestedObjects) ;
             //            printDetails("nestedObjectsWritten", nestedObjectsWritten) ;

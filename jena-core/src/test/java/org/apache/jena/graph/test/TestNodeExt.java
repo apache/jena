@@ -26,28 +26,34 @@ import org.junit.Test;
 /** Tests for {@link Node_Ext} */
 public class TestNodeExt {
 
-    private Node s = NodeFactory.createBlankNode();
-    private Node p = NodeCreateUtils.create("eg:p");
-    private Node o = NodeCreateUtils.create("'abc'");
-    
-    private Triple triple1 = Triple.create(s,p,o);
-    private Triple triple2 = Triple.create(s,p,o);
+    private static Node s = NodeFactory.createBlankNode();
+    private static Node p = NodeCreateUtils.create("eg:p");
+    private static Node o = NodeCreateUtils.create("'abc'");
 
-    private Triple triple9 = Triple.create(NodeFactory.createBlankNode(),p,o);
-    
+    private static Triple triple1 = Triple.create(s,p,o);
+    private static Triple triple2 = Triple.create(s,p,o);
+
+    private static Triple triple9 = Triple.create(NodeFactory.createBlankNode(),p,o);
+
     @Test public void ext_triple_1() {
-        Node_Triple nt = new Node_Triple(triple1);
+        Node_Triple nt = new Node_Triple(s,p,o);
         assertNotNull(nt.get());
-        assertSame(triple1, nt.get());
+        assertNotNull(Node_Triple.tripleOrNull(nt));
+        assertNotNull(Node_Triple.triple(nt));
+        assertEquals(triple1, nt.get());
+
+        assertEquals(nt, nt);
+        assertNotEquals(nt.get().hashCode(), nt.hashCode());
+        assertTrue(nt.sameValueAs(nt));
     }
-    
+
     @Test public void ext_triple_2() {
-        Node_Triple nt1 = new Node_Triple(triple1);
-        Node_Triple nt2 = new Node_Triple(triple1);
-        assertSame(nt1.get(), nt2.get());
-        assertNotSame(nt1, nt2);
+        Node_Triple nt1 = new Node_Triple(s,p,o);
+        Node_Triple nt2 = new Node_Triple(s,p,o);
+
         assertEquals(nt1, nt2);
         assertEquals(nt1.hashCode(), nt2.hashCode());
+        assertTrue(nt1.sameValueAs(nt2));
     }
 
     @Test public void ext_triple_3() {
@@ -65,5 +71,25 @@ public class TestNodeExt {
         assertNotSame(nt1.get(), nt9.get());
         assertNotSame(nt1, nt9);
         assertNotEquals(nt1, nt9);
+        assertFalse(nt1.sameValueAs(nt9));
     }
+
+    @Test public void ext_triple_bad_1() {
+        Node n = NodeFactory.createLiteral("abc");
+        assertNull(Node_Triple.tripleOrNull(n));
+    }
+
+    @Test
+    public void ext_triple_bad_2() {
+        Node n = NodeFactory.createLiteral("abc");
+        assertNull(Node_Triple.tripleOrNull(n));
+    }
+
+    @Test(expected=JenaNodeException.class)
+    public void ext_triple_bad_3() {
+        Node n = NodeFactory.createLiteral("abc");
+        Node_Triple.triple(n);
+    }
+
+
 }

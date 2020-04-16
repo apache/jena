@@ -23,7 +23,7 @@ import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.iterator.QueryIterBlockTriples ;
+import org.apache.jena.sparql.engine.iterator.QueryIterBlockTriplesStar ;
 import org.apache.jena.sparql.util.Context ;
 
 /** The stage builder (there is only one) is a library that encapsulates
@@ -67,48 +67,40 @@ public class StageBuilder
     
     // -------- Initialize
     
-    private static StageGenerator defaultStageGenerator = new StageGeneratorGeneric() ; 
+    private static StageGenerator defaultStageGenerator = new StageGeneratorGenericStar() ; 
     
     /** The plain StageGenerator, no reordering */
-    public static StageGenerator executeInline = new StageGenerator() {
-        @Override
-        public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
-        {
-            return QueryIterBlockTriples.create(input, pattern, execCxt) ;
-        }} ;
+    public static StageGenerator executeInline = 
+        (BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)->
+            QueryIterBlockTriplesStar.create(input, pattern, execCxt) ;
         
     // -------- Manage StageGenerator registration
     
-    public static void setGenerator(Context context, StageGenerator stageGenerator)
-    {
+    public static void setGenerator(Context context, StageGenerator stageGenerator) {
         if ( ARQ.stageGenerator == null )
             // Indicator of initialization problems
-            Log.warn(StageBuilder.class, "ARQ.stageGenerator = null") ;
-        context.set(ARQ.stageGenerator, stageGenerator) ;
+            Log.warn(StageBuilder.class, "ARQ.stageGenerator = null");
+        context.set(ARQ.stageGenerator, stageGenerator);
     }
-    
-    public static StageGenerator getGenerator(Context context)
-    {
+
+    public static StageGenerator getGenerator(Context context) {
         if ( context == null )
-            return null ;
-        return (StageGenerator)context.get(ARQ.stageGenerator) ;
+            return null;
+        return (StageGenerator)context.get(ARQ.stageGenerator);
     }
-    
-    public static StageGenerator getGenerator()
-    {
-        return getGenerator(ARQ.getContext()) ;
+
+    public static StageGenerator getGenerator() {
+        return getGenerator(ARQ.getContext());
     }
-    
-    public static StageGenerator standardGenerator()
-    {
-        return defaultStageGenerator ; 
+
+    public static StageGenerator standardGenerator() {
+        return defaultStageGenerator;
     }
-    
-    public static StageGenerator chooseStageGenerator(Context context)
-    {
-        StageGenerator gen = getGenerator(context) ;
+
+    public static StageGenerator chooseStageGenerator(Context context) {
+        StageGenerator gen = getGenerator(context);
         if ( gen == null )
-            gen = new StageGeneratorGeneric() ;
-        return gen ; 
+            gen = standardGenerator();
+        return gen;
     }
 }

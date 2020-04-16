@@ -138,7 +138,7 @@ public class rdflangtest extends CmdGeneral
 
     static void oneManifest(String testManifest)
     {
-        TestSuite suite = FactoryTestRiot.make(testManifest, null, null) ;
+        TestSuite suite = FactoryTestRiot.make(testManifest) ;
 
         //junit.textui.TestRunner.run(suite) ;
         SimpleTestRunner.runAndReport(suite) ;
@@ -155,7 +155,7 @@ public class rdflangtest extends CmdGeneral
     {
         EarlReport report = new EarlReport(systemURI, name, version, homepage) ;
         FactoryTestRiot.report = report ;
-        TestSuite suite = FactoryTestRiot.make(testManifest, null, null) ;
+        TestSuite suite = FactoryTestRiot.make(testManifest) ;
         SimpleTestRunner.runSilent(suite) ;
 
         Model model = report.getModel() ;

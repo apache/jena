@@ -16,18 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.syntax;
+package org.apache.jena.graph;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
+import org.apache.jena.shared.JenaException;
 
-@RunWith(Suite.class)
-@SuiteClasses( { 
-    TestSSE_Basic.class ,
-    TestSSE_Forms.class ,
-    TestSSE_Builder.class 
-})
-public class TS_SSE
-{ }
-
+public class JenaNodeException extends JenaException {
+    public JenaNodeException(String message) {
+        super(message);
+    }
+}

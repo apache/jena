@@ -198,6 +198,12 @@ public class ResultSetReaderJSON implements ResultSetReader {
             checkContains(term, false, false, kType, kValue, kXmlLang, kDatatype);
 
             String type = stringOrNull(term, kType);
+            
+            if ( kTriple.equals(type) ) {
+                JsonObject x = term.get(kValue).getAsObject();
+                return parseTripleTerm(x, labelMap);
+            }
+            
             String v = stringOrNull(term, kValue);
 
             if ( kUri.equals(type) ) {
@@ -226,8 +232,26 @@ public class ResultSetReaderJSON implements ResultSetReader {
 
             if ( kBnode.equals(type) )
                 return labelMap.get(null, v);
-
+            
             throw new ResultSetException("Object key not recognized as valid for an RDF term: " + term);
+        }
+
+        private static Node parseTripleTerm(JsonObject term, LabelToNode labelMap) {
+            if ( term.entrySet().size() != 3 )
+                throw new ResultSetException("Wrong number of object keys for triple term: should be 3, got " + term.entrySet().size());
+            checkContains(term, true, true, kSubject, kObject);
+            checkContainsOneOf(term, kPredicate, kProperty); 
+            JsonObject sTerm = term.get(kSubject).getAsObject(); 
+            JsonObject pTerm = term.get(kPredicate).getAsObject();
+            if ( pTerm == null )
+                pTerm = term.get(kProperty).getAsObject();
+            JsonObject oTerm = term.get(kObject).getAsObject();
+            if ( sTerm == null || pTerm == null || oTerm == null )
+                throw new ResultSetException("Bad triple term: "+term);
+            Node s = parseOneTerm(sTerm, labelMap);
+            Node p = parseOneTerm(pTerm, labelMap);
+            Node o = parseOneTerm(oTerm, labelMap);
+            return NodeFactory.createTripleNode(s, p, o);
         }
 
         private static String stringOrNull(JsonObject obj, String key) {
@@ -252,5 +276,20 @@ public class ResultSetReaderJSON implements ResultSetReader {
             if ( requireAllExpectedKeys && declared.size() < expectedKeys.size() )
                 throw new ResultSetException("One or more of the required keys " + expectedKeys + " was not found");
         }
+        
+        private static void checkContainsOneOf(JsonObject term, String... keys) {
+            List<String> expectedKeys = Arrays.asList(keys);
+            String found = null;
+            for ( String k : term.keys() ) {
+                if ( found == null ) {
+                    if ( expectedKeys.contains(k) )
+                        found = k;
+                } else {
+                    if ( expectedKeys.contains(k) )
+                        throw new ResultSetException("More than one key out of "+expectedKeys);
+                }
+            }
+        }
+
     }
 }

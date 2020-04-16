@@ -18,7 +18,7 @@
 
 package org.apache.jena.atlas.legacy;
 
-import org.apache.jena.atlas.csv.TestCSVParser ;
+import org.apache.jena.atlas.csv.TS_CSVParser;
 import org.apache.jena.atlas.data.TS_Data ;
 import org.apache.jena.atlas.event.TS_Event ;
 import org.apache.jena.atlas.json.TS_JSON ;
@@ -32,7 +32,7 @@ import org.junit.runners.Suite ;
     , TS_JSON.class
     , TS_Data.class
     , TS_Web.class
-    , TestCSVParser.class
+    , TS_CSVParser.class
 }) 
 
 public class TC_Atlas_ARQ

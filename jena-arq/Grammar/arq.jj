@@ -1158,9 +1158,18 @@ Node GraphNodePath(TripleCollectorMark acc) : { Node n ; }
  |
   n = TriplesNodePath(acc) { return n ; }
 }
-Node VarOrTerm() : {Node n = null ; }
+Node VarOrTerm() : { Node n = null ; Token t = null; Node s , p , o ; }
 {
-  ( n = Var() | n = GraphTerm() )
+  (
+    t = <LT2>
+    s = VarOrTerm()
+    p = Verb()
+    o = VarOrTerm()
+    { n = createTripleTerm(s,p,o); }
+    <GT2>
+  | n = Var()
+  | n = GraphTerm()
+  )
   { return n ; }
 }
 Node VarOrIri() : {Node n = null ; String iri ; }
@@ -1840,6 +1849,8 @@ TOKEN :
 | < LT: "<" >
 | < LE: "<=" >
 | < GE: ">=" >
+| < GT2: ">>" >
+| < LT2: "<<" >
 | < BANG: "!" >
 | < TILDE: "~" >
 | < COLON: ":" >

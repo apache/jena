@@ -1,0 +1,233 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+PREFIX mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#>
+PREFIX qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#>
+PREFIX :       <#>
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "SPARQL*" ;
+    mf:entries
+    (
+        :sparql-star-syntax-1
+        :sparql-star-syntax-2
+        :sparql-star-syntax-3
+        :sparql-star-syntax-4
+
+        :sparql-star-bad-syntax-1
+        :sparql-star-bad-syntax-2
+        :sparql-star-bad-syntax-3
+        :sparql-star-bad-syntax-4
+
+        :sparql-star-basic-1
+        :sparql-star-basic-2
+        :sparql-star-basic-3
+        :sparql-star-basic-4
+
+        :sparql-pattern-1
+        :sparql-pattern-2
+        :sparql-pattern-3
+        :sparql-pattern-4
+        :sparql-pattern-5
+        :sparql-pattern-6
+        :sparql-pattern-7
+        :sparql-pattern-8
+
+        :sparql-update-syntax-1
+        :sparql-update-syntax-2
+        :sparql-update-bad-syntax-1
+        :sparql-update-bad-syntax-2
+    ) .
+
+## Good syntax
+
+:sparql-star-syntax-1
+    rdf:type   mf:PositiveSyntaxTest11 ;
+    mf:name    "sparql-star-syntax-01.arq" ;
+    mf:action  <sparql-star-syntax-01.arq>
+    .
+
+:sparql-star-syntax-2
+    rdf:type   mf:PositiveSyntaxTest11 ;
+    mf:name    "sparql-star-syntax-02.arq" ;
+    mf:action  <sparql-star-syntax-02.arq>
+    .
+
+:sparql-star-syntax-3
+    rdf:type   mf:PositiveSyntaxTest11 ;
+    mf:name    "sparql-star-syntax-03.arq" ;
+    mf:action  <sparql-star-syntax-03.arq>
+    .
+
+:sparql-star-syntax-4
+    rdf:type   mf:PositiveSyntaxTest11 ;
+    mf:name    "sparql-star-syntax-04.arq" ;
+    mf:action  <sparql-star-syntax-04.arq>
+    .
+
+## Bad syntax
+
+:sparql-star-bad-syntax-1
+    rdf:type   mf:NegativeSyntaxTest11 ;
+    mf:name    "sparql-star-bad-syntax-01" ;
+    mf:action  <sparql-star-bad-syntax-01.arq>
+    .
+
+:sparql-star-bad-syntax-2
+    rdf:type   mf:NegativeSyntaxTest11 ;
+    mf:name    "sparql-star-bad-syntax-02" ;
+    mf:action  <sparql-star-bad-syntax-02.arq>
+    .
+
+:sparql-star-bad-syntax-3
+    rdf:type   mf:NegativeSyntaxTest11 ;
+    mf:name    "sparql-star-bad-syntax-03" ;
+    mf:action  <sparql-star-bad-syntax-03.arq>
+    .
+
+:sparql-star-bad-syntax-4
+    rdf:type   mf:NegativeSyntaxTest11 ;
+    mf:name    "sparql-star-bad-syntax-04" ;
+    mf:action  <sparql-star-bad-syntax-04.arq>
+    .
+
+## Execution - one triple pattern, no nesting
+
+:sparql-star-basic-1
+    mf:name    "SPARQL* - Triple pattern - subject position" ;
+    mf:action
+        [ qt:query  <sparql-star-basic-1.rq> ;
+          qt:data   <data1.ttl> ] ;
+    mf:result  <sparql-star-basic-1.srj>
+.
+
+:sparql-star-basic-2
+    mf:name    "SPARQL* - Triple pattern - concrete subject position" ;
+    mf:action
+        [ qt:query  <sparql-star-basic-2.arq> ;
+          qt:data   <data1.ttl> ] ;
+    mf:result  <sparql-star-basic-2.srj>
+.
+
+:sparql-star-basic-3
+    mf:name    "SPARQL* - Triple pattern - pattern, var subject position" ;
+    mf:action
+        [ qt:query  <sparql-star-basic-3.arq> ;
+          qt:data   <data1.ttl> ] ;
+    mf:result  <sparql-star-basic-3.srj>
+.
+
+:sparql-star-basic-4
+    mf:name    "SPARQL* - Triple pattern - pattern" ;
+    mf:action
+        [ qt:query  <sparql-star-basic-4.arq> ;
+          qt:data   <data1.ttl> ] ;
+    mf:result  <sparql-star-basic-4.srj>
+.
+
+## Execution - patterns
+
+:sparql-pattern-1
+    mf:name    "SPARQL* - Pattern - 1" ;
+    mf:action
+        [ qt:query  <sparql-star-pattern-01.arq> ;
+          qt:data   <data2.ttl> ] ;
+    mf:result  <sparql-star-pattern-01.srj>
+.
+
+:sparql-pattern-2
+    mf:name    "SPARQL* - Pattern - 2" ;
+    mf:action
+        [ qt:query  <sparql-star-pattern-02.arq> ;
+          qt:data   <data2.ttl> ] ;
+    mf:result  <sparql-star-pattern-02.srj>
+.
+
+:sparql-pattern-3
+    mf:name    "SPARQL* - Pattern - Variable for triple term" ;
+    mf:action
+        [ qt:query  <sparql-star-pattern-03.arq> ;
+          qt:data   <data2.ttl> ] ;
+    mf:result  <sparql-star-pattern-03.srj>
+.
+
+:sparql-pattern-4
+    mf:name    "SPARQL* - Pattern - No match" ;
+    mf:action
+        [ qt:query  <sparql-star-pattern-04.arq> ;
+          qt:data   <data2.ttl> ] ;
+    mf:result  <sparql-star-pattern-04.srj>
+.
+
+:sparql-pattern-5
+    mf:name    "SPARQL* - Pattern - match variables in triple terms" ;
+    mf:action
+        [ qt:query  <sparql-star-pattern-05.arq> ;
+          qt:data   <data2.ttl> ] ;
+    mf:result  <sparql-star-pattern-05.srj>
+.
+
+:sparql-pattern-6
+    mf:name    "SPARQL* - Pattern - Nesting 1" ;
+    mf:action
+        [ qt:query  <sparql-star-pattern-06.arq> ;
+          qt:data   <data2.ttl> ] ;
+    mf:result  <sparql-star-pattern-06.srj>
+.
+
+:sparql-pattern-7
+    mf:name    "SPARQL* - Pattern - Nesting - 2" ;
+    mf:action
+        [ qt:query  <sparql-star-pattern-07.arq> ;
+          qt:data   <data2.ttl> ] ;
+    mf:result  <sparql-star-pattern-07.srj>
+.
+
+:sparql-pattern-8
+    mf:name    "SPARQL* - Pattern - Match and nesting" ;
+    mf:action
+        [ qt:query  <sparql-star-pattern-08.arq> ;
+          qt:data   <data2.ttl> ] ;
+    mf:result  <sparql-star-pattern-08.srj>
+.
+
+## SPARQL* Update
+
+:sparql-update-syntax-1
+    rdf:type mf:PositiveUpdateSyntaxTest11;
+    mf:name    "sparql-star-update-syntax-01" ;
+    mf:action  <sparql-star-update-syntax-01.aru>
+    .
+    
+:sparql-update-syntax-2
+    rdf:type mf:PositiveUpdateSyntaxTest11;
+    mf:name    "sparql-star-update-syntax-02" ;
+    mf:action  <sparql-star-update-syntax-02.aru>
+    .
+    
+:sparql-update-bad-syntax-1
+    rdf:type mf:NegativeUpdateSyntaxTest11;
+    mf:name    "sparql-star-update-bad-syntax-01" ;
+    mf:action  <sparql-star-update-bad-syntax-01.aru>
+    .
+    
+:sparql-update-bad-syntax-2
+    rdf:type mf:NegativeUpdateSyntaxTest11;
+    mf:name    "sparql-star-update-bad-syntax-02" ;
+    mf:action  <sparql-star-update-bad-syntax-02.aru>
+    .

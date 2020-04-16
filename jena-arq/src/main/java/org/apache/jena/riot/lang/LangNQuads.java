@@ -17,103 +17,103 @@
  */
 
 package org.apache.jena.riot.lang;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.system.ParserProfile ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.tokens.Token ;
-import org.apache.jena.riot.tokens.TokenType ;
-import org.apache.jena.riot.tokens.Tokenizer ;
-import org.apache.jena.sparql.core.Quad ;
+
+import org.apache.jena.graph.Node;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.system.ParserProfile;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.tokens.Token;
+import org.apache.jena.riot.tokens.TokenType;
+import org.apache.jena.riot.tokens.Tokenizer;
+import org.apache.jena.sparql.core.Quad;
 
 /**
  * N-Quads.
  *
  * @see <a href="http://www.w3.org/TR/n-quads/">http://www.w3.org/TR/n-quads/</a>
  */
-public class LangNQuads extends LangNTuple<Quad>
-{
+public class LangNQuads extends LangNTuple<Quad> {
     // Null for no graph.
-    private Node currentGraph = null ;
-    
-    public LangNQuads(Tokenizer tokens, ParserProfile profile, StreamRDF dest)
-    {
-        super(tokens, profile, dest) ;
+    private Node currentGraph = null;
+
+    public LangNQuads(Tokenizer tokens, ParserProfile profile, StreamRDF dest) {
+        super(tokens, profile, dest);
     }
 
     @Override
-    public Lang getLang()   { return RDFLanguages.NQUADS ; }
-    
-    /** Method to parse the whole stream of triples, sending each to the sink */ 
+    public Lang getLang() {
+        return RDFLanguages.NQUADS;
+    }
+
+    /** Method to parse the whole stream of triples, sending each to the sink */
     @Override
-    protected final void runParser()
-    {
-        while(hasNext())
-        {
-            Quad x = parseOne() ;
+    protected final void runParser() {
+        while (hasNext()) {
+            Quad x = parseOne();
             if ( x != null )
-                dest.quad(x) ;
+                dest.quad(x);
         }
     }
-    
+
     @Override
-    protected final Quad parseOne()
-    {
-        Token sToken = nextToken() ;
-        if ( sToken.getType() == TokenType.EOF )
-            exception(sToken, "Premature end of file: %s", sToken) ;
-        
-        Token pToken = nextToken() ;
-        if ( pToken.getType() == TokenType.EOF )
-            exception(pToken, "Premature end of file: %s", pToken) ;
-        
-        Token oToken = nextToken() ;
-        if ( oToken.getType() == TokenType.EOF )
-            exception(oToken, "Premature end of file: %s", oToken) ;
-        
-        Token xToken = nextToken() ;    // Maybe DOT
+    protected final Quad parseOne() {
+        Token sToken = nextToken();
+        if ( sToken.isEOF() )
+            exception(sToken, "Premature end of file: %s", sToken);
+        Node s;
+        if ( sToken.hasType(TokenType.LT2) )
+            s = parseTripleTerm();
+        else {
+            checkIRIOrBNode(sToken);
+            s = tokenAsNode(sToken);
+        }
+
+        Token pToken = nextToken();
+        if ( pToken.isEOF() )
+            exception(pToken, "Premature end of file: %s", pToken);
+        checkIRI(pToken);
+        Node p = tokenAsNode(pToken);
+
+        Token oToken = nextToken();
+        if ( oToken.isEOF() )
+            exception(oToken, "Premature end of file: %s", oToken);
+        Node o;
+        if ( oToken.hasType(TokenType.LT2) )
+            o = parseTripleTerm();
+        else {
+            checkRDFTerm(oToken);
+            o = tokenAsNode(oToken);
+        }
+
+        Token xToken = nextToken();    // Maybe DOT
         if ( xToken.getType() == TokenType.EOF )
-            exception(xToken, "Premature end of file: Quad not terminated by DOT: %s", xToken) ;
-        
+            exception(xToken, "Premature end of file: Quad not terminated by DOT: %s", xToken);
+
         // Process graph node first, before S,P,O
         // to set bnode label scope (if not global)
-        Node c = null ;
+        Node c = null;
 
-        if ( xToken.getType() != TokenType.DOT )
-        {
+        if ( xToken.getType() != TokenType.DOT ) {
             // Allow bNodes for graph names.
-            checkIRIOrBNode(xToken) ;
+            checkIRIOrBNode(xToken);
             // Allow only IRIs
-            //checkIRI(xToken) ;
-            c = tokenAsNode(xToken) ;
-            xToken = nextToken() ;
-            currentGraph = c ;
+            // checkIRI(xToken) ;
+            c = tokenAsNode(xToken);
+            xToken = nextToken();
+            currentGraph = c;
+        } else {
+            c = Quad.defaultGraphNodeGenerated;
+            currentGraph = null;
         }
-        else
-        {
-            c = Quad.defaultGraphNodeGenerated ;
-            currentGraph = null ;
-        }
-        
-        // createQuad may also check but these checks are cheap and do form syntax errors.
-        checkIRIOrBNode(sToken) ;
-        checkIRI(pToken) ;
-        checkRDFTerm(oToken) ;
-        // xToken already checked.
 
-        Node s = tokenAsNode(sToken) ;
-        Node p = tokenAsNode(pToken) ;
-        Node o = tokenAsNode(oToken) ;
-        
-        // Check end of tuple.
-        
+        // Check end of quad
         if ( xToken.getType() != TokenType.DOT )
-            exception(xToken, "Quad not terminated by DOT: %s", xToken) ;
-        
-        return profile.createQuad(c, s, p, o, sToken.getLine(), sToken.getColumn()) ;
+            exception(xToken, "Quad not terminated by DOT: %s", xToken);
+
+        return profile.createQuad(c, s, p, o, sToken.getLine(), sToken.getColumn());
     }
-    
+
     @Override
     protected final Node tokenAsNode(Token token) {
         return profile.create(currentGraph, token);

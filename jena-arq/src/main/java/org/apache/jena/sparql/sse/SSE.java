@@ -74,7 +74,7 @@ import org.apache.jena.vocabulary.* ;
  * "()" and "[]" are interchangeable and used for visual effect. Expressions are parsed
  * and printed in prefix notation e.g. {@code (+ 1 ?x)}.
  * <p>
- * The oeprations are grouped into:
+ * The operations are grouped into:
  * <ul>
  * <li>{@code parseTYPE} &ndash; parse a string to object of a specific kind.
  * <li>{@code readTYPE} &ndash; Read a file and produce an object of a specific kind.
@@ -86,7 +86,7 @@ import org.apache.jena.vocabulary.* ;
  * Builders take parser {@code Item} and create the in-memory objects (package
  * {@code org.apache.jena.sparql.sse.builders}) and writers output in-memory objects
  * to an {@link IndentedWriter} (package {@code org.apache.jena.sparql.sse.writers}.
- * <p> 
+ * <p>
  * {@code SSE} should not be considered part of the public, stable Jena APIs.
  * <p>
  * If you don't like lots of "()" and indentation, look away now.
@@ -97,9 +97,9 @@ import org.apache.jena.vocabulary.* ;
 public class SSE
 {
     static { JenaSystem.init(); }
-    
+
     private SSE() {}
-    
+
     // Prefix map for convenience (used in parsing and str(), not for writing).
     private static PrefixMapping defaultPrefixMapPretty = new PrefixMappingImpl() ;
     private static void readMap(String prefix, String uri) { defaultPrefixMapPretty.setNsPrefix(prefix, uri) ; }
@@ -131,7 +131,7 @@ public class SSE
         readMap("ns",       "http://example.org/ns#") ;
         readMap("",         "http://example/") ;
     }
-    
+
     protected static PrefixMapping prefixMapRead   = defaultPrefixMapPretty ;
     public static PrefixMapping getPrefixMapRead() { return prefixMapRead ; }
     public static void setPrefixMapRead(PrefixMapping pmap) { prefixMapRead =  pmap ; }
@@ -142,7 +142,7 @@ public class SSE
     }
     public static PrefixMapping getPrefixMapString() { return prefixMapString ; }
     public static void setPrefixMapString(PrefixMapping pmap) { prefixMapString =  pmap ; }
-    
+
     // Short prefix map for convenience used in writing.
     private static PrefixMapping defaultPrefixMapWrite = new PrefixMappingImpl() ;
     static {
@@ -150,129 +150,129 @@ public class SSE
         defaultPrefixMapWrite.setNsPrefix("rdfs", ARQConstants.rdfsPrefix) ;
         defaultPrefixMapWrite.setNsPrefix("xsd",  ARQConstants.xsdPrefix) ;
     }
-    
+
     protected static PrefixMapping prefixMapWrite = defaultPrefixMapWrite ;
     public static PrefixMapping getPrefixMapWrite() { return prefixMapWrite ; }
     public static void setPrefixMapWrite(PrefixMapping pmap) { prefixMapWrite =  pmap ; }
-    
+
     /** Parse a string to obtain a Node (see NodeFactory.parse() */
     public static Node parseNode(String str) { return parseNode(str, null) ; }
-    
+
     /** Parse a string to obtain a Node */
     public static Node parseNode(String str, PrefixMapping pmap)
-    { 
+    {
         return parseNode(new StringReader(str), pmap) ;
     }
-    
+
     /** Parse a string to obtain a Quad */
     public static Quad parseQuad(String s) { return parseQuad(s, null) ; }
-    
+
     /** Parse a string to obtain a Quad */
     public static Quad parseQuad(String s, PrefixMapping pmap)
     {
         Item item = parse(s, pmap) ;
         if ( !item.isList() )
-            throw new ARQException("Not a list: "+s) ; 
+            throw new ARQException("Not a list: "+s) ;
         return BuilderGraph.buildQuad(item.getList()) ;
     }
 
     /** Parse a string to obtain a Triple */
     public static Triple parseTriple(String str) { return parseTriple(str, null) ; }
-    
+
     /** Parse a string to obtain a Triple */
     public static Triple parseTriple(String str, PrefixMapping pmap)
     {
         Item item = parse(str, pmap) ;
         if ( !item.isList() )
-            throw new ARQException("Not a list: "+str) ; 
+            throw new ARQException("Not a list: "+str) ;
         return BuilderGraph.buildTriple(item.getList()) ;
     }
-    
+
     /** Parse a string to obtain a path */
     public static Path parsePath(String str) { return parsePath(str, null) ; }
-    
+
     /** Parse a string to obtain a path */
     public static Path parsePath(String str, PrefixMapping pmap)
     {
         Item item = parse(str, pmap) ;
         if ( !item.isList() )
-            throw new ARQException("Not a list: "+str) ; 
+            throw new ARQException("Not a list: "+str) ;
         return BuilderPath.buildPath(item) ;
     }
-    
-    
+
+
     /** Parse a string to obtain a SPARQL expression  */
     public static Expr parseExpr(String s) { return parseExpr(s, null) ; }
-    
+
     /** Parse a string to obtain a SPARQL expression  */
     public static Expr parseExpr(String s, PrefixMapping pmap)
-    { 
+    {
         Item item = parse(s, pmap) ;
         return BuilderExpr.buildExpr(item) ;
     }
 
     /** Parse a string to obtain a list of SPARQL expressions  */
     public static ExprList parseExprList(String s) { return parseExprList(s, null) ; }
-    
+
     /** Parse a string to obtain a list of SPARQL expressions  */
-    public static ExprList parseExprList(String s, PrefixMapping pmap) { 
+    public static ExprList parseExprList(String s, PrefixMapping pmap) {
         Item item = parse(s, pmap) ;
         return BuilderExpr.buildExprOrExprList(item) ;
     }
 
     /** Parse a string, and obtain a graph */
     public static Graph parseGraph(String string) { return parseGraph(string, null) ; }
-    
+
     /** Parse a string, and obtain a graph */
     public static Graph parseGraph(String string, PrefixMapping pmap)
-    { 
+    {
         Item item = parse(string, pmap) ;
         return BuilderGraph.buildGraph(item) ;
     }
 
     /** Read in a file, parse, and obtain a graph */
     public static Graph readGraph(String filename) { return readGraph(filename, null) ; }
-    
+
     /** Read in a file, parse, and obtain a graph */
     public static Graph readGraph(String filename, PrefixMapping pmap)
     {
         Item item = readFile(filename, pmap) ;
         return BuilderGraph.buildGraph(item) ;
     }
-    
+
     /** Read in a file, parse, and obtain a graph */
     public static void readGraph(Graph graph, String filename) { readGraph(graph, filename, null) ; }
-    
+
     /** Read in a file, parse, and obtain a graph */
     public static void readGraph(Graph graph, String filename, PrefixMapping pmap)
     {
         Item item = readFile(filename, pmap) ;
         BuilderGraph.buildGraph(graph, item) ;
     }
-    
+
     /** Parse a string, and obtain a DatasetGraph */
     public static DatasetGraph parseDatasetGraph(String string) { return parseDatasetGraph(string, null) ; }
-    
+
     /** Parse a string, and obtain a graph */
     public static DatasetGraph parseDatasetGraph(String string, PrefixMapping pmap)
-    { 
+    {
         Item item = parse(string, pmap) ;
         return BuilderGraph.buildDataset(item) ;
     }
 
     /** Read in a file, parse, and obtain a graph */
     public static DatasetGraph readDatasetGraph(String filename) { return readDatasetGraph(filename, null) ; }
-    
+
     /** Read in a file, parse, and obtain a DatasetGraph */
     public static DatasetGraph readDatasetGraph(String filename, PrefixMapping pmap)
     {
         Item item = readFile(filename, pmap) ;
         return BuilderGraph.buildDataset(item) ;
     }
-    
+
     /** Read in a file, parse, and obtain a DatasetGraph */
     public static void readDatasetGraph(DatasetGraph dsg, String filename) { readDatasetGraph(dsg, filename, null) ; }
-    
+
     /** Read in a file, parse, and obtain a DatasetGraph */
     public static void readDatasetGraph(DatasetGraph dsg, String filename, PrefixMapping pmap)
     {
@@ -282,47 +282,47 @@ public class SSE
 
     /** Read in a file, parse, and obtain a SPARQL algebra op */
     public static Op readOp(String filename) { return Algebra.read(filename) ; }
-    
+
     /** Parse a string and obtain a SPARQL algebra op */
     public static Op parseOp(String s) { return Algebra.parse(s) ; }
-    
+
     /** Parse a string and obtain a SPARQL algebra op, given a prefix mapping */
     public static Op parseOp(String s, PrefixMapping pmap) { return Algebra.parse(s, pmap) ; }
 
     /** Read in a file, parse, and obtain a SPARQL algebra basic graph pattern */
     public static BasicPattern readBGP(String filename)
-    { 
+    {
         Item item = readFile(filename, null) ;
         return BuilderOp.buildBGP(item) ;
-    }    
-    
+    }
+
     /** Parse a string and obtain a SPARQL algebra basic graph pattern */
     public static BasicPattern parseBGP(String s)
     { return parseBGP(s, getPrefixMapRead()) ; }
-    
+
     /** Parse a string and obtain a SPARQL algebra basic graph pattern, given a prefix mapping */
     public static BasicPattern parseBGP(String s, PrefixMapping pmap)
-    { 
+    {
         Item item = parse(s, pmap) ;
         return BuilderOp.buildBGP(item) ;
     }
-    
+
     /** Read a file and obtain a SPARQL algebra table */
     public static Table readTable(String filename) { return readTable(filename, null) ; }
-    
+
     /** Read a file and obtain a SPARQL algebra table */
     public static Table readTable(String filename, PrefixMapping pmap)
-    { 
+    {
         Item item = readFile(filename, pmap) ;
         return BuilderTable.build(item) ;
     }
-    
+
     /** Parse a string and obtain a SPARQL algebra table */
     public static Table parseTable(String s) { return parseTable(s, null) ; }
 
     /** Parse a string and obtain a SPARQL algebra table */
     public static Table parseTable(String s, PrefixMapping pmap)
-    { 
+    {
         Item item = parse(s, pmap) ;
         return BuilderTable.build(item) ;
     }
@@ -331,7 +331,7 @@ public class SSE
     public static Item readFile(String filename)
     { return readFile(filename, null) ; }
 
-    
+
     /** Read a file and obtain an SSE item expression */
     public static Item readFile(String filename, PrefixMapping pmap)
     {
@@ -342,17 +342,17 @@ public class SSE
             if ( len == 0 )
                 return Item.nil ;
             return parse(in, pmap) ;
-        } 
+        }
         catch (FileNotFoundException ex)
-        { throw new NotFoundException("Not found: "+filename) ; } 
+        { throw new NotFoundException("Not found: "+filename) ; }
         catch (IOException ex)
         { throw new ARQException("IOExeption: "+filename, ex) ; }
         finally { IO.close(in) ; }
     }
-    
+
     /** Parse a string and obtain an SSE item expression (no additional prefix mappings)*/
     public static Item parseRaw(String str) { return parse(str, new PrefixMappingImpl()) ; }
-    
+
     /** Parse a string and obtain an SSE item expression */
     public static Item parse(String str) { return parse(str, null) ; }
 
@@ -371,12 +371,12 @@ public class SSE
         Reader reader = FileUtils.asBufferedUTF8(in) ;
         return parse(reader, pmap) ;
     }
-    
+
     // ---- Workers
-    
+
     public static void setUseResolver(boolean flag) { useResolver = flag ; }
     private static boolean useResolver = true ;
-    
+
     private static ParseHandler createParseHandler(PrefixMapping pmap)
     {
         if ( useResolver )
@@ -387,7 +387,7 @@ public class SSE
         else
             return new ParseHandlerPlain() ;
     }
-    
+
     private static Node parseNode(Reader reader, PrefixMapping pmap)
     {
         Item item = parseTerm(reader, pmap) ;
@@ -398,7 +398,7 @@ public class SSE
             if ( "false".equalsIgnoreCase(str) ) return NodeConst.nodeFalse ;
             throw new SSEParseException("Not a node: "+item, item.getLine(), item.getColumn()) ;
         }
-        
+
         if ( ! item.isNode() )
             throw new SSEParseException("Not a node: "+item, item.getLine(), item.getColumn()) ;
         return item.getNode() ;
@@ -411,7 +411,7 @@ public class SSE
             throw new SSEParseException("Not a symbol: "+item, item.getLine(), item.getColumn()) ;
         return item.getSymbol() ;
     }
-    
+
     public static Item parseItem(String str)
     {
         return parse(str, null) ;
@@ -421,37 +421,37 @@ public class SSE
     {
         return parse(new StringReader(str), pmap) ;
     }
-    
-    // --- Parse single elements. 
-    
+
+    // --- Parse single elements.
+
     private static Item parseTerm(Reader reader, PrefixMapping pmap)
     {
         if ( pmap == null )
             pmap = getPrefixMapRead() ;
         ParseHandler handler = createParseHandler(pmap) ;
-        SSE_Parser.term(reader, handler) ; 
+        SSE_Parser.term(reader, handler) ;
         return handler.getItem() ;
     }
 
     public static Item parse(Reader reader)
-    { return parse(reader, null) ; }  
+    { return parse(reader, null) ; }
 
     public static Item parse(Reader reader, PrefixMapping pmap)
     {
         if ( pmap == null )
             pmap = getPrefixMapRead() ;
         ParseHandler handler = createParseHandler(pmap) ;
-        SSE_Parser.parse(reader, handler) ; 
+        SSE_Parser.parse(reader, handler) ;
         return handler.getItem() ;
     }
-    
+
     // ---- To String
-    private static String strForNull = "<<null>>" ; 
-    
+    private static String strForNull = "<<null>>" ;
+
     public static String str(Node node) {
         return str(node, getPrefixMapString()) ;
     }
-    
+
     public static String str(Node node, PrefixMapping pmap) {
         if ( node == null )
             return strForNull ;
@@ -483,49 +483,49 @@ public class SSE
     public static String str(Quad quad) {
         return str(quad, getPrefixMapString()) ;
     }
-    
+
     public static String str(Quad quad, PrefixMapping pmap) {
         if ( quad == null )
             return strForNull ;
         return string((out)->WriterNode.outputNoTag(out, quad, sCxt(pmap))) ;
     }
-    
+
     /** Plain - with (), not (quad ...) */
     public static String strPlain(Quad quad) {
         return strPlain(quad, getPrefixMapString()) ;
     }
-    
+
     /** Plain - with (), not (quad ...) */
     public static String strPlain(Quad quad, PrefixMapping pmap) {
         if ( quad == null )
             return strForNull ;
         return string((out)->WriterNode.outputPlain(out, quad, sCxt(pmap))) ;
     }
-    
+
     public static String str(Graph graph) {
         return str(graph, getPrefixMapString()) ;
     }
-    
+
     public static String str(Graph graph, PrefixMapping pmap) {
         if ( graph == null )
             return strForNull ;
         return string((out)->WriterGraph.output(out, graph, sCxt(pmap))) ;
     }
-    
+
     public static String str(DatasetGraph dsg) {
         return str(dsg, getPrefixMapString()) ;
     }
-    
+
     public static String str(DatasetGraph dsg,  PrefixMapping pmap) {
         if ( dsg == null )
             return strForNull ;
         return string((out)->WriterGraph.output(out, dsg, sCxt(pmap))) ;
     }
-    
+
     public static String str(Expr expr) {
         return str(expr, getPrefixMapString()) ;
     }
-    
+
     public static String str(Expr expr, PrefixMapping pmap) {
         if ( expr == null )
             return strForNull ;
@@ -535,7 +535,7 @@ public class SSE
     public static String str(BasicPattern bgp) {
         return str(bgp, getPrefixMapString()) ;
     }
-    
+
     public static String str(BasicPattern bgp, PrefixMapping pmap) {
         if ( bgp == null )
             return strForNull ;
@@ -545,7 +545,7 @@ public class SSE
     public static String str(Op op) {
         return str(op, getPrefixMapString()) ;
     }
-    
+
     public static String str(Op op, PrefixMapping pmap) {
         if ( op == null )
             return strForNull ;
@@ -555,151 +555,151 @@ public class SSE
 //    public static String str(ResultSet rs) {
 //        return str(rs, getPrefixMapString()) ;
 //    }
-//    
+//
 //    public static String str(ResultSet rs, PrefixMapping pmap) {
 //        return string((out)->Writer???.output(out, rs, sCxt(pmap))) ;
 //    }
 
-    
+
     private static String string(Consumer<IndentedLineBuffer> action) {
         IndentedLineBuffer x = new IndentedLineBuffer() ;
-        action.accept(x); 
+        action.accept(x);
         return x.asString() ;
     }
 
-    /** @deprecated Use {@link #str(Node)} */ 
+    /** @deprecated Use {@link #str(Node)} */
     @Deprecated
     public static String format(Node node)                      { return FmtUtils.stringForNode(node) ; }
-    /** @deprecated  Use {@link #str(Node, PrefixMapping)} */ 
+    /** @deprecated  Use {@link #str(Node, PrefixMapping)} */
     @Deprecated
     public static String format(Node node, PrefixMapping pmap)  { return FmtUtils.stringForNode(node, pmap) ; }
-    
+
     // ----
-    
+
     public static void write(Op op) { WriterOp.output(IndentedWriter.stdout, op) ; IndentedWriter.stdout.flush() ; }
     public static void write(OutputStream out, Op op) { WriterOp.output(out, op) ; }
     public static void write(IndentedWriter out, Op op) { WriterOp.output(out, op) ; }
 
     public static void write(Graph graph)
-    { 
-        write(IndentedWriter.stdout, graph) ; 
+    {
+        write(IndentedWriter.stdout, graph) ;
         IndentedWriter.stdout.flush() ;
     }
     public static void write(OutputStream out, Graph graph)
-    { 
+    {
         IndentedWriter iOut = new IndentedWriter(out) ;
         write(iOut, graph) ;
         iOut.flush();
     }
-        
+
     public static void write(IndentedWriter out, Graph graph)
-    { 
-        WriterGraph.output(out, graph, 
+    {
+        WriterGraph.output(out, graph,
                            new SerializationContext(graph.getPrefixMapping())) ;
         out.ensureStartOfLine() ;
     }
 
     public static void write(Model model)
-    { 
-        write(IndentedWriter.stdout, model) ; 
+    {
+        write(IndentedWriter.stdout, model) ;
         IndentedWriter.stdout.flush() ;
     }
     public static void write(OutputStream out, Model model)
-    { 
+    {
         IndentedWriter iOut = new IndentedWriter(out) ;
         write(iOut, model) ;
         iOut.flush();
     }
-        
+
     public static void write(IndentedWriter out, Model model)
-    { 
+    {
         WriterGraph.output(out, model.getGraph(), new SerializationContext(model)) ;
     }
-    
-    
-    
-    public static void write(DatasetGraph dataset) { write(IndentedWriter.stdout, dataset) ; IndentedWriter.stdout.flush() ; } 
+
+
+
+    public static void write(DatasetGraph dataset) { write(IndentedWriter.stdout, dataset) ; IndentedWriter.stdout.flush() ; }
     public static void write(OutputStream out, DatasetGraph dataset)
-    { 
+    {
         IndentedWriter iOut = new IndentedWriter(out) ;
         write(iOut, dataset) ;
         iOut.flush();
     }
-        
-    public static void write(IndentedWriter out, DatasetGraph dataset)  
-    { 
+
+    public static void write(IndentedWriter out, DatasetGraph dataset)
+    {
         WriterGraph.output(out, dataset, sCxt(dataset.getDefaultGraph())) ;
     }
 
-    public static void write(Dataset dataset)                       { write(dataset.asDatasetGraph()) ; } 
-    public static void write(OutputStream out, Dataset dataset)     { write(out, dataset.asDatasetGraph()) ; } 
+    public static void write(Dataset dataset)                       { write(dataset.asDatasetGraph()) ; }
+    public static void write(OutputStream out, Dataset dataset)     { write(out, dataset.asDatasetGraph()) ; }
     public static void write(IndentedWriter out, Dataset dataset)   { write(out, dataset.asDatasetGraph()) ; }
 
     public static void write(BasicPattern pattern)                  { write(IndentedWriter.stdout, pattern) ; IndentedWriter.stdout.flush() ; }
-    
+
     public static void write(IndentedWriter out, BasicPattern pattern)
     { write(IndentedWriter.stdout, pattern, null) ; IndentedWriter.stdout.flush() ; }
-    
+
     public static void write(IndentedWriter out, BasicPattern pattern, PrefixMapping pMap)
     {
         WriterGraph.output(out, pattern, sCxt(pMap)) ;
         out.flush() ;
     }
-    
+
     public static void write(Triple triple) { write(IndentedWriter.stdout, triple) ; IndentedWriter.stdout.flush() ; }
     public static void write(OutputStream out, Triple triple)
-    { 
+    {
         IndentedWriter iOut = new IndentedWriter(out) ;
         write(iOut, triple) ;
         iOut.flush();
     }
-    public static void write(IndentedWriter out, Triple triple)                         
-    { 
-        WriterNode.output(out, triple, sCxt(getPrefixMapWrite())) ; 
+    public static void write(IndentedWriter out, Triple triple)
+    {
+        WriterNode.output(out, triple, sCxt(getPrefixMapWrite())) ;
         out.flush() ;
     }
-    
+
     public static void write(Quad quad) { write(IndentedWriter.stdout, quad) ; IndentedWriter.stdout.flush() ; }
     public static void write(OutputStream out, Quad quad)
-    { 
+    {
         IndentedWriter iOut = new IndentedWriter(out) ;
         write(iOut, quad) ;
         iOut.flush();
     }
-    public static void write(IndentedWriter out, Quad quad)                         
-    { 
-        WriterNode.output(out, quad, sCxt(getPrefixMapWrite())) ; 
+    public static void write(IndentedWriter out, Quad quad)
+    {
+        WriterNode.output(out, quad, sCxt(getPrefixMapWrite())) ;
         out.flush() ;
     }
 
-    
+
     public static void write(Node node) { write(IndentedWriter.stdout, node) ; IndentedWriter.stdout.flush() ; }
     public static void write(OutputStream out, Node node)
-    { 
+    {
         IndentedWriter iOut = new IndentedWriter(out) ;
         write(iOut, node) ;
         iOut.flush();
     }
-    public static void write(IndentedWriter out, Node node)                         
-    { 
+    public static void write(IndentedWriter out, Node node)
+    {
         WriterNode.output(IndentedWriter.stdout, node, sCxt(getPrefixMapWrite())) ;
         IndentedWriter.stdout.flush() ;
     }
-    
+
     /** Return a SerializationContext appropriate for the graph */
     public static SerializationContext sCxt(Graph graph)
     {
         if ( graph != null )
             return sCxt(graph.getPrefixMapping()) ;
         return new SerializationContext() ;
-    }  
-    
+    }
+
     /** Return a SerializationContext appropriate for the prefix mapping */
     public static SerializationContext sCxt(PrefixMapping pmap)
     {
         if ( pmap != null )
             return new SerializationContext(pmap) ;
         return new SerializationContext() ;
-    }  
+    }
 
 }

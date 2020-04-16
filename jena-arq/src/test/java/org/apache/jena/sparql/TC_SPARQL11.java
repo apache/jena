@@ -20,15 +20,16 @@ package org.apache.jena.sparql;
 
 import junit.framework.TestSuite ;
 
-/** The test suite for all SPARQL (the second SPARQL working group) approved tests. 
+/**
+ * The test suite for all SPARQL (the second SPARQL working group) approved tests.
+ * These are actually covered by TC_Scripted.
  */
 public class TC_SPARQL11 extends TestSuite
 {
-    
     static public TestSuite suite() { return new TC_SPARQL11(); }
-    
+
     // SPARQL 1.1 test suite (when ready)
-    
+
     public TC_SPARQL11()
     {
         super(TC_SPARQL11.class.getName()) ;

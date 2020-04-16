@@ -114,6 +114,7 @@ public class Tags
     public static final String tagExt             = "ext" ;
 
     // Expressions
+    // NB RDF* triple terms use { }. , not << or >>
     // sym => swiggly thing, tag => word-ish thing
 
     public static final String tagExpr            = "expr" ;
