@@ -73,7 +73,7 @@ public class TestSyntaxTransform
 
     @Test public void subst_query_10() {
         testQuery("SELECT * { SELECT ?o {} }", 
-                  "SELECT * {{SELECT (1 as ?o) {}}}",
+                  "SELECT * { SELECT (1 as ?o) {}}",
                   "o", "1");
     }
 
