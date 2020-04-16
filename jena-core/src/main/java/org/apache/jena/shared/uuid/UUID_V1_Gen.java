@@ -106,7 +106,7 @@ public class UUID_V1_Gen implements UUIDFactory
 
     // Generator initial state
     int clockSeq = 0 ;
-    private static final int CLOCK_BITS = 8 ;
+    private static final int CLOCK_BITS = 14 ;
     long node = 0 ;
 
 	// Time control
