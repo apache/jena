@@ -21,20 +21,17 @@ package jena.cmd;
 import java.io.PrintStream ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
-import jena.cmd.ArgModuleGeneral;
-import jena.cmd.CmdArgModule;
-import jena.cmd.ModGeneral;
 
 // Added usage + some common flags
-// This is the usual starting point for any sub 
+// This is the usual starting point for any sub
 
 public abstract class CmdGeneral extends CmdArgModule
 {
     protected ModGeneral modGeneral = new ModGeneral(this::printHelp) ;
     protected ModVersion modVersion = new ModVersion(true) ;
-    
+
     // Could be turned into a module but these are convenient as inherited flags
-    
+
     protected CmdGeneral(String[] argv)
     {
         super(argv) ;
@@ -48,7 +45,7 @@ public abstract class CmdGeneral extends CmdArgModule
         super.addModule(argModule) ;
         argModule.registerWith(this) ;
     }
-    
+
     protected boolean isVerbose() { return modGeneral.verbose ; }
     protected boolean isQuiet()   { return modGeneral.quiet ; }
     protected boolean isDebug()   { return modGeneral.debug ; }
@@ -62,13 +59,13 @@ public abstract class CmdGeneral extends CmdArgModule
 
     @Override
     protected void processModulesAndArgs()
-    { 
+    {
         if ( modVersion.getVersionFlag() )
             modVersion.printVersionAndExit() ;
     }
-    
-    private Usage usage = new Usage() ; 
-    
+
+    private Usage usage = new Usage() ;
+
     protected String cmdName = null ;
 
     protected abstract String getSummary() ;
@@ -81,7 +78,7 @@ public abstract class CmdGeneral extends CmdArgModule
         out.println(getSummary()) ;
         usage.output(out) ;
     }
-    
+
     public void add(ArgDecl argDecl, String argName, String msg)
     {
         add(argDecl) ;
