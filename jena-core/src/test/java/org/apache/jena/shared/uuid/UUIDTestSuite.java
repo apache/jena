@@ -19,23 +19,19 @@
 package org.apache.jena.shared.uuid;
 
 import junit.framework.TestSuite;
-import org.apache.jena.shared.uuid.UUID_V1_Gen ;
-import org.apache.jena.shared.uuid.UUID_V4_Gen ;
 
-public class UUIDTestSuite  extends TestSuite
-{
-    static UUID_V4_Gen factory4 = new UUID_V4_Gen() ;
-    static UUID_V1_Gen factory1 = new UUID_V1_Gen() ;
-    
+public class UUIDTestSuite extends TestSuite {
+    static UUID_V4_Gen factory4 = new UUID_V4_Gen();
+    static UUID_V1_Gen factory1 = new UUID_V1_Gen();
+
     static public TestSuite suite() {
         return new UUIDTestSuite();
     }
-    
-    private UUIDTestSuite()
-    {
-        // The OS kernel can run out of entropy in which case these tests get very slow
-        // These tests may not be in the test suite.
-        addTestSuite(TestUUID.class) ;
-        addTestSuite(TestUUID_JRE.class) ;
+
+    private UUIDTestSuite() {
+        // The OS kernel can run out of entropy in which case these tests get very
+        // slow. These tests may not be in the test suite.
+        addTestSuite(TestUUID.class);
+        addTestSuite(TestUUID_JRE.class);
     }
 }
