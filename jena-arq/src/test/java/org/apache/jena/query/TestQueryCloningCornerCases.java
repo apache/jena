@@ -58,8 +58,8 @@ public class TestQueryCloningCornerCases {
         }
         transformSw.stop();
 
-        double qpsPrintParse = n / (double)(printParseSw.elapsed(TimeUnit.MILLISECONDS) * 0.001);
-        double qpsTransform = n / (double)(transformSw.elapsed(TimeUnit.MILLISECONDS) * 0.001);
+        double qpsPrintParse = n / (printParseSw.elapsed(TimeUnit.MILLISECONDS) * 0.001);
+        double qpsTransform = n / (transformSw.elapsed(TimeUnit.MILLISECONDS) * 0.001);
         System.out.println("Queries/Second [Print-Parse: " + qpsPrintParse + "], [Transform: " + qpsTransform + "]");
     }
 
