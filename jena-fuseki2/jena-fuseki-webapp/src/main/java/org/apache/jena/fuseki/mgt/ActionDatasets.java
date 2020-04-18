@@ -64,7 +64,6 @@ import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
-import org.apache.jena.shared.uuid.JenaUUID;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
@@ -123,7 +122,7 @@ public class ActionDatasets extends ActionContainerItem {
 
     @Override
     protected JsonValue execPostContainer(HttpAction action) {
-        JenaUUID uuid = JenaUUID.generate();
+        UUID uuid = UUID.randomUUID();
         DatasetDescriptionMap registry = new DatasetDescriptionMap();
 
         ContentType ct = ActionLib.getContentType(action);
@@ -156,7 +155,7 @@ public class ActionDatasets extends ActionContainerItem {
             // ----
             // Keep a persistent copy immediately.  This is not used for
             // anything other than being "for the record".
-            systemFileCopy = FusekiWebapp.dirFileArea.resolve(uuid.asString()).toString();
+            systemFileCopy = FusekiWebapp.dirFileArea.resolve(uuid.toString()).toString();
             try ( OutputStream outCopy = IO.openOutputFile(systemFileCopy) ) {
                 RDFDataMgr.write(outCopy, model, Lang.TURTLE);
             }
