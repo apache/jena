@@ -25,7 +25,7 @@ import org.apache.jena.riot.system.StreamRDFOps ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.util.Context ;
 
-/** Write Turtle with one triple on one line with prefixed names, with short form literals (e.g. integers) */   
+/** Write Turtle with one triple on one line with prefixed names, with short form literals (e.g. integers) */
 public class TurtleWriterFlat extends TurtleWriterBase
 {
     @Override

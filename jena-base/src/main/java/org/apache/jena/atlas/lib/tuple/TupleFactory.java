@@ -25,7 +25,7 @@ public class TupleFactory {
 
     private TupleFactory() {}
 
-    /** Create a Tuple */ 
+    /** Create a Tuple */
     @SafeVarargs
     public static <X> Tuple<X> tuple(X...xs) {
         switch(xs.length) {
@@ -44,7 +44,7 @@ public class TupleFactory {
         }
     }
 
-    /** Create a Tuple from an array */ 
+    /** Create a Tuple from an array */
     public static <X> Tuple<X> create(X[] xs) {
         switch(xs.length) {
             case 0 : return create0() ;
@@ -61,12 +61,12 @@ public class TupleFactory {
         }
     }
 
-    /** Treat an array as a Tuple.  The array must not be mutated */ 
+    /** Treat an array as a Tuple.  The array must not be mutated */
     public static <X> Tuple<X> asTuple(X[] xs) {
         return TupleN.wrap(xs) ;
     }
 
-    /** Create a Tuple from a list */ 
+    /** Create a Tuple from a list */
     public static <X> Tuple<X> create(List<X> xs) {
         @SuppressWarnings("unchecked")
         X[] xa = (X[])(new Object[xs.size()]) ;
@@ -117,6 +117,4 @@ public class TupleFactory {
     public static <X> Tuple8<X> create8(X x1, X x2, X x3, X x4, X x5, X x6, X x7, X x8) {
         return new Tuple8<>(x1, x2, x3, x4, x5, x6, x7, x8) ;
     }
-
-
 }

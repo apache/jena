@@ -43,18 +43,18 @@ public interface FactoryRDF {
     /** Create a blank node which is completely new and used nowhere else. */
     public Node createBlankNode() ;
 
-    /** Create a blank node with the given string as internal system id */ 
+    /** Create a blank node with the given string as internal system id */
     public Node createBlankNode(String label) ;
-    
+
     /** Create a blank with the internal system id taken from 128 bit number provided.
      * This must be compatible with {@link java.util.UUID} so the variant and version
-     * bits must agree with <a href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.   
-     * 
+     * bits must agree with <a href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.
+     *
      *  @see java.util.UUID
      *  @see <a href="http://www.ietf.org/rfc/rfc4122.txt" ><i>RFC&nbsp;4122: A Universally Unique IDentifier (UUID) URN Namespace</i></a>
      */
     public Node createBlankNode(long mostSigBits, long leastSigBits) ;
-    
+
     /** Reset any internal state that should not be carried across parse runs (e.g. blank node labels). */
     public void reset();
 }

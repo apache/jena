@@ -43,7 +43,7 @@ public class TestQueryEngineMultiThreaded {
         public int numFailures;
         public List<Exception> exceptions = new ArrayList<>();
     }
-    
+
     @Test
     public void parallel_sparql_construct_default_model_read_lock() throws Exception {
         Model model = this.createDefaultModel();
@@ -55,7 +55,7 @@ public class TestQueryEngineMultiThreaded {
         Model model = createForwardChainingModel();
         this.testParallelConstruct(model, Lock.READ, EXPECTED_NUM_REASONER_TRIPLES);
     }
-    
+
     @Test
     public void parallel_sparql_construct_default_model_write_lock() throws Exception {
         Model model = this.createDefaultModel();
@@ -67,7 +67,7 @@ public class TestQueryEngineMultiThreaded {
         Model model = createForwardChainingModel();
         this.testParallelConstruct(model, Lock.WRITE, EXPECTED_NUM_REASONER_TRIPLES);
     }
-    
+
     @Test
     public void parallel_sparql_select_default_model_read_lock() throws Exception {
         Model model = this.createDefaultModel();
@@ -79,7 +79,7 @@ public class TestQueryEngineMultiThreaded {
         Model model = createForwardChainingModel();
         this.testParallelSelect(model, Lock.READ, EXPECTED_NUM_REASONER_RESULTS);
     }
-    
+
     @Test
     public void parallel_sparql_select_default_model_write_lock() throws Exception {
         Model model = this.createDefaultModel();
@@ -99,7 +99,7 @@ public class TestQueryEngineMultiThreaded {
         assertEquals(0, runResult.exceptions.size());
         assertEquals(0, runResult.numFailures);
     }
-    
+
     private void testParallelSelect(Model model, boolean lock, int expected) throws Exception {
         RunResult runResult = new RunResult();
         List<Thread> threads = createSparqlSelectExecutionThreads(model, lock, expected, runResult);
@@ -116,10 +116,10 @@ public class TestQueryEngineMultiThreaded {
         }
         return threads;
     }
-    
+
     private List<Thread> createSparqlSelectExecutionThreads(Model model, boolean lock, int expected, RunResult runResult) {
         List<Thread> threads = new ArrayList<>();
-        
+
         for (int thread = 0; thread < NUMBER_OF_THREADS; thread++) {
             threads.add(createExecuteSparqlSelectThread(model, lock, expected, runResult));
         }
@@ -143,7 +143,7 @@ public class TestQueryEngineMultiThreaded {
             }
         };
     }
-    
+
     private Thread createExecuteSparqlSelectThread(final Model model, final boolean lock, final int expected, final RunResult runResult) {
         return new Thread() {
             @Override
@@ -181,7 +181,7 @@ public class TestQueryEngineMultiThreaded {
             finally { model.leaveCriticalSection() ; }
         }
     }
-    
+
     private ResultSetRewindable executeSparqlSelect(Model model, String sparql, boolean lock) {
         Query query = QueryFactory.create(sparql);
         try(QueryExecution queryExec = QueryExecutionFactory.create(query, model)) {
@@ -193,7 +193,7 @@ public class TestQueryEngineMultiThreaded {
             }
         }
     }
-    
+
     private Model createDefaultModel() {
         Model def = ModelFactory.createDefaultModel();
         def.read(new ByteArrayInputStream(TURTLE_RDF.getBytes()), "", "TURTLE");

@@ -49,6 +49,5 @@ public class NodeShape extends Shape {
         if ( deactivated() )
             x = x + " deactivated";
         return x;
-
     }
 }

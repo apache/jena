@@ -32,20 +32,20 @@ class CatchParserOutput implements StreamRDF
     List<Quad>        quads       = new ArrayList<>() ;
     List<Pair<String,String>>     prefixes     = new ArrayList<>() ;
     List<String>     bases       = new ArrayList<>() ;
-    
+
     int startCalled = 0 ;
-    
+
     int finishCalled = 0 ;
-    
+
     @Override public void start()   { startCalled++ ; }
-    
+
     @Override public void triple(Triple triple)     { triples.add(triple) ; }
-    
+
     @Override public void quad(Quad quad)           { quads.add(quad) ; }
-    
+
     @Override public void base(String base)         { bases.add(base) ; }
-    
+
     @Override public void prefix(String prefix, String iri) { prefixes.add(Pair.create(prefix, iri)) ; }
-    
+
     @Override public void finish()  { finishCalled++ ; }
 }

@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory ;
 /**
  * Abstract base class for update processors that perform remote updates over
  * HTTP
- * 
+ *
  */
 public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
     private static Logger log = LoggerFactory.getLogger(UpdateProcessRemoteBase.class);
@@ -62,7 +62,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
 
     /**
      * Creates a new remote update processor
-     * 
+     *
      * @param request
      *            Update request
      * @param endpoint
@@ -93,7 +93,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
      * omits parameter merging since that will be done automatically whenever
      * the {@link QueryEngineHTTP} instance makes a query for remote submission.
      * </p>
-     * 
+     *
      * @param serviceURI
      *            Service URI
      */
@@ -123,7 +123,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
 
     /**
      * Gets the endpoint
-     * 
+     *
      * @return Endpoint URI
      */
     public String getEndpoint() {
@@ -143,7 +143,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
      * decide whether to add this themselves since the generated query string
      * may be being used in addition to an existing query string.
      * </p>
-     * 
+     *
      * @return Generated query string
      */
     public String getUpdateString() {
@@ -152,7 +152,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
 
     /**
      * Gets the parameters for the execution
-     * 
+     *
      * @return Parameters
      */
     public Params getParams() {
@@ -172,7 +172,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
 
     /**
      * Gets the update request
-     * 
+     *
      * @return Update request
      */
     public UpdateRequest getUpdateRequest() {
@@ -181,7 +181,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
 
     /**
      * Adds a default graph
-     * 
+     *
      * @param defaultGraph
      *            Default Graph URI
      */
@@ -194,7 +194,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
 
     /**
      * Adds a named graph
-     * 
+     *
      * @param namedGraph
      *            Named Graph URi
      */
@@ -207,7 +207,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
 
     /**
      * Adds a custom parameter to the request
-     * 
+     *
      * @param field
      *            Field
      * @param value
@@ -221,7 +221,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
 
     /**
      * Sets the default graphs
-     * 
+     *
      * @param defaultGraphs
      *            Default Graphs
      */
@@ -231,7 +231,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
 
     /**
      * Sets the named graphs
-     * 
+     *
      * @param namedGraphs
      *            Named Graphs
      */
@@ -241,7 +241,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
 
     /**
      * Convenience method to set the {@link HttpContext}
-     * 
+     *
      * @param httpContext
      *            HTTP Context
      */
@@ -251,7 +251,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
 
     /**
      * Convenience method to get the {@link HttpContext}
-     * 
+     *
      * @return HttpContext
      */
     public HttpContext getHttpContext() {
@@ -270,7 +270,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
      * {@link HttpOp#setDefaultHttpClient(HttpClient)} to avoid the
      * need to set client on a per-request basis
      * </p>
-     * 
+     *
      * @param client
      *            HTTP client
      */
@@ -285,7 +285,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
      * this can be configured via the
      * {@link HttpOp#setDefaultHttpClient(HttpClient)} method.
      * </p>
-     * 
+     *
      * @return HTTP client if set, null otherwise
      */
     public HttpClient getClient() {

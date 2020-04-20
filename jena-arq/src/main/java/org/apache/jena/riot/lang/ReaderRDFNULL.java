@@ -37,9 +37,9 @@ public class ReaderRDFNULL implements ReaderRIOT {
             return new ReaderRDFNULL();
         }
     }
-    
+
     public ReaderRDFNULL() {}
-    
+
     @Override
     public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
         IO.close(in);

@@ -25,10 +25,10 @@ import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.aggregate.AccumulatorExpr ;
 import org.apache.jena.sparql.function.FunctionEnv ;
 
-/** Base for statistics aggregations */ 
+/** Base for statistics aggregations */
 abstract class AccStatBase extends AccumulatorExpr {
     // Could also be used for AVG and SUM but those came before this.
-    
+
     private static final NodeValue noValuesToAvg = NodeValue.nvZERO ; // null? NaN?
     private static final NodeValue errorValue    = null ;
 
@@ -47,7 +47,7 @@ abstract class AccStatBase extends AccumulatorExpr {
     @Override
     final protected NodeValue getAccValue() {
         if ( super.errorCount != 0 )
-            //throw new ExprEvalException("avg: error in group") ; 
+            //throw new ExprEvalException("avg: error in group") ;
             return null ;
         if ( count <= 0 ) return noValuesToAvg ;
         try {
@@ -58,18 +58,18 @@ abstract class AccStatBase extends AccumulatorExpr {
 
     abstract protected double calc() ;
 
-    /** Calculate the variance (sample) */ 
+    /** Calculate the variance (sample) */
     final protected double calcVarianceSample() {
-        // (N*sum(?x*?x) - sum(?x) ) / N*(N-1) 
-        return AccStatLib.calcVarianceSample(sumSquared, sum, count) ; 
+        // (N*sum(?x*?x) - sum(?x) ) / N*(N-1)
+        return AccStatLib.calcVarianceSample(sumSquared, sum, count) ;
     }
-    
-    /** Calculate the variance (population) */ 
+
+    /** Calculate the variance (population) */
     final protected double calcVariancePop() {
-        // (N*sum(?x*?x) - sum(?x) ) / N*N 
+        // (N*sum(?x*?x) - sum(?x) ) / N*N
         return AccStatLib.calcVariancePopulation(sumSquared, sum, count) ;
     }
-    
+
     @Override
     protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv) {
         // shifted_data_variance
@@ -80,7 +80,7 @@ abstract class AccStatBase extends AccumulatorExpr {
                 K = d ;
                 sum = (d-K) ; // == 0 of K set.
                 sumSquared = (d-K)*(d-K) ; // == 0
-                return ; 
+                return ;
             }
             else {
                 double dk = (d-K) ;

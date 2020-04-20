@@ -20,13 +20,13 @@ package org.apache.jena.sparql.expr.aggregate.lib;
 
 import org.apache.jena.sparql.expr.Expr ;
 
-/** Aggregate - statistical standard deviation - population (i.e. N) */ 
+/** Aggregate - statistical standard deviation - population (i.e. N) */
 public class AccStatStdDevPopulation extends AccStatVarPopulation {
 
     public AccStatStdDevPopulation(Expr expr, boolean distinct) {
         super(expr, distinct);
     }
-    
+
     @Override
     protected double calc() {
         return Math.sqrt(super.calc());

@@ -46,7 +46,7 @@ import org.apache.jena.sparql.function.FunctionBase;
  * {@code xsd:integer} and {@code xsd:double}.
  * <p>
  * Functions that return null or undefined will result in a {@link ExprEvalException}.
- * 
+ *
  * @see EnvJavaScript
  * @see NV
  */
@@ -56,7 +56,7 @@ public class FunctionJavaScript extends FunctionBase {
     private final String functionName;
 
     private boolean initialized = false;
-    
+
     public FunctionJavaScript(String functionName, EnvJavaScript env) {
         this.functionName = functionName;
         this.envJS = env;
@@ -68,7 +68,7 @@ public class FunctionJavaScript extends FunctionBase {
     @Override
     public NodeValue exec(List<NodeValue> args) {
         try {
-            // Convert NodeValues to types more akin to Javascript. 
+            // Convert NodeValues to types more akin to Javascript.
             // Pass strings as string, and numbers as Number.
             Object[] a = new Object[args.size()];
             for ( int i = 0 ; i < args.size(); i++ )

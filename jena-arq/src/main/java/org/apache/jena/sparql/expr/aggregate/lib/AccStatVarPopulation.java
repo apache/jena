@@ -20,7 +20,7 @@ package org.apache.jena.sparql.expr.aggregate.lib;
 
 import org.apache.jena.sparql.expr.Expr ;
 
-/** Aggregate - statistical variance - population (i.e. N) */ 
+/** Aggregate - statistical variance - population (i.e. N) */
 public class AccStatVarPopulation extends AccStatVarSample {
 
     public AccStatVarPopulation(Expr expr, boolean distinct) {

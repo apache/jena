@@ -31,11 +31,11 @@ import org.apache.jena.sparql.lib.RDFTerm2Json;
 /**
  * General representation of an {@link NodeValue} for JavaScript. Conversion is to native
  * types where possible, otherwise {@code NV}. {@code NV.toString} of a URI returns the
- * uri as a string so {@code NV} works naturally in Java/Nashorn. 
- * 
+ * uri as a string so {@code NV} works naturally in Java/Nashorn.
+ *
  * @see #fromNodeValue
  * @see #toNodeValue
- * @see RDFTerm2Json RDFTerm2Json, for one way conversion JSON.  
+ * @see RDFTerm2Json RDFTerm2Json, for one way conversion JSON.
  */
 
 public class NV implements RDFJS {
@@ -47,9 +47,9 @@ public class NV implements RDFJS {
     //           String
     //           Symbol (new in ECMAScript 6; not in Nashorn/Java8).
     //       and Object
-    
+
     private NodeValue nv;
-    /** 
+    /**
      * Enable restoring integer from doubles.
      */
     private final static boolean narrowDoubles = true;
@@ -94,15 +94,15 @@ public class NV implements RDFJS {
         if ( r instanceof Number )
             return number2value((Number)r);
         if ( r instanceof Boolean ) {
-            return NodeValue.makeBoolean((Boolean)r); 
+            return NodeValue.makeBoolean((Boolean)r);
         }
         if ( r instanceof URI ) {
             Node n = NodeFactory.createURI(((URI)r).toString());
-            return NodeValue.makeNode(n); 
+            return NodeValue.makeNode(n);
         }
-        throw new ExprEvalException("Can't convert '"+r+"' to a NodeValue.  r is of class "+r.getClass().getName());  
+        throw new ExprEvalException("Can't convert '"+r+"' to a NodeValue.  r is of class "+r.getClass().getName());
     }
-    
+
     // Convert the numeric values that Nashorn can return.
     static NodeValue number2value(Number r) {
         if ( r instanceof Integer )
@@ -120,7 +120,7 @@ public class NV implements RDFJS {
                     // If is a very large integer (larger than long)?
                     if ( d == Math.floor(d) && Double.isFinite(d) ) {
                         BigInteger big = new BigInteger(Double.toString(x));
-                        return NodeValue.makeInteger(big); 
+                        return NodeValue.makeInteger(big);
                     }
                     if ( false ) {
                         // This always works but it is confusing decimal and double.
@@ -136,15 +136,15 @@ public class NV implements RDFJS {
         }
         // These are carried NV.value returns.
         if ( r instanceof BigInteger )
-            return NodeValue.makeInteger((BigInteger)r); 
+            return NodeValue.makeInteger((BigInteger)r);
         if ( r instanceof BigDecimal )
-            return NodeValue.makeDecimal((BigDecimal)r); 
-        
-        throw new ExprEvalException("Unknown return type for number: "+r); 
+            return NodeValue.makeDecimal((BigDecimal)r);
+
+        throw new ExprEvalException("Unknown return type for number: "+r);
     }
-    
+
     // ------ Object NV
-    
+
     // Javascript names and RDF extras.
     public boolean isURI() { return nv.isIRI(); }
     public boolean isBlank() { return nv.isBlank(); }
@@ -160,18 +160,18 @@ public class NV implements RDFJS {
             return "BlankNode";
         if ( isLiteral() )
             return "Literal";
-        return null; 
+        return null;
     }
 
     @Override
-    public String getValue() { 
+    public String getValue() {
         if ( isURI() )
             return getUri();
         if ( isBlank() )
             return getLabel();
         if ( isLiteral() )
             return getLex();
-        return null; 
+        return null;
     }
     // -- rdfjs
 
@@ -215,5 +215,5 @@ public class NV implements RDFJS {
         } else if ( !nv.equals(other.nv) )
             return false;
         return true;
-    } 
     }
+}

@@ -28,18 +28,18 @@ public enum TxnType {
      * <ul>
      * <li>{@code WRITE}: this guarantees a WRITE will complete if {@code commit()} is
      * called. The same as {@code begin(ReadWrite.WRITE)}.
-     * 
+     *
      * <li>{@code READ}: the transaction can not promote to WRITE,ensuring read-only
      * access to the data. The same as {@code begin(ReadWrite.READ)}.
-     * 
+     *
      * <li>{@code READ_PROMOTE}: the transaction will go from "read" to "write" if the
      * dataset has not been modified but if it has, the promotion fails with
      * exception.
-     * 
-     * <li>{@code READ_COMMITTED_PROMOTE}: Use this with care. The promotion will succeed but 
+     *
+     * <li>{@code READ_COMMITTED_PROMOTE}: Use this with care. The promotion will succeed but
      * changes from other transactions become visible.
      * </ul>
-     * 
+     *
      * Read committed: at the point transaction attempts promotion from "read" to
      * "write", the system checks if the dataset has changed since the transaction started
      * (called {@code begin}). If {@code READ_PROMOTE}, the dataset must not have
@@ -66,10 +66,10 @@ public enum TxnType {
             default: throw new JenaTransactionException("Incompatible mode: "+txnType);
         }
     }
-    /** 
+    /**
      * Translate a {@code TxnType} to it's initial {@link ReadWrite} mode.
-     * {@code WRITE -> WRITE}, {@code READ* -> READ} regardless of promotion setting. 
-     */ 
+     * {@code WRITE -> WRITE}, {@code READ* -> READ} regardless of promotion setting.
+     */
     public static ReadWrite initial(TxnType txnType) {
         Objects.requireNonNull(txnType);
         return (txnType == TxnType.WRITE) ? ReadWrite.WRITE : ReadWrite.READ;
@@ -80,5 +80,4 @@ public enum TxnType {
         Objects.requireNonNull(promoteMode);
         return (promoteMode == Transactional.Promote.ISOLATED) ? READ_PROMOTE : READ_COMMITTED_PROMOTE;
     }
-
 }

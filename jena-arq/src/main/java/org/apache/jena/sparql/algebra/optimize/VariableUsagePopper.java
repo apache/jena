@@ -25,7 +25,7 @@ import org.apache.jena.sparql.core.Var;
 
 /**
  * An after visitor for tracking variable usage
- * 
+ *
  */
 public class VariableUsagePopper extends VariableUsageVisitor {
 

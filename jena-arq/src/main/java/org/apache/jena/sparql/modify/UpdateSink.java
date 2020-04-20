@@ -37,5 +37,4 @@ public interface UpdateSink extends Sink<Update>
     public QuadDataAccSink createInsertDataSink();
 
     public QuadDataAccSink createDeleteDataSink();
-
 }

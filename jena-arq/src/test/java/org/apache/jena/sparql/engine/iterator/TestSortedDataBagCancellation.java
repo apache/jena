@@ -49,11 +49,11 @@ import org.junit.Test;
 /*
 	Test that a SortedDataBag used inside a QueryIterSort
 	does indeed cut off when cancelled.
-	
+
 	This is horribly clunky because of the effort of
 	setting up. Maybe we should instead be content to
 	test the SortedDataBag correctly?
- 
+
 */
 public class TestSortedDataBagCancellation {
 

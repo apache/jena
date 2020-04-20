@@ -165,4 +165,4 @@ public class QualifiedValueShape implements Constraint {
             (qMax<0) ? "_" : Integer.toString(qMax),
             qDisjoint);
     }
-    }
+}

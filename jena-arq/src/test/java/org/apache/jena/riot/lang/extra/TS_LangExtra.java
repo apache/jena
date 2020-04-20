@@ -23,7 +23,7 @@ import org.apache.jena.sys.JenaSystem;
 import org.junit.runner.RunWith;
 import org.junit.runners.AllTests;
 
-/** Tests for "lang.extra" such as the JavaCC version of the Turtle parser */ 
+/** Tests for "lang.extra" such as the JavaCC version of the Turtle parser */
 
 @RunWith(AllTests.class)
 public class TS_LangExtra
@@ -36,7 +36,7 @@ public class TS_LangExtra
     {
         JenaSystem.init();
         TurtleJavaccReaderRIOT.register();
-        
+
         TestSuite ts = new TestSuite(TS_LangExtra.class.getName());
         ts.addTest(FactoryTestTurtleJavacc.make(manifest1, null, null));
         ts.addTest(FactoryTestTurtleJavacc.make(manifest2, null, null));

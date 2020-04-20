@@ -167,7 +167,7 @@ public class ValidationReport {
         private PrefixMapping prefixes = new PrefixMappingImpl();
 
         public Builder() { }
-        
+
         public void addPrefixes(PrefixMapping pmap) {
             this.prefixes.setNsPrefixes(pmap);
         }
@@ -211,7 +211,7 @@ public class ValidationReport {
         public void addReportEntry(ReportEntry e) {
             entries.add(e);
         }
-        
+
         public ValidationReport build() {
             return new ValidationReport(paths, entries, prefixes);
         }

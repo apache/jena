@@ -39,7 +39,7 @@ public class UpdateWriterVisitor implements UpdateVisitor
     protected static final int BLOCK_INDENT = 2 ;
     protected final IndentedWriter out ;
     protected final SerializationContext sCxt ;
-    
+
     // TODO newline policy - don't add until needed.
 
     public UpdateWriterVisitor(IndentedWriter out, SerializationContext sCxt)
@@ -55,9 +55,9 @@ public class UpdateWriterVisitor implements UpdateVisitor
         out.print(" ") ;
         if ( update.isSilent() )
             out.print("SILENT ") ;
-        
+
         printTarget(update.getTarget()) ;
-        
+
     }
 
     protected void printTarget(Target target)
@@ -66,7 +66,7 @@ public class UpdateWriterVisitor implements UpdateVisitor
         else if ( target.isAllNamed() )     { out.print("NAMED") ; }
         else if ( target.isDefault() )      { out.print("DEFAULT") ; }
         else if ( target.isOneNamedGraph() )
-        { 
+        {
             out.print("GRAPH ") ;
             String s = FmtUtils.stringForNode(target.getGraph(), sCxt) ;
             out.print(s) ;
@@ -108,9 +108,9 @@ public class UpdateWriterVisitor implements UpdateVisitor
         out.print(" ") ;
         if ( update.getSilent() )
             out.print("SILENT ") ;
-        
+
         outputStringAsURI(update.getSource()) ;
-        
+
         if ( update.getDest() != null )
         {
             out.print(" INTO GRAPH ") ;
@@ -123,12 +123,12 @@ public class UpdateWriterVisitor implements UpdateVisitor
         String x = FmtUtils.stringForURI(uriStr, sCxt) ;
         out.print(x) ;
     }
-    
+
     protected void printTargetUpdate2(Target target)
     {
         if ( target.isDefault() )      { out.print("DEFAULT") ; }
         else if ( target.isOneNamedGraph() )
-        { 
+        {
             //out.print("GRAPH ") ;
             String s = FmtUtils.stringForNode(target.getGraph(), sCxt) ;
             out.print(s) ;
@@ -139,7 +139,7 @@ public class UpdateWriterVisitor implements UpdateVisitor
             throw new ARQException("Malformed Target / Update2") ;
         }
     }
-    
+
     protected void printUpdate2(UpdateBinaryOp update, String name)
     {
         out.print(name) ;
@@ -150,8 +150,8 @@ public class UpdateWriterVisitor implements UpdateVisitor
         out.print(" TO ") ;
         printTargetUpdate2(update.getDest()) ;
     }
-    
-    
+
+
     @Override
     public void visit(UpdateAdd update)
     { printUpdate2(update, "ADD") ; }
@@ -178,7 +178,7 @@ public class UpdateWriterVisitor implements UpdateVisitor
     {
         Iter.sendToSink(update.getQuads().iterator(), createInsertDataSink());  // Iter.sendToSink() will call close() on the sink
     }
-    
+
     @Override
     public Sink<Quad> createDeleteDataSink()
     {
@@ -194,7 +194,7 @@ public class UpdateWriterVisitor implements UpdateVisitor
     }
 
     // Prettier later.
-    
+
     protected void outputQuadsBraced(List<Quad> quads)
     {
         if ( quads.size() == 0 )
@@ -202,18 +202,18 @@ public class UpdateWriterVisitor implements UpdateVisitor
             out.print("{ }") ;
             return ;
         }
-        
+
         SinkQuadBracedOutput sink = new SinkQuadBracedOutput(out, sCxt);
         sink.open();
         Iter.sendToSink(quads.iterator(), sink);
     }
-    
+
     protected void output(Node node)
-    { 
+    {
         String $ = FmtUtils.stringForNode(node, sCxt) ;
         out.print($) ;
     }
-    
+
     @Override
     public void visit(UpdateDeleteWhere update)
     {
@@ -232,7 +232,7 @@ public class UpdateWriterVisitor implements UpdateVisitor
             out.print("WITH ") ;
             output(update.getWithIRI()) ;
         }
-        
+
         if ( update.hasDeleteClause() )
         {
             List<Quad> deleteQuads = update.getDeleteQuads() ;
@@ -240,7 +240,7 @@ public class UpdateWriterVisitor implements UpdateVisitor
             out.print("DELETE ") ;
             outputQuadsBraced(deleteQuads) ;
         }
-        
+
         if ( update.hasInsertClause() )
         {
             List<Quad> insertQuads = update.getInsertQuads() ;
@@ -248,28 +248,28 @@ public class UpdateWriterVisitor implements UpdateVisitor
             out.print("INSERT ") ;
             outputQuadsBraced(insertQuads) ;
         }
-        
+
         if ( ! update.hasInsertClause() && ! update.hasDeleteClause() )
         {
             // Fake a clause to make it legal syntax.
             out.ensureStartOfLine() ;
             out.println("INSERT { }") ;
         }
-        
+
         for ( Node x : update.getUsing() )
         {
             out.ensureStartOfLine() ;
             out.print("USING ") ;
             output(x) ;
         }
-        
+
         for ( Node x : update.getUsingNamed() )
         {
             out.ensureStartOfLine() ;
             out.print("USING NAMED ") ;
             output(x) ;
         }
-         
+
         // Wrong.
         Element el = update.getWherePattern() ;
         out.ensureStartOfLine() ;

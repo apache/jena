@@ -126,5 +126,4 @@ public abstract class Shape {
             out.decIndent();
         }
     }
-
 }

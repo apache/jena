@@ -32,7 +32,7 @@ import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 public class TestCastXSD {
-    
+
     private static boolean origValue ;
     @BeforeClass public static void beforeClass() {
         origValue = NodeValue.VerboseWarnings;
@@ -89,11 +89,11 @@ public class TestCastXSD {
     @Test public void cast_from_boolean_04() { testCast     ("xsd:decimal('false'^^xsd:boolean)",        "0.0" ) ; }
     @Test public void cast_from_boolean_05() { testCast     ("xsd:double('false'^^xsd:boolean)",         "0.0E0" ) ; }
 
-    @Test public void cast_to_duration_01()  { testCast     ("xsd:duration('PT10S')",                            "'PT10S'^^xsd:duration") ; }   
-    @Test public void cast_to_duration_02()  { testCast     ("xsd:duration('P1DT10S'^^xsd:dayTimeDuration)",     "'P1DT10S'^^xsd:duration") ; } 
+    @Test public void cast_to_duration_01()  { testCast     ("xsd:duration('PT10S')",                            "'PT10S'^^xsd:duration") ; }
+    @Test public void cast_to_duration_02()  { testCast     ("xsd:duration('P1DT10S'^^xsd:dayTimeDuration)",     "'P1DT10S'^^xsd:duration") ; }
 
-    @Test public void cast_to_duration_03()  { testCast     ("xsd:dayTimeDuration('P1Y2M3DT1H2M3S'^^xsd:duration)",   "'P3DT1H2M3S'^^xsd:dayTimeDuration") ; }   
-    @Test public void cast_to_duration_04()  { testCast     ("xsd:dayTimeDuration('P1Y'^^xsd:duration)",          "'PT0S'^^xsd:dayTimeDuration") ; }   
+    @Test public void cast_to_duration_03()  { testCast     ("xsd:dayTimeDuration('P1Y2M3DT1H2M3S'^^xsd:duration)",   "'P3DT1H2M3S'^^xsd:dayTimeDuration") ; }
+    @Test public void cast_to_duration_04()  { testCast     ("xsd:dayTimeDuration('P1Y'^^xsd:duration)",          "'PT0S'^^xsd:dayTimeDuration") ; }
     @Test public void cast_to_duration_05()  { testCast     ("xsd:yearMonthDuration('P1Y2M3DT1H2M3S'^^xsd:duration)", "'P1Y2M'^^xsd:yearMonthDuration") ; }
 
     // This is what the XSD spec says, not "no cast"
@@ -131,7 +131,7 @@ public class TestCastXSD {
     private NodeValue cast(String input$) {
         Expr input = ExprUtils.parse(input$) ;
         ARQ.getContext().set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime()) ;
-        FunctionEnv env = new ExecutionContext(ARQ.getContext(), null, null, null) ; 
+        FunctionEnv env = new ExecutionContext(ARQ.getContext(), null, null, null) ;
         return input.eval(null, env) ;
     }
 }

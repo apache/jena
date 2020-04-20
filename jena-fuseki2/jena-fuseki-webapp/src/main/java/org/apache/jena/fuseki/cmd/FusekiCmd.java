@@ -104,7 +104,7 @@ public class FusekiCmd {
             new FusekiCmdInner(argv).mainRun();
         }
 
-        private JettyServerConfig   jettyServerConfig = new JettyServerConfig(); 
+        private JettyServerConfig   jettyServerConfig = new JettyServerConfig();
         {
             jettyServerConfig.port = 3030;
             jettyServerConfig.contextPath = "/";
@@ -372,6 +372,4 @@ public class FusekiCmd {
         JettyFusekiWebapp.instance.start();
         JettyFusekiWebapp.instance.join();
     }
-
-
 }

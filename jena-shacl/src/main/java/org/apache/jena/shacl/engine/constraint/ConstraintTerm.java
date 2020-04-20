@@ -28,7 +28,7 @@ import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.sparql.path.Path;
 
-/* Constraint that does not need access to the data other than the nodes supplied. e.g. sh:datatype. */  
+/* Constraint that does not need access to the data other than the nodes supplied. e.g. sh:datatype. */
 public abstract class ConstraintTerm implements Constraint {
 
     public ConstraintTerm() {}

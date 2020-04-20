@@ -170,7 +170,7 @@ public class Constraints {
 
         if ( p.equals(SHACL.qualifiedValueShape) )
             return parseQualifiedValueShape(g, s, p, o, parsed);
-        
+
         // sh:qualifiedValueShape parameters.
         if ( p.equals(SHACL.QualifiedMinCountConstraintComponent) ||
              p.equals(SHACL.QualifiedMaxCountConstraintComponent) ||
@@ -188,7 +188,7 @@ public class Constraints {
             throw new ShaclParseException("Unexpected constraint: "+displayStr(p)+" on "+s);
         if ( p.equals(SHACL.property) )
             throw new ShaclParseException("Unexpected constraint: "+displayStr(p)+" on "+s);
-        
+
         return null;
     }
 
@@ -244,7 +244,7 @@ public class Constraints {
         //dispatch.put( SHACL.or,                 (g, s, p, o) -> notImplemented(p) );
         //dispatch.put( SHACL.xone,               (g, s, p, o) -> notImplemented(p) );
         //dispatch.put( SHACL.node,               (g, s, p, o) -> notImplemented(p) );
-        
+
         dispatch.put(SHACL.sparql, (g, s, p, o) -> SparqlConstraints.parseSparqlConstraint(g, s, p, o) );
     }
 
