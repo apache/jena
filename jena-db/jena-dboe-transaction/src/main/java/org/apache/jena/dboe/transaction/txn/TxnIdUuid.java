@@ -22,14 +22,13 @@ import java.util.UUID;
 
 import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.dboe.sys.LibUUID;
-import org.apache.jena.shared.uuid.JenaUUID;
 
 /** {@link TxnId} based on a {@link UUID}.
  */
 public class TxnIdUuid implements TxnId {
 
     static TxnIdUuid create() {
-        UUID id = JenaUUID.generate().asUUID(); // UUID.randomUUID() ;
+        UUID id = UUID.randomUUID() ;
         return new TxnIdUuid(id);
     }
 

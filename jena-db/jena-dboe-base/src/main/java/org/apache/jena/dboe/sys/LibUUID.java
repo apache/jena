@@ -21,18 +21,12 @@ package org.apache.jena.dboe.sys;
 import java.util.UUID;
 
 import org.apache.jena.atlas.lib.Bytes;
-import org.apache.jena.shared.uuid.JenaUUID;
 
 public class LibUUID {
 
     /** Generate bytes for a Java UUID (most significant first) */
     public static byte[] uuidAsBytes(UUID uuid) {
         // Not to be confused with UUID.nameUUIDFromBytes (a helper for version 3 UUIDs)
-        return uuidAsBytes(uuid.getMostSignificantBits(), uuid.getLeastSignificantBits());
-    }
-
-    /** Generate bytes for a Jena UUID (most significant first) */
-    public static byte[] uuidAsBytes(JenaUUID uuid) {
         return uuidAsBytes(uuid.getMostSignificantBits(), uuid.getLeastSignificantBits());
     }
 
@@ -49,10 +43,8 @@ public class LibUUID {
         return uuidAsBytes(UUID.fromString(str));
     }
 
-    /** UUID, as two longs, in RFC string format */ 
+    /** UUID, as two longs, in RFC string format */
     public static String uuidToString(long mostSignificantBits, long leastSignificantBits) {
         return new UUID(mostSignificantBits, leastSignificantBits).toString();
-        //JenaUUID.toString(mostSignificantBits, leastSignificantBits)
     }
-
 }

@@ -23,22 +23,22 @@ package org.apache.jena.atlas.lib;
 
 /** Utilities for manipulating a bit pattern which are held in a 32 bit int.
  *  @see BitsLong
- */ 
+ */
 public final class BitsInt
 {
     private BitsInt() {}
-    
-    private static int IntLen = Integer.SIZE ;
-    
+
+    private static final int IntLen = Integer.SIZE ;
+
     /** Extract the value packed into bits start (inclusive) and finish (exclusive).
      *  The value is returned in the low part of the returned int.
      *  The low bit is bit zero.
      * @param bits
      * @param start
      * @param finish
-     * @return int  
-     */ 
-    
+     * @return int
+     */
+
     public static final
     int unpack(int bits, int start, int finish)
     {
@@ -49,7 +49,7 @@ public final class BitsInt
     }
 
     /** Place the value into the bit pattern between start and finish
-     *  and returns the new int. 
+     *  and returns the new int.  Leaves other bits alone.
      * @param bits
      * @param value
      * @param start
@@ -61,18 +61,20 @@ public final class BitsInt
     {
         check(start, finish) ;
         bits = clear$(bits, start, finish) ;
-        bits = bits | (value<<start) ;
+        int mask = mask(start, finish) ;
+        bits = bits | ((value<<start) & mask) ;
         return bits ;
     }
 
     /** Get bits from a hex string.
-     * 
+     *
      * @param str
-     * @param startChar     Index of first character (counted from the left, string style). 
+     * @param startChar     Index of first character (counted from the left, string style).
      * @param finishChar    Index after the last character (counted from the left, string style).
      * @return int
+     * @see #access(int, int, int)
      */
-    
+
     public static final
     int unpack(String str, int startChar, int finishChar)
     {
@@ -81,20 +83,20 @@ public final class BitsInt
     }
 
     /** Set the bits specified.
-     * 
+     *
      * @param bits      Pattern
-     * @param bitIndex 
+     * @param bitIndex
      * @return          Modified pattern
      */
     public static final
     int set(int bits, int bitIndex)
-    { 
+    {
         check(bitIndex) ;
         return set$(bits, bitIndex) ;
     }
 
     /** Set the bits from start (inc) to finish (exc) to one
-     * 
+     *
      * @param bits      Pattern
      * @param start     start  (inclusive)
      * @param finish    finish (exclusive)
@@ -102,14 +104,14 @@ public final class BitsInt
      */
     public static final
     int set(int bits, int start, int finish)
-    { 
+    {
         check(start, finish) ;
         return set$(bits, start, finish) ;
     }
 
-    /** Test whether a bit is the same as isSet 
+    /** Test whether a bit is the same as isSet
      * @param bits      Pattern
-     * @param isSet     Test whether is set or not. 
+     * @param isSet     Test whether is set or not.
      * @param bitIndex  Bit index
      * @return          Boolean
      */
@@ -119,8 +121,8 @@ public final class BitsInt
         check(bitIndex) ;
         return test$(bits, isSet, bitIndex) ;
     }
-    
-    /** Test whether a bit is set 
+
+    /** Test whether a bit is set
      * @param bits      Pattern
      * @param bitIndex  Bit index
      * @return          Boolean
@@ -131,8 +133,8 @@ public final class BitsInt
         check(bitIndex) ;
         return test$(bits, true, bitIndex) ;
     }
-    
-    /** Test whether a range has a specific value or not   
+
+    /** Test whether a range has a specific value or not
      * @param bits      Pattern
      * @param value     Value to test for
      * @param start     start  (inclusive)
@@ -145,7 +147,7 @@ public final class BitsInt
         check(start, finish) ;
         return test$(bits, value, start, finish) ;
     }
-    
+
     /** Get the bits from start (inclusive) to finish (exclusive),
      *  leaving them aligned in the int.  See also unpack, returns
      *  the value found at that place.
@@ -155,14 +157,26 @@ public final class BitsInt
      *  @param finish
      *  @return int
      */
-    
     public static final
     int access(int bits, int start, int finish)
     {
         check(start, finish) ;
-        return access$(bits, start, finish) ; 
+        return access$(bits, start, finish) ;
     }
-    
+
+    /**
+     * Clear the bit specified.
+     *  @param bits
+     *  @param bitIndex
+     *  @return int
+     */
+    public static final
+    int clear(int bits, int bitIndex)
+    {
+        check(bitIndex);
+        return clear$(bits, bitIndex) ;
+    }
+
     /**
      * Clear the bits specified.
      *  @param bits
@@ -190,7 +204,7 @@ public final class BitsInt
         check(start, finish) ;
         return mask$(start, finish) ;
     }
-    
+
     /**
      * Create a mask that has zeros between bit positions start (inc) and finish (exc),
      * and ones elsewhere
@@ -204,7 +218,15 @@ public final class BitsInt
         check(start, finish) ;
         return maskZero$(start, finish) ;
     }
-    
+
+    private static final
+    int clear$(int bits, int bitIndex)
+    {
+        int mask = maskZero$(bitIndex);
+        bits = bits & mask ;
+        return bits ;
+    }
+
     private static final
     int clear$(int bits, int start, int finish)
     {
@@ -215,50 +237,46 @@ public final class BitsInt
 
     private static final
     int set$(int bits, int bitIndex)
-    { 
+    {
         int mask = mask$(bitIndex) ;
         return bits | mask ;
     }
 
     private static final
     int set$(int bits, int start, int finish)
-    { 
+    {
         int mask = mask$(start, finish) ;
         return bits | mask ;
     }
 
-    private static
+    private static final
     boolean test$(int bits, boolean isSet, int bitIndex)
     {
         return isSet == access$(bits, bitIndex) ;
     }
 
-    private static
+    private static final
     boolean test$(int bits, int value, int start, int finish)
     {
         int v = access$(bits, start, finish) ;
         return v == value ;
     }
 
-
-    
     private static final
     boolean access$(int bits, int bitIndex)
     {
         int mask = mask$(bitIndex) ;
         return (bits & mask) != 0L ;
     }
-    
+
     private static final
     int access$(int bits, int start, int finish)
     {
-        // Two ways:
-//        int mask = mask$(start, finish) ;
-//        return bits & mask ;
-        
+        // Alternative
+        //        int mask = mask$(start, finish) ;
+        //        return bits & mask ;
         return ( (bits<<(IntLen-finish)) >>> (IntLen-finish+start) ) << start  ;
     }
-    
 
     private static final
     int mask$(int bitIndex)
@@ -269,21 +287,17 @@ public final class BitsInt
     private static final
     int mask$(int start, int finish)
     {
-    //        int mask = 0 ;
-    //        if ( finish == int.SIZE )
-    //            // <<int.SIZE is a no-op 
-    //            mask = -1 ;
-    //        else
-    //            mask = (1L<<finish)-1 ;
         if ( finish == 0 )
-            // So start is zero and so the mask is zero.
+            // Valid args; start is zero and so the mask is zero.
             return 0 ;
-
-        
         int mask = -1 ;
-//        mask = mask << (IntLen-finish) >>> (intLen-finish) ;      // Clear the top bits
-//        return mask >>> start << start ;                  // Clear the bottom bits
-        return mask << (IntLen-finish) >>> (IntLen-finish+start) << start ; 
+        return mask << (IntLen-finish) >>> (IntLen-finish+start) << start ;
+    }
+
+    private static final
+    int maskZero$(int bitIndex)
+    {
+        return ~mask$(bitIndex);
     }
 
     private static final
@@ -291,7 +305,7 @@ public final class BitsInt
     {
         return ~mask$(start, finish) ;
     }
-    
+
     private static final
     void check(int bitIndex)
     {
@@ -305,5 +319,4 @@ public final class BitsInt
         if ( finish < 0 || finish > IntLen ) throw new IllegalArgumentException("Illegal finish: "+finish) ;
         if ( start > finish )  throw new IllegalArgumentException("Illegal range: ("+start+", "+finish+")") ;
     }
-    
 }
