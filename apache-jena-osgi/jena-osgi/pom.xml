@@ -269,6 +269,7 @@
               !com.ibm.uvm.tools,
               !com.sun.jdmk.comm,
               !org.apache.log,
+              !org.apache.logging.*,
               !org.apache.jena.ext.*,
               !org.checkerframework.checker.*,
               !com.google.errorprone.annotations.*,
