@@ -37,7 +37,7 @@ public class IteratorTxnTracker<T> extends IteratorWrapper<T> {
     @Override public boolean hasNext()  { check() ; return super.hasNext() ; }
 
     @Override public T next()           { check() ; return super.next() ; }
-    
+
     @Override public void remove()      { check() ; super.remove() ; }
 
     private void check() {

@@ -51,7 +51,7 @@ public class ShXone extends ConstraintOpN {
             boolean innerConforms = vCxt2.generateReport().conforms();
             if ( innerConforms ) {
                 c++;
-                // Choice: count all vs break as soon as error deteched
+                // Choice: count all vs break as soon as error detected
 //                if ( c > 1 )
 //                    break;
             }

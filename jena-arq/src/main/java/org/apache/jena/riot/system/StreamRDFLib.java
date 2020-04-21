@@ -47,17 +47,17 @@ public class StreamRDFLib
      * buffered.
      */
     public static StreamRDF writer(OutputStream out)         { return new WriterStreamRDFPlain(IO.wrapUTF8(out)) ; }
-    
+
     /** Create a {@link StreamRDF} that outputs to an {@link AWriter}. */
     public static StreamRDF writer(AWriter out)              { return new WriterStreamRDFPlain(out) ; }
-    
+
     /**
      * Create a {@link StreamRDF} that outputs to an {@link Writer}. It is important to
      * call {@link StreamRDF#start} and {@link StreamRDF#finish} because the output is
      * buffered.
      */
     public static StreamRDF writer(Writer out)               { return new WriterStreamRDFPlain(IO.wrap(out)) ; }
-    
+
     /**
      * Create a {@link StreamRDF} that outputs to an {@link OutputStream} with a specific
      * {@link CharSpace} (ASCII or UTF-8).
@@ -99,31 +99,31 @@ public class StreamRDFLib
     }
 
     public static StreamRDF graph(Graph graph)               { return new ParserOutputGraph(graph) ; }
-    
+
     public static StreamRDF dataset(DatasetGraph dataset)    { return new ParserOutputDataset(dataset) ; }
-    
-    /** 
+
+    /**
      * Output to a sink; prefix and base handled only within the parser.
-     * Unfortunately, Java needs different names for the triples and 
-     * quads versions because of type erasure.  
+     * Unfortunately, Java needs different names for the triples and
+     * quads versions because of type erasure.
      */
     public static StreamRDF sinkTriples(Sink<Triple> sink)   { return new ParserOutputSinkTriples(sink) ; }
 
-    /** 
+    /**
      * Output to a sink; prefix and base handled only within the parser.
-     * Unfortunately, Java needs different names for the triples and 
-     * quads versions because of type erasure.  
+     * Unfortunately, Java needs different names for the triples and
+     * quads versions because of type erasure.
      */
     public static StreamRDF sinkQuads(Sink<Quad> sink)       { return new ParserOutputSinkQuads(sink) ; }
-    
+
     /** Convert any triples seen to a quads, adding a graph node of {@link Quad#tripleInQuad} */
     public static StreamRDF extendTriplesToQuads(StreamRDF base)
     { return extendTriplesToQuads(Quad.tripleInQuad, base) ; }
-    
+
     /** Convert any triples seen to a quads, adding the specified graph node */
     public static StreamRDF extendTriplesToQuads(Node graphNode, StreamRDF base)
     { return new ParserOutputSinkTriplesToQuads(graphNode, base) ; }
-    
+
     public static StreamRDFCounting count()
     { return new StreamRDFCountingBase(sinkNull()) ; }
 
@@ -135,7 +135,7 @@ public class StreamRDFLib
         private final Node gn ;
         ParserOutputSinkTriplesToQuads(Node gn, StreamRDF base)
         { super(base) ; this.gn = gn ; }
-        
+
         @Override public void triple(Triple triple)
         { other.quad(new Quad(gn, triple)) ; }
     }
@@ -155,7 +155,7 @@ public class StreamRDFLib
         public void finish()
         { sink.flush() ; }
     }
-    
+
     private static class ParserOutputSinkQuads extends StreamRDFBase
     {
         private final Sink<Quad> sink ;
@@ -171,13 +171,13 @@ public class StreamRDFLib
         public void finish()
         { sink.flush() ; }
     }
-    
+
     private static class ParserOutputGraph extends StreamRDFBase
     {
         protected final Graph graph ;
         protected boolean warningIssued = false ;
         public ParserOutputGraph(Graph graph) { this.graph = graph ; }
-        
+
         @Override public void triple(Triple triple)     { graph.add(triple) ; }
         @Override public void quad(Quad quad)
         {
@@ -195,7 +195,7 @@ public class StreamRDFLib
             }
             //throw new IllegalStateException("Quad passed to graph parsing") ;
         }
-        
+
         @Override public void base(String base)
         { }
 
@@ -203,7 +203,7 @@ public class StreamRDFLib
         {
             try { // Jena applies XML rules to prerfixes.
                 graph.getPrefixMapping().setNsPrefix(prefix, uri) ;
-            } catch (JenaException ex) {} 
+            } catch (JenaException ex) {}
         }
     }
 
@@ -211,34 +211,34 @@ public class StreamRDFLib
     {
         protected final DatasetGraph dsg ;
         protected final PrefixMapping prefixMapping ;
-        
+
         public ParserOutputDataset(DatasetGraph dsg)
-        { 
+        {
             this.dsg = dsg ;
             this.prefixMapping = dsg.getDefaultGraph().getPrefixMapping() ;
             // = dsg.getPrefixMapping().setNsPrefix(prefix, uri) ;
         }
-        
-        @Override public void triple(Triple triple) 
+
+        @Override public void triple(Triple triple)
         {
             dsg.add(Quad.defaultGraphNodeGenerated, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
             //throw new IllegalStateException("Triple passed to dataset parsing") ;
         }
-        
-        @Override public void quad(Quad quad) 
-        { 
+
+        @Override public void quad(Quad quad)
+        {
             if ( quad.isTriple() )
                 dsg.add(Quad.defaultGraphNodeGenerated, quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
             else
                 dsg.add(quad) ;
         }
-        
+
         @Override public void base(String base)
         { }
 
         @Override public void prefix(String prefix, String uri)
         {
-            try { // Jena applies XML rules to prerfixes.  
+            try { // Jena applies XML rules to prerfixes.
                 prefixMapping.setNsPrefix(prefix, uri) ;
             } catch (JenaException ex) {}
         }

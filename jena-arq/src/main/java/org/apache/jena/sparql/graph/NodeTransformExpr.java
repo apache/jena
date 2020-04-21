@@ -28,9 +28,9 @@ import org.apache.jena.sparql.expr.*;
  * to {@link NodeValue} and {@link ExprVar} inside expressions.
  * <p>
  * This does not transform triple patterns in {@link ExprFunctionOp}
- * which is done as part of {@link ApplyTransformVisitor}. 
- * 
- * @see NodeTransformOp  
+ * which is done as part of {@link ApplyTransformVisitor}.
+ *
+ * @see NodeTransformOp
  */
 public class NodeTransformExpr extends ExprTransformCopy {
     private final NodeTransform transform ;
@@ -38,7 +38,7 @@ public class NodeTransformExpr extends ExprTransformCopy {
     {
         this.transform = transform ;
     }
-    
+
     @Override
     public Expr transform(NodeValue nv) {
         return transform(nv.asNode());
@@ -48,14 +48,14 @@ public class NodeTransformExpr extends ExprTransformCopy {
     public Expr transform(ExprVar exprVar) {
         return transform(exprVar.getAsNode());
     }
-    
+
     /** Transform node then create a {@link ExprVar} or {@link NodeValue}. */
     private Expr transform(Node input) {
         Node n = transform.apply(input);
         if ( n == null )
             throw new InternalErrorException("NodeTransform creates a null");
-        if ( ! Var.isVar(n) ) 
-            return NodeValue.makeNode(n);    
+        if ( ! Var.isVar(n) )
+            return NodeValue.makeNode(n);
         String name = Var.alloc(n).getVarName();
         return new ExprVar(n.getName());
     }

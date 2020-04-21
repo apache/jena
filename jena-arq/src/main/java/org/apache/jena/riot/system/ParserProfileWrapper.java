@@ -106,7 +106,7 @@ public class ParserProfileWrapper implements ParserProfile
     public Node createTripleNode(Triple triple, long line, long col) {
         return get().createTripleNode(triple, line, col);
     }
-    
+
     @Override
     public Node createGraphNode(Graph graph, long line, long col) {
         return get().createGraphNode(graph, line, col);

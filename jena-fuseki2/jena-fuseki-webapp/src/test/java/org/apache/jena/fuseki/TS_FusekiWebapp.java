@@ -51,7 +51,7 @@ public class TS_FusekiWebapp extends ServerTest
 {
     public static final String FusekiTestHome = "target/FusekiHome";
     public static final String FusekiTestBase = FusekiTestHome+"/run";
-    
+
     @BeforeClass public static void setupForFusekiServer() {
         FileOps.ensureDir(FusekiTestHome);
         FileOps.clearAll(FusekiTestHome);

@@ -25,7 +25,7 @@ public class Alarm {
     public final Runnable task ;
     public final ScheduledFuture<?> future ;
     /*package*/ final AlarmClock alarmClock;
-    
+
     Alarm(AlarmClock alarmClock, Runnable task, ScheduledFuture<? > future) {
         super();
         this.alarmClock = alarmClock ;

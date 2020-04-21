@@ -85,7 +85,7 @@ public class ResultsStAX implements ResultSet, Closeable {
         ResultsStAX rss = new ResultsStAX(xReader, model, context) ;
         return rss.read();
     }
-    
+
     // ResultSet variables
     private QuerySolution   current          = null;
     private XMLStreamReader parser           = null;
@@ -107,9 +107,9 @@ public class ResultsStAX implements ResultSet, Closeable {
     private boolean         askResult        = false;
 
     private ResultsStAX(XMLStreamReader reader, Model model, Context context) {
-        
-        
-        
+
+
+
         parser = reader ;
         this.model = model ;
         boolean inputGraphBNodeLabels = (context != null) && context.isTrue(ARQ.inputGraphBNodeLabels);
@@ -125,7 +125,7 @@ public class ResultsStAX implements ResultSet, Closeable {
         else
             return new SPARQLResult(askResult);
     }
-    
+
     private void init() {
         try {
             // Because all the tags are different, we could use one big
@@ -351,9 +351,9 @@ public class ResultsStAX implements ResultSet, Closeable {
         return ;
     }
 
-    
+
     static final String XML_NS = ARQConstants.XML_NS ;
-    
+
     private Binding getOneSolution() throws XMLStreamException {
         if ( finished )
             return null ;
@@ -441,7 +441,7 @@ public class ResultsStAX implements ResultSet, Closeable {
         staxError("getOneSolution: Hit end unexpectedly") ;
         return null ;
     }
-    
+
     static protected void addBinding(BindingMap binding, Var var, Node value) {
         Node n = binding.get(var);
         if ( n != null ) {

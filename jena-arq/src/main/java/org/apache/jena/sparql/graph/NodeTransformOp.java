@@ -39,8 +39,8 @@ import org.apache.jena.sparql.path.Path ;
  * to graph patterns.
  * <p>
  * This does not transform expressions. That is done by {@link NodeTransformExpr}.
- * 
- * @see NodeTransformExpr  
+ *
+ * @see NodeTransformExpr
  */
 class NodeTransformOp extends TransformCopy
 {
@@ -51,7 +51,7 @@ class NodeTransformOp extends TransformCopy
     //   Extend, Assign
     //   Table
     //   Project
-    
+
     private final NodeTransform transform ;
     NodeTransformOp(NodeTransform transform)
     {

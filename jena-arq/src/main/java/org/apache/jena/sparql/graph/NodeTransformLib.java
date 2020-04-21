@@ -47,7 +47,7 @@ public class NodeTransformLib
         ExprTransform exprTransform = new NodeTransformExpr(nodeTransform) ;
         return Transformer.transform(opTransform, exprTransform, op);
     }
-    
+
     /** Do a node{@literal ->}node conversion of a BGP - return original BGP for "no change" */
     public static BasicPattern transform(NodeTransform nodeTransform, BasicPattern pattern) {
         BasicPattern bgp2 = new BasicPattern() ;
@@ -86,14 +86,14 @@ public class NodeTransformLib
         Node s = triple.getSubject() ;
         Node p = triple.getPredicate() ;
         Node o = triple.getObject() ;
-        
+
         Node s1 = nodeTransform.apply(s) ;
         if ( s1 != s ) { change = true ; s = s1 ; }
         Node p1 = nodeTransform.apply(p) ;
         if ( p1 != p ) { change = true ; p = p1 ; }
         Node o1 = nodeTransform.apply(o) ;
         if ( o1 != o ) { change = true ; o = o1 ; }
-    
+
         if ( ! change )
             return triple ;
         return new Triple(s,p,o) ;
@@ -106,7 +106,7 @@ public class NodeTransformLib
         Node p = quad.getPredicate() ;
         Node o = quad.getObject() ;
         Node g = quad.getGraph() ;
-        
+
         Node g1 = nodeTransform.apply(g) ;
         if ( g1 != g ) { change = true ; g = g1 ; }
         Node s1 = nodeTransform.apply(s) ;
@@ -115,25 +115,25 @@ public class NodeTransformLib
         if ( p1 != p ) { change = true ; p = p1 ; }
         Node o1 = nodeTransform.apply(o) ;
         if ( o1 != o ) { change = true ; o = o1 ; }
-    
+
         if ( ! change )
             return quad ;
         return new Quad(g,s,p,o) ;
     }
-    
+
     public static Table transform(Table table, NodeTransform transform) {
-        // Non-streaming rewrite 
+        // Non-streaming rewrite
         List<Var> vars = transformVars(transform, table.getVars()) ;
-        Iterator<Binding> iter = table.rows() ; 
+        Iterator<Binding> iter = table.rows() ;
         List<Binding> newRows = new ArrayList<>() ;
-        for ( ; iter.hasNext() ; ) { 
+        for ( ; iter.hasNext() ; ) {
             Binding b = iter.next() ;
             Binding b2 = transform(b, transform) ;
             newRows.add(b2) ;
         }
         return new TableData(vars, newRows) ;
     }
-    
+
     public static Binding transform(Binding b, NodeTransform transform) {
         BindingMap b2 = BindingFactory.create() ;
         List<Var> vars = Iter.toList(b.vars()) ;
@@ -149,7 +149,7 @@ public class NodeTransformLib
     /** Do a node{@literal ->}node conversion of a List&lt;Quad&gt; - return original List&lt;Quad&gt; for "no change" */
     public static List<Quad> transformQuads(NodeTransform nodeTransform, List<Quad> quads) {
         List<Quad> x = new ArrayList<>() ;
-        boolean changed = false ; 
+        boolean changed = false ;
         for ( Quad q : quads )
         {
             Quad q2 = NodeTransformLib.transform(nodeTransform, q) ;
@@ -161,7 +161,7 @@ public class NodeTransformLib
             return quads ;
         return x ;
     }
-    
+
     /** Apply the NodeTransform to the variables of a VarExprList. */
     public static VarExprList transformVars(NodeTransform transform, VarExprList varExprList) {
         VarExprList varExprList2 = new VarExprList() ;
@@ -175,7 +175,7 @@ public class NodeTransformLib
             varExprList2.add(v2, expr) ;
         }
         if ( ! changed )
-            return varExprList ; 
+            return varExprList ;
         return varExprList2 ;
     }
 
@@ -189,7 +189,7 @@ public class NodeTransformLib
                 changed = true ;
         }
         if ( ! changed )
-            return varList ; 
+            return varList ;
         return varList2 ;
     }
 

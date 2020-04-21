@@ -28,14 +28,14 @@ import org.apache.jena.riot.thrift.TRDF;
 import org.apache.jena.riot.thrift.wire.RDF_Term;
 import org.apache.thrift.protocol.TProtocol;
 
-/** Serialization of a {@link Triple} using Thrift for the serialization. */  
+/** Serialization of a {@link Triple} using Thrift for the serialization. */
 public final class STriple implements Serializable {
     private static final long serialVersionUID = 0xa08f3324dc69187dL;
     private transient Triple triple;
 
     public STriple(Triple triple)   { this.triple = triple; }
     public Triple getTriple()       { return triple; }
-    
+
     private void writeObject(java.io.ObjectOutputStream out) throws IOException {
         TProtocol protocol = TRDF.protocol(out);
         RDF_Term tterm  = new RDF_Term();
@@ -48,12 +48,12 @@ public final class STriple implements Serializable {
     private void readObject(java.io.ObjectInputStream in) throws IOException {
         TProtocol protocol = TRDF.protocol(in);
         RDF_Term tterm  = new RDF_Term();
-        Node s = SerializerRDF.read(protocol, tterm); 
+        Node s = SerializerRDF.read(protocol, tterm);
         Node p = SerializerRDF.read(protocol, tterm);
         Node o = SerializerRDF.read(protocol, tterm);
         triple = Triple.create(s, p, o);
     }
-    
+
     Object readResolve() throws ObjectStreamException
     { return triple; }
 }

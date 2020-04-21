@@ -30,7 +30,7 @@ import org.apache.jena.shacl.vocabulary.SHACL;
 
 /** sh:node */
 public class ShNode extends ConstraintOp1 {
-    
+
     public ShNode(Shape other) {
         super(other);
     }

@@ -35,7 +35,7 @@ public class TurtleJavaccReaderRIOT implements ReaderRIOT {
     // Must be a different content type.
     // Must be a different file extension.
     public static Lang lang = LangBuilder.create("TurtleJavaCC", "text/turtle-jcc").addFileExtensions("ttljcc").build();
-    
+
     public static void register() {
         // This just registers the name, not the parser.
         RDFLanguages.register(lang);
@@ -50,7 +50,7 @@ public class TurtleJavaccReaderRIOT implements ReaderRIOT {
     private final ParserProfile profile;
 
     private static ReaderRIOTFactory factory = (Lang language, ParserProfile profile) -> new TurtleJavaccReaderRIOT(profile) ;
-    
+
     public TurtleJavaccReaderRIOT(ParserProfile profile) { this.profile = profile; }
 
     @Override
@@ -98,5 +98,4 @@ public class TurtleJavaccReaderRIOT implements ReaderRIOT {
             throw new RiotParseException(ex.getMessage(), -1 , -1);
         }
     }
-
 }

@@ -25,7 +25,7 @@ import org.apache.jena.sparql.core.Var;
 
 /**
  * A before visitor for tracking variable usage
- * 
+ *
  */
 public class VariableUsagePusher extends VariableUsageVisitor {
 
@@ -54,6 +54,4 @@ public class VariableUsagePusher extends VariableUsageVisitor {
         this.tracker.push();
         super.visit(opProject);
     }
-
-    
 }

@@ -57,13 +57,13 @@ import org.apache.jena.vocabulary.RDF ;
 
 /**
  * Writer that prints out JSON-LD.
- * 
+ *
  * By default, the output is "compact" (in JSON-LD terminology), and the JSON is "pretty" (using line breaks).
  * One can choose another form using one of the dedicated RDFFormats (JSONLD_EXPAND_PRETTY, etc.).
- * 
+ *
  * For formats using a context (that is, which have an "@context" node), (compact and expand),
  * this automatically generates a default one.
- * 
+ *
  * One can pass a jsonld context using the (jena) Context mechanism, defining a (jena) Context
  * (sorry for this clash of "contexts"), (cf. last argument in
  * {@link WriterDatasetRIOT#write(OutputStream out, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context)})
@@ -73,17 +73,17 @@ import org.apache.jena.vocabulary.RDF ;
  * jenaCtx.set(JsonLDWriter.JSONLD_CONTEXT, contextAsJsonString);
  * </pre>
  * where contextAsJsonString is a JSON string containing the value of the "@context".
- * 
+ *
  * It is possible to change the content of the "@context" node in the output using the {@link #JSONLD_CONTEXT_SUBSTITUTION} Symbol.
- * 
+ *
  * For a frame output, one must pass a frame in the jenaContext using the {@link #JSONLD_FRAME} Symbol.
- * 
+ *
  * It is also possible to define the different options supported
- * by JSONLD-java using the {@link #JSONLD_OPTIONS} Symbol 
- * 
+ * by JSONLD-java using the {@link #JSONLD_OPTIONS} Symbol
+ *
  * The {@link org.apache.jena.riot.JsonLDWriteContext} is a convenience class that extends Context and
  * provides methods to set the values of these different Symbols that are used in controlling the writing of JSON-LD.
- * 
+ *
  * Note that this class also provides a static method to convert jena RDF data to the corresponding object in JsonLD API:
  * {@link #toJsonLDJavaAPI(org.apache.jena.riot.RDFFormat.JSONLDVariant, DatasetGraph, PrefixMap, String, Context)}
  */
@@ -94,7 +94,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         return Symbol.create(SYMBOLS_NS + localName);
     }
     /**
-     * Expected value: the value of the "@context" 
+     * Expected value: the value of the "@context"
      * (a JSON String, or the object expected by the JSONLD-java API) */
     public static final Symbol JSONLD_CONTEXT = createSymbol("JSONLD_CONTEXT");
     /**
@@ -104,17 +104,17 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
      * This is useful<ol><li>for the cases you want to have a URI as value of @context,
      * without having JSON-LD java to download it and</li><li>as a trick to
      * change the URIs in your result.</li></ol>
-     * 
+     *
      * Only for compact and flatten formats.
-     * 
+     *
      * Note that it is supposed to be a JSON String: to set the value of @context to a URI,
      * the String must be quoted.*/
-    public static final Symbol JSONLD_CONTEXT_SUBSTITUTION = createSymbol("JSONLD_CONTEXT_SUBSTITUTION");       
+    public static final Symbol JSONLD_CONTEXT_SUBSTITUTION = createSymbol("JSONLD_CONTEXT_SUBSTITUTION");
     /** value: a JSON String, or the frame object expected by JsonLdProcessor.frame */
     public static final Symbol JSONLD_FRAME = createSymbol("JSONLD_FRAME");
     /** value: the option object expected by JsonLdProcessor (instance of JsonLdOptions) */
     public static final Symbol JSONLD_OPTIONS = createSymbol("JSONLD_OPTIONS");
-    /** 
+    /**
      * if creating a (jsonld) context from dataset, should we include all the prefixes defined in graph's prefix mappings
      * value: a Boolean (default: true) */
     public static final Symbol JSONLD_ADD_ALL_PREFIXES_TO_CONTEXT = createSymbol("JSONLD_ADD_ALL_PREFIXES_TO_CONTEXT");
@@ -153,7 +153,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         }
         if (opts == null) {
             opts = defaultJsonLdOptions(baseURI);
-        } 
+        }
         return opts;
     }
 
@@ -165,7 +165,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         opts.useNamespaces = true ; // this is NOT jsonld-java's default
         // opts.setUseRdfType(true); // false -> use "@type"
         opts.setUseNativeTypes(true); // this is NOT jsonld-java's default
-        opts.setCompactArrays(true); // this is jsonld-java's default           
+        opts.setCompactArrays(true); // this is jsonld-java's default
         return opts;
     }
 
@@ -314,7 +314,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
 
                 if ( p.equals(RDF.type.asNode()) )
                     return ;
-                // JENA-1744 : split as a "Curie" (at the last / or #, regardless of th characters in a lcoal name). 
+                // JENA-1744 : split as a "Curie" (at the last / or #, regardless of th characters in a lcoal name).
                 // Curie : https://www.w3.org/TR/curie/
                 String x = SplitIRI.localname(p.getURI());
 
@@ -332,9 +332,9 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
                         // typed literal)
                         Map<String, Object> x2 = new LinkedHashMap<>() ;
                         x2.put("@id", p.getURI()) ;
-                        if (! isLangString(o) && ! isSimpleString(o) ) 
+                        if (! isLangString(o) && ! isSimpleString(o) )
                             // RDF 1.1 : Skip if rdf:langString or xsd:string.
-                            x2.put("@type", literalDatatypeURI) ; 
+                            x2.put("@type", literalDatatypeURI) ;
                         ctx.put(x, x2) ;
                     } else {
                         // add property as an untyped attribute (the object is
@@ -386,7 +386,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
                         if (pair != null) {
                             String prefix = pair.getLeft();
                             addOnePrefix(ctx, prefix, mapping.get(prefix).toString());
-                        }        
+                        }
                     }
                 } ;
                 g.find(ANY).forEachRemaining(x);
@@ -417,5 +417,4 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         // default
         return true;
     }
-
 }

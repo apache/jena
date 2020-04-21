@@ -32,7 +32,7 @@ public class PrefixMappingZero extends PrefixMappingSink {
     protected void remove(String prefix) {
         throw new UnsupportedOperationException("remove prefix");
     }
-    
+
     @Override
     public String toString() {
         return "pm:Zero";

@@ -34,7 +34,7 @@ public class AlarmClock {
         .namingPattern("alarm-clock-%d")
         //.uncaughtExceptionHandler(null)
         .build() ;
-    
+
     private ScheduledThreadPoolExecutor timer = new ScheduledThreadPoolExecutor(1, threadFactory) ;
 
     /* package */AlarmClock() {}

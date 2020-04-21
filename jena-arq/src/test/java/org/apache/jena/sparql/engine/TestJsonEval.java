@@ -31,37 +31,37 @@ public class TestJsonEval {
 
     @Test public void json_eval_01() {
         test("JSON { 'x' : ?x } WHERE { VALUES ?x { 'X' } }",
-             "[ { 'x' : 'X' } ]"); 
+             "[ { 'x' : 'X' } ]");
     }
 
     @Test public void json_eval_02() {
         test("JSON { 'x' : ?x } WHERE { VALUES ?x { 'X' 'Y' } }",
-             "[ { 'x' : 'X' } , {'x' : 'Y' }]"); 
+             "[ { 'x' : 'X' } , {'x' : 'Y' }]");
     }
 
     @Test public void json_eval_03() {
         test("JSON { 's' : 'FOO' } WHERE { }",
-             "[ { 's' : 'FOO' } ]"); 
+             "[ { 's' : 'FOO' } ]");
     }
 
     @Test public void json_eval_04() {
         test("JSON { 'F' : 'string' } WHERE { }",
-             "[ { 'F' : 'string' } ]"); 
+             "[ { 'F' : 'string' } ]");
     }
 
     @Test public void json_eval_05() {
         test("JSON { 'x' : 123 } WHERE { }",
-             "[ { 'x' : 123 }]"); 
+             "[ { 'x' : 123 }]");
     }
 
     @Test public void json_eval_06() {
         test("JSON { 'x' : 123.5 } WHERE { }",
-             "[ { 'x' : 123.5 }]"); 
+             "[ { 'x' : 123.5 }]");
     }
 
     @Test public void json_eval_07() {
         test("JSON { 'x' : -10 } WHERE { }",
-             "[ { 'x' : -10 }]"); 
+             "[ { 'x' : -10 }]");
     }
 
     private void test(String queryString, String jsonExpected) {

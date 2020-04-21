@@ -21,24 +21,24 @@ package org.apache.jena.rdfconnection;
 /** package-wide utilities etc */
 /*package*/ class LibRDFConn {
     private static String dftName =  "default" ;
-    
+
     /*package*/ static boolean isDefault(String name) {
         return name == null || name.equals(dftName) ;
     }
-    
+
     private static String queryStringForGraph(String ch, String graphName) {
-        return 
-            ch + 
+        return
+            ch +
                 (LibRDFConn.isDefault(graphName)
                 ? "default"
                 : "graph="+graphName) ;
     }
-    
+
     /*package*/ static String urlForGraph(String graphStoreProtocolService, String graphName) {
         // If query string
         String ch = "?";
         if ( graphStoreProtocolService.contains("?") )
-            // Already has a query string, append with "&"  
+            // Already has a query string, append with "&"
             ch = "&";
         return graphStoreProtocolService + queryStringForGraph(ch, graphName) ;
     }
@@ -51,7 +51,7 @@ package org.apache.jena.rdfconnection;
         if ( destination == null )
             return srvEndpoint;
 
-        // If the srvEndpoint looks like an absolute URL, use as given. 
+        // If the srvEndpoint looks like an absolute URL, use as given.
         if ( srvEndpoint.startsWith("http:/") || srvEndpoint.startsWith("https:/") )
             return srvEndpoint;
         String queryString = null;
@@ -66,7 +66,7 @@ package org.apache.jena.rdfconnection;
             dest = dest.substring(0, dest.length()-1);
         dest = dest+"/"+srvEndpoint;
         if ( queryString != null )
-           dest = dest+queryString; 
+           dest = dest+queryString;
         return dest;
     }
 }

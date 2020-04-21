@@ -32,22 +32,22 @@ public class Factory
     {
     private Factory()
         { super(); }
-    
+
     /**
         Answer a memory-based Graph.
     */
     public static Graph createDefaultGraph()
         { return Factory.createGraphMem( ); }
-              
+
     public static Graph createGraphMem()
         { return new GraphMem(); }
 
     public static Graph createGraphMemWithTransactionHandler( final TransactionHandler th )
         {
-        Graph g = new GraphMem() 
+        Graph g = new GraphMem()
             {
             @Override
-            public TransactionHandler getTransactionHandler() 
+            public TransactionHandler getTransactionHandler()
                 {  return th; }
             };
         return g;
@@ -60,8 +60,8 @@ public class Factory
             return NullIterator.instance() ;
         }
     } ;
- 
-    /** Immutable graph with no triples */ 
+
+    /** Immutable graph with no triples */
     public static Graph empty() { return emptyGraph ; }
 
     }

@@ -28,14 +28,14 @@ import org.apache.jena.riot.thrift.wire.RDF_Term;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.thrift.protocol.TProtocol;
 
-/** Serialization of a {@link Quad} using Thrift for the serialization. */  
+/** Serialization of a {@link Quad} using Thrift for the serialization. */
 public final class SQuad implements Serializable {
     private static final long serialVersionUID = 0x993530716d72ff06L;
     private transient Quad quad;
-    
+
     public SQuad(Quad quad)     { this.quad = quad; }
     public Quad getQuad()       { return quad; }
-    
+
     private void writeObject(java.io.ObjectOutputStream out) throws IOException {
         TProtocol protocol = TRDF.protocol(out);
         RDF_Term tterm  = new RDF_Term();
@@ -50,13 +50,12 @@ public final class SQuad implements Serializable {
         TProtocol protocol = TRDF.protocol(in);
         RDF_Term tterm  = new RDF_Term();
         Node g = SerializerRDF.read(protocol, tterm);
-        Node s = SerializerRDF.read(protocol, tterm); 
+        Node s = SerializerRDF.read(protocol, tterm);
         Node p = SerializerRDF.read(protocol, tterm);
         Node o = SerializerRDF.read(protocol, tterm);
         quad = Quad.create(g, s, p, o);
     }
-    
+
     Object readResolve() throws ObjectStreamException
     { return quad; }
-
 }

@@ -22,7 +22,7 @@ package org.apache.jena.atlas.lib.tuple;
  * A tuple of 4 items.
  */
 public class Tuple4<X> extends TupleBase<X> {
-    protected final X x1 ; 
+    protected final X x1 ;
     protected final X x2 ;
     protected final X x3 ;
     protected final X x4 ;

@@ -20,8 +20,8 @@ package org.apache.jena.sparql.expr.aggregate.lib;
 
 public class AggURI {
     // = stddev-samp except one element -> 0. ?????????????
-    public static final String stdev       = StandardAggregates.BASE + "stdev";     
-    public static final String stdev_samp  = StandardAggregates.BASE + "stdev_samp";  
+    public static final String stdev       = StandardAggregates.BASE + "stdev";
+    public static final String stdev_samp  = StandardAggregates.BASE + "stdev_samp";
     public static final String stdev_pop   = StandardAggregates.BASE + "stdev_pop";
     public static final String variance    = StandardAggregates.BASE + "variance";
     public static final String var_samp    = StandardAggregates.BASE + "var_samp";

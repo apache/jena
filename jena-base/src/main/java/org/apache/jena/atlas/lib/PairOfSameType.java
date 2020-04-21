@@ -38,7 +38,7 @@ public class PairOfSameType<T> extends Pair<T, T> {
     public boolean either(Function<T, Boolean> op) {
         return apply(Boolean::logicalOr, op);
     }
-    
+
     public <S, X> S apply(BiFunction<X, X, S> f, Function<T, X> op) {
         return f.apply(op.apply(a), op.apply(b));
     }

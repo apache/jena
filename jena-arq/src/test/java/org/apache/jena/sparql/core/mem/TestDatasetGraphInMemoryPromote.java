@@ -36,7 +36,7 @@ public class TestDatasetGraphInMemoryPromote extends AbstractTestTransPromote {
     private static String[] getLoggers() {
         return new String[]{ DatasetGraphInMemory.class.getName() };
     }
-    
+
     @Override
     protected Class<JenaTransactionException> getTransactionExceptionClass() {
         return JenaTransactionException.class ;

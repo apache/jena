@@ -22,26 +22,26 @@ import java.util.ArrayList ;
 import java.util.List ;
 import java.util.ServiceLoader ;
 
-/** Implementation of {@link JenaSubsystemRegistry} for use in the simple 
+/** Implementation of {@link JenaSubsystemRegistry} for use in the simple
  *  but common case of running Jena as a collection of jars
- *  on the classpath. 
+ *  on the classpath.
  *  <p>
- *  Uses {@link ServiceLoader} to find sub-systems. 
+ *  Uses {@link ServiceLoader} to find sub-systems.
  */
 public class JenaSubsystemRegistryBasic implements JenaSubsystemRegistry {
-    
+
     private List<JenaSubsystemLifecycle> registry = new ArrayList<>() ;
     private Object registryLock = new Object() ;
 
     public JenaSubsystemRegistryBasic() {
     }
-     
+
     @Override
     public void load() {
         synchronized (registryLock) {
-            // Find subsystems asking for initialization. 
-            ServiceLoader<JenaSubsystemLifecycle> sl = 
-                // Use this->classloader form : better for OSGi 
+            // Find subsystems asking for initialization.
+            ServiceLoader<JenaSubsystemLifecycle> sl =
+                // Use this->classloader form : better for OSGi
                 ServiceLoader.load(JenaSubsystemLifecycle.class, this.getClass().getClassLoader()) ;
             sl.forEach(this::add) ;
         }
@@ -82,7 +82,7 @@ public class JenaSubsystemRegistryBasic implements JenaSubsystemRegistry {
             return registry.isEmpty();
         }
     }
-    
+
     @Override
     public List<JenaSubsystemLifecycle> snapshot() {
         synchronized (registryLock) {
