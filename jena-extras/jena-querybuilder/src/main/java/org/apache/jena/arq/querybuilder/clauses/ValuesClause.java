@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
+import org.apache.jena.arq.querybuilder.Converters;
 import org.apache.jena.arq.querybuilder.handlers.ValuesHandler;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.Var;

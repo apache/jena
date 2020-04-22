@@ -306,7 +306,7 @@ public class UpdateBuilder {
 	 * 
 	 * Shorthand for AbstractQueryBuilder.quote( s )
 	 * 
-	 * @see #quoted(String)
+	 * @see Converters#quoted(String)
 	 * 
 	 * @deprecated Use quoted()
 	 * @param s
