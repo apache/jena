@@ -22,37 +22,43 @@ import junit.framework.JUnit4TestAdapter;
 import org.apache.jena.rdf.model.impl.Util ;
 import org.junit.Test;
 import static org.junit.Assert.*;
+
+/**
+ * Tests of splitting with RDF/XML rules, where the local name is more restricted
+ * (e.g. can not start with a digit because XML qnames can have a digit immediately
+ * after the ":").
+ *
+ * This in turn leads to unexpected namespace strings.
+ */
 public class TestSplitIRI_XML
 {
      public static junit.framework.Test suite() {
          return new JUnit4TestAdapter(TestSplitIRI_XML.class) ;
      }
-    
-    // Intermediate : JUnit 3 and JUnit 4.
-     
+
     @Test public void splitNS_01()
     { split("http://example/xyz", "http://example/", "xyz") ; }
-    
+
     @Test public void splitNS_02()
     { split("http://example/ns#xyz", "http://example/ns#", "xyz") ; }
-    
+
     @Test public void splitNS_03()
     { no_split("http://example/ns#") ; }
-    
+
     @Test public void splitNS_04()
     { no_split("http://example/") ; }
-    
+
     @Test public void splitNS_05()  // Illegal URI
     { split("http://example", "http://", "example") ; }
-    
+
     @Test public void splitNS_06()   // localname must be at least the NCStartChar - not empty
     { split("mailto:me", "mailto:m", "e") ; }
 
     @Test public void splitNS_07()
-    { split("urn:abc:xyz","urn:abc:", "xyz") ; } 
+    { split("urn:abc:xyz","urn:abc:", "xyz") ; }
 
     @Test public void splitNS_08()
-    { no_split("urn:abc:xyz:") ; } 
+    { no_split("urn:abc:xyz:") ; }
 
     @Test public void splitNS_09()
     { split("http://bio2rdf.org/pdb:Pentane-3%2C4-diol-5-phosphate", "http://bio2rdf.org/pdb:Pentane-3%2C4-", "diol-5-phosphate") ; }
@@ -60,54 +66,54 @@ public class TestSplitIRI_XML
     @Test public void splitNS_10()
     { split("http://bio2rdf.org/pdb:Pentane-3,4-diol-5-phosphate", "http://bio2rdf.org/pdb:Pentane-3,4-", "diol-5-phosphate") ; }
 
-    // Don't split inside a %encoding. 
+    // Don't split inside a %encoding.
     @Test public void splitNS_11()
-    { split("http://host/abc%AAdef", "http://host/abc%AA", "def") ; } 
+    { split("http://host/abc%AAdef", "http://host/abc%AA", "def") ; }
 
     @Test public void splitNS_12()
-    { split("http://host/abc%1Adef", "http://host/abc%1A", "def") ; } 
-    
+    { split("http://host/abc%1Adef", "http://host/abc%1A", "def") ; }
+
     @Test public void splitNS_13()
-    { split("http://host/abc%A1def", "http://host/abc%A1", "def") ; } 
-    
+    { split("http://host/abc%A1def", "http://host/abc%A1", "def") ; }
+
     @Test public void splitNS_14()
-    { split("http://host/abc%AA22def", "http://host/abc%AA22", "def") ; } 
+    { split("http://host/abc%AA22def", "http://host/abc%AA22", "def") ; }
 
     @Test public void splitNS_15()
-    { no_split("http://host/abc%AA22") ; } 
+    { no_split("http://host/abc%AA22") ; }
 
     // Other schemes
-    
+
     @Test public void splitNS_50()
-    { split("file:///x/y", "file:///x/", "y") ; } 
+    { split("file:///x/y", "file:///x/", "y") ; }
 
     @Test public void splitNS_51()
-    { split("file:///x", "file:///", "x") ; } 
+    { split("file:///x", "file:///", "x") ; }
 
     @Test public void splitNS_52()
-    { split("file:x", "file:", "x") ; } 
+    { split("file:x", "file:", "x") ; }
 
     @Test public void splitNS_53()
     // Not ideal but some URI schemes dislike a URI with just the scheme
-    { split("file:foo", "file:", "foo") ; } 
+    { split("file:foo", "file:", "foo") ; }
 
     @Test public void splitNS_54()
-    { split("file:c:/foo", "file:c:/", "foo") ; } 
-    
+    { split("file:c:/foo", "file:c:/", "foo") ; }
+
     // urn:uuid:d871c7f4-2926-11b2-8073-a5e169788449 - legal type 1 uuid as urn
     // uuid:3cf3e43a-3a5d-40d8-a93c-8697b162a1c0 - legal type 4 uuid as uri
-    
+
     @Test public void splitNS_55()
     { split("urn:uuid:d871c7f4-2926-11b2-8073-a5e169788449", "urn:uuid:", "d871c7f4-2926-11b2-8073-a5e169788449") ; }
 
     @Test public void splitNS_56()
     { split("uuid:3cf3e43a-3a5d-40d8-a93c-8697b162a1c0", "uuid:3", "cf3e43a-3a5d-40d8-a93c-8697b162a1c0") ; }
-    
+
     @Test public void splitNS_57()
     { split("urn:abc:def", "urn:abc:", "def") ; }
 
     // --------
-    
+
     static void  no_split(String string)
     { split(string, null, null) ; }
 
@@ -117,15 +123,15 @@ public class TestSplitIRI_XML
             fail("Bad test - namespace is null but local name is not") ;
         if ( namespace != null && localname == null )
             fail("Bad test - namespace is not null but local name is") ;
-        
+
         int idx = Util.splitNamespaceXML(uriStr) ;
-        if ( idx == uriStr.length() ) 
+        if ( idx == uriStr.length() )
         {
             // No split.
             if ( namespace != null )
                 fail("Expected a split ("+namespace+","+localname+") - but none found") ;
             return ;
-            
+
         }
         // Split
         String ns = uriStr.substring(0,idx) ;
@@ -133,6 +139,4 @@ public class TestSplitIRI_XML
         assertEquals(namespace, ns) ;
         assertEquals(localname, ln) ;
     }
-    
-    
 }
