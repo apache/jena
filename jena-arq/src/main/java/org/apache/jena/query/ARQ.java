@@ -214,7 +214,7 @@ public class ARQ
 
     /**
      * Indicate whether duplicate select and groupby variables are allowed.
-     * If false, duplicates are silently supressed; it's not an error.
+     * If false, duplicates are silently suppressed; it's not an error.
      */
     public static final boolean allowDuplicateSelectColumns = false ;
 

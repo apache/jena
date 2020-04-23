@@ -71,18 +71,15 @@ public class QueryTransformOps {
      */
     public static Query transform(Query query, ElementTransform transform, ExprTransform exprTransform) {
         Query q2 = QueryTransformOps.shallowCopy(query);
-
         // "Shallow copy with transform."
-        transformVarExprList(q2.getProject(), exprTransform);
-        transformVarExprList(q2.getGroupBy(), exprTransform);
-        transformExprList(q2.getHavingExprs(), exprTransform);
+        // Mutate the q2 structures which are already allocated and no other code can access yet. 
+        mutateVarExprList(q2.getProject(), exprTransform);
+        mutateVarExprList(q2.getGroupBy(), exprTransform);
+        mutateExprList(q2.getHavingExprs(), exprTransform);
         if (q2.getOrderBy() != null) {
-            transformSortConditions(q2.getOrderBy(), exprTransform);
+            mutateSortConditions(q2.getOrderBy(), exprTransform);
         }
-        // ?? DOES NOT WORK: transformExprListAgg(q2.getAggregators(), exprTransform) ; ??
-        // if ( q2.hasHaving() ) {}
-        // if ( q2.hasAggregators() ) {}
-
+        
         Element el = q2.getQueryPattern();
 
         // Explicit null check to prevent warning in ElementTransformer
@@ -107,7 +104,10 @@ public class QueryTransformOps {
             ElementData elData2 = (ElementData)rawElData2;
             q2.setValuesDataBlock(elData2.getVars(), elData2.getRows());
         }
-
+        if  ( query.isQueryResultStar() ) {
+            // Reset internal to only what now can be seen.
+            q2.resetResultVars();
+        }
         return q2;
     }
 
@@ -117,7 +117,7 @@ public class QueryTransformOps {
     }
 
     // ** Mutates the List
-    private static void transformExprList(List<Expr> exprList, ExprTransform exprTransform) {
+    private static void mutateExprList(List<Expr> exprList, ExprTransform exprTransform) {
         for (int i = 0; i < exprList.size(); i++) {
             Expr e1 = exprList.get(0);
             Expr e2 = ExprTransformer.transform(exprTransform, e1);
@@ -127,7 +127,7 @@ public class QueryTransformOps {
         }
     }
 
-    private static void transformSortConditions(List<SortCondition> conditions, ExprTransform exprTransform) {
+    private static void mutateSortConditions(List<SortCondition> conditions, ExprTransform exprTransform) {
         for (int i = 0; i < conditions.size(); i++) {
             SortCondition s1 = conditions.get(i);
             Expr e = ExprTransformer.transform(exprTransform, s1.expression);
@@ -136,35 +136,54 @@ public class QueryTransformOps {
             conditions.set(i, new SortCondition(e, s1.direction));
         }
     }
+    
+    private static void mutateVarExprList(VarExprList varExprList, ExprTransform exprTransform) {
+        VarExprList x = transformVarExprList(varExprList, exprTransform);
+        varExprList.clear();
+        varExprList.addAll(x);
+    }
 
-    // ** Mutates the VarExprList
-    private static void transformVarExprList(VarExprList varExprList, ExprTransform exprTransform) {
-        Map<Var, Expr> map = varExprList.getExprs();
+    private static VarExprList transformVarExprList(VarExprList varExprList, ExprTransform exprTransform) {
+        VarExprList varExprList2 = new VarExprList();
+        boolean changed = false;
 
         for (Var v : varExprList.getVars()) {
             Expr e = varExprList.getExpr(v);
+            // Transform variable.
             ExprVar ev = new ExprVar(v);
             Expr ev2 = exprTransform.transform(ev);
-            if (ev != ev2) {
-                if (e != null)
-                    throw new ARQException("Can't substitute " + v + " because it's used as an AS variable");
-                if (ev2.isConstant() || ev2.isVariable()) {
-                    // Convert to (substitute value AS ?var)
-                    map.put(v, ev2);
-                    continue;
-                } else
-                    throw new ARQException("Can't substitute " + v + " because it's not a simple value: " + ev2);
-            }
-            if (e == null)
-                continue;
+            if (ev != ev2)
+                changed = true;
 
-            // Didn't change the variable.
+            if ( e == null ) {
+                // Variable only.
+                if ( ev2.isConstant() ) {
+                    // Skip or old var, assign so it become (?old AS substitute)
+                    // Skip .
+                    // Require transform to add back substitutions "for the record";
+                    varExprList2.remove(v);
+                    varExprList2.add(v, ev2);
+                }
+                else if ( ev2.isVariable() ) {
+                    varExprList2.add(ev2.asVar());
+                } else {
+                    throw new ARQException("Can't substitute " + v + " because it's not a simple value: " + ev2);
+                }
+                continue;
+            }
+
+            // There was an expression.
             Expr e2 = ExprTransformer.transform(exprTransform, e);
-            if (e != e2)
-                // replace
-                map.put(v, e2);
+            if ( e2 != e )
+                changed = true;
+            if ( ! ev2.isVariable() )
+                throw new ARQException("Can't substitute ("+v+", "+e+") as ("+ev2+", "+e2+")");
+            varExprList2.add(ev.asVar(), e2);
+
         }
+        return varExprList2;
     }
+
 
     static class QueryShallowCopy implements QueryVisitor {
         final Query newQuery = new Query();

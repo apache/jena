@@ -556,7 +556,7 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 
 		handlerBlock.build();
 
-		q.setResultVars();
+		q.resetResultVars();
 		return q;
 	}
 
@@ -591,7 +591,7 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 		final HandlerBlock hb = new HandlerBlock( retval );
 		final HandlerBlock hb2 = new HandlerBlock( q2 );
 		hb.addAll(hb2);
-		q2.setResultVars();
+		q2.resetResultVars();
 		return retval;
 	}
 
