@@ -23,7 +23,6 @@ import junit.framework.TestSuite;
 import org.apache.jena.atlas.legacy.BaseTest2;
 import org.apache.jena.atlas.legacy.TC_Atlas_ARQ;
 import org.apache.jena.common.TC_Common;
-import org.apache.jena.rdf_star.TS_RDF_Star;
 import org.apache.jena.riot.TC_Riot;
 import org.apache.jena.sparql.engine.main.QueryEngineMain;
 import org.apache.jena.sparql.engine.ref.QueryEngineRef;
@@ -69,7 +68,6 @@ public class ARQTestSuite extends TestSuite {
         ts.addTest(TC_Scripted.suite());
         ts.addTest(TC_DAWG.suite());
         // ts.addTest(TC_SPARQL11.suite()) ;
-        ts.addTest(new JUnit4TestAdapter(TS_RDF_Star.class));
 
         // Fiddle around with the config if necessary
         if ( false ) {
