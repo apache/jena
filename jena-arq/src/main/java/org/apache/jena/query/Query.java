@@ -674,38 +674,40 @@ public class Query extends Prologue implements Cloneable, Printable
     {
         if ( resultVarsSet )
             return ;
-        resultVarsSet = true ;
-
-        if ( getQueryPattern() == null )
-        {
-            if ( ! this.isDescribeType() )
-                Log.warn(this, "setResultVars(): no query pattern") ;
-            return ;
-        }
-
-        if ( isSelectType() )
-        {
-            if ( isQueryResultStar() )
+        synchronized(this) {
+            // Synchronized in case this built programmatically and not finished by
+            // calling setResultVars().
+            if ( getQueryPattern() == null )
+            {
+                if ( ! this.isDescribeType() )
+                    Log.warn(this, "setResultVars(): no query pattern") ;
+                return ;
+            }
+    
+            if ( isSelectType() )
+            {
+                if ( isQueryResultStar() )
+                    findAndAddNamedVars() ;
+                return ;
+            }
+    
+            if ( isConstructType() )
+            {
+                // All named variables are in-scope
                 findAndAddNamedVars() ;
-            return ;
+                return ;
+            }
+    
+            if ( isDescribeType() )
+            {
+                if ( isQueryResultStar() )
+                    findAndAddNamedVars() ;
+                return ;
+            }
+//            if ( isAskType() )
+//            {}
+            resultVarsSet = true ;
         }
-
-        if ( isConstructType() )
-        {
-            // All named variables are in-scope
-            findAndAddNamedVars() ;
-            return ;
-        }
-
-        if ( isDescribeType() )
-        {
-            if ( isQueryResultStar() )
-                findAndAddNamedVars() ;
-            return ;
-        }
-
-//        if ( isAskType() )
-//        {}
     }
 
     private void findAndAddNamedVars()

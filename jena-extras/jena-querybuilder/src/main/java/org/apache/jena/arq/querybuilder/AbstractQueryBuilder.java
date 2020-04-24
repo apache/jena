@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -47,7 +47,7 @@ import org.apache.jena.sparql.util.ExprUtils;
 
 /**
  * Base class for all QueryBuilders.
- * 
+ *
  * @param <T>
  *            The derived class type. Used for return types.
  */
@@ -73,9 +73,9 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 	 * <li>Will create a literal representation if the parseNode() fails or for
 	 * any other object type.</li>
 	 * </ul>
-	 * 
+	 *
 	 * Uses the internal query prefix mapping to resolve prefixes.
-	 * 
+	 *
 	 * @param o
 	 *            The object to convert. (may be null)
 	 * @return The Node value.
@@ -88,7 +88,7 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 	 * Make a node or path from the object using the query prefix mapping.
 	 * @param o the object to make the node or path from.
 	 * @return A node or path.
-	 * @see #Converters#makeNodeOrPath(Object, PrefixMapping)
+	 * @see Converters#makeNodeOrPath(Object, PrefixMapping)
 	 */
 	private Object makeNodeOrPath(Object o)
 	{
@@ -110,7 +110,7 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 	 * </ul>
 	 * @param o the object that should be interpreted as a path or a node.
 	 * @param pMapping the prefix mapping to resolve path or node with
-	 * @return the Path or Node 
+	 * @return the Path or Node
 	 * @deprecated use {@link Converters#makeNodeOrPath(Object, PrefixMapping)}
 	 */
 	@Deprecated
@@ -125,7 +125,7 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 
 	/**
 	 * Make a triple path from the objects.
-	 * 
+	 *
 	 * For subject, predicate and objects nodes
 	 * <ul>
 	 * <li>Will return Node.ANY if object is null.</li>
@@ -134,13 +134,13 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 	 * <li>If the object is a String
 	 * 	<ul>
 	 * <li>For <code>predicate</code> only will attempt to parse as a path</li>
-	 * <li>for subject, predicate and object will call NodeFactoryExtra.parseNode() 
+	 * <li>for subject, predicate and object will call NodeFactoryExtra.parseNode()
 	 * using the currently defined prefixes if the object is a String</li>
 	 * </ul></li>
 	 * <li>Will create a literal representation if the parseNode() fails or for
 	 * any other object type.</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param s The subject object
 	 * @param p the predicate object
 	 * @param o the object object.
@@ -160,9 +160,9 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 
 
 	/**
-	 * A convenience method to make an expression from a string.  Evaluates the 
+	 * A convenience method to make an expression from a string.  Evaluates the
 	 * expression with respect to the current query.
-	 * 
+	 *
 	 * @param expression The expression to parse.
 	 * @return the Expr object.
 	 * @throws QueryParseException on error.
@@ -175,13 +175,13 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 	/**
 	 * A convenience method to quote a string.
 	 * @param q the string to quote.
-	 * 
-	 * Will use single quotes if there are no single quotes in the string or if the 
+	 *
+	 * Will use single quotes if there are no single quotes in the string or if the
 	 * double quote is before the single quote in the string.
-	 * 
+	 *
 	 * Will use double quote otherwise.
-	 * 
-	 * @return the quoted string. 
+	 *
+	 * @return the quoted string.
 	 * @deprecated {@link Converters#quoted(String)}
 	 */
 	@Deprecated
@@ -238,7 +238,7 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 	 * <li>For all other objects will return the "?" prefixed to the toString()
 	 * value.</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param o
 	 *            The object to convert.
 	 * @return the Var value.
@@ -281,9 +281,9 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 	public final WhereHandler getWhereHandler() {
 		return getHandlerBlock().getWhereHandler();
 	}
-	
+
 	/**
-	 * Adds the contents of the whereClause to the where clause of this 
+	 * Adds the contents of the whereClause to the where clause of this
 	 * builder.
 	 * @param whereClause the where clause to add.
 	 * @return this builder for chaining.
@@ -293,17 +293,17 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 		getWhereHandler().addAll( whereClause.getWhereHandler());
 		return (T) this;
 	}
-	
+
 	@Override
 	public final ExprFactory getExprFactory() {
 		return getHandlerBlock().getPrologHandler().getExprFactory();
 	}
-	
+
 	/**
 	 * Set a variable replacement. During build all instances of var in the
 	 * query will be replaced with value. If value is null the replacement is
 	 * cleared.
-	 * 
+	 *
 	 * @param var
 	 *            The variable to replace
 	 * @param value
@@ -322,10 +322,10 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 	 * Set a variable replacement. During build all instances of var in the
 	 * query will be replaced with value. If value is null the replacement is
 	 * cleared.
-	 * 
+	 *
 	 * See {@link #makeVar} for conversion of the var param. See
 	 * {@link #makeNode} for conversion of the value param.
-	 * 
+	 *
 	 * @param var
 	 *            The variable to replace.
 	 * @param value
@@ -363,7 +363,7 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 		getPrologHandler().addPrefixes(prefixes);
 		return (T) this;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public T addPrefixes(PrefixMapping prefixMapping) {
@@ -503,7 +503,7 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 
 	/**
 	 * Build the query as a string.
-	 * 
+	 *
 	 * @return the string representation of the query.
 	 */
 	public final String buildString() {
@@ -513,7 +513,7 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 	/**
 	 * Build the query. Performs the var replacements as specified by
 	 * setVar(var,node) calls.
-	 * 
+	 *
 	 * @return The query.
 	 */
 	public final Query build() {
@@ -538,7 +538,7 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 				// do nothing
 				break;
 			default:
-				throw new IllegalStateException( "Internal query is not a known type: "+q.queryType());			
+				throw new IllegalStateException( "Internal query is not a known type: "+q.queryType());
 		}
 
 		// use the HandlerBlock implementation to copy the data.
@@ -556,15 +556,16 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 
 		handlerBlock.build();
 
+		q.setResultVars();
 		return q;
 	}
 
 	/**
 	 * Close the query.
-	 * 
+	 *
 	 * This can be used when the query would not normally parse as is required
 	 * by the Query.clone() method.
-	 * 
+	 *
 	 * @param q2
 	 *            The query to clone
 	 * @return A clone of the q2 param.
@@ -581,7 +582,7 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 		} else if (q2.isDescribeType())
 		{
 			retval.setQueryDescribeType();
-		} else if (q2.isConstructType()) 
+		} else if (q2.isConstructType())
 		{
 			retval.setQueryConstructType();
 		}
@@ -590,13 +591,13 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 		final HandlerBlock hb = new HandlerBlock( retval );
 		final HandlerBlock hb2 = new HandlerBlock( q2 );
 		hb.addAll(hb2);
-
+		q2.setResultVars();
 		return retval;
 	}
 
 	/**
 	 * Rewrite a query replacing variables as specified in the values map.
-	 * 
+	 *
 	 * @param q2
 	 *            The query to rewrite
 	 * @param values
