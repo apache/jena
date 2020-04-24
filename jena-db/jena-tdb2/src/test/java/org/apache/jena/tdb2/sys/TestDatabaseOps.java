@@ -125,6 +125,23 @@ public class TestDatabaseOps
     }
 
     @Test public void compact_prefixes_3() {
+        // This test fails sometimes with an NPE at the marked line when run with Java14 on ASF Jenkins.
+        // It does not failure anywhere else.
+        // It does not always fail
+        // There isn't a pointer deference to NPE!
+        //java.lang.NullPointerException
+        //        at org.apache.jena.tdb2.sys.TestDatabaseOps.compact_prefixes_3(TestDatabaseOps.java:142)
+        // No more stack
+        // Attempt to find out what is going on:
+        try { 
+            compact_prefixes_3_test();
+        } catch (Throwable th) {
+            th.printStackTrace();
+            throw th;
+        }
+    }
+    
+    private void compact_prefixes_3_test() {
         // prefixes across compaction.
         DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(dir);
         Graph g = dsg.getDefaultGraph();
@@ -139,7 +156,7 @@ public class TestDatabaseOps
         DatasetGraph dsg1 = dsgs.get();
         Location loc1 = ((DatasetGraphTDB)dsg1).getLocation();
 
-        DatabaseMgr.compact(dsgs);
+        DatabaseMgr.compact(dsgs); // HERE : Line 142 before investigation code added.
 
         Graph g2 = dsgs.getDefaultGraph();
 
@@ -147,8 +164,6 @@ public class TestDatabaseOps
             assertEquals("ex", g2.getPrefixMapping().getNsURIPrefix("http://example/"));
             assertEquals("http://example/", g2.getPrefixMapping().getNsPrefixURI("ex"));
         });
-
-
 
         // Check is not attached to the old graph.
         DatasetGraph dsgOld = StoreConnection.connectCreate(loc1).getDatasetGraph();
