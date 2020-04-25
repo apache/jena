@@ -43,6 +43,7 @@ import org.apache.jena.tdb2.loader.LoaderFactory;
 import org.apache.jena.tdb2.loader.base.LoaderOps;
 import org.apache.jena.tdb2.loader.base.MonitorOutput;
 import org.apache.jena.tdb2.loader.main.LoaderPlans;
+import org.apache.jena.util.FileUtils;
 import tdb2.cmdline.CmdTDB;
 import tdb2.cmdline.CmdTDBGraph;
 
@@ -154,12 +155,14 @@ public class tdbloader extends CmdTDBGraph {
         List<String> problemFiles = 
             ListUtils.toList(
                 urls.stream()
+                .filter(u->FileUtils.isFile(u))  // Local files.
                 .map(Paths::get)
                 .filter(p-> !Files.exists(p) || !Files.isRegularFile(p /*follow links*/) || !Files.isReadable(p) )
                 .map(Path::toString)
                 );
         if ( ! problemFiles.isEmpty() ) {
-            throw new CmdException("Can't read files : ["+problemFiles+"]"); 
+            String str = String.join(", ", problemFiles);
+            throw new CmdException("Can't read files : "+str); 
         }
     }
 

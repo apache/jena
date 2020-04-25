@@ -32,6 +32,7 @@ import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBLoader ;
 import org.apache.jena.tdb.store.GraphTDB;
+import org.apache.jena.util.FileUtils;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.CmdTDBGraph ;
 
@@ -127,12 +128,15 @@ public class tdbloader extends CmdTDBGraph {
         List<String> problemFiles = 
             ListUtils.toList(
                 urls.stream()
+                .filter(u->FileUtils.isFile(u))
+                // Only check local files.
                 .map(Paths::get)
                 .filter(p-> !Files.exists(p) || !Files.isRegularFile(p /*follow links*/) || !Files.isReadable(p) )
                 .map(Path::toString)
                 );
         if ( ! problemFiles.isEmpty() ) {
-            throw new CmdException("Can't read files : ["+problemFiles+"]"); 
+            String str = String.join(", ", problemFiles);
+            throw new CmdException("Can't read files : "+str); 
         }
     }
     
