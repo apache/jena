@@ -31,9 +31,10 @@ public abstract class SPARQLParser
 {
     public final Query parse(Query query, String queryString) throws QueryParseException
     {
-        Query q = parse$(query, queryString) ;
-        validateParsedQuery(q) ;
-        return q ;
+        Query parsedQuery = parse$(query, queryString) ;
+        validateParsedQuery(parsedQuery) ;
+        parsedQuery.resetResultVars();
+        return parsedQuery ;
     }
     
     protected abstract Query parse$(Query query, String queryString) throws QueryParseException ;

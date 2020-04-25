@@ -218,7 +218,7 @@ public class OpAsQuery {
                 Op op = processExtend(queryOp, assignments) ;
                 processQueryPattern(op, assignments) ;
                 query.setQueryResultStar(true) ;
-                query.setResultVars();
+                query.resetResultVars();
                 return query ;
             }
 
@@ -307,7 +307,7 @@ public class OpAsQuery {
                 query.setOffset(level.opSlice.getStart()) ;
                 query.setLimit(level.opSlice.getLength()) ;
             }
-            query.setResultVars() ;
+            query.resetResultVars() ;
             return query ;
         }
 

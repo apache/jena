@@ -482,13 +482,12 @@ public class Query extends Prologue implements Cloneable, Printable
         {
             Expr expr = varExprList.getExpr(v) ;
             if ( expr != null )
-
                 // SELECT (?a+?b AS ?x) ?x
                 throw new QueryBuildException("Duplicate variable (had an expression) in result projection '"+v+"'") ;
             // SELECT ?x ?x
             if ( ! ARQ.allowDuplicateSelectColumns )
                 return ;
-            // else drop thorugh and have two variables of the same name.
+            // else drop through and have two variables of the same name.
         }
         varExprList.add(v) ;
     }
@@ -667,47 +666,62 @@ public class Query extends Prologue implements Cloneable, Printable
     public List<Node> getResultURIs() { return resultNodes ; }
 
     private boolean resultVarsSet = false ;
-    /** Fix up when the query has "*" (when SELECT * or DESCRIBE *)
-     *  and for a construct query.  This operation is idempotent.
+    /**
+     * Set the results variables if necessary, when the query has "*" ({@code SELECT *}
+     * or {@code DESCRIBE *}) and for a construct query. This operation is idempotent and can
+     * be called to ensure the results variables have been set.
      */
     public void setResultVars()
     {
         if ( resultVarsSet )
             return ;
         synchronized(this) {
-            // Synchronized in case this built programmatically and not finished by
-            // calling setResultVars().
-            if ( getQueryPattern() == null )
-            {
-                if ( ! this.isDescribeType() )
-                    Log.warn(this, "setResultVars(): no query pattern") ;
-                return ;
-            }
-    
-            if ( isSelectType() )
-            {
-                if ( isQueryResultStar() )
-                    findAndAddNamedVars() ;
-                return ;
-            }
-    
-            if ( isConstructType() )
-            {
-                // All named variables are in-scope
-                findAndAddNamedVars() ;
-                return ;
-            }
-    
-            if ( isDescribeType() )
-            {
-                if ( isQueryResultStar() )
-                    findAndAddNamedVars() ;
-                return ;
-            }
-//            if ( isAskType() )
-//            {}
+            if ( resultVarsSet )
+                return;
+            // Synchronized in case this query is used in a multithreaded
+            // situation calling setResultVars(). JENA-1861.
+            resetResultVars();
             resultVarsSet = true ;
         }
+    }
+
+    /**
+     * If modifying a query, it may be necessary to reset the calculate of the result
+     * variables of the query for {@code SELECT *} and {@code DESCRIBE *} and {@code CONSTRUCT}.
+     */
+    public void resetResultVars() {
+        if  ( isQueryResultStar() )
+            projectVars.clear();
+        
+        if ( getQueryPattern() == null )
+        {
+            if ( ! this.isDescribeType() )
+                Log.warn(this, "setResultVars(): no query pattern") ;
+            return ;
+        }
+
+        if ( isSelectType() )
+        {
+            if ( isQueryResultStar() )
+                findAndAddNamedVars() ;
+            return ;
+        }
+
+        if ( isConstructType() )
+        {
+            // All named variables are in-scope
+            findAndAddNamedVars() ;
+            return ;
+        }
+
+        if ( isDescribeType() )
+        {
+            if ( isQueryResultStar() )
+                findAndAddNamedVars() ;
+            return ;
+        }
+//        if ( isAskType() )
+//        {}
     }
 
     private void findAndAddNamedVars()
@@ -731,9 +745,7 @@ public class Query extends Prologue implements Cloneable, Printable
 
         for ( ; varIter.hasNext() ; )
         {
-            Object obj = varIter.next() ;
-            //Var var = (Var)iter.next() ;
-            Var var = (Var)obj ;
+            Var var = varIter.next() ;
             if ( var.isNamedVar() )
                 addResultVar(var) ;
         }
