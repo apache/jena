@@ -269,12 +269,12 @@
               !com.ibm.uvm.tools,
               !com.sun.jdmk.comm,
               !org.apache.log,
-              !org.apache.logging.*,
               !org.apache.jena.ext.*,
               !org.checkerframework.checker.*,
               !com.google.errorprone.annotations.*,
               !com.google.appengine.api,
               !com.google.apphosting.api,
+              org.apache.logging.*;resolution:=optional,
               sun.misc;resolution:=optional,
               *
             </Import-Package>
