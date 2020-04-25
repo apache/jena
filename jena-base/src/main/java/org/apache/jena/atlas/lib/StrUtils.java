@@ -18,6 +18,7 @@
 
 package org.apache.jena.atlas.lib;
 
+import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.stream ;
 import static java.util.stream.Collectors.toList;
@@ -27,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import org.apache.jena.atlas.AtlasException;
 
 /** Some functions that act on strings */
 public class StrUtils //extends StringUtils
@@ -142,9 +145,11 @@ public class StrUtils //extends StringUtils
     // ==== Encoding and decoding strings based on a marker character (e.g. %)
     // and then the hexadecimal representation of the character.  
     // Only characters 0-255 can be encoded.
+    // Decoding is more general.
     
     /**
-     * Encode a string using hex values e.g. %20
+     * Encode a string using hex values e.g. %20.
+     * Encoding only deals with single byte codepoints.  
      * 
      * @param str String to encode
      * @param marker Marker character
@@ -154,7 +159,7 @@ public class StrUtils //extends StringUtils
     public static String encodeHex(String str, char marker, char[] escapees) {
         // We make a first pass to see if there is anything to do.
         // This is assuming
-        // (1) the string is shortish (e.g. fits in L1)
+        // (1) the string is shortish
         // (2) necessary escaping is not common
 
         int N = str.length() ;
@@ -183,19 +188,18 @@ public class StrUtils //extends StringUtils
     }
 
     /**
-     * Decode a string using marked hex values e.g. %20
+     * Decode a string using marked hex values e.g. %20.
+     * Multi-byte UTF-8 codepoints are handled.
      * 
-     * @param str String to decode : characters should be ASCII (&lt;127)
+     * @param str String to decode.
      * @param marker The marker character
-     * @return Decoded string (returns input object on no change)
+     * @return Decoded string (returns input object if no change)
      */
     public static String decodeHex(String str, char marker) {
-        if ( str.indexOf(marker) < 0 ) 
+        if ( str.indexOf(marker) < 0 )
+            // No marker, no work.
             return str;
-        // This function does work if input str is not pure ASCII.
-        // The tricky part is if an %-encoded part is a UTF-8 sequence.
-        // An alternative algorithm is to work in chars from the string, and handle
-        // that case %-endocded when value has the high bit set.
+        // By working in bytes, we deal with mult-byte codepoints. 
         byte[] strBytes = StrUtils.asUTF8bytes(str);
         final int N = strBytes.length;
         // Max length
@@ -207,27 +211,64 @@ public class StrUtils //extends StringUtils
                 bytes[i++] = b;
                 continue;
             }
-            // Marker.
-            char hi = str.charAt(j + 1);
-            char lo = str.charAt(j + 2);
+            // Marker. Decode next 2 bytes.
+            if ( j+2 >= N )
+                throw new AtlasException("Decoding error: incomplete hex value. \""+str+"\"");
+            int hi = strBytes[j+1];
+            int lo = strBytes[j+2];
             j += 2;
             int x1 = hexDecode(hi);
             int x2 = hexDecode(lo);
             int ch2 = (hexDecode(hi) << 4 | hexDecode(lo));
             bytes[i++] = (byte)ch2;
         }
-        return new String(bytes, 0, i, StandardCharsets.UTF_8); 
+        String s = new String(bytes, 0, i, StandardCharsets.UTF_8);
+        return s;
+    }
+    
+    // Same but working on the string.  This is the pair of the encoder.
+    // Encode/decode is normally use is for characters that illegal in a position
+    // (e.g. URI components, spaces in URIs).
+    
+    // This string version is brittle - reverses the encoding of encodeHex() 
+    // but not general use as a decoder of a string. 
+    // Multi-byte codepoints do not get recombined if operating on strings/characters.
+    private /*public*/ static String _forInfo_decodeHex(String str, char marker) {
+        int idx = str.indexOf(marker);
+        if ( idx == -1 )
+            return str;
+        StringBuilder buff = new StringBuilder();
+
+        buff.append(str, 0, idx);
+        int N = str.length();
+
+        for ( ; idx < N ; idx++ ) {
+            char ch = str.charAt(idx);
+            // First time through this is true, always.
+            if ( ch != marker ) {
+                buff.append(ch);
+                continue;
+            }
+            if ( idx+2 >= N )
+                throw new AtlasException("Decoding error: incomplete hex value. \""+str+"\"");
+            char hi = str.charAt(idx + 1);
+            char lo = str.charAt(idx + 2);
+            char ch2 = (char)(hexDecode(hi) << 4 | hexDecode(lo));
+            buff.append(ch2);
+            idx += 2;
+        }
+        return buff.toString();
     }
 
     // Encoding is table-driven but for decode, we use code.
-    static private int hexDecode(char ch) {
+    static private int hexDecode(int ch) {
         if ( ch >= '0' && ch <= '9' )
             return ch - '0';
         if ( ch >= 'A' && ch <= 'F' )
             return ch - 'A' + 10;
         if ( ch >= 'a' && ch <= 'f' )
             return ch - 'a' + 10;
-        return -1 ;
+        throw new AtlasException(format("Decoding error: bad character for hex digit (0x%02X) '%c' ",ch, ch)); 
     }
 
     public static String escapeString(String x) {
