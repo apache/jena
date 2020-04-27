@@ -274,6 +274,7 @@
               !com.google.errorprone.annotations.*,
               !com.google.appengine.api,
               !com.google.apphosting.api,
+              org.apache.logging.*;resolution:=optional,
               sun.misc;resolution:=optional,
               *
             </Import-Package>
