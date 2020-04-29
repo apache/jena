@@ -45,7 +45,7 @@ public class StrMinLengthConstraint extends ConstraintTerm {
         String str = NodeFunctions.str(n);
         if ( str.length() >= minLength )
             return null;
-        String msg = toString()+": String too long: "+str;
+        String msg = toString()+": String too short: "+str;
         return new ReportItem(msg, n);
     }
 
