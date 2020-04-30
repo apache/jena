@@ -22,6 +22,15 @@ import java.io.UnsupportedEncodingException ;
 import java.net.URLDecoder ;
 import java.net.URLEncoder ;
 
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.jena.atlas.lib.IRILib;
+
+/**
+ * Encode for a www-forms.
+ * @see IRILib
+ * @see URLEncodedUtils#format
+ * @see URLEncoder#encode
+ */
 public class Convert
 {
     // UTF-8 is required in Java implementations
