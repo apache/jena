@@ -24,21 +24,39 @@ import org.junit.Test;
 
 public class TestIRILib {
 
-    @Test public void encodeDecode01() { encodeDecode(""); }
+    @Test public void encodeDecode01() { encodeDecode("", ""); }
 
-    @Test public void encodeDecode02() { encodeDecode("aa"); }
+    @Test public void encodeDecode02() { encodeDecode("aa", "aa"); }
 
-    @Test public void encodeDecode03() { encodeDecode("aa"); }
+    @Test public void encodeDecode03() { encodeDecode("Größe", "Gr%C3%B6%C3%9Fe"); }
 
-    @Test public void encodeDecode04() { encodeDecode("Größe"); }
-    
-    private void encodeDecode(String testString) {
+    // Test mechanisms with the ASCII encoder.
+    private void encodeDecode(String testString, String expected) {
         String encoded = IRILib.encodeNonASCII(testString);
+        assertEquals(expected, encoded);
         String decoded = IRILib.decodeHex(encoded);
-        if ( ! testString.equals(decoded) ) {
-            System.out.println(encoded);
-        }
         assertEquals(testString, decoded);
     }
 
+    private void encodeDecodeQueryFrag(String testString, String expected) {
+        String encoded = IRILib.encodeUriQueryFrag(testString);
+        assertEquals(expected, encoded);
+        String decoded = IRILib.decodeHex(encoded);
+        assertEquals(testString, decoded);
+    }
+
+    @Test
+    public void codec_queryFrag_01() {
+        encodeDecodeQueryFrag("Größe", "Größe");
+    }
+
+    // Test use of query string encoder on a URI.
+    // e.g. Graph Store Protocol usage ?graph=http://example/
+    // RFC 3986: '?' in the encoded form is safe - a query strign starts
+    // with a '?' and then from then on '?' is a plain character.
+    @Test
+    public void codec_queryFrag_02() {
+        encodeDecodeQueryFrag("http://example/graph?name=value#zzzz", "http://example/graph?name%3Dvalue%23zzzz");
+    }
 }
+

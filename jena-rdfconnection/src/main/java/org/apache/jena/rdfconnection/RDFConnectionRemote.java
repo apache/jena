@@ -81,7 +81,7 @@ public class RDFConnectionRemote implements RDFConnection {
     protected final String acceptDataset;
     protected final String acceptSelectResult;
     protected final String acceptAskResult;
-    // All purpose SPARQL results header used if above specific cases do not apply. 
+    // All purpose SPARQL results header used if above specific cases do not apply.
     protected final String acceptSparqlResults;
 
     // Whether to check SPARQL queries given as strings by parsing them.
@@ -407,7 +407,7 @@ public class RDFConnectionRemote implements RDFConnection {
         doPutPost(url, file, lang, replace);
     }
 
-    /** Send a file to named graph (or "default" or null for the defaultl graph).
+    /** Send a file to named graph (or "default" or null for the default graph).
      * <p>
      * The Content-Type is taken from the given {@code Lang}.
      * <p>
@@ -442,11 +442,11 @@ public class RDFConnectionRemote implements RDFConnection {
 //        });
     }
 
-    /** Send a model to named graph (or "default" or null for the defaultl graph).
+    /** Send a model to named graph (or "default" or null for the default graph).
      * <p>
      * The Content-Type is taken from the given {@code Lang}.
      * <p>
-     * "Replace" means overwrite existing data, othewise the date is added to the target.
+     * "Replace" means overwrite existing data, otherwise the date is added to the target.
      */
     protected void doPutPost(Model model, String name, boolean replace) {
         String url = LibRDFConn.urlForGraph(svcGraphStore, name);
