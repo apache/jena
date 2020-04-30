@@ -268,6 +268,26 @@ public interface RDFConnection extends
 
     // ---- RDFDatasetConnection
 
+    /** Fetch a named graph.
+     * This is SPARQL Graph Store Protocol HTTP GET or equivalent.
+     *
+     * @param graphName URI string for the graph name (null or "default" for the default graph)
+     * @return Model
+     */
+    @Override
+    public Model fetch(String graphName);
+
+    /** Fetch the default graph.
+     * This is SPARQL Graph Store Protocol HTTP GET or equivalent.
+     * @return Model
+     */
+    @Override
+    public Model fetch();
+
+    /** Fetch the contents of the dataset */
+    @Override
+    public Dataset fetchDataset();
+
     /** Load (add, append) RDF into a named graph in a dataset.
      * This is SPARQL Graph Store Protocol HTTP POST or equivalent.
      *
