@@ -100,7 +100,12 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 if (! mbqNode.isLiteral()) {
                     throw new TextIndexException("text:maxBasicQueries property must be a int : " + mbqNode);
                 }
-                maxBasicQueries = mbqNode.asLiteral().getInt();
+                try {
+                    maxBasicQueries = mbqNode.asLiteral().getInt();
+                } catch (RuntimeException ex) {
+                    // Problems with the integer.
+                    throw new TextIndexException("text:maxBasicQueries property must be a int : " + mbqNode+ "("+ex.getMessage()+")");
+                }
             }
 
             // define any property lists for text:query

@@ -109,8 +109,8 @@ public class TextIndexLucene implements TextIndex {
     private final Analyzer         queryAnalyzer ;
     private final String           queryParserType ;
     private final FieldType        ftText ;
-    private final FieldType        ftTextNotStored ; // used for lang derived fields
-    private final FieldType        ftTextStoredNoIndex ; // used for lang derived fields
+    private final FieldType        ftTextNotStored ;      // used for lang derived fields
+    private final FieldType        ftTextStoredNoIndex ;  // used for lang derived fields
     private final boolean          isMultilingual ;
     private final int              maxBasicQueries ;
     private final boolean          ignoreIndexErrors ;

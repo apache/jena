@@ -27,7 +27,7 @@ public class TextIndexConfig {
     Analyzer queryAnalyzer;
     String queryParser;
     boolean multilingualSupport;
-    int maxBasicQueries;
+    int maxBasicQueries = 1024;
     boolean valueStored;
     boolean ignoreIndexErrors;
 
@@ -54,11 +54,11 @@ public class TextIndexConfig {
     public void setQueryAnalyzer(Analyzer queryAnalyzer) {
         this.queryAnalyzer = queryAnalyzer;
     }
-    
+
     public String getQueryParser() {
         return ((queryParser != null) ? queryParser : "QueryParser");
     }
-    
+
     public void setQueryParser(String queryParser) {
         this.queryParser = queryParser;
     }
