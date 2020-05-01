@@ -45,7 +45,7 @@ public class StrMaxLengthConstraint extends ConstraintTerm {
         String str = NodeFunctions.str(n);
         if ( str.length() <= maxLength )
             return null;
-        String msg = toString()+": String too short: "+str ;
+        String msg = toString()+": String too long: "+str ;
         return new ReportItem(msg,n);
     }
 
