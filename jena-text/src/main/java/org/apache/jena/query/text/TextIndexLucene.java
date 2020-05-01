@@ -112,6 +112,7 @@ public class TextIndexLucene implements TextIndex {
     private final FieldType        ftTextNotStored ; // used for lang derived fields
     private final FieldType        ftTextStoredNoIndex ; // used for lang derived fields
     private final boolean          isMultilingual ;
+    private final int              maxBasicQueries ;
     private final boolean          ignoreIndexErrors ;
     
     private Map<String, Analyzer> multilingualQueryAnalyzers = new HashMap<>();
@@ -131,6 +132,8 @@ public class TextIndexLucene implements TextIndex {
     public TextIndexLucene(Directory directory, TextIndexConfig config) {
         this.directory = directory ;
         this.docDef = config.getEntDef() ;
+
+        this.maxBasicQueries = config.getMaxBasicQueries();
 
         this.isMultilingual = config.isMultilingualSupport();
         if (this.isMultilingual &&  config.getEntDef().getLangField() == null) {
@@ -416,7 +419,7 @@ public class TextIndexLucene implements TextIndex {
                 break;
             case "SurroundQueryParser":
                 try {
-                    query = org.apache.lucene.queryparser.surround.parser.QueryParser.parse(queryString).makeLuceneQueryField(docDef.getPrimaryField(), new BasicQueryFactory());
+                    query = org.apache.lucene.queryparser.surround.parser.QueryParser.parse(queryString).makeLuceneQueryField(docDef.getPrimaryField(), new BasicQueryFactory(this.maxBasicQueries));
                 } catch(org.apache.lucene.queryparser.surround.parser.ParseException e) {
                     throw new ParseException(e.getMessage());
                 }
