@@ -125,22 +125,20 @@ public class TestDatabaseOps
     }
 
     @Test public void compact_prefixes_3() {
-        // This test fails sometimes with an NPE at the marked line when run with Java14 on ASF Jenkins.
-        // It does not failure anywhere else.
-        // It does not always fail
-        // There isn't a pointer deference to NPE!
-        //java.lang.NullPointerException
-        //        at org.apache.jena.tdb2.sys.TestDatabaseOps.compact_prefixes_3(TestDatabaseOps.java:142)
-        // No more stack
+        // 2020-04:
+        // This test fails at "HERE" sometimes with an NPE at the marked line when run with Java14 on ASF Jenkins.
+        // The NPE is from java.nio.file.Files.provider.
+        // It does not fail anywhere else and it does not always fail.
+        //   This suggests it is an environmental issue with the JDK14 job.
         // Attempt to find out what is going on:
-        try { 
+        try {
             compact_prefixes_3_test();
         } catch (Throwable th) {
             th.printStackTrace();
             throw th;
         }
     }
-    
+
     private void compact_prefixes_3_test() {
         // prefixes across compaction.
         DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(dir);
@@ -156,7 +154,7 @@ public class TestDatabaseOps
         DatasetGraph dsg1 = dsgs.get();
         Location loc1 = ((DatasetGraphTDB)dsg1).getLocation();
 
-        DatabaseMgr.compact(dsgs); // HERE : Line 142 before investigation code added.
+        DatabaseMgr.compact(dsgs); // HERE
 
         Graph g2 = dsgs.getDefaultGraph();
 
