@@ -31,9 +31,12 @@ import org.apache.jena.riot.resultset.ResultSetReaderRegistry;
 import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sys.JenaSystem;
 
 public class ResultsReader {
-    
+
+    static { JenaSystem.init(); }
+
     /** Create a {@code ResultsReader.Builder}. */
     public static Builder create() { return new Builder() ; }
     
@@ -103,7 +106,7 @@ public class ResultsReader {
             lang = RDFLanguages.contentTypeToLang(ct);
         }
         if ( lang == null )
-            throw new RiotException("Can't indentify the result set syntax from "+url); 
+            throw new RiotException("Can't identify the result set syntax from "+url); 
         return lang;
     }
     

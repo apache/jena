@@ -40,7 +40,7 @@ public class TC_Scripted extends TestSuite
         
         return ts ;
     }
-    
+
     public TC_Scripted()
     {
         super("Scripted") ;

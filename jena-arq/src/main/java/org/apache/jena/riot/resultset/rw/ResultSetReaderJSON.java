@@ -239,19 +239,29 @@ public class ResultSetReaderJSON implements ResultSetReader {
         private static Node parseTripleTerm(JsonObject term, LabelToNode labelMap) {
             if ( term.entrySet().size() != 3 )
                 throw new ResultSetException("Wrong number of object keys for triple term: should be 3, got " + term.entrySet().size());
-            checkContains(term, true, true, kSubject, kObject);
-            checkContainsOneOf(term, kPredicate, kProperty); 
-            JsonObject sTerm = term.get(kSubject).getAsObject(); 
-            JsonObject pTerm = term.get(kPredicate).getAsObject();
-            if ( pTerm == null )
-                pTerm = term.get(kProperty).getAsObject();
-            JsonObject oTerm = term.get(kObject).getAsObject();
+            checkContainsOneOf(term, kSubject, kSubjectAlt);
+            checkContainsOneOf(term, kObject, kObjectAlt);
+            checkContainsOneOf(term, kPredicate, kProperty, kPredicateAlt);
+            
+            JsonObject sTerm = get(term, kSubject, kSubjectAlt); 
+            JsonObject pTerm = get(term, kPredicate, kProperty, kPredicateAlt);
+            JsonObject oTerm = get(term, kObject, kObjectAlt);
             if ( sTerm == null || pTerm == null || oTerm == null )
                 throw new ResultSetException("Bad triple term: "+term);
             Node s = parseOneTerm(sTerm, labelMap);
             Node p = parseOneTerm(pTerm, labelMap);
             Node o = parseOneTerm(oTerm, labelMap);
             return NodeFactory.createTripleNode(s, p, o);
+        }
+        
+        // Get a object from an object - use the first name in the fields list  
+        private static JsonObject get(JsonObject term, String... fields) {
+            for ( String f : fields ) {
+                JsonValue v = term.get(f);
+                if ( v != null )
+                    return v.getAsObject();
+            }
+            return null;
         }
 
         private static String stringOrNull(JsonObject obj, String key) {

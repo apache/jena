@@ -18,19 +18,24 @@
 
 package org.apache.jena.rdf_star;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
+import org.apache.jena.riot.resultset.rw.ResultsReader;
+import org.junit.Test;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestNQuadsStarParse.class,
-    TestNTriplesStarParse.class,
-    TestTrigStarParse.class,
-    TestTurtleStarParse.class,
-    TestSPARQLStarParse.class,
-    TestSPARQLStarExtra.class
+/** 
+ * Odds and ends for SPARQL*. 
+ */
+public class TestSPARQLStarExtra {
 
-    //See also TC_Scripted SPARQL-star/manifest.ttl which run from JUnit3-centric ARQTestSuite 
-})
-public class TS_RDF_Star {
+    private static String FILES = "testing/ARQ/RDF-Star/Other/";
+
+    // RDF4J format JSON results.
+    // It uses "s", "p" and "o" for the RDF term results. 
+    @Test public void parse_alt() {
+        String x = FILES+"alternate-results.srj";
+        ResultSet rs = ResultsReader.create().read(x);
+        ResultSetFormatter.consume(rs);
+    }
 }
+
