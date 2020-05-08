@@ -600,7 +600,6 @@ public class XSDFuncOp
         if ( nv.isInteger() )
             return nv.getInteger().intValue() ;
         if ( nv.isDecimal() )
-            // No decimal round in Java 1.4
             return (int)Math.round(nv.getDecimal().doubleValue()) ;
 
         if ( nv.isFloat() ) {

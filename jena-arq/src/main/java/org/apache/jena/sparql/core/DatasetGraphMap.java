@@ -71,16 +71,17 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
     
     // ----
     private final Transactional txn                     = TransactionalLock.createMRSW() ;
-    @Override public void begin()                       { txn.begin(); }
-    @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
-    @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
-    @Override public boolean promote(Promote txnType)   { return txn.promote(txnType); }
-    @Override public void commit()                      { txn.commit(); }
-    @Override public void abort()                       { txn.abort(); }
-    @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
-    @Override public void end()                         { txn.end(); }
-    @Override public ReadWrite transactionMode()        { return txn.transactionMode(); }
-    @Override public TxnType transactionType()          { return txn.transactionType(); }
+    private final Transactional txn()                   { return txn; }
+    @Override public void begin()                       { txn().begin(); }
+    @Override public void begin(TxnType txnType)        { txn().begin(txnType); }
+    @Override public void begin(ReadWrite mode)         { txn().begin(mode); }
+    @Override public boolean promote(Promote txnType)   { return txn().promote(txnType); }
+    @Override public void commit()                      { txn().commit(); }
+    @Override public void abort()                       { txn().abort(); }
+    @Override public boolean isInTransaction()          { return txn().isInTransaction(); }
+    @Override public void end()                         { txn().end(); }
+    @Override public ReadWrite transactionMode()        { return txn().transactionMode(); }
+    @Override public TxnType transactionType()          { return txn().transactionType(); }
     @Override public boolean supportsTransactions()     { return true; }
     @Override public boolean supportsTransactionAbort() { return false; }
     // ----
