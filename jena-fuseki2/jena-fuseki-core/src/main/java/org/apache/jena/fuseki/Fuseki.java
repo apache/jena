@@ -314,7 +314,7 @@ public class Fuseki {
 
     /**
      * Test whether a {@link RDFConnectionRemote} connects to a Fuseki server. This
-     * operation can not guaranttee to detech a Fuseki server - for example, it may be
+     * operation can not guaranteed to detech a Fuseki server - for example, it may be
      * behind a reverse proxy that masks the signature.
      */
     public static boolean isFuseki(RDFConnectionRemote connection) {

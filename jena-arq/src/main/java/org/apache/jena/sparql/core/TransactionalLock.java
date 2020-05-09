@@ -33,7 +33,7 @@ import org.apache.jena.sparql.JenaTransactionException ;
  *  To use with implementation inheritance, for when you don't inherit:
  *  <pre>
  *      private final Transactional txn                     = TransactionalLock.createMRSW() ;
- *      protected final Transactional txn()                 { return txn; }
+ *      private final Transactional txn()                   { return txn; }
  *      {@literal @}Override public void begin(TxnType txnType)        { txn().begin(txnType) ; }
  *      {@literal @}Override public void begin()                       { txn().begin(); }
  *      {@literal @}Override public void begin(TxnType txnType)        { txn().begin(txnType); }
@@ -52,7 +52,7 @@ import org.apache.jena.sparql.JenaTransactionException ;
 public class TransactionalLock implements Transactional {
 /*
     private final Transactional txn                     = TransactionalLock.createMRSW() ;
-    protected final Transactional txn()                 { return txn; }
+    private final Transactional txn()                   { return txn; }
     @Override public void begin()                       { txn().begin(); }
     @Override public void begin(TxnType txnType)        { txn().begin(txnType); }
     @Override public void begin(ReadWrite mode)         { txn().begin(mode); }
@@ -64,7 +64,6 @@ public class TransactionalLock implements Transactional {
     @Override public TxnType transactionType()          { return txn().transactionType(); }
     @Override public boolean supportsTransactions()     { return true; }
     @Override public boolean supportsTransactionAbort() { return false; }
-
  */
     
     private ThreadLocal<Boolean>   inTransaction = ThreadLocal.withInitial(() -> Boolean.FALSE);
