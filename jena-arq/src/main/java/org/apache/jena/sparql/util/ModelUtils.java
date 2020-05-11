@@ -60,6 +60,9 @@ public class ModelUtils
                 
         if ( node.isURI() || node.isBlank() )
             return new ResourceImpl(node, null) ;
+
+        if ( node.isNodeTriple() )
+            return new ResourceImpl(node, null) ;
         
         throw new ARQInternalErrorException("Unknown node type for node: "+node) ;
     }

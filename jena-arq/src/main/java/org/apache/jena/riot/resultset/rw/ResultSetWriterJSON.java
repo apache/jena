@@ -346,17 +346,17 @@ public class ResultSetWriterJSON implements ResultSetWriter {
 
             // ---
             print(out, quoteName(kSubject), ": ");
-            print(out, "  ");
+            print(out, " ");
 
             writeValue(out, triple.getSubject(), multiLineInnerValue);
             println(out, " ,");
 
-            print(out, quoteName(kPredicate), ": ");
+            print(out, quoteName(kProperty), ": ");
             writeValue(out, triple.getPredicate(), multiLineInnerValue);
             println(out, " ,");
 
             print(out, quoteName(kObject), ": ");
-            print(out, "   ");
+            print(out, "  ");
             writeValue(out, triple.getObject(), multiLineInnerValue);
             // End of triple object.
             decIndent(out);

@@ -24,12 +24,13 @@ import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Node_Triple;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.riot.out.NodeToLabel;
 import org.apache.jena.riot.resultset.ResultSetLang;
@@ -243,8 +244,8 @@ public class ResultSetWriterXML implements ResultSetWriter {
         }
 
         @Override
-        public void binding(String varName, RDFNode node) {
-            if ( node == null && !outputExplicitUnbound )
+        public void binding(String varName, RDFNode rdfNode) {
+            if ( rdfNode == null && !outputExplicitUnbound )
                 return;
 
             out.print("<");
@@ -253,15 +254,15 @@ public class ResultSetWriterXML implements ResultSetWriter {
             out.print(varName);
             out.println("\">");
             out.incIndent(INDENT);
-            printBindingValue(node);
+            printBindingValue(rdfNode);
             out.decIndent(INDENT);
             out.print("</");
             out.print(dfBinding);
             out.println(">");
         }
 
-        void printBindingValue(RDFNode node) {
-            if ( node == null ) {
+        private void printBindingValue(RDFNode rdfNode) {
+            if ( rdfNode == null ) {
                 // Unbound
                 out.print("<");
                 out.print(dfUnbound);
@@ -269,68 +270,122 @@ public class ResultSetWriterXML implements ResultSetWriter {
                 return;
             }
 
-            if ( node instanceof Literal ) {
-                printLiteral((Literal)node);
+            Node node = rdfNode.asNode();
+            printBindingValue(node);
+        }
+        
+        private void printBindingValue(Node node) {
+            if ( node == null )
+                return;
+        
+            if ( node.isLiteral() ) {
+                printLiteral(node);
                 return;
             }
 
-            if ( node instanceof Resource ) {
-                printResource((Resource)node);
+            if ( node.isURI() ) {
+                printURI(node);
                 return;
             }
+            
+            if ( node.isBlank() ) {
+                printBlankNode(node);
+                return;
+            }
+            if ( node.isNodeTriple() ) {
+                printTripleTerm(node);
+                return;
+            }
+            
+            if ( node.isNodeGraph() )
+                throw new UnsupportedOperationException("Graph terms");
 
-            Log.warn(this, "Unknown RDFNode type in result set: " + node.getClass());
+            Log.warn(this, "Unknown RDFNode type in result set: " + node);
         }
 
-        void printLiteral(Literal literal) {
+        private void printURI(Node nodeURI) {
+            String uri = nodeURI.getURI();
+            out.print("<");
+            out.print(dfURI);
+            out.print(">");
+            out.print(xml_escape(uri));
+            out.print("</");
+            out.print(dfURI);
+            out.println(">");
+        }            
+            
+        private void printBlankNode(Node node) {
+            String label = bNodeMap.get(null, node);
+            // Comes with leading "_:"
+            label = label.substring(2);
+            out.print("<");
+            out.print(dfBNode);
+            out.print(">");
+            out.print(xml_escape(label));
+            out.print("</");
+            out.print(dfBNode);
+            out.println(">");
+        }
+
+        private void printLiteral(Node literal) {
             out.print("<");
             out.print(dfLiteral);
-
+        
             if ( Util.isLangString(literal) ) {
-                String lang = literal.getLanguage();
+                String lang = literal.getLiteralLanguage();
                 out.print(" xml:lang=\"");
-                out.print(literal.getLanguage());
+                out.print(lang);
                 out.print("\"");
             } else if ( !Util.isSimpleString(literal) ) {
                 // Datatype
                 // (RDF 1.1) not xsd:string nor rdf:langString.
                 // (RDF 1.0) any datatype.
-                String datatype = literal.getDatatypeURI();
+                String datatype = literal.getLiteralDatatypeURI();
                 out.print(" ");
                 out.print(dfAttrDatatype);
                 out.print("=\"");
                 out.print(datatype);
                 out.print("\"");
             }
-
+        
             out.print(">");
-            out.print(xml_escape(literal.getLexicalForm()));
+            out.print(xml_escape(literal.getLiteralLexicalForm()));
             out.print("</");
             out.print(dfLiteral);
             out.println(">");
         }
 
-        void printResource(Resource r) {
-            if ( r.isAnon() ) {
-                String label = bNodeMap.get(null, r.asNode());
-                // Comes with leading "_:"
-                label = label.substring(2);
-                out.print("<");
-                out.print(dfBNode);
-                out.print(">");
-                out.print(xml_escape(label));
-                out.print("</");
-                out.print(dfBNode);
-                out.println(">");
-            } else {
-                out.print("<");
-                out.print(dfURI);
-                out.print(">");
-                out.print(xml_escape(r.getURI()));
-                out.print("</");
-                out.print(dfURI);
-                out.println(">");
-            }
+        private void printTripleTerm(Node node) {
+            Triple triple = Node_Triple.triple(node);
+            openTag(dfTriple);
+            
+            // Subject
+            openTag(dfSubject);
+            printBindingValue(triple.getSubject());
+            closeTag(dfSubject);
+            // Property
+            openTag(dfProperty);
+            printBindingValue(triple.getPredicate());
+            closeTag(dfProperty);
+            // Object
+            openTag(dfObject);
+            printBindingValue(triple.getObject());
+            closeTag(dfObject);
+            
+            closeTag(dfTriple);
+        }
+        
+        private void openTag(String name) {
+            out.print("<");
+            out.print(name);
+            out.println(">");
+            out.incIndent();
+        }
+        private void closeTag(String name) {
+            out.decIndent();
+            out.print("</");
+            out.print(name);
+            out.println(">");
         }
 
         private static String xml_escape(String string) {

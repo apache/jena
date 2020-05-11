@@ -23,6 +23,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
@@ -53,7 +54,7 @@ import org.apache.jena.sparql.resultset.ResultSetException;
 import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.util.Context;
 
-/** Public only for use by XMLOuptu (legacy) */
+/** Public only for use by XMLOutput (legacy) */
 public class ResultsStAX implements ResultSet, Closeable {
     public static SPARQLResult read(InputStream in, Model model, Context context) {
         XMLInputFactory xf = XMLInputFactory.newInstance() ;
@@ -90,7 +91,8 @@ public class ResultsStAX implements ResultSet, Closeable {
     private QuerySolution   current          = null;
     private XMLStreamReader parser           = null;
     private List<String>    variables        = new ArrayList<>();
-    private Binding         binding          = null;                                                                  // Current
+    // Current binding/query solution.
+    private Binding         binding          = null;
     private boolean         inputGraphLabels = ARQ.isTrue(ARQ.inputGraphBNodeLabels);
 
     private final LabelToNode  bNodes;
@@ -386,53 +388,13 @@ public class ResultsStAX implements ResultSet, Closeable {
                         varName = parser.getAttributeValue(null, XMLResults.dfAttrVarName) ;
                         break ;
                     }
-                    // URI, literal, bNode, unbound.
-                    if ( isTag(tag, XMLResults.dfBNode) ) {
-                        String label = parser.getElementText() ;
-                        Node node = null ;
-                        // if ( inputGraphLabels.getValue() )
-                        if ( inputGraphLabels )
-                            node = NodeFactory.createBlankNode(label) ;
-                        else
-                            node = bNodes.get(null, label);
-                        addBinding(binding, Var.alloc(varName), node) ;
-                        break ;
-                    }
-
-                    if ( isTag(tag, XMLResults.dfLiteral) ) {
-                        String datatype = parser.getAttributeValue(null, XMLResults.dfAttrDatatype) ;
-
-                        // String langTag = parser.getAttributeValue(null,
-                        // "lang") ;
-
-                        // Woodstox needs XML_NS despite the javadoc of StAX
-                        // "If the namespaceURI is null the namespace is not checked for equality"
-                        // StAX(.codehaus.org) copes both ways round
-                        String langTag = parser.getAttributeValue(XML_NS, "lang") ;
-
-                        // Works for XML literals (returning them as a
-                        // string)
-                        String text = parser.getElementText() ;
-
-                        RDFDatatype dType = null ;
-                        if ( datatype != null )
-                            dType = TypeMapper.getInstance().getSafeTypeByName(datatype) ;
-
-                        Node n = NodeFactory.createLiteral(text, langTag, dType) ;
+                    
+                    Node value = parseOneTerm(tag);
+                    if ( value != null ) {
                         if ( varName == null )
                             throw new ResultSetException("No name for variable") ;
-                        addBinding(binding, Var.alloc(varName), n) ;
-                        break ;
-                    }
-
-                    if ( isTag(tag, XMLResults.dfUnbound) ) {
-                        break ;
-                    }
-                    if ( isTag(tag, XMLResults.dfURI) ) {
-                        String uri = parser.getElementText() ;
-                        Node node = NodeFactory.createURI(uri) ;
-                        addBinding(binding, Var.alloc(varName), node) ;
-                        break ;
+                        addBinding(binding, Var.alloc(varName), value) ;
+                        break;
                     }
                     break ;
                 default :
@@ -442,6 +404,118 @@ public class ResultsStAX implements ResultSet, Closeable {
         return null ;
     }
 
+    private Node parseOneTerm(String tag) throws XMLStreamException {
+      // URI, literal, bNode, unbound, triple
+      if ( isTag(tag, XMLResults.dfBNode) ) {
+          String label = parser.getElementText() ;
+          Node node = null ;
+          // if ( inputGraphLabels.getValue() )
+          if ( inputGraphLabels )
+              node = NodeFactory.createBlankNode(label) ;
+          else
+              node = bNodes.get(null, label);
+          return node;
+      }
+
+      if ( isTag(tag, XMLResults.dfLiteral) ) {
+          String datatype = parser.getAttributeValue(null, XMLResults.dfAttrDatatype) ;
+
+          // String langTag = parser.getAttributeValue(null, "lang") ;
+          // Woodstox needs XML_NS despite the javadoc of StAX
+          // "If the namespaceURI is null the namespace is not checked for equality"
+          // StAX(.codehaus.org) copes both ways round
+          String langTag = parser.getAttributeValue(XML_NS, "lang") ;
+
+          // Works for XML literals (returning them as a string)
+          String text = parser.getElementText() ;
+
+          RDFDatatype dType = null ;
+          if ( datatype != null )
+              dType = TypeMapper.getInstance().getSafeTypeByName(datatype) ;
+
+          Node n = NodeFactory.createLiteral(text, langTag, dType) ;
+          return n ;
+      }
+
+      if ( isTag(tag, XMLResults.dfUnbound) ) {
+          return null;
+      }
+      
+      if ( isTag(tag, XMLResults.dfURI) ) {
+          String uri = parser.getElementText() ;
+          Node node = NodeFactory.createURI(uri) ;
+          return node;
+      }
+      
+      if ( isTag(tag, XMLResults.dfTriple) ) {
+          // <triple>
+          Node s = null;
+          Node p = null;
+          Node o = null;
+          while (parser.hasNext()) {
+              // Skip CHARACTERS
+              int event2 = parser.nextTag() ;
+              if ( event2 == XMLStreamConstants.END_ELEMENT ) {
+                  // Early end.
+                  String tagx = parser.getLocalName() ;
+                  if ( tagx.equals(XMLResults.dfTriple) )
+                      staxError("Incomplete triple term");
+                  else
+                      staxError("Mismatched tag: "+tagx);
+              }
+              //XMLStreamConstants.START_ELEMENT
+                  
+              String tag2 = parser.getLocalName() ;
+              // <subject> <property> <object>
+              // One of subject, property, object (s,p,o)
+              
+              if ( ! isOneOf(tag2, XMLResults.dfSubject, XMLResults.dfProperty, XMLResults.dfPredicate, XMLResults.dfObject,
+                                   XMLResults.dfSubjectAlt, XMLResults.dfPropertyAlt, XMLResults.dfObjectAlt) )
+                  staxError("Unexpected tag in triple term: "+tag2);
+              
+              int event3 = parser.nextTag() ;
+              String tag3 = parser.getLocalName() ;
+              Node x = parseOneTerm(tag3);
+              
+              // Read end </subject> etc.
+              parser.nextTag() ;
+
+              // Check for double assignment.
+              if ( isOneOf(tag2, XMLResults.dfSubject, XMLResults.dfSubjectAlt) ) 
+                  s = x ;
+              else if ( isOneOf(tag2, XMLResults.dfProperty, XMLResults.dfPredicate, XMLResults.dfPropertyAlt) )
+                  p = x ;
+              else if ( isOneOf(tag2, XMLResults.dfObject, XMLResults.dfObjectAlt) )
+                  o = x ;
+              if ( s != null && p != null && o != null ) {
+                  int event4 = parser.nextTag() ;
+                  String tagx = parser.getLocalName() ;
+                  if ( event4 == XMLStreamConstants.START_ELEMENT )
+                      staxError("Too many terms for a triple");
+                  // XMLStreamConstants.END_ELEMENT )
+                  if ( ! tagx.equals(XMLResults.dfTriple) )
+                      staxError("Expecting </triple>: "+tagx);
+                  // </triple>
+                  break;
+              }
+          }
+          
+          if ( s == null || p == null || o == null )
+              staxError("Bad <triple> term");
+          Node node = NodeFactory.createTripleNode(s, p, o);
+          return node;
+      }
+        return null;
+    }
+
+    static private boolean isOneOf (String string, String...values) {
+        for ( String v : values ) {
+            if ( Objects.equals(string, v) )
+                return true;
+        }
+        return false;
+    }
+    
     static protected void addBinding(BindingMap binding, Var var, Node value) {
         Node n = binding.get(var);
         if ( n != null ) {
