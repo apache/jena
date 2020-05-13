@@ -113,7 +113,7 @@ PREFIX :       <#>
     mf:action
         [ qt:query  <sparql-star-basic-1.rq> ;
           qt:data   <data1.ttl> ] ;
-    mf:result  <sparql-star-basic-1.srj>
+    mf:result  <sparql-star-basic-1.srx>
 .
 
 :sparql-star-basic-2

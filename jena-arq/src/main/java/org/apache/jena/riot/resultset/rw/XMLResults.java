@@ -43,6 +43,16 @@ public interface XMLResults
     public static final String dfBNode      = "bnode" ;
     public static final String dfURI        = "uri" ;
     public static final String dfLiteral    = "literal" ;
+    public static final String dfTriple     = "triple" ;
+    public static final String dfSubject    = "subject" ;
+    public static final String dfProperty   = "property" ;
+    public static final String dfObject     = "object" ;
+
+    // Alternatives
+    public static final String dfPredicate   = "predicate" ;
+    public static final String dfSubjectAlt  = "s" ;
+    public static final String dfPropertyAlt = "p" ;
+    public static final String dfObjectAlt   = "o" ;
     
     public static final String dfUnbound    = "unbound" ;
 
