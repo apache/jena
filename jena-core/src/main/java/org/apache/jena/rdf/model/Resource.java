@@ -65,7 +65,7 @@ public interface Resource extends RDFNode {
     public AnonId getId();
     
     /**
-        Override RDFNode.inModel() to produce a staticly-typed Resource
+        Override RDFNode.inModel() to produce a statically-typed Resource
         in the given Model.
     */
     @Override
@@ -77,10 +77,17 @@ public interface Resource extends RDFNode {
     */
     public boolean hasURI( String uri );
 
-    /** Return the URI of the resource, or null if it's a bnode.
-     * @return The URI of the resource, or null if it's a bnode.
+    /** Return the URI of the resource, or null if it's a bnode or statement.
+     * @return The URI of the resource, or null if it's a bnode or statement.
      */
     public String getURI();
+    
+    /**
+     * Return the statement of this resource, or null if it is not an RDF* triple term.
+     * This is not a resource for a reified statement.   
+     * @return The statement of this resource,or null if it is not an RDF* triple term.
+     */
+    public Statement getStmtTerm();
 
     /** Returns the namespace associated with this resource if it is a URI, else return null. 
      * <p> 

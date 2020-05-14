@@ -24,6 +24,8 @@ import org.apache.jena.enhanced.EnhNode ;
 import org.apache.jena.enhanced.Implementation ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Node_Triple;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.PropertyNotFoundException;
 
@@ -109,6 +111,10 @@ public class ResourceImpl extends EnhNode implements Resource {
         this( NodeFactory.createURI( nameSpace + localName ), m );
     }
 
+    public ResourceImpl(Statement statement, ModelCom m) {
+        this( NodeFactory.createTripleNode(statement.asTriple()), m);
+    }
+
     @Override
     public Object visitWith( RDFVisitor rv )
         { return isAnon() ? rv.visitBlank( this, getId() ) : rv.visitURI( this, getURI() ); }
@@ -135,12 +141,22 @@ public class ResourceImpl extends EnhNode implements Resource {
         { return uri == null ? NodeFactory.createBlankNode() : NodeFactory.createURI( uri ); }
 
     @Override
-    public AnonId getId() 
-        { return new AnonId(asNode().getBlankNodeId()); }
+    public AnonId getId() {
+        return new AnonId(asNode().getBlankNodeId());
+    }
 
     @Override
     public String  getURI() {
-        return isAnon() ? null : node.getURI();
+        return this.isURIResource() ? node.getURI() : null;
+    }
+    
+    @Override
+    public Statement getStmtTerm() {
+        if ( ! isStmtResource() )
+            return null;
+        Triple t =  Node_Triple.triple(node);
+        Statement stmt = StatementImpl.toStatement(t, getModelCom());
+        return stmt; 
     }
 
     @Override

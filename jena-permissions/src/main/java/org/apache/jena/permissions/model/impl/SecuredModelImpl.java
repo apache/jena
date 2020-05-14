@@ -834,6 +834,11 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
+    public Resource createResource(Statement statement) {
+        throw new UnsupportedOperationException("SecuredModel.createResource(Statement)");
+    }
+
+    @Override
 	public SecuredResource createResource(final String uri, final Resource type)
 			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
 		final Resource r = ResourceFactory.createResource(uri);

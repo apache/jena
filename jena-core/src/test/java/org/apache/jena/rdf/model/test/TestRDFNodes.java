@@ -157,6 +157,12 @@ public class TestRDFNodes extends AbstractModelTestBase
 				Assert.assertEquals("must have correct field", R.getURI(), uri);
 				return "uri result";
 			}
+
+            @Override
+            public Object visitStmt(Resource r, Statement statement) {
+                history.add("statementTerm");
+                return "statement term result";
+            }
 		};
 		/* */
 		Assert.assertEquals("blank result", S.visitWith(rv));

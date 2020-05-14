@@ -190,6 +190,13 @@ public interface Model
 	   @return a new resource linked to this model.
 	*/
 	public Resource createResource( String uri ) ;
+	
+	/**
+	 * Create a resource that represents a statement. This is in support of RDF*.
+	 * @param statement
+	 * @return a new resource linked to this model.
+	 */
+	public Resource createResource( Statement statement ) ;
 
 	/**
         Create a property with a given URI composed from a namespace part and a

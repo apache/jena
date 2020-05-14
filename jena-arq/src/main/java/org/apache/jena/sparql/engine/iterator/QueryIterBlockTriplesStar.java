@@ -32,7 +32,6 @@ import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.serializer.SerializationContext;
 
-
 /**
  * Like {@link QueryIterBlockTriples} except it process triple term patterns (RDF*)
  * as well.
@@ -94,7 +93,7 @@ public class QueryIterBlockTriplesStar extends QueryIter1 {
 
     /**
      * Insert the stages necessary for a triple with triple pattern term inside it.
-     * If the triple pattern has am triple term, possibly with variables, introduce
+     * If the triple pattern has a triple term, possibly with variables, introduce
      * an iterator to solve for that, assign the matching triple term to a hidden
      * variable, and put allocated variable in to main triple pattern. Do for subject
      * and object positions, and also any nested triple pattern terms.
@@ -106,9 +105,8 @@ public class QueryIterBlockTriplesStar extends QueryIter1 {
     }
 
     // If we assume the data is correct (in PG mode), no need to test for the triple
-    // of a concrete Node_Triple because we able to // test for it in the triple
+    // of a concrete Node_Triple because we able to test for it in the triple
     // pattern itself.
-    // In SA: not an issue.
     // This should be "false".
     private static final boolean TEST_FOR_CONCRETE_TRIPLE_TERM = false;
 
