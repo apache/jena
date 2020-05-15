@@ -53,14 +53,14 @@ public class ResourceFactory {
     private ResourceFactory() {
     }
 
-    /** get the current factory object.
+    /** Get the current factory object.
      * 
      *  @return the current factory object
      */
     public static Interface getInstance() {
         return instance;
     }
-    /** set the current factory object.
+    /** Set the current factory object.
      * 
      * @param newInstance the new factory object
      * @return the previous factory object
@@ -71,7 +71,7 @@ public class ResourceFactory {
         return previousInstance;
     }
 
-    /** create a new anonymous resource.
+    /** Create a new anonymous resource.
      * 
      * <p>Uses the current factory object to create a new anonymous resource.</p>
      * 
@@ -81,7 +81,7 @@ public class ResourceFactory {
         return instance.createResource();
     }
 
-    /** create a new resource.
+    /** Create a new resource.
      * 
      * <p>Uses the current factory object to create a new resource.</p>
      * 
@@ -92,9 +92,18 @@ public class ResourceFactory {
         return instance.createResource(uriref);
     }
     
+    /** 
+     * Create a new resource representing an RDF* triple term.
+     * @param statement
+     * @return a new resource 
+     */
+    public static Resource createStmtResource(Statement statement) {
+        return instance.createStmtResource(statement);
+    }
+    
     /**
      * Answer a string (xsd:string) literal.
-     * This is the equivalent of a plain liteal with no language from RDF 1.0
+     * This is the equivalent of a plain literal with no language from RDF 1.0
      * (also called a simple literal in SPARQL)
      * 
      * Using {@link #createStringLiteral} is preferred; "plain literal" is RDF 1.0 terminology.  
@@ -109,7 +118,7 @@ public class ResourceFactory {
     
     /**
      * Answer a string (xsd:string) literal.
-     * This is the equivalent of a plain liteal with no language from RDF 1.0
+     * This is the equivalent of a plain literal with no language from RDF 1.0
      * (also called a simple literal in SPARQL)
      * 
      * @param string
@@ -135,29 +144,25 @@ public class ResourceFactory {
 
     /**
      * Answer a typed literal.
-     * 
-     * @param string
-     *            the string which forms the value of the literal
-     * @param dType
-     *            RDFDatatype of the type literal
+     * @param string the string which forms the value of the literal
+     * @param dType RDFDatatype of the type literal
      * @return a Literal node with that string as value
      */
 
-    public static Literal createTypedLiteral( String string , RDFDatatype dType)
-    {
+    public static Literal createTypedLiteral( String string , RDFDatatype dType) {
         return instance.createTypedLiteral( string , dType);
     }
     
     /**
-    Answer a typed literal.
-    @param value a java Object, the default RDFDatatype for that object will be used
-    @return a Literal node with that value
-    */
+     * Answer a typed literal.
+     * @param value a java Object, the default RDFDatatype for that object will be used
+     * @return a Literal node with that value
+     */
     public static Literal createTypedLiteral( Object value ) {
         return instance.createTypedLiteral(value);
     }
     
-    /** create a new property.
+    /** Create a new property.
      * 
      * <p>Uses the current factory object to create a new resource.</p>
      * 
@@ -168,7 +173,7 @@ public class ResourceFactory {
         return instance.createProperty(uriref);
     }
 
-    /** create a new property.
+    /** Create a new property.
      * 
      * <p>Uses the current factory object to create a new property.</p>
      * 
@@ -180,12 +185,14 @@ public class ResourceFactory {
         return instance.createProperty(namespace, localName);
     }
 
-    /** create a new statement.
+    /** 
+     * Create a new statement.
+     * <p>
      * Uses the current factory object to create a new statement.</p>
      * 
      * @param subject the subject of the new statement
      * @param predicate the predicate of the new statement
-     * @param object the objectof the new statement
+     * @param object the object of the new statement
      * @return a new resource
      */
     public static Statement createStatement(
@@ -195,22 +202,29 @@ public class ResourceFactory {
         return instance.createStatement(subject, predicate, object);
     }
 
-    /** the interface to resource factory objects.
+    /** The interface to resource factory objects.
      */
     public interface Interface {
 
-        /** create a new anonymous resource.
+        /** Create a new anonymous resource.
          * 
          * @return a new anonymous resource
          */
         public Resource createResource();
 
-        /** create a new resource.
+        /** Create a new resource.
          * 
          * @param uriref URIREF of the resource
          * @return a new resource
          */
         public Resource createResource(String uriref);
+        
+        /** Create a new resource representing an RDF* triple term.
+         * 
+         * @param statement
+         * @return a new resource
+         */
+        public Resource createStmtResource(Statement statement);
         
         /**
          * Answer a string (xsd:string) literal.
@@ -230,38 +244,40 @@ public class ResourceFactory {
         }
 
         /**
-        Answer a plain (untyped) literal with no language and the given content.
-        @param string the string which forms the value of the literal
-        @param lang The language tag to be used
-        @return a Literal node with that string as value
+         * Answer a plain (untyped) literal with no language and the given content.
+         * 
+         * @param string the string which forms the value of the literal
+         * @param lang The language tag to be used
+         * @return a Literal node with that string as value
          */
 
         public Literal createLangLiteral( String string , String lang );
 
         /**
-        Answer a typed literal.
-        @param string the string which forms the value of the literal
-        @param datatype RDFDatatype of the type literal
-        @return a Literal node with that string as value
-        */
+         * Answer a typed literal.
+         * 
+         * @param string the string which forms the value of the literal
+         * @param datatype RDFDatatype of the type literal
+         * @return a Literal node with that string as value
+         */
         public Literal createTypedLiteral( String string , RDFDatatype datatype) ;
 
 
         /**
-        Answer a typed literal.
-        @param value a java Object, the default RDFDatatype for that object will be used
-        @return a Literal node with that value
-        */
+         * Answer a typed literal.
+         * @param value a java Object, the default RDFDatatype for that object will be used
+         * @return a Literal node with that value
+         */
         public Literal createTypedLiteral( Object value ) ;
 
-        /** create a new property.
+        /** Create a new property.
          * 
          * @param uriref URIREF of the property
          * @return a new property
          */
         public Property createProperty(String uriref);
 
-        /** create a new property.
+        /** Create a new property.
          * 
          * @param namespace uriref of the namespace
          * @param localName localname of the property
@@ -269,7 +285,7 @@ public class ResourceFactory {
          */
         public Property createProperty(String namespace, String localName);
 
-        /** create a new statement.
+        /** Create a new statement.
          * 
          * @param subject subject of the new statement
          * @param predicate predicate of the new statement
@@ -295,6 +311,11 @@ public class ResourceFactory {
         @Override
         public Resource createResource(String uriref) {
             return new ResourceImpl(uriref);
+        }
+        
+        @Override
+        public Resource createStmtResource(Statement statement) {
+            return new ResourceImpl(statement, null);
         }
         
         @Override
@@ -342,6 +363,5 @@ public class ResourceFactory {
             RDFNode object) {
             return new StatementImpl(subject, predicate, object);
         }
-
     }
 }

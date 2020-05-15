@@ -55,10 +55,16 @@ public interface RDFNode extends FrontsNode
     
     /**
         Answer true iff this RDFNode is a URI resource or an anonymous
-        resource (ie is not a literal). Useful for one-off tests: see also 
+        resource or a statement term (ie is not a literal). Useful for one-off tests: see also 
         visitWith() for making literal/anon/URI choices.
     */
     public boolean isResource();
+    
+    /**
+        Answer true iff this RDFNode is a resource representing an RDF* triple term. 
+     */
+    
+    public boolean isStmtResource();
     
     /**
         RDFNodes can be converted to different implementation types. Convert

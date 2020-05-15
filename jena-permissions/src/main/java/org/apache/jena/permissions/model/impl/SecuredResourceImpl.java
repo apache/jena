@@ -580,6 +580,11 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
 		return holder.getBaseItem().getURI();
 	}
 
+    @Override
+    public Statement getStmtTerm() {
+        throw new UnsupportedOperationException("SecuredResource.getStmtTerm");
+    }
+	
 	/**
 	 * Answer true iff this resource has the value <code>o</code> for property
 	 * <code>p</code>. <code>o</code> is interpreted as a typed literal with the
@@ -923,5 +928,4 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
 	public Object visitWith(final RDFVisitor rv) {
 		return isAnon() ? rv.visitBlank(this, getId()) : rv.visitURI(this, getURI());
 	}
-
 }

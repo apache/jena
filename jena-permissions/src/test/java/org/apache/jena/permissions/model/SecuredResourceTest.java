@@ -28,7 +28,6 @@ import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluatorParameters;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
-import org.apache.jena.permissions.model.SecuredResource;
 import org.apache.jena.permissions.model.impl.SecuredResourceImpl;
 import org.apache.jena.permissions.model.impl.SecuredStatementIterator;
 import org.apache.jena.rdf.model.Literal;

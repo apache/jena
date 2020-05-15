@@ -19,10 +19,8 @@ package org.apache.jena.permissions.model;
 
 import org.apache.jena.permissions.Factory;
 import org.apache.jena.permissions.MockSecurityEvaluator;
-import org.apache.jena.permissions.SecurityEvaluatorParameters;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
-import org.apache.jena.permissions.model.SecuredModel;
-import org.apache.jena.permissions.model.SecuredRDFNode;
+import org.apache.jena.permissions.SecurityEvaluatorParameters;
 import org.apache.jena.permissions.model.impl.SecuredRDFNodeImpl;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.shared.ReadDeniedException;

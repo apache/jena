@@ -634,6 +634,10 @@ implements Model, PrefixMapping, Lock
     { return new ResourceImpl( id, this ); }
 
     @Override
+    public Resource createResource( Statement statement )
+    { return new ResourceImpl( statement, this ); }
+
+    @Override
     @Deprecated public Resource createResource( String uri, ResourceF f )  
     { return f.createResource( createResource( uri ) ); }
 
@@ -1455,7 +1459,7 @@ implements Model, PrefixMapping, Lock
       { return (Seq) getSeq(uri).addProperty( RDF.type, RDF.Seq ); }
 
       /**
-        Answer a Statement in this Model whcih encodes the given Triple.
+        Answer a Statement in this Model which encodes the given Triple.
         @param t a triple to wrap as a statement
         @return a statement wrapping the triple and in this model
        */

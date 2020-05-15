@@ -178,6 +178,11 @@ public abstract class SecuredRDFNodeImpl extends SecuredItemImpl implements Secu
 		return holder.getBaseItem().isURIResource();
 	}
 
+	@Override
+	public boolean isStmtResource() {
+	    throw new UnsupportedOperationException("SecuredRDFNode.isStmtResource");
+	}
+	
 	/**
 	 * An RDFNode is equal to another enhanced node n iff the underlying nodes
 	 * are equal. We generalise to allow the other object to be any class
