@@ -535,13 +535,13 @@ public class TestAdmin extends AbstractFusekiTest {
     */
    private static boolean waitForTasksToFinish(int pauseMillis, int maxWaitMillis) {
        // Wait for them to finish.
-       // Divide into
+       // Divide into chunks
        if ( pauseMillis > 0 )
            Lib.sleep(pauseMillis);
        int waited = 0;
        final int INTERVALS = 10;
        for (int i = 0 ; i < INTERVALS ; i++ ) {
-           System.err.println("Wait: "+i);
+           //System.err.println("Wait: "+i);
            List<String> x = runningTasks();
            if ( x.isEmpty() )
                return true;

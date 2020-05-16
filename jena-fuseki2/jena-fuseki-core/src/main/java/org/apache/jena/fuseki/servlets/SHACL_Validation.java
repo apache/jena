@@ -19,20 +19,16 @@
 package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format;
-import static org.apache.jena.fuseki.servlets.ActionLib.getOneHeader;
+import static org.apache.jena.fuseki.servlets.GraphTarget.determineTarget;
 
 import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.fuseki.DEF;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
-import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.shacl.ShaclValidator;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.ValidationReport;
-import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.web.HttpSC;
 
 /**
@@ -55,7 +51,10 @@ public class SHACL_Validation extends BaseActionREST { //ActionREST {
 
         action.beginRead();
         try {
-            Graph data = determineTarget(action.getActiveDSG(), action);
+            GraphTarget target = determineTarget(action.getActiveDSG(), action);
+            if ( ! target.exists() )
+                ServletOps.errorNotFound("No data graph: "+target.label());
+            Graph data = target.graph();
             Graph shapesGraph = ActionLib.readFromRequest(action, Lang.TTL);
             Shapes shapes = Shapes.parse(shapesGraph);
             ValidationReport report = ShaclValidator.get().validate(shapesGraph, data);
@@ -71,23 +70,4 @@ public class SHACL_Validation extends BaseActionREST { //ActionREST {
             action.endRead();
         }
     }
-
-    protected final static Graph determineTarget(DatasetGraph dsg, HttpAction action) {
-        boolean dftGraph = getOneHeader(action.request, HttpNames.paramGraphDefault) != null ;
-        String graphName = getOneHeader(action.request, HttpNames.paramGraph) ;
-        if ( dftGraph && graphName != null )
-            ServletOps.errorBadRequest("Both default graph and named graph specified") ;
-        if ( dftGraph )
-            graphName = HttpNames.valueDefault;
-        if ( graphName == null )
-            graphName = HttpNames.valueDefault;
-        // ?graph=
-        if ( graphName.equals(HttpNames.valueDefault ) )
-            return dsg.getDefaultGraph();
-        if ( graphName.equals("union") )
-            return dsg.getUnionGraph();
-        Node gn = NodeFactory.createURI(graphName);
-        return dsg.getGraph(gn);
-    }
-
 }

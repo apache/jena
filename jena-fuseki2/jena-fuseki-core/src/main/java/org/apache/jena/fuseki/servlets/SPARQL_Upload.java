@@ -128,7 +128,7 @@ public class SPARQL_Upload extends ActionService
 
         Node gn = null;
         if ( graphName != null ) {
-            gn = graphName.equals(HttpNames.valueDefault)
+            gn = graphName.equals(HttpNames.graphTargetDefault)
                 ? Quad.defaultGraphNodeGenerated
                 : NodeFactory.createURI(graphName);
         }

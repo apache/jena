@@ -206,7 +206,7 @@ public class Upload {
                     String value = Streams.asString(input, "UTF-8");
                     if ( fieldName.equals(HttpNames.paramGraph) ) {
                         graphName = value;
-                        if ( graphName != null && !graphName.equals("") && !graphName.equals(HttpNames.valueDefault) ) {
+                        if ( graphName != null && !graphName.equals("") && !graphName.equals(HttpNames.graphTargetDefault) ) {
                             // -- Check IRI with additional checks.
                             IRI iri = IRIResolver.parseIRI(value);
                             if ( iri.hasViolation(false) )
@@ -272,7 +272,7 @@ public class Upload {
             }
 
             if ( graphName == null || graphName.equals("") )
-                graphName = HttpNames.valueDefault;
+                graphName = HttpNames.graphTargetDefault;
             if ( isQuads )
                 graphName = null;
             return new UploadDetailsWithName(graphName, dsgTmp, count);

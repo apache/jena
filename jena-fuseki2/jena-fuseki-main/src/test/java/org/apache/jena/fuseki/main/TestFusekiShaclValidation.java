@@ -75,14 +75,9 @@ public class TestFusekiShaclValidation {
     public void shacl_default_graph() {
         try ( RDFConnection conn = RDFConnectionFactory.connect(serverURL+"/ds")) {
             conn.put(DIR+"data1.ttl");
-            
             ValidationReport report = validateReport(serverURL+"/ds/shacl?graph=default", DIR+"shapes1.ttl");
             assertNotNull(report);
             assertEquals(2, report.getEntries().size());
-            
-            ValidationReport report2 = validateReport(serverURL+"/ds/shacl?graph=urn:x:noGraph", DIR+"shapes1.ttl");
-            assertNotNull(report);
-            assertEquals(0, report2.getEntries().size());
             conn.update("CLEAR ALL");
         }
     }
@@ -91,10 +86,13 @@ public class TestFusekiShaclValidation {
     public void shacl_no_data_graph() {
         try ( RDFConnection conn = RDFConnectionFactory.connect(serverURL+"/ds")) {
             conn.put(DIR+"data1.ttl");
-            ValidationReport report = validateReport(serverURL+"/ds/shacl?graph=urn:x:noGraph", DIR+"shapes1.ttl");
-            assertNotNull(report);
-            assertEquals(0, report.getEntries().size());
-            conn.update("CLEAR ALL");
+            try {
+                FusekiTestLib.expect404(()->{
+                    ValidationReport report = validateReport(serverURL+"/ds/shacl?graph=urn:abc:noGraph", DIR+"shapes1.ttl");
+                });
+            } finally {
+                conn.update("CLEAR ALL");
+            }
         }
     }
 

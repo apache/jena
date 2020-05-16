@@ -26,7 +26,7 @@ public class HttpNames
     public static final String hAcceptEncoding      = "Accept-Encoding" ;
     public static final String hAcceptCharset       = "Accept-Charset" ;
     public static final String hAcceptRanges        = "Accept-Ranges" ;
-    
+
     public static final String hAllow               = "Allow" ;
     public static final String hAuthorization       = "Authorization";
     public static final String hContentEncoding     = "Content-Encoding" ;
@@ -41,7 +41,7 @@ public class HttpNames
     public static final String hLocation            = "Location" ; 
     public static final String hVary                = "Vary" ;
     public static final String charset              = "charset" ;
-    
+
     // CORS: 
     //   http://www.w3.org/TR/cors/  http://esw.w3.org/CORS_Enabled
     public static final String hAccessControlAllowOrigin        = "Access-Control-Allow-Origin" ;
@@ -53,8 +53,8 @@ public class HttpNames
     public static final String hOrigin                          = "Origin" ;
     public static final String hAccessControlRequestMethod      = "Access-Control-Request-Method" ;
     public static final String hAccessControlRequestHeaders     = "Access-Control-Request-Headers" ;
-    
-    // Fuseki parameter names 
+
+    // GSP parameter names 
     public static final String paramGraph           = "graph" ;
     public static final String paramGraphDefault    = "default" ;
 
@@ -62,7 +62,7 @@ public class HttpNames
     public static final String paramQueryRef        = "query-ref" ;
     public static final String paramDefaultGraphURI = "default-graph-uri" ;
     public static final String paramNamedGraphURI   = "named-graph-uri" ;
-    
+
     public static final String paramStyleSheet      = "stylesheet" ;
     public static final String paramAccept          = "accept" ;
     public static final String paramOutput1         = "output" ;        // See Yahoo! developer: http://developer.yahoo.net/common/json.html 
@@ -87,6 +87,8 @@ public class HttpNames
 
     public static final String HEADER_IFMODSINCE    = "If-Modified-Since";
     public static final String HEADER_LASTMOD       = "Last-Modified";
-    
-    public static final String valueDefault    = "default" ;
+
+    // Special names for GSP targets (use in ?graph=)
+    public static final String graphTargetDefault   = "default" ;
+    public static final String graphTargetUnion     = "union" ;
 }
