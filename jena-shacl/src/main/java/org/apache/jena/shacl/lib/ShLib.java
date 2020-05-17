@@ -153,11 +153,11 @@ public class ShLib {
                     else
                         System.out.printf("Node=%s\n",displayStr(focusNode));
                     System.out.printf("  %s\n", msg);
-                    
+
                     Path path = null;
                     if ( pathNode != null )
                         path = ShaclPaths.parsePath(report.getModel().getGraph(), pathNode.asNode());
-                    
+
                     // Better (?) to build a report entry.
 //                    ReportEntry e = ReportEntry.create()
 //                        .focusNode(focusNode.asNode())

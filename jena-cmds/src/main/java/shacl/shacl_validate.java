@@ -25,6 +25,7 @@ import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RiotException;
 import org.apache.jena.shacl.ValidationReport;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.validation.ValidationProc;
@@ -93,17 +94,27 @@ public class shacl_validate extends CmdGeneral {
 
     @Override
     protected void exec() {
-        Graph shapesGraph = RDFDataMgr.loadGraph(shapesfile);
+        Graph shapesGraph = load(shapesfile, "shapes file");
         Graph dataGraph;
         if ( datafile.equals(shapesfile) )
             dataGraph = shapesGraph;
         else
-            dataGraph = RDFDataMgr.loadGraph(datafile);
+            dataGraph = load(datafile, "data file");
         ValidationReport report = ValidationProc.simpleValidation(shapesGraph, dataGraph, isVerbose());
         if ( textOutput )
             ShLib.printReport(report);
         else
             RDFDataMgr.write(System.out, report.getGraph(), Lang.TTL);
+    }
+
+    private Graph load(String filename, String scope) {
+        try {
+            Graph graph = RDFDataMgr.loadGraph(filename);
+            return graph;
+        } catch (RiotException ex) {
+            System.err.println("Loading "+scope);
+            throw ex;
+        }
     }
 
     @Override

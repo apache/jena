@@ -58,13 +58,13 @@ public class ShapesParser {
     private static final boolean DEBUG = false;
     private static IndentedWriter OUT = IndentedWriter.stdout;
     //private static Logger LOG = LoggerFactory.getLogger(ShapesParser.class);
-    
+
     /** Return a list of "top shapes", those with targets.
      * The {@code shapesMap} is modified, adding in all shapes processed.
      */
     public static Collection<Shape> parseShapes(Graph shapesGraph, Targets targets, Map<Node, Shape> shapesMap) {
         Targets rootShapes = targets;
-        
+
         if ( DEBUG )
             OUT.println("SparqlConstraintComponents");
         ConstraintComponents sparqlConstraintComponents = ConstraintComponents.parseSparqlConstraintComponents(shapesGraph);
@@ -112,15 +112,15 @@ public class ShapesParser {
                 }
             });
         }
-        
+
         // Syntax rules for well-formed shapes.
         //https://www.w3.org/TR/shacl/#syntax-rules
-        // Note - we only have the reachable shapes in "shapesMap". 
-        
+        // Note - we only have the reachable shapes in "shapesMap".
+
         return acc ;
     }
 
-    /** Parse and add all the declared shapes into the map. 
+    /** Parse and add all the declared shapes into the map.
      * The {@code shapesMap} is modified, adding in all shapes processed.
      */
     public static Collection<Shape> declaredShapes(Graph shapesGraph, Map<Node, Shape> shapesMap) {
@@ -132,7 +132,7 @@ public class ShapesParser {
             parseRootShape(acc, shapesMap, shapesGraph, shapeNode));
         return acc;
     }
-    
+
     private static void parseRootShape(List<Shape> acc, Map<Node, Shape> parsed, Graph shapesGraph, Node shNode) {
         if ( parsed.containsKey(shNode) )
             return ;
@@ -222,9 +222,9 @@ public class ShapesParser {
                 OUT.printf("Node shape %s\n", displayStr(shapeNode));
             return new NodeShape(shapesGraph, shapeNode, isDeactivated, severity, messages, targets, constraints, propertyShapes);
         }
-        
+
         // -- Property shape.
-        
+
         if ( DEBUG )
             OUT.incIndent();
         Node pathNode = getOneSP(shapesGraph, shapeNode, SHACL.path);
@@ -280,21 +280,20 @@ public class ShapesParser {
         for ( Triple t : propertyTriples) {
             // Must be a property shape.
             Node propertyShape = object(t);
-            
+
             long x = countSP(shapesGraph, propertyShape, SHACL.path);
-            if ( x == 0 ) 
-                throw new ShaclParseException("No sh:path on a property shape: "+displayStr(shapeNode));
+            if ( x == 0 ) {
+                // Is it a typo? -> Can we find it as a subject?
+                boolean existsAsSubject = G.contains(shapesGraph, propertyShape, null,null);
+                if ( ! existsAsSubject )
+                    throw new ShaclParseException("Missing property shape: node="+displayStr(shapeNode)+" sh:property "+displayStr(propertyShape));
+                else
+                    throw new ShaclParseException("No sh:path on a property shape: node="+displayStr(shapeNode)+" sh:property "+displayStr(propertyShape));
+            }
             if ( x > 1 ) {
                 List<Node> paths = listSP(shapesGraph, propertyShape, SHACL.path);
-                throw new ShaclParseException("Muiltiple sh:path on a property shape: "+displayStr(shapeNode)+ " : "+paths);
+                throw new ShaclParseException("Muiltiple sh:path on a property shape: "+displayStr(shapeNode)+" sh:property"+displayStr(propertyShape)+ " : "+paths);
             }
-//            if ( DEBUG ) {
-//                Node pathNode = G.getSP(shapesGraph, propertyShape, SHACL.path);               
-//                if ( pathNode != null ) {
-//                    Path path = parsePath(shapesGraph, pathNode);
-//                    OUT.printf("Found property shape: path = %s\n", pathToString(shapesGraph, path));
-//                }
-//            }
             PropertyShape ps = (PropertyShape)parseShapeStep(parsed, shapesGraph, propertyShape);
             propertyShapes.add(ps);
         }
@@ -313,9 +312,9 @@ public class ShapesParser {
         accTarget(x, shapesGraph, shape, TargetType.targetClass);
         accTarget(x, shapesGraph, shape, TargetType.targetObjectsOf);
         accTarget(x, shapesGraph, shape, TargetType.targetSubjectsOf);
-        
+
         // TargetType.implicitClass : some overlap with TargetOps.implicitClassTargets
-        // Explicitly sh:NodeShape or sh:PropertyShape and also subClassof* rdfs:Class.    
+        // Explicitly sh:NodeShape or sh:PropertyShape and also subClassof* rdfs:Class.
         if ( isShapeType(shapesGraph, shape) && isOfType(shapesGraph, shape, rdfsClass) )
             x.add(Target.create(TargetType.implicitClass, shape));
         return x;
@@ -324,7 +323,7 @@ public class ShapesParser {
     private static boolean isShapeType(Graph shapesGraph, Node shape) {
         return hasType(shapesGraph, shape, SHACL.NodeShape) || hasType(shapesGraph, shape, SHACL.PropertyShape);
     }
-    
+
     private static Severity severity(Graph shapesGraph, Node shNode) {
         Node sev = G.getSP(shapesGraph, shNode, SHACL.severity);
         if ( sev == null )

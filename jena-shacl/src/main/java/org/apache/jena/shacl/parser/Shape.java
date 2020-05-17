@@ -29,6 +29,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.shacl.engine.Target;
 import org.apache.jena.shacl.engine.TargetOps;
 import org.apache.jena.shacl.validation.Severity;
+import org.apache.jena.sparql.util.FmtUtils;
 
 public abstract class Shape {
 
@@ -76,6 +77,10 @@ public abstract class Shape {
         return targets;
     }
 
+    public boolean hasTarget() {
+        return ! targets.isEmpty();
+    }
+
     public List<Constraint> getConstraints() {
         return constraints;
     }
@@ -103,6 +108,8 @@ public abstract class Shape {
 
     public void print(IndentedWriter out) {
         printHeader(out);
+        out.print(" ");
+        out.print("node="+FmtUtils.stringForNode(shapeNode));
 
         if ( deactivated() )
             out.print(" deactivated");

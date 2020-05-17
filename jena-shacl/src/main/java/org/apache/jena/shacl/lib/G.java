@@ -30,14 +30,8 @@ import org.apache.jena.sparql.util.graph.GNode;
 import org.apache.jena.sparql.util.graph.GraphList;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-/** Library of functions for convenience wokring direction with Graph and Node. */
+/** Library of functions for convenience working directly with Graph and Node. */
 public class G {
-        // Node filter tests.
-//    public static boolean isURI(GNode n)         { return n != null && isURI(n.getNode()); }
-//    public static boolean isBlank(GNode n)       { return n != null && isBlank(n.getNode()); }
-//    public static boolean isLiteral(GNode n)     { return n != null && isLiteral(n.getNode()); }
-//    public static boolean isResource(GNode n)    { return n != null && isURI(n.getNode())||isBlank(n.getNode()); }
-
     // Node versions
     public static Node subject(Triple triple) {
         return triple == null ? null : triple.getSubject();
