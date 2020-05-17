@@ -31,28 +31,31 @@ import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.path.Path;
 
+/** SPARQL Constraint (ASK or SELECT) */
 public class SparqlConstraint implements Constraint {
 
     private final Query query;
+    private String message;
     static Var varValue = Var.alloc("value");
     // Output
     static Var varPath = Var.alloc("path");
     // Input substitution.
     static Var varPATH = Var.alloc("PATH");
 
-    public SparqlConstraint(Query query) {
+    public SparqlConstraint(Query query, String message) {
         this.query = query;
+        this.message = message; 
     }
 
     @Override
     public void validateNodeShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode) {
-        SparqlValidation.validate(vCxt, data, shape, focusNode, null, focusNode, query, null, this);
+        SparqlValidation.validate(vCxt, data, shape, focusNode, null, focusNode, query, null, message, this);
     }
 
     @Override
     public void validatePropertyShape(ValidationContext vCxt, Graph data, Shape shape,
                                       Node focusNode, Path path, Set<Node> valueNodes) {
-        valueNodes.forEach(vn->SparqlValidation.validate(vCxt, data, shape, focusNode, path, vn, query, null, this));
+        valueNodes.forEach(vn->SparqlValidation.validate(vCxt, data, shape, focusNode, path, vn, query, null, message, this));
     }
 
     @Override

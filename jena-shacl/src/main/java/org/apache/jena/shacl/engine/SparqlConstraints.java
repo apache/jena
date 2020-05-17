@@ -85,7 +85,8 @@ public class SparqlConstraints {
         String qs = prefixes+"\n"+selectQuery;
         try { 
             Query query = QueryFactory.create(qs);
-            return new SparqlConstraint(query);
+            String msg = (message != null && message.isLiteral() ? message.getLiteralLexicalForm() : null );
+            return new SparqlConstraint(query, msg);
         } catch (QueryParseException ex) {
             throw new ShaclParseException("SPARQL parse error: "+ex.getMessage()+"\n"+qs);
         }
