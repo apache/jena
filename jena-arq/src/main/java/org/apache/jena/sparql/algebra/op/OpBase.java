@@ -35,6 +35,7 @@ public abstract class OpBase extends PrintSerializableBase implements Op
     @Override
     final public boolean equals(Object other)
     { 
+        if ( other == null ) return false;
         if ( this == other ) return true ;
 
         if ( ! ( other instanceof Op ) )

@@ -100,6 +100,14 @@ class ExecutionDispatch implements OpVisitor
     }
 
     @Override
+    public void visit(OpFind opFind)
+    {
+        QueryIterator input = pop() ;
+        QueryIterator qIter = opExecutor.execute(opFind, input) ;
+        push(qIter) ;
+    }
+
+    @Override
     public void visit(OpProcedure opProc)
     {
         QueryIterator input = pop() ;

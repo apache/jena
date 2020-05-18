@@ -246,15 +246,15 @@ public class TestSSE_Basic
     @Test public void testMisc_11()    { testNotEquals("(a)", "()") ; }
     @Test public void testMisc_12()    { testNotEquals("(a)", "(<a>)") ; }
 
-    @Test public void testTripleTerm_1()  { testNode("{:s :p :o}"); }
-    @Test public void testTripleTerm_2()  { testNode("{ :s :p :o }"); }
-    @Test public void testTripleTerm_3()  { testNode("{ ?s ?p ?o }"); }
-    @Test public void testTripleTerm_4()  { testNode("{{ :s :p :o } :q { :s :p :o }}"); }
+    @Test public void testTripleTerm_1()  { testNode("<< :s :p :o >>"); }
+    @Test public void testTripleTerm_2()  { testNode("<<:s :p :o>>"); }
+    @Test public void testTripleTerm_3()  { testNode("<< ?s ?p ?o >>"); }
+    @Test public void testTripleTerm_4()  { testNode("<<<< :s :p :o >> :q << :s :p :o >>>>"); }
 
-    @Test public void testTripleTerm_10()  { parseBad("{ :s :p :o "); }
-    @Test public void testTripleTerm_11()  { parseBad("{ :s }"); }
-    @Test public void testTripleTerm_12()  { parseBad("{ :s :p }"); }
-    @Test public void testTripleTerm_13()  { parseBad("{ {:s :p :o} :q } "); }
+    @Test public void testTripleTerm_10()  { parseBad("<< :s :p :o "); }
+    @Test public void testTripleTerm_11()  { parseBad("<< :s >>"); }
+    @Test public void testTripleTerm_12()  { parseBad("<< :s :p >>"); }
+    @Test public void testTripleTerm_13()  { parseBad("<< <<:s :p :o >> :q >> "); }
 
     @Test public void testTaggedList_1()
     {

@@ -40,8 +40,8 @@ import org.junit.Test;
 /** Misc tests for TDB2. */
 public class TestTDB2 {
     // Safe on MS Windows - different directories for abort1 and abort2.
-    static String DIR1 = "DB_1";
-    static String DIR2 = "DB_2";
+    static String DIR1 = "target/tdb-testing/DB_1";
+    static String DIR2 = "target/tdb-testing/DB_2";
 
     @BeforeClass public static void beforeClass() {
         FileOps.ensureDir(DIR1);

@@ -91,14 +91,13 @@ public class WriterNode
     {
         if ( node.isNodeTriple() ) {
             Triple t = Node_Triple.triple(node);
-            // special syntax.
-            out.print("{ ");
+            out.print("<< ");
             output(out, t.getSubject(), naming);
             out.print(" ");
             output(out, t.getPredicate(), naming);
             out.print(" ");
             output(out, t.getObject(), naming);
-            out.print(" }");
+            out.print(" >>");
         } else
             out.print(FmtUtils.stringForNode(node, naming)) ;
     }

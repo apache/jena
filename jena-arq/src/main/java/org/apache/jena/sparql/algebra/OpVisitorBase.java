@@ -77,6 +77,8 @@ public class OpVisitorBase implements OpVisitor
     @Override public void visit(OpAssign opAssign)              {}
 
     @Override public void visit(OpExtend opExtend)              {}
+    
+    @Override public void visit(OpFind opFind)                  {}
 
     @Override public void visit(OpList opList)                  {}
 

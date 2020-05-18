@@ -23,10 +23,14 @@ import java.util.List ;
 
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFormatter ;
 import org.apache.jena.query.SortCondition ;
-import org.apache.jena.sparql.algebra.* ;
+import org.apache.jena.sparql.algebra.Algebra;
+import org.apache.jena.sparql.algebra.JoinType;
+import org.apache.jena.sparql.algebra.Table;
+import org.apache.jena.sparql.algebra.TableFactory;
 import org.apache.jena.sparql.algebra.table.TableN ;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.core.TriplePath ;
@@ -74,6 +78,12 @@ public class EvaluatorSimple implements Evaluator
         QueryIterator qIter = new QueryIterPath(triplePath, 
                                                 QueryIterRoot.create(execCxt),
                                                 execCxt) ;
+        return TableFactory.create(qIter) ;
+    }
+
+    @Override
+    public Table find(Var var, Triple tripleTerm) {
+        QueryIterator qIter = RX.matchTripleStar(QueryIterRoot.create(execCxt), var, tripleTerm, execCxt);
         return TableFactory.create(qIter) ;
     }
 

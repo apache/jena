@@ -34,7 +34,7 @@ import org.apache.jena.sparql.syntax.ElementTriplesBlock ;
  * Because a {@link Var} is a subclass of {@link Node_Variable} which is a {@link Node},
  * this includes variable renaming.
  * <p>
- * This is a transformation on the syntax - all occurences of a variable are replaced, even if
+ * This is a transformation on the syntax - all occurrences of a variable are replaced, even if
  * inside sub-select's and not project (which means it is effectively a different variable).
  */
 public class ElementTransformSubst extends ElementTransformCopyBase {
@@ -90,7 +90,8 @@ public class ElementTransformSubst extends ElementTransformCopyBase {
         return new TriplePath(s1, path.getPath(), o1) ;
     }
 
-    private Triple transform(Triple triple) {
+    @Override
+    public Triple transform(Triple triple) {
         Node s = triple.getSubject() ;
         Node s1 = transform(s) ;
         Node p = triple.getPredicate() ;

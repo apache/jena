@@ -94,6 +94,7 @@ public class BuilderOp
         addBuild(Tags.tagAssign,        buildAssign) ;
         addBuild(Tags.tagExtend,        buildExtend) ;
         addBuild(Tags.symAssign,        buildAssign) ;
+        addBuild(Tags.tagFind,          buildFind) ;
         addBuild(Tags.tagSlice,         buildSlice) ;
 
         addBuild(Tags.tagTable,         buildTable) ;
@@ -728,25 +729,34 @@ public class BuilderOp
             return OpExtend.create(sub, x) ;
         }
     } ;
+    
+    final protected Build buildFind = list -> {
+        BuilderLib.checkLength(3, list, "find") ;
+        // Var
+        Item item1 = list.get(1); // var
+        Var var = BuilderNode.buildVar(item1);
+        // Triple
+        Item tItem = list.get(2);
+        BuilderLib.checkList(tItem);
+        Triple triple = BuilderGraph.buildTriple(tItem.getList()) ;
+        
+        return new OpFind(triple, var);
+    };
 
-    final protected Build buildSlice = new Build()
-    {
-        @Override
-        public Op make(ItemList list)
-        {
-            BuilderLib.checkLength(4, list, "slice") ;
-            long start = BuilderNode.buildLong(list, 1, -1) ;
-            long length = BuilderNode.buildLong(list, 2, -1) ;
+    final protected Build buildSlice = list -> {
+        BuilderLib.checkLength(4, list, "slice") ;
+        long start = BuilderNode.buildLong(list, 1, -1) ;
+        long length = BuilderNode.buildLong(list, 2, -1) ;
 
-            if ( start == -1 )
-                start = Query.NOLIMIT ;
-            if ( length == -1 )
-                length = Query.NOLIMIT ;
+        if ( start == -1 )
+            start = Query.NOLIMIT ;
+        if ( length == -1 )
+            length = Query.NOLIMIT ;
 
-            Op sub = build(list, 3) ;
-            return new OpSlice(sub, start, length) ;
-        }
-    } ;
+        Op sub = build(list, 3) ;
+        return new OpSlice(sub, start, length) ;
+    };
+
 
     final protected Build buildNull = new Build()
     {

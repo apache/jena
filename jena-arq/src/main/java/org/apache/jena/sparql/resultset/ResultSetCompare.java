@@ -22,12 +22,17 @@ import java.util.* ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.query.* ;
+import org.apache.jena.graph.Node_Triple;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFactory;
+import org.apache.jena.query.ResultSetRewindable;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingUtils ;
 import org.apache.jena.sparql.util.EqualityTest;
+import org.apache.jena.sparql.util.Iso;
 import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 import org.apache.jena.sparql.util.NodeUtils ;
 
@@ -323,10 +328,16 @@ public class ResultSetCompare
                 return literalTest.equal(n1, n2) ;
             
             if ( n1.isBlank() && n2.isBlank() )
-                return mapping.makeIsomorphic(n1, n2) ;
+                return Iso.nodeIso(n1, n2, mapping);
             
             if ( n1.isVariable() && n2.isVariable() )
                 return mapping.makeIsomorphic(n1, n2) ;
+
+            if ( n1.isNodeTriple() && n2.isNodeTriple() ) {
+                Triple t1 = Node_Triple.triple(n1);
+                Triple t2 = Node_Triple.triple(n2);
+                return  Iso.tripleIso(t1, t2, mapping);
+            }
             
             return false ;
         }

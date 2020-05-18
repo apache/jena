@@ -195,7 +195,7 @@ void BlankNode() : { Token t ; }
 
 void TripleTerm() :     { Token t1 = null ; Token t2 = null ; }
 {
-    t1 = <LBRACE> // "{"
+    t1 = <LT2>
     (<WS>)*
     { tripleTermStart(t1.beginLine, t1.beginColumn); }
     RDFTerm()
@@ -204,7 +204,7 @@ void TripleTerm() :     { Token t1 = null ; Token t2 = null ; }
     (<WS>)*
     RDFTerm()
     (<WS>)*
-    t2 = <RBRACE>
+    t2 = <GT2>
     { tripleTermFinish(t2.beginLine, t2.beginColumn); }
 }
 

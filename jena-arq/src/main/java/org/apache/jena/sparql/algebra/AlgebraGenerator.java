@@ -18,7 +18,10 @@
 
 package org.apache.jena.sparql.algebra;
 
-import java.util.* ;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
 
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Pair ;
@@ -139,6 +142,9 @@ public class AlgebraGenerator
         // (triple patterns not in a group) 
         if ( elt instanceof ElementTriplesBlock )
             return compileBasicPattern(((ElementTriplesBlock)elt).getPattern()) ;
+        
+        if ( elt instanceof ElementFind )
+            return compileFind((ElementFind)elt) ;
         
         // Ditto.
         if ( elt instanceof ElementPathBlock )
@@ -293,86 +299,58 @@ public class AlgebraGenerator
         return Pair.create(filters, groupElts) ;
     }
     
-    protected Op compileOneInGroup(Element elt, Op current, Deque<Op> acc)
-    {
-        // Elements that operate over their left hand size (query syntax). 
-        
-        if ( elt instanceof ElementAssign )
-        {
-            ElementAssign assign = (ElementAssign)elt ;
-            return OpAssign.assign(current, assign.getVar(), assign.getExpr()) ;
+    protected Op compileOneInGroup(Element elt, Op current, Deque<Op> acc) {
+        // Elements that operate over their left hand size (query syntax).
+
+        if ( elt instanceof ElementAssign ) {
+            ElementAssign assign = (ElementAssign)elt;
+            return OpAssign.assign(current, assign.getVar(), assign.getExpr());
         }
 
-        if ( elt instanceof ElementBind )
-        {
-            ElementBind bind = (ElementBind)elt ;
-            return OpExtend.create(current, bind.getVar(), bind.getExpr()) ;
+        if ( elt instanceof ElementBind ) {
+            ElementBind bind = (ElementBind)elt;
+            return OpExtend.create(current, bind.getVar(), bind.getExpr());
         }
 
-        if ( elt instanceof ElementOptional )
-        {
-            ElementOptional eltOpt = (ElementOptional)elt ;
-            return compileElementOptional(eltOpt, current) ;
+        if ( elt instanceof ElementOptional ) {
+            ElementOptional eltOpt = (ElementOptional)elt;
+            return compileElementOptional(eltOpt, current);
         }
-        
-        if ( elt instanceof ElementMinus )
-        {
-            ElementMinus elt2 = (ElementMinus)elt ;
-            Op op = compileElementMinus(current, elt2) ;
-            return op ;
+
+        if ( elt instanceof ElementMinus ) {
+            ElementMinus elt2 = (ElementMinus)elt;
+            Op op = compileElementMinus(current, elt2);
+            return op;
         }
 
         // All elements that simply "join" into the algebra.
-        if ( elt instanceof ElementGroup        || 
-             elt instanceof ElementNamedGraph   ||
-             elt instanceof ElementService      ||
-             elt instanceof ElementUnion        || 
-             elt instanceof ElementSubQuery     ||
-             elt instanceof ElementData         ||
-             elt instanceof ElementTriplesBlock ||
-             elt instanceof ElementPathBlock
-            )
-        {
-            Op op = compileElement(elt) ;
-            return join(current, op) ;
+        if ( elt instanceof ElementGroup || elt instanceof ElementNamedGraph || elt instanceof ElementService || elt instanceof ElementUnion
+             || elt instanceof ElementSubQuery || elt instanceof ElementData || elt instanceof ElementTriplesBlock
+             || elt instanceof ElementPathBlock || elt instanceof ElementFind ) {
+            Op op = compileElement(elt);
+            return join(current, op);
         }
-        
+
         // Specials.
-        
-        if ( elt instanceof ElementExists )
-        {
-            ElementExists elt2 = (ElementExists)elt ;
-            Op op = compileElementExists(current, elt2) ;
-            return op ;
+
+        if ( elt instanceof ElementExists ) {
+            ElementExists elt2 = (ElementExists)elt;
+            Op op = compileElementExists(current, elt2);
+            return op;
         }
-        
-        if ( elt instanceof ElementNotExists )
-        {
-            ElementNotExists elt2 = (ElementNotExists)elt ;
-            Op op = compileElementNotExists(current, elt2) ;
-            return op ;
+
+        if ( elt instanceof ElementNotExists ) {
+            ElementNotExists elt2 = (ElementNotExists)elt;
+            Op op = compileElementNotExists(current, elt2);
+            return op;
         }
-        
+
         // Filters were collected together by prepareGroup
-        // This only handles filters left in place by some magic. 
-        if ( elt instanceof ElementFilter )
-        {
-            ElementFilter f = (ElementFilter)elt ;
-            return OpFilter.filter(f.getExpr(), current) ;
+        // This only handles filters left in place by some magic.
+        if ( elt instanceof ElementFilter ) {
+            ElementFilter f = (ElementFilter)elt;
+            return OpFilter.filter(f.getExpr(), current);
         }
-    
-//        // SPARQL 1.1 UNION -- did not make it into SPARQL 
-//        if ( elt instanceof ElementUnion )
-//        {
-//            ElementUnion elt2 = (ElementUnion)elt ;
-//            if ( elt2.getElements().size() == 1 )
-//            {
-//                Op op = compileElementUnion(current, elt2) ;
-//                return op ;
-//            }
-//        }
-        
-        
         return compileUnknownElement(elt, "compile/Element not recognized: "+Lib.className(elt));
     }
 
@@ -458,6 +436,12 @@ public class AlgebraGenerator
         return PathLib.pathToTriples(pathBlock) ;
     }
 
+    protected Op compileFind(ElementFind elFind) {
+        Var var = elFind.getVar();
+        Triple triple = elFind.getTriple();
+        return new OpFind(triple, var);
+    }
+    
     protected Op compileElementGraph(ElementNamedGraph eltGraph)
     {
         Node graphNode = eltGraph.getGraphNameNode() ;

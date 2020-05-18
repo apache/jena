@@ -37,7 +37,7 @@ import org.apache.jena.sparql.serializer.SerializationContext;
  * with terms from the current binding. It is an error not to have substitutions for
  * all variables and results in the original binding unchanged.
  */
-class QueryIterAddTripleTerm extends QueryIterTriplePattern {
+public class QueryIterAddTripleTerm extends QueryIterTriplePattern {
     private final Triple triple;
     private final Var    var;
 

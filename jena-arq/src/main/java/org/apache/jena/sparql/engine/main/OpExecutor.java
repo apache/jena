@@ -136,6 +136,10 @@ public class OpExecutor
         return execute(opTriple.asBGP(), input) ;
     }
 
+    protected QueryIterator execute(OpFind opFind, QueryIterator input) {
+        return RX.matchTripleStar(input, opFind.getVar(), opFind.getTriple(), execCxt);
+    }
+
     protected QueryIterator execute(OpGraph opGraph, QueryIterator input) {
         QueryIterator qIter = specialcase(opGraph.getNode(), opGraph.getSubOp(), input) ;
         if (qIter != null)

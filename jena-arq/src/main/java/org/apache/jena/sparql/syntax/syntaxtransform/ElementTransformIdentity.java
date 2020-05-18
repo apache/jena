@@ -21,6 +21,7 @@ package org.apache.jena.sparql.syntax.syntaxtransform;
 import java.util.List ;
 
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.Expr ;
@@ -48,6 +49,10 @@ public final class ElementTransformIdentity implements ElementTransform
     public Element transform(ElementAssign el, Var v, Expr expr2) { return el ; }
     @Override
     public Element transform(ElementBind el, Var v, Expr expr2) { return el ; }
+    @Override
+    public Element transform(ElementFind el, Var v, Triple triple2) { return el ; }
+    @Override
+    public Triple transform(Triple triple) { return triple; }
     @Override
     public Element transform(ElementData el) { return el ; }
     @Override

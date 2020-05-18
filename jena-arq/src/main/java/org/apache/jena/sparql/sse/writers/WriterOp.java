@@ -235,6 +235,16 @@ public class WriterOp
         }
 
         @Override
+        public void visit(OpFind opFind) {
+            start(opFind, NoNL) ;
+            out.print(opFind.getVar());
+            out.print(" ");
+            formatTriple(opFind.getTriple()) ;
+            out.println() ;
+            finish(opFind) ;
+        }
+
+        @Override
         public void visit(OpProcedure opProc) {
             start(opProc, NoNL) ;
             WriterNode.output(out, opProc.getProcId(), sContext) ;

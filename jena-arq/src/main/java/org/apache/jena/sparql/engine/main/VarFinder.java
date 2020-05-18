@@ -165,6 +165,12 @@ public class VarFinder
         }
 
         @Override
+        public void visit(OpFind opFind) {
+            defines.add(opFind.getVar());
+            addVarsFromTriple(defines, opFind.getTriple());
+        }
+
+        @Override
         public void visit(OpExt opExt) {
             opExt.effectiveOp().visit(this);
         }

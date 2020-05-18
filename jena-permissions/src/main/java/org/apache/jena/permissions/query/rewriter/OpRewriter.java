@@ -324,15 +324,26 @@ public class OpRewriter implements OpVisitor {
 	}
 
 	/**
-	 * rewrites the subop of filter.
+	 * Returns the opFind
 	 */
 	@Override
-	public void visit(final OpFilter opFilter) {
+	public void visit(final OpFind opFind) {
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("Starting visiting OpFilter");
+			LOG.debug("Starting visiting OpFind");
 		}
-		addOp(OpFilter.filterBy(opFilter.getExprs(), rewriteOp1(opFilter)));
+		addOp(opFind);
 	}
+
+    /**
+     * rewrites the subop of filter.
+     */
+    @Override
+    public void visit(final OpFilter opFilter) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Starting visiting OpFilter");
+        }
+        addOp(OpFilter.filterBy(opFilter.getExprs(), rewriteOp1(opFilter)));
+    }
 
 	/**
 	 * rewrites the subop of graph.

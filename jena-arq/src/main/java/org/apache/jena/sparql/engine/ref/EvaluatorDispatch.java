@@ -97,6 +97,11 @@ public class EvaluatorDispatch implements OpVisitor
         Table table = evaluator.pathPattern(opPath.getTriplePath()) ;
         push(table) ;
     }
+    
+    @Override
+    public void visit(OpFind opFind) {
+        Table table = evaluator.find(opFind.getVar(), opFind.getTriple());
+    }
 
     @Override
     public void visit(OpProcedure opProc)

@@ -68,7 +68,7 @@ parseFinish() ;
     case STRING_LITERAL2:
     case STRING_LITERAL_LONG1:
     case STRING_LITERAL_LONG2:
-    case LBRACE:
+    case LT2:
     case SYMBOL:{
       Term();
       label_2:
@@ -192,8 +192,8 @@ listFinish(t.beginLine, t.beginColumn) ;
       case STRING_LITERAL_LONG1:
       case STRING_LITERAL_LONG2:
       case LPAREN:
-      case LBRACE:
       case LBRACKET:
+      case LT2:
       case SYMBOL:{
         ;
         break;
@@ -224,7 +224,7 @@ listFinish(t.beginLine, t.beginColumn) ;
     case STRING_LITERAL2:
     case STRING_LITERAL_LONG1:
     case STRING_LITERAL_LONG2:
-    case LBRACE:{
+    case LT2:{
       RDFTerm();
       break;
       }
@@ -264,7 +264,7 @@ listFinish(t.beginLine, t.beginColumn) ;
       BlankNode();
       break;
       }
-    case LBRACE:{
+    case LT2:{
       TripleTerm();
       break;
       }
@@ -339,7 +339,7 @@ emitBNode(t.beginLine, t.beginColumn, stripChars(t.image, 2)) ;
   }
 
   final public void TripleTerm() throws ParseException {Token t1 = null ; Token t2 = null ;
-    t1 = jj_consume_token(LBRACE);
+    t1 = jj_consume_token(LT2);
     label_8:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -396,7 +396,7 @@ tripleTermStart(t1.beginLine, t1.beginColumn);
       }
       jj_consume_token(WS);
     }
-    t2 = jj_consume_token(RBRACE);
+    t2 = jj_consume_token(GT2);
 tripleTermFinish(t2.beginLine, t2.beginColumn);
   }
 
@@ -515,10 +515,10 @@ emitLiteralDouble(t.beginLine, t.beginColumn, t.image) ;
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x2,0x2,0x2be1df0,0x2,0x2,0x2,0x2,0x2200000,0x2be1df0,0x9e1df0,0x9e1df0,0x180,0x1e1c00,0x2,0x2,0x2,0x2,0x1e0000,0x30,0x18000000,0x18000000,0x1c00,};
+      jj_la1_0 = new int[] {0x2,0x2,0xa3e1df0,0x2,0x2,0x2,0x2,0x2200000,0xa3e1df0,0x81e1df0,0x81e1df0,0x180,0x1e1c00,0x2,0x2,0x2,0x2,0x1e0000,0x30,0x60000000,0x60000000,0x1c00,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x200,0x0,0x0,0x0,0x0,0x0,0x200,0x200,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x800,0x0,0x0,0x0,0x0,0x0,0x800,0x800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -635,7 +635,7 @@ emitLiteralDouble(t.beginLine, t.beginColumn, t.image) ;
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[43];
+    boolean[] la1tokens = new boolean[45];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -652,7 +652,7 @@ emitLiteralDouble(t.beginLine, t.beginColumn, t.image) ;
         }
       }
     }
-    for (int i = 0; i < 43; i++) {
+    for (int i = 0; i < 45; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

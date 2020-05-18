@@ -80,37 +80,41 @@ public interface SSE_ParserCoreConstants {
   /** RegularExpression Id. */
   int RBRACKET = 26;
   /** RegularExpression Id. */
-  int DATATYPE = 27;
+  int LT2 = 27;
   /** RegularExpression Id. */
-  int LANGTAG = 28;
+  int GT2 = 28;
   /** RegularExpression Id. */
-  int AT = 29;
+  int DATATYPE = 29;
   /** RegularExpression Id. */
-  int A2Z = 30;
+  int LANGTAG = 30;
   /** RegularExpression Id. */
-  int A2ZN = 31;
+  int AT = 31;
   /** RegularExpression Id. */
-  int PN_CHARS_BASE = 32;
+  int A2Z = 32;
   /** RegularExpression Id. */
-  int PN_CHARS_U = 33;
+  int A2ZN = 33;
   /** RegularExpression Id. */
-  int PN_CHARS = 34;
+  int PN_CHARS_BASE = 34;
   /** RegularExpression Id. */
-  int PN_PREFIX = 35;
+  int PN_CHARS_U = 35;
   /** RegularExpression Id. */
-  int PN_LOCAL = 36;
+  int PN_CHARS = 36;
   /** RegularExpression Id. */
-  int VARNAME = 37;
+  int PN_PREFIX = 37;
   /** RegularExpression Id. */
-  int SYM = 38;
+  int PN_LOCAL = 38;
   /** RegularExpression Id. */
-  int SYM1 = 39;
+  int VARNAME = 39;
   /** RegularExpression Id. */
-  int SYM_ESC = 40;
+  int SYM = 40;
   /** RegularExpression Id. */
-  int SYMBOL = 41;
+  int SYM1 = 41;
   /** RegularExpression Id. */
-  int UNKNOWN = 42;
+  int SYM_ESC = 42;
+  /** RegularExpression Id. */
+  int SYMBOL = 43;
+  /** RegularExpression Id. */
+  int UNKNOWN = 44;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -144,6 +148,8 @@ public interface SSE_ParserCoreConstants {
     "\"}\"",
     "\"[\"",
     "\"]\"",
+    "\"<<\"",
+    "\">>\"",
     "\"^^\"",
     "<LANGTAG>",
     "\"@\"",

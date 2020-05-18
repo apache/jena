@@ -50,26 +50,26 @@ public class ElementWalker
         protected final ElementVisitor proc ;
         protected final ElementVisitor beforeVisitor ;
         protected final ElementVisitor afterVisitor ;
-        
+
         protected EltWalker(ElementVisitor visitor, ElementVisitor beforeVisitor, ElementVisitor afterVisitor)
         { 
             proc = visitor ;
             this.beforeVisitor= beforeVisitor ; 
             this.afterVisitor = afterVisitor ;
         }
-        
+
         private void before(Element elt)
         {
             if ( beforeVisitor != null )
                 elt.visit(beforeVisitor) ;
         }
-        
+
         private void after(Element elt)
         {
             if ( afterVisitor != null )
                 elt.visit(afterVisitor) ;
         }
-        
+
         @Override
         public void visit(ElementTriplesBlock el)
         {
@@ -77,7 +77,7 @@ public class ElementWalker
             proc.visit(el) ;
             after(el) ;
         }
-        
+
         @Override
         public void visit(ElementFilter el)
         {
@@ -93,7 +93,7 @@ public class ElementWalker
             proc.visit(el) ;
             after(el) ;
         }
-        
+
         @Override
         public void visit(ElementBind el)
         {
@@ -101,7 +101,16 @@ public class ElementWalker
             proc.visit(el) ;
             after(el) ;
         }
+
+        @Override
+        public void visit(ElementFind el)
+        {
+            before(el) ;
+            proc.visit(el) ;
+            after(el) ;
+        }
         
+
         @Override
         public void visit(ElementData el)
         {
@@ -109,7 +118,7 @@ public class ElementWalker
             proc.visit(el) ;
             after(el) ;
         }
-        
+
         @Override
         public void visit(ElementUnion el)
         {
@@ -119,7 +128,7 @@ public class ElementWalker
             proc.visit(el) ;
             after(el) ;
         }
-        
+
         @Override
         public void visit(ElementGroup el)
         {
@@ -129,7 +138,7 @@ public class ElementWalker
             proc.visit(el) ;
             after(el) ;
         }
-    
+
         @Override
         public void visit(ElementOptional el)
         {
@@ -139,7 +148,7 @@ public class ElementWalker
             proc.visit(el) ;
             after(el) ;
         }
-        
+
         @Override
         public void visit(ElementDataset el)
         {
@@ -159,7 +168,7 @@ public class ElementWalker
             proc.visit(el) ;
             after(el) ;
         }
-    
+
         @Override
         public void visit(ElementService el)
         {
@@ -197,7 +206,7 @@ public class ElementWalker
             proc.visit(el) ;
             after(el) ;
         }
-        
+
         @Override
         public void visit(ElementSubQuery el)
         {

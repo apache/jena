@@ -418,6 +418,12 @@ public class OpAsQuery {
         }
 
         @Override
+        public void visit(OpFind opFind) {
+            Element elt = new ElementFind(opFind.getVar(), opFind.getTriple());
+            currentGroup().addElement(elt) ;
+        }
+
+        @Override
         public void visit(OpProcedure opProcedure) {
             throw new ARQNotImplemented("OpProcedure") ;
         }

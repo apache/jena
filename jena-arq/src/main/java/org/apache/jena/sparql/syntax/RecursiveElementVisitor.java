@@ -41,27 +41,30 @@ package org.apache.jena.sparql.syntax;
 
 public class RecursiveElementVisitor implements ElementVisitor
 {
-    
+
     // ---- Call points.
     // Not abstract, because subclasses don't have to implement them.
-    
+
     public void startElement(ElementTriplesBlock el) {}
     public void endElement  (ElementTriplesBlock el) {}
 
     public void startElement(ElementDataset el) {}
     public void endElement  (ElementDataset el) {}
 
-    public void startElement(ElementFilter el) {} 
-    public void endElement  (ElementFilter el) {} 
+    public void startElement(ElementFilter el) {}
+    public void endElement  (ElementFilter el) {}
 
-    public void startElement(ElementAssign el) {} 
-    public void endElement  (ElementAssign el) {} 
+    public void startElement(ElementAssign el) {}
+    public void endElement  (ElementAssign el) {}
 
-    public void startElement(ElementBind el) {} 
-    public void endElement  (ElementBind el) {} 
+    public void startElement(ElementBind el) {}
+    public void endElement  (ElementBind el) {}
 
-    public void startElement(ElementData el) {} 
-    public void endElement  (ElementData el) {} 
+    public void startElement(ElementFind el) {}
+    public void endElement  (ElementFind el) {}
+
+    public void startElement(ElementData el) {}
+    public void endElement  (ElementData el) {}
 
     public void startElement(ElementUnion el) {}
     public void endElement  (ElementUnion el) {}
@@ -98,22 +101,22 @@ public class RecursiveElementVisitor implements ElementVisitor
     public void startElement(ElementPathBlock el)   {}
 
     protected ElementVisitor visitor = null ;
-    
+
     // ---- 
-    
+
     private RecursiveElementVisitor() { this.visitor = new ElementVisitorBase() ; }
     
     public RecursiveElementVisitor(ElementVisitor visitor) { this.visitor = visitor ; }
-    
+
     // Visitor pattern on Elements
-    
+
     @Override
     public final void visit(ElementTriplesBlock el)
     {
         startElement(el) ;
         endElement(el) ;
     }
-    
+
     @Override
     public final void visit(ElementDataset el)
     {
@@ -142,14 +145,21 @@ public class RecursiveElementVisitor implements ElementVisitor
         startElement(el) ;
         endElement(el) ;
     }
-    
+
+    @Override
+    public void visit(ElementFind el)
+    {
+        startElement(el) ;
+        endElement(el) ;
+    }
+
     @Override
     public void visit(ElementData el)
     {
         startElement(el) ;
         endElement(el) ;
     }
-    
+
     @Override
     public final void visit(ElementUnion el)
     {
@@ -162,7 +172,7 @@ public class RecursiveElementVisitor implements ElementVisitor
         }
         endElement(el) ;
     }
-    
+
     @Override
     public final void visit(ElementGroup el)
     {
@@ -184,7 +194,6 @@ public class RecursiveElementVisitor implements ElementVisitor
         endElement(el) ;
     }
 
-
     @Override
     public final void visit(ElementNamedGraph el)
     {
@@ -200,7 +209,7 @@ public class RecursiveElementVisitor implements ElementVisitor
         el.getElement().visit(this) ;
         endElement(el) ;
     }
-    
+
     @Override
     public final void visit(ElementExists el)
     {
@@ -225,14 +234,13 @@ public class RecursiveElementVisitor implements ElementVisitor
         endElement(el) ;
     }
 
-
-    
     @Override
     public void visit(ElementSubQuery el)
     { 
         startElement(el) ;
         endElement(el) ;
     }
+
     @Override
     public void visit(ElementPathBlock el)
     {

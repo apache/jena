@@ -625,6 +625,8 @@ Element GraphPatternNotTriples() : { Element el = null ; }
  |
    el = InlineData()
  |
+   el = Find()
+ |
    el = Assignment()
  |
    el = ExistsElt()
@@ -662,6 +664,16 @@ Element Bind() : { Var v ; Expr expr ; }
   <RPAREN>
   { return new ElementBind(v, expr) ; }
 }
+Element Find() : { Var v ; Node n; }
+{
+  <FIND>
+  <LPAREN>
+  n = TripleTerm()
+  <AS>
+  v = Var()
+  <RPAREN>
+  { return new ElementFind(v, n) ; }
+}
 Element InlineData() : { ElementData el ; Token t ; }
 {
   t = <VALUES>
@@ -676,16 +688,17 @@ void DataBlock() : { }
 {
   ( InlineDataOneVar() | InlineDataFull() )
 }
-void InlineDataOneVar() : { Var v ; Node n ; Token t ; }
+void InlineDataOneVar() : { Var v ; Node n ; Token t ; ; int beginLine; int beginColumn; }
 {
   v = Var()
   { emitDataBlockVariable(v) ; }
   t = <LBRACE>
+  { beginLine = t.beginLine; beginColumn = t.beginColumn; t = null; }
   (
     n = DataBlockValue()
-    { startDataBlockValueRow(-1, -1) ;
-      emitDataBlockValue(n, -1, -1) ;
-      finishDataBlockValueRow(-1, -1) ;
+    { startDataBlockValueRow(beginLine, beginColumn) ;
+      emitDataBlockValue(n, beginLine, beginColumn) ;
+      finishDataBlockValueRow(beginLine, beginColumn) ;
     }
   )*
   t = <RBRACE>
@@ -724,7 +737,7 @@ Node DataBlockValue() : { Node n ; String iri ; }
 | n = RDFLiteral() { return n ; }
 | n = NumericLiteral() { return n ; }
 | n = BooleanLiteral() { return n ; }
-| n = BlankNode() { return n ; }
+| n = TripleTerm() { return n ; }
 | <UNDEF> { return null ; }
 }
 Element Assignment() : { Var v ; Expr expr ; }
@@ -1158,19 +1171,23 @@ Node GraphNodePath(TripleCollectorMark acc) : { Node n ; }
  |
   n = TriplesNodePath(acc) { return n ; }
 }
-Node VarOrTerm() : { Node n = null ; Token t = null; Node s , p , o ; }
+Node VarOrTerm() : { Node n = null ; }
 {
-  (
-    t = <LT2>
-    s = VarOrTerm()
-    p = Verb()
-    o = VarOrTerm()
-    { n = createTripleTerm(s,p,o); }
-    <GT2>
+  ( n = TripleTerm()
   | n = Var()
   | n = GraphTerm()
   )
   { return n ; }
+}
+Node TripleTerm() : { Node n = null ; Token t ; Node s , p , o ; }
+{
+  t = <LT2>
+  s = VarOrTerm()
+  p = Verb()
+  o = VarOrTerm()
+  { n = createTripleTerm(s, p, o, t.beginLine, t.beginColumn); }
+  <GT2>
+  { return n; }
 }
 Node VarOrIri() : {Node n = null ; String iri ; }
 {
@@ -1686,6 +1703,7 @@ TOKEN [IGNORE_CASE] :
 | < BIND: "bind" >
 | < SERVICE: "service" >
 | < LET: "let" >
+| < FIND: "find" >
 | < EXISTS: "exists" >
 | < NOT: "not" >
 | < AS: "as" >

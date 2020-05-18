@@ -83,6 +83,7 @@ public class Tags
     public static final String tagDistinct        = "distinct" ;
     public static final String tagReduced         = "reduced" ;
     public static final String tagAssign          = "assign" ;
+    public static final String tagFind            = "find" ;
     public static final String tagExtend          = "extend" ;
     public static final String symAssign          = ":=" ;
     public static final String tagSlice           = "slice" ;
@@ -114,7 +115,6 @@ public class Tags
     public static final String tagExt             = "ext" ;
 
     // Expressions
-    // NB RDF* triple terms use { }. , not << or >>
     // sym => swiggly thing, tag => word-ish thing
 
     public static final String tagExpr            = "expr" ;

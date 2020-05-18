@@ -51,32 +51,32 @@ public class Syntax extends Symbol
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL_Algebra") ;
     
     /** The system default syntax */ 
-    public static Syntax defaultSyntax = syntaxSPARQL_11 ;
+    public static Syntax defaultSyntax = syntaxARQ;
     
     /** The name of the default query language for query parsing.
      *  The default query language syntax must be capable of accepting
      *  any SPARQL query but may also accept extensions. 
      */
-    public static Syntax defaultQuerySyntax = syntaxSPARQL_11 ;
+    public static Syntax defaultQuerySyntax = defaultSyntax;
     
     /** The name of the default update language for update parsing.
      *  The default update language syntax must be capable of accepting
      *  any SPARQL query but may also accept extensions. 
      */
-    public static Syntax defaultUpdateSyntax = syntaxSPARQL_11 ;
+    public static Syntax defaultUpdateSyntax = defaultSyntax;
     
-    /** The query syntax currently that is standardized, published, SPARQL - the "default SPARQL Query" */ 
+    /** The query syntax currently that is standardized, published, SPARQL Query */ 
     public static final Syntax syntaxSPARQL = syntaxSPARQL_11 ;
 
-//    /** The update syntax currently that is standardized, published, SPARQL - the "default SPARQL Update" */ 
+//    /** The update syntax currently that is standardized, published, SPARQL Update */ 
 //    private static final Syntax syntaxSPARQL_Update = syntaxSPARQL_11_Update ;
 
     public static TranslationTable<Syntax> querySyntaxNames = new TranslationTable<>(true) ;
     static {
         querySyntaxNames.put("sparql",      syntaxSPARQL) ;
-        querySyntaxNames.put("sparql10",   syntaxSPARQL_10) ;
+        querySyntaxNames.put("sparql10",    syntaxSPARQL_10) ;
         querySyntaxNames.put("sparql_10",   syntaxSPARQL_10) ;
-        querySyntaxNames.put("sparql11",   syntaxSPARQL_11) ;
+        querySyntaxNames.put("sparql11",    syntaxSPARQL_11) ;
         querySyntaxNames.put("sparql_11",   syntaxSPARQL_11) ;
         querySyntaxNames.put("arq",         syntaxARQ) ;
         querySyntaxNames.put("alg",         syntaxAlgebra) ;

@@ -33,6 +33,7 @@ import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.util.iterator.ClosableIterator ;
 import org.apache.jena.util.iterator.NiceIterator ;
 
+/** Match a single triple pattern */
 public class QueryIterTriplePattern extends QueryIterRepeatApply
 {
     private final Triple pattern ;

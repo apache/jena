@@ -68,6 +68,10 @@ public abstract class OpVisitorByType implements OpVisitor
     { visit0(opPath) ; }
     
     @Override
+    public void visit(OpFind opFind)
+    { visit0(opFind) ; }
+    
+    @Override
     public void visit(OpProcedure opProcedure)
     { visit1(opProcedure) ; }
 

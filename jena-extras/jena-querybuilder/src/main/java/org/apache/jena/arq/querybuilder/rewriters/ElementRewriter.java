@@ -99,6 +99,20 @@ public class ElementRewriter extends AbstractRewriter<Element> implements
 			push(new ElementTriplesBlock());
 		}
 	}
+	
+    @Override
+    public void visit(ElementFind el) {
+        Node n = changeNode(el.getVar());
+        Triple triple = rewrite(el.getTriple());
+        
+        if (n.equals(el.getVar())) {
+            push(new ElementFind(Var.alloc(n), triple));
+        } else {
+            ElementTriplesBlock etb = new ElementTriplesBlock();
+            etb.addTriple(triple);
+            push(etb);
+        }
+    }
 
 	@Override
 	public void visit(ElementData el) {
