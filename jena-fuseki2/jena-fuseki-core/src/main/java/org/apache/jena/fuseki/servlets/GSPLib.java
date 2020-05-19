@@ -18,9 +18,39 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.jena.riot.web.HttpNames;
+
 public class GSPLib {
+    
+    /** Test whether the operation has either of the GSP parameters. */
+    public static boolean hasGSPParams(HttpAction action) {
+        if ( action.request.getQueryString() == null )
+            return false;
+        boolean hasParamGraphDefault = action.request.getParameter(HttpNames.paramGraphDefault) != null;
+        if ( hasParamGraphDefault )
+            return true;
+        boolean hasParamGraph = action.request.getParameter(HttpNames.paramGraph) != null;
+        if ( hasParamGraph )
+            return true;
+        return false;
+    }
+
+    /** Test whether the operation has exactly one GSP parameter and no other parameters. */ 
+    public static boolean hasGSPParamsStrict(HttpAction action) {
+        if ( action.request.getQueryString() == null )
+            return false;
+        Map<String, String[]> params = action.request.getParameterMap();
+        if ( params.size() != 1 )
+            return false;
+        boolean hasParamGraphDefault = GSPLib.hasExactlyOneValue(action, HttpNames.paramGraphDefault);
+        boolean hasParamGraph = GSPLib.hasExactlyOneValue(action, HttpNames.paramGraph);
+        // Java XOR
+        return hasParamGraph ^ hasParamGraphDefault;
+    }
 
     /** Check whether there is exactly one HTTP header value */
     public static boolean hasExactlyOneValue(HttpAction action, String name) {

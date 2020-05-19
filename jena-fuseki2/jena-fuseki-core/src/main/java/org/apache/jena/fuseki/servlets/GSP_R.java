@@ -19,6 +19,7 @@
 package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format;
+import static org.apache.jena.fuseki.servlets.GraphTarget.determineTargetGSP;
 
 import java.io.IOException;
 
@@ -102,15 +103,13 @@ public class GSP_R extends GSP_Base {
                             action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName()));
         try {
             DatasetGraph dsg = decideDataset(action);
-            GSPTarget target = determineTarget(dsg, action);
+            GraphTarget target = determineTargetGSP(dsg, action);
             if ( action.log.isDebugEnabled() )
                 action.log.debug("GET->"+target);
             boolean exists = target.exists();
             if ( ! exists )
-                ServletOps.errorNotFound("No such graph: <"+target.name+">");
+                ServletOps.errorNotFound("No such graph: "+target.label());
             Graph g = target.graph();
-            if ( ! target.isDefault && g.isEmpty() )
-                ServletOps.errorNotFound("No such graph: <"+target.name+">");
             // If we want to set the Content-Length, we need to buffer.
             //response.setContentLength(??);
             String ct = lang.getContentType().toHeaderString();
@@ -165,12 +164,12 @@ public class GSP_R extends GSP_Base {
         action.beginRead();
         try {
             DatasetGraph dsg = decideDataset(action);
-            GSPTarget target = determineTarget(dsg, action);
+            GraphTarget target = determineTargetGSP(dsg, action);
             if ( action.log.isDebugEnabled() )
                 action.log.debug("HEAD->"+target);
             boolean exists = target.exists();
             if ( ! exists )
-                ServletOps.errorNotFound("No such graph: <"+target.name+">");
+                ServletOps.errorNotFound("No such graph: "+target.label());
             ServletOps.success(action);
         } finally { action.endRead(); }
     }

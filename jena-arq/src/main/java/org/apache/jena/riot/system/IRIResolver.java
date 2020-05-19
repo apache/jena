@@ -274,10 +274,13 @@ public abstract class IRIResolver
         return exceptions(globalResolver.resolve(uriStr));
     }
 
-    /*
-     * No exception thrown by this method.
+    /**
+     * Resolve a string against a base.
+     * <p>
+     * No exceptions thrown by this method; the application should test the returned
+     * IRI for violations with {@link IRI#hasViolation(boolean)}.
      */
-    static private IRI resolveIRI(String relStr, String baseStr) {
+    public static IRI resolveIRI(String relStr, String baseStr) {
         IRI i = iriFactory().create(relStr);
         if (i.isAbsolute())
             // removes excess . segments
