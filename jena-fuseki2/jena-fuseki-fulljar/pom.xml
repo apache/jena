@@ -38,6 +38,12 @@
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-webapp</artifactId>
       <version>${project.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-web</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Illustration: include the Jena Text ElasticSearch code
@@ -73,15 +79,26 @@
 
   <build>
     <plugins>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
         <configuration>
           <shadedArtifactAttached>false</shadedArtifactAttached>
           <transformers>
+            <!--
+                 https://issues.apache.org/jira/browse/LOG4J2-954 - fixed at 3.0.0
+                 Multiple Log4j2Plugins.dat
+                 jena-fuseki-fulljar picks up one Log4j2Plugins.dat from 
+                 org.apache.logging.log4j:log4j-core and, unless excluded,
+                 one via jena-fuseki-webapp which has org.apache.logging.log4j:log4j-core-web
+                 If it becomes necessary, see: https://github.com/edwgiz/maven-shaded-log4j-transformer
+            -->
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
               <mainClass>org.apache.jena.fuseki.cmd.FusekiCmd</mainClass>
+              <!-- https://issues.apache.org/jira/browse/LOG4J2-2537  -->
+              <manifestEntries>
+                <Multi-Release>true</Multi-Release>
+              </manifestEntries>
             </transformer>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
             <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
@@ -113,9 +130,7 @@
           </execution>
         </executions>
       </plugin>
-
     </plugins>
-
   </build>
   
 </project>
