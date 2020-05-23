@@ -46,9 +46,9 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
     private Predicate<Tuple<NodeId>> filter ;
 
     public StageMatchTuple(NodeTupleTable nodeTupleTable, Iterator<BindingNodeId> input, 
-                            Tuple<Node> tuple, boolean anyGraphs, 
-                            Predicate<Tuple<NodeId>> filter, 
-                            ExecutionContext execCxt)
+                           Tuple<Node> tuple, boolean anyGraphs, 
+                           Predicate<Tuple<NodeId>> filter, 
+                           ExecutionContext execCxt)
     {
         super(input) ;
         this.filter = filter ;
@@ -63,7 +63,7 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
      *  A variable that is not bound by the binding is placed in the var array.
      *  Return false if preparation detects the pattern can not match. 
      */
-    public static boolean prepare(NodeTable nodeTable, Tuple<Node> patternTuple, BindingNodeId input, NodeId ids[], Var[] var)
+    private static boolean prepare(NodeTable nodeTable, Tuple<Node> patternTuple, BindingNodeId input, NodeId ids[], Var[] var)
     {
         // Process the Node to NodeId conversion ourselves because
         // we wish to abort if an unknown node is seen.

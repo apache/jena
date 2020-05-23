@@ -71,7 +71,7 @@ public class Node_Triple extends Node_Ext<Triple>{
     public boolean isNodeTriple() {
         return true;
     }
-
+    
     @Override
     public String toString(PrefixMapping pm, boolean quoting) {
         return "<< " + label.toString() + " >>";

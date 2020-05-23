@@ -47,8 +47,6 @@ public class VarAlloc
         this.baseMarker = baseMarker ;
     }
 
-
-
     public Var allocVar()
     { return alloc(baseMarker, counter ++) ; }
 

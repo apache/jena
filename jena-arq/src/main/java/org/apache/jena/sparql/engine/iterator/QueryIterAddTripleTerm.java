@@ -37,20 +37,18 @@ import org.apache.jena.sparql.serializer.SerializationContext;
  * with terms from the current binding. It is an error not to have substitutions for
  * all variables and results in the original binding unchanged.
  */
-public class QueryIterAddTripleTerm extends QueryIterTriplePattern {
+public class QueryIterAddTripleTerm extends QueryIterConvert {
     private final Triple triple;
     private final Var    var;
 
     public QueryIterAddTripleTerm(QueryIterator chain, Var var, Triple triple, ExecutionContext execContext) {
-        super(chain, triple, execContext);
+        super(chain, b->convert(var, triple, b), execContext);
         this.triple = triple;
         this.var = var;
     }
 
-    @Override
-    protected Binding moveToNextBinding() {
-        Binding binding = super.moveToNextBinding();
-        Triple matchedTriple  = Substitute.substitute(triple, binding);
+    private static Binding convert(Var var, Triple triple, Binding binding) {
+        Triple matchedTriple = Substitute.substitute(triple, binding);
         if ( ! matchedTriple.isConcrete() )
             // Not all concrete terms.
             return binding;

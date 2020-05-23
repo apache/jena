@@ -103,7 +103,6 @@ public class StringFile implements Sync, Closeable
         }
     } ;
     // ----
- 
     
     // URI compression can be effective but literals are more of a problem.  More variety. 
     public final static boolean compression = false ; 
