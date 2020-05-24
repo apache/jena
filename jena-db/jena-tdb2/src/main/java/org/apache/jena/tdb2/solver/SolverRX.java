@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb.solver;
+package org.apache.jena.tdb2.solver;
 
 import static org.apache.jena.graph.Node_Triple.triple;
 
@@ -37,10 +37,10 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.VarAlloc;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.iterator.RX;
-import org.apache.jena.tdb.TDBException;
-import org.apache.jena.tdb.store.NodeId;
-import org.apache.jena.tdb.store.nodetable.NodeTable;
-import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable;
+import org.apache.jena.tdb2.TDBException;
+import org.apache.jena.tdb2.store.NodeId;
+import org.apache.jena.tdb2.store.nodetable.NodeTable;
+import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
 
 /**
  * See {@link RX} which is the same algorithm for Triple/Node space.

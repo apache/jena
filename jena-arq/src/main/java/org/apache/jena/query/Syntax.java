@@ -109,20 +109,17 @@ public class Syntax extends Symbol
         return null ;
     }
     
-    
-    public static Syntax guessFileSyntax(String url) 
-    {
-        return guessFileSyntax(url, syntaxSPARQL) ;
+    public static Syntax guessFileSyntax(String url) {
+        return guessFileSyntax(url, defaultQuerySyntax) ;
     }
 
     /** Guess the syntax (query and update) based on filename */
-    public static Syntax guessFileSyntax(String url, Syntax defaultSyntax)
-    {
+    public static Syntax guessFileSyntax(String url, Syntax defaultSyntax) {
         if ( url.endsWith(".arq") )     return syntaxARQ ;
-        if ( url.endsWith(".rq") )      return syntaxSPARQL ;
+        if ( url.endsWith(".rq") )      return defaultQuerySyntax ;
 
         if ( url.endsWith(".aru") )     return syntaxARQ ;
-        if ( url.endsWith(".ru") )      return syntaxSPARQL_11 ;
+        if ( url.endsWith(".ru") )      return defaultUpdateSyntax ;
         
         if ( url.endsWith(".sse") )     return syntaxAlgebra ;
         
@@ -141,7 +138,7 @@ public class Syntax extends Symbol
     public static Syntax guessQueryFileSyntax(String url, Syntax defaultSyntax)
     {
         if ( url.endsWith(".arq") )     return syntaxARQ ;
-        if ( url.endsWith(".rq") )      return syntaxSPARQL ;
+        if ( url.endsWith(".rq") )      return defaultQuerySyntax ;
         if ( url.endsWith(".sse") )     return syntaxAlgebra ;
         return defaultSyntax ;
     }
@@ -157,7 +154,7 @@ public class Syntax extends Symbol
     public static Syntax guessUpdateFileSyntax(String url, Syntax defaultSyntax)
     {
         if ( url.endsWith(".aru") )     return syntaxARQ ;
-        if ( url.endsWith(".ru") )      return syntaxSPARQL_11 ;
+        if ( url.endsWith(".ru") )      return defaultQuerySyntax ;
         if ( url.endsWith(".sse") )     return syntaxAlgebra ;
         return defaultSyntax ;
     }

@@ -30,6 +30,7 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.datatypes.xsd.impl.RDFLangString ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
@@ -195,6 +196,24 @@ public class ThriftConvert
             term.setVariable(var) ;
             return ;
         }
+        
+        if ( node.isNodeTriple() ) {
+            Triple triple = Node_Triple.triple(node);
+            
+            RDF_Term sTerm = new RDF_Term();
+            toThrift(triple.getSubject(), pmap, sTerm, allowValues);
+            
+            RDF_Term pTerm = new RDF_Term();
+            toThrift(triple.getPredicate(), pmap, pTerm, allowValues);
+            
+            RDF_Term oTerm = new RDF_Term();
+            toThrift(triple.getObject(), pmap, oTerm, allowValues);
+            
+            RDF_Triple tripleTerm = new RDF_Triple(sTerm, pTerm, oTerm);
+            term.setTripleTerm(tripleTerm);
+            return ;
+        }
+        
         if ( Node.ANY.equals(node)) {
             term.setAny(ANY) ;
             return ;
@@ -270,6 +289,12 @@ public class ThriftConvert
             return NodeFactory.createLiteral(lex, dt) ;
         }
 
+        if ( term.isSetTripleTerm() ) {
+            RDF_Triple rt = term.getTripleTerm();
+            Triple t = convert(rt, pmap);
+            return NodeFactory.createTripleNode(t);
+        }
+        
         if ( term.isSetVariable() )
             return Var.alloc(term.getVariable().getName()) ;
         

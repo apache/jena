@@ -33,57 +33,42 @@ public class OpExtRegistry
     // Known extensions.
     static Map<String, OpExtBuilder> extensions = new HashMap<>() ;
     
-    // Wire in (ext NAME ...) form
-    static { BuilderOp.add(Tags.tagExt, new BuildExtExt()) ; }
-    
-    public static void register(OpExtBuilder builder)
-    {
-        extensions.put(builder.getTagName(), builder) ;
+    public static void register(OpExtBuilder builder) {
+        extensions.put(builder.getTagName(), builder);
 
         if ( BuilderOp.contains(builder.getTagName()) )
-            throw new ARQException("Tag '"+builder.getTagName()+"' already defined") ;
-        BuilderOp.add(builder.getTagName(), new BuildExt2()) ;
+            throw new ARQException("Tag '" + builder.getTagName() + "' already defined");
+        BuilderOp.add(builder.getTagName(), buildExt2);
     }
-    
-    
-    public static void unregister(String subtag)
-    {
-        extensions.remove(subtag) ;
+
+    public static void unregister(String subtag) {
+        extensions.remove(subtag);
     }
     
     public static OpExtBuilder builder(String tag) { return extensions.get(tag) ; }
 
-    public static Op buildExt(String tag, ItemList args)
-    {
+    public static Op buildExt(String tag, ItemList args) {
         OpExtBuilder b = builder(tag) ;
         OpExt ext = b.make(args) ;  // Arguments 2 onwards
         return ext ;
     }
     
     // (ext NAME ...) form
-    static public class BuildExtExt implements BuilderOp.Build 
-    { 
-        @Override
-        public Op make(ItemList list)
-        {
-            // 0 is the "ext"
-            String subtag = list.get(1).getSymbol() ;
-            list = list.sublist(2) ;
-            return buildExt(subtag, list) ; 
-        }
-    }
+    static private BuilderOp.Build buildExtExt = (ItemList list) -> {
+        // 0 is the "ext"
+        String subtag = list.get(1).getSymbol() ;
+        list = list.sublist(2) ;
+        return buildExt(subtag, list) ; 
+    } ;
     
     // (NAME ...) form
-    static public class BuildExt2 implements BuilderOp.Build 
-    { 
-        @Override
-        public Op make(ItemList list)
-        {
-            String subtag = list.get(0).getSymbol() ;
-            list = list.sublist(1) ;
-            return buildExt(subtag, list) ; 
-        }
-    }
+    static private BuilderOp.Build buildExt2 = (ItemList list) -> {
+        String subtag = list.get(0).getSymbol() ;
+        list = list.sublist(1) ;
+        return buildExt(subtag, list) ; 
+    };
     
-    
+    // Wire in (ext NAME ...) form
+    static { BuilderOp.add(Tags.tagExt, buildExtExt) ; }
+
 }
