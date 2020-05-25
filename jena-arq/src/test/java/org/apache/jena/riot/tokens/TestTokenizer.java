@@ -666,7 +666,7 @@ public class TestTokenizer extends BaseTest {
 
     @Test
     public void tokenUnit_var9() {
-        tokenizeAndTestExact("?" + ARQConstants.allocVarBNodeToVar + "ABC", TokenType.VAR, ARQConstants.allocVarBNodeToVar + "ABC") ;
+        tokenizeAndTestExact("?" + ARQConstants.allocVarTripleTerm + "9", TokenType.VAR, ARQConstants.allocVarTripleTerm + "9") ;
     }
 
     @Test

@@ -28,7 +28,7 @@ import org.apache.jena.sparql.junit.TestItem;
 import org.apache.jena.sparql.vocabulary.TestManifestX;
 import org.apache.jena.util.junit.TestFactoryManifest;
 
-public class TestFactoryTDB extends TestFactoryManifest
+public class TestFactoryTDB2 extends TestFactoryManifest
 {
     public static EarlReport report = null;
 
@@ -41,7 +41,7 @@ public class TestFactoryTDB extends TestFactoryManifest
 
     public static TestSuite makeSuite(String manifestFile, String testRootName)
     {
-        TestFactoryTDB f = new TestFactoryTDB(testRootName);
+        TestFactoryTDB2 f = new TestFactoryTDB2(testRootName);
         TestSuite ts = f.process(manifestFile);
         if ( testRootName != null )
             ts.setName(testRootName+ts.getName());
@@ -52,7 +52,7 @@ public class TestFactoryTDB extends TestFactoryManifest
 
     public String testRootName;
 
-    public TestFactoryTDB(String testRootName)
+    public TestFactoryTDB2(String testRootName)
     {
         this.testRootName = testRootName;
     }
@@ -70,17 +70,32 @@ public class TestFactoryTDB extends TestFactoryManifest
         if ( testItem.getTestType() != null )
         {
             if ( testItem.getTestType().equals(TestManifestX.TestQuery) )
-                test = new QueryTestTDB(testName, report, testItem);
+                test = new QueryTestTDB2(testName, report, testItem);
 
             if ( testItem.getTestType().equals(TestManifestX.TestSurpressed) )
                 test = new SurpressedTest(testName, report, testItem);
+            
+            // Ignore syntax tests
+            if ( testItem.getTestType().equals(TestManifestX.PositiveSyntaxTestARQ) )
+                // Ignore
+                return null;
+            if ( testItem.getTestType().equals(TestManifestX.NegativeSyntaxTestARQ) )
+                // Ignore
+                return null;
+            if ( testItem.getTestType().equals(TestManifestX.PositiveUpdateSyntaxTestARQ) )
+                // Ignore
+                return null;
+            if ( testItem.getTestType().equals(TestManifestX.NegativeUpdateSyntaxTestARQ) )
+                // Ignore
+                return null;
+
 
             if ( test == null )
                 System.err.println("Unrecognized test type: "+testItem.getTestType());
         }
         // Default
         if ( test == null )
-            test = new QueryTestTDB(testName, report, testItem);
+            test = new QueryTestTDB2(testName, report, testItem);
 
         return test;
     }

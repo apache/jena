@@ -51,8 +51,6 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingRoot ;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.graph.GraphOps ;
-import org.apache.jena.sparql.graph.NodeTransform;
-import org.apache.jena.sparql.graph.NodeTransformLib ;
 import org.apache.jena.sparql.modify.request.* ;
 import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.syntax.ElementGroup ;
@@ -436,11 +434,6 @@ public class UpdateEngineWorker implements UpdateVisitor
         if ( g == null )
             g = GraphFactory.createGraphMem();
         return g;
-    }
-
-    protected static List<Quad> unused_convertBNodesToVariables(List<Quad> quads) {
-        NodeTransform bnodesToVariables = new NodeTransformBNodesToVariables();
-        return NodeTransformLib.transformQuads(bnodesToVariables, quads);
     }
 
     protected Element elementFromQuads(List<Quad> quads) {

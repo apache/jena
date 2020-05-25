@@ -16,26 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.algebra;
+package org.apache.jena.tdb;
 
-import java.util.Deque ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-import org.apache.jena.sparql.algebra.AlgebraQuad.QuadSlot ;
-import org.apache.jena.sparql.algebra.op.OpBGP;
-import org.apache.jena.sparql.algebra.op.OpQuadBlock;
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestScriptsTDB1.class
+})
 
-/**
- * Transform that rewrites an algebra into quadblock form
- *
- */
-public class TransformQuadBlockGraph extends TransformQuadGraph
-{
-    public TransformQuadBlockGraph(Deque<QuadSlot> tracker, OpVisitor before, OpVisitor after) {
-        super(tracker, before, after);
-    }
-
-    @Override
-    public Op transform(OpBGP opBGP) {
-        return OpQuadBlock.create(getNode(), opBGP.getPattern()) ;
-    }
-}
+public class TS_ScriptsTDB1 {}

@@ -111,20 +111,17 @@ public class uparse extends CmdARQ
         {
             Syntax syntax = updateSyntax ;
             if ( syntax == null )
-                syntax = Syntax.guessUpdateFileSyntax(filename) ;
+                syntax = Syntax.guessFileSyntax(filename) ;
             String x = oneFile( filename );
             if ( x != null )
                 execOne( x, syntax );
         }
-
-        
-        
         
         for ( String x : super.positionals ) {
             Syntax syntax = updateSyntax ;    
             if ( matchesIndirect(x) ) {
                 if ( syntax == null )
-                    syntax = Syntax.guessUpdateFileSyntax(x) ;
+                    syntax = Syntax.guessFileSyntax(x) ;
                 x = indirect( x );
             }
             if ( syntax == null )

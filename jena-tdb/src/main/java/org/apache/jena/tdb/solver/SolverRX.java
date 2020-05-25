@@ -31,12 +31,12 @@ import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.sparql.ARQException;
-import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.VarAlloc;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.iterator.RX;
+import org.apache.jena.sparql.util.Context;
 import org.apache.jena.tdb.TDBException;
 import org.apache.jena.tdb.store.NodeId;
 import org.apache.jena.tdb.store.nodetable.NodeTable;
@@ -50,34 +50,66 @@ public class SolverRX {
     // These argument get passed around a lot, making the argument lists long.
     private static class Args {
         final NodeTupleTable nodeTupleTable;
-        final boolean anyGraphs;
+        final boolean anyGraph;
         final Predicate<Tuple<NodeId>> filter;
         final ExecutionContext execCxt;
-        Args(NodeTupleTable nodeTupleTable, boolean anyGraphs, Predicate<Tuple<NodeId>> filter, ExecutionContext execCxt) {
+        final VarAlloc varAlloc;
+        Args(NodeTupleTable nodeTupleTable, boolean anyGraph, Predicate<Tuple<NodeId>> filter, ExecutionContext execCxt) {
             super();
             this.nodeTupleTable = nodeTupleTable;
-            this.anyGraphs = anyGraphs;
+            this.anyGraph = anyGraph;
             this.filter = filter;
             this.execCxt = execCxt;
+            this.varAlloc = varAlloc(execCxt);
         }
     }
 
-
-    // Call point for SolverLib.execute
-    public static Iterator<BindingNodeId> solveRX(NodeTupleTable nodeTupleTable, Tuple<Node> tuple, boolean anyGraph,
-                                                  Iterator<BindingNodeId> chain, Predicate<Tuple<NodeId>> filter,
-                                                  ExecutionContext execCxt) {
-        Args args = new Args(nodeTupleTable, anyGraph, filter, execCxt);
-        return rdfStarTriple(chain, tuple, args);
+    private static VarAlloc varAlloc(ExecutionContext execCxt) {
+        Context context = execCxt.getContext();
+        VarAlloc varAlloc = VarAlloc.get(context, ARQConstants.sysVarAllocRDFStar);
+        if ( varAlloc == null ) {
+            varAlloc = new VarAlloc(ARQConstants.allocVarTripleTerm);
+            context.set(ARQConstants.sysVarAllocRDFStar, varAlloc);  
+        }
+        return varAlloc;
     }
 
+    // Call point for SolverLib.execute
+    public static Iterator<BindingNodeId> solveRX(NodeTupleTable nodeTupleTable, Tuple<Node> pattern, boolean anyGraph,
+                                                  Iterator<BindingNodeId> chain, Predicate<Tuple<NodeId>> filter,
+                                                  ExecutionContext execCxt) {
+        if ( ! tripleHasNodeTriple(pattern) )
+            SolverLib.solve(nodeTupleTable, pattern, anyGraph, chain, filter, execCxt);
+        
+        Args args = new Args(nodeTupleTable, anyGraph, filter, execCxt);
+        return rdfStarTriple(chain, pattern, args);
+    }
 
+    /**
+     * Match a single triple pattern that may involve RDF* terms. This is the top
+     * level function for matching triples. The function {@link #matchTripleStar}
+     * matches a triple term and assigns the triple matched to a variable. It is used
+     * within {@link #rdfStarTriple} for nested triple term and a temporary allocated
+     * variable as well can for {@code FIND(<<...>> AS ?t)}.
+     *
+     * @implNote 
+     * Without RDF*, this would be a plain call of {@link #matchData} which
+     * is simply a call to {@link SolverLib#solve}.
+     */
     private static Iterator<BindingNodeId> rdfStarTriple(Iterator<BindingNodeId> input, Tuple<Node> pattern, Args args) {
+        // Should all work without this trap for plain RDF.
         if ( ! tripleHasNodeTriple(pattern) )
             return matchData( input, pattern, args);
         return rdfStarTripleSub(input, pattern, args);
     }
 
+    /**
+     * Insert the stages necessary for a triple with triple pattern term inside it.
+     * If the triple pattern has a triple term, possibly with variables, introduce
+     * an iterator to solve for that, assign the matching triple term to a hidden
+     * variable, and put allocated variable in to main triple pattern. Do for subject
+     * and object positions, and also any nested triple pattern terms.
+     */
     private static Iterator<BindingNodeId> rdfStarTripleSub(Iterator<BindingNodeId> input,
                                                             Tuple<Node> pattern, Args args) {
         Pair<Iterator<BindingNodeId>, Tuple<Node>> pair = preprocessForTripleTerms(input, pattern, args);
@@ -101,9 +133,11 @@ public class SolverRX {
         return qIter;
     }
 
-    // XXX RX
-    private static VarAlloc varAlloc = new VarAlloc("*1*"/*allocTripleTerms*/) ;
-
+    /**
+     * Process a triple for triple terms.
+     * <p>
+     * This creates additional matchers for triple terms in the pattern triple recursively.
+     */
     private static Pair<Iterator<BindingNodeId>, Tuple<Node>>
             preprocessForTripleTerms(Iterator<BindingNodeId> chain, Tuple<Node> patternTuple, Args args) {
         int sIdx = subjectIdx(patternTuple);
@@ -111,24 +145,29 @@ public class SolverRX {
 
         Node subject = patternTuple.get(sIdx);
         Node object = patternTuple.get(oIdx);
+        Node subject1 = null;
+        Node object1 = null;
 
         if ( subject.isNodeTriple() && ! subject.isConcrete() ) {
             Triple tripleTerm = triple(subject);
-            Var var = varAlloc.allocVar();
+            Var var = args.varAlloc.allocVar();
             patternTuple = createTuple(patternTuple, var, sIdx);
-            Tuple<Node> patternTuple2 = tuple(tripleTerm);
+            Tuple<Node> patternTuple2 = tuple(patternTuple, tripleTerm);
             chain = matchTripleStar(chain, var, patternTuple2, args);
+            subject1 = var;
         }
 
         if ( object.isNodeTriple() && ! object.isConcrete() ) {
             Triple tripleTerm = triple(object);
-            Var var = varAlloc.allocVar();
+            Var var = args.varAlloc.allocVar();
             patternTuple = createTuple(patternTuple, var, oIdx);
-            Tuple<Node> patternTuple2 = tuple(tripleTerm);
+            Tuple<Node> patternTuple2 = tuple(patternTuple, tripleTerm);
             chain = matchTripleStar(chain, var, patternTuple2, args);
+            object1 = var;
         }
 
-        // XXX Optimize for no change. But we caught that earlier?
+        if ( subject1 == null && object1 == null )
+            return Pair.create(chain, patternTuple);
         return Pair.create(chain, patternTuple);
     }
 
@@ -175,6 +214,14 @@ public class SolverRX {
         // Should not happen.
         if ( NodeId.isDoesNotExist(tid) )
             return null;
+        // Already bound (FIND)?
+        if ( binding.containsKey(var) ) {
+            NodeId tid2 = binding.get(var);
+            if ( tid.equals(tid2) )
+                return binding;
+            return null;
+        }
+        
         BindingNodeId b2 = new BindingNodeId(binding);
         b2.put(var, tid);
         return b2;
@@ -202,8 +249,14 @@ public class SolverRX {
         }
     }
 
+    /**
+     * Match the NodeTupleTable with a tuple pattern.
+     * This is the accessor to the data.
+     * It assumes any triple terms have been dealt with.
+     */
+
     private static Iterator<BindingNodeId> matchData(Iterator<BindingNodeId> chain, Tuple<Node> pattern, Args args) {
-        return SolverLib.solve(args.nodeTupleTable, pattern, args.anyGraphs, chain, args.filter, args.execCxt);
+        return SolverLib.solve(args.nodeTupleTable, pattern, args.anyGraph, chain, args.filter, args.execCxt);
     }
 
     private static Tuple<Node> createTuple(Tuple<Node> tuple, Var var, int idx) {
@@ -213,7 +266,7 @@ public class SolverRX {
             case 2: return TupleFactory.create3(tuple.get(0), tuple.get(1), var);
             case 3: return TupleFactory.create4(tuple.get(0), tuple.get(1), tuple.get(2), var);
             default:
-                throw new ARQException("Index is not recognized: "+idx);
+                throw new TDBException("Index is not recognized: "+idx);
         }
     }
 
@@ -221,7 +274,7 @@ public class SolverRX {
         switch(pattern.len()) {
             case 3: return 0;
             case 4: return 1;
-            default: throw new ARQException("Tuple not of length 3 or 4");
+            default: throw new TDBException("Tuple not of length 3 or 4");
         }
     }
 
@@ -229,7 +282,7 @@ public class SolverRX {
         switch(pattern.len()) {
             case 3: return 2;
             case 4: return 3;
-            default: throw new ARQException("Tuple not of length 3 or 4");
+            default: throw new TDBException("Tuple not of length 3 or 4");
         }
     }
 
@@ -250,13 +303,13 @@ public class SolverRX {
         return false;
     }
 
-    // XXX Somewhere
-    private static Tuple<Node> tuple(Triple triple) {
-        return TupleFactory.create3(triple.getSubject(), triple.getPredicate(), triple.getObject());
-    }
-
-    private static Tuple<Node> tuple(Quad quad) {
-        return TupleFactory.create4(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject());
+    private static Tuple<Node> tuple(Tuple<Node> base, Triple triple) {
+        switch(base.len()){
+            case 3: 
+                return TupleFactory.create3(triple.getSubject(), triple.getPredicate(), triple.getObject());   
+            case 4:
+                return TupleFactory.create4(base.get(0), triple.getSubject(), triple.getPredicate(), triple.getObject());
+            default:
+        }       throw new TDBException("Tuple not of length 3 or 4"); 
     }
 }
-

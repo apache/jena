@@ -66,7 +66,7 @@ public class ModQueryIn extends ModBase {
 
         if ( cmdline.contains(queryFileDecl) ) {
             queryFilename = cmdline.getValue(queryFileDecl) ;
-            querySyntax = Syntax.guessFileSyntax(queryFilename, defaultQuerySyntax) ;
+            querySyntax = Syntax.guessQueryFileSyntax(queryFilename, defaultQuerySyntax) ;
         }
 
         if ( cmdline.getNumPositional() == 0 && queryFilename == null )
@@ -82,7 +82,7 @@ public class ModQueryIn extends ModBase {
             // One positional argument.
             String qs = cmdline.getPositionalArg(0) ;
             if ( cmdline.matchesIndirect(qs) )
-                querySyntax = Syntax.guessFileSyntax(qs, defaultQuerySyntax) ;
+                querySyntax = Syntax.guessQueryFileSyntax(qs, defaultQuerySyntax) ;
 
             queryString = cmdline.indirect(qs) ;
         }

@@ -16,25 +16,29 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb.store;
+package org.apache.jena.tdb2;
 
 import junit.framework.TestSuite ;
-import org.apache.jena.tdb.ConfigTest ;
-import org.apache.jena.tdb.junit.TestFactoryTDB ;
+import org.apache.jena.tdb2.junit.TestFactoryTDB2;
 import org.junit.runner.RunWith ;
 import org.junit.runners.AllTests ;
 
 /** Scripted test generation */
 
 @RunWith(AllTests.class)
-public class TestSuiteGraphTDB extends TestSuite
+public class TestScriptsTDB2 extends TestSuite
 {
-    static public TestSuite suite() { return new TestSuiteGraphTDB() ; }
+    static final String ARQ_DIR = "../../jena-arq/testing/ARQ";
+    static public TestSuite suite() { return new TestScriptsTDB2(); }
     
-    private TestSuiteGraphTDB()
+    private TestScriptsTDB2()
     {
         super("TDB-Scripts") ;
-        String manifestMain = ConfigTest.getTestingDataRoot()+"/manifest.ttl" ;
-        TestFactoryTDB.make(this, manifestMain, "TDB-") ;
+        String manifestMain1 = ConfigTest.getTestingDataRoot()+"/manifest.ttl";
+        TestFactoryTDB2.make(this, manifestMain1, "TDB2-");
+
+        // From ARQ
+        String manifestMain2 = ARQ_DIR + "/RDF-Star/SPARQL-Star/manifest.ttl";
+        TestFactoryTDB2.make(this, manifestMain2, "TDB2-");
     }
 }

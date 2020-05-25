@@ -37,8 +37,6 @@ import org.junit.runners.Suite ;
     , TestDatasetGraphTDBFind.class
     , TestDatasetGraphTDBFindPattern.class
     , TestLoader.class
-    // The script suite
-    , TestSuiteGraphTDB.class
     , Test_SPARQL_TDB.class
     , TestConcurrentAccess.class
     , TestDynamicDatasetTDB.class

@@ -21,7 +21,7 @@ package org.apache.jena.tdb.junit;
 import java.util.List ;
 
 import org.apache.jena.query.* ;
-import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.engine.QueryEngineFactory ;
 import org.apache.jena.sparql.engine.QueryExecutionBase ;
@@ -31,17 +31,17 @@ import org.apache.jena.sparql.junit.EarlTestCase ;
 import org.apache.jena.sparql.junit.TestItem ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.resultset.SPARQLResult ;
+import org.apache.jena.system.Txn;
 import org.apache.jena.tdb.TDBFactory ;
-import org.apache.jena.util.FileManager ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-public class QueryTestTDB extends EarlTestCase
+public class QueryTestTDB1 extends EarlTestCase
 {
     // Changed to using in-memory graphs/datasets because this is testing the query
     // processing.  Physical graph/datsets is in package "store". 
     
-    private static Logger log = LoggerFactory.getLogger(QueryTestTDB.class) ;
+    private static Logger log = LoggerFactory.getLogger(QueryTestTDB1.class) ;
     private Dataset dataset = null ;
 
     boolean skipThisTest = false ;
@@ -56,7 +56,7 @@ public class QueryTestTDB extends EarlTestCase
     private static List<String> currentNamedGraphs = null ;
 
     // Old style (Junit3)
-    public QueryTestTDB(String testName, EarlReport report, TestItem item)
+    public QueryTestTDB1(String testName, EarlReport report, TestItem item)
     {
         this(testName, report, item.getURI(), 
              item.getDefaultGraphURIs(), item.getNamedGraphURIs(), 
@@ -64,7 +64,7 @@ public class QueryTestTDB extends EarlTestCase
              ) ;
     }
     
-    public QueryTestTDB(String testName, EarlReport report, 
+    public QueryTestTDB1(String testName, EarlReport report, 
                         String uri,
                         List<String> dftGraphs,
                         List<String> namedGraphs,
@@ -111,11 +111,12 @@ public class QueryTestTDB extends EarlTestCase
 
         //graphLocation.clear() ;
         
+        // Allow "qt:data" to be quads in defaultGraphURIs.
         for ( String fn : defaultGraphURIs )
-            load(dataset.getDefaultModel(), fn) ;
+            RDFDataMgr.read(dataset, fn);
         
         for ( String fn : namedGraphURIs )
-            load(dataset.getNamedModel(fn), fn) ;
+            RDFDataMgr.read(dataset.getNamedModel(fn), fn) ;
     }
     
     
@@ -129,12 +130,16 @@ public class QueryTestTDB extends EarlTestCase
         }
         
         Query query = QueryFactory.read(queryFile) ;
-        Dataset ds = DatasetFactory.create(defaultGraphURIs, namedGraphURIs) ;
+        Dataset ds = DatasetFactory.create();
+        for ( String fn : defaultGraphURIs )
+            RDFDataMgr.read(ds, fn);    // Allow quads
+        for ( String fn : namedGraphURIs )
+            RDFDataMgr.read(ds.getNamedModel(fn), fn) ;
         
         // ---- First, get the expected results by executing in-memory or from a results file.
         
-        ResultSetRewindable rs1 = null ;
-        String expectedLabel = "" ;
+        ResultSetRewindable rs1;
+        String expectedLabel;
         if ( results != null )
         {
             rs1 = ResultSetFactory.makeRewindable(results.getResultSet()) ;
@@ -151,32 +156,29 @@ public class QueryTestTDB extends EarlTestCase
         
         // ---- Second, execute in persistent graph
 
-        Dataset ds2 = dataset ; //DatasetFactory.create(model) ;
-        QueryExecution qExec2 = QueryExecutionFactory.create(query, ds2) ;
-        ResultSet rs = qExec2.execSelect() ;
-        ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(rs) ;
+        Dataset ds2 = dataset ;
+        Txn.executeRead(ds2, ()->{
+            QueryExecution qExec2 = QueryExecutionFactory.create(query, ds2) ;
+            ResultSet rs = qExec2.execSelect() ;
+            ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(rs) ;
+
+            // See if the same.
+            boolean b = ResultSetCompare.equalsByValue(rs1, rs2) ;
+            if ( !b )
+            {
+                rs1.reset() ;
+                rs2.reset() ;
+                System.out.println("------------------- "+this.getName());
+                System.out.printf("**** Expected (%s)", expectedLabel) ;
+                ResultSetFormatter.out(System.out, rs1) ; 
+                System.out.println("**** Got (TDB)") ;
+                ResultSetFormatter.out(System.out, rs2) ;
+            }
+            assertTrue("Results sets not the same", b) ; 
+        });
         
-        // See if the same.
-        boolean b = ResultSetCompare.equalsByValue(rs1, rs2) ;
-        if ( !b )
-        {
-            rs1.reset() ;
-            rs2.reset() ;
-            System.out.println("------------------- "+this.getName());
-            System.out.printf("**** Expected (%s)", expectedLabel) ;
-            ResultSetFormatter.out(System.out, rs1) ; 
-            System.out.println("**** Got (TDB)") ;
-            ResultSetFormatter.out(System.out, rs2) ;
-        }
-        
-        assertTrue("Results sets not the same", b) ; 
     }
 
-    private static void load(Model model, String fn)
-    {
-        FileManager.get().readModel(model, fn) ;
-    }
-    
     private static boolean compareLists(List<String> list1, List<String> list2)
     {
         if ( list1 == null )

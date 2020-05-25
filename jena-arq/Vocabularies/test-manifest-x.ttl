@@ -29,6 +29,13 @@
     rdfs:subClassOf :TestSyntax ;
     rdfs:comment "Syntax tests which expect a parse failure" .
 
+:PositiveUpdateSyntaxTestARQ rdf:type rdfs:Class ;
+    rdfs:comment "Syntax tests (query)" .
+
+:NegativeUpdateSyntaxTestARQ rdf:type rdfs:Class ;
+    rdfs:subClassOf :TestSyntax ;
+    rdfs:comment "Syntax tests which expect a parse failure" .
+
 :TestSerialization rdf:type rdfs:Class ;
     rdfs:comment "Query serialization tests" .
 

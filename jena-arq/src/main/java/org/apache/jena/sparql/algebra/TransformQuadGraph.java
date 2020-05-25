@@ -23,6 +23,7 @@ import java.util.Deque ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.algebra.AlgebraQuad.QuadSlot ;
 import org.apache.jena.sparql.algebra.op.* ;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.ExprVar ;
 
@@ -42,13 +43,10 @@ public class TransformQuadGraph extends TransformCopy
         this.afterVisitor = after ;
     }
 
-    private Node getNode() { return tracker.peek().rewriteGraphName ; }
+    protected Node getNode() { return tracker.peek().rewriteGraphName ; }
 
     @Override
     public Op transform(OpGraph opGraph, Op op) {
-
-        //System.err.println("transform(OpGraph)\n"+opGraph+op) ;
-
         // ?? Could just leave the (graph) in place always - just rewrite BGPs.
         boolean noPattern = false ;
 
@@ -106,9 +104,13 @@ public class TransformQuadGraph extends TransformCopy
     }
 
     @Override
+    public Op transform(OpFind opFind) {
+        // Put the (graph) back round it so FIND works on the named graph.
+        return new OpGraph(getNode() , opFind) ;
+    }
+
+    @Override
     public Op transform(OpPath opPath) {
-        // Put the (graph) back round it
-        // ?? inc default graph node.
         return new OpGraph(getNode() , opPath) ;
         // Does not get removed by transform above because this is
         // not the OpGraph that gets walked by the transform.
@@ -116,8 +118,12 @@ public class TransformQuadGraph extends TransformCopy
 
     @Override
     public Op transform(OpBGP opBGP) {
-        //System.out.print("transform(OpBGP) : "+getNode()+"\n"+opBGP) ;
         return new OpQuadPattern(getNode(), opBGP.getPattern()) ;
+    }
+
+    @Override
+    public Op transform(OpTriple opTriple) {
+        return new OpQuad(Quad.create(getNode(), opTriple.getTriple())); 
     }
 
     @Override

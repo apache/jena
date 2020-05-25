@@ -16,26 +16,30 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.algebra;
+package org.apache.jena.tdb;
 
-import java.util.Deque ;
+import junit.framework.TestSuite ;
+import org.apache.jena.tdb.junit.TestFactoryTDB ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.AllTests ;
 
-import org.apache.jena.sparql.algebra.AlgebraQuad.QuadSlot ;
-import org.apache.jena.sparql.algebra.op.OpBGP;
-import org.apache.jena.sparql.algebra.op.OpQuadBlock;
+/** Scripted test generation */
 
-/**
- * Transform that rewrites an algebra into quadblock form
- *
- */
-public class TransformQuadBlockGraph extends TransformQuadGraph
+@RunWith(AllTests.class)
+public class TestScriptsTDB1 extends TestSuite
 {
-    public TransformQuadBlockGraph(Deque<QuadSlot> tracker, OpVisitor before, OpVisitor after) {
-        super(tracker, before, after);
-    }
+    static final String ARQ_DIR = "../jena-arq/testing/ARQ";
 
-    @Override
-    public Op transform(OpBGP opBGP) {
-        return OpQuadBlock.create(getNode(), opBGP.getPattern()) ;
+    static public TestSuite suite() { return new TestScriptsTDB1() ; }
+    
+    private TestScriptsTDB1()
+    {
+        super("TDB-Scripts") ;
+//        String manifestMain1 = ConfigTest.getTestingDataRoot()+"/manifest.ttl" ;
+//        TestFactoryTDB.make(this, manifestMain1, "TDB-") ;
+        
+        // From ARQ
+        String manifestMain2 = ARQ_DIR + "/RDF-Star/SPARQL-Star/manifest.ttl";
+        TestFactoryTDB.make(this, manifestMain2, "TDB-");
     }
 }

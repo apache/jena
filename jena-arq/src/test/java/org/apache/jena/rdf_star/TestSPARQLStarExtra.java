@@ -38,4 +38,3 @@ public class TestSPARQLStarExtra {
         ResultSetFormatter.consume(rs);
     }
 }
-

@@ -240,7 +240,6 @@ public class WriterOp
             out.print(opFind.getVar());
             out.print(" ");
             formatTriple(opFind.getTriple()) ;
-            out.println() ;
             finish(opFind) ;
         }
 

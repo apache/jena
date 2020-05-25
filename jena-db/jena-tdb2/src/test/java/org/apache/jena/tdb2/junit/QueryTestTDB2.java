@@ -20,9 +20,8 @@ package org.apache.jena.tdb2.junit;
 
 import java.util.List;
 
-import org.apache.jena.system.Txn;
 import org.apache.jena.query.*;
-import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.engine.QueryEngineFactory;
 import org.apache.jena.sparql.engine.QueryExecutionBase;
@@ -32,17 +31,17 @@ import org.apache.jena.sparql.junit.EarlTestCase;
 import org.apache.jena.sparql.junit.TestItem;
 import org.apache.jena.sparql.resultset.ResultSetCompare;
 import org.apache.jena.sparql.resultset.SPARQLResult;
+import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.TDB2Factory;
-import org.apache.jena.util.FileManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class QueryTestTDB extends EarlTestCase
+public class QueryTestTDB2 extends EarlTestCase
 {
     // Changed to using in-memory graphs/datasets because this is testing the query
     // processing.  Physical graph/datsets is in package "store".
 
-    private static Logger log = LoggerFactory.getLogger(QueryTestTDB.class);
+    private static Logger log = LoggerFactory.getLogger(QueryTestTDB2.class);
     private Dataset dataset = null;
 
     boolean skipThisTest = false;
@@ -57,7 +56,7 @@ public class QueryTestTDB extends EarlTestCase
     private static List<String> currentNamedGraphs = null;
 
     // Old style (Junit3)
-    public QueryTestTDB(String testName, EarlReport report, TestItem item)
+    public QueryTestTDB2(String testName, EarlReport report, TestItem item)
     {
         this(testName, report, item.getURI(),
              item.getDefaultGraphURIs(), item.getNamedGraphURIs(),
@@ -65,7 +64,7 @@ public class QueryTestTDB extends EarlTestCase
              );
     }
 
-    public QueryTestTDB(String testName, EarlReport report,
+    public QueryTestTDB2(String testName, EarlReport report,
                         String uri,
                         List<String> dftGraphs,
                         List<String> namedGraphs,
@@ -113,11 +112,12 @@ public class QueryTestTDB extends EarlTestCase
 
         //graphLocation.clear();
 
+        // Allow "qt:data" to be quads in defaultGraphURIs.
         for ( String fn : defaultGraphURIs )
-            load(dataset.getDefaultModel(), fn);
-
+            RDFDataMgr.read(dataset, fn);
+        
         for ( String fn : namedGraphURIs )
-            load(dataset.getNamedModel(fn), fn);
+            RDFDataMgr.read(dataset.getNamedModel(fn), fn) ;
     }
 
 
@@ -131,28 +131,31 @@ public class QueryTestTDB extends EarlTestCase
         }
 
         Query query = QueryFactory.read(queryFile);
-        Dataset ds = DatasetFactory.create(defaultGraphURIs, namedGraphURIs);
+        
+        Dataset ds = DatasetFactory.create();
+        for ( String fn : defaultGraphURIs )
+            RDFDataMgr.read(ds, fn);    // Allow quads
+        for ( String fn : namedGraphURIs )
+            RDFDataMgr.read(ds.getNamedModel(fn), fn) ;
 
         // ---- First, get the expected results by executing in-memory or from a results file.
 
-        ResultSetRewindable rs1$ = null;
-        String expectedLabel$ = "";
+        ResultSetRewindable rs1;
+        String expectedLabel;
         if ( results != null )
         {
-            rs1$ = ResultSetFactory.makeRewindable(results.getResultSet());
-            expectedLabel$ = "Results file";
+            rs1 = ResultSetFactory.makeRewindable(results.getResultSet());
+            expectedLabel = "Results file";
         }
         else
         {
             QueryEngineFactory f = QueryEngineRef.getFactory();
             try(QueryExecution qExec1 = new QueryExecutionBase(query, ds, null, f)) {
-                rs1$ = ResultSetFactory.makeRewindable(qExec1.execSelect());
+                rs1 = ResultSetFactory.makeRewindable(qExec1.execSelect());
             }
-            expectedLabel$ = "Standard engine";
+            expectedLabel = "Standard engine";
         }
         // Effectively final.
-        ResultSetRewindable rs1 = rs1$;
-        String expectedLabel = expectedLabel$;
         // ---- Second, execute in persistent graph
 
         Dataset ds2 = dataset; //DatasetFactory.create(model) ;
@@ -177,11 +180,6 @@ public class QueryTestTDB extends EarlTestCase
                 assertTrue("Results sets not the same", b);
             }
         });
-    }
-
-    private static void load(Model model, String fn)
-    {
-        FileManager.get().readModel(model, fn);
     }
 
     private static boolean compareLists(List<String> list1, List<String> list2)

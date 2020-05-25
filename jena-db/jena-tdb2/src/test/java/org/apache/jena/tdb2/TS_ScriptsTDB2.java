@@ -16,25 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.store;
+package org.apache.jena.tdb2;
 
-import junit.framework.TestSuite;
-import org.apache.jena.tdb2.ConfigTest;
-import org.apache.jena.tdb2.junit.TestFactoryTDB;
 import org.junit.runner.RunWith;
-import org.junit.runners.AllTests;
+import org.junit.runners.Suite;
 
-/** Scripted test generation */
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestScriptsTDB2.class
+})
 
-@RunWith(AllTests.class)
-public class TestSuiteGraphTDB extends TestSuite
-{
-    static public TestSuite suite() { return new TestSuiteGraphTDB(); }
-
-    private TestSuiteGraphTDB()
-    {
-        super("TDB-Scripts");
-        String manifestMain = ConfigTest.getTestingDataRoot()+"/manifest.ttl";
-        TestFactoryTDB.make(this, manifestMain, "TDB-");
-    }
-}
+public class TS_ScriptsTDB2 {}

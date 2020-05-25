@@ -34,9 +34,8 @@ public class TC_Scripted extends TestSuite
         ts.addTest(ScriptTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Serialization/manifest.ttl")) ;
         
         String testDirRDFStar = "testing/ARQ/RDF-Star";
-        ts.addTest(FactoryTestRiot.make(testDirRDFStar+"/Turtle-star/manifest.ttl"));
-        ts.addTest(ScriptTestSuiteFactory.make(testDirRDFStar+"/SPARQL-star/manifest.ttl")) ;
-
+        ts.addTest(FactoryTestRiot.make(testDirRDFStar+"/Turtle-Star/manifest.ttl"));
+        ts.addTest(ScriptTestSuiteFactory.make(testDirRDFStar+"/SPARQL-Star/manifest.ttl")) ;
         
         return ts ;
     }

@@ -23,10 +23,12 @@ import static org.apache.jena.graph.Node_Triple.triple;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.VarAlloc;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.util.Context;
 
 /**
  * Solver library for RDF*.
@@ -42,9 +44,6 @@ import org.apache.jena.sparql.engine.QueryIterator;
  * {@code FIND(<<...>> AS ?t)}.
  */
 public class RX {
-    // From context?
-    static String allocTripleTerms = "*";
-    static VarAlloc varAlloc = new VarAlloc(allocTripleTerms) ;
 
     /**
      * Match a single triple pattern that may involve RDF* terms.
@@ -61,12 +60,21 @@ public class RX {
      * </pre>
      */
     public static QueryIterator rdfStarTriple(QueryIterator chain, Triple triple, ExecutionContext execCxt) {
-        // Should all work without this trap for plain RDF but for now,
-        // fast track the non-RDF* case.
+        // Should all work without this trap for plain RDF.
         if ( ! tripleHasNodeTriple(triple) )
             // No RDF* : direct to data.
             return matchData(chain, triple, execCxt);
         return rdfStarTripleSub(chain, triple, execCxt);
+    }
+
+    private static VarAlloc varAlloc(ExecutionContext execCxt) {
+        Context context = execCxt.getContext();
+        VarAlloc varAlloc = VarAlloc.get(context, ARQConstants.sysVarAllocRDFStar);
+        if ( varAlloc == null ) {
+            varAlloc = new VarAlloc(ARQConstants.allocVarTripleTerm);
+            context.set(ARQConstants.sysVarAllocRDFStar, varAlloc);  
+        }
+        return varAlloc;
     }
 
     /**
@@ -112,14 +120,14 @@ public class RX {
         // Recurse.
         if ( s.isNodeTriple() && ! s.isConcrete() ) {
             Triple t2 = triple(s);
-            Var var = varAlloc.allocVar();
+            Var var = varAlloc(execCxt).allocVar();
             Triple tripleTerm = Triple.create(t2.getSubject(), t2.getPredicate(), t2.getObject());
             chain = matchTripleStar(chain, var, tripleTerm, execCxt);
             s1 = var;
         }
         if ( o.isNodeTriple() && ! o.isConcrete() ) {
             Triple t2 = triple(o);
-            Var var = varAlloc.allocVar();
+            Var var = varAlloc(execCxt).allocVar();
             Triple tripleTerm = Triple.create(t2.getSubject(), t2.getPredicate(), t2.getObject());
             chain = matchTripleStar(chain, var, tripleTerm, execCxt);
             o1 = var;
