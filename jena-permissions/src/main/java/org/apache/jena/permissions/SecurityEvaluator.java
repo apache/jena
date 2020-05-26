@@ -17,15 +17,12 @@
  */
 package org.apache.jena.permissions;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.shared.AuthenticationRequiredException;
+
+import java.util.*;
 
 /**
  * SecurityEvaluator.
@@ -213,7 +210,7 @@ public interface SecurityEvaluator {
 	 * @throws AuthenticationRequiredException
 	 *             if user is not authenticated and is required to be.
 	 */
-	public boolean evaluate(Object principal, Action action, Node graphIRI)
+	boolean evaluate(Object principal, Action action, Node graphIRI)
 			throws AuthenticationRequiredException;
 
 	/**
@@ -282,8 +279,10 @@ public interface SecurityEvaluator {
 	 * @throws AuthenticationRequiredException
 	 *             if user is not authenticated and is required to be.
 	 */
-	public boolean evaluate(Object principal, Set<Action> actions, Node graphIRI)
-			throws AuthenticationRequiredException;
+	public default boolean evaluate(Object principal, Set<Action> actions, Node graphIRI)
+			throws AuthenticationRequiredException {
+		return actions.stream().allMatch(action -> evaluate(principal, action, graphIRI));
+	}
 
 	/**
 	 * Determine if all the actions are allowed on the triple within the graph.
@@ -305,9 +304,11 @@ public interface SecurityEvaluator {
 	 * @throws AuthenticationRequiredException
 	 *             if user is not authenticated and is required to be.
 	 */
-	public boolean evaluate(Object principal, Set<Action> actions,
+	public default boolean evaluate(Object principal, Set<Action> actions,
 			Node graphIRI, Triple triple)
-			throws AuthenticationRequiredException;
+			throws AuthenticationRequiredException {
+		return actions.stream().allMatch(action -> evaluate(principal, action, graphIRI));
+	}
 
 	/**
 	 * Determine if any of the actions are allowed on the graph.
@@ -326,8 +327,10 @@ public interface SecurityEvaluator {
 	 * @throws AuthenticationRequiredException
 	 *             if user is not authenticated and is required to be.
 	 */
-	public boolean evaluateAny(Object principal, Set<Action> actions,
-			Node graphIRI) throws AuthenticationRequiredException;
+	public default boolean evaluateAny(Object principal, Set<Action> actions,
+			Node graphIRI) throws AuthenticationRequiredException {
+		return actions.stream().anyMatch(action -> evaluate(principal, action, graphIRI));
+	}
 
 	/**
 	 * Determine if any of the actions are allowed on the triple within the
@@ -353,9 +356,11 @@ public interface SecurityEvaluator {
 	 * @throws AuthenticationRequiredException
 	 *             if user is not authenticated and is required to be.
 	 */
-	public boolean evaluateAny(Object principal, Set<Action> actions,
+	public default boolean evaluateAny(Object principal, Set<Action> actions,
 			Node graphIRI, Triple triple)
-			throws AuthenticationRequiredException;
+			throws AuthenticationRequiredException {
+		return actions.stream().anyMatch(action -> evaluate(principal, action, graphIRI, triple));
+	}
 
 	/**
 	 * Determine if the user is allowed to update the "from" triple to the "to"
@@ -380,8 +385,10 @@ public interface SecurityEvaluator {
 	 * @throws AuthenticationRequiredException
 	 *             if user is not authenticated and is required to be.
 	 */
-	public boolean evaluateUpdate(Object principal, Node graphIRI, Triple from,
-			Triple to) throws AuthenticationRequiredException;
+	public default boolean evaluateUpdate(Object principal, Node graphIRI, Triple from,
+			Triple to) throws AuthenticationRequiredException {
+		return evaluate(principal, Action.Delete, graphIRI, from) && evaluate(principal, Action.Create, graphIRI, to);
+	}
 
 	/**
 	 * returns the current principal or null if there is no current principal.
