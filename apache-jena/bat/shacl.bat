@@ -11,8 +11,8 @@ exit /B
 
 :okHome
 set JENA_CP=%JENA_HOME%\lib\*;
-set LOGGING=file:%JENA_HOME%/jena-log4j.properties
+set LOGGING=file:%JENA_HOME%/log4j2.properties
 
 @rem JVM_ARGS comes from the environment.
-java %JVM_ARGS% -Dlog4j.configuration="%LOGGING%" -cp "%JENA_CP%" shacl.shacl %*
+java %JVM_ARGS% -Dlog4j.configurationFile="%LOGGING%" -cp "%JENA_CP%" shacl.shacl %*
 exit /B
