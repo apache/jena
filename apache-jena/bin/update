@@ -67,8 +67,7 @@ fi
 # JVM_ARGS : don't set here but it can be set in the environment.
 # Expand JENA_HOME but literal *
 JENA_CP="$JENA_HOME"'/lib/*'
-SOCKS=
-LOGGING="${LOGGING:--Dlog4j.configuration=file:$JENA_HOME/jena-log4j.properties}"
+LOGGING="${LOGGING:--Dlog4j.configurationFile=file:$JENA_HOME/log4j2.properties}"
 
 # Platform specific fixup
 # On CYGWIN convert path and end with a ';' 
@@ -79,11 +78,11 @@ esac
 # Respect TMPDIR or TMP (windows?) if present
 # important for tdbloader spill
 if [ -n "$TMPDIR" ]
-	then
-	JVM_ARGS="$JVM_ARGS -Djava.io.tmpdir=\"$TMPDIR\""
+then
+    JVM_ARGS="$JVM_ARGS -Djava.io.tmpdir=\"$TMPDIR\""
 elif [ -n "$TMP" ]
-	then
-	JVM_ARGS="$JVM_ARGS -Djava.io.tmpdir=\"$TMP\""
+then
+    JVM_ARGS="$JVM_ARGS -Djava.io.tmpdir=\"$TMP\""
 fi
 
 java $JVM_ARGS $LOGGING -cp "$JENA_CP" arq.update "$@" 

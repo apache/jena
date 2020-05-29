@@ -43,7 +43,7 @@ public interface RDFVisitor
     /**
      * Method to call when visiting a resource with a statement.
      *   @param r the resource node being visited
-     *   @param uri the statement of that node
+     *   @param statement the statement of that node
      *   @return value to be returned from the visit
      */ 
         
