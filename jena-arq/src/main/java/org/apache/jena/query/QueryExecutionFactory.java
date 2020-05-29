@@ -490,7 +490,7 @@ public class QueryExecutionFactory
      * @return QueryExecution
      */ 
     static public QueryExecution sparqlService(String service, Query query, String defaultGraph, HttpClient client) {
-       return sparqlService(service, query, client, null);
+       return sparqlService(service, query, defaultGraph, client, null);
     }
     
     /** Create a QueryExecution that will access a SPARQL service over HTTP
