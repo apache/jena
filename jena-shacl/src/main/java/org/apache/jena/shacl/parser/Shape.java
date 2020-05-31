@@ -42,8 +42,8 @@ public abstract class Shape {
     protected final List<Constraint>    constraints;
     protected final List<PropertyShape> propertyShapes;
 
-    public Shape(Graph shapeGraph, Node shapeNode, boolean deactivated, Severity severity, List<Node> messages, Collection<Target> targets,
-                 List<Constraint> constraints, List<PropertyShape> propertyShapes) {
+    public Shape(Graph shapeGraph, Node shapeNode, boolean deactivated, Severity severity, List<Node> messages,
+                 Collection<Target> targets, List<Constraint> constraints, List<PropertyShape> propertyShapes) {
         super();
         this.shapeGraph = shapeGraph;
         this.shapeNode = shapeNode;

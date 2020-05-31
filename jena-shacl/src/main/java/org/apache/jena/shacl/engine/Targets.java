@@ -41,7 +41,6 @@ public class Targets {
     2.1.3.5 Objects-of targets (sh:targetObjectsOf)
     */
 
-
     public Graph        shapesGraph;
 
     public Set<Node>    targetNodes;

@@ -69,7 +69,9 @@ public class ShapesParser {
             OUT.println("SparqlConstraintComponents");
         ConstraintComponents sparqlConstraintComponents = ConstraintComponents.parseSparqlConstraintComponents(shapesGraph);
 
-        List<Shape> acc = new ArrayList<>();
+        // LinkedHashMap - convenience, so shapes are kept in 
+        // the order of discovery below.
+        Map<Node, Shape> acc = new LinkedHashMap<>();
 
         if ( DEBUG )
             OUT.println("sh:targetNodes");
@@ -116,8 +118,7 @@ public class ShapesParser {
         // Syntax rules for well-formed shapes.
         //https://www.w3.org/TR/shacl/#syntax-rules
         // Note - we only have the reachable shapes in "shapesMap".
-
-        return acc ;
+        return shapes(acc) ;
     }
 
     /** Parse and add all the declared shapes into the map.
@@ -125,28 +126,30 @@ public class ShapesParser {
      */
     public static Collection<Shape> declaredShapes(Graph shapesGraph, Map<Node, Shape> shapesMap) {
         // All declared shapes.
-        List<Shape> acc = new ArrayList<>();
+        Map<Node, Shape> acc = new LinkedHashMap<>();
         G.listAllNodesOfType(shapesGraph, SHACL.NodeShape).forEach(shapeNode->
             parseRootShape(acc, shapesMap, shapesGraph, shapeNode));
         G.listAllNodesOfType(shapesGraph, SHACL.PropertyShape).forEach(shapeNode->
             parseRootShape(acc, shapesMap, shapesGraph, shapeNode));
-        return acc;
+        return shapes(acc);
     }
 
-    private static void parseRootShape(List<Shape> acc, Map<Node, Shape> parsed, Graph shapesGraph, Node shNode) {
-        if ( parsed.containsKey(shNode) )
-            return ;
+    private static Collection<Shape> shapes(Map<Node, Shape> acc) {
+        // The list will be in insertion order.
+        return new ArrayList<>(acc.values());
+    }
+
+    private static void parseRootShape(Map<Node, Shape> acc, Map<Node, Shape> parsed, Graph shapesGraph, Node shNode) {
+        if ( acc.containsKey(shNode) )
+            // Already processed as root shape.
+            return;
         if ( DEBUG )
             OUT.incIndent();
         Shape shape = parseShapeStep(parsed, shapesGraph, shNode);
-        acc.add(shape);
+        acc.put(shNode, shape);
         if ( DEBUG )
             OUT.decIndent();
     }
-
-//    public static Shape parseShape(Graph shapesGraph, Map<Node, Shape> parsed, Node shNode) {
-//        return parseShape(parsed, shapesGraph, shNode);
-//    }
 
     /** Parse a specific shape from the Shapes graph */
     public static Shape parseShape(Graph shapesGraph, Node shNode) {
@@ -338,5 +341,4 @@ public class ShapesParser {
                 .forEachRemaining(target->acc.add(target));
         } finally { iter.close(); }
     }
-
 }
