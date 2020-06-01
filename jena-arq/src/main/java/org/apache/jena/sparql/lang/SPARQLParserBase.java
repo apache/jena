@@ -286,9 +286,12 @@ public class SPARQLParserBase extends ParserBase
             return ;
         
         Var v = variables.get(currentColumn) ;
+        if ( n != null && ! n.isConcrete() ) {
+            String msg = QueryParseException.formatMessage("Term is not concrete: "+n, line, col) ;
+            throw new QueryParseException(msg, line, col) ;
+        }
         if ( n != null )
             currentValueRow().add(v, n) ;
-        
     }
 
     protected void finishDataBlockValueRow(int line, int col)      

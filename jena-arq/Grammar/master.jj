@@ -894,6 +894,9 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = InlineData()
 #ifdef ARQ
  |
+   //el = BindOrFind()
+   el = Find()
+ |
    el = Assignment()
  |
    el = ExistsElt()
@@ -940,6 +943,32 @@ Element Bind() : {  Var v ; Expr expr ; }
   { return new ElementBind(v, expr) ; }
 }
 
+#ifdef ARQ
+// To follow RDF* paper using the overloaded "BIND" syntax.
+// Also make Bind() above in GraphPatternNotTriples SPARQL 1.1 only.
+// Element BindOrFind() : {  Var v ; Expr expr = null ; Node n = null ; }
+// {
+//   <BIND>
+//   <LPAREN>
+//   ( expr = Expression() |  n = TripleTerm() )
+//    <AS>
+//   v = Var()
+//   <RPAREN>
+//   { return expr != null ? new ElementBind(v, expr) : new ElementFind(v, n); }
+// }
+
+Element Find() : { Var v ; Node n; }
+{
+  <FIND>
+  <LPAREN>
+  n = TripleTerm()
+  <AS>
+  v = Var()
+  <RPAREN>
+  { return new ElementFind(v, n) ; }
+}
+#endif
+
 Element InlineData() : { ElementData el ; Token t ; }
 {
   t = <VALUES>
@@ -956,16 +985,17 @@ void DataBlock() : { }
   ( InlineDataOneVar() |  InlineDataFull() )
 }
 
-void InlineDataOneVar() : { Var v ; Node n ; Token t ; }
+void InlineDataOneVar() : { Var v ; Node n ; Token t ; ; int beginLine; int beginColumn; }
 {
   v = Var()
   { emitDataBlockVariable(v) ; }
   t = <LBRACE>
+  { beginLine = t.beginLine; beginColumn = t.beginColumn; t = null; }
   ( 
-    n = DataBlockValue() 
-    { startDataBlockValueRow(-1, -1) ;
-      emitDataBlockValue(n, -1, -1) ;
-      finishDataBlockValueRow(-1, -1) ;
+    n = DataBlockValue()
+    { startDataBlockValueRow(beginLine, beginColumn) ;
+      emitDataBlockValue(n, beginLine, beginColumn) ;
+      finishDataBlockValueRow(beginLine, beginColumn) ;
     }
   )*
   t = <RBRACE>
@@ -1007,7 +1037,7 @@ Node DataBlockValue() : { Node n ; String iri ; }
 | n = NumericLiteral()  { return n ; }
 | n = BooleanLiteral()  { return n ; }
 #ifdef ARQ
-| n = BlankNode()       { return n ; }
+| n = TripleTerm()      { return n ; }
 #endif
 | <UNDEF>               { return null ; }
 }
@@ -1624,23 +1654,27 @@ Node VarOrTerm() : {Node n = null ; }
 #endif
 #ifdef ARQ
 // RDF* Triple as term.
-Node VarOrTerm() : { Node n = null ; Token t = null; Node s , p , o ; }
+Node VarOrTerm() : { Node n = null ; }
 {
-  (
-    t = <LT2>
-    s = VarOrTerm()
-    p = Verb()
-    o = VarOrTerm()
-    { n = createTripleTerm(s,p,o); }
-    <GT2>
+  ( n = TripleTerm()
   | n = Var()
   | n = GraphTerm()
   )
   { return n ; }
 }
 
-#endif
+Node TripleTerm() :  { Node n = null ; Token t ; Node s , p , o ; }
+{
+  t = <LT2>
+  s = VarOrTerm()
+  p = Verb()
+  o = VarOrTerm()
+  { n = createTripleTerm(s, p, o, t.beginLine, t.beginColumn); }
+  <GT2>
+  { return n; }
+}
 
+#endif
 
 // e.g. Property (if no bNodes) + DESCRIBE
 Node VarOrIri() : {Node n = null ; String iri ; }
@@ -2372,6 +2406,7 @@ TOKEN [IGNORE_CASE] :
 
 #ifdef ARQ
 |  < LET:         "let" >
+|  < FIND:        "find" >
 #endif
 |  < EXISTS:      "exists" >
 |  < NOT:         "not" >

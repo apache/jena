@@ -29,6 +29,7 @@ public interface OpVisitor
     public void visit(OpTriple opTriple) ;
     public void visit(OpQuad opQuad) ;
     public void visit(OpPath opPath) ;
+    public void visit(OpFind opFind) ;
     public void visit(OpTable opTable) ;
     public void visit(OpNull opNull) ;
     
@@ -49,7 +50,6 @@ public interface OpVisitor
     public void visit(OpUnion opUnion) ;
     public void visit(OpDiff opDiff) ;
     public void visit(OpMinus opMinus) ;
-    
     public void visit(OpConditional opCondition) ;
     
     // OpN

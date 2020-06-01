@@ -237,6 +237,17 @@ public class FormatterElement extends FormatterBase implements ElementVisitor {
     }
 
     @Override
+    public void visit(ElementFind el) {
+        out.print("FIND(");
+        out.print("<< ");
+        formatTriple(el.getTriple());
+        out.print(" >>");
+        out.print(" AS ");
+        out.print("?" + el.getVar().getVarName());
+        out.print(")");
+    }
+
+    @Override
     public void visit(ElementData el) {
         QuerySerializer.outputDataBlock(out, el.getVars(), el.getRows(), context);
     }

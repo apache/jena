@@ -37,6 +37,9 @@ public class ElementVisitorBase implements ElementVisitor
     public void visit(ElementBind el)           { }
 
     @Override
+    public void visit(ElementFind el)           { }
+
+    @Override
     public void visit(ElementData el)           { }
 
     @Override
@@ -56,16 +59,16 @@ public class ElementVisitorBase implements ElementVisitor
 
     @Override
     public void visit(ElementExists el)         { }
-    
+
     @Override
     public void visit(ElementNotExists el)      { }
-    
+
     @Override
     public void visit(ElementMinus el)          { }
 
     @Override
     public void visit(ElementService el)        { }
-    
+
     @Override
     public void visit(ElementSubQuery el)       { }
 

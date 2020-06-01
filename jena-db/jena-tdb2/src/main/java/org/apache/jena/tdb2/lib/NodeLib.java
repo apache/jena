@@ -33,6 +33,7 @@ import org.apache.jena.atlas.lib.PoolSync;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.sparql.util.NodeUtils;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.store.Hash;
@@ -47,9 +48,10 @@ public class NodeLib {
         return h;
     }
 
-    private static String BNODE   = "bnode";
-    private static String URI     = "uri";
-    private static String LITERAL = "literal";
+    private static String BNODE         = "bnode";
+    private static String URI           = "uri";
+    private static String LITERAL       = "literal";
+    private static String TRIPLE_TERM   = "tripleTerm";
 
     public static void setHash(Hash h, Node n) {
         if ( n.isURI() )
@@ -65,6 +67,10 @@ public class NodeLib {
                 dt = null;
             }
             hash(h, n.getLiteralLexicalForm(), n.getLiteralLanguage(), dt, LITERAL);
+        } else if ( n.isNodeTriple() ) { 
+            String lex = NodeFmtLib.str(n);
+            hash(h, lex, null, null, TRIPLE_TERM);
+            return;
         } else
             throw new TDBException("Attempt to hash something strange: " + n);
     }

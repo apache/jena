@@ -67,6 +67,12 @@ public class TestManifestX {
     /** <p>Syntax tests (query)</p> */
     public static final Resource PositiveSyntaxTestARQ = m_model.createResource( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#PositiveSyntaxTestARQ" );
     
+    /** <p>Syntax tests which expect a parse failure</p> */
+    public static final Resource NegativeUpdateSyntaxTestARQ = m_model.createResource( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#NegativeUpdateSyntaxTestARQ" );
+    
+    /** <p>Syntax tests (query)</p> */
+    public static final Resource PositiveUpdateSyntaxTestARQ = m_model.createResource( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#PositiveUpdateSyntaxTestARQ" );
+    
     /** <p>The class of test that are Query tests (query, data, results)</p> */
     public static final Resource TestQuery = m_model.createResource( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#TestQuery" );
     

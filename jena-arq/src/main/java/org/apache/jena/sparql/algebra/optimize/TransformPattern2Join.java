@@ -33,7 +33,7 @@ public class TransformPattern2Join extends TransformCopy
 {
     /*
      * Get standard shaped trees?
-     * Alternative is hard flatteniing to (sequence of all the quads, triples) 
+     * Alternative is hard flattening to (sequence of all the quads, triples) 
      */
     
     @Override

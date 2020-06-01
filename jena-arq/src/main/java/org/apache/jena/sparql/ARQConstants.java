@@ -172,9 +172,6 @@ public class ARQConstants
     // Secondary marker for globally allocated variables.
     private static final String globalVar =     "." ;
 
-    /** Marker for variables replacing blank nodes in SPARQL Update patterns */
-    public static final String allocVarBNodeToVar =  "~" ;
-
     /** Marker for variables renamed to make variables hidden by scope have globally unique names */
     public static final String allocVarScopeHiding =  "/" ;
 
@@ -187,13 +184,16 @@ public class ARQConstants
     // These strings are without the leading "?"
 
     // Put each constant here and not in the place the variable allocator created.
-    // Alwats 0, 1, 2, 3 after these prefixes.
+    // Always 0, 1, 2, 3 after these prefixes.
 
-    public static final String allocGlobalVarMarker     = allocVarMarker+globalVar ;    // VarAlloc
+    //public static final String allocGlobalVarMarker     = allocVarMarker+globalVar ;    // VarAlloc
     public static final String allocPathVariables       = allocVarAnonMarker+"P" ;      // PathCompiler
     public static final String allocQueryVariables      = allocVarMarker ;              // Query
+    
+    /** Marker for RDF* variables */
+    public static final String allocVarTripleTerm      = "~";                           // RX, SolverRX
+    
     public static final String allocParserAnonVars      = allocVarAnonMarker ;          // LabelToModeMap
-
     // SSE
     public static final String allocSSEUnamedVars       = "_" ;                         // ParseHandlerPlain - SSE token "?" - legal SPARQL
     public static final String allocSSEAnonVars         = allocVarAnonMarker ;          // ParseHandlerPlain - SSE token "??"
@@ -219,6 +219,8 @@ public class ARQConstants
     /** Context key for the dataset for the current query execution. */
     public static final Symbol sysCurrentDataset        = Symbol.create(systemVarNS+"dataset") ;
 
+    public static final Symbol sysVarAllocRDFStar       = Symbol.create(systemVarNS+"varAllocRDFStar") ;
+    
     /** Context key for the dataset description (if any).
      *  See the <a href="http://www.w3.org/TR/sparql11-protocol">SPARQL protocol</a>.
      *  <p>
@@ -264,7 +266,7 @@ public class ARQConstants
     /** Context symbol for a supplied {@link Prologue} (used for text out of result sets). */
     public static final Symbol symPrologue                 = SystemARQ.allocSymbol("prologue");
 
-    /** Context key for making all SELECT queries have DISTINCT applied, whether stated ot not */
+    /** Context key for making all SELECT queries have DISTINCT applied, whether stated or not */
     public static final Symbol autoDistinct             = SystemARQ.allocSymbol("autoDistinct") ;
 
     // Context keys : some here, some in ARQ - sort out

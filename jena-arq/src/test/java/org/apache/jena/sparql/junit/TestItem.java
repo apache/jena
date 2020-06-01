@@ -108,7 +108,7 @@ public class TestItem
         namedGraphURIs = new ArrayList<>() ;
         resultFile = _resultFile ;
         comment = "" ;
-        queryFileSyntax = Syntax.guessFileSyntax(_queryFile) ;
+        queryFileSyntax = guessFileSyntax(_queryFile) ;
     }
 
     public Resource getResource() {
@@ -188,6 +188,16 @@ public class TestItem
 
     public boolean requiresTextIndex() {
         return buildLuceneIndex ;
+    }
+
+    // *.rq is strictly SPARQL 1.1 tests.
+    protected Syntax guessFileSyntax(String filename) {
+        if ( filename.endsWith(".rq") )
+            return Syntax.syntaxSPARQL_11;
+        if ( filename.endsWith(".ru") )
+            return Syntax.syntaxSPARQL_11;
+        
+        return Syntax.guessFileSyntax(filename);
     }
 
     private String _getName() {
@@ -299,7 +309,7 @@ public class TestItem
         }
 
         if ( uri != null ) {
-            Syntax synFileName = Syntax.guessFileSyntax(uri) ;
+            Syntax synFileName = guessFileSyntax(uri) ;
             if ( synFileName != null )
                 return synFileName ;
         }

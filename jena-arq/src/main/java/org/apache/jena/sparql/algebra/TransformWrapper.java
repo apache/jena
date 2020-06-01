@@ -42,6 +42,8 @@ public class TransformWrapper implements Transform
     public Op transform(OpQuad opQuad)                      { return transform.transform(opQuad) ; }
     @Override
     public Op transform(OpPath opPath)                      { return transform.transform(opPath) ; } 
+    @Override
+    public Op transform(OpFind opFind)                      { return transform.transform(opFind) ; } 
 
     @Override
     public Op transform(OpProcedure opProc, Op subOp)       { return transform.transform(opProc, subOp) ; }

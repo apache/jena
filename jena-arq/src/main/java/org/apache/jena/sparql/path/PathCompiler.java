@@ -30,7 +30,7 @@ public class PathCompiler
     // Convert to work on OpPath.
     // Need pre (and post) BGPs.
     
-    private static VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarAnonMarker+"P") ;
+    private static VarAlloc varAlloc = new VarAlloc(ARQConstants.allocPathVariables) ;
     
     // Move to AlgebraCompiler and have a per-transaction scoped var generator 
     

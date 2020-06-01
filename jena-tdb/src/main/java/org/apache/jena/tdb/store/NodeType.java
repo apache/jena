@@ -24,6 +24,7 @@ import org.apache.jena.sparql.util.Named ;
 import org.apache.jena.tdb.TDBException ;
 
 // Currently unused.
+// Placeholder for inline encoding.
 public enum NodeType implements Named
 {
     // Do not allocate id 0
@@ -54,11 +55,17 @@ public enum NodeType implements Named
         @Override public int getTypeId()            { return 3 ; }
         @Override public String getName()           { return "Literal" ; }
     } ,
+    
+    TRIPLETERM {
+        @Override public XSDDatatype getDatatype()  { return null ; }
+        @Override public int getTypeId()            { return 4 ; }
+        @Override public String getName()           { return "TripleTerm" ; }
+    } ,
 
 //    STRING
 //    {
 //        @Override public XSDDatatype getDatatype()  { return null ; }
-//        @Override public int getTypeId()            { return 4 ; }
+//        @Override public int getTypeId()            { return 100 ; }
 //        @Override public String getName()           { return "String" ; }
 //    } ,
 //
@@ -160,8 +167,7 @@ public enum NodeType implements Named
     {
         if ( n.isURI() ) return URI ;
         if ( n.isBlank() ) return BNODE ;
-        if ( n.isLiteral() )
-        {
+        if ( n.isLiteral() ) {
             return LITERAL ; 
 //            if ( n.getLiteralDatatypeURI() == null )
 //                // String - plain literal
@@ -175,6 +181,7 @@ public enum NodeType implements Named
 //            if ( n.getLiteralDatatype() == XSDDatatype.XSDdateTime )
 //                return DATETIME ;
         }
+        if ( n.isNodeTriple() ) return TRIPLETERM;
         return OTHER ;
     }
 
@@ -184,6 +191,7 @@ public enum NodeType implements Named
         if ( type == BNODE.getTypeId() )      return BNODE ;
         if ( type == URI.getTypeId() )        return URI ;
         if ( type == LITERAL.getTypeId() )    return LITERAL ;
+        if ( type == TRIPLETERM.getTypeId() ) return TRIPLETERM;
 //        if ( type == STRING.getTypeId() )     return STRING ;
 //        if ( type == XSDSTRING.getTypeId() )  return XSDSTRING ;
 //        if ( type == INTEGER.getTypeId() )    return INTEGER ;

@@ -27,12 +27,10 @@ import java.security.NoSuchAlgorithmException ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.Bytes ;
-import org.apache.jena.atlas.lib.Pool ;
-import org.apache.jena.atlas.lib.PoolBase ;
-import org.apache.jena.atlas.lib.PoolSync ;
+import org.apache.jena.atlas.lib.*;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.sparql.util.NodeUtils ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.base.objectfile.ObjectFile ;
@@ -146,6 +144,11 @@ public class NodeLib
                 }
                 hash(h, n.getLiteralLexicalForm(), n.getLiteralLanguage(), dt, nt);
                 return;
+            case TRIPLETERM: {
+                String lex = NodeFmtLib.str(n);
+                hash(h, lex, null, null, nt);
+                return;
+            }
             case OTHER :
                 throw new TDBException("Attempt to hash something strange: " + n);
         }

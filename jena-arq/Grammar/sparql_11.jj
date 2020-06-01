@@ -595,16 +595,17 @@ void DataBlock() : { }
 {
   ( InlineDataOneVar() | InlineDataFull() )
 }
-void InlineDataOneVar() : { Var v ; Node n ; Token t ; }
+void InlineDataOneVar() : { Var v ; Node n ; Token t ; ; int beginLine; int beginColumn; }
 {
   v = Var()
   { emitDataBlockVariable(v) ; }
   t = <LBRACE>
+  { beginLine = t.beginLine; beginColumn = t.beginColumn; t = null; }
   (
     n = DataBlockValue()
-    { startDataBlockValueRow(-1, -1) ;
-      emitDataBlockValue(n, -1, -1) ;
-      finishDataBlockValueRow(-1, -1) ;
+    { startDataBlockValueRow(beginLine, beginColumn) ;
+      emitDataBlockValue(n, beginLine, beginColumn) ;
+      finishDataBlockValueRow(beginLine, beginColumn) ;
     }
   )*
   t = <RBRACE>

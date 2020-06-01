@@ -127,7 +127,10 @@ public class SolverLib
             else
                 // 4-tuples.
                 tuple = tuple(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
-            chain = solve(nodeTupleTable, tuple, anyGraph, chain, filter, execCxt) ;
+            // Plain RDF
+            //chain = solve(nodeTupleTable, tuple, anyGraph, chain, filter, execCxt) ;
+            // RDF*
+            chain = SolverRX.solveRX(nodeTupleTable, tuple, anyGraph, chain, filter, execCxt) ;
             chain = makeAbortable(chain, killList) ; 
         }
         

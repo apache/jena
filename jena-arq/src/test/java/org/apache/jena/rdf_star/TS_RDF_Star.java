@@ -30,7 +30,7 @@ import org.junit.runners.Suite;
     TestSPARQLStarParse.class,
     TestSPARQLStarExtra.class
 
-    //See also TC_Scripted SPARQL-star/manifest.ttl which run from JUnit3-centric ARQTestSuite 
+    //See also TC_Scripted SPARQL-Star/manifest.ttl which run from JUnit3-centric ARQTestSuite 
 })
 public class TS_RDF_Star {
 }

@@ -27,5 +27,3 @@
         <Values/manifest.ttl>
         <UnionGraph/manifest.ttl>
     ) .
-
-

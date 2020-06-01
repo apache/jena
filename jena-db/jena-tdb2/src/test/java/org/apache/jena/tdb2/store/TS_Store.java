@@ -41,9 +41,6 @@ import org.junit.runners.Suite;
     , TestGraphNamedTDB.class
     , TestDatasetTDB.class
     , TestDatasetTDBPersist.class
-    // The script suite
-    , TestSuiteGraphTDB.class
-
     , Test_SPARQL_TDB.class
     , TestDynamicDatasetTDB.class
     , TestStoreConnectionMem.class

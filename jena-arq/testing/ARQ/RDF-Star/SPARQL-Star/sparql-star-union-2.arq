@@ -1,0 +1,13 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX :       <http://example/>
+
+# Nesting via match
+SELECT * {
+  GRAPH <urn:x-arq:UnionGraph> {
+     FIND( <<:s :p1 ?o>> AS ?t )
+     << ?t :q1 :z1 >> :q1 ?z .
+  }
+}

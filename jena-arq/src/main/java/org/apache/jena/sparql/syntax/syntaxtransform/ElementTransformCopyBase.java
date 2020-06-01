@@ -21,6 +21,7 @@ package org.apache.jena.sparql.syntax.syntaxtransform ;
 import java.util.List ;
 
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query ;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.core.PathBlock ;
@@ -54,7 +55,6 @@ public class ElementTransformCopyBase implements ElementTransform {
             before.getList().forEach(copy::add);
             el = new ElementTriplesBlock(copy);
         }
-
         return el ;
     }
 
@@ -66,8 +66,12 @@ public class ElementTransformCopyBase implements ElementTransform {
             before.getList().forEach(copy::add);
             el = new ElementPathBlock(copy);
         }
-
         return el ;
+    }
+
+    @Override
+    public Triple transform(Triple triple) {
+        return triple;
     }
 
     @Override
@@ -89,6 +93,13 @@ public class ElementTransformCopyBase implements ElementTransform {
         if ( !alwaysCopy && el.getVar() == v && el.getExpr() == expr2 )
             return el ;
         return new ElementBind(v, expr2) ;
+    }
+
+    @Override
+    public Element transform(ElementFind el, Var v, Triple triple2) {
+        if ( !alwaysCopy && el.getVar() == v && el.getTriple() == triple2 )
+            return el ;
+        return new ElementFind(v, triple2) ;
     }
 
     @Override

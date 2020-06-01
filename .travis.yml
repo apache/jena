@@ -6,4 +6,4 @@ jdk:
   - openjdk8
   - openjdk11
 env:
-  - JAVA_OPTS="-Xmx3072M -Xms512M -XX:+UseG1GC"
+  - JAVA_OPTS="-Xmx3072M -Xms512M"

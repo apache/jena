@@ -88,6 +88,11 @@ public interface OpVisitorByTypeAndExpr extends OpVisitor
     }
 
     @Override
+    public default void visit(OpFind opFind) {
+        visit0(opFind);
+    }
+
+    @Override
     public default void visit(OpProcedure opProcedure) {
         visit1(opProcedure);
     }

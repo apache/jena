@@ -16,6 +16,7 @@ thrift -r -out ../src/main/java -gen java "$@"
 
 for f in "$PKG"/*.java
 do
-    perl -i.bak -p -e 's/^public (class|enum)/\@SuppressWarnings("all")\npublic $1/' $f
+##    perl -i.bak -p -e 's/^public (class|enum)/\@SuppressWarnings("all")\npublic $1/' $f
+    perl -i.bak -p -e 's/^\@SuppressWarnings.*$/\@SuppressWarnings("all")/' $f
     rm -f $f.bak
 done

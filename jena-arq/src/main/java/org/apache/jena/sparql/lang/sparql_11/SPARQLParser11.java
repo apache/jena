@@ -2019,10 +2019,11 @@ finishInlineData(beginLine, beginColumn) ;
     }
   }
 
-  final public void InlineDataOneVar() throws ParseException {Var v ; Node n ; Token t ;
+  final public void InlineDataOneVar() throws ParseException {Var v ; Node n ; Token t ; ; int beginLine; int beginColumn;
     v = Var();
 emitDataBlockVariable(v) ;
     t = jj_consume_token(LBRACE);
+beginLine = t.beginLine; beginColumn = t.beginColumn; t = null;
     label_15:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -2053,9 +2054,9 @@ emitDataBlockVariable(v) ;
         break label_15;
       }
       n = DataBlockValue();
-startDataBlockValueRow(-1, -1) ;
-      emitDataBlockValue(n, -1, -1) ;
-      finishDataBlockValueRow(-1, -1) ;
+startDataBlockValueRow(beginLine, beginColumn) ;
+      emitDataBlockValue(n, beginLine, beginColumn) ;
+      finishDataBlockValueRow(beginLine, beginColumn) ;
     }
     t = jj_consume_token(RBRACE);
   }

@@ -331,6 +331,11 @@ public class ParserBase
 
     // --------
 
+    protected void checkConcrete(Node n, int line, int column) {
+        if ( ! n.isConcrete() )
+            throwParseException("Term is not concrete: "+n, line, column) ;
+    }
+    
     // BNode from a list
 //    protected Node createListNode()
 //    { return listLabelMap.allocNode() ; }
@@ -355,7 +360,7 @@ public class ParserBase
         return activeLabelMap.asNode(label) ;
     }
 
-    protected Node createTripleTerm(Node s, Node p, Node o) {
+    protected Node createTripleTerm(Node s, Node p, Node o, int line, int column) {
         return NodeFactory.createTripleNode(s, p, o);
     }
 

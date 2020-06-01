@@ -1,0 +1,48 @@
+{ "head": {
+    "vars": [ "t" , "s" , "p" , "o" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "t": {
+          "type": "triple" , 
+          "value": {
+            "subject":  {
+              "type": "triple" , 
+              "value": {
+                "subject":  { "type": "uri" , "value": "http://example/s" } ,
+                "property": { "type": "uri" , "value": "http://example/p1" } ,
+                "object":   { "type": "uri" , "value": "http://example/o" }
+              }
+            } ,
+            "property": { "type": "uri" , "value": "http://example/q1" } ,
+            "object":   { "type": "uri" , "value": "http://example/z1" }
+          }
+        } ,
+        "s": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/s" } ,
+            "property": { "type": "uri" , "value": "http://example/p1" } ,
+            "object":   { "type": "uri" , "value": "http://example/o" }
+          }
+        } ,
+        "p": { "type": "uri" , "value": "http://example/q1" } ,
+        "o": { "type": "uri" , "value": "http://example/z1" }
+      } ,
+      { 
+        "t": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/s" } ,
+            "property": { "type": "uri" , "value": "http://example/p1" } ,
+            "object":   { "type": "uri" , "value": "http://example/o" }
+          }
+        } ,
+        "s": { "type": "uri" , "value": "http://example/s" } ,
+        "p": { "type": "uri" , "value": "http://example/p1" } ,
+        "o": { "type": "uri" , "value": "http://example/o" }
+      }
+    ]
+  }
+}

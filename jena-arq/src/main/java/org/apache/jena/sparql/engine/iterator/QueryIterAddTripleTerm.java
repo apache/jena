@@ -37,24 +37,35 @@ import org.apache.jena.sparql.serializer.SerializationContext;
  * with terms from the current binding. It is an error not to have substitutions for
  * all variables and results in the original binding unchanged.
  */
-class QueryIterAddTripleTerm extends QueryIterTriplePattern {
+public class QueryIterAddTripleTerm extends QueryIterProcessBinding {
     private final Triple triple;
     private final Var    var;
 
     public QueryIterAddTripleTerm(QueryIterator chain, Var var, Triple triple, ExecutionContext execContext) {
-        super(chain, triple, execContext);
+        super(chain, execContext);
         this.triple = triple;
         this.var = var;
     }
 
     @Override
-    protected Binding moveToNextBinding() {
-        Binding binding = super.moveToNextBinding();
-        Triple matchedTriple  = Substitute.substitute(triple, binding);
+    public Binding accept(Binding binding) {
+        return convert(var, triple, binding);
+    }
+
+    private static Binding convert(Var var, Triple triple, Binding binding) {
+        Triple matchedTriple = Substitute.substitute(triple, binding);
         if ( ! matchedTriple.isConcrete() )
             // Not all concrete terms.
-            return binding;
+            return null;
         Node nt = NodeFactory.createTripleNode(matchedTriple);
+        // This makes it a filter. Syntactically not allowed but execution support
+        // "AS ?t" for existing ?t where it must be the same RDF term.
+        if ( binding.contains(var) ) {
+            Node nt2 = binding.get(var);
+            if ( ! nt.equals(nt2) )
+                return null;
+            return binding;
+        }
         Binding b = BindingFactory.binding(binding, var, nt);
         return b;
     }
@@ -63,4 +74,5 @@ class QueryIterAddTripleTerm extends QueryIterTriplePattern {
     protected void details(IndentedWriter out, SerializationContext sCxt) {
         out.print(this.getClass().getSimpleName()+": ["+var+"] " + triple);
     }
+
 }

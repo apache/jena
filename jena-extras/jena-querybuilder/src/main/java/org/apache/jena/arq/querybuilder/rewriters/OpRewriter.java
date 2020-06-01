@@ -23,7 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.SortCondition ;
+import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVisitor ;
 import org.apache.jena.sparql.algebra.Table ;
@@ -107,7 +109,21 @@ class OpRewriter extends AbstractRewriter<Op> implements OpVisitor {
 		push(new OpPath(rewrite(opPath.getTriplePath())));
 	}
 
-	@Override
+    @Override
+    public void visit(OpFind opFind) {
+        Var var = opFind.getVar();
+        Triple triple = opFind.getTriple();
+        
+        Node n2 = changeNode(var);
+        if ( ! Var.isVar(n2) )
+            throw new JenaException("OpFind: Write if not a variable");
+        
+        Var var2 = Var.alloc(n2); 
+        Triple triple2 = rewrite(triple); 
+        push(new OpFind(triple2, var2));
+    }
+
+    @Override
 	public void visit(OpTable opTable) {
 		Table tbl = opTable.getTable();
 		boolean process = false;

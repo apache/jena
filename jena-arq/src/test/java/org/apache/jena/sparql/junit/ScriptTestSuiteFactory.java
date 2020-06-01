@@ -106,7 +106,12 @@ public class ScriptTestSuiteFactory extends TestFactoryManifest
             // ---- Update tests
             if ( testType.equals(TestManifest_11.PositiveUpdateSyntaxTest11) )
                 return new SyntaxUpdateTest(testName, results, item, true) ;
+            if ( testType.equals(TestManifestX.PositiveUpdateSyntaxTestARQ) )
+                return new SyntaxUpdateTest(testName, results, item, true) ;
+            
             if ( testType.equals(TestManifest_11.NegativeUpdateSyntaxTest11) )
+                return new SyntaxUpdateTest(testName, results, item, false) ;
+            if ( testType.equals(TestManifestX.NegativeUpdateSyntaxTestARQ) )
                 return new SyntaxUpdateTest(testName, results, item, false) ;
 
             // Two names for same thing.

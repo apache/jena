@@ -117,17 +117,19 @@ public class PropertyFunctionRegistry
     /** Lookup by URI */
     public PropertyFunctionFactory get(String uri)
     {
+        // Is it mapped?
         String mappedUri = MappedLoader.mapDynamicURI(uri) ;
         if ( mappedUri != null )
-            uri = mappedUri ; 
-        
-        PropertyFunctionFactory ext = registry.get(uri) ;
-        if ( ext != null )
-            return ext ;
-        
+            uri = mappedUri ;
+
+        // Plain registration, after mapping.
+        PropertyFunctionFactory factory = registry.get(uri) ;
+        if ( factory != null )
+            return factory;
+
         if ( attemptedLoads.contains(uri) )
             return null ;
-
+        
         Class<?> extClass = MappedLoader.loadClass(uri, PropertyFunction.class) ;
         if ( extClass == null )
             return null ;
