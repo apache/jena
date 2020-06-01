@@ -113,6 +113,11 @@ public class ValidationProc {
         return vCxt.generateReport();
     }
 
+    public static ValidationReport simpleValidation(Graph shapesGraph, Graph dataGraph, Node node, boolean verbose) {
+        Shapes shapes = Shapes.parse(shapesGraph);
+        return simpleValidationNode(shapes, dataGraph, node, verbose);
+    }
+
     public static void simpleValidation(ValidationContext vCxt, Graph data, Shape shape) {
         simpleValidationInternal(vCxt, data, null, shape);
     }
@@ -125,7 +130,6 @@ public class ValidationProc {
             ValidationContext vCxt = new ValidationContext(shapes, data);
             vCxt.setVerbose(verbose);
             return simpleValidationNode(vCxt, shapes, node, data);
-        //} catch (ShaclParseException ex) {
         } finally { out.setAbsoluteIndent(x); }
     }
 

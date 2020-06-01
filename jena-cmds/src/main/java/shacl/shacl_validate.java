@@ -23,6 +23,8 @@ import jena.cmd.CmdException;
 import jena.cmd.CmdGeneral;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RiotException;
@@ -45,10 +47,12 @@ public class shacl_validate extends CmdGeneral {
     private ArgDecl argOutputText  = new ArgDecl(false, "--text");
     //private ArgDecl argOutputRDF   = new ArgDecl(false, "--rdf");
     private ArgDecl argData        = new ArgDecl(true, "--data", "--datafile", "-d");
-    private ArgDecl argShapes      = new ArgDecl(true, "--shapes", "--shapesfile", "-s");
+    private ArgDecl argShapes      = new ArgDecl(true, "--shapes", "--shapesfile", "--shapefile", "-s");
+    private ArgDecl argTargetNode  = new ArgDecl(true, "--target", "--node", "-n");
 
-    private String datafile = null;
-    private String shapesfile = null;
+    private String  datafile = null;
+    private String  shapesfile = null;
+    private String  targetNode = null;  // Parse later.
     private boolean textOutput = false;
 
     public static void main (String... argv) {
@@ -57,16 +61,16 @@ public class shacl_validate extends CmdGeneral {
 
     public shacl_validate(String[] argv) {
         super(argv) ;
-        // Includes -datafile myfile.ttl -shapesfile myshapes.ttl
         super.add(argShapes,        "--shapes", "Shapes file");
         super.add(argData,          "--data",   "Data file");
+        super.add(argTargetNode,    "--target", "Validate specific node [may use prefixes from the data]"); 
         super.add(argOutputText,    "--text",   "Output in concise text format");
         //super.add(argOutputRDF,  "--rdf", "Output in RDF (Turtle) format");
     }
 
     @Override
     protected String getSummary() {
-        return getCommandName()+" --shapes shapesFile --data dataFile";
+        return getCommandName()+" [--target URI] --shapes shapesFile --data dataFile";
     }
 
     @Override
@@ -88,8 +92,12 @@ public class shacl_validate extends CmdGeneral {
              throw new CmdException("Usage: "+getSummary());
          if ( shapesfile == null )
              shapesfile = datafile;
-
+         
          textOutput = super.hasArg(argOutputText);
+         
+         if ( contains(argTargetNode) ) {
+             targetNode = getValue(argTargetNode);
+         }
     }
 
     @Override
@@ -100,7 +108,17 @@ public class shacl_validate extends CmdGeneral {
             dataGraph = shapesGraph;
         else
             dataGraph = load(datafile, "data file");
-        ValidationReport report = ValidationProc.simpleValidation(shapesGraph, dataGraph, isVerbose());
+        
+        Node node = null;
+        if ( targetNode != null ) {
+            String x = dataGraph.getPrefixMapping().expandPrefix(targetNode);
+            node = NodeFactory.createURI(x);
+        }
+
+        ValidationReport report = ( node != null ) 
+            ? ValidationProc.simpleValidation(shapesGraph, dataGraph, node, isVerbose())
+            : ValidationProc.simpleValidation(shapesGraph, dataGraph, isVerbose());
+        
         if ( textOutput )
             ShLib.printReport(report);
         else

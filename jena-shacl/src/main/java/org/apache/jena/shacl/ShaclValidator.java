@@ -69,4 +69,9 @@ public interface ShaclValidator {
     public default ValidationReport validate(Graph shapesGraph, Graph data) {
         return validate(parse(shapesGraph), data);
     }
+    
+    /** Produce a node-specific validation report. */
+    public default ValidationReport validate(Graph shapesGraph, Graph data, Node target) {
+        return validate(parse(shapesGraph), data, target);
+    }
 }
