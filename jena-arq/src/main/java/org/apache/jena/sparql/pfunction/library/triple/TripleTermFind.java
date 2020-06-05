@@ -34,8 +34,8 @@ import org.apache.jena.sparql.pfunction.*;
 
 /** Property function for FIND() - allows already bound.
  * <pre>
- *    << ?s ?p ?o >> apf:find ?t .
- * <pre>
+ *    &lt;&lt; ?s ?p ?o &gt;&gt; apf:find ?t .
+ * </pre>
  * This binds all the variables, with <tt>?t</tt> bound to a triple term for the match of <tt>?s ?p ?o</tt>. 
  */ 
 public class TripleTermFind extends PropertyFunctionEval {

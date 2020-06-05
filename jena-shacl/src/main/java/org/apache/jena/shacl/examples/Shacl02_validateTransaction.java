@@ -36,7 +36,7 @@ import org.apache.jena.sparql.sse.SSE;
  */
 
 public class Shacl02_validateTransaction {
-    static { LogCtl.setLog4j(); }
+    static { LogCtl.setLogging(); }
 
     public static void main(String...args) {
         String SHAPES = "shapes.ttl";

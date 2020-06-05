@@ -32,7 +32,7 @@ import org.apache.jena.sys.JenaSystem;
 public class shacl_parse extends CmdGeneral {
 
     static {
-        LogCtl.setCmdLogging();
+        LogCtl.setLogging();
         JenaSystem.init();
     }
     private String shapesfile = null;

@@ -46,7 +46,7 @@ import org.apache.jena.sparql.sse.SSE ;
  * for the "no groups" case.
  */
 public class CustomAggregate {
-    static { LogCtl.setCmdLogging(); }
+    static { LogCtl.setLogging(); }
     /**
      * Execution of a custom aggregate is with accumulators. One accumulator is
      * created for the factory for each group in a query execution.

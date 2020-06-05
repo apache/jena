@@ -49,7 +49,7 @@ import org.apache.jena.sparql.util.Context;
 /** Example of using RIOT : register a new input language */
 public class ExRIOT6_AddNewReader
 {
-    static { LogCtl.setCmdLogging(); }
+    static { LogCtl.setLogging(); }
     
     public static void main(String... argv) {
         Lang lang = LangBuilder.create("SSE", "text/x-sse").addFileExtensions("rsse").build();

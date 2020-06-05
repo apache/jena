@@ -29,7 +29,7 @@ import org.apache.jena.shacl.lib.ShLib;
 
 /** Load shapes and data, validate and print report */
 public class Shacl01_validateGraph {
-    static { LogCtl.setLog4j(); }
+    static { LogCtl.setLogging(); }
 
     public static void main(String ...args) {
         String SHAPES = "shapes.ttl";

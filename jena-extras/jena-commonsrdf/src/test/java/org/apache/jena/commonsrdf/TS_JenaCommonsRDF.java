@@ -18,8 +18,6 @@
 
 package org.apache.jena.commonsrdf;
 
-import org.apache.jena.atlas.logging.LogCtl;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -35,10 +33,5 @@ import org.junit.runners.Suite;
     , TestServiceLoaderCommonsRDF.class
 })
 
-public class TS_JenaCommonsRDF {
-    @BeforeClass public static void beforeClass() {
-        LogCtl.setLog4j();
-        //LogCtl.setWarn("org.apache.jena");
-    }
-}
+public class TS_JenaCommonsRDF {}
 

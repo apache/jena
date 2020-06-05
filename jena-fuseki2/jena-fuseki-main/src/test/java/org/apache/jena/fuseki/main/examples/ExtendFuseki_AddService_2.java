@@ -18,13 +18,13 @@
 
 package org.apache.jena.fuseki.main.examples;
 
-import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.servlets.ActionService;
+import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -41,7 +41,7 @@ import org.apache.jena.web.HttpSC;
  */
 
 public class ExtendFuseki_AddService_2 {
-    static { LogCtl.setLog4j(); }
+    static { FusekiLogging.setLogging(); }
 
     // Endpoint dispatch only.
     static int PORT             = WebLib.choosePort();

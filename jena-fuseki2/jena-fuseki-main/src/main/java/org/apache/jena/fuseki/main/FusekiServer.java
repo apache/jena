@@ -205,7 +205,7 @@ public class FusekiServer {
             throw new FusekiException(ex);
         }
         catch (IllegalStateException ex) {
-            throw new FusekiException(ex.getMessage());
+            throw new FusekiException(ex.getMessage(), ex);
         }
         catch (Exception ex) {
             throw new FusekiException(ex);
@@ -1021,12 +1021,12 @@ public class FusekiServer {
             context.addServlet(sh, pathspec);
         }
 
-        private void addFilter(ServletContextHandler context, String pathspec, Filter filter) {
+        private static void addFilter(ServletContextHandler context, String pathspec, Filter filter) {
             FilterHolder holder = new FilterHolder(filter);
             addFilterHolder(context, pathspec, holder);
         }
 
-        private void addFilterHolder(ServletContextHandler context, String pathspec, FilterHolder holder) {
+        private static void addFilterHolder(ServletContextHandler context, String pathspec, FilterHolder holder) {
             context.addFilter(holder, pathspec, null);
         }
 

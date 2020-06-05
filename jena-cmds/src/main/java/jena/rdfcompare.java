@@ -18,7 +18,7 @@
 
 package jena;
 
-import static org.apache.jena.atlas.logging.LogCtl.setCmdLogging;
+import static org.apache.jena.atlas.logging.LogCtl.setLogging;
 
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
@@ -50,9 +50,9 @@ import org.apache.jena.sys.JenaSystem ;
  */
 public class rdfcompare extends java.lang.Object {
 
-    static {
+    static { 
+        setLogging(); 
         JenaSystem.init();
-        setCmdLogging();
     }
 
     /**

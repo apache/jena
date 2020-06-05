@@ -18,7 +18,7 @@
 
 package jena;
 
-import static org.apache.jena.atlas.logging.LogCtl.setCmdLogging;
+import static org.apache.jena.atlas.logging.LogCtl.setLogging;
 
 import java.lang.reflect.Constructor ;
 
@@ -77,7 +77,7 @@ import org.apache.jena.shared.Command ;
 
 public class rdfparse {
 
-    static { setCmdLogging(); }
+    static { setLogging(); }
 
     /** Either start an RDF/XML to NTriple converter, or run test suite.
 	 * @param args The command-line arguments.

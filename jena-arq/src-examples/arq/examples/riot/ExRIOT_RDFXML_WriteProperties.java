@@ -30,7 +30,7 @@ import org.apache.jena.sparql.util.Context;
 
 /** Example of setting properties for RDF/XML writer via RIOT */
 public class ExRIOT_RDFXML_WriteProperties {
-    static { LogCtl.setCmdLogging(); }
+    static { LogCtl.setLogging(); }
 
     public static void main(String... args) {
         // Data.

@@ -22,13 +22,10 @@ import java.util.List ;
 
 import jena.cmd.CmdException ;
 import jena.cmd.CmdGeneral ;
-
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.RandomLib ;
-import org.apache.jena.atlas.logging.LogCtl ;
 
 public abstract class BaseSoakTest extends CmdGeneral {
-    static { LogCtl.setLog4j() ; }
 
     protected final int MinOrder = 2 ;
     protected final int MinSize  = 1 ;

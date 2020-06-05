@@ -29,7 +29,7 @@ import org.apache.jena.sparql.graph.GraphFactory;
 
 /** Adapt a Jena Graph after parsing data into it */
 public class Ex_JenaGraphToCommonsRDFGraph {
-    static { LogCtl.setCmdLogging(); }
+    static { LogCtl.setLogging(); }
 
     public static void main(String ...a) {
         org.apache.jena.graph.Graph jGraph = GraphFactory.createGraphMem();

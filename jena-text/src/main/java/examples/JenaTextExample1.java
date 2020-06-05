@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory ;
 /** Build a text search dataset */
 public class JenaTextExample1
 {
-    static { LogCtl.setLog4j() ; }
+    static { LogCtl.setLogging(); }
     static Logger log = LoggerFactory.getLogger("JenaTextExample") ;
     
     public static void main(String ... argv)

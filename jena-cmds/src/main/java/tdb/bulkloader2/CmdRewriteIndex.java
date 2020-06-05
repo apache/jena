@@ -30,7 +30,7 @@ import org.apache.jena.tdb.sys.Names ;
 public class CmdRewriteIndex
 {
     static {
-        LogCtl.setCmdLogging();
+        LogCtl.setLogging();
         JenaSystem.init();
     }
 

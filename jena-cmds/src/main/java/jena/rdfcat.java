@@ -24,7 +24,7 @@ package jena;
 // Imports
 ///////////////
 
-import static org.apache.jena.atlas.logging.LogCtl.setCmdLogging;
+import static org.apache.jena.atlas.logging.LogCtl.setLogging;
 
 import java.io.OutputStream ;
 import java.util.* ;
@@ -121,7 +121,10 @@ import org.apache.jena.vocabulary.RDFS ;
 @Deprecated
 public class rdfcat
 {
-    static { setCmdLogging("jena-log4j.properties") ; }
+    static { 
+        setLogging(); 
+        JenaSystem.init();
+    }
     
     /** The merged model containing all of the inputs */
     protected Model m_model = ModelFactory.createDefaultModel();

@@ -38,7 +38,7 @@ import org.apache.jena.update.* ;
 
 public class UpdateProgrammatic
 {
-    static { LogCtl.setCmdLogging(); }
+    static { LogCtl.setLogging(); }
     public static void main(String []args)
     {
         Dataset dataset = DatasetFactory.createTxnMem() ;

@@ -34,7 +34,7 @@ import org.apache.jena.sparql.util.Context;
 
 /** Set proeprties of the RDF/XML parser (ARP) */
 public class ExRIOT_RDFXML_ReaderProperties {
-    static { LogCtl.setCmdLogging(); }
+    static { LogCtl.setLogging(); }
     
     public static void main(String[] args) {
         // Inline illustrative data.

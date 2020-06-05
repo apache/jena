@@ -20,15 +20,15 @@ package org.apache.jena.fuseki.main.examples;
 
 import java.io.IOException;
 
-import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.fuseki.servlets.ActionREST;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.web.HttpSC;
 
 public class ExampleService extends ActionREST {
-    static { LogCtl.setLog4j(); }
+    static { FusekiLogging.setLogging(); }
 
     @Override
     protected void doGet(HttpAction action) {

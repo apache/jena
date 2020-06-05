@@ -32,5 +32,5 @@ import org.junit.runners.Suite.SuiteClasses ;
 
 public class TS_Cmd
 {
-    static { LogCtl.setCmdLogging();}
+    static { LogCtl.setLogging();}
 }

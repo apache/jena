@@ -21,7 +21,7 @@
 package jena;
 
 
-import static org.apache.jena.atlas.logging.LogCtl.setCmdLogging;
+import static org.apache.jena.atlas.logging.LogCtl.setLogging;
 
 import java.io.ByteArrayOutputStream ;
 import java.io.File ;
@@ -59,7 +59,7 @@ import org.apache.jena.vocabulary.XSD ;
  */
 public class schemagen {
     
-    static { setCmdLogging(); }
+    static { setLogging(); }
 
     // Constants
     //////////////////////////////////
