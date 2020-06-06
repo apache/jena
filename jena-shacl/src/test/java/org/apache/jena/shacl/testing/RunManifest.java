@@ -33,7 +33,7 @@ public class RunManifest {
     }
 
     public static void runTest(String manifest, boolean verbose) {
-        if ( true ) {
+        if ( verbose ) {
             try {
                 String fn = manifest;
                 if ( manifest.startsWith("file://" ) )

@@ -36,14 +36,13 @@ import org.apache.jena.sparql.path.Path;
 
 /** SPARQL Constraint (ASK or SELECT) */
 public class ConstraintComponentSPARQL implements Constraint {
-    // XXX Rename if we do not have subclasses.
-    // XXX Need rule "if nodeShape, nodeValidator then validator". "if propertyShape, propertyValidator then validator."
-
     protected final SparqlComponent sparqlConstraintComponent;
     protected final Multimap<Parameter, Node> parameterMap;
     protected final Query query;
 
-    public ConstraintComponentSPARQL(SparqlComponent sparqlConstraintComponent, Multimap<Parameter, Node> parameterMap) {
+    public ConstraintComponentSPARQL(SparqlComponent sparqlConstraintComponent, 
+                                     Multimap<Parameter, Node> parameterMap) {
+        //sh:labelTemplate
         this.sparqlConstraintComponent = sparqlConstraintComponent;
         this.parameterMap = parameterMap;
 
@@ -60,13 +59,16 @@ public class ConstraintComponentSPARQL implements Constraint {
     @Override
     public void validateNodeShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode) {
         SparqlValidation.validate(vCxt, data, shape, focusNode, null, focusNode, query, parameterMap,
-            new ReportConstraint(sparqlConstraintComponent.getReportComponent()));
+                                  sparqlConstraintComponent.getMessage(),
+                                  new ReportConstraint(sparqlConstraintComponent.getReportComponent()));
     }
 
     @Override
     public void validatePropertyShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode, Path path, Set<Node> valueNodes) {
-        valueNodes.forEach(vn->SparqlValidation.validate(vCxt, data, shape, focusNode, path, vn, query, parameterMap,
-            new ReportConstraint(sparqlConstraintComponent.getReportComponent())));
+        valueNodes.forEach(vn->
+                SparqlValidation.validate(vCxt, data, shape, focusNode, path, vn, query, parameterMap,
+                                          sparqlConstraintComponent.getMessage(),
+                                          new ReportConstraint(sparqlConstraintComponent.getReportComponent())));
     }
 
     @Override

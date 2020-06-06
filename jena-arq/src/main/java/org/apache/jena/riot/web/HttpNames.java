@@ -62,7 +62,9 @@ public class HttpNames
     public static final String paramQueryRef        = "query-ref" ;
     public static final String paramDefaultGraphURI = "default-graph-uri" ;
     public static final String paramNamedGraphURI   = "named-graph-uri" ;
-
+    public static final String paramTarget          = "target" ;
+    
+    
     public static final String paramStyleSheet      = "stylesheet" ;
     public static final String paramAccept          = "accept" ;
     public static final String paramOutput1         = "output" ;        // See Yahoo! developer: http://developer.yahoo.net/common/json.html 

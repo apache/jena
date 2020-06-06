@@ -33,12 +33,14 @@ public class SparqlComponent {
     private final List<Parameter> params;
     private final List<Node> requiredParameters;
     private final List<Node> optionalParameters;
+    private final String message;
 
-    public SparqlComponent(Node reportNode, boolean isSelect, String sparqlString, List<Parameter> params) {
+    public SparqlComponent(Node reportNode, boolean isSelect, String sparqlString, List<Parameter> params, String message) {
         this.reportNode = reportNode;
         this.sparqlString = sparqlString;
         this.isSelect = isSelect;
         this.params = params;
+        this.message = message;
         this.requiredParameters = params.stream()
             .filter(param->!param.isOptional())
             .map(param->param.getParameterPath())
@@ -63,6 +65,10 @@ public class SparqlComponent {
 
     public List<Parameter> getParams() {
         return params;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     public List<Node> getRequiredParameters() {

@@ -22,10 +22,11 @@ import jena.cmd.CmdGeneral;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.lib.ShLib;
+import org.apache.jena.shacl.parser.ShaclParseException;
 import org.apache.jena.sys.JenaSystem;
 
 /** SHACL parsing.
- * <p> 
+ * <p>
  * Usage: <code>shacl parse FILE</code>
  */
 public class shacl_parse extends CmdGeneral {
@@ -65,16 +66,39 @@ public class shacl_parse extends CmdGeneral {
 
     @Override
     protected void exec() {
+        boolean multipleFiles = (positionals.size() > 1) ;
         positionals.forEach(fn->{
-            exec(fn);
+            exec(fn, multipleFiles);
         });
     }
 
-    private void exec(String fn) {
-        Shapes shapes = Shapes.parse(fn);
+    private void exec(String fn, boolean multipleFiles) {
+        Shapes shapes;
+        try {
+            shapes = Shapes.parseAll(fn);
+        } catch (ShaclParseException ex) {
+            if ( multipleFiles )
+                System.err.println(fn+" : ");
+            System.err.println(ex.getMessage());
+            return;
+        }
         ShLib.printShapes(shapes);
         int numShapes = shapes.numShapes();
         int numRootShapes = shapes.numRootShapes();
-        System.out.printf("Shapes = %,d : Root shapes = %,d\n", numShapes, numRootShapes);
+        if ( isVerbose() ) {
+            System.out.println();
+            System.out.println("Target shapes: ");
+            shapes.getShapeMap().forEach((n,shape)->{
+                if ( shape.hasTarget() )
+                    System.out.println("  "+ShLib.displayStr(shape.getShapeNode()));
+            });
+
+            System.out.println("Other Shapes: ");
+            shapes.getShapeMap().forEach((n,shape)->{
+                if ( ! shape.hasTarget() )
+                    System.out.println("  "+ShLib.displayStr(shape.getShapeNode()));
+            });
+        }
+
     }
 }

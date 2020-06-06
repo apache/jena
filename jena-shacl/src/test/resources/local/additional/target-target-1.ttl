@@ -1,0 +1,62 @@
+# Test iof nested targets.
+
+PREFIX ex:       <http://example/>
+
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+
+PREFIX sh:      <http://www.w3.org/ns/shacl#>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+
+PREFIX sht:     <http://www.w3.org/ns/shacl-test#>
+PREFIX mf:      <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+
+ex:A rdf:type ex:MyClass .
+
+ex:Shape1
+    sh:targetClass ex:MyClass ;
+    sh:node ex:Shape2 ;
+    .
+
+ex:Shape2
+   sh:targetClass ex:MyClass ;
+   sh:node ex:Shape3 ;
+   .    
+
+ex:Shape3
+   sh:property [
+       sh:path ex:p ;
+       sh:minCount 1 ;
+   ] ;
+   .  
+
+<>
+  rdf:type mf:Manifest ;
+  mf:entries ( <target-class-subclass-1> )
+  .
+
+<target-class-subclass-1>
+  rdf:type sht:Validate ;
+  rdfs:label "Target links to target, which links to constraint : run twice." ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type      sh:ValidationReport ;
+      sh:conforms  false ;
+      sh:result    [ a                             sh:ValidationResult ;
+                 sh:focusNode                  ex:A ;
+                 sh:resultSeverity             sh:Violation ;
+                 sh:sourceConstraintComponent  sh:NodeConstraintComponent ;
+                 sh:sourceShape                ex:Shape2 ;
+                 sh:value                      ex:A
+               ] ;
+      sh:result    [ a                             sh:ValidationResult ;
+                 sh:focusNode                  ex:A ;
+                 sh:resultSeverity             sh:Violation ;
+                 sh:sourceConstraintComponent  sh:NodeConstraintComponent ;
+                 sh:sourceShape                ex:Shape1 ;
+                 sh:value                      ex:A
+               ]
+] .

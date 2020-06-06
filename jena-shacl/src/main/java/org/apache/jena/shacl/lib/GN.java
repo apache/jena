@@ -24,6 +24,14 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.util.graph.GNode;
 
 public class GN {
+    
+    // Node filter tests.
+//public static boolean isURI(GNode n)         { return n != null && isURI(n.getNode()); }
+//public static boolean isBlank(GNode n)       { return n != null && isBlank(n.getNode()); }
+//public static boolean isLiteral(GNode n)     { return n != null && isLiteral(n.getNode()); }
+//public static boolean isResource(GNode n)    { return n != null && isURI(n.getNode())||isBlank(n.getNode()); }
+
+
 
     public static GNode create(Graph graph, Node node) {
         return new GNode(graph, node);

@@ -12,5 +12,8 @@ PREFIX ex:      <http://example/>
     ns:p 60 ;
     .
 
+## Invalid
+:s2  ns:p 57 .
+
 # Valid.
-:s2 ns:p "a string";.
+:s3 ns:p "a string";.

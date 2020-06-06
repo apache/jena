@@ -18,14 +18,12 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.ext.com.google.common.collect.Multimap;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -63,8 +61,11 @@ import org.apache.jena.sparql.util.ModelUtils;
     public static void validate(ValidationContext vCxt, Graph data, Shape shape,
                                 Node focusNode, Path path, Node valueNode,
                                 Query query, Multimap<Parameter, Node> parameterMap,
-                                Constraint reportConstraint) {
-        // Two subcases:
+                                String violationTemplate, Constraint reportConstraint) {
+        // Two sub-cases:
+        //    Syntax rule: https://www.w3.org/TR/shacl/#syntax-rule-multiple-parameters
+        //    If there are >1 parameters, each must be single valued.
+        // so: 
         // Multimap, one parameter, multiple values => conjunction of each, with one report.
         // Multimap, any number of parameters, single values => single validation with one report.
 
@@ -72,7 +73,7 @@ import org.apache.jena.sparql.util.ModelUtils;
             if ( parameterMap.keySet().size() == 1 && parameterMap.size() > 1 ) {
                 for ( Entry<Parameter, Node> e : parameterMap.entries()) {
                     Map<Parameter, Node> pmap = Collections.singletonMap(e.getKey(), e.getValue());
-                    boolean b = validateMap(vCxt, data, shape, focusNode, path, valueNode, query, pmap, reportConstraint);
+                    boolean b = validateMap(vCxt, data, shape, focusNode, path, valueNode, query, pmap, violationTemplate, reportConstraint);
                     if ( ! b )
                         // Validation error - return early.
                         return;
@@ -83,7 +84,7 @@ import org.apache.jena.sparql.util.ModelUtils;
         // Convert to map.
         Map<Parameter, Node> pmap = flatten(parameterMap);
         /*boolean b =*/
-        validateMap(vCxt, data, shape, focusNode, path, valueNode, query, pmap, reportConstraint);
+        validateMap(vCxt, data, shape, focusNode, path, valueNode, query, pmap, violationTemplate, reportConstraint);
     }
 
     private static Map<Parameter, Node> flatten(Multimap<Parameter, Node> parameterMap) {
@@ -100,7 +101,7 @@ import org.apache.jena.sparql.util.ModelUtils;
     private static boolean validateMap(ValidationContext vCxt, Graph data, Shape shape,
                                         Node focusNode, Path path, Node valueNode,
                                         Query _query, Map<Parameter, Node> parameterMap,
-                                        Constraint reportConstraint) {
+                                        String violationTemplate, Constraint reportConstraint) {
         Model model = ModelFactory.createModelForGraph(data);
         QueryExecution qExec;
         
@@ -128,19 +129,15 @@ import org.apache.jena.sparql.util.ModelUtils;
         if ( qExec.getQuery().isAskType() ) {
             boolean b = qExec.execAsk();
             if ( ! b ) {
-                String msg = "SPARQL ASK constraint for "+ShLib.displayStr(valueNode)+" returns false";
+                String msg = ( violationTemplate == null )
+                    ? "SPARQL ASK constraint for "+ShLib.displayStr(valueNode)+" returns false"
+                    : substitute(violationTemplate, parameterMap, focusNode, path, valueNode);
                 vCxt.reportEntry(msg, shape, focusNode, path, valueNode, reportConstraint);
             }
             return b;
         }
 
         ResultSet rs = qExec.execSelect();
-//        if ( true ) { // Development
-//            ResultSetRewindable rsw = ResultSetFactory.makeRewindable(rs);
-//            ResultSetFormatter.out(rsw);
-//            rsw.reset();
-//            rs = rsw;
-//        }
         if ( ! rs.hasNext() )
             return true;
 
@@ -151,10 +148,15 @@ import org.apache.jena.sparql.util.ModelUtils;
                 value = valueNode;
 
             String msg;
-            if ( value != null )
-                msg = "SPARQL SELECT constraint for "+ShLib.displayStr(valueNode)+" returns "+ShLib.displayStr(value);
-            else
-                msg = "SPARQL SELECT constraint for "+ShLib.displayStr(valueNode)+" returns row "+row;
+            if ( violationTemplate == null ) {
+                if ( value != null )
+                    msg = "SPARQL SELECT constraint for "+ShLib.displayStr(valueNode)+" returns "+ShLib.displayStr(value);
+                else
+                    msg = "SPARQL SELECT constraint for "+ShLib.displayStr(valueNode)+" returns row "+row;
+            } else {
+                msg = substitute(violationTemplate, row);
+            }
+            
             Path rPath = path;
             if ( rPath == null ) {
                 Node qPath = row.get(SparqlConstraint.varPath);
@@ -164,6 +166,47 @@ import org.apache.jena.sparql.util.ModelUtils;
             vCxt.reportEntry(msg, shape, focusNode, rPath, value, reportConstraint);
         }
         return false;
+    }
+
+    /** Result message: SELECT substitute */
+    private static String substitute(String violationTemplate, Binding row) {
+        String x = violationTemplate;
+        Iterator<Var> iter = row.vars();
+        while(iter.hasNext()) {
+            Var var = iter.next();
+            x = substit(x, var.getVarName(), row.get(var));
+        }
+        return x;
+    }
+
+    /** Result message: ASK substitute */
+    private static String substitute(String violationTemplate, Map<Parameter, Node> parameterMap, Node focusNode, Path path, Node valueNode) {
+        String x = violationTemplate;
+        for ( Entry<Parameter, Node> e : parameterMap.entrySet() ) {
+            x = substit(x, e.getKey().getSparqlName(), e.getValue());
+        }
+        return x;
+    }
+    
+    /** Substitution */
+    private static String substit(String x, String name, Node value) {
+        try { 
+            String vn = "\\{[?$]"+Matcher.quoteReplacement(name)+"\\}";
+            String val = strQuoted(value);
+            return x.replaceAll(vn, val);
+        } catch (RuntimeException ex) {
+            Log.warn(SparqlValidation.class, "Failed to substitute into string for name="+name+" value="+value);
+            return x;
+        }
+    }
+
+    /** regex-safe string */ 
+    private static String strQuoted(Node node) {
+        String x =  
+        node.isLiteral() ?node.getLiteralLexicalForm()
+        : NodeFmtLib.str(node);
+        x = Matcher.quoteReplacement(x);
+        return x;
     }
 
     private static Map<Var, Node> parameterMapToSyntaxSubstitutions(Map<Parameter, Node> parameterMap, Node thisNode, Path path) {

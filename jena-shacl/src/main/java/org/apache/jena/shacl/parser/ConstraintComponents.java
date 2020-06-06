@@ -215,10 +215,19 @@ class ConstraintComponents {
             throw new ShaclParseException("SparqlConstraintComponent: Multiple SPARQL queries: "+displayStr(constraintComponentNode));
         String prefixes = SparqlConstraints.prefixes(shapesGraph, valNode);
         String queryString = firstNonNull(xSelect, xAsk).getLiteralLexicalForm().trim();
+        String message = asString(G.getZeroOrOneSP(shapesGraph, valNode, SHACL.message));
         if ( ! prefixes.isEmpty() )
             queryString = prefixes+"\n"+queryString;
         boolean isSelect = (xSelect!=null);
-        SparqlComponent cs = new SparqlComponent(constraintComponentNode, isSelect, queryString, params);
+        SparqlComponent cs = new SparqlComponent(constraintComponentNode, isSelect, queryString, params, message);
         return cs;
+    }
+    
+    private static String asString(Node x) {
+        if ( x == null )
+            return null;
+        if ( ! x.isLiteral() )
+            return null;
+        return x.getLiteralLexicalForm();
     }
 }

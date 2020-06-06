@@ -76,6 +76,46 @@ public class Constraints {
 //        4.8.2 sh:hasValue
 //        4.8.3 sh:in
 
+    // The constraints that need just a single triple.
+    static Map<Node, ConstraintMaker> dispatch = new HashMap<>();
+    static {
+        dispatch.put( SHACL.class_,            (g, s, p, o) -> new ClassConstraint(o)    );
+        dispatch.put( SHACL.datatype,          (g, s, p, o) -> new DatatypeConstraint(o) );
+        dispatch.put( SHACL.nodeKind,          (g, s, p, o) -> new NodeKindConstraint(o) );
+        dispatch.put( SHACL.minCount,          (g, s, p, o) -> new MinCount(intValue(o)) );
+        dispatch.put( SHACL.maxCount,          (g, s, p, o) -> new MaxCount(intValue(o)) );
+    
+        dispatch.put( SHACL.minInclusive,      (g, s, p, o) -> new ValueMinInclusiveConstraint(o) );
+        dispatch.put( SHACL.minExclusive,      (g, s, p, o) -> new ValueMinExclusiveConstraint(o) );
+        dispatch.put( SHACL.maxInclusive,      (g, s, p, o) -> new ValueMaxInclusiveConstraint(o) );
+        dispatch.put( SHACL.maxExclusive,      (g, s, p, o) -> new ValueMaxExclusiveConstraint(o) );
+    
+        dispatch.put( SHACL.minLength,         (g, s, p, o) -> new StrMinLengthConstraint(intValue(o)) );
+        dispatch.put( SHACL.maxLength,         (g, s, p, o) -> new StrMaxLengthConstraint(intValue(o)) );
+        // in parseConstraint
+        //dispatch.put( SHACL.pattern,           (g, p, o) -> notImplemented(p) );
+        dispatch.put( SHACL.languageIn,        (g, s, p, o) -> new StrLanguageIn(listString(g, o)) );
+        dispatch.put( SHACL.uniqueLang,        (g, s, p, o) -> new UniqueLangConstraint(booleanValueStrict(o)) );
+    
+        dispatch.put( SHACL.hasValue,          (g, s, p, o) -> new HasValueConstraint(o) );
+        dispatch.put( SHACL.in,                (g, s, p, o) -> new InConstraint(list(g,o)) );
+        dispatch.put( SHACL.closed,            (g, s, p, o) -> new ClosedConstraint(g,s,booleanValue(o)) );
+    
+        dispatch.put( SHACL.equals,            (g, s, p, o) -> new EqualsConstraint(o) );
+        dispatch.put( SHACL.disjoint,          (g, s, p, o) -> new DisjointConstraint(o) );
+        dispatch.put( SHACL.lessThan,          (g, s, p, o) -> new LessThanConstraint(o) );
+        dispatch.put( SHACL.lessThanOrEquals,  (g, s, p, o) -> new LessThanOrEqualsConstraint(o) );
+    
+        // Below
+        //dispatch.put( SHACL.not,                (g, s, p, o) -> notImplemented(p) );
+        //dispatch.put( SHACL.and,                (g, s, p, o) -> notImplemented(p) );
+        //dispatch.put( SHACL.or,                 (g, s, p, o) -> notImplemented(p) );
+        //dispatch.put( SHACL.xone,               (g, s, p, o) -> notImplemented(p) );
+        //dispatch.put( SHACL.node,               (g, s, p, o) -> notImplemented(p) );
+    
+        dispatch.put(SHACL.sparql, (g, s, p, o) -> SparqlConstraints.parseSparqlConstraint(g, s, p, o) );
+    }
+
     /**
      * The constraints that just need an input node, and do not look in the data.
      * For example, minCount is not here because needs all the instances to count them.
@@ -98,6 +138,12 @@ public class Constraints {
         immediate.add(SHACL.pattern);
     }
 
+    /**
+     * Entry point. Process all triples of a specific shape node (subject). Has
+     * access to map of parsed shapes so it can recursively call back into the shapes
+     * parser at when the constraint uses other shapes
+     * (sh:and/sh:or/sh:not/sh:xone.sh:node).
+     */
     /*package*/ static List<Constraint> parseConstraints(Graph shapesGraph, Node shape, Map<Node, Shape> parsed) {
         List<Constraint> constraints = new ArrayList<>();
         Iterator<Triple> iter = G.find(shapesGraph, shape, null, null);
@@ -118,8 +164,13 @@ public class Constraints {
         return constraints;
     }
 
+    /** 
+     * The translate of an RDF triple into a {@link Constraint}. 
+     * Constraints require more that just the triple being inspected.
+     */  
     private static Constraint parseConstraint(Graph g, Node s, Node p, Node o, Map<Node, Shape> parsed) {
 
+        // Test for single triple constraints.
         ConstraintMaker maker = dispatch.get(p);
         if ( maker != null )
             return maker.make(g, s, p, o);
@@ -154,6 +205,7 @@ public class Constraints {
             return new ShNode(other);
         }
 
+        // sh:pattern is influenced by an adjacent sh:flags. 
         if ( p.equals(SHACL.pattern) ) {
             Node pat = o;
             if ( ! Util.isSimpleString(pat) )
@@ -207,45 +259,6 @@ public class Constraints {
 
     interface ConstraintMaker {
         Constraint make(Graph g, Node s, Node p, Node o);
-    }
-
-    static Map<Node, ConstraintMaker> dispatch = new HashMap<>();
-    static {
-        dispatch.put( SHACL.class_,            (g, s, p, o) -> new ClassConstraint(o)    );
-        dispatch.put( SHACL.datatype,          (g, s, p, o) -> new DatatypeConstraint(o) );
-        dispatch.put( SHACL.nodeKind,          (g, s, p, o) -> new NodeKindConstraint(o) );
-        dispatch.put( SHACL.minCount,          (g, s, p, o) -> new MinCount(intValue(o)) );
-        dispatch.put( SHACL.maxCount,          (g, s, p, o) -> new MaxCount(intValue(o)) );
-
-        dispatch.put( SHACL.minInclusive,      (g, s, p, o) -> new ValueMinInclusiveConstraint(o) );
-        dispatch.put( SHACL.minExclusive,      (g, s, p, o) -> new ValueMinExclusiveConstraint(o) );
-        dispatch.put( SHACL.maxInclusive,      (g, s, p, o) -> new ValueMaxInclusiveConstraint(o) );
-        dispatch.put( SHACL.maxExclusive,      (g, s, p, o) -> new ValueMaxExclusiveConstraint(o) );
-
-        dispatch.put( SHACL.minLength,         (g, s, p, o) -> new StrMinLengthConstraint(intValue(o)) );
-        dispatch.put( SHACL.maxLength,         (g, s, p, o) -> new StrMaxLengthConstraint(intValue(o)) );
-        // in parseConstraint
-        //dispatch.put( SHACL.pattern,           (g, p, o) -> notImplemented(p) );
-        dispatch.put( SHACL.languageIn,        (g, s, p, o) -> new StrLanguageIn(listString(g, o)) );
-        dispatch.put( SHACL.uniqueLang,        (g, s, p, o) -> new UniqueLangConstraint(booleanValueStrict(o)) );
-
-        dispatch.put( SHACL.hasValue,          (g, s, p, o) -> new HasValueConstraint(o) );
-        dispatch.put( SHACL.in,                (g, s, p, o) -> new InConstraint(list(g,o)) );
-        dispatch.put( SHACL.closed,            (g, s, p, o) -> new ClosedConstraint(g,s,booleanValue(o)) );
-
-        dispatch.put( SHACL.equals,            (g, s, p, o) -> new EqualsConstraint(o) );
-        dispatch.put( SHACL.disjoint,          (g, s, p, o) -> new DisjointConstraint(o) );
-        dispatch.put( SHACL.lessThan,          (g, s, p, o) -> new LessThanConstraint(o) );
-        dispatch.put( SHACL.lessThanOrEquals,  (g, s, p, o) -> new LessThanOrEqualsConstraint(o) );
-
-        // Below
-        //dispatch.put( SHACL.not,                (g, s, p, o) -> notImplemented(p) );
-        //dispatch.put( SHACL.and,                (g, s, p, o) -> notImplemented(p) );
-        //dispatch.put( SHACL.or,                 (g, s, p, o) -> notImplemented(p) );
-        //dispatch.put( SHACL.xone,               (g, s, p, o) -> notImplemented(p) );
-        //dispatch.put( SHACL.node,               (g, s, p, o) -> notImplemented(p) );
-
-        dispatch.put(SHACL.sparql, (g, s, p, o) -> SparqlConstraints.parseSparqlConstraint(g, s, p, o) );
     }
 
     private static Constraint notImplemented(Node p) {
