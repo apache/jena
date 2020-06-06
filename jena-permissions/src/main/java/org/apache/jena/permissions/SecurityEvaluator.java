@@ -210,7 +210,7 @@ public interface SecurityEvaluator {
 	 * @throws AuthenticationRequiredException
 	 *             if user is not authenticated and is required to be.
 	 */
-	boolean evaluate(Object principal, Action action, Node graphIRI)
+	public boolean evaluate(Object principal, Action action, Node graphIRI)
 			throws AuthenticationRequiredException;
 
 	/**
