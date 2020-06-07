@@ -18,6 +18,8 @@
 
 package org.apache.jena.atlas.lib;
 
+import static java.lang.String.format;
+
 import org.apache.jena.atlas.AtlasException ;
 
 /** Working in hex ... */
@@ -72,8 +74,10 @@ public class Hex
             return c - 'A' + 10;
         else if ( 'a' <= c && c <= 'f' )
             return c - 'a' + 10;
-        else
-            throw new IllegalArgumentException("Bad index char : " + c);
+        else {
+            String msg = format("Bad hex char : %d (0x%02X)", c, c);
+            throw new IllegalArgumentException(msg);
+        }
     }
 
     /**
