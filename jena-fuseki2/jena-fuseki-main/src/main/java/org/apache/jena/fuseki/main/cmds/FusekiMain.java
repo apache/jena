@@ -55,6 +55,7 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RiotException;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.Txn;
@@ -186,6 +187,8 @@ public class FusekiMain extends CmdARQ {
 
     @Override
     protected void processModulesAndArgs() {
+        Logger log = Fuseki.serverLog;
+
         serverConfig.verboseLogging = super.isVerbose();
 
         boolean allowEmpty = contains(argEmpty) || contains(argSparqler);
@@ -282,21 +285,30 @@ public class FusekiMain extends CmdARQ {
         }
 
         if ( contains(argFile) ) {
-            String filename = getValue(argFile);
-            String pathname = filename;
-            if ( filename.startsWith("file:") )
-                pathname = filename.substring("file:".length());
-
-            serverConfig.datasetDescription = "file:"+filename;
-            if ( !FileOps.exists(pathname) )
-                throw new CmdException("File not found: " + filename);
+            List<String> filenames = getValues(argFile);
+            serverConfig.datasetDescription = "in-memory, with files loaded";
             serverConfig.dsg = DatasetGraphFactory.createTxnMem();
 
-            // INITIAL DATA.
-            Lang language = RDFLanguages.filenameToLang(filename);
-            if ( language == null )
-                throw new CmdException("Can't guess language for file: " + filename);
-            Txn.executeWrite(serverConfig.dsg,  ()->RDFDataMgr.read(serverConfig.dsg, filename));
+            for(String filename : filenames ) {
+                String pathname = filename;
+                if ( filename.startsWith("file:") )
+                    pathname = filename.substring("file:".length());
+                if ( !FileOps.exists(pathname) )
+                    throw new CmdException("File not found: " + filename);
+
+                // INITIAL DATA.
+                Lang language = RDFLanguages.filenameToLang(filename);
+                if ( language == null )
+                    throw new CmdException("Can't guess language for file: " + filename);
+                Txn.executeWrite(serverConfig.dsg,  ()-> {
+                    try {
+                        log.info("Dataset: in-memory: load file: " + filename);
+                        RDFDataMgr.read(serverConfig.dsg, filename);
+                    } catch (RiotException ex) {
+                        throw new CmdException("Failed to load file: " + filename);
+                    }
+                });
+            }
         }
 
         if ( contains(argMemTDB) ) {
