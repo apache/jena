@@ -24,6 +24,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.dboe.base.block.Block;
 import org.apache.jena.dboe.base.block.BlockException;
 import org.apache.jena.dboe.sys.FileLib;
@@ -93,9 +94,14 @@ public abstract class BlockAccessBase implements BlockAccess {
 
     final protected int allocateId() {
         checkIfClosed();
-        int id = (int)seq.getAndIncrement();
-        numFileBlocks++; // TODO Fix this when proper freeblock management is
-                          // introduced.
+        long z = seq.getAndIncrement();
+        int id = (int)z;
+        if ( id < 0 ) {
+            String msg = format("%s : Block id has gone negative: %d (long = %d)", label, id, z);
+            throw new InternalErrorException(msg);
+        }
+        // TODO Fix this when proper free block management is introduced.
+        numFileBlocks++;
         return id;
     }
 
