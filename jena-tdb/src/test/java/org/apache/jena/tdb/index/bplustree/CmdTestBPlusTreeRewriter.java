@@ -26,7 +26,7 @@ import org.apache.jena.tdb.sys.SystemTDB ;
 
 public class CmdTestBPlusTreeRewriter
 {
-    static { LogCtl.setLog4j() ; }
+    static { LogCtl.setLogging(); }
     
     public static void main(String...argv)
     {

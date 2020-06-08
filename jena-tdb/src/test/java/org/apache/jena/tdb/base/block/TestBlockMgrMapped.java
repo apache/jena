@@ -19,7 +19,6 @@
 package org.apache.jena.tdb.base.block;
 
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.tdb.ConfigTest ;
 import org.apache.jena.tdb.base.file.BlockAccess ;
 import org.apache.jena.tdb.base.file.BlockAccessMapped ;
@@ -29,10 +28,6 @@ import org.junit.BeforeClass ;
 
 public class TestBlockMgrMapped extends AbstractTestBlockMgr
 {
-    static boolean logging = false ;
-    
-    static { if ( logging ) LogCtl.setLog4j() ; }
-    
     static final String filename = ConfigTest.getTestingDir()+"/block-mgr" ;
     
     // Windows is iffy about deleting memory mapped files.

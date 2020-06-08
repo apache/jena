@@ -35,7 +35,7 @@ import org.apache.jena.update.UpdateRequest ;
 
 public class UpdateExecuteOperations
 {
-    static { LogCtl.setCmdLogging(); }
+    static { LogCtl.setLogging(); }
     public static void main(String []args)
     {
         // Create an empty DatasetGraph (has an empty default graph and no named graphs) 

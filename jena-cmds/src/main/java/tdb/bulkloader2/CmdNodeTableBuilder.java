@@ -39,7 +39,7 @@ import tdb.cmdline.CmdTDB ;
 public class CmdNodeTableBuilder extends CmdGeneral
 {
     static {
-        LogCtl.setCmdLogging();
+        LogCtl.setLogging();
         JenaSystem.init();
     }
 

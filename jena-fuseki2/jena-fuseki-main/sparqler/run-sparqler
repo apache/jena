@@ -26,12 +26,12 @@ fi
 BACKGROUND=${BACKGROUND:-1}
 if [ "$BACKGROUND" = 0 ]
 then
-    LOGCONFIG=${LOGCONFIG:-file:log4j-foreground.properties}
+    LOGCONFIG=${LOGCONFIG:-file:log4j2-console.properties}
 else
-    LOGCONFIG=${LOGCONFIG:-file:log4j-server.properties}
+    LOGCONFIG=${LOGCONFIG:-file:log4j2-file.properties}
 fi
 
-export FUSEKI_LOG="-Dlog4j.configuration=${LOGCONFIG}"
+export FUSEKI_LOG="-Dlog4j.configurationFile=${LOGCONFIG}"
 export JVM_ARGS="${JVM_ARGS:--Xmx1200M}"
 
 ## SPARQLER_ARGS="--base $SPARQLER_PAGES --file=$SPARQLER_DATA  $SPARQLER_DS"

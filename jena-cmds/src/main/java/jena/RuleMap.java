@@ -19,7 +19,7 @@
 package jena;
 
 
-import static org.apache.jena.atlas.logging.LogCtl.setCmdLogging;
+import static org.apache.jena.atlas.logging.LogCtl.setLogging;
 
 import java.util.*;
 import java.io.*;
@@ -53,7 +53,7 @@ import org.apache.jena.util.FileUtils ;
  * </p>
  */
 public class RuleMap {
-    static { setCmdLogging() ; }
+    static { setLogging() ; }
     
     /**
      * Load a set of rule definitions including processing of

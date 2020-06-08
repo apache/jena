@@ -28,7 +28,7 @@ import org.apache.jena.sys.JenaSystem ;
 
 /** Dump an rdf-thrift file to show structure */ 
 public class dumpthrift {
-    static { LogCtl.setCmdLogging(); }
+    static { LogCtl.setLogging(); }
     static { JenaSystem.init() ; }
     
     public static void main(String... args) {

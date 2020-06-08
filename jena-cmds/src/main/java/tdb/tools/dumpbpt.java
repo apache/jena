@@ -48,7 +48,7 @@ public class dumpbpt extends CmdARQ {
     ModLocation modLocation = new ModLocation() ;
 
     static public void main(String... argv) {
-        LogCtl.setCmdLogging();
+        LogCtl.setLogging();
         new dumpbpt(argv).mainRun() ;
     }
 

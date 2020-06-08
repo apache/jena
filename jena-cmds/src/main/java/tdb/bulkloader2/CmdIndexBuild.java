@@ -24,7 +24,7 @@ import org.apache.jena.tdb.store.bulkloader2.ProcIndexBuild ;
 
 public class CmdIndexBuild {
     static {
-        LogCtl.setCmdLogging();
+        LogCtl.setLogging();
         JenaSystem.init();
     }
     

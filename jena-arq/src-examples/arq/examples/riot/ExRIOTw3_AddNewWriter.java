@@ -36,7 +36,7 @@ import org.apache.jena.sparql.util.Context ;
 /** Example of registering a new writer with RIOT */
 public class ExRIOTw3_AddNewWriter
 {
-    static { LogCtl.setCmdLogging(); }
+    static { LogCtl.setLogging(); }
     
     // See also ExRIOT6_AddNewLang
     public static void main(String[] args)

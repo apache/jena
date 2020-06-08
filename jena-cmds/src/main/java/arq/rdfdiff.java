@@ -18,7 +18,7 @@
 
 package arq;
 
-import static org.apache.jena.atlas.logging.LogCtl.setCmdLogging;
+import static org.apache.jena.atlas.logging.LogCtl.setLogging;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ import org.apache.jena.sparql.util.Closure;
 public class rdfdiff extends java.lang.Object {
 
     static {
-        setCmdLogging();
+        setLogging();
     }
 
     /**

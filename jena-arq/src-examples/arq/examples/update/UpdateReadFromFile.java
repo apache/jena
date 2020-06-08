@@ -29,7 +29,7 @@ import org.apache.jena.update.* ;
 /** Simple example of SPARQL/Update : read a update script from a file and execute it */ 
 public class UpdateReadFromFile
 {
-    static { LogCtl.setCmdLogging(); }
+    static { LogCtl.setLogging(); }
     public static void main(String []args)
     {
         // Create an empty GraphStore (has an empty default graph and no named graphs) 

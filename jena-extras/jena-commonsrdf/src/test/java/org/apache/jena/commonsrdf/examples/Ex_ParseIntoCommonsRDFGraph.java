@@ -29,7 +29,7 @@ import org.apache.jena.riot.system.StreamRDF;
 
 /** Use jena to parse data into an CommonsRDF graph */
 public class Ex_ParseIntoCommonsRDFGraph {
-    static { LogCtl.setCmdLogging(); }
+    static { LogCtl.setLogging(); }
 
     public static void main(String ...a) {
         System.out.println("== RDFTermFactoryJena");

@@ -33,7 +33,7 @@ public abstract class CmdMain extends CmdLineArgs
 {
     // Do this very early so it happens before anything else
     // gets a chance to create a logger.
-    static { LogCtl.setCmdLogging() ; }
+    static { LogCtl.setLogging() ; }
     
     public CmdMain(String[] args)
     {

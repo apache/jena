@@ -28,7 +28,7 @@ import org.apache.jena.sys.JenaSystem;
 
 public class shacl {
     static {
-        LogCtl.setCmdLogging();
+        LogCtl.setLogging();
         JenaSystem.init();
     }
 

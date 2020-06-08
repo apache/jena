@@ -18,7 +18,7 @@
 
 package jena;
 
-import static org.apache.jena.atlas.logging.LogCtl.setCmdLogging;
+import static org.apache.jena.atlas.logging.LogCtl.setLogging;
 
 import java.net.*;
 import java.io.*;
@@ -52,7 +52,7 @@ import org.apache.jena.shared.JenaException ;
  */
 public class rdfcopy extends java.lang.Object {
 
-    static { setCmdLogging(); }
+    static { setLogging(); }
 
 	/**
 	* @param args the command line arguments
