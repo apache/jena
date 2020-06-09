@@ -22,6 +22,8 @@ import static java.lang.String.format;
 
 import java.nio.ByteBuffer;
 
+import org.apache.jena.atlas.lib.ByteBufferLib;
+
 /** Record creator */
 final
 public class RecordFactory
@@ -105,13 +107,20 @@ public class RecordFactory
 //            copyInto(value, bb, posnValue, factory.valueLength);
 //        }
 
-        // Using bb.get(byte[],,) may be potentially faster but requires the synchronized
+        // Using bb.get(byte[],,) - synchronize and bulk get
         // There's no absolute version.
         synchronized(bb) {
-            bb.position(idx*factory.slotLen);
-            bb.get(key, 0, factory.keyLength);
-            if ( value != null )
-                bb.get(value, 0, factory.valueLength);
+            try {
+                bb.position(idx*factory.slotLen);
+                bb.get(key, 0, factory.keyLength);
+                if ( value != null )
+                    bb.get(value, 0, factory.valueLength);
+            } catch (Throwable ex) {
+                // JENA-1908 investigation
+                String msg = String.format("bb.position(%d) idx=%d %s %s\n", idx*factory.slotLen, idx, factory, ByteBufferLib.details(bb));  
+                System.err.printf(msg);
+                throw ex;
+            }
         }
         if ( keyBytes != null )
             System.arraycopy(key, 0, keyBytes, 0, factory.keyLength);

@@ -77,7 +77,8 @@ public class Indexer implements BulkStartFinish {
                 pipesTripleIndexers[i].put(chunk);
             }
             catch (InterruptedException e) {
-                Log.error(this, "Interrupted", e);
+                String name = indexes[i].getName();
+                Log.error(this, "Interrupted: "+name, e);
                 throw new RuntimeException(e);
             }
         }

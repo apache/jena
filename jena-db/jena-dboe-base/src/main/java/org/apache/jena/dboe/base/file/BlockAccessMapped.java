@@ -132,10 +132,15 @@ public class BlockAccessMapped extends BlockAccessBase
         // Limitation: ids must be integers.
         // ids are used to index into []-arrays.
         int id = (int)_id;
+        if ( id < 0 ) {
+            String msg = String.format("%s: ByteBuffer index is negative: %d (long = %d)", label, id, _id);
+            getLog().error(msg);
+            throw new IllegalArgumentException(msg);
+        }
 
         int seg = segment(id);                 // Segment.
         int segOff = byteOffset(id);           // Byte offset in segment
-
+        
         if ( getLog().isTraceEnabled() )
             getLog().trace(format("%d => [%d, %d]", id, seg, segOff));
 
