@@ -31,13 +31,13 @@ public class TestScriptsTDB1 extends TestSuite
     static final String ARQ_DIR = "../jena-arq/testing/ARQ";
 
     static public TestSuite suite() { return new TestScriptsTDB1() ; }
-    
+
     private TestScriptsTDB1()
     {
         super("TDB-Scripts") ;
-//        String manifestMain1 = ConfigTest.getTestingDataRoot()+"/manifest.ttl" ;
-//        TestFactoryTDB.make(this, manifestMain1, "TDB-") ;
-        
+        String manifestMain1 = ConfigTest.getTestingDataRoot()+"/manifest.ttl" ;
+        TestFactoryTDB.make(this, manifestMain1, "TDB-") ;
+
         // From ARQ
         String manifestMain2 = ARQ_DIR + "/RDF-Star/SPARQL-Star/manifest.ttl";
         TestFactoryTDB.make(this, manifestMain2, "TDB-");

@@ -33,13 +33,13 @@ public class FactoryTestRiot extends TestFactoryManifest
     public static String assumedRootURIex = "http://example/base/" ;
     public static String assumedRootURITurtle = "http://www.w3.org/2013/TurtleTests/" ;
     public static String assumedRootURITriG = "http://www.w3.org/2013/TriGTests/" ;
-    
+
     public static EarlReport report = null ;
-    
+
     public static TestSuite make(String manifest) {
         return make(manifest, null, null);
     }
-    
+
     public static TestSuite make(String manifest, Resource dftTestType, String labelPrefix) {
         return new FactoryTestRiot(dftTestType, labelPrefix).process(manifest);
     }
@@ -52,7 +52,7 @@ public class FactoryTestRiot extends TestFactoryManifest
         this.dftTestType = dftTestType ;
         this.labelPrefix = labelPrefix ;
     }
-    
+
     @Override
     public Test makeTest(Resource manifest, Resource item, String testName, Resource action, Resource result)
     {
@@ -63,49 +63,49 @@ public class FactoryTestRiot extends TestFactoryManifest
                 r = dftTestType ;
             if ( r == null )
                 throw new RiotException("Can't determine the test type") ;
-            
+
             if ( labelPrefix != null )
                 testName = labelPrefix+testName ;
-            
+
             // In Turtle tests, the action directly names the file to process.
             Resource input = action ;
-            Resource output = result ; 
-            
+            Resource output = result ;
+
             if ( r.equals(VocabLangRDF.TestPositiveSyntaxTTL) )
                 return new UnitTestSyntax(testName, item.getURI(), input.getURI(), RDFLanguages.TURTLE, report) ;
-            
+
             if ( r.equals(VocabLangRDF.TestNegativeSyntaxTTL) )
                 return new UnitTestBadSyntax(testName, item.getURI(), input.getURI(), RDFLanguages.TURTLE, report) ;
 
             if ( r.equals(VocabLangRDF.TestPositiveSyntaxTriG) )
                 return new UnitTestSyntax(testName, item.getURI(), input.getURI(), RDFLanguages.TRIG, report) ;
-            
+
             if ( r.equals(VocabLangRDF.TestNegativeSyntaxTriG) )
                 return new UnitTestBadSyntax(testName, item.getURI(), input.getURI(), RDFLanguages.TRIG, report) ;
 
             if ( r.equals(VocabLangRDF.TestPositiveSyntaxNT) )
                 return new UnitTestSyntax(testName, item.getURI(), input.getURI(), RDFLanguages.NTRIPLES, report) ;
-            
+
             if ( r.equals(VocabLangRDF.TestNegativeSyntaxNT) )
                 return new UnitTestBadSyntax(testName, item.getURI(), input.getURI(), RDFLanguages.NTRIPLES, report) ;
 
             if ( r.equals(VocabLangRDF.TestPositiveSyntaxNQ) )
                 return new UnitTestSyntax(testName, item.getURI(), input.getURI(), RDFLanguages.NQUADS, report) ;
-            
+
             if ( r.equals(VocabLangRDF.TestNegativeSyntaxNQ) )
                 return new UnitTestBadSyntax(testName, item.getURI(), input.getURI(), RDFLanguages.NQUADS, report) ;
 
             if ( r.equals(VocabLangRDF.TestPositiveSyntaxRJ) )
                 return new UnitTestSyntax(testName, item.getURI(), input.getURI(), RDFLanguages.RDFJSON, report) ;
-            
+
             if ( r.equals(VocabLangRDF.TestNegativeSyntaxRJ) )
                 return new UnitTestBadSyntax(testName, item.getURI(), input.getURI(), RDFLanguages.RDFJSON, report) ;
-            
+
             if ( r.equals(VocabLangRDF.TestSurpressed ))
                 return new UnitTestSurpressed(testName, item.getURI(), report) ;
 
             // Eval.
-            
+
             if ( r.equals(VocabLangRDF.TestEvalTTL) ) {
                 String base = rebase(input, assumedRootURITurtle) ;
                 return new UnitTestEval(testName, item.getURI(), input.getURI(), result.getURI(), base, RDFLanguages.TURTLE, report) ;
@@ -118,7 +118,7 @@ public class FactoryTestRiot extends TestFactoryManifest
 
             if ( r.equals(VocabLangRDF.TestNegativeEvalTTL) )
                 return new UnitTestBadEval(testName, item.getURI(), input.getURI(), RDFLanguages.TURTLE, report) ;
-            
+
             if ( r.equals(VocabLangRDF.TestNegativeEvalTriG) )
                 return new UnitTestBadEval(testName, item.getURI(), input.getURI(), RDFLanguages.TRIG, report) ;
 
@@ -127,7 +127,7 @@ public class FactoryTestRiot extends TestFactoryManifest
 
             if ( r.equals(VocabLangRDF.TestNegativeEvalNT) )
                 return new UnitTestBadEval(testName, item.getURI(), input.getURI(), RDFLanguages.NTRIPLES, report) ;
-            
+
             if ( r.equals(VocabLangRDF.TestEvalRJ) ) {
                 String base = rebase(input, assumedRootURIex) ;
                 return new UnitTestEval(testName, item.getURI(), input.getURI(), result.getURI(), base, RDFLanguages.RDFJSON, report) ;
