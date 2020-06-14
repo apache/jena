@@ -40,8 +40,8 @@ import org.apache.jena.fuseki.servlets.ServletOps;
 public class ActionStats extends ActionContainerItem
 {
     // For endpoint with "" as name.
-    private static String emptyNameKeyPrefix = "_"; 
-    
+    private static String emptyNameKeyPrefix = "_";
+
     public ActionStats() { super(); }
 
     @Override
@@ -49,7 +49,8 @@ public class ActionStats extends ActionContainerItem
 
     // This does not consult the system database for dormant etc.
     protected JsonValue execCommonContainer(HttpAction action) {
-        action.log.info(format("[%d] GET stats all", action.id));
+        if ( action.verbose )
+            action.log.info(format("[%d] GET stats all", action.id));
         return generateStats(action.getDataAccessPointRegistry());
     }
 
@@ -66,7 +67,8 @@ public class ActionStats extends ActionContainerItem
 
     protected JsonValue execCommonItem(HttpAction action) {
         String datasetPath = getItemDatasetName(action);
-        action.log.info(format("[%d] GET stats dataset %s", action.id, datasetPath));
+        if ( action.verbose )
+            action.log.info(format("[%d] GET stats dataset %s", action.id, datasetPath));
 
         JsonBuilder builder = new JsonBuilder();
         DataAccessPoint dap = getItemDataAccessPoint(action, datasetPath);

@@ -32,6 +32,7 @@ import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.server.*;
+import org.apache.jena.fuseki.system.ActionCategory;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -48,6 +49,7 @@ public class HttpAction
 {
     public final long id;
     public final boolean verbose;
+    public final ActionCategory category;
     public final Logger log;
 
     // ----
@@ -103,14 +105,14 @@ public class HttpAction
      * @param request HTTP request
      * @param response HTTP response
      */
-    public HttpAction(long id, Logger log, HttpServletRequest request, HttpServletResponse response) {
+    public HttpAction(long id, Logger log, ActionCategory category, HttpServletRequest request, HttpServletResponse response) {
         this.id = id;
-        this.log = log;
-        this.request = request;
-        this.response = new HttpServletResponseTracker(this, response);
-        // Should this be set when setDataset is called from the dataset context?
         // Currently server-wide, e.g. from the command line.
         this.verbose = Fuseki.getVerbose(request.getServletContext());
+        this.log = log;
+        this.category = category;
+        this.request = request;
+        this.response = new HttpServletResponseTracker(this, response);
         this.contextPath = request.getServletContext().getContextPath();
         this.actionURI = ActionLib.actionURI(request);
         this.serviceDispatchRegistry = OperationRegistry.get(request.getServletContext());

@@ -28,14 +28,14 @@ import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.fuseki.Fuseki;
 import org.slf4j.Logger;
 
+/** Information about the server */
 public class FusekiInfo {
 
-    public static void info(FusekiInitialConfig serverConfig, DataAccessPointRegistry registry) {
-        if ( ! serverConfig.verbose )
-            return;
-        if ( serverConfig.quiet )
-            return;
-
+    /** Print command line setup */
+    public static void info(String datasetPath,
+                            String datasetDescription,
+                            String fusekiServerConfigFile,
+                            DataAccessPointRegistry registry) {
         Logger log = Fuseki.serverLog;
         FmtLog.info(log,  "Apache Jena Fuseki");
 
@@ -49,16 +49,16 @@ public class FusekiInfo {
 //                log.error("No dataset path nor server configuration file");
 //        }
 
-        if ( serverConfig.datasetPath != null ) {
+        if ( datasetPath != null ) {
             if ( z.size() != 1 )
                 log.error("Expected only one dataset");
-            List<String> endpoints = z.get(serverConfig.datasetPath);
-            FmtLog.info(log,  "Dataset Type = %s", serverConfig.datasetDescription);
-            FmtLog.info(log,  "Path = %s; Services = %s", serverConfig.datasetPath, endpoints);
+            List<String> endpoints = z.get(datasetPath);
+            FmtLog.info(log,  "Dataset Type = %s", datasetDescription);
+            FmtLog.info(log,  "Path = %s; Services = %s", datasetPath, endpoints);
         }
-        if ( serverConfig.fusekiServerConfigFile != null ) {
+        if ( fusekiServerConfigFile != null ) {
             // May be many datasets and services.
-            FmtLog.info(log,  "Configuration file %s", serverConfig.fusekiServerConfigFile);
+            FmtLog.info(log,  "Configuration file %s", fusekiServerConfigFile);
             z.forEach((name, endpoints)->{
                 FmtLog.info(log,  "Path = %s; Services = %s", name, endpoints);
             });
@@ -98,7 +98,7 @@ public class FusekiInfo {
         FmtLog.info(log, "  OS:     %s %s %s", System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch"));
     }
 
-    public static void logDetailsVerbose(Logger log) {
+    public static void xlogDetailsVerbose(Logger log) {
         logDetails(log);
         logOne(log, "java.vendor");
         logOne(log, "java.home");
@@ -115,21 +115,6 @@ public class FusekiInfo {
     private static void logOne(Logger log, String property) {
         FmtLog.info(log, "    %-20s = %s", property, System.getProperty(property));
     }
-
-    /** Create a human-friendly string for a number based on Kilo/Mega/Giga/Tera (powers of 2) */
-    public static String strNumMixed(long x) {
-        // https://en.wikipedia.org/wiki/Kibibyte
-        if ( x < 1024 )
-            return Long.toString(x);
-        if ( x < 1024*1024 )
-            return String.format("%.1fK", x/1024.0);
-        if ( x < 1024*1024*1024 )
-            return String.format("%.1fM", x/(1024.0*1024));
-        if ( x < 1024L*1024*1024*1024 )
-            return String.format("%.1fG", x/(1024.0*1024*1024));
-        return String.format("%.1fT", x/(1024.0*1024*1024*1024));
-    }
-
 
     /** Create a human-friendly string for a number based on Kilo/Mega/Giga/Tera (powers of 10) */
     public static String strNum10(long x) {

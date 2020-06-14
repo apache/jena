@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.jena.fuseki.system.ActionCategory;
 import org.slf4j.Logger;
 
 /**
@@ -35,12 +36,14 @@ import org.slf4j.Logger;
  */
 public abstract class ServletProcessor extends HttpServlet implements ActionProcessor {
     private final Logger LOG;
+    private final ActionCategory category;
 
     /**
      * Constructor for an external {@link ActionProcessor}.
      */
-    public ServletProcessor(Logger log) {
+    protected ServletProcessor(Logger log, ActionCategory category) {
         this.LOG = log;
+        this.category = category;
     }
 
     /**
@@ -53,7 +56,7 @@ public abstract class ServletProcessor extends HttpServlet implements ActionProc
     }
 
     private HttpAction allocHttpActionServlet(HttpServletRequest request, HttpServletResponse response) {
-        HttpAction action = allocHttpAction(null, LOG, request, response);
+        HttpAction action = allocHttpAction(null, LOG, category, request, response);
         action.setEndpoint(null);
         return action;
     }

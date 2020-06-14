@@ -36,6 +36,7 @@ import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.servlets.*;
+import org.apache.jena.fuseki.system.ActionCategory;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger;
@@ -101,7 +102,7 @@ public class Dispatcher {
 
     /** Set up and handle a HTTP request for a dataset. */
     private static boolean process(DataAccessPoint dap, HttpServletRequest request, HttpServletResponse response) {
-        HttpAction action = allocHttpAction(dap, Fuseki.actionLog, request, response);
+        HttpAction action = allocHttpAction(dap, Fuseki.actionLog, ActionCategory.ACTION, request, response);
         return dispatchAction(action);
     }
 
@@ -363,7 +364,7 @@ public class Dispatcher {
         }
         // We don't wire in all the RDF syntaxes.
         // Instead, "Quads" drops through to the default operation.
-        
+
         // -- SPARQL Graph Store Protocol
         boolean hasParamGraph = request.getParameter(HttpNames.paramGraph) != null;
         boolean hasParamGraphDefault = request.getParameter(HttpNames.paramGraphDefault) != null;
