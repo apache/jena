@@ -68,7 +68,7 @@ public class GreatCircleFF extends FunctionBase5 {
             } else {
                 unitsURI = v5.asString();
             }
-            double distanceMetres = GreatCircleDistance.vincentyFormula(lat1, lon1, lat2, lon2);
+            double distanceMetres = GreatCircleDistance.haversineFormula(lat1, lon1, lat2, lon2);
 
             //Convert the Great Circle distance from metres into the requested units.
             Boolean isUnitsLinear = UnitsRegistry.isLinearUnits(unitsURI);
