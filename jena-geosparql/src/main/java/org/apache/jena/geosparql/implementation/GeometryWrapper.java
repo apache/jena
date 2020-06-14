@@ -613,9 +613,7 @@ public class GeometryWrapper implements Serializable {
         Coordinate coord1 = coordinatePair.getCoord1();
         Coordinate coord2 = coordinatePair.getCoord2();
 
-        //Vincenty Formula is apparently more accurate at the Longitude boundary.
-        double distance = GreatCircleDistance.vincentyFormula(coord1.getY(), coord1.getX(), coord2.getY(), coord2.getX());
-        //double distance = GreatCircleDistance.haversineFormula(coord1.getY(), coord1.getX(), coord2.getY(), coord2.getX());
+        double distance = GreatCircleDistance.haversineFormula(coord1.getY(), coord1.getX(), coord2.getY(), coord2.getX());
 
         //Convert the Great Circle distance from metres into the requested units.
         Boolean isTargetUnitsLinear = UnitsRegistry.isLinearUnits(targetDistanceUnitsURI);
