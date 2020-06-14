@@ -92,10 +92,6 @@ public class GreatCircleDistanceTest {
         double lon2 = -95.9339;
         double expResult = 2.8736;
         double result = GreatCircleDistance.vincentyFormula(lat1, lon1, lat2, lon2) / 1000; // Adjustment to kilometres.
-
-        System.out.println("Exp: " + expResult);
-        System.out.println("Res: " + result);
-
         assertEquals(expResult, result, 0.3);
     }
 
@@ -111,10 +107,6 @@ public class GreatCircleDistanceTest {
         double lon2 = -96.072;
         double expResult = 9.1893;
         double result = GreatCircleDistance.vincentyFormula(lat1, lon1, lat2, lon2) / 1000; // Adjustment to kilometres.
-
-        System.out.println("Exp: " + expResult);
-        System.out.println("Res: " + result);
-
         assertEquals(expResult, result, 0.3);
     }
 
@@ -130,10 +122,6 @@ public class GreatCircleDistanceTest {
         double lon2 = -93.626;
         double expResult = 198.3806;
         double result = GreatCircleDistance.vincentyFormula(lat1, lon1, lat2, lon2) / 1000; // Adjustment to kilometres.
-
-        System.out.println("Exp: " + expResult);
-        System.out.println("Res: " + result);
-
         assertEquals(expResult, result, 0.3);
     }
 
@@ -149,10 +137,6 @@ public class GreatCircleDistanceTest {
         double lon2 = -113.9998;
         double expResult = 1757.1519;
         double result = GreatCircleDistance.vincentyFormula(lat1, lon1, lat2, lon2) / 1000; // Adjustment to kilometres.
-
-        System.out.println("Exp: " + expResult);
-        System.out.println("Res: " + result);
-
         assertEquals(expResult, result, 0.3);
     }
 
@@ -168,10 +152,6 @@ public class GreatCircleDistanceTest {
         double lon2 = -73.9876;
         double expResult = 1840.1915;
         double result = GreatCircleDistance.vincentyFormula(lat1, lon1, lat2, lon2) / 1000; // Adjustment to kilometres.
-
-        System.out.println("Exp: " + expResult);
-        System.out.println("Res: " + result);
-
         assertEquals(expResult, result, 0.3);
     }
 
@@ -187,10 +167,6 @@ public class GreatCircleDistanceTest {
         double lon2 = 13.3422;
         double expResult = 7781.1365;
         double result = GreatCircleDistance.vincentyFormula(lat1, lon1, lat2, lon2) / 1000; // Adjustment to kilometres.
-
-        System.out.println("Exp: " + expResult);
-        System.out.println("Res: " + result);
-
         assertEquals(expResult, result, 0.3);
     }
 
@@ -207,10 +183,6 @@ public class GreatCircleDistanceTest {
         double lon2 = 18.4175;
         double expResult = 14312.6630;
         double result = GreatCircleDistance.vincentyFormula(lat1, lon1, lat2, lon2) / 1000; // Adjustment to kilometres.
-
-        System.out.println("Exp: " + expResult);
-        System.out.println("Res: " + result);
-
         assertEquals(expResult, result, 0.3);
     }
 
@@ -227,10 +199,6 @@ public class GreatCircleDistanceTest {
         double lon2 = 151.2099;
         double expResult = 14184.1430;
         double result = GreatCircleDistance.vincentyFormula(lat1, lon1, lat2, lon2) / 1000; // Adjustment to kilometres.
-
-        System.out.println("Exp: " + expResult);
-        System.out.println("Res: " + result);
-
         assertEquals(expResult, result, 0.3);
     }
 
@@ -276,10 +244,6 @@ public class GreatCircleDistanceTest {
         double lon2 = -95.9339;
         double expResult = 2.8736;
         double result = GreatCircleDistance.haversineFormula(lat1, lon1, lat2, lon2) / 1000; // Adjustment to kilometres.
-
-        System.out.println("Exp: " + expResult);
-        System.out.println("Res: " + result);
-
         assertEquals(expResult, result, 0.3);
     }
 
@@ -295,10 +259,6 @@ public class GreatCircleDistanceTest {
         double lon2 = -96.072;
         double expResult = 9.1893;
         double result = GreatCircleDistance.haversineFormula(lat1, lon1, lat2, lon2) / 1000; // Adjustment to kilometres.
-
-        System.out.println("Exp: " + expResult);
-        System.out.println("Res: " + result);
-
         assertEquals(expResult, result, 0.3);
     }
 
@@ -314,10 +274,6 @@ public class GreatCircleDistanceTest {
         double lon2 = -93.626;
         double expResult = 198.3806;
         double result = GreatCircleDistance.haversineFormula(lat1, lon1, lat2, lon2) / 1000; // Adjustment to kilometres.
-
-        System.out.println("Exp: " + expResult);
-        System.out.println("Res: " + result);
-
         assertEquals(expResult, result, 0.3);
     }
 
@@ -333,10 +289,6 @@ public class GreatCircleDistanceTest {
         double lon2 = -113.9998;
         double expResult = 1757.1519;
         double result = GreatCircleDistance.haversineFormula(lat1, lon1, lat2, lon2) / 1000; // Adjustment to kilometres.
-
-        System.out.println("Exp: " + expResult);
-        System.out.println("Res: " + result);
-
         assertEquals(expResult, result, 0.3);
     }
 
@@ -352,10 +304,6 @@ public class GreatCircleDistanceTest {
         double lon2 = -73.9876;
         double expResult = 1840.1915;
         double result = GreatCircleDistance.haversineFormula(lat1, lon1, lat2, lon2) / 1000; // Adjustment to kilometres.
-
-        System.out.println("Exp: " + expResult);
-        System.out.println("Res: " + result);
-
         assertEquals(expResult, result, 0.3);
     }
 
@@ -371,10 +319,6 @@ public class GreatCircleDistanceTest {
         double lon2 = 13.3422;
         double expResult = 7781.1365;
         double result = GreatCircleDistance.haversineFormula(lat1, lon1, lat2, lon2) / 1000; // Adjustment to kilometres.
-
-        System.out.println("Exp: " + expResult);
-        System.out.println("Res: " + result);
-
         assertEquals(expResult, result, 0.3);
     }
 
@@ -390,10 +334,6 @@ public class GreatCircleDistanceTest {
         double lon2 = 18.4175;
         double expResult = 14312.6630;
         double result = GreatCircleDistance.haversineFormula(lat1, lon1, lat2, lon2) / 1000; // Adjustment to kilometres.
-
-        System.out.println("Exp: " + expResult);
-        System.out.println("Res: " + result);
-
         assertEquals(expResult, result, 0.3);
     }
 
@@ -409,10 +349,6 @@ public class GreatCircleDistanceTest {
         double lon2 = 151.2099;
         double expResult = 14184.1430;
         double result = GreatCircleDistance.haversineFormula(lat1, lon1, lat2, lon2) / 1000; // Adjustment to kilometres.
-
-        System.out.println("Exp: " + expResult);
-        System.out.println("Res: " + result);
-
         assertEquals(expResult, result, 0.3);
     }
 

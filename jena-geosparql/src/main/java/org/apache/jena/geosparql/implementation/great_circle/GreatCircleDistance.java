@@ -109,8 +109,6 @@ public class GreatCircleDistance {
 
         double distance = UnitsOfMeasure.EARTH_MEAN_RADIUS * e;
 
-        System.out.println("φ1: " + lat1Rad + ", φ2: " + lat2Rad + ", Δφ: " + diffLonRad + ", c: " + c + ", d: " + d + ", e: " + e);
-
         //Distance is in metres.
         return distance;
     }
