@@ -32,7 +32,6 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.jetty.JettyServerConfig;
 import org.apache.jena.fuseki.mgt.Template;
-import org.apache.jena.fuseki.server.FusekiInitialConfig;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.fuseki.webapp.FusekiEnv;
 import org.apache.jena.fuseki.webapp.FusekiServerListener;
@@ -237,7 +236,6 @@ public class FusekiCmd {
             cmdLineConfig.allowUpdate = contains(argUpdate);
 
             if ( contains(argMem) ) {
-                log.info("Dataset: in-memory");
                 cmdLineConfig.datasetDescription = "in-memory";
                 // Only one setup should be called by the test above but to be safe
                 // and in case of future changes, clear the configuration.
@@ -294,7 +292,6 @@ public class FusekiCmd {
 
             // Otherwise
             if ( contains(assemblerDescDecl) ) {
-                log.info("Dataset from assembler");
                 cmdLineConfig.datasetDescription = "Assembler: "+ modDataset.getAssemblerFile();
                 // Need to add service details.
                 Dataset ds = modDataset.createDataset();
@@ -375,7 +372,7 @@ public class FusekiCmd {
         }
     }
 
-    /** Configure and run a Fuseki server - this function does not return except for error starting up*/
+    /** Configure and run a Fuseki server - this function does not return except for error starting up */
     public static void runFuseki(FusekiInitialConfig serverConfig, JettyServerConfig jettyConfig) {
         FusekiServerListener.initialSetup = serverConfig;
         JettyFusekiWebapp.initializeServer(jettyConfig);

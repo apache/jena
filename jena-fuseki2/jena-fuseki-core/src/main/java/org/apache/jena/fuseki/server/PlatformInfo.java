@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.main.cmds;
+package org.apache.jena.fuseki.server;
 
 import java.io.IOException;
 import java.util.function.Function;
@@ -31,13 +31,12 @@ public class PlatformInfo {
         long totalMem = Runtime.getRuntime().totalMemory();
         long freeMem = Runtime.getRuntime().freeMemory();
         long usedMem = totalMem - freeMem;
-        Function<Long, String> f = PlatformInfo::strNumMixed;
+        Function<Long, String> f = PlatformInfo::strNum2;
 
         System.out.printf("max=%s  total=%s  used=%s  free=%s\n", f.apply(maxMem), f.apply(totalMem), f.apply(usedMem), f.apply(freeMem));
     }
 
     /** Essential information about the runtime environment. */
-
     public static void logDetails(Logger log) {
         logDetails(log, "  ");
     }
@@ -57,45 +56,49 @@ public class PlatformInfo {
         Function<Long, String> f = PlatformInfo::strNum2;
 
         long pid = getProcessId();
-        FmtLog.info(log, "%sMemory: %s", prefix, f.apply(maxMem));
+        FmtLog.info(log, "%sMemory: %s",        prefix, f.apply(maxMem));
         //FmtLog.info(log, "%sMemory: max=%s  total=%s  used=%s  free=%s", prefix, f.apply(maxMem), f.apply(totalMem), f.apply(usedMem), f.apply(freeMem));
-        FmtLog.info(log, "%sJava:   %s", prefix, System.getProperty("java.version"));
-        FmtLog.info(log, "%sOS:     %s %s %s", prefix, System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch"));
+        FmtLog.info(log, "%sJava:   %s",        prefix, System.getProperty("java.version"));
+        FmtLog.info(log, "%sOS:     %s %s %s",  prefix, System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch"));
         if ( pid != -1)
             FmtLog.info(log, "%sPID:    %s", prefix, pid);
     }
 
     public static void logDetailsVerbose(Logger log) {
+        logDetailsVerbose(log, "  ");
+    }
+
+    public static void logDetailsVerbose(Logger log, String prefix) {
         logDetails(log);
-        logOne(log, "java.vendor");
-        logOne(log, "java.home");
-        logOne(log, "java.runtime.version");
-        logOne(log, "java.runtime.name");
+        logOne(log, prefix, "java.vendor");
+        logOne(log, prefix, "java.home");
+        logOne(log, prefix, "java.runtime.version");
+        logOne(log, prefix, "java.runtime.name");
         //logOne(log, "java.endorsed.dirs");
-        logOne(log, "user.language");
-        logOne(log, "user.timezone");
-        logOne(log, "user.country");
-        logOne(log, "user.dir");
+        logOne(log, prefix, "user.language");
+        logOne(log, prefix, "user.timezone");
+        logOne(log, prefix, "user.country");
+        logOne(log, prefix, "user.dir");
         //logOne(log, "file.encoding");
     }
 
-    private static void logOne(Logger log, String property) {
-        FmtLog.info(log, "    %-20s = %s", property, System.getProperty(property));
+    private static void logOne(Logger log, String prefix, String property) {
+        FmtLog.info(log, "%s%-20s = %s", prefix, property, System.getProperty(property));
     }
 
-    /** Create a human-friendly string for a number based on Kilo/Mega/Giga/Tera (powers of 2) */
-    public static String strNumMixed(long x) {
-        // https://en.wikipedia.org/wiki/Kibibyte
-        if ( x < 1024 )
-            return Long.toString(x);
-        if ( x < 1024*1024 )
-            return String.format("%.1fK", x/1024.0);
-        if ( x < 1024*1024*1024 )
-            return String.format("%.1fM", x/(1024.0*1024));
-        if ( x < 1024L*1024*1024*1024 )
-            return String.format("%.1fG", x/(1024.0*1024*1024));
-        return String.format("%.1fT", x/(1024.0*1024*1024*1024));
-    }
+//    /** Create a human-friendly string for a number based on Kilo/Mega/Giga/Tera (powers of 2) */
+//    public static String strNumMixed(long x) {
+//        // https://en.wikipedia.org/wiki/Kibibyte
+//        if ( x < 1024 )
+//            return Long.toString(x);
+//        if ( x < 1024*1024 )
+//            return String.format("%.1fK", x/1024.0);
+//        if ( x < 1024*1024*1024 )
+//            return String.format("%.1fM", x/(1024.0*1024));
+//        if ( x < 1024L*1024*1024*1024 )
+//            return String.format("%.1fG", x/(1024.0*1024*1024));
+//        return String.format("%.1fT", x/(1024.0*1024*1024*1024));
+//    }
 
     private static long getProcessId() {
         // Java9

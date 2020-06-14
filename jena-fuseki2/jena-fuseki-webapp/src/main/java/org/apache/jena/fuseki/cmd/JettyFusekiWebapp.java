@@ -30,6 +30,7 @@ import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.jetty.FusekiErrorHandler;
 import org.apache.jena.fuseki.jetty.JettyServerConfig;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
+import org.apache.jena.fuseki.server.FusekiInfo;
 import org.apache.jena.fuseki.webapp.FusekiEnv;
 import org.eclipse.jetty.security.*;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
@@ -111,21 +112,8 @@ public class JettyFusekiWebapp {
      */
     public void start() {
 
-        String version = Fuseki.VERSION;
-        String buildDate = Fuseki.BUILD_DATE;
-
-        if ( version != null && version.equals("${project.version}") )
-            version = null;
-        if ( buildDate != null && buildDate.equals("${build.time.xsd}") )
-            buildDate = DateTimeUtils.nowAsXSDDateTimeString();
-
-        if ( version != null ) {
-            if ( Fuseki.developmentMode && buildDate != null )
-                serverLog.info(format("%s %s %s", Fuseki.NAME, version, buildDate));
-            else
-                serverLog.info(format("%s %s", Fuseki.NAME, version));
-        }
-        // This does not get set usefully for Jetty as we use it.
+        FusekiInfo.server(serverLog);
+        // This does not get anything usefully for Jetty as we use it.
         // String jettyVersion = org.eclipse.jetty.server.Server.getVersion();
         // serverLog.info(format("Jetty %s",jettyVersion));
 
