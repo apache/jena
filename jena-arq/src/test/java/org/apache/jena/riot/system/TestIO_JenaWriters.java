@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertNotEquals ;
 import static org.junit.Assert.fail ;
 
-import org.apache.jena.n3.N3JenaWriter ;
 import org.apache.jena.rdf.model.RDFWriterF ;
 import org.apache.jena.rdf.model.impl.RDFWriterFImpl ;
 import org.apache.jena.riot.IO_Jena ;
@@ -32,10 +31,10 @@ import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 public class TestIO_JenaWriters {
-    
-    @BeforeClass public static void beforeClass() { } 
+
+    @BeforeClass public static void beforeClass() { }
     @AfterClass public static void afterClass()   { IO_Jena.wireIntoJena(); }
-    
+
     @Test
     public void testWireIntoJena() {
         IO_Jena.wireIntoJena();
@@ -49,25 +48,20 @@ public class TestIO_JenaWriters {
         assertEquals(RDFWriterRIOT.class, writerF.getWriter("NT").getClass());
 
         assertEquals(RDFWriterRIOT.class, writerF.getWriter("N3").getClass());
-        assertEquals(RDFWriterRIOT.class, writerF.getWriter(N3JenaWriter.n3WriterPrettyPrinter).getClass());
-        assertEquals(RDFWriterRIOT.class, writerF.getWriter(N3JenaWriter.n3WriterPlain).getClass());
-        assertEquals(RDFWriterRIOT.class, writerF.getWriter(N3JenaWriter.n3WriterTriples).getClass());
-        assertEquals(RDFWriterRIOT.class, writerF.getWriter(N3JenaWriter.n3WriterTriplesAlt).getClass());
-        
-        assertEquals(RDFWriterRIOT.class, writerF.getWriter(N3JenaWriter.turtleWriter).getClass());
-        assertEquals(RDFWriterRIOT.class, writerF.getWriter(N3JenaWriter.turtleWriterAlt1).getClass());
-        assertEquals(RDFWriterRIOT.class, writerF.getWriter(N3JenaWriter.turtleWriterAlt2).getClass());
+        assertEquals(RDFWriterRIOT.class, writerF.getWriter("TURTLE").getClass());
+        assertEquals(RDFWriterRIOT.class, writerF.getWriter("Turtle").getClass());
+        assertEquals(RDFWriterRIOT.class, writerF.getWriter("TTL").getClass());
 
         assertEquals(RDFWriterRIOT.class, writerF.getWriter("RDF/JSON").getClass());
         assertEquals(RDFWriterRIOT.class, writerF.getWriter("RDFJSON").getClass());
     }
-    
+
     @Test
     public void testResetJena() {
         IO_Jena.wireIntoJena();
         IO_Jena.resetJena();
         RDFWriterF writerF = new RDFWriterFImpl();
-        
+
         assertNotEquals(RDFWriterRIOT.class, writerF.getWriter().getClass());
         assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("RDF/XML").getClass());
         assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("RDF/XML-ABBREV").getClass());
@@ -76,14 +70,9 @@ public class TestIO_JenaWriters {
         assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("N-TRIPLE").getClass());
 
         assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("N3").getClass());
-        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter(N3JenaWriter.n3WriterPrettyPrinter).getClass());
-        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter(N3JenaWriter.n3WriterPlain).getClass());
-        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter(N3JenaWriter.n3WriterTriples).getClass());
-        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter(N3JenaWriter.n3WriterTriplesAlt).getClass());
-        
-        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter(N3JenaWriter.turtleWriter).getClass());
-        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter(N3JenaWriter.turtleWriterAlt1).getClass());
-        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter(N3JenaWriter.turtleWriterAlt2).getClass());
+        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("TURTLE").getClass());
+        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("Turtle").getClass());
+        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("TTL").getClass());
 
         try { writerF.getWriter("NT"); fail("Exception expected") ; } catch (NoWriterForLangException ex) {}
         try { writerF.getWriter("RDF/JSON") ; fail("Exception expected") ; } catch (NoWriterForLangException ex) {}
@@ -91,5 +80,5 @@ public class TestIO_JenaWriters {
         IO_Jena.wireIntoJena();
     }
 
-    
+
 }

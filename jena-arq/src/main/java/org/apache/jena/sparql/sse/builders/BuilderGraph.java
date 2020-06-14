@@ -21,8 +21,7 @@ package org.apache.jena.sparql.sse.builders;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.core.Quad ;
@@ -31,7 +30,6 @@ import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.ItemList ;
 import org.apache.jena.sparql.sse.Tags ;
 import org.apache.jena.sparql.util.NodeUtils ;
-import org.apache.jena.util.FileManager ;
 
 public class BuilderGraph
 {
@@ -167,8 +165,7 @@ public class BuilderGraph
         String s = NodeUtils.stringLiteral(item.getNode());
         if ( s == null )
             BuilderLib.broken(item, "Expected: ("+Tags.tagLoad+" 'filename')");
-        Model model = ModelFactory.createModelForGraph(graph);
-        FileManager.get().readModel(model, s);
+        RDFDataMgr.read(graph, s);
     }
 
     public static Triple buildTriple(ItemList list) {

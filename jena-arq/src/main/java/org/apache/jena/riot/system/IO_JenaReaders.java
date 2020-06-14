@@ -25,13 +25,13 @@ import org.apache.jena.util.FileManager ;
 
 public class IO_JenaReaders
 {
-//    private static String riotBase = "http://jena.apache.org/riot/" ; 
-//    private static String streamManagerSymbolStr = riotBase+"streammanager" ; 
-//    public static Symbol streamManagerSymbol = Symbol.create(streamManagerSymbolStr) ; 
+//    private static String riotBase = "http://jena.apache.org/riot/" ;
+//    private static String streamManagerSymbolStr = riotBase+"streammanager" ;
+//    public static Symbol streamManagerSymbol = Symbol.create(streamManagerSymbolStr) ;
 
     private static FileManager coreFileManager = null;
     private static boolean     isWiredIn       = false;
-    
+
     public static void wireIntoJena() {
         if ( isWiredIn )
             return ;
@@ -51,7 +51,7 @@ public class IO_JenaReaders
         FileManager.setGlobalFileManager(coreFileManager) ;
     }
 
-    /** Register for use with Model.read (old style compatibility) */ 
+    /** Register for use with Model.read (old style compatibility) */
     @Deprecated
     public static void registerForModelRead(String name, Class<? > cls) {
         RDFReaderFImpl.setBaseReaderClassName(name, cls.getName());

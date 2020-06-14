@@ -63,34 +63,9 @@ public class N3JenaWriter implements RDFWriter
      */
      
     static public final String n3Writer              = "N3" ;
-    
-    /**
-     * Name of the N3 pretty writer.  The pretty writer
-     * uses a frame-like layout, with prefixing, clustering like properties
-     * and embedding one-referenced bNodes.
-     */
-    static public final String n3WriterPrettyPrinter = "N3-PP" ;
-    
-    /**
-     * Name of the N3 plain writer.  The plain writer writes records
-     * by subject.
-     */
-    static public final String n3WriterPlain         = "N3-PLAIN" ;
-    
-    /**
-     * Name of the N3 triples writer. This writer writes one line per statement,
-     * like N-Triples, but does N3-style prefixing.
-     */
-    static public final String n3WriterTriples       = "N3-TRIPLES" ;
-    
-    /**
-     * Alternative name for the N3 triples writer.
-     */
-    static public final String n3WriterTriplesAlt    = "N3-TRIPLE" ;
 
     /**
      * Turtle writer.
-     * http://www.dajobe.org/2004/01/turtle/
      */
     static public final String turtleWriter          = "TURTLE" ;
     static public final String turtleWriterAlt1      = "Turtle" ;
@@ -105,16 +80,20 @@ public class N3JenaWriter implements RDFWriter
     {
         // Choose the writer
         String writerName = JenaRuntime.getSystemProperty(propWriterName) ;
-        if ( writerName == null ||
-             writerName.equals("N3") || writerName.equals(n3WriterPrettyPrinter) )
+        if ( writerName == null )
+            return new N3JenaWriterPP() ;
+        if ( writerName.equals("N3") )
             return new N3JenaWriterPP() ;
         
-        if ( writerName.equalsIgnoreCase(n3WriterPlain) )
-            return new N3JenaWriterCommon() ;
-        
-        if ( writerName.equalsIgnoreCase(n3WriterTriples) ||
-             writerName.equalsIgnoreCase(n3WriterTriplesAlt) )
-            return new N3JenaWriterTriples() ;
+//        if ( writerName.equals(n3WriterPrettyPrinter) )
+//            return new N3JenaWriterPP() ;
+//        
+//        if ( writerName.equalsIgnoreCase(n3WriterPlain) )
+//            return new N3JenaWriterCommon() ;
+//        
+//        if ( writerName.equalsIgnoreCase(n3WriterTriples) ||
+//             writerName.equalsIgnoreCase(n3WriterTriplesAlt) )
+//            return new N3JenaWriterTriples() ;
             
         if ( writerName.equalsIgnoreCase(turtleWriter) )
         {

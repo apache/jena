@@ -29,6 +29,7 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.rdf.model.Statement ;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.checker.CheckerLiterals ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
@@ -188,14 +189,14 @@ public class UpdateTest extends EarlTestCase
                     System.err.println("No data for graphData") ;
                 
                 String fn = gn.getProperty(TestManifestUpdate_11.graph).getResource().getURI() ;
+                Model m = RDFDataMgr.loadModel(fn);
                 String name = gn.getProperty(RDFS.label).getString() ;
-                Model m = FileManager.get().loadModel(fn) ;
                 ds.addNamedModel(name, m) ;
             }
             else
             {
                 String x = gn.getURI() ;
-                Model m = FileManager.get().loadModel(x) ;
+                Model m = RDFDataMgr.loadModel(x) ;
                 ds.addNamedModel(x, m) ;
             }
         }

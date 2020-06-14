@@ -55,14 +55,9 @@ public class N3JenaWriterTests extends N3ExternalTestsCom
 			resultsFile = basedir + "/" + resultsFile ;
 			
         // Run on each of the writers
-		addTest(new Test(testName, inputFile, resultsFile,
-                         N3JenaWriter.n3WriterPrettyPrinter)) ;
-        addTest(new Test(testName, inputFile, resultsFile,
-                         N3JenaWriter.n3WriterPlain)) ;
-        addTest(new Test(testName, inputFile, resultsFile,
-                         N3JenaWriter.n3WriterTriples)) ;
+		addTest(new Test(testName, inputFile, resultsFile, N3JenaWriter.n3Writer));
+        
 	}
-
 
 	static class Test extends TestCase
 	{

@@ -130,15 +130,11 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
         custom.put("RDF/XML", rdfxmlWriter);
         custom.put("RDF/XML-ABBREV", rdfxmlAbbrevWriter);
 
-        custom.put("N-TRIPLE", ntWriter);
+        custom.put("N-TRIPLE",  ntWriter);
         custom.put("N-TRIPLES", ntWriter);
         custom.put("N-Triples", ntWriter);
 
-        custom.put("N3", org.apache.jena.n3.N3JenaWriter.class);
-        custom.put(N3JenaWriter.n3WriterPrettyPrinter, org.apache.jena.n3.N3JenaWriterPP.class);
-        custom.put(N3JenaWriter.n3WriterPlain, org.apache.jena.n3.N3JenaWriterPP.class);
-        custom.put(N3JenaWriter.n3WriterTriples, ttlWriter);
-        custom.put(N3JenaWriter.n3WriterTriplesAlt, org.apache.jena.n3.N3JenaWriterTriples.class);
+        custom.put("N3",        org.apache.jena.n3.N3JenaWriter.class);
 
         custom.put(N3JenaWriter.turtleWriter, ttlWriter);
         custom.put(N3JenaWriter.turtleWriterAlt1, ttlWriter);
