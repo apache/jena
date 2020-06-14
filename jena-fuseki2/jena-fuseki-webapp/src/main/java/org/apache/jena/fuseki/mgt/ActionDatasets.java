@@ -345,41 +345,51 @@ public class ActionDatasets extends ActionContainerItem {
             // Need to reference count operations when they drop to zero
             // or a timer goes off, we delete the dataset.
 
-            DataAccessPoint ref = action.getDataAccessPointRegistry().get(name);
-
             // Redo check inside transaction.
+            DataAccessPoint ref = action.getDataAccessPointRegistry().get(name);
             if ( ref == null )
                 ServletOps.errorNotFound("No such dataset registered: "+name);
 
+            // Get a reference before removing.
+            DataService dataService = ref.getDataService();
+            // ---- Make it invisible in this running server.
+            action.getDataAccessPointRegistry().remove(name);
+
+            // Find the configuration.
             String filename = name.startsWith("/") ? name.substring(1) : name;
             List<String> configurationFiles = FusekiWebapp.existingConfigurationFile(filename);
-            if  ( configurationFiles.size() != 1 ) {
-                // This should not happen.
+
+            if ( configurationFiles.isEmpty() ) {
+                // ---- Unmanaged
+                action.log.warn(format("[%d] Can't delete database configuration - not a managed database", action.id, name));
+//                ServletOps.errorOccurred(format("Can't delete database - not a managed configuration", name));
+                systemDSG.commit();
+                committed = true;
+                ServletOps.success(action);
+                return;
+            }
+
+            if  ( configurationFiles.size() > 1 ) {
+                // -- This should not happen.
                 action.log.warn(format("[%d] There are %d configuration files, not one.", action.id, configurationFiles.size()));
                 ServletOps.errorOccurred(
                     format(
                         "There are %d configuration files, not one. Delete not performed; clearup of the filesystem needed.",
                         configurationFiles.size()));
+                return;
             }
 
+            // ---- Remove managed database.
             String cfgPathname = configurationFiles.get(0);
 
             // Delete configuration file.
             // Once deleted, server restart will not have the database.
             FileOps.deleteSilent(cfgPathname);
 
-            // Get before removing.
-            DataService dataService = ref.getDataService();
-
-            // Make it invisible in this running server.
-            action.getDataAccessPointRegistry().remove(name);
-
             // Delete the database for real only when it is in the server "run/databases"
             // area. Don't delete databases that reside elsewhere. We do delete the
             // configuration file, so the databases will not be associated with the server
             // anymore.
-
-            // JENA-1586: Remove from current running Fuseki server.
 
             boolean isTDB1 = org.apache.jena.tdb.sys.TDBInternal.isTDB1(dataService.getDataset());
             boolean isTDB2 = org.apache.jena.tdb2.sys.TDBInternal.isTDB2(dataService.getDataset());
