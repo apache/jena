@@ -111,8 +111,8 @@ public class OWLConsistencyTest extends TestCase {
      * Run the consistency check, returning a ValidityReport.
      */
     public ValidityReport testResults() {
-        Model t = FileManager.get().loadModel(BASE_DIR + tbox);
-        Model a = FileManager.get().loadModel(BASE_DIR + abox);
+        Model t = FileManager.getInternal().loadModel(BASE_DIR + tbox);
+        Model a = FileManager.getInternal().loadModel(BASE_DIR + abox);
         // Work around non-deterministic bug in bindSchema
         //        Reasoner r = rf.create(null).bindSchema(t);
         Reasoner r = rf.create(null);

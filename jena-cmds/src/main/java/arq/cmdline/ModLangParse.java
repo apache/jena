@@ -18,19 +18,14 @@
 
 package arq.cmdline;
 
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdArgModule;
-import jena.cmd.CmdException;
-import jena.cmd.CmdGeneral;
-import jena.cmd.ModBase;
-
+import jena.cmd.*;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.IRIResolver ;
-import org.apache.jena.util.FileManager ;
 
 public class ModLangParse extends ModBase
 {
@@ -143,7 +138,7 @@ public class ModLangParse extends ModBase
         if ( cmdLine.contains(argRDFS) ) {
             try {
                 rdfsVocabFilename = cmdLine.getArg(argRDFS).getValue() ;
-                rdfsVocab = FileManager.get().loadModel(rdfsVocabFilename) ;
+                rdfsVocab = RDFDataMgr.loadModel(rdfsVocabFilename) ;
             } catch (RiotException ex) {
                 throw new CmdException("Error in RDFS vocabulary: " + rdfsVocabFilename) ;
             } catch (Exception ex) {

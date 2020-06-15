@@ -124,7 +124,7 @@ public class LocationMapper
         }
         
         // Make a file manager to look for the location mapping file
-        FileManager fm = new FileManager() ;
+        FileManager fm = new FileManagerImpl() ;
         fm.addLocatorFile() ;
         fm.addLocatorClassLoader(fm.getClass().getClassLoader()) ;
         

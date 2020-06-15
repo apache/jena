@@ -18,14 +18,15 @@
 
 package arq.cmdline;
 
+import java.io.IOException;
+
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdArgModule;
 import jena.cmd.CmdGeneral;
 import jena.cmd.ModBase;
-
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.util.FileManager ;
 
 public class ModAlgebra extends ModBase
 {
@@ -50,7 +51,11 @@ public class ModAlgebra extends ModBase
         if ( cmdLine.contains(queryFileDecl) )
         {
             queryFilename = cmdLine.getValue(queryFileDecl) ;
-            queryString = FileManager.get().readWholeFileAsUTF8(queryFilename) ;
+            try {
+                queryString = IO.readWholeFileAsUTF8(queryFilename) ;
+            } catch (IOException e) {
+                IO.exception(e);
+            }
         }
     
         if ( cmdLine.getNumPositional() == 0 && queryFilename == null )

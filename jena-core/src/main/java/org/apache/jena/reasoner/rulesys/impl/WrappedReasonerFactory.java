@@ -61,7 +61,7 @@ public final class WrappedReasonerFactory implements ReasonerFactory
             {
             Statement s = schemas.nextStatement();
             Resource sc = s.getResource();
-            FileManager.get().readModel( schema, sc.getURI() );
+            FileManager.getInternal().readModel( schema, sc.getURI() );
             }
         return schema;
         }

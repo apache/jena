@@ -39,7 +39,6 @@ import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.tdb2.assembler.VocabTDB2;
 import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
-import org.apache.jena.util.FileManager ;
 
 public class ModTDBDataset extends ModDataset
 {
@@ -122,11 +121,10 @@ public class ModTDBDataset extends ModDataset
         if ( modAssembler.getLocation() != null )
             locations.add(modAssembler.getLocation().getDirectoryPath()) ;
 
-        // Extract the location from the assember file.
+        // Extract the location from the assembler file.
         if ( modAssembler.getAssemblerFile() != null )
         {
-            // Find and clear all locations
-            Model m = FileManager.get().loadModel(modAssembler.getAssemblerFile()) ;
+            Model m = RDFDataMgr.loadModel(modAssembler.getAssemblerFile()) ;
             Query query = QueryFactory.create("PREFIX tdb:     <http://jena.hpl.hp.com/2008/tdb#> SELECT ?dir { [] tdb:location ?dir FILTER (isURI(?dir)) }") ;
             try(QueryExecution qExec = QueryExecutionFactory.create(query, m)) {
                 for (ResultSet rs = qExec.execSelect() ; rs.hasNext() ; )

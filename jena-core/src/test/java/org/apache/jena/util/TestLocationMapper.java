@@ -76,7 +76,7 @@ public class TestLocationMapper extends TestCase
     
     public void testLocationMapperFromModel()
     {
-        Model model = FileManager.get().loadModel(testingDir+"/location-mapping-test.n3") ;
+        Model model = FileManager.getInternal().loadModel(testingDir+"/location-mapping-test.n3") ;
         LocationMapper loc = new LocationMapper(model) ; 
         
         // Light test that the two location mappers are "the same"

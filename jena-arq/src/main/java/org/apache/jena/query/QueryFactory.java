@@ -28,9 +28,7 @@ import org.apache.jena.sparql.lang.SPARQLParser ;
 import org.apache.jena.sparql.lang.SPARQLParserRegistry ;
 import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.syntax.Template ;
-//import org.apache.jena.util.FileManager ;
 import org.apache.jena.util.FileManager;
-
 
 public class QueryFactory
 {
@@ -217,7 +215,7 @@ public class QueryFactory
     static public Query read(String url, FileManager filemanager, String baseURI, Syntax langURI)
     {
         if ( filemanager == null )
-            filemanager = org.apache.jena.util.FileManager.get() ;
+            filemanager = org.apache.jena.util.FileManager.getInternal() ;
         String qStr = filemanager.readWholeFileAsUTF8(url) ;
         if ( baseURI == null )
             baseURI = url ;

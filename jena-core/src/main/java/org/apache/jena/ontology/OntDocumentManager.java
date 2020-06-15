@@ -54,16 +54,14 @@ import org.slf4j.LoggerFactory ;
  * example:
  * </p>
  * <pre>OntDocumentManager dm = OntDocumentManager.getInstance();
- * dm.setFileManager( FileManager.get() );</pre>
- * <p>Note that in Jena 2.3, we have deprecated the capability of the document manager
- * to store a table of known prefixes, and a table mapping document URI's to ontology language
- * types. <strong>The intention is to remove both of these capabilities from
- * Jena 2.4 onwards</strong>. If this change would be problematic, please send email to the
- * <a href="http://groups.yahoo.com/group/jena-dev">Jena support
- * list</a>.</p>
+ * dm.setFileManager( FileManager.get() );
+ * </pre>
  */
+@SuppressWarnings("deprecation")
 public class OntDocumentManager
 {
+    // @SuppressWarnings - FileManager model caching.
+    
     // Constants
     ////////////////////////////////////
 
@@ -284,7 +282,7 @@ public class OntDocumentManager
      * global location mapper).</p>
      */
     public void setFileManager() {
-        setFileManager( FileManager.get().clone() ) ;
+        setFileManager( FileManager.getInternal().clone() ) ;
         m_usingGlobalFileMgr = true;
     }
 
@@ -871,7 +869,7 @@ public class OntDocumentManager
         }
 
         // Make a temporary file manager to look for the metadata file
-        FileManager fm = new FileManager();
+        FileManager fm = FileManager.create();
         fm.addLocatorFile();
         fm.addLocatorURL();
         fm.addLocatorClassLoader( fm.getClass().getClassLoader() );

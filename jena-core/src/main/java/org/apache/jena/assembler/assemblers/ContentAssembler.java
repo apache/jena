@@ -166,7 +166,7 @@ public class ContentAssembler extends AssemblerBase implements Assembler
         Resource fm = getUniqueResource( root, JA.fileManager );
         return 
             fm != null ? (FileManager) a.open( fm )
-            : defaultFileManager == null ? FileManager.get() 
+            : defaultFileManager == null ? FileManager.getInternal() 
             : defaultFileManager
             ;
         }

@@ -148,7 +148,7 @@ public class StreamManager {
     }
 
     /**
-     * Open a file using the locators of this FileManager but without location
+     * Open a file using the locators of this StreamManager but without location
      * mapping. Throws RiotNotFoundException if not found.
      */
     public TypedInputStream openNoMap(String filenameOrURI) {
@@ -159,7 +159,7 @@ public class StreamManager {
     }
 
     /**
-     * Open a file using the locators of this FileManager without location
+     * Open a file using the locators of this StreamManager without location
      * mapping. Return null if not found
      */
 

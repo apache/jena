@@ -67,7 +67,7 @@ public class TestAssembler
     
     @Test public void model_1()
     {
-        Model assem = FileManager.get().loadModel(dir+"graph-assembler.ttl") ;
+        Model assem = FileManager.getInternal().loadModel(dir+"graph-assembler.ttl") ;
         Resource x = assem.getResource("http://example/test#graphDft") ;
         // Model for default graph
         Model model = (Model)Assembler.general.open(x) ;
@@ -76,7 +76,7 @@ public class TestAssembler
 
     @Test public void model_2()
     {
-        Model assem = FileManager.get().loadModel(dir+"graph-assembler.ttl") ;
+        Model assem = FileManager.getInternal().loadModel(dir+"graph-assembler.ttl") ;
         Resource x = assem.getResource("http://example/test#graphNamed") ;
         // Model for default graph
         Model model = (Model)Assembler.general.open(x) ;
@@ -94,7 +94,7 @@ public class TestAssembler
     
     @Test public void model_3()
     {
-        Model assem = FileManager.get().loadModel(dir+"graph-assembler.ttl") ;
+        Model assem = FileManager.getInternal().loadModel(dir+"graph-assembler.ttl") ;
         Resource xDft = assem.getResource("http://example/test#graphDft") ;
         Resource xNamed = assem.getResource("http://example/test#graphNamed") ;
         
@@ -107,7 +107,7 @@ public class TestAssembler
         
     @Test public void model_4()
     {
-        Model assem = FileManager.get().loadModel(dir+"graph-assembler.ttl") ;
+        Model assem = FileManager.getInternal().loadModel(dir+"graph-assembler.ttl") ;
         Resource xDft = assem.getResource("http://example/test#graphDft") ;
         Resource xNamed = assem.getResource("http://example/test#graphNamed") ;
         
@@ -131,7 +131,7 @@ public class TestAssembler
         
     @Test public void model_5()
     {
-        Model assem = FileManager.get().loadModel(dir+"graph-assembler.ttl") ;
+        Model assem = FileManager.getInternal().loadModel(dir+"graph-assembler.ttl") ;
         Resource xDft = assem.getResource("http://example/test#graphDft") ;
         
         Store store = create(assem) ;
@@ -150,7 +150,7 @@ public class TestAssembler
     
     @Test public void model_6()
     {
-        Model assem = FileManager.get().loadModel(dir+"graph-assembler.ttl") ;
+        Model assem = FileManager.getInternal().loadModel(dir+"graph-assembler.ttl") ;
         Resource xNamed = assem.getResource("http://example/test#graphNamed") ;
         
         Store store = create(assem) ;

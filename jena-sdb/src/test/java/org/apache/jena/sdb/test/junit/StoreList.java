@@ -98,7 +98,7 @@ public class StoreList
     
     private static List<Pair<String, String>> storesByQuery(String fn)
     {
-        Model model = FileManager.get().loadModel(fn) ;
+        Model model = FileManager.getInternal().loadModel(fn) ;
         List<Pair<String, String>> data = new ArrayList<Pair<String, String>>();
         Query query = QueryFactory.create(queryString) ;
         try ( QueryExecution qExec = QueryExecutionFactory.create(query, model) ) {

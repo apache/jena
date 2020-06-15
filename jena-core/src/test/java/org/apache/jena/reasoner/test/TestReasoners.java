@@ -270,7 +270,7 @@ public class TestReasoners extends TestCase {
      * Check a complex graph's transitive reduction. 
      */
     public void testTransitiveReduction() {
-        Model test = FileManager.get().loadModel("testing/reasoners/bugs/subpropertyModel.n3");
+        Model test = FileManager.getInternal().loadModel("testing/reasoners/bugs/subpropertyModel.n3");
         Property dp = test.getProperty(TransitiveReasoner.directSubPropertyOf.getURI());
         doTestTransitiveReduction(test, dp);
     }
@@ -441,7 +441,7 @@ public class TestReasoners extends TestCase {
      * Cycle bug in transitive reasoner
      */
     public void testTransitiveCycleBug() {
-        Model m = FileManager.get().loadModel( "file:testing/reasoners/bugs/unbroken.n3" );
+        Model m = FileManager.getInternal().loadModel( "file:testing/reasoners/bugs/unbroken.n3" );
         OntModel om = ModelFactory.createOntologyModel( OntModelSpec.RDFS_MEM_TRANS_INF, m );
         OntClass rootClass = om.getOntClass( RDFS.Resource.getURI() );
         Resource c = m.getResource("c");

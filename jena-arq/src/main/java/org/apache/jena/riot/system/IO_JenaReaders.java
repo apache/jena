@@ -32,16 +32,18 @@ public class IO_JenaReaders
     private static FileManager coreFileManager = null;
     private static boolean     isWiredIn       = false;
 
+    @SuppressWarnings("deprecation")
     public static void wireIntoJena() {
         if ( isWiredIn )
             return ;
         isWiredIn = true ;
         if ( coreFileManager == null )
-            coreFileManager = FileManager.get();
+            coreFileManager = FileManager.getInternal();
         FileManager.setGlobalFileManager(AdapterFileManager.get());
         RDFReaderFImpl.alternative(new RDFReaderFactoryRIOT());
     }
 
+    @SuppressWarnings("deprecation")
     public static void resetJena() {
         if ( ! isWiredIn )
             return ;

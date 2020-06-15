@@ -127,7 +127,7 @@ public class OWLWGTester {
      */
     public boolean runTests(String manifestFile, boolean log, boolean stats) throws IOException {
         // Load up the manifest
-        Model manifest = FileManager.get().loadModel(baseDir + manifestFile);
+        Model manifest = FileManager.getInternal().loadModel(baseDir + manifestFile);
         ResIterator tests = manifest.listResourcesWithProperty(RDF.type, PositiveEntailmentTest);
         while (tests.hasNext()) {
             Resource test = tests.nextResource();

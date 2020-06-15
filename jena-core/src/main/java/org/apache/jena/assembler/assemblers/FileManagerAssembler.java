@@ -33,8 +33,8 @@ public class FileManagerAssembler extends AssemblerBase
     public Object open( Assembler a, Resource root, Mode irrelevant )
         { 
         checkType( root, JA.FileManager );
-        FileManager fm = new FileManager( getLocationMapper( a, root ) );
-        FileManager.setStdLocators( fm );
+        FileManager fm = FileManager.createStd();
+        fm.setLocationMapper(getLocationMapper( a, root ) );
         return fm; 
         }
 

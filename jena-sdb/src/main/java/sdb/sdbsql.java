@@ -76,7 +76,7 @@ public class sdbsql extends CmdArgsDB
         if ( contains(argDeclQuery) )
         {
             String x = super.getValue(argDeclQuery) ;
-            String sqlStmt = FileManager.get().readWholeFileAsUTF8(x) ;
+            String sqlStmt = FileManager.getInternal().readWholeFileAsUTF8(x) ;
             positionalArg.add(sqlStmt) ;
         }
         
@@ -96,7 +96,7 @@ public class sdbsql extends CmdArgsDB
         }
          
         if ( sqlStmt.startsWith("@") ) 
-            sqlStmt = FileManager.get().readWholeFileAsUTF8(sqlStmt.substring(1)) ;
+            sqlStmt = FileManager.getInternal().readWholeFileAsUTF8(sqlStmt.substring(1)) ;
         
         getModTime().startTimer() ;
         long queryTime = 0 ;

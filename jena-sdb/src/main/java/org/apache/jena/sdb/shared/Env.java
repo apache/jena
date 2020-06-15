@@ -35,7 +35,7 @@ public class Env
     
     private static void initFM()
     {
-        fileManager = new FileManager() ;
+        fileManager = FileManager.create();
         fileManager.addLocatorFile() ;
 
         // Enabling this causes SDB to look in its installation directory for sdb.ttl files.

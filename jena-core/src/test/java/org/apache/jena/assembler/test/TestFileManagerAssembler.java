@@ -80,8 +80,7 @@ public class TestFileManagerAssembler extends AssemblerTestBase
 
     private Iterator<Locator> standardLocators()
         {
-        FileManager fm = new FileManager();
-        FileManager.setStdLocators( fm );
+        FileManager fm = FileManager.createStd();
         return fm.locators();
         }
     }

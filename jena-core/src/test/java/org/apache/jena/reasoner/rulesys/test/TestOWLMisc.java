@@ -153,7 +153,7 @@ public class TestOWLMisc extends TestCase  {
      * Test looping on recursive someValuesFrom.
      */
     public void hiddenTestOWLLoop() {
-        Model data = FileManager.get().loadModel("file:testing/reasoners/bugs/loop.owl");
+        Model data = FileManager.getInternal().loadModel("file:testing/reasoners/bugs/loop.owl");
         InfModel infmodel = ModelFactory.createInfModel(ReasonerRegistry.getOWLReasoner(), data);
         ((FBRuleInfGraph)infmodel.getGraph()).setTraceOn(true);
         String baseURI = "http://jena.hpl.hp.com/eg#";
@@ -186,7 +186,7 @@ public class TestOWLMisc extends TestCase  {
      * Test bug with leaking variables which results in an incorrect "range = Nothing" deduction.
      */
     public void testRangeBug() {
-        Model model = FileManager.get().loadModel("file:testing/reasoners/bugs/rangeBug.owl");
+        Model model = FileManager.getInternal().loadModel("file:testing/reasoners/bugs/rangeBug.owl");
 //        Model m = ModelFactory.createDefaultModel();
         Reasoner r = ReasonerRegistry.getOWLReasoner();
         InfModel omodel = ModelFactory.createInfModel(r, model);
@@ -201,7 +201,7 @@ public class TestOWLMisc extends TestCase  {
      * Test change of RDF specs to allow plain literals w/o lang and XSD string to be the same.
      */
     public void testLiteralBug() {
-        Model model = FileManager.get().loadModel("file:testing/reasoners/bugs/dtValidation.owl");
+        Model model = FileManager.getInternal().loadModel("file:testing/reasoners/bugs/dtValidation.owl");
 //        Model m = ModelFactory.createDefaultModel();
         Reasoner r = ReasonerRegistry.getOWLReasoner();
         InfModel infmodel = ModelFactory.createInfModel(r, model);

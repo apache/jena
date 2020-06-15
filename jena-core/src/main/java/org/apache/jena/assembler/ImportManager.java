@@ -54,7 +54,7 @@ public class ImportManager
         components. The default file manager is used to load the models.
     */
     public Model withImports( Model model )
-        { return withImports( FileManager.get(), model ); }
+        { return withImports( FileManager.getInternal(), model ); }
 
     /**
         Answer <code>model</code> if it has no imports, or a union model with

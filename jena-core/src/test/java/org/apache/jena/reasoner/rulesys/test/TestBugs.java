@@ -248,8 +248,8 @@ public class TestBugs extends TestCase {
      */
     public void testBindSchemaValidate() {
         Reasoner reasoner = ReasonerRegistry.getOWLReasoner();
-        Model schema = FileManager.get().loadModel("file:testing/reasoners/bugs/sbug.owl");
-        Model data = FileManager.get().loadModel("file:testing/reasoners/bugs/sbug.rdf");
+        Model schema = FileManager.getInternal().loadModel("file:testing/reasoners/bugs/sbug.owl");
+        Model data = FileManager.getInternal().loadModel("file:testing/reasoners/bugs/sbug.rdf");
 
         // Union version
         InfModel infu = ModelFactory.createInfModel(reasoner, data.union(schema));
@@ -382,7 +382,7 @@ public class TestBugs extends TestCase {
 
     /** Problem with bindSchema and validation rules */
     public void test_der_validation() {
-        Model abox = FileManager.get().loadModel("file:testing/reasoners/owl/nondetbug.rdf");
+        Model abox = FileManager.getInternal().loadModel("file:testing/reasoners/owl/nondetbug.rdf");
         List<Rule> rules = FBRuleReasoner.loadRules("testing/reasoners/owl/nondetbug.rules");
         GenericRuleReasoner r = new GenericRuleReasoner(rules);
 //        r.setTraceOn(true);
@@ -857,7 +857,7 @@ public class TestBugs extends TestCase {
      * used to trip up validation
      */
     public void testLayeredValidation() {
-        Model ont = FileManager.get().loadModel("testing/reasoners/bugs/layeredValidation.owl");
+        Model ont = FileManager.getInternal().loadModel("testing/reasoners/bugs/layeredValidation.owl");
         InfModel infModel =
             ModelFactory.createInfModel(ReasonerRegistry.getOWLReasoner(), ont);
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_RULE_INF,
@@ -886,7 +886,7 @@ public class TestBugs extends TestCase {
     
     private void doTestmaxCard2(OntModelSpec spec) {
         String NS = "http://jena.hpl.hp.com/eg#";
-        Model base = FileManager.get().loadModel("testing/reasoners/bugs/terrorism.owl");
+        Model base = FileManager.getInternal().loadModel("testing/reasoners/bugs/terrorism.owl");
         OntModel model = ModelFactory.createOntologyModel(spec, base);
         OntClass event = model.getOntClass(NS + "Event");
         List<OntClass> subclasses = event.listSubClasses().toList();

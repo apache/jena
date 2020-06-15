@@ -193,7 +193,7 @@ public class JA
 
     public static Model getSchema()
         { // inline packagename to avoid clash with /our/ FileManager.
-        if (schema == null) schema = complete( org.apache.jena.util.FileManager.get().loadModel( getSchemaPath() ) );
+        if (schema == null) schema = complete( org.apache.jena.util.FileManager.getInternal().loadModel( getSchemaPath() ) );
         return schema;
         }
 

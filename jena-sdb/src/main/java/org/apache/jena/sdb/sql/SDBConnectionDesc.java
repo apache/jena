@@ -54,7 +54,7 @@ public class SDBConnectionDesc
     
     public static SDBConnectionDesc read(String filename)
     {
-        Model m = FileManager.get().loadModel(filename) ;
+        Model m = FileManager.getInternal().loadModel(filename) ;
         return worker(m) ;
     }
     

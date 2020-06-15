@@ -43,14 +43,15 @@ public class TestTurtle extends TestCase
         RDFReader t = new TurtleReader() ;
         try {
             if ( baseIRI != null )
-                t.read(model, FileManager.get().open(input), baseIRI) ;
+                t.read(model, FileManager.getInternal().open(input), baseIRI) ;
             else
                 t.read(model, input) ;  
             // "http://www.w3.org/2001/sw/DataAccess/df1/tests/rdfq-results.ttl"
 
             String syntax = FileUtils.guessLang(output, FileUtils.langNTriple) ;
             
-            Model results = FileManager.get().loadModel(output, syntax);
+            @SuppressWarnings("deprecation")
+            Model results = FileManager.getInternal().loadModel(output, syntax);
             boolean b = model.isIsomorphicWith(results) ;
             if ( !b )
                 assertTrue("Models not isomorphic", b) ;
