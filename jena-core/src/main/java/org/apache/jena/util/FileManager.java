@@ -30,7 +30,7 @@ public interface FileManager {
     public static final String PATH_DELIMITER = ";";
     public static final String filePathSeparator = java.io.File.separator ;
 
-    /** For usage with Jena libraries only */
+    /** For use within Jena libraries only. */
     public static FileManager getInternal() { return FileManagerImpl.get(); }
     
     /** @deprecated Use {@code StreamManager} if needed; to read RDF files, use {@code RDFDataMgr}. */   
@@ -108,8 +108,15 @@ public interface FileManager {
      *  @param filenameOrURI The filename or a URI (file:, http:)
      *  @return a new model
      *  @exception JenaException if there is syntax error in file.
+     *  @deprecated Use {@code RDFDataMgr}
      */
-    Model loadModel(String filenameOrURI);
+    @Deprecated
+    default Model loadModel(String filenameOrURI) {
+        return loadModelInternal(filenameOrURI);
+    }
+    
+    /** For use within Jena libraries only. */
+    Model loadModelInternal(String filenameOrURI);
 
     /** Load a model from a file (local or remote).
      *  URI is the base for reading the model.
@@ -118,8 +125,8 @@ public interface FileManager {
      *  @param rdfSyntax  RDF Serialization syntax. 
      *  @return a new model
      *  @exception JenaException if there is syntax error in file.
+     *  @deprecated Use {@code RDFDataMgr}
      */
-
     @Deprecated
     Model loadModel(String filenameOrURI, String rdfSyntax);
 
@@ -130,7 +137,8 @@ public interface FileManager {
      *  @param rdfSyntax  RDF Serialization syntax. 
      *  @return a new model
      *  @exception JenaException if there is syntax error in file.
-    */
+     *  @deprecated Use {@code RDFDataMgr}
+     */
     @Deprecated
     Model loadModel(String filenameOrURI, String baseURI, String rdfSyntax);
 
@@ -140,9 +148,15 @@ public interface FileManager {
      * @param model
      * @param filenameOrURI
      * @return The model or null, if there was an error.
-     *  @exception JenaException if there is syntax error in file.
+     * @exception JenaException if there is syntax error in file.
+     * @deprecated Use {@code RDFDataMgr}
      */
-    Model readModel(Model model, String filenameOrURI);
+    default Model readModel(Model model, String filenameOrURI) {
+        return readModelInternal(model, filenameOrURI);
+    }
+    
+    /** For use within Jena libraries only. */
+    Model readModelInternal(Model model, String filenameOrURI);
 
     /**
      * Read a file of RDF into a model.
@@ -150,7 +164,8 @@ public interface FileManager {
      * @param filenameOrURI
      * @param rdfSyntax RDF Serialization syntax.
      * @return The model or null, if there was an error.
-     *  @exception JenaException if there is syntax error in file.
+     * @exception JenaException if there is syntax error in file.
+     * @deprecated Use {@code RDFDataMgr}
      */
     @Deprecated
     Model readModel(Model model, String filenameOrURI, String rdfSyntax);

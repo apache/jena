@@ -63,7 +63,7 @@ public class TestOWLConsistency extends TestCase {
      */
     public Reasoner makeReasoner() {
         if (reasonerCache == null) {
-            Model tbox = FileManager.getInternal().loadModel(testTbox);
+            Model tbox = FileManager.getInternal().loadModelInternal(testTbox);
             reasonerCache = ReasonerRegistry.getOWLReasoner().bindSchema(tbox.getGraph());
         }
         return reasonerCache;
@@ -124,7 +124,7 @@ public class TestOWLConsistency extends TestCase {
      */
     private boolean doTestOn(String dataFile) {
 //        System.out.println("Test: " + dataFile);
-        Model data = FileManager.getInternal().loadModel(dataFile);
+        Model data = FileManager.getInternal().loadModelInternal(dataFile);
         InfModel infmodel = ModelFactory.createInfModel(makeReasoner(), data);
         ValidityReport reportList = infmodel.validate();
         /* Debug only

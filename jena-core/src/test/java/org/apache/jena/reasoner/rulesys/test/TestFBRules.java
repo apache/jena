@@ -989,7 +989,7 @@ public class TestFBRules extends TestCase {
         boolean prior = JenaParameters.enableFilteringOfHiddenInfNodes;
         try {
             JenaParameters.enableFilteringOfHiddenInfNodes = false;
-            Model premisesM = FileManager.getInternal().loadModel("file:testing/wg/equivalentClass/premises004.rdf");
+            Model premisesM = FileManager.getInternal().loadModelInternal("file:testing/wg/equivalentClass/premises004.rdf");
             Graph data = premisesM.getGraph();
             Reasoner reasoner =  new OWLFBRuleReasoner(OWLFBRuleReasonerFactory.theInstance());
             InfGraph infgraph = reasoner.bind(data);

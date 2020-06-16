@@ -127,7 +127,7 @@ public class sdbmeta extends CmdArgsDB
         if ( model == null )
             model = ModelFactory.createDefaultModel() ;
         for ( String filename : positionalArgs)
-            FileManager.getInternal().readModel(model, filename) ;
+            FileManager.getInternal().readModelInternal(model, filename) ;
         conf.setModel(tag, model) ;
     }
     

@@ -288,7 +288,7 @@ public class ModStore extends ModBase
         {
             
             for ( String s : loadFiles )
-                FileManager.getInternal().readModel(model, s) ;
+                FileManager.getInternal().readModelInternal(model, s) ;
         }
         loadFiles = null ;
     }

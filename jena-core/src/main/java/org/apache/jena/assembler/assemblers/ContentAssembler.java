@@ -151,7 +151,7 @@ public class ContentAssembler extends AssemblerBase implements Assembler
 
     protected Content objectAsContent( FileManager fm, Statement s )
         {
-        final Model m = fm.loadModel( getModelName( s ) );
+        final Model m = fm.loadModelInternal( getModelName( s ) );
         return newModelContent( m );
         }
     

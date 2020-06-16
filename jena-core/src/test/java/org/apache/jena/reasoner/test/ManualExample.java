@@ -66,7 +66,7 @@ public class ManualExample {
     /** illustrate validation */
     public void test2(String fname) {
         System.out.println("Testing " + fname);
-        Model data = FileManager.getInternal().loadModel(fname);
+        Model data = FileManager.getInternal().loadModelInternal(fname);
         InfModel infmodel = ModelFactory.createRDFSModel(data);
         ValidityReport validity = infmodel.validate();
         if (validity.isValid()) {

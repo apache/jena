@@ -344,15 +344,8 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
     
     // LEGACY 
 
-    /** Load a model from a file (local or remote).
-     *  This operation may attempt content negotiation for http URLs.
-     *  @param filenameOrURI The filename or a URI (file:, http:)
-     *  @return a new model
-     *  @exception JenaException if there is syntax error in file.
-     */
-
     @Override
-    public Model loadModel(String filenameOrURI)
+    public Model loadModelInternal(String filenameOrURI)
     { 
         if ( log.isDebugEnabled() )
             log.debug("loadModel("+filenameOrURI+")") ;
@@ -368,7 +361,7 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
      *  @return a new model
      *  @exception JenaException if there is syntax error in file.
      */
-
+    @Deprecated
     @Override
     public Model loadModel(String filenameOrURI, String rdfSyntax)
     {
@@ -385,8 +378,7 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
      *  @return a new model
      *  @exception JenaException if there is syntax error in file.
     */
-
-
+    @Deprecated
     @Override
     public Model loadModel(String filenameOrURI, String baseURI, String rdfSyntax)
     {
@@ -413,17 +405,8 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
         return m ;
     }
     
-    /**
-     * Read a file of RDF into a model.  Guesses the syntax of the file based on filename extension, 
-     *  defaulting to RDF/XML.
-     * @param model
-     * @param filenameOrURI
-     * @return The model or null, if there was an error.
-     *  @exception JenaException if there is syntax error in file.
-     */    
-
     @Override
-    public Model readModel(Model model, String filenameOrURI)
+    public Model readModelInternal(Model model, String filenameOrURI)
     {
         if ( log.isDebugEnabled() )
             log.debug("readModel(model,"+filenameOrURI+")") ;
@@ -438,7 +421,7 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
      * @return The model or null, if there was an error.
      *  @exception JenaException if there is syntax error in file.
      */    
-
+    @Deprecated
     @Override
     public Model readModel(Model model, String filenameOrURI, String rdfSyntax)
     {
@@ -456,7 +439,7 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
      * @return The model
      *  @exception JenaException if there is syntax error in file.
      */    
-
+    @Deprecated
     @Override
     public Model readModel(Model model, String filenameOrURI, String baseURI, String syntax)
     {

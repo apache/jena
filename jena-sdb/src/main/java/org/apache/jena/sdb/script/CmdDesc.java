@@ -43,7 +43,7 @@ public class CmdDesc
     public static CmdDesc read(String filename)
     {
         ScriptVocab.init() ;
-        Model m = FileManager.getInternal().loadModel(filename) ;
+        Model m = FileManager.getInternal().loadModelInternal(filename) ;
         
         return worker(m) ;
     }

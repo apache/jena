@@ -1057,7 +1057,7 @@ public class OntDocumentManager
             }
             else {
                 // do the actual read
-                getFileManager().readModel( model, source );
+                getFileManager().readModelInternal( model, source );
             }
 
             // now the post-read hook

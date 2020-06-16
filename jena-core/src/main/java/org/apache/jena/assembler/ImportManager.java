@@ -102,7 +102,7 @@ public class ImportManager
         Graph already = cache.get( path );
         if (already == null)
             {
-            Graph result = withImports( fm, fm.loadModel( path ), loading ).getGraph();
+            Graph result = withImports( fm, fm.loadModelInternal( path ), loading ).getGraph();
             cache.put( path, result );
             return result;
             }

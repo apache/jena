@@ -43,7 +43,9 @@ public class QueryAssembler extends AssemblerBase implements Assembler
         if ( queryString == null )
         {
             String filename = GraphUtils.getStringValue(cmd, AssemblerVocab.pQueryFile) ;
-            queryString = FileManager.getInternal().readWholeFileAsUTF8(filename) ;
+            @SuppressWarnings("deprecation")
+            String s = FileManager.getInternal().readWholeFileAsUTF8(filename) ;
+            queryString = s;
         }
         // Base??
         // Convert to another exception?

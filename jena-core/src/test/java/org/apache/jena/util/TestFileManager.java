@@ -171,8 +171,8 @@ public class TestFileManager extends TestCase
     {
         FileManager fileManager = new FileManagerImpl() ;
         fileManager.addLocatorFile(testingDir) ;
-        Model m1 = fileManager.loadModel(fileModel) ;
-        Model m2 = fileManager.loadModel(fileModel) ;
+        Model m1 = fileManager.loadModelInternal(fileModel) ;
+        Model m2 = fileManager.loadModelInternal(fileModel) ;
         assertNotSame(m1, m2) ;
     }
     
@@ -182,8 +182,8 @@ public class TestFileManager extends TestCase
         FileManager fileManager = FileManager.getInternal() ;
         fileManager.addLocatorFile(testingDir) ;
         fileManager.setModelCaching(true) ;
-        Model m1 = fileManager.loadModel(fileModel) ;
-        Model m2 = fileManager.loadModel(fileModel) ;
+        Model m1 = fileManager.loadModelInternal(fileModel) ;
+        Model m2 = fileManager.loadModelInternal(fileModel) ;
         assertSame(m1, m2) ;
     }
     
@@ -193,17 +193,17 @@ public class TestFileManager extends TestCase
         FileManager fileManager = FileManager.getInternal() ;
         fileManager.addLocatorFile(testingDir) ;
         fileManager.setModelCaching(true) ;
-        Model m1 = fileManager.loadModel(fileModel) ;
-        Model m2 = fileManager.loadModel(fileModel) ;
+        Model m1 = fileManager.loadModelInternal(fileModel) ;
+        Model m2 = fileManager.loadModelInternal(fileModel) ;
         assertSame(m1, m2) ;
         
         fileManager.removeCacheModel(fileModel) ;
-        Model m3 = fileManager.loadModel(fileModel) ;
+        Model m3 = fileManager.loadModelInternal(fileModel) ;
         assertNotSame(m1, m3) ;
         
         fileManager.resetCache() ;
-        Model m4 = fileManager.loadModel(fileModel) ;
-        Model m5 = fileManager.loadModel(fileModel) ;
+        Model m4 = fileManager.loadModelInternal(fileModel) ;
+        Model m5 = fileManager.loadModelInternal(fileModel) ;
 
         assertSame(m4, m5) ;
         assertNotSame(m1, m4) ;

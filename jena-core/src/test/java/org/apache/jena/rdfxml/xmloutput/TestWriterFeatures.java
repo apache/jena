@@ -41,7 +41,7 @@ public class TestWriterFeatures extends ModelTestBase
                                     String propertyName, String propertyValue)
     {
             Model model = createMemModel();
-            FileManager.getInternal().readModel(model, filename );
+            FileManager.getInternal().readModelInternal(model, filename );
             
             String contents = null ;
             

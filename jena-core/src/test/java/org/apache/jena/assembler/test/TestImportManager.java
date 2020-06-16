@@ -35,7 +35,7 @@ public class TestImportManager extends AssemblerTestBase
         {
         Map<String, Model> map = new HashMap<>();
         
-        @Override public Model loadModel( String URL )
+        @Override public Model loadModelInternal( String URL )
             {
             Model result = map.get( URL );
             if (result == null) fail( "no model for " + URL );

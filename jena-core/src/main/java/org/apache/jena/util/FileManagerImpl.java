@@ -273,7 +273,7 @@ public class FileManagerImpl implements FileManager
      */
 
     @Override
-    public Model loadModel(String filenameOrURI)
+    public Model loadModelInternal(String filenameOrURI)
     { 
         if ( log.isDebugEnabled() )
             log.debug("loadModel("+filenameOrURI+")") ;
@@ -344,7 +344,7 @@ public class FileManagerImpl implements FileManager
      */    
 
     @Override
-    public Model readModel(Model model, String filenameOrURI)
+    public Model readModelInternal(Model model, String filenameOrURI)
     {
         if ( log.isDebugEnabled() )
             log.debug("readModel(model,"+filenameOrURI+")") ;

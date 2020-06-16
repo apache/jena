@@ -38,7 +38,7 @@ public class ScriptDesc
     public static ScriptDesc read(String filename)
     {
         AssemblerVocab.init() ;
-        Model m = FileManager.getInternal().loadModel(filename) ;
+        Model m = FileManager.getInternal().loadModelInternal(filename) ;
         
         return worker(m) ;
     }

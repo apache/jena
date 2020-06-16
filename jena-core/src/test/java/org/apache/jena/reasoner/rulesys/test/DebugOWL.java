@@ -138,7 +138,7 @@ public class DebugOWL {
      * Load a test data set from file.
      */
     public void load(String testFile) {
-        testdata = FileManager.getInternal().loadModel(testFile).getGraph();
+        testdata = FileManager.getInternal().loadModelInternal(testFile).getGraph();
         schema = null;
     }
     
@@ -146,8 +146,8 @@ public class DebugOWL {
      * Load both a schema and an instance data file.
      */
     public void load(String schemaFile, String testFile) {
-        testdata = FileManager.getInternal().loadModel(testFile).getGraph();
-        schema = FileManager.getInternal().loadModel(schemaFile).getGraph();
+        testdata = FileManager.getInternal().loadModelInternal(testFile).getGraph();
+        schema = FileManager.getInternal().loadModelInternal(schemaFile).getGraph();
     }
     
     /**
