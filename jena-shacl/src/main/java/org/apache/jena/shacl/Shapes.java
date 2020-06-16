@@ -62,12 +62,15 @@ public class Shapes implements Iterable<Shape> {
     }
 
     /**
-     *  Parse the graph and also include all declared node and property shapes, whether connected to the targets or not. 
-     */ 
+     *  Parse the graph and also include all declared node and property shapes, whether connected to the targets or not.
+     */
     public static Shapes parseAll(Graph graph) {
         Shapes shapes = parse(graph);
         Collection<Shape> declShapes = ShapesParser.declaredShapes(graph, shapes.shapes);
-        shapes.rootShapes.addAll(declShapes);
+        declShapes.forEach(shape->{
+            if ( ! shapes.getRootShapes().contains(shape) )
+                shapes.rootShapes.add(shape);
+        });
         return shapes;
     }
 
@@ -107,11 +110,11 @@ public class Shapes implements Iterable<Shape> {
     public Targets getTargets() {
         return targets;
     }
-    
+
     public int numShapes() {
         return shapes.values().size();
     }
-    
+
     public int numRootShapes() {
         return rootShapes.size();
     }

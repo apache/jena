@@ -64,9 +64,9 @@ public class OperationRegistry {
         stdOpReg.register(Operation.Query,   WebContent.contentTypeSPARQLQuery, queryServlet);
         stdOpReg.register(Operation.Update,  WebContent.contentTypeSPARQLUpdate, updateServlet);
         stdOpReg.register(Operation.Upload,  null, uploadServlet);
-        stdOpReg.register(Operation.Shacl,   null, shaclValidation); 
         stdOpReg.register(Operation.GSP_R,   null, gspServlet_R);
         stdOpReg.register(Operation.GSP_RW,  null, gspServlet_RW);
+        stdOpReg.register(Operation.Shacl,   null, shaclValidation);
         stdOpReg.register(Operation.NoOp,    null, noOperation);
         return stdOpReg;
     }
@@ -79,7 +79,7 @@ public class OperationRegistry {
 
     /** Map ContentType (lowercase, no charset) to the {@code Operation} for handling it. */
     private final Map<String, Operation> contentTypeToOperation = new ConcurrentHashMap<>();
-    
+
     /** Map {@link Operation} to servlet handler.
      * {@code Operation}s are the internal symbol identifying an operation,
      * not the name used in the configuration file,

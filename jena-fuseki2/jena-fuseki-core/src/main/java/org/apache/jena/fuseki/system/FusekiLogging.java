@@ -44,7 +44,7 @@ public class FusekiLogging
 
     /**
      * Places for the log4j properties file at (3).
-     * This is not the standard, fixed classpath names used by log4j.  
+     * This is not the standard, fixed classpath names used by log4j.
      *             //   log4j2.properties, log4j2.yaml, log4j2.json, log4j2.xml
 
      */
@@ -84,7 +84,7 @@ public class FusekiLogging
 
     public static final String log4j2_configurationFile = "log4j.configurationFile";
     public static final String log4j2_web_configuration = "log4jConfiguration";
-    
+
     /** Set up logging. Allow an extra location (string directory name without trailing "/"). This may be null
      *
      * @param extraDir
@@ -143,7 +143,7 @@ public class FusekiLogging
         // Stop anything attempting to do it again.
         System.setProperty(log4j2_configurationFile, "set");
     }
-    
+
     private static boolean checkSystemProperties(String... properties) {
         String x = null;
         for ( String propertyName : properties ) {
@@ -161,7 +161,7 @@ public class FusekiLogging
 
     private static void loadConfiguration(InputStream inputStream, String resourceName) throws IOException {
         ConfigurationSource source = new ConfigurationSource(inputStream);
-        ConfigurationFactory factory; 
+        ConfigurationFactory factory;
         if ( resourceName.endsWith(".properties" ) )
             factory = new PropertiesConfigurationFactory();
         else
@@ -232,9 +232,6 @@ public class FusekiLogging
             , "logger.fuseki.name  = org.apache.jena.fuseki"
             , "logger.fuseki.level = INFO"
             , ""
-            , "logger.fuseki-request.name  = org.apache.jena.fuseki.Request"
-            , "logger.fuseki-request.level = INFO"
-            ,""
             , "logger.fuseki-fuseki.name  = org.apache.jena.fuseki.Fuseki"
             , "logger.fuseki-fuseki.level = INFO"
             ,""
@@ -242,10 +239,10 @@ public class FusekiLogging
             , "logger.fuseki-server.level = INFO"
             ,""
             , "logger.fuseki-config.name  = org.apache.jena.fuseki.Config"
-            , "logger.fuseki-config.level = WARN"
+            , "logger.fuseki-config.level = INFO"
             ,""
             , "logger.fuseki-admin.name  = org.apache.jena.fuseki.Admin"
-            , "logger.fuseki-admin.level = WARN"
+            , "logger.fuseki-admin.level = INFO"
             ,""
             , "logger.jetty.name  = org.eclipse.jetty"
             , "logger.jetty.level = WARN"
@@ -265,14 +262,14 @@ public class FusekiLogging
             , "appender.plain.layout.type = PatternLayout"
             , "appender.plain.layout.pattern = %m%n"
             , ""
-            , "logger.request-log.name                   = org.apache.jena.fuseki.Request"
-            , "logger.request-log.additivity             = false"
-            , "logger.request-log.level                  = OFF"
-            , "logger.request-log.appenderRef.plain.ref  = PLAIN"
+            , "logger.fuseki-request.name                   = org.apache.jena.fuseki.Request"
+            , "logger.fuseki-request.additivity             = false"
+            , "logger.fuseki-request.level                  = OFF"
+            , "logger.fuseki-request.appenderRef.plain.ref  = PLAIN"
                 );
         // @formatter:on
     }
-    
+
     public static void resetLogging(String configString) {
         LogCmd.resetLogging(configString);
     }

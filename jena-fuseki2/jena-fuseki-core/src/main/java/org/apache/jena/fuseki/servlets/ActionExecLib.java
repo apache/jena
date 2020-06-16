@@ -32,6 +32,7 @@ import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.server.*;
+import org.apache.jena.fuseki.system.ActionCategory;
 import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.web.HttpSC;
@@ -49,10 +50,10 @@ public class ActionExecLib {
      * @param response HTTP response
      * @return a new HTTP Action
      */
-    public static HttpAction allocHttpAction(DataAccessPoint dap, Logger log, HttpServletRequest request, HttpServletResponse response) {
+    public static HttpAction allocHttpAction(DataAccessPoint dap, Logger log, ActionCategory category, HttpServletRequest request, HttpServletResponse response) {
         long id = allocRequestId(request, response);
         // Need a way to set verbose logging on a per servlet and per request basis.
-        HttpAction action = new HttpAction(id, log, request, response);
+        HttpAction action = new HttpAction(id, log, category, request, response);
         if ( dap != null ) {
             // TODO remove setRequest?
             DataService dataService = dap.getDataService();
@@ -192,12 +193,17 @@ public class ActionExecLib {
         action.finishRequest();
     }
 
+    private static boolean logLifecycle(HttpAction action) {
+        return action.verbose || action.category != ActionCategory.ADMIN;
+    }
+
     /** Log an {@link HttpAction} request. */
     public static void logRequest(HttpAction action) {
         String url = ActionLib.wholeRequestURL(action.request);
         String method = action.request.getMethod();
 
-        FmtLog.info(action.log, "[%d] %s %s", action.id, method, url);
+        if ( logLifecycle(action) )
+            FmtLog.info(action.log, "[%d] %s %s", action.id, method, url);
         if ( action.verbose ) {
             Enumeration<String> en = action.request.getHeaderNames();
             for (; en.hasMoreElements();) {
@@ -238,18 +244,20 @@ public class ActionExecLib {
 
         String timeStr = fmtMillis(time);
 
-        if ( action.message == null )
-            FmtLog.info(action.log, "[%d] %d %s (%s)",
-                action.id, action.statusCode, HttpSC.getMessage(action.statusCode), timeStr);
-        else
-            FmtLog.info(action.log,"[%d] %d %s (%s)", action.id, action.statusCode, action.message, timeStr);
-        // Standard format NCSA log.
-        if ( Fuseki.requestLog != null && Fuseki.requestLog.isInfoEnabled() ) {
-            String s = RequestLog.combinedNCSA(action);
-            Fuseki.requestLog.info(s);
+        if ( logLifecycle(action) ) {
+            if ( action.message == null )
+                FmtLog.info(action.log, "[%d] %d %s (%s)",
+                    action.id, action.statusCode, HttpSC.getMessage(action.statusCode), timeStr);
+            else
+                FmtLog.info(action.log,"[%d] %d %s (%s)", action.id, action.statusCode, action.message, timeStr);
         }
-
-        // See also HttpAction.finishRequest - request logging happens there.
+        // Standard format NCSA log.
+        if ( action.category == ActionCategory.ACTION ) {
+            if ( Fuseki.requestLog != null && Fuseki.requestLog.isInfoEnabled() ) {
+                String s = RequestLog.combinedNCSA(action);
+                Fuseki.requestLog.info(s);
+            }
+        }
     }
 
     /**

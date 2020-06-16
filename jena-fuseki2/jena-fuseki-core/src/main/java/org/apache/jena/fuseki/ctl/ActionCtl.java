@@ -23,6 +23,7 @@ import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.servlets.ActionLifecycle;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletProcessor;
+import org.apache.jena.fuseki.system.ActionCategory;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 /**
@@ -31,7 +32,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
  */
 public abstract class ActionCtl extends ServletProcessor implements ActionLifecycle {
     protected ActionCtl() {
-        super(Fuseki.adminLog);
+        super(Fuseki.adminLog, ActionCategory.ADMIN);
     }
 
     @Override

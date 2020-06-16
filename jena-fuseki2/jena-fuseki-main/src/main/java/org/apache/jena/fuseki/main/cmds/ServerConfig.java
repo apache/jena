@@ -30,7 +30,7 @@ class ServerConfig {
     public int port;
     /** Loopback */
     public boolean   loopback         = false;
-    /** The dataset name */
+    /** The dataset name (canonical form) */
     public String    datasetPath      = null;
     /** Allow update */
     public boolean   allowUpdate      = false;

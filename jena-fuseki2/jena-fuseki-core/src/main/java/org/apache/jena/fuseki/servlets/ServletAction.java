@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.jena.fuseki.system.ActionCategory;
 import org.slf4j.Logger;
 
 /**
@@ -57,6 +58,6 @@ public class ServletAction extends HttpServlet {
     }
 
     private HttpAction allocHttpActionServlet(HttpServletRequest request, HttpServletResponse response) {
-        return allocHttpAction(null, log, request, response);
+        return allocHttpAction(null, log, ActionCategory.ACTION, request, response);
     }
 }

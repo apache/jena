@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.server;
+package org.apache.jena.fuseki.cmd;
 
 import java.util.HashMap;
 import java.util.Map;

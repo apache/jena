@@ -48,7 +48,7 @@ public class Operation {
     /** @deprecated Use {@link #alloc(Node, String, String)}. */
     @Deprecated
     static public Operation register(String shortName, String description) {
-        String x = IRILib.encodeUriPath(shortName); 
+        String x = IRILib.encodeUriPath(shortName);
         return alloc("http://migration/"+x, shortName, description);
     }
 
@@ -91,7 +91,7 @@ public class Operation {
     public static final Operation Shacl    = alloc(FusekiVocab.opShacl.asNode(),  "SHACL",  "SHACL Validation");
     static {
         // Not everyone will remember "_" vs "-" so ...
-        altName(FusekiVocab.opNoOp_alt,   FusekiVocab.opNoOp); 
+        altName(FusekiVocab.opNoOp_alt,   FusekiVocab.opNoOp);
         altName(FusekiVocab.opGSP_r_alt,  FusekiVocab.opGSP_r);
         altName(FusekiVocab.opGSP_rw_alt, FusekiVocab.opGSP_rw);
     }
@@ -99,7 +99,7 @@ public class Operation {
     // -- Object
     private final Node id;
     private final String name;
-    // Name used in JSON in the "server" description and "stats" details. 
+    // Name used in JSON in the "server" description and "stats" details.
     // This name is know to the JS code (e.g. dataset.js).
     private final String jsName;
 
@@ -108,7 +108,7 @@ public class Operation {
     private Operation(Node fullName, String name, String jsName, String description) {
         this.id = fullName;
         this.name = name;
-        // Currently, this 
+        // Currently, this
         this.jsName = jsName;
         this.description = description;
     }
@@ -117,16 +117,16 @@ public class Operation {
         return id;
     }
 
-    /** Return the display name for this operation. */ 
+    /** Return the display name for this operation. */
     public String getName() {
         return name;
     }
 
-    /** 
-     * Name used in JSON in the "server" description and "stats" details. 
+    /**
+     * Name used in JSON in the "server" description and "stats" details.
      * Highlighted by JENA-1766.
      * This name is know to the JS code.
-     */   
+     */
     public String getJsonName() {
         return jsName;
     }

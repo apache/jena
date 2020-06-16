@@ -42,11 +42,11 @@ import org.apache.jena.sparql.core.DatasetGraphWrapper;
 
 public class DataService {
     private DatasetGraph dataset;
-    
+
     private Map<String, EndpointSet> endpoints                = new ConcurrentHashMap<>();
     private ListMultimap<Operation, Endpoint> operationsMap   = Multimaps.synchronizedListMultimap(ArrayListMultimap.create());
-    
-    
+
+
     // Dataset-level authorization policy.
     private AuthPolicy authPolicy                       = null;
 
@@ -91,8 +91,8 @@ public class DataService {
         return dataset;
     }
 
-    // Convenience 
-    
+    // Convenience
+
    public void addEndpoint(Operation operation) {
        addEndpoint(operation, null, null);
    }
@@ -117,7 +117,7 @@ public class DataService {
     private void addEndpoint$(Endpoint endpoint) {
         EndpointSet eps = endpoints.computeIfAbsent(endpoint.getName(), (k)->new EndpointSet(k));
         eps.put(endpoint);
-        // Cleaner not to have duplicates. But nice to have a (short) list that keeps the create order. 
+        // Cleaner not to have duplicates. But nice to have a (short) list that keeps the create order.
         if ( ! operationsMap.containsEntry(endpoint.getOperation(), endpoint) )
             operationsMap.put(endpoint.getOperation(), endpoint);
     }
@@ -180,7 +180,6 @@ public class DataService {
         return operationsMap.keySet().contains(operation);
     }
 
-    //@Override
     public boolean allowUpdate()    { return true; }
 
     public void goOffline() {
@@ -205,7 +204,7 @@ public class DataService {
                 Fuseki.configLog.warn("No processor for "+ep.getName());
         });
     }
-    
+
     public void goActive() {
         ensureEnpointProcessors();
         offlineInProgress.set(false);
@@ -286,7 +285,7 @@ public class DataService {
         // Find possible TDB1, TDB2.
         DatasetGraph base = findTDB(database);
         database.close();
-        
+
         boolean isTDB1 = isTDB1(base);
         boolean isTDB2 = isTDB2(base);
 
@@ -299,7 +298,7 @@ public class DataService {
         }
     }
 
-    /** Unwrap until a TDB database is encountered */ 
+    /** Unwrap until a TDB database is encountered */
     private static DatasetGraph findTDB(DatasetGraph dsg) {
         DatasetGraph dsgw = dsg;
         while (dsgw instanceof DatasetGraphWrapper) {
@@ -311,7 +310,7 @@ public class DataService {
         }
         return dsgw;
     }
-    
+
     public void setAuthPolicy(AuthPolicy authPolicy) { this.authPolicy = authPolicy; }
 
     /** Returning null implies no authorization control */

@@ -22,10 +22,7 @@ import java.net.BindException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import arq.cmdline.CmdARQ;
 import arq.cmdline.ModAssembler;
@@ -35,7 +32,6 @@ import jena.cmd.CmdException;
 import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonObject;
-import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.AuthScheme;
@@ -44,7 +40,7 @@ import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
-import org.apache.jena.fuseki.server.DataService;
+import org.apache.jena.fuseki.server.FusekiInfo;
 import org.apache.jena.fuseki.servlets.SPARQL_QueryGeneral;
 import org.apache.jena.fuseki.validation.DataValidator;
 import org.apache.jena.fuseki.validation.IRIValidator;
@@ -524,27 +520,9 @@ public class FusekiMain extends CmdARQ {
 
         Logger log = Fuseki.serverLog;
 
-        String version = Fuseki.VERSION;
-        String buildDate = Fuseki.BUILD_DATE;
+        FusekiInfo.server(log);
 
-        if ( version != null && version.equals("${project.version}") )
-            version = null;
-        if ( buildDate != null && buildDate.equals("${build.time.xsd}") )
-            buildDate = DateTimeUtils.nowAsXSDDateTimeString();
-
-        String name = Fuseki.NAME;
-        //name = name +" (basic server)";
-
-        if ( version != null ) {
-            if ( Fuseki.developmentMode && buildDate != null )
-                FmtLog.info(log, "%s %s %s", name, version, buildDate);
-            else
-                FmtLog.info(log, "%s %s", name, version);
-        }
-
-        // Dataset -> Endpoints
-        Map<String, List<String>> mapDatasetEndpoints = description(DataAccessPointRegistry.get(server.getServletContext()));
-
+        DataAccessPointRegistry dapRegistry = DataAccessPointRegistry.get(server.getServletContext());
         if ( serverConfig.empty ) {
             FmtLog.info(log, "No SPARQL datasets services");
         } else {
@@ -553,46 +531,20 @@ public class FusekiMain extends CmdARQ {
         }
 
         if ( serverConfig.datasetPath != null ) {
-            if ( mapDatasetEndpoints.size() != 1 )
-                log.error("Expected only one dataset");
-            List<String> endpoints = mapDatasetEndpoints.get(serverConfig.datasetPath);
-            FmtLog.info(log,  "Dataset Type = %s", serverConfig.datasetDescription);
-            FmtLog.info(log,  "Path = %s; Services = %s", serverConfig.datasetPath, endpoints);
-        }
-        if ( serverConfig.serverConfig != null ) {
-            // May be many datasets and services.
-            FmtLog.info(log,  "Configuration file %s", serverConfig.serverConfig);
-            mapDatasetEndpoints.forEach((path, endpoints)->{
-                FmtLog.info(log,  "Path = %s; Services = %s", path, endpoints);
-            });
+            if ( dapRegistry.size() != 1 )
+                log.error("Expected only one dataset in the DataAccessPointRegistry");
         }
 
-        if ( serverConfig.contentDirectory != null )
-            FmtLog.info(log,  "Static files = %s", serverConfig.contentDirectory);
+        // Log details on startup.
+        String datasetPath = serverConfig.datasetPath;
+        String datasetDescription = serverConfig.datasetDescription;
+        String serverConfigFile = serverConfig.serverConfig;
+        String staticFiles = serverConfig.contentDirectory;
+        boolean verbose = serverConfig.verboseLogging;
 
-        if ( super.isVerbose() )
-            PlatformInfo.logDetailsVerbose(log);
-        else if ( !super.isQuiet() )
-            PlatformInfo.logDetails(log);
-    }
-
-    private static Map<String, List<String>> description(DataAccessPointRegistry reg) {
-        Map<String, List<String>> desc = new LinkedHashMap<>();
-        reg.forEach((ds,dap)->{
-            List<String> endpoints = new ArrayList<>();
-            desc.put(ds, endpoints);
-            DataService dSrv = dap.getDataService();
-            dSrv.getOperations().forEach((op)->{
-                dSrv.getEndpoints(op).forEach(ep-> {
-                    String x = ep.getName();
-                    x = "\""+x+"\"";
-                    String opName = ep.getOperation().getName();
-                    String str = x+"=>"+opName;
-                    endpoints.add(str);
-                });
-            });
-        });
-        return desc;
+        if ( ! super.isQuiet() )
+            FusekiInfo.logServerSetup(log, verbose, dapRegistry,
+                                      datasetPath, datasetDescription, serverConfigFile, staticFiles);
     }
 
     @Override

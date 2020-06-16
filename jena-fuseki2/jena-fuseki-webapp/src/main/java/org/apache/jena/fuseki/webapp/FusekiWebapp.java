@@ -39,6 +39,7 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.build.DatasetDescriptionMap;
 import org.apache.jena.fuseki.build.FusekiConfig;
+import org.apache.jena.fuseki.cmd.FusekiInitialConfig;
 import org.apache.jena.fuseki.mgt.Template;
 import org.apache.jena.fuseki.mgt.TemplateFunctions;
 import org.apache.jena.fuseki.server.*;

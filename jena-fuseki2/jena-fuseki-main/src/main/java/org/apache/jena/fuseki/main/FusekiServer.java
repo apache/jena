@@ -29,6 +29,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 
 import org.apache.jena.atlas.lib.Pair;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
@@ -124,31 +125,20 @@ public class FusekiServer {
         return new Builder(serviceDispatchRegistry);
     }
 
-    public final Server server;
+    private final Server server;
     private final int httpPort;
     private final int httpsPort;
+    private final String staticContentDir;
     private final ServletContext servletContext;
-    private final boolean accessCtlRequest;
-    private final boolean accessCtlData;
-
-//    private FusekiServer(int httpPort, Server server) {
-//        this(httpPort, -1, server,
-//            ((ServletContextHandler)server.getHandler()).getServletContext()
-//            );
-//    }
 
     private FusekiServer(int httpPort, int httpsPort, Server server,
-//                         boolean accessCtlRequest,
-//                         boolean accessCtlData,
+                         String staticContentDir,
                          ServletContext fusekiServletContext) {
         this.server = server;
         this.httpPort = httpPort;
         this.httpsPort = httpsPort;
+        this.staticContentDir = staticContentDir;
         this.servletContext = fusekiServletContext;
-//        this.accessCtlRequest = accessCtlRequest;
-//        this.accessCtlData = accessCtlData;
-      this.accessCtlRequest = false;
-      this.accessCtlData = false;
     }
 
     /**
@@ -187,13 +177,9 @@ public class FusekiServer {
         return OperationRegistry.get(getServletContext());
     }
 
-    /** Return whether this server has any access control enabled. */
-    public boolean hasUserAccessControl() {
-        return accessCtlRequest || accessCtlData;
-    }
-
-    /** Start the server - the server continues to run after this call returns.
-     *  To synchronise with the server stopping, call {@link #join}.
+    /**
+     * Start the server - the server continues to run after this call returns.
+     * To synchronise with the server stopping, call {@link #join}.
      */
     public FusekiServer start() {
         try { server.start(); }
@@ -228,6 +214,22 @@ public class FusekiServer {
     public void join() {
         try { server.join(); }
         catch (Exception e) { throw new FusekiException(e); }
+    }
+
+    /** Log server details. */
+    public void logServer() {
+        Logger log = Fuseki.serverLog;
+        DataAccessPointRegistry dapRegistery = getDataAccessPointRegistry();
+        FusekiInfo.server(log);
+        if ( httpsPort > 0 )
+            log.info("Port = "+httpPort+"/"+httpsPort);
+        else
+            log.info("Port = "+getPort());
+        boolean verbose = Fuseki.getVerbose(getServletContext());
+        FusekiInfo.logDataAccessPointRegistry(log, dapRegistery, verbose );
+        if ( staticContentDir != null )
+            FmtLog.info(log,  "Static files: %s", staticContentDir);
+
     }
 
     /** FusekiServer.Builder */
@@ -793,7 +795,7 @@ public class FusekiServer {
                 }
                 if ( networkLoopback )
                     applyLocalhost(server);
-                return new FusekiServer(serverPort, serverHttpsPort, server, handler.getServletContext());
+                return new FusekiServer(serverPort, serverHttpsPort, server, staticContentDir, handler.getServletContext());
             } finally {
                 buildFinish();
             }

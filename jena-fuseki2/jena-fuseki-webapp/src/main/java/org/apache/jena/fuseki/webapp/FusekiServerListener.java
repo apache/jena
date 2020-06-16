@@ -24,8 +24,12 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
+import org.apache.jena.fuseki.cmd.FusekiInitialConfig;
 import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
-import org.apache.jena.fuseki.server.*;
+import org.apache.jena.fuseki.server.DataAccessPointRegistry;
+import org.apache.jena.fuseki.server.FusekiInfo;
+import org.apache.jena.fuseki.server.OperationRegistry;
+import org.slf4j.Logger;
 
 /** Setup configuration.
  * The order is controlled by {@code web.xml}:
@@ -78,7 +82,7 @@ public class FusekiServerListener implements ServletContextListener {
             }
 
             // The command line code sets initialSetup.
-            // In a non-commandline startup, initialSetup is null.
+            // In a non-command line startup, initialSetup is null.
             if ( initialSetup == null ) {
                 initialSetup = new FusekiInitialConfig();
                 String cfg = FusekiEnv.FUSEKI_BASE.resolve(FusekiWebapp.DFT_CONFIG).toAbsolutePath().toString();
@@ -91,18 +95,42 @@ public class FusekiServerListener implements ServletContextListener {
             }
             Fuseki.setVerbose(servletContext, initialSetup.verbose);
             FusekiWebapp.initializeDataAccessPoints(dataAccessPointRegistry,
-                                                    initialSetup, FusekiWebapp.dirConfiguration.toString());
-            // Bind endpoints, go active.
+                                                    initialSetup,
+                                                    FusekiWebapp.dirConfiguration.toString());
             dataAccessPointRegistry.forEach((name, dap)->{
                 dap.getDataService().setEndpointProcessors(operationRegistry);
                 dap.getDataService().goActive();
-                Fuseki.configLog.info("Register: "+dap.getName());
+                //Fuseki.configLog.info("Register: "+dap.getName());
             });
         } catch (Throwable th) {
             Fuseki.serverLog.error("Exception in initialization: {}", th.getMessage());
             throw th;
         }
-        FusekiInfo.info(initialSetup, dataAccessPointRegistry);
+
+        if ( initialSetup.quiet )
+            return;
+
+
+
+        info(initialSetup.datasetPath,
+             initialSetup.datasetDescription,
+             initialSetup.fusekiServerConfigFile,
+             dataAccessPointRegistry);
+    }
+
+    /** Print command line setup */
+    private static void info(String datasetPath,
+                            String datasetDescription,
+                            String serverConfigFile,
+                            DataAccessPointRegistry dapRegistry) {
+        Logger log = Fuseki.serverLog;
+        // Done earlier to get it before config output
+//        String version = Fuseki.VERSION;
+//        String buildDate = Fuseki.BUILD_DATE;
+//        FusekiInfo.logServer(log, Fuseki.NAME, version, buildDate);
+
+        FusekiInfo.logServerSetup(log, initialSetup.verbose,
+                                  dapRegistry,
+                                  datasetPath, datasetDescription, serverConfigFile, null);
     }
 }
-
