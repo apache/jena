@@ -108,8 +108,10 @@ public abstract class Shape {
 
     public void print(IndentedWriter out) {
         printHeader(out);
-        out.print(" ");
-        out.print("node="+FmtUtils.stringForNode(shapeNode));
+        if ( ! shapeNode.isBlank() ) {
+            out.print(" ");
+            out.print("node="+FmtUtils.stringForNode(shapeNode));
+        }
 
         if ( deactivated() )
             out.print(" deactivated");
@@ -132,5 +134,6 @@ public abstract class Shape {
         finally {
             out.decIndent();
         }
+        out.flush();
     }
 }

@@ -1,0 +1,4 @@
+BASE <http://example.org/basic-shape-iri>
+
+shape <http://example.org/test#TestShape> {
+}

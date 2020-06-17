@@ -1,0 +1,6 @@
+BASE <http://example.org/directives>
+
+IMPORTS <http://example.org/graph1>
+IMPORTS <http://example.org/graph2>
+
+PREFIX ex: <http://example.org/directives#>

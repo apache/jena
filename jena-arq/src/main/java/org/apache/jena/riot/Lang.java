@@ -144,13 +144,11 @@ public class Lang
             return false ;
 
         Lang otherLang = (Lang)other ;
-        // Just label should be enough.
         return 
             this.label == otherLang.label &&
             this.contentType.equals(otherLang.contentType) &&
             this.altContentTypes.equals(otherLang.altContentTypes) &&
             this.fileExtensions.equals(otherLang.fileExtensions) ;
-        // File extensions and alt 
     }
 
     public String getName()                     { return label ; }

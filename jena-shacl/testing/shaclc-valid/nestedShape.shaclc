@@ -1,0 +1,9 @@
+BASE <http://example.org/nestedShape>
+
+PREFIX ex: <http://example.org/test#>
+
+shape ex:TestShape {
+	ex:property IRI {
+		ex:nestedProperty [1..1] .
+	} .
+}

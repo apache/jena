@@ -124,7 +124,8 @@ public class ShapesParser {
     /** Parse and add all the declared shapes into the map.
      * The {@code shapesMap} is modified, adding in all shapes processed.
      */
-    public static Collection<Shape> declaredShapes(Graph shapesGraph, Map<Node, Shape> shapesMap) {
+    public static Collection<Shape> declaredShapes(Graph shapesGraph, Map<Node, Shape> _shapesMap) {
+        Map<Node, Shape> shapesMap = ( _shapesMap == null ) ? new HashMap<>() : _shapesMap;
         // All declared shapes.
         Map<Node, Shape> acc = new LinkedHashMap<>();
         G.listAllNodesOfType(shapesGraph, SHACL.NodeShape).forEach(shapeNode->

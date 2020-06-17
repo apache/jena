@@ -1,0 +1,7 @@
+BASE <http://example.org/path-oneOrMore>
+
+PREFIX ex: <http://example.org/test#>
+
+shape ex:TestShape {
+	ex:property+ .
+}

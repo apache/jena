@@ -1,0 +1,7 @@
+BASE <http://example.org/shapeRef>
+
+PREFIX ex: <http://example.org/test#>
+
+shape ex:TestShape {
+	ex:property @<http://example.org/test#OtherShape1> @ex:OtherShape2 .
+}

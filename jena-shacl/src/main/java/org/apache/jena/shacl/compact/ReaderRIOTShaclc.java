@@ -16,21 +16,27 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shacl;
+package org.apache.jena.shacl.compact;
 
-import org.apache.jena.shacl.compact.TestShaclCompact;
-import org.apache.jena.shacl.tests.TestValidationReport;
-import org.apache.jena.shacl.tests.jena_shacl.TS_JenaShacl;
-import org.apache.jena.shacl.tests.std.TS_StdSHACL;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.io.InputStream;
+import java.io.Reader;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestValidationReport.class
-    , TS_StdSHACL.class
-    , TS_JenaShacl.class
-    , TestShaclCompact.class
-} )
+import org.apache.jena.atlas.web.ContentType;
+import org.apache.jena.riot.ReaderRIOT;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.sparql.util.Context;
 
-public class TC_SHACL { }
+/** 
+ * RIOT Reader for 
+ * <a href="https://w3c.github.io/shacl/shacl-compact-syntax/">SHACL Compact Syntax</a>
+ */
+public class ReaderRIOTShaclc implements ReaderRIOT {
+
+    @Override
+    public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {}
+
+    @Override
+    public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {}
+
+}
+

@@ -1,0 +1,47 @@
+@base <http://example.com/ns> .
+@prefix ex: <http://example.com/ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.com/ns>
+	rdf:type owl:Ontology ;
+	owl:imports <http://example.com/person-ontology> .
+
+ex:Person
+	a sh:NodeShape, rdfs:Class ;
+	sh:closed true ;
+	sh:ignoredProperties ( rdf:type ) ;
+	sh:property [
+		sh:path ex:ssn ;
+		sh:maxCount 1 ;
+		sh:datatype xsd:string ;
+		sh:pattern "^\\d{3}-\\d{2}-\\d{4}$" ;
+	] ;
+	sh:property [
+		sh:path ex:worksFor ;
+		sh:class ex:Company ;
+		sh:nodeKind sh:IRI ;
+	] ;
+	sh:property [
+		sh:path ex:address ;
+		sh:maxCount 1 ;
+		sh:nodeKind sh:BlankNode ;
+		sh:node [
+			sh:property [
+				sh:path ex:city ;
+				sh:datatype xsd:string ;
+				sh:minCount 1 ;
+				sh:maxCount 1 ;
+			] ;
+			sh:property [
+				sh:path ex:postalCode ;
+				sh:or ( [ sh:datatype xsd:integer ] [ sh:datatype xsd:string ] ) ;
+				sh:minCount 1 ;
+				sh:maxCount 1 ;
+				sh:maxLength 5 ;
+			] ;
+		] ;
+	] .

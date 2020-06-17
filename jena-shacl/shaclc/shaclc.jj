@@ -1,0 +1,626 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+options
+{
+      // \ u processed in the input stream
+//    JAVA_UNICODE_ESCAPE   = true ;
+//    UNICODE_INPUT         = false ;
+
+       // \ u processed after parsing.
+       // strings, prefix names, IRIs
+       JAVA_UNICODE_ESCAPE   = false ;
+       // ???
+       UNICODE_INPUT         = true ;
+
+  STATIC                = false ;
+//  DEBUG_PARSER          = true ;
+//  DEBUG_TOKEN_MANAGER   = true ;
+}
+
+PARSER_BEGIN(ShaclCompactParserJJ)
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.jena.shacl.compact.parser;
+
+import java.util.List;
+import java.util.ArrayList;
+import org.apache.jena.graph.*;
+import org.apache.jena.sparql.path.*;
+import org.apache.jena.shacl.compact.*;
+
+public class ShaclCompactParserJJ extends ShaclCompactParser
+{}
+PARSER_END(ShaclCompactParserJJ)
+
+void Unit(): { }
+{
+  ByteOrderMark()
+  shaclDoc()
+  <EOF>
+}
+
+void ByteOrderMark() : {}
+{
+   (<BOM>)?
+}
+
+void shaclDoc() : {}
+{
+  (directive())*
+  (nodeShape()|shapeClass())*
+}
+
+void directive() : {}
+{
+  ( baseDecl() | prefixDecl() | importDecl() )
+}
+
+void baseDecl() : { String iri ; }
+{
+  <BASE> iri = IRIREF()
+  { getPrologue().setBaseURI(iri) ; }
+}
+
+void prefixDecl() : { Token t ; String iri ; }
+{
+    <PREFIX> t = <PNAME_NS> iri = IRIREF()
+      { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
+        getPrologue().setPrefix(s, iri) ; }
+}
+
+void importDecl() : { String iri ; }
+{
+  <IMPORTS> iri = iri()
+  { rImports(iri); }
+}
+
+void nodeShape() : { String iri; }
+{
+   { startNodeShape(); }
+   <SHAPE> iri = iri()
+   { rNodeShape(iri); }
+   (targetClass())? nodeShapeBody()
+   { finishNodeShape(); }
+}
+
+void shapeClass() : { String iri; }
+{
+  { startShapeClass(); }
+  <SHAPE_CLASS> iri = iri()
+  { rShapeClass(iri); }
+  nodeShapeBody()
+  { finishShapeClass(); }
+}
+
+void targetClass() : { String iri; }
+{
+  "->" (iri = iri() { rTargetClass(iri); }  )+
+}
+
+void nodeShapeBody() : {}
+{
+  { startNodeShapeBody() ; }
+  <LBRACE> (constraint())* <RBRACE>
+  { finishNodeShapeBody() ; }
+}
+
+void constraint() : { }
+{
+  { startConstraint(); }
+  ( (nodeOr())+ | propertyShape() )
+  { finishConstraint() ; }
+  <DOT>
+}
+
+void nodeOr() : { }
+{
+  { startNodeOr(); }
+  { rNodeOr_pre(); } nodeNot() { rNodeOr_post(); }
+  (
+     <VBAR>
+     { rNodeOr_pre(); } nodeNot() { rNodeOr_post(); }
+  )*
+  { finishNodeOr(); }
+}
+
+void nodeNot() : { boolean b = false; }
+{
+  { startNodeNot(); }
+  ( negation() { b = true; } )?
+  { beginNodeNot(b); }
+  nodeValue()
+  { finishNodeNot(b); }
+}
+
+void negation():{}
+{
+  <BANG>
+}
+
+void nodeValue() : { String s; Node n; List<Node> x; }
+{
+  s = nodeParam()
+  <EQUALS>
+  //value = iriOrLiteralOrArray()
+  (
+    n = iriOrLiteral() { rNodeValue(s, n); }
+  |
+    x = array() { rNodeValue(s, x); }
+  )
+}
+
+void propertyShape() : { Path p ; }
+{
+  { startPropertyShape(); }
+  p = path()
+  { rPropertyShape(p); }
+  ( propertyCount() | propertyOr() )*
+  { finishPropertyShape(); }
+}
+
+void propertyOr() : { }
+{
+   { startPropertyOr(); }
+   
+   { rPropertyOr_pre(); }
+   propertyNot()
+   { rPropertyOr_post(); }
+   
+   ( <VBAR>
+     { rPropertyOr_pre(); } propertyNot() { rPropertyOr_post(); }
+   )*
+   { finishPropertyOr(); }
+}
+
+void propertyNot() : { boolean b = false; }
+{
+  { startPropertyNot(); }
+  (negation() { b = true; } )?
+  { beginPropertyNot(b); }
+  propertyAtom()
+  { finishPropertyNot(b); }
+}
+
+void propertyAtom() : { }
+{
+  // Work on currentPropertyShape()
+  propertyType() | nodeKind() | shapeRef() | propertyValue() |
+     ( { startNestedPropertyAtom(); } nodeShapeBody() { finishNestedPropertyAtom(); })
+}
+
+void propertyCount() : { String s1, s2; }
+{
+  <LBRACKET> s1 = propertyMinCount() ".." s2 = propertyMaxCount() <RBRACKET>
+  { rPropertyCount(s1, s2); }
+}
+
+String propertyMinCount() : { Token t; } { t = <INTEGER> { return t.image; } }
+String propertyMaxCount() : { Token t; } { ( t = <INTEGER> | t = <STAR> ) { return t.image; } }
+
+void propertyType() : { String iriStr; }
+{
+  iriStr = iri()
+  { rPropertyType(iriStr); }
+}
+
+void nodeKind() : { Token t; }
+{
+  (
+    t = "BlankNode" |
+    t = "IRI" |
+    t = "Literal" |
+    t = "BlankNodeOrIRI" |
+    t = "BlankNodeOrLiteral" |
+    t = "IRIOrLiteral"
+  )
+  { rNodeKind(t.image); }
+}
+
+void shapeRef() : { Token t; String iriStr; }
+{
+  // consistent WS handling.?
+  ( t = <ATPNAME_LN>
+  { iriStr = resolvePName(t.image.substring(1), t.beginLine, t.beginColumn) ; }
+  | t = <ATPNAME_NS>
+  { iriStr = resolvePName(t.image.substring(1), t.beginLine, t.beginColumn) ; }
+  | <AT> iriStr= IRIREF()
+  )
+  //<AT> iriStr = iri()
+  { rShapeRef(iriStr); }
+}
+
+void propertyValue() : { String s; Node n; List<Node> x; }
+{
+  s = nodeParam()
+  <EQUALS>
+  //value = iriOrLiteralOrArray()
+  (
+    n = iriOrLiteral() { rParamValue(s, n); }
+  |
+    x = array() { rParamValue(s, x); }
+  )
+}
+
+// Assemble items to build with from hereon down.
+// Return Java objects.
+
+String nodeParam() : { Token t ;}
+{
+  (
+    t = "targetNode" | t = "targetObjectsOf" | t = "targetSubjectsOf" |
+    t = "deactivated" | t = "severity" | t = "message" |
+    t = "class" | t = "datatype" | t = "nodeKind" |
+    t = "minExclusive" | t = "minInclusive" | t = "maxExclusive" | t = "maxInclusive" |
+    t = "minLength" | t = "maxLength" | t = "pattern" | t = "flags" | t = "languageIn" |
+    t = "equals" | t = "disjoint" |
+    t = "closed" | t = "ignoredProperties" | t = "hasValue" | t = "in"
+  )
+  { return t.image ; }
+}
+
+String propertyParam() : { Token t; }
+{
+  (
+    t = "deactivated" | t = "severity" | t = "message" |
+    t = "class" | t = "datatype" | t = "nodeKind" |
+    t = "minExclusive" | t = "minInclusive" | t = "maxExclusive" | t = "maxInclusive" |
+    t = "minLength" | t = "maxLength" | t = "pattern" | t = "flags" | t = "languageIn" | t = "uniqueLang" |
+    t = "equals" | t = "disjoint" | t = "lessThan" | t = "lessThanOrEquals" |
+    t = "qualifiedValueShape" | t = "qualifiedMinCount" | t = "qualifiedMaxCount" | t = "qualifiedValueShapesDisjoint" |
+    t = "closed" | t = "ignoredProperties" | t = "hasValue" | t = "in"
+  )
+  { return t.image; }
+}
+
+// Paths - subset of SPARQL Paths - no negation, no path property sets.
+
+Path PathUnit() : { Path p ; }
+{
+  ByteOrderMark()
+  p = path()
+  <EOF>
+  { return p ; }
+}
+
+// Weakest outermost
+Path path() : { Path p ; }
+{
+  p = pathAlternative() { return p ; }
+}
+
+Path pathAlternative() : { Path p1 , p2 ; }
+{
+   p1 = pathSequence()
+   (
+      <VBAR> p2 = pathSequence()
+      { p1 = PathFactory.pathAlt(p1, p2) ; }
+   )*
+   { return p1 ; }
+}
+
+Path pathSequence() : { Path p1 , p2 ; }
+{
+    p1 = pathEltOrInverse()
+    ( <SLASH> p2 = pathEltOrInverse()
+      { p1 = PathFactory.pathSeq(p1, p2) ; }
+    )*
+   { return p1; }
+}
+
+// Path unit element, no inverse
+Path pathElt() : { String str ; Node n ; Path p ; }
+{ 
+   p = pathPrimary() 
+   ( p = pathMod(p) )?
+   { return p ; }
+}
+
+// Path unit element, including inverse.
+Path pathEltOrInverse() : { String str ; Node n ; Path p ; }
+{ 
+   ( p = pathElt() 
+   | <CARAT>
+     p = pathElt()
+     { p = PathFactory.pathInverse(p) ; }
+   )
+   { return p ; }
+}
+
+Path pathMod(Path p) : { long i1 ; long i2 ; }
+{
+   ( <QMARK>  { return PathFactory.pathZeroOrOne(p) ; }
+   | <STAR>   { return PathFactory.pathZeroOrMore1(p) ; }
+   | <PLUS>   { return PathFactory.pathOneOrMore1(p) ; }
+   )
+}
+
+Path pathPrimary() : { String str ; Path p ; Node n ; }
+{
+  ( 
+    str = iri()
+     { n = createNode(str) ; p = PathFactory.pathLink(n) ; }
+  | <LPAREN> p = path() <RPAREN>
+  )
+ { return p ; }
+}
+
+// To preserve types, use ( iriOrLiteral() | array() ) directly
+// void iriOrLiteralOrArray() : {}
+// {
+//   (
+//     { Node n = null; }
+//     n = iriOrLiteral()
+//     { iriOrLiteralOrArray(n); }
+//   |
+//     { List<Node> x = null; }
+//     x = array()
+//     { iriOrLiteralOrArray(x); }
+//   )
+// }
+
+List<Node> array() : { List<Node> x = new ArrayList<Node>(); Node n = null; }
+{
+   <LBRACKET>
+   ( n = iriOrLiteral()
+     { x.add(n); }
+   )*
+   <RBRACKET>
+   { return x; }
+}
+
+// Term generation
+
+Node iriOrLiteral() : { Node n; String uriStr; }
+{
+  ( uriStr = iri() { n = createNode(uriStr); } | n = literal() )
+  { return n ; }
+}
+
+Node literal() : { Node n ; }
+{
+  ( n = rdfLiteral() | n = numericLiteral() | n = booleanLiteral() )
+  { return n; }
+}
+
+Node booleanLiteral() : {}
+{
+   <TRUE> { return XSD_TRUE ; }
+ |
+   <FALSE> { return XSD_FALSE ; }
+}
+
+Node numericLiteral() : { Token t ;}
+{
+   t = <INTEGER>  { return createLiteralInteger(t.image) ; }
+ | t = <DECIMAL>  { return createLiteralDecimal(t.image) ; }
+ | t = <DOUBLE>   { return createLiteralDouble(t.image) ; }
+}
+
+Node rdfLiteral() : { Token t ; String lex = null ; }
+{
+  lex = string()
+  // Optional lang tag and datatype.
+  { String lang = null ; String dt = null ; }
+  (
+    ( t = <LANGTAG>  { lang = stripChars(t.image, 1) ; } )
+  |
+    ( "^^" dt = datatype() )
+  )?
+    { return createLiteral(lex, lang, dt) ; }
+} 
+
+String datatype() : { String s; }
+{
+  s = iri()
+  { return s; }
+}
+
+String string() : { Token t ; String lex ; }
+{
+  ( t = <STRING_LITERAL1> { lex = stripQuotes(t.image) ; }
+  | t = <STRING_LITERAL2> { lex = stripQuotes(t.image) ; }
+  | t = <STRING_LITERAL_LONG1> { lex = stripQuotes3(t.image) ; }
+  | t = <STRING_LITERAL_LONG2> { lex = stripQuotes3(t.image) ; }
+  )
+    {
+      lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
+      return lex ;
+    }
+}
+
+String iri() : { String iri = null; }
+{
+  iri = IRIREF() { return iri ; }
+|
+  iri = PrefixedName() { return iri ; }
+}
+
+String PrefixedName() : { Token t ; }
+{
+  ( t = <PNAME_LN>
+    { return resolvePName(t.image, t.beginLine, t.beginColumn) ; }
+  |
+    t = <PNAME_NS>
+    { return resolvePName(t.image, t.beginLine, t.beginColumn) ; }
+  )
+}
+
+String IRIREF() : { Token t ; }
+{
+  t = <IRIref>
+  { return resolveQuotedIRI(t.image, t.beginLine, t.beginColumn) ; }
+}
+
+
+SKIP : { " " | "\t" | "\n" | "\r" | "\f" }
+
+SPECIAL_TOKEN :
+{ <SINGLE_LINE_COMMENT: "#" (~["\n","\r"])* ("\n"|"\r"|"\r\n")? > }
+
+TOKEN: { 
+  <BOM:    "\uFEFF">
+}
+
+TOKEN [IGNORE_CASE] :
+{
+  // Keywords
+  <BASE             : "BASE" >
+| <IMPORTS          : "IMPORTS">
+| <PREFIX           : "PREFIX">
+
+| <SHAPE_CLASS      : "shapeClass">
+| <SHAPE            : "shape">
+| <TRUE             : "true">
+| <FALSE            : "false">
+}
+
+TOKEN:
+{
+  <#HEX             : ["0"-"9"] | ["A"-"F"] | ["a"-"f"] >
+| <PLUS             : "+" >
+| <MINUS            : "-" >
+| <VBAR             : "|" >
+| <AT               : "@">
+| <CARAT            : "^">
+| <DOT              : ".">
+| <BANG             : "!">
+| <QMARK            : "?">
+| <SLASH            : "/">
+| <STAR             : "*">
+| <EQUALS           : "=">
+| <LPAREN           : "(" >
+| <RPAREN           : ")" >
+| <LBRACE           : "{" >
+| <RBRACE           : "}" >
+| <LBRACKET         : "[" >
+| <RBRACKET         : "]" >
+
+| <#UCHAR              : "\\" ( "u" <HEX> <HEX> <HEX> <HEX> | "U" <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> ) >
+| <IRIref              : "<"
+                         (~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`","\u0000"-"\u0020"] | <UCHAR>)*
+                         ">" >
+| <PNAME_NS            : (<PN_PREFIX>)? ":" >
+| <PNAME_LN            : <PNAME_NS> <PN_LOCAL> >
+
+// Better shapeRef - consistent WS.
+| <ATPNAME_NS          : "@"<PNAME_NS> >
+| <ATPNAME_LN          : "@"<PNAME_LN> >
+
+| <#QUOTE_3D: "\"\"\"">
+| <#QUOTE_3S: "'''">
+| <ECHAR : "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
+
+| <STRING_LITERAL1: 
+      // Single quoted string
+      "'" ( (~["'","\\","\n","\r"]) | <ECHAR> | <UCHAR> )* "'" > 
+| <STRING_LITERAL2:
+    // Double quoted string
+      "\"" ( (~["\"","\\","\n","\r"]) | <ECHAR>  | <UCHAR> )* "\"" >
+| <STRING_LITERAL_LONG1:
+     <QUOTE_3S> 
+      ( ("'" | "''")? (~["'","\\"] | <ECHAR>  | <UCHAR> ))*
+     <QUOTE_3S> >
+| <STRING_LITERAL_LONG2: 
+     <QUOTE_3D> 
+      ( ("\"" | "\"\"")? (~["\"","\\"] | <ECHAR> | <UCHAR>))*
+     <QUOTE_3D> >
+
+| <#DIGITS             : (["0"-"9"])+>
+| <INTEGER             : (<PLUS>|<MINUS>)? <DIGITS> >
+| <DECIMAL             : (<PLUS>|<MINUS>)? (<DIGITS>)? "." <DIGITS> >
+| <DOUBLE              : (<PLUS>|<MINUS>)?
+                          ( (["0"-"9"])+ "." (["0"-"9"])* <EXPONENT>
+                          | "." (["0"-"9"])+ (<EXPONENT>)
+			              | (["0"-"9"])+ <EXPONENT>
+                          ) >
+			 
+| <#EXPONENT           : ["e","E"] (["+","-"])? (["0"-"9"])+ >
+
+| <LANGTAG: <AT> (<A2Z>)+("-" (<A2ZN>)+)* >
+| <#A2Z: ["a"-"z","A"-"Z"]>
+| <#A2ZN: ["a"-"z","A"-"Z","0"-"9"]>
+| <#PN_CHARS_BASE:
+          ["A"-"Z"] | ["a"-"z"] |
+          ["\u00C0"-"\u00D6"] | ["\u00D8"-"\u00F6"] | ["\u00F8"-"\u02FF"] |
+          ["\u0370"-"\u037D"] | ["\u037F"-"\u1FFF"] |
+          ["\u200C"-"\u200D"] | ["\u2070"-"\u218F"] | ["\u2C00"-"\u2FEF"] |
+          ["\u3001"-"\uD7FF"] | ["\uF900"-"\uFFFD"] 
+          >
+          // [#x10000-#xEFFFF]
+|
+  // With underscore
+  <#PN_CHARS_U: <PN_CHARS_BASE> | "_" >
+|
+  <#PN_CHARS: (<PN_CHARS_U> | "-" | ["0"-"9"] | "\u00B7" |
+              ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] ) >
+|
+  // No leading "_", no trailing ".", can have dot inside prefix name.
+  <#PN_PREFIX: <PN_CHARS_BASE> ((<PN_CHARS>|".")* <PN_CHARS>)?  >
+|
+  <#PN_LOCAL: (<PN_CHARS_U> | ":" | ["0"-"9"] | <PLX> ) 
+              ( (<PN_CHARS> | "." |":" | <PLX> )* 
+                (<PN_CHARS> | ":" | <PLX>) )?  >
+|
+  <#VARNAME: ( <PN_CHARS_U> | ["0"-"9"] )
+             ( <PN_CHARS_U> | ["0"-"9"] | "\u00B7" |
+               ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] )* >
+|
+  < #PN_LOCAL_ESC: "\\" 
+          ( "_" | 
+            "~" | "." | "-" | "!" | "$" | "&" | "'" | 
+           "(" | ")" | "*" | "+" | "," | ";" | "=" | 
+           "/" | "?" | "#" | "@" | "%" ) >
+|
+  <#PLX:  <PERCENT> | <PN_LOCAL_ESC> >
+|
+  <#PERCENT : "%" <HEX> <HEX> >
+}
+
+// Catch-all tokens.  Must be last.  
+// Any non-whitespace.  Causes a parser exception, rather than a
+// token manager error (which hides the line numbers).
+TOKEN:
+{
+  <#UNKNOWN: (~[" ","\t","\n","\r","\f" ])+ >
+}
+
+
+/*
+# Local Variables:
+# tab-width: 4
+# indent-tabs-mode: nil
+# comment-default-style: "//"
+# End:
+*/

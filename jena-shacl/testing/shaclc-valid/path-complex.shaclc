@@ -1,0 +1,7 @@
+BASE <http://example.org/path-complex>
+
+PREFIX ex: <http://example.org/test#>
+
+shape ex:TestShape {
+	(rdf:type/rdfs:subClassOf*)|ex:property .
+}
