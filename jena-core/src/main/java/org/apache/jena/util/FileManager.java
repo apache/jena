@@ -33,7 +33,7 @@ public interface FileManager {
     /** For use within Jena libraries only. */
     public static FileManager getInternal() { return FileManagerImpl.get(); }
     
-    /** @deprecated Use {@code StreamManager} if needed; to read RDF files, use {@code RDFDataMgr}. */   
+    /** @deprecated Use {@code RDFDataMgr} to read RDF files. Use {@code StreamManager} if needed.  */   
     @Deprecated
     public static FileManager get() { return getInternal(); }
     
@@ -41,9 +41,16 @@ public interface FileManager {
     @Deprecated
     public static void setGlobalFileManager(FileManager fm) { FileManagerImpl.setGlobalFileManager(fm); }
     
+    /** @deprecated Use {@code StreamManager} */   
+    @Deprecated
     public static FileManager create() { return new FileManagerImpl(); }
+    
+    /** @deprecated Use {@code StreamManager} */   
+    @Deprecated
     public static FileManager createStd() { return FileManagerImpl.makeStd(); }
     
+    /** @deprecated Use {@code StreamManager.} */   
+    @Deprecated
     public static FileManager create(LocationMapper locMap) { return new FileManagerImpl(locMap); }
     
     FileManager clone();

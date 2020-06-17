@@ -120,6 +120,7 @@ public class FileManagerImpl implements FileManager
     public FileManager clone() { return clone(this) ; } 
  
     // Isolate to help avoid copy errors.
+    @SuppressWarnings("deprecation")
     private static FileManager clone(FileManagerImpl filemanager) {
         FileManagerImpl newFm = new FileManagerImpl() ;
         newFm.fmHandlers.addAll(filemanager.fmHandlers) ;
@@ -134,7 +135,7 @@ public class FileManagerImpl implements FileManager
     /** Create a "standard" FileManager. */
     public static FileManager makeGlobal()
     {
-        FileManagerImpl fMgr = new FileManagerImpl(LocationMapper.get()) ;
+        FileManagerImpl fMgr = new FileManagerImpl(LocationMapper.getInternal()) ;
         setStdLocators(fMgr) ;
         return fMgr ;
     }
@@ -167,10 +168,12 @@ public class FileManagerImpl implements FileManager
         fmHandlers.add(loc) ; }
 
     /** Add a file locator */ 
+    @Deprecated
     @Override
     public void addLocatorFile() { addLocatorFile(null) ; } 
 
     /** Add a file locator which uses dir as its working directory */ 
+    @Deprecated
     @Override
     public void addLocatorFile(String dir)
     {
@@ -179,6 +182,7 @@ public class FileManagerImpl implements FileManager
     }
     
     /** Add a class loader locator */ 
+    @Deprecated
     @Override
     public void addLocatorClassLoader(ClassLoader cLoad)
     {
@@ -187,6 +191,7 @@ public class FileManagerImpl implements FileManager
     }
 
     /** Add a URL locator */
+    @Deprecated
     @Override
     public void addLocatorURL()
     {
@@ -195,6 +200,7 @@ public class FileManagerImpl implements FileManager
     }
 
     /** Add a zip file locator */
+    @Deprecated
     @Override
     public void addLocatorZip(String zfn)
     {

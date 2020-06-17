@@ -20,6 +20,7 @@ package org.apache.jena.util;
 
 import org.apache.jena.rdf.model.test.ModelTestBase ;
 
+@SuppressWarnings("deprecation")
 public class TestLocators extends ModelTestBase
     {
     private static final ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();

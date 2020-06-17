@@ -224,6 +224,7 @@ public class TestContentAssembler extends AssemblerTestBase
     
     public void testContentAssemblerHasSuppliedFileManager()
         {
+        @SuppressWarnings("deprecation")
         FileManager fm = FileManager.create();
         assertSame( fm, new ContentAssembler( fm ).getFileManager() );
         }

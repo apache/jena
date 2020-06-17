@@ -23,11 +23,13 @@ import java.util.Iterator ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.system.stream.LocationMapper ;
 
-/** Adapter from Jena2 LocationMapper to RIOT LocationMapper */ 
+/** Adapter from Jena core LocationMapper to RIOT LocationMapper */ 
+
 public class AdapterLocationMapper extends org.apache.jena.util.LocationMapper 
 {
     private final LocationMapper mapper ;
 
+    @SuppressWarnings("deprecation")
     public AdapterLocationMapper(LocationMapper mapper) {  this.mapper = mapper ; }
     
     @Override

@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 /** TestLocationMapper
  */
-
+@SuppressWarnings("deprecation")
 public class TestLocationMapper extends TestCase
 {
     static Logger log = LoggerFactory.getLogger(TestLocationMapper.class) ;

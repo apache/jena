@@ -375,7 +375,7 @@ public class RDFParser {
         }
         
         TypedInputStream in;
-        urlStr = StreamManager.get(context).mapURI(urlStr);
+        urlStr = streamManager.mapURI(urlStr);
         if ( urlStr.startsWith("http://") || urlStr.startsWith("https://") ) {
             // Need more control than LocatorURL provides. We could use it for the
             // httpClient == null case.

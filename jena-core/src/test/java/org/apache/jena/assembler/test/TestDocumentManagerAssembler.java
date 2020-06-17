@@ -57,6 +57,7 @@ public class TestDocumentManagerAssembler extends AssemblerTestBase
         {
         Resource root = resourceInModel( "x rdf:type ja:DocumentManager; x ja:fileManager f" );
         Assembler a = new DocumentManagerAssembler();
+        @SuppressWarnings("deprecation")
         FileManager fm = FileManager.create();
         Assembler mock = new NamedObjectAssembler( resource( "f" ), fm );
         Object x = a.open( mock, root );

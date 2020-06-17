@@ -30,8 +30,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Location files named by a URL
+ *  @deprecated Use {@code StreamManager} and {@code LocatorHTTP} from {@code org.apache.jena.riot.system.stream}.
  */
-
+@Deprecated
 public class LocatorURL implements Locator
 {
     static Logger log = LoggerFactory.getLogger(LocatorURL.class) ;

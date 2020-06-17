@@ -125,7 +125,7 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
         instance = globalFileManager ;
     }
 
-    /** Create an uninitialized FileManager */
+    /** Create an uninitialized StreamManager */
     private AdapterFileManager() {
         streamManager = new StreamManager() ;
     }

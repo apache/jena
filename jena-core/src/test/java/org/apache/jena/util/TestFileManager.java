@@ -147,6 +147,7 @@ public class TestFileManager extends TestCase
     
     public void testLocationMappingURLtoFileOpen()
     {
+        @SuppressWarnings("deprecation")
         LocationMapper locMap = new LocationMapper(TestLocationMapper.mapping) ;
         FileManager fileManager = new FileManagerImpl(locMap) ;
         fileManager.addLocatorFile() ;
@@ -157,6 +158,7 @@ public class TestFileManager extends TestCase
 
     public void testLocationMappingURLtoFileOpenNotFound()
     {
+        @SuppressWarnings("deprecation")
         LocationMapper locMap = new LocationMapper(TestLocationMapper.mapping) ;
         FileManager fileManager = new FileManagerImpl(locMap) ;
         fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader()) ;

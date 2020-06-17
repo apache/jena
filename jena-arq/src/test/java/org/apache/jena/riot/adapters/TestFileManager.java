@@ -35,6 +35,7 @@ import org.junit.Test ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+@SuppressWarnings("deprecation")
 public class TestFileManager extends BaseTest
 {
     static Logger log = LoggerFactory.getLogger(TestFileManager.class) ;
@@ -192,7 +193,6 @@ public class TestFileManager extends BaseTest
         assertNotSame(m1, m2) ;
     }
     
-    @SuppressWarnings("deprecation")
     @Test public void testCache2() {
         FileManager.setGlobalFileManager(AdapterFileManager.get()) ;
         
@@ -204,7 +204,6 @@ public class TestFileManager extends BaseTest
         assertSame(m1, m2) ;
     }
     
-    @SuppressWarnings("deprecation")
     @Test public void testCache3() {
         FileManager fileManager = FileManager.getInternal() ;
         fileManager.addLocatorFile(testingDir) ;
