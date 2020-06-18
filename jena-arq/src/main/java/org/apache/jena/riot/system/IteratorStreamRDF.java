@@ -19,7 +19,6 @@
 package org.apache.jena.riot.system;
 
 import org.apache.jena.atlas.iterator.IteratorSlotted ;
-import org.apache.jena.riot.system.StreamRowRDF ;
 
 /**
  *  Pull version of processing StreamRDF

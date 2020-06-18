@@ -23,7 +23,6 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.tdb.store.NodeId ;
-import org.apache.jena.tdb.store.nodetable.NodeTable ;
 
 public class NodeTableWrapper implements NodeTable
 {

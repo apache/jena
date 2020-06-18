@@ -18,7 +18,6 @@
 
 package org.apache.jena.atlas.event;
 
-import org.apache.jena.atlas.event.EventListener ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 

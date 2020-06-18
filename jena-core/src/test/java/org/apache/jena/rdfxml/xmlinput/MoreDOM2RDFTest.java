@@ -27,7 +27,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import junit.framework.TestCase;
-import org.apache.jena.rdfxml.xmlinput.StatementHandler ;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 

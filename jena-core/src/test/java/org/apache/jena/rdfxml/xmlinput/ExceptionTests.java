@@ -25,7 +25,6 @@ import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdf.model.RDFReader ;
 import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler ;
-import org.apache.jena.rdfxml.xmlinput.ARPErrorNumbers ;
 import org.apache.jena.shared.JenaException ;
 
 public class ExceptionTests

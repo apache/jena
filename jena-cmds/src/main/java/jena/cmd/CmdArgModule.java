@@ -21,8 +21,6 @@ package jena.cmd;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import jena.cmd.ArgModuleGeneral;
-
 public abstract class CmdArgModule extends CmdMain
 {
     List<ArgModuleGeneral> modules = new ArrayList<>() ;

@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.jena.graph.test.GraphTestBase ;
-import org.apache.jena.shared.PrefixMapping ;
 
 /**
     Test prefix mappings - subclass this test and override getMapping() to

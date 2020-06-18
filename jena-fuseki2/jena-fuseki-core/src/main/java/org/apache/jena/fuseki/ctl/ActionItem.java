@@ -19,7 +19,6 @@
 package org.apache.jena.fuseki.ctl;
 
 import org.apache.jena.atlas.json.JsonValue;
-import org.apache.jena.fuseki.ctl.ActionContainerItem;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.web.HttpSC;

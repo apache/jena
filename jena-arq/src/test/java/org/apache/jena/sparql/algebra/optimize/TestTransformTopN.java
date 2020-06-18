@@ -20,7 +20,6 @@ package org.apache.jena.sparql.algebra.optimize ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.algebra.optimize.AbstractTestTransform ;
 import org.junit.Test ;
 
 public class TestTransformTopN  extends AbstractTestTransform {

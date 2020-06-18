@@ -19,7 +19,6 @@
 package org.apache.jena.sparql.algebra;
 
 import org.apache.jena.graph.Node;
-import org.apache.jena.sparql.algebra.TransformCopy;
 import org.apache.jena.sparql.algebra.op.OpGraph;
 import org.apache.jena.sparql.algebra.op.OpQuadPattern;
 
