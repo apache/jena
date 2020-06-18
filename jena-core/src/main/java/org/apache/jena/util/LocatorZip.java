@@ -27,9 +27,10 @@ import org.apache.jena.shared.JenaException ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Location files in a zip file  */
- 
-
+/** Location files in a zip file
+ *  @deprecated Use {@code StreamManager} and {@code LocatorZip} from {@code org.apache.jena.riot.system.stream}.
+ */
+@Deprecated
 public class LocatorZip implements Locator
 {
     static Logger log = LoggerFactory.getLogger(LocatorZip.class) ;

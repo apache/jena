@@ -21,11 +21,11 @@ package tdb.cmdline;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import arq.cmdline.ModDataset ;
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdArgModule;
 import jena.cmd.CmdException;
 import jena.cmd.CmdGeneral;
-
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
@@ -37,9 +37,6 @@ import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.assembler.VocabTDB ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
-import org.apache.jena.util.FileManager ;
-
-import arq.cmdline.ModDataset ;
 
 public class ModTDBDataset extends ModDataset
 {
@@ -119,11 +116,11 @@ public class ModTDBDataset extends ModDataset
         if ( modAssembler.getLocation() != null )
             locations.add(modAssembler.getLocation().getDirectoryPath()) ;
 
-        // Extract the location from the assember file.
+        // Extract the location from the assembler file.
         if ( modAssembler.getAssemblerFile() != null )
         {
             // Find and clear all locations
-            Model m = FileManager.get().loadModel(modAssembler.getAssemblerFile()) ;
+            Model m = RDFDataMgr.loadModel(modAssembler.getAssemblerFile());
             Query query = QueryFactory.create("PREFIX tdb:     <http://jena.hpl.hp.com/2008/tdb#> SELECT ?dir { [] tdb:location ?dir FILTER (isURI(?dir)) }") ;
             try(QueryExecution qExec = QueryExecutionFactory.create(query, m)) {
                 for (ResultSet rs = qExec.execSelect() ; rs.hasNext() ; )

@@ -92,13 +92,13 @@ public class StoreUtils
     public static void load(Store store, String filename)
     {
         Model model = SDBFactory.connectDefaultModel(store) ;
-        FileManager.get().readModel(model, filename) ;
+        FileManager.getInternal().readModelInternal(model, filename) ;
     }
 
     public static void load(Store store, String graphIRI, String filename)
     {
         Model model = SDBFactory.connectNamedModel(store, graphIRI) ;
-        FileManager.get().readModel(model, filename) ;
+        FileManager.getInternal().readModelInternal(model, filename) ;
     }
     
     public static Iterator<Node> storeGraphNames(Store store)

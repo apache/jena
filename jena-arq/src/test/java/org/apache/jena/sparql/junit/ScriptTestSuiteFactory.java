@@ -28,14 +28,11 @@ import org.apache.jena.sparql.vocabulary.TestManifest ;
 import org.apache.jena.sparql.vocabulary.TestManifestUpdate_11 ;
 import org.apache.jena.sparql.vocabulary.TestManifestX ;
 import org.apache.jena.sparql.vocabulary.TestManifest_11 ;
-import org.apache.jena.util.FileManager ;
 import org.apache.jena.util.junit.TestFactoryManifest ;
 import org.apache.jena.util.junit.TestUtils ;
 
-
 public class ScriptTestSuiteFactory extends TestFactoryManifest
 {
-    private FileManager fileManager = FileManager.get() ;
     // Set (and retrieve) externally.
     public static EarlReport results = null ;
 

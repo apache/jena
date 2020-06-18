@@ -18,18 +18,22 @@
 
 package org.apache.jena.riot.adapters;
 
-import java.io.InputStream ;
+import java.io.*;
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.system.stream.* ;
+import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.NotFoundException;
+import org.apache.jena.shared.WrappedIOException;
 import org.apache.jena.util.FileManager ;
 import org.apache.jena.util.FileUtils ;
 import org.apache.jena.util.TypedStream ;
@@ -74,7 +78,7 @@ import org.slf4j.LoggerFactory ;
  * @see FileUtils
  */
  
-public class AdapterFileManager extends org.apache.jena.util.FileManager
+public class AdapterFileManager implements org.apache.jena.util.FileManager
 {
     // This is a legacy class - it provides  FileManager calls onto the RIOT equivalents.  
     // The different aspects are now split out 
@@ -121,7 +125,7 @@ public class AdapterFileManager extends org.apache.jena.util.FileManager
         instance = globalFileManager ;
     }
 
-    /** Create an uninitialized FileManager */
+    /** Create an uninitialized StreamManager */
     private AdapterFileManager() {
         streamManager = new StreamManager() ;
     }
@@ -207,6 +211,11 @@ public class AdapterFileManager extends org.apache.jena.util.FileManager
         LocatorClassLoader cLoc = new LocatorClassLoader(cLoad) ;
         streamManager.addLocator(cLoc) ;
     }
+    
+    @Override
+    public void addLocatorURL() {
+        addLocatorHTTP();
+    }
 
     public void addLocatorHTTP() {
         Locator loc = new LocatorHTTP() ;
@@ -268,7 +277,6 @@ public class AdapterFileManager extends org.apache.jena.util.FileManager
 
     // -------- Cache operations (end)
 
-    @Override
     protected Model readModelWorker(Model model, String filenameOrURI, String baseURI, String syntax) {
         // Doesn't call open() - we want to make the syntax guess
         // based on the mapped URI.
@@ -330,5 +338,173 @@ public class AdapterFileManager extends org.apache.jena.util.FileManager
     @Override
     public TypedStream openNoMapOrNull(String filenameOrURI) {
         return AdapterLib.convert(streamManager.openNoMapOrNull(filenameOrURI)) ;
+    }
+    
+    // -------- Cache operations (end)
+    
+    // LEGACY 
+
+    @Override
+    public Model loadModelInternal(String filenameOrURI)
+    { 
+        if ( log.isDebugEnabled() )
+            log.debug("loadModel("+filenameOrURI+")") ;
+        
+        return loadModelWorker(filenameOrURI, null, null) ;
+    }
+
+    /** Load a model from a file (local or remote).
+     *  URI is the base for reading the model.
+     * 
+     *  @param filenameOrURI The filename or a URI (file:, http:)
+     *  @param rdfSyntax  RDF Serialization syntax. 
+     *  @return a new model
+     *  @exception JenaException if there is syntax error in file.
+     */
+    @Deprecated
+    @Override
+    public Model loadModel(String filenameOrURI, String rdfSyntax)
+    {
+        if ( log.isDebugEnabled() )
+            log.debug("loadModel("+filenameOrURI+", "+rdfSyntax+")") ;
+        return loadModelWorker(filenameOrURI, null, rdfSyntax) ;
+    }
+    
+    /** Load a model from a file (local or remote).
+     * 
+     *  @param filenameOrURI The filename or a URI (file:, http:)
+     *  @param baseURI  Base URI for loading the RDF model.
+     *  @param rdfSyntax  RDF Serialization syntax. 
+     *  @return a new model
+     *  @exception JenaException if there is syntax error in file.
+    */
+    @Deprecated
+    @Override
+    public Model loadModel(String filenameOrURI, String baseURI, String rdfSyntax)
+    {
+        if ( log.isDebugEnabled() )
+            log.debug("loadModel("+filenameOrURI+", "+baseURI+", "+rdfSyntax+")") ;
+
+        return loadModelWorker(filenameOrURI, baseURI, rdfSyntax) ;
+    }
+
+    private Model loadModelWorker(String filenameOrURI, String baseURI, String rdfSyntax)
+    {
+        if ( hasCachedModel(filenameOrURI) )
+        {
+            if ( log.isDebugEnabled() )
+                log.debug("Model cache hit: "+filenameOrURI) ;
+            return getFromCache(filenameOrURI) ;
+        }
+
+        Model m = ModelFactory.createDefaultModel() ;
+        readModelWorker(m, filenameOrURI, baseURI, rdfSyntax) ;
+        
+        if ( isCachingModels() )
+            addCacheModel(filenameOrURI, m) ;
+        return m ;
+    }
+    
+    @Override
+    public Model readModelInternal(Model model, String filenameOrURI)
+    {
+        if ( log.isDebugEnabled() )
+            log.debug("readModel(model,"+filenameOrURI+")") ;
+        return readModel(model, filenameOrURI, null);
+    }
+    
+    /**
+     * Read a file of RDF into a model.
+     * @param model
+     * @param filenameOrURI
+     * @param rdfSyntax RDF Serialization syntax.
+     * @return The model or null, if there was an error.
+     *  @exception JenaException if there is syntax error in file.
+     */    
+    @Deprecated
+    @Override
+    public Model readModel(Model model, String filenameOrURI, String rdfSyntax)
+    {
+        if ( log.isDebugEnabled() )
+            log.debug("readModel(model,"+filenameOrURI+", "+rdfSyntax+")") ;
+        return readModelWorker(model, filenameOrURI, null, rdfSyntax);
+    }
+
+    /**
+     * Read a file of RDF into a model.
+     * @param model
+     * @param filenameOrURI
+     * @param baseURI
+     * @param syntax
+     * @return The model
+     *  @exception JenaException if there is syntax error in file.
+     */    
+    @Deprecated
+    @Override
+    public Model readModel(Model model, String filenameOrURI, String baseURI, String syntax)
+    {
+        
+        if ( log.isDebugEnabled() )
+            log.debug("readModel(model,"+filenameOrURI+", "+baseURI+", "+syntax+")") ;
+        return readModelWorker(model, filenameOrURI, baseURI, syntax) ;
+    }
+    
+    private static String chooseBaseURI(String baseURI)
+    {
+        String scheme = FileUtils.getScheme(baseURI) ;
+        
+        if ( scheme != null )
+        {
+            if ( scheme.equals("file") )
+            {
+                if ( ! baseURI.startsWith("file:///") )
+                {
+                    try {
+                        // Fix up file URIs.  Yuk.
+                        String tmp = baseURI.substring("file:".length()) ;
+                        File f = new File(tmp) ;
+                        baseURI = "file:///"+f.getCanonicalPath() ;
+                        baseURI = baseURI.replace('\\','/') ;
+
+//                        baseURI = baseURI.replace(" ","%20");
+//                        baseURI = baseURI.replace("~","%7E");
+                        // Convert to URI.  Except that it removes ///
+                        // Could do that and fix up (again)
+                        //java.net.URL u = new java.net.URL(baseURI) ;
+                        //baseURI = u.toExternalForm() ;
+                    } catch (Exception ex) {}
+                }
+            }
+            return baseURI ;
+        }
+            
+        if ( baseURI.startsWith("/") )
+            return "file://"+baseURI ;
+        return "file:"+baseURI ;
+    }
+    
+    /**
+     * @deprecated Use {@link IO#readWholeFileAsUTF8(InputStream)}
+     */
+    @Override
+    @Deprecated
+    public String readWholeFileAsUTF8(InputStream in)
+    {
+        try {
+            return IO.readWholeFileAsUTF8(in);
+        } catch (IOException ex)
+        { throw new WrappedIOException(ex) ; }
+    }
+    
+    /**
+     * @deprecated Use {@link IO#readWholeFileAsUTF8(String)}
+     */
+    @Override
+    public String readWholeFileAsUTF8(String filename)
+    {
+        InputStream in = open(filename) ;
+        if ( in == null )
+            throw new NotFoundException("File not found: "+filename) ;
+        return readWholeFileAsUTF8(in) ;
     }
 }

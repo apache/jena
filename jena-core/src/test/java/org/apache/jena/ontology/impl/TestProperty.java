@@ -596,7 +596,7 @@ public class TestProperty
                 @Override
                 protected void ontTest( OntModel m ) {
                     OntModel m0 = ModelFactory.createOntologyModel( OntModelSpec.OWL_DL_MEM_RULE_INF, null );
-                    FileManager.get().readModel( m0, "file:testing/ontology/testImport9/a.ttl" );
+                    FileManager.getInternal().readModelInternal( m0, "file:testing/ontology/testImport9/a.ttl" );
 
                     OntProperty p0 = m0.getOntProperty( "http://incubator.apache.org/jena/2011/10/testont/b#propB" );
                     TestUtil.assertIteratorLength( p0.listDomain(), 3 );
@@ -604,7 +604,7 @@ public class TestProperty
                     // repeat test - thus using previously cached model for import
 
                     OntModel m1 = ModelFactory.createOntologyModel( OntModelSpec.OWL_DL_MEM_RULE_INF, null );
-                    FileManager.get().readModel( m1, "file:testing/ontology/testImport9/a.ttl" );
+                    FileManager.getInternal().readModelInternal( m1, "file:testing/ontology/testImport9/a.ttl" );
 
                     OntProperty p1 = m1.getOntProperty( "http://incubator.apache.org/jena/2011/10/testont/b#propB" );
                     TestUtil.assertIteratorLength( p1.listDomain(), 3 );

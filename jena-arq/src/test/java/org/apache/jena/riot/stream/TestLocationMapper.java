@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+@SuppressWarnings("deprecation")
 public class TestLocationMapper
 {
     static Logger log = LoggerFactory.getLogger(TestLocationMapper.class) ;
@@ -39,9 +40,7 @@ public class TestLocationMapper
     static final String filename1 = "file:test" ; 
     static final String notFilename = "zzzz" ;
     static final String filename2 = "file:"+testingDir+"/location-mapping-test-file" ;
-    public static final String mapping = "location-mapping-test.ttl;"+
-                                  testingDir+"/location-mapping-test.ttl" ;
-
+    public static final String mapping = "location-mapping-test.ttl;"+testingDir+"/location-mapping-test.ttl" ;
     
     public TestLocationMapper() { }
     

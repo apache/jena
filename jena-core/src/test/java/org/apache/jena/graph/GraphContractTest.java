@@ -114,7 +114,7 @@ public class GraphContractTest<T extends Graph>
 
 	/**
 	 * Inference graphs can not be truly empty.
-	 * 
+	 *
 	 * @param g
 	 * @param b
 	 */
@@ -132,7 +132,7 @@ public class GraphContractTest<T extends Graph>
 
 	/**
 	 * Inference graphs can not be truly empty
-	 * 
+	 *
 	 * @param g
 	 * @param b
 	 */
@@ -1422,7 +1422,7 @@ public class GraphContractTest<T extends Graph>
 
 	/**
 	 * testIsomorphism from file data
-	 * 
+	 *
 	 * @throws URISyntaxException
 	 * @throws MalformedURLException
 	 */
@@ -1495,74 +1495,6 @@ public class GraphContractTest<T extends Graph>
 		return result;
 	}
 
-	// @ContractTest
-	// public void testTransactionCommit()
-	// {
-	// Graph g = producer.newInstance();
-	// if (g.getTransactionHandler().transactionsSupported())
-	// {
-	// Graph initial = graphWithTxn( "initial hasValue 42; also hasURI hello" );
-	// Graph extra = graphWithTxn( "extra hasValue 17; also hasURI world" );
-	// //File foo = FileUtils.tempFileName( "fileGraph", ".nt" );
-	//
-	// //Graph g = new FileGraph( foo, true, true );
-	//
-	// GraphUtil.addInto( g, initial );
-	// g.getTransactionHandler().begin();
-	// GraphUtil.addInto( g, extra );
-	// g.getTransactionHandler().commit();
-	// Graph union = graphWithTxn( "" );
-	// GraphUtil.addInto(union, initial );
-	// GraphUtil.addInto(union, extra );
-	// assertIsomorphic( union, g );
-	// //Model inFile = ModelFactory.createDefaultModel();
-	// //inFile.read( "file:///" + foo, "N-TRIPLES" );
-	// //assertIsomorphic( union, inFile.getGraph() );
-	// }
-	// }
-	//
-	// @ContractTest
-	// public void testTransactionAbort()
-	// {
-	// Graph g = producer.newInstance();
-	// if (g.getTransactionHandler().transactionsSupported())
-	// {
-	// Graph initial = graphWithTxn( "initial hasValue 42; also hasURI hello" );
-	// Graph extra = graphWithTxn( "extra hasValue 17; also hasURI world" );
-	// File foo = FileUtils.tempFileName( "fileGraph", ".n3" );
-	// //Graph g = new FileGraph( foo, true, true );
-	// GraphUtil.addInto( g, initial );
-	// g.getTransactionHandler().begin();
-	// GraphUtil.addInto( g, extra );
-	// g.getTransactionHandler().abort();
-	// assertIsomorphic( initial, g );
-	// }
-	// }
-	//
-	// @ContractTest
-	// public void testTransactionCommitThenAbort()
-	// {
-	// Graph g = producer.newInstance();
-	// if (g.getTransactionHandler().transactionsSupported())
-	// {
-	// Graph initial = graphWithTxn( "Foo pings B; B pings C" );
-	// Graph extra = graphWithTxn( "C pingedBy B; fileGraph rdf:type Graph" );
-	// //Graph g = producer.newInstance();
-	// //File foo = FileUtils.tempFileName( "fileGraph", ".nt" );
-	// //Graph g = new FileGraph( foo, true, true );
-	// g.getTransactionHandler().begin();
-	// GraphUtil.addInto( g, initial );
-	// g.getTransactionHandler().commit();
-	// g.getTransactionHandler().begin();
-	// GraphUtil.addInto( g, extra );
-	// g.getTransactionHandler().abort();
-	// assertIsomorphic( initial, g );
-	// //Model inFile = ModelFactory.createDefaultModel();
-	// // inFile.read( "file:///" + foo, "N-TRIPLES" );
-	// //assertIsomorphic( initial, inFile.getGraph() );
-	// }
-	// }
-
 	/**
 	 * This test exposed that the update-existing-graph functionality was broken
 	 * if the target graph already contained any statements with a subject S
@@ -1590,7 +1522,6 @@ public class GraphContractTest<T extends Graph>
 		txnBegin(source);
 		assertIsomorphic(graphWith("a R b; b S e; b R d"), dest);
 		txnRollback(source);
-
 	}
 
 	/**

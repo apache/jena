@@ -509,7 +509,7 @@ public class Rule implements ClauseEntry {
     public static List<Rule> rulesFromURL( String uri,BuiltinRegistry registry) {
         BufferedReader br = null;
         try {
-            InputStream in = FileManager.get().open(uri);
+            InputStream in = FileManager.getInternal().open(uri);
             if (in == null) throw new RulesetNotFoundException( uri );
             br = FileUtils.asBufferedUTF8( in );
             return parseRules( Rule.rulesParserFromReader( br ) );

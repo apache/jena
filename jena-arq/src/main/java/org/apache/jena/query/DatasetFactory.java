@@ -24,6 +24,7 @@ import java.util.Objects ;
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.ARQException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -32,7 +33,6 @@ import org.apache.jena.sparql.core.DatasetOne;
 import org.apache.jena.sparql.core.assembler.DatasetAssembler;
 import org.apache.jena.sparql.util.DatasetUtils;
 import org.apache.jena.sparql.util.graph.GraphUtils;
-import org.apache.jena.util.FileManager;
 
 /**
  * Makes {@link Dataset}s in various ways.
@@ -46,23 +46,23 @@ public class DatasetFactory {
      * <p>
      * This implementation copies models when {@link Dataset#addNamedModel(String, Model)} is called.
      * <p>
-     * This implementation does not support serialized transactions (it only provides MRSW locking). 
-     * 
+     * This implementation does not support serialized transactions (it only provides MRSW locking).
+     *
      * @see #createTxnMem
      */
     public static Dataset create() {
         return wrap(DatasetGraphFactory.create()) ;
     }
-    
+
 	/**
      * Create an in-memory. transactional {@link Dataset}.
-     * <p> 
+     * <p>
      * This fully supports transactions, including abort to roll-back changes.
      * It provides "autocommit" if operations are performed
      * outside a transaction but with a performance impact
      * (the implementation adds a begin/commit around each add or delete
      * so overheads can accumulate).
-     * 
+     *
      * @return a transactional, in-memory, modifiable Dataset
      */
 	public static Dataset createTxnMem() {
@@ -75,26 +75,26 @@ public class DatasetFactory {
 	 * </p>
 	 * This dataset type can contain graphs from any source when added via {@link Dataset#addNamedModel}.
 	 * These are held as links to the supplied graph and not copied.
-	 * <p> 
+	 * <p>
 	 * <em>This dataset does not support the graph indexing feature of jena-text.</em>
      * <p>
-	 * This dataset does not support serialized transactions (it only provides MRSW locking). 
+	 * This dataset does not support serialized transactions (it only provides MRSW locking).
 	 * <p>
-	 * 
+	 *
 	 * @see #createTxnMem
 	 * @return a general-purpose Dataset
 	 */
 	public static Dataset createGeneral() {
-		return wrap(DatasetGraphFactory.createGeneral()); 
+		return wrap(DatasetGraphFactory.createGeneral());
 	}
 
     /** Create an in-memory {@link Dataset}.
      * <p>
      * See also {@link #createTxnMem()} for a transactional dataset.
      * <p>
-     * Use {@link #createGeneral()} when needing to add graphs with mixed characteristics, 
+     * Use {@link #createGeneral()} when needing to add graphs with mixed characteristics,
      * e.g. inference graphs, or specific graphs from TDB.
-     * <p>    
+     * <p>
      * <em>It does not support the graph indexing feature of jena-text.</em>
      * <p>
      * <em>This factory operation is marked "deprecated" because the general purpose "add named graph of any implementation"
@@ -110,11 +110,11 @@ public class DatasetFactory {
 
     /**
      * Create a dataset, starting with the model argument as the default graph of the
-     * dataset. Named graphs can be added. 
-     * <p> 
+     * dataset. Named graphs can be added.
+     * <p>
      * Use {@link #wrap(Model)} to put dataset functionality around a single
      * model when named graphs will not be added.
-     * 
+     *
      * @param model The model for the default graph
      * @return a dataset with the given model as the default graph
      */
@@ -146,8 +146,8 @@ public class DatasetFactory {
 	}
 
     /**
-     * Wrap a {@link Model} to make a dataset; the model is the default graph of the RDF Dataset. 
-     * 
+     * Wrap a {@link Model} to make a dataset; the model is the default graph of the RDF Dataset.
+     *
      * This dataset can not have additional models
      * added to it, including indirectly through SPARQL Update
      * adding new graphs.
@@ -165,7 +165,7 @@ public class DatasetFactory {
 	 *
 	 * @param dataset DatasetGraph
 	 * @return Dataset
-	 * @deprecated Use {@link #wrap} 
+	 * @deprecated Use {@link #wrap}
 	 */
 	@Deprecated
 	public static Dataset create(DatasetGraph dataset) {
@@ -271,7 +271,7 @@ public class DatasetFactory {
 	 */
 	public static Dataset assemble(String filename) {
 	    Objects.requireNonNull(filename, "file name can not be null") ;
-		Model model = FileManager.get().loadModel(filename);
+		Model model = RDFDataMgr.loadModel(filename);
 		return assemble(model);
 	}
 
@@ -285,7 +285,7 @@ public class DatasetFactory {
 	public static Dataset assemble(String filename, String resourceURI) {
         Objects.requireNonNull(filename, "file name can not be null") ;
         Objects.requireNonNull(resourceURI, "resourceURI can not be null") ;
-		Model model = FileManager.get().loadModel(filename);
+		Model model = RDFDataMgr.loadModel(filename);
 		Resource r = model.createResource(resourceURI);
 		return assemble(r);
 	}

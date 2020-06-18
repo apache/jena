@@ -33,7 +33,6 @@ import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.vocabulary.TestManifest;
 import org.apache.jena.sparql.vocabulary.TestManifestX;
 import org.apache.jena.sparql.vocabulary.VocabTestQuery;
-import org.apache.jena.util.FileManager;
 import org.apache.jena.util.iterator.ClosableIterator;
 import org.apache.jena.util.junit.TestException;
 import org.apache.jena.util.junit.TestUtils;
@@ -150,7 +149,7 @@ public class TestItem
         ResultsFormat format = ResultsFormat.guessSyntax(resultFile) ;
 
         if ( ResultsFormat.isRDFGraphSyntax(format) ) {
-            Model m = FileManager.get().loadModel(resultFile) ;
+            Model m = RDFDataMgr.loadModel(resultFile) ;
             return new SPARQLResult(m) ;
         }
         

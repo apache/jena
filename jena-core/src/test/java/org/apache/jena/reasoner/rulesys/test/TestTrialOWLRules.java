@@ -185,7 +185,7 @@ public class TestTrialOWLRules extends TestCase {
      * for use during debugging.
      */
     public static void main(String[] args) {
-        Model premises = FileManager.get().loadModel("file:testing/wg/someValuesFrom/premises001.rdf");
+        Model premises = FileManager.getInternal().loadModelInternal("file:testing/wg/someValuesFrom/premises001.rdf");
         Reasoner reasoner = GenericRuleReasonerFactory.theInstance().create(configuration);
         InfModel conclusions = ModelFactory.createInfModel(reasoner, premises);
         

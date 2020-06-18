@@ -21,19 +21,25 @@ package jena;
 
 import static org.apache.jena.atlas.logging.LogCtl.setLogging;
 
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
-import org.apache.jena.graph.* ;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.rdf.model.InfModel;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.reasoner.Reasoner ;
 import org.apache.jena.reasoner.rulesys.* ;
 import org.apache.jena.reasoner.rulesys.builtins.BaseBuiltin ;
-import org.apache.jena.util.FileManager ;
 import org.apache.jena.util.FileUtils ;
 
 /**
@@ -153,12 +159,11 @@ public class RuleMap {
             
             String inLang = cl.getOptionValue("inputLang");
             String fname = filenameArgs.get(1);
-            Model inModel = null;
+            Model inModel = ModelFactory.createDefaultModel();
             if (fname.equals("-")) {
-                inModel = ModelFactory.createDefaultModel();
                 inModel.read(System.in, null, inLang);
             } else {
-                inModel = FileManager.get().loadModel(fname, inLang);
+                inModel.read(fname, inLang);
             }
             
             String outLang = cl.hasOption("outputLang") ? cl.getOptionValue("outputLang") : "N3";            

@@ -32,7 +32,6 @@ import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.process.inf.InfFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
-import org.apache.jena.util.FileManager ;
 
 /*
  * TDB Infer
@@ -118,7 +117,7 @@ public class infer extends CmdGeneral
         if ( ! contains(argRDFS) )
             throw new CmdException("Required argument missing: --"+argRDFS.getKeyName()) ;
         String fn = getValue(argRDFS) ;
-        vocab = FileManager.get().loadModel(fn) ;
+        vocab = RDFDataMgr.loadModel(fn) ;
     }
 
     @Override

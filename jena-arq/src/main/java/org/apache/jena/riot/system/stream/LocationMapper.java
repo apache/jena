@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory ;
  * A LocationMapper can be configured by an RDF file.  The default for this
  * is "etc/location-mapping.n3".
  * 
- * There is a default LocationMapper which is used by the global @link{FileManager}.
+ * There is a default LocationMapper which is used by the global @link{StreamManager}.
  */
 
 public class LocationMapper

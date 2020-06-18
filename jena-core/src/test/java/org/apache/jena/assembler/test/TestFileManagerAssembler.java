@@ -55,6 +55,7 @@ public class TestFileManagerAssembler extends AssemblerTestBase
     public void testCreatesFileManagerWithLocationMapper()
         {
         Resource root = resourceInModel( "f rdf:type ja:FileManager; f ja:locationMapper r" );
+        @SuppressWarnings("deprecation")
         LocationMapper mapper = new LocationMapper();
         Assembler mock = new NamedObjectAssembler( resource( "r" ), mapper );
         Assembler a = new FileManagerAssembler();
@@ -80,8 +81,8 @@ public class TestFileManagerAssembler extends AssemblerTestBase
 
     private Iterator<Locator> standardLocators()
         {
-        FileManager fm = new FileManager();
-        FileManager.setStdLocators( fm );
+        @SuppressWarnings("deprecation")
+        FileManager fm = FileManager.createStd();
         return fm.locators();
         }
     }

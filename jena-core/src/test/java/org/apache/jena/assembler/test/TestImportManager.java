@@ -24,17 +24,18 @@ import org.apache.jena.assembler.* ;
 import org.apache.jena.graph.compose.MultiUnion ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.util.FileManager ;
+import org.apache.jena.util.FileManagerImpl;
 
 public class TestImportManager extends AssemblerTestBase
     {
     public TestImportManager( String name )
         { super( name ); }    
     
-    static class FixedFileManager extends FileManager
+    static class FixedFileManager extends FileManagerImpl
         {
         Map<String, Model> map = new HashMap<>();
         
-        @Override public Model loadModel( String URL )
+        @Override public Model loadModelInternal( String URL )
             {
             Model result = map.get( URL );
             if (result == null) fail( "no model for " + URL );

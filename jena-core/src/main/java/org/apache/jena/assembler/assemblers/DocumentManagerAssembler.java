@@ -45,7 +45,7 @@ public class DocumentManagerAssembler extends AssemblerBase
     private FileManager getFileManager( Assembler a, Resource root )
         {
         Resource fm = getUniqueResource( root, JA.fileManager );
-        return fm == null ? FileManager.get() : (FileManager) a.open( fm );
+        return fm == null ? FileManager.getInternal() : (FileManager) a.open( fm );
         }
     
     /**

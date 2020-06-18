@@ -40,7 +40,7 @@ import org.apache.jena.sdb.store.StoreFactory ;
 
 public class ExJdbcConnection
 {
-    static { LogCtl.setLog4j() ; }
+    static { LogCtl.setLogging();}
     
     public static void main(String...argv)
     {

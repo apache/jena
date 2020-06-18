@@ -26,6 +26,7 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.ResultSetMgr ;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.resultset.rw.ReadAnything;
@@ -36,7 +37,6 @@ import org.apache.jena.sparql.resultset.* ;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderTable ;
-import org.apache.jena.util.FileManager ;
 
 /** ResultSetFactory - make result sets from places other than a query. */
 
@@ -44,10 +44,10 @@ public class ResultSetFactory {
     // See also ResultSetMgr - which post-dates this code.
     // Ideally, read operations here should call ResultSetMgr.
     // The exception is XML from a string and the arcachic RDF to ResultSet forms.
-    
+
     /**
      * Load a result set from file or URL into a result set (memory backed).
-     * 
+     *
      * @param filenameOrURI
      * @return ResultSet
      */
@@ -58,7 +58,7 @@ public class ResultSetFactory {
 
     /**
      * Load a result set from file or URL into a result set (memory backed).
-     * 
+     *
      * @param filenameOrURI
      * @param format
      * @return ResultSet
@@ -73,7 +73,7 @@ public class ResultSetFactory {
 
     /**
      * Load a result set from input stream into a result set (memory backed).
-     * 
+     *
      * @param input
      * @param format
      * @return ResultSet
@@ -84,7 +84,7 @@ public class ResultSetFactory {
             Log.warn(ResultSet.class, "Null format - defaulting to XML");
             format = ResultsFormat.FMT_RS_XML;
         }
-        
+
         // Old World - new world
         Lang lang = ResultsFormat.convert(format) ;
         if ( lang != null )
@@ -126,7 +126,7 @@ public class ResultSetFactory {
 
     /**
      * Load a result set (or any other model) from file or URL
-     * 
+     *
      * @param filenameOrURI
      * @return Model
      */
@@ -137,7 +137,7 @@ public class ResultSetFactory {
 
     /**
      * Load a result set (or any other model) from file or URL
-     * 
+     *
      * @param model
      *            Load into this model (returned)
      * @param filenameOrURI
@@ -149,7 +149,7 @@ public class ResultSetFactory {
 
     /**
      * Load a result set (or any other model) from file or URL
-     * 
+     *
      * @param filenameOrURI
      * @param format
      * @return Model
@@ -163,7 +163,7 @@ public class ResultSetFactory {
      * Load a result set (or any other model) from file or URL. Does not have to
      * be a result set (e.g. CONSTRUCt results) but it does interpret the
      * ResultSetFormat possibilities.
-     * 
+     *
      * @param model
      *            Load into this model (returned)
      * @param filenameOrURI
@@ -194,13 +194,15 @@ public class ResultSetFactory {
                 RDFOutput.encodeAsRDF(model, x.getResultSet());
             else if ( x.isBoolean() )
                 RDFOutput.encodeAsRDF(model, x.getBooleanResult());
-            else 
+            else
                 throw new ResultSetException("Not a result set");
             return model;
         }
 
-        if (ResultsFormat.isRDFGraphSyntax(format))
-            return FileManager.get().readModel(model, filenameOrURI);
+        if (ResultsFormat.isRDFGraphSyntax(format)) {
+            RDFDataMgr.read(model, filenameOrURI);
+            return model;
+        }
 
         Log.error(ResultSet.class, "Unknown result set syntax: " + format);
         return null;
@@ -240,7 +242,7 @@ public class ResultSetFactory {
         }
 
         if (ResultsFormat.isRDFGraphSyntax(format)) {
-            Model model = FileManager.get().loadModel(filenameOrURI);
+            Model model = RDFDataMgr.loadModel(filenameOrURI);
             return new SPARQLResult(model);
         }
 
@@ -250,7 +252,7 @@ public class ResultSetFactory {
 
     /**
      * Read XML which is the format of the SPARQL result set format.
-     * 
+     *
      * @param in
      *            InputStream
      * @return ResultSet
@@ -261,7 +263,7 @@ public class ResultSetFactory {
 
     /**
      * Read XML which is the format of the SPARQL result set format.
-     * 
+     *
      * @param str
      *            String to process
      * @return ResultSet
@@ -275,7 +277,7 @@ public class ResultSetFactory {
     /**
      * Read from an input stream which is the format of the SPARQL result set
      * format in JSON.
-     * 
+     *
      * @param in
      *            InputStream
      * @return ResultSet
@@ -287,7 +289,7 @@ public class ResultSetFactory {
     /**
      * Read from an input stream which is the format of the SPARQL result set
      * format in TSV.
-     * 
+     *
      * @param in
      *            InputStream
      * @return ResultSet
@@ -299,7 +301,7 @@ public class ResultSetFactory {
     /**
      * Read from an input stream which is the format of the SPARQL result set
      * format in SSE.
-     * 
+     *
      * @param in
      *            InputStream
      * @return ResultSet
@@ -319,7 +321,7 @@ public class ResultSetFactory {
      * Turns an RDF model, with properties and classes from the result set
      * vocabulary, into a SPARQL result set. The result set formed is a copy in
      * memory.
-     * 
+     *
      * @param model
      * @return ResultSet
      */
@@ -331,7 +333,7 @@ public class ResultSetFactory {
      * Turns an RDF model, with properties and classes from the result set
      * vocabulary, into a SPARQL result set which is rewindable (has a
      * .reset()operation). The result set formed is a copy in memory.
-     * 
+     *
      * @param model
      * @return ResultSetRewindable
      */
@@ -343,7 +345,7 @@ public class ResultSetFactory {
      * Turn an existing result set into a rewindable one.
      * May take a copy but this is not guaranteed
      * Uses up the result set passed in which is no longer valid as a ResultSet.
-     * 
+     *
      * @param resultSet
      * @return ResultSetRewindable
      */
@@ -369,7 +371,7 @@ public class ResultSetFactory {
      * </p> Note that rewindable results may typically also be peekable so may
      * be more broadly applicable if you can afford the cost of loading all the
      * results into memory. </p>
-     * 
+     *
      * @param resultSet
      *            Result set to wrap
      * @return Peekable results
@@ -377,7 +379,7 @@ public class ResultSetFactory {
     static public ResultSetPeekable makePeekable(ResultSet resultSet) {
         return new ResultSetPeeking(resultSet);
     }
-    
+
     /** Return a closable resultset for a {@link QueryExecution}.
      * The {@link QueryExecution} must be for a {@code SELECT} query.
      * <p>
@@ -388,7 +390,7 @@ public class ResultSetFactory {
      *       ...
      * }
      * </pre>
-     * 
+     *
      * @param queryExecution {@code QueryExecution} must be for a {@code SELECT} query.
      * @return ResultSetCloseable
      */
@@ -400,7 +402,7 @@ public class ResultSetFactory {
      * Take a copy of a result set - the result set returns is an in-memory
      * copy. It is not attached to the original query execution object which can
      * be closed.
-     * 
+     *
      * @param results
      * @return ResultSet
      */
@@ -410,7 +412,7 @@ public class ResultSetFactory {
 
     /**
      * Build a result set from one of ARQ's lower level query iterator.
-     * 
+     *
      * @param queryIterator
      * @param vars
      *            List of variables, by name, for the result set

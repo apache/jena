@@ -22,6 +22,10 @@ import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ *  @deprecated Use {@code StreamManager} and {@code LocatorClassLoader} from {@code org.apache.jena.riot.system.stream}.
+ */
+@Deprecated
 public class LocatorClassLoader  implements Locator
 {
     static Logger log = LoggerFactory.getLogger(LocatorClassLoader.class) ;

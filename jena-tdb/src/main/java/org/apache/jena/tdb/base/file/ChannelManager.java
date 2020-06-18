@@ -28,11 +28,6 @@ import java.util.Map ;
 
 public class ChannelManager
 {
-    // Make per "location"?
-    
-    // Because "FileManager" is already in use
-    // ChannelManager
-    
     // FileBase ==> OpenFileRef, ChannelRef
     
     public static FileChannel acquire(String filename)

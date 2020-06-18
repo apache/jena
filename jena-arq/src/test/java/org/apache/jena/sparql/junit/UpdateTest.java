@@ -29,6 +29,7 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.rdf.model.Statement ;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.checker.CheckerLiterals ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
@@ -36,7 +37,6 @@ import org.apache.jena.sparql.vocabulary.TestManifestUpdate_11 ;
 import org.apache.jena.update.UpdateAction ;
 import org.apache.jena.update.UpdateFactory ;
 import org.apache.jena.update.UpdateRequest ;
-import org.apache.jena.util.FileManager ;
 import org.apache.jena.util.iterator.ClosableIterator ;
 import org.apache.jena.util.junit.TestUtils ;
 import org.apache.jena.vocabulary.RDFS ;
@@ -171,10 +171,9 @@ public class UpdateTest extends EarlTestCase
         // Growing. dataset.
         Dataset ds = DatasetFactory.wrap(dsg) ;
         
-        
         List<String> dftData = getAll(r,  TestManifestUpdate_11.data) ;
         for ( String x : dftData )
-            FileManager.get().readModel(ds.getDefaultModel(), x) ;
+            RDFDataMgr.read(ds.getDefaultModel(), x) ;
         
         ClosableIterator<Statement> cIter =  r.listProperties(TestManifestUpdate_11.graphData) ;
         for ( ; cIter.hasNext() ; )
@@ -188,14 +187,14 @@ public class UpdateTest extends EarlTestCase
                     System.err.println("No data for graphData") ;
                 
                 String fn = gn.getProperty(TestManifestUpdate_11.graph).getResource().getURI() ;
+                Model m = RDFDataMgr.loadModel(fn);
                 String name = gn.getProperty(RDFS.label).getString() ;
-                Model m = FileManager.get().loadModel(fn) ;
                 ds.addNamedModel(name, m) ;
             }
             else
             {
                 String x = gn.getURI() ;
-                Model m = FileManager.get().loadModel(x) ;
+                Model m = RDFDataMgr.loadModel(x) ;
                 ds.addNamedModel(x, m) ;
             }
         }

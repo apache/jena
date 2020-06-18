@@ -52,7 +52,7 @@ public class Manifest
         log.debug("Manifest = "+fn ) ;
         filename = org.apache.jena.n3.N3IRIResolver.resolveGlobal(fn) ;
         log.debug("         = "+filename ) ;
-        manifest = FileManager.get().loadModel(filename) ;
+        manifest = FileManager.getInternal().loadModelInternal(filename) ;
         parseIncludes() ;
         parseManifest() ;
     }

@@ -34,7 +34,6 @@ import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.impl.RDFWriterFImpl ;
 import org.apache.jena.shared.NoWriterForLangException ;
 import org.apache.jena.sys.JenaSystem ;
-import org.apache.jena.util.FileManager ;
 import org.apache.jena.util.FileUtils ;
 import org.apache.jena.vocabulary.OWL ;
 import org.apache.jena.vocabulary.RDFS ;
@@ -95,10 +94,6 @@ import org.apache.jena.vocabulary.RDFS ;
  * the including statements (e.g <code>owl:imports</code> to be filtered
  * from the output models. To leave such statements in place, use the <code>--nofilter</code>
  * option.</p>
- * <p>rdfcat uses the Jena {@link org.apache.jena.util.FileManager FileManager}
- * to resolve input URI's to locations. This allows, for example, <code>http:</code>
- * URI's to be re-directed to local <code>file:</code> locations, to avoid a
- * network transaction.</p>
  * <p>Examples:</p>
  * <pre>
  * Join two RDF/XML files together into a single model in RDF/XML-ABBREV:
@@ -328,7 +323,7 @@ public class rdfcat
                 else {
                     // lang from extension overrides default set on command line
                     String lang = FileUtils.guessLang( in, m_inputFormat );
-                    FileManager.get().readModel( inModel, in, lang );
+                    inModel.read(in, lang );
                 }
 
                 // check for anything more that we need to read
