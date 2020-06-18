@@ -29,7 +29,6 @@ import java.util.Iterator;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.jena.iri.IRIRelativize ;
 import org.apache.jena.iri.impl.AbsIRIImpl ;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

@@ -22,7 +22,6 @@ import java.util.Iterator;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.iri.ViolationCodes ;
 import org.apache.jena.iri.impl.Force ;
 import org.apache.jena.iri.impl.IRIExamples ;
 import org.apache.jena.iri.impl.Specification ;
