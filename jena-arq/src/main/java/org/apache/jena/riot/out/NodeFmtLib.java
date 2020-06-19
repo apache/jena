@@ -40,17 +40,17 @@ import org.apache.jena.sparql.core.Quad;
  * <p>
  * Methods <tt>str</tt> generate a reparsable string.
  * <p>
- * Methods <tt>displayStr</tt> do not guarantee a reparsable string 
- * e.g. may use abbreviations or common prefixes.   
+ * Methods <tt>displayStr</tt> do not guarantee a reparsable string
+ * e.g. may use abbreviations or common prefixes.
  */
 public class NodeFmtLib
 {
     // Replaces FmtUtils
     // See OutputLangUtils.
     // See and use EscapeStr
-    
+
     private static final NodeFormatter plainFormatter = new NodeFormatterNT();
-    
+
     private static PrefixMap dftPrefixMap = PrefixMapFactory.create();
     static {
         PrefixMapping pm = ARQConstants.getGlobalPrefixMap();
@@ -105,9 +105,9 @@ public class NodeFmtLib
 
     private static String displayStrNodes(Node...nodes) {
         StringJoiner sj = new StringJoiner(" ");
-        for ( Node n : nodes ) 
+        for ( Node n : nodes )
             sj.add(displayStr(n));
-        return sj.toString(); 
+        return sj.toString();
     }
 
     public static void str(IndentedWriter w, Node n) {
@@ -116,6 +116,10 @@ public class NodeFmtLib
 
     public static String str(Node n, Prologue prologue) {
         return str(n, prologue.getBaseURI(), prologue.getPrefixMap());
+    }
+
+    public static String str(Node n, PrefixMap prefixMap) {
+        return str(n, null, prefixMap);
     }
 
     public static String str(Node n, String base, PrefixMap prefixMap) {
@@ -136,21 +140,21 @@ public class NodeFmtLib
             formatter = new NodeFormatterTTL(base, prefixMap);
         formatter.format(w, n);
     }
-    
+
     // ---- Blank node labels.
-    
+
     // Strict N-triples only allows [A-Za-z][A-Za-z0-9]
     static char encodeMarkerChar = 'X';
 
-    // These two form a pair to convert bNode labels to a safe (i.e. legal N-triples form) and back agains. 
-    
+    // These two form a pair to convert bNode labels to a safe (i.e. legal N-triples form) and back agains.
+
     // Encoding is:
-    // 1 - Add a Letter 
+    // 1 - Add a Letter
     // 2 - Hexify, as Xnn, anything outside ASCII A-Za-z0-9
     // 3 - X is encoded as XX
-    
-    private static char LabelLeadingLetter = 'B'; 
-    
+
+    private static char LabelLeadingLetter = 'B';
+
     public static String encodeBNodeLabel(String label) {
         StringBuilder buff = new StringBuilder();
         // Must be at least one char and not a digit.
