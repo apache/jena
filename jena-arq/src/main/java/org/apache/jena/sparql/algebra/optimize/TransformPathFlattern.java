@@ -29,7 +29,7 @@ import org.apache.jena.sparql.path.PathLib ;
  * Perform the equivalent of the transactions in the SPARQL 1.1 spec. ARQ
  * regards path transformation as an optimization. ARQ does not execute the
  * exact transformation as per spec as there are better ways to do it for ARQ.
- * For example, 
+ * For example,
  * <ul>
  * <li>Path seq {@literal ->} BGPs or a (sequence)
  * <li>"|" is not expanded into a union.
@@ -38,18 +38,18 @@ import org.apache.jena.sparql.path.PathLib ;
 
 public class TransformPathFlattern extends TransformCopy
 {
-    // This transform is also used so programmtically built queries also get converted.  
+    // This transform is also used so programmatically built queries also get converted.
     // Need previous BGP for merging?  Do as a separate pass (sequence, BGP collapse)
-    
+
     private PathCompiler pathCompiler ;
 
     public TransformPathFlattern() { this(new PathCompiler()) ; }
-    
+
     public TransformPathFlattern(PathCompiler pathCompiler)
     {
         this.pathCompiler = pathCompiler ;
     }
-    
+
     @Override
     public Op transform(OpPath opPath)
     {
