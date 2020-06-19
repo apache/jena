@@ -1,0 +1,39 @@
+#!/bin/bash
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+if [ $# -gt 1 ]
+then
+    echo "Usage: $0 FILE" 1>&2
+    exit 1
+    fi
+
+
+FILE="${1:-shaclc.jj}"
+DIR=../src/main/java/org/apache/jena/shacl/compact/parser
+
+rm -f "$DIR"/*
+
+javacc -OUTPUT_DIRECTORY=$DIR  -JDK_VERSION=1.8 "${FILE}"
+RC=$?
+if [ "$RC" -ne 0 ]
+then
+    exit
+fi
+
+## Fixup.
+#Token.java : public String toString()
+#TokenMgrError.java : public String getMessage()
+
+echo "---- Fixing Java warnings in Token ..."
+F="$DIR/Token.java"
+sed -e 's/@Override //' \
+    -e 's/public String toString/@Override public String toString/' < $F > F
+mv F $F
+
+echo "---- Fixing Java warnings in TokenMgrError ..."
+# Override:
+#   public String getMessage()
+F="$DIR/TokenMgrError.java"
+sed -e 's/@Override //' \
+    -e 's/public String getMessage/@Override public String getMessage/' < $F > F
+mv F $F

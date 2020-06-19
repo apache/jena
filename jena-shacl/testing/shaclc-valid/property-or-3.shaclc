@@ -1,0 +1,7 @@
+BASE <http://example.org/property-or-3>
+
+PREFIX ex: <http://example.org/test#>
+
+shape ex:TestShape {
+	ex:property xsd:string|rdf:langString|@ex:OtherShape .
+}

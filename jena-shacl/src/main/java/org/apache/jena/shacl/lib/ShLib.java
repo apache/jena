@@ -79,6 +79,7 @@ public class ShLib {
     public static void printShapes(Shapes shapes) {
         IndentedWriter out  = IndentedWriter.stdout;
         printShapes(out, shapes);
+        out.flush();
     }
 
     public static void printShapes(IndentedWriter out, Shapes shapes) {

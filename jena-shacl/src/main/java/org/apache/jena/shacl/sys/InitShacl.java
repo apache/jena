@@ -18,6 +18,7 @@
 
 package org.apache.jena.shacl.sys;
 
+import org.apache.jena.shacl.compact.SHACLC;
 import org.apache.jena.sys.JenaSubsystemLifecycle;
 
 public class InitShacl implements JenaSubsystemLifecycle {
@@ -25,7 +26,9 @@ public class InitShacl implements JenaSubsystemLifecycle {
     public InitShacl() {}
 
     @Override
-    public void start() {}
+    public void start() {
+        SHACLC.init();
+    }
 
     @Override
     public void stop() {}

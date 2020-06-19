@@ -29,6 +29,7 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.shacl.lib.G;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.parser.ShaclParseException;
@@ -232,9 +233,15 @@ SHACL Property path: [ sh:alternativePath ( ex:father ex:mother  ) ]
 //        return Pair.create(acc, n);
 //    }
 
-    /** Create triples for  path in dstGraph */
+    /** Create triples for path in dstGraph */
     public static Node pathToRDF(Path p, Graph dstGraph) {
         Node n = pathToRDF(dstGraph::add, p);
+        return n;
+    }
+
+    /** Create triples for path, send to a StreamRDF */
+    public static Node pathToRDF(Path p, StreamRDF dest) {
+        Node n = pathToRDF(dest::triple, p);
         return n;
     }
 

@@ -1,0 +1,17 @@
+== SHACLC parser
+
+The SHACLC parser tarnslates shaclc synatx into an RDF graph (rather than
+creating the shapes tree directly).
+
+To make the SHACLC parser:
+
+Run the script 
+
+   shaclc-parser
+
+which runs javacc to create the parser in 
+../src/main/java/org/apache/jena/shacl/compact/parser
+
+and cleans up the output files to remove or surpress Java warnings.
+
+

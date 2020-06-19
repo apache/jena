@@ -117,7 +117,7 @@ public class RDFParserRegistry
         langToParserFactory.put(lang, factory) ;
     }
     
-    /** Register a language and it's parser factory.
+    /** Register a language and its parser factory.
      * To create a {@link Lang} object use {@link LangBuilder}.
      */
     public static void registerLangTriples(Lang lang, ReaderRIOTFactory factory)
@@ -126,7 +126,7 @@ public class RDFParserRegistry
         registerLang(lang, factory) ;
     }
     
-    /** Register a language and it's parser factory.
+    /** Register a language and its parser factory.
      * To create a {@link Lang} object use {@link LangBuilder}.
      */
     public static void registerLangQuads(Lang lang, ReaderRIOTFactory factory)
