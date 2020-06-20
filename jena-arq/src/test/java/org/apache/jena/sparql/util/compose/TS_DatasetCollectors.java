@@ -23,6 +23,9 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ TestIntersectionDatasetCollector.class, TestUnionDatasetCollector.class })
+@SuiteClasses({
+    TestIntersectionDatasetCollector.class
+    , TestUnionDatasetCollector.class
+    })
 public class TS_DatasetCollectors {
 }

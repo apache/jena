@@ -37,7 +37,7 @@ import org.junit.Test ;
 
 /** Test of syntax by a triples parser (does not include node validitiy checking) */ 
 
-public class TestLangNTriples extends TestLangNTuples
+public class TestLangNTriples extends AbstractTestLangNTuples
 {
     // Test streaming interface.
 

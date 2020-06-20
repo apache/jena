@@ -144,7 +144,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <includes>
-            <!-- Requires HSQL and Apache Derbey to be set in 
+            <!-- Requires HSQL and Apache Derby to be set in 
                  store-list.ttl and store-list-simple.ttl
             -->
             <include>org/apache/jena/sdb/test/SDBTestAll.java</include>

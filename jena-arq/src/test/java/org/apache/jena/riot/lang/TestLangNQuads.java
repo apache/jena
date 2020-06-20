@@ -28,7 +28,7 @@ import org.junit.Test ;
 
 /** Test of syntax by a quads parser (does not include node validitiy checking) */ 
 
-public class TestLangNQuads extends TestLangNTuples
+public class TestLangNQuads extends AbstractTestLangNTuples
 {
     @Override
     protected Lang getLang() {

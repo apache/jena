@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.expr.NodeValue;
 import org.junit.Test;
 
 /**
@@ -30,6 +31,14 @@ import org.junit.Test;
  */
 public class TestNodeValueSortKey {
 
+    @Test
+    public void testSortKeyNodeValue() {
+        NodeValue noveValue = NodeValue.makeString("Casa");
+        NodeValue nv = NodeFunctions.sortKey(noveValue, "es");
+        assertTrue(nv instanceof NodeValueSortKey);
+        assertEquals("es", nv.getSortKey().getCollation());
+    }
+    
     @Test
     public void testCreateNodeValueSortKey() {
         NodeValueSortKey nv = new NodeValueSortKey("", null);
@@ -76,7 +85,6 @@ public class TestNodeValueSortKey {
     public void testCompareTo() {
         final String languageTag = "pt";
         NodeValueSortKey nv = new NodeValueSortKey("Bonito", languageTag);
-        assertEquals(0, nv.compareTo(null));
         assertEquals(1, nv.compareTo(new NodeValueSortKey("Bonita", languageTag)));
         assertEquals(-1, nv.compareTo(new NodeValueSortKey("Bonitos", languageTag)));
         // comparing string, regardless of the collations

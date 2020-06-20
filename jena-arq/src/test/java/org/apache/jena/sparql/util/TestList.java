@@ -29,7 +29,7 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.junit.AssertExtra ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.* ;
 import org.apache.jena.rdf.model.Model ;
@@ -250,7 +250,7 @@ public class TestList
     
     private static void check(List<Node> z, Node...expected) {
         List<Node> x = Arrays.asList(expected) ;
-        BaseTest.assertEqualsUnordered(x, z);
+        AssertExtra.assertEqualsUnordered(x, z);
     }
     
 }

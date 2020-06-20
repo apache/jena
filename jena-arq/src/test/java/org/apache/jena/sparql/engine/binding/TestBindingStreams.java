@@ -48,14 +48,14 @@ import org.junit.Test ;
 
 public class TestBindingStreams
 {
-    @BeforeClass public static void beforeClass()
-    { 
-        BaseTest2.setTestLogging() ;
+    @BeforeClass
+    public static void beforeClass() {
+        BaseTest2.setTestLogging();
     }
 
-    @AfterClass public static void afterClass()
-    { 
-        BaseTest2.unsetTestLogging() ;
+    @AfterClass
+    public static void afterClass() {
+        BaseTest2.unsetTestLogging();
     }
     
     static Binding b12 = build("(?a 1) (?b 2)") ;

@@ -21,25 +21,24 @@ package org.apache.jena.sdb.test.junit;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import junit.framework.TestCase;
 import org.apache.jena.query.* ;
 import org.apache.jena.sdb.Store ;
 import org.apache.jena.sdb.StoreDesc ;
 import org.apache.jena.sdb.engine.QueryEngineSDB ;
 import org.apache.jena.sdb.sql.SDBConnection ;
 import org.apache.jena.sdb.store.DatasetStore ;
+import org.apache.jena.sdb.test.junit2.TestItem;
 import org.apache.jena.sdb.util.StoreUtils ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.engine.QueryEngineFactory ;
 import org.apache.jena.sparql.engine.QueryExecutionBase ;
 import org.apache.jena.sparql.engine.ref.QueryEngineRef ;
-import org.apache.jena.sparql.junit.EarlReport ;
-import org.apache.jena.sparql.junit.EarlTestCase ;
-import org.apache.jena.sparql.junit.TestItem ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-public class QueryTestSDB extends EarlTestCase
+public class QueryTestSDB extends TestCase
 {
     public static boolean VERBOSE = false ;
     StoreDesc storeDesc ;
@@ -47,9 +46,9 @@ public class QueryTestSDB extends EarlTestCase
     TestItem item ;
     private static Logger log = LoggerFactory.getLogger(QueryTestSDB.class) ; 
     
-    public QueryTestSDB(StoreDesc desc, String testName, EarlReport report, TestItem item)
+    public QueryTestSDB(StoreDesc desc, String testName, TestItem item)
     {
-        super(testName, item.getURI(), report) ;
+        super(testName) ;
         this.storeDesc = desc ;
         this.item = item ;
     }
@@ -132,7 +131,7 @@ public class QueryTestSDB extends EarlTestCase
     }
 
     @Override
-    public void runTestForReal()
+    public void runTest()
     {
         if ( skipThisTest )
         {

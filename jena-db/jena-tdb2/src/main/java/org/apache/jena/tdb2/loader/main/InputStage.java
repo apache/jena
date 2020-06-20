@@ -22,8 +22,8 @@ package org.apache.jena.tdb2.loader.main;
  * The first phase, parsing to at least one index each of triples and quads
  * can be done in several ways.
  * <ul>
- * <li> {@code MULTI} - one thread parsing (caller), one for nodetable/tuples, and one for each index
- * <li> {@code PARSE_NODE} - one thread parsing (caller) and one for nodetable/tuples, and one for each index
+ * <li> {@code MULTI} - one thread parsing (caller), one for nodetable/tuples, and one for each primary index
+ * <li> {@code PARSE_NODE} - one thread parsing (caller) and the nodetable/tuples, and one for each primary index
  * <li> {@code PARSE_NODE_INDEX} - use the caller thread for all operations
  * </ul>
  * {@code MULTI} is fastest when hardware allows.

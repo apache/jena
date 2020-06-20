@@ -21,6 +21,7 @@ package org.apache.jena.sparql.util.compose;
 import static org.apache.jena.graph.NodeFactory.createBlankNode;
 import static org.apache.jena.rdf.model.ModelFactory.createModelForGraph;
 import static org.apache.jena.sparql.sse.SSE.parseGraph;
+import static org.junit.Assert.assertTrue;
 
 import java.util.stream.Stream;
 
@@ -29,7 +30,7 @@ import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.junit.Test;
 
-public class TestIntersectionDatasetCollector extends TestDatasetCollector {
+public class TestIntersectionDatasetCollector extends AbstractTestDatasetCollector {
 
     @Override
     public DatasetCollector testInstance() {

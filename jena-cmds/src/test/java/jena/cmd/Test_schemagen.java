@@ -21,6 +21,11 @@
 package jena.cmd;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 // Imports
 ///////////////
 import java.io.*;
@@ -30,7 +35,6 @@ import java.util.regex.Pattern;
 
 import jena.schemagen;
 import jena.schemagen.SchemagenOptionsImpl;
-import junit.framework.TestCase;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.util.FileUtils ;
 import org.junit.Test ;
@@ -44,7 +48,6 @@ import org.slf4j.LoggerFactory;
  * </p>
  */
 public class Test_schemagen
-    extends TestCase
 {
     // Constants
     //////////////////////////////////

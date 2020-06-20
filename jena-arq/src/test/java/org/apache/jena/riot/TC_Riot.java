@@ -20,7 +20,6 @@ package org.apache.jena.riot;
 
 import org.apache.jena.riot.adapters.TS_RIOTAdapters ;
 import org.apache.jena.riot.lang.TS_Lang ;
-import org.apache.jena.riot.lang.extra.TS_LangExtra;
 import org.apache.jena.riot.out.TS_Out ;
 import org.apache.jena.riot.process.TS_Process ;
 import org.apache.jena.riot.resultset.TS_ResultSetRIOT ;
@@ -38,8 +37,6 @@ import org.junit.runners.Suite ;
     TS_Tokens.class
     , TS_Out.class
     , TS_Lang.class
-    , TS_LangSuite.class
-    , TS_LangExtra.class
     , TS_RiotGeneral.class
     , TS_IO2.class
     , TS_RIOTAdapters.class
@@ -49,6 +46,8 @@ import org.junit.runners.Suite ;
     , TS_RiotWeb.class
     , TS_ResultSetRIOT.class
     , TS_RDFThrift.class
+    
+    , Scripts_LangSuite.class
 })
 
 

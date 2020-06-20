@@ -26,7 +26,6 @@ import org.junit.runners.Suite ;
     TestResultSet.class
     , TestResultSetFormat1.class
     , TestResultSetFormat2.class
-    //, TestResultSetCompare.class
 })
 public class TS_ResultSet
 {

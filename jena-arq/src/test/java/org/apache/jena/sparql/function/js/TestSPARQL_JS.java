@@ -18,32 +18,36 @@
 
 package org.apache.jena.sparql.function.js;
 
-import junit.framework.TestSuite;
+import org.apache.jena.arq.junit.manifest.Label;
+import org.apache.jena.arq.junit.manifest.Manifests;
+import org.apache.jena.arq.junit.runners.RunnerSPARQL;
 import org.apache.jena.query.ARQ;
-import org.apache.jena.sparql.junit.ScriptTestSuiteFactory;
 import org.apache.jena.sparql.util.Context;
-import org.apache.jena.sys.JenaSystem;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import org.junit.runners.AllTests;
 
-@RunWith(AllTests.class)
+@RunWith(RunnerSPARQL.class)
+@Label("SPARQL-JS")
+@Manifests({
+    "testing/ARQ/JS/manifest.ttl"
+})
 public class TestSPARQL_JS {
-    static final String MANIFEST = "testing/ARQ/JS/manifest.ttl";
     static final String JS_LIB_FILE = "testing/ARQ/JS/test-library.js";
     
-    private static void setupJS() {
+    @BeforeClass
+    public static void setupJS() {
         Context cxt = ARQ.getContext();
         cxt.set(ARQ.symJavaScriptLibFile, JS_LIB_FILE);
         cxt.set(ARQ.symJavaScriptFunctions, "function inc(x) { return x+1 }");
         EnvJavaScript.reset();
     }
     
-    static public TestSuite suite() {
-        JenaSystem.init();
-        setupJS();
-        TestSuite ts = new TestSuite(TestSPARQL_JS.class.getName());
-        TestSuite ts2 = ScriptTestSuiteFactory.make(MANIFEST);
-        ts.addTest(ts2);
-        return ts;
+    @AfterClass
+    public static void unsetupJS() {
+        Context cxt = ARQ.getContext();
+        cxt.remove(ARQ.symJavaScriptLibFile);
+        cxt.remove(ARQ.symJavaScriptFunctions);
+        //EnvJavaScript.reset();
     }
 }

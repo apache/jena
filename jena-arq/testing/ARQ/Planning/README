@@ -1,0 +1,8 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+Run Planning/manifest.ttl which is set for the text-modefixed reording applies
+in StageGeneratorGeneric
+
+Do not run in test suite:
+  Planning/manifest-no-reorder.ttl
+  Planning/manifest-reorder.ttl

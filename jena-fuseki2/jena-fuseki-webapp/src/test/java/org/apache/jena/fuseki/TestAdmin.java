@@ -42,7 +42,7 @@ import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.json.JsonValue;
-import org.apache.jena.atlas.junit.BaseTest;
+import org.apache.jena.atlas.junit.AssertExtra;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
@@ -410,7 +410,7 @@ public class TestAdmin extends AbstractFusekiTest {
 
     private static JsonValue getDatasetDescription(String dsName) {
         try (TypedInputStream in = execHttpGet(ServerCtl.urlRoot() + "$/" + opDatasets + "/" + dsName)) {
-            BaseTest.assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
+            AssertExtra.assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
             JsonValue v = JSON.parse(in);
             return v;
         }
@@ -637,14 +637,14 @@ public class TestAdmin extends AbstractFusekiTest {
 
     private static JsonValue execGetJSON(String url) {
         try ( TypedInputStream in = execHttpGet(url) ) {
-            BaseTest.assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
+            AssertExtra.assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
             return JSON.parse(in);
         }
     }
 
     private static JsonValue execPostJSON(String url) {
         try ( TypedInputStream in = execHttpPostStream(url, null, null, null) ) {
-            BaseTest.assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
+            AssertExtra.assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
             return JSON.parse(in);
         }
     }

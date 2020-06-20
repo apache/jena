@@ -27,7 +27,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.junit.Test;
 
-public class TestDifferenceDatasetGraph extends TestDyadicDatasetGraph {
+public class TestDifferenceDatasetGraph extends AbstractTestDyadicDatasetGraph {
 
     @Override
     public DifferenceDatasetGraph testInstance(DatasetGraph left, DatasetGraph right, Context c) {
