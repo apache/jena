@@ -20,8 +20,8 @@ package org.apache.jena.tdb.transaction;
 
 import static org.apache.jena.query.ReadWrite.READ ;
 import static org.apache.jena.query.ReadWrite.WRITE ;
+import static org.junit.Assert.assertEquals;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.* ;
 import org.apache.jena.sparql.core.Quad ;
@@ -32,7 +32,7 @@ import org.apache.jena.update.* ;
 import org.junit.* ;
 
 /** Tests of transactions and the TDB union graph */
-public class TestTransactionUnionGraph extends BaseTest
+public class TestTransactionUnionGraph
 {
     private Dataset ds ;
     

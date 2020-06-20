@@ -18,14 +18,15 @@
 
 package org.apache.jena.tdb.base.block;
 
+import static org.junit.Assert.assertArrayEquals;
+
 import java.nio.ByteBuffer ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-public class TestBlockMgrTracked extends BaseTest
+public class TestBlockMgrTracked
 {
     // Mainly testing the tracking
 

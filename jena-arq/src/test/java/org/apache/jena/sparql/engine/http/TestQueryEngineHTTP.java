@@ -18,12 +18,13 @@
 
 package org.apache.jena.sparql.engine.http;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.riot.WebContent ;
 import org.junit.Test ;
 
 /** A few tests of QueryEngineHTTP - mostly it gets tested in Fuseki */
-public class TestQueryEngineHTTP extends BaseTest {
+public class TestQueryEngineHTTP {
     
     // Check the headers contain the standard types. 
     @Test public void selectHeader_01() {

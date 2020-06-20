@@ -18,10 +18,12 @@
 
 package org.apache.jena.tdb.transaction;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.tdb.base.record.Record ;
 import org.apache.jena.tdb.base.record.RecordLib ;
 import org.apache.jena.tdb.index.IndexTestLib ;
@@ -29,7 +31,7 @@ import org.apache.jena.tdb.index.RangeIndex ;
 import org.apache.jena.tdb.index.bplustree.BPlusTree ;
 import org.junit.Test ;
 
-public class TestTransIterator extends BaseTest
+public class TestTransIterator
 {
     static BPlusTree build(int order, int[] values)
     {

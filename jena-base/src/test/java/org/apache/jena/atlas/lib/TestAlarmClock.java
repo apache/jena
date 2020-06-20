@@ -19,16 +19,16 @@
 package org.apache.jena.atlas.lib ;
 
 import static org.awaitility.Awaitility.await ;
+import static org.junit.Assert.assertEquals;
 import static org.apache.jena.atlas.lib.Lib.sleep ;
 
 import java.util.concurrent.TimeUnit ;
 import static java.util.concurrent.TimeUnit.* ;
 import java.util.concurrent.atomic.AtomicInteger ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
-public class TestAlarmClock extends BaseTest {
+public class TestAlarmClock {
     /* Issues with MS Windows.
      * 
      * Running some of these tests on windows is unreliable; sometimes they pass,

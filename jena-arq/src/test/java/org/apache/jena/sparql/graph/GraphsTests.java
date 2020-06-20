@@ -18,10 +18,11 @@
 
 package org.apache.jena.sparql.graph;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.* ;
@@ -33,7 +34,7 @@ import org.junit.Test ;
 
 /** Test API use of models, including some union graph cases : see also DatasetGraphTests */
 
-public abstract class GraphsTests extends BaseTest
+public abstract class GraphsTests
 {
     // These graphs must exist.
     protected static final String graph1 = "http://example/g1" ;

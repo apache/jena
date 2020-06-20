@@ -18,6 +18,9 @@
 
 package org.apache.jena.riot.writer;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
 import java.util.Arrays ;
@@ -146,7 +149,6 @@ public class TestRiotWriterGraph extends AbstractWriterTest
         }
         
         assertTrue("Did not round-trip file="+filename+" / format="+format,  b) ; 
-        
     }
 }
 

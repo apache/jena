@@ -18,9 +18,10 @@
 
 package org.apache.jena.sparql.graph;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.jena.atlas.data.ThresholdPolicy ;
 import org.apache.jena.atlas.data.ThresholdPolicyFactory ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.* ;
@@ -34,7 +35,7 @@ import org.junit.Before ;
 import org.junit.Test ;
 
 /** Tests for DataBag graphs */
-public class TestGraphsDataBag extends BaseTest
+public class TestGraphsDataBag
 {
     protected Graph distinct;
     protected Graph duplicates;

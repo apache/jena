@@ -19,13 +19,16 @@
 package org.apache.jena.sparql.path;
 
 import static org.apache.jena.atlas.lib.ListUtils.equalsUnordered ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -49,7 +52,7 @@ import org.apache.jena.sparql.sse.writers.WriterPath ;
 import org.junit.Assert ;
 import org.junit.Test ;
 
-public class TestPath extends BaseTest
+public class TestPath
 {
     static Graph graph1 = GraphFactory.createDefaultGraph() ;
     static Graph graph2 = GraphFactory.createDefaultGraph() ;

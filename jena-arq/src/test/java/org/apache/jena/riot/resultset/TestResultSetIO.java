@@ -22,6 +22,7 @@ import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetCSV ;
 import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetJSON ;
 import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetTSV ;
 import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetXML ;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
@@ -29,7 +30,6 @@ import java.util.ArrayList ;
 import java.util.Collection ;
 import java.util.List ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
@@ -46,7 +46,7 @@ import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
 
 @RunWith(Parameterized.class)
-public class TestResultSetIO extends BaseTest {
+public class TestResultSetIO {
     @Parameters(name = "{index}: {0}") 
     public static Collection<Object[]> data() { 
         Lang[] langs = { SPARQLResultSetXML

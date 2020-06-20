@@ -18,8 +18,11 @@
 
 package org.apache.jena.tdb.store;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.rdf.model.Model ;
@@ -38,7 +41,7 @@ import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 
-public abstract class AbstractStoreConnections extends BaseTest
+public abstract class AbstractStoreConnections
 {
     // Subclass to give direct and mapped versions.
     

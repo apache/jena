@@ -18,15 +18,17 @@
 
 package org.apache.jena.tdb.base.buffer;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.nio.ByteBuffer;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestPtrBuffer extends BaseTest
+public class TestPtrBuffer
 {
     static boolean originalNullOut ; 
     @BeforeClass static public void beforeClass()

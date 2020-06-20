@@ -20,12 +20,11 @@ package org.apache.jena.sparql.expr;
 
 import static org.apache.jena.sparql.expr.LibTestExpr.* ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.sparql.ARQException ;
 import org.junit.Test ;
 
 /** Expression evaluation involving math: */
-public class TestExpressionsMath extends BaseTest
+public class TestExpressionsMath
 {
     @Test public void pi_01()           { testDouble("math:pi()", "3.1415926", 0.00001) ; }
     @Test(expected=ARQException.class)

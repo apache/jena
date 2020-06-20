@@ -19,13 +19,13 @@
 package org.apache.jena.riot.system;
 
 import static org.apache.jena.riot.RDFLanguages.JSONLD ;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
 import java.util.Iterator ;
 import java.util.Map ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.rdf.model.Model ;
@@ -37,7 +37,7 @@ import org.junit.Assert ;
 import org.junit.Test ;
 
 /** tests : JSONLD->RDF ; JSONLD->RDF->JSONLD */
-public class TestJsonLDReadWrite extends BaseTest
+public class TestJsonLDReadWrite
 {
     private static String DIR = "testing/RIOT/jsonld/" ; 
     

@@ -49,7 +49,7 @@ import org.junit.Test ;
  * (propfunc) by simple property path flattening in the optimizer
  * or by use in complex path expressions.
  */  
-public class TestPathPF extends BaseTest
+public class TestPathPF
 {
     static Graph graph1 = GraphFactory.createDefaultGraph() ;
     static Node elt1 = SSE.parseNode("'elt1'") ;
@@ -157,6 +157,6 @@ public class TestPathPF extends BaseTest
 
     private static void check(Iterator<Node> iter, List<Node> expected) {
         List<Node> x = Iter.toList(iter) ;
-        assertEqualsUnordered(expected,x) ;
+        BaseTest.assertEqualsUnordered(expected,x) ;
     }
 }

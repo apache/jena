@@ -18,13 +18,17 @@
 
 package org.apache.jena.atlas.lib;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File ;
 import java.nio.file.Paths ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
-public class TestFilenameProcessing extends BaseTest
+public class TestFilenameProcessing
 {
     @Test public void encode_1() { encodeComponent("abc", "abc") ; }
     @Test public void encode_2() { encodeComponent("", "") ; }

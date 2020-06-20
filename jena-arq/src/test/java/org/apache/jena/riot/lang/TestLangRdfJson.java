@@ -18,10 +18,12 @@
 
 package org.apache.jena.riot.lang;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream ;
 import java.io.StringReader ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.rdf.model.Model ;
@@ -36,7 +38,7 @@ import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.Test ;
 
-public class TestLangRdfJson extends BaseTest
+public class TestLangRdfJson
 {
 	@Test
 	public void rdfjson_get_jena_reader()

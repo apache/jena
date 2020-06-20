@@ -18,7 +18,10 @@
 
 package org.apache.jena.sparql.graph;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -26,7 +29,7 @@ import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.Test ;
 
 /** Basic add and delete tests for a graph */
-public abstract class AbstractTestGraphAddDelete extends BaseTest
+public abstract class AbstractTestGraphAddDelete
 {
     // This will become the basis for a general graph test in Jena
     protected static final Node s1 = NodeFactoryExtra.parseNode("<ex:s1>") ;

@@ -18,9 +18,10 @@
 
 package org.apache.jena.tdb.assembler;
 
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.assembler.JA ;
 import org.apache.jena.assembler.exceptions.AssemblerException ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.query.Dataset ;
@@ -38,7 +39,7 @@ import org.junit.Before ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-public class TestTDBAssembler extends BaseTest
+public class TestTDBAssembler
 {
     // Can be slow - explicitly closes the dataset.
     static String dirAssem      = null ;

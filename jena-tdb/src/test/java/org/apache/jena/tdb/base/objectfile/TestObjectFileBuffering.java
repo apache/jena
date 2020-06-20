@@ -20,15 +20,15 @@ package org.apache.jena.tdb.base.objectfile;
 
 import static org.apache.jena.tdb.base.BufferTestLib.sameValue ;
 import static org.apache.jena.tdb.base.objectfile.AbstractTestObjectFile.fill ;
+import static org.junit.Assert.assertNotSame;
 
 import java.nio.ByteBuffer ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.tdb.base.file.BufferChannel ;
 import org.apache.jena.tdb.base.file.BufferChannelMem ;
 import org.junit.Test ;
 
-public class TestObjectFileBuffering extends BaseTest
+public class TestObjectFileBuffering
 {
     protected ObjectFile make(int bufferSize)
     {

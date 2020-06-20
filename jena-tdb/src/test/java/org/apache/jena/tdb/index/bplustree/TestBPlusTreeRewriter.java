@@ -23,7 +23,6 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.tdb.base.block.BlockMgr ;
 import org.apache.jena.tdb.base.block.BlockMgrFactory ;
@@ -36,7 +35,7 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-public class TestBPlusTreeRewriter extends BaseTest
+public class TestBPlusTreeRewriter
 {
     // See also CmdTestBlusTreeRewriter for randomized testing. 
     

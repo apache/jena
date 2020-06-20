@@ -18,6 +18,8 @@
 
 package org.apache.jena.fuseki;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.query.DatasetAccessor;
 import org.apache.jena.query.DatasetAccessorFactory;

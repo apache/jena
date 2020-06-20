@@ -18,6 +18,8 @@
 
 package org.apache.jena.riot.writer;
 
+import static org.junit.Assert.assertArrayEquals;
+
 import java.io.ByteArrayOutputStream ;
 import java.util.ArrayList ;
 import java.util.List ;

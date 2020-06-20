@@ -18,10 +18,12 @@
 
 package org.apache.jena.riot.lang;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap ;
 import java.util.Map ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.WebContent ;
@@ -31,7 +33,7 @@ import org.apache.jena.util.FileUtils ;
 import org.junit.Assert ;
 import org.junit.Test ;
 
-public class TestLang extends BaseTest
+public class TestLang
 {
     static { JenaSystem.init(); }
     @Test public void registration_01() { testregistration(RDFLanguages.RDFXML) ; }

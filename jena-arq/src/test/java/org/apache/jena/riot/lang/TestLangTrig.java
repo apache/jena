@@ -18,7 +18,8 @@
 
 package org.apache.jena.riot.lang;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.ErrorHandlerTestLib ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
@@ -29,7 +30,7 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
 /** Test the behaviour of the RIOT reader for TriG.  TriG includes checking of terms */
-public class TestLangTrig extends BaseTest
+public class TestLangTrig
 {
     @Test public void trig_01()     { parse("{}") ; } 
     @Test public void trig_02()     { parse("{}.") ; }

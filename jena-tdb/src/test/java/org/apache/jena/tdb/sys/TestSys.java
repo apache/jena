@@ -19,11 +19,12 @@
 package org.apache.jena.tdb.sys;
 
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertNotNull;
+
 import org.apache.jena.tdb.TDB ;
 import org.junit.Test;
 
-public class TestSys extends BaseTest
+public class TestSys
 {
     @Test public void sys1()
     {

@@ -18,14 +18,15 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.util.NodeUtils ;
 import org.junit.Test ;
 
-public class TestOrdering extends BaseTest
+public class TestOrdering
 {
     NodeValue nvInt2 = NodeValue.makeNodeInteger(2) ;
     NodeValue nvInt3 = NodeValue.makeNodeInteger("3") ;

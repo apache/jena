@@ -18,15 +18,17 @@
 
 package org.apache.jena.riot.stream;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.system.stream.LocatorFile ;
 import org.junit.Test ;
 
-public class TestLocators extends BaseTest 
+public class TestLocators 
 {
     public static final String testingDir = "testing/RIOT/Files/" ;
     

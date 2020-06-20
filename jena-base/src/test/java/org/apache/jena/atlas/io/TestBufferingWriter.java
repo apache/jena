@@ -18,12 +18,13 @@
 
 package org.apache.jena.atlas.io ;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.StringWriter ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
-public class TestBufferingWriter extends BaseTest {
+public class TestBufferingWriter {
     StringWriter    sw = null ;
     BufferingWriter w  = null ;
 

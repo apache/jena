@@ -18,13 +18,14 @@
 
 package org.apache.jena.riot.writer;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.RDFWriterRegistry ;
 import org.junit.Test ;
 
-public class TestWriterRegistration extends BaseTest
+public class TestWriterRegistration
 {
     static { RDFWriterRegistry.init(); }
     @Test public void registration_01() { testregistration(Lang.RDFXML) ; }

@@ -18,14 +18,15 @@
 
 package org.apache.jena.atlas.csv;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.jena.atlas.junit.BaseTest;
 import org.junit.Test;
 
-public class TestCSVParser extends BaseTest
+public class TestCSVParser
 {
     String[] row1 = {} ;
     String[] row2 = { "" } ;

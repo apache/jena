@@ -20,10 +20,13 @@ package org.apache.jena.tdb.base.record;
 
 import static org.apache.jena.tdb.base.record.RecordLib.intToRecord ;
 import static org.apache.jena.tdb.base.record.RecordLib.recordToInt ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
-public class TestRecord extends BaseTest
+public class TestRecord
 {
     static final public int RecLen = 4 ;
     

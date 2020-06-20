@@ -18,14 +18,18 @@
 
 package org.apache.jena.tdb.store.nodetable;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.store.NodeId ;
 import org.junit.Test ;
 
-public abstract class AbstractTestNodeTable extends BaseTest
+public abstract class AbstractTestNodeTable
 {
     protected abstract NodeTable createEmptyNodeTable() ;
     

@@ -18,7 +18,8 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+
 import org.apache.jena.query.QueryParseException ;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.util.ExprUtils ;
@@ -29,7 +30,7 @@ import org.junit.Test ;
 * @see TestExprLib
 * @see TestNodeValue
 */
-public class TestExpressions2 extends BaseTest
+public class TestExpressions2
 {
     @Test public void gregorian_eq_01()         { eval("'1999'^^xsd:gYear = '1999'^^xsd:gYear", true) ; }
     @Test public void gregorian_eq_02()         { eval("'1999'^^xsd:gYear != '1999'^^xsd:gYear", false) ; }

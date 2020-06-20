@@ -18,7 +18,8 @@
 
 package org.apache.jena.sparql.core;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
@@ -27,7 +28,7 @@ import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 
-public abstract class AbstractTestDynamicDataset extends BaseTest
+public abstract class AbstractTestDynamicDataset
 {
     protected abstract Dataset createDataset() ;
     protected abstract void releaseDataset(Dataset ds) ;

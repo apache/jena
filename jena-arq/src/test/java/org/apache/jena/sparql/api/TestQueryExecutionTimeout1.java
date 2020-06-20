@@ -19,10 +19,11 @@
 package org.apache.jena.sparql.api ;
 
 import static org.apache.jena.atlas.lib.Lib.sleep ;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.concurrent.TimeUnit ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.base.Sys ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.query.* ;
@@ -35,7 +36,7 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-public class TestQueryExecutionTimeout1 extends BaseTest
+public class TestQueryExecutionTimeout1
 {
     static Graph                g   = SSE.parseGraph("(graph (<s> <p> <o1>) (<s> <p> <o2>) (<s> <p> <o3>))") ;
     static DatasetGraph         dsg = DatasetGraphFactory.wrap(g) ;

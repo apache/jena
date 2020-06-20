@@ -18,9 +18,11 @@
 
 package org.apache.jena.riot.out;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.JenaRuntime ;
 import org.apache.jena.atlas.io.StringWriterI ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.CharSpace ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.system.PrefixMap ;
@@ -29,7 +31,7 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.Test ;
 
-public class TestNodeFmt extends BaseTest
+public class TestNodeFmt
 {
     private static String base = "http://example.org/base" ;
     private static PrefixMap prefixMap = PrefixMapFactory.createForOutput() ;

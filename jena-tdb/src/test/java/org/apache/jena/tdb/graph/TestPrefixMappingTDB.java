@@ -18,6 +18,10 @@
 
 package org.apache.jena.tdb.graph;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.util.Map ;
 
 import org.apache.jena.atlas.lib.FileOps ;

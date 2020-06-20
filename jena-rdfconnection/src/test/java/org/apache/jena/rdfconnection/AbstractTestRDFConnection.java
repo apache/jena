@@ -18,10 +18,13 @@
 
 package org.apache.jena.rdfconnection;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
@@ -35,7 +38,7 @@ import org.apache.jena.update.UpdateRequest;
 import org.junit.Assume;
 import org.junit.Test;
 
-public abstract class AbstractTestRDFConnection extends BaseTest {
+public abstract class AbstractTestRDFConnection {
     // Testing data.
     static String DIR = "testing/RDFConnection/";
 

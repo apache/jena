@@ -20,13 +20,16 @@ package org.apache.jena.tdb.index;
 
 import static org.apache.jena.tdb.base.record.RecordLib.intToRecord ;
 import static org.apache.jena.tdb.index.IndexTestLib.* ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import org.apache.jena.tdb.base.record.Record ;
 import org.apache.jena.tdb.base.record.RecordLib ;
 import org.junit.After;
 import org.junit.Test;
 
-public abstract class AbstractTestIndex extends BaseTest 
+public abstract class AbstractTestIndex 
 {
     Index index = null ;
     

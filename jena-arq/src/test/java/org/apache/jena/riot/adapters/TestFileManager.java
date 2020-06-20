@@ -18,9 +18,10 @@
 
 package org.apache.jena.riot.adapters;
 
+import static org.junit.Assert.*;
+
 import java.io.InputStream ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.ontology.Individual ;
 import org.apache.jena.ontology.OntModel ;
 import org.apache.jena.ontology.OntModelSpec ;
@@ -36,7 +37,7 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 @SuppressWarnings("deprecation")
-public class TestFileManager extends BaseTest
+public class TestFileManager
 {
     static Logger log = LoggerFactory.getLogger(TestFileManager.class) ;
     public static final String testingDir = "testing/RIOT/FileManager" ;

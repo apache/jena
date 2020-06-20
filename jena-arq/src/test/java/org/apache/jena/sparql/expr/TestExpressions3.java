@@ -18,7 +18,8 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.sse.Item ;
@@ -34,7 +35,7 @@ import org.junit.Test ;
 * @see TestExprLib
 * @see TestNodeValue
 */
-public class TestExpressions3 extends BaseTest
+public class TestExpressions3
 {
     @Test public void bound_01()       { eval("BOUND(?x)", "(?x 1)", true) ; }
     @Test public void bound_02()       { eval("BOUND(?x)", "(?y 1)", false) ; }

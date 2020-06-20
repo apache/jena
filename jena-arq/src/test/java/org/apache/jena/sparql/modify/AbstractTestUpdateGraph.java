@@ -19,6 +19,10 @@
 package org.apache.jena.sparql.modify;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.* ;
 import org.apache.jena.query.ARQ ;

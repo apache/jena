@@ -18,7 +18,9 @@
 
 package org.apache.jena.sparql.algebra;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryFactory ;
 import org.apache.jena.query.Syntax ;
@@ -28,7 +30,7 @@ import org.apache.jena.sparql.engine.main.JoinClassifier ;
 import org.apache.jena.sparql.engine.main.LeftJoinClassifier ;
 import org.junit.Test ;
 
-public class TestClassify extends BaseTest
+public class TestClassify
 {
     @Test public void testClassify_Join_01() 
 	{ classifyJ("{?s :p :o . { ?s :p :o FILTER(true) } }", true) ; }

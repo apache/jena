@@ -33,6 +33,7 @@ public class Env
     
     static { initFM() ; }
     
+    @SuppressWarnings("deprecation")
     private static void initFM()
     {
         fileManager = FileManager.create();

@@ -18,13 +18,14 @@
 
 package org.apache.jena.sparql.api;
 
+import static org.junit.Assert.*;
+
 import java.util.Iterator;
 import java.util.Set ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
-import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
@@ -61,7 +62,7 @@ import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Test;
 
-public class TestAPI extends BaseTest
+public class TestAPI
 {
     private static final String ns = "http://example/ns#" ;
     

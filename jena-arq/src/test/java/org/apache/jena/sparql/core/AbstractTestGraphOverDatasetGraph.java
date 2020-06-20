@@ -18,10 +18,14 @@
 
 package org.apache.jena.sparql.core;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -33,7 +37,7 @@ import org.junit.Test ;
 /**
  * Tests of graphs as views of a DatasetGraph.
  */
-public abstract class AbstractTestGraphOverDatasetGraph extends BaseTest
+public abstract class AbstractTestGraphOverDatasetGraph
 {
     // See also: ARQ/GraphsTests, TestGraphsMem(enable tests?), UnionTransformTests
 

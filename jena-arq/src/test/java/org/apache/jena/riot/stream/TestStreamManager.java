@@ -18,10 +18,12 @@
 
 package org.apache.jena.riot.stream;
 
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
@@ -36,7 +38,7 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-public class TestStreamManager extends BaseTest
+public class TestStreamManager
 {
     private static final String directory = "testing/RIOT/StreamManager" ;
     private static final String absDirectory = new File(directory).getAbsolutePath() ;

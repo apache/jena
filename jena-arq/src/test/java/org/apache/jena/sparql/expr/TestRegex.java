@@ -18,10 +18,11 @@
 
 package org.apache.jena.sparql.expr;
 
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.util.Symbol;
@@ -33,7 +34,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class TestRegex extends BaseTest
+public class TestRegex
 {
     @Parameters(name = "{index}: {0}")
     public static Collection<Object[]> data() {

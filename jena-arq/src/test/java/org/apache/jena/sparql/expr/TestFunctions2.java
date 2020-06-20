@@ -18,7 +18,9 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.graph.Node ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.ARQConstants ;
@@ -29,7 +31,7 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-public class TestFunctions2 extends BaseTest
+public class TestFunctions2
 {
     // Some overlap with TestFunctions except those are direct function calls and these are via SPARQL 1.1 syntax.
     // Better too many tests than too few.

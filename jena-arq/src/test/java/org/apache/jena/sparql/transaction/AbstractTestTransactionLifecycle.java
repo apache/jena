@@ -18,6 +18,10 @@
 
 package org.apache.jena.sparql.transaction;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 
 import java.util.ArrayList;
@@ -25,7 +29,6 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.ReadWrite;
@@ -37,7 +40,7 @@ import org.junit.Test;
 /**
  * Dataset transaction lifecycle. 
  */
-public abstract class AbstractTestTransactionLifecycle extends BaseTest
+public abstract class AbstractTestTransactionLifecycle
 {
     protected abstract Dataset create();
     
@@ -245,7 +248,6 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
         assertFalse(b2);
         ds.end();
     }
-
     
     // JENA-1469
     @Test
@@ -260,7 +262,7 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
 
     // XXX Refactor the above code.
     
-    // promotion tyope specified
+    // promotion type specified
     private void testPromote(TxnType txnType , Promote promoteMode, boolean succeeds) {
         Dataset ds = create();
         ds.begin(txnType);

@@ -18,10 +18,13 @@
 
 package org.apache.jena.tdb.transaction;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.ReadWrite ;
@@ -31,7 +34,7 @@ import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 
-public abstract class AbstractTestObjectFileTrans extends BaseTest
+public abstract class AbstractTestObjectFileTrans
 {
     static long count = 0 ;
     ObjectFile file1 ;

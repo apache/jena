@@ -18,7 +18,8 @@
 
 package org.apache.jena.riot.system;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
+
 import org.apache.jena.iri.IRIFactory ;
 import org.junit.Test ;
 
@@ -26,7 +27,7 @@ import org.junit.Test ;
  * Abstract tests for {@link PrefixMap} implementations
  * 
  */
-public abstract class AbstractTestPrefixMap extends BaseTest {
+public abstract class AbstractTestPrefixMap {
     protected IRIFactory factory = IRIResolver.iriFactory();
 
     /**

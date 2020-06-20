@@ -18,9 +18,10 @@
 
 package org.apache.jena.tdb.store;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.function.Predicate;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.* ;
@@ -34,7 +35,7 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-public class TestQuadFilter extends BaseTest
+public class TestQuadFilter
 {
     private static String graphToHide = "http://example/g2" ;
     private static Dataset ds = setup() ;  

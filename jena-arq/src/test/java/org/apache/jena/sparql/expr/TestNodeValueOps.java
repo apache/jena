@@ -18,12 +18,13 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueOps ;
 import org.junit.Test ;
 
-public class TestNodeValueOps extends BaseTest
+public class TestNodeValueOps
 {
     // ** Addition
     // Numerics

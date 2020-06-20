@@ -18,10 +18,11 @@
 
 package org.apache.jena.riot.lang;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.StringReader ;
 import java.util.List ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFParser ;
@@ -34,7 +35,7 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
 /** System-level testing of the parsers - testing the parser plumbing, not the language details */
-public class TestParserFactory extends BaseTest
+public class TestParserFactory
 {
     @Test public void ntriples_01() 
     {

@@ -18,25 +18,16 @@
 
 package org.apache.jena.sparql.expr;
 
+import static org.junit.Assert.*;
+
 import java.math.BigDecimal ;
-import java.util.Calendar ;
-import java.util.Comparator;
-import java.util.GregorianCalendar ;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.TimeZone ;
+import java.util.*;
 
 import org.apache.jena.JenaRuntime ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
@@ -50,7 +41,7 @@ import org.junit.Test ;
  * @see TestExprLib
  * @see TestNodeValue
  */
-public class TestNodeValue extends BaseTest
+public class TestNodeValue
 {
     static final double doubleAccuracy = 0.00000001d ;
     static boolean warningSetting ; 

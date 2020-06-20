@@ -18,7 +18,8 @@
 
 package org.apache.jena.sparql.algebra;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryFactory ;
@@ -26,7 +27,7 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
 //Tests for conversion of algebra forms to quad form. 
-public class TestTransformQuads extends BaseTest
+public class TestTransformQuads
 {
     // Simple
     @Test public void quads01() { test ("{ GRAPH ?g { ?s ?p ?o } }", 

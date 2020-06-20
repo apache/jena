@@ -18,10 +18,12 @@
 
 package org.apache.jena.sparql.algebra;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Set;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.sparql.algebra.op.OpExt ;
 import org.apache.jena.sparql.algebra.op.OpFilter;
@@ -36,7 +38,7 @@ import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 import org.junit.Test ;
 
 /** Tests for OpExt */ 
-public class TestTransformOpExt extends BaseTest
+public class TestTransformOpExt
 {
     // An OpExt
     static class OpExtTest extends OpExt {

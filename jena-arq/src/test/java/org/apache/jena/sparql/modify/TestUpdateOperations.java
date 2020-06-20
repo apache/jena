@@ -18,10 +18,12 @@
 
 package org.apache.jena.sparql.modify;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import java.util.concurrent.atomic.AtomicLong ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.rdf.model.Model ;
@@ -47,7 +49,7 @@ import org.junit.Test ;
 
 // Most of the testing of SPARQL Update is scripts and uses the SPARQL-WG test suite.
 // Here are a few additional tests
-public class TestUpdateOperations extends BaseTest
+public class TestUpdateOperations
 {
     private static final String DIR = "testing/Update" ;
     private DatasetGraph graphStore() { return DatasetGraphFactory.create() ; }

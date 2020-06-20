@@ -18,12 +18,15 @@
 
 package org.apache.jena.riot.thrift;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
@@ -42,7 +45,7 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.IsoMatcher ;
 import org.junit.Test ;
 
-public class TestStreamRDFThrift extends BaseTest {
+public class TestStreamRDFThrift {
 
     private static final String DIR = TS_RDFThrift.TestingDir ;
     

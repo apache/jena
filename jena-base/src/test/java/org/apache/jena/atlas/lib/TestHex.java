@@ -19,10 +19,12 @@
 package org.apache.jena.atlas.lib;
 
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import org.junit.Test ;
 
-public class TestHex extends BaseTest
+public class TestHex
 {
     @Test
     public void hex_01() {

@@ -24,6 +24,9 @@ import static org.apache.jena.fuseki.ServerTest.gn1;
 import static org.apache.jena.fuseki.ServerTest.gn2;
 import static org.apache.jena.fuseki.ServerTest.model1;
 import static org.apache.jena.fuseki.ServerTest.model2;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.*;
 import java.net.HttpURLConnection;

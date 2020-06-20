@@ -18,9 +18,13 @@
 
 package org.apache.jena.tdb.store;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -31,7 +35,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test ;
 
-public class TestTripleTable extends BaseTest
+public class TestTripleTable
 {
     private static String levelInfo;  
     private static String levelExec;  

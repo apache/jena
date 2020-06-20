@@ -18,13 +18,14 @@
 
 package org.apache.jena.riot.thrift;
 
+import static org.junit.Assert.assertFalse;
+
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
 import java.io.IOException ;
 import java.io.InputStream ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
@@ -35,7 +36,7 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderResultSet ;
 import org.junit.Test ;
 
-public class TestResultSetThrift extends BaseTest {
+public class TestResultSetThrift {
     // Only datatypes that transmitted perfectly. 
     static ResultSetRewindable rs0 = make
         ("(resultset (?x ?y)"

@@ -18,7 +18,10 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.graph.Graph ;
@@ -36,7 +39,7 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-public class TestCustomAggregates extends BaseTest {
+public class TestCustomAggregates {
     
     public static final String aggIRI = "http://example.test/agg" ;
     public static final String aggIRI2 = "http://example.test/aggUnRegistered" ;

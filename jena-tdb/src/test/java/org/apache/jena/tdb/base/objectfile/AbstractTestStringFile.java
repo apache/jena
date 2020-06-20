@@ -18,12 +18,14 @@
 
 package org.apache.jena.tdb.base.objectfile;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 
-public abstract class AbstractTestStringFile extends BaseTest
+public abstract class AbstractTestStringFile
 {
     StringFile f = null ;
     
@@ -94,9 +96,8 @@ public abstract class AbstractTestStringFile extends BaseTest
         f.flush() ;
         long id2 = f.write(x2) ;
         // No flush.
-        
+       
         assertNotEquals("Node Ids", id1, id2) ;
-        
         String z = f.read(id2) ;
         
         test(id2, x2) ;

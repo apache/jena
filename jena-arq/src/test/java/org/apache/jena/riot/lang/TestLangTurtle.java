@@ -21,10 +21,12 @@ package org.apache.jena.riot.lang;
 import static org.apache.jena.riot.system.ErrorHandlerFactory.errorHandlerNoLogging ;
 import static org.apache.jena.riot.system.ErrorHandlerFactory.getDefaultErrorHandler ;
 import static org.apache.jena.riot.system.ErrorHandlerFactory.setDefaultErrorHandler ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.rdf.model.Model ;
@@ -42,7 +44,7 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-public class TestLangTurtle extends BaseTest
+public class TestLangTurtle
 {
     @Test public void blankNodes1()
     {
