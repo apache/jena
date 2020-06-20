@@ -18,7 +18,6 @@
 
 package org.apache.jena.shacl.testing;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,19 +33,14 @@ public class RunManifest {
 
     public static void runTest(String manifest, boolean verbose) {
         if ( verbose ) {
-            try {
-                String fn = manifest;
-                if ( manifest.startsWith("file://" ) )
-                    fn = manifest.substring("file://".length());
-                String x = IO.readWholeFileAsUTF8(fn);
-                System.out.print(x);
-                if ( ! x.endsWith("\n") )
-                    System.out.println();
-                System.out.println("<><><><><>");
-            } catch (IOException e) {
-                e.printStackTrace();
-                return ;
-            }
+            String fn = manifest;
+            if ( manifest.startsWith("file://" ) )
+                fn = manifest.substring("file://".length());
+            String x = IO.readWholeFileAsUTF8(fn);
+            System.out.print(x);
+            if ( ! x.endsWith("\n") )
+                System.out.println();
+            System.out.println("<><><><><>");
         }
 
         List<String> omitManifests = new ArrayList<>();

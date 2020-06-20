@@ -62,7 +62,7 @@ public class G {
         }
         return false;
     }
-    
+
     public static boolean hasType(Graph graph, Node x, Node type) {
         Objects.requireNonNull(x, "Subject");
         Objects.requireNonNull(type, "Type");
@@ -86,7 +86,31 @@ public class G {
     }
 
     public static List<Node> listPO(Graph graph, Node p, Node o) {
-        return graph.find(null, p, o).mapWith(Triple::getSubject).toList();
+        return iterPO(graph, p, o).toList();
+    }
+
+    public static long countPO(Graph graph, Node p, Node o) {
+        return Iter.count(iterPO(graph, p, o));
+    }
+
+    public static ExtendedIterator<Node> iterPO(Graph graph, Node p, Node o) {
+        return graph.find(null, p, o).mapWith(Triple::getSubject);
+    }
+
+    public static long objectConnectiveness(Graph graph, Node object) {
+        return Iter.count(graph.find(null, null, object));
+    }
+
+    public static boolean oneConnected(Graph graph, Node object) {
+        ExtendedIterator<Triple> iter = graph.find(null, null, object);
+        if ( ! iter.hasNext() )
+            // Zero.
+            return false;
+        iter.next();
+        if ( iter.hasNext() )
+            // more than one
+            return false;
+        return true;
     }
 
     public static List<Node> listSubjectsOfType(Graph graph, Node type) {
@@ -103,7 +127,7 @@ public class G {
     /**
      * List the subclasses of a type, including itself.
      * This is <tt>?x rdfs:subClassOf* type</tt>.
-     * The list does not contain duplicates.   
+     * The list does not contain duplicates.
      */
     public static List<Node> listSubClasses(Graph graph, Node type) {
         List<Node> acc = new ArrayList<>();
@@ -116,7 +140,7 @@ public class G {
     /**
      * List the superclasses of a type, including itself.
      * This is <tt>type rdfs:subClassOf* ?x</tt>.
-     * The list does not contain duplicates.   
+     * The list does not contain duplicates.
      */
     public static List<Node> listSuperClasses(Graph graph, Node type) {
         List<Node> acc = new ArrayList<>();
@@ -155,7 +179,7 @@ public class G {
     }
 
     // Set versions.
-    
+
     public static Set<Node> setNodesOfType(Graph graph, Node type) {
         return graph.find(null, C.rdfType, type).mapWith(Triple::getSubject).toSet();
     }
@@ -164,7 +188,7 @@ public class G {
     public static Set<Node> setTypesOfNode(Graph graph, Node subject) {
         return graph.find(subject, C.rdfType, null).mapWith(Triple::getObject).toSet();
     }
- 
+
     /**
      * Set of the subclasses of a type, including itself.
      * This is <tt>?x rdfs:subClassOf* type</tt>.
@@ -175,7 +199,7 @@ public class G {
         Transitive.transitiveInc(graph, false, type, C.rdfsSubclassOf, acc);
         return acc;
     }
-    
+
     /** List all the node of type, including considering rdfs:subClassOf */
     public static Set<Node> setAllNodesOfType(Graph graph, Node type) {
         Set<Node> types = G.setSubClasses(graph, type);
@@ -183,7 +207,7 @@ public class G {
         types.forEach(t->nodes.addAll(G.listNodesOfType(graph, t)));
         return nodes;
     }
-    
+
     public static Set<Node> setSP(Graph graph, Node s, Node p) {
         return graph.find(s, p, null).mapWith(Triple::getObject).toSet();
     }
@@ -222,7 +246,7 @@ public class G {
     public static boolean containsOne(Graph g, Node s, Node p, Node o) {
         return g.contains(s, p, o) && Iter.count(g.find(s,p,null)) == 1;
     }
-    
+
     public static boolean hasProperty(Graph g, Node s, Node p) {
         return g.contains(s, p, null);
     }

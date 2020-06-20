@@ -18,11 +18,15 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
+import static org.apache.jena.shacl.engine.constraint.CompactOut.compact;
 import static org.apache.jena.shacl.lib.ShLib.displayStr;
 
+import java.util.Objects;
 import java.util.Set;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.vocabulary.SHACL;
@@ -32,8 +36,8 @@ import org.apache.jena.sparql.path.Path;
 /** sh:lessThanOrEquals */
 public class LessThanOrEqualsConstraint extends ConstraintPairwise {
 
-    public LessThanOrEqualsConstraint(Node property) {
-        super(property);
+    public LessThanOrEqualsConstraint(Node value) {
+        super(value, SHACL.LessThanOrEqualsConstraintComponent);
     }
 
     @Override
@@ -51,12 +55,17 @@ public class LessThanOrEqualsConstraint extends ConstraintPairwise {
     }
 
     @Override
-    public Node getComponent() {
-        return SHACL.LessThanOrEqualsConstraintComponent;
+    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
+        compact(out, nodeFmt, "lessThanOrEquals", value);
     }
 
     @Override
     public String toString() {
-        return "LessThanOrEquals["+displayStr(property)+"]";
+        return "LessThanOrEquals["+displayStr(value)+"]";
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value, 4);
     }
 }

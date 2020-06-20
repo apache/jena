@@ -47,6 +47,7 @@ public class ShaclcParser {
     public static Shapes parse(String filename) {
         return parse(filename, null);
     }
+
     /**
      * Parse the file to get SHACL shapes.
      * @param filename
@@ -55,6 +56,16 @@ public class ShaclcParser {
      */
     public static Shapes parse(String filename, String baseURI) {
         InputStream input = IO.openFile(filename);
+        return parse(input, baseURI);
+    }
+
+    /**
+     * Parse the file to get SHACL shapes.
+     * @param input
+     * @param baseURI
+     * @return Shapes
+     */
+    public static Shapes parse(InputStream input, String baseURI) {
         Graph graph = parseSHACLC(input, baseURI);
         return Shapes.parse(graph);
     }
@@ -74,13 +85,13 @@ public class ShaclcParser {
     public static void parseSHACLC(InputStream input, StreamRDF stream) {
         parseSHACLC(input, null, stream);
     }
-    
+
     /** Parse from an {@code InputStream} sending the triples to a {@link StreamRDF}. */
     public static void parseSHACLC(InputStream input, String baseURI, StreamRDF stream) {
         ShaclCompactParserJJ parser = new ShaclCompactParserJJ(input, StandardCharsets.UTF_8.name());
         parse$(parser, stream, baseURI);
     }
-    
+
     /**
      * Parse from an {@code Reader} to get the SHACL graph.
      * The reader should be UTF-8
@@ -96,7 +107,7 @@ public class ShaclcParser {
         parse$(parser, stream, baseURI);
         return graph;
     }
-    
+
     private static void parse$(ShaclCompactParserJJ parser, StreamRDF stream, String baseURI) {
         Prologue prologue = parser.getPrologue();
         stream.start();
@@ -122,7 +133,7 @@ public class ShaclcParser {
         parser.finish();
         stream.finish();
     }
-    
+
     private static void prefix(StreamRDF stream, Prologue prologue, String prefix, String uri) {
         stream.prefix(prefix, uri);
         prologue.getPrefixMapping().setNsPrefix(prefix, uri);

@@ -22,8 +22,10 @@ import java.io.InputStream;
 import java.io.Reader;
 
 import org.apache.jena.atlas.web.ContentType;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.ReaderRIOT;
 import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFOps;
 import org.apache.jena.sparql.util.Context;
 
 /** 
@@ -31,12 +33,18 @@ import org.apache.jena.sparql.util.Context;
  * <a href="https://w3c.github.io/shacl/shacl-compact-syntax/">SHACL Compact Syntax</a>
  */
 public class ReaderRIOTShaclc implements ReaderRIOT {
+    
+    @Override
+    public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
+        Graph g = ShaclcParser.parseSHACLC(reader, baseURI);
+        StreamRDFOps.sendGraphToStream(g, output);
+    }
 
     @Override
-    public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {}
-
-    @Override
-    public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {}
+    public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
+        Graph g = ShaclcParser.parseSHACLC(in, baseURI);
+        StreamRDFOps.sendGraphToStream(g, output);
+    }
 
 }
 

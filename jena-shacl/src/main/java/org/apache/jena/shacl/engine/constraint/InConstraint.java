@@ -18,14 +18,16 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
+import static org.apache.jena.shacl.engine.constraint.CompactOut.compactArrayNodes;
 import static org.apache.jena.shacl.lib.ShLib.displayStr;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.shacl.vocabulary.SHACL;
@@ -33,7 +35,7 @@ import org.apache.jena.shacl.vocabulary.SHACL;
 /** sh:in */
 public class InConstraint extends ConstraintTerm {
 
-    private final Set<Node> values = new HashSet<>();
+    private final List<Node> values = new ArrayList<>();
 
     public InConstraint(List<Node> list) {
         values.addAll(list);
@@ -50,6 +52,11 @@ public class InConstraint extends ConstraintTerm {
             return null;
         String errMsg = toString()+" : RDF term "+displayStr(n)+" not in expected values";
         return new ReportItem(errMsg, n);
+    }
+
+    @Override
+    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
+        compactArrayNodes(out, nodeFmt, "in", values);
     }
 
     @Override

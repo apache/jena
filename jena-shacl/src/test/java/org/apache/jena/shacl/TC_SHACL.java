@@ -18,7 +18,7 @@
 
 package org.apache.jena.shacl;
 
-import org.apache.jena.shacl.compact.TestShaclCompact;
+import org.apache.jena.shacl.compact.TS_Compact;
 import org.apache.jena.shacl.tests.TestValidationReport;
 import org.apache.jena.shacl.tests.jena_shacl.TS_JenaShacl;
 import org.apache.jena.shacl.tests.std.TS_StdSHACL;
@@ -30,7 +30,7 @@ import org.junit.runners.Suite;
     TestValidationReport.class
     , TS_StdSHACL.class
     , TS_JenaShacl.class
-    , TestShaclCompact.class
+    , TS_Compact.class
 } )
 
 public class TC_SHACL { }

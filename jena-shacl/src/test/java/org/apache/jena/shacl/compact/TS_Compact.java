@@ -18,17 +18,16 @@
 
 package org.apache.jena.shacl.compact;
 
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFParserRegistry;
-import org.apache.jena.riot.ReaderRIOTFactory;
-import org.apache.jena.riot.system.ParserProfile;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-/** SHACL Compact Syntax setup */
-public class SHACLC {
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestReadShaclCompact.class
+    , TestWriteShaclCompact.class
 
-    public static void init() {
-        // Lang.SHACLC is in RIOT RDFLanguages.
-        ReaderRIOTFactory factory = (Lang language, ParserProfile profile)->new ReaderRIOTShaclc();
-        RDFParserRegistry.registerLangTriples(Lang.SHACLC, factory);
-    }
+})
+public class TS_Compact {
+
 }
+

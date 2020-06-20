@@ -18,10 +18,14 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
+import static org.apache.jena.shacl.engine.constraint.CompactOut.compactQuotedString;
+
 import java.util.Set;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.Shape;
@@ -48,5 +52,10 @@ public class ReportConstraint implements Constraint {
     @Override
     public void validatePropertyShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode, Path path, Set<Node> valueNodes) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
+        compactQuotedString(out, "report", "report");
     }
 }

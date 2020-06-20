@@ -42,6 +42,11 @@ public class PropertyShape extends Shape {
     @Override
     public void visit(ShapeVisitor visitor) {  visitor.visit(this); }
 
+    @Override
+    public boolean isPropertyShape() {
+        return true;
+    }
+
     public Path getPath() {
         return path;
     }

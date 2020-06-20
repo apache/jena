@@ -22,15 +22,17 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.shacl.vocabulary.SHACL;
 
 public enum TargetType {
-    targetNode(SHACL.targetNode),
-    targetClass(SHACL.targetClass),
-    targetObjectsOf(SHACL.targetObjectsOf),
-    targetSubjectsOf(SHACL.targetSubjectsOf),
-    implicitClass(null);
+    targetNode(SHACL.targetNode, "targetNode"),
+    targetClass(SHACL.targetClass, "targetClass"),
+    targetObjectsOf(SHACL.targetObjectsOf, "targetObjectsOf"),
+    targetSubjectsOf(SHACL.targetSubjectsOf, "targetSubjectsOf"),
+    implicitClass(null,null);
 
     public final Node predicate;
+    public final String compact;
 
-    TargetType(Node n) {
+    TargetType(Node n, String compactWord) {
         this.predicate = n;
+        this.compact = compactWord; 
     }
 }

@@ -18,7 +18,9 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.vocabulary.SHACL;
 
 /** sh:maxCount */
@@ -28,10 +30,19 @@ public class MaxCount extends CardinalityConstraint {
         super(-1, maxCardinality);
     }
 
+    public int getMaxCount() {
+        return super.maxCount;
+    }
+    
+
     @Override
     public Node getComponent() {
         return SHACL.MaxCountConstraintComponent;
     }
+
+    // Special syntax. Do nothing is called generally.
+    @Override
+    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {}
 
     @Override
     public String toString() {

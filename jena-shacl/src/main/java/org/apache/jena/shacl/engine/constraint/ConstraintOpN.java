@@ -21,17 +21,18 @@ package org.apache.jena.shacl.engine.constraint;
 import java.util.List;
 
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.parser.Shape;
 
 /** A constraint that combines N other constraints */
 public abstract class ConstraintOpN extends ConstraintOp {
-    
+
     protected  final List<Shape> others;
-    
+
     protected ConstraintOpN(List<Shape> subShapes) {
         others = subShapes;
     }
-    
+
     @Override
     public void print(IndentedWriter out) {
         out.print(toString());
@@ -42,5 +43,10 @@ public abstract class ConstraintOpN extends ConstraintOp {
             out.ensureStartOfLine();
         }
         out.decIndent();
+    }
+
+    @Override
+    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
+        super.printCompact(out, nodeFmt);
     }
 }

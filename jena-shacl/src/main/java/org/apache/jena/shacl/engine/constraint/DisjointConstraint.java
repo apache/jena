@@ -18,11 +18,15 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
+import static org.apache.jena.shacl.engine.constraint.CompactOut.compactArrayNodes;
 import static org.apache.jena.shacl.lib.ShLib.displayStr;
 
+import java.util.Objects;
 import java.util.Set;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.vocabulary.SHACL;
@@ -31,8 +35,8 @@ import org.apache.jena.sparql.path.Path;
 /** sh:disjoint */
 public class DisjointConstraint extends ConstraintPairwise {
 
-    public DisjointConstraint(Node property) {
-        super(property);
+    public DisjointConstraint(Node value) {
+        super(value, SHACL.DisjointConstraintComponent);
     }
 
     @Override
@@ -47,12 +51,17 @@ public class DisjointConstraint extends ConstraintPairwise {
     }
 
     @Override
-    public Node getComponent() {
-        return SHACL.DisjointConstraintComponent;
+    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
+        compactArrayNodes(out, nodeFmt, null, null);
     }
 
     @Override
     public String toString() {
-        return "Disjoint["+displayStr(property)+"]";
+        return "Disjoint["+displayStr(value)+"]";
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.value, 1);
     }
 }

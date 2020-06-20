@@ -18,9 +18,13 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
+import static org.apache.jena.shacl.engine.constraint.CompactOut.compact;
+
 import java.util.Objects;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.validation.ReportItem;
@@ -52,6 +56,11 @@ public class StrMinLengthConstraint extends ConstraintTerm {
     @Override
     public Node getComponent() {
         return SHACL.MinLengthConstraintComponent;
+    }
+
+    @Override
+    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
+        compact(out, "minLength", minLength);
     }
 
     @Override

@@ -18,13 +18,16 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
+import static org.apache.jena.shacl.engine.constraint.CompactOut.compact;
 import static org.apache.jena.shacl.lib.ShLib.displayStr;
 
 import java.util.Objects;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.shacl.vocabulary.SHACL;
@@ -54,6 +57,18 @@ public class DatatypeConstraint extends ConstraintTerm {
         this.rdfDatatype = NodeFactory.getType(dtURI);
     }
 
+    public Node getDatatype() {
+        return datatype;
+    }
+
+    public String getDatatypeURI() {
+        return dtURI;
+    }
+
+    public RDFDatatype getRDFDatatype() {
+        return rdfDatatype;
+    }
+
     @Override
     public ReportItem validate(ValidationContext vCxt, Node n) {
         if ( n.isLiteral() && dtURI.equals(n.getLiteralDatatypeURI()) ) {
@@ -73,6 +88,12 @@ public class DatatypeConstraint extends ConstraintTerm {
     @Override
     public Node getComponent() {
         return SHACL.DatatypeConstraintComponent;
+    }
+
+    @Override
+    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
+        compact(out, nodeFmt, "datatype", datatype);
+        //nodeFmt.format(out, datatype);
     }
 
     @Override

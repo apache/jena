@@ -20,8 +20,10 @@ package org.apache.jena.shacl.engine.constraint;
 
 import java.util.*;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.ShaclException;
 import org.apache.jena.shacl.ValidationReport;
 import org.apache.jena.shacl.engine.ValidationContext;
@@ -156,6 +158,12 @@ public class QualifiedValueShape implements Constraint {
     @Override
     public Node getComponent() {
         return SHACL.qualifiedValueShape;
+    }
+
+    // XXX TODO : QualifiedValueShape
+    @Override
+    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
+        throw new UnsupportedOperationException("qualifiedValueShape");
     }
 
     @Override

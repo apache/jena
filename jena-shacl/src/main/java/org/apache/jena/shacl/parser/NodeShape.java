@@ -39,6 +39,11 @@ public class NodeShape extends Shape {
     public void visit(ShapeVisitor visitor) {  visitor.visit(this); }
 
     @Override
+    public boolean isNodeShape() {
+        return true;
+    }
+
+    @Override
     public void printHeader(IndentedWriter out) {
         out.print("NodeShape");
     }

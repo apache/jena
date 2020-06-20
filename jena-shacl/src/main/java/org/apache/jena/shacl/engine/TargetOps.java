@@ -31,7 +31,7 @@ import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.sys.C;
 import org.apache.jena.shacl.vocabulary.SHACL;
 
-/** Algroithms that calculate targets */
+/** Algorithms that calculate targets */
 public class TargetOps {
     public static String strTargets(Collection<Target> targets) {
         if ( targets.size() == 1 )

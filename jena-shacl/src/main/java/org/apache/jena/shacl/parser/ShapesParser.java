@@ -31,6 +31,7 @@ import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.engine.ShaclPaths;
 import org.apache.jena.shacl.engine.Target;
 import org.apache.jena.shacl.engine.TargetType;
@@ -59,8 +60,11 @@ public class ShapesParser {
     private static IndentedWriter OUT = IndentedWriter.stdout;
     //private static Logger LOG = LoggerFactory.getLogger(ShapesParser.class);
 
-    /** Return a list of "top shapes", those with targets.
+    /**
+     * Return a list of "top shapes", those with targets.
      * The {@code shapesMap} is modified, adding in all shapes processed.
+     * <p>
+     * Applications should call functions in {@link Shapes} rather than call the parser directly.
      */
     public static Collection<Shape> parseShapes(Graph shapesGraph, Targets targets, Map<Node, Shape> shapesMap) {
         Targets rootShapes = targets;
@@ -69,7 +73,7 @@ public class ShapesParser {
             OUT.println("SparqlConstraintComponents");
         ConstraintComponents sparqlConstraintComponents = ConstraintComponents.parseSparqlConstraintComponents(shapesGraph);
 
-        // LinkedHashMap - convenience, so shapes are kept in 
+        // LinkedHashMap - convenience, so shapes are kept in
         // the order of discovery below.
         Map<Node, Shape> acc = new LinkedHashMap<>();
 
@@ -116,12 +120,13 @@ public class ShapesParser {
         }
 
         // Syntax rules for well-formed shapes.
-        //https://www.w3.org/TR/shacl/#syntax-rules
+        //   https://www.w3.org/TR/shacl/#syntax-rules
         // Note - we only have the reachable shapes in "shapesMap".
         return shapes(acc) ;
     }
 
-    /** Parse and add all the declared shapes into the map.
+    /**
+     * Parse and add all the declared shapes into the map.
      * The {@code shapesMap} is modified, adding in all shapes processed.
      */
     public static Collection<Shape> declaredShapes(Graph shapesGraph, Map<Node, Shape> _shapesMap) {
@@ -153,7 +158,7 @@ public class ShapesParser {
     }
 
     /** Parse a specific shape from the Shapes graph */
-    public static Shape parseShape(Graph shapesGraph, Node shNode) {
+    private static Shape parseShape(Graph shapesGraph, Node shNode) {
         // Avoid recursion.
         Map<Node, Shape> parsed = new HashMap<>();
         return parseShapeStep(parsed, shapesGraph, shNode);
@@ -196,6 +201,7 @@ public class ShapesParser {
      */
     /** parse a shape during a parsing process */
     /*package*/ static Shape parseShapeStep(Map<Node, Shape> parsed, Graph shapesGraph, Node shapeNode) {
+        // Called by Constraints
         if ( parsed.containsKey(shapeNode) )
             return parsed.get(shapeNode);
         Shape shape = parseShape$(parsed, shapesGraph, shapeNode);
