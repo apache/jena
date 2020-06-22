@@ -18,10 +18,14 @@
 
 package org.apache.jena.sparql.core;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -30,7 +34,7 @@ import org.apache.jena.rdf.model.Resource;
 import org.junit.Test;
 
 /** Basic testing of the Dataset API */
-public abstract class AbstractTestDataset extends BaseTest
+public abstract class AbstractTestDataset
 {
     protected abstract Dataset createDataset();
     

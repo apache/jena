@@ -1,7 +1,7 @@
 
-    
-    
-    
+
+
+
  /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -36,120 +36,120 @@ import org.apache.jena.iri.impl.ViolationCodeInfo.FromAlso;
 import org.apache.jena.iri.impl.Specification;
 import org.apache.jena.iri.impl.SchemeSpecification;
 import org.apache.jena.iri.impl.Force;
- 
+
 /**
  * Detailed description of problems detected.
- * This interface lists the codes returned by 
+ * This interface lists the codes returned by
  * {@link Violation#getViolationCode()}.
  * Note: not all are errors, some merely reflect internal workings.
- 
+
  <p>The violations are evaluated against the following standards:
  </p>
  <dl>
-  
+
       <dt><a name="ref-RDF">[RDF]</a>
-      
+
       </dt>
       <dd><a href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref">
-      
+
 Resource Description Framework (RDF):
 Concepts and Abstract Syntax
 
         (section RDF URI References)
       </a>
       </dd>
-      
+
       <dd>
       The SCHEME component is required.<br />
-    
+
              <br/>
              The following are examples of ill-formed IRIs using this scheme:
              <ul>
-             
+
      <li>&lt;<code>foo/bar</code>&gt;</li>
-    
+
      <li>&lt;<code>#frag</code>&gt;</li>
-    
+
      <li>&lt;<code>//example.org/foo/bar#frag</code>&gt;</li>
-    
+
              </ul>
-             
+
       </dd>
-      
+
       <dt><a name="ref-URI">[URI]</a>
-      
+
       RFC 3986
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc3986.html">
       Uniform Resource Identifier (URI): Generic Syntax</a>
       </dd>
-      
+
       <dt><a name="ref-Unicode">[Unicode]</a>
-      
+
       </dt>
       <dd><a href="http://www.unicode.org/">
       Unicode</a>
       </dd>
-      
+
       <dt><a name="ref-IRI">[IRI]</a>
-      
+
       RFC 3987
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc3987.html">
       Internationalized Resource Identifiers (IRIs)</a>
       </dd>
-      
+
       <dt><a name="ref-XML">[XML]</a>
-      
+
       </dt>
       <dd><a href="http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid">
       Extensible Markup Language (XML) 1.0 (Third Edition)
         (section system identifier)
       </a>
       </dd>
-      
+
       <dd>
       The FRAGMENT component must be omitted.<br />
-    
+
       </dd>
-      
+
       <dt><a name="ref-XLink">[XLink]</a>
-      
+
       </dt>
       <dd><a href="http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators">
       XML Linking Language (XLink) Version 1.0
         (section Locator Attribute (href))
       </a>
       </dd>
-      
+
       <dt><a name="ref-Schema">[Schema]</a>
-      
+
       </dt>
       <dd><a href="http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI">
       XML Schema Part 2: Datatypes Second Edition
         (section anyURI)
       </a>
       </dd>
-       
+
  </dl>
- 
+
  <p>Scheme specific checks are enabled. The syntax of the following schemes is fully supported:
  </p>
  <dl>
-  
+
       <dt><a name="ref-http">[http]</a>
-      
+
       RFC 2616
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2616.html">
       Hypertext Transfer Protocol -- HTTP/1.1</a>
       </dd>
-      
+
       <dd>
       Pertinent text from the specification includes:
       <br />
       <dl>
-      
+
       <dt>
        See
       <a href="http://www.apps.ietf.org/rfc/rfc2616.html#sec-3.2.2">section 3.2.2<a>
@@ -159,70 +159,70 @@ Concepts and Abstract Syntax
      <pre>
 http_URL = "http:" "//" host [ ":" port ] [ abs_path [ "?" query ]]
 </pre>
-    
-           
+
+
       </dd>
-    
+
       </dl>
       </dd>
-      
+
       <dd>
      <br/>
      This scheme requires the use of hostnames conforming to DNS syntax.
      The IDNA compatibile processing of IRIs for this scheme is enabled if this scheme is enabled.
      To disable this behaviour, this scheme has to be disabled using // TODO how to disable scheme
      and DNS compatibile rules have to be disabled using {@link IRIFactory#dnsViolation}.
-    
+
       The default port is 80.<br />
-    
+
       The USER component must be omitted.<br />
-    
+
       The HOST component is required.<br />
-    
+
              <br/>
              The following are examples of well-formed IRIs using this scheme:
              <ul>
-             
+
      <li>&lt;<code>http://www.example.org/foo/bar</code>&gt;</li>
-    
+
              </ul>
-             
+
              <br/>
              The following are examples of ill-formed IRIs using this scheme:
              <ul>
-             
+
      <li>&lt;<code>http://www.example.org:80/foo/bar</code>&gt;</li>
-    
+
      <li>&lt;<code>http:foo/bar</code>&gt;</li>
-    
+
      <li>&lt;<code>http://user@www.example.org/foo/bar</code>&gt;</li>
-    
+
              </ul>
-             
+
       </dd>
-      
+
       <dt><a name="ref-https">[https]</a>
-      
+
       RFC 2818
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2818.html">
       Hypertext Transfer Protocol Secure</a>
       </dd>
-      
+
       <dd>
       Pertinent text from the specification includes:
       <br />
       <dl>
-      
+
       <dt>
        See
       <a href="http://www.apps.ietf.org/rfc/rfc2818.html#sec-2.4">section 2.4<a>
       </dt>
       <dd>
-HTTP/TLS is differentiated from HTTP URIs by using the 'https' protocol identifier in place of the 'http' protocol identifier. 
-    
+HTTP/TLS is differentiated from HTTP URIs by using the 'https' protocol identifier in place of the 'http' protocol identifier.
+
       </dd>
-    
+
       <dt>
        See <a href="#ref-http">
      [http]</a>, specifically,
@@ -233,50 +233,50 @@ HTTP/TLS is differentiated from HTTP URIs by using the 'https' protocol identifi
      <pre>
 http_URL = "http:" "//" host [ ":" port ] [ abs_path [ "?" query ]]
 </pre>
-    
-           
+
+
       </dd>
-    
+
       </dl>
       </dd>
-      
+
       <dd>
      <br/>
      This scheme requires the use of hostnames conforming to DNS syntax.
      The IDNA compatibile processing of IRIs for this scheme is enabled if this scheme is enabled.
      To disable this behaviour, this scheme has to be disabled using // TODO how to disable scheme
      and DNS compatibile rules have to be disabled using {@link IRIFactory#dnsViolation}.
-    
+
       The default port is 443.<br />
-    
+
       The USER component must be omitted.<br />
-    
+
       The HOST component is required.<br />
-    
+
              <br/>
              The following are examples of well-formed IRIs using this scheme:
              <ul>
-             
+
      <li>&lt;<code>https://www.example.org/foo/bar</code>&gt;</li>
-    
+
              </ul>
-             
+
              <br/>
              The following are examples of ill-formed IRIs using this scheme:
              <ul>
-             
+
      <li>&lt;<code>https://www.example.org:443/foo/bar</code>&gt;</li>
-    
+
      <li>&lt;<code>https:foo/bar</code>&gt;</li>
-    
+
      <li>&lt;<code>https://user@www.example.org/foo/bar</code>&gt;</li>
-    
+
              </ul>
-             
+
       </dd>
-      
+
       <dt><a name="ref-ftp">[ftp]</a>
-      
+
       RFC 1738
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-3.2">
@@ -284,12 +284,12 @@ http_URL = "http:" "//" host [ ":" port ] [ abs_path [ "?" query ]]
         (section 3.2)
       </a>
       </dd>
-      
+
       <dd>
       Pertinent text from the specification includes:
       <br />
       <dl>
-      
+
       <dt>
        See
       <a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-5">section 5<a>
@@ -302,12 +302,12 @@ fpath = fsegment *[ "/" fsegment ]
 fsegment = *[ uchar | "?" | ":" | "@" | "&amp;" | "=" ]
 ftptype = "A" | "I" | "D" | "a" | "i" | "d"
 </pre>
-    
+
 
      <pre>
 login = [ user [ ":" password ] "@" ] hostport
 </pre>
-    
+
 
      <pre>
 safe = "$" | "-" | "_" | "." | "+"
@@ -316,24 +316,24 @@ escape = "%" hex hex
 unreserved = alpha | digit | safe | extra
 uchar = unreserved | escape
 </pre>
-    
+
 
       </dd>
-    
+
       </dl>
       </dd>
-      
+
       <dd>
      <br/>
      This scheme requires the use of hostnames conforming to DNS syntax.
      The IDNA compatibile processing of IRIs for this scheme is enabled if this scheme is enabled.
      To disable this behaviour, this scheme has to be disabled using // TODO how to disable scheme
      and DNS compatibile rules have to be disabled using {@link IRIFactory#dnsViolation}.
-    
+
       The default port is 21.<br />
-    
+
       The HOST component is required.<br />
-    
+
       The PATHQUERY component:
       <ul>
       <li>
@@ -345,31 +345,31 @@ uchar = unreserved | escape
       the scheme specific syntax.
       </li>
       </ul>
-    
+
              <br/>
              The following are examples of well-formed IRIs using this scheme:
              <ul>
-             
+
      <li>&lt;<code>ftp://user@example.org/foo/bar;type=d</code>&gt;</li>
-    
+
              </ul>
-             
+
              <br/>
              The following are examples of ill-formed IRIs using this scheme:
              <ul>
-             
+
      <li>&lt;<code>ftp:///foo/bar</code>&gt;</li>
-    
+
      <li>&lt;<code>ftp://user@example.org/foo/bar;type=z</code>&gt;</li>
-    
+
      <li>&lt;<code>ftp://user@example.org/foo/b;ar;type=d</code>&gt;</li>
-    
+
              </ul>
-             
+
       </dd>
-      
+
       <dt><a name="ref-news">[news]</a>
-      
+
       RFC 1738
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-3.6">
@@ -377,12 +377,12 @@ uchar = unreserved | escape
         (section 3.6)
       </a>
       </dd>
-      
+
       <dd>
       Pertinent text from the specification includes:
       <br />
       <dl>
-      
+
       <dt>
        See
       <a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-5">section 5<a>
@@ -395,7 +395,7 @@ grouppart = "*" | group | article
 group = alpha *[ alpha | digit | "-" | "." | "+" | "_" ]
 article = 1*[ uchar | ";" | "/" | "?" | ":" | "&amp;" | "=" ] "@" host
 </pre>
-    
+
 
      <pre>
 safe = "$" | "-" | "_" | "." | "+"
@@ -404,18 +404,18 @@ escape = "%" hex hex
 unreserved = alpha | digit | safe | extra
 uchar = unreserved | escape
 </pre>
-    
+
 
       </dd>
-    
+
       </dl>
       </dd>
-      
+
       <dd>
       The AUTHORITY component must be omitted.<br />
-    
+
       The PATH component is required.<br />
-    
+
       The PATHQUERY component:
       <ul>
       <li>
@@ -427,39 +427,39 @@ uchar = unreserved | escape
       the scheme specific syntax.
       </li>
       </ul>
-    
+
              <br/>
              The following are examples of well-formed IRIs using this scheme:
              <ul>
-             
+
      <li>&lt;<code>news:*</code>&gt;</li>
-    
+
      <li>&lt;<code>news:group.it</code>&gt;</li>
-    
+
      <li>&lt;<code>news:arb?itrary@news.example.org</code>&gt;</li>
-    
+
      <li>&lt;<code>news:arbitrary@news.example.org</code>&gt;</li>
-    
+
              </ul>
-             
+
              <br/>
              The following are examples of ill-formed IRIs using this scheme:
              <ul>
-             
+
      <li>&lt;<code>news:arbitrary@news.exampl\u00E7.org</code>&gt;</li>
-    
+
      <li>&lt;<code>news:arbitr?ary@news.exampl\u00E7.org</code>&gt;</li>
-    
+
      <li>&lt;<code>news:///foo/bar</code>&gt;</li>
-    
+
      <li>&lt;<code>news://user@example.org/foo</code>&gt;</li>
-    
+
              </ul>
-             
+
       </dd>
-      
+
       <dt><a name="ref-nntp">[nntp]</a>
-      
+
       RFC 1738
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-3.7">
@@ -467,12 +467,12 @@ uchar = unreserved | escape
         (section 3.7)
       </a>
       </dd>
-      
+
       <dd>
       Pertinent text from the specification includes:
       <br />
       <dl>
-      
+
       <dt>
        See
       <a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-5">section 5<a>
@@ -482,71 +482,71 @@ uchar = unreserved | escape
      <pre>
 nntpurl = "nntp://" hostport "/" group [ "/" digits ]
 </pre>
-    
+
 
      <pre>
 group = alpha *[ alpha | digit | "-" | "." | "+" | "_" ]
 </pre>
-    
+
 
       </dd>
-    
+
       </dl>
       </dd>
-      
+
       <dd>
      <br/>
      This scheme requires the use of hostnames conforming to DNS syntax.
      The IDNA compatibile processing of IRIs for this scheme is enabled if this scheme is enabled.
      To disable this behaviour, this scheme has to be disabled using // TODO how to disable scheme
      and DNS compatibile rules have to be disabled using {@link IRIFactory#dnsViolation}.
-    
+
       The default port is 119.<br />
-    
+
       The QUERY component must be omitted.<br />
-    
+
       The USER component must be omitted.<br />
-    
+
       The HOST component is required.<br />
-    
+
       The PATH component
       is required to match the regular expression: /[a-zA-Z][-a-zA-Z0-9.+_]*(/[0-9]+)?
       <br/>
-    
+
              <br/>
              The following are examples of well-formed IRIs using this scheme:
              <ul>
-             
+
      <li>&lt;<code>nntp://example.org/foo4</code>&gt;</li>
-    
+
      <li>&lt;<code>nntp://example.org/foo/4</code>&gt;</li>
-    
+
              </ul>
-             
+
              <br/>
              The following are examples of ill-formed IRIs using this scheme:
              <ul>
-             
+
      <li>&lt;<code>nntp://user@example.org/foo</code>&gt;</li>
-    
+
      <li>&lt;<code>nntp:/foo</code>&gt;</li>
-    
+
      <li>&lt;<code>nntp:///foo</code>&gt;</li>
-    
+
      <li>&lt;<code>nntp://example.org/foo/4/3</code>&gt;</li>
-    
+
      <li>&lt;<code>nntp://example.org/</code>&gt;</li>
-    
+
      <li>&lt;<code>nntp://example.org/foo/</code>&gt;</li>
-    
+
      <li>&lt;<code>nntp://example.org/*</code>&gt;</li>
-    
+
              </ul>
-             
+
       </dd>
-      
+
       <dt><a name="ref-file">[file]</a>
-      
+
       RFC 1738
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-3.10">
@@ -554,12 +554,12 @@ group = alpha *[ alpha | digit | "-" | "." | "+" | "_" ]
         (section 3.10)
       </a>
       </dd>
-      
+
       <dd>
       Pertinent text from the specification includes:
       <br />
       <dl>
-      
+
       <dt>
        See
       <a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-5">section 5<a>
@@ -569,13 +569,13 @@ group = alpha *[ alpha | digit | "-" | "." | "+" | "_" ]
      <pre>
 fileurl = "file://" [ host | "localhost" ] "/" fpath
 </pre>
-    
+
 
      <pre>
 fpath = fsegment *[ "/" fsegment ]
 fsegment = *[ uchar | "?" | ":" | "@" | "&amp;" | "=" ]
 </pre>
-    
+
 
      <pre>
 safe = "$" | "-" | "_" | "." | "+"
@@ -584,28 +584,28 @@ escape = "%" hex hex
 unreserved = alpha | digit | safe | extra
 uchar = unreserved | escape
 </pre>
-    
+
 
       </dd>
-    
+
       </dl>
       </dd>
-      
+
       <dd>
      <br/>
      This scheme requires the use of hostnames conforming to DNS syntax.
      The IDNA compatibile processing of IRIs for this scheme is enabled if this scheme is enabled.
      To disable this behaviour, this scheme has to be disabled using // TODO how to disable scheme
      and DNS compatibile rules have to be disabled using {@link IRIFactory#dnsViolation}.
-    
+
       The USER component must be omitted.<br />
-    
+
       The PORT component must be omitted.<br />
-    
+
       The PATH component is required.<br />
-    
+
       The AUTHORITY component is required.<br />
-    
+
       The PATHQUERY component:
       <ul>
       <li>
@@ -617,70 +617,70 @@ uchar = unreserved | escape
       the scheme specific syntax.
       </li>
       </ul>
-    
+
              <br/>
              The following are examples of well-formed IRIs using this scheme:
              <ul>
-             
+
      <li>&lt;<code>file:///foo/b</code>&gt;</li>
-    
+
      <li>&lt;<code>file:///foo/b?ar/yuk</code>&gt;</li>
-    
+
              </ul>
-             
+
              <br/>
              The following are examples of ill-formed IRIs using this scheme:
              <ul>
-             
+
      <li>&lt;<code>file://user@example.org/foo/bar</code>&gt;</li>
-    
+
      <li>&lt;<code>file://eg:4029/foo/bar</code>&gt;</li>
-    
+
      <li>&lt;<code>file:/foo/bar</code>&gt;</li>
-    
+
      <li>&lt;<code>file://example.org</code>&gt;</li>
-    
+
      <li>&lt;<code>file://foo/bar;t</code>&gt;</li>
-    
+
      <li>&lt;<code>file://foo/~jjc</code>&gt;</li>
-    
+
              </ul>
-             
+
       </dd>
-       
+
  </dl>
- 
- 
+
+
  <p>The syntax of the following schemes is partially supported:
  </p>
  <dl>
-  
+
       <dt><a name="ref-mailto">[mailto]</a>
-      
+
       RFC 2368
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2368.html">
       Electronic mail address</a>
       </dd>
-      
+
       <dd>
       The AUTHORITY component must be omitted.<br />
-    
+
       </dd>
-      
+
       <dt><a name="ref-urn">[urn]</a>
-      
+
       RFC 2141
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2141.html">
       Uniform Resource Names</a>
       </dd>
-      
+
       <dd>
       Pertinent text from the specification includes:
       <br />
       <dl>
-      
+
       <dt>
        See
       <a href="http://www.apps.ietf.org/rfc/rfc2141.html#sec-2">section 2<a>
@@ -691,10 +691,10 @@ uchar = unreserved | escape
      <pre>
 &lt;URN&gt; ::= "urn:" &lt;NID&gt; ":" &lt;NSS&gt;
 </pre>
-    
+
 
       </dd>
-    
+
       <dt>
        See
       <a href="http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.1">section 2.1<a>
@@ -708,10 +708,10 @@ uchar = unreserved | escape
 
 &lt;let-num&gt;     ::= &lt;upper&gt; | &lt;lower&gt; | &lt;number&gt;
 </pre>
-    
+
 
       </dd>
-    
+
       <dt>
        See
       <a href="http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.2">section 2.2<a>
@@ -729,33 +729,33 @@ uchar = unreserved | escape
                   ":" | "=" | "@" | ";" | "$" |
                   "_" | "!" | "*" | "'"
 </pre>
-    
+
 
       </dd>
-    
+
       <dt>
        See
       <a href="http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.3.2">section 2.3.2<a>
       </dt>
       <dd>
-RFC 1630 [2] reserves the characters "/", "?", and "#" for particular purposes. 
-The URN-WG has not yet debated the applicability and precise semantics of those 
-purposes as applied to URNs. Therefore, these characters are RESERVED for future 
-developments. Namespace developers SHOULD NOT use these characters in unencoded form, 
+RFC 1630 [2] reserves the characters "/", "?", and "#" for particular purposes.
+The URN-WG has not yet debated the applicability and precise semantics of those
+purposes as applied to URNs. Therefore, these characters are RESERVED for future
+developments. Namespace developers SHOULD NOT use these characters in unencoded form,
 but rather use the appropriate %-encoding for each character.
 
       </dd>
-    
+
       </dl>
       </dd>
-      
+
       <dd>
       The AUTHORITY component must be omitted.<br />
-    
+
       The QUERY component must be omitted.<br />
-    
+
       The PATH component is required.<br />
-    
+
       The PATH component:
       <ul>
       <li>
@@ -767,448 +767,448 @@ but rather use the appropriate %-encoding for each character.
       the scheme specific syntax.
       </li>
       </ul>
-    <br/>TODO: case of NIS<br/>TODO: 
+    <br/>TODO: case of NIS<br/>TODO:
            registry of URNs, implement something of the NSS with Namespace specific rules.
-           <br/>TODO: 
+           <br/>TODO:
  To avoid confusion with the "urn:" identifier, the NID "urn" is reserved and MUST NOT be used.
- <br/>TODO: e-mail about frags in URNs<br/>TODO: 
-In addition, octet 0 (0 hex) should NEVER be used, in either unencoded or %-encoded form.           
-           
+ <br/>TODO: e-mail about frags in URNs<br/>TODO:
+In addition, octet 0 (0 hex) should NEVER be used, in either unencoded or %-encoded form.
+
              <br/>
              The following are examples of well-formed IRIs using this scheme:
              <ul>
-             
+
      <li>&lt;<code>urn:x-hp:foo\u00E9</code>&gt;</li>
-    
+
      <li>&lt;<code>urn:urn-1:foo</code>&gt;</li>
-    
+
              </ul>
-             
+
              <br/>
              The following are examples of ill-formed IRIs using this scheme:
              <ul>
-             
+
      <li>&lt;<code>urn:x-hp:foo/bar</code>&gt;</li>
-    
+
      <li>&lt;<code>urn:urn:foo</code>&gt;</li>
-    
+
      <li>&lt;<code>urn://foo</code>&gt;</li>
-    
+
      <li>&lt;<code>urn:foo:bar?query</code>&gt;</li>
-    
+
      <li>&lt;<code>urn:foo:ff~</code>&gt;</li>
-    
+
              </ul>
-             
+
       </dd>
-       
+
  </dl>
- 
- 
+
+
  <p>The names of the following registered schemes are known, but they are otherwise unsupported:
  </p>
  <dl>
-  
+
       <dt><a name="ref-telnet">[telnet]</a>
-      
+
       RFC 4248
       </dt>
       <dd><a href="http://www.ietf.org/rfc/rfc4248.txt">
       Reference to interactive sessions</a>
       </dd>
-      
+
       <dt><a name="ref-wais">[wais]</a>
-      
+
       RFC 4156
       </dt>
       <dd><a href="http://www.ietf.org/rfc/rfc4156.txt">
       Wide Area Information Servers</a>
       </dd>
-      
+
       <dt><a name="ref-prospero">[prospero]</a>
-      
+
       RFC 4157
       </dt>
       <dd><a href="http://www.ietf.org/rfc/rfc4157.txt">
       Prospero Directory Service</a>
       </dd>
-      
+
       <dt><a name="ref-gopher">[gopher]</a>
-      
+
       RFC 4266
       </dt>
       <dd><a href="http://www.ietf.org/rfc/rfc4266.txt">
       The gopher URI scheme</a>
       </dd>
-      
+
       <dt><a name="ref-z39.50s">[z39.50s]</a>
-      
+
       RFC 2056
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2056.html">
       Z39.50 Session</a>
       </dd>
-      
+
       <dt><a name="ref-z39.50r">[z39.50r]</a>
-      
+
       RFC 2056
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2056.html">
       Z39.50 Retrieval</a>
       </dd>
-      
+
       <dt><a name="ref-cid">[cid]</a>
-      
+
       RFC 2392
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2392.html">
       content identifier</a>
       </dd>
-      
+
       <dt><a name="ref-mid">[mid]</a>
-      
+
       RFC 2392
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2392.html">
       message identifier</a>
       </dd>
-      
+
       <dt><a name="ref-vemmi">[vemmi]</a>
-      
+
       RFC 2122
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2122.html">
       versatile multimedia interface</a>
       </dd>
-      
+
       <dt><a name="ref-service">[service]</a>
-      
+
       RFC 2609
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2609.html">
       service location</a>
       </dd>
-      
+
       <dt><a name="ref-imap">[imap]</a>
-      
+
       RFC 2192
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2192.html">
       internet message access protocol</a>
       </dd>
-      
+
       <dt><a name="ref-nfs">[nfs]</a>
-      
+
       RFC 2224
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2224.html">
       network file system protocol</a>
       </dd>
-      
+
       <dt><a name="ref-acap">[acap]</a>
-      
+
       RFC 2244
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2244.html">
       application configuration access protocol</a>
       </dd>
-      
+
       <dt><a name="ref-rtsp">[rtsp]</a>
-      
+
       RFC 2326
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2326.html">
       real time streaming protocol</a>
       </dd>
-      
+
       <dt><a name="ref-tip">[tip]</a>
-      
+
       RFC 2371
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2371.html">
       Transaction Internet Protocol</a>
       </dd>
-      
+
       <dt><a name="ref-pop">[pop]</a>
-      
+
       RFC 2384
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2384.html">
       Post Office Protocol v3</a>
       </dd>
-      
+
       <dt><a name="ref-data">[data]</a>
-      
+
       RFC 2397
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2397.html">
       data</a>
       </dd>
-      
+
       <dt><a name="ref-dav">[dav]</a>
-      
+
       RFC 2518
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2518.html">
       dav</a>
       </dd>
-      
+
       <dt><a name="ref-opaquelocktoken">[opaquelocktoken]</a>
-      
+
       RFC 2518
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2518.html">
       opaquelocktoken</a>
       </dd>
-      
+
       <dt><a name="ref-sip">[sip]</a>
-      
+
       RFC 3261
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc3261.html">
       session initiation protocol</a>
       </dd>
-      
+
       <dt><a name="ref-sips">[sips]</a>
-      
+
       RFC 3261
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc3261.html">
       secure session intitiaion protocol</a>
       </dd>
-      
+
       <dt><a name="ref-tel">[tel]</a>
-      
+
       RFC 2806
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2806.html">
       telephone</a>
       </dd>
-      
+
       <dt><a name="ref-fax">[fax]</a>
-      
+
       RFC 2806
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2806.html">
       fax</a>
       </dd>
-      
+
       <dt><a name="ref-modem">[modem]</a>
-      
+
       RFC 2806
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2806.html">
       modem</a>
       </dd>
-      
+
       <dt><a name="ref-soap.beep">[soap.beep]</a>
-      
+
       RFC 3288
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc3288.html">
       soap.beep</a>
       </dd>
-      
+
       <dt><a name="ref-soap.beeps">[soap.beeps]</a>
-      
+
       RFC 3288
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc3288.html">
       soap.beeps</a>
       </dd>
-      
+
       <dt><a name="ref-xmlrpc.beep">[xmlrpc.beep]</a>
-      
+
       RFC 3529
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc3529.html">
       xmlrpc.beep</a>
       </dd>
-      
+
       <dt><a name="ref-xmlrpc.beeps">[xmlrpc.beeps]</a>
-      
+
       RFC 3529
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc3529.html">
       xmlrpc.beeps</a>
       </dd>
-      
+
       <dt><a name="ref-go">[go]</a>
-      
+
       RFC 3368
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc3368.html">
       go</a>
       </dd>
-      
+
       <dt><a name="ref-h323">[h323]</a>
-      
+
       RFC 3508
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc3508.html">
       H.323</a>
       </dd>
-      
+
       <dt><a name="ref-ipp">[ipp]</a>
-      
+
       RFC 3510
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc3510.html">
       Internet Printing Protocol</a>
       </dd>
-      
+
       <dt><a name="ref-tftp">[tftp]</a>
-      
+
       RFC 3617
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc3617.html">
       Trivial File Transfer Protocol</a>
       </dd>
-      
+
       <dt><a name="ref-mupdate">[mupdate]</a>
-      
+
       RFC 3656
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc3656.html">
       Mailbox Update (MUPDATE) Protocol</a>
       </dd>
-      
+
       <dt><a name="ref-pres">[pres]</a>
-      
+
       RFC 3859
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc3859.html">
       Presence</a>
       </dd>
-      
+
       <dt><a name="ref-im">[im]</a>
-      
+
       RFC 3860
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc3860.html">
       Instant Messaging</a>
       </dd>
-      
+
       <dt><a name="ref-mtqp">[mtqp]</a>
-      
+
       RFC 3887
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc3887.html">
       Message Tracking Query Protocol</a>
       </dd>
-      
+
       <dt><a name="ref-iris.beep">[iris.beep]</a>
-      
+
       RFC 3983
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc3983.html">
       iris.beep</a>
       </dd>
-      
+
       <dt><a name="ref-dict">[dict]</a>
-      
+
       RFC 2229
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2229.html">
       dictionary service protocol</a>
       </dd>
-      
+
       <dt><a name="ref-snmp">[snmp]</a>
-      
+
       RFC 4088
       </dt>
       <dd><a href="http://www.ietf.org/rfc/rfc4088.txt">
       Simple Network Management Protocol</a>
       </dd>
-      
+
       <dt><a name="ref-crid">[crid]</a>
-      
+
       RFC 4078
       </dt>
       <dd><a href="http://www.ietf.org/rfc/rfc4078.txt">
       TV-Anytime Content Reference Identifier</a>
       </dd>
-      
+
       <dt><a name="ref-tag">[tag]</a>
-      
+
       RFC 4151
       </dt>
       <dd><a href="http://www.ietf.org/rfc/rfc4151.txt">
       tag</a>
       </dd>
-      
+
       <dt><a name="ref-afs">[afs]</a>
-      
+
       </dt>
       <dd><a href="http://www.iana.org/assignments/uri-schemes">
       Andrew File System global file names</a>
       </dd>
-      
+
       <dt><a name="ref-tn3270">[tn3270]</a>
-      
+
       </dt>
       <dd><a href="http://www.iana.org/assignments/uri-schemes">
       Interactive 3270 emulation sessions</a>
       </dd>
-      
+
       <dt><a name="ref-mailserver">[mailserver]</a>
-      
+
       </dt>
       <dd><a href="http://www.iana.org/assignments/uri-schemes">
       Access to data available from mail servers</a>
       </dd>
-      
+
       <dt><a name="ref-dns">[dns]</a>
-      
+
       </dt>
       <dd><a href="http://www.iana.org/assignments/uri-schemes">
       Domain Name System</a>
       </dd>
-      
+
       <dt><a name="ref-info">[info]</a>
-      
+
       </dt>
       <dd><a href="http://www.iana.org/assignments/uri-schemes">
       Information Assets with Identifiers in Public Namespaces</a>
       </dd>
-      
+
       <dt><a name="ref-ldap">[ldap]</a>
-      
+
       </dt>
       <dd><a href="http://www.iana.org/assignments/uri-schemes">
       Lightweight Directory Access Protocol</a>
       </dd>
-       
+
  </dl>
- 
+
  <p>Other relevant standards include:
  </p>
  <dl>
-  
+
       <dt><a name="ref-URL_Registratrion">[URL_Registratrion]</a>
-      
+
       RFC 2717
       </dt>
       <dd><a href="http://www.apps.ietf.org/rfc/rfc2717.html">
-      
+
         Registration Procedures for URL
               Scheme Names</a>
       </dd>
-       
+
  </dl>
- 
+
  */
 public interface ViolationCodes {
-   
+
 /**
 This class is not part of the API.
 */
    class Initialize implements IRIComponents, Force {
    static {
-   
+
    Specification spec;
-   
-   
+
+
      spec =
        new Specification(
                 "RDF",
@@ -1217,26 +1217,26 @@ This class is not part of the API.
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref",
                 "Resource Description Framework (RDF): Concepts and Abstract Syntax",
                 "RDF URI References",
-                  
+
                 new String[]{
-                  
+
       "foo/bar",
-    
+
       "#frag",
-    
+
       "//example.org/foo/bar#frag",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
+
         spec.require(
               IRIComponents.SCHEME
         );
-    
+
      spec =
        new Specification(
                 "URI",
@@ -1245,16 +1245,16 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc3986.html",
                 "Uniform Resource Identifier (URI): Generic Syntax",
                 "",
-                  
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
+
      spec =
        new Specification(
                 "Unicode",
@@ -1263,16 +1263,16 @@ This class is not part of the API.
                 "http://www.unicode.org/",
                 "Unicode",
                 "",
-                  
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
+
      spec =
        new Specification(
                 "IRI",
@@ -1281,16 +1281,16 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc3987.html",
                 "Internationalized Resource Identifiers (IRIs)",
                 "",
-                  
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
+
      spec =
        new Specification(
                 "XML",
@@ -1299,20 +1299,20 @@ This class is not part of the API.
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid",
                 "Extensible Markup Language (XML) 1.0 (Third Edition)",
                 "system identifier",
-                  
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
+
         spec.prohibit(
               IRIComponents.FRAGMENT
         );
-    
+
      spec =
        new Specification(
                 "XLink",
@@ -1321,16 +1321,16 @@ This class is not part of the API.
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators",
                 "XML Linking Language (XLink) Version 1.0",
                 "Locator Attribute (href)",
-                  
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
+
      spec =
        new Specification(
                 "Schema",
@@ -1339,16 +1339,16 @@ This class is not part of the API.
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI",
                 "XML Schema Part 2: Datatypes Second Edition",
                 "anyURI",
-                  
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
+
      spec =
        new Specification(
                 "URL_Registratrion",
@@ -1357,16 +1357,16 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2717.html",
                 "Registration Procedures for URL Scheme Names",
                 "",
-                  
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
+
      spec =
        new SchemeSpecification(
                 "http",
@@ -1374,51 +1374,51 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2616.html",
                 "Hypertext Transfer Protocol -- HTTP/1.1",
                 "",
-                
+
                 new String[]{
-                  
+
       "http://www.example.org:80/foo/bar",
-    
+
       "http:foo/bar",
-    
+
       "http://user@www.example.org/foo/bar",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
       "http://www.example.org/foo/bar",
-    
+
                 }
             );
-            
-            
+
+
         spec
         .addDefinition(
-                "http://www.apps.ietf.org/rfc/rfc2616.html#sec-3.2.2",    
+                "http://www.apps.ietf.org/rfc/rfc2616.html#sec-3.2.2",
                 ""+
   "\n"+
     "http_URL = \"http:\" \"//\" host [ \":\" port ] [ abs_path [ \"?\" query ]]\n"+
-    "",    
+    "",
                 ""+
      "</p><pre>\n"+
     "http_URL = \"http:\" \"//\" host [ \":\" port ] [ abs_path [ \"?\" query ]]\n"+
     "</pre>"+
      "<p>"
         );
-    
+
         spec.setDNS(true);
-    
+
         spec.port(80);
-    
+
         spec.prohibit(
               IRIComponents.USER
         );
-    
+
         spec.require(
               IRIComponents.HOST
         );
-    
+
      spec =
        new SchemeSpecification(
                 "https",
@@ -1426,58 +1426,58 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2818.html",
                 "Hypertext Transfer Protocol Secure",
                 "",
-                
+
                 new String[]{
-                  
+
       "https://www.example.org:443/foo/bar",
-    
+
       "https:foo/bar",
-    
+
       "https://user@www.example.org/foo/bar",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
       "https://www.example.org/foo/bar",
-    
+
                 }
             );
-            
-            
+
+
         spec
         .addDefinition(
-                "http://www.apps.ietf.org/rfc/rfc2818.html#sec-2.4",    
-                "HTTP/TLS is differentiated from HTTP URIs by using the 'https' protocol identifier in place of the 'http' protocol identifier.",    
+                "http://www.apps.ietf.org/rfc/rfc2818.html#sec-2.4",
+                "HTTP/TLS is differentiated from HTTP URIs by using the 'https' protocol identifier in place of the 'http' protocol identifier.",
                 "HTTP/TLS is differentiated from HTTP URIs by using the 'https' protocol identifier in place of the 'http' protocol identifier."
         );
-    
+
         spec
         .addDefinition(
-                "http://www.apps.ietf.org/rfc/rfc2818.html#sec-3.2.2",    
+                "http://www.apps.ietf.org/rfc/rfc2818.html#sec-3.2.2",
                 ""+
   "\n"+
     "http_URL = \"http:\" \"//\" host [ \":\" port ] [ abs_path [ \"?\" query ]]\n"+
-    "",    
+    "",
                 ""+
      "</p><pre>\n"+
     "http_URL = \"http:\" \"//\" host [ \":\" port ] [ abs_path [ \"?\" query ]]\n"+
     "</pre>"+
      "<p>"
         );
-    
+
         spec.setDNS(true);
-    
+
         spec.port(443);
-    
+
         spec.prohibit(
               IRIComponents.USER
         );
-    
+
         spec.require(
               IRIComponents.HOST
         );
-    
+
      spec =
        new SchemeSpecification(
                 "ftp",
@@ -1485,28 +1485,28 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc1738.html#sec-3.2",
                 "File Transfer Protocol",
                 "3.2",
-                
+
                 new String[]{
-                  
+
       "ftp:///foo/bar",
-    
+
       "ftp://user@example.org/foo/bar;type=z",
-    
+
       "ftp://user@example.org/foo/b;ar;type=d",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
       "ftp://user@example.org/foo/bar;type=d",
-    
+
                 }
             );
-            
-            
+
+
         spec
         .addDefinition(
-                "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",    
+                "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",
                 ""+
   "\n"+
     "ftpurl = \"ftp://\" login [ \"/\" fpath [ \";type=\" ftptype ]]\n"+
@@ -1523,7 +1523,7 @@ This class is not part of the API.
     "escape = \"%\" hex hex\n"+
     "unreserved = alpha | digit | safe | extra\n"+
     "uchar = unreserved | escape\n"+
-    "",    
+    "",
                 ""+
      "</p><pre>\n"+
     "ftpurl = \"ftp://\" login [ \"/\" fpath [ \";type=\" ftptype ]]\n"+
@@ -1545,20 +1545,20 @@ This class is not part of the API.
     "</pre>"+
      "<p>"
         );
-    
+
         spec.setDNS(true);
-    
+
         spec.port(21);
-    
+
         spec.require(
               IRIComponents.HOST
         );
-    
+
         spec.setPattern(PATHQUERY,
                 "[^;~]*(;@{mustLowerCase(type)}=@{shouldLowerCase([aid])}|)" );
-      
+
         spec.setReserved(PATHQUERY,"~;");
-      
+
      spec =
        new SchemeSpecification(
                 "mailto",
@@ -1566,21 +1566,21 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2368.html",
                 "Electronic mail address",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
         spec.prohibit(
               IRIComponents.AUTHORITY
         );
-    
+
      spec =
        new SchemeSpecification(
                 "news",
@@ -1588,36 +1588,36 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc1738.html#sec-3.6",
                 "USENET news",
                 "3.6",
-                
+
                 new String[]{
-                  
+
       "news:arbitrary@news.exampl\u00E7.org",
-    
+
       "news:arbitr?ary@news.exampl\u00E7.org",
-    
+
       "news:///foo/bar",
-    
+
       "news://user@example.org/foo",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
       "news:*",
-    
+
       "news:group.it",
-    
+
       "news:arb?itrary@news.example.org",
-    
+
       "news:arbitrary@news.example.org",
-    
+
                 }
             );
-            
-            
+
+
         spec
         .addDefinition(
-                "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",    
+                "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",
                 ""+
   "\n"+
     "newsurl = \"news:\" grouppart\n"+
@@ -1631,7 +1631,7 @@ This class is not part of the API.
     "escape = \"%\" hex hex\n"+
     "unreserved = alpha | digit | safe | extra\n"+
     "uchar = unreserved | escape\n"+
-    "",    
+    "",
                 ""+
      "</p><pre>\n"+
     "newsurl = \"news:\" grouppart\n"+
@@ -1649,20 +1649,20 @@ This class is not part of the API.
     "</pre>"+
      "<p>"
         );
-    
+
         spec.prohibit(
               IRIComponents.AUTHORITY
         );
-    
+
         spec.require(
               IRIComponents.PATH
         );
-    
+
         spec.setPattern(PATHQUERY,
                 "[^@]+@@{host}|[*]|[a-zA-Z][-a-zA-Z0-9.+_]*" );
-      
+
         spec.setReserved(PATHQUERY,"~@");
-      
+
      spec =
        new SchemeSpecification(
                 "nntp",
@@ -1670,45 +1670,45 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc1738.html#sec-3.7",
                 "USENET news using NNTP access",
                 "3.7",
-                
+
                 new String[]{
-                  
+
       "nntp://user@example.org/foo",
-    
+
       "nntp:/foo",
-    
+
       "nntp:///foo",
-    
+
       "nntp://example.org/foo/4/3",
-    
+
       "nntp://example.org/",
-    
+
       "nntp://example.org/foo/",
-    
+
       "nntp://example.org/*",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
       "nntp://example.org/foo4",
-    
+
       "nntp://example.org/foo/4",
-    
+
                 }
             );
-            
-            
+
+
         spec
         .addDefinition(
-                "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",    
+                "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",
                 ""+
   "\n"+
     "nntpurl = \"nntp://\" hostport \"/\" group [ \"/\" digits ]\n"+
     ""+
   "\n"+
     "group = alpha *[ alpha | digit | \"-\" | \".\" | \"+\" | \"_\" ]\n"+
-    "",    
+    "",
                 ""+
      "</p><pre>\n"+
     "nntpurl = \"nntp://\" hostport \"/\" group [ \"/\" digits ]\n"+
@@ -1719,26 +1719,26 @@ This class is not part of the API.
     "</pre>"+
      "<p>"
         );
-    
+
         spec.setDNS(true);
-    
+
         spec.port(119);
-    
+
         spec.prohibit(
               IRIComponents.QUERY
         );
-    
+
         spec.prohibit(
               IRIComponents.USER
         );
-    
+
         spec.require(
               IRIComponents.HOST
         );
-    
+
         spec.setPattern(PATH,
                 "/[a-zA-Z][-a-zA-Z0-9.+_]*(/[0-9]+)?" );
-      
+
      spec =
        new SchemeSpecification(
                 "telnet",
@@ -1746,17 +1746,17 @@ This class is not part of the API.
                 "http://www.ietf.org/rfc/rfc4248.txt",
                 "Reference to interactive sessions",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "wais",
@@ -1764,17 +1764,17 @@ This class is not part of the API.
                 "http://www.ietf.org/rfc/rfc4156.txt",
                 "Wide Area Information Servers",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "file",
@@ -1782,36 +1782,36 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc1738.html#sec-3.10",
                 "Host-specific file names",
                 "3.10",
-                
+
                 new String[]{
-                  
+
       "file://user@example.org/foo/bar",
-    
+
       "file://eg:4029/foo/bar",
-    
+
       "file:/foo/bar",
-    
+
       "file://example.org",
-    
+
       "file://foo/bar;t",
-    
+
       "file://foo/~jjc",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
       "file:///foo/b",
-    
+
       "file:///foo/b?ar/yuk",
-    
+
                 }
             );
-            
-            
+
+
         spec
         .addDefinition(
-                "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",    
+                "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",
                 ""+
   "\n"+
     "fileurl = \"file://\" [ host | \"localhost\" ] \"/\" fpath\n"+
@@ -1826,7 +1826,7 @@ This class is not part of the API.
     "escape = \"%\" hex hex\n"+
     "unreserved = alpha | digit | safe | extra\n"+
     "uchar = unreserved | escape\n"+
-    "",    
+    "",
                 ""+
      "</p><pre>\n"+
     "fileurl = \"file://\" [ host | \"localhost\" ] \"/\" fpath\n"+
@@ -1846,30 +1846,30 @@ This class is not part of the API.
     "</pre>"+
      "<p>"
         );
-    
+
         spec.setDNS(true);
-    
+
         spec.prohibit(
               IRIComponents.USER
         );
-    
+
         spec.prohibit(
               IRIComponents.PORT
         );
-    
+
         spec.require(
               IRIComponents.PATH
         );
-    
+
         spec.require(
               IRIComponents.AUTHORITY
         );
-    
+
         spec.setPattern(PATHQUERY,
                 "[^;~]*" );
-      
+
         spec.setReserved(PATHQUERY,"~;");
-      
+
      spec =
        new SchemeSpecification(
                 "prospero",
@@ -1877,17 +1877,17 @@ This class is not part of the API.
                 "http://www.ietf.org/rfc/rfc4157.txt",
                 "Prospero Directory Service",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "gopher",
@@ -1895,17 +1895,17 @@ This class is not part of the API.
                 "http://www.ietf.org/rfc/rfc4266.txt",
                 "The gopher URI scheme",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "z39.50s",
@@ -1913,17 +1913,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2056.html",
                 "Z39.50 Session",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "z39.50r",
@@ -1931,17 +1931,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2056.html",
                 "Z39.50 Retrieval",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "cid",
@@ -1949,17 +1949,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2392.html",
                 "content identifier",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "mid",
@@ -1967,17 +1967,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2392.html",
                 "message identifier",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "vemmi",
@@ -1985,17 +1985,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2122.html",
                 "versatile multimedia interface",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "service",
@@ -2003,17 +2003,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2609.html",
                 "service location",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "imap",
@@ -2021,17 +2021,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2192.html",
                 "internet message access protocol",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "nfs",
@@ -2039,17 +2039,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2224.html",
                 "network file system protocol",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "acap",
@@ -2057,17 +2057,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2244.html",
                 "application configuration access protocol",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "rtsp",
@@ -2075,17 +2075,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2326.html",
                 "real time streaming protocol",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "tip",
@@ -2093,17 +2093,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2371.html",
                 "Transaction Internet Protocol",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "pop",
@@ -2111,17 +2111,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2384.html",
                 "Post Office Protocol v3",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "data",
@@ -2129,17 +2129,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2397.html",
                 "data",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "dav",
@@ -2147,17 +2147,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2518.html",
                 "dav",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "opaquelocktoken",
@@ -2165,17 +2165,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2518.html",
                 "opaquelocktoken",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "sip",
@@ -2183,17 +2183,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc3261.html",
                 "session initiation protocol",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "sips",
@@ -2201,17 +2201,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc3261.html",
                 "secure session intitiaion protocol",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "tel",
@@ -2219,17 +2219,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2806.html",
                 "telephone",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "fax",
@@ -2237,17 +2237,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2806.html",
                 "fax",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "modem",
@@ -2255,17 +2255,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2806.html",
                 "modem",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "soap.beep",
@@ -2273,17 +2273,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc3288.html",
                 "soap.beep",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "soap.beeps",
@@ -2291,17 +2291,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc3288.html",
                 "soap.beeps",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "xmlrpc.beep",
@@ -2309,17 +2309,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc3529.html",
                 "xmlrpc.beep",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "xmlrpc.beeps",
@@ -2327,17 +2327,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc3529.html",
                 "xmlrpc.beeps",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "urn",
@@ -2345,48 +2345,48 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2141.html",
                 "Uniform Resource Names",
                 "",
-                
+
                 new String[]{
-                  
+
       "urn:x-hp:foo/bar",
-    
+
       "urn:urn:foo",
-    
+
       "urn://foo",
-    
+
       "urn:foo:bar?query",
-    
+
       "urn:foo:ff~",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
       "urn:x-hp:foo\u00E9",
-    
+
       "urn:urn-1:foo",
-    
+
                 }
             );
-            
-            
+
+
         spec
         .addDefinition(
-                "http://www.apps.ietf.org/rfc/rfc2141.html#sec-2",    
+                "http://www.apps.ietf.org/rfc/rfc2141.html#sec-2",
                 "All URNs have the following syntax (phrases enclosed in quotes are REQUIRED):"+
   "\n"+
     "<URN&gt; ::= \"urn:\" <NID&gt; \":\" <NSS&gt;\n"+
-    "",    
+    "",
                 "All URNs have the following syntax (phrases enclosed in quotes are REQUIRED):"+
      "</p><pre>\n"+
     "&lt;URN&gt; ::= \"urn:\" &lt;NID&gt; \":\" &lt;NSS&gt;\n"+
     "</pre>"+
      "<p>"
         );
-    
+
         spec
         .addDefinition(
-                "http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.1",    
+                "http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.1",
                 ""+
   "\n"+
     "<NID&gt;         ::= <let-num&gt; [ 1,31<let-num-hyp&gt; ]\n"+
@@ -2394,7 +2394,7 @@ This class is not part of the API.
     "<let-num-hyp&gt; ::= <upper&gt; | <lower&gt; | <number&gt; | \"-\"\n"+
     "\n"+
     "<let-num&gt;     ::= <upper&gt; | <lower&gt; | <number&gt;\n"+
-    "",    
+    "",
                 ""+
      "</p><pre>\n"+
     "&lt;NID&gt;         ::= &lt;let-num&gt; [ 1,31&lt;let-num-hyp&gt; ]\n"+
@@ -2405,10 +2405,10 @@ This class is not part of the API.
     "</pre>"+
      "<p>"
         );
-    
+
         spec
         .addDefinition(
-                "http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.2",    
+                "http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.2",
                 ""+
   "\n"+
     "<NSS&gt;         ::= 1*<URN chars&gt;\n"+
@@ -2420,7 +2420,7 @@ This class is not part of the API.
     "<other&gt;       ::= \"(\" | \")\" | \"+\" | \",\" | \"-\" | \".\" |\n"+
     "                  \":\" | \"=\" | \"@\" | \";\" | \"$\" |\n"+
     "                  \"_\" | \"!\" | \"*\" | \"'\"\n"+
-    "",    
+    "",
                 ""+
      "</p><pre>\n"+
     "&lt;NSS&gt;         ::= 1*&lt;URN chars&gt;\n"+
@@ -2435,14 +2435,14 @@ This class is not part of the API.
     "</pre>"+
      "<p>"
         );
-    
+
         spec
         .addDefinition(
-                "http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.3.2",    
-                "RFC 1630 [2] reserves the characters \"/\", \"?\", and \"#\" for particular purposes. The URN-WG has not yet debated the applicability and precise semantics of those purposes as applied to URNs. Therefore, these characters are RESERVED for future developments. Namespace developers SHOULD NOT use these characters in unencoded form, but rather use the appropriate %-encoding for each character.",    
+                "http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.3.2",
+                "RFC 1630 [2] reserves the characters \"/\", \"?\", and \"#\" for particular purposes. The URN-WG has not yet debated the applicability and precise semantics of those purposes as applied to URNs. Therefore, these characters are RESERVED for future developments. Namespace developers SHOULD NOT use these characters in unencoded form, but rather use the appropriate %-encoding for each character.",
                 "RFC 1630 [2] reserves the characters \"/\", \"?\", and \"#\" for particular purposes. The URN-WG has not yet debated the applicability and precise semantics of those purposes as applied to URNs. Therefore, these characters are RESERVED for future developments. Namespace developers SHOULD NOT use these characters in unencoded form, but rather use the appropriate %-encoding for each character."
         );
-    
+
         spec.prohibit(
               IRIComponents.AUTHORITY
         );
@@ -2452,22 +2452,22 @@ This class is not part of the API.
 //        spec.prohibit(
 //              IRIComponents.QUERY
 //        );
-    
+
         spec.require(
               IRIComponents.PATH
         );
-    
+
         spec.setPattern(QUERY, "[+=].*");
-        
+
         spec.setPattern(PATH,
-                // RFC 2141 - 
+                // RFC 2141 -
                 //"(?![uU][rR][nN]:)[a-zA-Z0-9][-a-zA-Z0-9]{1,31}:[^/~]+"
                 // RFC 8141 revision of 2141 - JENA-1647
                 "(?![uU][rR][nN]:)[a-zA-Z0-9][-a-zA-Z0-9]{1,31}:.*"
                 );
-      
+
         spec.setReserved(PATH,"/~");
-      
+
      spec =
        new SchemeSpecification(
                 "go",
@@ -2475,17 +2475,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc3368.html",
                 "go",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "h323",
@@ -2493,17 +2493,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc3508.html",
                 "H.323",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "ipp",
@@ -2511,17 +2511,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc3510.html",
                 "Internet Printing Protocol",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "tftp",
@@ -2529,17 +2529,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc3617.html",
                 "Trivial File Transfer Protocol",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "mupdate",
@@ -2547,17 +2547,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc3656.html",
                 "Mailbox Update (MUPDATE) Protocol",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "pres",
@@ -2565,17 +2565,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc3859.html",
                 "Presence",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "im",
@@ -2583,17 +2583,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc3860.html",
                 "Instant Messaging",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "mtqp",
@@ -2601,17 +2601,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc3887.html",
                 "Message Tracking Query Protocol",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "iris.beep",
@@ -2619,17 +2619,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc3983.html",
                 "iris.beep",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "dict",
@@ -2637,17 +2637,17 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2229.html",
                 "dictionary service protocol",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "snmp",
@@ -2655,17 +2655,17 @@ This class is not part of the API.
                 "http://www.ietf.org/rfc/rfc4088.txt",
                 "Simple Network Management Protocol",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "crid",
@@ -2673,17 +2673,17 @@ This class is not part of the API.
                 "http://www.ietf.org/rfc/rfc4078.txt",
                 "TV-Anytime Content Reference Identifier",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "tag",
@@ -2691,17 +2691,17 @@ This class is not part of the API.
                 "http://www.ietf.org/rfc/rfc4151.txt",
                 "tag",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "afs",
@@ -2709,17 +2709,17 @@ This class is not part of the API.
                 "http://www.iana.org/assignments/uri-schemes",
                 "Andrew File System global file names",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "tn3270",
@@ -2727,17 +2727,17 @@ This class is not part of the API.
                 "http://www.iana.org/assignments/uri-schemes",
                 "Interactive 3270 emulation sessions",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "mailserver",
@@ -2745,17 +2745,17 @@ This class is not part of the API.
                 "http://www.iana.org/assignments/uri-schemes",
                 "Access to data available from mail servers",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "dns",
@@ -2763,17 +2763,17 @@ This class is not part of the API.
                 "http://www.iana.org/assignments/uri-schemes",
                 "Domain Name System",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "info",
@@ -2781,17 +2781,17 @@ This class is not part of the API.
                 "http://www.iana.org/assignments/uri-schemes",
                 "Information Assets with Identifiers in Public Namespaces",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
      spec =
        new SchemeSpecification(
                 "ldap",
@@ -2799,17 +2799,17 @@ This class is not part of the API.
                 "http://www.iana.org/assignments/uri-schemes",
                 "Lightweight Directory Access Protocol",
                 "",
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 }
             );
-            
-            
+
+
             new ViolationCodeInfo(
                 ILLEGAL_CHARACTER,
                 "ILLEGAL_CHARACTER",
@@ -2817,51 +2817,51 @@ This class is not part of the API.
                 "<p>The character violates the grammar rules for URIs/IRIs.</p>",
                 0,
                 new InSpec[]{
-                  
+
             new FromAlso(
                 "URI",
                 "http://www.apps.ietf.org/rfc/rfc3986.html#page-49"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html#sec-2.2"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "ht$tp://example.org/foo",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 PERCENT_ENCODING_SHOULD_BE_UPPERCASE,
                 "PERCENT_ENCODING_SHOULD_BE_UPPERCASE",
@@ -2869,9 +2869,9 @@ This class is not part of the API.
                 "<p>Percent-escape sequences should use uppercase.</p>",
                 0|Force.minting,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.1",
                 "URI producers and normalizers should use *uppercase* hexadecimal digits for all percent-encodings.",
@@ -2879,46 +2879,46 @@ This class is not part of the API.
      " <em>uppercase</em> "+
      "hexadecimal digits for all percent-encodings.</p>"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://example.org/foo%c3%80",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 SUPERFLUOUS_NON_ASCII_PERCENT_ENCODING,
                 "SUPERFLUOUS_NON_ASCII_PERCENT_ENCODING",
@@ -2926,29 +2926,29 @@ This class is not part of the API.
                 "<p>Percent-escape sequences should not be used unnecessarily.</p>",
                 0|Force.minting,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "IRI", 
+                "IRI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3987.html#sec-3.2",
                 "URI-to-IRI conversion removes percent-encodings",
                 "<p>URI-to-IRI conversion removes percent-encodings</p>"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://example.org/foo%C3%A9r",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
                 true||
                 false
             );
-    
+
             new ViolationCodeInfo(
                 SUPERFLUOUS_ASCII_PERCENT_ENCODING,
                 "SUPERFLUOUS_ASCII_PERCENT_ENCODING",
@@ -2956,54 +2956,54 @@ This class is not part of the API.
                 "<p>Percent-escape sequences should not be used unnecessarily.</p>",
                 0|Force.minting,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.3",
                 "For consistency, percent-encoded octets in the ranges of ALPHA (%41-%5A and %61-%7A), DIGIT (%30-%39), hyphen (%2D), period (%2E), underscore (%5F), or tilde (%7E) should not be created by URI producers",
                 "<p>For consistency, percent-encoded octets in the ranges of ALPHA (%41-%5A and %61-%7A), DIGIT (%30-%39), hyphen (%2D), period (%2E), underscore (%5F), or tilde (%7E) should not be created by URI producers</p>"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://example.org/foo%5Fb%61r",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
                 true||
                 false
             );
-    
+
             new ViolationCodeInfo(
                 UNWISE_CHARACTER,
                 "UNWISE_CHARACTER",
@@ -3011,42 +3011,42 @@ This class is not part of the API.
                 "<p>The character matches no grammar rules of URIs/IRIs. These characters are permitted in RDF URI References, XML system identifiers, and XML Schema anyURIs.</p>",
                 0|Force.minting,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "IRI", 
+                "IRI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3987.html#page-13",
                 "Systems accepting IRIs MAY also deal with the printable characters in US-ASCII that are not allowed in URIs, namely \"<\", \"&gt;\", '\"', space, \"{\", \"}\", \"|\", \"\\\", \"^\", and \"`\", in step 2 above. If these characters are found but are not converted, then the conversion SHOULD fail.",
                 "<p>Systems accepting IRIs MAY also deal with the printable characters in US-ASCII that are not allowed in URIs, namely \"&lt;\", \"&gt;\", '\"', space, \"{\", \"}\", \"|\", \"\\\", \"^\", and \"`\", in step 2 above. If these characters are found but are not converted, then the conversion SHOULD fail.</p>"
             ),
-    
+
             new FromAlso(
                 "URI",
                 "http://www.apps.ietf.org/rfc/rfc3986.html#page-49"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://example.org/fo|o",
-    
+
       "http://example.org/fo<o",
-    
+
       "http://example.org/fo&gt;o",
-    
+
       "http://example.org/fo\"o",
-    
+
       "http://example.org/fo`o",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 CONTROL_CHARACTER,
                 "CONTROL_CHARACTER",
@@ -3054,9 +3054,9 @@ This class is not part of the API.
                 "<p>Control characters are not allowed in URIs or RDF URI References.</p>",
                 0,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "RDF", 
+                "RDF",
                 -1,
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref",
                 "A URI reference within an RDF graph (an RDF URI reference) is a Unicode string [UNICODE] that: (0)does not contain any control characters ( #x00 - #x1F, #x7F-#x9F) ",
@@ -3066,9 +3066,9 @@ This class is not part of the API.
      "</ul>"+
      "<p></p>"
             ),
-    
+
        new FromSpec_iri(
-                "IRI", 
+                "IRI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3987.html",
                 ""+
@@ -3091,32 +3091,32 @@ This class is not part of the API.
     "</pre>"+
      "<p></p>"
             ),
-    
+
             new FromAlso(
                 "URI",
                 "http://www.apps.ietf.org/rfc/rfc3986.html"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://example.org/fo\u007Fo",
-    
+
       "http://example.org/fo\u0085o",
-    
+
       "http://example.org/fo\u0009o",
-    
+
       "http://example.org/fo\u0001o",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 NON_XML_CHARACTER,
                 "NON_XML_CHARACTER",
@@ -3124,39 +3124,39 @@ This class is not part of the API.
                 "<p>The character is not legal in XML.</p>",
                 0,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "XML", 
+                "XML",
                 -1,
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#NT-Char",
                 "Char ::= #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]",
                 "<p>Char ::= #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]</p>"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://example.org/foo\u0001",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 DISCOURAGED_XML_CHARACTER,
                 "DISCOURAGED_XML_CHARACTER",
@@ -3164,39 +3164,39 @@ This class is not part of the API.
                 "<p>The character is discouraged in XML documents.</p>",
                 0|Force.minting,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "XML", 
+                "XML",
                 -1,
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#char32",
                 "Document authors are encouraged to avoid \"compatibility characters\", as defined in section 6.8 of [Unicode] (see also D21 in section 3.6 of [Unicode3]). The characters defined in the following ranges are also discouraged. They are either control characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F], [#xFDD0-#xFDDF],",
                 "<p>Document authors are encouraged to avoid \"compatibility characters\", as defined in section 6.8 of [Unicode] (see also D21 in section 3.6 of [Unicode3]). The characters defined in the following ranges are also discouraged. They are either control characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F], [#xFDD0-#xFDDF],</p>"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://example.org/foo\u0080",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 NON_INITIAL_DOT_SEGMENT,
                 "NON_INITIAL_DOT_SEGMENT",
@@ -3204,9 +3204,9 @@ This class is not part of the API.
                 "<p>The path contains a segment /../ not at the beginning of a relative reference, or it contains a /./ These should be removed.</p>",
                 0|Force.minting|Force.security,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-6.2.2.3",
                 "The complete path segments \".\" and \"..\" are intended *only* for use within relative references",
@@ -3214,56 +3214,56 @@ This class is not part of the API.
      " <em>only</em> "+
      "for use within relative references</p>"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://example.org/../foo",
-    
+
       "http://example.org/foo/../foo",
-    
+
       "http://example.org/foo/..",
-    
+
       "http://example.org/foo/./foo",
-    
+
       "http://example.org/./foo",
-    
+
       "http://example.org/foo/.",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 EMPTY_SCHEME,
                 "EMPTY_SCHEME",
@@ -3271,9 +3271,9 @@ This class is not part of the API.
                 "<p>The scheme component is empty.</p>",
                 0,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.1",
                 "Scheme names consist of a sequence of characters *beginning with a letter* and followed by any combination of letters, digits, plus (\"+\"), period (\".\"), or hyphen (\"-\").",
@@ -3281,46 +3281,46 @@ This class is not part of the API.
      " <em>beginning with a letter</em> "+
      "and followed by any combination of letters, digits, plus (\"+\"), period (\".\"), or hyphen (\"-\").</p>"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "://example.org/foo",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 SCHEME_MUST_START_WITH_LETTER,
                 "SCHEME_MUST_START_WITH_LETTER",
@@ -3328,9 +3328,9 @@ This class is not part of the API.
                 "<p>The scheme component must start with a letter.</p>",
                 0,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.1",
                 "Scheme names consist of a sequence of characters *beginning with a letter* and followed by any combination of letters, digits, plus (\"+\"), period (\".\"), or hyphen (\"-\").",
@@ -3338,46 +3338,46 @@ This class is not part of the API.
      " <em>beginning with a letter</em> "+
      "and followed by any combination of letters, digits, plus (\"+\"), period (\".\"), or hyphen (\"-\").</p>"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "007://example.org/foo",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 LOWERCASE_PREFERRED,
                 "LOWERCASE_PREFERRED",
@@ -3385,17 +3385,17 @@ This class is not part of the API.
                 "<p>lowercase is preferred in this component</p>",
                 0|Force.minting,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 SCHEME,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.1",
                 "An implementation should accept uppercase letters as equivalent to lowercase in scheme names (e.g., allow \"HTTP\" as well as \"http\") for the sake of robustness but should only produce lowercase scheme names for consistency.",
                 "<p>An implementation should accept uppercase letters as equivalent to lowercase in scheme names (e.g., allow \"HTTP\" as well as \"http\") for the sake of robustness but should only produce lowercase scheme names for consistency.</p>"
             ),
-    
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 HOST,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2",
                 "Although host is case-insensitive, producers and normalizers should use *lowercase for registered names* and hexadecimal addresses for the sake of uniformity, while only using uppercase letters for percent-encodings.",
@@ -3403,48 +3403,48 @@ This class is not part of the API.
      " <em>lowercase for registered names</em> "+
      "and hexadecimal addresses for the sake of uniformity, while only using uppercase letters for percent-encodings.</p>"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "HTTP://example.org/foo",
-    
+
       "http://eXamPle.org/foo",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 PORT_SHOULD_NOT_BE_EMPTY,
                 "PORT_SHOULD_NOT_BE_EMPTY",
@@ -3452,9 +3452,9 @@ This class is not part of the API.
                 "<p>The colon introducing an empty port component should be omitted entirely, or a port number should be specified.</p>",
                 0|Force.minting,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2",
                 "URI producers and normalizers should omit the port component *and its \":\" delimiter* if port is empty",
@@ -3462,46 +3462,46 @@ This class is not part of the API.
      " <em>and its \":\" delimiter</em> "+
      "if port is empty</p>"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://example.org:/foo",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 DEFAULT_PORT_SHOULD_BE_OMITTED,
                 "DEFAULT_PORT_SHOULD_BE_OMITTED",
@@ -3509,9 +3509,9 @@ This class is not part of the API.
                 "<p>If the port is the default one for the scheme it should be omitted.</p>",
                 0|Force.minting,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2",
                 "URI producers and normalizers should omit the port component and its \":\" delimiter if port is empty or if its value would be the *same as that of the scheme's default.* ",
@@ -3519,46 +3519,46 @@ This class is not part of the API.
      " <em>same as that of the scheme's default.</em> "+
      "</p>"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://example.org:80/foo",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 PORT_SHOULD_NOT_BE_WELL_KNOWN,
                 "PORT_SHOULD_NOT_BE_WELL_KNOWN",
@@ -3566,9 +3566,9 @@ This class is not part of the API.
                 "<p>Ports under 1024 should be accessed using the appropriate scheme name.</p>",
                 0|Force.security,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-7.2",
                 "Applications should prevent dereference of a URI that specifies a TCP port number within the \"well-known port\" range *(0 - 1023)* unless the protocol being used to dereference that URI is compatible with the protocol expected on that well-known port.",
@@ -3576,46 +3576,46 @@ This class is not part of the API.
      " <em>(0 - 1023)</em> "+
      "unless the protocol being used to dereference that URI is compatible with the protocol expected on that well-known port.</p>"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://example.org:180/foo",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 PORT_SHOULD_NOT_START_IN_ZERO,
                 "PORT_SHOULD_NOT_START_IN_ZERO",
@@ -3623,51 +3623,51 @@ This class is not part of the API.
                 "<p>Leading zeros in the port number should be omitted. This is an added feature of this implementation, not mandated by any standard.</p>",
                 0|Force.minting,
                 new InSpec[]{
-                  
+
             new FromAlso(
                 "URI",
                 "http://www.apps.ietf.org/rfc/rfc3986.html"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://example.org:08080/foo",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 BIDI_FORMATTING_CHARACTER,
                 "BIDI_FORMATTING_CHARACTER",
@@ -3675,41 +3675,41 @@ This class is not part of the API.
                 "<p>A prohibited bi-directional control character was found.</p>",
                 0,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "IRI", 
+                "IRI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3987.html#sec-4.1",
                 "IRIs MUST NOT contain bidirectional formatting characters (LRM, RLM, LRE, RLE, LRO, RLO, and PDF).",
                 "<p>IRIs MUST NOT contain bidirectional formatting characters (LRM, RLM, LRE, RLE, LRO, RLO, and PDF).</p>"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://example.org/Andr\u202Abar",
-    
+
       "http://example.org/Andr\u202Bbar",
-    
+
       "http://example.org/Andr\u202Cbar",
-    
+
       "http://example.org/Andr\u202Dbar",
-    
+
       "http://example.org/Andr\u202Ebar",
-    
+
       "http://example.org/Andr\u200Ebar",
-    
+
       "http://example.org/Andr\u200Fbar",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
                 true||
                 false
             );
-    
+
             new ViolationCodeInfo(
                 WHITESPACE,
                 "WHITESPACE",
@@ -3717,33 +3717,33 @@ This class is not part of the API.
                 "<p>A single whitespace character. These match no grammar rules of URIs/IRIs. These characters are permitted in RDF URI References, XML system identifiers, and XML Schema anyURIs.</p>",
                 0,
                 new InSpec[]{
-                  
+
             new FromAlso(
                 "URI",
                 "http://www.apps.ietf.org/rfc/rfc3986.html"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://example.org/ foo",
-    
+
       "file:///Program Files",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 DOUBLE_WHITESPACE,
                 "DOUBLE_WHITESPACE",
@@ -3751,42 +3751,42 @@ This class is not part of the API.
                 "<p>Either two or more consecutive whitespace characters, or leading or trailing whitespace. These match no grammar rules of URIs/IRIs. These characters are permitted in RDF URI References, XML system identifiers, but not XML Schema anyURIs.</p>",
                 0,
                 new InSpec[]{
-                  
+
             new FromAlso(
                 "URI",
                 "http://www.apps.ietf.org/rfc/rfc3986.html"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://example.org/  foo",
-    
+
       "file:///Program  Files",
-    
+
       "file:///TabBar ",
-    
+
       " rel-with-initial-space",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 NOT_XML_SCHEMA_WHITESPACE,
                 "NOT_XML_SCHEMA_WHITESPACE",
@@ -3794,19 +3794,19 @@ This class is not part of the API.
                 "<p>Whitespace characters match no grammar rules of URIs/IRIs. These characters are permitted in RDF URI References, and XML system identifiers. However, tab and new line characters, and consecutive space characters cannot occur in XML Schema anyURIs.</p>",
                 0,
                 new InSpec[]{
-                  
+
             new FromAlso(
                 "URI",
                 "http://www.apps.ietf.org/rfc/rfc3986.html"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
        new FromSpec_iri(
-                "Schema", 
+                "Schema",
                 -1,
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#schema",
                 ""+
@@ -3831,106 +3831,106 @@ This class is not part of the API.
     "</pre>"+
      "<p></p>"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "file:///Tab\u0009Bar",
-    
+
       "file:///Tab\nBar",
-    
+
       "file:///Tab\rBar",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 DOUBLE_DASH_IN_REG_NAME,
                 "DOUBLE_DASH_IN_REG_NAME",
                 new String[]{
-                  
+
       "http://foo--bar//",
-    
+
                 },
                 new String[]{
-                  
+
                 },
                 true||
                 false
             );
-    
+
             new ViolationCodeInfo(
                 SCHEME_INCLUDES_DASH,
                 "SCHEME_INCLUDES_DASH",
                 new String[]{
-                  
+
       "ht-tp://foo.bar//",
-    
+
       "-http://foo.bar//",
-    
+
       "http-://foo.bar//",
-    
+
                 },
                 new String[]{
-                  
+
                 },
                 true||
                 false
             );
-    
+
             new ViolationCodeInfo(
                 NON_URI_CHARACTER,
                 "NON_URI_CHARACTER",
                 new String[]{
-                  
+
       "http://foo-bar//̳a",
-    
+
       "http://foo-b̳ar//",
-    
+
                 },
                 new String[]{
-                  
+
                 },
                 true||
                 false
             );
-    
+
             new ViolationCodeInfo(
                 PERCENT_20,
                 "PERCENT_20",
                 new String[]{
-                  
+
       "http://foo-bar//%20a",
-    
+
                 },
                 new String[]{
-                  
+
                 },
                 true||
                 false
             );
-    
+
             new ViolationCodeInfo(
                 PERCENT,
                 "PERCENT",
                 new String[]{
-                  
+
       "http://foo-bar//%AAa",
-    
+
                 },
                 new String[]{
-                  
+
                 },
                 true||
                 false
             );
-    
+
             new ViolationCodeInfo(
                 IP_V6_OR_FUTURE_ADDRESS_SYNTAX,
                 "IP_V6_OR_FUTURE_ADDRESS_SYNTAX",
@@ -3938,9 +3938,9 @@ This class is not part of the API.
                 "<p>A syntax violation was detected in an IP V6 (or future) address.</p>",
                 0,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2",
                 ""+
@@ -3983,50 +3983,50 @@ This class is not part of the API.
     "</pre>"+
      "<p></p>"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://[/",
-    
+
       "ldap://[20015:db8::7]/c=GB?objectClass?one",
-    
+
       "ldap://[2001:db8:::7]/c=GB?objectClass?one",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 IPv6ADDRESS_SHOULD_BE_LOWERCASE,
                 "IPv6ADDRESS_SHOULD_BE_LOWERCASE",
@@ -4034,9 +4034,9 @@ This class is not part of the API.
                 "<p>IP version 6 addresses should use lowercase hexadecimal</p>",
                 0|Force.minting,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2",
                 "Although host is case-insensitive, producers and normalizers *should use lowercase* for registered names and *hexadecimal addresses* for the sake of uniformity",
@@ -4046,48 +4046,48 @@ This class is not part of the API.
      " <em>hexadecimal addresses</em> "+
      "for the sake of uniformity</p>"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "ldap://[2001:Db8::7]/c=GB?objectClass?one",
-    
+
       "ldap://[2001:dB8::7]/c=GB?objectClass?one",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 IP_V4_OCTET_RANGE,
                 "IP_V4_OCTET_RANGE",
@@ -4095,9 +4095,9 @@ This class is not part of the API.
                 "<p>A host entry consists of four numbers, but they are not in the range 0-255, or have leading zeros.</p>",
                 0,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2",
                 "A host identified by an IPv4 literal address is represented in dotted-decimal notation (a sequence of *four decimal numbers* in the range *0 to 255* , separated by \".\"),",
@@ -4107,9 +4107,9 @@ This class is not part of the API.
      " <em>0 to 255</em> "+
      ", separated by \".\"),</p>"
             ),
-    
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2",
                 ""+
@@ -4130,52 +4130,52 @@ This class is not part of the API.
     "</pre>"+
      "<p></p>"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "ldap://155.00.55.102/c=GB?objectClass?one",
-    
+
       "ldap://20.256.20.20/c=GB?objectClass?one",
-    
+
       "ldap://20.1000.20.20/c=GB?objectClass?one",
-    
+
       "ldap://20.010.20.20/c=GB?objectClass?one",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 NOT_DNS_NAME,
                 "NOT_DNS_NAME",
@@ -4183,9 +4183,9 @@ This class is not part of the API.
                 "<p>The host component did not meet the restrictions on DNS names.</p>",
                 0|Force.dns,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2",
                 "URI producers should use names that *conform to the DNS syntax* , even when use of DNS is not immediately apparent, and should limit these names to no more than 255 characters in length.",
@@ -4193,48 +4193,48 @@ This class is not part of the API.
      " <em>conform to the DNS syntax</em> "+
      ", even when use of DNS is not immediately apparent, and should limit these names to no more than 255 characters in length.</p>"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "ldap://foo$/c=GB?objectClass?one",
-    
+
       "http://foo.example.$org/",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 USE_PUNYCODE_NOT_PERCENTS,
                 "USE_PUNYCODE_NOT_PERCENTS",
@@ -4242,54 +4242,54 @@ This class is not part of the API.
                 "<p>The host component used percent encoding, where punycode is preferred.</p>",
                 0|Force.minting|Force.dns,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2",
                 "URI producers should provide these registered names in the IDNA encoding, rather than a percent-encoding, if they wish to maximize interoperability with legacy URI resolvers.",
                 "<p>URI producers should provide these registered names in the IDNA encoding, rather than a percent-encoding, if they wish to maximize interoperability with legacy URI resolvers.</p>"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "ftp://andr%C3%A9.example.org/",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 ILLEGAL_PERCENT_ENCODING,
                 "ILLEGAL_PERCENT_ENCODING",
@@ -4297,77 +4297,77 @@ This class is not part of the API.
                 "<p>The host component a percent occurred without two following hexadecimal digits.</p>",
                 0,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.1",
                 "A percent-encoded octet is encoded as a character triplet, consisting of the percent character \"%\" followed by the two hexadecimal digits representing that octet's numeric value.",
                 "<p>A percent-encoded octet is encoded as a character triplet, consisting of the percent character \"%\" followed by the two hexadecimal digits representing that octet's numeric value.</p>"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "ftp://andr%%A9.example.org/",
-    
+
       "ftp://andr%.example.org/",
-    
+
       "ftp://andre.example.org/%",
-    
+
       "ftp://andre.example.org/%A",
-    
+
       "ftp://andre.example.org/%A?",
-    
+
       "ftp://andre.example.org/%A#",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 ACE_PREFIX,
                 "ACE_PREFIX",
                 new String[]{
-                  
+
                 },
                 new String[]{
-                  
+
                 },
                 true||
                 false
             );
-    
+
             new ViolationCodeInfo(
                 LONE_SURROGATE,
                 "LONE_SURROGATE",
@@ -4375,21 +4375,21 @@ This class is not part of the API.
                 "<p>A unicode surrogate character that is not of a surrogate pair.</p>",
                 0,
                 new InSpec[]{
-                  
+
                 },
                 new String[]{
-                  
+
       "http:/foo/p\uD800",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 DNS_LABEL_DASH_START_OR_END,
                 "DNS_LABEL_DASH_START_OR_END",
@@ -4397,62 +4397,62 @@ This class is not part of the API.
                 "<p>A DNS name had a - at the beginning or end.</p>",
                 0|Force.dns,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2",
                 "Such a name consists of a sequence of domain labels separated by \".\", each domain label starting and ending with an alphanumeric character and possibly also containing \"-\" characters.",
                 "<p>Such a name consists of a sequence of domain labels separated by \".\", each domain label starting and ending with an alphanumeric character and possibly also containing \"-\" characters.</p>"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "ldap://-foo/c=GB?objectClass?one",
-    
+
       "http://foo.example.org-/",
-    
+
       "http://foo.example.org--/",
-    
+
       "http://--foo.example.org/",
-    
+
       "http://-fo-o.example.org/",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 BAD_IDN_UNASSIGNED_CHARS,
                 "BAD_IDN_UNASSIGNED_CHARS",
@@ -4460,57 +4460,57 @@ This class is not part of the API.
                 "<p>Characters used in the IRI were unassigned in the version of Unicode known by this system. They may have been assigned since.</p>",
                 0|Force.minting,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2",
                 "When a non-ASCII registered name represents an internationalized domain name intended for resolution via the DNS, the name must be transformed to the IDNA encoding [RFC3490] prior to name lookup. URI producers should provide these registered names in the IDNA encoding, rather than a percent-encoding, if they wish to maximize interoperability with legacy URI resolvers.",
                 "<p>When a non-ASCII registered name represents an internationalized domain name intended for resolution via the DNS, the name must be transformed to the IDNA encoding [RFC3490] prior to name lookup. URI producers should provide these registered names in the IDNA encoding, rather than a percent-encoding, if they wish to maximize interoperability with legacy URI resolvers.</p>"
             ),
-    
+
        new FromSpec_iri(
-                "IRI", 
+                "IRI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3987.html#sec-3.1",
                 "Replace the ireg-name part of the IRI by the part converted using the ToASCII operation specified in section 4.1 of [RFC3490] on each dot-separated label, and by using U+002E (FULL STOP) as a label separator, with the flag UseSTD3ASCIIRules set to TRUE, and with the flag AllowUnassigned set to FALSE for creating IRIs and set to TRUE otherwise.",
                 "<p>Replace the ireg-name part of the IRI by the part converted using the ToASCII operation specified in section 4.1 of [RFC3490] on each dot-separated label, and by using U+002E (FULL STOP) as a label separator, with the flag UseSTD3ASCIIRules set to TRUE, and with the flag AllowUnassigned set to FALSE for creating IRIs and set to TRUE otherwise.</p>"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://foo.example\u0221.org/",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 BAD_IDN,
                 "BAD_IDN",
@@ -4518,61 +4518,61 @@ This class is not part of the API.
                 "<p>The Internationalized Domain Name check failed.</p>",
                 0,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2",
                 "When a non-ASCII registered name represents an internationalized domain name intended for resolution via the DNS, the name must be transformed to the IDNA encoding [RFC3490] prior to name lookup. URI producers should provide these registered names in the IDNA encoding, rather than a percent-encoding, if they wish to maximize interoperability with legacy URI resolvers.",
                 "<p>When a non-ASCII registered name represents an internationalized domain name intended for resolution via the DNS, the name must be transformed to the IDNA encoding [RFC3490] prior to name lookup. URI producers should provide these registered names in the IDNA encoding, rather than a percent-encoding, if they wish to maximize interoperability with legacy URI resolvers.</p>"
             ),
-    
+
        new FromSpec_iri(
-                "IRI", 
+                "IRI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3987.html#sec-3.1",
                 "Replace the ireg-name part of the IRI by the part converted using the ToASCII operation specified in section 4.1 of [RFC3490] on each dot-separated label, and by using U+002E (FULL STOP) as a label separator, with the flag UseSTD3ASCIIRules set to TRUE, and with the flag AllowUnassigned set to FALSE for creating IRIs and set to TRUE otherwise.",
                 "<p>Replace the ireg-name part of the IRI by the part converted using the ToASCII operation specified in section 4.1 of [RFC3490] on each dot-separated label, and by using U+002E (FULL STOP) as a label separator, with the flag UseSTD3ASCIIRules set to TRUE, and with the flag AllowUnassigned set to FALSE for creating IRIs and set to TRUE otherwise.</p>"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://--foo.example.org/",
-    
+
       "http://xn--andr--ep-.example.org/",
-    
+
       "http://xn.example.\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333/",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 HAS_PASSWORD,
                 "HAS_PASSWORD",
@@ -4580,62 +4580,62 @@ This class is not part of the API.
                 "<p>Including passwords in URIs is deprecated.</p>",
                 0|Force.must|Force.security,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.1",
                 "Use of the format \"user:password\" in the userinfo field is deprecated.",
                 "<p>Use of the format \"user:password\" in the userinfo field is deprecated.</p>"
             ),
-    
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.1",
                 "Applications may choose to ignore or reject such data when it is received as part of a reference and should reject the storage of such data in unencrypted form. The passing of authentication information in clear text has proven to be a security risk in almost every case where it has been used.",
                 "<p>Applications may choose to ignore or reject such data when it is received as part of a reference and should reject the storage of such data in unencrypted form. The passing of authentication information in clear text has proven to be a security risk in almost every case where it has been used.</p>"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://user:pass@example.org/",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 DISCOURAGED_IRI_CHARACTER,
                 "DISCOURAGED_IRI_CHARACTER",
@@ -4643,35 +4643,35 @@ This class is not part of the API.
                 "<p>Certain characters are discouraged in IRIs.</p>",
                 0|Force.minting,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "IRI", 
+                "IRI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3987.html#sec-6.1",
                 "The UCS contains many areas of characters for which there are strong visual look-alikes. Because of the likelihood of transcription errors, these also should be avoided. This includes the full-width equivalents of Latin characters, half-width Katakana characters for Japanese, and many others. It also includes many look-alikes of \"space\", \"delims\", and \"unwise\", characters excluded in [RFC3491].",
                 "<p>The UCS contains many areas of characters for which there are strong visual look-alikes. Because of the likelihood of transcription errors, these also should be avoided. This includes the full-width equivalents of Latin characters, half-width Katakana characters for Japanese, and many others. It also includes many look-alikes of \"space\", \"delims\", and \"unwise\", characters excluded in [RFC3491].</p>"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://example.org/\u2000en-quad",
-    
+
       "http://example.org/\u205Fmedium-mathematical-space",
-    
+
       "http://example\uFF95.org/",
-    
+
       "http://example\uFF47.org/",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
                 true||
                 false
             );
-    
+
             new ViolationCodeInfo(
                 BAD_BIDI_SUBCOMPONENT,
                 "BAD_BIDI_SUBCOMPONENT",
@@ -4679,9 +4679,9 @@ This class is not part of the API.
                 "<p>There are restrictions on bidi characters in subcomponents of IRIs</p>",
                 0|Force.should,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "IRI", 
+                "IRI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3987.html#sec-4.2",
                 " (0)A component SHOULD NOT use both right-to-left and left-to-right characters. (1)A component using right-to-left characters SHOULD start and end with right-to-left characters. ",
@@ -4693,84 +4693,84 @@ This class is not part of the API.
      "</ol>"+
      "<p></p>"
             ),
-    
+
                 },
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
                 true||
                 false
             );
-    
+
             new ViolationCodeInfo(
                 DNS_LENGTH_LIMIT,
                 "DNS_LENGTH_LIMIT",
                 new String[]{
-                  
+
                 },
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 DNS_LABEL_LENGTH_LIMIT,
                 "DNS_LABEL_LENGTH_LIMIT",
                 new String[]{
-                  
+
                 },
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 NOT_UTF8_ESCAPE,
                 "NOT_UTF8_ESCAPE",
                 new String[]{
-                  
+
                 },
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 NOT_UTF8_ESCAPE_IN_HOST,
                 "NOT_UTF8_ESCAPE_IN_HOST",
                 new String[]{
-                  
+
                 },
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 BAD_DOT_IN_IDN,
                 "BAD_DOT_IN_IDN",
                 new String[]{
-                  
+
                 },
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 UNREGISTERED_IANA_SCHEME,
                 "UNREGISTERED_IANA_SCHEME",
@@ -4778,25 +4778,25 @@ This class is not part of the API.
                 "<p>The scheme name does not have a \"-\" in it, but is not in the IANA registry. (Last updated from the registry January 2006)</p>",
                 0,
                 new InSpec[]{
-                  
+
        new FromSpec_other(
-                "URL_Registratrion", 
+                "URL_Registratrion",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc2717.html#sec-",
                 "",
                 "<p></p>"
             ),
-    
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2",
                 "The NAMES of schemes registered in the IETF tree MUST NOT contain the dash (also known as the hyphen and minus sign) character ('-') USASCII value 2Dh. Use of this character can cause confusion with schemes registered in alternative trees (see section 3.3).",
                 "<p>The NAMES of schemes registered in the IETF tree MUST NOT contain the dash (also known as the hyphen and minus sign) character ('-') USASCII value 2Dh. Use of this character can cause confusion with schemes registered in alternative trees (see section 3.3).</p>"
             ),
-    
+
        new FromSpec_iri(
-                "URI", 
+                "URI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.3",
                 "The syntax for alternative trees shall be as follows: each tree will be identified by a unique prefix, which must be established in the same fashion as a URL scheme name in the IETF tree, except that the prefix must be defined by a Standards Track document. Scheme names in the new tree are then constructed by prepending the prefix to an identifier unique to each scheme in that tree, as prescribed by that tree's identifying document:"+
@@ -4809,46 +4809,46 @@ This class is not part of the API.
     "</pre>"+
      "<p>For instance, the \"foo\" tree would allow creation of scheme names of the form: \"foo-blahblah:\" and \"foo-bar:\", where the tree prescribes an arbitrary USASCII string following the tree's unique prefix.</p>"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "foo://example.org/bar",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 UNREGISTERED_NONIETF_SCHEME_TREE,
                 "UNREGISTERED_NONIETF_SCHEME_TREE",
@@ -4856,9 +4856,9 @@ This class is not part of the API.
                 "<p>The scheme name has a \"-\" in it, but it does not start in \"x-\" and the prefix is not known as the prefix of an alternative tree for URI schemes.</p>",
                 0,
                 new InSpec[]{
-                  
+
        new FromSpec_other(
-                "URL_Registratrion", 
+                "URL_Registratrion",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc2717.html#sec-3.3",
                 "The syntax for alternative trees shall be as follows: each tree will be identified by a unique prefix, which must be established in the same fashion as a URL scheme name in the IETF tree, except that the prefix must be defined by a Standards Track document. Scheme names in the new tree are then constructed by prepending the prefix to an identifier unique to each scheme in that tree, as prescribed by that tree's identifying document:"+
@@ -4871,51 +4871,51 @@ This class is not part of the API.
     "</pre>"+
      "<p>For instance, the \"foo\" tree would allow creation of scheme names of the form: \"foo-blahblah:\" and \"foo-bar:\", where the tree prescribes an arbitrary USASCII string following the tree's unique prefix.</p>"
             ),
-    
+
             new FromAlso(
                 "URI",
                 "http://www.apps.ietf.org/rfc/rfc3986.html"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
             new FromAlso(
                 "XLink",
                 "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
             ),
-    
+
             new FromAlso(
                 "XML",
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
             ),
-    
+
             new FromAlso(
                 "RDF",
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
             ),
-    
+
             new FromAlso(
                 "Schema",
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "foo-bar://example.org/bar",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 NOT_NFC,
                 "NOT_NFC",
@@ -4923,29 +4923,29 @@ This class is not part of the API.
                 "<p>The IRI is not in Unicode Normal Form C.</p>",
                 0|Force.should,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "IRI", 
+                "IRI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3987.html#sec-5.3.2.2",
                 "To avoid false negatives and problems with transcoding, IRIs SHOULD be created by using NFC.",
                 "<p>To avoid false negatives and problems with transcoding, IRIs SHOULD be created by using NFC.</p>"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://example.org/#Andre\u0301",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
                 true||
                 false
             );
-    
+
             new ViolationCodeInfo(
                 NOT_NFKC,
                 "NOT_NFKC",
@@ -4953,29 +4953,29 @@ This class is not part of the API.
                 "<p>The IRI is not in Unicode Normal Form KC.</p>",
                 0|Force.minting,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "IRI", 
+                "IRI",
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3987.html#sec-7.5",
                 "Although there may be exceptions, newly created resource names should generally be in NFKC",
                 "<p>Although there may be exceptions, newly created resource names should generally be in NFKC</p>"
             ),
-    
+
                 },
                 new String[]{
-                  
+
       "http://example.org/#Andre\u0301",
-    
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
                 true||
                 false
             );
-    
+
             new ViolationCodeInfo(
                 DEPRECATED_UNICODE_CHARACTER,
                 "DEPRECATED_UNICODE_CHARACTER",
@@ -4983,29 +4983,29 @@ This class is not part of the API.
                 "<p>TODO</p>",
                 0,
                 new InSpec[]{
-                  
+
             new FromAlso(
                 "Unicode",
                 "http://www.unicode.org/"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
                 },
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 UNDEFINED_UNICODE_CHARACTER,
                 "UNDEFINED_UNICODE_CHARACTER",
@@ -5013,29 +5013,29 @@ This class is not part of the API.
                 "<p>TODO</p>",
                 0,
                 new InSpec[]{
-                  
+
             new FromAlso(
                 "Unicode",
                 "http://www.unicode.org/"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
                 },
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 PRIVATE_USE_CHARACTER,
                 "PRIVATE_USE_CHARACTER",
@@ -5043,29 +5043,29 @@ This class is not part of the API.
                 "<p>TODO</p>",
                 0,
                 new InSpec[]{
-                  
+
             new FromAlso(
                 "Unicode",
                 "http://www.unicode.org/"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
                 },
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 UNICODE_CONTROL_CHARACTER,
                 "UNICODE_CONTROL_CHARACTER",
@@ -5073,85 +5073,85 @@ This class is not part of the API.
                 "<p>TODO</p>",
                 0,
                 new InSpec[]{
-                  
+
             new FromAlso(
                 "Unicode",
                 "http://www.unicode.org/"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
                 },
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 UNASSIGNED_UNICODE_CHARACTER,
                 "UNASSIGNED_UNICODE_CHARACTER",
-                "The character code is not assigned in the version of Unicode implemented here. Check validity of code, consider updating your copy of icu4j.jar.",
-                "<p>The character code is not assigned in the version of Unicode implemented here. Check validity of code, consider updating your copy of icu4j.jar.</p>",
+                "The character code is not assigned in the version of Unicode implemented here.",
+                "<p>The character code is not assigned in the version of Unicode implemented here.</p>",
                 0|Force.minting,
                 new InSpec[]{
-                  
+
             new FromAlso(
                 "Unicode",
                 "http://www.unicode.org/"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
                 },
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 MAYBE_NOT_NFC,
                 "MAYBE_NOT_NFC",
                 new String[]{
-                  
+
                 },
                 new String[]{
-                  
+
                 },
                 true||
                 false
             );
-    
+
             new ViolationCodeInfo(
                 MAYBE_NOT_NFKC,
                 "MAYBE_NOT_NFKC",
                 new String[]{
-                  
+
                 },
                 new String[]{
-                  
+
                 },
                 true||
                 false
             );
-    
+
             new ViolationCodeInfo(
                 UNICODE_WHITESPACE,
                 "UNICODE_WHITESPACE",
@@ -5159,29 +5159,29 @@ This class is not part of the API.
                 "<p>TODO</p>",
                 0,
                 new InSpec[]{
-                  
+
             new FromAlso(
                 "Unicode",
                 "http://www.unicode.org/"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
                 },
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 COMPATIBILITY_CHARACTER,
                 "COMPATIBILITY_CHARACTER",
@@ -5189,29 +5189,29 @@ This class is not part of the API.
                 "<p>TODO</p>",
                 0,
                 new InSpec[]{
-                  
+
             new FromAlso(
                 "Unicode",
                 "http://www.unicode.org/"
             ),
-    
+
             new FromAlso(
                 "IRI",
                 "http://www.apps.ietf.org/rfc/rfc3987.html"
             ),
-    
+
                 },
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 REQUIRED_COMPONENT_MISSING,
                 "REQUIRED_COMPONENT_MISSING",
@@ -5219,9 +5219,9 @@ This class is not part of the API.
                 "<p>A component that is required by the scheme is missing.</p>",
                 0,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "RDF", 
+                "RDF",
                 SCHEME,
                 "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref",
                 "representing an *absolute URI* with optional fragment identifier",
@@ -5229,21 +5229,21 @@ This class is not part of the API.
      " <em>absolute URI</em> "+
      "with optional fragment identifier</p>"
             ),
-    
+
        new FromSpec_scheme(
-                "http", 
+                "http",
                 HOST,
                 "http://www.apps.ietf.org/rfc/rfc2616.html"
             ),
-    
+
        new FromSpec_scheme(
-                "https", 
+                "https",
                 HOST,
                 "http://www.apps.ietf.org/rfc/rfc2818.html"
             ),
-    
+
        new FromSpec_scheme(
-                "ftp", 
+                "ftp",
                 HOST,
                 "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",
                 ""+
@@ -5260,9 +5260,9 @@ This class is not part of the API.
     "</pre>"+
      "<p></p>"
             ),
-    
+
        new FromSpec_scheme(
-                "news", 
+                "news",
                 PATH,
                 "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",
                 ""+
@@ -5281,15 +5281,15 @@ This class is not part of the API.
     "</pre>"+
      "<p></p>"
             ),
-    
+
        new FromSpec_scheme(
-                "nntp", 
+                "nntp",
                 HOST,
                 "http://www.apps.ietf.org/rfc/rfc1738.html#sec-3.7"
             ),
-    
+
        new FromSpec_scheme(
-                "file", 
+                "file",
                 PATH,
                 "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",
                 ""+
@@ -5302,9 +5302,9 @@ This class is not part of the API.
     "</pre>"+
      "<p></p>"
             ),
-    
+
        new FromSpec_scheme(
-                "file", 
+                "file",
                 AUTHORITY,
                 "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",
                 ""+
@@ -5317,9 +5317,9 @@ This class is not part of the API.
     "</pre>"+
      "<p></p>"
             ),
-    
+
        new FromSpec_scheme(
-                "urn", 
+                "urn",
                 PATH,
                 "http://www.apps.ietf.org/rfc/rfc2141.html#sec-2",
                 ""+
@@ -5332,19 +5332,19 @@ This class is not part of the API.
     "</pre>"+
      "<p></p>"
             ),
-    
+
                 },
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 PROHIBITED_COMPONENT_PRESENT,
                 "PROHIBITED_COMPONENT_PRESENT",
@@ -5352,29 +5352,29 @@ This class is not part of the API.
                 "<p>A component that is prohibited by the scheme is present.</p>",
                 0,
                 new InSpec[]{
-                  
+
        new FromSpec_iri(
-                "XML", 
+                "XML",
                 FRAGMENT,
                 "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid",
                 "TODO",
                 "<p>TODO</p>"
             ),
-    
+
        new FromSpec_scheme(
-                "http", 
+                "http",
                 USER,
                 "http://www.apps.ietf.org/rfc/rfc2616.html"
             ),
-    
+
        new FromSpec_scheme(
-                "https", 
+                "https",
                 USER,
                 "http://www.apps.ietf.org/rfc/rfc2818.html"
             ),
-    
+
        new FromSpec_scheme(
-                "mailto", 
+                "mailto",
                 AUTHORITY,
                 "http://www.apps.ietf.org/rfc/rfc2368.html",
                 ""+
@@ -5397,9 +5397,9 @@ This class is not part of the API.
     "</pre>"+
      "<p></p>"
             ),
-    
+
        new FromSpec_scheme(
-                "news", 
+                "news",
                 AUTHORITY,
                 "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",
                 ""+
@@ -5418,21 +5418,21 @@ This class is not part of the API.
     "</pre>"+
      "<p></p>"
             ),
-    
+
        new FromSpec_scheme(
-                "nntp", 
+                "nntp",
                 QUERY,
                 "http://www.apps.ietf.org/rfc/rfc1738.html#sec-3.7"
             ),
-    
+
        new FromSpec_scheme(
-                "nntp", 
+                "nntp",
                 USER,
                 "http://www.apps.ietf.org/rfc/rfc1738.html#sec-3.7"
             ),
-    
+
        new FromSpec_scheme(
-                "file", 
+                "file",
                 USER,
                 "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",
                 ""+
@@ -5445,9 +5445,9 @@ This class is not part of the API.
     "</pre>"+
      "<p></p>"
             ),
-    
+
        new FromSpec_scheme(
-                "file", 
+                "file",
                 PORT,
                 "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",
                 ""+
@@ -5460,9 +5460,9 @@ This class is not part of the API.
     "</pre>"+
      "<p></p>"
             ),
-    
+
        new FromSpec_scheme(
-                "urn", 
+                "urn",
                 AUTHORITY,
                 "http://www.apps.ietf.org/rfc/rfc2141.html#sec-2",
                 ""+
@@ -5475,9 +5475,9 @@ This class is not part of the API.
     "</pre>"+
      "<p></p>"
             ),
-    
+
        new FromSpec_scheme(
-                "urn", 
+                "urn",
                 AUTHORITY,
                 "http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.1",
                 ""+
@@ -5490,25 +5490,25 @@ This class is not part of the API.
     "</pre>"+
      "<p></p>"
             ),
-    
+
        new FromSpec_scheme(
-                "urn", 
+                "urn",
                 QUERY,
                 "http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.3.2"
             ),
-    
+
                 },
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 SCHEME_REQUIRES_LOWERCASE,
                 "SCHEME_REQUIRES_LOWERCASE",
@@ -5516,19 +5516,19 @@ This class is not part of the API.
                 "<p>Some part of the scheme specific syntax requires lowercase.</p>",
                 0,
                 new InSpec[]{
-                  
+
                 },
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 SCHEME_PREFERS_LOWERCASE,
                 "SCHEME_PREFERS_LOWERCASE",
@@ -5536,19 +5536,19 @@ This class is not part of the API.
                 "<p>Some part of the scheme specific syntax prefers lowercase.</p>",
                 0|Force.minting,
                 new InSpec[]{
-                  
+
                 },
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 SCHEME_PATTERN_MATCH_FAILED,
                 "SCHEME_PATTERN_MATCH_FAILED",
@@ -5556,275 +5556,275 @@ This class is not part of the API.
                 "<p>The scheme specific syntax rules are violated.</p>",
                 0,
                 new InSpec[]{
-                  
+
                 },
                 new String[]{
-                  
+
                 },
-                
+
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
             new ViolationCodeInfo(
                 QUERY_IN_LEGACY_SCHEME,
                 "QUERY_IN_LEGACY_SCHEME",
                 new String[]{
-                  
+
                 },
                 new String[]{
-                  
+
                 },
-                
+
                 false
             );
-    
+
      }
    }
-   
-   
+
+
 /**
 		    The character violates the grammar rules for URIs/IRIs.
-	    
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a> (see <a href="http://www.apps.ietf.org/rfc/rfc3986.html#page-49">here<a>), <a href="#ref-IRI">[IRI]</a> (see <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-2.2">section 2.2<a>), <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>ht$tp://example.org/foo</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int ILLEGAL_CHARACTER = 0;
-        
-    
+
+
 /**
 		   Percent-escape sequences should use uppercase.
-	    
+
      <p>This is specified in <a href="#ref-URI">
      [URI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.1">section 2.1<a>
      </dt>
      <dd>
-     
-             URI producers and normalizers should use 
+
+             URI producers and normalizers should use
      <em>uppercase</em>
-    
+
 	     hexadecimal digits for all percent-encodings.
-            
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
      <p>This violation relates to creating your own IRIs, rather than
      accepting and processing other peoples', and the behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#mintingViolation}.
      </p>
-    
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://example.org/foo%c3%80</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int PERCENT_ENCODING_SHOULD_BE_UPPERCASE = 1;
-        
-    
+
+
 /**
 		   Percent-escape sequences should not be used unnecessarily.
-	    
+
      <p>
      The IRI specification only weakly suggests that
 		    Unicode characters should be used in preference
 		    to percent encodings.
      </p>
-    
+
      <p>This is specified in <a href="#ref-IRI">
      [IRI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-3.2">section 3.2<a>
      </dt>
      <dd>
-     
+
 			   URI-to-IRI conversion removes percent-encodings
-                  
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the <a href=
           "#ref-IRI">[IRI]</a>
           specification.</p>
-       
+
      <p>This violation relates to creating your own IRIs, rather than
      accepting and processing other peoples', and the behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#mintingViolation}.
      </p>
-    
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://example.org/foo%C3%A9r</code>&gt;</li>
-    
+
         </ul>
-       
+
          <p>Unimplemented.</p>
-       
+
 */
         int SUPERFLUOUS_NON_ASCII_PERCENT_ENCODING = 2;
-        
-    
+
+
 /**
 		   Percent-escape sequences should not be used unnecessarily.
-	    
+
      <p>This is specified in <a href="#ref-URI">
      [URI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.3">section 2.3<a>
      </dt>
      <dd>
-     
+
 			  For consistency, percent-encoded octets in the
-			  ranges of ALPHA 
+			  ranges of ALPHA
 			  (%41-%5A and %61-%7A), DIGIT (%30-%39), hyphen
 			  (%2D), period (%2E), underscore (%5F), or tilde
 			  (%7E) should not be created by URI producers
-                  
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
      <p>This violation relates to creating your own IRIs, rather than
      accepting and processing other peoples', and the behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#mintingViolation}.
      </p>
-    
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://example.org/foo%5Fb%61r</code>&gt;</li>
-    
+
         </ul>
-       
+
          <p>Unimplemented.</p>
-       
+
 */
         int SUPERFLUOUS_ASCII_PERCENT_ENCODING = 3;
-        
-    
+
+
 /**
 		    The character matches no grammar rules of URIs/IRIs.
 		    These characters are permitted in RDF URI References,
 		    XML system identifiers, and XML Schema anyURIs.
-	    
+
      <p>
      Whitespace is dealt with separately.
      </p>
-    
+
      <p>This is specified in <a href="#ref-IRI">
      [IRI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3987.html#page-13">here<a>
      </dt>
      <dd>
-     
-              Systems accepting IRIs MAY also deal with the printable characters in US-ASCII 
-              that are not allowed in URIs, namely "&lt;", "&gt;", '"', space, "{", "}", "|", "\", 
-              "^", and "`", in step 2 above. If these characters are found but are not converted, 
-              then the conversion SHOULD fail. 
-             
+
+              Systems accepting IRIs MAY also deal with the printable characters in US-ASCII
+              that are not allowed in URIs, namely "&lt;", "&gt;", '"', space, "{", "}", "|", "\",
+              "^", and "`", in step 2 above. If these characters are found but are not converted,
+              then the conversion SHOULD fail.
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-IRI">[IRI]</a>, <a href="#ref-URI">[URI]</a> (see <a href="http://www.apps.ietf.org/rfc/rfc3986.html#page-49">here<a>).
           </p>
-       
+
      <p>This violation relates to creating your own IRIs, rather than
      accepting and processing other peoples', and the behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#mintingViolation}.
      </p>
-    
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://example.org/fo|o</code>&gt;</li>
-    
+
      <li>&lt;<code>http://example.org/fo&lt;o</code>&gt;</li>
-    
+
      <li>&lt;<code>http://example.org/fo&gt;o</code>&gt;</li>
-    
+
      <li>&lt;<code>http://example.org/fo"o</code>&gt;</li>
-    
+
      <li>&lt;<code>http://example.org/fo`o</code>&gt;</li>
-    
+
         </ul>
-       
+
      @see IRIFactory#allowUnwiseCharacters
      @see #WHITESPACE
      @see #DOUBLE_WHITESPACE
 */
         int UNWISE_CHARACTER = 4;
-        
-    
+
+
 /**
 		    Control characters are not allowed in URIs or RDF URI References.
-	    
+
      <p>This is specified in <a href="#ref-RDF">
      [RDF]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref">here<a>
      </dt>
      <dd>
-     
+
                A URI reference within an RDF graph (an RDF URI reference) is a Unicode string [UNICODE] that:
 
      <ul>
@@ -5832,26 +5832,26 @@ This class is not part of the API.
      <li>
      does not contain any control characters ( #x00 - #x1F, #x7F-#x9F)
 </li>
-    
+
 </ul>
-    
-               
+
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
      <p>This is specified in <a href="#ref-IRI">
      [IRI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3987.html">here<a>
      </dt>
      <dd>
-     
+
 
      <pre>
 ucschar = %xA0-D7FF / %xF900-FDCF / %xFDF0-FFEF
@@ -5861,605 +5861,605 @@ ucschar = %xA0-D7FF / %xF900-FDCF / %xFDF0-FFEF
         / %xA0000-AFFFD / %xB0000-BFFFD / %xC0000-CFFFD
         / %xD0000-DFFFD / %xE1000-EFFFD
 </pre>
-    
-             
+
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-RDF">[RDF]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-URI">[URI]</a>.
           </p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://example.org/fo\u007Fo</code>&gt;</li>
-    
+
      <li>&lt;<code>http://example.org/fo\u0085o</code>&gt;</li>
-    
+
      <li>&lt;<code>http://example.org/fo\u0009o</code>&gt;</li>
-    
+
      <li>&lt;<code>http://example.org/fo\u0001o</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int CONTROL_CHARACTER = 5;
-        
-    
+
+
 /**
 		    The character is not legal in XML.
-	    
+
      <p>This is specified in <a href="#ref-XML">
      [XML]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.w3.org/TR/2004/REC-xml-20040204/#NT-Char">here<a>
      </dt>
      <dd>
-      
+
 Char ::=   #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-	            
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://example.org/foo\u0001</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int NON_XML_CHARACTER = 6;
-        
-    
+
+
 /**
 		    The character is discouraged in XML documents.
-	    
+
      <p>This is specified in <a href="#ref-XML">
      [XML]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.w3.org/TR/2004/REC-xml-20040204/#char32">here<a>
      </dt>
      <dd>
-      
-Document authors are encouraged to avoid "compatibility characters", as defined in 
-section 6.8 of [Unicode] (see also D21 in section 3.6 of [Unicode3]). The characters 
-defined in the following ranges are also discouraged. They are either control 
-characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F], 
+
+Document authors are encouraged to avoid "compatibility characters", as defined in
+section 6.8 of [Unicode] (see also D21 in section 3.6 of [Unicode3]). The characters
+defined in the following ranges are also discouraged. They are either control
+characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F],
 [#xFDD0-#xFDDF],
-	            
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
      <p>This violation relates to creating your own IRIs, rather than
      accepting and processing other peoples', and the behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#mintingViolation}.
      </p>
-    
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://example.org/foo\u0080</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int DISCOURAGED_XML_CHARACTER = 7;
-        
-    
+
+
 /**
 		    The path contains a segment /../ not at the beginning
-		    of a relative reference, or it contains a /./ 
+		    of a relative reference, or it contains a /./
 		    These should be removed.
-	    
+
      <p>This is specified in <a href="#ref-URI">
      [URI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-6.2.2.3">section 6.2.2.3<a>
      </dt>
      <dd>
-     
-		    The complete path segments "." and ".." are intended 
+
+		    The complete path segments "." and ".." are intended
      <em>only</em>
-     for use within relative references 
-            
+     for use within relative references
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
      <p>This violation relates to creating your own IRIs, rather than
      accepting and processing other peoples', and the behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#mintingViolation}.
      </p>
-    
+
      <p>This violation may indicate security issues, and the behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#securityViolation}.
      </p>
-    
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://example.org/../foo</code>&gt;</li>
-    
+
      <li>&lt;<code>http://example.org/foo/../foo</code>&gt;</li>
-    
+
      <li>&lt;<code>http://example.org/foo/..</code>&gt;</li>
-    
+
      <li>&lt;<code>http://example.org/foo/./foo</code>&gt;</li>
-    
+
      <li>&lt;<code>http://example.org/./foo</code>&gt;</li>
-    
+
      <li>&lt;<code>http://example.org/foo/.</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int NON_INITIAL_DOT_SEGMENT = 8;
-        
-    
+
+
 /**
 		    The scheme component is empty.
-	    
+
      <p>This is specified in <a href="#ref-URI">
      [URI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.1">section 3.1<a>
      </dt>
      <dd>
-      Scheme names consist of a sequence of characters 
-     <em>beginning 
+      Scheme names consist of a sequence of characters
+     <em>beginning
 				    with a letter</em>
-     and followed by any combination of letters, 
-			    digits, plus ("+"), period ("."), or hyphen ("-"). 
+     and followed by any combination of letters,
+			    digits, plus ("+"), period ("."), or hyphen ("-").
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>://example.org/foo</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int EMPTY_SCHEME = 9;
-        
-    
+
+
 /**
 		    The scheme component must start with a letter.
-	    
+
      <p>This is specified in <a href="#ref-URI">
      [URI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.1">section 3.1<a>
      </dt>
      <dd>
-      Scheme names consist of a sequence of characters 
-     <em>beginning 
+      Scheme names consist of a sequence of characters
+     <em>beginning
 			    with a letter</em>
-     and followed by any combination of letters, 
-			    digits, plus ("+"), period ("."), or hyphen ("-"). 
+     and followed by any combination of letters,
+			    digits, plus ("+"), period ("."), or hyphen ("-").
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>007://example.org/foo</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int SCHEME_MUST_START_WITH_LETTER = 10;
-        
-    
+
+
 /**lowercase is preferred in this component
      <p>This is specified in <a href="#ref-URI">
      [URI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        For the SCHEME component:
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.1">section 3.1<a>
      </dt>
      <dd>
-     An implementation should accept uppercase letters as equivalent to lowercase in scheme names (e.g., allow "HTTP" as well as "http") for the sake of robustness but should only produce lowercase scheme names for consistency. 
+     An implementation should accept uppercase letters as equivalent to lowercase in scheme names (e.g., allow "HTTP" as well as "http") for the sake of robustness but should only produce lowercase scheme names for consistency.
      </dd>
-    
+
      <dt>
-     
+
        For the HOST component:
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
-     
-			    Although host is case-insensitive, producers and normalizers should use 
+
+			    Although host is case-insensitive, producers and normalizers should use
      <em>lowercase for registered names</em>
      and hexadecimal addresses for the sake of uniformity, while only using uppercase letters for percent-encodings.
-	            
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
      <p>This violation relates to creating your own IRIs, rather than
      accepting and processing other peoples', and the behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#mintingViolation}.
      </p>
-    
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>HTTP://example.org/foo</code>&gt;</li>
-    
+
      <li>&lt;<code>http://eXamPle.org/foo</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int LOWERCASE_PREFERRED = 11;
-        
-    
+
+
 /**The colon introducing an empty port component should be omitted entirely,
 	    or a port number should be specified.
      <p>This is specified in <a href="#ref-URI">
      [URI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
-     
-			    URI producers and normalizers should omit the port component 
+
+			    URI producers and normalizers should omit the port component
      <em>and its ":" delimiter</em>
-     if port is empty 
-	            
+     if port is empty
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
      <p>This violation relates to creating your own IRIs, rather than
      accepting and processing other peoples', and the behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#mintingViolation}.
      </p>
-    
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://example.org:/foo</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int PORT_SHOULD_NOT_BE_EMPTY = 12;
-        
-    
+
+
 /**If the port is the default one for the scheme it should be omitted.
-	    
+
      <p>This is specified in <a href="#ref-URI">
      [URI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
-     
-			    URI producers and normalizers should omit the port component and its ":" delimiter if port is empty  or if its value would be the 
+
+			    URI producers and normalizers should omit the port component and its ":" delimiter if port is empty  or if its value would be the
      <em>same as that of the scheme's default.</em>
-     
-	            
+
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
      <p>This violation relates to creating your own IRIs, rather than
      accepting and processing other peoples', and the behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#mintingViolation}.
      </p>
-    
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://example.org:80/foo</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int DEFAULT_PORT_SHOULD_BE_OMITTED = 13;
-        
-    
+
+
 /**
 		    Ports under 1024 should be accessed
 		    using the appropriate scheme name.
-	    
+
      <p>This is specified in <a href="#ref-URI">
      [URI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-7.2">section 7.2<a>
      </dt>
      <dd>
-     
-			    Applications should prevent dereference of a URI that specifies a TCP port number within the "well-known port" range 
+
+			    Applications should prevent dereference of a URI that specifies a TCP port number within the "well-known port" range
      <em>(0 - 1023)</em>
      unless the protocol being used to dereference that URI is compatible with the protocol expected on that well-known port.
-	            
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
      <p>This violation may indicate security issues, and the behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#securityViolation}.
      </p>
-    
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://example.org:180/foo</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int PORT_SHOULD_NOT_BE_WELL_KNOWN = 14;
-        
-    
+
+
 /**Leading zeros in the port number should be omitted.
 		    This is an added feature of this implementation,
 			    not mandated by any standard.
-	    
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
      <p>This violation relates to creating your own IRIs, rather than
      accepting and processing other peoples', and the behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#mintingViolation}.
      </p>
-    
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://example.org:08080/foo</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int PORT_SHOULD_NOT_START_IN_ZERO = 15;
-        
-    
+
+
 /**A prohibited bi-directional control character was found.
      <p>This is specified in <a href="#ref-IRI">
      [IRI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-4.1">section 4.1<a>
      </dt>
      <dd>
-     
-			     IRIs MUST NOT contain bidirectional formatting characters (LRM, RLM, LRE, RLE, LRO, RLO, and PDF). 
-	     
+
+			     IRIs MUST NOT contain bidirectional formatting characters (LRM, RLM, LRE, RLE, LRO, RLO, and PDF).
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the <a href=
           "#ref-IRI">[IRI]</a>
           specification.</p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://example.org/Andr\u202Abar</code>&gt;</li>
-    
+
      <li>&lt;<code>http://example.org/Andr\u202Bbar</code>&gt;</li>
-    
+
      <li>&lt;<code>http://example.org/Andr\u202Cbar</code>&gt;</li>
-    
+
      <li>&lt;<code>http://example.org/Andr\u202Dbar</code>&gt;</li>
-    
+
      <li>&lt;<code>http://example.org/Andr\u202Ebar</code>&gt;</li>
-    
+
      <li>&lt;<code>http://example.org/Andr\u200Ebar</code>&gt;</li>
-    
+
      <li>&lt;<code>http://example.org/Andr\u200Fbar</code>&gt;</li>
-    
+
         </ul>
-       
+
          <p>Unimplemented.</p>
-       
+
 */
         int BIDI_FORMATTING_CHARACTER = 16;
-        
-    
+
+
 /**
 A single whitespace character.
 These match no grammar rules of URIs/IRIs.
 		    These characters are permitted in RDF URI References,
 		    XML system identifiers, and XML Schema anyURIs.
-	    
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>.
           </p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://example.org/ foo</code>&gt;</li>
-    
+
      <li>&lt;<code>file:///Program Files</code>&gt;</li>
-    
+
         </ul>
-       
+
      @see IRIFactory#allowUnwiseCharacters
      @see #NOT_XML_SCHEMA_WHITESPACE
      @see #UNWISE_CHARACTER
      @see #DOUBLE_WHITESPACE
 */
         int WHITESPACE = 17;
-        
-    
+
+
 /**
 Either two or more consecutive whitespace characters, or leading or trailing whitespace.
 
 These match no grammar rules of URIs/IRIs.
 These characters are permitted in RDF URI References,
 XML system identifiers, but not XML Schema anyURIs.
-	    
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://example.org/  foo</code>&gt;</li>
-    
+
      <li>&lt;<code>file:///Program  Files</code>&gt;</li>
-    
+
      <li>&lt;<code>file:///TabBar </code>&gt;</li>
-    
+
      <li>&lt;<code> rel-with-initial-space</code>&gt;</li>
-    
+
         </ul>
-       
+
      @see IRIFactory#allowUnwiseCharacters
      @see #NOT_XML_SCHEMA_WHITESPACE
      @see #UNWISE_CHARACTER
      @see #WHITESPACE
 */
         int DOUBLE_WHITESPACE = 18;
-        
-    
+
+
 /**
-Whitespace characters 
+Whitespace characters
 		    match no grammar rules of URIs/IRIs.
 		    These characters are permitted in RDF URI References,
 	and	    XML system identifiers.
 	However, tab and new line characters, and consecutive space characters
 	cannot occur in XML Schema anyURIs.
-	    
+
      <p>This is specified in <a href="#ref-Schema">
      [Schema]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#schema">here<a>
      </dt>
      <dd>
-     
+
 
      <pre>
 &lt;xs:simpleType name="anyURI" id="anyURI"&gt;
@@ -6470,92 +6470,92 @@ Whitespace characters
     &lt;/xs:restriction&gt;
 &lt;/xs:simpleType&gt;
 </pre>
-    
-  
+
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>file:///Tab\u0009Bar</code>&gt;</li>
-    
+
      <li>&lt;<code>file:///Tab\u000ABar</code>&gt;</li>
-    
+
      <li>&lt;<code>file:///Tab\u000DBar</code>&gt;</li>
-    
+
         </ul>
-       
+
      @see IRIFactory#allowUnwiseCharacters
      @see #DOUBLE_WHITESPACE
      @see #WHITESPACE
 */
         int NOT_XML_SCHEMA_WHITESPACE = 19;
-        
-    
+
+
 /**
-    Internal code. This is not an error or warning condition, 
+    Internal code. This is not an error or warning condition,
     but is used to trigger more expensive processing.
-    
+
 */
         int DOUBLE_DASH_IN_REG_NAME = 20;
-        
-    
+
+
 /**
-    Internal code. This is not an error or warning condition, 
+    Internal code. This is not an error or warning condition,
     but is used to trigger more expensive processing.
-    
+
 */
         int SCHEME_INCLUDES_DASH = 21;
-        
-    
+
+
 /**
-    Internal code. This is not an error or warning condition, 
+    Internal code. This is not an error or warning condition,
     but is used to trigger more expensive processing.
-    
+
 */
         int NON_URI_CHARACTER = 22;
-        
-    
+
+
 /**
-    Internal code. This is not an error or warning condition, 
+    Internal code. This is not an error or warning condition,
     but is used to trigger more expensive processing.
-    
+
 */
         int PERCENT_20 = 23;
-        
-    
+
+
 /**
-    Internal code. This is not an error or warning condition, 
+    Internal code. This is not an error or warning condition,
     but is used to trigger more expensive processing.
-    
+
 */
         int PERCENT = 24;
-        
-    
+
+
 /**
 		    A syntax violation was detected in an IP V6 (or future) address.
-	    
+
      <p>This is specified in <a href="#ref-URI">
      [URI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
-     
-			    
+
+
      <pre>
 IP-literal  = "[" ( IPv6address / IPvFuture  ) "]"
 IPvFuture   = "v" 1*HEXDIG "." 1*( unreserved / sub-delims / ":" )
@@ -6571,117 +6571,117 @@ IPv6address =  6( h16 ":" ) ls32
 
 ls32        = ( h16 ":" h16 ) / IPv4address
                   ; least-significant 32 bits of address
-h16         = 1*4HEXDIG 
+h16         = 1*4HEXDIG
 		  ; 16 bits of address represented in hexadecimal
 </pre>
-    
-	            
+
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://[/</code>&gt;</li>
-    
+
      <li>&lt;<code>ldap://[20015:db8::7]/c=GB?objectClass?one</code>&gt;</li>
-    
+
      <li>&lt;<code>ldap://[2001:db8:::7]/c=GB?objectClass?one</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int IP_V6_OR_FUTURE_ADDRESS_SYNTAX = 25;
-        
-    
+
+
 /**
 	IP version 6 addresses should use lowercase hexadecimal
-	    
+
      <p>This is specified in <a href="#ref-URI">
      [URI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
-     
-			    Although host is case-insensitive, producers and normalizers 
-			    
+
+			    Although host is case-insensitive, producers and normalizers
+
      <em>should use lowercase</em>
-     for registered names and 
+     for registered names and
      <em>hexadecimal addresses</em>
      for the sake of uniformity
-		    
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
      <p>This violation relates to creating your own IRIs, rather than
      accepting and processing other peoples', and the behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#mintingViolation}.
      </p>
-    
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>ldap://[2001:Db8::7]/c=GB?objectClass?one</code>&gt;</li>
-    
+
      <li>&lt;<code>ldap://[2001:dB8::7]/c=GB?objectClass?one</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int IPv6ADDRESS_SHOULD_BE_LOWERCASE = 26;
-        
-    
+
+
 /**
 		    A host entry consists of four numbers,
 		    but they are not in the range 0-255, or have leading zeros.
-	    
+
      <p>This is specified in <a href="#ref-URI">
      [URI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
-     
-			    A host identified by an IPv4 literal address is represented in dotted-decimal notation (a sequence of 
+
+			    A host identified by an IPv4 literal address is represented in dotted-decimal notation (a sequence of
      <em>four decimal numbers</em>
-     in the range 
+     in the range
      <em>0 to 255</em>
     , separated by "."),
-		    
+
      </dd>
-    
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
-     
-			    
+
+
      <pre>
 dec-octet   = DIGIT                 ; 0-9
             / %x31-39 DIGIT         ; 10-99
@@ -6689,939 +6689,938 @@ dec-octet   = DIGIT                 ; 0-9
             / "2" %x30-34 DIGIT     ; 200-249
             / "25" %x30-35          ; 250-255
 </pre>
-    
-		    
+
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>ldap://155.00.55.102/c=GB?objectClass?one</code>&gt;</li>
-    
+
      <li>&lt;<code>ldap://20.256.20.20/c=GB?objectClass?one</code>&gt;</li>
-    
+
      <li>&lt;<code>ldap://20.1000.20.20/c=GB?objectClass?one</code>&gt;</li>
-    
+
      <li>&lt;<code>ldap://20.010.20.20/c=GB?objectClass?one</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int IP_V4_OCTET_RANGE = 27;
-        
-    
+
+
 /**
 		    The host component did not meet the restrictions on DNS names.
-	    
+
      <p>This is specified in <a href="#ref-URI">
      [URI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
-     
-			    URI producers should use names that 
+
+			    URI producers should use names that
      <em>conform to the DNS syntax</em>
     , even when use of DNS is not immediately apparent, and should limit these names to no more than 255 characters in length.
-		    
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
      <p>This violation is relevant for IRIs using DNS as the registry of hostnames.
      The behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#dnsViolation}.
      </p>
-    
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>ldap://foo$/c=GB?objectClass?one</code>&gt;</li>
-    
+
      <li>&lt;<code>http://foo.example.$org/</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int NOT_DNS_NAME = 28;
-        
-    
+
+
 /**
 		    The host component used percent encoding, where punycode is preferred.
-	    
+
      <p>This is specified in <a href="#ref-URI">
      [URI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
-     
+
 URI producers should provide these registered names in the IDNA encoding, rather than a percent-encoding, if they wish to maximize interoperability with legacy URI resolvers.
-		    
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
      <p>This violation relates to creating your own IRIs, rather than
      accepting and processing other peoples', and the behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#mintingViolation}.
      </p>
-    
+
      <p>This violation is relevant for IRIs using DNS as the registry of hostnames.
      The behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#dnsViolation}.
      </p>
-    
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>ftp://andr%C3%A9.example.org/</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int USE_PUNYCODE_NOT_PERCENTS = 29;
-        
-    
+
+
 /**
 		    The host component a percent occurred without two following hexadecimal digits.
-	    
+
      <p>This is specified in <a href="#ref-URI">
      [URI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.1">section 2.1<a>
      </dt>
      <dd>
-     
-			     A percent-encoded octet is encoded as a character triplet, consisting of the percent character "%" followed by the two hexadecimal digits representing that octet's numeric value. 
-		    
+
+			     A percent-encoded octet is encoded as a character triplet, consisting of the percent character "%" followed by the two hexadecimal digits representing that octet's numeric value.
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>ftp://andr%%A9.example.org/</code>&gt;</li>
-    
+
      <li>&lt;<code>ftp://andr%.example.org/</code>&gt;</li>
-    
+
      <li>&lt;<code>ftp://andre.example.org/%</code>&gt;</li>
-    
+
      <li>&lt;<code>ftp://andre.example.org/%A</code>&gt;</li>
-    
+
      <li>&lt;<code>ftp://andre.example.org/%A?</code>&gt;</li>
-    
+
      <li>&lt;<code>ftp://andre.example.org/%A#</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int ILLEGAL_PERCENT_ENCODING = 30;
-        
-    
+
+
 /**
-    Internal code. This is not an error or warning condition, 
+    Internal code. This is not an error or warning condition,
     but is used to trigger more expensive processing.
-    
+
 */
         int ACE_PREFIX = 31;
-        
-    
+
+
 /**
 		    A unicode surrogate character that is not of a surrogate pair.
-	    
+
          <p>This does not violate any of the supported IRI, URI or scheme specifications.</p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http:/foo/p\uD800</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int LONE_SURROGATE = 32;
-        
-    
+
+
 /**
 		    A DNS name had a - at the beginning or end.
-	    
+
      <p>This is specified in <a href="#ref-URI">
      [URI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
-     
-			     Such a name consists of a sequence of domain labels separated by ".", each domain label starting and ending with an alphanumeric character and possibly also containing "-" characters. 
-		    
+
+			     Such a name consists of a sequence of domain labels separated by ".", each domain label starting and ending with an alphanumeric character and possibly also containing "-" characters.
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
      <p>This violation is relevant for IRIs using DNS as the registry of hostnames.
      The behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#dnsViolation}.
      </p>
-    
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>ldap://-foo/c=GB?objectClass?one</code>&gt;</li>
-    
+
      <li>&lt;<code>http://foo.example.org-/</code>&gt;</li>
-    
+
      <li>&lt;<code>http://foo.example.org--/</code>&gt;</li>
-    
+
      <li>&lt;<code>http://--foo.example.org/</code>&gt;</li>
-    
+
      <li>&lt;<code>http://-fo-o.example.org/</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int DNS_LABEL_DASH_START_OR_END = 33;
-        
-    
+
+
 /**
 		    Characters used in the IRI were unassigned in the version of Unicode known
                     by this system. They may have been assigned since.
-	    
+
      <p>This is specified in <a href="#ref-URI">
      [URI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
-     
+
 			    When a non-ASCII registered name represents an internationalized domain name intended for resolution via the DNS, the name must be transformed to the IDNA encoding [RFC3490] prior to name lookup.  URI producers should provide these registered names in the IDNA encoding, rather than a percent-encoding, if they wish to maximize interoperability with legacy URI resolvers.
-		    
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
      <p>This is specified in <a href="#ref-IRI">
      [IRI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-3.1">section 3.1<a>
      </dt>
      <dd>
-     
+
 			    Replace the ireg-name part of the IRI by the part converted using the ToASCII operation specified in section 4.1 of [RFC3490] on each dot-separated label, and by using U+002E (FULL STOP) as a label separator, with the flag UseSTD3ASCIIRules set to TRUE, and with the flag AllowUnassigned set to FALSE for creating IRIs and set to TRUE otherwise.
-		    
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
      <p>This violation relates to creating your own IRIs, rather than
      accepting and processing other peoples', and the behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#mintingViolation}.
      </p>
-    
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://foo.example\u0221.org/</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int BAD_IDN_UNASSIGNED_CHARS = 34;
-        
-    
+
+
 /**
 		    The Internationalized Domain Name check failed.
-	    
+
      <p>This is specified in <a href="#ref-URI">
      [URI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
-     
+
 			    When a non-ASCII registered name represents an internationalized domain name intended for resolution via the DNS, the name must be transformed to the IDNA encoding [RFC3490] prior to name lookup.  URI producers should provide these registered names in the IDNA encoding, rather than a percent-encoding, if they wish to maximize interoperability with legacy URI resolvers.
-		    
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
      <p>This is specified in <a href="#ref-IRI">
      [IRI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-3.1">section 3.1<a>
      </dt>
      <dd>
-     
+
 			    Replace the ireg-name part of the IRI by the part converted using the ToASCII operation specified in section 4.1 of [RFC3490] on each dot-separated label, and by using U+002E (FULL STOP) as a label separator, with the flag UseSTD3ASCIIRules set to TRUE, and with the flag AllowUnassigned set to FALSE for creating IRIs and set to TRUE otherwise.
-		    
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://--foo.example.org/</code>&gt;</li>
-    
+
      <li>&lt;<code>http://xn--andr--ep-.example.org/</code>&gt;</li>
-    
+
      <li>&lt;<code>http://xn.example.\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333/</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int BAD_IDN = 35;
-        
-    
+
+
 /**
 	Including passwords in URIs is deprecated.
-	    
+
      <p>This is specified in <a href="#ref-URI">
      [URI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.1">section 3.2.1<a>
      </dt>
      <dd>
-     
-Use of the format "user:password" in the userinfo field is deprecated.		    
-	    
+
+Use of the format "user:password" in the userinfo field is deprecated.
+
      </dd>
-    
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.1">section 3.2.1<a>
      </dt>
      <dd>
-     
+
 Applications may choose to ignore or reject such data when it is received as part of a reference and should reject the storage of such data in unencrypted form. The passing of authentication information in clear text has proven to be a security risk in almost every case where it has been used.
-            
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
      <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-    
+
      <p>This violation may indicate security issues, and the behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#securityViolation}.
      </p>
-    
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://user:pass@example.org/</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int HAS_PASSWORD = 36;
-        
-    
+
+
 /**
 	Certain characters are discouraged in IRIs.
-	    
+
      <p>
      Implementation is very partial. The amount of guidance
 		    as to which characters to discourage is insufficient.
      </p>
-    
+
      <p>This is specified in <a href="#ref-IRI">
      [IRI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-6.1">section 6.1<a>
      </dt>
      <dd>
-     
+
 The UCS contains many areas of characters for which there are
 strong visual look-alikes. Because of the likelihood of transcription errors, these also should be avoided. This includes the full-width equivalents of Latin characters, half-width Katakana characters for Japanese, and many others. It also includes many look-alikes of "space", "delims", and "unwise", characters excluded in [RFC3491].
-	    
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the <a href=
           "#ref-IRI">[IRI]</a>
           specification.</p>
-       
+
      <p>This violation relates to creating your own IRIs, rather than
      accepting and processing other peoples', and the behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#mintingViolation}.
      </p>
-    
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://example.org/\u2000en-quad</code>&gt;</li>
-    
+
      <li>&lt;<code>http://example.org/\u205Fmedium-mathematical-space</code>&gt;</li>
-    
+
      <li>&lt;<code>http://example\uFF95.org/</code>&gt;</li>
-    
+
      <li>&lt;<code>http://example\uFF47.org/</code>&gt;</li>
-    
+
         </ul>
-       
+
          <p>Unimplemented.</p>
-       
+
 */
         int DISCOURAGED_IRI_CHARACTER = 37;
-        
-    
+
+
 /**
 	There are restrictions on bidi characters in subcomponents of IRIs
-	    
+
      <p>This is specified in <a href="#ref-IRI">
      [IRI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-4.2">section 4.2<a>
      </dt>
      <dd>
-     
+
 
      <ol>
-	
+
      <li>
 A component SHOULD NOT use both right-to-left and left-to-right
     characters.
     </li>
-    
-    
+
+
      <li>
 A component using right-to-left characters SHOULD start and end
     with right-to-left characters.
     </li>
     </ol>
-    	    
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the <a href=
           "#ref-IRI">[IRI]</a>
           specification.</p>
-       
+
      <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">SHOULD</a> force.
      By default, this is treated as an error (for the relevant specs), but that behaviour can be modified by
      {@link IRIFactory#shouldViolation}.
      </p>
-    
+
          <p>Unimplemented.</p>
-       
+
 */
         int BAD_BIDI_SUBCOMPONENT = 38;
-        
-    
+
+
 /**
        // TODO complete entry for DNS_LENGTH_LIMIT
 */
         int DNS_LENGTH_LIMIT = 39;
-        
-    
+
+
 /**
        // TODO complete entry for DNS_LABEL_LENGTH_LIMIT
 */
         int DNS_LABEL_LENGTH_LIMIT = 40;
-        
-    
+
+
 /**
        // TODO complete entry for NOT_UTF8_ESCAPE
 */
         int NOT_UTF8_ESCAPE = 41;
-        
-    
+
+
 /**
        // TODO complete entry for NOT_UTF8_ESCAPE_IN_HOST
 */
         int NOT_UTF8_ESCAPE_IN_HOST = 42;
-        
-    
+
+
 /**
        // TODO complete entry for BAD_DOT_IN_IDN
 */
         int BAD_DOT_IN_IDN = 43;
-        
-    
+
+
 /**
       The scheme name does not have a "-" in it, but is not in the IANA registry.
       (Last updated from the registry January 2006)
-      
+
      <p>This is specified in <a href="#ref-URL_Registratrion">
      [URL_Registratrion]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc2717.html#sec-">section <a>
      </dt>
      <dd>
-     
-        
+
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
      <p>This is specified in <a href="#ref-URI">
      [URI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2">section 3.2<a>
      </dt>
      <dd>
-     
-         The NAMES of schemes registered in the IETF tree MUST NOT contain the dash 
-         (also known as the hyphen and minus sign) character ('-') USASCII value 2Dh. 
-         Use of this character can cause confusion with schemes registered in 
+
+         The NAMES of schemes registered in the IETF tree MUST NOT contain the dash
+         (also known as the hyphen and minus sign) character ('-') USASCII value 2Dh.
+         Use of this character can cause confusion with schemes registered in
          alternative trees (see section 3.3).
-        
+
      </dd>
-    
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.3">section 3.3<a>
      </dt>
      <dd>
-     
+
         The syntax for alternative trees shall be as follows: each tree will be identified by a unique prefix, which must be established in the same fashion as a URL scheme name in the IETF tree, except that the prefix must be defined by a Standards Track document. Scheme names in the new tree are then constructed by prepending the prefix to an identifier unique to each scheme in that tree, as prescribed by that tree's identifying document:
 
      <pre>
       &lt;prefix&gt;'-'&lt;tree-specific identifier&gt;
 </pre>
-    
-For instance, the "foo" tree would allow creation of scheme names of the form: "foo-blahblah:" and "foo-bar:", where the tree prescribes an arbitrary USASCII string following the tree's unique prefix. 
- 
+
+For instance, the "foo" tree would allow creation of scheme names of the form: "foo-blahblah:" and "foo-bar:", where the tree prescribes an arbitrary USASCII string following the tree's unique prefix.
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>foo://example.org/bar</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int UNREGISTERED_IANA_SCHEME = 44;
-        
-    
+
+
 /**
       The scheme name has a "-" in it, but it does not start in "x-"
       and the prefix is not known as the prefix of an alternative tree for
       URI schemes.
-      
+
      <p>
-     
+
       There is no standard provision for "x-" as a prefix for private use schemes.
       This is a feature of this implementation.
       As far as I am aware, no alternative trees have been registered.
-      
+
      </p>
-    
+
      <p>This is specified in <a href="#ref-URL_Registratrion">
      [URL_Registratrion]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc2717.html#sec-3.3">section 3.3<a>
      </dt>
      <dd>
-     
+
         The syntax for alternative trees shall be as follows: each tree will be identified by a unique prefix, which must be established in the same fashion as a URL scheme name in the IETF tree, except that the prefix must be defined by a Standards Track document. Scheme names in the new tree are then constructed by prepending the prefix to an identifier unique to each scheme in that tree, as prescribed by that tree's identifying document:
 
      <pre>
       &lt;prefix&gt;'-'&lt;tree-specific identifier&gt;
 </pre>
-    
-For instance, the "foo" tree would allow creation of scheme names of the form: "foo-blahblah:" and "foo-bar:", where the tree prescribes an arbitrary USASCII string following the tree's unique prefix. 
- 
+
+For instance, the "foo" tree would allow creation of scheme names of the form: "foo-blahblah:" and "foo-bar:", where the tree prescribes an arbitrary USASCII string following the tree's unique prefix.
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the following specifications:
           <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>foo-bar://example.org/bar</code>&gt;</li>
-    
+
         </ul>
-       
+
 */
         int UNREGISTERED_NONIETF_SCHEME_TREE = 45;
-        
-    
+
+
 /**
       The IRI is not in Unicode Normal Form C.
-    
+
      <p>This is specified in <a href="#ref-IRI">
      [IRI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-5.3.2.2">section 5.3.2.2<a>
      </dt>
      <dd>
-     
-        To avoid false negatives and problems with transcoding, IRIs SHOULD be created by using NFC. 
-        
+
+        To avoid false negatives and problems with transcoding, IRIs SHOULD be created by using NFC.
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the <a href=
           "#ref-IRI">[IRI]</a>
           specification.</p>
-       
+
      <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">SHOULD</a> force.
      By default, this is treated as an error (for the relevant specs), but that behaviour can be modified by
      {@link IRIFactory#shouldViolation}.
      </p>
-    
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://example.org/#Andre\u0301</code>&gt;</li>
-    
+
         </ul>
-       
+
          <p>Unimplemented.</p>
-       
+
 */
         int NOT_NFC = 46;
-        
-    
+
+
 /**
       The IRI is not in Unicode Normal Form KC.
-    
+
      <p>This is specified in <a href="#ref-IRI">
      [IRI]</a>.</p>
      <dl>
-     
+
      <dt>
-     
+
        see
      <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-7.5">section 7.5<a>
      </dt>
      <dd>
-     
+
         Although there may be exceptions, newly created resource names should generally be in NFKC
-        
+
      </dd>
-    
+
      </dl>
-     
-    
+
+
           <p>This violates the <a href=
           "#ref-IRI">[IRI]</a>
           specification.</p>
-       
+
      <p>This violation relates to creating your own IRIs, rather than
      accepting and processing other peoples', and the behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#mintingViolation}.
      </p>
-    
+
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
-       
+
      <li>&lt;<code>http://example.org/#Andre\u0301</code>&gt;</li>
-    
+
         </ul>
-       
+
          <p>Unimplemented.</p>
-       
+
 */
         int NOT_NFKC = 47;
-        
-    
+
+
 /**TODO
           <p>This violates the following specifications:
           <a href="#ref-Unicode">[Unicode]</a>, <a href="#ref-IRI">[IRI]</a>.
           </p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
 */
         int DEPRECATED_UNICODE_CHARACTER = 48;
-        
-    
+
+
 /**TODO
           <p>This violates the following specifications:
           <a href="#ref-Unicode">[Unicode]</a>, <a href="#ref-IRI">[IRI]</a>.
           </p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
 */
         int UNDEFINED_UNICODE_CHARACTER = 49;
-        
-    
+
+
 /**TODO
           <p>This violates the following specifications:
           <a href="#ref-Unicode">[Unicode]</a>, <a href="#ref-IRI">[IRI]</a>.
           </p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
 */
         int PRIVATE_USE_CHARACTER = 50;
-        
-    
+
+
 /**TODO
           <p>This violates the following specifications:
           <a href="#ref-Unicode">[Unicode]</a>, <a href="#ref-IRI">[IRI]</a>.
           </p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
 */
         int UNICODE_CONTROL_CHARACTER = 51;
-        
-    
+
+
 /**The character code is not assigned in the version of Unicode implemented here.
       Check validity of code, consider updating your copy of icu4j.jar.
-      
+
           <p>This violates the following specifications:
           <a href="#ref-Unicode">[Unicode]</a>, <a href="#ref-IRI">[IRI]</a>.
           </p>
-       
+
      <p>This violation relates to creating your own IRIs, rather than
      accepting and processing other peoples', and the behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#mintingViolation}.
      </p>
-    
+
 */
         int UNASSIGNED_UNICODE_CHARACTER = 52;
-        
-    
+
+
 /**
-    Internal code. This is not an error or warning condition, 
+    Internal code. This is not an error or warning condition,
     but is used to trigger more expensive processing.
-    
+
 */
         int MAYBE_NOT_NFC = 53;
-        
-    
+
+
 /**
-    Internal code. This is not an error or warning condition, 
+    Internal code. This is not an error or warning condition,
     but is used to trigger more expensive processing.
-    
+
 */
         int MAYBE_NOT_NFKC = 54;
-        
-    
+
+
 /**TODO
           <p>This violates the following specifications:
           <a href="#ref-Unicode">[Unicode]</a>, <a href="#ref-IRI">[IRI]</a>.
           </p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
 */
         int UNICODE_WHITESPACE = 55;
-        
-    
+
+
 /**TODO
           <p>This violates the following specifications:
           <a href="#ref-Unicode">[Unicode]</a>, <a href="#ref-IRI">[IRI]</a>.
           </p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
 */
         int COMPATIBILITY_CHARACTER = 56;
-        
-    
+
+
 /**A component that is required by the scheme is missing.
          <p>This does not violate any of the supported IRI, URI or scheme specifications.</p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
 */
         int REQUIRED_COMPONENT_MISSING = 57;
-        
-    
+
+
 /**A component that is prohibited by the scheme is present.
          <p>This does not violate any of the supported IRI, URI or scheme specifications.</p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
 */
         int PROHIBITED_COMPONENT_PRESENT = 58;
-        
-    
+
+
 /**Some part of the scheme specific syntax requires lowercase.
          <p>This does not violate any of the supported IRI, URI or scheme specifications.</p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
 */
         int SCHEME_REQUIRES_LOWERCASE = 59;
-        
-    
+
+
 /**Some part of the scheme specific syntax prefers lowercase.
          <p>This does not violate any of the supported IRI, URI or scheme specifications.</p>
-       
+
      <p>This violation relates to creating your own IRIs, rather than
      accepting and processing other peoples', and the behaviour of a factory
      implementing the relevant specs can be modified by
      {@link IRIFactory#mintingViolation}.
      </p>
-    
+
 */
         int SCHEME_PREFERS_LOWERCASE = 60;
-        
-    
+
+
 /**The scheme specific syntax rules are violated.
          <p>This does not violate any of the supported IRI, URI or scheme specifications.</p>
-       
+
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
+
 */
         int SCHEME_PATTERN_MATCH_FAILED = 61;
-        
-    
+
+
 /**
        // TODO complete entry for QUERY_IN_LEGACY_SCHEME
 */
         int QUERY_IN_LEGACY_SCHEME = 62;
-        
-    
+
+
 
 }
-    

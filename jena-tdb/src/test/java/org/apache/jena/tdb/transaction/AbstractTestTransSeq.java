@@ -19,7 +19,9 @@
 package org.apache.jena.tdb.transaction;
 
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.JenaTransactionException;
@@ -35,7 +37,7 @@ import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 /** Basic tests and tests of ordering (single thread) */
-public abstract class AbstractTestTransSeq extends BaseTest
+public abstract class AbstractTestTransSeq
 {
     @BeforeClass public static void beforeClassLoggingOff() { LogCtl.disable(SystemTDB.errlog.getName()) ; } 
     @AfterClass public static void afterClassLoggingOn()    { LogCtl.setInfo(SystemTDB.errlog.getName()) ; }

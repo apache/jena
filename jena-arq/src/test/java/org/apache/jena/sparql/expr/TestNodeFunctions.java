@@ -18,8 +18,11 @@
 
 package org.apache.jena.sparql.expr ;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.JenaRuntime ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -29,7 +32,7 @@ import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.XSD ;
 import org.junit.Test ;
 
-public class TestNodeFunctions extends BaseTest {
+public class TestNodeFunctions {
     private static final double accuracyExact = 0.0d ;
     private static final double accuracyClose = 0.000001d ;
 

@@ -18,7 +18,11 @@
 
 package org.apache.jena.tdb.index.bplustree;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.tdb.base.block.BlockMgr ;
 import org.apache.jena.tdb.base.block.BlockMgrFactory ;
 import org.apache.jena.tdb.base.buffer.RecordBuffer ;
@@ -34,7 +38,7 @@ import org.junit.Before ;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestBPTreeRecords extends BaseTest
+public class TestBPTreeRecords
 {
     static private boolean oldNullOut ;
     static private boolean oldCheckingNode ;

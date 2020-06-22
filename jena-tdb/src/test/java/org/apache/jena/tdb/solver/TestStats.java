@@ -18,9 +18,10 @@
 
 package org.apache.jena.tdb.solver;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.core.Quad ;
@@ -35,7 +36,7 @@ import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import org.apache.jena.tdb.sys.TDBInternal ;
 import org.junit.Test ;
 
-public class TestStats extends BaseTest
+public class TestStats
 {
     static DatasetGraphTDB dsg      = TDBInternal.getBaseDatasetGraphTDB(TDBFactory.createDatasetGraph()) ;
     static NodeTupleTable quads     = dsg.getQuadTable().getNodeTupleTable() ;

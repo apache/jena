@@ -26,7 +26,7 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 
-public class BaseTest2 extends BaseTest {
+public class BaseTest2 {
     // Should go elsewhere?
     
   private static Deque<ErrorHandler> errorHandlers = new ArrayDeque<>() ;

@@ -18,11 +18,12 @@
 
 package org.apache.jena.riot;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-public class TestLangRIOT extends BaseTest
+public class TestLangRIOT
 {
     @BeforeClass public static void beforeClass() { RDFLanguages.init() ; } 
     

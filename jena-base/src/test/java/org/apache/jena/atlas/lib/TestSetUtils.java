@@ -19,15 +19,16 @@
 package org.apache.jena.atlas.lib;
 
 import static org.apache.jena.atlas.lib.ListUtils.asList ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet ;
 import java.util.List ;
 import java.util.Set ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
-public class TestSetUtils extends BaseTest
+public class TestSetUtils
 {
     @Test public void set01() 
     {

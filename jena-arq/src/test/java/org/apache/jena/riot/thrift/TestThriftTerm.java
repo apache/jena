@@ -18,8 +18,9 @@
 
 package org.apache.jena.riot.thrift;
 
+import static org.junit.Assert.*;
+
 import org.apache.jena.JenaRuntime ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.rdf.model.impl.Util ;
@@ -35,7 +36,7 @@ import org.apache.jena.vocabulary.RDFS ;
 import org.apache.jena.vocabulary.XSD ;
 import org.junit.Test ;
 
-public class TestThriftTerm extends BaseTest {
+public class TestThriftTerm {
     static PrefixMap prefixMap = PrefixMapFactory.create() ;
     static {
         prefixMap.add("rdf",    RDF.getURI()) ;

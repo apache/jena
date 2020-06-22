@@ -43,21 +43,21 @@ public class UnitTestBadSyntax extends LangTestCase
         this.uri = uri ;
         this.lang = lang ;
     }
-    
-    /** An error handler that throw exceptions on warnings and errors */ 
+
+    /** An error handler that throw exceptions on warnings and errors */
     private static ErrorHandler errorHandlerTestStrict = new ErrorHandler()
     {
         /** report a warning  - do not carry on */
         @Override
         public void warning(String message, long line, long col)
-        { 
+        {
             throw new RiotException(fmtMessage(message, line, col)) ;
         }
-        
+
         /** report an error - do not carry on */
         @Override
         public void error(String message, long line, long col)
-        { 
+        {
             throw new RiotException(fmtMessage(message, line, col)) ;
         }
 
@@ -82,12 +82,12 @@ public class UnitTestBadSyntax extends LangTestCase
         else
             run4() ;
     }
-    
+
     private void run3() {
-        Graph graph = GraphFactory.createDefaultGraph(); 
+        Graph graph = GraphFactory.createDefaultGraph();
         try {
             Parse.parse(graph, uri, lang);
-        } 
+        }
         catch (RiotException ex) { return ; }
         catch (RuntimeException ex) {
             ex.printStackTrace(System.err) ;
@@ -95,7 +95,7 @@ public class UnitTestBadSyntax extends LangTestCase
         }
         fail("Bad syntax test succeed in parsing the file") ;
     }
-    
+
     private void run4() {
         DatasetGraph dsg = DatasetGraphFactory.createGeneral() ;
         try {

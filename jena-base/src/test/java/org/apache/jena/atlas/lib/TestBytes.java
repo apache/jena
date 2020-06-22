@@ -18,12 +18,15 @@
 
 package org.apache.jena.atlas.lib;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.nio.ByteBuffer;
 
-import org.apache.jena.atlas.junit.BaseTest;
 import org.junit.Test;
 
-public class TestBytes extends BaseTest
+public class TestBytes
 {
     @Test public void intToBytes1() {
         byte[] b = Bytes.intToBytes(0xF1020304);

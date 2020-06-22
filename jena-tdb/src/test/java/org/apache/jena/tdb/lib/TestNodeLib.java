@@ -19,12 +19,14 @@
 package org.apache.jena.tdb.lib;
 
 import static org.apache.jena.tdb.lib.NodeLib.hash ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.Test ;
 
-public class TestNodeLib extends BaseTest
+public class TestNodeLib
 {
     // Tests of TDBs NodeLib
     @Test public void hash1() 

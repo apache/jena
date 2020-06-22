@@ -18,10 +18,11 @@
 
 package org.apache.jena.tdb.store;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.ConcurrentModificationException ;
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.GraphUtil ;
@@ -40,7 +41,7 @@ import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.junit.Test ;
 
-public class TestConcurrentAccess extends BaseTest
+public class TestConcurrentAccess
 {
     static String data = StrUtils.strjoinNL(
        "(graph",

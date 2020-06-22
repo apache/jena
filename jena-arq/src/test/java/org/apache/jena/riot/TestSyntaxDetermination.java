@@ -18,10 +18,11 @@
 
 package org.apache.jena.riot;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
@@ -29,7 +30,7 @@ import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
 
 @RunWith(Parameterized.class)
-public class TestSyntaxDetermination extends BaseTest {
+public class TestSyntaxDetermination {
     // On experience of test paramterization:
     //   Macro-generating the test items would be better 
     //   because test failures then leave a clickable

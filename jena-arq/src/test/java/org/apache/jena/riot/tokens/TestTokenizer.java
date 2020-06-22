@@ -18,17 +18,21 @@
 
 package org.apache.jena.riot.tokens ;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream ;
 
 import org.apache.jena.atlas.io.PeekReader ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.RiotParseException ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.junit.Test ;
 
-public class TestTokenizer extends BaseTest {
+public class TestTokenizer {
     // WORKERS
     private static Tokenizer tokenizer(String string) {
         return tokenizer(string, false) ;

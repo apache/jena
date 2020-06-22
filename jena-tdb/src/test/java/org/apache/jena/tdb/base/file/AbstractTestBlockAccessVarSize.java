@@ -21,6 +21,7 @@ package org.apache.jena.tdb.base.file;
 import org.apache.jena.tdb.base.block.Block ;
 import org.junit.Test ;
 import static org.apache.jena.tdb.base.BufferTestLib.* ;
+import static org.junit.Assert.assertNotSame;
 
 public abstract class AbstractTestBlockAccessVarSize extends AbstractTestBlockAccessFixedSize
 {

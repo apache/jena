@@ -18,10 +18,12 @@
 
 package org.apache.jena.tdb.transaction ;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.query.TxnType;
@@ -43,7 +45,7 @@ import org.junit.Before ;
 import org.junit.Test ;
 
 /** Test of re-attaching to a pre-existing database */  
-public class TestTransRestart extends BaseTest {
+public class TestTransRestart {
     static { 
         // Only if run directly, not in test suite.
         if ( false )

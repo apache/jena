@@ -18,11 +18,12 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
-public class TestExprTransform extends BaseTest
+public class TestExprTransform
 {
     ExprTransform et1 = new ExprTransformCopy() 
     {   @Override

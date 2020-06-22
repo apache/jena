@@ -24,46 +24,32 @@ import org.junit.internal.TextListener ;
 import org.junit.runner.Description ;
 import org.junit.runner.notification.Failure ;
 
-public class TextListener2 extends TextListener
+/** JUnit4 test listener that prints one line per test */
+public class TextListenerLong extends TextListener
 {
     private PrintStream out ;
-    int count = 0 ;
 
-    public TextListener2(PrintStream writer)
-    {
+    public TextListenerLong(PrintStream writer) {
         super(writer) ;
         this.out = writer ;
     }
-    
+
     @Override
-    public void testRunStarted(Description description)
-    {
-        //count = 0 ;
-    }
-    
+    public void testRunStarted(Description description) {}
+
     @Override
     public void testStarted(Description description) {
-        newline() ;
-        out.append('.');
-    }
-
-    private void newline()
-    {
-        if ( count != 0 && count%50 == 0 )
-            out.println();
-        count++ ;
+        out.println(description.getDisplayName());
     }
 
     @Override
     public void testFailure(Failure failure) {
-        newline() ;
-        out.append('E');
+        out.println("Error: "+ failure.getMessage());
     }
 
     @Override
     public void testIgnored(Description description) {
-        newline() ;
-        out.append('I');
+        out.println("  Ignored");
     }
-    
+
 }

@@ -19,8 +19,11 @@
 package org.apache.jena.sparql.util;
 
 import static org.apache.jena.sparql.core.DatasetGraphFactory.createTxnMem;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.ReadWrite;
@@ -30,7 +33,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphZero;
 import org.junit.Test;
 
-public abstract class TestDyadicDatasetGraph extends BaseTest {
+public abstract class TestDyadicDatasetGraph {
 
     public abstract DatasetGraph testInstance(DatasetGraph left, DatasetGraph right, Context c);
 

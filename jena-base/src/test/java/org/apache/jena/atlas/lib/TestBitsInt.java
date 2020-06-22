@@ -18,11 +18,13 @@
 
 package org.apache.jena.atlas.lib;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test ;
 
 
-public class TestBitsInt extends BaseTest
+public class TestBitsInt
 {
     @Test public void testMask1()
     {

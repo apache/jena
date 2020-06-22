@@ -18,7 +18,10 @@
 
 package org.apache.jena.web;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.GraphUtil ;
 import org.apache.jena.graph.Node ;
@@ -32,7 +35,7 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
 @SuppressWarnings("deprecation")
-public abstract class AbstractTestDatasetGraphAccessor extends BaseTest
+public abstract class AbstractTestDatasetGraphAccessor
 {
     protected static final String gn1       = "http://graph/1" ;
     protected static final String gn2       = "http://graph/2" ;

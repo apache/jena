@@ -18,11 +18,12 @@
 
 package org.apache.jena.riot.lang;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.InputStream ;
 import java.util.Arrays ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.ReaderRIOT ;
@@ -38,7 +39,7 @@ import org.junit.runners.Parameterized.Parameter ;
 import org.junit.runners.Parameterized.Parameters ;
 
 @RunWith(Parameterized.class)
-public class TestTriXReader extends BaseTest {
+public class TestTriXReader {
     
     static String DIR = "testing/RIOT/Lang/TriX" ;
     

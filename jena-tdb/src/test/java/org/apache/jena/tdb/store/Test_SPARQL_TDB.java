@@ -18,7 +18,8 @@
 
 package org.apache.jena.tdb.store;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.NodeFactory ;
@@ -37,7 +38,7 @@ import org.junit.Test ;
 /**
  * Test SPARQL
  */
-public class Test_SPARQL_TDB extends BaseTest
+public class Test_SPARQL_TDB
 {
     private static Dataset create() 
     {

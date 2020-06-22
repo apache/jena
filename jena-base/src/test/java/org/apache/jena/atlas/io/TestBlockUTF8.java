@@ -18,6 +18,10 @@
 
 package org.apache.jena.atlas.io;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream ;
 import java.io.IOException ;
 import java.io.OutputStreamWriter ;
@@ -29,11 +33,10 @@ import java.nio.charset.Charset ;
 import java.nio.charset.CharsetDecoder ;
 import java.nio.charset.CharsetEncoder ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Chars ;
 import org.junit.Test ;
 
-public class TestBlockUTF8 extends BaseTest
+public class TestBlockUTF8
 {
     // Need array and non-array versions.
     
@@ -129,7 +132,7 @@ public class TestBlockUTF8 extends BaseTest
         assertEquals(x, str) ;
     }
 
-    // Tesing, but not against what Java would do (it replaces bad chars, we want binary).
+    // Testing, but not against what Java would do (it replaces bad chars, we want binary).
     static void testInOutBinary(String x)
     {
         int N = x.length() ;

@@ -22,17 +22,18 @@ import static org.apache.jena.sparql.core.QuadAction.ADD ;
 import static org.apache.jena.sparql.core.QuadAction.DELETE ;
 import static org.apache.jena.sparql.core.QuadAction.NO_ADD ;
 import static org.apache.jena.sparql.core.QuadAction.NO_DELETE ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
-public class TestDatasetMonitor extends BaseTest
+public class TestDatasetMonitor
 {
     static Quad quad1 = SSE.parseQuad("(_ <s> <p> 1)") ;
     static Quad quad2 = SSE.parseQuad("(<g> <s> <p> 2)") ;

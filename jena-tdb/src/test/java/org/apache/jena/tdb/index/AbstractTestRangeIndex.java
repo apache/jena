@@ -24,15 +24,18 @@ import static org.apache.jena.tdb.index.IndexTestLib.add ;
 import static org.apache.jena.tdb.index.IndexTestLib.randTest ;
 import static org.apache.jena.tdb.index.IndexTestLib.testInsert ;
 import static org.apache.jena.tdb.index.IndexTestLib.testInsertDelete ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.tdb.base.record.RecordLib ;
 import org.junit.After ;
 import org.junit.Test ;
 
-public abstract class AbstractTestRangeIndex extends BaseTest {
+public abstract class AbstractTestRangeIndex {
     private RangeIndex rIndex = null ;
 
     @After

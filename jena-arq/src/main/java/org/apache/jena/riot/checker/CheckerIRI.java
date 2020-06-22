@@ -45,7 +45,7 @@ public class CheckerIRI implements NodeChecker
         this.handler = handler ;
         this.iriFactory = iriFactory ;
     }
-    
+
     @Override
     public boolean check(Node node, long line, long col)
     { return node.isURI() && checkURI(node, line, col) ; }
@@ -77,23 +77,23 @@ public class CheckerIRI implements NodeChecker
      *  Assumes error handler throws exceptions on errors if needbe
      *  @param iri  IRI to check
      *  @param errorHandler The error handler to call on each warning or error.
-     *   
+     *
      */
     public static void iriViolations(IRI iri, ErrorHandler errorHandler) {
         iriViolations(iri, errorHandler, -1L, -1L) ;
     }
-    
+
     /** Process violations on an IRI
      *  Calls the errorhandler on all errors and warnings (as warning).
      *  Assumes error handler throws exceptions on errors if needbe
      *  @param iri  IRI to check
      *  @param errorHandler The error handler to call on each warning or error.
-     *   
+     *
      */
     public static void iriViolations(IRI iri, ErrorHandler errorHandler, long line, long col) {
         iriViolations(iri, errorHandler, false, true, line, col) ;
     }
-    
+
     /** Process violations on an IRI
      *  Calls the errorhandler on all errors and warnings (as warning).
      *  Assumes error handler throws exceptions on errors if needbe
@@ -118,10 +118,10 @@ public class CheckerIRI implements NodeChecker
 
     /** Process violations on an IRI
      *  Calls the errorhandler on all errors and warnings (as warning).
-     *  Assumes error handler throws exceptions on errors if needbe 
+     *  Assumes error handler throws exceptions on errors if needbe
      */
-    public static void iriViolations(IRI iri, ErrorHandler errorHandler, 
-                                     boolean allowRelativeIRIs, 
+    public static void iriViolations(IRI iri, ErrorHandler errorHandler,
+                                     boolean allowRelativeIRIs,
                                      boolean includeIRIwarnings,
                                      long line, long col) {
         if ( !allowRelativeIRIs && iri.isRelative() )
@@ -156,8 +156,8 @@ public class CheckerIRI implements NodeChecker
                 if ( isError ) {
                     errorSeen = true ;
                     if ( vError == null )
-                                         // Remember first error
-                                         vError = v ;
+                        // Remember first error
+                        vError = v ;
                 } else {
                     warningSeen = true ;
                     if ( vWarning == null )
@@ -170,24 +170,24 @@ public class CheckerIRI implements NodeChecker
                 // Ideally, we might want to output all messages relating to this IRI
                 // then cause the error or continue.
                 // But that's tricky given the current errorhandler architecture.
-                
+
 //                // Put out warnings for all IRI issues - later, exception for errors.
 //                if (v.getViolationCode() == ViolationCodes.REQUIRED_COMPONENT_MISSING &&
 //                    v.getComponent() == IRIComponents.SCHEME)
 //                {
 //                    if (! allowRelativeIRIs )
 //                        handler.error("Relative URIs are not permitted in RDF: <"+iriStr+">", line, col);
-//                } 
+//                }
 //                else
                 {
                     if ( isError )
-                        // IRI errors are warning at the level of parsing - they got through syntax checks.  
+                        // IRI errors are warning at the level of parsing - they got through syntax checks.
                         errorHandler.warning("Bad IRI: "+msg, line, col);
                     else
                         errorHandler.warning("Not advised IRI: "+msg, line, col);
                 }
             }
-            
+
 //            // and report our choosen error.
 //            if ( errorSeen || (warningsAreErrors && warningSeen) )
 //            {

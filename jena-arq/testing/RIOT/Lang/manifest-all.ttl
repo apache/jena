@@ -17,5 +17,5 @@
         <NTriplesStd/manifest.ttl>
         <NQuadsStd/manifest.ttl>
         <TurtleStd/manifest.ttl>    # W3C test suite
-        <TrigStd/manifest.ttl>   # W3C Test Suite
+        <TrigStd/manifest.ttl>      # W3C Test Suite
 	).

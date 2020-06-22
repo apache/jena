@@ -18,13 +18,14 @@
 
 package org.apache.jena.riot.out;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.vocabulary.RDF ;
 import org.junit.Test ;
 
-public class TestNodeFmtLib extends BaseTest
+public class TestNodeFmtLib
 {
     // : is 3A 
     // - is 2D

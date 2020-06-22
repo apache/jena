@@ -22,13 +22,12 @@ import static org.apache.jena.sparql.expr.LibTestExpr.test ;
 import static org.apache.jena.sparql.expr.LibTestExpr.testDouble ;
 import static org.apache.jena.sparql.expr.LibTestExpr.testError ;
 
-import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestLeviathanFunctions extends BaseTest {
+public class TestLeviathanFunctions {
 
     private static final double DELTA = 0.0000000001d;
     static boolean warnOnBadLexicalForms = true;

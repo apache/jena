@@ -36,16 +36,16 @@ public class ModLangParse extends ModBase
 
     private ArgDecl argStrict   = new ArgDecl(ArgDecl.NoValue, "strict") ;
     private ArgDecl argValidate = new ArgDecl(ArgDecl.NoValue, "validate") ;
-    
+
     private ArgDecl argSkip     = new ArgDecl(ArgDecl.NoValue, "skip") ;
     private ArgDecl argNoSkip   = new ArgDecl(ArgDecl.NoValue, "noSkip") ;
     private ArgDecl argStop     = new ArgDecl(ArgDecl.NoValue, "stopOnError", "stoponerror", "stop") ;
     private ArgDecl argStopWarn = new ArgDecl(ArgDecl.NoValue, "stopOnWarning", "stoponwarning", "stop-warnings") ;
-    
+
     private ArgDecl argBase     = new ArgDecl(ArgDecl.HasValue, "base") ;
-    
+
     private ArgDecl argRDFS     = new ArgDecl(ArgDecl.HasValue, "rdfs") ;
-    
+
     private ArgDecl argSyntax     = new ArgDecl(ArgDecl.HasValue, "syntax") ;
 
     private  String rdfsVocabFilename   = null ;
@@ -56,12 +56,12 @@ public class ModLangParse extends ModBase
     private boolean skipOnBadTerm       = false ;
     private boolean stopOnBadTerm       = false ;
     private boolean stopOnWarnings      = false ;
-    private boolean bitbucket           = false ; 
+    private boolean bitbucket           = false ;
     private boolean strict              = false ;
     private boolean validate            = false ;
     private boolean outputCount         = false ;
     private Lang lang                   = null ;
-    
+
     @Override
     public void registerWith(CmdGeneral cmdLine) {
         cmdLine.getUsage().startCategory("Parser control") ;
@@ -73,7 +73,7 @@ public class ModLangParse extends ModBase
         cmdLine.add(argValidate,"--validate",       "Same as --sink --check --strict") ;
         cmdLine.add(argCount,   "--count",          "Count triples/quads parsed, not output them") ;
         cmdLine.add(argRDFS,    "--rdfs=file",      "Apply some RDFS inference using the vocabulary in the file") ;
-        
+
         cmdLine.add(argNoCheck, "--nocheck",        "Turn off checking of RDF terms") ;
 //        cmdLine.add(argSkip,    "--noSkip",         "Skip (do not output) triples failing the RDF term tests") ;
 //        cmdLine.add(argNoSkip,  "--skip",           "Include triples failing the RDF term tests (not recommended)") ;
@@ -123,13 +123,13 @@ public class ModLangParse extends ModBase
 
         if ( cmdLine.contains(argStop) )
             stopOnBadTerm = true ;
-        
+
         if ( cmdLine.contains(argStopWarn) )
             stopOnWarnings = true;
 
         if ( cmdLine.contains(argSink) )
             bitbucket = true ;
-        
+
         if ( cmdLine.contains(argCount) ) {
             bitbucket = true ;
             outputCount = true ;
@@ -174,7 +174,7 @@ public class ModLangParse extends ModBase
     public boolean stopOnBadTerm() {
         return stopOnBadTerm ;
     }
-    
+
     public boolean stopOnWarnings() {
         return stopOnWarnings ;
     }

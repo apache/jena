@@ -18,11 +18,13 @@
 
 package org.apache.jena.sparql.lang;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import org.apache.jena.query.QueryParseException ;
 import org.junit.Test ;
 
-public class TestUnescape extends BaseTest
+public class TestUnescape
 {
     @Test public void testEsc01() { execTest("x\\uabcd", "x\uabcd") ; }
     @Test public void testEsc02() { execTest("\\uabcdx", "\uabcdx") ; }

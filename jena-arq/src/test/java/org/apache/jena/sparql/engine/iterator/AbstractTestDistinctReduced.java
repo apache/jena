@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Arrays ;
 import java.util.HashSet ;
@@ -26,7 +28,6 @@ import java.util.Set ;
 import java.util.stream.Collectors ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.QueryIterator ;
@@ -35,7 +36,7 @@ import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.junit.Test ;
 
-public abstract class AbstractTestDistinctReduced extends BaseTest {
+public abstract class AbstractTestDistinctReduced {
     
     static List<String> data1 =     Arrays.asList("0","1","1","3","9","5","6","8","9","0") ;
     static List<String> results1 =  Arrays.asList("0","1",    "3","9","5","6","8"        ) ;

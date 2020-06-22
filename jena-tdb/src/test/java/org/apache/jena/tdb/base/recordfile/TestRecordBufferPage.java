@@ -18,7 +18,8 @@
 
 package org.apache.jena.tdb.base.recordfile;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+
 import org.apache.jena.tdb.base.block.BlockMgr ;
 import org.apache.jena.tdb.base.block.BlockMgrFactory ;
 import org.apache.jena.tdb.base.buffer.RecordBuffer ;
@@ -31,7 +32,7 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-public class TestRecordBufferPage extends BaseTest
+public class TestRecordBufferPage
 {
     // Testing: records are 2 bytes, 3 records per block.  
     

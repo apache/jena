@@ -18,14 +18,17 @@
 
 package org.apache.jena.atlas.iterator;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.ext.com.google.common.collect.Iterators ;
 import org.junit.Test ;
 
-public class TestIteratorPeek extends BaseTest
+public class TestIteratorPeek
 {
     List<String> data0 = new ArrayList<>() ;
     List<String> data1 = new ArrayList<>() ;

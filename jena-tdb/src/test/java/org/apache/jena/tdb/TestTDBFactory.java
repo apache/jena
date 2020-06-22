@@ -18,7 +18,11 @@
 
 package org.apache.jena.tdb;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
@@ -31,7 +35,7 @@ import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 
-public class TestTDBFactory extends BaseTest
+public class TestTDBFactory
 {
     String DIR = ConfigTest.getCleanDir() ;
     

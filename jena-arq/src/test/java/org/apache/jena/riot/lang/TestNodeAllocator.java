@@ -18,13 +18,16 @@
 
 package org.apache.jena.riot.lang;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertSame;
+
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.riot.system.SyntaxLabels ;
 import org.junit.Test ;
 
-public class TestNodeAllocator extends BaseTest
+public class TestNodeAllocator
 {
     static Node gragh1 = NodeFactory.createURI("g1") ;
     static Node gragh2 = NodeFactory.createURI("g2") ;

@@ -18,6 +18,10 @@
 
 package org.apache.jena.sparql.resultset;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
 import java.io.InputStream;
@@ -25,7 +29,6 @@ import java.util.ArrayList ;
 import java.util.List ;
 import java.util.NoSuchElementException;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -53,7 +56,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test ;
 
-public class TestResultSet extends BaseTest
+public class TestResultSet
 {
     static { JenaSystem.init(); }
     

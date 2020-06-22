@@ -19,12 +19,13 @@
 package org.apache.jena.tdb.lib;
 
 import static org.apache.jena.atlas.lib.tuple.TupleFactory.* ;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.junit.Test ;
 
-public class TestColumnMap extends BaseTest
+public class TestColumnMap
 {
     @Test public void remap1() 
     {

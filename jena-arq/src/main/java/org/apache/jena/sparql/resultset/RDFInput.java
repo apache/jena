@@ -21,6 +21,7 @@ package org.apache.jena.sparql.resultset;
 import java.util.ArrayList;
 
 import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.shared.JenaException;
@@ -98,7 +99,7 @@ public class RDFInput extends ResultSetMem {
         Model m = root.getModel();
         // Assume one result set per file.
         for ( int index = 1 ;; index++ ) {
-            Literal ind = m.createTypedLiteral(index);
+            Literal ind = m.createTypedLiteral(index, XSDDatatype.XSDinteger);
             StmtIterator sIter = m.listStatements(null, ResultSetGraphVocab.index, ind);
             if ( !sIter.hasNext() )
                 break;
@@ -171,7 +172,7 @@ public class RDFInput extends ResultSetMem {
      * Turns an RDF model, with properties and classes from the result set
      * vocabulary, into a SPARQL result set. The result set formed is a copy in
      * memory.
-     * 
+     *
      * @param model
      * @return ResultSet
      */

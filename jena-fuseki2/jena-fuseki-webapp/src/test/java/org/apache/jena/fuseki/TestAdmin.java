@@ -27,6 +27,7 @@ import static org.apache.jena.riot.web.HttpOp.execHttpDelete;
 import static org.apache.jena.riot.web.HttpOp.execHttpGet;
 import static org.apache.jena.riot.web.HttpOp.execHttpPost;
 import static org.apache.jena.riot.web.HttpOp.execHttpPostStream;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,6 +42,7 @@ import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.json.JsonValue;
+import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
@@ -399,6 +401,8 @@ public class TestAdmin extends AbstractFusekiTest {
         }
     }
 
+    private void assertEqualsIgnoreCase(String contenttypejson, String contentType) {}
+
     private static JsonValue getTask(String taskId) {
         String url = ServerCtl.urlRoot()+"$/tasks/"+taskId;
         return httpGetJson(url);
@@ -406,7 +410,7 @@ public class TestAdmin extends AbstractFusekiTest {
 
     private static JsonValue getDatasetDescription(String dsName) {
         try (TypedInputStream in = execHttpGet(ServerCtl.urlRoot() + "$/" + opDatasets + "/" + dsName)) {
-            assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
+            BaseTest.assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
             JsonValue v = JSON.parse(in);
             return v;
         }
@@ -633,14 +637,14 @@ public class TestAdmin extends AbstractFusekiTest {
 
     private static JsonValue execGetJSON(String url) {
         try ( TypedInputStream in = execHttpGet(url) ) {
-            assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
+            BaseTest.assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
             return JSON.parse(in);
         }
     }
 
     private static JsonValue execPostJSON(String url) {
         try ( TypedInputStream in = execHttpPostStream(url, null, null, null) ) {
-            assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
+            BaseTest.assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
             return JSON.parse(in);
         }
     }

@@ -18,13 +18,15 @@
 
 package org.apache.jena.atlas.lib;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import java.util.concurrent.Callable ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
 // Non-parameterized tests
-public class TestCache2 extends BaseTest
+public class TestCache2
 {
     // Cache1
     @Test public void cache_10()

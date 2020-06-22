@@ -24,17 +24,17 @@ import java.util.Locale ;
 import org.apache.jena.atlas.lib.ListUtils ;
 import org.junit.Assert ;
 
-public class BaseTest extends Assert {
+public class BaseTest {
     public static void assertEqualsIgnoreCase(String a, String b) {
         a = a.toLowerCase(Locale.ROOT) ;
         b = b.toLowerCase(Locale.ROOT) ;
-        assertEquals(a, b) ;
+        Assert.assertEquals(a, b) ;
     }
 
     public static void assertEqualsIgnoreCase(String msg, String a, String b) {
         a = a.toLowerCase(Locale.ROOT) ;
         b = b.toLowerCase(Locale.ROOT) ;
-        assertEquals(msg, a, b) ;
+        Assert.assertEquals(msg, a, b) ;
     }
 
     public static <T> void assertEqualsUnordered(List<T> list1, List<T> list2) {
@@ -43,7 +43,7 @@ public class BaseTest extends Assert {
     
     public static <T> void assertEqualsUnordered(String msg, List<T> list1, List<T> list2) {
         if ( ! ListUtils.equalsUnordered(list1, list2) )
-            fail(msg(msg, list1, list2)) ;
+            Assert.fail(msg(msg, list1, list2)) ;
     }
     
     private static <T> String msg(String msg, List<T> list1, List<T> list2) {
@@ -51,5 +51,4 @@ public class BaseTest extends Assert {
         x = x +"Expected: " + list1 + " : Actual: " + list2 ;
         return x ;
     }
-
 }

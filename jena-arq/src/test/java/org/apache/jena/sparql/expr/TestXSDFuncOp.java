@@ -18,9 +18,10 @@
 
 package org.apache.jena.sparql.expr;
 
+import static org.junit.Assert.*;
+
 import java.math.BigDecimal;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -30,7 +31,7 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Assert ;
 import org.junit.Test ;
 
-public class TestXSDFuncOp extends BaseTest
+public class TestXSDFuncOp
 {
     private static final double accuracyExact_D = 0.0d ;
     private static final double accuracyExact_F = 0.0d ;

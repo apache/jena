@@ -18,11 +18,12 @@
 
 package org.apache.jena.tdb.store.nodetable;
 
+import static org.junit.Assert.assertEquals;
+
 import java.nio.ByteBuffer ;
 import java.util.Arrays ;
 import java.util.Collection ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.ByteBufferLib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
@@ -32,7 +33,7 @@ import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
 
 @RunWith(Parameterized.class)
-public class TestCodec extends BaseTest 
+public class TestCodec 
 {
     static private final String asciiBase             = "abc" ;
     static private final String latinBase             = "Àéíÿ" ;

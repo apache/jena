@@ -18,12 +18,14 @@
 
 package org.apache.jena.sparql.engine.binding;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.legacy.BaseTest2 ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -44,7 +46,7 @@ import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 
-public class TestBindingStreams extends BaseTest
+public class TestBindingStreams
 {
     @BeforeClass public static void beforeClass()
     { 

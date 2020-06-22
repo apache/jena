@@ -18,11 +18,12 @@
 
 package org.apache.jena.common;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList ;
 import java.util.Collection;
 import java.util.List ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.graph.Graph ;
@@ -37,7 +38,7 @@ import org.apache.jena.sparql.util.IsoMatcher ;
 import org.apache.jena.sparql.util.NodeUtils;
 import org.junit.Test ;
 
-public class TestIsoMatcher extends BaseTest
+public class TestIsoMatcher
 {
     @Test public void iso_00() { testGraph("",
                                            "",

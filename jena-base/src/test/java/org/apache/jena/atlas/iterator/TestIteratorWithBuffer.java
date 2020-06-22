@@ -18,13 +18,14 @@
 
 package org.apache.jena.atlas.iterator;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Arrays ;
 import java.util.List ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
-public class TestIteratorWithBuffer extends BaseTest
+public class TestIteratorWithBuffer
 {
 
     @Test public void iterBuffer_01()

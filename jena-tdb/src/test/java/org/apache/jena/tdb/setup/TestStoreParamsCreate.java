@@ -19,6 +19,7 @@
 package org.apache.jena.tdb.setup;
 
 import static org.apache.jena.tdb.setup.StoreParamsConst.TDB_CONFIG_FILE ;
+import static org.junit.Assert.*;
 
 import java.nio.file.Files ;
 import java.nio.file.Path ;
@@ -26,7 +27,6 @@ import java.nio.file.Paths ;
 
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonObject ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.tdb.ConfigTest ;
 import org.apache.jena.tdb.StoreConnection ;
@@ -39,7 +39,7 @@ import org.junit.Test ;
  * This test suite uses on-disk structures, does a lot of clean/create/sync
  * calls and can be noticeably slow.
  */
-public class TestStoreParamsCreate extends BaseTest {
+public class TestStoreParamsCreate {
     private final String DB_DIR = ConfigTest.getCleanDir() ;
     private final Path db = Paths.get(DB_DIR) ;
     private final Path cfg = Paths.get(DB_DIR, TDB_CONFIG_FILE) ;

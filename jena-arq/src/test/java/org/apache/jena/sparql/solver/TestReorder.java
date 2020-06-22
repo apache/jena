@@ -21,14 +21,15 @@ package org.apache.jena.sparql.solver;
 import static org.apache.jena.sparql.solver.TestSolverLib.bgp ;
 import static org.apache.jena.sparql.solver.TestSolverLib.matcher ;
 import static org.apache.jena.sparql.solver.TestSolverLib.triple ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.engine.optimizer.StatsMatcher ;
 import org.apache.jena.sparql.engine.optimizer.reorder.* ;
 import org.junit.Test ;
 
-public class TestReorder extends BaseTest
+public class TestReorder
 {
 
     @Test public void match_01()

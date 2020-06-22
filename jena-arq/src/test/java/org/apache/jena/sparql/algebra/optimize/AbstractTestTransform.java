@@ -18,9 +18,10 @@
 
 package org.apache.jena.sparql.algebra.optimize ;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Objects ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryFactory ;
@@ -31,7 +32,7 @@ import org.apache.jena.sparql.algebra.Transformer ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Assert ;
 
-public abstract class AbstractTestTransform extends BaseTest {
+public abstract class AbstractTestTransform {
 
     public void testOptimize(String input, String... output) {
         Query q = QueryFactory.create(input) ;

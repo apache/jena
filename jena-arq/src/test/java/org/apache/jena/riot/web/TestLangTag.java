@@ -18,10 +18,11 @@
 
 package org.apache.jena.riot.web;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
+
 import org.junit.Test ;
 
-public class TestLangTag extends BaseTest
+public class TestLangTag
 {
     @Test public void parse_01() 
     { parseGood("en",                  "en",               "en", null, null, null, null) ; }

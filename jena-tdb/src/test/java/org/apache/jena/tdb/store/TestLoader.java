@@ -18,12 +18,15 @@
 
 package org.apache.jena.tdb.store ;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.InputStream ;
 import java.util.List ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -41,7 +44,7 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-public class TestLoader extends BaseTest {
+public class TestLoader {
     private static String DIR = null ;
     private static final Node   g   = NodeFactory.createURI("g") ;
     private static final Node   s   = NodeFactory.createURI("s") ;

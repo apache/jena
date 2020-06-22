@@ -18,6 +18,11 @@
 
 package org.apache.jena.sparql.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.StringReader ;
 import java.util.Arrays ;
 import java.util.Iterator ;
@@ -39,7 +44,7 @@ import org.apache.jena.vocabulary.RDF ;
 import org.junit.Test ;
 
 /** Test the graph-level RDF list support used in SPARQL */
-public class TestList extends BaseTest
+public class TestList
 {
     private GNode emptyList = parse(listStr_1) ; 
     private GNode list4 = parse(listStr_2) ;
@@ -245,7 +250,7 @@ public class TestList extends BaseTest
     
     private static void check(List<Node> z, Node...expected) {
         List<Node> x = Arrays.asList(expected) ;
-        assertEqualsUnordered(x, z);
+        BaseTest.assertEqualsUnordered(x, z);
     }
     
 }

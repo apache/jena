@@ -18,14 +18,13 @@
 
 package org.apache.jena.riot.lang;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.Test ;
 
-public class TestTurtleTerms extends BaseTest
+public class TestTurtleTerms
 {
 
 	static public final String QUOTE3 = "\"\"\"" ;

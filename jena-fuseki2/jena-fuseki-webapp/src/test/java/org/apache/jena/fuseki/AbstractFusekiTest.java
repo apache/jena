@@ -18,7 +18,6 @@
 
 package org.apache.jena.fuseki;
 
-import org.apache.jena.atlas.junit.BaseTest;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -41,7 +40,7 @@ import org.junit.BeforeClass;
  * requirements.
  */
 
-public class AbstractFusekiTest extends BaseTest
+public class AbstractFusekiTest
 {
     @BeforeClass public static void ctlBeforeClass() { ServerCtl.ctlBeforeClass(); }
     @AfterClass  public static void ctlAfterClass()  { ServerCtl.ctlAfterClass(); }

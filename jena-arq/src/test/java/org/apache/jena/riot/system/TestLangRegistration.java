@@ -18,10 +18,13 @@
 
 package org.apache.jena.riot.system;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.* ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
@@ -30,7 +33,7 @@ import org.junit.runners.Parameterized.Parameters ;
 
 
 @RunWith(Parameterized.class)
-public class TestLangRegistration extends BaseTest
+public class TestLangRegistration
 {
     @Parameters(name = "{0} -- {1} {2} {3}")
     public static Iterable<Object[]> data() {

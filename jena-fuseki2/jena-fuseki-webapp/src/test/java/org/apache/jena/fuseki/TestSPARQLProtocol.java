@@ -23,6 +23,7 @@ import static org.apache.jena.fuseki.ServerCtl.serviceUpdate;
 import static org.apache.jena.fuseki.ServerTest.gn1;
 import static org.apache.jena.fuseki.ServerTest.model1;
 import static org.apache.jena.fuseki.ServerTest.model2;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.query.*;
 import org.apache.jena.riot.WebContent;

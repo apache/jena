@@ -19,12 +19,14 @@
 package org.apache.jena.riot.thrift;
 
 import static org.apache.jena.riot.RDFLanguages.THRIFT ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.* ;
 import org.junit.Test ;
 
-public class TestThriftSetup extends BaseTest {
+public class TestThriftSetup {
 
     @Test public void setup_01() {
         assertTrue(RDFLanguages.isRegistered(THRIFT)) ;

@@ -18,10 +18,11 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.HashSet ;
 import java.util.Set ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryFactory ;
@@ -36,7 +37,7 @@ import org.junit.Rule;
 import org.junit.Test ;
 import org.junit.rules.TestName;
 
-public class TestVarRename extends BaseTest
+public class TestVarRename
 {
     @Rule public TestName name = new TestName();
     

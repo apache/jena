@@ -18,12 +18,13 @@
 
 package org.apache.jena.riot;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.FileInputStream ;
 import java.io.IOException ;
 import java.io.StringReader ;
 import java.nio.file.Paths ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.TypedInputStream ;
@@ -37,7 +38,7 @@ import org.junit.Test ;
 
 /* Test of integration with Jena via model.read.
  * Also tests triples format reading of RDFDataMgr */
-public class TestJenaReaderRIOT extends BaseTest
+public class TestJenaReaderRIOT
 {
     private static final String directory = "testing/RIOT/Reader" ;
 

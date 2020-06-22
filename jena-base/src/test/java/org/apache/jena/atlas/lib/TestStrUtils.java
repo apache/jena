@@ -18,11 +18,12 @@
 
 package org.apache.jena.atlas.lib;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.jena.atlas.AtlasException;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
-public class TestStrUtils extends BaseTest
+public class TestStrUtils
 {
     static char marker = '_' ;
     static char esc[] = { ' ' , '_' } ; 

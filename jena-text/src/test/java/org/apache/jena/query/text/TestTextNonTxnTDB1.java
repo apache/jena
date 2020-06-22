@@ -18,6 +18,8 @@
 
 package org.apache.jena.query.text;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.List ;

@@ -20,7 +20,6 @@ package org.apache.jena.sparql.algebra.optimize ;
 
 import java.util.Objects ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.algebra.Op ;
@@ -40,7 +39,7 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Assert ;
 import org.junit.Test ;
 
-public class TestTransformFilterPlacement extends BaseTest { //extends AbstractTestTransform {
+public class TestTransformFilterPlacement { //extends AbstractTestTransform {
     
     // ** Filter
     

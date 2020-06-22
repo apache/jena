@@ -152,13 +152,13 @@ public class TestItem
             Model m = RDFDataMgr.loadModel(resultFile) ;
             return new SPARQLResult(m) ;
         }
-        
+
         if ( ResultsFormat.isDatasetSyntax(format) ) {
             Dataset d = RDFDataMgr.loadDataset(resultFile) ;
             return new SPARQLResult(d) ;
         }
 
-        // Attempt to handle as a resulset or boolean result.s
+        // Attempt to handle as a resultset or boolean result.s
         SPARQLResult x = ResultSetFactory.result(resultFile) ;
         return x ;
     }
@@ -195,12 +195,12 @@ public class TestItem
             return Syntax.syntaxSPARQL_11;
         if ( filename.endsWith(".ru") )
             return Syntax.syntaxSPARQL_11;
-        
+
         return Syntax.guessFileSyntax(filename);
     }
 
     private String _getName() {
-        
+
         Statement s = testResource.getProperty(TestManifest.name) ;
         String ln = s.getSubject().getLocalName();
         if ( s == null )
@@ -235,7 +235,7 @@ public class TestItem
     /**
      * Get the data file (default graph): maybe unknown if part for the query
      * (FROM)
-     * 
+     *
      * @return List
      */
 
@@ -258,7 +258,7 @@ public class TestItem
 
     /**
      * Get the named graphs : maybe unknown if part for the query (FROM NAMED)
-     * 
+     *
      * @return List
      */
 
@@ -282,7 +282,7 @@ public class TestItem
     /**
      * Get the query file: either it is the action (data in query) or it is
      * specified within the bNode as a query/data pair.
-     * 
+     *
      * @return
      */
 

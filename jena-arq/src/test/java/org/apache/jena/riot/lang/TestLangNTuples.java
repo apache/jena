@@ -21,10 +21,10 @@ package org.apache.jena.riot.lang;
 import static org.apache.jena.riot.system.ErrorHandlerFactory.errorHandlerNoLogging ;
 import static org.apache.jena.riot.system.ErrorHandlerFactory.getDefaultErrorHandler ;
 import static org.apache.jena.riot.system.ErrorHandlerFactory.setDefaultErrorHandler ;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.CharSpace ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx;
@@ -41,7 +41,7 @@ import org.junit.BeforeClass ;
 import org.junit.Test ;
 /** Test of syntax by a tuples parser (does not include node validitiy checking) */ 
 
-abstract public class TestLangNTuples extends BaseTest
+abstract public class TestLangNTuples
 {
     // Test streaming interface.
 

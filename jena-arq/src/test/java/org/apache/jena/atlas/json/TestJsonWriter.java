@@ -19,10 +19,11 @@
 package org.apache.jena.atlas.json;
 
 import static org.apache.jena.atlas.json.LibJsonTest.writeRead ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test ;
 
-public class TestJsonWriter extends BaseTest
+public class TestJsonWriter
 {
     @Test public void js_write_str_1()  { test("foo") ; }
     

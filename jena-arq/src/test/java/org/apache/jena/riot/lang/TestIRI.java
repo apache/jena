@@ -18,7 +18,9 @@
 
 package org.apache.jena.riot.lang;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.graph.Node ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
@@ -30,7 +32,7 @@ import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.junit.Test ;
 
-public class TestIRI extends BaseTest
+public class TestIRI
 {
     static protected final ErrorHandler handler = new ErrorHandlerTestLib.ErrorHandlerEx() ;
 

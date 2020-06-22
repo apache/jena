@@ -18,11 +18,13 @@
 
 package org.apache.jena.tdb.store.tupletable;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.tdb.base.record.RecordFactory ;
@@ -31,7 +33,7 @@ import org.apache.jena.tdb.sys.SystemTDB ;
 import org.junit.Test;
 
 
-public class TestTupleTable extends BaseTest
+public class TestTupleTable
 {
     static RecordFactory factory = new RecordFactory(3*SystemTDB.SizeOfNodeId, 0) ;
     static NodeId n1 = new NodeId(1) ;

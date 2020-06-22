@@ -25,6 +25,7 @@ import static org.apache.jena.fuseki.ServerCtl.urlRoot;
 import static org.apache.jena.fuseki.test.FusekiTest.execWithHttpException;
 import static org.apache.jena.fuseki.test.FusekiTest.expect404;
 import static org.apache.jena.riot.web.HttpOp.initialDefaultHttpClient;
+import static org.junit.Assert.*;
 
 import org.apache.http.client.HttpClient;
 import org.apache.jena.atlas.lib.IRILib;

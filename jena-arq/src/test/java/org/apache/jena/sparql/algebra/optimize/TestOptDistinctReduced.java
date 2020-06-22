@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.algebra.Transform ;
 import org.junit.Test ;

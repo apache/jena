@@ -18,11 +18,12 @@
 
 package org.apache.jena.riot.writer;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
 import java.util.Arrays ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -35,7 +36,7 @@ import org.junit.runners.Parameterized.Parameter ;
 import org.junit.runners.Parameterized.Parameters ;
 
 @RunWith(Parameterized.class)
-public class TestTriXWriter extends BaseTest {
+public class TestTriXWriter {
 
     static String DIR = "testing/RIOT/Lang/TriX" ;
 

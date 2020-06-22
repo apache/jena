@@ -18,12 +18,16 @@
 
 package org.apache.jena.atlas.iterator;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays ;
 import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Parameterized ;
@@ -31,7 +35,7 @@ import org.junit.runners.Parameterized.Parameters ;
 
 @RunWith(Parameterized.class)
 
-public class TestIteratorSlotted extends BaseTest
+public class TestIteratorSlotted
 {
     @Parameters(name = "{index}: {0}")
     public static Collection<Object[]> implementations() {

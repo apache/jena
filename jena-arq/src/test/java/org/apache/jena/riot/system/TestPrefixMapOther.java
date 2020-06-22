@@ -18,14 +18,13 @@
 
 package org.apache.jena.riot.system;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
 /**
  * Test the standard {@link PrefixMapStd} implementation
  *
  */
-public class TestPrefixMapOther extends BaseTest
+public class TestPrefixMapOther
 {
     @Test(expected=UnsupportedOperationException.class) 
     public void other_01()

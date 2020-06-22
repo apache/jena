@@ -18,7 +18,9 @@
 
 package org.apache.jena.tdb.store;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
@@ -33,7 +35,7 @@ import org.apache.jena.tdb.TDBFactory ;
 import org.junit.Test ;
 
 /** Tests of datasets, prefixes, special URIs etc (see also {@link org.apache.jena.sparql.graph.GraphsTests} */
-public class TestDatasetTDB extends BaseTest
+public class TestDatasetTDB
 {
     
     private static Dataset create()

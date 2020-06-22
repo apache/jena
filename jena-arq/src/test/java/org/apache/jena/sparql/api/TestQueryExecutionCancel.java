@@ -18,7 +18,10 @@
 
 package org.apache.jena.sparql.api;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.Property ;
@@ -30,7 +33,7 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-public class TestQueryExecutionCancel extends BaseTest {
+public class TestQueryExecutionCancel {
 
     private static final String ns = "http://example/ns#" ;
     
