@@ -23,6 +23,7 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.core.PathBlock ;
 import org.apache.jena.sparql.core.TriplePath ;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.VarAlloc ;
 
 public class PathCompiler
@@ -31,6 +32,9 @@ public class PathCompiler
     // Need pre (and post) BGPs.
     
     private static VarAlloc varAlloc = new VarAlloc(ARQConstants.allocPathVariables) ;
+    
+    /** Testing use only. */
+    public static void resetForTest() {  varAlloc = new VarAlloc(ARQConstants.allocPathVariables) ; }
     
     // Move to AlgebraCompiler and have a per-transaction scoped var generator 
     
@@ -95,8 +99,14 @@ public class PathCompiler
         {
             P_Seq ps = (P_Seq)path ;
             Node v = varAlloc.allocVar() ;
-            reduce(x, varAlloc, startNode, ps.getLeft(), v) ;
-            reduce(x, varAlloc, v, ps.getRight(), endNode) ;
+            if ( Var.isVar(startNode) && ! Var.isVar(endNode) ) {
+                // start at the grounded term.
+                reduce(x, varAlloc, v, ps.getRight(), endNode) ;
+                reduce(x, varAlloc, startNode, ps.getLeft(), v) ;
+            } else {
+                reduce(x, varAlloc, startNode, ps.getLeft(), v) ;
+                reduce(x, varAlloc, v, ps.getRight(), endNode) ;
+            }
             return ;
         }
 

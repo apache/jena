@@ -31,6 +31,7 @@ import org.junit.runners.Suite ;
     , TestTransformFilters.class
     , TestTransformFilterEquality.class
     , TestTransformFilterPlacement.class
+    , TestTransformPathFlatten.class
     , TestTransformMergeBGPs.class
     , TestTransformPromoteTableEmpty.class
     , TestTransformEliminateAssignments.class
