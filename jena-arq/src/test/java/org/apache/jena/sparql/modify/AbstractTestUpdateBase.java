@@ -18,11 +18,11 @@
 
 package org.apache.jena.sparql.modify ;
 
+import org.apache.jena.arq.ARQTestSuite;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.GraphUtil ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.ARQTestSuite ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.update.UpdateAction ;

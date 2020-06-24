@@ -162,13 +162,13 @@
         <configuration>
           <includes>
             <!--
-                The test collections TC_General, TC_Riot, TC_Atlas
+                The test collections TC_ARQ, TC_Riot, TC_Atlas_ARQ
                 are development support that collect the relevant
                 tests for partial testing during development.
+                TC_Examples does not run in the the build.
             -->
             <include>**/TS_*.java</include>
-            <include>**/TC_Scripted.java</include>
-            <include>**/TC_DAWG.java</include>
+            <include>**/Scripts_*.java</include>
           </includes>
         </configuration>
       </plugin>

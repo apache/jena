@@ -30,37 +30,42 @@ public class wwwenc
      *   !    *   "   '   (   )   ;   :   @   &   =   +   $   ,   /   ?   %   #   [   ]
      *   %21  %2A %22 %27 %28 %29 %3B %3A %40 %26 %3D %2B %24 %2C %2F %3F %25 %23 %5B %5D
      * These loose any reserved meaning if encoded.
-     *   
+     * 
      * Other common, but unreserved, characters after percent-encoding 
      *   <   >   ~   .   {   }   |   \   -   `   _   ^
      *   %3C %3E %7E %2E %7B %7D %7C %5C %2D %60 %5F %5E
      * 
-     * Unreserved characters treated equivalent to their unencoded form.  
-     *   
-     *   
+     * Unreserved characters treated equivalent to their un-encoded form.  
      */
     public static void main(String...args) throws IOException
     {
-        // Reserved characters + space
-        char reserved[] = 
-            {' ',
-             '\n','\t',
-             '!', '*', '"', '\'', '(', ')', ';', ':', '@', '&', 
-             '=', '+', '$', ',', '/', '?', '%', '#', '[', ']'} ;
-        
-        char[] other = {'<', '>', '~', '.', '{', '}', '|', '\\', '-', '`', '_', '^'} ;        
+//        RFC3986:
+//        unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
+//        reserved      = gen-delims / sub-delims
+//        gen-delims    = ":" / "/" / "?" / "#" / "[" / "]" / "@"
+//        sub-delims    = "!" / "$" / "&" / "'" / "(" / ")"
+//                      / "*" / "+" / "," / ";" / "="
+        char encode[] =
+            {' ', '\n','\t',
+             // gen-delims
+             ':' , '/' , '?' , '#' , '[' , ']' , '@',
+             // sub-delims
+             '!' , '$' , '&' , '\'' , '(' , ')',
+             '*' , '+' , ',' , ';' , '=',
+             // general trouble
+             '<', '>', '{', '}', '|', '\\', '`', '^'
+            } ;
         
         if ( args.length == 0 ) {
             String x = IO.readWholeFileAsUTF8(System.in);
-            String y = StrUtils.encodeHex(x, '%', reserved) ;
+            String y = StrUtils.encodeHex(x, '%', encode) ;
             System.out.println(y) ;
             return;
         }       
         for ( String x : args) {
             // Not URLEncoder which does www-form-encoding.
-            String y = StrUtils.encodeHex(x, '%', reserved) ;
+            String y = StrUtils.encodeHex(x, '%', encode) ;
             System.out.println(y) ;
-            
 //            String s2 = URLEncoder.encode(s, "utf-8") ;
 //            System.out.println(s2) ;
 

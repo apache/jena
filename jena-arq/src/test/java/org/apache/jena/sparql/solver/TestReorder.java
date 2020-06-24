@@ -18,9 +18,9 @@
 
 package org.apache.jena.sparql.solver;
 
-import static org.apache.jena.sparql.solver.TestSolverLib.bgp ;
-import static org.apache.jena.sparql.solver.TestSolverLib.matcher ;
-import static org.apache.jena.sparql.solver.TestSolverLib.triple ;
+import static org.apache.jena.sparql.solver.SolverLibTest.bgp ;
+import static org.apache.jena.sparql.solver.SolverLibTest.matcher ;
+import static org.apache.jena.sparql.solver.SolverLibTest.triple ;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.jena.graph.Triple ;

@@ -122,7 +122,7 @@ public class LoaderFactory {
      * This loader will use all available resources of the machine,
      * making other actions on the machine unresponsive.
      * <p>
-     * * The dataset can not be used for other operations - the code will block other transactions
+     * The dataset can not be used for other operations - the code will block other transactions
      * as necessary and release then when loading has finished.
      * <p>
      * Supply a {@link MonitorOutput} for the desirable progress and summary output messages
@@ -163,7 +163,7 @@ public class LoaderFactory {
      * This loader will use all available resources of the machine,
      * making other actions on the machine unresponsive.
      * <p>
-     * * The dataset can not be used for other operations - the code will block other transactions
+     * The dataset can not be used for other operations - the code will block other transactions
      * as necessary and release then when loading has finished.
      * <p>
      * Supply a {@link MonitorOutput} for the desirable progress and summary output messages

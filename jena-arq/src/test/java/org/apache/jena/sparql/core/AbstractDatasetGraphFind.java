@@ -21,7 +21,7 @@ package org.apache.jena.sparql.core;
 import static org.apache.jena.atlas.iterator.Iter.asStream ;
 import static org.apache.jena.atlas.iterator.Iter.toList;
 import static org.apache.jena.atlas.iterator.Iter.toSet;
-import static org.apache.jena.atlas.junit.BaseTest.assertEqualsUnordered;
+import static org.apache.jena.atlas.junit.AssertExtra.assertEqualsUnordered;
 import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertFalse ;
 import static org.junit.Assert.assertNotNull;

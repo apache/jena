@@ -55,7 +55,7 @@ import org.junit.runners.Suite;
     , TS_TDBAssembler.class
     , TS_Sys.class
     , TS_Loader.class
-    , TS_ScriptsTDB2.class
+    , Scripts_TDB2.class
 } )
 
 public class TC_TDB2

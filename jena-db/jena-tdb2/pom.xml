@@ -108,7 +108,8 @@
         <artifactId>maven-surefire-report-plugin</artifactId>
         <configuration>
           <includes>
-            <include>**/TC_*.java</include>
+            <include>**/TS_*.java</include>
+            <include>**/Scripts_*.java</include>
           </includes>
         </configuration>
       </plugin>

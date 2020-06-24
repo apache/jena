@@ -18,25 +18,21 @@
 
 package org.apache.jena.sdb.test.junit;
 
-import static org.apache.jena.sparql.junit.TestQueryUtils.getQuerySyntax ;
 import junit.framework.Test ;
 import junit.framework.TestCase ;
 import junit.framework.TestSuite ;
 import org.apache.jena.query.Syntax ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sdb.StoreDesc ;
+import org.apache.jena.sdb.test.junit2.SurpressedTest;
+import org.apache.jena.sdb.test.junit2.TestItem;
 import org.apache.jena.sdb.util.Pair ;
-import org.apache.jena.sparql.junit.EarlReport ;
 import org.apache.jena.sparql.junit.QueryTestException ;
-import org.apache.jena.sparql.junit.SurpressedTest ;
-import org.apache.jena.sparql.junit.TestItem ;
 import org.apache.jena.sparql.vocabulary.TestManifestX ;
-import org.apache.jena.util.junit.TestFactoryManifest ;
+import org.apache.jena.util.junit.TestFactoryManifestOld ;
 
-public class QueryTestSDBFactory extends TestFactoryManifest
+public class QueryTestSDBFactory extends TestFactoryManifestOld
 {
-    public static EarlReport results = null ;
-    
     public static TestSuite makeSuite(String storeListFile, String manifestFile)
     {
         TestSuite ts = new TestSuite() ;
@@ -79,7 +75,7 @@ public class QueryTestSDBFactory extends TestFactoryManifest
     public Test makeTest(Resource manifest, Resource entry, String testName, Resource action, Resource result)
     {
         // Defaults.
-        Syntax querySyntax = getQuerySyntax(manifest)  ;
+        Syntax querySyntax = Syntax.syntaxARQ ;
 
         if ( testRootName != null )
             testName = testRootName+testName ;
@@ -95,10 +91,10 @@ public class QueryTestSDBFactory extends TestFactoryManifest
         TestCase test = null ;
 
         if ( testItem.getTestType().equals(TestManifestX.TestQuery) )
-            test = new QueryTestSDB(storeDesc, testName, results, testItem) ;
+            test = new QueryTestSDB(storeDesc, testName, testItem) ;
 
         if ( testItem.getTestType().equals(TestManifestX.TestSurpressed) )
-            test = new SurpressedTest(testName, results, testItem) ;
+            test = new SurpressedTest(testName, testItem) ;
 
         if ( test == null )
             System.err.println("Unrecognized test type: "+testItem.getTestType()) ;

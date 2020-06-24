@@ -18,26 +18,22 @@
 
 package arq;
 
-import java.io.File ;
-
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModEngine ;
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdException;
 import jena.cmd.TerminationException;
-import junit.framework.TestSuite ;
+import org.apache.jena.arq.junit.TextTestRunner;
+import org.apache.jena.arq.junit.sparql.SparqlTests;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.rdf.model.Literal ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.sparql.ARQTestSuite ;
-import org.apache.jena.sparql.expr.E_Function ;
-import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.junit.EarlReport ;
-import org.apache.jena.sparql.junit.ScriptTestSuiteFactory ;
-import org.apache.jena.sparql.junit.SimpleTestRunner ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.sparql.vocabulary.DOAP ;
 import org.apache.jena.sparql.vocabulary.FOAF ;
@@ -62,16 +58,10 @@ public class qtest extends CmdARQ
 {
     protected ArgDecl allDecl =    new ArgDecl(ArgDecl.NoValue, "all") ;
     protected ArgDecl wgDecl =     new ArgDecl(ArgDecl.NoValue, "wg", "dawg") ;
-    protected ArgDecl queryDecl =  new ArgDecl(ArgDecl.HasValue, "query") ;
-    protected ArgDecl dataDecl =   new ArgDecl(ArgDecl.HasValue, "data") ;
-    protected ArgDecl resultDecl = new ArgDecl(ArgDecl.HasValue, "result") ;
     protected ArgDecl earlDecl =   new ArgDecl(ArgDecl.NoValue, "earl") ;
 
     protected ModEngine modEngine = null ;
 
-    protected TestSuite suite = null;
-    protected boolean execAllTests = false;
-    protected boolean execDAWGTests = false;
     protected String testfile = null;
     protected boolean createEarlReport = false;
 
@@ -89,17 +79,6 @@ public class qtest extends CmdARQ
 
         modEngine = setModEngine() ;
         addModule(modEngine) ;
-
-        getUsage().startCategory("Tests (single query)") ;
-        add(queryDecl, "--query", "run the given query") ;
-        add(dataDecl, "--data", "data file to be queried") ;
-        add(resultDecl, "--result", "file that specifies the expected result") ;
-
-        getUsage().startCategory("Tests (built-in tests)") ;
-        add(allDecl, "--all", "run all built-in tests") ;
-        add(wgDecl, "--dawg", "run working group tests") ;
-
-        getUsage().startCategory("Tests (execute test manifest)") ;
         getUsage().addUsage("<manifest>", "run the tests specified in the given manifest") ;
         add(earlDecl, "--earl", "create EARL report") ;
     }
@@ -119,36 +98,10 @@ public class qtest extends CmdARQ
     protected void processModulesAndArgs()
     {
         super.processModulesAndArgs() ;
+        if ( ! hasPositional() )
+            throw new CmdException("No manifest file") ;
 
-        if ( contains(queryDecl) || contains(dataDecl) || contains(resultDecl) )
-        {
-            if ( ! ( contains(queryDecl) && contains(dataDecl) && contains(resultDecl) ) )
-                throw new CmdException("Must give query, data and result to run a single test") ;
-
-            String query = getValue(queryDecl) ;
-            String data = getValue(dataDecl) ;
-            String result = getValue(resultDecl) ;
-
-            suite = ScriptTestSuiteFactory.make(query, data, result) ;
-        }
-        else if ( contains(allDecl) )
-        {
-            execAllTests = true ;
-        }
-        else if ( contains(wgDecl) )
-        {
-            execDAWGTests = true ;
-        }
-        else
-        {
-            // OK - running a manifest
-
-            if ( ! hasPositional() )
-                throw new CmdException("No manifest file") ;
-
-            testfile = getPositionalArg(0) ;
-            createEarlReport = contains(earlDecl) ;
-        }
+        testfile = getPositionalArg(0) ;
     }
 
     @Override
@@ -157,19 +110,7 @@ public class qtest extends CmdARQ
         if ( cmdStrictMode )
             ARQ.setStrictMode() ;
 
-        if ( suite != null )
-            SimpleTestRunner.runAndReport(suite) ;
-        else if ( execAllTests )
-            allTests() ;
-        else if ( execDAWGTests )
-            dawgTests() ;
-        else
-        {
-            // running a manifest
-
-            NodeValue.VerboseWarnings = false ;
-            E_Function.WarnOnUnknownFunction = false ;
-
+        for ( String manifest : super.getPositional() ) {
             if ( createEarlReport )
                 oneManifestEarl(testfile) ;
             else
@@ -179,10 +120,7 @@ public class qtest extends CmdARQ
 
     static void oneManifest(String testManifest)
     {
-        TestSuite suite = ScriptTestSuiteFactory.make(testManifest) ;
-
-        //junit.textui.TestRunner.run(suite) ;
-        SimpleTestRunner.runAndReport(suite) ;
+        TextTestRunner.runOne(testManifest, SparqlTests::makeSPARQLTest) ;
     }
 
     static void oneManifestEarl(String testManifest)
@@ -195,7 +133,8 @@ public class qtest extends CmdARQ
 
         // Include information later.
         EarlReport report = new EarlReport(systemURI, name, version, homepage) ;
-        ScriptTestSuiteFactory.results = report ;
+        
+        TextTestRunner.runOne(report, testManifest, SparqlTests::makeSPARQLTest);
 
         Model model = report.getModel() ;
         model.setNsPrefix("dawg", TestManifest.getURI()) ;
@@ -235,39 +174,6 @@ public class qtest extends CmdARQ
         release.addProperty(DOAP.created, today) ;
         release.addProperty(DOAP.name, releaseName) ;      // Again
 
-        TestSuite suite = ScriptTestSuiteFactory.make(testManifest) ;
-        SimpleTestRunner.runSilent(suite) ;
-
-        ScriptTestSuiteFactory.results.getModel().write(System.out, "TTL") ;
-
-    }
-
-    static void allTests()
-    {
-        // This should load all the built in tests.
-        // Check to see if expected directories are present or not.
-
-        ensureDirExists("testing") ;
-        ensureDirExists("testing/ARQ") ;
-        ensureDirExists("testing/DAWG") ;
-
-        TestSuite ts = ARQTestSuite.suite() ;
-        junit.textui.TestRunner.run(ts) ;
-        //SimpleTestRunner.runAndReport(ts) ;
-    }
-
-    static void dawgTests()
-    {
-        System.err.println("DAWG tests not packaged up yet") ;
-    }
-
-    static void ensureDirExists(String dirname)
-    {
-        File f = new File(dirname) ;
-        if ( ! f.exists() || !f.isDirectory() )
-        {
-            System.err.println("Can't find required directory: '"+dirname+"'") ;
-            throw new TerminationException(8) ;
-        }
+        RDFDataMgr.write(System.out, model, Lang.TTL);
     }
  }

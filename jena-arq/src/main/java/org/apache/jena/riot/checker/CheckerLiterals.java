@@ -29,8 +29,6 @@ import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.util.SplitIRI;
 
 public class CheckerLiterals implements NodeChecker {
-    // A flag to enable the test suite to read bad data.
-    public static boolean WarnOnBadLiterals = true ;
 
     private ErrorHandler handler ;
 
@@ -64,9 +62,6 @@ public class CheckerLiterals implements NodeChecker {
 
     public static boolean checkLiteral(String lexicalForm, String lang, RDFDatatype datatype, ErrorHandler handler,
                                        long line, long col) {
-        if ( !WarnOnBadLiterals )
-            return true ;
-
         boolean hasLang = lang != null && !lang.equals("") ;
         if ( !hasLang ) {
             // Datatype check (and RDF 1.0 simple literals are always well formed)

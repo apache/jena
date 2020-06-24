@@ -67,6 +67,5 @@ public class BuildTestLib {
         String filename = loc.getPath(name);
         return new BinaryDataFileRandomAccess(filename);
     }
-
 }
 

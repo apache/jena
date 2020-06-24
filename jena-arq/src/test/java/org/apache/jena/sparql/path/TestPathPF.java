@@ -24,7 +24,7 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.junit.AssertExtra ;
 import org.apache.jena.graph.Factory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
@@ -157,6 +157,6 @@ public class TestPathPF
 
     private static void check(Iterator<Node> iter, List<Node> expected) {
         List<Node> x = Iter.toList(iter) ;
-        BaseTest.assertEqualsUnordered(expected,x) ;
+        AssertExtra.assertEqualsUnordered(expected,x) ;
     }
 }

@@ -18,12 +18,7 @@
 package org.apache.jena.query;
 
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.PathMatcher;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +26,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.jena.sparql.expr.E_Function;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,6 +66,23 @@ public class TestQueryCloningEssentials {
         this.query = query;
     }
 
+    private static boolean bVerboseWarnings;
+    private static boolean bWarnOnUnknownFunction;
+
+    //@BeforeClass -- call earlier
+    public static void beforeClass() {
+        bVerboseWarnings = NodeValue.VerboseWarnings;
+        bWarnOnUnknownFunction = E_Function.WarnOnUnknownFunction;
+        NodeValue.VerboseWarnings = false;
+        E_Function.WarnOnUnknownFunction = false;
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        NodeValue.VerboseWarnings = bVerboseWarnings;
+        E_Function.WarnOnUnknownFunction = bWarnOnUnknownFunction;
+    }
+    
     @Test
     public void runTest() {
         checkedClone(query);
@@ -76,9 +91,10 @@ public class TestQueryCloningEssentials {
     @Parameters(name = "Query.clone {0}")
     public static Collection<Object[]> generateTestParams() throws Exception
     {
+        beforeClass();
         List<String> exclusions = Arrays.asList(/* no exclusions as all test cases work */);
 
-        Path startPath = Paths.get("./testing").toAbsolutePath().normalize();
+        Path startPath = Paths.get("./testing/ARQ").toAbsolutePath().normalize();
         PathMatcher pathMatcher = startPath.getFileSystem().getPathMatcher("glob:**/*.rq");
 
         List<Object[]> testParams = new ArrayList<>();

@@ -18,13 +18,14 @@
 
 package riotcmd;
 
-import arq.cmdline.ModEngine ;
 import arq.cmdline.ModContext ;
+import arq.cmdline.ModEngine ;
 import jena.cmd.ArgDecl ;
 import jena.cmd.CmdException ;
 import jena.cmd.CmdGeneral ;
 import jena.cmd.TerminationException ;
-import junit.framework.TestSuite ;
+import org.apache.jena.arq.junit.TextTestRunner;
+import org.apache.jena.arq.junit.riot.RiotTests;
 import org.apache.jena.atlas.legacy.BaseTest2 ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
@@ -34,12 +35,11 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.langsuite.FactoryTestRiot ;
+import org.apache.jena.riot.SysRIOT;
 import org.apache.jena.riot.langsuite.VocabLangRDF ;
 import org.apache.jena.sparql.expr.E_Function ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.junit.EarlReport ;
-import org.apache.jena.sparql.junit.SimpleTestRunner ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.sparql.vocabulary.DOAP ;
 import org.apache.jena.sparql.vocabulary.FOAF ;
@@ -110,16 +110,15 @@ public class rdflangtest extends CmdGeneral
     @Override
     protected void exec()
     {
-        // Paradoxical naming - the boolean is a visibility flag.
         BaseTest2.setTestLogging() ;
         
-//        if ( contains(strictDecl) ) {
-//            // Always done in test setups.
-//            cmdStrictMode = true ;
-//            // Which will apply to reading the manifest!
-//            ARQ.setStrictMode() ;
-//            SysRIOT.setStrictMode(true) ;
-//        }
+        if ( contains(strictDecl) ) {
+            // Always done in test setups.
+            cmdStrictMode = true ;
+            // Which will apply to reading the manifest!
+            ARQ.setStrictMode() ;
+            SysRIOT.setStrictMode(true) ;
+        }
         
         NodeValue.VerboseWarnings = false ;
         E_Function.WarnOnUnknownFunction = false ;
@@ -138,10 +137,7 @@ public class rdflangtest extends CmdGeneral
 
     static void oneManifest(String testManifest)
     {
-        TestSuite suite = FactoryTestRiot.make(testManifest) ;
-
-        //junit.textui.TestRunner.run(suite) ;
-        SimpleTestRunner.runAndReport(suite) ;
+        TextTestRunner.runOne(testManifest, RiotTests::makeRIOTTest);
     }
     
     static String name =  "Apache Jena RIOT" ;
@@ -154,9 +150,8 @@ public class rdflangtest extends CmdGeneral
     static void oneManifestEarl(String testManifest)
     {
         EarlReport report = new EarlReport(systemURI, name, version, homepage) ;
-        FactoryTestRiot.report = report ;
-        TestSuite suite = FactoryTestRiot.make(testManifest) ;
-        SimpleTestRunner.runSilent(suite) ;
+        
+        TextTestRunner.runOne(report, testManifest, RiotTests::makeRIOTTest);
 
         Model model = report.getModel() ;
         model.setNsPrefix("rdft", VocabLangRDF.getURI()) ;

@@ -24,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.EntityTemplate;
-import org.apache.jena.atlas.junit.BaseTest;
+import org.apache.jena.atlas.junit.AssertExtra;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
@@ -117,7 +117,7 @@ public class TestDatasetOps extends AbstractFusekiTest {
 
         // Do manually so the test can validate the expected ContentType
         try (TypedInputStream in = HttpOp.execHttpGet(urlDataset, acceptheader)) {
-            BaseTest.assertEqualsIgnoreCase(contentTypeResponse, in.getContentType());
+            AssertExtra.assertEqualsIgnoreCase(contentTypeResponse, in.getContentType());
             Lang lang = RDFLanguages.contentTypeToLang(in.getContentType());
             DatasetGraph dsg = DatasetGraphFactory.create();
             StreamRDF dest = StreamRDFLib.dataset(dsg);

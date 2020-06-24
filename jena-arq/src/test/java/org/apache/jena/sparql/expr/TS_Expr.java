@@ -18,6 +18,7 @@
 
 package org.apache.jena.sparql.expr;
 
+import org.apache.jena.sparql.expr.nodevalue.TestNodeValueSortKey;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -45,6 +46,8 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestExprTransform.class
     , TestCustomAggregates.class
     , TestStatisticsAggregates.class
+    , TestFunctionDynamic.class
+    , TestNodeValueSortKey.class
 })
 
 public class TS_Expr

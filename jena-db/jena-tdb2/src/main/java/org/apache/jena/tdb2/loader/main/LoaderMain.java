@@ -81,8 +81,8 @@ import org.apache.jena.tdb2.sys.TDBInternal;
  * which uses on thread for both parsing and node table
  * {@code DataToTuplesInline -> Indexer+}.
  * </p><p>
- * The third alternative {@link InputStage#PARSE_NODE}, provided by {@code executeDataOneThread},
- * which do doesa all input stage operations on the calling parser thread.
+ * The third alternative {@link InputStage#PARSE_NODE_INDEX}, provided by {@code executeDataOneThread},
+ * which does do all input stage operations on the calling parser thread.
  * </p>
  * <p><b>Index Phase</b></p>
  * <p>

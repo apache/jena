@@ -18,8 +18,6 @@
 
 package org.apache.jena.atlas.data;
 
-import junit.framework.JUnit4TestAdapter ;
-
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.junit.runners.Suite.SuiteClasses ;
@@ -34,9 +32,4 @@ import org.junit.runners.Suite.SuiteClasses ;
 })
 
 public class TS_Data
-{
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TS_Data.class) ;
-    }
-}
+{}

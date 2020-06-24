@@ -39,7 +39,8 @@ import org.junit.Test;
 
 public class TestJsonLDReader {
 
-    @Test public final void simpleReadTest() {
+    @Test
+    public final void simpleReadTest() {
         try {
             String jsonld = someSchemaDorOrgJsonld();
             Model m = ModelFactory.createDefaultModel();

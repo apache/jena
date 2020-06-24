@@ -113,6 +113,7 @@
         <configuration>
           <includes>
             <include>**/TS_*.java</include>
+            <include>**/Scripts_*.java</include>
           </includes>
         </configuration>
       </plugin>
