@@ -105,7 +105,7 @@ public class TokenizerJSON implements Tokenizer
     public void remove()
     { throw new UnsupportedOperationException() ; }
 
-    // ---- Machinary
+    // ---- Machinery
     
     // ""-string, ''-string, *X, 
     // various single characters . , : ; 

@@ -135,7 +135,7 @@ public class SystemTDB
         propertyFileName = x;
     }
 
-    public static final boolean is64bitSystem = determineIf64Bit();
+    public static final boolean is64bitSystem = Sys.is64bitSystem;
 
     private static Properties properties = readPropertiesFile();
 
@@ -312,40 +312,6 @@ public class SystemTDB
             IO.exception(ex);
         }
         return p;
-    }
-
-    // --------
-
-    public static final boolean isWindows = determineIfWindows();	// Memory mapped files behave differently.
-
-    //Or look in File.listRoots.
-    //Alternative method:
-    //  http://stackoverflow.com/questions/1293533/name-of-the-operating-system-in-java-not-os-name
-
-    private static boolean determineIfWindows() {
-    	String s = System.getProperty("os.name");
-    	if ( s == null )
-    		return false;
-    	return s.startsWith("Windows ");
-	}
-
-    private static boolean determineIf64Bit() {
-        String s = System.getProperty("sun.arch.data.model");
-        if ( s != null ) {
-            boolean b = s.equals("64");
-            TDB2.logInfo.debug("System architecture: " + (b ? "64 bit" : "32 bit"));
-            return b;
-        }
-        // Not a SUN VM
-        s = System.getProperty("java.vm.info");
-        if ( s == null ) {
-            log.warn("Can't determine the data model");
-            return false;
-        }
-        log.debug("Can't determine the data model from 'sun.arch.data.model' - using java.vm.info");
-        boolean b = s.contains("64");
-        TDB2.logInfo.debug("System architecture: (from java.vm.info) " + (b ? "64 bit" : "32 bit"));
-        return b;
     }
 
     // ---- File mode

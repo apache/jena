@@ -375,11 +375,10 @@ public class RDFParser {
         }
         
         TypedInputStream in;
+        // Need more control than LocatorURL provides to get the Accept header in and the HttpCLient.
+        // So map now.
         urlStr = streamManager.mapURI(urlStr);
         if ( urlStr.startsWith("http://") || urlStr.startsWith("https://") ) {
-            // Need more control than LocatorURL provides. We could use it for the
-            // httpClient == null case.
-            //  
             // HttpOp.execHttpGet(,acceptHeader,) overrides the HttpClient default setting.
             // 
             // If there is an explicitly set HttpClient use that as given, and do not override
@@ -388,8 +387,9 @@ public class RDFParser {
             String acceptHeader = 
                 ( httpClient == null ) ? WebContent.defaultRDFAcceptHeader : null; 
             in = HttpOp.execHttpGet(urlStr, acceptHeader, httpClient, null);
-        } else { 
-            in = streamManager.open(urlStr);
+        } else {
+            // Already mapped.
+            in = streamManager.openNoMapOrNull(urlStr);
         }
         if ( in == null )
             throw new RiotNotFoundException("Not found: "+urlStr);

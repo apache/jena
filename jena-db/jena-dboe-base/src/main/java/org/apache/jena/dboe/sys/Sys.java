@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 /** Low level environment */
 public class Sys
 {
-    static final Logger log = LoggerFactory.getLogger("Sys");
+    static final Logger log = LoggerFactory.getLogger("org.apache.jena.dboe.Sys");
 
     /** System log - use for general messages (a few) and warnings.
      *  Generally, do not log events unless you want every user to see them every time.
@@ -39,9 +39,9 @@ public class Sys
      */
 
     /** General system log */
-    public static final Logger syslog = LoggerFactory.getLogger("System");
+    public static final Logger syslog = LoggerFactory.getLogger("org.apache.jena.dboe.System");
     /** Send warnings and error */
-    public static final Logger errlog = LoggerFactory.getLogger("System");
+    public static final Logger errlog = LoggerFactory.getLogger("org.apache.jena.dboe.System");
 
     /** Size, in bytes, of a Java long */
     public static final int SizeOfLong              = Long.BYTES; // Long.SIZE/Byte.SIZE ;

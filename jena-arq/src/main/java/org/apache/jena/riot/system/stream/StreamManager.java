@@ -132,6 +132,11 @@ public class StreamManager {
         return openNoMapOrNull(uri) ;
     }
 
+    /** Test whether a mapping exists */
+    public boolean hasMapping(String filenameOrURI) {
+        return mapper.containsMapping(filenameOrURI);
+    }
+
     /** Apply the mapping of a filename or URI */
     public String mapURI(String filenameOrURI) {
         if ( mapper == null )

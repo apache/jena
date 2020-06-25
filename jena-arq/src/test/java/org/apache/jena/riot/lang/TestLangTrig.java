@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.ErrorHandlerTestLib ;
-import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
+import org.apache.jena.riot.ErrorHandlerTestLib.ExError;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -67,13 +67,13 @@ public class TestLangTrig
     // Also need to check that the RiotExpection is called in normal use. 
     
     // Bad terms.
-    @Test (expected=ExFatal.class)
+    @Test (expected=ExError.class)
     public void trig_20()     { parse("@prefix ex:  <bad iri> .", "{ ex:s ex:p 123 }") ; }
     
-    @Test (expected=ExFatal.class)
+    @Test (expected=ExError.class)
     public void trig_21()     { parse("@prefix ex:  <http://example/> .", "{ ex:s <http://example/broken p> 123 }") ; }
     
-    @Test (expected=ExFatal.class)
+    @Test (expected=ExError.class)
     public void trig_22()     { parse("{ <x> <p> 'number'^^<bad uri> }") ; }
 
     @Test (expected=ExWarning.class)

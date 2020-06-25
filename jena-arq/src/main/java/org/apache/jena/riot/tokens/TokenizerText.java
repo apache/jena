@@ -22,6 +22,7 @@ import static org.apache.jena.atlas.lib.Chars.*;
 import static org.apache.jena.riot.system.RiotChars.*;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import org.apache.jena.atlas.AtlasException;
 import org.apache.jena.atlas.io.IO;
@@ -33,53 +34,40 @@ import org.apache.jena.riot.system.RiotChars;
 import org.apache.jena.sparql.ARQInternalErrorException;
 
 /** Tokenizer for all sorts of things RDF-ish */
-
 public final class TokenizerText implements Tokenizer
 {
     // Drop through to final general symbol/keyword reader, including <=, !=
     // Care with <=
     // Policy driven for CURIES?
 
-    // Various allow/deny options (via checker?)
-
-    // Space for CURIEs, stricter Turtle QNames, sane Turtle (i.e. leading digits in local part).
     public static final int CTRL_CHAR = CH_STAR;
 
-    public static boolean Checking = false;
+    // The code has the call points for checking tokens but it is generally better to
+    // do the check later in the parsing process. In case a need arises, the code
+    // remains, all compiled away by "if ( false )" (javac does not generate any
+    // bytecodes and even if it it did, JIT will remove dead branches.
+    private static final boolean Checking = false;
 
     private Token token = null;
     private final StringBuilder stringBuilder = new StringBuilder(200);
     private final PeekReader reader;
-    private final boolean lineMode;        // Whether whitespace includes or excludes NL (in its various forms).
+    // Whether whitespace between tokens includes newlines (in various forms).
+    private final boolean lineMode;        
     private boolean finished = false;
     private TokenChecker checker = null;
 
-    private static class ErrorHandlerTokenizer implements ErrorHandler {
-        @Override public void warning(String message, long line, long col) {
-            // Warning/continue.
-            //ErrorHandlerFactory.errorHandlerStd.warning(message, line, col);
-            throw new RiotParseException(message, line, col);
-        }
-
-        @Override public void error(String message, long line, long col) {
-            throw new RiotParseException(message, line, col);
-        }
-
-        @Override public void fatal(String message, long line, long col) {
-            throw new RiotParseException(message, line, col);
-        }
-    };
     // The code assumes that errors throw exception and so stop parsing.
-    private static final ErrorHandler defaultErrorHandler = new ErrorHandlerTokenizer();
-    private ErrorHandler errorHandler = defaultErrorHandler;
+    private final ErrorHandler errorHandler;
 
-    /*package*/ TokenizerText(PeekReader reader) {
-        this(reader, false);
+    public static TokenizeTextBuilder create() { return new TokenizeTextBuilder() ; } 
+    
+    /*package*/ static TokenizerText internal(PeekReader reader, boolean lineMode, ErrorHandler errorHandler) {
+        return new TokenizerText(reader, lineMode, errorHandler);
     }
-
-    /*package*/ TokenizerText(PeekReader reader, boolean lineMode) {
-        this.reader = reader;
+    private TokenizerText(PeekReader reader, boolean lineMode, ErrorHandler errorHandler) {
+        this.reader = Objects.requireNonNull(reader, "PeekReader");
         this.lineMode = lineMode;
+        this.errorHandler = Objects.requireNonNull(errorHandler, "ErrorHandler");
     }
 
     @Override
@@ -114,7 +102,6 @@ public final class TokenizerText implements Tokenizer
         }
     }
 
-
     @Override
     public final boolean eof() {
         return !hasNext();
@@ -140,28 +127,28 @@ public final class TokenizerText implements Tokenizer
     public void remove()
     { throw new UnsupportedOperationException(); }
 
-    public TokenChecker getChecker() {
-        return checker;
-    }
-
-    public void setChecker(TokenChecker checker) {
-        this.checker = checker;
-    }
-
-    public ErrorHandler getErrorHandler() {
-        return errorHandler;
-    }
-
-    public void setErrorHandler(ErrorHandler handler) {
-        this.errorHandler = handler;
-    }
+//    private TokenChecker getChecker() {
+//        return checker;
+//    }
+//
+//    private void setChecker(TokenChecker checker) {
+//        this.checker = checker;
+//    }
+//
+//    private ErrorHandler getErrorHandler() {
+//        return errorHandler;
+//    }
+//
+//    private void setErrorHandler(ErrorHandler handler) {
+//        this.errorHandler = handler;
+//    }
 
     @Override
     public void close() {
         IO.close(reader);
     }
 
-    // ---- Machinary
+    // ---- Machinery
 
     private void skip() {
         int ch = EOF;
@@ -217,7 +204,7 @@ public final class TokenizerText implements Tokenizer
                 //token.setImage("<<");
                 return token;
             }
-            error("Internal error - parsed '"+chPeek+"' after '<'");
+            fatal("Internal error - parsed '"+chPeek+"' after '<'");
         }
 
         // ---- Literal
@@ -288,7 +275,7 @@ public final class TokenizerText implements Tokenizer
 
                 Token subToken = parseToken();
                 if ( !subToken.isIRI() )
-                    error("Datatype URI required after ^^ - URI or prefixed name expected");
+                    fatal("Datatype URI required after ^^ - URI or prefixed name expected");
 
                 mainToken.setSubToken2(subToken);
                 mainToken.setType(TokenType.LITERAL_DT);
@@ -385,14 +372,14 @@ public final class TokenizerText implements Tokenizer
             case CH_VBAR:       reader.readChar(); token.setType(TokenType.VBAR);      /*token.setImage(CH_VBAR);*/ return token;
             case CH_AMPHERSAND: reader.readChar(); token.setType(TokenType.AMPHERSAND);/*token.setImage(CH_AMPHERSAND);*/ return token;
             // Specials (if blank node processing off)
-            //case CH_COLON:      reader.readChar(); token.setType(TokenType.COLON); return token;
+            //case CH_COLON:      reader.readChar(); token.setType(TokenType.COLON); /*token.setImage(COLON);*/return token;
 
             // Done above with blank nodes.
-            //case CH_UNDERSCORE: reader.readChar(); token.setType(TokenType.UNDERSCORE); /*token.setImage(CH_UNDERSCORE);*/ return token;
-            case CH_LT:         reader.readChar(); token.setType(TokenType.LT); /*token.setImage(CH_LT);*/ return token;
-            case CH_STAR:       reader.readChar(); token.setType(TokenType.STAR); /*token.setImage(CH_STAR);*/ return token;
+            //case CH_UNDERSCORE: reader.readChar(); token.setType(TokenType.UNDERSCORE);/*token.setImage(CH_UNDERSCORE);*/ return token;
+            case CH_LT:         reader.readChar(); token.setType(TokenType.LT);        /*token.setImage(CH_LT);*/ return token;
+            case CH_STAR:       reader.readChar(); token.setType(TokenType.STAR);      /*token.setImage(CH_STAR);*/ return token;
 
-            // XXX Multi character symbols
+            // XXX Multi-character symbols
             // Two character tokens && || GE >= , LE <=
             //TokenType.LE
             //TokenType.GE
@@ -483,11 +470,11 @@ public final class TokenizerText implements Tokenizer
             int ch = reader.readChar();
             switch(ch) {
                 case EOF:
-                    error("Broken IRI (End of file)"); return null;
+                    fatal("Broken IRI (End of file)"); return null;
                 case NL:
-                    error("Broken IRI (newline): %s", stringBuilder.toString()); return null;
+                    fatal("Broken IRI (newline): %s", stringBuilder.toString()); return null;
                 case CR:
-                    error("Broken IRI (CR): %s", stringBuilder.toString()); return null;
+                    fatal("Broken IRI (CR): %s", stringBuilder.toString()); return null;
                 case CH_GT:
                     // Done!
                     return stringBuilder.toString();
@@ -503,8 +490,8 @@ public final class TokenizerText implements Tokenizer
                     // Bad characters will lead to trouble elsewhere.
                     break;
                 case CH_LT:
-                    // Probably a corrupt file so not a warning.
-                    error("Bad character in IRI (bad character: '<'): <%s[<]...>", stringBuilder.toString()); return null;
+                    // Probably a corrupt file so treat as fatal.
+                    fatal("Bad character in IRI (bad character: '<'): <%s[<]...>", stringBuilder.toString()); return null;
                 case TAB:
                     error("Bad character in IRI (Tab character): <%s[tab]...>", stringBuilder.toString()); return null;
                 case '{': case '}': case '"': case '|': case '^': case '`' :
@@ -513,27 +500,55 @@ public final class TokenizerText implements Tokenizer
                     break;
                 case SPC:
                     if ( ! AllowSpacesInIRI )
+                        error("Bad character in IRI (space): <%s[space]...>", stringBuilder.toString());
+                    else
                         warning("Bad character in IRI (space): <%s[space]...>", stringBuilder.toString());
                     break;
                 default:
                     if ( ch <= 0x19 )
                         warning("Illegal character in IRI (control char 0x%02X): <%s[0x%02X]...>", ch, stringBuilder.toString(), ch);
+                    
             }
+            // JENA-1924: jena-iri does not catch this.
+            if ( ! VeryVeryLaxIRI && ch >= 0xA0 && ! isUcsChar(ch) )
+                warning("Illegal character in IRI (Not a ucschar: 0x%04X): <%s[U+%04X]...>", ch, stringBuilder.toString(), ch);
             insertCodepoint(stringBuilder, ch);
         }
     }
 
+    private static boolean isUcsChar(int ch) {
+        // RFC 3987
+        // ucschar    = %xA0-D7FF / %xF900-FDCF / %xFDF0-FFEF
+        //            / %x10000-1FFFD / %x20000-2FFFD / %x30000-3FFFD
+        //            / %x40000-4FFFD / %x50000-5FFFD / %x60000-6FFFD
+        //            / %x70000-7FFFD / %x80000-8FFFD / %x90000-9FFFD
+        //            / %xA0000-AFFFD / %xB0000-BFFFD / %xC0000-CFFFD
+        //            / %xD0000-DFFFD / %xE1000-EFFFD
+        boolean b = range(ch, 0xA0, 0xD7FF)  || range(ch, 0xF900, 0xFDCF)  || range(ch, 0xFDF0, 0xFFEF);
+        if ( b )
+            return true;
+        if ( ch < 0x1000 )
+            return false;
+        // 32 bit checks.
+        return
+            range(ch, 0x10000, 0x1FFFD) || range(ch, 0x20000, 0x2FFFD) || range(ch, 0x30000, 0x3FFFD) ||
+            range(ch, 0x40000, 0x4FFFD) || range(ch, 0x50000, 0x5FFFD) || range(ch, 0x60000, 0x6FFFD) ||
+            range(ch, 0x70000, 0x7FFFD) || range(ch, 0x80000, 0x8FFFD) || range(ch, 0x90000, 0x9FFFD) ||
+            range(ch, 0xA0000, 0xAFFFD) || range(ch, 0xB0000, 0xBFFFD) || range(ch, 0xC0000, 0xCFFFD) ||
+            range(ch, 0xD0000, 0xDFFFD) || range(ch, 0xE1000, 0xEFFFD);
+    }
+    
     // Read a unicode escape : does not allow \\ bypass
     private final int readUnicodeEscape() {
         int ch = reader.readChar();
         if ( ch == EOF )
-            error("Broken escape sequence");
+            fatal("Broken escape sequence");
 
         switch (ch) {
             case 'u': return readUnicode4Escape();
             case 'U': return readUnicode8Escape();
             default:
-                error("Illegal unicode escape sequence value: \\%c (0x%02X)", ch, ch);
+                fatal("Illegal unicode escape sequence value: \\%c (0x%02X)", ch, ch);
         }
         return 0;
     }
@@ -556,7 +571,7 @@ public final class TokenizerText implements Tokenizer
         // If we made no progress, nothing found, not even a keyword -- it's an
         // error.
         if ( posn == reader.getPosition() )
-            error("Failed to find a prefix name or keyword: %c(%d;0x%04X)", ch, ch, ch);
+            fatal("Failed to find a prefix name or keyword: %c(%d;0x%04X)", ch, ch, ch);
 
         if ( Checking )
             checkKeyword(token.getImage());
@@ -681,13 +696,13 @@ public final class TokenizerText implements Tokenizer
 
             ch = reader.peekChar();
             if ( ! isHexChar(ch) )
-                error("Not a hex character: '%c'",ch);
+                fatal("Not a hex character: '%c'",ch);
             stringBuilder.append((char)ch);
             reader.readChar();
 
             ch = reader.peekChar();
             if ( ! isHexChar(ch) )
-                error("Not a hex character: '%c'",ch);
+                fatal("Not a hex character: '%c'",ch);
             stringBuilder.append((char)ch);
             reader.readChar();
         }
@@ -713,11 +728,11 @@ public final class TokenizerText implements Tokenizer
             int ch = reader.readChar();
             if ( ch == EOF ) {
                 // if ( endNL ) return stringBuilder.toString();
-                error("Broken token: " + stringBuilder.toString(), y, x);
+                fatal("Broken token: " + stringBuilder.toString(), y, x);
             }
 
             if ( ch == NL )
-                error("Broken token (newline): " + stringBuilder.toString(), y, x);
+                fatal("Broken token (newline): " + stringBuilder.toString(), y, x);
 
             if ( ch == endCh ) {
                 return stringBuilder.toString();
@@ -736,7 +751,7 @@ public final class TokenizerText implements Tokenizer
             if ( ch == EOF ) {
                 if ( endNL )
                     return stringBuilder.toString();
-                error("Broken long string");
+                fatal("Broken long string");
             }
 
             if ( ch == quoteChar ) {
@@ -828,14 +843,14 @@ public final class TokenizerText implements Tokenizer
         {
             int ch = reader.peekChar();
             if ( ch == EOF )
-                error("Blank node label missing (EOF found)");
+                fatal("Blank node label missing (EOF found)");
             if ( isWhitespace(ch) )
-                error("Blank node label missing");
+                fatal("Blank node label missing");
             // if ( ! isAlpha(ch) && ch != '_' )
             // Not strict
 
             if ( !RiotChars.isPNChars_U_N(ch) )
-                error("Blank node label does not start with alphabetic or _ :" + (char)ch);
+                fatal("Blank node label does not start with alphabetic or _ :" + (char)ch);
             reader.readChar();
             stringBuilder.append((char)ch);
         }
@@ -936,7 +951,7 @@ public final class TokenizerText implements Tokenizer
         if ( x == 0 && !isDecimal )
             // Possible a tokenizer error - should not have entered readNumber
             // in the first place.
-            error("Unrecognized as number");
+            fatal("Unrecognized as number");
 
         if ( exponent(stringBuilder) ) {
             isDouble = true;
@@ -975,7 +990,7 @@ public final class TokenizerText implements Tokenizer
             x++;
         }
         if ( x == 0 )
-            error("No hex characters after " + sb.toString());
+            fatal("No hex characters after " + sb.toString());
     }
 
     private int readDigits(StringBuilder buffer) {
@@ -1033,7 +1048,7 @@ public final class TokenizerText implements Tokenizer
         readPossibleSign(sb);
         int x = readDigits(sb);
         if ( x == 0 )
-            error("Malformed double: " + sb);
+            fatal("Malformed double: " + sb);
         return true;
     }
 
@@ -1041,7 +1056,7 @@ public final class TokenizerText implements Tokenizer
         stringBuilder.setLength(0);
         a2z(stringBuilder);
         if ( stringBuilder.length() == 0 )
-            error("Bad language tag");
+            fatal("Bad language tag");
         for (;;) {
             int ch = reader.peekChar();
             if ( ch == '-' ) {
@@ -1050,7 +1065,7 @@ public final class TokenizerText implements Tokenizer
                 int x = stringBuilder.length();
                 a2zN(stringBuilder);
                 if ( stringBuilder.length() == x )
-                    error("Bad language tag");
+                    fatal("Bad language tag");
             } else
                 break;
         }
@@ -1087,7 +1102,7 @@ public final class TokenizerText implements Tokenizer
             // Convert to UTF-16. Note that the rest of any system this is used
             // in must also respect codepoints and surrogate pairs.
             if ( !Character.isDefined(ch) && !Character.isSupplementaryCodePoint(ch) )
-                error("Illegal codepoint: 0x%04X", ch);
+                fatal("Illegal codepoint: 0x%04X", ch);
             char[] chars = Character.toChars(ch);
             buffer.append(chars);
         }
@@ -1165,7 +1180,7 @@ public final class TokenizerText implements Tokenizer
     private final int readLiteralEscape() {
         int c = reader.readChar();
         if ( c == EOF )
-            error("Escape sequence not completed");
+            fatal("Escape sequence not completed");
 
         switch (c) {
             case 'n':   return NL;
@@ -1179,7 +1194,7 @@ public final class TokenizerText implements Tokenizer
             case 'u':   return readUnicode4Escape();
             case 'U':   return readUnicode8Escape();
             default:
-                error("Illegal escape sequence value: %c (0x%02X)", c, c);
+                fatal("Illegal escape sequence value: %c (0x%02X)", c, c);
                 return 0;
         }
     }
@@ -1191,7 +1206,7 @@ public final class TokenizerText implements Tokenizer
 
         int c = reader.readChar();
         if ( c == EOF )
-            error("Escape sequence not completed");
+            fatal("Escape sequence not completed");
 
         switch (c) {
             case '_': case '~': case '.':  case '-':  case '!':  case '$':  case '&':
@@ -1200,7 +1215,7 @@ public final class TokenizerText implements Tokenizer
             case '=':  case '/':  case '?':  case '#':  case '@':  case '%':
                 return c;
             default:
-                error("illegal character escape value: \\%c", c);
+                fatal("illegal character escape value: \\%c", c);
                 return 0;
         }
     }
@@ -1211,7 +1226,7 @@ public final class TokenizerText implements Tokenizer
     private final int readUnicode8Escape() {
         int ch8 = readHexSequence(8);
         if ( ch8 > Character.MAX_CODE_POINT )
-            error("Illegal code point in \\U sequence value: 0x%08X", ch8);
+            fatal("Illegal code point in \\U sequence value: 0x%08X", ch8);
         return ch8;
     }
 
@@ -1229,12 +1244,12 @@ public final class TokenizerText implements Tokenizer
     private final int readHexChar() {
         int ch = reader.readChar();
         if ( ch == EOF )
-            error("Not a hexadecimal character (end of file)");
+            fatal("Not a hexadecimal character (end of file)");
 
         int x = valHexChar(ch);
         if ( x != -1 )
             return x;
-        error("Not a hexadecimal character: " + (char)ch);
+        fatal("Not a hexadecimal character: " + (char)ch);
         return -1;
     }
 
@@ -1242,12 +1257,12 @@ public final class TokenizerText implements Tokenizer
         for (int i = 0; i < str.length(); i++) {
             char want = str.charAt(i);
             if ( reader.eof() ) {
-                error("End of input during expected string: " + str);
+                fatal("End of input during expected string: " + str);
                 return false;
             }
             int inChar = reader.peekChar();
             if ( inChar != want ) {
-                error("expected \"" + str + "\"");
+                fatal("expected \"" + str + "\"");
                 return false;
             }
             reader.readChar();
@@ -1255,17 +1270,28 @@ public final class TokenizerText implements Tokenizer
         return true;
     }
 
+    /** Warning - can continue. */ 
     private void warning(String message, Object... args) {
         String msg = String.format(message, args);
         errorHandler.warning(msg, reader.getLineNum(), reader.getColNum());
-        //exception(message, args);
     }
 
+    /** Error - at the tokenizer level, it can continue (with some junk) but it is a serious error and the   
+     * caller probably should treat as an error and stop.
+     * @param message
+     * @param args
+     */
     private void error(String message, Object... args) {
+        String msg = String.format(message, args);
+        errorHandler.error(msg, reader.getLineNum(), reader.getColNum());
+    }
+
+    /** Structural error - unrecoverable - but reported as ERROR (FATAL can imply system fault) */
+    private void fatal(String message, Object... args) {
         String msg = String.format(message, args);
         long line = reader.getLineNum();
         long col = reader.getColNum();
-        errorHandler.error(msg, line, col);
+        errorHandler.fatal(msg, line, col);
         // We require that errors cause the tokenizer to stop so in case the
         // provided error handler does not, we throw an exception.
         throw new RiotParseException(message, line, col);
