@@ -105,7 +105,7 @@ public class FileManagerImpl implements FileManager
     
     /** Create an uninitialized FileManager */
 
-    protected FileManagerImpl() {}
+    public FileManagerImpl() {}
     
     protected static FileManager makeStd() {
         FileManagerImpl fm = new FileManagerImpl();
