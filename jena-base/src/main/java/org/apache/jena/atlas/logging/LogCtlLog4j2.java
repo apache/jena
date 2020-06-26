@@ -37,7 +37,7 @@ import org.apache.logging.log4j.core.config.properties.PropertiesConfigurationFa
  * <br/>
  * This class is split out from {@link LogCtl} to decouple the class loading dependencies.
  */
-public class LogCmd {
+public class LogCtlLog4j2 {
     /**
      * Reset logging (log4j2). log4j2.properties format.
      */
@@ -75,14 +75,14 @@ public class LogCmd {
         , "filters = threshold"
         , ""
         , "filter.threshold.type = ThresholdFilter"
-        , "filter.threshold.level = INFO"
+        , "filter.threshold.level = ALL"
 
         , "appender.console.type = Console"
         , "appender.console.name = OUT"
         , "appender.console.target = SYSTEM_OUT"
         , "appender.console.layout.type = PatternLayout"
-        , "appender.console.layout.pattern = %d{HH:mm:ss} %-5p %-10c{1} :: %m%n"
-        , "#appender.console.layout.pattern = [%d{yyyy-MM-dd HH:mm:ss}] %-5p %-10c{1} :: %m%n"
+        , "appender.console.layout.pattern = %d{HH:mm:ss} %-5p %-15c{1} :: %m%n"
+        , "#appender.console.layout.pattern = [%d{yyyy-MM-dd HH:mm:ss}] %-5p %-15c{1} :: %m%n"
 
         , "rootLogger.level                  = INFO"
         , "rootLogger.appenderRef.stdout.ref = OUT"
@@ -97,8 +97,7 @@ public class LogCmd {
         , "logger.riot.level = INFO"
         );
     // @formatter:on
-    
-    
+
     // @formatter:off
     /** A format for commands using stderr. */
     public static String log4j2setupCmd = StrUtils.strjoinNL
@@ -108,14 +107,14 @@ public class LogCmd {
         , "filters = threshold"
         , ""
         , "filter.threshold.type = ThresholdFilter"
-        , "filter.threshold.level = INFO"
+        , "filter.threshold.level = ALL"
 
         , "appender.console.type = Console"
         , "appender.console.name = OUT"
         , "appender.console.target = SYSTEM_ERR"
         , "appender.console.layout.type = PatternLayout"
-        , "appender.console.layout.pattern = %d{HH:mm:ss} %-5p %-10c{1} :: %m%n"
-        , "#appender.console.layout.pattern = [%d{yyyy-MM-dd HH:mm:ss}] %-5p %-10c{1} ::: %m%n"
+        , "appender.console.layout.pattern = %d{HH:mm:ss} %-5p %-15c{1} :: %m%n"
+        , "#appender.console.layout.pattern = [%d{yyyy-MM-dd HH:mm:ss}] %-5p %-15c{1} ::: %m%n"
 
         , "rootLogger.level                  = INFO"
         , "rootLogger.appenderRef.stdout.ref = OUT"
@@ -130,6 +129,4 @@ public class LogCmd {
         , "logger.riot.level = INFO"
         );
     // @formatter:on
-
 }
-

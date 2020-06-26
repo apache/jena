@@ -40,6 +40,7 @@ public class LogCtl {
     private static final boolean hasLog4j1 = hasClass("org.slf4j.impl.Log4jLoggerFactory");
     private static final boolean hasJUL    = hasClass("org.slf4j.impl.JDK14LoggerFactory");
     // JUL always present but needs slf4j adapter.
+    // Put per-logging system code in separate classes to avoid needing them on the classpath.
 
     private static boolean hasClass(String className) {
         try {
@@ -54,8 +55,8 @@ public class LogCtl {
         setLevel(logger.getName(), level);
     }
 
-    static public void setLevel(Class<? > logger, String level) {
-        setLevel(logger.getName(), level);
+    static public void setLevel(Class<? > cls, String level) {
+        setLevel(cls.getName(), level);
     }
 
     static public void setLevel(Logger logger, String level) {
@@ -141,8 +142,6 @@ public class LogCtl {
         else if ( levelName.equalsIgnoreCase("OFF") )
             level = org.apache.logging.log4j.Level.OFF;
         try {
-            // "try" : If log4j2 core is not on the path (everything else is
-            // log4j-api).
             if ( !logger.equals("") )
                 org.apache.logging.log4j.core.config.Configurator.setLevel(logger, level);
             else
@@ -316,7 +315,7 @@ public class LogCtl {
             if ( isSetLog4j2property() )
                 return;
             // Nothing found - built-in default.
-            LogCmd.resetLogging(LogCmd.log4j2setup);
+            LogCtlLog4j2.resetLogging(LogCtlLog4j2.log4j2setup);
         }
     }
 
@@ -347,7 +346,7 @@ public class LogCtl {
     public static void setJavaLogging() {
         if ( System.getProperty(JUL_PROPERTY) != null )
             return;
-        LogJUL.resetJavaLogging();
+        LogCtlJUL.resetJavaLogging();
     }
 
     /**
@@ -358,7 +357,7 @@ public class LogCtl {
         try {
             InputStream details = new FileInputStream(filename);
             details = new BufferedInputStream(details);
-            LogJUL.readJavaLoggingConfiguration(details);
+            LogCtlJUL.readJavaLoggingConfiguration(details);
         } catch (Exception ex) {
             throw new AtlasException(ex);
         }

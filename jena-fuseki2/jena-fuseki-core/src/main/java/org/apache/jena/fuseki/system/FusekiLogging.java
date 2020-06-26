@@ -18,15 +18,21 @@
 
 package org.apache.jena.fuseki.system;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.atlas.logging.LogCmd;
+import org.apache.jena.atlas.logging.LogCtlLog4j2;
 import org.apache.jena.fuseki.Fuseki;
-import org.apache.logging.log4j.core.config.*;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.properties.PropertiesConfigurationFactory;
 
 public class FusekiLogging
@@ -208,7 +214,7 @@ public class FusekiLogging
             , "filters = threshold"
             , ""
             , "filter.threshold.type = ThresholdFilter"
-            , "filter.threshold.level = INFO"
+            , "filter.threshold.level = ALL"
             , ""
             , "appender.console.type = Console"
             , "appender.console.name = OUT"
@@ -271,7 +277,7 @@ public class FusekiLogging
     }
 
     public static void resetLogging(String configString) {
-        LogCmd.resetLogging(configString);
+        LogCtlLog4j2.resetLogging(configString);
     }
 }
 

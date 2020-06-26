@@ -71,7 +71,6 @@ public class TestJenaSimple {
         org.apache.jena.sparql.core.DatasetGraph jenaDatasetGraph = JenaCommonsRDF.toJena(crdf_dataset);
 
         String str = org.apache.jena.riot.RDFWriter.create().source(jenaDatasetGraph).lang(Lang.TRIG).asString();
-        System.out.println(str);
         assertTrue(str.contains("123"));
         // No prefixes
         assertTrue(str.contains("http://example/g"));

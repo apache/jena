@@ -93,7 +93,7 @@
             Multiple Log4j2Plugins.dat
             jena-fuseki-server only pick up one Log4j2Plugins.dat (from log4j-core-2.13.2)
             No need to run the transformer to merge them.
-            If it becomes necssary, see: https://github.com/edwgiz/maven-shaded-log4j-transformer
+            If it becomes necessary, see: https://github.com/edwgiz/maven-shaded-log4j-transformer
           -->
 
           <transformers>

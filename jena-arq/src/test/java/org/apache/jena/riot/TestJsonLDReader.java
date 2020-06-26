@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -33,6 +32,7 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Test;
@@ -44,9 +44,11 @@ public class TestJsonLDReader {
         try {
             String jsonld = someSchemaDorOrgJsonld();
             Model m = ModelFactory.createDefaultModel();
-            try (StringReader reader = new StringReader(jsonld)) {
-                m.read(reader, null, "JSON-LD");              
-            }
+            RDFParser.create()
+                .errorHandler(ErrorHandlerFactory.errorHandlerNoLogging)
+                .fromString(jsonld)
+                .lang(Lang.JSONLD)
+                .parse(m);
             assertJohnDoeIsOK(m);
         } catch (RiotException e) {
             // cf. org.apache.jena.riot.RiotException: loading remote context failed: http://schema.org/
@@ -116,15 +118,10 @@ public class TestJsonLDReader {
     private Dataset jsonld2dataset(String jsonld, Context jenaCtx) throws IOException {
         Dataset ds = DatasetFactory.create();
 
-        // this is works too
-        //        ReaderRIOT reader = RDFDataMgr.createReader(Lang.JSONLD);
-        //        try (InputStream in = new ByteArrayInputStream(jsonld.getBytes(StandardCharsets.UTF_8))) {
-        //            reader.read(in, null, null, StreamRDFLib.dataset(ds.asDatasetGraph()), jenaCtx);
-        //        }
-
         try (InputStream in = new ByteArrayInputStream(jsonld.getBytes(StandardCharsets.UTF_8))) {
             RDFParser.create()
                 .source(in)
+                .errorHandler(ErrorHandlerFactory.errorHandlerNoLogging)
                 .lang(Lang.JSONLD)
                 .context(jenaCtx)
                 .parse(ds.asDatasetGraph());

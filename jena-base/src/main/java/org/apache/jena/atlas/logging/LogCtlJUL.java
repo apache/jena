@@ -30,7 +30,7 @@ import org.apache.jena.atlas.AtlasException;
 import org.apache.jena.atlas.lib.StrUtils;
 
 /** java.util.logging specific code. */
-public class LogJUL {
+public class LogCtlJUL {
     // File or java resource name default.
     public static String JUL_LOGGING       = "logging.properties";
 
@@ -48,7 +48,9 @@ public class LogJUL {
         //,"org.apache.jena.atlas.logging.java.TextFormatter.format=%5$tT %3$-5s %2$-20s :: %6$s"
         );
     // @formatter:off
-    
+
+    private LogCtlJUL() {}
+
     /**
      * Reset java.util.logging - this overrides the previous configuration, if any.
      */
