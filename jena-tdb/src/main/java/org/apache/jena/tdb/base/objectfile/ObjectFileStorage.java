@@ -27,6 +27,7 @@ import java.util.Iterator;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.iterator.IteratorSlotted;
 import org.apache.jena.atlas.lib.Pair;
+import org.apache.jena.tdb.TDB;
 import org.apache.jena.tdb.base.file.BufferChannel;
 import org.apache.jena.tdb.base.file.FileException;
 import org.apache.jena.tdb.sys.SystemTDB;
