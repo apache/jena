@@ -171,7 +171,8 @@ public class ObjectFileStorage implements ObjectFile
             log("R(0x%X)", loc);
 
         if ( loc < 0 )
-            throw new IllegalArgumentException("ObjectFile.read[" + file.getLabel() + "]: Bad read: " + loc);
+            throw new IllegalArgumentException("ObjectFile.read[" + file.getLabel() + "]: Bad read: " + loc
+                                               + "\n" + TDB.tdbFaqsLink);
 
         // Maybe it's in the in the write buffer.
         if ( loc >= filesize ) {
@@ -179,7 +180,8 @@ public class ObjectFileStorage implements ObjectFile
             synchronized (lockWriteBuffer) {
                 if ( loc >= filesize + writeBuffer.position() )
                     throw new IllegalArgumentException("ObjectFileStorage.read[" + file.getLabel() + "]: Bad read: location=" + loc
-                                                       + " >= max=" + (filesize + writeBuffer.position()));
+                                                       + " >= max=" + (filesize + writeBuffer.position())
+                                                       + "\n" + TDB.tdbFaqsLink);
                 int offset = (int)(loc - filesize);
                 int len = writeBuffer.getInt(offset);
                 int posn = offset + SizeOfInt;
@@ -197,7 +199,8 @@ public class ObjectFileStorage implements ObjectFile
         int x = file.read(lengthBuffer, loc);
         if ( x != 4 ) {
             String msg = "ObjectFileStorage.read[" + file.getLabel() + "](" + loc + ")[filesize=" + filesize + "]"
-                         + "[file.size()=" + file.size() + "]: Failed to read the length : got " + x + " bytes";
+                         + "[file.size()=" + file.size() + "]: Failed to read the length : got " + x + " bytes"
+                         + "\n" + TDB.tdbFaqsLink;
             lengthBuffer.clear();
             int x1 = file.read(lengthBuffer, loc);
             throw new FileException(msg);
@@ -207,7 +210,8 @@ public class ObjectFileStorage implements ObjectFile
         if ( len > filesize - (loc + SizeOfInt) ) {
             String msg = "ObjectFileStorage.read[" + file.getLabel() + "](" + loc + ")[filesize=" + filesize + "][file.size()="
                          + file.size() + "]: Impossibly large object : " + len + " bytes > filesize-(loc+SizeOfInt)="
-                         + (filesize - (loc + SizeOfInt));
+                         + (filesize - (loc + SizeOfInt) 
+                         + "\n" + TDB.tdbFaqsLink);
             throw new FileException(msg);
         }
 
@@ -218,7 +222,8 @@ public class ObjectFileStorage implements ObjectFile
         x = file.read(bb, loc + SizeOfInt);
         bb.flip();
         if ( x != len )
-            throw new FileException("ObjectFileStorage.read: Failed to read the object (" + len + " bytes) : got " + x + " bytes");
+            throw new FileException("ObjectFileStorage.read: Failed to read the object (" + len + " bytes) : got " + x + " bytes"
+                                    + "\n" + TDB.tdbFaqsLink);
         return bb;
     }
 
