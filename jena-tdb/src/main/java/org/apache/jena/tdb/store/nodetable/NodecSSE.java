@@ -33,7 +33,7 @@ import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapNull;
 import org.apache.jena.riot.tokens.Token;
 import org.apache.jena.riot.tokens.Tokenizer;
-import org.apache.jena.riot.tokens.TokenizerFactory;
+import org.apache.jena.riot.tokens.TokenizerText;
 import org.apache.jena.riot.web.LangTag;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.sse.SSE;
@@ -137,7 +137,7 @@ public class NodecSSE implements Nodec
             return NodeFactory.createURI(str);
         }
 
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(str);
+        Tokenizer tokenizer = createTokenizer(str);
         if ( ! tokenizer.hasNext() )
             throw new TDBException("Failed to tokenize: "+str);
         Token t = tokenizer.next();
@@ -152,6 +152,10 @@ public class NodecSSE implements Nodec
         }
     }
 
+    private static Tokenizer createTokenizer(String string) {
+        return TokenizerText.create().fromString(string).build();
+    }
+    
     // Over-estimate the length of the encoding.
     private static int maxLength(Node node)
     {

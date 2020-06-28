@@ -33,7 +33,7 @@ import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.apache.jena.riot.tokens.Tokenizer ;
-import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.tokens.TokenizerText;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
@@ -120,7 +120,7 @@ public class TestBindingStreams
     
     static void testRead(String x, Binding ... bindings)
     {
-        Tokenizer t = TokenizerFactory.makeTokenizerString(x) ;
+        Tokenizer t = TokenizerText.create().fromString(x).build(); ;
         BindingInputStream inStream = new BindingInputStream(t) ;
         
         if ( bindings.length == 0 )

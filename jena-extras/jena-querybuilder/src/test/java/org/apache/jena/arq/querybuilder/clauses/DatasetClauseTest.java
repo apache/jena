@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
-import org.apache.jena.arq.querybuilder.clauses.DatasetClause;
 import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.core.Var ;

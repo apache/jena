@@ -32,7 +32,7 @@ import org.apache.jena.riot.out.NodeToLabel ;
 import org.apache.jena.riot.out.SinkQuadOutput ;
 import org.apache.jena.riot.out.SinkTripleOutput ;
 import org.apache.jena.riot.tokens.Tokenizer ;
-import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.tokens.TokenizerText;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingInputStream ;
@@ -78,11 +78,11 @@ public class SerializationFactoryFinder
             @Override
             public Iterator<Triple> createDeserializer(InputStream in)
             {
-                Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in);
+                Tokenizer tokenizer = TokenizerText.create().source(in).build();
                 ParserProfile profile = RiotLib.createParserProfile(RiotLib.factoryRDF(LabelToNode.createUseLabelEncoded()),
-                                                          ErrorHandlerFactory.errorHandlerNoWarnings,
-                                                          IRIResolver.createNoResolve(),
-                                                          false);
+                                                                    ErrorHandlerFactory.errorHandlerNoWarnings,
+                                                                    IRIResolver.createNoResolve(),
+                                                                    false);
                 LangNTriples parser = new LangNTriples(tokenizer, profile, null);
                 return parser ;
             }
@@ -109,11 +109,11 @@ public class SerializationFactoryFinder
             @Override
             public Iterator<Quad> createDeserializer(InputStream in)
             {
-                Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in);
+                Tokenizer tokenizer = TokenizerText.create().source(in).build();
                 ParserProfile profile = RiotLib.createParserProfile(RiotLib.factoryRDF(LabelToNode.createUseLabelEncoded()),
-                                                          ErrorHandlerFactory.errorHandlerNoWarnings,
-                                                          IRIResolver.createNoResolve(),
-                                                          false);
+                                                                    ErrorHandlerFactory.errorHandlerNoWarnings,
+                                                                    IRIResolver.createNoResolve(),
+                                                                    false);
                 LangNQuads parser = new LangNQuads(tokenizer, profile, null) ;
                 return parser ;
             }

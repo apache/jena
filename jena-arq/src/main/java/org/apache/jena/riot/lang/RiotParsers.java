@@ -36,7 +36,7 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.tokens.Tokenizer;
-import org.apache.jena.riot.tokens.TokenizerFactory;
+import org.apache.jena.riot.tokens.TokenizerText;
 import org.apache.jena.sparql.core.Quad;
 
 /** Use RDFDataMgr operations.
@@ -53,7 +53,7 @@ public class RiotParsers {
             Tokenizer tokenizer = new TokenizerJSON(PeekReader.makeUTF8(input));
             return createParserRdfJson(tokenizer, dest, profile);
         }
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input, profile.getErrorHandler());
+        Tokenizer tokenizer = TokenizerText.create().source(input).errorHandler(profile.getErrorHandler()).build();
         if ( RDFLanguages.sameLang(TURTLE, lang) || RDFLanguages.sameLang(N3,  lang) ) 
             return createParserTurtle(tokenizer, dest, profile);
         if ( RDFLanguages.sameLang(NTRIPLES, lang) )
@@ -72,8 +72,7 @@ public class RiotParsers {
             return createParserRdfJson(tokenizer, dest, profile);
         }
 
-        @SuppressWarnings("deprecation")
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(input, profile.getErrorHandler());
+        Tokenizer tokenizer = TokenizerText.create().source(input).errorHandler(profile.getErrorHandler()).build();
         if ( RDFLanguages.sameLang(TURTLE, lang) || RDFLanguages.sameLang(N3,  lang) ) 
             return createParserTurtle(tokenizer, dest, profile);
         if ( RDFLanguages.sameLang(NTRIPLES, lang) )
@@ -120,7 +119,7 @@ public class RiotParsers {
     /** Create an iterator for parsing N-Triples. */
     public static Iterator<Triple> createIteratorNTriples(InputStream input, StreamRDF dest, ParserProfile profile) {
         // LangNTriples supports iterator use.
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input, profile.getErrorHandler());
+        Tokenizer tokenizer = TokenizerText.create().source(input).errorHandler(profile.getErrorHandler()).build();
         return createParserNTriples(tokenizer, null, profile);
     }
 
@@ -132,7 +131,7 @@ public class RiotParsers {
     /** Create an iterator for parsing N-Quads. */
     public static Iterator<Quad> createIteratorNQuads(InputStream input, StreamRDF dest, ParserProfile profile) {
         // LangNQuads supports iterator use.
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input, profile.getErrorHandler());
+        Tokenizer tokenizer = TokenizerText.create().source(input).errorHandler(profile.getErrorHandler()).build();
         return createParserNQuads(tokenizer, null,  profile);
     }
 }

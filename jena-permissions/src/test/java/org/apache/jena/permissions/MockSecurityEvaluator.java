@@ -23,7 +23,6 @@ import java.util.Set;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.rdf.model.Resource ;
 
 public class MockSecurityEvaluator implements SecurityEvaluator

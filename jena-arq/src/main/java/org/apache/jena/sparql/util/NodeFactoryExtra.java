@@ -33,7 +33,7 @@ import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.Tokenizer ;
-import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.tokens.TokenizerText;
 import org.apache.jena.sparql.sse.SSE ;
 
 /**
@@ -69,7 +69,7 @@ public class NodeFactoryExtra {
      * @throws RiotException Thrown if a valid node cannot be parsed
      */
     public static Node parseNode(String nodeString, PrefixMap pmap) {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(nodeString) ;
+        Tokenizer tokenizer = TokenizerText.create().fromString(nodeString).build();
         if ( !tokenizer.hasNext() )
             throw new RiotException("Empty RDF term") ;
         Token token = tokenizer.next() ;

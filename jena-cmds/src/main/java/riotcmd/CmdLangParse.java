@@ -47,7 +47,7 @@ import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.riot.system.StreamRDFWriter;
 import org.apache.jena.riot.tokens.Tokenizer ;
-import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.tokens.TokenizerText;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sys.JenaSystem ;
@@ -351,7 +351,7 @@ public abstract class CmdLangParse extends CmdGeneral
     }
 
     protected Tokenizer makeTokenizer(InputStream in) {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(in) ;
+        Tokenizer tokenizer = TokenizerText.create().source(in).build() ;
         return tokenizer ;
     }
 

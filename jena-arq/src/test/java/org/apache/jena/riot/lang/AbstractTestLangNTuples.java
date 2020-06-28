@@ -31,16 +31,16 @@ import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExError;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning;
-import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RIOT;
+import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.tokens.Tokenizer ;
-import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.tokens.TokenizerText;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-/** Test of syntax by a tuples parser (does not include node validitiy checking) */ 
 
+/** Test of syntax by a tuples parser (does not include node validity checking) */ 
 abstract public class AbstractTestLangNTuples
 {
     // Test streaming interface.
@@ -175,7 +175,8 @@ abstract public class AbstractTestLangNTuples
         byte b[] = StrUtils.asUTF8bytes(string);
         ByteArrayInputStream in = new ByteArrayInputStream(b);
         Tokenizer tokenizer = charSpace == CharSpace.ASCII
-            ? TokenizerFactory.makeTokenizerASCII(in) : TokenizerFactory.makeTokenizerUTF8(in);
+            ? TokenizerText.create().asciiOnly(true).source(in).build()
+            : TokenizerText.create().source(in).build();
         return tokenizer;
     }
 
@@ -183,7 +184,7 @@ abstract public class AbstractTestLangNTuples
         // UTF-8
         byte b[] = StrUtils.asUTF8bytes(string);
         ByteArrayInputStream in = new ByteArrayInputStream(b);
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(in);
+        Tokenizer tokenizer = TokenizerText.create().source(in).build() ;
         return tokenizer;
     }
 

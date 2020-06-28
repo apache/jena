@@ -34,7 +34,6 @@ import java.util.function.Predicate;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -42,15 +41,13 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.lang.LabelToNode;
-import org.apache.jena.riot.tokens.Token;
-import org.apache.jena.riot.tokens.Tokenizer;
-import org.apache.jena.riot.tokens.TokenizerFactory;
 import org.apache.jena.riot.writer.WriterGraphRIOTBase;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
 /** Misc RIOT code */
@@ -150,16 +147,8 @@ public class RiotLib
     private static ParserProfile profile = setupInternalParserProfile();
     
     /** Parse a string to get one Node (the first token in the string) */
-    public static Node parse(String string)
-    {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string);
-        if ( ! tokenizer.hasNext() )
-            return null;
-        Token t = tokenizer.next();
-        Node n = profile.create(null, t);
-        if ( tokenizer.hasNext() )
-            Log.warn(RiotLib.class, "String has more than one token in it: "+string);
-        return n;
+    public static Node parse(String string) {
+        return NodeFactoryExtra.parseNode(string, null);
     }
 
     public static ParserProfile profile(Lang lang, String baseIRI)

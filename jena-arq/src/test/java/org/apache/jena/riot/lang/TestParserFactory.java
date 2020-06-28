@@ -29,7 +29,7 @@ import org.apache.jena.riot.RDFParser ;
 import org.apache.jena.riot.RIOT;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.tokens.Tokenizer ;
-import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.tokens.TokenizerText;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
@@ -52,7 +52,7 @@ public class TestParserFactory
 
         // Old style, direct to LangRIOT -- very deprecated.
         // NQ version tests that relative URIs remain relative. 
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("<x> <p> <q> .") ;
+        Tokenizer tokenizer = TokenizerText.create().fromString("<x> <p> <q> .").build();
         CatchParserOutput sink = new CatchParserOutput() ;
         ParserProfile profile = makeParserProfile(IRIResolver.createNoResolve(), null, false);
         LangRIOT parser = RiotParsers.createParserNTriples(tokenizer, sink, profile) ;
@@ -67,28 +67,14 @@ public class TestParserFactory
     @Test public void turtle_01() 
     {
         // Verify the expected output works.
-        {
-            String s = "<x> <p> <q> ." ;
-            CatchParserOutput sink = parseCapture(s, Lang.TTL) ;
-            assertEquals(1, sink.startCalled) ;
-            assertEquals(1, sink.finishCalled) ;
-            assertEquals(1, sink.triples.size()) ;
-            assertEquals(0, sink.quads.size()) ;
-            Triple t = SSE.parseTriple("(<http://base/x> <http://base/p> <http://base/q>)") ;
-            assertEquals(t, last(sink.triples)) ;
-        }
-
-        // Old style, deprecated.
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("<x> <p> <q> .") ; 
-        CatchParserOutput sink = new CatchParserOutput() ;
-        ParserProfile maker = makeParserProfile(IRIResolver.create("http://base/"), null, true);
-        LangRIOT parser = RiotParsers.createParserTurtle(tokenizer, sink, maker) ;
-        parser.parse();
+        String s = "<x> <p> <q> ." ;
+        CatchParserOutput sink = parseCapture(s, Lang.TTL) ;
         assertEquals(1, sink.startCalled) ;
         assertEquals(1, sink.finishCalled) ;
         assertEquals(1, sink.triples.size()) ;
         assertEquals(0, sink.quads.size()) ;
-        assertEquals(SSE.parseTriple("(<http://base/x> <http://base/p> <http://base/q>)"), last(sink.triples)) ;
+        Triple t = SSE.parseTriple("(<http://base/x> <http://base/p> <http://base/q>)") ;
+        assertEquals(t, last(sink.triples)) ;
     }
     
     private ParserProfile makeParserProfile(IRIResolver resolver, ErrorHandler errorHandler, boolean checking) {
@@ -104,23 +90,8 @@ public class TestParserFactory
 
     @Test public void nquads_01() 
     {
-        {
-            String s = "<x> <p> <q> <g> ." ;
-            CatchParserOutput sink = parseCapture(s, Lang.NQ) ;
-            assertEquals(1, sink.startCalled) ;
-            assertEquals(1, sink.finishCalled) ;
-            assertEquals(0, sink.triples.size()) ;
-            assertEquals(1, sink.quads.size()) ;
-            Quad q = SSE.parseQuad("(<g> <x> <p> <q>)") ;
-            assertEquals(q, last(sink.quads)) ;
-        }
-        
-        // Old style, deprecated.
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("<x> <p> <q> <g>.") ; 
-        CatchParserOutput sink = new CatchParserOutput() ;
-        ParserProfile x = makeParserProfile(IRIResolver.createNoResolve(), null, false);
-        LangRIOT parser = RiotParsers.createParserNQuads(tokenizer, sink, x) ;
-        parser.parse();
+        String s = "<x> <p> <q> <g> ." ;
+        CatchParserOutput sink = parseCapture(s, Lang.NQ) ;
         assertEquals(1, sink.startCalled) ;
         assertEquals(1, sink.finishCalled) ;
         assertEquals(0, sink.triples.size()) ;
