@@ -53,8 +53,7 @@ public class RiotParsers {
             Tokenizer tokenizer = new TokenizerJSON(PeekReader.makeUTF8(input));
             return createParserRdfJson(tokenizer, dest, profile);
         }
-
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input);
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input, profile.getErrorHandler());
         if ( RDFLanguages.sameLang(TURTLE, lang) || RDFLanguages.sameLang(N3,  lang) ) 
             return createParserTurtle(tokenizer, dest, profile);
         if ( RDFLanguages.sameLang(NTRIPLES, lang) )
@@ -74,7 +73,7 @@ public class RiotParsers {
         }
 
         @SuppressWarnings("deprecation")
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(input);
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(input, profile.getErrorHandler());
         if ( RDFLanguages.sameLang(TURTLE, lang) || RDFLanguages.sameLang(N3,  lang) ) 
             return createParserTurtle(tokenizer, dest, profile);
         if ( RDFLanguages.sameLang(NTRIPLES, lang) )
@@ -121,7 +120,7 @@ public class RiotParsers {
     /** Create an iterator for parsing N-Triples. */
     public static Iterator<Triple> createIteratorNTriples(InputStream input, StreamRDF dest, ParserProfile profile) {
         // LangNTriples supports iterator use.
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input);
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input, profile.getErrorHandler());
         return createParserNTriples(tokenizer, null, profile);
     }
 
@@ -133,7 +132,7 @@ public class RiotParsers {
     /** Create an iterator for parsing N-Quads. */
     public static Iterator<Quad> createIteratorNQuads(InputStream input, StreamRDF dest, ParserProfile profile) {
         // LangNQuads supports iterator use.
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input);
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input, profile.getErrorHandler());
         return createParserNQuads(tokenizer, null,  profile);
     }
 }

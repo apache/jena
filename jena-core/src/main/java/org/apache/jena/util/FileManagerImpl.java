@@ -114,7 +114,10 @@ public class FileManagerImpl implements FileManager
     }
     
     /** Create with the given location mapper */
-    protected FileManagerImpl(LocationMapper _mapper)    { setLocationMapper(_mapper) ; }
+    protected FileManagerImpl(LocationMapper _mapper) {
+        this();
+        setLocationMapper(_mapper);
+    }
 
     @Override
     public FileManager clone() { return clone(this) ; } 

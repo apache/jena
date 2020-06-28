@@ -141,7 +141,8 @@ Notes: PN_CHARS_BASE has a hole above #xD800 -- these are the  surrogate pairs
 
     private static boolean r(int ch, int a, int b) { return ( ch >= a && ch <= b ); }
 
-    public static boolean range(int ch, char a, char b) {
+    /** Test whether a codepoint is a given range (both ends inclusive)*/
+    public static boolean range(int ch, int a, int b) {
         return (ch >= a && ch <= b);
     }
 }

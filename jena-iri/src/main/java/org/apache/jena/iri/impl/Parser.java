@@ -18,14 +18,10 @@
 
 package org.apache.jena.iri.impl;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
-import java.io.Reader;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import java.io.*;
 import java.net.IDN;
 
 import org.apache.jena.iri.* ;
@@ -227,15 +223,27 @@ public class Parser implements IRIComponents, ViolationCodes {
         }
     }
 
+    static public void devParse(String uriStr) throws IOException {
+        LineNumberReader in = new LineNumberReader(new StringReader(uriStr));
+        devParse(in);
+    }
+    
     static public void main(String args[]) throws IOException {
-        LineNumberReader in = new LineNumberReader(new InputStreamReader(
-                System.in));
+        LineNumberReader in = new LineNumberReader(new InputStreamReader(System.in));
+        devParse(in);
+    }
+    
+    static private void devParse(LineNumberReader in) throws IOException {
+        
         IRIImpl last = null;
         DEBUG = true;
 
         IRIFactory factory = IRIFactory.iriImplementation();
         while (true) {
-            String s = in.readLine().trim();
+            String s = in.readLine();
+            if ( s == null )
+                return;
+            s = s.trim();
             if (s.equals("quit"))
                 return;
             IRIImpl iri = (IRIImpl) factory.create(s);

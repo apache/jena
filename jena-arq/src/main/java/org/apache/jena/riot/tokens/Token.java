@@ -26,7 +26,6 @@ import java.util.ArrayList ;
 import java.util.List ;
 import java.util.Objects ;
 
-import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.datatypes.RDFDatatype ;
@@ -105,8 +104,7 @@ public final class Token
 
     static Token create(String s)
     {
-        PeekReader pr = PeekReader.readString(s) ;
-        TokenizerText tt = new TokenizerText(pr) ;
+        Tokenizer tt = TokenizerText.create().fromString(s).build();
         if ( ! tt.hasNext() )
             throw new RiotException("No token") ;
         Token t = tt.next() ;
@@ -117,8 +115,7 @@ public final class Token
 
     static Iter<Token> createN(String s)
     {
-        PeekReader pr = PeekReader.readString(s) ;
-        TokenizerText tt = new TokenizerText(pr) ;
+        Tokenizer tt = TokenizerText.create().fromString(s).build();
         List<Token> x = new ArrayList<>() ;
         while(tt.hasNext())
             x.add(tt.next()) ;

@@ -131,7 +131,7 @@ abstract public class AbstractTestLangNTuples
     }
 
     // Bad terms - but accepted by default.
-    @Test(expected = ExFatal.class)
+    @Test(expected = ExError.class)
     public void tuple_bad_10() {
         parseCount("<x> <p> <bad uri> .");
     }

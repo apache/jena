@@ -72,8 +72,13 @@ public class ErrorHandlerFactory
      * An error handler that throws a {@link RiotParseException}, hence it
      * exposes the details of errors.
      */
-    public static ErrorHandler errorHandlerDetailed()         { return new ErrorHandlerRiotParseException() ; }
+    public static ErrorHandler errorHandlerDetailed()           { return new ErrorHandlerRiotParseErrors() ; }
 
+    /**
+     * An error handler that throws exceptions in all cases.
+     */
+    public static ErrorHandler errorHandlerExceptions()        { return new ErrorHandlerRiotParseException() ; }
+    
     private static ErrorHandler defaultErrorHandler = errorHandlerStd ;
     /** Get the current default error handler */
     public static ErrorHandler getDefaultErrorHandler() { return defaultErrorHandler ; }
@@ -130,8 +135,9 @@ public class ErrorHandlerFactory
 
         /** report a warning */
         @Override
-        public void warning(String message, long line, long col)
-        { logWarning(message, line, col) ; }
+        public void warning(String message, long line, long col) {
+            logWarning(message, line, col);
+        }
 
         /** report an error */
         @Override
@@ -304,8 +310,10 @@ public class ErrorHandlerFactory
     }
 
     /** An error handler that throws a RiotParseException, hence it exposes the details of errors. */
-    private static class ErrorHandlerRiotParseException implements ErrorHandler {
-        public ErrorHandlerRiotParseException() {}
+    private static class ErrorHandlerRiotParseErrors implements ErrorHandler {
+
+        public ErrorHandlerRiotParseErrors() {}
+
         @Override public void warning(String message, long line, long col) { }
 
         @Override public void error(String message, long line, long col) {
@@ -316,5 +324,22 @@ public class ErrorHandlerFactory
             throw new RiotParseException(message, line, col);
         }
     }
+    
+    /** An error handler that throws a RiotParseException in all cases. */
+    private static class ErrorHandlerRiotParseException implements ErrorHandler {
+        
+        public ErrorHandlerRiotParseException() {}
+        
+        @Override public void warning(String message, long line, long col) {
+            throw new RiotParseException(message, line, col);
+        }
 
+        @Override public void error(String message, long line, long col) {
+            throw new RiotParseException(message, line, col);
+        }
+
+        @Override public void fatal(String message, long line, long col) {
+            throw new RiotParseException(message, line, col);
+        }
+    }
 }
