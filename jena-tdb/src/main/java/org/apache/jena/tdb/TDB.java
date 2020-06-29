@@ -111,6 +111,8 @@ public class TDB {
      * "mapped" = Memory mapped temporary file <br>
      */
     public static final Symbol  transactionJournalWriteBlockMode = SystemTDB.allocSymbol("transactionJournalWriteBlockMode") ;
+    
+    public static final String  tdbFaqsLink                      = "See https://jena.apache.org/documentation/tdb/faqs.html for more information.";
 
     public static Context getContext() {
         return ARQ.getContext() ;
