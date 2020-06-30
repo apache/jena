@@ -393,7 +393,12 @@ public class TextIndexES implements TextIndex {
             limit = MAX_RESULTS;
         
         if(property != null) {
-            qs = parse(property.getLocalName(), qs, lang);
+            String field = docDef.getField(property);
+            if (field == null) {
+                LOGGER.warn("No field mapping for property " + property);
+                return Collections.emptyList();
+            }
+            qs = parse(field, qs, lang);
         } else {
             qs = parse(null, qs, lang);
         }
