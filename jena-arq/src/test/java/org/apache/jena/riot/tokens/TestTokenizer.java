@@ -912,7 +912,7 @@ public class TestTokenizer {
     @Test
     public void tokenizer_charset_1() {
         ByteArrayInputStream in = bytes("'abc'") ;
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in) ;
+        Tokenizer tokenizer = TokenizerText.create().asciiOnly(true).source(in).build() ;
         Token t = tokenizer.next() ;
         assertFalse(tokenizer.hasNext()) ;
     }
@@ -920,7 +920,7 @@ public class TestTokenizer {
     @Test(expected = RiotParseException.class)
     public void tokenizer_charset_2() {
         ByteArrayInputStream in = bytes("'abcdé'") ;
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in) ;
+        Tokenizer tokenizer = TokenizerText.create().asciiOnly(true).source(in).build() ;
         Token t = tokenizer.next() ;
         assertFalse(tokenizer.hasNext()) ;
     }
@@ -928,7 +928,7 @@ public class TestTokenizer {
     @Test(expected = RiotParseException.class)
     public void tokenizer_charset_3() {
         ByteArrayInputStream in = bytes("<http://example/abcdé>") ;
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in) ;
+        Tokenizer tokenizer = TokenizerText.create().asciiOnly(true).source(in).build() ;
         Token t = tokenizer.next() ;
         assertFalse(tokenizer.hasNext()) ;
     }
@@ -937,7 +937,7 @@ public class TestTokenizer {
     public void tokenizer_BOM_1() {
         // BOM
         ByteArrayInputStream in = bytes("\uFEFF'abc'") ;
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(in) ;
+        Tokenizer tokenizer = TokenizerText.create().source(in).build() ;
         assertTrue(tokenizer.hasNext()) ;
         Token token = tokenizer.next() ;
         assertNotNull(token) ;
@@ -945,7 +945,7 @@ public class TestTokenizer {
         assertEquals("abc", token.getImage()) ;
         assertFalse(tokenizer.hasNext()) ;
     }
-
+    
     // First symbol from the stream.
     private static void testSymbol(String string, TokenType expected) {
         Tokenizer tokenizer = tokenizeAndTestFirst(string, expected, null) ;

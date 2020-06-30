@@ -41,7 +41,7 @@ import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.tokens.Tokenizer;
-import org.apache.jena.riot.tokens.TokenizerFactory;
+import org.apache.jena.riot.tokens.TokenizerText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -155,7 +155,7 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
      * @return Tokenizer
      */
     protected Tokenizer getTokenizer(String line) {
-        return TokenizerFactory.makeTokenizerString(line);
+        return TokenizerText.fromString(line);
     }
 
 

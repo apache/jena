@@ -35,7 +35,7 @@ import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
-import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.tokens.TokenizerText;
 import org.junit.Test ;
 
 public class TestLangRdfJson
@@ -447,7 +447,7 @@ public class TestLangRdfJson
 	public void rdfjson_invalid_tokenizer() {
 		byte b[] = StrUtils.asUTF8bytes("") ;
 		ByteArrayInputStream in = new ByteArrayInputStream(b);
-		Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(in) ;
+		Tokenizer tokenizer = TokenizerText.create().source(in).build() ;
         StreamRDFCounting sink = StreamRDFLib.count() ;
 		LangRDFJSON parser = RiotParsers.createParserRdfJson(tokenizer, sink, RiotLib.dftProfile()) ;
 	}

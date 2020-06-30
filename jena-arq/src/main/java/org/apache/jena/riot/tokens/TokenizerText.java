@@ -40,7 +40,7 @@ public final class TokenizerText implements Tokenizer
     // Care with <=
     // Policy driven for CURIES?
 
-    public static final int CTRL_CHAR = CH_STAR;
+    private static final int CTRL_CHAR = CH_STAR;
 
     // The code has the call points for checking tokens but it is generally better to
     // do the check later in the parsing process. In case a need arises, the code
@@ -59,7 +59,9 @@ public final class TokenizerText implements Tokenizer
     // The code assumes that errors throw exception and so stop parsing.
     private final ErrorHandler errorHandler;
 
-    public static TokenizeTextBuilder create() { return new TokenizeTextBuilder() ; } 
+    public static TokenizeTextBuilder create() { return new TokenizeTextBuilder() ; }
+    
+    public static Tokenizer fromString(String string) { return create().fromString(string).build(); }
     
     /*package*/ static TokenizerText internal(PeekReader reader, boolean lineMode, ErrorHandler errorHandler) {
         return new TokenizerText(reader, lineMode, errorHandler);

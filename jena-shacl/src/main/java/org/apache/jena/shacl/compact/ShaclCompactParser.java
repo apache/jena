@@ -28,7 +28,7 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.riot.system.StreamRDF;
-import org.apache.jena.riot.tokens.TokenizerFactory;
+import org.apache.jena.riot.tokens.TokenizerText;
 import org.apache.jena.shacl.ShaclException;
 import org.apache.jena.shacl.engine.ShaclPaths;
 import org.apache.jena.shacl.vocabulary.SHACL;
@@ -464,7 +464,7 @@ public class ShaclCompactParser extends ParserBase {
             return x;
         String s = x.getLiteralLexicalForm();
         PrefixMap pmap = PrefixMapFactory.create(getPrologue().getPrefixMapping());
-        Node n = TokenizerFactory.makeTokenizerString(s).next().asNode(pmap);
+        Node n = TokenizerText.create().fromString(s).build().next().asNode(pmap);
         return n;
     }
 

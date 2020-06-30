@@ -36,10 +36,7 @@ import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.lang.LangEngine ;
 import org.apache.jena.riot.out.NodeFmtLib ;
 import org.apache.jena.riot.system.* ;
-import org.apache.jena.riot.tokens.Token ;
-import org.apache.jena.riot.tokens.TokenType ;
-import org.apache.jena.riot.tokens.Tokenizer ;
-import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.tokens.*;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.graph.NodeConst ;
 
@@ -69,7 +66,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
     
     public BindingInputStream(InputStream in)
     {
-        this(TokenizerFactory.makeTokenizerUTF8(in)) ;
+        this(TokenizerText.create().source(in).build()) ;
     }
     
     public BindingInputStream(Tokenizer tokenizer)

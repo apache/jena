@@ -32,7 +32,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.Tokenizer ;
-import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.tokens.TokenizerText;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -44,8 +44,8 @@ public class IteratorStreamRDFText extends IteratorStreamRDF implements Iterator
     private Node[] previousTuple = null ;
 
     private /*public*/ IteratorStreamRDFText(InputStream input) {
-        Tokenizer t = TokenizerFactory.makeTokenizerUTF8(input) ;
-        in = new TokenInputStream(null, t) ;
+        Tokenizer tokenizer = TokenizerText.create().source(input).build();
+        in = new TokenInputStream(null, tokenizer) ;
     }
 
     @Override

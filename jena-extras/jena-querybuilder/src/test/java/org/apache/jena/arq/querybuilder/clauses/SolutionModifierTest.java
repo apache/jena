@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.Order;
-import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Query;

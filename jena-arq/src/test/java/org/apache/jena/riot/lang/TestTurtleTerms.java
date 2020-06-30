@@ -19,9 +19,11 @@
 package org.apache.jena.riot.lang;
 
 import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.riot.system.*;
+import org.apache.jena.riot.system.RiotLib;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.riot.tokens.Tokenizer ;
-import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.tokens.TokenizerText;
 import org.junit.Test ;
 
 public class TestTurtleTerms
@@ -250,7 +252,7 @@ public class TestTurtleTerms
 	public static void parse(String testString)
 	{
 	    // Need a prefix mapping.
-	    Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(prefixMap+"\n"+testString) ;
+	    Tokenizer tokenizer = TokenizerText.create().fromString(prefixMap+"\n"+testString).build() ;
 	    StreamRDF sink = StreamRDFLib.sinkNull() ;
         LangTurtle parser = RiotParsers.createParserTurtle(tokenizer, sink, RiotLib.dftProfile()) ;
         parser.parse();
