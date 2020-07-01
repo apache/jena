@@ -18,8 +18,6 @@
 
 package org.apache.jena.riot ;
 
-import static org.apache.jena.riot.RDFLanguages.THRIFT ;
-
 import java.util.Objects;
 
 /** Constants for writable formats */
@@ -47,36 +45,36 @@ public class RDFFormat {
     public static final RDFFormat        TURTLE         = TURTLE_PRETTY ;
     /** Turtle - short name */
     public static final RDFFormat        TTL            = TURTLE_PRETTY ;
-    /** Turtle - write in blocks of triples, with same subject, no nested object or RDF lists */ 
+    /** Turtle - write in blocks of triples, with same subject, no nested object or RDF lists */
     public static final RDFFormat        TURTLE_BLOCKS  = new RDFFormat(Lang.TURTLE, BLOCKS) ;
-    /** Turtle - one line per triple  */ 
+    /** Turtle - one line per triple  */
     public static final RDFFormat        TURTLE_FLAT    = new RDFFormat(Lang.TURTLE, FLAT) ;
 
-    /** N-Triples in UTF-8 */ 
+    /** N-Triples in UTF-8 */
     public static final RDFFormat        NTRIPLES_UTF8  = new RDFFormat(Lang.NTRIPLES, UTF8) ;
-    /** N-Triples - RDF 1.1 form - UTF-8 */ 
+    /** N-Triples - RDF 1.1 form - UTF-8 */
     public static final RDFFormat        NTRIPLES       = NTRIPLES_UTF8 ;
-    /** N-Triples - RDF 1.1 form - UTF-8 */ 
+    /** N-Triples - RDF 1.1 form - UTF-8 */
     public static final RDFFormat        NT             = NTRIPLES ;
-    /** N-Triples - Use ASCII */ 
+    /** N-Triples - Use ASCII */
     public static final RDFFormat        NTRIPLES_ASCII = new RDFFormat(Lang.NTRIPLES, ASCII) ;
 
-    /** N-Quads in UTF-8 */ 
+    /** N-Quads in UTF-8 */
     public static final RDFFormat        NQUADS_UTF8    = new RDFFormat(Lang.NQUADS, UTF8) ;
-    /** N-Quads - RDF 1.1 form - UTF-8 */ 
+    /** N-Quads - RDF 1.1 form - UTF-8 */
     public static final RDFFormat        NQUADS         = NQUADS_UTF8 ;
-    /** N-Quads - RDF 1.1 form - UTF-8 */ 
+    /** N-Quads - RDF 1.1 form - UTF-8 */
     public static final RDFFormat        NQ             = NQUADS ;
-    /** N-Quads - Use ASCII */ 
+    /** N-Quads - Use ASCII */
     public static final RDFFormat        NQUADS_ASCII   = new RDFFormat(Lang.NQUADS, ASCII) ;
 
     /** TriG - pretty form */
     public static final RDFFormat        TRIG_PRETTY    = new RDFFormat(Lang.TRIG, PRETTY) ;
     /** TriG - default form */
     public static final RDFFormat        TRIG           = TRIG_PRETTY ;
-    /** TriG - write in blocks of triples, with same subject, no nested object or RDF lists */ 
+    /** TriG - write in blocks of triples, with same subject, no nested object or RDF lists */
     public static final RDFFormat        TRIG_BLOCKS    = new RDFFormat(Lang.TRIG, BLOCKS) ;
-    /** TriG - one line per triple  */ 
+    /** TriG - one line per triple  */
     public static final RDFFormat        TRIG_FLAT      = new RDFFormat(Lang.TRIG, FLAT) ;
 
     //
@@ -94,7 +92,7 @@ public class RDFFormat {
         private JSONLD_FORMAT format ;
         private boolean prettyJson ;
 
-        JSONLDVariant(String name, boolean prettyJson, JSONLD_FORMAT format) { 
+        JSONLDVariant(String name, boolean prettyJson, JSONLD_FORMAT format) {
             super(name) ;
             this.format = format ;
             this.prettyJson = prettyJson ;
@@ -161,7 +159,7 @@ public class RDFFormat {
      * @see #RDF_THRIFT_VALUES
      */
 
-    public static final RDFFormat RDF_THRIFT            = new RDFFormat(THRIFT) ;
+    public static final RDFFormat RDF_THRIFT            = new RDFFormat(Lang.RDFTHRIFT) ;
     /**
      * A variant of an an RDFFormat that uses value encoding (e.g. integers,
      * doubles, decimals as binary). This does not preserve exact representation
@@ -173,7 +171,7 @@ public class RDFFormat {
      *
      * @see #RDF_THRIFT
      */
-    public static final RDFFormat RDF_THRIFT_VALUES     = new RDFFormat(THRIFT, ValueEncoding) ;
+    public static final RDFFormat RDF_THRIFT_VALUES     = new RDFFormat(Lang.RDFTHRIFT, ValueEncoding) ;
 
     /**
      * The "null" output format (a sink that prints nothing, usually quite

@@ -32,15 +32,9 @@ import org.apache.jena.sparql.util.Context;
 /** SHACL Compact Syntax setup */
 public class SHACLC {
 
-    public static Lang langShacl = LangBuilder.create("SHACLC", "text/shaclc")
-        .addAltNames("shaclc")
-        .addFileExtensions("shaclc", "shc")
-        .build();
-
     public static void init() {
-         RDFLanguages.register(langShacl);
          ReaderRIOTFactory factory = (Lang language, ParserProfile profile)->new ReaderRIOTShaclc();
-         RDFParserRegistry.registerLangTriples(langShacl, factory);
+         RDFParserRegistry.registerLangTriples(Lang.SHACLC, factory);
     }
 
     static class ReaderRIOTShaclc implements ReaderRIOT {
@@ -56,6 +50,4 @@ public class SHACLC {
             StreamRDFOps.sendGraphToStream(g, output);
         }
     }
-
 }
-
