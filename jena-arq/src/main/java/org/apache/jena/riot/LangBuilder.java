@@ -21,10 +21,8 @@ package org.apache.jena.riot;
 import java.util.ArrayList ;
 import java.util.List ;
 
-
-
 /** Builder for RDF languages (Syntaxes).
- * 
+ *
  *  Example usage:
  *  <pre>
  *  LangBuilder.create()
@@ -34,12 +32,11 @@ import java.util.List ;
  *             .addFileExtensions("ext1", "ext2")
  *             .build()
  *  </pre>
- * 
- * */
+ */
 
 public class LangBuilder {
     public String lang ;
-    public String officialContentType ; 
+    public String officialContentType ;
     public List<String> altNames = new ArrayList<>() ;
     public List<String> contentTypes = new ArrayList<>() ;
     public List<String> fileExtensions = new ArrayList<>() ;
@@ -49,8 +46,8 @@ public class LangBuilder {
     {
         return new LangBuilder() ;
     }
-    
-    /** Create a builder - convenience operation to 
+
+    /** Create a builder - convenience operation to
      * take the language name and content type
      * which should be set if at all possible.
      * @param langname
@@ -59,26 +56,26 @@ public class LangBuilder {
     public static LangBuilder create(String langname, String officialContentType)
     {
         return new LangBuilder()
-            .langName(langname)
-            .contentType(officialContentType) ;
+                    .langName(langname)
+                    .contentType(officialContentType) ;
     }
-    
+
     private LangBuilder() {}
-    
+
     /** Add alternative names */
     public LangBuilder addAltNames(String...x)
-    { 
+    {
         copy(x, altNames) ;
         return this ;
     }
-    
+
     /** Add alternative content types */
     public LangBuilder addAltContentTypes(String...x)
-    { 
+    {
         copy(x, contentTypes) ;
         return this ;
     }
-    
+
     /** Add file name extensions */
     public LangBuilder addFileExtensions(String...x)
     {
@@ -92,7 +89,7 @@ public class LangBuilder {
             if ( !dst.contains(str) )
                 dst.add(str) ;
     }
-    
+
     /** Construct the {@link Lang} */
     public Lang build()
     {
@@ -105,7 +102,7 @@ public class LangBuilder {
 
     private void error(String message)
     {
-        throw new RiotException(message) ; 
+        throw new RiotException(message) ;
     }
 
     public String getContentType()
@@ -114,7 +111,7 @@ public class LangBuilder {
     }
 
     /** Set the main content type for this language.
-     * If there is an officially registered, preferred type, this should be that.  
+     * If there is an officially registered, preferred type, this should be that.
      */
     public LangBuilder contentType(String officialContentType)
     {
@@ -122,7 +119,7 @@ public class LangBuilder {
         return this ;
     }
 
-    /** Set the language label.  A system wide, unique short name */ 
+    /** Set the language label. A system wide, unique short name */
     public LangBuilder langName(String langname)
     {
         this.lang = langname ;
