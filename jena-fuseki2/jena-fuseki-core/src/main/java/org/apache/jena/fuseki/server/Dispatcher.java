@@ -20,7 +20,7 @@ package org.apache.jena.fuseki.server;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.jena.fuseki.server.Operation.*;
+import static org.apache.jena.fuseki.server.Operation.GSP_R;
 import static org.apache.jena.fuseki.server.Operation.GSP_RW;
 import static org.apache.jena.fuseki.server.Operation.Query;
 import static org.apache.jena.fuseki.server.Operation.Update;
@@ -37,6 +37,7 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.servlets.*;
 import org.apache.jena.fuseki.system.ActionCategory;
+import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger;
@@ -228,23 +229,31 @@ public class Dispatcher {
      * look for a named endpoint that supplies the operation.
      */
     private static Endpoint chooseEndpoint(HttpAction action, DataService dataService, String endpointName) {
-        Endpoint ep = chooseEndpointNoLegacy(action, dataService, endpointName);
-        if ( ep != null )
-            return ep;
-        // No dispatch so far.
+        try {
+            Endpoint ep = chooseEndpointNoLegacy(action, dataService, endpointName);
+            if ( ep != null )
+                return ep;
+            // No dispatch so far.
 
-        if ( ! isEmpty(endpointName) )
-            return ep;
-        // [DISPATCH LEGACY]
+            if ( ! isEmpty(endpointName) )
+                return ep;
+            // [DISPATCH LEGACY]
 
-        // When it is a unnamed service request (operation on the dataset) and there
-        // is no match, search the named services.
-        Operation operation = chooseOperation(action);
-        // Search for an endpoint that provides the operation.
-        // No guarantee it has the access controls for the operation
-        // but in this case, access control will validate against all possible endpoints.
-        ep = findEndpointForOperation(action, dataService, operation, true);
-        return ep;
+            // When it is a unnamed service request (operation on the dataset) and there
+            // is no match, search the named services.
+            Operation operation = chooseOperation(action);
+            // Search for an endpoint that provides the operation.
+            // No guarantee it has the access controls for the operation
+            // but in this case, access control will validate against all possible endpoints.
+            ep = findEndpointForOperation(action, dataService, operation, true);
+            return ep;
+        } catch (ActionErrorException ex) {
+            throw ex;
+        } catch (RuntimeException ex) {
+            // Example: Jetty throws BadMessageException when it is an HTML form and it is too big.
+            ServletOps.errorBadRequest(ex.getMessage());
+            return null;
+        }
     }
 
     /**
@@ -267,7 +276,7 @@ public class Dispatcher {
             return null;
 
         // If there is one endpoint, dispatch there directly.
-        Endpoint ep = epSet.getOnly();
+        Endpoint ep = epSet.getExactlyOne();
         if ( ep != null )
             return ep;
         // No single direct dispatch. Multiple choices (different operation, same endpoint name)
@@ -373,11 +382,23 @@ public class Dispatcher {
 
         // -- Any other queryString
         // Query string now unexpected.
+
         // Place for an extension point.
         boolean hasParams = request.getParameterMap().size() > 0;
         if ( hasParams ) {
+            // One nasty case:
+            // Bad HTML form (content-type  application/x-www-form-urlencoded), but body is not an HTML form.
+            //  map is one entry, and the key is all of the body,
+            if ( WebContent.contentTypeHTMLForm.equals(request.getContentType()) ) {
+                ServletOps.errorBadRequest("Malformed request: unrecognized HTML form request");
+                return null;
+            }
             // Unrecognized ?key=value
-            ServletOps.errorBadRequest("Malformed request: unrecognized query string parameters: " + request.getQueryString());
+            String qs = request.getQueryString();
+            if ( qs != null )
+                ServletOps.errorBadRequest("Malformed request: unrecognized parameters: " + qs);
+            else
+                ServletOps.errorBadRequest(HttpSC.getMessage(HttpSC.BAD_REQUEST_400));
         }
 
 
