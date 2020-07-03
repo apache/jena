@@ -286,7 +286,7 @@ public class RDFConnectionRemoteBuilder {
         return this;
     }
 
-    /** Build an {RDFConnection}. */
+    /** Build an {@link RDFConnection}. */
     public RDFConnection build() {
         requireNonNull(txnLifecycle);
 

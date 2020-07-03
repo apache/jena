@@ -123,6 +123,7 @@ public class RDFLanguages
                                                      .addAltNames("RDF_THRIFT", "RDFTHRIFT", "RDF/THRIFT", "TRDF")
                                                      .addFileExtensions("rt", "trdf")
                                                      .build() ;
+    /** @deprecated Use {@link #RDFTHRIFT} */
     public static final Lang THRIFT     = RDFTHRIFT;
 
     /** Text */
@@ -184,7 +185,7 @@ public class RDFLanguages
         Lang.NQUADS     = RDFLanguages.NQUADS ;
         Lang.NQ         = RDFLanguages.NQ ;
         Lang.TRIG       = RDFLanguages.TRIG ;
-        Lang.RDFTHRIFT  = RDFLanguages.THRIFT ;
+        Lang.RDFTHRIFT  = RDFLanguages.RDFTHRIFT ;
         Lang.TRIX       = RDFLanguages.TRIX ;
         Lang.RDFNULL    = RDFLanguages.RDFNULL ;
         Lang.SHACLC     = RDFLanguages.SHACLC ;
@@ -215,7 +216,7 @@ public class RDFLanguages
         register(RDFJSON) ;
         register(TRIG) ;
         register(NQUADS) ;
-        register(THRIFT) ;
+        register(RDFTHRIFT) ;
         register(TRIX) ;
         register(RDFNULL) ;
         register(SHACLC) ;

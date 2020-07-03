@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot.thrift;
 
-import static org.apache.jena.riot.RDFLanguages.THRIFT ;
+import static org.apache.jena.riot.RDFLanguages.RDFTHRIFT ;
 
 import java.io.OutputStream ;
 import java.io.Writer ;
@@ -41,7 +41,7 @@ public class WriterDatasetThrift implements WriterDatasetRIOT
     }
     @Override
     public Lang getLang() {
-        return THRIFT ;
+        return RDFTHRIFT ;
     }
     @Override
     public void write(Writer out, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context) {
