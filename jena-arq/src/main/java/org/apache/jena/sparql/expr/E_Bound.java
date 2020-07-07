@@ -34,7 +34,7 @@ public class E_Bound extends ExprFunction1
     
     @Override
     public NodeValue evalSpecial(Binding binding, FunctionEnv env) { 
-        // See alse ExprLib.evalOrNull.
+        // See also ExprLib.evalOrNull.
         // This code predates that; it handles exceptions 
         // slightly differently (VariableNotBoundException not
         // a general ExprEvalException).
@@ -50,7 +50,7 @@ public class E_Bound extends ExprFunction1
             return NodeValue.booleanReturn(binding.contains(expr.asVar())) ; 
         
         // General expression. This case can't be written in SPARQL
-        // but we keep the code general in case some optimziation rewrite
+        // but we keep the code general in case some optimization rewrite
         // or algebra expression uses the generalized feature.
 		try {
 			expr.eval(binding, env) ;

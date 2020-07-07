@@ -226,9 +226,11 @@ public class SPARQLParserBase extends ParserBase
     
     protected Query newSubQuery(Prologue progloue)
     {
-        return new Query(getPrologue());
+        // The parser uses the same prologue throughout the parsing process.
+        // For printing purposes, the subquery must not have a prologue of its own.
+        return new Query();
     }
-    
+
     protected void popQuery()
     {
         query = stack.pop();

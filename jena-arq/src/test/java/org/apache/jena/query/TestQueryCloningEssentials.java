@@ -46,15 +46,20 @@ public class TestQueryCloningEssentials {
     /**
      * Assert whether cloning using the old print-parse approach
      * yields the same result as the one using the syntax transform
-     * machinery
+     * machinery.
      *
      * @param query
      */
     public static Query checkedClone(Query query) {
         Query expected = slowClone(query);
         Query actual = query.cloneQuery();
-
+        Assert.assertEquals(query, actual);
         Assert.assertEquals(expected, actual);
+
+        // Check that the cloned query is OK. 
+        Query again = slowClone(actual);
+        Assert.assertEquals(query, again);
+        
         return actual;
     }
 

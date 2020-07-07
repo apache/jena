@@ -433,7 +433,7 @@ public class FormatterElement extends FormatterBase implements ElementVisitor {
         out.incIndent(INDENT);
         Query q = el.getQuery();
 
-        // Serialize with respect to the existing context
+        // Serialize with respect to the existing context.
         QuerySerializerFactory factory = SerializerRegistry.get().getQuerySerializerFactory(Syntax.syntaxARQ);
         QueryVisitor serializer = factory.create(Syntax.syntaxARQ, context, out);
         q.visit(serializer);

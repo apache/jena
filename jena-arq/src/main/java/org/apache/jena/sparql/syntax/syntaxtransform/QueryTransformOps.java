@@ -79,7 +79,7 @@ public class QueryTransformOps {
         if (q2.getOrderBy() != null) {
             mutateSortConditions(q2.getOrderBy(), exprTransform);
         }
-        
+
         Element el = q2.getQueryPattern();
 
         // Explicit null check to prevent warning in ElementTransformer
@@ -183,7 +183,6 @@ public class QueryTransformOps {
         }
         return varExprList2;
     }
-
 
     static class QueryShallowCopy implements QueryVisitor {
         final Query newQuery = new Query();
@@ -334,5 +333,4 @@ public class QueryTransformOps {
         Query q2 = copy.newQuery;
         return q2;
     }
-
 }
