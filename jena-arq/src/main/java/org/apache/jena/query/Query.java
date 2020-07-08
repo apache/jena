@@ -127,7 +127,10 @@ public class Query extends Prologue implements Cloneable, Printable
     public Query(Prologue prologue)
     {
         this() ;
-        usePrologueFrom(prologue) ;
+        Prologue p2 = prologue.copy();
+        prefixMap = p2.getPrefixMapping();
+        seenBaseURI = false ;
+        resolver = p2.getResolver();
     }
 
     // Allocate variables that are unique to this query.
