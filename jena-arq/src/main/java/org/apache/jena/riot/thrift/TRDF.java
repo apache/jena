@@ -41,9 +41,9 @@ import org.apache.thrift.transport.TTransport ;
 
 /** Support operations for RDF Thrift */
 public class TRDF {
-    public static final int InputBufferSize     = 128*1024 ; 
-    public static final int OutputBufferSize    = 128*1024 ; 
-    
+    public static final int InputBufferSize     = 128*1024 ;
+    public static final int OutputBufferSize    = 128*1024 ;
+
     /**
      * Create Thrift protocol for the InputStream.
      * @param in InputStream
@@ -61,13 +61,13 @@ public class TRDF {
 
     /**
      * Create Thrift protocol for the OutputStream.
-     * The caller must call {@link TRDF#flush(TProtocol)} 
-     * which will flush the underlying (internally buffered) output stream. 
+     * The caller must call {@link TRDF#flush(TProtocol)}
+     * which will flush the underlying (internally buffered) output stream.
      * @param out OutputStream
      */
     public static TProtocol protocol(OutputStream out) {
         try {
-            // Flushing the protocol will flush the BufferedOutputStream 
+            // Flushing the protocol will flush the BufferedOutputStream
             if ( !( out instanceof BufferedOutputStream ) )
                 out = new BufferedOutputStream(out, OutputBufferSize) ;
             TTransport transport = new TIOStreamTransport(out) ;
@@ -89,26 +89,26 @@ public class TRDF {
 
     public static TProtocol protocol(TTransport transport) {
         if ( true ) return new TCompactProtocol(transport) ;
-    
+
         // Keep the warnings down.
         if ( false ) return new TTupleProtocol(transport) ;
         if ( false ) return new TJSONProtocol(transport) ;
         throw new RiotThriftException("No protocol impl choosen") ;
     }
 
-    /** Flush a TProtocol; exceptions converted to {@link RiotException} */  
+    /** Flush a TProtocol; exceptions converted to {@link RiotException} */
     public static void flush(TProtocol protocol) {
         flush(protocol.getTransport()) ;
     }
 
-    /** Flush a TTransport; exceptions converted to {@link RiotException} */  
+    /** Flush a TTransport; exceptions converted to {@link RiotException} */
     public static void flush(TTransport transport) {
         try { transport.flush() ; }
         catch (TException ex) { TRDF.exception(ex) ; }
     }
 
     public static final RDF_ANY ANY = new RDF_ANY() ;
-    /** The Thrift RDF Term 'ANY' */ 
+    /** The Thrift RDF Term 'ANY' */
     public static final RDF_Term tANY = new RDF_Term() ;
     /** The Thrift RDF Term 'UNDEF' */
     public static final RDF_UNDEF UNDEF = new RDF_UNDEF() ;

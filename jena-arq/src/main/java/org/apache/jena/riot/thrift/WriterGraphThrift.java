@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot.thrift;
 
-import static org.apache.jena.riot.RDFLanguages.THRIFT ;
+import static org.apache.jena.riot.RDFLanguages.RDFTHRIFT ;
 
 import java.io.OutputStream ;
 import java.io.Writer ;
@@ -42,12 +42,13 @@ public class WriterGraphThrift implements WriterGraphRIOT
     }
     @Override
     public Lang getLang() {
-        return THRIFT ;
+        return RDFTHRIFT ;
     }
     @Override
     public void write(Writer out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
         throw new NotImplemented("Writing binary data to a java.io.Writer is not supported. Please use an OutputStream") ;
     }
+
     @Override
     public void write(OutputStream out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
         StreamRDF stream = BinRDF.streamToOutputStream(out, withValues) ;

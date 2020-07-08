@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot.thrift;
 
-import static org.apache.jena.riot.RDFLanguages.THRIFT ;
+import static org.apache.jena.riot.RDFLanguages.RDFTHRIFT ;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -29,25 +29,25 @@ import org.junit.Test ;
 public class TestThriftSetup {
 
     @Test public void setup_01() {
-        assertTrue(RDFLanguages.isRegistered(THRIFT)) ;
+        assertTrue(RDFLanguages.isRegistered(RDFTHRIFT)) ;
     }
 
     @Test public void setup_02() {
         Lang lang = RDFLanguages.filenameToLang("data.rt") ;
-        assertEquals(lang, THRIFT) ;
+        assertEquals(lang, RDFTHRIFT) ;
     }
 
     @SuppressWarnings("deprecation")
     @Test public void setup_03() {
-        assertTrue(RDFParserRegistry.isQuads(THRIFT)) ;
-        assertTrue(RDFParserRegistry.isTriples(THRIFT)) ;
-        assertTrue(RDFParserRegistry.isRegistered(THRIFT));
-        assertNotNull(RDFParserRegistry.getFactory(THRIFT)) ;
+        assertTrue(RDFParserRegistry.isQuads(RDFTHRIFT)) ;
+        assertTrue(RDFParserRegistry.isTriples(RDFTHRIFT)) ;
+        assertTrue(RDFParserRegistry.isRegistered(RDFTHRIFT));
+        assertNotNull(RDFParserRegistry.getFactory(RDFTHRIFT)) ;
     }
-    
+
     @Test public void setup_04() {
-        assertTrue(RDFWriterRegistry.contains(THRIFT)) ;
-        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(THRIFT)) ;
+        assertTrue(RDFWriterRegistry.contains(RDFTHRIFT)) ;
+        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(RDFTHRIFT)) ;
         assertTrue(RDFWriterRegistry.contains(RDFFormat.RDF_THRIFT)) ;
         assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(RDFFormat.RDF_THRIFT)) ;
         assertTrue(RDFWriterRegistry.contains(RDFFormat.RDF_THRIFT_VALUES)) ;
