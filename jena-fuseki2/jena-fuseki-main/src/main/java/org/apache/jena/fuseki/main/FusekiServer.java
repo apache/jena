@@ -273,7 +273,7 @@ public class FusekiServer {
         static {
             // This is the CrossOriginFilter default.
             corsInitParamsDft.put(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");
-            // Variatiosn from CrossOriginFilter defaults.
+            // Variations from CrossOriginFilter defaults.
             corsInitParamsDft.put(CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,POST,DELETE,PUT,HEAD,OPTIONS,PATCH");
             corsInitParamsDft.put(CrossOriginFilter.ALLOWED_HEADERS_PARAM,
                 "X-Requested-With, Content-Type, Accept, Origin, Last-Modified, Authorization");
@@ -974,6 +974,8 @@ public class FusekiServer {
             context.setDisplayName(Fuseki.servletRequestLogName);
             context.setErrorHandler(new FusekiErrorHandler1());
             context.setContextPath(contextPath);
+            // SPARQL Update by HTML - not the best way but.
+            context.setMaxFormContentSize(1024*1024);
             // securityHandler done in buildAccessControl
             return context;
         }

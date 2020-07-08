@@ -104,7 +104,7 @@ public class EndpointSet {
     public Collection<Operation> operations() { return endpoints.keySet(); }
     
     /** Get the Endpoint for a singleton EndpointSet */
-    public Endpoint getOnly() {
+    public Endpoint getExactlyOne() {
         return single;
     }
     
