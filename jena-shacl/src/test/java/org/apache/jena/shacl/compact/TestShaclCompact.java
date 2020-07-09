@@ -63,7 +63,7 @@ public class TestShaclCompact {
     @Test public void property_or_3()       { testv("property-or-3"); }
     @Test public void shapeRef()            { testv("shapeRef"); }
 
-    private final String DIR = "testing/shaclc-valid/";
+    private final String DIR = "src/test/resources/shaclc-valid/";
     private final String BASE ="urn:x-base:default";
 
     private void testv(String string) {
