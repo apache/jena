@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shacl.compact.parser;
+package org.apache.jena.shacl.compact.reader.parser;
 
 /**
  * Describes the input token stream.
@@ -146,4 +146,4 @@ public class Token implements java.io.Serializable {
   }
 
 }
-/* JavaCC - OriginalChecksum=b1f3cdb13f8b7afc2b4ae081e3e4e3be (do not edit this line) */
+/* JavaCC - OriginalChecksum=90f37783673758f2c51516bcdf5b9153 (do not edit this line) */

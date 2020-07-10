@@ -26,7 +26,7 @@ import org.apache.jena.datatypes.DatatypeFormatException ;
  * This only needs to implement the unparsing.
  */
 public class XSDhexBinary extends XSDbinary {
-    
+
     public XSDhexBinary(String typeName) {
         super(typeName, false);
     }
@@ -39,7 +39,7 @@ public class XSDhexBinary extends XSDbinary {
     public String unparse(Object value) {
         if (value instanceof byte[]) {
             // XSD canonical form uses upper case and this aligns with
-            // javax.xml.bind.DatatypeConverter.printHexBinary which 
+            // javax.xml.bind.DatatypeConverter.printHexBinary which
             // Jena used until 3.7.0.
             return Hex.encodeHexString((byte[])value, false);
         } else {

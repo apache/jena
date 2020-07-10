@@ -18,8 +18,6 @@
 
 package org.apache.jena.shacl.compact.writer;
 
-import java.io.OutputStream;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,58 +27,78 @@ import org.apache.jena.riot.out.NodeFormatterTTL;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.riot.system.RiotLib;
+import org.apache.jena.riot.writer.WriterConst;
 import org.apache.jena.shacl.ShaclException;
 import org.apache.jena.shacl.Shapes;
+import org.apache.jena.shacl.compact.SHACLC;
 import org.apache.jena.shacl.engine.Target;
 import org.apache.jena.shacl.engine.TargetType;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.Shape;
+import org.apache.jena.shared.PrefixMapping;
 
 public class CompactWriter {
-    private static final boolean DEV = true;
 
-    public static void print(OutputStream output, Shapes shapes) {
-        IndentedWriter out = new IndentedWriter(output);
-        out.setUnitIndent(4);
-        if ( DEV )
-            out.setFlushOnNewline(true);
-        print(out, shapes);
-    }
-
+    /** Write shapes with directives BASE/PREFIX/IMPORTS.*/
     public static void print(IndentedWriter out, Shapes shapes) {
-        PrefixMap pmap = PrefixMapFactory.create();
-        shapes.getGraph().getPrefixMapping().getNsPrefixMap().forEach((p,u)->pmap.add(p, u));
+        // Output PrefixMap
+        PrefixMapping graphPrefixMapping = shapes.getGraph().getPrefixMapping();
+
+        // Formatter PrefixMap - with the std prefixes if not overridden.
+        PrefixMap pmapWithStd = SHACLC.withStandardPrefixes();
+        // Add second so it can override any standard settings.
+        graphPrefixMapping.getNsPrefixMap().forEach((p,u)->pmapWithStd.add(p, u));
+        NodeFormatter nodeFmt = new NodeFormatterTTL(null, pmapWithStd);
 
         // BASE
-        // if contains
-
-        // prefixes
-        if ( ! pmap.isEmpty() ) {
-            RiotLib.writePrefixes(out, pmap, true);
+        if ( shapes.getBase() != null && shapes.getBase().isURI() ) {
+            RiotLib.writeBase(out, shapes.getBase().getURI(), true);
             out.println();
         }
 
-        // Imports.
-        // XXX Imports
+        // PREFIX
+        if ( ! graphPrefixMapping.hasNoMappings() ) {
+            PrefixMap pm = PrefixMapFactory.create(graphPrefixMapping);
+            RiotLib.writePrefixes(out, pm, true);
+            out.println();
+        }
 
-        NodeFormatter nodeFmt = new NodeFormatterTTL(null, pmap);
-        Collection<Shape> items = shapes.getRootShapes();
-        if ( items.isEmpty() ) {}
-        ShapeOutputVisitor visitor = new ShapeOutputVisitor(pmap, nodeFmt, out);
-        // imports
-        // shapes
-        for ( Shape sh : shapes ) {
-            if ( sh.getShapeNode().isURI() ) {
-                output(out, nodeFmt, visitor, sh);
+        // IMPORTS
+        if ( shapes.getImports() != null ) {
+            if ( ! shapes.getImports().isEmpty() ) {
+                shapes.getImports().forEach(n->{
+                    out.print("IMPORTS ");
+                    out.pad(WriterConst.PREFIX_IRI);
+                    nodeFmt.format(out, n);
+                    out.println();
+                });
+                out.println();
             }
         }
+
+        PrefixMapping prefixMappingWithStd = SHACLC.withStandardPrefixes(graphPrefixMapping);
+        ShapeOutputVisitor visitor = new ShapeOutputVisitor(prefixMappingWithStd, nodeFmt, out);
+        shapes.iteratorAll().forEachRemaining(sh->{
+            if ( sh.getShapeNode().isURI() )
+                CompactWriter.output(out, nodeFmt, visitor, sh);
+        });
         out.flush();
     }
 
-    // XXX NodeShape
-    // XXX shapeClass - needs graph.or tag in the NodeShape.
 
-    private static void output(IndentedWriter out, NodeFormatter nodeFmt, ShapeOutputVisitor visitor, Shape sh) {
+    private static NodeFormatter formatterPrefixMap(PrefixMapping prefixMapping) {
+        PrefixMap pmap = prefixMapWithStd(prefixMapping);
+        NodeFormatter nodeFmt = new NodeFormatterTTL(null, pmap);
+        return nodeFmt;
+    }
+
+    private static PrefixMap prefixMapWithStd(PrefixMapping prefixMapping) {
+        PrefixMap pmap = SHACLC.withStandardPrefixes();
+        prefixMapping.getNsPrefixMap().forEach((p,u)->pmap.add(p, u));
+        return pmap;
+    }
+
+    public static void output(IndentedWriter out, NodeFormatter nodeFmt, ShapeOutputVisitor visitor, Shape sh) {
         List<Target> targetImplicitClasses = sh.getTargets().stream()
             .filter(t->t.getTargetType()==TargetType.implicitClass)
             .collect(Collectors.toList());
@@ -117,11 +135,17 @@ public class CompactWriter {
         out.println("}");
     }
 
-    // XXX Needs work.
+    /** Write recursively.
+     * Used for an inline sh:node.
+     * @param out
+     * @param nodeFmt
+     * @param sh
+     */
     public static void output(IndentedWriter out, NodeFormatter nodeFmt, Shape sh) {
-        PrefixMap pmap = PrefixMapFactory.create();
-        sh.getShapeGraph().getPrefixMapping().getNsPrefixMap().forEach((p,u)->pmap.add(p, u));
-        ShapeOutputVisitor visitor = new ShapeOutputVisitor(pmap, nodeFmt, out);
+        // If this were critical for performance, having a "serialization context"
+        // with out, nodeFmt and prefixes" would be better. But this is the only place the
+        PrefixMapping prefixMappingWithStd = SHACLC.withStandardPrefixes(sh.getShapeGraph().getPrefixMapping());
+        ShapeOutputVisitor visitor = new ShapeOutputVisitor(prefixMappingWithStd, nodeFmt, out);
         sh.visit(visitor);
     }
 

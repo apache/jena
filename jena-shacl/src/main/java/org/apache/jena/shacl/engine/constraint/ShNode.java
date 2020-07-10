@@ -67,7 +67,6 @@ public class ShNode extends ConstraintOp1 {
         out.print("{ ");
         out.incIndent();
         out.println();
-        // XXX Needs work.
         CompactWriter.output(out, nodeFmt, other);
         out.decIndent();
         out.println(" }");

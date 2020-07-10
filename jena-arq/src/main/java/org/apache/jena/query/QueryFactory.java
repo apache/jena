@@ -18,8 +18,6 @@
 
 package org.apache.jena.query;
 
-import java.io.IOException;
-
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.riot.system.stream.StreamManager;
@@ -231,13 +229,7 @@ public class QueryFactory
         if ( filemanager == null )
             filemanager = StreamManager.get() ;
 
-        String qStr;
-        try {
-            qStr = IO.readWholeFileAsUTF8(filemanager.open(url));
-        } catch (IOException e) {
-            IO.exception(e);
-            qStr = null;
-        }
+        String qStr = IO.readWholeFileAsUTF8(filemanager.open(url));
         if ( baseURI == null )
             baseURI = url ;
         if ( langURI == null )

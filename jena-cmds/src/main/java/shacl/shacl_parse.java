@@ -75,7 +75,7 @@ public class shacl_parse extends CmdGeneral {
     private void exec(String fn, boolean multipleFiles) {
         Shapes shapes;
         try {
-            shapes = Shapes.parseAll(fn);
+            shapes = Shapes.parse(fn);
         } catch (ShaclParseException ex) {
             if ( multipleFiles )
                 System.err.println(fn+" : ");

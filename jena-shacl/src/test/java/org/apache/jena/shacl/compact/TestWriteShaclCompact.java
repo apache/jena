@@ -33,11 +33,8 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RDFWriter;
 import org.apache.jena.shacl.Shapes;
-import org.apache.jena.shacl.compact.writer.CompactWriter;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.sparql.graph.GraphFactory;
-import org.apache.jena.vocabulary.OWL;
-import org.apache.jena.vocabulary.RDF;
 import org.junit.Test;
 
 public class TestWriteShaclCompact {
@@ -76,16 +73,17 @@ public class TestWriteShaclCompact {
     @Test public void property_or_3()       { testWriter("property-or-3"); }
     @Test public void shapeRef()            { testWriter("shapeRef"); }
 
-    private final String DIR = "src/test/resources/shaclc-valid/";
+    private final String DIR = "src/test/files/shaclc-valid/";
     private final String BASE ="urn:x-base:default";
 
-    private void testWriter(String string) {
-        String fn = DIR+string+".shaclc";
-        String ttl = DIR+string+".ttl"; // <<-- Unique base
+    // Test by loading, writing and reading again then checking against the graph
+    // provided with teh graph from the read-back-in Shapes.
+    private void testWriter(String fileBaseName) {
+        String fn = DIR+fileBaseName+".shaclc";
+        String ttl = DIR+fileBaseName+".ttl";
 
         boolean DEV = false;
 
-        // XXX Remove dev code.
         if ( DEV ) {
             System.out.println("---- "+fn);
             String x = IO.readWholeFileAsUTF8(fn);
@@ -93,16 +91,18 @@ public class TestWriteShaclCompact {
         }
 
         // All shapes, not some.
-        Shapes shapes = ShaclcParser.parse(fn, BASE);
-        shapes = Shapes.parseAll(shapes.getGraph());
-        //if ( DEV ) System.out.printf("R = %d : S = %d\n", shapes.numRootShapes(), shapes.numShapes());
-        if ( DEV ) ShLib.printShapes(shapes);
+        Shapes shapes1 = ShaclcParser.parse(fn, BASE);
+        if ( DEV ) {
+            ShLib.printShapes(shapes1);
+            System.out.println();
+        }
 
         Graph expected = GraphFactory.createDefaultGraph();
         RDFDataMgr.read(expected, ttl, BASE, null);
 
+        // Write the shapes in compact syntax.
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        CompactWriter.print(out, shapes);
+        ShaclcWriter.print(out, shapes1);
 
         if ( DEV ) System.out.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
 
@@ -112,14 +112,7 @@ public class TestWriteShaclCompact {
         Graph graphGot = shapes2.getGraph();
         Graph graphOther = expected;
 
-        // <urn:x-base:default>  a  owl:Ontology .
-        // <http://example.org/datatype> a       owl:Ontology .
-
-        // XXX TEMP
-        remove(graphGot, null, RDF.type.asNode(), OWL.Ontology.asNode());
-        remove(graphGot, null, OWL.imports.asNode(), null);
-        remove(graphOther, null, RDF.type.asNode(), OWL.Ontology.asNode());
-        remove(graphOther, null, OWL.imports.asNode(), null);
+        if ( DEV ) System.out.println();
 
         boolean isomorphic = graphGot.isIsomorphicWith(graphOther);
         if ( ! isomorphic ) {
@@ -133,7 +126,7 @@ public class TestWriteShaclCompact {
                 RDFWriter.create().source(graphOther).format(RDFFormat.TURTLE_PRETTY).output(System.err);
             }
         }
-        assertTrue("test: "+string, isomorphic);
+        assertTrue("test: "+fileBaseName, isomorphic);
     }
 
     private void remove(Graph graph, Node s, Node p, Node o) {

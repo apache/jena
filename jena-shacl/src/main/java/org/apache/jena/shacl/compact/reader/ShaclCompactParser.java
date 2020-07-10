@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shacl.compact;
+package org.apache.jena.shacl.compact.reader;
 
 import java.util.*;
 
@@ -71,8 +71,6 @@ public class ShaclCompactParser extends ParserBase {
         triple(outputStream, s, nRDFtype, OWL.Ontology.asNode());
 
         imports.forEach(iri -> triple(outputStream, s, OWL.imports.asNode(), iri(iri)));
-        // Include PREFIXes in output graph
-        getPrologue().getPrefixMapping().getNsPrefixMap().forEach((p, u) -> outputStream.prefix(p, u));
 
         if ( !currentNodeShape.isEmpty() )
             throw new InternalErrorException("Internal error: Node shape stack is not empty at end of parsing");
@@ -92,6 +90,8 @@ public class ShaclCompactParser extends ParserBase {
 
     // Accumulators for triples of a constraint
     private Deque<List<Triple>> currentConstraintTriples = new ArrayDeque<>();
+
+    private List<String> imports = new ArrayList<>();
 
     protected void startNodeShape() {}
 
@@ -169,7 +169,16 @@ public class ShaclCompactParser extends ParserBase {
 
     // ---- Start grammar.
 
-    private List<String> imports = new ArrayList<>();
+    protected void rBase(String baseURI) {
+        getPrologue().setBaseURI(baseURI);
+        outputStream.base(baseURI);
+    }
+
+    protected void rPrefix(String prefix, String iriStr) {
+        getPrologue().getPrefixMapping().setNsPrefix(prefix, iriStr);
+        outputStream.prefix(prefix, iriStr);
+    }
+
     protected void rImports(String iri) {
         imports.add(iri);
     }
@@ -367,7 +376,7 @@ public class ShaclCompactParser extends ParserBase {
     // propertyAtom: Use ?property as context shape for any of the child elements.
     // For a nested nodeShapeBody, produce a new blank node ?node and use that as the
     // context shape ?shape. Then produce a triple ?property sh:node ?node.
-    public void startNestedPropertyAtom() {
+    protected void startNestedPropertyAtom() {
         // For a nested nodeShapeBody (in a propertyAtom), produce a new blank node
         // ?node and use that as the context shape ?shape.
         Node b = newBlankNode("nested-shape");
@@ -376,7 +385,7 @@ public class ShaclCompactParser extends ParserBase {
         beginNodeShape(b);
     }
 
-    public void finishNestedPropertyAtom() {
+    protected void finishNestedPropertyAtom() {
         finishNodeShape();
     }
 

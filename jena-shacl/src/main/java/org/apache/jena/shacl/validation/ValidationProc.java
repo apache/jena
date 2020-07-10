@@ -103,11 +103,17 @@ public class ValidationProc {
         } finally { out.setAbsoluteIndent(x); }
     }
 
-    public static ValidationReport simpleValidation(ValidationContext vCxt, Iterable<Shape> shapes, Graph data) {
-        //vCxt.setVerbose(true);
-        for ( Shape shape : shapes ) {
-            simpleValidation(vCxt, data, shape);
-        }
+
+
+    public static ValidationReport simpleValidation(ValidationContext vCxt, Shapes shapes, Graph data) {
+        shapes.getTargetShapes().forEach(shape->simpleValidation(vCxt, data, shape));
+        if ( vCxt.isVerbose() )
+            out.ensureStartOfLine();
+        return vCxt.generateReport();
+    }
+
+    public static ValidationReport simpleValidation(ValidationContext vCxt, Collection<Shape> shapes, Graph data) {
+        shapes.forEach(shape->simpleValidation(vCxt, data, shape));
         if ( vCxt.isVerbose() )
             out.ensureStartOfLine();
         return vCxt.generateReport();
@@ -121,7 +127,7 @@ public class ValidationProc {
     public static void simpleValidation(ValidationContext vCxt, Graph data, Shape shape) {
         simpleValidationInternal(vCxt, data, null, shape);
     }
-    
+
     // ---- Single node.
 
     public static ValidationReport simpleValidationNode(Shapes shapes, Graph data, Node node, boolean verbose) {
@@ -134,14 +140,12 @@ public class ValidationProc {
     }
 
     private static ValidationReport simpleValidationNode(ValidationContext vCxt, Shapes shapes, Node node, Graph data) {
-        //vCxt.setVerbose(true);
-        for ( Shape shape : shapes ) {
-            simpleValidationNode(vCxt, data, node, shape);
-        }
+        shapes.getTargetShapes().forEach(shape->
+            simpleValidationNode(vCxt, data, node, shape)
+            );
         if ( vCxt.isVerbose() )
             out.ensureStartOfLine();
         return vCxt.generateReport();
-
     }
 
     private static void simpleValidationNode(ValidationContext vCxt, Graph data, Node node, Shape shape) {
@@ -149,7 +153,7 @@ public class ValidationProc {
     }
 
     // --- Top of process
-    
+
     /**
      * Validation process.
      * Either all focusNode for the shape (argument node == null)
@@ -157,7 +161,7 @@ public class ValidationProc {
      */
     private static void simpleValidationInternal(ValidationContext vCxt, Graph data, Node node, Shape shape) {
         Collection<Node> focusNodes;
-   
+
         if ( node != null ) {
             if (! isFocusNode(shape, node, data))
                 return ;
@@ -165,7 +169,7 @@ public class ValidationProc {
         } else {
             focusNodes = getFocusNodes(data, shape);
         }
-        
+
         if ( vCxt.isVerbose() ) {
             out.println(shape.toString());
             out.printf("N: FocusNodes(%d): %s\n", focusNodes.size(), focusNodes);
@@ -280,9 +284,9 @@ public class ValidationProc {
             case targetNode:
                 return Collections.singletonList(targetObj);
             case targetObjectsOf:
-                return G.setSP(data, null, targetObj);
+                return G.allSP(data, null, targetObj);
             case targetSubjectsOf:
-                return G.setPO(data, targetObj, null);
+                return G.allPO(data, targetObj, null);
             default:
                 return Collections.emptyList();
         }

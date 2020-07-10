@@ -62,7 +62,7 @@ public abstract class ConstraintPairwise implements Constraint {
     public void validatePropertyShape(ValidationContext vCxt, Graph data, Shape shape,
                          Node focusNode, Path path, Set<Node> pathNodes) {
         // pathNodes is (focusNode, sh:path ?V) = valueNodes
-        Set<Node> compareNodes = G.setSP(data, focusNode, value);
+        Set<Node> compareNodes = G.allSP(data, focusNode, value);
         validate(vCxt, shape, focusNode, path, pathNodes, compareNodes);
     }
 

@@ -19,7 +19,7 @@
 package org.apache.jena.shacl.engine;
 
 
-import static org.apache.jena.shacl.lib.G.setAllNodesOfType;
+import static org.apache.jena.shacl.lib.G.allNodesOfType;
 
 import java.util.*;
 
@@ -81,12 +81,12 @@ public class TargetOps {
 
     /** Implicit class targets : section 2.1.3.3 Implicit Class Targets */
     public static Set<Node> implicitClassTargets(Graph shapesGraph) {
-        Set<Node> allClasses = setAllNodesOfType(shapesGraph, C.rdfsClass);
+        Set<Node> allClasses = allNodesOfType(shapesGraph, C.rdfsClass);
         if ( allClasses.isEmpty() )
             return Collections.emptySet();
-        Set<Node> nodeShapes = setAllNodesOfType(shapesGraph, SHACL.NodeShape);
-        Set<Node> propertyShapes = setAllNodesOfType(shapesGraph, SHACL.PropertyShape);
-        // A = A intersection B 
+        Set<Node> nodeShapes = allNodesOfType(shapesGraph, SHACL.NodeShape);
+        Set<Node> propertyShapes = allNodesOfType(shapesGraph, SHACL.PropertyShape);
+        // A = A intersection B
         nodeShapes.retainAll(allClasses);
         propertyShapes.retainAll(allClasses);
         Set<Node> acc = new HashSet<>();

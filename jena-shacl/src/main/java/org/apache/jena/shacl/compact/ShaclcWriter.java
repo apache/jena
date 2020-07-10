@@ -18,13 +18,24 @@
 
 package org.apache.jena.shacl.compact;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.io.OutputStream;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestReadShaclCompact.class
-    , TestWriteShaclCompact.class
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.shacl.Shapes;
+import org.apache.jena.shacl.compact.writer.CompactWriter;
 
-})
-public class TS_Compact {}
+public class ShaclcWriter {
+
+    /** Write shapes in <a href="https://w3c.github.io/shacl/shacl-compact-syntax/">SHACL Compact Syntax</a> (July 2020). */
+    public static void print(OutputStream output, Shapes shapes) {
+        IndentedWriter out = new IndentedWriter(output);
+        out.setUnitIndent(4);
+        print(out, shapes);
+    }
+
+    /** Write shapes in <a href="https://w3c.github.io/shacl/shacl-compact-syntax/">SHACL Compact Syntax</a> (July 2020). */
+    public static void print(IndentedWriter out, Shapes shapes) {
+        CompactWriter.print(out, shapes);
+    }
+}
+

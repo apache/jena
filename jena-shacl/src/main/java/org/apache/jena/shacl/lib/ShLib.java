@@ -42,7 +42,6 @@ import org.apache.jena.shacl.ValidationReport;
 import org.apache.jena.shacl.engine.ShaclPaths;
 import org.apache.jena.shacl.engine.Target;
 import org.apache.jena.shacl.engine.TargetType;
-import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.vocabulary.OWL;
@@ -61,16 +60,16 @@ public class ShLib {
         ""
         );
 
-    private static PrefixMap pmap = PrefixMapFactory.createForOutput();
+    private static PrefixMap displayPrefixMap = PrefixMapFactory.createForOutput();
     static {
-        pmap.add("owl",  OWL.getURI());
-        pmap.add("rdf",  RDF.getURI());
-        pmap.add("rdfs", RDFS.getURI());
-        pmap.add("sh",   SHACL.getURI());
-        pmap.add("xsd",  XSD.getURI());
+        displayPrefixMap.add("owl",  OWL.getURI());
+        displayPrefixMap.add("rdf",  RDF.getURI());
+        displayPrefixMap.add("rdfs", RDFS.getURI());
+        displayPrefixMap.add("sh",   SHACL.getURI());
+        displayPrefixMap.add("xsd",  XSD.getURI());
     }
 
-    private static NodeFormatter nodeFmt = new NodeFormatterTTL(null, pmap);
+    private static NodeFormatter nodeFmt = new NodeFormatterTTL(null, displayPrefixMap);
 
     public static void printShapes(Graph shapeGraph) {
         printShapes(Shapes.parse(shapeGraph));
@@ -84,9 +83,7 @@ public class ShLib {
 
     public static void printShapes(IndentedWriter out, Shapes shapes) {
         int indent = out.getAbsoluteIndent();
-        for ( Shape shape : shapes ) {
-            shape.print(out);
-        }
+        shapes.iteratorAll().forEachRemaining(shape->shape.print(out));
         out.setAbsoluteIndent(indent);
     }
 

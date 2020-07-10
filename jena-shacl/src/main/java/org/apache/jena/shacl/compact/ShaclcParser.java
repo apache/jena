@@ -27,16 +27,12 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.shacl.Shapes;
-import org.apache.jena.shacl.vocabulary.SHACL;
+import org.apache.jena.shacl.compact.reader.parser.ParseException;
+import org.apache.jena.shacl.compact.reader.parser.ShaclCompactParserJJ;
 import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.graph.GraphFactory;
-import org.apache.jena.vocabulary.OWL;
-import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.RDFS;
-import org.apache.jena.vocabulary.XSD;
-import org.apache.jena.shacl.compact.parser.ParseException;
-import org.apache.jena.shacl.compact.parser.ShaclCompactParserJJ;
 
+/** Parse <a href="https://w3c.github.io/shacl/shacl-compact-syntax/">SHACL Compact Syntax</a> (July 2020). */
 public class ShaclcParser {
 
     /**
@@ -96,7 +92,7 @@ public class ShaclcParser {
      * Parse from an {@code Reader} to get the SHACL graph.
      * The reader should be UTF-8
      */
-    /*package*/ static Graph parseSHACLC(Reader reader, String baseURI) {
+    public static Graph parseSHACLC(Reader reader, String baseURI) {
         ShaclCompactParserJJ parser = new ShaclCompactParserJJ(reader);
         return parseIntoGraph$(parser, baseURI);
     }
@@ -111,17 +107,8 @@ public class ShaclcParser {
     private static void parse$(ShaclCompactParserJJ parser, StreamRDF stream, String baseURI) {
         Prologue prologue = parser.getPrologue();
         stream.start();
-        if ( true ) {
-            // Always add these prefixes to the output stream.
-            // These are required by the test suite.
-            // Do before parsing in case the SHACLC file overrides them.
-            prefix(stream, prologue, "rdf",  RDF.getURI());
-            prefix(stream, prologue, "rdfs", RDFS.getURI());
-            prefix(stream, prologue, "sh",   SHACL.getURI());
-            prefix(stream, prologue, "xsd",  XSD.getURI());
-            prefix(stream, prologue, "owl",  OWL.getURI());
-        }
 
+        SHACLC.addStandardPrefixes(prologue.getPrefixMapping());
         parser.start(stream);
         try {
             if ( baseURI != null )
@@ -134,8 +121,7 @@ public class ShaclcParser {
         stream.finish();
     }
 
-    private static void prefix(StreamRDF stream, Prologue prologue, String prefix, String uri) {
-        stream.prefix(prefix, uri);
+    private static void prefix(Prologue prologue, String prefix, String uri) {
         prologue.getPrefixMapping().setNsPrefix(prefix, uri);
     }
 }

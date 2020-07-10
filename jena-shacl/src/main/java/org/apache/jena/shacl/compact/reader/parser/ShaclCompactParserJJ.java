@@ -18,13 +18,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shacl.compact.parser;
+package org.apache.jena.shacl.compact.reader.parser;
 
 import java.util.List;
 import java.util.ArrayList;
 import org.apache.jena.graph.*;
 import org.apache.jena.sparql.path.*;
-import org.apache.jena.shacl.compact.*;
+import org.apache.jena.shacl.compact.reader.*;
 
 public class ShaclCompactParserJJ extends ShaclCompactParser implements ShaclCompactParserJJConstants {
 
@@ -115,7 +115,7 @@ public class ShaclCompactParserJJ extends ShaclCompactParser implements ShaclCom
   final public void baseDecl() throws ParseException {String iri ;
     jj_consume_token(BASE);
     iri = IRIREF();
-getPrologue().setBaseURI(iri) ;
+rBase(iri) ;
   }
 
   final public void prefixDecl() throws ParseException {Token t ; String iri ;
@@ -123,7 +123,7 @@ getPrologue().setBaseURI(iri) ;
     t = jj_consume_token(PNAME_NS);
     iri = IRIREF();
 String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
-        getPrologue().setPrefix(s, iri) ;
+      rPrefix(s, iri);
   }
 
   final public void importDecl() throws ParseException {String iri ;

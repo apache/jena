@@ -34,7 +34,7 @@ public class TS_JenaShacl {
 
     @Parameters(name = "{0}")
     public static Collection<Object[]> data() throws Exception {
-        String manifest = "src/test/resources/local/manifest.ttl";
+        String manifest = "src/test/files/local/manifest.ttl";
         List<String> omitManifests = new ArrayList<>();
         return ShaclTests.junitParameters(manifest, omitManifests);
     }

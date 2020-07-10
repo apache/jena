@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shacl.compact;
+package org.apache.jena.shacl.compact.reader;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -26,6 +26,7 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.ReaderRIOT;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFOps;
+import org.apache.jena.shacl.compact.ShaclcParser;
 import org.apache.jena.sparql.util.Context;
 
 /** 

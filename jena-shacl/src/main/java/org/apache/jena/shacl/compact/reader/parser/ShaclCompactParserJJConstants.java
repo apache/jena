@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shacl.compact.parser;
+package org.apache.jena.shacl.compact.reader.parser;
 
 
 /**

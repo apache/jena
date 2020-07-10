@@ -68,7 +68,7 @@ public class ShaclPaths {
         if ( path instanceof P_Link ) {
             // Fast path common case.
             Node p = ((P_Link)path).getNode();
-            return G.setSP(graph, node, p);
+            return G.allSP(graph, node, p);
         }
         // Value nodes are a set.
         return Iter.toSet(pathReachIter(graph, node, path));

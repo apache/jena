@@ -45,7 +45,7 @@ public class RunManifest {
 
         List<String> omitManifests = new ArrayList<>();
         // Miss out. e.g.
-        //omitManifests.add(IRILib.filenameToIRI("src/test/resources/std/core/validation-reports/manifest.ttl"));
+        //omitManifests.add(IRILib.filenameToIRI("src/test/files/std/core/validation-reports/manifest.ttl"));
 
         List<ShaclTestItem> testCases = ShaclTests.manifest(manifest, omitManifests);
 

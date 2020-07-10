@@ -18,14 +18,15 @@
 
 package org.apache.jena.shacl.compact.writer;
 
+import static org.apache.jena.shacl.engine.constraint.CompactOut.*;
+
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.riot.out.NodeFormatter;
-import org.apache.jena.riot.system.PrefixMap;
-import static org.apache.jena.shacl.engine.constraint.CompactOut.*;
 import org.apache.jena.shacl.engine.constraint.MaxCount;
 import org.apache.jena.shacl.engine.constraint.MinCount;
 import org.apache.jena.shacl.parser.*;
 import org.apache.jena.shacl.vocabulary.SHACL;
+import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.sparql.path.PathWriter;
 
@@ -33,14 +34,13 @@ class ShapeOutputVisitor implements ShapeVisitor {
 
     private final IndentedWriter out;
     private final NodeFormatter nodeFmt;
+    // For the SPARQL path syntax writer.
     private final org.apache.jena.sparql.core.Prologue prologue;
 
-    ShapeOutputVisitor(PrefixMap pmap, NodeFormatter nodeFmt, IndentedWriter out) {
+    ShapeOutputVisitor(PrefixMapping pmap, NodeFormatter nodeFmt, IndentedWriter out) {
         this.nodeFmt = nodeFmt;
         this.out = out;
-        this.prologue = new org.apache.jena.sparql.core.Prologue();
-        if ( pmap != null )
-            pmap.forEach((p,u)->this.prologue.getPrefixMapping().setNsPrefix(p, u));
+        this.prologue = new org.apache.jena.sparql.core.Prologue(pmap);
     }
 
     @Override
@@ -61,8 +61,7 @@ class ShapeOutputVisitor implements ShapeVisitor {
         int minCount = -1 ;
         int maxCount = -1;
 
-        // XXX Ugly code.
-        // Find min and max.
+        // Find min and max ready for printing.
         for ( Constraint c : propertyShape.getConstraints()) {
             if ( SHACL.MinCountConstraintComponent.equals(c.getComponent()) ) {
                 minCount = ((MinCount)c).getMinCount();
@@ -94,10 +93,6 @@ class ShapeOutputVisitor implements ShapeVisitor {
         }
 
         out.println(" .");
-
-        //propertyShape.getPath();
-        // Which may include sh:node.
-        // propertyAtom        : propertyType | nodeKind | shapeRef | propertyValue | nodeShapeBody ;
 
         propertyShape.getPropertyShapes().forEach(this::outputPropertyShape);
     }
@@ -158,52 +153,4 @@ class ShapeOutputVisitor implements ShapeVisitor {
     void constraint(Constraint c) {
         c.printCompact(out, nodeFmt);
     }
-
-    /*
-     Commonality of form.
-nodeParam           : 'targetNode' | 'targetObjectsOf' | 'targetSubjectsOf' |
-                      'deactivated' | 'severity' | 'message' |
-                      'class' | 'datatype' | 'nodeKind' |
-                      'minExclusive' | 'minInclusive' | 'maxExclusive' | 'maxInclusive' |
-                      'minLength' | 'maxLength' | 'pattern' | 'flags' | 'languageIn' |
-                      'equals' | 'disjoint' |
-                      'closed' | 'ignoredProperties' | 'hasValue' | 'in' ;
-
-propertyParam       : 'deactivated' | 'severity' | 'message' |
-                      'class' | 'datatype' | 'nodeKind' |
-                      'minExclusive' | 'minInclusive' | 'maxExclusive' | 'maxInclusive' |
-                      'minLength' | 'maxLength' | 'pattern' | 'flags' | 'languageIn' | 'uniqueLang' |
-                      'equals' | 'disjoint' | 'lessThan' | 'lessThanOrEquals' |
-                      'qualifiedValueShape' | 'qualifiedMinCount' | 'qualifiedMaxCount' | 'qualifiedValueShapesDisjoint' |
-                      'closed' | 'ignoredProperties' | 'hasValue' | 'in' ;
-
-
-       node only      'targetNode' | 'targetObjectsOf' | 'targetSubjectsOf' |
-
-                      'uniqueLang' |
-       property only  'qualifiedValueShape' | 'qualifiedMinCount' | 'qualifiedMaxCount' | 'qualifiedValueShapesDisjoint' |
-                      'lessThan' | 'lessThanOrEquals' |
-
-     */
-
-//    void printConstraint(Constraint c) {
-//        // XXX c.compactPrint(out, nodeFmt);
-//        if ( c instanceof DatatypeConstraint ) {
-//            DatatypeConstraint dc = (DatatypeConstraint)c;
-//            nodeFmt.format(out, dc.getDatatype());
-//        } else if ( c instanceof NodeKindConstraint ) {
-//            NodeKindConstraint nkc = (NodeKindConstraint)c;
-//            // XXX Not ideal. ENUM?
-//            String s = nkc.getKind().getLocalName();
-//            out.print(s);
-//        }
-//        else {
-//            //SHACL.DatatypeConstraintComponent;
-//            // XXX Dummy.
-//            c.print(out);
-//        }
-//        if ( false/*datatype*/) {}
-//        if ( false/*sh:node IRI*/) {}
-//        // nodeKind
-//    }
 }

@@ -63,7 +63,7 @@ public class TestReadShaclCompact {
     @Test public void property_or_3()       { testReader("property-or-3"); }
     @Test public void shapeRef()            { testReader("shapeRef"); }
 
-    private final String DIR = "src/test/resources/shaclc-valid/";
+    private final String DIR = "src/test/files/shaclc-valid/";
     private final String BASE ="urn:x-base:default";
 
     private void testReader(String string) {

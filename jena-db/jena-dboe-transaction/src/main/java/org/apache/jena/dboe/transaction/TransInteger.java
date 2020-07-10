@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.InternalErrorException;
@@ -107,16 +108,14 @@ public class TransInteger extends TransactionalComponentLifecycle<TransInteger.I
             str = str.trim();
             return Long.parseLong(str);
         }
-        catch (IOException ex) {
+        catch (RuntimeIOException ex) {
             Log.error(TransInteger.class, "IOException: " + ex.getMessage(), ex);
-            IO.exception(ex);
+            throw ex;
         }
         catch (NumberFormatException ex) {
             Log.error(TransInteger.class, "NumberformatException: " + ex.getMessage());
             throw new InternalErrorException(ex);
         }
-        // Not reached.
-        return Long.MIN_VALUE;
     }
 
     private static void write(String filename, long value) {
