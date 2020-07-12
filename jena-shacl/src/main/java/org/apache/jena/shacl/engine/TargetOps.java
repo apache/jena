@@ -27,33 +27,37 @@ import org.apache.jena.atlas.lib.CollectionUtils;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.sys.C;
 import org.apache.jena.shacl.vocabulary.SHACL;
 
 /** Algorithms that calculate targets */
 public class TargetOps {
-    public static String strTargets(Collection<Target> targets) {
+    public static String strTargets(Collection<Target> targets, NodeFormatter nodeFmt) {
         if ( targets.size() == 1 )
-            return strTarget(CollectionUtils.oneElt(targets));
+            return strTarget(CollectionUtils.oneElt(targets), nodeFmt);
 
         StringJoiner sj = new StringJoiner(", ","(",")");
-        targets.forEach(t->sj.add(strTarget(t)));
+        targets.forEach(t->sj.add(strTarget(t, nodeFmt)));
         return sj.toString();
     }
 
-    public static String strTarget(Target target) {
+    public static String strTarget(Target target, NodeFormatter nodeFmt) {
+        if ( nodeFmt == null )
+            nodeFmt = ShLib.nodeFmtAbbrev;
+
         switch(target.getTargetType()) {
             case implicitClass :
-                return "T/Impl ["+target.getObject()+"]";
+                return "T/Impl ["+ShLib.displayStr(target.getObject(), nodeFmt)+"]";
             case targetClass :
-                return "T/Class [?x rdf:type "+ShLib.displayStr(target.getObject())+"]";
+                return "T/Class [?x rdf:type "+ShLib.displayStr(target.getObject(), nodeFmt)+"]";
             case targetNode :
-                return "T/Node [?x = "+ShLib.displayStr(target.getObject())+"]";
+                return "T/Node [?x = "+ShLib.displayStr(target.getObject(), nodeFmt)+"]";
             case targetObjectsOf :
-                return "T/Obj [_ "+ShLib.displayStr(target.getObject())+" ?x]";
+                return "T/Obj [_ "+ShLib.displayStr(target.getObject(), nodeFmt)+" ?x]";
             case targetSubjectsOf :
-                return "T/Subj [?x "+ShLib.displayStr(target.getObject())+" _]";
+                return "T/Subj [?x "+ShLib.displayStr(target.getObject(), nodeFmt)+" _]";
             default :
                 return "** Unknown **";
         }

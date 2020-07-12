@@ -30,7 +30,7 @@ import org.apache.jena.sparql.path.Path;
 
 public interface Constraint {
     // Print - internal format
-    public default void print(IndentedWriter out) {
+    public default void print(IndentedWriter out, NodeFormatter nodeFmt) {
         out.print(toString());
     }
 

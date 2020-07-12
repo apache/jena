@@ -80,7 +80,7 @@ public class TestReadShaclCompact {
         boolean isomorphic = graphGot.isIsomorphicWith(graphOther);
         if ( ! isomorphic ) {
             System.err.println("---- "+fn);
-            System.err.println("Different");
+            System.err.println("Different (R)");
             System.err.println("graph(jena) = "+graphGot.size());
             System.err.println("graph(ref)  = "+graphOther.size());
             if ( false ) {

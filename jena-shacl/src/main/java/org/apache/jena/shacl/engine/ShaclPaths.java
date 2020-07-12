@@ -23,12 +23,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.shacl.lib.G;
 import org.apache.jena.shacl.lib.ShLib;
@@ -192,6 +194,20 @@ public class ShaclPaths {
         Prologue prologue = new Prologue(graph.getPrefixMapping());
         return PathWriter.asString(path, prologue);
     }
+
+    public static void write(IndentedWriter out, Path path, Prologue prologue) {
+        PathWriter.write(out, path, prologue);
+    }
+
+    public static void write(IndentedWriter out, Path path, NodeFormatter nodeFmt) {
+        Node n = pathNode(path);
+        if ( n == null )
+            out.print(PathWriter.asString(path));
+        else
+            nodeFmt.format(out, n);;
+
+    }
+
 
     public static Node pathNode(Path path) {
         if ( path instanceof P_Link ) {

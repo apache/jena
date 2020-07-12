@@ -22,15 +22,15 @@ import static org.apache.jena.shacl.engine.constraint.CompactOut.*;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.riot.out.NodeFormatter;
+import org.apache.jena.shacl.engine.ShaclPaths;
 import org.apache.jena.shacl.engine.constraint.MaxCount;
 import org.apache.jena.shacl.engine.constraint.MinCount;
 import org.apache.jena.shacl.parser.*;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.path.Path;
-import org.apache.jena.sparql.path.PathWriter;
 
-class ShapeOutputVisitor implements ShapeVisitor {
+public class ShapeOutputVisitor implements ShapeVisitor {
 
     private final IndentedWriter out;
     private final NodeFormatter nodeFmt;
@@ -56,7 +56,7 @@ class ShapeOutputVisitor implements ShapeVisitor {
         printShape(propertyShape);
         // Any nodeParam constraint?
         Path path = propertyShape.getPath();
-        PathWriter.write(out, path, prologue);
+        ShaclPaths.write(out, path, prologue);
 
         int minCount = -1 ;
         int maxCount = -1;

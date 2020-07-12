@@ -18,6 +18,10 @@
 
 package org.apache.jena.shacl;
 
+import static org.apache.jena.sparql.graph.NodeConst.nodeOwlImports;
+import static org.apache.jena.sparql.graph.NodeConst.nodeOwlOntology;
+import static org.apache.jena.sparql.graph.NodeConst.nodeRDFType;
+
 import java.util.*;
 
 import org.apache.jena.atlas.iterator.Iter;
@@ -30,9 +34,7 @@ import org.apache.jena.shacl.lib.G;
 import org.apache.jena.shacl.lib.RDFDataException;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.parser.ShapesParser;
-import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.sys.JenaSystem;
-import org.apache.jena.vocabulary.OWL;
 
 /** A collection of shapes as output by the SHACL parser.
  * Usage:
@@ -102,6 +104,7 @@ public class Shapes implements Iterable<Shape> {
                 declShapes.add(shape);
             }
         });
+
         return new Shapes(shapesGraph, shapesMap, targets, declaredNodes, rootShapes, declShapes);
     }
 
@@ -119,8 +122,8 @@ public class Shapes implements Iterable<Shape> {
         List<Node> _imports = null;
         // Extract base and imports.
         try {
-            _shapesBase = G.getOnePO(shapesGraph, NodeConst.nodeRDFType, OWL.Ontology.asNode());
-            _imports = G.listSP(shapesGraph, _shapesBase, OWL.imports.asNode());
+            _shapesBase = G.getOnePO(shapesGraph, nodeRDFType, nodeOwlOntology);
+            _imports = G.listSP(shapesGraph, _shapesBase, nodeOwlImports);
         } catch (RDFDataException ex) {}
         this.shapesBase = _shapesBase;
         this.imports = _imports;

@@ -54,10 +54,8 @@ public class ShNode extends ConstraintOp1 {
         return new ReportItem(msg, node);
     }
 
-    // XXX TODO sh:node
     @Override
     public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
-        //'@'
         if ( other.getShapeNode().isURI() ) {
             out.print("@");
             nodeFmt.format(out, other.getShapeNode());

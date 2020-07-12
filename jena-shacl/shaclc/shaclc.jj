@@ -281,6 +281,10 @@ String nodeParam() : { Token t ;}
 {
   (
     t = "targetNode" | t = "targetObjectsOf" | t = "targetSubjectsOf" |
+// <EXT>
+    // Extension for symmetry!
+    t = "targetClass" |
+// </EXT>
     t = "deactivated" | t = "severity" | t = "message" |
     t = "class" | t = "datatype" | t = "nodeKind" |
     t = "minExclusive" | t = "minInclusive" | t = "maxExclusive" | t = "maxInclusive" |

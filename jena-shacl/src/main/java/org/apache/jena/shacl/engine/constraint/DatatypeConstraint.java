@@ -81,7 +81,8 @@ public class DatatypeConstraint extends ConstraintTerm {
         }
         if ( ! n.isLiteral() )
             return new ReportItem(toString()+" : Not a literal", n);
-        String errMsg = toString()+" : Got datatype "+n.getLiteralDatatype().getURI()+" : Node "+displayStr(n);
+        String dtStr = vCxt.getShapesGraph().getPrefixMapping().qnameFor(dtURI);
+        String errMsg = toString()+" : Got datatype "+dtStr+" : Node "+displayStr(n);
         return new ReportItem(errMsg, n);
     }
 
@@ -93,7 +94,13 @@ public class DatatypeConstraint extends ConstraintTerm {
     @Override
     public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
         compact(out, nodeFmt, "datatype", datatype);
-        //nodeFmt.format(out, datatype);
+
+        // Only allowed in a property shape without OR or NOT.
+//        if ( ShLib.isDatatype(dtURI) ) {
+//            nodeFmt.format(out, datatype);
+//        } else {
+//            compact(out, nodeFmt, "datatype", datatype);
+//        }
     }
 
     @Override

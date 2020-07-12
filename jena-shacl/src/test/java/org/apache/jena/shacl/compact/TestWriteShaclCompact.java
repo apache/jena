@@ -32,9 +32,11 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RDFWriter;
+import org.apache.jena.riot.RIOT;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.sparql.graph.GraphFactory;
+import org.apache.jena.sparql.util.Context;
 import org.junit.Test;
 
 public class TestWriteShaclCompact {
@@ -82,7 +84,7 @@ public class TestWriteShaclCompact {
         String fn = DIR+fileBaseName+".shaclc";
         String ttl = DIR+fileBaseName+".ttl";
 
-        boolean DEV = false;
+        boolean DEV = true;
 
         if ( DEV ) {
             System.out.println("---- "+fn);
@@ -116,14 +118,16 @@ public class TestWriteShaclCompact {
 
         boolean isomorphic = graphGot.isIsomorphicWith(graphOther);
         if ( ! isomorphic ) {
+            Context cxt = RIOT.getContext().copy();
+            cxt.set(RIOT.symTurtleDirectiveStyle, "sparql");
             System.err.println("---- "+fn);
 
-            System.err.println("Different");
+            System.err.println("Different (W)");
             System.err.println("graph(jena) = "+graphGot.size());
             System.err.println("graph(ref)  = "+graphOther.size());
             if ( true ) {
-                RDFWriter.create().source(graphGot).format(RDFFormat.TURTLE_PRETTY).output(System.err);
-                RDFWriter.create().source(graphOther).format(RDFFormat.TURTLE_PRETTY).output(System.err);
+                RDFWriter.create().source(graphGot).format(RDFFormat.TURTLE_PRETTY).context(cxt).output(System.err);
+                RDFWriter.create().source(graphOther).format(RDFFormat.TURTLE_PRETTY).context(cxt).output(System.err);
             }
         }
         assertTrue("test: "+fileBaseName, isomorphic);

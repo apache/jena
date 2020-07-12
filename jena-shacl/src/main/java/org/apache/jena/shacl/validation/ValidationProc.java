@@ -233,7 +233,7 @@ public class ValidationProc {
         }
     }
 
-    // XXX This is *nearly* validationShape.
+    // XXX This is nearly validationShape.
     private static void validationPropertyShape(ValidationContext vCxt, Graph data, PropertyShape propertyShape, Node focusNode) {
         //validateShape(vCxt, data, propertyShape, focusNode);
         // sh:property got us here.

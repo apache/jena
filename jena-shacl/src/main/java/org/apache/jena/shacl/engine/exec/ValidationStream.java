@@ -29,6 +29,7 @@ import org.apache.jena.riot.system.StreamRDFWrapper;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.validation.ReportItem;
+import org.apache.jena.sparql.path.P_Link;
 
 public class ValidationStream extends StreamRDFWrapper {
     private ValidationContext vCxt;
@@ -41,8 +42,24 @@ public class ValidationStream extends StreamRDFWrapper {
         this.validators = validators;
         validators.stream()
             .filter(v->ShLib.isImmediate(v.getTarget()))
-            .map(v->v.getTarget())
-            .forEach(t->predicates.add(t.getObject()));
+            .forEach(v->{
+                if ( v.getPath() != null ) {
+                    // sh:path.
+                    P_Link pl = (P_Link)(v.getPath());
+                    Node p = pl.getNode();
+                    predicates.add(p);
+                    // Later: More complex path : end predicate.
+                } else {
+                    // sh:targetObjectsOf
+                    predicates.add(v.getTarget().getObject());
+                }
+            });
+
+
+//            .map(v->v.getTarget())
+//            .forEach(t->predicates.add(t.getObject()));
+
+        predicates.forEach(p->System.out.println("  ValidationStream predicate: <"+p.getURI()+">"));
     }
 
     @Override

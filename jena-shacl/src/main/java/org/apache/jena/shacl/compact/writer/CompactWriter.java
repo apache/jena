@@ -50,35 +50,43 @@ public class CompactWriter {
         graphPrefixMapping.getNsPrefixMap().forEach((p,u)->pmapWithStd.add(p, u));
         NodeFormatter nodeFmt = new NodeFormatterTTL(null, pmapWithStd);
 
+        boolean someOutput = false;
+
         // BASE
         if ( shapes.getBase() != null && shapes.getBase().isURI() ) {
+            if ( someOutput )
+                out.println();
             RiotLib.writeBase(out, shapes.getBase().getURI(), true);
-            out.println();
+            someOutput = true;
         }
 
         // PREFIX
         if ( ! graphPrefixMapping.hasNoMappings() ) {
             PrefixMap pm = PrefixMapFactory.create(graphPrefixMapping);
+            if ( someOutput )
+                out.println();
             RiotLib.writePrefixes(out, pm, true);
-            out.println();
+            someOutput = true;
         }
 
         // IMPORTS
         if ( shapes.getImports() != null ) {
             if ( ! shapes.getImports().isEmpty() ) {
+                if ( someOutput )
+                    out.println();
                 shapes.getImports().forEach(n->{
                     out.print("IMPORTS ");
                     out.pad(WriterConst.PREFIX_IRI);
                     nodeFmt.format(out, n);
                     out.println();
                 });
-                out.println();
             }
         }
 
         PrefixMapping prefixMappingWithStd = SHACLC.withStandardPrefixes(graphPrefixMapping);
         ShapeOutputVisitor visitor = new ShapeOutputVisitor(prefixMappingWithStd, nodeFmt, out);
         shapes.iteratorAll().forEachRemaining(sh->{
+            out.println();
             if ( sh.getShapeNode().isURI() )
                 CompactWriter.output(out, nodeFmt, visitor, sh);
         });
@@ -120,7 +128,7 @@ public class CompactWriter {
             if ( targetImplicitClasses.size() > 1 )
                 CompactWriter.notShaclc("Multiple implicit classes");
             if ( ! targetClasses.isEmpty() )
-                CompactWriter.notShaclc("Implciit classe and targetClass");
+                CompactWriter.notShaclc("Implicit classes and targetClass");
             Target target = targetImplicitClasses.get(0);
             out.print("shapeClass ");
             nodeFmt.format(out, target.getObject());

@@ -19,23 +19,24 @@
 package org.apache.jena.shacl.engine.constraint;
 
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.parser.Shape;
 
 /** A constraint that operates on one other constraints */
 public abstract class ConstraintOp1 extends ConstraintOp {
-    
+
     protected  final Shape other;
-    
+
     protected ConstraintOp1(Shape subShape) {
         other = subShape;
     }
-    
+
     @Override
-    public void print(IndentedWriter out) {
+    public void print(IndentedWriter out, NodeFormatter nodeFmt) {
         out.print(toString());
         out.ensureStartOfLine();
         out.incIndent();
-        other.print(out);
+        other.print(out, nodeFmt);
         out.decIndent();
         out.ensureStartOfLine();
     }

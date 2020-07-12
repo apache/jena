@@ -86,5 +86,4 @@ public class CompactOut {
         EscapeStr.stringEsc(out, str, '"', true, CharSpace.UTF8);
         out.print('"');
     }
-
 }

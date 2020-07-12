@@ -50,6 +50,12 @@ public class ClassConstraint extends ConstraintDataTerm {
     @Override
     public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
         compact(out, nodeFmt, "class", expectedClass);
+        // Only allowed in a property shape without OR or NOT.
+//        if ( expectedClass.isURI() && ! ShLib.isDatatype(expectedClass.getURI()) ) {
+//            nodeFmt.format(out, expectedClass);
+//        } else {
+//            compact(out, nodeFmt, "class", expectedClass);
+//        }
     }
 
     @Override
@@ -69,6 +75,13 @@ public class ClassConstraint extends ConstraintDataTerm {
     @Override
     public Node getComponent() {
         return SHACL.ClassConstraintComponent;
+    }
+
+    @Override
+    public void print(IndentedWriter out, NodeFormatter nodeFmt) {
+        out.print("ClassConstraint[");
+        nodeFmt.format(out, expectedClass);
+        out.print("]");
     }
 
     @Override

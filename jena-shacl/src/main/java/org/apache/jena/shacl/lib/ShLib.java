@@ -21,6 +21,8 @@ package org.apache.jena.shacl.lib;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.io.IndentedWriter;
@@ -69,7 +71,7 @@ public class ShLib {
         displayPrefixMap.add("xsd",  XSD.getURI());
     }
 
-    private static NodeFormatter nodeFmt = new NodeFormatterTTL(null, displayPrefixMap);
+    public static NodeFormatter nodeFmtAbbrev = new NodeFormatterTTL(null, displayPrefixMap);
 
     public static void printShapes(Graph shapeGraph) {
         printShapes(Shapes.parse(shapeGraph));
@@ -83,7 +85,8 @@ public class ShLib {
 
     public static void printShapes(IndentedWriter out, Shapes shapes) {
         int indent = out.getAbsoluteIndent();
-        shapes.iteratorAll().forEachRemaining(shape->shape.print(out));
+        NodeFormatter nodeFmt = new NodeFormatterTTL(null, PrefixMapFactory.create(shapes.getGraph().getPrefixMapping()));
+        shapes.iteratorAll().forEachRemaining(shape->shape.print(out, nodeFmt));
         out.setAbsoluteIndent(indent);
     }
 
@@ -174,14 +177,14 @@ public class ShLib {
     }
 
     static String displayStr(RDFNode n) {
-        return displayStr(n.asNode(), nodeFmt);
+        return displayStr(n.asNode(), nodeFmtAbbrev);
     }
 
     public static String displayStr(Node n) {
-        return displayStr(n, nodeFmt);
+        return displayStr(n, nodeFmtAbbrev);
     }
 
-    public static String displayStr(Node n, NodeFormatter fmt) {
+    public static String displayStr(Node n, NodeFormatter nodeFmt) {
         IndentedLineBuffer sw = new IndentedLineBuffer() ;
         nodeFmt.format(sw, n);
         return sw.toString() ;
@@ -191,6 +194,25 @@ public class ShLib {
         TargetType targetType = target.getTargetType();
         return targetType.equals(TargetType.targetObjectsOf) || targetType.equals(TargetType.targetSubjectsOf);
     }
+
+    static Set<String> rdfDatatypes = new HashSet<>();
+    static {
+        rdfDatatypes.add(RDF.dtLangString.getURI());
+        rdfDatatypes.add(RDF.dtRDFHTML.getURI());
+        rdfDatatypes.add(RDF.dtRDFJSON.getURI());
+        rdfDatatypes.add(RDF.dtXMLLiteral.getURI());
+    }
+
+
+
+    /** Test whether the IRI is a datatype that can be written in compact short form (no datatype=)
+     * This test us used by the SHACL compact parser in {@code ShaclCompactParser.rPropertyType}
+     * and SHACL compact writer.
+     */
+    public static boolean isDatatype(String iriStr) {
+        return iriStr.startsWith(XSD.getURI()) || rdfDatatypes.contains(iriStr);
+    }
+
 
     public static Node focusNode(Triple triple, Target target) {
         switch(target.getTargetType()) {
@@ -204,5 +226,10 @@ public class ShLib {
             default :
         }
         return null;
+    }
+
+    public static NodeFormatter nodeFormatter(Shapes shapes) {
+        PrefixMap pmap = PrefixMapFactory.create(shapes.getGraph().getPrefixMapping());
+        return new NodeFormatterTTL(null, pmap);
     }
 }

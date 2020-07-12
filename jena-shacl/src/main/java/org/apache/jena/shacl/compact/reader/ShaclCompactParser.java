@@ -31,14 +31,13 @@ import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.tokens.TokenizerText;
 import org.apache.jena.shacl.ShaclException;
 import org.apache.jena.shacl.engine.ShaclPaths;
+import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.lang.ParserBase;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.vocabulary.OWL;
-import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
-import org.apache.jena.vocabulary.XSD;
 
 /**
  * The engine for translating SHACL Compact Syntax into a SHACL graph of triples.
@@ -62,15 +61,21 @@ public class ShaclCompactParser extends ParserBase {
     // no value but imports is not empty. For each iri in imports, produce a triple
     // ?baseURI owl:imports ?iri.
     public void finish() {
-        String base = getPrologue().getBaseURI();
-        if ( base == null )
-            base = "http://example/base#";
-        outputStream.base(base);
+        // A test (empty.shaclc) does not pass without this.
+        // It is the only test without a BASE.
+        if ( true /*baseSeen != null*/ ) {
+            String base = getPrologue().getBaseURI();
+            if ( base == null )
+                throw new ShaclException("No BASE");
 
-        Node s = iri(base);
-        triple(outputStream, s, nRDFtype, OWL.Ontology.asNode());
-
-        imports.forEach(iri -> triple(outputStream, s, OWL.imports.asNode(), iri(iri)));
+            Node s = iri(base);
+            triple(outputStream, s, nRDFtype, OWL.Ontology.asNode());
+            imports.forEach(iri -> triple(outputStream, s, OWL.imports.asNode(), iri(iri)));
+        } else {
+            // No BASE, but with imports. Record using a blank node.
+            Node s = NodeFactory.createBlankNode();
+            imports.forEach(iri -> triple(outputStream, s, OWL.imports.asNode(), iri(iri)));
+        }
 
         if ( !currentNodeShape.isEmpty() )
             throw new InternalErrorException("Internal error: Node shape stack is not empty at end of parsing");
@@ -91,7 +96,10 @@ public class ShaclCompactParser extends ParserBase {
     // Accumulators for triples of a constraint
     private Deque<List<Triple>> currentConstraintTriples = new ArrayDeque<>();
 
-    private List<String> imports = new ArrayList<>();
+    // Record what is seen.
+    private String baseSeen                     = null;
+    private Map<String, String> prefixesSeen    = new HashMap<>();
+    private List<String> imports                = new ArrayList<>();
 
     protected void startNodeShape() {}
 
@@ -172,11 +180,13 @@ public class ShaclCompactParser extends ParserBase {
     protected void rBase(String baseURI) {
         getPrologue().setBaseURI(baseURI);
         outputStream.base(baseURI);
+        baseSeen = baseURI;
     }
 
     protected void rPrefix(String prefix, String iriStr) {
         getPrologue().getPrefixMapping().setNsPrefix(prefix, iriStr);
         outputStream.prefix(prefix, iriStr);
+        prefixesSeen.put(prefix, iriStr);
     }
 
     protected void rImports(String iri) {
@@ -394,17 +404,8 @@ public class ShaclCompactParser extends ParserBase {
     // then produce a triple ?property sh:datatype ?iri, otherwise ?property sh:class
     // ?iri.
 
-    static Set<String> rdfDatatypes = new HashSet<>();
-    static {
-        rdfDatatypes.add(RDF.dtLangString.getURI());
-        rdfDatatypes.add(RDF.dtRDFHTML.getURI());
-        rdfDatatypes.add(RDF.dtRDFJSON.getURI());
-        rdfDatatypes.add(RDF.dtXMLLiteral.getURI());
-    }
-
     protected void rPropertyType(String iri) {
-        Node p =
-            iri.startsWith(XSD.getURI()) || rdfDatatypes.contains(iri)
+        Node p = ShLib.isDatatype(iri)
             ? SHACL.datatype
             : SHACL.class_;
         triple(currentTripleAcc(), currentPropertyShape(), p, iri(iri));

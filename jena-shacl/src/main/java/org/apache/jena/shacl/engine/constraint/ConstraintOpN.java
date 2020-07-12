@@ -34,12 +34,12 @@ public abstract class ConstraintOpN extends ConstraintOp {
     }
 
     @Override
-    public void print(IndentedWriter out) {
+    public void print(IndentedWriter out, NodeFormatter nodeFmt) {
         out.print(toString());
         out.ensureStartOfLine();
         out.incIndent();
         for ( Shape sub: others ) {
-            sub.print(out);
+            sub.print(out, nodeFmt);
             out.ensureStartOfLine();
         }
         out.decIndent();
