@@ -18,9 +18,23 @@
 
 package shacl;
 
+import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import jena.cmd.ArgDecl;
+import jena.cmd.CmdException;
 import jena.cmd.CmdGeneral;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.StreamOps;
 import org.apache.jena.atlas.logging.LogCtl;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.shacl.ShaclException;
 import org.apache.jena.shacl.Shapes;
+import org.apache.jena.shacl.compact.ShaclcWriter;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.parser.ShaclParseException;
 import org.apache.jena.sys.JenaSystem;
@@ -30,11 +44,17 @@ import org.apache.jena.sys.JenaSystem;
  * Usage: <code>shacl parse FILE</code>
  */
 public class shacl_parse extends CmdGeneral {
-
     static {
         LogCtl.setLogging();
         JenaSystem.init();
     }
+
+    private static ArgDecl argOutput = new ArgDecl(true, "output", "out");
+
+    private boolean printCompact = false;
+    private boolean printRDF = false;
+    private boolean printText = false;
+
     private String shapesfile = null;
 
     public static void main (String... argv) {
@@ -43,11 +63,12 @@ public class shacl_parse extends CmdGeneral {
 
     public shacl_parse(String[] argv) {
         super(argv) ;
+        super.add(argOutput);
     }
 
     @Override
     protected String getSummary() {
-        return getCommandName()+" FILE";
+        return getCommandName()+" -out=FMT,FMT FILE";
     }
 
     @Override
@@ -56,6 +77,37 @@ public class shacl_parse extends CmdGeneral {
          if ( super.positionals.size() == 0 ) {
              System.err.println(getSummary());
              System.exit(0);
+         }
+
+         if ( super.hasArg(argOutput) ) {
+             printCompact = false;
+             printRDF = false;
+             printText = false;
+             // Split values.
+             Function<String, Stream<String>> f = (x) -> {
+                 String[] a = x.split(",");
+                 return Arrays.stream(a);
+             };
+             List<String> values =
+                 StreamOps.toList(getValues(argOutput).stream()
+                     .flatMap(f)
+                     .map(s->s.toLowerCase())
+                     );
+             printText = values.remove("text") || values.remove("t");
+             printCompact = values.remove("compact") || values.remove("c");
+             printRDF = values.remove("rdf") || values.remove("r");
+             if ( values.remove("all")) {
+                 printCompact = true;
+                 printRDF = true;
+                 printText = true;
+             }
+             if ( ! values.isEmpty() )
+                 throw new CmdException("Formats not recognized: "+values);
+
+         } else {
+             printCompact = false;
+             printRDF = false;
+             printText = true;
          }
     }
 
@@ -74,15 +126,44 @@ public class shacl_parse extends CmdGeneral {
 
     private void exec(String fn, boolean multipleFiles) {
         Shapes shapes;
+        PrintStream out = System.out;
+        PrintStream err = System.err;
+
         try {
             shapes = Shapes.parse(fn);
         } catch (ShaclParseException ex) {
             if ( multipleFiles )
-                System.err.println(fn+" : ");
-            System.err.println(ex.getMessage());
+                err.println(fn+" : ");
+            err.println(ex.getMessage());
             return;
         }
-        ShLib.printShapes(shapes);
+
+        boolean outputByPrev = false;
+
+        if ( printText ) {
+            outputByPrev = printText(out, err, shapes);
+        }
+        if ( printCompact) {
+            if ( outputByPrev ) {
+                out.println("- - - - - - - - ");
+                outputByPrev = false;
+            }
+            outputByPrev = printCompact(out, err, shapes);
+        }
+        if ( printRDF) {
+            if ( outputByPrev ) {
+                out.println("- - - - - - - - ");
+                outputByPrev = false;
+            }
+            outputByPrev = printRDF(out, err, shapes);
+        }
+    }
+
+    private boolean printText(PrintStream out, PrintStream err, Shapes shapes) {
+        IndentedWriter iOut  = new IndentedWriter(out);
+        ShLib.printShapes(iOut, shapes);
+        iOut.ensureStartOfLine();
+        iOut.flush();
         int numShapes = shapes.numShapes();
         int numRootShapes = shapes.numRootShapes();
         if ( isVerbose() ) {
@@ -99,6 +180,20 @@ public class shacl_parse extends CmdGeneral {
                     System.out.println("  "+ShLib.displayStr(shape.getShapeNode()));
             });
         }
+        return true;
+    }
 
+    private boolean printRDF(PrintStream out, PrintStream err, Shapes shapes) {
+        RDFDataMgr.write(out, shapes.getGraph(), Lang.TTL);
+        return ! shapes.getGraph().isEmpty() && ! shapes.getGraph().getPrefixMapping().hasNoMappings();
+    }
+
+    private boolean printCompact(PrintStream out, PrintStream err, Shapes shapes) {
+        try {
+            ShaclcWriter.print(out, shapes);
+        } catch (ShaclException ex) {
+            err.println(ex.getMessage());
+        }
+        return ! shapes.getGraph().isEmpty() && ! shapes.getGraph().getPrefixMapping().hasNoMappings();
     }
 }

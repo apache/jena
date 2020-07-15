@@ -78,14 +78,27 @@ public class ShLib {
     }
 
     public static void printShapes(Shapes shapes) {
-        IndentedWriter out  = IndentedWriter.stdout;
-        printShapes(out, shapes);
-        out.flush();
+        printShapes(IndentedWriter.stdout, shapes);
+        IndentedWriter.stdout.flush();
     }
 
     public static void printShapes(IndentedWriter out, Shapes shapes) {
+        NodeFormatter nodeFmt = ShLib.nodeFormatter(shapes);
+        printImports(out, nodeFmt, shapes);
+        printShapes(out, nodeFmt, shapes);
+        out.flush();
+    }
+
+    private static void printImports(IndentedWriter out, NodeFormatter nodeFmt, Shapes shapes) {
+        shapes.getImports().forEach(impt->{
+            out.print("Import: ");
+            nodeFmt.format(out, impt);
+            out.println();
+        });
+    }
+
+    public static void printShapes(IndentedWriter out, NodeFormatter nodeFmt, Shapes shapes) {
         int indent = out.getAbsoluteIndent();
-        NodeFormatter nodeFmt = new NodeFormatterTTL(null, PrefixMapFactory.create(shapes.getGraph().getPrefixMapping()));
         shapes.iteratorAll().forEachRemaining(shape->shape.print(out, nodeFmt));
         out.setAbsoluteIndent(indent);
     }
