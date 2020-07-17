@@ -216,16 +216,15 @@ public class ShLib {
         rdfDatatypes.add(RDF.dtXMLLiteral.getURI());
     }
 
-
-
-    /** Test whether the IRI is a datatype that can be written in compact short form (no datatype=)
-     * This test us used by the SHACL compact parser in {@code ShaclCompactParser.rPropertyType}
-     * and SHACL compact writer.
+    /**
+     * Test whether the IRI is a datatype that can be written in compact short form
+     * (no {@code datatype=} written, only the datatype URI). This test is used by
+     * the SHACL compact parser in {@code ShaclCompactParser.rPropertyType} and SHACL
+     * compact writer.
      */
     public static boolean isDatatype(String iriStr) {
         return iriStr.startsWith(XSD.getURI()) || rdfDatatypes.contains(iriStr);
     }
-
 
     public static Node focusNode(Triple triple, Target target) {
         switch(target.getTargetType()) {
