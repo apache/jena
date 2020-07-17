@@ -18,10 +18,14 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
+import static org.apache.jena.shacl.engine.constraint.CompactOut.*;
+
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.validation.ReportItem;
@@ -66,6 +70,16 @@ public class PatternConstraint extends ConstraintTerm {
     @Override
     public Node getComponent() {
         return SHACL.PatternConstraintComponent;
+    }
+
+    @Override
+    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
+        // XXX flagStr?
+        compactQuotedString(out, "pattern", patternString);
+        if ( flagsStr != null ) {
+            out.print(" ");
+            compactQuotedString(out, "flags", flagsStr);
+        }
     }
 
     @Override

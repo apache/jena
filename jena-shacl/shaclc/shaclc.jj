@@ -52,13 +52,13 @@ PARSER_BEGIN(ShaclCompactParserJJ)
  * limitations under the License.
  */
 
-package org.apache.jena.shacl.compact.parser;
+package org.apache.jena.shacl.compact.reader.parser;
 
 import java.util.List;
 import java.util.ArrayList;
 import org.apache.jena.graph.*;
 import org.apache.jena.sparql.path.*;
-import org.apache.jena.shacl.compact.*;
+import org.apache.jena.shacl.compact.reader.*;
 
 public class ShaclCompactParserJJ extends ShaclCompactParser
 {}
@@ -90,14 +90,15 @@ void directive() : {}
 void baseDecl() : { String iri ; }
 {
   <BASE> iri = IRIREF()
-  { getPrologue().setBaseURI(iri) ; }
+  { rBase(iri) ; }
 }
 
 void prefixDecl() : { Token t ; String iri ; }
 {
     <PREFIX> t = <PNAME_NS> iri = IRIREF()
-      { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
-        getPrologue().setPrefix(s, iri) ; }
+    { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
+      rPrefix(s, iri);
+    }
 }
 
 void importDecl() : { String iri ; }
@@ -280,6 +281,10 @@ String nodeParam() : { Token t ;}
 {
   (
     t = "targetNode" | t = "targetObjectsOf" | t = "targetSubjectsOf" |
+// <EXT>
+    // Extension for symmetry!
+    t = "targetClass" |
+// </EXT>
     t = "deactivated" | t = "severity" | t = "message" |
     t = "class" | t = "datatype" | t = "nodeKind" |
     t = "minExclusive" | t = "minInclusive" | t = "maxExclusive" | t = "maxInclusive" |

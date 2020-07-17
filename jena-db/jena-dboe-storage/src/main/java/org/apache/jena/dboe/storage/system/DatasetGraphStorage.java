@@ -176,11 +176,12 @@ public class DatasetGraphStorage extends DatasetGraphBaseFind implements Databas
     @Override
     public void addGraph(Node graphName, Graph graph) {
         graph.find(null,null,null).forEachRemaining(t->add(graphName, t.getSubject(), t.getPredicate(), t.getObject()));
+        graph.getPrefixMapping().getNsPrefixMap().forEach((p,u)->prefixes.add(graphName, p, u));
     }
 
     @Override
     public void removeGraph(Node graphName) {
-        storage.removeAll(graphName, null, null, null);
+        storage.removeAll(graphName, Node.ANY, Node.ANY, Node.ANY);
         prefixes.deleteAll(graphName);
     }
 }

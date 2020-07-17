@@ -18,12 +18,16 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
+import static org.apache.jena.shacl.engine.constraint.CompactOut.compactArrayString;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.impl.Util;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.shacl.vocabulary.SHACL;
@@ -33,7 +37,7 @@ import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 public class StrLanguageIn extends ConstraintTerm {
 
     private final List<String> langs;
-    
+
     public StrLanguageIn(List<String> langs) {
         this.langs = langs;
     }
@@ -72,6 +76,16 @@ public class StrLanguageIn extends ConstraintTerm {
         return SHACL.LanguageInConstraintComponent;
     }
 
+//    @Override
+//    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
+//        // list
+//    }
+
+    @Override
+    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
+        compactArrayString(out, nodeFmt, "languageIn", langs);
+    }
+
     @Override
     public String toString() {
         StringJoiner sj = new StringJoiner(", ");
@@ -81,8 +95,8 @@ public class StrLanguageIn extends ConstraintTerm {
             else
                 sj.add(lang);
         });
-        
-        
+
+
         return "LanguageIn["+sj.toString()+"]";
     }
 

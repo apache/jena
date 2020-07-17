@@ -34,14 +34,14 @@ public class TestShaclSparqlWG {
 
     @Parameters(name = "{0}")
     public static Collection<Object[]> data() throws Exception {
-        String manifest = "src/test/resources/std/sparql/manifest.ttl";
-        
+        String manifest = "src/test/files/std/sparql/manifest.ttl";
+
         // The W3C WG tests for  SPARQL-based Constraints is made up of:
-        //String manifest = "src/test/resources/std/sparql/property/manifest.ttl";
-        //String manifest = "src/test/resources/std/sparql/pre-binding/manifest.ttl";
-        //String manifest = "src/test/resources/std/sparql/node/manifest.ttl";
-        //String manifest = "src/test/resources/std/sparql/component/manifest.ttl";
-        
+        //String manifest = "src/test/files/std/sparql/property/manifest.ttl";
+        //String manifest = "src/test/files/std/sparql/pre-binding/manifest.ttl";
+        //String manifest = "src/test/files/std/sparql/node/manifest.ttl";
+        //String manifest = "src/test/files/std/sparql/component/manifest.ttl";
+
         List<String> omitManifests = new ArrayList<>();
         return ShaclTests.junitParameters(manifest, omitManifests);
     }

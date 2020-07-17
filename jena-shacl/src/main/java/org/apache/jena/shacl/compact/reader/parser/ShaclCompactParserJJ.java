@@ -18,13 +18,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shacl.compact.parser;
+package org.apache.jena.shacl.compact.reader.parser;
 
 import java.util.List;
 import java.util.ArrayList;
 import org.apache.jena.graph.*;
 import org.apache.jena.sparql.path.*;
-import org.apache.jena.shacl.compact.*;
+import org.apache.jena.shacl.compact.reader.*;
 
 public class ShaclCompactParserJJ extends ShaclCompactParser implements ShaclCompactParserJJConstants {
 
@@ -115,7 +115,7 @@ public class ShaclCompactParserJJ extends ShaclCompactParser implements ShaclCom
   final public void baseDecl() throws ParseException {String iri ;
     jj_consume_token(BASE);
     iri = IRIREF();
-getPrologue().setBaseURI(iri) ;
+rBase(iri) ;
   }
 
   final public void prefixDecl() throws ParseException {Token t ; String iri ;
@@ -123,7 +123,7 @@ getPrologue().setBaseURI(iri) ;
     t = jj_consume_token(PNAME_NS);
     iri = IRIREF();
 String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
-        getPrologue().setPrefix(s, iri) ;
+      rPrefix(s, iri);
   }
 
   final public void importDecl() throws ParseException {String iri ;
@@ -209,6 +209,7 @@ startNodeShapeBody() ;
       case 30:
       case 31:
       case 32:
+      case 33:
       case CARAT:
       case BANG:
       case LPAREN:
@@ -255,6 +256,7 @@ startConstraint();
     case 30:
     case 31:
     case 32:
+    case 33:
     case BANG:{
       label_5:
       while (true) {
@@ -284,6 +286,7 @@ startConstraint();
         case 30:
         case 31:
         case 32:
+        case 33:
         case BANG:{
           ;
           break;
@@ -426,6 +429,7 @@ rPropertyShape(p);
       case 30:
       case 31:
       case 32:
+      case 33:
       case AT:
       case BANG:
       case LBRACE:
@@ -477,6 +481,7 @@ rPropertyShape(p);
       case 30:
       case 31:
       case 32:
+      case 33:
       case AT:
       case BANG:
       case LBRACE:
@@ -584,7 +589,8 @@ finishPropertyNot(b);
     case 29:
     case 30:
     case 31:
-    case 32:{
+    case 32:
+    case 33:{
       propertyValue();
       break;
       }
@@ -749,11 +755,14 @@ String nodeParam() throws ParseException {Token t ;
       break;
       }
     case 12:{
-      t = jj_consume_token(12);
+      // <EXT>
+          // Extension for symmetry!
+          t = jj_consume_token(12);
       break;
       }
     case 13:{
-      t = jj_consume_token(13);
+      // </EXT>
+          t = jj_consume_token(13);
       break;
       }
     case 14:{
@@ -832,6 +841,10 @@ String nodeParam() throws ParseException {Token t ;
       t = jj_consume_token(32);
       break;
       }
+    case 33:{
+      t = jj_consume_token(33);
+      break;
+      }
     default:
       jj_la1[22] = jj_gen;
       jj_consume_token(-1);
@@ -843,10 +856,6 @@ String nodeParam() throws ParseException {Token t ;
 
   final public String propertyParam() throws ParseException {Token t;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case 12:{
-      t = jj_consume_token(12);
-      break;
-      }
     case 13:{
       t = jj_consume_token(13);
       break;
@@ -903,20 +912,20 @@ String nodeParam() throws ParseException {Token t ;
       t = jj_consume_token(26);
       break;
       }
-    case 33:{
-      t = jj_consume_token(33);
-      break;
-      }
     case 27:{
       t = jj_consume_token(27);
+      break;
+      }
+    case 34:{
+      t = jj_consume_token(34);
       break;
       }
     case 28:{
       t = jj_consume_token(28);
       break;
       }
-    case 34:{
-      t = jj_consume_token(34);
+    case 29:{
+      t = jj_consume_token(29);
       break;
       }
     case 35:{
@@ -939,8 +948,8 @@ String nodeParam() throws ParseException {Token t ;
       t = jj_consume_token(39);
       break;
       }
-    case 29:{
-      t = jj_consume_token(29);
+    case 40:{
+      t = jj_consume_token(40);
       break;
       }
     case 30:{
@@ -953,6 +962,10 @@ String nodeParam() throws ParseException {Token t ;
       }
     case 32:{
       t = jj_consume_token(32);
+      break;
+      }
+    case 33:{
+      t = jj_consume_token(33);
       break;
       }
     default:
@@ -1271,7 +1284,7 @@ n = createNode(uriStr);
     lex = string();
 String lang = null ; String dt = null ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case 40:
+    case 41:
     case LANGTAG:{
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case LANGTAG:{
@@ -1279,8 +1292,8 @@ String lang = null ; String dt = null ;
 lang = stripChars(t.image, 1) ;
         break;
         }
-      case 40:{
-        jj_consume_token(40);
+      case 41:{
+        jj_consume_token(41);
         dt = datatype();
         break;
         }
@@ -1405,13 +1418,13 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
       jj_la1_init_3();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x2,0x0,0xfffffe00,0xfffffe00,0xfffffe00,0x0,0x0,0x0,0xfffffff8,0xfffffff8,0x0,0x0,0xfffffff8,0x0,0x1f8,0x0,0x0,0xfffffe00,0xfffff000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x2,0x0,0xfffffe00,0xfffffe00,0xfffffe00,0x0,0x0,0x0,0xfffffff8,0xfffffff8,0x0,0x0,0xfffffff8,0x0,0x1f8,0x0,0x0,0xfffffe00,0xffffe000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x8000,0x70000,0x180000,0x180000,0x70000,0x0,0x0,0x50000001,0x40000001,0x50000001,0x4000000,0x40000000,0x600000,0x48000001,0x48000001,0x4000000,0x40000000,0x8000001,0x0,0x0,0x8000000,0x600000,0x1,0xff,0x4000000,0x0,0x81000000,0x10000000,0x81000000,0x0,0x600000,0x600000,0x600000,0x600000,0x0,0x100,0x100,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x10000,0xe0000,0x300000,0x300000,0xe0000,0x0,0x0,0xa0000003,0x80000003,0xa0000003,0x8000000,0x80000000,0xc00000,0x90000003,0x90000003,0x8000000,0x80000000,0x10000003,0x0,0x0,0x10000000,0xc00000,0x3,0x1ff,0x8000000,0x0,0x2000000,0x20000000,0x2000000,0x0,0xc00000,0xc00000,0xc00000,0xc00000,0x0,0x200,0x200,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x1c00,0x1c08,0x0,0x1c08,0x0,0x0,0x3bc1c80,0x7ca0,0x7ca0,0x0,0x0,0x7c20,0x800002,0x0,0x6000,0x3bc1c80,0x0,0x0,0x0,0x1,0x2,0x1c08,0x2,0x1c08,0x3bc1c00,0x3bc1c00,0x3bc0000,0x0,0x3800000,0x8000000,0x8000000,0x3c0000,0x1c00,0x1800,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x3800,0x3810,0x0,0x3810,0x0,0x0,0x7783900,0xf940,0xf940,0x0,0x0,0xf840,0x1000004,0x0,0xc000,0x7783900,0x0,0x0,0x0,0x2,0x5,0x3810,0x5,0x3810,0x7783800,0x7783800,0x7780000,0x0,0x7000000,0x10000000,0x10000000,0x780000,0x3800,0x3000,};
    }
    private static void jj_la1_init_3() {
       jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
@@ -1531,7 +1544,7 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[104];
+    boolean[] la1tokens = new boolean[105];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -1554,7 +1567,7 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
         }
       }
     }
-    for (int i = 0; i < 104; i++) {
+    for (int i = 0; i < 105; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

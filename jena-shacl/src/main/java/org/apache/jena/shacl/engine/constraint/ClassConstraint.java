@@ -18,13 +18,16 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
+import static org.apache.jena.shacl.engine.constraint.CompactOut.compact;
 import static org.apache.jena.shacl.lib.ShLib.displayStr;
 
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.lib.G;
 import org.apache.jena.shacl.validation.ReportItem;
@@ -45,6 +48,17 @@ public class ClassConstraint extends ConstraintDataTerm {
     }
 
     @Override
+    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
+        compact(out, nodeFmt, "class", expectedClass);
+        // Only allowed in a property shape without OR or NOT.
+//        if ( expectedClass.isURI() && ! ShLib.isDatatype(expectedClass.getURI()) ) {
+//            nodeFmt.format(out, expectedClass);
+//        } else {
+//            compact(out, nodeFmt, "class", expectedClass);
+//        }
+    }
+
+    @Override
     public ReportItem validate(ValidationContext vCxt, Graph data, Node focusNode) {
         if ( focusNode.isLiteral() ) {
             String msg = toString()+": Expected class :"+displayStr(expectedClass)+" for "+displayStr(focusNode);
@@ -61,6 +75,13 @@ public class ClassConstraint extends ConstraintDataTerm {
     @Override
     public Node getComponent() {
         return SHACL.ClassConstraintComponent;
+    }
+
+    @Override
+    public void print(IndentedWriter out, NodeFormatter nodeFmt) {
+        out.print("ClassConstraint[");
+        nodeFmt.format(out, expectedClass);
+        out.print("]");
     }
 
     @Override

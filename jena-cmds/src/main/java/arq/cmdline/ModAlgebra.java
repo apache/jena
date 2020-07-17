@@ -18,8 +18,6 @@
 
 package arq.cmdline;
 
-import java.io.IOException;
-
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdArgModule;
 import jena.cmd.CmdGeneral;
@@ -35,7 +33,7 @@ public class ModAlgebra extends ModBase
     private String queryFilename   = null ;
     private String queryString = null ;
     private Op op = null ;
-    
+
     @Override
     public void registerWith(CmdGeneral cmdLine)
     {
@@ -51,30 +49,26 @@ public class ModAlgebra extends ModBase
         if ( cmdLine.contains(queryFileDecl) )
         {
             queryFilename = cmdLine.getValue(queryFileDecl) ;
-            try {
-                queryString = IO.readWholeFileAsUTF8(queryFilename) ;
-            } catch (IOException e) {
-                IO.exception(e);
-            }
+            queryString = IO.readWholeFileAsUTF8(queryFilename) ;
         }
-    
+
         if ( cmdLine.getNumPositional() == 0 && queryFilename == null )
             cmdLine.cmdError("No query string or query file") ;
 
         if ( cmdLine.getNumPositional() > 1 )
             cmdLine.cmdError("Only one query string allowed") ;
-    
+
         if ( cmdLine.getNumPositional() == 1 && queryFilename != null )
             cmdLine.cmdError("Either query string or query file - not both") ;
 
-        
+
         if ( queryFilename == null )
         {
             String qs = cmdLine.getPositionalArg(0) ;
             queryString = cmdLine.indirect(qs) ;
         }
     }
-    
+
     public Op getOp()
     {
         if ( op != null )

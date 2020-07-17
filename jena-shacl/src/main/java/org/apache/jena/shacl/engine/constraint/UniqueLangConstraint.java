@@ -18,13 +18,17 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
+import static org.apache.jena.shacl.engine.constraint.CompactOut.compactUnquotedString;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.impl.Util;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.ShaclException;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.Constraint;
@@ -74,6 +78,11 @@ public class UniqueLangConstraint implements Constraint {
     @Override
     public Node getComponent() {
         return SHACL.UniqueLangConstraintComponent;
+    }
+
+    @Override
+    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
+        compactUnquotedString(out, "uniqueLang", Boolean.toString(flag));
     }
 
     @Override

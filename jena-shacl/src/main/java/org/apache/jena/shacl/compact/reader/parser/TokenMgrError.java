@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shacl.compact.parser;
+package org.apache.jena.shacl.compact.reader.parser;
 
 /** Token Manager Error. */
 public class TokenMgrError extends Error
@@ -162,4 +162,4 @@ public class TokenMgrError extends Error
     this(LexicalError(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
   }
 }
-/* JavaCC - OriginalChecksum=67356b7e54e48778087c76088eb92168 (do not edit this line) */
+/* JavaCC - OriginalChecksum=5c7ab98ee4a71b6f39f265fcd73a50fb (do not edit this line) */

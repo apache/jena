@@ -20,8 +20,11 @@ package org.apache.jena.shacl.engine.constraint;
 
 import static org.apache.jena.shacl.lib.ShLib.displayStr;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFormatter;
+import org.apache.jena.shacl.compact.writer.CompactWriter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.validation.ReportItem;
@@ -49,6 +52,22 @@ public class ShNode extends ConstraintOp1 {
             return null;
         String msg = toString()+" at focusNode "+displayStr(node);
         return new ReportItem(msg, node);
+    }
+
+    @Override
+    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
+        if ( other.getShapeNode().isURI() ) {
+            out.print("@");
+            nodeFmt.format(out, other.getShapeNode());
+            return;
+        }
+        // Inline.
+        out.print("{ ");
+        out.incIndent();
+        out.println();
+        CompactWriter.output(out, nodeFmt, other);
+        out.decIndent();
+        out.println(" }");
     }
 
     @Override

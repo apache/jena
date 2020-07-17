@@ -16,23 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shacl.engine;
+package org.apache.jena.shacl.compact;
 
-import org.apache.jena.graph.Node;
-import org.apache.jena.shacl.vocabulary.SHACL;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public enum TargetType {
-    targetNode(SHACL.targetNode, "targetNode"),
-    targetClass(SHACL.targetClass, "targetClass"),
-    targetObjectsOf(SHACL.targetObjectsOf, "targetObjectsOf"),
-    targetSubjectsOf(SHACL.targetSubjectsOf, "targetSubjectsOf"),
-    implicitClass(null,null);
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestReadShaclCompact.class
+    , TestWriteShaclCompact.class
 
-    public final Node predicate;
-    public final String compact;
-
-    TargetType(Node n, String compactWord) {
-        this.predicate = n;
-        this.compact = compactWord; 
-    }
-}
+})
+public class TS_Compact {}

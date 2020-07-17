@@ -20,10 +20,13 @@ package org.apache.jena.shacl.engine.constraint;
 
 import java.util.*;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.ShaclException;
 import org.apache.jena.shacl.ValidationReport;
+import org.apache.jena.shacl.compact.writer.CompactWriter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.lib.G;
 import org.apache.jena.shacl.parser.Constraint;
@@ -156,6 +159,31 @@ public class QualifiedValueShape implements Constraint {
     @Override
     public Node getComponent() {
         return SHACL.qualifiedValueShape;
+    }
+
+    @Override
+    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
+        // 'qualifiedValueShape' | 'qualifiedMinCount' | 'qualifiedMaxCount' | 'qualifiedValueShapesDisjoint'
+        boolean outputDone = false;
+        if ( qMin >= 0 ) {
+            CompactOut.compact(out, "qualifiedMinCount", qMin);
+            outputDone = true;
+        }
+        if ( qMax >= 0 ) {
+            if ( outputDone )
+                out.print(" ");
+            CompactOut.compact(out, "qualifiedMaxCount", qMax);
+            outputDone = true;
+        }
+        if ( qDisjoint ) {
+            if ( outputDone )
+                out.print(" ");
+            CompactOut.compactUnquotedString(out, "qualifiedValueShapesDisjoint", "true");
+            outputDone = true;
+        }
+        if ( outputDone )
+            out.print(" ");
+        CompactWriter.output(out, nodeFmt, sub);
     }
 
     @Override

@@ -31,6 +31,7 @@ import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.engine.ShaclPaths;
 import org.apache.jena.shacl.engine.Target;
 import org.apache.jena.shacl.engine.TargetType;
@@ -59,8 +60,11 @@ public class ShapesParser {
     private static IndentedWriter OUT = IndentedWriter.stdout;
     //private static Logger LOG = LoggerFactory.getLogger(ShapesParser.class);
 
-    /** Return a list of "top shapes", those with targets.
+    /**
+     * Parse, starting from the given targets.
      * The {@code shapesMap} is modified, adding in all shapes processed.
+     * <p>
+     * Applications should call functions in {@link Shapes} rather than call the parser directly.
      */
     public static Collection<Shape> parseShapes(Graph shapesGraph, Targets targets, Map<Node, Shape> shapesMap) {
         Targets rootShapes = targets;
@@ -69,38 +73,42 @@ public class ShapesParser {
             OUT.println("SparqlConstraintComponents");
         ConstraintComponents sparqlConstraintComponents = ConstraintComponents.parseSparqlConstraintComponents(shapesGraph);
 
-        // LinkedHashMap - convenience, so shapes are kept in 
+        // LinkedHashSet - convenience, so shapes are kept in
         // the order of discovery below.
+        // Record all added by name.
+        // If a shape has two targets, include once.
+        // If a shape with target that refers to another shape with target, include both shapes.
+        // We want both as top-level shapes.
         Map<Node, Shape> acc = new LinkedHashMap<>();
 
         if ( DEBUG )
             OUT.println("sh:targetNodes");
         for ( Node shapeNode : rootShapes.targetNodes ) {
-            parseRootShape(acc, shapesMap, shapesGraph, shapeNode);
+            parseShapeAcc(acc, shapesMap, shapesGraph, shapeNode);
         }
 
         if ( DEBUG )
             OUT.println("sh:targetClasses");
         for ( Node shapeNode : rootShapes.targetClasses ) {
-            parseRootShape(acc, shapesMap, shapesGraph, shapeNode);
+            parseShapeAcc(acc, shapesMap, shapesGraph, shapeNode);
         }
 
         if ( DEBUG )
             OUT.println("targetObjectsOf");
         for ( Node shapeNode : rootShapes.targetObjectsOf ) {
-            parseRootShape(acc, shapesMap, shapesGraph, shapeNode);
+            parseShapeAcc(acc, shapesMap, shapesGraph, shapeNode);
         }
 
         if ( DEBUG )
             OUT.println("targetSubjectsOf");
         for ( Node shapeNode : rootShapes.targetSubjectsOf ) {
-            parseRootShape(acc, shapesMap, shapesGraph, shapeNode);
+            parseShapeAcc(acc, shapesMap, shapesGraph, shapeNode);
         }
 
         if ( DEBUG )
             OUT.println("implicitClassTargets");
         for ( Node shapeNode : rootShapes.implicitClassTargets ) {
-            parseRootShape(acc, shapesMap, shapesGraph, shapeNode);
+            parseShapeAcc(acc, shapesMap, shapesGraph, shapeNode);
         }
 
         if ( DEBUG )
@@ -116,23 +124,16 @@ public class ShapesParser {
         }
 
         // Syntax rules for well-formed shapes.
-        //https://www.w3.org/TR/shacl/#syntax-rules
-        // Note - we only have the reachable shapes in "shapesMap".
+        //   https://www.w3.org/TR/shacl/#syntax-rules
         return shapes(acc) ;
     }
 
-    /** Parse and add all the declared shapes into the map.
-     * The {@code shapesMap} is modified, adding in all shapes processed.
-     */
-    public static Collection<Shape> declaredShapes(Graph shapesGraph, Map<Node, Shape> _shapesMap) {
-        Map<Node, Shape> shapesMap = ( _shapesMap == null ) ? new HashMap<>() : _shapesMap;
-        // All declared shapes.
-        Map<Node, Shape> acc = new LinkedHashMap<>();
-        G.listAllNodesOfType(shapesGraph, SHACL.NodeShape).forEach(shapeNode->
-            parseRootShape(acc, shapesMap, shapesGraph, shapeNode));
-        G.listAllNodesOfType(shapesGraph, SHACL.PropertyShape).forEach(shapeNode->
-            parseRootShape(acc, shapesMap, shapesGraph, shapeNode));
-        return shapes(acc);
+    /** Find all names for shapes with explicit type NodeShape or PropertyShape. */
+    public static Collection<Node> findDeclaredShapes(Graph shapesGraph) {
+        Set<Node> declared = new HashSet<>();
+        G.listAllNodesOfType(shapesGraph, SHACL.NodeShape).forEach(declared::add);
+        G.listAllNodesOfType(shapesGraph, SHACL.PropertyShape).forEach(declared::add);
+        return declared;
     }
 
     private static Collection<Shape> shapes(Map<Node, Shape> acc) {
@@ -140,24 +141,47 @@ public class ShapesParser {
         return new ArrayList<>(acc.values());
     }
 
-    private static void parseRootShape(Map<Node, Shape> acc, Map<Node, Shape> parsed, Graph shapesGraph, Node shNode) {
+    /**
+     * Parse shape "shNode". If it has been parsed before, simply return.
+     * If not, parse, adding to the overall map of parsed shapes
+     * "parsed" and also add it to the accumulator map.
+     * <p>
+     * Used by the targets stage.
+     */
+    private static Shape parseShapeAcc(Map<Node, Shape> acc, Map<Node, Shape> shapesMap, Graph shapesGraph, Node shNode) {
         if ( acc.containsKey(shNode) )
-            // Already processed as root shape.
-            return;
+            return acc.get(shNode);
         if ( DEBUG )
             OUT.incIndent();
-        Shape shape = parseShapeStep(parsed, shapesGraph, shNode);
-        acc.put(shNode, shape);
+        Shape shape = parseShape(shapesMap, shapesGraph, shNode);
+        if ( acc != null )
+            acc.put(shNode, shape);
         if ( DEBUG )
             OUT.decIndent();
+        return shape;
     }
 
-    /** Parse a specific shape from the Shapes graph */
-    public static Shape parseShape(Graph shapesGraph, Node shNode) {
-        // Avoid recursion.
-        Map<Node, Shape> parsed = new HashMap<>();
-        return parseShapeStep(parsed, shapesGraph, shNode);
+    // ---- Main parser worker.
+    /**
+     *  Parse shape "shNode", updating the record of shapes already parsed.
+     *
+     * @param shapesMap
+     * @param shapesGraph
+     * @param shNode
+     * @return Shape
+     */
+    public static Shape parseShape(Map<Node, Shape> shapesMap, Graph shapesGraph, Node shNode) {
+        Shape shape = parseShapeStep(shapesMap, shapesGraph, shNode);
+        return shape;
     }
+
+
+//    /** Parse a specific shape from the Shapes graph */
+//    private static Shape parseShape(Graph shapesGraph, Node shNode) {
+//        // Avoid recursion.
+//        Map<Node, Shape> parsed = new HashMap<>();
+//        return parseShapeStep(parsed, shapesGraph, shNode);
+//    }
 
     /*
     ?X rdfs:domain sh:Shape
@@ -196,6 +220,7 @@ public class ShapesParser {
      */
     /** parse a shape during a parsing process */
     /*package*/ static Shape parseShapeStep(Map<Node, Shape> parsed, Graph shapesGraph, Node shapeNode) {
+        // Called by Constraints
         if ( parsed.containsKey(shapeNode) )
             return parsed.get(shapeNode);
         Shape shape = parseShape$(parsed, shapesGraph, shapeNode);

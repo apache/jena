@@ -9,7 +9,7 @@ then
 
 
 FILE="${1:-shaclc.jj}"
-DIR=../src/main/java/org/apache/jena/shacl/compact/parser
+DIR=../src/main/java/org/apache/jena/shacl/compact/reader/parser
 
 rm -f "$DIR"/*
 

@@ -26,10 +26,11 @@ import java.util.List;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.Target;
 import org.apache.jena.shacl.engine.TargetOps;
+import org.apache.jena.shacl.lib.G;
 import org.apache.jena.shacl.validation.Severity;
-import org.apache.jena.sparql.util.FmtUtils;
 
 public abstract class Shape {
 
@@ -93,42 +94,62 @@ public abstract class Shape {
         return deactivated;
     }
 
+    public boolean isNodeShape()        { return false ; }
+    public boolean isPropertyShape()    { return false ; }
+
     @Override
     public abstract String toString();
 
-    public void print(OutputStream out) {
+    public void print(OutputStream out, NodeFormatter nodeFmt) {
         if ( !(out instanceof BufferedOutputStream) )
             out = new BufferedOutputStream(out, 128 * 1024);
         IndentedWriter w = new IndentedWriter(out);
-        try { print(w); }
+        try { print(w, nodeFmt); }
         finally { w.flush(); }
     }
 
-    protected abstract void printHeader(IndentedWriter out);
+    protected abstract void printHeader(IndentedWriter out, NodeFormatter nodeFmt);
 
-    public void print(IndentedWriter out) {
-        printHeader(out);
-        if ( ! shapeNode.isBlank() ) {
+    public void print(IndentedWriter out, NodeFormatter nodeFmt) {
+        printHeader(out, nodeFmt);
+
+        boolean printNode = false;
+
+        // Print the shape node unless it is a blank with no reuse.
+        if ( ! shapeNode.isBlank()  )
+            printNode = true;
+        else {
+            // blank node but is the shapeNode one-connected? by sh:property?
+            long z = G.objectConnectiveness(shapeGraph, shapeNode);
+            boolean isOneConnected = G.oneConnected(shapeGraph, shapeNode);
+            if ( ! isOneConnected )
+                printNode = true;
+        }
+        if ( printNode ) {
             out.print(" ");
-            out.print("node="+FmtUtils.stringForNode(shapeNode));
+            out.print("node=");
+            nodeFmt.format(out, shapeNode);
         }
 
         if ( deactivated() )
             out.print(" deactivated");
-        if ( !targets.isEmpty() ) {
-            out.print(" :: ");
-            out.print(TargetOps.strTargets(targets));
-        }
         out.println();
-        out.incIndent();
         try {
+            out.incIndent();
+            targets.forEach(target-> out.println(TargetOps.strTarget(target, nodeFmt)) );
+//            // Compact list of targets
+//            if ( !targets.isEmpty() ) {
+//                out.print(TargetOps.strTargets(targets));
+//                out.println();
+//            }
+            // Constraints
             for ( Constraint c : constraints ) {
-                c.print(out);
+                c.print(out, nodeFmt);
                 if ( ! out.atLineStart() )
                     out.println();
             }
             for ( PropertyShape ps : getPropertyShapes() ) {
-                ps.print(out);
+                ps.print(out, nodeFmt);
             }
         }
         finally {

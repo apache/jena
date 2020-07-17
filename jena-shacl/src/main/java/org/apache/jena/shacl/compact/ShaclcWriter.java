@@ -16,22 +16,26 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shacl.engine.constraint;
+package org.apache.jena.shacl.compact;
 
-import java.util.Set;
+import java.io.OutputStream;
 
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.Node;
-import org.apache.jena.shacl.engine.ValidationContext;
-import org.apache.jena.shacl.parser.Constraint;
-import org.apache.jena.shacl.parser.Shape;
-import org.apache.jena.sparql.path.Path;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.shacl.Shapes;
+import org.apache.jena.shacl.compact.writer.CompactWriter;
 
-public abstract class ConstraintBase implements Constraint {
+public class ShaclcWriter {
 
-    @Override
-    public abstract void validateNodeShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode);
+    /** Write shapes in <a href="https://w3c.github.io/shacl/shacl-compact-syntax/">SHACL Compact Syntax</a> (July 2020). */
+    public static void print(OutputStream output, Shapes shapes) {
+        IndentedWriter out = new IndentedWriter(output);
+        out.setUnitIndent(4);
+        print(out, shapes);
+    }
 
-    @Override
-    public abstract void validatePropertyShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode, Path path, Set<Node> valueNodes);
+    /** Write shapes in <a href="https://w3c.github.io/shacl/shacl-compact-syntax/">SHACL Compact Syntax</a> (July 2020). */
+    public static void print(IndentedWriter out, Shapes shapes) {
+        CompactWriter.print(out, shapes);
+    }
 }
+

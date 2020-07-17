@@ -19,6 +19,7 @@
 package org.apache.jena.shacl.engine.constraint;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.jena.graph.Graph;
@@ -36,11 +37,20 @@ import org.apache.jena.sparql.path.Path;
  */
 public abstract class ConstraintPairwise implements Constraint {
 
-    protected final Node property;
+    protected final Node value;
+    private final Node constraintComponent;
 
-    protected ConstraintPairwise(Node property) {
-        this.property = property;
+    protected ConstraintPairwise(Node value, Node constraintComponent) {
+        this.value = value;
+        this.constraintComponent = constraintComponent;
     }
+
+    @Override
+    final
+    public Node getComponent() {
+        return constraintComponent;
+    }
+
 
     @Override
     public void validateNodeShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode) {
@@ -52,7 +62,7 @@ public abstract class ConstraintPairwise implements Constraint {
     public void validatePropertyShape(ValidationContext vCxt, Graph data, Shape shape,
                          Node focusNode, Path path, Set<Node> pathNodes) {
         // pathNodes is (focusNode, sh:path ?V) = valueNodes
-        Set<Node> compareNodes = G.setSP(data, focusNode, property);
+        Set<Node> compareNodes = G.allSP(data, focusNode, value);
         validate(vCxt, shape, focusNode, path, pathNodes, compareNodes);
     }
 
@@ -68,5 +78,22 @@ public abstract class ConstraintPairwise implements Constraint {
           // Known to be not a Expr compare constant value.
           return -999;
       }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(constraintComponent, value);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        ConstraintPairwise other = (ConstraintPairwise)obj;
+        return Objects.equals(constraintComponent, other.constraintComponent) && Objects.equals(value, other.value);
     }
 }

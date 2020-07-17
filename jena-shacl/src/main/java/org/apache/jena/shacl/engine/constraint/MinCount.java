@@ -18,7 +18,9 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.vocabulary.SHACL;
 
 /** sh:minCount */
@@ -28,13 +30,37 @@ public class MinCount extends CardinalityConstraint {
         super(minCardinality, -1);
     }
 
+    public int getMinCount() {
+        return super.minCount;
+    }
+    
     @Override
     public Node getComponent() {
         return SHACL.MinCountConstraintComponent;
     }
 
+    // Special syntax. Do nothing is called generally.
+    @Override
+    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {}
+    
     @Override
     public String toString() {
         return String.format("minCount[%s]", strInt(minCount));
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( !super.equals(obj) )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        return true;
     }
 }

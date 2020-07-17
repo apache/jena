@@ -24,6 +24,7 @@ import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.shacl.vocabulary.SHACL;
@@ -54,6 +55,14 @@ public class NodeKindConstraint extends ConstraintTerm {
                 "not one of sh:BlankNode, sh:IRI, sh:Literal sh:BlankNodeOrIRI, sh:BlankNodeOrLiteral and sh:IRIOrLiteral");
     }
 
+    public  Node getKind() { return kind; }
+
+    @Override
+    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
+        String s = getKind().getLocalName();
+        out.print(s);
+    }
+
     @Override
     public ReportItem validate(ValidationContext vCxt, Node n) {
         if ( canBeIRI && n.isURI() )          return null;
@@ -69,7 +78,7 @@ public class NodeKindConstraint extends ConstraintTerm {
     }
 
     @Override
-    public void print(IndentedWriter out) {
+    public void print(IndentedWriter out, NodeFormatter nodeFmt) {
         out.print(toString());
     }
 

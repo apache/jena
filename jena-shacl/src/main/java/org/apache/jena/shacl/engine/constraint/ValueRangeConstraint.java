@@ -18,10 +18,13 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
+import static org.apache.jena.shacl.engine.constraint.CompactOut.compact;
+
 import java.util.Objects;
 
-
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.sparql.expr.Expr;
@@ -57,16 +60,23 @@ public abstract class ValueRangeConstraint extends ConstraintTerm {
         }
     }
 
-    @Override
-    public Node getComponent() {
-        return constraintComponent;
-    }
-
     protected abstract String getErrorMessage(Node n);
 
     protected abstract boolean test(int r);
 
     protected abstract String getName();
+
+    @Override
+    final
+    public Node getComponent() {
+        return constraintComponent  ;
+    }
+
+
+    @Override
+    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
+        compact(out, nodeFmt, getName(), nodeValue.asNode());
+    }
 
     @Override
     public String toString() {

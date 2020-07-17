@@ -18,8 +18,6 @@
 
 package arq.cmdline;
 
-import java.io.IOException;
-
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdArgModule;
 import jena.cmd.CmdGeneral;
@@ -33,9 +31,9 @@ public class ModItem extends ModBase
     protected final ArgDecl queryFileDecl = new ArgDecl(ArgDecl.HasValue, "file") ;
 
     private String filename = null ;
-    private String parseString = null ; 
+    private String parseString = null ;
     private Item item = null ;
-    
+
     @Override
     public void registerWith(CmdGeneral cmdLine)
     {
@@ -49,20 +47,16 @@ public class ModItem extends ModBase
         if ( cmdLine.contains(queryFileDecl) )
         {
             filename = cmdLine.getValue(queryFileDecl) ;
-            try {
-                parseString = IO.readWholeFileAsUTF8(filename) ;
-            } catch (IOException e) {
-                IO.exception(e);
-            }
+            parseString = IO.readWholeFileAsUTF8(filename) ;
             return ;
         }
-    
+
         if ( cmdLine.getNumPositional() == 0 && filename == null )
             cmdLine.cmdError("No query string or query file") ;
 
         if ( cmdLine.getNumPositional() > 1 )
             cmdLine.cmdError("Only one query string allowed") ;
-    
+
         if ( cmdLine.getNumPositional() == 1 && filename != null )
             cmdLine.cmdError("Either query string or query file - not both") ;
 
@@ -72,7 +66,7 @@ public class ModItem extends ModBase
             parseString = cmdLine.indirect(qs) ;
         }
     }
-    
+
     public Item getItem()
     {
         if ( item != null )

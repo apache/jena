@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shacl.compact.parser;
+package org.apache.jena.shacl.compact.reader.parser;
 
 /**
  * This exception is thrown when parse errors are encountered.
@@ -202,4 +202,4 @@ public class ParseException extends Exception {
    }
 
 }
-/* JavaCC - OriginalChecksum=2d673050c5239191477a72f725163133 (do not edit this line) */
+/* JavaCC - OriginalChecksum=703508d550f48fe3a28a93f27829e43f (do not edit this line) */

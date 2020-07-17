@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shacl.compact;
+package org.apache.jena.shacl.compact.reader;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -24,19 +24,23 @@ import java.io.Reader;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.riot.ReaderRIOT;
 import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.shacl.compact.ShaclcParser;
 import org.apache.jena.sparql.util.Context;
 
-/** 
- * RIOT Reader for 
+/**
+ * RIOT Reader for
  * <a href="https://w3c.github.io/shacl/shacl-compact-syntax/">SHACL Compact Syntax</a>
  */
 public class ReaderRIOTShaclc implements ReaderRIOT {
 
     @Override
-    public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {}
+    public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
+        ShaclcParser.parseSHACLC(reader, baseURI, output, context);
+    }
 
     @Override
-    public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {}
-
+    public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
+        ShaclcParser.parseSHACLC(in, baseURI, output, context);
+    }
 }
 

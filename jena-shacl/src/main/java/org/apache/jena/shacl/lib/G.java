@@ -32,6 +32,7 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 
 /** Library of functions for convenience working directly with Graph and Node. */
 public class G {
+
     // Node versions
     public static Node subject(Triple triple) {
         return triple == null ? null : triple.getSubject();
@@ -62,7 +63,7 @@ public class G {
         }
         return false;
     }
-    
+
     public static boolean hasType(Graph graph, Node x, Node type) {
         Objects.requireNonNull(x, "Subject");
         Objects.requireNonNull(type, "Type");
@@ -85,8 +86,17 @@ public class G {
         return graph.find(s, p, null).mapWith(Triple::getObject);
     }
 
+    public static ExtendedIterator<Node> iterPO(Graph graph, Node p, Node o) {
+        return graph.find(null, p, o).mapWith(Triple::getSubject);
+    }
+
+
     public static List<Node> listPO(Graph graph, Node p, Node o) {
-        return graph.find(null, p, o).mapWith(Triple::getSubject).toList();
+        return iterPO(graph, p, o).toList();
+    }
+
+    public static long countPO(Graph graph, Node p, Node o) {
+        return Iter.count(iterPO(graph, p, o));
     }
 
     public static List<Node> listSubjectsOfType(Graph graph, Node type) {
@@ -103,7 +113,7 @@ public class G {
     /**
      * List the subclasses of a type, including itself.
      * This is <tt>?x rdfs:subClassOf* type</tt>.
-     * The list does not contain duplicates.   
+     * The list does not contain duplicates.
      */
     public static List<Node> listSubClasses(Graph graph, Node type) {
         List<Node> acc = new ArrayList<>();
@@ -116,7 +126,7 @@ public class G {
     /**
      * List the superclasses of a type, including itself.
      * This is <tt>type rdfs:subClassOf* ?x</tt>.
-     * The list does not contain duplicates.   
+     * The list does not contain duplicates.
      */
     public static List<Node> listSuperClasses(Graph graph, Node type) {
         List<Node> acc = new ArrayList<>();
@@ -148,49 +158,66 @@ public class G {
 
     /** List all the node of type, including considering rdfs:subClassOf */
     public static List<Node> listAllNodesOfType(Graph graph, Node type) {
-        List<Node> types = G.listSubClasses(graph, type);
+        List<Node> types = listSubClasses(graph, type);
         List<Node> nodes = new ArrayList<>();
-        types.forEach(t->nodes.addAll(G.listNodesOfType(graph, t)));
+        types.forEach(t->nodes.addAll(listNodesOfType(graph, t)));
         return nodes;
     }
 
     // Set versions.
-    
+
     public static Set<Node> setNodesOfType(Graph graph, Node type) {
         return graph.find(null, C.rdfType, type).mapWith(Triple::getSubject).toSet();
     }
 
     /** Set of types of a node/subject */
-    public static Set<Node> setTypesOfNode(Graph graph, Node subject) {
+    public static Set<Node> typesOfNode(Graph graph, Node subject) {
         return graph.find(subject, C.rdfType, null).mapWith(Triple::getObject).toSet();
     }
- 
+
     /**
      * Set of the subclasses of a type, including itself.
      * This is <tt>?x rdfs:subClassOf* type</tt>.
      */
-    public static Set<Node> setSubClasses(Graph graph, Node type) {
+    public static Set<Node> subClasses(Graph graph, Node type) {
         Set<Node> acc = new HashSet<>();
         // Subclasses are follow rdfs:subclassOf in reverse - object to subject.
         Transitive.transitiveInc(graph, false, type, C.rdfsSubclassOf, acc);
         return acc;
     }
-    
+
+    /** @deprecated Use {@link #allNodesOfType} */
+    @Deprecated
+    public static Set<Node> setAllNodesOfType(Graph graph, Node type) { return allNodesOfType(graph, type); }
+
+    /** @deprecated Use {@link #allSP} */
+    @Deprecated
+    public static Set<Node> setAllSP(Graph graph, Node s, Node p) {
+        return allSP(graph, s, p);
+    }
+
+    /** @deprecated Use {@link #allPO} */
+    @Deprecated
+    public static Set<Node> setPO(Graph graph, Node p, Node o) {
+        return allPO(graph, p, o);
+    }
+
     /** List all the node of type, including considering rdfs:subClassOf */
-    public static Set<Node> setAllNodesOfType(Graph graph, Node type) {
-        Set<Node> types = G.setSubClasses(graph, type);
+    public static Set<Node> allNodesOfType(Graph graph, Node type) {
+        Set<Node> types = subClasses(graph, type);
         Set<Node> nodes = new HashSet<>();
-        types.forEach(t->nodes.addAll(G.listNodesOfType(graph, t)));
+        types.forEach(t->nodes.addAll(listNodesOfType(graph, t)));
         return nodes;
     }
-    
-    public static Set<Node> setSP(Graph graph, Node s, Node p) {
+
+    public static Set<Node> allSP(Graph graph, Node s, Node p) {
         return graph.find(s, p, null).mapWith(Triple::getObject).toSet();
     }
 
-    public static Set<Node> setPO(Graph graph, Node p, Node o) {
+    public static Set<Node> allPO(Graph graph, Node p, Node o) {
         return graph.find(null, p, o).mapWith(Triple::getSubject).toSet();
     }
+
     // Exactly one, exception on none or more than one.
     public static Node getOneSP(Graph graph, Node s, Node p) {
         return object(findUnique(graph, s, p, Node.ANY));
@@ -202,9 +229,26 @@ public class G {
     }
 
     // Exactly one, exception on none or more than one.
+    public static Node getOnePO(Graph graph, Node p, Node o) {
+        return subject(findUnique(graph, Node.ANY, p, o));
+    }
+
+    // Zero or one, exception on more than one.
+    public static Node getZeroOrOnePO(Graph graph, Node p, Node o) {
+        return subject(findZeroOne(graph, Node.ANY, p, o));
+    }
+
+    // Exactly one, exception on none or more than one.
     public static Triple getOne(Graph graph, Node s, Node p, Node o) {
         return findUnique(graph, s, p, Node.ANY);
     }
+
+    // Zero or one, exception on more than one.
+    // Can call object() or subject().
+    public static Triple getZeroOrOne(Graph graph, Node s, Node p, Node o) {
+        return findZeroOne(graph, s, p, o);
+    }
+
 
     public static boolean contains(Graph g, Node s, Node p, Node o) {
         return g.contains(s, p, o);
@@ -222,9 +266,25 @@ public class G {
     public static boolean containsOne(Graph g, Node s, Node p, Node o) {
         return g.contains(s, p, o) && Iter.count(g.find(s,p,null)) == 1;
     }
-    
+
     public static boolean hasProperty(Graph g, Node s, Node p) {
         return g.contains(s, p, null);
+    }
+
+    public static long objectConnectiveness(Graph graph, Node object) {
+        return Iter.count(graph.find(null, null, object));
+    }
+
+    public static boolean oneConnected(Graph graph, Node object) {
+        ExtendedIterator<Triple> iter = graph.find(null, null, object);
+        if ( ! iter.hasNext() )
+            // Zero.
+            return false;
+        iter.next();
+        if ( iter.hasNext() )
+            // more than one
+            return false;
+        return true;
     }
 
     public static ExtendedIterator<Triple> find(Graph g, Node s, Node p, Node o) {
@@ -308,5 +368,4 @@ public class G {
         }
         return x;
     }
-
 }

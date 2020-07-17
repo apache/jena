@@ -1,4 +1,4 @@
-# Test iof nested targets.
+# Test of nested targets.
 
 PREFIX ex:       <http://example/>
 
@@ -46,17 +46,17 @@ ex:Shape3
       rdf:type      sh:ValidationReport ;
       sh:conforms  false ;
       sh:result    [ a                             sh:ValidationResult ;
-                 sh:focusNode                  ex:A ;
-                 sh:resultSeverity             sh:Violation ;
-                 sh:sourceConstraintComponent  sh:NodeConstraintComponent ;
-                 sh:sourceShape                ex:Shape2 ;
-                 sh:value                      ex:A
-               ] ;
+                     sh:focusNode                  ex:A ;
+                     sh:resultSeverity             sh:Violation ;
+                     sh:sourceConstraintComponent  sh:NodeConstraintComponent ;
+                     sh:sourceShape                ex:Shape2 ;
+                     sh:value                      ex:A
+                   ] ;
       sh:result    [ a                             sh:ValidationResult ;
-                 sh:focusNode                  ex:A ;
-                 sh:resultSeverity             sh:Violation ;
-                 sh:sourceConstraintComponent  sh:NodeConstraintComponent ;
-                 sh:sourceShape                ex:Shape1 ;
-                 sh:value                      ex:A
+                     sh:focusNode                  ex:A ;
+                     sh:resultSeverity             sh:Violation ;
+                     sh:sourceConstraintComponent  sh:NodeConstraintComponent ;
+                     sh:sourceShape                ex:Shape1 ;
+                     sh:value                      ex:A
                ]
 ] .

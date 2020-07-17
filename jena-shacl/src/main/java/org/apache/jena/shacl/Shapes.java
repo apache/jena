@@ -18,13 +18,20 @@
 
 package org.apache.jena.shacl;
 
+import static org.apache.jena.sparql.graph.NodeConst.nodeOwlImports;
+import static org.apache.jena.sparql.graph.NodeConst.nodeOwlOntology;
+import static org.apache.jena.sparql.graph.NodeConst.nodeRDFType;
+
 import java.util.*;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shacl.engine.Targets;
+import org.apache.jena.shacl.lib.G;
+import org.apache.jena.shacl.lib.RDFDataException;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.parser.ShapesParser;
 import org.apache.jena.sys.JenaSystem;
@@ -38,62 +45,117 @@ import org.apache.jena.sys.JenaSystem;
 public class Shapes implements Iterable<Shape> {
     static { JenaSystem.init(); }
 
+    // Shapes with targets (including implicit class target).
     private final Collection<Shape> rootShapes;
+    // Declared shapes, not in targetShapes.
+    private final Collection<Shape> declShapes;
     private final Map<Node, Shape> shapes;
     private final Graph shapesGraph;
     private final Targets targets;
+    // Nodes for explicit declared shapes.
+    // May include nodes for shapes in targets.
+    private final Collection<Node> declaredShapeNode;
 
-    /** Parse the model and return the shapes connected to the targets. */
+    private final Node shapesBase;
+    private final List<Node> imports;
+
+    /** Parse the model and return the shapes. */
     public static Shapes parse(Model model) {
         return parse(model.getGraph());
     }
 
-    /** Parse the graph and return the shapes connected to the targets. */
-    public static Shapes parse(Graph graph) {
-        Targets targets = ShapesParser.targets(graph);
-        Map<Node, Shape> shapes = new HashMap<>();
-        Collection<Shape> rootShapes = ShapesParser.parseShapes(graph, targets, shapes);
-        return new Shapes(graph, shapes, rootShapes, targets);
-    }
-
+    /** Load the file, parse the graph and return the shapes. */
     public static Shapes parse(String fileOrURL) {
         Graph g = RDFDataMgr.loadGraph(fileOrURL);
         return parse(g);
     }
 
-    /**
-     *  Parse the graph and also include all declared node and property shapes, whether connected to the targets or not.
-     */
-    public static Shapes parseAll(Graph graph) {
-        Shapes shapes = parse(graph);
-        Collection<Shape> declShapes = ShapesParser.declaredShapes(graph, shapes.shapes);
-        declShapes.forEach(shape->{
-            if ( ! shapes.getRootShapes().contains(shape) )
-                shapes.rootShapes.add(shape);
-        });
+    /** Parse the graph and return the shapes connected to the targets. */
+    public static Shapes parse(Graph graph) {
+        return parseAll(graph);
+    }
+
+    /** Parse the graph and return the shapes connected to the targets. */
+    public static Shapes parseTargets(Graph graph) {
+        Targets targets = ShapesParser.targets(graph);
+        Shapes shapes = parseProcess(graph, targets, Collections.emptyList());
         return shapes;
     }
 
-    public static Shapes parseAll(String fileOrURL) {
-        Graph g = RDFDataMgr.loadGraph(fileOrURL);
-        return parseAll(g);
+    /**
+     * Parse the graph and also include all declared node and property shapes, whether connected to the targets or not.
+     */
+    private static Shapes parseAll(Graph graph) {
+        Targets targets = ShapesParser.targets(graph);
+        Collection<Node> declShapes = ShapesParser.findDeclaredShapes(graph);
+        Shapes shapes = parseProcess(graph, targets, declShapes);
+        return shapes;
     }
 
-    /** Do not call directly.*/
-    private Shapes(Graph shapesGraph, Map<Node, Shape> shapes, Collection<Shape> rootShapes, Targets targets) {
-        this.rootShapes = rootShapes;
-        this.shapes = shapes;
+    private static Shapes parseProcess(Graph shapesGraph, Targets targets, Collection<Node> declaredNodes) {
+        Map<Node, Shape> shapesMap = new HashMap<>();
+        Collection<Shape> rootShapes = ShapesParser.parseShapes(shapesGraph, targets, shapesMap);
+
+        // This skips declared+targets because the shapesMap is in common.
+        Collection<Shape> declShapes = new ArrayList<>();
+        declaredNodes.forEach(shapeNode -> {
+            if ( !shapesMap.containsKey(shapeNode) ) {
+                Shape shape = ShapesParser.parseShape(shapesMap, shapesGraph, shapeNode);
+                declShapes.add(shape);
+            }
+        });
+
+        return new Shapes(shapesGraph, shapesMap, targets, declaredNodes, rootShapes, declShapes);
+    }
+
+    public Shapes(Graph shapesGraph, Map<Node, Shape> shapesMap, Targets targets,
+                  Collection<Node> declShapeNodes,
+                  Collection<Shape> rootShapes, Collection<Shape> declShapes) {
         this.shapesGraph = shapesGraph;
         this.targets = targets;
+        this.declaredShapeNode = declShapeNodes;
+        this.shapes = shapesMap;
+        this.rootShapes = rootShapes;
+        this.declShapes = declShapes;
+
+        Node _shapesBase = null;
+        List<Node> _imports = null;
+        // Extract base and imports.
+        try {
+            _shapesBase = G.getOnePO(shapesGraph, nodeRDFType, nodeOwlOntology);
+            _imports = G.listSP(shapesGraph, _shapesBase, nodeOwlImports);
+        } catch (RDFDataException ex) {}
+        this.shapesBase = _shapesBase;
+        this.imports = _imports;
     }
 
     public boolean isEmpty() {
         return shapes.isEmpty();
     }
 
+    /** @deprecated Use {@link #getTargetShapes()} */
+    @Deprecated
     public Collection<Shape> getRootShapes() {
+        return getTargetShapes();
+    }
+
+    /** Return the shapes with targets. */
+    public Collection<Shape> getTargetShapes() {
         return rootShapes;
     }
+
+    public Collection<Node> getImports() {
+        return imports;
+    }
+
+    public Node getBase() {
+        return shapesBase;
+    }
+
+//    /** Return the shapes which has excplict type declarations, not including in the shapes with targets. */
+//    public Collection<Shape> getDeclaredShapes() {
+//        return declShapes;
+//    }
 
     public Shape getShape(Node node) {
         return shapes.get(node);
@@ -119,8 +181,15 @@ public class Shapes implements Iterable<Shape> {
         return rootShapes.size();
     }
 
+    /** Iterator over the shapes with targets */
     @Override
     public Iterator<Shape> iterator() {
         return rootShapes.iterator();
     }
+
+    /** Iterator over the shapes with targets and with explicit type NodeShape or PropertyShape. */
+    public Iterator<Shape> iteratorAll() {
+        return Iter.concat(rootShapes.iterator(), declShapes.iterator());
+    }
+
 }

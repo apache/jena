@@ -25,7 +25,6 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.shacl.ShaclValidator;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.ValidationReport;
 import org.apache.jena.shacl.lib.ShLib;
@@ -34,17 +33,8 @@ import org.apache.jena.shacl.validation.ValidationProc;
 
 public class ShaclTest {
 
-//    public static void shaclTest(ShaclTestItem test) {
-//        shaclTest(test, false, true);
-//    }
-//
     public static void shaclTest(ShaclTestItem test, boolean verbose) {
         Graph shapesGraph = RDFDataMgr.loadGraph(test.getShapesGraph().getURI());
-        if ( false ) {
-            // This has one error report for testing/std/core/path/path-strange-002.ttl 
-            validateShapes(shapesGraph, test.origin());
-        }
-        
         try {
             Graph dataGraph;
             if ( test.getShapesGraph().getURI().equals(test.getDataGraph().getURI()) )
@@ -105,8 +95,6 @@ public class ShaclTest {
             assertTrue("Reports differ : "+test.origin(), b1);
             assertTrue("Report models differ", b2);
 
-            // Compare reports.
-        //} catch (NotImplemented x) {
         } catch (RuntimeException ex) {
 //            ex.printStackTrace();
 //            System.err.println(ex.getMessage());
@@ -118,18 +106,7 @@ public class ShaclTest {
         }
     }
 
-    
-    private static Shapes shapes = Shapes.parse("std/shacl-shacl.ttl");
-    /** Validate the shapes graph 
-     * @param origin */ 
-    private static void validateShapes(Graph shapesGraph, String origin) {
-        ValidationReport report = ShaclValidator.get().validate(shapes, shapesGraph);
-        if ( ! report.conforms() ) {
-            System.out.println("Test: "+origin);
-            ShLib.printReport(report.getResource());
-        }
-        
-    }
+
 
 
 }

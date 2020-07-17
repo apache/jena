@@ -18,12 +18,15 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer;
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.*;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.Shape;
@@ -44,7 +47,7 @@ public class SparqlConstraint implements Constraint {
 
     public SparqlConstraint(Query query, String message) {
         this.query = query;
-        this.message = message; 
+        this.message = message;
     }
 
     @Override
@@ -64,11 +67,33 @@ public class SparqlConstraint implements Constraint {
     }
 
     @Override
+    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
+        Constraint.super.printCompact(out, nodeFmt);
+    }
+
+    @Override
     public String toString() {
         IndentedLineBuffer out = new IndentedLineBuffer();
         out.setFlatMode(true);
         query.serialize(out);
         String x = out.asString();
         return "SPARQL["+x+"]";
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(message, query);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        SparqlConstraint other = (SparqlConstraint)obj;
+        return Objects.equals(message, other.message) && Objects.equals(query, other.query);
     }
 }

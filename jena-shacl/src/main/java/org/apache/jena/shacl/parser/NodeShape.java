@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.Target;
 import org.apache.jena.shacl.validation.Severity;
 
@@ -39,7 +40,12 @@ public class NodeShape extends Shape {
     public void visit(ShapeVisitor visitor) {  visitor.visit(this); }
 
     @Override
-    public void printHeader(IndentedWriter out) {
+    public boolean isNodeShape() {
+        return true;
+    }
+
+    @Override
+    public void printHeader(IndentedWriter out, NodeFormatter nodeFmt) {
         out.print("NodeShape");
     }
 

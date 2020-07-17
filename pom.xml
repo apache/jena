@@ -730,6 +730,7 @@
                 (e.g. W3C Software Licence, W3C Test Suite License) as
                 noted in the code tree.
             -->
+            <exclude>**/src/test/files/**/*</exclude>
             <exclude>**/src/test/resources/**/*</exclude>
             <exclude>**/testing/**/*</exclude>
 
@@ -781,6 +782,12 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.8.1</version>
+          <!--
+          <configuration>
+            <release>11</release>
+          </configuration>
+          -->
+          <!-- Java8 compiler for Java8 output -->
           <configuration>
             <showDeprecation>false</showDeprecation>
             <encoding>UTF-8</encoding>

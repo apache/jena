@@ -20,9 +20,13 @@ package org.apache.jena.shacl.engine.constraint;
 
 import static org.apache.jena.shacl.lib.ShLib.displayStr;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFormatter;
+import org.apache.jena.shacl.compact.writer.CompactWriter;
 import org.apache.jena.shacl.engine.ValidationContext;
+import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.shacl.validation.ValidationProc;
@@ -49,6 +53,16 @@ public class ShNot extends ConstraintOp1 {
             return null;
         String msg = "Not["+other+"] at focusNode "+displayStr(node);
         return new ReportItem(msg, node);
+    }
+
+    @Override
+    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
+        // "other" must be a node shape with no property shapes and one constraint.
+        Constraint constraint  = CompactWriter.getCompactPrintable(other);
+        if ( constraint == null )
+            throw new UnsupportedOperationException("sh:not");
+        out.print("! ");
+        constraint.printCompact(out, nodeFmt);
     }
 
     @Override

@@ -27,16 +27,13 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.shacl.Shapes;
-import org.apache.jena.shacl.vocabulary.SHACL;
+import org.apache.jena.shacl.compact.reader.parser.ParseException;
+import org.apache.jena.shacl.compact.reader.parser.ShaclCompactParserJJ;
 import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.graph.GraphFactory;
-import org.apache.jena.vocabulary.OWL;
-import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.RDFS;
-import org.apache.jena.vocabulary.XSD;
-import org.apache.jena.shacl.compact.parser.ParseException;
-import org.apache.jena.shacl.compact.parser.ShaclCompactParserJJ;
+import org.apache.jena.sparql.util.Context;
 
+/** Parse <a href="https://w3c.github.io/shacl/shacl-compact-syntax/">SHACL Compact Syntax</a> (July 2020). */
 public class ShaclcParser {
 
     /**
@@ -47,6 +44,7 @@ public class ShaclcParser {
     public static Shapes parse(String filename) {
         return parse(filename, null);
     }
+
     /**
      * Parse the file to get SHACL shapes.
      * @param filename
@@ -55,62 +53,48 @@ public class ShaclcParser {
      */
     public static Shapes parse(String filename, String baseURI) {
         InputStream input = IO.openFile(filename);
-        Graph graph = parseSHACLC(input, baseURI);
+        return parse(input, baseURI);
+    }
+
+    /**
+     * Parse the file to get SHACL shapes.
+     * @param input
+     * @param baseURI
+     * @return Shapes
+     */
+    public static Shapes parse(InputStream input, String baseURI) {
+        Graph graph = GraphFactory.createDefaultGraph();
+        StreamRDF dest = StreamRDFLib.graph(graph);
+        parseSHACLC(input, baseURI, dest, null);
         return Shapes.parse(graph);
-    }
-
-    /** Parse from an {@code InputStream} to get the SHACL graph. */
-    public static Graph parseSHACLC(InputStream input) {
-        return parseSHACLC(input, (String)null);
-    }
-
-    /** Parse from an {@code InputStream} to get the SHACL graph. */
-    public static Graph parseSHACLC(InputStream input, String baseURI) {
-        ShaclCompactParserJJ parser = new ShaclCompactParserJJ(input, StandardCharsets.UTF_8.name());
-        return parseIntoGraph$(parser, baseURI);
     }
 
     /** Parse from an {@code InputStream} sending the triples to a {@link StreamRDF}. */
     public static void parseSHACLC(InputStream input, StreamRDF stream) {
-        parseSHACLC(input, null, stream);
-    }
-    
-    /** Parse from an {@code InputStream} sending the triples to a {@link StreamRDF}. */
-    public static void parseSHACLC(InputStream input, String baseURI, StreamRDF stream) {
-        ShaclCompactParserJJ parser = new ShaclCompactParserJJ(input, StandardCharsets.UTF_8.name());
-        parse$(parser, stream, baseURI);
-    }
-    
-    /**
-     * Parse from an {@code Reader} to get the SHACL graph.
-     * The reader should be UTF-8
-     */
-    /*package*/ static Graph parseSHACLC(Reader reader, String baseURI) {
-        ShaclCompactParserJJ parser = new ShaclCompactParserJJ(reader);
-        return parseIntoGraph$(parser, baseURI);
+        parseSHACLC(input, null, stream, null);
     }
 
-    private static Graph parseIntoGraph$(ShaclCompactParserJJ parser, String baseURI) {
-        Graph graph = GraphFactory.createDefaultGraph();
-        StreamRDF stream = StreamRDFLib.graph(graph);
-        parse$(parser, stream, baseURI);
-        return graph;
+    /** Parse from an {@code InputStream} sending the triples to a {@link StreamRDF}. */
+    public static void parseSHACLC(InputStream input, String baseURI, StreamRDF stream, Context context) {
+        ShaclCompactParserJJ parser = new ShaclCompactParserJJ(input, StandardCharsets.UTF_8.name());
+        parse$(parser, stream, baseURI, context);
     }
-    
-    private static void parse$(ShaclCompactParserJJ parser, StreamRDF stream, String baseURI) {
+
+    /**
+     * Parse from an {@code Reader} sending the triples to a {@link StreamRDF}.
+     * {@code InputStream} recommended unless it is a {@code StringReader}.
+     * The reader should be UTF-8.
+     */
+    public static void parseSHACLC(Reader reader, String baseURI, StreamRDF stream, Context context) {
+        ShaclCompactParserJJ parser = new ShaclCompactParserJJ(reader);
+        parse$(parser, stream, baseURI, context);
+    }
+
+    private static void parse$(ShaclCompactParserJJ parser, StreamRDF stream, String baseURI, Context context) {
         Prologue prologue = parser.getPrologue();
         stream.start();
-        if ( true ) {
-            // Always add these prefixes to the output stream.
-            // These are required by the test suite.
-            // Do before parsing in case the SHACLC file overrides them.
-            prefix(stream, prologue, "rdf",  RDF.getURI());
-            prefix(stream, prologue, "rdfs", RDFS.getURI());
-            prefix(stream, prologue, "sh",   SHACL.getURI());
-            prefix(stream, prologue, "xsd",  XSD.getURI());
-            prefix(stream, prologue, "owl",  OWL.getURI());
-        }
 
+        SHACLC.addStandardPrefixes(prologue.getPrefixMapping());
         parser.start(stream);
         try {
             if ( baseURI != null )
@@ -122,10 +106,8 @@ public class ShaclcParser {
         parser.finish();
         stream.finish();
     }
-    
-    private static void prefix(StreamRDF stream, Prologue prologue, String prefix, String uri) {
-        stream.prefix(prefix, uri);
+
+    private static void prefix(Prologue prologue, String prefix, String uri) {
         prologue.getPrefixMapping().setNsPrefix(prefix, uri);
     }
 }
-
