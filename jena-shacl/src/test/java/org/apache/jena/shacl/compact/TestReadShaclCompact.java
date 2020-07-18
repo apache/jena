@@ -25,51 +25,11 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RDFWriter;
 import org.apache.jena.shacl.Shapes;
-import org.junit.Test;
 
-public class TestReadShaclCompact {
+public class TestReadShaclCompact extends AbstractTestShaclCompact {
 
-    // Tests from the WG github area.
-    @Test public void array_in()            { testReader("array-in"); }
-    @Test public void basic_shape_iri()     { testReader("basic-shape-iri"); }
-    @Test public void basic_shape()         { testReader("basic-shape"); }
-    @Test public void basic_shape_with_target()     { testReader("basic-shape-with-target"); }
-    @Test public void basic_shape_with_targets()    { testReader("basic-shape-with-targets"); }
-    @Test public void class_()              { testReader("class"); }
-    @Test public void comment()             { testReader("comment"); }
-    @Test public void complex1()            { testReader("complex1"); }
-    @Test public void complex2()            { testReader("complex2"); }
-    @Test public void count_0_1()           { testReader("count-0-1"); }
-    @Test public void count_0_unlimited()   { testReader("count-0-unlimited"); }
-    @Test public void count_1_2()           { testReader("count-1-2"); }
-    @Test public void count_1_unlimited()   { testReader("count-1-unlimited"); }
-    @Test public void datatype()            { testReader("datatype"); }
-    @Test public void directives()          { testReader("directives"); }
-    @Test public void empty()               { testReader("empty"); }
-    @Test public void nestedShape()         { testReader("nestedShape"); }
-    @Test public void nodeKind()            { testReader("nodeKind"); }
-    @Test public void node_or_2()           { testReader("node-or-2"); }
-    @Test public void node_or_3_not()       { testReader("node-or-3-not"); }
-    @Test public void path_alternative()    { testReader("path-alternative"); }
-    @Test public void path_complex()        { testReader("path-complex"); }
-    @Test public void path_inverse()        { testReader("path-inverse"); }
-    @Test public void path_oneOrMore()      { testReader("path-oneOrMore"); }
-    @Test public void path_sequence()       { testReader("path-sequence"); }
-    @Test public void path_zeroOrMore()     { testReader("path-zeroOrMore"); }
-    @Test public void path_zeroOrOne()      { testReader("path-zeroOrOne"); }
-    @Test public void property_empty()      { testReader("property-empty"); }
-    @Test public void property_not()        { testReader("property-not"); }
-    @Test public void property_or_2()       { testReader("property-or-2"); }
-    @Test public void property_or_3()       { testReader("property-or-3"); }
-    @Test public void shapeRef()            { testReader("shapeRef"); }
-
-    private final String DIR = "src/test/files/shaclc-valid/";
-    private final String BASE ="urn:x-base:default";
-
-    private void testReader(String string) {
-        String fn = DIR+string+".shaclc";
-        String ttl = DIR+string+".ttl";
-
+    @Override
+    protected void runTest(String fn, String ttl, String fileBaseName) {
         Shapes shapes = ShaclcParser.parse(fn, BASE);
         //System.out.printf("R = %d : S = %d\n", shapes.numRootShapes(), shapes.numShapes());
         Graph expected = RDFDataMgr.loadGraph(ttl);
@@ -88,7 +48,7 @@ public class TestReadShaclCompact {
                 RDFWriter.create().source(graphOther).format(RDFFormat.TURTLE_PRETTY).output(System.err);
             }
         }
-        assertTrue("test: "+string, isomorphic);
+        assertTrue("test: "+fileBaseName, isomorphic);
     }
 }
 

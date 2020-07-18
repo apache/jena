@@ -28,7 +28,15 @@ import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.sparql.path.Path;
 
-/** A restriction on a single RDF term which needs access to the data to check such as sh:class. */
+/**
+ * A restriction on an RDF term which needs access to the data to check such as
+ * {@link ClassConstraint}.
+ * <p>
+ * Contrast this with {@link ConstraintEntity} which produces one report based on the
+ * set of path nodes.
+ *
+ * @see ConstraintEntity
+ */
 public abstract class ConstraintDataTerm implements Constraint {
 
     @Override

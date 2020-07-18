@@ -18,13 +18,12 @@
 
 package org.apache.jena.shacl.compact;
 
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFParserRegistry;
-import org.apache.jena.riot.ReaderRIOTFactory;
+import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.shacl.compact.reader.ReaderRIOTShaclc;
+import org.apache.jena.shacl.compact.writer.WriterRIOTShaclc;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
@@ -37,8 +36,11 @@ public class SHACLC {
 
     public static void init() {
         // Lang.SHACLC is in RIOT RDFLanguages.
-        ReaderRIOTFactory factory = (Lang language, ParserProfile profile)->new ReaderRIOTShaclc();
-        RDFParserRegistry.registerLangTriples(Lang.SHACLC, factory);
+        ReaderRIOTFactory factoryReader = (Lang language, ParserProfile profile)->new ReaderRIOTShaclc();
+        RDFParserRegistry.registerLangTriples(Lang.SHACLC, factoryReader);
+
+        WriterGraphRIOTFactory factoryWriter = (rdfFormat)->new WriterRIOTShaclc();
+        RDFWriterRegistry.register(RDFFormat.SHACLC, factoryWriter);
     }
 
     /** Return a copy of the {@link PrefixMap} with the SHACLC standard prefixes added */

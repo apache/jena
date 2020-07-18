@@ -60,7 +60,7 @@ public class ShNot extends ConstraintOp1 {
         // "other" must be a node shape with no property shapes and one constraint.
         Constraint constraint  = CompactWriter.getCompactPrintable(other);
         if ( constraint == null )
-            throw new UnsupportedOperationException("sh:not");
+            throw new UnsupportedOperationException("sh:not("+other+")");
         out.print("! ");
         constraint.printCompact(out, nodeFmt);
     }

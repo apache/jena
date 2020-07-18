@@ -30,6 +30,7 @@ import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.shacl.validation.ValidationProc;
 import org.apache.jena.shacl.vocabulary.SHACL;
+import org.apache.jena.sparql.util.FmtUtils;
 
 /** sh:node */
 public class ShNode extends ConstraintOp1 {
@@ -72,6 +73,6 @@ public class ShNode extends ConstraintOp1 {
 
     @Override
     public String toString() {
-        return "Node";
+        return "Node["+FmtUtils.stringForNode(other.getShapeNode())+"]";
     }
 }
