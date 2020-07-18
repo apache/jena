@@ -84,7 +84,7 @@ public class TestWriteShaclCompact {
         String fn = DIR+fileBaseName+".shaclc";
         String ttl = DIR+fileBaseName+".ttl";
 
-        boolean DEV = true;
+        boolean DEV = false;
 
         if ( DEV ) {
             System.out.println("---- "+fn);
