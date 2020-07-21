@@ -21,6 +21,7 @@ package org.apache.jena.shacl.compact.writer;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterTTL;
@@ -87,10 +88,36 @@ public class CompactWriter {
         ShapeOutputVisitor visitor = new ShapeOutputVisitor(prefixMappingWithStd, nodeFmt, out);
         shapes.iteratorAll().forEachRemaining(sh->{
             out.println();
-            if ( sh.getShapeNode().isURI() )
-                CompactWriter.output(out, nodeFmt, visitor, sh);
+            writeOneShapeCompact(out, prefixMappingWithStd, nodeFmt, visitor, sh);
         });
         out.flush();
+    }
+
+    /** Write in compact syntax or throw {@link ShaclNotCompactException} */
+    private static void writeOneShapeCompact(IndentedWriter out, PrefixMapping prefixMappingWithStd, NodeFormatter nodeFmt, ShapeOutputVisitor visitor, Shape sh) {
+        // Write-or-crash.
+        // Provides indicate of information lost.
+        if ( sh.getShapeNode().isURI() ) {
+            CompactWriter.output(out, nodeFmt, visitor, sh);
+        }
+    }
+
+    /** Write in compact syntax or skip, noting the fact in a comment */
+    private static void writeOneShapeCompactOrSkip(IndentedWriter out, PrefixMapping prefixMappingWithStd, NodeFormatter nodeFmt, ShapeOutputVisitor visitor, Shape sh) {
+        // Write a shape is we can, else comment.
+        try {
+            try ( IndentedLineBuffer out2 = new IndentedLineBuffer() ) {
+                // Need visitor to hold the IndentedLineBuffer
+                ShapeOutputVisitor visitorMem = new ShapeOutputVisitor(prefixMappingWithStd, nodeFmt, out2);
+                if ( sh.getShapeNode().isURI() )
+                    CompactWriter.output(out2, nodeFmt, visitorMem, sh);
+                out.print(out2.asString());
+            }
+        } catch (ShaclNotCompactException ex) {
+            out.print("## Can't write in compact syntax: ");
+            nodeFmt.format(out, sh.getShapeNode());
+            out.println();
+        }
     }
 
 

@@ -196,7 +196,7 @@ public class Shapes implements Iterable<Shape> {
 
     /** Iterator over the shapes with targets and with explicit type NodeShape or PropertyShape. */
     public Iterator<Shape> iteratorAll() {
-        // rootsShapes and declShaes are disjoint so no dupicates in the iterator.
+        // rootsShapes and declShaes are disjoint so no duplicates in the iterator.
         return Iter.concat(rootShapes.iterator(), declShapes.iterator());
     }
 }

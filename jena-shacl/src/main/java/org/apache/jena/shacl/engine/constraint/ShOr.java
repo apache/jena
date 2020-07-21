@@ -27,6 +27,7 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.compact.writer.CompactWriter;
+import org.apache.jena.shacl.compact.writer.ShaclNotCompactException;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.Shape;
@@ -49,7 +50,7 @@ public class ShOr extends ConstraintOpN {
     @Override
     public ReportItem validate(ValidationContext vCxt, Graph data, Node node) {
         for ( Shape sh : others ) {
-            ValidationContext vCxt2 = new ValidationContext(vCxt);
+            ValidationContext vCxt2 = ValidationContext.create(vCxt);
             ValidationProc.execValidateShape(vCxt2, data, sh, node);
             boolean innerConforms = vCxt2.generateReport().conforms();
             if ( innerConforms )
@@ -68,7 +69,7 @@ public class ShOr extends ConstraintOpN {
             first = false;
             Constraint c = CompactWriter.getCompactPrintable(shape);
             if ( c == null )
-                throw new UnsupportedOperationException("or");
+                throw new ShaclNotCompactException("or");
             c.printCompact(out, nodeFmt);
         }
     }

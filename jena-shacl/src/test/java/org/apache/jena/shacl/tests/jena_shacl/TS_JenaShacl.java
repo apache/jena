@@ -46,5 +46,5 @@ public class TS_JenaShacl {
     }
 
     @Test
-    public void test() { ShaclTest.shaclTest(test, false); }
+    public void test() { ShaclTest.shaclTest(test); }
 }

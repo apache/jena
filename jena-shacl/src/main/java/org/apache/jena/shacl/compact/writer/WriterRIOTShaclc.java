@@ -43,21 +43,23 @@ public class WriterRIOTShaclc extends WriterGraphRIOTBase {
     @Override
     public void write(Writer out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
         IndentedWriter iOut = RiotLib.create(out) ;
-        iOut.setAbsoluteIndent(4);
-        write(iOut, graph, prefixMap, baseURI, context);
+        try {
+            iOut.setAbsoluteIndent(4);
+            write(iOut, graph, prefixMap, baseURI, context);
+        } finally { iOut.flush(); }
     }
 
     @Override
     public void write(OutputStream out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
         IndentedWriter iOut = new IndentedWriter(out);
-        iOut.setUnitIndent(4);
-        write(iOut, graph, prefixMap, baseURI, context);
+        try {
+            iOut.setUnitIndent(4);
+            write(iOut, graph, prefixMap, baseURI, context);
+        } finally { iOut.flush(); }
     }
 
     private void write(IndentedWriter out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
         Shapes shapes = Shapes.parse(graph);
         ShaclcWriter.print(out, shapes);
-        //out.flush();
     }
 }
-

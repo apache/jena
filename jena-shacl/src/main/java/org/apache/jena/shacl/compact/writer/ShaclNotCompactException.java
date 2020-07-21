@@ -16,17 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shacl.sys;
+package org.apache.jena.shacl.compact.writer;
 
-import org.apache.jena.shacl.ShaclValidator;
-import org.apache.jena.shacl.validation.ShaclPlainValidator;
+import org.apache.jena.shacl.ShaclException;
 
-public class ShaclSystem {
-    private static ShaclValidator globalDefault = new ShaclPlainValidator();
-    
-    /** Set the current system-wide {@link ShaclValidator}. */
-    public static void set(ShaclValidator validator) { globalDefault = validator; }
+public class ShaclNotCompactException extends ShaclException {
 
-    /** The current system-wide {@link ShaclValidator}. */ 
-    public static ShaclValidator get() { return globalDefault; }
+    public ShaclNotCompactException(String msg) {
+        super(msg);
+    }
+
 }
+

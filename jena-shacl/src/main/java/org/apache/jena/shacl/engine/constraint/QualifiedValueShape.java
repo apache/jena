@@ -130,8 +130,7 @@ public class QualifiedValueShape implements Constraint {
     }
 
     private static boolean conforms(ValidationContext vCxt, Shape shape, Node v) {
-        ValidationContext vCxt2 = new ValidationContext(vCxt);
-        vCxt2.setVerbose(false);
+        ValidationContext vCxt2 = ValidationContext.create(vCxt);
         ValidationProc.execValidateShape(vCxt2, vCxt.getDataGraph(), shape,  v);
         ValidationReport report = vCxt2.generateReport();
         return report.conforms();

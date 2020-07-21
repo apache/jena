@@ -53,5 +53,5 @@ public class TestShaclSparqlWG {
     }
 
     @Test
-    public void test() { ShaclTest.shaclTest(test, false); }
+    public void test() { ShaclTest.shaclTest(test); }
 }

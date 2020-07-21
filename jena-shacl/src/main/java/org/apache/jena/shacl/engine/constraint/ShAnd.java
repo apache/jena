@@ -45,7 +45,7 @@ public class ShAnd extends ConstraintOpN {
     @Override
     public ReportItem validate(ValidationContext vCxt, Graph data, Node node) {
         for ( Shape sh : others ) {
-            ValidationContext vCxt2 = new ValidationContext(vCxt);
+            ValidationContext vCxt2 = ValidationContext.create(vCxt);
             ValidationProc.execValidateShape(vCxt2, data, sh, node);
             boolean innerConforms = vCxt2.generateReport().conforms();
             if ( ! innerConforms ) {

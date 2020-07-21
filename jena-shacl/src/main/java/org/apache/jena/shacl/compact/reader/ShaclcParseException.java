@@ -16,27 +16,24 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query;
+package org.apache.jena.shacl.compact.reader;
 
-/** QueryParseException is root exception for all (intentional) exceptions
- *  from the various parsers where the error is to do with the syntax of a query.
- */
+import org.apache.jena.shacl.ShaclException;
 
-public class QueryParseException extends QueryException
-{
+public class ShaclcParseException extends ShaclException {
     private int line ;
     private int column ;
 
-    public QueryParseException(int line, int column)
+    public ShaclcParseException(int line, int column)
     { this(null, null, line, column) ; }
 
-    public QueryParseException(Throwable cause, int line, int column)
+    public ShaclcParseException(Throwable cause, int line, int column)
     { this(null, cause, line, column) ; }
 
-    public QueryParseException(String msg, int line, int column)
+    public ShaclcParseException(String msg, int line, int column)
     { this(msg, null, line, column) ; }
 
-    public QueryParseException(String msg, Throwable cause, int line, int column)
+    public ShaclcParseException(String msg, Throwable cause, int line, int column)
     {
         //super(formatMessage(msg, line, column), cause) ;
         super(msg, cause) ;

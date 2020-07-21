@@ -22,7 +22,6 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.TransactionHandler;
 import org.apache.jena.graph.impl.TransactionHandlerBase;
 import org.apache.jena.shacl.*;
-import org.apache.jena.shacl.validation.ValidationProc;
 import org.apache.jena.sparql.graph.GraphWrapper;
 
 /** A graph that performs SHACL validation on a graph during transaction "commit".
@@ -128,7 +127,7 @@ public class ValidationGraph extends GraphWrapper {
 
         // Execute. If there are any validation results of any severity, abort, and return the ValidationReport.
         private ValidationReport validateCommit() {
-            ValidationReport report = ValidationProc.simpleValidation(graphValidate.shapes, graphValidate.get(), false);
+            ValidationReport report = ShaclValidator.get().validate(graphValidate.shapes, graphValidate.get());
             if ( report.conforms() ) {
                 other.commit();
                 return null;

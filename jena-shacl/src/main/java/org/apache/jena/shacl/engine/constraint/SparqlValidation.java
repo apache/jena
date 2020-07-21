@@ -65,7 +65,7 @@ import org.apache.jena.sparql.util.ModelUtils;
         // Two sub-cases:
         //    Syntax rule: https://www.w3.org/TR/shacl/#syntax-rule-multiple-parameters
         //    If there are >1 parameters, each must be single valued.
-        // so: 
+        // so:
         // Multimap, one parameter, multiple values => conjunction of each, with one report.
         // Multimap, any number of parameters, single values => single validation with one report.
 
@@ -104,7 +104,7 @@ import org.apache.jena.sparql.util.ModelUtils;
                                         String violationTemplate, Constraint reportConstraint) {
         Model model = ModelFactory.createModelForGraph(data);
         QueryExecution qExec;
-        
+
         Query query = _query;
         // If path is not a simple link, rewrite the query.
         if ( path != null && !(path instanceof P_Link ) )
@@ -156,7 +156,7 @@ import org.apache.jena.sparql.util.ModelUtils;
             } else {
                 msg = substitute(violationTemplate, row);
             }
-            
+
             Path rPath = path;
             if ( rPath == null ) {
                 Node qPath = row.get(SparqlConstraint.varPath);
@@ -187,10 +187,10 @@ import org.apache.jena.sparql.util.ModelUtils;
         }
         return x;
     }
-    
+
     /** Substitution */
     private static String substit(String x, String name, Node value) {
-        try { 
+        try {
             String vn = "\\{[?$]"+Matcher.quoteReplacement(name)+"\\}";
             String val = strQuoted(value);
             return x.replaceAll(vn, val);
@@ -200,9 +200,9 @@ import org.apache.jena.sparql.util.ModelUtils;
         }
     }
 
-    /** regex-safe string */ 
+    /** regex-safe string */
     private static String strQuoted(Node node) {
-        String x =  
+        String x =
         node.isLiteral() ?node.getLiteralLexicalForm()
         : NodeFmtLib.str(node);
         x = Matcher.quoteReplacement(x);
@@ -234,8 +234,6 @@ import org.apache.jena.sparql.util.ModelUtils;
         }
         qsm.add("this", ModelUtils.convertGraphNodeToRDFNode(thisNode, model));
         if ( path != null ) {
-//            if ( !(path instanceof P_Link ) )
-//                throw new UnsupportedOperationException("Paths that are more than a single property: "+path);
             RDFNode z = ModelUtils.convertGraphNodeToRDFNode(ShaclPaths.pathNode(path), model);
             qsm.add("PATH" , z);
         }
@@ -286,12 +284,12 @@ import org.apache.jena.sparql.util.ModelUtils;
     private static class ElementTransformPath extends ElementTransformCopyBase {
         private final Var var;
         private final Path path;
-    
+
         ElementTransformPath(Var varPath, Path path) {
             this.var = varPath;
             this.path = path;
         }
-    
+
         @Override
         public Element transform(ElementPathBlock el) {
             ElementPathBlock el2 = new ElementPathBlock();
