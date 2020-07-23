@@ -77,6 +77,8 @@ public class RDFFormat {
     /** TriG - one line per triple  */
     public static final RDFFormat        TRIG_FLAT      = new RDFFormat(Lang.TRIG, FLAT) ;
 
+    /** SHACL Compact Syntax */
+    public static final RDFFormat        SHACLC         = new RDFFormat(Lang.SHACLC);
     //
     // JSONLD related
     //

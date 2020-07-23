@@ -29,7 +29,6 @@ import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.ResultSet;
@@ -90,11 +89,13 @@ public class ShLib {
     }
 
     private static void printImports(IndentedWriter out, NodeFormatter nodeFmt, Shapes shapes) {
-        shapes.getImports().forEach(impt->{
-            out.print("Import: ");
-            nodeFmt.format(out, impt);
-            out.println();
-        });
+        if ( shapes.getImports() != null ) {
+            shapes.getImports().forEach(impt->{
+                out.print("Import: ");
+                nodeFmt.format(out, impt);
+                out.println();
+            });
+        }
     }
 
     public static void printShapes(IndentedWriter out, NodeFormatter nodeFmt, Shapes shapes) {
@@ -224,20 +225,6 @@ public class ShLib {
      */
     public static boolean isDatatype(String iriStr) {
         return iriStr.startsWith(XSD.getURI()) || rdfDatatypes.contains(iriStr);
-    }
-
-    public static Node focusNode(Triple triple, Target target) {
-        switch(target.getTargetType()) {
-            //case targetClass :
-            case targetNode :
-                return target.getObject();
-            case targetObjectsOf :
-                return triple.getObject();
-            case targetSubjectsOf :
-                return triple.getSubject();
-            default :
-        }
-        return null;
     }
 
     public static NodeFormatter nodeFormatter(Shapes shapes) {

@@ -28,7 +28,6 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.shacl.engine.ShaclPaths;
-import org.apache.jena.shacl.engine.exec.TripleValidator;
 import org.apache.jena.shacl.lib.G;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.Shape;
@@ -178,11 +177,6 @@ public class ValidationReport {
 
         public void addReportEntry(String message, Shape shape, Node focusNode, Path path, Node valueNode, Constraint constraint) {
             addReportEntryW(message, shape, null, focusNode, path, valueNode, constraint);
-        }
-
-        public void addReportEntry(ReportItem item, TripleValidator validator, Triple triple) {
-            addReportEntryW(item.getMessage(), validator.getShape(), triple,
-                            validator.getFocusNode(triple), validator.getPath(), item.getValue(), validator.getConstraint());
         }
 
         private void addReportEntryW(String message, Shape shape, Triple triple, Node focusNode, Path path, Node valueNode, Constraint constraint) {

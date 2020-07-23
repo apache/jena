@@ -25,9 +25,9 @@ import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.ValidationReport;
 
 /** A basic implementation of SHACL Validator. */
-public class ShaclSimpleValidator implements ShaclValidator {
+public class ShaclPlainValidator implements ShaclValidator {
 
-    public ShaclSimpleValidator() {}
+    public ShaclPlainValidator() {}
 
     /**
      * Parse the shapes from the graph and return a AST object that has all the
@@ -40,8 +40,8 @@ public class ShaclSimpleValidator implements ShaclValidator {
 
     /**
      * Does the data conform to the shapes? This operation only checks whether the
-     * data is conformant or not - it does not genberate a complete report.
-     * 
+     * data is conformant or not - it does not generate a complete report.
+     *
      * @see #validate(Shapes, Graph)
      */
     @Override
@@ -53,7 +53,7 @@ public class ShaclSimpleValidator implements ShaclValidator {
     /**
      * Does the data conform to the shapes? This operation only checks whether the
      * data is conformant or not - it does not genberate a complete report.
-     * 
+     *
      * @see #validate(Graph, Graph)
      */
     @Override
@@ -65,7 +65,7 @@ public class ShaclSimpleValidator implements ShaclValidator {
      * Does the node within the data conform to the shapes? This operation only
      * checks the data is conformant or not - it does not genberate a complete
      * report.
-     * 
+     *
      * @see #validate(Shapes, Graph, Node)
      */
     @Override
@@ -76,13 +76,13 @@ public class ShaclSimpleValidator implements ShaclValidator {
     /** Produce a full validation report. */
     @Override
     public ValidationReport validate(Shapes shapes, Graph data) {
-        return ValidationProc.simpleValidation(shapes, data, false);
+        return ValidationProc.plainValidation(shapes, data);
     }
 
     /** Produce a full validation report for this node in the data. */
     @Override
     public ValidationReport validate(Shapes shapes, Graph data, Node node) {
-        return ValidationProc.simpleValidationNode(shapes, data, node, false);
+        return ValidationProc.plainValidationNode(shapes, data, node);
     }
 
     /** Produce a full validation report. */

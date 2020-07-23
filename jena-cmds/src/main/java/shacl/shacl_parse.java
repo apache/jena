@@ -28,13 +28,16 @@ import jena.cmd.ArgDecl;
 import jena.cmd.CmdException;
 import jena.cmd.CmdGeneral;
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.StreamOps;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RiotException;
 import org.apache.jena.shacl.ShaclException;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.compact.ShaclcWriter;
+import org.apache.jena.shacl.compact.reader.ShaclcParseException;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.parser.ShaclParseException;
 import org.apache.jena.sys.JenaSystem;
@@ -129,9 +132,18 @@ public class shacl_parse extends CmdGeneral {
         PrintStream out = System.out;
         PrintStream err = System.err;
 
+        if ( ! FileOps.exists(fn) ) {
+            err.println(fn+" : File not found");
+            return;
+        }
+
         try {
             shapes = Shapes.parse(fn);
-        } catch (ShaclParseException ex) {
+        }
+        catch ( RiotException ex ) { /*ErrorHandler logged this */ return; }
+        catch (ShaclParseException | ShaclcParseException /*| RiotException*/ ex) {
+            // Errors parsing the RDF.
+            // Errors parsing SHACL Compact Syntax.
             if ( multipleFiles )
                 err.println(fn+" : ");
             err.println(ex.getMessage());

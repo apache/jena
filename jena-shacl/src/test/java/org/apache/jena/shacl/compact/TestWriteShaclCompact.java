@@ -37,52 +37,13 @@ import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.util.Context;
-import org.junit.Test;
 
-public class TestWriteShaclCompact {
-
-    // Tests from the WG github area.
-    @Test public void array_in()            { testWriter("array-in"); }
-    @Test public void basic_shape_iri()     { testWriter("basic-shape-iri"); }
-    @Test public void basic_shape()         { testWriter("basic-shape"); }
-    @Test public void basic_shape_with_target()     { testWriter("basic-shape-with-target"); }
-    @Test public void basic_shape_with_targets()    { testWriter("basic-shape-with-targets"); }
-    @Test public void class_()              { testWriter("class"); }
-    @Test public void comment()             { testWriter("comment"); }
-    @Test public void complex1()            { testWriter("complex1"); }
-    @Test public void complex2()            { testWriter("complex2"); }
-    @Test public void count_0_1()           { testWriter("count-0-1"); }
-    @Test public void count_0_unlimited()   { testWriter("count-0-unlimited"); }
-    @Test public void count_1_2()           { testWriter("count-1-2"); }
-    @Test public void count_1_unlimited()   { testWriter("count-1-unlimited"); }
-    @Test public void datatype()            { testWriter("datatype"); }
-    @Test public void directives()          { testWriter("directives"); }
-    @Test public void empty()               { testWriter("empty"); }
-    @Test public void nestedShape()         { testWriter("nestedShape"); }
-    @Test public void nodeKind()            { testWriter("nodeKind"); }
-    @Test public void node_or_2()           { testWriter("node-or-2"); }
-    @Test public void node_or_3_not()       { testWriter("node-or-3-not"); }
-    @Test public void path_alternative()    { testWriter("path-alternative"); }
-    @Test public void path_complex()        { testWriter("path-complex"); }
-    @Test public void path_inverse()        { testWriter("path-inverse"); }
-    @Test public void path_oneOrMore()      { testWriter("path-oneOrMore"); }
-    @Test public void path_sequence()       { testWriter("path-sequence"); }
-    @Test public void path_zeroOrMore()     { testWriter("path-zeroOrMore"); }
-    @Test public void path_zeroOrOne()      { testWriter("path-zeroOrOne"); }
-    @Test public void property_empty()      { testWriter("property-empty"); }
-    @Test public void property_not()        { testWriter("property-not"); }
-    @Test public void property_or_2()       { testWriter("property-or-2"); }
-    @Test public void property_or_3()       { testWriter("property-or-3"); }
-    @Test public void shapeRef()            { testWriter("shapeRef"); }
-
-    private final String DIR = "src/test/files/shaclc-valid/";
-    private final String BASE ="urn:x-base:default";
+public class TestWriteShaclCompact extends AbstractTestShaclCompact {
 
     // Test by loading, writing and reading again then checking against the graph
-    // provided with teh graph from the read-back-in Shapes.
-    private void testWriter(String fileBaseName) {
-        String fn = DIR+fileBaseName+".shaclc";
-        String ttl = DIR+fileBaseName+".ttl";
+    // provided with the graph from the read-back-in Shapes.
+    @Override
+    protected void runTest(String fn, String ttl, String fileBaseName) {
 
         boolean DEV = false;
 

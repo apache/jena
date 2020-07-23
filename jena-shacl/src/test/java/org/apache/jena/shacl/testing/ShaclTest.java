@@ -25,15 +25,15 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.shacl.ShaclValidator;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.ValidationReport;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.validation.VR;
-import org.apache.jena.shacl.validation.ValidationProc;
 
 public class ShaclTest {
 
-    public static void shaclTest(ShaclTestItem test, boolean verbose) {
+    public static void shaclTest(ShaclTestItem test) {
         Graph shapesGraph = RDFDataMgr.loadGraph(test.getShapesGraph().getURI());
         try {
             Graph dataGraph;
@@ -45,7 +45,7 @@ public class ShaclTest {
             boolean generalFailure = test.isGeneralFailure();
             if ( generalFailure ) {
                 try {
-                    ValidationReport testReport = ValidationProc.simpleValidation(shapesGraph, dataGraph, verbose);
+                    ValidationReport testReport = validate(ShaclValidator.get(), shapesGraph, dataGraph);
                     if ( testReport.conforms() )
                         fail("Expect a test failure: "+test.origin());
                 } catch (RuntimeException ex) {
@@ -58,7 +58,7 @@ public class ShaclTest {
             ValidationReport vReportGot;
 
             try {
-                vReportGot = ValidationProc.simpleValidation(shapesGraph, dataGraph, verbose);
+                vReportGot = validate(ShaclValidator.get(), shapesGraph, dataGraph);
             } catch (Throwable th) {
                 System.out.println("** Test : "+test.origin());
                 throw th;
@@ -106,7 +106,9 @@ public class ShaclTest {
         }
     }
 
-
-
-
+    private static ValidationReport validate(ShaclValidator validator, Graph shapesGraph, Graph dataGraph) {
+        if ( validator == null )
+            validator = ShaclValidator.get();
+        return validator.validate(shapesGraph, dataGraph);
+    }
 }

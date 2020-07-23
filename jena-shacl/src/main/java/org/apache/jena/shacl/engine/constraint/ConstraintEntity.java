@@ -28,7 +28,15 @@ import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.sparql.path.Path;
 
-/** A restriction on an RDF "entity" (e.g. triples with the same subject). */
+/** A Constraint that handles an RDF "entity" (e.g. triples with the same subject)
+ *  and produces a single report based on a test using the set of pathNodes or a single focusNode.
+ *  {@link MinCount}, {@link MaxCount}, {@link HasValueConstraint}.
+ *  <p>
+ *  Contrast this with {@link ConstraintDataTerm} which handles an RDF "entity" and
+ *  produces one report for each item in the set of nodes. {@link ClassConstraint}.
+ *
+ *  @see ConstraintDataTerm
+ */
 public abstract class ConstraintEntity implements Constraint {
 
     @Override

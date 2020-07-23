@@ -28,10 +28,8 @@ import org.apache.jena.shacl.lib.ShLib;
 public class RunManifest {
 
     public static void runTest(String manifest) {
-        runTest(manifest, true);
-    }
+        boolean verbose = false;
 
-    public static void runTest(String manifest, boolean verbose) {
         if ( verbose ) {
             String fn = manifest;
             if ( manifest.startsWith("file://" ) )
@@ -50,13 +48,13 @@ public class RunManifest {
         List<ShaclTestItem> testCases = ShaclTests.manifest(manifest, omitManifests);
 
         testCases.forEach(stc->{
-            if ( false ) {
+            if ( verbose ) {
                 Shapes shapes = Shapes.parse(stc.getShapesGraph().getModel());
                 ShLib.printShapes(shapes);
                 System.out.println("<><><><><>");
             }
             try {
-                ShaclTest.shaclTest(stc, verbose);
+                ShaclTest.shaclTest(stc);
                 System.out.println("OK: "+manifest);
             } catch (AssertionError ex) {
                 System.out.flush();

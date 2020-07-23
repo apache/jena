@@ -18,25 +18,16 @@
 
 package org.apache.jena.shacl.validation;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
 
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.ValidationReport;
-import org.apache.jena.shacl.engine.ShaclPaths;
-import org.apache.jena.shacl.engine.Target;
 import org.apache.jena.shacl.engine.ValidationContext;
-import org.apache.jena.shacl.lib.G;
-import org.apache.jena.shacl.parser.Constraint;
-import org.apache.jena.shacl.parser.NodeShape;
-import org.apache.jena.shacl.parser.PropertyShape;
 import org.apache.jena.shacl.parser.Shape;
-import org.apache.jena.sparql.path.Path;
-
-import static org.apache.jena.shacl.lib.G.isOfType;
 
 public class ValidationProc {
     /* 3.4 Validation
@@ -84,72 +75,47 @@ public class ValidationProc {
 
     private static IndentedWriter out  = IndentedWriter.stdout;
 
-    public static ValidationReport simpleValidation(Graph shapesGraph, Graph data) {
-        return simpleValidation(shapesGraph, data, false);
-    }
-
-    public static ValidationReport simpleValidation(Graph shapesGraph, Graph data, boolean verbose) {
-        Shapes shapes = Shapes.parse(shapesGraph);
-        return simpleValidation(shapes, data, verbose);
-    }
-
-    public static ValidationReport simpleValidation(Shapes shapes, Graph data, boolean verbose) {
+    public static ValidationReport plainValidation(Shapes shapes, Graph data) {
         int x = out.getAbsoluteIndent();
         try {
-            ValidationContext vCxt = new ValidationContext(shapes, data);
-            vCxt.setVerbose(verbose);
-            return simpleValidation(vCxt, shapes, data);
+            ValidationContext vCxt = ValidationContext.create(shapes, data);
+            return plainValidation(vCxt, shapes, data);
         //} catch (ShaclParseException ex) {
         } finally { out.setAbsoluteIndent(x); }
     }
 
-
-
-    public static ValidationReport simpleValidation(ValidationContext vCxt, Shapes shapes, Graph data) {
-        shapes.getTargetShapes().forEach(shape->simpleValidation(vCxt, data, shape));
+    private static ValidationReport plainValidation(ValidationContext vCxt, Shapes shapes, Graph data) {
+        shapes.getTargetShapes().forEach(shape->plainValidation(vCxt, shape, data));
         if ( vCxt.isVerbose() )
             out.ensureStartOfLine();
         return vCxt.generateReport();
     }
 
-    public static ValidationReport simpleValidation(ValidationContext vCxt, Collection<Shape> shapes, Graph data) {
-        shapes.forEach(shape->simpleValidation(vCxt, data, shape));
-        if ( vCxt.isVerbose() )
-            out.ensureStartOfLine();
-        return vCxt.generateReport();
-    }
-
-    public static ValidationReport simpleValidation(Graph shapesGraph, Graph dataGraph, Node node, boolean verbose) {
-        Shapes shapes = Shapes.parse(shapesGraph);
-        return simpleValidationNode(shapes, dataGraph, node, verbose);
-    }
-
-    public static void simpleValidation(ValidationContext vCxt, Graph data, Shape shape) {
-        simpleValidationInternal(vCxt, data, null, shape);
+    private static void plainValidation(ValidationContext vCxt, Shape shape, Graph data) {
+        plainValidationInternal(vCxt, data, null, shape);
     }
 
     // ---- Single node.
 
-    public static ValidationReport simpleValidationNode(Shapes shapes, Graph data, Node node, boolean verbose) {
+    public static ValidationReport plainValidationNode(Shapes shapes, Graph data, Node node) {
         int x = out.getAbsoluteIndent();
         try {
-            ValidationContext vCxt = new ValidationContext(shapes, data);
-            vCxt.setVerbose(verbose);
-            return simpleValidationNode(vCxt, shapes, node, data);
+            ValidationContext vCxt = ValidationContext.create(shapes, data);
+            return plainValidationNode(vCxt, shapes, node, data);
         } finally { out.setAbsoluteIndent(x); }
     }
 
-    private static ValidationReport simpleValidationNode(ValidationContext vCxt, Shapes shapes, Node node, Graph data) {
+    private static ValidationReport plainValidationNode(ValidationContext vCxt, Shapes shapes, Node node, Graph data) {
         shapes.getTargetShapes().forEach(shape->
-            simpleValidationNode(vCxt, data, node, shape)
+            plainValidationNode(vCxt, data, node, shape)
             );
         if ( vCxt.isVerbose() )
             out.ensureStartOfLine();
         return vCxt.generateReport();
     }
 
-    private static void simpleValidationNode(ValidationContext vCxt, Graph data, Node node, Shape shape) {
-        simpleValidationInternal(vCxt, data, node, shape);
+    private static void plainValidationNode(ValidationContext vCxt, Graph data, Node node, Shape shape) {
+        plainValidationInternal(vCxt, data, node, shape);
     }
 
     // --- Top of process
@@ -159,15 +125,15 @@ public class ValidationProc {
      * Either all focusNode for the shape (argument node == null)
      * or just for one node of the focusNodes of the shape.
      */
-    private static void simpleValidationInternal(ValidationContext vCxt, Graph data, Node node, Shape shape) {
+    private static void plainValidationInternal(ValidationContext vCxt, Graph data, Node node, Shape shape) {
         Collection<Node> focusNodes;
 
         if ( node != null ) {
-            if (! isFocusNode(shape, node, data))
+            if (! VLib.isFocusNode(shape, node, data))
                 return ;
             focusNodes = Collections.singleton(node);
         } else {
-            focusNodes = getFocusNodes(data, shape);
+            focusNodes = VLib.focusNodes(data, shape);
         }
 
         if ( vCxt.isVerbose() ) {
@@ -179,139 +145,17 @@ public class ValidationProc {
         for ( Node focusNode : focusNodes ) {
             if ( vCxt.isVerbose() )
                 out.println("F: "+focusNode);
-            validateShape(vCxt, data, shape, focusNode);
+            VLib.validateShape(vCxt, data, shape, focusNode);
         }
         if ( vCxt.isVerbose() ) {
             out.decIndent();
         }
     }
 
+    // XXX VLib
+    // Make ValidationContext carry teh ShaclVAlidator to recurse on.
     // Recursion for shapes of shapes. "shape-expecting constraint parameters"
     public static void execValidateShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode) {
-        validateShape(vCxt, data, shape, focusNode);
-    }
-
-    private static void validateShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode) {
-        if ( shape.deactivated() )
-            return;
-        if ( vCxt.isVerbose() )
-            out.println("S: "+shape);
-
-        Path path;
-        Set<Node> vNodes;
-        if ( shape instanceof NodeShape ) {
-            path = null;
-            vNodes = null;
-        } else if ( shape instanceof PropertyShape ) {
-            PropertyShape propertyShape = (PropertyShape)shape;
-            path = propertyShape.getPath();
-            vNodes = ShaclPaths.valueNodes(data, focusNode, propertyShape.getPath());
-        } else {
-            if ( vCxt.isVerbose() )
-                out.println("Z: "+shape);
-            return;
-        }
-
-        // Constraints of this shape.
-        for ( Constraint c : shape.getConstraints() ) {
-            if ( vCxt.isVerbose() )
-                out.println("C: "+c);
-            evalConstraint(vCxt, data, shape, focusNode, path, vNodes, c);
-        }
-
-        // Follow sh:property (sh:node behaves as a constraint).
-        validationPropertyShapes(vCxt, data, shape.getPropertyShapes(), focusNode);
-        if ( vCxt.isVerbose() )
-            out.println();
-    }
-
-    private static void validationPropertyShapes(ValidationContext vCxt, Graph data, List<PropertyShape> propertyShapes, Node focusNode) {
-        if ( propertyShapes == null )
-            return;
-        for ( PropertyShape propertyShape : propertyShapes ) {
-            validationPropertyShape(vCxt, data, propertyShape, focusNode);
-        }
-    }
-
-    // XXX This is nearly validationShape.
-    private static void validationPropertyShape(ValidationContext vCxt, Graph data, PropertyShape propertyShape, Node focusNode) {
-        //validateShape(vCxt, data, propertyShape, focusNode);
-        // sh:property got us here.
-        if ( propertyShape.deactivated() )
-            return;
-        if ( vCxt.isVerbose() )
-            out.println("P: "+propertyShape);
-
-        Set<Node> vNodes = ShaclPaths.valueNodes(data, focusNode, propertyShape.getPath());
-
-        // DRY with validateShape.
-        for ( Constraint c : propertyShape.getConstraints() ) {
-            if ( vCxt.isVerbose() )
-                out.println("C: "+focusNode+" :: "+c);
-            // Pass vNodes here.
-            evalConstraint(vCxt, data, propertyShape, focusNode, propertyShape.getPath(), vNodes, c);
-        }
-        vNodes.forEach(vNode->{
-            validationPropertyShapes(vCxt, data, propertyShape.getPropertyShapes(), vNode);
-        });
-    }
-
-    private static void evalConstraint(ValidationContext vCxt, Graph data, Shape shape, Node focusNode, Path path, Set<Node> pathNodes, Constraint c) {
-        if ( path == null ) {
-            if ( pathNodes != null )
-                throw new InternalErrorException("Path is null but pathNodes is not null");
-            c.validateNodeShape(vCxt, data, shape, focusNode);
-            return;
-        }
-        if ( pathNodes == null )
-            throw new InternalErrorException("Path is not null but pathNodes is null");
-        c.validatePropertyShape(vCxt, data, shape, focusNode, path, pathNodes);
-    }
-
-    private static Collection<Node> getFocusNodes(Graph data, Shape shape) {
-        Collection<Node> acc = new HashSet<>();
-        shape.getTargets().forEach(target->
-            acc.addAll(getFocusNodes(data, target)));
-        return acc;
-    }
-
-    private static Collection<Node> getFocusNodes(Graph data, Target target) {
-        Node targetObj = target.getObject();
-        switch(target.getTargetType()) {
-            case targetClass:
-            case implicitClass:
-                return G.listAllNodesOfType(data, targetObj);
-            case targetNode:
-                return Collections.singletonList(targetObj);
-            case targetObjectsOf:
-                return G.allSP(data, null, targetObj);
-            case targetSubjectsOf:
-                return G.allPO(data, targetObj, null);
-            default:
-                return Collections.emptyList();
-        }
-    }
-
-    private static boolean isFocusNode(Shape shape, Node node, Graph data) {
-        return shape.getTargets()
-                .stream()
-                .anyMatch(target -> isFocusNode(target, node, data));
-    }
-
-    private static boolean isFocusNode(Target target, Node node, Graph data) {
-        Node targetObject = target.getObject();
-        switch (target.getTargetType()) {
-            case targetClass:
-            case implicitClass:
-                return isOfType(data, node, targetObject);
-            case targetNode:
-                return targetObject.equals(node);
-            case targetObjectsOf:
-                return data.contains(null, targetObject, node);
-            case targetSubjectsOf:
-                return data.contains(node, targetObject, null);
-            default:
-                return false;
-        }
+        VLib.validateShape(vCxt, data, shape, focusNode);
     }
 }

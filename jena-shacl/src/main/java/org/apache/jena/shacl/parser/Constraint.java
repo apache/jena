@@ -24,7 +24,7 @@ import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
-import org.apache.jena.shacl.ShaclException;
+import org.apache.jena.shacl.compact.writer.ShaclNotCompactException;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.sparql.path.Path;
 
@@ -35,7 +35,7 @@ public interface Constraint {
     }
 
     public default void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
-        throw new ShaclException("Not supported in compact syntax: "+getClass().getSimpleName());
+        throw new ShaclNotCompactException("Not supported in compact syntax: "+getClass().getSimpleName());
     }
 
     /** Execute a Constraint - node shape. */

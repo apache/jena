@@ -29,6 +29,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
+import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.vocabulary.XSD;
@@ -82,6 +83,12 @@ public class DatatypeConstraint extends ConstraintTerm {
         if ( ! n.isLiteral() )
             return new ReportItem(toString()+" : Not a literal", n);
         String dtStr = vCxt.getShapesGraph().getPrefixMapping().qnameFor(dtURI);
+
+        if ( dtStr == null ) {
+            Node dt = NodeFactory.createURI(n.getLiteralDatatypeURI());
+            dtStr = ShLib.displayStr(dt);
+        }
+
         String errMsg = toString()+" : Got datatype "+dtStr+" : Node "+displayStr(n);
         return new ReportItem(errMsg, n);
     }

@@ -26,7 +26,7 @@ import org.apache.jena.shacl.sys.ShaclSystem;
 /** Public API for the SHACL Validation. */
 public interface ShaclValidator {
 
-    /** Return the current system-wide {@code ShaclValidator}. */ 
+    /** Return the current system-wide {@code ShaclValidator}. */
     public static ShaclValidator get() { return ShaclSystem.get();}
 
     /** Parse the shapes from the graph and return a AST object that has all the shapes. */
@@ -69,7 +69,7 @@ public interface ShaclValidator {
     public default ValidationReport validate(Graph shapesGraph, Graph data) {
         return validate(parse(shapesGraph), data);
     }
-    
+
     /** Produce a node-specific validation report. */
     public default ValidationReport validate(Graph shapesGraph, Graph data, Node target) {
         return validate(parse(shapesGraph), data, target);

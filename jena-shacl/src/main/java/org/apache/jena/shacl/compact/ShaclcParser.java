@@ -27,8 +27,10 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.shacl.Shapes;
+import org.apache.jena.shacl.compact.reader.ShaclcParseException;
 import org.apache.jena.shacl.compact.reader.parser.ParseException;
 import org.apache.jena.shacl.compact.reader.parser.ShaclCompactParserJJ;
+import org.apache.jena.shacl.compact.reader.parser.TokenMgrError;
 import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.util.Context;
@@ -100,8 +102,13 @@ public class ShaclcParser {
             if ( baseURI != null )
                 parser.getPrologue().setBaseURI(baseURI);
             parser.Unit();
-        } catch (ParseException e) {
-            e.printStackTrace();
+        } catch (ParseException ex) {
+            throw new ShaclcParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn);
+        }
+        catch ( TokenMgrError tErr) {
+            int col = parser.token.endColumn ;
+            int line = parser.token.endLine ;
+            throw new ShaclcParseException(tErr.getMessage(), line, col) ;
         }
         parser.finish();
         stream.finish();

@@ -25,6 +25,7 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.compact.writer.CompactWriter;
+import org.apache.jena.shacl.compact.writer.ShaclNotCompactException;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.Shape;
@@ -46,7 +47,7 @@ public class ShNot extends ConstraintOp1 {
 
     @Override
     public ReportItem validate(ValidationContext vCxt, Graph data, Node node) {
-        ValidationContext vCxt2 = new ValidationContext(vCxt);
+        ValidationContext vCxt2 = ValidationContext.create(vCxt);
         ValidationProc.execValidateShape(vCxt2, data, other, node);
         boolean innerConforms = vCxt2.generateReport().conforms();
         if ( ! innerConforms )
@@ -60,7 +61,7 @@ public class ShNot extends ConstraintOp1 {
         // "other" must be a node shape with no property shapes and one constraint.
         Constraint constraint  = CompactWriter.getCompactPrintable(other);
         if ( constraint == null )
-            throw new UnsupportedOperationException("sh:not");
+            throw new ShaclNotCompactException("sh:not("+other+")");
         out.print("! ");
         constraint.printCompact(out, nodeFmt);
     }

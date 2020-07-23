@@ -20,10 +20,8 @@ package org.apache.jena.shacl.engine;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.ValidationReport;
-import org.apache.jena.shacl.engine.exec.TripleValidator;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.validation.ReportItem;
@@ -31,20 +29,32 @@ import org.apache.jena.sparql.path.Path;
 
 public class ValidationContext {
 
+    public static boolean VERBOSE = false;
+
     private final ValidationReport.Builder validationReportBuilder = ValidationReport.create();
     private boolean verbose = false;
     private final Shapes shapes;
     private final Graph dataGraph;
     private boolean strict = false;
 
-    public ValidationContext(ValidationContext vCxt) {
+    public static ValidationContext create(Shapes shapes, Graph data) {
+        ValidationContext vCxt = new ValidationContext(shapes, data);
+        vCxt.setVerbose(VERBOSE);
+        return vCxt;
+    }
+
+    public static ValidationContext create(ValidationContext vCxt) {
+        return new ValidationContext(vCxt);
+    }
+
+    private ValidationContext(ValidationContext vCxt) {
         this.shapes = vCxt.shapes;
         this.dataGraph = vCxt.dataGraph;
         this.verbose = vCxt.verbose;
         this.strict = vCxt.strict;
     }
 
-    public ValidationContext(Shapes shapes, Graph data) {
+    private ValidationContext(Shapes shapes, Graph data) {
         this.shapes = shapes;
         this.dataGraph = data;
         validationReportBuilder.addPrefixes(data.getPrefixMapping());
@@ -52,17 +62,15 @@ public class ValidationContext {
     }
 
     //public ValidationReport.Builder builder() { return validationReportBuilder; }
-    
+
     public void reportEntry(ReportItem item, Shape shape, Node focusNode, Path path, Constraint constraint) {
         reportEntry(item.getMessage(), shape, focusNode, path, item.getValue(), constraint);
     }
 
     public void reportEntry(String message, Shape shape, Node focusNode, Path path, Node valueNode, Constraint constraint) {
+        if ( verbose )
+            System.out.println("Validation report entry");
         validationReportBuilder.addReportEntry(message, shape, focusNode, path, valueNode, constraint);
-    }
-
-    public void reportEntry(ReportItem item, TripleValidator validator, Triple triple) {
-        validationReportBuilder.addReportEntry(item, validator, triple);
     }
 
     public ValidationReport generateReport() {

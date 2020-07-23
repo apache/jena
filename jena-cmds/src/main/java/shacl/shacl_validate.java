@@ -28,9 +28,10 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RiotException;
+import org.apache.jena.shacl.ShaclValidator;
 import org.apache.jena.shacl.ValidationReport;
+import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.lib.ShLib;
-import org.apache.jena.shacl.validation.ValidationProc;
 import org.apache.jena.sys.JenaSystem;
 
 /** SHACL validation.
@@ -63,7 +64,7 @@ public class shacl_validate extends CmdGeneral {
         super(argv) ;
         super.add(argShapes,        "--shapes", "Shapes file");
         super.add(argData,          "--data",   "Data file");
-        super.add(argTargetNode,    "--target", "Validate specific node [may use prefixes from the data]"); 
+        super.add(argTargetNode,    "--target", "Validate specific node [may use prefixes from the data]");
         super.add(argOutputText,    "--text",   "Output in concise text format");
         //super.add(argOutputRDF,  "--rdf", "Output in RDF (Turtle) format");
     }
@@ -92,9 +93,9 @@ public class shacl_validate extends CmdGeneral {
              throw new CmdException("Usage: "+getSummary());
          if ( shapesfile == null )
              shapesfile = datafile;
-         
+
          textOutput = super.hasArg(argOutputText);
-         
+
          if ( contains(argTargetNode) ) {
              targetNode = getValue(argTargetNode);
          }
@@ -108,17 +109,20 @@ public class shacl_validate extends CmdGeneral {
             dataGraph = shapesGraph;
         else
             dataGraph = load(datafile, "data file");
-        
+
         Node node = null;
         if ( targetNode != null ) {
             String x = dataGraph.getPrefixMapping().expandPrefix(targetNode);
             node = NodeFactory.createURI(x);
         }
 
-        ValidationReport report = ( node != null ) 
-            ? ValidationProc.simpleValidation(shapesGraph, dataGraph, node, isVerbose())
-            : ValidationProc.simpleValidation(shapesGraph, dataGraph, isVerbose());
-        
+        if ( isVerbose() )
+            ValidationContext.VERBOSE = true;
+
+        ValidationReport report = ( node != null )
+            ? ShaclValidator.get().validate(shapesGraph, dataGraph, node)
+            : ShaclValidator.get().validate(shapesGraph, dataGraph);
+
         if ( textOutput )
             ShLib.printReport(report);
         else

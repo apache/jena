@@ -45,18 +45,18 @@ import org.apache.jena.sys.JenaSystem;
 public class Shapes implements Iterable<Shape> {
     static { JenaSystem.init(); }
 
+    private final Graph shapesGraph;
+    //Map is Node to Shape.
+    private final Map<Node, Shape> shapes;
+
     // Shapes with targets (including implicit class target).
     private final Collection<Shape> rootShapes;
     // Declared shapes, not in targetShapes.
     private final Collection<Shape> declShapes;
-    private final Map<Node, Shape> shapes;
-    private final Graph shapesGraph;
     private final Targets targets;
-    // Nodes for explicit declared shapes.
-    // May include nodes for shapes in targets.
-    private final Collection<Node> declaredShapeNode;
 
     private final Node shapesBase;
+    // Imports in the graph.
     private final List<Node> imports;
 
     /** Parse the model and return the shapes. */
@@ -83,10 +83,13 @@ public class Shapes implements Iterable<Shape> {
     }
 
     /**
-     * Parse the graph and also include all declared node and property shapes, whether connected to the targets or not.
+     * Parse the graph and also include all declared (have rdf:type) node and property shapes
+     * (i.e. have rdf:type sh:NodeShape or sh:PropertyShape)
+     * whether connected to the targets or not.
      */
     private static Shapes parseAll(Graph graph) {
         Targets targets = ShapesParser.targets(graph);
+        // May include targets if there are explicit node/property shapes and also have a target.
         Collection<Node> declShapes = ShapesParser.findDeclaredShapes(graph);
         Shapes shapes = parseProcess(graph, targets, declShapes);
         return shapes;
@@ -94,26 +97,35 @@ public class Shapes implements Iterable<Shape> {
 
     private static Shapes parseProcess(Graph shapesGraph, Targets targets, Collection<Node> declaredNodes) {
         Map<Node, Shape> shapesMap = new HashMap<>();
+        // Returns shapes with targets.
         Collection<Shape> rootShapes = ShapesParser.parseShapes(shapesGraph, targets, shapesMap);
 
         // This skips declared+targets because the shapesMap is in common.
-        Collection<Shape> declShapes = new ArrayList<>();
         declaredNodes.forEach(shapeNode -> {
             if ( !shapesMap.containsKey(shapeNode) ) {
                 Shape shape = ShapesParser.parseShape(shapesMap, shapesGraph, shapeNode);
-                declShapes.add(shape);
             }
         });
 
-        return new Shapes(shapesGraph, shapesMap, targets, declaredNodes, rootShapes, declShapes);
+        // All declared shapes, without targets, so not a root shape.
+        Collection<Shape> declShapes = new ArrayList<>();
+        declaredNodes.forEach(shapeNode -> {
+            if ( shapesMap.containsKey(shapeNode) ) {
+                Shape sh = shapesMap.get(shapeNode);
+                if ( ! rootShapes.contains(sh) )
+                    declShapes.add(shapesMap.get(shapeNode));
+            } else {
+                throw new ShaclException("Failed to find shape for declared shape: "+shapeNode);
+            }
+        });
+
+        return new Shapes(shapesGraph, shapesMap, targets, rootShapes, declShapes);
     }
 
     public Shapes(Graph shapesGraph, Map<Node, Shape> shapesMap, Targets targets,
-                  Collection<Node> declShapeNodes,
                   Collection<Shape> rootShapes, Collection<Shape> declShapes) {
         this.shapesGraph = shapesGraph;
         this.targets = targets;
-        this.declaredShapeNode = declShapeNodes;
         this.shapes = shapesMap;
         this.rootShapes = rootShapes;
         this.declShapes = declShapes;
@@ -152,11 +164,6 @@ public class Shapes implements Iterable<Shape> {
         return shapesBase;
     }
 
-//    /** Return the shapes which has excplict type declarations, not including in the shapes with targets. */
-//    public Collection<Shape> getDeclaredShapes() {
-//        return declShapes;
-//    }
-
     public Shape getShape(Node node) {
         return shapes.get(node);
     }
@@ -189,7 +196,7 @@ public class Shapes implements Iterable<Shape> {
 
     /** Iterator over the shapes with targets and with explicit type NodeShape or PropertyShape. */
     public Iterator<Shape> iteratorAll() {
+        // rootsShapes and declShaes are disjoint so no duplicates in the iterator.
         return Iter.concat(rootShapes.iterator(), declShapes.iterator());
     }
-
 }
