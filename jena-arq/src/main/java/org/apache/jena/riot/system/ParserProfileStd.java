@@ -82,9 +82,12 @@ public class ParserProfileStd implements ParserProfile
 
     @Override
     public void setBaseIRI(String baseIRI) {
-        IRI iri = resolver.resolve(baseIRI);
+        // In normal parsing use, resolveIRI/internalMakeIRI has already been called
+        // and this is a duplicate of making an IRI object but it does hide "IRI"
+        // from the outside.
+        // BASE is not a frequent directive in any given file so this is acceptable.
+        IRI iri = internalMakeIRI(baseIRI, -1, -1);
         this.resolver = IRIResolver.create(iri);
-
     }
 
     private IRI internalMakeIRI(String uriStr, long line, long col) {
