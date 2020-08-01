@@ -184,7 +184,7 @@ public class ShaclCompactParser extends ParserBase {
     }
 
     protected void rPrefix(String prefix, String iriStr) {
-        getPrologue().getPrefixMapping().setNsPrefix(prefix, iriStr);
+        getPrologue().setPrefix(prefix, iriStr);
         outputStream.prefix(prefix, iriStr);
         prefixesSeen.put(prefix, iriStr);
     }

@@ -69,16 +69,16 @@ void Prologue() : {}
 {
   ( BaseDecl() | PrefixDecl() )*
 }
-void BaseDecl() : { String iri ; }
+void BaseDecl() : { Token t ; String iri ; }
 {
-  <BASE> iri = IRIREF()
-  { getPrologue().setBaseURI(iri) ; }
+  t = <BASE> iri = IRIREF()
+  { setBase(iri, t.beginLine, t.beginColumn ) ; }
 }
 void PrefixDecl() : { Token t ; String iri ; }
 {
     <PREFIX> t = <PNAME_NS> iri = IRIREF()
-      { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
-        getPrologue().setPrefix(s, iri) ; }
+    { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn);
+      setPrefix(s, iri, t.beginLine, t.beginColumn) ; }
 }
 void SelectQuery() : { }
 {
@@ -194,7 +194,7 @@ void JsonClause() : {}
 void JsonObjectMember() : { Node o ; String s ; Token t; }
 {
   s = String()
-  t = < PNAME_NS > {
+  t = <PNAME_NS> {
     if ( ! t.image.equals(":") )
       throwParseException("Prefix name expression not legal at this point : "+t.image, t.beginLine, t.beginColumn) ;
   }

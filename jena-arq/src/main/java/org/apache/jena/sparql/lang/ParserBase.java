@@ -88,7 +88,7 @@ public class ParserBase
 
     // This is the map used allocate blank node labels during parsing.
     // 1/ It is different between CONSTRUCT and the query pattern
-    // 2/ Each BasicGraphPattern is a scope for blank node labels so each
+    // 2/ Each BasicGraphPattern is a scope for blank node labels so eachf
     //    BGP causes the map to be cleared at the start of the BGP
 
     LabelToNodeMap activeLabelMap = anonVarLabels ;
@@ -106,6 +106,15 @@ public class ParserBase
     protected Prologue prologue ;
     public void setPrologue(Prologue prologue) { this.prologue = prologue ; }
     public Prologue getPrologue() { return prologue ; }
+
+    protected void setBase(String iriStr, int line, int column) {
+        getPrologue().setBaseURI(iriStr);
+    }
+
+    protected void setPrefix(String prefix, String uriStr, int line, int column) {
+        //prefix = fixupPrefix(prefix, line, column);
+        getPrologue().setPrefix(prefix, uriStr);
+    }
 
     protected void setInConstructTemplate(boolean b) {
         setBNodesAreVariables(!b) ;
@@ -335,7 +344,7 @@ public class ParserBase
         if ( ! n.isConcrete() )
             throwParseException("Term is not concrete: "+n, line, column) ;
     }
-    
+
     // BNode from a list
 //    protected Node createListNode()
 //    { return listLabelMap.allocNode() ; }
@@ -373,6 +382,7 @@ public class ParserBase
         return new E_NotExists(element) ;
     }
 
+    // Convert a parser token, which includes the final ":", to a prefix name.
     protected String fixupPrefix(String prefix, int line, int column) {
         // \ u processing!
         if ( prefix.endsWith(":") )
