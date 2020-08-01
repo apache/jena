@@ -108,10 +108,14 @@ public class ParserBase
     public Prologue getPrologue() { return prologue ; }
 
     protected void setBase(String iriStr, int line, int column) {
+        if ( isBNodeIRI(iriStr) )
+            throwParseException("Blank node URI syntax used for BASE", line, column);
+        iriStr = resolveIRI(iriStr, line, column);
         getPrologue().setBaseURI(iriStr);
     }
 
     protected void setPrefix(String prefix, String uriStr, int line, int column) {
+        // Should have happen in the parser because this step is "token to prefix".
         //prefix = fixupPrefix(prefix, line, column);
         getPrologue().setPrefix(prefix, uriStr);
     }
