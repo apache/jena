@@ -103,7 +103,7 @@ public class TurtleJavacc extends TurtleParserBase implements TurtleJavaccConsta
       t = jj_consume_token(PNAME_NS);
       iri = IRIREF();
 String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
-      setPrefix(t.beginLine, t.beginColumn, s, iri) ;
+      setPrefix(s, iri, t.beginLine, t.beginColumn) ;
       break;
       }
     case BASE:{
@@ -127,7 +127,7 @@ setBase(iri, t.beginLine, t.beginColumn) ;
       iri = IRIREF();
       jj_consume_token(DOT);
 String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
-      setPrefix(t.beginLine, t.beginColumn, s, iri) ;
+      setPrefix(s, iri, t.beginLine, t.beginColumn) ;
       break;
       }
     case BASE_OLD:{

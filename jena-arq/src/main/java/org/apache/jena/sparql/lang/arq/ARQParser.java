@@ -105,18 +105,18 @@ finishUpdateRequest() ;
     }
   }
 
-  final public void BaseDecl() throws ParseException {String iri ;
-    jj_consume_token(BASE);
+  final public void BaseDecl() throws ParseException {Token t ; String iri ;
+    t = jj_consume_token(BASE);
     iri = IRIREF();
-getPrologue().setBaseURI(iri) ;
+setBase(iri, t.beginLine, t.beginColumn ) ;
   }
 
   final public void PrefixDecl() throws ParseException {Token t ; String iri ;
     jj_consume_token(PREFIX);
     t = jj_consume_token(PNAME_NS);
     iri = IRIREF();
-String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
-        getPrologue().setPrefix(s, iri) ;
+String s = fixupPrefix(t.image, t.beginLine, t.beginColumn);
+      setPrefix(s, iri, t.beginLine, t.beginColumn) ;
   }
 
   final public void SelectQuery() throws ParseException {

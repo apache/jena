@@ -85,9 +85,14 @@ public class Util extends Object {
         // Check we haven't split up a %-encoding.
         if ( j >= 2 && uri.charAt(j-2) == '%' )
             j = j+1 ;
-        if ( j >= 1 && uri.charAt(j-1) == '%' )
+        if ( j >= 1 && uri.charAt(j-1) == '%' ) {
             j = j+2 ;
-        
+            if ( j > lg )
+                // JENA-1941: Protect against overshoot in the case of "%x"
+                // at end of a (bad) URI.
+                return lg;
+        }
+
         // Have found the leftmost NCNameChar from the
         // end of the URI string.
         // Now scan forward for an NCNameStartChar
@@ -99,11 +104,11 @@ public class Util extends Object {
             if (XMLChar.isNCNameStart(ch))
             {
                 // "mailto:" is special.
-                // Keep part after mailto: at least one charcater.
-                // Do a quick test before calling .startsWith
-                // OLD: if ( uri.charAt(j - 1) == ':' && uri.lastIndexOf(':', j - 2) == -1)
+                // split "mailto:me" as "mailto:m" and "e" !
+                // Keep part after mailto: with at least one character.
                 if ( j == 7 && uri.startsWith("mailto:"))
-                    continue; // split "mailto:me" as "mailto:m" and "e" !
+                    // Don't split at "mailto:"
+                    continue;
                 else
                     break;
             }
@@ -119,7 +124,7 @@ public class Util extends Object {
         { return !XMLChar.isNCName( ch ); }
 
     protected static Pattern standardEntities = 
-    	   Pattern.compile( "&|<|>|\t|\n|\r|\'|\"" );
+        Pattern.compile( "&|<|>|\t|\n|\r|\'|\"" );
     
     public static String substituteStandardEntities( String s )
         {
@@ -138,7 +143,7 @@ public class Util extends Object {
         }
     
     protected static Pattern entityValueEntities = 
- 	   Pattern.compile( "&|%|\'|\"" );
+        Pattern.compile( "&|%|\'|\"" );
  
    public static String substituteEntitiesInEntityValue( String s )
      {
@@ -214,7 +219,7 @@ public class Util extends Object {
     }
 
     /**
-     * A Node is a language string if it has a language tag. 
+     * A Node is a language string if it has a language tag.
      * (RDF 1.0 and RDF 1.1)
      */
     public static boolean isLangString(Node n) {
@@ -249,5 +254,4 @@ public class Util extends Object {
             return false ;
         return ! lang.equals("") ;
     }
-
 }
