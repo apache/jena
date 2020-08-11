@@ -248,7 +248,7 @@ public class FusekiMain extends CmdARQ {
 
         // Which TDB to use to create a command line TDB database.
         useTDB2 = contains(argTDB2mode);
-        String tag = useTDB2 ? "TDB2" : "TDB";
+        String tag = useTDB2 ? "TDB2" : "TDB1";
 
         if ( allowEmpty ) {
             serverConfig.empty = true;
@@ -317,12 +317,8 @@ public class FusekiMain extends CmdARQ {
         }
 
         if ( contains(argTDB) ) {
-            String dir = getValue(argTDB);
-            serverConfig.datasetDescription = tag+" dataset: "+dir;
-            serverConfig.dsg =
-                useTDB2
-                ? DatabaseMgr.connectDatasetGraph(dir)
-                    : TDBFactory.createDatasetGraph(dir);
+            String directory = getValue(argTDB);
+            DSGSetup.setupTDB(directory, useTDB2, serverConfig);
         }
 
         if ( contains(ModAssembler.assemblerDescDecl) ) {

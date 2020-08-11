@@ -24,7 +24,7 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
-import org.apache.jena.fuseki.cmd.FusekiInitialConfig;
+import org.apache.jena.fuseki.cmd.FusekiArgs;
 import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.FusekiInfo;
@@ -44,7 +44,7 @@ public class FusekiServerListener implements ServletContextListener {
 
     public FusekiServerListener() { }
 
-    public static FusekiInitialConfig initialSetup = null;
+    public static FusekiArgs initialSetup = null;
 
     private boolean initialized = false;
 
@@ -84,7 +84,7 @@ public class FusekiServerListener implements ServletContextListener {
             // The command line code sets initialSetup.
             // In a non-command line startup, initialSetup is null.
             if ( initialSetup == null ) {
-                initialSetup = new FusekiInitialConfig();
+                initialSetup = new FusekiArgs();
                 String cfg = FusekiEnv.FUSEKI_BASE.resolve(FusekiWebapp.DFT_CONFIG).toAbsolutePath().toString();
                 initialSetup.fusekiServerConfigFile = cfg;
             }

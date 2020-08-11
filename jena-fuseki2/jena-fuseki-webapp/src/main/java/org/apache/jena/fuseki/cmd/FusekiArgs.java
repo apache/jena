@@ -25,7 +25,7 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 /** Dataset setup (command line, config file) for a dataset (or several if config file) */
-public class FusekiInitialConfig {
+public class FusekiArgs {
     public boolean quiet = false;
     public boolean verbose = Fuseki.verboseLogging;
 
@@ -33,9 +33,9 @@ public class FusekiInitialConfig {
     // through the command line processing should not allow --conf and a templated /dataset.
 
     // Label for dataset setup (command line).
-    public String datasetDescription  = null;
+    public String    datasetDescription  = null;
     // Either this ... command line ...
-    public String    argTemplateFile  = null;              // Command list args --mem, --loc, --memtdb
+    public String    templateFile     = null;              // Command list args --mem, --loc, --memtdb
     public String    datasetPath      = null;              // Dataset name on the command line.
     public boolean   allowUpdate      = false;             // Command line --update.
     // Special case - prebuilt dataset.  Uses datasetPath.
@@ -49,10 +49,10 @@ public class FusekiInitialConfig {
     // Additional information.
     public Map<String,String> params  = new HashMap<>();
 
-    public FusekiInitialConfig() {}
+    public FusekiArgs() {}
 
     public void reset() {
-        argTemplateFile  = null;
+        templateFile  = null;
         datasetPath = null;
         allowUpdate = false;
         dsg = null;

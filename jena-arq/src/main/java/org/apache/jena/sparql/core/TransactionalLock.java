@@ -48,7 +48,7 @@ import org.apache.jena.sparql.JenaTransactionException ;
  *      {@literal @}Override public boolean supportsTransactions()     { return true; }
  *      {@literal @}Override public boolean supportsTransactionAbort() { return false; }
  *   </pre>
- */ 
+ */
 public class TransactionalLock implements Transactional {
 /*
     private final Transactional txn                     = TransactionalLock.createMRSW() ;
@@ -65,7 +65,7 @@ public class TransactionalLock implements Transactional {
     @Override public boolean supportsTransactions()     { return true; }
     @Override public boolean supportsTransactionAbort() { return false; }
  */
-    
+
     private ThreadLocal<Boolean>   inTransaction = ThreadLocal.withInitial(() -> Boolean.FALSE);
     private ThreadLocal<TxnType>   txnType = ThreadLocal.withInitial(() -> null);
     private ThreadLocal<ReadWrite> txnMode = ThreadLocal.withInitial(() -> null);
@@ -85,12 +85,12 @@ public class TransactionalLock implements Transactional {
     public static TransactionalLock createMRSW() {
         return create(new LockMRSW()) ;
     }
-    
+
     /** Create a Transactional using a mutex (exclusive - one at a time) lock */
     public static TransactionalLock createMutex() {
         return create(new LockMutex()) ;
     }
-    
+
     protected TransactionalLock(Lock lock) {
         this.lock = lock ;
     }
@@ -99,7 +99,7 @@ public class TransactionalLock implements Transactional {
     public void begin(ReadWrite readWrite) {
         begin(TxnType.convert(readWrite));
     }
-    
+
     @Override
     public void begin(TxnType txnType) {
         if ( isInTransaction() )
@@ -107,10 +107,10 @@ public class TransactionalLock implements Transactional {
         switch(txnType) {
             case READ_PROMOTE:
             case READ_COMMITTED_PROMOTE:
-                throw new UnsupportedOperationException("begin("+txnType+")");
+                throw new UnsupportedOperationException("begin(TxnType."+txnType+")");
             default:
         }
-        ReadWrite readWrite = TxnType.convert(txnType);  
+        ReadWrite readWrite = TxnType.convert(txnType);
         boolean isRead = readWrite.equals(ReadWrite.READ) ;
         lock.enterCriticalSection(isRead);
         this.inTransaction.set(true);
@@ -125,11 +125,11 @@ public class TransactionalLock implements Transactional {
     @Override public TxnType transactionType() {
         return Lib.readThreadLocal(txnType) ;
     }
-    
-    // Lock promotion required (Ok for mutex) 
-    
+
+    // Lock promotion required (Ok for mutex)
+
     @Override
-    public boolean promote(Promote txnType) { 
+    public boolean promote(Promote txnType) {
         return false;
     }
 
@@ -174,8 +174,8 @@ public class TransactionalLock implements Transactional {
             inTransaction.remove();
         }
     }
-    
+
     protected void error(String msg) {
-        throw new JenaTransactionException(msg) ; 
+        throw new JenaTransactionException(msg) ;
     }
 }
