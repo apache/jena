@@ -18,12 +18,7 @@
 
 package org.apache.jena.sparql.expr.nodevalue;
 
-import static javax.xml.datatype.DatatypeConstants.DAYS ;
-import static javax.xml.datatype.DatatypeConstants.HOURS ;
-import static javax.xml.datatype.DatatypeConstants.MINUTES ;
-import static javax.xml.datatype.DatatypeConstants.MONTHS ;
-import static javax.xml.datatype.DatatypeConstants.SECONDS ;
-import static javax.xml.datatype.DatatypeConstants.YEARS ;
+import static javax.xml.datatype.DatatypeConstants.*;
 import static org.apache.jena.sparql.expr.nodevalue.NodeFunctions.checkAndGetStringLiteral ;
 import static org.apache.jena.sparql.expr.nodevalue.NodeFunctions.checkTwoArgumentStringLiterals ;
 import static org.apache.jena.sparql.expr.nodevalue.NumericType.OP_DECIMAL ;
@@ -33,6 +28,8 @@ import static org.apache.jena.sparql.expr.nodevalue.NumericType.OP_INTEGER ;
 
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.text.DecimalFormat ;
 import java.text.DecimalFormatSymbols ;
 import java.text.Normalizer;
@@ -49,7 +46,6 @@ import javax.xml.datatype.XMLGregorianCalendar ;
 
 import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDateTime ;
@@ -68,7 +64,9 @@ public class XSDFuncOp
 {
     private XSDFuncOp() {}
     
-    // The choice of "24" is arbitrary but more than 18 as required by F&O 
+    // The choice of "24" is arbitrary but more than 18 (XSD 1.0) or 16 XSD 1.1) as required by F&O 
+    //   F&O 3.1: section 4.2 (end intro)
+    //   https://www.w3.org/TR/xpath-functions/#op.numeric section 4.2
     private static final int DIVIDE_PRECISION = 24 ;
     // --------------------------------
     // Numeric operations
@@ -139,8 +137,6 @@ public class XSDFuncOp
                 return decimalDivide(d1, d2) ;
             }
             case OP_DECIMAL : {
-                if ( nv2.getDecimal().compareTo(BigDecimal.ZERO) == 0 )
-                    throw new ExprEvalException("Divide by zero in decimal divide") ;
                 BigDecimal d1 = nv1.getDecimal() ;
                 BigDecimal d2 = nv2.getDecimal() ;
                 return decimalDivide(d1, d2) ;
@@ -157,14 +153,16 @@ public class XSDFuncOp
     }
     
     private static NodeValue decimalDivide(BigDecimal d1, BigDecimal d2) {
+        if ( d2.equals(BigDecimal.ZERO) )
+            throw new ExprEvalException("Divide by zero in decimal divide") ;
+        BigDecimal d3;
         try {
-            BigDecimal d3 = d1.divide(d2, DIVIDE_PRECISION, BigDecimal.ROUND_FLOOR) ;
-            return canonicalDecimalNV(d3) ;
+            d3 = d1.divide(d2, MathContext.UNLIMITED);
         } catch (ArithmeticException ex) {
-            Log.warn(XSDFuncOp.class, "ArithmeticException in decimal divide - attempting to treat as doubles") ;
-            BigDecimal d3 = new BigDecimal(d1.doubleValue() / d2.doubleValue()) ;
-            return NodeValue.makeDecimal(d3) ;
+            // Does not throw ArithmeticException
+            d3 = d1.divide(d2, DIVIDE_PRECISION, RoundingMode.HALF_EVEN);
         }
+        return canonicalDecimalNV(d3) ;  
     }
 
     public static NodeValue canonicalDecimalNV(BigDecimal d) {
