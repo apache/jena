@@ -126,11 +126,19 @@ public class TestDatabaseOps
 
     @Test public void compact_prefixes_3() {
         // 2020-04:
-        // This test fails at "HERE" sometimes with an NPE at the marked line when run with Java14 on ASF Jenkins.
+        // This test fails at "HERE" in the test, with an NPEwith Java14 on ASF Jenkins.
+        // java.lang.NullPointerException
+        //         at java.base/java.nio.file.Files.provider(Files.java:105)
+        //         at java.base/java.nio.file.Files.isDirectory(Files.java:2308)
+        //         at org.apache.jena.tdb2.sys.IOX.asLocation(IOX.java:151)
+        //         at org.apache.jena.tdb2.sys.DatabaseOps.compact(DatabaseOps.java:176)
+        //         at org.apache.jena.tdb2.DatabaseMgr.compact(DatabaseMgr.java:62)
+        //         at org.apache.jena.tdb2.sys.TestDatabaseOps.compact_prefixes_3_test(TestDatabaseOps.java:157)
+        //         at org.apache.jena.tdb2.sys.TestDatabaseOps.compact_prefixes_3(TestDatabaseOps.java:135)
+        // (and now JDK15).
         // The NPE is from java.nio.file.Files.provider.
-        // It does not fail anywhere else and it does not always fail.
-        //   This suggests it is an environmental issue with the JDK14 job.
-        // Attempt to find out what is going on:
+        // It does not fail anywhere else ecept at ASF and it does not always fail.
+        // This seems to be on specific, maybe just on, Jenkins build node.
         try {
             compact_prefixes_3_test();
         } catch (Throwable th) {
