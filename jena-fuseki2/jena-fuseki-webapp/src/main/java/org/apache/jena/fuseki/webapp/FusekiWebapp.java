@@ -35,14 +35,18 @@ import jena.cmd.CmdException;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.dboe.sys.Names;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.build.DatasetDescriptionMap;
 import org.apache.jena.fuseki.build.FusekiConfig;
-import org.apache.jena.fuseki.cmd.FusekiInitialConfig;
+import org.apache.jena.fuseki.cmd.FusekiArgs;
 import org.apache.jena.fuseki.mgt.Template;
 import org.apache.jena.fuseki.mgt.TemplateFunctions;
-import org.apache.jena.fuseki.server.*;
+import org.apache.jena.fuseki.server.DataAccessPoint;
+import org.apache.jena.fuseki.server.DataAccessPointRegistry;
+import org.apache.jena.fuseki.server.DataService;
+import org.apache.jena.fuseki.server.FusekiVocab;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.rdf.model.*;
@@ -51,7 +55,6 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
-import org.apache.jena.tdb.sys.Names;
 
 public class FusekiWebapp
 {
@@ -212,7 +215,7 @@ public class FusekiWebapp
         }
     }
 
-    public static void initializeDataAccessPoints(DataAccessPointRegistry registry, FusekiInitialConfig initialSetup, String configDir) {
+    public static void initializeDataAccessPoints(DataAccessPointRegistry registry, FusekiArgs initialSetup, String configDir) {
         List<DataAccessPoint> configFileDBs = initServerConfiguration(initialSetup);
         List<DataAccessPoint> directoryDBs =  FusekiConfig.readConfigurationDirectory(configDir);
         List<DataAccessPoint> systemDBs =     FusekiConfig.readSystemDatabase(SystemState.getDataset());
@@ -225,7 +228,7 @@ public class FusekiWebapp
         datapoints.forEach(registry::register);
     }
 
-    private static List<DataAccessPoint> initServerConfiguration(FusekiInitialConfig params) {
+    private static List<DataAccessPoint> initServerConfiguration(FusekiArgs params) {
         // Has a side effect of global context setting
         // when processing a config file.
         // Compatibility.
@@ -245,8 +248,8 @@ public class FusekiWebapp
         else if ( params.dsg != null ) {
             DataAccessPoint dap = datasetDefaultConfiguration(params.datasetPath, params.dsg, params.allowUpdate);
             datasets.add(dap);
-        } else if ( params.argTemplateFile != null ) {
-            DataAccessPoint dap = configFromTemplate(params.argTemplateFile, params.datasetPath, params.allowUpdate, params.params);
+        } else if ( params.templateFile != null ) {
+            DataAccessPoint dap = configFromTemplate(params.templateFile, params.datasetPath, params.allowUpdate, params.params);
             datasets.add(dap);
         }
         // No datasets is valid.
@@ -284,13 +287,8 @@ public class FusekiWebapp
         Fuseki.configLog.info("Template file: " + templateFile);
         String dir = params.get(Template.DIR);
         if ( dir != null ) {
-            if ( Objects.equals(dir, Names.memName) ) {
-                Fuseki.configLog.info("TDB dataset: in-memory");
-            } else {
-                if ( !FileOps.exists(dir) )
-                    throw new CmdException("Directory not found: " + dir);
-                Fuseki.configLog.info("TDB dataset: directory=" + dir);
-            }
+            if ( ! Objects.equals(dir, Names.memName) && !FileOps.exists(dir) )
+                throw new CmdException("Directory not found: " + dir);
         }
         //-- Logging
 

@@ -30,7 +30,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
-import org.apache.jena.fuseki.cmd.FusekiInitialConfig;
+import org.apache.jena.fuseki.cmd.FusekiArgs;
 import org.apache.jena.fuseki.cmd.JettyFusekiWebapp;
 import org.apache.jena.fuseki.jetty.JettyServerConfig;
 import org.apache.jena.fuseki.system.FusekiNetLib;
@@ -253,7 +253,7 @@ public class ServerCtl {
         SystemState.location = Location.mem();
         SystemState.init$();
 
-        FusekiInitialConfig params = new FusekiInitialConfig();
+        FusekiArgs params = new FusekiArgs();
         dsgTesting = DatasetGraphFactory.createTxnMem();
         params.dsg = dsgTesting;
         params.datasetPath = datasetPath;

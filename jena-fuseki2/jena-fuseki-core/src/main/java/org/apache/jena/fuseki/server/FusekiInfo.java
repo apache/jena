@@ -57,7 +57,7 @@ public class FusekiInfo {
                                       DataAccessPointRegistry dapRegistry,
                                       String datasetPath, String datasetDescription, String serverConfigFile, String staticFiles) {
         if ( datasetPath != null ) {
-            FmtLog.info(log,  "Dataset Type: %s", datasetDescription);
+            FmtLog.info(log,  "Database: %s", datasetDescription);
         }
         if ( serverConfigFile != null )
             FmtLog.info(log,  "Configuration file: %s", serverConfigFile);

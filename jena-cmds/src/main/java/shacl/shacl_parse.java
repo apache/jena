@@ -71,7 +71,7 @@ public class shacl_parse extends CmdGeneral {
 
     @Override
     protected String getSummary() {
-        return getCommandName()+" -out=FMT,FMT FILE";
+        return getCommandName()+" --out=FMT[,FMT] FILE";
     }
 
     @Override
@@ -105,7 +105,7 @@ public class shacl_parse extends CmdGeneral {
                  printText = true;
              }
              if ( ! values.isEmpty() )
-                 throw new CmdException("Formats not recognized: "+values);
+                 throw new CmdException("Formats not recognized: "+values+" : Formats are 'text', 'compact', 'rdf' and 'all'");
 
          } else {
              printCompact = false;

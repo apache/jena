@@ -60,8 +60,8 @@ import org.slf4j.LoggerFactory;
  */
 public class DatabaseOps {
     private static Logger LOG = LoggerFactory.getLogger(DatabaseOps.class);
-    private static final String dbPrefix     = "Data";
-    private static final String SEP          = "-";
+    public static final String dbPrefix     = "Data";
+    public static final String SEP          = "-";
     private static final String startCount   = "0001";
 
     private static final String BACKUPS_DIR  = "Backups";
@@ -207,7 +207,7 @@ public class DatabaseOps {
     private static void compact(DatasetGraphSwitchable container, Location loc1, Location loc2) {
         if ( loc1.isMem() || loc2.isMem() )
             throw new TDBException("Compact involves a memory location: "+loc1+" : "+loc2);
-        
+
         copyFiles(loc1, loc2);
         StoreConnection srcConn = StoreConnection.connectExisting(loc1);
 
@@ -276,7 +276,7 @@ public class DatabaseOps {
             return;
         for ( File f : files ) {
             String fn = f.getName();
-            IOX.copy(loc1.getPath(fn), loc2.getPath(fn));  
+            IOX.copy(loc1.getPath(fn), loc2.getPath(fn));
         }
     }
 

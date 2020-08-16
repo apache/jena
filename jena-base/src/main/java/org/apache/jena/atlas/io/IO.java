@@ -22,10 +22,7 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -205,6 +202,25 @@ public class IO
     /** Create a print writer that uses UTF-8 encoding */
     static public PrintWriter asPrintWriterUTF8(OutputStream out) {
         return new PrintWriter(asUTF8(out));
+    }
+
+    public static boolean isEmptyDirectory(String directory) {
+        Path path = Paths.get(directory);
+        try(DirectoryStream<Path> dirStream = Files.newDirectoryStream(path)) {
+            return !dirStream.iterator().hasNext();
+        }
+        catch (NotDirectoryException ex) { return false ; }
+        catch (IOException ex) { IO.exception(ex); return false; }
+    }
+
+    public static boolean exists(String directory) {
+        Path path = Paths.get(directory);
+        return Files.exists(path);
+    }
+
+    public static boolean isDirectory(String directory) {
+        Path path = Paths.get(directory);
+        return Files.isDirectory(path);
     }
 
     public static void close(org.apache.jena.atlas.lib.Closeable resource) {
