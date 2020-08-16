@@ -19,7 +19,6 @@
 package org.apache.jena.riot.thrift;
 
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.thrift.wire.RDF_PrefixDecl ;
@@ -58,10 +57,7 @@ public class Thrift2StreamRDF implements VisitorStreamRowTRDF {
     public void visit(RDF_PrefixDecl prefixDecl) {
         String prefix = prefixDecl.getPrefix() ;
         String iriStr = prefixDecl.getUri() ;
-        try {
-            pmap.add(prefix, iriStr) ; 
-        } catch (RiotException ex) {}
+        pmap.add(prefix, iriStr) ;
         dest.prefix(prefix, iriStr) ;
     }
-
 }

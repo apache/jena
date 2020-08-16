@@ -157,8 +157,8 @@ public class BinRDF {
         final Thrift2StreamRDF s = new Thrift2StreamRDF(pmap, dest) ;
         dest.start() ;
         apply(protocol, z -> TRDF.visit(z, s)) ;
+        // Includes flushing the protocol.
         dest.finish() ;
-        // No need to flush - we read from the protocol ; 
     }
 
     /**

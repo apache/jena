@@ -206,14 +206,24 @@ public class RDFParserRegistry
     private static class ReaderRIOTFactoryThrift implements ReaderRIOTFactory {
         @Override
         public ReaderRIOT create(Lang language, ParserProfile profile) {
-            return new ReaderRDFThrift() ;
+            return new ReaderRDFThrift(profile) ;
         }
     }
 
     private static class ReaderRDFThrift implements ReaderRIOT {
+        private final ParserProfile profile; 
+        public ReaderRDFThrift(ParserProfile profile) { this.profile = profile; }
+
         @Override
         public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-            BinRDF.inputStreamToStream(in, output) ;
+            try {
+                BinRDF.inputStreamToStream(in, output);
+            } catch (RiotException ex) {
+                if ( profile != null && profile.getErrorHandler() != null )
+                    profile.getErrorHandler().error(ex.getMessage(), -1, -1);
+                else
+                    System.err.println(ex.getMessage());
+            }
         }
 
         @Override
