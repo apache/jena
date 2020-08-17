@@ -62,6 +62,8 @@ public abstract class JenaStatement implements Statement {
     protected static final int NO_LIMIT = 0;
     protected static final int DEFAULT_TYPE = ResultSet.TYPE_FORWARD_ONLY;
     protected static final int USE_CONNECTION_COMPATIBILITY = Integer.MIN_VALUE;
+    protected static final int UNKNOWN_UPDATE_COUNT = 0;
+    protected static final int NOT_AN_UPDATE = -1;
 
     private List<String> commands = new ArrayList<>();
     private SQLWarning warnings = null;
@@ -74,7 +76,7 @@ public abstract class JenaStatement implements Statement {
     private int fetchDirection = DEFAULT_FETCH_DIRECTION;
     private int fetchSize = DEFAULT_FETCH_SIZE;
     private int holdability = DEFAULT_HOLDABILITY;
-    private int updateCount = 0;
+    private int updateCount = NOT_AN_UPDATE;
     private boolean autoCommit = DEFAULT_AUTO_COMMIT;
     private int transactionLevel = DEFAULT_TRANSACTION_LEVEL;
     private int maxRows = NO_LIMIT;
@@ -288,6 +290,7 @@ public abstract class JenaStatement implements Statement {
     }
 
     private boolean executeQuery(Query q) throws SQLException {
+        updateCount = NOT_AN_UPDATE;
         if (this.isClosed())
             throw new SQLException("The Statement is closed");
 
@@ -422,6 +425,7 @@ public abstract class JenaStatement implements Statement {
     protected abstract QueryExecution createQueryExecution(Query q) throws SQLException;
 
     private int executeUpdate(UpdateRequest u) throws SQLException {
+        updateCount = UNKNOWN_UPDATE_COUNT;
         if (this.isClosed())
             throw new SQLException("The Statement is closed");
         if (this.connection.isReadOnly())
@@ -654,6 +658,7 @@ public abstract class JenaStatement implements Statement {
         }
         if (!this.results.isEmpty()) {
             this.currResults = this.results.poll();
+            this.updateCount = this.currResults == null ? UNKNOWN_UPDATE_COUNT : NOT_AN_UPDATE;
             return true;
         } else {
             return false;
