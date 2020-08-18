@@ -31,9 +31,11 @@ import java.util.Set ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.lang.* ;
+import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.thrift.BinRDF ;
+import org.apache.jena.riot.thrift.RiotThriftException;
 import org.apache.jena.sparql.util.Context ;
 
 /** The registry of languages and parsers.
@@ -206,14 +208,25 @@ public class RDFParserRegistry
     private static class ReaderRIOTFactoryThrift implements ReaderRIOTFactory {
         @Override
         public ReaderRIOT create(Lang language, ParserProfile profile) {
-            return new ReaderRDFThrift() ;
+            return new ReaderRDFThrift(profile) ;
         }
     }
 
     private static class ReaderRDFThrift implements ReaderRIOT {
+        private final ParserProfile profile; 
+        public ReaderRDFThrift(ParserProfile profile) { this.profile = profile; }
+
         @Override
         public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-            BinRDF.inputStreamToStream(in, output) ;
+            try {
+                BinRDF.inputStreamToStream(in, output);
+            } catch (RiotThriftException ex) {
+                if ( profile != null && profile.getErrorHandler() != null )
+                    profile.getErrorHandler().error(ex.getMessage(), -1, -1);
+                else
+                    ErrorHandlerFactory.errorHandlerStd.error(ex.getMessage(), -1 , -1);
+                throw ex;
+            }
         }
 
         @Override

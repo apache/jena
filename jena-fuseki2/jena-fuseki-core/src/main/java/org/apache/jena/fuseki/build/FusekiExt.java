@@ -64,6 +64,12 @@ public class FusekiExt {
 
     /** Make a new operation available. */
     public static void registerOperation(Operation op, ActionService handler) {
+        // No Content-type registration 
         OperationRegistry.get().register(op, null, handler);
+    }
+    
+    /** Remove an operation. */
+    public static void unregisterOperation(Operation op, ActionService handler) {
+        OperationRegistry.get().unregister(op);
     }
 }
