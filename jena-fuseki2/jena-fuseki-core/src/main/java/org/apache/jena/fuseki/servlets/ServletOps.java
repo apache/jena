@@ -37,22 +37,50 @@ import org.apache.jena.web.HttpSC.Code;
 
 public class ServletOps {
 
+    /** Send an HTTP error response. 
+     *  Include an optional message in the body (as text/plain), if provided.
+     *  Note that we do not set a custom Reason Phrase.
+     *  <br/>
+     *  HTTPS/2 does not have a "Reason Phrase". 
+     * 
+     * @param response
+     * @param statusCode
+     * @param message
+     */
     public static void responseSendError(HttpServletResponse response, int statusCode, String message) {
+        response.setStatus(statusCode);
+        if ( message != null )
+            writeMessagePlainText(response, message);
+        //response.sendError(statusCode, message);
+    }
+
+    /** Send an HTTP response with no body */
+    public static void responseSendError(HttpServletResponse response, int statusCode) {
+        response.setStatus(statusCode);
+    }
+
+    /** Write a plain text body.
+     * <p>
+     * Use Content-Length so the connection is preserved.
+     */
+    public static void writeMessagePlainText(HttpServletResponse response, String message) {
+        if ( message == null )
+            return;
         try {
-            response.sendError(statusCode, message);
+            if ( ! message.endsWith("\n") )
+                message = message+"\n";
+            response.setContentLength(message.length());
+            response.setContentType(WebContent.contentTypeTextPlain);
+            response.setCharacterEncoding(WebContent.charsetUTF8);
+            ServletOps.setNoCache(response);
+            try(ServletOutputStream out = response.getOutputStream()){
+                out.print(message);
+            }
         } catch (IOException ex) {
             errorOccurred(ex);
         } catch (IllegalStateException ex) {}
     }
-
-    public static void responseSendError(HttpServletResponse response, int statusCode) {
-        try {
-            response.sendError(statusCode);
-        } catch (IOException ex) {
-            errorOccurred(ex);
-        }
-    }
-
+    
     public static void successNoContent(HttpAction action) {
         success(action, HttpSC.NO_CONTENT_204);
     }
@@ -78,6 +106,7 @@ public class ServletOps {
     public static void successPage(HttpAction action, String message) {
         try {
             action.response.setContentType("text/html");
+            action.response.setCharacterEncoding(WebContent.charsetUTF8);
             action.response.setStatus(HttpSC.OK_200);
             PrintWriter out = action.response.getWriter();
             out.println("<html>");
@@ -146,11 +175,11 @@ public class ServletOps {
     }
 
     public static void error(int statusCode) {
-        throw new ActionErrorException(null, null, statusCode);
+        throw new ActionErrorException(statusCode, null, null);
     }
 
     public static void error(int statusCode, String string) {
-        throw new ActionErrorException(null, string, statusCode);
+        throw new ActionErrorException(statusCode, string, null);
     }
 
     public static void errorOccurred(String message) {
@@ -162,7 +191,7 @@ public class ServletOps {
     }
 
     public static void errorOccurred(String message, Throwable ex) {
-        throw new ActionErrorException(ex, message, HttpSC.INTERNAL_SERVER_ERROR_500);
+        throw new ActionErrorException(HttpSC.INTERNAL_SERVER_ERROR_500, message, ex);
     }
 
     public static String formatForLog(String string) {

@@ -21,7 +21,7 @@ package org.apache.jena.fuseki.servlets;
 public class ActionErrorException extends RuntimeException {
     private final int rc;
 
-    public ActionErrorException(Throwable ex, String message, int rc) {
+    public ActionErrorException(int rc, String message, Throwable ex) {
         super(message, ex);
         this.rc = rc;
     }

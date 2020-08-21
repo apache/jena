@@ -199,8 +199,8 @@ public class JettyFusekiWebapp {
         // which happens during server startup.
         // This the name of the ServletContext logger as well
         webapp.setDisplayName(Fuseki.servletRequestLogName);
-        webapp.setParentLoaderPriority(true);  // Normal Java classloader behaviour.
-        webapp.setErrorHandler(new FusekiErrorHandler());
+        webapp.setParentLoaderPriority(true);               // Normal Java classloader behaviour.
+        webapp.setErrorHandler(new FusekiErrorHandler());   // If used.
         return webapp;
     }
 

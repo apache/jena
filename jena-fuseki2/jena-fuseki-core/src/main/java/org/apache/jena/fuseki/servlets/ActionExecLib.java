@@ -111,7 +111,7 @@ public class ActionExecLib {
                 //    global -- cxt.get(ARQ.queryTimeout)
                 //    dataset -- dataset.getContect(ARQ.queryTimeout)
                 //    protocol -- SPARQL_Query.setAnyTimeouts
-                String message = String.format("Query timed out");
+                String message = "Query timed out";
                 ServletOps.responseSendError(response, HttpSC.SERVICE_UNAVAILABLE_503, message);
             } catch (ActionErrorException ex) {
                 if ( ex.getCause() != null )
