@@ -22,6 +22,7 @@ package org.apache.jena.graph.test;
 import junit.framework.TestSuite ;
 
 import org.apache.jena.JenaRuntime ;
+import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
@@ -606,17 +607,40 @@ public class TestNode extends GraphTestBase
     }
 
     public void testGetIndexingValuePlainString()
-    { testIndexingValueLiteral( NodeCreateUtils.create( "'literally'" ) ); }
+    { testIndexingValueLiteral( ()->NodeCreateUtils.create( "'literally'" ) ); }
 
     public void testGetIndexingValueLanguagedString()
-    { testIndexingValueLiteral( NodeCreateUtils.create( "'chat'fr" ) ); }
+    { testIndexingValueLiteral( ()->NodeCreateUtils.create( "'chat'fr" ) ); }
 
     public void testGetIndexingValueXSDString()
-    { testIndexingValueLiteral( NodeCreateUtils.create( "'string'xsd:string" ) ); }
+    { testIndexingValueLiteral( ()->NodeCreateUtils.create( "'string'xsd:string" ) ); }
 
-    private void testIndexingValueLiteral( Node s )
-    { assertEquals( s.getLiteral().getIndexingValue(), s.getIndexingValue() ); }
+    // JENA-1936
+    public void testGetIndexingValueHexBinary1()
+    { testIndexingValueLiteral( ()->NodeCreateUtils.create( "''xsd:hexBinary" ) ); }
 
+    public void testGetIndexingValueHexBinary2()
+    { testIndexingValueLiteral( ()->NodeCreateUtils.create( "'ABCD'xsd:hexBinary" ) ); }
+
+    public void testGetIndexingValueBase64Binary1()
+    { testIndexingValueLiteral( ()->NodeCreateUtils.create( "''xsd:base64Binary" ) ); }
+
+    // "sure." encodes to "c3VyZS4=" 
+    public void testGetIndexingValueBase64Binary2()
+    { testIndexingValueLiteral( ()->NodeCreateUtils.create( "'c3VyZS4='xsd:base64Binary" ) ); }
+    
+    private void testIndexingValueLiteral( Creator<Node> creator) {
+        Node n1 = creator.create();
+        Node n2 = creator.create();
+        testIndexingValueLiteral(n1,n2);
+    }
+    
+    private void testIndexingValueLiteral(Node n1, Node n2) {
+        assertNotSame(n1, n2); // Test the test.
+        assertEquals(n1.getLiteral().getIndexingValue(), n2.getIndexingValue());
+        assertEquals(n1.getLiteral().getIndexingValue().hashCode(), n2.getIndexingValue().hashCode());
+    }
+    
     public void  testGetLiteralValuePlainString()
     {
         Node s = NodeCreateUtils.create( "'aString'" );
