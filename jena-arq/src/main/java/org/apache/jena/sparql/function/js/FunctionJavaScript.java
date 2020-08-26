@@ -55,8 +55,6 @@ public class FunctionJavaScript extends FunctionBase {
     private final EnvJavaScript envJS;
     private final String functionName;
 
-    private boolean initialized = false;
-
     public FunctionJavaScript(String functionName, EnvJavaScript env) {
         this.functionName = functionName;
         this.envJS = env;
