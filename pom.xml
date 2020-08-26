@@ -561,6 +561,18 @@
       </dependency>
 
       <dependency>
+        <groupId>org.graalvm.js</groupId>
+        <artifactId>js</artifactId>
+        <version>${ver.graalvm}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.graalvm.js</groupId>
+        <artifactId>js-scriptengine</artifactId>
+        <version>${ver.graalvm}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.xenei</groupId>
         <artifactId>junit-contracts</artifactId>
         <version>${ver.contract.tests}</version>
@@ -605,17 +617,6 @@
           <version>${ver.micrometer}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.graalvm.js</groupId>
-        <artifactId>js</artifactId>
-        <version>${ver.graalvm}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.graalvm.js</groupId>
-        <artifactId>js-scriptengine</artifactId>
-        <version>${ver.graalvm}</version>
-      </dependency>
     </dependencies>
 
   </dependencyManagement>
