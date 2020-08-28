@@ -40,7 +40,7 @@ import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.ctl.ActionPing;
 import org.apache.jena.fuseki.ctl.ActionStats;
-import org.apache.jena.fuseki.jetty.FusekiErrorHandler1;
+import org.apache.jena.fuseki.jetty.FusekiErrorHandler;
 import org.apache.jena.fuseki.jetty.JettyHttps;
 import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
@@ -972,7 +972,7 @@ public class FusekiServer {
                 contextPath = "/" + contextPath;
             ServletContextHandler context = new ServletContextHandler();
             context.setDisplayName(Fuseki.servletRequestLogName);
-            context.setErrorHandler(new FusekiErrorHandler1());
+            context.setErrorHandler(new FusekiErrorHandler());
             context.setContextPath(contextPath);
             // SPARQL Update by HTML - not the best way but.
             context.setMaxFormContentSize(1024*1024);
