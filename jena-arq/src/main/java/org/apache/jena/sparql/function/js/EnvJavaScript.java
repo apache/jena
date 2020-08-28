@@ -52,7 +52,7 @@ public class EnvJavaScript {
         return new EnvJavaScript(context);
     }
     
-    private static EnvJavaScript global = null;
+    private static volatile EnvJavaScript global = null;
     
     /**
      * Return the global {@code EnvJavaScript}. 
@@ -61,9 +61,11 @@ public class EnvJavaScript {
     public static EnvJavaScript get() {
         if ( global == null ) {
             synchronized(EnvJavaScript.class) {
-                Context context = ARQ.getContext();
-                if ( context.isDefined(symJavaScriptFunctions) || context.isDefined(symJavaScriptLibFile) )
-                    global = create(ARQ.getContext());
+                if ( global == null ) {
+                    Context context = ARQ.getContext();
+                    if ( context.isDefined(symJavaScriptFunctions) || context.isDefined(symJavaScriptLibFile) )
+                        global = create(context);
+                }
             }
         }
         return global ;
@@ -90,7 +92,7 @@ public class EnvJavaScript {
     // For now, in combination with the implementation of JSEngine,
     // we keep separate Nashorn script engines. 
     
-    private Pool<JSEngine> pool = PoolSync.create(new PoolBase<JSEngine>());
+    private final Pool<JSEngine> pool = PoolSync.create(new PoolBase<JSEngine>());
     
     private EnvJavaScript(Context context) {
         this.scriptLib = context.getAsString(symJavaScriptFunctions);
