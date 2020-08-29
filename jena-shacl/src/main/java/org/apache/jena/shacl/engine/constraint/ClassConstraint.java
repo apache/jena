@@ -18,7 +18,7 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
-import static org.apache.jena.shacl.engine.constraint.CompactOut.compact;
+import static org.apache.jena.shacl.compact.writer.CompactOut.compact;
 import static org.apache.jena.shacl.lib.ShLib.displayStr;
 
 import java.util.List;

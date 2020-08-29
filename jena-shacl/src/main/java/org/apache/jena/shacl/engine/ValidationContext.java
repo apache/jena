@@ -20,10 +20,12 @@ package org.apache.jena.shacl.engine;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.ValidationReport;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.Shape;
+import org.apache.jena.shacl.sys.ShaclSystem;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.sparql.path.Path;
 
@@ -33,12 +35,19 @@ public class ValidationContext {
 
     private final ValidationReport.Builder validationReportBuilder = ValidationReport.create();
     private boolean verbose = false;
+    private boolean seenValidationReportEntry = false;
     private final Shapes shapes;
     private final Graph dataGraph;
     private boolean strict = false;
 
+    private final ErrorHandler errorHandler;
+
     public static ValidationContext create(Shapes shapes, Graph data) {
-        ValidationContext vCxt = new ValidationContext(shapes, data);
+        return create(shapes, data, ShaclSystem.systemShaclErrorHandler);
+    }
+    
+    public static ValidationContext create(Shapes shapes, Graph data, ErrorHandler errorHandler) {
+        ValidationContext vCxt = new ValidationContext(shapes, data, errorHandler);
         vCxt.setVerbose(VERBOSE);
         return vCxt;
     }
@@ -52,11 +61,15 @@ public class ValidationContext {
         this.dataGraph = vCxt.dataGraph;
         this.verbose = vCxt.verbose;
         this.strict = vCxt.strict;
+        this.errorHandler = vCxt.errorHandler;
     }
 
-    private ValidationContext(Shapes shapes, Graph data) {
+    private ValidationContext(Shapes shapes, Graph data, ErrorHandler errorHandler) {
         this.shapes = shapes;
         this.dataGraph = data;
+        if ( errorHandler == null )
+            errorHandler = ShaclSystem.systemShaclErrorHandler;
+        this.errorHandler = errorHandler;
         validationReportBuilder.addPrefixes(data.getPrefixMapping());
         validationReportBuilder.addPrefixes(shapes.getGraph().getPrefixMapping());
     }
@@ -70,12 +83,15 @@ public class ValidationContext {
     public void reportEntry(String message, Shape shape, Node focusNode, Path path, Node valueNode, Constraint constraint) {
         if ( verbose )
             System.out.println("Validation report entry");
+        seenValidationReportEntry = true;
         validationReportBuilder.addReportEntry(message, shape, focusNode, path, valueNode, constraint);
     }
 
     public ValidationReport generateReport() {
         return validationReportBuilder.build();
     }
+
+    public boolean hasViolation() { return seenValidationReportEntry; }
 
     public void setVerbose(boolean value) {
         this.verbose = value;
@@ -103,4 +119,9 @@ public class ValidationContext {
     public Graph getDataGraph() {
         return dataGraph;
     }
+    
+    public ErrorHandler getErrorHandler() {
+        return errorHandler;
+    }
+
 }

@@ -140,7 +140,11 @@ void nodeShapeBody() : {}
 void constraint() : { }
 {
   { startConstraint(); }
-  ( (nodeOr())+ | propertyShape() )
+  ( (nodeOr())+ | propertyShape()
+// <EXT>
+    | shapeRef(false)
+// </EXT>
+  )
   { finishConstraint() ; }
   <DOT>
 }
@@ -217,7 +221,7 @@ void propertyNot() : { boolean b = false; }
 void propertyAtom() : { }
 {
   // Work on currentPropertyShape()
-  propertyType() | nodeKind() | shapeRef() | propertyValue() |
+  propertyType() | nodeKind() | shapeRef(true) | propertyValue() |
      ( { startNestedPropertyAtom(); } nodeShapeBody() { finishNestedPropertyAtom(); })
 }
 
@@ -249,7 +253,7 @@ void nodeKind() : { Token t; }
   { rNodeKind(t.image); }
 }
 
-void shapeRef() : { Token t; String iriStr; }
+void shapeRef(boolean inPropertyShape) : { Token t; String iriStr; }
 {
   // consistent WS handling.?
   ( t = <ATPNAME_LN>
@@ -258,8 +262,7 @@ void shapeRef() : { Token t; String iriStr; }
   { iriStr = resolvePName(t.image.substring(1), t.beginLine, t.beginColumn) ; }
   | <AT> iriStr= IRIREF()
   )
-  //<AT> iriStr = iri()
-  { rShapeRef(iriStr); }
+  { rShapeRef(inPropertyShape, iriStr); }
 }
 
 void propertyValue() : { String s; Node n; List<Node> x; }
@@ -305,6 +308,11 @@ String propertyParam() : { Token t; }
     t = "equals" | t = "disjoint" | t = "lessThan" | t = "lessThanOrEquals" |
     t = "qualifiedValueShape" | t = "qualifiedMinCount" | t = "qualifiedMaxCount" | t = "qualifiedValueShapesDisjoint" |
     t = "closed" | t = "ignoredProperties" | t = "hasValue" | t = "in"
+// <EXT>
+        | t = "group" | t = "order"
+        | t = "name"  | t = "description"
+        | t = "defaultValue"
+// </EXT>
   )
   { return t.image; }
 }

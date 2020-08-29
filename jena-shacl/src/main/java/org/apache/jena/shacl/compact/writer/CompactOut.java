@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shacl.engine.constraint;
+package org.apache.jena.shacl.compact.writer;
 
 import java.util.Collection;
 

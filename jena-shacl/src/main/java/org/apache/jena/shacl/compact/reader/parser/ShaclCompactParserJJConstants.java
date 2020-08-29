@@ -29,121 +29,121 @@ public interface ShaclCompactParserJJConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int SINGLE_LINE_COMMENT = 47;
+  int SINGLE_LINE_COMMENT = 52;
   /** RegularExpression Id. */
-  int BOM = 48;
+  int BOM = 53;
   /** RegularExpression Id. */
-  int BASE = 49;
+  int BASE = 54;
   /** RegularExpression Id. */
-  int IMPORTS = 50;
+  int IMPORTS = 55;
   /** RegularExpression Id. */
-  int PREFIX = 51;
+  int PREFIX = 56;
   /** RegularExpression Id. */
-  int SHAPE_CLASS = 52;
+  int SHAPE_CLASS = 57;
   /** RegularExpression Id. */
-  int SHAPE = 53;
+  int SHAPE = 58;
   /** RegularExpression Id. */
-  int TRUE = 54;
+  int TRUE = 59;
   /** RegularExpression Id. */
-  int FALSE = 55;
+  int FALSE = 60;
   /** RegularExpression Id. */
-  int HEX = 56;
+  int HEX = 61;
   /** RegularExpression Id. */
-  int PLUS = 57;
+  int PLUS = 62;
   /** RegularExpression Id. */
-  int MINUS = 58;
+  int MINUS = 63;
   /** RegularExpression Id. */
-  int VBAR = 59;
+  int VBAR = 64;
   /** RegularExpression Id. */
-  int AT = 60;
+  int AT = 65;
   /** RegularExpression Id. */
-  int CARAT = 61;
+  int CARAT = 66;
   /** RegularExpression Id. */
-  int DOT = 62;
+  int DOT = 67;
   /** RegularExpression Id. */
-  int BANG = 63;
+  int BANG = 68;
   /** RegularExpression Id. */
-  int QMARK = 64;
+  int QMARK = 69;
   /** RegularExpression Id. */
-  int SLASH = 65;
+  int SLASH = 70;
   /** RegularExpression Id. */
-  int STAR = 66;
+  int STAR = 71;
   /** RegularExpression Id. */
-  int EQUALS = 67;
+  int EQUALS = 72;
   /** RegularExpression Id. */
-  int LPAREN = 68;
+  int LPAREN = 73;
   /** RegularExpression Id. */
-  int RPAREN = 69;
+  int RPAREN = 74;
   /** RegularExpression Id. */
-  int LBRACE = 70;
+  int LBRACE = 75;
   /** RegularExpression Id. */
-  int RBRACE = 71;
+  int RBRACE = 76;
   /** RegularExpression Id. */
-  int LBRACKET = 72;
+  int LBRACKET = 77;
   /** RegularExpression Id. */
-  int RBRACKET = 73;
+  int RBRACKET = 78;
   /** RegularExpression Id. */
-  int UCHAR = 74;
+  int UCHAR = 79;
   /** RegularExpression Id. */
-  int IRIref = 75;
+  int IRIref = 80;
   /** RegularExpression Id. */
-  int PNAME_NS = 76;
+  int PNAME_NS = 81;
   /** RegularExpression Id. */
-  int PNAME_LN = 77;
+  int PNAME_LN = 82;
   /** RegularExpression Id. */
-  int ATPNAME_NS = 78;
+  int ATPNAME_NS = 83;
   /** RegularExpression Id. */
-  int ATPNAME_LN = 79;
+  int ATPNAME_LN = 84;
   /** RegularExpression Id. */
-  int QUOTE_3D = 80;
+  int QUOTE_3D = 85;
   /** RegularExpression Id. */
-  int QUOTE_3S = 81;
+  int QUOTE_3S = 86;
   /** RegularExpression Id. */
-  int ECHAR = 82;
+  int ECHAR = 87;
   /** RegularExpression Id. */
-  int STRING_LITERAL1 = 83;
+  int STRING_LITERAL1 = 88;
   /** RegularExpression Id. */
-  int STRING_LITERAL2 = 84;
+  int STRING_LITERAL2 = 89;
   /** RegularExpression Id. */
-  int STRING_LITERAL_LONG1 = 85;
+  int STRING_LITERAL_LONG1 = 90;
   /** RegularExpression Id. */
-  int STRING_LITERAL_LONG2 = 86;
+  int STRING_LITERAL_LONG2 = 91;
   /** RegularExpression Id. */
-  int DIGITS = 87;
+  int DIGITS = 92;
   /** RegularExpression Id. */
-  int INTEGER = 88;
+  int INTEGER = 93;
   /** RegularExpression Id. */
-  int DECIMAL = 89;
+  int DECIMAL = 94;
   /** RegularExpression Id. */
-  int DOUBLE = 90;
+  int DOUBLE = 95;
   /** RegularExpression Id. */
-  int EXPONENT = 91;
+  int EXPONENT = 96;
   /** RegularExpression Id. */
-  int LANGTAG = 92;
+  int LANGTAG = 97;
   /** RegularExpression Id. */
-  int A2Z = 93;
+  int A2Z = 98;
   /** RegularExpression Id. */
-  int A2ZN = 94;
+  int A2ZN = 99;
   /** RegularExpression Id. */
-  int PN_CHARS_BASE = 95;
+  int PN_CHARS_BASE = 100;
   /** RegularExpression Id. */
-  int PN_CHARS_U = 96;
+  int PN_CHARS_U = 101;
   /** RegularExpression Id. */
-  int PN_CHARS = 97;
+  int PN_CHARS = 102;
   /** RegularExpression Id. */
-  int PN_PREFIX = 98;
+  int PN_PREFIX = 103;
   /** RegularExpression Id. */
-  int PN_LOCAL = 99;
+  int PN_LOCAL = 104;
   /** RegularExpression Id. */
-  int VARNAME = 100;
+  int VARNAME = 105;
   /** RegularExpression Id. */
-  int PN_LOCAL_ESC = 101;
+  int PN_LOCAL_ESC = 106;
   /** RegularExpression Id. */
-  int PLX = 102;
+  int PLX = 107;
   /** RegularExpression Id. */
-  int PERCENT = 103;
+  int PERCENT = 108;
   /** RegularExpression Id. */
-  int UNKNOWN = 104;
+  int UNKNOWN = 109;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -191,6 +191,11 @@ public interface ShaclCompactParserJJConstants {
     "\"qualifiedMinCount\"",
     "\"qualifiedMaxCount\"",
     "\"qualifiedValueShapesDisjoint\"",
+    "\"group\"",
+    "\"order\"",
+    "\"name\"",
+    "\"description\"",
+    "\"defaultValue\"",
     "\"^^\"",
     "\" \"",
     "\"\\t\"",

@@ -18,59 +18,44 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
-import static org.apache.jena.shacl.compact.writer.CompactOut.compact;
-
 import java.util.Objects;
 
-import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
-import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.lib.ShLib;
+import org.apache.jena.shacl.sys.ShaclSystem;
 import org.apache.jena.shacl.validation.ReportItem;
-import org.apache.jena.shacl.vocabulary.SHACL;
-import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
+import org.apache.jena.shacl.vocabulary.SHJ;
 
-/** sh:minLength */
-public class StrMinLengthConstraint extends ConstraintTerm {
+/** A constraint that logs when touched but does not causes a violation */
+public class JLogConstraint extends ConstraintTerm {
 
-    private final int minLength;
+    private final String message;
 
-    public StrMinLengthConstraint(int minLength) {
-        this.minLength = minLength;
-    }
-
-    @Override
-    public ReportItem validate(ValidationContext vCxt, Node n) {
-        if ( n.isBlank() ) {
-            String msg = toString()+": Blank node: "+ShLib.displayStr(n);
-            return new ReportItem(msg, n);
-        }
-        String str = NodeFunctions.str(n);
-        if ( str.length() >= minLength )
-            return null;
-        String msg = toString()+": String too short: "+str;
-        return new ReportItem(msg, n);
+    public JLogConstraint(String message) {
+        this.message = message;
     }
 
     @Override
     public Node getComponent() {
-        return SHACL.MinLengthConstraintComponent;
+        return SHJ.LogConstraintComponent;
     }
 
     @Override
-    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
-        compact(out, "minLength", minLength);
+    public ReportItem validate(ValidationContext vCxt, Node n) {
+        String msg = String.format("%s[%s]", message, ShLib.displayStr(n));
+        ShaclSystem.systemShaclLogger.warn(msg);
+        return null;
     }
 
     @Override
     public String toString() {
-        return "MinLengthConstraint["+minLength+"]";
+        return "Log["+message+"]";
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(minLength);
+        return Objects.hash(message);
     }
 
     @Override
@@ -79,9 +64,10 @@ public class StrMinLengthConstraint extends ConstraintTerm {
             return true;
         if ( obj == null )
             return false;
-        if ( !(obj instanceof StrMinLengthConstraint) )
+        if ( getClass() != obj.getClass() )
             return false;
-        StrMinLengthConstraint other = (StrMinLengthConstraint)obj;
-        return minLength == other.minLength;
+        JLogConstraint other = (JLogConstraint)obj;
+        return Objects.equals(message, other.message);
     }
 }
+

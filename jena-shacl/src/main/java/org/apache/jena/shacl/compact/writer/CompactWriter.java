@@ -18,11 +18,13 @@
 
 package org.apache.jena.shacl.compact.writer;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.CollectionUtils;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterTTL;
 import org.apache.jena.riot.system.PrefixMap;
@@ -190,10 +192,10 @@ public class CompactWriter {
             return null;
         if ( ! other.getPropertyShapes().isEmpty() )
             return null;
-        List<Constraint> constraints = other.getConstraints();
+        Collection<Constraint> constraints = other.getConstraints();
         if ( constraints.size() != 1 )
             return null;
-        return constraints.get(0);
+        return CollectionUtils.oneElt(constraints);
     }
 
     private static void notShaclc(String string) {

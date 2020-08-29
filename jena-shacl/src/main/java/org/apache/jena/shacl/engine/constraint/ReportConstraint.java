@@ -18,7 +18,7 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
-import static org.apache.jena.shacl.engine.constraint.CompactOut.compactQuotedString;
+import static org.apache.jena.shacl.compact.writer.CompactOut.compactQuotedString;
 
 import java.util.Set;
 

@@ -21,7 +21,6 @@ package org.apache.jena.shacl.parser;
 import java.io.BufferedOutputStream;
 import java.io.OutputStream;
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Graph;
@@ -40,11 +39,11 @@ public abstract class Shape {
     protected final Severity            severity;
     protected final Collection<Node>    messages;
     protected final Collection<Target>  targets;
-    protected final List<Constraint>    constraints;
-    protected final List<PropertyShape> propertyShapes;
+    protected final Collection<Constraint>    constraints;
+    protected final Collection<PropertyShape> propertyShapes;
 
-    public Shape(Graph shapeGraph, Node shapeNode, boolean deactivated, Severity severity, List<Node> messages,
-                 Collection<Target> targets, List<Constraint> constraints, List<PropertyShape> propertyShapes) {
+    protected Shape(Graph shapeGraph, Node shapeNode, boolean deactivated, Severity severity, Collection<Node> messages,
+                 Collection<Target> targets, Collection<Constraint> constraints, Collection<PropertyShape> propertyShapes) {
         super();
         this.shapeGraph = shapeGraph;
         this.shapeNode = shapeNode;
@@ -82,11 +81,11 @@ public abstract class Shape {
         return ! targets.isEmpty();
     }
 
-    public List<Constraint> getConstraints() {
+    public Collection<Constraint> getConstraints() {
         return constraints;
     }
 
-    public List<PropertyShape> getPropertyShapes() {
+    public Collection<PropertyShape> getPropertyShapes() {
         return propertyShapes;
     }
 

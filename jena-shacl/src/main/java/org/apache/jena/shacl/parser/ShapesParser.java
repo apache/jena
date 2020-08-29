@@ -36,7 +36,10 @@ import org.apache.jena.shacl.engine.ShaclPaths;
 import org.apache.jena.shacl.engine.Target;
 import org.apache.jena.shacl.engine.TargetType;
 import org.apache.jena.shacl.engine.Targets;
+import org.apache.jena.shacl.engine.constraint.JLogConstraint;
 import org.apache.jena.shacl.lib.G;
+import org.apache.jena.shacl.lib.ShLib;
+import org.apache.jena.shacl.sys.ShaclSystem;
 import org.apache.jena.shacl.validation.Severity;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.shared.JenaException;
@@ -58,7 +61,6 @@ public class ShapesParser {
 
     private static final boolean DEBUG = false;
     private static IndentedWriter OUT = IndentedWriter.stdout;
-    //private static Logger LOG = LoggerFactory.getLogger(ShapesParser.class);
 
     /**
      * Parse, starting from the given targets.
@@ -67,6 +69,13 @@ public class ShapesParser {
      * Applications should call functions in {@link Shapes} rather than call the parser directly.
      */
     public static Collection<Shape> parseShapes(Graph shapesGraph, Targets targets, Map<Node, Shape> shapesMap) {
+        // Cycle detection. 
+        Set<Node> cycles = new HashSet<>();
+        return parseShapes(shapesGraph, targets, shapesMap, cycles);
+    }
+    
+    /*package*/ static Collection<Shape> parseShapes(Graph shapesGraph, Targets targets, Map<Node, Shape> shapesMap, Set<Node> cycles) {
+        
         Targets rootShapes = targets;
 
         if ( DEBUG )
@@ -163,15 +172,17 @@ public class ShapesParser {
 
     // ---- Main parser worker.
     /**
-     *  Parse shape "shNode", updating the record of shapes already parsed.
+     *  Parse one shape updating the record of shapes already parsed.
      *
      * @param shapesMap
      * @param shapesGraph
      * @param shNode
      * @return Shape
      */
+    
     public static Shape parseShape(Map<Node, Shape> shapesMap, Graph shapesGraph, Node shNode) {
-        Shape shape = parseShapeStep(shapesMap, shapesGraph, shNode);
+        Set<Node> traversed = new HashSet<>();
+        Shape shape = parseShapeStep(traversed, shapesMap, shapesGraph, shNode);
         return shape;
     }
 
@@ -218,22 +229,42 @@ public class ShapesParser {
     | sh:path         |
     -------------------
      */
+    
+    /** Do nothing placeholder shape. */
+    static Shape unshape(Graph shapesGraph, Node shapeNode) { return 
+            new NodeShape(shapesGraph, shapeNode, false, Severity.Violation,
+                          Collections.emptySet(), Collections.emptySet(),
+                          Collections.singleton(new JLogConstraint("Cycle")),
+                          Collections.emptySet());
+    }
+    
     /** parse a shape during a parsing process */
-    /*package*/ static Shape parseShapeStep(Map<Node, Shape> parsed, Graph shapesGraph, Node shapeNode) {
+    /*package*/ static Shape parseShapeStep(Set<Node> traversed, Map<Node, Shape> parsed, Graph shapesGraph, Node shapeNode) {
         // Called by Constraints
         if ( parsed.containsKey(shapeNode) )
             return parsed.get(shapeNode);
-        Shape shape = parseShape$(parsed, shapesGraph, shapeNode);
+        // Loop detection. Do before parsing.
+        if ( traversed.contains(shapeNode) ) {
+//            Log.error(ShapesParser.class,  "Cycle detected : node "+ShLib.displayStr(shapeNode));
+//            throw new ShaclParseException("Shapes cycle detected : node "+ShLib.displayStr(shapeNode));
+            ShaclSystem.systemShaclLogger.warn("Cycle detected : node "+ShLib.displayStr(shapeNode));
+            // Put in a substitute shape.
+            return unshape(shapesGraph, shapeNode);
+        }
+        
+        traversed.add(shapeNode);
+        Shape shape = parseShape$(traversed, parsed, shapesGraph, shapeNode);
         parsed.put(shapeNode, shape);
+        traversed.remove(shapeNode);
         return shape;
     }
 
-    private static Shape parseShape$(Map<Node, Shape> parsed, Graph shapesGraph, Node shapeNode) {
+    private static Shape parseShape$(Set<Node> traversed, Map<Node, Shape> parsed, Graph shapesGraph, Node shapeNode) {
         if ( DEBUG )
             OUT.printf("Parse shape : %s\n", displayStr(shapeNode));
         boolean isDeactivated = absentOrOne(shapesGraph, shapeNode, SHACL.deactivated, NodeConst.nodeTrue);
         Collection<Target> targets = targets(shapesGraph, shapeNode);
-        List<Constraint> constraints = Constraints.parseConstraints(shapesGraph, shapeNode, parsed);
+        List<Constraint> constraints = Constraints.parseConstraints(shapesGraph, shapeNode, parsed, traversed);
         Severity severity = severity(shapesGraph, shapeNode);
         List<Node> messages = listSP(shapesGraph, shapeNode, SHACL.message);
 
@@ -241,7 +272,7 @@ public class ShapesParser {
             OUT.incIndent();
         // sh:Property PropertyShapes from this shape.
         // sh:node is treated as a constraint.
-        List<PropertyShape> propertyShapes = findPropertyShapes(parsed, shapesGraph, shapeNode);
+        List<PropertyShape> propertyShapes = findPropertyShapes(traversed, parsed, shapesGraph, shapeNode);
         if ( DEBUG )
             OUT.decIndent();
 
@@ -303,7 +334,7 @@ public class ShapesParser {
         return ShaclPaths.parsePath(shapesGraph, node);
     }
 
-    private static List<PropertyShape> findPropertyShapes(Map<Node, Shape> parsed, Graph shapesGraph, Node shapeNode) {
+    private static List<PropertyShape> findPropertyShapes(Set<Node> traversed, Map<Node, Shape> parsed, Graph shapesGraph, Node shapeNode) {
         List<Triple> propertyTriples = G.find(shapesGraph, shapeNode, SHACL.property, null).toList();
         List<PropertyShape> propertyShapes = new ArrayList<>();
         for ( Triple t : propertyTriples) {
@@ -321,9 +352,9 @@ public class ShapesParser {
             }
             if ( x > 1 ) {
                 List<Node> paths = listSP(shapesGraph, propertyShape, SHACL.path);
-                throw new ShaclParseException("Muiltiple sh:path on a property shape: "+displayStr(shapeNode)+" sh:property"+displayStr(propertyShape)+ " : "+paths);
+                throw new ShaclParseException("Multiple sh:path on a property shape: "+displayStr(shapeNode)+" sh:property"+displayStr(propertyShape)+ " : "+paths);
             }
-            PropertyShape ps = (PropertyShape)parseShapeStep(parsed, shapesGraph, propertyShape);
+            PropertyShape ps = (PropertyShape)parseShapeStep(traversed, parsed, shapesGraph, propertyShape);
             propertyShapes.add(ps);
         }
         return propertyShapes;

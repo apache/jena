@@ -18,7 +18,7 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
-import static org.apache.jena.shacl.engine.constraint.CompactOut.compactUnquotedString;
+import static org.apache.jena.shacl.compact.writer.CompactOut.compactUnquotedString;
 
 import java.util.HashSet;
 import java.util.Objects;
