@@ -388,7 +388,7 @@ public class ResultsStAX implements ResultSet, Closeable {
                         varName = parser.getAttributeValue(null, XMLResults.dfAttrVarName) ;
                         break ;
                     }
-                    
+
                     Node value = parseOneTerm(tag);
                     if ( value != null ) {
                         if ( varName == null )
@@ -440,14 +440,14 @@ public class ResultsStAX implements ResultSet, Closeable {
       if ( isTag(tag, XMLResults.dfUnbound) ) {
           return null;
       }
-      
+
       if ( isTag(tag, XMLResults.dfURI) ) {
           String uri = parser.getElementText() ;
           Node node = NodeFactory.createURI(uri) ;
           return node;
       }
-      
-      if ( isTag(tag, XMLResults.dfTriple) ) {
+
+      if ( isTag(tag, XMLResults.dfTriple) || isTag(tag, XMLResults.dfStatement) ) {
           // <triple>
           Node s = null;
           Node p = null;
@@ -458,30 +458,30 @@ public class ResultsStAX implements ResultSet, Closeable {
               if ( event2 == XMLStreamConstants.END_ELEMENT ) {
                   // Early end.
                   String tagx = parser.getLocalName() ;
-                  if ( tagx.equals(XMLResults.dfTriple) )
+                  if ( tagx.equals(XMLResults.dfTriple) || tagx.equals(XMLResults.dfStatement) )
                       staxError("Incomplete triple term");
                   else
                       staxError("Mismatched tag: "+tagx);
               }
               //XMLStreamConstants.START_ELEMENT
-                  
+
               String tag2 = parser.getLocalName() ;
               // <subject> <property> <object>
               // One of subject, property, object (s,p,o)
-              
+
               if ( ! isOneOf(tag2, XMLResults.dfSubject, XMLResults.dfProperty, XMLResults.dfPredicate, XMLResults.dfObject,
                                    XMLResults.dfSubjectAlt, XMLResults.dfPropertyAlt, XMLResults.dfObjectAlt) )
                   staxError("Unexpected tag in triple term: "+tag2);
-              
+
               int event3 = parser.nextTag() ;
               String tag3 = parser.getLocalName() ;
               Node x = parseOneTerm(tag3);
-              
+
               // Read end </subject> etc.
               parser.nextTag() ;
 
               // Check for double assignment.
-              if ( isOneOf(tag2, XMLResults.dfSubject, XMLResults.dfSubjectAlt) ) 
+              if ( isOneOf(tag2, XMLResults.dfSubject, XMLResults.dfSubjectAlt) )
                   s = x ;
               else if ( isOneOf(tag2, XMLResults.dfProperty, XMLResults.dfPredicate, XMLResults.dfPropertyAlt) )
                   p = x ;
@@ -493,13 +493,13 @@ public class ResultsStAX implements ResultSet, Closeable {
                   if ( event4 == XMLStreamConstants.START_ELEMENT )
                       staxError("Too many terms for a triple");
                   // XMLStreamConstants.END_ELEMENT )
-                  if ( ! tagx.equals(XMLResults.dfTriple) )
+                  if ( ! tagx.equals(XMLResults.dfTriple) && ! tagx.equals(XMLResults.dfStatement) )
                       staxError("Expecting </triple>: "+tagx);
                   // </triple>
                   break;
               }
           }
-          
+
           if ( s == null || p == null || o == null )
               staxError("Bad <triple> term");
           Node node = NodeFactory.createTripleNode(s, p, o);
@@ -515,7 +515,7 @@ public class ResultsStAX implements ResultSet, Closeable {
         }
         return false;
     }
-    
+
     static protected void addBinding(BindingMap binding, Var var, Node value) {
         Node n = binding.get(var);
         if ( n != null ) {

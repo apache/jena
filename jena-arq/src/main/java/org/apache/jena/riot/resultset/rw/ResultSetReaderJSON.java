@@ -199,7 +199,7 @@ public class ResultSetReaderJSON implements ResultSetReader {
 
             String type = stringOrNull(term, kType);
             
-            if ( kTriple.equals(type) ) {
+            if ( kTriple.equals(type) || kStatement.equals(type) ) {
                 JsonObject x = term.get(kValue).getAsObject();
                 return parseTripleTerm(x, labelMap);
             }
