@@ -253,11 +253,11 @@ public abstract class SPARQLQueryProcessor extends ActionService
         } catch (ActionErrorException ex) {
             throw ex;
         } catch (QueryParseException ex) {
-            ServletOps.errorBadRequest("Parse error: \n" + queryString + "\n\r" + SPARQLProtocol.messageForException(ex));
+            ServletOps.errorBadRequest("Parse error: \n" + queryString + "\n" + SPARQLProtocol.messageForException(ex));
         }
         // Should not happen.
         catch (QueryException ex) {
-            ServletOps.errorBadRequest("Error: \n" + queryString + "\n\r" + ex.getMessage());
+            ServletOps.errorBadRequest("Error: \n" + queryString + "\n" + ex.getMessage());
         }
 
         // Assumes finished whole thing by end of sendResult.
@@ -277,7 +277,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
         }
         catch (QueryParseException ex) {
             // Late stage static error (e.g. bad fixed Lucene query string).
-            ServletOps.errorBadRequest("Query parse error: \n" + queryString + "\n\r" + SPARQLProtocol.messageForException(ex));
+            ServletOps.errorBadRequest("Query parse error: \n" + queryString + "\n" + SPARQLProtocol.messageForException(ex));
         }
         catch (QueryCancelledException ex) {
             // Additional counter information.

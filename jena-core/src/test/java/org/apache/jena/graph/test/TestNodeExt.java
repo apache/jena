@@ -35,8 +35,12 @@ public class TestNodeExt {
 
     private static Triple triple9 = Triple.create(NodeFactory.createBlankNode(),p,o);
 
-    @Test public void ext_triple_1() {
-        Node_Triple nt = new Node_Triple(s,p,o);
+    private static Node_Triple newTripleTerm(Triple triple)             { return new Node_Triple(triple); }
+
+    private static Node_Triple newTripleTerm(Node s, Node p , Node o)   { return new Node_Triple(s,p,o); }
+
+     @Test public void ext_triple_1() {
+        Node_Triple nt = newTripleTerm(s,p,o);
         assertNotNull(nt.get());
         assertNotNull(Node_Triple.tripleOrNull(nt));
         assertNotNull(Node_Triple.triple(nt));
@@ -48,8 +52,8 @@ public class TestNodeExt {
     }
 
     @Test public void ext_triple_2() {
-        Node_Triple nt1 = new Node_Triple(s,p,o);
-        Node_Triple nt2 = new Node_Triple(s,p,o);
+        Node_Triple nt1 = newTripleTerm(s,p,o);
+        Node_Triple nt2 = newTripleTerm(s,p,o);
 
         assertEquals(nt1, nt2);
         assertEquals(nt1.hashCode(), nt2.hashCode());
@@ -57,8 +61,8 @@ public class TestNodeExt {
     }
 
     @Test public void ext_triple_3() {
-        Node_Triple nt1 = new Node_Triple(triple1);
-        Node_Triple nt2 = new Node_Triple(triple2);
+        Node_Triple nt1 = newTripleTerm(triple1);
+        Node_Triple nt2 = newTripleTerm(triple2);
         assertNotSame(nt1.get(), nt2.get());
         assertNotSame(nt1, nt2);
         assertEquals(nt1, nt2);
@@ -66,8 +70,8 @@ public class TestNodeExt {
     }
 
     @Test public void ext_triple_4() {
-        Node_Triple nt1 = new Node_Triple(triple1);
-        Node_Triple nt9 = new Node_Triple(triple9);
+        Node_Triple nt1 = newTripleTerm(triple1);
+        Node_Triple nt9 = newTripleTerm(triple9);
         assertNotSame(nt1.get(), nt9.get());
         assertNotSame(nt1, nt9);
         assertNotEquals(nt1, nt9);
@@ -90,6 +94,4 @@ public class TestNodeExt {
         Node n = NodeFactory.createLiteral("abc");
         Node_Triple.triple(n);
     }
-
-
 }
