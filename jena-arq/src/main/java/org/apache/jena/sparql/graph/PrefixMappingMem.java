@@ -50,7 +50,7 @@ public class PrefixMappingMem extends PrefixMappingBase {
     /** See notes on reverse mappings in {@link PrefixMappingBase}.
      * This is a complete implementation.
      * <p>
-     * Test {@lcode AbstractTestPrefixMapping.testSecondPrefixDeletedUncoversPreviousMap}.
+     * Test {@code AbstractTestPrefixMapping.testSecondPrefixDeletedUncoversPreviousMap}.
      */
     @Override
     protected void remove(String prefix) {

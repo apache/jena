@@ -45,6 +45,8 @@ public class JSONResultsKW
 
     // RDF* Triple terms
     public static String kTriple        = "triple" ;
+    // Alternative type for RDF* triple terms.
+    public static String kStatement     = "statement" ;
     public static String kSubject       = "subject" ;
     public static String kPredicate     = "predicate" ;
     public static String kProperty      = "property" ;

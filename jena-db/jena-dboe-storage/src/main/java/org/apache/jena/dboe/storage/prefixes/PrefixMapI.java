@@ -36,7 +36,7 @@ import org.apache.jena.shared.PrefixMapping;
  * The contract does not require an implementation to do any validation unlike the
  * Jena Core {@link PrefixMapping} which requires validation of prefixes.
  * </p>
- * 
+ *
  * @implNote The package {@code org.apache.jena.dboe.storage.prefixes} in module
  *     {@code jena-dboe-storage} provides implementations that work with
  *     {@code StoragePrefixes} which is dataset provision of prefixes on per-named
@@ -68,7 +68,7 @@ public interface PrefixMapI extends Iterable<PrefixEntry>, PrefixMap
     public default void putAll(PrefixMap pmap) {
         pmap.forEach(this::add);
     }
-    
+
     @Override
     public default void putAll(PrefixMapping pmap) {
         pmap.getNsPrefixMap().forEach(this::add);

@@ -65,7 +65,8 @@ public class AccessCtl_AllowGET extends ActionService {
     public void execAny(String methodName, HttpAction action) {
         if ( label == null )
             ServletOps.errorBadRequest("Not supported");
-        ServletOps.errorBadRequest(label+" : not supported");
+        else
+            ServletOps.errorBadRequest(label+" : not supported");
         throw new InternalErrorException("AccessCtl_AllowGET: "+ "didn't reject request");
     }
 

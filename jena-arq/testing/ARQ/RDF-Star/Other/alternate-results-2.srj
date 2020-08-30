@@ -1,0 +1,41 @@
+{
+  "head" : {
+    "vars" : [
+      "a",
+      "b",
+      "c"
+    ]
+  },
+  "results" : {
+    "bindings": [
+      { "a" : {
+          "type" : "statement",
+          "value" : {
+            "s" : {
+              "type" : "uri",
+              "value" : "http://example.org/bob"
+            },
+            "p" : {
+              "type" : "uri",
+              "value" : "http://xmlns.com/foaf/0.1/name"
+            },
+            "o" : {
+              "datatype" : "http://www.w3.org/2001/XMLSchema#integer",
+              "type" : "literal",
+              "value" : "23"
+            }
+          }
+        },
+        "b": { 
+          "type": "uri",
+          "value": "http://example.org/certainty"
+        },
+        "c" : {
+          "datatype" : "http://www.w3.org/2001/XMLSchema#decimal",
+          "type" : "literal",
+          "value" : "0.9"
+        }
+      }
+    ]
+  }
+}

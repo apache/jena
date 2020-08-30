@@ -27,10 +27,10 @@ public interface XMLResults
 
     public static final String baseNamespace   = ARQConstants.srxPrefix ;
     public static final String xsBaseURI       = ARQConstants.XML_SCHEMA_NS ;
-    
+
     public static final String dfAttrVarName   = "name" ;
     public static final String dfAttrDatatype  = "datatype" ;
-    
+
     public static final String dfNamespace  = baseNamespace ;
     public static final String dfRootTag    = "sparql" ;
     public static final String dfHead       = "head" ;
@@ -39,11 +39,12 @@ public interface XMLResults
     public static final String dfResults    = "results" ;
     public static final String dfSolution   = "result" ;
     public static final String dfBinding    = "binding" ;
-    
+
     public static final String dfBNode      = "bnode" ;
     public static final String dfURI        = "uri" ;
     public static final String dfLiteral    = "literal" ;
     public static final String dfTriple     = "triple" ;
+    public static final String dfStatement  = "statement" ;
     public static final String dfSubject    = "subject" ;
     public static final String dfProperty   = "property" ;
     public static final String dfObject     = "object" ;
@@ -53,7 +54,7 @@ public interface XMLResults
     public static final String dfSubjectAlt  = "s" ;
     public static final String dfPropertyAlt = "p" ;
     public static final String dfObjectAlt   = "o" ;
-    
+
     public static final String dfUnbound    = "unbound" ;
 
     public static final String dfBoolean    = "boolean" ;

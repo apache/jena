@@ -23,17 +23,26 @@ import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.riot.resultset.rw.ResultsReader;
 import org.junit.Test;
 
-/** 
- * Odds and ends for SPARQL*. 
+/**
+ * Odds and ends for SPARQL*.
  */
 public class TestSPARQLStarExtra {
 
     private static String FILES = "testing/ARQ/RDF-Star/Other/";
 
     // RDF4J format JSON results.
-    // It uses "s", "p" and "o" for the RDF term results. 
-    @Test public void parse_alt() {
-        String x = FILES+"alternate-results.srj";
+    // It uses "s", "p" and "o" for the RDF term results.
+    @Test public void parse_alt_1() {
+        String x = FILES+"alternate-results-1.srj";
+        ResultSet rs = ResultsReader.create().read(x);
+        ResultSetFormatter.consume(rs);
+    }
+
+    // Believed Stardog format JSON results.
+    // It uses "s", "p" and "o" for the RDF term results.
+    // It uses "statement" for "triple".
+    @Test public void parse_alt_2() {
+        String x = FILES+"alternate-results-2.srj";
         ResultSet rs = ResultsReader.create().read(x);
         ResultSetFormatter.consume(rs);
     }
