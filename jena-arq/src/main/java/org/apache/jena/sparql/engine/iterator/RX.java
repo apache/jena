@@ -72,7 +72,7 @@ public class RX {
         VarAlloc varAlloc = VarAlloc.get(context, ARQConstants.sysVarAllocRDFStar);
         if ( varAlloc == null ) {
             varAlloc = new VarAlloc(ARQConstants.allocVarTripleTerm);
-            context.set(ARQConstants.sysVarAllocRDFStar, varAlloc);  
+            context.set(ARQConstants.sysVarAllocRDFStar, varAlloc);
         }
         return varAlloc;
     }
@@ -118,14 +118,14 @@ public class RX {
         Node o1 = null;
 
         // Recurse.
-        if ( s.isNodeTriple() && ! s.isConcrete() ) {
+        if ( s.isNodeTriple() ) {
             Triple t2 = triple(s);
             Var var = varAlloc(execCxt).allocVar();
             Triple tripleTerm = Triple.create(t2.getSubject(), t2.getPredicate(), t2.getObject());
             chain = matchTripleStar(chain, var, tripleTerm, execCxt);
             s1 = var;
         }
-        if ( o.isNodeTriple() && ! o.isConcrete() ) {
+        if ( o.isNodeTriple() ) {
             Triple t2 = triple(o);
             Var var = varAlloc(execCxt).allocVar();
             Triple tripleTerm = Triple.create(t2.getSubject(), t2.getPredicate(), t2.getObject());
@@ -134,8 +134,8 @@ public class RX {
         }
 
         // Because of the test in rdfStarTriple,
-        // This code only happens when there is a a triple term. 
-        
+        // This code only happens when there is a a triple term.
+
         // No triple term in this triple.
         if ( s1 == null && o1 == null )
             return Pair.create(chain, patternTriple);

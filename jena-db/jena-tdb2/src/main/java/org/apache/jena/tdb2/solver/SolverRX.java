@@ -69,7 +69,7 @@ public class SolverRX {
         VarAlloc varAlloc = VarAlloc.get(context, ARQConstants.sysVarAllocRDFStar);
         if ( varAlloc == null ) {
             varAlloc = new VarAlloc(ARQConstants.allocVarTripleTerm);
-            context.set(ARQConstants.sysVarAllocRDFStar, varAlloc);  
+            context.set(ARQConstants.sysVarAllocRDFStar, varAlloc);
         }
         return varAlloc;
     }
@@ -80,7 +80,7 @@ public class SolverRX {
                                                   ExecutionContext execCxt) {
         if ( ! tripleHasNodeTriple(pattern) )
             SolverLib.solve(nodeTupleTable, pattern, anyGraph, chain, filter, execCxt);
-        
+
         Args args = new Args(nodeTupleTable, anyGraph, filter, execCxt);
         return rdfStarTriple(chain, pattern, args);
     }
@@ -92,7 +92,7 @@ public class SolverRX {
      * within {@link #rdfStarTriple} for nested triple term and a temporary allocated
      * variable as well can for {@code FIND(<<...>> AS ?t)}.
      *
-     * @implNote 
+     * @implNote
      * Without RDF*, this would be a plain call of {@link #matchData} which
      * is simply a call to {@link SolverLib#solve}.
      */
@@ -148,7 +148,7 @@ public class SolverRX {
         Node subject1 = null;
         Node object1 = null;
 
-        if ( subject.isNodeTriple() && ! subject.isConcrete() ) {
+        if ( subject.isNodeTriple() ) {
             Triple tripleTerm = triple(subject);
             Var var = args.varAlloc.allocVar();
             patternTuple = createTuple(patternTuple, var, sIdx);
@@ -157,7 +157,7 @@ public class SolverRX {
             subject1 = var;
         }
 
-        if ( object.isNodeTriple() && ! object.isConcrete() ) {
+        if ( object.isNodeTriple() ) {
             Triple tripleTerm = triple(object);
             Var var = args.varAlloc.allocVar();
             patternTuple = createTuple(patternTuple, var, oIdx);
@@ -221,7 +221,7 @@ public class SolverRX {
                 return binding;
             return null;
         }
-        
+
         BindingNodeId b2 = new BindingNodeId(binding);
         b2.put(var, tid);
         return b2;
@@ -305,11 +305,11 @@ public class SolverRX {
 
     private static Tuple<Node> tuple(Tuple<Node> base, Triple triple) {
         switch(base.len()){
-            case 3: 
-                return TupleFactory.create3(triple.getSubject(), triple.getPredicate(), triple.getObject());   
+            case 3:
+                return TupleFactory.create3(triple.getSubject(), triple.getPredicate(), triple.getObject());
             case 4:
                 return TupleFactory.create4(base.get(0), triple.getSubject(), triple.getPredicate(), triple.getObject());
             default:
-        }       throw new TDBException("Tuple not of length 3 or 4"); 
+        }       throw new TDBException("Tuple not of length 3 or 4");
     }
 }
