@@ -18,17 +18,35 @@
 
 package org.apache.jena.shacl.vocabulary;
 
+import java.util.Objects;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 
 /** Vocabulary for Jena additions to SHACL */
 public class SHJ {
-    private static Node createResource(String localName) { return NodeFactory.createURI(NS+localName); }
-    private static Node createProperty(String localName) { return NodeFactory.createURI(NS+localName); }
 
     /** The namespace of the vocabulary as a string */
     public static final String NS = "http://jena.apache.org/shacl#";
 
     /** The namespace of the vocabulary as a string*/
     public static String getURI() {return NS;}
+    
+    /** Namespace */
+    public String ns() { return NS; }
+        
+    private static String uri(String ns, String local) {
+        Objects.requireNonNull(ns);
+        Objects.requireNonNull(local);
+        return ns+local;
+    }
+
+    private static Node createResource(String ns, String localName) { return NodeFactory.createURI(uri(ns, localName)); }
+    private static Node createProperty(String ns, String localName) { return NodeFactory.createURI(uri(ns, localName)); }
+
+    public static final Node LogConstraintComponent         = createResource(NS, "LogConstraintComponent");
+    public static final Node logConstraint                  = createProperty(NS, "log");
+
+    public static final Node ViolationConstraintComponent   = createResource(NS, "ViolationConstraintComponent");
+    public static final Node violation                      = createProperty(NS, "violation");
 }

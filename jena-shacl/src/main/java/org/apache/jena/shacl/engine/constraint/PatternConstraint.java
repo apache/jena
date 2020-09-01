@@ -18,7 +18,7 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
-import static org.apache.jena.shacl.engine.constraint.CompactOut.*;
+import static org.apache.jena.shacl.compact.writer.CompactOut.*;
 
 import java.util.Objects;
 import java.util.regex.Pattern;

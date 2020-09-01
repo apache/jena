@@ -18,59 +18,48 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
-import static org.apache.jena.shacl.compact.writer.CompactOut.compact;
-
-import java.util.Objects;
-
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
+import org.apache.jena.shacl.compact.writer.CompactOut;
 import org.apache.jena.shacl.engine.ValidationContext;
-import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.validation.ReportItem;
-import org.apache.jena.shacl.vocabulary.SHACL;
-import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
+import org.apache.jena.shacl.vocabulary.SHJ;
 
-/** sh:minLength */
-public class StrMinLengthConstraint extends ConstraintTerm {
+/** A constraint that causes a violation if it's object is "true" */
+public class JViolationConstraint extends ConstraintTerm {
 
-    private final int minLength;
+    private final boolean generateViolation;
 
-    public StrMinLengthConstraint(int minLength) {
-        this.minLength = minLength;
-    }
-
-    @Override
-    public ReportItem validate(ValidationContext vCxt, Node n) {
-        if ( n.isBlank() ) {
-            String msg = toString()+": Blank node: "+ShLib.displayStr(n);
-            return new ReportItem(msg, n);
-        }
-        String str = NodeFunctions.str(n);
-        if ( str.length() >= minLength )
-            return null;
-        String msg = toString()+": String too short: "+str;
-        return new ReportItem(msg, n);
+    public JViolationConstraint(boolean generateViolation) {
+        this.generateViolation = generateViolation;
     }
 
     @Override
     public Node getComponent() {
-        return SHACL.MinLengthConstraintComponent;
+        return SHJ.ViolationConstraintComponent;
+    }
+
+    @Override
+    public ReportItem validate(ValidationContext vCxt, Node n) {
+        if ( ! generateViolation )
+            return null;
+        return new ReportItem("Violation");
     }
 
     @Override
     public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
-        compact(out, "minLength", minLength);
+        CompactOut.compactUnquotedString(out, "violation", Boolean.toString(generateViolation));
     }
 
     @Override
     public String toString() {
-        return "MinLengthConstraint["+minLength+"]";
+        return "Violation["+generateViolation+"]";
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(minLength);
+        return 158+(generateViolation?1:2);
     }
 
     @Override
@@ -79,9 +68,10 @@ public class StrMinLengthConstraint extends ConstraintTerm {
             return true;
         if ( obj == null )
             return false;
-        if ( !(obj instanceof StrMinLengthConstraint) )
+        if ( getClass() != obj.getClass() )
             return false;
-        StrMinLengthConstraint other = (StrMinLengthConstraint)obj;
-        return minLength == other.minLength;
+        JViolationConstraint other = (JViolationConstraint)obj;
+        return generateViolation == other.generateViolation;
     }
 }
+

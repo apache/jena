@@ -18,7 +18,7 @@
 
 package org.apache.jena.shacl.compact.writer;
 
-import static org.apache.jena.shacl.engine.constraint.CompactOut.*;
+import static org.apache.jena.shacl.compact.writer.CompactOut.*;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.riot.out.NodeFormatter;

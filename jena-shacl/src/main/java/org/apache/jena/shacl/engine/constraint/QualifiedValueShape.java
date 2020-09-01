@@ -26,6 +26,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.ShaclException;
 import org.apache.jena.shacl.ValidationReport;
+import org.apache.jena.shacl.compact.writer.CompactOut;
 import org.apache.jena.shacl.compact.writer.CompactWriter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.lib.G;

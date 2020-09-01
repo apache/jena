@@ -19,7 +19,6 @@
 package org.apache.jena.shacl.parser;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Graph;
@@ -31,8 +30,8 @@ import org.apache.jena.shacl.validation.Severity;
 public class NodeShape extends Shape {
 
     public NodeShape(Graph shapeGraph, Node shapeNode, boolean deactivated,
-                     Severity severity, List<Node> messages, Collection<Target> targets,
-                     List<Constraint> constraints, List<PropertyShape> propertyShapes) {
+                     Severity severity, Collection<Node> messages, Collection<Target> targets,
+                     Collection<Constraint> constraints, Collection<PropertyShape> propertyShapes) {
         super(shapeGraph, shapeNode, deactivated, severity, messages, targets, constraints, propertyShapes);
     }
 

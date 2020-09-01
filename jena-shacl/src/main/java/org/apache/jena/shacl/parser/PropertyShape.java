@@ -34,7 +34,7 @@ import org.apache.jena.sparql.path.Path;
 public class PropertyShape extends Shape {
 
     private final Path path;
-    public PropertyShape(Graph shapeGraph, Node shapeNode, boolean isDeactivated, Severity severity, List<Node> messages,
+    public PropertyShape(Graph shapeGraph, Node shapeNode, boolean isDeactivated, Severity severity, Collection<Node> messages,
                          Collection<Target> targets, Path path, List<Constraint> constraints, List<PropertyShape> propertyShapes) {
         super(shapeGraph, shapeNode, isDeactivated, severity, messages, targets, constraints, propertyShapes);
         this.path = Objects.requireNonNull(path, "path");

@@ -426,9 +426,13 @@ public class ShaclCompactParser extends ParserBase {
 
     // shapeRef: Produce a triple ?property sh:node ?node where ?node is the IRI
     // derived from the substring of shapeRef after the '@' character using iri.
-    protected void rShapeRef(String iriStr) {
+    protected void rShapeRef(boolean inPropertyShape, String iriStr) {
         Node x = iri(iriStr);
-        triple(currentTripleAcc(), currentPropertyShape(), SHACL.node, x);
+        if ( inPropertyShape )
+            triple(currentTripleAcc(), currentPropertyShape(), SHACL.node, x);
+        else
+            // Extension.
+            triple(currentTripleAcc(), currentNodeShape(), SHACL.node, x);
     }
 
     // propertyValue: Produce a triple ?property ?predicate ?object where ?predicate

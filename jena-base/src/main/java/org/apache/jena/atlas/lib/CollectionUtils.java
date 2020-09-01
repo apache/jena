@@ -19,18 +19,23 @@
 package org.apache.jena.atlas.lib;
 
 import java.util.Collection ;
+import java.util.List;
 
 import org.apache.jena.atlas.iterator.Iter;
 
 public class CollectionUtils
-{   
-    /** Test for same elements, regardless of cardinality */ 
+{
+    /** Test for same elements, regardless of cardinality */
     public static <T> boolean sameElts(Collection<T> left, Collection<T> right) {
         return right.containsAll(left) && left.containsAll(right) ;
     }
 
-    /** Return an element from a collection. */ 
+    /** Return an element from a collection. */
     public static <T> T oneElt(Collection<T> collection) {
+        if ( collection == null || collection.isEmpty() )
+            return null;
+        if ( collection instanceof List<?> )
+            return ((List<T>)collection).get(0);
         return Iter.first(collection.iterator());
     }
 }

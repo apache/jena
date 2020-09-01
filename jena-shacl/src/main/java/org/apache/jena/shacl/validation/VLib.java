@@ -121,7 +121,7 @@ public class VLib {
             out.println();
     }
 
-    static void validationPropertyShapes(ValidationContext vCxt, Graph data, List<PropertyShape> propertyShapes, Node focusNode) {
+    static void validationPropertyShapes(ValidationContext vCxt, Graph data, Collection<PropertyShape> propertyShapes, Node focusNode) {
         if ( propertyShapes == null )
             return;
         for ( PropertyShape propertyShape : propertyShapes ) {
