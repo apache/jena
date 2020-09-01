@@ -20,17 +20,12 @@ package arq.cmdline ;
 
 import java.io.IOException ;
 
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdArgModule;
-import jena.cmd.CmdException;
-import jena.cmd.CmdGeneral;
-import jena.cmd.ModBase;
-import jena.cmd.TerminationException;
-
+import jena.cmd.*;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryFactory ;
 import org.apache.jena.query.Syntax ;
 import org.apache.jena.shared.JenaException ;
+import org.apache.jena.shared.NotFoundException;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.util.FileUtils ;
 
@@ -127,8 +122,12 @@ public class ModQueryIn extends ModBase {
                         throw new CmdException("Error reading stdin", ex) ;
                     }
                 } else {
-                    query = QueryFactory.read(queryFilename, baseURI, getQuerySyntax()) ;
-                    return query ;
+                    try {
+                        query = QueryFactory.read(queryFilename, baseURI, getQuerySyntax()) ;
+                        return query ;
+                    } catch (NotFoundException ex) {
+                        throw new JenaException("Failed to load Query: "+ex.getMessage());
+                    }
                 }
             }
 

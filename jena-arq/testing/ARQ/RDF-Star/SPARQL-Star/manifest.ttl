@@ -49,6 +49,9 @@ PREFIX :       <#>
         :sparql-star-pattern-6
         :sparql-star-pattern-7
         :sparql-star-pattern-8
+        :sparql-star-pattern-9
+
+        :sparql-star-pattern-arq-1
 
         :sparql-star-find-1
 
@@ -234,6 +237,24 @@ PREFIX :       <#>
         [ qt:query  <sparql-star-pattern-09.arq> ;
           qt:data   <data2.ttl> ] ;
     mf:result  <sparql-star-pattern-09.srj>
+.
+
+## SPARQL* : ARQ specific.
+
+:sparql-star-pattern-arq-1
+    mf:name    "SPARQL* - Base triple in data: ground triple term in query" ;
+    mf:action
+        [ qt:query  <sparql-star-pattern-arq-01.arq> ;
+          qt:data   <data4.ttl> ] ;
+    mf:result  <sparql-star-pattern-arq-01.srj>
+.
+
+:sparql-star-pattern-arq-1
+    mf:name    "SPARQL* - Base triple in data: pattern triple term in query" ;
+    mf:action
+        [ qt:query  <sparql-star-pattern-arq-01.arq> ;
+          qt:data   <data4.ttl> ] ;
+    mf:result  <sparql-star-pattern-arq-01.srj>
 .
 
 ## SPARQL FIND*
