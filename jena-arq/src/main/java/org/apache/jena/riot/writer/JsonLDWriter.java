@@ -193,7 +193,6 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         JsonLdOptions opts = getJsonLdOptions(baseURI, jenaContext) ;
 
         // we can benefit from the fact we know that there are no duplicates in the jsonld RDFDataset that we create
-        // (optimization in jsonld-java 0.8.3)
         // see https://github.com/jsonld-java/jsonld-java/pull/173
 
         // with this, we cannot call the json-ld fromRDF method that assumes no duplicates in RDFDataset

@@ -109,13 +109,6 @@ public class RIOT {
 
     // ---- Symbols
 
-    /**
-     * Symbol to use to pass (in a Context object) the "@context" to be used when reading jsonld
-     * (overriding the actual @context in the jsonld)
-     * Expected value: the value of the "@context",
-     * as expected by the JSONLD-java API (a Map) */
-    public static final Symbol JSONLD_CONTEXT = Symbol.create("http://jena.apache.org/riot/jsonld#JSONLD_CONTEXT");
-
     private static String TURTLE_SYMBOL_BASE = "http://jena.apache.org/riot/turtle#";
 
     /**
