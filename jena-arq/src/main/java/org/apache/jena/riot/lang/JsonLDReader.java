@@ -111,7 +111,6 @@ public class JsonLDReader implements ReaderRIOT
         }
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
         try {
@@ -131,6 +130,7 @@ public class JsonLDReader implements ReaderRIOT
         }
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private void readWithJsonLDCtxOptions(Object jsonObject, String baseURI, final StreamRDF output, Context context)  throws JsonParseException, IOException {
         JsonLdOptions options = getJsonLdOptions(baseURI, context) ;
         Object jsonldCtx = getJsonLdContext(context);
