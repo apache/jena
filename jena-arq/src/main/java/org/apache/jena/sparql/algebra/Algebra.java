@@ -50,10 +50,10 @@ import org.apache.jena.sparql.util.Context ;
 public class Algebra
 {
     // -------- Optimize
-    
+
     /** Apply static transformations to a query to optimize it */
     public static Op optimize(Op op) { return optimize(op, null) ; }
-    
+
     /** Apply static transformations to a query to optimize it */
     public static Op optimize(Op op, Context context)
     {
@@ -63,10 +63,10 @@ public class Algebra
         if ( op == null )
             return null ;
         return Optimize.optimize(op, context) ;
-    }   
-    
+    }
+
     // -------- Compile
-    
+
     /** Compile a query - pattern and modifiers.  */
     public static Op compile(Query query)
     {
@@ -88,21 +88,25 @@ public class Algebra
     {
         return AlgebraQuad.quadize(op) ;
     }
-    
+
     /** Turn an algebra expression into quadblock form */
     public static Op toQuadBlockForm(Op op)
     {
         return AlgebraQuad.quadizeBlock(op) ;
     }
-    
-    /** Transform an algebra expression so that default graph is union of the named graphs. */
+
+    /** Transform an algebra expression so that default graph is union of the named graphs.
+     * Does not work with property paths.
+     * @deprecated To be removed
+     */
+    @Deprecated
     public static Op unionDefaultGraph(Op op)
     {
         return TransformUnionQuery.transform(op) ;
     }
-    
+
     // -------- SSE uses these operations ...
-    
+
     static public Op read(String filename)
     {
         Item item = SSE.readFile(filename) ;
@@ -114,20 +118,20 @@ public class Algebra
         Item item = SSE.parse(string) ;
         return parse(item) ;
     }
-    
+
 
     static public Op parse(String string, PrefixMapping pmap)
     {
         Item item = SSE.parse(string, pmap) ;
         return parse(item) ;
     }
-    
+
     static public Op parse(Item item)
     {
         Op op = BuilderOp.build(item) ;
         return op ;
     }
-    
+
     // -------- Execute
 
     static public QueryIterator exec(Op op, Dataset ds)
@@ -174,16 +178,16 @@ public class Algebra
         QueryEngineRef qe = new QueryEngineRef(op, dsg, ARQ.getContext().copy()) ;
         return qe.getPlan().iterator() ;
     }
-    
-    // This is the SPARQL merge rule. 
+
+    // This is the SPARQL merge rule.
     public static Binding merge(Binding bindingLeft, Binding bindingRight)
     {
         // Test to see if compatible: Iterate over variables in left
         boolean matches = compatible(bindingLeft, bindingRight) ;
-        
-        if ( ! matches ) 
+
+        if ( ! matches )
             return null ;
-        
+
         // If compatible, merge. Iterate over variables in right but not in left.
         BindingMap b = BindingFactory.create(bindingLeft) ;
         for ( Iterator<Var> vIter = bindingRight.vars() ; vIter.hasNext() ; )
@@ -195,28 +199,28 @@ public class Algebra
         }
         return b ;
     }
-    
+
     public static boolean compatible(Binding bindingLeft, Binding bindingRight)
     {
         // Test to see if compatible: Iterate over variables in left
         for ( Iterator<Var> vIter = bindingLeft.vars() ; vIter.hasNext() ; )
         {
             Var v = vIter.next();
-            Node nLeft  = bindingLeft.get(v) ; 
+            Node nLeft  = bindingLeft.get(v) ;
             Node nRight = bindingRight.get(v) ;
-            
+
             if ( nRight != null && ! nRight.equals(nLeft) )
                 return false ;
         }
         return true ;
     }
-    
+
     public static boolean disjoint(Binding binding1, Binding binding2)
     {
         Iterator<Var> iterVar1 = binding1.vars() ;
         for ( ; iterVar1.hasNext() ; )
         {
-            Var v = iterVar1.next() ; 
+            Var v = iterVar1.next() ;
             if ( binding2.contains(v) )
                 return false ;
         }
