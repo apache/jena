@@ -22,8 +22,9 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.github.jsonldjava.core.DocumentLoader;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.utils.JsonUtils;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.lang.JsonLDReader;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.sparql.util.Context;
@@ -42,8 +43,8 @@ public class TestJsonLDReader {
     @Test
     public final void simpleReadTest() throws IOException {
         String jsonld = someSchemaDorOrgJsonld();
-        Model m = jsonld2model(jsonld, null);
-        assertJohnDoeIsOK(m);
+        Dataset ds = jsonld2dataset(jsonld, null);
+        assertJohnDoeIsOK(ds.getDefaultModel());
     }
 
     /**
@@ -63,10 +64,10 @@ public class TestJsonLDReader {
         jenaCtx.set(JsonLDReader.JSONLD_CONTEXT, jsonldContextAsMap);
 
         // read the jsonld, replacing its "@context"
-        Model m = jsonld2model(jsonld, jenaCtx);
+        Dataset ds = jsonld2dataset(jsonld, jenaCtx);
 
         // check ds is correct
-        assertJohnDoeIsOK(m);
+        assertJohnDoeIsOK(ds.getDefaultModel());
     }
 
     /**
@@ -92,18 +93,23 @@ public class TestJsonLDReader {
         jenaCtx.setOptions(options);
 
         // read the jsonld, replacing its "@context"
-        Model m = jsonld2model(jsonld, jenaCtx);
+        Dataset ds = jsonld2dataset(jsonld, jenaCtx);
 
         // check ds is correct
-        assertJohnDoeIsOK(m);
+        assertJohnDoeIsOK(ds.getDefaultModel());
     }
 
     //
     //
     //
 
-    private Model jsonld2model(String jsonld, Context jenaCtx) throws IOException {
-        Model m = ModelFactory.createDefaultModel();
+    /**
+     * Reading some jsonld String, using a Context
+     * @return a new Dataset
+     * @throws IOException
+     */
+    private Dataset jsonld2dataset(String jsonld, Context jenaCtx) throws IOException {
+        Dataset ds = DatasetFactory.create();
 
         try (InputStream in = new ByteArrayInputStream(jsonld.getBytes(StandardCharsets.UTF_8))) {
             RDFParser.create()
@@ -111,10 +117,10 @@ public class TestJsonLDReader {
                     .errorHandler(ErrorHandlerFactory.errorHandlerNoLogging)
                     .lang(Lang.JSONLD)
                     .context(jenaCtx)
-                    .parse(m);
+                    .parse(ds.asDatasetGraph());
         }
 
-        return m;
+        return ds;
     }
 
     /**
