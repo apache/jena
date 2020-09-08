@@ -86,6 +86,7 @@ public class FusekiMain extends CmdARQ {
     private static ArgDecl  argCORS         = new ArgDecl(ArgDecl.NoValue, "withCORS", "cors", "CORS");
     private static ArgDecl  argWithPing     = new ArgDecl(ArgDecl.NoValue, "withPing", "ping");
     private static ArgDecl  argWithStats    = new ArgDecl(ArgDecl.NoValue, "withStats", "stats");
+    private static ArgDecl  argWithMetrics  = new ArgDecl(ArgDecl.NoValue,  "withMetrics", "metrics");
 
     private static ArgDecl  argAuth         = new ArgDecl(ArgDecl.HasValue, "auth");
 
@@ -170,6 +171,7 @@ public class FusekiMain extends CmdARQ {
 //            add(argRealm, "--realm=REALM", "Realm name");
         add(argWithPing,    "--ping",   "Enable /$/ping");
         add(argWithStats,   "--stats",  "Enable /$/stats");
+        add(argWithMetrics, "--metrics",  "Enable /$/metrics");
 
         super.modVersion.addClass(Fuseki.class);
     }
@@ -397,6 +399,7 @@ public class FusekiMain extends CmdARQ {
         serverConfig.withCORS = contains(argCORS);
         serverConfig.withPing = contains(argWithPing);
         serverConfig.withStats = contains(argWithStats);
+        serverConfig.withMetrics = contains(argWithMetrics);
 
 //            if ( contains(argGZip) ) {
 //                if ( !hasValueOfTrue(argGZip) && !hasValueOfFalse(argGZip) )
@@ -506,6 +509,9 @@ public class FusekiMain extends CmdARQ {
 
         if ( serverConfig.withStats )
             builder.enableStats(true);
+
+        if ( serverConfig.withMetrics )
+            builder.enableMetrics(true);
 
         return builder.build();
     }

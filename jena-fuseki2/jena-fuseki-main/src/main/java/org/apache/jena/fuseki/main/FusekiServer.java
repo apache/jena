@@ -38,6 +38,7 @@ import org.apache.jena.fuseki.access.DataAccessCtl;
 import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.build.FusekiConfig;
+import org.apache.jena.fuseki.ctl.ActionMetrics;
 import org.apache.jena.fuseki.ctl.ActionPing;
 import org.apache.jena.fuseki.ctl.ActionStats;
 import org.apache.jena.fuseki.jetty.FusekiErrorHandler;
@@ -242,8 +243,10 @@ public class FusekiServer {
         private int                      serverHttpsPort    = -1;
         private boolean                  networkLoopback    = false;
         private boolean                  verbose            = false;
-        private boolean                  withStats          = false;
         private boolean                  withPing           = false;
+        private boolean                  withMetrics        = false;
+        private boolean                  withStats          = false;
+
         private Map<String, String>      corsInitParams     = null;
 
         // Server wide authorization policy.
@@ -403,6 +406,14 @@ public class FusekiServer {
             return this;
         }
 
+        /** Add the "/$/ping" servlet that responds to HTTP very efficiently.
+         * This is useful for testing whether a server is alive, for example, from a load balancer.
+         */
+        public Builder enablePing(boolean withPing) {
+            this.withPing = withPing;
+            return this;
+        }
+
         /** Add the "/$/stats" servlet that responds with stats about the server,
          * including counts of all calls made.
          */
@@ -411,11 +422,9 @@ public class FusekiServer {
             return this;
         }
 
-        /** Add the "/$/ping" servlet that responds to HTTP very efficiently.
-         * This is useful for testing whether a server is alive, for example, from a load balancer.
-         */
-        public Builder enablePing(boolean withPing) {
-            this.withPing = withPing;
+        /** Add the "/$/metrics" servlet that responds with Prometheus metrics about the server. */
+        public Builder enableMetrics(boolean withMetrics) {
+            this.withMetrics = withMetrics;
             return this;
         }
 
@@ -531,6 +540,7 @@ public class FusekiServer {
 
             withPing  = argBoolean(server, FusekiVocab.pServerPing,  false);
             withStats = argBoolean(server, FusekiVocab.pServerStats, false);
+            withMetrics = argBoolean(server, FusekiVocab.pServerMetrics, false);
 
             // Extract settings - the server building is done in buildSecurityHandler,
             // buildAccessControl.  Dataset and graph level happen in assemblers.
@@ -1003,10 +1013,12 @@ public class FusekiServer {
             addFilter(context, "/*", ff);
 
             // and then any additional servlets and filters.
-            if ( withStats )
-                addServlet(context, "/$/stats/*", new ActionStats());
             if ( withPing )
                 addServlet(context, "/$/ping", new ActionPing());
+            if ( withStats )
+                addServlet(context, "/$/stats/*", new ActionStats());
+            if ( withMetrics )
+                addServlet(context, "/$/metrics", new ActionMetrics());
 
             servlets.forEach(p-> addServlet(context, p.getLeft(), p.getRight()));
             filters.forEach (p-> addFilter(context, p.getLeft(), p.getRight()));

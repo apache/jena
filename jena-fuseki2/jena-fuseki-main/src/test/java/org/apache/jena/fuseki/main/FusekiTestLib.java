@@ -30,7 +30,7 @@ public class FusekiTestLib {
     public static void expect401(Runnable runnable) {
         expectFail(runnable, HttpSC.Code.UNAUTHORIZED);
     }
-        
+
     public static void expect403(Runnable runnable) {
         expectFail(runnable, HttpSC.Code.FORBIDDEN);
     }
@@ -38,13 +38,12 @@ public class FusekiTestLib {
     public static void expect404(Runnable runnable) {
         expectFail(runnable, HttpSC.Code.NOT_FOUND);
     }
-    
+
     public static void expectFail(Runnable runnable, Code code) {
         if ( code == null || ( 200 <= code.getCode() && code.getCode() < 300 ) ) {
             runnable.run();
             return;
         }
-
         try {
           runnable.run();
           fail("Failed: Got no exception: Expected HttpException "+code.getCode());
@@ -55,12 +54,23 @@ public class FusekiTestLib {
       }
     }
 
+    public static int expectFail(Runnable runnable) {
+        try {
+          runnable.run();
+          fail("Failed: Got no exception: Expected HttpException");
+          return -1;
+      } catch (HttpException ex) {
+          return ex.getStatusCode();
+      }
+    }
+
+
     // Same - except a QueryExceptionHTTP.
-    
+
     public static void expectQuery401(Runnable runnable) {
         expectQueryFail(HttpSC.Code.UNAUTHORIZED, runnable);
     }
-        
+
     public static void expectQuery403(Runnable runnable) {
         expectQueryFail(HttpSC.Code.FORBIDDEN, runnable);
     }
@@ -68,13 +78,13 @@ public class FusekiTestLib {
     public static void expectQuery404(Runnable runnable) {
         expectQueryFail(HttpSC.Code.NOT_FOUND, runnable);
     }
-    
+
     public static void expectQueryFail(Code code, Runnable runnable) {
         if ( code == null || ( 200 <= code.getCode() && code.getCode() < 300 ) ) {
             runnable.run();
             return;
         }
-        
+
         try {
           runnable.run();
           fail("Failed: Got no exception: Expected QueryExceptionHTTP "+code.getCode());
@@ -84,7 +94,7 @@ public class FusekiTestLib {
           throw ex;
       }
     }
-    
+
     public static void expectOK(Runnable runnable) {
         runnable.run();
     }
@@ -92,7 +102,7 @@ public class FusekiTestLib {
     public static void expectQueryOK(Runnable runnable) {
         runnable.run();
     }
-    
+
     public static void expectQueryAccessFail(Runnable runnable) {
         try {
              runnable.run();

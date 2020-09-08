@@ -1,4 +1,5 @@
-/*
+/*Multi
+ *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,15 +19,16 @@
 
 package org.apache.jena.fuseki.main;
 
+import static org.apache.jena.fuseki.main.FusekiTestLib.expectFail;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.atlas.web.WebLib;
@@ -35,11 +37,9 @@ import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.build.FusekiExt;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Operation;
+import org.apache.jena.fuseki.server.OperationRegistry;
 import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.fuseki.servlets.HttpAction;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -49,19 +49,21 @@ import org.junit.Test;
 
 /** Test for adding a new operation */
 public class TestFusekiCustomOperation {
-    private static final Operation newOp = Operation.alloc("http://example/special", "special", "Custom operation");
-    private static final String contentType = "application/special";
-    private static final String endpointName = "special";
+    private static final Operation newOp                 = Operation.alloc("http://example/special", "special", "Custom operation");
+    private static final String    contentType           = "application/special";
+    private static final String    endpointName          = "special";
+    private static final String    customHandlerBodyGet  = "    ** Hello world (GET) ** custom handler **";
+    private static final String    customHandlerBodyPost = "    ** Hello world (POST) ** custom handler **";
 
-    private final ActionService customHandler = new CustomTestService() {
+    private final ActionService    customHandler =
+        new CustomTestService() {
         @Override
         protected void doGet(HttpAction action) {
             action.response.setStatus(HttpSC.OK_200);
             try {
                 action.response.setContentType(WebContent.contentTypeTextPlain);
-                action.response.getOutputStream().println("    ** Hello world (GET) **");
-            }
-            catch (IOException e) {
+                action.response.getOutputStream().print(customHandlerBodyGet);
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -77,16 +79,16 @@ public class TestFusekiCustomOperation {
             action.response.setStatus(HttpSC.OK_200);
             try {
                 action.response.setContentType(WebContent.contentTypeTextPlain);
-                action.response.getOutputStream().println("    ** Hello world (POST) **");
-            }
-            catch (IOException e) {
+                action.response.getOutputStream().print(customHandlerBodyPost);
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     };
 
-    private final int port = WebLib.choosePort();
-    private final String url = "http://localhost:"+port;
+    private final int              port                  = WebLib.choosePort();
+    // Without trailing "/"
+    private final String           url                   = "http://localhost:" + port;
 
     @Test
     public void cfg_dataservice_named() {
@@ -95,16 +97,19 @@ public class TestFusekiCustomOperation {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         DataService dataService = new DataService(dsg);
         FusekiConfig.populateStdServices(dataService, true);
-        FusekiExt.registerOperation(newOp, customHandler);
-        FusekiConfig.addServiceEP(dataService, newOp, endpointName);
+        try {
+            FusekiExt.registerOperation(newOp, customHandler);
+            assertTrue(OperationRegistry.get().isRegistered(newOp));
 
-        FusekiServer server =
-            FusekiServer.create()
-                .port(port)
-                .registerOperation(newOp, contentType, customHandler)
-                .add("/ds", dataService)
-                .build();
-        testServer(server, url, endpointName, true);
+            FusekiConfig.addServiceEP(dataService, newOp, endpointName);
+            FusekiServer server = FusekiServer.create().port(port).registerOperation(newOp, contentType, customHandler)
+                .add("/ds", dataService).build();
+            testServer(server, url, endpointName, true, false);
+        }
+        finally {
+            FusekiExt.unregisterOperation(newOp, customHandler);
+        }
+        assertFalse(OperationRegistry.get().isRegistered(newOp));
     }
 
     @Test
@@ -114,149 +119,136 @@ public class TestFusekiCustomOperation {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         DataService dataService = new DataService(dsg);
         FusekiConfig.populateStdServices(dataService, true);
-        FusekiExt.registerOperation(newOp, customHandler);
-        FusekiConfig.addServiceEP(dataService, newOp, null);
+        try {
+            FusekiExt.registerOperation(newOp, customHandler);
+            assertTrue(OperationRegistry.get().isRegistered(newOp));
 
-        FusekiServer server =
-            FusekiServer.create()
-                .port(port)
-                .registerOperation(newOp, contentType, customHandler)
-                .add("/ds", dataService)
-                .build();
-        // No endpoint name dispatch - content-type required.
-        testServer(server, url, null, true);
-    }
-
-    @Test
-    public void cfg_builder_CT_named() {
-        FusekiServer server =
-            FusekiServer.create()
-                .port(port)
-                .registerOperation(newOp, contentType, customHandler)
-                .add("/ds", DatasetGraphFactory.createTxnMem(), true)
-                .addEndpoint("/ds", endpointName, newOp)
-                .build();
-        testServer(server, url, endpointName, true);
-    }
-
-    @Test
-    public void cfg_builder_CT_noName() {
-        FusekiServer server =
-            FusekiServer.create()
-                .port(port)
-                .registerOperation(newOp, contentType, customHandler)
-                .add("/ds", DatasetGraphFactory.createTxnMem(), true)
-                .addEndpoint("/ds", "", newOp)
-                .build();
-        testServer(server, url, null, true);
+            FusekiConfig.addServiceEP(dataService, newOp, null);
+            FusekiServer server = FusekiServer.create().port(port).registerOperation(newOp, contentType, customHandler)
+                .add("/ds", dataService).build();
+            // No endpoint name dispatch - content-type required.
+            testServer(server, url, "", false, true);
+        }
+        finally {
+            FusekiExt.unregisterOperation(newOp, customHandler);
+        }
+        assertFalse(OperationRegistry.get().isRegistered(newOp));
     }
 
     @Test
     public void cfg_builder_noCT() {
-        FusekiServer server =
-            FusekiServer.create()
-                .port(port)
-                .registerOperation(newOp, null, customHandler)
-                .add("/ds", DatasetGraphFactory.createTxnMem(), true)
-                .addEndpoint("/ds", endpointName, newOp)
-                .build();
-        testServer(server, url, endpointName, false);
+        // Register operation in the builder. Dispatch by-name. CT not required.
+        FusekiServer server = FusekiServer.create().port(port).registerOperation(newOp, null, customHandler)
+            .add("/ds", DatasetGraphFactory.createTxnMem(), true).addEndpoint("/ds", endpointName, newOp).build();
+        testServer(server, url, endpointName, true, false);
     }
 
-    @Test(expected=FusekiConfigException.class)
+    @Test
+    public void cfg_builder_CT_named() {
+        FusekiServer server = FusekiServer.create().port(port).registerOperation(newOp, contentType, customHandler)
+            .add("/ds", DatasetGraphFactory.createTxnMem(), true).addEndpoint("/ds", endpointName, newOp).build();
+        // Endpoint name dispatch - with content-type
+        testServer(server, url, endpointName, true, true);
+    }
+
+    @Test
+    public void cfg_builder_CT_noName() {
+        // Register operation in the builder. Dispatch by-content-type on "".
+        FusekiServer server = FusekiServer.create().port(port).registerOperation(newOp, contentType, customHandler)
+            .add("/ds", DatasetGraphFactory.createTxnMem(), true).addEndpoint("/ds", "", newOp).build();
+        testServer(server, url, "", false, true);
+    }
+
+    @Test(expected = FusekiConfigException.class)
     public void cfg_bad_01() {
-        FusekiServer.create()
-        .port(port)
-        .registerOperation(newOp, null, customHandler)
-        .addEndpoint("/UNKNOWN", endpointName, newOp);
-        //.build();
+        FusekiServer.create().port(port).registerOperation(newOp, null, customHandler).addEndpoint("/UNKNOWN", endpointName, newOp);
+        // .build();
     }
 
-    @Test(expected=FusekiConfigException.class)
+    @Test(expected = FusekiConfigException.class)
     public void cfg_bad_02() {
-        FusekiServer.create()
-        .port(port)
-        //.registerOperation(newOp, null, customHandler)
-        .add("/ds", DatasetGraphFactory.createTxnMem(), true)
-        // Unregistered.
-        .addEndpoint("/ds", endpointName, newOp);
-        //.build();
-    }
-
-    public void cfg_bad_ct_not_enabled_here() {
-        FusekiServer server = FusekiServer.create()
-            .port(port)
-            .registerOperation(newOp, "app/special", customHandler)
+        FusekiServer.create().port(port)
+            // .registerOperation(newOp, null, customHandler)
             .add("/ds", DatasetGraphFactory.createTxnMem(), true)
             // Unregistered.
-            .addEndpoint("/ds", endpointName, newOp)
-            .build();
-        testServer(server, url, null, false);
+            .addEndpoint("/ds", endpointName, newOp);
+        // .build();
     }
 
+    // Bad test: no MIME type must match.
+    @Test
+    public void cfg_bad_ct_not_enabled_here_1() {
+        FusekiServer server = FusekiServer.create().port(port)
+            // Wrong MIME type.
+            .registerOperation(newOp, "app/special", customHandler).add("/ds", DatasetGraphFactory.createTxnMem(), true)
+            // Unregistered CT dispatch.
+            .addEndpoint("/ds", "", newOp).build();
 
-    private static void testServer(FusekiServer server, String url, String epName, boolean withContentType) {
+        // CT dispatch.
+        expectFail(() -> testServer(server, url, "", false, true), HttpSC.Code.BAD_REQUEST);
+    }
+
+    /** Call the server to check that the endpoint can be contacted. */
+    private static void testServer(FusekiServer server, String url, String epName, boolean withoutContentType, boolean withContentType) {
         try {
             server.start();
-            // Try query (no extension required)
-            try(RDFConnection rconn = RDFConnectionFactory.connect(url+"/ds")) {
-                try(QueryExecution qExec = rconn.query("ASK {}")) {
-                    qExec.execAsk();
-                }
+            Lib.sleep(100);
+
+            String svcCall = StringUtils.isEmpty(epName) ? url + "/ds" : url + "/ds/" + epName;
+
+            if ( withoutContentType )
+                testServerNoCT(server, svcCall);
+
+            if ( withContentType )
+                testServerCT(server, svcCall);
+
+            // DELETE -> fails
+            int statusCode = expectFail(() -> HttpOp.execHttpDelete(svcCall));
+            switch (statusCode) {
+                // Acceptable.
+                case HttpSC.BAD_REQUEST_400 :
+                case HttpSC.METHOD_NOT_ALLOWED_405 :
+                    break;
+                default :
+                    // Wrong
+                    fail("Status code = " + statusCode);
             }
-
-            if ( epName != null ) {
-                if ( ! epName.isEmpty() ) {
-                    // Service endpoint name : GET
-                    String svcCall = url+"/ds/"+epName;
-
-                    String s1 = HttpOp.execHttpGetString(svcCall);
-
-                    // Service endpoint name : POST
-                    try ( TypedInputStream stream = HttpOp.execHttpPostStream(svcCall, "ignored", "", "text/plain") ) {
-                        assertNotNull(stream);
-                        String x = IOUtils.toString(stream, StandardCharsets.UTF_8);
-                        assertNotNull(x);
-                    } catch (IOException ex) {
-                        IO.exception(ex);
-                    }
-                }
-            } else {
-                // No endpoint so we expect a 404.
-                try {
-                    // Service endpoint name : GET
-                    HttpOp.execHttpGet(url+"/ds/"+endpointName);
-                    fail("Expected to fail HTTP GET");
-                } catch (HttpException ex) {
-                    assertEquals(404, ex.getStatusCode());
-                }
-            }
-
-            if ( withContentType ) {
-                // Content-type
-                try ( TypedInputStream stream = HttpOp.execHttpPostStream(url+"/ds", contentType, "", "text/plain") ) {
-                    assertNotNull(stream);
-                    String x = IOUtils.toString(stream, StandardCharsets.UTF_8);
-                    assertNotNull(x);
-                } catch (IOException ex) {
-                    IO.exception(ex);
-                }
-            } else {
-                // No Content-Type
-                try ( TypedInputStream stream = HttpOp.execHttpPostStream(url+"/ds", contentType, "", "text/plain") ) {
-                    fail("Expected to fail HTTP POST using Content-Type");
-                } catch (HttpException ex) {}
-
-                // Service endpoint name. DELETE -> fails 405
-                try {
-                    HttpOp.execHttpDelete(url+"/ds/"+endpointName);
-                    throw new IllegalStateException("DELETE succeeded");
-                } catch (HttpException ex) {
-                    assertEquals(405, ex.getStatusCode());
-                }
-            }
-        } finally {
+        }
+        finally {
             server.stop();
         }
+    }
+
+    private static void testServerCT(FusekiServer server, String svcCall) {
+        // Content-type
+        try (TypedInputStream stream = HttpOp.execHttpPostStream(svcCall, contentType, "", "text/plain")) {
+            assertNotNull(stream);
+            String x = IOUtils.toString(stream, StandardCharsets.UTF_8);
+            assertValidResponseBody(customHandlerBodyPost, x);
+        } catch (IOException ex) {
+            IO.exception(ex);
+        }
+    }
+
+    private static void testServerNoCT(FusekiServer server, String svcCall) {
+        // Service endpoint name : GET
+        String s1 = HttpOp.execHttpGetString(svcCall);
+        if ( s1 == null )
+            throw new HttpException(HttpSC.NOT_FOUND_404, "Not Found", "");
+        assertValidResponseBody(customHandlerBodyGet, s1);
+
+        // Service endpoint name : POST
+        try (TypedInputStream stream = HttpOp.execHttpPostStream(svcCall, "ignored", "", "text/plain")) {
+            assertNotNull(stream);
+            String x = IOUtils.toString(stream, StandardCharsets.UTF_8);
+            assertValidResponseBody(customHandlerBodyPost, x);
+        } catch (IOException ex) {
+            IO.exception(ex);
+        }
+    }
+
+    private static void assertValidResponseBody(String expectedResponseBody, String responseBody) {
+        assertNotNull(responseBody);
+        assertEquals(expectedResponseBody, responseBody);
     }
 }
