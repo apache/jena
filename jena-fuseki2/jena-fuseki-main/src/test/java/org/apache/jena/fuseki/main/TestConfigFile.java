@@ -22,6 +22,7 @@ import static org.apache.jena.fuseki.test.FusekiTest.expect400;
 import static org.apache.jena.fuseki.test.FusekiTest.expect404;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.atlas.lib.StrUtils;
@@ -32,22 +33,23 @@ import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.rdfconnection.RDFConnectionRemote;
 import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
+import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.sparql.core.Var;
 import org.junit.Test;
 
-/** Test server configuration by configuration file */ 
+/** Test server configuration by configuration file */
 public class TestConfigFile {
 
     private static final String DIR = "testing/Config/";
-    
+
     private static final String PREFIXES = StrUtils.strjoinNL
-        ("PREFIX afn: <http://jena.apache.org/ARQ/function#>" 
+        ("PREFIX afn: <http://jena.apache.org/ARQ/function#>"
         ,"PREFIX fuseki: <http://jena.apache.org/fuseki#>"
         ,"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
         ,"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
         , ""
         );
-    
+
     private static RDFConnection namedServices(String baseURL) {
         return RDFConnectionRemote.create()
             .destination(baseURL)
@@ -56,9 +58,9 @@ public class TestConfigFile {
             .gspEndpoint("data")
             .build();
     }
-    
+
     @Test public void basic () {
-        int port = WebLib.choosePort(); 
+        int port = WebLib.choosePort();
         FusekiServer server = server(port, "basic.ttl");
         server.start();
         try ( RDFConnection conn = RDFConnectionFactory.connect("http://localhost:"+port+"/ds") ) {
@@ -70,7 +72,7 @@ public class TestConfigFile {
     }
 
     @Test public void context() {
-        int port = WebLib.choosePort(); 
+        int port = WebLib.choosePort();
         FusekiServer server = server(port, "context.ttl");
         server.start();
         try {
@@ -96,7 +98,7 @@ public class TestConfigFile {
     }
 
     @Test public void stdServicesNamed () {
-        int port = WebLib.choosePort(); 
+        int port = WebLib.choosePort();
         FusekiServer server = server(port, "std-named.ttl");
         String serverURL = "http://localhost:"+port+"/ds-named";
         server.start();
@@ -108,7 +110,7 @@ public class TestConfigFile {
                 Graph g = conn.fetch().getGraph();
                 assertEquals(1, g.size());
             }
-            
+
             // These should not work because there is a blocking dataset service (no-op).
             try ( RDFConnection conn =  RDFConnectionFactory.connect(serverURL) ) {
                 expect400(()->conn.update("INSERT DATA { <x:s> <x:p> 123 }"));
@@ -120,37 +122,37 @@ public class TestConfigFile {
             server.stop();
         }
     }
-    
-    @Test public void stdServicesDirect () {
-        int port = WebLib.choosePort(); 
+
+    @Test public void stdServicesDirect() {
+        int port = WebLib.choosePort();
         FusekiServer server = server(port, "std-dataset.ttl");
         String serverURL = "http://localhost:"+port+"/ds-direct";
         server.start();
         try {
-            try ( RDFConnection conn =  RDFConnectionFactory.connect(serverURL) ) {
-                conn.update("INSERT DATA { <x:s> <x:p> 123 }");
-                conn.queryAsk("ASK{}");
-                Graph g = conn.fetch().getGraph();
-                assertEquals(1, g.size());
-            }
-            
+//            try ( RDFConnection conn =  RDFConnectionFactory.connect(serverURL) ) {
+//                conn.update("INSERT DATA { <x:s> <x:p> 123 }");
+//                conn.queryAsk("ASK{}");
+//                Graph g = conn.fetch().getGraph();
+//                assertEquals(1, g.size());
+//            }
+
             // No named endpoints.
             try ( RDFConnection conn = namedServices(serverURL) ) {
                 expect404(()->conn.update("INSERT DATA { <x:s> <x:p> 123 }"));
                 expect404(()->conn.queryAsk("ASK{}"));
                 expect404(()->conn.fetch());
             }
-            
+
         } finally {
             server.stop();
         }
     }
 
     @Test public void stdServicesNoConfig() {
-        int port = WebLib.choosePort(); 
+        int port = WebLib.choosePort();
         FusekiServer server = server(port, "std-empty.ttl");
         String serverURL = "http://localhost:"+port+"/ds-no-ep";
-        
+
         server.start();
         try {
             try ( RDFConnection conn =  RDFConnectionFactory.connect(serverURL) ) {
@@ -170,51 +172,74 @@ public class TestConfigFile {
             server.stop();
         }
     }
-    
-    @Test public void stdServicesGeneral() {
-        int port = WebLib.choosePort(); 
-        FusekiServer server = server(port, "std-general.ttl");
-        String serverURL = "http://localhost:"+port+"/ds";
-        
+
+    // Named services mirrored onto the dataset
+    @Test public void stdServicesOldStyle() {
+        int port = WebLib.choosePort();
+        FusekiServer server = server(port, "std-old-style.ttl");
+        String serverURL = "http://localhost:"+port+"/ds0";
+
         server.start();
         try {
-            // Either style.
-            
-            try ( RDFConnection conn =  RDFConnectionFactory.connect(serverURL) ) {
-                conn.update("INSERT DATA { <x:s> <x:p> 123 }");
-                conn.queryAsk("ASK{}");
-                Graph g = conn.fetch().getGraph();
-                assertEquals(1, g.size());
-            }
-            RDFConnectionRemoteBuilder builder = RDFConnectionRemote.create()
+            RDFConnectionRemoteBuilder builderUnamedServices = RDFConnectionRemote.create()
+                .destination(serverURL)
+                .updateEndpoint("")
+                .queryEndpoint("");
+            RDFConnectionRemoteBuilder builderNamedServices = RDFConnectionRemote.create()
                 .destination(serverURL)
                 .queryEndpoint("sparql")
                 .updateEndpoint("update")
                 .gspEndpoint("data");
-            try ( RDFConnection conn = builder.build() ) {
+
+            try ( RDFConnection conn = builderNamedServices.build() ) {
                 conn.update("INSERT DATA { <x:s> <x:p> 123 }");
+                Graph g = conn.fetch().getGraph();
+                assertEquals(1, g.size());
+            }
+
+            try ( RDFConnection conn = builderNamedServices.build() ) {
                 conn.queryAsk("ASK{}");
                 Graph g = conn.fetch().getGraph();
                 assertEquals(1, g.size());
             }
-            
+
+            try ( RDFConnection conn = builderUnamedServices.build() ) {
+                conn.update("INSERT DATA { <x:s> <x:p> 456 }");
+                conn.queryAsk("ASK{}");
+                Graph g = conn.fetch().getGraph();
+                assertEquals(2, g.size());
+            }
         } finally {
             server.stop();
         }
     }
 
-    private static String NL = "\n";
-    
+    @Test public void serverMisc() {
+        int port = WebLib.choosePort();
+        FusekiServer server = server(port, "server.ttl");
+        server.start();
+        try {
+            String x1 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/ping");
+            assertNotNull(x1);
+            String x2 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/stats");
+            assertNotNull(x2);
+            String x3 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/metrics");
+            assertNotNull(x3);
+        } finally {
+            server.stop();
+        }
+    }
+
     @Test public void unionGraph1() {
         unionGraph("tdb1-endpoints.ttl","/ds-tdb1");
     }
-    
+
     @Test public void unionGraph2() {
         unionGraph("tdb2-endpoints.ttl","/ds-tdb2");
     }
-    
+
     @Test public void setupOpsSameName() {
-        int port = WebLib.choosePort(); 
+        int port = WebLib.choosePort();
         FusekiServer server = server(port, "setup1.ttl");
         String serverURL = "http://localhost:"+port+"/ds";
         server.start();
@@ -228,9 +253,9 @@ public class TestConfigFile {
             server.stop();
         }
     }
-    
+
     @Test public void setupRootDataset() {
-        int port = WebLib.choosePort(); 
+        int port = WebLib.choosePort();
         FusekiServer server = server(port, "setup2.ttl");
         String serverURL = "http://localhost:"+port+"/";
         server.start();
@@ -245,12 +270,14 @@ public class TestConfigFile {
         }
     }
 
+    private static String NL = "\n";
+
     private void unionGraph(String fnConfig, String dbName) {
-        int port = WebLib.choosePort(); 
+        int port = WebLib.choosePort();
         FusekiServer server = server(port, fnConfig);
         String serverURL = "http://localhost:"+port+dbName;
         server.start();
-        
+
         try {
             try ( RDFConnection conn =  RDFConnectionFactory.connect(serverURL) ) {
                 conn.update("INSERT DATA {"+NL+
@@ -281,18 +308,18 @@ public class TestConfigFile {
             return x;
         }
     }
-    
-    
-    
+
+
+
     private static void assertCxtValue(RDFConnection conn, String contextSymbol, String value) {
-        String actual = 
+        String actual =
             conn.query(PREFIXES+"SELECT ?V { BIND(afn:context('"+contextSymbol+"') AS ?V) }")
             .execSelect()
             .nextBinding().get(Var.alloc("V"))
             .getLiteralLexicalForm();
         assertEquals(value, actual);
     }
-    
+
     private static void assertCxtValueNotNull(RDFConnection conn, String contextSymbol) {
         boolean b = conn.queryAsk(PREFIXES+"ASK { FILTER (afn:context('"+contextSymbol+"') != '' ) }");
         assertTrue(contextSymbol, b);
@@ -318,5 +345,5 @@ public class TestConfigFile {
             .port(port)
             .build();
         return server;
-    }    
+    }
 }

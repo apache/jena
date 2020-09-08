@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.StringEntity;
+import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.fuseki.test.FusekiTest;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
@@ -97,6 +98,13 @@ public class TestServerReadOnly
             HttpOp.execHttpDelete(ServerCtl.serviceGSP()+"?default");
         });
     }
+
+    @Test
+    public void dataset_readonly_GET() {
+        // Try to read
+        try ( TypedInputStream in = HttpOp.execHttpGet(ServerCtl.urlDataset()) ) {}
+    }
+
 
     @Test
     public void dataset_w_readonly_POST() {

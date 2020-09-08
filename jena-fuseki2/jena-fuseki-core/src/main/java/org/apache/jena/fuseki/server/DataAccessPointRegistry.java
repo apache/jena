@@ -27,6 +27,10 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.metrics.FusekiRequestsMetrics;
 
+/**
+ * Registry of (dataset name, {@link DataAccessPoint}).
+ * In addition, registered {@link DataAccessPoint} are added to the metrics.
+ */
 public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
 {
     private MeterRegistry meterRegistry;
@@ -60,6 +64,11 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
     }
 
     // Debugging
+    public void print() {
+        print(null);
+    }
+
+    // Debugging
     public void print(String string) {
         System.out.flush();
         if ( string == null )
@@ -69,7 +78,7 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
             System.out.printf("  (key=%s, ref=%s)\n", k, ref.getName());
             ref.getDataService().getOperations().forEach((op)->{
                 ref.getDataService().getEndpoints(op).forEach(ep->{
-                    System.out.printf("     %s : %s\n", op, ep.getName());
+                    System.out.printf("    %-10s @ \"%s\"\n", op, ep.getName());
                 });
             });
         });

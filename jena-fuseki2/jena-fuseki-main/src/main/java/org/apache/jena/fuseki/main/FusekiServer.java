@@ -27,6 +27,8 @@ import java.util.function.Predicate;
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.logging.FmtLog;
@@ -1029,6 +1031,33 @@ public class FusekiServer {
                 ServletHolder staticContent = new ServletHolder(staticServlet);
                 staticContent.setInitParameter("resourceBase", staticContentDir);
                 context.addServlet(staticContent, "/");
+            } else {
+                // Backstop servlet
+                // Jetty default is 404 on GET and 405 otherwise
+                HttpServlet staticServlet = new Servlet404();
+                ServletHolder staticContent = new ServletHolder(staticServlet);
+                context.addServlet(staticContent, "/");
+            }
+        }
+
+        /** 404 for HEAD/GET/POST/PUT */
+        static class Servlet404 extends HttpServlet {
+            // service()?
+            @Override
+            protected void doHead(HttpServletRequest req, HttpServletResponse resp)     { err404(req, resp); }
+            @Override
+            protected void doGet(HttpServletRequest req, HttpServletResponse resp)      { err404(req, resp); }
+            @Override
+            protected void doPost(HttpServletRequest req, HttpServletResponse resp)     { err404(req, resp); }
+            @Override
+            protected void doPut(HttpServletRequest req, HttpServletResponse resp)      { err404(req, resp); }
+            //protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
+            //protected void doTrace(HttpServletRequest req, HttpServletResponse resp)
+            //protected void doOptions(HttpServletRequest req, HttpServletResponse resp)
+            private static void err404(HttpServletRequest req, HttpServletResponse response) {
+                try {
+                    response.sendError(404, "NOT FOUND");
+                } catch (IOException ex) {}
             }
         }
 

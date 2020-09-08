@@ -34,17 +34,15 @@ import org.apache.jena.rdf.model.Resource;
  * same dataset.
  */
 public class DatasetDescriptionMap  {
-	
+
 	private Map<Resource, Dataset> map = new HashMap<>();
-	
+
 	public DatasetDescriptionMap() {}
-	
+
     public void register(Resource node, Dataset ds) {
         Dataset dsCurrent = map.get(node);
-        if ( dsCurrent != null ) {
-            if ( ! dsCurrent.equals(ds) )
-                Log.warn(this.getClass(), "Replacing registered dataset for "+node);
-        }
+        if ( dsCurrent != null && ! dsCurrent.equals(ds) )
+            Log.warn(this.getClass(), "Replacing registered dataset for "+node);
         map.put(node, ds);
     }
 

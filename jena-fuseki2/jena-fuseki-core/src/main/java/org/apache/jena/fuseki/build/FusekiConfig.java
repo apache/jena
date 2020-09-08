@@ -46,6 +46,7 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.auth.AuthPolicy;
+import org.apache.jena.fuseki.auth.AuthPolicyList;
 import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.graph.Node;
@@ -455,15 +456,52 @@ public class FusekiConfig {
         accEndpointOldStyle(endpoints1, Operation.GSP_R,    fusekiService,  pServiceReadGraphStoreEP);
         accEndpointOldStyle(endpoints1, Operation.GSP_RW,   fusekiService,  pServiceReadWriteGraphStoreEP);
 
+        // ---- Legacy for old style: a request wouls also try the dataset (i.e. no endpoint name).
+        // If "sparql" then allow /dataset?query=
+        // Instead, for old style declarations, add new endpoints to put on the dataset
+        // Only complication is that authorization is the AND (all say "yes") of named service authorization.
+        {
+            Collection<Endpoint> endpointsCompat = oldStyleCompat(dataService, endpoints1);
+            endpointsCompat.forEach(dataService::addEndpoint);
+        }
+        endpoints1.forEach(dataService::addEndpoint);
+
         // New (2019) style
         // fuseki:endpoint [ fuseki:operation fuseki:query ; fuseki:name "" ; fuseki:allowedUsers (....) ] ;
         //   and more.
-        accFusekiEndpoints(endpoints2, fusekiService, dsDescMap);
 
-        endpoints1.forEach(dataService::addEndpoint);
+        accFusekiEndpoints(endpoints2, fusekiService, dsDescMap);
         // This will overwrite old style entries of the same fuseki:name.
         endpoints2.forEach(dataService::addEndpoint);
+
         return dataService;
+    }
+
+    /**
+     *  Old style compatibility.
+     *  For each endpoint in "endpoints1", ensure there is a endpoint on the dataset 9endpoint name "") itself.
+     *  Combine the authentication as "AND" of named endpoints authentication.
+     */
+    private static Collection<Endpoint> oldStyleCompat(DataService dataService, Set<Endpoint> endpoints1) {
+        Map<Operation, Endpoint> endpoints3 = new HashMap<>();
+        endpoints1.forEach(ep->{
+           Operation operation = ep.getOperation();
+           AuthPolicy auth = ep.getAuthPolicy();
+
+           if ( ! StringUtils.isEmpty(ep.getName()) ) {
+               if ( endpoints3.containsKey(operation) ) {
+                   Endpoint ep1 = endpoints3.get(operation);
+                   // Accumulate Authorization.
+                   auth = AuthPolicyList.merge(ep1.getAuthPolicy(), auth);
+                   Endpoint ep2 = Endpoint.create(ep.getOperation(), "", auth);
+                   endpoints3.put(operation, ep2);
+               } else {
+                   Endpoint ep2 = Endpoint.create(operation, "", auth);
+                   endpoints3.put(operation, ep2);
+               }
+           }
+        });
+        return endpoints3.values();
     }
 
     /** Find and parse {@code fuseki:endpoint} descriptions. */
@@ -540,7 +578,6 @@ public class FusekiConfig {
             epName = epNameR.asLiteral().getLexicalForm();
         }
 
-
         Context cxt = parseContext(endpoint);
 
         // Per-endpoint context.
@@ -587,11 +624,11 @@ public class FusekiConfig {
             RDFNode ep = soln.get("ep");
             String endpointName = null;
             if ( ep.isLiteral() )
+                // fuseki:serviceQuery "sparql"
                 endpointName = soln.getLiteral("ep").getLexicalForm();
             else if ( ep.isResource() ) {
                 Resource r = (Resource)ep;
                 try {
-                    // Look for possible:
                     // [ fuseki:name ""; fuseki:allowedUsers ( "" "" ) ]
                     endpointName = r.getProperty(FusekiVocab.pEndpointName).getString();
                     List<RDFNode> x = GraphUtils.multiValue(r, FusekiVocab.pAllowedUsers);

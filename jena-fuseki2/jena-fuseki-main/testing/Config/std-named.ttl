@@ -18,10 +18,6 @@ PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
     fuseki:endpoint [ fuseki:operation fuseki:gsp_r;  fuseki:name "get"     ] ;
     fuseki:endpoint [ fuseki:operation fuseki:gsp_rw; fuseki:name "data"    ] ;
 
-    ## Any explicit dataset level operation means that
-    ## trying as named service does not happen.
-    fuseki:endpoint [ fuseki:operation fuseki:no_op ] ;
-    
     fuseki:dataset      <#emptyDataset> ;
     .
 

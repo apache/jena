@@ -43,6 +43,15 @@ package org.apache.jena.rdfconnection;
         return graphStoreProtocolService + queryStringForGraph(ch, graphName) ;
     }
 
+    /**
+     * Service endpoint URL calculation.
+     * <ul>
+     * <li> If srvEndpoint is null,  "destination"
+     * <li> If srvEndpoint is "",  "destination"
+     * <li> If srvEndpoint is an absolute URL,  "srvEndpoint"
+     * <li> "destination / srvEndpoint" (ensures the "/"), while preserving the query string
+     * </ul>
+     */
     /*package*/ static String formServiceURL(String destination, String srvEndpoint) {
         if ( srvEndpoint == null )
             return null;

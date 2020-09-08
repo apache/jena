@@ -15,7 +15,7 @@ PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
     ## Same endpoint name, different operations available.
     fuseki:endpoint     [
        fuseki:operation  fuseki:query;
-       ## Named service and root daatset not supported.
+       ## Named service and root dataset not supported.
        #fuseki:name       "sparql" ;
     ] ;
     fuseki:endpoint     [
