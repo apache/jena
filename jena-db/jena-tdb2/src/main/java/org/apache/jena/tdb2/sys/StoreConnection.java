@@ -82,7 +82,7 @@ public class StoreConnection
         if ( sConn == null ) {
             ProcessFileLock lock = null;
             // This is not duplicating DatabaseConnection.build.
-            // This is a tdb.lock file in the storage database, not the switchable. 
+            // This is a tdb.lock file in the storage database, not the switchable.
             if (SystemTDB.DiskLocationMultiJvmUsagePrevention && ! location.isMem() ) {
                 lock = lockForLocation(location);
                 // Take the lock.  This is atomic and non-reentrant.

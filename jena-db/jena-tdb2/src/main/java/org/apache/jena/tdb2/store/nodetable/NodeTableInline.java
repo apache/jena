@@ -18,7 +18,6 @@
 
 package org.apache.jena.tdb2.store.nodetable;
 
-
 import org.apache.jena.graph.Node;
 import org.apache.jena.tdb2.store.NodeId;
 
