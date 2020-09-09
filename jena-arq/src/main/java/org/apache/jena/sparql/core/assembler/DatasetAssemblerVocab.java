@@ -27,7 +27,7 @@ public class DatasetAssemblerVocab
 {
     public static final String NS = JA.getURI() ;
     public static String getURI() { return NS ; }
-    
+
     // General dataset
     public static final Resource tDataset            = ResourceFactory.createResource(NS+"RDFDataset") ;
     // Dataset to hold exactly one model.
@@ -35,23 +35,27 @@ public class DatasetAssemblerVocab
 
     // In-memory dataset
     public static final Resource tDatasetTxnMem      = ResourceFactory.createResource(NS+"DatasetTxnMem") ;
-    
+
     // Specialised datasets
     public static final Resource tMemoryDataset      = ResourceFactory.createResource(NS+"MemoryDataset") ;
     public static final Resource tDatasetZero        = ResourceFactory.createResource(NS+"RDFDatasetZero") ;
     public static final Resource tDatasetSink        = ResourceFactory.createResource(NS+"RDFDatasetSink") ;
-    
+    public static final Resource tViewGraph          = ResourceFactory.createResource(NS+"ViewGraph") ;
+
+    public static final Property pDataset            = ResourceFactory.createProperty(NS, "dataset") ;
+
     public static final Property pDefaultGraph       = ResourceFactory.createProperty(NS, "defaultGraph") ;
+
     public static final Property pNamedGraph         = ResourceFactory.createProperty(NS, "namedGraph") ;
-    
     public static final Property pGraphName          = ResourceFactory.createProperty(NS, "graphName") ;
+
     public static final Property pGraph              = ResourceFactory.createProperty(NS, "graph") ;
     public static final Property pGraphAlt           = ResourceFactory.createProperty(NS, "graphData") ;
 
     public static final Property pIndex              = ResourceFactory.createProperty(NS, "textIndex") ;
-    
+
     public static final Property pTransactional      = ResourceFactory.createProperty(NS, "transactional") ;
-    
+
     public static final Property pContext            = ResourceFactory.createProperty(NS, "context") ;
     public static final Property pCxtName            = ResourceFactory.createProperty(NS, "cxtName") ;
     public static final Property pCxtValue           = ResourceFactory.createProperty(NS, "cxtValue") ;

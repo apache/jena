@@ -152,9 +152,9 @@ public class Dispatcher {
 
         Endpoint endpoint = chooseEndpoint(action, dataService, endpointName);
         if ( endpoint == null )
-            // Named service, no such endpoint.
+            // Includes named service, no such endpoint.
             // Allows for resources under /dataset/
-            // Does to Jetty's default handling (404 for GET, 405 other methods).
+            // The request will pass on down the filter/servlet chain.
             return null;
 
         Operation operation = endpoint.getOperation();
@@ -224,11 +224,9 @@ public class Dispatcher {
         if ( epSet == null || epSet.isEmpty() ) {
             // No matches by name.
             if ( ! StringUtils.isAnyEmpty(endpointName) )
-                // There was a service name, not found.
-                // But it may be a URL for static resource.
+                // There was a service name but it was not found.
+                // It may be a URL for static resource.
                 return null;
-//                // No service endpoint so 404.
-//                ServletOps.errorNotFound();
             // Dataset URL - "exists" (even if no services) so 404 is wrong.
             ServletOps.errorBadRequest("No endpoint for request");
             return null; // Unreachable.

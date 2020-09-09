@@ -41,32 +41,34 @@ import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.*;
 
 public class AssemblerUtils
 {
-    // Wrappers for reading things form a file - assumes one of the thing per file. 
+    // Wrappers for reading things form a file - assumes one of the thing per file.
     public static PrefixMapping readPrefixMapping(String file)
     {
         PrefixMapping pm = (PrefixMapping)AssemblerUtils.build(file, JA.PrefixMapping) ;
         return pm ;
     }
-    
-    private static boolean initialized = false ; 
-    
-    static { JenaSystem.init() ; } 
-    
+
+    private static boolean initialized = false ;
+
+    static { JenaSystem.init() ; }
+
     static public void init()
     {
         if ( initialized )
             return ;
         initialized = true ;
-        registerDataset(tDataset,         new DatasetAssembler()) ;
-        registerDataset(tDatasetOne,      new DatasetOneAssembler()) ;
-        registerDataset(tDatasetZero,     new DatasetNullAssembler(tDatasetZero)) ;
-        registerDataset(tDatasetSink,     new DatasetNullAssembler(tDatasetSink)) ;
-        registerDataset(tMemoryDataset,   new InMemDatasetAssembler()) ;
-        registerDataset(tDatasetTxnMem,   new InMemDatasetAssembler()) ;
+        registerDataset(tDataset,         new DatasetAssembler());
+        registerDataset(tDatasetOne,      new DatasetOneAssembler());
+        registerDataset(tDatasetZero,     new DatasetNullAssembler(tDatasetZero));
+        registerDataset(tDatasetSink,     new DatasetNullAssembler(tDatasetSink));
+        registerDataset(tMemoryDataset,   new InMemDatasetAssembler());
+        registerDataset(tDatasetTxnMem,   new InMemDatasetAssembler());
+
+        registerModel(tViewGraph,          new ViewGraphAssembler());
     }
-    
+
     private static Model modelExtras = ModelFactory.createDefaultModel() ;
-    
+
     /** Register an assembler that creates a dataset */
     static public void registerDataset(Resource r, Assembler a) {
         register(ConstAssembler.general(), r, a, DatasetAssembler.getType()) ;
@@ -77,7 +79,7 @@ public class AssemblerUtils
         register(ConstAssembler.general(), r, a, JA.Model) ;
     }
 
-    /** Register an addition assembler */  
+    /** Register an additional assembler */
     static public void register(AssemblerGroup g, Resource r, Assembler a, Resource superType) {
         registerAssembler(g, r, a) ;
         if ( superType != null && ! superType.equals(r) ) {
@@ -86,8 +88,8 @@ public class AssemblerUtils
            modelExtras.add(r, RDFS.Init.subClassOf(), superType) ;
         }
     }
-    
-    /** register */ 
+
+    /** register */
     public static void registerAssembler(AssemblerGroup group, Resource r, Assembler a) {
         if ( group == null )
             group = ConstAssembler.general();
@@ -104,7 +106,7 @@ public class AssemblerUtils
         addRegistered(spec);
         return spec ;
     }
-    
+
     /** Add any extra information to the model.
      * Such information includes registration of datasets (e.g. TDB1, TDB2)
      * done by {@link #register} ({@link #registerDataset}, {@link #registerModel}.
@@ -116,36 +118,36 @@ public class AssemblerUtils
         model.add(modelExtras) ;
         return model ;
     }
-    
+
     public static Object build(String assemblerFile, String typeURI) {
         Resource type = ResourceFactory.createResource(typeURI) ;
-        return build(assemblerFile, type) ; 
+        return build(assemblerFile, type) ;
     }
-    
+
     public static Object build(String assemblerFile, Resource type) {
         if ( assemblerFile == null )
             throw new ARQException("No assembler file") ;
         Model spec = readAssemblerFile(assemblerFile) ;
-        
+
         Resource root = null ;
         try {
             root = GraphUtils.findRootByType(spec, type) ;
             if ( root == null )
                 throw new ARQException("No such type: <"+type+">");
-            
+
         } catch (TypeNotUniqueException ex)
         { throw new ARQException("Multiple types for: "+tDataset) ; }
         return Assembler.general.open(root) ;
     }
-    
-    /** Look for and build context declarations. 
+
+    /** Look for and build context declarations.
      * e.g.
      * <pre>
      * root ... ;
      *   ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000" ] ;
      *   ...
      * </pre>
-     * Short name forms of context parameters can be used.  
+     * Short name forms of context parameters can be used.
      * Setting as string "undef" will remove the context setting.
      * Returns null when there is no {@link JA#context} on the resource.
      */
@@ -157,20 +159,20 @@ public class AssemblerUtils
         mergeContext(r, context);
         return context;
     }
-        
+
     /** @deprecated Use {@link #mergeContext(Resource, Context)} */
     public static void setContext(Resource r, Context context) {
         mergeContext(r, context);
     }
-    
-    /** Look for and merge in context declarations. 
+
+    /** Look for and merge in context declarations.
      * e.g.
      * <pre>
      * root ... ;
      *   ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000" ] ;
      *   ...
      * </pre>
-     * Short name forms of context parameters can be used.  
+     * Short name forms of context parameters can be used.
      * Setting as string "undef" will remove the context setting.
      */
     public static void mergeContext(Resource r, Context context) {

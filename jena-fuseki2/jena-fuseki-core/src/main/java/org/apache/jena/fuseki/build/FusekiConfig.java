@@ -456,7 +456,7 @@ public class FusekiConfig {
         accEndpointOldStyle(endpoints1, Operation.GSP_R,    fusekiService,  pServiceReadGraphStoreEP);
         accEndpointOldStyle(endpoints1, Operation.GSP_RW,   fusekiService,  pServiceReadWriteGraphStoreEP);
 
-        // ---- Legacy for old style: a request wouls also try the dataset (i.e. no endpoint name).
+        // ---- Legacy for old style: a request would also try the dataset (i.e. no endpoint name).
         // If "sparql" then allow /dataset?query=
         // Instead, for old style declarations, add new endpoints to put on the dataset
         // Only complication is that authorization is the AND (all say "yes") of named service authorization.
@@ -479,7 +479,7 @@ public class FusekiConfig {
 
     /**
      *  Old style compatibility.
-     *  For each endpoint in "endpoints1", ensure there is a endpoint on the dataset 9endpoint name "") itself.
+     *  For each endpoint in "endpoints1", ensure there is an endpoint on the dataset (endpoint name "") itself.
      *  Combine the authentication as "AND" of named endpoints authentication.
      */
     private static Collection<Endpoint> oldStyleCompat(DataService dataService, Set<Endpoint> endpoints1) {
