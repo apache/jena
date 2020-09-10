@@ -84,6 +84,7 @@ public class TestSpecialGraphNames {
         Op op = op("(bgp (?s ?p ?o))", mode) ;
         List<Binding> results = exec(op) ;
         assertEquals(5, results.size()) ;
+        @SuppressWarnings("deprecation")
         Op op2 = Algebra.unionDefaultGraph(op) ;
         List<Binding> results2 = exec(op2) ;
         assertEquals(4, results2.size()) ;
