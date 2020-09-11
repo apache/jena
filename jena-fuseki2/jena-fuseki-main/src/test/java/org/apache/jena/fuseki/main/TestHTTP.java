@@ -181,7 +181,7 @@ public class TestHTTP {
     // Servlet - mounted at /ds/myServlet, but not a service that Fuseki dispatches.
     @Test public void plainServlet() {
         String x = HttpOp.execHttpGetString(URL+"/myServlet");
-        assertEquals(x, "SERVLET");
+        assertEquals("SERVLET",x);
     }
 
     // Files - a static file /ds/file.txt is visible.

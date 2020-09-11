@@ -430,6 +430,6 @@ public class HttpAction
 
     @Override
     public String toString() {
-        return request.getRequestURL().toString();
+        return request.getMethod()+" "+request.getRequestURL().toString();
     }
 }

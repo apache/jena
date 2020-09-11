@@ -31,6 +31,8 @@ import org.junit.runners.Suite.SuiteClasses;
   , TestFusekiCustomOperation.class
   , TestFusekiMainCmd.class
   , TestStdSetup.class
+  , TestConfigFile.class
+  , TestHTTP.class
   , TestFusekiShaclValidation.class
 })
 public class TS_FusekiMain {}

@@ -7,18 +7,20 @@ PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
 
-[] rdf:type fuseki:Server .
+[] rdf:type fuseki:Server ;
+   fuseki:services   ( <#service1> ) ;
+   fuseki:pingEP     true ;
+   fuseki:statsEP    true ;
+   fuseki:metricsEP  true ;
+.
 
 <#service1> rdf:type fuseki:Service ;
     fuseki:name         "ds" ;
-    fuseki:endpoint [ fuseki:operation fuseki:query;  fuseki:name "sparql"  ] ;
-    fuseki:endpoint [ fuseki:operation fuseki:query;  fuseki:name "query"   ] ;
-    fuseki:endpoint [ fuseki:operation fuseki:update; fuseki:name "update"  ] ;
-    fuseki:endpoint [ fuseki:operation fuseki:gsp_r;  fuseki:name "get"     ] ;
-    fuseki:endpoint [ fuseki:operation fuseki:gsp_rw; fuseki:name "data"    ] ;
-
-    ## No blocked on endpoint "".
+    fuseki:endpoint     [
+       fuseki:operation  fuseki:query;
+       fuseki:name       "" ;
+    ] ;
     fuseki:dataset      <#emptyDataset> ;
-    .
+.
 
 <#emptyDataset> rdf:type ja:RDFDataset .

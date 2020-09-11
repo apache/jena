@@ -164,7 +164,7 @@ public class TestEmbeddedFuseki {
         } finally { server.stop(); }
     }
 
-    @Test public void embedded_05() {
+    @Test public void embedded_no_stats() {
         DatasetGraph dsg = dataset();
         int port = WebLib.choosePort();
         FusekiServer server = FusekiServer.create()
@@ -173,13 +173,33 @@ public class TestEmbeddedFuseki {
             .build();
         server.start();
         try {
-            // No stats
-            String x = HttpOp.execHttpGetString("http://localhost:"+port+"/$/stats");
-            assertNull(x);
+            // No server services
+            String x1 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/ping");
+            assertNull(x1);
+
+            String x2 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/stats");
+            assertNull(x2);
+
+            String x3 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/metrics");
+            assertNull(x3);
         } finally { server.stop(); }
     }
 
-    @Test public void embedded_06() {
+    @Test public void embedded_ping() {
+        DatasetGraph dsg = dataset();
+        int port = WebLib.choosePort();
+        FusekiServer server = FusekiServer.create()
+            .port(port)
+            .add("/ds0", dsg)
+            .enablePing(true)
+            .build();
+        server.start();
+        String x = HttpOp.execHttpGetString("http://localhost:"+port+"/$/ping");
+        assertNotNull(x);
+        server.stop();
+    }
+
+    @Test public void embedded_stats() {
         DatasetGraph dsg = dataset();
         int port = WebLib.choosePort();
         FusekiServer server = FusekiServer.create()
@@ -193,16 +213,16 @@ public class TestEmbeddedFuseki {
         server.stop();
     }
 
-    @Test public void embedded_07() {
+    @Test public void embedded_metrics() {
         DatasetGraph dsg = dataset();
         int port = WebLib.choosePort();
         FusekiServer server = FusekiServer.create()
             .port(port)
             .add("/ds0", dsg)
-            .enablePing(true)
+            .enableMetrics(true)
             .build();
         server.start();
-        String x = HttpOp.execHttpGetString("http://localhost:"+port+"/$/ping");
+        String x = HttpOp.execHttpGetString("http://localhost:"+port+"/$/metrics");
         assertNotNull(x);
         server.stop();
     }

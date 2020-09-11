@@ -40,6 +40,7 @@ class ServerConfig {
     public boolean withCORS           = false;
     public boolean withPing           = false;
     public boolean withStats          = false;
+    public boolean withMetrics        = false;
 
     // This is set ...
     public DatasetGraph dsg           = null;

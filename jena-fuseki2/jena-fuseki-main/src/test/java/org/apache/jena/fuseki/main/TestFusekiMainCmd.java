@@ -82,4 +82,10 @@ public class TestFusekiMainCmd {
         assertNotNull(x);
         JSON.parse(x);
     }
+
+    @Test public void metrics_01() {
+        server("--mem", "--metrics", "/ds");
+        String x = HttpOp.execHttpGetString(serverURL+"/$/metrics");
+        assertNotNull(x);
+    }
 }
