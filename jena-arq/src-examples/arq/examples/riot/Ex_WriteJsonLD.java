@@ -200,7 +200,8 @@ public class Ex_WriteJsonLD
         DatasetGraph g = DatasetFactory.wrap(m).asDatasetGraph();
         JsonLDWriteContext ctx = new JsonLDWriteContext();
 
-        // The following should work, but unfortunately it doesn't (with JSONLD-java 0.8.3):
+        // The following should work for Uris returning JSON-LD,
+        // but unfortunately it doesn't for schema.org due to the following bug: https://github.com/jsonld-java/jsonld-java/issues/289:
         ctx.setJsonLDContext("\"http://schema.org/\"");
         System.out.println("\n--- Setting the context to a URI, WRONG WAY: it's slow, and the output is not JSON-LD. Sorry about that. ---");
         write(g, RDFFormat.JSONLD_COMPACT_PRETTY, ctx);
@@ -214,7 +215,6 @@ public class Ex_WriteJsonLD
         // the output process must download the vocab before anything.
         // (that's why the previous attempt was slow)
         // -> that would not be an very efficient way to output your data.
-        // -> it doesn't work, (with JSONLD-java 0.8.3), but no regret.
 
         // To achieve the expected result,
         // you have to do 2 things:

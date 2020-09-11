@@ -26,6 +26,7 @@ import java.util.Map ;
 import java.util.Map.Entry;
 import java.util.Objects;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.web.ContentType ;
@@ -47,14 +48,42 @@ import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.core.JsonLdTripleCallback;
 import com.github.jsonldjava.core.RDFDataset;
 import com.github.jsonldjava.utils.JsonUtils ;
+import org.apache.jena.sparql.util.Symbol;
 
 /**
+ * One can pass a jsonld context using the (jena) Context mechanism, defining a (jena) Context
+ * (sorry for this clash of "contexts"), (cf. last argument in
+ * {@link ReaderRIOT#read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context)})
+ * with:
+ * <pre>
+ * Context jenaContext = new Context()
+ * jenaCtx.set(JsonLdReader.JSONLD_CONTEXT, contextAsJsonString);
+ * </pre>
+ * where contextAsJsonString is a JSON string containing the value of the "@context".
+ *
+ * It is also possible to define the different options supported
+ * by JSONLD-java using the {@link #JSONLD_OPTIONS} Symbol
+ *
+ * The {@link JsonLDReadContext} is a convenience class that extends Context and
+ * provides methods to set the values of these different Symbols that are used in controlling the writing of JSON-LD.
  * Note: it is possible to override jsonld's "@context" value by providing one,
- * using a {@link org.apache.jena.sparql.util.Context}, and setting the {@link RIOT#JSONLD_CONTEXT} Symbol's value
+ * using a {@link org.apache.jena.sparql.util.Context}, and setting the {@link JsonLDReader#JSONLD_CONTEXT} Symbol's value
  * to the data expected by JSON-LD java API (a {@link Map}).
  */
 public class JsonLDReader implements ReaderRIOT
 {
+    private static final String SYMBOLS_NS = "http://jena.apache.org/riot/jsonld#" ;
+    private static Symbol createSymbol(String localName) {
+        return Symbol.create(SYMBOLS_NS + localName);
+    }
+    /**
+     * Symbol to use to pass (in a Context object) the "@context" to be used when reading jsonld
+     * (overriding the actual @context in the jsonld)
+     * Expected value: the value of the "@context",
+     * as expected by the JSONLD-java API (a Map) */
+    public static final Symbol JSONLD_CONTEXT = createSymbol("JSONLD_CONTEXT");
+    /** value: the option object expected by JsonLdProcessor (instance of JsonLdOptions) */
+    public static final Symbol JSONLD_OPTIONS = createSymbol("JSONLD_OPTIONS");
     private /*final*/ ErrorHandler errorHandler = ErrorHandlerFactory.getDefaultErrorHandler() ;
     private /*final*/ ParserProfile profile;
     
@@ -67,7 +96,26 @@ public class JsonLDReader implements ReaderRIOT
     public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
         try {
             Object jsonObject = JsonUtils.fromReader(reader) ;
-            read$(jsonObject, baseURI, ct, output, context) ;
+            readWithJsonLDCtxOptions(jsonObject, baseURI, output, context) ;
+        }
+        catch (JsonProcessingException ex) {    
+            // includes JsonParseException
+            // The Jackson JSON parser, or addition JSON-level check, throws up something.
+            JsonLocation loc = ex.getLocation() ;
+            errorHandler.error(ex.getOriginalMessage(), loc.getLineNr(), loc.getColumnNr()); 
+            throw new RiotException(ex.getOriginalMessage()) ;
+        }
+        catch (IOException e) {
+            errorHandler.error(e.getMessage(), -1, -1); 
+            IO.exception(e) ;
+        }
+    }
+
+    @Override
+    public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
+        try {
+            Object jsonObject = JsonUtils.fromInputStream(in) ;
+            readWithJsonLDCtxOptions(jsonObject, baseURI, output, context) ;
         }
         catch (JsonProcessingException ex) {    
             // includes JsonParseException
@@ -83,37 +131,20 @@ public class JsonLDReader implements ReaderRIOT
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    @Override
-    public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-        try {
-            Object jsonObject = JsonUtils.fromInputStream(in) ;
-            
-            if (context != null) {
-                Object jsonldCtx = context.get(RIOT.JSONLD_CONTEXT);
-                if (jsonldCtx != null) {
-                    if (jsonObject instanceof Map) {
-                        ((Map) jsonObject).put("@context", jsonldCtx);
-                    } else {
-                        errorHandler.warning("Unexpected: not a Map; unable to set JsonLD's @context",-1,-1);
-                    }
-                }
+    private void readWithJsonLDCtxOptions(Object jsonObject, String baseURI, final StreamRDF output, Context context)  throws JsonParseException, IOException {
+        JsonLdOptions options = getJsonLdOptions(baseURI, context) ;
+        Object jsonldCtx = getJsonLdContext(context);
+        if (jsonldCtx != null) {
+            if (jsonObject instanceof Map) {
+                ((Map) jsonObject).put("@context", jsonldCtx);
+            } else {
+                errorHandler.warning("Unexpected: not a Map; unable to set JsonLD's @context",-1,-1);
             }
-            read$(jsonObject, baseURI, ct, output, context) ;
         }
-        catch (JsonProcessingException ex) {    
-            // includes JsonParseException
-            // The Jackson JSON parser, or addition JSON-level check, throws up something.
-            JsonLocation loc = ex.getLocation() ;
-            errorHandler.error(ex.getOriginalMessage(), loc.getLineNr(), loc.getColumnNr()); 
-            throw new RiotException(ex.getOriginalMessage()) ;
-        }
-        catch (IOException e) {
-            errorHandler.error(e.getMessage(), -1, -1); 
-            IO.exception(e) ;
-        }
+        read$(jsonObject, options, output);
     }
-    
-    private void read$(Object jsonObject, String baseURI, ContentType ct, final StreamRDF output, Context context) {
+
+    private void read$(Object jsonObject, JsonLdOptions options, final StreamRDF output) {
         output.start() ;
         try {       	
             JsonLdTripleCallback callback = new JsonLdTripleCallback() {
@@ -154,8 +185,6 @@ public class JsonLDReader implements ReaderRIOT
                     return null ;
                 }
             } ;
-            JsonLdOptions options = new JsonLdOptions(baseURI);
-            options.useNamespaces = true;
             JsonLdProcessor.toRDF(jsonObject, callback, options) ;
         }
         catch (JsonLdError e) {
@@ -163,6 +192,44 @@ public class JsonLDReader implements ReaderRIOT
             throw new RiotException(e) ;
         }
         output.finish() ;
+    }
+
+    /** Get the (jsonld) options from the jena context if exists or create default */
+    static private JsonLdOptions getJsonLdOptions(String baseURI, Context jenaContext) {
+        JsonLdOptions opts = null;
+        if (jenaContext != null) {
+            opts = (JsonLdOptions) jenaContext.get(JSONLD_OPTIONS);
+        }
+        if (opts == null) {
+            opts = defaultJsonLdOptions(baseURI);
+        }
+        return opts;
+    }
+
+    static private JsonLdOptions defaultJsonLdOptions(String baseURI) {
+        JsonLdOptions opts = new JsonLdOptions(baseURI);
+        opts.useNamespaces = true ; // this is NOT jsonld-java's default
+        return opts;
+    }
+
+    /** Get the (jsonld) context from the jena context if exists */
+    static private Object getJsonLdContext(Context jenaContext) throws JsonParseException, IOException {
+        Object ctx = null;
+        boolean isCtxDefined = false; // to allow jenaContext to set ctx to null. Useful?
+
+        if (jenaContext != null) {
+            if (jenaContext.isDefined(JSONLD_CONTEXT)) {
+                Object o = jenaContext.get(JSONLD_CONTEXT);
+                if (o != null) {
+                    if (o instanceof String) { // supposed to be a json string
+                        String jsonString = (String) o;
+                        o = JsonUtils.fromString(jsonString);
+                    }
+                    ctx = o;
+                }
+            }
+        }
+        return ctx;
     }
 
     public static String LITERAL    = "literal" ;

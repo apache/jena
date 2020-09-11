@@ -19,6 +19,7 @@
 package org.apache.jena.riot ;
 
 import org.apache.jena.query.ARQ ;
+import org.apache.jena.riot.lang.JsonLDReader;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
@@ -109,12 +110,9 @@ public class RIOT {
 
     // ---- Symbols
 
-    /**
-     * Symbol to use to pass (in a Context object) the "@context" to be used when reading jsonld
-     * (overriding the actual @context in the jsonld)
-     * Expected value: the value of the "@context",
-     * as expected by the JSONLD-java API (a Map) */
-    public static final Symbol JSONLD_CONTEXT = Symbol.create("http://jena.apache.org/riot/jsonld#JSONLD_CONTEXT");
+    /** @deprecated Use {@link JsonLDReader#JSONLD_CONTEXT} */
+    @Deprecated
+    public static final Symbol JSONLD_CONTEXT = JsonLDReader.JSONLD_CONTEXT;
 
     private static String TURTLE_SYMBOL_BASE = "http://jena.apache.org/riot/turtle#";
 
