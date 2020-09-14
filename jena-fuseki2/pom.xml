@@ -65,6 +65,8 @@
     <module>jena-fuseki-war</module>
     <module>jena-fuseki-fulljar</module>
 
+    <module>jena-fuseki-docker</module>
+
     <module>apache-jena-fuseki</module>
   </modules>
   
