@@ -5,12 +5,17 @@ PREFIX fuseki:  <http://jena.apache.org/fuseki#>
 PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+
 PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
+PREFIX text:    <http://jena.apache.org/text#>
 
 [] rdf:type fuseki:Server ;
    fuseki:services (
      :service
    ) .
+
+## Service description for "/dataset"
+## with a TDB2 dataset and a text index.
 
 :service rdf:type fuseki:Service ;
     fuseki:name "dataset" ;
@@ -38,42 +43,38 @@ PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
         fuseki:operation fuseki:upload ;
         fuseki:name "upload"
     ] ; 
-    fuseki:dataset :dataset ;
+    fuseki:dataset :text_dataset ;
     .
 
-## Datasets with some graphs from a TDB2 dataset.
-## Note: Prefer using "GRAPH" in a SPARQL query where possible.
+## ---------------------------------------------------------------
+## Confiure a dataset with a text index.
+## See
+##   https://jena.apache.org/documentation/query/text-query.html
+## for details
 
-:dataset rdf:type      ja:RDFDataset ;
-    ja:defaultGraph :graph ;
-    ja:namedGraph [
-          ja:graphName <https://example/ng1> ;
-          ja:graph :graph2
-      ];
-    ja:namedGraph [
-          ja:graphName <https://example/ng2> ;
-          ja:graph :graph3
-      ];
-    . 
-
-## Graphs out of DB2.
-
-:graph rdf:type tdb2:GraphTDB2 ;
-    tdb2:graphName "urn:x-arq:UnionGraph" ;
-    tdb2:dataset :dataset_tdb2 ;
+:text_dataset rdf:type     text:TextDataset ;
+    text:dataset   :base_dataset ;
+    text:index     :indexLucene ;
     .
 
-:graph2  rdf:type tdb2:GraphTDB2 ;
-    tdb2:graphName "https://example/ng1" ;
-    tdb2:dataset :dataset_tdb2 ;
-    .
-:graph3  rdf:type tdb2:GraphTDB2 ;
-    tdb2:graphName "https://example/ng" ;
-    tdb2:dataset :dataset_tdb2 ;
+:base_dataset rdf:type      tdb2:DatasetTDB2 ;
+    tdb2:location "DB2"
     .
 
-## The database
+:indexLucene a text:TextIndexLucene ;
+    # File location of index
+    text:directory <file:Lucene> ;
+    text:entityMap :entMap ;
+    .
 
-:dataset_tdb2  rdf:type tdb2:DatasetTDB2 ;
-    tdb2:location "DB2" ;
+<#entMap> a text:EntityMap ;
+    text:entityField      "uri" ;
+    ## Must be defined in the text:map
+    text:defaultField     "text" ;
+    ## Enable deleting of text index entries.
+    text:uidField         "uid" ;
+    text:map (
+         # rdfs:label            
+         [ text:field "text" ; text:predicate rdfs:label ]
+         )
     .
