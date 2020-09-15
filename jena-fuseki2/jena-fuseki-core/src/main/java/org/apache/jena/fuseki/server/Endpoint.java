@@ -114,6 +114,12 @@ public class Endpoint implements Counters {
         return counters.value(CounterName.RequestsBad);
     }
 
+    public static boolean sameNameAndOperation(Endpoint ep1, Endpoint ep2) {
+        return 
+            Objects.equals(ep1.getName(), ep2.getName()) && 
+            Objects.equals(ep1.getOperation(), ep2.getOperation()) ;
+    }
+    
     @Override
     public String toString() {
         return getName()+"["+operation+"]";

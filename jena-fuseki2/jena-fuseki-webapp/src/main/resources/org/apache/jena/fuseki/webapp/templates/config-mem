@@ -22,8 +22,6 @@
     fuseki:serviceUpload               "upload" ;
     fuseki:serviceReadWriteGraphStore  "data" ;     
     fuseki:serviceReadGraphStore       "get" ;
-    fuseki:serviceReadQuads            "" ;
-    fuseki:serviceReadWriteQuads       "" ;
     fuseki:dataset                     <#dataset> ;
     .
 

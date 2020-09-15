@@ -464,6 +464,8 @@ public class FusekiConfig {
             Collection<Endpoint> endpointsCompat = oldStyleCompat(dataService, endpoints1);
             endpointsCompat.forEach(dataService::addEndpoint);
         }
+        // Explicit definition overrides implied by legacy compatibility.
+        // Should not happen.
         endpoints1.forEach(dataService::addEndpoint);
 
         // New (2019) style
@@ -501,6 +503,12 @@ public class FusekiConfig {
                }
            }
         });
+        // Now, after making all legacy endpoints, remove any that are explicit defined in endpoints1.
+        // Given the small numbers involved, it is easier to do it this way than
+        // additional logic in the first pass over endpoints1.
+        endpoints1.stream()
+            .filter(ep->StringUtils.isEmpty(ep.getName()))
+            .forEach(ep->endpoints3.remove(ep.getOperation()));
         return endpoints3.values();
     }
 

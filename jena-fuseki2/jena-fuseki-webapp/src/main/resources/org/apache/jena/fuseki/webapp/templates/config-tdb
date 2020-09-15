@@ -22,8 +22,6 @@
     fuseki:serviceReadWriteGraphStore  "data" ;
     # A separate read-only graph store endpoint:
     fuseki:serviceReadGraphStore       "get" ;
-    fuseki:serviceReadQuads            "";
-    fuseki:serviceReadWriteQuads       "";
     fuseki:dataset                     <#tdb_dataset_readwrite> ;
     .
 

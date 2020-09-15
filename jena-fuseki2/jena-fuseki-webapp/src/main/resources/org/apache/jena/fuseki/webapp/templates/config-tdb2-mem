@@ -21,8 +21,6 @@ PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
     fuseki:serviceUpload               "upload" ;
     fuseki:serviceReadWriteGraphStore  "data" ;     
     fuseki:serviceReadGraphStore       "get" ;
-    fuseki:serviceReadQuads            "" ;
-    fuseki:serviceReadWriteQuads       "" ;
     fuseki:dataset                     <#tdb_dataset_readwrite> ;
     .
 
