@@ -114,11 +114,13 @@
     <dependency>
       <groupId>org.graalvm.js</groupId>
       <artifactId>js</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.graalvm.js</groupId>
       <artifactId>js-scriptengine</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
