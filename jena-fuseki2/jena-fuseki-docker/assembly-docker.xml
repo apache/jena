@@ -61,7 +61,7 @@
       <outputDirectory></outputDirectory>
       <includes>
         <include>Dockerfile*</include>
-        <include>docker-compose.yml</include>
+        <include>docker-compose.yaml</include>
         <include>README*</include>
         <include>log4j2.properties</include>
         <include>entrypoint.sh</include>

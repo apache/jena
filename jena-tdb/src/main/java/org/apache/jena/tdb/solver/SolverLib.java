@@ -256,7 +256,7 @@ public class SolverLib
                 // Can occur with BindingProject
                 continue ;
 
-            // Rely on the node table cache for efficency - we will likely be
+            // Rely on the node table cache for efficiency - we will likely be
             // repeatedly looking up the same node in different bindings.
             NodeId id = nodeTable.getNodeIdForNode(n) ;
             // Optional: whether to put in "known missing"
@@ -312,7 +312,6 @@ public class SolverLib
 
         final Var var = Var.alloc(graphNode) ;
         Iterator<Binding> iterBinding = Iter.map(iter4, node -> BindingFactory.binding(var, node)) ;
-        // Not abortable.
         return new QueryIterTDB(iterBinding, killList, input, execCxt) ;
     }
     

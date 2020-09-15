@@ -7,10 +7,17 @@ PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
 PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
 
+## Server-wide timeout (all datasets).
+
 [] rdf:type fuseki:Server ;
-   fuseki:services (
-     :service
-   ) .
+    # Format 1: "10000" -- 10 second timeout
+    # Format 2: "10000,60000" -- 10s timeout to first result,
+    #   then 60s timeout to for rest of query.
+    # See javadoc for ARQ.queryTimeout
+    ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000" ] ;
+    fuseki:services (
+       :service
+    ) .
 
 :service rdf:type fuseki:Service ;
     fuseki:name "dataset" ;
@@ -38,42 +45,9 @@ PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
         fuseki:operation fuseki:upload ;
         fuseki:name "upload"
     ] ; 
-    fuseki:dataset :dataset ;
+    fuseki:dataset :dataset_tdb2 ;
     .
 
-## Datasets with some graphs from a TDB2 dataset.
-## Note: Prefer using "GRAPH" in a SPARQL query where possible.
-
-:dataset rdf:type      ja:RDFDataset ;
-    ja:defaultGraph :graph ;
-    ja:namedGraph [
-          ja:graphName <https://example/ng1> ;
-          ja:graph :graph2
-      ];
-    ja:namedGraph [
-          ja:graphName <https://example/ng2> ;
-          ja:graph :graph3
-      ];
-    . 
-
-## Graphs out of DB2.
-
-:graph rdf:type tdb2:GraphTDB2 ;
-    tdb2:graphName "urn:x-arq:UnionGraph" ;
-    tdb2:dataset :dataset_tdb2 ;
-    .
-
-:graph2  rdf:type tdb2:GraphTDB2 ;
-    tdb2:graphName "https://example/ng1" ;
-    tdb2:dataset :dataset_tdb2 ;
-    .
-:graph3  rdf:type tdb2:GraphTDB2 ;
-    tdb2:graphName "https://example/ng" ;
-    tdb2:dataset :dataset_tdb2 ;
-    .
-
-## The database
-
-:dataset_tdb2  rdf:type tdb2:DatasetTDB2 ;
-    tdb2:location "DB2" ;
+:dataset_tdb2 rdf:type  tdb2:DatasetTDB2 ;
+    tdb2:location "DB2"
     .
