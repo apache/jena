@@ -29,7 +29,6 @@ import java.nio.file.Paths;
 import javax.script.*;
 
 import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.riot.RiotNotFoundException;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.ARQException;
@@ -67,8 +66,6 @@ public class JSEngine {
 
         if (scriptEngine.getFactory().getEngineName().equals("Graal.js")) {
             scriptEngine.getContext().setAttribute("polyglot.js.nashorn-compat", true, ScriptContext.ENGINE_SCOPE);
-        } else if (scriptEngine.getFactory().getNames().contains("Nashorn")) {
-            Log.warn(JSEngine.class, "Nashorn will be permanently removed in JDK 15. Consider switching to Graal VM.");
         }
 
         Invocable invoc = (Invocable)scriptEngine;
