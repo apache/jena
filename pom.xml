@@ -70,7 +70,7 @@
          POM for the correct dependency versions
          and use that or later.
     -->
-    <ver.jsonldjava>0.13.0</ver.jsonldjava>
+    <ver.jsonldjava>0.13.1</ver.jsonldjava>
     <ver.jackson>2.10.1</ver.jackson>
     <ver.jackson-databind>${ver.jackson}</ver.jackson-databind>
 
