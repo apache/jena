@@ -65,8 +65,9 @@ public class FusekiVocab
     public static final Property pServiceShaclEP                = property("serviceShacl");
     public static final Property pServiceReadWriteGraphStoreEP  = property("serviceReadWriteGraphStore");
     public static final Property pServiceReadGraphStoreEP       = property("serviceReadGraphStore");
-    public static final Property pServiceReadWriteQuadsEP       = property("serviceReadWriteQuads");
-    public static final Property pServiceReadQuadsEP            = property("serviceReadQuads");
+    // No longer used.
+//    public static final Property pServiceReadWriteQuadsEP       = property("serviceReadWriteQuads");
+//    public static final Property pServiceReadQuadsEP            = property("serviceReadQuads");
 
     // Operation names : the standard operations.
     // "alt" names are the same but using "_" not "_".
