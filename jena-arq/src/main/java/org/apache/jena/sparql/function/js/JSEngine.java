@@ -34,7 +34,11 @@ import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.ARQException;
 import org.apache.jena.sparql.sse.builders.ExprBuildException;
 
-/** Abstraction of a <em>per-thread</em> JavaScript execution system */  
+/**
+ * Abstraction of a <em>per-thread</em> JavaScript execution system *
+ * @deprecated Use {@link org.apache.jena.sparql.function.scripting.ScriptFunction}
+*/
+@Deprecated
 public class JSEngine {
     private final Invocable invoc;
 

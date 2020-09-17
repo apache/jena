@@ -36,6 +36,7 @@ import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.TS_Expr ;
 import org.apache.jena.sparql.function.js.TS_FunctionJS;
 import org.apache.jena.sparql.function.library.TS_LibraryFunctions ;
+import org.apache.jena.sparql.function.scripting.TS_FunctionScripting;
 import org.apache.jena.sparql.function.user.TS_UserFunctions ;
 import org.apache.jena.sparql.graph.TS_Graph ;
 import org.apache.jena.sparql.lang.TS_Lang ;
@@ -71,6 +72,7 @@ import org.junit.runners.Suite ;
     , TS_LibraryFunctions.class
     , TS_UserFunctions.class
     , TS_FunctionJS.class
+    , TS_FunctionScripting.class
     , TS_PFunction.class
     
     , TS_ResultSet.class

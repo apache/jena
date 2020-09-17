@@ -49,7 +49,9 @@ import org.apache.jena.sparql.function.FunctionBase;
  *
  * @see EnvJavaScript
  * @see NV
+ * @deprecated Use {@link org.apache.jena.sparql.function.scripting.ScriptFunction}
  */
+@Deprecated
 public class FunctionJavaScript extends FunctionBase {
 
     private final EnvJavaScript envJS;

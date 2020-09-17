@@ -24,7 +24,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.sparql.expr.NodeValue;
-import org.apache.jena.sparql.function.js.NV;
+import org.apache.jena.sparql.function.scripting.NV;
 
 /**
  * General converting of {@link Node}s to JSON.
