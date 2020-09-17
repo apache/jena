@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.function.js;
+package org.apache.jena.sparql.function.scripting;
 
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.sse.SSE;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-@Deprecated
+import static org.junit.Assert.assertEquals;
+
 public class TestNV {
 
     @Test public void nv_1() { test("'abc'"); }

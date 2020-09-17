@@ -16,17 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.function.js;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.URI;
+package org.apache.jena.sparql.function.scripting;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.lib.RDFTerm2Json;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.net.URI;
 
 /**
  * General representation of an {@link NodeValue} for JavaScript. Conversion is to native
@@ -36,10 +36,9 @@ import org.apache.jena.sparql.lib.RDFTerm2Json;
  * @see #fromNodeValue
  * @see #toNodeValue
  * @see RDFTerm2Json RDFTerm2Json, for one way conversion JSON.
- * @deprecated Use {@link org.apache.jena.sparql.function.scripting.NV}
  */
-@Deprecated
-public class NV implements RDFJS {
+
+public class NV {
     //  Six data types that are primitives in JavaScript:
     //           Boolean
     //           Null
@@ -84,7 +83,7 @@ public class NV implements RDFJS {
     public static NodeValue toNodeValue(Object r) {
         if ( r == null )
             return null;
-        if ( r instanceof NV )
+        if ( r instanceof NV)
             return ((NV)r).nv();
         if ( r instanceof NodeValue )
             return (NodeValue)r;
@@ -152,8 +151,6 @@ public class NV implements RDFJS {
     public boolean isNumber() { return nv.isNumber(); }
     public boolean isLiteral() { return nv.isLiteral(); }
 
-    // -- rdfjs
-    @Override
     public String getTermType() {
         if ( isURI() )
             return "NamedNode";
@@ -164,7 +161,6 @@ public class NV implements RDFJS {
         return null;
     }
 
-    @Override
     public String getValue() {
         if ( isURI() )
             return getUri();

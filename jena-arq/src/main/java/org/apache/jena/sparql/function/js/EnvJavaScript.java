@@ -38,7 +38,10 @@ import org.apache.jena.sparql.util.Symbol;
  * <p>
  * If both are present, the file named by {@code EnvJavaScript.symJavaScriptLibFile} is loaded
  * then the string from {@code EnvJavaScript.symJavaScriptLib}.
+ *
+ * @deprecated Use {@link org.apache.jena.sparql.function.scripting.ScriptFunction}
  */
+@Deprecated
 public class EnvJavaScript {
     /** JavaScript functions as a string value which is evaluated. */ 
     public static Symbol symJavaScriptFunctions = ARQ.symJavaScriptFunctions;
