@@ -102,6 +102,8 @@
     <ver.awaitility>3.1.0</ver.awaitility>
     <ver.micrometer>1.2.1</ver.micrometer>
 
+    <ver.graalvm>20.2.0</ver.graalvm>
+
     <jdk.version>1.8</jdk.version>
     <targetJdk>${jdk.version}</targetJdk>
 
@@ -559,6 +561,18 @@
       </dependency>
 
       <dependency>
+        <groupId>org.graalvm.js</groupId>
+        <artifactId>js</artifactId>
+        <version>${ver.graalvm}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.graalvm.js</groupId>
+        <artifactId>js-scriptengine</artifactId>
+        <version>${ver.graalvm}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.xenei</groupId>
         <artifactId>junit-contracts</artifactId>
         <version>${ver.contract.tests}</version>
@@ -602,6 +616,7 @@
         <artifactId>micrometer-registry-prometheus</artifactId>
           <version>${ver.micrometer}</version>
       </dependency>
+
     </dependencies>
 
   </dependencyManagement>

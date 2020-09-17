@@ -36,13 +36,7 @@ import org.apache.jena.sparql.sse.builders.ExprBuildException;
 
 /** Abstraction of a <em>per-thread</em> JavaScript execution system */  
 public class JSEngine {
-    private ScriptEngine scriptEngine;
-    private CompiledScript compiledScript;
-    
     private final Invocable invoc;
-    private String functions;
-
-    private String functionLibFile;
 
 
     /** Create a {@code JSEngine} from a string. */ 
@@ -55,24 +49,29 @@ public class JSEngine {
         return new JSEngine(null, functionLibFile);
     }
     
-    /*package*/ JSEngine(String functions, String functionLibFile) { 
-        this.functions = functions;
-        this.functionLibFile = functionLibFile;
+    /*package*/ JSEngine(String functions, String functionLibFile) {
         invoc = build(functions, functionLibFile);
     }
 
     private static Invocable build(String functions, String functionLibFile) {
         if ( functions == null && functionLibFile == null )
-            throw new ARQException("Both script string and script filename are null"); 
+            throw new ARQException("Both script string and script filename are null");
 
         ScriptEngineManager manager = new ScriptEngineManager();
-        ScriptEngine scriptEngine = manager.getEngineByName("nashorn");
-        
+        ScriptEngine scriptEngine = manager.getEngineByName("javascript");
+        if (scriptEngine == null) {
+            throw new ARQException("Could not load JavaScript script engine. " +
+                    "Make sure that org.graalvm.js:js and org.graalvm.js:js-scriptengine are added to the class path");
+        }
+
+        if (scriptEngine.getFactory().getEngineName().equals("Graal.js")) {
+            scriptEngine.getContext().setAttribute("polyglot.js.nashorn-compat", true, ScriptContext.ENGINE_SCOPE);
+        }
+
         Invocable invoc = (Invocable)scriptEngine;
         if ( functionLibFile != null ) {
-            try {
-                Reader reader = Files.newBufferedReader(Paths.get(functionLibFile), StandardCharsets.UTF_8);
-                Object x = scriptEngine.eval(reader);
+            try (Reader reader = Files.newBufferedReader(Paths.get(functionLibFile), StandardCharsets.UTF_8)) {
+                scriptEngine.eval(reader);
             }
             catch (NoSuchFileException | FileNotFoundException ex) {
                 throw new RiotNotFoundException("File: "+functionLibFile);
@@ -84,7 +83,7 @@ public class JSEngine {
         }
         if ( functions != null ) {
             try {
-                Object x = scriptEngine.eval(functions);
+                scriptEngine.eval(functions);
             }
             catch (ScriptException e) {
                 throw new ExprBuildException("Failed to load Javascript", e);
@@ -94,7 +93,7 @@ public class JSEngine {
         // Try to call the init function - ignore NoSuchMethodException 
         try {
             invoc.invokeFunction(ARQConstants.JavaScriptInitFunction);
-        } catch (NoSuchMethodException ex) {}
+        } catch (NoSuchMethodException ignore) {}
         catch (ScriptException ex) {
             throw new ARQException("Failed to call JavaScript initialization function", ex);
         }
@@ -104,6 +103,4 @@ public class JSEngine {
     public Object call(String functionName, Object[] args) throws NoSuchMethodException, ScriptException {
         return invoc.invokeFunction(functionName, args);
     }
-
-    
 }

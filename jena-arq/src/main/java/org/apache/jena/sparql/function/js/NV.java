@@ -31,7 +31,7 @@ import org.apache.jena.sparql.lib.RDFTerm2Json;
 /**
  * General representation of an {@link NodeValue} for JavaScript. Conversion is to native
  * types where possible, otherwise {@code NV}. {@code NV.toString} of a URI returns the
- * uri as a string so {@code NV} works naturally in Java/Nashorn.
+ * uri as a string so {@code NV} works naturally in Java/JavaScript.
  *
  * @see #fromNodeValue
  * @see #toNodeValue
@@ -54,7 +54,7 @@ public class NV implements RDFJS {
      */
     private final static boolean narrowDoubles = true;
     /**
-     * Map an ARQ {@link NodeValue} to java/Nashorn representation of a JavaScript object.
+     * Map an ARQ {@link NodeValue} to java/Nashorn/GraalVM representation of a JavaScript object.
      * Native JavaScript types supported are null, string, number and boolean.
      * Otherwise a {@link NV} is returned.
      */
@@ -76,7 +76,7 @@ public class NV implements RDFJS {
         return new NV(nv);
     }
     /**
-     * Map a java/Nashorn representation of a JavaScript object to an ARQ
+     * Map a java/Nashorn/GraalVM representation of a JavaScript object to an ARQ
      * {@link NodeValue}. Identified types are null, string, number and boolean and also
      * {@code NV} returned by the JavaScript code.
      */
@@ -103,7 +103,7 @@ public class NV implements RDFJS {
         throw new ExprEvalException("Can't convert '"+r+"' to a NodeValue.  r is of class "+r.getClass().getName());
     }
 
-    // Convert the numeric values that Nashorn can return.
+    // Convert the numeric values that JavaScript can return.
     static NodeValue number2value(Number r) {
         if ( r instanceof Integer )
             return NodeValue.makeInteger((Integer)r);
