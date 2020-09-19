@@ -32,7 +32,7 @@ import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.SysRIOT;
 import org.apache.jena.sparql.util.Context;
 
-/** Set proeprties of the RDF/XML parser (ARP) */
+/** Set properties of the RDF/XML parser (ARP) */
 public class ExRIOT_RDFXML_ReaderProperties {
     static { LogCtl.setLogging(); }
     
@@ -42,7 +42,7 @@ public class ExRIOT_RDFXML_ReaderProperties {
             ("<?xml version=\"1.0\" encoding=\"utf-8\"?>"
             ,"<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\""
             ,"         xmlns:ex=\"http://examples.org/\">"
-            // This rdf:ID startswith a digit which normal causes a warning.
+            // This rdf:ID starts with a digit which normal causes a warning.
             ,"  <ex:Type rdf:ID='012345'></ex:Type>"
             ,"</rdf:RDF>"
             );

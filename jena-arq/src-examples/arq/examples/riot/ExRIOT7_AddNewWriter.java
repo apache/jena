@@ -34,11 +34,11 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.Context ;
 
 /** Example of registering a new writer with RIOT */
-public class ExRIOTw3_AddNewWriter
+public class ExRIOT7_AddNewWriter
 {
     static { LogCtl.setLogging(); }
     
-    // See also ExRIOT6_AddNewLang
+    // See also ExRIOT6_AddReader
     public static void main(String[] args)
     {
         System.out.println("## Example of a registering a new language with RIOT for writing") ; 

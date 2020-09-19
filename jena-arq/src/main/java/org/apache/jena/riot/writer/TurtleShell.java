@@ -83,7 +83,8 @@ public abstract class TurtleShell {
     }
 
     protected void writeBase(String base) {
-        RiotLib.writeBase(out, base, prefixStyle==DirectiveStyle.SPARQL) ;
+        if ( context == null || ! context.isTrue(RIOT.symTurtleOmitBase) )
+            RiotLib.writeBase(out, base, prefixStyle==DirectiveStyle.SPARQL) ;
     }
 
     protected void writePrefixes(PrefixMap prefixMap) {

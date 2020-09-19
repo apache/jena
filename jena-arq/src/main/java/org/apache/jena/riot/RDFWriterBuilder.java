@@ -90,8 +90,7 @@ public class RDFWriterBuilder {
     public RDFWriterBuilder source(Dataset dataset) {
         return source(dataset.asDatasetGraph());
     }
-
-
+    
 //    // Not implemented
 //    public RDFWriterBuilder labels(NodeToLabel nodeToLabel) { return this; }
 //    

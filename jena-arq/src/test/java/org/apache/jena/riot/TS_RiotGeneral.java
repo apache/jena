@@ -37,6 +37,9 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestRDFWriter.class
     , TestParseURISchemeBases.class
     
+    , TestTurtleWriter.class
+    , TestTurtleWriterPretty.class
+    
     , TestJsonLDReader.class
     , TestJsonLDWriter.class
 })

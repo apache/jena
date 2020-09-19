@@ -50,7 +50,7 @@ public abstract class TurtleWriterBase extends WriterGraphRIOTBase
 
     private void output$(IndentedWriter iOut, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
         if ( baseURI != null )
-            baseURI = IRIResolver.resolveString(baseURI) ;
+            baseURI = IRIResolver.resolveStringSilent(baseURI);
         output(iOut, graph, prefixMap, baseURI, context) ;
         iOut.flush() ;
     }

@@ -34,7 +34,6 @@ import jena.cmd.CmdException;
 import jena.cmd.CmdGeneral ;
 import org.apache.jena.Jena ;
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LabelToNode ;
@@ -84,8 +83,10 @@ public abstract class CmdLangParse extends CmdGeneral
 
     protected List<ParseRecord> outcomes = new ArrayList<>();
 
-    OutputStream outputWrite = System.out ;
-    StreamRDF outputStream = null ;
+    protected OutputStream outputWrite = System.out ;
+    protected StreamRDF outputStream   = null ;
+    protected String parserBaseIRI     = null;
+    protected String writerBaseIRI     = null;
 
     @Override
     protected void processModulesAndArgs() {
@@ -122,6 +123,10 @@ public abstract class CmdLangParse extends CmdGeneral
         boolean oldStrictValue = SysRIOT.isStrictMode() ;
         if ( modLangParse.strictMode() )
             SysRIOT.setStrictMode(true) ;
+        
+        parserBaseIRI = modLangParse.getBaseIRI();
+        writerBaseIRI = parserBaseIRI;
+        
         try { exec$() ; }
         finally { SysRIOT.setStrictMode(oldStrictValue) ; }
     }
@@ -218,10 +223,10 @@ public abstract class CmdLangParse extends CmdGeneral
     }
 
     public ParseRecord parseFile(String filename) {
-        String baseURI = modLangParse.getBaseIRI() ;
+        String baseParserIRI = this.parserBaseIRI;
         RDFParserBuilder builder = RDFParser.create();
-        if ( baseURI != null )
-            builder.base(baseURI);
+        if ( baseParserIRI != null )
+            builder.base(baseParserIRI);
         if ( modLangParse.getLang() != null )
             // Always use the command line specified syntax.
             builder.forceLang(modLangParse.getLang());
@@ -236,9 +241,9 @@ public abstract class CmdLangParse extends CmdGeneral
 
         // Set the source.
         if ( filename.equals("-") ) {
-            if ( baseURI == null ) {
-                baseURI = "http://base/";
-                builder.base(baseURI);
+            if ( baseParserIRI == null ) {
+                baseParserIRI = "http://base/";
+                builder.base(baseParserIRI);
             }
             filename = "stdin";
             builder.source(System.in);
@@ -330,23 +335,18 @@ public abstract class CmdLangParse extends CmdGeneral
         final DatasetGraph dsg = DatasetGraphFactory.create() ;
         StreamRDF sink = StreamRDFLib.dataset(dsg) ;
         final RDFFormat fmt = modLangOutput.getOutputFormatted() ;
-        PostParseHandler handler = new PostParseHandler() {
-            @Override
-            public void postParse() {
-                // Try as dataset, then as graph.
-                WriterDatasetRIOTFactory w = RDFWriterRegistry.getWriterDatasetFactory(fmt) ;
-                if ( w != null ) {
-                    RDFDataMgr.write(outputWrite, dsg, fmt) ;
-                    return ;
-                }
-                WriterGraphRIOTFactory wg = RDFWriterRegistry.getWriterGraphFactory(fmt) ;
-                if ( wg != null ) {
-                    RDFDataMgr.write(System.out, dsg.getDefaultGraph(), fmt) ;
-                    return ;
-                }
-                throw new InternalErrorException("failed to find the writer: "+fmt) ;
-            }
-        } ;
+        PostParseHandler handler = ()->{
+            RDFWriterBuilder builder = RDFWriter.create();
+            builder.format(fmt);
+            if ( RDFLanguages.isQuads(fmt.getLang()) )
+                builder.source(dsg);
+            else
+                builder.source(dsg.getDefaultGraph());
+            String baseURI = writerBaseIRI;
+            if ( baseURI != null )
+                builder.base(baseURI);
+            builder.output(outputWrite);
+        };
         return Pair.create(sink, handler) ;
     }
 

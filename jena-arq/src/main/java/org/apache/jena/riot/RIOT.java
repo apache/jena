@@ -21,9 +21,11 @@ package org.apache.jena.riot ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.lang.JsonLDReader;
 import org.apache.jena.riot.resultset.ResultSetLang;
+import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.MappingRegistry;
 import org.apache.jena.sparql.util.Symbol ;
 import org.apache.jena.sys.JenaSystem ;
 
@@ -76,7 +78,10 @@ public class RIOT {
             RDFParserRegistry.init() ;
             RDFWriterRegistry.init() ;
             ResultSetLang.init();
-
+            
+            MappingRegistry.addPrefixMapping("ttl", TURTLE_SYMBOL_BASE) ;
+            MappingRegistry.addPrefixMapping("trig", TURTLE_SYMBOL_BASE) ;
+            
             IO_Jena.wireIntoJena() ;
 
             // Don't register JMX info with ARQ as it may not be initialized
@@ -122,6 +127,15 @@ public class RIOT {
      */
     public static final Symbol symTurtleDirectiveStyle = SystemARQ.allocSymbol(TURTLE_SYMBOL_BASE, "directiveStyle");
 
+    /**
+     * Printing style. Whether to output "BASE"/"@base" (according to
+     * {@link #symTurtleDirectiveStyle} or not. BASE is normally written if there is
+     * a base URI passed to the writer or, for a streaming writer, if
+     * {@link StreamRDF#base} is called. If this context setting is set true, then do
+     * not output BASE even when given.
+     */
+    public static final Symbol symTurtleOmitBase = SystemARQ.allocSymbol(TURTLE_SYMBOL_BASE, "omitBase");
+    
     /** @deprecated Use {@link #symTurtleDirectiveStyle}. */
     @Deprecated
     public static final Symbol symTurtlePrefixStyle = SystemARQ.allocSymbol(TURTLE_SYMBOL_BASE, "prefixStyle");
