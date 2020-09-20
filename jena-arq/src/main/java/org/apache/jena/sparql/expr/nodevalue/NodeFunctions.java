@@ -286,13 +286,26 @@ public class NodeFunctions {
         return NodeValue.booleanReturn(langMatches(langStr, langPattern));
     }
     
-    /** The algortihm for the SPARQ function "LANGMATCHES".
-     *  
+    /** The algorithm for the SPARQL function "LANGMATCHES".
+     * Matching in SPARQL is defined to be the language tag matching of
+     *  <a href="https://tools.ietf.org/html/rfc4647">RFC 4647</a>, part of
+     *  <a href="https://tools.ietf.org/html/bcp47">BCP 47</a>.
+     *  <p>
+     *  SPARQL uses basic matching which is single "*" or a prefix of subtags.
+     *  <p>
+     *  This code does not implement extended matching correctly.
+     *
      * @param langStr The language string
-     * @param langPattern The pattern to match against 
-     * @return Whether there is a match. 
+     * @param langPattern The pattern to match against
+     * @return Whether there is a match.
      */
     public static boolean langMatches(String langStr, String langPattern) {
+        // Nowadays there is JDK support for language tags:
+        //   List<Locale.LanguageRange> parse = Locale.LanguageRange.parse(langPattern);
+        //   List<String> strings = Locale.filterTags(parse, Collections.singletonList(langTag));
+        //   return !strings.isEmpty();
+        // which churns quite a few small objects so compiling fixed langPattern would be sensible.
+
         if ( langPattern.equals("*") ) {
             // Not a legal lang string.
             if ( langStr == null || langStr.equals("") )
@@ -300,7 +313,13 @@ public class NodeFunctions {
             return true ;
         }
 
-        // See RFC 3066 (it's "tag (-tag)*)"
+        // Basic Language Range
+        //     language-range   = (1*8ALPHA *("-" 1*8alphanum)) / "*"
+        //     alphanum         = ALPHA / DIGIT
+
+        // Extended Language Range
+        //     extended-language-range = (1*8ALPHA / "*")
+        //     *("-" (1*8alphanum / "*"))
 
         String[] langElts = langStr.split("-") ;
         String[] langRangeElts = langPattern.split("-") ;
@@ -313,9 +332,9 @@ public class NodeFunctions {
 
         /*
          * RFC 4647 basic filtering.
-         * 
+         *
          * Notes for extended:
-         *  1. Remove any -*- (but not *-)
+         *  1. Remove any "-*" (but not *)
          *  2. Compare primary tags.
          *  3. Is the remaining range a subsequence of the remaining language tag?
          */
