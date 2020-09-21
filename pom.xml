@@ -103,6 +103,7 @@
     <ver.micrometer>1.2.1</ver.micrometer>
 
     <ver.graalvm>20.2.0</ver.graalvm>
+    <ver.jython>2.7.2</ver.jython>
 
     <jdk.version>1.8</jdk.version>
     <targetJdk>${jdk.version}</targetJdk>
@@ -570,6 +571,13 @@
         <groupId>org.graalvm.js</groupId>
         <artifactId>js-scriptengine</artifactId>
         <version>${ver.graalvm}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.python</groupId>
+        <artifactId>jython-standalone</artifactId>
+        <version>${ver.jython}</version>
+        <scope>test</scope>
       </dependency>
 
       <dependency>

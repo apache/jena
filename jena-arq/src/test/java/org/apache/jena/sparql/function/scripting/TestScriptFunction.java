@@ -51,7 +51,17 @@ public class TestScriptFunction {
                         + "function ucFirst(word)    { return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();}\n"
                         + "function lcFirst(word)    { return word.toLowerCase(); }\n"
                         + "function cc(word,index)   { return (index == 0) ? lcFirst(word) : ucFirst(word); }\n" }
-                //, {"Python", "testing/ARQ/Python/test-library.py", "..." }
+                , {"python", "testing/ARQ/Scripting/test-library.py",
+                        "def toCamelCase(str):\n" +
+                        "  return ''.join([cc(word, index) for index, word in enumerate(str.split(' '))])\n" +
+                        "def ucFirst(word):\n" +
+                        "  return word[0].upper() + word[1:].lower()\n" +
+                        "def lcFirst(word):\n" +
+                        "  return word.lower()\n" +
+                        "def cc(word,index):\n" +
+                        "  if index == 0:\n" +
+                        "    return lcFirst(word)\n" +
+                        "  return ucFirst(word)\n" }
         });
     }
 
@@ -192,14 +202,20 @@ public class TestScriptFunction {
 
     @Test
     public void script_err_3() {
-        // Legal.
+        if (!language.equals("JS")) {
+            return;
+        }
+        // Legal in JS.
         NodeValue nv = eval("combine", "'a'");
         assertNotNull(nv);
     }
 
     @Test
     public void script_err_4() {
-        // Legal.
+        if (!language.equals("JS")) {
+            return;
+        }
+        // Legal in JS.
         NodeValue nv = eval("identity", "3", "2");
         NodeValue nvx = nv("3");
         assertEquals(nvx, nv);
