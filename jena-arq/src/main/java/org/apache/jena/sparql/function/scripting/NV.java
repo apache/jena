@@ -65,9 +65,9 @@ public class NV {
             return nv.getString();
         if ( nv.isNumber() ) {
             if ( nv.isInteger())
-                return nv.getInteger();
+                return nv.getInteger().longValue();
             if ( nv.isDecimal() )
-                return nv.getDecimal();
+                return nv.getDecimal().doubleValue();
             if ( nv.isDouble() )
                 return nv.getDouble();
         }
