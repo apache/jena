@@ -147,7 +147,7 @@ public class ScriptFunction extends FunctionBase {
             } catch (IOException ex) {
                 IO.exception(ex);
             } catch (ScriptException e) {
-                throw new ExprBuildException("Failed to load " + engine.getFactory().getLanguageName() + " library", e);
+                throw new ExprBuildException("Failed to load " + lang + " library", e);
             }
         }
 
@@ -156,7 +156,7 @@ public class ScriptFunction extends FunctionBase {
             try {
                 engine.eval(functions);
             } catch (ScriptException e) {
-                throw new ExprBuildException("Failed to load " + engine.getFactory().getLanguageName() + " functions", e);
+                throw new ExprBuildException("Failed to load " + lang + " functions", e);
             }
         }
 
@@ -166,7 +166,7 @@ public class ScriptFunction extends FunctionBase {
                 invocable.invokeFunction("arq" + name + "init");
             } catch (NoSuchMethodException ignore) {}
             catch (ScriptException ex) {
-                throw new ExprBuildException("Failed to call " + engine.getFactory().getLanguageName() + " initialization function", ex);
+                throw new ExprBuildException("Failed to call " + lang + " initialization function", ex);
             }
         }
 
