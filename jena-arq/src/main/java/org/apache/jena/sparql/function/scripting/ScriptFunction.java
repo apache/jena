@@ -111,12 +111,11 @@ public class ScriptFunction extends FunctionBase {
         }
     }
 
-
     private Invocable getEngine() {
         Pool<Invocable> pool = enginePools.computeIfAbsent(lang, key -> PoolSync.create(new PoolBase<>()));
         Invocable engine = pool.get();
         if (engine == null) {
-            engine = createEngine(lang);
+            engine = createEngine();
         }
         return engine;
     }
@@ -125,7 +124,7 @@ public class ScriptFunction extends FunctionBase {
         enginePools.get(lang).put(engine);
     }
 
-    private static Invocable createEngine(String lang) {
+    private Invocable createEngine() {
         ScriptEngine engine = scriptEngineManager.getEngineByName(lang);
         if (engine == null) {
             throw new ExprBuildException("Unknown scripting language: " + lang);
