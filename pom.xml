@@ -101,6 +101,7 @@
     <ver.mockito>3.8.0</ver.mockito>
     <ver.awaitility>4.0.3</ver.awaitility>
     <ver.contract.tests>0.2.0</ver.contract.tests>
+    <ver.jython>2.7.2</ver.jython>
 
     <java.version>11</java.version>
 
@@ -548,6 +549,13 @@
         <groupId>org.graalvm.js</groupId>
         <artifactId>js-scriptengine</artifactId>
         <version>${ver.graalvm}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.python</groupId>
+        <artifactId>jython-standalone</artifactId>
+        <version>${ver.jython}</version>
+        <scope>test</scope>
       </dependency>
 
       <dependency>
