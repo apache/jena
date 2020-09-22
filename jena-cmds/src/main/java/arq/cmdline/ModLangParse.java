@@ -114,7 +114,8 @@ public class ModLangParse extends ModBase
 
         if ( cmdLine.contains(argBase) ) {
             baseIRI = cmdLine.getValue(argBase) ;
-            IRI iri = IRIResolver.resolveIRI(baseIRI) ;
+            IRI iri = IRIResolver.iriFactory().create(baseIRI);
+            
             if ( iri.hasViolation(false) )
                 throw new CmdException("Bad base IRI: " + baseIRI) ;
             if ( !iri.isAbsolute() )

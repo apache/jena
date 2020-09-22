@@ -22,7 +22,7 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.* ;
 
 /** Example writing a model with RIOT */
-public class ExRIOTw1_writeModel
+public class ExRIOT_writeModel
 {
     public static void main(String[] args)
     {

@@ -32,7 +32,7 @@ import org.apache.jena.riot.lang.PipedTriplesStream ;
  * {@link PipedRDFStream} and a {@link PipedRDFIterator}
  * 
  */
-public class ExRIOT7_ParserPiped {
+public class ExRIOT9_ParserPiped {
 
     public static void main(String... argv) {
         final String filename = "data.ttl";

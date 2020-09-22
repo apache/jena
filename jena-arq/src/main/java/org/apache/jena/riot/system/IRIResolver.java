@@ -66,13 +66,14 @@ public abstract class IRIResolver
         setErrorWarning(iriFactoryInst, ViolationCodes.NON_INITIAL_DOT_SEGMENT, false, false);
 
         // Turn off?? (ignored in CheckerIRI.iriViolations anyway).
-        // setErrorWarning(iriFactory, ViolationCodes.LOWERCASE_PREFERRED, false, false);
-        // setErrorWarning(iriFactory, ViolationCodes.PERCENT_ENCODING_SHOULD_BE_UPPERCASE, false, false);
         // setErrorWarning(iriFactory, ViolationCodes.SCHEME_PATTERN_MATCH_FAILED, false, false);
 
+        // Choices
+        setErrorWarning(iriFactoryInst, ViolationCodes.LOWERCASE_PREFERRED, false, true);
+        //setErrorWarning(iriFactoryInst, ViolationCodes.PERCENT_ENCODING_SHOULD_BE_UPPERCASE, false, true);
+        
         // NFC tests are not well understood by general developers and these cause confusion.
         // See JENA-864
-
         // NFC is in RDF 1.1 so do test for that.
         // https://www.w3.org/TR/rdf11-concepts/#section-IRIs
         // Leave switched on as a warning.
@@ -87,6 +88,7 @@ public abstract class IRIResolver
         // The set of legal characters depends on the Java version.
         // If not set, this causes test failures in Turtle and Trig eval tests.
         setErrorWarning(iriFactoryInst, ViolationCodes.UNASSIGNED_UNICODE_CHARACTER, false, false);
+        
 
         if ( ShowResolverSetup ) {
             System.out.println("---- After initialization ----");

@@ -1,0 +1,6 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+# test for base URI handling externally.
+PREFIX : <http://example/>
+
+<> :p 123 .

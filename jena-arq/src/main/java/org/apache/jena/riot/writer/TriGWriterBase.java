@@ -51,7 +51,7 @@ public abstract class TriGWriterBase extends WriterDatasetRIOTBase
 
     private void output$(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context) {
         if ( baseURI != null )
-            baseURI = IRIResolver.resolveString(baseURI) ;
+            baseURI = IRIResolver.resolveStringSilent(baseURI) ;
         output(iOut, dsg, prefixMap, baseURI, context) ;
         iOut.flush() ;
     }

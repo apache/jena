@@ -25,6 +25,7 @@ import java.io.Writer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.riot.RIOT;
 import org.apache.jena.riot.out.NodeFormatterTTL ;
 import org.apache.jena.riot.out.NodeToLabel ;
 import org.apache.jena.riot.system.PrefixMap ;
@@ -55,117 +56,101 @@ public abstract class WriterStreamRDFBase implements StreamRDF
     protected NodeFormatterTTL fmt ;
     protected final IndentedWriter out ;
     protected final DirectiveStyle prefixStyle;
+    protected final boolean printBase;
 
-    public WriterStreamRDFBase(OutputStream output, Context context)
-    {
+    public WriterStreamRDFBase(OutputStream output, Context context) {
         this(new IndentedWriter(output), context) ;
     }
 
-    public WriterStreamRDFBase(Writer output, Context context)
-    { this(wrap(output), context) ; }
+    public WriterStreamRDFBase(Writer output, Context context) {
+        this(wrap(output), context);
+    }
 
-
-    public WriterStreamRDFBase(IndentedWriter output, Context context)
-    {
+    public WriterStreamRDFBase(IndentedWriter output, Context context) {
         out = output ;
-        baseURI = null ;
         pMap = PrefixMapFactory.create() ;
         nodeToLabel = NodeToLabel.createScopeByDocument() ;
+        
+        // Stream writing does not take an external base URI from the API "write"
+        // call. The base URI is output if StreamRDF.base() called, which means BASE
+        // was in the data stream.
+        baseURI = null ;
         prefixStyle = WriterLib.directiveStyle(context);
+        printBase = 
+            ( context == null ) ? true : context.isFalseOrUndef(RIOT.symTurtleOmitBase);
         setFormatter() ;
     }
 
-    private void setFormatter()
-    {
-        fmt = new NodeFormatterTTL(baseURI, pMap, nodeToLabel) ;
+    private void setFormatter() {
+        fmt = new NodeFormatterTTL(baseURI, pMap, nodeToLabel);
     }
 
-    private static IndentedWriter wrap(Writer output)
-    {
-        if ( ! ( output instanceof BufferedWriter ) )
-            output = new BufferedWriter(output, 32*1024) ;
-        return RiotLib.create(output) ;
+    private static IndentedWriter wrap(Writer output) {
+        if ( !(output instanceof BufferedWriter) )
+            output = new BufferedWriter(output, 32 * 1024);
+        return RiotLib.create(output);
     }
 
-    private void reset$()
-    {
-        activeTripleData = false ;
-        activeQuadData = false ;
-        lastWasDirective = false ;
+    private void reset$() {
+        activeTripleData = false;
+        activeQuadData = false;
+        lastWasDirective = false;
     }
 
     @Override
-    public final void start()
-    {
-        reset$() ;
-        startData() ;
+    public final void start() {
+        reset$();
+        startData();
     }
 
     @Override
-    public final void finish()
-    {
-        endData() ;
-        out.flush() ;
+    public final void finish() {
+        endData();
+        out.flush();
     }
 
     @Override
-    public final void triple(Triple triple)
-    {
-        print(triple) ;
-        activeTripleData = true ;
+    public final void triple(Triple triple) {
+        print(triple);
+        activeTripleData = true;
     }
 
     @Override
-    public final void quad(Quad quad)
-    {
-        print(quad) ;
-        activeQuadData = true ;
+    public final void quad(Quad quad) {
+        print(quad);
+        activeQuadData = true;
     }
 
     @Override
-    public final void base(String base)
-    {
-        baseURI = base ;
-        lastWasDirective = true ;
-        setFormatter() ;
-        RiotLib.writeBase(out, base, prefixStyle==DirectiveStyle.SPARQL) ;
+    public final void base(String base) {
+        baseURI = base;
+        lastWasDirective = true;
+        setFormatter();
+        if ( printBase )
+            RiotLib.writeBase(out, base, prefixStyle == DirectiveStyle.SPARQL);
     }
 
     @Override
-    public final void prefix(String prefix, String iri)
-    {
-        endData() ;
-        lastWasDirective = true ;
-        pMap.add(prefix, iri) ;
-        RiotLib.writePrefix(out, prefix, iri, prefixStyle==DirectiveStyle.SPARQL);
+    public final void prefix(String prefix, String iri) {
+        endData();
+        lastWasDirective = true;
+        pMap.add(prefix, iri);
+        RiotLib.writePrefix(out, prefix, iri, prefixStyle == DirectiveStyle.SPARQL);
     }
 
-    protected void outputNode(Node n)
-    {
-        fmt.format(out, n) ;
+    protected void outputNode(Node n) {
+        fmt.format(out, n);
     }
 
     // Subclass contract
 
-    protected abstract void startData() ;
+    protected abstract void startData();
 
-    protected abstract void endData() ;
+    protected abstract void endData();
 
-    protected abstract void print(Quad quad) ;
+    protected abstract void print(Quad quad);
 
-    protected abstract void print(Triple triple) ;
+    protected abstract void print(Triple triple);
 
-    protected abstract void reset() ;
-
-    protected void DEBUG(String fmt, Object...args)
-    {
-        int loc = out.getCol() ;            // Absolute
-        int off = out.getAbsoluteIndent() ;
-        out.ensureStartOfLine();
-        out.setAbsoluteIndent(0) ;
-        out.println(String.format(fmt, args)) ;
-        out.setAbsoluteIndent(off) ;
-        out.ensureStartOfLine();
-        out.pad(loc, true) ;
-    }
+    protected abstract void reset();
 }

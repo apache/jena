@@ -24,7 +24,7 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 
 /** Other writer examples */
-public class ExRIOTw2_writeRDF
+public class ExRIOT_writeRDF
 {
     public static void main(String[] args)
     {
