@@ -26,6 +26,7 @@ import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.RiotNotFoundException;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.ExprUndefFunction;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase;
 import org.apache.jena.sparql.sse.builders.ExprBuildException;
@@ -50,7 +51,6 @@ public class ScriptFunction extends FunctionBase {
 
     private static final Map<String, Pool<Invocable>> enginePools = new ConcurrentHashMap<>();
 
-    private String uri;
     private String lang;
     private String name;
 
@@ -76,7 +76,6 @@ public class ScriptFunction extends FunctionBase {
             throw new ExprBuildException("Invalid URI: " + uri);
         }
 
-        this.uri = uri;
         String localPart = uri.substring(ARQ_NS.length());
         int separatorPos = localPart.indexOf('#');
         this.lang = localPart.substring(0, separatorPos - FUNCTION_SUFFIX.length());
@@ -97,9 +96,9 @@ public class ScriptFunction extends FunctionBase {
             try {
                 r = engine.invokeFunction(name, params);
             } catch (ScriptException e) {
-                throw new ExprEvalException("Error invoking function " + uri, e);
+                throw new ExprEvalException("Failed to evaluate " + lang + "function '" + name + "'", e);
             } catch (NoSuchMethodException e) {
-                throw new ExprEvalException("Function not found: " + uri);
+                throw new ExprUndefFunction("No such " + lang + " function '" + name + "'", name);
             }
 
             if (r == null)
@@ -161,11 +160,11 @@ public class ScriptFunction extends FunctionBase {
         }
 
         Invocable invocable = (Invocable) engine;
-        for (String name: engine.getFactory().getNames()) {
+        for (String name : engine.getFactory().getNames()) {
             try {
                 invocable.invokeFunction("arq" + name + "init");
-            } catch (NoSuchMethodException ignore) {}
-            catch (ScriptException ex) {
+            } catch (NoSuchMethodException ignore) {
+            } catch (ScriptException ex) {
                 throw new ExprBuildException("Failed to call " + lang + " initialization function", ex);
             }
         }
@@ -175,6 +174,6 @@ public class ScriptFunction extends FunctionBase {
 
     // For testing purposes only
     static void clearEngineCache() {
-        enginePools.clear();;
+        enginePools.clear();
     }
 }

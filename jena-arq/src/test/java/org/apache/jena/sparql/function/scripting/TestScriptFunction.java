@@ -46,7 +46,7 @@ public class TestScriptFunction {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                { "JS", "testing/ARQ/Scripting/test-library.js",
+                { "js", "testing/ARQ/Scripting/test-library.js",
                         "function toCamelCase(str) { return str.split(' ').map(cc).join('');}\n"
                         + "function ucFirst(word)    { return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();}\n"
                         + "function lcFirst(word)    { return word.toLowerCase(); }\n"
