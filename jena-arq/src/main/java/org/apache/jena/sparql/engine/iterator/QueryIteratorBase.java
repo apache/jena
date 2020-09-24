@@ -30,7 +30,7 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.util.PrintSerializableBase ;
 
 /**
- * This class provides the general machinary for iterators.  This includes:
+ * This class provides the general machinery for iterators.  This includes:
  * <ul>
  * <li>autoclose when the iterator runs out</li>
  * <li>ensuring query iterators only contain Bindings</li>

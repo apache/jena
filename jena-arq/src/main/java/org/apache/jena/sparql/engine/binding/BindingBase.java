@@ -28,7 +28,7 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.util.FmtUtils ;
 
 
-/** Machinary encapsulating a mapping from a name to a value.
+/** Machinery encapsulating a mapping from a name to a value.
  *  The "parent" is a shared, immutable, common set of bindings.
  *  An association of var/node must not override a setting in the parent.
  *  

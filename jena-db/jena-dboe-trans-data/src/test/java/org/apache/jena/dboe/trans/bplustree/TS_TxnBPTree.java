@@ -25,7 +25,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
 
-    // Non-transactional tests -- that is, algorithms and machinary.
+    // Non-transactional tests -- that is, algorithms and machinery.
     TestBPTreeRecordsNonTxn.class,
     TestBPlusTreeIndexNonTxn.class,
     TestBPlusTreeNonTxn.class,

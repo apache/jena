@@ -70,7 +70,7 @@ public interface Tuple<X> extends Iterable<X> {
         copyInto(array, 0, len());
     }
 
-    /** Copy the elements of this Tuple into the array */ 
+    /** Copy the elements of this Tuple start at 'start' into the array */ 
     public default void copyInto(X[] array, int start) {
         copyInto(array, start, len());
     }

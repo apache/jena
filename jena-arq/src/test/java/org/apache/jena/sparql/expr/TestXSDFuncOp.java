@@ -777,7 +777,7 @@ public class TestXSDFuncOp
         Node n = SSE.parseNode(str) ;
         return NodeValue.makeNode(n) ; 
     }
-    // abs is a test of Function.unaryOp machinary 
+    // abs is a test of Function.unaryOp machinery 
     @Test public void testAbs1()
     {
         NodeValue nv = NodeValue.makeInteger(2) ;

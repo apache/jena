@@ -39,7 +39,7 @@ public abstract class AccumulatorExpr implements Accumulator
     
     protected AccumulatorExpr(Expr expr, boolean makeDistinct) {
         this.expr = expr;
-        // Not all subclasses use the machinary here to handled  DISTINCT.
+        // Not all subclasses use the machinery here to handled  DISTINCT.
         // SAMPLE(DISTINCT) and COUNT(DISTINCT *) are different.
         this.makeDistinct = makeDistinct ;
         this.values  = makeDistinct ? new HashSet<>() : null ;

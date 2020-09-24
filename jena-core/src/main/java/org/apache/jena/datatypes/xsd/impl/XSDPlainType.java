@@ -21,7 +21,7 @@ package org.apache.jena.datatypes.xsd.impl;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.impl.LiteralLabel ;
 
-/** A datatype that does not use the Xerces machinary for isEqual, yet is still an XSDDatatype.
+/** A datatype that does not use the Xerces machinery for isEqual, yet is still an XSDDatatype.
  * Assumes no derived XSD datatypes.
  */
 
