@@ -200,42 +200,30 @@ public class Ex_WriteJsonLD
         DatasetGraph g = DatasetFactory.wrap(m).asDatasetGraph();
         JsonLDWriteContext ctx = new JsonLDWriteContext();
 
-        // The following should work for Uris returning JSON-LD,
-        // but unfortunately it doesn't for schema.org due to the following bug: https://github.com/jsonld-java/jsonld-java/issues/289:
+        // The following works with Uris returning JSON-LD or Uris returning an Alternate document location that is JSON-LD
+        // https://www.w3.org/TR/json-ld11/#alternate-document-location
+        // NOTE: This example will download the "@context" from the passed URL before processing the output, which can be slow.
         ctx.setJsonLDContext("\"http://schema.org/\"");
         System.out.println("\n--- Setting the context to a URI, WRONG WAY: it's slow, and the output is not JSON-LD. Sorry about that. ---");
         write(g, RDFFormat.JSONLD_COMPACT_PRETTY, ctx);
 
-        // But don't worry (be happy): 
-        // - there is a solution
-        // - and what we tried is not what we would want to do, anyway.
-        
-        // The output process needs to have the content of the "@context" at hand
-        // in order to compute the output. So, if passing the URL of the vocab,
-        // the output process must download the vocab before anything.
-        // (that's why the previous attempt was slow)
-        // -> that would not be an very efficient way to output your data.
+        // Alternatively, if we know beforehand the resolved context, we can use the DocumentLoader as follows (much more performant):
+        DocumentLoader dl = new DocumentLoader();
+        String resolvedContext = "\"@context\": {\"name\":{\"@id\":\"http://schema.org/name\"},\"Person\": {\"@id\": \"http://schema.org/Person\"}}"
+        dl.addInjectedDoc("http://schema.org", resolvedContext);
+        JsonLdOptions options = new JsonLdOptions();
+        options.setDocumentLoader(dl);
+        ctx.setOptions(options);
 
-        // To achieve the expected result,
-        // you have to do 2 things:
-
-        // 1)
-        // you have to pass the dereferenced content of http://schema.org/
-        // - or the relevant subset of it (as we only use very few terms).
-        // Here it is:
-        String atContextAsJson = "{\"name\":{\"@id\":\"http://schema.org/name\"},\"Person\": {\"@id\": \"http://schema.org/Person\"}}";
-        ctx.setJsonLDContext(atContextAsJson);
-        // Alternatively, we could just pass "null":
-        // ctx.setJsonLDContext(null);
-        // and let jena compute the context (as the model only uses schema.org vocab)
-
-        // 2)
-        // and then you pass the schema.org url using:
+        // Alternatively, we could just pass "null" as context and let jena compute it (as the model only uses schema.org vocab)
+        // After that, we can substitute the output "@context" from Jena by whatever we want, in this case the URL http://schema.org/
+        ctx.setJsonLDContext(null);
         ctx.setJsonLDContextSubstitution("\"http://schema.org/\"");
 
         // To summarize:
-        // - ctx.setJsonLDContext allows to define the @context used to compute the output
-        // - ctx.setJsonLDContextSubstitution allows to change the value of the "@context" in the output
+        // - ctx.setJsonLDContext allows to define the @context used to produce the output in compacted/frame/flatten algorithms
+        // - ctx.setOptions allows to define the Json-LD options and override the remote context URI resolutions (using DocumentLoader)
+        // - ctx.setJsonLDContextSubstitution allows to override the output value of the "@context" after the compaction/frame/flattening algorithms have already been executed
         System.out.println("\n--- COMPACT with @context replaced by schema.org URI ---");
         write(g, RDFFormat.JSONLD_COMPACT_PRETTY, ctx);
 
