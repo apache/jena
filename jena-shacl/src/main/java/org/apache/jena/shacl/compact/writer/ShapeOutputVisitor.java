@@ -75,9 +75,10 @@ public class ShapeOutputVisitor implements ShapeVisitor {
 
         boolean minMaxCountDone = false;
         for ( Constraint c : propertyShape.getConstraints()) {
+            // Min/Max is a special case.
             if ( SHACL.MinCountConstraintComponent.equals(c.getComponent()) ||
                  SHACL.MaxCountConstraintComponent.equals(c.getComponent()) ) {
-                // Print on encounter. preserves the look of the input.
+                // Print on encounter. Preserves the look of the input.
                 if ( ! minMaxCountDone ) {
                     // Special!
                     if ( minCount != -1 || maxCount!= -1 ) {
@@ -87,9 +88,10 @@ public class ShapeOutputVisitor implements ShapeVisitor {
                     }
                 }
                 minMaxCountDone = true;
+            } else {
+                out.print(" ");
+                propertyConstraint(c);
             }
-            out.print(" ");
-            propertyConstraint(c);
         }
 
         out.println(" .");
