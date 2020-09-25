@@ -60,7 +60,7 @@ public class JsonLDWriteContext extends Context {
      * Only useful for "Compact" and "Flattened" JSON-LD outputs, and not required: if not set,
      * a value for the "@Context" node is computed, based on the content of the dataset and its prefix mappings.
      * 
-     * @param jsonLdContext the value of the "@context" node (a JSON value). Some remote contexts might not be resolved property.
+     * @param jsonLdContext the value of the "@context" node (a JSON value).
      * @see #setJsonLDContextSubstitution(String) for a way to overcome this problem.
      * 
      * @see #setJsonLDContext(Object)
@@ -75,7 +75,7 @@ public class JsonLDWriteContext extends Context {
      * Only useful for "Compact" and "Flattened" JSON-LD outputs, and not required: if not set,
      * a value for the "@Context" node is computed, based on the content of the dataset and its prefix mappings.
      * 
-     * @param jsonLdContext the context as expected by JSON-LD java API. Some remote contexts might not be resolved property.
+     * @param jsonLdContext the context as expected by JSON-LD java API.
      * @see #setJsonLDContextSubstitution(String) for a way to overcome this problem.
      * 
      * @see #setJsonLDContext(String)

@@ -21,11 +21,9 @@ package org.apache.jena.riot;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.github.jsonldjava.core.DocumentLoader;
 import com.github.jsonldjava.core.JsonLdOptions;
-import com.github.jsonldjava.utils.JsonUtils;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.lang.JsonLDReader;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.vocabulary.RDF;
@@ -55,13 +53,9 @@ public class TestJsonLDReader {
         // some jsonld using schema.org's URI as "@context"
         String jsonld = someSchemaDorOrgJsonld();
 
-        // a subset of schema.org that can be used as @context for jsonld
-        String jsonldContext = "{\"name\":{\"@id\":\"http://schema.org/name\", \"@type\": \"http://www.w3.org/2001/XMLSchema#other\"},\"Person\": {\"@id\": \"http://schema.org/Person\"}}";
-
         // pass the jsonldContext to the read using a jena Context
-        Context jenaCtx = new Context();
-        Object jsonldContextAsMap = JsonUtils.fromInputStream(new ByteArrayInputStream(jsonldContext.getBytes(StandardCharsets.UTF_8)));
-        jenaCtx.set(JsonLDReader.JSONLD_CONTEXT, jsonldContextAsMap);
+        JsonLDReadContext jenaCtx = new JsonLDReadContext();
+        jenaCtx.setJsonLDContext(schemaOrgResolvedContext());
 
         // read the jsonld, replacing its "@context"
         Dataset ds = jsonld2dataset(jsonld, jenaCtx);
@@ -70,26 +64,18 @@ public class TestJsonLDReader {
         assertJohnDoeIsOK(ds.getDefaultModel());
     }
 
-    /**
-     * Not really useful, but one can replace the @context by a URI: in this case, this URI is used when expanding the json
-     * (letting JSON-LD java API taking care of downloading the context.
-     */
     @Test
-    public final void overrideJsonLdOptionsAndContextUri() throws JsonGenerationException, IOException {
-        // some jsonld using a (fake) pseudo.schema.org's URI as "@context"
-        String jsonld = "{\"@id\":\"_:b0\",\"@type\":\"Person\",\"name\":\"John Doe\",\"@context\":\"http://pseudo.schema.org/\"}";
-
-        // a subset of schema.org that can be used as @context for jsonld
-        String jsonldContext = "\"http://schema.org\"";
+    public final void overrideJsonLdOptions() throws JsonGenerationException, IOException {
+        // some jsonld using a (fake) http://pseudo.schema.org's URI as "@context"
+        String jsonld = "{\"@id\":\"_:b0\",\"@type\":\"Person\",\"name\":\"John Doe\",\"@context\":\"http://pseudo.schema.org\"}";
 
         JsonLdOptions options = new JsonLdOptions();
         DocumentLoader dl = new DocumentLoader();
-        dl.addInjectedDoc("http://schema.org", String.format("{%s}", schemaOrgContext()));
+        dl.addInjectedDoc("http://pseudo.schema.org", String.format("{ \"@context\": %s }", schemaOrgResolvedContext()));
         options.setDocumentLoader(dl);
 
         // pass the jsonldContext and JsonLdOptions to the read using a jena Context
         JsonLDReadContext jenaCtx = new JsonLDReadContext();
-        jenaCtx.setJsonLDContext(jsonldContext);
         jenaCtx.setOptions(options);
 
         // read the jsonld, replacing its "@context"
@@ -131,7 +117,13 @@ public class TestJsonLDReader {
     }
 
     private String schemaOrgContext() {
-        return "\"@context\": {\"@vocab\": \"http://schema.org/\", \"name\": {\"@type\": \"http://www.w3.org/2001/XMLSchema#other\"} }";
+        return "\"@context\": \"http://schema.org/\"";
+    }
+
+    // a subset of schema.org that can be used as @context for jsonld
+    private String schemaOrgResolvedContext() {
+        return "{\"name\":{\"@id\":\"http://schema.org/name\"},\"Person\": {\"@id\": \"http://schema.org/Person\"}}";
+
     }
 
     /**
@@ -139,8 +131,7 @@ public class TestJsonLDReader {
      */
     private void assertJohnDoeIsOK(Model m) {
         assertTrue(m.contains(null, RDF.type, m.createResource("http://schema.org/Person")));
-        assertTrue(m.contains(null, m.createProperty("http://schema.org/name"),
-                m.createTypedLiteral("John Doe", "http://www.w3.org/2001/XMLSchema#other")));
+        assertTrue(m.contains(null, m.createProperty("http://schema.org/name"), "John Doe"));
     }
 
 
