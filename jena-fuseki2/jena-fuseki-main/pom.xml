@@ -115,6 +115,7 @@
         </executions>
         <configuration>
           <excludes>
+            <exclude>**/hs_err_pid*.log</exclude>
             <exclude>**/.project</exclude>
             <exclude>**/.settings/**</exclude>
             <exclude>**/.classpath</exclude>
