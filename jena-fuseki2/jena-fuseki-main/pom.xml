@@ -118,11 +118,11 @@
             <exclude>**/.project</exclude>
             <exclude>**/.settings/**</exclude>
             <exclude>**/.classpath</exclude>
+            <exclude>**/target/**/*</exclude>
             <exclude>**/README.*</exclude>
             <exclude>**/META-INF/services/*</exclude>
             <exclude>**/dependency-reduced-pom.xml</exclude>
 
-            <exclude>fuseki.classpath</exclude>
             <exclude>testing/**/*.ttl</exclude>
             <exclude>testing/**/*.txt</exclude>
             <exclude>sparqler/data/empty.nt</exclude>
