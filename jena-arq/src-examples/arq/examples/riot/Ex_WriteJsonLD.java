@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
 
+import com.github.jsonldjava.core.DocumentLoader;
 import com.github.jsonldjava.core.JsonLdOptions;
 
 import org.apache.jena.query.DatasetFactory;
@@ -209,7 +210,7 @@ public class Ex_WriteJsonLD
 
         // Alternatively, if we know beforehand the resolved context, we can use the DocumentLoader as follows (much more performant):
         DocumentLoader dl = new DocumentLoader();
-        String resolvedContext = "\"@context\": {\"name\":{\"@id\":\"http://schema.org/name\"},\"Person\": {\"@id\": \"http://schema.org/Person\"}}"
+        String resolvedContext = "\"@context\": {\"name\":{\"@id\":\"http://schema.org/name\"},\"Person\": {\"@id\": \"http://schema.org/Person\"}}";
         dl.addInjectedDoc("http://schema.org", resolvedContext);
         JsonLdOptions options = new JsonLdOptions();
         options.setDocumentLoader(dl);
