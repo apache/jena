@@ -17,7 +17,6 @@
  */
 package org.apache.jena.riot.writer;
 
-import static com.github.jsonldjava.core.JsonLdOptions.JSON_LD_1_1;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -32,7 +31,6 @@ import java.util.Map.Entry;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdOptions;
-import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.utils.JsonUtils;
 
 import org.apache.jena.atlas.json.JsonObject;
@@ -49,7 +47,6 @@ import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.vocabulary.FOAF;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Test;
-import org.slf4j.LoggerFactory;
 
 public class TestJsonLDWriter {
 
