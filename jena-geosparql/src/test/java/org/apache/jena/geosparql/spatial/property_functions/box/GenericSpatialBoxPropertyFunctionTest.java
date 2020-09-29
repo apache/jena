@@ -210,7 +210,7 @@ public class GenericSpatialBoxPropertyFunctionTest {
         float lonMax = 3;
         int limit = 10;
 
-        List<Node> objectNodes = Arrays.asList(NodeValue.makeString("0").asNode(), NodeValue.makeFloat(lonMin).asNode(), NodeValue.makeFloat(latMax).asNode(), NodeValue.makeFloat(lonMax).asNode(), NodeValue.makeInteger(limit).asNode());
+        List<Node> objectNodes = Arrays.asList(NodeValue.makeString("e").asNode(), NodeValue.makeFloat(lonMin).asNode(), NodeValue.makeFloat(latMax).asNode(), NodeValue.makeFloat(lonMax).asNode(), NodeValue.makeInteger(limit).asNode());
         PropFuncArg object = new PropFuncArg(objectNodes);
 
         //Function arguments
@@ -242,7 +242,7 @@ public class GenericSpatialBoxPropertyFunctionTest {
         float lonMax = 3;
         int limit = 10;
 
-        List<Node> objectNodes = Arrays.asList(NodeValue.makeFloat(latMin).asNode(), NodeValue.makeString("1").asNode(), NodeValue.makeFloat(latMax).asNode(), NodeValue.makeFloat(lonMax).asNode(), NodeValue.makeInteger(limit).asNode());
+        List<Node> objectNodes = Arrays.asList(NodeValue.makeFloat(latMin).asNode(), NodeValue.makeString("e").asNode(), NodeValue.makeFloat(latMax).asNode(), NodeValue.makeFloat(lonMax).asNode(), NodeValue.makeInteger(limit).asNode());
         PropFuncArg object = new PropFuncArg(objectNodes);
 
         //Function arguments
@@ -274,7 +274,7 @@ public class GenericSpatialBoxPropertyFunctionTest {
         float lonMax = 3;
         int limit = 10;
 
-        List<Node> objectNodes = Arrays.asList(NodeValue.makeFloat(latMin).asNode(), NodeValue.makeFloat(lonMin).asNode(), NodeValue.makeString("2").asNode(), NodeValue.makeFloat(lonMax).asNode(), NodeValue.makeInteger(limit).asNode());
+        List<Node> objectNodes = Arrays.asList(NodeValue.makeFloat(latMin).asNode(), NodeValue.makeFloat(lonMin).asNode(), NodeValue.makeString("e").asNode(), NodeValue.makeFloat(lonMax).asNode(), NodeValue.makeInteger(limit).asNode());
         PropFuncArg object = new PropFuncArg(objectNodes);
 
         //Function arguments
@@ -306,7 +306,7 @@ public class GenericSpatialBoxPropertyFunctionTest {
         float lonMax = 3;
         int limit = 10;
 
-        List<Node> objectNodes = Arrays.asList(NodeValue.makeFloat(latMin).asNode(), NodeValue.makeFloat(lonMin).asNode(), NodeValue.makeFloat(latMax).asNode(), NodeValue.makeString("3").asNode(), NodeValue.makeInteger(limit).asNode());
+        List<Node> objectNodes = Arrays.asList(NodeValue.makeFloat(latMin).asNode(), NodeValue.makeFloat(lonMin).asNode(), NodeValue.makeFloat(latMax).asNode(), NodeValue.makeString("e").asNode(), NodeValue.makeInteger(limit).asNode());
         PropFuncArg object = new PropFuncArg(objectNodes);
 
         //Function arguments

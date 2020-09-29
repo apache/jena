@@ -20,6 +20,7 @@ package org.apache.jena.geosparql.spatial;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.geosparql.implementation.WKTLiteralFactory;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
+import static org.apache.jena.geosparql.spatial.ConvertLatLon.extractDouble;
 import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.sparql.expr.NodeValue;
@@ -42,27 +43,11 @@ public class ConvertLatLonBox {
         return WKTLiteralFactory.createBox(latMin, lonMin, latMax, lonMax, SRS_URI.WGS84_CRS);
     }
 
-    public static final NodeValue toNodeValue(NodeValue v1, NodeValue v2, NodeValue v3, NodeValue v4) {
-        if (!v1.isNumber()) {
-            throw new DatatypeFormatException("Not a number: " + FmtUtils.stringForNode(v1.asNode()));
-        }
-
-        if (!v2.isNumber()) {
-            throw new DatatypeFormatException("Not a number: " + FmtUtils.stringForNode(v2.asNode()));
-        }
-
-        if (!v3.isNumber()) {
-            throw new DatatypeFormatException("Not a number: " + FmtUtils.stringForNode(v3.asNode()));
-        }
-
-        if (!v4.isNumber()) {
-            throw new DatatypeFormatException("Not a number: " + FmtUtils.stringForNode(v4.asNode()));
-        }
-
-        double latMin = v1.getDouble();
-        double lonMin = v2.getDouble();
-        double latMax = v3.getDouble();
-        double lonMax = v4.getDouble();
+    public static final NodeValue toNodeValue(NodeValue v1, NodeValue v2, NodeValue v3, NodeValue v4) {       
+        double latMin = extractDouble(v1);
+        double lonMin = extractDouble(v2);
+        double latMax = extractDouble(v3);
+        double lonMax = extractDouble(v4);
         Literal wktBox = toLiteral(latMin, lonMin, latMax, lonMax);
 
         return NodeValue.makeNode(wktBox.asNode());

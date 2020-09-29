@@ -43,21 +43,30 @@ public class ConvertLatLon {
     }
 
     public static final NodeValue toNodeValue(NodeValue latNodeValue, NodeValue lonNodeValue) {
-        if (!latNodeValue.isNumber()) {
-            throw new DatatypeFormatException("Not a number: " + FmtUtils.stringForNode(latNodeValue.asNode()));
-        }
-
-        if (!lonNodeValue.isNumber()) {
-            throw new DatatypeFormatException("Not a number: " + FmtUtils.stringForNode(lonNodeValue.asNode()));
-        }
-
-        double lat = latNodeValue.getDouble();
-        double lon = lonNodeValue.getDouble();
+                
+        double lat = extractDouble(latNodeValue);
+        double lon = extractDouble(lonNodeValue);
         Literal wktPoint = toLiteral(lat, lon);
 
         return NodeValue.makeNode(wktPoint.asNode());
     }
 
+    public static double extractDouble(NodeValue nodeValue){
+        
+        if (nodeValue.isNumber()) {
+            return nodeValue.getDouble();
+        } else if (nodeValue.isString()) {
+            try {
+                // isNumber() does not throw on Nan or Infinity so handle consistently.
+                return Double.parseDouble(nodeValue.getString());  
+            } catch (NumberFormatException e) {
+                // fall through to DatatypeFormatException.
+            }
+        }    
+        
+        throw new DatatypeFormatException("Not a number: " + FmtUtils.stringForNode(nodeValue.asNode())); 
+    }
+    
     public static final Node toNode(Node latNode, Node lonNode) {
         NodeValue result = toNodeValue(NodeValue.makeNode(latNode), NodeValue.makeNode(lonNode));
         return result.asNode();
@@ -65,18 +74,8 @@ public class ConvertLatLon {
 
     public static final GeometryWrapper toGeometryWrapper(Node latNode, Node lonNode) {
 
-        NodeValue latNodeValue = NodeValue.makeNode(latNode);
-        NodeValue lonNodeValue = NodeValue.makeNode(lonNode);
-
-        if (!latNodeValue.isNumber()) {
-            throw new DatatypeFormatException("Not a number: " + FmtUtils.stringForNode(latNodeValue.asNode()));
-        }
-
-        if (!lonNodeValue.isNumber()) {
-            throw new DatatypeFormatException("Not a number: " + FmtUtils.stringForNode(lonNodeValue.asNode()));
-        }
-        double lat = latNodeValue.getDouble();
-        double lon = lonNodeValue.getDouble();
+        double lat = extractDouble(NodeValue.makeNode(latNode));
+        double lon = extractDouble(NodeValue.makeNode(lonNode));
         checkBounds(lat, lon);
         return GeometryWrapper.fromPoint(lat, lon, SRS_URI.WGS84_CRS);
     }

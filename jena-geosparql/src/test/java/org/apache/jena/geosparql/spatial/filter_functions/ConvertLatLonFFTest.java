@@ -85,7 +85,7 @@ public class ConvertLatLonFFTest {
     @Test(expected = ExprEvalException.class)
     public void testExec_pos0_fail() {
 
-        NodeValue v1 = NodeValue.makeString("10.0");
+        NodeValue v1 = NodeValue.makeString("e");
         NodeValue v2 = NodeValue.makeFloat(20.0f);
         ConvertLatLonFF instance = new ConvertLatLonFF();
         NodeValue expResult = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0)", WKTDatatype.INSTANCE);
@@ -100,7 +100,7 @@ public class ConvertLatLonFFTest {
     public void testExec_pos1_fail() {
 
         NodeValue v1 = NodeValue.makeFloat(10.0f);
-        NodeValue v2 = NodeValue.makeString("20.0");
+        NodeValue v2 = NodeValue.makeString("e");
         ConvertLatLonFF instance = new ConvertLatLonFF();
         NodeValue expResult = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0)", WKTDatatype.INSTANCE);
         NodeValue result = instance.exec(v1, v2);

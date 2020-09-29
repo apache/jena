@@ -115,4 +115,19 @@ public class ConvertLatLonBoxTest {
         assertEquals(expResult, result);
     }
 
+    /**
+     * Test of toNodeValue method, of class ConvertLatLonBox.
+     */
+    @Test
+    public void testConvert_4args_3() {
+
+        NodeValue v1 = NodeValue.makeString("0.0");
+        NodeValue v2 = NodeValue.makeString("1.0");
+        NodeValue v3 = NodeValue.makeString("10.0");
+        NodeValue v4 = NodeValue.makeString("11.0");
+        NodeValue expResult = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((0 1, 10 1, 10 11, 0 11, 0 1))", WKTDatatype.INSTANCE);
+        NodeValue result = ConvertLatLonBox.toNodeValue(v1, v2, v3, v4);
+        assertEquals(expResult, result);
+    }
+    
 }

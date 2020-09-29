@@ -186,7 +186,7 @@ public class GenericCardinalPropertyFunctionTest {
         int limit = 10;
 
         Literal geometry = ConvertLatLon.toLiteral(lat, lon);
-        List<Node> objectNodes = Arrays.asList(NodeValue.makeString("0").asNode(), NodeValue.makeFloat(lon).asNode(), NodeValue.makeInteger(limit).asNode());
+        List<Node> objectNodes = Arrays.asList(NodeValue.makeString("e").asNode(), NodeValue.makeFloat(lon).asNode(), NodeValue.makeInteger(limit).asNode());
         PropFuncArg object = new PropFuncArg(objectNodes);
 
         GeometryWrapper geometryWrapper = GeometryWrapper.extract(geometry);
@@ -213,7 +213,7 @@ public class GenericCardinalPropertyFunctionTest {
         int limit = 10;
 
         Literal geometry = ConvertLatLon.toLiteral(lat, lon);
-        List<Node> objectNodes = Arrays.asList(NodeValue.makeFloat(lat).asNode(), NodeValue.makeString("1").asNode(), NodeValue.makeInteger(limit).asNode());
+        List<Node> objectNodes = Arrays.asList(NodeValue.makeFloat(lat).asNode(), NodeValue.makeString("e").asNode(), NodeValue.makeInteger(limit).asNode());
         PropFuncArg object = new PropFuncArg(objectNodes);
 
         GeometryWrapper geometryWrapper = GeometryWrapper.extract(geometry);
