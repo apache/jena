@@ -87,7 +87,7 @@ public class ConvertLatLonBoxFFTest {
     @Test(expected = ExprEvalException.class)
     public void testExec_pos0_fail() {
 
-        NodeValue v1 = NodeValue.makeString("0.0");
+        NodeValue v1 = NodeValue.makeString("e");
         NodeValue v2 = NodeValue.makeFloat(1.0f);
         NodeValue v3 = NodeValue.makeFloat(10.0f);
         NodeValue v4 = NodeValue.makeFloat(11.0f);
@@ -104,7 +104,7 @@ public class ConvertLatLonBoxFFTest {
     public void testExec_pos1_fail() {
 
         NodeValue v1 = NodeValue.makeFloat(0.0f);
-        NodeValue v2 = NodeValue.makeString("1.0");
+        NodeValue v2 = NodeValue.makeString("e");
         NodeValue v3 = NodeValue.makeFloat(10.0f);
         NodeValue v4 = NodeValue.makeFloat(11.0f);
         ConvertLatLonBoxFF instance = new ConvertLatLonBoxFF();
@@ -121,7 +121,7 @@ public class ConvertLatLonBoxFFTest {
 
         NodeValue v1 = NodeValue.makeFloat(0.0f);
         NodeValue v2 = NodeValue.makeFloat(1.0f);
-        NodeValue v3 = NodeValue.makeString("10.0");
+        NodeValue v3 = NodeValue.makeString("e");
         NodeValue v4 = NodeValue.makeFloat(11.0f);
         ConvertLatLonBoxFF instance = new ConvertLatLonBoxFF();
         NodeValue expResult = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((0.0 1.0, 10.0 1.0, 10.0 11.0, 0.0 11.0, 0.0 1.0))", WKTDatatype.INSTANCE);
@@ -138,7 +138,7 @@ public class ConvertLatLonBoxFFTest {
         NodeValue v1 = NodeValue.makeFloat(0.0f);
         NodeValue v2 = NodeValue.makeFloat(0.0f);
         NodeValue v3 = NodeValue.makeFloat(10.0f);
-        NodeValue v4 = NodeValue.makeString("10.0");
+        NodeValue v4 = NodeValue.makeString("e");
         ConvertLatLonBoxFF instance = new ConvertLatLonBoxFF();
         NodeValue expResult = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((0.0 1.0, 10.0 1.0, 10.0 11.0, 0.0 11.0, 0.0 1.0))", WKTDatatype.INSTANCE);
         NodeValue result = instance.exec(v1, v2, v3, v4);

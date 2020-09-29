@@ -18,7 +18,9 @@
 package org.apache.jena.geosparql.spatial;
 
 import org.apache.jena.datatypes.DatatypeFormatException;
+import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
+import static org.apache.jena.geosparql.spatial.ConvertLatLon.extractDouble;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.rdf.model.Literal;
@@ -187,7 +189,7 @@ public class ConvertLatLonTest {
      * Test of toNode method, of class ConvertLatLonFF.
      */
     @Test
-    public void testConvert_Node_Node() {
+    public void testConvertToNode_Node_Node() {
 
         Node n1 = NodeValue.makeFloat(10.0f).asNode();
         Node n2 = NodeValue.makeFloat(20.0f).asNode();
@@ -195,4 +197,89 @@ public class ConvertLatLonTest {
         Node result = ConvertLatLon.toNode(n1, n2);
         assertEquals(expResult, result);
     }
+    
+    /**
+     * Test of toNode method, of class ConvertLatLonFF.
+     */
+    @Test
+    public void testConvertToNode_NodeString_NodeString() {
+
+        Node n1 = NodeValue.makeString("10.0").asNode();
+        Node n2 = NodeValue.makeString("20").asNode();
+        Node expResult = NodeFactory.createLiteral("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10 20)", WKTDatatype.INSTANCE);
+        Node result = ConvertLatLon.toNode(n1, n2);
+        assertEquals(expResult, result);
+    }
+    
+    /**
+     * Test of toNode method, of class ConvertLatLonFF.
+     */
+    @Test(expected = DatatypeFormatException.class)
+    public void testConvertToNode_NodeString_NodeString_Malformed() {
+
+        Node n1 = NodeValue.makeString("val").asNode();
+        Node n2 = NodeValue.makeString("20.0").asNode();
+        Node expResult = NodeFactory.createLiteral("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10 20)", WKTDatatype.INSTANCE);
+        Node result = ConvertLatLon.toNode(n1, n2);
+        assertEquals(expResult, result);
+    }
+    
+    /**
+     * Test of toGeometryWrapper method, of class ConvertLatLonFF.
+     */
+    @Test
+    public void testConvertToGeometryWrapper_NodeString_NodeString() {
+
+        Node n1 = NodeValue.makeString("10.0").asNode();
+        Node n2 = NodeValue.makeString("20").asNode();
+        GeometryWrapper expResult = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10 20)", WKTDatatype.URI);
+        GeometryWrapper result = ConvertLatLon.toGeometryWrapper(n1, n2);
+        assertEquals(expResult, result);
+    }
+    
+    /**
+     * Test of toGeometryWrapper method, of class ConvertLatLonFF.
+     */
+    @Test(expected = DatatypeFormatException.class)
+    public void testConvertToGeometryWrapper_NodeString_NodeString_Malformed() {
+
+        Node n1 = NodeValue.makeString("val").asNode();
+        Node n2 = NodeValue.makeString("20.0").asNode();
+        GeometryWrapper expResult = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10 20)", WKTDatatype.URI);
+        GeometryWrapper result = ConvertLatLon.toGeometryWrapper(n1, n2);
+        assertEquals(expResult, result);
+    }
+    
+    /**
+     * Test of extractDouble method, of class ConvertLatLonFF.
+     */
+    @Test
+    public void testExtractDouble() {
+        
+        NodeValue nv = NodeValue.makeDouble(10.0);        
+        double result = extractDouble(nv);
+        assertEquals(10.0, result, 0);
+    }
+    
+    /**
+     * Test of extractDouble method, of class ConvertLatLonFF.
+     */
+    @Test
+    public void testExtractDouble_String() {
+        
+        NodeValue nv = NodeValue.makeString("10.0");        
+        double result = extractDouble(nv);
+        assertEquals(10.0, result, 0);
+    }
+    
+    /**
+     * Test of extractDouble method, of class ConvertLatLonFF.
+     */
+    @Test(expected = DatatypeFormatException.class)
+    public void testExtractDouble_Malformed() {
+        
+        NodeValue nv = NodeValue.makeString("val");        
+        extractDouble(nv);
+    }
+    
 }
