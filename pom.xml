@@ -100,7 +100,7 @@
 
     <ver.mockito>1.9.5</ver.mockito>
     <ver.awaitility>3.1.0</ver.awaitility>
-    <ver.micrometer>1.2.1</ver.micrometer>
+    <ver.micrometer>1.5.5</ver.micrometer>
 
     <ver.graalvm>20.2.0</ver.graalvm>
 
