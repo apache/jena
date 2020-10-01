@@ -27,7 +27,7 @@ import java.util.Map ;
 import java.util.Objects ;
 
 import org.apache.jena.atlas.lib.NotImplemented ;
-import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.rdf.model.Model;
@@ -135,7 +135,7 @@ public class ResultSetWriterRegistry {
             if ( m != null )
                 return new Prologue(m);
         } catch (Exception ex) {
-            Log.warn(ARQ.getExecLogger(), "Failed to establish a 'Prologue' for text output: "+ex.getMessage()); 
+            FmtLog.warn(ARQ.getExecLogger(), "Failed to establish a 'Prologue' for text output: %s", ex.getMessage()); 
         }
         return null;
     }

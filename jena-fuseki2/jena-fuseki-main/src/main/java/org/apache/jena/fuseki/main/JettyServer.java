@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.OperationRegistry;
@@ -49,6 +50,8 @@ import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.eclipse.jetty.util.thread.ThreadPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -156,19 +159,21 @@ public class JettyServer {
     }
 
     public static class Builder {
-        private int                      port               = -1;
-        private boolean                  loopback           = false;
-        protected boolean                verbose            = false;
+        private int                     port               = -1;
+        private int                     minThreads         = -1;
+        private int                     maxThreads         = -1;
+        private boolean                 loopback           = false;
+        protected boolean               verbose            = false;
         // Other servlets to add.
-        private List<Pair<String, HttpServlet>> servlets    = new ArrayList<>();
-        private List<Pair<String, Filter>> filters          = new ArrayList<>();
+        private List<Pair<String, HttpServlet>> servlets   = new ArrayList<>();
+        private List<Pair<String, Filter>> filters         = new ArrayList<>();
 
-        private String                   contextPath        = "/";
-        private String                   servletContextName = "Jetty";
-        private String                   staticContentDir   = null;
-        private SecurityHandler          securityHandler    = null;
-        private ErrorHandler             errorHandler       = new PlainErrorHandler();
-        private Map<String, Object>      servletAttr        = new HashMap<>();
+        private String                  contextPath        = "/";
+        private String                  servletContextName = "Jetty";
+        private String                  staticContentDir   = null;
+        private SecurityHandler         securityHandler    = null;
+        private ErrorHandler            errorHandler       = new PlainErrorHandler();
+        private Map<String, Object>     servletAttr        = new HashMap<>();
 
         public Builder() {}
 
@@ -244,6 +249,36 @@ public class JettyServer {
         }
 
         /**
+         * Set the number threads used by Jetty. This uses a {@code org.eclipse.jetty.util.thread.QueuedThreadPool} provided by Jetty.
+         * <p>
+         * Argument order is (minThreads, maxThreads).
+         * <p> 
+         * <ul>
+         * <li>Use (-1,-1) for Jetty "default". The Jetty 9.4 defaults are (min=8,max=200).
+         * <li>If (min != -1, max is -1) then the default max is 20.
+         * <li>If (min is -1, max != -1) then the default min is 2.
+         * </ul>
+         */
+        public Builder numServerThreads(int minThreads, int maxThreads) {
+            if ( minThreads >= 0 && maxThreads > 0 ) {
+                if ( minThreads > maxThreads )
+                    throw new FusekiConfigException(String.format("Bad thread setting: (min=%d, max=%d)", minThreads, maxThreads));
+            }
+            this.minThreads = minThreads;
+            this.maxThreads = maxThreads;
+            return this;
+        }
+
+        /**
+         * Set the maximum number threads used by Jetty.
+         * In development or in embedded use, limiting the maximum threads can be useful.
+         */
+        public Builder maxServerNumThreads(int maxThreads) {
+            numServerThreads(-1, maxThreads);
+            return this;            
+        }
+
+        /**
          * Add the given servlet with the pathSpec. These are added so that they are
          * before the static content handler (which is the last servlet)
          * used for {@link #staticFileBase(String)}.
@@ -284,7 +319,7 @@ public class JettyServer {
         public JettyServer build() {
             ServletContextHandler handler = buildServletContext();
             // Use HandlerCollection for several ServletContextHandlers and thus several ServletContext.
-            Server server = jettyServer(port, loopback);
+            Server server = jettyServer(port, loopback, minThreads, maxThreads);
             server.setHandler(handler);
             return new JettyServer(port, server);
         }
@@ -352,8 +387,19 @@ public class JettyServer {
         }
 
         /** Jetty server */
-        private static Server jettyServer(int port, boolean loopback) {
-            Server server = new Server();
+        private static Server jettyServer(int port, boolean loopback, int minThreads, int maxThreads) {
+            ThreadPool threadPool = null;
+            // Jetty 9.4 : the Jetty default is 200,8
+            if ( minThreads != -1 || maxThreads != -1 ) {
+                if ( minThreads == -1 )
+                    minThreads = 2;
+                if ( maxThreads == -1 )
+                    maxThreads = 20;
+                maxThreads = Math.max(minThreads, maxThreads);
+                // Args reversed:Jetty uses (max,min)
+                threadPool = new QueuedThreadPool(maxThreads, minThreads);
+            }
+            Server server = new Server(threadPool);
             HttpConnectionFactory f1 = new HttpConnectionFactory();
 
             //f1.getHttpConfiguration().setRequestHeaderSize(512 * 1024);

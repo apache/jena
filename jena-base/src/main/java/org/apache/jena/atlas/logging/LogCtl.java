@@ -51,33 +51,33 @@ public class LogCtl {
         }
     }
 
-    static public void set(Logger logger, String level) {
+    public static void set(Logger logger, String level) {
         setLevel(logger.getName(), level);
     }
 
-    static public void setLevel(Class<? > cls, String level) {
+    public static void setLevel(Class<? > cls, String level) {
         setLevel(cls.getName(), level);
     }
 
-    static public void setLevel(Logger logger, String level) {
+    public static void setLevel(Logger logger, String level) {
         setLevel(logger.getName(), level);
     }
 
-    static public void setLevel(String logger, String level) {
+    public static void setLevel(String logger, String level) {
         // setLevelLog4j1(logger,level);
         setLevelLog4j2(logger, level);
         setLevelJUL(logger, level);
     }
 
-    static public String getLevel(Logger logger) {
+    public static String getLevel(Logger logger) {
         return getLevel(logger.getName());
     }
 
-    static public String getLevel(Class<? > logger) {
+    public static String getLevel(Class<? > logger) {
         return getLevel(logger.getName());
     }
 
-    static public String getLevel(String logger) {
+    public static String getLevel(String logger) {
         String s2 = getLevelLog4j2(logger);
         if ( s2 != null )
             return s2;
@@ -155,11 +155,11 @@ public class LogCtl {
      * Turn on a logger (all levels). Works for Log4j and Java logging as the logging
      * provider to Apache common logging or slf4j.
      */
-    static public void enable(Logger logger) {
+    public static void enable(Logger logger) {
         enable(logger.getName());
     }
 
-    static public void enable(String logger) {
+    public static void enable(String logger) {
         setLevel(logger, "all");
     }
 
@@ -167,7 +167,7 @@ public class LogCtl {
      * Turn on a logger (all levels). Works for Log4j and Java logging as the logging
      * provider to Apache common logging or slf4j.
      */
-    static public void enable(Class<? > logger) {
+    public static void enable(Class<? > logger) {
         setLevel(logger.getName(), "ALL");
     }
 
@@ -175,7 +175,7 @@ public class LogCtl {
      * Turn on a logger (all levels). Works for Log4j and Java logging as the logging
      * provider to Apache common logging or slf4j.
      */
-    static public void disable(Logger logger) {
+    public static void disable(Logger logger) {
         setLevel(logger.getName(), "OFF");
     }
 
@@ -183,7 +183,7 @@ public class LogCtl {
      * Turn on a logger (all levels). Works for Log4j and Java logging as the logging
      * provider to Apache common logging or slf4j.
      */
-    static public void disable(String logger) {
+    public static void disable(String logger) {
         setLevel(logger, "OFF");
     }
 
@@ -191,7 +191,7 @@ public class LogCtl {
      * Turn on a logger (all levels). Works for Log4j and Java logging as the logging
      * provider to Apache common logging or slf4j.
      */
-    static public void disable(Class<? > logger) {
+    public static void disable(Class<? > logger) {
         setLevel(logger.getName(), "OFF");
     }
 
@@ -199,7 +199,7 @@ public class LogCtl {
      * Set to info level. Works for Log4j and Java logging as the logging provider to
      * Apache common logging or slf4j.
      */
-    static public void setInfo(String logger) {
+    public static void setInfo(String logger) {
         setLevel(logger, "info");
     }
 
@@ -207,7 +207,7 @@ public class LogCtl {
      * Set to info level. Works for Log4j and Java logging as the logging provider to
      * Apache common logging or slf4j.
      */
-    static public void setInfo(Class<? > logger) {
+    public static void setInfo(Class<? > logger) {
         setLevel(logger.getName(), "info");
     }
 
@@ -215,7 +215,7 @@ public class LogCtl {
      * Set to warning level. Works for Log4j and Java logging as the logging provider
      * to Apache common logging or slf4j.
      */
-    static public void setWarn(String logger) {
+    public static void setWarn(String logger) {
         setLevel(logger, "warn");
     }
 
@@ -223,7 +223,7 @@ public class LogCtl {
      * Set to warning level. Works for Log4j and Java logging as the logging provider
      * to Apache common logging or slf4j.
      */
-    static public void setWarn(Class<? > logger) {
+    public static void setWarn(Class<? > logger) {
         setLevel(logger.getName(), "warn");
     }
 
@@ -231,7 +231,7 @@ public class LogCtl {
      * Set to error level. Works for Log4j and Java logging as the logging provider
      * to Apache common logging or slf4j.
      */
-    static public void setError(String logger) {
+    public static void setError(String logger) {
         setLevel(logger, "error");
     }
 
@@ -239,7 +239,7 @@ public class LogCtl {
      * Set to error level. Works for Log4j and Java logging as the logging provider
      * to Apache common logging or slf4j.
      */
-    static public void setError(Class<? > logger) {
+    public static void setError(Class<? > logger) {
         setLevel(logger.getName(), "error");
     }
 

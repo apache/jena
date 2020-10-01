@@ -32,7 +32,7 @@ import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.lib.DateTimeUtils;
-import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.query.ARQ;
@@ -339,7 +339,7 @@ public class Fuseki {
             // If returning "Server"
             String serverIdent = safeGetHeader(response, "Server");
             if ( serverIdent != null ) {
-                Log.debug(ARQ.getHttpRequestLogger(), "Server: "+serverIdent);
+                FmtLog.debug(ARQ.getHttpRequestLogger(), "Server: %s", serverIdent);
                 boolean isFuseki = serverIdent.startsWith("Apache Jena Fuseki");
                 if ( !isFuseki )
                     isFuseki = serverIdent.toLowerCase().contains("fuseki");
