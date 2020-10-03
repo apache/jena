@@ -92,19 +92,7 @@ public class DatasetOperations {
         }
 
         //Setup Spatial Extension
-        if (!dataset.isEmpty()) {
-            if (argsConfig.getSpatialIndexFile() != null) {
-                File spatialIndexFile = argsConfig.getSpatialIndexFile();
-                GeoSPARQLConfig.setupSpatialIndex(dataset, spatialIndexFile);
-            } else if (argsConfig.isTDBFileSetup()) {
-                File spatialIndexFile = new File(argsConfig.getTdbFile(), SPATIAL_INDEX_FILE);
-                GeoSPARQLConfig.setupSpatialIndex(dataset, spatialIndexFile);
-            } else {
-                GeoSPARQLConfig.setupSpatialIndex(dataset);
-            }
-        } else {
-            LOGGER.warn("Datset empty. Spatial Index not constructed. Server will require restarting after adding data and any updates to build Spatial Index.");
-        }
+        prepareSpatialExtension(dataset, argsConfig);
 
         return dataset;
     }
@@ -160,10 +148,15 @@ public class DatasetOperations {
                     }
 
                     //Load file and add to target model.
-                    Model model = RDFDataMgr.loadModel(rdfFile.getAbsolutePath(), rdfFormat.getLang());
-                    targetModel.add(model);
-                    dataset.commit();
-                    LOGGER.info("Reading RDF - Completed - File: {}, Graph Name: {}, RDF Format: {}", rdfFile, graphName, rdfFormat);
+                    if (rdfFile.exists()) {
+                        Model model = RDFDataMgr.loadModel(rdfFile.getAbsolutePath(), rdfFormat.getLang());
+                        targetModel.add(model);
+                        dataset.commit();
+                        LOGGER.info("Reading RDF - Completed - File: {}, Graph Name: {}, RDF Format: {}", rdfFile, graphName, rdfFormat);
+                    } else {
+                        dataset.abort();
+                        LOGGER.info("Reading RDF - Not Completed - File: {} does not exist", rdfFile, graphName, rdfFormat);
+                    }
                 }
             } catch (Exception ex) {
                 dataset.abort();
@@ -212,6 +205,29 @@ public class DatasetOperations {
             }
         }
 
+    }
+
+    private static void prepareSpatialExtension(Dataset dataset, ArgsConfig argsConfig) throws SpatialIndexException {
+
+        // Transaction now required to check if dataset is empty.
+        dataset.begin(ReadWrite.READ);
+        boolean isEmpty = dataset.isEmpty();
+        dataset.end();
+
+        // Only build spatial index if data provided.
+        if (!isEmpty) {
+            if (argsConfig.getSpatialIndexFile() != null) {
+                File spatialIndexFile = argsConfig.getSpatialIndexFile();
+                GeoSPARQLConfig.setupSpatialIndex(dataset, spatialIndexFile);
+            } else if (argsConfig.isTDBFileSetup()) {
+                File spatialIndexFile = new File(argsConfig.getTdbFile(), SPATIAL_INDEX_FILE);
+                GeoSPARQLConfig.setupSpatialIndex(dataset, spatialIndexFile);
+            } else {
+                GeoSPARQLConfig.setupSpatialIndex(dataset);
+            }
+        } else {
+            LOGGER.warn("Datset empty. Spatial Index not constructed. Server will require restarting after adding data and any updates to build Spatial Index.");
+        }
     }
 
 }
