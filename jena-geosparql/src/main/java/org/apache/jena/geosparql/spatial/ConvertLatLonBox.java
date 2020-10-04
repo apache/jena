@@ -17,14 +17,12 @@
  */
 package org.apache.jena.geosparql.spatial;
 
-import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.geosparql.implementation.WKTLiteralFactory;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import static org.apache.jena.geosparql.spatial.ConvertLatLon.extractDouble;
 import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.sparql.expr.NodeValue;
-import org.apache.jena.sparql.util.FmtUtils;
 
 /**
  *
