@@ -24,7 +24,7 @@ import java.util.concurrent.Callable;
 
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.lib.InternalErrorException;
-import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.server.DataService;
 import org.slf4j.Logger;
@@ -74,8 +74,7 @@ public class AsyncTask implements Callable<Object>
 
     private void start() {
         if ( startPoint != null ) {
-            String msg = format("[Task %s] Async task has already been started", taskId);
-            Log.warn(Fuseki.serverLog, msg);
+            FmtLog.warn(Fuseki.serverLog, "[Task %s] Async task has already been started", taskId);
             throw new InternalErrorException("Finish has already been called ["+getTaskId()+"]");
         }
 
@@ -85,8 +84,7 @@ public class AsyncTask implements Callable<Object>
 
     public void finish() {
         if ( finishPoint != null ) {
-            String msg = format("[Task %s] Async task has already been finished", taskId);
-            Log.warn(Fuseki.serverLog, msg);
+            FmtLog.warn(Fuseki.serverLog, "[Task %s] Async task has already been finished", taskId);
             throw new InternalErrorException("Finish has already been called ["+getTaskId()+"]");
         }
         finishPoint = DateTimeUtils.nowAsXSDDateTimeString();

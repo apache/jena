@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.logging.FmtLog;
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.server.*;
@@ -115,7 +114,7 @@ public class ActionExecLib {
                 ServletOps.responseSendError(response, HttpSC.SERVICE_UNAVAILABLE_503, message);
             } catch (ActionErrorException ex) {
                 if ( ex.getCause() != null )
-                    Log.warn(Fuseki.serverLog, "ActionErrorException with cause", ex);
+                    FmtLog.warn(action.log, ex, "[%d] ActionErrorException with cause", action.id);
                 // Log message done by printResponse in a moment.
                 if ( ex.getMessage() != null )
                     ServletOps.responseSendError(response, ex.getRC(), ex.getMessage());

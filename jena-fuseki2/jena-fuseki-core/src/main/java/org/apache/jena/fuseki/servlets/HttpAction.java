@@ -318,7 +318,7 @@ public class HttpAction
         catch (Exception ex) {
             // Some datasets claim to be transactional but
             // don't provide a real abort. We tried to avoid
-            // them earlier but even if they sneek through,
+            // them earlier but even if they sneak through,
             // we try to continue server operation.
             Log.warn(this, "Exception during abort (operation attempts to continue): "+ex.getMessage());
         }

@@ -26,6 +26,7 @@ import java.util.zip.GZIPOutputStream;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.DateTimeUtils;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
@@ -90,7 +91,7 @@ public class Backup
         synchronized(activeBackups) {
             // Atomically check-and-set
             if ( activeBackups.contains(dsg) )
-                Log.warn(Fuseki.serverLog, "Backup already in progress");
+                FmtLog.warn(Fuseki.serverLog, "Backup already in progress");
             activeBackups.add(dsg);
         }
 
@@ -112,7 +113,7 @@ public class Backup
             out.close();
             out = null;
         } catch (FileNotFoundException e) {
-            Log.warn(Fuseki.serverLog, "File not found: " + backupfile);
+            FmtLog.warn(Fuseki.serverLog, "File not found: %s", backupfile);
             throw new FusekiException("File not found: " + backupfile);
         } catch (IOException e) {
             IO.exception(e);
