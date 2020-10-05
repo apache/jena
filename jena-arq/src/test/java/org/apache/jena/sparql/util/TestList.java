@@ -36,7 +36,7 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.other.GLib ;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.graph.GNode ;
 import org.apache.jena.sparql.util.graph.GraphList ;
@@ -239,7 +239,7 @@ public class TestList
     private static void testGraphListMember(Node s, Node...expected) {
         Node list = listOf(graph, s) ;
         Iterator<Triple> iter = GraphList.listMember(graph, list, Node.ANY) ;
-        Iterator<Node> x = GLib.triple2object(iter) ;
+        Iterator<Node> x = G.triple2object(iter) ;
         List<Node> z = Iter.toList(x) ;
         check(z, expected) ;
     }

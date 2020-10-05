@@ -28,11 +28,12 @@ import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
 import org.apache.jena.ext.com.google.common.collect.Multimap;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.shacl.engine.Parameter;
 import org.apache.jena.shacl.engine.SparqlConstraints;
 import org.apache.jena.shacl.engine.constraint.ConstraintComponentSPARQL;
 import org.apache.jena.shacl.engine.constraint.SparqlComponent;
-import org.apache.jena.shacl.lib.G;
+
 import org.apache.jena.shacl.vocabulary.SHACL;
 
 class ConstraintComponents {
@@ -70,7 +71,7 @@ class ConstraintComponents {
         // SHACL.SPARQLConstraintComponent is not a subclass of SHACL.ConstraintComponent
         // SHACL.SPARQLConstraintComponent is an instance of SHACL.ConstraintComponent.
         // Need to process by actual property present.
-        G.listAllNodesOfType(shapesGraph, SHACL.ConstraintComponent).forEach(sccNode->{
+        G.allNodesOfTypeRDFS(shapesGraph, SHACL.ConstraintComponent).forEach(sccNode->{
             SparqlComponent c = sparqlConstraintComponent(shapesGraph, sccNode);
             if ( c != null ) {
                 for ( Parameter p : c.getParams() ) {
@@ -106,7 +107,7 @@ class ConstraintComponents {
 
 //          Alternative approach
 //            // Find all shapes uses the parameter.
-//            List<Node> shapes = G.find(shapesGraph, null, paramPath, null).mapWith(Triple::getSubject).toList();
+//            List<Node> shapes = G1.find(shapesGraph, null, paramPath, null).mapWith(Triple::getSubject).toList();
             Node shNode = shape.getShapeNode();
 
             // All components with this parameter.

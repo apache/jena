@@ -18,18 +18,19 @@
 
 package org.apache.jena.shacl.validation;
 
-import static org.apache.jena.shacl.lib.G.isOfType;
-
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.shacl.engine.ShaclPaths;
 import org.apache.jena.shacl.engine.Target;
 import org.apache.jena.shacl.engine.ValidationContext;
-import org.apache.jena.shacl.lib.G;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.NodeShape;
 import org.apache.jena.shacl.parser.PropertyShape;
@@ -166,7 +167,7 @@ public class VLib {
         switch(target.getTargetType()) {
             case targetClass:
             case implicitClass:
-                return G.allNodesOfType(data, targetObj);
+                return G.allNodesOfTypeRDFS(data, targetObj);
             case targetNode:
                 return Collections.singletonList(targetObj);
             case targetObjectsOf:
@@ -190,7 +191,7 @@ public class VLib {
         switch (target.getTargetType()) {
             case targetClass:
             case implicitClass:
-                return isOfType(data, node, targetObject);
+                return G.isOfType(data, node, targetObject);
             case targetNode:
                 return targetObject.equals(node);
             case targetObjectsOf:

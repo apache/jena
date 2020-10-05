@@ -34,7 +34,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.RIOT;
-import org.apache.jena.riot.other.GLib;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterTTL;
 import org.apache.jena.riot.out.NodeFormatterTTL_MultiLine;
@@ -326,7 +326,7 @@ public abstract class TurtleShell {
         }
 
         private Iterator<Node> listSubjects() {
-            return GLib.listSubjects(graph) ;
+            return G.listSubjects(graph) ;
         }
 
         // ---- Data access

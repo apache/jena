@@ -22,9 +22,12 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Sync ;
-import org.apache.jena.graph.*;
+import org.apache.jena.graph.Capabilities;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.TransactionHandler;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.GraphBase ;
-import org.apache.jena.riot.other.GLib ;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.shared.AddDeniedException;
 import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.shared.JenaException ;
@@ -118,7 +121,7 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
         if ( Quad.isUnionGraph(gn) )
             return graphUnionFind(s, p, o) ;
         Node g = graphNode(gn) ;
-        Iterator<Triple> iter = GLib.quads2triples(dsg.find(g, s, p, o)) ;
+        Iterator<Triple> iter = G.quads2triples(dsg.find(g, s, p, o)) ;
         return WrappedIterator.createNoRemove(iter) ;
     }
 
@@ -132,7 +135,7 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
         // For example, Iter.distinctAdjacent is a lot cheaper than Iter.distinct
         // but assumes things come back in a particular order
         Iterator<Quad> iterQuads = getDataset().find(g, s, p, o) ;
-        Iterator<Triple> iter = GLib.quads2triples(iterQuads) ;
+        Iterator<Triple> iter = G.quads2triples(iterQuads) ;
         // Suppress duplicates after projecting to triples.
         iter = Iter.distinct(iter) ;
         return WrappedIterator.createNoRemove(iter) ;

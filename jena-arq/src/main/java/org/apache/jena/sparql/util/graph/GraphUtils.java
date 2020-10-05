@@ -27,6 +27,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.* ;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.util.NotUniqueException ;
 import org.apache.jena.sparql.util.PropertyRequiredException ;
@@ -42,14 +43,16 @@ public class GraphUtils {
      * Convert an iterator of triples into quads for the default graph. This is
      * {@link Quad#defaultGraphIRI}, not {@link Quad#defaultGraphNodeGenerated}, which is
      * for quads outside a dataset, usually the output of parsers.
+     * @deprecated Use {@link G#triples2quadsDftGraph(Iterator)} instead
      */
-    public static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter) {
-        return triples2quads(Quad.defaultGraphIRI, iter) ;
+    public static Iter<Quad> triples2quadsDftGraph(Iterator<Triple> iter) {
+        return G.triples2quadsDftGraph(iter);
     }
 
-    /** Convert an iterator of triples into quads for the specified graph name. */
+    /** Convert an iterator of triples into quads for the specified graph name. 
+     * @deprecated Use {@link G#triples2quads(Node,Iterator)} instead*/
     public static Iter<Quad> triples2quads(final Node graphNode, Iterator<Triple> iter) {
-        return Iter.iter(iter).map(t -> new Quad(graphNode, t)) ;
+        return G.triples2quads(graphNode, iter);
     }
 
     public static List<String> multiValueString(Resource r, Property p) {

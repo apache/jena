@@ -19,8 +19,6 @@
 package org.apache.jena.tdb.store;
 
 
-import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quadsDftGraph ;
-
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
@@ -31,6 +29,7 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.sparql.core.DatasetGraphTriplesQuads ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.Transactional ;
@@ -78,7 +77,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     
     @Override
     protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o)
-    { return triples2quadsDftGraph(getTripleTable().find(s, p, o)) ; }
+    { return G.triples2quadsDftGraph(getTripleTable().find(s, p, o)) ; }
 
     @Override
     protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o)

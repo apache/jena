@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.shacl.lib.G;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.vocabulary.SHACL;
 

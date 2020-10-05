@@ -22,7 +22,6 @@ import static java.lang.ThreadLocal.withInitial;
 import static org.apache.jena.graph.Node.ANY;
 import static org.apache.jena.query.ReadWrite.WRITE;
 import static org.apache.jena.sparql.core.Quad.isUnionGraph;
-import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quadsDftGraph ;
 import static org.apache.jena.system.Txn.calculateRead;
 import static org.apache.jena.system.Txn.executeWrite;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -34,9 +33,12 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.graph.*;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.shared.Lock;
 import org.apache.jena.shared.LockMRPlusSW;
 import org.apache.jena.sparql.JenaTransactionException;
@@ -322,7 +324,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     }
 
     private Iterator<Quad> triplesFinder(final Node s, final Node p, final Node o) {
-        return triples2quadsDftGraph(defaultGraph().find(s, p, o).iterator());
+        return G.triples2quadsDftGraph(defaultGraph().find(s, p, o).iterator());
     }
 
     @Override

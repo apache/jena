@@ -26,8 +26,30 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.BasicPattern ;
 
 
+/**
+ * A {@code GNode} pair of (graph, node in graph) with an abstracted "findable"
+ * operation so it work for graphs and collections of triples.
+ * <p>
+ * See {@link GraphList}.
+ */
 public class GNode
 {
+    public static GNode create(Graph graph, Node node) {
+        return new GNode(graph, node);
+    }
+
+    public static GNode subject(Graph graph, Triple triple) {
+        return triple == null ? null : create(graph, triple.getSubject());
+    }
+
+    public static GNode predicate(Graph graph, Triple triple) {
+        return triple == null ? null : create(graph, triple.getPredicate());
+    }
+
+    public static GNode object(Graph graph, Triple triple) {
+        return triple == null ? null : create(graph, triple.getObject());
+    }
+    
     public final Findable findable ;
     public final Node node ;
     

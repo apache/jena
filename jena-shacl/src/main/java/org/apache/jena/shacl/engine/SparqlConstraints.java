@@ -20,13 +20,15 @@ package org.apache.jena.shacl.engine;
 
 import java.util.StringJoiner;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.impl.Util;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.shacl.engine.constraint.SparqlConstraint;
-import org.apache.jena.shacl.lib.G;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.ShaclParseException;
@@ -35,6 +37,7 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.graph.NodeConst;
+import org.apache.jena.util.iterator.ExtendedIterator;
 
 public class SparqlConstraints {
     //    5. SPARQL-based Constraints
@@ -72,7 +75,7 @@ public class SparqlConstraints {
          */
         //G.contains(shapesGraph, sparqlConstraintNode, C.rdfType, SHACL.SPARQLConstraint);
         Node message = G.getZeroOrOneSP(shapesGraph, sparqlConstraintNode, SHACL.message);
-        boolean deactivated = G.absentOrOne(shapesGraph, sparqlConstraintNode, SHACL.deactivated, NodeConst.nodeTrue);
+        boolean deactivated = absentOrOne(shapesGraph, sparqlConstraintNode, SHACL.deactivated, NodeConst.nodeTrue);
 
         // XXX Optimize prefixes acquisition in case of use from more than one place.
         String prefixes = prefixes(shapesGraph, sparqlConstraintNode);
@@ -91,6 +94,27 @@ public class SparqlConstraints {
             throw new ShaclParseException("SPARQL parse error: "+ex.getMessage()+"\n"+qs);
         }
     }
+    
+    /**
+     * Test for zero or one occurrences of a tripel pattern that is expected to be   
+     * Returns false for zero, true for one. 
+     * Throws an exception on two or more.
+     */
+    private static boolean absentOrOne(Graph g, Node s, Node p, Node o) {
+        ExtendedIterator<Triple> iter = G.find(g, s, p, null);
+        try {
+            if ( ! iter.hasNext() )
+                return false;
+            iter.next();
+            if ( ! iter.hasNext() )
+                return true;
+            long x = Iter.count(G.find(g, s, p, null));
+            throw new ShaclParseException("More than one (" + x + ") of " + String.format("(%s %s %s)", s, p, o));
+        }
+        finally { iter.close(); }
+    }
+
+
 
     public static String prefixes(Graph shapesGraph, Node sparqlNode) {
         // XXX Ignores sparqlNode ATM

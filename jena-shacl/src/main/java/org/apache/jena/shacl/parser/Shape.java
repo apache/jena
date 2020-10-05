@@ -25,10 +25,10 @@ import java.util.Collection;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.Target;
 import org.apache.jena.shacl.engine.TargetOps;
-import org.apache.jena.shacl.lib.G;
 import org.apache.jena.shacl.validation.Severity;
 
 public abstract class Shape {

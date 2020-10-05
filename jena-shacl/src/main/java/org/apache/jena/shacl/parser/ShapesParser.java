@@ -18,8 +18,8 @@
 
 package org.apache.jena.shacl.parser;
 
+import static org.apache.jena.riot.other.G.*;
 import static org.apache.jena.shacl.engine.ShaclPaths.pathToString;
-import static org.apache.jena.shacl.lib.G.*;
 import static org.apache.jena.shacl.lib.ShLib.displayStr;
 import static org.apache.jena.shacl.sys.C.rdfsClass;
 
@@ -31,13 +31,14 @@ import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.other.G;
+import org.apache.jena.riot.other.RDFDataException;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.engine.ShaclPaths;
 import org.apache.jena.shacl.engine.Target;
 import org.apache.jena.shacl.engine.TargetType;
 import org.apache.jena.shacl.engine.Targets;
 import org.apache.jena.shacl.engine.constraint.JLogConstraint;
-import org.apache.jena.shacl.lib.G;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.sys.ShaclSystem;
 import org.apache.jena.shacl.validation.Severity;
@@ -140,8 +141,8 @@ public class ShapesParser {
     /** Find all names for shapes with explicit type NodeShape or PropertyShape. */
     public static Collection<Node> findDeclaredShapes(Graph shapesGraph) {
         Set<Node> declared = new HashSet<>();
-        G.listAllNodesOfType(shapesGraph, SHACL.NodeShape).forEach(declared::add);
-        G.listAllNodesOfType(shapesGraph, SHACL.PropertyShape).forEach(declared::add);
+        G.allNodesOfTypeRDFS(shapesGraph, SHACL.NodeShape).forEach(declared::add);
+        G.allNodesOfTypeRDFS(shapesGraph, SHACL.PropertyShape).forEach(declared::add);
         return declared;
     }
 
@@ -240,29 +241,33 @@ public class ShapesParser {
     
     /** parse a shape during a parsing process */
     /*package*/ static Shape parseShapeStep(Set<Node> traversed, Map<Node, Shape> parsed, Graph shapesGraph, Node shapeNode) {
-        // Called by Constraints
-        if ( parsed.containsKey(shapeNode) )
-            return parsed.get(shapeNode);
-        // Loop detection. Do before parsing.
-        if ( traversed.contains(shapeNode) ) {
+        try { 
+            // Called by Constraints
+            if ( parsed.containsKey(shapeNode) )
+                return parsed.get(shapeNode);
+            // Loop detection. Do before parsing.
+            if ( traversed.contains(shapeNode) ) {
 //            Log.error(ShapesParser.class,  "Cycle detected : node "+ShLib.displayStr(shapeNode));
 //            throw new ShaclParseException("Shapes cycle detected : node "+ShLib.displayStr(shapeNode));
-            ShaclSystem.systemShaclLogger.warn("Cycle detected : node "+ShLib.displayStr(shapeNode));
-            // Put in a substitute shape.
-            return unshape(shapesGraph, shapeNode);
+                ShaclSystem.systemShaclLogger.warn("Cycle detected : node "+ShLib.displayStr(shapeNode));
+                // Put in a substitute shape.
+                return unshape(shapesGraph, shapeNode);
+            }
+
+            traversed.add(shapeNode);
+            Shape shape = parseShape$(traversed, parsed, shapesGraph, shapeNode);
+            parsed.put(shapeNode, shape);
+            traversed.remove(shapeNode);
+            return shape;
+        } catch (RDFDataException ex) {
+            throw new ShaclParseException(ex.getMessage());
         }
-        
-        traversed.add(shapeNode);
-        Shape shape = parseShape$(traversed, parsed, shapesGraph, shapeNode);
-        parsed.put(shapeNode, shape);
-        traversed.remove(shapeNode);
-        return shape;
     }
 
     private static Shape parseShape$(Set<Node> traversed, Map<Node, Shape> parsed, Graph shapesGraph, Node shapeNode) {
         if ( DEBUG )
             OUT.printf("Parse shape : %s\n", displayStr(shapeNode));
-        boolean isDeactivated = absentOrOne(shapesGraph, shapeNode, SHACL.deactivated, NodeConst.nodeTrue);
+        boolean isDeactivated = contains(shapesGraph, shapeNode, SHACL.deactivated, NodeConst.nodeTrue);
         Collection<Target> targets = targets(shapesGraph, shapeNode);
         List<Constraint> constraints = Constraints.parseConstraints(shapesGraph, shapeNode, parsed, traversed);
         Severity severity = severity(shapesGraph, shapeNode);

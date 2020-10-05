@@ -975,7 +975,6 @@ public abstract class AbstractTestGraph extends GraphTestBase
         return toUpdate;
     }
 
-
     protected Graph copy( Graph g )
     {
         Graph result = Factory.createDefaultGraph();

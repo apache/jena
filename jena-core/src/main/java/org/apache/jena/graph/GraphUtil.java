@@ -293,7 +293,7 @@ public class GraphUtil
      * @implNote
      *  This is designed for the case of {@code dstGraph} being comparable or much larger than
      *  {@code srcGraph} or {@code srcGraph} having a lot of triples to actually be
-     *  deleted from {@code dstGraph}. This includes teh case of large, persistent {@code dstGraph}.
+     *  deleted from {@code dstGraph}. This includes the case of large, persistent {@code dstGraph}.
      *  <p>  
      *  It is not designed for a large {@code srcGraph} and large {@code dstGraph} 
      *  with only a few triples in common to delete from {@code dstGraph}. It is better to

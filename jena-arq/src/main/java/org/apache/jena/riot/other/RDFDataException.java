@@ -16,11 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shacl.lib;
+package org.apache.jena.riot.other;
 
-import org.apache.jena.shacl.ShaclException;
+import org.apache.jena.shared.JenaException;
 
-public class RDFDataException extends ShaclException {
+public class RDFDataException extends JenaException {
     public RDFDataException(String msg) { super(msg);}
     public RDFDataException(String msg, Throwable th) { super(msg, th); }
 }

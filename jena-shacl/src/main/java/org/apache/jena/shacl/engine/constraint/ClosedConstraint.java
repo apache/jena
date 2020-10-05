@@ -18,7 +18,8 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
-import static org.apache.jena.shacl.compact.writer.CompactOut.*;
+import static org.apache.jena.shacl.compact.writer.CompactOut.compactArrayNodes;
+import static org.apache.jena.shacl.compact.writer.CompactOut.compactUnquotedString;
 import static org.apache.jena.shacl.lib.ShLib.displayStr;
 
 import java.util.*;
@@ -27,16 +28,16 @@ import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
-import org.apache.jena.shacl.lib.G;
-import org.apache.jena.shacl.lib.GN;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.ShaclParseException;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.sparql.path.PathFactory;
+import org.apache.jena.sparql.util.graph.GNode;
 import org.apache.jena.sparql.util.graph.GraphList;
 
 /** sh:closed */
@@ -61,7 +62,7 @@ public class ClosedConstraint implements Constraint {
         if ( G.contains(shapesGraph, shNode, SHACL.ignoredProperties, null) ) {
             Node ignored = G.getOneSP(shapesGraph, shNode, SHACL.ignoredProperties);
             if ( ignored != null ) {
-                ignoredProperties = GraphList.members(GN.create(shapesGraph, ignored)) ;
+                ignoredProperties = GraphList.members(GNode.create(shapesGraph, ignored)) ;
                 ignoredProperties.forEach(p->{
                     if ( ! p.isURI() )
                         throw new ShaclParseException("Only URIs allowed in sh:ignoredProperties at "+displayStr(shNode));

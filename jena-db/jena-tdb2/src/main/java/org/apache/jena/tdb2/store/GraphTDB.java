@@ -29,7 +29,7 @@ import org.apache.jena.dboe.storage.StoragePrefixes;
 import org.apache.jena.dboe.storage.system.GraphViewStorage;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.riot.other.GLib;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
@@ -106,7 +106,7 @@ public class GraphTDB extends GraphViewStorage {
     protected ExtendedIterator<Triple> graphUnionFind(Node s, Node p, Node o) {
         Node g = Quad.unionGraph;
         Iterator<Quad> iterQuads = getDSG().find(g, s, p, o);
-        Iterator<Triple> iter = GLib.quads2triples(iterQuads);
+        Iterator<Triple> iter = G.quads2triples(iterQuads);
         // Suppress duplicates after projecting to triples.
         // TDB guarantees that duplicates are adjacent.
         // See SolverLib.

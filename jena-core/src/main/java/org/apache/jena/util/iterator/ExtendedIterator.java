@@ -19,6 +19,7 @@
 package org.apache.jena.util.iterator;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -71,7 +72,18 @@ public interface ExtendedIterator<T> extends ClosableIterator<T>
      */
      public <U> ExtendedIterator<U> mapWith( Function<T, U> map1 );
 
-    /**
+     /**
+      * Execute an action on each element of the iterator.
+      * This operation ends and closes the {@code ExtendedIterator} even if there is an exception.
+      * Shorter name for "{@code Iterator.forEachRemaining}", adding exception handling.  
+      */
+     public default void forEach( Consumer<T> action) { 
+         try { 
+             forEachRemaining(action);
+         } finally { close() ; } 
+     }
+     
+     /**
          Answer a list of the [remaining] elements of this iterator, in order,
          consuming this iterator.
     */
