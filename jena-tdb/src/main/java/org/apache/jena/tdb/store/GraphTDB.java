@@ -29,7 +29,7 @@ import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.graph.GraphEvents ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.other.GLib ;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -138,7 +138,7 @@ public abstract class GraphTDB extends GraphView implements Closeable, Sync {
     @Override
     protected ExtendedIterator<Triple> graphUnionFind(Node s, Node p, Node o) {
         Iterator<Quad> iterQuads = getDatasetGraphTDB().find(Quad.unionGraph, s, p, o) ;
-        Iterator<Triple> iter = GLib.quads2triples(iterQuads) ;
+        Iterator<Triple> iter = G.quads2triples(iterQuads) ;
         // Suppress duplicates after projecting to triples.
         // TDB guarantees that duplicates are adjacent.
         // See SolverLib.

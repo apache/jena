@@ -22,8 +22,11 @@ import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 
 /** Some node constants */
 public class NodeConst {
@@ -43,6 +46,8 @@ public class NodeConst {
     public static final Node nodeTen       = literal("10", XSDDatatype.XSDinteger);
     public static final Node nodeMinusOne  = literal("-1", XSDDatatype.XSDinteger);
     public static final Node emptyString   = NodeFactory.createLiteral("");
+    public static final Node TRUE = NodeConst.nodeTrue;
+    public static final Node FALSE = NodeConst.nodeFalse;
 
     // It should be safe to use RDF.Nodes.
     // Fallback code "just in case"
@@ -58,4 +63,16 @@ public class NodeConst {
     public static final Node nodeOwlSameAs        = OWL.sameAs.asNode();    // uri("http://www.w3.org/2002/07/owl#sameAs")
     public static final Node rdfLangString        = RDF.Nodes.langString;
     public static final RDFDatatype dtLangString  = RDF.dtLangString;
+    
+    public static Literal mTRUE = ResourceFactory.createTypedLiteral(true);
+    public static Literal mFALSE = ResourceFactory.createTypedLiteral(false);
+
+//    public static Node rdfType = RDF.Nodes.type;
+    public static Node rdfsClass = RDFS.Nodes.Class;
+    public static Node rdfsSubclassOf = RDFS.subClassOf.asNode();
+
+    public static final Node FIRST = RDF.first.asNode() ;
+    public static final Node REST = RDF.rest.asNode() ;
+    public static final Node NIL = RDF.nil.asNode() ;
+
 }

@@ -24,8 +24,8 @@ import java.util.Set;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.shacl.engine.ValidationContext;
-import org.apache.jena.shacl.lib.G;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.sparql.expr.ExprNotComparableException;

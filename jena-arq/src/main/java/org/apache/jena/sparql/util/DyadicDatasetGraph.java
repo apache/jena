@@ -25,7 +25,6 @@ import static org.apache.jena.ext.com.google.common.collect.Iterators.concat;
 import static org.apache.jena.graph.Node.ANY;
 import static org.apache.jena.query.TxnType.READ;
 import static org.apache.jena.sparql.core.Quad.defaultGraphIRI;
-import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quads;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -36,6 +35,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.compose.MultiUnion;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.shared.Lock;
 import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -195,7 +195,7 @@ public abstract class DyadicDatasetGraph extends PairOfSameType<DatasetGraph> im
     }
 
     protected Iterator<Quad> findInOneGraph(Node g, Node s, Node p, Node o) {
-        return triples2quads(g, getGraph(g).find(s, p, o));
+        return G.triples2quads(g, getGraph(g).find(s, p, o));
     }
 
     @Override

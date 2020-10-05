@@ -21,7 +21,7 @@ package org.apache.jena.atlas.io ;
 import java.io.IOException ;
 import java.io.Reader ;
 
-/** Machinary to add Reader functionality to a CharStream */
+/** Machinery to add Reader functionality to a CharStream */
 public abstract class CharStreamReader extends Reader implements CharStream {
     
     @Override

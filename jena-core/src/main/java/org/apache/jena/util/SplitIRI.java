@@ -33,7 +33,7 @@ import org.apache.jena.rdf.model.impl.Util ;
  * or last {@code #}, if present.
  * See {@link #splitpoint} for more details.
  * <p>
- * This code form the machinary behind {@link Node#getLocalName}
+ * This code form the machinery behind {@link Node#getLocalName}
  * {@link Node#getNameSpace} for URI Nodes.
  * <p>
  * {@link #localnameTTL} is strict Turtle; it is the same local name as

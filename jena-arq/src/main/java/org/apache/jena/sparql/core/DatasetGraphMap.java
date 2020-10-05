@@ -18,9 +18,6 @@
 
 package org.apache.jena.sparql.core;
 
-import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quads ;
-import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quadsDftGraph ;
-
 import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Map ;
@@ -32,6 +29,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker ;
 import org.apache.jena.sparql.graph.GraphUnionRead ;
@@ -126,13 +124,13 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
     @Override
     protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o) {
         Iterator<Triple> iter = getDefaultGraph().find(s, p, o) ;
-        return triples2quadsDftGraph(iter)  ;
+        return G.triples2quadsDftGraph(iter)  ;
     }
 
     @Override
     protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o) {
         Iterator<Triple> iter = getGraph(g).find(s, p, o) ;
-        return triples2quads(g, iter) ;
+        return G.triples2quads(g, iter) ;
     }
 
     @Override

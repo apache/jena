@@ -50,6 +50,7 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.XSD;
 
+/** Misc operations used in the jena-shacl module. */
 public class ShLib {
 
     private static String PREFIXES =  StrUtils.strjoinNL(

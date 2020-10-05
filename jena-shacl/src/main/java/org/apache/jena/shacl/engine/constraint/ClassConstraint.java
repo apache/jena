@@ -21,15 +21,15 @@ package org.apache.jena.shacl.engine.constraint;
 import static org.apache.jena.shacl.compact.writer.CompactOut.compact;
 import static org.apache.jena.shacl.lib.ShLib.displayStr;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
-import org.apache.jena.shacl.lib.G;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.shacl.vocabulary.SHACL;
 
@@ -65,7 +65,7 @@ public class ClassConstraint extends ConstraintDataTerm {
             return new ReportItem(msg, focusNode);
         }
 
-        List<Node> types = G.listAllTypesOfNode(data, focusNode);
+        Collection<Node> types = G.allTypesOfNodeRDFS(data, focusNode);
         if ( types.contains(expectedClass) )
             return null;
         String msg = toString()+": Expected class :"+displayStr(expectedClass)+" for "+displayStr(focusNode);

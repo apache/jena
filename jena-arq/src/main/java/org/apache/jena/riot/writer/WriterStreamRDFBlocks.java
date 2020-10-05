@@ -27,7 +27,7 @@ import java.util.Objects;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.other.GLib ;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.util.Context;
@@ -93,7 +93,7 @@ public class WriterStreamRDFBlocks extends WriterStreamRDFBatched
             startGraph(g) ;
             lastGraph = g ;
         }
-        List<Triple> triples = GLib.quads2triples(quads.iterator()).toList() ;
+        List<Triple> triples = G.quads2triples(quads.iterator()).toList() ;
         printBatch(s, triples) ;
         // No trailing "." has been printed.
         lastSubject = s ;

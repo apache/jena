@@ -19,6 +19,7 @@
 package org.apache.jena.shacl.engine.constraint;
 
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.vocabulary.SHACL;
@@ -39,9 +40,11 @@ public class MinCount extends CardinalityConstraint {
         return SHACL.MinCountConstraintComponent;
     }
 
-    // Special syntax. Do nothing is called generally.
+    // Special syntax. Handled in ShapeOutputVisitor property shape. Ignore here.
     @Override
-    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {}
+    public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
+        throw new InternalErrorException("Call to MinCount/compact syntax");
+    }
     
     @Override
     public String toString() {

@@ -153,7 +153,7 @@ public class ValidationProc {
     }
 
     // XXX VLib
-    // Make ValidationContext carry teh ShaclVAlidator to recurse on.
+    // Make ValidationContext carry the ShaclVAlidator to recurse on.
     // Recursion for shapes of shapes. "shape-expecting constraint parameters"
     public static void execValidateShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode) {
         VLib.validateShape(vCxt, data, shape, focusNode);

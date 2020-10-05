@@ -68,7 +68,7 @@ public class Iter<T> implements Iterator<T> {
 
     public static <T> Stream<T> asStream(Iterator<T> iterator, boolean parallel) {
         // Why isn't there a JDK operation for Iterator -> (sequential) stream?  
-        int characteristics = 0 ; //Spliterator.IMMUTABLE;
+        int characteristics = Spliterator.IMMUTABLE;
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, characteristics), parallel);
     }
 

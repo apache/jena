@@ -44,7 +44,7 @@ class NormalizeValue
     //   hexBinary, base64Binary.
     
     // Auxillary class of datatype handers, placed here to avoid static initialization
-    // ordering problems (if in CanonicalizeLiteral, all this low-level machinary would
+    // ordering problems (if in CanonicalizeLiteral, all this low-level machinery would
     // need to be in the file before the external API, which I consider bad style).  It
     // is a source of obscure bugs.
 

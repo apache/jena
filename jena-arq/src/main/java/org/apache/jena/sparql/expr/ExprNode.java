@@ -31,7 +31,7 @@ import org.apache.jena.sparql.sse.writers.WriterExpr ;
 
 /** A node that is a constraint expression that can be evaluated
  * An Expr is already a Constraint - ExprNode is the base implementation
- * of all Expr classes that provides the Constraint machinary. */
+ * of all Expr classes that provides the Constraint machinery. */
  
 public abstract class ExprNode implements Expr
 {

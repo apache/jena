@@ -18,8 +18,6 @@
 
 package org.apache.jena.sparql.core;
 
-import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quadsDftGraph;
-
 import java.util.Iterator;
 
 import org.apache.jena.atlas.iterator.Iter;
@@ -30,6 +28,7 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.reasoner.InfGraph;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.sparql.graph.GraphOps;
 import org.apache.jena.sparql.graph.GraphZero;
 
@@ -189,7 +188,7 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
     // -- Not needed -- implement find(g,s,p,o) directly.
     @Override
     protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o) {
-        return triples2quadsDftGraph(graph.find(s, p, o));
+        return G.triples2quadsDftGraph(graph.find(s, p, o));
     }
 
     @Override
@@ -216,7 +215,7 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
     @Override
     public Iterator<Quad> find(Node g, Node s, Node p, Node o) {
         if ( isWildcard(g) || isDefaultGraph(g) )
-            return triples2quadsDftGraph(graph.find(s, p, o));
+            return G.triples2quadsDftGraph(graph.find(s, p, o));
         else
             return new NullIterator<>();
     }

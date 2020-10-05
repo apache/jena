@@ -35,7 +35,7 @@ import org.apache.jena.sparql.sse.Item ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-/** Machinary.
+/** Machinery.
  * This code implements the connectiveness assumed by execution based on substitution (index joins).
  * i.e. if <code>{ ?x :p ?v . ?x :q ?w }</code> then <code>?x</code> is <code>TERM</code>
  * at the second triple. 

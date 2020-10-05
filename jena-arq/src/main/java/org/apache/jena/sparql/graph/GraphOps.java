@@ -91,7 +91,7 @@ public class GraphOps {
         deleteAll(g, iter.iterator()) ;
     }
 
-    /** Remove all layers of graph wrapping. Returns the orinalk graph is not wrapped at all.*/
+    /** Remove all layers of graph wrapping. Returns the original graph is not wrapped at all.*/
     public static Graph unwrapAll(Graph graph) {
         Graph graph1 = graph;
         for (;;) {
