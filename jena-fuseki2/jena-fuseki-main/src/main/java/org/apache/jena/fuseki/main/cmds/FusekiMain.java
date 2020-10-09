@@ -82,8 +82,9 @@ public class FusekiMain extends CmdARQ {
     private static ArgDecl  argConfig       = new ArgDecl(ArgDecl.HasValue, "config", "conf");
     private static ArgDecl  argGZip         = new ArgDecl(ArgDecl.HasValue, "gzip");
     private static ArgDecl  argBase         = new ArgDecl(ArgDecl.HasValue, "base", "files");
-
+    
     private static ArgDecl  argCORS         = new ArgDecl(ArgDecl.NoValue, "withCORS", "cors", "CORS");
+    private static ArgDecl  argNoCORS         = new ArgDecl(ArgDecl.NoValue, "noCORS", "no-cors");
     private static ArgDecl  argWithPing     = new ArgDecl(ArgDecl.NoValue, "withPing", "ping");
     private static ArgDecl  argWithStats    = new ArgDecl(ArgDecl.NoValue, "withStats", "stats");
     private static ArgDecl  argWithMetrics  = new ArgDecl(ArgDecl.NoValue,  "withMetrics", "metrics");
@@ -166,7 +167,8 @@ public class FusekiMain extends CmdARQ {
         add(argHttpsPort, "--httpsPort=NUM", "https port (default port is 3043)");
 
         add(argPasswdFile, "--passwd=FILE", "Password file");
-        add(argCORS, "--cors", "Enable CORS");
+        add(argCORS); //, "--cors"); "Enable CORS");
+        add(argNoCORS, "--no-cors", "Disable CORS");
         // put in the configuration file
 //            add(argRealm, "--realm=REALM", "Realm name");
         add(argWithPing,    "--ping",   "Enable /$/ping");
@@ -396,7 +398,8 @@ public class FusekiMain extends CmdARQ {
             serverConfig.authScheme = AuthScheme.scheme(schemeStr);
         }
 
-        serverConfig.withCORS = contains(argCORS);
+        // 2020-10: Ignore argCORS - CORS is now on by default in Fuseki Main cmd  
+        serverConfig.withCORS = ! contains(argNoCORS);
         serverConfig.withPing = contains(argWithPing);
         serverConfig.withStats = contains(argWithStats);
         serverConfig.withMetrics = contains(argWithMetrics);
