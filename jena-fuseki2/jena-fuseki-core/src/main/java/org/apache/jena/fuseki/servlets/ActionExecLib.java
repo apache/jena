@@ -174,7 +174,7 @@ public class ActionExecLib {
      *            Request ID
      */
     public static void addRequestId(HttpServletResponse response, long id) {
-        response.addHeader("Fuseki-Request-ID", Long.toString(id));
+        response.addHeader(Fuseki.FusekiRequestIdHeader, Long.toString(id));
     }
 
     /**
