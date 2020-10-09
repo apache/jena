@@ -27,7 +27,10 @@ import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.web.HttpSC;
 
-public class ExampleService extends ActionREST {
+/**
+ * A demonstration service implementation.
+ */
+public class DemoService extends ActionREST {
     static { FusekiLogging.setLogging(); }
 
     @Override

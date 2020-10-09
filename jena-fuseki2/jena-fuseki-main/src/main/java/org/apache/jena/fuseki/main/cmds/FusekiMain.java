@@ -82,7 +82,7 @@ public class FusekiMain extends CmdARQ {
     private static ArgDecl  argConfig       = new ArgDecl(ArgDecl.HasValue, "config", "conf");
     private static ArgDecl  argGZip         = new ArgDecl(ArgDecl.HasValue, "gzip");
     private static ArgDecl  argBase         = new ArgDecl(ArgDecl.HasValue, "base", "files");
-    
+
     private static ArgDecl  argCORS         = new ArgDecl(ArgDecl.NoValue, "withCORS", "cors", "CORS");
     private static ArgDecl  argNoCORS         = new ArgDecl(ArgDecl.NoValue, "noCORS", "no-cors");
     private static ArgDecl  argWithPing     = new ArgDecl(ArgDecl.NoValue, "withPing", "ping");
