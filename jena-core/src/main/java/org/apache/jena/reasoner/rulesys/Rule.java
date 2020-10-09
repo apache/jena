@@ -18,9 +18,7 @@
 
 package org.apache.jena.reasoner.rulesys;
 
-import java.io.BufferedReader ;
-import java.io.IOException ;
-import java.io.InputStream ;
+import java.io.*;
 import java.util.* ;
 
 import org.apache.jena.datatypes.RDFDatatype ;
@@ -675,7 +673,12 @@ public class Rule implements ClauseEntry {
      * @throws ParserException if there is a problem
      */
     public static List<Rule> parseRules(String source,BuiltinRegistry registry) throws ParserException {
-        return parseRules(new Parser(source,registry));
+        try ( BufferedReader reader = new BufferedReader(new StringReader(source)) ) {
+            Parser parser = rulesParserFromReader(reader, registry);
+            return parseRules(parser);
+        } catch (IOException ex) {
+            throw new WrappedIOException(ex);
+        }
     }
 
     /**
@@ -697,7 +700,6 @@ public class Rule implements ClauseEntry {
      * No embedded spaces supported.
      */
     public static class Parser {
-
 
         /** Tokenizer */
         private Tokenizer stream;
