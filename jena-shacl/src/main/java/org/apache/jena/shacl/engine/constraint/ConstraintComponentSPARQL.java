@@ -26,10 +26,10 @@ import org.apache.jena.ext.com.google.common.collect.Multimap;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.Parameter;
+import org.apache.jena.shacl.engine.SparqlConstraints;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.ShaclParseException;
@@ -51,7 +51,7 @@ public class ConstraintComponentSPARQL implements Constraint {
 
         String qs =  sparqlConstraintComponent.getSparqlString();
         try {
-            this.query = QueryFactory.create(sparqlConstraintComponent.getSparqlString());
+            this.query = SparqlConstraints.parseQueryString(sparqlConstraintComponent.getSparqlString());
             if ( !query.isAskType() && !query.isSelectType() )
                 throw new ShaclParseException("Not a SELECT or ASK query");
         } catch (QueryParseException ex) {

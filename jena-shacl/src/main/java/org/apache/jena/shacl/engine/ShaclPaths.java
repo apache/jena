@@ -204,8 +204,7 @@ public class ShaclPaths {
         if ( n == null )
             out.print(PathWriter.asString(path));
         else
-            nodeFmt.format(out, n);;
-
+            nodeFmt.format(out, n);
     }
 
 

@@ -234,8 +234,14 @@ import org.apache.jena.sparql.util.ModelUtils;
         }
         qsm.add("this", ModelUtils.convertGraphNodeToRDFNode(thisNode, model));
         if ( path != null ) {
-            RDFNode z = ModelUtils.convertGraphNodeToRDFNode(ShaclPaths.pathNode(path), model);
-            qsm.add("PATH" , z);
+            Node pn = ShaclPaths.pathNode(path);
+            // If 'path' can not be translated into a substituted form, then ignore
+            // PATH. This means that is the path is not a simple link, it could only be
+            // done by textually substitution of the SPARQL query string.
+            if ( pn != null ) {
+                RDFNode z = ModelUtils.convertGraphNodeToRDFNode(pn, model);
+                qsm.add("PATH", z);
+            }
         }
         return qsm;
     }
