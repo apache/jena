@@ -67,10 +67,10 @@ import org.apache.jena.web.HttpSC;
  *          .addOperation("/dataset", "endpoint", myOperation)
  *          .build();
  * </pre>
- * @see ExampleService
+ * @see DemoService
  */
 
-public class ExtendFuseki_AddService_1 {
+public class ExFuseki_1_NamedService {
     static { FusekiLogging.setLogging(); }
 
     // Endpoint dispatch only.
@@ -100,7 +100,7 @@ public class ExtendFuseki_AddService_1 {
 
         // The handled for the new operation.
 
-        ActionService customHandler = new ExampleService();
+        ActionService customHandler = new DemoService();
 
         FusekiServer server =
             FusekiServer.create().port(PORT)

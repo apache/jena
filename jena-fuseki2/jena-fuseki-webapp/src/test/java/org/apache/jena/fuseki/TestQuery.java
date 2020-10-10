@@ -98,7 +98,7 @@ public class TestQuery extends AbstractFusekiTest {
         String qs = Convert.encWWWForm("ASK{}");
         URL u = new URL(serviceQuery() + "?query=" + qs);
         HttpURLConnection conn = (HttpURLConnection)u.openConnection();
-        Assert.assertTrue(conn.getHeaderField("Fuseki-Request-ID") != null);
+        Assert.assertTrue(conn.getHeaderField(Fuseki.FusekiRequestIdHeader) != null);
     }
 
     @Test

@@ -36,11 +36,15 @@ import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.web.HttpSC;
 
 /**
- * Create custom endpoint names, dispatch by {@code Content-Type}.
- * See also {@link ExtendFuseki_AddService_1} for more details.
+ * Create custom setup of a {@link DataService}, 
+ * with both a building in operation (query) and a custom one.
+ * These are invoked with named endpoints.
+ * 
+ * This shows a more detailed setup compared to {@link ExFuseki_1_NamedService}. 
+ * See also {@link ExFuseki_1_NamedService} for more details.
  */
 
-public class ExtendFuseki_AddService_2 {
+public class ExFuseki_2_Config_DataService {
     static { FusekiLogging.setLogging(); }
 
     // Endpoint dispatch only.
@@ -53,11 +57,9 @@ public class ExtendFuseki_AddService_2 {
 
     public static void main(String ...args) {
         // Register a new operation
-
         Operation myOperation = Operation.alloc("http://example/special2", "special2", "Custom operation");
 
         // Service endpoint names.
-
         String queryEndpoint = "q";
         String customEndpoint = "x";
 
@@ -71,7 +73,7 @@ public class ExtendFuseki_AddService_2 {
         FusekiConfig.addServiceEP(dataService, Operation.Query, queryEndpoint);
 
         // The handled for the new operation.
-        ActionService customHandler = new ExampleService();
+        ActionService customHandler = new DemoService();
 
         FusekiServer server =
             FusekiServer.create().port(PORT)
@@ -101,7 +103,7 @@ public class ExtendFuseki_AddService_2 {
                 qExec.execAsk();
             }
 
-            // Try default name - 404
+            // Try the usual default name, which is not configured in the DataService so expect a 404.
             try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(SERVER_URL + DATASET + "/sparql", query) ) {
                 qExec.execAsk();
                 throw new RuntimeException("Didn't fail");
@@ -111,6 +113,7 @@ public class ExtendFuseki_AddService_2 {
                 }
             }
 
+            // Make an HTTP GET to the custom operation.
             // Service endpoint name : GET
             String s1 = HttpOp.execHttpGetString(customOperationURL);
             if ( s1 == null )

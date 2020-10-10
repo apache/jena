@@ -34,11 +34,11 @@ import org.apache.jena.util.FileUtils;
 /**
  * This example show adding a custom operation to Fuseki, with dispatch by {@code Content-Type}.
  * <p>
- * See {@link ExtendFuseki_AddService_1} fior a geenral description of the routing process.
- * @see ExampleService
+ * See {@link ExFuseki_1_NamedService} for a general description of the routing process.
+ * @see DemoService
  */
 
-public class ExtendFuseki_AddService_3 {
+public class ExFuseki_3_AddService_ContentType {
     static { FusekiLogging.setLogging(); }
 
     static int PORT             = WebLib.choosePort();
@@ -56,15 +56,12 @@ public class ExtendFuseki_AddService_3 {
         Operation myOperation = Operation.alloc("http://example/special3", "special3", "Custom operation");
 
         // Service endpoint name.
-        // This can be different for different datasets even in the same server.
-        // c.f. {@code fuseki:serviceQuery}
-
         String endpointName = "special";
         String contentType = "application/special";
 
         // The handled for the new operation.
 
-        ActionService customHandler = new ExampleService();
+        ActionService customHandler = new DemoService();
 
         FusekiServer server =
             FusekiServer.create().port(PORT)

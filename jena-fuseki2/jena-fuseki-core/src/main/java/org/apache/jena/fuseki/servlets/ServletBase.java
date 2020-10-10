@@ -46,14 +46,14 @@ public abstract class ServletBase extends HttpServlet {
     protected ServletBase() {}
 
     /**
-     * Helper method which gets a unique request ID and appends it as a header
+     * Helper method which gets a unique request id and appends it as a header
      * to the response
      *
      * @param request
      *            HTTP Request
      * @param response
      *            HTTP Response
-     * @return Request ID
+     * @return Request Id
      */
     protected static long allocRequestId(HttpServletRequest request, HttpServletResponse response) {
         long id = requestIdAlloc.incrementAndGet();
@@ -70,7 +70,7 @@ public abstract class ServletBase extends HttpServlet {
      *            Request ID
      */
     protected static void addRequestId(HttpServletResponse response, long id) {
-        response.addHeader("Fuseki-Request-ID", Long.toString(id));
+        response.addHeader(Fuseki.FusekiRequestIdHeader, Long.toString(id));
     }
 
     static final String varyHeaderSetting = String.join(",",

@@ -227,10 +227,8 @@ public class Fuseki {
         webStreamManager.addLocator(new LocatorFTP());
     }
 
-    /** Default (and development) root of the Fuseki installation for fixed files. */
-    public static String DFT_FUSEKI_HOME = ".";
-    /** Default (and development) root of the varying files in this deployment. */
-    public static String DFT_FUSEKI_BASE = ".";
+    // HTTP response header inserted to aid tracking. 
+    public static String FusekiRequestIdHeader = "Fuseki-Request-Id";
 
     private static boolean            initialized       = false;
 
@@ -331,8 +329,8 @@ public class Fuseki {
             HttpResponse response = httpClient.execute(request);
             // Fuseki does not send "Server" in release mode.
             // (best practice).
-            // All we can do is try for the "Fuseki-Request-ID"
-            String reqId = safeGetHeader(response, "Fuseki-Request-ID");
+            // We can do is try for the "Fuseki-Request-Id"
+            String reqId = safeGetHeader(response, FusekiRequestIdHeader);
             if ( reqId != null )
                 return true;
 

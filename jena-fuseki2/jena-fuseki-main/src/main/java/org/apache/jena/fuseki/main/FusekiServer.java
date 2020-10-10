@@ -706,7 +706,7 @@ public class FusekiServer {
         }
 
         /**
-         * Add an operation to the server, together with its triggering Content-Type (may be null) and servlet handler.
+         * Add an operation to the server, together with its triggering Content-Type (which may be null) and servlet handler.
          * <p>
          * To associate an operation with a dataset, call {@link #addEndpoint} after adding the dataset.
          *
