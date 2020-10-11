@@ -18,6 +18,8 @@
 
 package org.apache.jena.shacl.engine;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringJoiner;
 
 import org.apache.jena.atlas.iterator.Iter;
@@ -49,15 +51,6 @@ public class SparqlConstraints {
     //        5.3.1 Pre-bound Variables in SPARQL Constraints ($this, $shapesGraph, $currentShape)
     //        5.3.2 Mapping of Solution Bindings to Result Properties
 
-    private static String prefixesQueryString = StrUtils.strjoinNL
-        ("PREFIX owl:     <http://www.w3.org/2002/07/owl#>"
-        ,"PREFIX sh:      <http://www.w3.org/ns/shacl#>"
-        ,"SELECT * { ?x sh:prefixes/owl:imports*/sh:declare [ sh:prefix ?prefix ; sh:namespace ?namespace ] }"
-        );
-    private static Query prefixesQuery = QueryFactory.create(prefixesQueryString);
-    private static Var varPrefix = Var.alloc("prefix");
-    private static Var varNamespace = Var.alloc("namespace");
-
     public static Constraint parseSparqlConstraint(Graph shapesGraph, Node shape, Node p, Node sparqlConstraintNode) {
         /*
            sh:sparql [
@@ -86,15 +79,34 @@ public class SparqlConstraints {
         String selectQuery = selectNode.getLiteralLexicalForm();
         // If parse error - constraint failure.
         String qs = prefixes+"\n"+selectQuery;
-        try { 
-            Query query = QueryFactory.create(qs);
-            String msg = (message != null && message.isLiteral() ? message.getLiteralLexicalForm() : null );
+        String msg = (message != null && message.isLiteral() ? message.getLiteralLexicalForm() : null );
+        try {
+            Query query = parseQueryString(qs);
             return new SparqlConstraint(query, msg);
         } catch (QueryParseException ex) {
+//            Log.warn("SHACL", "SPARQL parse error: "+ex.getMessage()+"\n"+qs);
+//            return new SparqlConstraint(new Query(), msg);
             throw new ShaclParseException("SPARQL parse error: "+ex.getMessage()+"\n"+qs);
         }
     }
-    
+
+    /** 
+     * Parse a string to produce a {@link Query}.
+     * All {@link Query} should go through this function to allow of inserting default prefixes. 
+     */
+    public static Query parseQueryString(String queryString) {
+        Query query = new Query();
+        // The SHACL spec does not define any default prefixes.
+        // But for identified practical reasons some may be added such as: 
+//        query.getPrefixMapping().setNsPrefix("owl",  OWL.getURI());
+//        query.getPrefixMapping().setNsPrefix("rdf",  RDF.getURI());
+//        query.getPrefixMapping().setNsPrefix("rdfs", RDFS.getURI());
+//        query.getPrefixMapping().setNsPrefix("sh",   SHACL.getURI());
+//        query.getPrefixMapping().setNsPrefix("xsd",  XSD.getURI());
+        QueryFactory.parse(query, queryString, null,  Syntax.defaultQuerySyntax);
+        return query;
+    }
+
     /**
      * Test for zero or one occurrences of a tripel pattern that is expected to be   
      * Returns false for zero, true for one. 
@@ -114,13 +126,21 @@ public class SparqlConstraints {
         finally { iter.close(); }
     }
 
-
+    private static String prefixesQueryString = StrUtils.strjoinNL
+        ("PREFIX owl:     <http://www.w3.org/2002/07/owl#>"
+        ,"PREFIX sh:      <http://www.w3.org/ns/shacl#>"
+        ,"SELECT * { ?x sh:prefixes/owl:imports*/sh:declare [ sh:prefix ?prefix ; sh:namespace ?namespace ] }"
+        );
+    private static Query prefixesQuery = QueryFactory.create(prefixesQueryString);
+    private static Var varPrefix = Var.alloc("prefix");
+    private static Var varNamespace = Var.alloc("namespace");
 
     public static String prefixes(Graph shapesGraph, Node sparqlNode) {
         // XXX Ignores sparqlNode ATM
         StringJoiner prefixesSJ = new StringJoiner("\n");
         QueryExecution qExec = QueryExecutionFactory.create(prefixesQuery, DatasetGraphFactory.wrap(shapesGraph));
         ResultSet rs = qExec.execSelect();
+        Map<String, String> seen = new HashMap<>();
 
         while(rs.hasNext()) {
             Binding binding = rs.nextBinding();
@@ -128,7 +148,12 @@ public class SparqlConstraints {
             Node nNamespace = binding.get(varNamespace);
             String prefix = nPrefix.getLiteralLexicalForm();
             String ns = nNamespace.getLiteralLexicalForm();
+            if ( seen.containsKey(prefix) ) {
+                if ( seen.get(prefix).equals(ns) )
+                    continue;
+            }
             prefixesSJ.add("PREFIX "+prefix+": <"+ns+">");
+            seen.put(prefix, ns);
         }
         return prefixesSJ.toString();
     }
