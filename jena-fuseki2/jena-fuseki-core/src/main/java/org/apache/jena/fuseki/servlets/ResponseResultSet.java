@@ -117,7 +117,7 @@ public class ResponseResultSet
             mimeType = outputField;
 
         String serializationType = mimeType;           // Choose the serializer based on this.
-        String contentType = mimeType;                 // Set the HTTP respose header to this.
+        String contentType = mimeType;                 // Set the HTTP response header to this.
 
         // -- Stylesheet - change to application/xml.
         final String stylesheetURL = ResponseOps.paramStylesheet(request);
@@ -172,7 +172,7 @@ public class ResponseResultSet
             charset = null;
         }
 
-        //Finally, the general case
+        // Finally, the general case
         generalOutput(action, lang, contentType, charset, cxt, jsonCallback, resultSet, booleanResult);
     }
 
@@ -215,7 +215,7 @@ public class ResponseResultSet
         output(action, contentType, charset, proc);
     }
 
-    // Sett HTTP response Execute OutputContent inside
+    // Set HTTP response and execute OutputContent inside try-catch.
     private static void output(HttpAction action, String contentType, String charset, OutputContent proc) {
         try {
             ResponseOps.setHttpResponse(action, contentType, charset);

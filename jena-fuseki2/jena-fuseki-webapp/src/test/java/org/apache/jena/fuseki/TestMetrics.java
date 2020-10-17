@@ -28,9 +28,8 @@ import org.junit.Test;
 
 import static org.apache.commons.lang3.StringUtils.substringAfter;
 import static org.apache.commons.lang3.StringUtils.substringBefore;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TestMetrics extends AbstractFusekiTest {
 
@@ -38,14 +37,12 @@ public class TestMetrics extends AbstractFusekiTest {
     public void can_retrieve_metrics() {
         RecordingResponseHandler responseHandler = new RecordingResponseHandler();
 
-        HttpOp.execHttpGet( ServerCtl.urlRoot() + "$/metrics" ,
-                "",
-                responseHandler);
+        HttpOp.execHttpGet( ServerCtl.urlRoot() + "$/metrics" , "", responseHandler);
 
-        assertThat(responseHandler.statusCode, is(HttpSC.OK_200));
-        assertThat(responseHandler.contentType, is(WebContent.contentTypeTextPlain));
-        assertThat(responseHandler.encoding, is(WebContent.charsetUTF8));
-        assertThat(responseHandler.content, containsString("fuseki_requests_good"));
+        assertEquals(HttpSC.OK_200, responseHandler.statusCode);
+        assertEquals(WebContent.contentTypeTextPlain, responseHandler.contentType);
+        assertEquals(WebContent.charsetUTF8, responseHandler.encoding);
+        assertTrue(responseHandler.content.contains("fuseki_requests_good"));
     }
 
     static class RecordingResponseHandler implements HttpResponseHandler {
@@ -63,7 +60,5 @@ public class TestMetrics extends AbstractFusekiTest {
             encoding = substringAfter(rawContentType, "charset=");
             content = IOUtils.toString( response.getEntity().getContent(), encoding);
         }
-
     }
-
 }
