@@ -27,12 +27,14 @@ import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.function.FunctionEnvBase ;
 import org.apache.jena.sparql.util.ExprUtils ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
+import org.apache.jena.sys.JenaSystem;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 public class TestFunctions2
 {
+    static { JenaSystem.init(); }
     // Some overlap with TestFunctions except those are direct function calls and these are via SPARQL 1.1 syntax.
     // Better too many tests than too few.
     
@@ -165,6 +167,23 @@ public class TestFunctions2
     public void substr_21()         { test("substr('', 'one', 3)",            "''") ; }
     @Test(expected=ExprEvalException.class)
     public void substr_22()         { test("substr('', 1, 'three')",            "''") ; }
+    
+    // Codepoint outside UTF-16. 
+    // These are  U+0001F46A 👪 - FAMILY
+    // As surrogate pair: 0xD83D 0xDC6A
+    // Written here in forms which protect against binary file corruption.
+    
+    //@Test public void substr_30()   { test("substr('👪', 1)",           "'👪'") ; }
+    
+    // Written using \-u escapes in SPARQL.
+    @Test public void substr_30()   { test("substr('\\uD83D\\uDC6A', 1)",           "'\\uD83D\\uDC6A'") ; }
+    // Same using Java string escapes.
+    @Test public void substr_30b()  { test("substr('\uD83D\uDC6A', 1)",             "'\uD83D\uDC6A'") ; }
+    @Test public void substr_31()   { test("substr('\\uD83D\\uDC6A', 2)",                       "''") ; }
+    
+    @Test public void substr_32()   { test("substr('ABC\\uD83D\\uDC6ADEF', 4, 1)",  "'\\uD83D\\uDC6A'") ; }
+    @Test public void substr_33()   { test("substr('\\uD83D\\uDC6A!', -1, 3)",      "'\\uD83D\\uDC6A'") ; }
+    @Test public void substr_34()   { test("substr('\\uD83D\\uDC6A!', -1, 4)",      "'\\uD83D\\uDC6A!'") ; }
 
     // STRLEN
     @Test public void strlen_01()   { test("strlen('abc')",    "3") ; }

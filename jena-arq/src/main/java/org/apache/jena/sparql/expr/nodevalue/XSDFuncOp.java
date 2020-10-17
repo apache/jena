@@ -542,58 +542,69 @@ public class XSDFuncOp
     public static NodeValue substring(NodeValue nvString, NodeValue nvStart, NodeValue nvLength) {
         Node n = checkAndGetStringLiteral("substring", nvString) ;
         RDFDatatype dt = n.getLiteralDatatype() ;
-        String lang = n.getLiteralLanguage() ;
-
-        // A string of some kind.
-
         // XSD F&O:
         try {
-            // NaN, float and double.
-
             String string = n.getLiteralLexicalForm() ;
-            int start = intValueStr(nvStart, string.length() + 1) ;
+            
+            // Length in code points.
+            int cpLength = string.codePointCount(0,  string.length());
+
+            // Arguments.
+            int start = intValueStr(nvStart, cpLength + 1) ;
             int length ;
 
             if ( nvLength != null )
                 length = intValueStr(nvLength, 0) ;
-            else {
-                length = string.length() ;
-                if ( start < 0 )
-                    length = length - start ; // Address to end of string.
-            }
+            else
+                length = cpLength;
 
+            // Evaluation.
+            
+            if ( string.isEmpty() )
+                return nvString;
+            
+            // Working in codepoints indexes at this point
+            
+            // Includes negative start.
             int finish = start + length ;
 
-            // Adjust for zero and negative rules for XSD.
-            // Calculate the finish, regardless of whether start is zero of
-            // negative ...
-
-            // Adjust to java - and ensure within the string.
             // F&O strings are one-based ; convert to java, 0 based.
-
+            // Adjust to zero-offset, and ensure in-bounds -  still in codepoint indexes.
             // java needs indexes in-bounds.
-            if ( start <= 0 )
-                start = 1 ;
             start-- ;
             finish-- ;
-            if ( finish > string.length() )
-                finish = string.length() ; // Java index must be within bounds.
+            if ( start < 0 )
+                start = 0 ;
+            if ( finish > cpLength )
+                finish = cpLength ; // Java index must be within bounds.
             if ( finish < start )
                 finish = start ;
-
             if ( finish < 0 )
                 finish = 0 ;
 
-            if ( string.length() == 0 )
-                return calcReturn("", n) ;
-
-            String lex2 = string.substring(start, string.offsetByCodePoints(start, finish - start)) ;
+            // Convert to UTF-16 code units to index values for the string.substring 
+            int xs = codePointToStringIndex(string, start, cpLength);
+            int xf = codePointToStringIndex(string, finish, cpLength);
+            
+            String lex2 = string.substring(xs, xf);
+            
             return calcReturn(lex2, n) ;
         } catch (IndexOutOfBoundsException ex) {
             throw new ExprEvalException("IndexOutOfBounds", ex) ;
         }
     }
     
+    /** Convert zero-based codepoint to zero-based Java string index in-bounds.*/ 
+    private static int codePointToStringIndex(String string, int index, int cpLength) {
+        if ( index < 0 )
+            return 0;
+        
+        return (index > cpLength) 
+                    ? string.length()
+                    : string.offsetByCodePoints(0, index);
+    }
+    
+    // NaN, float and double.
     private static int intValueStr(NodeValue nv, int valueNan) {
         if ( nv.isInteger() )
             return nv.getInteger().intValue() ;
@@ -637,6 +648,7 @@ public class XSDFuncOp
         return NodeValue.booleanReturn(lex1.endsWith(lex2)) ;
     }
     
+    /** Build a NodeValue with lexical form, and same language and datatype as the Node argument */
     private static NodeValue calcReturn(String result, Node arg) {
         Node n2 = NodeFactory.createLiteral(result, arg.getLiteralLanguage(), arg.getLiteralDatatype()) ; 
         return NodeValue.makeNode(n2) ;
