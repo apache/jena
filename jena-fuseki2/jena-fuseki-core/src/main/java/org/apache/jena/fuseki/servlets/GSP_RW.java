@@ -38,9 +38,9 @@ import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.web.HttpSC;
 
 public class GSP_RW extends GSP_R {
-    
+
     public GSP_RW() {}
-    
+
     @Override
     protected void doOptions(HttpAction action) {
         ActionLib.setCommonHeadersForOptions(action.response);
@@ -111,7 +111,7 @@ public class GSP_RW extends GSP_R {
     }
 
     protected void execDeleteQuads(HttpAction action) {
-        // Don't allow whole-database DELETE. 
+        // Don't allow whole-database DELETE.
         ServletOps.errorMethodNotAllowed("DELETE");
     }
 
@@ -132,10 +132,10 @@ public class GSP_RW extends GSP_R {
 
         ServletOps.uploadResponse(action, details);
     }
-    
-    // Refcatoring:
+
+    // Refactoring:
     //   Make doPutPost and doPustPosyQuads teh same pattern.
-    //   addDataInto*: Extract commonality in error handling. 
+    //   addDataInto*: Extract commonality in error handling.
 
     /** Directly add data in a transaction.
      * Assumes recovery from parse errors by transaction abort.
@@ -250,7 +250,7 @@ public class GSP_RW extends GSP_R {
 
     // ---- Quads
     // XXX Make like doPutPost
-    
+
     protected void doPutPostQuads(HttpAction action, boolean overwrite) {
         // See doPutPostGSP
         if ( !action.getDataService().allowUpdate() )
@@ -259,7 +259,7 @@ public class GSP_RW extends GSP_R {
             quadsPutPostTxn(action, overwrite);
         else
             quadsPutPostNonTxn(action, overwrite);
-    }        
+    }
 
     /**
      * Load data using a transaction into the dataset of an action. if the data is bad,
