@@ -27,14 +27,25 @@ import org.junit.Test ;
 
 public class TestEscapeStr {
     
-    @Test public void escape_str_01()   { test("", "") ; }
-    @Test public void escape_str_02()   { test("A", "A") ; }
-    @Test public void escape_str_03()   { test("\n", "\\n") ; }
-    @Test public void escape_str_04()   { test("A\tB", "A\\tB") ; }
-    @Test public void escape_str_05()   { test("\"", "\\\"") ; }
+    @Test public void escape_str_01()   { test_esc("", "") ; }
+    @Test public void escape_str_02()   { test_esc("A", "A") ; }
+    @Test public void escape_str_03()   { test_esc("\n", "\\n") ; }
+    @Test public void escape_str_04()   { test_esc("A\tB", "A\\tB") ; }
+    @Test public void escape_str_05()   { test_esc("\"", "\\\"") ; }
+    
+    @Test public void unescape_str_10()   { test_unesc("\\u0041", "A") ; }
+    @Test public void unescape_str_11()   { test_unesc("\\U00000041", "A") ; }
+    @Test public void unescape_str_12()   { test_unesc("12\\u004134", "12A34") ; }
+    @Test public void unescape_str_13()   { test_unesc("12\\U0000004134", "12A34") ; }
 
-    private static void test(String input, String expected) {
+    private static void test_esc(String input, String expected) {
         String output = EscapeStr.stringEsc(input) ;
         Assert.assertEquals(expected, output);
     }
+    
+    private void test_unesc(String input, String expected) {
+        String output = EscapeStr.unescapeStr(input) ;
+        Assert.assertEquals(expected, output);
+    }
+    
 }

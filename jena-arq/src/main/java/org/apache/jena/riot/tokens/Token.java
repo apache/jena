@@ -422,7 +422,7 @@ public final class Token
                 Token dtToken  = getSubToken2() ;
 
                 if ( pmap == null && dtToken.hasType(TokenType.PREFIXED_NAME) )
-                    // Must be able to resolve the datattype else we can't find it's datatype.
+                    // Must be able to resolve the datatype else we can't find it's datatype.
                     throw new RiotException("Invalid token: "+this) ;
                 Node n = dtToken.asNode(pmap);
                 if ( ! n.isURI() )
