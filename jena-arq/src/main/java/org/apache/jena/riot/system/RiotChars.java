@@ -58,18 +58,31 @@ public class RiotChars
     }
     
     /*
-The token rules from SPARQL and Turtle.
-PNAME_NS       ::=  PN_PREFIX? ':'
-PNAME_LN       ::=  PNAME_NS PN_LOCAL[131]  BLANK_NODE_LABEL  ::=  '_:' PN_LOCAL
-PN_CHARS_BASE  ::=  [A-Z] | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
-PN_CHARS_U     ::=  PN_CHARS_BASE | '_'
-VARNAME        ::=  ( PN_CHARS_U  | [0-9] ) ( PN_CHARS_U | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040] )*
-PN_CHARS       ::=  PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
-PN_PREFIX      ::=  PN_CHARS_BASE ((PN_CHARS|'.')* PN_CHARS)?
-PN_LOCAL       ::=  ( PN_CHARS_U | [0-9] ) ((PN_CHARS|'.')* PN_CHARS)?
-
-//  "high surrogates" (D800–DBFF) "low surrogates" (DC00–DFFF).
-Notes: PN_CHARS_BASE has a hole above #xD800 -- these are the  surrogate pairs 
+     * The token rules from SPARQL and Turtle.
+     * BLANK_NODE_LABEL  ::= '_:' ( PN_CHARS_U | [0-9] ) ((PN_CHARS|'.')* PN_CHARS)?
+     *
+     * PNAME_NS          ::=  PN_PREFIX? ':'
+     * PNAME_LN          ::=  PNAME_NS PN_LOCAL
+     *
+     * PN_CHARS_BASE     ::=  [A-Z] | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF]
+     *                   | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF]
+     *                   | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD]
+     *                   | [#x10000-#xEFFFF]
+     *
+     * PN_CHARS_U     ::=  PN_CHARS_BASE | '_'
+     * PN_CHARS       ::=  PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
+     *
+     * PN_PREFIX      ::=  PN_CHARS_BASE ((PN_CHARS|'.')* PN_CHARS)?
+     * PN_LOCAL       ::=  (PN_CHARS_U | ':' | [0-9] | PLX ) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX) )?
+     *
+     * PLX            ::=  PERCENT | PN_LOCAL_ESC
+     * PERCENT        ::=  '%' HEX HEX
+     * HEX            ::=  [0-9] | [A-F] | [a-f]
+     * PN_LOCAL_ESC   ::=  '\' ( '_' | '~' | '.' | '-' | '!' | '$' | '&' | "'" | '(' | ')'
+     *                   | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' | '%' )
+     *
+     *   Notes: PN_CHARS_BASE has a hole above #xD800 -- these are the surrogate pairs 
+     *   "high surrogates" (D800–DBFF) "low surrogates" (DC00–DFFF).
      */
     
     public static boolean isPNCharsBase(int ch) {
@@ -103,11 +116,12 @@ Notes: PN_CHARS_BASE has a hole above #xD800 -- these are the  surrogate pairs
     }
     
     public static boolean isPN_LOCAL_ESC(char ch) {
-        //[172s]  PN_LOCAL_ESC    ::=     '\' ('_' | '~' | '.' | '-' | '!' | '$' | '&' | "'" | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' | '%')
+        //[172s]  PN_LOCAL_ESC    ::= 
+        // '\' ('_' | '~' | '.' | '-' | '!' | '$' | '&' | "'" | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' | '%')
         switch (ch) {
-            case '\\': case '_':  case '~': case '.': case '-': case '!': case '$':
-            case '&':  case '\'': case '(': case ')': case '*': case '+': case ',':
-            case ';':  case '=':  case '/': case '?': case '#': case '@': case '%':
+            case '_':  case '~': case '.': case '-': case '!': case '$': case '&':
+            case '\'': case '(': case ')': case '*': case '+': case ',': case ';':
+            case '=':  case '/': case '?': case '#': case '@': case '%':
                 return true;
             default:
                 return false;

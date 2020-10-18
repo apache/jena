@@ -3,7 +3,7 @@
 ==== The Grammars
 See Archive for old, historical material.
 
-master.jj - Template for SPARQL and ARQ
+main.jj - Template for SPARQL and ARQ
     cpp input to produce sparql.jj or arq.jj
 
 sparql_11.jj - The SPARQL working group syntax
@@ -14,20 +14,20 @@ arq.jj - The native query language of the query engine
     Generates org.apache.jena.query.parser.arq.ARQParser
 
 
-sparql_10.jj - SPARQL 1.0, but updated to match internal chnages in ARQ.
+sparql_10-final.jj - SPARQL 1.0, but updated to match internal chnages in ARQ.
     This should produce the grammar in the SPARQ 1.0/DAWG rec.
     Generates org.apache.jena.query.parser.sparql_10.SPARQLParser
     
-Archive/sparql_10-REC.jj is original for the SPARQL 1.0 specification. 
+Final/sparql_10-final.jj is original for the SPARQL 1.0 specification. 
+Final/sparql_11-final.jj is original for the SPARQL 1.1 specification.
 
-Archive/rdql-arq.jjt
-    RDQL for the ARQ query engine.
-    Generates org.apache.jena.query.parser.rdql.RDQLParser
+This should produce the HTML grammar in the SPARQL 1.0/DAWG and SPARQL 1.1
+specifications.
 
 ==== Making the parsers
 
 See "grammar"
-Note this runs cpp over master.jj to produce arq.jj or sparql.jj
+Note this runs cpp over main.jj to produce arq.jj or sparql.jj
 
 ==== Making the HTML
 
