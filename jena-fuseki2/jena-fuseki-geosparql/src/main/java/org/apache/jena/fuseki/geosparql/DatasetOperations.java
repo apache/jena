@@ -40,6 +40,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.tdb.TDBFactory;
+import org.apache.jena.tdb2.TDB2Factory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,8 +103,12 @@ public class DatasetOperations {
         Dataset dataset;
         File tdbFolder = argsConfig.getTdbFile();
         if (tdbFolder != null) {
-            LOGGER.info("TDB Dataset: {}", tdbFolder);
-            dataset = TDBFactory.createDataset(tdbFolder.getAbsolutePath());
+            LOGGER.info("TDB Dataset: {}, TDB2: {}", tdbFolder, argsConfig.isTDB2());
+            if(argsConfig.isTDB2()){
+                dataset = TDB2Factory.connectDataset(tdbFolder.getAbsolutePath());
+            }else{
+                dataset = TDBFactory.createDataset(tdbFolder.getAbsolutePath());
+            }            
         } else {
             LOGGER.info("In-Memory Dataset");
             dataset = DatasetFactory.create();

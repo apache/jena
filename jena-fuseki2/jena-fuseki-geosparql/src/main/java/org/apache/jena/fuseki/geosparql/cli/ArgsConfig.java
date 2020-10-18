@@ -99,8 +99,12 @@ public class ArgsConfig {
     @Parameter(names = {"--spatial_index", "-si"}, description = "File to load or store the spatial index. Default to " + SPATIAL_INDEX_FILE + " in TDB folder if using TDB and not set. Otherwise spatial index is not stored.", converter = FileConverter.class, order = 16)
     private File spatialIndexFile = null;
 
-    //18) Help
-    @Parameter(names = {"--help", "-h"}, description = "Application help. @path/to/file can be used to submit parameters in a file.", help = true, order = 17)
+    //18) TDB2
+    @Parameter(names = {"--tdb2", "-t2"}, description = "Option to use TDB2, rather than TDB, for persistent storage. Default: false", order = 17)
+    private boolean tdb2 = false;
+    
+    //19) Help
+    @Parameter(names = {"--help", "-h"}, description = "Application help. @path/to/file can be used to submit parameters in a file.", help = true, order = 18)
     private boolean help = false;
 
     public int getPort() {
@@ -187,12 +191,16 @@ public class ArgsConfig {
         return spatialIndexFile;
     }
 
+    public boolean isTDB2() {
+        return tdb2;
+    }
+    
     public boolean isHelp() {
         return help;
     }
 
     public String getSummary() {
-        return "port=" + port + ", datsetName=" + datsetName + ", loopbackOnly=" + loopbackOnly + ", updateAllowed=" + updateAllowed + ", inference=" + inference + ", applyDefaultGeometry=" + applyDefaultGeometry + ", validateGeometryLiteral=" + validateGeometryLiteral + ", convertGeoPredicates=" + convertGeoPredicates + ", removeGeoPredicates=" + removeGeoPredicates + ", queryRewrite=" + queryRewrite + ", tdbFile=" + tdbFile + ", fileGraphFormats=" + fileGraphFormats + ", fileGraphDelimiters=" + fileGraphDelimiters + ", indexEnabled=" + indexEnabled + ", indexSizes=" + indexSizes + ", indexExpiries=" + indexExpiries + ", spatialIndexFile=" + spatialIndexFile + ", help=" + help;
+        return "port=" + port + ", datsetName=" + datsetName + ", loopbackOnly=" + loopbackOnly + ", updateAllowed=" + updateAllowed + ", inference=" + inference + ", applyDefaultGeometry=" + applyDefaultGeometry + ", validateGeometryLiteral=" + validateGeometryLiteral + ", convertGeoPredicates=" + convertGeoPredicates + ", removeGeoPredicates=" + removeGeoPredicates + ", queryRewrite=" + queryRewrite + ", tdbFile=" + tdbFile + ", fileGraphFormats=" + fileGraphFormats + ", fileGraphDelimiters=" + fileGraphDelimiters + ", indexEnabled=" + indexEnabled + ", indexSizes=" + indexSizes + ", indexExpiries=" + indexExpiries + ", spatialIndexFile=" + spatialIndexFile + ", tdb2=" + tdb2 + ", help=" + help;
     }
 
     @Override
