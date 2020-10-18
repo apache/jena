@@ -83,67 +83,71 @@ public interface ShaclCompactParserJJConstants {
   /** RegularExpression Id. */
   int RBRACKET = 78;
   /** RegularExpression Id. */
-  int UCHAR = 79;
+  int IRIref = 79;
   /** RegularExpression Id. */
-  int IRIref = 80;
+  int PNAME_NS = 80;
   /** RegularExpression Id. */
-  int PNAME_NS = 81;
+  int PNAME_LN = 81;
   /** RegularExpression Id. */
-  int PNAME_LN = 82;
+  int ATPNAME_NS = 82;
   /** RegularExpression Id. */
-  int ATPNAME_NS = 83;
+  int ATPNAME_LN = 83;
   /** RegularExpression Id. */
-  int ATPNAME_LN = 84;
+  int QUOTE_3D = 84;
   /** RegularExpression Id. */
-  int QUOTE_3D = 85;
+  int QUOTE_3S = 85;
   /** RegularExpression Id. */
-  int QUOTE_3S = 86;
+  int ECHAR = 86;
   /** RegularExpression Id. */
-  int ECHAR = 87;
+  int UCHAR = 87;
   /** RegularExpression Id. */
-  int STRING_LITERAL1 = 88;
+  int UCHAR4 = 88;
   /** RegularExpression Id. */
-  int STRING_LITERAL2 = 89;
+  int UCHAR8 = 89;
   /** RegularExpression Id. */
-  int STRING_LITERAL_LONG1 = 90;
+  int STRING_LITERAL1 = 90;
   /** RegularExpression Id. */
-  int STRING_LITERAL_LONG2 = 91;
+  int STRING_LITERAL2 = 91;
   /** RegularExpression Id. */
-  int DIGITS = 92;
+  int STRING_LITERAL_LONG1 = 92;
   /** RegularExpression Id. */
-  int INTEGER = 93;
+  int STRING_LITERAL_LONG2 = 93;
   /** RegularExpression Id. */
-  int DECIMAL = 94;
+  int DIGITS = 94;
   /** RegularExpression Id. */
-  int DOUBLE = 95;
+  int INTEGER = 95;
   /** RegularExpression Id. */
-  int EXPONENT = 96;
+  int DECIMAL = 96;
   /** RegularExpression Id. */
-  int LANGTAG = 97;
+  int DOUBLE = 97;
   /** RegularExpression Id. */
-  int A2Z = 98;
+  int EXPONENT = 98;
   /** RegularExpression Id. */
-  int A2ZN = 99;
+  int LANGTAG = 99;
   /** RegularExpression Id. */
-  int PN_CHARS_BASE = 100;
+  int A2Z = 100;
   /** RegularExpression Id. */
-  int PN_CHARS_U = 101;
+  int A2ZN = 101;
   /** RegularExpression Id. */
-  int PN_CHARS = 102;
+  int PN_CHARS_BASE = 102;
   /** RegularExpression Id. */
-  int PN_PREFIX = 103;
+  int PN_CHARS_U = 103;
   /** RegularExpression Id. */
-  int PN_LOCAL = 104;
+  int PN_CHARS = 104;
   /** RegularExpression Id. */
-  int VARNAME = 105;
+  int PN_PREFIX = 105;
   /** RegularExpression Id. */
-  int PN_LOCAL_ESC = 106;
+  int PN_LOCAL = 106;
   /** RegularExpression Id. */
-  int PLX = 107;
+  int VARNAME = 107;
   /** RegularExpression Id. */
-  int PERCENT = 108;
+  int PN_LOCAL_ESC = 108;
   /** RegularExpression Id. */
-  int UNKNOWN = 109;
+  int PLX = 109;
+  /** RegularExpression Id. */
+  int PERCENT = 110;
+  /** RegularExpression Id. */
+  int UNKNOWN = 111;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -229,7 +233,6 @@ public interface ShaclCompactParserJJConstants {
     "\"}\"",
     "\"[\"",
     "\"]\"",
-    "<UCHAR>",
     "<IRIref>",
     "<PNAME_NS>",
     "<PNAME_LN>",
@@ -238,6 +241,9 @@ public interface ShaclCompactParserJJConstants {
     "\"\\\"\\\"\\\"\"",
     "\"\\\'\\\'\\\'\"",
     "<ECHAR>",
+    "<UCHAR>",
+    "<UCHAR4>",
+    "<UCHAR8>",
     "<STRING_LITERAL1>",
     "<STRING_LITERAL2>",
     "<STRING_LITERAL_LONG1>",

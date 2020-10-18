@@ -25,7 +25,6 @@ options
        // \ u processed after parsing.
        // strings, prefix names, IRIs
        JAVA_UNICODE_ESCAPE   = false ;
-       // ???
        UNICODE_INPUT         = true ;
 
   STATIC                = false ;
@@ -434,7 +433,7 @@ Node booleanLiteral() : {}
    <FALSE> { return XSD_FALSE ; }
 }
 
-Node numericLiteral() : { Token t ;}
+Node numericLiteral() : { Token t ; }
 {
    t = <INTEGER>  { return createLiteralInteger(t.image) ; }
  | t = <DECIMAL>  { return createLiteralDecimal(t.image) ; }
@@ -540,10 +539,12 @@ TOKEN:
 | <LBRACKET         : "[" >
 | <RBRACKET         : "]" >
 
-| <#UCHAR              : "\\" ( "u" <HEX> <HEX> <HEX> <HEX> | "U" <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> ) >
-| <IRIref              : "<"
-                         (~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`","\u0000"-"\u0020"] | <UCHAR>)*
-                         ">" >
+| <IRIref     : "<"
+                  (~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`","\u0000"-"\u0020"]
+                  | <UCHAR>
+                  )*
+                 ">" >
+                 
 | <PNAME_NS            : (<PN_PREFIX>)? ":" >
 | <PNAME_LN            : <PNAME_NS> <PN_LOCAL> >
 
@@ -553,7 +554,11 @@ TOKEN:
 
 | <#QUOTE_3D: "\"\"\"">
 | <#QUOTE_3S: "'''">
-| <ECHAR : "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
+
+| < #ECHAR:          "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
+| < #UCHAR:          <UCHAR4> | <UCHAR8> >
+| < #UCHAR4:         "\\" "u" <HEX> <HEX> <HEX> <HEX> >
+| < #UCHAR8:         "\\" "U" <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> >
 
 | <STRING_LITERAL1: 
       // Single quoted string
@@ -569,16 +574,16 @@ TOKEN:
      <QUOTE_3D> 
       ( ("\"" | "\"\"")? (~["\"","\\"] | <ECHAR> | <UCHAR>))*
      <QUOTE_3D> >
+     
+| <#DIGITS:        (["0"-"9"])+>
+| <INTEGER:        (<PLUS>|<MINUS>)? <DIGITS> >
+| <DECIMAL:        (<PLUS>|<MINUS>)? (<DIGITS>)? "." <DIGITS> >
+| <DOUBLE:         (<PLUS>|<MINUS>)?
+                     ( (["0"-"9"])+ "." (["0"-"9"])* <EXPONENT>
+                     | "." (["0"-"9"])+ (<EXPONENT>)
+			         | (["0"-"9"])+ <EXPONENT>
+                     ) >
 
-| <#DIGITS             : (["0"-"9"])+>
-| <INTEGER             : (<PLUS>|<MINUS>)? <DIGITS> >
-| <DECIMAL             : (<PLUS>|<MINUS>)? (<DIGITS>)? "." <DIGITS> >
-| <DOUBLE              : (<PLUS>|<MINUS>)?
-                          ( (["0"-"9"])+ "." (["0"-"9"])* <EXPONENT>
-                          | "." (["0"-"9"])+ (<EXPONENT>)
-			              | (["0"-"9"])+ <EXPONENT>
-                          ) >
-			 
 | <#EXPONENT           : ["e","E"] (["+","-"])? (["0"-"9"])+ >
 
 | <LANGTAG: <AT> (<A2Z>)+("-" (<A2ZN>)+)* >
@@ -597,7 +602,7 @@ TOKEN:
   <#PN_CHARS_U: <PN_CHARS_BASE> | "_" >
 |
   <#PN_CHARS: (<PN_CHARS_U> | "-" | ["0"-"9"] | "\u00B7" |
-              ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] ) >
+               ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] ) >
 |
   // No leading "_", no trailing ".", can have dot inside prefix name.
   <#PN_PREFIX: <PN_CHARS_BASE> ((<PN_CHARS>|".")* <PN_CHARS>)?  >
