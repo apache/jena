@@ -29,7 +29,7 @@
     <relativePath>..</relativePath>
   </parent> 
 
-  <description>TDB is a storage subsystem for Jena and ARQ, it is a native triple store providing persisent disk based storage of triples/quads.</description>
+  <description>TDB is a storage subsystem for Jena and ARQ, it is a native triple store providing persistent storage of triples/quads.</description>
 
   <properties>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
