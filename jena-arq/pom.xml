@@ -120,7 +120,7 @@
     <dependency>
       <groupId>org.python</groupId>
       <artifactId>jython-standalone</artifactId>
-      <scope>compile</scope>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
