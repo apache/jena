@@ -118,8 +118,12 @@ public abstract class NodeValue extends ExprNode
     public static final NodeValue FALSE  = NodeValue.makeNode("false", XSDboolean) ;
     
     public static final NodeValue nvZERO = NodeValue.makeNode(NodeConst.nodeZero) ;
+    public static final NodeValue nvNegZERO = NodeValue.makeNode("-0.0e0", XSDdouble);
     public static final NodeValue nvONE  = NodeValue.makeNode(NodeConst.nodeOne) ;
     public static final NodeValue nvTEN  = NodeValue.makeNode(NodeConst.nodeTen) ;
+    
+    public static final NodeValue nvDecimalZERO = NodeValue.makeNode("0.0", XSDdecimal);
+    public static final NodeValue nvDecimalONE  = NodeValue.makeNode("1.0", XSDdecimal);
     
     public static final NodeValue nvNaN     = NodeValue.makeNode("NaN", XSDdouble) ;
     public static final NodeValue nvINF     = NodeValue.makeNode("INF", XSDdouble) ;

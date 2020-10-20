@@ -316,15 +316,15 @@ public class StandardFunctions
     }
     
     private static void addCastXSD(FunctionRegistry registry, XSDDatatype dt) {
-        registry.put(dt.getURI(), new CastXSD(dt)) ;
+        registry.put(dt.getURI(), new FunctionCastXSD(dt)) ;
     }
 
     private static void addCastNumeric(FunctionRegistry registry, XSDDatatype dt) {
-        registry.put(dt.getURI(), new CastXSD(dt)) ;
+        registry.put(dt.getURI(), new FunctionCastXSD(dt)) ;
     }
 
     private static void addCastTemporal(FunctionRegistry registry, XSDDatatype dt) {
-        registry.put(dt.getURI(), new CastXSD(dt)) ;
+        registry.put(dt.getURI(), new FunctionCastXSD(dt)) ;
     }
 
     private static void add(FunctionRegistry registry, String uri, Class<? > funcClass) {

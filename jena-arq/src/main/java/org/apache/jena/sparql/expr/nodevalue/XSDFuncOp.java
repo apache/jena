@@ -170,7 +170,47 @@ public class XSDFuncOp
         return NodeValue.makeNode(x, XSDDatatype.XSDdecimal) ;
     }
 
-    public static String canonicalDecimalStr(BigDecimal d) {
+    /**
+     * Decimal format, cast-to-string.
+     * <p>
+     * Decimal canonical form where integer values have no ".0" (as in XSD 1.1).
+     * <p>
+     * In XSD 2, canonical integer-valued decimal has a trailing ".0". 
+     * In F&O v 3.1, xs:string cast of a decimal which integer valued, does not have the trailing ".0".  
+     */
+    public static String canonicalDecimalStrNoIntegerDot(BigDecimal bd) {
+        if ( bd.signum() == 0 )
+            return "0";
+        if ( bd.scale() <= 0 )
+            // No decimal part.
+            return bd.toPlainString();
+        return bd.stripTrailingZeros().toPlainString();
+    }
+    
+    /**
+     * Canonical decimal according to XML Schema Datatype 2.
+     * Integer-valued decimals have a trailing ".0".
+     * (In XML Schema Datatype 1.1 they did not have a ".0".)
+     * <p>
+     * Java BigDecimal.toPlainString does not produce XSD 2 compatible lexical forms for integer values. 
+     */
+    public static String canonicalDecimalStr(BigDecimal decimal) {
+        if ( decimal.signum() == 0 )
+            return "0.0";
+        if ( decimal.scale() <= 0 )
+            // No decimal part.
+            return decimal.toPlainString()+".0";
+        String str = decimal.stripTrailingZeros().toPlainString();
+        // Maybe the decimal part was only zero. 
+        int dotIdx = str.indexOf('.') ;
+        if ( dotIdx < 0 )
+            // No DOT.
+            str = str + ".0";    
+        return str;
+    }
+
+    /** Original code, with changes of JENA-1717 / Jena 3.13.0 - 2019-05 */
+    private static String canonicalDecimalStr_X(BigDecimal d) {
         String x = d.toPlainString() ;
 
         // The part after the "."
@@ -1184,37 +1224,8 @@ public class XSDFuncOp
         throw new ARQInternalErrorException("Weird boolean comparison: " + nv1 + ", " + nv2) ;
     }
 
-    public static boolean dateTimeCastCompatible(NodeValue nv, XSDDatatype xsd) {
-        return nv.hasDateTime() ;
-    }
-    
-    /** Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to {@literal F&O}
-     *  <a href="http://www.w3.org/TR/xpath-functions/#casting-to-datetimes">17.1.5 Casting to date and time types</a>
-     *  Throws an exception on incorrect case.
-     *   
-     *  @throws ExprEvalTypeException  
-     */
-    
-    public static NodeValue dateTimeCast(NodeValue nv, String typeURI) {
-        RDFDatatype t = NodeFactory.getType(typeURI) ;
-        return dateTimeCast(nv, t) ;
-    }
-
-    /** Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to {@literal F&O}
-     *  <a href="http://www.w3.org/TR/xpath-functions/#casting-to-datetimes">17.1.5 Casting to date and time types</a>
-     *  Throws an exception on incorrect case.
-     *   
-     *  @throws ExprEvalTypeException  
-     */
-    
-    public static NodeValue dateTimeCast(NodeValue nv, RDFDatatype rdfDatatype) {
-        if ( !(rdfDatatype instanceof XSDDatatype) )
-            throw new ExprEvalTypeException("Can't cast to XSDDatatype: " + nv) ;
-        XSDDatatype xsd = (XSDDatatype)rdfDatatype ;
-        return dateTimeCast(nv, xsd) ;
-    }
-
-    /** Get the timezone in XSD tiezone format (e.g. "Z" or "+01:00").
+    /**
+     * Get the timezone in XSD timezone format (e.g. "Z" or "+01:00").
      * Assumes the NodeValue is of suitable datatype.
      */
     private static String tzStrFromNV(NodeValue nv) {
@@ -1227,13 +1238,13 @@ public class XSDFuncOp
         return tzStr ;
     }
     
-    /** Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to {@literal F&O}
-     *  <a href="http://www.w3.org/TR/xpath-functions/#casting-to-datetimes">17.1.5 Casting to date and time types</a>
-     *  Throws an exception on incorrect case.
+    /**
+     * Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to {@literal F&O}
+     * <a href="http://www.w3.org/TR/xpath-functions/#casting-to-datetimes">17.1.5 Casting to date and time types</a>
+     * Throws an exception on incorrect case.
      *   
-     *  @throws ExprEvalTypeException  
+     * @throws ExprEvalTypeException  
      */
-    
     public static NodeValue dateTimeCast(NodeValue nv, XSDDatatype xsd) {
         if ( nv.isString() ) {
             String s = nv.getString() ;
