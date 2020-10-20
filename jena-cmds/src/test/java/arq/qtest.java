@@ -56,8 +56,6 @@ import org.apache.jena.vocabulary.XSD ;
 
 public class qtest extends CmdARQ
 {
-    protected ArgDecl allDecl =    new ArgDecl(ArgDecl.NoValue, "all") ;
-    protected ArgDecl wgDecl =     new ArgDecl(ArgDecl.NoValue, "wg", "dawg") ;
     protected ArgDecl earlDecl =   new ArgDecl(ArgDecl.NoValue, "earl") ;
 
     protected ModEngine modEngine = null ;
@@ -65,7 +63,7 @@ public class qtest extends CmdARQ
     protected String testfile = null;
     protected boolean createEarlReport = false;
 
-    public static void main (String... argv)
+    public static void main(String... argv)
     {
         try {
             new qtest(argv).mainRun() ;
@@ -92,7 +90,7 @@ public class qtest extends CmdARQ
     protected String getCommandName() { return Lib.className(this) ; }
 
     @Override
-    protected String getSummary() { return getCommandName()+" [ --data=<file> --query=<query> --result=<results> ] | --all | --dawg | <manifest>" ; }
+    protected String getSummary() { return getCommandName()+" [--earl] <manifest>" ; }
 
     @Override
     protected void processModulesAndArgs()
@@ -100,7 +98,7 @@ public class qtest extends CmdARQ
         super.processModulesAndArgs() ;
         if ( ! hasPositional() )
             throw new CmdException("No manifest file") ;
-
+        createEarlReport = super.contains(earlDecl);
         testfile = getPositionalArg(0) ;
     }
 

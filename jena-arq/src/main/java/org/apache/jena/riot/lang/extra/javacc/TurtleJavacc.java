@@ -35,10 +35,10 @@ public class TurtleJavacc extends TurtleParserBase implements TurtleJavaccConsta
       case BASE_OLD:
       case BASE:
       case PREFIX:
+      case IRIref:
       case LPAREN:
       case LBRACKET:
       case ANON:
-      case IRIref:
       case PNAME_NS:
       case PNAME_LN:
       case BLANK_NODE_LABEL:{
@@ -78,10 +78,10 @@ public class TurtleJavacc extends TurtleParserBase implements TurtleJavaccConsta
       DirectiveOld();
       break;
       }
+    case IRIref:
     case LPAREN:
     case LBRACKET:
     case ANON:
-    case IRIref:
     case PNAME_NS:
     case PNAME_LN:
     case BLANK_NODE_LABEL:{
@@ -165,8 +165,8 @@ setBase(iri, t.beginLine, t.beginColumn) ;
 
   final public void TriplesSameSubject() throws ParseException {Node s ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case ANON:
     case IRIref:
+    case ANON:
     case PNAME_NS:
     case PNAME_LN:
     case BLANK_NODE_LABEL:{
@@ -351,15 +351,10 @@ listTriple(line, column, cell, nRDFfirst, n) ;
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case TRUE:
       case FALSE:
+      case IRIref:
       case INTEGER:
       case DECIMAL:
       case DOUBLE:
-      case INTEGER_POSITIVE:
-      case DECIMAL_POSITIVE:
-      case DOUBLE_POSITIVE:
-      case INTEGER_NEGATIVE:
-      case DECIMAL_NEGATIVE:
-      case DOUBLE_NEGATIVE:
       case STRING_LITERAL1:
       case STRING_LITERAL2:
       case STRING_LITERAL_LONG1:
@@ -368,7 +363,6 @@ listTriple(line, column, cell, nRDFfirst, n) ;
       case NIL:
       case LBRACKET:
       case ANON:
-      case IRIref:
       case PNAME_NS:
       case PNAME_LN:
       case BLANK_NODE_LABEL:{
@@ -415,22 +409,16 @@ if ( lastCell != null )
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case TRUE:
     case FALSE:
+    case IRIref:
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
-    case INTEGER_POSITIVE:
-    case DECIMAL_POSITIVE:
-    case DOUBLE_POSITIVE:
-    case INTEGER_NEGATIVE:
-    case DECIMAL_NEGATIVE:
-    case DOUBLE_NEGATIVE:
     case STRING_LITERAL1:
     case STRING_LITERAL2:
     case STRING_LITERAL_LONG1:
     case STRING_LITERAL_LONG2:
     case NIL:
     case ANON:
-    case IRIref:
     case PNAME_NS:
     case PNAME_LN:
     case BLANK_NODE_LABEL:{
@@ -471,13 +459,7 @@ if ( lastCell != null )
       }
     case INTEGER:
     case DECIMAL:
-    case DOUBLE:
-    case INTEGER_POSITIVE:
-    case DECIMAL_POSITIVE:
-    case DOUBLE_POSITIVE:
-    case INTEGER_NEGATIVE:
-    case DECIMAL_NEGATIVE:
-    case DOUBLE_NEGATIVE:{
+    case DOUBLE:{
       n = NumericLiteral();
 {if ("" != null) return n ;}
       break;
@@ -562,36 +544,7 @@ String lang = stripChars(t.image, 1) ; {if ("" != null) return lang ;}
     throw new Error("Missing return statement in function");
   }
 
-  final public Node NumericLiteral() throws ParseException {Node n ;
-    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case INTEGER:
-    case DECIMAL:
-    case DOUBLE:{
-      n = NumericLiteralUnsigned();
-      break;
-      }
-    case INTEGER_POSITIVE:
-    case DECIMAL_POSITIVE:
-    case DOUBLE_POSITIVE:{
-      n = NumericLiteralPositive();
-      break;
-      }
-    case INTEGER_NEGATIVE:
-    case DECIMAL_NEGATIVE:
-    case DOUBLE_NEGATIVE:{
-      n = NumericLiteralNegative();
-      break;
-      }
-    default:
-      jj_la1[20] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-{if ("" != null) return n ;}
-    throw new Error("Missing return statement in function");
-  }
-
-  final public Node NumericLiteralUnsigned() throws ParseException {Token t ;
+  final public Node NumericLiteral() throws ParseException {Token t ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case INTEGER:{
       t = jj_consume_token(INTEGER);
@@ -609,57 +562,7 @@ String lang = stripChars(t.image, 1) ; {if ("" != null) return lang ;}
       break;
       }
     default:
-      jj_la1[21] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-    throw new Error("Missing return statement in function");
-  }
-
-  final public Node NumericLiteralPositive() throws ParseException {Token t ;
-    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case INTEGER_POSITIVE:{
-      t = jj_consume_token(INTEGER_POSITIVE);
-{if ("" != null) return createLiteralInteger(t.image) ;}
-      break;
-      }
-    case DECIMAL_POSITIVE:{
-      t = jj_consume_token(DECIMAL_POSITIVE);
-{if ("" != null) return createLiteralDecimal(t.image) ;}
-      break;
-      }
-    case DOUBLE_POSITIVE:{
-      t = jj_consume_token(DOUBLE_POSITIVE);
-{if ("" != null) return createLiteralDouble(t.image) ;}
-      break;
-      }
-    default:
-      jj_la1[22] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-    throw new Error("Missing return statement in function");
-  }
-
-  final public Node NumericLiteralNegative() throws ParseException {Token t ;
-    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case INTEGER_NEGATIVE:{
-      t = jj_consume_token(INTEGER_NEGATIVE);
-{if ("" != null) return createLiteralInteger(t.image) ;}
-      break;
-      }
-    case DECIMAL_NEGATIVE:{
-      t = jj_consume_token(DECIMAL_NEGATIVE);
-{if ("" != null) return createLiteralDecimal(t.image) ;}
-      break;
-      }
-    case DOUBLE_NEGATIVE:{
-      t = jj_consume_token(DOUBLE_NEGATIVE);
-{if ("" != null) return createLiteralDouble(t.image) ;}
-      break;
-      }
-    default:
-      jj_la1[23] = jj_gen;
+      jj_la1[20] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -679,7 +582,7 @@ String lang = stripChars(t.image, 1) ; {if ("" != null) return lang ;}
       break;
       }
     default:
-      jj_la1[24] = jj_gen;
+      jj_la1[21] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -709,7 +612,7 @@ lex = stripQuotes3(t.image) ;
       break;
       }
     default:
-      jj_la1[25] = jj_gen;
+      jj_la1[22] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -732,7 +635,7 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
       break;
       }
     default:
-      jj_la1[26] = jj_gen;
+      jj_la1[23] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -752,7 +655,7 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
       break;
       }
     default:
-      jj_la1[27] = jj_gen;
+      jj_la1[24] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -773,7 +676,7 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
       break;
       }
     default:
-      jj_la1[28] = jj_gen;
+      jj_la1[25] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -795,7 +698,7 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[29];
+  final private int[] jj_la1 = new int[26];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -805,13 +708,13 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
       jj_la1_init_2();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x1e00,0x10000,0x1e00,0x1800,0x600,0x1800,0x0,0x100,0x0,0x100,0x0,0x100,0x0,0x1ff06000,0x0,0x1ff06000,0x1ff06000,0x1800,0x1800,0x1800,0x1ff00000,0x700000,0x3800000,0x1c000000,0x6000,0x0,0x0,0x0,0x0,};
+      jj_la1_0 = new int[] {0x21e00,0x10000,0x21e00,0x1800,0x600,0x1800,0x20000,0x20100,0x0,0x20100,0x0,0x20100,0x0,0x80e26000,0x20000,0x80e26000,0x80e26000,0x1800,0x1800,0x1800,0xe00000,0x6000,0x80000000,0x20000,0x0,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x781420,0x0,0x781420,0x0,0x0,0x0,0x781420,0x380000,0x2000,0x380000,0x4000,0x380000,0x420,0x7814be,0x781000,0x7814be,0x78109e,0x810000,0x810000,0x800000,0x0,0x0,0x0,0x0,0x0,0x1e,0x380000,0x300000,0x401000,};
+      jj_la1_1 = new int[] {0x70508,0x0,0x70508,0x0,0x0,0x0,0x70508,0x30000,0x800,0x30000,0x1000,0x30000,0x108,0x7052f,0x70400,0x7052f,0x70427,0x84000,0x84000,0x80000,0x0,0x0,0x7,0x30000,0x30000,0x40400,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -825,7 +728,7 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 29; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -839,7 +742,7 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 29; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -849,7 +752,7 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 29; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -859,7 +762,7 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 29; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -868,7 +771,7 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 29; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -877,7 +780,7 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 29; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -928,12 +831,12 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[69];
+    boolean[] la1tokens = new boolean[65];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 29; i++) {
+    for (int i = 0; i < 26; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -948,7 +851,7 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
         }
       }
     }
-    for (int i = 0; i < 69; i++) {
+    for (int i = 0; i < 65; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

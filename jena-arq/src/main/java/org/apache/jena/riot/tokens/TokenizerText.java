@@ -577,7 +577,6 @@ public final class TokenizerText implements Tokenizer
 
         if ( Checking )
             checkKeyword(token.getImage());
-
     }
 
     /*

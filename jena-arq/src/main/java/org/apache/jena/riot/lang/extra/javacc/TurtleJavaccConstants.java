@@ -51,109 +51,101 @@ public interface TurtleJavaccConstants {
   /** RegularExpression Id. */
   int BOM = 16;
   /** RegularExpression Id. */
-  int PLUS = 17;
+  int IRIref = 17;
   /** RegularExpression Id. */
-  int MINUS = 18;
+  int PLUS = 18;
   /** RegularExpression Id. */
-  int DIGITS = 19;
+  int MINUS = 19;
   /** RegularExpression Id. */
-  int INTEGER = 20;
+  int DIGITS = 20;
   /** RegularExpression Id. */
-  int DECIMAL = 21;
+  int INTEGER = 21;
   /** RegularExpression Id. */
-  int DOUBLE = 22;
+  int DECIMAL = 22;
   /** RegularExpression Id. */
-  int INTEGER_POSITIVE = 23;
+  int DOUBLE = 23;
   /** RegularExpression Id. */
-  int DECIMAL_POSITIVE = 24;
+  int EXPONENT = 24;
   /** RegularExpression Id. */
-  int DOUBLE_POSITIVE = 25;
+  int QUOTE_3D = 25;
   /** RegularExpression Id. */
-  int INTEGER_NEGATIVE = 26;
+  int QUOTE_3S = 26;
   /** RegularExpression Id. */
-  int DECIMAL_NEGATIVE = 27;
+  int ECHAR = 27;
   /** RegularExpression Id. */
-  int DOUBLE_NEGATIVE = 28;
+  int UCHAR = 28;
   /** RegularExpression Id. */
-  int EXPONENT = 29;
+  int UCHAR4 = 29;
   /** RegularExpression Id. */
-  int QUOTE_3D = 30;
+  int UCHAR8 = 30;
   /** RegularExpression Id. */
-  int QUOTE_3S = 31;
+  int STRING_LITERAL1 = 31;
   /** RegularExpression Id. */
-  int ECHAR = 32;
+  int STRING_LITERAL2 = 32;
   /** RegularExpression Id. */
-  int STRING_LITERAL1 = 33;
+  int STRING_LITERAL_LONG1 = 33;
   /** RegularExpression Id. */
-  int STRING_LITERAL2 = 34;
+  int STRING_LITERAL_LONG2 = 34;
   /** RegularExpression Id. */
-  int STRING_LITERAL_LONG1 = 35;
+  int LPAREN = 35;
   /** RegularExpression Id. */
-  int STRING_LITERAL_LONG2 = 36;
+  int RPAREN = 36;
   /** RegularExpression Id. */
-  int LPAREN = 37;
+  int NIL = 37;
   /** RegularExpression Id. */
-  int RPAREN = 38;
+  int LBRACE = 38;
   /** RegularExpression Id. */
-  int NIL = 39;
+  int RBRACE = 39;
   /** RegularExpression Id. */
-  int LBRACE = 40;
+  int LBRACKET = 40;
   /** RegularExpression Id. */
-  int RBRACE = 41;
+  int RBRACKET = 41;
   /** RegularExpression Id. */
-  int LBRACKET = 42;
+  int ANON = 42;
   /** RegularExpression Id. */
-  int RBRACKET = 43;
+  int SEMICOLON = 43;
   /** RegularExpression Id. */
-  int ANON = 44;
+  int COMMA = 44;
   /** RegularExpression Id. */
-  int SEMICOLON = 45;
+  int DOT = 45;
   /** RegularExpression Id. */
-  int COMMA = 46;
+  int DATATYPE = 46;
   /** RegularExpression Id. */
-  int DOT = 47;
+  int AT = 47;
   /** RegularExpression Id. */
-  int DATATYPE = 48;
+  int PNAME_NS = 48;
   /** RegularExpression Id. */
-  int AT = 49;
+  int PNAME_LN = 49;
   /** RegularExpression Id. */
-  int UCHAR = 50;
+  int BLANK_NODE_LABEL = 50;
   /** RegularExpression Id. */
-  int IRIref = 51;
+  int LANGTAG = 51;
   /** RegularExpression Id. */
-  int PNAME_NS = 52;
+  int A2Z = 52;
   /** RegularExpression Id. */
-  int PNAME_LN = 53;
+  int A2ZN = 53;
   /** RegularExpression Id. */
-  int BLANK_NODE_LABEL = 54;
+  int PN_CHARS_BASE = 54;
   /** RegularExpression Id. */
-  int LANGTAG = 55;
+  int PN_CHARS_U = 55;
   /** RegularExpression Id. */
-  int A2Z = 56;
+  int PN_CHARS = 56;
   /** RegularExpression Id. */
-  int A2ZN = 57;
+  int PN_PREFIX = 57;
   /** RegularExpression Id. */
-  int PN_CHARS_BASE = 58;
+  int PN_LOCAL = 58;
   /** RegularExpression Id. */
-  int PN_CHARS_U = 59;
+  int VARNAME = 59;
   /** RegularExpression Id. */
-  int PN_CHARS = 60;
+  int PN_LOCAL_ESC = 60;
   /** RegularExpression Id. */
-  int PN_PREFIX = 61;
+  int PLX = 61;
   /** RegularExpression Id. */
-  int PN_LOCAL = 62;
+  int HEX = 62;
   /** RegularExpression Id. */
-  int VARNAME = 63;
+  int PERCENT = 63;
   /** RegularExpression Id. */
-  int PN_LOCAL_ESC = 64;
-  /** RegularExpression Id. */
-  int PLX = 65;
-  /** RegularExpression Id. */
-  int HEX = 66;
-  /** RegularExpression Id. */
-  int PERCENT = 67;
-  /** RegularExpression Id. */
-  int UNKNOWN = 68;
+  int UNKNOWN = 64;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -177,22 +169,20 @@ public interface TurtleJavaccConstants {
     "\"false\"",
     "<WSC>",
     "\"\\ufeff\"",
+    "<IRIref>",
     "\"+\"",
     "\"-\"",
     "<DIGITS>",
     "<INTEGER>",
     "<DECIMAL>",
     "<DOUBLE>",
-    "<INTEGER_POSITIVE>",
-    "<DECIMAL_POSITIVE>",
-    "<DOUBLE_POSITIVE>",
-    "<INTEGER_NEGATIVE>",
-    "<DECIMAL_NEGATIVE>",
-    "<DOUBLE_NEGATIVE>",
     "<EXPONENT>",
     "\"\\\"\\\"\\\"\"",
     "\"\\\'\\\'\\\'\"",
     "<ECHAR>",
+    "<UCHAR>",
+    "<UCHAR4>",
+    "<UCHAR8>",
     "<STRING_LITERAL1>",
     "<STRING_LITERAL2>",
     "<STRING_LITERAL_LONG1>",
@@ -210,8 +200,6 @@ public interface TurtleJavaccConstants {
     "\".\"",
     "\"^^\"",
     "\"@\"",
-    "<UCHAR>",
-    "<IRIref>",
     "<PNAME_NS>",
     "<PNAME_LN>",
     "<BLANK_NODE_LABEL>",

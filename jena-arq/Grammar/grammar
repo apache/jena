@@ -17,7 +17,7 @@
 
 # Parser builder
 
-GRAMMAR="${GRAMMAR:-master.jj}"
+GRAMMAR="${GRAMMAR:-main.jj}"
 
 # --------------------------------------------------------
 

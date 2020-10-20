@@ -171,23 +171,32 @@ public class EscapeStr
             // \\u and \\U
             if ( ch2 == 'u' )
             {
-                // i points to the \ so i+6 is next character
                 if ( i+4 >= s.length() )
                     throw new AtlasException("\\u escape too short") ;
-                int x = Hex.hexStringToInt(s, i+1, 4) ;
-                sb.append((char)x) ;
+                int x4 = Hex.hexStringToInt(s, i+1, 4) ;
+                sb.append((char)x4) ;
                 // Jump 1 2 3 4 -- already skipped \ and u
                 i = i+4 ;
                 continue ;
             }
             if ( ch2 == 'U' )
             {
-                // i points to the \ so i+6 is next character
                 if ( i+8 >= s.length() )
                     throw new AtlasException("\\U escape too short") ;
-                int x = Hex.hexStringToInt(s, i+1, 8) ;
-                // Convert to UTF-16 codepoint pair.
-                sb.append((char)x) ;
+                int ch8 = Hex.hexStringToInt(s, i+1, 8) ;
+                if ( Character.charCount(ch8) == 1 )
+                    sb.append((char)ch8);
+                else {
+                    // See also TokenerText.insertCodepoint and TokenerText.readUnicodeEscape
+                    // Convert to UTF-16. Note that the rest of any system this is used
+                    // in must also respect codepoints and surrogate pairs.
+                    if ( !Character.isDefined(ch8) && !Character.isSupplementaryCodePoint(ch8) )
+                        throw new AtlasException(String.format("Illegal codepoint: 0x%04X", ch8));
+                    if ( ch8 > Character.MAX_CODE_POINT )
+                        throw new AtlasException(String.format("Illegal code point in \\U sequence value: 0x%08X", ch8));
+                    char[] chars = Character.toChars(ch8);
+                    sb.append(chars);
+                }
                 // Jump 1 2 3 4 5 6 7 8 -- already skipped \ and u
                 i = i+8 ;
                 continue ;
