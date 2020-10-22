@@ -5415,6 +5415,7 @@ a.add(expr) ;
                      boolean distinct = false ;
                      ExprList ordered = new ExprList() ;
                      Token t ;
+startAggregate();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case COUNT:{
       t = jj_consume_token(COUNT);
@@ -5852,9 +5853,11 @@ agg = AggregatorFactory.createCustom(iri, a) ;
       throw new ParseException();
     }
 if ( ! getAllowAggregatesInExpressions() )
-           throwParseException("Aggregate expression not legal at this point",
-                                t.beginLine, t.beginColumn) ;
+        throwParseException("Aggregate expression not legal at this point", t.beginLine, t.beginColumn) ;
+    if ( getAggregateDepth() > 1 )
+        throwParseException("Nested aggregate in expression not legal ", t.beginLine, t.beginColumn) ;
 Expr exprAgg = getQuery().allocAggregate(agg) ;
+    finishAggregate();
     {if ("" != null) return exprAgg ;}
     throw new Error("Missing return statement in function");
   }
@@ -6177,13 +6180,6 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
     try { return !jj_3_5(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(4, xla); }
-  }
-
-  private boolean jj_3R_128()
- {
-    if (jj_scan_token(STDEV)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
   }
 
   private boolean jj_3_5()
@@ -7033,15 +7029,15 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
     return false;
   }
 
-  private boolean jj_3_1()
- {
-    if (jj_3R_43()) return true;
-    return false;
-  }
-
   private boolean jj_3R_173()
  {
     if (jj_scan_token(ANON)) return true;
+    return false;
+  }
+
+  private boolean jj_3_1()
+ {
+    if (jj_3R_43()) return true;
     return false;
   }
 
@@ -7074,12 +7070,6 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
     return false;
   }
 
-  private boolean jj_3R_105()
- {
-    if (jj_3R_118()) return true;
-    return false;
-  }
-
   private boolean jj_3R_159()
  {
     Token xsp;
@@ -7088,6 +7078,18 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
     jj_scanpos = xsp;
     if (jj_3R_165()) return true;
     }
+    return false;
+  }
+
+  private boolean jj_3R_105()
+ {
+    if (jj_3R_118()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_152()
+ {
+    if (jj_3R_159()) return true;
     return false;
   }
 
@@ -7108,19 +7110,6 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
     return false;
   }
 
-  private boolean jj_3_4()
- {
-    if (jj_scan_token(DOT)) return true;
-    if (jj_3R_45()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_152()
- {
-    if (jj_3R_159()) return true;
-    return false;
-  }
-
   private boolean jj_3R_144()
  {
     Token xsp;
@@ -7135,6 +7124,13 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
   private boolean jj_3R_151()
  {
     if (jj_3R_145()) return true;
+    return false;
+  }
+
+  private boolean jj_3_4()
+ {
+    if (jj_scan_token(DOT)) return true;
+    if (jj_3R_45()) return true;
     return false;
   }
 
@@ -7153,12 +7149,6 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
   private boolean jj_3R_175()
  {
     if (jj_scan_token(STRING_LITERAL2)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_116()
- {
-    if (jj_3R_138()) return true;
     return false;
   }
 
@@ -7185,17 +7175,23 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
     return false;
   }
 
-  private boolean jj_3R_138()
+  private boolean jj_3R_116()
  {
-    if (jj_scan_token(PREFIX)) return true;
-    if (jj_scan_token(PNAME_NS)) return true;
-    if (jj_3R_145()) return true;
+    if (jj_3R_138()) return true;
     return false;
   }
 
   private boolean jj_3R_171()
  {
     if (jj_scan_token(FALSE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_138()
+ {
+    if (jj_scan_token(PREFIX)) return true;
+    if (jj_scan_token(PNAME_NS)) return true;
+    if (jj_3R_145()) return true;
     return false;
   }
 
@@ -7216,9 +7212,27 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
     return false;
   }
 
+  private boolean jj_3R_189()
+ {
+    if (jj_scan_token(DOUBLE_NEGATIVE)) return true;
+    return false;
+  }
+
   private boolean jj_3R_135()
  {
     if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_188()
+ {
+    if (jj_scan_token(DECIMAL_NEGATIVE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_187()
+ {
+    if (jj_scan_token(INTEGER_NEGATIVE)) return true;
     return false;
   }
 
@@ -7229,15 +7243,17 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
     return false;
   }
 
-  private boolean jj_3R_189()
+  private boolean jj_3R_180()
  {
-    if (jj_scan_token(DOUBLE_NEGATIVE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_188()
- {
-    if (jj_scan_token(DECIMAL_NEGATIVE)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_187()) {
+    jj_scanpos = xsp;
+    if (jj_3R_188()) {
+    jj_scanpos = xsp;
+    if (jj_3R_189()) return true;
+    }
+    }
     return false;
   }
 
@@ -7258,12 +7274,6 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
     return false;
   }
 
-  private boolean jj_3R_187()
- {
-    if (jj_scan_token(INTEGER_NEGATIVE)) return true;
-    return false;
-  }
-
   private boolean jj_3R_109()
  {
     Token xsp;
@@ -7275,17 +7285,9 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
     return false;
   }
 
-  private boolean jj_3R_180()
+  private boolean jj_3R_186()
  {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_187()) {
-    jj_scanpos = xsp;
-    if (jj_3R_188()) {
-    jj_scanpos = xsp;
-    if (jj_3R_189()) return true;
-    }
-    }
+    if (jj_scan_token(DOUBLE_POSITIVE)) return true;
     return false;
   }
 
@@ -7299,12 +7301,6 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
     return false;
   }
 
-  private boolean jj_3R_186()
- {
-    if (jj_scan_token(DOUBLE_POSITIVE)) return true;
-    return false;
-  }
-
   private boolean jj_3R_185()
  {
     if (jj_scan_token(DECIMAL_POSITIVE)) return true;
@@ -7314,12 +7310,6 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
   private boolean jj_3R_184()
  {
     if (jj_scan_token(INTEGER_POSITIVE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_158()
- {
-    if (jj_scan_token(NIL)) return true;
     return false;
   }
 
@@ -7337,21 +7327,9 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
     return false;
   }
 
-  private boolean jj_3R_157()
+  private boolean jj_3R_158()
  {
-    if (jj_3R_163()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_156()
- {
-    if (jj_3R_162()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_155()
- {
-    if (jj_3R_161()) return true;
+    if (jj_scan_token(NIL)) return true;
     return false;
   }
 
@@ -7361,15 +7339,53 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
     return false;
   }
 
-  private boolean jj_3R_154()
+  private boolean jj_3R_157()
  {
-    if (jj_3R_160()) return true;
+    if (jj_3R_163()) return true;
     return false;
   }
 
   private boolean jj_3R_182()
  {
     if (jj_scan_token(DECIMAL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_156()
+ {
+    if (jj_3R_162()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_181()
+ {
+    if (jj_scan_token(INTEGER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_155()
+ {
+    if (jj_3R_161()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_178()
+ {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_181()) {
+    jj_scanpos = xsp;
+    if (jj_3R_182()) {
+    jj_scanpos = xsp;
+    if (jj_3R_183()) return true;
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_154()
+ {
+    if (jj_3R_160()) return true;
     return false;
   }
 
@@ -7402,23 +7418,9 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
     return false;
   }
 
-  private boolean jj_3R_181()
+  private boolean jj_3R_169()
  {
-    if (jj_scan_token(INTEGER)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_178()
- {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_181()) {
-    jj_scanpos = xsp;
-    if (jj_3R_182()) {
-    jj_scanpos = xsp;
-    if (jj_3R_183()) return true;
-    }
-    }
+    if (jj_3R_180()) return true;
     return false;
   }
 
@@ -7430,12 +7432,6 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
     jj_scanpos = xsp;
     if (jj_scan_token(15)) return true;
     }
-    return false;
-  }
-
-  private boolean jj_3R_169()
- {
-    if (jj_3R_180()) return true;
     return false;
   }
 
@@ -7547,6 +7543,13 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
   private boolean jj_3R_129()
  {
     if (jj_scan_token(STDEV_SAMP)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_128()
+ {
+    if (jj_scan_token(STDEV)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }

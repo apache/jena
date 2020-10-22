@@ -2079,6 +2079,8 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
 {
   // Count is special because of COUNT(*)
   // GROUP_CONCAT is special because of separator=
+  
+  { startAggregate(); }
 
   ( t = <COUNT> <LPAREN> 
     ( <DISTINCT> { distinct = true ; } )?
@@ -2162,10 +2164,13 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
 
   {
     if ( ! getAllowAggregatesInExpressions() )
-           throwParseException("Aggregate expression not legal at this point",
-                                t.beginLine, t.beginColumn) ;
+        // Do late so we have the token for line/column
+        throwParseException("Aggregate expression not legal at this point", t.beginLine, t.beginColumn) ;
+    if ( getAggregateDepth() > 1 )
+        throwParseException("Nested aggregate in expression not legal ", t.beginLine, t.beginColumn) ;
   }
   { Expr exprAgg = getQuery().allocAggregate(agg) ;
+    finishAggregate();
     return exprAgg ; }
 }
 
