@@ -943,24 +943,48 @@ public class XSDFuncOp
         integerSubTypes.add(XSDDatatype.XSDnegativeInteger) ;
     }
 
-    public static boolean isNumericType(XSDDatatype xsdDatatype) {
+    public static boolean isNumericDatatype(XSDDatatype xsdDatatype) {
         if ( XSDDatatype.XSDfloat.equals(xsdDatatype) )
             return true ;
         if ( XSDDatatype.XSDdouble.equals(xsdDatatype) )
             return true ;
-        return isDecimalType(xsdDatatype) ;
+        return isDecimalDatatype(xsdDatatype) ;
     }
 
-    public static boolean isDecimalType(XSDDatatype xsdDatatype) {
+    public static boolean isDecimalDatatype(XSDDatatype xsdDatatype) {
         if ( XSDDatatype.XSDdecimal.equals(xsdDatatype) )
             return true ;
-        return isIntegerType(xsdDatatype) ;
+        return isIntegerDatatype(xsdDatatype) ;
     }
 
-    public static boolean isIntegerType(XSDDatatype xsdDatatype) {
+    public static boolean isIntegerDatatype(XSDDatatype xsdDatatype) {
         return integerSubTypes.contains(xsdDatatype) ;
     }
 
+    public static boolean isTemporalDatatype(XSDDatatype datatype) {
+        return
+            datatype.equals(XSDDatatype.XSDdateTime) ||
+            datatype.equals(XSDDatatype.XSDtime) ||
+            datatype.equals(XSDDatatype.XSDdate) ||
+            datatype.equals(XSDDatatype.XSDgYear) ||
+            datatype.equals(XSDDatatype.XSDgYearMonth) ||
+            datatype.equals(XSDDatatype.XSDgMonth) ||
+            datatype.equals(XSDDatatype.XSDgMonthDay) ||
+            datatype.equals(XSDDatatype.XSDgDay);
+    }
+
+    public static boolean isDurationDatatype(XSDDatatype datatype) {
+        return
+            datatype.equals(XSDDatatype.XSDduration) ||
+            datatype.equals(XSDDatatype.XSDyearMonthDuration) ||
+            datatype.equals(XSDDatatype.XSDdayTimeDuration );
+    }
+
+    public static boolean isBinaryDatatype(XSDDatatype datatype) {
+        return datatype.equals(XSDDatatype.XSDhexBinary) || datatype.equals(XSDDatatype.XSDbase64Binary);
+    }
+
+    
     // --------------------------------
     // Comparisons operations
     // Do not confuse with sameValueAs/notSamevalueAs

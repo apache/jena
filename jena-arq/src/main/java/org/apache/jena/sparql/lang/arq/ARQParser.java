@@ -5855,7 +5855,7 @@ agg = AggregatorFactory.createCustom(iri, a) ;
 if ( ! getAllowAggregatesInExpressions() )
         throwParseException("Aggregate expression not legal at this point", t.beginLine, t.beginColumn) ;
     if ( getAggregateDepth() > 1 )
-        throwParseException("Nested aggregate in expression not legal ", t.beginLine, t.beginColumn) ;
+        throwParseException("Nested aggregate in expression not legal", t.beginLine, t.beginColumn) ;
 Expr exprAgg = getQuery().allocAggregate(agg) ;
     finishAggregate();
     {if ("" != null) return exprAgg ;}

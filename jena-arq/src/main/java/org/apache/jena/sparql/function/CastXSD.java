@@ -21,7 +21,7 @@ package org.apache.jena.sparql.function;
 import static org.apache.jena.sparql.expr.NodeValue.nvNaN;
 import static org.apache.jena.sparql.expr.NodeValue.nvNegZERO;
 import static org.apache.jena.sparql.expr.NodeValue.nvZERO;
-
+import static org.apache.jena.sparql.expr.nodevalue.XSDFuncOp.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Objects;
@@ -152,35 +152,6 @@ public class CastXSD {
         return castByLex(nv, castType);
     }
 
-    // XXX Merge into XSDFuncOp
-    private static boolean isTemporalDatatype(XSDDatatype datatype) {
-        return
-            datatype.equals(XSDDatatype.XSDdateTime) ||
-            datatype.equals(XSDDatatype.XSDtime) ||
-            datatype.equals(XSDDatatype.XSDdate) ||
-            datatype.equals(XSDDatatype.XSDgYear) ||
-            datatype.equals(XSDDatatype.XSDgYearMonth) ||
-            datatype.equals(XSDDatatype.XSDgMonth) ||
-            datatype.equals(XSDDatatype.XSDgMonthDay) ||
-            datatype.equals(XSDDatatype.XSDgDay);
-    }
-
-    private static boolean isDurationDatatype(XSDDatatype datatype) {
-        return
-            datatype.equals(XSDDatatype.XSDduration) ||
-            datatype.equals(XSDDatatype.XSDyearMonthDuration) ||
-            datatype.equals(XSDDatatype.XSDdayTimeDuration );
-    }
-
-    private static boolean isNumericDatatype(XSDDatatype datatype) {
-        // XXX Check sharing
-        return XSDFuncOp.isNumericType(datatype);
-    }
-
-    private static boolean isBinaryDatatype(XSDDatatype datatype) {
-        return datatype.equals(XSDDatatype.XSDhexBinary) || datatype.equals(XSDDatatype.XSDbase64Binary);
-    }
-
     private static NodeValue castToNumber(NodeValue nv, XSDDatatype castType) {
         if ( castType.equals(XSDDatatype.XSDdecimal) ) {
             // Number to decimal.
@@ -203,7 +174,7 @@ public class CastXSD {
             // Integer, or derived type -> decimal.
             return castByLex(nv, castType);
         }
-        if ( XSDFuncOp.isIntegerType(castType) ) {
+        if ( isIntegerDatatype(castType) ) {
             // Number to integer
             if ( isDouble(nv) || isFloat(nv) ) {
                 // FP to integer
@@ -393,49 +364,49 @@ public class CastXSD {
         return ( d >= 0.000001d && d < 1000000d ) || ( d <= -0.000001d && d > -1000000d );
     }
 
+    /** Test to see if a BuigDecimal is integer valued  */
     private static boolean isIntegerValue(BigDecimal bd) {
         return bd.signum() == 0 || bd.scale() <= 0 || bd.stripTrailingZeros().scale() <= 0;
       }
 
-    /** Presentation form of an XSD datatype URI */
-    private static String xsdName(XSDDatatype datatype) {
-        return datatype.getURI().replaceAll(XSDDatatype.XSD+"#", "xsd:");
-    }
-
-    /** Test to see if a NodeValue is a valid double value and is of datatype xsd:double. */
+    /** Test to see if a {@link NodeValue} is a valid double value and is of datatype xsd:double. */
     private static boolean isDouble(NodeValue nv) {
         return nv.isDouble() && nv.getDatatypeURI().equals(XSDDatatype.XSDdouble.getURI());
     }
 
-    /** Test to see if a NodeValue is a valid float value and is of datatype float. */
+    /** Test to see if a {@link NodeValue} is a valid float value and is of datatype float. */
     private static boolean isFloat(NodeValue nv) {
         return nv.isFloat() && nv.getDatatypeURI().equals(XSDDatatype.XSDfloat.getURI());
     }
 
-    /** Test to see if a NodeValue is a valid decimal value and is of datatype decimal. */
+    /** Test to see if a {@link NodeValue} is a valid decimal value and is of datatype decimal. */
     private static boolean isDecimal(NodeValue nv) {
         return nv.isDecimal() && nv.getDatatypeURI().equals(XSDDatatype.XSDdecimal.getURI());
     }
 
-    /** Test to see if a NodeValue is a valid numeric value. */
+    /** Test to see if a {@link NodeValue} is a valid numeric value. */
     private static boolean isNumeric(NodeValue nv) {
         return nv.isNumber();
     }
 
-    /** Test to see if a NodeValue is a temporal includes Gregorian.. */
+    /** Test to see if a {@link NodeValue} is a temporal includes Gregorian.. */
     private static boolean isTemporal(NodeValue nv) {
-        //
         return nv.hasDateTime();
     }
 
-    /** Test to see if a NodeValue is a duration */
+    /** Test to see if a {@link NodeValue} is a duration */
     private static boolean isDuration(NodeValue nv) {
         return nv.isDuration();
     }
 
-    /** Test to see if a NodeValue is a valid numeric value. */
+    /** Test to see if a {@link NodeValue} is a valid numeric value. */
     private static boolean isBoolean(NodeValue nv) {
         return nv.isBoolean();
+    }
+
+    /** Presentation form of an XSD datatype URI */
+    private static String xsdName(XSDDatatype datatype) {
+        return datatype.getURI().replaceAll(XSDDatatype.XSD+"#", "xsd:");
     }
 
     private static ExprException exception(NodeValue nv, XSDDatatype dt) {
