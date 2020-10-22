@@ -46,6 +46,25 @@ N=$((N+1)) ; testGood $ARQ $(fname "syntax-select-expr-" $N arq) <<EOF
 PREFIX : <http://example/>
 SELECT str(?z) ?z {}
 EOF
+## ---- Nested aggregates
+
+N=0
+
+N=$((N+1)) ; testBad $ARQ $(fname "syntax-agg-expr-bad-" $N arq) <<EOF
+PREFIX : <http://example/>
+SELECT (SUM(COUNT(*)) AS ?Z) {}
+EOF
+
+N=$((N+1)) ; testBad $ARQ $(fname "syntax-agg-expr-bad-" $N arq) <<EOF
+PREFIX : <http://example/>
+SELECT ?Z {} HAVING (COUNT(AVG(?x)) > 0)
+EOF
+
+N=$((N+1)) ; testBad $ARQ $(fname "syntax-agg-expr-bad-" $N arq) <<EOF
+PREFIX : <http://example/>
+SELECT ?Z {} ORDER BY COUNT(AVG(?x))
+EOF
+
 
 ## ---- SERVICE
 

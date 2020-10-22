@@ -20,7 +20,7 @@ package org.apache.jena.sparql.expr;
 
 import org.apache.jena.sparql.ARQNotImplemented ;
 
-
+// CAST(string, Y/IRI)
 public class E_Cast extends ExprFunction2
 {
     // See E_StrDatatype
