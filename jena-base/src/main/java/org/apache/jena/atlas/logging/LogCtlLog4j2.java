@@ -30,9 +30,9 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.properties.PropertiesConfigurationFactory;
 
-/** 
+/**
  * Additional logging control, for Log4j2 as used by jena-cmds.
- * <br/> 
+ * <br/>
  * This class pulls in log4j2.
  * <br/>
  * This class is split out from {@link LogCtl} to decouple the class loading dependencies.
@@ -58,7 +58,7 @@ public class LogCtlLog4j2 {
         Configuration configuration = factory.getConfiguration(null, source);
         Configurator.initialize(configuration);
     }
-    
+
 //    public static void setCmdLogging() {
 //        LogCtl.setLog4j2();
 //        if ( ! LogCtl.isSetLog4j2property() )
@@ -72,11 +72,11 @@ public class LogCtlLog4j2 {
         ( "## Command default log4j2 setup : log4j2 properties syntax."
         , "status = error"
         , "name = PropertiesConfig"
-        , "filters = threshold"
-        , ""
-        , "filter.threshold.type = ThresholdFilter"
-        , "filter.threshold.level = ALL"
-
+//        , "filters = threshold"
+//        , ""
+//        , "filter.threshold.type = ThresholdFilter"
+//        , "filter.threshold.level = ALL"
+//      , ""        
         , "appender.console.type = Console"
         , "appender.console.name = OUT"
         , "appender.console.target = SYSTEM_OUT"
@@ -104,11 +104,11 @@ public class LogCtlLog4j2 {
         ( "## Command default log4j2 setup : log4j2 properties syntax."
         , "status = error"
         , "name = PropertiesConfig"
-        , "filters = threshold"
-        , ""
-        , "filter.threshold.type = ThresholdFilter"
-        , "filter.threshold.level = ALL"
-
+//        , "filters = threshold"
+//        , ""
+//        , "filter.threshold.type = ThresholdFilter"
+//        , "filter.threshold.level = ALL"
+//      , ""
         , "appender.console.type = Console"
         , "appender.console.name = OUT"
         , "appender.console.target = SYSTEM_ERR"

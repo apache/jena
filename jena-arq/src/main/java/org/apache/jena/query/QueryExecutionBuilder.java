@@ -21,7 +21,9 @@ package org.apache.jena.query;
 import java.util.Objects;
 
 import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphOne;
 import org.apache.jena.sparql.engine.QueryEngineFactory;
 import org.apache.jena.sparql.engine.QueryEngineRegistry;
 import org.apache.jena.sparql.engine.QueryExecutionBase;
@@ -47,8 +49,18 @@ public class QueryExecutionBuilder {
         return this;
     }
 
+    public QueryExecutionBuilder query(String queryString) {
+        this.query = QueryFactory.create(queryString);
+        return this;
+    }
+    
     public QueryExecutionBuilder dataset(DatasetGraph dsg) {
         this.dataset = dsg;
+        return this;
+    }
+
+    public QueryExecutionBuilder graph(Graph graph) {
+        this.dataset = DatasetGraphOne.create(graph);
         return this;
     }
 
