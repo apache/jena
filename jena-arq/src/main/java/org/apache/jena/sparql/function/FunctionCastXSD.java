@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,34 +16,26 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.expr;
+package org.apache.jena.sparql.function;
 
-import org.apache.jena.sparql.ARQNotImplemented ;
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.sparql.expr.NodeValue ;
 
-// CAST(string, Y/IRI)
-public class E_Cast extends ExprFunction2
-{
-    // See E_StrDatatype
-    private static final String symbol = "cast" ;
+public class FunctionCastXSD extends FunctionBase1 implements FunctionFactory {
 
-    private E_Cast(Expr expr1, Expr expr2)
-    {
-        super(expr1, expr2, symbol) ;
+    protected final XSDDatatype castType;
+
+    public FunctionCastXSD(XSDDatatype dt) {
+        this.castType = dt;
     }
 
     @Override
-    public NodeValue eval(NodeValue x, NodeValue y)
-    {
-        if ( ! x.isString() ) throw new ExprEvalException("cast: arg 2 is not a string: "+x) ;
-        if ( ! y.isIRI() ) throw new ExprEvalException("cast: arg 2 is not a URI: "+y) ;
-        
-        String lex = x.getString() ;
-        y.asNode().getURI() ;
-        
-        throw new ARQNotImplemented() ;
+    public Function create(String uri) {
+        return this;
     }
 
     @Override
-    public Expr copy(Expr arg1, Expr arg2)
-    { return new E_Cast(arg1, arg2) ; }
+    public NodeValue exec(NodeValue v) {
+        return CastXSD.cast(v, castType);
+    }
 }

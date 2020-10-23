@@ -4594,6 +4594,7 @@ expr1 = new E_Divide(expr1, expr2) ;
                      boolean distinct = false ;
                      ExprList ordered = new ExprList() ;
                      Token t ;
+startAggregate();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case COUNT:{
       t = jj_consume_token(COUNT);
@@ -4837,9 +4838,11 @@ agg = AggregatorFactory.createGroupConcat(distinct, expr, sep, ordered) ;
       throw new ParseException();
     }
 if ( ! getAllowAggregatesInExpressions() )
-           throwParseException("Aggregate expression not legal at this point",
-                                t.beginLine, t.beginColumn) ;
+        throwParseException("Aggregate expression not legal at this point", t.beginLine, t.beginColumn) ;
+    if ( getAggregateDepth() > 1 )
+        throwParseException("Nested aggregate in expression not legal", t.beginLine, t.beginColumn) ;
 Expr exprAgg = getQuery().allocAggregate(agg) ;
+    finishAggregate();
     {if ("" != null) return exprAgg ;}
     throw new Error("Missing return statement in function");
   }

@@ -1,6 +1,8 @@
 #!/bin/bash
 
-## Reification
+## Original reification support.
+## This is not RDF*
+## This is not all currently valid.
 N=0
 
 N=$((N+1)) ; testGood $ARQ $(fname "syntax-reif-arq-" $N arq) <<EOF

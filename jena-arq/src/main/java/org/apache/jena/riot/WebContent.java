@@ -67,16 +67,16 @@ public class WebContent
     public static final String      contentTypeXMLAlt            = "text/xml" ;
     public static final ContentType ctXMLAlt                     = ContentType.create(contentTypeXMLAlt) ;
 
-    public static final String      contentTypeTriG              = "text/trig" ;
+    public static final String      contentTypeTriG              = "application/trig" ;
     public static final ContentType ctTriG                       = ContentType.create(contentTypeTriG) ;
 
     public static final String      contentTypeNQuads            = "application/n-quads" ;
     public static final ContentType ctNQuads                     = ContentType.create(contentTypeNQuads) ;
 
-    public static final String      contentTypeTriGAlt1          = "application/x-trig" ;
+    public static final String      contentTypeTriGAlt1          = "text/trig" ;
     public static final ContentType ctTriGAlt1                   = ContentType.create(contentTypeTriGAlt1) ;
 
-    public static final String      contentTypeTriGAlt2          = "application/trig" ;
+    public static final String      contentTypeTriGAlt2          = "application/x-trig" ;
     public static final ContentType ctTriGAlt2                   = ContentType.create(contentTypeTriGAlt2) ;
 
     // Unofficial

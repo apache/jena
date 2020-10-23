@@ -34,57 +34,85 @@ import org.junit.Test ;
 public class TestXSDFuncOp
 {
     private static final double accuracyExact_D = 0.0d ;
-    private static final double accuracyExact_F = 0.0d ;
+    private static final double accuracyExact_F = 0.0f ;
     private static final double accuracyClose_D = 0.000001d ;
     private static final double accuracyClose_F = 0.000001f ;
     
     
     @Test public void lex_decimal_1() {
-        lex_decimal(BigDecimal.valueOf(0), "0.0");
+        lex_decimal_value(BigDecimal.valueOf(0), "0.0");
     }
     
     @Test public void lex_decimal_2() {
-        lex_decimal(BigDecimal.valueOf(1), "1.0");
+        lex_decimal_value(BigDecimal.valueOf(1), "1.0");
     }
     
     @Test public void lex_decimal_3() {
-        lex_decimal(BigDecimal.valueOf(0.5), "0.5");
+        lex_decimal_value(BigDecimal.valueOf(0.5), "0.5");
     }
     
     @Test public void lex_decimal_4() {
-        lex_decimal(BigDecimal.valueOf(-0.5), "-0.5");
+        lex_decimal_value(BigDecimal.valueOf(-0.5), "-0.5");
     }
     
     @Test public void lex_decimal_5() {
-        lex_decimal(BigDecimal.valueOf(1_000_000_000_000_000L), "1000000000000000.0");
+        lex_decimal_value(BigDecimal.valueOf(1_000_000_000_000_000L), "1000000000000000.0");
     }
     
     @Test public void lex_decimal_6() {
-        lex_decimal(BigDecimal.valueOf(-1_000_000_000_000_000L), "-1000000000000000.0");
+        lex_decimal_value(BigDecimal.valueOf(-1_000_000_000_000_000L), "-1000000000000000.0");
     }
 
-    @Test public void lex_decimal_7() {
-        lex_decimal("0.0","0.0");
+    @Test public void lex_decimal_canonical_1() {
+        lex_decimal_canonical("+.0","0.0");
     }
     
-    @Test public void lex_decimal_8() {
+    @Test public void lex_decimal_canonical_2() {
+        lex_decimal_canonical("-.0","0.0");
+    }
+
+    @Test public void lex_decimal_canonical_3() {
+        lex_decimal_canonical("0010","10.0");
+    }
+
+    @Test public void lex_decimal_canonical_4() {
+        lex_decimal_canonical("0012.0000","12.0");
+    }
+    
+    @Test public void lex_decimal_canonical_5() {
+        lex_decimal_canonical("-0012.0000","-12.0");
+    }
+
+    
+    // Exact given lexical form preserved.
+    @Test public void lex_decimal_nodevalue_1() {
+        lex_decimal_nodevalue("0.0","0.0");
+    }
+    
+    @Test public void lex_decimal_nodevalue_2() {
         // As input.
-        lex_decimal("0.","0.");
+        lex_decimal_nodevalue("0.","0.");
     }
     
-    @Test public void lex_decimal_9() {
+    @Test public void lex_decimal_nodevalue3() {
         // As input.
-        lex_decimal("+.0","+.0");
+        lex_decimal_nodevalue("+.0","+.0");
     }
     
-    private static void lex_decimal(BigDecimal decimal, String expected) {
+    private static void lex_decimal_value(BigDecimal decimal, String expected) {
         String lex = XSDFuncOp.canonicalDecimalStr(decimal);
         assertEquals(expected, lex);
     }
     
-    private static void lex_decimal(String input, String expected) {
+    private static void lex_decimal_nodevalue(String input, String expected) {
         NodeValue nv = NodeValue.makeDecimal(input);
         String lex = nv.asString(); 
+        assertEquals(expected, lex);
+    }
+
+    private static void lex_decimal_canonical(String input, String expected) {
+        BigDecimal decimal = new BigDecimal(input);
+        String lex = XSDFuncOp.canonicalDecimalStr(decimal);
         assertEquals(expected, lex);
     }
 

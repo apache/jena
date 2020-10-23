@@ -1489,6 +1489,7 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
                      ExprList ordered = new ExprList() ;
                      Token t ; }
 {
+  { startAggregate(); }
   ( t = <COUNT> <LPAREN>
     ( <DISTINCT> { distinct = true ; } )?
     ( <STAR> | expr = Expression() )
@@ -1544,10 +1545,12 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
   )
   {
     if ( ! getAllowAggregatesInExpressions() )
-           throwParseException("Aggregate expression not legal at this point",
-                                t.beginLine, t.beginColumn) ;
+        throwParseException("Aggregate expression not legal at this point", t.beginLine, t.beginColumn) ;
+    if ( getAggregateDepth() > 1 )
+        throwParseException("Nested aggregate in expression not legal", t.beginLine, t.beginColumn) ;
   }
   { Expr exprAgg = getQuery().allocAggregate(agg) ;
+    finishAggregate();
     return exprAgg ; }
 }
 Expr iriOrFunction() : { String iri ; Args a = null ; }

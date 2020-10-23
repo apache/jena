@@ -97,6 +97,7 @@ public class ParserBase
     // Aggregates are only allowed in places where grouping can happen.
     // e.g. SELECT clause but not a FILTER.
     private boolean allowAggregatesInExpressions = false ;
+    private int     aggregateDepth               = 0 ;
 
     //LabelToNodeMap listLabelMap = new LabelToNodeMap(true, new VarAlloc("L")) ;
     // ----
@@ -148,6 +149,11 @@ public class ParserBase
         this.allowAggregatesInExpressions = allowAggregatesInExpressions;
     }
 
+    // Tracking for nested aggregates.
+    protected void startAggregate()   { aggregateDepth++; }
+    protected int getAggregateDepth() { return aggregateDepth; }
+    protected void finishAggregate()  { aggregateDepth--; }
+    
     protected Element compressGroupOfOneGroup(ElementGroup elg) {
         // remove group of one group.
         if ( elg.size() == 1 ) {
