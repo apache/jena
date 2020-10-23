@@ -18,10 +18,8 @@
 
 options
 {
-  // Use \ u escapes in streams AND use a reader for the query
-  // => get both raw and escaped unicode
-   JAVA_UNICODE_ESCAPE   = true ;
-   UNICODE_INPUT         = false ;
+   JAVA_UNICODE_ESCAPE   = false ;
+   UNICODE_INPUT         = true ;
 
   STATIC                = false ;
 //   DEBUG_PARSER          = true ;
@@ -65,6 +63,7 @@ PARSER_END(SSE_ParserCore)
 
 void parse() : { }
 {
+    [ <BOM> ]
     { parseStart() ; }
     (<WS>)*
     TermOrList()
