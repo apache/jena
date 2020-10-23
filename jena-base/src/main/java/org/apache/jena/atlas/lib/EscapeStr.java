@@ -142,6 +142,12 @@ public class EscapeStr
     public static String unescapeStr(String s, char escapeChar)
     { return unescape(s, escapeChar, false) ; }
 
+    
+    /** Unicode escapes  \-u abd \-U only */  
+    public static String unescapeUnicode(String s) {
+        return  unescape(s, '\\', true) ;
+    }
+    
     // Main worker function for unescaping strings.
     public static String unescape(String s, char escape, boolean pointCodeOnly) {
         int i = s.indexOf(escape) ;

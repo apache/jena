@@ -26,6 +26,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.sdb.Store ;
 import org.apache.jena.sdb.graph.GraphSDB ;
 import org.apache.jena.sdb.util.StoreUtils ;
@@ -33,7 +34,6 @@ import org.apache.jena.shared.Lock ;
 import org.apache.jena.shared.LockMRSW ;
 import org.apache.jena.sparql.core.* ;
 import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.sparql.util.graph.GraphUtils ;
 
 public class DatasetGraphSDB extends DatasetGraphTriplesQuads 
     implements DatasetGraph, Closeable
@@ -98,7 +98,7 @@ public class DatasetGraphSDB extends DatasetGraphTriplesQuads
 
     @Override
     protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o)
-    { return GraphUtils.triples2quadsDftGraph(LibSDB.findTriplesInDftGraph(this, s, p, o)) ; }
+    { return G.triples2quadsDftGraph(LibSDB.findTriplesInDftGraph(this, s, p, o)) ; }
 
     @Override
     protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o)

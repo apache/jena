@@ -225,8 +225,10 @@ public class TestExpressions
     @Test public void testURI_9()       { testURI("rdf:__2",  rdfNS+"__2" ) ; }
     @Test public void testURI_10()      { testURI(":b",       dftNS+"b" ) ; }
     @Test public void testURI_11()      { testURI(":", dftNS ) ; }
-    @Test public void testURI_12()      { testURI(":\\u00E9", dftNS+"\u00E9" ) ; }
-    @Test public void testURI_13()      { testURI("\\u0065\\u0078:", exNS ) ; }
+    // These assume \-u processing by JavaCC
+    // Migration to processing like Turtle, in strings and URIs only.
+//    @Test public void testURI_12()      { testURI(":\\u00E9", dftNS+"\u00E9" ) ; }
+//    @Test public void testURI_13()      { testURI("\\u0065\\u0078:", exNS ) ; }
     @Test public void testURI_14()      { testURI("select:a", selNS+"a" ) ; }
 
     @Test public void testURI_15()      { testURI("ex:a.",   exNS+"a") ; }
@@ -285,18 +287,19 @@ public class TestExpressions
     @Test public void testString_8() { testString("'a\\\\b'", "a\\b") ; }
     @Test public void testString_9() { testString("'a\\u0020a'", "a a") ; }
     @Test public void testString_10() { testString("'a\\uF021'", "a\uF021") ; }
+    @Test public void testString_11() { testString("'a\\U0000F021'", "a\uF021") ; }
 
     @Test(expected=QueryParseException.class)
-    public void testString_11() { testString("'a\\X'") ; }
+    public void testString_bad_1() { testString("'a\\X'") ; }
 
     @Test(expected=QueryParseException.class)
-    public void testString_12() { testString("'aaa\\'") ; }
+    public void testString_bad_2() { testString("'aaa\\'") ; }
 
     @Test(expected=QueryParseException.class)
-    public void testString_13() { testString("'\\u'") ; }
+    public void testString_bad_3() { testString("'\\u'") ; }
 
     @Test(expected=QueryParseException.class)
-    public void testString_14() { testString("'\\u111'") ; }
+    public void testString_bad_4() { testString("'\\u111'") ; }
 
 //    @Test public void testBoolean_109() { testBoolean("\"fred\\1\" = 'fred1'", false ) ; }
 //    @Test public void testBoolean_110() { testBoolean("\"fred2\" = 'fred\\2'", true ) ; }

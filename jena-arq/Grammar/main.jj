@@ -46,15 +46,18 @@
 
 options
 {
-      // \ u processed in the input stream
-      // SPARQL 1.0
+#ifdef SPARQL_11
+    // Standards with \ u everywhere, \U in strings and IRIs only.
+    // \ u processed in the input stream
+    // SPARQL 1.0 and 1.1
     JAVA_UNICODE_ESCAPE   = true ;
     UNICODE_INPUT         = false ;
-
-//       // \ u processed after parsing.
-//       // strings, prefix names, IRIs
-//       JAVA_UNICODE_ESCAPE   = false ;
-//       UNICODE_INPUT         = true ;
+#endif
+#ifdef ARQ
+    // \ u processed after parsing in strings and IRIs, nowhere else.
+    JAVA_UNICODE_ESCAPE   = false ;
+    UNICODE_INPUT         = true ;
+#endif
 
   STATIC                = false ;
 //  DEBUG_PARSER          = true ;
@@ -2345,8 +2348,11 @@ TOKEN: {
 TOKEN:
 {
    // Includes # for relative URIs
-   <IRIref:       "<" (~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`", 
-                      "\u0000"-"\u0020"])* ">" >
+   <IRIref:   "<"
+                ( ~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`", "\u0000"-"\u0020"]
+                | <UCHAR>
+                )*
+              ">" >
 |  <PNAME_NS: (<PN_PREFIX>)? ":" >
 |  <PNAME_LN: <PNAME_NS> <PN_LOCAL> >
 |  <BLANK_NODE_LABEL: "_:" (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS>|".")* <PN_CHARS>)?  >
@@ -2575,20 +2581,30 @@ TOKEN :
 | < #QUOTE_3D: "\"\"\"">
 | < #QUOTE_3S: "'''">
 | <ECHAR: "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
+#ifdef SPARQL_11
+// Done instream by JavaCC
+| < #UCHAR:      <UCHAR8> >
+#endif
+#ifdef ARQ
+| < #UCHAR:      <UCHAR4> | <UCHAR8> >
+#endif
+| < #UCHAR4:     "\\" "u" <HEX> <HEX> <HEX> <HEX> >
+| < #UCHAR8:     "\\" "U" <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> >
+
 | < STRING_LITERAL1: 
       // Single quoted string
-      "'" ( (~["'","\\","\n","\r"]) | <ECHAR> )* "'" > 
+      "'" ( (~["'","\\","\n","\r"]) | <ECHAR> | <UCHAR> )* "'" > 
 | < STRING_LITERAL2:
     // Double quoted string
-      "\"" ( (~["\"","\\","\n","\r"]) | <ECHAR> )* "\"" >
+      "\"" ( (~["\"","\\","\n","\r"]) | <ECHAR> | <UCHAR> )* "\"" >
 | < STRING_LITERAL_LONG1:
      <QUOTE_3S> 
-      ( ("'" | "''")? (~["'","\\"] | <ECHAR> ))*
+      ( ("'" | "''")? (~["'","\\"] | <ECHAR>  | <UCHAR> ))*
      <QUOTE_3S> >
 
 | < STRING_LITERAL_LONG2: 
      <QUOTE_3D> 
-      ( ("\"" | "\"\"")? (~["\"","\\"] | <ECHAR> ))*
+      ( ("\"" | "\"\"")? (~["\"","\\"] | <ECHAR> | <UCHAR> ))*
      <QUOTE_3D> >
 }
 
