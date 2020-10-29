@@ -1451,8 +1451,11 @@ TOKEN: {
 }
 TOKEN:
 {
-   <IRIref: "<" (~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`",
-                      "\u0000"-"\u0020"])* ">" >
+   <IRIref: "<"
+                ( ~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`", "\u0000"-"\u0020"]
+                | <UCHAR>
+                )*
+              ">" >
 | <PNAME_NS: (<PN_PREFIX>)? ":" >
 | <PNAME_LN: <PNAME_NS> <PN_LOCAL> >
 | <BLANK_NODE_LABEL: "_:" (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS>|".")* <PN_CHARS>)? >
@@ -1615,17 +1618,20 @@ TOKEN :
 | < #QUOTE_3D: "\"\"\"">
 | < #QUOTE_3S: "'''">
 | <ECHAR: "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
+| < #UCHAR: <UCHAR8> >
+| < #UCHAR4: "\\" "u" <HEX> <HEX> <HEX> <HEX> >
+| < #UCHAR8: "\\" "U" <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> >
 | < STRING_LITERAL1:
-      "'" ( (~["'","\\","\n","\r"]) | <ECHAR> )* "'" >
+      "'" ( (~["'","\\","\n","\r"]) | <ECHAR> | <UCHAR> )* "'" >
 | < STRING_LITERAL2:
-      "\"" ( (~["\"","\\","\n","\r"]) | <ECHAR> )* "\"" >
+      "\"" ( (~["\"","\\","\n","\r"]) | <ECHAR> | <UCHAR> )* "\"" >
 | < STRING_LITERAL_LONG1:
      <QUOTE_3S>
-      ( ("'" | "''")? (~["'","\\"] | <ECHAR> ))*
+      ( ("'" | "''")? (~["'","\\"] | <ECHAR> | <UCHAR> ))*
      <QUOTE_3S> >
 | < STRING_LITERAL_LONG2:
      <QUOTE_3D>
-      ( ("\"" | "\"\"")? (~["\"","\\"] | <ECHAR> ))*
+      ( ("\"" | "\"\"")? (~["\"","\\"] | <ECHAR> | <UCHAR> ))*
      <QUOTE_3D> >
 }
 TOKEN :

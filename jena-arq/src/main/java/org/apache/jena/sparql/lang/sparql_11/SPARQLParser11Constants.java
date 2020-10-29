@@ -315,101 +315,107 @@ public interface SPARQLParser11Constants {
   /** RegularExpression Id. */
   int ECHAR = 157;
   /** RegularExpression Id. */
-  int STRING_LITERAL1 = 158;
+  int UCHAR = 158;
   /** RegularExpression Id. */
-  int STRING_LITERAL2 = 159;
+  int UCHAR4 = 159;
   /** RegularExpression Id. */
-  int STRING_LITERAL_LONG1 = 160;
+  int UCHAR8 = 160;
   /** RegularExpression Id. */
-  int STRING_LITERAL_LONG2 = 161;
+  int STRING_LITERAL1 = 161;
   /** RegularExpression Id. */
-  int LPAREN = 162;
+  int STRING_LITERAL2 = 162;
   /** RegularExpression Id. */
-  int RPAREN = 163;
+  int STRING_LITERAL_LONG1 = 163;
   /** RegularExpression Id. */
-  int NIL = 164;
+  int STRING_LITERAL_LONG2 = 164;
   /** RegularExpression Id. */
-  int LBRACE = 165;
+  int LPAREN = 165;
   /** RegularExpression Id. */
-  int RBRACE = 166;
+  int RPAREN = 166;
   /** RegularExpression Id. */
-  int LBRACKET = 167;
+  int NIL = 167;
   /** RegularExpression Id. */
-  int RBRACKET = 168;
+  int LBRACE = 168;
   /** RegularExpression Id. */
-  int ANON = 169;
+  int RBRACE = 169;
   /** RegularExpression Id. */
-  int SEMICOLON = 170;
+  int LBRACKET = 170;
   /** RegularExpression Id. */
-  int COMMA = 171;
+  int RBRACKET = 171;
   /** RegularExpression Id. */
-  int DOT = 172;
+  int ANON = 172;
   /** RegularExpression Id. */
-  int EQ = 173;
+  int SEMICOLON = 173;
   /** RegularExpression Id. */
-  int NE = 174;
+  int COMMA = 174;
   /** RegularExpression Id. */
-  int GT = 175;
+  int DOT = 175;
   /** RegularExpression Id. */
-  int LT = 176;
+  int EQ = 176;
   /** RegularExpression Id. */
-  int LE = 177;
+  int NE = 177;
   /** RegularExpression Id. */
-  int GE = 178;
+  int GT = 178;
   /** RegularExpression Id. */
-  int BANG = 179;
+  int LT = 179;
   /** RegularExpression Id. */
-  int TILDE = 180;
+  int LE = 180;
   /** RegularExpression Id. */
-  int COLON = 181;
+  int GE = 181;
   /** RegularExpression Id. */
-  int SC_OR = 182;
+  int BANG = 182;
   /** RegularExpression Id. */
-  int SC_AND = 183;
+  int TILDE = 183;
   /** RegularExpression Id. */
-  int PLUS = 184;
+  int COLON = 184;
   /** RegularExpression Id. */
-  int MINUS = 185;
+  int SC_OR = 185;
   /** RegularExpression Id. */
-  int STAR = 186;
+  int SC_AND = 186;
   /** RegularExpression Id. */
-  int SLASH = 187;
+  int PLUS = 187;
   /** RegularExpression Id. */
-  int DATATYPE = 188;
+  int MINUS = 188;
   /** RegularExpression Id. */
-  int AT = 189;
+  int STAR = 189;
   /** RegularExpression Id. */
-  int VBAR = 190;
+  int SLASH = 190;
   /** RegularExpression Id. */
-  int CARAT = 191;
+  int DATATYPE = 191;
   /** RegularExpression Id. */
-  int FPATH = 192;
+  int AT = 192;
   /** RegularExpression Id. */
-  int RPATH = 193;
+  int VBAR = 193;
   /** RegularExpression Id. */
-  int QMARK = 194;
+  int CARAT = 194;
   /** RegularExpression Id. */
-  int PN_CHARS_BASE = 195;
+  int FPATH = 195;
   /** RegularExpression Id. */
-  int PN_CHARS_U = 196;
+  int RPATH = 196;
   /** RegularExpression Id. */
-  int PN_CHARS = 197;
+  int QMARK = 197;
   /** RegularExpression Id. */
-  int PN_PREFIX = 198;
+  int PN_CHARS_BASE = 198;
   /** RegularExpression Id. */
-  int PN_LOCAL = 199;
+  int PN_CHARS_U = 199;
   /** RegularExpression Id. */
-  int VARNAME = 200;
+  int PN_CHARS = 200;
   /** RegularExpression Id. */
-  int PN_LOCAL_ESC = 201;
+  int PN_PREFIX = 201;
   /** RegularExpression Id. */
-  int PLX = 202;
+  int PN_LOCAL = 202;
   /** RegularExpression Id. */
-  int HEX = 203;
+  int VARNAME = 203;
   /** RegularExpression Id. */
-  int PERCENT = 204;
+  int PN_LOCAL_ESC = 204;
   /** RegularExpression Id. */
-  int UNKNOWN = 205;
+  int PLX = 205;
+  /** RegularExpression Id. */
+  int HEX = 206;
+  /** RegularExpression Id. */
+  int PERCENT = 207;
+  /** RegularExpression Id. */
+  int UNKNOWN = 208;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -574,6 +580,9 @@ public interface SPARQLParser11Constants {
     "\"\\\"\\\"\\\"\"",
     "\"\\\'\\\'\\\'\"",
     "<ECHAR>",
+    "<UCHAR>",
+    "<UCHAR4>",
+    "<UCHAR8>",
     "<STRING_LITERAL1>",
     "<STRING_LITERAL2>",
     "<STRING_LITERAL_LONG1>",

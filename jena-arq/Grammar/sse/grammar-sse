@@ -104,14 +104,16 @@ then
     fi
 
 for G in "$@"
-  do
-  case "$G" in
-  unisyn)
-    cat "$GRAMMAR" | cpp -P -C - > parser.jj
-    grammar parser.jj sse/lang/parser SSE_ParserCore
-    [ "$RC" = 0 ] && rm parser.jj
-    ;;
-  *)    echo "**** Unknown grammar: $G" 1>&2
-    ;;
+do
+    case "$G" in
+	unisyn)
+	    cp ../header.jj parser.jj
+	    # The parser that is exactly the working group grammar
+	    cat "$GRAMMAR" | cpp -P >> parser.jj
+	    grammar parser.jj sse/lang/parser SSE_ParserCore
+	    [ "$RC" = 0 ] && rm parser.jj
+	    ;;
+	*)    echo "**** Unknown grammar: $G" 1>&2
+	      ;;
     esac
 done

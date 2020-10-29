@@ -260,6 +260,7 @@ public class ParserBase
 
     protected String resolveQuotedIRI(String iriStr, int line, int column) {
         iriStr = stripQuotes(iriStr) ;
+        iriStr = unescapeUnicode(iriStr, line, column);
         return resolveIRI(iriStr, line, column) ;
     }
 
@@ -476,6 +477,10 @@ public class ParserBase
         }
     }
 
+    public static String unescapeUnicode(String s, int line, int column) {
+        return unescape(s, '\\', true, line, column);
+    }
+    
     public static String unescapePName(String s, int line, int column) {
         char escape = '\\' ;
         int idx = s.indexOf(escape) ;
