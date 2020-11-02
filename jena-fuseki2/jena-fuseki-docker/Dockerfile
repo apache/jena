@@ -59,12 +59,14 @@ RUN ./download.sh --chksum sha1 "$JAR_URL"
 ## ADD "$JAR_URL"
 
 ## -- Make reduced Java JDK
+
+ARG JDEPS_EXTRA="jdk.crypto.cryptoki,jdk.crypto.ec"
 RUN \
-  JDEPS="$(jdeps --multi-release base --print-module-deps --ignore-missing-deps ${FUSEKI_JAR})" && \
+  JDEPS="$(jdeps --multi-release base --print-module-deps --ignore-missing-deps ${FUSEKI_JAR})"  && \
   jlink \
         --compress 2 --strip-debug --no-header-files --no-man-pages \
         --output "${JAVA_MINIMAL}" \
-        --add-modules "${JDEPS}"
+        --add-modules "${JDEPS},${JDEPS_EXTRA}"
 
 ADD entrypoint.sh .
 ADD log4j2.properties .
