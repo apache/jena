@@ -1021,6 +1021,7 @@ public class FusekiServer {
                 addServlet(context, "/$/stats/*", new ActionStats());
             if ( withMetrics )
                 addServlet(context, "/$/metrics", new ActionMetrics());
+            // TODO Should we support registering other functionality e.g. /$/backup/* and /$/compact/*
 
             servlets.forEach(p-> addServlet(context, p.getLeft(), p.getRight()));
             filters.forEach (p-> addFilter(context, p.getLeft(), p.getRight()));

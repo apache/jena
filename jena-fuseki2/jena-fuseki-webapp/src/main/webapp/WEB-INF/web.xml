@@ -202,6 +202,11 @@
     <servlet-name>BackupListServlet</servlet-name>
     <servlet-class>org.apache.jena.fuseki.mgt.ActionBackupList</servlet-class>
   </servlet>
+  
+  <servlet>
+    <servlet-name>ActionCompact</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.mgt.ActionCompact</servlet-class>
+  </servlet>
 
   <!-- An action that only creates a background task that sleeps. -->
   <servlet>
@@ -227,6 +232,11 @@
   <servlet-mapping>
     <servlet-name>BackupListServlet</servlet-name>
     <url-pattern>/$/backups-list</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>ActionCompact</servlet-name>
+    <url-pattern>/$/compact/*</url-pattern>
   </servlet-mapping>
 
   <!-- Admin controls-->
