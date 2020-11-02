@@ -24,6 +24,7 @@ import org.apache.jena.fuseki.ctl.ActionAsyncTask;
 import org.apache.jena.fuseki.ctl.TaskBase;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.tdb2.DatabaseMgr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +59,7 @@ public class ActionCompact extends ActionAsyncTask
         public void run() {
             try {
                 log.info(format("[%d] >>>> Start compact %s", actionId, datasetName));
-                Compact.compact(dataset);
+                DatabaseMgr.compact(dataset);
                 log.info(format("[%d] <<<< Finish compact %s", actionId, datasetName));
             } catch (Exception ex) {
                 log.info(format("[%d] **** Exception in compact", actionId), ex);
