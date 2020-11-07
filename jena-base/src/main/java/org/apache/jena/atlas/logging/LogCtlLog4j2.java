@@ -24,10 +24,11 @@ import java.io.InputStream;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.properties.PropertiesConfigurationFactory;
 
 /**
@@ -56,14 +57,10 @@ public class LogCtlLog4j2 {
             ? new PropertiesConfigurationFactory()
             : ConfigurationFactory.getInstance();
         Configuration configuration = factory.getConfiguration(null, source);
-        Configurator.initialize(configuration);
+        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        // This changes exising loggers.
+        ctx.setConfiguration(configuration);
     }
-
-//    public static void setCmdLogging() {
-//        LogCtl.setLog4j2();
-//        if ( ! LogCtl.isSetLog4j2property() )
-//            resetLogging(log4j2setupCmd);
-//    }
 
     // basic setup.
     // @formatter:off
@@ -71,7 +68,7 @@ public class LogCtlLog4j2 {
     public static String log4j2setup = StrUtils.strjoinNL
         ( "## Command default log4j2 setup : log4j2 properties syntax."
         , "status = error"
-        , "name = PropertiesConfig"
+        , "name = JenaLoggingDft"
 //        , "filters = threshold"
 //        , ""
 //        , "filter.threshold.type = ThresholdFilter"
