@@ -446,7 +446,7 @@ public class TransactionCoordinator {
 
     /** Try to block all writers, or return if can't at the moment.
      * <p>
-     * Unlike a write transction, there is no associated transaction.
+     * Unlike a write transaction, there is no associated transaction.
      * <p>
      * If it returns true, the application must call {@link #enableWriters} later.
      *

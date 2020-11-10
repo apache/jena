@@ -57,6 +57,6 @@ public class FusekiErrorHandler extends ErrorHandler
         if ( message == null )
             message = HttpSC.getMessage(code);
         String msg = format("Error %d: %s\n", code, message);
-        ServletOps.writeMessagePlainText(response, msg);
+        ServletOps.writeMessagePlainTextError(response, msg);
     }
 }

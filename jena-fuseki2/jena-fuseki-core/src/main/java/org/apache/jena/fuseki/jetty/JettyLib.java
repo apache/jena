@@ -20,7 +20,9 @@ package org.apache.jena.fuseki.jetty;
 
 import java.util.Objects;
 
+import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.web.AuthScheme;
+import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.riot.WebContent;
 import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.security.*;
@@ -137,6 +139,8 @@ public class JettyLib {
      * {@link PropertyUserStore} for details.
      */
     public static UserStore makeUserStore(String passwordFile) {
+        if ( ! FileOps.exists(passwordFile) )
+            throw new FusekiConfigException("No such file: "+passwordFile);
         PropertyUserStore propertyUserStore = new PropertyUserStore();
         propertyUserStore.setConfig(passwordFile);
         propertyUserStore.setHotReload(true);
@@ -223,6 +227,4 @@ public class JettyLib {
         mimeTypes.addMimeMapping("tsv",     WebContent.contentTypeTextTSV);
         context.setMimeTypes(mimeTypes);
     }
-
-
 }

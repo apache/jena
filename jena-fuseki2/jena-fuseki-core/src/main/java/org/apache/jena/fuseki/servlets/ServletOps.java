@@ -24,6 +24,8 @@ import java.io.PrintWriter;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.jena.atlas.RuntimeIOException;
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonValue;
@@ -50,7 +52,7 @@ public class ServletOps {
     public static void responseSendError(HttpServletResponse response, int statusCode, String message) {
         response.setStatus(statusCode);
         if ( message != null )
-            writeMessagePlainText(response, message);
+            writeMessagePlainTextError(response, message);
         //response.sendError(statusCode, message);
     }
 
@@ -63,23 +65,27 @@ public class ServletOps {
      * <p>
      * Use Content-Length so the connection is preserved.
      */
-    public static void writeMessagePlainText(HttpServletResponse response, String message) {
+    static void writeMessagePlainText(HttpServletResponse response, String message) {
         if ( message == null )
             return;
-        try {
-            if ( ! message.endsWith("\n") )
-                message = message+"\n";
-            response.setContentLength(message.length());
-            response.setContentType(WebContent.contentTypeTextPlain);
-            response.setCharacterEncoding(WebContent.charsetUTF8);
-            ServletOps.setNoCache(response);
-            try(ServletOutputStream out = response.getOutputStream()){
-                out.print(message);
-            }
-        } catch (IOException ex) {
-            errorOccurred(ex);
-        } catch (IllegalStateException ex) {}
+        if ( ! message.endsWith("\n") )
+            message = message+"\n";
+        response.setContentLength(message.length());
+        response.setContentType(WebContent.contentTypeTextPlain);
+        response.setCharacterEncoding(WebContent.charsetUTF8);
+        ServletOps.setNoCache(response);
+        try(ServletOutputStream out = response.getOutputStream()){
+            out.print(message);
+        }
+        catch (IOException ex) {
+            IO.exception(ex);
+        }
     }
+     
+     public static void writeMessagePlainTextError(HttpServletResponse response, String message) {
+        try { writeMessagePlainText(response, message); }
+        catch (RuntimeIOException ex) {}
+     }
     
     public static void successNoContent(HttpAction action) {
         success(action, HttpSC.NO_CONTENT_204);
@@ -191,6 +197,8 @@ public class ServletOps {
     }
 
     public static void errorOccurred(String message, Throwable ex) {
+        if ( message == null )
+            System.err.println();
         throw new ActionErrorException(HttpSC.INTERNAL_SERVER_ERROR_500, message, ex);
     }
 

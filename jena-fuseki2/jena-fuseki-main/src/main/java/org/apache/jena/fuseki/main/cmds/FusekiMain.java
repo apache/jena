@@ -29,6 +29,7 @@ import arq.cmdline.ModAssembler;
 import arq.cmdline.ModDatasetAssembler;
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdException;
+import jena.cmd.TerminationException;
 import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonObject;
@@ -441,11 +442,12 @@ public class FusekiMain extends CmdARQ {
             server.join();
             System.exit(0);
         }
-        catch (AssemblerException ex) {
+        catch (AssemblerException | FusekiException  ex) {
             if ( ex.getCause() != null )
                 System.err.println(ex.getCause().getMessage());
             else
                 System.err.println(ex.getMessage());
+            throw new TerminationException(1);
         }
     }
 

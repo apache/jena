@@ -230,6 +230,34 @@ public class TestTrie {
         Assert.assertTrue(trie.isEmpty()) ;
     }
 
+    @Test
+    public void trie_isEmpty_01() {
+        Trie<Integer> trie = new Trie<>();
+        Assert.assertTrue(trie.isEmpty()) ;
+    }
+    
+    @Test
+    public void trie_isEmpty_02() {
+        Trie<Integer> trie = new Trie<>();
+        trie.add("", 123);
+        Assert.assertFalse(trie.isEmpty()) ;
+    }
+
+    @Test
+    public void trie_isEmpty_03() {
+        Trie<Integer> trie = new Trie<>();
+        trie.add("x", 123);
+        Assert.assertFalse(trie.isEmpty()) ;
+    }
+    
+    @Test
+    public void trie_isEmpty_04() {
+        Trie<Integer> trie = new Trie<>();
+        trie.add("xy", 123);
+        Assert.assertFalse(trie.isEmpty()) ;
+    }
+
+
     /**
      * Test prefix search
      */
