@@ -93,6 +93,11 @@
     -->
     <param-value>shiro.ini</param-value>
   </context-param>
+
+  <context-param>
+    <param-name>log4jConfiguration</param-name>
+    <param-value>log4j2.properties</param-value>
+  </context-param>
   
   <!-- Fuseki datatset serviced calls -->
   <filter>

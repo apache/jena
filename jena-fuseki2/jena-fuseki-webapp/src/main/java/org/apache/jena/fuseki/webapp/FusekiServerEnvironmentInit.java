@@ -36,12 +36,19 @@ public class FusekiServerEnvironmentInit implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         // These do not touch Jena.
         FusekiEnv.setEnvironment();
-        // Log4j2 name.
-        // If this is set, the webapp is controlling log4j setup via log4j-web and its own initialization.
-        String x = sce.getServletContext().getInitParameter(FusekiLogging.log4j2_web_configuration);
-        if ( x != null )
-            FusekiLogging.markInitialized(true);
-        FusekiLogging.setLogging(FusekiEnv.FUSEKI_BASE);
+        // The command line initializes Fuseki-full with FusekiLogging.setLogging()
+        if ( FusekiLogging.hasInitialized() ) {
+            // If this is set, the webapp is controlling log4j setup via log4j-web and its own initialization.
+            // The logging file in in log4j2.properties in the webapp root directory.
+            String x = sce.getServletContext().getInitParameter(FusekiLogging.log4j2_web_configuration);
+            if ( x != null ) {
+                // https://logging.apache.org/log4j/2.x/manual/webapp.html
+                System.err.println("log4jConfiguration = "+x);
+                FusekiLogging.markInitialized(true);
+            } else {
+                FusekiLogging.setLogging(FusekiEnv.FUSEKI_BASE);
+            }
+        }
         JenaSystem.init();
     }
 
