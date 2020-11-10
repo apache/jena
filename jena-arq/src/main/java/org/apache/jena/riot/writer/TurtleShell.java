@@ -204,21 +204,14 @@ public abstract class TurtleShell {
 
         /** Get exactly one triple or null for none or more than one. */
         private Triple triple1(Node s, Node p, Node o) {
-            if ( dsg != null )
-                return RiotLib.triple1(dsg, s, p, o) ;
+            if ( dsg != null ) {
+                Quad q = G.getOneOrNull(dsg, Node.ANY, s, p, o) ;
+                if ( q == null )
+                    return null;
+                return q.asTriple();
+            }
             else
-                return RiotLib.triple1(graph, s, p, o) ;
-        }
-
-        /** Get exactly one triple, or null for none or more than one. */
-        private Triple triple1(DatasetGraph dsg, Node s, Node p, Node o) {
-            Iterator<Quad> iter = dsg.find(ANY, s, p, o) ;
-            if ( !iter.hasNext() )
-                return null ;
-            Quad q = iter.next() ;
-            if ( iter.hasNext() )
-                return null ;
-            return q.asTriple() ;
+                return G.getOneOrNull(graph, s, p, o) ;
         }
 
         private long countTriples(Node s, Node p, Node o) {

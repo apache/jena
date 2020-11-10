@@ -22,8 +22,12 @@ import java.util.*;
 import java.util.function.Consumer;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.graph.*;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphUtil;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.out.NodeFmtLib;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.sparql.util.graph.GNode;
@@ -122,7 +126,7 @@ public class G {
             return !iter.hasNext();
         } finally { iter.close(); }
     }
-
+    
     /**
      * Get object, given subject and predicate. Returns one (non-deterministically) or null.
      * See also {@link #getOneSP} and {@link #getZeroOrOneSP}.
@@ -140,7 +144,7 @@ public class G {
      */
     public static Node getOneSP(Graph graph, Node subject, Node predicate) {
         Objects.requireNonNull(graph, "graph");
-        return object(findUnique(graph, subject, predicate, Node.ANY));
+        return object(findUniqueTriple(graph, subject, predicate, Node.ANY));
     }
 
     /**
@@ -149,7 +153,7 @@ public class G {
      */
     public static Node getZeroOrOneSP(Graph graph, Node subject, Node predicate) {
         Objects.requireNonNull(graph, "graph");
-        return object(findZeroOne(graph, subject, predicate, Node.ANY));
+        return object(findZeroOneTriple(graph, subject, predicate, Node.ANY));
     }
 
     /**
@@ -167,7 +171,7 @@ public class G {
      */
     public static Node getOnePO(Graph graph, Node predicate, Node object) {
         Objects.requireNonNull(graph, "graph");
-        return subject(findUnique(graph, Node.ANY, predicate, object));
+        return subject(findUniqueTriple(graph, Node.ANY, predicate, object));
     }
 
     /**
@@ -176,7 +180,7 @@ public class G {
      */
     public static Node getZeroOrOnePO(Graph graph, Node predicate, Node object) {
         Objects.requireNonNull(graph, "graph");
-        return subject(findZeroOne(graph, Node.ANY, predicate, object));
+        return subject(findZeroOneTriple(graph, Node.ANY, predicate, object));
     }
 
     /**
@@ -185,7 +189,7 @@ public class G {
      */
     public static Triple getOne(Graph graph, Node subject, Node predicate, Node object) {
         Objects.requireNonNull(graph, "graph");
-        return findUnique(graph, subject, predicate, object);
+        return findUniqueTriple(graph, subject, predicate, object);
     }
 
     /**
@@ -194,10 +198,46 @@ public class G {
      */
     public static Triple getZeroOrOne(Graph graph, Node subject, Node predicate, Node object) {
         Objects.requireNonNull(graph, "graph");
-        return findZeroOne(graph, subject, predicate, object);
+        return findZeroOneTriple(graph, subject, predicate, object);
     }
 
+    /**
+     * Get triple if there is exactly one to match the s/p/o; else return null 
+     * if none or more than one.
+     */
+    public static Triple getOneOrNull(Graph graph, Node subject, Node predicate, Node object) {
+        Objects.requireNonNull(graph, "graph");
+        return findTripleOrNull(graph, subject, predicate, object);
+    }
+    
+    /**
+     * Get quad if there is exactly one to match the s/p/o, else throw
+     * {@linkplain RDFDataException}.
+     */
+    public static Quad getOne(DatasetGraph dsg, Node graph, Node subject, Node predicate, Node object) {
+        Objects.requireNonNull(dsg, "DatasetGraph");
+        return findUniqueQuad(dsg, graph, subject, predicate, object);
+    }
+
+    /**
+     * Get triple if there is exactly one to match the s/p/o; return null if none;
+     * throw {@linkplain RDFDataException} if more than one.
+     */
+    public static Quad getZeroOrOne(DatasetGraph dsg, Node graph, Node subject, Node predicate, Node object) {
+        Objects.requireNonNull(dsg, "DatasetGraph");
+        return findZeroOneQuad(dsg, graph, subject, predicate, object);
+    }
+    
     // ---- Multiple matches.
+
+    /**
+     * Get triple if there is exactly one to match the s/p/o; else return null 
+     * if none or more than one.
+     */
+    public static Quad getOneOrNull(DatasetGraph dsg, Node graph, Node subject, Node predicate, Node object) {
+        Objects.requireNonNull(dsg, "DatasetGraph");
+        return findQuadOrNull(dsg, graph, subject, predicate, object);
+    }
 
     /**
      * {@link ExtendedIterator} of objects where the triple matches for subject and
@@ -492,7 +532,7 @@ public class G {
         return graph.find();
     }
 
-    private static Triple findUnique(Graph graph, Node subject, Node predicate, Node object) {
+    private static Triple findUniqueTriple(Graph graph, Node subject, Node predicate, Node object) {
         ExtendedIterator<Triple> iter = graph.find(subject, predicate, object);
         try {
             if ( ! iter.hasNext() )
@@ -504,7 +544,45 @@ public class G {
         } finally { iter.close(); }
     }
 
-    private static Triple findZeroOne(Graph graph, Node subject, Node predicate, Node object) {
+    /** Find one triple matching subject-predicate-object. Return quad or throw {@link RDFDataException}. */
+    private static Quad findUniqueQuad(DatasetGraph dsg, Node graph, Node subject, Node predicate, Node object) {
+        // Better stack trace and error messages if done explicitly. 
+        Iterator<Quad> iter = dsg.find(graph, subject, predicate, object);
+        if ( ! iter.hasNext() )
+            throw new RDFDataException("No match : "+matchStr(graph, subject, predicate, object));
+        Quad x = iter.next();
+        if ( iter.hasNext() )
+            throw new RDFDataException("More than one match : "+matchStr(graph, subject, predicate, object));
+        return x;
+    }
+    
+    /** Find one triple matching subject-predicate-object else return null. */ 
+    private static Triple findTripleOrNull(Graph graph, Node subject, Node predicate, Node object) {
+        ExtendedIterator<Triple> iter = graph.find(subject, predicate, object);
+        try {
+            if ( ! iter.hasNext() )
+                return null;
+            Triple x = iter.next();
+            if ( iter.hasNext() )
+                return null;
+            return x;
+        } finally { iter.close(); }
+    }
+
+    /** Find one quad matching graph-subject-predicate-object else return null. */ 
+    private static Quad findQuadOrNull(DatasetGraph dsg, Node graph, Node subject, Node predicate, Node object) {
+        // Better stack trace and error messages if done explicitly. 
+        Iterator<Quad> iter = dsg.find(graph, subject, predicate, object);
+        if ( ! iter.hasNext() )
+            return null;
+        Quad x = iter.next();
+        if ( iter.hasNext() )
+            return null;
+        return x;
+    }
+
+    /** Find one triple matching subject-predicate-object. Return null for zero, quad for one or throw {@link RDFDataException}. */ 
+    private static Triple findZeroOneTriple(Graph graph, Node subject, Node predicate, Node object) {
         ExtendedIterator<Triple> iter = graph.find(subject, predicate, object);
         try {
             if ( ! iter.hasNext() )
@@ -516,8 +594,23 @@ public class G {
         } finally { iter.close(); }
     }
 
+    /** Find one quad matching graph-subject-predicate-object. Return null for zero, quad for one or throw {@link RDFDataException}. */ 
+    private static Quad findZeroOneQuad(DatasetGraph dsg, Node graph, Node subject, Node predicate, Node object) {
+        Iterator<Quad> iter = dsg.find(graph, subject, predicate, object);
+        if ( ! iter.hasNext() )
+            return null;
+        Quad x = iter.next();
+        if ( iter.hasNext() )
+            throw new RDFDataException("More than one match : "+matchStr(subject, predicate, object));
+        return x;
+    }
+
     private static String matchStr(Node subject, Node predicate, Node object) {
         return "("+NodeFmtLib.strNodes(subject, predicate, object)+")";
+    }
+
+    private static String matchStr(Node graph, Node subject, Node predicate, Node object) {
+        return "("+NodeFmtLib.strNodes(graph, subject, predicate, object)+")";
     }
 
     private static Triple first(ExtendedIterator<Triple> iter) {
