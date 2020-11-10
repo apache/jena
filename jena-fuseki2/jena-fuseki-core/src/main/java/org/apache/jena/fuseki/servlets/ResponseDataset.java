@@ -35,12 +35,7 @@ import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.RDFFormat;
-import org.apache.jena.riot.RDFLanguages;
-import org.apache.jena.riot.RDFWriterRegistry;
-import org.apache.jena.riot.WebContent;
+import org.apache.jena.riot.*;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.web.HttpSC;
 
@@ -53,6 +48,7 @@ public class ResponseDataset
     private static final String contentOutputXML           = "xml";
     private static final String contentOutputText          = "text";
     private static final String contentOutputTTL           = "ttl";
+    private static final String contentOutputTurtle        = "turtle";
     private static final String contentOutputNT            = "nt";
     private static final String contentOutputTriG          = "trig";
     private static final String contentOutputNQuads        = "n-quads";
@@ -66,9 +62,10 @@ public class ResponseDataset
         ResponseOps.put(shortNamesModel, contentOutputXML,      contentTypeRDFXML);
         ResponseOps.put(shortNamesModel, contentOutputText,     contentTypeTurtle);
         ResponseOps.put(shortNamesModel, contentOutputTTL,      contentTypeTurtle);
+        ResponseOps.put(shortNamesModel, contentOutputTurtle,   contentTypeTurtle);
         ResponseOps.put(shortNamesModel, contentOutputNT,       contentTypeNTriples);
-        ResponseOps.put(shortNamesModel, contentOutputNQuads,  WebContent.contentTypeNQuads);
-        ResponseOps.put(shortNamesModel, contentOutputTriG,     WebContent.contentTypeTriG);
+        ResponseOps.put(shortNamesModel, contentOutputNQuads,   contentTypeNQuads);
+        ResponseOps.put(shortNamesModel, contentOutputTriG,     contentTypeTriG);
     }
 
     public static void doResponseModel(HttpAction action, Model model) {
