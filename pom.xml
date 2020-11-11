@@ -92,7 +92,7 @@
     <ver.httpcore-osgi>${ver.httpcore}</ver.httpcore-osgi>
     <ver.httpclient-osgi>${ver.httpclient}</ver.httpclient-osgi>
     
-    <ver.lucene>7.7.2</ver.lucene>
+    <ver.lucene>8.7.0</ver.lucene>
     <!-- Align to Lucene version -->
     <ver.elasticsearch>6.8.6</ver.elasticsearch>
 
