@@ -94,7 +94,7 @@
     
     <ver.lucene>7.7.2</ver.lucene>
     <!-- Align to Lucene version -->
-    <ver.elasticsearch>6.8.6</ver.elasticsearch>
+    <ver.elasticsearch>7.10.0</ver.elasticsearch>
 
     <ver.spatial4j>0.6</ver.spatial4j>
 
