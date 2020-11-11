@@ -83,16 +83,17 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- 10.14.2.0 is the last working with Java8 -->
     <dependency>
       <groupId>org.apache.derby</groupId>
       <artifactId>derby</artifactId>
-      <version>10.15.2.0</version>
+      <version>10.14.2.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.derby</groupId>
       <artifactId>derbytools</artifactId>
-      <version>10.15.2.0</version>
+      <version>10.14.2.0</version>
       <scope>test</scope>
     </dependency>
 
