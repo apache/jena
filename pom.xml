@@ -99,7 +99,7 @@
     <ver.spatial4j>0.7</ver.spatial4j>
 
     <ver.mockito>1.10.19</ver.mockito>
-    <ver.awaitility>3.1.0</ver.awaitility>
+    <ver.awaitility>4.0.3</ver.awaitility>
     <ver.micrometer>1.5.5</ver.micrometer>
 
     <ver.graalvm>20.2.0</ver.graalvm>
