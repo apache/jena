@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-// Encoding in Thrift iof RDF terms and other items 
+// Encoding in Thrift of RDF terms and other items 
 // for Graph, Datasets, Result Set and Patches
 
 // Versioning considerations?
@@ -42,7 +42,7 @@ struct RDF_BNode {
 1: required string label
 }
 
-// Common abbreviated for datatypes and other URIs?
+// Common abbreviations for datatypes and other URIs?
 // union with additional values. 
 
 struct RDF_Literal {

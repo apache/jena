@@ -16,15 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.io ;
+package org.apache.jena.atlas.io;
 
-import static org.apache.jena.atlas.io.IO.EOF ;
-import static org.apache.jena.atlas.io.IO.UNSET ;
+import static org.apache.jena.atlas.io.IO.EOF;
+import static org.apache.jena.atlas.io.IO.UNSET;
 
-import java.io.* ;
+import java.io.*;
 
-import org.apache.jena.atlas.AtlasException ;
-import org.apache.jena.atlas.lib.Chars ;
+import org.apache.jena.atlas.AtlasException;
+import org.apache.jena.atlas.lib.Chars;
 
 /**
  * Parsing-centric reader. This class is not thread safe.
@@ -39,126 +39,126 @@ public final class PeekReader extends Reader {
 
     // Using a Reader here seems to have zero cost or benefit but CharStream
     // allows fast String handling.
-    private final CharStream source ;
+    private final CharStream source;
 
-    private static final int PUSHBACK_SIZE = 10 ;
-    static final byte        CHAR0         = (char)0 ;
+    private static final int PUSHBACK_SIZE = 10;
+    static final byte        CHAR0         = (char)0;
 
-    private char[]           pushbackChars ;
+    private char[]           pushbackChars;
     // Index into pushbackChars: points to next pushBack.
     // -1 => none.
-    private int              idxPushback ;            
+    private int              idxPushback;            
 
     // Next character to return when reading forwards.
-    private int              currChar      = UNSET ;  
-    private long             posn ;
+    private int              currChar      = UNSET;  
+    private long             posn;
 
-    public static final int  INIT_LINE     = 1 ;
-    public static final int  INIT_COL      = 1 ;
+    public static final int  INIT_LINE     = 1;
+    public static final int  INIT_COL      = 1;
 
-    private long             colNum ;
-    private long             lineNum ;
+    private long             colNum;
+    private long             lineNum;
 
     // ---- static construction methods.
 
     public static PeekReader make(Reader r) {
         if ( r instanceof PeekReader )
-            return (PeekReader)r ;
-        return make(r, CharStreamBuffered.CB_SIZE) ;
+            return (PeekReader)r;
+        return make(r, CharStreamBuffered.CB_SIZE);
     }
 
     public static PeekReader make(Reader r, int bufferSize) {
         // It is worth our own buffering even if a BufferedReader
         // because of the synchronized on one char reads in BufferedReader.
-        return new PeekReader(new CharStreamBuffered(r, bufferSize)) ;
+        return new PeekReader(new CharStreamBuffered(r, bufferSize));
     }
 
     /** Make PeekReader where the input is UTF8 : BOM is removed */
     public static PeekReader makeUTF8(InputStream in) {
         // This is the best route to make a PeekReader because it avoids
         // chances of wrong charset for a Reader say.
-        PeekReader pr ;
+        PeekReader pr;
         if ( true ) {
-            Reader r = IO.asUTF8(in) ;
+            Reader r = IO.asUTF8(in);
             // This adds reader-level buffering
-            pr = make(r) ;
+            pr = make(r);
         } else {
             // This is a bit slower - reason unknown.
-            InputStreamBuffered in2 = new InputStreamBuffered(in) ;
-            CharStream r = new InStreamUTF8(in2) ;
-            pr = new PeekReader(r) ;
+            InputStreamBuffered in2 = new InputStreamBuffered(in);
+            CharStream r = new InStreamUTF8(in2);
+            pr = new PeekReader(r);
         }
         // Skip BOM.
-        int ch = pr.peekChar() ;
+        int ch = pr.peekChar();
         if ( ch == Chars.BOM )
             // Skip BOM
-            pr.readChar() ;
-        return pr ;
+            pr.readChar();
+        return pr;
     }
 
     /** Make PeekReader where the input is ASCII */
     public static PeekReader makeASCII(InputStream in) {
-        Reader r = IO.asASCII(in) ;
-        return make(r) ;
+        Reader r = IO.asASCII(in);
+        return make(r);
     }
 
     public static PeekReader make(CharStream r) {
-        return new PeekReader(r) ;
+        return new PeekReader(r);
     }
 
     public static PeekReader readString(String string) {
-        return new PeekReader(new CharStreamSequence(string)) ;
+        return new PeekReader(new CharStreamSequence(string));
     }
 
     public static PeekReader open(String filename) {
         try {
-            InputStream in = new FileInputStream(filename) ;
-            return makeUTF8(in) ;
+            InputStream in = new FileInputStream(filename);
+            return makeUTF8(in);
         } catch (FileNotFoundException ex) {
-            throw new AtlasException("File not found: " + filename) ;
+            throw new AtlasException("File not found: " + filename);
         }
     }
 
     private PeekReader(CharStream stream) {
-        this.source = stream ;
-        this.pushbackChars = new char[PUSHBACK_SIZE] ;
-        this.idxPushback = -1 ;
+        this.source = stream;
+        this.pushbackChars = new char[PUSHBACK_SIZE];
+        this.idxPushback = -1;
 
-        this.colNum = INIT_COL ;
-        this.lineNum = INIT_LINE ;
-        this.posn = 0 ;
+        this.colNum = INIT_COL;
+        this.lineNum = INIT_LINE;
+        this.posn = 0;
     }
 
     public long getLineNum() {
-        return lineNum ;
+        return lineNum;
     }
 
     public long getColNum() {
-        return colNum ;
+        return colNum;
     }
 
     public long getPosition() {
-        return posn ;
+        return posn;
     }
 
     // ---- Do not access currChar except with peekChar/setCurrChar.
     public final int peekChar() {
         if ( idxPushback >= 0 )
-            return pushbackChars[idxPushback] ;
+            return pushbackChars[idxPushback];
 
         // If not started ... delayed initialization.
         if ( currChar == UNSET )
-            init() ;
-        return currChar ;
+            init();
+        return currChar;
     }
 
     // And the correct way to read the currChar is to call peekChar.
     private final void setCurrChar(int ch) {
-        currChar = ch ;
+        currChar = ch;
     }
 
     public final int readChar() {
-        return nextChar() ;
+        return nextChar();
     }
 
     /**
@@ -166,40 +166,40 @@ public final class PeekReader extends Reader {
      * column counts
      */
     public final void pushbackChar(int ch) {
-        unreadChar(ch) ;
+        unreadChar(ch);
     }
 
     // Reader operations
     @Override
     public final void close() throws IOException {
-        source.closeStream() ;
+        source.closeStream();
     }
 
     @Override
     public final int read() throws IOException {
         if ( eof() )
-            return EOF ;
-        int x = readChar() ;
-        return x ;
+            return EOF;
+        int x = readChar();
+        return x;
     }
 
     @Override
     public final int read(char[] cbuf, int off, int len) throws IOException {
         if ( eof() )
-            return EOF ;
+            return EOF;
         // Note - we need to preserve line count
         // Single char ops are reasonably efficient.
         for (int i = 0; i < len; i++) {
-            int ch = readChar() ;
+            int ch = readChar();
             if ( ch == EOF )
-                return (i == 0) ? EOF : i ;
-            cbuf[i + off] = (char)ch ;
+                return (i == 0) ? EOF : i;
+            cbuf[i + off] = (char)ch;
         }
-        return len ;
+        return len;
     }
 
     public final boolean eof() {
-        return peekChar() == EOF ;
+        return peekChar() == EOF;
     }
 
     // ----------------
@@ -213,27 +213,27 @@ public final class PeekReader extends Reader {
 
         if ( idxPushback >= pushbackChars.length ) {
             // Enlarge pushback buffer.
-            char[] pushbackChars2 = new char[pushbackChars.length * 2] ;
-            System.arraycopy(pushbackChars, 0, pushbackChars2, 0, pushbackChars.length) ;
-            pushbackChars = pushbackChars2 ;
-            // throw new JenaException("Pushback buffer overflow") ;
+            char[] pushbackChars2 = new char[pushbackChars.length * 2];
+            System.arraycopy(pushbackChars, 0, pushbackChars2, 0, pushbackChars.length);
+            pushbackChars = pushbackChars2;
+            // throw new JenaException("Pushback buffer overflow");
         }
         if ( ch == EOF || ch == UNSET )
-            IO.exception("Illegal character to push back: " + ch) ;
+            IO.exception("Illegal character to push back: " + ch);
 
-        idxPushback++ ;
-        pushbackChars[idxPushback] = (char)ch ;
+        idxPushback++;
+        pushbackChars[idxPushback] = (char)ch;
     }
 
     private final void init() {
-        advanceAndSet() ;
+        advanceAndSet();
         if ( currChar == UNSET )
-            setCurrChar(EOF) ;
+            setCurrChar(EOF);
     }
 
     private final void advanceAndSet() {
-        int ch = source.advance() ;
-        setCurrChar(ch) ;
+        int ch = source.advance();
+        setCurrChar(ch);
     }
 
     // Invariants.
@@ -244,26 +244,26 @@ public final class PeekReader extends Reader {
      * character
      */
     private final int nextChar() {
-        int ch = peekChar() ;
+        int ch = peekChar();
 
         if ( ch == EOF )
-            return EOF ;
+            return EOF;
 
         if ( idxPushback >= 0 ) {
-            char ch2 = pushbackChars[idxPushback] ;
-            idxPushback-- ;
-            return ch2 ;
+            char ch2 = pushbackChars[idxPushback];
+            idxPushback--;
+            return ch2;
         }
 
-        posn++ ;
+        posn++;
 
         if ( ch == '\n' ) {
-            lineNum++ ;
-            colNum = INIT_COL ;
+            lineNum++;
+            colNum = INIT_COL;
         } else
-            colNum++ ;
+            colNum++;
 
-        advanceAndSet() ;
-        return ch ;
+        advanceAndSet();
+        return ch;
     }
 }

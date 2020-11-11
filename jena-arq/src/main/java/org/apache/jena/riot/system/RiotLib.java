@@ -270,33 +270,6 @@ public class RiotLib
         iter.close();
     }
 
-    /** Get exactly one triple or null for none or more than one. */
-    public static Triple triple1(Graph graph, Node s, Node p, Node o) {
-        ExtendedIterator<Triple> iter = graph.find(s, p, o);
-        try {
-            if ( !iter.hasNext() )
-                return null;
-            Triple t = iter.next();
-            if ( iter.hasNext() )
-                return null;
-            return t;
-        }
-        finally {
-            iter.close();
-        }
-    }
-
-    /** Get exactly one triple, or null for none or more than one. */
-    public static Triple triple1(DatasetGraph dsg, Node s, Node p, Node o) {
-        Iterator<Quad> iter = dsg.find(Node.ANY, s, p, o);
-            if ( !iter.hasNext() )
-                return null;
-            Quad q = iter.next();
-            if ( iter.hasNext() )
-                return null;
-            return q.asTriple();
-    }
-
     public static boolean strSafeFor(String str, char ch) {
         return str.indexOf(ch) == -1;
     }

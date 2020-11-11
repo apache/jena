@@ -126,12 +126,11 @@ public final class Trie<T> {
     }
 
     /**
-     * Clear the Trie completely. 
+     * Test whether the Trie is empty. 
      */
     public boolean isEmpty() {
-        return ! root.hasValue() ;
+        return ! root.hasValue() && root.singletonChild == null;
     }
-
 
     /**
      * Gets whether a key exists in the trie and has a non-null value mapped to
@@ -202,7 +201,7 @@ public final class Trie<T> {
 
     /**
      * Performs a prefix search and returns all values mapped under the given
-     * prefix. The entirety of the prefix must be matches, if you only want part
+     * prefix. The entirety of the prefix must be matched, if you only want part
      * of the prefix to be matched use the {@link #partialSearch(String)} method
      * instead.
      * 

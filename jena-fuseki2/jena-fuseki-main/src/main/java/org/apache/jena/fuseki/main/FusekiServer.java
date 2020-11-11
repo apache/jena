@@ -63,10 +63,7 @@ import org.apache.jena.sys.JenaSystem;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.UserStore;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.HttpConnectionFactory;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -1078,13 +1075,18 @@ public class FusekiServer {
         /** Jetty server with one connector/port. */
         private static Server jettyServer(ServletContextHandler handler, int port) {
             Server server = new Server();
-            HttpConnectionFactory f1 = new HttpConnectionFactory();
+
+            // Missed when HTTPS. 
+            // TODO Share with jettyServer :: jettyServerHttps
+            HttpConfiguration httpConfig = new HttpConfiguration();
             // Some people do try very large operations ... really, should use POST.
-            f1.getHttpConfiguration().setRequestHeaderSize(512 * 1024);
-            f1.getHttpConfiguration().setOutputBufferSize(1024 * 1024);
+            httpConfig.setRequestHeaderSize(512 * 1024);
+            httpConfig.setOutputBufferSize(1024 * 1024);
             // Do not add "Server: Jetty(....) when not a development system.
             if ( ! Fuseki.outputJettyServerHeader )
-                f1.getHttpConfiguration().setSendServerVersion(false);
+                httpConfig.setSendServerVersion(false);
+           
+            HttpConnectionFactory f1 = new HttpConnectionFactory(httpConfig);
             ServerConnector connector = new ServerConnector(server, f1);
             connector.setPort(port);
             server.addConnector(connector);
