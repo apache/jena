@@ -154,7 +154,7 @@
         <!-- Can't use ${ver.elasticsearch.maven.plugin} 
              enforcer-plugin fails the whole system build 
         -->
-        <version>6.8</version>
+        <version>6.19</version>
         <configuration>
           <clusterName>elasticsearch</clusterName>
           <transportPort>9500</transportPort>
