@@ -89,6 +89,12 @@
       <version>10.15.2.0</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derbytools</artifactId>
+      <version>10.15.2.0</version>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>
