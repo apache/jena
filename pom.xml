@@ -58,7 +58,7 @@
     <ver.shade-plugin>3.2.4</ver.shade-plugin>
 
     <ver.jetty>9.4.34.v20201102</ver.jetty>
-    <ver.shiro>1.5.1</ver.shiro>
+    <ver.shiro>1.7.0</ver.shiro>
 
     <ver.libthrift>0.13.0</ver.libthrift>
 
