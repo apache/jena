@@ -74,7 +74,7 @@
     <ver.jackson>2.11.3</ver.jackson>
     <ver.jackson-databind>${ver.jackson}</ver.jackson-databind>
 
-    <ver.commonsio>2.6</ver.commonsio>
+    <ver.commonsio>2.8.0</ver.commonsio>
     <ver.commonscli>1.4</ver.commonscli>
     <ver.commonslang3>3.11</ver.commonslang3>
     <ver.commonsrdf>0.5.0</ver.commonsrdf>
