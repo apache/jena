@@ -100,7 +100,7 @@
 
     <ver.mockito>1.10.19</ver.mockito>
     <ver.awaitility>4.0.3</ver.awaitility>
-    <ver.micrometer>1.5.5</ver.micrometer>
+    <ver.micrometer>1.6.1</ver.micrometer>
 
     <ver.graalvm>20.2.0</ver.graalvm>
 
