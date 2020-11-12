@@ -51,7 +51,7 @@ public class LogCtlLog4j2 {
         }
     }
 
-    private static void resetLogging(InputStream inputStream, String syntaxHint) throws IOException {
+    public static void resetLogging(InputStream inputStream, String syntaxHint) throws IOException {
         ConfigurationSource source = new ConfigurationSource(inputStream);
         ConfigurationFactory factory = ( syntaxHint.endsWith(".properties") )
             ? new PropertiesConfigurationFactory()

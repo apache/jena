@@ -29,11 +29,6 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.logging.LogCtlLog4j2;
 import org.apache.jena.fuseki.Fuseki;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.config.properties.PropertiesConfigurationFactory;
 
 /**
  * FusekiLogging.
@@ -67,20 +62,20 @@ public class FusekiLogging
      * log4j2.properties, log4j2.yaml, log4j2.json, log4j2.xml
      */
     private static final String[] resourcesForLog4jProperties = {
-        // NOT the standard, fixed classpath names used by log4j2
-        //  .   log4j2.properties, log4j2.yaml, log4j2.json, log4j2.xml
-        "log4j2-fuseki.properties"
+        "log4j2.properties"
     };
 
     private static final boolean LogLogging     = System.getenv("FUSEKI_LOGLOGGING") != null || System.getProperty("fuseki.loglogging") != null;
     
     private static boolean loggingInitialized   = false;
-    private static boolean allowLoggingReset    = true;
 
     /**
-     * Mark whether logging is considered "initialized".
-     * Some external factor (e.g. log4j2 webapp context param "log4jConfiguration")
-     * may mean logging wil be initialized some other way.
+     * Mark whether logging is considered "initialized". Some external factor (e.g.
+     * log4j2 webapp context-param "log4jConfiguration") may mean logging will be
+     * initialized some other way.
+     * <p>
+     * Call this with argument false if the code wants to re-initialize the logging
+     * otherwise calls of {@code setLogging} will be no-ops.
      */
     public static synchronized void markInitialized(boolean isInitialized) {
         logLogging("markInitialized("+isInitialized+")");
@@ -104,8 +99,8 @@ public class FusekiLogging
      * @param extraDir
      */
     public static synchronized void setLogging(Path extraDir) {
-        if ( ! allowLoggingReset )
-            return;
+        // Cope with repeated calls so code can call this to ensure
+        // logging setup has happened.
         if ( loggingInitialized )
             return;
         loggingInitialized = true;
@@ -135,11 +130,11 @@ public class FusekiLogging
             // Instead, we manually load a resource.
             logLogging("Try classpath %s", resourceName);
             URL url = Thread.currentThread().getContextClassLoader().getResource(resourceName);
-            if ( url != null ) {
-                // Problem - test classes can be on the classpath (development mainly).
-                if ( url.toString().contains("-tests.jar") || url.toString().contains("test-classes") )
-                    url = null;
-            }
+//            if ( url != null ) {
+//                // Problem - test classes can be on the classpath (development mainly).
+//                if ( url.toString().contains("-tests.jar") || url.toString().contains("test-classes") )
+//                    url = null;
+//            }
 
             if ( url != null ) {
                 try ( InputStream inputStream = url.openStream() ) {
@@ -172,16 +167,9 @@ public class FusekiLogging
         }
         return false;
     }
-
+    
     private static void loadConfiguration(InputStream inputStream, String resourceName) throws IOException {
-        ConfigurationSource source = new ConfigurationSource(inputStream);
-        ConfigurationFactory factory;
-        if ( resourceName.endsWith(".properties" ) )
-            factory = new PropertiesConfigurationFactory();
-        else
-            factory = ConfigurationFactory.getInstance();
-        Configuration configuration = factory.getConfiguration(null, source);
-        Configurator.reconfigure(configuration);
+        LogCtlLog4j2.resetLogging(inputStream, resourceName);
     }
 
     private static boolean attempt(String fn) {

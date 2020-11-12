@@ -176,7 +176,7 @@ public class XSDFuncOp
      * Decimal canonical form where integer values have no ".0" (as in XSD 1.1).
      * <p>
      * In XSD 2, canonical integer-valued decimal has a trailing ".0". 
-     * In F&O v 3.1, xs:string cast of a decimal which integer valued, does not have the trailing ".0".  
+     * In F&amp;O v 3.1, xs:string cast of a decimal which integer valued, does not have the trailing ".0".  
      */
     public static String canonicalDecimalStrNoIntegerDot(BigDecimal bd) {
         if ( bd.signum() == 0 )

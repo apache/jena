@@ -61,6 +61,10 @@
                     <groupId>org.apache.jena</groupId>
                     <artifactId>jena-tdb2</artifactId>
                 </exclusion>
+                <exclusion>
+                  <groupId>com.beust</groupId>
+                  <artifactId>jcommander</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 

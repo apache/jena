@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -26,7 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonValue;
 import org.apache.jena.fuseki.system.UploadDetails;
@@ -219,6 +219,16 @@ public class ServletOps {
         response.setHeader(HttpNames.hPragma, "no-cache");
     }
 
+    /** response to a upload operation of some kind. */
+    public static void uploadResponse(HttpAction action, UploadDetails details) {
+        if ( details.getExistedBefore().equals(PreState.ABSENT) )
+            ServletOps.successCreated(action);
+        else
+            ServletOps.success(action); // successNoContent if empty body.
+        JsonValue v = details.detailsJson();
+        ServletOps.sendJson(action, v);
+    }
+
     /** Send a JSON value as a 200 response.  Null object means no response body and no content-type headers. */
     public static void sendJsonReponse(HttpAction action, JsonValue v) {
         if ( v == null ) {
@@ -232,33 +242,22 @@ public class ServletOps {
     }
 
     /** Send a JSON value as a 200 response.  Null object means no response body and no content-type headers. */
-    public static void sendJson(HttpAction action, JsonValue v) {
-        if ( v == null )
+    public static void sendJson(HttpAction action, JsonValue jValue) {
+        if ( jValue == null )
             return;
 
+        ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
+        JSON.write(bytesOut, jValue);
+        byte[] bytes = bytesOut.toByteArray();
         try {
             HttpServletResponse response = action.response;
             ServletOutputStream out = response.getOutputStream();
             response.setContentType(WebContent.contentTypeJSON);
+            response.setContentLength(bytes.length);
             response.setCharacterEncoding(WebContent.charsetUTF8);
-
-            IndentedWriter iOut = new IndentedWriter(out);
-            JSON.write(iOut, v);
-            // Make sure we end with a newline.
-            iOut.ensureStartOfLine();
-            iOut.flush();
+            out.write(bytes);
             out.flush();
         } catch (IOException ex) { ServletOps.errorOccurred(ex); }
-    }
-
-    /** response to a upload operation of some kind. */
-    public static void uploadResponse(HttpAction action, UploadDetails details) {
-        if ( details.getExistedBefore().equals(PreState.ABSENT) )
-            ServletOps.successCreated(action);
-        else
-            ServletOps.success(action); // successNoContent if empty body.
-        JsonValue v = details.detailsJson();
-        ServletOps.sendJson(action, v);
     }
 }
 
