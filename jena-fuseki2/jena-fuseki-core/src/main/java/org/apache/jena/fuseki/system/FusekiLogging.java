@@ -70,18 +70,12 @@ public class FusekiLogging
     private static boolean loggingInitialized   = false;
 
     /**
-<<<<<<< HEAD
-     * Mark whether logging is considered "initialized".
-     * Some external factor (e.g. log4j2 webapp context param "log4jConfiguration")
-     * may mean logging will be initialized some other way.
-=======
      * Mark whether logging is considered "initialized". Some external factor (e.g.
      * log4j2 webapp context-param "log4jConfiguration") may mean logging will be
      * initialized some other way.
      * <p>
      * Call this with argument false if the code wants to re-initialize the logging
      * otherwise calls of {@code setLogging} will be no-ops.
->>>>>>> 34d13c56cb... Remove unnecesary 'allowLoggingReset'
      */
     public static synchronized void markInitialized(boolean isInitialized) {
         logLogging("markInitialized("+isInitialized+")");
