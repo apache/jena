@@ -47,7 +47,7 @@ limitations under the License.
         <jdk>1.8</jdk>
       </activation>
       <properties>
-        <hadoop.version>2.6.0</hadoop.version>
+        <hadoop.version>3.3.0</hadoop.version>
       </properties>
       <modules>
         <module>jena-elephas-io</module>
