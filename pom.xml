@@ -79,7 +79,7 @@
     <ver.commonslang3>3.11</ver.commonslang3>
     <ver.commonsrdf>0.5.0</ver.commonsrdf>
     <ver.commonscsv>1.8</ver.commonscsv>
-    <ver.commons-codec>1.14</ver.commons-codec>
+    <ver.commons-codec>1.15</ver.commons-codec>
     <ver.commons-compress>1.20</ver.commons-compress>
 
     <ver.dexxcollection>0.7</ver.dexxcollection>
