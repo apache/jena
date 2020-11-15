@@ -54,29 +54,4 @@ public interface RDFReaderF {
  
  */    
     public RDFReader getReader(String lang) ;
-    
-/** set the class name for the RDFReader for a language
- * @param lang the language for which this class should be used
- * @param className the class name for readers for this language
- * @return the old class name for this language
- */    
-    @Deprecated
-    public String setReaderClassName(String lang, String className);
-    
-    /**
-     * Resets the values to the initial condition.
-     */
-    @Deprecated
-    public void resetRDFReaderF();
-    
-    /**
-     * Remove lang from list of readers..
-     * Must be one of the classes that was added using setReaderClassName()
-     * @param lang The lang to remove.
-     * @return the old class name for this language
-     * @throws IllegalArgumentException if lang is one of the initial languages
-     */
-    @Deprecated
-    public String removeReader( String lang ) throws IllegalArgumentException;
- 
 }

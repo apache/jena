@@ -236,28 +236,6 @@ implements Model, PrefixMapping, Lock
         return readerFactory.getReader(lang);
     }
 
-    /** @deprecated Use {@code org.apache.jena.riot.RDFParserRegistry.register}
-     */
-    @Override
-    @Deprecated
-    public String setReaderClassName(String lang, String className) {
-        return readerFactory.setReaderClassName(lang, className);
-    } 
-    
-    @Override
-    @Deprecated
-    public void resetRDFReaderF()
-    {
-    	readerFactory.resetRDFReaderF();
-    }
-    
-    @Override
-    @Deprecated
-    public String removeReader( String lang ) throws IllegalArgumentException
-    {
-    	return readerFactory.removeReader(lang);
-    }
-
     @Override
     public Model read(String url)  {
         readerFactory .getReader() .read(this, url);
@@ -324,27 +302,6 @@ implements Model, PrefixMapping, Lock
         return writerFactory.getWriter(lang);
     }
 
-
-    /** @deprecated Use {@code org.apache.jena.riot.RDFWriterRegistry.register}
-     */
-    @Override
-    @Deprecated
-    public String setWriterClassName(String lang, String className) {
-        return writerFactory.setWriterClassName(lang, className);
-    }
-
-    @Override
-    @Deprecated
-    public void resetRDFWriterF()  {
-    	writerFactory.resetRDFWriterF();
-    }
-    
-    @Override
-    @Deprecated
-    public String removeWriter( String lang ) throws IllegalArgumentException {
-    	return writerFactory.removeWriter( lang );
-    }
-    
     @Override
     public Model write(Writer writer) 
     {

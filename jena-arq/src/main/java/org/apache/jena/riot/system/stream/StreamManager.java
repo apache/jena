@@ -60,7 +60,7 @@ public class StreamManager {
         return streamManager ;
     }
 
-    /** @deprecate Use {@link #createStd()} */
+    /** @deprecated Use {@link #createStd()} */
     @Deprecated
     public static StreamManager makeDefaultStreamManager() { return createStd() ; }
 

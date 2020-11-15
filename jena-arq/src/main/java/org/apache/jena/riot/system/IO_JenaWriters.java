@@ -39,12 +39,5 @@ public class IO_JenaWriters
         isWiredIn = false ;
         RDFWriterFImpl.alternative(null);
     }
-
-    /** Register for use with Model.write  (old style compatibility) */
-    @Deprecated
-    public static void registerForModelWrite(String name, Class<?> cls)
-    {
-        RDFWriterFImpl.setBaseWriterClassName(name, cls.getName()) ;
-    }
 }
 

@@ -28,7 +28,8 @@ import org.slf4j.LoggerFactory ;
  * operations find/create the logger by name, or by the class of some object, or an
  * org.slf4j.Logger object.
  * 
- * @See FmtLog
+ * @see LogCtl
+ * @see FmtLog
  */
 public class Log {
     private Log() {}

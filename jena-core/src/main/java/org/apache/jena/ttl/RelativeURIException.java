@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,22 +16,9 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.adapters;
+package org.apache.jena.ttl;
 
-import org.apache.jena.rdf.model.RDFWriter;
-import org.apache.jena.rdf.model.RDFWriterF;
-
-/** Adapter to old style Jena writer factory */
-public class RDFWriterFactoryRIOT implements RDFWriterF {
-    public RDFWriterFactoryRIOT() {}
-
-    @Override
-    public RDFWriter getWriter() {
-        return getWriter(null);
-    }
-
-    @Override
-    public RDFWriter getWriter(String langname) {
-        return new RDFWriterRIOT(langname);
-    }
+public class RelativeURIException extends JenaURIException
+{
+    public RelativeURIException(String msg) { super(msg) ; }
 }

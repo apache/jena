@@ -51,7 +51,7 @@ public class ManifestOld
     public ManifestOld(String fn)
     {
         log.debug("Manifest = "+fn ) ;
-        filename = org.apache.jena.n3.N3IRIResolver.resolveGlobal(fn) ;
+        filename = org.apache.jena.ttl.N3IRIResolver.resolveGlobal(fn) ;
         log.debug("         = "+filename ) ;
         manifest = FileManager.getInternal().loadModelInternal(filename) ;
         parseIncludes() ;

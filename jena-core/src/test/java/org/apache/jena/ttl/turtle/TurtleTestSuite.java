@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,22 +16,24 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.adapters;
+package org.apache.jena.ttl.turtle;
 
-import org.apache.jena.rdf.model.RDFWriter;
-import org.apache.jena.rdf.model.RDFWriterF;
+import junit.framework.* ;
 
-/** Adapter to old style Jena writer factory */
-public class RDFWriterFactoryRIOT implements RDFWriterF {
-    public RDFWriterFactoryRIOT() {}
-
-    @Override
-    public RDFWriter getWriter() {
-        return getWriter(null);
+public class TurtleTestSuite extends TestSuite
+{
+    static public TestSuite suite() {
+        return new TurtleTestSuite() ;
     }
-
-    @Override
-    public RDFWriter getWriter(String langname) {
-        return new RDFWriterRIOT(langname);
-    }
+	
+	private TurtleTestSuite()
+	{
+		super("Turtle") ;
+        addTest(TestTurtleReader.suite()) ;
+        addTest(TurtleInternalTests.suite()) ;
+        addTest(TurtleTestFactory.make("testing/Turtle/manifest.ttl")) ;
+//		addTest(new N3ExternalTests()) ;
+//		addTest(new N3JenaReaderTests()) ;
+//		addTest(new N3JenaWriterTests()) ;
+	}
 }

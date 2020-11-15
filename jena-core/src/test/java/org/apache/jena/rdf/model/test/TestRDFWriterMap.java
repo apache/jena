@@ -79,9 +79,7 @@ public class TestRDFWriterMap extends JenaTestBase
             setWriterClassName(TestRDFWriterMap.NTRIPLES,       Jena.PATH + ".rdf.model.impl.NTripleWriter");
 		}
 
-		@Override
-		public String setWriterClassName( final String lang,
-				final String className )
+		private String setWriterClassName( final String lang, String className )
 		{
 			try
 			{
@@ -99,18 +97,6 @@ public class TestRDFWriterMap extends JenaTestBase
 			{
 				throw new JenaException(e);
 			}
-		}
-
-		@Override
-		public void resetRDFWriterF() {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public String removeWriter(String lang) throws IllegalArgumentException {
-			// TODO Auto-generated method stub
-			return null;
 		}
 	}
 
