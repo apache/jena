@@ -19,13 +19,13 @@
 package org.apache.jena.util;
 
 import java.util.* ;
-import java.util.function.Consumer ;
 import java.util.stream.Collectors ;
 
 import org.apache.jena.atlas.lib.SetUtils ;
 import org.apache.jena.atlas.lib.Trie ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.impl.WrappedGraph;
 import org.apache.jena.rdf.model.Model ;
@@ -42,7 +42,7 @@ public class PrefixMappingUtils {
      * Later changes to the prefix mapping of the original graph are not reflected in the returned graph.
      * Modifications to the triples contained in the underlying graph are reflected.   
      */
-    public static Graph graphInUsePrefixMapping(Graph graph) {
+    public static Graph graphxInUsePrefixMapping(Graph graph) {
         final PrefixMapping prefixMapping = calcInUsePrefixMapping(graph) ;
         prefixMapping.lock() ;
         Graph graph2 = new WrappedGraph(graph) {
@@ -95,7 +95,6 @@ public class PrefixMappingUtils {
      * @see #calcInUsePrefixMappingTTL(Graph, PrefixMapping)
      */
     public static PrefixMapping calcInUsePrefixMapping(Graph graph, PrefixMapping prefixMapping) {
-        
         /* Method:
          * 
          * For each URI in the data, look it up in the trie.
@@ -116,25 +115,9 @@ public class PrefixMappingUtils {
         // (URIs if "add(uri, uri)")
         Set<String> inUse = new HashSet<>() ;
         
-        // Process to apply to each node
-        // Accumulate any prefixes into 'inUse' if the data URI
-        // is partially matched by a prefix URIs in the trie.  
-        Consumer<Node> process = (node)->{
-            if ( ! node.isURI() )
-                return ;
-            String uri = node.getURI() ;
-            // Get all prefixes whose URIs are candidates 
-            List<String> hits = trie.partialSearch(uri) ;
-            if ( hits.isEmpty() )
-                return ;
-            inUse.addAll(hits) ;
-        } ;
-        
         while(iter.hasNext()) {
             Triple triple = iter.next() ;
-            process.accept(triple.getSubject()) ;
-            process.accept(triple.getPredicate()) ;
-            process.accept(triple.getObject()) ; 
+            process(triple, inUse, trie);
             if ( pmap.size() == inUse.size() )
                 break ;
         }
@@ -148,6 +131,36 @@ public class PrefixMappingUtils {
         return pmap2 ;
     }
 
+    // Step for each Triple
+    private static void process(Triple triple, Set<String> inUse, Trie<String> trie) {
+        process(triple.getSubject(),   inUse, trie); 
+        process(triple.getPredicate(), inUse, trie);
+        process(triple.getObject(),    inUse, trie);
+    }
+    
+    // Step for each Node.
+    // Process to apply to each node
+    // Accumulate any prefixes into 'inUse' if the data URI
+    // is partially matched by a prefix URIs in the trie.  
+    private static void process(Node node, Set<String> inUse, Trie<String> trie) {
+        String uri;
+        if ( node.isURI() )
+            uri = node.getURI();
+        else if ( node.isLiteral() )
+            uri = node.getLiteralDatatypeURI();
+        else if ( node.isNodeTriple() ) {
+            process(Node_Triple.triple(node), inUse, trie);
+            return ;
+        }
+        else
+            return;
+        // Get all prefixes whose URIs are candidates 
+        List<String> hits = trie.partialSearch(uri) ;
+        if ( hits.isEmpty() )
+            return ;
+        inUse.addAll(hits) ;
+    }
+    
     /**
      * Analyse the graph to see which prefixes of the graph are in use.
      * <p>
@@ -195,27 +208,11 @@ public class PrefixMappingUtils {
         
         // Prefixes used.
         Set<String> inUse = new HashSet<>() ;
-        // Process to be applied to each node in the graph.
-        Consumer<Node> process = (node) -> {
-            if ( ! node.isURI() )
-                return ;
-            String uri = node.getURI() ;
-            
-            int idx = SplitIRI.splitpoint(uri) ;
-            if ( idx < 0 )
-                return ;
-            String nsURI = SplitIRI.namespaceTTL(uri) ;
-            String prefix = prefixMapping.getNsURIPrefix(nsURI) ;
-            if ( prefix != null )
-                inUse.add(prefix) ;
-        } ;
         
         Iterator<Triple> iter = graph.find(null, null, null) ;
         while(iter.hasNext()) {
             Triple triple = iter.next() ;
-            process.accept(triple.getSubject()) ; 
-            process.accept(triple.getPredicate()) ;
-            process.accept(triple.getObject()) ; 
+            processTTL(triple, inUse, prefixMapping);
             if ( inUse.size() == prefixURIs.size() )
                 // Fast exit.
                 break ;
@@ -228,6 +225,36 @@ public class PrefixMappingUtils {
         PrefixMapping pmap2 = new PrefixMappingImpl() ;
         inUse.forEach((prefix)-> pmap2.setNsPrefix(prefix, prefixMapping.getNsPrefixURI(prefix)) ) ;
         return pmap2 ;
+    }
+
+    // Step for each Triple
+    private static void processTTL(Triple triple, Set<String> inUse, PrefixMapping prefixMapping) {
+        processTTL(triple.getSubject(),   inUse, prefixMapping); 
+        processTTL(triple.getPredicate(), inUse, prefixMapping);
+        processTTL(triple.getObject(),    inUse, prefixMapping);
+    }
+    
+    // Step for each Node.
+    private static void processTTL(Node node, Set<String> inUse, PrefixMapping prefixMapping) {
+        String uri;
+        if ( node.isURI() )
+            uri = node.getURI();
+        else if ( node.isLiteral() )
+            uri = node.getLiteralDatatypeURI();
+        else if ( node.isNodeTriple() ) {
+            processTTL(Node_Triple.triple(node), inUse, prefixMapping);
+            return ;
+        }
+        else
+            return;
+        // URI case.
+        int idx = SplitIRI.splitpoint(uri) ;
+        if ( idx < 0 )
+            return ;
+        String nsURI = SplitIRI.namespaceTTL(uri) ;
+        String prefix = prefixMapping.getNsURIPrefix(nsURI) ;
+        if ( prefix != null )
+            inUse.add(prefix) ;
     }
     
     /** Check every URI as a possible use of a prefix */ 
