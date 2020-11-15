@@ -70,13 +70,13 @@ public class ShapesParser {
      * Applications should call functions in {@link Shapes} rather than call the parser directly.
      */
     public static Collection<Shape> parseShapes(Graph shapesGraph, Targets targets, Map<Node, Shape> shapesMap) {
-        // Cycle detection. 
+        // Cycle detection.
         Set<Node> cycles = new HashSet<>();
         return parseShapes(shapesGraph, targets, shapesMap, cycles);
     }
-    
+
     /*package*/ static Collection<Shape> parseShapes(Graph shapesGraph, Targets targets, Map<Node, Shape> shapesMap, Set<Node> cycles) {
-        
+
         Targets rootShapes = targets;
 
         if ( DEBUG )
@@ -173,20 +173,19 @@ public class ShapesParser {
 
     // ---- Main parser worker.
     /**
-     *  Parse one shape updating the record of shapes already parsed.
+     *  Parse one shape, updating the record of shapes already parsed.
      *
      * @param shapesMap
      * @param shapesGraph
      * @param shNode
      * @return Shape
      */
-    
+
     public static Shape parseShape(Map<Node, Shape> shapesMap, Graph shapesGraph, Node shNode) {
         Set<Node> traversed = new HashSet<>();
         Shape shape = parseShapeStep(traversed, shapesMap, shapesGraph, shNode);
         return shape;
     }
-
 
 //    /** Parse a specific shape from the Shapes graph */
 //    private static Shape parseShape(Graph shapesGraph, Node shNode) {
@@ -230,18 +229,18 @@ public class ShapesParser {
     | sh:path         |
     -------------------
      */
-    
+
     /** Do nothing placeholder shape. */
-    static Shape unshape(Graph shapesGraph, Node shapeNode) { return 
+    static Shape unshape(Graph shapesGraph, Node shapeNode) { return
             new NodeShape(shapesGraph, shapeNode, false, Severity.Violation,
                           Collections.emptySet(), Collections.emptySet(),
                           Collections.singleton(new JLogConstraint("Cycle")),
                           Collections.emptySet());
     }
-    
+
     /** parse a shape during a parsing process */
     /*package*/ static Shape parseShapeStep(Set<Node> traversed, Map<Node, Shape> parsed, Graph shapesGraph, Node shapeNode) {
-        try { 
+        try {
             // Called by Constraints
             if ( parsed.containsKey(shapeNode) )
                 return parsed.get(shapeNode);
