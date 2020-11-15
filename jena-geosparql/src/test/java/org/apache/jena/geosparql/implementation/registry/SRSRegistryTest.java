@@ -87,10 +87,10 @@ public class SRSRegistryTest {
                     + "  Scope[\"Horizontal component of 3D system. Used by the GPS satellite navigation system and for NATO military geodetic surveying.\"],\n"
                     + "  Area[\"World.\"],\n"
                     + "  BBox[-90.00, -180.00, 90.00, 180.00],\n"
-                    + "  Id[\"CRS\", 84, Citation[\"OGC:WMS\"], URI[\"urn:ogc:def:crs:OGC:1.3:CRS84\"]]]";
+                    + "  Id[\"CRS\", 84, Citation[\"WMS\"], URI[\"urn:ogc:def:crs:OGC:1.3:CRS84\"]]]";
 
             CoordinateReferenceSystem expResult = CRS.fromWKT(default_CRS_WKT);
-            CoordinateReferenceSystem result = SRSRegistry.getCRS(srsURI);
+            CoordinateReferenceSystem result = SRSRegistry.getCRS(srsURI);          
             assertEquals(expResult.toWKT(), result.toWKT());
         } catch (FactoryException ex) {
 
