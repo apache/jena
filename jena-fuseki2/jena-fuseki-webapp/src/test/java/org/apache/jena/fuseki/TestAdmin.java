@@ -191,7 +191,7 @@ public class TestAdmin extends AbstractFusekiTest {
     }
     
     @Test public void add_delete_dataset_6() {
-        assumeWindows();
+        assumeNotWindows();
         
         checkNotThere(dsTestTdb2);
 
@@ -324,7 +324,7 @@ public class TestAdmin extends AbstractFusekiTest {
     // ---- Compact
     
     @Test public void compact_01() {
-        assumeWindows();
+        assumeNotWindows();
         try {
             checkNotThere(dsTestTdb2);
             addTestDatasetTdb2();
@@ -346,7 +346,7 @@ public class TestAdmin extends AbstractFusekiTest {
         }
     }
 
-    private void assumeWindows() {
+    private void assumeNotWindows() {
         if (SystemUtils.IS_OS_WINDOWS)
             throw new AssumptionViolatedException("Test may be unstable on Windows due to inability to delete memory-mapped files");
     }
