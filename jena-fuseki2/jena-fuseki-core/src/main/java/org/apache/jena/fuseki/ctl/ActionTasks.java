@@ -80,7 +80,6 @@ public class ActionTasks extends ActionCtl
 
             for ( AsyncPool pool : pools ) {
                 for ( AsyncTask aTask : pool.tasks() ) {
-                    //builder.value(aTask.getTaskId());
                     descOneTask(builder, aTask);
                 }
             }

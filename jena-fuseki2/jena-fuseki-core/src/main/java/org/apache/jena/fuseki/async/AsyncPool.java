@@ -22,6 +22,7 @@ import static java.lang.String.format;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.server.DataService;
@@ -63,7 +64,9 @@ public class AsyncPool
             String taskId = Long.toString(++counter);
             Fuseki.serverLog.info(format("Task : %s : %s",taskId, displayName));
             Callable<Object> c = ()->{
-                try { task.run(); }
+                try { 
+                    task.run(); 
+                }
                 catch (Throwable th) {
                     Fuseki.serverLog.error(format("Exception in task %s execution", taskId), th);
                 }

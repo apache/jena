@@ -18,11 +18,8 @@
 
 package org.apache.jena.fuseki;
 
-import static org.apache.jena.fuseki.mgt.ServerMgtConst.opDatasets;
-import static org.apache.jena.fuseki.mgt.ServerMgtConst.opListBackups;
-import static org.apache.jena.fuseki.mgt.ServerMgtConst.opServer;
-import static org.apache.jena.fuseki.server.ServerConst.opPing;
-import static org.apache.jena.fuseki.server.ServerConst.opStats;
+import static org.apache.jena.fuseki.mgt.ServerMgtConst.*;
+import static org.apache.jena.fuseki.server.ServerConst.*;
 import static org.apache.jena.riot.web.HttpOp.execHttpDelete;
 import static org.apache.jena.riot.web.HttpOp.execHttpGet;
 import static org.apache.jena.riot.web.HttpOp.execHttpPost;
@@ -35,6 +32,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.FileEntity;
@@ -46,22 +44,29 @@ import org.apache.jena.atlas.junit.AssertExtra;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
+import org.apache.jena.fuseki.ctl.JsonConstCtl;
 import org.apache.jena.fuseki.mgt.ServerMgtConst;
 import org.apache.jena.fuseki.server.ServerConst;
+import org.apache.jena.fuseki.system.spot.TDBOps;
 import org.apache.jena.fuseki.test.FusekiTest;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.riot.web.HttpResponseHandler;
+import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.web.HttpSC;
+import org.junit.Assert;
+import org.junit.AssumptionViolatedException;
 import org.junit.Test;
+import org.junit.TestCouldNotBeSkippedException;
 
 /** Tests of the admin functionality */
 public class TestAdmin extends AbstractFusekiTest {
 
     // Name of the dataset in the assembler file.
-    static String dsTest    = "test-ds1";
-    static String dsTestInf = "test-ds4";
-    static String fileBase  = "testing/";
+    static String dsTest      = "test-ds1";
+    static String dsTestInf   = "test-ds4";
+    static String dsTestTdb2  = "test-tdb2";
+    static String fileBase    = "testing/";
 
     // --- Ping
 
@@ -187,6 +192,21 @@ public class TestAdmin extends AbstractFusekiTest {
         addTestDataset(fileBase+"config-ds-plain-2.ttl");
         checkExists("test-ds2");
     }
+    
+    @Test public void add_delete_dataset_6() {
+        assumeWindows();
+        
+        checkNotThere(dsTestTdb2);
+
+        addTestDatasetTdb2();
+
+        // Check exists.
+        checkExists(dsTestTdb2);
+
+        // Remove it.
+        deleteDataset(dsTestTdb2);
+        checkNotThere(dsTestTdb2);
+    }
 
     @Test public void add_error_1() {
         FusekiTest.execWithHttpException(HttpSC.BAD_REQUEST_400,
@@ -247,6 +267,92 @@ public class TestAdmin extends AbstractFusekiTest {
     }
 
     // ---- Backup
+    
+    @Test public void create_backup_1() {
+        String id = null;
+        try {
+            JsonResponseHandler x = new JsonResponseHandler();
+            execHttpPost(ServerCtl.urlRoot() + "$/" + opBackup + "/" + ServerCtl.datasetPath(), null, WebContent.contentTypeJSON, x);
+            JsonValue v = x.getJSON();
+            id = v.getAsObject().getString("taskId");
+        } finally {
+            waitForTasksToFinish(1000, 5000);
+        }
+        Assert.assertNotNull(id);
+        checkInTasks(id);
+        
+        // Check a backup was created
+        try ( TypedInputStream in = execHttpGet(ServerCtl.urlRoot()+"$/"+opListBackups) ) {
+            assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
+            JsonValue v = JSON.parseAny(in);
+            assertNotNull(v.getAsObject().get("backups"));
+            JsonArray a = v.getAsObject().get("backups").getAsArray();
+            Assert.assertEquals(1, a.size());
+        }
+        
+        JsonValue task = getTask(id);
+        Assert.assertNotNull(id);
+        // TODO: Ideally an async task would set a flag indicating success/failure but can't get that to work currently
+        //Assert.assertTrue(task.getAsObject().getBoolean(JsonConstCtl.success));
+    }
+    
+    @Test
+    public void create_backup_2() {
+        String id = null;
+        try {
+            JsonResponseHandler x = new JsonResponseHandler();
+            execHttpPost(ServerCtl.urlRoot() + "$/" + opBackup + "/noSuchDataset", null, WebContent.contentTypeJSON, x);
+            JsonValue v = x.getJSON();
+            id = v.getAsObject().getString(JsonConstCtl.taskId);
+        } finally {
+            waitForTasksToFinish(1000, 5000);
+        }
+        Assert.assertNotNull(id);
+        checkInTasks(id);
+        
+        JsonValue task = getTask(id);
+        Assert.assertNotNull(task);
+        // TODO: Ideally an async task would set a flag indicating success/failure but can't get that to work currently
+        //Assert.assertFalse(task.getAsObject().getBoolean(JsonConstCtl.success));
+    }
+
+    @Test public void list_backups_1() {
+        try ( TypedInputStream in = execHttpGet(ServerCtl.urlRoot()+"$/"+opListBackups) ) {
+            assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
+            JsonValue v = JSON.parseAny(in);
+            assertNotNull(v.getAsObject().get("backups"));
+        }
+    }
+    
+    // ---- Compact
+    
+    @Test public void compact_01() {
+        assumeWindows();
+        try {
+            checkNotThere(dsTestTdb2);
+            addTestDatasetTdb2();
+            checkExists(dsTestTdb2);
+            
+            String id = null;
+            try {
+                JsonResponseHandler x = new JsonResponseHandler();
+                execHttpPost(ServerCtl.urlRoot() + "$/" + opCompact + "/" + dsTestTdb2, null, WebContent.contentTypeJSON, x);
+                JsonValue v = x.getJSON();
+                id = v.getAsObject().getString(JsonConstCtl.taskId);
+            } finally {
+                waitForTasksToFinish(1000, 5000);
+            }
+            Assert.assertNotNull(id);
+            checkInTasks(id);
+        } finally {
+            deleteDataset(dsTestTdb2);
+        }
+    }
+
+    private void assumeWindows() {
+        if (SystemUtils.IS_OS_WINDOWS)
+            throw new AssumptionViolatedException("Test may be unstable on Windows due to inability to delete memory-mapped files");
+    }
 
     // ---- Server
 
@@ -393,14 +499,6 @@ public class TestAdmin extends AbstractFusekiTest {
         }
     }
 
-    @Test public void list_backups_1() {
-        try ( TypedInputStream in = execHttpGet(ServerCtl.urlRoot()+"$/"+opListBackups) ) {
-            assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
-            JsonValue v = JSON.parseAny(in);
-            assertNotNull(v.getAsObject().get("backups"));
-        }
-    }
-
     private void assertEqualsIgnoreCase(String contenttypejson, String contentType) {}
 
     private static JsonValue getTask(String taskId) {
@@ -424,6 +522,10 @@ public class TestAdmin extends AbstractFusekiTest {
 
     private static void addTestDatasetInf() {
         addTestDataset(fileBase+"config-ds-inf.ttl");
+    }
+    
+    private static void addTestDatasetTdb2() {
+        addTestDataset(fileBase+"config-tdb2.ttl");
     }
 
     private static void addTestDataset(String filename) {
@@ -659,6 +761,7 @@ public class TestAdmin extends AbstractFusekiTest {
         POST    /$/datasets/*{name}*?state=offline
         POST    /$/datasets/*{name}*?state=active
         POST    /$/backup/*{name}*
+        POST    /$/compact/*{name}*
         GET     /$/server
         POST    /$/server/shutdown
         GET     /$/stats/

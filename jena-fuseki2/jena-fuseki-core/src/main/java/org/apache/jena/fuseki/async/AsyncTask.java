@@ -21,6 +21,7 @@ package org.apache.jena.fuseki.async;
 import static java.lang.String.format;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.lib.InternalErrorException;
@@ -46,7 +47,7 @@ public class AsyncTask implements Callable<Object>
     private final String taskId;
 
     private long requestId;
-
+    
     /*package*/ AsyncTask(Callable<Object> callable,
                           AsyncPool pool,
                           String taskId,
@@ -97,7 +98,7 @@ public class AsyncTask implements Callable<Object>
             start();
             return callable.call();
         }
-        catch (Exception ex) {
+        catch (Throwable ex) {
             log.error("Async task threw an expection", ex);
             return null;
         }

@@ -84,6 +84,10 @@ public class Backup
      * @see #backup(Transactional, DatasetGraph, String)
      */
     private static void backup(DatasetGraph dsg, String backupfile) {
+        if (dsg == null) {
+            throw new FusekiException("No dataset provided to backup");
+        }
+        
         if ( !backupfile.endsWith(".nq") )
             backupfile = backupfile + ".nq";
 
