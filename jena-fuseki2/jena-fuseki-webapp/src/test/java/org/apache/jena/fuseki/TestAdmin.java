@@ -47,17 +47,14 @@ import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.fuseki.ctl.JsonConstCtl;
 import org.apache.jena.fuseki.mgt.ServerMgtConst;
 import org.apache.jena.fuseki.server.ServerConst;
-import org.apache.jena.fuseki.system.spot.TDBOps;
 import org.apache.jena.fuseki.test.FusekiTest;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.riot.web.HttpResponseHandler;
-import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.web.HttpSC;
 import org.junit.Assert;
 import org.junit.AssumptionViolatedException;
 import org.junit.Test;
-import org.junit.TestCouldNotBeSkippedException;
 
 /** Tests of the admin functionality */
 public class TestAdmin extends AbstractFusekiTest {

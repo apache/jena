@@ -61,7 +61,7 @@ public class ActionBackup extends ActionAsyncTask
                 log.info(format("[%d] >>>> Start backup %s -> %s", actionId, datasetName, backupFilename));
                 Backup.backup(transactional, dataset, backupFilename);
                 log.info(format("[%d] <<<< Finish backup %s -> %s", actionId, datasetName, backupFilename));
-            } catch (Throwable ex) {
+            } catch (Exception ex) {
                 log.info(format("[%d] **** Exception in backup", actionId), ex);
             }
         }
