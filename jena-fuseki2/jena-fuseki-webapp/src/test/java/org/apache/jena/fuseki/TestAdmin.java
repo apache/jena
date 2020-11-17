@@ -289,8 +289,8 @@ public class TestAdmin extends AbstractFusekiTest {
         
         JsonValue task = getTask(id);
         Assert.assertNotNull(id);
-        // TODO: Ideally an async task would set a flag indicating success/failure but can't get that to work currently
-        //Assert.assertTrue(task.getAsObject().getBoolean(JsonConstCtl.success));
+        // Expect task success
+        Assert.assertTrue("Expected task to be marked as successful", task.getAsObject().getBoolean(JsonConstCtl.success));
     }
     
     @Test
@@ -309,8 +309,8 @@ public class TestAdmin extends AbstractFusekiTest {
         
         JsonValue task = getTask(id);
         Assert.assertNotNull(task);
-        // TODO: Ideally an async task would set a flag indicating success/failure but can't get that to work currently
-        //Assert.assertFalse(task.getAsObject().getBoolean(JsonConstCtl.success));
+        // Expect task failure
+        Assert.assertFalse("Expected task to be marked as failed", task.getAsObject().getBoolean(JsonConstCtl.success));
     }
 
     @Test public void list_backups_1() {
@@ -341,9 +341,33 @@ public class TestAdmin extends AbstractFusekiTest {
             }
             Assert.assertNotNull(id);
             checkInTasks(id);
+            
+            JsonValue task = getTask(id);
+            Assert.assertNotNull(id);
+            // Expect task success
+            Assert.assertTrue("Expected task to be marked as successful", task.getAsObject().getBoolean(JsonConstCtl.success));
         } finally {
             deleteDataset(dsTestTdb2);
         }
+    }
+    
+    @Test public void compact_02() {
+        String id = null;
+        try {
+            JsonResponseHandler x = new JsonResponseHandler();
+            execHttpPost(ServerCtl.urlRoot() + "$/" + opCompact + "/noSuchDataset", null, WebContent.contentTypeJSON, x);
+            JsonValue v = x.getJSON();
+            id = v.getAsObject().getString(JsonConstCtl.taskId);
+        } finally {
+            waitForTasksToFinish(1000, 5000);
+        }
+        Assert.assertNotNull(id);
+        checkInTasks(id);
+        
+        JsonValue task = getTask(id);
+        Assert.assertNotNull(id);
+        // Expect task failure
+        Assert.assertFalse("Expected task to be marked as failed", task.getAsObject().getBoolean(JsonConstCtl.success));
     }
 
     private void assumeNotWindows() {

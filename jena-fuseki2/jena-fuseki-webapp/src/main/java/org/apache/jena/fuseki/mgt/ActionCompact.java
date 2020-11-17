@@ -61,8 +61,11 @@ public class ActionCompact extends ActionAsyncTask
                 log.info(format("[%d] >>>> Start compact %s", actionId, datasetName));
                 DatabaseMgr.compact(dataset);
                 log.info(format("[%d] <<<< Finish compact %s", actionId, datasetName));
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 log.info(format("[%d] **** Exception in compact", actionId), ex);
+                // Must also throw the error upwards so that the async task tracking infrastucture can set the
+                // success flag correctly
+                throw ex;
             }
         }
     }

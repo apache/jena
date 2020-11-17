@@ -47,6 +47,8 @@ public class AsyncTask implements Callable<Object>
 
     private long requestId;
     
+    private Boolean success = null;
+    
     /*package*/ AsyncTask(Callable<Object> callable,
                           AsyncPool pool,
                           String taskId,
@@ -95,10 +97,15 @@ public class AsyncTask implements Callable<Object>
     public Object call() {
         try {
             start();
-            return callable.call();
+            Object result = callable.call();
+            this.success = true;
+            return result;
         }
-        catch (Exception ex) {
-            log.error("Async task threw an expection", ex);
+        catch (Throwable ex) {
+            // NB - Since the only place that constructs an AsyncTask is AsyncPool.submit() and that is already
+            // set up to handle uncaught exceptions and throw them onwards all we need to do here is set the
+            // success flag to false
+            this.success = false;
             return null;
         }
         finally {
@@ -113,6 +120,10 @@ public class AsyncTask implements Callable<Object>
 
     public String getFinishPoint() {
         return finishPoint;
+    }
+    
+    public Boolean wasSuccessful() {
+        return this.success;
     }
 }
 

@@ -71,10 +71,7 @@ public class Backup
         transactional.begin(ReadWrite.READ);
         try {
             Backup.backup(dsg, backupfile);
-        } catch (Exception ex) {
-            Log.warn(Fuseki.serverLog, "Exception in backup", ex);
-        }
-        finally {
+        } finally {
             transactional.end();
         }
     }
