@@ -63,7 +63,6 @@ public class ActionCompact extends ActionAsyncTask
                 log.info(format("[%d] <<<< Finish compact %s", actionId, datasetName));
             } catch (Exception ex) {
                 log.info(format("[%d] **** Exception in compact", actionId), ex);
-                throw ex;
             }
         }
     }

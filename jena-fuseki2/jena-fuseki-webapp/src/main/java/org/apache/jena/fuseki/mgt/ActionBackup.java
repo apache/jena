@@ -63,8 +63,6 @@ public class ActionBackup extends ActionAsyncTask
                 log.info(format("[%d] <<<< Finish backup %s -> %s", actionId, datasetName, backupFilename));
             } catch (Throwable ex) {
                 log.info(format("[%d] **** Exception in backup", actionId), ex);
-                log.info(format("Throwing exception %s", ex.getClass().getCanonicalName()));
-                throw ex;
             }
         }
     }
