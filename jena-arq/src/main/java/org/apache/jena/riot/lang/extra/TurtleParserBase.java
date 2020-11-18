@@ -25,7 +25,6 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.iri.IRI;
 import org.apache.jena.iri.IRIFactory;
 import org.apache.jena.iri.ViolationCodes;
-import org.apache.jena.n3.JenaURIException;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.RiotParseException;
 import org.apache.jena.riot.system.IRIResolver;
@@ -34,6 +33,7 @@ import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.sparql.lang.ParserBase;
+import org.apache.jena.ttl.JenaURIException;
 import org.apache.jena.vocabulary.RDF;
 
 @SuppressWarnings("hiding")

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,22 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.adapters;
+package org.apache.jena.ttl.turtle;
 
-import org.apache.jena.rdf.model.RDFWriter;
-import org.apache.jena.rdf.model.RDFWriterF;
+import org.apache.jena.graph.Triple ;
 
-/** Adapter to old style Jena writer factory */
-public class RDFWriterFactoryRIOT implements RDFWriterF {
-    public RDFWriterFactoryRIOT() {}
-
+public class TurtleEventNull implements TurtleEventHandler
+{
     @Override
-    public RDFWriter getWriter() {
-        return getWriter(null);
-    }
-
+    public void triple(int line, int col, Triple triple)  {}
     @Override
-    public RDFWriter getWriter(String langname) {
-        return new RDFWriterRIOT(langname);
-    }
+    public void startFormula(int line, int col)           {}
+    @Override
+    public void endFormula(int line, int col)             {}
+    @Override
+    public void prefix(int line, int col, String prefix, String iri) {}
 }

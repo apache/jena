@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,22 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.adapters;
+package org.apache.jena.ttl.turtle;
 
-import org.apache.jena.rdf.model.RDFWriter;
-import org.apache.jena.rdf.model.RDFWriterF;
+import org.apache.jena.shared.JenaException ;
 
-/** Adapter to old style Jena writer factory */
-public class RDFWriterFactoryRIOT implements RDFWriterF {
-    public RDFWriterFactoryRIOT() {}
+/** QueryParseException is root exception for all (intentional) exceptions
+ *  from the various parsers where the error is to do with the syntax of a query.
+ */
 
-    @Override
-    public RDFWriter getWriter() {
-        return getWriter(null);
-    }
 
-    @Override
-    public RDFWriter getWriter(String langname) {
-        return new RDFWriterRIOT(langname);
-    }
+public class TurtleParseException extends JenaException
+{
+    public TurtleParseException() { super() ; }
+    public TurtleParseException(Throwable cause) { super(cause) ; }
+    public TurtleParseException(String msg) { super(msg) ; }
+    public TurtleParseException(String msg, Throwable cause) { super(msg, cause) ; }
 }

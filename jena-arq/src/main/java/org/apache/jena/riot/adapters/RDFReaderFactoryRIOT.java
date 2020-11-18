@@ -36,19 +36,4 @@ public class RDFReaderFactoryRIOT implements RDFReaderF {
         // For RIOT, the language name is a hint.
         return new RDFReaderRIOT(langname);
     }
-
-    @Override
-    public String setReaderClassName(String lang, String className) {
-        return null;
-    }
-
-    @Override
-    public void resetRDFReaderF() {
-        // does nothing as the reader can not be modified.
-    }
-
-    @Override
-    public String removeReader(String lang) throws IllegalArgumentException {
-        return null;
-    }
 }

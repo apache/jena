@@ -69,10 +69,11 @@ public class TestIO_JenaWriters {
         assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("N-Triples").getClass());
         assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("N-TRIPLE").getClass());
 
-        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("N3").getClass());
-        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("TURTLE").getClass());
-        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("Turtle").getClass());
-        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("TTL").getClass());
+        //N3 , Turtle in jena-core removed.
+//        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("N3").getClass());
+//        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("TURTLE").getClass());
+//        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("Turtle").getClass());
+//        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("TTL").getClass());
 
         try { writerF.getWriter("NT"); fail("Exception expected") ; } catch (NoWriterForLangException ex) {}
         try { writerF.getWriter("RDF/JSON") ; fail("Exception expected") ; } catch (NoWriterForLangException ex) {}

@@ -1209,18 +1209,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		return holder.getBaseItem().getReader(lang);
 	}
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public void resetRDFReaderF() {
-		holder.getBaseItem().resetRDFReaderF();
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public String removeReader(String lang) throws IllegalArgumentException {
-		return holder.getBaseItem().removeReader(lang);
-	}
-
 	@Override
 	public SecuredStatement getRequiredProperty(final Resource s, final Property p)
 			throws ReadDeniedException, AuthenticationRequiredException {
@@ -1282,18 +1270,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	@Override
 	public RDFWriter getWriter(final String lang) {
 		return holder.getBaseItem().getWriter(lang);
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public void resetRDFWriterF() {
-		holder.getBaseItem().resetRDFWriterF();
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public String removeWriter(String lang) throws IllegalArgumentException {
-		return holder.getBaseItem().removeWriter(lang);
 	}
 
 	@Override
@@ -1948,22 +1924,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		checkUpdate();
 		holder.getBaseItem().setNsPrefixes(other);
 		return holder.getSecuredItem();
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public String setReaderClassName(final String lang, final String className)
-			throws UpdateDeniedException, AuthenticationRequiredException {
-		checkUpdate();
-		return holder.getBaseItem().setReaderClassName(lang, className);
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public String setWriterClassName(final String lang, final String className)
-			throws UpdateDeniedException, AuthenticationRequiredException {
-		checkUpdate();
-		return holder.getBaseItem().setWriterClassName(lang, className);
 	}
 
 	@Override

@@ -70,19 +70,6 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
 
     /**
      * Use RIOT to add custom RDF parsers. See
-     * {@code RDFParserRegistry.registerLangTriples} and
-     * {@code RDFParserRegistry.registerLangQuads}
-     * 
-     * @deprecated Register with RIOT.
-     */
-    @Override
-    @Deprecated
-    public String setReaderClassName(String lang, String className) {
-        return setBaseReaderClassName(lang, className);
-    }
-
-    /**
-     * Use RIOT to add custom RDF parsers. See
      * {@code RDFParserRegistry.registerLang}
      * 
      * @deprecated Register with RIOT.
@@ -108,16 +95,6 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
         }
     }
 
-    @Override
-    public void resetRDFReaderF() {
-        reset();
-    }
-
-    @Override
-    public String removeReader(String lang) throws IllegalArgumentException {
-        return remove(lang);
-    }
-
     static { 
         // static initializer - set default readers
         reset();
@@ -126,7 +103,7 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
     private static void reset() {
         Class<? extends RDFReader> rdfxmlReader = org.apache.jena.rdfxml.xmlinput.JenaReader.class;
         Class<? extends RDFReader> ntReader = org.apache.jena.rdf.model.impl.NTripleReader.class;
-        Class<? extends RDFReader> turtleReader = org.apache.jena.n3.turtle.TurtleReader.class;
+        Class<? extends RDFReader> turtleReader = org.apache.jena.ttl.turtle.TurtleReader.class;
 
         custom.put("RDF", rdfxmlReader);
         custom.put("RDF/XML", rdfxmlReader);

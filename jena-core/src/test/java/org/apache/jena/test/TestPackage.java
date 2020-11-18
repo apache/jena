@@ -40,8 +40,7 @@ public class TestPackage extends TestCase {
         addTest(ts,  "Mem", org.apache.jena.mem.test.TestMemPackage.suite() );
         addTest(ts,  "Mem2", org.apache.jena.mem.test.TestGraphMemPackage.suite() );
         addTest(ts,  "Model", org.apache.jena.rdf.model.test.TestPackage.suite());
-        addTest(ts,  "N3", org.apache.jena.n3.N3TestSuite.suite());
-        addTest(ts,  "Turtle", org.apache.jena.n3.turtle.TurtleTestSuite.suite()) ;
+        addTest(ts,  "Turtle", org.apache.jena.ttl.turtle.TurtleTestSuite.suite()) ;
         addTest(ts,  "XML Output", org.apache.jena.rdfxml.xmloutput.TestPackage.suite());
         addTest(ts,  "Util", org.apache.jena.util.TestPackage.suite());
         addTest(ts,  "Jena iterator", org.apache.jena.util.iterator.test.TestPackage.suite() );

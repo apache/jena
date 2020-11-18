@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,22 +16,29 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.adapters;
+package org.apache.jena.ttl.turtle;
 
-import org.apache.jena.rdf.model.RDFWriter;
-import org.apache.jena.rdf.model.RDFWriterF;
+import junit.framework.TestCase;
+import org.apache.jena.rdf.model.* ;
 
-/** Adapter to old style Jena writer factory */
-public class RDFWriterFactoryRIOT implements RDFWriterF {
-    public RDFWriterFactoryRIOT() {}
 
+public class TestBadSyntax extends TestCase
+{
+    String uri ;
+    public TestBadSyntax(String name, String uri) { super(name) ; this.uri = uri ; }
+    
     @Override
-    public RDFWriter getWriter() {
-        return getWriter(null);
-    }
+    public void runTest()
+    {
+        Model model = ModelFactory.createDefaultModel() ;
+        RDFReader t = new TurtleReader() ;
+        try {
+            t.read(model, uri) ;
+            fail("Bad syntax test succeed in parsing the file") ;
+        } catch (TurtleParseException ex)
+        {
+            return ;    
+        }
 
-    @Override
-    public RDFWriter getWriter(String langname) {
-        return new RDFWriterRIOT(langname);
     }
 }

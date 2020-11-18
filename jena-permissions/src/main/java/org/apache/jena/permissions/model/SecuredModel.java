@@ -1792,28 +1792,6 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 
 	/**
 	 * 
-	 * @sec.graph Update
-	 * @throws UpdateDeniedException
-	 * @throws AuthenticationRequiredException
-	 *             if user is not authenticated and is required to be.
-	 */
-	@Override
-	public String setReaderClassName(final String lang, final String className)
-			throws UpdateDeniedException, AuthenticationRequiredException;
-
-	/**
-	 * 
-	 * @sec.graph Update
-	 * @throws UpdateDeniedException
-	 * @throws AuthenticationRequiredException
-	 *             if user is not authenticated and is required to be.
-	 */
-	@Override
-	public String setWriterClassName(final String lang, final String className)
-			throws UpdateDeniedException, AuthenticationRequiredException;
-
-	/**
-	 * 
 	 * @sec.graph Read
 	 * @throws ReadDeniedException
 	 * @throws AuthenticationRequiredException
