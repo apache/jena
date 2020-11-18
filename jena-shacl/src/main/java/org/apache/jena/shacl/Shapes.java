@@ -18,19 +18,14 @@
 
 package org.apache.jena.shacl;
 
-import static org.apache.jena.sparql.graph.NodeConst.nodeOwlImports;
-import static org.apache.jena.sparql.graph.NodeConst.nodeOwlOntology;
-import static org.apache.jena.sparql.graph.NodeConst.nodeRDFType;
-
 import java.util.*;
 
 import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.other.G;
-import org.apache.jena.riot.other.RDFDataException;
 import org.apache.jena.shacl.engine.Targets;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.parser.ShapesParser;
@@ -70,6 +65,16 @@ public class Shapes implements Iterable<Shape> {
         return parse(g);
     }
 
+    /** Load the file, parse the graph and return the shapes. */
+    public static Shapes parse(String fileOrURL, boolean withImports) {
+        Graph g = withImports
+            ? Imports.loadWithImports(fileOrURL)
+            : RDFDataMgr.loadGraph(fileOrURL);
+        return parse(g);
+    }
+
+
+    
     /** Parse the graph and return the shapes connected to the targets. */
     public static Shapes parse(Graph graph) {
         return parseAll(graph);
@@ -122,7 +127,7 @@ public class Shapes implements Iterable<Shape> {
         return new Shapes(shapesGraph, shapesMap, targets, rootShapes, declShapes);
     }
 
-    public Shapes(Graph shapesGraph, Map<Node, Shape> shapesMap, Targets targets,
+    private Shapes(Graph shapesGraph, Map<Node, Shape> shapesMap, Targets targets,
                   Collection<Shape> rootShapes, Collection<Shape> declShapes) {
         this.shapesGraph = shapesGraph;
         this.targets = targets;
@@ -130,15 +135,10 @@ public class Shapes implements Iterable<Shape> {
         this.rootShapes = rootShapes;
         this.declShapes = declShapes;
 
-        Node _shapesBase = null;
-        List<Node> _imports = null;
         // Extract base and imports.
-        try {
-            _shapesBase = G.getOnePO(shapesGraph, nodeRDFType, nodeOwlOntology);
-            _imports = G.listSP(shapesGraph, _shapesBase, nodeOwlImports);
-        } catch (RDFDataException ex) {}
-        this.shapesBase = _shapesBase;
-        this.imports = _imports;
+        Pair<Node,List<Node>> pair = Imports.baseAndImports(shapesGraph);
+        this.shapesBase = pair.getLeft();
+        this.imports = pair.getRight();
     }
 
     public boolean isEmpty() {
