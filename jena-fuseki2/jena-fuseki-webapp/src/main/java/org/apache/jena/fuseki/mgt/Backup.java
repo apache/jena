@@ -27,7 +27,6 @@ import java.util.zip.GZIPOutputStream;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.logging.FmtLog;
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.webapp.FusekiWebapp;

@@ -17,7 +17,12 @@
  */
 package org.apache.jena.geosparql.implementation.datatype;
 
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
+
 import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.implementation.DimensionInfo;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
@@ -25,22 +30,9 @@ import org.apache.jena.geosparql.implementation.jts.CoordinateSequenceDimensions
 import org.apache.jena.geosparql.implementation.jts.CustomCoordinateSequence;
 import org.apache.jena.geosparql.implementation.jts.CustomGeometryFactory;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
-import static org.hamcrest.CoreMatchers.not;
 import org.jdom2.JDOMException;
-import org.junit.After;
-import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.LinearRing;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.Polygon;
+import org.junit.*;
+import org.locationtech.jts.geom.*;
 
 /**
  *
