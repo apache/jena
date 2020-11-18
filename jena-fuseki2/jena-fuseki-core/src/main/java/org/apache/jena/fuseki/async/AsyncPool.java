@@ -65,7 +65,13 @@ public class AsyncPool
             Callable<Object> c = ()->{
                 try { task.run(); }
                 catch (Throwable th) {
+                    // Generally speaking tasks should provide more specific log messages when they fail but this
+                    // handles the case of tasks not doing that
                     Fuseki.serverLog.error(format("Exception in task %s execution", taskId), th);
+                    
+                    // Need to throw the error upwards so that the AsyncTask, which is itself a Callable, can use
+                    // this to set the success flag correctly
+                    throw th;
                 }
                 return null;
             };

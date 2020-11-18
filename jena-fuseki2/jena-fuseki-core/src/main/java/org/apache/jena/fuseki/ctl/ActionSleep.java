@@ -102,6 +102,9 @@ public class ActionSleep extends ActionCtl /* Not ActionAsyncTask - that is a co
                 log.info(format("[Task %d] << Sleep finish", actionId));
             } catch (Exception ex) {
                 log.info(format("[Task %d] **** Exception", actionId), ex);
+                // Must also throw the error upwards so that the async task tracking infrastucture can set the
+                // success flag correctly
+                throw ex;
             }
         }
     }

@@ -24,12 +24,13 @@ import org.apache.jena.fuseki.ctl.ActionAsyncTask;
 import org.apache.jena.fuseki.ctl.TaskBase;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.tdb2.DatabaseMgr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ActionBackup extends ActionAsyncTask
+public class ActionCompact extends ActionAsyncTask
 {
-    public ActionBackup() { super("Backup"); }
+    public ActionCompact() { super("Compact"); }
 
     @Override
     public void validate(HttpAction action) {}
@@ -43,26 +44,25 @@ public class ActionBackup extends ActionAsyncTask
             return null;
         }
 
-        action.log.info(format("[%d] Backup dataset %s", action.id, name));
-        return new BackupTask(action);
+        action.log.info(format("[%d] Compact dataset %s", action.id, name));
+        return new CompactTask(action);
     }
 
-    static class BackupTask extends TaskBase {
-        static private Logger log = LoggerFactory.getLogger("Backup");
+    static class CompactTask extends TaskBase {
+        static private Logger log = LoggerFactory.getLogger("Compact");
 
-        public BackupTask(HttpAction action) {
+        public CompactTask(HttpAction action) {
             super(action);
         }
 
         @Override
         public void run() {
             try {
-                String backupFilename = Backup.chooseFileName(datasetName);
-                log.info(format("[%d] >>>> Start backup %s -> %s", actionId, datasetName, backupFilename));
-                Backup.backup(transactional, dataset, backupFilename);
-                log.info(format("[%d] <<<< Finish backup %s -> %s", actionId, datasetName, backupFilename));
+                log.info(format("[%d] >>>> Start compact %s", actionId, datasetName));
+                DatabaseMgr.compact(dataset);
+                log.info(format("[%d] <<<< Finish compact %s", actionId, datasetName));
             } catch (Throwable ex) {
-                log.info(format("[%d] **** Exception in backup", actionId), ex);
+                log.info(format("[%d] **** Exception in compact", actionId), ex);
                 // Must also throw the error upwards so that the async task tracking infrastucture can set the
                 // success flag correctly
                 throw ex;

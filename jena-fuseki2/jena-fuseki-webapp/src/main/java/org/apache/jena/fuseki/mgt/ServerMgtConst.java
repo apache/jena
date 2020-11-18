@@ -24,6 +24,8 @@ package org.apache.jena.fuseki.mgt;
  */
 public class ServerMgtConst {
     public static final String  opDatasets      = "datasets";
+    public static final String  opBackup        = "backup";
+    public static final String  opCompact       = "compact";
     public static final String  opListBackups   = "backups-list";
     public static final String  opServer        = "server";
 

@@ -80,7 +80,6 @@ public class ActionTasks extends ActionCtl
 
             for ( AsyncPool pool : pools ) {
                 for ( AsyncTask aTask : pool.tasks() ) {
-                    //builder.value(aTask.getTaskId());
                     descOneTask(builder, aTask);
                 }
             }
@@ -116,6 +115,8 @@ public class ActionTasks extends ActionCtl
             builder.key(JsonConstCtl.started).value(aTask.getStartPoint());
         if ( aTask.getFinishPoint() != null )
             builder.key(JsonConstCtl.finished).value(aTask.getFinishPoint());
+        if ( aTask.wasSuccessful() != null )
+            builder.key(JsonConstCtl.success).value(aTask.wasSuccessful());
         builder.finishObject("SingleTask");
     }
 }
