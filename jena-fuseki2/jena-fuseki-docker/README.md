@@ -38,6 +38,12 @@ server.
 
 Note the build command must provide the version number.
 
+### Build from snapshot version
+
+For building Docker image of a snapshot version from https://repository.apache.org/content/groups/snapshots/org/apache/jena/apache-jena-fuseki/ use `Dockerfile.snapshot`. Both JENA_VERSION and JENA_SNAPSHOT_VERSION must be provided.
+
+    docker build -f Dockerfile.snapshot -t fuseki-snapshot --build-arg JENA_VERSION=3.17.0-SNAPSHOT --build-arg JENA_SNAPSHOT_VERSION=3.17.0-20201119.075025-46 .
+
 ## Test Run
 
 `docker-compose run` cam be used to test the build from the previous section.
