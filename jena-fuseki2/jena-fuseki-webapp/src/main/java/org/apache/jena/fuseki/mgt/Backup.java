@@ -69,7 +69,7 @@ public class Backup
     public static void backup(Transactional transactional, DatasetGraph dsg, String backupfile) {
         if ( transactional == null )
             transactional = new TransactionalNull();
-        Txn.executeRead(transactional,()->backup(dsg, backupfile));
+        Txn.executeRead(transactional, ()->backup(dsg, backupfile));
     }
 
     /** Perform a backup.

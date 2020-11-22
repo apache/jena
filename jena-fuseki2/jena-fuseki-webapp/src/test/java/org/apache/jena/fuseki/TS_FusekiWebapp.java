@@ -71,6 +71,8 @@ public class TS_FusekiWebapp extends ServerTest
         LogCtl.setLevel(Fuseki.actionLogName,        "WARN");
         LogCtl.setLevel(Fuseki.requestLogName,       "WARN");
         LogCtl.setLevel(Fuseki.servletRequestLogName,"WARN");
+        LogCtl.setLevel(Fuseki.backupLogName,        "WARN");
+        LogCtl.setLevel(Fuseki.compactLogName,       "WARN");
 
         ServerCtl.ctlBeforeTestSuite();
     }

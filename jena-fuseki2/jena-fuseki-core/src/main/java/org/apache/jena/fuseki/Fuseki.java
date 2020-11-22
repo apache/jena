@@ -193,6 +193,12 @@ public class Fuseki {
     /** Instance of log for config server messages. */
     public static final Logger        configLog         = LoggerFactory.getLogger(configLogName);
 
+    public static final String        backupLogName     = PATH + ".Backup";
+    public static final Logger        backupLog         = LoggerFactory.getLogger(backupLogName);
+
+    public static final String        compactLogName    = PATH + ".Compact";
+    public static final Logger        compactLog        = LoggerFactory.getLogger(compactLogName);;
+
     /** Instance of log for config server messages.
      * This is the global default used to set attribute
      * in each server created.
@@ -227,7 +233,7 @@ public class Fuseki {
         webStreamManager.addLocator(new LocatorFTP());
     }
 
-    // HTTP response header inserted to aid tracking. 
+    // HTTP response header inserted to aid tracking.
     public static String FusekiRequestIdHeader = "Fuseki-Request-Id";
 
     private static boolean            initialized       = false;
