@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.dboe.storage.StoragePrefixes;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.system.PrefixEntry;
 import org.apache.jena.sparql.core.Quad;
 
 /**
@@ -36,10 +37,17 @@ public class StoragePrefixesView implements StoragePrefixMap
     private final StoragePrefixes dsgPrefixes;
     private final Node graphName;
 
-    public static StoragePrefixMap viewDefaultGraph(StoragePrefixes dsgPrefixes)
+    public static StoragePrefixMap viewDataset(StoragePrefixes dsgPrefixes)
     { return new StoragePrefixesView(dsgPrefixes, Quad.defaultGraphNodeGenerated); }
 
-    public static StoragePrefixMap viewGraph(StoragePrefixes dsgPrefixes, Node graphName)
+    // Used by tests only
+    // ** Not for dataset prefixes.
+    /*package*/ static StoragePrefixMap viewDefaultGraph(StoragePrefixes dsgPrefixes)
+    { return new StoragePrefixesView(dsgPrefixes, Quad.defaultGraphNodeGenerated); }
+
+    // Used by tests only
+    // ** Not for dataset prefixes.
+    /*package*/ static StoragePrefixMap viewGraph(StoragePrefixes dsgPrefixes, Node graphName)
     { return new StoragePrefixesView(dsgPrefixes, graphName); }
 
     private StoragePrefixesView(StoragePrefixes dsgPrefixes, Node graphName) {

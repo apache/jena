@@ -175,7 +175,7 @@ class Journal implements Closeable
         if ( len > 0 )
         {
             // Make buffer include it's full length.
-            // [TxDEV:TODO] This is the full buffer, junk and all.
+            // This is the full buffer, junk and all.
             // This makes the system able to check block sizes (BlockAccess checking).
 
             int bufferLimit = buffer.limit();
@@ -318,7 +318,7 @@ class Journal implements Closeable
      * finally { journal.endWrite(); }
      * </pre>
      */
-     
+
     public void startWrite() {
         journalWriteStart = this.position;
         journalWriteEnded = false;

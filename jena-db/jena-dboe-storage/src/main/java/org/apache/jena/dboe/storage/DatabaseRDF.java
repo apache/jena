@@ -30,7 +30,7 @@ public interface DatabaseRDF  {
     /**
      * @return the prefixes storage.
      */
-    public StoragePrefixes getPrefixes();
+    public StoragePrefixes getStoragePrefixes();
 
     /**
      * @return the {@link Transactional} for this database.

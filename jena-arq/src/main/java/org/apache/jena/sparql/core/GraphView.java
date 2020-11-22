@@ -22,36 +22,33 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Sync ;
-import org.apache.jena.graph.Capabilities;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.TransactionHandler;
-import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.*;
 import org.apache.jena.graph.impl.GraphBase ;
 import org.apache.jena.riot.other.G;
+import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.shared.AddDeniedException;
 import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.graph.GraphUnionRead ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 
 /** Implement a Graph as a view of the DatasetGraph.
- * 
- *  It maps graph operations to quad operations. 
- *  
+ *
+ *  It maps graph operations to quad operations.
+ *
  *  {@link GraphUnionRead} provides a union graph that does not assume quads, but loops on graphs.
- *  
+ *
  *  @see GraphUnionRead
- */ 
+ */
 
 public class GraphView extends GraphBase implements NamedGraph, Sync
 {
     // Beware this implements union graph - implementations may wish
     // to do better so see protected method below.
-    
+
     static class GraphViewException extends JenaException
     {
         public GraphViewException()                                  { super(); }
@@ -59,25 +56,25 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
         public GraphViewException(Throwable cause)                   { super(cause) ; }
         public GraphViewException(String message, Throwable cause)   { super(message, cause) ; }
     }
-    
+
     private final DatasetGraph dsg ;
     // null for default graph.
-    private final Node gn ;                 
+    private final Node graphName ;
     private final TransactionHandlerView transactionHandler;
 
     // Factory style.
     public static GraphView createDefaultGraph(DatasetGraph dsg)
     { return new GraphView(dsg, Quad.defaultGraphNodeGenerated) ; }
-    
+
     public static GraphView createNamedGraph(DatasetGraph dsg, Node graphIRI)
     { return new GraphView(dsg, graphIRI) ; }
-    
+
     public static GraphView createUnionGraph(DatasetGraph dsg)
     { return new GraphView(dsg, Quad.unionGraph) ; }
 
     protected GraphView(DatasetGraph dsg, Node gn) {
         this.dsg = dsg ;
-        this.gn = gn ;
+        this.graphName = gn ;
         this.transactionHandler = new TransactionHandlerView(dsg);
     }
 
@@ -87,24 +84,23 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
      */
     @Override
     public Node getGraphName() {
-        return (gn == Quad.defaultGraphNodeGenerated) ? null : gn ;
+        return isDefaultGraph() ? null : graphName ;
     }
 
     /** Return the {@link DatasetGraph} we are viewing. */
     public DatasetGraph getDataset() {
         return dsg ;
     }
-    
-    protected final boolean isDefaultGraph() { return isDefaultGraph(gn) ; }
-    protected final boolean isUnionGraph()   { return isUnionGraph(gn) ; }
+
+    protected final boolean isDefaultGraph() { return isDefaultGraph(graphName) ; }
+    protected final boolean isUnionGraph()   { return isUnionGraph(graphName) ; }
 
     protected static final boolean isDefaultGraph(Node gn) { return gn == null || Quad.isDefaultGraph(gn) ; }
     protected static final boolean isUnionGraph(Node gn)   { return Quad.isUnionGraph(gn) ; }
-    
+
     @Override
     protected PrefixMapping createPrefixMapping() {
-        // Subclasses should override this but in the absence of anything better ...
-        return new PrefixMappingImpl() ;
+        return Prefixes.adapt(dsg.prefixes());
     }
 
     @Override
@@ -115,12 +111,12 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
         Node o = m.getMatchObject() ;
         return graphBaseFind(s, p, o) ;
     }
-    
+
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(Node s, Node p, Node o) {
-        if ( Quad.isUnionGraph(gn) )
+        if ( Quad.isUnionGraph(graphName) )
             return graphUnionFind(s, p, o) ;
-        Node g = graphNode(gn) ;
+        Node g = graphNode(graphName) ;
         Iterator<Triple> iter = G.quads2triples(dsg.find(g, s, p, o)) ;
         return WrappedIterator.createNoRemove(iter) ;
     }
@@ -130,7 +126,7 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
     }
 
     protected ExtendedIterator<Triple> graphUnionFind(Node s, Node p, Node o) {
-        Node g = graphNode(gn) ;
+        Node g = graphNode(graphName) ;
         // Implementations may wish to do better so this is separated out.
         // For example, Iter.distinctAdjacent is a lot cheaper than Iter.distinct
         // but assumes things come back in a particular order
@@ -140,12 +136,12 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
         iter = Iter.distinct(iter) ;
         return WrappedIterator.createNoRemove(iter) ;
     }
-    
+
     @Override
-    public void performAdd( Triple t ) { 
-        Node g = graphNode(gn) ;
+    public void performAdd( Triple t ) {
+        Node g = graphNode(graphName) ;
         if ( Quad.isUnionGraph(g) )
-            throw new AddDeniedException("Can't update the union graph of a dataset") ; 
+            throw new AddDeniedException("Can't update the union graph of a dataset") ;
         Node s = t.getSubject() ;
         Node p = t.getPredicate() ;
         Node o = t.getObject() ;
@@ -154,15 +150,15 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
 
     @Override
     public void performDelete( Triple t ) {
-        Node g = graphNode(gn) ;
+        Node g = graphNode(graphName) ;
         if ( Quad.isUnionGraph(g) )
-            throw new DeleteDeniedException("Can't update the union graph of a dataset") ; 
+            throw new DeleteDeniedException("Can't update the union graph of a dataset") ;
         Node s = t.getSubject() ;
         Node p = t.getPredicate() ;
         Node o = t.getObject() ;
         dsg.delete(g, s, p, o) ;
     }
-    
+
     @Override
     public void remove(Node s, Node p, Node o) {
         if ( getEventManager().listening() ) {
@@ -175,9 +171,18 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
         // We know no one is listening ...
         // getEventManager().notifyEvent(this, GraphEvents.remove(s, p, o) );
     }
-    
-    /** 
-     * Subclasses may wish to provide {@code graphBaseSize} otherwise {@link GraphBase} uses {@code find()}.  
+
+    @Override
+    public void clear() {
+        Node gn = getGraphName();
+        if ( gn == null )
+            gn = Quad.defaultGraphNodeGenerated;
+        getDataset().deleteAny(gn, Node.ANY, Node.ANY, Node.ANY);
+        getEventManager().notifyEvent(this, GraphEvents.removeAll);
+    }
+
+    /**
+     * Subclasses may wish to provide {@code graphBaseSize} otherwise {@link GraphBase} uses {@code find()}.
      */
     @Override protected int graphBaseSize() { return super.graphBaseSize(); }
 
@@ -185,19 +190,19 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
     public void sync() {
         SystemARQ.sync(dsg);
     }
-    
+
     @Override
     public TransactionHandler getTransactionHandler() {
         return new TransactionHandlerView(dsg);
     }
-    
+
     @Override
-    public Capabilities getCapabilities() { 
-        if (capabilities == null) 
+    public Capabilities getCapabilities() {
+        if (capabilities == null)
             capabilities = new GraphViewCapabilities();
         return capabilities;
     }
-    
+
     protected static class GraphViewCapabilities implements Capabilities {
         @Override
         public boolean sizeAccurate() {
@@ -231,7 +236,7 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
 
         @Override
         public boolean iteratorRemoveAllowed() {
-            //Default for GraphViews is that iterators do not provide remove. 
+            //Default for GraphViews is that iterators do not provide remove.
             return false;
         }
 

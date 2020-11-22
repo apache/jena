@@ -21,17 +21,10 @@ package org.apache.jena.tdb.graph;
 import org.apache.jena.sparql.core.AbstractDatasetGraphTests ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.tdb.TDBFactory ;
-import org.junit.Test ;
 
 // Quad tests
 public class TestDatasetGraphTDB extends AbstractDatasetGraphTests
 {
     @Override
     protected DatasetGraph emptyDataset() { return TDBFactory.createDatasetGraph() ; }
-
-    @Override
-    // Empty graph tests: N/A
-    @Test public void graph_01()
-    {}
-
 }

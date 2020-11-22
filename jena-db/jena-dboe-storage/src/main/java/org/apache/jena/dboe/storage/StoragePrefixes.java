@@ -21,8 +21,9 @@ import java.util.Iterator;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Pair;
-import org.apache.jena.dboe.storage.prefixes.PrefixEntry;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.system.PrefixEntry;
+import org.apache.jena.riot.system.Prefixes;
 
 /** Like PrefixMapping, only for a dataset which can have different prefix maps for different graphs.
  * There is a distinguished name {@linkplain Prefixes#nodeDataset} that means the prefixes

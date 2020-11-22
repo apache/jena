@@ -22,13 +22,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.apache.jena.atlas.lib.Pair;
+import org.apache.jena.riot.system.PrefixLib;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapFactory;
 import org.junit.Test;
 
 public class TestPrefixLib {
-    // abbreviate
-
-    private PrefixMapI create() {
-        return PrefixesFactory.createMem();
+    private PrefixMap create() {
+        return PrefixMapFactory.create();
     }
     protected String pref1  = "pref1";
     protected String pref1a = "pref1:";
@@ -36,7 +37,7 @@ public class TestPrefixLib {
 
     @Test
     public void abbreviate_1() {
-        PrefixMapI prefixes = create();
+        PrefixMap prefixes = create();
         prefixes.add(pref1, "http://example.net/ns#");
 
         String x = PrefixLib.abbreviate(prefixes, "http://example.net/ns#xyz");
@@ -45,7 +46,7 @@ public class TestPrefixLib {
 
     @Test
     public void abbreviate_2() {
-        PrefixMapI prefixes = create();
+        PrefixMap prefixes = create();
         prefixes.add(pref1, "http://example.net/ns#");
 
         String x = PrefixLib.abbreviate(prefixes, "http://other/ns#xyz");
@@ -54,7 +55,7 @@ public class TestPrefixLib {
 
     @Test
     public void abbrev_1() {
-        PrefixMapI prefixes = create();
+        PrefixMap prefixes = create();
         prefixes.add(pref1, "http://example.net/ns#");
 
         Pair<String, String> x = PrefixLib.abbrev(prefixes, "http://example.net/ns#xyz");
@@ -65,7 +66,7 @@ public class TestPrefixLib {
 
     @Test
     public void abbrev_2() {
-        PrefixMapI prefixes = create();
+        PrefixMap prefixes = create();
         prefixes.add(pref1, "http://example.net/ns#");
         Pair<String, String> x = PrefixLib.abbrev(prefixes, "http://other/ns#xyz");
         assertNull(x);
@@ -73,7 +74,7 @@ public class TestPrefixLib {
 
     @Test
     public void expand_1() {
-        PrefixMapI prefixes = create();
+        PrefixMap prefixes = create();
         prefixes.add(pref1, "http://example.net/ns#");
         String x = PrefixLib.expand(prefixes, "pref1:abc");
         assertEquals("http://example.net/ns#abc", x);
@@ -83,10 +84,9 @@ public class TestPrefixLib {
 
     @Test
     public void expand_2() {
-        PrefixMapI prefixes = create();
+        PrefixMap prefixes = create();
         prefixes.add(pref1, "http://example.net/ns#");
         String x2 = PrefixLib.expand(prefixes, "pref1z:abc");
         assertNull(x2);
     }
-
 }

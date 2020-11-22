@@ -19,7 +19,6 @@
 package org.apache.jena.tdb.store ;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream ;
@@ -156,7 +155,7 @@ public class TestLoader {
         String uri = dsg.getDefaultGraph().getPrefixMapping().getNsPrefixURI("") ;
         assertEquals("http://example/", uri) ;
     }
-    
+
     @Test
     public void load_graph_06() {
         DatasetGraphTDB dsg = fresh() ;
@@ -165,6 +164,7 @@ public class TestLoader {
         String uri1 = dsg.getGraph(g).getPrefixMapping().getNsPrefixURI("") ;
         assertEquals("http://example/", uri1) ;
         String uri2 = dsg.getDefaultGraph().getPrefixMapping().getNsPrefixURI("") ;
-        assertNull(uri2) ;
+        // Shared prefixes.
+        assertEquals("http://example/", uri2) ;
     }
 }

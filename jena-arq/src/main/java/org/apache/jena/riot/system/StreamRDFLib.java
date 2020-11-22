@@ -31,7 +31,6 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
 import org.apache.jena.riot.writer.WriterStreamRDFPlain ;
 import org.apache.jena.shared.JenaException ;
-import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 
@@ -172,74 +171,76 @@ public class StreamRDFLib
         { sink.flush() ; }
     }
 
-    private static class ParserOutputGraph extends StreamRDFBase
-    {
-        protected final Graph graph ;
-        protected boolean warningIssued = false ;
-        public ParserOutputGraph(Graph graph) { this.graph = graph ; }
-
-        @Override public void triple(Triple triple)     { graph.add(triple) ; }
-        @Override public void quad(Quad quad)
-        {
-            if ( quad.isTriple() || quad.isDefaultGraph() )
-                graph.add(quad.asTriple()) ;
-            else
-            {
-                if ( ! warningIssued )
-                {
-                    //SysRIOT.getLogger().warn("Only triples or default graph data expected : named graph data ignored") ;
-                    // Not ideal - assumes the global default.
-                    ErrorHandlerFactory.getDefaultErrorHandler().warning("Only triples or default graph data expected : named graph data ignored", -1, -1) ;
-                }
-                warningIssued = true ;
-            }
-            //throw new IllegalStateException("Quad passed to graph parsing") ;
+    private static class ParserOutputGraph extends StreamRDFBase {
+        protected final Graph graph;
+        protected boolean     warningIssued = false;
+        public ParserOutputGraph(Graph graph) {
+            this.graph = graph;
         }
 
-        @Override public void base(String base)
-        { }
+        @Override
+        public void triple(Triple triple) {
+            graph.add(triple);
+        }
 
-        @Override public void prefix(String prefix, String uri)
-        {
-            try { // Jena applies XML rules to prerfixes.
-                graph.getPrefixMapping().setNsPrefix(prefix, uri) ;
+        @Override
+        public void quad(Quad quad) {
+            if ( quad.isTriple() || quad.isDefaultGraph() )
+                graph.add(quad.asTriple());
+            else {
+                if ( !warningIssued ) {
+                    // SysRIOT.getLogger().warn("Only triples or default graph data expected : named graph data ignored") ;
+                    // Not ideal - assumes the global default.
+                    ErrorHandlerFactory.getDefaultErrorHandler()
+                        .warning("Only triples or default graph data expected : named graph data ignored", -1, -1);
+                }
+                warningIssued = true;
+            }
+            // throw new IllegalStateException("Quad passed to graph parsing") ;
+        }
+
+        @Override
+        public void base(String base) {}
+
+        @Override
+        public void prefix(String prefix, String uri) {
+            try { // Some graphs applies XML rules to prefixes.
+                graph.getPrefixMapping().setNsPrefix(prefix, uri);
             } catch (JenaException ex) {}
         }
     }
 
-    private static class ParserOutputDataset extends StreamRDFBase
-    {
-        protected final DatasetGraph dsg ;
-        protected final PrefixMapping prefixMapping ;
+    private static class ParserOutputDataset extends StreamRDFBase {
+        protected final DatasetGraph dsg;
+        protected final PrefixMap    prefixMap;
 
-        public ParserOutputDataset(DatasetGraph dsg)
-        {
-            this.dsg = dsg ;
-            this.prefixMapping = dsg.getDefaultGraph().getPrefixMapping() ;
-            // = dsg.getPrefixMapping().setNsPrefix(prefix, uri) ;
+        public ParserOutputDataset(DatasetGraph dsg) {
+            this.dsg = dsg;
+            this.prefixMap = dsg.prefixes();
         }
 
-        @Override public void triple(Triple triple)
-        {
-            dsg.add(Quad.defaultGraphNodeGenerated, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
-            //throw new IllegalStateException("Triple passed to dataset parsing") ;
+        @Override
+        public void triple(Triple triple) {
+            dsg.add(Quad.defaultGraphNodeGenerated, triple.getSubject(), triple.getPredicate(), triple.getObject());
         }
 
-        @Override public void quad(Quad quad)
-        {
+        @Override
+        public void quad(Quad quad) {
             if ( quad.isTriple() )
-                dsg.add(Quad.defaultGraphNodeGenerated, quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
+                dsg.add(Quad.defaultGraphNodeGenerated, quad.getSubject(), quad.getPredicate(), quad.getObject());
             else
-                dsg.add(quad) ;
+                dsg.add(quad);
         }
 
-        @Override public void base(String base)
-        { }
+        @Override
+        public void base(String base) {}
 
-        @Override public void prefix(String prefix, String uri)
-        {
-            try { // Jena applies XML rules to prerfixes.
-                prefixMapping.setNsPrefix(prefix, uri) ;
+        @Override
+        public void prefix(String prefix, String uri) {
+            try {
+                // Some datasets may be tied to PrefixMappings and may apply XML
+                // rules to prefixes.
+                prefixMap.add(prefix, uri);
             } catch (JenaException ex) {}
         }
     }

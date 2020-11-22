@@ -77,6 +77,11 @@ public class Lib
             return "null" ;
         return cls.getSimpleName() ;
     }
+         
+    /** Create {@link UnsupportedOperationException} with formatted message. */
+    static public UnsupportedOperationException unsupportedMethod(Object object, String method) {
+        return new UnsupportedOperationException(Lib.className(object) + "." + method);
+    }
 
     /** Do two lists have the same elements? */
     public static <T> boolean equalsListAsSet(List<T> list1, List<T> list2) {

@@ -190,20 +190,6 @@ public class Dispatcher {
         return processor;
     }
 
-
-
-//    // Find the endpoints for an operation.
-//    // This is GSP_R/GSP_RW aware.
-//    // If asked for GSP_R and there are no endpoints for GSP_R, try GSP_RW.
-//    private static Collection<Endpoint> getEndpoints(DataService dataService, Operation operation) {
-//        Collection<Endpoint> x = dataService.getEndpoints(operation);
-//        if ( x == null || x.isEmpty() ) {
-//            if ( operation == GSP_R ) // [GSP Promote]
-//                x = dataService.getEndpoints(GSP_RW);
-//        }
-//        return x;
-//    }
-
     /**
      * Choose an endpoint.
      * An endpoint is a name and an operation.

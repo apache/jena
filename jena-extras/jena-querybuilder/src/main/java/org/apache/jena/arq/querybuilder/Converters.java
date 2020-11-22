@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -47,11 +47,11 @@ import org.apache.jena.sparql.util.NodeFactoryExtra;
  * types used in Query and Update construction.
  */
 public class Converters {
-	
-	private Converters() { 
+
+	private Converters() {
 		// do not make instance
 	}
-	
+
 	/**
 	 * Converts any Node_Variable nodes into Var nodes.
 	 * @param n the node to check
@@ -65,7 +65,7 @@ public class Converters {
 		}
 		return n;
 	}
-	
+
 	/**
 	 * Creates a literal from an object.
 	 * If the object type is registered with the TypeMapper the associated literal
@@ -76,17 +76,17 @@ public class Converters {
 	 * @throws IllegalArgumentException if object type is not registered.
 	 */
 	public static Node makeLiteral(Object o) {
-		
+
 		RDFDatatype dt = TypeMapper.getInstance().getTypeByValue( o );
 		if (dt == null) {
 			String msg = "No TypeDef defined for %s. Use TypeMapper.getInstance().register() to "
 					+ "register one or use makeLiteral() method in query builder instance.";
 			throw new IllegalArgumentException( String.format( msg, o.getClass()));
-		} 
+		}
 		return NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(o));
 
 	}
-	
+
 	/**
 	 * Creates a literal from the value and type URI.
 	 * There are several possible outcomes:
@@ -98,10 +98,10 @@ public class Converters {
 	 * will return a proper object.
 	 * </li><li>
 	 * If the URI is unregistered a Datatype is created but not registered
-	 * with the TypeMapper.  The resulting node is properly constructed for 
-	 * used in output serialization, queries, or updates.  Calling 
+	 * with the TypeMapper.  The resulting node is properly constructed for
+	 * used in output serialization, queries, or updates.  Calling
 	 * {@code getLiteralValue()} on the returned node will throw DatatypeFormatException.
-	 * Note that if {@code JenaParameters.enableEagerLiteralValidation} is true the 
+	 * Note that if {@code JenaParameters.enableEagerLiteralValidation} is true the
 	 * DatatypeFormatException will be thrown by this method.
 	 * </li><li>
 	 * If the URI is registered but the value is not a proper lexical form
@@ -124,7 +124,7 @@ public class Converters {
 			public boolean isValidValue(Object valueForm) {
 				return false;
 			}
-			
+
 			@Override
 			public Object parse(String lexicalForm) throws DatatypeFormatException {
 				RDFDatatype dt = TypeMapper.getInstance().getTypeByName(uri);
@@ -134,7 +134,7 @@ public class Converters {
 				}
 				return dt.parse( lexicalForm );
 		    }
-			
+
 		};
 		} else {
 			oValue = dt.parse( value );
@@ -142,7 +142,7 @@ public class Converters {
 		LiteralLabel ll = LiteralLabelFactory.createByValue( oValue, null, dt );
 		return NodeFactory.createLiteral(ll);
 	}
-	
+
 	/**
 	 * Makes a node from an object while using the associated prefix mapping.
 	 * <ul>
@@ -172,8 +172,7 @@ public class Converters {
 		}
 		if (o instanceof String) {
 			try {
-				return checkVar(NodeFactoryExtra.parseNode((String) o, PrefixMapFactory
-						.createForInput(pMapping)));
+				return checkVar(NodeFactoryExtra.parseNode((String) o, PrefixMapFactory.create(pMapping)));
 			} catch (final RiotException e) {
 				// expected in some cases -- do nothing
 			}
@@ -198,7 +197,7 @@ public class Converters {
 	 * @param o the object that should be interpreted as a path or a node.
 	 * @param pMapping the prefix mapping to resolve path or node with
 	 * @return the Path or Node
-	 * @see #makeLiteral(Object) 
+	 * @see #makeLiteral(Object)
 	 */
 	public static Object makeNodeOrPath(Object o, PrefixMapping pMapping)
 	{
@@ -217,7 +216,7 @@ public class Converters {
 			return checkVar((Node)o);
 		}
 		if (o instanceof String) {
-			try {			
+			try {
 				final Path p = PathParser.parse((String) o, pMapping);
 				if (p instanceof P_Link)
 				{
@@ -225,14 +224,14 @@ public class Converters {
 				}
 				return p;
 			}
-			
+
 			catch (final Exception e)
 			{
 				// expected in some cases -- do nothing
 			}
 
 		}
-		return makeNode( o, pMapping );		
+		return makeNode( o, pMapping );
 	}
 
 	/**
@@ -251,7 +250,7 @@ public class Converters {
 	 * <li>For all other objects will return the "?" prefixed to the toString()
 	 * value.</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param o
 	 *            The object to convert.
 	 * @return the Var value.
@@ -283,24 +282,24 @@ public class Converters {
 	/**
 	 * A convenience method to quote a string.
 	 * @param q the string to quote.
-	 * 
-	 * Will use single quotes if there are no single quotes in the string or if the 
+	 *
+	 * Will use single quotes if there are no single quotes in the string or if the
 	 * double quote is before the single quote in the string.
-	 * 
+	 *
 	 * Will use double quote otherwise.
-	 * 
-	 * @return the quoted string. 
+	 *
+	 * @return the quoted string.
 	 */
 	public static String quoted(String q) {
 		int qt = q.indexOf('"');
 		int sqt = q.indexOf("'");
-		if (qt == -1) { 
+		if (qt == -1) {
 			qt = Integer.MAX_VALUE;
 		}
 		if (sqt == -1) {
 			sqt = Integer.MAX_VALUE;
 		}
-		
+
 		if (qt <= sqt)
 		{
 			return String.format( "'%s'", q);
@@ -328,7 +327,7 @@ public class Converters {
 			if (o == null)
 			{
 				values.add( null );
-			} else 
+			} else
 			{
 				values.add( makeNode( o, prefixMapping ));
 			}

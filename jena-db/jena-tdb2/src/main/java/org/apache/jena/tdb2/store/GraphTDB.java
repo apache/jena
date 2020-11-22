@@ -30,6 +30,7 @@ import org.apache.jena.dboe.storage.system.GraphViewStorage;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.other.G;
+import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
@@ -65,6 +66,11 @@ public class GraphTDB extends GraphViewStorage {
     /** The NodeTupleTable for this graph */
     public NodeTupleTable getNodeTupleTable() {
         return getDSG().chooseNodeTupleTable(getGraphName());
+    }
+
+    @Override
+    public PrefixMapping getPrefixMapping() {
+        return createPrefixMapping();
     }
 
     // Better ways to execute.
@@ -114,7 +120,7 @@ public class GraphTDB extends GraphViewStorage {
         return WrappedIterator.createNoRemove(iter);
     }
 
-    
+
     @Override
     public final void sync() {
     }

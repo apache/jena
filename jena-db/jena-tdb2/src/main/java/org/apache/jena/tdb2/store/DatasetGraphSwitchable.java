@@ -26,6 +26,7 @@ import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphWrapper;
 import org.apache.jena.sparql.core.Quad;
@@ -45,6 +46,7 @@ public class DatasetGraphSwitchable extends DatasetGraphWrapper
     // Null for in-memory datasets.
     private final Path basePath;
     private final Location location;
+    private final PrefixMapSwitchable prefixes;
 
     public DatasetGraphSwitchable(Path base, Location location, DatasetGraph dsg) {
         // Don't use the slot in datasetGraphWrapper - use the AtomicReference
@@ -52,6 +54,7 @@ public class DatasetGraphSwitchable extends DatasetGraphWrapper
         dsgx.set(dsg);
         this.basePath = base;
         this.location = location;
+        this.prefixes = new PrefixMapSwitchable(this);
     }
 
     /** Is this {@code DatasetGraphSwitchable} just a holder for a {@code DatasetGraph}?
@@ -78,6 +81,12 @@ public class DatasetGraphSwitchable extends DatasetGraphWrapper
         return dsgx.getAndSet(dsg);
     }
 
+    @Override
+    public PrefixMap prefixes() {
+        return prefixes;
+    }
+
+
     /** Don't do anything on close.
      *  This would not be safe across switches.
      */
@@ -88,7 +97,8 @@ public class DatasetGraphSwitchable extends DatasetGraphWrapper
 //    @Override
 //    public void sync() { }
 
-    /** If and only if the current value is the given old value, set the base {@link DatasetGraph}
+    /**
+     * If and only if the current value is the given old value, set the base {@link DatasetGraph}
      * Returns true if a swap happened.
      */
     public boolean change(DatasetGraph oldDSG, DatasetGraph newDSG) {
@@ -107,7 +117,7 @@ public class DatasetGraphSwitchable extends DatasetGraphWrapper
     public Graph getUnionGraph() {
         return GraphViewSwitchable.createUnionGraphSwitchable(this);
     }
-    
+
 //    private Cache<Node, Graph> ngCache = CacheFactory.createCache(10);
     private Cache<Node, Graph> ngCache = CacheFactory.createOneSlotCache();
 

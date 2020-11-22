@@ -26,6 +26,7 @@ import java.util.Map ;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.graph.Graph ;
+import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.graph.AbstractTestPrefixMappingView ;
 import org.apache.jena.tdb.ConfigTest ;
@@ -43,51 +44,58 @@ import org.junit.* ;
 public class TestPrefixMappingTDB extends AbstractTestPrefixMappingView
 {
     static DatasetPrefixesTDB last = null ;
-    
+
     @BeforeClass public static void beforeClass() {}
     @AfterClass public static void afterClass()   { TDBInternal.reset() ; ConfigTest.deleteTestingDir() ; }
 
-    @Before public void before() { TDBInternal.reset() ; }
+    @Before public void before() { TDBInternal.reset() ; create(); }
     @After public  void after()  { }
 
-    
     @Override
     protected PrefixMapping create() {
         last = createTestingMem() ;
         return view() ;
     }
 
-    static DatasetPrefixesTDB createTestingMem() { 
+    static DatasetPrefixesTDB createTestingMem() {
         return createTesting(Location.mem(), new DatasetControlMRSW()) ;
     }
-    
+
     static DatasetPrefixesTDB createTesting(Location location, DatasetControl policy) {
         return Build.makePrefixes(location, policy) ;
     }
 
     @Override
     protected PrefixMapping view() {
-        return last.getPrefixMapping() ; 
+        return Prefixes.adapt(last.getPrefixMap()) ;
+    }
+
+    protected PrefixMapping getPrefixMapping() {
+        return Prefixes.adapt(last.getPrefixMap());
+    }
+
+    protected PrefixMapping getPrefixMapping(String graphName) {
+        return Prefixes.adapt(last.getPrefixMap(graphName));
     }
 
     @Test public void multiple1() {
         DatasetPrefixesTDB prefixes = createTestingMem() ;
-        PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
-        PrefixMapping pmap2 = prefixes.getPrefixMapping("http://graph/") ;
+        PrefixMapping pmap1 = getPrefixMapping() ;
+        PrefixMapping pmap2 = getPrefixMapping("http://graph/") ;
         pmap1.setNsPrefix("x", "http://foo/") ;
         assertNull(pmap2.getNsPrefixURI("x")) ;
         assertNotNull(pmap1.getNsPrefixURI("x")) ;
     }
-    
+
     @Test public void multiple2() {
         DatasetPrefixesTDB prefixes = createTestingMem() ;
-        PrefixMapping pmap1 = prefixes.getPrefixMapping("http://graph/") ;  // Same
-        PrefixMapping pmap2 = prefixes.getPrefixMapping("http://graph/") ;
+        PrefixMapping pmap1 = getPrefixMapping("http://graph/") ;  // Same
+        PrefixMapping pmap2 = getPrefixMapping("http://graph/") ;
         pmap1.setNsPrefix("x", "http://foo/") ;
         assertNotNull(pmap2.getNsPrefixURI("x")) ;
         assertNotNull(pmap1.getNsPrefixURI("x")) ;
     }
-    
+
     // Persistent.
     @Test
     public void persistent1() {
@@ -95,13 +103,13 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMappingView
         FileOps.clearDirectory(dir) ;
 
         DatasetPrefixesTDB prefixes = createTesting(Location.create(dir), new DatasetControlMRSW()) ;
-        PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
+        PrefixMapping pmap1 = getPrefixMapping() ;
 
         String x = pmap1.getNsPrefixURI("x") ;
         assertNull(x) ;
         prefixes.close() ;
     }
-    
+
     // Persistent.
     @Test
     public void persistent2() {
@@ -109,18 +117,18 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMappingView
         FileOps.clearDirectory(dir) ;
 
         DatasetPrefixesTDB prefixes = createTesting(Location.create(dir), new DatasetControlMRSW()) ;
-        PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
+        PrefixMapping pmap1 = getPrefixMapping() ;
 
         pmap1.setNsPrefix("x", "http://foo/") ;
         prefixes.close() ;
 
         prefixes = createTesting(Location.create(dir), new DatasetControlMRSW()) ;
-        PrefixMapping pmap2 = prefixes.getPrefixMapping() ;
+        PrefixMapping pmap2 = getPrefixMapping() ;
         String uri = pmap2.getNsPrefixURI("x");
         assertEquals("http://foo/", uri) ;
         prefixes.close() ;
     }
-    
+
     @Test
     public void persistent3() {
         // Test case from a report by Holger Knublauch

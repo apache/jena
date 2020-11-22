@@ -53,7 +53,7 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
 
     // The current committed position and the limit as seen by readers.
     // This is also the abort point.
-    // Global.s
+    // Global.
     private final AtomicLong committedLength;
 
     // The state of the file visible outside the transaction.
@@ -164,7 +164,7 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
         if ( isWriteTxn() ) {
             long x = committedLength.get();
             // Internal consistency check.
-            // (Abort after commit would trigger the warning.) 
+            // (Abort after commit would trigger the warning.)
             if ( txnResetState.length != x )
                 Log.warn(this, format("Mismatch: state.length = %d,  committedLength = %d", txnResetState.length != x));
             binFile.truncate(x);

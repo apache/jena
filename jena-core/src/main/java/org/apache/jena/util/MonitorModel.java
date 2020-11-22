@@ -26,10 +26,10 @@ import org.apache.jena.rdf.model.impl.ModelCom ;
 
 /**
  * Model wrapper which provides normal access to an underlying model but
- * also maintains a snapshot of the triples it was last known to contain. 
+ * also maintains a snapshot of the triples it was last known to contain.
  * A snapshot action
  * causes the set of changes between this and the previous snapshot to
- * be calculated and the cache updated. The snapshot process will also 
+ * be calculated and the cache updated. The snapshot process will also
  * fire change notification.
  */
 
@@ -41,7 +41,7 @@ public class MonitorModel extends ModelCom {
     public MonitorModel(Model base) {
         super(new MonitorGraph(base.getGraph()));
     }
-    
+
     /**
      * Compute the differences between the current monitored graph and the last
      * snapshot. The changes will also be forwarded to any listeners.
@@ -66,7 +66,7 @@ public class MonitorModel extends ModelCom {
             }
         }
     }
-    
+
     /**
      * Compute the differences between the current monitored graph and the last
      * snapshot, forward any changes to registered listeners, then take a new snapshot.
@@ -74,5 +74,5 @@ public class MonitorModel extends ModelCom {
     public void snapshot() {
         snapshot(null, null);
     }
-    
+
 }

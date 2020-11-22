@@ -17,7 +17,7 @@
 
 package org.apache.jena.dboe.storage.simple;
 
-import static org.apache.jena.dboe.storage.prefixes.PrefixLib.canonicalGraphName;
+import static org.apache.jena.riot.system.PrefixLib.canonicalGraphName;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,23 +25,23 @@ import java.util.Map;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.dboe.storage.StoragePrefixes;
-import org.apache.jena.dboe.storage.prefixes.PrefixEntry;
-import org.apache.jena.dboe.storage.prefixes.PrefixMapI;
-import org.apache.jena.dboe.storage.prefixes.PrefixesFactory;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.system.PrefixEntry;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapFactory;
+import org.apache.jena.riot.system.PrefixMapZero;
 
 /** In-memory dataset prefixes */
-
-public class StoragePrefixesMem implements StoragePrefixes {
+public class StoragePrefixesSimpleMem implements StoragePrefixes {
     // Effectively this a map of maps
-    private Map<Node, PrefixMapI> map = new HashMap<Node, PrefixMapI>();
+    private Map<Node, PrefixMap> map = new HashMap<Node, PrefixMap>();
 
-    public StoragePrefixesMem() {}
+    public StoragePrefixesSimpleMem() {}
 
     @Override
     public String get(Node graphNode, String prefix) {
         graphNode = canonicalGraphName(graphNode);
-        PrefixMapI pmap = map.get(graphNode);
+        PrefixMap pmap = map.get(graphNode);
         if ( pmap == null )
             return null;
         return pmap.get(prefix);
@@ -50,13 +50,13 @@ public class StoragePrefixesMem implements StoragePrefixes {
     @Override
     public Iterator<PrefixEntry> get(Node graphNode) {
         graphNode = canonicalGraphName(graphNode);
-        PrefixMapI pmap = map.get(graphNode);
+        PrefixMap pmap = map.get(graphNode);
         if ( pmap == null )
             return Iter.nullIterator();
-        if ( pmap.getPrefixMapStorage() != null )
-            //If implemented as a map of other-implementation PrefixMapI
-            return pmap.getPrefixMapStorage().iterator();
-        return pmap.iterator();
+        return
+            pmap.getMapping().entrySet().stream()
+                .map(e->PrefixEntry.create(e.getKey(), e.getValue()))
+                .iterator();
     }
 
     @Override
@@ -94,14 +94,14 @@ public class StoragePrefixesMem implements StoragePrefixes {
         return 0;
     }
 
-    protected PrefixMapI createPrefixMap() {
-        return PrefixesFactory.createMem();
+    protected PrefixMap createPrefixMap() {
+        return PrefixMapFactory.create();
     }
 
     // Access or return a fresh, empty.
-    private PrefixMapI accessForUpdate(Node graphName) {
+    private PrefixMap accessForUpdate(Node graphName) {
         graphName = canonicalGraphName(graphName);
-        PrefixMapI pmap = map.get(graphName);
+        PrefixMap pmap = map.get(graphName);
         if ( pmap == null ) {
             pmap = createPrefixMap();
             map.put(graphName, pmap);
@@ -110,11 +110,11 @@ public class StoragePrefixesMem implements StoragePrefixes {
     }
 
     // Access or return the empty, dummy mapping.
-    private PrefixMapI access(Node graphName) {
+    private PrefixMap access(Node graphName) {
         graphName = canonicalGraphName(graphName);
-        PrefixMapI pmap = map.get(graphName);
+        PrefixMap pmap = map.get(graphName);
         if ( pmap == null )
-            return PrefixesFactory.empty();
+            return PrefixMapZero.empty;
         return pmap;
     }
 }

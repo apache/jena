@@ -41,7 +41,6 @@ import org.apache.jena.riot.JsonLDWriteContext;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RDFWriter;
 import org.apache.jena.riot.system.PrefixMap;
-import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.vocabulary.FOAF;
@@ -130,7 +129,7 @@ public class TestJsonLDWriter {
             if (((RDFFormat.JSONLDVariant) f.getVariant()).isFrame()) continue;
             String s = toString(m, f, null);
             Model m2 = parse(s);
-            assertTrue(m2.isIsomorphicWith(m));        
+            assertTrue(m2.isIsomorphicWith(m));
         }
     }
 
@@ -170,7 +169,7 @@ public class TestJsonLDWriter {
 
         // String js = "{\"p\":{\"@id\":\"http://www.a.com/foo/p\",\"@type\":\"@id\"},\"ex\":\"http://www.a.com/foo/\"}";
         // constructing the js string ny hand:
-        JsonObject obj = new JsonObject();  
+        JsonObject obj = new JsonObject();
         obj.put("@id", ns + "p");
         obj.put("@type", "@id");
         JsonObject json = new JsonObject();
@@ -184,7 +183,7 @@ public class TestJsonLDWriter {
         // model wo prefix -> no more prefix string in result:
         assertFalse(s2.contains(prefixStringInResult));
 
-        // the model wo prefix, output as jsonld using a context that defines the prefix    
+        // the model wo prefix, output as jsonld using a context that defines the prefix
         JsonLDWriteContext jenaCtx = new JsonLDWriteContext();
         jenaCtx.setJsonLDContext(js);
 
@@ -248,7 +247,7 @@ public class TestJsonLDWriter {
 
     /**
      * Checks that one can pass a context defined by its URI
-     * 
+     *
      */
     @Test
     public final void testContextByUri() {
@@ -367,7 +366,7 @@ public class TestJsonLDWriter {
 
         String jsonld = toString(m, RDFFormat.JSONLD_FLAT, null);
 
-        // without following line in JsonLDWriter, the test fails 
+        // without following line in JsonLDWriter, the test fails
         // if (! isLangString(o) && ! isSimpleString(o) )
         String vv = "\"plangstring\":{\"@language\":\"fr\",\"@value\":\"a langstring\"}";
         assertTrue(jsonld.contains(vv));
@@ -431,7 +430,7 @@ public class TestJsonLDWriter {
         JsonLDWriteContext jenaCtx = new JsonLDWriteContext();
 
         JsonLdOptions opts = new JsonLdOptions(null);
-        opts.setCompactArrays(false);       
+        opts.setCompactArrays(false);
 
         jenaCtx.setOptions(opts);
 
@@ -484,7 +483,7 @@ public class TestJsonLDWriter {
         m.setNsPrefix("", ns);
 
         DatasetGraph g = DatasetFactory.wrap(m).asDatasetGraph();
-        PrefixMap pm = RiotLib.prefixMap(g);
+        PrefixMap pm = g.prefixes();
         String base = null;
         Context jenaContext = null;
 
@@ -502,7 +501,7 @@ public class TestJsonLDWriter {
             Object o = e.getValue();
             if (o instanceof Map) {
                 o = ((Map<String, Object>) o).get("@id");
-            }           
+            }
             if ((o != null) && (o instanceof String)) {
                 if (((String) o).equals(ns + e.getKey())) {
                     remove.add(e.getKey());

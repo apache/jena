@@ -16,47 +16,50 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core;
+package org.apache.jena.tdb.store;
 
 import java.util.Map ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
-import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.riot.system.PrefixMap;
 
-/** Abstract of prefix storage for graphs in an RDF dataset */
+/**
+ * Abstract of prefix storage for graphs in an RDF dataset. This is more general than
+ * a set of prefixes for a dataset; it has multiple prefix mappings by graph name.
+ */
 public interface DatasetPrefixStorage extends Closeable, Sync
 {
-    /** Return the set of graph names for which there might be prefix mappings */ 
+    /** Return the set of graph names for which there might be prefix mappings */
     public Set<String> graphNames() ;
-    
-    /** Get the URI string associated with a prefix string for a specific graph (or null for dataset, not a specific graph) */ 
-    public String readPrefix(String graphName, String prefix) ;
-    /** Get the prefix string associated with a URI string for a specific graph (or null for dataset, not a specific graph) */ 
-    public String readByURI(String graphName, String uriStr) ;
-    
-    /** Return the mappings for a specific graph.  Do not change this map */ 
-    public Map<String, String> readPrefixMap(String graphName) ;
-    
-    /** Add a prefix mapping for a specific graph (or null for dataset, not a specific graph) */ 
-    public void insertPrefix(String graphName, String prefix, String uri) ;
-    
-    /** Copy the prefixes for a graph into the given {@link PrefixMapping}
-     * @param graphName Graph name
-     * @param pmap      Destination.
-     */
-    public void loadPrefixMapping(String graphName, PrefixMapping pmap) ;
 
-    /** Remove the association of a prefix for a specific graph */ 
+    /** Get the URI string associated with a prefix string for a specific graph (or null for dataset, not a specific graph) */
+    public String readPrefix(String graphName, String prefix) ;
+    /** Get the prefix string associated with a URI string for a specific graph (or null for dataset, not a specific graph) */
+    public String readByURI(String graphName, String uriStr) ;
+
+    /** Return the mappings for a specific graph.  Do not change this map */
+    public Map<String, String> readPrefixMap(String graphName) ;
+
+    /** Add a prefix mapping for a specific graph (or null for dataset, not a specific graph) */
+    public void insertPrefix(String graphName, String prefix, String uri) ;
+
+//    /** Copy the prefixes for a graph into the given {@link PrefixMapping}
+//     * @param graphName Graph name
+//     * @param pmap      Destination.
+//     */
+//    public void loadPrefixMapping(String graphName, PrefixMapping pmap) ;
+
+    /** Remove the association of a prefix for a specific graph */
     public void removeFromPrefixMap(String graphName, String prefix) ;
 
-    /** Remove all associations for a specific graph. */ 
+    /** Remove all associations for a specific graph. */
     public void removeAllFromPrefixMap(String graphName) ;
 
-    /** Return a PrefixMapping for the default (unnamed) graph. */ 
-    public PrefixMapping getPrefixMapping() ;
+    /** Return a PrefixMapping for the dataset. */
+    public PrefixMap getPrefixMap() ;
 
-    /** Return a PrefixMapping for a named graph */ 
-    public PrefixMapping getPrefixMapping(String graphName) ;
+    /** Return a PrefixMapping for a named graph */
+    public PrefixMap getPrefixMap(String graphName) ;
 }

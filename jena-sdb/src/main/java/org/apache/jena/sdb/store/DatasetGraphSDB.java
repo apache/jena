@@ -27,6 +27,8 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.riot.other.G;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.sdb.Store ;
 import org.apache.jena.sdb.graph.GraphSDB ;
 import org.apache.jena.sdb.util.StoreUtils ;
@@ -35,7 +37,7 @@ import org.apache.jena.shared.LockMRSW ;
 import org.apache.jena.sparql.core.* ;
 import org.apache.jena.sparql.util.Context ;
 
-public class DatasetGraphSDB extends DatasetGraphTriplesQuads 
+public class DatasetGraphSDB extends DatasetGraphTriplesQuads
     implements DatasetGraph, Closeable
     /** SDB uses JDBC transactions, not Dataset transactions*/
 {
@@ -43,7 +45,7 @@ public class DatasetGraphSDB extends DatasetGraphTriplesQuads
     private Lock lock = new LockMRSW() ;
     private final Context context ;
     private GraphSDB defaultGraph;
-    
+
     public DatasetGraphSDB(Store store, Context context) {
         this(store, new GraphSDB(store), context);
     }
@@ -78,7 +80,13 @@ public class DatasetGraphSDB extends DatasetGraphTriplesQuads
     public Graph getGraph(Node graphNode) {
         return new GraphSDB(store, graphNode);
     }
-    
+
+    @Override
+    public PrefixMap prefixes() {
+        // Don't create when object is created - database may not be formatted yet.
+        return Prefixes.adapt(getDefaultGraph());
+    }
+
     // Use unsubtle versions (the bulk loader copes with large additions).
     @Override
     protected void addToDftGraph(Node s, Node p, Node o)
@@ -102,17 +110,17 @@ public class DatasetGraphSDB extends DatasetGraphTriplesQuads
 
     @Override
     protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o)
-    { return LibSDB.findInQuads(this, Node.ANY, s, p, o) ; } 
+    { return LibSDB.findInQuads(this, Node.ANY, s, p, o) ; }
 
     @Override
     protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o)
     { return LibSDB.findInQuads(this, g, s, p, o) ; }
-    
+
     @Override
     public void close()
     { store.close() ; }
 
-    // Transactions for SDB are an aspect of the JDBC connection not the dataset. 
+    // Transactions for SDB are an aspect of the JDBC connection not the dataset.
     private final Transactional txn                     = new TransactionalNotSupported() ;
     @Override public void begin()                       { txn.begin(); }
     @Override public void begin(TxnType txnType)        { txn.begin(txnType); }

@@ -24,7 +24,6 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.junit.TL;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
 // Quad tests
 public class TestDatasetGraphTDB extends AbstractDatasetGraphTests
@@ -44,10 +43,4 @@ public class TestDatasetGraphTDB extends AbstractDatasetGraphTests
     protected DatasetGraph emptyDataset() {
         return dsg;
     }
-
-    @Override
-    // Empty graph tests: N/A
-    @Test public void graph_01()
-    {}
-
 }

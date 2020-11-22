@@ -20,9 +20,12 @@ package org.apache.jena.dboe.storage.prefixes;
 import org.apache.jena.dboe.storage.StoragePrefixes;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.graph.AbstractTestPrefixMappingView;
 
+/** AbstractTestPrefixMappingView for named graph. */
 public class TestPrefixMappingOverDatasetPrefixes2 extends AbstractTestPrefixMappingView
 {
     static Node gn = NodeFactory.createURI("http://test/graphName");
@@ -30,15 +33,15 @@ public class TestPrefixMappingOverDatasetPrefixes2 extends AbstractTestPrefixMap
 
     @Override
     protected PrefixMapping create() {
-        dsgprefixes = PrefixesFactory.newDatasetPrefixesMem();
+        dsgprefixes = PrefixesDboeFactory.newDatasetPrefixesMem();
         return view();
     }
 
     @Override
     protected PrefixMapping view() {
         StoragePrefixMap view = StoragePrefixesView.viewGraph(dsgprefixes, gn);
-        PrefixMapI pmap = PrefixesFactory.newPrefixMap(view);
-        return PrefixesFactory.newPrefixMappingOverPrefixMapI(pmap);
+        PrefixMap pmap = PrefixesDboeFactory.newPrefixMap(view);
+        return Prefixes.adapt(pmap);
     }
 }
 

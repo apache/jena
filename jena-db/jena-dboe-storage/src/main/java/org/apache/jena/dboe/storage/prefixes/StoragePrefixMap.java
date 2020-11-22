@@ -20,6 +20,8 @@ package org.apache.jena.dboe.storage.prefixes;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
+import org.apache.jena.riot.system.PrefixEntry;
+
 /**
  * Storage-oriented abstraction for one set of prefix mappings.
  * The API features, such as expanding prefix names. are provided elsewhere.

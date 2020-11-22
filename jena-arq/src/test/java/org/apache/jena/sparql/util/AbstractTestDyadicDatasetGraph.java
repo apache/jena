@@ -90,44 +90,45 @@ public abstract class AbstractTestDyadicDatasetGraph {
     public void noClearing() {
         emptyDsg().clear();
     }
-    
+
     @Test(expected = UnsupportedOperationException.class)
     public void noAddingToDefaultGraph() {
         emptyDsg().getDefaultGraph().add(null);
     }
-    
+
     @Test(expected = UnsupportedOperationException.class)
     public void noDeletingFromDefaultGraph() {
         emptyDsg().getDefaultGraph().delete(null);
     }
-    
+
     @Test(expected = UnsupportedOperationException.class)
     public void noAddingToANamedGraph() {
         Node graphName = NodeFactory.createBlankNode();
         emptyDsg().getGraph(graphName).add(null);
     }
-    
+
     @Test(expected = UnsupportedOperationException.class)
     public void noDeletingFromANamedGraph() {
         Node graphName = NodeFactory.createBlankNode();
         emptyDsg().getGraph(graphName).delete(null);
     }
-    
+
     @Test(expected = UnsupportedOperationException.class)
     public void noClearingDefaultGraph() {
         emptyDsg().getDefaultGraph().clear();
     }
-    
+
     @Test(expected = UnsupportedOperationException.class)
     public void noClearingANamedGraph() {
         Node graphName = NodeFactory.createBlankNode();
         emptyDsg().getGraph(graphName).clear();
     }
-    
+
     @Test(expected = UnsupportedOperationException.class)
     public void noRemovingFromANamedGraph() {
         Node graphName = NodeFactory.createBlankNode();
-        emptyDsg().getGraph(graphName).remove(null, null, null);
+        emptyDsg().getGraph(graphName)
+        .remove(null, null, null);
     }
 
     // Read lifecycle.
@@ -140,7 +141,7 @@ public abstract class AbstractTestDyadicDatasetGraph {
         dsg.commit();
         dsg.end();
     }
-    
+
     @Test
     public void txnRead2() {
         final DatasetGraph dsg = emptyDsg();
@@ -149,7 +150,7 @@ public abstract class AbstractTestDyadicDatasetGraph {
         assertTrue(dsg.isInTransaction());
         dsg.end();
     }
-    
+
     @Test
     public void txnRead3() {
         final DatasetGraph dsg = emptyDsg();
@@ -160,7 +161,7 @@ public abstract class AbstractTestDyadicDatasetGraph {
         assertEquals(TxnType.READ, dsg.transactionType());
         dsg.end();
     }
-    
+
     @Test(expected = JenaTransactionException.class)
     public void noWriting1() {
         emptyDsg().begin(ReadWrite.WRITE);
@@ -180,7 +181,7 @@ public abstract class AbstractTestDyadicDatasetGraph {
     public void noWriting4() {
         emptyDsg().begin(TxnType.READ_COMMITTED_PROMOTE);
     }
-    
+
     @Test
     public void noPromoting() {
         final DatasetGraph dsg = emptyDsg();

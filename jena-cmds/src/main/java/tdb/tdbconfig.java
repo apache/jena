@@ -22,13 +22,12 @@ package tdb;
 import java.util.List ;
 import java.util.Map ;
 
+import arq.cmdline.CmdARQ ;
 import jena.cmd.ModVersion;
-
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.sparql.core.DatasetPrefixStorage ;
+import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.base.file.FileFactory ;
 import org.apache.jena.tdb.base.file.Location ;
@@ -37,12 +36,11 @@ import org.apache.jena.tdb.setup.Build ;
 import org.apache.jena.tdb.solver.stats.Stats ;
 import org.apache.jena.tdb.solver.stats.StatsResults ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
+import org.apache.jena.tdb.store.DatasetPrefixStorage;
 import org.apache.jena.tdb.sys.DatasetControlNone ;
-
 import tdb.cmdline.CmdSub ;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.CmdTDBGraph ;
-import arq.cmdline.CmdARQ ;
 
 /** Tools to manage a TDB store.  Subcommand based. */
 public class tdbconfig extends CmdSub
@@ -53,7 +51,7 @@ public class tdbconfig extends CmdSub
     static final String CMD_NODES       = "nodes" ;
     static final String CMD_INFO        = "info" ;
     static final String CMD_PREFIXES    = "prefixes" ;
-    
+
     static public void main(String... argv)
     {
         CmdTDB.init() ;
@@ -65,30 +63,30 @@ public class tdbconfig extends CmdSub
         super(argv) ;
 //        super.addSubCommand(CMD_CLEAN, new Exec()
 //          { @Override public void exec(String[] argv) { new tdbclean(argv).main() ; } }) ;
-        
+
         super.addSubCommand(CMD_HELP, new Exec()
         { /*@Override*/ @Override
         public void exec(String[] argv) { new SubHelp(argv).mainRun() ; } }) ;
-        
+
         super.addSubCommand(CMD_STATS, new Exec()
         { /*@Override*/ @Override
         public void exec(String[] argv) { new SubStats(argv).mainRun() ; } }) ;
-        
+
         super.addSubCommand(CMD_NODES, new Exec()
         { /*@Override*/ @Override
         public void exec(String[] argv) { new SubNodes(argv).mainRun() ; } }) ;
-        
+
         super.addSubCommand(CMD_INFO, new Exec()
         { /*@Override*/ @Override
         public void exec(String[] argv) { new SubInfo(argv).mainRun() ; } }) ;
-        
+
         super.addSubCommand(CMD_PREFIXES, new Exec()
         { /*@Override*/ @Override
         public void exec(String[] argv) { new SubPrefixes(argv).mainRun() ; } }) ;
 
-        
+
     }
-    
+
     static class SubPrefixes extends CmdTDB
     {
         public SubPrefixes(String ... argv)
@@ -111,14 +109,14 @@ public class tdbconfig extends CmdSub
             for ( String gn : prefixes.graphNames() )
             {
                 System.out.println("Graph: "+gn) ;
-                PrefixMapping pmap = prefixes.getPrefixMapping(gn) ;
-                Map<String, String> x = pmap.getNsPrefixMap() ;
+                PrefixMap pmap = prefixes.getPrefixMap(gn) ;
+                Map<String, String> x = pmap.getMapping();
                 for ( String k : x.keySet() )
                     System.out.printf("  %-10s %s\n", k+":", x.get(k)) ;
             }
         }
     }
-    
+
     // Subcommand : help
     class SubHelp extends CmdARQ
     {
@@ -127,7 +125,7 @@ public class tdbconfig extends CmdSub
             super(argv) ;
             //super.addModule(modSymbol) ;
         }
-        
+
         @Override
         protected String getSummary()
         {
@@ -143,7 +141,7 @@ public class tdbconfig extends CmdSub
 
             for ( String name : subCommandNames() )
             {
-                out.println(name) ; 
+                out.println(name) ;
             }
             out.decIndent() ;
             out.flush() ;
@@ -155,7 +153,7 @@ public class tdbconfig extends CmdSub
             return "tdbconfig help" ;
         }
     }
-    
+
     static class SubStats extends CmdTDBGraph
     {
         public SubStats(String ... argv)
@@ -163,7 +161,7 @@ public class tdbconfig extends CmdSub
             super(argv) ;
             //super.addModule(modSymbol) ;
         }
-        
+
         @Override
         protected String getSummary()
         {
@@ -185,14 +183,14 @@ public class tdbconfig extends CmdSub
             return "tdbconfig stats" ;
         }
     }
-    
+
     static class SubNodes extends CmdTDB
     {
         public SubNodes(String ... argv)
         {
             super(argv) ;
         }
-        
+
         @Override
         protected String getSummary()
         {
@@ -224,7 +222,7 @@ public class tdbconfig extends CmdSub
         {
             super(argv) ;
         }
-        
+
         @Override
         protected String getSummary()
         {
@@ -246,5 +244,5 @@ public class tdbconfig extends CmdSub
             return "tdbconfig info" ;
         }
     }
-    
+
 }

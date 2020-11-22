@@ -47,29 +47,29 @@ import org.slf4j.Logger ;
 
 public class ProcNodeTableBuilder {
     private static Logger cmdLog = TDB.logLoader ;
-    
+
     public static void exec(Location location,
                             String dataFileTriples, String dataFileQuads,
                             List<String> datafiles, boolean collectStats) {
         // This formats the location correctly.
         // But we're not really interested in it all.
         DatasetGraphTDB dsg = DatasetBuilderStd.create(location) ;
-        
+
         // so close indexes and the prefix table.
         dsg.getTripleTable().getNodeTupleTable().getTupleTable().close();
         dsg.getQuadTable().getNodeTupleTable().getTupleTable().close();
-        
+
         ProgressMonitor monitor = ProgressMonitor.create(cmdLog, "Data", BulkLoader.DataTickPoint, BulkLoader.superTick) ;
         OutputStream outputTriples = null ;
         OutputStream outputQuads = null ;
-        
-        try { 
-            outputTriples = new FileOutputStream(dataFileTriples) ; 
+
+        try {
+            outputTriples = new FileOutputStream(dataFileTriples) ;
             outputQuads = new FileOutputStream(dataFileQuads) ;
         }
         catch (FileNotFoundException e) { throw new AtlasException(e) ; }
-        
-        NodeTableBuilder sink = new NodeTableBuilder(dsg, monitor, outputTriples, outputQuads, collectStats) ; 
+
+        NodeTableBuilder sink = new NodeTableBuilder(dsg, monitor, outputTriples, outputQuads, collectStats) ;
         monitor.start() ;
         sink.startBulk() ;
         for( String filename : datafiles) {
@@ -80,13 +80,13 @@ public class ProcNodeTableBuilder {
         sink.finishBulk() ;
         IO.close(outputTriples) ;
         IO.close(outputQuads) ;
-        
+
         // ---- Stats
-        
+
         // See Stats class.
         if ( ! location.isMem() && sink.getCollector() != null )
             Stats.write(dsg.getLocation().getPath(Names.optStats), sink.getCollector().results()) ;
-        
+
         // ---- Monitor
         long time = monitor.finish() ;
 
@@ -110,14 +110,14 @@ public class ProcNodeTableBuilder {
         {
             this.dsg = dsg ;
             this.monitor = monitor ;
-            NodeTupleTable ntt = dsg.getTripleTable().getNodeTupleTable() ; 
+            NodeTupleTable ntt = dsg.getTripleTable().getNodeTupleTable() ;
             this.nodeTable = ntt.getNodeTable() ;
-            this.writerTriples = new WriteRows(outputTriples, 3, 20000) ; 
-            this.writerQuads = new WriteRows(outputQuads, 4, 20000) ; 
+            this.writerTriples = new WriteRows(outputTriples, 3, 20000) ;
+            this.writerQuads = new WriteRows(outputQuads, 4, 20000) ;
             if ( collectStats )
                 this.stats = new StatsCollectorNodeId(nodeTable) ;
         }
-        
+
         @Override
         public void startBulk()
         {}
@@ -136,9 +136,9 @@ public class ProcNodeTableBuilder {
             writerTriples.flush() ;
             writerQuads.flush() ;
             nodeTable.sync() ;
-            dsg.getPrefixes().sync() ;
+            dsg.getStoragePrefixes().sync() ;
         }
-            
+
         @Override
         public void triple(Triple triple)
         {
@@ -161,13 +161,13 @@ public class ProcNodeTableBuilder {
             process(g,s,p,o);
         }
 
-       
+
         private void process(Node g, Node s, Node p, Node o)
         {
-            NodeId sId = nodeTable.getAllocateNodeId(s) ; 
+            NodeId sId = nodeTable.getAllocateNodeId(s) ;
             NodeId pId = nodeTable.getAllocateNodeId(p) ;
             NodeId oId = nodeTable.getAllocateNodeId(o) ;
-            
+
             if ( g != null )
             {
                 NodeId gId = nodeTable.getAllocateNodeId(g) ;
@@ -200,10 +200,10 @@ public class ProcNodeTableBuilder {
         @Override
         public void prefix(String prefix, String iri)
         {
-            dsg.getPrefixes().getPrefixMapping().setNsPrefix(prefix, iri) ;
+            dsg.getStoragePrefixes().getPrefixMap().add(prefix, iri) ;
         }
     }
 
-   
+
 }
 

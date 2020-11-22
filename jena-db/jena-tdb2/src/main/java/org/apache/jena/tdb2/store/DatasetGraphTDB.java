@@ -119,17 +119,17 @@ public class DatasetGraphTDB extends DatasetGraphStorage
 
     public GraphTDB getDefaultGraphTDB() {
         checkNotClosed();
-        return GraphTDB.tdb_createDefaultGraph(this, getPrefixes());
+        return GraphTDB.tdb_createDefaultGraph(this, getStoragePrefixes());
     }
 
     public GraphTDB getGraphTDB(Node graphNode) {
         checkNotClosed();
-        return GraphTDB.tdb_createNamedGraph(this, graphNode, getPrefixes());
+        return GraphTDB.tdb_createNamedGraph(this, graphNode, getStoragePrefixes());
     }
 
     public GraphTDB getUnionGraphTDB() {
         checkNotClosed();
-        return GraphTDB.tdb_createUnionGraph(this, getPrefixes());
+        return GraphTDB.tdb_createUnionGraph(this, getStoragePrefixes());
     }
 
     @Override

@@ -18,6 +18,8 @@
 
 package org.apache.jena.tdb2.store;
 
+import static org.apache.jena.riot.system.PrefixLib.canonicalGraphName;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,13 +27,12 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.dboe.base.record.RecordFactory;
 import org.apache.jena.dboe.storage.StoragePrefixes;
-import org.apache.jena.dboe.storage.prefixes.PrefixEntry;
-import org.apache.jena.dboe.storage.prefixes.PrefixLib;
 import org.apache.jena.dboe.transaction.txn.Transaction;
 import org.apache.jena.dboe.transaction.txn.TransactionException;
 import org.apache.jena.dboe.transaction.txn.TransactionalSystem;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.riot.system.PrefixEntry;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
 
 public class StoragePrefixesTDB implements StoragePrefixes {
@@ -52,7 +53,7 @@ public class StoragePrefixesTDB implements StoragePrefixes {
     @Override
     public String get(Node graphNode, String prefix) {
         requireTxn();
-        graphNode = PrefixLib.canonicalGraphName(graphNode);
+        graphNode = canonicalGraphName(graphNode);
         Node p = NodeFactory.createLiteral(prefix);
         Iterator<Tuple<Node>> iter = prefixTable.find(graphNode, p, null);
         if ( ! iter.hasNext() )
@@ -65,7 +66,7 @@ public class StoragePrefixesTDB implements StoragePrefixes {
     @Override
     public Iterator<PrefixEntry> get(Node graphNode) {
         requireTxn();
-        graphNode = PrefixLib.canonicalGraphName(graphNode);
+        graphNode = canonicalGraphName(graphNode);
         Iterator<Tuple<Node>> iter = prefixTable.find(graphNode, null, null);
         return Iter.iter(iter).map(t->PrefixEntry.create(t.get(1).getLiteralLexicalForm(), t.get(2).getURI()));
     }
@@ -83,12 +84,12 @@ public class StoragePrefixesTDB implements StoragePrefixes {
         add_ext(graphNode, prefix, iriStr);
     }
 
-    /** Add without checks - used by the bulkloader when it takes control of the transaction. */  
+    /** Add without checks - used by the bulkloader when it takes control of the transaction. */
     public void add_ext(Node graphNode, String prefix, String iriStr) {
         // By exposing the operation here, we use the rules (e.g. canonicalGraphName) on
         // added prefixes. Going to the NodeTupleTable prefixTable would skip those and
         // require node creation in the caller as well.
-        graphNode = PrefixLib.canonicalGraphName(graphNode);
+        graphNode = canonicalGraphName(graphNode);
         Node p = NodeFactory.createLiteral(prefix);
         Node u = NodeFactory.createURI(iriStr);
         // Delete any existing old mapping of prefix.
@@ -112,10 +113,10 @@ public class StoragePrefixesTDB implements StoragePrefixes {
         remove_ext(g, p, u);
     }
 
-    /** Remove without checks - used by the bulkloader when it takes control of the transaction. */  
+    /** Remove without checks - used by the bulkloader when it takes control of the transaction. */
     private void remove_ext(Node g, Node p, Node u) {
         // See add_ext
-        g = PrefixLib.canonicalGraphName(g);
+        g = canonicalGraphName(g);
         Iterator<Tuple<Node>> iter = prefixTable.find(g, p, u);
         List<Tuple<Node>> list = Iter.toList(iter);    // Materialize.
         for ( Tuple<Node> tuple : list )

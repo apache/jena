@@ -23,6 +23,9 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.dboe.storage.DatabaseRDF;
 import org.apache.jena.dboe.storage.StoragePrefixes;
 import org.apache.jena.dboe.storage.StorageRDF;
+import org.apache.jena.dboe.storage.prefixes.PrefixesDboeFactory;
+import org.apache.jena.dboe.storage.prefixes.StoragePrefixMap;
+import org.apache.jena.dboe.storage.prefixes.StoragePrefixesView;
 import org.apache.jena.dboe.transaction.txn.IteratorTxnTracker;
 import org.apache.jena.dboe.transaction.txn.TransactionalSystem;
 import org.apache.jena.dboe.transaction.txn.TxnId;
@@ -31,7 +34,11 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
-import org.apache.jena.sparql.core.*;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.sparql.core.DatasetGraphBaseFind;
+import org.apache.jena.sparql.core.DatasetGraphTriplesQuads;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.Transactional;
 
 /** Alternative: DatasetGraph over RDFStorage, using DatasetGraphBaseFind
  *  Collapses DatasetGraphTriplesQuads into this adapter class.
@@ -70,16 +77,24 @@ public class DatasetGraphStorage extends DatasetGraphBaseFind implements Databas
 
     private final StorageRDF storage;
     private final StoragePrefixes prefixes;
+    private final PrefixMap prefixMap;
 
     public DatasetGraphStorage(StorageRDF storage, StoragePrefixes prefixes, Transactional transactional) {
         this.storage = storage;
         this.prefixes = prefixes;
+        StoragePrefixMap spm = StoragePrefixesView.viewDataset(prefixes);
+        this.prefixMap = PrefixesDboeFactory.newPrefixMap(spm);
         this.txn = transactional;
     }
 
-    @Override public StorageRDF getData()             { return storage; }
-    @Override public StoragePrefixes getPrefixes()    { return prefixes; }
-    @Override public Transactional getTransactional() { return txn; }
+    @Override public StorageRDF getData()               { return storage; }
+    @Override public StoragePrefixes getStoragePrefixes()    { return prefixes; }
+    @Override public Transactional getTransactional()   { return txn; }
+
+    @Override
+    public PrefixMap prefixes() {
+        return prefixMap;
+    }
 
     /**
      * Provide a general implementation of "listGraphNodes". Implementations may wish

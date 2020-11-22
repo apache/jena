@@ -28,11 +28,11 @@ import org.apache.jena.sparql.core.Quad ;
 
 /**
  * Base class for StreamRDF implementations which store received <T>
- * objects in a {@link java.util.Collection}. 
- * 
+ * objects in a {@link java.util.Collection}.
+ *
  * The resulting collection can be retrieved via the {@link #getCollected()}
  * method.
- * 
+ *
  * Implementations are suitable for single-threaded parsing, for use with small
  * data or distributed computing frameworks (e.g. Hadoop) where the overhead
  * of creating many threads is significant.
@@ -40,12 +40,12 @@ import org.apache.jena.sparql.core.Quad ;
  * @param <T> Type of the value stored in the collection
  */
 public abstract class CollectorStreamBase<T> implements StreamRDF {
-	private final PrefixMap prefixes = PrefixMapFactory.createForInput();
+	private final PrefixMap prefixes = PrefixMapFactory.create();
 	private String baseIri;
-	
+
 	@Override
 	public void finish() {}
-	
+
 	@Override
 	public void triple(Triple triple) {}
 
@@ -54,17 +54,17 @@ public abstract class CollectorStreamBase<T> implements StreamRDF {
 
 	@Override
 	public void start() {}
-	
+
 	@Override
 	public void base(String base) {
 		this.baseIri = base;
 	}
-	
+
 	@Override
 	public void prefix(String prefix, String iri) {
 		prefixes.add(prefix, iri);
 	}
-	
+
 	public PrefixMap getPrefixes() {
 		return prefixes;
 	}
@@ -74,7 +74,7 @@ public abstract class CollectorStreamBase<T> implements StreamRDF {
 	}
 
 	/**
-	 * @return The collection received by this instance. 
+	 * @return The collection received by this instance.
 	 */
 	public abstract Collection<T> getCollected();
 }

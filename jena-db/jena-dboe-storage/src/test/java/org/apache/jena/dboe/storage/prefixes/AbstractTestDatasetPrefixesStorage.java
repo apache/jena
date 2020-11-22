@@ -26,6 +26,7 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.dboe.storage.StoragePrefixes;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.riot.system.PrefixEntry;
 import org.junit.Test;
 
 public abstract class AbstractTestDatasetPrefixesStorage

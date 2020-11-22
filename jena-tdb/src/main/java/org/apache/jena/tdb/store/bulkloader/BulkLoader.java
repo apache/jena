@@ -28,7 +28,7 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBException ;
@@ -109,14 +109,14 @@ public class BulkLoader {
         loadQuads$(dest, urls) ;
     }
 
-    /** Load into a dataset 
+    /** Load into a dataset
      * @deprecated Use {@link #loadDataset(DatasetGraphTDB, InputStream, Lang, boolean, boolean)}
      */
     @Deprecated
     public static void loadDataset(DatasetGraphTDB dsg, InputStream input, boolean showProgress, boolean collectStats) {
         loadDataset(dsg, input, Lang.NQUADS, showProgress, collectStats);
     }
-    
+
     /** Load into a dataset */
     public static void loadDataset(DatasetGraphTDB dsg, InputStream input, Lang lang, boolean showProgress, boolean collectStats) {
         BulkStreamRDF dest = destinationDataset(dsg, showProgress, collectStats) ;
@@ -278,7 +278,7 @@ public class BulkLoader {
 
         @Override
         public void prefix(String prefix, String iri) {
-            dsg.getPrefixes().getPrefixMapping().setNsPrefix(prefix, iri) ;
+            dsg.prefixes().add(prefix, iri) ;
         }
 
         @Override
@@ -295,6 +295,7 @@ public class BulkLoader {
         private long                       count = 0 ;
         private StatsCollector             stats = null ;
         private final boolean              collectStats ;
+        final private PrefixMap            prefixMap;
 
         // Graph node is null for default graph.
         DestinationGraph(final DatasetGraphTDB dsg, Node graphNode, boolean showProgress, boolean collectStats) {
@@ -312,6 +313,7 @@ public class BulkLoader {
             startedEmpty = dsg.isEmpty() ;
             monitor = createLoadMonitor(dsg, "triples", showProgress) ;
             loaderTriples = new LoaderNodeTupleTable(nodeTupleTable, "triples", monitor) ;
+            this.prefixMap = dsg.prefixes();
         }
 
         @Override
@@ -361,15 +363,7 @@ public class BulkLoader {
 
         @Override
         public void prefix(String prefix, String iri) {
-            if ( graphName != null && graphName.isBlank() ) {
-                loadLogger.warn("Prefixes for blank node graphs not stored") ;
-                return ;
-            }
-
-            PrefixMapping pmap = (graphName == null)
-                                                    ? dsg.getPrefixes().getPrefixMapping()
-                                                    : dsg.getPrefixes().getPrefixMapping(graphName.getURI()) ;
-            pmap.setNsPrefix(prefix, iri) ;
+            prefixMap.add(prefix, iri);
         }
 
         @Override
@@ -382,7 +376,7 @@ public class BulkLoader {
         dsg.getTripleTable().getNodeTupleTable().getNodeTable().sync() ;
         dsg.getQuadTable().getNodeTupleTable().getNodeTable().sync() ;
         dsg.getQuadTable().getNodeTupleTable().getNodeTable().sync() ;
-        dsg.getPrefixes().getNodeTupleTable().getNodeTable().sync() ;
+        dsg.getStoragePrefixes().getNodeTupleTable().getNodeTable().sync() ;
         // This is not enough -- modules check whether sync needed.
         dsg.sync() ;
 

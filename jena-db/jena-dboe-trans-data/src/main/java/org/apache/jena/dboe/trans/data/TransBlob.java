@@ -37,17 +37,20 @@ import org.apache.jena.query.ReadWrite;
 public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobState> {
 
     // The last committed state.
+    // The current writer view is data state held by TransactionalComponentLifecycle.
     // Immutable ByteBuffer.
+
     private final AtomicReference<ByteBuffer> blobRef = new AtomicReference<>();
     private final BufferChannel file;
 
     static class BlobState {
-        boolean hasChanged = false;
-        ByteBuffer $txnBlob;
+        private boolean hasChanged = false;
+        private ByteBuffer $txnBlob;
 
         BlobState(ByteBuffer bb) {
             setByteBuffer(bb);
         }
+
         void setByteBuffer(ByteBuffer bb) {
             $txnBlob = bb;
             // Could compare - seems like added complexity.
@@ -73,7 +76,7 @@ public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobSta
         blobRef.set(blob);
     }
 
-    private void write() {
+    private void writeBlobState() {
         ByteBuffer blob = blobRef.get();
         blob.rewind();
         int x = blob.remaining();
@@ -152,7 +155,7 @@ public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobSta
     @Override
     public void finishRecovery() {
         if ( recoveryChange )
-            write();
+            writeBlobState();
     }
 
     @Override
@@ -186,9 +189,12 @@ public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobSta
     protected void _commit(TxnId txnId, BlobState state) {
         if ( ! state.hasChanged )
             return;
-        // NB Change reference.
+        // Change reference.
         blobRef.set(state.getByteBuffer());
-        write();
+        // Write to persistent storage.
+        // It's in the journal already, and is rewritten from the journal
+        // if there is a crash at this point.
+        writeBlobState();
     }
 
     @Override

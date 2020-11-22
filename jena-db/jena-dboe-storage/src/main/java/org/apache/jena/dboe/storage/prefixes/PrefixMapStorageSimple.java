@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.apache.jena.riot.system.PrefixEntry;
+
 public class PrefixMapStorageSimple implements StoragePrefixMap {
     private Map<String, String> map = new HashMap<>();
 

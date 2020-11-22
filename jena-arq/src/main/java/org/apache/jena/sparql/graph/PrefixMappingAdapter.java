@@ -24,50 +24,60 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 
 import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapAdapter;
 import org.apache.jena.shared.PrefixMapping;
 
-/** Provided {@link PrefixMapping} for a {@link PrefixMap}. */
+/**
+ * Provided {@link PrefixMapping} for a {@link PrefixMap}.
+ *
+ * @see PrefixMapAdapter
+ */
+final
 public class PrefixMappingAdapter extends PrefixMappingBase {
 
-    private final PrefixMap pmap;
-    
+    private final PrefixMap prefixMap;
+
     public PrefixMappingAdapter(PrefixMap pmap) {
-        this.pmap = pmap;
+        this.prefixMap = pmap;
     }
-    
+
+    public PrefixMap getPrefixMap() {
+        return prefixMap;
+    }
+
     @Override
     protected void add(String prefix, String uri) {
-        pmap.add(prefix, uri);
+        prefixMap.add(prefix, uri);
     }
 
     @Override
     protected void remove(String prefix) {
-        pmap.delete(prefix);
+        prefixMap.delete(prefix);
     }
 
     @Override
     protected void clear() {
-        pmap.clear();
+        prefixMap.clear();
     }
 
     @Override
     protected boolean isEmpty() {
-        return pmap.isEmpty();
+        return prefixMap.isEmpty();
     }
 
     @Override
     protected int size() {
-        return pmap.size();
+        return prefixMap.size();
     }
 
     @Override
     protected String prefixToUri(String prefix) {
-        return pmap.getMapping().get(prefix);
+        return prefixMap.getMapping().get(prefix);
     }
 
     @Override
     protected String uriToPrefix(String uri) {
-       return pmap.getMapping().entrySet().stream()
+       return prefixMap.getMapping().entrySet().stream()
            .filter(e->Objects.equals(uri, e.getValue().toString()))
            .map(Entry::getKey)
            .findFirst()
@@ -76,16 +86,16 @@ public class PrefixMappingAdapter extends PrefixMappingBase {
 
     @Override
     protected Map<String, String> asMap() {
-        return pmap.getMapping();
+        return prefixMap.getMapping();
     }
 
     @Override
     protected Map<String, String> asMapCopy() {
-        return pmap.getMappingCopy();
+        return prefixMap.getMappingCopy();
     }
 
     @Override
     protected void apply(BiConsumer<String, String> action) {
-        pmap.forEach(action);
+        prefixMap.forEach(action);
     }
 }

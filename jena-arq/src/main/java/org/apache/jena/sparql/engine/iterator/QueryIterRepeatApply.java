@@ -26,31 +26,31 @@ import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 
 /** Repeatedly execute the subclass operation for each Binding in the input iterator. */
- 
+
 public abstract class QueryIterRepeatApply extends QueryIter1
 {
-    int count = 0 ; 
-    private QueryIterator currentStage ; 
-    private volatile boolean cancelRequested = false;   // [CANCEL] needed? super.cancelRequest?
-    
+    int count = 0 ;
+    private QueryIterator currentStage ;
+    private volatile boolean cancelRequested = false;
+
     public QueryIterRepeatApply( QueryIterator input ,
                                  ExecutionContext context)
     {
         super(input, context) ;
         this.currentStage = null ;
-        
+
         if ( input == null )
         {
             Log.error(this, "[QueryIterRepeatApply] Repeated application to null input iterator") ;
             return ;
         }
     }
-       
+
     protected QueryIterator getCurrentStage()
     {
         return currentStage ;
     }
-    
+
     protected abstract QueryIterator nextStage(Binding binding) ;
 
     @Override
@@ -58,22 +58,22 @@ public abstract class QueryIterRepeatApply extends QueryIter1
     {
         if ( isFinished() )
             return false ;
-        
+
         for ( ;; )
         {
             if ( currentStage == null  )
                 currentStage = makeNextStage() ;
-            
+
             if ( currentStage == null  )
                 return false ;
-            
+
             if ( cancelRequested )
                 // Pass on the cancelRequest to the active stage.
                 performRequestCancel(currentStage);
-            
+
             if ( currentStage.hasNext() )
                 return true ;
-            
+
             // finish this step
             currentStage.close() ;
             currentStage = null ;
@@ -88,9 +88,9 @@ public abstract class QueryIterRepeatApply extends QueryIter1
         if ( ! hasNextBinding() )
             throw new NoSuchElementException(Lib.className(this)+".next()/finished") ;
         return currentStage.nextBinding() ;
-        
+
     }
-    
+
     private QueryIterator makeNextStage()
     {
         count++ ;
@@ -101,21 +101,21 @@ public abstract class QueryIterRepeatApply extends QueryIter1
         if ( !getInput().hasNext() )
         {
             getInput().close() ;
-            return null ; 
+            return null ;
         }
-        
+
         Binding binding = getInput().next() ;
         QueryIterator iter = nextStage(binding) ;
         return iter ;
     }
-   
+
     @Override
     protected void closeSubIterator()
     {
         if ( currentStage != null )
             currentStage.close() ;
     }
-    
+
     @Override
     protected void requestSubCancel()
     {

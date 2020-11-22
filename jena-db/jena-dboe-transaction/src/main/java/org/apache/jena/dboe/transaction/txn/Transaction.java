@@ -196,8 +196,6 @@ public class Transaction implements TransactionInfo {
     }
 
     public void end() {
-        // [1746]
-        // txnMgr.executeEnd(thus, ()->{});
         txnMgr.notifyEndStart(this);
         if ( isWriteTxn() && getState() == ACTIVE ) {
             //Log.warn(this, "Write transaction with no commit() or abort() before end()");
@@ -209,7 +207,6 @@ public class Transaction implements TransactionInfo {
         endInternal();
         txnMgr.notifyEndFinish(this);
         txnMgr = null;
-        //components.clear();
     }
 
     private void endInternal() {
@@ -240,14 +237,14 @@ public class Transaction implements TransactionInfo {
         setState(ACTIVE);
     }
 
-    /** Require a WRITE transaction - do not try to promote. */ 
+    /** Require a WRITE transaction - do not try to promote. */
     public void requireWriteTxn() {
         checkState(ACTIVE);
         if ( mode != ReadWrite.WRITE )
             throw new TransactionException("Not a write transaction");
     }
 
-    /** Require a WRITE transaction - includes trying to promote. */ 
+    /** Require a WRITE transaction - includes trying to promote. */
     public void ensureWriteTxn() {
         checkState(ACTIVE);
         if ( mode != ReadWrite.WRITE ) {

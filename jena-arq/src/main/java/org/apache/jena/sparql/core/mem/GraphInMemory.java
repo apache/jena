@@ -19,8 +19,8 @@
 package org.apache.jena.sparql.core.mem;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.sparql.core.DatasetPrefixStorage;
 import org.apache.jena.sparql.core.GraphView;
 
 /**
@@ -39,9 +39,7 @@ public class GraphInMemory extends GraphView {
 
     @Override
     protected PrefixMapping createPrefixMapping() {
-        final DatasetPrefixStorage prefixes = datasetGraph().prefixes();
-        return isDefaultGraph() || isUnionGraph() ? prefixes.getPrefixMapping() : prefixes
-            .getPrefixMapping(getGraphName().getURI());
+        return Prefixes.adapt(datasetGraph.prefixes());
     }
 
     private DatasetGraphInMemory datasetGraph() {

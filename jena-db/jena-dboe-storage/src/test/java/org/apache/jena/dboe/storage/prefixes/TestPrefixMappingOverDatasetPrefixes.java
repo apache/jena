@@ -18,24 +18,27 @@
 package org.apache.jena.dboe.storage.prefixes;
 
 import org.apache.jena.dboe.storage.StoragePrefixes;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.graph.AbstractTestPrefixMappingView;
 
+/** AbstractTestPrefixMappingView for default graph. */
 public class TestPrefixMappingOverDatasetPrefixes extends AbstractTestPrefixMappingView
 {
     StoragePrefixes dsgprefixes;
 
     @Override
     protected PrefixMapping create() {
-        dsgprefixes = PrefixesFactory.newDatasetPrefixesMem();
+        dsgprefixes = PrefixesDboeFactory.newDatasetPrefixesMem();
         return view();
     }
 
     @Override
     protected PrefixMapping view() {
         StoragePrefixMap view = StoragePrefixesView.viewDefaultGraph(dsgprefixes);
-        PrefixMapI pmap = PrefixesFactory.newPrefixMap(view);
-        return PrefixesFactory.newPrefixMappingOverPrefixMapI(pmap);
+        PrefixMap pmap = PrefixesDboeFactory.newPrefixMap(view);
+        return Prefixes.adapt(pmap);
     }
 }
 

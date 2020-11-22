@@ -35,7 +35,7 @@ import org.apache.jena.web.HttpSC;
 
 /** The ping servlet provides a low cost, uncached endpoint that can be used
  * to determine if this component is running and responding.  For example,
- * a nagios check should use this endpoint.
+ * a Nagios check should use this endpoint.
  */
 public class ActionPing extends HttpServlet
 {
@@ -53,7 +53,6 @@ public class ActionPing extends HttpServlet
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         doCommon(req, resp);
     }
-
 
     @Override
     protected void doHead(HttpServletRequest req, HttpServletResponse resp) {

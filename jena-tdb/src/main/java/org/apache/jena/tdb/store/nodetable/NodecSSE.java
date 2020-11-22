@@ -30,7 +30,7 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.riot.system.PrefixMap;
-import org.apache.jena.riot.system.PrefixMapNull;
+import org.apache.jena.riot.system.PrefixMapZero;
 import org.apache.jena.riot.tokens.Token;
 import org.apache.jena.riot.tokens.Tokenizer;
 import org.apache.jena.riot.tokens.TokenizerText;
@@ -47,36 +47,36 @@ public class NodecSSE implements Nodec
 {
     // Characters in IRIs that are illegal and cause SSE problems, but we wish to keep.
     private final static char MarkerChar = '_';
-    private final static char[] invalidIRIChars = { MarkerChar , ' ' }; 
-    
+    private final static char[] invalidIRIChars = { MarkerChar , ' ' };
+
     public NodecSSE() {}
-    
+
     @Override
     public int maxSize(Node node)
     {
         return maxLength(node);
     }
 
-    private static final PrefixMap pmap0 = PrefixMapNull.empty;
+    private static final PrefixMap pmap0 = PrefixMapZero.empty;
     private static final boolean onlySafeBNodeLabels = false;
     @Override
     public int encode(Node node, ByteBuffer bb, PrefixMapping pmap)
     {
         if ( ! node.isConcrete() )
             FmtLog.warn(TDB.logInfo,"Attempt to encode non-concrete node: "+node);
-            
 
-        
+
+
         String str = null;
 
-        if ( node.isURI() ) 
+        if ( node.isURI() )
         {
             // Pesky spaces etc
             String x = StrUtils.encodeHex(node.getURI(), MarkerChar, invalidIRIChars);
             if ( x != node.getURI() )
-                node = NodeFactory.createURI(x); 
+                node = NodeFactory.createURI(x);
         }
-        
+
         if ( node.isLiteral() && NodeUtils.isLangString(node) )
         {
             // Check syntactically valid.
@@ -84,16 +84,16 @@ public class NodecSSE implements Nodec
             if ( ! LangTag.check(lang) )
                 throw new TDBException("bad language tag: "+node);
         }
-        
+
         if ( node.isBlank() && ! onlySafeBNodeLabels ) {
             // Special case.
             str = "_:"+node.getBlankNodeLabel();
         }
-        
+
         if ( node.isNodeTriple() ) {
             str = NodeFmtLib.str(node);
         }
-        
+
         // Catch-all: Node->String
         if ( str == null )
             str = NodeFmtLib.str(node);
@@ -102,18 +102,18 @@ public class NodecSSE implements Nodec
         bb.flip();
         return bb.limit();
     }
-    
+
     @Override
     public Node decode(ByteBuffer bb, PrefixMapping pmap) {
         // Ideally, this would be straight from the byte buffer.
-        // But currently we go bytes -> string -> node 
+        // But currently we go bytes -> string -> node
 
         // Byte -> String
         String str = BlockUTF8.toString(bb);
         // String -> Node
-        
+
         // Easy cases.
-        if ( str.startsWith("_:") )   
+        if ( str.startsWith("_:") )
         {
             // Must be done this way.
             // In particular, bnode labels can contain ":" from Jena
@@ -127,7 +127,7 @@ public class NodecSSE implements Nodec
             return SSE.parseNode(str);
         }
 
-        if ( str.startsWith("<") ) 
+        if ( str.startsWith("<") )
         {
             // Do directly.
             // (is it quicker?)
@@ -155,13 +155,13 @@ public class NodecSSE implements Nodec
     private static Tokenizer createTokenizer(String string) {
         return TokenizerText.create().fromString(string).build();
     }
-    
+
     // Over-estimate the length of the encoding.
     private static int maxLength(Node node)
     {
         if ( node.isBlank() )
             // "_:"
-            return 2+maxLength(node.getBlankNodeLabel());    
+            return 2+maxLength(node.getBlankNodeLabel());
         if ( node.isURI() )
             // "<>"
             return 2+maxLength(node.getURI());
@@ -182,9 +182,9 @@ public class NodecSSE implements Nodec
         if ( node.isNodeTriple() ) {
             Triple t = Node_Triple.triple(node);
             // Leading an trailing <<>>, 4 spaces
-            return (2+4+2)+maxLength(t.getSubject())+maxLength(t.getPredicate())+maxLength(t.getObject()); 
+            return (2+4+2)+maxLength(t.getSubject())+maxLength(t.getPredicate())+maxLength(t.getObject());
         }
-        
+
         throw new TDBException("Unrecognized node type: "+node);
     }
 
@@ -192,13 +192,13 @@ public class NodecSSE implements Nodec
     {
         // Very worse case for UTF-8 - and then some.
         // Encoding every character as _XX or bad UTF-8 conversion (3 bytes)
-        // Max 3 bytes UTF-8 for up to 10FFFF (NB Java treats above 16bites as surrogate pairs only). 
+        // Max 3 bytes UTF-8 for up to 10FFFF (NB Java treats above 16bites as surrogate pairs only).
         return string.length()*3;
     }
-    
+
     // See also StringFile.
-//    // URI compression can be effective but literals are more of a problem.  More variety. 
-//    public final static boolean compression = false; 
+//    // URI compression can be effective but literals are more of a problem.  More variety.
+//    public final static boolean compression = false;
 //    private static StringAbbrev abbreviations = new StringAbbrev();
 //    static {
 //        abbreviations.add(  "rdf",      "<http://www.w3.org/1999/02/22-rdf-syntax-ns#");

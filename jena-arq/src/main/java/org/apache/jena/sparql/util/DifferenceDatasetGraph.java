@@ -34,7 +34,7 @@ public class DifferenceDatasetGraph extends DyadicDatasetGraph {
 	public DifferenceDatasetGraph(DatasetGraph left, DatasetGraph right, Context c) {
 		super(left, right, c);
 	}
-	
+
 	private Graph difference(Function<DatasetGraph, Graph> op) {
 	    return apply(DifferenceView::new, op);
 	}
@@ -73,7 +73,7 @@ public class DifferenceDatasetGraph extends DyadicDatasetGraph {
 	public long size() {
 		return getLeft().size();
 	}
-	
+
     static class DifferenceView extends Difference {
 
         public DifferenceView(Graph L, Graph R) {
@@ -89,7 +89,13 @@ public class DifferenceDatasetGraph extends DyadicDatasetGraph {
         public void performDelete(Triple t) {
             throwNoMutationAllowed();
         }
-        
+
+        @Override
+        public void remove(Node s, Node p, Node o) {
+            throwNoMutationAllowed();
+        }
+
+
         @Override
         public void clear() {
             throwNoMutationAllowed();

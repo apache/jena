@@ -18,18 +18,20 @@
 
 package org.apache.jena.riot.system ;
 
+import static org.apache.jena.atlas.lib.Lib.unsupportedMethod;
+
 import java.util.Collections ;
 import java.util.Map ;
 import java.util.function.BiConsumer ;
+import java.util.stream.Stream;
 
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.shared.PrefixMapping ;
 
-/** Always empty prefix map */
-public class PrefixMapNull implements PrefixMap {
-    public static PrefixMap empty = new PrefixMapNull() ;
+/** Base of always empty prefix maps {@link PrefixMapSink} and {@link PrefixMapZero}. */
+public abstract class PrefixMapNull implements PrefixMap {
 
-    private PrefixMapNull() {}
+    protected PrefixMapNull() {}
 
     @Override
     public Map<String, String> getMapping() {
@@ -44,34 +46,46 @@ public class PrefixMapNull implements PrefixMap {
     @Override
     public void forEach(BiConsumer<String, String> action) {}
 
+
+    @Override
+    public Stream<PrefixEntry> stream() {
+        return Stream.empty();
+    }
+
+
+    @Override
+    public String get(String prefix) {
+        return null;
+    }
+
     @Override
     public void add(String prefix, String iri) {
-        throw new UnsupportedOperationException("Unmodifiable PrefixMap") ;
+        throw unsupportedMethod(this, "add") ;
     }
 
     @Override
     public void putAll(PrefixMap pmap) {
-        throw new UnsupportedOperationException("Unmodifiable PrefixMap") ;
+        throw unsupportedMethod(this, "putAll") ;
     }
 
     @Override
     public void putAll(PrefixMapping pmap) {
-        throw new UnsupportedOperationException("Unmodifiable PrefixMap") ;
+        throw unsupportedMethod(this, "putAll") ;
     }
 
     @Override
     public void putAll(Map<String, String> mapping) {
-        throw new UnsupportedOperationException("Unmodifiable PrefixMap") ;
+        throw unsupportedMethod(this, "putAll") ;
     }
 
     @Override
     public void delete(String prefix) {
-        throw new UnsupportedOperationException("Unmodifiable PrefixMap") ;
+        throw unsupportedMethod(this, "delete") ;
     }
 
     @Override
     public void clear() {
-        throw new UnsupportedOperationException("Unmodifiable PrefixMap") ;
+        throw unsupportedMethod(this, "clear") ;
     }
 
     @Override

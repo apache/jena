@@ -30,7 +30,7 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NullIterator;
 
 public class IntersectionDatasetGraph extends DyadicDatasetGraph {
-  
+
     public IntersectionDatasetGraph(DatasetGraph left, DatasetGraph right, Context c) {
         super(left, right, c);
     }
@@ -79,7 +79,12 @@ public class IntersectionDatasetGraph extends DyadicDatasetGraph {
         public void performDelete(Triple t) {
             throwNoMutationAllowed();
         }
-        
+
+        @Override
+        public void remove(Node s, Node p, Node o) {
+            throwNoMutationAllowed();
+        }
+
         @Override
         public void clear() {
             throwNoMutationAllowed();

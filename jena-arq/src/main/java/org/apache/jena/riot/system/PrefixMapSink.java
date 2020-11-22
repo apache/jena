@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,24 +16,38 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.storage;
+package org.apache.jena.riot.system ;
 
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
+import java.util.Map ;
 
-public class Prefixes {
-    //Distinguished nodes:
-    //  Default graph   : Quad.defaultGraphNodeGenerated would have been preferred.
-    //     For compatibility reasons, in TDB2, this is the URI <> (empty string).
-    //  "whole dataset" : <urn:x-arq:Dataset> (maybe reserved NodeFactory.createLiteral("") or URI <$>
+import org.apache.jena.shared.PrefixMapping ;
 
-    // Name assigned to the default graph.
-    // For backwards compatibility of TDB2 , this an (unresolved) URI <>.
-    /** Name assigned to the default graph. */
-    public static Node nodeDefaultGraph = NodeFactory.createURI("");
+/** Empty prefix map that throws away updates. */
+public class PrefixMapSink extends PrefixMapNull {
+    public static PrefixMap sink = new PrefixMapSink() ;
 
-    /** Name for dataset prefixes. */
-    public static Node nodeDataset = nodeDefaultGraph; //NodeFactory.createURI("urn:x-arq:Dataset");
+    private PrefixMapSink() {}
 
+    @Override
+    public void add(String prefix, String iri) { }
 
+    @Override
+    public void putAll(PrefixMap pmap) { }
+
+    @Override
+    public void putAll(PrefixMapping pmap) { }
+
+    @Override
+    public void putAll(Map<String, String> mapping) { }
+
+    @Override
+    public void delete(String prefix) { }
+
+    @Override
+    public void clear() { }
+
+    @Override
+    public String toString() {
+        return "PrefixMapSink";
+    }
 }

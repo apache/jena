@@ -25,9 +25,8 @@ import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.sparql.core.DatasetPrefixStorage ;
-import org.apache.jena.sparql.graph.GraphPrefixesProjection ;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 
 /**
@@ -37,28 +36,33 @@ import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
  */
 public class DatasetPrefixesTDB implements DatasetPrefixStorage
 {
-    /* 
-     * Almost everything is cached in the prefix map associated with the
-     * graph or dataset so this table is the persistent form and
-     * does not need a cache of it's own.   
-     */
-    
-    //static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
-    static final String unnamedGraphURI = "" ;
-    
     private final NodeTupleTable nodeTupleTable ;
-    
+
     public DatasetPrefixesTDB(NodeTupleTable nodeTupleTable) {
         this.nodeTupleTable = nodeTupleTable ;
     }
-    
+
     @Override
     public synchronized void insertPrefix(String graphName, String prefix, String uri) {
-        Node g = NodeFactory.createURI(graphName) ; 
-        Node p = NodeFactory.createLiteral(prefix) ; 
+        Node g = NodeFactory.createURI(graphName) ;
+        Node p = NodeFactory.createLiteral(prefix) ;
         Node u = NodeFactory.createURI(uri) ;
-
+        // Remove any previous mapping.
+        remove_prefix(g,p,Node.ANY);
         nodeTupleTable.addRow(g,p,u) ;
+    }
+
+    private void remove_prefix(Node g, Node p, Node u) {
+        Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, p, u);
+        List<Tuple<Node>> list = Iter.toList(iter);    // Materialize.
+        for ( Tuple<Node> tuple : list )
+            nodeTupleTable.deleteRow(tuple.get(0), tuple.get(1), tuple.get(2));
+    }
+
+    private void dump() {
+        System.out.println(">   NodeTupleTable");
+        nodeTupleTable.findAll().forEachRemaining(t->System.out.println("    "+t));
+        System.out.println("<");
     }
 
     @Override
@@ -70,12 +74,12 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         Iter.close(iter) ;
         return x ;
     }
-    
+
     @Override
     public synchronized String readPrefix(String graphName, String prefix) {
-        Node g = NodeFactory.createURI(graphName) ; 
-        Node p = NodeFactory.createLiteral(prefix) ; 
-        
+        Node g = NodeFactory.createURI(graphName) ;
+        Node p = NodeFactory.createLiteral(prefix) ;
+
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, p, null) ;
         try {
             if ( ! iter.hasNext() )
@@ -83,13 +87,13 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
             Tuple<Node> t = iter.next() ;
             Node uri = t.get(2) ;
             return uri.getURI() ;
-        } finally { Iter.close(iter) ; } 
+        } finally { Iter.close(iter) ; }
     }
 
     @Override
     public synchronized String readByURI(String graphName, String uriStr) {
-        Node g = NodeFactory.createURI(graphName) ; 
-        Node u = NodeFactory.createURI(uriStr) ; 
+        Node g = NodeFactory.createURI(graphName) ;
+        Node u = NodeFactory.createURI(uriStr) ;
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, null, u) ;
         if ( ! iter.hasNext() )
             return null ;
@@ -106,7 +110,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         // ends up with NPE access to the node table from
         // the prefix index. As prefixes are "nice extras", we
         // keep calm and carry on in the face of exceptions.
-        
+
         Node g = NodeFactory.createURI(graphName) ;
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, null, null) ;
         for ( ; iter.hasNext() ; )
@@ -116,38 +120,24 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
                 String prefix = t.get(1).getLiteralLexicalForm() ;
                 String uri = t.get(2).getURI() ;
                 map.put(prefix, uri) ;
-            } catch (Exception ex) { 
-                Log.warn(this, "Mangled prefix map: graph name="+graphName, ex) ;
+            } catch (Exception ex) {
+                Log.warn(this, "Mangled prefix map: graph name='"+graphName+"'", ex) ;
             }
         }
         Iter.close(iter) ;
         return map ;
     }
-    
-    @Override
-    public synchronized void loadPrefixMapping(String graphName, PrefixMapping pmap) {
-        Node g = NodeFactory.createURI(graphName) ;
-        Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, null, null) ;
-        for ( ; iter.hasNext() ; )
-        {
-            Tuple<Node> t = iter.next();
-            String prefix = t.get(1).getLiteralLexicalForm() ;
-            String uri = t.get(2).getURI() ;
-            pmap.setNsPrefix(prefix, uri) ;
-        }
-        Iter.close(iter) ;
-    }
-    
+
     @Override
     public void removeFromPrefixMap(String graphName, String prefix) {
-        Node g = NodeFactory.createURI(graphName) ; 
+        Node g = NodeFactory.createURI(graphName) ;
         Node p = NodeFactory.createLiteral(prefix) ;
         removeAll(g, p, null) ;
     }
 
     @Override
     public void removeAllFromPrefixMap(String graphName) {
-        Node g = NodeFactory.createURI(graphName) ; 
+        Node g = NodeFactory.createURI(graphName) ;
         removeAll(g, null, null) ;
     }
 
@@ -157,22 +147,22 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         List<Tuple<Node>> list = Iter.toList(iter) ;    // Materialize.
         Iter.close(iter) ;
         for ( Tuple<Node> tuple : list )
-            nodeTupleTable.deleteRow(tuple.get(0), tuple.get(1), tuple.get(2)) ; 
+            nodeTupleTable.deleteRow(tuple.get(0), tuple.get(1), tuple.get(2)) ;
     }
-    
+
     public NodeTupleTable getNodeTupleTable()  { return nodeTupleTable ; }
-    
-    /** Return a PrefixMapping for the unamed graph */
+
+    /** Return a PrefixMapping for the dataset */
     @Override
-    public PrefixMapping getPrefixMapping()
-    { return getPrefixMapping(unnamedGraphURI) ; }
+    public PrefixMap getPrefixMap()
+    { return getPrefixMap(Prefixes.datasetPrefixSet) ; }
 
     /** Return a PrefixMapping for a named graph */
     @Override
-    public PrefixMapping getPrefixMapping(String graphName) { 
+    public PrefixMap getPrefixMap(String graphName) {
         return new GraphPrefixesProjection(graphName, this) ;
     }
-    
+
     @Override
     public void close() {
         nodeTupleTable.close() ;

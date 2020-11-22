@@ -16,16 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.storage.prefixes;
+package org.apache.jena.test;
 
-import org.apache.jena.riot.system.AbstractTestPrefixMap;
-import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.test.assembler.TS_Assembler;
+import org.apache.jena.test.integration.TS_Integration;
+import org.apache.jena.test.rdfconnection.TS_RDFConnectionIntegration;
+import org.apache.jena.test.txn.TS_TranactionIntegration;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public class TestPrefixMapOverPrefixMapI extends AbstractTestPrefixMap {
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TS_Integration.class
+    , TS_TranactionIntegration.class
+    , TS_RDFConnectionIntegration.class
+    , TS_Assembler.class
+})
 
-    @Override
-    protected PrefixMap getPrefixMap() {
-        PrefixMapI pmapi = PrefixesFactory.createMem();
-        return pmapi;
-    }
-}
+public class TC_Integration { }
+
