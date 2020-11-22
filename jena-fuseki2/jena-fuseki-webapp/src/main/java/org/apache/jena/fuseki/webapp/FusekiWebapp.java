@@ -104,7 +104,7 @@ public class FusekiWebapp
     public static Path        dirSystemDatabase  = null;
 
     /** Directory for files uploaded (e.g upload assembler descriptions); not data uploads. */
-    public static Path        dirFileArea        = null;
+    public static Path        dirSystemFileArea  = null;
 
     /** Directory for assembler files */
     public static Path        dirTemplates       = null;
@@ -113,7 +113,7 @@ public class FusekiWebapp
     // Marks the end of successful initialization.
     /*package*/static boolean serverInitialized  = false;
 
-    /*package*/ synchronized static void formatBaseArea() {
+    public /*package*/ synchronized static void formatBaseArea() {
         if ( initialized )
             return;
         initialized = true;
@@ -152,7 +152,7 @@ public class FusekiWebapp
             dirConfiguration    = writeableDirectory(FUSEKI_BASE, configDirNameBase);
             dirLogs             = writeableDirectory(FUSEKI_BASE, logsNameBase);
             dirSystemDatabase   = writeableDirectory(FUSEKI_BASE, systemDatabaseNameBase);
-            dirFileArea         = writeableDirectory(FUSEKI_BASE, systemFileAreaBase);
+            dirSystemFileArea   = writeableDirectory(FUSEKI_BASE, systemFileAreaBase);
             //Possible intercept point
 
             // ---- Initialize with files.

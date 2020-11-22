@@ -30,18 +30,18 @@ import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.webapp.FusekiWebapp;
-import org.apache.jena.query.ReadWrite;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.core.TransactionalNull;
+import org.apache.jena.system.Txn;
 
 /** Perform a backup */
 public class Backup
 {
     public static String chooseFileName(String dsName) {
-        // Without the "/" - ie. a relative name.
+        // Without the "/" - i.e. a relative name.
         String ds = dsName;
         if ( ds.startsWith("/") )
             ds = ds.substring(1);
@@ -61,18 +61,15 @@ public class Backup
     // same dataset multiple times at the same time.
     private static Set<DatasetGraph> activeBackups = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
-    /** Perform a backup.
-     *  A backup is a dump of the dataset in compressed N-Quads, done inside a transaction.
+    /**
+     * Perform a backup.
+     * <p>
+     * A backup is a dump of the dataset in compressed N-Quads, done inside a transaction.
      */
     public static void backup(Transactional transactional, DatasetGraph dsg, String backupfile) {
         if ( transactional == null )
             transactional = new TransactionalNull();
-        transactional.begin(ReadWrite.READ);
-        try {
-            Backup.backup(dsg, backupfile);
-        } finally {
-            transactional.end();
-        }
+        Txn.executeRead(transactional,()->backup(dsg, backupfile));
     }
 
     /** Perform a backup.
@@ -83,7 +80,7 @@ public class Backup
         if (dsg == null) {
             throw new FusekiException("No dataset provided to backup");
         }
-        
+
         if ( !backupfile.endsWith(".nq") )
             backupfile = backupfile + ".nq";
 
