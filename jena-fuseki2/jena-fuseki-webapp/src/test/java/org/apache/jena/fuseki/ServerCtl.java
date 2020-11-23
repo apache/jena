@@ -223,6 +223,7 @@ public class ServerCtl {
     }
 
     protected static void setupServer(boolean updateable) {
+        // Does not initial Fuseki webapp.
         FusekiEnv.FUSEKI_HOME = Paths.get(TS_FusekiWebapp.FusekiTestHome).toAbsolutePath();
         FileOps.ensureDir("target");
         FileOps.ensureDir(TS_FusekiWebapp.FusekiTestHome);
@@ -233,11 +234,13 @@ public class ServerCtl {
         // in the case of starting in the same location. FusekiSystem has statics.
         // Fuseki-full is designed to be the only server, not restartable.
         // Here, we want to reset for testing.
+        FusekiWebapp.formatBaseArea();
         emptyDirectory(FusekiWebapp.dirSystemDatabase);
         emptyDirectory(FusekiWebapp.dirBackups);
         emptyDirectory(FusekiWebapp.dirLogs);
         emptyDirectory(FusekiWebapp.dirConfiguration);
         emptyDirectory(FusekiWebapp.dirDatabases);
+        emptyDirectory(FusekiWebapp.dirSystemFileArea);
 
         setupServer(port(), null, datasetPath(), updateable);
     }

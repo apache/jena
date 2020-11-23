@@ -58,7 +58,7 @@ public class OpVars
         // Does not work yet for new walker.
         OpWalker.walk(new OpWalkerVisitorVisible(visitor, acc), op) ;
     }
-    
+
     /** The set of variables that will be in every solution of this Op */
     public static Set<Var> fixedVars(Op op) {
         Set<Var> acc = collector() ;
@@ -70,7 +70,7 @@ public class OpVars
         OpVarsPattern visitor = new OpVarsPattern(acc, true) ;
         OpWalker.walk(new OpWalkerVisitorFixed(visitor, acc), op) ;
     }
-    
+
     public static Tuple<Set<Var>> mentionedVarsByPosition(Op op) {
         Set<Var> graphAcc = collector() ;
         Set<Var> subjAcc = collector() ;
@@ -81,7 +81,7 @@ public class OpVars
         OpWalker.walk(op, visitor);
         return TupleFactory.tuple(graphAcc, subjAcc, predAcc, objAcc, unknownAcc);
     }
-    
+
     public static Tuple<Set<Var>> mentionedVarsByPosition(Op... ops) {
         Set<Var> graphAcc = collector() ;
         Set<Var> subjAcc = collector() ;
@@ -108,7 +108,7 @@ public class OpVars
     }
 
     /** Do project and don't walk into it. MINUS vars aren't visible either */
-    private static class OpWalkerVisitorVisible extends OpWalkerVisitor 
+    private static class OpWalkerVisitorVisible extends OpWalkerVisitor
     {
         private final Collection<Var> acc ;
 
@@ -149,7 +149,7 @@ public class OpVars
             super(visitor);
             this.acc = acc ;
         }
-        
+
         @Override
         public void visit(OpLeftJoin x) {
             x.getLeft().visit(this);
@@ -167,7 +167,7 @@ public class OpVars
             Set<Var> r = SetUtils.intersection(left,  right) ;
             acc.addAll(r) ;
         }
-        
+
         @Override
         public void visit(OpProject op) {
             before(op) ;
@@ -192,7 +192,7 @@ public class OpVars
     }
 
     /** Collect variables.
-     * What to collect from is controlled by the walker e.g. 
+     * What to collect from is controlled by the walker e.g.
      * OpWalkerVisitorFixed, OpWalkerVisitorVisible
      * and for OpVarsMentioned, the full geenral walker.
      */
@@ -223,7 +223,7 @@ public class OpVars
             addVar(acc, quadPattern.getGraphNode()) ;
             VarUtils.addVars(acc, quadPattern.getBasicPattern()) ;
         }
-        
+
         @Override
         public void visit(OpQuadBlock quadBlock) {
             VarUtils.addVars(acc, quadBlock.getPattern()) ;
@@ -245,6 +245,12 @@ public class OpVars
         }
 
         @Override
+        public void visit(OpFind opFind) {
+            VarUtils.addVarsFromTriple(acc, opFind.getTriple());
+            addVar(acc, opFind.getVar());
+        }
+
+        @Override
         public void visit(OpDatasetNames dsNames) {
             addVar(acc, dsNames.getGraphNode()) ;
         }
@@ -262,7 +268,7 @@ public class OpVars
             // The walker (WalkerVisitorVisible) handles this
             // for visible variables, not mentioned variable collecting.
             // The visibleOnly/clear is simply to be as general as possible.
-            // visible: OpWalkerVisitorFixed, OpWalkerVisitorVisible,   
+            // visible: OpWalkerVisitorFixed, OpWalkerVisitorVisible,
             // all (visibleOnly==false) for OpVarsMentioned
             if (visibleOnly)
                 acc.clear() ;
@@ -289,13 +295,13 @@ public class OpVars
         public void visit(OpProcedure opProc) {
             ExprVars.varsMentioned(acc, opProc.getArgs()) ;
         }
-        
+
         @Override
         public void visit(OpExt opExt) {
             // OpWalkerVisitor is taking care of calling opExt.effectiveOp().visit(this)
         }
     }
-    
+
     private static class OpVarsPatternWithPositions extends OpVisitorBase
     {
         // The possibly-set-vars
@@ -359,7 +365,7 @@ public class OpVars
                 clear(subjAcc, vs);
                 clear(predAcc, vs);
                 clear(objAcc, vs);
-                
+
             }
             for (Var v : vs) {
                 if (!graphAcc.contains(v) && !subjAcc.contains(v) && !predAcc.contains(v) && !objAcc.contains(v)) {
@@ -399,7 +405,7 @@ public class OpVars
         public void visit(OpProcedure opProc) {
             unknownAcc.addAll(OpVars.mentionedVars(opProc));
         }
-        
+
         private void vars(BasicPattern bp) {
             for (Triple t : bp.getList())
             {
@@ -408,7 +414,7 @@ public class OpVars
                 addVar(objAcc, t.getObject());
             }
         }
-        
+
         private void clear(Set<Var> acc, List<Var> visible) {
             List<Var> toRemove = new ArrayList<>();
             for (Var found : acc)

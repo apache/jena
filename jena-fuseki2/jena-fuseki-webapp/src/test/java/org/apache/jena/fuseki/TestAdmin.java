@@ -19,7 +19,8 @@
 package org.apache.jena.fuseki;
 
 import static org.apache.jena.fuseki.mgt.ServerMgtConst.*;
-import static org.apache.jena.fuseki.server.ServerConst.*;
+import static org.apache.jena.fuseki.server.ServerConst.opPing;
+import static org.apache.jena.fuseki.server.ServerConst.opStats;
 import static org.apache.jena.riot.web.HttpOp.execHttpDelete;
 import static org.apache.jena.riot.web.HttpOp.execHttpGet;
 import static org.apache.jena.riot.web.HttpOp.execHttpPost;
@@ -42,6 +43,7 @@ import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.json.JsonValue;
 import org.apache.jena.atlas.junit.AssertExtra;
 import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.fuseki.ctl.JsonConstCtl;
@@ -52,9 +54,7 @@ import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.riot.web.HttpResponseHandler;
 import org.apache.jena.web.HttpSC;
-import org.junit.Assert;
-import org.junit.AssumptionViolatedException;
-import org.junit.Test;
+import org.junit.*;
 
 /** Tests of the admin functionality */
 public class TestAdmin extends AbstractFusekiTest {
@@ -64,6 +64,16 @@ public class TestAdmin extends AbstractFusekiTest {
     static String dsTestInf   = "test-ds4";
     static String dsTestTdb2  = "test-tdb2";
     static String fileBase    = "testing/";
+
+    @Before public void setLogging() {
+        LogCtl.setLevel(Fuseki.backupLogName, "ERROR");
+        LogCtl.setLevel(Fuseki.compactLogName,"ERROR");
+    }
+
+    @After public void unsetLogging() {
+        LogCtl.setLevel(Fuseki.backupLogName, "WARN");
+        LogCtl.setLevel(Fuseki.compactLogName,"WARN");
+    }
 
     // --- Ping
 
@@ -189,10 +199,10 @@ public class TestAdmin extends AbstractFusekiTest {
         addTestDataset(fileBase+"config-ds-plain-2.ttl");
         checkExists("test-ds2");
     }
-    
+
     @Test public void add_delete_dataset_6() {
         assumeNotWindows();
-        
+
         checkNotThere(dsTestTdb2);
 
         addTestDatasetTdb2();
@@ -264,7 +274,7 @@ public class TestAdmin extends AbstractFusekiTest {
     }
 
     // ---- Backup
-    
+
     @Test public void create_backup_1() {
         String id = null;
         try {
@@ -273,11 +283,11 @@ public class TestAdmin extends AbstractFusekiTest {
             JsonValue v = x.getJSON();
             id = v.getAsObject().getString("taskId");
         } finally {
-            waitForTasksToFinish(1000, 5000);
+            waitForTasksToFinish(1000, 20000);
         }
         Assert.assertNotNull(id);
         checkInTasks(id);
-        
+
         // Check a backup was created
         try ( TypedInputStream in = execHttpGet(ServerCtl.urlRoot()+"$/"+opListBackups) ) {
             assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
@@ -286,31 +296,19 @@ public class TestAdmin extends AbstractFusekiTest {
             JsonArray a = v.getAsObject().get("backups").getAsArray();
             Assert.assertEquals(1, a.size());
         }
-        
+
         JsonValue task = getTask(id);
         Assert.assertNotNull(id);
         // Expect task success
         Assert.assertTrue("Expected task to be marked as successful", task.getAsObject().getBoolean(JsonConstCtl.success));
     }
-    
+
     @Test
     public void create_backup_2() {
-        String id = null;
-        try {
+        FusekiTest.expect400(()->{
             JsonResponseHandler x = new JsonResponseHandler();
             execHttpPost(ServerCtl.urlRoot() + "$/" + opBackup + "/noSuchDataset", null, WebContent.contentTypeJSON, x);
-            JsonValue v = x.getJSON();
-            id = v.getAsObject().getString(JsonConstCtl.taskId);
-        } finally {
-            waitForTasksToFinish(1000, 5000);
-        }
-        Assert.assertNotNull(id);
-        checkInTasks(id);
-        
-        JsonValue task = getTask(id);
-        Assert.assertNotNull(task);
-        // Expect task failure
-        Assert.assertFalse("Expected task to be marked as failed", task.getAsObject().getBoolean(JsonConstCtl.success));
+        });
     }
 
     @Test public void list_backups_1() {
@@ -320,16 +318,16 @@ public class TestAdmin extends AbstractFusekiTest {
             assertNotNull(v.getAsObject().get("backups"));
         }
     }
-    
+
     // ---- Compact
-    
+
     @Test public void compact_01() {
         assumeNotWindows();
         try {
             checkNotThere(dsTestTdb2);
             addTestDatasetTdb2();
             checkExists(dsTestTdb2);
-            
+
             String id = null;
             try {
                 JsonResponseHandler x = new JsonResponseHandler();
@@ -341,7 +339,7 @@ public class TestAdmin extends AbstractFusekiTest {
             }
             Assert.assertNotNull(id);
             checkInTasks(id);
-            
+
             JsonValue task = getTask(id);
             Assert.assertNotNull(id);
             // Expect task success
@@ -350,24 +348,12 @@ public class TestAdmin extends AbstractFusekiTest {
             deleteDataset(dsTestTdb2);
         }
     }
-    
+
     @Test public void compact_02() {
-        String id = null;
-        try {
+        FusekiTest.expect400(()->{
             JsonResponseHandler x = new JsonResponseHandler();
             execHttpPost(ServerCtl.urlRoot() + "$/" + opCompact + "/noSuchDataset", null, WebContent.contentTypeJSON, x);
-            JsonValue v = x.getJSON();
-            id = v.getAsObject().getString(JsonConstCtl.taskId);
-        } finally {
-            waitForTasksToFinish(1000, 5000);
-        }
-        Assert.assertNotNull(id);
-        checkInTasks(id);
-        
-        JsonValue task = getTask(id);
-        Assert.assertNotNull(id);
-        // Expect task failure
-        Assert.assertFalse("Expected task to be marked as failed", task.getAsObject().getBoolean(JsonConstCtl.success));
+        });
     }
 
     private void assumeNotWindows() {
@@ -544,7 +530,7 @@ public class TestAdmin extends AbstractFusekiTest {
     private static void addTestDatasetInf() {
         addTestDataset(fileBase+"config-ds-inf.ttl");
     }
-    
+
     private static void addTestDatasetTdb2() {
         addTestDataset(fileBase+"config-tdb2.ttl");
     }

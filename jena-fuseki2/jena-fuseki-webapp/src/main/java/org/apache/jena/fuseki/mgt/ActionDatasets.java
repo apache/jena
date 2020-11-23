@@ -155,7 +155,7 @@ public class ActionDatasets extends ActionContainerItem {
             // ----
             // Keep a persistent copy immediately.  This is not used for
             // anything other than being "for the record".
-            systemFileCopy = FusekiWebapp.dirFileArea.resolve(uuid.toString()).toString();
+            systemFileCopy = FusekiWebapp.dirSystemFileArea.resolve(uuid.toString()).toString();
             try ( OutputStream outCopy = IO.openOutputFile(systemFileCopy) ) {
                 RDFDataMgr.write(outCopy, model, Lang.TURTLE);
             }

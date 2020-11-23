@@ -20,13 +20,14 @@ package org.apache.jena.fuseki.mgt;
 
 import static java.lang.String.format;
 
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.ctl.ActionAsyncTask;
 import org.apache.jena.fuseki.ctl.TaskBase;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.tdb2.DatabaseMgr;
+import org.apache.jena.tdb2.sys.TDBInternal;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ActionCompact extends ActionAsyncTask
 {
@@ -45,11 +46,21 @@ public class ActionCompact extends ActionAsyncTask
         }
 
         action.log.info(format("[%d] Compact dataset %s", action.id, name));
-        return new CompactTask(action);
+
+        CompactTask task = new CompactTask(action);
+        if ( task.dataset == null ) {
+            ServletOps.errorBadRequest("Dataset not found");
+            return null;
+        }
+        if ( ! TDBInternal.isTDB2(task.dataset) ) {
+            ServletOps.errorBadRequest("Not a TDB2 dataset: Compact only applies to TDB2");
+            return null;
+        }
+        return task;
     }
 
     static class CompactTask extends TaskBase {
-        static private Logger log = LoggerFactory.getLogger("Compact");
+        static private Logger log = Fuseki.compactLog;
 
         public CompactTask(HttpAction action) {
             super(action);
@@ -62,9 +73,8 @@ public class ActionCompact extends ActionAsyncTask
                 DatabaseMgr.compact(dataset);
                 log.info(format("[%d] <<<< Finish compact %s", actionId, datasetName));
             } catch (Throwable ex) {
-                log.info(format("[%d] **** Exception in compact", actionId), ex);
-                // Must also throw the error upwards so that the async task tracking infrastucture can set the
-                // success flag correctly
+                log.warn(format("[%d] **** Exception in compact", actionId), ex);
+                // Pass on - the async task tracking infrastructure will record this.
                 throw ex;
             }
         }
