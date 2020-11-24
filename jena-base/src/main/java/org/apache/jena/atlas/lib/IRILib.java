@@ -181,7 +181,7 @@ public class IRILib
         // so need strip the leading "/"
         fn = fixupWindows(fn);
 
-        return decode(fn) ;
+        return decodeHex(fn) ;
     }
 
     /** Convert a plain file name (no file:) to a file: URL */

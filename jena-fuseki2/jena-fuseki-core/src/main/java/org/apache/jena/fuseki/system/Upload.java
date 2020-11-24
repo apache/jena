@@ -134,7 +134,7 @@ public class Upload {
                     String name = fileStream.getName();
                     if ( name == null || name.equals("") )
                         ServletOps.errorBadRequest("No name for content - can't determine RDF syntax");
-                    lang = RDFLanguages.filenameToLang(name);
+                    lang = RDFLanguages.pathnameToLang(name);
                     if (name.endsWith(".gz"))
                         input = new GZIPInputStream(input);
                 }
@@ -240,7 +240,7 @@ public class Upload {
 
                     lang = RDFLanguages.contentTypeToLang(ct.getContentTypeStr());
                     if ( lang == null ) {
-                        lang = RDFLanguages.filenameToLang(name);
+                        lang = RDFLanguages.pathnameToLang(name);
 
                         // JENA-600 filenameToLang() strips off certain
                         // extensions such as .gz and
