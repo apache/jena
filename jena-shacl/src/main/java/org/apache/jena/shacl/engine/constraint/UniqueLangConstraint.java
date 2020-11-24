@@ -47,6 +47,10 @@ public class UniqueLangConstraint implements Constraint {
         this.flag = flag;
     }
 
+    public boolean isFlag() {
+        return flag;
+    }
+
     @Override
     public void validateNodeShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode) {
         // Node shape -> not allowed

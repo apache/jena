@@ -53,6 +53,18 @@ public class PatternConstraint extends ConstraintTerm {
         this.pattern = Pattern.compile(pattern, flags);
     }
 
+    public Pattern getPattern() {
+        return pattern;
+    }
+
+    public String getPatternString() {
+        return patternString;
+    }
+
+    public String getFlagsStr() {
+        return flagsStr;
+    }
+
     @Override
     public ReportItem validate(ValidationContext vCxt, Node n) {
         if ( n.isBlank() ) {

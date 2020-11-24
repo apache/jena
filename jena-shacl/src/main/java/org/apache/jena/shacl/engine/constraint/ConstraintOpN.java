@@ -33,6 +33,10 @@ public abstract class ConstraintOpN extends ConstraintOp {
         others = subShapes;
     }
 
+    public List<Shape> getOthers() {
+        return others;
+    }
+
     @Override
     public void print(IndentedWriter out, NodeFormatter nodeFmt) {
         out.print(toString());

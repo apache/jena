@@ -43,6 +43,10 @@ public class HasValueConstraint extends ConstraintEntity {
         this.value = value;
     }
 
+    public Node getValue() {
+        return value;
+    }
+
     @Override
     public Node getComponent() {
         return SHACL.HasValueConstraintComponent;

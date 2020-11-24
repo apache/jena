@@ -40,6 +40,10 @@ public class StrMinLengthConstraint extends ConstraintTerm {
         this.minLength = minLength;
     }
 
+    public int getMinLength() {
+        return minLength;
+    }
+
     @Override
     public ReportItem validate(ValidationContext vCxt, Node n) {
         if ( n.isBlank() ) {

@@ -41,6 +41,10 @@ public class InConstraint extends ConstraintTerm {
         values.addAll(list);
     }
 
+    public List<Node> getValues() {
+        return values;
+    }
+
     @Override
     public Node getComponent() {
         return SHACL.InConstraintComponent;

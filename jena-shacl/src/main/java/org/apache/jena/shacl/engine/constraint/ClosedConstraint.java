@@ -57,6 +57,18 @@ public class ClosedConstraint implements Constraint {
         ignoredProperties = (ignored == null) ? Collections.emptyList() : ignored;
     }
 
+    public Set<Node> getExpected(){
+        return expected;
+    }
+
+    public List<Node> getIgnoredProperties() {
+        return ignoredProperties;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
     private static List<Node> ignoredProperties(Graph shapesGraph, Node shNode) {
         List<Node> ignoredProperties = null;
         if ( G.contains(shapesGraph, shNode, SHACL.ignoredProperties, null) ) {

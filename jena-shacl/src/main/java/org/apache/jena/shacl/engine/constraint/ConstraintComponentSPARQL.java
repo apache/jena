@@ -59,6 +59,18 @@ public class ConstraintComponentSPARQL implements Constraint {
         }
     }
 
+    public SparqlComponent getSparqlConstraintComponent() {
+        return sparqlConstraintComponent;
+    }
+
+    public Multimap<Parameter, Node> getParameterMap() {
+        return parameterMap;
+    }
+
+    public Query getQuery() {
+        return query;
+    }
+
     @Override
     public void validateNodeShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode) {
         SparqlValidation.validate(vCxt, data, shape, focusNode, null, focusNode, query, parameterMap,

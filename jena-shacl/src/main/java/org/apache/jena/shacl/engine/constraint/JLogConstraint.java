@@ -36,6 +36,10 @@ public class JLogConstraint extends ConstraintTerm {
         this.message = message;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
     @Override
     public Node getComponent() {
         return SHJ.LogConstraintComponent;

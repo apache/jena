@@ -50,6 +50,22 @@ public class QualifiedValueShape implements Constraint {
         this.qDisjoint = qDisjoint;
     }
 
+    public Shape getSub() {
+        return sub;
+    }
+
+    public int getqMin() {
+        return qMin;
+    }
+
+    public int getqMax() {
+        return qMax;
+    }
+
+    public boolean isqDisjoint() {
+        return qDisjoint;
+    }
+
     @Override
     public void validateNodeShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode) {
         throw new ShaclException("sh:qualifiedValueShape only valid in a property shape");
