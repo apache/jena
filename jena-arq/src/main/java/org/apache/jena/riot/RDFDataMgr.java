@@ -707,7 +707,7 @@ public class RDFDataMgr
         if ( base == null )
             base = SysRIOT.chooseBaseIRI(uri) ;
         if ( hintLang == null )
-            hintLang = RDFLanguages.filenameToLang(uri) ;
+            hintLang = RDFLanguages.pathnameToLang(uri) ;
         parseFromURI(sink, uri, base, hintLang, context);
     }
 

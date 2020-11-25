@@ -34,14 +34,11 @@ import org.slf4j.LoggerFactory ;
 
 /** Location files in the filing system.
  *  A FileLocator can have a "current directory" - this is separate from any
- *  location mapping (see @link{LocationMapping}) as it applies only to files.
+ *  location mapping (see {@link LocationMapper}) as it applies only to files.
  */
 
 public class LocatorFile implements Locator
 {
-    // Implementation note:
-    // Java7: Path.resolve may provide an answer from the intricies of MS Windows
-    
     static Logger log = LoggerFactory.getLogger(LocatorFile.class) ;
     private final String thisDir ;
     private final String thisDirLogStr ;
@@ -50,7 +47,7 @@ public class LocatorFile implements Locator
      * Relative file names are relative to the working directory of the JVM.
      */
     public LocatorFile() { this(null) ; }
-    
+
     /** Create a LocatorFile that uses the argument as it's working directory.
      * <p>
      * The working directory should be a UNIX style file name,
@@ -58,7 +55,7 @@ public class LocatorFile implements Locator
      * <p>
      * For MS Window, if asked to {@link #open} a file name with a drive letter,
      * the code assumes it is not relative to the working directory
-     * of this {@code LocatorFile}.  
+     * of this {@code LocatorFile}.
      */
     public LocatorFile(String dir)
     {
@@ -74,24 +71,24 @@ public class LocatorFile implements Locator
     }
 
     /** Processing the filename for file: or relative filename
-     *  and return a filename suitable for file operations. 
+     *  and return a filename suitable for file operations.
      */
     public String toFileName(String filenameIRI)
     {
-        // Do not use directly : it will ignore the directory. 
+        // Do not use directly : it will ignore the directory.
         //IRILib.filenameToIRI
-        
+
         String scheme = FileUtils.getScheme(filenameIRI) ;
         String fn = filenameIRI ;
         // Windows : C:\\ is not a scheme name!
-        if ( scheme != null ) 
+        if ( scheme != null )
         {
             if ( scheme.length() == 1 )
             {
                 // Not perfect for MS Windows but if thisDir is set then
                 // the main use case is resolving relative (no drive)
                 // filenames against thisDir. Treat the presence of a
-                // drive letter as making this a JVM relative filename. 
+                // drive letter as making this a JVM relative filename.
                 return fn ;
             }
             else if ( scheme.length() > 1 )
@@ -101,14 +98,14 @@ public class LocatorFile implements Locator
                     return null ;
                 fn = IRILib.IRIToFilename(filenameIRI) ;
                 // fall through
-            } 
+            }
         }
         // fn is the file name to use.
         return absolute(fn) ;
     }
 
     /** Make a filename (no URI scheme, no windows drive) absolute if there is
-     * a setting for directory name thisDir  
+     * a setting for directory name thisDir
      */
     private String absolute(String fn)
     {
@@ -116,7 +113,7 @@ public class LocatorFile implements Locator
             fn = thisDir+File.separator+fn ;
         return fn ;
     }
-    
+
     public String getThisDir()
     {
         return thisDir ;
@@ -133,10 +130,10 @@ public class LocatorFile implements Locator
         String fn = toFileName(fileIRI) ;
         if ( fn == null )
             return false ;
-        
+
         return exists$(fn) ;
     }
-    
+
     private boolean exists$(String fn)
     {
         if ( fn.equals("-") )
@@ -144,14 +141,14 @@ public class LocatorFile implements Locator
         return new File(fn).exists() ;
     }
 
-    /** Open anything that looks a bit like a file name */ 
+    /** Open anything that looks a bit like a file name */
     @Override
     public TypedInputStream open(String filenameIRI)
     {
         String fn = toFileName(filenameIRI) ;
         if ( fn == null )
             return null ;
-        
+
         try {
             if ( ! exists$(fn) )
             {
@@ -163,13 +160,13 @@ public class LocatorFile implements Locator
             log.warn("Security problem testing for file", e);
             return null;
         }
-        
+
         try {
             InputStream in = IO.openFileEx(fn) ;
 
             if ( StreamManager.logAllLookups && log.isTraceEnabled() )
                 log.trace("Found: "+filenameIRI+thisDirLogStr) ;
-            
+
             ContentType ct = RDFLanguages.guessContentType(filenameIRI) ;
             return new TypedInputStream(in, ct, filenameIRI) ;
         } catch (IOException ioEx)
@@ -180,7 +177,7 @@ public class LocatorFile implements Locator
             return null ;
         }
     }
-    
+
     @Override
     public String getName()
     {

@@ -30,7 +30,6 @@ import java.util.zip.GZIPOutputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.compress.compressors.snappy.SnappyCompressorInputStream;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.StrUtils;
@@ -69,6 +68,10 @@ public class IO
         } catch (IOException ex) { IO.exception(ex); return null; }
     }
 
+    private static final String ext_gz = "gz";
+    private static final String ext_bz2 = "bz2";
+    private static final String ext_sz = "sz";
+
     /** Open an input stream to a file; do not mask IOExceptions.
      * If the filename is null or "-", return System.in
      * If the filename ends in .gz, wrap in GZIPInputStream
@@ -85,24 +88,75 @@ public class IO
             filename = IRILib.decodeHex(filename);
         }
         InputStream in = new FileInputStream(filename);
-        String ext = FilenameUtils.getExtension(filename);
+        String ext = getExtension(filename);
         switch ( ext ) {
             case "":        return in;
-            case "gz":      return new GZIPInputStream(in);
-            case "bz2":     return new BZip2CompressorInputStream(in);
-            case "sz":      return new SnappyCompressorInputStream(in);
+            case ext_gz:    return new GZIPInputStream(in);
+            case ext_bz2:   return new BZip2CompressorInputStream(in);
+            case ext_sz:    return new SnappyCompressorInputStream(in);
         }
         return in;
     }
 
-    private static String[] extensions = { "gz", "bz2", "sz" };
+    // ---- Extracted from Apache CommonsIO : FilenameUtils (2.8.0) because of the drive letter handling.
+    private static final int NOT_FOUND = -1;
+    private static final String EMPTY_STRING = "";
+    private static final String EXTENSION_SEPARATOR = ".";
+    private static final char UNIX_SEPARATOR = '/';
+    private static final char WINDOWS_SEPARATOR = '\\';
 
-    /** The filename without any compression extension, or the original filename.
-     *  It tests for compression types handled by {@link #openFileEx}.
+    private static int indexOfLastSeparator(final String fileName) {
+        if (fileName == null) {
+            return NOT_FOUND;
+        }
+        final int lastUnixPos = fileName.lastIndexOf(UNIX_SEPARATOR);
+        final int lastWindowsPos = fileName.lastIndexOf(WINDOWS_SEPARATOR);
+        return Math.max(lastUnixPos, lastWindowsPos);
+    }
+
+    private static int indexOfExtension(final String fileName) throws IllegalArgumentException {
+        if (fileName == null) {
+            return NOT_FOUND;
+        }
+//        if (isSystemWindows()) {
+//            // Special handling for NTFS ADS: Don't accept colon in the fileName.
+//            final int offset = fileName.indexOf(':', getAdsCriticalOffset(fileName));
+//            if (offset != -1) {
+//                throw new IllegalArgumentException("NTFS ADS separator (':') in file name is forbidden.");
+//            }
+//        }
+        final int extensionPos = fileName.lastIndexOf(EXTENSION_SEPARATOR);
+        final int lastSeparator = indexOfLastSeparator(fileName);
+        return lastSeparator > extensionPos ? NOT_FOUND : extensionPos;
+    }
+
+    private static String getExtension(final String fileName) {
+        if (fileName == null) {
+            return null;
+        }
+        final int index = indexOfExtension(fileName);
+        if (index == -1) {
+            return "";
+        }
+        return fileName.substring(index + 1);
+    }
+
+    // ---- Apache CommonsIO : FilenameUtils
+
+    /**
+     * The filename without any compression extension, or the original filename.
+     * It tests for compression types handled by {@link #openFileEx}.
      */
     static public String filenameNoCompression(String filename) {
-        if ( FilenameUtils.isExtension(filename, extensions) ) {
-            return FilenameUtils.removeExtension(filename);
+        String ext = getExtension(filename);
+        switch ( ext ) {
+            case EMPTY_STRING:
+                return filename;
+            case ext_gz:
+            case ext_bz2:
+            case ext_sz:
+                // +1 for the "."
+                return filename.substring(0, filename.length()-(ext.length()+1));
         }
         return filename;
     }
@@ -180,7 +234,7 @@ public class IO
             filename = IRILib.decodeHex(filename);
         }
         OutputStream out = new FileOutputStream(filename);
-        String ext = FilenameUtils.getExtension(filename);
+        String ext = getExtension(filename);
         switch ( ext ) {
             case "":        return out;
             case "gz":      return new GZIPOutputStream(out);

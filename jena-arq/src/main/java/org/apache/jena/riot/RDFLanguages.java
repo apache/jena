@@ -28,7 +28,8 @@ import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.util.FileUtils ;
 
-/** Central registry of RDF languages and syntaxes.
+/**
+ * Central registry of RDF languages and syntaxes.
  * @see RDFParserRegistry
  * @see RDFFormat
  */
@@ -399,31 +400,34 @@ public class RDFLanguages
     }
 
     /** Try to map a resource name to a {@link Lang}; return null on no registered mapping */
-    public static Lang resourceNameToLang(String resourceName) { return filenameToLang(resourceName) ; }
+    public static Lang resourceNameToLang(String resourceName) { return pathnameToLang(resourceName) ; }
 
     /** Try to map a resource name to a {@link Lang}; return the given default where there is no registered mapping */
     public static Lang resourceNameToLang(String resourceName, Lang dftLang) { return filenameToLang(resourceName, dftLang) ; }
 
-    /** Try to map a URI or file name to a {@link Lang}; return null on no registered mapping. */
-    public static Lang filenameToLang(String filename)
+    /** Try to map a file name to a {@link Lang}; return null on no registered mapping. */
+    public static Lang filenameToLang(String uriOrFilename) { return pathnameToLang(uriOrFilename); }
+
+    /** Try to map a URI or URI path name to a {@link Lang}; return null on no registered mapping. */
+    public static Lang pathnameToLang(String pathname)
     {
-        if ( filename == null )
+        if ( pathname == null )
             return null;
         // Remove any URI fragment (there can be only one # in a URI).
         // Pragmatically, assume any # is URI related.
         // URIs can be relative.
-        int iHash = filename.indexOf('#');
+        int iHash = pathname.indexOf('#');
         if ( iHash  > 0 )
-            filename = filename.substring(0, iHash);
-        // Gzip or BZip2 compressed?
-        filename = IO.filenameNoCompression(filename);
-        return fileExtToLang(FileUtils.getFilenameExt(filename));
+            pathname = pathname.substring(0, iHash);
+        // Compressed?
+        pathname = IO.filenameNoCompression(pathname);
+        return fileExtToLang(FileUtils.getFilenameExt(pathname));
     }
 
     /** Try to map a file name to a {@link Lang}; return the given default where there is no registered mapping */
     public static Lang filenameToLang(String filename, Lang dftLang)
     {
-        Lang lang = filenameToLang(filename) ;
+        Lang lang = pathnameToLang(filename) ;
         return (lang == null) ? dftLang : lang ;
     }
 
@@ -449,7 +453,7 @@ public class RDFLanguages
     {
         if ( resourceName == null )
             return null ;
-        Lang lang = filenameToLang(resourceName) ;
+        Lang lang = pathnameToLang(resourceName) ;
         if ( lang == null )
             return null ;
         return lang.getContentType() ;
