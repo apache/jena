@@ -22,6 +22,7 @@ import static org.apache.jena.shacl.compact.writer.CompactOut.compactArrayNodes;
 import static org.apache.jena.shacl.lib.ShLib.displayStr;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,7 +43,7 @@ public class InConstraint extends ConstraintTerm {
     }
 
     public List<Node> getValues() {
-        return values;
+        return Collections.unmodifiableList(values);
     }
 
     @Override

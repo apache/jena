@@ -18,6 +18,7 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.jena.atlas.io.IndentedWriter;
@@ -34,7 +35,7 @@ public abstract class ConstraintOpN extends ConstraintOp {
     }
 
     public List<Shape> getOthers() {
-        return others;
+        return Collections.unmodifiableList(others);
     }
 
     @Override

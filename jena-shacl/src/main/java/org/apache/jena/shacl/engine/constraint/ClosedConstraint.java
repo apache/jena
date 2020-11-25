@@ -58,11 +58,11 @@ public class ClosedConstraint implements Constraint {
     }
 
     public Set<Node> getExpected(){
-        return expected;
+        return Collections.unmodifiableSet(expected);
     }
 
     public List<Node> getIgnoredProperties() {
-        return ignoredProperties;
+        return Collections.unmodifiableList(ignoredProperties);
     }
 
     public boolean isActive() {
