@@ -26,7 +26,6 @@ import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Symbol;
-import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.sys.SystemTDB;
@@ -53,7 +52,7 @@ class GraphFilterTDB2 extends GraphFilter<NodeId> {
         if ( ! TDBInternal.isTDB2(dsg) )
             throw new IllegalArgumentException("DatasetGraph is not TDB2-backed");
         List<NodeId> x =
-            Txn.calculateRead(dsg, ()->{
+            dsg.calculateRead(()->{
                 NodeTable nt = TDBInternal.getDatasetGraphTDB(dsg).getQuadTable().getNodeTupleTable().getNodeTable();
                 return
                     ListUtils.toList(

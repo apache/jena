@@ -33,7 +33,6 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.DatasetGraphReadOnly;
 import org.apache.jena.sparql.graph.GraphReadOnly;
-import org.apache.jena.system.Txn;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateRequest;
 
@@ -77,7 +76,7 @@ public class RDFConnectionLocal implements RDFConnection {
     @Override
     public void update(UpdateRequest update) {
         checkOpen();
-        Txn.executeWrite(dataset, ()->UpdateExecutionFactory.create(update, dataset).execute() ); 
+        dataset.executeWrite(()->UpdateExecutionFactory.create(update, dataset).execute() ); 
     }
 
     @Override
@@ -95,7 +94,7 @@ public class RDFConnectionLocal implements RDFConnection {
     @Override
     public void load(String graphName, Model model) {
         checkOpen();
-        Txn.executeWrite(dataset, ()-> {
+        dataset.executeWrite(()-> {
             Model modelDst = modelFor(graphName); 
             modelDst.add(model);
         });
@@ -108,7 +107,7 @@ public class RDFConnectionLocal implements RDFConnection {
 
     @Override
     public Model fetch(String graph) {
-        return Txn.calculateRead(dataset, ()-> {
+        return dataset.calculateRead(()-> {
             Model model = modelFor(graph); 
             return isolate(model); 
         });
@@ -140,7 +139,7 @@ public class RDFConnectionLocal implements RDFConnection {
     @Override
     public void put(String graphName, Model model) {
         checkOpen();
-        Txn.executeWrite(dataset, ()-> {
+        dataset.executeWrite(()-> {
             Model modelDst = modelFor(graphName); 
             modelDst.removeAll();
             modelDst.add(model);
@@ -150,7 +149,7 @@ public class RDFConnectionLocal implements RDFConnection {
     @Override
     public void delete(String graph) {
         checkOpen();
-        Txn.executeWrite(dataset,() ->{
+        dataset.executeWrite(() ->{
             if ( LibRDFConn.isDefault(graph) ) 
                 dataset.getDefaultModel().removeAll();
             else 
@@ -168,7 +167,7 @@ public class RDFConnectionLocal implements RDFConnection {
         Objects.requireNonNull(file);
         Lang lang = RDFLanguages.filenameToLang(file);
         
-        Txn.executeWrite(dataset,() ->{
+        dataset.executeWrite(() ->{
             if ( RDFLanguages.isTriples(lang) ) {
                 Model model = LibRDFConn.isDefault(graph) ? dataset.getDefaultModel() : dataset.getNamedModel(graph);
                 if ( replace )
@@ -238,20 +237,20 @@ public class RDFConnectionLocal implements RDFConnection {
     @Override
     public Dataset fetchDataset() {
         checkOpen();
-        return Txn.calculateRead(dataset,() -> isolate(dataset));   
+        return dataset.calculateRead(() -> isolate(dataset));
     }
 
     @Override
     public void loadDataset(String file) {
         checkOpen();
-        Txn.executeWrite(dataset,() ->{
+        dataset.executeWrite(() ->{
             RDFDataMgr.read(dataset, file);
         });
     }
 
     @Override
     public void loadDataset(Dataset dataset) {
-        Txn.executeWrite(dataset,() ->{
+        dataset.executeWrite(() ->{
             dataset.asDatasetGraph().find().forEachRemaining((q)->this.dataset.asDatasetGraph().add(q));
         });
     }
@@ -259,7 +258,7 @@ public class RDFConnectionLocal implements RDFConnection {
     @Override
     public void putDataset(String file) {
         checkOpen();
-        Txn.executeWrite(dataset,() ->{
+        dataset.executeWrite(() ->{
             dataset.asDatasetGraph().clear();
             RDFDataMgr.read(dataset, file);
         });
@@ -267,7 +266,7 @@ public class RDFConnectionLocal implements RDFConnection {
 
     @Override
     public void putDataset(Dataset dataset) {
-        Txn.executeWrite(dataset,() ->{
+        dataset.executeWrite(() ->{
             this.dataset = isolate(dataset);
         });
     }

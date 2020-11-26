@@ -34,7 +34,6 @@ import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.util.Context;
-import org.apache.jena.system.Txn;
 
 /** Read anything (RDF).
  * <li>By MIME type.
@@ -75,7 +74,7 @@ public class ReadAnything {
             };
             
             if ( ds.supportsTransactions() ) 
-                return Txn.calculateWrite(ds, r);
+                return ds.calculateWrite(r);
             else
                 return r.get();
         }

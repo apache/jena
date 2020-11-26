@@ -30,7 +30,6 @@ import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Transactional;
-import org.apache.jena.system.Txn;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
@@ -74,11 +73,11 @@ public class update extends CmdUpdate
         Transactional transactional = graphStore;
         
         for ( String filename : requestFiles )
-            Txn.executeWrite(transactional, ()->execOneFile(filename, graphStore));
+            transactional.executeWrite(()->execOneFile(filename, graphStore));
 
         for ( String requestString : super.getPositional() ) {
             String requestString2 = indirect(requestString);
-            Txn.executeWrite(transactional, ()->execOne(requestString2, graphStore));
+            transactional.executeWrite(()->execOne(requestString2, graphStore));
         }
         
         if ( ! ( transactional instanceof DatasetGraph ) )
@@ -86,7 +85,7 @@ public class update extends CmdUpdate
             SystemARQ.sync(graphStore);
 
         if ( dump )
-            Txn.executeRead(transactional, ()->RDFDataMgr.write(System.out, graphStore, Lang.NQUADS) );
+            transactional.executeRead(()->RDFDataMgr.write(System.out, graphStore, Lang.NQUADS) );
     }
 
     protected void execOneFile(String filename, DatasetGraph store) {

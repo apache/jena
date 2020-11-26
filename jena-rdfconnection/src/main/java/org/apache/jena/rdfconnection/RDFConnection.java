@@ -23,7 +23,6 @@ import java.util.function.Consumer;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.Transactional;
-import org.apache.jena.system.Txn;
 import org.apache.jena.update.Update;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
@@ -88,7 +87,7 @@ public interface RDFConnection extends
      */
     @Override
     public default void queryResultSet(String queryString, Consumer<ResultSet> resultSetAction) {
-        Txn.executeRead(this, ()->{
+        executeRead(()->{
             try ( QueryExecution qExec = query(queryString) ) {
                 ResultSet rs = qExec.execSelect();
                 resultSetAction.accept(rs);
@@ -105,7 +104,7 @@ public interface RDFConnection extends
     public default void queryResultSet(Query query, Consumer<ResultSet> resultSetAction) {
         if ( ! query.isSelectType() )
             throw new JenaConnectionException("Query is not a SELECT query");
-        Txn.executeRead(this, ()->{
+        executeRead(()->{
             try ( QueryExecution qExec = query(query) ) {
                 ResultSet rs = qExec.execSelect();
                 resultSetAction.accept(rs);
@@ -120,7 +119,7 @@ public interface RDFConnection extends
      */
     @Override
     public default void querySelect(String queryString, Consumer<QuerySolution> rowAction) {
-        Txn.executeRead(this, ()->{
+        executeRead(()->{
             try ( QueryExecution qExec = query(queryString) ) {
                 qExec.execSelect().forEachRemaining(rowAction);
             }
@@ -136,7 +135,7 @@ public interface RDFConnection extends
     public default void querySelect(Query query, Consumer<QuerySolution> rowAction) {
         if ( ! query.isSelectType() )
             throw new JenaConnectionException("Query is not a SELECT query");
-        Txn.executeRead(this, ()->{
+        executeRead(()->{
             try ( QueryExecution qExec = query(query) ) {
                 qExec.execSelect().forEachRemaining(rowAction);
             }
@@ -147,7 +146,7 @@ public interface RDFConnection extends
     @Override
     public default Model queryConstruct(String queryString) {
         return
-            Txn.calculateRead(this, ()->{
+            calculateRead(()->{
                 try ( QueryExecution qExec = query(queryString) ) {
                     return qExec.execConstruct();
                 }
@@ -158,7 +157,7 @@ public interface RDFConnection extends
     @Override
     public default Model queryConstruct(Query query) {
         return
-            Txn.calculateRead(this, ()->{
+            calculateRead(()->{
                 try ( QueryExecution qExec = query(query) ) {
                     return qExec.execConstruct();
                 }
@@ -169,7 +168,7 @@ public interface RDFConnection extends
     @Override
     public default Model queryDescribe(String queryString) {
         return
-            Txn.calculateRead(this, ()->{
+            calculateRead(()->{
                 try ( QueryExecution qExec = query(queryString) ) {
                     return qExec.execDescribe();
                 }
@@ -180,7 +179,7 @@ public interface RDFConnection extends
     @Override
     public default Model queryDescribe(Query query) {
         return
-            Txn.calculateRead(this, ()->{
+            calculateRead(()->{
                 try ( QueryExecution qExec = query(query) ) {
                     return qExec.execDescribe();
                 }
@@ -191,7 +190,7 @@ public interface RDFConnection extends
     @Override
     public default boolean queryAsk(String queryString) {
         return
-            Txn.calculateRead(this, ()->{
+            calculateRead(()->{
                 try ( QueryExecution qExec = query(queryString) ) {
                     return qExec.execAsk();
                 }
@@ -202,7 +201,7 @@ public interface RDFConnection extends
     @Override
     public default boolean queryAsk(Query query) {
         return
-            Txn.calculateRead(this, ()->{
+            calculateRead(()->{
                 try ( QueryExecution qExec = query(query) ) {
                     return qExec.execAsk();
                 }

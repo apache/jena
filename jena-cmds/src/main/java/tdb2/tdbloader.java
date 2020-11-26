@@ -37,7 +37,6 @@ import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.loader.DataLoader;
 import org.apache.jena.tdb2.loader.LoaderFactory;
 import org.apache.jena.tdb2.loader.base.LoaderOps;
@@ -209,7 +208,7 @@ public class tdbloader extends CmdTDBGraph {
         LoaderEnum useLoader = loader;
         if ( useLoader == null ) {
             // Default choice - phased if empty. basic if not.  
-            boolean isEmpty = Txn.calculateRead(dsg, ()->dsg.isEmpty());
+            boolean isEmpty = dsg.calculateRead(dsg::isEmpty);
             if ( isEmpty )
                 useLoader = LoaderEnum.Phased;
             else

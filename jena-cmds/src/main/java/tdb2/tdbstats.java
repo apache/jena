@@ -22,7 +22,6 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.system.Txn;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.tdb2.solver.SolverLib;
@@ -53,7 +52,7 @@ public class tdbstats extends CmdTDBGraph {
     }
 
     public static StatsResults stats(DatasetGraphTDB dsg, Node gn) {
-        return Txn.calculateRead(dsg, ()->stats$(dsg, gn));
+        return dsg.calculateRead(()->stats$(dsg, gn));
     }
     
     private static StatsResults stats$(DatasetGraphTDB dsg, Node gn) {

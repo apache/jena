@@ -55,7 +55,6 @@ import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sys.JenaSystem;
-import org.apache.jena.system.Txn;
 import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.tdb.transaction.TransactionManager;
 import org.apache.jena.tdb2.DatabaseMgr;
@@ -301,7 +300,7 @@ public class FusekiMain extends CmdARQ {
                 Lang language = RDFLanguages.filenameToLang(filename);
                 if ( language == null )
                     throw new CmdException("Can't guess language for file: " + filename);
-                Txn.executeWrite(serverConfig.dsg,  ()-> {
+                serverConfig.dsg.executeWrite(()-> {
                     try {
                         log.info("Dataset: in-memory: load file: " + filename);
                         RDFDataMgr.read(serverConfig.dsg, filename);

@@ -18,10 +18,12 @@
 
 package org.apache.jena.sparql.core;
 
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.JenaTransactionException;
-import org.apache.jena.system.Txn;
+import org.apache.jena.system.TxnOp;
+
+import java.util.function.Supplier;
 
 /** Interface that encapsulates the  begin/abort|commit/end operations.
  * <p>The read lifecycle is:
@@ -31,32 +33,12 @@ import org.apache.jena.system.Txn;
  * <pre> begin(WRITE) ... abort() or commit()</pre>
  * <p>{@code end()} is optional but preferred.
  * <p>
- * Helper code is available {@link Txn} so, for example:
- * <pre>Txn.executeRead(dataset, {@literal ()->} { ... sparql query ... });</pre>
- * <pre>Txn.executeWrite(dataset, {@literal ()->} { ... sparql update ... });</pre>
- * or use one of <tt>Txn.calculateRead</tt> and <tt>Txn.executeWrite</tt>
+ * In most cases instead of calling primitive methods such as {@code begin} and {@code commit }
+ * it makes more sense to use high-level default methods:
+ * <pre>dataset.executeRead({@literal ()->} { ... sparql query ... });</pre>
+ * <pre>dataset.executeWrite({@literal ()->} { ... sparql update ... });</pre>
+ * or use one of <tt>calculateRead</tt> and <tt>executeWrite</tt>
  * to return a value for the transaction block.
- * <p>
- * Directly called, code might look like:
- * <pre>
- *     Transactional object = ...
- *     object.begin(TxnMode.READ) ;
- *     try {
- *       ... actions inside a read transaction ...
- *     } finally { object.end() ; }
- * </pre>
- * or
- * <pre>
- *     Transactional object = ...
- *     object.begin(TxnMode.WRITE) ;
- *     try {
- *        ... actions inside a write transaction ...
- *        object.commit() ;
- *     } finally {
- *        // This causes an abort if {@code commit} has not been called.
- *        object.end() ;
- *     }
- * </pre>
  */
 
 public interface Transactional
@@ -192,4 +174,110 @@ public interface Transactional
 
     /** Say whether inside a transaction. */
     public boolean isInTransaction() ;
+
+    /**
+     * Execute and return a value in a transaction with the given {@link TxnType transaction type}.
+     */
+    public default <T extends Transactional, X> X calc(TxnType txnType, Supplier<X> r) {
+        boolean wasInTransaction = isInTransaction();
+        if (wasInTransaction)
+            TxnOp.compatibleWithPromote(txnType, this);
+        else
+            begin(txnType);
+        X x;
+        try {
+            x = r.get();
+        } catch (Throwable th) {
+            try {
+                abort();
+                end();
+            } catch (Throwable th2) {
+                th.addSuppressed(th2);
+            }
+            throw th;
+        }
+
+        if (!wasInTransaction) {
+            if (isInTransaction())
+                // May have been explicit commit or abort.
+                commit();
+            end();
+        }
+        return x;
+    }
+
+    /**
+     * Execute in a "read" transaction that can promote to "write".
+     * <p>
+     * Such a transaction may abort if an update is executed
+     * by another thread before this one is promoted to "write" mode.
+     * If so, the data protected by {@code txn} is unchanged.
+     * <p>
+     * If the application knows updates will be needed, consider using {@link #executeWrite}
+     * which starts in "write" mode.
+     * <p>
+     * The application code can call {@link Transactional#promote} to attempt to
+     * change from "read" to "write"; the {@link Transactional#promote promote} method
+     * returns a boolean indicating whether the promotion was possible or not.
+     */
+    public default void execute(Runnable r) {
+        exec(TxnType.READ_PROMOTE, r);
+    }
+
+
+    /**
+     * Execute in a "read" transaction that can promote to "write" and return some calculated value.
+     * <p>
+     * Such a transaction may abort if an update is executed
+     * by another thread before this one is promoted to "write" mode.
+     * If so, the data protected by {@code txn} is unchanged.
+     * <p>
+     * If the application knows updates will be needed, consider using {@link #executeWrite}
+     * which starts in "write" mode.
+     * <p>
+     * The application code can call {@link Transactional#promote} to attempt to
+     * change from "read" to "write"; the {@link Transactional#promote promote} method
+     * returns a boolean indicating whether the promotion was possible or not.
+     */
+    public default <X> X calculate(Supplier<X> r) {
+        return calc(TxnType.READ_PROMOTE, r);
+    }
+
+    /**
+     * Execute application code in a transaction with the given {@link TxnType trasnaction type}.
+     */
+    public default void exec(TxnType txnType, Runnable r) {
+        calc(txnType, () -> {
+            r.run();
+            return null;
+        });
+    }
+
+    /**
+     * Execute in a read transaction
+     */
+    public default void executeRead(Runnable r) {
+        exec(TxnType.READ, r);
+    }
+
+    /**
+     * Execute and return a value in a read transaction
+     */
+    public default <X> X calculateRead(Supplier<X> r) {
+        return calc(TxnType.READ, r);
+    }
+
+    /**
+     * Execute the Runnable in a write transaction
+     */
+    public default void executeWrite(Runnable r) {
+        exec(TxnType.WRITE, r);
+    }
+
+    /**
+     * Execute and return a value in a write transaction.
+     */
+    public default <X> X calculateWrite(Supplier<X> r) {
+        return calc(TxnType.WRITE, r);
+    }
 }

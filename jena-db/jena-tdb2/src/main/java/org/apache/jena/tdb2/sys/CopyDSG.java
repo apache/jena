@@ -26,19 +26,16 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.system.Txn;
 
 /** Copy operations of any {@link DatasetGraph} */
 public class CopyDSG {
 
     public static void copy(DatasetGraph dsgSrc, DatasetGraph dsgDst) {
-        Txn.executeRead(dsgSrc, ()->{
-            Txn.executeWrite(dsgDst, () -> {
-                Iterator<Quad> iter = dsgSrc.find();
-                iter.forEachRemaining(dsgDst::add);
-                copyPrefixes(dsgSrc, dsgDst);
-            });
-        });
+        dsgSrc.executeRead(()-> dsgDst.executeWrite(() -> {
+            Iterator<Quad> iter = dsgSrc.find();
+            iter.forEachRemaining(dsgDst::add);
+            copyPrefixes(dsgSrc, dsgDst);
+        }));
     }
 
     public static void copyPrefixes(DatasetGraph dsgSrc, DatasetGraph dsgDst) {

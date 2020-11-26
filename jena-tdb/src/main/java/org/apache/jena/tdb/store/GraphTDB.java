@@ -36,7 +36,6 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetPrefixStorage ;
 import org.apache.jena.sparql.core.GraphView ;
 import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.system.Txn;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction;
@@ -109,8 +108,8 @@ public abstract class GraphTDB extends GraphView implements Closeable, Sync {
         boolean txnMode = getDatasetGraphTransaction() != null && getDatasetGraphTransaction().getStoreConnection().haveUsedInTransaction() ;
         if ( ! txnMode )
             return createPrefixMapping$();
-        return 
-            Txn.calculateRead(getDataset(),()-> createPrefixMapping$()); 
+        return
+                getDataset().calculateRead(this::createPrefixMapping$);
     }
     
     private PrefixMapping createPrefixMapping$() {

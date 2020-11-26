@@ -35,7 +35,6 @@ import org.apache.jena.sparql.core.DatasetDescription ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.graph.GraphFactory ;
-import org.apache.jena.system.Txn ;
 
 /** Internal Dataset factory + graph equivalents. */
 public class DatasetUtils
@@ -178,7 +177,7 @@ public class DatasetUtils
         if ( dsg.isInTransaction() )
             addInGraphsWorker(dsg, uriList, namedSourceList, baseURI);
 
-        Txn.executeWrite(dsg, ()->addInGraphsWorker(dsg, uriList, namedSourceList, baseURI)) ;
+        dsg.executeWrite(()->addInGraphsWorker(dsg, uriList, namedSourceList, baseURI)) ;
     }
 
     // For the transactional case, could read straight in, not via buffering graphs that catch syntax errors.

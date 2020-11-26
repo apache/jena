@@ -32,7 +32,6 @@ import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.util.DatasetUtils ;
-import org.apache.jena.system.Txn;
 
 /** ModDataset: arguments to build a dataset - 
  * see also ModDatasetAssembler which extends ModDataset
@@ -95,7 +94,7 @@ public class ModDatasetGeneral extends ModDataset
         try {
             if ( hasEntries(dataURLs) ) {
                 if ( ds.supportsTransactions() ) {
-                    Txn.executeWrite(ds, () -> {
+                    ds.executeWrite(() -> {
                         for ( String url : dataURLs )
                             RDFDataMgr.read(ds, url);
                     });

@@ -18,18 +18,22 @@
 
 package org.apache.jena.system;
 
-import java.util.function.Supplier ;
-
 import org.apache.jena.query.TxnType;
-import org.apache.jena.sparql.core.Transactional ;
+import org.apache.jena.sparql.core.Transactional;
 
-/** Application utilities for executing code in transactions.
+import java.util.function.Supplier;
+
+/**
+ * Application utilities for executing code in transactions.
  * <p>
- * Nested transaction are not supported but calling inside an existing transaction, 
+ *
+ * @deprecated Use {@link Transactional } class directly instead
+ * <p>
+ * Nested transaction are not supported but calling inside an existing transaction,
  * which must be compatible, (i.e. a write needs a WRITE transaction).
  * causes the existing transaction to be used.
  */
-
+@Deprecated
 public class Txn {
     /**
      * Execute in a "read" transaction that can promote to "write".
@@ -43,14 +47,18 @@ public class Txn {
      * <p>
      * The application code can call {@link Transactional#promote} to attempt to
      * change from "read" to "write"; the {@link Transactional#promote promote} method
-     * returns a boolean indicating whether the promotion was possible or not. 
+     * returns a boolean indicating whether the promotion was possible or not.
+     * <p>
+     *
+     * @deprecated Use {@link Transactional#exec} instead
      */
+    @Deprecated
     public static <T extends Transactional> void execute(T txn, Runnable r) {
-        exec(txn, TxnType.READ_PROMOTE, r);
+        txn.exec(TxnType.READ_PROMOTE, r);
     }
 
     /**
-     * Execute in a "read" transaction that can promote to "write" and return some calculated value. 
+     * Execute in a "read" transaction that can promote to "write" and return some calculated value.
      * <p>
      * Such a transaction may abort if an update is executed
      * by another thread before this one is promoted to "write" mode.
@@ -61,80 +69,73 @@ public class Txn {
      * <p>
      * The application code can call {@link Transactional#promote} to attempt to
      * change from "read" to "write"; the {@link Transactional#promote promote} method
-     * returns a boolean indicating whether the promotion was possible or not. 
+     * returns a boolean indicating whether the promotion was possible or not.
+     * <p>
+     *
+     * @deprecated Use {@link Transactional#calculate} instead
      */
+    @Deprecated
     public static <T extends Transactional, X> X calculate(T txn, Supplier<X> r) {
         return calc(txn, TxnType.READ_PROMOTE, r);
     }
 
-    /** Execute application code in a transaction with the given {@link TxnType trasnaction type}. */
+    /**
+     * Execute application code in a transaction with the given {@link TxnType trasnaction type}.
+     * <p>
+     *
+     * @deprecated Use {@link Transactional#exec} instead
+     */
     public static <T extends Transactional> void exec(T txn, TxnType txnType, Runnable r) {
-        boolean b = txn.isInTransaction() ;
-        if ( b )
-            TxnOp.compatibleWithPromote(txnType, txn);
-        else
-            txn.begin(txnType) ;
-        try { r.run() ; }
-        catch (Throwable th) {
-            onThrowable(th, txn);
-            throw th ;
-        }
-        if ( !b ) {
-            if ( txn.isInTransaction() )
-                // May have been explicit commit or abort.
-                txn.commit() ;
-            txn.end() ;
-        }
+        txn.exec(txnType, r);
     }
 
-    /** Execute and return a value in a transaction with the given {@link TxnType transaction type}. */
+    /**
+     * Execute and return a value in a transaction with the given {@link TxnType transaction type}.
+     * <p>>
+     *
+     * @deprecated Use {@link Transactional#calc} instead
+     */
     public static <T extends Transactional, X> X calc(T txn, TxnType txnType, Supplier<X> r) {
-        boolean b = txn.isInTransaction() ;
-        if ( b )
-            TxnOp.compatibleWithPromote(txnType, txn);
-        else
-            txn.begin(txnType) ;
-        X x;
-        try { x = r.get() ; } 
-        catch (Throwable th) {
-            onThrowable(th, txn);
-            throw th ;
-        }
-        
-        if ( !b ) {
-            if ( txn.isInTransaction() )
-                // May have been explicit commit or abort.
-                txn.commit() ;
-            txn.end() ;
-        }
-        return x;
+        return txn.calc(txnType, r);
     }
 
-    /** Execute in a read transaction */
+    /**
+     * Execute in a read transaction
+     * <p>
+     *
+     * @deprecated Use {@link Transactional#executeRead} instead
+     */
     public static <T extends Transactional> void executeRead(T txn, Runnable r) {
-        exec(txn, TxnType.READ, r);
+        txn.exec(TxnType.READ, r);
     }
-    
-    /** Execute and return a value in a read transaction */
+
+    /**
+     * Execute and return a value in a read transaction
+     * <p>
+     *
+     * @deprecated Use {@link Transactional#calculateRead} instead
+     */
     public static <T extends Transactional, X> X calculateRead(T txn, Supplier<X> r) {
         return calc(txn, TxnType.READ, r);
     }
 
-    /** Execute the Runnable in a write transaction */
+    /**
+     * Execute the Runnable in a write transaction
+     * <p>
+     *
+     * @deprecated Use {@link Transactional#executeWrite} instead
+     */
     public static <T extends Transactional> void executeWrite(T txn, Runnable r) {
-        exec(txn, TxnType.WRITE, r);
+        txn.exec(TxnType.WRITE, r);
     }
 
-    /** Execute and return a value in a write transaction. */
+    /**
+     * Execute and return a value in a write transaction.
+     * <p>
+     *
+     * @deprecated Use {@link Transactional#calculateWrite} instead
+     */
     public static <T extends Transactional, X> X calculateWrite(T txn, Supplier<X> r) {
-        return calc(txn, TxnType.WRITE, r);
-    }
-    
-    // Attempt some kind of cleanup.
-    private static <T extends Transactional> void onThrowable(Throwable th, T txn) {
-        try {
-            txn.abort() ;
-            txn.end() ;
-        } catch (Throwable th2) { th.addSuppressed(th2); }
+        return txn.calc(TxnType.WRITE, r);
     }
 }

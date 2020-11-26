@@ -23,7 +23,6 @@ import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.system.Txn;
 
 /* 
  * Example of a connection performng a number of transactional operations.
@@ -36,7 +35,7 @@ public class RDFConnectionExample2 {
         try ( RDFConnection conn = RDFConnectionFactory.connect(dataset) ) {
             System.out.println("** Load a file");
             // ---- Transaction 1: load data. 
-            Txn.executeWrite(conn, ()->conn.load("data.ttl"));
+            conn.executeWrite(()->conn.load("data.ttl"));
             
             // ---- Transaction 2: explicit styles 
             conn.begin(ReadWrite.WRITE);
@@ -50,7 +49,7 @@ public class RDFConnectionExample2 {
             System.out.println("** After abort 1");
             
             // ---- Transaction 3: explicit styles
-            Txn.executeWrite(conn, ()->{
+            conn.executeWrite(()->{
                 conn.load("http://example/g0", "data.ttl");
                 System.out.println("** Inside multistep transaction - fetch dataset");
                 Dataset ds2 = conn.fetchDataset();

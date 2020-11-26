@@ -18,8 +18,6 @@
 
 package org.apache.jena.sparql.util.compose;
 
-import static org.apache.jena.system.Txn.*;
-
 import java.util.function.*;
 
 import org.apache.jena.atlas.lib.IdentityFinishCollector.UnorderedIdentityFinishCollector;
@@ -52,12 +50,12 @@ public abstract class DatasetCollector implements UnorderedIdentityFinishCollect
 
         @Override
         public BinaryOperator<Dataset> combiner() {
-            return (d1, d2) ->  calculateRead(d2, () -> calculateWrite(d1, () -> collector.combiner().apply(d1, d2)));
+            return (d1, d2) ->  d2.calculateRead(() -> d1.calculateWrite(() -> collector.combiner().apply(d1, d2)));
         }
 
         @Override
         public BiConsumer<Dataset, Dataset> accumulator() {
-            return (d1, d2) -> executeRead(d2, () -> executeWrite(d1, () -> collector.accumulator().accept(d1, d2)));
+            return (d1, d2) -> d2.executeRead(() -> d1.executeWrite(() -> collector.accumulator().accept(d1, d2)));
         }
     }
 

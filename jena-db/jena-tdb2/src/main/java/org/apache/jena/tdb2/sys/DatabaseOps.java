@@ -34,7 +34,6 @@ import org.apache.jena.dboe.transaction.txn.TransactionalSystem;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.params.StoreParams;
 import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
@@ -119,7 +118,7 @@ public class DatabaseOps {
         try (OutputStream out2 = x.getLeft();
              OutputStream out1 = new GZIPOutputStream(out2, 8 * 1024);
              OutputStream out = new BufferedOutputStream(out1)) {
-            Txn.executeRead(dsg, ()->RDFDataMgr.write(out, dsg, Lang.NQUADS));
+            dsg.executeRead(()->RDFDataMgr.write(out, dsg, Lang.NQUADS));
         } catch (IOException e) {
             throw IOX.exception(e);
         }

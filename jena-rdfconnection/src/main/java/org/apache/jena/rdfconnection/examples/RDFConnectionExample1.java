@@ -21,7 +21,6 @@ package org.apache.jena.rdfconnection.examples;
 import org.apache.jena.query.*;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
-import org.apache.jena.system.Txn;
 
 /** RDF Connection example */
 public class RDFConnectionExample1 {
@@ -30,7 +29,7 @@ public class RDFConnectionExample1 {
         Dataset dataset = DatasetFactory.createTxnMem();
         RDFConnection conn = RDFConnectionFactory.connect(dataset);
         
-        Txn.executeWrite(conn, () ->{
+        conn.executeWrite(() ->{
             System.out.println("Load a file");
             conn.load("data.ttl");
             conn.load("http://example/g0", "data.ttl");

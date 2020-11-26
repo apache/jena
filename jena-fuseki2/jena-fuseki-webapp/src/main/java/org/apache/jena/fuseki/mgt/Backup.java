@@ -35,7 +35,6 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.core.TransactionalNull;
-import org.apache.jena.system.Txn;
 
 /** Perform a backup */
 public class Backup
@@ -69,7 +68,7 @@ public class Backup
     public static void backup(Transactional transactional, DatasetGraph dsg, String backupfile) {
         if ( transactional == null )
             transactional = new TransactionalNull();
-        Txn.executeRead(transactional, ()->backup(dsg, backupfile));
+        transactional.executeRead(()->backup(dsg, backupfile));
     }
 
     /** Perform a backup.

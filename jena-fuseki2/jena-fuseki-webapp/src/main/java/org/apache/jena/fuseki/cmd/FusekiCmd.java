@@ -44,7 +44,6 @@ import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sys.JenaSystem;
-import org.apache.jena.system.Txn;
 import org.apache.jena.tdb.TDB;
 import org.apache.jena.tdb.sys.Names;
 import org.slf4j.Logger;
@@ -260,7 +259,7 @@ public class FusekiCmd {
                     Lang language = RDFLanguages.filenameToLang(filename);
                     if ( language == null )
                         throw new CmdException("Can't guess language for file: " + filename);
-                    Txn.executeWrite(cmdLine.dsg, ()->{
+                    cmdLine.dsg.executeWrite(()->{
                         try {
                             log.info("Dataset: in-memory: load file: " + filename);
                             RDFDataMgr.read(cmdLine.dsg, filename);

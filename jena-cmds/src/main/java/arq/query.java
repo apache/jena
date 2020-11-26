@@ -38,7 +38,6 @@ import org.apache.jena.sparql.mgt.Explain ;
 import org.apache.jena.sparql.resultset.ResultSetException ;
 import org.apache.jena.sparql.resultset.ResultsFormat ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
-import org.apache.jena.system.Txn ;
 
 public class query extends CmdARQ
 {
@@ -229,7 +228,7 @@ public class query extends CmdARQ
                 throw new TerminationException(1);
             }
             Transactional transactional = (dataset != null && dataset.supportsTransactions()) ? dataset : new TransactionalNull() ;
-            Txn.executeRead(transactional, ()->{
+            transactional.executeRead(()->{
                 modTime.startTimer() ;
                 try ( QueryExecution qe = QueryExecutionFactory.create(query, dataset) ) {
                     try { QueryExecUtils.executeQuery(query, qe, fmt); }

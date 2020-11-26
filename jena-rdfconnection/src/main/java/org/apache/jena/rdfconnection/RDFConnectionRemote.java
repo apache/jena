@@ -49,7 +49,6 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.core.TransactionalLock;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
-import org.apache.jena.system.Txn;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 import org.apache.jena.web.HttpSC;
@@ -158,7 +157,7 @@ public class RDFConnectionRemote implements RDFConnection {
      */
     @Override
     public void queryResultSet(String queryString, Consumer<ResultSet> resultSetAction) {
-        Txn.executeRead(this, ()->{
+        executeRead(()->{
             try ( QueryExecution qExec = query(queryString, QueryType.SELECT) ) {
                 ResultSet rs = qExec.execSelect();
                 resultSetAction.accept(rs);
@@ -173,7 +172,7 @@ public class RDFConnectionRemote implements RDFConnection {
      */
     @Override
     public void querySelect(String queryString, Consumer<QuerySolution> rowAction) {
-        Txn.executeRead(this, ()->{
+        executeRead(()->{
             try ( QueryExecution qExec = query(queryString, QueryType.SELECT) ) {
                 qExec.execSelect().forEachRemaining(rowAction);
             }
@@ -184,7 +183,7 @@ public class RDFConnectionRemote implements RDFConnection {
     @Override
     public Model queryConstruct(String queryString) {
         return
-            Txn.calculateRead(this, ()->{
+            calculateRead(()->{
                 try ( QueryExecution qExec = query(queryString, QueryType.CONSTRUCT) ) {
                     return qExec.execConstruct();
                 }
@@ -195,7 +194,7 @@ public class RDFConnectionRemote implements RDFConnection {
     @Override
     public Model queryDescribe(String queryString) {
         return
-            Txn.calculateRead(this, ()->{
+            calculateRead(()->{
                 try ( QueryExecution qExec = query(queryString, QueryType.DESCRIBE) ) {
                     return qExec.execDescribe();
                 }
@@ -206,7 +205,7 @@ public class RDFConnectionRemote implements RDFConnection {
     @Override
     public boolean queryAsk(String queryString) {
         return
-            Txn.calculateRead(this, ()->{
+            calculateRead(()->{
                 try ( QueryExecution qExec = query(queryString, QueryType.ASK) ) {
                     return qExec.execAsk();
                 }
@@ -477,7 +476,7 @@ public class RDFConnectionRemote implements RDFConnection {
         if ( destination == null )
             throw new ARQException("Dataset operations not available - no dataset URL provided");
         Dataset ds = DatasetFactory.createTxnMem();
-        Txn.executeWrite(ds, ()->{
+        ds.executeWrite(()->{
             HttpCaptureResponse<TypedInputStream> handler = new CaptureInput();
             exec(()->HttpOp.execHttpGet(destination, acceptDataset, handler, this.httpClient, this.httpContext));
             TypedInputStream s = handler.get();

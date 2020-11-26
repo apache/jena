@@ -25,7 +25,6 @@ import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.system.Txn;
 import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.base.file.Location ;
@@ -158,7 +157,7 @@ public class TDBInternal
      * Don't call while transactions are active. 
      */
     public static synchronized void expel(DatasetGraph dsg) {
-        DatasetGraphTDB dsgtdb = Txn.calculate(dsg, ()->getDatasetGraphTDB(dsg));
+        DatasetGraphTDB dsgtdb = dsg.calculate(()->getDatasetGraphTDB(dsg));
         if ( dsgtdb == null )
             return;
         expel(dsgtdb.getLocation());

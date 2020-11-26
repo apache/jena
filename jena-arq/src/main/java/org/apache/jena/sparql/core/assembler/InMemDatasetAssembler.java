@@ -33,7 +33,6 @@ import org.apache.jena.assembler.Mode;
 import org.apache.jena.assembler.assemblers.AssemblerBase;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.system.Txn;
 import org.apache.jena.vocabulary.RDF;
 
 /**
@@ -53,7 +52,7 @@ public class InMemDatasetAssembler extends AssemblerBase implements Assembler {
         final Dataset dataset = createTxnMem();
         mergeContext(root, dataset.getContext());
 
-        Txn.executeWrite(dataset, ()->{ 
+        dataset.executeWrite(()->{
             // Load data into the default graph
             // This also loads quads into the dataset.
             multiValueAsString(root, data)

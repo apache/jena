@@ -22,8 +22,6 @@ import static java.lang.ThreadLocal.withInitial;
 import static org.apache.jena.graph.Node.ANY;
 import static org.apache.jena.query.ReadWrite.WRITE;
 import static org.apache.jena.sparql.core.Quad.isUnionGraph;
-import static org.apache.jena.system.Txn.calculateRead;
-import static org.apache.jena.system.Txn.executeWrite;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Iterator;
@@ -302,7 +300,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     }
     
     private <T> T access(final Supplier<T> source) {
-        return isInTransaction() ? source.get() : calculateRead(this, source::get);
+        return isInTransaction() ? source.get() : calculateRead(source::get);
     }
 
     @Override
@@ -390,7 +388,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
                 }
             }
             mutator.accept(payload);
-        } else executeWrite(this, () -> mutator.accept(payload));
+        } else executeWrite(() -> mutator.accept(payload));
     }
 
     /**
