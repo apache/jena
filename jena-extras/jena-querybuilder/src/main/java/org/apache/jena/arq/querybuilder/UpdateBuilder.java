@@ -1221,7 +1221,7 @@ public class UpdateBuilder {
 	 * Specify the graph for all inserts and deletes.
 	 * 
 	 * 
-	 * @See Quad#defaultGraphNodeGenerated
+	 * @see Quad#defaultGraphNodeGenerated
 	 * @param iri
 	 *            the IRI for the graph to use.
 	 * @return this builder for chaining.

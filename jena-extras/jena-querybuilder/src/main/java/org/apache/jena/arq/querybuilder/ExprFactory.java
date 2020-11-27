@@ -1569,7 +1569,7 @@ public class ExprFactory {
 	 *            the pattern to replace in the string literal.
 	 * @param replacement
 	 *            the string literal to replace the pattern with.
-	 * @flags flags the flags that control replacement options.
+	 * @param flags the flags that control replacement options.
 	 * @return an E_StrReplace instance
 	 */
 	public final E_StrReplace replace(Object arg, Object pattern, Object replacement, Object flags) {
