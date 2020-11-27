@@ -88,7 +88,7 @@ public abstract class AbstractRunnerOfTests extends ParentRunner<Runner> {
     // Print all manifests, top level and included.
     private static boolean PrintManifests = false;
     private static IndentedWriter out = IndentedWriter.stdout;
-    
+
     /**
      * Do one level of tests. test are {@link Runnable Runnables} that each succeed or fail with an exception.
      */
@@ -102,7 +102,7 @@ public abstract class AbstractRunnerOfTests extends ParentRunner<Runner> {
         while(sub.hasNext() ) {
             if ( PrintManifests )
                 out.incIndent();
-            
+
             String mf = sub.next();
             Manifest manifestSub = Manifest.parse(mf);
             Runner runner = build(report, manifestSub, maker, prefix);
@@ -110,6 +110,16 @@ public abstract class AbstractRunnerOfTests extends ParentRunner<Runner> {
             if ( PrintManifests )
                 out.decIndent();
         }
+
+        // Check entries do have test targets.
+
+        manifest.entries().forEach(entry->{
+            if ( entry.getAction() == null )
+                throw new RuntimeException("Missing: action ["+entry.getEntry()+"]");
+            if ( entry.getName() == null )
+                throw new RuntimeException("Missing: label ["+entry.getEntry()+"]");
+        });
+
         prepareTests(report, thisLevel, manifest, maker, prefix);
         return thisLevel;
     }

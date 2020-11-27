@@ -1407,7 +1407,7 @@ String String() : { Token t ; String lex ; }
   | t = <STRING_LITERAL_LONG1> { lex = stripQuotes3(t.image) ; }
   | t = <STRING_LITERAL_LONG2> { lex = stripQuotes3(t.image) ; }
   )
-    {
+    { checkString(lex, t.beginLine, t.beginColumn) ;
       lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
       return lex ;
     }

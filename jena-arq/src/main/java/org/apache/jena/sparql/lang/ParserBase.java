@@ -153,7 +153,7 @@ public class ParserBase
     protected void startAggregate()   { aggregateDepth++; }
     protected int getAggregateDepth() { return aggregateDepth; }
     protected void finishAggregate()  { aggregateDepth--; }
-    
+
     protected Element compressGroupOfOneGroup(ElementGroup elg) {
         // remove group of one group.
         if ( elg.size() == 1 ) {
@@ -188,6 +188,25 @@ public class ParserBase
 
         lex = lex.substring(1) ;
         return NodeFactory.createLiteral(lex, lang, dt) ;
+    }
+
+    protected void checkString(String string, int line, int column) {
+        for ( int i = 0 ; i < string.length() ; i++ ) {
+            // Not "codePointAt" which does surrogate processing.
+            char ch = string.charAt(i);
+            // Check surrogate pairs are pairs.
+            if ( Character.isHighSurrogate(ch) ) {
+                i++;
+                if ( i == string.length() )
+                    throw new QueryParseException("Bad surrogate pair (end of string)", line, column);
+                char ch1 = string.charAt(i);
+                if ( ! Character.isLowSurrogate(ch1) ) {
+                    throw new QueryParseException("Bad surrogate pair (high surrogate not followed by low surrogate)", line, column);
+                }
+            } else if ( Character.isLowSurrogate(ch) ) {
+                throw new QueryParseException("Bad surrogate pair (low surrogate without high surrogate)", line, column);
+            }
+        }
     }
 
     protected Node createLiteral(String lexicalForm, String langTag, String datatypeURI) {
@@ -480,7 +499,7 @@ public class ParserBase
     public static String unescapeUnicode(String s, int line, int column) {
         return unescape(s, '\\', true, line, column);
     }
-    
+
     public static String unescapePName(String s, int line, int column) {
         char escape = '\\' ;
         int idx = s.indexOf(escape) ;

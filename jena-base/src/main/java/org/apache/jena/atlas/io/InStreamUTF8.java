@@ -28,11 +28,6 @@ import org.apache.jena.atlas.AtlasException ;
 /** Fast and streaming UTF-8 */
 public final class InStreamUTF8 extends Reader implements CharStream
 {
-    // TODO Add line and col counts.
-    // See arq.utf8.
-    // TODO Better ready()/available() in InputStreamBuffered
-    // TODO: chars > 16 bits -> convert to surrogate pairs.
-
     // The standard Java way of doing this is via charset decoders.
     // One small disadvantage is that bad UTF-8 does not get flagged as to
     // the byte position of the error.
@@ -127,10 +122,12 @@ public final class InStreamUTF8 extends Reader implements CharStream
 
     @Override
     public final int read() {
-        int ch = advance(input);
-        // if ( ! Character.isDefined(ch) ) throw new
-        // AtlasException(String.format("Undefined codepoint: 0x%04X", ch)) ;
-        return ch;
+        int codepoint = advance(input);
+        if ( false ) {
+            if ( !Character.isDefined(codepoint) )
+                throw new AtlasException(String.format("Undefined codepoint: 0x%04X", codepoint));
+          }
+        return codepoint;
     }
 
     /** Next codepoint, given the first byte of any UTF-8 byte sequence is already known.
@@ -144,7 +141,9 @@ public final class InStreamUTF8 extends Reader implements CharStream
     public static final int advance(InputStreamBuffered input) {
         int x = input.advance() ;
         if ( x == -1 ) return -1 ;
-        return advance(input, x) ;
+
+        int codepoint = advance(input, x) ;
+        return codepoint;
     }
 
     /** Next codepoint, given the first byte of any UTF-8 byte sequence is already known.
@@ -171,9 +170,6 @@ public final class InStreamUTF8 extends Reader implements CharStream
         if ( (x & 0xF0) == 0xE0 ) {
             int ch = readMultiBytes(input, x & 0x0F, 3);
             // count += 3 ;
-            // if ( ! Character.isDefined(ch) ) throw new
-            // AtlasException(String.format("Undefined codepoint: 0x%04X", ch))
-            // ;
             return ch;
         }
 
@@ -182,19 +178,10 @@ public final class InStreamUTF8 extends Reader implements CharStream
         // 11110zzz => 4 bytes.
         if ( (x & 0xF8) == 0xF0 ) {
             ch = readMultiBytes(input, x & 0x08, 4);
-            // Opps - need two returns. Character.toChars(ch, chars, 0) ;
             // count += 4 ;
+            return ch;
         }
-
-        else
-            IO.exception(new IOException("Illegal UTF-8: " + x));
-
-        // This test will go off. We're processing a 4 byte sequence but Java
-        // only supports 16 bit chars.
-        if ( ch > Character.MAX_VALUE )
-            throw new AtlasException("Out of range character (must use a surrogate pair)");
-        if ( !Character.isDefined(ch) )
-            throw new AtlasException(String.format("Undefined codepoint: 0x%04X", ch));
+        IO.exception(new IOException("Illegal UTF-8: " + x));
         return ch;
     }
 
