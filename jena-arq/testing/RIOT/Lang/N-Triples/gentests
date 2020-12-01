@@ -1,2 +1,0 @@
-#!/bin/sh
-../generate N-Triples nt nt master
