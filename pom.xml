@@ -102,7 +102,7 @@
     <ver.awaitility>4.0.3</ver.awaitility>
     <ver.micrometer>1.6.1</ver.micrometer>
 
-    <ver.graalvm>20.2.0</ver.graalvm>
+    <ver.graalvm>20.3.0</ver.graalvm>
 
     <jdk.version>1.8</jdk.version>
     <targetJdk>${jdk.version}</targetJdk>
