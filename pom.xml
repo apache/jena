@@ -72,7 +72,7 @@
     -->
     <ver.jsonldjava>0.13.2</ver.jsonldjava>
     <ver.jackson>2.11.3</ver.jackson>
-    <ver.jackson-databind>${ver.jackson}</ver.jackson-databind>
+    <ver.jackson-databind>2.12.0</ver.jackson-databind>
 
     <ver.commonsio>2.8.0</ver.commonsio>
     <ver.commonscli>1.4</ver.commonscli>
