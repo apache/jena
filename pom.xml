@@ -89,7 +89,7 @@
     <!-- Normally, these are the same as the above
          In the case of 4.2.6, there isn't a httpcore-osgi.
     -->
-    <ver.httpcore-osgi>${ver.httpcore}</ver.httpcore-osgi>
+    <ver.httpcore-osgi>4.4.14</ver.httpcore-osgi>
     <ver.httpclient-osgi>${ver.httpclient}</ver.httpclient-osgi>
     
     <ver.lucene>7.7.3</ver.lucene>
