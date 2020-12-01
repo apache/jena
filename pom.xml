@@ -96,7 +96,7 @@
     <!-- Align to Lucene version -->
     <ver.elasticsearch>6.8.9</ver.elasticsearch>
 
-    <ver.spatial4j>0.7</ver.spatial4j>
+    <ver.spatial4j>0.8</ver.spatial4j>
 
     <ver.mockito>1.10.19</ver.mockito>
     <ver.awaitility>4.0.3</ver.awaitility>
