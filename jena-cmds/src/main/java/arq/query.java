@@ -18,10 +18,14 @@
 
 package arq;
 
+import java.io.PrintStream;
+
 import arq.cmdline.* ;
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdException;
 import jena.cmd.TerminationException;
+import org.apache.commons.io.output.NullPrintStream;
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
@@ -146,15 +150,13 @@ public class query extends CmdARQ
 
         // Warm up.
         for ( int i = 0 ; i < warmupCount ; i++ )
-        {
-            queryExec(false, ResultsFormat.FMT_NONE) ;
-        }
+            // Include the results format so that is warmed up as well. 
+            queryExec(false, modResults.getResultsFormat(), NullPrintStream.NULL_PRINT_STREAM) ;
 
         for ( int i = 0 ; i < repeatCount ; i++ )
-            queryExec(modTime.timingEnabled(),  modResults.getResultsFormat()) ;
+            queryExec(modTime.timingEnabled(),  modResults.getResultsFormat(), System.out) ;
 
-        if ( modTime.timingEnabled() && repeatCount > 1 )
-        {
+        if ( modTime.timingEnabled() && repeatCount > 1 ) {
             long avg = totalTime/repeatCount ;
             String avgStr = modTime.timeStr(avg) ;
             System.err.println("Total time: "+modTime.timeStr(totalTime)+" sec for repeat count of "+repeatCount+ " : average: "+avgStr) ;
@@ -207,12 +209,12 @@ public class query extends CmdARQ
     }
 
     protected long totalTime = 0 ;
-    protected void queryExec(boolean timed, ResultsFormat fmt)
+    protected void queryExec(boolean timed, ResultsFormat fmt, PrintStream resultsDest)
     {
         try {
             Query query = getQuery() ;
             if ( isVerbose() ) {
-                IndentedWriter out = new IndentedWriter(System.err, true);
+                IndentedWriter out = new IndentedWriter(resultsDest, true);
                 query.serialize(out);
                 out.setLineNumbers(false);
                 out.println();
@@ -232,12 +234,11 @@ public class query extends CmdARQ
             Txn.executeRead(transactional, ()->{
                 modTime.startTimer() ;
                 try ( QueryExecution qe = QueryExecutionFactory.create(query, dataset) ) {
-                    try { QueryExecUtils.executeQuery(query, qe, fmt); }
+                    try { QueryExecUtils.executeQuery(query, qe, fmt, resultsDest); }
                     catch (QueryCancelledException ex) {
-                        System.out.flush();
+                        IO.flush(resultsDest);
                         System.err.println("Query timed out");
                     }
-
                     long time = modTime.endTimer();
                     if ( timed ) {
                         totalTime += time;

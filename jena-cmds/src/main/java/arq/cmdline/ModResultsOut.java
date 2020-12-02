@@ -29,42 +29,37 @@ import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.resultset.ResultsFormat ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
 
-public class ModResultsOut extends ModBase
-{
-    protected final 
-    ArgDecl resultsFmtDecl = new ArgDecl(ArgDecl.HasValue, "results", "out", "rfmt") ;
+public class ModResultsOut extends ModBase {
+    protected final ArgDecl resultsFmtDecl = new ArgDecl(ArgDecl.HasValue, "results", "out", "rfmt");
 
-    private ResultsFormat resultsFormat = ResultsFormat.FMT_UNKNOWN ;
-    
+    private ResultsFormat   resultsFormat  = ResultsFormat.FMT_UNKNOWN;
+
     @Override
-    public void processArgs(CmdArgModule cmdline) throws IllegalArgumentException
-    {
-        if ( cmdline.contains(resultsFmtDecl) )
-        {
-            String rFmt = cmdline.getValue(resultsFmtDecl) ;
-            resultsFormat = ResultsFormat.lookup(rFmt) ;
+    public void processArgs(CmdArgModule cmdline) throws IllegalArgumentException {
+        if ( cmdline.contains(resultsFmtDecl) ) {
+            String rFmt = cmdline.getValue(resultsFmtDecl);
+            resultsFormat = ResultsFormat.lookup(rFmt);
             if ( resultsFormat == null )
-                cmdline.cmdError("Unrecognized output format: "+rFmt) ;
+                cmdline.cmdError("Unrecognized output format: " + rFmt);
         }
     }
-    
+
     @Override
-    public void registerWith(CmdGeneral cmdLine)
-    {
-        cmdLine.getUsage().startCategory("Results") ;
+    public void registerWith(CmdGeneral cmdLine) {
+        cmdLine.getUsage().startCategory("Results");
         cmdLine.add(resultsFmtDecl,
                     "--results=",
                     "Results format (Result set: text, XML, JSON, CSV, TSV; Graph: RDF serialization)") ;  
     }
 
-    public void checkCommandLine(CmdArgModule cmdLine)
-    {}
+    public void checkCommandLine(CmdArgModule cmdLine) {}
 
-    public void printResultSet(ResultSet resultSet, Prologue prologue)
-    {
-        QueryExecUtils.outputResultSet(resultSet, prologue, resultsFormat) ;
+    public void printResultSet(ResultSet resultSet, Prologue prologue) {
+        QueryExecUtils.outputResultSet(resultSet, prologue, resultsFormat, System.out);
     }
-    
-    public ResultsFormat getResultsFormat() { return resultsFormat ; }
+
+    public ResultsFormat getResultsFormat() {
+        return resultsFormat;
+    }
 
 }

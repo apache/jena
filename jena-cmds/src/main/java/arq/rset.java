@@ -18,56 +18,49 @@
 
 package arq;
 
-import org.apache.jena.query.ResultSet ;
-import arq.cmdline.CmdARQ ;
-import arq.cmdline.ModResultsIn ;
-import arq.cmdline.ModResultsOut ;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.sparql.util.QueryExecUtils;
+import arq.cmdline.CmdARQ;
+import arq.cmdline.ModResultsIn;
+import arq.cmdline.ModResultsOut;
 
 /** Read and write result sets */
 
-public class rset extends CmdARQ
-{
-    ModResultsIn modInput    = new ModResultsIn() ;
-    ModResultsOut modOutput  = new ModResultsOut() ;
-    
-    static String usage = rset.class.getName()+
-            " [--in syntax] [--out syntax] [--file FILE | FILE ]" ; 
+public class rset extends CmdARQ {
+    ModResultsIn  modInput  = new ModResultsIn();
+    ModResultsOut modOutput = new ModResultsOut();
 
-    public static void main(String... argv)
-    {
-        new rset(argv).mainRun() ;
+    static String usage     = rset.class.getName() + " [--in syntax] [--out syntax] [--file FILE | FILE ]";
+
+    public static void main(String...argv) {
+        new rset(argv).mainRun();
     }
 
-    public rset(String[] argv)
-    {
-        super(argv) ;
-        super.addModule(modInput) ;
-        super.addModule(modOutput) ;
-    }
-            
-    @Override
-    protected void processModulesAndArgs()
-    {
-        super.processModulesAndArgs() ;
+    public rset(String[] argv) {
+        super(argv);
+        super.addModule(modInput);
+        super.addModule(modOutput);
     }
 
     @Override
-    protected String getSummary()
-    {
-        return usage ;
+    protected void processModulesAndArgs() {
+        super.processModulesAndArgs();
     }
 
     @Override
-    protected void exec()
-    {
-        ResultSet rs = modInput.getResultSet() ;
-        modOutput.printResultSet(rs, null) ;
+    protected String getSummary() {
+        return usage;
     }
 
     @Override
-    protected String getCommandName()
-    {
-        return "rset" ;
+    protected void exec() {
+        ResultSet rs = modInput.getResultSet();
+        QueryExecUtils.outputResultSet(rs, null, modOutput.getResultsFormat(), System.out);
+    }
+
+    @Override
+    protected String getCommandName() {
+        return "rset";
     }
 
 }
