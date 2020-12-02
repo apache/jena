@@ -18,6 +18,7 @@
 
 package org.apache.jena.sparql.util ;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List ;
 
@@ -67,26 +68,31 @@ public class QueryExecUtils {
     }
 
     public static void executeQuery(Prologue prologue, QueryExecution queryExecution, ResultsFormat outputFormat) {
+        executeQuery(prologue, queryExecution, outputFormat, System.out);
+    }
+    
+    public static void executeQuery(Prologue prologue, QueryExecution queryExecution, ResultsFormat outputFormat, PrintStream output) {
         Query query = queryExecution.getQuery() ;
         if ( prologue == null && query != null )
             prologue = query.getPrologue() ;
         if ( prologue == null )
             prologue = dftPrologue ;
         if ( query.isSelectType() )
-            doSelectQuery(prologue, queryExecution, outputFormat) ;
+            doSelectQuery(prologue, queryExecution, outputFormat, output) ;
         else if ( query.isDescribeType() )
-            doDescribeQuery(prologue, queryExecution, outputFormat) ;
+            doDescribeQuery(prologue, queryExecution, outputFormat, output) ;
         else if ( query.isConstructQuad() )
             // Before isConstructType.
-            doConstructQuadsQuery(prologue, queryExecution, outputFormat) ;
+            doConstructQuadsQuery(prologue, queryExecution, outputFormat, output) ;
         else if ( query.isConstructType() )
-            doConstructQuery(prologue, queryExecution, outputFormat) ;
+            doConstructQuery(prologue, queryExecution, outputFormat, output) ;
         else if ( query.isAskType() )
-            doAskQuery(prologue, queryExecution, outputFormat) ;
+            doAskQuery(prologue, queryExecution, outputFormat, output) ;
         else if ( query.isJsonType() )
-            doJsonQuery(prologue, queryExecution, outputFormat) ;
+            doJsonQuery(prologue, queryExecution, outputFormat, output) ;
         else
             throw new QueryException("Unrecognized query form");
+        output.flush();
     }
 
     public static void execute(Op op, DatasetGraph dsg) {
@@ -94,6 +100,10 @@ public class QueryExecUtils {
     }
 
     public static void execute(Op op, DatasetGraph dsg, ResultsFormat outputFormat) {
+        execute(op, dsg, outputFormat, System.out);
+    }
+        
+    public static void execute(Op op, DatasetGraph dsg, ResultsFormat outputFormat, PrintStream output) {
         QueryIterator qIter = Algebra.exec(op, dsg) ;
 
         List<String> vars = null ;
@@ -105,10 +115,11 @@ public class QueryExecUtils {
             vars = Var.varNames(OpVars.visibleVars(op)) ;
 
         ResultSet results = ResultSetFactory.create(qIter, vars) ;
-        outputResultSet(results, null, outputFormat) ;
+        outputResultSet(results, null, outputFormat, output) ;
+        output.flush();
     }
 
-    public static void outputResultSet(ResultSet results, Prologue prologue, ResultsFormat outputFormat) {
+    public static void outputResultSet(ResultSet results, Prologue prologue, ResultsFormat outputFormat, PrintStream output) {
         if ( outputFormat.equals(ResultsFormat.FMT_UNKNOWN) )
             outputFormat = ResultsFormat.FMT_TEXT ;
         // Proper ResultSet formats.
@@ -119,58 +130,58 @@ public class QueryExecUtils {
             Context context = ARQ.getContext().copy();
             if ( prologue != null )
                 context.set(ARQConstants.symPrologue, prologue);
-            ResultsWriter.create().context(context).lang(lang).build().write(System.out, results);
-            System.out.flush() ;
+            ResultsWriter.create().context(context).lang(lang).build().write(output, results);
+            output.flush() ;
             return ;
         }
 
-        boolean done = ResultsFormat.oldWrite(System.out, outputFormat, prologue, results);
+        boolean done = ResultsFormat.oldWrite(output, outputFormat, prologue, results);
         if ( !done )
             System.err.println("Unknown format request: " + outputFormat) ;
-        System.out.flush() ;
+        output.flush() ;
     }
 
-    private static void doSelectQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat) {
+    private static void doSelectQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat, PrintStream output) {
         if ( prologue == null )
             prologue = qe.getQuery().getPrologue() ;
         if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
             outputFormat = ResultsFormat.FMT_TEXT ;
         ResultSet results = qe.execSelect() ;
-        outputResultSet(results, prologue, outputFormat) ;
+        outputResultSet(results, prologue, outputFormat, output) ;
     }
 
-    private static void doJsonQuery(Prologue prologue, QueryExecution queryExecution, ResultsFormat outputFormat) {
+    private static void doJsonQuery(Prologue prologue, QueryExecution queryExecution, ResultsFormat outputFormat, PrintStream output) {
         JsonArray results = queryExecution.execJson();
-        JSON.write(System.out, results);
+        JSON.write(output, results);
     }
 
-    private static void doDescribeQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat) {
+    private static void doDescribeQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat, PrintStream output) {
         if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
             outputFormat = ResultsFormat.FMT_RDF_TTL ;
-
         Model r = qe.execDescribe() ;
-        writeModel(prologue, r, outputFormat) ;
+        writeModel(prologue, r, outputFormat, output) ;
     }
 
-    private static void doConstructQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat) {
+    private static void doConstructQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat, PrintStream output) {
         if ( qe.getQuery().isConstructQuad() ) {
-            doConstructQuadsQuery(prologue, qe, outputFormat);
+            doConstructQuadsQuery(prologue, qe, outputFormat, output);
             return;
         }
         if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
             outputFormat = ResultsFormat.FMT_RDF_TTL ;
         Model r = qe.execConstruct() ;
-        writeModel(prologue, r, outputFormat) ;
+        writeModel(prologue, r, outputFormat, output) ;
     }
 
-    private static void doConstructQuadsQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat) {
+    private static void doConstructQuadsQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat, PrintStream output) {
         if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
             outputFormat = ResultsFormat.FMT_RDF_TRIG;
         Dataset ds = qe.execConstructDataset();
-        writeDataset(prologue, ds, outputFormat) ;
+        writeDataset(prologue, ds, outputFormat, output) ;
+        output.flush();
     }
 
-    private static void writeModel(Prologue prologue, Model model, ResultsFormat outputFormat) {
+    private static void writeModel(Prologue prologue, Model model, ResultsFormat outputFormat, PrintStream output) {
         if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
             outputFormat = ResultsFormat.FMT_TEXT ;
 
@@ -178,51 +189,51 @@ public class QueryExecUtils {
             return ;
 
         if ( outputFormat.equals(ResultsFormat.FMT_TEXT) ) {
-            System.out.println("# ======== ") ;
-            RDFDataMgr.write(System.out, model, Lang.TURTLE) ;
-            System.out.println("# ======== ") ;
+            output.println("# ======== ") ;
+            RDFDataMgr.write(output, model, Lang.TURTLE) ;
+            output.println("# ======== ") ;
             return ;
         }
 
         if ( outputFormat.equals(ResultsFormat.FMT_RDF_XML) ) {
-            model.write(System.out, "RDF/XML-ABBREV", null) ;
+            model.write(output, "RDF/XML-ABBREV", null) ;
             return ;
         }
 
         if ( outputFormat.equals(ResultsFormat.FMT_RDF_TTL) ) {
-            model.write(System.out, "N3", null) ;
+            model.write(output, "N3", null) ;
             return ;
         }
 
         if ( outputFormat.equals(ResultsFormat.FMT_RDF_N3) ) {
-            model.write(System.out, "N3", null) ;
+            model.write(output, "N3", null) ;
             return ;
         }
 
         if ( outputFormat.equals(ResultsFormat.FMT_RDF_NT) ) {
-            model.write(System.out, "N-TRIPLES", null) ;
+            model.write(output, "N-TRIPLES", null) ;
             return ;
         }
 
         if ( outputFormat.equals(ResultsFormat.FMT_RDF_NQ) ) {
-            model.write(System.out, "N-QUADS", null) ;
+            model.write(output, "N-QUADS", null) ;
             return ;
         }
 
         if ( outputFormat.equals(ResultsFormat.FMT_RDF_TRIG) ) {
-            model.write(System.out, "TriG", null) ;
+            model.write(output, "TriG", null) ;
             return ;
         }
 
         if ( outputFormat.equals(ResultsFormat.FMT_RDF_JSONLD) ) {
-            RDFDataMgr.write(System.out, model, Lang.JSONLD) ;
+            RDFDataMgr.write(output, model, Lang.JSONLD) ;
             return ;
         }
 
         System.err.println("Unknown format: " + outputFormat) ;
     }
 
-    private static void writeDataset(Prologue prologue, Dataset dataset, ResultsFormat outputFormat) {
+    private static void writeDataset(Prologue prologue, Dataset dataset, ResultsFormat outputFormat, PrintStream output) {
         if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
             outputFormat = ResultsFormat.FMT_TEXT ;
 
@@ -230,24 +241,24 @@ public class QueryExecUtils {
             return ;
 
         if ( outputFormat.equals(ResultsFormat.FMT_TEXT) ) {
-            System.out.println("# ======== ") ;
-            RDFDataMgr.write(System.out, dataset, Lang.TURTLE) ;
-            System.out.println("# ======== ") ;
+            output.println("# ======== ") ;
+            RDFDataMgr.write(output, dataset, Lang.TURTLE) ;
+            output.println("# ======== ") ;
             return ;
         }
 
         if ( outputFormat.equals(ResultsFormat.FMT_RDF_NQ) ) {
-            RDFDataMgr.write(System.out, dataset, Lang.NQUADS);
+            RDFDataMgr.write(output, dataset, Lang.NQUADS);
             return ;
         }
 
         if ( outputFormat.equals(ResultsFormat.FMT_RDF_TRIG) ) {
-            RDFDataMgr.write(System.out, dataset, Lang.TRIG);
+            RDFDataMgr.write(output, dataset, Lang.TRIG);
             return ;
         }
 
         if ( outputFormat.equals(ResultsFormat.FMT_RDF_JSONLD) ) {
-            RDFDataMgr.write(System.out, dataset, Lang.JSONLD);
+            RDFDataMgr.write(output, dataset, Lang.JSONLD);
             return ;
         }
 
@@ -255,7 +266,7 @@ public class QueryExecUtils {
     }
 
     
-    private static void doAskQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat) {
+    private static void doAskQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat, PrintStream output) {
         boolean b = qe.execAsk() ;
 
         if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
@@ -265,18 +276,17 @@ public class QueryExecUtils {
             return ;
 
         if ( outputFormat.equals(ResultsFormat.FMT_RS_XML) ) {
-            ResultSetFormatter.outputAsXML(System.out, b) ;
+            ResultSetFormatter.outputAsXML(output, b) ;
             return ;
         }
 
         if ( outputFormat.equals(ResultsFormat.FMT_RDF_N3) || outputFormat.equals(ResultsFormat.FMT_RDF_TTL) ) {
-            RDFOutput.outputAsRDF(System.out, "TURTLE", b) ;
-            System.out.flush() ;
+            RDFOutput.outputAsRDF(output, "TURTLE", b) ;
             return ;
         }
 
         if ( outputFormat.equals(ResultsFormat.FMT_RS_JSON) ) {
-            ResultSetFormatter.outputAsJSON(System.out, b) ;
+            ResultSetFormatter.outputAsJSON(output, b) ;
             return ;
         }
 

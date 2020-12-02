@@ -22,7 +22,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.algebra.op.OpGraph;
 import org.apache.jena.sparql.algebra.op.OpQuadPattern;
 
-/** Rename quad form alegra */
+/** Rename quad form alegbra */
 public class TransformGraphRename extends TransformCopy
 {
     private Node oldGraphName;

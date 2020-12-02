@@ -30,6 +30,7 @@ import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.ResultSet ;
+import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RiotException ;
@@ -47,7 +48,7 @@ import org.apache.jena.sparql.util.Context ;
 public class ResultSetWriterRegistry {
 
     private static Map<Lang, ResultSetWriterFactory> registry = new HashMap<>() ;
-    
+
     /** Lookup a {@link Lang} to get the registered {@link ResultSetReaderFactory} (or null) */
     public static ResultSetWriterFactory getFactory(Lang lang) {
         Objects.requireNonNull(lang) ;
@@ -65,7 +66,7 @@ public class ResultSetWriterRegistry {
         Objects.requireNonNull(factory) ;
         registry.put(lang, factory) ;
     }
-    
+
     private static boolean initialized = false ;
     public static void init() {
         if ( initialized )
@@ -82,7 +83,7 @@ public class ResultSetWriterRegistry {
         register(SPARQLResultSetText,   factory) ;
         register(SPARQLResultSetNone,   factory) ;
     }
- 
+
     private static ResultSetWriter writerCSV = new ResultSetWriter() {
         @Override public void write(OutputStream out, ResultSet resultSet, Context context) {
             CSVOutput fmt = new CSVOutput() ;
@@ -108,8 +109,8 @@ public class ResultSetWriterRegistry {
     } ;
 
     private static ResultSetWriter writerNone = new ResultSetWriter() {
-        @Override public void write(OutputStream out, ResultSet resultSet, Context context) {}
-        @Override public void write(Writer out, ResultSet resultSet, Context context)       {}
+        @Override public void write(OutputStream out, ResultSet resultSet, Context context) { ResultSetFormatter.consume(resultSet); }
+        @Override public void write(Writer out, ResultSet resultSet, Context context)       { ResultSetFormatter.consume(resultSet); }
         @Override public void write(OutputStream out, boolean result, Context context)      {}
     } ;
 
@@ -117,16 +118,16 @@ public class ResultSetWriterRegistry {
         @Override public void write(OutputStream out, ResultSet resultSet, Context context) {
             Prologue prologue = choosePrologue(resultSet, context);
             TextOutput tFmt = new TextOutput(new SerializationContext(prologue)) ;
-            tFmt.format(out, resultSet) ; 
+            tFmt.format(out, resultSet) ;
         }
         @Override public void write(Writer out, ResultSet resultSet, Context context) {throw new NotImplemented("Writer") ; }
         @Override public void write(OutputStream out, boolean result, Context context) {
             TextOutput tFmt = new TextOutput(new SerializationContext((Prologue)null)) ;
-            tFmt.format(out, result) ; 
+            tFmt.format(out, result) ;
         }
     } ;
-    
-    /** Establish a prologue for formatting output.  Return "null" for none found. */ 
+
+    /** Establish a prologue for formatting output.  Return "null" for none found. */
     private static Prologue choosePrologue(ResultSet resultSet, Context context) {
         try {
             if ( context != null && context.get(ARQConstants.symPrologue) != null )
@@ -135,7 +136,7 @@ public class ResultSetWriterRegistry {
             if ( m != null )
                 return new Prologue(m);
         } catch (Exception ex) {
-            FmtLog.warn(ARQ.getExecLogger(), "Failed to establish a 'Prologue' for text output: %s", ex.getMessage()); 
+            FmtLog.warn(ARQ.getExecLogger(), "Failed to establish a 'Prologue' for text output: %s", ex.getMessage());
         }
         return null;
     }
