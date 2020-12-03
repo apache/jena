@@ -39,14 +39,6 @@ public abstract class CardinalityConstraint extends ConstraintEntity {
         throw new ShaclParseException("Cardinality constraint on a node shape");
     }
 
-    public int getMinCount(){
-        return minCount;
-    }
-
-    public int getMaxCount(){
-        return maxCount;
-    }
-
     // -1 => no test
     protected CardinalityConstraint(int minCardinality, int maxCardinality) {
         this.minCount = minCardinality;

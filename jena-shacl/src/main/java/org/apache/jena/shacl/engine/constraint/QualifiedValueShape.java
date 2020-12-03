@@ -54,15 +54,15 @@ public class QualifiedValueShape implements Constraint {
         return sub;
     }
 
-    public int getqMin() {
+    public int qMin() {
         return qMin;
     }
 
-    public int getqMax() {
+    public int qMax() {
         return qMax;
     }
 
-    public boolean isqDisjoint() {
+    public boolean qDisjoint() {
         return qDisjoint;
     }
 

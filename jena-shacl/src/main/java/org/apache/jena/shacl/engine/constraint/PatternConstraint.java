@@ -53,11 +53,7 @@ public class PatternConstraint extends ConstraintTerm {
         this.pattern = Pattern.compile(pattern, flags);
     }
 
-    public Pattern getPattern() {
-        return pattern;
-    }
-
-    public String getPatternString() {
+    public String getPattern() {
         return patternString;
     }
 

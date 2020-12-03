@@ -35,7 +35,7 @@ public class JViolationConstraint extends ConstraintTerm {
         this.generateViolation = generateViolation;
     }
 
-    public boolean isGenerateViolation() {
+    public boolean generatesViolation() {
         return generateViolation;
     }
 
