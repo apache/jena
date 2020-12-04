@@ -27,7 +27,7 @@ import org.junit.runners.Suite.SuiteClasses ;
  *
  */
 @RunWith(Suite.class)
-@SuiteClasses({ 
+@SuiteClasses({
     TestChecker.class
     , TestStreamRDF.class
     , TestFactoryRDF.class
@@ -37,8 +37,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestPrefixMap.class
     , TestPrefixMapWrapper.class
     , TestPrefixMapOther.class
-    , TestPrefixMapExtended1.class
-    
+
     , TestIO_JenaReaders.class
     , TestIO_JenaWriters.class
     , TestLangRegistration.class

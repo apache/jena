@@ -110,7 +110,8 @@ public class TestDatasetTDB
         load1(m);
         Model m2 = ds.getNamedModel("http://example/graph/");
         String x = m2.expandPrefix(":x");
-        assertEquals(x, ":x");
+        // Shared prefixes.
+        assertEquals("http://example/x", x);
     }
 
     @Test public void query1()

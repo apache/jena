@@ -137,7 +137,7 @@ public class TestDatabaseOps
         //         at org.apache.jena.tdb2.sys.TestDatabaseOps.compact_prefixes_3(TestDatabaseOps.java:135)
         // (and now JDK15).
         // The NPE is from java.nio.file.Files.provider.
-        // It does not fail anywhere else ecept at ASF and it does not always fail.
+        // It does not fail anywhere else except at ASF and it does not always fail.
         // This seems to be on specific, maybe just on, Jenkins build node.
         try {
             compact_prefixes_3_test();
@@ -162,7 +162,16 @@ public class TestDatabaseOps
         DatasetGraph dsg1 = dsgs.get();
         Location loc1 = ((DatasetGraphTDB)dsg1).getLocation();
 
+        // Before
+        int x1 = Txn.calculateRead(dsg, ()->dsg.prefixes().size());
+        assertTrue("Prefxies count", x1 > 0);
+
         DatabaseMgr.compact(dsgs); // HERE
+
+        // After
+        int x2 = Txn.calculateRead(dsg, ()->dsg.prefixes().size());
+
+        assertEquals("Before and after prefix count", x1, x2);
 
         Graph g2 = dsgs.getDefaultGraph();
 

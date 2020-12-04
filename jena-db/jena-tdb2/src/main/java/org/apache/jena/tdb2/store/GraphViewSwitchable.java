@@ -18,20 +18,16 @@
 
 package org.apache.jena.tdb2.store;
 
-import org.apache.jena.dboe.storage.StoragePrefixes;
-import org.apache.jena.dboe.storage.prefixes.*;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.sparql.core.GraphView;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
 /**
  * A GraphView that is sensitive to {@link DatasetGraphSwitchable} switching.
- * This ensures that a graph object remains valid as the {@link DatasetGraphSwitchable} switchs.
+ * This ensures that a graph object remains valid as the {@link DatasetGraphSwitchable} switches.
  */
 public class GraphViewSwitchable extends GraphView {
     public static GraphViewSwitchable createDefaultGraphSwitchable(DatasetGraphSwitchable dsg)
@@ -51,25 +47,8 @@ public class GraphViewSwitchable extends GraphView {
         this.dsgx = dsg;
     }
 
-    // Some operations need to be caught and switched here, some don't 
+    // Some operations need to be caught and switched here, some don't
     // Add/delete get switched because the DSG of the super class GraphView switches.
-    // But we need a switching PrefixMapping.
-    // We need a TransactionHandler.
-    
-    @Override
-    protected PrefixMapping createPrefixMapping() {
-        Node gn = super.getGraphName();
-        if ( gn == Quad.defaultGraphNodeGenerated )
-            gn = null;
-        if ( Quad.isUnionGraph(gn) ) {
-            // [TDBX] Union
-            // Read-only wrapper would be better than a copy.
-            PrefixMapping pmap = new PrefixMappingImpl();
-            pmap.setNsPrefixes(prefixMapping(null));
-            return pmap;
-        }
-        return prefixMapping(gn);
-    }
 
     /** Return the {@link DatasetGraphSwitchable} we are viewing. */
     @Override
@@ -77,7 +56,7 @@ public class GraphViewSwitchable extends GraphView {
         return getx();
     }
 
-    /** 
+    /**
      *  Return the {@code Graph} from the underlying DatasetGraph
      *  Do not hold onto this reference across switches.
      */
@@ -98,48 +77,20 @@ public class GraphViewSwitchable extends GraphView {
     public void clear() {
         getBaseGraph().clear();
     }
-    
+
     // Operations that GraphView provides but where the underlying switchable graph may be do better.
     // As the underlying graph is not a subclass, it can not override by inheritance.
-    
+
     @Override
-    public void sync() { } 
-   
+    public void sync() { }
+
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(Node s, Node p, Node o) {
         // This breaks the cycle because super.find will call here again.
-        return getBaseGraph().find(s, p, o); 
+        return getBaseGraph().find(s, p, o);
     }
 
-    // Not needed here because the union graph is a graph(unionGraph) so that redirects on use.
-    // graphUnionFind(Node s, Node p, Node o) : see GraphTDB
-    
     private DatasetGraphTDB getDSG() {
         return ((DatasetGraphTDB)(getx().get()));
-    }
-
-    private PrefixMapping prefixMapping(Node graphName) {
-        PrefixMapI pmap = new PrefixMapTDB2(graphName);
-        return PrefixesFactory.newPrefixMappingOverPrefixMapI(pmap);
-    }
-
-    class PrefixMapTDB2 extends PrefixMapIOverStorage {
-        
-        private final Node graphName;
-    
-        PrefixMapTDB2(Node graphName) {
-            super(null);
-            graphName = PrefixLib.canonicalGraphName(graphName);
-            this.graphName = graphName;
-        }
-    
-        @Override
-        protected StoragePrefixMap spm() {
-            StoragePrefixes prefixes = getDSG().getPrefixes();
-            StoragePrefixMap view = PrefixLib.isNodeDefaultGraph(graphName)
-                ? StoragePrefixesView.viewDefaultGraph(prefixes)
-                : StoragePrefixesView.viewGraph(prefixes, graphName);
-            return view;
-        }
     }
 }

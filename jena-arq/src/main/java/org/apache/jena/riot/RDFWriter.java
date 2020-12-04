@@ -219,7 +219,7 @@ public class RDFWriter {
     }
 
     private  PrefixMap prefixMap(DatasetGraph dataset) {
-        return prefixMap(dataset.getDefaultGraph());
+        return PrefixMapFactory.createForOutput(dataset.prefixes());
     }
 
     private static PrefixMap prefixMap(Graph graph) {

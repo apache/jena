@@ -164,16 +164,9 @@ public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
         BPlusTreeParams params = bpTree.getParams();
 
         int ptrBuffLen = params.MaxPtr * params.getPtrLength();
-        // Only store the key part of records in a B+Tree block
-        // OLD - Node table has real value part - what's going on?
 
-        // [Issue:FREC]
-        // Allocate space for record, key and value, despite slight over
-        // allocation.
+        // Allocate space for record, key and value, despite slight over allocation.
         int recBuffLen = params.MaxRec * params.getRecordLength();
-
-        // [Issue:FREC] Should be: key space only.
-        // int recBuffLen = params.MaxRec * params.getKeyLength();
 
         n.id = block.getId().intValue();
         n.setParent(parent);

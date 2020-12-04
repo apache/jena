@@ -19,28 +19,26 @@
 package org.apache.jena.riot.system;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.function.BiConsumer ;
+import java.util.stream.Stream;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.shared.PrefixMapping ;
 
 /**
  * Abstract base implementation of a {@link PrefixMap} which provides
- * some useful helper methods
- *
+ * some implementations of API methods.
  */
 public abstract class PrefixMapBase implements PrefixMap {
 
+    protected PrefixMapBase() {}
+
     protected boolean strSafeFor(String str, char ch) {
         return str.indexOf(ch) == -1;
-    }
-
-    protected String canonicalPrefix(String prefix) {
-        if (prefix.endsWith(":"))
-            return prefix.substring(0, prefix.length() - 1);
-        return prefix;
     }
 
     @Override
@@ -53,9 +51,19 @@ public abstract class PrefixMapBase implements PrefixMap {
         getMapping().forEach(action);
     }
 
+    // e.g. Iterable.
+    private Iterator<PrefixEntry> iterator() {
+        return Iter.iter(getMapping().entrySet()).map(e->PrefixEntry.create(e.getKey(), e.getValue()));
+    }
+
+    @Override
+    public Stream<PrefixEntry> stream() {
+        return getMapping().entrySet().stream().map(e->PrefixEntry.create(e.getKey(), e.getValue()));
+    }
+
     @Override
     public void putAll(PrefixMap pmap) {
-    		pmap.getMapping().forEach(this::add);
+        pmap.getMapping().forEach(this::add);
     }
 
     @Override
@@ -65,69 +73,49 @@ public abstract class PrefixMapBase implements PrefixMap {
 
     @Override
     public void putAll(Map<String, String> mapping) {
-    		mapping.forEach(this::add);
+        mapping.forEach(this::add);
+    }
+
+    @Override
+    public String abbreviate(String uriStr) {
+        Objects.requireNonNull(uriStr);
+        PrefixLib.abbreviate(this, uriStr);
+        Pair<String, String> p = abbrev(uriStr);
+        if (p == null)
+            return null;
+        return p.getLeft() + ":" + p.getRight();
+    }
+
+    @Override
+    public String expand(String prefix, String localName)  {
+        Objects.requireNonNull(prefix);
+        Objects.requireNonNull(localName);
+        return PrefixLib.expand(this, prefix, localName);
+    }
+
+    @Override
+    public Pair<String, String> abbrev(String uriStr) {
+        return PrefixLib.abbrev(this, uriStr);
     }
 
     /**
-     * Abbreviate an IRI or return a pair of prefix and local parts.
+     * Abbreviate an IRI and return a pair of prefix and local parts; return null otherwise.
      *
-     * @param uriStr
-     *            URI string to abbreviate
-     * @param turtleSafe
-     *            Only return legal Turtle local names.
+     * @param uriStr               URI string to abbreviate
+     * @param turtleSafeLocalPart  Only return legal Turtle local names.
      */
-    protected Pair<String, String> abbrev(Map<String, String> prefixes, String uriStr, boolean checkLocalPart) {
-        for (Entry<String, String> e : prefixes.entrySet()) {
-            String uriForPrefix = e.getValue();
-
-            if (uriStr.startsWith(uriForPrefix)) {
-                String ln = uriStr.substring(uriForPrefix.length());
-                if (!checkLocalPart || this.isSafeLocalPart(ln))
-                    return Pair.create(e.getKey(), ln);
-            }
-        }
-        return null;
+    protected Pair<String, String> abbrev(Map<String, String> prefixesMap, String uriStr, boolean turtleSafeLocalPart) {
+        return PrefixLib.abbrev(prefixesMap, uriStr, turtleSafeLocalPart);
     }
 
     @Override
     public String expand(String prefixedName) {
-        int i = prefixedName.indexOf(':');
-        if (i < 0)
-            return null;
-        return expand(prefixedName.substring(0, i), prefixedName.substring(i + 1));
-    }
-
-    /**
-     * Is a local name safe? Default is a fast check for Turtle-like local names.
-     * @param ln Local name
-     * @return True if safe, false otherwise
-     */
-    protected boolean isSafeLocalPart(String ln) {
-        // This test isn't complete but covers the common issues that arise.
-        // Does not consider possible escaping.
-        // There needs to be a further, stronger check for output.
-        // About ':' -- Turtle RDF 1.1 allows this in a local part of a prefix name.
-        return strSafeFor(ln, '/') && strSafeFor(ln, '#');
+        Objects.requireNonNull(prefixedName);
+        return PrefixLib.expand(this, prefixedName);
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{ ");
-        boolean first = true;
-
-        for (Entry<String, String> e : this.getMapping().entrySet()) {
-            String prefix = e.getKey();
-            String iri = e.getValue();
-            if (first)
-                first = false;
-            else
-                sb.append(" ,");
-            sb.append(prefix);
-            sb.append(":=");
-            sb.append(iri);
-        }
-        sb.append(" }");
-        return sb.toString();
+        return Prefixes.toString(this);
     }
 }

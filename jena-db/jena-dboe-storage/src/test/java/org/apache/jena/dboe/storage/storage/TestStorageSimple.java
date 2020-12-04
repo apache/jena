@@ -18,12 +18,12 @@
 package org.apache.jena.dboe.storage.storage;
 
 import org.apache.jena.dboe.storage.StorageRDF;
-import org.apache.jena.dboe.storage.simple.StorageMem;
+import org.apache.jena.dboe.storage.simple.StorageSimpleMem;
 
 public class TestStorageSimple extends BaseTestStorageRDF {
 
     @Override
     protected StorageRDF create() {
-        return new StorageMem();
+        return new StorageSimpleMem();
     }
 }

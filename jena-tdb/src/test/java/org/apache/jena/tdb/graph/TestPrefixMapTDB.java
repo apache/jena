@@ -16,17 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system;
+package org.apache.jena.tdb.graph;
 
-/**
- * Tests for {@link PrefixMapExtended} applied over a {@link PrefixMapStd}
- *
- */
-public class TestPrefixMapExtended1 extends AbstractTestPrefixMap {
+import org.apache.jena.riot.system.AbstractTestPrefixMap;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.tdb.TDBFactory;
 
+public class TestPrefixMapTDB extends AbstractTestPrefixMap
+{
     @Override
     protected PrefixMap getPrefixMap() {
-        return new PrefixMapExtended(new PrefixMapStd());
+        return TDBFactory.createDatasetGraph().prefixes();
     }
-
 }

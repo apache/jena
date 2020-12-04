@@ -29,12 +29,14 @@ import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.reasoner.InfGraph;
 import org.apache.jena.riot.other.G;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.sparql.graph.GraphOps;
 import org.apache.jena.sparql.graph.GraphZero;
 
 /** DatasetGraph of a single graph as default graph.
  * <p>
- *  Fixed as one graph (the default) - named graphs can notbe added nor the default graph changed, only the contents modified.
+ *  Fixed as one graph (the default) - named graphs can not be added nor the default graph changed, only the contents modified.
  *  <p>
  *  This dataset passes transactions down to a nominated backing {@link DatasetGraph}.
  *  <p>
@@ -42,6 +44,7 @@ import org.apache.jena.sparql.graph.GraphZero;
  */
 public class DatasetGraphOne extends DatasetGraphBaseFind {
     private final Graph graph;
+    private final PrefixMap prefixes;
     private final DatasetGraph backingDGS;
     private final Transactional txn;
     private final boolean supportsAbort;
@@ -72,22 +75,22 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
     }
 
     private DatasetGraphOne(Graph graph, DatasetGraph backing) {
-        this.graph = graph;
-        backingDGS = backing;
-        supportsAbort = backing.supportsTransactionAbort();
-        txn = backing;
+        this(graph, backing, backing, backing.supportsTransactionAbort());
     }
 
     private DatasetGraphOne(Graph graph) {
-        // Not GraphView which was handled in create(Graph).
-        this.graph = graph;
-        txn = new TxnDataset2Graph(graph);
-        //txn = TransactionalLock.createMRSW();
-        backingDGS = null;
         // Don't advertise the fact but TxnDataset2Graph tries to provide abort.
         // We can not guarantee it though because a plain, non-TIM,
         // memory graph does not support abort.
-        supportsAbort = false;
+        this(graph, null, new TxnDataset2Graph(graph), false);
+    }
+
+    private DatasetGraphOne(Graph graph, DatasetGraph backing, Transactional txn, boolean supportsAbort) {
+        this.graph = graph;
+        this.prefixes = Prefixes.adapt(graph);
+        this.txn = txn;
+        this.backingDGS = backing;
+        this.supportsAbort = supportsAbort;
     }
 
     @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
@@ -131,6 +134,11 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
     @Override
     public Iterator<Node> listGraphNodes() {
         return new NullIterator<>();
+    }
+
+    @Override
+    public PrefixMap prefixes() {
+        return prefixes;
     }
 
     @Override

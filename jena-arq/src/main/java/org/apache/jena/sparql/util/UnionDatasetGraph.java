@@ -22,7 +22,9 @@ import java.util.Iterator;
 import java.util.function.Function;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.graph.*;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.compose.Union;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
@@ -85,7 +87,7 @@ public class UnionDatasetGraph extends DyadicDatasetGraph {
     public boolean isEmpty() {
         return both(DatasetGraph::isEmpty);
     }
-    
+
     static class UnionView extends Union {
 
         public UnionView(Graph L, Graph R) {
@@ -101,7 +103,12 @@ public class UnionDatasetGraph extends DyadicDatasetGraph {
         public void performDelete(Triple t) {
             throwNoMutationAllowed();
         }
-        
+
+        @Override
+        public void remove(Node s, Node p, Node o) {
+            throwNoMutationAllowed();
+        }
+
         @Override
         public void clear() {
             throwNoMutationAllowed();

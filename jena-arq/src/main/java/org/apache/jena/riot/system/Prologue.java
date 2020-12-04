@@ -28,71 +28,69 @@ public class Prologue
 
     protected PrefixMap prefixMap = null ;
     protected IRIResolver resolver = null ;
-    
+
     public static Prologue create(String base, PrefixMapping pmapping)
     {
-        PrefixMap pmap = null ;
+        PrefixMap pmap = new PrefixMapStd() ;
         if ( pmapping != null )
-        {
-            pmap = PrefixMapFactory.createForInput(pmapping) ;
-        }
+            // Copy to isolate
+            pmap.putAll(pmapping);
         IRIResolver resolver = null ;
         if ( base != null )
             resolver = IRIResolver.create(base) ;
         return new Prologue(pmap, resolver) ;
     }
-    
+
     public Prologue()
-    { 
-        this.prefixMap = PrefixMapFactory.createForInput() ;
+    {
+        this.prefixMap = PrefixMapFactory.create() ;
         this.resolver = null ;
     }
-    
+
     public Prologue(PrefixMap pmap, IRIResolver resolver)
     {
-        this.prefixMap = pmap ; 
+        this.prefixMap = pmap ;
         this.resolver = resolver ;
     }
-    
+
     public Prologue(Prologue other)
     {
-        this.prefixMap = other.prefixMap ; 
+        this.prefixMap = other.prefixMap ;
         this.resolver = other.resolver ;
     }
 
     public Prologue copy()
     {
-        PrefixMap prefixMap = PrefixMapFactory.createForInput(this.prefixMap) ;
+        PrefixMap prefixMap = PrefixMapFactory.create(this.prefixMap) ;
         return new Prologue(prefixMap, resolver) ;
     }
-    
+
     public void usePrologueFrom(Prologue other)
     {
         // Copy.
-        prefixMap = PrefixMapFactory.createForInput(other.prefixMap) ;
+        prefixMap = PrefixMapFactory.create(other.prefixMap) ;
         seenBaseURI = false ;
         if ( other.resolver != null )
             resolver = IRIResolver.create(other.resolver.getBaseIRIasString()) ;
     }
-    
+
     public Prologue sub(PrefixMap newMappings)  { return sub(newMappings, null) ; }
     public Prologue sub(String base)            { return sub(null, base) ; }
-    
-    public Prologue sub(PrefixMap newMappings, String base)
-    {
+
+    public Prologue sub(PrefixMap newMappings, String base) {
         // New prefix mappings
         PrefixMap ext = getPrefixMap() ;
         if ( newMappings != null )
-            ext = PrefixMapFactory.extend(ext) ;
+            ext.putAll(newMappings);
         // New base.
         IRIResolver r = resolver ;
         if ( base != null )
             r = IRIResolver.create(base) ;
         return new Prologue(ext, r) ;
     }
-    
+
     /**
-     * @return True if the query has an explicitly set base URI. 
+     * @return True if the query has an explicitly set base URI.
      */
     public boolean explicitlySetBaseURI() { return seenBaseURI ; }
 
@@ -103,7 +101,7 @@ public class Prologue
     {
         if ( resolver == null )
             return null ;
-        
+
 //        if ( baseURI == null )
 //            setDefaultBaseIRI() ;
         return resolver.getBaseIRIasString();
@@ -114,13 +112,13 @@ public class Prologue
     public void setBaseURI(String baseURI)
     {
         this.seenBaseURI = true ;
-        this.resolver = IRIResolver.create(baseURI) ; 
+        this.resolver = IRIResolver.create(baseURI) ;
     }
-    
+
     public void setBaseURI(IRI iri)
     {
         this.seenBaseURI = true ;
-        this.resolver = IRIResolver.create(iri) ; 
+        this.resolver = IRIResolver.create(iri) ;
     }
 
     /**
@@ -129,64 +127,23 @@ public class Prologue
     public void setBaseURI(IRIResolver resolver)
     {
         this.seenBaseURI = true ;
-        this.resolver = resolver ; 
+        this.resolver = resolver ;
     }
-    
-//    protected void setDefaultBaseIRI() { setDefaultBaseIRI(null) ; }
-//    
-//    protected void setDefaultBaseIRI(String base)
-//    {
-//        if ( baseURI != null )
-//            return ;
-//        
-//        baseURI = IRIResolver.chooseBaseURI(base) ;
-//    }
-    
+
     // ---- Query prefixes
-    
+
     /** Set a prefix for this query */
     public void setPrefix(String prefix, String expansion)
     {
         prefixMap.add(prefix, expansion) ;
-    }   
+    }
 
-    /** Return the prefix map from the parsed query */ 
+    /** Return the prefix map from the parsed query */
     public PrefixMap getPrefixMap() { return prefixMap ; }
-//    /** Set the mapping */
-//    public void setPrefixMapping(PrefixMap pmap ) { prefixMap = pmap ; }
-
-//    /** Reverse lookup of a URI to get a prefix */
-//    public String getPrefix(String uriStr)
-//    {
-//        return prefixMap.getPrefix(uriStr) ;
-//    }
 
     /** Get the IRI resolver */
     public IRIResolver getResolver() { return resolver ; }
-    
+
     /** Set the IRI resolver */
     public void setResolver(IRIResolver resolver) { this.resolver = resolver; }
-    
-//    /** Expand prefixed name 
-//     * 
-//     * @param qname  The prefixed name to be expanded
-//     * @return URI, or null if not expanded.
-//     */
-//
-//    public String expandPrefixedName(String qname)
-//    {
-//        // Split qname.
-//        
-//        String s = prefixMap.expand(qname) ;
-//        if ( s.equals(qname) )
-//            return null ;
-//        return s ;
-//    }
-    
-//    /** Use the prefix map to turn a URI into a qname, or return the original URI */
-//    
-//    public String shortForm(String uri)
-//    {
-//        return prefixMap.shortForm(uri) ;
-//    }
 }

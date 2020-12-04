@@ -30,6 +30,8 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.riot.other.G;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker ;
 import org.apache.jena.sparql.graph.GraphUnionRead ;
@@ -40,33 +42,36 @@ import org.apache.jena.sparql.graph.GraphUnionRead ;
  *  This implementation provides copy-in, copy-out for {@link #addGraph}.
  *  <p>See {@link DatasetGraphMapLink} for a {@code DatasetGraph}
  *  that holds graphs as provided.
- *  
- *  @see DatasetGraphMapLink  
+ *
+ *  @see DatasetGraphMapLink
  */
 public class DatasetGraphMap extends DatasetGraphTriplesQuads
 {
     private final GraphMaker graphMaker ;
     private final Map<Node, Graph> graphs = new HashMap<>() ;
-    private Graph defaultGraph ;
-    
+    private final Graph defaultGraph ;
+    private final PrefixMap prefixes ;
+
     /**  DatasetGraphMap defaulting to storage in memory.
      */
     public DatasetGraphMap() {
-        this(DatasetGraphFactory.graphMakerNamedGraphMem) ; 
+        this(DatasetGraphFactory.graphMakerNamedGraphMem) ;
     }
-    
+
     /**  DatasetGraphMap with a specific policy for graph creation.
-     *   This allows control over the storage. 
+     *   This allows control over the storage.
      */
     public DatasetGraphMap(GraphMaker graphMaker) {
         this(graphMaker.create(null), graphMaker) ;
     }
-    
+
     private DatasetGraphMap(Graph defaultGraph, GraphMaker graphMaker) {
         this.defaultGraph = defaultGraph ;
         this.graphMaker = graphMaker ;
+        // Preserves legacy behaviour of "getDefaultPraph" having prefixes.
+        this.prefixes = Prefixes.adapt(defaultGraph);
     }
-    
+
     // ----
     private final Transactional txn                     = TransactionalLock.createMRSW() ;
     private final Transactional txn()                   { return txn; }
@@ -83,24 +88,29 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
     @Override public boolean supportsTransactions()     { return true; }
     @Override public boolean supportsTransactionAbort() { return false; }
     // ----
-    
+
     @Override
     public Iterator<Node> listGraphNodes() {
-        // Hide empty graphs. 
+        // Hide empty graphs.
         return graphs.entrySet().stream().filter(e->!e.getValue().isEmpty()).map(Entry::getKey).iterator();
     }
 
     @Override
+    public PrefixMap prefixes() {
+        return prefixes;
+    }
+
+    @Override
     public boolean containsGraph(Node graphNode) {
-        // Hide empty graphs. 
+        // Hide empty graphs.
         if ( Quad.isDefaultGraph(graphNode) )
             return true;
         if ( Quad.isUnionGraph(graphNode) )
             return true;
         Graph g = graphs.get(graphNode);
-        return g != null && !g.isEmpty(); 
+        return g != null && !g.isEmpty();
     }
-    
+
     @Override
     protected void addToDftGraph(Node s, Node p, Node o) {
         getDefaultGraph().add(Triple.create(s, p, o)) ;
@@ -155,7 +165,7 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
 
     @Override
     public Graph getGraph(Node graphNode) {
-        if ( Quad.isUnionGraph(graphNode) ) 
+        if ( Quad.isUnionGraph(graphNode) )
             return new GraphUnionRead(this) ;
         if ( Quad.isDefaultGraph(graphNode))
             return getDefaultGraph() ;
@@ -171,15 +181,15 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
 
     /** Called from getGraph when a nonexistent graph is asked for.
      * Return null for "nothing created as a graph".
-     * Sub classes can reimplement this.  
+     * Sub classes can reimplement this.
      */
-    protected Graph getGraphCreate(Node graphNode) { 
+    protected Graph getGraphCreate(Node graphNode) {
         Graph g = graphMaker.create(graphNode) ;
         if ( g == null )
             throw new ARQException("Can't make new graphs") ;
         return g ;
     }
-    
+
     @Override
     public long size() {
         return graphs.size();

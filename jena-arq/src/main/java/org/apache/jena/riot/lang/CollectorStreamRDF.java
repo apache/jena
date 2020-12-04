@@ -28,50 +28,50 @@ import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.core.Quad ;
 
 /**
- * StreamRDF implementations which store received triples and quads 
- * in a {@link java.util.Collection}. 
- * 
+ * StreamRDF implementations which store received triples and quads
+ * in a {@link java.util.Collection}.
+ *
  * The resulting collection can be retrieved via the
- * {@link #getTriples()} and {@link #getQuads()} 
+ * {@link #getTriples()} and {@link #getQuads()}
  * methods.
- * 
+ *
  * The implementations are suitable for single-threaded parsing, for use with small
  * data or distributed computing frameworks (e.g. Hadoop) where the overhead
  * of creating many threads for a push-pull parser setup is significant.
  */
 public class CollectorStreamRDF implements StreamRDF {
-	private PrefixMap prefixes = PrefixMapFactory.createForInput();
+	private PrefixMap prefixes = PrefixMapFactory.create();
 	private String baseIri;
-	
+
 	private List<Triple> triples = new ArrayList<>();
 	private List<Quad> quads = new ArrayList<>();
-    
+
     @Override
     public void start() {
         triples.clear() ;
         quads.clear() ;
-        prefixes = PrefixMapFactory.createForInput();
+        prefixes = PrefixMapFactory.create();
     }
 
 	@Override
 	public void finish() {}
-	
+
 	@Override
 	public void triple(Triple triple) { triples.add(triple) ; }
-	
+
 	@Override
 	public void quad(Quad quad) { quads.add(quad) ; }
-	
+
 	@Override
 	public void base(String base) {
 		this.baseIri = base;
 	}
-	
+
 	@Override
 	public void prefix(String prefix, String iri) {
 		prefixes.add(prefix, iri);
 	}
-	
+
 	public PrefixMap getPrefixes() {
 		return prefixes;
 	}
@@ -80,6 +80,6 @@ public class CollectorStreamRDF implements StreamRDF {
 		return baseIri;
 	}
 
-	public List<Triple> getTriples()        { return triples ; } 
-    public List<Quad> getQuads()            { return quads ; } 
+	public List<Triple> getTriples()        { return triples ; }
+    public List<Quad> getQuads()            { return quads ; }
 }

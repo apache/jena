@@ -24,8 +24,6 @@ import org.apache.jena.sparql.graph.GraphsTests;
 import org.apache.jena.tdb2.sys.SystemTDB;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
 
 public abstract class AbstractTestGraphsTDB extends GraphsTests
 {
@@ -38,14 +36,4 @@ public abstract class AbstractTestGraphsTDB extends GraphsTests
     }
 
     @AfterClass public static void afterClass() {  SystemTDB.setDefaultReorderTransform(reorder); }
-
-    // These don't pass ... not quite clear if the test is right.  Investigate.
-
-    @Override
-    @Ignore @Test public void graph_count5() {}
-
-    @Override
-    @Ignore @Test public void graph_count6() {}
-
-
 }

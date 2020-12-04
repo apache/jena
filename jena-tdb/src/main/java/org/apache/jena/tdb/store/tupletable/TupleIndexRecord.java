@@ -37,9 +37,9 @@ import org.apache.jena.tdb.store.NodeId ;
 public class TupleIndexRecord extends TupleIndexBase
 {
     private static final boolean Check = false ;
-    private RangeIndex index ; 
+    private RangeIndex index ;
     private RecordFactory factory ;
-    
+
     public TupleIndexRecord(int N, ColumnMap colMapping, String name, RecordFactory factory, RangeIndex index) {
         super(N, colMapping, name);
         this.factory = factory;
@@ -117,7 +117,7 @@ public class TupleIndexRecord extends TupleIndexBase
             NodeId X = pattern.get(i);
             if ( NodeId.isAny(X) ) {
                 X = null;
-                // No longer seting leading key slots.
+                // No longer setting leading key slots.
                 leading = false;
                 continue;
             }
@@ -168,7 +168,7 @@ public class TupleIndexRecord extends TupleIndexBase
 
         return tuples;
     }
-    
+
     @Override
     public Iterator<Tuple<NodeId>> all() {
         Iterator<Record> iter = index.iterator();

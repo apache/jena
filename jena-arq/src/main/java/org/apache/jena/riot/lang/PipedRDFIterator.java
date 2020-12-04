@@ -48,11 +48,11 @@ import org.apache.jena.riot.system.PrefixMapFactory;
  * Inspired by Java's {@link java.io.PipedInputStream} and
  * {@link java.io.PipedOutputStream}
  * </p>
- * 
+ *
  * @param <T>
  *            The type of the RDF primitive, should be one of {@code Triple},
  *            {@code Quad}, or {@code Tuple<Node>}
- * 
+ *
  * @see PipedTriplesStream
  * @see PipedQuadsStream
  * @see PipedTuplesStream
@@ -94,7 +94,7 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable {
 
     private final Object lock = new Object(); // protects baseIri and prefixes
     private String baseIri;
-    private final PrefixMap prefixes = PrefixMapFactory.createForInput();
+    private final PrefixMap prefixes = PrefixMapFactory.create();
 
     /**
      * Creates a new piped RDF iterator with the default buffer size of
@@ -122,7 +122,7 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable {
      * the expected input size though you may need to tune this depending on how
      * fast your consumer thread is.
      * </p>
-     * 
+     *
      * @param bufferSize
      *            Buffer size
      */
@@ -146,7 +146,7 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable {
      * chance of thread starvation. This likely need only be set to {@code true}
      * if there will be multiple consumers.
      * </p>
-     * 
+     *
      * @param bufferSize
      *            Buffer size
      * @param fair
@@ -188,7 +188,7 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable {
      * and errors out accordingly. You may need to adjust this if you have a
      * slow producer thread or many consumer threads.
      * </p>
-     * 
+     *
      * @param bufferSize
      *            Buffer size
      * @param fair
@@ -328,7 +328,7 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable {
 
     /**
      * Gets the most recently seen Base IRI
-     * 
+     *
      * @return Base IRI
      */
     public String getBaseIri() {
@@ -345,7 +345,7 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable {
 
     /**
      * Gets the prefix map which contains the prefixes seen so far in the stream
-     * 
+     *
      * @return Prefix Map
      */
     public PrefixMap getPrefixes() {

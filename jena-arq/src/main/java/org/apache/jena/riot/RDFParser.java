@@ -54,9 +54,9 @@ import org.apache.jena.sparql.util.Context;
  * "parse" method is called. It can be used multiple times in which case the same source
  * is reread. The destination can vary. The application is responsible for concurrency of
  * the destination of the parse operation.
- * 
+ *
  * The process is
- * 
+ *
  * <pre>
  *    StreamRDF destination = ...
  *    RDFParser parser = RDFParser.create().source("filename.ttl").build();
@@ -68,12 +68,12 @@ import org.apache.jena.sparql.util.Context;
  * </pre>
  * The {@code destination} {@link StreamRDF} and can be given as a
  * {@link Graph} or {@link DatasetGraph} as well.
- * 
- * @see ReaderRIOT The interface to the syntax parsing process for each RDF syntax. 
+ *
+ * @see ReaderRIOT The interface to the syntax parsing process for each RDF syntax.
  */
 
 public class RDFParser {
-    /*package*/ enum LangTagForm { NONE, LOWER_CASE, CANONICAL }  
+    /*package*/ enum LangTagForm { NONE, LOWER_CASE, CANONICAL }
 
     private final String            uri;
     private final Path              path;
@@ -100,7 +100,7 @@ public class RDFParser {
     private boolean                 canUseThisParser = true;
 
     // ---- Builder creation
-    
+
     /** Create an {@link RDFParserBuilder}.
      * <p>
      * Often used in a pattern such as:
@@ -109,7 +109,7 @@ public class RDFParser {
      *        .source("data.ttl")
      *        .parse(graph);
      * </pre>
-     * 
+     *
      */
     public static RDFParserBuilder create() {
         return RDFParserBuilder.create();
@@ -120,7 +120,7 @@ public class RDFParser {
      * {@link Path}.
      * <p>
      * This is a shortcut for {@code RDFParser.create().source(path)}.
-     * 
+     *
      * @param path
      * @return this
      */
@@ -133,11 +133,11 @@ public class RDFParser {
      * can be a filename.
      * <p>
      * This is a shortcut for {@code RDFParser.create().source(uriOrFile)}.
-     * 
+     *
      * @param uriOrFile
      * @return this
      */
-    
+
     public static RDFParserBuilder source(String uriOrFile) {
         return RDFParserBuilder.create().source(uriOrFile);
     }
@@ -154,23 +154,23 @@ public class RDFParser {
         return RDFParserBuilder.create().fromString(string);
     }
 
-    /** 
+    /**
      * Create an {@link RDFParserBuilder} and set the source to {@link InputStream}.
-     *  The {@link InputStream} will be closed when the 
-     *  parser is called and the parser can not be reused. 
+     *  The {@link InputStream} will be closed when the
+     *  parser is called and the parser can not be reused.
      *  The syntax must be set with {@code .lang(...)}.
      *  <p>
      *  This is a shortcut for {@code RDFParser.create().source(input)}.
      *  @param input
-     *  @return this 
+     *  @return this
      */
     public static RDFParserBuilder source(InputStream input) {
         return RDFParserBuilder.create().source(input);
     }
-    
-    /* package */ RDFParser(String uri, Path path, String content, InputStream inputStream, Reader javaReader, StreamManager streamManager, 
-                            HttpClient httpClient, Lang hintLang, Lang forceLang, String baseUri, boolean strict, Optional<Boolean> checking, 
-                            boolean canonicalLexicalValues, LangTagForm langTagForm,  
+
+    /* package */ RDFParser(String uri, Path path, String content, InputStream inputStream, Reader javaReader, StreamManager streamManager,
+                            HttpClient httpClient, Lang hintLang, Lang forceLang, String baseUri, boolean strict, Optional<Boolean> checking,
+                            boolean canonicalLexicalValues, LangTagForm langTagForm,
                             boolean resolveURIs, IRIResolver resolver, FactoryRDF factory,
                             ErrorHandler errorHandler, Context context) {
         int x = countNonNull(uri, path, content, inputStream, javaReader);
@@ -181,7 +181,7 @@ public class RDFParser {
         Objects.requireNonNull(factory);
         Objects.requireNonNull(errorHandler);
         Objects.requireNonNull(checking);
-        
+
         this.uri = uri;
         this.path = path;
         this.content = content;
@@ -229,40 +229,40 @@ public class RDFParser {
                 return false;
         return true;
     }
-    
+
     /**
      * Parse the source, sending the results to a {@link Graph}. The source must be for
-     * triples; any quads are discarded. 
+     * triples; any quads are discarded.
      */
     public void parse(Graph graph) {
         parse(StreamRDFLib.graph(graph));
     }
-    
+
     /**
      * Parse the source, sending the results to a {@link Model}.
      * The source must be for triples; any quads are discarded.
-     * This method is equivalent to {@code parse(model.getGraph())}. 
+     * This method is equivalent to {@code parse(model.getGraph())}.
      */
     public void parse(Model model) {
         parse(model.getGraph());
     }
-    
+
     /**
      * Parse the source, sending the results to a {@link DatasetGraph}.
      */
     public void parse(DatasetGraph dataset) {
         parse(StreamRDFLib.dataset(dataset));
     }
-    
+
     /**
      * Parse the source, sending the results to a {@link Dataset}.
-     * This method is equivalent to {@code parse(dataset.asDatasetGraph())}. 
+     * This method is equivalent to {@code parse(dataset.asDatasetGraph())}.
      */
     public void parse(Dataset dataset) {
         parse(dataset.asDatasetGraph());
     }
-    
-    /** 
+
+    /**
      * Parse the source, sending the results to a {@link StreamRDF}.
      */
     public void parse(StreamRDF destination) {
@@ -273,7 +273,7 @@ public class RDFParser {
         // FactoryRDF is stateful in the LabelToNode mapping.
         // NB FactoryRDFCaching does not need to reset its cache.
         factory.reset() ;
-        
+
         if ( canonicalLexicalValues )
             destination = new StreamCanonicalLiterals(destination);
         switch(langTagForm) {
@@ -332,23 +332,23 @@ public class RDFParser {
         ContentType ct = WebContent.determineCT(null, lang, baseUri);
         if ( ct == null )
             throw new RiotException("Failed to determine the RDF syntax (.lang or .base required)");
-    
+
         ReaderRIOT readerRiot = createReader(ct);
         if ( readerRiot == null )
             throw new RiotException("No parser registered for content type: " + ct.getContentTypeStr());
         Reader jr = javaReader;
         if ( content != null )
             jr = new StringReader(content);
-        
+
         read(readerRiot, inputStream, jr, baseUri, context, ct, destination);
     }
-    
+
     /** Call the reader, from either an InputStream or a Reader */
     private static void read(ReaderRIOT readerRiot, InputStream inputStream, Reader javaReader,
                              String baseUri, Context context,
                              ContentType ct, StreamRDF destination) {
         if ( inputStream != null && javaReader != null )
-            throw new InternalErrorException("Both inputStream and javaReader are non-null"); 
+            throw new InternalErrorException("Both inputStream and javaReader are non-null");
         if ( inputStream != null ) {
             readerRiot.read(inputStream, baseUri, ct, destination, context);
             return;
@@ -373,19 +373,19 @@ public class RDFParser {
             { throw new RiotNotFoundException() ;}
             catch (IOException ex) { IO.exception(ex); }
         }
-        
+
         TypedInputStream in;
         // Need more control than LocatorURL provides to get the Accept header in and the HttpCLient.
         // So map now.
         urlStr = streamManager.mapURI(urlStr);
         if ( urlStr.startsWith("http://") || urlStr.startsWith("https://") ) {
             // HttpOp.execHttpGet(,acceptHeader,) overrides the HttpClient default setting.
-            // 
+            //
             // If there is an explicitly set HttpClient use that as given, and do not override
             // the accept header (i.e. pass null to arg accpetHeader in execHttpGet).
             // Else, use httpOp as setup and set the accept header.
-            String acceptHeader = 
-                ( httpClient == null ) ? WebContent.defaultRDFAcceptHeader : null; 
+            String acceptHeader =
+                ( httpClient == null ) ? WebContent.defaultRDFAcceptHeader : null;
             in = HttpOp.execHttpGet(urlStr, acceptHeader, httpClient, null);
         } else {
             // Already mapped.
@@ -394,7 +394,7 @@ public class RDFParser {
         if ( in == null )
             throw new RiotNotFoundException("Not found: "+urlStr);
         return in ;
-        
+
     }
 
     private ReaderRIOT createReader(ContentType ct) {
@@ -406,7 +406,7 @@ public class RDFParser {
         ReaderRIOTFactory r = RDFParserRegistry.getFactory(lang);
         if ( r == null )
             return null;
-        
+
         ReaderRIOT reader = createReader(r, lang);
         return reader ;
     }
@@ -420,7 +420,7 @@ public class RDFParser {
     private ParserProfile makeParserProfile(Lang lang) {
         boolean resolve = resolveURIs;
         boolean checking$ = strict;
-        
+
         // Per language tweaks.
         if ( sameLang(NTRIPLES, lang) || sameLang(NQUADS, lang) ) {
             if ( ! strict )
@@ -435,11 +435,11 @@ public class RDFParser {
 
         IRIResolver resolver = this.resolver;
         if ( resolver == null ) {
-            resolver = resolve ? 
+            resolver = resolve ?
                 IRIResolver.create(baseUri) :
                 IRIResolver.createNoResolve() ;
         }
-        PrefixMap prefixMap = PrefixMapFactory.createForInput();
+        PrefixMap prefixMap = PrefixMapFactory.create();
         ParserProfileStd parserFactory = new ParserProfileStd(factory, errorHandler, resolver, prefixMap, context, checking$, strict);
         return parserFactory;
     }

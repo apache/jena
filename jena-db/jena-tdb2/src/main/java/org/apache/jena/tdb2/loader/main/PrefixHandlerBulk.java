@@ -18,12 +18,12 @@
 
 package org.apache.jena.tdb2.loader.main;
 
-import org.apache.jena.dboe.storage.Prefixes;
 import org.apache.jena.dboe.transaction.txn.Transaction;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.TxnType;
+import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.tdb2.loader.base.BulkStartFinish;
 import org.apache.jena.tdb2.loader.base.CoLib;
 import org.apache.jena.tdb2.loader.base.MonitorOutput;
@@ -69,7 +69,7 @@ public class PrefixHandlerBulk implements BulkStartFinish {
         return (prefix, uriStr) -> {
             Node p = NodeFactory.createLiteral(prefix);
             Node u = NodeFactory.createURI(uriStr);
-            prefixes.add_ext(Prefixes.nodeDefaultGraph, prefix, uriStr);
+            prefixes.add_ext(Prefixes.nodeDataset, prefix, uriStr);
         };
     }
 }

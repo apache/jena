@@ -25,6 +25,7 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
+import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.sparql.JenaTransactionException ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphWrapper;
@@ -36,6 +37,7 @@ import org.apache.jena.tdb.TDBException;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.store.GraphTxnTDB ;
+import org.apache.jena.tdb.store.PrefixMapTDB1;
 
 /**
  * A transactional {@code DatasetGraph} that allows one active transaction per thread.
@@ -64,6 +66,7 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
 
     private final StoreConnection        sConn;
     private boolean                      isClosed      = false;
+    private final PrefixMap prefixes;
 
     public DatasetGraphTransaction(Location location) {
         this(StoreConnection.make(location)) ;
@@ -72,13 +75,13 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     public DatasetGraphTransaction(StoreConnection sConn) {
         super(null);
         this.sConn = sConn;
+        this.prefixes = new PrefixMapTDB1(this, ()->get());
     }
 
     public Location getLocation() {
         return sConn.getLocation() ;
     }
 
-    // getCurrentTxnDSG
     public DatasetGraphTDB getDatasetGraphToQuery() {
         checkNotClosed() ;
         return get() ;
@@ -90,43 +93,46 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
         return sConn.getBaseDataset() ;
     }
 
-    @Override public DatasetGraph getW() {
-        if ( isInTransaction() ) {
-            DatasetGraphTxn dsgTxn = dsgtxn.get() ;
-            if ( dsgTxn.getTransaction().isRead() ) {
-                TxnType txnType = dsgTxn.getTransaction().getTxnType();
-                Promote mode;
-                switch(txnType) {
-                    case READ :
-                        throw new JenaTransactionException("Attempt to update in a read transaction");
-                    case WRITE :
-                        // Impossible. We're in read-mode.
-                        throw new TDBException("Internal inconsistency: read-mode write transaction");
-                    case READ_PROMOTE :
-                        mode = Promote.ISOLATED;
-                        break;
-                    case READ_COMMITTED_PROMOTE :
-                        mode = Promote.READ_COMMITTED;
-                        break;
-                    default:
-                        throw new TDBException("Internal inconsistency: null transaction type");
-                }
-                // Promotion.
-                TransactionManager txnMgr = dsgTxn.getTransaction().getTxnMgr() ;
-                DatasetGraphTxn dsgTxn2 = txnMgr.promote(dsgTxn, txnType, mode) ;
-                if ( dsgTxn2 == null )
-                    // We were asked for a write operation and can't promote.
-                    // Returning false makes no sense.
-                    throw new JenaTransactionException("Can't promote "+txnType+"- dataset has been written to");
-                dsgtxn.set(dsgTxn2);
+    public void requireWrite() {
+        if ( ! isInTransaction() )
+            return;
+        DatasetGraphTxn dsgTxn = dsgtxn.get() ;
+        if ( dsgTxn.getTransaction().isRead() ) {
+            TxnType txnType = dsgTxn.getTransaction().getTxnType();
+            Promote promoteMode;
+            switch(txnType) {
+                case READ :
+                    throw new JenaTransactionException("Attempt to update in a read transaction");
+                case WRITE :
+                    // Impossible. We're in read-mode.
+                    throw new TDBException("Internal inconsistency: read-mode write transaction");
+                case READ_PROMOTE :
+                    promoteMode = Promote.ISOLATED;
+                    break;
+                case READ_COMMITTED_PROMOTE :
+                    promoteMode = Promote.READ_COMMITTED;
+                    break;
+                default:
+                    throw new TDBException("Internal inconsistency: null transaction type");
             }
+            // Promotion.
+            boolean b = promoteStep(dsgTxn, promoteMode);
+            if ( !b )
+                // We were asked for a write operation and can't promote.
+                // Returning false makes no sense.
+                throw new JenaTransactionException("Can't promote "+txnType+"- dataset has been written to");
         }
+    }
+
+    @Override
+    public DatasetGraph getW() {
+        requireWrite();
         return super.getW() ;
     }
 
     /** Get the current DatasetGraphTDB */
     @Override
-    public DatasetGraphTDB get() {
+    protected DatasetGraphTDB get() {
         if ( isInTransaction() ) {
             DatasetGraphTxn dsgTxn = dsgtxn.get() ;
             if ( dsgTxn == null )
@@ -158,10 +164,15 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     }
 
     @Override
+    public PrefixMap prefixes() {
+        return prefixes;
+    }
+
+    @Override
     public void begin(ReadWrite txnType) {
         begin(TxnType.convert(txnType));
     }
-    
+
     @Override
     public void begin(TxnType txnType) {
         checkNotClosed() ;
@@ -179,12 +190,17 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
               promoteMode = Promote.READ_COMMITTED;
           return promote(promoteMode);
       }
-    
+
     @Override
     public boolean promote(Promote promoteMode) {
         // Promotion (TDB1) is a reset of the DatasetGraphTxn.
         checkNotClosed() ;
         DatasetGraphTxn dsgTxn = dsgtxn.get();
+        return promoteStep(dsgTxn, promoteMode);
+    }
+
+    private boolean promoteStep(DatasetGraphTxn dsgTxn, Promote promoteMode) {
+        // Promotion (TDB1) is a reset of the DatasetGraphTxn.
         Transaction transaction = dsgTxn.getTransaction();
         DatasetGraphTxn dsgTxn2 = transaction.getTxnMgr().promote(dsgTxn, transaction.getTxnType(), promoteMode);
         if ( dsgTxn2 == null )

@@ -55,7 +55,7 @@ public class RiotLib
 {
     // ---- BlankNode skolemization as IRIs
     private final static boolean skolomizedBNodes = ARQ.isTrueOrUndef(ARQ.constantBNodeLabels);
-    /** "Skolemize" to a node. 
+    /** "Skolemize" to a node.
      * Returns a Node_URI.
      */
     public static Node blankNodeToIri(Node node) {
@@ -64,7 +64,7 @@ public class RiotLib
         return node;
     }
 
-    /** "Skolemize" to a string. */ 
+    /** "Skolemize" to a string. */
     public static String blankNodeToIriString(Node node) {
         if ( node.isBlank() ) {
             String x = node.getBlankNodeLabel();
@@ -95,21 +95,21 @@ public class RiotLib
     public static boolean isBNodeIRI(String iri) {
         return iri.startsWith(bNodeLabelStart);
     }
-    
+
     private static final String URI_PREFIX_FIXUP = "::";
-    
+
     // These two must be in-step.
-    /** Function applied to undefined prefixes to convert to a URI string */  
+    /** Function applied to undefined prefixes to convert to a URI string */
     public static final Function<String,String> fixupPrefixes      = (x) -> URI_PREFIX_FIXUP.concat(x);
 
-    /** Function to test for undefined prefix URIs*/  
+    /** Function to test for undefined prefix URIs*/
     public static final Predicate<String> testFixupedPrefixURI     = (x) -> x.startsWith(URI_PREFIX_FIXUP);
-    
+
     /** Test whether a IRI is a ARQ-encoded blank node. */
     public static boolean isPrefixIRI(String iri) {
         return testFixupedPrefixURI.test(iri);
     }
-    
+
     /** Convert an prefix name (qname) to an IRI, for when the prerix is nor defined.
      * @see ARQ#fixupUndefinedPrefixes
      */
@@ -123,29 +123,29 @@ public class RiotLib
     public static String fixupPrefixIRI(String prefixedName) {
         return fixupPrefixes.apply(prefixedName);
     }
-    
-    /** Internal ParserProfile used to create nodes from strings. */ 
+
+    /** Internal ParserProfile used to create nodes from strings. */
     private static ParserProfile setupInternalParserProfile() {
-        PrefixMap pmap = PrefixMapFactory.createForInput();
+        PrefixMap pmap = PrefixMapFactory.create();
         pmap.add("rdf",  ARQConstants.rdfPrefix);
         pmap.add("rdfs", ARQConstants.rdfsPrefix);
         pmap.add("xsd",  ARQConstants.xsdPrefix);
         pmap.add("owl" , ARQConstants.owlPrefix);
-        pmap.add("fn" ,  ARQConstants.fnPrefix); 
-        pmap.add("op" ,  ARQConstants.fnPrefix); 
+        pmap.add("fn" ,  ARQConstants.fnPrefix);
+        pmap.add("op" ,  ARQConstants.fnPrefix);
         pmap.add("ex" ,  "http://example/ns#");
         pmap.add("" ,    "http://example/");
-        
-        return new ParserProfileStd(RiotLib.factoryRDF(), 
+
+        return new ParserProfileStd(RiotLib.factoryRDF(),
                                     ErrorHandlerFactory.errorHandlerStd,
                                     IRIResolver.create(),
                                     pmap,
                                     RIOT.getContext().copy(),
                                     true, false);
     }
-    
+
     private static ParserProfile profile = setupInternalParserProfile();
-    
+
     /** Parse a string to get one Node (the first token in the string) */
     public static Node parse(String string) {
         return NodeFactoryExtra.parseNode(string, null);
@@ -172,7 +172,7 @@ public class RiotLib
     /** Create a parser profile for the given setup
      * @param baseIRI       Base IRI
      * @param resolveIRIs   Whether to resolve IRIs
-     * @param checking      Whether to check 
+     * @param checking      Whether to check
      * @param handler       Error handler
      * @return ParserProfile
      * @see #profile for per-language setup
@@ -182,7 +182,7 @@ public class RiotLib
     public static ParserProfile profile(String baseIRI, boolean resolveIRIs, boolean checking, ErrorHandler handler)
     {
         LabelToNode labelToNode = SyntaxLabels.createLabelToNode();
-        
+
         IRIResolver resolver;
         if ( resolveIRIs )
             resolver = IRIResolver.create(baseIRI);
@@ -193,15 +193,15 @@ public class RiotLib
     }
 
     /** Create a new (not influenced by anything else) {@code FactoryRDF}
-     * using the label to blank node scheme provided. 
+     * using the label to blank node scheme provided.
      */
     public static FactoryRDF factoryRDF(LabelToNode labelMapping) {
         return new FactoryRDFCaching(FactoryRDFCaching.DftNodeCacheSize, labelMapping);
     }
 
     /** Create a new (not influenced by anything else) {@code FactoryRDF}
-     * using the default label to blank node scheme. 
-     */  
+     * using the default label to blank node scheme.
+     */
     public static FactoryRDF factoryRDF() {
         return factoryRDF(SyntaxLabels.createLabelToNode());
     }
@@ -218,21 +218,21 @@ public class RiotLib
 
     /** Create a {@link ParserProfile} with default settings, and a specific error handler. */
     public static ParserProfile createParserProfile(FactoryRDF factory, ErrorHandler errorHandler, boolean checking) {
-        return new ParserProfileStd(factory, 
+        return new ParserProfileStd(factory,
                                     errorHandler,
                                     IRIResolver.create(),
-                                    PrefixMapFactory.createForInput(),
+                                    PrefixMapFactory.create(),
                                     RIOT.getContext().copy(),
                                     checking, false);
     }
-    
+
     /** Create a {@link ParserProfile}. */
-    public static ParserProfile createParserProfile(FactoryRDF factory, ErrorHandler errorHandler, 
+    public static ParserProfile createParserProfile(FactoryRDF factory, ErrorHandler errorHandler,
                                           IRIResolver resolver, boolean checking) {
-        return new ParserProfileStd(factory, 
+        return new ParserProfileStd(factory,
                                     errorHandler,
                                     resolver,
-                                    PrefixMapFactory.createForInput(),
+                                    PrefixMapFactory.create(),
                                     RIOT.getContext().copy(),
                                     checking, false);
     }
@@ -273,7 +273,7 @@ public class RiotLib
     public static boolean strSafeFor(String str, char ch) {
         return str.indexOf(ch) == -1;
     }
-    
+
     public static void writeBase(IndentedWriter out, String base, boolean newStyle) {
         if ( newStyle )
             writeBaseNewStyle(out, base);
@@ -304,7 +304,7 @@ public class RiotLib
         }
     }
 
-    /** Write prefixes */ 
+    /** Write prefixes */
     public static void writePrefixes(IndentedWriter out, PrefixMap prefixMap, boolean newStyle) {
         if ( prefixMap != null && !prefixMap.isEmpty() ) {
             for ( Map.Entry<String, String> e : prefixMap.getMapping().entrySet() ) {
@@ -315,10 +315,10 @@ public class RiotLib
             }
         }
     }
-    
+
     /** Write a prefix.
      * Write using {@code @prefix} or {@code PREFIX}.
-     */ 
+     */
     public static void writePrefix(IndentedWriter out, String prefix, String uri, boolean newStyle) {
         if ( newStyle )
             writePrefixNewStyle(out, prefix, uri);
@@ -326,7 +326,7 @@ public class RiotLib
             writePrefixOldStyle(out, prefix, uri);
     }
 
-    /** Write prefix, using {@code PREFIX} */ 
+    /** Write prefix, using {@code PREFIX} */
     private static void writePrefixNewStyle(IndentedWriter out, String prefix, String uri) {
         out.print("PREFIX ");
         out.print(prefix);
@@ -338,7 +338,7 @@ public class RiotLib
         out.println();
     }
 
-    /** Write prefixes, using {@code @prefix} */ 
+    /** Write prefixes, using {@code @prefix} */
     public static void writePrefixOldStyle(IndentedWriter out, String prefix, String uri) {
         out.print("@prefix ");
         out.print(prefix);
@@ -369,7 +369,7 @@ public class RiotLib
     {
         if ( ! prefixMap.containsPrefix(rdfNS) && RDF_type.equals(p) )
             return 1;
-        
+
         String x = prefixMap.abbreviate(p.getURI());
         if ( x == null )
             return p.getURI().length()+2;
@@ -378,9 +378,9 @@ public class RiotLib
 
     public static int calcWidth(PrefixMap prefixMap, String baseURI, Collection<Node> nodes, int minWidth, int maxWidth)
     {
-        Node prev = null; 
+        Node prev = null;
         int nodeMaxWidth = minWidth;
-        
+
         for ( Node n : nodes )
         {
             if ( prev != null && prev.equals(n) )
@@ -392,14 +392,14 @@ public class RiotLib
                 nodeMaxWidth = len;
             prev = n;
         }
-        return nodeMaxWidth; 
+        return nodeMaxWidth;
     }
 
     public static int calcWidthTriples(PrefixMap prefixMap, String baseURI, Collection<Triple> triples, int minWidth, int maxWidth)
     {
-        Node prev = null; 
+        Node prev = null;
         int nodeMaxWidth = minWidth;
-    
+
         for ( Triple triple : triples )
         {
             Node n = triple.getPredicate();
@@ -423,7 +423,7 @@ public class RiotLib
     public static WriterGraphRIOTBase adapter(WriterDatasetRIOT writer)
     { return new WriterAdapter(writer); }
 
-    /** Hidden to direct program to using OutputStreams (for RDF, that gets the charset right) */ 
+    /** Hidden to direct program to using OutputStreams (for RDF, that gets the charset right) */
     private static class IndentedWriterWriter extends IndentedWriter
     {
         IndentedWriterWriter(Writer w) { super(w); }
@@ -432,16 +432,16 @@ public class RiotLib
     private static class WriterAdapter extends WriterGraphRIOTBase
     {
         private WriterDatasetRIOT writer;
-    
+
         WriterAdapter(WriterDatasetRIOT writer) { this.writer = writer; }
         @Override
         public Lang getLang()
         { return writer.getLang(); }
-    
+
         @Override
         public void write(OutputStream out, Graph graph, PrefixMap prefixMap, String baseURI, Context context)
         { writer.write(out, DatasetGraphFactory.wrap(graph), prefixMap, baseURI, context); }
-        
+
         @Override
         public void write(Writer out, Graph graph, PrefixMap prefixMap, String baseURI, Context context)
         { writer.write(out, DatasetGraphFactory.wrap(graph), prefixMap, baseURI, context); }

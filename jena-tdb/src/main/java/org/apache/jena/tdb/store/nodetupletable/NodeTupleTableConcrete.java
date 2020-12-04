@@ -43,7 +43,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     private final DatasetControl dsPolicy ;
 
     /*
-     * Concurrency checking: Everything goes through one of 
+     * Concurrency checking: Everything goes through one of
      * addRow, deleteRow or find*
      */
 
@@ -73,7 +73,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     @Override
     public DatasetControl getPolicy()
     { return dsPolicy ; }
-    
+
     @Override
     public boolean addRow(Node... nodes)
     {
@@ -102,7 +102,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
             for (int i = 0; i < nodes.length; i++)
             {
                 NodeId id = idForNode(nodes[i]) ;
-                if (NodeId.isDoesNotExist(id)) 
+                if (NodeId.isDoesNotExist(id))
                     return false ;
                 n[i] = id ;
             }
@@ -124,7 +124,8 @@ public class NodeTupleTableConcrete implements NodeTupleTable
             Iterator<Tuple<NodeId>> iter1 = findAsNodeIds(nodes) ; // **public call
             if (iter1 == null) return new NullIterator<>() ;
             Iterator<Tuple<Node>> iter2 = TupleLib.convertToNodes(nodeTable, iter1) ;
-            return iteratorControl(iter2) ;
+            // iteratorControl() not needed due to public call above.
+            return iter2 ;
         } finally { finishRead() ; }
     }
 
@@ -142,7 +143,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
             for (int i = 0; i < nodes.length; i++)
             {
                 NodeId id = idForNode(nodes[i]) ;
-                if (NodeId.isDoesNotExist(id)) 
+                if (NodeId.isDoesNotExist(id))
                     return Iter.nullIterator() ;
                 n[i] = id ;
             }
@@ -240,7 +241,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
             startWrite() ;
             tupleTable.close() ;
             nodeTable.close() ;
-        } 
+        }
         finally { finishWrite() ; }
     }
 

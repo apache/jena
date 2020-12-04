@@ -37,7 +37,7 @@ import org.junit.Test ;
 /** System-level testing of the parsers - testing the parser plumbing, not the language details */
 public class TestParserFactory
 {
-    @Test public void ntriples_01() 
+    @Test public void ntriples_01()
     {
         {
             String s = "<x> <p> <q> ." ;
@@ -51,7 +51,7 @@ public class TestParserFactory
         }
 
         // Old style, direct to LangRIOT -- very deprecated.
-        // NQ version tests that relative URIs remain relative. 
+        // NQ version tests that relative URIs remain relative.
         Tokenizer tokenizer = TokenizerText.create().fromString("<x> <p> <q> .").build();
         CatchParserOutput sink = new CatchParserOutput() ;
         ParserProfile profile = makeParserProfile(IRIResolver.createNoResolve(), null, false);
@@ -64,7 +64,7 @@ public class TestParserFactory
         assertEquals(SSE.parseTriple("(<x> <p> <q>)"), last(sink.triples)) ;
     }
 
-    @Test public void turtle_01() 
+    @Test public void turtle_01()
     {
         // Verify the expected output works.
         String s = "<x> <p> <q> ." ;
@@ -76,19 +76,19 @@ public class TestParserFactory
         Triple t = SSE.parseTriple("(<http://base/x> <http://base/p> <http://base/q>)") ;
         assertEquals(t, last(sink.triples)) ;
     }
-    
+
     private ParserProfile makeParserProfile(IRIResolver resolver, ErrorHandler errorHandler, boolean checking) {
         if ( errorHandler == null )
             errorHandler = ErrorHandlerFactory.errorHandlerStd;
-        return new ParserProfileStd(RiotLib.factoryRDF(), 
+        return new ParserProfileStd(RiotLib.factoryRDF(),
                                     errorHandler,
                                     resolver,
-                                    PrefixMapFactory.createForInput(),
+                                    PrefixMapFactory.create(),
                                     RIOT.getContext().copy(),
                                     checking, false) ;
     }
 
-    @Test public void nquads_01() 
+    @Test public void nquads_01()
     {
         String s = "<x> <p> <q> <g> ." ;
         CatchParserOutput sink = parseCapture(s, Lang.NQ) ;
@@ -102,34 +102,34 @@ public class TestParserFactory
 
     @Test public void nquads_dft_triple() {
         // JENA-1854
-        String s = "<x> <p> <q> ." ; 
+        String s = "<x> <p> <q> ." ;
         CatchParserOutput sink = parseCapture(s, Lang.NQ) ;
         assertEquals(1, sink.startCalled) ;
         assertEquals(1, sink.finishCalled) ;
         assertEquals(0, sink.triples.size()) ;
         assertEquals(1, sink.quads.size()) ;
-        
+
         Triple t = SSE.parseTriple("(<x> <p> <q>)") ;
         Quad q = new Quad(Quad.defaultGraphNodeGenerated, t) ;
         assertEquals(q, last(sink.quads)) ;
     }
 
-    
+
     @Test public void trig_dft_triple() {
         // JENA-1854
-        String s = "{ <x> <p> <q> }" ; 
+        String s = "{ <x> <p> <q> }" ;
         CatchParserOutput sink = parseCapture(s, Lang.TRIG) ;
         assertEquals(1, sink.startCalled) ;
         assertEquals(1, sink.finishCalled) ;
         assertEquals(0, sink.triples.size()) ;
         assertEquals(1, sink.quads.size()) ;
-        
+
         Triple t = SSE.parseTriple("(<http://base/x> <http://base/p> <http://base/q>)") ;
         Quad q = new Quad(Quad.defaultGraphNodeGenerated, t) ;
         assertEquals(q, last(sink.quads)) ;
     }
-    
-    @Test public void trig_02() 
+
+    @Test public void trig_02()
     {
         String s = "<g> { <x> <p> <q> }" ;
         CatchParserOutput sink = parseCapture(s, Lang.TRIG) ;
@@ -148,8 +148,8 @@ public class TestParserFactory
         return sink ;
     }
 
-    private static <T> T last(List<T> list) 
-    { 
+    private static <T> T last(List<T> list)
+    {
         if ( list.isEmpty() ) return null ;
         return list.get(list.size()-1) ;
     }

@@ -139,7 +139,7 @@ public class LoaderMain extends LoaderBase implements DataLoader {
      * Used by {@link InputStage#MULTI}.
      */
     private static StreamRDFCounting executeData(LoaderPlan loaderPlan, DatasetGraphTDB dsgtdb, Map<String, TupleIndex> indexMap, List<BulkStartFinish> dataProcess, MonitorOutput output) {
-        StoragePrefixesTDB dps = (StoragePrefixesTDB)dsgtdb.getPrefixes();
+        StoragePrefixesTDB dps = (StoragePrefixesTDB)dsgtdb.getStoragePrefixes();
         PrefixHandlerBulk prefixHandler = new PrefixHandlerBulk(dps, output);
         dataProcess.add(prefixHandler);
 

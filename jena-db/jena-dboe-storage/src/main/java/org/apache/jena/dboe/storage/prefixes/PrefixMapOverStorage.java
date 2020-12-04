@@ -17,18 +17,23 @@
 
 package org.apache.jena.dboe.storage.prefixes;
 
+import static org.apache.jena.riot.system.PrefixLib.canonicalPrefix;
+
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-/** {@link PrefixMapI} implemented using {@link StoragePrefixMap} */
-public class PrefixMapIOverStorage implements PrefixMapI {
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapBase;
+import org.apache.jena.riot.system.Prefixes;
+
+/** {@link PrefixMap} implemented using {@link StoragePrefixMap} */
+public class PrefixMapOverStorage extends PrefixMapBase {
 
     private final StoragePrefixMap prefixes;
     protected StoragePrefixMap spm() { return prefixes; }
 
-    public PrefixMapIOverStorage(StoragePrefixMap storage) {
+    public PrefixMapOverStorage(StoragePrefixMap storage) {
         this.prefixes = storage;
     }
 
@@ -43,26 +48,21 @@ public class PrefixMapIOverStorage implements PrefixMapI {
     }
 
     @Override
-    public StoragePrefixMap getPrefixMapStorage() {
-        return prefixes;
-    }
-
-    @Override
     public void add(String prefix, String iriString) {
-        prefix = PrefixLib.canonicalPrefix(prefix);
+        prefix = canonicalPrefix(prefix);
         spm().put(prefix, iriString);
     }
 
     @Override
     public void delete(String prefix) {
-        prefix = PrefixLib.canonicalPrefix(prefix);
+        prefix = canonicalPrefix(prefix);
         spm().remove(prefix);
     }
 
-    @Override
-    public Stream<PrefixEntry> stream() {
-        return spm().stream();
-    }
+//    @Override
+//    public Stream<PrefixEntry> stream() {
+//        return spm().stream();
+//    }
 
     @Override
     public void forEach(BiConsumer<String, String> action) {
@@ -86,32 +86,18 @@ public class PrefixMapIOverStorage implements PrefixMapI {
 
     @Override
     public String get(String prefix) {
-        prefix = PrefixLib.canonicalPrefix(prefix);
+        prefix = canonicalPrefix(prefix);
         return spm().get(prefix);
     }
 
     @Override
     public boolean containsPrefix(String prefix) {
-        prefix = PrefixLib.canonicalPrefix(prefix);
+        prefix = canonicalPrefix(prefix);
         return spm().containsPrefix(prefix);
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{ ");
-        boolean first = true;
-
-        for ( PrefixEntry e : prefixes ) {
-            if ( first )
-                first = false;
-            else
-                sb.append(" ,");
-            sb.append(e.getPrefix());
-            sb.append(":=");
-            sb.append(e.getUri());
-        }
-        sb.append(" }");
-        return sb.toString();
+        return Prefixes.toString(this);
     }
 }

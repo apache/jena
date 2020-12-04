@@ -36,6 +36,8 @@ import org.apache.jena.graph.compose.MultiUnion;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.riot.other.G;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapUnmodifiable;
 import org.apache.jena.shared.Lock;
 import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -57,6 +59,12 @@ public abstract class DyadicDatasetGraph extends PairOfSameType<DatasetGraph> im
         throw new UnsupportedOperationException("This view does not allow mutation!");
     }
 
+
+    @Override
+    public PrefixMap prefixes() {
+        return new PrefixMapUnmodifiable(getLeft().prefixes());
+    }
+
     @Override
     public void commit() {
         forEach(DatasetGraph::commit);
@@ -67,7 +75,7 @@ public abstract class DyadicDatasetGraph extends PairOfSameType<DatasetGraph> im
         begin(TxnType.READ);
     }
 
-    
+
     @Override
     public void begin(TxnType type) {
         switch (type) {
@@ -84,11 +92,11 @@ public abstract class DyadicDatasetGraph extends PairOfSameType<DatasetGraph> im
         // no mutation allowed
         return false;
     }
-    
+
     @Override
     public ReadWrite transactionMode() {
         if ( ! isInTransaction() )
-            return null; 
+            return null;
         return TxnType.convert(transactionType());
     }
 

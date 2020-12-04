@@ -49,7 +49,7 @@ import org.junit.runners.Parameterized.Parameters;
 //   DatasetOne, DatasetGraphOne. <-- Flag needed.
 //   DatasetImpl
 
-/** Additional testing for "Dataset over Graph" transaction mapping */ 
+/** Additional testing for "Dataset over Graph" transaction mapping */
 
 @RunWith(Parameterized.class)
 public class TestDataset2Graph {
@@ -60,7 +60,9 @@ public class TestDataset2Graph {
         Creator<Dataset> datasetTxnMemMaker = ()-> DatasetFactory.createTxnMem() ;
         Creator<Dataset> datasetTDB1 = ()-> TDBFactory.createDataset();
         Creator<Dataset> datasetTDB2 = ()-> TDB2Factory.createDataset();
-        return Arrays.asList(new Object[][] { 
+
+
+        return Arrays.asList(new Object[][] {
             { "Plain", datasetPlainMaker },
             { "TIM",   datasetTxnMemMaker },
             { "TDB1",  datasetTDB1 },
@@ -74,7 +76,7 @@ public class TestDataset2Graph {
         this.creator = creator;
     }
 
-    @Test public void dsgGraphTxn_model() {
+    @Test public void dsgGraphTxn_infModel() {
         testInfModel(creator.create());
     }
 
@@ -88,28 +90,28 @@ public class TestDataset2Graph {
 
     private static void testInfModel(Dataset ds0) {
         Txn.executeWrite(ds0, ()->{});
-        Model baseModel = ds0.getDefaultModel(); 
+        Model baseModel = ds0.getDefaultModel();
         Model model = ModelFactory.createInfModel(RDFSRuleReasonerFactory.theInstance().create(null), baseModel);
         if ( model.getGraph().getTransactionHandler().transactionsSupported() ) {
-            // InfModels do not support transactions per se - they particpate if includes in a suitable dataset.
+            // InfModels do not support transactions per se - they participate if included in a suitable dataset.
             model.begin();
             long x = Iter.count(model.listStatements());
             model.commit();
             assertTrue(x > 10);
         }
     }
-    
+
     private static void testOverDS(Dataset ds0, boolean wrap) {
         // Force to transactions / verify the DSG is transactional.
         Txn.executeWrite(ds0, ()->{});
-        Model baseModel = ds0.getDefaultModel(); 
+        Model baseModel = ds0.getDefaultModel();
         Model model = ModelFactory.createInfModel(RDFSRuleReasonerFactory.theInstance().create(null), baseModel);
         Dataset ds1 = wrap ? DatasetFactory.wrap(model) : DatasetFactory.create(model);
 
         try ( RDFConnection conn = RDFConnectionFactory.connect(ds1) ) {
-            
+
             //conn.querySelect("SELECT (count(*) AS ?C) { ?s ?p ?o } HAVING (?C = 0)", (qs)-> fail("Didn't expect any query solutions"));
-            
+
             // Necessary
             Txn.exec(conn, TxnType.READ, ()->{
                 try ( QueryExecution qExec = conn.query("SELECT * { ?s ?p ?o }") ) {
@@ -118,18 +120,18 @@ public class TestDataset2Graph {
                 }
             });
         }
-        
+
         Triple t = SSE.parseTriple("(:s :p :o)");
         Quad q = Quad.create(Quad.defaultGraphIRI, t);
-        
+
         // Now write via top.
         Txn.executeWrite(ds1, ()->{
             ds1.asDatasetGraph().add(q);
         });
-        
+
         // And get it back again from storage.
         Txn.exec(ds0, TxnType.READ, ()->{
-            assertEquals(1, ds0.asDatasetGraph().getDefaultGraph().size()); 
+            assertEquals(1, ds0.asDatasetGraph().getDefaultGraph().size());
             assertTrue(ds0.getDefaultModel().getGraph().contains(t));
         });
     }

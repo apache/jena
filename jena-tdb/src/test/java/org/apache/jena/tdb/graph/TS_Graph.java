@@ -23,7 +23,8 @@ import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestPrefixMappingTDB.class
+    TestPrefixMapTDB.class
+    , TestPrefixMappingTDB.class
     , TestDatasetGraphTDB.class
     , TestGraphsTDBnonTxn.class
     , TestGraphsTDBinsideTxn.class

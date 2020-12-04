@@ -95,16 +95,9 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>> {
                 System.out.println("** Item: " + pair);
             Record r = pair.cdr();
 
-            // [Issue: FREC]
-            // The record buffer size is wrong.
-            // Writes the whole record, only need to write the key part.
-            // **** r = recordFactory.createKeyOnly(r);
-
-            // [Issue: FREC]
             // The record is key-only (which is correct) but until FREC fixed,
             // we need key,value
             r = recordFactory.create(r.getKey());
-            // -- End FREC
 
             // Always add - so ptrBuff is one ahead when we finish.
             // There is always one more ptr than record in a B+Tree node.
@@ -114,12 +107,6 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>> {
             // Add pointer.
             ptrBuff.add(pair.car());
 
-            // [Issue: FREC]
-            // Either test shoudl work but due to the missetting of record
-            // buffer size
-            // testing recBuff does not work.
-            // if ( recBuff.isFull() )
-            // .... test ptrBuff
             if ( ptrBuff.isFull() ) {
                 // End of this block.
 

@@ -25,7 +25,7 @@ public class TestDatasetPrefixesMem extends AbstractTestDatasetPrefixesStorage {
 
     @Override
     protected StoragePrefixes create() {
-        prefixes = PrefixesFactory.newDatasetPrefixesMem();
+        prefixes = PrefixesDboeFactory.newDatasetPrefixesMem();
         return view();
     }
 

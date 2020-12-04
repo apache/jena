@@ -23,13 +23,13 @@ import java.util.function.Consumer;
 
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.atlas.lib.tuple.TupleFactory;
-import org.apache.jena.dboe.storage.Prefixes;
 import org.apache.jena.dboe.transaction.txn.Transaction;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.riot.lang.StreamRDFCounting;
+import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.tdb2.loader.BulkLoaderException;
@@ -73,7 +73,7 @@ public class DataToTuplesInlineSingle implements StreamRDFCounting, BulkStartFin
         this.dest4 = dest4;
         this.output = output;
         this.nodeTable = dsgtdb.getTripleTable().getNodeTupleTable().getNodeTable();
-        this.prefixes = (StoragePrefixesTDB)dsgtdb.getPrefixes();
+        this.prefixes = (StoragePrefixesTDB)dsgtdb.getStoragePrefixes();
         NodeTable nodeTable2 = dsgtdb.getQuadTable().getNodeTupleTable().getNodeTable();
         if ( nodeTable != nodeTable2 )
             throw new BulkLoaderException("Different node tables");

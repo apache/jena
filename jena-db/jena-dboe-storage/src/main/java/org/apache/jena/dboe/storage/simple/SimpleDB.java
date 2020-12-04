@@ -31,7 +31,7 @@ public class SimpleDB {
 
     public static class DatasetGraphSimpleDB extends DatasetGraphStorage {
         public DatasetGraphSimpleDB() {
-            super(new StorageMem(), new StoragePrefixesMem(), TransactionalLock.createMRSW());
+            super(new StorageSimpleMem(), new StoragePrefixesSimpleMem(), TransactionalLock.createMRSW());
         }
     }
 }

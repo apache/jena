@@ -20,9 +20,9 @@ package org.apache.jena.dboe.storage.simple;
 import org.apache.jena.dboe.storage.StorageRDF;
 
 /** Very simple {@link StorageRDF} based on a set/scan implementation of tuple storage.*/
-public class StorageMem extends StorageTuples {
+public class StorageSimpleMem extends StorageTuples {
 
-    public StorageMem() {
+    public StorageSimpleMem() {
         super(new StorageTuplesN(3), new StorageTuplesN(4));
     }
 }

@@ -24,6 +24,7 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.dboe.storage.StoragePrefixes;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.system.PrefixEntry;
 
 public class StoragePrefixesEmpty implements StoragePrefixes {
 

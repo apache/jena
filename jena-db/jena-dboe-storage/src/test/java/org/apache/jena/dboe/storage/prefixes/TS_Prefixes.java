@@ -25,8 +25,6 @@ import org.junit.runners.Suite;
     TestDatasetPrefixesMem.class
     , TestPrefixMappingOverDatasetPrefixes.class
     , TestPrefixMappingOverDatasetPrefixes2.class
-    , TestPrefixMappingOverPrefixMap.class
-    , TestPrefixMapOverPrefixMapI.class
     , TestPrefixLib.class
 })
 

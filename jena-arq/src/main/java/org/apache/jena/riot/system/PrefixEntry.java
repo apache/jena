@@ -15,13 +15,17 @@
  *  information regarding copyright ownership.
  */
 
-package org.apache.jena.dboe.storage.prefixes;
+package org.apache.jena.riot.system;
+
+import java.util.Objects;
 
 /** Entry in a prefix map. */
 public class PrefixEntry {
     // Custom interface to get more appropriate names.
 
     public static PrefixEntry create(String prefix, String uri) {
+        Objects.requireNonNull(prefix);
+        Objects.requireNonNull(uri);
         return new PrefixEntry(prefix, uri);
     }
     private final String prefix;
@@ -43,5 +47,22 @@ public class PrefixEntry {
     @Override
     public String toString() {
         return "PrefixEntry["+prefix+": <"+uri+">]";
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(prefix, uri);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        PrefixEntry other = (PrefixEntry)obj;
+        return Objects.equals(prefix, other.prefix) && Objects.equals(uri, other.uri);
     }
 }

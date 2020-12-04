@@ -28,7 +28,7 @@ import org.apache.jena.tdb.base.buffer.RecordBuffer ;
 import org.apache.jena.tdb.base.record.Record ;
 import org.apache.jena.tdb.base.record.RecordFactory ;
 
-/** Take a stream of (block id,split record) pairs and generate B+Tree Nodes */ 
+/** Take a stream of (block id,split record) pairs and generate B+Tree Nodes */
 class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
 {
     private Pair<Integer, Record> slot ;
@@ -37,7 +37,7 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
 
     private final boolean leafLayer ;
     private final RecordFactory recordFactory ;
-    
+
     BPTreeNodeBuilder(Iterator<Pair<Integer, Record>> iter, BPTreeNodeMgr mgr, boolean leafLayer, RecordFactory recordFactory)
     {
         this.iter = iter ;
@@ -45,7 +45,7 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
         this.leafLayer = leafLayer ;
         this.recordFactory = recordFactory ;
     }
-    
+
     @Override
     public boolean hasNext()
     {
@@ -54,7 +54,7 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
 
         if ( iter == null )
             return false ;
-            
+
         if ( ! iter.hasNext() )
         {
             // Start of next block, no more input.
@@ -63,69 +63,53 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
         }
 
         // At least one element to put in a new node.
-        // Unknown parent.  Does not matter (parent is only in-memory) 
+        // Unknown parent.  Does not matter (parent is only in-memory)
 
         BPTreeNode bptNode = mgr.createNode(-1) ;
         bptNode.setIsLeaf(leafLayer) ;
-        
+
         RecordBuffer recBuff = bptNode.getRecordBuffer() ;
         PtrBuffer ptrBuff = bptNode.getPtrBuffer() ;
         recBuff.setSize(0) ;
         ptrBuff.setSize(0) ;    // Creation leaves this junk.
-        
+
         int rMax = recBuff.maxSize() ;
         int pMax = ptrBuff.maxSize() ;
 
         for ( ; iter.hasNext() ; )
         {
-            
+
             int X = bptNode.getCount() ;
             int X2 = bptNode.getMaxSize() ;
             int P = ptrBuff.size() ;
             int P2 = ptrBuff.maxSize() ;
             int R = recBuff.size() ;
             int R2 = recBuff.maxSize() ;
-            
-            // bptNode.getMaxSize() is drivel
-            //System.out.printf("N: %d/%d : P %d/%d : R %d/%d\n", X, X2, P, P2, R, R2) ;
-            
+
             Pair<Integer, Record> pair = iter.next() ;
             Record r = pair.cdr() ;
-            
-            // [Issue: FREC]
-            // The record buffer size is wrong.
-            // Writes the whole record, only need to write the key part.
-            // **** r = recordFactory.createKeyOnly(r) ;
-            
-            // [Issue: FREC]
-            // The record is key-only (which is correct) but until FREC fixed, we need key,value
+
             r = recordFactory.create(r.getKey()) ;
-            // -- End FREC
-            
+
             // Always add - so ptrBuff is one ahead when we finish.
             // There is always one more ptr than record in a B+Tree node.
             if ( ptrBuff.isFull() )
                Log.error(this, "PtrBuffer is full") ;
-            
+
             // Add pointer.
             ptrBuff.add(pair.car()) ;
 
-            // [Issue: FREC]
-            // Either test should work but due to the missetting of record buffer size
-            // testing recBuff does not work. 
-            //if ( recBuff.isFull() )
-            // .... test ptrBuff
             if ( ptrBuff.isFull() )
             {
                 // End of this block.
 
                 // Does not add to ptrBuff so the one extra slot is done.
                 // Instead, the high point goes to the next level up.
-                
+
                 // Internal consistency check.
                 if ( ! ptrBuff.isFull() )
                     Log.error(this, "PtrBuffer is not full") ;
-                
+
                 // The split point for the next level up.
                 slot = new Pair<>(bptNode.getId(), pair.cdr()) ;
 
@@ -137,9 +121,9 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
             recBuff.add(r) ;
             bptNode.setCount(bptNode.getCount()+1) ;
         }
-        
-        
-        
+
+
+
 
         // If we get here, the input stream ran out before we finished a complete block.
         // Fix up block (remove the last record)
@@ -147,7 +131,7 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
         recBuff.removeTop() ;
         bptNode.setCount(bptNode.getCount()-1) ;
         slot = new Pair<>(bptNode.getId(), r) ;
-        
+
         mgr.put(bptNode) ;
         return true ;
     }
@@ -160,7 +144,7 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
         slot = null ;
         return x ;
     }
-    
+
     @Override
     public void remove()
     { throw new UnsupportedOperationException() ; }

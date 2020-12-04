@@ -30,6 +30,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.riot.other.G;
+import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.sparql.core.DatasetGraphTriplesQuads ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.Transactional ;
@@ -41,13 +42,13 @@ import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 import org.apache.jena.tdb.transaction.DatasetGraphTxn ;
 
-/** This is the class that creates a dataset over the storage. 
- *  The name is historical. "{@code TDBStorage}" might be better nowadays. 
- * <p> This class is not {@code Transactional}. It is used within the TDB transaction system. 
- * <p> 
+/** This is the class that creates a dataset over the storage.
+ *  The name is historical. "{@code TDBStorage}" might be better nowadays.
+ * <p> This class is not {@code Transactional}. It is used within the TDB transaction system.
+ * <p>
  *  See also:
  *  <ul>
- *  <li>{@link DatasetGraphTxn} &ndash; the sublcass that provides a single tranasaction</li>
+ *  <li>{@link DatasetGraphTxn} &ndash; the sublclass that provides a single tranasaction</li>
  *  <li>{@link DatasetGraphTransaction} &ndash; class that provides the application with the right DatasetGraphTDB (base or transaction).</li>
  *  </ul>
  */
@@ -60,10 +61,10 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     private DatasetPrefixesTDB prefixes ;
     private final ReorderTransformation transform ;
     private final StorageConfig config ;
-    
+
     private boolean closed = false ;
 
-    public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes, 
+    public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes,
                            ReorderTransformation transform, StorageConfig config) {
         this.tripleTable = tripleTable ;
         this.quadTable = quadTable ;
@@ -74,7 +75,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
 
     public QuadTable getQuadTable()         { return quadTable ; }
     public TripleTable getTripleTable()     { return tripleTable ; }
-    
+
     @Override
     protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o)
     { return G.triples2quadsDftGraph(getTripleTable().find(s, p, o)) ; }
@@ -102,8 +103,8 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     @Override
     protected void deleteFromNamedGraph(Node g, Node s, Node p, Node o)
     { getQuadTable().delete(g, s, p, o) ; }
-    
-    public GraphTDB getDefaultGraphTDB() 
+
+    public GraphTDB getDefaultGraphTDB()
     { return (GraphTDB)getDefaultGraph() ; }
 
     public GraphTDB getGraphTDB(Node graphNode)
@@ -114,7 +115,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         if ( closed )
             return ;
         closed = true ;
-        
+
         tripleTable.close() ;
         quadTable.close() ;
         prefixes.close();
@@ -123,19 +124,19 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         quadTable = null ;
         prefixes = null ;
     }
-    
+
     @Override
-    // Empty graphs don't "exist" 
-    public boolean containsGraph(Node graphNode) { 
+    // Empty graphs don't "exist"
+    public boolean containsGraph(Node graphNode) {
         if ( Quad.isDefaultGraph(graphNode) || Quad.isUnionGraph(graphNode)  )
             return true ;
         // Have to look explicitly, which is a bit of a nuisance.
         // But does not normally happen for GRAPH <g> because that's rewritten to quads.
-        // Only pattern with complex paths go via GRAPH. 
+        // Only pattern with complex paths go via GRAPH.
         Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().findAsNodeIds(graphNode, null, null, null) ;
         if ( x == null )
-            return false ; 
-        
+            return false ;
+
 //        NodeId graphNodeId = quadTable.getNodeTupleTable().getNodeTable().getNodeIdForNode(graphNode) ;
 //        Tuple<NodeId> pattern = Tuple.create(graphNodeId, null, null, null) ;
 //        Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().getTupleTable().find(pattern) ;
@@ -143,8 +144,8 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         return result ;
     }
 
-    // These should not be called in normal use - they are intercepted by DatasetGraphTransaction. 
-    
+    // These should not be called in normal use - they are intercepted by DatasetGraphTransaction.
+
     @Override
     public Graph getDefaultGraph()
     { return new GraphNonTxnTDB(this, null) ; }
@@ -161,15 +162,20 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     public void removeGraph(Node graphNode) {
         deleteAny(graphNode, Node.ANY, Node.ANY, Node.ANY) ;
         if ( graphNode.isURI() )
-            getPrefixes().removeAllFromPrefixMap(graphNode.getURI());
+            getStoragePrefixes().removeAllFromPrefixMap(graphNode.getURI());
     }
 
     public StorageConfig getConfig()                        { return config ; }
-    
+
     public ReorderTransformation getReorderTransform()      { return transform ; }
-    
-    public DatasetPrefixesTDB getPrefixes()                 { return prefixes ; }
-    
+
+    @Override
+    public PrefixMap prefixes() {
+        return getStoragePrefixes().getPrefixMap();
+    }
+
+    public DatasetPrefixesTDB getStoragePrefixes()                 { return prefixes ; }
+
     @Override
     public Iterator<Node> listGraphNodes()
     {
@@ -191,7 +197,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         getTripleTable().clearTriples() ;
         getQuadTable().clearQuads() ;
     }
-    
+
     public NodeTupleTable chooseNodeTupleTable(Node graphNode)
     {
         if ( graphNode == null || Quad.isDefaultGraph(graphNode) )
@@ -200,23 +206,25 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
             // Includes Node.ANY and union graph
             return getQuadTable().getNodeTupleTable() ;
     }
-    
+
     private static final int sliceSize = 1000 ;
-    
+
     @Override
     public void deleteAny(Node g, Node s, Node p, Node o) {
         // Delete in batches.
         // That way, there is no active iterator when a delete
         // from the indexes happens.
 
+        boolean isDftGraph = (g==null) || Quad.isDefaultGraph(g);
+
         NodeTupleTable t = chooseNodeTupleTable(g) ;
         @SuppressWarnings("unchecked")
         Tuple<NodeId>[] array = (Tuple<NodeId>[])new Tuple<?>[sliceSize] ;
 
         while (true) { // Convert/cache s,p,o?
-            // The Node Cache will catch these so don't worry unduely.
+            // The Node Cache will cache these so don't worry unduly.
             Iterator<Tuple<NodeId>> iter = null ;
-            if ( g == null )
+            if ( isDftGraph )
                 iter = t.findAsNodeIds(s, p, o) ;
             else
                 iter = t.findAsNodeIds(g, s, p, o) ;
@@ -243,7 +251,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
                 break ;
         }
     }
-    
+
     public Location getLocation()       { return config.location ; }
 
     @Override
@@ -253,9 +261,9 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         quadTable.sync() ;
         prefixes.sync() ;
     }
-    
+
     @Override
-    public void setDefaultGraph(Graph g) { 
+    public void setDefaultGraph(Graph g) {
         throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ;
     }
 

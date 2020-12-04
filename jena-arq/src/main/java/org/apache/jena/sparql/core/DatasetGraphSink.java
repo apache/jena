@@ -20,36 +20,38 @@ package org.apache.jena.sparql.core;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapSink;
 import org.apache.jena.sparql.graph.GraphSink;
 
 
-/** 
+/**
  * An always empty {@link DatasetGraph} that accepts changes but ignores them.
- * 
+ *
  * @see DatasetGraphZero - a DSG that does not allow changes.
  */
 public class DatasetGraphSink extends DatasetGraphNull {
 
     public static DatasetGraph create() { return new DatasetGraphSink(); }
-    
+
     @Override
     protected Graph createGraph() {
         return GraphSink.instance();
     }
-    
+
     public DatasetGraphSink() {}
-    
+
     // Ignore all updates.
-    
+
     @Override
-    public void add(Quad quad) { /* ignore */ } 
-    
+    public void add(Quad quad) { /* ignore */ }
+
     @Override
     public void delete(Quad quad) { /* ignore */ }
-    
+
     @Override
     public void deleteAny(Node g, Node s, Node p, Node o) { /* ignore */ }
-    
+
     @Override
     public void setDefaultGraph(Graph g) { /* ignore */ }
 
@@ -58,4 +60,10 @@ public class DatasetGraphSink extends DatasetGraphNull {
 
     @Override
     public void removeGraph(Node graphName) { /* ignore */ }
+
+    @Override
+    public PrefixMap prefixes() {
+        return PrefixMapSink.sink;
+    }
+
 }
