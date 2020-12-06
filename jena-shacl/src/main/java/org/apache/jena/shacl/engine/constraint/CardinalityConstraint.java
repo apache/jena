@@ -38,7 +38,7 @@ public abstract class CardinalityConstraint extends ConstraintEntity {
         // Node shape with cardinality. Can this usefully be checked for in the parser?
         throw new ShaclParseException("Cardinality constraint on a node shape");
     }
-    
+
     // -1 => no test
     protected CardinalityConstraint(int minCardinality, int maxCardinality) {
         this.minCount = minCardinality;

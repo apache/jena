@@ -35,6 +35,10 @@ public class JViolationConstraint extends ConstraintTerm {
         this.generateViolation = generateViolation;
     }
 
+    public boolean generatesViolation() {
+        return generateViolation;
+    }
+
     @Override
     public Node getComponent() {
         return SHJ.ViolationConstraintComponent;

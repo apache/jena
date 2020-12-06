@@ -50,6 +50,14 @@ public class SparqlConstraint implements Constraint {
         this.message = message;
     }
 
+    public Query getQuery() {
+        return query;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
     @Override
     public void validateNodeShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode) {
         SparqlValidation.validate(vCxt, data, shape, focusNode, null, focusNode, query, null, message, this);

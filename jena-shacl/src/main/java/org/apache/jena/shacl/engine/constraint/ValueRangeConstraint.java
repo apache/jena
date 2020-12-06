@@ -43,6 +43,14 @@ public abstract class ValueRangeConstraint extends ConstraintTerm {
         this.constraintComponent = constraintComponent;
     }
 
+    public NodeValue getNodeValue() {
+        return nodeValue;
+    }
+
+    public Node getConstraintComponent() {
+        return constraintComponent;
+    }
+
     @Override
     final public ReportItem validate(ValidationContext vCxt, Node n) {
         NodeValue nv = NodeValue.makeNode(n);

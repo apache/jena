@@ -39,7 +39,11 @@ public class StrMaxLengthConstraint extends ConstraintTerm {
     public StrMaxLengthConstraint(int maxLength) {
         this.maxLength = maxLength;
     }
-    
+
+    public int getMaxLength() {
+        return maxLength;
+    }
+
     @Override
     public ReportItem validate(ValidationContext vCxt, Node n) {
         if ( n.isBlank() ) {

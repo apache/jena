@@ -45,6 +45,14 @@ public abstract class ConstraintPairwise implements Constraint {
         this.constraintComponent = constraintComponent;
     }
 
+    public Node getValue() {
+        return value;
+    }
+
+    public Node getConstraintComponent() {
+        return constraintComponent;
+    }
+
     @Override
     final
     public Node getComponent() {

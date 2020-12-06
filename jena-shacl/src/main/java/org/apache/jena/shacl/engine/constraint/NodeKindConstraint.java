@@ -57,6 +57,18 @@ public class NodeKindConstraint extends ConstraintTerm {
 
     public  Node getKind() { return kind; }
 
+    public boolean isCanBeIRI() {
+        return canBeIRI;
+    }
+
+    public boolean isCanBeBlankNode() {
+        return canBeBlankNode;
+    }
+
+    public boolean isCanBeLiteral() {
+        return canBeLiteral;
+    }
+
     @Override
     public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
         String s = getKind().getLocalName();
