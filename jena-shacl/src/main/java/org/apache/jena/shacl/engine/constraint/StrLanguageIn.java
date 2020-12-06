@@ -116,5 +116,4 @@ public class StrLanguageIn extends ConstraintTerm {
         StrLanguageIn other = (StrLanguageIn)obj;
         return Objects.equals(langs, other.langs);
     }
-
 }

@@ -1,5 +1,5 @@
 language: java
-sudo: false
+os: linux
 install: true
 script: mvn -B clean install
 jdk:

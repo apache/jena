@@ -49,16 +49,11 @@ public abstract class ConstraintPairwise implements Constraint {
         return value;
     }
 
-    public Node getConstraintComponent() {
-        return constraintComponent;
-    }
-
     @Override
     final
     public Node getComponent() {
         return constraintComponent;
     }
-
 
     @Override
     public void validateNodeShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode) {
