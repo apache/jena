@@ -21,81 +21,20 @@ package org.apache.jena.shacl.parser;
 import org.apache.jena.shacl.engine.constraint.*;
 
 public abstract class ConstraintVisitorBase implements ConstraintVisitor {
+    @Override
+    public void visit(ClassConstraint constraint) {}
 
     @Override
-    public void visit(SparqlConstraint constraint) {}
+    public void visit(DatatypeConstraint constraint) {}
 
     @Override
-    public void visit(ConstraintComponentSPARQL constraint) {}
-
-    @Override
-    public void visit(UniqueLangConstraint constraint) {}
-
-    @Override
-    public void visit(HasValueConstraint constraint) {}
+    public void visit(NodeKindConstraint constraint) {}
 
     @Override
     public void visit(MinCount constraint) {}
 
     @Override
     public void visit(MaxCount constraint) {}
-
-    @Override
-    public void visit(ShXone constraint) {}
-
-    @Override
-    public void visit(ShAnd constraint) {}
-
-    @Override
-    public void visit(ShOr constraint) {}
-
-    @Override
-    public void visit(ShNot constraint) {}
-
-    @Override
-    public void visit(ShNode constraint) {}
-
-    @Override
-    public void visit(QualifiedValueShape constraint) {}
-
-    @Override
-    public void visit(LessThanOrEqualsConstraint constraint) {}
-
-    @Override
-    public void visit(DisjointConstraint constraint) {}
-
-    @Override
-    public void visit(EqualsConstraint constraint) {}
-
-    @Override
-    public void visit(LessThanConstraint constraint) {}
-
-    @Override
-    public void visit(ClosedConstraint constraint) {}
-
-    @Override
-    public void visit(ClassConstraint constraint) {}
-
-    @Override
-    public void visit(StrMaxLengthConstraint constraint) {}
-
-    @Override
-    public void visit(StrLanguageIn constraint) {}
-
-    @Override
-    public void visit(StrMinLengthConstraint constraint) {}
-
-    @Override
-    public void visit(JViolationConstraint constraint) {}
-
-    @Override
-    public void visit(DatatypeConstraint constraint) {}
-
-    @Override
-    public void visit(JLogConstraint constraint) {}
-
-    @Override
-    public void visit(PatternConstraint constraint) {}
 
     @Override
     public void visit(ValueMinExclusiveConstraint constraint) {}
@@ -110,8 +49,68 @@ public abstract class ConstraintVisitorBase implements ConstraintVisitor {
     public void visit(ValueMaxExclusiveConstraint constraint) {}
 
     @Override
+    public void visit(StrMinLengthConstraint constraint) {}
+
+    @Override
+    public void visit(StrMaxLengthConstraint constraint) {}
+
+    @Override
+    public void visit(PatternConstraint constraint) {}
+
+    @Override
+    public void visit(StrLanguageIn constraint) {}
+
+    @Override
+    public void visit(UniqueLangConstraint constraint) {}
+
+    @Override
+    public void visit(EqualsConstraint constraint) {}
+
+    @Override
+    public void visit(DisjointConstraint constraint) {}
+
+    @Override
+    public void visit(LessThanConstraint constraint) {}
+
+    @Override
+    public void visit(LessThanOrEqualsConstraint constraint) {}
+
+    @Override
+    public void visit(ShNot constraint) {}
+
+    @Override
+    public void visit(ShAnd constraint) {}
+
+    @Override
+    public void visit(ShOr constraint) {}
+
+    @Override
+    public void visit(ShXone constraint) {}
+
+    @Override
+    public void visit(ShNode constraint) {}
+
+    @Override
+    public void visit(QualifiedValueShape constraint) {}
+
+    @Override
+    public void visit(ClosedConstraint constraint) {}
+
+    @Override
+    public void visit(HasValueConstraint constraint) {}
+
+    @Override
     public void visit(InConstraint constraint) {}
 
     @Override
-    public void visit(NodeKindConstraint constraint) {}
+    public void visit(ConstraintComponentSPARQL constraint) {}
+
+    @Override
+    public void visit(SparqlConstraint constraint) {}
+
+    @Override
+    public void visit(JViolationConstraint constraint) {}
+
+    @Override
+    public void visit(JLogConstraint constraint) {}
 }

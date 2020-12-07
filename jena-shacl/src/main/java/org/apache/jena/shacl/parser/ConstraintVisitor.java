@@ -21,35 +21,38 @@ package org.apache.jena.shacl.parser;
 import org.apache.jena.shacl.engine.constraint.*;
 
 public interface ConstraintVisitor {
-    void visit(SparqlConstraint constraint);
-    void visit(ConstraintComponentSPARQL constraint);
-    void visit(UniqueLangConstraint constraint);
-    void visit(HasValueConstraint constraint);
+    // SHACL Core Constraint Components
+    void visit(ClassConstraint constraint);
+    void visit(DatatypeConstraint constraint);
+    void visit(NodeKindConstraint constraint);
     void visit(MinCount constraint);
     void visit(MaxCount constraint);
-    void visit(ShXone constraint);
-    void visit(ShAnd constraint);
-    void visit(ShOr constraint);
-    void visit(ShNot constraint);
-    void visit(ShNode constraint);
-    void visit(QualifiedValueShape constraint);
-    void visit(LessThanOrEqualsConstraint constraint);
-    void visit(DisjointConstraint constraint);
-    void visit(EqualsConstraint constraint);
-    void visit(LessThanConstraint constraint);
-    void visit(ClosedConstraint constraint);
-    void visit(ClassConstraint constraint);
-    void visit(StrMaxLengthConstraint constraint);
-    void visit(StrLanguageIn constraint);
-    void visit(StrMinLengthConstraint constraint);
-    void visit(JViolationConstraint constraint);
-    void visit(DatatypeConstraint constraint);
-    void visit(JLogConstraint constraint);
-    void visit(PatternConstraint constraint);
     void visit(ValueMinExclusiveConstraint constraint);
     void visit(ValueMinInclusiveConstraint constraint);
     void visit(ValueMaxInclusiveConstraint constraint);
     void visit(ValueMaxExclusiveConstraint constraint);
+    void visit(StrMinLengthConstraint constraint);
+    void visit(StrMaxLengthConstraint constraint);
+    void visit(PatternConstraint constraint);
+    void visit(StrLanguageIn constraint);
+    void visit(UniqueLangConstraint constraint);
+    void visit(EqualsConstraint constraint);
+    void visit(DisjointConstraint constraint);
+    void visit(LessThanConstraint constraint);
+    void visit(LessThanOrEqualsConstraint constraint);
+    void visit(ShNot constraint);
+    void visit(ShAnd constraint);
+    void visit(ShOr constraint);
+    void visit(ShXone constraint);
+    void visit(ShNode constraint);
+    void visit(QualifiedValueShape constraint);
+    void visit(ClosedConstraint constraint);
+    void visit(HasValueConstraint constraint);
     void visit(InConstraint constraint);
-    void visit(NodeKindConstraint constraint);
+    void visit(ConstraintComponentSPARQL constraint);
+    void visit(SparqlConstraint constraint);
+
+    // Other Constraints
+    void visit(JViolationConstraint constraint);
+    void visit(JLogConstraint constraint);
 }
