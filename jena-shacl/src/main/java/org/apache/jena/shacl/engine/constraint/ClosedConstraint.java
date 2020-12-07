@@ -95,11 +95,6 @@ public class ClosedConstraint implements Constraint {
         validate(vCxt, data, shape, focusNode);
     }
 
-    @Override
-    public void visit(ConstraintVisitor visitor){
-        visitor.visit(this);
-    }
-
     private void validate(ValidationContext vCxt, Graph data, Shape shape, Node focusNode) {
         if ( ! active )
             return;
@@ -148,6 +143,11 @@ public class ClosedConstraint implements Constraint {
     @Override
     public Node getComponent() {
         return SHACL.ClosedConstraintComponent;
+    }
+
+    @Override
+    public void visit(ConstraintVisitor visitor){
+        visitor.visit(this);
     }
 
     @Override

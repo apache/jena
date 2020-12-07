@@ -46,15 +46,15 @@ public class JViolationConstraint extends ConstraintTerm {
     }
 
     @Override
-    public void visit(ConstraintVisitor visitor){
-        visitor.visit(this);
-    }
-
-    @Override
     public ReportItem validate(ValidationContext vCxt, Node n) {
         if ( ! generateViolation )
             return null;
         return new ReportItem("Violation");
+    }
+
+    @Override
+    public void visit(ConstraintVisitor visitor){
+        visitor.visit(this);
     }
 
     @Override

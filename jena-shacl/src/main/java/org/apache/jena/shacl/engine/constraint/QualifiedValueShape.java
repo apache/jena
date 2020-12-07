@@ -137,11 +137,6 @@ public class QualifiedValueShape implements Constraint {
         }
     }
 
-    @Override
-    public void visit(ConstraintVisitor visitor){
-        visitor.visit(this);
-    }
-
     private boolean conformsSiblings(ValidationContext vCxt, Node v, Collection<Node> sibs) {
         for ( Node sib : sibs ) {
             Shape sibShape = vCxt.getShapes().getShape(sib);
@@ -181,6 +176,11 @@ public class QualifiedValueShape implements Constraint {
     @Override
     public Node getComponent() {
         return SHACL.qualifiedValueShape;
+    }
+
+    @Override
+    public void visit(ConstraintVisitor visitor){
+        visitor.visit(this);
     }
 
     @Override

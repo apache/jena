@@ -47,15 +47,15 @@ public class JLogConstraint extends ConstraintTerm {
     }
 
     @Override
-    public void visit(ConstraintVisitor visitor){
-        visitor.visit(this);
-    }
-
-    @Override
     public ReportItem validate(ValidationContext vCxt, Node n) {
         String msg = String.format("%s[%s]", message, ShLib.displayStr(n));
         ShaclSystem.systemShaclLogger.warn(msg);
         return null;
+    }
+
+    @Override
+    public void visit(ConstraintVisitor visitor){
+        visitor.visit(this);
     }
 
     @Override

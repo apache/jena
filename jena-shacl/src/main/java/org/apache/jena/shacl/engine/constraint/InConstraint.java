@@ -53,16 +53,16 @@ public class InConstraint extends ConstraintTerm {
     }
 
     @Override
-    public void visit(ConstraintVisitor visitor){
-        visitor.visit(this);
-    }
-
-    @Override
     public ReportItem validate(ValidationContext vCxt, Node n) {
         if ( values.contains(n) )
             return null;
         String errMsg = toString()+" : RDF term "+displayStr(n)+" not in expected values";
         return new ReportItem(errMsg, n);
+    }
+
+    @Override
+    public void visit(ConstraintVisitor visitor){
+        visitor.visit(this);
     }
 
     @Override

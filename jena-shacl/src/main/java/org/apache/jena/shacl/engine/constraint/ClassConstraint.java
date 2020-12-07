@@ -49,6 +49,11 @@ public class ClassConstraint extends ConstraintDataTerm {
     }
 
     @Override
+    public void visit(ConstraintVisitor visitor){
+        visitor.visit(this);
+    }
+
+    @Override
     public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
         compact(out, nodeFmt, "class", expectedClass);
         // Only allowed in a property shape without OR or NOT.
@@ -76,11 +81,6 @@ public class ClassConstraint extends ConstraintDataTerm {
     @Override
     public Node getComponent() {
         return SHACL.ClassConstraintComponent;
-    }
-
-    @Override
-    public void visit(ConstraintVisitor visitor){
-        visitor.visit(this);
     }
 
     @Override
