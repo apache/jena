@@ -28,6 +28,7 @@ import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
+import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.sparql.expr.Expr;
@@ -52,6 +53,11 @@ public class LessThanOrEqualsConstraint extends ConstraintPairwise {
                 }
             }
         }
+    }
+
+    @Override
+    public void visit(ConstraintVisitor visitor){
+        visitor.visit(this);
     }
 
     @Override

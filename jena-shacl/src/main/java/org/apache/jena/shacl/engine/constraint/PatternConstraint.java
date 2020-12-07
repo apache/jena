@@ -28,6 +28,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.lib.ShLib;
+import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.sparql.expr.RegexJava;
@@ -78,6 +79,11 @@ public class PatternConstraint extends ConstraintTerm {
     @Override
     public Node getComponent() {
         return SHACL.PatternConstraintComponent;
+    }
+
+    @Override
+    public void visit(ConstraintVisitor visitor){
+        visitor.visit(this);
     }
 
     @Override

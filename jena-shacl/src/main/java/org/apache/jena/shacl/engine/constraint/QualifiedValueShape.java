@@ -31,6 +31,7 @@ import org.apache.jena.shacl.compact.writer.CompactOut;
 import org.apache.jena.shacl.compact.writer.CompactWriter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.Constraint;
+import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.validation.ValidationProc;
 import org.apache.jena.shacl.vocabulary.SHACL;
@@ -134,6 +135,11 @@ public class QualifiedValueShape implements Constraint {
             vCxt.reportEntry(msg, shape, focusNode, path, null,
                 new ReportConstraint(SHACL.QualifiedMaxCountConstraintComponent));
         }
+    }
+
+    @Override
+    public void visit(ConstraintVisitor visitor){
+        visitor.visit(this);
     }
 
     private boolean conformsSiblings(ValidationContext vCxt, Node v, Collection<Node> sibs) {

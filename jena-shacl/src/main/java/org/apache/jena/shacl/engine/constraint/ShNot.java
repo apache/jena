@@ -28,6 +28,7 @@ import org.apache.jena.shacl.compact.writer.CompactWriter;
 import org.apache.jena.shacl.compact.writer.ShaclNotCompactException;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.Constraint;
+import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.shacl.validation.ValidationProc;
@@ -54,6 +55,11 @@ public class ShNot extends ConstraintOp1 {
             return null;
         String msg = "Not["+other+"] at focusNode "+displayStr(node);
         return new ReportItem(msg, node);
+    }
+
+    @Override
+    public void visit(ConstraintVisitor visitor){
+        visitor.visit(this);
     }
 
     @Override

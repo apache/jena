@@ -32,6 +32,7 @@ import org.apache.jena.shacl.engine.Parameter;
 import org.apache.jena.shacl.engine.SparqlConstraints;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.Constraint;
+import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.parser.ShaclParseException;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.vocabulary.SHACL;
@@ -77,6 +78,11 @@ public class ConstraintComponentSPARQL implements Constraint {
     @Override
     public Node getComponent() {
         return SHACL.SPARQLConstraintComponent;
+    }
+
+    @Override
+    public void visit(ConstraintVisitor visitor){
+        visitor.visit(this);
     }
 
     @Override

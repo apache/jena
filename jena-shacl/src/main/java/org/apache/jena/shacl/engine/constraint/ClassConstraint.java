@@ -30,6 +30,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
+import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.shacl.vocabulary.SHACL;
 
@@ -75,6 +76,11 @@ public class ClassConstraint extends ConstraintDataTerm {
     @Override
     public Node getComponent() {
         return SHACL.ClassConstraintComponent;
+    }
+
+    @Override
+    public void visit(ConstraintVisitor visitor){
+        visitor.visit(this);
     }
 
     @Override

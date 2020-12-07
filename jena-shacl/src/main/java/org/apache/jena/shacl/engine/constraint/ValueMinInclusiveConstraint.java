@@ -21,6 +21,7 @@ package org.apache.jena.shacl.engine.constraint;
 import static org.apache.jena.shacl.lib.ShLib.displayStr;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.sparql.expr.Expr;
 
@@ -29,6 +30,11 @@ public class ValueMinInclusiveConstraint extends ValueRangeConstraint {
 
     public ValueMinInclusiveConstraint(Node value) {
         super(value, SHACL.MinInclusiveConstraintComponent);
+    }
+
+    @Override
+    public void visit(ConstraintVisitor visitor){
+        visitor.visit(this);
     }
 
     @Override

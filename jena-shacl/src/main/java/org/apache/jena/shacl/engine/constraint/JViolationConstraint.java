@@ -23,6 +23,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.compact.writer.CompactOut;
 import org.apache.jena.shacl.engine.ValidationContext;
+import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.shacl.vocabulary.SHJ;
 
@@ -42,6 +43,11 @@ public class JViolationConstraint extends ConstraintTerm {
     @Override
     public Node getComponent() {
         return SHJ.ViolationConstraintComponent;
+    }
+
+    @Override
+    public void visit(ConstraintVisitor visitor){
+        visitor.visit(this);
     }
 
     @Override
