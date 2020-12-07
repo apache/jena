@@ -57,7 +57,7 @@ public class ReportConstraint implements Constraint {
 
     @Override
     public void visit(ConstraintVisitor visitor){
-        visitor.visit(this);
+        //empty
     }
 
     @Override

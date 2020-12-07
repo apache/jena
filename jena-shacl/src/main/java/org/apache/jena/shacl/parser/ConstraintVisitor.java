@@ -21,7 +21,6 @@ package org.apache.jena.shacl.parser;
 import org.apache.jena.shacl.engine.constraint.*;
 
 public interface ConstraintVisitor {
-    void visit(ReportConstraint constraint);
     void visit(SparqlConstraint constraint);
     void visit(ConstraintComponentSPARQL constraint);
     void visit(UniqueLangConstraint constraint);

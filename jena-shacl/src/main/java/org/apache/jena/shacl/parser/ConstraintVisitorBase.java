@@ -23,9 +23,6 @@ import org.apache.jena.shacl.engine.constraint.*;
 public abstract class ConstraintVisitorBase implements ConstraintVisitor {
 
     @Override
-    public void visit(ReportConstraint constraint) {}
-
-    @Override
     public void visit(SparqlConstraint constraint) {}
 
     @Override
