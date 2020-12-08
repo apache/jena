@@ -46,4 +46,6 @@ public interface Constraint {
 
     public Node getComponent();
 
+    public void visit(ConstraintVisitor visitor);
+
 }

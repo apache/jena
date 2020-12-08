@@ -30,6 +30,7 @@ import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
+import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.shacl.vocabulary.SHACL;
 
@@ -57,6 +58,11 @@ public class InConstraint extends ConstraintTerm {
             return null;
         String errMsg = toString()+" : RDF term "+displayStr(n)+" not in expected values";
         return new ReportItem(errMsg, n);
+    }
+
+    @Override
+    public void visit(ConstraintVisitor visitor){
+        visitor.visit(this);
     }
 
     @Override

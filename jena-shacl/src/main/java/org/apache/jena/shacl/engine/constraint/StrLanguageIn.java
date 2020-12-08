@@ -29,6 +29,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
+import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
@@ -74,6 +75,11 @@ public class StrLanguageIn extends ConstraintTerm {
     @Override
     public Node getComponent() {
         return SHACL.LanguageInConstraintComponent;
+    }
+
+    @Override
+    public void visit(ConstraintVisitor visitor){
+        visitor.visit(this);
     }
 
 //    @Override

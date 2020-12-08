@@ -23,6 +23,7 @@ import java.util.Objects;
 import org.apache.jena.graph.Node;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.lib.ShLib;
+import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.sys.ShaclSystem;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.shacl.vocabulary.SHJ;
@@ -50,6 +51,11 @@ public class JLogConstraint extends ConstraintTerm {
         String msg = String.format("%s[%s]", message, ShLib.displayStr(n));
         ShaclSystem.systemShaclLogger.warn(msg);
         return null;
+    }
+
+    @Override
+    public void visit(ConstraintVisitor visitor){
+        visitor.visit(this);
     }
 
     @Override
