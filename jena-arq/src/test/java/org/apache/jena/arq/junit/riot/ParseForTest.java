@@ -18,13 +18,14 @@
 
 package org.apache.jena.arq.junit.riot;
 
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFParser;
-import org.apache.jena.riot.system.ErrorHandler;
-import org.apache.jena.riot.system.ErrorHandlerFactory;
-import org.apache.jena.riot.system.StreamRDF;
+import java.io.InputStream;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class Parse {
+import org.apache.jena.riot.*;
+import org.apache.jena.riot.system.*;
+
+public class ParseForTest {
 
     private static ErrorHandler errorHandlerTestStrict = ErrorHandlerFactory.errorHandlerStrictSilent();
 
@@ -32,7 +33,17 @@ public class Parse {
         parse(destination, uri, uri, lang);
     }
 
+    public static Map<Lang, ReaderRIOTFactory> alternativeReaderFactories = new ConcurrentHashMap<>();
+    
     public static void parse(StreamRDF destination, String uri, String base, Lang lang) {
+        if ( alternativeReaderFactories.containsKey(lang) ) {
+            ReaderRIOTFactory factoryForTest = alternativeReaderFactories.get(lang);
+            InputStream in = RDFDataMgr.open(uri);
+            ParserProfile profile = RiotLib.profile(lang, base, errorHandlerTestStrict);
+            factoryForTest.create(lang, profile).read(in, base, null, destination, RIOT.getContext());
+            return ;
+        }
+        // Otherwise use the RDFParser builder.
         RDFParser.create()
             .errorHandler(errorHandlerTestStrict)
             .strict(true)

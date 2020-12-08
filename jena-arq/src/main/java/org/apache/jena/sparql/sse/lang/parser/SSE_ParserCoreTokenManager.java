@@ -3,6 +3,7 @@
 package org.apache.jena.sparql.sse.lang.parser ;
 
 
+
 /** Token Manager. */
 public class SSE_ParserCoreTokenManager implements SSE_ParserCoreConstants {
 

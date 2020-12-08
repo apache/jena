@@ -17,7 +17,7 @@
 
 # Parser builder
 
-DIR="../src/main/java/org/apache/jena/riot/lang/extra/javacc"
+DIR="../../src/main/java/org/apache/jena/riot/lang/extra/javacc"
 FILE="turtle.jj"
 CLASS=TurtleJavacc
 

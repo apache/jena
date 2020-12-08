@@ -36,11 +36,14 @@ public enum TokenType {
     // LT, GT, LE, GE are only visible if IRI processing is not enabled.
     LT, GT, LE, GE, LOGICAL_AND, LOGICAL_OR,    // && and ||
     LT2, GT2,                                   // << and >>
-    VBAR, AMPHERSAND,
 
-    LBRACE, RBRACE,     // {}
-    LPAREN, RPAREN,                 // ()
-    LBRACKET, RBRACKET,             // []
+    // RDF* annotation syntax {|...|}
+    L_ANN, R_ANN,
+
+    VBAR, AMPHERSAND,
+    LBRACE, RBRACE,         // {}
+    LPAREN, RPAREN,         // ()
+    LBRACKET, RBRACKET,     // []
     // = == + - * / \
     EQUALS, EQUIVALENT, PLUS, MINUS, STAR, SLASH, RSLASH,
     // Whitespace, any comment, (one line comment, multiline comment)

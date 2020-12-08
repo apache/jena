@@ -19,16 +19,12 @@
 // Turtle RDF 1.1 Gramamr.
 // This is not the usual parser used by RIOT.
 // RIOT has it's own tokenizer/parser which is faster.
-// This grammar exists as a more convenient base for new languages.
+// This grammar exists as a more convenient base for new languages
+// and working on the grammar of Turtle itself (e.g. RDF*)
 
 options
 {
-//     // \ u processed in the input stream
-//     JAVA_UNICODE_ESCAPE   = true ;
-//     UNICODE_INPUT         = false ;
-
-  // \ u processed after parsing.
-  // strings, IRIs
+  // \ u processed after parsing in strings and IRIs, nowhere else.
   JAVA_UNICODE_ESCAPE   = false ;
   UNICODE_INPUT         = true ;
 
@@ -60,8 +56,9 @@ package org.apache.jena.riot.lang.extra.javacc;
 
 import org.apache.jena.graph.*;
 import org.apache.jena.riot.lang.extra.* ;
+import static org.apache.jena.riot.lang.extra.LangParserLib.*;
 
-public class TurtleJavacc extends TurtleParserBase
+public class TurtleJavacc extends LangParserBase
 {}
 PARSER_END(TurtleJavacc)
 
@@ -78,6 +75,7 @@ void ByteOrderMark() : {}
   (<BOM>)?
 }
 
+// Turtle [2] statement
 void Statement() : {}
 {
     Directive()
@@ -87,6 +85,7 @@ void Statement() : {}
   | (TriplesSameSubject() <DOT> )
 }
 
+// Turtle [3] directive
 void Directive() : { Token t ; String iri ; }
 {
     <PREFIX> t = <PNAME_NS> iri = IRIREF()
@@ -107,96 +106,141 @@ void DirectiveOld() : { Token t ; String iri ; }
     { setBase(iri, t.beginLine, t.beginColumn) ; }
 }
 
-Token AnyDirective() : { Token t ; }
-{
-    ( t = <PREFIX> | t = <BASE> ) { return t ; }
-}
-
+// Turtle [6] triples
 void TriplesSameSubject() : { Node s ; } 
 {
-  s = SubjectNode()
-  PropertyListNotEmpty(s) 
+  s = Subject()
+  PredicateObjectList(s) 
 |
-  s = TriplesNode()
-  PropertyList(s)
+  s = BlankNodePropertyList()
+  ( PredicateObjectList(s) )?
 }
 
-void PropertyList(Node s) : { }
-{
-  ( PropertyListNotEmpty(s) ) ?
-}
-
-void PropertyListNotEmpty(Node s) : { Node p = null ; }
+// Turtle [7] predicateObjectList
+void PredicateObjectList(Node s) : { Node p = null ; }
 {
     p = Verb()
     ObjectList(s, p)
     (<SEMICOLON> (p = Verb() ObjectList(s, p))? )*
 }
 
+// Turtle [8] objectList
 void ObjectList(Node s, Node p): { Node o ; } 
 {
-  Object(s, p)
-  ( <COMMA> Object(s, p) )*
-}
-
-void Object(Node s, Node p): { Node o ; }
-{
-  o = GraphNode() 
+  o = Object()
   { emitTriple(token.beginLine, token.beginColumn, s, p, o) ; }
+  Annotation(s, p, o)
+  (
+    <COMMA> o = Object()
+    { emitTriple(token.beginLine, token.beginColumn, s, p, o) ; }
+    Annotation(s, p, o)
+  )*
 }
 
-Node Verb() : { Node p ; String iri;}
+// RDF* Annotation Syntax
+void Annotation(Node s, Node p, Node o) : {}
 {
-  ( iri = iri() { p = createNode(iri); }
-  | <KW_A> { p = nRDFtype ; }
-  )
+  (
+    "{|"
+      { Node x = tripleStar(s, p, o); }
+      PredicateObjectList(x)
+    "|}"
+  )?
+}
+
+// Turtle [9] verb
+Node Verb() : { Node p ; }
+{
+  ( p = Predicate()  | <KW_A> { p = nRDFtype ; } )
   { return p ; }
 }
 
-// -------- Triple expansions
-
-// Anything that can stand in a node slot and which is
-// a number of triples
-
-Node TriplesNode() : { Node n ; }
+// Turtle [10] subject (include RDF* SubjectX)
+Node Subject() : { Node s; String iri ; }
 {
-  n = Collection() { return n ; }
- |
-  n = BlankNodePropertyList() { return n ; }
-//  |
-//   n = TripleStar() { return n ; }
+  (
+    iri = iri() { s = createNode(iri) ; }
+  |
+    s = BlankNode()
+  |
+    s = Collection()
+  |
+    // RDF* SubjectX
+    s = TripleStar()
+  )
+  { return s ; }
 }
 
+
+// Turtle [11] predicate
+Node Predicate() : { String iri;}
+{
+  iri = iri()
+  { return createNode(iri); }
+}
+
+// Turtle [12] object
+Node Object(): { Node o ; String iri; }
+{
+  ( iri = iri() { o = createNode(iri) ; }
+  | o = BlankNode()
+  | o = Collection()
+  | o = BlankNodePropertyList()
+  | o = Literal()
+  |
+    // RDF* ObjectX
+    o = TripleStar()
+  )
+  { return o; }
+}
+
+// RDF* objectXTurtle [12] object
+Node ObjectX(): { Node o ; String iri; }
+{
+   ( iri = iri() { o = createNode(iri) ; }
+  | o = BlankNode()
+  | o = Literal()
+  |
+    // RDF* ObjectX
+    o = TripleStar()
+  )
+  { return o ; } 
+}
+
+// The syntax for RDF*
+// RDF* [] tripleX 
+Node TripleStar() : { Node s , p , o ; Token t ; }
+{
+  t = "<<"
+    { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
+  s = Subject()
+  p = Predicate()
+  o = ObjectX()
+  ">>"
+  { Node n = tripleStar(s, p, o);
+    return n;
+  }
+}
+
+// Turtle [13] literal
+Node Literal() : { Node n ;}
+{
+  n = RDFLiteral()      { return n ; }
+| n = NumericLiteral()  { return n ; }
+| n = BooleanLiteral()  { return n ; }
+}
+
+// Turtle [14] blankNodePropertyList
 Node BlankNodePropertyList() : { Token t ; }
 {
   t = <LBRACKET> 
     { Node n = createBNode( t.beginLine, t.beginColumn) ; }
-  PropertyListNotEmpty(n)
+  PredicateObjectList(n)
   <RBRACKET>
     { return n ; }
 }
 
-// The syntax for RDF* 
-//Node TripleStar() : 
-//     { Node s , p , o ; Token t ; }
-// {
-//   t = "<<"
-//     { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
-//         id = createTripleId(beginLine, beginColumn() ;
-//     }
-//   s = GraphNode()
-//   p = GraphNode()
-//   o = GraphNode()
-//   ">>"
-//   { Node n = tripleStar(s, p, o);
-//     return n;
-//   }
-// }
-// 
-
-// ------- RDF collections
-// Ordering?
-
+// Turtle [15] collection
 Node Collection() : 
     { Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ; }
 {
@@ -211,13 +255,12 @@ Node Collection() :
       if ( lastCell != null )
         listTriple(line, column, lastCell, nRDFrest,  cell) ;
     }
-    n = GraphNode()
+    n = CollectionElt()
     {
       listTriple(line, column, cell, nRDFfirst, n) ;
       lastCell = cell ;
     }
-  ) +
-  // Not * here - "()" is handled separately.
+  ) *
   <RPAREN>
    { if ( lastCell != null )
        listTriple(line, column, lastCell, nRDFrest,  nRDFnil) ;
@@ -225,31 +268,24 @@ Node Collection() :
      return listHead ; }
 }
 
-Node SubjectNode() : { Node s; String iri ;}
+// Turtle: Gramnmar has "object" directly in the collection rule.
+Node CollectionElt() : { Node o;}
 {
-  s = BlankNode() { return s ; }
- |
-   iri = iri() { return createNode(iri) ; }
+  o = Object()
+  { return o; }
 }
 
-Node GraphNode() : { Node n ; }
+// Turtle [16] NumericLiteral
+Node NumericLiteral() : { Token t ; }
 {
-  n = GraphTerm() { return n ; }
- |
-  n = TriplesNode() { return n ; }
+  (
+    t = <INTEGER> { return createLiteralInteger(t.image) ; }
+  | t = <DECIMAL> { return createLiteralDecimal(t.image) ; }
+  | t = <DOUBLE>  { return createLiteralDouble(t.image) ; }
+  )
 }
 
-Node GraphTerm() : { Node n ; String iri ; }
-{
-  iri = iri()        { return createNode(iri) ; }
-| n = RDFLiteral()      { return n ; }
-| n = NumericLiteral()  { return n ; }
-| n = BooleanLiteral()  { return n ; }
-| n = BlankNode()       { return n ; }   
-  //  <LPAREN> <RPAREN>     { return nRDFnil ; }
-| <NIL>  { return nRDFnil ; }
-}
-
+// Turtle [128s] RDFLiteral
 Node RDFLiteral() : { Token t ; String lex = null ; }
 {
   lex = String()
@@ -270,15 +306,12 @@ String LangTag() : { Token t ; }
   { String lang = stripChars(t.image, 1) ; return lang ; }
 }
 
-Node NumericLiteral() : { Token t ; }
+Token AnyDirective() : { Token t ; }
 {
-  (
-    t = <INTEGER> { return createLiteralInteger(t.image) ; }
-  | t = <DECIMAL> { return createLiteralDecimal(t.image) ; }
-  | t = <DOUBLE>  { return createLiteralDouble(t.image) ; }
-  )
+    ( t = <PREFIX> | t = <BASE> ) { return t ; }
 }
 
+// Turtle [133s BooleanLiteral
 Node BooleanLiteral() : {}
 {
   <TRUE> { return XSD_TRUE ; }
@@ -286,6 +319,7 @@ Node BooleanLiteral() : {}
   <FALSE> { return XSD_FALSE ; }
 }
 
+// Turtle [17] String
 String String() : { Token t ; String lex ; }
 {
   ( t = <STRING_LITERAL1> { lex = stripQuotes(t.image) ; }
@@ -294,11 +328,13 @@ String String() : { Token t ; String lex ; }
   | t = <STRING_LITERAL_LONG2> { lex = stripQuotes3(t.image) ; }
   )
     {
+      checkString(lex, t.beginLine, t.beginColumn) ;
       lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
       return lex ;
     }
 }
 
+// Turtle [135s] iri
 String iri() : { String iri ; }
 {
   iri = IRIREF() { return iri ; }
@@ -306,6 +342,7 @@ String iri() : { String iri ; }
   iri = PrefixedName() { return iri ; }
 }
 
+// Turtle [136s] PrefixedName
 String PrefixedName() : { Token t ; }
 {
   ( t = <PNAME_LN>
@@ -316,12 +353,12 @@ String PrefixedName() : { Token t ; }
   )
 }
 
+// Turtle [137s] BlankNode
 Node BlankNode() :  { Token t = null ; }
 {
   t = <BLANK_NODE_LABEL>
     { return createBNode(t.image, t.beginLine, t.beginColumn) ; }  
 |
-//  <LBRACKET> <RBRACKET> { return createBNode(t.beginLine, t.beginColumn) ; }
   t = <ANON> { return createBNode(t.beginLine, t.beginColumn) ; }
 
 }
@@ -410,13 +447,6 @@ TOKEN :
 | < LPAREN:    "(" >
 | < RPAREN:    ")" >
 
-// All the stuff for NUL is needed just to make a 
-// single list "() ." as a triple pattern illegal.
-// It leads to a lot of extra work.
-// Similarly [].
-
-| <NIL: <LPAREN> (<WSC>)* <RPAREN> >
-
 | < LBRACE:    "{" >
 | < RBRACE:    "}" >
 
@@ -438,6 +468,8 @@ TOKEN :
 |  <#A2Z: ["a"-"z","A"-"Z"]>
 |  <#A2ZN: ["a"-"z","A"-"Z","0"-"9"]>
 
+| <#SURROGATE_PAIR: ["\uD800"-"\uDBFF"] ["\uDC00"-"\uDFFF"] >
+
 | <#PN_CHARS_BASE:
           ["A"-"Z"] | ["a"-"z"] |
           ["\u00C0"-"\u00D6"] | ["\u00D8"-"\u00F6"] | ["\u00F8"-"\u02FF"] |
@@ -445,6 +477,9 @@ TOKEN :
           ["\u200C"-"\u200D"] | ["\u2070"-"\u218F"] | ["\u2C00"-"\u2FEF"] |
           ["\u3001"-"\uD7FF"] | ["\uF900"-"\uFFFD"]
           // | [#x10000-#xEFFFF]
+          // Put in surrogate pairs because by the time javacc sees codepoints,
+          // they are in UTF-16.
+          | <SURROGATE_PAIR>
           >
 |
   // With underscore

@@ -41,12 +41,17 @@ public class StreamRDFLib
     public static StreamRDF sinkNull()                       { return new StreamRDFBase() ; }
 
     /**
+     * Create a {@link StreamRDF} that prints to an {@link OutputStream}.
+     * This is debug output.
+     */
+    public static StreamRDF print(OutputStream out)         { return new WriterStreamRDFPlain(IO.wrapUTF8(out)) ; }
+
+    /**
      * Create a {@link StreamRDF} that outputs to an {@link OutputStream}. It is important
      * to call {@link StreamRDF#start} and {@link StreamRDF#finish} because the output is
      * buffered.
      */
     public static StreamRDF writer(OutputStream out)         { return new WriterStreamRDFPlain(IO.wrapUTF8(out)) ; }
-
     /** Create a {@link StreamRDF} that outputs to an {@link AWriter}. */
     public static StreamRDF writer(AWriter out)              { return new WriterStreamRDFPlain(out) ; }
 

@@ -28,6 +28,9 @@ import org.apache.jena.vocabulary.RDF ;
 public class RiotTests
 {
     public static String assumedRootURIex = "http://example/base/" ;
+
+    // Depends on origin of the tests.
+    //public static String assumedRootURITurtle = "http://w3c.github.io/rdf-tests/turtle/";
     public static String assumedRootURITurtle = "http://www.w3.org/2013/TurtleTests/" ;
     public static String assumedRootURITriG = "http://www.w3.org/2013/TriGTests/" ;
 

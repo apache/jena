@@ -23,6 +23,7 @@ package org.apache.jena.shacl.compact.reader.parser;
 import java.util.List;
 import java.util.ArrayList;
 import org.apache.jena.graph.*;
+import org.apache.jena.riot.lang.extra.LangParserLib;
 import org.apache.jena.sparql.path.*;
 import org.apache.jena.shacl.compact.reader.*;
 
@@ -1318,7 +1319,7 @@ String lang = null ; String dt = null ;
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case LANGTAG:{
         t = jj_consume_token(LANGTAG);
-lang = stripChars(t.image, 1) ;
+lang = LangParserLib.stripChars(t.image, 1) ;
         break;
         }
       case 46:{
@@ -1351,22 +1352,22 @@ lang = stripChars(t.image, 1) ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case STRING_LITERAL1:{
       t = jj_consume_token(STRING_LITERAL1);
-lex = stripQuotes(t.image) ;
+lex = LangParserLib.stripQuotes(t.image) ;
       break;
       }
     case STRING_LITERAL2:{
       t = jj_consume_token(STRING_LITERAL2);
-lex = stripQuotes(t.image) ;
+lex = LangParserLib.stripQuotes(t.image) ;
       break;
       }
     case STRING_LITERAL_LONG1:{
       t = jj_consume_token(STRING_LITERAL_LONG1);
-lex = stripQuotes3(t.image) ;
+lex = LangParserLib.stripQuotes3(t.image) ;
       break;
       }
     case STRING_LITERAL_LONG2:{
       t = jj_consume_token(STRING_LITERAL_LONG2);
-lex = stripQuotes3(t.image) ;
+lex = LangParserLib.stripQuotes3(t.image) ;
       break;
       }
     default:
@@ -1374,7 +1375,7 @@ lex = stripQuotes3(t.image) ;
       jj_consume_token(-1);
       throw new ParseException();
     }
-lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
+lex = LangParserLib.unescapeStr(lex,  t.beginLine, t.beginColumn) ;
       {if ("" != null) return lex ;}
     throw new Error("Missing return statement in function");
   }

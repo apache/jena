@@ -80,25 +80,4 @@ public class IsoMatcher
     public static boolean isomorphic(Collection<Tuple<Node>> x1, Collection<Tuple<Node>> x2, EqualityTest nodeTest) {
         return IsoAlg.isIsomorphic(x1, x2, nodeTest);
     }
-
-    // --- Compatibility. Deprecated, and due for removal.
-    private List<Tuple<Node>> tuples1;
-    private List<Tuple<Node>> tuples2;
-    private EqualityTest nodeTest;
-
-    /** @deprecated Use {@link IsoMatcher#match} */
-    @Deprecated
-    public IsoMatcher(List<Tuple<Node>> g1, List<Tuple<Node>> g2, EqualityTest nodeTest) {
-        this.tuples1 = g1;
-        this.tuples2 = g2;
-        this.nodeTest = nodeTest;
-    }
-
-    /** @deprecated Use {@link IsoMatcher#match} */
-    @Deprecated
-    public boolean match() {
-        return isomorphic(tuples2, tuples1, nodeTest);
-    }
-    // ---
-    
 }

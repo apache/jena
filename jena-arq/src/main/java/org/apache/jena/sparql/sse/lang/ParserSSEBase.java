@@ -19,10 +19,9 @@
 package org.apache.jena.sparql.sse.lang;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.sparql.lang.ParserBase ;
 import org.apache.jena.sparql.sse.SSEParseException ;
 
-public class ParserSSEBase extends ParserBase
+public class ParserSSEBase
 {
     private ParseHandler handler = null ;
 

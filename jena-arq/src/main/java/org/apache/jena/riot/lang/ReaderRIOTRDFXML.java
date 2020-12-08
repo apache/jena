@@ -51,15 +51,12 @@ import org.xml.sax.SAXParseException ;
  */
 public class ReaderRIOTRDFXML implements ReaderRIOT
 {
-    public static class Factory implements ReaderRIOTFactory {
-        @Override
-        public ReaderRIOT create(Lang language, ParserProfile parserProfile) {
+    public static ReaderRIOTFactory factory = (Lang language, ParserProfile parserProfile) ->
             // Ignore the provided ParserProfile
-            // ARP predates RIOT and does many things internall already.
-            // Thisincludes IRI resolution.
-            return new ReaderRIOTRDFXML(parserProfile.getErrorHandler()) ;
-        }
-    }
+            // ARP predates RIOT and does many things internally already.
+            // This includes IRI resolution.
+            new ReaderRIOTRDFXML(parserProfile.getErrorHandler())
+            ;
     
     private ARP arp = new ARP() ;
     

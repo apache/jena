@@ -24,14 +24,12 @@ import java.nio.charset.StandardCharsets;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.riot.system.StreamRDF;
-import org.apache.jena.riot.system.StreamRDFLib;
+import org.apache.jena.riot.system.*;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.compact.reader.ShaclcParseException;
 import org.apache.jena.shacl.compact.reader.parser.ParseException;
 import org.apache.jena.shacl.compact.reader.parser.ShaclCompactParserJJ;
 import org.apache.jena.shacl.compact.reader.parser.TokenMgrError;
-import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.util.Context;
 
@@ -93,14 +91,18 @@ public class ShaclcParser {
     }
 
     private static void parse$(ShaclCompactParserJJ parser, StreamRDF stream, String baseURI, Context context) {
-        Prologue prologue = parser.getPrologue();
+        
+        ParserProfile profile = new ParserProfileStd(RiotLib.factoryRDF(),
+                                                     ErrorHandlerFactory.errorHandlerStd,
+                                                     IRIResolver.create(baseURI),
+                                                     PrefixMapFactory.create(),
+                                                     context, false, false); 
+        SHACLC.addStandardPrefixes(profile.getPrefixMap());
         stream.start();
-
-        SHACLC.addStandardPrefixes(prologue.getPrefixMapping());
-        parser.start(stream);
+        parser.setDest(stream);
+        parser.setProfile(profile);
+        parser.start();
         try {
-            if ( baseURI != null )
-                parser.getPrologue().setBaseURI(baseURI);
             parser.Unit();
         } catch (ParseException ex) {
             throw new ShaclcParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn);
@@ -112,9 +114,5 @@ public class ShaclcParser {
         }
         parser.finish();
         stream.finish();
-    }
-
-    private static void prefix(Prologue prologue, String prefix, String uri) {
-        prologue.getPrefixMapping().setNsPrefix(prefix, uri);
     }
 }

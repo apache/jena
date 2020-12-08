@@ -168,17 +168,31 @@ public class Iso {
 
     /** Interface for choosing the pairs of node that can be map[ped for isomorphism. */ 
     public interface Mappable {
+        boolean isMappable(Node n);
         boolean mappable(Node n1, Node n2);
     }
 
     /** Blank nodes are mappable in {@link IsoAlg} */
-    public static Iso.Mappable mappableBlankNodes = (n1, n2) -> (n1.isBlank() && n2.isBlank());
+    public static Iso.Mappable mappableBlankNodes = new Mappable() {
+        @Override public boolean isMappable(Node n) { return n.isBlank(); } 
+        @Override public boolean mappable(Node n1, Node n2) { return n1.isBlank() && n2.isBlank(); }   
+    };
+
+    /** Blank nodes and variables are mappable in {@link IsoAlg} */
+    public static Iso.Mappable mappableVariables = new Mappable() {
+        @Override public boolean isMappable(Node n) { return n.isVariable(); } 
+        @Override public boolean mappable(Node n1, Node n2) { return n1.isVariable() && n2.isVariable(); }   
+    };
+
     
     /** Blank nodes and variables are mappable in {@link IsoAlg} */
-    public static Iso.Mappable mappableBlankNodesVariables = (n1, n2) -> {
-        if ( n1.isBlank() && n2.isBlank() ) return true;
-        if ( n1.isVariable() && n2.isVariable() ) return true;
-        return false;
+    public static Iso.Mappable mappableBlankNodesVariables = new Mappable() {
+        @Override public boolean isMappable(Node n) { return n.isBlank()|| n.isVariable() ; } 
+        @Override public boolean mappable(Node n1, Node n2) { 
+            if ( n1.isBlank() && n2.isBlank() ) return true;
+            if ( n1.isVariable() && n2.isVariable() ) return true;
+            return false;
+        }
     };
 }
 

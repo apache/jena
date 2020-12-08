@@ -284,7 +284,7 @@ public abstract class LangTurtleBase extends LangBase {
     private Node nodeX(String posnLabel) {
         if ( lookingAt(LT2) )
             return parseTripleTerm();
-        
+
         // ANON
         // [14]     blankNodePropertyList   ::=     '[' predicateObjectList ']'
         //    is at least one predicate /object.
@@ -299,7 +299,7 @@ public abstract class LangTurtleBase extends LangBase {
             nextToken();
             return profile.createBlankNode(currentGraph, t.getLine(), t.getColumn()) ;
         }
-        
+
         if ( ! lookingAt(NODE) )
             exception(peekToken(), "Bad %s in RDF* triple", posnLabel, peekToken().text()) ;
         Node node = node();
@@ -420,8 +420,17 @@ public abstract class LangTurtleBase extends LangBase {
 
     protected final void objectList(Node subject, Node predicate) {
         for (;;) {
+            // object ::=
             Node object = triplesNode() ;
             emitTriple(subject, predicate, object) ;
+//            if ( !moreTokens() )
+//                break ;
+            if ( lookingAt(L_ANN) ) {
+                nextToken() ;
+                Node x = profile.createTripleNode(subject, predicate, object, -1, -1); // XXX
+                predicateObjectList(x);
+                expect("Missing end annotation", R_ANN);
+            }
 
             if ( !moreTokens() )
                 break ;

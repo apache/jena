@@ -71,9 +71,9 @@ public class RiotEvalTest implements Runnable {
         StreamRDF dest = StreamRDFLib.graph(graph);
         try {
             if ( baseIRI != null )
-                Parse.parse(dest, input, baseIRI, lang);
+                ParseForTest.parse(dest, input, baseIRI, lang);
             else
-                Parse.parse(dest, input, lang);
+                ParseForTest.parse(dest, input, lang);
 
             if ( ! expectLegalSyntax )
                 fail("Passed bad syntax eval test");
@@ -91,10 +91,11 @@ public class RiotEvalTest implements Runnable {
                 fail("Failed to read results: "+ex.getMessage()) ;
             }
 
-            boolean b = graph.isIsomorphicWith(results) ;
-
+            boolean b = IsoMatcher.isomorphic(graph, results);
+            
             if ( !b ) {
-                //model.isIsomorphicWith(results) ;
+                // model.isIsomorphicWith(results) ;
+                // IsoMatcher.isomorphic(graph, results);
                 System.out.println("---- Parsed");
                 RDFDataMgr.write(System.out, graph, Lang.TURTLE) ;
                 System.out.println("---- Expected");
@@ -114,9 +115,9 @@ public class RiotEvalTest implements Runnable {
         StreamRDF dest = StreamRDFLib.dataset(dsg);
         try {
             if ( baseIRI != null )
-                Parse.parse(dest, input, baseIRI, lang) ;
+                ParseForTest.parse(dest, input, baseIRI, lang) ;
             else
-                Parse.parse(dest, input, lang) ;
+                ParseForTest.parse(dest, input, lang) ;
             if ( ! expectLegalSyntax )
                 fail("Passed bad syntax eval test");
 

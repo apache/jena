@@ -48,7 +48,7 @@ PARSER_BEGIN(SSE_ParserCore)
 package org.apache.jena.sparql.sse.lang.parser ;
 
 import org.apache.jena.sparql.sse.lang.ParserSSEBase ;
-    
+import static org.apache.jena.riot.lang.extra.LangParserLib.*;
 
 public class SSE_ParserCore extends ParserSSEBase
 {
