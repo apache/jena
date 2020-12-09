@@ -60,7 +60,7 @@ public class utf8
                     } else
                         colNum++ ;
                     if ( !Character.isDefined(ch) )
-                        throw new AtlasException(String.format("No such codepoint: 0x%04X", ch)) ;
+                        System.out.printf("No such codepoint: 0x%04X\n", ch);
                 }
                 System.out.printf("%s: chars = %d , lines = %d\n", fn, charCount, lineNum) ;
             }
