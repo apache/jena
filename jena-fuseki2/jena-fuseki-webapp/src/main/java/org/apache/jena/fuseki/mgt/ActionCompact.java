@@ -20,11 +20,15 @@ package org.apache.jena.fuseki.mgt;
 
 import static java.lang.String.format;
 
+import com.github.jsonldjava.shaded.com.google.common.base.Predicate;
+
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.ctl.ActionAsyncTask;
 import org.apache.jena.fuseki.ctl.TaskBase;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphWrapper;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.sys.TDBInternal;
 import org.slf4j.Logger;
@@ -52,11 +56,37 @@ public class ActionCompact extends ActionAsyncTask
             ServletOps.errorBadRequest("Dataset not found");
             return null;
         }
-        if ( ! TDBInternal.isTDB2(task.dataset) ) {
+
+        DatasetGraph dsg = getTDB2(task.dataset);
+
+        if ( dsg == null ) {
             ServletOps.errorBadRequest("Not a TDB2 dataset: Compact only applies to TDB2");
             return null;
         }
         return task;
+    }
+
+    // Unwrapping until the top of TDBS2, DatasetGraphSwitchable, is found.
+    // This include a DatasetGraphText.
+
+    /** Safety condition that stops further unwrapping */
+    private static Predicate<DatasetGraph> notTDB2 =
+        (dsg) -> org.apache.jena.tdb.sys.TDBInternal.isTDB1(dsg);
+
+    private static DatasetGraph getTDB2(DatasetGraph dsg) {
+        return unwrap(dsg, x -> TDBInternal.isTDB2(x), notTDB2);
+    }
+
+    private static DatasetGraph unwrap(DatasetGraph dsg, Predicate<DatasetGraph> predicate, Predicate<DatasetGraph> failPredicate) {
+        for ( ;; ) {
+            if ( failPredicate.apply(dsg) )
+                return null;
+            if ( predicate.apply(dsg) )
+                return dsg;
+            if ( ! ( dsg instanceof DatasetGraphWrapper) )
+                return null;
+            dsg = ((DatasetGraphWrapper)dsg).getWrapped();
+        }
     }
 
     static class CompactTask extends TaskBase {
@@ -69,8 +99,9 @@ public class ActionCompact extends ActionAsyncTask
         @Override
         public void run() {
             try {
+                DatasetGraph dsg = getTDB2(dataset);
                 log.info(format("[%d] >>>> Start compact %s", actionId, datasetName));
-                DatabaseMgr.compact(dataset);
+                DatabaseMgr.compact(dsg);
                 log.info(format("[%d] <<<< Finish compact %s", actionId, datasetName));
             } catch (Throwable ex) {
                 log.warn(format("[%d] **** Exception in compact", actionId), ex);
