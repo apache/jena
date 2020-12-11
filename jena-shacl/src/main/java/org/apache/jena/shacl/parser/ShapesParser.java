@@ -246,8 +246,6 @@ public class ShapesParser {
                 return parsed.get(shapeNode);
             // Loop detection. Do before parsing.
             if ( traversed.contains(shapeNode) ) {
-//            Log.error(ShapesParser.class,  "Cycle detected : node "+ShLib.displayStr(shapeNode));
-//            throw new ShaclParseException("Shapes cycle detected : node "+ShLib.displayStr(shapeNode));
                 ShaclSystem.systemShaclLogger.warn("Cycle detected : node "+ShLib.displayStr(shapeNode));
                 // Put in a substitute shape.
                 return unshape(shapesGraph, shapeNode);
