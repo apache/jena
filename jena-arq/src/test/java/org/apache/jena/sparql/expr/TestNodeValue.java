@@ -31,6 +31,7 @@ import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
@@ -44,13 +45,13 @@ import org.junit.Test ;
 public class TestNodeValue
 {
     static final double doubleAccuracy = 0.00000001d ;
-    static boolean warningSetting ; 
-    
+    static boolean warningSetting ;
+
     @BeforeClass public static void beforeClass() {
         warningSetting = NodeValue.VerboseWarnings ;
         NodeValue.VerboseWarnings = false ;
     }
-    
+
     @AfterClass public static void afterClass() {
         NodeValue.VerboseWarnings = warningSetting ;
     }
@@ -172,7 +173,7 @@ public class TestNodeValue
         assertFalse("A date: " + v, v.isDate());
         assertTrue("Not a node: " + v, v.hasNode());
     }
-    
+
     @Test
     public void testDateTime3() {
         NodeValue v1 = NodeValue.makeDateTime("2005-02-18T20:39:10Z");
@@ -234,6 +235,15 @@ public class TestNodeValue
         NodeValue v0 = NodeValue.makeDateTime("2005-02-18T20:39:10-05:00");
         NodeValue v1 = NodeValue.makeDateTime("2005-02-18T17:39:10.000-08:00");
         assertEquals("Not Calendar.equals: ", v0.getDateTime(), v1.getDateTime());
+    }
+
+    @Test
+    public void testDateTimeStamp1() {
+        // xsd:dateTimeStamp is a derived datatype of xsd:dateTime.
+        Node n = SSE.parseNode("'2000-01-01T00:00:00+00:00'^^xsd:dateTimeStamp");
+        NodeValue nv = NodeValue.makeNode(n);
+        assertTrue(nv.isDateTime());
+        assertFalse(nv.isDate());
     }
 
     @Test
@@ -373,7 +383,7 @@ public class TestNodeValue
         assertTrue("Not a node: " + v, v.hasNode());
     }
 
-    
+
     @Test
     public void testNodeFloat1() {
         // Theer is no SPARQL representation in short form of a float.
@@ -397,7 +407,7 @@ public class TestNodeValue
         String actualStr = v.asQuotedString();
 
         assertEquals("Print form mismatch", "57.0e0", actualStr) ;
-//                     "\"57\"^^<"+XSDDatatype.XSDdouble.getURI()+">", 
+//                     "\"57\"^^<"+XSDDatatype.XSDdouble.getURI()+">",
 //                     actualStr);
     }
 
@@ -424,7 +434,7 @@ public class TestNodeValue
 
         assertEquals("Print form mismatch", "057.0e0", actualStr);
     }
-    
+
     @Test
     public void testNodeDouble4() {
         // Leading/trail whitespace.
@@ -475,58 +485,58 @@ public class TestNodeValue
         return nv;
     }
 
-    @Test public void gregorian_01() { 
+    @Test public void gregorian_01() {
         NodeValue nv = make("'1999'^^xsd:gYear") ;
 
-        assertTrue(nv.isGYear()) ; 
-        assertFalse(nv.isGYearMonth()) ; 
-        assertFalse(nv.isGMonth()) ; 
-        assertFalse(nv.isGMonthDay()) ; 
-        assertFalse(nv.isGDay()) ; 
+        assertTrue(nv.isGYear()) ;
+        assertFalse(nv.isGYearMonth()) ;
+        assertFalse(nv.isGMonth()) ;
+        assertFalse(nv.isGMonthDay()) ;
+        assertFalse(nv.isGDay()) ;
     }
-    
-    @Test public void gregorian_02() { 
+
+    @Test public void gregorian_02() {
         NodeValue nv = make("'1999-01'^^xsd:gYearMonth") ;
 
-        assertFalse(nv.isGYear()) ; 
-        assertTrue(nv.isGYearMonth()) ; 
-        assertFalse(nv.isGMonth()) ; 
-        assertFalse(nv.isGMonthDay()) ; 
-        assertFalse(nv.isGDay()) ; 
+        assertFalse(nv.isGYear()) ;
+        assertTrue(nv.isGYearMonth()) ;
+        assertFalse(nv.isGMonth()) ;
+        assertFalse(nv.isGMonthDay()) ;
+        assertFalse(nv.isGDay()) ;
     }
 
-    @Test public void gregorian_03() { 
+    @Test public void gregorian_03() {
         NodeValue nv = make("'--01'^^xsd:gMonth") ;
 
-        assertFalse(nv.isGYear()) ; 
-        assertFalse(nv.isGYearMonth()) ; 
-        assertTrue(nv.isGMonth()) ; 
-        assertFalse(nv.isGMonthDay()) ; 
-        assertFalse(nv.isGDay()) ; 
+        assertFalse(nv.isGYear()) ;
+        assertFalse(nv.isGYearMonth()) ;
+        assertTrue(nv.isGMonth()) ;
+        assertFalse(nv.isGMonthDay()) ;
+        assertFalse(nv.isGDay()) ;
     }
-    
-    @Test public void gregorian_04() { 
+
+    @Test public void gregorian_04() {
         NodeValue nv = make("'--01-30'^^xsd:gMonthDay") ;
 
-        assertFalse(nv.isGYear()) ; 
-        assertFalse(nv.isGYearMonth()) ; 
-        assertFalse(nv.isGMonth()) ; 
-        assertTrue(nv.isGMonthDay()) ; 
-        assertFalse(nv.isGDay()) ; 
+        assertFalse(nv.isGYear()) ;
+        assertFalse(nv.isGYearMonth()) ;
+        assertFalse(nv.isGMonth()) ;
+        assertTrue(nv.isGMonthDay()) ;
+        assertFalse(nv.isGDay()) ;
     }
-    
-    @Test public void gregorian_05() { 
+
+    @Test public void gregorian_05() {
         NodeValue nv = make("'---30'^^xsd:gDay") ;
 
-        assertFalse(nv.isGYear()) ; 
-        assertFalse(nv.isGYearMonth()) ; 
-        assertFalse(nv.isGMonth()) ; 
-        assertFalse(nv.isGMonthDay()) ; 
-        assertTrue(nv.isGDay()) ; 
+        assertFalse(nv.isGYear()) ;
+        assertFalse(nv.isGYearMonth()) ;
+        assertFalse(nv.isGMonth()) ;
+        assertFalse(nv.isGMonthDay()) ;
+        assertTrue(nv.isGDay()) ;
     }
-    
+
     @Test public void langString_01() {
- 
+
         NodeValue nv = make("''@en") ;
         assertFalse(nv.isString()) ;
         assertTrue(nv.isLangString()) ;
@@ -685,22 +695,22 @@ public class TestNodeValue
     static boolean ebvDouble(double d) {
         return XSDFuncOp.booleanEffectiveValue(NodeValue.makeDouble(d));
     }
-    
+
     @Test
     public void testEBV9() {
         assertTrue ( ebvDouble(0.01d) );
         assertFalse( ebvDouble(0.0d) );
         assertFalse( ebvDouble(-0.0d) );
-        
+
         assertFalse( ebvDouble(Double.NaN) );
-        
+
         assertTrue ( ebvDouble(Double.MIN_NORMAL) );
         assertTrue ( ebvDouble(Double.MIN_VALUE) );
         assertTrue ( ebvDouble(Double.MAX_VALUE) );
-        
+
         assertTrue ( ebvDouble(Double.POSITIVE_INFINITY) );
         assertTrue ( ebvDouble(Double.NEGATIVE_INFINITY) );
-        
+
         Node x = NodeFactory.createLiteral("NaN", XSDDatatype.XSDdouble);
         NodeValue v = NodeValue.makeNode(x);
         assertFalse(XSDFuncOp.booleanEffectiveValue(v));
@@ -709,7 +719,7 @@ public class TestNodeValue
     static boolean ebvFloat(float f) {
         return XSDFuncOp.booleanEffectiveValue(NodeValue.makeFloat(f));
     }
-    
+
     @Test
     public void testEBV10() {
         assertTrue ( ebvFloat(0.01f) );
@@ -717,19 +727,19 @@ public class TestNodeValue
         assertFalse( ebvFloat(-0.0f) );
 
         assertFalse( ebvFloat(Float.NaN) );
-        
+
         assertTrue ( ebvFloat(Float.MIN_NORMAL) );
         assertTrue ( ebvFloat(Float.MIN_VALUE) );
         assertTrue ( ebvFloat(Float.MAX_VALUE) );
 
         assertTrue ( ebvFloat(Float.POSITIVE_INFINITY) );
         assertTrue ( ebvFloat(Float.NEGATIVE_INFINITY) );
-        
+
         Node x = NodeFactory.createLiteral("NaN", XSDDatatype.XSDfloat);
         NodeValue v = NodeValue.makeNode(x);
         assertFalse(XSDFuncOp.booleanEffectiveValue(v));
     }
-    
+
     private static boolean filterEBV(NodeValue nv) {
         try {
             return XSDFuncOp.booleanEffectiveValue(nv);

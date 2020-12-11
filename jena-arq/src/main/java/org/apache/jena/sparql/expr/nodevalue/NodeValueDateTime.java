@@ -18,25 +18,19 @@
 
 package org.apache.jena.sparql.expr.nodevalue;
 
-import static org.apache.jena.datatypes.xsd.XSDDatatype.XSDdate ;
-import static org.apache.jena.datatypes.xsd.XSDDatatype.XSDdateTime ;
-import static org.apache.jena.datatypes.xsd.XSDDatatype.XSDgDay ;
-import static org.apache.jena.datatypes.xsd.XSDDatatype.XSDgMonth ;
-import static org.apache.jena.datatypes.xsd.XSDDatatype.XSDgMonthDay ;
-import static org.apache.jena.datatypes.xsd.XSDDatatype.XSDgYear ;
-import static org.apache.jena.datatypes.xsd.XSDDatatype.XSDgYearMonth ;
-import static org.apache.jena.datatypes.xsd.XSDDatatype.XSDtime ;
+import static org.apache.jena.datatypes.xsd.XSDDatatype.*;
 
 import javax.xml.datatype.XMLGregorianCalendar ;
 
+import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.expr.NodeValue ;
 
-public class NodeValueDT extends NodeValue
+public class NodeValueDateTime extends NodeValue
 {
     final private XMLGregorianCalendar datetime ;
-    
-    public NodeValueDT(String lex, Node n)
+
+    public NodeValueDateTime(String lex, Node n)
     {
         super(n) ;
         // Java bug : Java6, Java8: gMonth with a timezone of Z causes IllegalArgumentException
@@ -55,9 +49,13 @@ public class NodeValueDT extends NodeValue
 
     // Look at datatype.
     // By doing this here, the check of valid lexical form must have been done to create the node.
-   
+
     @Override
-    public boolean isDateTime()     { return XSDdateTime.equals(getNode().getLiteralDatatype()) ; }
+    public boolean isDateTime() {
+        RDFDatatype dt = getNode().getLiteralDatatype();
+        return XSDdateTime.equals(dt) || XSDdateTimeStamp.equals(dt);
+    }
+
     @Override
     public boolean isDate()         { return XSDdate.equals(getNode().getLiteralDatatype()) ; }
     @Override
@@ -72,11 +70,10 @@ public class NodeValueDT extends NodeValue
     public boolean isGMonthDay()    { return XSDgMonthDay.equals(getNode().getLiteralDatatype()) ; }
     @Override
     public boolean isGDay()         { return XSDgDay.equals(getNode().getLiteralDatatype()) ; }
-    
+
     @Override
     public XMLGregorianCalendar getDateTime()    { return (XMLGregorianCalendar)datetime.clone() ; }
 
-    
     @Override
     protected Node makeNode()
     {

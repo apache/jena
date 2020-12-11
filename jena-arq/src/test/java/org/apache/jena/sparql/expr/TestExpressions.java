@@ -190,13 +190,18 @@ public class TestExpressions
     @Test public void testBoolean_66() { testBoolean(time4+" < "+time2, true) ; }
     @Test public void testBoolean_67() { testBoolean(time4+" > "+time2, false) ; }
 
-    @Test public void testBoolean_68() { testBoolean("isNumeric(12)", true) ; }
-    @Test public void testBoolean_69() { testBoolean("isNumeric('12')", false) ; }
-    @Test public void testBoolean_70() { testBoolean("isNumeric('12'^^<"+XSDDatatype.XSDbyte.getURI()+">)", true) ; }
-    @Test public void testBoolean_71() { testBoolean("isNumeric('1200'^^<"+XSDDatatype.XSDbyte.getURI()+">)", false) ; }
+    // xsd:dateTimeStamp
+    static String dateTimeStamp1 = "'1999-10-26T19:32:52+00:00'^^<"+XSDDatatype.XSDdateTimeStamp.getURI()+">" ;
+    static String dateTimeStamp2 = "'2000-01-01T00:00:00+00:00'^^<"+XSDDatatype.XSDdateTimeStamp.getURI()+">" ;
+    @Test public void testBoolean_68() { testBoolean(dateTimeStamp1+" < "+dateTimeStamp2, true) ; }
+
+    @Test public void testBoolean_70() { testBoolean("isNumeric(12)", true) ; }
+    @Test public void testBoolean_71() { testBoolean("isNumeric('12')", false) ; }
+    @Test public void testBoolean_72() { testBoolean("isNumeric('12'^^<"+XSDDatatype.XSDbyte.getURI()+">)", true) ; }
+    @Test public void testBoolean_73() { testBoolean("isNumeric('1200'^^<"+XSDDatatype.XSDbyte.getURI()+">)", false) ; }
 
     @Test(expected=ExprEvalException.class)
-    public void testBoolean_72()       { testBoolean("isNumeric(?x)", true) ; }
+    public void testBoolean_74()       { testBoolean("isNumeric(?x)", true) ; }
 
     @Test public void testDuration_01() { testBoolean(duration1+" = "+duration1, true) ; }
     @Test public void testDuration_02() { testBoolean(duration1+" < "+duration2, true) ; }
@@ -205,11 +210,14 @@ public class TestExpressions
     @Test public void testDuration_05() { testBoolean(duration1+" = "+duration3, true) ; }
     @Test public void testDuration_06() { testBoolean(duration1+" <= "+duration3, true) ; }
     @Test public void testDuration_07() { testBoolean(duration1+" >= "+duration3, true) ; }
+    @Test public void testDuration_08() { testBoolean(duration7+" < "+duration8, true) ; }
 
-    // Jena bug (<=2.6.2) for durations with fractional seconds.
-    // @Test public void testDuration_08() { testBoolean(duration5+" > "+duration4, true) ; }
-
-    @Test public void testDuration_09() { testBoolean(duration7+" < "+duration8, true) ; }
+    // duration5* are the same duration length, written differently
+    @Test public void testDuration_10() { testBoolean(duration5+" > "+duration4, true) ; }
+    @Test public void testDuration_11() { testBoolean(duration5a+" = "+duration5, true) ; }
+    @Test public void testDuration_12() { testBoolean(duration5a+" = "+duration5b, true) ; }
+    @Test public void testDuration_13() { testBoolean(duration5b+" = "+duration5, true) ; }    
+    @Test public void testDuration_14() { testBoolean(duration5a+" > "+duration4, true) ; }
 
     @Test public void testURI_1()       { testURI("<a>",     baseNS+"a" ) ; }
     @Test public void testURI_2()       { testURI("<a\\u00E9>",     baseNS+"a\u00E9" ) ; }
@@ -368,10 +376,15 @@ public class TestExpressions
     static String duration1 = "'P1Y1M1DT1H1M1S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
     static String duration2 = "'P2Y1M1DT1H1M1S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
     static String duration3 = "'P1Y1M1DT1H1M1S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
+
     static String duration4 = "'PT1H1M1S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
-    static String duration5 = "'PT1H1M1.1S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
+    static String duration5 = "'PT1H1M1.9S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
+    static String duration5a = "'PT61M1.9S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
+    static String duration5b = "'PT3661.9S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
+    
     static String duration7 = "'-PT1H"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
     static String duration8 = "'PT0H0M0S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
+
     static String dateTime1 = "'2005-02-25T12:03:34Z'^^<"+XSDDatatype.XSDdateTime.getURI()+">" ;
     static String dateTime2 = "'2005-02-25T12:03:34Z'^^<"+XSDDatatype.XSDdateTime.getURI()+">" ;
     // Earlier
