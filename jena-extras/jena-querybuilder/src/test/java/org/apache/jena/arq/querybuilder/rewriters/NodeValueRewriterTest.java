@@ -189,7 +189,7 @@ public class NodeValueRewriterTest {
 		// 2001-10-26T21:32:52
 		GregorianCalendar cal = new GregorianCalendar(2001, 10, 26, 21, 32, 52);
 		Node n =NodeFactory.createLiteralByValue( cal, XSDDatatype.XSDdateTime);
-		NodeValue nv = new NodeValueDT( "2001-10-26T21:32:52", n);
+		NodeValue nv = new NodeValueDateTime( "2001-10-26T21:32:52", n);
 		nv.visit( rewriter );
 		NodeValue result = rewriter.getResult();
 		assertEquals( nv, result );
