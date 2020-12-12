@@ -18,6 +18,10 @@
 
 package org.apache.jena.fuseki.authz;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
@@ -47,15 +51,17 @@ public class LocalhostFilter extends AuthorizationFilter403 {
 
     public LocalhostFilter() { super(message); }
 
-    private static String LOCALHOST_IpV6 =  "0:0:0:0:0:0:0:1";
+    private static String LOCALHOST_IpV6_a = "[0:0:0:0:0:0:0:1]";
+    private static String LOCALHOST_IpV6_b = "0:0:0:0:0:0:0:1";
     private static String LOCALHOST_IpV4 =  "127.0.0.1";   // Strictly, 127.*.*.*
+
+    private static final Collection<String> localhosts = new HashSet<>(
+        Arrays.asList(LOCALHOST_IpV4, LOCALHOST_IpV6_a, LOCALHOST_IpV6_b));  
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
         String remoteAddr = request.getRemoteAddr();
-        if ( LOCALHOST_IpV6.equals(remoteAddr) || LOCALHOST_IpV4.equals(remoteAddr) )
-            return true;
-        return false;
+        return localhosts.contains(request.getRemoteAddr());
     }
 }
 
