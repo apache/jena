@@ -98,8 +98,8 @@ import org.apache.jena.ext.xerces.util.DatatypeMessageFormatter;
  */
 @SuppressWarnings("all")
 class DurationImpl
-	extends Duration
-	implements Serializable {
+    extends Duration
+    implements Serializable {
     
     /**
      * <p>Stream Unique Identifier.</p>
@@ -172,12 +172,12 @@ class DurationImpl
         return signum;
     }
 
-	/**
-	 * TODO: Javadoc
-	 * @param isPositive Sign.
-	 * 
-	 * @return 1 if positive, else -1.
-	 */	        
+    /**
+     * TODO: Javadoc
+     * @param isPositive Sign.
+     * 
+     * @return 1 if positive, else -1.
+     */         
     private int calcSignum(boolean isPositive) {
         if ((years == null || years.signum() == 0)
              && (months == null || months.signum() == 0)
@@ -316,20 +316,20 @@ class DurationImpl
             seconds != 0 ? BigDecimal.valueOf(seconds) : null);
     }
 
-	/**
-	 * TODO: Javadoc
-	 * 
-	 * @param i int to convert to BigInteger.
-	 * 
-	 * @return BigInteger representation of int.
-	 */
+    /**
+     * TODO: Javadoc
+     * 
+     * @param i int to convert to BigInteger.
+     * 
+     * @return BigInteger representation of int.
+     */
     private static BigInteger wrap(final int i) {
-    	// field may not be set
-    	if (i == DatatypeConstants.FIELD_UNDEFINED) {
-    		return null;
-    	}
-    	
-    	// int -> BigInteger
+        // field may not be set
+        if (i == DatatypeConstants.FIELD_UNDEFINED) {
+            return null;
+        }
+        
+        // int -> BigInteger
         return BigInteger.valueOf(i);
     }
     
@@ -386,7 +386,6 @@ class DurationImpl
         l /= 24L;
         this.days = (l == 0) ? null : BigInteger.valueOf(l);
     }
-    
     
     /**
      * Constructs a new Duration object by
@@ -445,7 +444,6 @@ class DurationImpl
         if (length != idx[0] && s.charAt(idx[0]++) != 'P') {
             throw new IllegalArgumentException(s); //,idx[0]-1);
         }
-
 
         // phase 1: chop the string into chunks
         // (where a chunk is '<number><a symbol>'
@@ -664,213 +662,213 @@ class DurationImpl
         XMLGregorianCalendarImpl.parse("1903-07-01T00:00:00Z")
     };
     
-	/**
-	 * <p>Partial order relation comparison with this <code>Duration</code> instance.</p>
-	 * 
-	 * <p>Comparison result must be in accordance with
-	 * <a href="http://www.w3.org/TR/xmlschema-2/#duration-order">W3C XML Schema 1.0 Part 2, Section 3.2.7.6.2,
-	 * <i>Order relation on duration</i></a>.</p>
-	 * 
-	 * <p>Return:</p>
-	 * <ul>
-	 *   <li>{@link DatatypeConstants#LESSER} if this <code>Duration</code> is shorter than <code>duration</code> parameter</li>
-	 *   <li>{@link DatatypeConstants#EQUAL} if this <code>Duration</code> is equal to <code>duration</code> parameter</li>
-	 *   <li>{@link DatatypeConstants#GREATER} if this <code>Duration</code> is longer than <code>duration</code> parameter</li>
-	 *   <li>{@link DatatypeConstants#INDETERMINATE} if a conclusive partial order relation cannot be determined</li>
-	 * </ul>
-	 *
-	 * @param duration to compare
-	 * 
-	 * @return the relationship between <code>this</code> <code>Duration</code>and <code>duration</code> parameter as
-	 *   {@link DatatypeConstants#LESSER}, {@link DatatypeConstants#EQUAL}, {@link DatatypeConstants#GREATER}
-	 *   or {@link DatatypeConstants#INDETERMINATE}.
-	 * 
-	 * @throws UnsupportedOperationException If the underlying implementation
-	 *   cannot reasonably process the request, e.g. W3C XML Schema allows for
-	 *   arbitrarily large/small/precise values, the request may be beyond the
-	 *   implementations capability.
-	 * @throws NullPointerException if <code>duration</code> is <code>null</code>. 
-	 *
-	 * @see #isShorterThan(Duration)
-	 * @see #isLongerThan(Duration)
-	 */
+    /**
+     * <p>Partial order relation comparison with this <code>Duration</code> instance.</p>
+     * 
+     * <p>Comparison result must be in accordance with
+     * <a href="http://www.w3.org/TR/xmlschema-2/#duration-order">W3C XML Schema 1.0 Part 2, Section 3.2.7.6.2,
+     * <i>Order relation on duration</i></a>.</p>
+     * 
+     * <p>Return:</p>
+     * <ul>
+     *   <li>{@link DatatypeConstants#LESSER} if this <code>Duration</code> is shorter than <code>duration</code> parameter</li>
+     *   <li>{@link DatatypeConstants#EQUAL} if this <code>Duration</code> is equal to <code>duration</code> parameter</li>
+     *   <li>{@link DatatypeConstants#GREATER} if this <code>Duration</code> is longer than <code>duration</code> parameter</li>
+     *   <li>{@link DatatypeConstants#INDETERMINATE} if a conclusive partial order relation cannot be determined</li>
+     * </ul>
+     *
+     * @param duration to compare
+     * 
+     * @return the relationship between <code>this</code> <code>Duration</code>and <code>duration</code> parameter as
+     *   {@link DatatypeConstants#LESSER}, {@link DatatypeConstants#EQUAL}, {@link DatatypeConstants#GREATER}
+     *   or {@link DatatypeConstants#INDETERMINATE}.
+     * 
+     * @throws UnsupportedOperationException If the underlying implementation
+     *   cannot reasonably process the request, e.g. W3C XML Schema allows for
+     *   arbitrarily large/small/precise values, the request may be beyond the
+     *   implementations capability.
+     * @throws NullPointerException if <code>duration</code> is <code>null</code>. 
+     *
+     * @see #isShorterThan(Duration)
+     * @see #isLongerThan(Duration)
+     */
     @Override
     public int compare(Duration rhs) {
-    	
-    	BigInteger maxintAsBigInteger = BigInteger.valueOf(Integer.MAX_VALUE);
+        
+        BigInteger maxintAsBigInteger = BigInteger.valueOf(Integer.MAX_VALUE);
 
-    	// check for fields that are too large in this Duration
-    	if (years != null && years.compareTo(maxintAsBigInteger) == 1) {    		
+        // check for fields that are too large in this Duration
+        if (years != null && years.compareTo(maxintAsBigInteger) == 1) {            
             throw new UnsupportedOperationException(
                         DatatypeMessageFormatter.formatMessage(null, "TooLarge", 
                             new Object[]{this.getClass().getName() + "#compare(Duration duration)" + DatatypeConstants.YEARS.toString(), years.toString()})
-    					//this.getClass().getName() + "#compare(Duration duration)"
-						//+ " years too large to be supported by this implementation "
-						//+ years.toString()
-					);
-    	}
-    	if (months != null && months.compareTo(maxintAsBigInteger) == 1) {
-    		throw new UnsupportedOperationException(
+                        //this.getClass().getName() + "#compare(Duration duration)"
+                        //+ " years too large to be supported by this implementation "
+                        //+ years.toString()
+                    );
+        }
+        if (months != null && months.compareTo(maxintAsBigInteger) == 1) {
+            throw new UnsupportedOperationException(
                         DatatypeMessageFormatter.formatMessage(null, "TooLarge", 
                             new Object[]{this.getClass().getName() + "#compare(Duration duration)" + DatatypeConstants.MONTHS.toString(), months.toString()})
             
-    					//this.getClass().getName() + "#compare(Duration duration)"
-						//+ " months too large to be supported by this implementation "
-						//+ months.toString()
-					);
-    	}
-    	if (days != null && days.compareTo(maxintAsBigInteger) == 1) {
-    		throw new UnsupportedOperationException(
+                        //this.getClass().getName() + "#compare(Duration duration)"
+                        //+ " months too large to be supported by this implementation "
+                        //+ months.toString()
+                    );
+        }
+        if (days != null && days.compareTo(maxintAsBigInteger) == 1) {
+            throw new UnsupportedOperationException(
                         DatatypeMessageFormatter.formatMessage(null, "TooLarge", 
                             new Object[]{this.getClass().getName() + "#compare(Duration duration)" + DatatypeConstants.DAYS.toString(), days.toString()})
             
-    					//this.getClass().getName() + "#compare(Duration duration)"
-						//+ " days too large to be supported by this implementation "
-						//+ days.toString()
-					);
-    	}
-    	if (hours != null && hours.compareTo(maxintAsBigInteger) == 1) {
-    		throw new UnsupportedOperationException(
+                        //this.getClass().getName() + "#compare(Duration duration)"
+                        //+ " days too large to be supported by this implementation "
+                        //+ days.toString()
+                    );
+        }
+        if (hours != null && hours.compareTo(maxintAsBigInteger) == 1) {
+            throw new UnsupportedOperationException(
                         DatatypeMessageFormatter.formatMessage(null, "TooLarge", 
                             new Object[]{this.getClass().getName() + "#compare(Duration duration)" + DatatypeConstants.HOURS.toString(), hours.toString()})
             
-    					//this.getClass().getName() + "#compare(Duration duration)"
-						//+ " hours too large to be supported by this implementation "
-						//+ hours.toString()
-					);
-    	}
-    	if (minutes != null && minutes.compareTo(maxintAsBigInteger) == 1) {
-    		throw new UnsupportedOperationException(
+                        //this.getClass().getName() + "#compare(Duration duration)"
+                        //+ " hours too large to be supported by this implementation "
+                        //+ hours.toString()
+                    );
+        }
+        if (minutes != null && minutes.compareTo(maxintAsBigInteger) == 1) {
+            throw new UnsupportedOperationException(
                         DatatypeMessageFormatter.formatMessage(null, "TooLarge", 
                             new Object[]{this.getClass().getName() + "#compare(Duration duration)" + DatatypeConstants.MINUTES.toString(), minutes.toString()})
             
-    					//this.getClass().getName() + "#compare(Duration duration)"
-						//+ " minutes too large to be supported by this implementation "
-						//+ minutes.toString()
-					);
-    	}
-    	if (seconds != null && seconds.toBigInteger().compareTo(maxintAsBigInteger) == 1) {
-    		throw new UnsupportedOperationException(
+                        //this.getClass().getName() + "#compare(Duration duration)"
+                        //+ " minutes too large to be supported by this implementation "
+                        //+ minutes.toString()
+                    );
+        }
+        if (seconds != null && seconds.toBigInteger().compareTo(maxintAsBigInteger) == 1) {
+            throw new UnsupportedOperationException(
                         DatatypeMessageFormatter.formatMessage(null, "TooLarge", 
                             new Object[]{this.getClass().getName() + "#compare(Duration duration)" + DatatypeConstants.SECONDS.toString(), toString(seconds)})
             
-    					//this.getClass().getName() + "#compare(Duration duration)"
-						//+ " seconds too large to be supported by this implementation "
-						//+ seconds.toString()
-					);
-    	}
-    	
-    	// check for fields that are too large in rhs Duration
-    	BigInteger rhsYears = (BigInteger) rhs.getField(DatatypeConstants.YEARS);
-    	if (rhsYears != null && rhsYears.compareTo(maxintAsBigInteger) == 1) {
-    		throw new UnsupportedOperationException(
+                        //this.getClass().getName() + "#compare(Duration duration)"
+                        //+ " seconds too large to be supported by this implementation "
+                        //+ seconds.toString()
+                    );
+        }
+        
+        // check for fields that are too large in rhs Duration
+        BigInteger rhsYears = (BigInteger) rhs.getField(DatatypeConstants.YEARS);
+        if (rhsYears != null && rhsYears.compareTo(maxintAsBigInteger) == 1) {
+            throw new UnsupportedOperationException(
                         DatatypeMessageFormatter.formatMessage(null, "TooLarge", 
                             new Object[]{this.getClass().getName() + "#compare(Duration duration)" + DatatypeConstants.YEARS.toString(), rhsYears.toString()})
             
-    					//this.getClass().getName() + "#compare(Duration duration)"
-						//+ " years too large to be supported by this implementation "
-						//+ rhsYears.toString()
-					);
-    	}
-    	BigInteger rhsMonths = (BigInteger) rhs.getField(DatatypeConstants.MONTHS);
-    	if (rhsMonths != null && rhsMonths.compareTo(maxintAsBigInteger) == 1) {
-    		throw new UnsupportedOperationException(
+                        //this.getClass().getName() + "#compare(Duration duration)"
+                        //+ " years too large to be supported by this implementation "
+                        //+ rhsYears.toString()
+                    );
+        }
+        BigInteger rhsMonths = (BigInteger) rhs.getField(DatatypeConstants.MONTHS);
+        if (rhsMonths != null && rhsMonths.compareTo(maxintAsBigInteger) == 1) {
+            throw new UnsupportedOperationException(
                         DatatypeMessageFormatter.formatMessage(null, "TooLarge", 
                             new Object[]{this.getClass().getName() + "#compare(Duration duration)" + DatatypeConstants.MONTHS.toString(), rhsMonths.toString()})
             
-    					//this.getClass().getName() + "#compare(Duration duration)"
-						//+ " months too large to be supported by this implementation "
-						//+ rhsMonths.toString()
-					);
-    	}
-    	BigInteger rhsDays = (BigInteger) rhs.getField(DatatypeConstants.DAYS);
-    	if (rhsDays != null && rhsDays.compareTo(maxintAsBigInteger) == 1) {
-    		throw new UnsupportedOperationException(
+                        //this.getClass().getName() + "#compare(Duration duration)"
+                        //+ " months too large to be supported by this implementation "
+                        //+ rhsMonths.toString()
+                    );
+        }
+        BigInteger rhsDays = (BigInteger) rhs.getField(DatatypeConstants.DAYS);
+        if (rhsDays != null && rhsDays.compareTo(maxintAsBigInteger) == 1) {
+            throw new UnsupportedOperationException(
                         DatatypeMessageFormatter.formatMessage(null, "TooLarge", 
                             new Object[]{this.getClass().getName() + "#compare(Duration duration)" + DatatypeConstants.DAYS.toString(), rhsDays.toString()})
             
-    					//this.getClass().getName() + "#compare(Duration duration)"
-						//+ " days too large to be supported by this implementation "
-						//+ rhsDays.toString()
-					);
-    	}
-    	BigInteger rhsHours = (BigInteger) rhs.getField(DatatypeConstants.HOURS);
-    	if (rhsHours != null && rhsHours.compareTo(maxintAsBigInteger) == 1) {
-    		throw new UnsupportedOperationException(
+                        //this.getClass().getName() + "#compare(Duration duration)"
+                        //+ " days too large to be supported by this implementation "
+                        //+ rhsDays.toString()
+                    );
+        }
+        BigInteger rhsHours = (BigInteger) rhs.getField(DatatypeConstants.HOURS);
+        if (rhsHours != null && rhsHours.compareTo(maxintAsBigInteger) == 1) {
+            throw new UnsupportedOperationException(
                         DatatypeMessageFormatter.formatMessage(null, "TooLarge", 
                             new Object[]{this.getClass().getName() + "#compare(Duration duration)" + DatatypeConstants.HOURS.toString(), rhsHours.toString()})
             
-    					//this.getClass().getName() + "#compare(Duration duration)"
-						//+ " hours too large to be supported by this implementation "
-						//+ rhsHours.toString()
-					);
-    	}
-    	BigInteger rhsMinutes = (BigInteger) rhs.getField(DatatypeConstants.MINUTES);
-    	if (rhsMinutes != null && rhsMinutes.compareTo(maxintAsBigInteger) == 1) {
-    		throw new UnsupportedOperationException(
+                        //this.getClass().getName() + "#compare(Duration duration)"
+                        //+ " hours too large to be supported by this implementation "
+                        //+ rhsHours.toString()
+                    );
+        }
+        BigInteger rhsMinutes = (BigInteger) rhs.getField(DatatypeConstants.MINUTES);
+        if (rhsMinutes != null && rhsMinutes.compareTo(maxintAsBigInteger) == 1) {
+            throw new UnsupportedOperationException(
                         DatatypeMessageFormatter.formatMessage(null, "TooLarge", 
                             new Object[]{this.getClass().getName() + "#compare(Duration duration)" + DatatypeConstants.MINUTES.toString(), rhsMinutes.toString()})
             
-    					//this.getClass().getName() + "#compare(Duration duration)"
-						//+ " minutes too large to be supported by this implementation "
-						//+ rhsMinutes.toString()
-					);
-    	}
-    	BigDecimal rhsSecondsAsBigDecimal = (BigDecimal) rhs.getField(DatatypeConstants.SECONDS);
-    	BigInteger rhsSeconds = null;
+                        //this.getClass().getName() + "#compare(Duration duration)"
+                        //+ " minutes too large to be supported by this implementation "
+                        //+ rhsMinutes.toString()
+                    );
+        }
+        BigDecimal rhsSecondsAsBigDecimal = (BigDecimal) rhs.getField(DatatypeConstants.SECONDS);
+        BigInteger rhsSeconds = null;
         if ( rhsSecondsAsBigDecimal != null ) {
                 rhsSeconds =  rhsSecondsAsBigDecimal.toBigInteger();
         }
-    	if (rhsSeconds != null && rhsSeconds.compareTo(maxintAsBigInteger) == 1) {
-    		throw new UnsupportedOperationException(
+        if (rhsSeconds != null && rhsSeconds.compareTo(maxintAsBigInteger) == 1) {
+            throw new UnsupportedOperationException(
                         DatatypeMessageFormatter.formatMessage(null, "TooLarge", 
                             new Object[]{this.getClass().getName() + "#compare(Duration duration)" + DatatypeConstants.SECONDS.toString(), rhsSeconds.toString()})
             
-    					//this.getClass().getName() + "#compare(Duration duration)"
-						//+ " seconds too large to be supported by this implementation "
-						//+ rhsSeconds.toString()
-					);
-    	}
+                        //this.getClass().getName() + "#compare(Duration duration)"
+                        //+ " seconds too large to be supported by this implementation "
+                        //+ rhsSeconds.toString()
+                    );
+        }
 
-    	if ( rhsSecondsAsBigDecimal == null || seconds == null ) {
-    	    // Jena: change: this only works for durations with no fractional seconds.
-    	    // Fix is to only use if no seconds in LHS or RHS.
-    	    
-    	    // turn this Duration into a GregorianCalendar
-    	    GregorianCalendar lhsCalendar = new GregorianCalendar(
-    	        1970,
-    	        1,
-    	        1,
-    	        0,
-    	        0,
-    	        0);
-    	    lhsCalendar.add(GregorianCalendar.YEAR, getYears() * getSign());
-    	    lhsCalendar.add(GregorianCalendar.MONTH, getMonths() * getSign());
-    	    lhsCalendar.add(GregorianCalendar.DAY_OF_YEAR, getDays() * getSign());
-    	    lhsCalendar.add(GregorianCalendar.HOUR_OF_DAY, getHours() * getSign());
-    	    lhsCalendar.add(GregorianCalendar.MINUTE, getMinutes() * getSign());
-    	    lhsCalendar.add(GregorianCalendar.SECOND, getSeconds() * getSign());
+        if ( rhsSecondsAsBigDecimal == null || seconds == null ) {
+            // Jena: change: this only works for durations with no fractional seconds.
+            // Fix is to only use if no seconds in LHS or RHS.
+            
+            // turn this Duration into a GregorianCalendar
+            GregorianCalendar lhsCalendar = new GregorianCalendar(
+                1970,
+                1,
+                1,
+                0,
+                0,
+                0);
+            lhsCalendar.add(GregorianCalendar.YEAR, getYears() * getSign());
+            lhsCalendar.add(GregorianCalendar.MONTH, getMonths() * getSign());
+            lhsCalendar.add(GregorianCalendar.DAY_OF_YEAR, getDays() * getSign());
+            lhsCalendar.add(GregorianCalendar.HOUR_OF_DAY, getHours() * getSign());
+            lhsCalendar.add(GregorianCalendar.MINUTE, getMinutes() * getSign());
+            lhsCalendar.add(GregorianCalendar.SECOND, getSeconds() * getSign());
 
-    	    // turn compare Duration into a GregorianCalendar
-    	    GregorianCalendar rhsCalendar = new GregorianCalendar(
-    	        1970,
-    	        1,
-    	        1,
-    	        0,
-    	        0,
-    	        0);
-    	    rhsCalendar.add(GregorianCalendar.YEAR, rhs.getYears() * rhs.getSign());
-    	    rhsCalendar.add(GregorianCalendar.MONTH, rhs.getMonths() * rhs.getSign());
-    	    rhsCalendar.add(GregorianCalendar.DAY_OF_YEAR, rhs.getDays() * rhs.getSign());
-    	    rhsCalendar.add(GregorianCalendar.HOUR_OF_DAY, rhs.getHours() * rhs.getSign());
-    	    rhsCalendar.add(GregorianCalendar.MINUTE, rhs.getMinutes() * rhs.getSign());
-    	    rhsCalendar.add(GregorianCalendar.SECOND, rhs.getSeconds() * rhs.getSign());
+            // turn compare Duration into a GregorianCalendar
+            GregorianCalendar rhsCalendar = new GregorianCalendar(
+                1970,
+                1,
+                1,
+                0,
+                0,
+                0);
+            rhsCalendar.add(GregorianCalendar.YEAR, rhs.getYears() * rhs.getSign());
+            rhsCalendar.add(GregorianCalendar.MONTH, rhs.getMonths() * rhs.getSign());
+            rhsCalendar.add(GregorianCalendar.DAY_OF_YEAR, rhs.getDays() * rhs.getSign());
+            rhsCalendar.add(GregorianCalendar.HOUR_OF_DAY, rhs.getHours() * rhs.getSign());
+            rhsCalendar.add(GregorianCalendar.MINUTE, rhs.getMinutes() * rhs.getSign());
+            rhsCalendar.add(GregorianCalendar.SECOND, rhs.getSeconds() * rhs.getSign());
 
-    	    if (lhsCalendar.equals(rhsCalendar)) {
-    	        return DatatypeConstants.EQUAL;
-    	    }
-    	}
-   		return compareDuration(this, rhs);
+            if (lhsCalendar.equals(rhsCalendar)) {
+                return DatatypeConstants.EQUAL;
+            }
+        }
+        return compareDuration(this, rhs);
     }
     
     /**
@@ -1067,44 +1065,44 @@ class DurationImpl
      */
     @Override
     public boolean isSet(DatatypeConstants.Field field) {
-    	
-    	if (field == null) {
+        
+        if (field == null) {
             String methodName = "javax.xml.datatype.Duration" + "#isSet(DatatypeConstants.Field field)" ;
-    		throw new NullPointerException(                
+            throw new NullPointerException(                
                 //"cannot be called with field == null"
                 DatatypeMessageFormatter.formatMessage(null, "FieldCannotBeNull", new Object[]{methodName})                
-    		);
-    	}
-    	
-    	if (field == DatatypeConstants.YEARS) {
-			return years != null;
-    	}
+            );
+        }
+        
+        if (field == DatatypeConstants.YEARS) {
+            return years != null;
+        }
 
-		if (field == DatatypeConstants.MONTHS) {
-			return months != null;
-		}
+        if (field == DatatypeConstants.MONTHS) {
+            return months != null;
+        }
 
-		if (field == DatatypeConstants.DAYS) {
-			return days != null;
-		}
+        if (field == DatatypeConstants.DAYS) {
+            return days != null;
+        }
 
-		if (field == DatatypeConstants.HOURS) {
-			return hours != null;
-		}
+        if (field == DatatypeConstants.HOURS) {
+            return hours != null;
+        }
 
-		if (field == DatatypeConstants.MINUTES) {
-			return minutes != null;
-		}
-		
-		if (field == DatatypeConstants.SECONDS) {
-			return seconds != null;
-		}
+        if (field == DatatypeConstants.MINUTES) {
+            return minutes != null;
+        }
+        
+        if (field == DatatypeConstants.SECONDS) {
+            return seconds != null;
+        }
         String methodName = "javax.xml.datatype.Duration" + "#isSet(DatatypeConstants.Field field)";
         
         throw new IllegalArgumentException(
-            DatatypeMessageFormatter.formatMessage(null,"UnknownField", new Object[]{methodName, field.toString()})			
-		);
-		
+            DatatypeMessageFormatter.formatMessage(null,"UnknownField", new Object[]{methodName, field.toString()})         
+        );
+        
     }
     
     /**
@@ -1134,49 +1132,49 @@ class DurationImpl
     @Override
     public Number getField(DatatypeConstants.Field field) {
 
-		if (field == null) {
+        if (field == null) {
             String methodName = "javax.xml.datatype.Duration" + "#isSet(DatatypeConstants.Field field) " ;
             
-			throw new NullPointerException(				
+            throw new NullPointerException(             
                 DatatypeMessageFormatter.formatMessage(null,"FieldCannotBeNull", new Object[]{methodName})
                 );
-		}
-    	
-		if (field == DatatypeConstants.YEARS) {
-			return years;
-		}
+        }
+        
+        if (field == DatatypeConstants.YEARS) {
+            return years;
+        }
 
-		if (field == DatatypeConstants.MONTHS) {
-			return months;
-		}
+        if (field == DatatypeConstants.MONTHS) {
+            return months;
+        }
 
-		if (field == DatatypeConstants.DAYS) {
-			return days;
-		}
+        if (field == DatatypeConstants.DAYS) {
+            return days;
+        }
 
-		if (field == DatatypeConstants.HOURS) {
-			return hours;
-		}
+        if (field == DatatypeConstants.HOURS) {
+            return hours;
+        }
 
-		if (field == DatatypeConstants.MINUTES) {
-			return minutes;
-		}
-		
-		if (field == DatatypeConstants.SECONDS) {
-			return seconds;
-		}
-		/**
-		throw new IllegalArgumentException(
-			"javax.xml.datatype.Duration"
-			+ "#(getSet(DatatypeConstants.Field field) called with an unknown field: "
-			+ field.toString()
-		);
+        if (field == DatatypeConstants.MINUTES) {
+            return minutes;
+        }
+        
+        if (field == DatatypeConstants.SECONDS) {
+            return seconds;
+        }
+        /**
+        throw new IllegalArgumentException(
+            "javax.xml.datatype.Duration"
+            + "#(getSet(DatatypeConstants.Field field) called with an unknown field: "
+            + field.toString()
+        );
         */
         String methodName = "javax.xml.datatype.Duration" + "#(getSet(DatatypeConstants.Field field)";
         
         throw new IllegalArgumentException(
-            DatatypeMessageFormatter.formatMessage(null,"UnknownField", new Object[]{methodName, field.toString()})			
-		);
+            DatatypeMessageFormatter.formatMessage(null,"UnknownField", new Object[]{methodName, field.toString()})         
+        );
         
     }
     
@@ -1680,17 +1678,17 @@ class DurationImpl
         BigDecimal[] buf = new BigDecimal[6];
         
         buf[0] = sanitize((BigInteger) lhs.getField(DatatypeConstants.YEARS),
-        	lhs.getSign()).add(sanitize((BigInteger) rhs.getField(DatatypeConstants.YEARS),  rhs.getSign()));
+            lhs.getSign()).add(sanitize((BigInteger) rhs.getField(DatatypeConstants.YEARS),  rhs.getSign()));
         buf[1] = sanitize((BigInteger) lhs.getField(DatatypeConstants.MONTHS),
-        	lhs.getSign()).add(sanitize((BigInteger) rhs.getField(DatatypeConstants.MONTHS), rhs.getSign()));
+            lhs.getSign()).add(sanitize((BigInteger) rhs.getField(DatatypeConstants.MONTHS), rhs.getSign()));
         buf[2] = sanitize((BigInteger) lhs.getField(DatatypeConstants.DAYS),
-        	lhs.getSign()).add(sanitize((BigInteger) rhs.getField(DatatypeConstants.DAYS),   rhs.getSign()));
+            lhs.getSign()).add(sanitize((BigInteger) rhs.getField(DatatypeConstants.DAYS),   rhs.getSign()));
         buf[3] = sanitize((BigInteger) lhs.getField(DatatypeConstants.HOURS),
-        	lhs.getSign()).add(sanitize((BigInteger) rhs.getField(DatatypeConstants.HOURS),  rhs.getSign()));
+            lhs.getSign()).add(sanitize((BigInteger) rhs.getField(DatatypeConstants.HOURS),  rhs.getSign()));
         buf[4] = sanitize((BigInteger) lhs.getField(DatatypeConstants.MINUTES),
-        	lhs.getSign()).add(sanitize((BigInteger) rhs.getField(DatatypeConstants.MINUTES), rhs.getSign()));
+            lhs.getSign()).add(sanitize((BigInteger) rhs.getField(DatatypeConstants.MINUTES), rhs.getSign()));
         buf[5] = sanitize((BigDecimal) lhs.getField(DatatypeConstants.SECONDS),
-        	lhs.getSign()).add(sanitize((BigDecimal) rhs.getField(DatatypeConstants.SECONDS), rhs.getSign()));
+            lhs.getSign()).add(sanitize((BigDecimal) rhs.getField(DatatypeConstants.SECONDS), rhs.getSign()));
         
         // align sign
         alignSigns(buf, 0, 2); // Y,M
@@ -1710,15 +1708,15 @@ class DurationImpl
         return new DurationImpl(
             s >= 0,
             toBigInteger(sanitize(buf[0], s),
-            	lhs.getField(DatatypeConstants.YEARS) == null && rhs.getField(DatatypeConstants.YEARS) == null),
+                lhs.getField(DatatypeConstants.YEARS) == null && rhs.getField(DatatypeConstants.YEARS) == null),
             toBigInteger(sanitize(buf[1], s),
-            	lhs.getField(DatatypeConstants.MONTHS) == null && rhs.getField(DatatypeConstants.MONTHS) == null),
+                lhs.getField(DatatypeConstants.MONTHS) == null && rhs.getField(DatatypeConstants.MONTHS) == null),
             toBigInteger(sanitize(buf[2], s),
-            	lhs.getField(DatatypeConstants.DAYS) == null && rhs.getField(DatatypeConstants.DAYS) == null),
+                lhs.getField(DatatypeConstants.DAYS) == null && rhs.getField(DatatypeConstants.DAYS) == null),
             toBigInteger(sanitize(buf[3], s),
-            	lhs.getField(DatatypeConstants.HOURS) == null && rhs.getField(DatatypeConstants.HOURS) == null),
+                lhs.getField(DatatypeConstants.HOURS) == null && rhs.getField(DatatypeConstants.HOURS) == null),
             toBigInteger(sanitize(buf[4], s),
-            	lhs.getField(DatatypeConstants.MINUTES) == null && rhs.getField(DatatypeConstants.MINUTES) == null),
+                lhs.getField(DatatypeConstants.MINUTES) == null && rhs.getField(DatatypeConstants.MINUTES) == null),
              (buf[5].signum() == 0
              && lhs.getField(DatatypeConstants.SECONDS) == null
              && rhs.getField(DatatypeConstants.SECONDS) == null) ? null : sanitize(buf[5], s));
