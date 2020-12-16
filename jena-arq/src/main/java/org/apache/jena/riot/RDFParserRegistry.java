@@ -31,6 +31,8 @@ import java.util.Set ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.lang.* ;
+import org.apache.jena.riot.lang.extra.TurtleJCC;
+import org.apache.jena.riot.lang.extra.TurtleJavaccReaderRIOT;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.StreamRDF;
@@ -60,14 +62,6 @@ public class RDFParserRegistry
     /** Known quads languages */
     private static Set<Lang> langQuads    = new HashSet<>() ;
 
-    /** General parser factory for parsers implemented by "Lang" */
-    private static ReaderRIOTFactory parserFactory          = new ReaderRIOTLangFactory() ;
-    // Others
-    private static ReaderRIOTFactory parserFactoryRDFXML    = new ReaderRIOTRDFXML.Factory();
-    private static ReaderRIOTFactory parserFactoryJsonLD    = new ReaderRIOTFactoryJSONLD() ;
-    private static ReaderRIOTFactory parserFactoryThrift    = new ReaderRIOTFactoryThrift() ;
-    private static ReaderRIOTFactory parserFactoryTriX      = new ReaderTriX.ReaderRIOTFactoryTriX() ;
-    private static ReaderRIOTFactory parserFactoryRDFNULL   = new ReaderRDFNULL.Factory() ;
 
     private static boolean initialized = false ;
     static { init() ; }
@@ -83,15 +77,24 @@ public class RDFParserRegistry
         // Make sure the constants are initialized.
         RDFLanguages.init() ;
 
+        /** General parser factory for parsers implemented by "Lang" */
+        ReaderRIOTFactory parserFactory          = ReaderRIOTLang.factory;
+        // Others
+        ReaderRIOTFactory parserFactoryRDFXML    = ReaderRIOTRDFXML.factory ;
+        ReaderRIOTFactory parserFactoryJsonLD    = new ReaderRIOTFactoryJSONLD() ;
+        ReaderRIOTFactory parserFactoryThrift    = ReaderRDFThrift.factory;
+        ReaderRIOTFactory parserFactoryTriX      = ReaderTriX.factory;
+        ReaderRIOTFactory parserFactoryRDFNULL   = ReaderRDFNULL.factory;
+
         registerLangTriples(NTRIPLES,   parserFactory) ;
         registerLangTriples(N3,         parserFactory) ;
         registerLangTriples(TURTLE,     parserFactory) ;
         registerLangTriples(RDFJSON,    parserFactory) ;
-        registerLangTriples(RDFXML,     parserFactoryRDFXML) ;
+        registerLangTriples(RDFXML,     ReaderRIOTRDFXML.factory) ;
         registerLangTriples(JSONLD,     parserFactoryJsonLD) ;
-        registerLangTriples(RDFTHRIFT,  parserFactoryThrift) ;
-        registerLangTriples(TRIX,       parserFactoryTriX) ;
-        registerLangTriples(RDFNULL,    parserFactoryRDFNULL) ;
+        registerLangTriples(RDFTHRIFT,  ReaderRDFThrift.factory) ;
+        registerLangTriples(TRIX,       ReaderTriX.factory) ;
+        registerLangTriples(RDFNULL,    ReaderRDFNULL.factory) ;
 
         registerLangQuads(JSONLD,       parserFactoryJsonLD) ;
         registerLangQuads(NQUADS,       parserFactory) ;
@@ -99,6 +102,9 @@ public class RDFParserRegistry
         registerLangQuads(RDFTHRIFT,    parserFactoryThrift) ;
         registerLangQuads(TRIX,         parserFactoryTriX) ;
         registerLangQuads(RDFNULL,      parserFactoryRDFNULL) ;
+        
+        // Javacc based Turtle parser, different language name.
+        TurtleJCC.register();
     }
 
     /** Register a language and it's parser factory.
@@ -135,7 +141,8 @@ public class RDFParserRegistry
         langToParserFactory.remove(lang) ;
     }
 
-    /** Return the parser factory for the language, or null if not registered.
+    /**
+     * Return the parser factory for the language, or null if not registered.
      * @deprecated To be removed or made package scoped. Use {@code RDFParser.create() ... .build()}
      */
     @Deprecated
@@ -153,18 +160,13 @@ public class RDFParserRegistry
     /** return true if the language is registered with the quads parser factories */
     public static boolean isQuads(Lang lang)   { return langQuads.contains(lang) ; }
 
-    // Parser factories
-
-    private static class ReaderRIOTLangFactory implements ReaderRIOTFactory
-    {
-        @Override
-        public ReaderRIOT create(Lang lang, ParserProfile parserProfile) {
-            return new ReaderRIOTLang(lang, parserProfile) ;
-        }
-    }
+    // Parsers and factories.
 
     private static class ReaderRIOTLang implements ReaderRIOT
     {
+        static ReaderRIOTFactory factory =
+            (Lang lang, ParserProfile parserProfile) -> new ReaderRIOTLang(lang, parserProfile);
+
         private final Lang lang ;
         private ParserProfile parserProfile = null ;
 
@@ -205,15 +207,11 @@ public class RDFParserRegistry
         }
     }
 
-    private static class ReaderRIOTFactoryThrift implements ReaderRIOTFactory {
-        @Override
-        public ReaderRIOT create(Lang language, ParserProfile profile) {
-            return new ReaderRDFThrift(profile) ;
-        }
-    }
-
     private static class ReaderRDFThrift implements ReaderRIOT {
-        private final ParserProfile profile; 
+
+        static ReaderRIOTFactory factory = (Lang language, ParserProfile profile) -> new ReaderRDFThrift(profile);
+
+        private final ParserProfile profile;
         public ReaderRDFThrift(ParserProfile profile) { this.profile = profile; }
 
         @Override
@@ -232,6 +230,26 @@ public class RDFParserRegistry
         @Override
         public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
             throw new RiotException("RDF Thrift : Reading binary data from a java.io.reader is not supported. Please use an InputStream") ;
+        }
+    }
+
+    // JavaCC power Turtle parser.
+    private static class ReaderRDFTurtleJCC implements ReaderRIOT {
+        static ReaderRIOTFactory Factory = (Lang language, ParserProfile profile)->new TurtleJavaccReaderRIOT(profile);
+
+        private final ParserProfile profile;
+        public ReaderRDFTurtleJCC(ParserProfile profile) { this.profile = profile; }
+
+        @Override
+        public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
+            TurtleJavaccReaderRIOT parser = new TurtleJavaccReaderRIOT(profile);
+            parser.read(in, baseURI, ct, output, context);
+        }
+
+        @Override
+        public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
+            TurtleJavaccReaderRIOT parser = new TurtleJavaccReaderRIOT(profile);
+            parser.read(reader, baseURI, ct, output, context);
         }
     }
 }

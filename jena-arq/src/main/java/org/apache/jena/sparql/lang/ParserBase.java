@@ -35,6 +35,7 @@ import org.apache.jena.iri.IRI ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.QueryParseException ;
 import org.apache.jena.riot.checker.CheckerIRI ;
+import org.apache.jena.riot.lang.extra.LangParserLib;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.RiotLib ;
@@ -88,7 +89,7 @@ public class ParserBase
 
     // This is the map used allocate blank node labels during parsing.
     // 1/ It is different between CONSTRUCT and the query pattern
-    // 2/ Each BasicGraphPattern is a scope for blank node labels so eachf
+    // 2/ Each BasicGraphPattern is a scope for blank node labels so each
     //    BGP causes the map to be cleared at the start of the BGP
 
     LabelToNodeMap activeLabelMap = anonVarLabels ;
@@ -262,8 +263,8 @@ public class ParserBase
     }
 
     /** remove the first n characters from the string */
-    public static String stripChars(String s, int n) {
-        return s.substring(n, s.length()) ;
+    protected static String stripChars(String s, int n) {
+        return LangParserLib.stripChars(s, n);
     }
 
     protected Var createVariable(String s, int line, int column) {
@@ -470,9 +471,9 @@ public class ParserBase
 
     // Utilities to remove escapes in strings.
 
-    public static String unescapeStr(String s)
-    { return unescape(s, '\\', false, 1, 1) ; }
-
+    /*package-testing*/ static String unescapeStr(String s)
+    { return unescapeStr(s, -1, -1) ; }
+//
 //    public static String unescapeCodePoint(String s)
 //    { return unescape(s, '\\', true, 1, 1) ; }
 //
@@ -480,14 +481,14 @@ public class ParserBase
 //    { return unescape(s, '\\', true, line, column) ; }
 
 
-    // Do we nee dthe line/column versions?
+    // Do we need the line/column versions?
     // Why not catch exceptions and comvert to  QueryParseException
 
-    public static String unescapeStr(String s, int line, int column)
+    protected static String unescapeStr(String s, int line, int column)
     { return unescape(s, '\\', false, line, column) ; }
 
     // Worker function
-    public static String unescape(String s, char escape, boolean pointCodeOnly, int line, int column) {
+    protected static String unescape(String s, char escape, boolean pointCodeOnly, int line, int column) {
         try {
             return EscapeStr.unescape(s, escape, pointCodeOnly) ;
         } catch (AtlasException ex) {
@@ -496,11 +497,11 @@ public class ParserBase
         }
     }
 
-    public static String unescapeUnicode(String s, int line, int column) {
+    protected static String unescapeUnicode(String s, int line, int column) {
         return unescape(s, '\\', true, line, column);
     }
 
-    public static String unescapePName(String s, int line, int column) {
+    protected static String unescapePName(String s, int line, int column) {
         char escape = '\\' ;
         int idx = s.indexOf(escape) ;
 

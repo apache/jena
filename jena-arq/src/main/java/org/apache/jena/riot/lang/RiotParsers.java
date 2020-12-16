@@ -40,7 +40,7 @@ import org.apache.jena.riot.tokens.TokenizerText;
 import org.apache.jena.sparql.core.Quad;
 
 /** Use RDFDataMgr operations.
- * 
+ *
  * <b>This class is internal to RIOT.</b>
  */
 public class RiotParsers {
@@ -54,7 +54,7 @@ public class RiotParsers {
             return createParserRdfJson(tokenizer, dest, profile);
         }
         Tokenizer tokenizer = TokenizerText.create().source(input).errorHandler(profile.getErrorHandler()).build();
-        if ( RDFLanguages.sameLang(TURTLE, lang) || RDFLanguages.sameLang(N3,  lang) ) 
+        if ( RDFLanguages.sameLang(TURTLE, lang) || RDFLanguages.sameLang(N3,  lang) )
             return createParserTurtle(tokenizer, dest, profile);
         if ( RDFLanguages.sameLang(NTRIPLES, lang) )
             return createParserNTriples(tokenizer, dest, profile);
@@ -73,7 +73,7 @@ public class RiotParsers {
         }
 
         Tokenizer tokenizer = TokenizerText.create().source(input).errorHandler(profile.getErrorHandler()).build();
-        if ( RDFLanguages.sameLang(TURTLE, lang) || RDFLanguages.sameLang(N3,  lang) ) 
+        if ( RDFLanguages.sameLang(TURTLE, lang) || RDFLanguages.sameLang(N3,  lang) )
             return createParserTurtle(tokenizer, dest, profile);
         if ( RDFLanguages.sameLang(NTRIPLES, lang) )
             return createParserNTriples(tokenizer, dest, profile);
@@ -84,7 +84,7 @@ public class RiotParsers {
         return null;
     }
 
-    public /* For Elephas */ 
+    public /* For Elephas */
     /*package*/ static LangNTriples createParserNTriples(Tokenizer tokenizer, StreamRDF dest, ParserProfile profile) {
         LangNTriples parser = new LangNTriples(tokenizer, profile, dest);
         return parser;

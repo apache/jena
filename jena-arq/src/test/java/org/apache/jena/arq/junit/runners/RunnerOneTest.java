@@ -29,7 +29,7 @@ import org.junit.runner.notification.RunNotifier;
  */
 public class RunnerOneTest extends Runner
 {
-    static int count = 0;
+    private static int count = 1;
     private final Description description;
     private final EarlReport report;    // Optional.
     private final Runnable testCase;
@@ -42,10 +42,11 @@ public class RunnerOneTest extends Runner
 
     public RunnerOneTest(String name, Runnable test, String testURI, EarlReport report) {
         this.name = name;
-        int count$ = (++count);
+        int count$ = count;
         testCase = test;
         // Names must be unique else Eclipse will not report them.
         description = Description.createSuiteDescription("T-"+count$+": "+name);
+        count++;
 
         // Optional.
         this.testURI = testURI;

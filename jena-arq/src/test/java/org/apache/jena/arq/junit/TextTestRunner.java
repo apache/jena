@@ -47,6 +47,7 @@ public class TextTestRunner {
         // Get rid of CheckerLiterals.WarnOnBadLiterals?
         // CheckerLiterals.WarnOnBadLiterals = false ;
 
+        // Count includes the manifest itself.
         JUnitCore junitCore = new JUnitCore();
         junitCore.addListener(new TextListenerLong(System.out));
         //junit.addListener(new TextListenerDots(System.out));

@@ -52,7 +52,7 @@ public final class TokenizerText implements Tokenizer
     private final StringBuilder stringBuilder = new StringBuilder(200);
     private final PeekReader reader;
     // Whether whitespace between tokens includes newlines (in various forms).
-    private final boolean lineMode;        
+    private final boolean lineMode;
     private boolean finished = false;
     private TokenChecker checker = null;
 
@@ -60,9 +60,9 @@ public final class TokenizerText implements Tokenizer
     private final ErrorHandler errorHandler;
 
     public static TokenizeTextBuilder create() { return new TokenizeTextBuilder() ; }
-    
+
     public static Tokenizer fromString(String string) { return create().fromString(string).build(); }
-    
+
     /*package*/ static TokenizerText internal(PeekReader reader, boolean lineMode, ErrorHandler errorHandler) {
         return new TokenizerText(reader, lineMode, errorHandler);
     }
@@ -362,8 +362,22 @@ public final class TokenizerText implements Tokenizer
 
             case CH_SEMICOLON:  reader.readChar(); token.setType(TokenType.SEMICOLON); /*token.setImage(CH_SEMICOLON);*/ return token;
             case CH_COMMA:      reader.readChar(); token.setType(TokenType.COMMA);     /*token.setImage(CH_COMMA);*/ return token;
-            case CH_LBRACE:     reader.readChar(); token.setType(TokenType.LBRACE);    /*token.setImage(CH_LBRACE);*/ return token;
+
+            // {| for RDF* annotation syntax.
+//            case CH_LBRACE:     reader.readChar(); token.setType(TokenType.LBRACE);    /*token.setImage(CH_LBRACE);*/ return token;
+            case CH_LBRACE: {
+                reader.readChar();
+                int chPeek = reader.peekChar();
+                if ( chPeek == CH_VBAR ) {
+                    reader.readChar();
+                    token.setType(TokenType.L_ANN);
+                    return token;
+                }
+                token.setType(TokenType.LBRACE);
+                return token;
+            }
             case CH_RBRACE:     reader.readChar(); token.setType(TokenType.RBRACE);    /*token.setImage(CH_RBRACE);*/ return token;
+
             case CH_LPAREN:     reader.readChar(); token.setType(TokenType.LPAREN);    /*token.setImage(CH_LPAREN);*/ return token;
             case CH_RPAREN:     reader.readChar(); token.setType(TokenType.RPAREN);    /*token.setImage(CH_RPAREN);*/ return token;
             case CH_LBRACKET:   reader.readChar(); token.setType(TokenType.LBRACKET);  /*token.setImage(CH_LBRACKET);*/ return token;
@@ -371,7 +385,21 @@ public final class TokenizerText implements Tokenizer
             case CH_EQUALS:     reader.readChar(); token.setType(TokenType.EQUALS);    /*token.setImage(CH_EQUALS);*/ return token;
             case CH_SLASH:      reader.readChar(); token.setType(TokenType.SLASH);     /*token.setImage(CH_SLASH);*/ return token;
             case CH_RSLASH:     reader.readChar(); token.setType(TokenType.RSLASH);    /*token.setImage(CH_RSLASH);*/ return token;
-            case CH_VBAR:       reader.readChar(); token.setType(TokenType.VBAR);      /*token.setImage(CH_VBAR);*/ return token;
+//            case CH_VBAR:       reader.readChar(); token.setType(TokenType.VBAR);      /*token.setImage(CH_VBAR);*/ return token;
+            
+            // |} for RDF* annotation syntax.
+            case CH_VBAR: {
+                reader.readChar();
+                int chPeek = reader.peekChar();
+                if ( chPeek == CH_RBRACE ) {
+                    reader.readChar();
+                    token.setType(TokenType.R_ANN);
+                    return token;
+                }
+                token.setType(TokenType.VBAR);
+                return token;
+            }
+
             case CH_AMPHERSAND: reader.readChar(); token.setType(TokenType.AMPHERSAND);/*token.setImage(CH_AMPHERSAND);*/ return token;
             // Specials (if blank node processing off)
             //case CH_COLON:      reader.readChar(); token.setType(TokenType.COLON); /*token.setImage(COLON);*/return token;
@@ -509,7 +537,7 @@ public final class TokenizerText implements Tokenizer
                 default:
                     if ( ch <= 0x19 )
                         warning("Illegal character in IRI (control char 0x%02X): <%s[0x%02X]...>", ch, stringBuilder.toString(), ch);
-                    
+
             }
             // JENA-1924: jena-iri does not catch this.
             if ( ! VeryVeryLaxIRI && ch >= 0xA0 && ! isUcsChar(ch) )
@@ -539,7 +567,7 @@ public final class TokenizerText implements Tokenizer
             range(ch, 0xA0000, 0xAFFFD) || range(ch, 0xB0000, 0xBFFFD) || range(ch, 0xC0000, 0xCFFFD) ||
             range(ch, 0xD0000, 0xDFFFD) || range(ch, 0xE1000, 0xEFFFD);
     }
-    
+
     // Read a unicode escape : does not allow \\ bypass
     private final int readUnicodeEscape() {
         int ch = reader.readChar();
@@ -1271,13 +1299,13 @@ public final class TokenizerText implements Tokenizer
         return true;
     }
 
-    /** Warning - can continue. */ 
+    /** Warning - can continue. */
     private void warning(String message, Object... args) {
         String msg = String.format(message, args);
         errorHandler.warning(msg, reader.getLineNum(), reader.getColNum());
     }
 
-    /** Error - at the tokenizer level, it can continue (with some junk) but it is a serious error and the   
+    /** Error - at the tokenizer level, it can continue (with some junk) but it is a serious error and the
      * caller probably should treat as an error and stop.
      * @param message
      * @param args

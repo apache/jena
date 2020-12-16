@@ -21,10 +21,14 @@ package org.apache.jena.arq.junit.riot;
 import static org.junit.Assert.fail;
 
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
+import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.RiotNotFoundException;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
+import org.apache.jena.shared.NotFoundException;
 
 public class RiotSyntaxTest implements Runnable {
 
@@ -43,30 +47,22 @@ public class RiotSyntaxTest implements Runnable {
     @Override
     public void run() {
         StreamRDF stream = StreamRDFLib.sinkNull();
+        // Check so the parse step does not confuse missing with bad syntax.
+        String fn = IRILib.IRIToFilename(filename);
+        if ( ! FileOps.exists(fn) ) {
+            throw new NotFoundException("File not found: "+filename) {
+                @Override public Throwable fillInStackTrace() { return this; }
+            };
+        }
         try {
-            // XXX Errors to exceptions.
-            Parse.parse(stream, filename, lang);
+            ParseForTest.parse(stream, filename, lang);
             if (! expectLegalSyntax )
-                fail("Parsing suceeded in a bad syntax test");
+                fail("Parsing succeeded in a bad syntax test");
+        } catch(RiotNotFoundException ex) {
+            throw ex;
         } catch(RiotException ex) {
             if ( expectLegalSyntax )
                 fail("Parse error: "+ex.getMessage());
         }
     }
-
-//        if ( RDFLanguages.isTriples(lang) )
-//            run3();
-//        else
-//            run4();
-//    }
-//
-//    private void run3() {
-//        Graph graph = GraphFactory.createDefaultGraph();
-//        Parse.parse(graph, filename, lang);
-//    }
-//
-//    private void run4() {
-//        DatasetGraph dsg = DatasetGraphFactory.createGeneral();
-//        Parse.parse(dsg, filename, lang);
-//    }
 }

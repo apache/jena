@@ -29,123 +29,123 @@ public interface TurtleJavaccConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int WS = 6;
+  int WS = 10;
   /** RegularExpression Id. */
-  int SINGLE_LINE_COMMENT = 7;
+  int SINGLE_LINE_COMMENT = 11;
   /** RegularExpression Id. */
-  int KW_A = 8;
+  int KW_A = 12;
   /** RegularExpression Id. */
-  int PREFIX_OLD = 9;
+  int PREFIX_OLD = 13;
   /** RegularExpression Id. */
-  int BASE_OLD = 10;
+  int BASE_OLD = 14;
   /** RegularExpression Id. */
-  int BASE = 11;
+  int BASE = 15;
   /** RegularExpression Id. */
-  int PREFIX = 12;
+  int PREFIX = 16;
   /** RegularExpression Id. */
-  int TRUE = 13;
+  int TRUE = 17;
   /** RegularExpression Id. */
-  int FALSE = 14;
+  int FALSE = 18;
   /** RegularExpression Id. */
-  int WSC = 15;
+  int WSC = 19;
   /** RegularExpression Id. */
-  int BOM = 16;
+  int BOM = 20;
   /** RegularExpression Id. */
-  int IRIref = 17;
+  int IRIref = 21;
   /** RegularExpression Id. */
-  int PLUS = 18;
+  int PLUS = 22;
   /** RegularExpression Id. */
-  int MINUS = 19;
+  int MINUS = 23;
   /** RegularExpression Id. */
-  int DIGITS = 20;
+  int DIGITS = 24;
   /** RegularExpression Id. */
-  int INTEGER = 21;
+  int INTEGER = 25;
   /** RegularExpression Id. */
-  int DECIMAL = 22;
+  int DECIMAL = 26;
   /** RegularExpression Id. */
-  int DOUBLE = 23;
+  int DOUBLE = 27;
   /** RegularExpression Id. */
-  int EXPONENT = 24;
+  int EXPONENT = 28;
   /** RegularExpression Id. */
-  int QUOTE_3D = 25;
+  int QUOTE_3D = 29;
   /** RegularExpression Id. */
-  int QUOTE_3S = 26;
+  int QUOTE_3S = 30;
   /** RegularExpression Id. */
-  int ECHAR = 27;
+  int ECHAR = 31;
   /** RegularExpression Id. */
-  int UCHAR = 28;
+  int UCHAR = 32;
   /** RegularExpression Id. */
-  int UCHAR4 = 29;
+  int UCHAR4 = 33;
   /** RegularExpression Id. */
-  int UCHAR8 = 30;
+  int UCHAR8 = 34;
   /** RegularExpression Id. */
-  int STRING_LITERAL1 = 31;
+  int STRING_LITERAL1 = 35;
   /** RegularExpression Id. */
-  int STRING_LITERAL2 = 32;
+  int STRING_LITERAL2 = 36;
   /** RegularExpression Id. */
-  int STRING_LITERAL_LONG1 = 33;
+  int STRING_LITERAL_LONG1 = 37;
   /** RegularExpression Id. */
-  int STRING_LITERAL_LONG2 = 34;
+  int STRING_LITERAL_LONG2 = 38;
   /** RegularExpression Id. */
-  int LPAREN = 35;
+  int LPAREN = 39;
   /** RegularExpression Id. */
-  int RPAREN = 36;
+  int RPAREN = 40;
   /** RegularExpression Id. */
-  int NIL = 37;
+  int LBRACE = 41;
   /** RegularExpression Id. */
-  int LBRACE = 38;
+  int RBRACE = 42;
   /** RegularExpression Id. */
-  int RBRACE = 39;
+  int LBRACKET = 43;
   /** RegularExpression Id. */
-  int LBRACKET = 40;
+  int RBRACKET = 44;
   /** RegularExpression Id. */
-  int RBRACKET = 41;
+  int ANON = 45;
   /** RegularExpression Id. */
-  int ANON = 42;
+  int SEMICOLON = 46;
   /** RegularExpression Id. */
-  int SEMICOLON = 43;
+  int COMMA = 47;
   /** RegularExpression Id. */
-  int COMMA = 44;
+  int DOT = 48;
   /** RegularExpression Id. */
-  int DOT = 45;
+  int DATATYPE = 49;
   /** RegularExpression Id. */
-  int DATATYPE = 46;
+  int AT = 50;
   /** RegularExpression Id. */
-  int AT = 47;
+  int PNAME_NS = 51;
   /** RegularExpression Id. */
-  int PNAME_NS = 48;
+  int PNAME_LN = 52;
   /** RegularExpression Id. */
-  int PNAME_LN = 49;
+  int BLANK_NODE_LABEL = 53;
   /** RegularExpression Id. */
-  int BLANK_NODE_LABEL = 50;
+  int LANGTAG = 54;
   /** RegularExpression Id. */
-  int LANGTAG = 51;
+  int A2Z = 55;
   /** RegularExpression Id. */
-  int A2Z = 52;
+  int A2ZN = 56;
   /** RegularExpression Id. */
-  int A2ZN = 53;
+  int SURROGATE_PAIR = 57;
   /** RegularExpression Id. */
-  int PN_CHARS_BASE = 54;
+  int PN_CHARS_BASE = 58;
   /** RegularExpression Id. */
-  int PN_CHARS_U = 55;
+  int PN_CHARS_U = 59;
   /** RegularExpression Id. */
-  int PN_CHARS = 56;
+  int PN_CHARS = 60;
   /** RegularExpression Id. */
-  int PN_PREFIX = 57;
+  int PN_PREFIX = 61;
   /** RegularExpression Id. */
-  int PN_LOCAL = 58;
+  int PN_LOCAL = 62;
   /** RegularExpression Id. */
-  int VARNAME = 59;
+  int VARNAME = 63;
   /** RegularExpression Id. */
-  int PN_LOCAL_ESC = 60;
+  int PN_LOCAL_ESC = 64;
   /** RegularExpression Id. */
-  int PLX = 61;
+  int PLX = 65;
   /** RegularExpression Id. */
-  int HEX = 62;
+  int HEX = 66;
   /** RegularExpression Id. */
-  int PERCENT = 63;
+  int PERCENT = 67;
   /** RegularExpression Id. */
-  int UNKNOWN = 64;
+  int UNKNOWN = 68;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -153,6 +153,10 @@ public interface TurtleJavaccConstants {
   /** Literal token values. */
   String[] tokenImage = {
     "<EOF>",
+    "\"{|\"",
+    "\"|}\"",
+    "\"<<\"",
+    "\">>\"",
     "\" \"",
     "\"\\t\"",
     "\"\\n\"",
@@ -189,7 +193,6 @@ public interface TurtleJavaccConstants {
     "<STRING_LITERAL_LONG2>",
     "\"(\"",
     "\")\"",
-    "<NIL>",
     "\"{\"",
     "\"}\"",
     "\"[\"",
@@ -206,6 +209,7 @@ public interface TurtleJavaccConstants {
     "<LANGTAG>",
     "<A2Z>",
     "<A2ZN>",
+    "<SURROGATE_PAIR>",
     "<PN_CHARS_BASE>",
     "<PN_CHARS_U>",
     "<PN_CHARS>",

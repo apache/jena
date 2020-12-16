@@ -31,12 +31,7 @@ import org.apache.jena.sparql.util.Context ;
 
 public class ReaderRDFNULL implements ReaderRIOT {
 
-    public static class Factory implements ReaderRIOTFactory {
-        @Override
-        public ReaderRIOT create(Lang language, ParserProfile profile) {
-            return new ReaderRDFNULL();
-        }
-    }
+    public static ReaderRIOTFactory factory = (Lang language, ParserProfile profile) -> new ReaderRDFNULL();
 
     public ReaderRDFNULL() {}
 

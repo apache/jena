@@ -48,6 +48,7 @@ import org.junit.runners.Suite ;
     , TS_RDFThrift.class
     
     , Scripts_LangSuite.class
+    , Scripts_AltTurtle.class
 })
 
 
