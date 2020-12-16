@@ -28,7 +28,6 @@ import org.junit.runners.Suite.SuiteClasses ;
     TestWriterRegistration.class
     , TestRiotWriterGraph.class
     , TestRiotWriterDataset.class
-    , TestJenaWriters.class
     , TestRDFJSON.class
     , TestTurtleWriter.class
     , TestTriXWriter.class

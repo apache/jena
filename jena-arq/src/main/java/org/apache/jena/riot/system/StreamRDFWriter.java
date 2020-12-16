@@ -185,6 +185,18 @@ public class StreamRDFWriter {
      *  and is guaranteed to do so in a scaling, streaming fashion.
      * @param output   OutputStream
      * @param format   The syntax (as an {@link RDFFormat})
+     * @return         StreamRDF, or null if format is not registered for streaming.
+     * @see StreamRDFOps#graphToStream
+     * @see StreamRDFOps#datasetToStream
+     */
+    public static StreamRDF getWriterStream(OutputStream output, RDFFormat format) {
+        return getWriterStream(output, format, null) ;
+    }
+
+    /** Get a StreamRDF destination that will output in syntax {@link RDFFormat}
+     *  and is guaranteed to do so in a scaling, streaming fashion.
+     * @param output   OutputStream
+     * @param format   The syntax (as an {@link RDFFormat})
      * @param context  Context
      * @return         StreamRDF, or null if format is not registered for streaming.
      * @see StreamRDFOps#graphToStream
@@ -232,21 +244,21 @@ public class StreamRDFWriter {
      *
      * @param output OutputStream
      * @param graph  Graph to write
-     * @param lang   Syntax
+     * @param format Syntax
      */
-    public static void write(OutputStream output, Graph graph, RDFFormat lang) {
-        write(output, graph, lang, null);
+    public static void write(OutputStream output, Graph graph, RDFFormat format) {
+        write(output, graph, format, null);
     }
 
     /** Write a Graph in streaming fashion
      *
      * @param output OutputStream
      * @param graph  Graph to write
-     * @param lang   Syntax
+     * @param format Syntax
      * @param context Context
      */
-    public static void write(OutputStream output, Graph graph, RDFFormat lang, Context context) {
-        StreamRDF stream = getWriterStream(output, lang, context) ;
+    public static void write(OutputStream output, Graph graph, RDFFormat format, Context context) {
+        StreamRDF stream = getWriterStream(output, format, context) ;
         StreamRDFOps.graphToStream(graph, stream) ;
     }
     /** Write a DatasetGraph in streaming fashion

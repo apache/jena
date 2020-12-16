@@ -139,6 +139,7 @@ public abstract class TurtleShell {
         // This is true for the main pretty printing then
         // false when we are clearing up unwritten triples.
         private boolean allowDeepPretty = true ;
+        private final boolean printTypeKeyword;
 
         private ShellGraph(Graph graph, Node graphName, DatasetGraph dsg, Set<Node> graphNames) {
             this.dsg = dsg ;
@@ -164,7 +165,7 @@ public abstract class TurtleShell {
             // Stop head of lists printed as triples going all the way to the
             // good part.
             nestedObjects.removeAll(listElts) ;
-
+            this.printTypeKeyword = ! prefixMap.getMapping().values().contains(rdfNS);
             //printDetails() ;
         }
 
@@ -655,7 +656,7 @@ public abstract class TurtleShell {
             Collection<Node> predicates = pGroups.keySet() ;
 
             // Find longest predicate URI
-            int predicateMaxWidth = RiotLib.calcWidth(prefixMap, baseURI, predicates, MIN_PREDICATE, LONG_PREDICATE) ;
+            int predicateMaxWidth = Widths.calcWidth(prefixMap, baseURI, predicates, MIN_PREDICATE, LONG_PREDICATE, printTypeKeyword) ;
 
             boolean first = true ;
 
@@ -744,7 +745,7 @@ public abstract class TurtleShell {
             }
             int colPredicateStart = out.getAbsoluteIndent() ;
 
-            if ( !prefixMap.containsPrefix(rdfNS) && RDF_type.equals(p) )
+            if ( printTypeKeyword && RDF_type.equals(p) )
                 print("a") ;
             else
                 writeNode(p) ;

@@ -18,7 +18,6 @@
 
 package org.apache.jena.riot;
 
-//import static org.apache.jena.riot.RDFLanguages.*;
 import static org.apache.jena.riot.Lang.*;
 
 import java.io.InputStream ;
@@ -208,9 +207,7 @@ public class RDFParserRegistry
     }
 
     private static class ReaderRDFThrift implements ReaderRIOT {
-
         static ReaderRIOTFactory factory = (Lang language, ParserProfile profile) -> new ReaderRDFThrift(profile);
-
         private final ParserProfile profile;
         public ReaderRDFThrift(ParserProfile profile) { this.profile = profile; }
 
