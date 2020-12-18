@@ -1269,6 +1269,9 @@ void Object(Node s, Node p, Path path, TripleCollector acc): { Node o ; }
   { ElementPathBlock tempAcc = new ElementPathBlock() ; int mark = tempAcc.mark() ; }
   o = GraphNode(tempAcc) 
   { insert(tempAcc, mark, s, p, path, o) ;  insert(acc, tempAcc) ; }
+#ifdef ARQ  
+  Annotation(acc, s, p, path, o)
+#endif
 }
 
 // -------- BGPs with paths.
@@ -1285,7 +1288,6 @@ void TriplesSameSubjectPath(TripleCollector acc) : { Node s ; }
   PropertyListPath(s, tempAcc)
   { insert(acc, tempAcc) ; }
 }
-
 
 void PropertyListPath(Node s, TripleCollector acc) : { }
 {
@@ -1339,8 +1341,10 @@ void ObjectPath(Node s, Node p, Path path, TripleCollector acc): { Node o ; }
   { ElementPathBlock tempAcc = new ElementPathBlock() ; int mark = tempAcc.mark() ; }
   o = GraphNodePath(tempAcc) 
   { insert(tempAcc, mark, s, p, path, o) ;  insert(acc, tempAcc) ; }
+#ifdef ARQ
+  AnnotationPath(acc, s, p, path, o)
+#endif
 }
-
 
 // End paths stuff.
 
@@ -1627,6 +1631,35 @@ Node CollectionPath(TripleCollectorMark acc) :
        insert(acc, lastCell, nRDFrest,  nRDFnil) ;
      return listHead ; }
 }
+
+#ifdef ARQ
+// RDF* Annotation Syntax
+void AnnotationPath(TripleCollector acc, Node s, Node p, Path path, Node o) : {}
+{
+  (
+    <L_ANN>
+      { Node pAnn = preConditionAnnotation(s, p, path, o, token.beginLine, token.beginColumn) ;
+        Node x = createTripleTerm(s, pAnn, o, token.beginLine, token.beginColumn);
+      }
+      PropertyListPathNotEmpty(x, acc)
+    <R_ANN>
+  )?
+}
+
+// RDF* Annotation Syntax
+void Annotation(TripleCollector acc, Node s, Node p, Path path, Node o) : { }
+{
+  // path should be null.
+  (
+    <L_ANN>
+      { Node pAnn = preConditionAnnotation(s, p, path, o, token.beginLine, token.beginColumn) ;
+        Node x = createTripleTerm(s, p, o, token.beginLine, token.beginColumn);
+      }
+      PropertyListNotEmpty(x, acc)
+    <R_ANN>
+  )?
+}
+#endif
 
 // -------- Nodes in a graph pattern or template
 
@@ -2640,7 +2673,10 @@ TOKEN :
 #ifdef ARQ
 | < GT2:     ">>" >
 | < LT2:     "<<" >
+| <L_ANN:    "{|" >
+| <R_ANN:    "|}" >
 #endif
+
 | < BANG:    "!" >
 | < TILDE:   "~" >
 | < COLON:   ":" >
@@ -2674,6 +2710,10 @@ TOKEN :
 
 TOKEN:
 {
+#ifdef ARQ
+  <#SURROGATE_PAIR: ["\uD800"-"\uDBFF"] ["\uDC00"-"\uDFFF"] >
+|
+#endif
   // XML 1.1 NCNameStartChar without "_"
   <#PN_CHARS_BASE:
           ["A"-"Z"] | ["a"-"z"] |
@@ -2681,8 +2721,13 @@ TOKEN:
           ["\u0370"-"\u037D"] | ["\u037F"-"\u1FFF"] |
           ["\u200C"-"\u200D"] | ["\u2070"-"\u218F"] | ["\u2C00"-"\u2FEF"] |
           ["\u3001"-"\uD7FF"] | ["\uF900"-"\uFFFD"] 
-          >
           // [#x10000-#xEFFFF]
+#ifdef ARQ
+          // Put in surrogate pairs because by the time javacc sees codepoints,
+          // they are in UTF-16.
+          | <SURROGATE_PAIR>
+#endif
+          >
 |
   // With underscore
   <#PN_CHARS_U: <PN_CHARS_BASE> | "_" >
