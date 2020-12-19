@@ -363,7 +363,7 @@ public final class TokenizerText implements Tokenizer
             case CH_SEMICOLON:  reader.readChar(); token.setType(TokenType.SEMICOLON); /*token.setImage(CH_SEMICOLON);*/ return token;
             case CH_COMMA:      reader.readChar(); token.setType(TokenType.COMMA);     /*token.setImage(CH_COMMA);*/ return token;
 
-            // {| for RDF* annotation syntax.
+            // {| for RDF-star annotation syntax.
 //            case CH_LBRACE:     reader.readChar(); token.setType(TokenType.LBRACE);    /*token.setImage(CH_LBRACE);*/ return token;
             case CH_LBRACE: {
                 reader.readChar();
@@ -387,7 +387,7 @@ public final class TokenizerText implements Tokenizer
             case CH_RSLASH:     reader.readChar(); token.setType(TokenType.RSLASH);    /*token.setImage(CH_RSLASH);*/ return token;
 //            case CH_VBAR:       reader.readChar(); token.setType(TokenType.VBAR);      /*token.setImage(CH_VBAR);*/ return token;
             
-            // |} for RDF* annotation syntax.
+            // |} for RDF-star annotation syntax.
             case CH_VBAR: {
                 reader.readChar();
                 int chPeek = reader.peekChar();

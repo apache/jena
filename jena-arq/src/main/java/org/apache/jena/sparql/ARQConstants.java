@@ -190,7 +190,7 @@ public class ARQConstants
     public static final String allocPathVariables       = allocVarAnonMarker+"P" ;      // PathCompiler
     public static final String allocQueryVariables      = allocVarMarker ;              // Query
     
-    /** Marker for RDF* variables */
+    /** Marker for RDF-star variables */
     public static final String allocVarTripleTerm      = "~";                           // RX, SolverRX
     
     public static final String allocParserAnonVars      = allocVarAnonMarker ;          // LabelToModeMap

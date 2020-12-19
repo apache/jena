@@ -37,7 +37,7 @@ public enum TokenType {
     LT, GT, LE, GE, LOGICAL_AND, LOGICAL_OR,    // && and ||
     LT2, GT2,                                   // << and >>
 
-    // RDF* annotation syntax {|...|}
+    // RDF-star annotation syntax {|...|}
     L_ANN, R_ANN,
 
     VBAR, AMPHERSAND,

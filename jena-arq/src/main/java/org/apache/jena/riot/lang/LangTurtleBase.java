@@ -235,7 +235,7 @@ public abstract class LangTurtleBase extends LangBase {
         exception(peekToken(), "Out of place: %s", peekToken()) ;
     }
 
-    // Parse a << >> : RDF*
+    // Parse a << >> : RDF-star
     /* The Turtle grammar is:
             tripleX ::= ’<<’ subjectX predicate objectX ’>>’
             subjectX ::= iri | BlankNode | tripleX
@@ -271,7 +271,7 @@ public abstract class LangTurtleBase extends LangBase {
     private Node subjectX() {
         Node node = nodeX("subject");
         if ( node.isLiteral() )
-            exception(peekToken(), "Literal as subject in RDF* triple") ;
+            exception(peekToken(), "Literal as subject in RDF-star triple") ;
         return node ;
     }
 
@@ -290,18 +290,18 @@ public abstract class LangTurtleBase extends LangBase {
         //    is at least one predicate /object.
         // Method triplesNodeCompound ()-> triplesBlankNode(subject)
         //    can cope with zero length, covering grammar token ANON and rule [7] predicateObjectList cases
-        // But here, in RDF*, only [] is legal.
+        // But here, in RDF-star, only [] is legal.
         if ( lookingAt(LBRACKET) ) {
             nextToken();
             Token t = peekToken();
             if ( ! lookingAt(RBRACKET) )
-                exception(peekToken(), "Bad %s in RDF* triple after [, expected ]", posnLabel, peekToken().text()) ;
+                exception(peekToken(), "Bad %s in RDF-star triple after [, expected ]", posnLabel, peekToken().text()) ;
             nextToken();
             return profile.createBlankNode(currentGraph, t.getLine(), t.getColumn()) ;
         }
 
         if ( ! lookingAt(NODE) )
-            exception(peekToken(), "Bad %s in RDF* triple", posnLabel, peekToken().text()) ;
+            exception(peekToken(), "Bad %s in RDF-star triple", posnLabel, peekToken().text()) ;
         Node node = node();
         nextToken();
         return node;
@@ -423,10 +423,11 @@ public abstract class LangTurtleBase extends LangBase {
             // object ::=
             Node object = triplesNode() ;
             emitTriple(subject, predicate, object) ;
-//            if ( !moreTokens() )
-//                break ;
+            // RDF-star annotation syntax
             if ( lookingAt(L_ANN) ) {
-                nextToken() ;
+                Token tNext = nextToken() ;
+                if ( lookingAt(R_ANN) )
+                    exception(tNext, "Empty annotation");
                 Node x = profile.createTripleNode(subject, predicate, object, -1, -1); // XXX
                 predicateObjectList(x);
                 expect("Missing end annotation", R_ANN);

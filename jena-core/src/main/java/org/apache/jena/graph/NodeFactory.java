@@ -217,13 +217,13 @@ public class NodeFactory {
         return createLiteralByValue(value, lang, dtype) ;
     }
 
-    /** Create a triple node (RDF*) */
+    /** Create a triple node (RDF-star) */
     public static Node createTripleNode(Node s, Node p, Node o) {
         Triple triple = Triple.create(s, p, o);
         return createTripleNode(triple);
     }
 
-    /** Create a triple node (RDF*) */
+    /** Create a triple node (RDF-star) */
     public static Node createTripleNode(Triple triple) {
         return new Node_Triple(triple);
     }

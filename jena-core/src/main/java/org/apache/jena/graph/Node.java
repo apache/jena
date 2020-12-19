@@ -64,7 +64,7 @@ public abstract class Node implements Serializable {
     public abstract boolean isConcrete();
 
     /**
-        Answer true iff this node is an "triple node" (RDF*)
+        Answer true iff this node is an "triple node" (RDF-star)
      */
     public boolean isNodeTriple()
         { return false; }

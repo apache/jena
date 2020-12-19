@@ -78,10 +78,10 @@ public interface ParserProfile {
     /** Create a fresh blank node */
     public Node createBlankNode(Node scope, long line, long col);
 
-    /** Create a triple node (RDF*) */
+    /** Create a triple node (RDF-star) */
     public Node createTripleNode(Node subject, Node predicate, Node object, long line, long col);
 
-    /** Create a triple node (RDF*) */
+    /** Create a triple node (RDF-star) */
     public Node createTripleNode(Triple triple, long line, long col);
 
     /** Create a graph node. This is an N3-formula and not named graphs */

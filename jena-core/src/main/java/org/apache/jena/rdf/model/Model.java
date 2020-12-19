@@ -192,7 +192,7 @@ public interface Model
 	public Resource createResource( String uri ) ;
 	
 	/**
-	 * Create a resource that represents a statement. This is in support of RDF*.
+	 * Create a resource that represents a statement. This is in support of RDF-star.
 	 * @param statement
 	 * @return a new resource linked to this model.
 	 */

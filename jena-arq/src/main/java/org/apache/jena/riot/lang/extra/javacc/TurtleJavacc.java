@@ -241,7 +241,7 @@ emitTriple(token.beginLine, token.beginColumn, s, p, o) ;
     }
   }
 
-// RDF* Annotation Syntax
+// RDF-star Annotation Syntax
   final public void Annotation(Node s, Node p, Node o) throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case 1:{
@@ -280,7 +280,7 @@ p = nRDFtype ;
     throw new Error("Missing return statement in function");
   }
 
-// Turtle [10] subject (include RDF* SubjectX)
+// Turtle [10] subject (include RDF-star SubjectX)
   final public Node Subject() throws ParseException {Node s; String iri ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case IRIref:
@@ -300,7 +300,7 @@ s = createNode(iri) ;
       break;
       }
     case 3:{
-      // RDF* SubjectX
+      // RDF-star SubjectX
           s = TripleStar();
       break;
       }
@@ -356,7 +356,7 @@ o = createNode(iri) ;
       break;
       }
     case 3:{
-      // RDF* ObjectX
+      // RDF-star ObjectX
           o = TripleStar();
       break;
       }
@@ -369,7 +369,7 @@ o = createNode(iri) ;
     throw new Error("Missing return statement in function");
   }
 
-// RDF* objectXTurtle [12] object
+// RDF-star objectXTurtle [12] object
   final public Node ObjectX() throws ParseException {Node o ; String iri;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case IRIref:
@@ -397,7 +397,7 @@ o = createNode(iri) ;
       break;
       }
     case 3:{
-      // RDF* ObjectX
+      // RDF-star ObjectX
           o = TripleStar();
       break;
       }
@@ -410,8 +410,8 @@ o = createNode(iri) ;
     throw new Error("Missing return statement in function");
   }
 
-// The syntax for RDF*
-// RDF* [] tripleX 
+// The syntax for RDF-star
+// RDF-star [] tripleX 
   final public Node TripleStar() throws ParseException {Node s , p , o ; Token t ;
     t = jj_consume_token(3);
 int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;

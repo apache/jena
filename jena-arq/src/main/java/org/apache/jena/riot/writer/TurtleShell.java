@@ -334,7 +334,7 @@ public abstract class TurtleShell {
          *   triple term must refer to a triple in the graph so blank node used elsewhere.)
          */
         private void findBNodesSyntax1() {
-            // Set of all bnodes used into triple terms (RDF*)
+            // Set of all bnodes used into triple terms (RDF-star)
             Set<Node> blankNodesInTripleTerms = new HashSet<>();
             // Nodes known not to meet the requirement.
             Set<Node> rejects = new HashSet<>() ;

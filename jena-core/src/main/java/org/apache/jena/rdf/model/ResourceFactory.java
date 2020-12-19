@@ -93,7 +93,7 @@ public class ResourceFactory {
     }
     
     /** 
-     * Create a new resource representing an RDF* triple term.
+     * Create a new resource representing an RDF-star triple term.
      * @param statement
      * @return a new resource 
      */
@@ -219,7 +219,7 @@ public class ResourceFactory {
          */
         public Resource createResource(String uriref);
         
-        /** Create a new resource representing an RDF* triple term.
+        /** Create a new resource representing an RDF-star triple term.
          * 
          * @param statement
          * @return a new resource

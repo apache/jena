@@ -42,7 +42,7 @@ public class StandardPropertyFunctions {
         // Use function for constant (JENA-1294)
         add(registry, RDFS.Init.member().getURI(), org.apache.jena.sparql.pfunction.library.container.class);
 
-        // Property function - RDF*
+        // Property function - RDF-star
 //        PropertyFunctionFactory factory = (uri)->new TripleTermFind();
 //        registry.put(ARQConstants.ARQPropertyFunctionLibraryURI+"find", factory);
         add(registry, ARQConstants.ARQPropertyFunctionLibraryURI+"find", TripleTermFind.class);

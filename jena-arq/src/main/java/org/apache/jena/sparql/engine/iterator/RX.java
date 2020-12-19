@@ -31,12 +31,12 @@ import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.util.Context;
 
 /**
- * Solver library for RDF*.
+ * Solver library for RDF-star.
  * <p>
  * There are two entry points.
  * <p>
  * Function {@link #rdfStarTriple} for matching a single triple pattern in a basic
- * graph pattern that may involve RDF* terms.
+ * graph pattern that may involve RDF-star terms.
  * <p>
  * Function {@link #matchTripleStar} for matches a triple term and assigning the
  * triple matched to a variable. It is used within {@link #rdfStarTriple} for nested
@@ -46,7 +46,7 @@ import org.apache.jena.sparql.util.Context;
 public class RX {
 
     /**
-     * Match a single triple pattern that may involve RDF* terms.
+     * Match a single triple pattern that may involve RDF-star terms.
      * This is the top level function for matching triples.
      *
      * The function {@link #matchTripleStar} matches a triple term and assigns the triple matched to a variable.
@@ -54,7 +54,7 @@ public class RX {
      * as well can for {@code FIND(<<...>> AS ?t)}.
      *
      * @implNote
-     * Without RDF*, this would be a plain call of {@link #matchData} which is simply:
+     * Without RDF-star, this would be a plain call of {@link #matchData} which is simply:
      * <pre>
      * new QueryIterTriplePattern(chain, triple, execCxt)}
      * </pre>
@@ -62,7 +62,7 @@ public class RX {
     public static QueryIterator rdfStarTriple(QueryIterator chain, Triple triple, ExecutionContext execCxt) {
         // Should all work without this trap for plain RDF.
         if ( ! tripleHasNodeTriple(triple) )
-            // No RDF* : direct to data.
+            // No RDF-star : direct to data.
             return matchData(chain, triple, execCxt);
         return rdfStarTripleSub(chain, triple, execCxt);
     }
