@@ -23,7 +23,6 @@ import static org.apache.jena.sparql.graph.NodeConst.nodeOwlImports;
 import static org.apache.jena.sparql.graph.NodeConst.nodeOwlOntology;
 import static org.apache.jena.sparql.graph.NodeConst.nodeRDFType;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +33,7 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphUtil;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RiotParseException;
 import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.sparql.graph.GraphFactory;
@@ -100,14 +100,17 @@ public class Imports {
                 // Ignore non-URIs.
                 continue;
             String uri = imported.getURI();
-            if ( ! visited.contains(uri) ) {
-                visited.add(uri);
-                // Read into a temporary graph to isolate errors.
-                try {
-                    Graph g2 = RDFDataMgr.loadGraph(uri);
-                    GraphUtil.addInto(acc, g2);
-                    processImports(visited, g2, acc);
-                } catch (RuntimeException ex) {}
+            if ( visited.contains(uri) )
+                continue;
+            visited.add(uri);
+            // Read into a temporary graph to isolate errors.
+            try {
+                Graph g2 = RDFDataMgr.loadGraph(uri);
+                GraphUtil.addInto(acc, g2);
+                processImports(visited, g2, acc);
+            } catch (RiotParseException ex) {
+                //FmtLog.error(Imports.class, "Parse error reading '%s': %s", uri, ex.getMessage());
+                throw ex;
             }
         }
     }
@@ -121,12 +124,14 @@ public class Imports {
     /**
      * Locate the base (a single triple ? rdf:type owl:Ontology)
      * and imports (triples "base owl:Imports URI").
-     * Returns a Pair of (null,EmptyList) for no base.
+     * May return null for the base in which case all imports are returned.
+     * 
      */
     public static Pair<Node,List<Node>> baseAndImports(Graph graph) {
-        Node base = G.getZeroOrOnePO(graph, nodeRDFType, nodeOwlOntology);
-        if ( base == null )
-            return Pair.create(null, Collections.emptyList());
+        Node base = null;
+        if ( G.containsOne(graph, null, nodeRDFType, nodeOwlOntology) ) {
+            base = G.getOnePO(graph, nodeRDFType, nodeOwlOntology);
+        }
         List<Node> imports = allImports(base, graph);
         return Pair.create(base, imports);
     }
