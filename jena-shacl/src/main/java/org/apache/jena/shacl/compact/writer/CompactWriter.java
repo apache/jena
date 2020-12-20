@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.CollectionUtils;
+import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterTTL;
 import org.apache.jena.riot.system.PrefixMap;
@@ -55,11 +56,12 @@ public class CompactWriter {
 
         boolean someOutput = false;
 
-        // BASE
-        if ( shapes.getBase() != null && shapes.getBase().isURI() ) {
+        // BASE - output if and only if there is exactly one.
+        Node baseURI = shapes.getBase();
+        if ( baseURI != null && baseURI.isURI() ) {
             if ( someOutput )
                 out.println();
-            RiotLib.writeBase(out, shapes.getBase().getURI(), true);
+            RiotLib.writeBase(out, baseURI.getURI(), true);
             someOutput = true;
         }
 

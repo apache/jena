@@ -904,9 +904,6 @@ public class Rule implements ClauseEntry {
                     }
                 }
                 return NodeFactory.createURI(exp);
-            } else if (peekToken().equals("(")) {
-                Functor f = new Functor(token, parseNodeList(), registry);
-                return Functor.makeFunctorNode( f );
             } else if (token.equals("'") || token.equals("\"")) {
                 // A plain literal
                 String lit = nextToken();
@@ -937,11 +934,15 @@ public class Rule implements ClauseEntry {
                     return NodeFactory.createLiteral(lit, dt);
                 } else {
                     return NodeFactory.createLiteral(lit, "");
-                }                
+                }    
             } else  if ( Character.isDigit(token.charAt(0)) || 
                          (token.charAt(0) == '-' && token.length() > 1 && Character.isDigit(token.charAt(1))) ) {
                 // A number literal
                return parseNumber(token);
+            } else if (peekToken().equals("(")) {
+                // token=SomeName token=( is a functor.  
+                Functor f = new Functor(token, parseNodeList(), registry);
+                return Functor.makeFunctorNode( f );
             } else {
                 // A  uri
                 return NodeFactory.createURI(token);

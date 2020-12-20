@@ -73,8 +73,6 @@ public class Shapes implements Iterable<Shape> {
         return parse(g);
     }
 
-
-    
     /** Parse the graph and return the shapes connected to the targets. */
     public static Shapes parse(Graph graph) {
         return parseAll(graph);
