@@ -90,7 +90,9 @@ public class TestBasics extends TestCase  {
             "-> print('42'^^xsd:byte). ",
             "-> print('42'^^http://www.w3.org/2001/XMLSchema#int). ",
             "-> print('42'^^foobar:byte). ",
-            "-> print(<foo://a/file>). "
+            "-> print(<foo://a/file>). " ,
+            "-> print('(').",
+            "-> print(\"(\")."
         };
         String[] testResults = new String[] {
             "[ (?a rdf:type ?_) -> (?a rdf:type ?b) ]",
@@ -110,6 +112,8 @@ public class TestBasics extends TestCase  {
             "[ -> print('42'^^http://www.w3.org/2001/XMLSchema#int) ]",
             "[ -> print('42'^^http://foobar#byte) ]",
             "[ -> print(<foo://a/file>) ]",
+            "[ -> print('(') ]",
+            "[ -> print('(') ]"
         };
         
         PrintUtil.registerPrefix("foobar", "http://foobar#");
