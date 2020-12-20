@@ -63,10 +63,10 @@ public class WriterStreamRDFFlat extends WriterStreamRDFBase
         Node s = triple.getSubject() ;
         Node p = triple.getPredicate() ;
         Node o = triple.getObject() ;
-        
+
         outputNode(s) ;
         out.print(' ') ;
-        outputNode(p) ;
+        printProperty(p);
         out.print(' ') ;
         outputNode(o) ;
         out.println(" .") ;
@@ -79,7 +79,7 @@ public class WriterStreamRDFFlat extends WriterStreamRDFBase
         Node s = quad.getSubject() ;
         Node p = quad.getPredicate() ;
         Node o = quad.getObject() ;
-        
+
         if ( g != null && ! Quad.isDefaultGraph(g) )
         {
             outputNode(g) ;
@@ -89,7 +89,7 @@ public class WriterStreamRDFFlat extends WriterStreamRDFBase
             out.print("{ ") ;
         outputNode(s) ;
         out.print(' ') ;
-        outputNode(p) ;
+        printProperty(p);
         out.print(' ') ;
         outputNode(o) ;
         out.println(" }") ;

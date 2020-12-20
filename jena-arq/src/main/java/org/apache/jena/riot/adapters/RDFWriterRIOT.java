@@ -60,11 +60,8 @@ public class RDFWriterRIOT implements RDFWriter
     protected RDFWriterBuilder writer() {
         if ( jenaName == null )
             throw new IllegalArgumentException("Jena writer name is null");
-        // For writing via model.write(), use any old names for jena writers. (As of 2107-03 - there are none)
-        RDFFormat format = RDFWriterRegistry.getFormatForJenaWriter(jenaName) ;
+        // For writing via model.write(), use any old names for jena writers.
         RDFWriterBuilder builder = org.apache.jena.riot.RDFWriter.create();
-        if ( format != null )
-            return builder.format(format);
         Lang lang = RDFLanguages.nameToLang(jenaName);
         if ( lang != null )
             return builder.lang(lang);

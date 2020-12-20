@@ -17,7 +17,7 @@
  */
 
 package org.apache.jena.riot.writer;
-
+import static org.apache.jena.riot.writer.WriterConst.rdfNS;
 import java.io.BufferedWriter ;
 import java.io.OutputStream ;
 import java.io.Writer ;
@@ -57,6 +57,8 @@ public abstract class WriterStreamRDFBase implements StreamRDF
     protected final IndentedWriter out ;
     protected final DirectiveStyle prefixStyle;
     protected final boolean printBase;
+    // Is there an active prefix mapping for the RDF namespace.
+    protected int countPrefixesForRDF = 0;
 
     public WriterStreamRDFBase(OutputStream output, Context context) {
         this(new IndentedWriter(output), context) ;
@@ -70,13 +72,13 @@ public abstract class WriterStreamRDFBase implements StreamRDF
         out = output ;
         pMap = PrefixMapFactory.create() ;
         nodeToLabel = NodeToLabel.createScopeByDocument() ;
-        
+
         // Stream writing does not take an external base URI from the API "write"
         // call. The base URI is output if StreamRDF.base() called, which means BASE
         // was in the data stream.
         baseURI = null ;
         prefixStyle = WriterLib.directiveStyle(context);
-        printBase = 
+        printBase =
             ( context == null ) ? true : context.isFalseOrUndef(RIOT.symTurtleOmitBase);
         setFormatter() ;
     }
@@ -133,13 +135,39 @@ public abstract class WriterStreamRDFBase implements StreamRDF
     @Override
     public final void prefix(String prefix, String iri) {
         endData();
+        prefixSetup(prefix, iri);
         lastWasDirective = true;
+        if ( pMap.containsPrefix(prefix) ) {
+            // Overwrite?
+            // Update for PrefixMap.get
+            String old = pMap.getMapping().get(prefix);
+            if ( rdfNS.equals(old) ) {
+                countPrefixesForRDF--;
+            }
+        }
+        if ( rdfNS.equals(iri) ) {
+            countPrefixesForRDF++;
+        }
+
         pMap.add(prefix, iri);
         RiotLib.writePrefix(out, prefix, iri, prefixStyle == DirectiveStyle.SPARQL);
     }
 
+    protected void prefixSetup(String prefix, String iri) {}
+
     protected void outputNode(Node n) {
         fmt.format(out, n);
+    }
+
+    /**
+     * Helper for formats that wish to print 'a' or 'rdf:type' based
+     * on whether a prefix definition is in-scope.
+     */
+    protected void printProperty(Node p) {
+        if ( countPrefixesForRDF <= 0 && WriterConst.RDF_type.equals(p) )
+            out.print('a');
+        else
+            outputNode(p) ;
     }
 
     // Subclass contract
