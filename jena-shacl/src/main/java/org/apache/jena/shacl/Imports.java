@@ -35,6 +35,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RiotParseException;
 import org.apache.jena.riot.other.G;
+import org.apache.jena.riot.other.RDFDataException;
 import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.sparql.graph.GraphFactory;
 
@@ -142,7 +143,9 @@ public class Imports {
      */
     public static Node base(Graph graph) {
         // Filter for URI?
-        return G.getZeroOrOnePO(graph, nodeRDFType, nodeOwlOntology);
+        try { 
+            return G.getZeroOrOnePO(graph, nodeRDFType, nodeOwlOntology);
+        } catch (RDFDataException ex) { return null; }
     }
 
     /**

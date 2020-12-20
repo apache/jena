@@ -31,6 +31,7 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.shacl.Imports;
+import org.apache.jena.shacl.Shapes;
 import org.junit.Test;
 
 public class TestImports {
@@ -101,15 +102,17 @@ public class TestImports {
     @Test public void testImportsLoading3() {
         Graph graph1 = RDFDataMgr.loadGraph(FILES+"/graph1.ttl");
         Graph graph = Imports.withImports(graph1);
-        // Will be read again due to not knowing it URI.
+        // Will be read again due to not knowing its URI so two matches.
         // Skip test.
-        // assertTrue(G.containsOne(graph, g1, p, null));
+        // assertTrue(G.containsOne(graph, g1, predicate, null));
         assertTrue(G.containsOne(graph, g2, predicate, null));
         assertTrue(G.containsOne(graph, g3, predicate, null));
         assertTrue(G.containsOne(graph, g4, predicate, null));
         assertTrue(G.containsOne(graph, g5, predicate, null));
     }
 
-
+    @Test public void testShapesImports1() {
+        Shapes.parse(FILES+"/graph1.ttl", true);
+    }
 }
 
