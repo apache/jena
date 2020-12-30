@@ -612,10 +612,17 @@ public class RDFParserBuilder {
         if ( errorHandler$ == null )
             errorHandler$ = ErrorHandlerFactory.getDefaultErrorHandler();
 
-        if ( path != null && baseUri == null )
-            baseUri = IRILib.filenameToIRI(path.toString());
-        if ( path == null && baseUri == null && uri != null )
-            baseUri = uri;
+        if ( path != null ) {
+            if ( baseUri == null )
+                baseUri = IRILib.filenameToIRI(path.toString());
+        } else {
+            if ( baseUri == null && uri != null ) {
+                if ( resolver != null )
+                    baseUri = resolver.resolveToString(uri);
+                else
+                    baseUri = IRIResolver.resolveString(uri);
+            }
+        }
         
         StreamManager sMgr = streamManager;
         if ( sMgr == null )

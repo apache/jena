@@ -246,7 +246,7 @@ emitTriple(token.beginLine, token.beginColumn, s, p, o) ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case 1:{
       jj_consume_token(1);
-Node x = tripleStar(s, p, o);
+Node x = createTripleTerm(s, p, o, token.beginLine, token.beginColumn);
       PredicateObjectList(x);
       jj_consume_token(2);
       break;
@@ -287,7 +287,7 @@ p = nRDFtype ;
     case PNAME_NS:
     case PNAME_LN:{
       iri = iri();
-s = createNode(iri) ;
+s = createNode(iri, token.beginLine, token.beginColumn) ;
       break;
       }
     case ANON:
@@ -316,7 +316,7 @@ s = createNode(iri) ;
 // Turtle [11] predicate
   final public Node Predicate() throws ParseException {String iri;
     iri = iri();
-{if ("" != null) return createNode(iri);}
+{if ("" != null) return createNode(iri, token.beginLine, token.beginColumn);}
     throw new Error("Missing return statement in function");
   }
 
@@ -327,7 +327,7 @@ s = createNode(iri) ;
     case PNAME_NS:
     case PNAME_LN:{
       iri = iri();
-o = createNode(iri) ;
+o = createNode(iri, token.beginLine, token.beginColumn) ;
       break;
       }
     case ANON:
@@ -376,7 +376,7 @@ o = createNode(iri) ;
     case PNAME_NS:
     case PNAME_LN:{
       iri = iri();
-o = createNode(iri) ;
+o = createNode(iri, token.beginLine, token.beginColumn) ;
       break;
       }
     case ANON:
@@ -419,7 +419,7 @@ int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
     p = Predicate();
     o = ObjectX();
     jj_consume_token(4);
-Node n = tripleStar(s, p, o);
+Node n = createTripleTerm(s, p, o, beginLine, beginColumn);
     {if ("" != null) return n;}
     throw new Error("Missing return statement in function");
   }
@@ -459,7 +459,7 @@ Node n = tripleStar(s, p, o);
 // Turtle [14] blankNodePropertyList
   final public Node BlankNodePropertyList() throws ParseException {Token t ;
     t = jj_consume_token(LBRACKET);
-Node n = createBNode( t.beginLine, t.beginColumn) ;
+Node n = createBNode(t.beginLine, t.beginColumn) ;
     PredicateObjectList(n);
     jj_consume_token(RBRACKET);
 {if ("" != null) return n ;}
@@ -527,17 +527,17 @@ if ( lastCell != null )
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case INTEGER:{
       t = jj_consume_token(INTEGER);
-{if ("" != null) return createLiteralInteger(t.image) ;}
+{if ("" != null) return createLiteralInteger(t.image, t.beginLine, t.beginColumn) ;}
       break;
       }
     case DECIMAL:{
       t = jj_consume_token(DECIMAL);
-{if ("" != null) return createLiteralDecimal(t.image) ;}
+{if ("" != null) return createLiteralDecimal(t.image, t.beginLine, t.beginColumn) ;}
       break;
       }
     case DOUBLE:{
       t = jj_consume_token(DOUBLE);
-{if ("" != null) return createLiteralDouble(t.image) ;}
+{if ("" != null) return createLiteralDouble(t.image, t.beginLine, t.beginColumn) ;}
       break;
       }
     default:
@@ -580,7 +580,7 @@ String lang = null ; String uri = null ;
       jj_la1[19] = jj_gen;
 
     }
-{if ("" != null) return createLiteral(lex, lang, uri) ;}
+{if ("" != null) return createLiteral(lex, lang, uri, token.beginLine, token.beginColumn) ;}
     throw new Error("Missing return statement in function");
   }
 

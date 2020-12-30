@@ -142,7 +142,7 @@ void Annotation(Node s, Node p, Node o) : {}
 {
   (
     "{|"
-      { Node x = tripleStar(s, p, o); }
+      { Node x = createTripleTerm(s, p, o, token.beginLine, token.beginColumn); }
       PredicateObjectList(x)
     "|}"
   )?
@@ -159,7 +159,7 @@ Node Verb() : { Node p ; }
 Node Subject() : { Node s; String iri ; }
 {
   (
-    iri = iri() { s = createNode(iri) ; }
+    iri = iri() { s = createNode(iri, token.beginLine, token.beginColumn) ; }
   |
     s = BlankNode()
   |
@@ -176,13 +176,13 @@ Node Subject() : { Node s; String iri ; }
 Node Predicate() : { String iri;}
 {
   iri = iri()
-  { return createNode(iri); }
+  { return createNode(iri, token.beginLine, token.beginColumn); }
 }
 
 // Turtle [12] object
 Node Object(): { Node o ; String iri; }
 {
-  ( iri = iri() { o = createNode(iri) ; }
+  ( iri = iri() { o = createNode(iri, token.beginLine, token.beginColumn) ; }
   | o = BlankNode()
   | o = Collection()
   | o = BlankNodePropertyList()
@@ -197,7 +197,7 @@ Node Object(): { Node o ; String iri; }
 // RDF-star objectXTurtle [12] object
 Node ObjectX(): { Node o ; String iri; }
 {
-   ( iri = iri() { o = createNode(iri) ; }
+   ( iri = iri() { o = createNode(iri, token.beginLine, token.beginColumn) ; }
   | o = BlankNode()
   | o = Literal()
   |
@@ -217,7 +217,7 @@ Node TripleStar() : { Node s , p , o ; Token t ; }
   p = Predicate()
   o = ObjectX()
   ">>"
-  { Node n = tripleStar(s, p, o);
+  { Node n = createTripleTerm(s, p, o, beginLine, beginColumn);
     return n;
   }
 }
@@ -234,7 +234,7 @@ Node Literal() : { Node n ;}
 Node BlankNodePropertyList() : { Token t ; }
 {
   t = <LBRACKET> 
-    { Node n = createBNode( t.beginLine, t.beginColumn) ; }
+    { Node n = createBNode(t.beginLine, t.beginColumn) ; }
   PredicateObjectList(n)
   <RBRACKET>
     { return n ; }
@@ -279,9 +279,9 @@ Node CollectionElt() : { Node o;}
 Node NumericLiteral() : { Token t ; }
 {
   (
-    t = <INTEGER> { return createLiteralInteger(t.image) ; }
-  | t = <DECIMAL> { return createLiteralDecimal(t.image) ; }
-  | t = <DOUBLE>  { return createLiteralDouble(t.image) ; }
+    t = <INTEGER> { return createLiteralInteger(t.image, t.beginLine, t.beginColumn) ; }
+  | t = <DECIMAL> { return createLiteralDecimal(t.image, t.beginLine, t.beginColumn) ; }
+  | t = <DOUBLE>  { return createLiteralDouble(t.image, t.beginLine, t.beginColumn) ; }
   )
 }
 
@@ -296,7 +296,7 @@ Node RDFLiteral() : { Token t ; String lex = null ; }
   |
     <DATATYPE> uri = iri()
   )?
-    { return createLiteral(lex, lang, uri) ; }
+    { return createLiteral(lex, lang, uri, token.beginLine, token.beginColumn) ; }
 } 
 
 String LangTag() : { Token t ; }

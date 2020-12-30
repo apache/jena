@@ -24,7 +24,6 @@ import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.RiotException;
@@ -36,9 +35,9 @@ import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.sparql.lang.ParserBase;
 import org.apache.jena.vocabulary.RDF;
 
-/** 
+/**
  * Base for JavaCC parser of RDF languages.
- * See {@link ParserBase} for the base class for SPARQL. 
+ * See {@link ParserBase} for the base class for SPARQL.
  */
 public class LangParserBase {
 
@@ -59,8 +58,8 @@ public class LangParserBase {
     protected ParserProfile profile;
 
     public LangParserBase() { }
-    
-    // These are essential calls unless the parser takes over the functions. 
+
+    // These are essential calls unless the parser takes over the functions.
     // They can't easily be in the constructor because this class is inherited
     // by the JavaCC generated parser.
     public void setProfile(ParserProfile profile) {
@@ -70,17 +69,17 @@ public class LangParserBase {
     public void setDest(StreamRDF stream) {
         this.stream = stream;
     }
-    
+
     // ----
-    
+
     protected String fixupPrefix(String prefix, int line, int column) {
         if ( prefix.endsWith(":") )
             prefix = prefix.substring(0, prefix.length() - 1) ;
         return prefix ;
     }
 
-    protected Node createNode(String iriStr) {
-        return profile.createURI(iriStr, -1, -1);
+    protected Node createNode(String iriStr, int line, int column) {
+        return profile.createURI(iriStr, line, column);
     }
 
     protected Node createBNode(int line, int column) {
@@ -114,34 +113,34 @@ public class LangParserBase {
         }
     }
 
-    protected Node createLiteral(String lexicalForm, String langTag, String datatypeURI) {
+    protected Node createLiteral(String lexicalForm, String langTag, String datatypeURI, int line, int column) {
         // XXX profile.
         Node n = null ;
         // Can't have type and lang tag in parsing.
         if ( datatypeURI != null ) {
             RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatypeURI) ;
-            n = NodeFactory.createLiteral(lexicalForm, dType) ;
+            n = profile.createTypedLiteral(lexicalForm, dType, line, column) ;
         } else if ( langTag != null && !langTag.isEmpty() )
-            n = NodeFactory.createLiteral(lexicalForm, langTag) ;
+            n = profile.createLangLiteral(lexicalForm, langTag, line, column) ;
         else
-            n = NodeFactory.createLiteral(lexicalForm) ;
+            n = profile.createStringLiteral(lexicalForm, line, column) ;
         return n ;
     }
 
-    protected static Node tripleStar(Node s, Node p, Node o) {
-        return NodeFactory.createTripleNode(s, p, o);
+    protected Node createTripleTerm(Node s, Node p, Node o, int line, int column) {
+        return profile.createTripleNode(s, p, o, line, column);
     }
 
-    protected Node createLiteralInteger(String lexicalForm) {
-        return NodeFactory.createLiteral(lexicalForm, XSDDatatype.XSDinteger) ;
+    protected Node createLiteralInteger(String lexicalForm, int line, int column) {
+        return profile.createTypedLiteral(lexicalForm, XSDDatatype.XSDinteger, line, column);
     }
 
-    protected Node createLiteralDecimal(String lexicalForm) {
-        return NodeFactory.createLiteral(lexicalForm, XSDDatatype.XSDdecimal) ;
+    protected Node createLiteralDecimal(String lexicalForm, int line, int column) {
+        return profile.createTypedLiteral(lexicalForm, XSDDatatype.XSDdecimal, line, column);
     }
 
-    protected Node createLiteralDouble(String lexicalForm) {
-        return NodeFactory.createLiteral(lexicalForm, XSDDatatype.XSDdouble) ;
+    protected Node createLiteralDouble(String lexicalForm, int line, int column) {
+        return profile.createTypedLiteral(lexicalForm, XSDDatatype.XSDdouble, line, column);
     }
 
     protected String resolvePName(String pname, int line, int column) {
@@ -170,7 +169,7 @@ public class LangParserBase {
             throw new RiotParseException("Illegal character '<' or '>' in IRI: '"+iriStr+"'", line, column);
         return profile.resolveIRI(iriStr, line, column);
     }
-    
+
     protected void setBase(String iri, int line, int column) {
         profile.setBaseIRI(iri);
         stream.base(iri);
