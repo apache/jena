@@ -18,6 +18,8 @@
 
 package org.apache.jena.atlas.lib.tuple;
 
+import java.util.function.Function;
+
 /**
  * A tuple of 6 items.
  */
@@ -54,5 +56,17 @@ public class Tuple6<X> extends TupleBase<X> {
     @Override
     public final int len() {
         return 6 ;
+    }
+
+    @Override
+    public <Y> Tuple<Y> map(Function<X, Y> function) {
+        return new Tuple6<>(
+                function.apply(x1),
+                function.apply(x2),
+                function.apply(x3),
+                function.apply(x4),
+                function.apply(x5),
+                function.apply(x6)
+                );
     }
 }

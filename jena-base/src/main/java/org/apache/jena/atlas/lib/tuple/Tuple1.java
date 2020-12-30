@@ -18,6 +18,8 @@
 
 package org.apache.jena.atlas.lib.tuple;
 
+import java.util.function.Function;
+
 /**
  * A tuple of 1 item.
  */
@@ -39,4 +41,7 @@ public class Tuple1<X> extends TupleBase<X> {
     public final int len() {
         return 1 ;
     }
+
+    @Override
+    public <Y> Tuple<Y> map(Function<X,Y> function) { return new Tuple1<>(function.apply(x1)) ;}
 }

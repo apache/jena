@@ -19,12 +19,13 @@
 package org.apache.jena.atlas.lib.tuple;
 
 import java.util.Arrays ;
+import java.util.function.Function;
 
 /** A Tuple of N items */
 public class TupleN<X> extends TupleBase<X> {
     private final X[] tuple ;
 
-    /** Create a TupleN - safely copy the input */ 
+    /** Create a TupleN - safely copy the input */
     @SafeVarargs
     public static <X> TupleN<X> create(X... xs) {
         X[] xs2 = Arrays.copyOf(xs, xs.length) ;
@@ -37,7 +38,7 @@ public class TupleN<X> extends TupleBase<X> {
     }
 
     /** Put a TupleN wrapper around a X[].
-     *  The array must not be subsequently modified. 
+     *  The array must not be subsequently modified.
      *  The statics {@link #create} and {@link wrap} determine whether to copy or not.
      */
     protected TupleN(X[] xs) {
@@ -52,5 +53,16 @@ public class TupleN<X> extends TupleBase<X> {
     @Override
     public int len() {
         return tuple.length;
+    }
+
+    @Override
+    public <Y> Tuple<Y> map(Function<X, Y> function) {
+        int N = tuple.length;
+        @SuppressWarnings("unchecked")
+        Y[] tuple2 = (Y[])new Object[N];
+        for ( int i = 0 ; i < N ; i++ ) {
+            tuple2[i] = function.apply(tuple[i]);
+        }
+        return wrap(tuple2);
     }
 }
