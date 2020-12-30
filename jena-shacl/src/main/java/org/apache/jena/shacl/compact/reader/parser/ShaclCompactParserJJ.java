@@ -23,9 +23,9 @@ package org.apache.jena.shacl.compact.reader.parser;
 import java.util.List;
 import java.util.ArrayList;
 import org.apache.jena.graph.*;
-import org.apache.jena.riot.lang.extra.LangParserLib;
 import org.apache.jena.sparql.path.*;
 import org.apache.jena.shacl.compact.reader.*;
+import static org.apache.jena.riot.lang.extra.LangParserLib.*;
 
 public class ShaclCompactParserJJ extends ShaclCompactParser implements ShaclCompactParserJJConstants {
 
@@ -1140,7 +1140,7 @@ p = PathFactory.pathInverse(p) ;
     case PNAME_NS:
     case PNAME_LN:{
       str = iri();
-n = createNode(str) ; p = PathFactory.pathLink(n) ;
+n = createNode(str, token.beginLine, token.beginColumn) ; p = PathFactory.pathLink(n) ;
       break;
       }
     case LPAREN:{
@@ -1212,7 +1212,7 @@ Node iriOrLiteral() throws ParseException {Node n; String uriStr;
     case PNAME_NS:
     case PNAME_LN:{
       uriStr = iri();
-n = createNode(uriStr);
+n = createNode(uriStr, token.beginLine, token.beginColumn);
       break;
       }
     case TRUE:
@@ -1289,17 +1289,17 @@ n = createNode(uriStr);
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case INTEGER:{
       t = jj_consume_token(INTEGER);
-{if ("" != null) return createLiteralInteger(t.image) ;}
+{if ("" != null) return createLiteralInteger(t.image, token.beginLine, token.beginColumn) ;}
       break;
       }
     case DECIMAL:{
       t = jj_consume_token(DECIMAL);
-{if ("" != null) return createLiteralDecimal(t.image) ;}
+{if ("" != null) return createLiteralDecimal(t.image, token.beginLine, token.beginColumn) ;}
       break;
       }
     case DOUBLE:{
       t = jj_consume_token(DOUBLE);
-{if ("" != null) return createLiteralDouble(t.image) ;}
+{if ("" != null) return createLiteralDouble(t.image, token.beginLine, token.beginColumn) ;}
       break;
       }
     default:
@@ -1310,16 +1310,17 @@ n = createNode(uriStr);
     throw new Error("Missing return statement in function");
   }
 
-  final public Node rdfLiteral() throws ParseException {Token t ; String lex = null ;
+  final public Node rdfLiteral() throws ParseException {Token t ; Token tLang; String lex = null ;
     lex = string();
+t = token;
 String lang = null ; String dt = null ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case 46:
     case LANGTAG:{
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case LANGTAG:{
-        t = jj_consume_token(LANGTAG);
-lang = LangParserLib.stripChars(t.image, 1) ;
+        tLang = jj_consume_token(LANGTAG);
+lang = stripChars(tLang.image, 1) ;
         break;
         }
       case 46:{
@@ -1338,7 +1339,7 @@ lang = LangParserLib.stripChars(t.image, 1) ;
       jj_la1[36] = jj_gen;
       ;
     }
-{if ("" != null) return createLiteral(lex, lang, dt) ;}
+{if ("" != null) return createLiteral(lex, lang, dt, t.beginLine, t.beginColumn) ;}
     throw new Error("Missing return statement in function");
   }
 
@@ -1352,22 +1353,22 @@ lang = LangParserLib.stripChars(t.image, 1) ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case STRING_LITERAL1:{
       t = jj_consume_token(STRING_LITERAL1);
-lex = LangParserLib.stripQuotes(t.image) ;
+lex = stripQuotes(t.image) ;
       break;
       }
     case STRING_LITERAL2:{
       t = jj_consume_token(STRING_LITERAL2);
-lex = LangParserLib.stripQuotes(t.image) ;
+lex = stripQuotes(t.image) ;
       break;
       }
     case STRING_LITERAL_LONG1:{
       t = jj_consume_token(STRING_LITERAL_LONG1);
-lex = LangParserLib.stripQuotes3(t.image) ;
+lex = stripQuotes3(t.image) ;
       break;
       }
     case STRING_LITERAL_LONG2:{
       t = jj_consume_token(STRING_LITERAL_LONG2);
-lex = LangParserLib.stripQuotes3(t.image) ;
+lex = stripQuotes3(t.image) ;
       break;
       }
     default:
@@ -1375,7 +1376,7 @@ lex = LangParserLib.stripQuotes3(t.image) ;
       jj_consume_token(-1);
       throw new ParseException();
     }
-lex = LangParserLib.unescapeStr(lex,  t.beginLine, t.beginColumn) ;
+lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
       {if ("" != null) return lex ;}
     throw new Error("Missing return statement in function");
   }
