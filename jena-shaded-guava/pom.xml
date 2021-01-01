@@ -54,7 +54,7 @@
            This is important because Guava itself (at v24 at least) has tools dependencies
            with various licenses.
       -->
-      <version>30.0-jre</version>
+      <version>30.1-jre</version>
       <optional>true</optional>
 
       <!-- These are also affected by the artifactSet and filters of the shade plugin. -->
