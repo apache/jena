@@ -31,6 +31,7 @@ import org.apache.jena.riot.RiotParseException;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.sparql.lang.ParserBase;
 import org.apache.jena.vocabulary.RDF;
@@ -141,6 +142,11 @@ public class LangParserBase {
 
     protected Node createLiteralDouble(String lexicalForm, int line, int column) {
         return profile.createTypedLiteral(lexicalForm, XSDDatatype.XSDdouble, line, column);
+    }
+
+    protected Var createVariable(String varName, int line, int column) {
+        varName = varName.substring(1) ; // Drop the marker
+        return Var.alloc(varName) ;
     }
 
     protected String resolvePName(String pname, int line, int column) {
