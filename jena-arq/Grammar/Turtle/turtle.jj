@@ -141,10 +141,10 @@ void ObjectList(Node s, Node p): { Node o ; }
 void Annotation(Node s, Node p, Node o) : {}
 {
   (
-    "{|"
+    <L_ANN>
       { Node x = createTripleTerm(s, p, o, token.beginLine, token.beginColumn); }
       PredicateObjectList(x)
-    "|}"
+    <R_ANN>
   )?
 }
 
@@ -211,12 +211,12 @@ Node ObjectX(): { Node o ; String iri; }
 // RDF-star [] tripleX 
 Node TripleStar() : { Node s , p , o ; Token t ; }
 {
-  t = "<<"
+  t = <LT2>
     { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
   s = Subject()
   p = Predicate()
   o = ObjectX()
-  ">>"
+  <GT2>
   { Node n = createTripleTerm(s, p, o, beginLine, beginColumn);
     return n;
   }
@@ -457,6 +457,10 @@ TOKEN :
 | < SEMICOLON: ";" >
 | < COMMA:     "," >
 | < DOT:       "." >
+| < LT2:       "<<" >
+| < GT2:       ">>" >
+| < L_ANN:     "{|" >
+| < R_ANN:     "|}" >
 
 | < DATATYPE: "^^">
 | < AT: "@">

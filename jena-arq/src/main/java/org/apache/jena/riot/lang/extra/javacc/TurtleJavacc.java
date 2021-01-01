@@ -32,7 +32,6 @@ public class TurtleJavacc extends LangParserBase implements TurtleJavaccConstant
     label_1:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case 3:
       case PREFIX_OLD:
       case BASE_OLD:
       case BASE:
@@ -41,6 +40,7 @@ public class TurtleJavacc extends LangParserBase implements TurtleJavaccConstant
       case LPAREN:
       case LBRACKET:
       case ANON:
+      case LT2:
       case PNAME_NS:
       case PNAME_LN:
       case BLANK_NODE_LABEL:{
@@ -81,11 +81,11 @@ public class TurtleJavacc extends LangParserBase implements TurtleJavaccConstant
       DirectiveOld();
       break;
       }
-    case 3:
     case IRIref:
     case LPAREN:
     case LBRACKET:
     case ANON:
+    case LT2:
     case PNAME_NS:
     case PNAME_LN:
     case BLANK_NODE_LABEL:{
@@ -152,10 +152,10 @@ setBase(iri, t.beginLine, t.beginColumn) ;
 // Turtle [6] triples
   final public void TriplesSameSubject() throws ParseException {Node s ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case 3:
     case IRIref:
     case LPAREN:
     case ANON:
+    case LT2:
     case PNAME_NS:
     case PNAME_LN:
     case BLANK_NODE_LABEL:{
@@ -244,11 +244,11 @@ emitTriple(token.beginLine, token.beginColumn, s, p, o) ;
 // RDF-star Annotation Syntax
   final public void Annotation(Node s, Node p, Node o) throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case 1:{
-      jj_consume_token(1);
+    case L_ANN:{
+      jj_consume_token(L_ANN);
 Node x = createTripleTerm(s, p, o, token.beginLine, token.beginColumn);
       PredicateObjectList(x);
-      jj_consume_token(2);
+      jj_consume_token(R_ANN);
       break;
       }
     default:
@@ -299,7 +299,7 @@ s = createNode(iri, token.beginLine, token.beginColumn) ;
       s = Collection();
       break;
       }
-    case 3:{
+    case LT2:{
       // RDF-star SubjectX
           s = TripleStar();
       break;
@@ -355,7 +355,7 @@ o = createNode(iri, token.beginLine, token.beginColumn) ;
       o = Literal();
       break;
       }
-    case 3:{
+    case LT2:{
       // RDF-star ObjectX
           o = TripleStar();
       break;
@@ -396,7 +396,7 @@ o = createNode(iri, token.beginLine, token.beginColumn) ;
       o = Literal();
       break;
       }
-    case 3:{
+    case LT2:{
       // RDF-star ObjectX
           o = TripleStar();
       break;
@@ -413,12 +413,12 @@ o = createNode(iri, token.beginLine, token.beginColumn) ;
 // The syntax for RDF-star
 // RDF-star [] tripleX 
   final public Node TripleStar() throws ParseException {Node s , p , o ; Token t ;
-    t = jj_consume_token(3);
+    t = jj_consume_token(LT2);
 int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
     s = Subject();
     p = Predicate();
     o = ObjectX();
-    jj_consume_token(4);
+    jj_consume_token(GT2);
 Node n = createTripleTerm(s, p, o, beginLine, beginColumn);
     {if ("" != null) return n;}
     throw new Error("Missing return statement in function");
@@ -474,7 +474,6 @@ int line = t.beginLine; int column = t.beginColumn;
     label_4:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case 3:
       case TRUE:
       case FALSE:
       case IRIref:
@@ -488,6 +487,7 @@ int line = t.beginLine; int column = t.beginColumn;
       case LPAREN:
       case LBRACKET:
       case ANON:
+      case LT2:
       case PNAME_NS:
       case PNAME_LN:
       case BLANK_NODE_LABEL:{
@@ -767,10 +767,10 @@ checkString(lex, t.beginLine, t.beginColumn) ;
       jj_la1_init_2();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x21e008,0x100000,0x21e008,0x18000,0x6000,0x201000,0x200008,0x0,0x201000,0x0,0x2,0x201000,0x200008,0xe260008,0xe260008,0xe060000,0xe260008,0xe000000,0x18000,0x18000,0x18000,0x18000,0x60000,0x0,0x200000,0x0,0x0,};
+      jj_la1_0 = new int[] {0x21e00,0x10000,0x21e00,0x1800,0x600,0x20100,0x20000,0x0,0x20100,0x0,0x0,0x20100,0x20000,0x80e26000,0x80e26000,0x80e06000,0x80e26000,0xe00000,0x1800,0x1800,0x1800,0x1800,0x6000,0x80000000,0x20000,0x0,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x382880,0x0,0x382880,0x0,0x0,0x180000,0x382880,0x4000,0x180000,0x8000,0x0,0x180000,0x382080,0x3828f8,0x382078,0x78,0x3828f8,0x0,0x420000,0x420000,0x400000,0x0,0x0,0x78,0x180000,0x180000,0x202000,};
+      jj_la1_1 = new int[] {0x382288,0x0,0x382288,0x0,0x0,0x180000,0x382288,0x400,0x180000,0x800,0x8000,0x180000,0x382208,0x38228f,0x382207,0x7,0x38228f,0x0,0x420000,0x420000,0x400000,0x0,0x0,0x7,0x180000,0x180000,0x200200,};
    }
    private static void jj_la1_init_2() {
       jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
