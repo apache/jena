@@ -75,7 +75,7 @@ public interface PrefixMap {
     public Map<String, String> getMappingCopy();
 
     /**
-     * Apply a {@link BiConsumer}{@literal<String, String>} to each entry in the PrefixMap.
+     * Apply a {@link BiConsumer}{@literal <String, String>} to each entry in the PrefixMap.
      */
     public void forEach(BiConsumer<String, String> action) ;
 
