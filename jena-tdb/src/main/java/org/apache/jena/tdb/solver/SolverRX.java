@@ -86,14 +86,14 @@ public class SolverRX {
     }
 
     /**
-     * Match a single triple pattern that may involve RDF* terms. This is the top
+     * Match a single triple pattern that may involve RDF-star terms. This is the top
      * level function for matching triples. The function {@link #matchTripleStar}
      * matches a triple term and assigns the triple matched to a variable. It is used
      * within {@link #rdfStarTriple} for nested triple term and a temporary allocated
      * variable as well can for {@code FIND(<<...>> AS ?t)}.
      *
      * @implNote
-     * Without RDF*, this would be a plain call of {@link #matchData} which
+     * Without RDF-star, this would be a plain call of {@link #matchData} which
      * is simply a call to {@link SolverLib#solve}.
      */
     private static Iterator<BindingNodeId> rdfStarTriple(Iterator<BindingNodeId> input, Tuple<Node> pattern, Args args) {

@@ -30,17 +30,20 @@ import org.apache.jena.query.Syntax;
 
 public class QuerySyntaxTest implements Runnable {
     final boolean       expectLegalSyntax;
+    // Required syntax, null for "by file extension".
+    final Syntax        testSyntax ;
     final ManifestEntry testEntry;
 
     public QuerySyntaxTest(ManifestEntry entry, Syntax defSyntax, boolean positiveTest) {
         testEntry = entry;
+        testSyntax = defSyntax;
         expectLegalSyntax = positiveTest;
     }
 
     @Override
     public void run() {
         try {
-            Query query = SparqlTestLib.queryFromEntry(testEntry);
+            Query query = SparqlTestLib.queryFromEntry(testEntry, testSyntax);
             if ( !expectLegalSyntax )
                 fail("Expected parse failure");
         } catch (QueryException qEx) {

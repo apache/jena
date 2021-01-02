@@ -28,10 +28,12 @@ public class UpdateSyntaxTest implements Runnable
 {
     static int count = 0 ;
     final boolean expectLegalSyntax ;
+    final Syntax testSyntax;
     final ManifestEntry testEntry ;
 
     public UpdateSyntaxTest(ManifestEntry entry, Syntax defSyntax, boolean positiveTest) {
         testEntry = entry;
+        testSyntax = defSyntax;
         expectLegalSyntax = positiveTest ;
     }
 
@@ -39,7 +41,7 @@ public class UpdateSyntaxTest implements Runnable
     public void run()
     {
         try {
-            SparqlTestLib.updateFromEntry(testEntry) ;
+            SparqlTestLib.updateFromEntry(testEntry, testSyntax) ;
             if ( ! expectLegalSyntax )
                 fail("Expected parse failure") ;
         }

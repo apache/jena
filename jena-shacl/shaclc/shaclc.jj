@@ -58,6 +58,7 @@ import java.util.ArrayList;
 import org.apache.jena.graph.*;
 import org.apache.jena.sparql.path.*;
 import org.apache.jena.shacl.compact.reader.*;
+import static org.apache.jena.riot.lang.extra.LangParserLib.*;
 
 public class ShaclCompactParserJJ extends ShaclCompactParser
 {}
@@ -382,7 +383,7 @@ Path pathPrimary() : { String str ; Path p ; Node n ; }
 {
   ( 
     str = iri()
-     { n = createNode(str) ; p = PathFactory.pathLink(n) ; }
+     { n = createNode(str, token.beginLine, token.beginColumn) ; p = PathFactory.pathLink(n) ; }
   | <LPAREN> p = path() <RPAREN>
   )
  { return p ; }
@@ -416,7 +417,10 @@ List<Node> array() : { List<Node> x = new ArrayList<Node>(); Node n = null; }
 
 Node iriOrLiteral() : { Node n; String uriStr; }
 {
-  ( uriStr = iri() { n = createNode(uriStr); } | n = literal() )
+  (
+    uriStr = iri() { n = createNode(uriStr, token.beginLine, token.beginColumn); }
+  | n = literal()
+  )
   { return n ; }
 }
 
@@ -435,22 +439,22 @@ Node booleanLiteral() : {}
 
 Node numericLiteral() : { Token t ; }
 {
-   t = <INTEGER>  { return createLiteralInteger(t.image) ; }
- | t = <DECIMAL>  { return createLiteralDecimal(t.image) ; }
- | t = <DOUBLE>   { return createLiteralDouble(t.image) ; }
+   t = <INTEGER>  { return createLiteralInteger(t.image, token.beginLine, token.beginColumn) ; }
+ | t = <DECIMAL>  { return createLiteralDecimal(t.image, token.beginLine, token.beginColumn) ; }
+ | t = <DOUBLE>   { return createLiteralDouble(t.image, token.beginLine, token.beginColumn) ; }
 }
 
-Node rdfLiteral() : { Token t ; String lex = null ; }
+Node rdfLiteral() : { Token t ; Token tLang; String lex = null ; }
 {
-  lex = string()
+  lex = string() { t = token; }
   // Optional lang tag and datatype.
   { String lang = null ; String dt = null ; }
   (
-    ( t = <LANGTAG>  { lang = stripChars(t.image, 1) ; } )
+    ( tLang = <LANGTAG>  { lang = stripChars(tLang.image, 1) ; } )
   |
     ( "^^" dt = datatype() )
   )?
-    { return createLiteral(lex, lang, dt) ; }
+    { return createLiteral(lex, lang, dt, t.beginLine, t.beginColumn) ; }
 } 
 
 String datatype() : { String s; }

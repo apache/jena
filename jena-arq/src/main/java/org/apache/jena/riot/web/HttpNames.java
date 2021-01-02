@@ -38,23 +38,23 @@ public class HttpNames
     public static final String hCacheControl        = "Cache-Control" ;
     public static final String hRetryAfter          = "Retry-After" ;
     public static final String hServer              = "Server" ;
-    public static final String hLocation            = "Location" ; 
+    public static final String hLocation            = "Location" ;
     public static final String hVary                = "Vary" ;
     public static final String charset              = "charset" ;
 
-    // CORS: 
+    // CORS:
     //   http://www.w3.org/TR/cors/  http://esw.w3.org/CORS_Enabled
     public static final String hAccessControlAllowOrigin        = "Access-Control-Allow-Origin" ;
     public static final String hAccessControlExposeHeaders      = "Access-Control-Expose-Headers" ;
     public static final String hAccessControlMaxAge             = "Access-Control-Max-Age" ;
-    public static final String hAccessControlAllowCredentials   = "Access-Control-Allow-Credentials" ; 
+    public static final String hAccessControlAllowCredentials   = "Access-Control-Allow-Credentials" ;
     public static final String hAccessControlAllowMethods       = "Access-Control-Allow-Methods" ;
     public static final String hAccessControlAllowHeaders       = "Access-Control-Allow-Headers" ;
     public static final String hOrigin                          = "Origin" ;
     public static final String hAccessControlRequestMethod      = "Access-Control-Request-Method" ;
     public static final String hAccessControlRequestHeaders     = "Access-Control-Request-Headers" ;
 
-    // GSP parameter names 
+    // GSP parameter names
     public static final String paramGraph           = "graph" ;
     public static final String paramGraphDefault    = "default" ;
 
@@ -63,21 +63,22 @@ public class HttpNames
     public static final String paramDefaultGraphURI = "default-graph-uri" ;
     public static final String paramNamedGraphURI   = "named-graph-uri" ;
     public static final String paramTarget          = "target" ;
-    
-    
+
+
     public static final String paramStyleSheet      = "stylesheet" ;
     public static final String paramAccept          = "accept" ;
-    public static final String paramOutput1         = "output" ;        // See Yahoo! developer: http://developer.yahoo.net/common/json.html 
-    public static final String paramOutput2         = "format" ;        // Alternative name 
+    public static final String paramOutput1         = "output" ;
+    public static final String paramOutput2         = "format" ;        // Alternative name
+    public static final String paramOutput3         = "results" ;       // Alternative name
     public static final String paramCallback        = "callback" ;
     public static final String paramForceAccept     = "force-accept" ;  // Force the accept header at the last moment
     public static final String paramTimeout         = "timeout" ;
-    
+
     public static final String paramUpdate          = "update" ;
-    public static final String paramRequest         = "request" ; 
+    public static final String paramRequest         = "request" ;
     public static final String paramUsingGraphURI        = "using-graph-uri" ;
     public static final String paramUsingNamedGraphURI   = "using-named-graph-uri" ;
-    
+
     public static final String METHOD_DELETE        = "DELETE";
     public static final String METHOD_HEAD          = "HEAD";
     public static final String METHOD_GET           = "GET";

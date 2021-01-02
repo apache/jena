@@ -153,6 +153,30 @@ public class TestTuple {
         check(tuple) ;
     }
 
+    @Test public void tuple_map_0() {
+        Tuple<Integer> tuple1 = TupleFactory.tuple() ;
+        Tuple<Integer> tuple2 = tuple1.map(x->x+10);
+        assertEquals(Tuple0.class, tuple2.getClass()) ;
+    }
+
+    @Test public void tuple_map_4() {
+        Tuple<Integer> tuple1 = TupleFactory.tuple(3,2,1,0) ;
+        Tuple<Integer> tuple2 = tuple1.map(x->x+10);
+        assertEquals(Tuple4.class, tuple2.getClass()) ;
+        assertEquals(10, tuple2.get(3).intValue());
+        assertEquals(11, tuple2.get(2).intValue());
+        assertEquals(12, tuple2.get(1).intValue());
+        assertEquals(13, tuple2.get(0).intValue());
+    }
+
+    @Test public void tuple_map_N() {
+        Tuple<Integer> tuple1 = TupleFactory.tuple(8,7,6,5,4,3,2,1,0) ;
+        Tuple<Integer> tuple2 = tuple1.map(x->x+10);
+        assertEquals(TupleN.class, tuple2.getClass()) ;
+        assertEquals(10, tuple2.get(8).intValue());
+        assertEquals(18, tuple2.get(0).intValue());
+    }
+
     @Test public void tuple_equals_1() {
         Tuple<Integer> tuple1 = TupleFactory.tuple(9,8,7) ;
         Tuple<Integer> tuple2 = TupleN.create(9,8,7) ;
@@ -200,11 +224,11 @@ public class TestTuple {
     private static void check(Tuple<Integer> tuple) {
         int val = 9 ;
         for ( int i = 0 ; i < tuple.len() ; i++ ) {
-            assertEquals(val-i, tuple.get(i).intValue()) ; 
+            assertEquals(val-i, tuple.get(i).intValue()) ;
         }
         List<Integer> list = tuple.asList() ;
         for ( int i = 0 ; i < tuple.len() ; i++ ) {
-            assertEquals(val-i, list.get(i).intValue()) ; 
+            assertEquals(val-i, list.get(i).intValue()) ;
         }
         try { tuple.get(-1) ; fail("Index -1 did not throw an exception") ; }
         catch(IndexOutOfBoundsException ex) {}

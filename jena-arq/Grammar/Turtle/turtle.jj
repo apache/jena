@@ -20,7 +20,7 @@
 // This is not the usual parser used by RIOT.
 // RIOT has it's own tokenizer/parser which is faster.
 // This grammar exists as a more convenient base for new languages
-// and working on the grammar of Turtle itself (e.g. RDF*)
+// and working on the grammar of Turtle itself (e.g. RDF-star)
 
 options
 {
@@ -137,14 +137,14 @@ void ObjectList(Node s, Node p): { Node o ; }
   )*
 }
 
-// RDF* Annotation Syntax
+// RDF-star Annotation Syntax
 void Annotation(Node s, Node p, Node o) : {}
 {
   (
-    "{|"
-      { Node x = tripleStar(s, p, o); }
+    <L_ANN>
+      { Node x = createTripleTerm(s, p, o, token.beginLine, token.beginColumn); }
       PredicateObjectList(x)
-    "|}"
+    <R_ANN>
   )?
 }
 
@@ -155,17 +155,17 @@ Node Verb() : { Node p ; }
   { return p ; }
 }
 
-// Turtle [10] subject (include RDF* SubjectX)
+// Turtle [10] subject (include RDF-star SubjectX)
 Node Subject() : { Node s; String iri ; }
 {
   (
-    iri = iri() { s = createNode(iri) ; }
+    iri = iri() { s = createNode(iri, token.beginLine, token.beginColumn) ; }
   |
     s = BlankNode()
   |
     s = Collection()
   |
-    // RDF* SubjectX
+    // RDF-star SubjectX
     s = TripleStar()
   )
   { return s ; }
@@ -176,48 +176,48 @@ Node Subject() : { Node s; String iri ; }
 Node Predicate() : { String iri;}
 {
   iri = iri()
-  { return createNode(iri); }
+  { return createNode(iri, token.beginLine, token.beginColumn); }
 }
 
 // Turtle [12] object
 Node Object(): { Node o ; String iri; }
 {
-  ( iri = iri() { o = createNode(iri) ; }
+  ( iri = iri() { o = createNode(iri, token.beginLine, token.beginColumn) ; }
   | o = BlankNode()
   | o = Collection()
   | o = BlankNodePropertyList()
   | o = Literal()
   |
-    // RDF* ObjectX
+    // RDF-star ObjectX
     o = TripleStar()
   )
   { return o; }
 }
 
-// RDF* objectXTurtle [12] object
+// RDF-star objectXTurtle [12] object
 Node ObjectX(): { Node o ; String iri; }
 {
-   ( iri = iri() { o = createNode(iri) ; }
+   ( iri = iri() { o = createNode(iri, token.beginLine, token.beginColumn) ; }
   | o = BlankNode()
   | o = Literal()
   |
-    // RDF* ObjectX
+    // RDF-star ObjectX
     o = TripleStar()
   )
   { return o ; } 
 }
 
-// The syntax for RDF*
-// RDF* [] tripleX 
+// The syntax for RDF-star
+// RDF-star [] tripleX 
 Node TripleStar() : { Node s , p , o ; Token t ; }
 {
-  t = "<<"
+  t = <LT2>
     { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
   s = Subject()
   p = Predicate()
   o = ObjectX()
-  ">>"
-  { Node n = tripleStar(s, p, o);
+  <GT2>
+  { Node n = createTripleTerm(s, p, o, beginLine, beginColumn);
     return n;
   }
 }
@@ -234,7 +234,7 @@ Node Literal() : { Node n ;}
 Node BlankNodePropertyList() : { Token t ; }
 {
   t = <LBRACKET> 
-    { Node n = createBNode( t.beginLine, t.beginColumn) ; }
+    { Node n = createBNode(t.beginLine, t.beginColumn) ; }
   PredicateObjectList(n)
   <RBRACKET>
     { return n ; }
@@ -279,9 +279,9 @@ Node CollectionElt() : { Node o;}
 Node NumericLiteral() : { Token t ; }
 {
   (
-    t = <INTEGER> { return createLiteralInteger(t.image) ; }
-  | t = <DECIMAL> { return createLiteralDecimal(t.image) ; }
-  | t = <DOUBLE>  { return createLiteralDouble(t.image) ; }
+    t = <INTEGER> { return createLiteralInteger(t.image, t.beginLine, t.beginColumn) ; }
+  | t = <DECIMAL> { return createLiteralDecimal(t.image, t.beginLine, t.beginColumn) ; }
+  | t = <DOUBLE>  { return createLiteralDouble(t.image, t.beginLine, t.beginColumn) ; }
   )
 }
 
@@ -296,7 +296,7 @@ Node RDFLiteral() : { Token t ; String lex = null ; }
   |
     <DATATYPE> uri = iri()
   )?
-    { return createLiteral(lex, lang, uri) ; }
+    { return createLiteral(lex, lang, uri, token.beginLine, token.beginColumn) ; }
 } 
 
 String LangTag() : { Token t ; }
@@ -457,6 +457,10 @@ TOKEN :
 | < SEMICOLON: ";" >
 | < COMMA:     "," >
 | < DOT:       "." >
+| < LT2:       "<<" >
+| < GT2:       ">>" >
+| < L_ANN:     "{|" >
+| < R_ANN:     "|}" >
 
 | < DATATYPE: "^^">
 | < AT: "@">

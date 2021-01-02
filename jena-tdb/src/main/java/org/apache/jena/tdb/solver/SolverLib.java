@@ -129,7 +129,7 @@ public class SolverLib
                 tuple = tuple(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
             // Plain RDF
             //chain = solve(nodeTupleTable, tuple, anyGraph, chain, filter, execCxt) ;
-            // RDF*
+            // RDF-star
             chain = SolverRX.solveRX(nodeTupleTable, tuple, anyGraph, chain, filter, execCxt) ;
             chain = makeAbortable(chain, killList) ; 
         }

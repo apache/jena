@@ -29,7 +29,7 @@ import org.apache.jena.riot.system.StreamRDFLib;
 import org.junit.Test;
 
 /**
- * Test parsing of RDF* constructs for Turtle.
+ * Test parsing of RDF-star constructs for Turtle.
  */
 public class TestTurtleStarParse {
 

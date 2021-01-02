@@ -307,7 +307,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
     /** Perform the {@link QueryExecution} once.
      * @param action
      * @param queryExecution
-     * @param requestQuery Original query; queryExecution query may have been modified. 
+     * @param requestQuery Original query; queryExecution query may have been modified.
      * @param queryStringLog Informational string created from the initial query.
      * @return
      */
@@ -441,8 +441,9 @@ public abstract class SPARQLQueryProcessor extends ActionService
     protected Collection<String> stdParams() { return stdParams_; }
 
     /** The parameters Fuseki also provides */
-    private static Collection<String> fusekiParams_ = Arrays.asList(paramQueryRef, paramStyleSheet, paramAccept, paramOutput1,
-                                                                    paramOutput2, paramCallback, paramForceAccept, paramTimeout);
+    private static Collection<String> fusekiParams_ = Arrays.asList(paramQueryRef, paramStyleSheet, paramAccept,
+                                                                    paramOutput1, paramOutput2, paramOutput3,
+                                                                    paramCallback, paramForceAccept, paramTimeout);
 
     protected Collection<String> fusekiParams() { return fusekiParams_; }
 }

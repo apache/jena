@@ -65,8 +65,6 @@ public class NodecSSE implements Nodec
         if ( ! node.isConcrete() )
             FmtLog.warn(TDB.logInfo,"Attempt to encode non-concrete node: "+node);
 
-
-
         String str = null;
 
         if ( node.isURI() )

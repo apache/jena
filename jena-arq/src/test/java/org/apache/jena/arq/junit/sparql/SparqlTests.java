@@ -41,7 +41,13 @@ public class SparqlTests {
         }
 
         // Defaults.
-        Syntax querySyntax = Syntax.syntaxSPARQL_11; // TestQueryUtils.getQuerySyntax(manifest)  ;
+        Syntax querySyntax = Syntax.syntaxSPARQL_11;
+
+        // Syntax to use for tests where the file extension .rq/.ru applies.
+        // Normally, syntaxSPARQL_11
+        // For SPARQL*/RDF*, use ARQ syntax so we can run the RDF-star community tests.
+        Syntax querySyntax11 = Syntax.syntaxSPARQL_11;
+        Syntax updateSyntax11 = Syntax.syntaxSPARQL_11;
 
         if ( querySyntax != null )
         {
@@ -61,7 +67,7 @@ public class SparqlTests {
             if ( testType.equals(TestManifest.PositiveSyntaxTest) )
                 return new QuerySyntaxTest(entry, querySyntax, true);
             if ( testType.equals(TestManifest_11.PositiveSyntaxTest11) )
-                return new QuerySyntaxTest(entry, Syntax.syntaxSPARQL_11, true) ;
+                return new QuerySyntaxTest(entry, querySyntax11, true) ;
             if ( testType.equals(TestManifestX.PositiveSyntaxTestARQ) )
                 return new QuerySyntaxTest(entry, Syntax.syntaxARQ, true) ;
 
@@ -69,18 +75,18 @@ public class SparqlTests {
             if ( testType.equals(TestManifest.NegativeSyntaxTest) )
                 return new QuerySyntaxTest(entry, querySyntax, false) ;
             if ( testType.equals(TestManifest_11.NegativeSyntaxTest11) )
-                return new QuerySyntaxTest(entry, Syntax.syntaxSPARQL_11, false) ;
+                return new QuerySyntaxTest(entry, querySyntax11, false) ;
             if ( testType.equals(TestManifestX.NegativeSyntaxTestARQ) )
                 return new QuerySyntaxTest(entry, Syntax.syntaxARQ, false) ;
 
             // ---- Update tests
             if ( testType.equals(TestManifest_11.PositiveUpdateSyntaxTest11) )
-                return new UpdateSyntaxTest(entry, querySyntax, true) ;
+                return new UpdateSyntaxTest(entry, updateSyntax11, true) ;
             if ( testType.equals(TestManifestX.PositiveUpdateSyntaxTestARQ) )
                 return new UpdateSyntaxTest(entry, Syntax.syntaxARQ, true) ;
 
             if ( testType.equals(TestManifest_11.NegativeUpdateSyntaxTest11) )
-                return new UpdateSyntaxTest(entry, querySyntax, false) ;
+                return new UpdateSyntaxTest(entry, querySyntax11, false) ;
             if ( testType.equals(TestManifestX.NegativeUpdateSyntaxTestARQ) )
                 return new UpdateSyntaxTest(entry, Syntax.syntaxARQ, false) ;
 

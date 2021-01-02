@@ -28,7 +28,7 @@ import org.apache.jena.riot.system.StreamRDFLib;
 import org.junit.Test;
 
 /**
- * Test parsing of RDF* constructs for N-Triples.
+ * Test parsing of RDF-star constructs for N-Triples.
  */
 public class TestNTriplesStarParse {
 

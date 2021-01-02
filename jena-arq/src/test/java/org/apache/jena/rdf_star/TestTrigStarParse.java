@@ -28,7 +28,7 @@ import org.apache.jena.riot.system.StreamRDFLib;
 import org.junit.Test;
 
 /**
- * Test parsing of RDF* constructs for TriG.
+ * Test parsing of RDF-star constructs for TriG.
  */
 public class TestTrigStarParse {
 

@@ -27,7 +27,7 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.serializer.SerializationContext;
 
 /**
- * Like {@link QueryIterBlockTriples} except it process triple term patterns (RDF*)
+ * Like {@link QueryIterBlockTriples} except it process triple term patterns (RDF-star)
  * as well.
  */
 public class QueryIterBlockTriplesStar extends QueryIter1 {

@@ -48,6 +48,7 @@ import org.apache.jena.sparql.expr.E_NotExists ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.modify.request.QuadAccSink ;
+import org.apache.jena.sparql.path.P_Link;
 import org.apache.jena.sparql.path.Path ;
 import org.apache.jena.sparql.syntax.* ;
 import org.apache.jena.sparql.util.ExprUtils ;
@@ -398,6 +399,15 @@ public class ParserBase
 
         // label = unescapeCodePoint(label, line, column) ;
         return activeLabelMap.asNode(label) ;
+    }
+
+    protected Node preConditionAnnotation(Node s, Node p, Path path, Node o, int line, int column) {
+        if ( p != null )
+            return p;
+        if ( path instanceof P_Link )
+            return ((P_Link)path).getNode();
+        throwParseException("Only simple paths allowed with annotation syntax", line, column) ;
+        return null;
     }
 
     protected Node createTripleTerm(Node s, Node p, Node o, int line, int column) {

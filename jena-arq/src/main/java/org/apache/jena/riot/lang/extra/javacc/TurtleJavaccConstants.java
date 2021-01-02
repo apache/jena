@@ -29,83 +29,91 @@ public interface TurtleJavaccConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int WS = 10;
+  int WS = 6;
   /** RegularExpression Id. */
-  int SINGLE_LINE_COMMENT = 11;
+  int SINGLE_LINE_COMMENT = 7;
   /** RegularExpression Id. */
-  int KW_A = 12;
+  int KW_A = 8;
   /** RegularExpression Id. */
-  int PREFIX_OLD = 13;
+  int PREFIX_OLD = 9;
   /** RegularExpression Id. */
-  int BASE_OLD = 14;
+  int BASE_OLD = 10;
   /** RegularExpression Id. */
-  int BASE = 15;
+  int BASE = 11;
   /** RegularExpression Id. */
-  int PREFIX = 16;
+  int PREFIX = 12;
   /** RegularExpression Id. */
-  int TRUE = 17;
+  int TRUE = 13;
   /** RegularExpression Id. */
-  int FALSE = 18;
+  int FALSE = 14;
   /** RegularExpression Id. */
-  int WSC = 19;
+  int WSC = 15;
   /** RegularExpression Id. */
-  int BOM = 20;
+  int BOM = 16;
   /** RegularExpression Id. */
-  int IRIref = 21;
+  int IRIref = 17;
   /** RegularExpression Id. */
-  int PLUS = 22;
+  int PLUS = 18;
   /** RegularExpression Id. */
-  int MINUS = 23;
+  int MINUS = 19;
   /** RegularExpression Id. */
-  int DIGITS = 24;
+  int DIGITS = 20;
   /** RegularExpression Id. */
-  int INTEGER = 25;
+  int INTEGER = 21;
   /** RegularExpression Id. */
-  int DECIMAL = 26;
+  int DECIMAL = 22;
   /** RegularExpression Id. */
-  int DOUBLE = 27;
+  int DOUBLE = 23;
   /** RegularExpression Id. */
-  int EXPONENT = 28;
+  int EXPONENT = 24;
   /** RegularExpression Id. */
-  int QUOTE_3D = 29;
+  int QUOTE_3D = 25;
   /** RegularExpression Id. */
-  int QUOTE_3S = 30;
+  int QUOTE_3S = 26;
   /** RegularExpression Id. */
-  int ECHAR = 31;
+  int ECHAR = 27;
   /** RegularExpression Id. */
-  int UCHAR = 32;
+  int UCHAR = 28;
   /** RegularExpression Id. */
-  int UCHAR4 = 33;
+  int UCHAR4 = 29;
   /** RegularExpression Id. */
-  int UCHAR8 = 34;
+  int UCHAR8 = 30;
   /** RegularExpression Id. */
-  int STRING_LITERAL1 = 35;
+  int STRING_LITERAL1 = 31;
   /** RegularExpression Id. */
-  int STRING_LITERAL2 = 36;
+  int STRING_LITERAL2 = 32;
   /** RegularExpression Id. */
-  int STRING_LITERAL_LONG1 = 37;
+  int STRING_LITERAL_LONG1 = 33;
   /** RegularExpression Id. */
-  int STRING_LITERAL_LONG2 = 38;
+  int STRING_LITERAL_LONG2 = 34;
   /** RegularExpression Id. */
-  int LPAREN = 39;
+  int LPAREN = 35;
   /** RegularExpression Id. */
-  int RPAREN = 40;
+  int RPAREN = 36;
   /** RegularExpression Id. */
-  int LBRACE = 41;
+  int LBRACE = 37;
   /** RegularExpression Id. */
-  int RBRACE = 42;
+  int RBRACE = 38;
   /** RegularExpression Id. */
-  int LBRACKET = 43;
+  int LBRACKET = 39;
   /** RegularExpression Id. */
-  int RBRACKET = 44;
+  int RBRACKET = 40;
   /** RegularExpression Id. */
-  int ANON = 45;
+  int ANON = 41;
   /** RegularExpression Id. */
-  int SEMICOLON = 46;
+  int SEMICOLON = 42;
   /** RegularExpression Id. */
-  int COMMA = 47;
+  int COMMA = 43;
   /** RegularExpression Id. */
-  int DOT = 48;
+  int DOT = 44;
+  /** RegularExpression Id. */
+  int LT2 = 45;
+  /** RegularExpression Id. */
+  int GT2 = 46;
+  /** RegularExpression Id. */
+  int L_ANN = 47;
+  /** RegularExpression Id. */
+  int R_ANN = 48;
   /** RegularExpression Id. */
   int DATATYPE = 49;
   /** RegularExpression Id. */
@@ -153,10 +161,6 @@ public interface TurtleJavaccConstants {
   /** Literal token values. */
   String[] tokenImage = {
     "<EOF>",
-    "\"{|\"",
-    "\"|}\"",
-    "\"<<\"",
-    "\">>\"",
     "\" \"",
     "\"\\t\"",
     "\"\\n\"",
@@ -201,6 +205,10 @@ public interface TurtleJavaccConstants {
     "\";\"",
     "\",\"",
     "\".\"",
+    "\"<<\"",
+    "\">>\"",
+    "\"{|\"",
+    "\"|}\"",
     "\"^^\"",
     "\"@\"",
     "<PNAME_NS>",

@@ -34,7 +34,7 @@ import org.apache.jena.sparql.mgt.Explain ;
 
 /** 
  * Generic - always works - StageGenerator.
- * Uses the RDF* QueryIterBlockTriplesStar solver.
+ * Uses the RDF-star QueryIterBlockTriplesStar solver.
  */
 public class StageGeneratorGenericStar implements StageGenerator {
     public StageGeneratorGenericStar() {}

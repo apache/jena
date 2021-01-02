@@ -83,9 +83,9 @@ public interface Resource extends RDFNode {
     public String getURI();
     
     /**
-     * Return the statement of this resource, or null if it is not an RDF* triple term.
+     * Return the statement of this resource, or null if it is not an RDF-star triple term.
      * This is not a resource for a reified statement.   
-     * @return The statement of this resource,or null if it is not an RDF* triple term.
+     * @return The statement of this resource,or null if it is not an RDF-star triple term.
      */
     public Statement getStmtTerm();
 

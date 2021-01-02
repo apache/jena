@@ -139,7 +139,7 @@ public class Substitute {
         return NodeFactory.createTripleNode(s1, p1, o1);
     }
 
-    /** Substitue for a node that makes up a triple in a Node_Triple. Recursively. */
+    /** Substitute for a node that makes up a triple in a Node_Triple. Recursively. */
     private static Node subTripleTermNode(Node n, Binding binding) {
         if ( n.isNodeTriple() ) {
             if ( ! n.isConcrete() )

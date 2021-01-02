@@ -61,7 +61,7 @@ public interface RDFNode extends FrontsNode
     public boolean isResource();
     
     /**
-        Answer true iff this RDFNode is a resource representing an RDF* triple term. 
+        Answer true iff this RDFNode is a resource representing an RDF-star triple term. 
      */
     
     public boolean isStmtResource();

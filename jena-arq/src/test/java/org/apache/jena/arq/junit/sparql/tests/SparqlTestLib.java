@@ -62,12 +62,21 @@ class SparqlTestLib {
     }
 
     static Query queryFromEntry(ManifestEntry entry) {
+        return queryFromEntry(entry, null);
+    }
+
+    /** read a query, forcing syntax */
+    static Query queryFromEntry(ManifestEntry entry, Syntax syntax) {
         if ( queryFile(entry) == null ) {
             SparqlTestLib.setupFailure("Query test file is null");
             return null;
         }
 
-        Query query = QueryFactory.read(queryFile(entry), null, querySyntax(entry, null));
+        Syntax syn = syntax;
+        if ( syn == null )
+            syn = querySyntax(entry, null);
+
+        Query query = QueryFactory.read(queryFile(entry), null, syn);
         return query;
     }
 
@@ -111,14 +120,19 @@ class SparqlTestLib {
 //    }
 //
     static UpdateRequest updateFromEntry(ManifestEntry entry) {
+        return updateFromEntry(entry, null);
+    }
+
+    static UpdateRequest updateFromEntry(ManifestEntry entry, Syntax syntax) {
+
         if ( queryFile(entry) == null ) {
             SparqlTestLib.setupFailure("Query test file is null");
             return null;
         }
         String fn = queryFile(entry);
-        Syntax syntax = guessFileSyntax(fn);
+        Syntax syn = (syntax!=null) ? syntax : guessFileSyntax(fn);
 
-        UpdateRequest request = UpdateFactory.read(fn, syntax);
+        UpdateRequest request = UpdateFactory.read(fn, syn);
         return request;
     }
 }

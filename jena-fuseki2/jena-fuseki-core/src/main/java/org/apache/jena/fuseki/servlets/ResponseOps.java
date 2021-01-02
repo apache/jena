@@ -55,6 +55,8 @@ class ResponseOps {
         String x = fetchParam(request, HttpNames.paramOutput1);
         if ( x == null )
             x = fetchParam(request, HttpNames.paramOutput2);
+        if ( x == null )
+            x = fetchParam(request, HttpNames.paramOutput3);
         return expandShortName(x, map);
     }
 
