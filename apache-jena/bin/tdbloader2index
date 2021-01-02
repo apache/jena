@@ -360,7 +360,7 @@ generate_index()
     # Sort the input data
     info "Sort $IDX"
     debug "Sorting $DATA into work file $WORK"
-    sort $SORT_ARGS -u $KEYS < "$DATA" > $WORK
+    sort $SORT_ARGS -u $KEYS < "$DATA" > "$WORK"
     info "Sort $IDX Completed"
 
     # Build into an index
