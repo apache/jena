@@ -67,7 +67,7 @@ public class HttpNames
 
     public static final String paramStyleSheet      = "stylesheet" ;
     public static final String paramAccept          = "accept" ;
-    public static final String paramOutput1         = "output" ;        // See Yahoo! developer: http://developer.yahoo.net/common/json.html
+    public static final String paramOutput1         = "output" ;
     public static final String paramOutput2         = "format" ;        // Alternative name
     public static final String paramOutput3         = "results" ;       // Alternative name
     public static final String paramCallback        = "callback" ;

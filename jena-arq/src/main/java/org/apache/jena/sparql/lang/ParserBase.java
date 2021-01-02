@@ -400,16 +400,16 @@ public class ParserBase
         // label = unescapeCodePoint(label, line, column) ;
         return activeLabelMap.asNode(label) ;
     }
-    
+
     protected Node preConditionAnnotation(Node s, Node p, Path path, Node o, int line, int column) {
         if ( p != null )
             return p;
         if ( path instanceof P_Link )
             return ((P_Link)path).getNode();
-        throwParseException("Only a simple paths allowed with annotation syntax", line, column) ;
+        throwParseException("Only simple paths allowed with annotation syntax", line, column) ;
         return null;
     }
-    
+
     protected Node createTripleTerm(Node s, Node p, Node o, int line, int column) {
         return NodeFactory.createTripleNode(s, p, o);
     }

@@ -30,7 +30,7 @@ import org.apache.jena.query.Syntax;
 
 public class QuerySyntaxTest implements Runnable {
     final boolean       expectLegalSyntax;
-    // Rwquired syntax, null for by file extension.
+    // Required syntax, null for "by file extension".
     final Syntax        testSyntax ;
     final ManifestEntry testEntry;
 
