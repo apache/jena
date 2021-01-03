@@ -20,6 +20,7 @@ package org.apache.jena.riot.lang.extra;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.riot.ReaderRIOT;
@@ -46,7 +47,7 @@ public class TurtleJavaccReaderRIOT implements ReaderRIOT {
 
     @Override
     public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-        TurtleJavacc parser = new TurtleJavacc(in);
+        TurtleJavacc parser = new TurtleJavacc(in, StandardCharsets.UTF_8.name());
         read(parser, baseURI, ct, output, context);
     }
 
