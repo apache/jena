@@ -28,6 +28,7 @@
 
   <properties>
     <automatic.module.name>org.apache.jena.elephas.mapreduce</automatic.module.name>
+    <ver.mockito>1.9.5</ver.mockito>
   </properties>
 
   <dependencies>
@@ -37,7 +38,6 @@
       <artifactId>jena-elephas-common</artifactId>
       <version>${project.version}</version>
     </dependency>
-
 		<!-- Hadoop Dependencies -->
 		<!-- Note these will be provided on the Hadoop cluster hence the provided 
 			scope -->
@@ -69,6 +69,11 @@
       <artifactId>mrunit</artifactId>
       <scope>test</scope>
       <classifier>hadoop2</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

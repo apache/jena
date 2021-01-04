@@ -21,6 +21,7 @@ package org.apache.jena.hadoop.rdf.mapreduce;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mrunit.mapreduce.MapReduceDriver;
+import org.apache.jena.sys.JenaSystem;
 
 /**
  * Abstract tests for mappers
@@ -43,6 +44,8 @@ import org.apache.hadoop.mrunit.mapreduce.MapReduceDriver;
  */
 public abstract class AbstractMapReduceTests<TKey, TValue, TIntermediateKey, TIntermediateValue, TReducedKey, TReducedValue> {
 
+    static { JenaSystem.init(); }
+    
     /**
      * Gets the mapper instance to test
      * 
