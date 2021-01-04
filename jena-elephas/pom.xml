@@ -35,6 +35,7 @@ limitations under the License.
     <mrunit.version>1.1.0</mrunit.version>
     <airline.version>2.8.0</airline.version>
     <automatic.module.name>org.apache.jena.elephas</automatic.module.name>
+    <hadoop.version>2.6.0</hadoop.version>
   </properties>
 
   <!-- Profiles to allow building for different Hadoop versions -->
@@ -46,9 +47,6 @@ limitations under the License.
       <activation>
         <jdk>1.8</jdk>
       </activation>
-      <properties>
-        <hadoop.version>2.6.0</hadoop.version>
-      </properties>
       <modules>
         <module>jena-elephas-io</module>
         <module>jena-elephas-common</module>
@@ -107,7 +105,7 @@ limitations under the License.
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-	<version>11.0.2</version>
+	      <version>11.0.2</version>
       </dependency>
 
       <!-- CLI Related Dependencies -->

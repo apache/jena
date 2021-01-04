@@ -98,7 +98,7 @@
 
     <ver.spatial4j>0.8</ver.spatial4j>
 
-    <ver.mockito>1.10.19</ver.mockito>
+    <ver.mockito>3.6.28</ver.mockito>
     <ver.awaitility>4.0.3</ver.awaitility>
     <ver.micrometer>1.6.2</ver.micrometer>
 
@@ -594,7 +594,7 @@
 
       <dependency>
         <groupId>org.mockito</groupId>
-        <artifactId>mockito-all</artifactId>
+        <artifactId>mockito-core</artifactId>
         <version>${ver.mockito}</version>
         <scope>test</scope>
       </dependency>
