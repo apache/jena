@@ -123,10 +123,10 @@ public abstract class CmdLangParse extends CmdGeneral
         boolean oldStrictValue = SysRIOT.isStrictMode() ;
         if ( modLangParse.strictMode() )
             SysRIOT.setStrictMode(true) ;
-        
+
         parserBaseIRI = modLangParse.getBaseIRI();
         writerBaseIRI = parserBaseIRI;
-        
+
         try { exec$() ; }
         finally { SysRIOT.setStrictMode(oldStrictValue) ; }
     }

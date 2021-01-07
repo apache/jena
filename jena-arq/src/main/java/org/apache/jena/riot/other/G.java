@@ -126,7 +126,7 @@ public class G {
             return !iter.hasNext();
         } finally { iter.close(); }
     }
-    
+
     /**
      * Get object, given subject and predicate. Returns one (non-deterministically) or null.
      * See also {@link #getOneSP} and {@link #getZeroOrOneSP}.
@@ -202,14 +202,14 @@ public class G {
     }
 
     /**
-     * Get triple if there is exactly one to match the s/p/o; else return null 
+     * Get triple if there is exactly one to match the s/p/o; else return null
      * if none or more than one.
      */
     public static Triple getOneOrNull(Graph graph, Node subject, Node predicate, Node object) {
         Objects.requireNonNull(graph, "graph");
         return findTripleOrNull(graph, subject, predicate, object);
     }
-    
+
     /**
      * Get quad if there is exactly one to match the s/p/o, else throw
      * {@linkplain RDFDataException}.
@@ -227,11 +227,11 @@ public class G {
         Objects.requireNonNull(dsg, "DatasetGraph");
         return findZeroOneQuad(dsg, graph, subject, predicate, object);
     }
-    
+
     // ---- Multiple matches.
 
     /**
-     * Get triple if there is exactly one to match the s/p/o; else return null 
+     * Get triple if there is exactly one to match the s/p/o; else return null
      * if none or more than one.
      */
     public static Quad getOneOrNull(DatasetGraph dsg, Node graph, Node subject, Node predicate, Node object) {
@@ -326,7 +326,7 @@ public class G {
 
     /**
      * List the types of a node/subject.
-     * See {@link #listTypesOfNodeRDFS(Graph, Node)} , which does include super-classes.
+     * See {@link #listTypesOfNodeRDFS(Graph, Node)}, which does include super-classes.
      */
     public static List<Node> typesOfNodeAsList(Graph graph, Node node) {
         Objects.requireNonNull(graph, "graph");
@@ -546,7 +546,7 @@ public class G {
 
     /** Find one triple matching subject-predicate-object. Return quad or throw {@link RDFDataException}. */
     private static Quad findUniqueQuad(DatasetGraph dsg, Node graph, Node subject, Node predicate, Node object) {
-        // Better stack trace and error messages if done explicitly. 
+        // Better stack trace and error messages if done explicitly.
         Iterator<Quad> iter = dsg.find(graph, subject, predicate, object);
         if ( ! iter.hasNext() )
             throw new RDFDataException("No match : "+matchStr(graph, subject, predicate, object));
@@ -555,8 +555,8 @@ public class G {
             throw new RDFDataException("More than one match : "+matchStr(graph, subject, predicate, object));
         return x;
     }
-    
-    /** Find one triple matching subject-predicate-object else return null. */ 
+
+    /** Find one triple matching subject-predicate-object else return null. */
     private static Triple findTripleOrNull(Graph graph, Node subject, Node predicate, Node object) {
         ExtendedIterator<Triple> iter = graph.find(subject, predicate, object);
         try {
@@ -569,9 +569,9 @@ public class G {
         } finally { iter.close(); }
     }
 
-    /** Find one quad matching graph-subject-predicate-object else return null. */ 
+    /** Find one quad matching graph-subject-predicate-object else return null. */
     private static Quad findQuadOrNull(DatasetGraph dsg, Node graph, Node subject, Node predicate, Node object) {
-        // Better stack trace and error messages if done explicitly. 
+        // Better stack trace and error messages if done explicitly.
         Iterator<Quad> iter = dsg.find(graph, subject, predicate, object);
         if ( ! iter.hasNext() )
             return null;
@@ -581,7 +581,7 @@ public class G {
         return x;
     }
 
-    /** Find one triple matching subject-predicate-object. Return null for zero, quad for one or throw {@link RDFDataException}. */ 
+    /** Find one triple matching subject-predicate-object. Return null for zero, quad for one or throw {@link RDFDataException}. */
     private static Triple findZeroOneTriple(Graph graph, Node subject, Node predicate, Node object) {
         ExtendedIterator<Triple> iter = graph.find(subject, predicate, object);
         try {
@@ -594,7 +594,7 @@ public class G {
         } finally { iter.close(); }
     }
 
-    /** Find one quad matching graph-subject-predicate-object. Return null for zero, quad for one or throw {@link RDFDataException}. */ 
+    /** Find one quad matching graph-subject-predicate-object. Return null for zero, quad for one or throw {@link RDFDataException}. */
     private static Quad findZeroOneQuad(DatasetGraph dsg, Node graph, Node subject, Node predicate, Node object) {
         Iterator<Quad> iter = dsg.find(graph, subject, predicate, object);
         if ( ! iter.hasNext() )
