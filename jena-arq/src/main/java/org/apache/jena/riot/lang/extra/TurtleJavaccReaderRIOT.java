@@ -29,6 +29,7 @@ import org.apache.jena.riot.lang.LangTurtle;
 import org.apache.jena.riot.lang.extra.javacc.ParseException;
 import org.apache.jena.riot.lang.extra.javacc.TokenMgrError;
 import org.apache.jena.riot.lang.extra.javacc.TurtleJavacc;
+import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.util.Context;
@@ -67,9 +68,11 @@ public class TurtleJavaccReaderRIOT implements ReaderRIOT {
             output.finish();
         }
         catch (ParseException ex) {
+            profile.getErrorHandler().error(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn);
             throw new RiotParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn);
         }
         catch (TokenMgrError ex) {
+            profile.getErrorHandler().error(ex.getMessage(), -1, -1);
             throw new RiotParseException(ex.getMessage(), -1 , -1);
         }
     }
