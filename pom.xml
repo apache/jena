@@ -104,8 +104,7 @@
 
     <ver.graalvm>20.3.0</ver.graalvm>
 
-    <jdk.version>1.8</jdk.version>
-    <targetJdk>${jdk.version}</targetJdk>
+    <java.version>11</java.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
@@ -799,12 +798,10 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.8.1</version>
-          <!--
           <configuration>
-            <release>11</release>
+            <release>${java.version}</release>
           </configuration>
-          -->
-          <!-- Java8 compiler for Java8 output -->
+          <!-- Java8 compiler for Java8 output
           <configuration>
             <showDeprecation>false</showDeprecation>
             <encoding>UTF-8</encoding>
@@ -814,6 +811,7 @@
             <source>${jdk.version}</source>
             <target>${jdk.version}</target>
           </configuration>
+          -->
         </plugin>
 
         <plugin>
@@ -862,16 +860,33 @@
             </execution>
           </executions>
           <configuration>
-            <!-- Java 11: explicitly define the source as Java8 -->
-            <source>8</source>
+            <!--
+                 https://bugs.openjdk.java.net/browse/JDK-8212233
+            -->
+            
+            <!-- Java 11: JDK-8212233
+                 Fixed in 12.0.1, 11.0.3
+
+                 Explicitly define the source as Java8 when building
+                 with java8 source code for java8 output.
+                 Not good enough when compiling for Java11 output.
+                 <source>8</source>
+
+                 https://bugs.openjdk.java.net/browse/JDK-8212233
+                     which affects early Java11 and Java12
+                 https://issues.apache.org/jira/browse/MJAVADOC-555
+            -->
+            
             <!-- Java 10
                  <additionalOptions>-html5</additionalOptions>
             -->
             <quiet>true</quiet>
             <doclint>none</doclint>
+
             <!-- To allow the build to keep going despite javadoc problems:
                  <failOnError>false</failOnError>
             -->
+
             <version>true</version>
             <show>public</show>
             <encoding>UTF-8</encoding>
