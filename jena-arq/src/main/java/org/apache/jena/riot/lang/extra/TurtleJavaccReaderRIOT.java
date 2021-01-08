@@ -29,7 +29,6 @@ import org.apache.jena.riot.lang.LangTurtle;
 import org.apache.jena.riot.lang.extra.javacc.ParseException;
 import org.apache.jena.riot.lang.extra.javacc.TokenMgrError;
 import org.apache.jena.riot.lang.extra.javacc.TurtleJavacc;
-import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.util.Context;
