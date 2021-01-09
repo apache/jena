@@ -36,7 +36,7 @@ class ProcedureFactoryAuto implements ProcedureFactory
     {
         try
         {
-            return (Procedure)extClass.newInstance() ;
+            return (Procedure)extClass.getDeclaredConstructor().newInstance() ;
         } catch (Exception e)
         {
             throw new QueryBuildException("Can't instantiate procedure for "+uri, e) ;

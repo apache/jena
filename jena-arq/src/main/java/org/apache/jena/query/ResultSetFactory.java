@@ -262,19 +262,6 @@ public class ResultSetFactory {
     }
 
     /**
-     * Read XML which is the format of the SPARQL result set format.
-     *
-     * @param str
-     *            String to process
-     * @return ResultSet
-     * @deprecated
-     */
-    @Deprecated
-    public static ResultSet fromXML(String str) {
-        return XMLInput.fromXML(str);
-    }
-
-    /**
      * Read from an input stream which is the format of the SPARQL result set
      * format in JSON.
      *

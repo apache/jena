@@ -2810,7 +2810,7 @@ public class OntModelImpl extends ModelCom implements OntModel
         if (owlSyntaxCheckerClass == null ) {
             try {
               owlSyntaxCheckerClass = Class.forName(owlSyntaxCheckerClassName);
-              owlSyntaxCheckerClass.newInstance();
+              owlSyntaxCheckerClass.getDeclaredConstructor().newInstance();
             }
             catch (Exception e){
                 throw new ConfigException("owlsyntax.jar must be on the classpath.",e);
