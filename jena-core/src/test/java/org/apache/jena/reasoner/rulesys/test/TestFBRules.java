@@ -193,7 +193,7 @@ public class TestFBRules extends TestCase {
 //        assertEquals(D.getNode(), func.getArgs()[1]);
         
         Literal one = (Literal)foo.getRequiredProperty(propbar).getObject();
-        assertEquals(new Integer(1), one.getValue());
+        assertEquals(Integer.valueOf(1), one.getValue());
     }
     
     /**

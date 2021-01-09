@@ -154,7 +154,7 @@ public class TestDatatypes {
     }
 
     @Test public void valueToLex_double_01() {
-        testValueToLex(new Double("1E21"), XSDDatatype.XSDdouble) ;
+        testValueToLex(Double.valueOf("1E21"), XSDDatatype.XSDdouble) ;
     }
 
     @Test public void valueToLex_double_02() {
@@ -166,7 +166,7 @@ public class TestDatatypes {
     }
 
     @Test public void valueToLex_float_01() {
-        testValueToLex(new Float("1E21"), XSDDatatype.XSDfloat) ;
+        testValueToLex(Float.valueOf("1E21"), XSDDatatype.XSDfloat) ;
     }
 
     @Test public void valueToLex_float_02() {

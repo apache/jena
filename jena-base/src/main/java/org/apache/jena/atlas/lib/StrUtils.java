@@ -138,8 +138,7 @@ public class StrUtils //extends StringUtils
     }
     
     public static List<Character> toCharList(String str) {
-        return str.codePoints().mapToObj(i -> (char) i).map(Character::new)
-                  .collect(toList());
+        return str.codePoints().mapToObj(i -> (char) i).map(Character::valueOf).collect(toList());
     }
     
     // ==== Encoding and decoding strings based on a marker character (e.g. %)

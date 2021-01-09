@@ -617,7 +617,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 while (si.hasNext()) {
                     String uri = si.nextStatement().getResource().getURI();
                     String fieldName = uri.substring(uri.lastIndexOf('#') + 1);
-                    expected.add(new Integer(ParseException.errorCode(fieldName)));
+                    expected.add(Integer.valueOf(ParseException.errorCode(fieldName)));
                 }
             }
         }
@@ -700,7 +700,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         }
         @Override
         void onError(int level, int id) {
-            Integer err = new Integer(id);
+            Integer err = Integer.valueOf(id);
             found.add(err);
             errorCnt[level]++;
             if (expected != null) {
@@ -906,7 +906,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             for ( int err : errs )
             {
 
-                expected.add( new Integer( err ) );
+                expected.add( Integer.valueOf( err ) );
             }
         }
         @Override
@@ -987,7 +987,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         }
         @Override
         void onError(int level, int id) {
-            Integer err = new Integer(id);
+            Integer err = Integer.valueOf(id);
             found.add(err);
             errorCnt[level]++;
             if (expected != null) {

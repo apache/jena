@@ -860,8 +860,8 @@ public class schemagen {
             String ns = r.getNameSpace();
 
             // increment the count for this namespace
-            Integer count = nsCount.containsKey( ns ) ? (Integer) nsCount.get( ns ) : new Integer( 0 );
-            Integer count1 = new Integer( count.intValue() + 1 );
+            Integer count = nsCount.containsKey( ns ) ? (Integer) nsCount.get( ns ) : Integer.valueOf( 0 );
+            Integer count1 = Integer.valueOf( count.intValue() + 1 );
 
             nsCount.put( ns, count1 );
         }

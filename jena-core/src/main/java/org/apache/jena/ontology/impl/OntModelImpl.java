@@ -3144,7 +3144,7 @@ public class OntModelImpl extends ModelCom implements OntModel
             if (acc.booleanValue()) {
                 // true so far
                 Resource r = (Resource) node;
-                return new Boolean( r.hasProperty( RDF.type, m_type ) );
+                return Boolean.valueOf( r.hasProperty( RDF.type, m_type ) );
             }
             else {
                 return acc;

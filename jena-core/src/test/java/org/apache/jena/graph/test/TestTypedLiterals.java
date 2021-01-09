@@ -201,7 +201,7 @@ public class TestTypedLiterals extends TestCase {
         Literal l4 = m.createTypedLiteral("63");  // default map
 
         assertSameValueAs("Default map failed", l1, l2);
-        assertEquals("Value wrong", l1.getValue(), new Integer(42));
+        assertEquals("Value wrong", l1.getValue(), Integer.valueOf(42));
         assertEquals("class wrong", l1.getValue().getClass(), Integer.class);
         assertEquals("Value accessor problem", l1.getInt(), 42);
         assertEquals("wrong type name", l2.getDatatypeURI(), xsdIntURI);
@@ -290,8 +290,8 @@ public class TestTypedLiterals extends TestCase {
         checkIllegalLiteral("12345", XSDDatatype.XSDnonPositiveInteger);
         checkLegalLiteral("-9223372036854775808", XSDDatatype.XSDnonPositiveInteger, BigInteger.class, new BigInteger("-9223372036854775808"));
 
-        checkLegalLiteral("12345", XSDDatatype.XSDdecimal, Integer.class, new Integer("12345"));
-        checkLegalLiteral("0.0", XSDDatatype.XSDdecimal, Integer.class, new Integer("0"));
+        checkLegalLiteral("12345", XSDDatatype.XSDdecimal, Integer.class, Integer.valueOf("12345"));
+        checkLegalLiteral("0.0", XSDDatatype.XSDdecimal, Integer.class, Integer.valueOf("0"));
         checkLegalLiteral("42.45", XSDDatatype.XSDdecimal, BigDecimal.class, new BigDecimal("42.45"));
         checkLegalLiteral("9223372036854775808.1234", XSDDatatype.XSDdecimal, BigDecimal.class, new BigDecimal("9223372036854775808.1234"));
         checkLegalLiteral("123.4", XSDDatatype.XSDdecimal, BigDecimal.class, new BigDecimal("123.4"));
@@ -870,18 +870,18 @@ public class TestTypedLiterals extends TestCase {
         assertTrue(! XSDDatatype.XSDint.isValidLiteral(ll));
 
        // Test the isValidValue form which had a problem with numbers
-       assertTrue(XSDDatatype.XSDnonNegativeInteger.isValidValue(new Integer(10)));
-       assertTrue(XSDDatatype.XSDnonNegativeInteger.isValidValue(new Integer(10)));
-       assertTrue(!XSDDatatype.XSDnonNegativeInteger.isValidValue(new Integer(-10)));
+       assertTrue(XSDDatatype.XSDnonNegativeInteger.isValidValue(Integer.valueOf(10)));
+       assertTrue(XSDDatatype.XSDnonNegativeInteger.isValidValue(Integer.valueOf(10)));
+       assertTrue(!XSDDatatype.XSDnonNegativeInteger.isValidValue(Integer.valueOf(-10)));
        assertTrue(!XSDDatatype.XSDnonNegativeInteger.isValidValue("10"));
 
        // The correct behaviour on float/double is unclear but will be clarified
        // by the SWBP working group task force on XML schema.
        // For now we leave that float, double and the decimal tree are all distinct
-       assertTrue(XSDDatatype.XSDfloat.isValidValue(new Float("2.3")));
-       assertTrue(XSDDatatype.XSDdouble.isValidValue(new Double("2.3")));
-       assertTrue( ! XSDDatatype.XSDfloat.isValidValue(new Integer("2")));
-       assertTrue( ! XSDDatatype.XSDfloat.isValidValue(new Double("2.3")));
+       assertTrue(XSDDatatype.XSDfloat.isValidValue(Float.valueOf("2.3")));
+       assertTrue(XSDDatatype.XSDdouble.isValidValue(Double.valueOf("2.3")));
+       assertTrue( ! XSDDatatype.XSDfloat.isValidValue(Integer.valueOf("2")));
+       assertTrue( ! XSDDatatype.XSDfloat.isValidValue(Double.valueOf("2.3")));
     }
 
     // These should not be used in data but we test they don't crash anything.

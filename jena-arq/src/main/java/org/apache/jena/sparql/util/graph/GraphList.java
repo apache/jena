@@ -234,7 +234,7 @@ public class GraphList
         {
             Node v = car(gnode) ;
             if ( v != null && v.equals(value) )
-                x.add(new Integer(idx)) ;
+                x.add(idx) ;
             gnode = next(gnode) ;
             idx++ ;
         }

@@ -340,7 +340,7 @@ public class XSDFuncOp
             case OP_INTEGER :
                 return v ;
             case OP_DECIMAL :
-                BigDecimal dec = v.getDecimal().setScale(0, BigDecimal.ROUND_CEILING) ;
+                BigDecimal dec = v.getDecimal().setScale(0, RoundingMode.CEILING) ;
                 return NodeValue.makeDecimal(dec) ;
             case OP_FLOAT :
                 return NodeValue.makeFloat((float)Math.ceil(v.getFloat())) ;
@@ -356,7 +356,7 @@ public class XSDFuncOp
             case OP_INTEGER :
                 return v ;
             case OP_DECIMAL :
-                BigDecimal dec = v.getDecimal().setScale(0, BigDecimal.ROUND_FLOOR) ;
+                BigDecimal dec = v.getDecimal().setScale(0, RoundingMode.FLOOR) ;
                 return NodeValue.makeDecimal(dec) ;
             case OP_FLOAT :
                 return NodeValue.makeFloat((float)Math.floor(v.getFloat())) ;
@@ -375,9 +375,9 @@ public class XSDFuncOp
                 int sgn = v.getDecimal().signum();
                 BigDecimal dec;
                 if (sgn < 0)
-                    dec = v.getDecimal().setScale(0, BigDecimal.ROUND_HALF_DOWN);
+                    dec = v.getDecimal().setScale(0, RoundingMode.HALF_DOWN);
                 else
-                    dec = v.getDecimal().setScale(0, BigDecimal.ROUND_HALF_UP);
+                    dec = v.getDecimal().setScale(0, RoundingMode.HALF_UP);
                 return NodeValue.makeDecimal(dec);
             case OP_FLOAT:
                 return NodeValue.makeFloat(Math.round(v.getFloat()));
@@ -394,14 +394,14 @@ public class XSDFuncOp
     private static BigDecimal roundDecimalValue(BigDecimal dec,int precision,boolean isHalfToEven)
     {
         if(isHalfToEven){
-            return dec.setScale(precision, BigDecimal.ROUND_HALF_EVEN);
+            return dec.setScale(precision, RoundingMode.HALF_EVEN);
         }
         else {
             int sgn = dec.signum();
             if (sgn < 0)
-                return dec.setScale(precision, BigDecimal.ROUND_HALF_DOWN);
+                return dec.setScale(precision, RoundingMode.HALF_DOWN);
             else
-                return dec.setScale(precision, BigDecimal.ROUND_HALF_UP);
+                return dec.setScale(precision, RoundingMode.HALF_UP);
         }
     }
 

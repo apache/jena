@@ -349,7 +349,7 @@ public class GraphMatcher extends java.lang.Object {
     }
     private Bucket matchBucket(Bucket key) {
         check(HASH_OK);
-        Integer hash = new Integer(key.aMember().myHash);
+        Integer hash = Integer.valueOf(key.aMember().myHash);
         Bucket rslt = table.get(hash);
         if ( rslt != null ) {
             if ( key.size() != rslt.size() )
@@ -389,7 +389,7 @@ public class GraphMatcher extends java.lang.Object {
         // right buckets.
         for ( AnonResource a : unboundAnonResources )
         {
-            Integer hash = new Integer( a.myHashCode() );
+            Integer hash = Integer.valueOf( a.myHashCode() );
             Bucket bkt = table.get( hash );
             if ( bkt == null )
             {

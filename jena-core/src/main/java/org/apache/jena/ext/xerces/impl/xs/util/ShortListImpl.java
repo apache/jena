@@ -115,7 +115,7 @@ public final class ShortListImpl extends AbstractList implements ShortList {
     @Override
     public Object get(int index) {
         if (index >= 0 && index < fLength) {
-            return new Short(fArray[index]);
+            return Short.valueOf(fArray[index]);
         }
         throw new IndexOutOfBoundsException("Index: " + index);
     }

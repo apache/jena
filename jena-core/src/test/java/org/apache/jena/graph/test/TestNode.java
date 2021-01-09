@@ -572,8 +572,8 @@ public class TestNode extends GraphTestBase
     public void testDataMatches()
     {
         TypeMapper tm = TypeMapper.getInstance();
-        RDFDatatype dt1 = tm.getTypeByValue( new Integer( 10 ) );
-        RDFDatatype dt2 = tm.getTypeByValue( new Short( (short) 10 ) );
+        RDFDatatype dt1 = tm.getTypeByValue( Integer.valueOf( 10 ) );
+        RDFDatatype dt2 = tm.getTypeByValue( Short.valueOf( (short) 10 ) );
         Node a = NodeFactory.createLiteral( "10", dt1 );
         Node b = NodeFactory.createLiteral( "10", dt2 );
         assertDiffer( "types must make a difference", a, b );
@@ -584,7 +584,7 @@ public class TestNode extends GraphTestBase
     public void testLiteralToString()
     {
         TypeMapper tm = TypeMapper.getInstance();
-        RDFDatatype dtInt = tm.getTypeByValue( new Integer( 10 ) );
+        RDFDatatype dtInt = tm.getTypeByValue( Integer.valueOf( 10 ) );
         Node plain = NodeFactory.createLiteral( "rhubarb", "");    
         Node english = NodeFactory.createLiteral( "eccentric", "en_UK");
         Node typed = NodeFactory.createLiteral( "10", dtInt );

@@ -158,10 +158,6 @@ public class SPARQLResult {
         hasBeenSet = true;
     }
 
-    protected void set(boolean r) {
-        set(new Boolean(r));
-    }
-
     protected void set(Boolean r) {
         booleanResult = r;
         hasBeenSet = true;
