@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package jena ;
+package jena.text ;
 
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.text.* ;

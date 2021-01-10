@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package jena ;
+package jena.text ;
 
 import java.util.HashSet ;
 import java.util.Iterator ;

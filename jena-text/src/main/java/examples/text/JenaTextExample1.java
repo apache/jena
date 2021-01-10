@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package examples;
+package examples.text;
 
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.LogCtl ;
