@@ -609,7 +609,7 @@ implements Model, PrefixMapping, Lock
      */
     @Override
     public Literal createTypedLiteral( boolean v )  {
-        return createTypedLiteral( new Boolean( v ) );
+        return createTypedLiteral( Boolean.valueOf( v ) );
     }
 
     /** create a typed literal from an integer value.
@@ -620,7 +620,7 @@ implements Model, PrefixMapping, Lock
      */   
     @Override
     public Literal createTypedLiteral(int v)   {
-        return createTypedLiteral(new Integer(v));
+        return createTypedLiteral(Integer.valueOf(v));
     }
 
     /** create a typed literal from a long integer value.
@@ -631,7 +631,7 @@ implements Model, PrefixMapping, Lock
      */   
     @Override
     public Literal createTypedLiteral(long v)   {
-        return createTypedLiteral(new Long(v));
+        return createTypedLiteral(Long.valueOf(v));
     }
 
     /** create a typed literal from a char value.
@@ -642,7 +642,7 @@ implements Model, PrefixMapping, Lock
      */
     @Override
     public Literal createTypedLiteral(char v)  {
-        return createTypedLiteral(new Character(v));
+        return createTypedLiteral(Character.valueOf(v));
     }
 
     /** create a typed literal from a float value.
@@ -653,7 +653,7 @@ implements Model, PrefixMapping, Lock
      */
     @Override
     public Literal createTypedLiteral(float v)  {
-        return createTypedLiteral(new Float(v));
+        return createTypedLiteral(Float.valueOf(v));
     }
 
     /** create a typed literal from a double value.
@@ -664,7 +664,7 @@ implements Model, PrefixMapping, Lock
      */
     @Override
     public Literal createTypedLiteral(double v)  {
-        return createTypedLiteral(new Double(v));
+        return createTypedLiteral(Double.valueOf(v));
     }
 
     /** create a typed literal from a String value.

@@ -141,7 +141,7 @@ final class SecuritySupport {
                 AccessController.doPrivileged(new PrivilegedAction() {
                     @Override
                     public Object run() {
-                        return new Long(f.lastModified());
+                        return Long.valueOf(f.lastModified());
                     }
                 })).longValue();
     }

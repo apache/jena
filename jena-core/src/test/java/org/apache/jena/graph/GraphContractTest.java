@@ -807,13 +807,13 @@ public class GraphContractTest<T extends Graph>
 		if (g.getCapabilities().handlesLiteralTyping())
 		{
 			Node ab = NodeFactory.createLiteral(LiteralLabelFactory
-					.createTypedLiteral(new Byte((byte) 42)));
+					.createTypedLiteral(Byte.valueOf((byte) 42)));
 			Node as = NodeFactory.createLiteral(LiteralLabelFactory
-					.createTypedLiteral(new Short((short) 42)));
+					.createTypedLiteral(Short.valueOf((short) 42)));
 			Node ai = NodeFactory.createLiteral(
-					LiteralLabelFactory.createTypedLiteral(new Integer(42)));
+					LiteralLabelFactory.createTypedLiteral(Integer.valueOf(42)));
 			Node al = NodeFactory.createLiteral(
-					LiteralLabelFactory.createTypedLiteral(new Long(42)));
+					LiteralLabelFactory.createTypedLiteral(Long.valueOf(42)));
 
 			Node SB = NodeCreateUtils.create("SB");
 			Node SS = NodeCreateUtils.create("SS");
@@ -942,13 +942,13 @@ public class GraphContractTest<T extends Graph>
 		if (g.getCapabilities().handlesLiteralTyping())
 		{
 			Node ab = NodeFactory.createLiteral(LiteralLabelFactory
-					.createTypedLiteral(new Byte((byte) 42)));
+					.createTypedLiteral(Byte.valueOf((byte) 42)));
 			Node as = NodeFactory.createLiteral(LiteralLabelFactory
-					.createTypedLiteral(new Short((short) 42)));
+					.createTypedLiteral(Short.valueOf((short) 42)));
 			Node ai = NodeFactory.createLiteral(
-					LiteralLabelFactory.createTypedLiteral(new Integer(42)));
+					LiteralLabelFactory.createTypedLiteral(Integer.valueOf(42)));
 			Node al = NodeFactory.createLiteral(
-					LiteralLabelFactory.createTypedLiteral(new Long(42)));
+					LiteralLabelFactory.createTypedLiteral(Long.valueOf(42)));
 
 			Node SB = NodeCreateUtils.create("SB");
 			Node SS = NodeCreateUtils.create("SS");

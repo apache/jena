@@ -142,9 +142,9 @@ public class TestModelEvents extends AbstractModelTestBase
 		Integer n = m.get(x);
 		if (n == null)
 		{
-			n = new Integer(0);
+			n = Integer.valueOf(0);
 		}
-		m.put(x, new Integer(n.intValue() + 1));
+		m.put(x, Integer.valueOf(n.intValue() + 1));
 	}
 
 	public Map<Object, Integer> asBag( final List<Statement> l )

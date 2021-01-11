@@ -236,11 +236,11 @@
         <module>apache-jena-libs</module>
 
         <module>jena-text</module>
-        <module>jena-text-es</module>
 
         <module>jena-cmds</module>
         <module>jena-fuseki2</module>
 
+        <!-- Javadoc does not build under Java11 without fixes (see plugin) -->
         <module>jena-geosparql</module>
         <module>jena-fuseki2/jena-fuseki-geosparql</module>
 
@@ -266,11 +266,16 @@
         <module>jena-extras</module>
 
         <!-- Slow building modules -->
+        <!-- Javadoc does not build under Java11 without fixes (see plugin) -->
+        <module>jena-text-es</module>
+
+        <!-- Javadoc does not build under Java11 without fixes (see plugin) -->
         <module>jena-jdbc</module>
-        <!--  Fails when building with Java9 JDK because it requires 
+
+        <!--  Fails when building with Java9+ JDK because it requires 
              system jar jdk.tools which is not available in Java9 onwards
+             <module>jena-elephas</module>
         -->
-        <module>jena-elephas</module>
         <module>apache-jena-osgi</module>
       </modules>
     </profile>
@@ -801,7 +806,7 @@
           <configuration>
             <release>${java.version}</release>
           </configuration>
-          <!-- Java8 compiler for Java8 output
+          <!-- Java8 compiler for Java8 output : retain temporarily 2021-01
           <configuration>
             <showDeprecation>false</showDeprecation>
             <encoding>UTF-8</encoding>
@@ -870,13 +875,17 @@
                  Explicitly define the source as Java8 when building
                  with java8 source code for java8 output.
                  Not good enough when compiling for Java11 output.
-                 <source>8</source>
 
                  https://bugs.openjdk.java.net/browse/JDK-8212233
                      which affects early Java11 and Java12
                  https://issues.apache.org/jira/browse/MJAVADOC-555
             -->
-            
+
+            <!-- Java 11
+                 If Java8 output, and using Java11 to build, need:
+                 <source>8</source>
+                 See also Java11 problems below.
+            -->
             <!-- Java 10
                  <additionalOptions>-html5</additionalOptions>
             -->
@@ -886,6 +895,20 @@
             <!-- To allow the build to keep going despite javadoc problems:
                  <failOnError>false</failOnError>
             -->
+
+            <!-- Fixes for Javadoc when bulding for Java11. Both these are needed. -->
+
+            <!-- (1) Fix for:
+                 Named / unnamed modules error/warning
+            -->
+            <detectJavaApiLink>false</detectJavaApiLink>
+
+            <!-- (2) Fix for:
+                 [ERROR] error: the unnamed module reads package PKG from both A and B
+            -->
+            <source>8</source>
+
+            <!-- End Java11 fixes (2021-01) -->
 
             <version>true</version>
             <show>public</show>

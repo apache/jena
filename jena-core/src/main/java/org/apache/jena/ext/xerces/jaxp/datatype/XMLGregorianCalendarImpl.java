@@ -551,9 +551,9 @@ class XMLGregorianCalendarImpl
             throw new IllegalArgumentException(
                 DatatypeMessageFormatter.formatMessage(null, 
                     "InvalidXGCValue-fractional", 
-                    new Object[] { year, new Integer(month), new Integer(day), 
-                    new Integer(hour), new Integer(minute), new Integer(second),
-                    fractionalSecond, new Integer(timezone)})
+                    new Object[] { year, Integer.valueOf(month), Integer.valueOf(day), 
+                    Integer.valueOf(hour), Integer.valueOf(minute), Integer.valueOf(second),
+                    fractionalSecond, Integer.valueOf(timezone)})
 			);
                     
 			/**
@@ -628,9 +628,9 @@ class XMLGregorianCalendarImpl
             throw new IllegalArgumentException(
                     DatatypeMessageFormatter.formatMessage(null, 
                             "InvalidXGCValue-milli", 
-                            new Object[] { new Integer(year), new Integer(month), new Integer(day), 
-                            new Integer(hour), new Integer(minute), new Integer(second), 
-                            new Integer(millisecond), new Integer(timezone)})                
+                            new Object[] { Integer.valueOf(year), Integer.valueOf(month), Integer.valueOf(day), 
+                            Integer.valueOf(hour), Integer.valueOf(minute), Integer.valueOf(second), 
+                            Integer.valueOf(millisecond), Integer.valueOf(timezone)})                
             );
             /*
                 throw new IllegalArgumentException(
@@ -1385,7 +1385,7 @@ class XMLGregorianCalendarImpl
 					       " field");
              */
             throw new IllegalArgumentException(
-                    DatatypeMessageFormatter.formatMessage(null, "InvalidFieldValue", new Object[]{ new Integer(value), FIELD_NAME[field]})
+                    DatatypeMessageFormatter.formatMessage(null, "InvalidFieldValue", new Object[]{ Integer.valueOf(value), FIELD_NAME[field]})
             );
         }
     }

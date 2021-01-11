@@ -94,7 +94,7 @@ public class ByteListImpl extends AbstractList implements ByteList {
 
     public Object get(int index) {
         if (index >= 0 && index < data.length) {
-            return new Byte(data[index]);
+            return Byte.valueOf(data[index]);
         }
         throw new IndexOutOfBoundsException("Index: " + index);
     }

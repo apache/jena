@@ -150,13 +150,6 @@ public abstract class AbstractDataBag<E> implements DataBag<E>
     protected void finalize() throws Throwable
     {
         // Last chance to remove any files if the user forgot to call close()
-        try
-        {
-            close();
-        }
-        finally
-        {
-            super.finalize();
-        }
+        close();
     }
 }

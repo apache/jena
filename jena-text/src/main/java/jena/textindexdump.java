@@ -18,100 +18,12 @@
 
 package jena ;
 
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.query.text.* ;
-import org.apache.jena.query.text.assembler.TextVocab ;
-import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
-import org.apache.lucene.analysis.Analyzer ;
-import org.apache.lucene.document.Document ;
-import org.apache.lucene.index.DirectoryReader ;
-import org.apache.lucene.index.IndexReader ;
-import org.apache.lucene.index.IndexableField ;
-import org.apache.lucene.queryparser.classic.QueryParser ;
-import org.apache.lucene.search.IndexSearcher ;
-import org.apache.lucene.search.Query ;
-import org.apache.lucene.search.ScoreDoc ;
-import org.apache.lucene.store.Directory ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
-import jena.cmd.ArgDecl ;
-import jena.cmd.CmdException ;
-import arq.cmdline.CmdARQ ;
-
 /**
  * Text index development tool - dump the index.
  */
-public class textindexdump extends CmdARQ {
-
-    private static Logger      log          = LoggerFactory.getLogger(textindexdump.class) ;
-
-    public static final ArgDecl assemblerDescDecl = new ArgDecl(ArgDecl.HasValue, "desc", "dataset") ;
-    protected TextIndex        textIndex    = null ;
-
+public class textindexdump { 
+    // Placeholder: need to avoid have split packages and package "jena" is in use in jena-cmds.
     static public void main(String... argv) {
-        new textindexdump(argv).mainRun() ;
-    }
-
-    protected textindexdump(String[] argv) {
-        super(argv) ;
-        super.add(assemblerDescDecl, "--desc=", "Assembler description file") ;
-    }
-
-    @Override
-    protected void processModulesAndArgs() {
-        super.processModulesAndArgs() ;
-        // Two forms : with and without arg.
-        // Maximises similarity with other tools.
-        String file ;
-        if ( super.contains(assemblerDescDecl) ) {
-            if ( getValues(assemblerDescDecl).size() != 1 )
-                throw new CmdException("Multiple assembler descriptions given") ;
-            if ( getPositional().size() != 0 )
-                throw new CmdException("Additional assembler descriptions given") ; 
-            file = getValue(assemblerDescDecl) ;
-        } else {
-            if ( getNumPositional() != 1 )
-                throw new CmdException("Multiple assembler descriptions given") ;
-            file = getPositionalArg(0) ;
-        }
-        textIndex = (TextIndex)AssemblerUtils.build(file, TextVocab.textIndex) ;
-    }        
-
-    @Override
-    protected String getSummary() {
-        return getCommandName() + " assemblerFile" ;
-    }
-
-    @Override
-    protected void exec() {
-        
-        if ( textIndex instanceof TextIndexLucene )
-            dump((TextIndexLucene)textIndex) ;
-        else
-            System.err.println("Unsupported index type : "+Lib.className(textIndex)) ;
-        }
-
-    private static void dump(TextIndexLucene textIndex) {
-        try {
-            Directory directory = textIndex.getDirectory() ;
-            Analyzer analyzer = textIndex.getQueryAnalyzer() ;
-            IndexReader indexReader = DirectoryReader.open(directory) ;
-            IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-            QueryParser queryParser = new QueryParser(textIndex.getDocDef().getPrimaryField(), analyzer);
-            Query query = queryParser.parse("*:*");
-            ScoreDoc[] sDocs = indexSearcher.search(query, 1000).scoreDocs ;
-            for ( ScoreDoc sd : sDocs ) {
-                System.out.println("Doc: "+sd.doc) ;
-                Document doc = indexSearcher.doc(sd.doc) ;
-                // Don't forget that many fields aren't stored, just indexed.
-                for ( IndexableField f : doc ) {
-                    //System.out.println("  "+f) ;
-                    System.out.println("  "+f.name()+" = "+f.stringValue()) ;
-                }
-                
-            }
-
-        } catch (Exception ex) { throw new TextIndexException(ex) ; }
-        
+        jena.text.textindexdump.main(argv) ;
     }
 }

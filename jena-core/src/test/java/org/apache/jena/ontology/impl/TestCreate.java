@@ -306,7 +306,7 @@ public class TestCreate
             @Override
             public OntResource doCreate( OntModel m )   {
                 Property p = m.createDatatypeProperty( NS + "p" );
-                Literal x = m.createTypedLiteral( new Integer( 42 ) );
+                Literal x = m.createTypedLiteral( Integer.valueOf( 42 ) );
                 return m.createHasValueRestriction( null, p,  x );
             }
             @Override

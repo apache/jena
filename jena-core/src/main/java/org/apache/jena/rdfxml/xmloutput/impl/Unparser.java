@@ -278,7 +278,7 @@ class Unparser {
 
     final private static String rdfns = RDF.type.getNameSpace();
 
-    final private static Integer one = new Integer(1);
+    final private static Integer one = 1;
 
     private String localName;
 
@@ -1236,7 +1236,7 @@ class Unparser {
         if (cnt == null) {
             cnt = one;
         } else {
-            cnt = new Integer(cnt.intValue() + 1);
+            cnt = Integer.valueOf(cnt.intValue() + 1);
         }
         objectTable.put(r, cnt);
     }

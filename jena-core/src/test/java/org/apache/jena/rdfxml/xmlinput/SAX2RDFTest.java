@@ -24,19 +24,21 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Vector;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdf.model.RDFReader ;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 public class SAX2RDFTest extends TestCase {
 
@@ -1259,8 +1261,8 @@ public class SAX2RDFTest extends TestCase {
 		}
 	}
 
-	void loadXMLModel(Model m2, InputStream in, RDFEHArray eh2) throws SAXException, IOException {
-		XMLReader saxParser = XMLReaderFactory.createXMLReader();
+	void loadXMLModel(Model m2, InputStream in, RDFEHArray eh2) throws SAXException, IOException, ParserConfigurationException {
+		XMLReader saxParser = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
 		SAX2Model handler = SAX2Model.create(base, m2);
 		SAX2RDF.installHandlers(saxParser, handler);
 		handler.setErrorHandler(eh2);

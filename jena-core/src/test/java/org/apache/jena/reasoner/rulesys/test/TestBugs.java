@@ -789,7 +789,7 @@ public class TestBugs extends TestCase {
      */
     public void testLiteralsInErrorReports() {
         RDFNode culprit = doTestLiteralsInErrorReports("-> (eg:a eg:p 42).  (?X rb:violation error('test', 'arg')) <- (?S eg:p ?X).");
-        assertEquals( culprit, ResourceFactory.createTypedLiteral( new Integer(42) ));
+        assertEquals( culprit, ResourceFactory.createTypedLiteral( Integer.valueOf(42) ));
         culprit = doTestLiteralsInErrorReports("-> (eg:a eg:p 'foo').  (?X rb:violation error('test', 'arg')) <- (?S eg:p ?X).");
         assertEquals( culprit, ResourceFactory.createPlainLiteral("foo"));
         BuiltinRegistry.theRegistry.register( new SomeTriple() );
