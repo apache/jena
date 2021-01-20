@@ -195,51 +195,8 @@ public abstract class Node implements Serializable {
     public boolean hasURI( String uri )
         { return false; }
 
-    // DEPRECATED
-    /** an abstraction to allow code sharing */
-    static abstract class NodeMaker { abstract Node construct( Object x ); }
-
-    @Deprecated
-    static final NodeMaker makeAnon = new NodeMaker() {
-        @Override Node construct( Object x ) { return new Node_Blank( x ); }
-    };
-
-   @Deprecated
-   static final NodeMaker makeLiteral = new NodeMaker() {
-        @Override Node construct( Object x ) { return new Node_Literal( x ); }
-   };
-
-   @Deprecated
-    static final NodeMaker makeURI = new NodeMaker() {
-        @Override Node construct( Object x ) { return new Node_URI( x ); }
-   };
-
-   @Deprecated
-   static final NodeMaker makeVariable = new NodeMaker() {
-       @Override Node construct( Object x ) { return new Node_Variable( x ); }
-   };
-
-    /**
-        The canonical NULL. It appears here so that revised definitions [eg as a bnode]
-        that require the cache-and-maker system will work; the NodeMaker constants
-        should be non-null at this point.
-    */
-    @Deprecated
-    public static final Node NULL = new Node_NULL();
-
     /* package visibility only */ Node( Object label )
         { this.label = label; }
-
-    /**
-        We object strongly to null labels: for example, they make .equals flaky.
-        @deprecated Use specific {@link NodeFactory} functions.
-    */
-    @Deprecated
-    public static Node create( NodeMaker maker, Object label )
-        {
-        if (label == null) throw new JenaException( "Node.make: null label" );
-        return maker.construct( label ) ;
-        }
 
     /**
 		Nodes only equal other Nodes that have equal labels.

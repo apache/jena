@@ -39,7 +39,10 @@ import org.apache.jena.shared.* ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.util.CollectionFactory ;
-import org.apache.jena.util.iterator.* ;
+import org.apache.jena.util.iterator.ClosableIterator;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.FilterIterator;
+import org.apache.jena.util.iterator.Map1Iterator;
 import org.apache.jena.vocabulary.RDF ;
 
 /** Common methods for model implementations.
@@ -55,27 +58,12 @@ implements Model, PrefixMapping, Lock
     private static RDFReaderF readerFactory = new RDFReaderFImpl();
     private static RDFWriterF writerFactory = new RDFWriterFImpl();
     private Lock modelLock = null ;
-    /** @deprecated Remove when setDefaultModelPrefixes etc removed. */
-    @Deprecated
-    private static PrefixMapping defaultPrefixMapping = null; // Should be the default value in Java.
 
     static {
         // This forces RIOT (in ARQ) to initialize but after Jena readers/writers
         // have cleanly initialized from the calls of RDFReaderFImpl and RDFWriterFImpl
         // above.  RIOT initialization happens before model.read can be called.
         JenaSystem.init() ;
-    }
-    
-    /* Internal.
-     * During intialization, all sorts of class loading orders can happen.
-     * Many places create Models, calling into a ModelCom constructor.
-     * so this helps the runtime ensure that ModelCom is
-     * initialized before a ModelCom is created.   
-     */
-    
-    static {
-        if ( defaultPrefixMapping == null )
-            defaultPrefixMapping = PrefixMapping.Factory.create();
     }
     
     /**
@@ -86,25 +74,7 @@ implements Model, PrefixMapping, Lock
 
     public ModelCom( Graph base, Personality<RDFNode> personality ) { 
         super( base, personality );
-        // JENA-1249. Touching the prefix mappings can incur initialization costs.
-        // Also, must protect against defaultPrefixMapping being null due to initialization effects.
-        if ( defaultPrefixMapping != null && ! defaultPrefixMapping.hasNoMappings() )
-            withDefaultMappings( defaultPrefixMapping );
     }  
-
-    /** @deprecated This feature will be removed */
-    @Deprecated
-    public static PrefixMapping getDefaultModelPrefixes()
-    { return defaultPrefixMapping; }
-
-    /** @deprecated This feature will be removed */
-    @Deprecated
-    public static PrefixMapping setDefaultModelPrefixes(PrefixMapping pm)
-    {
-        PrefixMapping result = defaultPrefixMapping ;
-        defaultPrefixMapping = pm ;
-        return result ;
-    }
 
     @Override
     public Graph getGraph()
@@ -1353,11 +1323,6 @@ implements Model, PrefixMapping, Lock
      @Override
      public Model commit() 
      { getTransactionHandler().commit(); return this; }
-
-     @SuppressWarnings("deprecation")
-     @Override
-     public Object executeInTransaction( Command cmd )
-     { return getTransactionHandler().executeInTransaction( cmd ); }
 
      private TransactionHandler getTransactionHandler()
      { return getGraph().getTransactionHandler(); }

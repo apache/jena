@@ -105,7 +105,6 @@ public abstract class AbstractTestPackage extends TestSuite
 
 		addTest(TestConcurrencyParallel.class, modelFactory);
 		addTest(TestModelMakerImpl.class);
-		addTest(TestModelPrefixMapping.class, modelFactory);
 		addTest(TestContainers.class, modelFactory);
 		addTest(TestModel.class, modelFactory);
 		addTest(TestModelSetOperations.class, modelFactory);

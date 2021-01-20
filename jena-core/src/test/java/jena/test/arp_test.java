@@ -18,21 +18,20 @@
 
 package jena.test;
 
-//import junit.swingui.TestRunner;
+import junit.textui.TestRunner;
 
-import org.apache.jena.rdfxml.xmlinput.ARPTests ;
-import org.apache.jena.shared.Command ;
+import org.apache.jena.rdfxml.xmlinput.ARPTests;
 
-public class rdfparse implements Command
-    {
+public class arp_test {
     protected boolean internetTest;
-    
-    public rdfparse( boolean internetTest )
-        { this.internetTest = internetTest; }
-    
-    @Override
-    public Object execute()
-        { ARPTests.internet = internetTest;
-//        TestRunner.main( new String[] { "-noloading", ARPTests.class.getName()});
-        return null; }
+
+    public arp_test(boolean internetTest) {
+        this.internetTest = internetTest;
     }
+
+    public Object execute() {
+        ARPTests.internet = internetTest;
+        TestRunner.main( new String[] { "-noloading", ARPTests.class.getName()});
+        return null;
+    }
+}

@@ -745,20 +745,6 @@ public class RDFListImpl
         // not found
         return this;
     }
-        
-    
-    /**
-     * <p>Deprecated. Since an <code>RDFList</code> does not behave like a Java container, it is not
-     * the case that the contents of the list can be removed and the container filled with values
-     * again. Therefore, this method name has been deprecated in favour of {@link #removeList}</p>
-     * @deprecated Replaced by {@link #removeList}
-     */
-    @Override
-    @Deprecated
-    public void removeAll() {
-        removeList();
-    }
-    
     
     /**
      * <p>Remove all of the components of this list from the model. Once this operation

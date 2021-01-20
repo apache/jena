@@ -20,8 +20,10 @@ package org.apache.jena.shared;
 
 /**
     An interface expressing the execution of a command.
+    @deprecated Use {@link Runnable}.
 */
 
+@Deprecated
 public interface Command
     {
     /**

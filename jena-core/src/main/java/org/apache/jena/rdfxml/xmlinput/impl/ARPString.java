@@ -76,15 +76,6 @@ public class ARPString extends TaintImpl implements ALiteral {
         return this.isWellFormedXML;
     }
     
-    /**
-     * @deprecated
-     */
-    @Override
-    @Deprecated
-    public String getParseType() {
-        return parseType;
-    }
-    
     @Override
     public String getLang() {
         return lang;

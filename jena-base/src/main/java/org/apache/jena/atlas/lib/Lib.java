@@ -20,6 +20,7 @@ package org.apache.jena.atlas.lib;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List ;
+import java.util.Objects;
 import java.util.Set ;
 import java.util.zip.Adler32 ;
 import java.util.zip.CRC32 ;
@@ -27,7 +28,6 @@ import java.util.zip.Checksum ;
 
 import org.apache.commons.codec.digest.MurmurHash3;
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.ext.com.google.common.base.Objects;
 
 public class Lib
 {
@@ -43,13 +43,13 @@ public class Lib
             ((Sync)object).sync() ;
     }
 
-    /** Return true if obj1 and obj are both null or are .equals, else return false
-     * @deprecated
-     * Prefer {@link Objects#equal(Object, Object)}
+    /**
+     * Return true if obj1 and obj are both null or are .equals, else return false
+     * Prefer {@link Objects#equals(Object, Object)}
      */
-    @Deprecated
-    public static final <T> boolean equal(T obj1, T obj2) {
-        return Objects.equal(obj1, obj2) ;
+    public static final <T> boolean equals(T obj1, T obj2) {
+        // Include because other equals* operations are here.
+        return Objects.equals(obj1, obj2) ;
     }
 
     /** Return true if obj1 and obj are both null or are .equals, else return false */
@@ -59,9 +59,9 @@ public class Lib
         return str1.equalsIgnoreCase(str2) ;
     }
 
-    /** Return true if obj1 and obj are ! equal */
+    /** Return true if obj1 and obj are not equal */
     public static final <T> boolean notEqual(T obj1, T obj2) {
-        return !Objects.equal(obj1, obj2) ;
+        return !Objects.equals(obj1, obj2) ;
     }
 
     /** Safely return the class short name for an object -- obj.getClass().getSimpleName() */
@@ -77,13 +77,13 @@ public class Lib
             return "null" ;
         return cls.getSimpleName() ;
     }
-         
+
     /** Create {@link UnsupportedOperationException} with formatted message. */
     static public UnsupportedOperationException unsupportedMethod(Object object, String method) {
         return new UnsupportedOperationException(Lib.className(object) + "." + method);
     }
 
-    /** Do two lists have the same elements? */
+    /** Do two lists have the same elements without considering the order of the lists? */
     public static <T> boolean equalsListAsSet(List<T> list1, List<T> list2) {
         if ( list1 == null && list2 == null )
             return true ;

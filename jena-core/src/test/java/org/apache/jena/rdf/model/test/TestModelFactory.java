@@ -18,19 +18,17 @@
 
 package org.apache.jena.rdf.model.test;
 
+import junit.framework.TestCase;
 import org.apache.jena.graph.compose.Union ;
 import org.apache.jena.rdf.model.InfModel ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.impl.ModelCom ;
 import org.apache.jena.reasoner.InfGraph ;
 import org.apache.jena.reasoner.Reasoner ;
 import org.apache.jena.reasoner.rulesys.GenericRuleReasoner ;
 import org.apache.jena.reasoner.rulesys.Rule ;
-import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.test.JenaTestBase ;
 import org.junit.Assert;
-import junit.framework.TestCase;
 
 /**
  * Tests the ModelFactory code. Very skeletal at the moment. It's really
@@ -91,28 +89,5 @@ public class TestModelFactory extends TestCase
 		JenaTestBase.assertInstanceOf(Union.class, m.getGraph());
 		Assert.assertSame(m1.getGraph(), ((Union) m.getGraph()).getL());
 		Assert.assertSame(m2.getGraph(), ((Union) m.getGraph()).getR());
-	}
-
-	public void testFindAssemblerRoots()
-	{
-		// TODO Set ModelFactory.findAssemblerRoots( Model model )
-	}
-
-	@SuppressWarnings("deprecation")
-    public void testGetDefaultPrefixMapping()
-	{
-		Assert.assertSame(ModelCom.getDefaultModelPrefixes(),
-				ModelFactory.getDefaultModelPrefixes());
-	}
-
-    @SuppressWarnings("deprecation")
-	public void testSetDefaultPrefixMapping()
-	{
-		final PrefixMapping original = ModelCom.getDefaultModelPrefixes();
-		final PrefixMapping pm = PrefixMapping.Factory.create();
-		ModelFactory.setDefaultModelPrefixes(pm);
-		Assert.assertSame(pm, ModelCom.getDefaultModelPrefixes());
-		Assert.assertSame(pm, ModelFactory.getDefaultModelPrefixes());
-		ModelCom.setDefaultModelPrefixes(original);
 	}
 }

@@ -25,7 +25,7 @@ import org.apache.jena.sparql.core.Transactional ;
 
 /** Application utilities for executing code in transactions.
  * <p>
- * Nested transaction are not supported but calling inside an existing transaction, 
+ * Nested transaction are not supported but calling inside an existing transaction,
  * which must be compatible, (i.e. a write needs a WRITE transaction).
  * causes the existing transaction to be used.
  */
@@ -43,14 +43,14 @@ public class Txn {
      * <p>
      * The application code can call {@link Transactional#promote} to attempt to
      * change from "read" to "write"; the {@link Transactional#promote promote} method
-     * returns a boolean indicating whether the promotion was possible or not. 
+     * returns a boolean indicating whether the promotion was possible or not.
      */
     public static <T extends Transactional> void execute(T txn, Runnable r) {
         exec(txn, TxnType.READ_PROMOTE, r);
     }
 
     /**
-     * Execute in a "read" transaction that can promote to "write" and return some calculated value. 
+     * Execute in a "read" transaction that can promote to "write" and return some calculated value.
      * <p>
      * Such a transaction may abort if an update is executed
      * by another thread before this one is promoted to "write" mode.
@@ -61,13 +61,13 @@ public class Txn {
      * <p>
      * The application code can call {@link Transactional#promote} to attempt to
      * change from "read" to "write"; the {@link Transactional#promote promote} method
-     * returns a boolean indicating whether the promotion was possible or not. 
+     * returns a boolean indicating whether the promotion was possible or not.
      */
     public static <T extends Transactional, X> X calculate(T txn, Supplier<X> r) {
         return calc(txn, TxnType.READ_PROMOTE, r);
     }
 
-    /** Execute application code in a transaction with the given {@link TxnType trasnaction type}. */
+    /** Execute application code in a transaction with the given {@link TxnType transaction type}. */
     public static <T extends Transactional> void exec(T txn, TxnType txnType, Runnable r) {
         boolean b = txn.isInTransaction() ;
         if ( b )
@@ -95,12 +95,12 @@ public class Txn {
         else
             txn.begin(txnType) ;
         X x;
-        try { x = r.get() ; } 
+        try { x = r.get() ; }
         catch (Throwable th) {
             onThrowable(th, txn);
             throw th ;
         }
-        
+
         if ( !b ) {
             if ( txn.isInTransaction() )
                 // May have been explicit commit or abort.
@@ -114,7 +114,7 @@ public class Txn {
     public static <T extends Transactional> void executeRead(T txn, Runnable r) {
         exec(txn, TxnType.READ, r);
     }
-    
+
     /** Execute and return a value in a read transaction */
     public static <T extends Transactional, X> X calculateRead(T txn, Supplier<X> r) {
         return calc(txn, TxnType.READ, r);
@@ -129,7 +129,7 @@ public class Txn {
     public static <T extends Transactional, X> X calculateWrite(T txn, Supplier<X> r) {
         return calc(txn, TxnType.WRITE, r);
     }
-    
+
     // Attempt some kind of cleanup.
     private static <T extends Transactional> void onThrowable(Throwable th, T txn) {
         try {

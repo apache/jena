@@ -55,33 +55,6 @@ public class NodeFactory {
         return new Node_Blank(id) ;
     }
 
-    /** make a blank node with a fresh anon id
-     *  @deprecated Use {@link #createBlankNode()}
-     */
-    @Deprecated
-    public static Node createAnon() {
-        return createAnon(BlankNodeId.create()) ;
-    }
-
-    /** make a blank node with the specified label
-     * @deprecated Use {@link #createBlankNode(BlankNodeId)}
-     */
-    @Deprecated
-    public static Node createAnon(BlankNodeId id) {
-        Objects.requireNonNull(id, "Argument to NodeFactory.createAnon is null") ;
-        return new Node_Blank(id) ;
-    }
-
-    /** make a blank node with the specified label
-     * @deprecated Use {@link #createBlankNode(String)}
-     */
-    @Deprecated
-    public static Node createAnon(String string) {
-        Objects.requireNonNull(string, "Argument to NodeFactory.createAnon is null") ;
-        BlankNodeId id = BlankNodeId.create(string) ;
-        return new Node_Blank(id) ;
-    }
-
     /** make a literal node with the specified literal value */
     public static Node createLiteral(LiteralLabel lit) {
         Objects.requireNonNull(lit, "Argument to NodeFactory.createLiteral is null") ;
@@ -201,20 +174,6 @@ public class NodeFactory {
     public static Node createLiteralByValue(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
         Objects.requireNonNull(value, "Argument 'value' to NodeFactory.createLiteralByValue is null") ;
         return new Node_Literal(LiteralLabelFactory.createByValue(value, lang, dtype)) ;
-    }
-
-    /** @deprecated To be removed: Use {@link #createLiteralByValue(Object, RDFDatatype)} */
-    @Deprecated
-    public static Node createUncachedLiteral(Object value, RDFDatatype dtype) throws DatatypeFormatException {
-        Objects.requireNonNull(value, "Argument 'value' to NodeFactory.createLiteralByValue is null") ;
-        return createLiteralByValue(value, dtype) ;
-    }
-
-    /** @deprecated To be removed: Use {@link #createLiteralByValue(Object, String, RDFDatatype)} */
-    @Deprecated
-    public static Node createUncachedLiteral(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
-        Objects.requireNonNull(value, "Argument 'value' to NodeFactory.createLiteralByValue is null") ;
-        return createLiteralByValue(value, lang, dtype) ;
     }
 
     /** Create a triple node (RDF-star) */

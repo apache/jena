@@ -369,17 +369,6 @@ public interface RDFList
      */
     public RDFList removeHead();
 
-
-    /**
-     * <p>Deprecated. Since an <code>RDFList</code> does not behave like a Java container, it is not
-     * the case that the contents of the list can be removed and the container filled with values
-     * again. Therefore, this method name has been deprecated in favour of {@link #removeList}</p>
-     * @deprecated Replaced by {@link #removeList}
-     */
-    @Deprecated
-    public void removeAll();
-
-
     /**
      * <p>Remove all of the components of this list from the model. Once this operation
      * has completed, the {@link RDFList} resource on which it was called will no

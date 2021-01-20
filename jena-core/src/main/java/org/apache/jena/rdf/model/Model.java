@@ -928,15 +928,6 @@ public interface Model
 
 	 */
 	Model commit() ;
-
-	 /**
-        If transactions are supported, execute the command c within a transaction
-        and return its result. If not, throw an UnsupportedOperationException.
-        @deprecated use {@link #calculateInTxn(Supplier)} or migrate to {@link #executeInTxn(Runnable)}.  
-	  */
-	@Deprecated
-    Object executeInTransaction( Command cmd );
-    
     
     /**
      * Execute the runnable <code>action</code> within a transaction. If it completes normally,
@@ -999,15 +990,6 @@ public interface Model
 	 *     rather than leave it to the finalizer.</p>
 	 */
 	public void close();
-
-//    /** Get the model lock for this model.
-//     *  See also the convenience operations enterCriticalSection and leaveCriticalSection.
-//     *
-//     * @see ModelLock
-//     * @return The ModelLock object associated with this model
-//     * @deprecated Applications should use {@link #getLock()}
-//     */
-//    public ModelLock getModelLock() ;
 
     /** Get the model lock for this model.
      *  See also the convenience operations enterCriticalSection and leaveCriticalSection.

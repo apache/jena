@@ -42,15 +42,7 @@ public class ARPDatatypeLiteral extends TaintImpl implements ALiteral {
     public boolean isWellFormedXML() {
         return false; //datatype.equals(ARPString.RDFXMLLiteral);
     }
-    /**
-     * @see org.apache.jena.rdfxml.xmlinput.ALiteral#getParseType()
-     * @deprecated
-     */
-    @Override
-    @Deprecated
-    public String getParseType() {
-        return null;
-    }
+
     @Override
     public String toString() {
         return lexForm;
