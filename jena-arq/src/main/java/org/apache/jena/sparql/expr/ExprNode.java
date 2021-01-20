@@ -18,7 +18,6 @@
 
 package org.apache.jena.sparql.expr;
 
-import java.util.Collection ;
 import java.util.Set ;
 
 import org.apache.jena.sparql.algebra.Op ;
@@ -29,9 +28,11 @@ import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.graph.NodeTransform;
 import org.apache.jena.sparql.sse.writers.WriterExpr ;
 
-/** A node that is a constraint expression that can be evaluated
- * An Expr is already a Constraint - ExprNode is the base implementation
- * of all Expr classes that provides the Constraint machinery. */
+/** 
+ * A node that is a constraint expression that can be evaluated
+ * An {@link Expr} is already a Constraint - ExprNode is the base implementation
+ * of all {@link Expr} classes that provides the Constraint machinery.
+ */
  
 public abstract class ExprNode implements Expr
 {
@@ -57,16 +58,6 @@ public abstract class ExprNode implements Expr
     
     @Override
     public final Set<Var> getVarsMentioned()                    { return ExprVars.getVarsMentioned(this) ; }
-    @Override
-    public final void varsMentioned(Collection<Var> acc)        { ExprVars.varsMentioned(acc, this) ; }
-
-    /** @deprecated Use {@link ExprVars#getVarNamesMentioned} */
-    @Deprecated
-    public Set<String> getVarNamesMentioned()                   { return ExprVars.getVarNamesMentioned(this) ; }
-
-    /** @deprecated Use {@link ExprVars#varNamesMentioned} */
-    @Deprecated
-    public void varNamesMentioned(Collection<String> acc)       { ExprVars.varNamesMentioned(acc, this) ; }
 
     @Override
     public abstract int hashCode() ;

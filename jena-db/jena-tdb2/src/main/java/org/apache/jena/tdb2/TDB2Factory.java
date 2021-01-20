@@ -35,34 +35,10 @@ public class TDB2Factory
 
     private TDB2Factory() {}
 
-    /** @deprecated Use {@link DatabaseMgr#connectDatasetGraph(Location)} */
-    @Deprecated
-    public static DatasetGraph createDatasetGraph(Location location) {
-        return DatabaseMgr.connectDatasetGraph(location);
-    }
-
-    /** @deprecated Use {@link #connectDataset(Location)} */
-    @Deprecated
-    public static Dataset createDataset(Location location) {
-        return connectDataset(location);
-    }
-
     /** Create or connect to a TDB2-backed dataset */
     public static Dataset connectDataset(Location location) {
         DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(location);
         return DatasetFactory.wrap(dsg);
-    }
-
-    /** @deprecated Use {@link DatabaseMgr#connectDatasetGraph(String)} */
-    @Deprecated
-    public static DatasetGraph createDatasetGraph(String location) {
-        return DatabaseMgr.connectDatasetGraph(location);
-    }
-
-    /** @deprecated Use {@link #connectDataset(String)} */
-    @Deprecated
-    public static Dataset createDataset(String location) {
-        return connectDataset(location);
     }
 
     /** Create or connect to a TDB2-backed dataset */

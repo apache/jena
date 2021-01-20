@@ -109,14 +109,6 @@ public class BulkLoader {
         loadQuads$(dest, urls) ;
     }
 
-    /** Load into a dataset
-     * @deprecated Use {@link #loadDataset(DatasetGraphTDB, InputStream, Lang, boolean, boolean)}
-     */
-    @Deprecated
-    public static void loadDataset(DatasetGraphTDB dsg, InputStream input, boolean showProgress, boolean collectStats) {
-        loadDataset(dsg, input, Lang.NQUADS, showProgress, collectStats);
-    }
-
     /** Load into a dataset */
     public static void loadDataset(DatasetGraphTDB dsg, InputStream input, Lang lang, boolean showProgress, boolean collectStats) {
         BulkStreamRDF dest = destinationDataset(dsg, showProgress, collectStats) ;

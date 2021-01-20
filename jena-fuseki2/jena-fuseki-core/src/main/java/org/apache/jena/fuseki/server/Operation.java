@@ -23,7 +23,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -44,13 +43,6 @@ public class Operation {
     static private Map<Node, Operation> mgr = new HashMap<>();
 
     static public Operation get(Node node) { return mgr.get(node); }
-
-    /** @deprecated Use {@link #alloc(Node, String, String)}. */
-    @Deprecated
-    static public Operation register(String shortName, String description) {
-        String x = IRILib.encodeUriPath(shortName);
-        return alloc("http://migration/"+x, shortName, description);
-    }
 
     /**
      * Create an Operation - this operation interns operations so there is only

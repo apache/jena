@@ -76,34 +76,6 @@ public class DatasetGraphFactory
     public static DatasetGraph createGeneral() { 
         return new DatasetGraphMapLink(graphMakerMem.create(null), graphMakerMem) ;
     }
-
-    /** Create an in-memory {@link Dataset}.
-     * <p>
-     * See also {@link #createTxnMem()} for a transactional dataset.
-     * <p>
-     * Use {@link #createGeneral()} when needing to add graphs with mixed characteristics, 
-     * e.g. inference graphs, or specific graphs from TDB.
-     * <p>    
-     * <em>It does not support the graph indexing feature of jena-text.</em>
-     * <p>
-     * <em>This factory operation is marked "deprecated" because the general purpose "add named graph of any implementation"
-     * feature will be removed; this feature is now provided by {@link #createGeneral()}.
-     * </em>
-     * @deprecated Prefer {@link #createTxnMem()} or {@link #create()} or, for special cases, {@link #createGeneral()}.
-     * @see #createTxnMem
-     */
-   @Deprecated
-    public static DatasetGraph createMem() { return createGeneral() ; }
-    
-    /** Create a DatasetGraph based on an existing one;
-     *  this is a structure copy of the dataset structure
-     *  but graphs are shared
-     *  @deprecated Use {@link #cloneStructure}
-     */
-    @Deprecated
-    public static DatasetGraph create(DatasetGraph dsg) {
-        return cloneStructure(dsg) ;
-    }
     
     /** 
      * Clone the structure of a {@link DatasetGraph}.
@@ -142,13 +114,6 @@ public class DatasetGraphFactory
     public static DatasetGraph wrap(Graph graph) { return DatasetGraphOne.create(graph) ; }
 
     
-    /**
-     * Create a DatasetGraph which only ever has a single default graph.
-     * @deprecated Use {#wrap(Graph)} 
-     */
-    @Deprecated
-    public static DatasetGraph createOneGraph(Graph graph) { return wrap(graph) ; }
-
     /** Interface for making graphs when a dataset needs to add a new graph.
      *  Return null for no graph created.
      */

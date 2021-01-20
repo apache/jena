@@ -96,29 +96,6 @@ public class TDBFactory
     private static DatasetGraph _createDatasetGraph() {
         return TDBMaker.createDatasetGraphTransaction() ;
     }
-    
-    /** Test whether a dataset is backed by TDB.
-     * @deprecated Use {@link #isTDB1(Dataset)}
-     */
-    @Deprecated
-    public static boolean isBackedByTDB(Dataset dataset) {
-        DatasetGraph dsg = dataset.asDatasetGraph() ;
-        return isBackedByTDB(dsg) ;
-    }
-    
-    /** Test whether a dataset is backed by TDB.
-     * @deprecated Use {@link #isTDB1(DatasetGraph)} 
-     */
-    @Deprecated
-    public static boolean isBackedByTDB(DatasetGraph datasetGraph) {
-        if ( datasetGraph instanceof DatasetGraphTransaction )
-            // The switching "connection" for TDB 
-            return true ;
-        if ( datasetGraph instanceof DatasetGraphTDB )
-            // A transaction or the base storage.
-            return true ;
-        return false ;
-    }
 
     /** Test whether a dataset is backed by TDB. */ 
     public static boolean isTDB1(Dataset dataset) {

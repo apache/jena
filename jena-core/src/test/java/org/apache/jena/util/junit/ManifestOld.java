@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A test manifest for a single manifest file.
- * Exists solely while the old Turtle/N3 parsers is test in jena-core.
+ * Exists solely while the old Turtle/N3 parsers is tested in jena-core.
  */
 
 public class ManifestOld

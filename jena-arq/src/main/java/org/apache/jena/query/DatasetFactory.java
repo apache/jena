@@ -88,26 +88,6 @@ public class DatasetFactory {
 		return wrap(DatasetGraphFactory.createGeneral());
 	}
 
-    /** Create an in-memory {@link Dataset}.
-     * <p>
-     * See also {@link #createTxnMem()} for a transactional dataset.
-     * <p>
-     * Use {@link #createGeneral()} when needing to add graphs with mixed characteristics,
-     * e.g. inference graphs, or specific graphs from TDB.
-     * <p>
-     * <em>It does not support the graph indexing feature of jena-text.</em>
-     * <p>
-     * <em>This factory operation is marked "deprecated" because the general purpose "add named graph of any implementation"
-     * feature will be removed; this feature is now provided by {@link #createGeneral()}.
-     * </em>
-     * @deprecated Prefer {@link #createTxnMem()} or {@link #create()} or, for special cases, {@link #createGeneral()}.
-     * @see #createTxnMem
-     */
-    @Deprecated
-    public static Dataset createMem() {
-        return createGeneral() ;
-    }
-
     /**
      * Create a dataset, starting with the model argument as the default graph of the
      * dataset. Named graphs can be added.
@@ -121,17 +101,6 @@ public class DatasetFactory {
 	public static Dataset create(Model model) {
 	    Objects.requireNonNull(model, "Default model must be provided") ;
 		return new DatasetImpl(model);
-	}
-
-	/**
-	 * @param dataset Dataset to clone structure from.
-	 * @return a dataset: clone the dataset structure of named graphs, and share the graphs themselves.
-	 * @deprecated This operation may be removed.
-	 */
-	@Deprecated
-	public static Dataset create(Dataset dataset) {
-	    Objects.requireNonNull(dataset, "Clone dataset is null") ;
-		return new DatasetImpl(dataset);
 	}
 
     /**
@@ -159,18 +128,6 @@ public class DatasetFactory {
         Objects.requireNonNull(model, "Can't wrap a null Model reference") ;
         return DatasetOne.create(model);
     }
-
-    /**
-	 * Wrap a {@link DatasetGraph} to make a dataset
-	 *
-	 * @param dataset DatasetGraph
-	 * @return Dataset
-	 * @deprecated Use {@link #wrap}
-	 */
-	@Deprecated
-	public static Dataset create(DatasetGraph dataset) {
-	    return wrap(dataset);
-	}
 
     /**
 	 * @param uriList URIs merged to form the default dataset

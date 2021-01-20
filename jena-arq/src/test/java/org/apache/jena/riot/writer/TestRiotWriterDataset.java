@@ -100,8 +100,7 @@ public class TestRiotWriterDataset extends AbstractWriterTest
         
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
         String s = StrUtils.fromUTF8bytes(out.toByteArray()) ;
-        @SuppressWarnings("deprecation")
-        Dataset ds2 = DatasetFactory.createMem() ;
+        Dataset ds2 = DatasetFactory.create() ;
         try {
             RDFDataMgr.read(ds2, in, lang) ;
         } catch (RiotException ex)

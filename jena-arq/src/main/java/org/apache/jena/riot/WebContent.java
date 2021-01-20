@@ -42,13 +42,6 @@ public class WebContent
     public static final String      contentTypeRDFJSON           = "application/rdf+json" ;
     public static final ContentType ctRDFJSON                    = ContentType.create(contentTypeRDFJSON) ;
     
-    /** @deprecated Use {@link #contentTypeRDFJSON} */
-    @Deprecated
-    public static final String      contentTypeRdfJson           = contentTypeRDFJSON ;
-    /** @deprecated Use {@link #ctRDFJSON} */
-    @Deprecated
-    public static final ContentType ctRrdfJson                   = ctRDFJSON ;
-
     public static final String      contentTypeJSONLD            = "application/ld+json" ;
     public static final ContentType ctJSONLD                     = ContentType.create(contentTypeJSONLD) ;
 

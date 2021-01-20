@@ -53,15 +53,6 @@ public class JettyLib {
         return sh;
     }
 
-//    /** Create a Jetty {@link SecurityHandler} for basic authentication. */
-//    @Deprecated
-//    public static SecurityHandler makeSecurityHandlerForPathspec(String pathSpec, String realm, UserStore userStore, String role) {
-//        ConstraintSecurityHandler securityHandler = makeSecurityHandler(realm, userStore, role);
-//        // Pathspec based.
-//        addDatasetConstraint(securityHandler, pathSpec);
-//        return securityHandler;
-//    }
-
     /**
      * Digest requires an extra round trip so it is unfriendly to API
      * or scripts that stream.

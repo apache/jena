@@ -296,29 +296,12 @@ public class FusekiServer {
             OperationRegistry.copyConfig(operationRegistry, this.operationRegistry);
         }
 
-        /** Set the port to run on.
-         * @deprecated Use {@link #port}.
-         */
-        @Deprecated
-        public Builder setPort(int port) {
-            return port(port);
-        }
-
         /** Set the port to run on. */
         public Builder port(int port) {
             if ( port < 0 )
                 throw new IllegalArgumentException("Illegal port="+port+" : Port must be greater than or equal to zero.");
             this.serverPort = port;
             return this;
-        }
-
-        /** Context path to Fuseki.  If it's "/" then Fuseki URL look like
-         * "http://host:port/dataset/query" else "http://host:port/path/dataset/query"
-         * @deprecated Use {@link #contextPath}.
-         */
-        @Deprecated
-        public Builder setContextPath(String path) {
-            return contextPath(path);
         }
 
         /** Context path to Fuseki.  If it's "/" then Fuseki URL look like
@@ -330,26 +313,10 @@ public class FusekiServer {
             return this;
         }
 
-        /** Restrict the server to only responding to the localhost interface.
-         *  @deprecated Use {@link #networkLoopback}.
-         */
-        @Deprecated
-        public Builder setLoopback(boolean loopback) {
-            return loopback(loopback);
-        }
-
         /** Restrict the server to only responding to the localhost interface. */
         public Builder loopback(boolean loopback) {
             this.networkLoopback = loopback;
             return this;
-        }
-
-        /** Set the location (filing system directory) to serve static file from.
-         *  @deprecated Use {@link #staticFileBase}.
-         */
-        @Deprecated
-        public Builder setStaticFileBase(String directory) {
-            return staticFileBase(directory);
         }
 
         /** Set the location (filing system directory) to serve static files from. */
@@ -357,16 +324,6 @@ public class FusekiServer {
             requireNonNull(directory, "directory");
             this.staticContentDir = directory;
             return this;
-        }
-
-        /** Set a Jetty SecurityHandler.
-         * <p>
-         *  By default, the server runs with no security.
-         *  @deprecated Use {@link #staticFileBase}.
-         */
-        @Deprecated
-        public Builder setSecurityHandler(SecurityHandler securityHandler) {
-            return securityHandler(securityHandler);
         }
 
         /** Set a Jetty SecurityHandler.
@@ -381,14 +338,6 @@ public class FusekiServer {
             requireNonNull(securityHandler, "securityHandler");
             this.securityHandler = securityHandler;
             return this;
-        }
-
-        /** Set verbose logging
-         *  @deprecated Use {@link #verbose(boolean)}.
-         */
-        @Deprecated
-        public Builder setVerbose(boolean verbose) {
-            return verbose(verbose);
         }
 
         /** Set verbose logging */
@@ -658,7 +607,7 @@ public class FusekiServer {
          * Add the given servlet with the {@code pathSpec}. These servlets are added so
          * that they are checked after the Fuseki filter for datasets and before the
          * static content handler (which is the last servlet) used for
-         * {@link #setStaticFileBase(String)}.
+         * {@link #staticFileBase(String)}.
          */
         public Builder addServlet(String pathSpec, HttpServlet servlet) {
             requireNonNull(pathSpec, "pathSpec");

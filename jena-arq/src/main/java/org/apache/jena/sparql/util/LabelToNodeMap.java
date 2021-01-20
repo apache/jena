@@ -31,7 +31,7 @@ import org.apache.jena.sparql.core.VarAlloc ;
 /** Map from _:* form to bNodes or variables. */
 public class LabelToNodeMap
 {
-    Map<String, Node> bNodeLabels = new HashMap<>() ;
+    private Map<String, Node> bNodeLabels = new HashMap<>() ;
     
     // Variables or bNodes?
     // True means variables (query pattern)

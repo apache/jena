@@ -74,14 +74,6 @@ public class HttpServletResponseTracker extends HttpServletResponseWrapper
     }
 
     @Override
-    @Deprecated
-    public void setStatus(int sc, String sm) {
-        action.statusCode = sc;
-        action.message = sm;
-        super.setStatus(sc, sm);
-    }
-
-    @Override
     public void setContentLength(int len) {
         action.responseContentLength = len;
         super.setContentLength(len);
