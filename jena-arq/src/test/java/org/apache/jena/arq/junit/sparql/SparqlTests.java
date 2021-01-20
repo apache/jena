@@ -46,8 +46,8 @@ public class SparqlTests {
         // Syntax to use for tests where the file extension .rq/.ru applies.
         // Normally, syntaxSPARQL_11
         // For SPARQL*/RDF*, use ARQ syntax so we can run the RDF-star community tests.
-        Syntax querySyntax11 = Syntax.syntaxSPARQL_11;
-        Syntax updateSyntax11 = Syntax.syntaxSPARQL_11;
+        Syntax querySyntax11 = Syntax.syntaxARQ;
+        Syntax updateSyntax11 = Syntax.syntaxARQ;
 
         if ( querySyntax != null )
         {
@@ -74,8 +74,15 @@ public class SparqlTests {
             // == Bad
             if ( testType.equals(TestManifest.NegativeSyntaxTest) )
                 return new QuerySyntaxTest(entry, querySyntax, false) ;
-            if ( testType.equals(TestManifest_11.NegativeSyntaxTest11) )
-                return new QuerySyntaxTest(entry, querySyntax11, false) ;
+            if ( testType.equals(TestManifest_11.NegativeSyntaxTest11) ) {
+                // Special override
+                Syntax syn = querySyntax11;
+                // Some of these are things that ARQ deals with but aren't SPARQL 1.1 so force SPARQL 1.1
+                if ( entry.getAction().getURI().contains("/Syntax-SPARQL_11/syn-bad-") )
+                    syn = Syntax.syntaxSPARQL_11;
+                return new QuerySyntaxTest(entry, syn, false) ;
+            }
+
             if ( testType.equals(TestManifestX.NegativeSyntaxTestARQ) )
                 return new QuerySyntaxTest(entry, Syntax.syntaxARQ, false) ;
 
@@ -150,6 +157,5 @@ public class SparqlTests {
 //                return new SurpressedTest(entry);
         }
         return null;
-
     }
 }

@@ -59,8 +59,11 @@ public class utf8
                         colNum = INIT_COL ;
                     } else
                         colNum++ ;
-                    if ( !Character.isDefined(ch) )
-                        System.out.printf("No such codepoint: 0x%04X\n", ch);
+                    if ( ! Character.isBmpCodePoint(ch) ) {
+                        char[] utf16 = Character.toChars(ch);
+                        if ( utf16.length > 1 )
+                            System.out.printf("Codepoint: hi:0x%04X lo:0x%04X\n", (int)utf16[0], (int)utf16[1]);
+                    }
                 }
                 System.out.printf("%s: chars = %d , lines = %d\n", fn, charCount, lineNum) ;
             }
