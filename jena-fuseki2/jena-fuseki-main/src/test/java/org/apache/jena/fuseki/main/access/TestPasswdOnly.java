@@ -42,9 +42,9 @@ import org.junit.Test;
 public class TestPasswdOnly {
     protected static FusekiServer server; 
     protected static int port;
-    
+
     private static AuthSetup auth1 = new AuthSetup("localhost", port, "user1", "pw1", null);
-    
+
     @BeforeClass public static void beforeClass () {
         port = WebLib.choosePort();
         server = FusekiServer.create()
@@ -57,11 +57,11 @@ public class TestPasswdOnly {
             .build();
         server.start();
     }
-    
+
     @AfterClass public static void afterClass () {
         server.stop();
     }
-    
+
     // Bounced by Jetty.
     @Test(expected=QueryExceptionHTTP.class)
     public void passwd_no_user_A() {
@@ -71,7 +71,7 @@ public class TestPasswdOnly {
             }
         }
     }
-    
+
     @Test
     public void passwd_no_user_B() {
         expectQuery401(() -> {
@@ -90,7 +90,7 @@ public class TestPasswdOnly {
             });
         });
     }
-    
+
     @Test public void passwd_user_bad() {
         AuthSetup auth1 = new AuthSetup("localhost", port, "user99", "pw1", null);
         expectQuery401(

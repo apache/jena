@@ -57,4 +57,13 @@ class AuthUserList implements AuthPolicy {
             return false;
         return collection.contains(obj);
     }
+    
+    @Override
+    public String toString() {
+        StringJoiner sj = new StringJoiner(", ", "Users:(",")");
+        allowedUsers.stream().forEach(policy->{
+             sj.add(policy.toString());
+        });
+        return sj.toString();
+    }
 }

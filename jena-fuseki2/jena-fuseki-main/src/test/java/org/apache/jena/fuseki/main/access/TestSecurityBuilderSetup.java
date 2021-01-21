@@ -155,7 +155,6 @@ public class TestSecurityBuilderSetup {
         });
     }
 
-
     // Should fail.
     @Test public void access_deny_ds() {
         try( TypedInputStream in = HttpOp.execHttpGet(serverURL+"ds") ) {
