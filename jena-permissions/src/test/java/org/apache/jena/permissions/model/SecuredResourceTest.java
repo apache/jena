@@ -775,7 +775,7 @@ public class SecuredResourceTest extends SecuredRDFNodeTest {
 	}
 
 	@Test
-	public void testRemoveAll() {
+	public void testRemoveList() {
 		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] { Action.Update, Action.Delete });
 		final int count = baseModel.listStatements(getBaseRDFNode().asResource(), SecuredRDFNodeTest.p, (RDFNode) null)
 				.toSet().size();

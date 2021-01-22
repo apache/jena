@@ -489,33 +489,6 @@ public class SecuredRDFListTest extends SecuredResourceTest {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-	@Override
-	@Test
-	public void testRemoveAll() {
-		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] { Action.Update, Action.Delete });
-
-		try {
-			final int count = count(SecurityEvaluator.Util.asSet(new Action[] { Action.Delete, Action.Read }));
-			getSecuredRDFList().removeAll();
-			if (!securityEvaluator.evaluate(Action.Update)
-					|| ((count > 0) && !securityEvaluator.evaluate(Action.Delete))) {
-				Assert.fail("Should have thrown AccessDeniedException Exception");
-			}
-		} catch (final AccessDeniedException e) {
-			if (securityEvaluator.evaluate(perms)) {
-				Assert.fail(String.format("Should not have thrown AccessDeniedException Exception: %s - %s", e,
-						e.getTriple()));
-			}
-		} catch (final EmptyListException e) {
-			if (count(Action.Read) == 0) {
-				// expected.
-			} else {
-				throw e;
-			}
-		}
-	}
-
 	@Test
 	public void testRemoveHead() {
 		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] { Action.Update, Action.Delete });
@@ -539,6 +512,7 @@ public class SecuredRDFListTest extends SecuredResourceTest {
 		}
 	}
 
+    @Override
 	@Test
 	public void testRemoveList() {
 		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] { Action.Update, Action.Delete });

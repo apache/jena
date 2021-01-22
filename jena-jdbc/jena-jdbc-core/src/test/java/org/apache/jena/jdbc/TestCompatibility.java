@@ -356,7 +356,7 @@ public class TestCompatibility {
      */
     @Test
     public void test_column_type_detection_strings_06() throws SQLException {
-        testColumnTypeDetection("x", NodeFactory.createAnon(), true, Types.NVARCHAR, String.class.getCanonicalName());
+        testColumnTypeDetection("x", NodeFactory.createBlankNode(), true, Types.NVARCHAR, String.class.getCanonicalName());
     }
     
     /**

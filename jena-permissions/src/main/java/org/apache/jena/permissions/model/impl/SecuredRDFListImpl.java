@@ -627,13 +627,6 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 	}
 
 	@Override
-	@Deprecated
-	public void removeAll() throws UpdateDeniedException,
-			AuthenticationRequiredException {
-		removeList();
-	}
-
-	@Override
 	public SecuredRDFList removeHead() throws UpdateDeniedException,
 			DeleteDeniedException, AuthenticationRequiredException {
 		checkUpdate();

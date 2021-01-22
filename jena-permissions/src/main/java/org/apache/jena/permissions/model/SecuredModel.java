@@ -282,7 +282,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 * @sec.triple Create if t does exist
 	 * @throws UpdateDeniedException
 	 * @throws AddDeniedException
-	 * @throws ReadException
+	 * @throws ReadDeniedException
 	 * @throws AuthenticationRequiredException
 	 *             if user is not authenticated and is required to be.
 	 */

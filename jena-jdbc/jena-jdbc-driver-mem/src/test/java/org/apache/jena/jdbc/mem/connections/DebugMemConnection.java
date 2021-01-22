@@ -22,7 +22,6 @@ import java.sql.SQLException;
 
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
-import org.apache.jena.jdbc.mem.connections.MemConnection;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 
@@ -37,7 +36,7 @@ public class DebugMemConnection extends MemConnection {
      * @throws SQLException
      */
     public DebugMemConnection() throws SQLException {
-        this(DatasetFactory.createMem());
+        this(DatasetFactory.create());
     }
 
     /**
