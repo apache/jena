@@ -68,14 +68,6 @@ public class DatasetImpl implements Dataset
         this.transactional = dsg ;
     }
 
-    /** Create a Dataset with a copy of the structure of another one,
-     * while sharing the graphs themselves.  
-     */
-    @Deprecated
-    public DatasetImpl(Dataset ds) {
-        this(DatasetGraphFactory.cloneStructure(ds.asDatasetGraph())) ;
-    }
-
     @Override
     public Model getDefaultModel() { 
         return ModelFactory.createModelForGraph(dsg.getDefaultGraph()) ; 

@@ -281,22 +281,6 @@ public class LogCtl {
         setLogging();
     }
 
-    /**
-     * @deprecated Use {@link #setLog4j2}
-     */
-    @Deprecated
-    public static void setLog4j() {
-        System.err.println("Log4j1 supported removed. Please use setLog4j2.");
-    }
-
-    /**
-     * @deprecated Use logging provider setup. For log4j2, use system property "log4j.configurationFile"
-     */
-    @Deprecated
-    public static void setLog4j(String filename) {
-        System.err.println("Log4j1 supported removed. Please use setLog4j2.");
-    }
-
     // ---- log4j2.
 
     /** The log4j2 configuration file - must be a file or URL, not a classpath java resource */

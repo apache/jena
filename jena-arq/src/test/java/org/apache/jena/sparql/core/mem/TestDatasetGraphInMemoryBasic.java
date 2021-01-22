@@ -97,11 +97,11 @@ public class TestDatasetGraphInMemoryBasic extends AbstractDatasetGraphTests {
 		dsg.add(q);
 		// Expected in the union graph
 		Quad q2 = Quad.create(unionGraph, q.asTriple());
-		assertTrue(iter(dsg.find(unionGraph, ANY, ANY, ANY)).some(q2::equals));
+		assertTrue(iter(dsg.find(unionGraph, ANY, ANY, ANY)).anyMatch(q2::equals));
 		// no triples from default graph should appear in union
 		Triple t = Triple.create(createBlankNode(), createBlankNode(), createBlankNode());
 		dsg.getDefaultGraph().add(t);
-		assertFalse(iter(dsg.find(unionGraph, ANY, ANY, ANY)).some(Quad::isDefaultGraph));
+		assertFalse(iter(dsg.find(unionGraph, ANY, ANY, ANY)).anyMatch(Quad::isDefaultGraph));
 	}
 
     @Test

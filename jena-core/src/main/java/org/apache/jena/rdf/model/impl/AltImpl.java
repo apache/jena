@@ -129,11 +129,6 @@ public class AltImpl extends ContainerImpl implements Alt {
     }
     
     @Override
-    @Deprecated public Resource getDefaultResource(ResourceF f)  {
-    	return needDefaultStatement().getResource();
-    }
-    
-    @Override
     public Alt getDefaultAlt()  {
     	return needDefaultStatement().getAlt();
     }

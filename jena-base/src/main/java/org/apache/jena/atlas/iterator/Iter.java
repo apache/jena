@@ -261,16 +261,6 @@ public class Iter<T> implements Iterator<T> {
     /**
      * Return true if every element of stream passes the filter (reads the
      * stream until the first element not passing the filter)
-     * @deprecated Use {@link #allMatch}
-     */
-    @Deprecated
-    public static <T> boolean every(Iterator<? extends T> iter, Predicate<T> predicate) {
-        return Iter.allMatch(iter, predicate);
-    }
-
-    /**
-     * Return true if every element of stream passes the filter (reads the
-     * stream until the first element not passing the filter)
      */
     public static <T> boolean allMatch(Iterator<T> iter, Predicate<? super T> predicate) {
         while ( iter.hasNext() ) {
@@ -281,16 +271,6 @@ public class Iter<T> implements Iterator<T> {
         return true ;
     }
     
-    /**
-     * Return true if one or more elements of stream passes the filter (reads
-     * the stream to first element passing the filter)
-     * @deprecated Use {@link #anyMatch}
-     */
-    @Deprecated
-    public static <T> boolean some(Iterator<T> iter, Predicate<? super T> predicate) {
-        return Iter.anyMatch(iter, predicate);
-    }
-
     /**
      * Return true if one or more elements of stream passes the filter (reads
      * the stream to first element passing the filter)
@@ -327,6 +307,21 @@ public class Iter<T> implements Iterator<T> {
     }
 
     /**
+     * Return an Optional with the last element of an iterator that matches the predicate.
+     * Return {@code Optional.empty} if no match.
+     * Reads the iterator.
+     */
+    public static <T> Optional<T> findLast(Iterator<T> iter, Predicate<? super T> predicate) {
+        T thing = null;
+        while ( iter.hasNext() ) {
+            T item = iter.next() ;
+            if ( predicate.test(item) )
+                thing = item;
+        }
+        return Optional.ofNullable(thing);
+    }
+    
+    /**
      * Return an Optional with an element of an iterator that matches the predicate.
      * Return {@code Optional.empty} if none match.
      * The element returned is not specified by the API contract. 
@@ -358,15 +353,6 @@ public class Iter<T> implements Iterator<T> {
             }
         } ;
         return iter ;
-    }
-
-    /** Transform a list of elements to a new list of the function applied to each element.
-     * Using a stream is often better.  This operation preserves the order of the list.
-     * @deprecated Use Java8 Streams
-     */
-    @Deprecated
-    public static <T, R> List<R> map(List<? extends T> list, Function<T, R> converter) {
-        return toList(map(list.iterator(), converter)) ;
     }
 
     /** 
@@ -680,12 +666,6 @@ public class Iter<T> implements Iterator<T> {
         sink.close() ;
     }
 
-    /** Send the elements of the iterable to a sink */
-    @Deprecated
-    public static <T> void sendToSink(Iterable<T> stream, Sink<T> sink) {
-        sendToSink(stream.iterator(), sink) ;
-    }
-
     // ----
     // Iter class part : factories
 
@@ -757,12 +737,6 @@ public class Iter<T> implements Iterator<T> {
         return null ;
     }
 
-    /** @deprecated Use Java8 Streams */
-    @Deprecated
-    public static <T> T first(Collection<T> collection, Predicate<T> filter) {
-        return collection.stream().filter(filter).findFirst().orElse(null);
-    }
-
     /** Skip to the first element meeting a condition and return that element's index (zero-based). */
     public static <T> int firstIndex(Iterator<T> iter, Predicate<T> filter) {
         for (int idx = 0; iter.hasNext(); idx++) {
@@ -773,19 +747,13 @@ public class Iter<T> implements Iterator<T> {
         return -1 ;
     }
 
-    /** @deprecated Use Java8 Streams */
-    @Deprecated
-    public static <T> int firstIndex(Collection<T> collection, Predicate<T> filter) {
-        return firstIndex(collection.iterator(), filter) ;
-    }
-
     /** Return the last element or null, if no elements. This operation consumes the iterator. */
     public static <T> T last(Iterator<T> iter) {
         return last(iter, (x)->true) ;
     }
 
     /** Return the last element satisfying a predicate. This operation consumes the whole iterator. */
-    public static <T> T last(Iterator<T> iter, Predicate<T> filter) {
+    public static <T> T last(Iterator<T> iter, Predicate<? super T> filter) {
         T thing = null ;
         while (iter.hasNext()) {
             T t = iter.next() ;
@@ -795,27 +763,14 @@ public class Iter<T> implements Iterator<T> {
         return thing ;
     }
 
-    /** @deprecated Use Java8 Streams */
-    @Deprecated
-    public static <T> T last(Collection<T> collection, Predicate<T> filter) {
-        return last(collection.iterator(), filter) ;
-    }
-
-    /** Return the index of the last element satisfying a predicate (zero-based). */
-    public static <T> int lastIndex(Iterator<T> iter, Predicate<T> filter) {
-        int location = -1 ;
-        for (int idx = 0; iter.hasNext(); idx++) {
-            T t = iter.next() ;
+    /** Find the last occurrence, defined by a predicate, in a list. */
+    public static <T> int lastIndex(List<T> list, Predicate<? super T> filter) {
+        for (int idx = list.size()-1; idx >= 0 ; idx--) {
+            T t = list.get(idx);
             if ( filter.test(t) )
-                location = idx ;
+                return idx;
         }
-        return location ;
-    }
-
-    /** @deprecated Use Java8 Streams */
-    @Deprecated
-    public static <T> int lastIndex(Collection<T> collection, Predicate<T> filter) {
-        return lastIndex(collection.iterator(), filter) ;
+        return -1;
     }
 
     // ------------------------------------------------------
@@ -864,29 +819,9 @@ public class Iter<T> implements Iterator<T> {
         return firstIndex(iterator, filter) ;
     }
 
-    /** Return the last element satisfying a predicate. This operation destroys the whole iterator. */
-    public T last(Predicate<T> filter) {
-        return last(iterator, filter) ;
-    }
-
-    /** Return the index of the last element satisfying a predicate (zero-based). */
-    public int lastIndex(Predicate<T> filter) {
-        return lastIndex(iterator, filter) ;
-    }
-
     /** Filter by predicate */  
     public Iter<T> filter(Predicate<T> filter) {
         return iter(filter(iterator, filter)) ;
-    }
-
-    /** Return true if every element satisfies a predicate */ 
-    public boolean every(Predicate<T> predicate) {
-        return every(iterator, predicate) ;
-    }
-
-    /** Return true if some element satisfies a predicate */ 
-    public boolean some(Predicate<T> filter) {
-        return some(iterator, filter) ;
     }
 
     public boolean allMatch(Predicate<? super T> predicate) {
@@ -909,6 +844,10 @@ public class Iter<T> implements Iterator<T> {
         return findAny(iterator, predicate);
     }
 
+    public Optional<T> findLast(Predicate<? super T> predicate) {
+        return findLast(iterator, predicate);
+    }
+    
     /** Remove nulls */
     public Iter<T> removeNulls() {
         return iter(removeNulls(this)) ;

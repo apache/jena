@@ -330,10 +330,6 @@ public class IRILib
         return false ;
     }
 
-    /** @deprecated Use {@link #decodeHex} */
-    @Deprecated
-    public static String decode(String string) { return decodeHex(string); }
-
     /**
      * Decode a string that may have %-encoded sequences.
      * <p>

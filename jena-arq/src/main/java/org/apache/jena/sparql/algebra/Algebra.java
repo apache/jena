@@ -95,16 +95,6 @@ public class Algebra
         return AlgebraQuad.quadizeBlock(op) ;
     }
 
-    /** Transform an algebra expression so that default graph is union of the named graphs.
-     * Does not work with property paths.
-     * @deprecated To be removed
-     */
-    @Deprecated
-    public static Op unionDefaultGraph(Op op)
-    {
-        return TransformUnionQuery.transform(op) ;
-    }
-
     // -------- SSE uses these operations ...
 
     static public Op read(String filename)
