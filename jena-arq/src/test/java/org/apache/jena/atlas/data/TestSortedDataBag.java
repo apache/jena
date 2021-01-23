@@ -30,7 +30,6 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryCancelledException ;
 import org.apache.jena.query.SortCondition ;
-import org.apache.jena.riot.system.SerializationFactoryFinder ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
@@ -38,6 +37,7 @@ import org.apache.jena.sparql.engine.binding.BindingComparator ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.expr.ExprVar ;
+import org.apache.jena.sparql.system.SerializationFactoryFinder;
 import org.junit.Test ;
 
 public class TestSortedDataBag

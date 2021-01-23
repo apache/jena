@@ -26,7 +26,6 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.NodeFactory ;
 import org.junit.Test ;
 import org.apache.jena.query.SortCondition ;
-import org.apache.jena.riot.system.SerializationFactoryFinder ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingComparator ;
@@ -36,6 +35,7 @@ import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderBinding ;
+import org.apache.jena.sparql.system.SerializationFactoryFinder;
 import org.apache.jena.sparql.util.NodeUtils ;
 import static org.junit.Assert.*;
 

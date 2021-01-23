@@ -23,13 +23,13 @@ import java.util.List;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.riot.out.SinkQuadBracedOutput;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.modify.request.UpdateDataWriter.UpdateMode ;
 import org.apache.jena.sparql.serializer.FormatterElement ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.syntax.Element ;
+import org.apache.jena.sparql.system.SinkQuadBracedOutput;
 import org.apache.jena.sparql.util.FmtUtils ;
 import org.apache.jena.sparql.util.NodeToLabelMapBNode ;
 
@@ -38,8 +38,6 @@ public class UpdateWriterVisitor implements UpdateVisitor
     protected static final int BLOCK_INDENT = 2 ;
     protected final IndentedWriter out ;
     protected final SerializationContext sCxt ;
-
-    // TODO newline policy - don't add until needed.
 
     public UpdateWriterVisitor(IndentedWriter out, SerializationContext sCxt)
     {
@@ -166,8 +164,11 @@ public class UpdateWriterVisitor implements UpdateVisitor
     {
         UpdateDataWriter udw = new UpdateDataWriter(UpdateMode.INSERT, out, sCxt);
         udw.open();
-        Iter.sendToSink(update.getQuads().iterator(), udw);  // Iter.sendToSink() will call close() on the sink
-        udw.close();
+        try { 
+            Iter.sendToSink(update.getQuads().iterator(), udw);
+        } finally {
+            udw.close();
+        }
     }
 
     @Override
@@ -175,11 +176,12 @@ public class UpdateWriterVisitor implements UpdateVisitor
     {
         UpdateDataWriter udw = new UpdateDataWriter(UpdateMode.DELETE, out, sCxt);
         udw.open();
-        Iter.sendToSink(update.getQuads().iterator(), udw); // Iter.sendToSink() will call close() on the sink
-        udw.close();
+        try { 
+            Iter.sendToSink(update.getQuads().iterator(), udw);
+        } finally {
+            udw.close();
+        }
     }
-
-    // Prettier later.
 
     protected void outputQuadsBraced(List<Quad> quads)
     {

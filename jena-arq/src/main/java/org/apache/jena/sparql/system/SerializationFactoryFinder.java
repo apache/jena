@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system;
+package org.apache.jena.sparql.system;
 
 import java.io.InputStream ;
 import java.io.OutputStream ;
@@ -29,8 +29,10 @@ import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.lang.LangNQuads ;
 import org.apache.jena.riot.lang.LangNTriples ;
 import org.apache.jena.riot.out.NodeToLabel ;
-import org.apache.jena.riot.out.SinkQuadOutput ;
-import org.apache.jena.riot.out.SinkTripleOutput ;
+import org.apache.jena.riot.system.ErrorHandlerFactory;
+import org.apache.jena.riot.system.IRIResolver;
+import org.apache.jena.riot.system.ParserProfile;
+import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerText;
 import org.apache.jena.sparql.core.Quad ;

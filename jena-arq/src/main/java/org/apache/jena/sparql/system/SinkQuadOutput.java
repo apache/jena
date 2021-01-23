@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.out;
+package org.apache.jena.sparql.system;
 
 import java.io.OutputStream ;
 
@@ -25,6 +25,9 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.out.NodeFormatter;
+import org.apache.jena.riot.out.NodeFormatterNT;
+import org.apache.jena.riot.out.NodeToLabel;
 import org.apache.jena.riot.writer.WriterStreamRDFPlain ;
 import org.apache.jena.sparql.core.Quad ;
 

@@ -41,7 +41,6 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryExecutionFactory ;
 import org.apache.jena.riot.*;
-import org.apache.jena.riot.system.SerializationFactoryFinder ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.core.* ;
 import org.apache.jena.sparql.engine.Plan ;
@@ -54,6 +53,7 @@ import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.syntax.ElementGroup ;
 import org.apache.jena.sparql.syntax.ElementNamedGraph ;
 import org.apache.jena.sparql.syntax.ElementTriplesBlock ;
+import org.apache.jena.sparql.system.SerializationFactoryFinder;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.update.UpdateException ;
 

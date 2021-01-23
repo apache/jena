@@ -24,13 +24,13 @@ import org.apache.jena.atlas.data.* ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.SortCondition ;
-import org.apache.jena.riot.system.SerializationFactoryFinder ;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingComparator ;
 import org.apache.jena.sparql.engine.binding.BindingProjectNamed ;
+import org.apache.jena.sparql.system.SerializationFactoryFinder;
 
 /**
  * A QueryIterator that suppresses items already seen. This will stream results

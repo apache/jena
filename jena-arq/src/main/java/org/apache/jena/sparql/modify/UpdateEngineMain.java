@@ -29,7 +29,7 @@ import org.apache.jena.sparql.util.Context ;
 /**
  * Default implementation of an update engine based on stream updates to a worker
  * function. In addition, it applies INSERT DATA and DELETE DATA driven off the updates,
- * which may be directly from the parser 
+ * which may be directly from the parser.
  * <p>
  * Developers who only want to change/extend the processing of individual updates can
  * easily

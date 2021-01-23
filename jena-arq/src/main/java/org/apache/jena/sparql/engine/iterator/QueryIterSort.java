@@ -30,11 +30,11 @@ import org.apache.jena.atlas.iterator.IteratorDelayedInitialization;
 import org.apache.jena.atlas.lib.Closeable;
 import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.query.SortCondition;
-import org.apache.jena.riot.system.SerializationFactoryFinder;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingComparator;
+import org.apache.jena.sparql.system.SerializationFactoryFinder;
 
 /**
  * Sort a query iterator. The sort will happen in-memory unless the size of the
