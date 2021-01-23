@@ -32,7 +32,6 @@ import org.apache.jena.atlas.data.ThresholdPolicy ;
 import org.apache.jena.atlas.data.ThresholdPolicyFactory ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph ;
@@ -44,7 +43,6 @@ import org.apache.jena.query.QueryExecutionFactory ;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.SerializationFactoryFinder ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.core.* ;
 import org.apache.jena.sparql.engine.Plan ;
 import org.apache.jena.sparql.engine.binding.Binding ;
@@ -284,45 +282,9 @@ public class UpdateEngineWorker implements UpdateVisitor
     // ----
     
     @Override
-    public Sink<Quad> createInsertDataSink() {
-        return new Sink<Quad>() {
-            @Override
-            public void send(Quad quad) {
-                addToDatasetGraph(datasetGraph, quad);
-            }
-
-            @Override
-            public void flush() {
-                SystemARQ.sync(datasetGraph);
-            }
-
-            @Override
-            public void close() {}
-        };
-    }
-    
-    @Override
     public void visit(UpdateDataInsert update) {
         for ( Quad quad : update.getQuads() )
             addToDatasetGraph(datasetGraph, quad);
-    }
-
-    @Override
-    public Sink<Quad> createDeleteDataSink() {
-        return new Sink<Quad>() {
-            @Override
-            public void send(Quad quad) {
-                deleteFromDatasetGraph(datasetGraph, quad);
-            }
-
-            @Override
-            public void flush() {
-                SystemARQ.sync(datasetGraph);
-            }
-
-            @Override
-            public void close() {}
-        };
     }
 
     @Override

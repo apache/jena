@@ -18,12 +18,15 @@
 
 package org.apache.jena.sparql.modify;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.graph.* ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.QueryException ;
@@ -295,6 +298,29 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
         assertTrue(gStore.getDefaultGraph().isIsomorphicWith(gStore.getGraph(graphIRI)));
     }
     
+    @Test public void testUpdateInsertData() {
+        DatasetGraph dsg = getEmptyDatasetGraph() ;
+        String updateStr = "INSERT DATA { <x:s> <x:p> 'dft' }";
+        byte[] bytes = Bytes.string2bytes(updateStr);
+        UsingList usingList = new UsingList();
+        InputStream in = new ByteArrayInputStream(bytes);
+        UpdateAction.parseExecute(usingList, dsg, in);
+        assertEquals(1, dsg.getDefaultGraph().size());
+    }
+    
+    @Test public void testUpdateDeleteData() {
+        DatasetGraph dsg = getEmptyDatasetGraph() ;
+        dsg.add(SSE.parseQuad("(_ <x:s> <x:p> <x:o>)"));
+        assertEquals(1, dsg.getDefaultGraph().size());
+        
+        String updateStr =  "DELETE DATA { <x:s> <x:p> <x:o> }";
+        byte[] bytes = Bytes.string2bytes(updateStr);
+        UsingList usingList = new UsingList();
+        InputStream in = new ByteArrayInputStream(bytes);
+        UpdateAction.parseExecute(usingList, dsg, in);
+        assertEquals(0, dsg.getDefaultGraph().size());
+    }
+    
     @Test public void testUpdateScript1()
     {
         DatasetGraph gStore = getEmptyDatasetGraph() ;
@@ -375,7 +401,6 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
         assertEquals(0, gStore.getDefaultGraph().size()) ;
     }
 
-    
     @Test(expected = QueryException.class) public void testUpdateBad1()      { testBad("bad-1.ru", 1) ; }
     @Test public void testUpdateBad2()      { testBad("bad-2.ru", 1) ; }
     @Test public void testUpdateBad3()      { testBad("bad-3.ru", 0) ; }

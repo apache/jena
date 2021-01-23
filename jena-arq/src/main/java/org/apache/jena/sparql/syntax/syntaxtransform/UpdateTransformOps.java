@@ -22,7 +22,6 @@ import java.util.ArrayList ;
 import java.util.List ;
 import java.util.Map ;
 
-import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.rdf.model.Literal ;
 import org.apache.jena.rdf.model.RDFNode ;
@@ -216,17 +215,6 @@ public class UpdateTransformOps {
             else
                 return TransformElementLib.apply(n, exprTransform) ;
         }
-
-        @Override
-        public Sink<Quad> createInsertDataSink() {
-            return null ;
-        }
-
-        @Override
-        public Sink<Quad> createDeleteDataSink() {
-            return null ;
-        }
-
     }
 
 }

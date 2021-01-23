@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.lib.Sink;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.out.SinkQuadBracedOutput;
 import org.apache.jena.sparql.ARQException ;
@@ -55,9 +54,7 @@ public class UpdateWriterVisitor implements UpdateVisitor
         out.print(" ") ;
         if ( update.isSilent() )
             out.print("SILENT ") ;
-
         printTarget(update.getTarget()) ;
-
     }
 
     protected void printTarget(Target target)
@@ -164,33 +161,22 @@ public class UpdateWriterVisitor implements UpdateVisitor
     public void visit(UpdateMove update)
     { printUpdate2(update, "MOVE") ; }
 
-
-    @Override
-    public Sink<Quad> createInsertDataSink()
-    {
-        UpdateDataWriter udw = new UpdateDataWriter(UpdateMode.INSERT, out, sCxt);
-        udw.open();
-        return udw;
-    }
-
     @Override
     public void visit(UpdateDataInsert update)
     {
-        Iter.sendToSink(update.getQuads().iterator(), createInsertDataSink());  // Iter.sendToSink() will call close() on the sink
-    }
-
-    @Override
-    public Sink<Quad> createDeleteDataSink()
-    {
-        UpdateDataWriter udw = new UpdateDataWriter(UpdateMode.DELETE, out, sCxt);
+        UpdateDataWriter udw = new UpdateDataWriter(UpdateMode.INSERT, out, sCxt);
         udw.open();
-        return udw;
+        Iter.sendToSink(update.getQuads().iterator(), udw);  // Iter.sendToSink() will call close() on the sink
+        udw.close();
     }
 
     @Override
     public void visit(UpdateDataDelete update)
     {
-        Iter.sendToSink(update.getQuads().iterator(), createDeleteDataSink()); // Iter.sendToSink() will call close() on the sink
+        UpdateDataWriter udw = new UpdateDataWriter(UpdateMode.DELETE, out, sCxt);
+        udw.open();
+        Iter.sendToSink(update.getQuads().iterator(), udw); // Iter.sendToSink() will call close() on the sink
+        udw.close();
     }
 
     // Prettier later.

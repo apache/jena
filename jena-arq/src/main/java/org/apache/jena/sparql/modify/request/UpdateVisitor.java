@@ -18,9 +18,6 @@
 
 package org.apache.jena.sparql.modify.request;
 
-import org.apache.jena.atlas.lib.Sink ;
-import org.apache.jena.sparql.core.Quad ;
-
 public interface UpdateVisitor
 {
     public void visit(UpdateDrop update) ;
@@ -38,6 +35,6 @@ public interface UpdateVisitor
     public void visit(UpdateDeleteWhere update) ;
     public void visit(UpdateModify update) ;
     
-    public Sink<Quad> createInsertDataSink();
-    public Sink<Quad> createDeleteDataSink();
+//    public Sink<Quad> createInsertDataSink();
+//    public Sink<Quad> createDeleteDataSink();
 }

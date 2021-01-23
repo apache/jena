@@ -32,7 +32,6 @@ public interface UpdateSink extends Sink<Update>
 {
     public Prologue getPrologue();
 
-    // TODO make an interface for the quad sinks
     public QuadDataAccSink createInsertDataSink();
 
     public QuadDataAccSink createDeleteDataSink();

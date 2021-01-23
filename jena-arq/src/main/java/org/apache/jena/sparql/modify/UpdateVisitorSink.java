@@ -18,44 +18,49 @@
 
 package org.apache.jena.sparql.modify;
 
+import org.apache.jena.atlas.lib.Sink;
 import org.apache.jena.sparql.core.Prologue ;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.modify.request.QuadDataAccSink ;
 import org.apache.jena.sparql.modify.request.UpdateVisitor ;
 import org.apache.jena.update.Update ;
 
+/**
+ * UpdateSink that sends every Update to a worker visitor
+ * except for    
+ */
 public class UpdateVisitorSink implements UpdateSink
 {
-    private final Prologue prologue;
+    private final Prologue prologue = new Prologue();
     private final UpdateVisitor worker;
+    private final Sink<Quad> addSink;
+    private final Sink<Quad> delSink;
     
-    public UpdateVisitorSink(UpdateVisitor worker)
-    {
-        this.prologue = new Prologue();
+    public UpdateVisitorSink(UpdateVisitor worker, Sink<Quad> addSink, Sink<Quad> delSink) {
         this.worker = worker;
+        this.addSink = addSink;
+        this.delSink = delSink;
     }
-    
+
     @Override
-    public Prologue getPrologue()
-    {
+    public Prologue getPrologue() {
         return prologue;
     }
-    
+
     @Override
-    public void send(Update update)
-    {
+    public void send(Update update) {
         update.visit(worker);
     }
     
+    // The sink for INSERT DATA, DELETE DATA to go straight to sink handlers.
     @Override
-    public QuadDataAccSink createInsertDataSink()
-    {
-        return new QuadDataAccSink(worker.createInsertDataSink());
+    public QuadDataAccSink createInsertDataSink() {
+        return new QuadDataAccSink(addSink);
     }
-    
+
     @Override
-    public QuadDataAccSink createDeleteDataSink()
-    {
-        return new QuadDataAccSink(worker.createDeleteDataSink());
+    public QuadDataAccSink createDeleteDataSink() {
+        return new QuadDataAccSink(delSink);
     }
 
     @Override
