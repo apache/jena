@@ -18,9 +18,9 @@
 
 package org.apache.jena.sparql;
 
-import org.apache.jena.riot.system.Prologue;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
+import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.util.Symbol ;
 
 /**

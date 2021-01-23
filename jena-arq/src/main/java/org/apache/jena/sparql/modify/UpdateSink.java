@@ -28,7 +28,6 @@ import org.apache.jena.update.Update ;
  * or an {@link org.apache.jena.update.UpdateRequest}) that can process or store a single SPARQL Update
  * request which consists of one or more SPARQL Update operations.
  */
-// TODO More documentation!
 public interface UpdateSink extends Sink<Update>
 {
     public Prologue getPrologue();

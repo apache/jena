@@ -26,7 +26,6 @@ import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.system.Prologue ;
 import org.apache.jena.riot.writer.WriterStreamRDFPlain ;
 
 /**
@@ -37,23 +36,14 @@ import org.apache.jena.riot.writer.WriterStreamRDFPlain ;
  */
 public class SinkTripleOutput implements Sink<Triple>
 {
-    // WriterStreamRDFTuples
-
-    private Prologue      prologue    = null ;
     private final AWriter out ;
     private NodeToLabel   labelPolicy = null ;
 
     private NodeFormatter nodeFmt     = new NodeFormatterNT() ;
 
-    public SinkTripleOutput(OutputStream outs, Prologue prologue, NodeToLabel labels) {
+    public SinkTripleOutput(OutputStream outs, NodeToLabel labels) {
         out = IO.wrapUTF8(outs) ;
-        setPrologue(prologue) ;
         setLabelPolicy(labels) ;
-    }
-
-    // Need to do this later sometimes to sort out the plumbing.
-    public void setPrologue(Prologue prologue) {
-        this.prologue = prologue ;
     }
 
     public void setLabelPolicy(NodeToLabel labels) {

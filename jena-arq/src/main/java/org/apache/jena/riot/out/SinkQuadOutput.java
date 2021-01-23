@@ -25,7 +25,6 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.system.Prologue ;
 import org.apache.jena.riot.writer.WriterStreamRDFPlain ;
 import org.apache.jena.sparql.core.Quad ;
 
@@ -35,22 +34,14 @@ import org.apache.jena.sparql.core.Quad ;
  */ 
 public class SinkQuadOutput implements Sink<Quad>
 {
-    private Prologue prologue = null ;
     private AWriter out ;
     private NodeToLabel labelPolicy = null ;
     private NodeFormatter nodeFmt = new NodeFormatterNT() ;
 
-    public SinkQuadOutput(OutputStream outs, Prologue prologue, NodeToLabel labels)
+    public SinkQuadOutput(OutputStream outs, NodeToLabel labels)
     {
         out = IO.wrapUTF8(outs) ;
-        setPrologue(prologue) ;
         setLabelPolicy(labels) ;
-    }
-    
-    // Need to do this later sometimes to sort out the plumbing.
-    public void setPrologue(Prologue prologue)
-    {
-        this.prologue = prologue ;
     }
     
     public void setLabelPolicy(NodeToLabel labels)

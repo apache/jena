@@ -77,7 +77,6 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
     static ParserProfile profile()
     {
         // Don't do anything with IRIs or blank nodes.
-        Prologue prologue = new Prologue(PrefixMapFactory.create(), IRIResolver.createNoResolve()) ;
         ErrorHandler handler = ErrorHandlerFactory.getDefaultErrorHandler() ;
         FactoryRDF factory = RiotLib.factoryRDF(LabelToNode.createUseLabelAsGiven()) ;
         ParserProfile profile = RiotLib.createParserProfile(factory, handler, false);

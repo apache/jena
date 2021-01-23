@@ -72,7 +72,7 @@ public class SerializationFactoryFinder
             @Override
             public Sink<Triple> createSerializer(OutputStream out)
             {
-                return new SinkTripleOutput(out, null, NodeToLabel.createBNodeByLabelEncoded()) ;
+                return new SinkTripleOutput(out, NodeToLabel.createBNodeByLabelEncoded()) ;
             }
             
             @Override
@@ -103,7 +103,7 @@ public class SerializationFactoryFinder
             @Override
             public Sink<Quad> createSerializer(OutputStream out)
             {
-                return new SinkQuadOutput(out, null, NodeToLabel.createBNodeByLabelEncoded()) ;
+                return new SinkQuadOutput(out, NodeToLabel.createBNodeByLabelEncoded()) ;
             }
             
             @Override

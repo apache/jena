@@ -114,10 +114,6 @@ public class NodeFmtLib
         serialize(w, n, null, null);
     }
 
-    public static String str(Node n, Prologue prologue) {
-        return str(n, prologue.getBaseURI(), prologue.getPrefixMap());
-    }
-
     public static String str(Node n, PrefixMap prefixMap) {
         return str(n, null, prefixMap);
     }
@@ -126,10 +122,6 @@ public class NodeFmtLib
         IndentedLineBuffer sw = new IndentedLineBuffer();
         serialize(sw, n, base, prefixMap);
         return sw.toString();
-    }
-
-    public static void serialize(IndentedWriter w, Node n, Prologue prologue) {
-        serialize(w, n, prologue.getBaseURI(), prologue.getPrefixMap());
     }
 
     public static void serialize(IndentedWriter w, Node n, String base, PrefixMap prefixMap) {

@@ -341,7 +341,10 @@ public class TestAdmin extends AbstractFusekiTest {
             checkInTasks(id);
 
             JsonValue task = getTask(id);
-            Assert.assertNotNull(id);
+            // Due to timing dependence of this test, task can be null on a heavily
+            // loaded setup which has become "jittery" (long pauses, meaning many
+            // seconds, for CPU scheduling).
+            Assert.assertNotNull(task);
             // Expect task success
             Assert.assertTrue("Expected task to be marked as successful", task.getAsObject().getBoolean(JsonConstCtl.success));
         } finally {

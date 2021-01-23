@@ -81,8 +81,8 @@ public class SPARQLParserBase extends ParserBase
     public void setUpdateSink(UpdateSink sink)
     { 
         this.sink = sink ;
-        this.query = new Query() ; 
-        setPrologue(sink.getPrologue()) ;
+        this.query = null ; 
+        setPrologue(sink.getPrologue());
     }
 
     // Signal start/finish of units
