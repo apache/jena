@@ -22,7 +22,6 @@ import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.iri.IRI;
 import org.apache.jena.riot.tokens.Token;
 import org.apache.jena.sparql.core.Quad;
 
@@ -40,16 +39,6 @@ import org.apache.jena.sparql.core.Quad;
 public interface ParserProfile {
     /** Resolve a URI, returning a string */
     public String resolveIRI(String uriStr, long line, long col);
-
-    /**
-     * Resolve a URI, returning an IRI.
-     * @deprecated Use {@link #resolveIRI(String, long, long)}. This method will be removed.
-     */
-    @Deprecated
-    public default IRI makeIRI(String uriStr, long line, long col) {
-        String resolved = resolveIRI(uriStr, line, col);
-        return IRIResolver.parseIRI(resolved);
-    }
 
     /* Reset the base for IRI resolution. */
     public void setBaseIRI(String baseIRI);

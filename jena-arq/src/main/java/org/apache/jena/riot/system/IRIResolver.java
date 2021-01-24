@@ -71,7 +71,7 @@ public abstract class IRIResolver
         // Choices
         setErrorWarning(iriFactoryInst, ViolationCodes.LOWERCASE_PREFERRED, false, true);
         //setErrorWarning(iriFactoryInst, ViolationCodes.PERCENT_ENCODING_SHOULD_BE_UPPERCASE, false, true);
-        
+
         // NFC tests are not well understood by general developers and these cause confusion.
         // See JENA-864
         // NFC is in RDF 1.1 so do test for that.
@@ -88,7 +88,7 @@ public abstract class IRIResolver
         // The set of legal characters depends on the Java version.
         // If not set, this causes test failures in Turtle and Trig eval tests.
         setErrorWarning(iriFactoryInst, ViolationCodes.UNASSIGNED_UNICODE_CHARACTER, false, false);
-        
+       
 
         if ( ShowResolverSetup ) {
             System.out.println("---- After initialization ----");
@@ -96,7 +96,6 @@ public abstract class IRIResolver
         }
     }
 
-    // ---- Initialization support
 
     /** Set the error/warning state of a violation code.
      * @param factory   IRIFactory
@@ -129,6 +128,32 @@ public abstract class IRIResolver
         String x = PatternCompiler.errorCodeName(code);
         ps.printf("%-40s : E:%-5s W:%-5s\n", x, factory.isError(code), factory.isWarning(code));
     }
+
+    /**
+     * The current working directory, as a string.
+     */
+    static private String      globalBase         = IRILib.filenameToIRI("./");
+
+    // The global resolver may be accessed by multiple threads
+    // Other resolvers are not thread safe.
+    
+    private static IRIResolver globalResolver;
+    /**
+     * The current global resolver based on the working directory
+     */
+    static {
+        IRI cwd;
+        try {
+            cwd = iriFactory().construct(globalBase);
+        } catch (IRIException e) {
+            Log.error(IRIResolver.class, "Unexpected IRIException in initializer: " + e.getMessage());
+            cwd = iriFactory().create("file:///");
+            e.printStackTrace(System.err);
+        }
+        globalResolver = new IRIResolverSync(IRIResolver.create(cwd));
+    }
+
+    
 
     // ---- System-wide IRI Factory.
 
@@ -166,47 +191,6 @@ public abstract class IRIResolver
     }
 
     /**
-     * The current working directory, as a string.
-     */
-    static private String      globalBase         = IRILib.filenameToIRI("./");
-
-    // The global resolver may be accessed by multiple threads
-    // Other resolvers are not thread safe.
-
-    private static IRIResolver globalResolver;
-
-    /**
-     * The current global resolver based on the working directory
-     */
-    static {
-        IRI cwd;
-        try {
-            cwd = iriFactory().construct(globalBase);
-        } catch (IRIException e) {
-            Log.error(IRIResolver.class, "Unexpected IRIException in initializer: " + e.getMessage());
-            cwd = iriFactory().create("file:///");
-            e.printStackTrace(System.err);
-        }
-        globalResolver = new IRIResolverSync(IRIResolver.create(cwd));
-    }
-
-    /**
-     * Turn a filename into a well-formed file: URL relative to the working
-     * directory.
-     *
-     * @param filename
-     * @return String The filename as an absolute URL
-     */
-    static public String resolveFileURL(String filename) throws IRIException {
-        IRI r = globalResolver.resolve(filename);
-        if (!r.getScheme().equalsIgnoreCase("file")) {
-            // Pragmatic hack that copes with "c:"
-            return resolveFileURL("./" + filename);
-        }
-        return r.toString();
-    }
-
-    /**
      * Resolve a URI against a base. If baseStr is a relative file IRI
      * then it is first resolved against the current working directory.
      *
@@ -217,8 +201,61 @@ public abstract class IRIResolver
      * @throws RiotException
      *             If result would not be legal, absolute IRI
      */
-    static public IRI resolve(String relStr, String baseStr) throws RiotException {
+    public static IRI resolve(String relStr, String baseStr) throws RiotException {
         return exceptions(resolveIRI(relStr, baseStr));
+    }
+
+    /**
+     * Resolve an IRI against whatever is the base for this process (likely to
+     * be based on the current working directory of this process at the time of
+     * initialization of this class).
+     */
+    public static IRI resolveIRI(String uriStr) {
+        return exceptions(globalResolver.resolve(uriStr));
+    }
+
+    /**
+     * Resolve a string against a base.
+     * <p>
+     * No exceptions thrown by this method; the application should test the returned
+     * IRI for violations with {@link IRI#hasViolation(boolean)}.
+     */
+    public static IRI resolveIRI(String relStr, String baseStr) {
+        IRI i = iriFactory().create(relStr);
+        if (i.isAbsolute())
+            // removes excess . segments
+            return globalResolver.getBaseIRI().create(i);
+    
+        IRI base = iriFactory().create(baseStr);
+        return base.create(i);
+    }
+
+    /**
+     * Choose a base URI based on the current directory
+     *
+     * @return String Absolute URI
+     */
+    public static IRI chooseBaseURI() {
+        return globalResolver.getBaseIRI();
+    }
+
+    // The global resolver may be accessed by multiple threads
+    // Other resolvers are not thread safe.
+
+//    /**
+//     * Turn a filename into a well-formed file: URL relative to the working
+//     * directory.
+//     *
+//     * @param filename
+//     * @return String The filename as an absolute URL
+//     */
+    static public String resolveFileURL(String filename) throws IRIException {
+        IRI r = globalResolver.resolve(filename);
+        if (!r.getScheme().equalsIgnoreCase("file")) {
+            // Pragmatic hack that copes with "c:"
+            return resolveFileURL("./" + filename);
+        }
+        return r.toString();
     }
 
     /**
@@ -261,31 +298,6 @@ public abstract class IRIResolver
         return globalResolver.resolveSilent(uriStr).toString();
     }
 
-    /**
-     * Resolve an IRI against whatever is the base for this process (likely to
-     * be based on the current working directory of this process at the time of
-     * initialization of this class).
-     */
-    public static IRI resolveIRI(String uriStr) {
-        return exceptions(globalResolver.resolve(uriStr));
-    }
-
-    /**
-     * Resolve a string against a base.
-     * <p>
-     * No exceptions thrown by this method; the application should test the returned
-     * IRI for violations with {@link IRI#hasViolation(boolean)}.
-     */
-    public static IRI resolveIRI(String relStr, String baseStr) {
-        IRI i = iriFactory().create(relStr);
-        if (i.isAbsolute())
-            // removes excess . segments
-            return globalResolver.getBaseIRI().create(i);
-
-        IRI base = iriFactory().create(baseStr);
-        return base.create(i);
-    }
-
     public static IRIResolver create() {
         return new IRIResolverNormal();
     }
@@ -308,15 +320,6 @@ public abstract class IRIResolver
      */
     public static void suppressExceptions() {
         showExceptions = false;
-    }
-
-    /**
-     * Choose a base URI based on the current directory
-     *
-     * @return String Absolute URI
-     */
-    static public IRI chooseBaseURI() {
-        return globalResolver.getBaseIRI();
     }
 
     public String getBaseIRIasString() {
