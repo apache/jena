@@ -886,30 +886,10 @@ public class Query extends Prologue implements Cloneable, Printable
         try { out.flush() ; } catch (Exception ex) { }
     }
 
-    /** Format the query into the buffer
-     *
-     * @param buff    IndentedLineBuffer
-     */
-
-    public void serialize(IndentedLineBuffer buff) {
-        serialize(buff, syntax);
-    }
-
-    /** Format the query
-     *
-     * @param buff       IndentedLineBuffer in which to place the unparsed query
-     * @param outSyntax  Syntax URI
-     */
-
-    public void serialize(IndentedLineBuffer buff, Syntax outSyntax) {
-        serialize((IndentedWriter)buff, outSyntax);
-    }
-
     /** Format the query
      *
      * @param writer  IndentedWriter
      */
-
     public void serialize(IndentedWriter writer) {
         serialize(writer, syntax);
     }
