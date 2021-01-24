@@ -18,19 +18,19 @@
 
 package org.apache.jena.sparql.core;
 
-import java.util.HashMap ;
-import java.util.Iterator ;
-import java.util.Map ;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.Prefixes;
-import org.apache.jena.sparql.SystemARQ ;
-import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker ;
-import org.apache.jena.sparql.graph.GraphUnionRead ;
+import org.apache.jena.sparql.SystemARQ;
+import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker;
+import org.apache.jena.sparql.graph.GraphOps;
 import org.apache.jena.sparql.graph.GraphZero;
 
 /** Implementation of a DatasetGraph as an extensible set of graphs where graphs are held by reference.
@@ -46,11 +46,11 @@ import org.apache.jena.sparql.graph.GraphZero;
  */
 public class DatasetGraphMapLink extends DatasetGraphCollection
 {
-    private final GraphMaker graphMaker ;
-    private final Map<Node, Graph> graphs = new HashMap<>() ;
+    private final GraphMaker graphMaker;
+    private final Map<Node, Graph> graphs = new HashMap<>();
 
-    private Graph defaultGraph ;
-    private PrefixMap prefixes ;
+    private Graph defaultGraph;
+    private PrefixMap prefixes;
     private final Transactional txn;
     private final TxnDataset2Graph txnDsg2Graph;
     private static GraphMaker dftGraphMaker = DatasetGraphFactory.graphMakerMem;
@@ -78,9 +78,9 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
 
     private static void linkGraphs(DatasetGraph srcDsg, DatasetGraphMapLink dstDsg) {
         dstDsg.setDefaultGraph(srcDsg.getDefaultGraph());
-        for ( Iterator<Node> names = srcDsg.listGraphNodes() ; names.hasNext() ; ) {
-            Node gn = names.next() ;
-            dstDsg.addGraph(gn, srcDsg.getGraph(gn)) ;
+        for ( Iterator<Node> names = srcDsg.listGraphNodes(); names.hasNext(); ) {
+            Node gn = names.next();
+            dstDsg.addGraph(gn, srcDsg.getGraph(gn));
         }
     }
 
@@ -103,7 +103,7 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
     public void commit() {
         if ( txnDsg2Graph == null )
             SystemARQ.sync(this);
-        txn.commit() ;
+        txn.commit();
     }
 
     @Override public void begin()                       { txn.begin(); }
@@ -136,9 +136,9 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
     public Graph getGraph(Node graphNode) {
         // Same as DatasetGraphMap.getGraph but we inherit differently.
         if ( Quad.isUnionGraph(graphNode) )
-            return new GraphUnionRead(this) ;
+            return GraphOps.unionGraph(this);
         if ( Quad.isDefaultGraph(graphNode))
-            return getDefaultGraph() ;
+            return getDefaultGraph();
         // Not a special case.
         Graph g = graphs.get(graphNode);
         if ( g == null ) {
@@ -154,7 +154,7 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
      * Return null for "nothing created as a graph"
      */
     protected Graph getGraphCreate(Node graphNode) {
-        return graphMaker.create(graphNode) ;
+        return graphMaker.create(graphNode);
     }
 
     @Override

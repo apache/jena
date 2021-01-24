@@ -28,5 +28,4 @@ public interface SerializationFactory<E>
 {
     Sink<E> createSerializer(OutputStream out);
     Iterator<E> createDeserializer(InputStream in);
-    long getEstimatedMemorySize(E item);
 }

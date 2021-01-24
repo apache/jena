@@ -37,10 +37,12 @@ import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.GraphUtil ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryExecutionFactory ;
-import org.apache.jena.riot.*;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.core.* ;
 import org.apache.jena.sparql.engine.Plan ;
@@ -249,19 +251,7 @@ public class UpdateEngineWorker implements UpdateVisitor
     protected static void gsAddTriples(DatasetGraph dsg, Target src, Target dest) {
         Graph gSrc = graph(dsg, src);
         Graph gDest = graph(dsg, dest);
-
-        // Avoids concurrency problems by reading fully before writing
-        ThresholdPolicy<Triple> policy = ThresholdPolicyFactory.policyFromContext(dsg.getContext());
-        DataBag<Triple> db = BagFactory.newDefaultBag(policy, SerializationFactoryFinder.tripleSerializationFactory());
-        try {
-            Iterator<Triple> triples = gSrc.find(null, null, null);
-            db.addAll(triples);
-            Iter.close(triples);
-            GraphOps.addAll(gDest, db.iterator());
-        }
-        finally {
-            db.close();
-        }
+        GraphOps.addAll(gDest, gSrc.find());
     }
 
     /** Clear target */
