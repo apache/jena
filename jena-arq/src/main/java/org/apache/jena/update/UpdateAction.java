@@ -417,8 +417,8 @@ public class UpdateAction
             UpdateSink sink = new UsingUpdateSink(uProc.getUpdateSink(), usingList) ;
             try
             {
-                UpdateParser parser = UpdateFactory.setupParser(sink.getPrologue(), baseURI, syntax) ;
-                parser.parse(sink, input) ;
+                UpdateParser parser = UpdateFactory.setupParser(uProc.getPrologue(), baseURI, syntax) ;
+                parser.parse(sink, uProc.getPrologue(), input) ;
             }
             finally
             {

@@ -35,7 +35,6 @@ import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker ;
 import org.apache.jena.sparql.graph.GraphOps;
-import org.apache.jena.sparql.graph.GraphUnionRead ;
 
 /** Implementation of a {@code DatasetGraph} as an extensible set of graphs.
  *  Subclasses need to manage any implicit graph creation.

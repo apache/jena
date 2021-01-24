@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.modify;
 
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.update.UpdateProcessorStreaming ;
@@ -32,10 +33,12 @@ public class UpdateProcessorStreamingBase implements UpdateProcessorStreaming
     protected final Context context ;
     
     protected final UpdateEngine proc;
+    protected final Prologue prologue;
 
-    public UpdateProcessorStreamingBase(DatasetGraph datasetGraph, Binding inputBinding, Context context, UpdateEngineFactory factory)
+    public UpdateProcessorStreamingBase(DatasetGraph datasetGraph, Binding inputBinding, Prologue prologue, Context context, UpdateEngineFactory factory)
     {
         this.datasetGraph = datasetGraph ;
+        this.prologue = prologue;
         this.context = context;
         Context.setCurrentDateTime(this.context) ;
         proc = factory.create(datasetGraph, inputBinding, context) ;
@@ -64,5 +67,10 @@ public class UpdateProcessorStreamingBase implements UpdateProcessorStreaming
     @Override
     public Context getContext() {
         return context ;
+    }
+
+    @Override
+    public Prologue getPrologue() {
+        return prologue;
     }
 }

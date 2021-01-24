@@ -19,19 +19,17 @@
 package org.apache.jena.sparql.modify;
 
 import org.apache.jena.atlas.lib.Sink;
-import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.modify.request.QuadDataAccSink ;
 import org.apache.jena.sparql.modify.request.UpdateVisitor ;
 import org.apache.jena.update.Update ;
 
 /**
- * UpdateSink that sends every Update to a worker visitor
- * except for    
+ * UpdateSink that sends every Update to a worker except for the quads 
+ * of INSERT DATA, DELETE DATA which do to special sinks.
  */
 public class UpdateVisitorSink implements UpdateSink
 {
-    private final Prologue prologue = new Prologue();
     private final UpdateVisitor worker;
     private final Sink<Quad> addSink;
     private final Sink<Quad> delSink;
@@ -40,11 +38,6 @@ public class UpdateVisitorSink implements UpdateSink
         this.worker = worker;
         this.addSink = addSink;
         this.delSink = delSink;
-    }
-
-    @Override
-    public Prologue getPrologue() {
-        return prologue;
     }
 
     @Override
