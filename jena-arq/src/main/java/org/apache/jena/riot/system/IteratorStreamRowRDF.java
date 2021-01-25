@@ -21,7 +21,7 @@ package org.apache.jena.riot.system;
 import org.apache.jena.atlas.iterator.IteratorSlotted ;
 
 /**
- *  Pull version of processing StreamRDF
+ *  Pull version of processing {@link StreamRDF} for {@link StreamRowRDF}
  */
-public abstract class IteratorStreamRDF extends IteratorSlotted<StreamRowRDF> { }
+public abstract class IteratorStreamRowRDF extends IteratorSlotted<StreamRowRDF> { }
 
