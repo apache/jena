@@ -102,7 +102,7 @@
     <ver.awaitility>4.0.3</ver.awaitility>
     <ver.micrometer>1.6.2</ver.micrometer>
 
-    <ver.graalvm>20.3.0</ver.graalvm>
+    <ver.graalvm>21.0.0</ver.graalvm>
 
     <java.version>11</java.version>
 
