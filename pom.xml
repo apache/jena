@@ -98,7 +98,7 @@
 
     <ver.spatial4j>0.8</ver.spatial4j>
 
-    <ver.mockito>3.6.28</ver.mockito>
+    <ver.mockito>3.7.7</ver.mockito>
     <ver.awaitility>4.0.3</ver.awaitility>
     <ver.micrometer>1.6.2</ver.micrometer>
 
