@@ -27,6 +27,7 @@ import java.io.ByteArrayInputStream ;
 
 import org.apache.jena.atlas.lib.CharSpace ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.irix.IRIs;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExError;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal;
@@ -40,7 +41,7 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-/** Test of syntax by a tuples parser (does not include node validity checking) */ 
+/** Test of syntax by a tuples parser (does not include node validity checking) */
 abstract public class AbstractTestLangNTuples
 {
     // Test streaming interface.
@@ -93,13 +94,13 @@ abstract public class AbstractTestLangNTuples
         long count = parseCount("<x> <y> \"123\"@lang.");
         assertEquals(1, count);
     }
-    
+
     // Test parse errors interface.
     @Test(expected = ExFatal.class)
     public void tuple_bad_01() {
         parseCount("<x> <y> <z>");          // No DOT
     }
-    
+
     @Test(expected = ExFatal.class)
     public void tuple_bad_02() {
         parseCount("<x> _:a <z> .");        // Bad predicate
@@ -124,7 +125,7 @@ abstract public class AbstractTestLangNTuples
     public void tuple_bad_6() {
         parseCount("<x> <p> 123 .");        // No abbreviations.
     }
-    
+
     @Test(expected = ExFatal.class)
     public void tuple_bad_7() {
         parseCount("<x> <p> x:y .");        // No prefixed names
@@ -165,7 +166,7 @@ abstract public class AbstractTestLangNTuples
         // E9 is e-acute
         parseCheck("<http://example/x\\u00E9> <http://example/p> <http://example/s> .");
     }
-    
+
     @Test
     public void tuple_charset_2() {
         parseCheck("<http://example/é> <http://example/p> \"é\" .");
@@ -195,7 +196,7 @@ abstract public class AbstractTestLangNTuples
         LangRIOT x = RiotParsers.createParserNQuads(tokenizer, sink, parserProfile(new ErrorHandlerEx()));
         x.parse();
     }
-    
+
     final protected long parseCount(CharSpace charSpace, String... strings) {
         String string = String.join("\n", strings);
         Tokenizer tokenizer = tokenizer(charSpace, string);
@@ -207,9 +208,9 @@ abstract public class AbstractTestLangNTuples
 
     /** Create a {@link ParserProfile}, no resolving, no prefix map. */
     static ParserProfile parserProfile(ErrorHandler errorHandler) {
-        return new ParserProfileStd(RiotLib.factoryRDF(), 
+        return new ParserProfileStd(RiotLib.factoryRDF(),
                                     errorHandler,
-                                    IRIResolver.createNoResolve(),
+                                    IRIs.absoluteResolver(),
                                     PrefixMapFactory.emptyPrefixMap(),
                                     RIOT.getContext().copy(),
                                     true, false) ;

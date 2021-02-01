@@ -19,13 +19,14 @@
 package arq.cmdline;
 
 import jena.cmd.*;
-import org.apache.jena.iri.IRI ;
+import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIs;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.system.IRIResolver ;
 
 public class ModLangParse extends ModBase
 {
@@ -114,12 +115,13 @@ public class ModLangParse extends ModBase
 
         if ( cmdLine.contains(argBase) ) {
             baseIRI = cmdLine.getValue(argBase) ;
-            IRI iri = IRIResolver.iriFactory().create(baseIRI);
-            
-            if ( iri.hasViolation(false) )
+            try {
+                IRIx iri = IRIs.reference(baseIRI);
+                if ( !iri.isAbsolute() )
+                    throw new CmdException("Base IRI not suitable for use as a base for RDF: " + baseIRI) ;
+            } catch (IRIException ex) {
                 throw new CmdException("Bad base IRI: " + baseIRI) ;
-            if ( !iri.isAbsolute() )
-                throw new CmdException("Base IRI must be an absolute IRI: " + baseIRI) ;
+            }
         }
 
         if ( cmdLine.contains(argStop) )

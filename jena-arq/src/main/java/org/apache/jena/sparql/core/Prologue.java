@@ -21,10 +21,11 @@ package org.apache.jena.sparql.core;
 import java.util.Objects;
 
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.riot.system.IRIResolver ;
+import org.apache.jena.irix.IRIs;
+import org.apache.jena.irix.IRIx;
+import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
-import org.apache.jena.sparql.util.PrefixMapping2 ;
 
 /** Prologue - combines with PrefixMapping (the RIOT Prologue uses PrefixMap) */
 public class Prologue
@@ -33,62 +34,28 @@ public class Prologue
 //    protected String baseURI = null ;
 
     protected PrefixMapping prefixMap = null ;
-    protected IRIResolver resolver = null ;
+    protected IRIxResolver resolver = null ;
 
-    public Prologue() { prefixMap = new PrefixMappingImpl() ; }
+    public Prologue() { this(new PrefixMappingImpl(), (IRIxResolver)null) ; }
 
-    public Prologue(PrefixMapping pmap)
-    {
-        this.prefixMap = pmap ;
-        this.resolver = null ;
+    public Prologue(PrefixMapping pmap) {
+        this(pmap, (IRIxResolver)null);
     }
 
-    public Prologue(PrefixMapping pmap, String base)
-    {
-        this.prefixMap = pmap ;
-        setBaseURI(base) ;
+    public Prologue(PrefixMapping pmap, IRIxResolver resolver) {
+        this.prefixMap = pmap;
+        this.resolver = resolver;
     }
 
-    public Prologue(PrefixMapping pmap, IRIResolver resolver)
-    {
-        this.prefixMap = pmap ;
-        this.resolver = resolver ;
-    }
+//    public Prologue(PrefixMapping pmap, String base) {
+//        this.prefixMap = pmap;
+//        setBaseURI(base);
+//    }
 
-    public Prologue copy()
-    {
-        PrefixMapping prefixMap = new PrefixMappingImpl() ;
-        prefixMap.setNsPrefixes(this.prefixMap) ;
-        String baseURI = null ;
-        if ( resolver != null)
-            baseURI = resolver.getBaseIRIasString() ;
-
-        return new Prologue(prefixMap, baseURI) ;
-    }
-
-    // Reverse of sub()
-    public void usePrologueFrom(Prologue other)
-    {
-        prefixMap = new PrefixMapping2(other.prefixMap) ;
-        seenBaseURI = false ;
-        if ( other.resolver != null )
-            resolver = IRIResolver.create(getBaseURI()) ;
-    }
-
-    public Prologue sub(PrefixMapping newMappings) { return sub(newMappings, null) ; }
-    public Prologue sub(String base) { return sub(null, base) ; }
-
-    public Prologue sub(PrefixMapping newMappings, String base)
-    {
-        // New prefix mappings
-        PrefixMapping ext = getPrefixMapping() ;
-        if ( newMappings != null )
-            ext = new PrefixMapping2(ext, newMappings) ;
-        // New base.
-        IRIResolver r = resolver ;
-        if ( base != null )
-            r = IRIResolver.create(base) ;
-        return new Prologue(ext, r) ;
+    public Prologue copy() {
+        PrefixMapping prefixMap = new PrefixMappingImpl();
+        prefixMap.setNsPrefixes(this.prefixMap);
+        return new Prologue(prefixMap, resolver);
     }
 
     /**
@@ -103,8 +70,29 @@ public class Prologue
     {
         if ( resolver == null )
             return null ;
-        return resolver.getBaseIRIasString();
+        return resolver.getBaseURI();
     }
+
+    public IRIx getBase() {
+        if ( resolver == null )
+            return null;
+        return resolver.getBase();
+    }
+
+    public void setBase(IRIx base) {
+        if ( base == null ) {
+            this.resolver = null;
+            return;
+        }
+        if ( resolver == null )
+            this.resolver = IRIs.stdResolver();
+        this.resolver = resolver.resetBase(base);
+    }
+
+    public IRIxResolver getResolver() {
+        return resolver;
+    }
+
     /**
      * @param baseURI The baseURI to set.
      */
@@ -116,21 +104,7 @@ public class Prologue
             return ;
         }
         this.seenBaseURI = true ;
-        this.resolver = IRIResolver.create(baseURI) ;
-    }
-
-    /**
-     * @param resolver IRI resolver
-     */
-    public void setBaseURI(IRIResolver resolver)
-    {
-        if ( resolver == null ) {
-            this.seenBaseURI = false ;
-            this.resolver = null ;
-            return ;
-        }
-        this.seenBaseURI = true ;
-        this.resolver = resolver ;
+        this.resolver = IRIxResolver.create(baseURI).build();
     }
 
     // ---- Query prefixes
@@ -160,16 +134,9 @@ public class Prologue
     public void setPrefixMapping(PrefixMapping pmap ) { prefixMap = pmap ; }
 
     /** Lookup a prefix for this query, including the default prefixes */
-    public String getPrefix(String prefix)
-    {
-        return prefixMap.getNsPrefixURI(prefix) ;
+    public String getPrefix(String prefix) {
+        return prefixMap.getNsPrefixURI(prefix);
     }
-
-    /** Get the IRI resolver */
-    public IRIResolver getResolver() { return resolver ; }
-
-    /** Set the IRI resolver */
-    public void setResolver(IRIResolver resolver) { this.resolver = resolver; }
 
     /** Expand prefixed name
      *

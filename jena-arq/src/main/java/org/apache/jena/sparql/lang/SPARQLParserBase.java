@@ -35,7 +35,7 @@ import org.apache.jena.sparql.util.LabelToNodeMap ;
 import org.apache.jena.update.Update ;
 
 /** Class that has all the parse event operations and other query/update specific things */  
-public class SPARQLParserBase extends ParserBase 
+public class SPARQLParserBase extends QueryParserBase 
 {
     private Deque<Query> stack = new ArrayDeque<>() ;
     protected Query query ;

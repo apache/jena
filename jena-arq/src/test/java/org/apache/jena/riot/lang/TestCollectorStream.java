@@ -21,56 +21,54 @@ package org.apache.jena.riot.lang;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.system.StreamRDF;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.util.NodeFactoryExtra ;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class TestCollectorStream  {
-	
-	private List<Triple> writeTriples(StreamRDF out, int size) {
-		List<Triple> results = new ArrayList<>();
-		out.start();
-        for (int i = 1; i <= size; i++) {
-            Triple t = new Triple(NodeFactory.createBlankNode(),
-                    NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
+public class TestCollectorStream {
+
+    private List<Triple> writeTriples(StreamRDF out, int size) {
+        List<Triple> results = new ArrayList<>();
+        out.start();
+        for ( int i = 1 ; i <= size ; i++ ) {
+            Triple t = new Triple(NodeFactory.createBlankNode(), NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
             out.triple(t);
             results.add(t);
         }
         out.finish();
         return results;
-	}
-	
-	@Test
-	public void test_streamed_triples() {
-		CollectorStreamTriples out = new CollectorStreamTriples();
-		List<Triple> expected = writeTriples(out, 10);
-		
-		Assert.assertEquals(expected, out.getCollected());
-	}
-	
-	private List<Quad> writeQuads(StreamRDF out, int size) {
-		List<Quad> results = new ArrayList<>();
-		out.start();
-        for (int i = 1; i <= size; i++) {
-        	Quad q = new Quad(NodeFactory.createURI("http://graph"),
-                    NodeFactory.createBlankNode(),
-                    NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
+    }
+
+    @Test
+    public void test_streamed_triples() {
+        CollectorStreamTriples out = new CollectorStreamTriples();
+        List<Triple> expected = writeTriples(out, 10);
+
+        Assert.assertEquals(expected, out.getCollected());
+    }
+
+    private List<Quad> writeQuads(StreamRDF out, int size) {
+        List<Quad> results = new ArrayList<>();
+        out.start();
+        for ( int i = 1 ; i <= size ; i++ ) {
+            Quad q = new Quad(NodeFactory.createURI("http://graph"), NodeFactory.createBlankNode(),
+                              NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
             out.quad(q);
             results.add(q);
         }
         out.finish();
         return results;
-	}
-	
-	@Test
-	public void test_streamed_quads() {
-		CollectorStreamQuads out = new CollectorStreamQuads();
-		List<Quad> expected = writeQuads(out, 10);
-		
-		Assert.assertEquals(expected, out.getCollected());
-	}
+    }
+
+    @Test
+    public void test_streamed_quads() {
+        CollectorStreamQuads out = new CollectorStreamQuads();
+        List<Quad> expected = writeQuads(out, 10);
+
+        Assert.assertEquals(expected, out.getCollected());
+    }
 }

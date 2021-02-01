@@ -21,10 +21,11 @@ package org.apache.jena.riot.system;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.*;
-import org.apache.jena.iri.IRI;
+import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIx;
+import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.RiotException;
-import org.apache.jena.riot.checker.CheckerIRI;
 import org.apache.jena.riot.checker.CheckerLiterals;
 import org.apache.jena.riot.tokens.Token;
 import org.apache.jena.riot.tokens.TokenType;
@@ -41,14 +42,14 @@ public class ParserProfileStd implements ParserProfile
     private final FactoryRDF   factory;
     private final ErrorHandler errorHandler;
     private final Context      context;
-    private       IRIResolver  resolver;
+    private       IRIxResolver resolver;
     private final PrefixMap    prefixMap;
     private final boolean      strictMode;
     private final boolean      checking;
     private boolean allowNodeExtentions;
 
     public ParserProfileStd(FactoryRDF factory, ErrorHandler errorHandler,
-                            IRIResolver resolver, PrefixMap prefixMap,
+                            IRIxResolver resolver, PrefixMap prefixMap,
                             Context context, boolean checking, boolean strictMode) {
         this.factory = factory;
         this.errorHandler = errorHandler;
@@ -81,31 +82,26 @@ public class ParserProfileStd implements ParserProfile
     }
 
     @Override
-    public void setBaseIRI(String baseIRI) {
-        // In normal parsing use, resolveIRI/internalMakeIRI has already been called
-        // and this is a duplicate of making an IRI object but it does hide "IRI"
-        // from the outside.
-        // BASE is not a frequent directive in any given file so this is acceptable.
-        IRI iri = internalMakeIRI(baseIRI, -1, -1);
-        this.resolver = IRIResolver.create(iri);
+    public void setBaseIRI(String baseIRIstr) {
+        IRIx newBase = resolver.resolve(baseIRIstr);
+        this.resolver = resolver.resetBase(newBase);
     }
 
-    private IRI internalMakeIRI(String uriStr, long line, long col) {
-        IRI iri = resolver.resolveSilent(uriStr);
-        // Some specific problems and specific error messages,.
-        if ( uriStr.contains(" ") ) {
+    private IRIx internalMakeIRI(String uriStr, long line, long col) {
+        if ( uriStr.contains(" ") )
             // Specific check for spaces.
             errorHandler.warning("Bad IRI: <" + uriStr + "> Spaces are not legal in URIs/IRIs.", line, col);
+
+        try {
+            IRIx iri = resolver.resolve(uriStr);
             return iri;
+        } catch (IRIException ex) {
+            // This should only be errors and the errorHandler may be set to "don't continue".
+            //errorHandler.warning("Bad IRI: <" + uriStr + "> : "+ex.getMessage(), line, col);
+            errorHandler.error("Bad IRI: <" + uriStr + "> : "+ex.getMessage(), line, col);
+            // Error handler let it pass so return something.
+            return IRIx.create(uriStr);
         }
-
-        if ( !checking )
-            return iri;
-
-        // At this point, IRI "errors" are warnings.
-        // A tuned set of checking.
-        CheckerIRI.iriViolations(iri, errorHandler, line, col);
-        return iri;
     }
 
     /** Create a triple - this operation call {@link #checkTriple} if checking is enabled. */

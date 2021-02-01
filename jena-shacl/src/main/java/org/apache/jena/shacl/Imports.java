@@ -32,11 +32,11 @@ import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphUtil;
 import org.apache.jena.graph.Node;
+import org.apache.jena.irix.IRIs;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RiotParseException;
 import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.other.RDFDataException;
-import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.sparql.graph.GraphFactory;
 
 /**
@@ -54,7 +54,7 @@ public class Imports {
      * Load a graph and process owl:imports to create a new, single graph.
      */
     public static Graph loadWithImports(String url) {
-        url = IRIResolver.resolveString(url);
+        url = IRIs.resolve(url);
         Graph graph = RDFDataMgr.loadGraph(url);
         return withImportsWorker(url, graph);
     }
@@ -73,7 +73,7 @@ public class Imports {
      * The graph is included in the results.
      */
     public static Graph withImports(String url, Graph graph) {
-        url = IRIResolver.resolveString(url);
+        url = IRIs.resolve(url);
         return withImportsWorker(url, graph);
     }
 
@@ -126,7 +126,7 @@ public class Imports {
      * Locate the base (a single triple ? rdf:type owl:Ontology)
      * and imports (triples "base owl:Imports URI").
      * May return null for the base in which case all imports are returned.
-     * 
+     *
      */
     public static Pair<Node,List<Node>> baseAndImports(Graph graph) {
         Node base = null;
@@ -143,7 +143,7 @@ public class Imports {
      */
     public static Node base(Graph graph) {
         // Filter for URI?
-        try { 
+        try {
             return G.getZeroOrOnePO(graph, nodeRDFType, nodeOwlOntology);
         } catch (RDFDataException ex) { return null; }
     }

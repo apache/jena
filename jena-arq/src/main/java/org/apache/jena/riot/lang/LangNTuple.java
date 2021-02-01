@@ -33,17 +33,17 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 /** N-Quads, N-triples parser framework, with both push and pull interfaces.
- * 
+ *
  * <ul>
- * <li>The {@link #parse} method processes the whole stream of tokens, 
+ * <li>The {@link #parse} method processes the whole stream of tokens,
  *   sending each to a {@link org.apache.jena.atlas.lib.Sink} object.</li>
  * <li>The <tt>Iterator&lt;X&gt;</tt> interface yields triples one-by-one.</li>
- *  </ul> 
- * 
+ *  </ul>
+ *
  * Normally, bad terms causes the parser to stop (i.e. treat them as errors).
  * In addition, the NTuples subsystem allows triples/quads with "bad" terms
  * to be skipped.
- * 
+ *
  * Checking can be switched off completely. If the data is known to be correct,
  * no checking can be a large performance gain. <i>Caveat emptor</i>.
  */
@@ -51,9 +51,9 @@ import org.slf4j.LoggerFactory ;
 public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
 {
     private static Logger log = LoggerFactory.getLogger(LangNTuple.class) ;
-    
+
     protected boolean skipOnBadTerm = false ;
-    
+
     protected LangNTuple(Tokenizer tokens, ParserProfile profile, StreamRDF dest) {
         super(tokens, profile, dest);
     }
@@ -63,26 +63,26 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
     public final boolean hasNext() {
         return super.moreTokens();
     }
-    
+
     @Override
     public final X next() {
         return parseOne();
     }
-    
+
     @Override
     public final void remove()
     { throw new UnsupportedOperationException(); }
 
-    /** Parse one tuple - return object to be sent to the sink or null for none */ 
+    /** Parse one tuple - return object to be sent to the sink or null for none */
     protected abstract X parseOne() ;
-    
+
     /** Note a tuple not being output */
     protected void skipOne(X object, String printForm, long line, long col) {
         errorHandler.warning("Skip: " + printForm, line, col);
     }
 
     protected abstract Node tokenAsNode(Token token) ;
-    
+
     // One triple, not include terminator.
     protected final Triple parseTriple() {
         Token sToken = nextToken();
@@ -154,16 +154,16 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
                 exception(token, "Illegal object: %s", token) ;
         }
     }
-    
+
     private void checkString(Token token) {
         if ( token.isLongString() )
             exception(token, "Triple quoted string not permitted: %s", token) ;
-        if ( isStrictMode && ! token.hasStringType(StringType.STRING2) )
-            exception(token, "Not a \"\"-quoted string: %s", token); 
+        if ( isStrictMode() && ! token.hasStringType(StringType.STRING2) )
+            exception(token, "Not a \"\"-quoted string: %s", token);
     }
-    
-    /** SkipOnBadTerm - do not output tuples with bad RDF terms */ 
+
+    /** SkipOnBadTerm - do not output tuples with bad RDF terms */
     public boolean  getSkipOnBadTerm()                      { return skipOnBadTerm ; }
-    /** SkipOnBadTerm - do not output tuples with bad RDF terms */ 
+    /** SkipOnBadTerm - do not output tuples with bad RDF terms */
     public void     setSkipOnBadTerm(boolean skipOnBadTerm) { this.skipOnBadTerm = skipOnBadTerm ; }
 }

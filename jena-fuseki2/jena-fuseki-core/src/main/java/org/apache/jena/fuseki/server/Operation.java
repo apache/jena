@@ -26,9 +26,9 @@ import java.util.Objects;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.iri.IRI;
+import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.riot.system.IRIResolver;
 
 /**
  * Operations are symbol to look up in the {@link OperationRegistry#operationToHandler} map. The name
@@ -49,11 +49,13 @@ public class Operation {
      * one object for each operation. It is an extensible enum.
      */
     static public Operation alloc(String iriStr, String name, String description) {
-        IRI iri = IRIResolver.parseIRI(iriStr);
-        if ( iri.hasViolation(false) )
-            Log.warn(Operation.class, "Poor Operation name: "+iriStr+" : Not an IRI");
-        if ( iri.isRelative() )
-            Log.warn(Operation.class, "Poor Operation name: "+iriStr+" : Relative IRI");
+        try {
+            IRIx iri = IRIx.create(iriStr);
+            if ( !iri.isReference() )
+                Log.warn(Operation.class, "Poor Operation name: "+iriStr+" : Relative IRI");
+        } catch (IRIException ex) {
+            Log.error(Operation.class, "Poor Operation name: "+iriStr+" : Not an IRI");
+        }
         Node node = NodeFactory.createURI(iriStr);
         return alloc(node, name, description);
     }

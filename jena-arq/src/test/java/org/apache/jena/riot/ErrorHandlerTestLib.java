@@ -23,7 +23,7 @@ import java.util.List ;
 
 import org.apache.jena.riot.system.ErrorHandler ;
 
-/** Error handled to convert anything to an exception */
+/** Error handler to convert anything to an exception */
 public class ErrorHandlerTestLib
 {
     public static class ExFatal extends RuntimeException { ExFatal(String msg) { super(msg) ; } }

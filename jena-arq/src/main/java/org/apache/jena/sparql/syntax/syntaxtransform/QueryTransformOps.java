@@ -72,7 +72,7 @@ public class QueryTransformOps {
     public static Query transform(Query query, ElementTransform transform, ExprTransform exprTransform) {
         Query q2 = QueryTransformOps.shallowCopy(query);
         // "Shallow copy with transform."
-        // Mutate the q2 structures which are already allocated and no other code can access yet. 
+        // Mutate the q2 structures which are already allocated and no other code can access yet.
         mutateVarExprList(q2.getProject(), exprTransform);
         mutateVarExprList(q2.getGroupBy(), exprTransform);
         mutateExprList(q2.getHavingExprs(), exprTransform);
@@ -136,7 +136,7 @@ public class QueryTransformOps {
             conditions.set(i, new SortCondition(e, s1.direction));
         }
     }
-    
+
     private static void mutateVarExprList(VarExprList varExprList, ExprTransform exprTransform) {
         VarExprList x = transformVarExprList(varExprList, exprTransform);
         varExprList.clear();
@@ -195,7 +195,7 @@ public class QueryTransformOps {
             newQuery.setSyntax(query.getSyntax());
 
             if (query.explicitlySetBaseURI())
-                newQuery.setBaseURI(query.getPrologue().getResolver());
+                newQuery.setBaseURI(query.getPrologue().getBaseURI());
 
             newQuery.setQueryResultStar(query.isQueryResultStar());
 

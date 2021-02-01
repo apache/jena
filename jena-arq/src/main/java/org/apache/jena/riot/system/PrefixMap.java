@@ -22,7 +22,6 @@ import java.util.function.BiConsumer ;
 import java.util.stream.Stream;
 
 import org.apache.jena.atlas.lib.Pair;
-import org.apache.jena.iri.IRI;
 import org.apache.jena.shared.PrefixMapping ;
 
 /**
@@ -95,18 +94,6 @@ public interface PrefixMap {
     /**
      * Add a prefix, overwrites any existing association
      *
-     * @param prefix Prefix
-     * @param iri Namespace IRI
-     * @deprecated Use {@link #add(String, String)}
-     */
-    @Deprecated
-    public default void add(String prefix, IRI iri) {
-        add(prefix, iri.toString());
-    }
-
-    /**
-     * Add a prefix, overwrites any existing association
-     *
      * @param pmap Prefix Map
      */
     public void putAll(PrefixMap pmap);
@@ -145,12 +132,6 @@ public interface PrefixMap {
      * @return True if the prefix is contained in the map, false otherwise
      */
     public boolean containsPrefix(String prefix);
-
-    /** @deprecated Use {@link #containsPrefix(String)} */
-    @Deprecated
-    public default boolean contains(String prefix) {
-        return containsPrefix(prefix);
-    }
 
     /**
      * Abbreviate an IRI or return null

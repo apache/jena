@@ -63,8 +63,8 @@ import org.apache.jena.sparql.util.DateTimeStruct ;
 public class XSDFuncOp
 {
     private XSDFuncOp() {}
-    
-    // The choice of "24" is arbitrary but more than 18 (XSD 1.0) or 16 XSD 1.1) as required by F&O 
+
+    // The choice of "24" is arbitrary but more than 18 (XSD 1.0) or 16 XSD 1.1) as required by F&O
     //   F&O 3.1: section 4.2 (end intro)
     //   https://www.w3.org/TR/xpath-functions/#op.numeric section 4.2
     private static final int DIVIDE_PRECISION = 24 ;
@@ -72,7 +72,7 @@ public class XSDFuncOp
     // Numeric operations
     // http://www.w3.org/TR/xpath-functions/#op.numeric
     // http://www.w3.org/TR/xpath-functions/#comp.numeric
-    
+
     public static NodeValue numAdd(NodeValue nv1, NodeValue nv2) {
         switch (classifyNumeric("add", nv1, nv2)) {
             case OP_INTEGER :
@@ -87,7 +87,7 @@ public class XSDFuncOp
                 throw new ARQInternalErrorException("Unrecognized numeric operation : (" + nv1 + " ," + nv2 + ")") ;
         }
     }
-    
+
     public static NodeValue numSubtract(NodeValue nv1, NodeValue nv2) {
         switch (classifyNumeric("subtract", nv1, nv2)) {
             case OP_INTEGER :
@@ -102,7 +102,7 @@ public class XSDFuncOp
                 throw new ARQInternalErrorException("Unrecognized numeric operation : (" + nv1 + " ," + nv2 + ")") ;
         }
     }
-    
+
     public static NodeValue numMultiply(NodeValue nv1, NodeValue nv2) {
         switch (classifyNumeric("multiply", nv1, nv2)) {
             case OP_INTEGER :
@@ -117,7 +117,7 @@ public class XSDFuncOp
                 throw new ARQInternalErrorException("Unrecognized numeric operation : (" + nv1 + " ," + nv2 + ")") ;
         }
     }
-    
+
     /* Quote from XQuery/XPath F&O:
         For xs:float or xs:double values, a positive number divided by positive zero returns INF.
         A negative number divided by positive zero returns -INF.
@@ -125,7 +125,7 @@ public class XSDFuncOp
         Positive or negative zero divided by positive or negative zero returns NaN.
         Also, INF or -INF divided by INF or -INF returns NaN.
      */
-    
+
     public static NodeValue numDivide(NodeValue nv1, NodeValue nv2) {
         switch (classifyNumeric("divide", nv1, nv2)) {
             case OP_INTEGER : {
@@ -151,7 +151,7 @@ public class XSDFuncOp
                 throw new ARQInternalErrorException("Unrecognized numeric operation : (" + nv1 + " ," + nv2 + ")") ;
         }
     }
-    
+
     private static NodeValue decimalDivide(BigDecimal d1, BigDecimal d2) {
         if ( d2.equals(BigDecimal.ZERO) )
             throw new ExprEvalException("Divide by zero in decimal divide") ;
@@ -162,7 +162,7 @@ public class XSDFuncOp
             // Does not throw ArithmeticException
             d3 = d1.divide(d2, DIVIDE_PRECISION, RoundingMode.HALF_EVEN);
         }
-        return canonicalDecimalNV(d3) ;  
+        return canonicalDecimalNV(d3) ;
     }
 
     public static NodeValue canonicalDecimalNV(BigDecimal d) {
@@ -175,8 +175,8 @@ public class XSDFuncOp
      * <p>
      * Decimal canonical form where integer values have no ".0" (as in XSD 1.1).
      * <p>
-     * In XSD 2, canonical integer-valued decimal has a trailing ".0". 
-     * In F&amp;O v 3.1, xs:string cast of a decimal which integer valued, does not have the trailing ".0".  
+     * In XSD 2, canonical integer-valued decimal has a trailing ".0".
+     * In F&amp;O v 3.1, xs:string cast of a decimal which integer valued, does not have the trailing ".0".
      */
     public static String canonicalDecimalStrNoIntegerDot(BigDecimal bd) {
         if ( bd.signum() == 0 )
@@ -186,13 +186,13 @@ public class XSDFuncOp
             return bd.toPlainString();
         return bd.stripTrailingZeros().toPlainString();
     }
-    
+
     /**
      * Canonical decimal according to XML Schema Datatype 2.
      * Integer-valued decimals have a trailing ".0".
      * (In XML Schema Datatype 1.1 they did not have a ".0".)
      * <p>
-     * Java BigDecimal.toPlainString does not produce XSD 2 compatible lexical forms for integer values. 
+     * Java BigDecimal.toPlainString does not produce XSD 2 compatible lexical forms for integer values.
      */
     public static String canonicalDecimalStr(BigDecimal decimal) {
         if ( decimal.signum() == 0 )
@@ -201,11 +201,11 @@ public class XSDFuncOp
             // No decimal part.
             return decimal.toPlainString()+".0";
         String str = decimal.stripTrailingZeros().toPlainString();
-        // Maybe the decimal part was only zero. 
+        // Maybe the decimal part was only zero.
         int dotIdx = str.indexOf('.') ;
         if ( dotIdx < 0 )
             // No DOT.
-            str = str + ".0";    
+            str = str + ".0";
         return str;
     }
 
@@ -260,15 +260,15 @@ public class XSDFuncOp
     public static NodeValue not(NodeValue nv) {
         boolean b = XSDFuncOp.booleanEffectiveValue(nv) ;
         return NodeValue.booleanReturn(!b) ;
-    }    
-    
+    }
+
     /** {@literal F&O} fn:boolean */
     public static NodeValue booleanEffectiveValueAsNodeValue(NodeValue nv) {
         if ( nv.isBoolean() ) // "Optimization" (saves on object churn)
             return nv ;
         return NodeValue.booleanReturn(booleanEffectiveValue(nv)) ;
     }
-    
+
     /** {@literal F&O} fn:boolean */
     public static boolean booleanEffectiveValue(NodeValue nv) {
         // Apply the "boolean effective value" rules
@@ -290,7 +290,7 @@ public class XSDFuncOp
             double v = nv.getDouble();
             return v != 0.0d && ! Double.isNaN(v);
         }
-        if ( nv.isFloat() ) { 
+        if ( nv.isFloat() ) {
             float v = nv.getFloat();
             return v != 0.0f && ! Float.isNaN(v);
         }
@@ -313,7 +313,7 @@ public class XSDFuncOp
                 throw new ARQInternalErrorException("Unrecognized numeric operation : " + nv) ;
         }
     }
-    
+
     public static NodeValue unaryPlus(NodeValue nv) {
         // Not quite a no-op - tests for a number
         NumericType opType = classifyNumeric("unaryPlus", nv) ;
@@ -389,7 +389,7 @@ public class XSDFuncOp
     }
 
     // The following function 'roundXpath3' implements the definition for "fn:round" in F&O v3.
-    // This is diffrent to the "fn:round" in F&O v2. 
+    // This is diffrent to the "fn:round" in F&O v2.
     // SPARQL 1.1 references F&O v2.
     private static BigDecimal roundDecimalValue(BigDecimal dec,int precision,boolean isHalfToEven)
     {
@@ -431,7 +431,7 @@ public class XSDFuncOp
     public static NodeValue sqrt(NodeValue v) {
         return NodeValue.makeDouble(Math.sqrt(v.getDouble())) ;
     }
-   
+
     // NB Java string start from zero and uses start/end
     // F&O strings start from one and uses start/length
 
@@ -529,7 +529,7 @@ public class XSDFuncOp
         if ( nvFlags != null )
             flagsStr = checkAndGetStringLiteral("replace", nvFlags).getLiteralLexicalForm();
         return strReplace(nvStr, RegexJava.makePattern("replace", pat, flagsStr), nvReplacement);
-    }    
+    }
 
     public static NodeValue strReplace(NodeValue nvStr, Pattern pattern, NodeValue nvReplacement) {
         String n = checkAndGetStringLiteral("replace", nvStr).getLiteralLexicalForm() ;
@@ -537,7 +537,7 @@ public class XSDFuncOp
         String x = replaceAll(pattern.matcher(n), rep) ;
         if ( x == null )
             // No replacement.
-            return nvStr ; 
+            return nvStr ;
         return calcReturn(x, nvStr.asNode()) ;
     }
 
@@ -546,8 +546,8 @@ public class XSDFuncOp
     // Java:  ("", ".*", "x") --> "x" and ("notEmpty", ".*", "x") --> "xx"
     // F&O: [err:FORX0003] (in F&O, a global error; SPARQL does not have global execution errors)
     // http://www.w3.org/TR/xpath-functions/#func-replace
-    // ARQ 
-    
+    // ARQ
+
     private static String replaceAll(Matcher matcher, String rep) {
         // Follow Java -- return matcher.replaceAll(rep) ;
         try {
@@ -567,7 +567,7 @@ public class XSDFuncOp
             matcher.appendTail(sb);
             return sb.toString();
         } catch (IndexOutOfBoundsException ex) {
-            throw new ExprEvalException("IndexOutOfBounds", ex) ; 
+            throw new ExprEvalException("IndexOutOfBounds", ex) ;
         }
     }
 
@@ -585,7 +585,7 @@ public class XSDFuncOp
         // XSD F&O:
         try {
             String string = n.getLiteralLexicalForm() ;
-            
+
             // Length in code points.
             int cpLength = string.codePointCount(0,  string.length());
 
@@ -599,12 +599,12 @@ public class XSDFuncOp
                 length = cpLength;
 
             // Evaluation.
-            
+
             if ( string.isEmpty() )
                 return nvString;
-            
+
             // Working in codepoints indexes at this point
-            
+
             // Includes negative start.
             int finish = start + length ;
 
@@ -622,28 +622,28 @@ public class XSDFuncOp
             if ( finish < 0 )
                 finish = 0 ;
 
-            // Convert to UTF-16 code units to index values for the string.substring 
+            // Convert to UTF-16 code units to index values for the string.substring
             int xs = codePointToStringIndex(string, start, cpLength);
             int xf = codePointToStringIndex(string, finish, cpLength);
-            
+
             String lex2 = string.substring(xs, xf);
-            
+
             return calcReturn(lex2, n) ;
         } catch (IndexOutOfBoundsException ex) {
             throw new ExprEvalException("IndexOutOfBounds", ex) ;
         }
     }
-    
-    /** Convert zero-based codepoint to zero-based Java string index in-bounds.*/ 
+
+    /** Convert zero-based codepoint to zero-based Java string index in-bounds.*/
     private static int codePointToStringIndex(String string, int index, int cpLength) {
         if ( index < 0 )
             return 0;
-        
-        return (index > cpLength) 
+
+        return (index > cpLength)
                     ? string.length()
                     : string.offsetByCodePoints(0, index);
     }
-    
+
     // NaN, float and double.
     private static int intValueStr(NodeValue nv, int valueNan) {
         if ( nv.isInteger() )
@@ -687,13 +687,13 @@ public class XSDFuncOp
         String lex2 = match.asNode().getLiteralLexicalForm() ;
         return NodeValue.booleanReturn(lex1.endsWith(lex2)) ;
     }
-    
+
     /** Build a NodeValue with lexical form, and same language and datatype as the Node argument */
     private static NodeValue calcReturn(String result, Node arg) {
-        Node n2 = NodeFactory.createLiteral(result, arg.getLiteralLanguage(), arg.getLiteralDatatype()) ; 
+        Node n2 = NodeFactory.createLiteral(result, arg.getLiteralLanguage(), arg.getLiteralDatatype()) ;
         return NodeValue.makeNode(n2) ;
     }
-    
+
     public static NodeValue strBefore(NodeValue string, NodeValue match) {
         checkTwoArgumentStringLiterals("strBefore", string, match) ;
         String lex1 = string.asNode().getLiteralLexicalForm() ;
@@ -746,7 +746,7 @@ public class XSDFuncOp
         Node n = v.asNode() ;
         if ( !n.isLiteral() )
             throw new ExprEvalException("Not a literal") ;
-        if ( ! Util.isSimpleString(n) && ! Util.isLangString(n) )  
+        if ( ! Util.isSimpleString(n) && ! Util.isLangString(n) )
             throw new ExprEvalException("Not a string literal") ;
 
         String str = n.getLiteralLexicalForm() ;
@@ -924,7 +924,7 @@ public class XSDFuncOp
     }
 
     private static Set<XSDDatatype> integerSubTypes = new HashSet<>() ;
-    static { 
+    static {
 //        decimalSubTypes.add(XSDDatatype.XSDfloat) ;
 //        decimalSubTypes.add(XSDDatatype.XSDdouble) ;
         integerSubTypes.add(XSDDatatype.XSDint) ;
@@ -984,7 +984,7 @@ public class XSDFuncOp
         return datatype.equals(XSDDatatype.XSDhexBinary) || datatype.equals(XSDDatatype.XSDbase64Binary);
     }
 
-    
+
     // --------------------------------
     // Comparisons operations
     // Do not confuse with sameValueAs/notSamevalueAs
@@ -996,7 +996,7 @@ public class XSDFuncOp
             return Expr.CMP_GREATER ;
         return Expr.CMP_EQUAL ;
     }
-    
+
     public static int compareNumeric(NodeValue nv1, NodeValue nv2) {
         NumericType opType = classifyNumeric("compareNumeric", nv1, nv2) ;
 
@@ -1013,25 +1013,25 @@ public class XSDFuncOp
                 throw new ARQInternalErrorException("Unrecognized numeric operation : (" + nv1 + " ," + nv2 + ")") ;
         }
     }
-    
-    //public static int compareDatetime(NodeValue nv1, NodeValue nv2) 
-    
+
+    //public static int compareDatetime(NodeValue nv1, NodeValue nv2)
+
     // --------------------------------
     // Functions on strings
     // http://www.w3.org/TR/xpath-functions/#d1e2222
     // http://www.w3.org/TR/xpath-functions/#substring.functions
-    
+
     // String operations
     //  stringCompare = fn:compare
     //  fn:length
     //  fn:string-concat
     //  fn:substring
     // langMatch
-    
+
     public static int compareString(NodeValue nv1, NodeValue nv2) {
         return calcReturn(nv1.getString().compareTo(nv2.getString())) ;
-    }        
-    
+    }
+
     // --------------------------------
     // Date/DateTime operations
     // works for dates as well because they are implemented as dateTimes on their start point.
@@ -1042,49 +1042,15 @@ public class XSDFuncOp
         return compareXSDDateTime(nv1.getDateTime(), nv2.getDateTime()) ;
     }
 
-//    public static int compareDate(NodeValue nv1, NodeValue nv2) {
-//        if ( strictDateTimeFO )
-//            return compareDateFO(nv1, nv2) ;
-//        return compareXSDDateTime(nv1.getDateTime(), nv2.getDateTime()) ;
-//    }
-//    
-//    public static int compareTime(NodeValue nv1, NodeValue nv2) {
-//        if ( strictDateTimeFO )
-//            return compareDateFO(nv1, nv2) ;
-//        return compareXSDDateTime(nv1.getDateTime(), nv2.getDateTime()) ;
-//    }
-    
     public static int compareDuration(NodeValue nv1, NodeValue nv2) {
         return compareDuration(nv1.getDuration(), nv2.getDuration()) ;
     }
 
-//    public static int compareGYear(NodeValue nv1, NodeValue nv2)
-//    {
-//        return -99 ;
-//    }
-//    public static int compareGYearMonth(NodeValue nv1, NodeValue nv2)
-//    {
-//        return -99 ;
-//    }
-//    public static int compareGMonth(NodeValue nv1, NodeValue nv2)
-//    {
-//        return -99 ;
-//    }
-//    public static int compareGMonthDay(NodeValue nv1, NodeValue nv2)
-//    {
-//        return -99 ;
-//    }
-//    public static int compareGDay(NodeValue nv1, NodeValue nv2)
-//    {
-//        return -99 ;
-//    }
-    
     public static final String defaultTimezone = "Z" ;
-    
-    
+
     /** Strict {@literal F&O} handling of compare date(times).
      * But that means applying the "local" timezone if there is no TZ.
-     * The data may have come from different timezones to the query. 
+     * The data may have come from different timezones to the query.
      */
     private static int compareDateTimeFO(NodeValue nv1, NodeValue nv2) {
         XMLGregorianCalendar dt1 = nv1.getDateTime() ;
@@ -1115,9 +1081,9 @@ public class XSDFuncOp
         }
         return x ;
     }
-    
-//    // This only differs by some "dateTime" => "date" 
-//    // Comparison is done on the dateTime start point of an xsd:date so this code is not needed.     
+
+//    // This only differs by some "dateTime" => "date"
+//    // Comparison is done on the dateTime start point of an xsd:date so this code is not needed.
 //    private static int compareDateFO(NodeValue nv1, NodeValue nv2)
 //    {
 //        XMLGregorianCalendar dt1 = nv1.getDateTime() ;
@@ -1129,28 +1095,28 @@ public class XSDFuncOp
 //            NodeValue nv3 = fixupDate(nv1) ;
 //            if ( nv3 != null )
 //            {
-//                XMLGregorianCalendar dt3 = nv3.getDateTime() ; 
+//                XMLGregorianCalendar dt3 = nv3.getDateTime() ;
 //                x =  compareXSDDateTime(dt3, dt2) ;
 //                if ( x == XSDDateTime.INDETERMINATE )
 //                    throw new ARQInternalErrorException("Still get indeterminate comparison") ;
 //                return x ;
 //            }
-//            
+//
 //            nv3 = fixupDate(nv2) ;
 //            if ( nv3 != null )
 //            {
-//                XMLGregorianCalendar dt3 = nv3.getDateTime() ; 
+//                XMLGregorianCalendar dt3 = nv3.getDateTime() ;
 //                x = compareXSDDateTime(dt1, dt3) ;
 //                if ( x == XSDDateTime.INDETERMINATE )
 //                    throw new ARQInternalErrorException("Still get indeterminate comparison") ;
 //                return x ;
 //            }
-//            
+//
 //            throw new ARQInternalErrorException("Failed to fixup dateTimes") ;
 //        }
 //        return x ;
 //    }
-    
+
     private static NodeValue fixupDateOrDateTime(NodeValue nv) {
         if ( nv.isDateTime() )
             return fixupDateTime(nv);
@@ -1158,7 +1124,7 @@ public class XSDFuncOp
             return fixupDate(nv);
         throw new ARQInternalErrorException("Attempt to fixupDateOrDateTime on "+nv);
     }
-    
+
     private static NodeValue fixupDateTime(NodeValue nv) {
         DateTimeStruct dts = DateTimeStruct.parseDateTime(nv.asNode().getLiteralLexicalForm()) ;
         if ( dts.timezone != null )
@@ -1211,13 +1177,13 @@ public class XSDFuncOp
             return Expr.CMP_INDETERMINATE ;
         throw new ARQInternalErrorException("Unexpected return from XSDDuration.compare: " + x) ;
     }
-    
+
     // --------------------------------
     // Boolean operations
-    
+
     /* Logical OR and AND is special with respect to handling errors truth table.
-     * AND they take effective boolean values, not boolean 
-     * 
+     * AND they take effective boolean values, not boolean
+     *
     A       B   |   NOT A   A && B  A || B
     -------------------------------------
     E       E   |   E       E       E
@@ -1234,7 +1200,7 @@ public class XSDFuncOp
     // Not possible because of error masking.
     // public static NodeValue logicalOr(NodeValue x, NodeValue y)
     // public static NodeValue logicalAnd(NodeValue x, NodeValue y)
-    
+
     public static int compareBoolean(NodeValue nv1, NodeValue nv2) {
         boolean b1 = nv1.getBoolean() ;
         boolean b2 = nv2.getBoolean() ;
@@ -1261,13 +1227,13 @@ public class XSDFuncOp
             tzStr = "" ;
         return tzStr ;
     }
-    
+
     /**
      * Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to {@literal F&O}
      * <a href="http://www.w3.org/TR/xpath-functions/#casting-to-datetimes">17.1.5 Casting to date and time types</a>
      * Throws an exception on incorrect case.
-     *   
-     * @throws ExprEvalTypeException  
+     *
+     * @throws ExprEvalTypeException
      */
     public static NodeValue dateTimeCast(NodeValue nv, XSDDatatype xsd) {
         if ( nv.isString() ) {
@@ -1276,7 +1242,7 @@ public class XSDFuncOp
                 throw new ExprEvalTypeException("Invalid lexical form: '"+s+"' for "+xsd.getURI()) ;
             return NodeValue.makeNode(s, xsd) ;
         }
-        
+
         if ( !nv.hasDateTime() )
             throw new ExprEvalTypeException("Not a date/time type: " + nv) ;
 
@@ -1374,9 +1340,9 @@ public class XSDFuncOp
 
         throw new ExprEvalTypeException("Can't case to <" + xsd.getURI() + ">: " + nv) ;
     }
-    
+
     // Get years/months/days/hours/minutes/seconds from any type we understands.
-    
+
     public static NodeValue getYear(NodeValue nv) {
         if ( nv.isDuration() ) return durGetYears(nv) ;
         return dtGetYear(nv) ;
@@ -1414,7 +1380,7 @@ public class XSDFuncOp
             throw new ExprEvalException("fn:dateTime: arg2: Not an xsd:time: "+nv2) ;
         String lex1 = nv1.asNode().getLiteralLexicalForm() ;
         String lex2 = nv2.asNode().getLiteralLexicalForm() ;
-        
+
         DateTimeStruct dts1 = DateTimeStruct.parseDate(lex1);
         DateTimeStruct dts2 = DateTimeStruct.parseTime(lex2);
 
@@ -1422,7 +1388,7 @@ public class XSDFuncOp
             if ( ! Objects.equals(dts1.timezone, dts2.timezone) )
                 throw new ExprEvalException("fn:dateTime: Two different timezones: ("+nv1+", "+nv2+")");
         }
-        
+
         // Merge the date into the time.  There are zero or one timezones, or two the same by this point.
         dts2.year = dts1.year;
         dts2.month = dts1.month;
@@ -1431,7 +1397,7 @@ public class XSDFuncOp
         String lex = dts2.toString();
         return NodeValue.makeDateTime(lex);
     }
-    
+
     // Accessors: datetime, date, Gregorian.
     public static NodeValue dtGetYear(NodeValue nv) {
         if ( nv.isDateTime() || nv.isDate() || nv.isGYear() || nv.isGYearMonth() ) {
@@ -1609,33 +1575,33 @@ public class XSDFuncOp
         // throw new ExprEvalException("Not a duration: "+nv) ;
         Number x = dur.getField(field) ;
         if ( x == null ) {
-            x =  field.equals(DatatypeConstants.SECONDS) 
-                ? BigDecimal.ZERO 
+            x =  field.equals(DatatypeConstants.SECONDS)
+                ? BigDecimal.ZERO
                 : BigInteger.ZERO ;
         }
-        
+
         if ( field.equals(DatatypeConstants.SECONDS) )
             return NodeValue.makeDecimal((BigDecimal)x) ;
 
         return NodeValue.makeInteger((BigInteger)x) ;
     }
-    
+
     public static Duration zeroDuration = NodeValue.xmlDatatypeFactory.newDuration(true, null, null, null, null, null, BigDecimal.ZERO) ;
-    
+
     public static NodeValue localTimezone() {
         Duration dur = localTimezoneDuration();
         NodeValue nv = NodeValue.makeDuration(dur);
         return nv;
     }
-    
-    /** Local (query engine) timezone including DST */ 
+
+    /** Local (query engine) timezone including DST */
     private static Duration localTimezoneDuration() {
         ZonedDateTime zdt = ZonedDateTime.now();
         int tzDurationInSeconds = zdt.getOffset().getTotalSeconds();
         Duration dur = NodeFunctions.duration(tzDurationInSeconds);
-        return dur; 
+        return dur;
     }
-    
+
     public static NodeValue adjustDatetimeToTimezone(NodeValue nv1,NodeValue nv2){
         if(nv1 == null)
             return null;
@@ -1687,10 +1653,10 @@ public class XSDFuncOp
         else
             return NodeValue.makeDate(calValue);
     }
-    
+
     /** fn:format-number
-     * 
-     * The 3rd argument, if present, called decimal-format-name, is here a 
+     *
+     * The 3rd argument, if present, called decimal-format-name, is here a
      * IETF BCP 47 language tag string.
      */
     public static NodeValue formatNumber(NodeValue nv, NodeValue picture, NodeValue nvLocale) {
@@ -1705,12 +1671,12 @@ public class XSDFuncOp
         if ( nvLocale != null )
             locale = Locale.forLanguageTag(nvLocale.asString()) ;
         DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(locale) ;
-        
-        NumberFormat formatter = 
+
+        NumberFormat formatter =
             (dfs == null )
                 ? new DecimalFormat(picture.getString())
                 : new DecimalFormat(picture.getString(), dfs) ;
-            
+
         NumericType nt = XSDFuncOp.classifyNumeric("fn:formatNumber", nv) ;
         String s = null ;
         switch(nt) {
@@ -1725,6 +1691,6 @@ public class XSDFuncOp
             default :
                 break ;
         }
-        return NodeValue.makeString(s) ; 
+        return NodeValue.makeString(s) ;
     }
 }

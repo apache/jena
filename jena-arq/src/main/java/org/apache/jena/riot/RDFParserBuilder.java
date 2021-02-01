@@ -81,19 +81,18 @@ public class RDFParserBuilder {
     private HttpClient httpClient = null;
 
     // Syntax
-    private Lang hintLang = null;
+    private Lang hintLang  = null;
     private Lang forceLang = null;
 
-    private String baseUri = null;
+    private String baseURI = null;
 
-    private boolean           canonicalValues = false;
-    private LangTagForm  langTagForm = LangTagForm.NONE;
+    private boolean canonicalValues = false;
+    private LangTagForm langTagForm = LangTagForm.NONE;
 
     private Optional<Boolean> checking = Optional.empty();
 
     private boolean strict = SysRIOT.isStrictMode();
     private boolean resolveURIs = true;
-    private IRIResolver resolver = null;
     // ----
 
     // Construction for the StreamRDF
@@ -282,7 +281,7 @@ public class RDFParserBuilder {
     }
 
     /** Set the base URI for parsing.  The default is to have no base URI. */
-    public RDFParserBuilder base(String base) { this.baseUri = base ; return this; }
+    public RDFParserBuilder base(String base) { this.baseURI = base ; return this; }
 
     /** Choose whether to resolve URIs.<br/>
      *  This does not affect all languages: N-Triples and N-Quads never resolve URIs.<br/>
@@ -612,13 +611,16 @@ public class RDFParserBuilder {
         if ( errorHandler$ == null )
             errorHandler$ = ErrorHandlerFactory.getDefaultErrorHandler();
 
-        if ( baseUri == null ) {
+        String parserBaseURI = baseURI;
+
+        if ( baseURI == null ) {
             if ( path != null ) {
-                baseUri = IRILib.filenameToIRI(path.toString());
+                parserBaseURI = IRILib.filenameToIRI(path.toString());
             } else if ( uri != null ) {
-                baseUri = resolver != null ? resolver.resolveToString(uri) : IRIResolver.resolveString(uri);
+                parserBaseURI = uri;
             }
         }
+        // selectedBaseURI can still be null here (no baseUri, no path, no uri)
 
         StreamManager sMgr = streamManager;
         if ( sMgr == null )
@@ -627,9 +629,9 @@ public class RDFParserBuilder {
         // Can't build the profile here as it is Lang/conneg dependent.
         return new RDFParser(uri, path, content, inputStream, javaReader, sMgr,
                              client, hintLang, forceLang,
-                             baseUri, strict, checking,
+                             parserBaseURI, strict, checking,
                              canonicalValues, langTagForm,
-                             resolveURIs, resolver, factory$, errorHandler$, context);
+                             resolveURIs, factory$, errorHandler$, context);
     }
 
     private FactoryRDF buildFactoryRDF() {
@@ -681,13 +683,12 @@ public class RDFParserBuilder {
         builder.httpClient =        this.httpClient;
         builder.hintLang =          this.hintLang;
         builder.forceLang =         this.forceLang;
-        builder.baseUri =           this.baseUri;
+        builder.baseURI =           this.baseURI;
         builder.checking =          this.checking;
         builder.canonicalValues =   this.canonicalValues;
         builder.langTagForm =       this.langTagForm;
         builder.strict =            this.strict;
         builder.resolveURIs =       this.resolveURIs;
-        builder.resolver =          this.resolver;
         builder.factory =           this.factory;
         builder.labelToNode =       this.labelToNode;
         builder.errorHandler =      this.errorHandler;

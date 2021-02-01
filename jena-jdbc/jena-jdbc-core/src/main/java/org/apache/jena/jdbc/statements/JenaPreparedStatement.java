@@ -23,23 +23,7 @@ import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URL;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Date;
-import java.sql.NClob;
-import java.sql.ParameterMetaData;
-import java.sql.PreparedStatement;
-import java.sql.Ref;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.RowId;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.sql.SQLXML;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.sql.Types;
+import java.sql.*;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -47,6 +31,7 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.iri.IRI;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.statements.metadata.JenaParameterMetadata;
 import org.apache.jena.jdbc.utils.JdbcNodeUtils;
@@ -56,7 +41,7 @@ import org.apache.jena.sparql.util.NodeFactoryExtra ;
 
 /**
  * Abstract Jena JDBC implementation of a prepared statement
- * 
+ *
  */
 public abstract class JenaPreparedStatement extends JenaStatement implements PreparedStatement {
 
@@ -65,7 +50,7 @@ public abstract class JenaPreparedStatement extends JenaStatement implements Pre
 
     /**
      * Creates a new prepared statement
-     * 
+     *
      * @param sparql
      * @param connection
      *            Connection
@@ -311,7 +296,7 @@ public abstract class JenaPreparedStatement extends JenaStatement implements Pre
     @Override
     public void setObject(int parameterIndex, Object value) throws SQLException {
         if (value == null) throw new SQLException("Setting a null value is not permitted");
-        
+
         if (value instanceof Node) {
             this.setParameter(parameterIndex, (Node) value);
         } else if (value instanceof RDFNode) {
@@ -352,6 +337,8 @@ public abstract class JenaPreparedStatement extends JenaStatement implements Pre
             this.setParameter(parameterIndex, NodeFactory.createURI(value.toString()));
         } else if (value instanceof IRI) {
             this.setParameter(parameterIndex, NodeFactory.createURI(value.toString()));
+        } else if (value instanceof IRIx) {
+            this.setParameter(parameterIndex, NodeFactory.createURI(value.toString()));
         } else {
             throw new SQLException(
                     "setObject() received a value that could not be converted to a RDF node for use in a SPARQL query");
@@ -361,7 +348,7 @@ public abstract class JenaPreparedStatement extends JenaStatement implements Pre
     @Override
     public void setObject(int parameterIndex, Object value, int targetSqlType) throws SQLException {
         if (value == null) throw new SQLException("Setting a null value is not permitted");
-        
+
         try {
             switch (targetSqlType) {
             case Types.ARRAY:
@@ -496,6 +483,8 @@ public abstract class JenaPreparedStatement extends JenaStatement implements Pre
                     this.setParameter(parameterIndex, NodeFactory.createURI(((URI)value).toString()));
                 } else if (value instanceof IRI) {
                     this.setParameter(parameterIndex, NodeFactory.createURI(((IRI)value).toString()));
+                } else if (value instanceof IRIx) {
+                    this.setParameter(parameterIndex, NodeFactory.createURI(((IRIx)value).toString()));
                 } else if (value instanceof BigDecimal) {
                     this.setParameter(parameterIndex, NodeFactory.createLiteral(((BigDecimal)value).toPlainString(), XSDDatatype.XSDdecimal));
                 } else if (value instanceof Boolean) {
@@ -522,7 +511,7 @@ public abstract class JenaPreparedStatement extends JenaStatement implements Pre
                     this.setParameter(parameterIndex, NodeFactoryExtra.timeToNode(c));
                 } else if (value instanceof Calendar) {
                     this.setParameter(parameterIndex, NodeFactoryExtra.dateTimeToNode((Calendar)value));
-                } else { 
+                } else {
                     this.setParameter(parameterIndex, NodeFactory.createLiteral(value.toString()));
                 }
                 break;
@@ -654,7 +643,7 @@ public abstract class JenaPreparedStatement extends JenaStatement implements Pre
     /**
      * Gets a copy of the underlying {@link ParameterizedSparqlString} used to
      * implement this prepared statement
-     * 
+     *
      * @return Copy of the underlying string
      */
     public ParameterizedSparqlString getParameterizedString() {

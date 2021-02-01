@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.compact.reader.ShaclcParseException;
@@ -91,12 +92,12 @@ public class ShaclcParser {
     }
 
     private static void parse$(ShaclCompactParserJJ parser, StreamRDF stream, String baseURI, Context context) {
-        
+
         ParserProfile profile = new ParserProfileStd(RiotLib.factoryRDF(),
                                                      ErrorHandlerFactory.errorHandlerStd,
-                                                     IRIResolver.create(baseURI),
+                                                     IRIxResolver.create(baseURI).build(),
                                                      PrefixMapFactory.create(),
-                                                     context, false, false); 
+                                                     context, false, false);
         SHACLC.addStandardPrefixes(profile.getPrefixMap());
         stream.start();
         parser.setDest(stream);

@@ -22,8 +22,6 @@ import static java.lang.System.out ;
 
 import java.util.Iterator ;
 
-import org.apache.jena.iri.IRIFactory ;
-
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
@@ -36,16 +34,12 @@ import org.apache.jena.tdb.TDBFactory ;
 /** Example of single threaded use of TDB working with the Jena RDF API */
 public class ExTDB6
 {
-    /// observe the non-http "protocol", because it is a bad precedent
-    /// to only use http IRI when there is no http protocol involved
     public static final String MY_NS =
         "x-ns://example.org/ns1/";
 
     public static void main(String[] args) throws Exception {
         /// turn off the "No BGP optimizer warning"
         TDB.setOptimizerWarningFlag(false);
-
-        final IRIFactory iriFactory = IRIFactory.iriImplementation();
 
         final String DATASET_DIR_NAME = "data0";
         final Dataset data0 = TDBFactory.createDataset( DATASET_DIR_NAME );
@@ -66,10 +60,7 @@ public class ExTDB6
         out.println("Graph := "+graph);
 
         if (graph.isEmpty()) {
-            final Resource product1 = model.createResource(
-                    iriFactory.construct( MY_NS +"product/1" )
-                        .toString() );
-
+            final Resource product1 = model.createResource( MY_NS +"product/1");
             final Property hasName = model.createProperty( MY_NS, "#hasName");
             final Statement stmt = model.createStatement(
                     product1, hasName, model.createLiteral("Beach Ball","en") );

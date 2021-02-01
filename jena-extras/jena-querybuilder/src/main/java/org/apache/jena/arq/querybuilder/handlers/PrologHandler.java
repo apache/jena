@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,8 +22,8 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.arq.querybuilder.ExprFactory;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.query.Query ;
-import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.sparql.core.Var ;
@@ -46,10 +46,10 @@ public class PrologHandler implements Handler {
 	}
 
 	/**
-	 * get the canonical prefix name.  
-	 * 
+	 * get the canonical prefix name.
+	 *
 	 * Removes ':' from the end of the name if present.
-	 * 
+	 *
 	 * @param x The prefix name
 	 * @return The prefix name with the trailing ':' removed.
 	 */
@@ -61,11 +61,10 @@ public class PrologHandler implements Handler {
 
 	/**
 	 * Set the base for the query.  This is the IRI against which relative names will be resolved.
-	 * @param resolver The IRIResolver to set the base from.
+	 * @param base The base URI.
 	 */
-	public void setBase(IRIResolver resolver) {
-		query.setBaseURI(resolver);
-
+	public void setBase(IRIx base) {
+		query.setBase(base);
 	}
 
 	/**
@@ -84,7 +83,7 @@ public class PrologHandler implements Handler {
 	public void addPrefix(String pfx, String uri) {
 		query.setPrefix(canonicalPfx(pfx), uri);
 	}
-	
+
 	/**
 	 * Clear the prefix mapping.
 	 */
@@ -101,11 +100,11 @@ public class PrologHandler implements Handler {
 			addPrefix(e.getKey(), e.getValue());
 		}
 	}
-	
+
 	public PrefixMapping getPrefixes() {
 		return query.getPrefixMapping();
 	}
-	
+
 	public ExprFactory getExprFactory() {
 		return new ExprFactory( query.getPrefixMapping() );
 	}

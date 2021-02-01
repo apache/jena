@@ -40,7 +40,10 @@ import org.apache.jena.sparql.serializer.SerializerRegistry ;
 import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.syntax.PatternVars ;
 import org.apache.jena.sparql.syntax.Template ;
-import org.apache.jena.sparql.syntax.syntaxtransform.* ;
+import org.apache.jena.sparql.syntax.syntaxtransform.ElementTransform;
+import org.apache.jena.sparql.syntax.syntaxtransform.ElementTransformCopyBase;
+import org.apache.jena.sparql.syntax.syntaxtransform.ExprTransformApplyElementTransform;
+import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
 import org.apache.jena.sparql.util.FmtUtils ;
 import org.apache.jena.sys.JenaSystem ;
 
@@ -692,7 +695,7 @@ public class Query extends Prologue implements Cloneable, Printable
     public void resetResultVars() {
         if  ( isQueryResultStar() )
             projectVars.clear();
-        
+
         if ( getQueryPattern() == null )
         {
             if ( ! this.isDescribeType() )

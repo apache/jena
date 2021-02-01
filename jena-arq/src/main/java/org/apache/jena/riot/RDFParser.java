@@ -36,6 +36,7 @@ import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.process.normalize.StreamCanonicalLangTag;
@@ -85,13 +86,12 @@ public class RDFParser {
     private final HttpClient        httpClient;
     private final Lang              hintLang;
     private final Lang              forceLang;
-    private final String            baseUri;
+    private final String            baseURI;
     private final boolean           strict;
     private final boolean           resolveURIs;
     private final boolean           canonicalLexicalValues;
     private final LangTagForm       langTagForm;
     private final Optional<Boolean> checking;
-    private final IRIResolver       resolver;
     private final FactoryRDF        factory;
     private final ErrorHandler      errorHandler;
     private final Context           context;
@@ -168,10 +168,11 @@ public class RDFParser {
         return RDFParserBuilder.create().source(input);
     }
 
-    /* package */ RDFParser(String uri, Path path, String content, InputStream inputStream, Reader javaReader, StreamManager streamManager,
-                            HttpClient httpClient, Lang hintLang, Lang forceLang, String baseUri, boolean strict, Optional<Boolean> checking,
+    /* package */ RDFParser(String uri, Path path, String content, InputStream inputStream, Reader javaReader,
+                            StreamManager streamManager, HttpClient httpClient,
+                            Lang hintLang, Lang forceLang, String parserBaseURI, boolean strict, Optional<Boolean> checking,
                             boolean canonicalLexicalValues, LangTagForm langTagForm,
-                            boolean resolveURIs, IRIResolver resolver, FactoryRDF factory,
+                            boolean resolveURIs, FactoryRDF factory,
                             ErrorHandler errorHandler, Context context) {
         int x = countNonNull(uri, path, content, inputStream, javaReader);
         if ( x >= 2 )
@@ -191,13 +192,12 @@ public class RDFParser {
         this.httpClient = httpClient;
         this.hintLang = hintLang;
         this.forceLang = forceLang;
-        this.baseUri = baseUri;
+        this.baseURI = parserBaseURI;
         this.strict = strict;
         this.resolveURIs = resolveURIs;
         this.canonicalLexicalValues = canonicalLexicalValues;
         this.langTagForm = langTagForm;
         this.checking = checking;
-        this.resolver = resolver;
         this.factory = factory;
         this.errorHandler = errorHandler;
         this.context = context;
@@ -292,7 +292,7 @@ public class RDFParser {
             parseNotUri(destination);
             return;
         }
-        Objects.requireNonNull(baseUri);
+        Objects.requireNonNull(baseURI);
         parseURI(destination);
     }
 
@@ -312,14 +312,14 @@ public class RDFParser {
             } else {
                 // No forced language.
                 // Conneg and hint, ignoring text/plain.
-                ct = WebContent.determineCT(input.getContentType(), hintLang, baseUri);
+                ct = WebContent.determineCT(input.getContentType(), hintLang, baseURI);
                 if ( ct == null )
-                    throw new RiotException("Failed to determine the content type: (URI=" + baseUri + " : stream=" + input.getContentType()+")");
+                    throw new RiotException("Failed to determine the content type: (URI=" + baseURI + " : stream=" + input.getContentType()+")");
                 reader = createReader(ct);
                 if ( reader == null )
                     throw new RiotException("No parser registered for content type: " + ct.getContentTypeStr());
             }
-            read(reader, input, null, baseUri, context, ct, destination);
+            read(reader, input, null, baseURI, context, ct, destination);
         }
     }
 
@@ -329,7 +329,7 @@ public class RDFParser {
         Lang lang = hintLang;
         if ( forceLang != null )
             lang = forceLang;
-        ContentType ct = WebContent.determineCT(null, lang, baseUri);
+        ContentType ct = WebContent.determineCT(null, lang, baseURI);
         if ( ct == null )
             throw new RiotException("Failed to determine the RDF syntax (.lang or .base required)");
 
@@ -343,7 +343,7 @@ public class RDFParser {
         if ( content != null )
             jr = new StringReader(content);
 
-        read(readerRiot, inputStream, jr, baseUri, context, ct, destination);
+        read(readerRiot, inputStream, jr, baseURI, context, ct, destination);
     }
 
     /** Call the reader, from either an InputStream or a Reader */
@@ -429,28 +429,30 @@ public class RDFParser {
         return reader ;
     }
 
+    // See also RiotLib.profile but this version has RDFParser specific features.
     private ParserProfile makeParserProfile(Lang lang) {
         boolean resolve = resolveURIs;
+        boolean allowRelative = false;
         boolean checking$ = strict;
+        String baseStr = baseURI;
 
         // Per language tweaks.
         if ( sameLang(NTRIPLES, lang) || sameLang(NQUADS, lang) ) {
-            if ( ! strict )
+            baseStr = null;
+            if ( ! strict ) {
+                allowRelative = true;
                 checking$ = checking.orElseGet(()->false);
-            resolve = false;
+            } else
+                resolve = false;
         } else {
             if ( ! strict )
                 checking$ = checking.orElseGet(()->true);
         }
         if ( sameLang(RDFJSON, lang) )
+            // The JSON-LD subsystem handles this.
             resolve = false;
 
-        IRIResolver resolver = this.resolver;
-        if ( resolver == null ) {
-            resolver = resolve ?
-                IRIResolver.create(baseUri) :
-                IRIResolver.createNoResolve() ;
-        }
+        IRIxResolver resolver = IRIxResolver.create().base(baseStr).resolve(resolve).allowRelative(allowRelative).build();
         PrefixMap prefixMap = PrefixMapFactory.create();
         ParserProfileStd parserFactory = new ParserProfileStd(factory, errorHandler, resolver, prefixMap, context, checking$, strict);
         return parserFactory;

@@ -21,7 +21,7 @@ package org.apache.jena.sparql.sse.lang;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import org.apache.jena.sparql.core.Prologue ;
+import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.ItemList ;
 
@@ -30,26 +30,28 @@ public class ParseHandlerLink extends ParseHandlerResolver
     // Untested.
     // Implements (link@ LABEL) and (@name LABEL expression) to give non-trees.
     // Caveat: other things assume tree walking.
-    
+
     static final String tagLink = "link@" ;
     static final String tagName = "@name" ;
-    
-    public ParseHandlerLink(Prologue prologue)                  { super(prologue) ; }
-    
+
+    public ParseHandlerLink(String baseStr, PrefixMapping prefixMapping) {
+        super(baseStr, prefixMapping);
+    }
+
     String currentName = null ;
     Map<String, Item> namedItems = new HashMap<>() ;    // Item => Item
-    
+
     // ----
-    
+
     @Override
     public void parseFinish()
     {
         // Check links.
         super.parseFinish() ;
     }
-    
+
     // ----
-    
+
     @Override
     protected void declItem(ItemList list, Item item)
     {
@@ -58,12 +60,12 @@ public class ParseHandlerLink extends ParseHandlerResolver
             super.declItem(list, item) ;
             return ;
         }
-        
+
         if ( list.getFirst().isSymbol(tagName) )
         {
             if ( ! item.isSymbol() )
                 throwException("Must be a symbol for a named item: "+item.shortString(), item) ;
-            
+
             if ( namedItems.containsKey(item.getSymbol()) )
                 throwException("Name already defined: "+item, item) ;
             currentName = item.getSymbol() ;
@@ -71,7 +73,7 @@ public class ParseHandlerLink extends ParseHandlerResolver
             super.declItem(list, item) ;
             return ;
         }
-        
+
         super.declItem(list, item) ;
     }
 

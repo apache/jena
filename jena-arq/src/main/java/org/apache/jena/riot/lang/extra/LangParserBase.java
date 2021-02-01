@@ -33,12 +33,12 @@ import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.graph.NodeConst;
-import org.apache.jena.sparql.lang.ParserBase;
+import org.apache.jena.sparql.lang.QueryParserBase;
 import org.apache.jena.vocabulary.RDF;
 
 /**
  * Base for JavaCC parser of RDF languages.
- * See {@link ParserBase} for the base class for SPARQL.
+ * See {@link QueryParserBase} for the base class for SPARQL.
  */
 public class LangParserBase {
 

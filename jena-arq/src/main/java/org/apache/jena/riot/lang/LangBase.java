@@ -26,12 +26,14 @@ import org.apache.jena.riot.tokens.Tokenizer ;
 public abstract class LangBase extends LangEngine implements LangRIOT
 {
     protected final StreamRDF dest;
-    protected final boolean isStrictMode; 
 
     protected LangBase(Tokenizer tokens, ParserProfile profile, StreamRDF dest) {
         super(tokens, profile, profile.getErrorHandler());
         this.dest = dest;
-        this.isStrictMode = profile.isStrictMode();
+    }
+
+    protected boolean isStrictMode() {
+        return profile.isStrictMode();
     }
 
     @Override

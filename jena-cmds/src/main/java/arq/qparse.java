@@ -35,7 +35,7 @@ import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.core.QueryCheckException ;
 import org.apache.jena.sparql.expr.E_Function ;
-import org.apache.jena.sparql.lang.ParserBase ;
+import org.apache.jena.sparql.lang.QueryParserBase ;
 import org.apache.jena.sparql.resultset.ResultSetException ;
 import org.apache.jena.sparql.util.QueryOutputUtils ;
 import org.apache.jena.sparql.util.QueryUtils ;
@@ -154,7 +154,7 @@ public class qparse extends CmdARQ
         try{
             Query query = modQuery.getQuery() ;
             try {
-                LogCtl.disable(ParserBase.ParserLoggerName) ;
+                LogCtl.disable(QueryParserBase.ParserLoggerName) ;
                 QueryUtils.checkQuery(query, true) ;
             } catch (QueryCheckException ex)
             {
@@ -163,7 +163,7 @@ public class qparse extends CmdARQ
                 if ( ex.getCause() != null )
                     ex.getCause().printStackTrace(System.err) ;
             }
-            finally { LogCtl.setLevel(ParserBase.ParserLoggerName, "INFO") ; }
+            finally { LogCtl.setLevel(QueryParserBase.ParserLoggerName, "INFO") ; }
 
             
             // Print the query out in some syntax

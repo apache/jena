@@ -21,7 +21,8 @@ package org.apache.jena.query;
 import java.io.InputStream;
 
 import org.apache.jena.atlas.io.IO;
-import org.apache.jena.riot.system.IRIResolver ;
+import org.apache.jena.irix.IRIs;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.shared.NotFoundException;
 import org.apache.jena.sparql.lang.ParserARQ ;
@@ -130,22 +131,15 @@ public class QueryFactory
         if ( parser == null )
             throw new UnsupportedOperationException("Unrecognized syntax for parsing: "+syntaxURI) ;
 
-        if ( query.getResolver() == null )
+        if ( query.getBase() == null )
         {
-            IRIResolver resolver = null ;
+            IRIx queryBase = null;
             try {
-                if ( baseURI != null ) {
-                    // Sort out the baseURI - if that fails, dump in a dummy one and continue.
-                    resolver = IRIResolver.create(baseURI) ;
-                }
-                else {
-                    resolver = IRIResolver.create() ;
-                }
-            }
-            catch (Exception ex) {}
-            if ( resolver == null )
-                resolver = IRIResolver.create("http://localhost/query/defaultBase#") ;
-            query.setResolver(resolver) ;
+                queryBase = ( baseURI != null ) ? IRIs.resolveIRI(baseURI) : IRIs.getSystemBase();
+            } catch (Exception ex) {}
+            if ( queryBase == null )
+                queryBase = IRIx.create("http://localhost/query/defaultBase#");
+            query.setBase(queryBase);
 
         }
         return parser.parse(query, queryString) ;

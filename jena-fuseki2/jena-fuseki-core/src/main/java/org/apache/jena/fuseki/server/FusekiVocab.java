@@ -19,12 +19,12 @@
 package org.apache.jena.fuseki.server;
 
 import org.apache.jena.fuseki.FusekiException;
-import org.apache.jena.iri.IRI;
+import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.riot.system.IRIResolver;
 
 public class FusekiVocab
 {
@@ -100,13 +100,14 @@ public class FusekiVocab
 
     private static String iri(String localname) {
         String uri = NS + localname;
-        IRI iri = IRIResolver.parseIRI(uri);
-        if ( iri.hasViolation(true) )
-            throw new FusekiException("Bad IRI: "+iri);
-        if ( ! iri.isAbsolute() )
-            throw new FusekiException("Bad IRI: "+iri);
-
-        return uri;
+        try {
+            IRIx iri = IRIx.create(uri);
+            if ( ! iri.isReference() )
+                throw new FusekiException("Bad IRI (relative): "+uri);
+            return uri;
+        } catch (IRIException ex) {
+            throw new FusekiException("Bad IRI: "+uri);
+        }
     }
 }
 

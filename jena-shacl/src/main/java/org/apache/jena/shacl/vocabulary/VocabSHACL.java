@@ -18,12 +18,12 @@
 
 package org.apache.jena.shacl.vocabulary;
 
-import org.apache.jena.iri.IRI;
+import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.shacl.ShaclException;
 
 /**
@@ -41,11 +41,13 @@ public class VocabSHACL {
 
     private static String iri(String localname) {
         String uri = NS + localname;
-        IRI iri = IRIResolver.parseIRI(uri);
-        if ( iri.hasViolation(true) )
-            throw new ShaclException("Bad IRI: "+iri);
-        if ( ! iri.isAbsolute() )
-            throw new ShaclException("Bad IRI: "+iri);
-        return uri;
+        try {
+            IRIx iri = IRIx.create(uri);
+            if ( ! iri.isReference() )
+                throw new ShaclException("Bad IRI (relative): "+uri);
+            return uri;
+        } catch (IRIException ex) {
+            throw new ShaclException("Bad IRI: "+uri);
+        }
     }
 }

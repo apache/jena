@@ -30,11 +30,11 @@ import junit.framework.TestCase;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.irix.IRIs;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.Var;
@@ -59,10 +59,10 @@ public class QueryTest extends TestCase
     private static int testCounter = 1 ;
     private int testNumber = testCounter++ ;
     private final TestItem testItem ;
-    
+
     private SPARQLResult results = null ;    // Maybe null if no testing of results
     private final String testURI;
-    
+
     // If supplied with a model, the test will load that model with data from the source
     // If no model is supplied one is created or attached (e.g. a database)
 
@@ -72,10 +72,10 @@ public class QueryTest extends TestCase
         this.testItem = t ;
         this.testURI = testItem.getURI();
     }
-    
+
     private boolean oldWarningFlag  ;
     private boolean oldPlainGraphFlag  ;
-    
+
     @Override
     public void setUp()
     {
@@ -86,13 +86,13 @@ public class QueryTest extends TestCase
         // Sort out results.
         results =  testItem.getResults() ;
     }
-    
+
     @Override
     public void tearDown()
     {
         SystemARQ.UsePlainGraph = oldPlainGraphFlag ;
     }
-    
+
     private Dataset setUpDataset(Query query, TestItem testItem)
     {
         try {
@@ -101,9 +101,9 @@ public class QueryTest extends TestCase
             if ( doesQueryHaveDataset(query) && doesTestItemHaveDataset(testItem) )
             {
                 // Only warn if there are results to test
-                // Syntax tests may have FROM etc and a manifest data file. 
+                // Syntax tests may have FROM etc and a manifest data file.
                 if ( testItem.getResultFile() != null )
-                    Log.warn(this, testItem.getName()+" : query data source and also in test file") ; 
+                    Log.warn(this, testItem.getName()+" : query data source and also in test file") ;
             }
 
             // In test file?
@@ -111,33 +111,33 @@ public class QueryTest extends TestCase
                 // Not specified in the query - get from test item and load
                 return createDataset(testItem.getDefaultGraphURIs(), testItem.getNamedGraphURIs()) ;
 
-            if ( ! doesQueryHaveDataset(query) ) 
+            if ( ! doesQueryHaveDataset(query) )
                 fail("No dataset") ;
 
             // Left to query
           return null ;
-      
+
       } catch (JenaException jEx)
       {
           fail("JenaException creating data source: "+jEx.getMessage()) ;
           return null ;
       }
     }
-    
+
     private static boolean doesTestItemHaveDataset(TestItem testItem)
     {
-        boolean r = 
+        boolean r =
             ( testItem.getDefaultGraphURIs() != null &&  testItem.getDefaultGraphURIs().size() > 0 )
             ||
             ( testItem.getNamedGraphURIs() != null &&  testItem.getNamedGraphURIs().size() > 0 ) ;
         return r ;
     }
-    
+
     private static boolean doesQueryHaveDataset(Query query)
     {
         return query.hasDatasetDescription() ;
     }
-    
+
     private static Dataset createDataset(List<String> defaultGraphURIs, List<String> namedGraphURIs)
     {
         // Allow "qt:data" to be quads in defaultGraphURIs.
@@ -149,14 +149,14 @@ public class QueryTest extends TestCase
         }
         if ( namedGraphURIs != null ) {
             for ( String sourceURI : namedGraphURIs ) {
-                String absSourceURI = IRIResolver.resolveString(sourceURI) ;
+                String absSourceURI = IRIs.resolve(sourceURI) ;
                 Model m = ds.getNamedModel(absSourceURI);
                 RDFDataMgr.read(m, sourceURI);
             }
         }
         return ds;
     }
-    
+
     @Override
     protected void runTest() throws Throwable
     {
@@ -172,11 +172,11 @@ public class QueryTest extends TestCase
             }
 
             Dataset dataset = setUpDataset(query, testItem) ;
-            if ( dataset == null && ! doesQueryHaveDataset(query) ) 
+            if ( dataset == null && ! doesQueryHaveDataset(query) )
                 fail("No dataset for query") ;
 
-            try(QueryExecution qe = ( dataset == null ) 
-                                    ? QueryExecutionFactory.create(query) 
+            try(QueryExecution qe = ( dataset == null )
+                                    ? QueryExecutionFactory.create(query)
                                     : QueryExecutionFactory.create(query, dataset) ) {
                 if ( query.isSelectType() )
                     runTestSelect(query, qe) ;
@@ -204,17 +204,17 @@ public class QueryTest extends TestCase
             fail( "Exception: "+ex.getClass().getName()+": "+ex.getMessage()) ;
         }
     }
-    
+
     void runTestSelect(Query query, QueryExecution qe)
     {
         // Do the query!
         ResultSetRewindable resultsActual = ResultSetFactory.makeRewindable(qe.execSelect()) ;
-        
+
         qe.close() ;
-        
+
         if ( results == null )
             return ;
-        
+
         // Assumes resultSetCompare can cope with full isomorphism possibilities.
         ResultSetRewindable resultsExpected ;
         if ( results.isResultSet() )
@@ -226,14 +226,14 @@ public class QueryTest extends TestCase
             fail("Wrong result type for SELECT query") ;
             resultsExpected = null ; // Keep the compiler happy
         }
-        
+
         if ( query.isReduced() )
         {
             // Reduced - best we can do is DISTINCT
             resultsExpected = unique(resultsExpected) ;
             resultsActual = unique(resultsActual) ;
         }
-        
+
         // Hack for CSV : tests involving bNodes need manually checking.
         if ( testItem.getResultFile().endsWith(".csv") )
         {
@@ -250,13 +250,13 @@ public class QueryTest extends TestCase
                 System.out.println("Manual check of CSV results required: "+testItem.getName()) ;
             return ;
         }
-            
+
         boolean b = resultSetEquivalent(query, resultsExpected, resultsActual) ;
-        
+
         if ( ! b )
         {
             resultsExpected.reset() ;
-            resultsActual.reset() ; 
+            resultsActual.reset() ;
             boolean b2 = resultSetEquivalent(query, resultsExpected, resultsActual) ;
             printFailedResultSetTest(query, qe, resultsExpected, resultsActual) ;
         }
@@ -272,7 +272,7 @@ public class QueryTest extends TestCase
         {
             Binding b = resultsActual.nextBinding() ;
             BindingMap b2 = BindingFactory.create() ;
-            
+
             for ( String vn : resultsActual.getResultVars() )
             {
                 Var v = Var.alloc(vn) ;
@@ -297,7 +297,7 @@ public class QueryTest extends TestCase
         // VERY crude.  Utilises the fact that bindings have value equality.
         List<Binding> x = new ArrayList<>() ;
         Set<Binding> seen = new HashSet<>() ;
-        
+
         for ( ; results.hasNext() ; )
         {
             Binding b = results.nextBinding() ;
@@ -309,7 +309,7 @@ public class QueryTest extends TestCase
         QueryIterator qIter = new QueryIterPlainWrapper(x.iterator()) ;
         ResultSet rs = new ResultSetStream(results.getResultVars(), ModelFactory.createDefaultModel(), qIter) ;
         return ResultSetFactory.makeRewindable(rs) ;
-    } 
+    }
 
     public static boolean resultSetEquivalent(Query query, ResultSetRewindable resultsExpected, ResultSetRewindable resultsActual)
     {
@@ -330,17 +330,17 @@ public class QueryTest extends TestCase
                 return ResultSetCompare.equalsByTerm(resultsExpected, resultsActual) ;
         }
     }
-    
+
     // TEMPORARY
     private boolean checkResultsByModel(Query query, Model expectedModel, ResultSetRewindable results)
     {
         // Fudge - can't cope with ordered results properly.  The output writer for ResultSets does nto add rs:index.
-        
+
         results.reset() ;
         Model actualModel = RDFOutput.encodeAsModel(results) ;
         // Tidy the models.
         // Very regretable.
-        
+
         expectedModel.removeAll(null, RDF.type,  ResultSetGraphVocab.ResultSet) ;
         expectedModel.removeAll(null, RDF.type,  ResultSetGraphVocab.ResultSolution) ;
         expectedModel.removeAll(null, RDF.type,  ResultSetGraphVocab.ResultBinding) ;
@@ -352,7 +352,7 @@ public class QueryTest extends TestCase
         actualModel.removeAll(null, RDF.type,  ResultSetGraphVocab.ResultBinding) ;
         actualModel.removeAll(null, ResultSetGraphVocab.size,  (RDFNode)null) ;
         actualModel.removeAll(null, ResultSetGraphVocab.index,  (RDFNode)null) ;
-        
+
         boolean b =  expectedModel.isIsomorphicWith(actualModel) ;
         if ( !b )
         {
@@ -376,7 +376,7 @@ public class QueryTest extends TestCase
 	    	compareGraphResults(resultsActual, query) ;
 	    }
     }
-   
+
    private void compareGraphResults(Model resultsActual, Query query)
    {
         if ( results != null )
@@ -384,7 +384,7 @@ public class QueryTest extends TestCase
             try {
                 if ( ! results.isGraph() )
                     fail("Expected results are not a graph: "+testItem.getName()) ;
-                    
+
                 Model resultsExpected = results.getModel() ;
                 if ( ! resultsExpected.isIsomorphicWith(resultsActual) )
                 {
@@ -398,7 +398,7 @@ public class QueryTest extends TestCase
             }
         }
     }
-   
+
    private void compareDatasetResults(Dataset resultsActual, Query query)
    {
         if ( results != null )
@@ -406,7 +406,7 @@ public class QueryTest extends TestCase
             try {
                 if ( ! results.isDataset() )
                     fail("Expected results are not a graph: "+testItem.getName()) ;
-                    
+
                 Dataset resultsExpected = results.getDataset() ;
                 if ( ! IsoMatcher.isomorphic( resultsExpected.asDatasetGraph(),resultsActual.asDatasetGraph() ) )
                 {
@@ -420,13 +420,13 @@ public class QueryTest extends TestCase
             }
         }
     }
-    
+
     void runTestDescribe(Query query, QueryExecution qe)
     {
         Model resultsActual = qe.execDescribe() ;
         compareGraphResults(resultsActual, query) ;
     }
-    
+
     void runTestAsk(Query query, QueryExecution qe) throws Exception
     {
         boolean result = qe.execAsk() ;
@@ -453,10 +453,10 @@ public class QueryTest extends TestCase
                 if ( x != result )
                     assertEquals("ASK test results do not match", x,result);
             }
-        }        
+        }
         return ;
     }
-    
+
     void printFailedResultSetTest(Query query, QueryExecution qe, ResultSetRewindable qrExpected, ResultSetRewindable qrActual)
     {
        PrintStream out = System.out ;
@@ -474,12 +474,12 @@ public class QueryTest extends TestCase
        qrActual.reset() ;
        out.flush() ;
 
-       
+
        out.println("Expected: "+qrExpected.size()+" -----------------------------") ;
        qrExpected.reset() ;
        ResultSetFormatter.out(out, qrExpected, query.getPrefixMapping()) ;
        qrExpected.reset() ;
-       
+
        out.println() ;
        out.flush() ;
    }
@@ -494,7 +494,7 @@ public class QueryTest extends TestCase
         expected.write(out, "TTL") ;
         out.println() ;
     }
-    
+
     void printFailedDatasetTest(Query query, Dataset expected, Dataset results)
     {
     	System.out.println("=======================================") ;
@@ -504,7 +504,7 @@ public class QueryTest extends TestCase
     	RDFDataMgr.write(System.out, expected, Lang.TRIG);
         System.out.println() ;
     }
-    
+
     protected Query queryFromTestItem(TestItem testItem)
     {
         if ( testItem.getQueryFile() == null )
@@ -512,14 +512,14 @@ public class QueryTest extends TestCase
             fail("Query test file is null") ;
             return null ;
         }
-        
+
         Query query = QueryFactory.read(testItem.getQueryFile(), null, testItem.getFileSyntax()) ;
         return query ;
     }
-    
+
     @Override
     public String toString()
-    { 
+    {
         if ( testItem.getName() != null )
             return testItem.getName() ;
         return super.getName() ;
@@ -533,7 +533,7 @@ public class QueryTest extends TestCase
             _description = makeDescription() ;
         return _description ;
     }
-    
+
     private String makeDescription()
     {
         String tmp = "" ;
@@ -551,7 +551,7 @@ public class QueryTest extends TestCase
                 tmp = tmp + s;
             }
         }
-        
+
         String d = "Test "+testNumber+" :: "+testItem.getName() ;
         //+" :: QueryFile="+testItem.getQueryFile()+
         //          ", DataFile="+tmp+", ResultsFile="+testItem.getResultFile() ;

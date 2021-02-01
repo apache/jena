@@ -27,7 +27,7 @@ import org.apache.jena.sparql.sse.SSE;
 
 /**
  * Tests for the {@link TransformEliminateAssignments}
- * 
+ *
  */
 public class TestTransformEliminateAssignments {
 
@@ -446,7 +446,7 @@ public class TestTransformEliminateAssignments {
         testNoChange("(project (?x ?y)",
                      "  (filter (exprlist ?x)",
                      "    (extend (?x true)",
-                     "      (bgp (triple ?y <urn:pred> <urn:obj>)))))");
+                     "      (bgp (triple ?y <urn:ex:pred> <urn:ex:obj>)))))");
         //@formatter:on
     }
 
@@ -455,7 +455,7 @@ public class TestTransformEliminateAssignments {
     // This would be true regardless of the (project) but the current code is only
     // triggered by (project)
 
-    // OLD - wrong (new walker correctly waks into the exist). 
+    // OLD - wrong (new walker correctly waks into the exist).
 //    @Test
 //    public void ineligible_10() {
 //        // We can't inline out of an EXISTS since the assignment isn't projected
@@ -468,8 +468,8 @@ public class TestTransformEliminateAssignments {
 //                     "    (table unit)))");
 //        //@formatter:on
 //    }
-    
-    // Checks the right output though for the wrong reason. 
+
+    // Checks the right output though for the wrong reason.
 //    @Test
 //    public void eligible_10() {
 //        // The "(extend (?x ...)" is not used - it does not com eout of the (exists).
@@ -536,7 +536,7 @@ public class TestTransformEliminateAssignments {
                      "  (filter (exists",
                      "            (filter  ?x (table unit)))",
                      "    (extend (?x true)",
-                     "      (table unit))))") ; 
+                     "      (table unit))))") ;
         //@formatter:on
     }
 
@@ -575,7 +575,7 @@ public class TestTransformEliminateAssignments {
             "  (filter (exists (filter true (table unit)))",
             "     (table unit)",
             "))") ;
-            
+
         //@formatter:on
     }
 
@@ -761,7 +761,7 @@ public class TestTransformEliminateAssignments {
                      "             (table unit)))))))");
        //@formatter:off
     }
-    
+
     @Test
     public void scope_06() {
         // In-lining in the outer scope should not change the inner scope

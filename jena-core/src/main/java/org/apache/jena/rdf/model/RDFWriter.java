@@ -36,55 +36,55 @@ public interface RDFWriter {
 	 * a FileWriter) at least permits the implementation to
 	 * examine the encoding. With an arbitrary Writer  implementations
 	 * assume  a utf-8 encoding.
-	 * 
+	 *
 	 * @param out The Writer to which the serialization should
 	 * be sent.
 	 * @param model The model to be written.
 	 * @param base the base URI for relative URI calculations.  <code>
 	   null</code> means use only absolute URI's.
-	 */    
-	    public void write(Model model, Writer out, String base);
-    
-    
-/** Serialize Model <code>model</code> to OutputStream <code>out</out>.
- * The implementation chooses  the character encoding, utf-8 is preferred.
- * 
- * 
- * @param out The OutputStream to which the serialization should be sent.
- * @param model The model to be written.
- * @param base the base URI for relative URI calculations.  <code>
+	 */
+	public void write(Model model, Writer out, String base);
+
+
+	/** Serialize Model <code>model</code> to OutputStream <code>out</out>.
+	 * The implementation chooses  the character encoding, utf-8 is preferred.
+	 *
+	 *
+	 * @param out The OutputStream to which the serialization should be sent.
+	 * @param model The model to be written.
+	 * @param base the base URI for relative URI calculations.  <code>
    null</code> means use only absolute URI's. This is used for relative
    URIs that would be resolved against the document retrieval URL.
-   Particular writers may include this value in the output. 
- */    
-    public void write(Model model, OutputStream out, String base);
-    
-/** Set a property to control the behaviour of this writer.
- *
- * <p>An RDFWriter's behaviour can be influenced by defining property values
- * interpreted by that particular writer class.  The values for such
- * properties can be changed by calling this method.  </p>
- *
- * <p>No standard properties are defined.  For the properties recognised
- * by any particular writer implementation, see the documentation for
- * that implementation.  </p>
- * <p>
- * The built-in RDFWriters have properties as defined by:
- * <dl>
- * <dt>N3</dt><dt>N-TRIPLE</dt>
- * <dd>No properties.</dd>
- * <dt>RDF/XML</dt><dt>RDF/XML-ABBREV</dt>
- * </dl>
- * @return the old value for this property, or <code>null</code>
- * if no value was set.
- * @param propName The name of the property.
- * @param propValue The new value of the property
- */ 
-    public Object setProperty(String propName, Object propValue);
+   Particular writers may include this value in the output.
+	 */
+	public void write(Model model, OutputStream out, String base);
 
-/** Set an error handler.
- * @param errHandler The new error handler to be used.
- * @return the old error handler
- */    
-    public RDFErrorHandler  setErrorHandler(RDFErrorHandler errHandler);
+	/** Set a property to control the behaviour of this writer.
+	 *
+	 * <p>An RDFWriter's behaviour can be influenced by defining property values
+	 * interpreted by that particular writer class.  The values for such
+	 * properties can be changed by calling this method.  </p>
+	 *
+	 * <p>No standard properties are defined.  For the properties recognised
+	 * by any particular writer implementation, see the documentation for
+	 * that implementation.  </p>
+	 * <p>
+	 * The built-in RDFWriters have properties as defined by:
+	 * <dl>
+	 * <dt>N3</dt><dt>N-TRIPLE</dt>
+	 * <dd>No properties.</dd>
+	 * <dt>RDF/XML</dt><dt>RDF/XML-ABBREV</dt>
+	 * </dl>
+	 * @return the old value for this property, or <code>null</code>
+	 * if no value was set.
+	 * @param propName The name of the property.
+	 * @param propValue The new value of the property
+	 */
+	public Object setProperty(String propName, Object propValue);
+
+	/** Set an error handler.
+	 * @param errHandler The new error handler to be used.
+	 * @return the old error handler
+	 */
+	public RDFErrorHandler  setErrorHandler(RDFErrorHandler errHandler);
 }

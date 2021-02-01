@@ -20,9 +20,9 @@
 package org.apache.jena.ttl.turtle.parser ;
 
 import org.apache.jena.graph.* ;
-import org.apache.jena.ttl.turtle.ParserBase;
+import org.apache.jena.ttl.turtle.TurtleParserBase;
 
-public class TurtleParser extends ParserBase implements TurtleParserConstants {
+public class TurtleParser extends TurtleParserBase implements TurtleParserConstants {
 
 // --- Entry point
   final public void parse() throws ParseException {

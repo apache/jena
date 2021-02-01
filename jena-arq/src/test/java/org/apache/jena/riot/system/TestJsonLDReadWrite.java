@@ -135,26 +135,26 @@ public class TestJsonLDReadWrite
 
         // Check namespaces in the parsed dataset match those in the original data
         checkNamespaces(ds2.getDefaultModel(), ds1.getDefaultModel().getNsPrefixMap());
-    	Iterator<String> graphNames = ds2.listNames();
-    	while (graphNames.hasNext()) {
-    		String gn = graphNames.next();
-    		checkNamespaces(ds2.getNamedModel(gn), ds1.getNamedModel(gn).getNsPrefixMap());
-    	}
+        Iterator<String> graphNames = ds2.listNames();
+        while (graphNames.hasNext()) {
+            String gn = graphNames.next();
+            checkNamespaces(ds2.getNamedModel(gn), ds1.getNamedModel(gn).getNsPrefixMap());
+        }
     }
 
-    private static boolean isIsomorphic(Dataset ds1, Dataset ds2)
-    {
-        return IsoMatcher.isomorphic(ds1.asDatasetGraph(), ds2.asDatasetGraph()) ;
+    private static boolean isIsomorphic(Dataset ds1, Dataset ds2) {
+        return IsoMatcher.isomorphic(ds1.asDatasetGraph(), ds2.asDatasetGraph());
     }
 
     private static void checkNamespaces(Model m, Map<String, String> namespaces) {
-    	if (namespaces == null) return;
+        if ( namespaces == null )
+            return;
 
-    	for (String prefix : namespaces.keySet()) {
-    	    if ( ! prefix.isEmpty() )
-    		Assert.assertEquals("Model does contain expected namespace " + prefix + ": <" + namespaces.get(prefix) + ">", namespaces.get(prefix), m.getNsPrefixURI(prefix));
-    	}
+        for ( String prefix : namespaces.keySet() ) {
+            if ( !prefix.isEmpty() )
+                Assert.assertEquals("Model does contain expected namespace " + prefix + ": <" + namespaces.get(prefix) + ">",
+                                    namespaces.get(prefix), m.getNsPrefixURI(prefix));
+        }
     }
 }
-
 

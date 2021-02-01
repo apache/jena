@@ -942,32 +942,6 @@ public class RDFDataMgr
             .context(context)
             .parse(sink);
     }
-    // ---- Support for RDFDataMgr.parse only.
-
-    /**
-     * @deprecated Use {@link RDFParser#create}.
-     */
-    @Deprecated
-    public static ReaderRIOT createReader(Lang lang) {
-        return createReader(lang, RiotLib.profile(lang, null));
-    }
-
-    /**
-     * Create a {@link ReaderRIOT}.
-     * This operation
-     *
-     * @see RDFParser
-     * @see RDFParserBuilder
-     * @deprecated This operation exists to ease migration to using {@link RDFParser#create} for detailed setup.
-     */
-    @Deprecated
-    public static ReaderRIOT createReader(Lang lang, ParserProfile profile) {
-        Objects.requireNonNull(lang,"Argument lang can not be null in RDFDataMgr.createReader") ;
-        ReaderRIOTFactory r = RDFParserRegistry.getFactory(lang) ;
-        if ( r == null )
-            return null ;
-        return r.create(lang, profile) ;//, profile.getHandler());
-    }
 
     // Operations to remove "null"s in the code.
 

@@ -26,10 +26,9 @@ import org.apache.jena.fuseki.server.Endpoint;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.iri.IRI;
-import org.apache.jena.riot.RiotException;
+import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.riot.out.NodeFmtLib;
-import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.core.DatasetGraph;
 
@@ -39,16 +38,16 @@ import org.apache.jena.sparql.core.DatasetGraph;
  *
  */
 public class GraphTarget {
-    
+
     public final static GraphTarget determineTarget(DatasetGraph dsg, HttpAction action) {
         return determineTarget(dsg, action, false);
     }
-    
+
     /** With GSP direct naming. */
     public final static GraphTarget determineTargetGSP(DatasetGraph dsg, HttpAction action) {
         return determineTarget(dsg, action, Fuseki.GSP_DIRECT_NAMING);
     }
-        
+
     private final static GraphTarget determineTarget(DatasetGraph dsg, HttpAction action, boolean allowDirectNaming) {
         // Inside a transaction.
         if ( dsg == null )
@@ -87,49 +86,61 @@ public class GraphTarget {
         return createNamed(dsg, absUri);
     }
 
-    
+
     // Resolving a relative URI in ?graph= is a bit murky.
-    //   Whether to use the base is the dataset or the dataset+service endpoint name.
+    //   Whether to use the base of the dataset or the dataset+service endpoint name.
     //   How to find the dataset URL when service can be on the dataset directly or a named endpoint.
     //   And will it match in the dataset named graphs anyway?
-    
+
     /** Check URI, require it to be absolute. */
     private static String resolve0(String uri, HttpAction action) {
-        IRI iri = IRIResolver.parseIRI(uri);
-        if ( iri.hasViolation(false) ) {
-            action.log.warn(format("[%d] Bad URI <%s> : %s", 
-                action.id, uri, iri.violations(false).next().getShortMessage()));
+        try {
+            IRIx iri = IRIx.create(uri);
+            if ( ! iri.isReference() )
+                action.log.warn(format("[%d] URI is relative: <%s>", action.id, uri));
+            return uri;
+        } catch (IRIException ex) {
+            action.log.warn(format("[%d] Bad URI <%s> : %s", action.id, uri, ex.getMessage()));
+            return uri;
         }
-        if ( ! iri.isAbsolute() ) {
-            action.log.warn(format("[%d] URI is not abolute: <%s>", action.id, uri));
-        }
-        return uri;
     }
 
-    /** Resolve URI, Calculate a base URI as the dataset URI and resolve uri against that.*/ 
-    private static String resolve(String uri, HttpAction action) {
+    /** Resolve URI. Calculate a base URI from the dataset URI and resolve uri against that.*/
+    private static String xresolve(String uriStr, HttpAction action) {
         // Strictly, a bit naughty on the URI resolution, but more sensible.
         // Make the base the URI of the dataset.
         // Strictly, the base includes service and query string but that is unhelpful.
         // wholeRequestURL(request);
-        String base = action.request.getRequestURL().toString();
+        IRIx uri;
+        try {
+            uri = IRIx.create(uriStr);
+            if ( uri.isReference() )
+                return uri.str();
+        } catch (IRIException ex) {
+            FmtLog.warn(Fuseki.actionLog, "Bad URI: '"+uriStr);
+            ServletOps.errorBadRequest("Bad IRI: "+uriStr+" : " + ex.getMessage());
+            return null;
+        }
+
+        String baseStr = action.request.getRequestURL().toString();
         Endpoint ep = action.getEndpoint();
-        if ( ! ep.isUnnamed() && base.endsWith(ep.getName()) ) {
+        if ( ! ep.isUnnamed() && baseStr.endsWith(ep.getName()) ) {
             // Remove endpoint name
-            base = base.substring(0, base.length()-ep.getName().length());
+            baseStr = baseStr.substring(0, baseStr.length()-ep.getName().length());
         }
         // Make sure it ends in "/", treating the dataset as a container.
-        if ( !base.endsWith("/") )
-            base = base + "/";
+        if ( !baseStr.endsWith("/") )
+            baseStr = baseStr + "/";
         try {
-            IRI abs = IRIResolver.resolveIRI(uri, base);
-            if ( abs.hasViolation(false) ) {
-                FmtLog.warn(Fuseki.actionLog, "Bad URI: '"+uri+"' : "+abs.violations(false).next().getShortMessage());
+            IRIx base = IRIx.create(baseStr);
+            IRIx uri2 = base.resolve(uri);
+            if ( ! uri2.isReference() ) {
+                FmtLog.warn(Fuseki.actionLog, "Bad URI (after resolving): '"+uriStr);
+                ServletOps.errorBadRequest("Bad IRI: " + uriStr);
             }
-            return abs.toString();
-        } catch (RiotException ex) {
-            // Bad IRI
-            ServletOps.errorBadRequest("Bad IRI: " + ex.getMessage());
+            return uri2.str();
+        } catch (IRIException ex) {
+            ServletOps.errorBadRequest("Bad IRI: "+uriStr+" : " + ex.getMessage());
             return null;
         }
     }
@@ -140,7 +151,7 @@ public class GraphTarget {
     final private Node         graphName;
 
     static GraphTarget createNamed(DatasetGraph dsg, String graphName) {
-        return createNamed(dsg, NodeFactory.createURI(graphName)); 
+        return createNamed(dsg, NodeFactory.createURI(graphName));
     }
 
     static GraphTarget createNamed(DatasetGraph dsg, Node graphName) {
@@ -173,7 +184,7 @@ public class GraphTarget {
             throw new IllegalArgumentException("Inconsistent: union and a graph name");
         else if ( isDefault && isUnion )
             throw new IllegalArgumentException("Inconsistent: default and union graph");
-        
+
         this.isDefault = isDefault;
         this.isUnion = isUnion;
         this.dsg = dsg;
@@ -203,7 +214,7 @@ public class GraphTarget {
             return dsg.getUnionGraph();
         return dsg.getGraph(graphName);
     }
-    
+
     public boolean exists() {
         if ( isDefault || isUnion )
             return true;

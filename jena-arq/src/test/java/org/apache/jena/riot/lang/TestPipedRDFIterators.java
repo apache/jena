@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory ;
 
 /**
  * Tests for the {@link PipedRDFIterator} implementation
- * 
+ *
  */
 public class TestPipedRDFIterators {
     private static final Logger LOGGER = LoggerFactory.getLogger(TestPipedRDFIterators.class);
@@ -57,7 +57,7 @@ public class TestPipedRDFIterators {
 
     /**
      * Destroy our thread pool
-     * 
+     *
      * @throws InterruptedException
      */
     @AfterClass
@@ -121,7 +121,7 @@ public class TestPipedRDFIterators {
 
     /**
      * Test that blocking and waiting work nicely
-     * 
+     *
      * @throws ExecutionException
      * @throws InterruptedException
      * @throws TimeoutException
@@ -134,7 +134,7 @@ public class TestPipedRDFIterators {
 
     /**
      * Test that blocking and waiting work nicely
-     * 
+     *
      * @throws ExecutionException
      * @throws InterruptedException
      * @throws TimeoutException
@@ -147,7 +147,7 @@ public class TestPipedRDFIterators {
 
     /**
      * Test that blocking and waiting work nicely
-     * 
+     *
      * @throws ExecutionException
      * @throws InterruptedException
      * @throws TimeoutException
@@ -160,7 +160,7 @@ public class TestPipedRDFIterators {
 
     /**
      * Test where blocking should rarely occur
-     * 
+     *
      * @throws ExecutionException
      * @throws InterruptedException
      * @throws TimeoutException
@@ -173,7 +173,7 @@ public class TestPipedRDFIterators {
 
     /**
      * Test where blocking should rarely occur
-     * 
+     *
      * @throws ExecutionException
      * @throws InterruptedException
      * @throws TimeoutException
@@ -186,7 +186,7 @@ public class TestPipedRDFIterators {
 
     /**
      * Test where blocking may occur
-     * 
+     *
      * @throws ExecutionException
      * @throws InterruptedException
      * @throws TimeoutException
@@ -199,7 +199,7 @@ public class TestPipedRDFIterators {
 
     /**
      * Test where blocking may occur
-     * 
+     *
      * @throws ExecutionException
      * @throws InterruptedException
      * @throws TimeoutException
@@ -266,7 +266,7 @@ public class TestPipedRDFIterators {
 
     /**
      * Test that blocking and waiting work nicely
-     * 
+     *
      * @throws ExecutionException
      * @throws InterruptedException
      * @throws TimeoutException
@@ -279,7 +279,7 @@ public class TestPipedRDFIterators {
 
     /**
      * Test that blocking and waiting work nicely
-     * 
+     *
      * @throws ExecutionException
      * @throws InterruptedException
      * @throws TimeoutException
@@ -292,7 +292,7 @@ public class TestPipedRDFIterators {
 
     /**
      * Test that blocking and waiting work nicely
-     * 
+     *
      * @throws ExecutionException
      * @throws InterruptedException
      * @throws TimeoutException
@@ -305,7 +305,7 @@ public class TestPipedRDFIterators {
 
     /**
      * Test where blocking should rarely occur
-     * 
+     *
      * @throws ExecutionException
      * @throws InterruptedException
      * @throws TimeoutException
@@ -318,7 +318,7 @@ public class TestPipedRDFIterators {
 
     /**
      * Test where blocking should rarely occur
-     * 
+     *
      * @throws ExecutionException
      * @throws InterruptedException
      * @throws TimeoutException
@@ -331,7 +331,7 @@ public class TestPipedRDFIterators {
 
     /**
      * Test where blocking may occur
-     * 
+     *
      * @throws ExecutionException
      * @throws InterruptedException
      * @throws TimeoutException
@@ -344,7 +344,7 @@ public class TestPipedRDFIterators {
 
     /**
      * Test where blocking may occur
-     * 
+     *
      * @throws ExecutionException
      * @throws InterruptedException
      * @throws TimeoutException
@@ -374,7 +374,7 @@ public class TestPipedRDFIterators {
     /**
      * Tests that the iterate copes correctly in the case of hitting a parser
      * error
-     * 
+     *
      * @param data
      *            Data string (Turtle format) which should be malformed
      * @param expected
@@ -447,7 +447,7 @@ public class TestPipedRDFIterators {
 
     /**
      * Test failure of the iterator
-     * 
+     *
      * @throws TimeoutException
      * @throws InterruptedException
      */
@@ -458,7 +458,7 @@ public class TestPipedRDFIterators {
 
     /**
      * Test failure of the iterator
-     * 
+     *
      * @throws TimeoutException
      * @throws InterruptedException
      */
@@ -489,9 +489,9 @@ public class TestPipedRDFIterators {
             @Override
             public void run() {
                 out.start();
-                out.triple(Triple.create(org.apache.jena.graph.NodeFactory.createURI("urn:s"),
-                        org.apache.jena.graph.NodeFactory.createURI("urn:p"),
-                        org.apache.jena.graph.NodeFactory.createURI("urn:o")));
+                out.triple(Triple.create(org.apache.jena.graph.NodeFactory.createURI("urn:x:s"),
+                        org.apache.jena.graph.NodeFactory.createURI("urn:x:p"),
+                        org.apache.jena.graph.NodeFactory.createURI("urn:x:o")));
                 out.finish() ;
                 throw new RuntimeException("die!");
             }
@@ -512,7 +512,7 @@ public class TestPipedRDFIterators {
         it.next();
         // Should not throw a RiotException
         it.hasNext();
-        
+
     }
 
     /**
@@ -531,9 +531,9 @@ public class TestPipedRDFIterators {
             @Override
             public void run() {
                 out.start();
-                out.triple(Triple.create(org.apache.jena.graph.NodeFactory.createURI("urn:s"),
-                        org.apache.jena.graph.NodeFactory.createURI("urn:p"),
-                        org.apache.jena.graph.NodeFactory.createURI("urn:o")));
+                out.triple(Triple.create(org.apache.jena.graph.NodeFactory.createURI("urn:x:s"),
+                        org.apache.jena.graph.NodeFactory.createURI("urn:x:p"),
+                        org.apache.jena.graph.NodeFactory.createURI("urn:x:o")));
                 throw new RuntimeException("die!");
             }
         };

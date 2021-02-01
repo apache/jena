@@ -23,7 +23,6 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.modify.request.UpdateDataWriter.UpdateMode ;
@@ -37,11 +36,11 @@ public class UpdateWriter implements UpdateSerializer
 {
     protected final IndentedWriter out;
     protected final SerializationContext sCxt;
-    
+
     protected UpdateDataWriter udw;
     protected boolean firstOp = true;
     protected boolean opened = false;
-    
+
     /** Create a UpdateWriter for output of a single UpdateRequest.
      *  @param out
      *  @param sCxt SerializationContext - pass null for one that will produce legal output.
@@ -50,18 +49,18 @@ public class UpdateWriter implements UpdateSerializer
     {
         if (out == null)
             throw new NullPointerException("out") ;
-        
-        // To get legal syntax out, the serialization context 
+
+        // To get legal syntax out, the serialization context
         // has to be a bNode mapping that does ??N vars to bNodes
         if (sCxt == null)
             // This is the one used for INSERT and DELETE templates.
             // For the WHERE clause, see UpdateWriterVisitor.prepareElementFormatter
             sCxt = new SerializationContext((Prologue)null, new NodeToLabelMapBNode());
-        
+
         this.out = out;
         this.sCxt = sCxt;
     }
-    
+
     /* (non-Javadoc)
      * @see com.hp.hpl.jena.sparql.modify.request.UpdateSerializer#open()
      */
@@ -72,13 +71,13 @@ public class UpdateWriter implements UpdateSerializer
             prologue();
         opened = true;
     }
-    
+
     protected void checkOpen()
     {
         if (!opened)
             throw new IllegalStateException("UpdateStreamWriter is not opened.  Call open() first.");
     }
-    
+
     protected void prologue()
     {
         int row1 = out.getRow() ;
@@ -87,7 +86,7 @@ public class UpdateWriter implements UpdateSerializer
         if ( row1 != row2 )
             out.newline() ;
     }
-    
+
     protected void prepareForDataUpdate(UpdateMode mode)
     {
         if ((null != udw) && !udw.getMode().equals(mode))
@@ -96,7 +95,7 @@ public class UpdateWriter implements UpdateSerializer
             udw = null;
             firstOp = false;
         }
-        
+
         if (null == udw)
         {
             if (!firstOp)
@@ -108,12 +107,12 @@ public class UpdateWriter implements UpdateSerializer
             firstOp = false;
         }
     }
-    
+
     public void insert(Quad quad)
     {
         insert(quad.getGraph(), quad.asTriple());
     }
-    
+
     public void insert(Iterator<? extends Quad> it)
     {
         checkOpen();
@@ -123,14 +122,14 @@ public class UpdateWriter implements UpdateSerializer
             udw.send(it.next());
         }
     }
-    
+
     public void insert(Node graph, Triple triple)
     {
         checkOpen();
         prepareForDataUpdate(UpdateMode.INSERT);
         udw.send(graph, triple);
     }
-    
+
     public void insert(Node graph, Iterator<? extends Triple> it)
     {
         checkOpen();
@@ -140,12 +139,12 @@ public class UpdateWriter implements UpdateSerializer
             udw.send(graph, it.next());
         }
     }
-    
+
     public void delete(Quad quad)
     {
         delete(quad.getGraph(), quad.asTriple());
     }
-    
+
     public void delete(Iterator<? extends Quad> it)
     {
         checkOpen();
@@ -155,14 +154,14 @@ public class UpdateWriter implements UpdateSerializer
             udw.send(it.next());
         }
     }
-    
+
     public void delete(Node graph, Triple triple)
     {
         checkOpen();
         prepareForDataUpdate(UpdateMode.DELETE);
         udw.send(graph, triple);
     }
-    
+
     public void delete(Node graph, Iterator<? extends Triple> it)
     {
         checkOpen();
@@ -172,7 +171,7 @@ public class UpdateWriter implements UpdateSerializer
             udw.send(graph, it.next());
         }
     }
-    
+
     /* (non-Javadoc)
      * @see com.hp.hpl.jena.sparql.modify.request.UpdateSerializer#update(com.hp.hpl.jena.update.Update)
      */
@@ -185,14 +184,14 @@ public class UpdateWriter implements UpdateSerializer
             udw.close();
             udw = null;
         }
-        
+
         if (!firstOp)
         {
             out.println(" ;");
         }
         UpdateVisitor writer = prepareWriterVisitor() ;
-        update.visit(writer) ; 
-        
+        update.visit(writer) ;
+
         firstOp = false;
     }
 
@@ -203,7 +202,7 @@ public class UpdateWriter implements UpdateSerializer
     protected UpdateVisitor prepareWriterVisitor() {
         return new UpdateWriterVisitor(out, sCxt);
     }
-    
+
     /* (non-Javadoc)
      * @see com.hp.hpl.jena.sparql.modify.request.UpdateSerializer#update(java.lang.Iterable)
      */
@@ -212,7 +211,7 @@ public class UpdateWriter implements UpdateSerializer
     {
         update(updates.iterator());
     }
-    
+
     /* (non-Javadoc)
      * @see com.hp.hpl.jena.sparql.modify.request.UpdateSerializer#update(java.util.Iterator)
      */
@@ -224,12 +223,12 @@ public class UpdateWriter implements UpdateSerializer
             update(updateIter.next());
         }
     }
-    
+
     public void flush()
     {
         out.flush();
     }
-    
+
     /* (non-Javadoc)
      * @see com.hp.hpl.jena.sparql.modify.request.UpdateSerializer#close()
      */
@@ -243,26 +242,26 @@ public class UpdateWriter implements UpdateSerializer
                 udw.close();
                 udw = null;
             }
-            
+
             // Update requests always end in newline.
             out.ensureStartOfLine();
             flush();
             opened = false;
         }
     }
-    
+
     // -- Convenience static methods -----------------------
-    
+
     public static void output(UpdateRequest request, IndentedWriter out)
     {
         Prologue prologue = request ;
         if ( ! request.explicitlySetBaseURI() )
-            prologue = new Prologue(request.getPrefixMapping(), (IRIResolver)null) ;
-        
+            prologue = new Prologue(request.getPrefixMapping()) ;
+
         SerializationContext sCxt = new SerializationContext(prologue, new NodeToLabelMapBNode()) ;
         output(request, out, sCxt);
     }
-    
+
     public static void output(UpdateRequest request, IndentedWriter out, SerializationContext sCxt)
     {
         UpdateWriter uw = new UpdateWriter(out, sCxt);
@@ -270,7 +269,7 @@ public class UpdateWriter implements UpdateSerializer
         uw.update(request);
         uw.close();
     }
-    
+
     public static void output(Update update, IndentedWriter out, SerializationContext sCxt)
     {
         UpdateWriter uw = new UpdateWriter(out, sCxt);

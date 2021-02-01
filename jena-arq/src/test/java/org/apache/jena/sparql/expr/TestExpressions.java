@@ -35,6 +35,7 @@ import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.function.FunctionEnvBase ;
 import org.apache.jena.sparql.util.ExprUtils ;
+import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.XSD ;
 import org.junit.AfterClass ;
@@ -50,6 +51,7 @@ import org.junit.Test ;
 */
 public class TestExpressions
 {
+    static { JenaSystem.init(); }
     public final static int NO_FAILURE    = 100 ;
     public final static int PARSE_FAIL    = 250 ;   // Parser should catch it.
     public final static int EVAL_FAIL     = 200 ;   // Parser should pass it but eval should fail it
@@ -133,7 +135,7 @@ public class TestExpressions
     @Test public void testBoolean_12() { testBoolean("'foo'  || false", true) ; }
     @Test public void testBoolean_13() { testBoolean("0 || false", false) ; }
     @Test public void testBoolean_14() { testBoolean("'' || false", false) ; }
-    @Test(expected=ExprEvalException.class) public void testBoolean_15() { testEval("!'junk'^^<urn:unknown>") ; }
+    @Test(expected=ExprEvalException.class) public void testBoolean_15() { testEval("!'junk'^^<urn:unknown:uri>") ; }
     @Test public void testBoolean_16() { testBoolean("2 < 3", 2 < 3) ; }
     @Test public void testBoolean_17() { testBoolean("2 > 3", 2 > 3) ; }
     @Test public void testBoolean_18() { testBoolean("(2 < 3) && (3<4)", (2 < 3) && (3<4)) ; }
@@ -216,7 +218,7 @@ public class TestExpressions
     @Test public void testDuration_10() { testBoolean(duration5+" > "+duration4, true) ; }
     @Test public void testDuration_11() { testBoolean(duration5a+" = "+duration5, true) ; }
     @Test public void testDuration_12() { testBoolean(duration5a+" = "+duration5b, true) ; }
-    @Test public void testDuration_13() { testBoolean(duration5b+" = "+duration5, true) ; }    
+    @Test public void testDuration_13() { testBoolean(duration5b+" = "+duration5, true) ; }
     @Test public void testDuration_14() { testBoolean(duration5a+" > "+duration4, true) ; }
 
     @Test public void testURI_1()       { testURI("<a>",     baseNS+"a" ) ; }
@@ -312,10 +314,10 @@ public class TestExpressions
 //    @Test public void testBoolean_109() { testBoolean("\"fred\\1\" = 'fred1'", false ) ; }
 //    @Test public void testBoolean_110() { testBoolean("\"fred2\" = 'fred\\2'", true ) ; }
     @Test public void testBoolean_111() { testBoolean("'fred\\\\3' != \"fred3\"", true ) ; }
-    @Test public void testBoolean_112() { testBoolean("'urn:fred' = <urn:fred>" , false) ; }
-    @Test public void testBoolean_113() { testBoolean("'urn:fred' != <urn:fred>" , true) ; }
-    @Test public void testBoolean_114() { testBoolean("'urn:fred' = <urn:fred>", false ) ; }
-    @Test public void testBoolean_115() { testBoolean("'urn:fred' != <urn:fred>", true ) ; }
+    @Test public void testBoolean_112() { testBoolean("'urn:ex:fred' = <urn:ex:fred>" , false) ; }
+    @Test public void testBoolean_113() { testBoolean("'urn:ex:fred' != <urn:ex:fred>" , true) ; }
+    @Test public void testBoolean_114() { testBoolean("'urn:ex:fred' = <urn:ex:fred>", false ) ; }
+    @Test public void testBoolean_115() { testBoolean("'urn:ex:fred' != <urn:ex:fred>", true ) ; }
     @Test public void testBoolean_116() { testBoolean("REGEX('aabbcc', 'abbc')", true ) ; }
     @Test public void testBoolean_117() { testBoolean("REGEX('aabbcc' , 'a..c')", true ) ; }
     @Test public void testBoolean_118() { testBoolean("REGEX('aabbcc' , '^aabb')", true ) ; }
@@ -327,7 +329,7 @@ public class TestExpressions
     @Test public void testBoolean_124() { testBoolean("REGEX('aabbcc', 'B.*B', 'i')", true ) ; }
     @Test(expected=ExprEvalException.class) public void testBoolean_125() { testEval("2 < 'fred'") ; }
     @Test public void testBoolean_126() { testBoolean("datatype('fred') = <"+XSD.xstring.getURI()+">", true) ; }
-    @Test public void testBoolean_127() { testBoolean("datatype('fred'^^<urn:foo>) = <urn:foo>", true) ; }
+    @Test public void testBoolean_127() { testBoolean("datatype('fred'^^<urn:test:foo>) = <urn:test:foo>", true) ; }
     @Test public void testBoolean_128() { testBoolean("datatype('fred'^^<foo>) = <Foo>", false) ; }
     @Test public void testString_15() { testString("lang('fred'@en)", "en") ; }
     @Test public void testString_16() { testString("lang('fred'@en-uk)", "en-uk") ; }
@@ -338,7 +340,7 @@ public class TestExpressions
 
     // ?y is unbound
     @Test(expected=ExprEvalException.class) public void testBoolean_132() { testBoolean("isURI(?y)", false, env) ; }
-    @Test public void testBoolean_133() { testBoolean("isURI(<urn:foo>)", true, env) ; }
+    @Test public void testBoolean_133() { testBoolean("isURI(<urn:test:foo>)", true, env) ; }
     @Test public void testBoolean_134() { testBoolean("isURI('bar')", false, env) ; }
     @Test public void testBoolean_135() { testBoolean("isLiteral(?x)", false, env) ; }
     @Test public void testBoolean_136() { testBoolean("isLiteral(?a)", true, env) ; }
@@ -352,7 +354,7 @@ public class TestExpressions
     @Test public void testBoolean_144() { testBoolean("bound(?b)", true, env) ; }
     @Test public void testBoolean_145() { testBoolean("bound(?x)", true, env) ; }
     @Test public void testBoolean_146() { testBoolean("bound(?y)", false, env) ; }
-    @Test public void testString_18()   { testString("str(<urn:x>)", "urn:x") ; }
+    @Test public void testString_18()   { testString("str(<urn:ex:x>)", "urn:ex:x") ; }
     @Test public void testString_19()   { testString("str('')", "") ; }
     @Test public void testString_20()   { testString("str(15)", "15") ; }
     @Test public void testString_21()   { testString("str('15.20'^^<"+XSDDatatype.XSDdouble.getURI()+">)", "15.20") ; }
@@ -381,7 +383,7 @@ public class TestExpressions
     static String duration5 = "'PT1H1M1.9S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
     static String duration5a = "'PT61M1.9S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
     static String duration5b = "'PT3661.9S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
-    
+
     static String duration7 = "'-PT1H"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
     static String duration8 = "'PT0H0M0S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
 
@@ -417,7 +419,7 @@ public class TestExpressions
         BindingMap b = BindingFactory.create() ;
         b.add(Var.alloc("a"), NodeFactory.createLiteral("A")) ;
         b.add(Var.alloc("b"), NodeFactory.createBlankNode()) ;
-        b.add(Var.alloc("x"), NodeFactory.createURI("urn:x")) ;
+        b.add(Var.alloc("x"), NodeFactory.createURI("urn:ex:abcd")) ;
         env = b ;
     }
 

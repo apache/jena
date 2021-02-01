@@ -2463,7 +2463,7 @@ This class is not part of the API.
                 // RFC 2141 -
                 //"(?![uU][rR][nN]:)[a-zA-Z0-9][-a-zA-Z0-9]{1,31}:[^/~]+"
                 // RFC 8141 revision of 2141 - JENA-1647
-                "(?![uU][rR][nN]:)[a-zA-Z0-9][-a-zA-Z0-9]{1,31}:.*"
+                "(?![uU][rR][nN]:)[a-zA-Z0-9][-a-zA-Z0-9]{1,31}:.+"
                 );
 
         spec.setReserved(PATH,"/~");

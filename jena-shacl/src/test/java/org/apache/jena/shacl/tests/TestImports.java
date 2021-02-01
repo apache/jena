@@ -27,16 +27,16 @@ import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.irix.IRIs;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.other.G;
-import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.shacl.Imports;
 import org.apache.jena.shacl.Shapes;
 import org.junit.Test;
 
 public class TestImports {
     // Work in absolute URIs.
-    private static String FILES = IRIResolver.resolveString("src/test/files/imports");
+    private static String FILES = IRIs.resolve("src/test/files/imports");
     private static Node g1 = NodeFactory.createURI("http://example/graph1");
     private static Node g2 = NodeFactory.createURI("http://example/graph2");
     private static Node g3 = NodeFactory.createURI("http://example/graph3");

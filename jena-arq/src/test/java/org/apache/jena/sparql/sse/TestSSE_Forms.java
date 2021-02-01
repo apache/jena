@@ -102,8 +102,8 @@ public class TestSSE_Forms
 
     @Test public void testPrefix_01()
     {
-        Item r = Item.createNode(NodeFactory.createURI("http://example/abc")) ;
-        testItem("(prefix ((ex: <http://example/>)) ex:abc)", r);
+        Item r = Item.createNode(NodeFactory.createURI("http://ex/abc")) ;
+        testItem("(prefix ((ex: <http://ex/>)) ex:abc)", r);
     }
 
     @Test public void testPrefix_02()
@@ -120,8 +120,8 @@ public class TestSSE_Forms
 
     @Test public void testPrefix_04()
     {
-        Item r = SSE.parse("(<http://EXAMPLE/abc>)" , null) ;
-        testItem("(prefix ((ex: <http://example/>)) ( (prefix ((ex: <http://EXAMPLE/>)) ex:abc) ))", r);
+        Item r = SSE.parse("<http://EXAMPLE/abc>" , null) ;
+        testItem("(prefix ((x: <http://example/>)) (prefix ((ex: <http://EXAMPLE/>)) ex:abc) )", r);
     }
 
     @Test public void testPrefix_05()

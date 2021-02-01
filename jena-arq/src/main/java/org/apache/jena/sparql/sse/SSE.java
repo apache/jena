@@ -39,7 +39,6 @@ import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.Table ;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
@@ -380,10 +379,7 @@ public class SSE
     private static ParseHandler createParseHandler(PrefixMapping pmap)
     {
         if ( useResolver )
-        {
-            Prologue prologue = new Prologue(pmap) ;
-            return new ParseHandlerResolver(prologue) ;
-        }
+            return new ParseHandlerResolver(null, pmap) ;
         else
             return new ParseHandlerPlain() ;
     }

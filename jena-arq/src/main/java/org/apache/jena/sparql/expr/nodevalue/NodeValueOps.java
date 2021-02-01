@@ -310,7 +310,4 @@ public class NodeValueOps
         long x2 = gcal2.getTimeInMillis() ;
         return NodeValue.xmlDatatypeFactory.newDuration(x1-x2) ;
     }
-
-    
 }
-

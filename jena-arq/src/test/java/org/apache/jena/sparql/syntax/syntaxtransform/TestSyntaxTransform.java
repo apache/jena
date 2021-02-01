@@ -38,20 +38,20 @@ import org.junit.Test ;
 public class TestSyntaxTransform
 {
     @Test public void subst_query_01() {
-        testQuery("SELECT * { }", 
-                  "SELECT * {}", 
+        testQuery("SELECT * { }",
+                  "SELECT * {}",
                   "o", "1");
     }
 
-    @Test public void subst_query_02() { 
-        testQuery("SELECT ?x { }", 
+    @Test public void subst_query_02() {
+        testQuery("SELECT ?x { }",
                   "SELECT ?x {}",
                   "o", "1") ;
     }
 
     @Test public void subst_query_03() {
-        testQuery("SELECT ?o { }", 
-                  "SELECT (1 as ?o) {}", 
+        testQuery("SELECT ?o { }",
+                  "SELECT (1 as ?o) {}",
                   "o", "1") ; }
 
     @Test public void subst_query_04() {
@@ -60,77 +60,77 @@ public class TestSyntaxTransform
                   "o", "1") ; }
 
     @Test public void subst_query_05() {
-        testQuery("SELECT (?o+2 AS ?z) { }", 
+        testQuery("SELECT (?o+2 AS ?z) { }",
                   "SELECT (1+2 AS ?z) {}",
                   "o", "1");
     }
 
     @Test public void subst_query_09() {
-        testQuery("SELECT * {?s ?p ?o}", 
+        testQuery("SELECT * {?s ?p ?o}",
                   "SELECT * {?s ?p 1}",
                   "o", "1");
     }
 
     @Test public void subst_query_10() {
-        testQuery("SELECT * { SELECT ?o {} }", 
+        testQuery("SELECT * { SELECT ?o {} }",
                   "SELECT * { SELECT (1 as ?o) {}}",
                   "o", "1");
     }
 
-    @Test public void subst_query_11() { 
+    @Test public void subst_query_11() {
         testQuery("SELECT * { ?s ?p ?o { SELECT ?x { ?x ?p ?o } } }",
                   "SELECT * { ?s ?p 1  { SELECT ?x { ?x ?p 1 } } }",
                   "o", "1") ; }
 
-    @Test public void subst_query_20() { 
+    @Test public void subst_query_20() {
         testQuery("SELECT * { ?s ?p ?g GRAPH ?g { ?s ?p ?g } }",
-                  "SELECT * { ?s ?p <urn:graph> GRAPH <urn:graph> { ?s ?p <urn:graph> } }",
-                  "g", "<urn:graph>") ; }
+                  "SELECT * { ?s ?p <urn:ex:graph> GRAPH <urn:ex:graph> { ?s ?p <urn:ex:graph> } }",
+                  "g", "<urn:ex:graph>") ; }
 
-    @Test public void subst_query_21() { 
+    @Test public void subst_query_21() {
         testQuery("SELECT * { ?s ?p ?srv SERVICE ?srv { ?s ?p ?srv}}",
-                  "SELECT * { ?s ?p <urn:service> SERVICE <urn:service> { ?s ?p <urn:service>}}",
-                  "srv", "<urn:service>") ; }
-    
+                  "SELECT * { ?s ?p <urn:ex:service> SERVICE <urn:ex:service> { ?s ?p <urn:ex:service>}}",
+                  "srv", "<urn:ex:service>") ; }
+
     @Test public void subst_query_30() {
-        testQuery("SELECT * { ?s ?p ?o } ORDER BY ?s", "SELECT * { <urn:x> ?p ?o } ORDER BY (<urn:x>)",
-                "s", "<urn:x>");
+        testQuery("SELECT * { ?s ?p ?o } ORDER BY ?s", "SELECT * { <urn:ex:z> ?p ?o } ORDER BY (<urn:ex:z>)",
+                "s", "<urn:ex:z>");
     }
-    
+
     // Same except use the Model API.
     @Test public void subst_query_31() {
-        testQueryModel("SELECT * { ?s ?p ?o } ORDER BY ?s", "SELECT * { <urn:x> ?p ?o } ORDER BY (<urn:x>)",
-                       "s", "<urn:x>");
+        testQueryModel("SELECT * { ?s ?p ?o } ORDER BY ?s", "SELECT * { <urn:ex:z> ?p ?o } ORDER BY (<urn:ex:z>)",
+                       "s", "<urn:ex:z>");
     }
 
-    @Test public void subst_update_01() { 
-        testUpdate("DELETE { ?s <urn:p> ?x } WHERE {}", 
-                   "DELETE { ?s <urn:p> <urn:x> } WHERE {}",
-                   "x", "<urn:x>") ;
+    @Test public void subst_update_01() {
+        testUpdate("DELETE { ?s <urn:ex:p> ?x } WHERE {}",
+                   "DELETE { ?s <urn:ex:p> <urn:ex:z> } WHERE {}",
+                   "x", "<urn:ex:z>") ;
     }
 
-    @Test public void subst_update_02() { 
-        testUpdate("DELETE { ?s <urn:p> ?x } WHERE { ?s <urn:p> ?x }", 
-                   "DELETE { ?s <urn:p> <urn:x> } WHERE { ?s <urn:p> <urn:x> }",
-                   "x", "<urn:x>") ;
+    @Test public void subst_update_02() {
+        testUpdate("DELETE { ?s <urn:ex:p> ?x } WHERE { ?s <urn:ex:p> ?x }",
+                   "DELETE { ?s <urn:ex:p> <urn:ex:z> } WHERE { ?s <urn:ex:p> <urn:ex:z> }",
+                   "x", "<urn:ex:z>") ;
     }
 
-    @Test public void subst_update_03() { 
-        testUpdate("DELETE { ?s <urn:p> ?x } INSERT { ?s <urn:p> ?x } WHERE { ?s <urn:p> ?x }", 
-                   "DELETE { ?s <urn:p> <urn:x> } INSERT { ?s <urn:p> <urn:x> } WHERE { ?s <urn:p> <urn:x> }",
-                   "x", "<urn:x>") ;
-    }
-    
-    @Test public void subst_update_09() { 
-        testUpdate("DELETE WHERE { ?s <urn:p> ?x }", 
-                   "DELETE WHERE { ?s <urn:p> <urn:x> }",
-                   "x", "<urn:x>") ;
+    @Test public void subst_update_03() {
+        testUpdate("DELETE { ?s <urn:ex:p> ?x } INSERT { ?s <urn:ex:p> ?x } WHERE { ?s <urn:ex:p> ?x }",
+                   "DELETE { ?s <urn:ex:p> <urn:ex:z> } INSERT { ?s <urn:ex:p> <urn:ex:z> } WHERE { ?s <urn:ex:p> <urn:ex:z> }",
+                   "x", "<urn:ex:z>") ;
     }
 
-    @Test public void subst_update_10() { 
-        testUpdateModel("DELETE WHERE { ?s <urn:p> ?x }", 
-                        "DELETE WHERE { ?s <urn:p> <urn:x> }",
-                           "x", "<urn:x>") ;
+    @Test public void subst_update_09() {
+        testUpdate("DELETE WHERE { ?s <urn:ex:p> ?x }",
+                   "DELETE WHERE { ?s <urn:ex:p> <urn:ex:z> }",
+                   "x", "<urn:ex:z>") ;
+    }
+
+    @Test public void subst_update_10() {
+        testUpdateModel("DELETE WHERE { ?s <urn:ex:p> ?x }",
+                        "DELETE WHERE { ?s <urn:ex:p> <urn:ex:z> }",
+                           "x", "<urn:ex:z>") ;
     }
 
     //static final String PREFIX = "PREFIX : <http://example/>\n" ;
@@ -140,31 +140,31 @@ public class TestSyntaxTransform
     {
         Query q1 = QueryFactory.create(PREFIX+input) ;
         Query qExpected = QueryFactory.create(PREFIX+output) ;
-        
+
         Map<Var, Node> map = new HashMap<>() ;
         map.put(Var.alloc(varStr), SSE.parseNode(valStr)) ;
-        
+
         Query qTrans = QueryTransformOps.transform(q1, map) ;
-        
+
         if ( ! qExpected.equals(qTrans) ) {
             System.out.println(qExpected.getProject());
             System.out.print(qExpected);
             System.out.println(qTrans.getProject());
             System.out.print(qTrans);
         }
-        
+
         assertEquals(qExpected, qTrans) ;
     }
 
     private void testQueryModel(String input, String output, String varStr, String valStr) {
         Query q1 = QueryFactory.create(PREFIX+input) ;
         Query qExpected = QueryFactory.create(PREFIX+output) ;
-        
+
         Map<String, RDFNode> map = new HashMap<>() ;
         Node n = SSE.parseNode(valStr);
         RDFNode x = ModelUtils.convertGraphNodeToRDFNode(n);
         map.put(varStr, x);
-        
+
         Query qTrans = QueryTransformOps.transformQuery(q1, map) ;
         assertEquals(qExpected, qTrans) ;
     }
@@ -172,12 +172,12 @@ public class TestSyntaxTransform
     private void testUpdate(String input, String output, String varStr, String valStr) {
         UpdateRequest req1 = UpdateFactory.create(PREFIX+input) ;
         UpdateRequest reqExpected = UpdateFactory.create(PREFIX+output) ;
-        
+
         Map<Var, Node> map = new HashMap<>() ;
         map.put(Var.alloc(varStr), SSE.parseNode(valStr)) ;
-        
+
         UpdateRequest reqTrans = UpdateTransformOps.transform(req1, map) ;
-        
+
         // Crude.
         String x1 = reqExpected.toString().replaceAll("[ \n\t]", "") ;
         String x2 = reqTrans.toString().replaceAll("[ \n\t]", "") ;
@@ -188,14 +188,14 @@ public class TestSyntaxTransform
     private void testUpdateModel(String input, String output, String varStr, String valStr) {
         UpdateRequest req1 = UpdateFactory.create(PREFIX+input) ;
         UpdateRequest reqExpected = UpdateFactory.create(PREFIX+output) ;
-        
+
         Map<String, RDFNode> map = new HashMap<>() ;
         Node n = SSE.parseNode(valStr);
         RDFNode x = ModelUtils.convertGraphNodeToRDFNode(n);
         map.put(varStr, x);
-        
+
         UpdateRequest reqTrans = UpdateTransformOps.transformUpdate(req1, map) ;
-        
+
         // Crude.
         String x1 = reqExpected.toString().replaceAll("[ \n\t]", "") ;
         String x2 = reqTrans.toString().replaceAll("[ \n\t]", "") ;
