@@ -128,7 +128,7 @@ public class MemDriver extends JenaDriver {
             } else {
                 // Load dataset from a file
                 try {
-                    Dataset ds = DatasetFactory.createMem();
+                    Dataset ds = DatasetFactory.create();
                     RDFDataMgr.read(ds, dsObj.toString());
                     return new MemConnection(ds, JenaConnection.DEFAULT_HOLDABILITY, JenaConnection.DEFAULT_AUTO_COMMIT,
                             JenaConnection.DEFAULT_ISOLATION_LEVEL, compatibilityLevel);
@@ -139,7 +139,7 @@ public class MemDriver extends JenaDriver {
             }
         } else if (this.isTrue(props, PARAM_EMPTY)) {
             // Use an empty dataset
-            return new MemConnection(DatasetFactory.createMem(), JenaConnection.DEFAULT_HOLDABILITY,
+            return new MemConnection(DatasetFactory.create(), JenaConnection.DEFAULT_HOLDABILITY,
                     JenaConnection.DEFAULT_AUTO_COMMIT, JenaConnection.DEFAULT_ISOLATION_LEVEL, compatibilityLevel);
         } else {
             throw new SQLException(

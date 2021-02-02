@@ -84,15 +84,6 @@ public class DatabaseMgr {
         return connectDatasetGraph(Location.mem());
     }
 
-    /** Return whether a {@code DatasetGraph} is TDB2.
-     * @deprecated Use {@link #isTDB2}.
-     */
-    @Deprecated
-    // Wrong name
-    public static boolean isBackedByTDB(DatasetGraph datasetGraph) {
-        return TDBInternal.isTDB2(datasetGraph);
-    }
-
     /** Return whether a {@code DatasetGraph} is a TDB2 database. */
     public static boolean isTDB2(DatasetGraph datasetGraph) {
         return TDBInternal.isTDB2(datasetGraph);

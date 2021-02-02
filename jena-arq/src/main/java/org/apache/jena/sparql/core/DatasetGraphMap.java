@@ -34,7 +34,7 @@ import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker ;
-import org.apache.jena.sparql.graph.GraphUnionRead ;
+import org.apache.jena.sparql.graph.GraphOps;
 
 /** Implementation of a {@code DatasetGraph} as an extensible set of graphs.
  *  Subclasses need to manage any implicit graph creation.
@@ -166,7 +166,7 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
     @Override
     public Graph getGraph(Node graphNode) {
         if ( Quad.isUnionGraph(graphNode) )
-            return new GraphUnionRead(this) ;
+            return GraphOps.unionGraph(this) ;
         if ( Quad.isDefaultGraph(graphNode))
             return getDefaultGraph() ;
         // Not a special case.

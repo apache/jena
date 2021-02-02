@@ -32,6 +32,7 @@ import org.apache.jena.atlas.lib.Creator ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.sparql.algebra.Algebra ;
 import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.op.OpGraph;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.sse.SSE ;
@@ -81,11 +82,13 @@ public class TestSpecialGraphNames {
     }
     
     private void union_dft_1(Mode mode) {
+        Op opPattern =  SSE.parseOp("(bgp (?s ?p ?o))");
         Op op = op("(bgp (?s ?p ?o))", mode) ;
         List<Binding> results = exec(op) ;
         assertEquals(5, results.size()) ;
-        @SuppressWarnings("deprecation")
-        Op op2 = Algebra.unionDefaultGraph(op) ;
+        
+        // Now execute as the union graph.
+        Op op2 = new OpGraph(Quad.unionGraph, opPattern) ;
         List<Binding> results2 = exec(op2) ;
         assertEquals(4, results2.size()) ;
     }

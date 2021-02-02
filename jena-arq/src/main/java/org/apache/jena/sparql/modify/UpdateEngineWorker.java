@@ -32,19 +32,18 @@ import org.apache.jena.atlas.data.ThresholdPolicy ;
 import org.apache.jena.atlas.data.ThresholdPolicyFactory ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.GraphUtil ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryExecutionFactory ;
-import org.apache.jena.riot.*;
-import org.apache.jena.riot.system.SerializationFactoryFinder ;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.core.* ;
 import org.apache.jena.sparql.engine.Plan ;
 import org.apache.jena.sparql.engine.binding.Binding ;
@@ -56,6 +55,7 @@ import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.syntax.ElementGroup ;
 import org.apache.jena.sparql.syntax.ElementNamedGraph ;
 import org.apache.jena.sparql.syntax.ElementTriplesBlock ;
+import org.apache.jena.sparql.system.SerializationFactoryFinder;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.update.UpdateException ;
 
@@ -251,19 +251,7 @@ public class UpdateEngineWorker implements UpdateVisitor
     protected static void gsAddTriples(DatasetGraph dsg, Target src, Target dest) {
         Graph gSrc = graph(dsg, src);
         Graph gDest = graph(dsg, dest);
-
-        // Avoids concurrency problems by reading fully before writing
-        ThresholdPolicy<Triple> policy = ThresholdPolicyFactory.policyFromContext(dsg.getContext());
-        DataBag<Triple> db = BagFactory.newDefaultBag(policy, SerializationFactoryFinder.tripleSerializationFactory());
-        try {
-            Iterator<Triple> triples = gSrc.find(null, null, null);
-            db.addAll(triples);
-            Iter.close(triples);
-            GraphOps.addAll(gDest, db.iterator());
-        }
-        finally {
-            db.close();
-        }
+        GraphOps.addAll(gDest, gSrc.find());
     }
 
     /** Clear target */
@@ -284,45 +272,9 @@ public class UpdateEngineWorker implements UpdateVisitor
     // ----
     
     @Override
-    public Sink<Quad> createInsertDataSink() {
-        return new Sink<Quad>() {
-            @Override
-            public void send(Quad quad) {
-                addToDatasetGraph(datasetGraph, quad);
-            }
-
-            @Override
-            public void flush() {
-                SystemARQ.sync(datasetGraph);
-            }
-
-            @Override
-            public void close() {}
-        };
-    }
-    
-    @Override
     public void visit(UpdateDataInsert update) {
         for ( Quad quad : update.getQuads() )
             addToDatasetGraph(datasetGraph, quad);
-    }
-
-    @Override
-    public Sink<Quad> createDeleteDataSink() {
-        return new Sink<Quad>() {
-            @Override
-            public void send(Quad quad) {
-                deleteFromDatasetGraph(datasetGraph, quad);
-            }
-
-            @Override
-            public void flush() {
-                SystemARQ.sync(datasetGraph);
-            }
-
-            @Override
-            public void close() {}
-        };
     }
 
     @Override

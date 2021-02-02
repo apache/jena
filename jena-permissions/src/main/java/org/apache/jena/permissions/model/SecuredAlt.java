@@ -19,7 +19,6 @@ package org.apache.jena.permissions.model;
 
 import org.apache.jena.rdf.model.Alt;
 import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.ResourceF;
 import org.apache.jena.shared.AddDeniedException;
 import org.apache.jena.shared.AuthenticationRequiredException;
 import org.apache.jena.shared.ReadDeniedException;
@@ -30,7 +29,6 @@ import org.apache.jena.shared.UpdateDeniedException;
  * 
  * Use the SecuredAlt.Factory to create instances
  */
-@SuppressWarnings("deprecation")
 public interface SecuredAlt extends Alt, SecuredContainer {
 	/**
 	 * @sec.graph Read
@@ -174,18 +172,6 @@ public interface SecuredAlt extends Alt, SecuredContainer {
 	@Override
 	public SecuredResource getDefaultResource() throws ReadDeniedException,
 			AuthenticationRequiredException;
-
-	/**
-	 * @sec.graph Read
-	 * @sec.triple Read SecTriple(this, RDF.li(1), o )
-	 * @throws ReadDeniedException
-	 * @throws AuthenticationRequiredException
-	 *             if user is not authenticated and is required to be.
-	 */
-	@Override
-	@Deprecated
-	public SecuredResource getDefaultResource(final ResourceF f)
-			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read

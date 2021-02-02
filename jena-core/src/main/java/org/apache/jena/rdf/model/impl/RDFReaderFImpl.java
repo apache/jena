@@ -24,7 +24,6 @@ import java.util.Map;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.rdf.model.RDFReader;
 import org.apache.jena.rdf.model.RDFReaderF;
-import org.apache.jena.shared.ConfigException;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.NoReaderForLangException;
 
@@ -62,33 +61,6 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
 
         try {
             return c.getConstructor().newInstance();
-        }
-        catch (Exception e) {
-            throw new JenaException(e);
-        }
-    }
-
-    /**
-     * Use RIOT to add custom RDF parsers. See
-     * {@code RDFParserRegistry.registerLang}
-     * 
-     * @deprecated Register with RIOT.
-     */
-    @Deprecated
-    public static String setBaseReaderClassName(String lang, String className) {
-        if ( rewiredAlternative != null )
-            Log.error(RDFReaderFImpl.class, "Rewired RDFReaderFImpl - configuration changes have no effect on reading");
-            
-        String oldClassName = currentEntry(lang);
-        try {
-            @SuppressWarnings("unchecked")
-            Class<? extends RDFReader> newClass = (Class<? extends RDFReader>)Class.forName(className, false,
-                                                                                            Thread.currentThread().getContextClassLoader());
-            custom.put(lang, newClass);
-            return oldClassName;
-        }
-        catch (ClassNotFoundException e) {
-            throw new ConfigException("Reader not found on classpath", e);
         }
         catch (Exception e) {
             throw new JenaException(e);

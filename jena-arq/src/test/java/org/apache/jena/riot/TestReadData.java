@@ -129,8 +129,7 @@ public class TestReadData
     private static void read(String dataurl, Lang lang)
     {
         dataurl = filename(dataurl) ;
-        @SuppressWarnings("deprecation")
-        Dataset ds = DatasetFactory.createMem() ;
+        Dataset ds = DatasetFactory.create() ;
         RDFDataMgr.read(ds, dataurl, lang) ;
     }
 
@@ -144,15 +143,13 @@ public class TestReadData
         filename = filename(filename) ;
         
         // Read with a base
-        @SuppressWarnings("deprecation")
-        Dataset ds0 = DatasetFactory.createMem() ;
+        Dataset ds0 = DatasetFactory.create() ;
         try(FileInputStream in0 = new FileInputStream(filename)) {
             RDFDataMgr.read(ds0, in0, "http://example/base2", lang) ;
         }
         
         // Read again, but without base
-        @SuppressWarnings("deprecation")
-        Dataset ds1 = DatasetFactory.createMem() ;
+        Dataset ds1 = DatasetFactory.create() ;
         try(FileInputStream in1 = new FileInputStream(filename)) {
             RDFDataMgr.read(ds1, in1, null, lang) ;
         }

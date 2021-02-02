@@ -25,11 +25,7 @@ package org.apache.jena.graph;
 */
 
 public class Node_Blank extends Node_Concrete
-    {
-    /** @deprecated Use {@link Node_Blank#BlankNodeId} */
-    @Deprecated
-    /* package */ Node_Blank( Object id ) { super( id ); }
-
+{
     /* package */ Node_Blank( BlankNodeId id ) { super( id ); } 
 
     @Override

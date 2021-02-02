@@ -36,7 +36,6 @@ import org.apache.jena.rdf.model.impl.ModelMakerImpl ;
 import org.apache.jena.reasoner.InfGraph ;
 import org.apache.jena.reasoner.Reasoner ;
 import org.apache.jena.reasoner.ReasonerRegistry ;
-import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sys.JenaSystem ;
 
 /**
@@ -52,33 +51,6 @@ public class ModelFactory extends ModelFactoryBase
     */
     private ModelFactory()
         {}
-
-    /**
-        Each Model created by ModelFactory has a default set of prefix mappings.
-        These mappings are copied from a (static) default PrefixMapping which is
-        set by setDefaultModelPrefixes. It is the reference to a PrefixMapping that
-        is retained, not a copy of it, so a user may set the defaults with this method
-        and continue to modify it; the modifications will appear in the next model to
-        be created.
-    <p>
-        When a Model is created from an existing Graph, the prefixes of that Graph
-        are not disturbed; only ones not present in the Graph are added.
-
-         @param pm the default prefixes to use
-         @return the previous default prefix mapping
-         @deprecated This feature wil be removed from ModelFactory
-    */
-    @Deprecated
-    public static PrefixMapping setDefaultModelPrefixes( PrefixMapping pm )
-        { return ModelCom.setDefaultModelPrefixes( pm ); }
-
-    /**
-        Answer the current default model prefixes PrefixMapping object.
-        @deprecated This feature wil be removed from ModelFactory
-    */
-    @Deprecated
-    public static PrefixMapping getDefaultModelPrefixes()
-        { return ModelCom.getDefaultModelPrefixes(); }
 
     /**
         Answer a Model constructed from the single resource in

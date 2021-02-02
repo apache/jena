@@ -77,12 +77,11 @@ public class SPARQLParserBase extends ParserBase
     private Deque<Set<String>>    stackPreviousLabels = new ArrayDeque<>() ;
     private Deque<LabelToNodeMap> stackCurrentLabels = new ArrayDeque<>() ;
 
-//    protected UpdateSink getUpdateSink() { return sink ; }
-    public void setUpdateSink(UpdateSink sink)
+    public void setUpdate(Prologue prologue, UpdateSink sink)
     { 
         this.sink = sink ;
-        this.query = new Query() ; 
-        setPrologue(sink.getPrologue()) ;
+        this.query = null ; 
+        setPrologue(prologue);
     }
 
     // Signal start/finish of units

@@ -27,11 +27,6 @@ import org.apache.jena.shared.* ;
 */
 public class Node_Literal extends Node_Concrete
 {
-    /** @deprecated Use {@code Node_Literal(LiteralLabel)} */
-    @Deprecated
-    /* package */ Node_Literal( Object label )
-        { super( label ); }
-
     /* package */ Node_Literal( LiteralLabel label )
         { super( label ); }
 

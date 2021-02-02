@@ -69,18 +69,8 @@ public class TDBLoader
         loader.loadDataset(dataset, urls) ;
     }
     
-    /**
-     *  Load the contents of URL into a dataset.  Input is N-Quads format.
-     * @deprecated Use {@link #load(DatasetGraphTDB, InputStream, Lang, boolean, boolean)}
-     */
-    @Deprecated
-    public static void load(DatasetGraphTDB dataset, InputStream input, boolean showProgress)
-    {
-        load(dataset, input, Lang.NQUADS, showProgress, false);
-    }
-    
     /** Load a dataset from an input stream which must be in N-Quads form */
-    public static void load(DatasetGraphTDB dataset, InputStream input,  Lang lang, boolean showProgress, boolean generateStats) {
+    public static void load(DatasetGraphTDB dataset, InputStream input, Lang lang, boolean showProgress, boolean generateStats) {
         TDBLoader loader = new TDBLoader() ;
         loader.setShowProgress(showProgress) ;
         loader.setGenerateStats(generateStats) ;
@@ -154,51 +144,44 @@ public class TDBLoader
     
     public TDBLoader() {}
 
-    /** Load a graph from a URL - assumes URL names a triples format document*/
-    public void loadGraph(GraphTDB graph, String url)
-    {
-        loadGraph(graph, asList(url)) ;
+    /** Load a graph from a URL - assumes URL names a triples format document */
+    public void loadGraph(GraphTDB graph, String url) {
+        loadGraph(graph, asList(url));
     }
-    
-    /** Load a graph from a list of URL - assumes the URLs name triples format documents */
-    public void loadGraph(GraphTDB graph, List<String> urls)
-    {
-        loadGraph$(graph, urls, showProgress, generateStats) ;
-    }
-    
-    /** Load a graph from a list of URL - assumes the URLs name triples format documents */
-    public void loadGraph(GraphTDB graph, InputStream in)
-    {
-        loadGraph$(graph, in, showProgress, generateStats) ;
-    }
-    
-    /** Load a dataset from a URL - assumes URL names a quads format */
-    public void loadDataset(DatasetGraphTDB dataset, String url)
-    {
-        loadDataset(dataset, asList(url)) ;
-    }
-    
-    /** Load a dataset from a list of URL - assumes the URLs name quads format documents */
-    public void loadDataset(DatasetGraphTDB dataset, List<String> urls)
-    {
-        // Triples languages are quads languages so no test for quad-ness needed.
-        loadDataset$(dataset, urls, showProgress, generateStats) ;
-    }
-    
-    /** 
-     * Load a dataset from an input stream which must be in N-Quads form.
-     * @deprecated Use {@link #loadDataset(DatasetGraphTDB, InputStream, Lang)}
+
+    /**
+     * Load a graph from a list of URL - assumes the URLs name triples format
+     * documents
      */
-    @Deprecated
-    public void loadDataset(DatasetGraphTDB dataset, InputStream input)
-    {
-        loadDataset(dataset, input, Lang.NQUADS);
+    public void loadGraph(GraphTDB graph, List<String> urls) {
+        loadGraph$(graph, urls, showProgress, generateStats);
     }
-    
+
+    /**
+     * Load a graph from a list of URL - assumes the URLs name triples format
+     * documents
+     */
+    public void loadGraph(GraphTDB graph, InputStream in) {
+        loadGraph$(graph, in, showProgress, generateStats);
+    }
+
+    /** Load a dataset from a URL - assumes URL names a quads format */
+    public void loadDataset(DatasetGraphTDB dataset, String url) {
+        loadDataset(dataset, asList(url));
+    }
+
+    /**
+     * Load a dataset from a list of URL - assumes the URLs name quads format
+     * documents
+     */
+    public void loadDataset(DatasetGraphTDB dataset, List<String> urls) {
+        // Triples languages are quads languages so no test for quad-ness needed.
+        loadDataset$(dataset, urls, showProgress, generateStats);
+    }
+
     /** Load a dataset from an input stream */
-    public void loadDataset(DatasetGraphTDB dataset, InputStream input, Lang lang)
-    {
-        loadDataset$(dataset, input, lang, showProgress, generateStats) ;
+    public void loadDataset(DatasetGraphTDB dataset, InputStream input, Lang lang) {
+        loadDataset$(dataset, input, lang, showProgress, generateStats);
     }
 
     public boolean getChecking()  

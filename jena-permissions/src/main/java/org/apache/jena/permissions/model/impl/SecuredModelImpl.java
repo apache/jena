@@ -1004,12 +1004,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		holder.getBaseItem().enterCriticalSection(readLockRequested);
 	}
 
-	@Deprecated
-	@Override
-	public Object executeInTransaction(final Command cmd) {
-		return holder.getBaseItem().executeInTransaction(cmd);
-	}
-
 	@Override
 	public void executeInTxn(Runnable action) {
 		holder.getBaseItem().executeInTxn(action);

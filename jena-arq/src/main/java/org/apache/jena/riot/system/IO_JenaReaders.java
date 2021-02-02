@@ -52,10 +52,4 @@ public class IO_JenaReaders
         // Or set to null - this forces reinitialization if ever used.
         FileManager.setGlobalFileManager(coreFileManager) ;
     }
-
-    /** Register for use with Model.read (old style compatibility) */
-    @Deprecated
-    public static void registerForModelRead(String name, Class<? > cls) {
-        RDFReaderFImpl.setBaseReaderClassName(name, cls.getName());
-    }
 }

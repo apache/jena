@@ -18,44 +18,27 @@
 
 package org.apache.jena.sparql.lang;
 
-import java.io.FileReader ;
 import java.io.Reader ;
-import java.io.StringReader ;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.QueryException ;
 import org.apache.jena.query.QueryParseException ;
 import org.apache.jena.shared.JenaException ;
+import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import org.apache.jena.sparql.modify.UpdateSink ;
 import org.apache.jena.update.UpdateException ;
-import org.slf4j.LoggerFactory ;
-
 
 public class ParserSPARQL11Update extends UpdateParser
 {
-    @Override
-    protected void parse$(UpdateSink sink, String updateString) {
-        Reader r = new StringReader(updateString) ;
-        _parse(sink, r) ;
-    }
-
-    @Override
-    protected void parse$(UpdateSink sink, Reader r) {
-        _parse(sink, r) ;
-    }
-
-    public void parse(UpdateSink sink, Reader r) {
-        if ( r instanceof FileReader )
-            LoggerFactory.getLogger(this.getClass()).warn("FileReader passed to ParserSPARQL11Update.parse - use a FileInputStream") ;
-        _parse(sink, r) ;
-    }
+    public ParserSPARQL11Update() {}
     
-    private void _parse(UpdateSink sink, Reader r) {
+    @Override
+    protected void executeParse(UpdateSink sink, Prologue prologue, Reader r) {
         SPARQLParser11 parser = null ;
         try {
             parser = new SPARQLParser11(r) ;
-            parser.setUpdateSink(sink) ;
+            parser.setUpdate(prologue, sink) ;
             parser.UpdateUnit() ;
         }
         catch (org.apache.jena.sparql.lang.sparql_11.ParseException ex)
@@ -84,6 +67,4 @@ public class ParserSPARQL11Update extends UpdateParser
             throw new QueryException(th.getMessage(), th) ;
         }
     }
-
-
 }

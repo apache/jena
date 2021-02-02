@@ -16,16 +16,30 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.data;
+package org.apache.jena.sparql.system;
 
 import java.io.InputStream ;
 import java.io.OutputStream ;
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.data.SerializationFactory ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.binding.BindingInputStream ;
+import org.apache.jena.sparql.engine.binding.BindingOutputStream ;
 
-public interface SerializationFactory<E>
-{
-    Sink<E> createSerializer(OutputStream out);
-    Iterator<E> createDeserializer(InputStream in);
+public class SerializationFactoryFinder {
+    public static SerializationFactory<Binding> bindingSerializationFactory() {
+        return new SerializationFactory<Binding>() {
+            @Override
+            public Sink<Binding> createSerializer(OutputStream out) {
+                return new BindingOutputStream(out);
+            }
+
+            @Override
+            public Iterator<Binding> createDeserializer(InputStream in) {
+                return new BindingInputStream(in);
+            }
+        };
+    }
 }

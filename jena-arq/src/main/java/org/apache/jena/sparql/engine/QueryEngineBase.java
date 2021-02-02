@@ -81,7 +81,7 @@ public abstract class QueryEngineBase implements OpEval, Closeable
         if ( baseURI == null )
             baseURI = IRIResolver.chooseBaseURI().toString() ;
 
-        dsg = DatasetUtils.createDatasetGraph(dsDesc, baseURI ) ;
+        dsg = DatasetUtils.createDatasetGraph(dsDesc, baseURI) ;
         return dsg ;
     }
 

@@ -19,6 +19,7 @@
 package org.apache.jena.fuseki.auth;
 
 import java.util.Queue;
+import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -28,7 +29,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class AuthPolicyList implements AuthPolicy {
 
     // Thread safe.
-    // Use a
     private final Queue<AuthPolicy> policies = new ConcurrentLinkedQueue<>();
 
     /**
@@ -69,5 +69,14 @@ public class AuthPolicyList implements AuthPolicy {
                 return false;
         }
         return true;
+    }
+    
+    @Override
+    public String toString() {
+        StringJoiner sj = new StringJoiner(", ","(",")");
+        policies.stream().forEach(policy->{
+             sj.add(policy.toString());
+        });
+        return sj.toString();
     }
 }

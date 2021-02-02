@@ -31,9 +31,8 @@ import org.apache.jena.sparql.core.Quad ;
 
 /** Some operations on graphs */ 
 public class GraphOps {
-    // Combine with Jena GraphUtils?
-    
-    /** Check whether a dataset contains a named graph of the given name.
+    /** 
+     * Check whether a dataset contains a named graph of the given name.
      * Graph with special names (union and default) return true.
      */
     public static boolean containsGraph(DatasetGraph dsg, Node gn) {

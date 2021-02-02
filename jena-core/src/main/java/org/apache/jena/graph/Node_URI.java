@@ -25,11 +25,7 @@ import org.apache.jena.shared.* ;
     RDF nodes with a global identity given by a URI.
 */
 public class Node_URI extends Node_Concrete
-    {    
-    /** @deprecated Use {@code Node_URI(String)} */
-    @Deprecated
-    protected Node_URI( Object uri )
-        { super( uri ); }
+{    
 
     protected Node_URI( String uri )
         { super( uri ); }

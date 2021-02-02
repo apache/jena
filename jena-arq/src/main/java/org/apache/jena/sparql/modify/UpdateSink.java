@@ -19,22 +19,15 @@
 package org.apache.jena.sparql.modify;
 
 import org.apache.jena.atlas.lib.Sink ;
-import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.modify.request.QuadDataAccSink ;
 import org.apache.jena.update.Update ;
 
 /**
  * An {@link UpdateSink} is an object usually created by a container (such as a storage engine
- * or an {@link org.apache.jena.update.UpdateRequest}) that can process or store a single SPARQL Update
- * request which consists of one or more SPARQL Update operations.
+ * or an {@link org.apache.jena.update.UpdateRequest}) that can process or store 
+ * the quads for INSERT DATA and DELETE DATA in a single SPARQL Update.
  */
-// TODO More documentation!
-public interface UpdateSink extends Sink<Update>
-{
-    public Prologue getPrologue();
-
-    // TODO make an interface for the quad sinks
+public interface UpdateSink extends Sink<Update> {
     public QuadDataAccSink createInsertDataSink();
-
     public QuadDataAccSink createDeleteDataSink();
 }

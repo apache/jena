@@ -27,7 +27,6 @@ import org.xenei.junit.contract.ContractTest;
 
 import static org.junit.Assert.*;
 
-import org.apache.jena.shared.Command;
 import org.apache.jena.shared.JenaException;
 import org.xenei.junit.contract.IProducer;
 import org.apache.jena.util.CollectionFactory;
@@ -59,15 +58,8 @@ public class TransactionHandlerContractTest {
 	 * Test that Graphs have transaction support methods, and that if they fail
 	 * on some g they fail because they do not support the operation.
 	 */
-	@SuppressWarnings("deprecation")
     @ContractTest
 	public void testTransactionsExistAsPerTransactionSupported() {
-        // Write out explicitly
-        Command cmd = new Command() {
-               @Override
-               public Object execute() { return null; }
-           };
-
         TransactionHandler th = getTransactionHandlerProducer().newInstance();
 
 		if (th.transactionsSupported()) {
@@ -77,8 +69,6 @@ public class TransactionHandlerContractTest {
 			th.commit();
             th.execute( ()->{} ) ;
 			th.calculate(()->null);
-			th.executeInTransaction(cmd) ;
-			th.executeInTransaction( ()->null ) ;
 		} else {
 			try {
 				th.begin();
@@ -105,33 +95,14 @@ public class TransactionHandlerContractTest {
                 th.calculate(()->null);
                 fail("Should have thrown UnsupportedOperationException");
             } catch (UnsupportedOperationException x) { }
-            try {
-                th.executeInTransaction(cmd);
-                fail("Should have thrown UnsupportedOperationException");
-            } catch (UnsupportedOperationException x) { }
-            try {
-                th.executeInTransaction(()->null);
-                fail("Should have thrown UnsupportedOperationException");
-            } catch (UnsupportedOperationException x) { }
 		}
 	}
 
-	@SuppressWarnings("deprecation")
     @ContractTest
 	public void testExecuteInTransactionCatchesThrowable() {
 		TransactionHandler th = getTransactionHandlerProducer().newInstance();
 
 		if (th.transactionsSupported()) {
-			Command cmd = new Command() {
-				@Override
-				public Object execute() throws Error {
-					throw new Error();
-				}
-			};
-			try {
-				th.executeInTransaction(cmd);
-				fail("Should have thrown JenaException");
-			} catch (JenaException x) { }
 			try {
                 th.execute(()-> { throw new Error() ; });
                 fail("Should have thrown JenaException");

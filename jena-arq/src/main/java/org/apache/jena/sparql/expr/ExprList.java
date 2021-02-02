@@ -72,18 +72,9 @@ public class ExprList implements Iterable<Expr>
     public ExprList tail(int fromIdx)                   { return subList(fromIdx, expressions.size()) ; }
     
     public Set<Var> getVarsMentioned() {
-        Set<Var> x = new HashSet<>() ;
-        varsMentioned(x) ;
-        return x ;
+        return ExprVars.getVarsMentioned(this);
     }
 
-    /** @deprecated Use {@link ExprVars#varsMentioned(Collection, ExprList)} */
-    @Deprecated
-    public void varsMentioned(Collection<Var> acc) {
-        for (Expr expr : expressions)
-            ExprVars.varsMentioned(acc, expr);
-    }
-    
     /**
      * Rewrite, applying a node{@literal ->}node transformation
      */

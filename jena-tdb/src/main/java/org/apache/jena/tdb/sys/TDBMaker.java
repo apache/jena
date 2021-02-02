@@ -88,18 +88,6 @@ public class TDBMaker
             cache.remove(location);
     }
     
-    /** 
-     * Reset the making and caching of datasets.
-     * Applications should not use this operation.
-     * All dataset must be rebuild with {@link TDBFactory}
-     * after calling this operation.
-     * @deprecated Use TDBInternal.reset()
-     */
-    @Deprecated
-    public static void reset() {
-        TDBInternal.reset();
-    }
-    
     public static void resetCache() {
         if ( CACHING )
             cache.clear();
@@ -125,16 +113,4 @@ public class TDBMaker
     public static DatasetGraphTransaction createDirect(Location location) {
         return new DatasetGraphTransaction(location) ;
     }
-
-    
-//    // ---- Raw non-transactional
-//    /** 
-//     * Create a non-transactional TDB dataset graph.
-//     * <b>Use at your own risk.</b>
-//     * <i>This function does not attempt to share databases at the same location.</i> 
-//     * @deprecated Use {@link TDBFactory} or {@link StoreConnection}.
-//     */
-//    @Deprecated
-//    public static DatasetGraphTDB createDatasetGraphTDB(Location loc, StoreParams params)
-//    { return DatasetBuilderStd.create(loc, params) ; }
 }

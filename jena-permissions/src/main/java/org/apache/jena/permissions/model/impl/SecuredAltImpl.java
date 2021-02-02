@@ -184,15 +184,6 @@ public class SecuredAltImpl extends SecuredContainerImpl implements SecuredAlt {
 	}
 
 	@Override
-	@Deprecated
-	public SecuredResource getDefaultResource(final ResourceF f)
-			throws ReadDeniedException, AuthenticationRequiredException {
-		// getDefaultStatement() calls checkRead
-		return SecuredResourceImpl.getInstance(getModel(),
-				getDefaultStatement().getResource(f));
-	}
-
-	@Override
 	public SecuredSeq getDefaultSeq() throws ReadDeniedException,
 			AuthenticationRequiredException {
 		// getDefaultStatement() calls checkRead

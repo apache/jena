@@ -22,11 +22,8 @@ import static org.apache.jena.atlas.lib.Chars.* ;
 import static org.apache.jena.atlas.lib.Lib.hashCodeObject ;
 import static org.apache.jena.riot.tokens.TokenType.* ;
 
-import java.util.ArrayList ;
-import java.util.List ;
 import java.util.Objects ;
 
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
@@ -35,7 +32,6 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.Prologue ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.util.FmtUtils ;
@@ -102,8 +98,7 @@ public final class Token
 
     public final Token setStringType(StringType st)     { this.stringType = st ; return this ; }
 
-    static Token create(String s)
-    {
+    static Token create(String s) {
         Tokenizer tt = TokenizerText.create().fromString(s).build();
         if ( ! tt.hasNext() )
             throw new RiotException("No token") ;
@@ -113,23 +108,12 @@ public final class Token
         return t ;
     }
 
-    static Iter<Token> createN(String s)
-    {
-        Tokenizer tt = TokenizerText.create().fromString(s).build();
-        List<Token> x = new ArrayList<>() ;
-        while(tt.hasNext())
-            x.add(tt.next()) ;
-        return Iter.iter(x) ;
+    public long getColumn() {
+        return column;
     }
 
-    public long getColumn()
-    {
-        return column ;
-    }
-
-    public long getLine()
-    {
-        return line ;
+    public long getLine() {
+        return line;
     }
 
     public Token(String string) { this(STRING, string) ; }
@@ -156,8 +140,7 @@ public final class Token
 //    { this(type, image1, null, subToken) ; }
 //
 //
-    private Token(TokenType type, String image1, String image2, Token subToken1, Token subToken2)
-    {
+    private Token(TokenType type, String image1, String image2, Token subToken1, Token subToken2) {
         this() ;
         setType(type) ;
         setImage(image1) ;
@@ -170,8 +153,7 @@ public final class Token
 
     public Token(long line, long column) { this.line = line ; this.column = column ; }
 
-    public Token(Token token)
-    {
+    public Token(Token token) {
         this(token.tokenType,
              token.tokenImage, token.tokenImage2,
              token.subToken1, token.subToken2) ;
@@ -197,43 +179,39 @@ public final class Token
         return Integer.valueOf(tokenImage);
     }
 
-    public long asLong()
-    {
-        return asLong(-1) ;
+    public long asLong() {
+        return asLong(-1);
     }
 
-    public long asLong(long dft)
-    {
-        switch (tokenType)
-        {
-            case INTEGER:   return Long.valueOf(tokenImage) ;
-            case HEX:       return Long.valueOf(tokenImage, 16) ;
-            default:
-                 return dft ;
+    public long asLong(long dft) {
+        switch (tokenType) {
+            case INTEGER :
+                return Long.valueOf(tokenImage);
+            case HEX :
+                return Long.valueOf(tokenImage, 16);
+            default :
+                return dft;
         }
     }
 
-    public String asWord()
-    {
-        if ( ! hasType(TokenType.KEYWORD) ) return null ;
-        return tokenImage ;
+    public String asWord() {
+        if ( !hasType(TokenType.KEYWORD) )
+            return null;
+        return tokenImage;
     }
 
-    public String text()
-    {
-        return toString(false) ;
+    public String text() {
+        return toString(false);
     }
 
     @Override
-    public String toString()
-    {
-        return toString(false) ;
+    public String toString() {
+        return toString(false);
     }
 
     static final String delim1 = "" ;
     static final String delim2 = "" ;
-    public String toString(boolean addLocation)
-    {
+    public String toString(boolean addLocation) {
         StringBuilder sb = new StringBuilder() ;
         if ( addLocation && getLine() >= 0 && getColumn() >= 0 )
             sb.append(String.format("[%d,%d]", getLine(), getColumn())) ;
@@ -290,52 +268,46 @@ public final class Token
 
     public boolean isString()   { return tokenType == TokenType.STRING ; }
 
-    public boolean isNumber()
-    {
-        switch(tokenType)
-        {
-            case DECIMAL:
-            case DOUBLE:
-            case INTEGER:
-                return true ;
-            default:
-                return false ;
+    public boolean isNumber() {
+        switch (tokenType) {
+            case DECIMAL :
+            case DOUBLE :
+            case INTEGER :
+                return true;
+            default :
+                return false;
         }
     }
 
-    public boolean isNode()
-    {
-        switch(tokenType)
-        {
+    public boolean isNode() {
+        switch (tokenType) {
             case BNODE :
             case IRI :
             case PREFIXED_NAME :
-            case DECIMAL:
-            case DOUBLE:
-            case INTEGER:
-            case LITERAL_DT:
-            case LITERAL_LANG:
-            case STRING:
-                return true ;
-            case KEYWORD:
+            case DECIMAL :
+            case DOUBLE :
+            case INTEGER :
+            case LITERAL_DT :
+            case LITERAL_LANG :
+            case STRING :
+                return true;
+            case KEYWORD :
                 if ( tokenImage.equals(ImageANY) )
-                    return true ;
-                return false ;
-            default:
-                return false ;
+                    return true;
+                return false;
+            default :
+                return false;
         }
     }
 
     // N-Triples but allows single quoted strings as well.
-    public boolean isNodeBasic()
-    {
-        switch(tokenType)
-        {
+    public boolean isNodeBasic() {
+        switch (tokenType) {
             case BNODE :
             case IRI :
             case PREFIXED_NAME :
-            case LITERAL_DT:
-            case LITERAL_LANG:
+            case LITERAL_DT :
+            case LITERAL_LANG :
                 return true;
             case STRING : {
                 switch (stringType) {
@@ -346,49 +318,41 @@ public final class Token
                         return false;
                 }
             }
-            default:
-                return false ;
+            default :
+                return false;
         }
     }
 
-    public boolean isBasicLiteral()
-    {
-        switch(tokenType)
-        {
-            case LITERAL_DT:
-            case LITERAL_LANG:
-            case STRING:
-                return true ;
-            default:
-                return false ;
+    public boolean isBasicLiteral() {
+        switch (tokenType) {
+            case LITERAL_DT :
+            case LITERAL_LANG :
+            case STRING :
+                return true;
+            default :
+                return false;
         }
     }
 
-    public boolean isInteger()
-    {
-        return tokenType.equals(TokenType.INTEGER) ;
+    public boolean isInteger() {
+        return tokenType.equals(TokenType.INTEGER);
     }
 
-    public boolean isIRI()
-    {
+    public boolean isIRI() {
         return tokenType.equals(TokenType.IRI) || tokenType.equals(TokenType.PREFIXED_NAME);
     }
 
-    public boolean isBNode()
-    {
-        return tokenType.equals(TokenType.BNODE) ;
+    public boolean isBNode() {
+        return tokenType.equals(TokenType.BNODE);
     }
 
-
-    /** Token to Node, a very direct form that is purely driven off the token.
-     *  Turtle and N-triples need to process the token and not call this:
-     *  1/ Use bNode label as given
-     *  2/ No prefix or URI resolution.
-     *  3/ No checking.
+    /**
+     * Token to Node, a very direct form that is purely driven off the token. Turtle
+     * and N-triples need to process the token and not call this: 1/ Use bNode label
+     * as given 2/ No prefix or URI resolution. 3/ No checking.
      */
-    public Node asNode()
-    {
-        return asNode(null) ;
+    public Node asNode() {
+        return asNode(null);
     }
 
     /** Token to Node, with a prefix map
@@ -397,119 +361,114 @@ public final class Token
      *  2/ No prefix or URI resolution.
      *  3/ No checking.
      */
-    public Node asNode(PrefixMap pmap)
-    {
-        switch(tokenType)
-        {
+    public Node asNode(PrefixMap pmap) {
+        switch (tokenType) {
             // Assumes that bnode labels have been sorted out already.
-            case BNODE : return NodeFactory.createBlankNode(tokenImage) ;
+            case BNODE :
+                return NodeFactory.createBlankNode(tokenImage);
             case IRI :
                 // RiotLib.createIRIorBNode(tokenImage) includes processing <_:label>
-                return NodeFactory.createURI(tokenImage) ;
+                return NodeFactory.createURI(tokenImage);
             case PREFIXED_NAME :
                 if ( pmap == null )
-                    return NodeFactory.createURI("urn:prefixed-name:"+tokenImage+":"+tokenImage2) ;
-                String x = pmap.expand(tokenImage, tokenImage2) ;
+                    return NodeFactory.createURI("urn:prefixed-name:" + tokenImage + ":" + tokenImage2);
+                String x = pmap.expand(tokenImage, tokenImage2);
                 if ( x == null )
-                    throw new RiotException("Can't expand prefixed name: "+this) ;
-                return NodeFactory.createURI(x) ;
-            case DECIMAL :  return NodeFactory.createLiteral(tokenImage, XSDDatatype.XSDdecimal)  ;
-            case DOUBLE :   return NodeFactory.createLiteral(tokenImage, XSDDatatype.XSDdouble)  ;
-            case INTEGER:   return NodeFactory.createLiteral(tokenImage, XSDDatatype.XSDinteger) ;
-            case LITERAL_DT :
-            {
-                Token lexToken = getSubToken1() ;
-                Token dtToken  = getSubToken2() ;
+                    throw new RiotException("Can't expand prefixed name: " + this);
+                return NodeFactory.createURI(x);
+            case DECIMAL :
+                return NodeFactory.createLiteral(tokenImage, XSDDatatype.XSDdecimal);
+            case DOUBLE :
+                return NodeFactory.createLiteral(tokenImage, XSDDatatype.XSDdouble);
+            case INTEGER :
+                return NodeFactory.createLiteral(tokenImage, XSDDatatype.XSDinteger);
+            case LITERAL_DT : {
+                Token lexToken = getSubToken1();
+                Token dtToken = getSubToken2();
 
                 if ( pmap == null && dtToken.hasType(TokenType.PREFIXED_NAME) )
-                    // Must be able to resolve the datatype else we can't find it's datatype.
-                    throw new RiotException("Invalid token: "+this) ;
+                    // Must be able to resolve the datatype else we can't find it's
+                    // datatype.
+                    throw new RiotException("Invalid token: " + this);
                 Node n = dtToken.asNode(pmap);
-                if ( ! n.isURI() )
-                    throw new RiotException("Invalid token: "+this) ;
-                RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(n.getURI()) ;
-                return NodeFactory.createLiteral(lexToken.getImage(), dt)  ;
+                if ( !n.isURI() )
+                    throw new RiotException("Invalid token: " + this);
+                RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(n.getURI());
+                return NodeFactory.createLiteral(lexToken.getImage(), dt);
             }
-            case LITERAL_LANG : return NodeFactory.createLiteral(tokenImage, tokenImage2)  ;
-            case STRING:
-                return NodeFactory.createLiteral(tokenImage) ;
-            case VAR:
-                return Var.alloc(tokenImage) ;
-            case KEYWORD:
+            case LITERAL_LANG :
+                return NodeFactory.createLiteral(tokenImage, tokenImage2);
+            case STRING :
+                return NodeFactory.createLiteral(tokenImage);
+            case VAR :
+                return Var.alloc(tokenImage);
+            case KEYWORD :
                 if ( tokenImage.equals(ImageANY) )
-                    return NodeConst.nodeANY ;
+                    return NodeConst.nodeANY;
                 if ( tokenImage.equals(ImageTrue) )
-                    return NodeConst.nodeTrue ;
+                    return NodeConst.nodeTrue;
                 if ( tokenImage.equals(ImageFalse) )
-                    return NodeConst.nodeFalse ;
+                    return NodeConst.nodeFalse;
                 //$FALL-THROUGH$
-            default: break ;
+            default :
+                break;
         }
-        return null ;
+        return null;
     }
 
-
-    public boolean hasType(TokenType tokenType)
-    {
-        return getType() == tokenType ;
+    public boolean hasType(TokenType tokenType) {
+        return getType() == tokenType;
     }
 
     @Override
-    public int hashCode()
-    {
-        return hashCodeObject(tokenType) ^
-                hashCodeObject(tokenImage) ^
-                hashCodeObject(tokenImage2) ^
-                hashCodeObject(cntrlCode) ;
+    public int hashCode() {
+        return hashCodeObject(tokenType) ^ hashCodeObject(tokenImage) ^ hashCodeObject(tokenImage2) ^ hashCodeObject(cntrlCode);
     }
 
     @Override
-    public boolean equals(Object other)
-    {
-        if ( ! ( other instanceof Token ) ) return false ;
-        Token t = (Token)other ;
-        return  Objects.equals(tokenType, t.tokenType) &&
-        		Objects.equals(tokenImage, t.tokenImage) &&
-        		Objects.equals(tokenImage2, t.tokenImage2) &&
-        		Objects.equals(cntrlCode, t.cntrlCode) ;
+    public boolean equals(Object other) {
+        if ( !(other instanceof Token) )
+            return false;
+        Token t = (Token)other;
+        return Objects.equals(tokenType, t.tokenType) && Objects.equals(tokenImage, t.tokenImage)
+               && Objects.equals(tokenImage2, t.tokenImage2) && Objects.equals(cntrlCode, t.cntrlCode);
     }
 
-    public static Token tokenForChar(char character)
-    {
-        switch(character)
-        {
-            case CH_DOT:        return new Token(TokenType.DOT) ;
-            case CH_SEMICOLON:  return new Token(TokenType.SEMICOLON) ;
-            case CH_COMMA:      return new Token(TokenType.COMMA) ;
-            case CH_LBRACE:     return new Token(TokenType.LBRACE) ;
-            case CH_RBRACE:     return new Token(TokenType.RBRACE) ;
-            case CH_LPAREN:     return new Token(TokenType.LPAREN) ;
-            case CH_RPAREN:     return new Token(TokenType.RPAREN) ;
-            case CH_LBRACKET:   return new Token(TokenType.LBRACKET) ;
-            case CH_RBRACKET:   return new Token(TokenType.RBRACKET) ;
-            default:
-                throw new RuntimeException("Token error: unrecognized character: "+character) ;
+    public static Token tokenForChar(char character) {
+        switch (character) {
+            case CH_DOT :
+                return new Token(TokenType.DOT);
+            case CH_SEMICOLON :
+                return new Token(TokenType.SEMICOLON);
+            case CH_COMMA :
+                return new Token(TokenType.COMMA);
+            case CH_LBRACE :
+                return new Token(TokenType.LBRACE);
+            case CH_RBRACE :
+                return new Token(TokenType.RBRACE);
+            case CH_LPAREN :
+                return new Token(TokenType.LPAREN);
+            case CH_RPAREN :
+                return new Token(TokenType.RPAREN);
+            case CH_LBRACKET :
+                return new Token(TokenType.LBRACKET);
+            case CH_RBRACKET :
+                return new Token(TokenType.RBRACKET);
+            default :
+                throw new RuntimeException("Token error: unrecognized character: " + character);
         }
     }
 
-    public static Token tokenForInteger(long value)
-    {
-        return new Token(TokenType.INTEGER, Long.toString(value)) ;
+    public static Token tokenForInteger(long value) {
+        return new Token(TokenType.INTEGER, Long.toString(value));
     }
 
-    public static Token tokenForWord(String word)
-    {
-        return new Token(TokenType.KEYWORD, word) ;
+    public static Token tokenForWord(String word) {
+        return new Token(TokenType.KEYWORD, word);
     }
 
-    public static Token tokenForNode(Node n)
-    {
-        return tokenForNode(n, null, null) ;
-    }
-
-    public static Token tokenForNode(Node n, Prologue prologue)
-    {
-        return tokenForNode(n, prologue.getBaseURI(), prologue.getPrefixMap()) ;
+    public static Token tokenForNode(Node n) {
+        return tokenForNode(n, null, null);
     }
 
     private static final String dtXSDintger = XSDDatatype.XSDinteger.getURI();

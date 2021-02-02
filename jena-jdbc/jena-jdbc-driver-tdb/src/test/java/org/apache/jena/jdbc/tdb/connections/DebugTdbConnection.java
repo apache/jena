@@ -22,7 +22,6 @@ import java.sql.SQLException;
 
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
-import org.apache.jena.jdbc.tdb.connections.TDBConnection;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 

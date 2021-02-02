@@ -84,7 +84,7 @@ public class UpdateFactory
     private static void make(UpdateRequest request, String input,  String baseURI, Syntax syntax)
     {
         UpdateParser parser = setupParser(request, baseURI, syntax) ;
-        parser.parse(new UpdateRequestSink(request), input) ;
+        parser.parse(new UpdateRequestSink(request), request, input) ;
     }
     
     /* Parse operations and add to an UpdateRequest */ 
@@ -274,17 +274,14 @@ public class UpdateFactory
     }
     
     /** Append update operations to a request */
-    private static void make(UpdateRequest request, UsingList usingList, InputStream input,  String baseURI, Syntax syntax)
-    {
-        UpdateParser parser = setupParser(request, baseURI, syntax) ;
-        UpdateSink sink = new UsingUpdateSink(new UpdateRequestSink(request), usingList) ;
-        try
-        {
-            parser.parse(sink, input) ;
+    private static void make(UpdateRequest request, UsingList usingList, InputStream input, String baseURI, Syntax syntax) {
+        UpdateParser parser = setupParser(request, baseURI, syntax);
+        UpdateSink sink = new UsingUpdateSink(new UpdateRequestSink(request), usingList);
+        try {
+            parser.parse(sink, request, input);
         }
-        finally
-        {
-            sink.close() ;
+        finally {
+            sink.close();
         }
     }
 }

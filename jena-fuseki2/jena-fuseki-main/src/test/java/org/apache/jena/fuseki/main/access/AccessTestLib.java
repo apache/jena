@@ -45,7 +45,6 @@ public class AccessTestLib {
             ,":g4 { :s4 :p 4 }"
             );
 
-
     public static Node s0 = SSE.parseNode("<http://test/s0>");
     public static Node s1 = SSE.parseNode("<http://test/s1>");
     public static Node s2 = SSE.parseNode("<http://test/s2>");

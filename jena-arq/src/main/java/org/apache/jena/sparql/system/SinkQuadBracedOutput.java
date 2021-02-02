@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.out ;
+package org.apache.jena.sparql.system ;
 
 import java.io.OutputStream ;
 import java.util.Objects;

@@ -18,10 +18,8 @@
 
 package org.apache.jena.sparql.graph;
 
-import org.apache.jena.atlas.data.ThresholdPolicy ;
 import org.apache.jena.graph.Factory ;
 import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.impl.GraphPlain ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
@@ -65,12 +63,6 @@ public class GraphFactory
         return new GraphSink() ;
     }
     
-    /** A graph backed by a DistinctDataBag&lt;Triple&gt;. */
-    public static Graph createDataBagGraph(ThresholdPolicy<Triple> thresholdPolicy)
-    {
-        return new GraphDistinctDataBag(thresholdPolicy) ;
-    }
-
     /** Guaranteed call-through to Jena's ModelFactory operation */
     public static Model makeJenaDefaultModel() { return ModelFactory.createDefaultModel() ; }
     
@@ -84,11 +76,5 @@ public class GraphFactory
     public static Model makePlainModel()
     {
         return ModelFactory.createModelForGraph(createPlainGraph()) ;
-    }
-    
-    /** Create a model over a DataBag graph (will spill to disk when it get large) */
-    public static Model makeDataBagModel(ThresholdPolicy<Triple> thresholdPolicy)
-    {
-        return ModelFactory.createModelForGraph(createDataBagGraph(thresholdPolicy)) ;
     }
 }

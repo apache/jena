@@ -36,7 +36,6 @@ import org.apache.jena.sdb.core.Generator ;
 import org.apache.jena.sdb.core.Gensym ;
 import org.apache.jena.sdb.core.SDBConstants ;
 import org.apache.jena.sdb.graph.TransactionHandlerSDB ;
-import org.apache.jena.shared.Command ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,11 +134,6 @@ public class SDBConnection
         }
         catch (RuntimeException ex)
         { throw ex ; }
-    }
-
-    @Deprecated
-    public Object executeInTransaction(Command c) {
-        return getTransactionHandler().executeInTransaction(c) ;
     }
 
     public void execute(Runnable action) {

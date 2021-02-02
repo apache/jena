@@ -23,7 +23,6 @@ import java.util.HashSet ;
 import java.util.Map ;
 import java.util.Set ;
 
-import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.mgt.ARQMgt ;
 import org.apache.jena.tdb.base.file.ChannelManager ;
@@ -92,28 +91,12 @@ public class StoreConnection
     }
 
     /**
-     * @deprecated Use {@link #begin(TxnType)}
-     */
-    @Deprecated
-    public DatasetGraphTxn begin(ReadWrite mode) {
-        return begin(TxnType.convert(mode));
-    }
-
-    /**
      * Begin a transaction. Terminate a write transaction with
      * {@link Transaction#commit()} or {@link Transaction#abort()}. 
      * Terminate a write transaction with {@link Transaction#close()}.
      */
     public DatasetGraphTxn begin(TxnType mode) {
         return begin(mode, null);
-    }
-
-    /**
-     * @deprecated Use {@link #begin(TxnType, String)}
-     */
-    @Deprecated
-    public DatasetGraphTxn begin(ReadWrite mode, String label) {
-        return begin(TxnType.convert(mode), label);
     }
 
     /**

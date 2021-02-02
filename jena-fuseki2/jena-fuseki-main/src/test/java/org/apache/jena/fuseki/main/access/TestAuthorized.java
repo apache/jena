@@ -59,7 +59,6 @@ public class TestAuthorized {
         assertFalse(auth.isAllowed("user1"));
     }
 
-
     @Test public void auth_user_1() {
         AuthPolicy auth = Auth.policyAllowSpecific("user1", "user2");
         assertFalse(auth.isAllowed(null));

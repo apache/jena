@@ -20,8 +20,6 @@ package org.apache.jena.graph;
 
 import java.util.function.Supplier ;
 
-import org.apache.jena.shared.Command ;
-
 /**
     Preliminary interface for graphs supporting transactions.
     
@@ -55,15 +53,6 @@ public interface TransactionHandler
         throw an UnsupportedOperationException.
      */
     void commit();
-
-
-
-    /**
-        If transactions are supported, execute the command c within a transaction
-        and return its result. If not, throw an UnsupportedOperationException.
-        @deprecated use {@link #execute(Runnable)} or {@link #calculate(Supplier)} 
-     */
-    Object executeInTransaction( Command c );
 
     /**
      * Execute the runnable <code>action</code> within a transaction. If it completes normally,

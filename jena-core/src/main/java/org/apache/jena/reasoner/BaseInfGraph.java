@@ -108,38 +108,6 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         public boolean findContractSafe() { return true; }
         }
 
-//    /**
-//        InfBulkUpdateHandler - a bulk update handler specialised for inference
-//        graphs by code for <code>removeAll()</code>.
-//    */
-//    static class InfBulkUpdateHandler extends SimpleBulkUpdateHandler
-//    	{
-//        public InfBulkUpdateHandler( BaseInfGraph  graph )
-//            { super(graph); }
-//
-//        @Override
-//        @Deprecated
-//        public void remove( Node s, Node p, Node o )
-//            {
-//            BaseInfGraph g = (BaseInfGraph) graph;
-//            g.getRawGraph().remove( s, p, o );
-//            g.discardState();
-//            g.rebind();
-//            manager.notifyEvent( graph, GraphEvents.remove( s, p, o ) );
-//            }
-//
-//        @Override
-//        @Deprecated
-//        public void removeAll()
-//            {
-//            BaseInfGraph g = (BaseInfGraph) graph;
-//            g.getRawGraph().clear();
-//            g.discardState();
-//            g.rebind();
-//            g.getEventManager().notifyEvent( g, GraphEvents.removeAll );
-//            }
-//    	}
-    
     @Override
     public void remove( Node s, Node p, Node o )
     {

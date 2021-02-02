@@ -143,12 +143,6 @@ public class Shapes implements Iterable<Shape> {
         return shapes.isEmpty();
     }
 
-    /** @deprecated Use {@link #getTargetShapes()} */
-    @Deprecated
-    public Collection<Shape> getRootShapes() {
-        return getTargetShapes();
-    }
-
     /** Return the shapes with targets. */
     public Collection<Shape> getTargetShapes() {
         return rootShapes;

@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory ;
 /** Testing/development convenience.
  *  Iterator of StreamRowRDF (always a tuple) for an input stream of tokenized RDF terms.
  */  
-public class IteratorStreamRDFText extends IteratorStreamRDF implements Iterator<StreamRowRDF> {
+public class IteratorStreamRDFText extends IteratorStreamRowRDF implements Iterator<StreamRowRDF> {
     private final TokenInputStream in ;
     private Node[] previousTuple = null ;
 

@@ -394,22 +394,6 @@ public interface SecuredRDFList extends RDFList, SecuredResource {
 
 	/**
 	 * @sec.graph Update
-	 * @sec.triple Delete for all triples.
-	 * @throws UpdateDeniedException
-	 * @throws DeleteDeniedException
-	 * @throws EmptyListException
-	 * @throws ListIndexException
-	 * @throws InvalidListException
-	 * @throws AuthenticationRequiredException
-	 *             if user is not authenticated and is required to be.
-	 */
-	@Override
-	@Deprecated
-	public void removeAll() throws UpdateDeniedException,
-			DeleteDeniedException, AuthenticationRequiredException;
-
-	/**
-	 * @sec.graph Update
 	 * @sec.triple Delete for the head triple.
 	 * @throws UpdateDeniedException
 	 * @throws DeleteDeniedException

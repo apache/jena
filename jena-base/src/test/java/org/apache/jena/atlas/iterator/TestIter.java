@@ -204,38 +204,10 @@ public class TestIter
         assertEquals(null, Iter.first(iter, filter));
     }
 
-    @SuppressWarnings("deprecation")
-    @Test
-    public void first_02() {
-        List<String> data = Arrays.asList("11", "A", "B", "C");
-        assertEquals("A", Iter.first(data, filter));
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void first_03() {
-        List<String> data = Arrays.asList("11", "AA", "BB", "CC");
-        assertEquals(null, Iter.first(data, filter));
-    }
-
     @Test
     public void first_04() {
         Iter<String> iter = Iter.nullIter();
         assertEquals(-1, Iter.firstIndex(iter, filter));
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void first_05() {
-        List<String> data = Arrays.asList("11", "A", "B", "C");
-        assertEquals(1, Iter.firstIndex(data, filter));
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void first_06() {
-        List<String> data = Arrays.asList("11", "AA", "BB", "CC");
-        assertEquals(-1, Iter.firstIndex(data, filter));
     }
 
     @Test
@@ -244,34 +216,12 @@ public class TestIter
         assertEquals(null, Iter.last(iter, filter));
     }
 
-    @SuppressWarnings("deprecation")
-    @Test
-    public void last_02() {
-        List<String> data = Arrays.asList("11", "A", "B", "C");
-        assertEquals("C", Iter.last(data, filter));
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void last_03() {
-        List<String> data = Arrays.asList("11", "AA", "BB", "CC");
-        assertEquals(null, Iter.last(data, filter));
-    }
-
-    @Test
-    public void last_04() {
-        Iter<String> iter = Iter.nullIter();
-        assertEquals(-1, Iter.lastIndex(iter, filter));
-    }
-
-    @SuppressWarnings("deprecation")
     @Test
     public void last_05() {
         List<String> data = Arrays.asList("11", "A", "B", "C");
         assertEquals(3, Iter.lastIndex(data, filter));
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void last_06() {
         List<String> data = Arrays.asList("11", "AA", "BB", "CC");

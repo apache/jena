@@ -16,28 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.system;
+package org.apache.jena.riot.system;
+
+import org.apache.jena.atlas.iterator.IteratorSlotted ;
 
 /**
- * This is a temporary adapter for implementations to transition to [JENA-1524]
+ *  Pull version of processing {@link StreamRDF} for {@link StreamRowRDF}
  */
-@Deprecated
-public class JenaSystem {
+public abstract class IteratorStreamRowRDF extends IteratorSlotted<StreamRowRDF> { }
 
-    /**
-     * Initialize Jena.
-     * @deprecated Use {@link org.apache.jena.sys.JenaSystem#init()}
-     */
-    @Deprecated
-    public static void init() {
-        org.apache.jena.sys.JenaSystem.init();
-    }
-
-    /** Shutdown subsystems
-     * @deprecated Use {@link org.apache.jena.sys.JenaSystem#shutdown()}
-     */
-    @Deprecated
-    public static void shutdown() {
-        org.apache.jena.sys.JenaSystem.shutdown();
-    }
-}
