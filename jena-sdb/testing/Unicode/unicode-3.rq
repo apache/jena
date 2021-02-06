@@ -1,5 +1,0 @@
-SELECT *
-{ 
-  ?s ?p "Alpha:\u03B1" .
-  ?s ?p "Alpha:α" .
-}

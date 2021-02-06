@@ -258,7 +258,6 @@
         <!-- Retired: <module>jena-maven-tools</module> -->
 
         <!-- Other -->
-        <module>jena-sdb</module>
         <module>jena-permissions</module>
         <module>jena-extras</module>
 
