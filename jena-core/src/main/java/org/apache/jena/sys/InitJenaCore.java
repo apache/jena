@@ -18,6 +18,7 @@
 
 package org.apache.jena.sys;
 
+import org.apache.jena.irix.SystemIRIx;
 import org.apache.jena.vocabulary.OWL ;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
@@ -33,12 +34,12 @@ public class InitJenaCore  implements JenaSubsystemLifecycle {
 
     @Override
     public void stop() {}
-    
+
     @Override
     public int level() {
         return 10 ;
     }
-    
+
     public static void init() {
         if ( initialized )
             return ;
@@ -51,9 +52,10 @@ public class InitJenaCore  implements JenaSubsystemLifecycle {
             JenaSystem.logLifecycle("JenaCore.init - start") ;
 
             // Initialization
-            // Touch classes with constants.  
+            SystemIRIx.init();
+            // Touch classes with constants.
             // This isn't necessary but it makes it more deterministic.
-            // These constants are reused in various places.  
+            // These constants are reused in various places.
             RDF.getURI() ;
             RDFS.getURI() ;
             OWL.getURI() ;

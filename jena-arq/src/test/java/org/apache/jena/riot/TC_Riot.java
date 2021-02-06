@@ -46,11 +46,10 @@ import org.junit.runners.Suite ;
     , TS_RiotWeb.class
     , TS_ResultSetRIOT.class
     , TS_RDFThrift.class
-    
+
     , Scripts_LangSuite.class
     , Scripts_AltTurtle.class
 })
-
 
 public class TC_Riot
 { }

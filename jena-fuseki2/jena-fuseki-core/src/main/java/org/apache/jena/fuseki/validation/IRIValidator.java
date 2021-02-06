@@ -21,7 +21,6 @@ package org.apache.jena.fuseki.validation;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.jena.fuseki.validation.html.IRIValidatorHTML;
 import org.apache.jena.fuseki.validation.json.IRIValidatorJSON;
 
 public class IRIValidator extends ValidatorBase {
@@ -33,6 +32,6 @@ public class IRIValidator extends ValidatorBase {
 
     @Override
     protected void executeHTML(HttpServletRequest request, HttpServletResponse response) {
-        IRIValidatorHTML.executeHTML(request, response);
+        executeHTML(request, response);
     }
 }

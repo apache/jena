@@ -32,7 +32,7 @@ import org.apache.jena.query.QueryException ;
 import org.apache.jena.query.QueryParseException ;
 import org.apache.jena.query.Syntax ;
 import org.apache.jena.sparql.core.QueryCheckException ;
-import org.apache.jena.sparql.lang.ParserBase ;
+import org.apache.jena.sparql.lang.QueryParserBase ;
 import org.apache.jena.sparql.modify.request.UpdateWriter ;
 import org.apache.jena.update.UpdateFactory ;
 import org.apache.jena.update.UpdateRequest ;
@@ -164,7 +164,7 @@ public class uparse extends CmdARQ
         
 
         try {
-            LogCtl.disable(ParserBase.ParserLoggerName) ;
+            LogCtl.disable(QueryParserBase.ParserLoggerName) ;
             checkUpdate(req, syntax);
         } catch (UpdateCheckException ex)
         {
@@ -173,7 +173,7 @@ public class uparse extends CmdARQ
             if ( ex.getCause() != null )
                 ex.getCause().printStackTrace(System.err) ;
         }
-        finally { LogCtl.setLevel(ParserBase.ParserLoggerName, "INFO") ; }
+        finally { LogCtl.setLevel(QueryParserBase.ParserLoggerName, "INFO") ; }
     }
     
     public static class UpdateCheckException extends QueryException

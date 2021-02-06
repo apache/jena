@@ -27,10 +27,10 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphUtil;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.irix.IRIs;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.sparql.core.DatasetDescription ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
@@ -41,7 +41,7 @@ import org.apache.jena.system.Txn ;
 public class DatasetUtils
 {
     private DatasetUtils() {}
-    
+
     /** Create a general purpose, in-memory dataset, and load data into the default graph and
      * also some named graphs.
      * @param uri               Default graph
@@ -65,7 +65,7 @@ public class DatasetUtils
     }
 
     /** Create a general purpose, in-memory dataset, and load some data
-     * 
+     *
      * @param uriList           RDF for the default graph
      * @param namedSourceList   Named graphs.
      * @return Dataset
@@ -75,8 +75,8 @@ public class DatasetUtils
     }
 
     /** Create a general purpose, in-memory dataset, and load data.
-     * 
-     * @param datasetDesc   
+     *
+     * @param datasetDesc
      * @return Dataset
      */
     public static Dataset createDataset(DatasetDescription datasetDesc) {
@@ -84,8 +84,8 @@ public class DatasetUtils
     }
 
     /** Create a general purpose, in-memory dataset, and load data.
-     * 
-     * @param datasetDesc   
+     *
+     * @param datasetDesc
      * @return Dataset
      */
     public static Dataset createDataset(DatasetDescription datasetDesc, String baseURI) {
@@ -107,9 +107,9 @@ public class DatasetUtils
     public static Dataset addInGraphs(Dataset ds, List<String> uriList, List<String> namedSourceList) {
         return addInGraphs(ds, uriList, namedSourceList, null) ;
     }
-    
+
     /** Add graphs into a Dataset
-     * 
+     *
      * @param ds
      * @param uriList           Default graph
      * @param namedSourceList   Named graphs
@@ -122,10 +122,10 @@ public class DatasetUtils
     }
 
     // ---- DatasetGraph level.
-    
+
     /** Create a general purpose, in-memory dataset, and load data.
-     * 
-     * @param datasetDesc   
+     *
+     * @param datasetDesc
      * @return Dataset
      */
     public static DatasetGraph createDatasetGraph(DatasetDescription datasetDesc) {
@@ -133,15 +133,15 @@ public class DatasetUtils
     }
 
     /** Create a general purpose, in-memory dataset, and load data.
-     * 
-     * @param datasetDesc   
+     *
+     * @param datasetDesc
      * @param baseURI
      * @return Dataset
      */
     public static DatasetGraph createDatasetGraph(DatasetDescription datasetDesc, String baseURI) {
         return createDatasetGraph(datasetDesc.getDefaultGraphURIs(), datasetDesc.getNamedGraphURIs(), baseURI) ;
     }
-        
+
     public static DatasetGraph createDatasetGraph(String uri, List<String> namedSourceList, String baseURI) {
         List<String> uriList = new ArrayList<>();
         uriList.add(uri);
@@ -153,9 +153,9 @@ public class DatasetUtils
         addInGraphs(dsg, uriList, namedSourceList, baseURI);
         return dsg ;
     }
-    
+
     /** Add graphs into a DatasetGraph
-     * 
+     *
      * @param dsg
      * @param uriList           Default graph
      * @param namedSourceList   Named graphs
@@ -165,7 +165,7 @@ public class DatasetUtils
     }
 
     /** Add graphs into a DatasetGraph
-     * 
+     *
      * @param dsg
      * @param uriList           Default graph
      * @param namedSourceList   Named graphs
@@ -174,7 +174,7 @@ public class DatasetUtils
     public static void addInGraphs(DatasetGraph dsg, List<String> uriList, List<String> namedSourceList, String baseURI) {
         if ( ! dsg.supportsTransactions() )
             addInGraphsWorker(dsg, uriList, namedSourceList, baseURI) ;
-        
+
         if ( dsg.isInTransaction() )
             addInGraphsWorker(dsg, uriList, namedSourceList, baseURI);
 
@@ -182,13 +182,13 @@ public class DatasetUtils
     }
 
     // For the transactional case, could read straight in, not via buffering graphs that catch syntax errors.
-    
+
     private static void addInGraphsWorker(DatasetGraph dsg, List<String> uriList, List<String> namedSourceList, String baseURI) {
         String absBaseURI = null;
         // Sort out base URI, if any.
         if ( baseURI != null )
-            absBaseURI = IRIResolver.resolveString(baseURI);
-        
+            absBaseURI = IRIs.resolve(baseURI);
+
         // Merge into background graph
         if ( uriList != null && ! uriList.isEmpty() ) {
             // Isolate from syntax errors
@@ -214,11 +214,11 @@ public class DatasetUtils
             }
         }
     }
-    
+
     private static String baseURI(String sourceURI, String absBaseURI) {
         if ( absBaseURI == null )
-            return IRIResolver.resolveString(sourceURI);
-        else    
-            return IRIResolver.resolveString(sourceURI, absBaseURI);
+            return IRIs.resolve(sourceURI);
+        else
+            return IRIs.resolve(sourceURI, absBaseURI);
     }
 }

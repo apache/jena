@@ -24,6 +24,8 @@ import java.io.StringReader ;
 import java.util.List ;
 
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.irix.IRIs;
+import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFParser ;
 import org.apache.jena.riot.RIOT;
@@ -54,7 +56,8 @@ public class TestParserFactory
         // NQ version tests that relative URIs remain relative.
         Tokenizer tokenizer = TokenizerText.create().fromString("<x> <p> <q> .").build();
         CatchParserOutput sink = new CatchParserOutput() ;
-        ParserProfile profile = makeParserProfile(IRIResolver.createNoResolve(), null, false);
+        IRIxResolver resolver = IRIs.relativeResolver();
+        ParserProfile profile = makeParserProfile(IRIs.relativeResolver(), null, false);
         LangRIOT parser = RiotParsers.createParserNTriples(tokenizer, sink, profile) ;
         parser.parse();
         assertEquals(1, sink.startCalled) ;
@@ -77,15 +80,13 @@ public class TestParserFactory
         assertEquals(t, last(sink.triples)) ;
     }
 
-    private ParserProfile makeParserProfile(IRIResolver resolver, ErrorHandler errorHandler, boolean checking) {
+    private ParserProfile makeParserProfile(IRIxResolver resolver, ErrorHandler errorHandler, boolean checking) {
         if ( errorHandler == null )
             errorHandler = ErrorHandlerFactory.errorHandlerStd;
-        return new ParserProfileStd(RiotLib.factoryRDF(),
-                                    errorHandler,
-                                    resolver,
-                                    PrefixMapFactory.create(),
+        return new ParserProfileStd(RiotLib.factoryRDF(), errorHandler,
+                                    resolver, PrefixMapFactory.create(),
                                     RIOT.getContext().copy(),
-                                    checking, false) ;
+                                    checking, false);
     }
 
     @Test public void nquads_01()

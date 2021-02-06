@@ -346,19 +346,19 @@ public abstract class AbstractTestRDFConnection {
 
     @Test public void update_01() {
         try ( RDFConnection conn = connection() ) {
-            conn.update("INSERT DATA { <urn:x:s> <urn:x:p> <urn:x:o>}");
+            conn.update("INSERT DATA { <urn:ex:s> <urn:ex:p> <urn:ex:o>}");
         }
     }
 
     @Test public void update_02() {
         try ( RDFConnection conn = connection() ) {
-            Txn.executeWrite(conn, ()->conn.update("INSERT DATA { <urn:x:s> <urn:x:p> <urn:x:o>}"));
+            Txn.executeWrite(conn, ()->conn.update("INSERT DATA { <urn:ex:s> <urn:ex:p> <urn:ex:o>}"));
         }
     }
 
     @Test public void update_03() {
     	UpdateRequest update = new UpdateRequest();
-    	update.add("INSERT DATA { <urn:x:s> <urn:x:p> <urn:x:o>}");
+    	update.add("INSERT DATA { <urn:ex:s> <urn:ex:p> <urn:ex:o>}");
         try ( RDFConnection conn = connection() ) {
             conn.update(update);
         }
@@ -366,7 +366,7 @@ public abstract class AbstractTestRDFConnection {
 
     @Test public void update_04() {
     	UpdateRequest update = new UpdateRequest();
-    	update.add("INSERT DATA { <urn:x:s> <urn:x:p> <urn:x:o>}");
+    	update.add("INSERT DATA { <urn:ex:s> <urn:ex:p> <urn:ex:o>}");
         try ( RDFConnection conn = connection() ) {
             Txn.executeWrite(conn, ()->conn.update(update));
         }

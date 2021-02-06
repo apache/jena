@@ -49,7 +49,7 @@ import org.apache.jena.shared.WrappedIOException ;
  * Interface between Jena and ARP.
  */
 public class JenaReader implements RDFReader, ARPErrorNumbers {
-    
+
     static private final String saxFeaturesURL = "http://xml.org/sax/features/";
 
     static private final String saxPropertiesURL = "http://xml.org/sax/properties/";
@@ -74,9 +74,9 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
     private Model model;
 
     /**
-     * Reads from url, using url as base, adding triples to model. 
+     * Reads from url, using url as base, adding triples to model.
      * Uses content negotiation to ask for application/rdf+xml, if available.
-     * 
+     *
      * @param m
      *            A model to add triples to.
      * @param url
@@ -139,7 +139,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
     /**
      * Reads from reader, using base URI xmlbase, adding triples to model. If
      * xmlbase is "" then relative URIs may be added to model.
-     * 
+     *
      * @param m
      *            A model to add triples to.
      * @param reader
@@ -147,17 +147,14 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * @param xmlBase
      *            The base URI of the document or "".
      */
-    private void read(Model m, InputSource inputS, String xmlBase)
-            throws JenaException {
+    private void read(Model m, InputSource inputS, String xmlBase) throws JenaException {
         model = m;
         read(model.getGraph(), inputS, xmlBase, model);
     }
 
     private JenaHandler handler;
 
-    synchronized private void read(final Graph g, InputSource inputS,
-            String xmlBase, Model m) {
-
+    synchronized private void read(final Graph g, InputSource inputS, String xmlBase, Model m) {
         try {
             g.getEventManager().notifyEvent(g, GraphEvents.startRead);
             inputS.setSystemId(xmlBase);
@@ -177,7 +174,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
     /**
      * Reads from reader, using base URI xmlbase, adding triples to model. If
      * xmlbase is "" then relative URIs may be added to model.
-     * 
+     *
      * @param m
      *            A model to add triples to.
      * @param reader
@@ -194,7 +191,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
     /**
      * Reads from reader, using base URI xmlbase, adding triples to graph. If
      * xmlbase is "" then relative URIs may be added to graph.
-     * 
+     *
      * @param g
      *            A graph to add triples to.
      * @param reader
@@ -210,7 +207,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
     /**
      * Reads from inputStream, using base URI xmlbase, adding triples to model.
      * If xmlbase is "" then relative URIs may be added to model.
-     * 
+     *
      * @param m
      *            A model to add triples to.
      * @param in
@@ -227,7 +224,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
     /**
      * Reads from inputStream, using base URI xmlbase, adding triples to graph.
      * If xmlbase is "" then relative URIs may be added to graph.
-     * 
+     *
      * @param g
      *            A graph to add triples to.
      * @param in
@@ -247,7 +244,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * Note that errors of class {@link ParseException}can be promoted using
      * the {@link ParseException#promote}method. See ARP documentation for
      * {@link org.xml.sax.ErrorHandler}for the details of error promotion.
-     * 
+     *
      * @param errHandler
      *            The new error handler.
      * @return The old error handler.
@@ -264,7 +261,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
     }
 
     /**
-     * 
+     *
      * Change a property of the RDF or XML parser.
      * <p>
      * I do not believe that many of the XML features or properties are in fact
@@ -343,7 +340,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * </tr>
      * </table></dd>
      * </dl>
-     * 
+     *
      * @param str
      *            The property to set.
      * @param value
@@ -427,9 +424,9 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 	}
 
     /**
-     * Supported properties: 
+     * Supported properties:
      * error-mode (String) default, lax, strict,
-     * strict-ignore, strict-warning, strict-error, strict.error <br/> 
+     * strict-ignore, strict-warning, strict-error, strict.error <br/>
      * embedding (String/Boolean) true, false<br/>
      * ERR_* (String/Integer) em_warning, em.error, em_ignore, em_error<br/>
      * IGN_* ditto<br/>
@@ -536,7 +533,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                 return old;
             }
         }
-        
+
         if ( str.equals("IRI-RULES") )
         {
             IRIFactory old = options.getIRIFactory() ;
@@ -548,7 +545,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                 "Property \"IRI-RULES\" requires one of 'STRICT', 'IRI' or 'LAX'"));
             return old ;
         }
-        
+
         eh.error(new UnknownPropertyException(str));
         return null;
     }

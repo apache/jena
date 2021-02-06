@@ -34,7 +34,7 @@ public class ParseForTest {
     }
 
     public static Map<Lang, ReaderRIOTFactory> alternativeReaderFactories = new ConcurrentHashMap<>();
-    
+
     public static void parse(StreamRDF destination, String uri, String base, Lang lang) {
         if ( alternativeReaderFactories.containsKey(lang) ) {
             ReaderRIOTFactory factoryForTest = alternativeReaderFactories.get(lang);

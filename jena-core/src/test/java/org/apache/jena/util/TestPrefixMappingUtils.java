@@ -33,7 +33,7 @@ import org.junit.Assert ;
 import org.junit.Test ;
 
 public class TestPrefixMappingUtils {
-    
+
     public static junit.framework.Test suite() {
         return new JUnit4TestAdapter(TestPrefixMappingUtils.class) ;
     }
@@ -44,11 +44,11 @@ public class TestPrefixMappingUtils {
         m.read(new StringReader(data), null, "TTL");
         return graph ;
     }
-    
+
     static int size(PrefixMapping pmap) {
         return pmap.getNsPrefixMap().size() ;
     }
-    
+
     @Test public void prefixes1() {
         // All prefixes used.
         // Note: XSD as well.
@@ -65,9 +65,9 @@ public class TestPrefixMappingUtils {
         PrefixMapping pmap = PrefixMappingUtils.calcInUsePrefixMapping(graph1) ;
         PrefixMapping pmapExpected = graph1.getPrefixMapping() ;
         Assert.assertEquals(3, size(pmap)) ;
-        Assert.assertEquals(pmapExpected, pmap) ; 
+        Assert.assertEquals(pmapExpected, pmap) ;
     }
-    
+
     @Test public void prefixes2() {
         // Some prefixes used
         String data2 = StrUtils.strjoinNL
@@ -78,7 +78,7 @@ public class TestPrefixMappingUtils {
              ":s1 :p :x1 ." ,
              ":s1 ex:p :x1 ."
              ) ;
-        
+
         Graph graph1 = create(data2) ;
         PrefixMapping pmap = PrefixMappingUtils.calcInUsePrefixMapping(graph1) ;
         PrefixMapping pmapExpected = new PrefixMappingImpl() ;
@@ -102,7 +102,7 @@ public class TestPrefixMappingUtils {
         pmapExpected.setNsPrefix("", "http://example/") ;
         Assert.assertTrue(sameMapping(pmapExpected, pmap)) ;
     }
-    
+
     @Test public void prefixes4() {
         // No prefixes.
         String data = StrUtils.strjoinNL
@@ -115,7 +115,7 @@ public class TestPrefixMappingUtils {
         PrefixMapping pmapExpected = new PrefixMappingImpl() ;
         Assert.assertTrue(sameMapping(pmapExpected, pmap)) ;
     }
-    
+
     @Test public void prefixesN() {
         // All combinations.
         // No "@prefix xsd: <"+XSD.getURI()+"> ." so not in output.
@@ -124,7 +124,7 @@ public class TestPrefixMappingUtils {
              "@prefix ex: <http://example/ex#> ." ,
              "@prefix notinuse: <http://example/whatever/> ." ,
              "@prefix indirect: <urn:foo:> ." ,
-             "@prefix indirectx: <urn:x:> ." ,
+             "@prefix indirectx: <urn:ex:> ." ,
 
              "@prefix ns: <http://host/ns> ." ,
              "@prefix ns1: <http://host/ns1> ." ,
@@ -134,15 +134,15 @@ public class TestPrefixMappingUtils {
              ":s1 ex:p :x1 ." ,
 
              "<urn:foo:bar> :p 1 . ",
-             "<urn:x:a:b> :p 2 . ",
+             "<urn:ex:a:b> :p 2 . ",
 
-             "<urn:verybad#.> :p 1 . ",
+             "<urn:ex:verybad#.> :p 1 . ",
 
              "ns:x ns1:p 'ns1' . ",
 
              "<http://examp/abberev> indirect:p 'foo' . "
              ) ;
-        
+
         Graph graph = create(data) ;
         PrefixMapping pmap = PrefixMappingUtils.calcInUsePrefixMapping(graph) ;
         PrefixMapping pmapExpected = new PrefixMappingImpl() ;
@@ -151,7 +151,7 @@ public class TestPrefixMappingUtils {
         pmapExpected.setNsPrefix("indirect", "urn:foo:") ;
         pmapExpected.setNsPrefix("ns", "http://host/ns") ;
         pmapExpected.setNsPrefix("ns1", "http://host/ns1") ;
-        pmapExpected.setNsPrefix("indirectx", "urn:x:") ;
+        pmapExpected.setNsPrefix("indirectx", "urn:ex:") ;
         //print("Expected:", pmapExpected) ;
         //print("Got:", pmap) ;
         Assert.assertTrue(sameMapping(pmapExpected, pmap)) ;
@@ -174,9 +174,9 @@ public class TestPrefixMappingUtils {
         PrefixMapping pmap = PrefixMappingUtils.calcInUsePrefixMappingTTL(graph1) ;
         PrefixMapping pmapExpected = graph1.getPrefixMapping() ;
         Assert.assertEquals(3, size(pmap)) ;
-        Assert.assertEquals(pmapExpected, pmap) ; 
+        Assert.assertEquals(pmapExpected, pmap) ;
     }
-    
+
     @Test public void prefixesTTL2() {
         // Some prefixes used
         String data2 = StrUtils.strjoinNL
@@ -187,7 +187,7 @@ public class TestPrefixMappingUtils {
              ":s1 :p :x1 ." ,
              ":s1 ex:p :x1 ."
              ) ;
-        
+
         Graph graph1 = create(data2) ;
         PrefixMapping pmap = PrefixMappingUtils.calcInUsePrefixMappingTTL(graph1) ;
         PrefixMapping pmapExpected = new PrefixMappingImpl() ;
@@ -211,7 +211,7 @@ public class TestPrefixMappingUtils {
         pmapExpected.setNsPrefix("", "http://example/") ;
         Assert.assertTrue(sameMapping(pmapExpected, pmap)) ;
     }
-    
+
     @Test public void prefixesTTL4() {
         // No prefixes.
         String data = StrUtils.strjoinNL
@@ -224,7 +224,7 @@ public class TestPrefixMappingUtils {
         PrefixMapping pmapExpected = new PrefixMappingImpl() ;
         Assert.assertTrue(sameMapping(pmapExpected, pmap)) ;
     }
-    
+
     // No <<>> parser in jena-core.
     @Test public void prefixesTTL() {
         // All combinations.
@@ -252,9 +252,9 @@ public class TestPrefixMappingUtils {
 
              "<http://examp/abberev> indirect:p 'foo' . "
              ) ;
-        
+
         Graph graph = create(data) ;
-        
+
         PrefixMapping pmap = PrefixMappingUtils.calcInUsePrefixMappingTTL(graph) ;
         PrefixMapping pmapExpected = new PrefixMappingImpl() ;
         pmapExpected.setNsPrefix("", "http://example/") ;
@@ -272,7 +272,7 @@ public class TestPrefixMappingUtils {
     private boolean sameMapping(PrefixMapping pmapExpected, PrefixMapping pmap) {
         return pmapExpected.samePrefixMappingAs(pmap) ;
     }
-    
+
     private static void print(String label, PrefixMapping pmap) {
         System.out.println(label);
         pmap.getNsPrefixMap().forEach((p,u)->System.out.printf("    %s: -> <%s>\n", p,u)) ;

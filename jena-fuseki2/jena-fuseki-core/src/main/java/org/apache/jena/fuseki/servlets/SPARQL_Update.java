@@ -45,11 +45,11 @@ import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.iri.IRI;
+import org.apache.jena.irix.IRIx;
+import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.Syntax;
-import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.modify.UsingList;
 import org.apache.jena.update.UpdateAction;
@@ -62,7 +62,11 @@ public class SPARQL_Update extends ActionService
 {
     // Base URI used to isolate parsing from the current directory of the server.
     private static final String UpdateParseBase = Fuseki.BaseParserSPARQL;
-    private static final IRIResolver resolver = IRIResolver.create(UpdateParseBase);
+    private static final IRIxResolver resolver = IRIxResolver.create()
+                                                            .base(UpdateParseBase)
+                                                            .resolve(true)
+                                                            .allowRelative(false)
+                                                            .build();
 
     public SPARQL_Update() { super(); }
 
@@ -277,8 +281,8 @@ public class SPARQL_Update extends ActionService
 
     private static Node createNode(String x) {
         try {
-            IRI iri = resolver.resolve(x);
-            return NodeFactory.createURI(iri.toString());
+            IRIx iri = resolver.resolve(x);
+            return NodeFactory.createURI(iri.str());
         } catch (Exception ex) {
             ServletOps.errorBadRequest("SPARQL Update: bad IRI: "+x);
             return null;

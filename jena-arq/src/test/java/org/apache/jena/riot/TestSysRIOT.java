@@ -32,7 +32,7 @@ public class TestSysRIOT {
 
     @Test public void chooseBaseIRI_10() {
         String x = SysRIOT.chooseBaseIRI(null, "foo") ;
-        Assert.assertTrue(x.startsWith("file:///"));
+        Assert.assertTrue(x, x.startsWith("file:///"));
     }
 
     private void testChooseBaseIRI(String input, String expected) {

@@ -21,7 +21,6 @@ package org.apache.jena.riot.system;
 import java.util.Collections ;
 import java.util.Map ;
 
-import org.apache.jena.iri.IRI ;
 import org.apache.jena.shared.PrefixMapping ;
 
 /** A PrefixMap that traps update operations on a wrapped prefix map */
@@ -35,10 +34,6 @@ public class PrefixMapUnmodifiable extends PrefixMapWrapper
 
     @Override
     public void add(String prefix, String iriString)
-    { throw new UnsupportedOperationException("Unmodifiable PrefixMap") ; }
-
-    @Override
-    public void add(String prefix, IRI iri)
     { throw new UnsupportedOperationException("Unmodifiable PrefixMap") ; }
 
     @Override

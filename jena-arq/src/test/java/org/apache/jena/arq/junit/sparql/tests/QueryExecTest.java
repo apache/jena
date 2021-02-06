@@ -35,11 +35,11 @@ import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.irix.IRIs;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.Var;
@@ -178,7 +178,7 @@ public class QueryExecTest implements Runnable {
                 }
                 if ( namedGraphURIs != null ) {
                     for ( String sourceURI : namedGraphURIs ) {
-                        String absSourceURI = IRIResolver.resolveString(sourceURI);
+                        String absSourceURI = IRIs.resolve(sourceURI);
                         SystemARQ.UsePlainGraph = true;
                         Model m = ds.getNamedModel(absSourceURI);
                         SparqlTestLib.parser(sourceURI).parse(m);

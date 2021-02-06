@@ -1,4 +1,5 @@
 PREFIX : <http://example/>
+
 PREFIX sys: <urn:x-arq:>
 
 SELECT *

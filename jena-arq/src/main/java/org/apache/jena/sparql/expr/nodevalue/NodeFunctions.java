@@ -58,12 +58,12 @@ public class NodeFunctions {
         if ( !n.isLiteral() )
             throw new ExprEvalException(label + ": Not a literal: " + nv) ;
         String lang = n.getLiteralLanguage() ;
-        
+
         if ( NodeUtils.isLangString(n) )
-            // Language tag.  Legal.  
+            // Language tag.  Legal.
             return n ;
-        
-        // No language tag : either no datatype or a datatype of xsd:string 
+
+        // No language tag : either no datatype or a datatype of xsd:string
         // Includes the case of rdf:langString and no language ==> Illegal as a compatible string.
 
         if ( nv.isString() )
@@ -74,19 +74,19 @@ public class NodeFunctions {
     /**
      * Check for string operations with primary first arg and second arg
      * (e.g. CONTAINS).  The arguments are not used in the same way and the check
-     * operation is not symmetric. 
+     * operation is not symmetric.
      * <li> "abc"@en is compatible with "abc"
      * <li> "abc" is NOT compatible with "abc"@en
      */
     public static void checkTwoArgumentStringLiterals(String label, NodeValue arg1, NodeValue arg2) {
-        
+
         /* Quote the spec:
          * Compatibility of two arguments is defined as:
          *    The arguments are simple literals or literals typed as xsd:string
          *    The arguments are plain literals with identical language tags
          *    The first argument is a plain literal with language tag and the second argument is a simple literal or literal typed as xsd:string
          */
-        
+
         Node n1 = checkAndGetStringLiteral(label, arg1) ;
         Node n2 = checkAndGetStringLiteral(label, arg2) ;
         String lang1 = n1.getLiteralLanguage() ;
@@ -97,7 +97,7 @@ public class NodeFunctions {
             lang2 = "" ;
 
         // Case 1
-        if ( lang1.equals("") ) { 
+        if ( lang1.equals("") ) {
             if ( lang2.equals("") )
                 return ;
             throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2) ;
@@ -106,20 +106,20 @@ public class NodeFunctions {
         // Case 2
         if ( lang1.equalsIgnoreCase(lang2) )
             return ;
-        
+
         // Case 3
         if ( lang2.equals("") )
             return ;
 
         throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2) ;
-        
+
         // ----------
-                
+
 //                if ( lang1.equals("") && !lang2.equals("") )
 //            throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2) ;
-//        
-//        
-//        
+//
+//
+//
 //        if ( n1.getLiteralDatatype() != null ) {
 //            // n1 is an xsd string by checkAndGetString
 //            if ( XSDDatatype.XSDstring.equals(n2.getLiteralDatatypeURI()) )
@@ -260,9 +260,9 @@ public class NodeFunctions {
 
     // -------- langMatches
     /** LANGMATCHES
-     *  
+     *
      * @param nv The language string
-     * @param nvPattern The pattern to match against 
+     * @param nvPattern The pattern to match against
      * @return Boolean nodeValue
      */
     public static NodeValue langMatches(NodeValue nv, NodeValue nvPattern) {
@@ -270,9 +270,9 @@ public class NodeFunctions {
     }
 
     /** LANGMATCHES
-     *  
+     *
      * @param nv The language string
-     * @param langPattern The pattern to match against 
+     * @param langPattern The pattern to match against
      * @return Boolean nodeValue
      */
     public static NodeValue langMatches(NodeValue nv, String langPattern) {
@@ -285,7 +285,7 @@ public class NodeFunctions {
         String langStr = node.getLiteralLexicalForm() ;
         return NodeValue.booleanReturn(langMatches(langStr, langPattern));
     }
-    
+
     /** The algorithm for the SPARQL function "LANGMATCHES".
      * Matching in SPARQL is defined to be the language tag matching of
      *  <a href="https://tools.ietf.org/html/rfc4647">RFC 4647</a>, part of
@@ -394,7 +394,7 @@ public class NodeFunctions {
     public static boolean isLiteral(Node node) {
         return node.isLiteral() ;
     }
-    
+
     /** NodeValue to NodeValue, skolemizing, and converting strings to URIs. */
     public static NodeValue iri(NodeValue nv, String baseIRI) {
         if ( isIRI(nv.asNode()) )
@@ -402,7 +402,7 @@ public class NodeFunctions {
         Node n2 = iri(nv.asNode(), baseIRI) ;
         return NodeValue.makeNode(n2) ;
     }
-    
+
     private static final IRIFactory iriFactory      = IRIResolver.iriFactory();
     public static boolean           warningsForIRIs = false ;
 
@@ -427,7 +427,7 @@ public class NodeFunctions {
         return NodeFactory.createURI(iri.toString()) ;
     }
 
-    // 
+    //
     private static IRI resolveCheckIRI(String iriStr, String baseIRI) {
         IRI iri = null ;
 
@@ -440,7 +440,7 @@ public class NodeFunctions {
 
         if ( !iri.isAbsolute() )
             throw new ExprEvalException("Relative IRI string: " + iriStr) ;
-        
+
         String msg = getOneViolation(iri, false);
         if ( msg != null ) {
             msg = "Bad IRI: " + msg + ": " + iri;
@@ -459,7 +459,7 @@ public class NodeFunctions {
     private static String getOneViolation(IRI iri, boolean includeWarnings) {
         Iterator<Violation> iter = iri.violations(includeWarnings);
         if ( ! iter.hasNext() )
-            return null; 
+            return null;
         Violation viol = iter.next() ;
         return viol.getShortMessage() ;
     }
@@ -516,15 +516,15 @@ public class NodeFunctions {
             throw new ExprEvalException("Empty lang tag") ;
         return NodeValue.makeLangString(lex, lang) ;
     }
-    
-    /** A duration, tided */ 
+
+    /** A duration, tided */
     public static Duration duration(int seconds) {
         if ( seconds == 0 )
             return XSDFuncOp.zeroDuration;
         Duration dur = NodeValue.xmlDatatypeFactory.newDuration(1000*seconds);
         // Neaten the duration. Not all the fields ar zero.
-        dur = NodeValue.xmlDatatypeFactory.newDuration(dur.getSign()>=0, 
-                                                       field(dur, DatatypeConstants.YEARS), 
+        dur = NodeValue.xmlDatatypeFactory.newDuration(dur.getSign()>=0,
+                                                       field(dur, DatatypeConstants.YEARS),
                                                        field(dur, DatatypeConstants.MONTHS),
                                                        field(dur, DatatypeConstants.DAYS),
                                                        field(dur, DatatypeConstants.HOURS),

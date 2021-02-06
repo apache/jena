@@ -24,7 +24,6 @@ import java.util.Map;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.query.QueryVisitor;
 import org.apache.jena.query.Syntax;
-import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.modify.request.UpdateSerializer;
 import org.apache.jena.sparql.modify.request.UpdateWriter;
@@ -45,7 +44,7 @@ import org.apache.jena.sparql.util.NodeToLabelMapBNode;
  * serializers produce standards compliant SPARQL syntax and should be more than
  * sufficient in most cases
  * </p>
- * 
+ *
  */
 public class SerializerRegistry {
 
@@ -97,7 +96,7 @@ public class SerializerRegistry {
             @Override
             public UpdateSerializer create(Syntax syntax, Prologue prologue, IndentedWriter writer) {
                 if (!prologue.explicitlySetBaseURI())
-                    prologue = new Prologue(prologue.getPrefixMapping(), (IRIResolver) null);
+                    prologue = new Prologue(prologue.getPrefixMapping());
 
                 SerializationContext context = new SerializationContext(prologue);
                 return new UpdateWriter(writer, context);
@@ -121,7 +120,7 @@ public class SerializerRegistry {
     /**
      * Gets the serializer registry which is a singleton lazily instantiating it
      * if this is the first time this method has been called
-     * 
+     *
      * @return Registry
      */
     public static SerializerRegistry get() {
@@ -133,7 +132,7 @@ public class SerializerRegistry {
 
     /**
      * Adds a query serializer factory for the given syntax
-     * 
+     *
      * @param syntax
      *            Syntax
      * @param factory
@@ -149,7 +148,7 @@ public class SerializerRegistry {
 
     /**
      * Adds an update serializer factory for the given syntax
-     * 
+     *
      * @param syntax
      *            Syntax
      * @param factory
@@ -166,7 +165,7 @@ public class SerializerRegistry {
     /**
      * Gets whether a query serializer factory is registered for the given
      * syntax
-     * 
+     *
      * @param syntax
      *            Syntax
      * @return True if registered, false otherwise
@@ -178,7 +177,7 @@ public class SerializerRegistry {
     /**
      * Gets whether an update serializer factory is registered for the given
      * syntax
-     * 
+     *
      * @param syntax
      *            Syntax
      * @return True if registered, false otherwise
@@ -190,7 +189,7 @@ public class SerializerRegistry {
     /**
      * Gets the query serializer factory for the given syntax which may be null
      * if there is none registered
-     * 
+     *
      * @param syntax
      *            Syntax
      * @return Query Serializer Factory or null if none registered for the given
@@ -203,7 +202,7 @@ public class SerializerRegistry {
     /**
      * Gets the update serializer factory for the given syntax which may be null
      * if there is none registered
-     * 
+     *
      * @param syntax
      *            Syntax
      * @return Update Serializer Factory or null if none registered for the
@@ -215,7 +214,7 @@ public class SerializerRegistry {
 
     /**
      * Removes the query serializer factory for the given syntax
-     * 
+     *
      * @param syntax
      *            Syntax
      */
@@ -225,7 +224,7 @@ public class SerializerRegistry {
 
     /**
      * Removes the update serializer factory for the given syntax
-     * 
+     *
      * @param syntax
      *            Syntax
      */

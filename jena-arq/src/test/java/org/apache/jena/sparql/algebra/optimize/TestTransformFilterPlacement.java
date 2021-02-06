@@ -40,9 +40,9 @@ import org.junit.Assert ;
 import org.junit.Test ;
 
 public class TestTransformFilterPlacement { //extends AbstractTestTransform {
-    
+
     // ** Filter
-    
+
     @Test public void place_bgp_01() {
         test("(filter (= ?x 1) (bgp ( ?s ?p ?x)))", "(filter (= ?x 1) (bgp ( ?s ?p ?x)))") ;
     }
@@ -63,12 +63,12 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
     }
 
     @Test public void place_bgp_04() {
-        test("(filter (= ?XX 1) (bgp (?s ?p ?x) (?s1 ?p1 ?XX) ))", 
+        test("(filter (= ?XX 1) (bgp (?s ?p ?x) (?s1 ?p1 ?XX) ))",
              "(filter (= ?XX 1) (bgp (?s ?p ?x) (?s1 ?p1 ?XX) ))") ;
-        // and not 
-        // "(sequence (bgp (?s ?p ?x)) (filter (= ?XX 1) (?s1 ?p1 ?XX)) )" 
+        // and not
+        // "(sequence (bgp (?s ?p ?x)) (filter (= ?XX 1) (?s1 ?p1 ?XX)) )"
     }
-    
+
     @Test public void place_bgp_05() {
         test("(filter (= ?x 123) (bgp (?s ?p ?x) (?s ?p ?x1) (?s ?p ?x2)) )",
              "(sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x1) (?s ?p ?x2)) )") ;
@@ -89,17 +89,17 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
         testNoBGP("(filter (isURI ?g) (quadpattern (?g ?s ?p ?o) ))",
              null) ;
     }
-    
+
     @Test public void place_bgp_07() {
         test("(filter (isURI ?g) (quadpattern (?g ?s ?p ?o1) (?g ?s ?p ?o2) ))",
-             "(sequence  (filter (isURI ?g) (quadpattern (?g ?s ?p ?o1) ))  (quadpattern (?g ?s ?p ?o2)) )") ;    
+             "(sequence  (filter (isURI ?g) (quadpattern (?g ?s ?p ?o1) ))  (quadpattern (?g ?s ?p ?o2)) )") ;
     }
 
     @Test public void place_bgp_07a() {
         testNoBGP("(filter (isURI ?g) (quadpattern (?g ?s ?p ?o1) (?g ?s ?p ?o2) ))",
                   null) ;
     }
-    
+
     @Test public void place_bgp_08() {
         test("(filter (exprlist (isURI ?g) (= ?o2 123)) (quadpattern (?g ?s ?p ?o1) (?g ?s ?p ?o2) (?g ?s ?p ?o3) ))",
              "(sequence (filter (= ?o2 123) (sequence (filter (isURI ?g) (quadpattern (?g ?s ?p ?o1))) (quadpattern (?g ?s ?p ?o2)))) (quadpattern (?g ?s ?p ?o3)) )") ;
@@ -111,25 +111,25 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
     }
 
     @Test public void place_bgp_50() {
-        test(StrUtils.strjoinNL("(filter (exprlist (|| (|| (|| (&& (< \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?startDate1) (< ?endDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)) (&& (< ?startDate1 \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) (< \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1))) (&& (&& (<= ?startDate1 \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) (<= ?endDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)) (<= \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1))) (&& (&& (<= \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?startDate1) (<= \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1)) (<= ?startDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>))) (! (sameTerm ?node2 <urn:foo>)))",
+        test(StrUtils.strjoinNL("(filter (exprlist(|| (|| (|| (&& (< \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?startDate1) (< ?endDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)) (&& (< ?startDate1 \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) (< \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1))) (&& (&& (<= ?startDate1 \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) (<= ?endDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)) (<= \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1))) (&& (&& (<= \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?startDate1) (<= \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1)) (<= ?startDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>))) (! (sameTerm ?node2 <urn:ex:foo>)))",
                                 " (quadpattern",
-                                "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?arg1Pred1 <urn:foo>)",
+                                "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?arg1Pred1 <urn:ex:foo>)",
                                 "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?class1)",
                                 "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?arg2Pred1 ?node2)",
                                 "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?startDatePred1 ?startDate1)",
                                 "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?endDatePred1 ?endDate1)",
-                                "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <urn:class>)",
-                                "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:pred1> ?arg1Pred1)",
-                                "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:pred2> ?arg2Pred1)",
-                                "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:predStartDate> ?startDatePred1)",
-                                "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:predEndDate> ?endDatePred1)",
+                                "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <urn:ex:class>)",
+                                "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:ex:pred1> ?arg1Pred1)",
+                                "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:ex:pred2> ?arg2Pred1)",
+                                "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:ex:predStartDate> ?startDatePred1)",
+                                "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:ex:predEndDate> ?endDatePred1)",
                                 "))"),
             StrUtils.strjoinNL("(sequence",
                                "  (filter (|| (|| (|| (&& (< \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?startDate1) (< ?endDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)) (&& (< ?startDate1 \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) (< \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1))) (&& (&& (<= ?startDate1 \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) (<= ?endDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)) (<= \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1))) (&& (&& (<= \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?startDate1) (<= \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1)) (<= ?startDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)))",
                                "   (sequence",
-                               "    (filter (! (sameTerm ?node2 <urn:foo>))",
+                               "    (filter (! (sameTerm ?node2 <urn:ex:foo>))",
                                "       (quadpattern",
-                               "         (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?arg1Pred1 <urn:foo>)",
+                               "         (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?arg1Pred1 <urn:ex:foo>)",
                                "         (quad <urn:x-arq:DefaultGraphNode> ?inst1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?class1)",
                                "         (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?arg2Pred1 ?node2)",
                                "       ))",
@@ -138,27 +138,27 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
                                "       (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?endDatePred1 ?endDate1)",
                                "     )))",
                                " (quadpattern",
-                               "   (quad <urn:x-arq:DefaultGraphNode> ?class1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <urn:class>)",
-                               "   (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:pred1> ?arg1Pred1)",
-                               "   (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:pred2> ?arg2Pred1)",
-                               "   (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:predStartDate> ?startDatePred1)",
-                               "   (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:predEndDate> ?endDatePred1)",
+                               "   (quad <urn:x-arq:DefaultGraphNode> ?class1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <urn:ex:class>)",
+                               "   (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:ex:pred1> ?arg1Pred1)",
+                               "   (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:ex:pred2> ?arg2Pred1)",
+                               "   (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:ex:predStartDate> ?startDatePred1)",
+                               "   (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:ex:predEndDate> ?endDatePred1)",
                                " ))"));
     }
-    
+
     @Test public void place_bgp_50a() {
-        testNoBGP(StrUtils.strjoinNL("(filter (exprlist (|| (|| (|| (&& (< \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?startDate1) (< ?endDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)) (&& (< ?startDate1 \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) (< \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1))) (&& (&& (<= ?startDate1 \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) (<= ?endDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)) (<= \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1))) (&& (&& (<= \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?startDate1) (<= \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1)) (<= ?startDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>))) (! (sameTerm ?node2 <urn:foo>)))",
+        testNoBGP(StrUtils.strjoinNL("(filter (exprlist (|| (|| (|| (&& (< \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?startDate1) (< ?endDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)) (&& (< ?startDate1 \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) (< \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1))) (&& (&& (<= ?startDate1 \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) (<= ?endDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)) (<= \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1))) (&& (&& (<= \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?startDate1) (<= \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1)) (<= ?startDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>))) (! (sameTerm ?node2 <urn:ex:foo>)))",
                                      " (quadpattern",
-                                     "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?arg1Pred1 <urn:foo>)",
+                                     "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?arg1Pred1 <urn:ex:foo>)",
                                      "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?class1)",
                                      "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?arg2Pred1 ?node2)",
                                      "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?startDatePred1 ?startDate1)",
                                      "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?endDatePred1 ?endDate1)",
-                                     "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <urn:class>)",
-                                     "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:pred1> ?arg1Pred1)",
-                                     "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:pred2> ?arg2Pred1)",
-                                     "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:predStartDate> ?startDatePred1)",
-                                     "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:predEndDate> ?endDatePred1)",
+                                     "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <urn:ex:class>)",
+                                     "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:ex:pred1> ?arg1Pred1)",
+                                     "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:ex:pred2> ?arg2Pred1)",
+                                     "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:ex:predStartDate> ?startDatePred1)",
+                                     "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:ex:predEndDate> ?endDatePred1)",
                                      "))"), null);
     }
 
@@ -226,7 +226,7 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
     @Test public void place_sequence_08() {
         testNoChange("(sequence (bgp (?s ?p ?x)) (filter (= ?z 123) (bgp (?s ?p ?z))) )") ;
     }
-    
+
     @Test public void place_sequence_09() {
         test("(filter (= ?x 123) (sequence (bgp (?s ?p ?x1) (?s ?p ?x)) (bgp (?s ?p ?x2)) ))",
              "(sequence (filter (= ?x 123) (bgp (?s ?p ?x1) (?s ?p ?x))) (bgp (?s ?p ?x2)) )") ;
@@ -236,7 +236,7 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
         testNoBGP("(filter (= ?x 123) (sequence (bgp (?s ?p ?x1) (?s ?p ?x)) (bgp (?s ?p ?x2)) ))",
                 "(sequence (filter (= ?x 123) (bgp (?s ?p ?x1) (?s ?p ?x))) (bgp (?s ?p ?x2)) )") ;
     }
-    
+
     // Join : one sided push.
     @Test public void place_join_01() {
         test("(filter (= ?x 123) (join (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))",
@@ -252,17 +252,17 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
     @Test public void place_join_03() {
         String x = StrUtils.strjoinNL
             ("(filter ((= 13 14) (> ?o1 12) (< ?o 56) (< (+ ?o ?o1) 999))",
-             "   (join", 
+             "   (join",
              "      (bgp (triple ?s ?p ?o))" ,
              "      (bgp (triple ?s ?p1 ?o1))))") ;
 
-        // Everything pushed down once. 
+        // Everything pushed down once.
         String y = StrUtils.strjoinNL
             ("(filter (< (+ ?o ?o1) 999)",
              "  (join",
-             "    (filter ((= 13 14) (< ?o 56))", 
-             "      (bgp (triple ?s ?p ?o)))", 
-             "    (filter ((= 13 14) (> ?o1 12))", 
+             "    (filter ((= 13 14) (< ?o 56))",
+             "      (bgp (triple ?s ?p ?o)))",
+             "    (filter ((= 13 14) (> ?o1 12))",
              "      (bgp (triple ?s ?p1 ?o1)))))") ;
         // Recursive push in - causes (= 13 14) to go into BGP
         String y1 = StrUtils.strjoinNL
@@ -324,12 +324,12 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
     @Test public void place_project_02() {
         testNoChange("(filter (= ?x 123) (project (?s) (bgp (?s ?p ?x)) ))") ;
     }
-    
+
     @Test public void place_project_03() {
         test("(filter (= ?x 123) (project (?x) (bgp (?s ?p ?x) (?s ?p ?z) ) ))",
              "(project (?x) (sequence (filter (= ?x 123) (bgp (?s ?p ?x)) ) (bgp (?s ?p ?z))) )") ;
     }
-    
+
     @Test public void place_distinct_01() {
         test("(filter (= ?x 123) (distinct (bgp (?s ?p ?x)) ))",
              "(distinct (filter (= ?x 123) (bgp (?s ?p ?x)) ))") ;
@@ -359,7 +359,7 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
         test("(filter (= ?x 123) (reduced (bgp (?s ?p ?o)) ))",
              null) ;
     }
-    
+
     @Test public void place_reduced_04() {
         test("(filter ((= ?o 456) (= ?z 987)) (reduced (bgp (?s ?p ?o) )))",
              "(filter (= ?z 987) (reduced (filter (= ?o 456) (bgp (?s ?p ?o) ))))") ;
@@ -369,17 +369,17 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
         test("(filter (= ?x 123) (reduced (extend ((?x 123)) (bgp (?s ?p ?o)) )))",
              "(reduced (filter (= ?x 123) (extend ((?x 123)) (bgp (?s ?p ?o)) )))") ;
     }
-    
+
     @Test public void place_extend_01() {
         test("(filter (= ?x 123) (extend ((?z 123)) (bgp (?s ?p ?x)) ))",
              "(extend ((?z 123)) (filter (= ?x 123) (bgp (?s ?p ?x)) ))") ;
     }
-    
+
     @Test public void place_extend_02() {
         test("(filter ((= ?x1 123) (= ?x2 456)) (extend (?z 789) (bgp (?s ?p ?x1)) ))",
              "(filter (= ?x2 456) (extend (?z 789) (filter (= ?x1 123) (bgp (?s ?p ?x1)) )))") ;
     }
-    
+
     @Test public void place_extend_03() { // Blocked
         test("(filter (= ?x 123) (extend ((?x 123)) (bgp (?s ?p ?z)) ))",
              null) ;
@@ -391,28 +391,28 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
     }
 
     @Test public void place_extend_05() {
-        // Filter further out than one place. 
+        // Filter further out than one place.
     	test("(filter (= ?z 1) (sequence (extend (?x1 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?z))))",
     	     "(sequence (extend (?x1 123) (bgp (?s ?p ?x))) (filter (= ?z 1) (bgp (?s ?p ?z)) ))") ;
     }
 
     @Test public void place_extend_06() {
-        // Filter further out than one place. 
+        // Filter further out than one place.
         test("(filter (= ?z 1) (join (extend (?x1 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?z))))" ,
              "(join (extend (?x1 123) (bgp (?s ?p ?x))) (filter (= ?z 1) (bgp (?s ?p ?z))) )") ;
     }
-    
+
     @Test public void place_extend_07() {
         // Push filters through extend where the extend itself is over an
         // extend that can have filters pushed into it.
-        String x1 = StrUtils.strjoinNL 
+        String x1 = StrUtils.strjoinNL
             ("(filter ( (= ?s 5) (= ?w 6) (= ?s1 7) )"
              ,"  (extend ((?w 2))"
              ,"    (extend ((?s 1))"
              ,"      (table (vars ?s1)"
              ,"        (row [?s1 1])"
              ,"))))") ;
-        String x2 = StrUtils.strjoinNL 
+        String x2 = StrUtils.strjoinNL
             ("(filter (= ?w 6)"
             ,"  (extend ((?w 2))"
             ,"    (filter (= ?s 5)"
@@ -427,7 +427,7 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
     @Test public void place_extend_08() {
         // Push filters through extend where the extend itself is over an
         // extend that can have filters pushed into it.
-        String x1 = StrUtils.strjoinNL 
+        String x1 = StrUtils.strjoinNL
             ("(filter ( (= ?s 'S') (= ?w 'W') (= ?s1 'S1') (= ?a 'A') (= ?b 'B'))"
              ,"  (extend ((?w 2))"
              ,"    (extend ((?s 1))"
@@ -460,36 +460,36 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
         test("(filter (= ?x 123) (assign ((?z 123)) (bgp (?s ?p ?x)) ))",
              "(assign ((?z 123)) (filter (= ?x 123) (bgp (?s ?p ?x)) ))") ;
     }
-    
+
     @Test public void place_assign_02() {
         test("(filter ((= ?x1 123) (= ?x2 456)) (assign (?z 789) (bgp (?s ?p ?x1)) ))",
              "(filter (= ?x2 456) (assign (?z 789) (filter (= ?x1 123) (bgp (?s ?p ?x1)) )))"
              ) ;
-             
+
     }
-    
+
     @Test public void place_assign_03() { // Blocked
         test("(filter (= ?x 123) (assign ((?x 123)) (bgp (?s ?p ?z)) ))",
              null) ;
     }
 
     @Test public void place_assign_04() {
-        // Caution - OpFilter equality is sensitive to the order of expressions 
+        // Caution - OpFilter equality is sensitive to the order of expressions
         test("(filter (= ?x 123) (assign ((?x1 123)) (filter (< ?x 456) (bgp (?s ?p ?x) (?s ?p ?z))) ))",
              "(assign (?x1 123) (sequence (filter ((= ?x 123) (< ?x 456)) (bgp (?s ?p ?x))) (bgp (?s ?p ?z))) )") ;
     }
-    
+
     @Test public void place_assign_05() {
         // Even with No BGP we can still wrap a BGP without breaking it
         testNoBGP("(filter (= ?x 123) (assign ((?z 123)) (bgp (?s ?p ?x)) ))",
              "(assign ((?z 123)) (filter (= ?x 123) (bgp (?s ?p ?x)) ))") ;
     }
-    
+
     @Test public void place_assign_06() {
         test("(filter (= ?x 123) (assign ((?z 123)) (bgp (?s ?p ?x) (?s ?p ?x1) )))",
              "(assign ((?z 123)) (sequence (filter (= ?x 123) (bgp (?s ?p ?x)) ) (bgp (?s ?p ?x1)) ) )") ;
     }
-    
+
     @Test public void place_assign_06a() {
         // With No BGP we won't break up the BGP but we will still push the filter down
         testNoBGP("(filter (= ?x 123) (assign ((?z 123)) (bgp (?s ?p ?x) (?s ?p ?x1) )))",
@@ -499,14 +499,14 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
     @Test public void place_assign_07() {
         // Push filters through assign where the assign itself is over an
         // assign that can have filters pushed into it.
-        String x1 = StrUtils.strjoinNL 
+        String x1 = StrUtils.strjoinNL
             ("(filter ( (= ?s 5) (= ?w 6) (= ?s1 7) )"
              ,"  (assign ((?w 2))"
              ,"    (assign ((?s 1))"
              ,"      (table (vars ?s1)"
              ,"        (row [?s1 1])"
              ,"))))") ;
-        String x2 = StrUtils.strjoinNL 
+        String x2 = StrUtils.strjoinNL
             ("(filter (= ?w 6)"
             ,"  (assign ((?w 2))"
             ,"    (filter (= ?s 5)"
@@ -521,7 +521,7 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
     @Test public void place_assign_08() {
         // Push filters through assign where the assign itself is over an
         // assign that can have filters pushed into it.
-        String x1 = StrUtils.strjoinNL 
+        String x1 = StrUtils.strjoinNL
             ("(filter ( (= ?s 'S') (= ?w 'W') (= ?s1 'S1') (= ?a 'A') (= ?b 'B'))"
              ,"  (assign ((?w 2))"
              ,"    (assign ((?s 1))"
@@ -551,17 +551,17 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
     }
 
     @Test public void place_filter_01() {
-        test("(filter (= ?x 123) (filter (= ?y 456) (bgp (?s ?p ?x) (?s ?p ?y)) ))" , 
+        test("(filter (= ?x 123) (filter (= ?y 456) (bgp (?s ?p ?x) (?s ?p ?y)) ))" ,
              "(filter (= ?y 456) (sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?y)) ))" ) ;
     }
 
     @Test public void place_filter_02() {
-        test("(filter (= ?x 123) (filter (= ?y 456) (bgp (?s ?p ?x) (?s ?p ?y) (?s ?p ?z) )))" , 
+        test("(filter (= ?x 123) (filter (= ?y 456) (bgp (?s ?p ?x) (?s ?p ?y) (?s ?p ?z) )))" ,
              "(sequence (filter (= ?y 456) (sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?y)))) (bgp (?s ?p ?z)))") ;
     }
-    
-    // JENA-881 
-    @Test public void place_filter_03() { 
+
+    // JENA-881
+    @Test public void place_filter_03() {
         String x1 = StrUtils.strjoinNL
             ("(filter true"
             ,"  (union"
@@ -578,8 +578,8 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
             ) ;
         test(x1, x2) ;
     }
-    // JENA-881 
-    @Test public void place_filter_04() { 
+    // JENA-881
+    @Test public void place_filter_04() {
         String x1 = StrUtils.strjoinNL
             ("(filter true"
             ,"  (union"
@@ -598,14 +598,14 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
         test(x1, x2) ;
     }
     // JENA-881
-    @Test public void place_filter_05() { 
+    @Test public void place_filter_05() {
         String x1 = StrUtils.strjoinNL
             ("(filter (= ?z 3)"
             ,"  (sequence"
             ,"    (filter (= ?y 3)"
             ,"      (table unit))"
             ,"    (bgp (triple ?s ?p ?z))))"
-            ) ; 
+            ) ;
         String x2 = StrUtils.strjoinNL
             ("(sequence"
             ,"  (filter (= ?y 3)"
@@ -615,13 +615,13 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
             ) ;
         test(x1, x2) ;
     }
-    
+
     @Test public void place_union_01() {
         test("(filter (= ?x 123) (union (bgp (?s ?p ?x) (?s ?p ?y)) (bgp (?s ?p ?z)  (?s1 ?p1 ?x)) ))",
              "(union  (sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?y))) "+
                       "(filter (= ?x 123) (bgp (?s ?p ?z)  (?s1 ?p1 ?x)) ))") ;
     }
-    
+
     @Test public void place_union_02() {
         String in = StrUtils.strjoinNL
             ("(filter 1"
@@ -640,7 +640,7 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
              );
         test(in, out) ;
     }
-    
+
     @Test public void place_union_02a() {
         String in = StrUtils.strjoinNL
             ("(filter 1"
@@ -657,7 +657,7 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
             );
         testNoBGP(in, out) ;
     }
-    
+
     @Test public void place_union_03() {
         String in = StrUtils.strjoinNL
             ("(slice _ 1"
@@ -682,7 +682,7 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
              ,"))");
         test(in, out) ;
     }
-    
+
     @Test public void place_union_03a() {
         String in = StrUtils.strjoinNL
             ("(slice _ 1"
@@ -704,7 +704,7 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
             ,"))");
         testNoBGP(in, out) ;
     }
-    
+
     // Union - push outer filters into each arm.
     @Test public void place_union_04() {
         String in = StrUtils.strjoinNL
@@ -725,7 +725,7 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
               ) ;
         test ( in, out ) ;
     }
-    
+
     @Test public void place_union_04a() {
         String in = StrUtils.strjoinNL
             ("(filter (= 1 1)"
@@ -743,8 +743,8 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
             ) ;
         testNoBGP ( in, out ) ;
     }
-    
-    // Unrelated filter 
+
+    // Unrelated filter
     @Test public void place_union_05() {
         String in = StrUtils.strjoinNL
             ("(filter (= ?x 1)"
@@ -756,8 +756,8 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
         String out = in ;
         test( in, out ) ;
     }
-    
-    // Unrelated filter 
+
+    // Unrelated filter
     @Test public void place_union_05a() {
         String in = StrUtils.strjoinNL
             ("(filter (= ?x 1)"
@@ -786,11 +786,11 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
             ,"    (bgp (triple ?s ?p ?o))"
             ,"    (filter (= ?x 1) (bgp (triple ?s ?p ?x)))"
             ,"))"
-             ) ; 
+             ) ;
         test( in, out ) ;
     }
-    
-    // Filter in one arm but not the other 
+
+    // Filter in one arm but not the other
     @Test public void place_union_07() {
         String in = StrUtils.strjoinNL
             ("(filter (= ?x 1)"
@@ -805,10 +805,10 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
             ,"    (filter (= ?x 1) (bgp (triple ?s ?p ?x)))"
             ,"    (bgp (triple ?s ?p ?o))"
             ,"))"
-             ) ; 
+             ) ;
         test( in, out ) ;
     }
-    
+
     // JENA-1235
     @Test public void place_disjunction_01() {
         String in = StrUtils.strjoinNL
@@ -834,7 +834,7 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
                 ) ;
         test( in, out ) ;
     }
-    
+
     // Push in, push and wrap, wrap.
     @Test public void place_disjunction_02() {
         String in = StrUtils.strjoinNL
@@ -863,9 +863,9 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
              ) ;
         test( in, out ) ;
     }
-    
+
     private static String propertyFunctionURI = "http://example/PF" ;
-    // Dummy property 
+    // Dummy property
     private static PropertyFunction dummyPropertyFunction = new PropertyFunction() {
         @Override
         public QueryIterator exec(QueryIterator input, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {
@@ -875,7 +875,7 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
         @Override
         public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {}
     };
-    
+
     private static void test_property_function(Runnable action) {
         PropertyFunctionRegistry.get().put(propertyFunctionURI, dummyPropertyFunction.getClass());
         try {
@@ -884,7 +884,7 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
             PropertyFunctionRegistry.get().remove(propertyFunctionURI) ;
         }
     }
-    
+
     @Test public void place_property_functions_01() {
         // No filter.
         test_property_function(()->{
@@ -893,7 +893,7 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
             test( in, out ) ;
         }) ;
     }
-    
+
     @Test public void place_property_functions_02() {
         test_property_function(()->{
             String in = StrUtils.strjoinNL
@@ -912,7 +912,7 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
             test( in, out ) ;
         }) ;
     }
-    
+
     @Test public void place_property_functions_02a() {
         test_property_function(()->{
             String in = StrUtils.strjoinNL
@@ -943,7 +943,7 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
             test( in, out ) ;
         }) ;
     }
-    
+
     @Test public void place_property_functions_03() {
         test_property_function(()->{
             String in = StrUtils.strjoinNL
@@ -981,9 +981,9 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
             test( in, out ) ;
         }) ;
     }
-     
+
     private static String procedureURI = "http://example/PROC" ;
-    // Dummy procedure 
+    // Dummy procedure
     private static Procedure dummyProcedure = new ProcedureBase() {
         @Override
         public QueryIterator exec(Binding binding, Node name, ExprList args, ExecutionContext execCxt) {
@@ -999,7 +999,7 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
             ProcedureRegistry.get().remove(procedureURI) ;
         }
     }
-    
+
     @Test public void place_procedure_01() {
         test_procedure(()->{
             String in = "(proc :PROC ((+ ?arg1 111) (?arg2)) (bgp (?s ?p ?o)))" ;
@@ -1007,7 +1007,7 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
             test( in, out ) ;
         }) ;
     }
-    
+
     @Test public void place_procedure_02() {
         test_procedure(()->{
             String in = StrUtils.strjoinNL
@@ -1021,11 +1021,11 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
                 ,"  (filter (= ?o 9)"
                 ,"    (bgp (?s ?p ?o))"
                 ,"   ))"
-                ) ; 
+                ) ;
             test( in, out ) ;
         }) ;
     }
-    
+
     @Test public void place_procedure_03() {
         test_procedure(()->{
             String in = StrUtils.strjoinNL
@@ -1074,7 +1074,7 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
     @Test public void nondeterministic_functions_01() {
         testNoChange("(filter (= ?x (rand)) (bgp (?s ?p ?x) (?s1 ?p1 ?x)))") ;
     }
-        
+
     @Test public void nondeterministic_functions_02() {
         testNoChange("(filter (= ?x (bnode)) (bgp (?s ?p ?x) (?s1 ?p1 ?x)))") ;
     }
@@ -1123,7 +1123,7 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
         test(in,out) ;
     }
 
-    
+
     public static void testNoChange(String input) {
         test(input, null) ;
     }
@@ -1135,7 +1135,7 @@ public class TestTransformFilterPlacement { //extends AbstractTestTransform {
     public static void testNoBGP(String input , String output) {
         test$(input, output, false) ;
     }
-        
+
     public static void test$(String input, String output, boolean includeBGPs) {
         Transform t_placement = new TransformFilterPlacement(includeBGPs) ;
         Op op1 = SSE.parseOp(input) ;

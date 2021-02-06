@@ -18,7 +18,6 @@
 
 package org.apache.jena.riot.out;
 
-import java.net.MalformedURLException;
 import java.util.Map;
 import java.util.StringJoiner;
 
@@ -28,8 +27,6 @@ import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.atlas.lib.Chars;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.iri.IRI;
-import org.apache.jena.iri.IRIRelativize;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.shared.PrefixMapping;
@@ -201,22 +198,5 @@ public class NodeFmtLib
         }
 
         return buffer.toString();
-    }
-
-    // ---- Relative URIs.
-
-    static private int relFlags = IRIRelativize.SAMEDOCUMENT | IRIRelativize.CHILD;
-    static public String abbrevByBase(String uri, String base) {
-        if ( base == null )
-            return null;
-        IRI baseIRI = IRIResolver.iriFactory().construct(base);
-        IRI rel = baseIRI.relativize(uri, relFlags);
-        String r = null;
-        try {
-            r = rel.toASCIIString();
-        } catch (MalformedURLException ex) {
-            r = rel.toString();
-        }
-        return r;
     }
 }

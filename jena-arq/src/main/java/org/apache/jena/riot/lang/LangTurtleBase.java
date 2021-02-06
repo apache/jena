@@ -117,7 +117,7 @@ public abstract class LangTurtleBase extends LangBase {
 
         if ( x.equals("base") ) {
             directiveBase() ;
-            if ( isStrictMode )
+            if ( isStrictMode() )
                 // The line number is probably one ahead due to the newline
                 expect("Base directive not terminated by a dot", DOT) ;
             else
@@ -127,7 +127,7 @@ public abstract class LangTurtleBase extends LangBase {
 
         if ( x.equals("prefix") ) {
             directivePrefix() ;
-            if ( isStrictMode )
+            if ( isStrictMode() )
                 // The line number is probably one ahead due to the newline
                 expect("Prefix directive not terminated by a dot", DOT) ;
             else
@@ -197,7 +197,7 @@ public abstract class LangTurtleBase extends LangBase {
             // There must be a predicate and object.
 
             // -- If strict turtle.
-            if ( isStrictMode && maybeList ) {
+            if ( isStrictMode() && maybeList ) {
                 if ( peekPredicate() ) {
                     predicateObjectList(n) ;
                     expectEndOfTriples() ;
@@ -327,7 +327,7 @@ public abstract class LangTurtleBase extends LangBase {
     // It is not in N3 and SPARQL.
 
     protected void expectEndOfTriplesTurtle() {
-        if ( isStrictMode )
+        if ( isStrictMode() )
             expect("Triples not terminated by DOT", DOT) ;
         else
             expectOrEOF("Triples not terminated by DOT", DOT) ;
@@ -364,13 +364,12 @@ public abstract class LangTurtleBase extends LangBase {
         Token t = peekToken() ;
 
         if ( t.hasType(TokenType.KEYWORD) ) {
-            boolean strict = isStrictMode ;
             Token tErr = peekToken() ;
             String image = peekToken().getImage() ;
             if ( image.equals(KW_A) )
                 return NodeConst.nodeRDFType ;
             // N3-isms
-            if ( !strict && image.equals(KW_SAME_AS) )
+            if ( !isStrictMode() && image.equals(KW_SAME_AS) )
                 return nodeSameAs ;
             // Relationship between two formulae in N3.
 //            if ( !strict && image.equals(KW_LOG_IMPLIES) )
@@ -390,7 +389,7 @@ public abstract class LangTurtleBase extends LangBase {
             String image = peekToken().getImage() ;
             if ( image.equals(KW_A) )
                 return true ;
-            if ( !isStrictMode && image.equals(KW_SAME_AS) )
+            if ( !isStrictMode() && image.equals(KW_SAME_AS) )
                 return true ;
 //            if ( !isStrictMode && image.equals(KW_LOG_IMPLIES) )
 //                return true ;

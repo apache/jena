@@ -80,45 +80,13 @@ public class CheckerIRI implements NodeChecker
      *
      */
     public static void iriViolations(IRI iri, ErrorHandler errorHandler) {
-        iriViolations(iri, errorHandler, -1L, -1L) ;
+        iriViolations(iri, errorHandler, false, true, -1L, -1L) ;
     }
 
-    /** Process violations on an IRI
-     *  Calls the errorhandler on all errors and warnings (as warning).
-     *  Assumes error handler throws exceptions on errors if needbe
-     *  @param iri  IRI to check
-     *  @param errorHandler The error handler to call on each warning or error.
-     *
-     */
-    public static void iriViolations(IRI iri, ErrorHandler errorHandler, long line, long col) {
-        iriViolations(iri, errorHandler, false, true, line, col) ;
-    }
-
-    /** Process violations on an IRI
-     *  Calls the errorhandler on all errors and warnings (as warning).
-     *  Assumes error handler throws exceptions on errors if needbe
-     *  @param iri  IRI to check
-     *  @param errorHandler The error handler to call on each warning or error.
-     *  @param allowRelativeIRIs Allow relative URIs (discouraged)
-     */
-    private static void iriViolations(IRI iri, ErrorHandler errorHandler, boolean allowRelativeIRIs) {
-        iriViolations(iri, errorHandler, allowRelativeIRIs, -1, -1) ;
-    }
-
-    /** Process violations on an IRI
-     *  Calls the errorhandler on all errors and warnings (as warning).
-     *  Assumes error handler throws exceptions on errors if needbe
-     *  @param iri  IRI to check
-     *  @param errorHandler The error handler to call on each warning or error.
-     *  @param allowRelativeIRIs Allow relative URIs (discouraged)
-     */
-    private static void iriViolations(IRI iri, ErrorHandler errorHandler, boolean allowRelativeIRIs, long line, long col) {
-        iriViolations(iri, errorHandler, allowRelativeIRIs, true, line, col) ;
-    }
-
-    /** Process violations on an IRI
-     *  Calls the errorhandler on all errors and warnings (as warning).
-     *  Assumes error handler throws exceptions on errors if needbe
+    /**
+     * Process violations on an IRI
+     * Calls the errorHandler on all errors and warnings (as warning).
+     * Assumes error handler throws exceptions on errors if need be
      */
     public static void iriViolations(IRI iri, ErrorHandler errorHandler,
                                      boolean allowRelativeIRIs,
@@ -143,7 +111,7 @@ public class CheckerIRI implements NodeChecker
                 int code = v.getViolationCode() ;
                 boolean isError = v.isError() ;
 
-                // Ignore these.
+                // Ignore these. They seem to present even if switched off.
                 if ( code == Violation.LOWERCASE_PREFERRED
                      || code == Violation.PERCENT_ENCODING_SHOULD_BE_UPPERCASE
                      || code == Violation.SCHEME_PATTERN_MATCH_FAILED )

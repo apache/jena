@@ -34,12 +34,12 @@ import org.apache.jena.sparql.sse.writers.WriterOp ;
 
 public class WriterSSE
 {
-    // No need for SerializationContext forms because these are the external intefraces
+    // No need for SerializationContext forms because these are the external interfaces
     // PrintStream [, Base] [, PrefixMap]
-    
+
     public static void out(IndentedWriter out, Node node, Prologue prologue)
     { WriterNode.output(out, node, sCxt(prologue)) ; }
-    
+
     public static void out(IndentedWriter out, Triple triple, Prologue prologue)
     { WriterNode.output(out, triple, sCxt(prologue)) ; }
 
@@ -48,15 +48,15 @@ public class WriterSSE
 
     public static void out(IndentedWriter out, Op op, Prologue prologue)
     { WriterOp.output(out, op, sCxt(prologue)) ; }
-    
+
     public static void out(IndentedWriter out, Graph g, Prologue prologue)
     { WriterGraph.output(out, g, sCxt(prologue)) ; }
-    
+
     public static void out(IndentedWriter out, DatasetGraph dsg, Prologue prologue)
     { WriterGraph.output(out, dsg, sCxt(prologue)) ; }
 
     private static SerializationContext sCxt(Prologue prologue)
-    { 
+    {
 //        return new SerializationContext(prologue) ;
         // Pragmatic.
         if ( false && prologue.explicitlySetBaseURI() )
@@ -64,5 +64,5 @@ public class WriterSSE
         else
             return new SerializationContext(prologue.getPrefixMapping()) ;
     }
-    
+
 }

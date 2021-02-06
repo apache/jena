@@ -19,20 +19,9 @@
 package org.apache.jena.riot;
 
 import org.apache.jena.riot.system.ParserProfile;
-import org.apache.jena.riot.system.RiotLib;
 
-/** Create {@link ReaderRIOT} */ 
+/** Create {@link ReaderRIOT} */
 public interface ReaderRIOTFactory
 {
-    /**
-     * Create a {@link ReaderRIOT} with the languages default {@link ParserProfile}
-     * with no initial base URI.
-     * 
-     *  See {@link RiotLib#profile}.
-     */
-    public default ReaderRIOT create(Lang language) {
-        return create(language, RiotLib.profile(language, null));
-    }
-
     public ReaderRIOT create(Lang language, ParserProfile profile);
 }

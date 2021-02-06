@@ -20,20 +20,17 @@ package org.apache.jena.riot.system;
 
 import static org.junit.Assert.*;
 
-import org.apache.jena.iri.IRIFactory ;
 import org.junit.Test ;
 
 /**
  * Abstract tests for {@link PrefixMap} implementations
- * 
+ *
  */
 public abstract class AbstractTestPrefixMap {
-    protected IRIFactory factory = IRIResolver.iriFactory();
-
     /**
      * Gets the prefix map implementation to test, each call should result in a
      * fresh instance
-     * 
+     *
      * @return Prefix Map
      */
     protected abstract PrefixMap getPrefixMap();
@@ -47,7 +44,7 @@ public abstract class AbstractTestPrefixMap {
         assertTrue(pmap.getMapping().isEmpty()) ;
         assertTrue(pmap.getMappingCopy().isEmpty()) ;
     }
-    
+
     @Test
     public void prefixMap_basic_02()
     {
@@ -71,7 +68,7 @@ public abstract class AbstractTestPrefixMap {
         assertFalse(pmap.isEmpty()) ;
         assertEquals(2, pmap.size()) ;
     }
-    
+
     @Test
     public void prefixMap_basic_04()
     {
@@ -86,8 +83,8 @@ public abstract class AbstractTestPrefixMap {
         assertFalse(pmap2.isEmpty()) ;
         assertEquals(2, pmap2.size()) ;
     }
-    
-    
+
+
 
     /**
      * Simple expand test
@@ -308,7 +305,7 @@ public abstract class AbstractTestPrefixMap {
             assertNull("expected no abbreviation for "+iriStr, x) ;
             return ;
         }
-        
+
         for (String possible : expected) {
             if (possible.equals(x))
                 return;
@@ -318,7 +315,7 @@ public abstract class AbstractTestPrefixMap {
 
     /**
      * Helper method for adding a namespace mapping
-     * 
+     *
      * @param pmap
      *            Prefix Map
      * @param prefix

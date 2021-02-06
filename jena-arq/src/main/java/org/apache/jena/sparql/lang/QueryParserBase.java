@@ -31,10 +31,9 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.iri.IRI ;
+import org.apache.jena.irix.IRIException;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.QueryParseException ;
-import org.apache.jena.riot.checker.CheckerIRI ;
 import org.apache.jena.riot.lang.extra.LangParserLib;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
@@ -53,13 +52,12 @@ import org.apache.jena.sparql.path.Path ;
 import org.apache.jena.sparql.syntax.* ;
 import org.apache.jena.sparql.util.ExprUtils ;
 import org.apache.jena.sparql.util.LabelToNodeMap ;
-import org.apache.jena.ttl.JenaURIException;
 import org.apache.jena.vocabulary.RDF ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 /** Base class parsers, mainly SPARQL related */
-public class ParserBase
+public class QueryParserBase
 {
     // NodeConst
     protected final Node XSD_TRUE       = NodeConst.nodeTrue ;
@@ -104,7 +102,7 @@ public class ParserBase
     //LabelToNodeMap listLabelMap = new LabelToNodeMap(true, new VarAlloc("L")) ;
     // ----
 
-    public ParserBase() {}
+    public QueryParserBase() {}
 
     protected Prologue prologue ;
     public void setPrologue(Prologue prologue) { this.prologue = prologue ; }
@@ -294,18 +292,13 @@ public class ParserBase
             return iriStr ;
 
         if ( getPrologue() != null ) {
-            if ( getPrologue().getResolver() != null )
+            if ( getPrologue().getBase() != null ) {
                 try {
-                    // Used to be errors (pre Jena 2.12.0)
-                    // .resolve(iriStr)
-                    IRI iri = getPrologue().getResolver().resolveSilent(iriStr) ;
-                    if ( true )
-                        CheckerIRI.iriViolations(iri, errorHandler, line, column) ;
-                    iriStr = iri.toString() ;
+                    iriStr = getPrologue().getBase().resolve(iriStr).toString();
+                } catch (IRIException ex) {
+                    errorHandler.error("Bad IRI: '"+iriStr+"': "+ex.getMessage(), line, column);
                 }
-                catch (JenaURIException ex) {
-                    throwParseException(ex.getMessage(), line, column) ;
-                }
+            }
         }
         return iriStr ;
     }

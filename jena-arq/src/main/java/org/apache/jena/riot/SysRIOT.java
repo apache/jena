@@ -19,8 +19,8 @@
 package org.apache.jena.riot;
 
 import org.apache.jena.atlas.lib.IRILib ;
+import org.apache.jena.irix.IRIs;
 import org.apache.jena.rdf.model.RDFReader;
-import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol ;
 import org.apache.jena.util.FileUtils ;
@@ -31,22 +31,22 @@ public class SysRIOT
 {
     public static final String riotLoggerName = "org.apache.jena.riot" ;
     private static Logger riotLogger = LoggerFactory.getLogger(riotLoggerName) ;
-    
+
     /** @deprecated Do not use - lexical forms are always strict. */
     @Deprecated
     public static boolean StrictXSDLexicialForms      = false ;
-    
+
     public static boolean strictMode                  = false ;
-    
+
     /** Some people argue that absolute URIs should not be normalized.
      * This flag puts IRI resolution in that mode.
      * Bewared: inconisstencies arise - relative URIs are still normalized so
      * where the unnormalized part is in a prefix name changes the outcome.
-     * Jena has always normalized abolute URIs.  
+     * Jena has always normalized abolute URIs.
      */
     public static final boolean AbsURINoNormalization   = false ;
     public static final String BNodeGenIdPrefix         = "genid" ;
-    
+
     private static String riotBase = "http://jena.apache.org/riot/" ;
 
     /**
@@ -69,10 +69,10 @@ public class SysRIOT
     /** @deprecated Use {@link #sysRdfWriterProperties} */
     @Deprecated
     public static final Symbol rdfWriterProperties      = sysRdfWriterProperties ;
-    
-    /** Context key for the StreamManager */ 
+
+    /** Context key for the StreamManager */
     public static Symbol sysStreamManager = Symbol.create(riotBase+"streamManager") ;
-    
+
     public static void setStrictMode(boolean state) {
         SysRIOT.strictMode = state ;
         //SysRIOT.StrictXSDLexicialForms = state ;
@@ -99,22 +99,22 @@ public class SysRIOT
     {
         return riotLogger ;
     }
-    
+
     public static String chooseBaseIRI()
     {
-        return IRIResolver.chooseBaseURI().toString() ;
+        return IRIs.getSystemBase().toString() ;
     }
-    
+
     /** Return a URI suitable for a baseURI, based on some input (which may be null) */
     public static String chooseBaseIRI(String baseURI)
     {
-      String scheme = FileUtils.getScheme(baseURI) ;
-      // Assume scheme of one letter are Windows drive letters. 
-      if ( scheme != null && scheme.length() == 1 ) 
-          scheme = "file" ;
+      String scheme = FileUtils.getScheme(baseURI);
+      // Assume scheme of one letter are Windows drive letters.
+      if ( scheme != null && scheme.length() == 1 )
+          scheme = "file";
       if ( scheme != null && scheme.equals("file") )
-          return IRILib.filenameToIRI(baseURI) ;
-      return IRIResolver.resolveString(baseURI) ;
+          return IRILib.filenameToIRI(baseURI);
+      return IRIs.getSystemBase().resolve(baseURI).toString();
     }
 
     public static String filename2baseIRI(String filename)
@@ -126,7 +126,7 @@ public class SysRIOT
     }
 
     /** Choose base IRI, from a given one and a filename.
-     *  Prefer the given base ; turn any filename into an IRI.   
+     *  Prefer the given base ; turn any filename into an IRI.
      *  String will need to be resolved as well.
      */
     public static String chooseBaseIRI(String baseIRI, String fileOrIri)

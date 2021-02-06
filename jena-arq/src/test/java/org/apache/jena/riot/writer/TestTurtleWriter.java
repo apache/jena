@@ -35,8 +35,8 @@ import org.junit.Test ;
 
 public class TestTurtleWriter {
     // Tests data.
-    static String cycle1 = "_:a <urn:p> _:b . _:b <urn:q> _:a ." ;
-    static String cycle2 = "_:a <urn:p> _:b . _:b <urn:q> _:a . _:a <urn:r> \"abc\" . " ;
+    static String cycle1 = "_:a <urn:xx:p> _:b . _:b <urn:xx:q> _:a ." ;
+    static String cycle2 = "_:a <urn:xx:p> _:b . _:b <urn:xx:q> _:a . _:a <urn:xx:r> \"abc\" . " ;
 
     static String base = "http://example.org/";
     static String basetester = "@base <"+base+"> .   " +

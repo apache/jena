@@ -39,16 +39,7 @@ public class FactoryRDFCaching extends FactoryRDFStd {
     private final Cache<String, Node> cache ;
 
     public FactoryRDFCaching() {
-        this(DftNodeCacheSize) ;
-    }
-
-    public FactoryRDFCaching(int cacheSize) {
-        super() ;
-        cache = setCache(cacheSize) ;
-    }
-
-    public FactoryRDFCaching(LabelToNode labelMapping) {
-        this(DftNodeCacheSize, labelMapping) ;
+        this(DftNodeCacheSize, SyntaxLabels.createLabelToNode());
     }
 
     public FactoryRDFCaching(int cacheSize, LabelToNode labelMapping) {

@@ -19,25 +19,18 @@
 package org.apache.jena.query;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.iri.IRI;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -153,7 +146,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Creates a new parameterized string
-     * 
+     *
      * @param command
      *            Raw Command Text
      * @param map
@@ -175,7 +168,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Creates a new parameterized string
-     * 
+     *
      * @param command
      *            Raw Command Text
      * @param map
@@ -189,7 +182,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Creates a new parameterized string
-     * 
+     *
      * @param command
      *            Raw Command Text
      * @param map
@@ -203,7 +196,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Creates a new parameterized string
-     * 
+     *
      * @param command
      *            Raw Command Text
      * @param map
@@ -215,7 +208,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Creates a new parameterized string
-     * 
+     *
      * @param command
      *            Raw Command Text
      * @param base
@@ -229,7 +222,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Creates a new parameterized string
-     * 
+     *
      * @param command
      *            Raw Command Text
      * @param prefixes
@@ -241,7 +234,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Creates a new parameterized string
-     * 
+     *
      * @param command
      *            Raw Command Text
      * @param base
@@ -253,7 +246,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Creates a new parameterized string
-     * 
+     *
      * @param command
      *            Raw Command Text
      */
@@ -263,7 +256,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Creates a new parameterized string
-     * 
+     *
      * @param map
      *            Initial Parameters to inject
      * @param prefixes
@@ -275,7 +268,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Creates a new parameterized string
-     * 
+     *
      * @param map
      *            Initial Parameters to inject
      */
@@ -285,7 +278,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Creates a new parameterized string
-     * 
+     *
      * @param prefixes
      *            Prefix Mapping
      */
@@ -303,8 +296,8 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Gets the syntax used for parsing when calling {@link #asQuery()} or
      * {@link #asUpdate()}
-     * 
-     * 
+     *
+     *
      * @return Syntax
      */
     public Syntax getSyntax() {
@@ -314,7 +307,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Sets the syntax used for parsing when calling {@link #asQuery()} or
      * {@link #asUpdate()}
-     * 
+     *
      * @param syntax
      *            Syntax
      */
@@ -330,7 +323,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * to append to the command text use one of the {@link #append(String)},
      * {@link #appendIri(String)}, {@link #appendLiteral(String)} or
      * {@link #appendNode(Node)} methods instead
-     * 
+     *
      * @param command
      *            Command Text
      */
@@ -344,7 +337,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * formatting when used as a constant consider using the
      * {@link #appendLiteral(String)} or {@link #appendIri(String)} method as
      * appropriate
-     * 
+     *
      * @param text
      *            Text to append
      */
@@ -356,7 +349,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Appends a character as-is to the existing command text, to ensure correct
      * formatting when used as a constant consider using one of the
      * {@code appendLiteral()} methods
-     * 
+     *
      * @param c
      *            Character to append
      */
@@ -368,7 +361,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Appends a boolean as-is to the existing command text, to ensure correct
      * formatting when used as a constant consider using the
      * {@link #appendLiteral(boolean)} method
-     * 
+     *
      * @param b
      *            Boolean to append
      */
@@ -380,7 +373,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Appends a double as-is to the existing command text, to ensure correct
      * formatting when used as a constant consider using the
      * {@link #appendLiteral(double)} method
-     * 
+     *
      * @param d
      *            Double to append
      */
@@ -392,7 +385,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Appends a float as-is to the existing command text, to ensure correct
      * formatting when used as a constant consider using the
      * {@link #appendLiteral(float)} method
-     * 
+     *
      * @param f
      *            Float to append
      */
@@ -404,7 +397,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Appends an integer as-is to the existing command text, to ensure correct
      * formatting when used as a constant consider using the
      * {@link #appendLiteral(int)} method
-     * 
+     *
      * @param i
      *            Integer to append
      */
@@ -416,7 +409,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Appends a long as-is to the existing command text, to ensure correct
      * formatting when used as a constant consider using the
      * {@link #appendLiteral(long)} method
-     * 
+     *
      * @param l
      *            Long to append
      */
@@ -429,7 +422,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * formatting when used as a constant consider converting into a more
      * specific type and using the appropriate {@code appendLiteral()},
      * {@code appendIri()} or {@code appendNode} methods
-     * 
+     *
      * @param obj
      *            Object to append
      */
@@ -440,7 +433,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Appends a Node to the command text as a constant using appropriate
      * formatting
-     * 
+     *
      * @param n
      *            Node to append
      */
@@ -453,7 +446,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Appends a Node to the command text as a constant using appropriate
      * formatting
-     * 
+     *
      * @param n
      *            Node to append
      */
@@ -464,7 +457,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Appends a URI to the command text as a constant using appropriate
      * formatting
-     * 
+     *
      * @param uri
      *            URI to append
      */
@@ -475,17 +468,30 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Appends an IRI to the command text as a constant using appropriate
      * formatting
-     * 
+     *
      * @param iri
      *            IRI to append
      */
-    public void appendIri(IRI iri) {
+    public void appendIri(IRIx iri) {
+        this.appendNode(NodeFactory.createURI(iri.toString()));
+    }
+
+    /**
+     * Appends an IRI to the command text as a constant using appropriate
+     * formatting
+     *
+     * @param iri
+     *            IRI to append
+     * @deprecated Use {@link #appendIri(IRIx)}
+     */
+    @Deprecated
+    public void appendIri(org.apache.jena.iri.IRI iri) {
         this.appendNode(NodeFactory.createURI(iri.toString()));
     }
 
     /**
      * Appends a simple literal as a constant using appropriate formatting
-     * 
+     *
      * @param value
      *            Lexical Value
      */
@@ -496,7 +502,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Appends a literal with a lexical value and language to the command text
      * as a constant using appropriate formatting
-     * 
+     *
      * @param value
      *            Lexical Value
      * @param lang
@@ -509,7 +515,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Appends a Typed Literal to the command text as a constant using
      * appropriate formatting
-     * 
+     *
      * @param value
      *            Lexical Value
      * @param datatype
@@ -522,7 +528,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Appends a boolean to the command text as a constant using appropriate
      * formatting
-     * 
+     *
      * @param b
      *            Boolean to append
      */
@@ -533,7 +539,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Appends an integer to the command text as a constant using appropriate
      * formatting
-     * 
+     *
      * @param i
      *            Integer to append
      */
@@ -544,7 +550,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Appends a long to the command text as a constant using appropriate
      * formatting
-     * 
+     *
      * @param l
      *            Long to append
      */
@@ -555,7 +561,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Appends a float to the command text as a constant using appropriate
      * formatting
-     * 
+     *
      * @param f
      *            Float to append
      */
@@ -566,7 +572,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Appends a double to the command text as a constant using appropriate
      * formatting
-     * 
+     *
      * @param d
      *            Double to append
      */
@@ -577,7 +583,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Appends a date time to the command text as a constant using appropriate
      * formatting
-     * 
+     *
      * @param dt
      *            Date Time to append
      */
@@ -592,7 +598,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * see the command with injected parameters invoke the {@link #toString()}
      * method
      * </p>
-     * 
+     *
      * @return Command Text
      */
     public String getCommandText() {
@@ -601,7 +607,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Sets the Base URI which will be prepended to the query/update
-     * 
+     *
      * @param base
      *            Base URI
      */
@@ -611,7 +617,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Gets the Base URI which will be prepended to a query
-     * 
+     *
      * @return Base URI
      */
     public String getBaseUri() {
@@ -620,7 +626,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Helper method which does the validation of the parameters
-     * 
+     *
      * @param n
      *            Node
      */
@@ -633,7 +639,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Sets the Parameters
-     * 
+     *
      * @param map
      *            Parameters
      */
@@ -653,7 +659,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Setting a parameter to null is equivalent to calling
      * {@link #clearParam(int)} for the given variable
      * </p>
-     * 
+     *
      * @param index
      *            Positional Index
      * @param n
@@ -676,12 +682,12 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Setting a parameter to null is equivalent to calling
      * {@link #clearParam(String)} for the given variable
      * </p>
-     * 
+     *
      * @param var
      *            Variable
      * @param n
      *            Value
-     * 
+     *
      */
     public void setParam(String var, Node n) {
         if (var == null)
@@ -702,7 +708,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Setting a parameter to null is equivalent to calling
      * {@link #clearParam(String)} for the given variable
      * </p>
-     * 
+     *
      * @param index
      *            Positional Index
      * @param n
@@ -718,7 +724,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Setting a parameter to null is equivalent to calling
      * {@link #clearParam(String)} for the given variable
      * </p>
-     * 
+     *
      * @param var
      *            Variable
      * @param n
@@ -734,7 +740,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Setting a parameter to null is equivalent to calling
      * {@link #clearParam(int)} for the given index
      * </p>
-     * 
+     *
      * @param index
      *            Positional Index
      * @param iri
@@ -750,7 +756,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Setting a parameter to null is equivalent to calling
      * {@link #clearParam(String)} for the given variable
      * </p>
-     * 
+     *
      * @param var
      *            Variable
      * @param iri
@@ -766,13 +772,31 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Setting a parameter to null is equivalent to calling
      * {@link #clearParam(int)} for the given index
      * </p>
-     * 
+     *
+     * @param index
+     *            Positional Index
+     * @param iri
+     *            IRI
+     * @deprecated Use {@link #setIri(int, IRIx)}
+     */
+    @Deprecated
+    public void setIri(int index, org.apache.jena.iri.IRI iri) {
+        this.setIri(index, iri.toString());
+    }
+
+    /**
+     * Sets a positional parameter to an IRI
+     * <p>
+     * Setting a parameter to null is equivalent to calling
+     * {@link #clearParam(int)} for the given index
+     * </p>
+     *
      * @param index
      *            Positional Index
      * @param iri
      *            IRI
      */
-    public void setIri(int index, IRI iri) {
+    public void setIri(int index, IRIx iri) {
         this.setIri(index, iri.toString());
     }
 
@@ -782,23 +806,40 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Setting a parameter to null is equivalent to calling
      * {@link #clearParam(String)} for the given variable
      * </p>
-     * 
+     *
      * @param var
      *            Variable
      * @param iri
      *            IRI
      */
-    public void setIri(String var, IRI iri) {
+    public void setIri(String var, IRIx iri) {
         this.setIri(var, iri.toString());
     }
 
+
+    /**
+     * Sets a variable parameter to an IRI
+     * <p>
+     * Setting a parameter to null is equivalent to calling
+     * {@link #clearParam(String)} for the given variable
+     * </p>
+     *
+     * @param var
+     *            Variable
+     * @param iri
+     *            IRI
+     */
+    @Deprecated
+    public void setIri(String var, org.apache.jena.iri.IRI iri) {
+        this.setIri(var, iri.toString());
+    }
     /**
      * Sets a positional parameter to an IRI
      * <p>
      * Setting a parameter to null is equivalent to calling
      * {@link #clearParam(int)} for the given index
      * </p>
-     * 
+     *
      * @param index
      *            Positional Index
      * @param url
@@ -814,12 +855,12 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Setting a parameter to null is equivalent to calling
      * {@link #clearParam(String)} for the given variable
      * </p>
-     * 
+     *
      * @param var
      *            Variable
      * @param url
      *            URL used as IRI
-     * 
+     *
      */
     public void setIri(String var, URL url) {
         this.setIri(var, url.toString());
@@ -831,12 +872,12 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Setting a parameter to null is equivalent to calling
      * {@link #clearParam(int)} for the given index
      * </p>
-     * 
+     *
      * @param index
      *            Positional Index
      * @param lit
      *            Value
-     * 
+     *
      */
     public void setLiteral(int index, Literal lit) {
         this.setParam(index, lit.asNode());
@@ -848,12 +889,12 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Setting a parameter to null is equivalent to calling
      * {@link #clearParam(String)} for the given variable
      * </p>
-     * 
+     *
      * @param var
      *            Variable
      * @param lit
      *            Value
-     * 
+     *
      */
     public void setLiteral(String var, Literal lit) {
         this.setParam(var, lit.asNode());
@@ -865,12 +906,12 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Setting a parameter to null is equivalent to calling
      * {@link #clearParam(int)} for the given index
      * </p>
-     * 
+     *
      * @param index
      *            Positional Index
      * @param value
      *            Lexical Value
-     * 
+     *
      */
     public void setLiteral(int index, String value) {
         this.setParam(index, NodeFactoryExtra.createLiteralNode(value, null, null));
@@ -882,12 +923,12 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Setting a parameter to null is equivalent to calling
      * {@link #clearParam(String)} for the given variable
      * </p>
-     * 
+     *
      * @param var
      *            Variable
      * @param value
      *            Lexical Value
-     * 
+     *
      */
     public void setLiteral(String var, String value) {
         this.setParam(var, NodeFactoryExtra.createLiteralNode(value, null, null));
@@ -899,14 +940,14 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Setting a parameter to null is equivalent to calling
      * {@link #clearParam(int)} for the given index
      * </p>
-     * 
+     *
      * @param index
      *            Positional index
      * @param value
      *            Lexical Value
      * @param lang
      *            Language
-     * 
+     *
      */
     public void setLiteral(int index, String value, String lang) {
         this.setParam(index, NodeFactoryExtra.createLiteralNode(value, lang, null));
@@ -918,14 +959,14 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Setting a parameter to null is equivalent to calling
      * {@link #clearParam(String)} for the given variable
      * </p>
-     * 
+     *
      * @param var
      *            Variable
      * @param value
      *            Lexical Value
      * @param lang
      *            Language
-     * 
+     *
      */
     public void setLiteral(String var, String value, String lang) {
         this.setParam(var, NodeFactoryExtra.createLiteralNode(value, lang, null));
@@ -937,14 +978,14 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Setting a parameter to null is equivalent to calling
      * {@link #clearParam(int)} for the given index
      * </p>
-     * 
+     *
      * @param index
      *            Positional Index
      * @param value
      *            Lexical Value
      * @param datatype
      *            Datatype
-     * 
+     *
      */
     public void setLiteral(int index, String value, RDFDatatype datatype) {
         this.setParam(index, this.model.createTypedLiteral(value, datatype));
@@ -956,14 +997,14 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Setting a parameter to null is equivalent to calling
      * {@link #clearParam(String)} for the given variable
      * </p>
-     * 
+     *
      * @param var
      *            Variable
      * @param value
      *            Lexical Value
      * @param datatype
      *            Datatype
-     * 
+     *
      */
     public void setLiteral(String var, String value, RDFDatatype datatype) {
         this.setParam(var, this.model.createTypedLiteral(value, datatype));
@@ -971,7 +1012,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Sets a positional parameter to a boolean literal
-     * 
+     *
      * @param index
      *            Positional Index
      * @param value
@@ -983,7 +1024,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Sets a variable parameter to a boolean literal
-     * 
+     *
      * @param var
      *            Variable
      * @param value
@@ -995,7 +1036,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Sets a positional parameter to an integer literal
-     * 
+     *
      * @param index
      *            Positional Index
      * @param i
@@ -1007,7 +1048,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Sets a variable parameter to an integer literal
-     * 
+     *
      * @param var
      *            Variable
      * @param i
@@ -1019,7 +1060,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Sets a positional parameter to an integer literal
-     * 
+     *
      * @param index
      *            Positional Index
      * @param l
@@ -1031,7 +1072,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Sets a variable parameter to an integer literal
-     * 
+     *
      * @param var
      *            Variable
      * @param l
@@ -1043,7 +1084,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Sets a positional parameter to a float literal
-     * 
+     *
      * @param index
      *            Positional Index
      * @param f
@@ -1055,7 +1096,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Sets a variable parameter to a float literal
-     * 
+     *
      * @param var
      *            Variable
      * @param f
@@ -1067,7 +1108,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Sets a positional parameter to a double literal
-     * 
+     *
      * @param index
      *            Positional Index
      * @param d
@@ -1079,7 +1120,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Sets a variable parameter to a double literal
-     * 
+     *
      * @param var
      *            Variable
      * @param d
@@ -1091,7 +1132,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Sets a positional parameter to a date time literal
-     * 
+     *
      * @param index
      *            Positional Index
      * @param dt
@@ -1103,7 +1144,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Sets a variable parameter to a date time literal
-     * 
+     *
      * @param var
      *            Variable
      * @param dt
@@ -1115,7 +1156,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Gets the current value for a variable parameter
-     * 
+     *
      * @param var
      *            Variable
      * @return Current value or null if not set
@@ -1126,7 +1167,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Gets the current value for a positional parameter
-     * 
+     *
      * @param index
      *            Positional Index
      * @return Current value or null if not set
@@ -1138,7 +1179,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Gets the variable names which are currently treated as variable
      * parameters (i.e. have values set for them)
-     * 
+     *
      * @return Iterator of variable names
      */
     @Deprecated
@@ -1149,7 +1190,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Gets the map of currently set variable parameters, this will be an
      * unmodifiable map
-     * 
+     *
      * @return Map of variable names and values
      */
     public Map<String, Node> getVariableParameters() {
@@ -1159,7 +1200,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Gets the map of currently set positional parameters, this will be an
      * unmodifiable map
-     * 
+     *
      * @return Map of positional indexes and values
      */
     public Map<Integer, Node> getPositionalParameters() {
@@ -1174,7 +1215,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Gets the eligible positional parameters i.e. detected positional
      * parameters that may be set in the command string as it currently stands
-     * 
+     *
      * @return Iterator of eligible positional parameters
      */
     public Iterator<Integer> getEligiblePositionalParameters() {
@@ -1192,7 +1233,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Clears the value for a variable or values parameter so the given variable
      * will not * have a value injected
-     * 
+     *
      * @param var
      *            Variable
      */
@@ -1203,7 +1244,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Clears the value for a positional parameter
-     * 
+     *
      * @param index
      *            Positional Index
      */
@@ -1223,7 +1264,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Helper method which checks whether it is safe to inject to a variable
      * parameter the given value
-     * 
+     *
      * @param command
      *            Current command string
      * @param var
@@ -1268,7 +1309,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Helper method which checks whether it is safe to inject to a positional
      * parameter the given value
-     * 
+     *
      * @param command
      *            Current command string
      * @param index
@@ -1299,7 +1340,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Helper method which does light parsing on the command string to find the
      * position of all relevant delimiters
-     * 
+     *
      * @param command
      *            Command String
      * @return DelimiterInfo
@@ -1334,7 +1375,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * a syntax error when you try to parse the query. If you run into issues
      * like this try using a mixture of variable and positional parameters.
      * </p>
-     * 
+     *
      * @throws ARQException
      *             May be thrown if the code detects a SPARQL Injection
      *             vulnerability because of the interaction of the command
@@ -1413,7 +1454,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Attempts to take the command text with parameters injected from the
      * {@link #toString()} method and parse it as a {@link Query}
-     * 
+     *
      * @return Query if the command text is a valid SPARQL query
      * @exception QueryException
      *                Thrown if the command text does not parse
@@ -1426,7 +1467,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Attempts to take the command text with parameters injected from the
      * {@link #toString()} method and parse it as a {@link Query} using the
      * given {@link Syntax} syntax
-     * 
+     *
      * @return Query if the command text is a valid SPARQL query
      * @exception QueryException
      *                Thrown if the command text does not parse
@@ -1438,7 +1479,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Attempts to take the command text with parameters injected from the
      * {@link #toString()} method and parse it as a {@link UpdateRequest}
-     * 
+     *
      * @return Update if the command text is a valid SPARQL Update request
      *         (one/more update commands)
      */
@@ -1450,7 +1491,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Attempts to take the command text with parameters injected from the
      * {@link #toString()} method and parse it as a {@link UpdateRequest} using
      * the given {@link Syntax}
-     * 
+     *
      * @return Update if the command text is a valid SPARQL Update request
      *         (one/more update commands)
      */
@@ -1460,7 +1501,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Makes a full copy of this parameterized string
-     * 
+     *
      * @return Copy of the string
      */
     public ParameterizedSparqlString copy() {
@@ -1470,7 +1511,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * Makes a copy of the command text, base URI and prefix mapping and
      * optionally copies parameter values
-     * 
+     *
      * @param copyParams
      *            Whether to copy parameters
      * @return Copy of the string
@@ -1481,7 +1522,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Makes a copy of the command text and optionally copies other aspects
-     * 
+     *
      * @param copyParams
      *            Whether to copy parameters
      * @param copyBase
@@ -1589,7 +1630,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Represents information about delimiters in a string
-     * 
+     *
      */
     private class DelimiterInfo {
         private List<Pair<Integer, String>> starts = new ArrayList<>();
@@ -1598,7 +1639,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
         /**
          * Parse delimiters from a string, discards any previously parsed
          * information
-         * 
+         *
          * @param command
          *            Command string
          */

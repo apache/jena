@@ -38,6 +38,7 @@ import java.util.Iterator;
 
 import org.apache.jena.assembler.JA ;
 import org.apache.jena.assembler.exceptions.CannotConstructException;
+import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
@@ -60,8 +61,6 @@ public class TestInMemDatasetAssembler extends Assert {
     private Dataset assemble(final Resource example) {
         Model model = example.getModel() ;
         model.setNsPrefix("ja", JA.getURI()) ;
-//	    System.out.println("-------------");
-//	    RDFDataMgr.write(System.out, model, Lang.TTL) ;
         final InMemDatasetAssembler testAssembler = new InMemDatasetAssembler();
         return testAssembler.open(testAssembler, example, DEFAULT);
     }
@@ -80,7 +79,7 @@ public class TestInMemDatasetAssembler extends Assert {
         // first make a file of triples to load later
         final Model model = createDefaultModel();
         final Path triples = createTempFile("simpleExample", ".nt");
-        final Resource triplesURI = model.createResource(triples.toFile().toURI().toString());
+        final Resource triplesURI = model.createResource(IRILib.fileToIRI(triples.toFile()));
         final Resource simpleExample = model.createResource("test:simpleExample");
         simpleExample.addProperty(type, DatasetAssemblerVocab.tDatasetTxnMem);
         // add a default graph
@@ -119,14 +118,19 @@ public class TestInMemDatasetAssembler extends Assert {
         // first make a file of quads to load later
         final Model model = createDefaultModel();
         final Path quads = createTempFile("quadExample", ".nq");
-        final Resource quadsURI = model.createResource(quads.toFile().toURI().toString());
+
+        String quadsURIStr = IRILib.fileToIRI(quads.toFile());
+        final Resource quadsURI = model.createResource(quadsURIStr);
+
         final Resource simpleExample = model.createResource("test:simpleExample");
         simpleExample.addProperty(type, DatasetAssemblerVocab.tDatasetTxnMem);
         simpleExample.addProperty(data, quadsURI);
 
         final DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
-        model.listStatements().mapWith(Statement::asTriple).mapWith(t -> new Quad(quadsURI.asNode(), t))
-        .forEachRemaining(dsg::add);
+        model.listStatements()
+            .mapWith(Statement::asTriple)
+            .mapWith(t -> new Quad(quadsURI.asNode(), t))
+            .forEachRemaining(dsg::add);
         try (OutputStream out = new FileOutputStream(quads.toFile())) {
             write(out, dsg, NQUADS);
         }
@@ -149,14 +153,14 @@ public class TestInMemDatasetAssembler extends Assert {
         try (OutputStream out = new FileOutputStream(quads.toFile())) {
             write(out, dsgData, NQUADS);
         }
-        
+
         Model assemblerModel = createDefaultModel();
         Resource simpleExample2 = assemblerModel.createResource("test:simpleExample2");
         simpleExample2.addProperty(type, DatasetAssemblerVocab.tDatasetTxnMem) ;
         simpleExample2.addProperty(data, dataFileName);
-        
+
         final Dataset dataset = assemble(simpleExample2);
-        
+
         assertTrue(IsoMatcher.isomorphic(dsgData, dataset.asDatasetGraph()));
     }
 

@@ -31,7 +31,7 @@ import org.apache.jena.ttl.N3IRIResolver;
 import org.apache.jena.vocabulary.RDF ;
 
 @SuppressWarnings("deprecation")
-public class ParserBase
+public class TurtleParserBase
 {
     // Should be the same as ARQ ParserBase and Prologues.
     protected final Node XSD_TRUE   = NodeFactory.createLiteral("true", null, XSDDatatype.XSDboolean) ;
@@ -56,7 +56,7 @@ public class ParserBase
     protected boolean strictTurtle = true ;
     protected boolean skolomizedBNodes = true ; 
     
-    public ParserBase() {}
+    public TurtleParserBase() {}
     
     PrefixMapping prefixMapping = new PrefixMappingImpl() ;
     N3IRIResolver resolver = new N3IRIResolver() ;

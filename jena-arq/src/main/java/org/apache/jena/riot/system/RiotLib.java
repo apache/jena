@@ -38,6 +38,9 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.irix.IRIs;
+import org.apache.jena.irix.IRIx;
+import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.lang.LabelToNode;
@@ -138,7 +141,7 @@ public class RiotLib
 
         return new ParserProfileStd(RiotLib.factoryRDF(),
                                     ErrorHandlerFactory.errorHandlerStd,
-                                    IRIResolver.create(),
+                                    IRIs.stdResolver(),
                                     pmap,
                                     RIOT.getContext().copy(),
                                     true, false);
@@ -149,11 +152,6 @@ public class RiotLib
     /** Parse a string to get one Node (the first token in the string) */
     public static Node parse(String string) {
         return NodeFactoryExtra.parseNode(string, null);
-    }
-
-    public static ParserProfile profile(Lang lang, String baseIRI)
-    {
-        return profile(lang, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler());
     }
 
     public static ParserProfile profile(Lang lang, String baseIRI, ErrorHandler handler)
@@ -169,25 +167,13 @@ public class RiotLib
         return profile(baseIRI, true, true, handler);
     }
 
-    /** Create a parser profile for the given setup
-     * @param baseIRI       Base IRI
-     * @param resolveIRIs   Whether to resolve IRIs
-     * @param checking      Whether to check
-     * @param handler       Error handler
-     * @return ParserProfile
-     * @see #profile for per-language setup
-     * @deprecated To be removed.
-     */
-    @Deprecated
-    public static ParserProfile profile(String baseIRI, boolean resolveIRIs, boolean checking, ErrorHandler handler)
-    {
+    /** Create a parser profile for the given setup */
+    private static ParserProfile profile(String baseIRI, boolean resolveIRIs, boolean checking, ErrorHandler handler) {
         LabelToNode labelToNode = SyntaxLabels.createLabelToNode();
-
-        IRIResolver resolver;
-        if ( resolveIRIs )
-            resolver = IRIResolver.create(baseIRI);
-        else
-            resolver = IRIResolver.createNoResolve();
+        IRIx base = resolveIRIs
+                ? IRIs.resolveIRI(baseIRI)
+                : IRIx.create(baseIRI);
+        IRIxResolver resolver = IRIxResolver.create(base).resolve(resolveIRIs).allowRelative(false).build();
         ParserProfile profile = RiotLib.createParserProfile(factoryRDF(labelToNode), handler, resolver, checking);
         return profile;
     }
@@ -220,7 +206,7 @@ public class RiotLib
     public static ParserProfile createParserProfile(FactoryRDF factory, ErrorHandler errorHandler, boolean checking) {
         return new ParserProfileStd(factory,
                                     errorHandler,
-                                    IRIResolver.create(),
+                                    IRIxResolver.create(IRIs.getSystemBase()).build(),
                                     PrefixMapFactory.create(),
                                     RIOT.getContext().copy(),
                                     checking, false);
@@ -228,7 +214,7 @@ public class RiotLib
 
     /** Create a {@link ParserProfile}. */
     public static ParserProfile createParserProfile(FactoryRDF factory, ErrorHandler errorHandler,
-                                          IRIResolver resolver, boolean checking) {
+                                                    IRIxResolver resolver, boolean checking) {
         return new ParserProfileStd(factory,
                                     errorHandler,
                                     resolver,

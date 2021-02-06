@@ -36,12 +36,12 @@ import org.apache.jena.fuseki.servlets.ActionErrorException;
 import org.apache.jena.fuseki.servlets.ActionLib;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
-import org.apache.jena.iri.IRI;
+import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.RiotParseException;
 import org.apache.jena.riot.lang.StreamRDFCounting;
-import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.riot.web.HttpNames;
@@ -208,19 +208,12 @@ public class Upload {
                         graphName = value;
                         if ( graphName != null && !graphName.equals("") && !graphName.equals(HttpNames.graphTargetDefault) ) {
                             // -- Check IRI with additional checks.
-                            IRI iri = IRIResolver.parseIRI(value);
-                            if ( iri.hasViolation(false) )
+                            try {
+                                IRIx iri = IRIx.create(value);
+                                if ( ! iri.isReference() )
+                                    ServletOps.errorBadRequest("IRI not suitable: " + graphName);
+                            } catch (IRIException ex) {
                                 ServletOps.errorBadRequest("Bad IRI: " + graphName);
-                            if ( iri.getScheme() == null )
-                                ServletOps.errorBadRequest("Bad IRI: no IRI scheme name: " + graphName);
-                            if ( iri.getScheme().equalsIgnoreCase("http") || iri.getScheme().equalsIgnoreCase("https") ) {
-                                // Redundant??
-                                if ( iri.getRawHost() == null )
-                                    ServletOps.errorBadRequest("Bad IRI: no host name: " + graphName);
-                                if ( iri.getRawPath() == null || iri.getRawPath().length() == 0 )
-                                    ServletOps.errorBadRequest("Bad IRI: no path: " + graphName);
-                                if ( iri.getRawPath().charAt(0) != '/' )
-                                    ServletOps.errorBadRequest("Bad IRI: Path does not start '/': " + graphName);
                             }
                             // End check IRI
                         }
@@ -261,8 +254,8 @@ public class Upload {
 
                     StreamRDF x = StreamRDFLib.dataset(dsgTmp);
                     StreamRDFCounting dest = StreamRDFLib.count(x);
-                    try { 
-                        ActionLib.parse(action, dest, input, lang, base);   
+                    try {
+                        ActionLib.parse(action, dest, input, lang, base);
                     } catch (RiotParseException ex) {
                         IO.skipToEnd(input);
                         ServletOps.errorParseError(ex);

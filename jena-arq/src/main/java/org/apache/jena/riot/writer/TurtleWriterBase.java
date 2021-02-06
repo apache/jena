@@ -23,8 +23,8 @@ import java.io.Writer ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.graph.Graph ;
+import org.apache.jena.irix.IRIs;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.sparql.util.Context ;
@@ -50,7 +50,7 @@ public abstract class TurtleWriterBase extends WriterGraphRIOTBase
 
     private void output$(IndentedWriter iOut, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
         if ( baseURI != null )
-            baseURI = IRIResolver.resolveStringSilent(baseURI);
+            baseURI = IRIs.resolve(baseURI);
         output(iOut, graph, prefixMap, baseURI, context) ;
         iOut.flush() ;
     }

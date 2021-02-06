@@ -54,7 +54,7 @@ public class TestUnescape
     
     private void execTestFail(String input) {
         try {
-            String s = ParserBase.unescapeStr(input);
+            String s = QueryParserBase.unescapeStr(input);
             fail("Unescaping succeeded on " + input + " producing <<"+s+">>");
         }
         catch (QueryParseException ex) {
@@ -63,7 +63,7 @@ public class TestUnescape
     }
 
     private void execTest(String input, String outcome) {
-        String result = ParserBase.unescapeStr(input);
+        String result = QueryParserBase.unescapeStr(input);
         assertEquals("Unescaped string does not match (" + input + ")", outcome, result);
     }
 }
