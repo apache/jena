@@ -18,8 +18,8 @@
 
 package org.apache.jena.fuseki.main.cmds;
 
-import jena.cmd.CmdException;
 import org.apache.jena.atlas.io.IO;
+import org.apache.jena.cmd.CmdException;
 import org.apache.jena.fuseki.system.spot.TDBOps;
 import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.tdb2.DatabaseMgr;

@@ -18,7 +18,7 @@
 
 package arq.cmdline;
 
-import jena.cmd.*;
+import org.apache.jena.cmd.*;
 import org.apache.jena.irix.IRIException;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.irix.IRIx;

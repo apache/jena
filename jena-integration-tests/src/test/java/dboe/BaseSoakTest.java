@@ -20,10 +20,10 @@ package dboe;
 
 import java.util.List ;
 
-import jena.cmd.CmdException ;
-import jena.cmd.CmdGeneral ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.RandomLib ;
+import org.apache.jena.cmd.CmdException;
+import org.apache.jena.cmd.CmdGeneral;
 
 public abstract class BaseSoakTest extends CmdGeneral {
 

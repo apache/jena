@@ -24,10 +24,10 @@ import java.util.List;
 
 import arq.cmdline.CmdARQ;
 import arq.cmdline.ModDatasetAssembler;
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdException;
-import jena.cmd.TerminationException;
 import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.CmdException;
+import org.apache.jena.cmd.TerminationException;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.jetty.JettyServerConfig;

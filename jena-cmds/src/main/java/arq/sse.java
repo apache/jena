@@ -18,11 +18,10 @@
 
 package arq;
 
-import jena.cmd.ArgDecl;
-import jena.cmd.TerminationException;
-
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.TerminationException;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.sse.Item ;

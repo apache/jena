@@ -31,10 +31,10 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 
-import jena.cmd.CmdException;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.cmd.CmdException;
 import org.apache.jena.dboe.sys.Names;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;

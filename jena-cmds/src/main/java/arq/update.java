@@ -21,9 +21,9 @@ package arq;
 import java.util.List;
 
 import arq.cmdline.CmdUpdate;
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdException;
 import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.CmdException;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.SystemARQ;

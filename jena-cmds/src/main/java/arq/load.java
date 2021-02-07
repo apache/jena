@@ -22,10 +22,10 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import arq.cmdline.CmdUpdate ;
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdException;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.CmdException;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.DatasetGraph ;
