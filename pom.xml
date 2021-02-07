@@ -93,8 +93,6 @@
     <ver.httpclient-osgi>${ver.httpclient}</ver.httpclient-osgi>
     
     <ver.lucene>7.7.3</ver.lucene>
-    <!-- Align to Lucene version -->
-    <ver.elasticsearch>6.8.13</ver.elasticsearch>
 
     <ver.spatial4j>0.8</ver.spatial4j>
 
@@ -177,7 +175,6 @@
         <module>apache-jena-libs</module>
 
         <module>jena-text</module>
-        <!-- <module>jena-text-es</module>        -->
         
         <module>jena-cmds</module>
         <module>jena-fuseki2</module>
@@ -261,13 +258,10 @@
         <!-- Retired: <module>jena-maven-tools</module> -->
 
         <!-- Other -->
-        <module>jena-sdb</module>
         <module>jena-permissions</module>
         <module>jena-extras</module>
 
         <!-- Slow building modules -->
-        <!-- Javadoc does not build under Java11 without fixes (see plugin) -->
-        <module>jena-text-es</module>
 
         <!-- Javadoc does not build under Java11 without fixes (see plugin) -->
         <module>jena-jdbc</module>

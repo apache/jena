@@ -1,5 +1,0 @@
-PREFIX : <http://example/>
-
-SELECT ?p
-{ ?x ?p ?v }
-LIMIT 3
