@@ -28,8 +28,8 @@ import java.util.regex.Pattern ;
 import org.apache.jena.graph.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.RDFReader ;
-import org.apache.jena.rdf.model.RDFWriter ;
+import org.apache.jena.rdf.model.RDFReaderI ;
+import org.apache.jena.rdf.model.RDFWriterI ;
 import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler ;
 import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.rdf.model.test.ModelTestBase ;
@@ -145,7 +145,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 		check(file1, // any will do
 				"xml:base=['\"]" + base2 + "['\"]", new Change() {
 					@Override
-                    public void modify(RDFWriter writer) {
+                    public void modify(RDFWriterI writer) {
 						String oldvalue = (String) writer.setProperty(
 								"xmlbase", base1);
 						assertTrue("xmlbase valued non-null", oldvalue == null);
@@ -309,13 +309,13 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 	}
 
 	void setNsPrefixSysProp(String prefix, String uri) {
-		System.setProperty(RDFWriter.NSPREFIXPROPBASE + uri, prefix);
+		System.setProperty(RDFWriterI.NSPREFIXPROPBASE + uri, prefix);
 	}
 
 	public void testUseNamespaceSysProp() throws IOException {
 		check(file1, "xmlns:eg=['\"]http://example.org/#['\"]", new Change() {
 			@Override
-            public void modify(RDFWriter writer) {
+            public void modify(RDFWriterI writer) {
 				setNsPrefixSysProp("eg", "http://example.org/#");
 			}
 		});
@@ -324,7 +324,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 	public void testDefaultNamespaceSysProp() throws IOException {
 		check(file1, "xmlns=['\"]http://example.org/#['\"]", new Change() {
 			@Override
-            public void modify(RDFWriter writer) {
+            public void modify(RDFWriterI writer) {
 				setNsPrefixSysProp("", "http://example.org/#");
 			}
 		});
@@ -338,7 +338,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 				new Change() {
 
 					@Override
-                    public void modify(RDFWriter writer) {
+                    public void modify(RDFWriterI writer) {
 						setNsPrefixSysProp("eg1", "http://example.org/#");
 						setNsPrefixSysProp("eg2", "http://example.org/#");
 					}
@@ -349,7 +349,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 		check(file1, "xmlns:eg=['\"]http://example.org/file[12]#['\"]", null,
 				new Change() {
 					@Override
-                    public void modify(RDFWriter writer) {
+                    public void modify(RDFWriterI writer) {
 						setNsPrefixSysProp("eg", "http://example.org/file1#");
 						setNsPrefixSysProp("eg", "http://example.org/file2#");
 					}
@@ -426,7 +426,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
         Model m = ModelFactory.createModelForGraph(g) ;
         // serialize
 
-        RDFWriter rw = m.getWriter(lang) ;
+        RDFWriterI rw = m.getWriter(lang) ;
         if ( p != null )
             rw.setProperty(p, val) ;
         try (StringWriter w = new StringWriter()) {
@@ -443,7 +443,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
             }
             // read back in
             Model m2 = createMemModel() ;
-            RDFReader rdr = m2.getReader("RDF/XML") ;
+            RDFReaderI rdr = m2.getReader("RDF/XML") ;
             rdr.setProperty("error-mode", "lax") ;
             try (StringReader sr = new StringReader(f)) {
                 rdr.read(m2, sr, "http://example.org/") ;
@@ -515,7 +515,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 	 * 
 	 */
 	public void testRelativeAPI() {
-		RDFWriter w = createMemModel().getWriter(lang);
+		RDFWriterI w = createMemModel().getWriter(lang);
 		String old = (String) w.setProperty("relativeURIs", "");
 		assertEquals("default value check", old,
 				"same-document, absolute, relative, parent");
@@ -537,7 +537,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 
 		String contents ;
 		try ( ByteArrayOutputStream bos = new ByteArrayOutputStream() ) {
-		    RDFWriter writer = m.getWriter(lang);
+		    RDFWriterI writer = m.getWriter(lang);
 		    writer.setProperty("relativeURIs", relativeParam);
 		    writer.write(m, bos, base);
 	        contents = bos.toString("UTF8");

@@ -21,12 +21,14 @@ package org.apache.jena.rdf.model;
 import java.io.Reader;
 import java.io.InputStream;
 
-/** An <code>RDFReader</code> reads a serialized representation of RDF,
- * e.g. RDF/XML, n-triple or n3 and adds the statements to a model.
+/**
+ * An <code>RDFReader</code> reads a serialized representation of RDF,
+ * e.g. RDF/XML or N-Triples and adds the statements to a model.
  */
-public interface RDFReader {
 
-	/** 
+public interface RDFReaderI {
+
+	/**
 	 * It is usually a mistake to use this method.
 	 * Read serialized RDF from a <code>Reader</code> and add the statements to a
 	 * <code>Model</code>. It is generally better to use an InputStream if
@@ -74,7 +76,7 @@ public interface RDFReader {
 	 * that implementation. </p>
      * <p> The built-in RDFReaders have properties as defined by:
  * <dl>
- * <dt>N3</dt><dt>N-TRIPLE</dt>
+ * <dt>N-TRIPLE</dt>
  * <dd>No properties.</dd>
  * <dt>RDF/XML</dt><dt>RDF/XML-ABBREV</dt>
  * <dd>See {@link org.apache.jena.rdfxml.xmlinput.JenaReader#setProperty(String,Object)}
@@ -90,5 +92,5 @@ public interface RDFReader {
 	 * @return the previous error handler
 	 */
 	public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler);
-    
+
 }

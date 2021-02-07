@@ -34,16 +34,16 @@ package org.apache.jena.rdf.model;
  */
 
 public interface RDFWriterF {
-    
+
 /** return an RDFWriter instance for the default serialization language.
  * @return an RDFWriter instance for the default serialization language.
- */    
-    public RDFWriter getWriter();
-    
+ */
+    public RDFWriterI getWriter();
+
 /** an RDFWriter instance for the specified serialization language.
  * @param lang the serialization language - <code>null</code> selects the
  *             default
  * @return the RDFWriter instance
- */    
-    public RDFWriter getWriter(String lang); 
+ */
+    public RDFWriterI getWriter(String lang);
 }

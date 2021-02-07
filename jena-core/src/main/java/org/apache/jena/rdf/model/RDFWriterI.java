@@ -19,13 +19,12 @@
 package org.apache.jena.rdf.model;
 import java.io.Writer;
 import java.io.OutputStream;
-/** RDFWriter is an interface to RDF serializers.
+/** RDFWriterI is an interface to RDF serializers.
  *
  * <p>An <code>RDFWriter</code> is a class which serializes an RDF model
- * to some RDF serialization language.  RDF/XML, n-triple and n3 are
- * examples of serialization languages.</p>
+ * to some RDF serialization language.</p>
  */
-public interface RDFWriter {
+public interface RDFWriterI {
 
 	public static final String NSPREFIXPROPBASE = "org.apache.jena.nsprefix.";
 	/** Caution: Serialize Model <code>model</code> to Writer <code>out</code>.
@@ -44,7 +43,6 @@ public interface RDFWriter {
 	   null</code> means use only absolute URI's.
 	 */
 	public void write(Model model, Writer out, String base);
-
 
 	/** Serialize Model <code>model</code> to OutputStream <code>out</out>.
 	 * The implementation chooses  the character encoding, utf-8 is preferred.
@@ -71,7 +69,7 @@ public interface RDFWriter {
 	 * <p>
 	 * The built-in RDFWriters have properties as defined by:
 	 * <dl>
-	 * <dt>N3</dt><dt>N-TRIPLE</dt>
+	 * <dt>N-TRIPLE</dt>
 	 * <dd>No properties.</dd>
 	 * <dt>RDF/XML</dt><dt>RDF/XML-ABBREV</dt>
 	 * </dl>

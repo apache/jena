@@ -197,12 +197,12 @@ implements Model, PrefixMapping, Lock
     }
 
     @Override
-    public RDFReader getReader()  {
+    public RDFReaderI getReader()  {
         return readerFactory.getReader();
     }
 
     @Override
-    public RDFReader getReader(String lang)  {
+    public RDFReaderI getReader(String lang)  {
         return readerFactory.getReader(lang);
     }
 
@@ -259,7 +259,7 @@ implements Model, PrefixMapping, Lock
         prefixes.
      */
     @Override
-    public RDFWriter getWriter()  {
+    public RDFWriterI getWriter()  {
         return writerFactory.getWriter();
     }
 
@@ -268,7 +268,7 @@ implements Model, PrefixMapping, Lock
         prefixes.
      */
     @Override
-    public RDFWriter getWriter(String lang)  {
+    public RDFWriterI getWriter(String lang)  {
         return writerFactory.getWriter(lang);
     }
 

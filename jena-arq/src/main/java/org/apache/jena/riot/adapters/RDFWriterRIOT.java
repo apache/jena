@@ -26,7 +26,7 @@ import java.util.Map ;
 
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
-import org.apache.jena.rdf.model.RDFWriter ;
+import org.apache.jena.rdf.model.RDFWriterI ;
 import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.sparql.util.Context ;
@@ -34,15 +34,15 @@ import org.apache.jena.sparql.util.Symbol ;
 
 /**
  * This class is used for indirecting all model.write calls to RIOT. It
- * implements Jena core {@link RDFWriter} can calls {@link WriterGraphRIOT}.
+ * implements Jena core {@link RDFWriterI} can calls {@link WriterGraphRIOT}.
  * <p>
  * For RDF/XML, that {@link WriterGraphRIOT} is a {@link AdapterRDFWriter} that
- * calls the old style {@link RDFWriter} interface.
+ * calls the old style {@link RDFWriterI} interface.
  * <p>
  * {@link AdapterRDFWriter} is a {@link WriterGraphRIOT} over a
- * {@link RDFWriter}.
+ * {@link RDFWriterI}.
  */
-public class RDFWriterRIOT implements RDFWriter 
+public class RDFWriterRIOT implements RDFWriterI 
 {
     // ---- Compatibility
     private final String basename ; 

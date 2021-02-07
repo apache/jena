@@ -23,7 +23,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.RDFWriter ;
+import org.apache.jena.rdf.model.RDFWriterI ;
 import org.apache.jena.rdf.model.test.ModelTestBase ;
 import org.apache.jena.util.FileManager ;
 
@@ -46,7 +46,7 @@ public class TestWriterFeatures extends ModelTestBase
             String contents = null ;
             
             try ( StringWriter sw = new StringWriter() ) {
-                RDFWriter w =  model.getWriter(writerName) ;
+                RDFWriterI w =  model.getWriter(writerName) ;
                 if ( propertyName != null )
                     w.setProperty(propertyName, propertyValue) ;
                 w.write(model, sw, null) ;

@@ -37,7 +37,7 @@ import org.apache.jena.graph.* ;
 import org.apache.jena.iri.IRIFactory;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
-import org.apache.jena.rdf.model.RDFReader ;
+import org.apache.jena.rdf.model.RDFReaderI ;
 import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler ;
 import org.apache.jena.rdfxml.xmlinput.impl.RDFXMLParser ;
 import org.apache.jena.shared.DoesNotExistException ;
@@ -48,7 +48,7 @@ import org.apache.jena.shared.WrappedIOException ;
 /**
  * Interface between Jena and ARP.
  */
-public class JenaReader implements RDFReader, ARPErrorNumbers {
+public class JenaReader implements RDFReaderI, ARPErrorNumbers {
 
     static private final String saxFeaturesURL = "http://xml.org/sax/features/";
 

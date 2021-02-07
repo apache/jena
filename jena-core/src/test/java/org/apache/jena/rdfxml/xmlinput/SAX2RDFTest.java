@@ -32,7 +32,7 @@ import junit.framework.TestSuite;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
-import org.apache.jena.rdf.model.RDFReader ;
+import org.apache.jena.rdf.model.RDFReaderI ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
@@ -1218,7 +1218,7 @@ public class SAX2RDFTest extends TestCase {
 		Model m2 = ModelFactory.createDefaultModel();
         RDFEHArray eh = new RDFEHArray();
         try ( InputStream in = new FileInputStream(file) ) {
-            RDFReader w = m.getReader();
+            RDFReaderI w = m.getReader();
             w.setErrorHandler(eh);
             w.read(m, in, base);
         }

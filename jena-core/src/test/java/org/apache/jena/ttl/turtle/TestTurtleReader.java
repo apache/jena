@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.RDFReader ;
+import org.apache.jena.rdf.model.RDFReaderI ;
 
 
 public class TestTurtleReader extends TestCase
@@ -35,7 +35,7 @@ public class TestTurtleReader extends TestCase
     
     public void test0()
     {
-        RDFReader r = ModelFactory.createDefaultModel().getReader("Turtle") ;
+        RDFReaderI r = ModelFactory.createDefaultModel().getReader("Turtle") ;
         assertNotNull(r) ;
     }
     

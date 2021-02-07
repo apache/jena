@@ -1194,12 +1194,12 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public RDFReader getReader() {
+	public RDFReaderI getReader() {
 		return holder.getBaseItem().getReader();
 	}
 
 	@Override
-	public RDFReader getReader(final String lang) {
+	public RDFReaderI getReader(final String lang) {
 		return holder.getBaseItem().getReader(lang);
 	}
 
@@ -1257,12 +1257,12 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public RDFWriter getWriter() {
+	public RDFWriterI getWriter() {
 		return holder.getBaseItem().getWriter();
 	}
 
 	@Override
-	public RDFWriter getWriter(final String lang) {
+	public RDFWriterI getWriter(final String lang) {
 		return holder.getBaseItem().getWriter(lang);
 	}
 

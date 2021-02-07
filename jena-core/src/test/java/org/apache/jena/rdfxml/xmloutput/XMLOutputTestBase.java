@@ -23,7 +23,7 @@ import java.util.Properties;
 import java.util.regex.Pattern;
 
 import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.RDFWriter ;
+import org.apache.jena.rdf.model.RDFWriterI ;
 import org.apache.jena.rdf.model.test.ModelTestBase ;
 import org.apache.jena.rdfxml.xmloutput.impl.BaseXMLWriter ;
 import org.apache.jena.rdfxml.xmloutput.impl.SimpleLogger ;
@@ -65,10 +65,10 @@ public class XMLOutputTestBase extends ModelTestBase
     
     static protected class Change 
         {
-        public void modify( RDFWriter w ) {}
+        public void modify( RDFWriterI w ) {}
         public void modify( Model m ) {}
         
-        public void modify( Model m, RDFWriter w ) { modify(m); modify(w); }
+        public void modify( Model m, RDFWriterI w ) { modify(m); modify(w); }
         
         public static Change none()
             { return new Change(); }
@@ -77,7 +77,7 @@ public class XMLOutputTestBase extends ModelTestBase
             {
             return new Change()
                 { @Override
-                public void modify( RDFWriter writer )
+                public void modify( RDFWriterI writer )
                     { writer.setProperty( property, value ); }
                 };
             }
@@ -86,7 +86,7 @@ public class XMLOutputTestBase extends ModelTestBase
             {
             return new Change()
                 { @Override
-                public void modify( RDFWriter writer )
+                public void modify( RDFWriterI writer )
                     { writer.setProperty( property, value ); }
                 };
             }
@@ -109,7 +109,7 @@ public class XMLOutputTestBase extends ModelTestBase
         private Change and( final Change change )
             { return new Change()
                 { @Override
-                public void modify(  Model m, RDFWriter w )
+                public void modify(  Model m, RDFWriterI w )
                     {
                     Change.this.modify( m, w );
                     change.modify( m, w );
@@ -196,7 +196,7 @@ public class XMLOutputTestBase extends ModelTestBase
             sw = new OutputStreamWriter(bos, encoding);
         }
         Properties p = (Properties) System.getProperties().clone();
-        RDFWriter writer = m.getWriter(lang);
+        RDFWriterI writer = m.getWriter(lang);
         code.modify( m, writer );
         writer.write( m, sw, base );
         sw.close();

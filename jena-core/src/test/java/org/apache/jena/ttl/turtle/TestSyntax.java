@@ -31,7 +31,7 @@ public class TestSyntax extends TestCase
     public void runTest()
     {
         Model model = ModelFactory.createDefaultModel() ;
-        RDFReader t = new TurtleReader() ;
+        RDFReaderI t = new TurtleReader() ;
         try {
             t.read(model, uri) ;
         } catch (TurtleParseException ex)

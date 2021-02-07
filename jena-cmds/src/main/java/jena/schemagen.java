@@ -631,7 +631,7 @@ public class schemagen {
         if (includeSource()) {
             // first save a copy of the source in compact form into a buffer
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            RDFWriter rw = m_source.getWriter( "Turtle" );
+            RDFWriterI rw = m_source.getWriter( "Turtle" );
             rw.setProperty( "objectLists", Boolean.FALSE.toString() );
             rw.write( m_source, bos, null );
             String output = bos.toString();

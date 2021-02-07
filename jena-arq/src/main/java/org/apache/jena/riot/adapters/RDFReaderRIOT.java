@@ -25,7 +25,7 @@ import java.util.Locale ;
 import org.apache.jena.graph.GraphEvents ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
-import org.apache.jena.rdf.model.RDFReader ;
+import org.apache.jena.rdf.model.RDFReaderI ;
 import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
@@ -34,7 +34,7 @@ import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol ;
 
 /** Adapter from Jena2 original style adapter to RIOT reader. */
-public class RDFReaderRIOT implements RDFReader {
+public class RDFReaderRIOT implements RDFReaderI {
     private final String      basename ;
     protected final Lang      hintlang ;
     protected Context         context      = new Context() ;

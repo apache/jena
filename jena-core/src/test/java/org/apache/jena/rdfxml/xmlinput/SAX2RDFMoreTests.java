@@ -27,7 +27,7 @@ import javax.xml.parsers.SAXParserFactory;
 import junit.framework.TestCase;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.RDFReader ;
+import org.apache.jena.rdf.model.RDFReaderI ;
 import org.apache.jena.rdfxml.xmlinput.SAX2RDFTest.RDFEHArray ;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
@@ -43,7 +43,7 @@ public class SAX2RDFMoreTests extends TestCase {
 	    Model m2 = ModelFactory.createDefaultModel();
 	    RDFEHArray eh = new RDFEHArray();
 	    try ( InputStream in = new FileInputStream("testing/wg/rdfms-xmllang/test004.rdf") ) {
-	        RDFReader w = m.getReader();
+	        RDFReaderI w = m.getReader();
 	        w.setErrorHandler(eh);
 	        w.read(m, in, "http://example.org/");
 	    }

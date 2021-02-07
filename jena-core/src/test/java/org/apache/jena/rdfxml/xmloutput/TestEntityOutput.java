@@ -120,7 +120,7 @@ public class TestEntityOutput extends ModelTestBase
         Model m = createMemModel();
         m.read("file:testing/abbreviated/entities.rdf");
         try ( StringWriter w = new StringWriter() ) {
-            RDFWriter wr = m.getWriter();
+            RDFWriterI wr = m.getWriter();
             wr.setProperty("showDoctypeDeclaration", "true");
             wr.write(m, w, "http://example.org/");
             Reader r = new StringReader(w.toString());
@@ -173,7 +173,7 @@ public class TestEntityOutput extends ModelTestBase
     private String modelToString( Model m )
         {
         StringWriter s = new StringWriter();
-        RDFWriter w = m.getWriter( "RDF/XML-ABBREV" );
+        RDFWriterI w = m.getWriter( "RDF/XML-ABBREV" );
         w.setProperty( "showDoctypeDeclaration", Boolean.TRUE );
         w.write( m, s, null );
         return s.toString();

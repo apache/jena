@@ -22,7 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.rdf.model.RDFWriter;
+import org.apache.jena.rdf.model.RDFWriterI;
 import org.apache.jena.rdf.model.RDFWriterF;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.NoWriterForLangException ;
@@ -31,7 +31,7 @@ import org.apache.jena.shared.NoWriterForLangException ;
  */
 public class RDFWriterFImpl extends Object implements RDFWriterF {
     public static final String DEFAULTLANG = "RDF/XML";
-    private static Map<String, Class<? extends RDFWriter>> custom = new LinkedHashMap<>();
+    private static Map<String, Class<? extends RDFWriterI>> custom = new LinkedHashMap<>();
     private static RDFWriterF rewiredAlternative = null ;
     /** Rewire to use an external RDFWriterF (typically, RIOT).
      * Set to null to use old jena-core setup.
@@ -50,18 +50,18 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
     public RDFWriterFImpl() {}
 
     @Override
-    public RDFWriter getWriter() {
+    public RDFWriterI getWriter() {
         return getWriter(DEFAULTLANG);
     }
 
     @Override
-    public RDFWriter getWriter(String lang) {
+    public RDFWriterI getWriter(String lang) {
         // If RIOT ->
         if ( rewiredAlternative != null )
             return rewiredAlternative.getWriter(lang) ;
         if (lang==null || lang.equals(""))
             lang = DEFAULTLANG ;
-        Class<? extends RDFWriter> c = custom.get(lang);
+        Class<? extends RDFWriterI> c = custom.get(lang);
         if ( c == null )
             throw new NoWriterForLangException("Writer not found: " + lang);
         try {
@@ -77,9 +77,9 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
     }
 
     private static void reset() {
-        Class<? extends RDFWriter> rdfxmlWriter = org.apache.jena.rdfxml.xmloutput.impl.Basic.class;
-        Class<? extends RDFWriter> rdfxmlAbbrevWriter = org.apache.jena.rdfxml.xmloutput.impl.Abbreviated.class;
-        Class<? extends RDFWriter> ntWriter = org.apache.jena.rdf.model.impl.NTripleWriter.class;
+        Class<? extends RDFWriterI> rdfxmlWriter = org.apache.jena.rdfxml.xmloutput.impl.Basic.class;
+        Class<? extends RDFWriterI> rdfxmlAbbrevWriter = org.apache.jena.rdfxml.xmloutput.impl.Abbreviated.class;
+        Class<? extends RDFWriterI> ntWriter = org.apache.jena.rdf.model.impl.NTripleWriter.class;
 
         custom.put("RDF/XML", rdfxmlWriter);
         custom.put("RDF/XML-ABBREV", rdfxmlAbbrevWriter);
@@ -90,7 +90,7 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
     }
 
     private static String currentEntry(String lang) {
-        Class<? extends RDFWriter> oldClass = custom.get(lang);
+        Class<? extends RDFWriterI> oldClass = custom.get(lang);
         if ( oldClass != null )
             return oldClass.getName();
         else
