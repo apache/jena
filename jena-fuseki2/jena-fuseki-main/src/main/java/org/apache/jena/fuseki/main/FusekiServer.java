@@ -296,7 +296,11 @@ public class FusekiServer {
             OperationRegistry.copyConfig(operationRegistry, this.operationRegistry);
         }
 
-        /** Set the port to run on. */
+        /**
+         * Set the port to run on.
+         * <p>
+         * If set to 0, a random free port will be used.
+         */
         public Builder port(int port) {
             if ( port < 0 )
                 throw new IllegalArgumentException("Illegal port="+port+" : Port must be greater than or equal to zero.");
