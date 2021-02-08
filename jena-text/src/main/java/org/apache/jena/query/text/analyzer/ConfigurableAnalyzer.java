@@ -37,7 +37,6 @@ import org.apache.lucene.analysis.core.LetterTokenizer;
 import org.apache.lucene.analysis.core.LowerCaseFilter ;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer ;
 import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilter;
-import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 
 /** 
@@ -67,7 +66,6 @@ public class ConfigurableAnalyzer extends Analyzer {
             
             filterSpecs.put(TextVocab.NS+"ASCIIFoldingFilter", new FilterSpec(ASCIIFoldingFilter.class, paramClasses, paramValues));
             filterSpecs.put(TextVocab.NS+"LowerCaseFilter", new FilterSpec(LowerCaseFilter.class, paramClasses, paramValues));
-            filterSpecs.put(TextVocab.NS+"StandardFilter", new FilterSpec(StandardFilter.class, paramClasses, paramValues));
         }
         
         public static void defineFilter(String id, FilterSpec spec) {
