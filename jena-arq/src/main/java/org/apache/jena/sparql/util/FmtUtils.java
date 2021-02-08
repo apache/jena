@@ -27,12 +27,10 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Node_Literal ;
 import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIRelativize ;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
@@ -466,16 +464,13 @@ public class FmtUtils
         stringForURI( result, uri ) ;
     }
 
-    static private int relFlags = IRIRelativize.SAMEDOCUMENT | IRIRelativize.CHILD ;
-
-    static public String abbrevByBase(String uri, String base)
-    {
-        if ( hasScheme(uri) )
-            return uri ;
-        IRI baseIRI = IRIResolver.iriFactory().construct(base) ;
-        IRI rel = baseIRI.relativize(uri, relFlags) ;
-        String r = rel.toString() ;
-        return r ;
+    public static String abbrevByBase(String uriStr, String base) {
+        IRIx baseIRI = IRIx.create(base);
+        if ( baseIRI == null )
+            return null;
+        IRIx relInput = IRIx.create(uriStr);
+        IRIx relativized = baseIRI.relativize(relInput);
+        return (relativized==null) ? null : relativized.toString();
     }
 
     static private Pattern schemePattern = Pattern.compile("[A-Za-z]+:") ;

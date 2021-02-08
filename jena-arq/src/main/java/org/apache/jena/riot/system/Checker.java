@@ -21,7 +21,6 @@ package org.apache.jena.riot.system;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.checker.* ;
 
 /** A checker validates RDF terms. */
@@ -30,7 +29,7 @@ public final class Checker
     private boolean allowRelativeIRIs = false ;
     private boolean warningsAreErrors = false ;
     private ErrorHandler handler ;
-    
+
     private NodeChecker checkLiterals ;
     private NodeChecker checkURIs ;
     private NodeChecker checkBlankNodes ;
@@ -40,23 +39,23 @@ public final class Checker
     {
         this(null) ;
     }
-    
+
     public Checker(ErrorHandler handler)
     {
         if ( handler == null )
             handler = ErrorHandlerFactory.getDefaultErrorHandler() ;
         this.handler = handler ;
-        
+
         checkLiterals = new CheckerLiterals(handler) ;
-       
-        checkURIs = new CheckerIRI(handler, IRIResolver.iriFactory()) ;
+
+        checkURIs = new CheckerIRI(handler) ;
         checkBlankNodes = new CheckerBlankNodes(handler) ;
-        checkVars = new CheckerVar(handler) ;        
+        checkVars = new CheckerVar(handler) ;
     }
 
-    public ErrorHandler getHandler()                { return handler ; } 
+    public ErrorHandler getHandler()                { return handler ; }
     public void setHandler(ErrorHandler handler)    { this.handler = handler ; }
-    
+
     public boolean check(Node node, long line, long col)
     {
         // NodeVisitor?
@@ -69,16 +68,16 @@ public final class Checker
     }
 
     /** Check a triple - assumes individual nodes are legal */
-    public boolean check(Triple triple, long line, long col) 
+    public boolean check(Triple triple, long line, long col)
     {
-        return checkTriple(triple.getSubject(), triple.getPredicate(), triple.getObject(), line, col) ; 
+        return checkTriple(triple.getSubject(), triple.getPredicate(), triple.getObject(), line, col) ;
     }
-    
+
     /** Check a triple against the RDF rules for a triple : subject is a IRI or bnode, predicate is a IRI and object is an bnode, literal or IRI */
-    public boolean checkTriple(Node subject, Node predicate, Node object, long line, long col) 
+    public boolean checkTriple(Node subject, Node predicate, Node object, long line, long col)
     {
         boolean rc = true ;
-    
+
         if ( subject == null || ( ! subject.isURI() && ! subject.isBlank() ) )
         {
             handler.error("Subject is not a URI or blank node", line, col) ;
@@ -96,12 +95,12 @@ public final class Checker
         }
         return rc ;
     }
-    
+
 //    public static boolean validate(String msg, Triple triple)
 //    {
 //        return validate(msg, triple.getSubject() , triple.getPredicate() , triple.getObject() ) ;
 //    }
-//    
+//
 //    public static boolean validate(String msg, Node subject, Node predicate, Node object)
 //    {
 //        if ( msg == null )
@@ -111,7 +110,7 @@ public final class Checker
 //            errorHandlerStd.error(msg+": Subject is not a URI or blank node", -1, -1) ;
 //            return false ;
 //        }
-//            
+//
 //        if ( predicate == null || ( ! predicate.isURI() ) )
 //        {
 //            errorHandlerStd.error(msg+": Predicate not a URI", -1, -1) ;
@@ -124,30 +123,21 @@ public final class Checker
 //        }
 //        return true ;
 //    }
-   
+
     final public boolean checkVar(Node node, long line, long col)
     { return checkVars.check(node, line, col) ; }
 
     final public boolean checkLiteral(Node node, long line, long col)
     { return checkLiterals.check(node, line, col) ; }
-    
+
     final public boolean checkBlank(Node node, long line, long col)
     { return checkBlankNodes.check(node, line, col) ; }
 
     final public boolean checkIRI(Node node, long line, long col)
     { return checkURIs.check(node, line, col) ; }
 
-    final public boolean checkIRI(IRI iri, long line, long col)
-    { 
-        if ( ! ( checkURIs instanceof CheckerIRI ) )
-            return true ;
-        
-        return ((CheckerIRI)checkURIs).checkIRI(iri, line, col) ;
-    }
-
-    
     // Getters and setters
-    
+
     public final NodeChecker getCheckLiterals()                       { return checkLiterals ; }
     public final void setCheckLiterals(NodeChecker checkLiterals)     { this.checkLiterals = checkLiterals ; }
 

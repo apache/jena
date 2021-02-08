@@ -30,6 +30,11 @@ import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.IRIResolver ;
 
+/**
+ * Check IRIs.
+ * <p>
+ * This uses jena-iri for additional errors and warnings over and above the parsers..
+ */
 public class CheckerIRI implements NodeChecker
 {
     private boolean allowRelativeIRIs = false ;
@@ -38,7 +43,11 @@ public class CheckerIRI implements NodeChecker
     private IRIFactory iriFactory ;
 
     public CheckerIRI() {
-        this(ErrorHandlerFactory.getDefaultErrorHandler(), IRIResolver.iriFactory()) ;
+        this(ErrorHandlerFactory.getDefaultErrorHandler()) ;
+    }
+
+    public CheckerIRI(ErrorHandler handler) {
+        this(handler, IRIResolver.iriCheckerFactory()) ;
     }
 
     public CheckerIRI(ErrorHandler handler, IRIFactory iriFactory) {
@@ -72,26 +81,15 @@ public class CheckerIRI implements NodeChecker
         return !iri.hasViolation(true) ;
     }
 
-    /** Process violations on an IRI
-     *  Calls the errorhandler on all errors and warnings (as warning).
-     *  Assumes error handler throws exceptions on errors if needbe
-     *  @param iri  IRI to check
-     *  @param errorHandler The error handler to call on each warning or error.
-     *
-     */
-    public static void iriViolations(IRI iri, ErrorHandler errorHandler) {
-        iriViolations(iri, errorHandler, false, true, -1L, -1L) ;
-    }
-
     /**
      * Process violations on an IRI
      * Calls the errorHandler on all errors and warnings (as warning).
      * Assumes error handler throws exceptions on errors if need be
      */
-    public static void iriViolations(IRI iri, ErrorHandler errorHandler,
-                                     boolean allowRelativeIRIs,
-                                     boolean includeIRIwarnings,
-                                     long line, long col) {
+    private static void iriViolations(IRI iri, ErrorHandler errorHandler,
+                                      boolean allowRelativeIRIs,
+                                      boolean includeIRIwarnings,
+                                      long line, long col) {
         if ( !allowRelativeIRIs && iri.isRelative() )
             errorHandler.error("Relative IRI: " + iri, line, col) ;
 
@@ -111,16 +109,19 @@ public class CheckerIRI implements NodeChecker
                 int code = v.getViolationCode() ;
                 boolean isError = v.isError() ;
 
+                // IRI parsing ignored these.
+                // When checking we output a higher level of warnings.
                 // Ignore these. They seem to present even if switched off.
-                if ( code == Violation.LOWERCASE_PREFERRED
-                     || code == Violation.PERCENT_ENCODING_SHOULD_BE_UPPERCASE
-                     || code == Violation.SCHEME_PATTERN_MATCH_FAILED )
-                    continue ;
+//                if ( code == Violation.LOWERCASE_PREFERRED
+//                     || code == Violation.PERCENT_ENCODING_SHOULD_BE_UPPERCASE
+//                     || code == Violation.SCHEME_PATTERN_MATCH_FAILED )
+//                    continue ;
 
                 // Anything we want to reprioritise?
                 // [nothing at present]
 
-                // Remember first error and first warning.
+                // Remember first error and first warning in case we want to order findings
+                // (as use to happen when used with parsing).
                 if ( isError ) {
                     errorSeen = true ;
                     if ( vError == null )
@@ -135,38 +136,12 @@ public class CheckerIRI implements NodeChecker
                 String msg = v.getShortMessage() ;
                 String iriStr = iri.toString() ;
 
-                // Ideally, we might want to output all messages relating to this IRI
-                // then cause the error or continue.
-                // But that's tricky given the current errorhandler architecture.
-
-//                // Put out warnings for all IRI issues - later, exception for errors.
-//                if (v.getViolationCode() == ViolationCodes.REQUIRED_COMPONENT_MISSING &&
-//                    v.getComponent() == IRIComponents.SCHEME)
-//                {
-//                    if (! allowRelativeIRIs )
-//                        handler.error("Relative URIs are not permitted in RDF: <"+iriStr+">", line, col);
-//                }
-//                else
-                {
-                    if ( isError )
-                        // IRI errors are warning at the level of parsing - they got through syntax checks.
-                        errorHandler.warning("Bad IRI: "+msg, line, col);
-                    else
-                        errorHandler.warning("Not advised IRI: "+msg, line, col);
-                }
+                if ( isError )
+                    // IRI errors are warnings - they got through syntax checks.
+                    errorHandler.warning("Bad IRI: "+msg, line, col);
+                else
+                    errorHandler.warning("Not advised IRI: "+msg, line, col);
             }
-
-//            // and report our choosen error.
-//            if ( errorSeen || (warningsAreErrors && warningSeen) )
-//            {
-//                String msg = null ;
-//                if ( vError != null ) msg = vError.getShortMessage() ;
-//                if ( msg == null && vWarning != null ) msg = vWarning.getShortMessage() ;
-//                if ( msg == null )
-//                    handler.error("Bad IRI: <"+iri+">", line, col) ;
-//                else
-//                    handler.error("Bad IRI: "+msg, line, col) ;
-//            }
         }
     }
 }

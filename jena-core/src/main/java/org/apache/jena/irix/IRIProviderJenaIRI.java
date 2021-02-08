@@ -29,9 +29,10 @@ import org.apache.jena.iri.impl.PatternCompiler;
  */
 public class IRIProviderJenaIRI implements IRIProvider {
 
-    // jena-iri.IRI.create is silent.
-    // jena-iri.IRI.construct throws errors.
-    // jena-iri.IRI.resolve is the same as create
+    // Notes:
+    // jena-iri:IRI.create is silent.
+    // jena-iri:IRI.construct throws errors.
+    // jena-iri:IRI.resolve is the same as create
 
     public IRIProviderJenaIRI() { }
 
@@ -57,10 +58,18 @@ public class IRIProviderJenaIRI implements IRIProvider {
         public boolean isReference() {
             if ( jenaIRI.isRootless() )
                 return true;
+
             // isHierarchical.
-            return jenaIRI.getScheme() != null && jenaIRI.getRawHost() != null;
+            return jenaIRI.getScheme() != null;
                     // Unnecessary There is always a path even if it's "".
                     /* && iri.getRawPath() != null*/
+        }
+
+        @Override
+        public boolean hasScheme(String scheme) {
+            if ( jenaIRI.getScheme() == null )
+                return false;
+            return jenaIRI.getScheme().startsWith(scheme);
         }
 
         @Override
@@ -189,7 +198,6 @@ public class IRIProviderJenaIRI implements IRIProvider {
 
     private static final IRIFactory iriFactoryInst = new IRIFactory();
     static {
-        // These two are from IRIFactory.iriImplementation() ...
         iriFactoryInst.useSpecificationIRI(true);
         iriFactoryInst.useSchemeSpecificRules("*", true);
 
@@ -208,7 +216,6 @@ public class IRIProviderJenaIRI implements IRIProvider {
         setErrorWarning(iriFactoryInst, ViolationCodes.UNREGISTERED_IANA_SCHEME, false, false);
         setErrorWarning(iriFactoryInst, ViolationCodes.NON_INITIAL_DOT_SEGMENT, false, false);
 
-        // Warnings.
         setErrorWarning(iriFactoryInst, ViolationCodes.LOWERCASE_PREFERRED, false, true);
         setErrorWarning(iriFactoryInst, ViolationCodes.REQUIRED_COMPONENT_MISSING, true, true);
 

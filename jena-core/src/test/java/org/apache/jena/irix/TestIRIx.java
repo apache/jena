@@ -102,10 +102,6 @@ public class TestIRIx {
 
     @Test public void uri_06()      { test("http://1.2.3.4/abc"); }
 
-    @Test(expected=IRIException.class)
-    // Bad hex code: Breaks RFC 3986 grammar.
-    public void bad_01() { parse("http://h/ab%XXcd"); }
-
     // ---- Compliance with HTTP RFC7230. https://tools.ietf.org/html/rfc7230#section-2.7
     @Test(expected=IRIException.class)
     public void http_01() { parse("http:"); }
@@ -212,9 +208,21 @@ public class TestIRIx {
 
     @Test public void relative_http_08() { relative("http://example/dir1/dir2/path", "http://example/otherDir/abcd", null); }
 
+    @Test public void relative_http_09() { relative("http://example/path", "http://example/path", ""); }
+
+    @Test public void relative_http_10() { relative("http://example/path", "http://example/path#", "#"); }
+
     @Test public void relative_file_01() { relative("file:///dir/", "file:///dir/abcd", "abcd"); }
 
     @Test public void relative_file_02() { relative("file:///", "file:///dir/abcd", "dir/abcd"); }
+
+    // ---- Things expected.
+
+    @Test public void misc_01()     { reference("wm:/abc", true); }
+
+    @Test(expected=IRIException.class)
+    // Bad hex code: Breaks RFC 3986 grammar.
+    public void misc_02()           { parse("http://h/ab%XXcd"); }
 
     private void relative(String baseUriStr, String otherStr, String expected) {
         IRIx base = IRIx.create(baseUriStr);
@@ -230,6 +238,11 @@ public class TestIRIx {
     }
 
     // Create - is it suitable for an RDF reference?
+    private void reference(String uriStr) {
+        IRIx iri = IRIx.create(uriStr);
+        assertTrue("IRI = "+uriStr, iri.isReference());
+    }
+
     private void reference(String uriStr, boolean expected) {
         IRIx iri = IRIx.create(uriStr);
         assertEquals("IRI = "+uriStr, expected, iri.isReference());
