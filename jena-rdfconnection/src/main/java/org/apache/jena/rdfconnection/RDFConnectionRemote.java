@@ -394,7 +394,7 @@ public class RDFConnectionRemote implements RDFConnection {
      * <p>
      * The Content-Type is inferred from the file extension.
      * <p>
-     * "Replace" means overwrite existing data, othewise the date is added to the target.
+     * "Replace" means overwrite existing data, otherwise the date is added to the target.
      */
     protected void upload(String graph, String file, boolean replace) {
         // if triples

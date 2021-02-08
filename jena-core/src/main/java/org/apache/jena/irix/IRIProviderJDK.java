@@ -73,12 +73,15 @@ public class IRIProviderJDK implements IRIProvider {
             // Accept empty host for file:
             if ( javaURI.getScheme() == null )
                 return false;
-            if ( !javaURI.getScheme().equals("file") ) {
-                // file:/// is OK.
-                if ( javaURI.getHost() == null )
-                    return false;
-            }
             return true;
+        }
+
+        @Override
+        public boolean hasScheme(String scheme) {
+            String iriScheme = javaURI.getScheme();
+            if ( iriScheme == null )
+                return false;
+            return iriScheme.startsWith(scheme);
         }
 
         @Override

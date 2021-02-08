@@ -21,44 +21,38 @@ package org.apache.jena.riot.system;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.checker.* ;
+import org.apache.jena.sparql.core.Quad;
 
-/** A checker validates RDF terms. */
+/** A checker that drives the process of validating RDF terms, triples and quads. */
 public final class Checker
 {
     private boolean allowRelativeIRIs = false ;
     private boolean warningsAreErrors = false ;
     private ErrorHandler handler ;
-    
+
     private NodeChecker checkLiterals ;
     private NodeChecker checkURIs ;
     private NodeChecker checkBlankNodes ;
     private NodeChecker checkVars ;
 
-    public Checker()
-    {
-        this(null) ;
-    }
-    
-    public Checker(ErrorHandler handler)
-    {
-        if ( handler == null )
-            handler = ErrorHandlerFactory.getDefaultErrorHandler() ;
-        this.handler = handler ;
-        
-        checkLiterals = new CheckerLiterals(handler) ;
-       
-        checkURIs = new CheckerIRI(handler, IRIResolver.iriFactory()) ;
-        checkBlankNodes = new CheckerBlankNodes(handler) ;
-        checkVars = new CheckerVar(handler) ;        
+    public Checker() {
+        this(null);
     }
 
-    public ErrorHandler getHandler()                { return handler ; } 
-    public void setHandler(ErrorHandler handler)    { this.handler = handler ; }
-    
-    public boolean check(Node node, long line, long col)
-    {
+    public Checker(ErrorHandler handler) {
+        if ( handler == null )
+            handler = ErrorHandlerFactory.getDefaultErrorHandler();
+        this.handler = handler;
+
+        checkLiterals = new CheckerLiterals(handler);
+
+        checkURIs = new CheckerIRI(handler);
+        checkBlankNodes = new CheckerBlankNodes(handler);
+        checkVars = new CheckerVar(handler);
+    }
+
+    public boolean check(Node node, long line, long col) {
         // NodeVisitor?
         if      ( node.isURI() )        return checkIRI(node, line, col) ;
         else if ( node.isBlank() )      return checkBlank(node, line, col) ;
@@ -69,94 +63,116 @@ public final class Checker
     }
 
     /** Check a triple - assumes individual nodes are legal */
-    public boolean check(Triple triple, long line, long col) 
-    {
-        return checkTriple(triple.getSubject(), triple.getPredicate(), triple.getObject(), line, col) ; 
+    public boolean check(Triple triple, long line, long col) {
+        return checkTriple(triple.getSubject(), triple.getPredicate(), triple.getObject(), line, col);
     }
-    
+
     /** Check a triple against the RDF rules for a triple : subject is a IRI or bnode, predicate is a IRI and object is an bnode, literal or IRI */
-    public boolean checkTriple(Node subject, Node predicate, Node object, long line, long col) 
-    {
-        boolean rc = true ;
-    
-        if ( subject == null || ( ! subject.isURI() && ! subject.isBlank() ) )
-        {
-            handler.error("Subject is not a URI or blank node", line, col) ;
-            rc = false ;
-        }
-        if ( predicate == null || ( ! predicate.isURI() ) )
-        {
-            handler.error("Predicate not a URI", line, col) ;
-            rc = false ;
-        }
-        if ( object == null || ( ! object.isURI() && ! object.isBlank() && ! object.isLiteral() ) )
-        {
-            handler.error("Object is not a URI, blank node or literal", line, col) ;
-            rc = false ;
-        }
-        return rc ;
-    }
-    
-//    public static boolean validate(String msg, Triple triple)
-//    {
-//        return validate(msg, triple.getSubject() , triple.getPredicate() , triple.getObject() ) ;
-//    }
-//    
-//    public static boolean validate(String msg, Node subject, Node predicate, Node object)
-//    {
-//        if ( msg == null )
-//            msg = "Validation" ;
-//        if ( subject == null || ( ! subject.isURI() && ! subject.isBlank() ) )
-//        {
-//            errorHandlerStd.error(msg+": Subject is not a URI or blank node", -1, -1) ;
-//            return false ;
-//        }
-//            
-//        if ( predicate == null || ( ! predicate.isURI() ) )
-//        {
-//            errorHandlerStd.error(msg+": Predicate not a URI", -1, -1) ;
-//            return false ;
-//        }
-//        if ( object == null || ( ! object.isURI() && ! object.isBlank() && ! object.isLiteral() ) )
-//        {
-//            errorHandlerStd.error(msg+": Object is not a URI, blank node or literal", -1 ,-1) ;
-//            return false ;
-//        }
-//        return true ;
-//    }
-   
-    final public boolean checkVar(Node node, long line, long col)
-    { return checkVars.check(node, line, col) ; }
+    public boolean checkTriple(Node subject, Node predicate, Node object, long line, long col) {
+        boolean rc = true;
 
-    final public boolean checkLiteral(Node node, long line, long col)
-    { return checkLiterals.check(node, line, col) ; }
-    
-    final public boolean checkBlank(Node node, long line, long col)
-    { return checkBlankNodes.check(node, line, col) ; }
-
-    final public boolean checkIRI(Node node, long line, long col)
-    { return checkURIs.check(node, line, col) ; }
-
-    final public boolean checkIRI(IRI iri, long line, long col)
-    { 
-        if ( ! ( checkURIs instanceof CheckerIRI ) )
-            return true ;
-        
-        return ((CheckerIRI)checkURIs).checkIRI(iri, line, col) ;
+        if ( subject == null || (!subject.isURI() && !subject.isBlank()) ) {
+            handler.error("Subject is not a URI or blank node", line, col);
+            rc = false;
+        }
+        if ( predicate == null || (!predicate.isURI()) ) {
+            handler.error("Predicate not a URI", line, col);
+            rc = false;
+        }
+        if ( object == null || (!object.isURI() && !object.isBlank() && !object.isLiteral()) ) {
+            handler.error("Object is not a URI, blank node or literal", line, col);
+            rc = false;
+        }
+        return rc;
     }
 
-    
-    // Getters and setters
-    
-    public final NodeChecker getCheckLiterals()                       { return checkLiterals ; }
-    public final void setCheckLiterals(NodeChecker checkLiterals)     { this.checkLiterals = checkLiterals ; }
+    /** Check a quad - assumes individual nodes are legal */
+    public boolean checkQuad(Quad quad, long line, long col) {
+        return checkQuad(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject(), line, col);
+    }
 
-    public final NodeChecker getCheckURIs()                           { return checkURIs ; }
-    public final void setCheckURIs(NodeChecker checkURIs)             { this.checkURIs = checkURIs ; }
+    /** Check a quad against the RDF rules for a quad : subject is a IRI or bnode, predicate is a IRI and object is an bnode, literal or IRI */
+    public boolean checkQuad(Node graph, Node subject, Node predicate, Node object, long line, long col) {
+        boolean rc = true;
 
-    public final NodeChecker getCheckBlankNodes()                     { return checkBlankNodes ; }
-    public final void setCheckBlankNodes(NodeChecker checkBlankNodes) { this.checkBlankNodes = checkBlankNodes ; }
+        if ( graph == null || (!graph.isURI() && !graph.isBlank()) ) {
+            handler.error("Graph name is not a URI or blank node", line, col);
+            rc = false;
+        }
 
-    public final NodeChecker getCheckVars()                           { return checkVars ; }
-    public final void setCheckVars(NodeChecker checkVars)             { this.checkVars = checkVars ; }
+        if ( subject == null || (!subject.isURI() && !subject.isBlank() && !subject.isNodeTriple() ) ) {
+            handler.error("Subject is not a URI, blank node or RDF-star triple term", line, col);
+            rc = false;
+        }
+        if ( predicate == null || (!predicate.isURI()) ) {
+            handler.error("Predicate not a URI", line, col);
+            rc = false;
+        }
+        if ( object == null || (!object.isURI() && !object.isBlank() && !object.isLiteral() && !subject.isNodeTriple() ) ) {
+            handler.error("Object is not a URI, blank node, literal or RDF-star triple term", line, col);
+            rc = false;
+        }
+        return rc;
+    }
+
+    public boolean checkVar(Node node, long line, long col) {
+        return checkVars.check(node, line, col);
+    }
+
+    public boolean checkLiteral(Node node, long line, long col) {
+        return checkLiterals.check(node, line, col);
+    }
+
+    public boolean checkBlank(Node node, long line, long col) {
+        return checkBlankNodes.check(node, line, col);
+    }
+
+    public boolean checkIRI(Node node, long line, long col) {
+        return checkURIs.check(node, line, col);
+    }
+
+    public ErrorHandler getHandler() {
+        return handler;
+    }
+
+    public Checker setHandler(ErrorHandler handler) {
+        this.handler = handler;
+        return this;
+    }
+
+    public NodeChecker getCheckLiterals() {
+        return checkLiterals;
+    }
+
+    public Checker setCheckLiterals(NodeChecker checkLiterals) {
+        this.checkLiterals = checkLiterals;
+        return this;
+    }
+
+    public NodeChecker getCheckURIs() {
+        return checkURIs;
+    }
+
+    public Checker setCheckURIs(NodeChecker checkURIs) {
+        this.checkURIs = checkURIs;
+        return this;
+    }
+
+    public NodeChecker getCheckBlankNodes() {
+        return checkBlankNodes;
+    }
+
+    public Checker setCheckBlankNodes(NodeChecker checkBlankNodes) {
+        this.checkBlankNodes = checkBlankNodes;
+        return this;
+    }
+
+    public NodeChecker getCheckVars() {
+        return checkVars;
+    }
+
+    public Checker setCheckVars(NodeChecker checkVars) {
+        this.checkVars = checkVars;
+        return this;
+    }
 }

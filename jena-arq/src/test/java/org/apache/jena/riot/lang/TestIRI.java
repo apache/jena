@@ -22,45 +22,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.graph.Node ;
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIFactory ;
-import org.apache.jena.riot.ErrorHandlerTestLib ;
-import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
-import org.apache.jena.riot.checker.CheckerIRI ;
-import org.apache.jena.riot.system.ErrorHandler ;
-import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.junit.Test ;
 
+/**
+ * IRI-related tests for thing other that RFC IRI parsing and processing.
+ */
 public class TestIRI
 {
-    static protected final ErrorHandler handler = new ErrorHandlerTestLib.ErrorHandlerEx() ;
-
-    static IRIFactory factory = IRIResolver.iriFactory();
-
-    @Test public void iri1()  { testIRI("http://example/") ; }
-
-    // JENA-1713: Not a warning
-    @Test 
-    public void iri2()  { testIRI("http://example/.") ; }
-
-    @Test(expected=ErrorHandlerTestLib.ExError.class)
-    // No relative IRIs
-    public void iriErr1()  { testIRI("example") ; }
-
-    @Test(expected=ExWarning.class) 
-    public void iriWarn1()  
-    { testIRI("http:") ; }
-
-    @Test(expected=ExWarning.class) 
-    public void iriWarn2()  { testIRI("http:///::") ; }
-
-    private void testIRI(String uriStr)
-    {
-        IRI iri = factory.create(uriStr) ;
-        CheckerIRI.iriViolations(iri, handler) ;
-    }
-
     @Test public void bNodeIRI_1()
     {
         Node n = RiotLib.createIRIorBNode("_:abc") ;

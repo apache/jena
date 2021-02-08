@@ -30,6 +30,11 @@ import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.IRIResolver ;
 
+/**
+ * Check IRIs.
+ * <p>
+ * This uses jena-iri for additional warnings over and above the parsers.
+ */
 public class CheckerIRI implements NodeChecker
 {
     private boolean allowRelativeIRIs = false ;
@@ -38,7 +43,11 @@ public class CheckerIRI implements NodeChecker
     private IRIFactory iriFactory ;
 
     public CheckerIRI() {
-        this(ErrorHandlerFactory.getDefaultErrorHandler(), IRIResolver.iriFactory()) ;
+        this(ErrorHandlerFactory.getDefaultErrorHandler()) ;
+    }
+
+    public CheckerIRI(ErrorHandler handler) {
+        this(handler, IRIResolver.iriCheckerFactory()) ;
     }
 
     public CheckerIRI(ErrorHandler handler, IRIFactory iriFactory) {
@@ -73,11 +82,9 @@ public class CheckerIRI implements NodeChecker
     }
 
     /** Process violations on an IRI
-     *  Calls the errorhandler on all errors and warnings (as warning).
-     *  Assumes error handler throws exceptions on errors if needbe
+     *  Calls the {@link ErrorHandler} on all errors and warnings (as warnings).
      *  @param iri  IRI to check
-     *  @param errorHandler The error handler to call on each warning or error.
-     *
+     *  @param errorHandler The error handler to call on each warning
      */
     public static void iriViolations(IRI iri, ErrorHandler errorHandler) {
         iriViolations(iri, errorHandler, false, true, -1L, -1L) ;
@@ -86,87 +93,42 @@ public class CheckerIRI implements NodeChecker
     /**
      * Process violations on an IRI
      * Calls the errorHandler on all errors and warnings (as warning).
+     * (If checking for relative IRIs, these are sent out as errors.)
      * Assumes error handler throws exceptions on errors if need be
      */
-    public static void iriViolations(IRI iri, ErrorHandler errorHandler,
-                                     boolean allowRelativeIRIs,
-                                     boolean includeIRIwarnings,
-                                     long line, long col) {
+    private static void iriViolations(IRI iri, ErrorHandler errorHandler,
+                                      boolean allowRelativeIRIs,
+                                      boolean includeIRIwarnings,
+                                      long line, long col) {
         if ( !allowRelativeIRIs && iri.isRelative() )
             errorHandler.error("Relative IRI: " + iri, line, col) ;
 
         if ( iri.hasViolation(includeIRIwarnings) ) {
             Iterator<Violation> iter = iri.violations(includeIRIwarnings) ;
 
-            boolean errorSeen = false ;
-            boolean warningSeen = false ;
-
-            // What to finally report.
-            Violation vError = null ;
-            Violation vWarning = null ;
-            Violation xvSub = null ;
-
             for ( ; iter.hasNext() ; ) {
                 Violation v = iter.next() ;
                 int code = v.getViolationCode() ;
                 boolean isError = v.isError() ;
 
-                // Ignore these. They seem to present even if switched off.
-                if ( code == Violation.LOWERCASE_PREFERRED
-                     || code == Violation.PERCENT_ENCODING_SHOULD_BE_UPPERCASE
-                     || code == Violation.SCHEME_PATTERN_MATCH_FAILED )
-                    continue ;
-
                 // Anything we want to reprioritise?
+                // Some jena-iri violations are fully controllable by error.wraning controls
+                // and need to be handled here.
                 // [nothing at present]
-
-                // Remember first error and first warning.
-                if ( isError ) {
-                    errorSeen = true ;
-                    if ( vError == null )
-                        // Remember first error
-                        vError = v ;
-                } else {
-                    warningSeen = true ;
-                    if ( vWarning == null )
-                        vWarning = v ;
-                }
+//                if ( code == Violation.LOWERCASE_PREFERRED
+//                     || code == Violation.PERCENT_ENCODING_SHOULD_BE_UPPERCASE
+//                     || code == Violation.SCHEME_PATTERN_MATCH_FAILED )
+//                    continue ;
 
                 String msg = v.getShortMessage() ;
                 String iriStr = iri.toString() ;
 
-                // Ideally, we might want to output all messages relating to this IRI
-                // then cause the error or continue.
-                // But that's tricky given the current errorhandler architecture.
-
-//                // Put out warnings for all IRI issues - later, exception for errors.
-//                if (v.getViolationCode() == ViolationCodes.REQUIRED_COMPONENT_MISSING &&
-//                    v.getComponent() == IRIComponents.SCHEME)
-//                {
-//                    if (! allowRelativeIRIs )
-//                        handler.error("Relative URIs are not permitted in RDF: <"+iriStr+">", line, col);
-//                }
-//                else
-                {
-                    if ( isError )
-                        // IRI errors are warning at the level of parsing - they got through syntax checks.
-                        errorHandler.warning("Bad IRI: "+msg, line, col);
-                    else
-                        errorHandler.warning("Not advised IRI: "+msg, line, col);
-                }
+                if ( isError )
+                    // IRI errors are warnings - they got through syntax checks.
+                    errorHandler.warning("Bad IRI: "+msg, line, col);
+                else
+                    errorHandler.warning("Not advised IRI: "+msg, line, col);
             }
-
-//            // and report our choosen error.
-//            if ( errorSeen || (warningsAreErrors && warningSeen) )
-//            {
-//                String msg = null ;
-//                if ( vError != null ) msg = vError.getShortMessage() ;
-//                if ( msg == null && vWarning != null ) msg = vWarning.getShortMessage() ;
-//                if ( msg == null )
-//                    handler.error("Bad IRI: <"+iri+">", line, col) ;
-//                else
-//                    handler.error("Bad IRI: "+msg, line, col) ;
-//            }
         }
     }
 }

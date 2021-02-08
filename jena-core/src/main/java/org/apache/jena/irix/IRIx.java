@@ -90,6 +90,13 @@ public abstract class IRIx {
     public abstract boolean isRelative();
 
     /**
+     * Test whether the IRI has the given scheme name.
+     * <p>
+     * The scheme name should be lowercase.
+     */
+    public abstract boolean hasScheme(String scheme);
+
+    /**
      * An <em>RDF Reference</em> is an URI which has scheme.
      * If it is hierarchical, it should a non-empty host authority,
      * and may have a query component and may have a fragment component.

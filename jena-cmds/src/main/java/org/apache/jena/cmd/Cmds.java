@@ -27,7 +27,6 @@ import org.apache.jena.sys.JenaSystem;
 /**
  * Command execute by registering a name and a way to call "main".
  * This is used by modules that are not a dependency of jena-cmds.
- * <p>
  */
 public class Cmds {
 
@@ -49,12 +48,10 @@ public class Cmds {
         } catch (NoClassDefFoundError ex) {
             System.err.println("NoClassDefFoundError: Class missing on the classpath/modulepath: "+ex.getMessage().replace('/', '.'));
             throw new CmdException("NoClassDefFoundError: "+ex.getMessage(), ex);
-            //System.exit(2);
         }
         Consumer<String[]> main = findCmd(cmdName);
         if ( main == null ) {
             System.err.println("Command "+cmdName+" not found");
-            //throw new CmdException("Command "+cmdName+" not found");
             return ;
         }
         main.accept(args);
