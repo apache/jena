@@ -149,7 +149,7 @@ public class FusekiServer {
      */
     public int getPort() {
         //TODO garantee to return the HTTPS port, if HTTPS is enabled
-        return ((ServerConnector) fuseki.getJettyServer().getConnectors()[0]).getLocalPort();
+        return ((ServerConnector) getJettyServer().getConnectors()[0]).getLocalPort();
     }
 
     /** Get the underlying Jetty server which has also been set up. */
