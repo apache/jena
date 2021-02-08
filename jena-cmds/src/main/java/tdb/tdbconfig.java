@@ -23,9 +23,9 @@ import java.util.List ;
 import java.util.Map ;
 
 import arq.cmdline.CmdARQ ;
-import jena.cmd.ModVersion;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.DateTimeUtils ;
+import org.apache.jena.cmd.ModVersion;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.tdb.TDB ;

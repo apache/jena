@@ -21,7 +21,7 @@ package org.apache.jena.rdf.model.test;
 import java.io.StringReader;
 
 import org.apache.jena.graph.GraphEvents ;
-import org.apache.jena.rdf.model.RDFReader ;
+import org.apache.jena.rdf.model.RDFReaderI ;
 import org.apache.jena.rdf.model.test.helpers.RecordingModelListener ;
 import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
 
@@ -50,7 +50,7 @@ public class TestReaderEvents extends AbstractModelTestBase
 	{
 		final RecordingModelListener L = new RecordingModelListener();
 		model.register(L);
-		final RDFReader r = model.getReader(language);
+		final RDFReaderI r = model.getReader(language);
 		final StringReader stringReader = new StringReader(emptyModel);
 		r.read(model, stringReader, "");
 		L.assertHasStart(new Object[] { "someEvent", model,

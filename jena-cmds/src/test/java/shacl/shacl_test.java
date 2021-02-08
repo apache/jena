@@ -18,9 +18,9 @@
 
 package shacl;
 
-import jena.cmd.CmdGeneral;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.logging.LogCtl;
+import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.testing.RunManifest;
 import org.apache.jena.sys.JenaSystem;

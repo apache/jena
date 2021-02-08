@@ -20,12 +20,11 @@ package arq.cmdline;
 
 import java.io.PrintStream ;
 
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdArgModule;
-import jena.cmd.CmdGeneral;
-import jena.cmd.ModBase;
-
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.CmdArgModule;
+import org.apache.jena.cmd.CmdGeneral;
+import org.apache.jena.cmd.ModBase;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;

@@ -18,10 +18,10 @@
 
 package arq.cmdline;
 
-import jena.cmd.ArgDecl ;
-import jena.cmd.CmdGeneral ;
 import org.apache.jena.Jena ;
 import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorBase ;
 import org.apache.jena.sys.JenaSystem ;

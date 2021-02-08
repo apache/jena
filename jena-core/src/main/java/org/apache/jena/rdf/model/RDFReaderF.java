@@ -41,17 +41,17 @@ package org.apache.jena.rdf.model;
  */
 
 public interface RDFReaderF {
-    
+
 /** return an RDFReader instance for the default serialization language.
  * @return an RDFReader instance for the default serialization language.
- */    
-    public RDFReader getReader() ;
-    
+ */
+    public RDFReaderI getReader() ;
+
 /** return an RDFReader instance for the specified serialization language.
  * @return the RDFWriter instance
  * @param lang the serialization language - <code>null</code> selects the
  *            default
- 
- */    
-    public RDFReader getReader(String lang) ;
+
+ */
+    public RDFReaderI getReader(String lang) ;
 }

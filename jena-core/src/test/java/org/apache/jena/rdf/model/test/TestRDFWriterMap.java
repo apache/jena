@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.jena.Jena ;
-import org.apache.jena.rdf.model.RDFWriter ;
+import org.apache.jena.rdf.model.RDFWriterI ;
 import org.apache.jena.rdf.model.RDFWriterF ;
 import org.apache.jena.rdf.model.impl.NTripleWriter ;
 import org.apache.jena.rdfxml.xmloutput.impl.Abbreviated ;
@@ -36,7 +36,7 @@ public class TestRDFWriterMap extends JenaTestBase
 {
 	public static class RDFWriterMap implements RDFWriterF
 	{
-		protected final Map<String, Class<RDFWriter>> map = new HashMap<>();
+		protected final Map<String, Class<RDFWriterI>> map = new HashMap<>();
 
 		public RDFWriterMap( final boolean preloadDefaults )
 		{
@@ -47,15 +47,15 @@ public class TestRDFWriterMap extends JenaTestBase
 		}
 
 		@Override
-		public RDFWriter getWriter()
+		public RDFWriterI getWriter()
 		{
 			return getWriter("RDF/XML");
 		}
 
 		@Override
-		public RDFWriter getWriter( final String lang )
+		public RDFWriterI getWriter( final String lang )
 		{
-			final Class<RDFWriter> result = map.get(lang);
+			final Class<RDFWriterI> result = map.get(lang);
 			if (result == null)
 			{
 				throw new NoWriterForLangException(lang);
@@ -83,12 +83,12 @@ public class TestRDFWriterMap extends JenaTestBase
 		{
 			try
 			{
-				final Class<RDFWriter> old = map.get(lang);
+				final Class<RDFWriterI> old = map.get(lang);
 				final Class<?> c = Class.forName(className);
-				if (RDFWriter.class.isAssignableFrom(c))
+				if (RDFWriterI.class.isAssignableFrom(c))
 				{
 					@SuppressWarnings( "unchecked" )
-					final Class<RDFWriter> x = (Class<RDFWriter>) c;
+					final Class<RDFWriterI> x = (Class<RDFWriterI>) c;
 					map.put(lang, x);
 				}
 				return old == null ? null : old.getName();

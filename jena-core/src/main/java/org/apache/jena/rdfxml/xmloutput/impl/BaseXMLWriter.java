@@ -275,7 +275,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     private void setFromWriterSystemProperties( Map<String, String> ns, Set<String> prefixesUsed ) {
         for ( String uri : namespacesNeeded )
         {
-            String val = JenaRuntime.getSystemProperty( RDFWriter.NSPREFIXPROPBASE + uri );
+            String val = JenaRuntime.getSystemProperty( RDFWriterI.NSPREFIXPROPBASE + uri );
             if ( val != null && checkLegalPrefix( val ) && !prefixesUsed.contains( val ) )
             {
                 ns.put( uri, val );
@@ -638,7 +638,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         Set the writer property propName to the value obtained from propValue. Return an
         Object representation of the original value.
          
-     	@see org.apache.jena.rdf.model.RDFWriter#setProperty(java.lang.String, java.lang.Object)
+     	@see org.apache.jena.rdf.model.RDFWriterI#setProperty(java.lang.String, java.lang.Object)
      */
 	@Override
     final synchronized public Object setProperty( String propName, Object propValue ) {

@@ -31,7 +31,7 @@ public class TestBadSyntax extends TestCase
     public void runTest()
     {
         Model model = ModelFactory.createDefaultModel() ;
-        RDFReader t = new TurtleReader() ;
+        RDFReaderI t = new TurtleReader() ;
         try {
             t.read(model, uri) ;
             fail("Bad syntax test succeed in parsing the file") ;

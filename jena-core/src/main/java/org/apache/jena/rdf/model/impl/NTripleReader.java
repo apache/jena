@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 /** N-Triple Reader
  */
-public class NTripleReader extends Object implements RDFReader {
+public class NTripleReader extends Object implements RDFReaderI {
     static final Logger log = LoggerFactory.getLogger(NTripleReader.class);
 
     private Model model = null;

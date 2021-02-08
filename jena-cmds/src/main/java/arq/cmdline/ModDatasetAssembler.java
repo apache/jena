@@ -18,10 +18,9 @@
 
 package arq.cmdline;
 
-import jena.cmd.CmdArgModule;
-import jena.cmd.CmdException;
-import jena.cmd.CmdGeneral;
-
+import org.apache.jena.cmd.CmdArgModule;
+import org.apache.jena.cmd.CmdException;
+import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.NotFoundException ;

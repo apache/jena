@@ -23,9 +23,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List ;
 
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdException;
 import org.apache.jena.atlas.lib.ListUtils;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.CmdException;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;

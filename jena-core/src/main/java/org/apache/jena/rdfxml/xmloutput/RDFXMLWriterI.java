@@ -18,16 +18,16 @@
 
 package org.apache.jena.rdfxml.xmloutput;
 
-import org.apache.jena.rdf.model.RDFWriter ;
+import org.apache.jena.rdf.model.RDFWriterI ;
 import org.apache.jena.vocabulary.RDFSyntax ;
 
 /**
  * 
- * This interface only adds documentation to {@link RDFWriter}.
+ * This interface only adds documentation to {@link RDFWriterI}.
  * The documentation identifies the properties that can be
  * set on RDF/XML and RDF/XML-ABBREV writers.
  */
-public interface RDFXMLWriterI extends RDFWriter {
+public interface RDFXMLWriterI extends RDFWriterI {
     /** Suppress a compiler warning. */
    Object _NotInteresting = RDFSyntax.parseCollection;
     

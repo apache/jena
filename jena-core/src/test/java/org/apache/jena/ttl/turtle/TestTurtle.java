@@ -22,7 +22,7 @@ package org.apache.jena.ttl.turtle;
 import junit.framework.TestCase;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.RDFReader ;
+import org.apache.jena.rdf.model.RDFReaderI ;
 import org.apache.jena.util.FileManager ;
 import org.apache.jena.util.FileUtils ;
 
@@ -40,7 +40,7 @@ public class TestTurtle extends TestCase
     public void runTest()
     {
         Model model = ModelFactory.createDefaultModel() ;
-        RDFReader t = new TurtleReader() ;
+        RDFReaderI t = new TurtleReader() ;
         try {
             if ( baseIRI != null )
                 t.read(model, FileManager.getInternal().open(input), baseIRI) ;

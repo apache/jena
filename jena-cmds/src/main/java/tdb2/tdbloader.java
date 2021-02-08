@@ -24,11 +24,11 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdException;
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.atlas.lib.Timer;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.CmdException;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.ARQ;

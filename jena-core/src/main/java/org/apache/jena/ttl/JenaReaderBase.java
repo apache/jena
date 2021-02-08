@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * single worker function with model, UTF8 reader and visited base  
  */
 @SuppressWarnings("deprecation")
-public abstract class JenaReaderBase implements RDFReader
+public abstract class JenaReaderBase implements RDFReaderI
 {
 	protected RDFErrorHandler errorHandler = null ;
 	

@@ -18,14 +18,13 @@
 
 package arq;
 
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdException;
-import jena.cmd.CmdLineArgs;
-import jena.cmd.TerminationException;
-
 import org.apache.jena.Jena ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.CmdException;
+import org.apache.jena.cmd.CmdLineArgs;
+import org.apache.jena.cmd.TerminationException;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.QueryParseException ;

@@ -21,14 +21,14 @@ package arq;
 import java.io.PrintStream;
 
 import arq.cmdline.* ;
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdException;
-import jena.cmd.TerminationException;
 import org.apache.commons.io.output.NullPrintStream;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.CmdException;
+import org.apache.jena.cmd.TerminationException;
 import org.apache.jena.query.* ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.RiotNotFoundException ;

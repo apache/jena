@@ -24,13 +24,13 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdException;
-import jena.cmd.CmdGeneral;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.StreamOps;
 import org.apache.jena.atlas.logging.LogCtl;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.CmdException;
+import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RiotException;

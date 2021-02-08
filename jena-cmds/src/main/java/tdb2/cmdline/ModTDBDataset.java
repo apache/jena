@@ -22,11 +22,11 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import arq.cmdline.ModDataset ;
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdArgModule;
-import jena.cmd.CmdException;
-import jena.cmd.CmdGeneral;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.CmdArgModule;
+import org.apache.jena.cmd.CmdException;
+import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;

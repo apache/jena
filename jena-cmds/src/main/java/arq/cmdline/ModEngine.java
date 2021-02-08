@@ -20,12 +20,7 @@ package arq.cmdline;
 
 import java.util.List ;
 
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdArgModule;
-import jena.cmd.CmdException;
-import jena.cmd.CmdGeneral;
-import jena.cmd.ModBase;
-
+import org.apache.jena.cmd.*;
 import org.apache.jena.sparql.engine.main.QueryEngineMain ;
 import org.apache.jena.sparql.engine.main.QueryEngineMainQuad ;
 import org.apache.jena.sparql.engine.ref.QueryEngineRef ;

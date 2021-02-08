@@ -20,7 +20,7 @@ package org.apache.jena.riot;
 
 import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.irix.IRIs;
-import org.apache.jena.rdf.model.RDFReader;
+import org.apache.jena.rdf.model.RDFReaderI;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol ;
 import org.apache.jena.util.FileUtils ;
@@ -62,7 +62,7 @@ public class SysRIOT
      * Context key for old style RDFReader properties. The value of this in a
      * {@link Context} must be a {@code Map<String, Object>}. The entries of the
      * map are used to set reader properties before the
-     * {@link RDFReader} is called. Only has any effect on RDF/XML,
+     * {@link RDFReaderI} is called. Only has any effect on RDF/XML,
      */
     public static final Symbol sysRdfReaderProperties      = Symbol.create(riotBase+"rdfReader_properties") ;
 

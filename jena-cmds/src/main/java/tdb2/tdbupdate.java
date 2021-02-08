@@ -19,7 +19,7 @@
 package tdb2;
 
 import arq.cmdline.ModDataset;
-import jena.cmd.CmdException;
+import org.apache.jena.cmd.CmdException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.TDB2;
 import tdb2.cmdline.CmdTDB;

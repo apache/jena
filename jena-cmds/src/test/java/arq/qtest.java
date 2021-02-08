@@ -20,12 +20,12 @@ package arq;
 
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModEngine ;
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdException;
-import jena.cmd.TerminationException;
 import org.apache.jena.arq.junit.TextTestRunner;
 import org.apache.jena.arq.junit.sparql.SparqlTests;
 import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.CmdException;
+import org.apache.jena.cmd.TerminationException;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.rdf.model.Literal ;

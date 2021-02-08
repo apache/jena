@@ -23,7 +23,7 @@ import java.net.ConnectException ;
 import java.net.NoRouteToHostException ;
 import java.net.UnknownHostException ;
 
-import org.apache.jena.rdf.model.RDFReader ;
+import org.apache.jena.rdf.model.RDFReaderI ;
 import org.apache.jena.rdf.model.StmtIterator ;
 import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
 import org.apache.jena.shared.JenaException ;
@@ -44,7 +44,7 @@ public class TestReaders extends AbstractModelTestBase
      * Test to ensure that the reader is set.
      */
     public void testGetNTripleReader() {
-        final RDFReader reader = model.getReader("N-TRIPLE") ;
+        final RDFReaderI reader = model.getReader("N-TRIPLE") ;
         Assert.assertNotNull(reader) ;
     }
 	

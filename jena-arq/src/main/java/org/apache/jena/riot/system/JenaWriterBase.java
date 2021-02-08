@@ -28,9 +28,9 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
-import org.apache.jena.rdf.model.RDFWriter ;
+import org.apache.jena.rdf.model.RDFWriterI ;
 
-public abstract class JenaWriterBase implements RDFWriter
+public abstract class JenaWriterBase implements RDFWriterI
 {
     protected Map<String, String> writerPropertyMap = new HashMap<>() ;
     private RDFErrorHandler errorHandler = null ;

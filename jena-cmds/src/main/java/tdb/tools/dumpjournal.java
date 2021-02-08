@@ -21,9 +21,9 @@ package tdb.tools ;
 import java.io.PrintStream ;
 
 import arq.cmdline.CmdARQ;
-import jena.cmd.CmdException ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.cmd.CmdException;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.transaction.Journal ;
 import org.apache.jena.tdb.transaction.JournalControl ;
