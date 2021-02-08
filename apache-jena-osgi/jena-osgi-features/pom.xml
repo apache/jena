@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>apache-jena-osgi</artifactId>
-    <version>3.18.0-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>jena-osgi-features</artifactId>  
   <packaging>bundle</packaging>
