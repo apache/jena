@@ -25,30 +25,30 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.system.Txn;
 
-/* 
- * Example of a connection performng a number of transactional operations.
+/*
+ * Example of a connection performing a number of transactional operations.
  */
 public class RDFConnectionExample2 {
     public static void main(String ...args) {
         Query query = QueryFactory.create("SELECT * { {?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
         Dataset dataset = DatasetFactory.createTxnMem();
-        
+
         try ( RDFConnection conn = RDFConnectionFactory.connect(dataset) ) {
             System.out.println("** Load a file");
-            // ---- Transaction 1: load data. 
+            // ---- Transaction 1: load data.
             Txn.executeWrite(conn, ()->conn.load("data.ttl"));
-            
-            // ---- Transaction 2: explicit styles 
+
+            // ---- Transaction 2: explicit styles
             conn.begin(ReadWrite.WRITE);
             conn.load("http://example/g0", "data.ttl");
-            
+
             System.out.println("** Inside multistep transaction - query dataset");
             conn.queryResultSet(query, ResultSetFormatter::out);
-            
+
             conn.abort();
             conn.end();
             System.out.println("** After abort 1");
-            
+
             // ---- Transaction 3: explicit styles
             Txn.executeWrite(conn, ()->{
                 conn.load("http://example/g0", "data.ttl");
@@ -57,7 +57,7 @@ public class RDFConnectionExample2 {
                 RDFDataMgr.write(System.out, ds2, Lang.TRIG);
                 conn.abort();
             });
-            
+
             System.out.println("** After abort 2");
             // Only default graph showing.
             conn.queryResultSet(query, ResultSetFormatter::out);

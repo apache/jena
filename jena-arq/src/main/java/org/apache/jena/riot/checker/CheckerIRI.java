@@ -33,7 +33,7 @@ import org.apache.jena.riot.system.IRIResolver ;
 /**
  * Check IRIs.
  * <p>
- * This uses jena-iri for additional errors and warnings over and above the parsers..
+ * This uses jena-iri for additional warnings over and above the parsers.
  */
 public class CheckerIRI implements NodeChecker
 {
@@ -81,9 +81,19 @@ public class CheckerIRI implements NodeChecker
         return !iri.hasViolation(true) ;
     }
 
+    /** Process violations on an IRI
+     *  Calls the {@link ErrorHandler} on all errors and warnings (as warnings).
+     *  @param iri  IRI to check
+     *  @param errorHandler The error handler to call on each warning
+     */
+    public static void iriViolations(IRI iri, ErrorHandler errorHandler) {
+        iriViolations(iri, errorHandler, false, true, -1L, -1L) ;
+    }
+
     /**
      * Process violations on an IRI
      * Calls the errorHandler on all errors and warnings (as warning).
+     * (If checking for relative IRIs, these are sent out as errors.)
      * Assumes error handler throws exceptions on errors if need be
      */
     private static void iriViolations(IRI iri, ErrorHandler errorHandler,
@@ -96,42 +106,19 @@ public class CheckerIRI implements NodeChecker
         if ( iri.hasViolation(includeIRIwarnings) ) {
             Iterator<Violation> iter = iri.violations(includeIRIwarnings) ;
 
-            boolean errorSeen = false ;
-            boolean warningSeen = false ;
-
-            // What to finally report.
-            Violation vError = null ;
-            Violation vWarning = null ;
-            Violation xvSub = null ;
-
             for ( ; iter.hasNext() ; ) {
                 Violation v = iter.next() ;
                 int code = v.getViolationCode() ;
                 boolean isError = v.isError() ;
 
-                // IRI parsing ignored these.
-                // When checking we output a higher level of warnings.
-                // Ignore these. They seem to present even if switched off.
+                // Anything we want to reprioritise?
+                // Some jena-iri violations are fully controllable by error.wraning controls
+                // and need to be handled here.
+                // [nothing at present]
 //                if ( code == Violation.LOWERCASE_PREFERRED
 //                     || code == Violation.PERCENT_ENCODING_SHOULD_BE_UPPERCASE
 //                     || code == Violation.SCHEME_PATTERN_MATCH_FAILED )
 //                    continue ;
-
-                // Anything we want to reprioritise?
-                // [nothing at present]
-
-                // Remember first error and first warning in case we want to order findings
-                // (as use to happen when used with parsing).
-                if ( isError ) {
-                    errorSeen = true ;
-                    if ( vError == null )
-                        // Remember first error
-                        vError = v ;
-                } else {
-                    warningSeen = true ;
-                    if ( vWarning == null )
-                        vWarning = v ;
-                }
 
                 String msg = v.getShortMessage() ;
                 String iriStr = iri.toString() ;
