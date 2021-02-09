@@ -92,7 +92,7 @@
     <ver.httpcore-osgi>${ver.httpcore}</ver.httpcore-osgi>
     <ver.httpclient-osgi>${ver.httpclient}</ver.httpclient-osgi>
     
-    <ver.lucene>7.7.3</ver.lucene>
+    <ver.lucene>8.8.0</ver.lucene>
 
     <ver.spatial4j>0.8</ver.spatial4j>
 
