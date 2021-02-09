@@ -39,9 +39,9 @@ import org.apache.jena.util.Tokenizer ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-/**Representation of a generic inference rule. 
+/**Representation of a generic inference rule.
  * <p>
- * This represents the rule specification but most engines will 
+ * This represents the rule specification but most engines will
  * compile this specification into an abstract machine or processing
  * graph. </p>
  * <p>
@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory ;
  * Each element in the head or body can be a TriplePattern, a Functor or a Rule.
  * A TriplePattern is just a triple of Nodes but the Nodes can represent
  * variables, wildcards and embedded functors - as well as constant uri or
- * literal graph nodes. A functor comprises a functor name and a list of 
+ * literal graph nodes. A functor comprises a functor name and a list of
  * arguments. The arguments are Nodes of any type except functor nodes
  * (there is no functor nesting). The functor name can be mapped into a registered
  * java class that implements its semantics. Functors play three roles -
@@ -68,42 +68,42 @@ import org.slf4j.LoggerFactory ;
  * We include a trivial, recursive descent parser but this is just there
  * to allow rules to be embedded in code. External rule syntax based on N3
  * and RDF could be developed. The embedded syntax supports rules such as:
- * <blockindent>    
+ * <blockindent>
  * <code>[ (?C rdf:type *), guard(?C, ?P) {@literal ->} (?c rb:restriction some(?P, ?D)) ].</code><br />
  * <code>[ (?s owl:foo ?p) {@literal ->} [ (?s owl:bar ?a) {@literal ->} (?s ?p ?a) ] ].</code><br />
  * <code>[name: (?s owl:foo ?p) {@literal ->} (?s ?p ?a)].</code><br />
  * </blockindent>
- * only built in namespaces are recognized as such, * is a wildcard node, ?c is a variable, 
+ * only built in namespaces are recognized as such, * is a wildcard node, ?c is a variable,
  * name(node ... node) is a functor, (node node node) is a triple pattern, [..] is an
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
  */
 public class Rule implements ClauseEntry {
-    
+
 //=======================================================================
 // variables
 
     /** Rule body */
     protected ClauseEntry[] body;
-    
+
     /** Rule head or set of heads */
     protected ClauseEntry[] head;
-    
+
     /** Optional name for the rule */
     protected String name;
-    
+
     /** The number of distinct variables used in the rule */
     protected int numVars = -1;
-    
+
     /** Flags whether the rule was written as a forward or backward rule */
     protected boolean isBackward = false;
-    
+
     /** Flags whether the rule is monotonic */
     protected boolean isMonotonic = true;
-    
+
     static Logger logger = LoggerFactory.getLogger(Rule.class);
-    
+
     /**
      * Constructor
      * @param body a list of TriplePatterns or Functors.
@@ -112,7 +112,7 @@ public class Rule implements ClauseEntry {
     public Rule(List<ClauseEntry> head, List<ClauseEntry> body) {
         this(null, head, body);
     }
-    
+
     /**
      * Constructor
      * @param name a label for rule
@@ -120,11 +120,11 @@ public class Rule implements ClauseEntry {
      * @param head a list of TriplePatterns, Functors or rules
      */
     public Rule(String name, List<ClauseEntry> head, List<ClauseEntry> body) {
-        this(name, 
+        this(name,
                 head.toArray(new ClauseEntry[head.size()]),
                 body.toArray(new ClauseEntry[body.size()]) );
     }
-    
+
     /**
      * Constructor
      * @param name a label for rule
@@ -137,7 +137,7 @@ public class Rule implements ClauseEntry {
         this.body = body;
         this.isMonotonic = allMonotonic(head);
     }
-    
+
     // Compute the monotonicity flag
     // Future support for negation would affect this
     private boolean allMonotonic(ClauseEntry[] elts) {
@@ -162,7 +162,7 @@ public class Rule implements ClauseEntry {
         }
         return true;
     }
-    
+
 //=======================================================================
 // accessors
 
@@ -172,50 +172,50 @@ public class Rule implements ClauseEntry {
     public int bodyLength() {
         return body.length;
     }
-    
+
     /**
      * Return the n'th body element
      */
     public ClauseEntry getBodyElement(int n) {
         return body[n];
     }
-    
+
     /**
      * return the entire rule body as an array of objects
      */
     public ClauseEntry[] getBody() {
         return body;
     }
-        
-    
+
+
     /**
      * Return the number of head elements
      */
     public int headLength() {
         return head.length;
     }
-    
+
     /**
      * Return the n'th head element
      */
     public ClauseEntry getHeadElement(int n) {
         return head[n];
     }
-    
+
     /**
      * return the entire rule head as an array of objects
      */
     public ClauseEntry[] getHead() {
         return head;
     }
-    
+
     /**
      * Return true if the rule was written as a backward (as opposed to forward) rule.
      */
     public boolean isBackward() {
         return isBackward;
     }
-    
+
     /**
      * Set the rule to be run backwards.
      * @param flag if true the rule should run backwards.
@@ -223,14 +223,14 @@ public class Rule implements ClauseEntry {
     public void setBackward(boolean flag) {
         isBackward = flag;
     }
-    
+
     /**
      * Get the name for the rule - can be null.
      */
     public String getName() {
         return name;
     }
-    
+
     /**
      * Set the number of distinct variables for this rule.
      * Used internally when cloing rules, not normally required.
@@ -238,7 +238,7 @@ public class Rule implements ClauseEntry {
     public void setNumVars(int n) {
         numVars = n;
     }
-    
+
     /**
      * Return the number of distinct variables in the rule. Or more precisely, the
      * size of a binding environment needed to represent the rule.
@@ -253,7 +253,7 @@ public class Rule implements ClauseEntry {
         }
         return numVars;
     }
-    
+
     /**
      * Find all the variables in a clause array.
      */
@@ -272,7 +272,7 @@ public class Rule implements ClauseEntry {
         }
         return max;
     }
-    
+
     /**
      * Find all the variables in a TriplePattern.
      */
@@ -288,7 +288,7 @@ public class Rule implements ClauseEntry {
         }
         return max;
     }
-        
+
     /**
      * Find all the variables in a Functor.
      */
@@ -304,18 +304,18 @@ public class Rule implements ClauseEntry {
         }
         return max;
     }
-    
+
     /**
-     * Return the maximum node index of the variable and the max so far. 
+     * Return the maximum node index of the variable and the max so far.
      */
     private int maxVarIndex(Node var, int max) {
         if (var instanceof Node_RuleVariable) {
             int index = ((Node_RuleVariable)var).index;
-            if (index > max) return index;            
+            if (index > max) return index;
         }
         return max;
     }
-    
+
     /**
      * Instantiate a rule given a variable binding environment.
      * This will clone any non-bound variables though that is only needed
@@ -325,7 +325,7 @@ public class Rule implements ClauseEntry {
         HashMap<Node_RuleVariable, Node> vmap = new HashMap<>();
         return new Rule(name, cloneClauseArray(head, vmap, env), cloneClauseArray(body, vmap, env));
     }
-    
+
     /**
      * Clone a rule, cloning any embedded variables.
      */
@@ -337,7 +337,7 @@ public class Rule implements ClauseEntry {
             return this;
         }
     }
-    
+
     /**
      * Clone a clause array.
      */
@@ -348,7 +348,7 @@ public class Rule implements ClauseEntry {
         }
         return cClauses;
     }
-    
+
     /**
      * Clone a clause, cloning any embedded variables.
      */
@@ -364,7 +364,7 @@ public class Rule implements ClauseEntry {
             return cloneFunctor((Functor)clause, vmap, env);
         }
     }
-    
+
     /**
      * Clone a functor, cloning any embedded variables.
      */
@@ -378,7 +378,7 @@ public class Rule implements ClauseEntry {
         fn.setImplementor(f.getImplementor());
         return fn;
     }
-    
+
     /**
      * Close a single node.
      */
@@ -399,7 +399,7 @@ public class Rule implements ClauseEntry {
             return n;
         }
     }
-    
+
     /**
      * Returns false for rules which can affect other rules non-monotonically (remove builtin
      * or similar) or are affected non-monotonically (involve negation-as-failure).
@@ -407,9 +407,9 @@ public class Rule implements ClauseEntry {
     public boolean isMonotonic() {
         return isMonotonic;
     }
-    
+
     /**
-     * Returns true if the rule does not depend on any data, and so should 
+     * Returns true if the rule does not depend on any data, and so should
      * be treated as an axiom.
      */
     public boolean isAxiom() {
@@ -423,7 +423,7 @@ public class Rule implements ClauseEntry {
         }
         return true;
     }
-    
+
     /**
      * Printable string describing the rule
      */
@@ -463,7 +463,7 @@ public class Rule implements ClauseEntry {
         buff.append("]");
         return buff.toString();
     }
-    
+
     /**
      * Print a short description of the rule, just its name if it
      * has one, otherwise the whole rule description.
@@ -475,7 +475,7 @@ public class Rule implements ClauseEntry {
             return toString();
         }
     }
-    
+
 //=======================================================================
 // parser access
 
@@ -523,11 +523,11 @@ public class Rule implements ClauseEntry {
     public static List<Rule> rulesFromURL( String uri) {
         return rulesFromURL(uri,BuiltinRegistry.theRegistry);
     }
-        
+
     /**
      * Processes the source reader stripping off comment lines and noting prefix
      * definitions (@prefix) and rule inclusion commands (@include).
-     * Returns a parser which is bound to the stripped source text with 
+     * Returns a parser which is bound to the stripped source text with
      * associated prefix and rule inclusion definitions.
     */
     public static Parser rulesParserFromReader( BufferedReader src, BuiltinRegistry registry ) {
@@ -555,16 +555,16 @@ public class Rule implements ClauseEntry {
                    // Check for predefined cases
                    if (url.equalsIgnoreCase("rdfs")) {
                        preloadedRules.addAll( RDFSFBRuleReasoner.loadRules() );
-                       
+
                    } else if (url.equalsIgnoreCase("owl")) {
                        preloadedRules.addAll( OWLFBRuleReasoner.loadRules() ) ;
-                       
+
                    } else if (url.equalsIgnoreCase("owlmicro")) {
                        preloadedRules.addAll( OWLMicroReasoner.loadRules() ) ;
-                       
+
                    } else if (url.equalsIgnoreCase("owlmini")) {
                        preloadedRules.addAll( OWLMiniReasoner.loadRules() ) ;
-                       
+
                    } else {
                        // Just try loading as a URL
                        preloadedRules.addAll( rulesFromURL(url) );
@@ -580,7 +580,7 @@ public class Rule implements ClauseEntry {
            parser.addRulesPreload(preloadedRules);
            return parser;
        }
-       catch (IOException e) 
+       catch (IOException e)
            { throw new WrappedIOException( e ); }
    }
 
@@ -594,7 +594,7 @@ public class Rule implements ClauseEntry {
        return rulesParserFromReader(src,BuiltinRegistry.theRegistry);
     }
 
-    /** 
+    /**
      * Helper function find a URI argument in the current string,
      * optionally surrounded by matching <>.
      */
@@ -607,7 +607,7 @@ public class Rule implements ClauseEntry {
         return token;
     }
 
-    /** 
+    /**
      * Helper function to return the next whitespace delimited argument
      * from the string
      */
@@ -616,8 +616,8 @@ public class Rule implements ClauseEntry {
         int stop = nextSplit(start, true, token);
         return token.substring(start, stop);
     }
-    
-    /** 
+
+    /**
      * Helper function to return the remainder of the line after
      * stripping off the next whitespace delimited argument
      * from the string
@@ -628,10 +628,10 @@ public class Rule implements ClauseEntry {
         int rest = nextSplit(stop, false, token);
         return token.substring(rest);
     }
-    
+
     /**
      * Helper function - find index of next whitespace or non white
-     * after the start index. 
+     * after the start index.
      */
     private static int nextSplit(int start, boolean white, String line) {
         int i = start;
@@ -689,7 +689,7 @@ public class Rule implements ClauseEntry {
     public static List<Rule> parseRules(String source) throws ParserException {
         return parseRules(source,BuiltinRegistry.theRegistry);
     }
-    
+
 
 //=======================================================================
 // parser support
@@ -703,7 +703,7 @@ public class Rule implements ClauseEntry {
 
         /** Tokenizer */
         private Tokenizer stream;
-        
+
         /** Look ahead, null if none */
         private String lookahead;
 
@@ -713,25 +713,25 @@ public class Rule implements ClauseEntry {
         // Literal parse state flags
         private static final int NORMAL = 0;
         private static final int STARTED_LITERAL = 1;
-        
+
         /** Literal parse state */
         private int literalState = NORMAL;
-        
+
         /** Trace back of recent tokens for error reporting */
         protected List<String> priorTokens = new ArrayList<>();
-        
+
         /** Maximum number of recent tokens to remember */
         private static final int maxPriors = 20;
-        
+
         /** Variable table */
         private Map<String, Node_RuleVariable> varMap;
-        
+
         /** Local prefix map */
         private PrefixMapping prefixMapping = PrefixMapping.Factory.create();
-        
+
         /** Pre-included rules */
         private List<Rule> preloadedRules = new ArrayList<>();
-        
+
         /**
          * Constructor
          * @param source the string to be parsed
@@ -741,42 +741,42 @@ public class Rule implements ClauseEntry {
             lookahead = null;
             this.registry=registry;
         }
-        
+
         /**
          * Register a new namespace prefix with the parser
          */
         public void registerPrefix(String prefix, String namespace ) {
             prefixMapping.setNsPrefix(prefix, namespace);
         }
-        
+
         /**
          * Register a set of prefix to namespace mappings with the parser
          */
         public void registerPrefixMap(Map<String, String> map) {
             prefixMapping.setNsPrefixes(map);
         }
-        
+
         /**
          * Return a map of all the discovered prefixes
          */
         public Map<String, String> getPrefixMap() {
             return prefixMapping.getNsPrefixMap();
         }
-        
+
         /**
          * Add a new set of preloaded rules.
          */
         void addRulesPreload(List<Rule> rules) {
             preloadedRules.addAll(rules);
         }
-        
+
         /**
          * Return the complete set of preloaded rules;
          */
         public List<Rule> getRulesPreload() {
             return preloadedRules;
         }
-        
+
         /**
          * Return the next token
          */
@@ -807,7 +807,7 @@ public class Rule implements ClauseEntry {
                 return token;
             }
         }
-                
+
         /**
          * Return a trace of the recently seen tokens, for use
          * in error reporting
@@ -820,7 +820,7 @@ public class Rule implements ClauseEntry {
             }
             return trace.toString();
         }
-        
+
         /**
          * Peek ahead one token.
          */
@@ -830,14 +830,14 @@ public class Rule implements ClauseEntry {
             }
             return lookahead;
         }
-        
+
         /**
          * Push back a previously fetched token. Only depth 1 supported.
          */
         void pushback(String token) {
             lookahead = token;
         }
-        
+
         /**
          * Returns true if token is an skippable separator
          */
@@ -848,7 +848,7 @@ public class Rule implements ClauseEntry {
             }
             return false;
         }
-        
+
         /**
          * Returns true if token is a syntax element ()[]
          */
@@ -859,7 +859,7 @@ public class Rule implements ClauseEntry {
             }
             return false;
         }
-        
+
         /**
          * Find the variable index for the given variable name
          * and return a Node_RuleVariable with that index.
@@ -872,7 +872,7 @@ public class Rule implements ClauseEntry {
             }
             return node;
         }
-        
+
         /**
          * Translate a token to a node.
          */
@@ -895,8 +895,9 @@ public class Rule implements ClauseEntry {
                 if (exp == token) {
                     // No expansion was possible
                     String prefix = token.substring(0, token.indexOf(':'));
-                    if (prefix.equals("http") || prefix.equals("urn") || prefix.equals("file")
-                     || prefix.equals("ftp") || prefix.equals("mailto")) {
+                    if ( prefix.equals("http") || prefix.equals("https")
+                            || prefix.equals("urn") || prefix.equals("file")
+                            || prefix.equals("ftp") || prefix.equals("mailto") ) {
                         // assume it is all OK and fall through
                     } else {
                         // Likely to be a typo in a qname or failure to register
@@ -919,7 +920,7 @@ public class Rule implements ClauseEntry {
                         if (exp == dtURI) {
                             // No expansion was possible
                             String prefix = dtURI.substring(0, dtURI.indexOf(':'));
-                            if (prefix.equals("http") || prefix.equals("urn") 
+                            if (prefix.equals("http") || prefix.equals("urn")
                              || prefix.equals("ftp") || prefix.equals("mailto")) {
                                 // assume it is all OK and fall through
                             } else {
@@ -929,18 +930,18 @@ public class Rule implements ClauseEntry {
                         } else {
                             dtURI = exp;
                         }
-                    } 
+                    }
                     RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);
                     return NodeFactory.createLiteral(lit, dt);
                 } else {
                     return NodeFactory.createLiteral(lit, "");
-                }    
-            } else  if ( Character.isDigit(token.charAt(0)) || 
+                }
+            } else  if ( Character.isDigit(token.charAt(0)) ||
                          (token.charAt(0) == '-' && token.length() > 1 && Character.isDigit(token.charAt(1))) ) {
                 // A number literal
                return parseNumber(token);
             } else if (peekToken().equals("(")) {
-                // token=SomeName token=( is a functor.  
+                // token=SomeName token=( is a functor.
                 Functor f = new Functor(token, parseNodeList(), registry);
                 return Functor.makeFunctorNode( f );
             } else {
@@ -948,13 +949,13 @@ public class Rule implements ClauseEntry {
                 return NodeFactory.createURI(token);
             }
         }
-        
+
         /**
          * Turn a possible numeric token into typed literal else a plain literal
          * @return the constructed literal node
          */
         Node parseNumber(String lit) {
-            if ( Character.isDigit(lit.charAt(0)) || 
+            if ( Character.isDigit(lit.charAt(0)) ||
                 (lit.charAt(0) == '-' && lit.length() > 1 && Character.isDigit(lit.charAt(1))) ) {
                 if ( lit.contains( "." ) ) {
                     // Float?
@@ -971,7 +972,7 @@ public class Rule implements ClauseEntry {
             // Default is a plain literal
             return NodeFactory.createLiteral(lit, "");
         }
-        
+
         /**
          * Parse a list of nodes delimited by parentheses
          */
@@ -991,7 +992,7 @@ public class Rule implements ClauseEntry {
             }
             return nodeList;
         }
-        
+
         /**
          * Parse a clause, could be a triple pattern, a rule or a functor
          */
@@ -1024,15 +1025,15 @@ public class Rule implements ClauseEntry {
                 return clause;
             }
         }
-        
-        
+
+
         /**
          * Parse a rule, terminated by a "]" or "." character.
          */
         public Rule parseRule() {
             return doParseRule(false);
         }
-        
+
         /**
          * Parse a rule, terminated by a "]" or "." character.
          * @param retainVarMap set to true to ccause the existing varMap to be left in place, which
@@ -1067,7 +1068,7 @@ public class Rule implements ClauseEntry {
                 while ( !(token.equals(".") || token.equals("]")) ) {
                     head.add(parseClause());
                     token = peekToken();
-                } 
+                }
                 nextToken();        // consume the terminating token
                 Rule r = null;
                 if (backwardRule) {
@@ -1084,7 +1085,7 @@ public class Rule implements ClauseEntry {
         }
 
     }
-   
+
     /** Equality override */
     @Override
     public boolean equals(Object o) {
@@ -1108,7 +1109,7 @@ public class Rule implements ClauseEntry {
         }
         return true;
     }
-        
+
     /** hash function override */
     @Override
     public int hashCode() {
@@ -1123,7 +1124,7 @@ public class Rule implements ClauseEntry {
         }
         return hash;
     }
-    
+
     /**
      * Compare clause entries, taking into account variable indices.
      * The equality function ignores differences between variables.
@@ -1132,7 +1133,7 @@ public class Rule implements ClauseEntry {
     public boolean sameAs(Object o) {
         return equals(o);
     }
-    
+
 //=======================================================================
 // Other supporting inner classes
 
@@ -1147,7 +1148,7 @@ public class Rule implements ClauseEntry {
         public ParserException(String message, Parser parser) {
             super(constructMessage(message, parser));
         }
-        
+
         /**
          * Extract context trace from prior tokens stack
          */
@@ -1159,7 +1160,7 @@ public class Rule implements ClauseEntry {
             message.append("'");
             return message.toString();
         }
-        
+
     }
-    
+
 }
