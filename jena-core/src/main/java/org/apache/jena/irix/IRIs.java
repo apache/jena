@@ -96,7 +96,6 @@ public class IRIs {
         return resolve(getSystemBase(), iriStr);
     }
 
-
     /** Resolve a URI against the system base. */
     public static IRIx resolveIRI(String iriStr) {
         if ( iriStr == null )
@@ -106,11 +105,19 @@ public class IRIs {
 
     /** Resolve a URI against a base. */
     public static String resolve(IRIx base, String iriStr) {
-        return base.resolve(iriStr).toString();
+        return base.resolve(iriStr).str();
     }
 
     /** Resolve a URI against a base. */
-    public static String resolve(String base, String iriStr) {
-        return resolveIRI(base).resolve(iriStr).toString();
+    public static String resolve(IRIx base, IRIx iri) {
+        return base.resolve(iri).str();
+    }
+
+    /** Resolve a URI against a base. The base must be an absolute IRI. */
+    public static String resolve(String baseStr, String iriStr) {
+        IRIx base = IRIx.create(baseStr);
+        if ( ! base.isReference() )
+            throw new IRIException("Not suitable as a base URI: '"+baseStr+"'");
+        return resolve(base, iriStr);
     }
 }
