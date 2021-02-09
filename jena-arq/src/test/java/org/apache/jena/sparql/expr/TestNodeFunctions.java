@@ -260,7 +260,7 @@ public class TestNodeFunctions {
 
     @Test
     public void testLangMatches9() {
-        // The language-match of "" is not a legal by RFC 4647 but useful for language tags of "" 
+        // The language-match of "" is not a legal by RFC 4647 but useful for language tags of ""
         NodeValue nv = NodeValue.makeString("") ;
         NodeValue pat = NodeValue.makeString("") ;
         NodeValue r = NodeFunctions.langMatches(nv, pat) ;
@@ -269,13 +269,13 @@ public class TestNodeFunctions {
 
     @Test
     public void testLangMatches10() {
-        // The language-match of "" is not a legal by RFC 4647 but useful for language tags of "" 
+        // The language-match of "" is not a legal by RFC 4647 but useful for language tags of ""
         NodeValue nv = NodeValue.makeString("en") ;
         NodeValue pat = NodeValue.makeString("") ;
         NodeValue r = NodeFunctions.langMatches(nv, pat) ;
         assertEquals(NodeValue.FALSE, r) ;
     }
-    
+
     @Test public void testIsIRI_1() {
         NodeValue nv = NodeValue.makeNode(NodeFactory.createURI("http://example/")) ;
         NodeValue r = NodeFunctions.isIRI(nv) ;
@@ -292,7 +292,6 @@ public class TestNodeFunctions {
         NodeValue nv = NodeValue.makeNode(NodeFactory.createBlankNode()) ;
         NodeValue r = NodeFunctions.isBlank(nv) ;
         assertEquals(NodeValue.TRUE, r) ;
-
     }
 
     @Test public void testIsBlank2() {
@@ -319,13 +318,13 @@ public class TestNodeFunctions {
         NodeValue r = NodeFunctions.isLiteral(nv) ;
         assertEquals(NodeValue.FALSE, r) ;
     }
-    
+
     @Test public void testCheckAndGetStringLiteral1() {
         NodeValue nv = NodeValue.makeNode("abc", XSDDatatype.XSDstring) ;
         Node n = NodeFunctions.checkAndGetStringLiteral("Test", nv);
         assertEquals( "abc", n.getLiteralLexicalForm());
     }
-    
+
     @Test public void testCheckAndGetStringLiteral2() {
         NodeValue nv = NodeValue.makeNode("abc", XSDDatatype.XSDnormalizedString) ;
         Node n = NodeFunctions.checkAndGetStringLiteral("Test", nv);
@@ -337,10 +336,10 @@ public class TestNodeFunctions {
         Node n = NodeFunctions.checkAndGetStringLiteral("Test", nv);
         assertEquals( "abc", n.getLiteralLexicalForm());
     }
-    
+
     @Test(expected=ExprEvalException.class)
     public void testCheckAndGetStringLiteral4() {
-        // The form "abc"^^rdf:langString (no lang tag) is not derived from xsd:string. 
+        // The form "abc"^^rdf:langString (no lang tag) is not derived from xsd:string.
         NodeValue nv = NodeValue.makeNode("abc", RDF.dtLangString) ;
         Node n = NodeFunctions.checkAndGetStringLiteral("Test", nv);
         assertEquals( "abc", n.getLiteralLexicalForm());
