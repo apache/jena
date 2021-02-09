@@ -78,7 +78,13 @@ public class TextVocab
     public static final Resource whitespaceTokenizer = Vocab.resource(NS, "WhitespaceTokenizer");
     
     // Filters
+	/** 
+	 * "Standard Filter" is a no-op in Lucene 7.x and removed in Lucene 8.x.
+	 * @deprecated Do not use. To be removed.
+	 */
+    @Deprecated
     public static final Resource standardFilter     = Vocab.resource(NS, "StandardFilter");
+	
     public static final Resource lowerCaseFilter    = Vocab.resource(NS, "LowerCaseFilter");
     public static final Resource asciiFoldingFilter = Vocab.resource(NS, "ASCIIFoldingFilter");
 
