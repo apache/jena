@@ -46,28 +46,6 @@
       </exclusions>
     </dependency>
 
-    <!-- Illustration: include the Jena Text ElasticSearch code
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-text-es</artifactId>
-      <version>${project.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.hdrhistogram</groupId>
-          <artifactId>HdrHistogram</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.httpcomponents</groupId>
-          <artifactId>httpcore</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.httpcomponents</groupId>
-          <artifactId>httpclient</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    -->
-
     <!-- Include jena-cmds in the server jar so 
          "java -cp server-jar jena.cmd ..." works
          as a convenience in deployments.
