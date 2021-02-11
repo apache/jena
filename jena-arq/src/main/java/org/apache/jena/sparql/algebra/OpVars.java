@@ -245,12 +245,6 @@ public class OpVars
         }
 
         @Override
-        public void visit(OpFind opFind) {
-            VarUtils.addVarsFromTriple(acc, opFind.getTriple());
-            addVar(acc, opFind.getVar());
-        }
-
-        @Override
         public void visit(OpDatasetNames dsNames) {
             addVar(acc, dsNames.getGraphNode()) ;
         }

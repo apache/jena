@@ -28,7 +28,7 @@ import org.junit.Test;
  */
 public class TestSPARQLStarExtra {
 
-    private static String FILES = "testing/ARQ/RDF-Star/Other/";
+    private static String FILES = "testing/ARQ/RDF-star/Other/";
 
     // RDF4J format JSON results.
     // It uses "s", "p" and "o" for the RDF term results.

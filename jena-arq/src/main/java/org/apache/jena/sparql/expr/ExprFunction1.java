@@ -24,13 +24,13 @@ import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.graph.NodeTransform;
 
 /** A function that has a single argument */
- 
+
 public abstract class ExprFunction1 extends ExprFunction
 {
     protected final Expr expr ;
 
     protected ExprFunction1(Expr expr, String fName) { this(expr, fName, null) ; }
-    
+
     protected ExprFunction1(Expr expr, String fName, String opSign)
     {
         super(fName, opSign) ;
@@ -43,10 +43,10 @@ public abstract class ExprFunction1 extends ExprFunction
     public Expr getArg(int i)
     {
         if ( i == 1 )
-            return expr ; 
+            return expr ;
         return null ;
     }
-    
+
     @Override
     public int hashCode()
     {
@@ -55,27 +55,27 @@ public abstract class ExprFunction1 extends ExprFunction
 
     @Override
     public int numArgs() { return 1 ; }
-    
+
     // ---- Evaluation
-    
+
     @Override
     final public NodeValue eval(Binding binding, FunctionEnv env)
     {
         NodeValue s = evalSpecial(binding, env) ;
         if ( s != null )
             return s ;
-        
+
         NodeValue x = eval(binding, env, expr) ;
         return eval(x, env) ;
     }
-    
-    // Ideally, we would only have the FunctionEnv form but that break compatibility. 
+
+    // Ideally, we would only have the FunctionEnv form but that break compatibility.
     public NodeValue eval(NodeValue v, FunctionEnv env) { return eval(v) ; }
-    public abstract NodeValue eval(NodeValue v) ;
-    
+    public abstract NodeValue eval(NodeValue nv) ;
+
     // Allow special cases.
-    protected NodeValue evalSpecial(Binding binding, FunctionEnv env) { return null ; } 
-    
+    protected NodeValue evalSpecial(Binding binding, FunctionEnv env) { return null ; }
+
     @Override
     final public Expr copySubstitute(Binding binding)
     {
@@ -89,9 +89,9 @@ public abstract class ExprFunction1 extends ExprFunction
         Expr e = (expr == null ? null : expr.applyNodeTransform(transform)) ;
         return copy(e) ;
     }
-    
+
     public abstract Expr copy(Expr expr) ;
-    
+
     @Override
     public void visit(ExprVisitor visitor) { visitor.visit(this) ; }
     public Expr apply(ExprTransform transform, Expr sub) { return transform.transform(this, sub) ; }

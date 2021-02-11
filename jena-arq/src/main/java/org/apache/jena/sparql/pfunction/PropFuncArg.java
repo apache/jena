@@ -27,10 +27,10 @@ import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.expr.ExprLib;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.ExprUtils ;
 import org.apache.jena.sparql.util.FmtUtils ;
 import org.apache.jena.sparql.util.PrintSerializableBase ;
 
@@ -98,13 +98,13 @@ public class PropFuncArg extends PrintSerializableBase
         ExprList exprList = new ExprList() ;
         if ( isNode() ) {
             Node n = getArg() ;
-            Expr expr = ExprUtils.nodeToExpr(n) ;
+            Expr expr = ExprLib.nodeToExpr(n) ;
             exprList.add(expr) ;
             return exprList ;
         }
 
         for ( Node n : getArgList() ) {
-            Expr expr = ExprUtils.nodeToExpr(n) ;
+            Expr expr = ExprLib.nodeToExpr(n) ;
             exprList.add(expr) ;
         }
         return exprList ;

@@ -24,7 +24,7 @@ import org.apache.jena.sparql.algebra.op.* ;
 
 /**
  * When writing {@link Transform}s to be applied to a tree,
- * extend {@link TransformCopy}, not this class. 
+ * extend {@link TransformCopy}, not this class.
  */
 public class TransformBase implements Transform
 {
@@ -37,9 +37,7 @@ public class TransformBase implements Transform
     @Override
     public Op transform(OpQuad opQuad)                      { return opQuad ; }
     @Override
-    public Op transform(OpPath opPath)                      { return opPath ; } 
-    @Override
-    public Op transform(OpFind opFind)                      { return opFind ; } 
+    public Op transform(OpPath opPath)                      { return opPath ; }
 
     @Override
     public Op transform(OpProcedure opProc, Op subOp)       { return opProc ; }
@@ -52,19 +50,19 @@ public class TransformBase implements Transform
     public Op transform(OpQuadPattern quadPattern)          { return quadPattern ; }
     @Override
     public Op transform(OpQuadBlock quadBlock)              { return quadBlock ; }
-    
+
     @Override
     public Op transform(OpFilter opFilter, Op subOp)        { return opFilter ; }
     @Override
-    public Op transform(OpGraph opGraph, Op subOp)          { return opGraph ; } 
+    public Op transform(OpGraph opGraph, Op subOp)          { return opGraph ; }
     @Override
-    public Op transform(OpService opService, Op subOp)      { return opService ; } 
+    public Op transform(OpService opService, Op subOp)      { return opService ; }
 
     @Override
     public Op transform(OpAssign opAssign, Op subOp)        { return opAssign ; }
     @Override
     public Op transform(OpExtend opExtend, Op subOp)        { return opExtend ; }
-    
+
     @Override
     public Op transform(OpJoin opJoin, Op left, Op right)           { return opJoin ; }
     @Override
@@ -76,8 +74,8 @@ public class TransformBase implements Transform
     @Override
     public Op transform(OpUnion opUnion, Op left, Op right)         { return opUnion ; }
     @Override
-    public Op transform(OpConditional opCond, Op left, Op right)    { return opCond ; } 
-    
+    public Op transform(OpConditional opCond, Op left, Op right)    { return opCond ; }
+
     @Override
     public Op transform(OpSequence opSequence, List<Op> elts)       { return opSequence ; }
     @Override
@@ -89,7 +87,7 @@ public class TransformBase implements Transform
     public Op transform(OpNull opNull)                      { return opNull ; }
     @Override
     public Op transform(OpLabel opLabel, Op subOp)          { return opLabel ; }
-    
+
     @Override
     public Op transform(OpList opList, Op subOp)            { return opList ; }
     @Override

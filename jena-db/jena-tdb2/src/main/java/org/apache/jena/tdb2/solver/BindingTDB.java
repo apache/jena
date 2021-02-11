@@ -99,7 +99,7 @@ public class BindingTDB extends BindingBase
         NodeId id = idBinding.get(var);
         if ( id != null )
             return id;
-        // In case we are inserting known missing nodes.
+        // In case we are handling known missing nodes.
         if ( NodeId.isDoesNotExist(id) )
             return null;
 

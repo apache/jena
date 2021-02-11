@@ -18,8 +18,6 @@
 
 package org.apache.jena.sparql.function.library.triple;
 
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase3;
@@ -30,14 +28,10 @@ import org.apache.jena.sparql.function.FunctionBase3;
  */
 public class TripleTerm extends FunctionBase3 {
 
+    public TripleTerm() {}
+
     @Override
     public NodeValue exec(NodeValue nv1, NodeValue nv2, NodeValue nv3) {
-        Node s = nv1.asNode();
-        Node p = nv2.asNode();
-        if ( ! p.isURI() )
-            throw new ExprEvalException(getClass().getSimpleName()+": Predicate not a URI: "+nv2);
-        Node o = nv3.asNode();
-        Node t = NodeFactory.createTripleNode(s, p, o);
-        return NodeValue.makeNode(t);
+        return EmbeddedTripleFunctions.fnTriple(nv1, nv2, nv3);
     }
 }

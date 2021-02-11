@@ -23,8 +23,11 @@ import org.apache.jena.sparql.function.FunctionBase1;
 
 /** Test whether a {@link NodeValue} is an triple term. */
 public class IsTripleTerm extends FunctionBase1 {
+
+    public IsTripleTerm() {}
+
     @Override
     public NodeValue exec(NodeValue nv) {
-        return NodeValue.booleanReturn(nv.asNode().isNodeTriple());
+        return EmbeddedTripleFunctions.isTriple(nv);
     }
 }

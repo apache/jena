@@ -83,7 +83,7 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
 
     protected abstract Node tokenAsNode(Token token) ;
 
-    // One triple, not include terminator.
+    // One triple, not including terminator.
     protected final Triple parseTriple() {
         Token sToken = nextToken();
         if ( sToken.isEOF() )

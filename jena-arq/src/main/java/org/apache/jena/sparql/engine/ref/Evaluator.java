@@ -21,7 +21,6 @@ package org.apache.jena.sparql.engine.ref;
 import java.util.List ;
 
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.sparql.algebra.Table ;
 import org.apache.jena.sparql.core.BasicPattern ;
@@ -39,7 +38,6 @@ public interface Evaluator
     
     public Table basicPattern(BasicPattern pattern) ;
     public Table pathPattern(TriplePath triplePath) ;
-    public Table find(Var var, Triple tripleterm) ;
 
     // Two forms that provide custom code evaluation
     public Table procedure(Table table, Node procId, ExprList args) ;

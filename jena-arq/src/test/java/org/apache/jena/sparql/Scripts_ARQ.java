@@ -34,7 +34,7 @@ import org.junit.runner.RunWith;
     "testing/ARQ/Syntax/manifest-syntax.ttl" ,
     "testing/ARQ/manifest-arq.ttl" ,
     "testing/ARQ/Serialization/manifest.ttl" ,
-    "testing/ARQ/RDF-Star/SPARQL-Star/manifest.ttl"
+    "testing/ARQ/RDF-star/SPARQL-star/manifest.ttl"
     //"testing/ARQ/Examples/manifest.ttl"
 })
 public class Scripts_ARQ

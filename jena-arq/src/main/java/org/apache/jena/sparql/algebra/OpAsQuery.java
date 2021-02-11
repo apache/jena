@@ -375,7 +375,7 @@ public class OpAsQuery {
             // Other cleanups.
             return el;
         }
-        
+
         private Element fixupGroupsOfOne(ElementGroup eg) {
             ElementTransform transform = new ElementTransformCleanGroupsOfOne() ;
             ExprTransform exprTransform = new ExprTransformApplyElementTransform(transform) ;
@@ -415,12 +415,6 @@ public class OpAsQuery {
         @Override
         public void visit(OpQuad opQuad) {
             throw new ARQNotImplemented("OpQuad") ;
-        }
-
-        @Override
-        public void visit(OpFind opFind) {
-            Element elt = new ElementFind(opFind.getVar(), opFind.getTriple());
-            currentGroup().addElement(elt) ;
         }
 
         @Override
@@ -902,7 +896,7 @@ public class OpAsQuery {
             stack.push(el) ;
         }
     }
-    
+
 
     /**
      * Allows multiple filters and any number of extend

@@ -33,17 +33,17 @@ import org.apache.jena.sparql.expr.* ;
 import org.apache.jena.sparql.expr.aggregate.Aggregator ;
 
 /** Apply the {@link Transform}, {@link ExprTransform}
- *  Works in conjunction with {@link WalkerVisitor}. 
+ *  Works in conjunction with {@link WalkerVisitor}.
  */
 public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisitor {
     private final Transform     opTransform ;
     private final ExprTransform exprTransform ;
 
     protected final boolean     visitService ;
-    
+
     private final Deque<Op>     opStack   = new ArrayDeque<>() ;
     private final Deque<Expr>   exprStack = new ArrayDeque<>() ;
-    
+
     private final OpVisitor     beforeVisitor ;
     private final OpVisitor     afterVisitor ;
 
@@ -64,7 +64,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     /*package*/ final Expr exprResult() {
         return pop(exprStack) ;
     }
-    
+
     // These three could be calls within WalkerVisitor followed by "collect".
     protected Expr transform(Expr expr) {
         int x1 = opStack.size() ;
@@ -80,7 +80,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
                 Log.error(ApplyTransformVisitor.class, "Misaligned exprStack") ;
         }
     }
-    
+
     protected ExprList transform(ExprList exprList) {
 //        if ( exprList == null || exprTransform == null )
 //            return exprList ;
@@ -155,7 +155,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
             return varExprList ;
       List<Var> vars = varExprList.getVars() ;
       VarExprList varExpr2 = new VarExprList() ;
-      
+
       List<Expr> x = collect(vars.size()) ;
 
       boolean changed = false ;
@@ -172,8 +172,8 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
           }
       }
       return changed ? varExpr2 : varExprList ;
-    }  
-        
+    }
+
     private ExprList collect(ExprList exprList) {
         if ( exprList == null )
             return null ;
@@ -189,14 +189,14 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
             return exprList ;
         return new ExprList(x) ;
     }
-    
+
     private ExprList collect(List<Expr> exprList) {
         if ( exprList == null )
             return null ;
         return new ExprList(collect(exprList.size())) ;
     }
-    
-    // collect and return in the original order (take account of stack reversal). 
+
+    // collect and return in the original order (take account of stack reversal).
     private List<Expr> collect(int N) {
         // Check for "same"/unchanged
         List<Expr> x = new ArrayList<>(N) ;
@@ -208,7 +208,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
         }
         return x ;
     }
-    
+
     @Override
     public void visit(OpGroup opGroup) {
         boolean changed = false ;
@@ -301,7 +301,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
         System.out.println("    O:"+x);
         System.out.println("    E:"+y);
     }
-    
+
     @Override
     public void visit(OpFilter opFilter) {
         Op subOp = null ;
@@ -314,14 +314,14 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
             push(opStack, opFilter.apply(opTransform, subOp)) ;
             return ;
         }
-        // ex2 is the same length as ex. 
+        // ex2 is the same length as ex.
         ExprList ex2 = collect(ex) ;
         OpFilter f = opFilter ;
         if ( ex != ex2 || opFilter.getSubOp() != subOp ) {
             f = OpFilter.filterAlways(ex2, subOp) ;
             // If we removed a layer of filter, then subOp needs changing
-            // else f-subOp is subOp anyway.    
-            subOp = f.getSubOp() ; 
+            // else f-subOp is subOp anyway.
+            subOp = f.getSubOp() ;
         }
         push(opStack, f.apply(opTransform, subOp)) ;
     }
@@ -345,7 +345,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
         Op opX = x.apply(opTransform, left, right) ;
         push(opStack, opX) ;
     }
-    
+
     @Override
     public void visit(OpService op) {
         if ( ! visitService ) {
@@ -360,17 +360,17 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     public void visitExt(OpExt op) {
         push(opStack, opTransform.transform(op)) ;
     }
-    
+
     @Override
-    public void visitExpr(ExprList exprs) { 
+    public void visitExpr(ExprList exprs) {
         throw new InternalErrorException("Didn't expect as call to ApplyTransformVisit.visitExpr") ;
     }
-    
+
     @Override
     public void visitVarExpr(VarExprList exprVarExprList)  {
         throw new InternalErrorException("Didn't expect as call to ApplyTransformVisit.visitVarExpr") ;
     }
-    
+
     @Override
     public void visit(ExprFunction0 func) {
         Expr e = func.apply(exprTransform) ;
@@ -419,6 +419,13 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     }
 
     @Override
+    public void visit(ExprTripleTerm tripleTerm) {
+        //Expr e = tripleTerm.apply(exprTransform) ;
+        Expr e = tripleTerm;
+        push(exprStack, e) ;
+    }
+
+    @Override
     public void visit(NodeValue nv) {
         Expr e = nv.apply(exprTransform) ;
         push(exprStack, e) ;
@@ -435,7 +442,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
         Expr e = eAgg.apply(exprTransform) ;
         push(exprStack, e) ;
     }
-    
+
     @Override
     public void visit(ExprNone e) {
         push(exprStack, e) ;
@@ -460,7 +467,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
             return null ;
         }
     }
-    
+
     private String stackLabel(Deque<?> stack) {
         if ( stack == opStack ) return "Op" ;
         if ( stack == exprStack ) return "Expr" ;

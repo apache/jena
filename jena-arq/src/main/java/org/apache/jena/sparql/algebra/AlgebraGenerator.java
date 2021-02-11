@@ -141,9 +141,6 @@ public class AlgebraGenerator
         if ( elt instanceof ElementTriplesBlock )
             return compileBasicPattern(((ElementTriplesBlock)elt).getPattern());
 
-        if ( elt instanceof ElementFind )
-            return compileFind((ElementFind)elt);
-
         // Ditto.
         if ( elt instanceof ElementPathBlock )
             return compilePathBlock(((ElementPathBlock)elt).getPattern());
@@ -314,7 +311,7 @@ public class AlgebraGenerator
         // All elements that simply "join" into the algebra.
         if ( elt instanceof ElementGroup || elt instanceof ElementNamedGraph || elt instanceof ElementService || elt instanceof ElementUnion
              || elt instanceof ElementSubQuery || elt instanceof ElementData || elt instanceof ElementTriplesBlock
-             || elt instanceof ElementPathBlock || elt instanceof ElementFind ) {
+             || elt instanceof ElementPathBlock ) {
             Op op = compileElement(elt);
             return join(current, op);
         }
@@ -413,12 +410,6 @@ public class AlgebraGenerator
 
         // Always turns the most basic paths to triples.
         return PathLib.pathToTriples(pathBlock);
-    }
-
-    protected Op compileFind(ElementFind elFind) {
-        Var var = elFind.getVar();
-        Triple triple = elFind.getTriple();
-        return new OpFind(triple, var);
     }
 
     protected Op compileElementGraph(ElementNamedGraph eltGraph) {

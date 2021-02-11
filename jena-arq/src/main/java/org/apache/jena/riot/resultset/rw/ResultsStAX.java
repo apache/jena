@@ -465,7 +465,7 @@ public class ResultsStAX implements ResultSet, Closeable {
               //XMLStreamConstants.START_ELEMENT
 
               String tag2 = parser.getLocalName() ;
-              // <subject> <property> <object>
+              // <subject> <predicate> <object>
               // One of subject, property, object (s,p,o)
 
               if ( ! isOneOf(tag2, XMLResults.dfSubject, XMLResults.dfProperty, XMLResults.dfPredicate, XMLResults.dfObject,

@@ -3918,7 +3918,7 @@ expr1 = new E_Divide(expr1, expr2) ;
     throw new Error("Missing return statement in function");
   }
 
-  final public Expr PrimaryExpression() throws ParseException {Expr expr ; Node gn ;
+  final public Expr PrimaryExpression() throws ParseException {Expr expr ; Node n ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case LPAREN:{
       expr = BrackettedExpression();
@@ -4001,8 +4001,8 @@ expr1 = new E_Divide(expr1, expr2) ;
     case STRING_LITERAL2:
     case STRING_LITERAL_LONG1:
     case STRING_LITERAL_LONG2:{
-      gn = RDFLiteral();
-{if ("" != null) return asExpr(gn) ;}
+      n = RDFLiteral();
+{if ("" != null) return asExpr(n) ;}
       break;
       }
     case INTEGER:
@@ -4014,20 +4014,20 @@ expr1 = new E_Divide(expr1, expr2) ;
     case INTEGER_NEGATIVE:
     case DECIMAL_NEGATIVE:
     case DOUBLE_NEGATIVE:{
-      gn = NumericLiteral();
-{if ("" != null) return asExpr(gn) ;}
+      n = NumericLiteral();
+{if ("" != null) return asExpr(n) ;}
       break;
       }
     case TRUE:
     case FALSE:{
-      gn = BooleanLiteral();
-{if ("" != null) return asExpr(gn) ;}
+      n = BooleanLiteral();
+{if ("" != null) return asExpr(n) ;}
       break;
       }
     case VAR1:
     case VAR2:{
-      gn = Var();
-{if ("" != null) return asExpr(gn) ;}
+      n = Var();
+{if ("" != null) return asExpr(n) ;}
       break;
       }
     default:
@@ -4046,7 +4046,8 @@ expr1 = new E_Divide(expr1, expr2) ;
     throw new Error("Missing return statement in function");
   }
 
-  final public Expr BuiltInCall() throws ParseException {Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
+  final public Expr BuiltInCall() throws ParseException {Expr expr ;
+                       Expr expr1 = null ; Expr expr2 = null ; Expr expr3 = null ;
                        Node gn ; ExprList a ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case COUNT:

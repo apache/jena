@@ -83,12 +83,6 @@ public class PatternVarsVisitor extends ElementVisitorBase
     }
 
     @Override
-    public void visit(ElementFind el) {
-        acc.add(el.getVar());
-        VarUtils.addVarsFromTriple(acc, el.getTriple());
-    }
-
-    @Override
     public void visit(ElementData el) {
         acc.addAll(el.getVars());
     }

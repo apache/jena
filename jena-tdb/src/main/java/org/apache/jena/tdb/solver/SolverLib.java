@@ -18,7 +18,8 @@
 
 package org.apache.jena.tdb.solver;
 
-import static org.apache.jena.atlas.lib.tuple.TupleFactory.tuple ;
+import static org.apache.jena.atlas.lib.tuple.TupleFactory.create3;
+import static org.apache.jena.atlas.lib.tuple.TupleFactory.create4;
 
 import java.util.* ;
 import java.util.function.Function;
@@ -123,10 +124,10 @@ public class SolverLib
             Tuple<Node> tuple = null ;
             if ( graphNode == null )
                 // 3-tuples
-                tuple = tuple(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+                tuple = create3(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
             else
                 // 4-tuples.
-                tuple = tuple(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+                tuple = create4(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
             // Plain RDF
             //chain = solve(nodeTupleTable, tuple, anyGraph, chain, filter, execCxt) ;
             // RDF-star

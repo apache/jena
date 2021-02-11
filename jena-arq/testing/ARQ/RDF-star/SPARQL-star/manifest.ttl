@@ -21,20 +21,18 @@ PREFIX qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#>
 PREFIX :       <#>
 
 <>  rdf:type mf:Manifest ;
-    rdfs:label "SPARQL*" ;
+    rdfs:label "SPARQL-star" ;
     mf:entries
     (
         :sparql-star-syntax-1
         :sparql-star-syntax-2
         :sparql-star-syntax-3
         :sparql-star-syntax-4
-        :sparql-star-syntax-5
 
         :sparql-star-bad-syntax-1
         :sparql-star-bad-syntax-2
         :sparql-star-bad-syntax-3
         :sparql-star-bad-syntax-4
-        :sparql-star-bad-syntax-5
 
         :sparql-star-basic-1
         :sparql-star-basic-2
@@ -53,18 +51,12 @@ PREFIX :       <#>
 
         :sparql-star-pattern-arq-1
 
-        :sparql-star-find-1
-
         :sparql-star-update-syntax-1
         :sparql-star-update-syntax-2
         :sparql-star-update-bad-syntax-1
         :sparql-star-update-bad-syntax-2
 
         :sparql-star-union-1
-        :sparql-star-union-2
-
-        :sparql-star-named-graph-1
-        :sparql-star-named-graph-2
     ) .
 
 ## Good syntax
@@ -93,12 +85,6 @@ PREFIX :       <#>
     mf:action  <sparql-star-syntax-04.arq>
     .
 
-:sparql-star-syntax-5
-    rdf:type   mfx:PositiveSyntaxTestARQ ;
-    mf:name    "sparql-star-syntax-05.arq" ;
-    mf:action  <sparql-star-syntax-05.arq>
-    .
-
 ## Bad syntax
 
 :sparql-star-bad-syntax-1
@@ -123,12 +109,6 @@ PREFIX :       <#>
     rdf:type   mfx:NegativeSyntaxTestARQ ;
     mf:name    "sparql-star-bad-syntax-04" ;
     mf:action  <sparql-star-bad-syntax-04.arq>
-    .
-
-:sparql-star-bad-syntax-5
-    rdf:type   mfx:NegativeSyntaxTestARQ ;
-    mf:name    "sparql-star-bad-syntax-05" ;
-    mf:action  <sparql-star-bad-syntax-05.arq>
     .
 
 ## Execution - one triple pattern, no nesting
@@ -242,7 +222,7 @@ PREFIX :       <#>
 ## SPARQL* : ARQ specific.
 
 :sparql-star-pattern-arq-1
-    mf:name    "SPARQL* - Base triple in data: ground triple term in query" ;
+    mf:name    "SPARQL* - Asserted triple not in data: ground triple term in query" ;
     mf:action
         [ qt:query  <sparql-star-pattern-arq-01.arq> ;
           qt:data   <data4.ttl> ] ;
@@ -255,16 +235,6 @@ PREFIX :       <#>
         [ qt:query  <sparql-star-pattern-arq-01.arq> ;
           qt:data   <data4.ttl> ] ;
     mf:result  <sparql-star-pattern-arq-01.srj>
-.
-
-## SPARQL FIND*
-
-:sparql-star-find-1
-    mf:name    "SPARQL* - FIND - 1" ;
-    mf:action
-        [ qt:query  <sparql-star-find-01.arq> ;
-          qt:data   <data3.ttl> ] ;
-    mf:result  <sparql-star-find-01.srj>
 .
 
 ## SPARQL* Update
@@ -307,20 +277,4 @@ PREFIX :       <#>
         [ qt:query  <sparql-star-union-2.arq> ;
           qt:data   <data-quads.trig> ] ;
     mf:result  <sparql-star-union-2.srj>
-.
-
-:sparql-star-named-graph-1
-    mf:name    "SPARQL* - Pattern - named graph" ;
-    mf:action
-        [ qt:query  <sparql-star-named-graph-1.arq> ;
-          qt:data   <data-quads.trig> ] ;
-    mf:result  <sparql-star-named-graph-1.srj>
-.
-
-:sparql-star-named-graph-2
-    mf:name    "SPARQL* - FIND - named graph" ;
-    mf:action
-        [ qt:query  <sparql-star-named-graph-2.arq> ;
-          qt:data   <data-quads.trig> ] ;
-    mf:result  <sparql-star-named-graph-2.srj>
 .
