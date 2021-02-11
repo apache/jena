@@ -52,16 +52,16 @@ public class WriterOp
     private static final int NL     = WriterLib.NL ;
     private static final int NoNL   = WriterLib.NoNL ;    // No newline, with space
     private static final int NoSP   = WriterLib.NoSP ;
-    
+
     public static void output(Op op)
     { output(System.out, op) ; }
-    
+
     public static void output(Op op, PrefixMapping pMap)
     { output(System.out, op, pMap) ; }
-    
+
     public static void output(Op op, Prologue prologue)
     { output(System.out, op, prologue) ; }
-    
+
     public static void output(OutputStream out, Op op)
     { output(out, op, (PrefixMapping)null) ; }
 
@@ -103,7 +103,7 @@ public class WriterOp
         } ;
         WriterBasePrefix.output(iWriter, fmt, sCxt2.getPrologue()) ;
     }
-    
+
     // Without the base/prefix wrapper.
     static void outputNoPrologue(final IndentedWriter iWriter, final Op op, final SerializationContext sCxt) {
         OpWriterWorker v = new OpWriterWorker(iWriter, sCxt) ;
@@ -232,15 +232,6 @@ public class WriterOp
             // start(opPath, NoNL) ;
             formatTriplePath(opPath.getTriplePath()) ;
             // finish(opPath) ;
-        }
-
-        @Override
-        public void visit(OpFind opFind) {
-            start(opFind, NoNL) ;
-            out.print(opFind.getVar());
-            out.print(" ");
-            formatTriple(opFind.getTriple()) ;
-            finish(opFind) ;
         }
 
         @Override

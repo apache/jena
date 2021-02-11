@@ -48,11 +48,11 @@ import org.apache.jena.sparql.procedure.Procedure ;
 
 /**
  * Turn an Op expression into an execution of QueryIterators.
- * 
+ *
  * Does not consider optimizing the algebra expression (that should happen
  * elsewhere). BGPs are still subject to StageBuilding during iterator
  * execution.
- * 
+ *
  * During execution, when a substitution into an algebra expression
  * happens (in other words, a streaming operation, index-join-like), there is a
  * call into the executor each time so it does not just happen once before a
@@ -107,11 +107,11 @@ public class OpExecutor
         this.stageGenerator = StageBuilder.chooseStageGenerator(execCxt.getContext()) ;
     }
 
-    // Public interface 
+    // Public interface
     public QueryIterator executeOp(Op op, QueryIterator input) {
         return exec(op, input) ;
     }
-    
+
     // ---- The recursive step.
     protected QueryIterator exec(Op op, QueryIterator input) {
         level++ ;
@@ -134,10 +134,6 @@ public class OpExecutor
 
     protected QueryIterator execute(OpTriple opTriple, QueryIterator input) {
         return execute(opTriple.asBGP(), input) ;
-    }
-
-    protected QueryIterator execute(OpFind opFind, QueryIterator input) {
-        return RX.matchTripleStar(input, opFind.getVar(), opFind.getTriple(), execCxt);
     }
 
     protected QueryIterator execute(OpGraph opGraph, QueryIterator input) {
@@ -178,7 +174,7 @@ public class OpExecutor
         OpGraph op = new OpGraph(quadPattern.getGraphNode(), opBGP) ;
         return execute(op, input) ;
     }
-    
+
     protected QueryIterator execute(OpQuadBlock quadBlock, QueryIterator input) {
         Op op = quadBlock.convertOp() ;
         return exec(op, input) ;
@@ -420,11 +416,11 @@ public class OpExecutor
             // then we need to take account of the ORDER.
             // The normal (non-spill case) already preserves the input order,
             // passing through the first occurence. It is only if a spill happens that
-            // we need to ensure the spill buckets respect sort order. 
+            // we need to ensure the spill buckets respect sort order.
             OpOrder subOrder = (OpOrder)opDistinct.getSubOp();
             conditions = subOrder.getConditions();
         }
-        
+
         qIter = new QueryIterDistinct(qIter, conditions, execCxt) ;
         return qIter ;
     }

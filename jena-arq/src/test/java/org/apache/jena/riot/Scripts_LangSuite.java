@@ -29,7 +29,7 @@ import org.junit.runner.RunWith ;
 @Label("RIOT")
 @Manifests({
     "testing/RIOT/Lang/manifest-all.ttl",
-    "testing/ARQ/RDF-Star/Turtle-Star/manifest.ttl"
+    "testing/ARQ/RDF-star/Turtle-star/manifest.ttl"
 })
 
 public class Scripts_LangSuite

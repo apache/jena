@@ -104,12 +104,6 @@ public class TransformQuadGraph extends TransformCopy
     }
 
     @Override
-    public Op transform(OpFind opFind) {
-        // Put the (graph) back round it so FIND works on the named graph.
-        return new OpGraph(getNode() , opFind) ;
-    }
-
-    @Override
     public Op transform(OpPath opPath) {
         return new OpGraph(getNode() , opPath) ;
         // Does not get removed by transform above because this is
@@ -123,7 +117,7 @@ public class TransformQuadGraph extends TransformCopy
 
     @Override
     public Op transform(OpTriple opTriple) {
-        return new OpQuad(Quad.create(getNode(), opTriple.getTriple())); 
+        return new OpQuad(Quad.create(getNode(), opTriple.getTriple()));
     }
 
     @Override

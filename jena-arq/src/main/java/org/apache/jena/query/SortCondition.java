@@ -27,10 +27,10 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.Plan ;
 import org.apache.jena.sparql.expr.E_Function ;
 import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.expr.ExprLib;
 import org.apache.jena.sparql.expr.ExprVar ;
 import org.apache.jena.sparql.serializer.FmtExprSPARQL ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.ExprUtils ;
 import org.apache.jena.sparql.util.PrintSerializableBase ;
 
 
@@ -43,7 +43,7 @@ public class SortCondition extends PrintSerializableBase
     { this(new ExprVar(var),dir) ; } 
   
     public SortCondition(Node var, int dir)
-    { this(ExprUtils.nodeToExpr(var), dir) ; }
+    { this(ExprLib.nodeToExpr(var), dir) ; }
 
     public SortCondition(Expr expr, int dir)
     {

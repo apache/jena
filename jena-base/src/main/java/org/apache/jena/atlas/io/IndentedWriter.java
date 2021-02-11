@@ -96,12 +96,13 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     }
 
     private static Writer makeWriter(OutputStream out) {
-        // return BufferingWriter.create(out) ;
         return IO.asBufferedUTF8(out) ;
     }
 
     /** Using Writers directly is discouraged */
-    protected IndentedWriter(Writer writer) { this(writer, false) ; }
+    protected IndentedWriter(Writer writer) {
+        this(writer, false);
+    }
 
     /** Using Writers directly is discouraged */
     protected IndentedWriter(Writer writer, boolean withLineNumbers) {

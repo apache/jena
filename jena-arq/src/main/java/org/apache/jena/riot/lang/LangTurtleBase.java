@@ -236,6 +236,7 @@ public abstract class LangTurtleBase extends LangBase {
     }
 
     // Parse a << >> : RDF-star
+    // XXX Update grammar extract to RDF-star CG report.
     /* The Turtle grammar is:
             tripleX ::= ’<<’ subjectX predicate objectX ’>>’
             subjectX ::= iri | BlankNode | tripleX
@@ -249,21 +250,16 @@ public abstract class LangTurtleBase extends LangBase {
     // node() or nodeX
     private Node parseTripleTerm() {
         Token token = nextToken();
-        // subjectX()
         Node s = subjectX();
 
         Node p = predicate();  // predicate() == node();nextToken();
         nextToken();
 
-        // objectX()
         Node o = objectX();
 
         if ( ! lookingAt(GT2) )
             exception(peekToken(), "Expected >>, found %s", peekToken().text()) ;
         nextToken();
-
-        // XXX Emit target triple. Need to suppress duplicates
-        //emitTriple(s, p, o);
 
         return profile.createTripleNode(s, p, o, token.getLine(), token.getColumn());
     }
@@ -427,7 +423,7 @@ public abstract class LangTurtleBase extends LangBase {
                 Token tNext = nextToken() ;
                 if ( lookingAt(R_ANN) )
                     exception(tNext, "Empty annotation");
-                Node x = profile.createTripleNode(subject, predicate, object, -1, -1); // XXX
+                Node x = profile.createTripleNode(subject, predicate, object, currLine, currCol);
                 predicateObjectList(x);
                 expect("Missing end annotation", R_ANN);
             }

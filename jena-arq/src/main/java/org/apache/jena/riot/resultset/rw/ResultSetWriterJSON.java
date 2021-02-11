@@ -351,7 +351,7 @@ public class ResultSetWriterJSON implements ResultSetWriter {
             writeValue(out, triple.getSubject(), multiLineInnerValue);
             println(out, " ,");
 
-            print(out, quoteName(kProperty), ": ");
+            print(out, quoteName(kPredicate), ": ");
             writeValue(out, triple.getPredicate(), multiLineInnerValue);
             println(out, " ,");
 

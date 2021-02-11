@@ -30,7 +30,7 @@ import org.junit.runners.Suite;
     TestSPARQLStarParse.class,
     TestSPARQLStarExtra.class
 
-    // See also Scripts_ARQ SPARQL-Star/manifest.ttl
+    // See also Scripts_ARQ SPARQL-star/manifest.ttl
     // and 
  
 })

@@ -18,6 +18,7 @@
 
 package org.apache.jena.riot.resultset.rw;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.apache.jena.atlas.web.ContentType;
@@ -32,6 +33,7 @@ import org.apache.jena.riot.resultset.ResultSetReaderRegistry;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.riot.system.stream.StreamManager;
+import org.apache.jena.shared.NotFoundException;
 import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.system.Txn;
@@ -41,18 +43,21 @@ import org.apache.jena.system.Txn;
  * <li>By format (resultset, boolean, graph)
  */
 public class ReadAnything {
-    
-    /** Read something RDF/SPARQL like */ 
+
+    /** Read something RDF/SPARQL like */
     public static SPARQLResult read(String url) {
         return read(url, ARQ.getContext());
     }
 
-    /** Read something RDF/SPARQL like */ 
+    /** Read something RDF/SPARQL like */
     public static SPARQLResult read(String url, Context context) {
+        Objects.requireNonNull(url);
         TypedInputStream in = StreamManager.get(context).open(url);
+        if ( in == null )
+            throw new NotFoundException(url);
         ContentType ct = WebContent.determineCT(in.getContentType(), null, url);
         Lang lang = RDFLanguages.contentTypeToLang(ct);
-        
+
         if ( RDFLanguages.isTriples(lang) ) {
             Model model = ModelFactory.createDefaultModel();
             Supplier<SPARQLResult> r = ()->{
@@ -73,15 +78,15 @@ public class ReadAnything {
                 RDFParser.source(in).lang(lang).parse(sink);
                 return new SPARQLResult(ds);
             };
-            
-            if ( ds.supportsTransactions() ) 
+
+            if ( ds.supportsTransactions() )
                 return Txn.calculateWrite(ds, r);
             else
                 return r.get();
         }
-        
+
         if ( ResultSetReaderRegistry.isRegistered(lang) ) {
-            return 
+            return
                 ResultsReader.create()
                     .forceLang(lang)
                     .context(context)

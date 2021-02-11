@@ -19,21 +19,21 @@
 package org.apache.jena.sparql.syntax;
 
 
-/** An element visitor that walks the graph pattern tree for one query level. 
+/** An element visitor that walks the graph pattern tree for one query level.
  *  applying a visitor at each Element traversed.<br/>
- *  Does not process subqueries.<br/>      
+ *  Does not process subqueries.<br/>
  *  Does not process (NOT)EXISTS in filters.<br/>
  *  These will need to call down themselves if it is meaningful for the visitor.
  *  Bottom-up walk - apply to subelements before applying to current element.
  */
 
-public class ElementWalker 
+public class ElementWalker
 {
     public static void walk(Element el, ElementVisitor visitor)
     {
         walk(el, visitor, null, null) ;
     }
-    
+
     public static void walk(Element el, ElementVisitor visitor, ElementVisitor beforeVisitor, ElementVisitor afterVisitor)
     {
         EltWalker w = new EltWalker(visitor, beforeVisitor, afterVisitor) ;
@@ -52,9 +52,9 @@ public class ElementWalker
         protected final ElementVisitor afterVisitor ;
 
         protected EltWalker(ElementVisitor visitor, ElementVisitor beforeVisitor, ElementVisitor afterVisitor)
-        { 
+        {
             proc = visitor ;
-            this.beforeVisitor= beforeVisitor ; 
+            this.beforeVisitor= beforeVisitor ;
             this.afterVisitor = afterVisitor ;
         }
 
@@ -101,15 +101,6 @@ public class ElementWalker
             proc.visit(el) ;
             after(el) ;
         }
-
-        @Override
-        public void visit(ElementFind el)
-        {
-            before(el) ;
-            proc.visit(el) ;
-            after(el) ;
-        }
-        
 
         @Override
         public void visit(ElementData el)
@@ -180,7 +171,7 @@ public class ElementWalker
         }
 
         // EXISTs, NOT EXISTs also occur in FILTERs via expressions.
-        
+
         @Override
         public void visit(ElementExists el)
         {

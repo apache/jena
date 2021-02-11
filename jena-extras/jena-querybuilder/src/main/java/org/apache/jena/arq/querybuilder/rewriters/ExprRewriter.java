@@ -26,22 +26,12 @@ import java.util.Map;
 
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.expr.ExprAggregator;
-import org.apache.jena.sparql.expr.ExprFunction0;
-import org.apache.jena.sparql.expr.ExprFunction1;
-import org.apache.jena.sparql.expr.ExprFunction2;
-import org.apache.jena.sparql.expr.ExprFunction3;
-import org.apache.jena.sparql.expr.ExprFunctionN;
-import org.apache.jena.sparql.expr.ExprFunctionOp;
-import org.apache.jena.sparql.expr.ExprList;
-import org.apache.jena.sparql.expr.ExprNone;
-import org.apache.jena.sparql.expr.ExprVar;
-import org.apache.jena.sparql.expr.ExprVisitor;
-import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.*;
 import org.apache.jena.sparql.syntax.Element ;
 
 /**
@@ -157,6 +147,14 @@ public class ExprRewriter extends AbstractRewriter<Expr> implements ExprVisitor 
 	}
 
 	@Override
+    public void visit(ExprTripleTerm tripleTerm) {
+	    Triple t1 = tripleTerm.getTriple();
+	    Triple t2 = rewrite(t1);
+	    Node ntt = NodeFactory.createTripleNode(t2);
+	    push(ExprLib.nodeToExpr(ntt));
+	}
+
+    @Override
 	public void visit(ExprAggregator eAgg) {
 		Node n = changeNode(eAgg.getVar());
 		if (n.equals(eAgg.getVar())) {

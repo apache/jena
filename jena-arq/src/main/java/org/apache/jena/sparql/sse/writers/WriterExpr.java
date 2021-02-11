@@ -26,6 +26,7 @@ import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.expr.* ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.util.FmtUtils;
 
 public class WriterExpr
 {
@@ -34,7 +35,7 @@ public class WriterExpr
         output(b, expr, new SerializationContext()) ;
         return b.asString() ;
     }
-    
+
     public static void output(IndentedWriter out, ExprList exprs, SerializationContext sCxt) {
         output(out, exprs, true, true, sCxt) ;
     }
@@ -135,7 +136,7 @@ public class WriterExpr
                 out.print(" ") ;
             else
                 out.ensureStartOfLine() ;
-            
+
             // Ensures we are unit indent under the (operator ...)
             // Without trappings.
             WriterOp.outputNoPrologue(out, funcOp.getGraphPattern(), context) ;
@@ -157,6 +158,11 @@ public class WriterExpr
         @Override
         public void visit(NodeValue nv) {
             out.print(nv.asQuotedString(context)) ;
+        }
+
+        @Override
+        public void visit(ExprTripleTerm tripleTerm) {
+            out.print(FmtUtils.stringForNode(tripleTerm.getNode(), context));
         }
 
         @Override

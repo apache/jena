@@ -45,6 +45,17 @@ import org.apache.jena.sparql.util.Context;
  */
 public class RX {
 
+    public static boolean MODE_SA = true;
+
+    public static QueryIterator rdfStarTriple(QueryIterator chain, Triple triple, ExecutionContext execCxt) {
+        if ( MODE_SA )
+            return RX_SA.rdfStarTriple_SA(chain, triple, execCxt);
+        else
+            return rdfStarTriple_PG(chain, triple, execCxt);
+    }
+
+    // ---- PG mode ----
+
     /**
      * Match a single triple pattern that may involve RDF-star terms.
      * This is the top level function for matching triples.
@@ -59,22 +70,12 @@ public class RX {
      * new QueryIterTriplePattern(chain, triple, execCxt)}
      * </pre>
      */
-    public static QueryIterator rdfStarTriple(QueryIterator chain, Triple triple, ExecutionContext execCxt) {
+    public static QueryIterator rdfStarTriple_PG(QueryIterator chain, Triple triple, ExecutionContext execCxt) {
         // Should all work without this trap for plain RDF.
         if ( ! tripleHasNodeTriple(triple) )
             // No RDF-star : direct to data.
             return matchData(chain, triple, execCxt);
         return rdfStarTripleSub(chain, triple, execCxt);
-    }
-
-    private static VarAlloc varAlloc(ExecutionContext execCxt) {
-        Context context = execCxt.getContext();
-        VarAlloc varAlloc = VarAlloc.get(context, ARQConstants.sysVarAllocRDFStar);
-        if ( varAlloc == null ) {
-            varAlloc = new VarAlloc(ARQConstants.allocVarTripleTerm);
-            context.set(ARQConstants.sysVarAllocRDFStar, varAlloc);
-        }
-        return varAlloc;
     }
 
     /**
@@ -94,7 +95,13 @@ public class RX {
      * Match a triple pattern (which may have nested triple terms in it).
      * Any matched triples are added as triple terms bound to the supplied variable.
      */
-    public static QueryIterator matchTripleStar(QueryIterator chain, Var var, Triple triple, ExecutionContext execCxt) {
+
+    public static QueryIterator findTripleStar(QueryIterator chain, Var var, Triple triple, ExecutionContext execCxt) {
+        // Called from OpFind/apf:find = TripleTermFind which are to be removed.
+        return matchTripleStar(chain, var, triple, execCxt);
+    }
+
+    private static QueryIterator matchTripleStar(QueryIterator chain, Var var, Triple triple, ExecutionContext execCxt) {
         if ( tripleHasNodeTriple(triple) ) {
             Pair<QueryIterator, Triple> pair = preprocessForTripleTerms(chain, triple, execCxt);
             chain = pair.getLeft();
@@ -111,6 +118,7 @@ public class RX {
      * This creates additional matchers for triple terms in the pattern triple recursively.
      */
     private static Pair<QueryIterator, Triple> preprocessForTripleTerms(QueryIterator chain, Triple patternTriple, ExecutionContext execCxt) {
+        // PG mode
         Node s = patternTriple.getSubject();
         Node p = patternTriple.getPredicate();
         Node o = patternTriple.getObject();
@@ -151,7 +159,6 @@ public class RX {
 
     /**
      * Add a binding to each row with triple grounded by the current row.
-     * If the triple isn't concrete, then just return the row as-is.
      */
     private static QueryIterator bindTripleTerm(QueryIterator chain, Var var, Triple pattern, ExecutionContext execCxt) {
         QueryIterator qIter = matchData(chain, pattern, execCxt);
@@ -175,6 +182,16 @@ public class RX {
         return triple.getSubject().isNodeTriple()
                /*|| triple.getPredicate().isNodeTriple()*/
                || triple.getObject().isNodeTriple();
+    }
+
+    private static VarAlloc varAlloc(ExecutionContext execCxt) {
+        Context context = execCxt.getContext();
+        VarAlloc varAlloc = VarAlloc.get(context, ARQConstants.sysVarAllocRDFStar);
+        if ( varAlloc == null ) {
+            varAlloc = new VarAlloc(ARQConstants.allocVarTripleTerm);
+            context.set(ARQConstants.sysVarAllocRDFStar, varAlloc);
+        }
+        return varAlloc;
     }
 }
 

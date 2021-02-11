@@ -31,6 +31,7 @@ import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
@@ -42,11 +43,12 @@ import org.apache.jena.vocabulary.XSD ;
 
 /** Presentation forms of various kinds of objects.
  *  Beware that bNodes are abbreviated to _:b0 etc.
+ *  @see NodeFmtLib
  */
 
 public class FmtUtils
 {
-    // OLD CODE - being replaced by riot.NodeFmtLib
+    // See alsoriot.NodeFmtLib
 
     // Consider withdrawing non-serialization context forms of this.
     // Or a temporary SerialzationContext does not abbreviate bNodes.

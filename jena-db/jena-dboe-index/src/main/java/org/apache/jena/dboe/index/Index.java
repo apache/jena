@@ -19,7 +19,6 @@
 package org.apache.jena.dboe.index;
 
 import java.util.Iterator;
-import java.util.stream.Stream;
 
 import org.apache.jena.atlas.lib.Closeable;
 import org.apache.jena.atlas.lib.Sync;
@@ -39,33 +38,6 @@ public interface Index extends Iterable<Record>, Sync, Closeable
 
     /** Delete a record - Return true if a record was actually removed */
     public boolean delete(Record record);
-
-//    public default void bulkInsert(Collection<Record> inserts) {
-//        for ( Record r : inserts )
-//            insert(r);
-//    }
-//
-//    public default void bulkDelete(Collection<Record> inserts) {
-//        for ( Record r : inserts )
-//            delete(r);
-//    }
-
-    /** Bulk changes as given by a stream of changes.
-     * This is operations consumes the stream.
-     * @param changes
-     */
-    public default void bulkChanges(Stream<IndexChange> changes) {
-        changes.forEach(chg -> {
-            switch (chg.action) {
-                case ADD :
-                    insert(chg.record);
-                    break;
-                case DELETE :
-                    delete(chg.record);
-                    break;
-            }
-        });
-    }
 
     /** Iterate over the whole index */
     @Override

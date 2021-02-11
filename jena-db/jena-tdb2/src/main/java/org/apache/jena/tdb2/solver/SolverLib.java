@@ -121,14 +121,19 @@ public class SolverLib
             Tuple<Node> tuple = null;
             if ( graphNode == null )
                 // 3-tuples
-                tuple = TupleFactory.tuple(triple.getSubject(), triple.getPredicate(), triple.getObject());
+                tuple = TupleFactory.create3(triple.getSubject(), triple.getPredicate(), triple.getObject());
             else
                 // 4-tuples.
-                tuple = TupleFactory.tuple(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject());
+                tuple = TupleFactory.create4(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject());
             // Plain RDF
             //chain = solve(nodeTupleTable, tuple, anyGraph, chain, filter, execCxt) ;
-            // RDF-star
-            chain = SolverRX.solveRX(nodeTupleTable, tuple, anyGraph, chain, filter, execCxt) ;
+
+            // RDF-star PG
+            //chain = SolverRX.solveRX(nodeTupleTable, tuple, anyGraph, chain, filter, execCxt) ;
+
+            // RDF-star SA
+            chain = SolverRX_SA.stepOne(chain, graphNode, triple, nodeTupleTable, tuple, anyGraph, filter, execCxt) ;
+
             chain = makeAbortable(chain, killList);
         }
 

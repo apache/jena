@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -53,7 +53,7 @@ public class OpRewriter implements OpVisitor {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param securityEvaluator
 	 *            The security evaluator to use
 	 * @param graphIRI
@@ -69,7 +69,7 @@ public class OpRewriter implements OpVisitor {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param securityEvaluator
 	 *            The security evaluator to use
 	 * @param graphIRI
@@ -82,7 +82,7 @@ public class OpRewriter implements OpVisitor {
 
 	/**
 	 * Add the operation to the result.
-	 * 
+	 *
 	 * @param op
 	 *            the operation to add.
 	 */
@@ -92,7 +92,7 @@ public class OpRewriter implements OpVisitor {
 
 	/**
 	 * Get the result of the rewrite.
-	 * 
+	 *
 	 * @return the resulting operator
 	 */
 	public Op getResult() {
@@ -110,7 +110,7 @@ public class OpRewriter implements OpVisitor {
 	 * Register variables.
 	 *
 	 * Registers n as a variable if it is one.
-	 * 
+	 *
 	 * @param n
 	 *            the node to check
 	 * @param variables
@@ -126,7 +126,7 @@ public class OpRewriter implements OpVisitor {
 
 	/**
 	 * Reset the rewriter to the initial state.
-	 * 
+	 *
 	 * @return this rewriter for chaining.
 	 */
 	public OpRewriter reset() {
@@ -136,7 +136,7 @@ public class OpRewriter implements OpVisitor {
 
 	/**
 	 * Register all the variables in the triple.
-	 * 
+	 *
 	 * @param t
 	 *            the triple to register.
 	 * @param variables
@@ -152,7 +152,7 @@ public class OpRewriter implements OpVisitor {
 
 	/**
 	 * Rewrites the subop of op1 and returns the result.
-	 * 
+	 *
 	 * @param op1
 	 * @return the rewritten op.
 	 */
@@ -165,7 +165,7 @@ public class OpRewriter implements OpVisitor {
 	/**
 	 * rewrites the left and right parts of the op2 the left part is returned
 	 * the right part is placed in the rewriter
-	 * 
+	 *
 	 * @param op2
 	 * @param rewriter
 	 * @return the rewritten op.
@@ -179,7 +179,7 @@ public class OpRewriter implements OpVisitor {
 
 	/**
 	 * rewrite source to dest and returns dest
-	 * 
+	 *
 	 * @param source
 	 * @param dest
 	 * @return the rewritten op.
@@ -321,17 +321,6 @@ public class OpRewriter implements OpVisitor {
 			LOG.debug("Starting visiting OpExtend");
 		}
 		addOp(OpExtend.extend(rewriteOp1(opExtend), opExtend.getVarExprList()));
-	}
-
-	/**
-	 * Returns the opFind
-	 */
-	@Override
-	public void visit(final OpFind opFind) {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Starting visiting OpFind");
-		}
-		addOp(opFind);
 	}
 
     /**
@@ -561,7 +550,7 @@ public class OpRewriter implements OpVisitor {
 
 	/**
 	 * rewrites the subop of slice
-	 * 
+	 *
 	 * This also handles the limit case
 	 */
 	@Override

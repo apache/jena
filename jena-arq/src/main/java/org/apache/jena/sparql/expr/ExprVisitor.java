@@ -21,14 +21,15 @@ package org.apache.jena.sparql.expr;
 public interface ExprVisitor
 {
     //void visit(ExprFunction func) ;
-    void visit(ExprFunction0 func) ;
-    void visit(ExprFunction1 func) ;
-    void visit(ExprFunction2 func) ;
-    void visit(ExprFunction3 func) ;
-    void visit(ExprFunctionN func) ;
-    void visit(ExprFunctionOp funcOp) ;
-    void visit(NodeValue nv) ;
-    void visit(ExprVar nv) ;
-    void visit(ExprAggregator eAgg) ;
-    void visit(ExprNone exprNone) ;
+    public void visit(ExprFunction0 func) ;
+    public void visit(ExprFunction1 func) ;
+    public void visit(ExprFunction2 func) ;
+    public void visit(ExprFunction3 func) ;
+    public void visit(ExprFunctionN func) ;
+    public void visit(ExprFunctionOp funcOp) ;
+    public void visit(ExprTripleTerm tripleTerm) ;
+    public void visit(NodeValue nv) ;
+    public void visit(ExprVar nv) ;
+    public void visit(ExprAggregator eAgg) ;
+    public void visit(ExprNone exprNone) ;
 }

@@ -16,25 +16,26 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.index;
+package org.apache.jena.sparql.expr;
 
-import java.util.Objects;
+import org.apache.jena.sparql.function.library.triple.EmbeddedTripleFunctions;
+import org.apache.jena.sparql.sse.Tags ;
 
-import org.apache.jena.dboe.base.record.Record;
-import org.apache.jena.sparql.core.DatasetChanges;
+public class E_TripleSubject extends ExprFunction1
+{
+    private static final String symbol = Tags.tagSubject;
 
-/** Temporary class to refine what to put into Jena itself.
- * @see DatasetChanges
- */
-public class IndexChange {
-    enum Action { ADD, DELETE }
-    final Action action;
-    final Record record;
-    public IndexChange(Action action, Record record) {
-        Objects.requireNonNull(action, "Action can not be null");
-        Objects.requireNonNull(record, "Record can not be null");
-        this.action = action;
-        this.record = record;
+    public E_TripleSubject(Expr expr) {
+        super(expr, "subject", symbol) ;
+    }
+
+    @Override
+    public NodeValue eval(NodeValue nv) {
+        return EmbeddedTripleFunctions.tripleSubject(nv);
+    }
+
+    @Override
+    public Expr copy(Expr expr) {
+        return new E_TripleSubject(expr);
     }
 }
-

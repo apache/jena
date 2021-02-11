@@ -18,7 +18,7 @@
 
 package org.apache.jena.sparql.expr;
 
-public class ExprVisitorBase implements ExprVisitor 
+public class ExprVisitorBase implements ExprVisitor
 {
     @Override
     public void visit(ExprFunction0 func)   {}
@@ -34,6 +34,8 @@ public class ExprVisitorBase implements ExprVisitor
     public void visit(ExprFunctionOp op)    {}
     @Override
     public void visit(NodeValue nv)         {}
+    @Override
+    public void visit(ExprTripleTerm tripleTerm) {}
     @Override
     public void visit(ExprVar nv)           {}
     @Override

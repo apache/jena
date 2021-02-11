@@ -41,11 +41,11 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
     private final Tuple<Node> patternTuple;
 
     private final ExecutionContext execCxt;
-    private boolean anyGraphs;
+    private boolean anyGraph;
     private Predicate<Tuple<NodeId>> filter;
 
     public StageMatchTuple(NodeTupleTable nodeTupleTable, Iterator<BindingNodeId> input,
-                            Tuple<Node> tuple, boolean anyGraphs,
+                            Tuple<Node> tuple, boolean anyGraph,
                             Predicate<Tuple<NodeId>> filter,
                             ExecutionContext execCxt)
     {
@@ -54,7 +54,7 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         this.nodeTupleTable = nodeTupleTable;
         this.patternTuple = tuple;
         this.execCxt = execCxt;
-        this.anyGraphs = anyGraphs;
+        this.anyGraph = anyGraph;
     }
 
     /** Prepare a pattern (tuple of nodes), and an existing binding of NodeId, into NodeIds and Variables.
@@ -82,8 +82,23 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
     }
 
     @Override
-    protected Iterator<BindingNodeId> makeNextStage(final BindingNodeId input)
-    {
+    protected Iterator<BindingNodeId> makeNextStage(BindingNodeId input) {
+        return access(nodeTupleTable, input, patternTuple, filter, anyGraph, execCxt);
+    }
+
+    // [RDF-star]
+    public static Iterator<BindingNodeId> access(NodeTupleTable nodeTupleTable, Iterator<BindingNodeId> input, Tuple<Node> patternTuple,
+                                                 Predicate<Tuple<NodeId>> filter, boolean anyGraph,
+                                                 ExecutionContext execCxt) {
+        return Iter.flatMap(input, bnid->{
+            return StageMatchTuple.access(nodeTupleTable, bnid, patternTuple, filter, anyGraph, execCxt);
+        });
+    }
+
+    // [RDF-star]
+    public static Iterator<BindingNodeId> access(NodeTupleTable nodeTupleTable, BindingNodeId input, Tuple<Node> patternTuple,
+                                                 Predicate<Tuple<NodeId>> filter, boolean anyGraph,
+                                                 ExecutionContext execCxt) {
         // ---- Convert to NodeIds
         NodeId ids[] = new NodeId[patternTuple.len()];
         // Variables for this tuple after substitution
@@ -106,7 +121,7 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         // through a distinct-ifier.
         // Assumes quads are GSPO - zaps the first slot.
         // Assumes that tuples are not shared.
-        if ( anyGraphs )
+        if ( anyGraph )
         {
             iterMatches = Iter.map(iterMatches, quadsToAnyTriples);
             //Guaranteed

@@ -45,12 +45,12 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.E_Exists ;
 import org.apache.jena.sparql.expr.E_NotExists ;
 import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.expr.ExprLib;
 import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.modify.request.QuadAccSink ;
 import org.apache.jena.sparql.path.P_Link;
 import org.apache.jena.sparql.path.Path ;
 import org.apache.jena.sparql.syntax.* ;
-import org.apache.jena.sparql.util.ExprUtils ;
 import org.apache.jena.vocabulary.RDF ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -460,7 +460,7 @@ public class QueryParserBase
     }
 
     protected Expr asExpr(Node n) {
-        return ExprUtils.nodeToExpr(n) ;
+        return ExprLib.nodeToExpr(n) ;
     }
 
     protected Expr asExprNoSign(Node n) {
@@ -468,7 +468,7 @@ public class QueryParserBase
         String lang = n.getLiteralLanguage() ;
         String dtURI = n.getLiteralDatatypeURI() ;
         n = createLiteral(lex, lang, dtURI) ;
-        return ExprUtils.nodeToExpr(n) ;
+        return ExprLib.nodeToExpr(n) ;
     }
 
     // Utilities to remove escapes in strings.

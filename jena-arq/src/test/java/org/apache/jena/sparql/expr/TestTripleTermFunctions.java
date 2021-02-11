@@ -30,45 +30,84 @@ import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.sys.JenaSystem;
 import org.junit.Test;
 
-/** Tests for afn:triple(), afn:subject(), afn:predicate(), afn:object(), afn:isTriple(). */
+/**
+ * Tests for TRIPLE, SUBJECT, PREDICATE, OBJECT, isTRIPLE
+ * and by URIs afn:triple(), afn:subject(), afn:predicate(), afn:object(), afn:isTriple().
+ */
 public class TestTripleTermFunctions {
 
     static { JenaSystem.init(); }
 
-    @Test public void tripleTermCreate1() {
-        Node r = eval("afn:triple(:s1, :p1, :o1)");
+    @Test public void tripleTermKW_Create1() {
+        Node r = eval("triple(:s1, :p1, :o1)");
         assertNotNull(r);
     }
 
     @Test(expected=ExprEvalException.class)
-    public void tripleTermCreate2() {
+    public void tripleTermKW_Create2() {
+        eval("triple(:s1, 'bc', :o1)");
+    }
+
+    @Test
+    public void tripleTermKW_Access1() {
+        test("subject(triple(:s1, :p1, :o1))", ":s1");
+    }
+
+    @Test
+    public void tripleTermKW_Access2() {
+        test("predicate(triple(:s1, :p1, :o1))", ":p1");
+    }
+
+    @Test
+    public void tripleTermKW_Access3() {
+        test("object(triple(:s1, :p1, :o1))", ":o1");
+    }
+
+    @Test
+    public void tripleTermKW_Test1() {
+        test("isTriple(triple(:s1, :p1, :o1))", "true");
+    }
+
+    @Test
+    public void tripleTermKW_Test2() {
+        test("isTriple(:x)", "false");
+    }
+
+    @Test public void tripleTermURI_Create1() {
+        Node r = eval("triple(:s1, :p1, :o1)");
+        assertNotNull(r);
+    }
+
+    @Test(expected=ExprEvalException.class)
+    public void tripleTermURI_Create2() {
         eval("afn:triple(:s1, 'bc', :o1)");
     }
 
     @Test
-    public void tripleTermAccess1() {
+    public void tripleTermURI_Access1() {
         test("afn:subject(afn:triple(:s1, :p1, :o1))", ":s1");
     }
 
     @Test
-    public void tripleTermAccess2() {
+    public void tripleTermURI_Access2() {
         test("afn:predicate(afn:triple(:s1, :p1, :o1))", ":p1");
     }
 
     @Test
-    public void tripleTermAccess3() {
+    public void tripleTermURI_Access3() {
         test("afn:object(afn:triple(:s1, :p1, :o1))", ":o1");
     }
 
     @Test
-    public void tripleTermTest1() {
+    public void tripleTermURI_Test1() {
         test("afn:isTriple(afn:triple(:s1, :p1, :o1))", "true");
     }
 
     @Test
-    public void tripleTermTest2() {
+    public void tripleTermURI_Test2() {
         test("afn:isTriple(:x)", "false");
     }
+
 
     private static Node eval(String string) {
         Expr expr = ExprUtils.parse(string, pmap);

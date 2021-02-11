@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.function.Predicate;
 
 import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.atlas.lib.tuple.TupleFactory;
@@ -79,10 +80,27 @@ public class SolverRX {
                                                   Iterator<BindingNodeId> chain, Predicate<Tuple<NodeId>> filter,
                                                   ExecutionContext execCxt) {
         if ( ! tripleHasNodeTriple(pattern) )
+            // [RDF-start] Or is concrete
             SolverLib.solve(nodeTupleTable, pattern, anyGraph, chain, filter, execCxt);
 
         Args args = new Args(nodeTupleTable, anyGraph, filter, execCxt);
         return rdfStarTriple(chain, pattern, args);
+    }
+
+    // ---- SA Mode ----
+
+    private static Iterator<BindingNodeId> rdfStarTriple(Iterator<BindingNodeId> input, Tuple<Node> pattern, Args args) {
+        if ( RX.MODE_SA )
+            return rdfStarTriple_SA(input, pattern, args);
+        else
+            return rdfStarTriple_PG(input, pattern, args);
+    }
+
+    // ---- PG Mode ----
+
+    private static Iterator<BindingNodeId> rdfStarTriple_SA(Iterator<BindingNodeId> input, Tuple<Node> pattern, Args args) {
+        throw new NotImplemented();
+        //return null;
     }
 
     /**
@@ -96,7 +114,7 @@ public class SolverRX {
      * Without RDF-star, this would be a plain call of {@link #matchData} which
      * is simply a call to {@link SolverLib#solve}.
      */
-    private static Iterator<BindingNodeId> rdfStarTriple(Iterator<BindingNodeId> input, Tuple<Node> pattern, Args args) {
+    private static Iterator<BindingNodeId> rdfStarTriple_PG(Iterator<BindingNodeId> input, Tuple<Node> pattern, Args args) {
         // Should all work without this trap for plain RDF.
         if ( ! tripleHasNodeTriple(pattern) )
             return matchData( input, pattern, args);

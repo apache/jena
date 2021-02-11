@@ -21,7 +21,7 @@ package org.apache.jena.sparql.syntax;
 
 /** <p> Visitor pattern helper that walks the entire tree calling operations
  * are various points in the walking process.  It is a depth first traversal.</p>
- * 
+ *
  * <p> Every visit operation is bracketted by a start/end pair making the
  * calling points:
  * <ul>
@@ -31,11 +31,11 @@ package org.apache.jena.sparql.syntax;
  * <li>end of element</li>
  * </ul>
  * </p>
- * 
+ *
  * <p>The calls before and after subElements pass in the containing Element.
  * These calls are in addition to the start/end call on elements as
- * part of the recursive walk.</p>   
- * 
+ * part of the recursive walk.</p>
+ *
  * <p>Usage: inherit from this class and implement  startElement/endElement as needed.
  * The ElementWalker is like implementing endElement.</p> */
 
@@ -59,9 +59,6 @@ public class RecursiveElementVisitor implements ElementVisitor
 
     public void startElement(ElementBind el) {}
     public void endElement  (ElementBind el) {}
-
-    public void startElement(ElementFind el) {}
-    public void endElement  (ElementFind el) {}
 
     public void startElement(ElementData el) {}
     public void endElement  (ElementData el) {}
@@ -87,10 +84,10 @@ public class RecursiveElementVisitor implements ElementVisitor
 
     public void startElement(ElementExists el)  {}
     public void endElement  (ElementExists el)  {}
-    
+
     public void startElement(ElementNotExists el) {}
     public void endElement  (ElementNotExists el) {}
-    
+
     public void startElement(ElementMinus el) {}
     public void endElement  (ElementMinus el) {}
 
@@ -102,10 +99,10 @@ public class RecursiveElementVisitor implements ElementVisitor
 
     protected ElementVisitor visitor = null ;
 
-    // ---- 
+    // ----
 
     private RecursiveElementVisitor() { this.visitor = new ElementVisitorBase() ; }
-    
+
     public RecursiveElementVisitor(ElementVisitor visitor) { this.visitor = visitor ; }
 
     // Visitor pattern on Elements
@@ -141,13 +138,6 @@ public class RecursiveElementVisitor implements ElementVisitor
 
     @Override
     public void visit(ElementBind el)
-    {
-        startElement(el) ;
-        endElement(el) ;
-    }
-
-    @Override
-    public void visit(ElementFind el)
     {
         startElement(el) ;
         endElement(el) ;
@@ -236,7 +226,7 @@ public class RecursiveElementVisitor implements ElementVisitor
 
     @Override
     public void visit(ElementSubQuery el)
-    { 
+    {
         startElement(el) ;
         endElement(el) ;
     }

@@ -27,22 +27,22 @@ import org.apache.jena.sparql.algebra.OpVisitor ;
 import org.apache.jena.sparql.algebra.op.* ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 
-/**  Class to provide type-safe execution dispatch using the visitor support of Op */ 
+/**  Class to provide type-safe execution dispatch using the visitor support of Op */
 
 class ExecutionDispatch implements OpVisitor
 {
     private Deque<QueryIterator> stack = new ArrayDeque<>() ;
     private OpExecutor opExecutor ;
-    
+
     ExecutionDispatch(OpExecutor exec)
     {
         opExecutor = exec ;
     }
-    
+
     QueryIterator exec(Op op, QueryIterator input)
     {
         push(input) ;
-        int x = stack.size() ; 
+        int x = stack.size() ;
         op.visit(this) ;
         int y = stack.size() ;
         if ( x != y )
@@ -100,14 +100,6 @@ class ExecutionDispatch implements OpVisitor
     }
 
     @Override
-    public void visit(OpFind opFind)
-    {
-        QueryIterator input = pop() ;
-        QueryIterator qIter = opExecutor.execute(opFind, input) ;
-        push(qIter) ;
-    }
-
-    @Override
     public void visit(OpProcedure opProc)
     {
         QueryIterator input = pop() ;
@@ -146,7 +138,7 @@ class ExecutionDispatch implements OpVisitor
         QueryIterator qIter = opExecutor.execute(opDisjunction, input) ;
         push(qIter) ;
     }
-    
+
 
     @Override
     public void visit(OpLeftJoin opLeftJoin)
@@ -299,7 +291,7 @@ class ExecutionDispatch implements OpVisitor
         QueryIterator qIter = opExecutor.execute(opAssign, input) ;
         push(qIter) ;
     }
-    
+
     @Override
     public void visit(OpExtend opExtend)
     {
@@ -307,7 +299,7 @@ class ExecutionDispatch implements OpVisitor
         QueryIterator qIter = opExecutor.execute(opExtend, input) ;
         push(qIter) ;
     }
-    
+
     @Override
     public void visit(OpSlice opSlice)
     {
@@ -315,18 +307,18 @@ class ExecutionDispatch implements OpVisitor
         QueryIterator qIter = opExecutor.execute(opSlice, input) ;
         push(qIter) ;
     }
-    
+
     @Override
     public void visit(OpGroup opGroup)
-    { 
+    {
         QueryIterator input = pop() ;
         QueryIterator qIter = opExecutor.execute(opGroup, input) ;
         push(qIter) ;
     }
-    
+
     @Override
     public void visit(OpTopN opTop)
-    { 
+    {
         QueryIterator input = pop() ;
         QueryIterator qIter = opExecutor.execute(opTop, input) ;
         push(qIter) ;
@@ -334,7 +326,7 @@ class ExecutionDispatch implements OpVisitor
 
     private void push(QueryIterator qIter)  { stack.push(qIter) ; }
     private QueryIterator pop()
-    { 
+    {
         if ( stack.size() == 0 )
             Log.warn(this, "Warning: pop: empty stack") ;
         return stack.pop() ;

@@ -19,6 +19,8 @@
 package org.apache.jena.sparql.expr;
 
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node_Triple;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.algebra.optimize.ExprTransformConstantFold ;
 import org.apache.jena.sparql.algebra.walker.Walker ;
@@ -220,5 +222,27 @@ public class ExprLib
         // an exception but we don't need it. 
         @Override
         public Throwable fillInStackTrace() { return this ; }
+    }
+
+    /** Go from a node to an expression. */
+        public static Expr nodeToExpr(Node n)
+        {
+            if ( n.isVariable() )
+                return new ExprVar(n) ;
+            if ( n.isNodeTriple() ) {
+    //            // Rewrite as TRIPLE(s,p,o)
+    //            Expr e = rewriteTriple(Node_Triple.triple(n));
+    //            return e;
+                Node_Triple tripleTerm = Node_Triple.cast(n);
+                return new ExprTripleTerm(tripleTerm);
+            }
+            return NodeValue.makeNode(n) ;
+        }
+
+    public static Expr rewriteTriple(Triple t) {
+        Expr e1 = nodeToExpr(t.getSubject());
+        Expr e2 = nodeToExpr(t.getPredicate());
+        Expr e3 = nodeToExpr(t.getObject());
+        return new E_TripleTerm(e1, e2, e3);
     }
 }
