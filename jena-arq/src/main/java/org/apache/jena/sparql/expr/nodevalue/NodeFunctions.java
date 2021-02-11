@@ -20,21 +20,18 @@ package org.apache.jena.sparql.expr.nodevalue ;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Iterator ;
 import java.util.UUID ;
 
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeConstants.Field;
 import javax.xml.datatype.Duration;
 
-import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIFactory ;
-import org.apache.jena.iri.Violation ;
-import org.apache.jena.riot.system.IRIResolver;
+import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIs;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.ExprTypeException ;
@@ -403,9 +400,6 @@ public class NodeFunctions {
         return NodeValue.makeNode(n2) ;
     }
 
-    private static final IRIFactory iriFactory      = IRIResolver.iriFactory();
-    public static boolean           warningsForIRIs = false ;
-
     /** Node to Node, skolemizing, and converting strings to URIs. */
     public static Node iri(Node n, String baseIRI) {
         Node node = RiotLib.blankNodeToIri(n);
@@ -423,45 +417,22 @@ public class NodeFunctions {
             // Pass through as an IRI.
             return NodeFactory.createURI(iriStr) ;
         }
-        IRI iri = resolveCheckIRI(iriStr, baseIRI);
-        return NodeFactory.createURI(iri.toString()) ;
+        String iri = resolveCheckIRI(baseIRI, iriStr);
+        return NodeFactory.createURI(iri) ;
     }
 
     //
-    private static IRI resolveCheckIRI(String iriStr, String baseIRI) {
-        IRI iri = null ;
-
-        // Level of checking?
-        if ( baseIRI != null ) {
-            IRI base = iriFactory.create(baseIRI) ;
-            iri = base.create(iriStr) ;
-        } else
-            iri = iriFactory.create(iriStr) ;
-
-        if ( !iri.isAbsolute() )
-            throw new ExprEvalException("Relative IRI string: " + iriStr) ;
-
-        String msg = getOneViolation(iri, false);
-        if ( msg != null ) {
-            msg = "Bad IRI: " + msg + ": " + iri;
-            Log.error(NodeFunctions.class, msg);
-            //throw new ExprEvalException(msg);
-        } else {
-            if ( warningsForIRIs && iri.hasViolation(false) ) {
-                msg = getOneViolation(iri, true);
-                if ( msg != null )
-                    Log.warn(NodeFunctions.class, "Bad IRI: " + msg + ": " + iri) ;
-            }
+    private static String resolveCheckIRI(String baseIRI, String iriStr) {
+        try {
+            IRIx iri = IRIx.create(iriStr);
+            IRIx base = ( baseIRI != null ) ? IRIx.create(baseIRI) : IRIs.getSystemBase();
+            IRIx result = base.resolve(iri);
+            if ( ! result.isReference() )
+                throw new IRIException("Not suitable: "+result.str());
+            return result.str();
+        } catch (IRIException ex) {
+            throw new ExprEvalException("Bad IRI: " + iriStr) ;
         }
-        return iri;
-    }
-
-    private static String getOneViolation(IRI iri, boolean includeWarnings) {
-        Iterator<Violation> iter = iri.violations(includeWarnings);
-        if ( ! iter.hasNext() )
-            return null;
-        Violation viol = iter.next() ;
-        return viol.getShortMessage() ;
     }
 
     public static NodeValue struuid() {

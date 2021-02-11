@@ -98,8 +98,8 @@ public abstract class IRIx {
 
     /**
      * An <em>RDF Reference</em> is an URI which has scheme.
-     * If it is hierarchical, it should a non-empty host authority,
-     * and may have a query component and may have a fragment component.
+     * If it is hierarchical, it should have a non-empty host authority.
+     * It may have a query component and may have a fragment component.
      * This not a term in
      * <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>
      * and it is not the same as "absolute URI".

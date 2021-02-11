@@ -25,14 +25,14 @@ import org.apache.jena.tdb.assembler.Vocab ;
 public class TextVocab
 {
     public static final String NS                   =  "http://jena.apache.org/text#" ;
-    
+
     public static final String pfQuery              =  NS+"query" ;
 
     public static final Resource textDataset        = Vocab.resource(NS, "TextDataset") ;
     public static final Property pDataset           = Vocab.property(NS, "dataset") ;
     public static final Property pIndex             = Vocab.property(NS, "index") ;
     public static final Property pTextDocProducer   = Vocab.property(NS, "textDocProducer") ;
-    
+
     public static final Resource textIndex          = Vocab.resource(NS, "TextIndex") ;
     public static final Resource textIndexLucene    = Vocab.resource(NS, "TextIndexLucene") ;
     public static final Property pLanguage          = Vocab.property(NS, "language") ;
@@ -47,7 +47,7 @@ public class TextVocab
     public static final Property pTokenizer         = Vocab.property(NS, "tokenizer") ;
     public static final Property pFilter            = Vocab.property(NS, "filter") ;
     public static final Property pFilters           = Vocab.property(NS, "filters") ;
-    
+
     // Entity definition
     public static final Resource entityMap          = Vocab.resource(NS, "EntityMap") ;
     public static final Property pEntityField       = Vocab.property(NS, "entityField") ;
@@ -60,7 +60,7 @@ public class TextVocab
     public static final Property pPredicate         = Vocab.property(NS, "predicate") ;
     public static final Property pNoIndex           = Vocab.property(NS, "noIndex") ;
     public static final Property pOptional          = Vocab.property(NS, "optional") ;
-    
+
     // Analyzers
     public static final Property pAnalyzer          = Vocab.property(NS, "analyzer");
     public static final Resource standardAnalyzer   = Vocab.resource(NS, "StandardAnalyzer");
@@ -70,26 +70,25 @@ public class TextVocab
     public static final Resource lowerCaseKeywordAnalyzer    = Vocab.resource(NS, "LowerCaseKeywordAnalyzer");
     public static final Resource localizedAnalyzer    = Vocab.resource(NS, "LocalizedAnalyzer");
     public static final Resource configurableAnalyzer = Vocab.resource(NS, "ConfigurableAnalyzer");
-    
+
     // Tokenizers
     public static final Resource standardTokenizer  = Vocab.resource(NS, "StandardTokenizer");
     public static final Resource letterTokenizer    = Vocab.resource(NS, "LetterTokenizer");
     public static final Resource keywordTokenizer   = Vocab.resource(NS, "KeywordTokenizer");
     public static final Resource whitespaceTokenizer = Vocab.resource(NS, "WhitespaceTokenizer");
-    
+
     // Filters
-    public static final Resource standardFilter     = Vocab.resource(NS, "StandardFilter");
+    /**
+     * "Standard Filter" is a no-op in Lucene 7.x and removed in Lucene 8.x.
+     *
+     * @deprecated Do not use. To be removed.
+     */
+    @Deprecated
+    public static final Resource standardFilter = Vocab.resource(NS, "StandardFilter");
+
     public static final Resource lowerCaseFilter    = Vocab.resource(NS, "LowerCaseFilter");
     public static final Resource asciiFoldingFilter = Vocab.resource(NS, "ASCIIFoldingFilter");
 
-    // ElasticSearch
-    public static final Property pServerList        = Vocab.property(NS, "serverList");
-    public static final Property pClusterName       = Vocab.property(NS, "clusterName");
-    public static final Property pShards            = Vocab.property(NS, "shards");
-    public static final Property pReplicas          = Vocab.property(NS, "replicas");
-    public static final Property pIndexName         = Vocab.property(NS, "indexName");
-
-    //GenericAnalyzer, DefinedFilter, DefinedTokenizer
     public static final Resource definedAnalyzer    = Vocab.resource(NS, "DefinedAnalyzer");
     public static final Resource genericAnalyzer    = Vocab.resource(NS, "GenericAnalyzer");
     public static final Resource genericFilter      = Vocab.resource(NS, "GenericFilter");
@@ -114,10 +113,10 @@ public class TextVocab
     public static final Property pSearchFor         = Vocab.property(NS, "searchFor");
     public static final Property pAuxIndex          = Vocab.property(NS, "auxIndex");
     public static final Property pIndexAnalyzer     = Vocab.property(NS, "indexAnalyzer");
-    
+
     // Query Cache
     public static final Property pCacheQueries      = Vocab.property(NS, "cacheQueries");
-    
+
     // Property Lists
     public static final Property pPropLists         = Vocab.property(NS, "propLists");
     public static final Property pPropListProp      = Vocab.property(NS, "propListProp");
