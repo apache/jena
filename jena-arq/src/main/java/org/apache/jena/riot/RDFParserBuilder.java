@@ -30,6 +30,7 @@ import org.apache.http.message.BasicHeader;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.graph.BlankNodeId;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.irix.IRIs;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser.LangTagForm;
@@ -611,16 +612,20 @@ public class RDFParserBuilder {
         if ( errorHandler$ == null )
             errorHandler$ = ErrorHandlerFactory.getDefaultErrorHandler();
 
-        String parserBaseURI = baseURI;
+        // Select base for the parser.
+        // The order is baseURI > path > uri.
+        //   baseURI or uri may be a filename or relative and need converting to a URI.
 
-        if ( baseURI == null ) {
-            if ( path != null ) {
-                parserBaseURI = IRILib.filenameToIRI(path.toString());
-            } else if ( uri != null ) {
-                parserBaseURI = uri;
-            }
-        }
-        // selectedBaseURI can still be null here (no baseUri, no path, no uri)
+        String parserBaseURI;
+
+        if ( baseURI != null )
+            parserBaseURI = IRIs.toBase(baseURI);
+        else if ( path != null )
+            parserBaseURI = IRILib.filenameToIRI(path.toString());
+        else if ( uri != null )
+            parserBaseURI = IRIs.toBase(uri);
+        else
+            parserBaseURI = null;
 
         StreamManager sMgr = streamManager;
         if ( sMgr == null )
