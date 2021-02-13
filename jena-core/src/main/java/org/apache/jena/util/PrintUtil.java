@@ -40,16 +40,16 @@ import org.apache.jena.vocabulary.ReasonerVocabulary ;
  * prefix map which is preloaded with known prefixes.
  */
 public class PrintUtil {
-    
+
     protected static PrefixMapping prefixMapping = PrefixMapping.Factory.create();
-    
+
     /** Default built in eg namespace used in testing */
     public static final String egNS = "urn:x-hp:eg/";
-        
+
     static {
         init();
     }
-    
+
     /**
      * Load built in prefixes.
      */
@@ -63,7 +63,7 @@ public class PrintUtil {
         registerPrefix("eg", egNS);
         registerPrefix("xsd", XSDDatatype.XSD + "#");
     }
-    
+
     /**
      * Register a new prefix/namespace mapping which will be used to shorten
      * the print strings for resources in known namespaces.
@@ -71,7 +71,7 @@ public class PrintUtil {
     public static void registerPrefix(String prefix, String namespace) {
         prefixMapping.setNsPrefix( prefix, namespace );
     }
-    
+
     /**
      * Register a set of new prefix/namespace mapping which will be used to shorten
      * the print strings for resources in known namespaces.
@@ -79,14 +79,14 @@ public class PrintUtil {
     public static void registerPrefixMap(Map<String, String> map) {
         prefixMapping.setNsPrefixes( map );
     }
-    
+
     /**
      * Remove a registered prefix from the table of known short forms
      */
     public static void removePrefix(String prefix) {
         prefixMapping.removeNsPrefix(prefix);
     }
-    
+
     /**
      * Remove a set of prefix mappings from the table of known short forms
      */
@@ -96,9 +96,9 @@ public class PrintUtil {
             prefixMapping.removeNsPrefix( s );
         }
     }
-    
+
     /**
-     * Return a simplified print string for a Node. 
+     * Return a simplified print string for a Node.
      */
     public static String print(Node node) {
         if (node instanceof Node_URI) {
@@ -111,8 +111,11 @@ public class PrintUtil {
             }
         } else if (node instanceof Node_Literal) {
             String lf = node.getLiteralLexicalForm();
-            // RDF 1.1 : Print xsd:string without ^^xsd:string 
-            return "'" + lf + "'" + (Util.isSimpleString(node) ? "" : "^^" + node.getLiteralDatatypeURI());
+            String singleQuote = "'";
+            if ( lf.contains(singleQuote) )
+                lf = lf.replace(singleQuote, "\\'");
+            // RDF 1.1 : Print xsd:string without ^^xsd:string
+            return singleQuote + lf + singleQuote + (Util.isSimpleString(node) ? "" : "^^" + node.getLiteralDatatypeURI());
         } else if (node instanceof Node_ANY) {
             return "*";
         }
@@ -121,15 +124,15 @@ public class PrintUtil {
         }
         return node.toString();
     }
-    
+
     /**
-     * Return a simplified print string for an RDFNode. 
+     * Return a simplified print string for an RDFNode.
      */
     public static String print(RDFNode node) {
         if (node == null) return "null";
         return print(node.asNode());
     }
-    
+
     /**
      * Return a simplified print string for a Triple
      */
@@ -139,7 +142,7 @@ public class PrintUtil {
                       print(triple.getPredicate()) + " " +
                       print(triple.getObject()) + ")";
     }
-    
+
     /**
      * Return a simplified print string for a TriplePattern
      */
@@ -149,7 +152,7 @@ public class PrintUtil {
                       print(triple.getPredicate()) + " " +
                       print(triple.getObject()) + ")";
     }
-    
+
     /**
      * Return a simplified print string for a statement
      */
@@ -157,7 +160,7 @@ public class PrintUtil {
         if (stmt == null) return "(null)";
         return print(stmt.asTriple());
     }
-    
+
     /**
      * Default print which just uses tostring
      */
@@ -177,7 +180,7 @@ public class PrintUtil {
             return obj.toString();
         }
     }
-    
+
     /**
      * Expand qnames to URIs. If the given URI appears
      * to start with one of the registered prefixes then
@@ -186,7 +189,7 @@ public class PrintUtil {
     public static String expandQname(String uri) {
         return prefixMapping.expandPrefix( uri );
     }
-    
+
     /**
      * Print an n-space indent to the given output stream
      */
@@ -195,7 +198,7 @@ public class PrintUtil {
         for (int i = 0; i < indent; i++) spaces.append(" ");
         out.print(spaces.toString());
     }
-    
+
     /**
      * Print all the Triple values from a find iterator.
      */

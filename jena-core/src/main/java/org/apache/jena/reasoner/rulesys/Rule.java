@@ -712,7 +712,8 @@ public class Rule implements ClauseEntry {
 
         // Literal parse state flags
         private static final int NORMAL = 0;
-        private static final int STARTED_LITERAL = 1;
+        private static final int IN_LITERAL = 1;
+        private static final int END_LITERAL = 2;
 
         /** Literal parse state */
         private int literalState = NORMAL;
@@ -785,27 +786,38 @@ public class Rule implements ClauseEntry {
                 String temp = lookahead;
                 lookahead = null;
                 return temp;
-            } else {
-                String token = stream.nextToken();
-                if (literalState == NORMAL) {
-                    // Skip separators unless within a literal
+            }
+            if ( !stream.hasMoreTokens() ) {}
+            String token = stream.nextToken();
+
+            // Three states
+            // NORMAL
+            // IN_LITERAL: entered when a literal string delimite is found.
+            // END_LITERAL: expecting finish delimiter
+            switch( literalState ) {
+                case NORMAL:
+                    // Skip separators - not in a literal
                     while (isSeparator(token)) {
                         token = stream.nextToken();
                     }
-                }
-                if (token.equals("'")) {
-                    if (literalState == NORMAL) {
-                        literalState = STARTED_LITERAL;
-                    } else {
-                        literalState = NORMAL;
-                    }
-                }
-                priorTokens.add(0, token);
-                if (priorTokens.size() > maxPriors) {
-                    priorTokens.remove(priorTokens.size()-1);
-                }
-                return token;
+                    // Start delimiter
+                    if ( token.equals("'") || token.equals("\"") )
+                        literalState = IN_LITERAL;
+                    break;
+                case IN_LITERAL:
+                    // Between delimiters
+                    literalState = END_LITERAL;
+                    break;
+                case END_LITERAL:
+                    // Finish Delimiter.
+                    literalState = NORMAL;
+                    break;
             }
+            priorTokens.add(0, token);
+            if (priorTokens.size() > maxPriors) {
+                priorTokens.remove(priorTokens.size()-1);
+            }
+            return token;
         }
 
         /**
@@ -934,7 +946,7 @@ public class Rule implements ClauseEntry {
                     RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);
                     return NodeFactory.createLiteral(lit, dt);
                 } else {
-                    return NodeFactory.createLiteral(lit, "");
+                    return NodeFactory.createLiteral(lit);
                 }
             } else  if ( Character.isDigit(token.charAt(0)) ||
                          (token.charAt(0) == '-' && token.length() > 1 && Character.isDigit(token.charAt(1))) ) {
@@ -1018,7 +1030,7 @@ public class Rule implements ClauseEntry {
                 List<Node> args = parseNodeList();
                 Functor clause = new Functor(name, args, registry);
                 if (clause.getImplementor() == null) {
-                    // Not a.error error becase later processing can add this
+                    // Not an error because later processing can add this
                     // implementation to the registry
                     logger.warn("Rule references unimplemented functor: " + name);
                 }
@@ -1036,7 +1048,7 @@ public class Rule implements ClauseEntry {
 
         /**
          * Parse a rule, terminated by a "]" or "." character.
-         * @param retainVarMap set to true to ccause the existing varMap to be left in place, which
+         * @param retainVarMap set to true to cause the existing varMap to be left in place, which
          * is required for nested rules.
          */
         private Rule doParseRule(boolean retainVarMap) {
