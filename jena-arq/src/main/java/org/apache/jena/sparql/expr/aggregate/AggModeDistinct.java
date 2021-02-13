@@ -36,20 +36,20 @@ public class AggModeDistinct extends AggregatorBase
     // ---- Mode (DISTINCT expr)
     private static Logger log = LoggerFactory.getLogger("ModeDistinct") ;
 
-    public AggModeDistinct(Expr expr) { super("Mode", true, expr) ; } 
+    public AggModeDistinct(Expr expr) { super("Mode", true, expr) ; }
     @Override
     public Aggregator copy(ExprList expr) { return new AggModeDistinct(expr.get(0)) ; }
 
-    private static final NodeValue noValuesToMode = NodeValue.nvZERO ; 
+    private static final NodeValue noValuesToMode = NodeValue.nvZERO ;
 
     @Override
     public Accumulator createAccumulator()
-    { 
+    {
         return new AccModeDistinct(getExpr()) ;
     }
 
     @Override
-    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToMode) ; } 
+    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToMode) ; }
 
     @Override
     public int hashCode()   {
@@ -65,21 +65,20 @@ public class AggModeDistinct extends AggregatorBase
         return exprList.equals(a.exprList, bySyntax) ;
     }
 
-    
     // ---- Accumulator
     class AccModeDistinct extends AccumulatorExpr
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
         private NodeValue total = noValuesToMode ;
         private int count = 0 ;
-        ArrayList<NodeValue> collection=new ArrayList<NodeValue>(); 
-        
+        ArrayList<NodeValue> collection=new ArrayList<NodeValue>();
+
         public AccModeDistinct(Expr expr) { super(expr, true) ; }
 
         @Override
         protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
-        { 
-			log.debug("mode {}", nv);
+        {
+            log.debug("mode {}", nv);
 
             if ( nv.isNumber() )
             {
@@ -99,38 +98,38 @@ public class AggModeDistinct extends AggregatorBase
             if ( count == 0 ) return noValuesToMode ;
             if ( super.errorCount != 0 )
                 return null ;
-            
+
             int indexsize = collection.size();
             double[] arrDouble = new double[indexsize];
             for(int i=0; i<indexsize; i++){
-            	arrDouble[i] = collection.get(i).getDouble();	
+                arrDouble[i] = collection.get(i).getDouble();
             }
 
-    	    HashMap<Double,Integer> amode = new HashMap<Double,Integer>();
-    	    int max  = 0;
+            HashMap<Double,Integer> amode = new HashMap<Double,Integer>();
+            int max  = 0;
 
-    	    for(int i = 0; i < arrDouble.length; i++) {
-    	        if (amode.get(arrDouble[i]) != null) {
-    	            int count = amode.get(arrDouble[i]);
-    	            count++;
-    	            amode.put(arrDouble[i], count);
+            for(int i = 0; i < arrDouble.length; i++) {
+                if (amode.get(arrDouble[i]) != null) {
+                    int count = amode.get(arrDouble[i]);
+                    count++;
+                    amode.put(arrDouble[i], count);
 
-    	            if(count > max) {
-    	                max  = count;
-    	                mode = arrDouble[i];
-    	            }
-    	        }
-    	        else {
-    	            amode.put(arrDouble[i],1);
-    	            if(mode==0) {
-    	            	mode = arrDouble[i];
-    	            }
-    	        }
-    	    }
+                    if(count > max) {
+                        max  = count;
+                        mode = arrDouble[i];
+                    }
+                }
+                else {
+                    amode.put(arrDouble[i],1);
+                    if(mode==0) {
+                        mode = arrDouble[i];
+                    }
+                }
+            }
 
             return NodeValue.makeDecimal(mode);
         }
-        
+
         @Override
         protected void accumulateError(Binding binding, FunctionEnv functionEnv)
         {}
