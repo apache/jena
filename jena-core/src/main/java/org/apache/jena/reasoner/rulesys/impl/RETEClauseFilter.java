@@ -206,7 +206,7 @@ public class RETEClauseFilter implements RETESourceNode {
                 // for possible later functor argument accesses
                 n = triple.getObject();
                 if ( !n.isLiteral() ) return;
-                if ( n.getLiteralDatatype() != Functor.FunctorDatatype.theFunctorDatatype) return;
+                if ( n.getLiteralDatatype() != FunctorDatatype.theFunctorDatatype) return;
                 lastFunctor = (Functor)n.getLiteralValue();
                 if ( !lastFunctor.getName().equals(args[instructions[pc++]]) ) return;
                 break;

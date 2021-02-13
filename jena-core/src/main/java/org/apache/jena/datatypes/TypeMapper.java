@@ -189,4 +189,15 @@ public class TypeMapper {
             classToDT.put(jc, type);
         }
     }
+    
+    /**
+     * Remove a datatype registration.
+     */
+    public void unregisterDatatype(final RDFDatatype type) {
+        uriToDT.remove(type.getURI());
+        final Class<?> jc = type.getJavaClass();
+        if (jc != null) {
+            classToDT.remove(jc);
+        }
+    }
 }
