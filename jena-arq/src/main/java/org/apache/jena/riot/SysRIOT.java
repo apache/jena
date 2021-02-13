@@ -23,7 +23,6 @@ import org.apache.jena.irix.IRIs;
 import org.apache.jena.rdf.model.RDFReaderI;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol ;
-import org.apache.jena.util.FileUtils ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -40,9 +39,9 @@ public class SysRIOT
 
     /** Some people argue that absolute URIs should not be normalized.
      * This flag puts IRI resolution in that mode.
-     * Bewared: inconisstencies arise - relative URIs are still normalized so
+     * Beware: inconsistencies arise - relative URIs are still normalized so
      * where the unnormalized part is in a prefix name changes the outcome.
-     * Jena has always normalized abolute URIs.
+     * Jena has always normalized absolute URIs.
      */
     public static final boolean AbsURINoNormalization   = false ;
     public static final String BNodeGenIdPrefix         = "genid" ;
@@ -83,58 +82,53 @@ public class SysRIOT
         return SysRIOT.strictMode ;
     }
 
-    static public String fmtMessage(String message, long line, long col)
-    {
+    public static String fmtMessage(String message, long line, long col) {
         if ( col == -1 && line == -1 )
-                return message ;
+            return message;
         if ( col == -1 && line != -1 )
-            return String.format("[line: %d] %s", line, message) ;
+            return String.format("[line: %d] %s", line, message);
         if ( col != -1 && line == -1 )
-            return String.format("[col: %d] %s", col, message) ;
+            return String.format("[col: %d] %s", col, message);
         // Mild attempt to keep some alignment
-        return String.format("[line: %d, col: %-2d] %s", line, col, message) ;
+        return String.format("[line: %d, col: %-2d] %s", line, col, message);
     }
 
-    public static Logger getLogger()
-    {
-        return riotLogger ;
+    public static Logger getLogger() {
+        return riotLogger;
     }
 
-    public static String chooseBaseIRI()
-    {
-        return IRIs.getSystemBase().toString() ;
+    /** @deprecated Use {@code IRIs.getBaseStr();} */
+    @Deprecated
+    public static String chooseBaseIRI() {
+        return IRIs.getBaseStr();
     }
 
-    /** Return a URI suitable for a baseURI, based on some input (which may be null) */
-    public static String chooseBaseIRI(String baseURI)
-    {
-      String scheme = FileUtils.getScheme(baseURI);
-      // Assume scheme of one letter are Windows drive letters.
-      if ( scheme != null && scheme.length() == 1 )
-          scheme = "file";
-      if ( scheme != null && scheme.equals("file") )
-          return IRILib.filenameToIRI(baseURI);
-      return IRIs.getSystemBase().resolve(baseURI).toString();
-    }
-
-    public static String filename2baseIRI(String filename)
-    {
-        if ( filename == null || filename.equals("-") )
-            return "http://localhost/stdin/" ;
-        String x = IRILib.filenameToIRI(filename) ;
-        return x ;
-    }
-
-    /** Choose base IRI, from a given one and a filename.
-     *  Prefer the given base ; turn any filename into an IRI.
-     *  String will need to be resolved as well.
+    /**
+     * Return a URI suitable for a baseURI, based on some input (which may be null).
+     *
+     * @deprecated Use {@code IRIs.getBaseStr();}
      */
-    public static String chooseBaseIRI(String baseIRI, String fileOrIri)
-    {
+    @Deprecated
+    public static String chooseBaseIRI(String baseURI) {
+        return IRIs.toBase(baseURI);
+    }
+
+    /**
+     * Choose base IRI, from a given one and a filename. Prefer the given base ; turn
+     * any filename into an IRI. String will need to be resolved as well.
+     */
+    public static String chooseBaseIRI(String baseIRI, String fileOrIri) {
         if ( baseIRI != null )
-            return baseIRI ;
+            return baseIRI;
         if ( fileOrIri == null || fileOrIri.equals("-") )
-            return "http://localhost/stdin/" ;
-        return chooseBaseIRI(fileOrIri) ;
+            return "http://localhost/stdin/";
+        return IRIs.toBase(fileOrIri);
+    }
+
+    public static String filename2baseIRI(String filename) {
+        if ( filename == null || filename.equals("-") )
+            return "http://localhost/stdin/";
+        String x = IRILib.filenameToIRI(filename);
+        return x;
     }
 }

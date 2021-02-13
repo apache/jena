@@ -65,7 +65,7 @@ public class SystemIRIx {
 
     private static IRIx establishBaseURI() {
         try {
-            String baseStr = IRILib.filenameToIRI(".");
+            String baseStr = IRILib.filenameToIRI("./");
             if ( ! baseStr.endsWith("/") )
                 baseStr = baseStr+"/";
             return setSystemBase(baseStr);

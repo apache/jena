@@ -18,18 +18,19 @@
 
 package org.apache.jena.riot.adapters;
 
-import java.io.*;
+import java.io.File;
+import java.io.InputStream;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.irix.IRIs;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.system.stream.* ;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.NotFoundException;
@@ -292,7 +293,7 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
         // Not : RDFDataMgr.read(model, mappedURI, baseURI, lang);
         // Allow model.read to be overridden e.g. by OntModel which does import processing.
         if ( baseURI == null )
-            baseURI = SysRIOT.chooseBaseIRI(filenameOrURI) ;
+            baseURI = IRIs.toBase(filenameOrURI) ;
         try(TypedInputStream in = streamManager.openNoMapOrNull(mappedURI)) {
             if ( in == null )
             {
