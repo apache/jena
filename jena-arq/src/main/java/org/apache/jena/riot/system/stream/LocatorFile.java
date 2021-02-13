@@ -124,7 +124,6 @@ public class LocatorFile implements Locator
         return thisDir != null ;
     }
 
-
     public boolean exists(String fileIRI)
     {
         String fn = toFileName(fileIRI) ;
