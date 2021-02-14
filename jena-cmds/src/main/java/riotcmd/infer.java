@@ -28,6 +28,7 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.process.inf.InfFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
@@ -58,7 +59,7 @@ import org.apache.jena.riot.system.StreamRDFLib ;
     * equivalentClass
     * equivalentProperty
     * sameAs
-    * differentFrom (and allDifferent) 
+    * differentFrom (and allDifferent)
 
 # Property Characteristics:
 
@@ -69,7 +70,7 @@ import org.apache.jena.riot.system.StreamRDFLib ;
     * InverseFunctionalProperty
     * ObjectProperty
     * DatatypeProperty
-    * disjointWith 
+    * disjointWith
 
 AllegroGraph RDFS++
     * rdf:type
@@ -84,11 +85,11 @@ public class infer extends CmdGeneral
 {
     static final ArgDecl argRDFS = new ArgDecl(ArgDecl.HasValue, "rdfs") ;
     private Model vocab ;
-    
+
     public static void main(String... argv)
     {
         new infer(argv).mainRun() ;
-    }        
+    }
 
     protected infer(String[] argv)
     {
@@ -101,7 +102,7 @@ public class infer extends CmdGeneral
 //        Sink<Triple> sink = new SinkTripleOutput(System.out) ;
 //        sink = new InferenceExpanderRDFS(sink, vocab) ;
 //        RiotReader.parseTriples(filename, sink) ;
-//        IO.flush(System.out); 
+//        IO.flush(System.out);
 //    }
 
     @Override
@@ -124,14 +125,14 @@ public class infer extends CmdGeneral
     {
         StreamRDF sink = StreamRDFLib.writer(System.out) ;
         sink = InfFactory.inf(sink, vocab) ;
-        
+
         List<String> files = getPositionalOrStdin() ;
         if ( files.isEmpty() )
             files.add("-") ;
-            
+
         for ( String fn : files )
             processFile(fn, sink) ;
-        IO.flush(System.out); 
+        IO.flush(System.out);
     }
 
     private void processFile(String filename, StreamRDF sink)
@@ -139,9 +140,9 @@ public class infer extends CmdGeneral
         Lang lang = filename.equals("-") ? RDFLanguages.NQUADS : RDFLanguages.filenameToLang(filename, RDFLanguages.NQUADS) ;
 
         if ( filename.equals("-") )
-            RDFDataMgr.parse(sink, System.in, null, RDFLanguages.NQUADS) ;
+            RDFParser.source(System.in).lang(RDFLanguages.NQUADS).parse(sink);
         else
-            RDFDataMgr.parse(sink, filename) ;
+            RDFParser.source(filename).parse(sink);
     }
 
     @Override

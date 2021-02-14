@@ -27,6 +27,8 @@ import java.util.Objects;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -71,6 +73,38 @@ public class RDFWriter {
      * </pre>
      */
     public static RDFWriterBuilder create() { return new RDFWriterBuilder(); }
+
+    /** Create an {@link RDFWriterBuilder} and set the source of writing to the graph argument.
+     * @param graph     A {@link Graph}.
+     * @return RDFWriterBuilder
+     */
+    public static RDFWriterBuilder create(Graph graph) {
+        return create().source(graph);
+    }
+
+    /** Create an {@link RDFWriterBuilder} and set the source of writing to the graph argument.
+     * @param model     A {@link Model}.
+     * @return RDFWriterBuilder
+     */
+    public static RDFWriterBuilder create(Model model) {
+        return create().source(model);
+    }
+
+    /** Create an {@link RDFWriterBuilder} and set the source of writing to the graph argument.
+     * @param dataset     A {@link DatasetGraph}.
+     * @return RDFWriterBuilder
+     */
+    public static RDFWriterBuilder create(DatasetGraph dataset) {
+        return create().source(dataset);
+    }
+
+    /** Create an {@link RDFWriterBuilder} and set the source of writing to the graph argument.
+     * @param dataset     A {@link Dataset}.
+     * @return RDFWriterBuilder
+     */
+    public static RDFWriterBuilder create(Dataset dataset) {
+        return create().source(dataset);
+    }
 
     /*package*/ RDFWriter(DatasetGraph dataset, Graph graph, RDFFormat format, Lang lang, String baseURI, Context context) {
         this.dataset = dataset;
@@ -117,7 +151,7 @@ public class RDFWriter {
      * <p>
      * The {@code Lang} or {@code RDFFormat} must have been set.
      * @param javaWriter
-     * @deprecated Using Java Writers risk corrupting the character set. Only UTF-8 is safe.
+     * @deprecated Using Java Writers risks corruption because of mismatch of character set. Only UTF-8 is safe.
      */
     @Deprecated
     public void output(Writer javaWriter) {
