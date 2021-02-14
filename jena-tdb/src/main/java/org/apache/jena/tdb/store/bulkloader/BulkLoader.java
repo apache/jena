@@ -26,8 +26,8 @@ import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.tdb.TDB ;
@@ -121,7 +121,7 @@ public class BulkLoader {
         for ( String url : urls ) {
             loadLogger.info("Load: " + url + " -- " + DateTimeUtils.nowAsString()) ;
             Lang lang = RDFLanguages.filenameToLang(url, Lang.NTRIPLES) ;
-            RDFDataMgr.parse(dest, url, lang) ;
+            RDFParser.source(url).lang(lang).parse(dest);
         }
         dest.finishBulk() ;
     }
@@ -130,7 +130,7 @@ public class BulkLoader {
     private static void loadTriples$(BulkStreamRDF dest, InputStream input) {
         loadLogger.info("Load: from input stream -- " + DateTimeUtils.nowAsString()) ;
         dest.startBulk() ;
-        RDFDataMgr.parse(dest, input, Lang.NTRIPLES) ;
+        RDFParser.source(input).lang(Lang.NTRIPLES).parse(dest);
         dest.finishBulk() ;
     }
 
@@ -140,7 +140,7 @@ public class BulkLoader {
         for ( String url : urls ) {
             loadLogger.info("Load: " + url + " -- " + DateTimeUtils.nowAsString()) ;
             Lang lang = RDFLanguages.filenameToLang(url, Lang.NQUADS) ;
-            RDFDataMgr.parse(dest, url, lang) ;
+            RDFParser.source(url).lang(lang).parse(dest);
         }
         dest.finishBulk() ;
     }
@@ -151,7 +151,7 @@ public class BulkLoader {
             lang = Lang.NQUADS;
         loadLogger.info("Load: from input stream -- " + DateTimeUtils.nowAsString()) ;
         dest.startBulk() ;
-        RDFDataMgr.parse(dest, input, lang) ;
+        RDFParser.source(input).lang(lang).parse(dest);
         dest.finishBulk() ;
     }
 

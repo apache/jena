@@ -32,6 +32,7 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.IsoMatcher;
@@ -126,7 +127,7 @@ public abstract class AbstractTestLoader {
         DatasetGraph dsg = fresh();
         DataLoader loader = maker.apply(dsg, null);
         loader.startBulk();
-        RDFDataMgr.parse(loader.stream(), DIR + "data-1.nq");
+        RDFParser.source(DIR + "data-1.nq").parse(loader.stream());
         loader.finishBulk();
         Txn.executeRead(dsg, ()->{
             assertTrue(dsg.getDefaultGraph().isEmpty());
