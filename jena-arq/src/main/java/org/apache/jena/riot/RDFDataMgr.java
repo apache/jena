@@ -911,7 +911,6 @@ public class RDFDataMgr
             .parse(destination);
     }
 
-
     private static void parseFromURI(StreamRDF destination, String uri, String baseUri, Lang lang, Context context) {
         RDFParser.create()
             .source(uri)

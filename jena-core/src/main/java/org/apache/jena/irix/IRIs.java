@@ -20,6 +20,9 @@ package org.apache.jena.irix;
 
 import java.util.Objects;
 
+import org.apache.jena.atlas.lib.IRILib;
+import org.apache.jena.util.FileUtils;
+
 /**
  * Operations in support of {@link IRIx}.
  */
@@ -60,8 +63,28 @@ public class IRIs {
         return reference(iriStr).str();
     }
 
+    /** The system base {@link IRIx}. */
     public static IRIx getSystemBase() {
         return SystemIRIx.getSystemBase();
+    }
+
+    /** The system base IRI as a string. */
+    public static String getBaseStr() {
+        return SystemIRIx.getSystemBase().toString();
+    }
+
+    /**
+     * Given a candidate baseURI string, which may be a filename,
+     * turn it into a IRI suitable as a base IRI.
+     */
+    public static String toBase(String baseURI) {
+        String scheme = FileUtils.getScheme(baseURI);
+        // Assume scheme of one letter are Windows drive letters.
+        if ( scheme != null && scheme.length() == 1 )
+            scheme = "file";
+        if ( scheme != null && scheme.equals("file") )
+            return IRILib.filenameToIRI(baseURI);
+        return IRIs.getSystemBase().resolve(baseURI).toString();
     }
 
     /** Return a general purpose resolver, with the current system base as its base IRI. */

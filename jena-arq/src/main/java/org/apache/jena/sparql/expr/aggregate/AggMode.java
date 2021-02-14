@@ -35,23 +35,23 @@ public class AggMode extends AggregatorBase
     // ---- MODE(?var)
     private static Logger log = LoggerFactory.getLogger("MODE") ;
 
-    public AggMode(Expr expr) { super("MODE", false, expr) ; } 
+    public AggMode(Expr expr) { super("MODE", false, expr) ; }
     @Override
     public Aggregator copy(ExprList expr) { return new AggMode(expr.get(0)) ; }
 
     // XQuery/XPath Functions&Operators suggests zero
     // SQL suggests null.
-    private static final NodeValue noValuesToMode = NodeValue.nvZERO ; // null 
+    private static final NodeValue noValuesToMode = NodeValue.nvZERO ; // null
 
     @Override
     public Accumulator createAccumulator()
-    { 
+    {
         return new AccMode(getExpr()) ;
     }
 
     @Override
-    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToMode) ; } 
-    
+    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToMode) ; }
+
     @Override
     public int hashCode()   { return HC_AggMode ^ getExprList().hashCode() ; }
 
@@ -63,26 +63,26 @@ public class AggMode extends AggregatorBase
         AggMode a = (AggMode)other ;
         return exprList.equals(a.exprList, bySyntax) ;
     }
-    
+
     // ---- Accumulator
     private static class AccMode extends AccumulatorExpr
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
         private NodeValue total = noValuesToMode ;
         private int count = 0 ;
-        ArrayList<NodeValue> collection=new ArrayList<NodeValue>(); 
-                
+        ArrayList<NodeValue> collection=new ArrayList<NodeValue>();
+
         public AccMode(Expr expr) { super(expr, false) ; }
 
         @Override
         protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
-        { 
-			log.debug("mode {}", nv);
+        {
+            log.debug("mode {}", nv);
 
             if ( nv.isNumber() )
             {
-              count++ ;
-              collection.add(nv);
+                count++ ;
+                collection.add(nv);
             }
             else
             {
@@ -100,38 +100,38 @@ public class AggMode extends AggregatorBase
             if ( count == 0 ) return noValuesToMode ;
             if ( super.errorCount != 0 )
                 return null ;
-            
+
             int indexsize = collection.size();
             double[] arrDouble = new double[indexsize];
             for(int i=0; i<indexsize; i++){
-            	arrDouble[i] = collection.get(i).getDouble();	
+                arrDouble[i] = collection.get(i).getDouble();
             }
 
-    	    HashMap<Double,Integer> amode = new HashMap<Double,Integer>();
-    	    int max  = 0;
+            HashMap<Double,Integer> amode = new HashMap<Double,Integer>();
+            int max  = 0;
 
-    	    for(int i = 0; i < arrDouble.length; i++) {
-    	        if (amode.get(arrDouble[i]) != null) {
-    	            int count = amode.get(arrDouble[i]);
-    	            count++;
-    	            amode.put(arrDouble[i], count);
+            for(int i = 0; i < arrDouble.length; i++) {
+                if (amode.get(arrDouble[i]) != null) {
+                    int count = amode.get(arrDouble[i]);
+                    count++;
+                    amode.put(arrDouble[i], count);
 
-    	            if(count > max) {
-    	                max  = count;
-    	                mode = arrDouble[i];
-    	            }
-    	        }
-    	        else {
-    	            amode.put(arrDouble[i],1);
-    	            if(mode==0) {
-    	            	mode = arrDouble[i];
-    	            }
-    	        }
-    	    }
+                    if(count > max) {
+                        max  = count;
+                        mode = arrDouble[i];
+                    }
+                }
+                else {
+                    amode.put(arrDouble[i],1);
+                    if(mode==0) {
+                        mode = arrDouble[i];
+                    }
+                }
+            }
 
             return NodeValue.makeDecimal(mode);
         }
-    	
+
         @Override
         protected void accumulateError(Binding binding, FunctionEnv functionEnv)
         {}
