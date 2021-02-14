@@ -525,7 +525,7 @@ public class TestJsonLDWriter {
 
     private String toString(Model m, RDFFormat f, Context jenaContext) {
         try(ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            RDFWriter.create().source(m).format(f).context(jenaContext).output(out);
+            RDFWriter.create(m).format(f).context(jenaContext).output(out);
             out.flush();
             return out.toString("UTF-8");
         } catch (IOException e) { throw new RuntimeException(e); }

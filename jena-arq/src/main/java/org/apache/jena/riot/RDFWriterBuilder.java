@@ -34,10 +34,10 @@ public class RDFWriterBuilder {
     private Lang         lang    = null;
     private RDFFormat    format  = null;
     private String       baseURI = null;
-    
+
     /** A new {@code RDFWriterBuilder}.
      * <p>
-     * See also {@link RDFWriter#create()} 
+     * See also {@link RDFWriter#create()}
      */
     RDFWriterBuilder () {}
 
@@ -58,7 +58,7 @@ public class RDFWriterBuilder {
      * Any previous source setting is cleared.
      * <p>
      * Equivalent to {@code source(model.getGraph()(s)}
-     * 
+     *
      * @param model A {@link Model}.
      * @return this
      */
@@ -83,17 +83,17 @@ public class RDFWriterBuilder {
      * Any previous source setting is cleared.
      * <p>
      * Equivalent to {@code source(dataset.asDatasetGraph())}
-     * 
+     *
      * @param dataset A {@link DatasetGraph}.
      * @return this
      */
     public RDFWriterBuilder source(Dataset dataset) {
         return source(dataset.asDatasetGraph());
     }
-    
+
 //    // Not implemented
 //    public RDFWriterBuilder labels(NodeToLabel nodeToLabel) { return this; }
-//    
+//
 //    // Not implemented
 //    public RDFWriterBuilder formatter(NodeFormatter nodeFormatter) { return this; }
 
@@ -101,14 +101,14 @@ public class RDFWriterBuilder {
         if ( context == null )
             context = new Context();
     }
-    
+
     /**
      * Set the context for the writer when built.
-     * 
+     *
      * If a context is already partly set
-     * for this builder, merge the new settings 
+     * for this builder, merge the new settings
      * into the outstanding context.
-     * 
+     *
      * @param context
      * @return this
      * @see Context
@@ -118,10 +118,10 @@ public class RDFWriterBuilder {
             return this;
         ensureContext();
         this.context.putAll(context);
-        return this; 
+        return this;
     }
-    
-    /** 
+
+    /**
      * Added a setting to the context for the writer when built.
      * A value of "null" removes a previous setting.
      * @param symbol
@@ -134,16 +134,16 @@ public class RDFWriterBuilder {
         context.put(symbol, value);
         return this;
     }
-    
+
     /**
-     * Set the output language to a {@link Lang}; this will set the format. 
+     * Set the output language to a {@link Lang}; this will set the format.
      * <p>
      * If {@code Lang} and {@code RDFFormat} are not set, an attempt is made to guess it from file name or URI on output.
      * <p>
      * If output is to an {@code OutputStream}, {@code Lang} or {@code RDFFormat} must be set.
      * <p>
      * Any previous setting of {@code Lang} or {@code RDFFormat} is cleared.
-     * 
+     *
      * @param lang
      * @return this
      */
@@ -154,7 +154,7 @@ public class RDFWriterBuilder {
     }
 
     /**
-     * Set the output format to a {@link RDFFormat}. 
+     * Set the output format to a {@link RDFFormat}.
      * <p>
      * If {@code Lang} and {@code RDFFormat} are not set, an attempt is made to guess it from file name or URI on output.
      * <p>
@@ -169,12 +169,12 @@ public class RDFWriterBuilder {
         this.format = format;
         return this;
     }
-    
+
     public RDFWriterBuilder base(String baseURI) {
         this.baseURI = baseURI;
         return this;
     }
-    
+
     @Override
     public RDFWriterBuilder clone() {
         RDFWriterBuilder clone = new RDFWriterBuilder();
@@ -186,32 +186,32 @@ public class RDFWriterBuilder {
         clone.baseURI   = this.baseURI;
         return clone;
     }
-    
-    public RDFWriter build() { 
+
+    public RDFWriter build() {
         if ( context == null )
             context = RIOT.getContext().copy();
         if ( dataset == null && graph == null )
             throw new RiotException("No source to be written");
         return new RDFWriter(dataset, graph, format, lang, baseURI, context);
     }
-    
-    
+
+
     /** Short form for {@code build().output(outputStream)}.
-     * 
+     *
      * @param outputStream
      */
     public void output(OutputStream outputStream) {
         build().output(outputStream);
     }
-        
+
     /** Short form for {@code build().output(filename)}.
-     * 
+     *
      * @param filename
      */
     public void output(String filename) {
         build().output(filename);
     }
-    
+
     /** Short form for {@code build().asString()}.
      */
     public String asString() {

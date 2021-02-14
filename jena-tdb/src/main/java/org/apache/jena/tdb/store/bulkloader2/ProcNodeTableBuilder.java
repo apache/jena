@@ -29,7 +29,7 @@ import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.ProgressMonitor ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.base.file.Location ;
@@ -75,7 +75,7 @@ public class ProcNodeTableBuilder {
         for( String filename : datafiles) {
             if ( datafiles.size() > 0 )
                 cmdLog.info("Load: "+filename+" -- "+DateTimeUtils.nowAsString()) ;
-            RDFDataMgr.parse(sink, filename) ;
+            RDFParser.source(filename).parse(sink);
         }
         sink.finishBulk() ;
         IO.close(outputTriples) ;
