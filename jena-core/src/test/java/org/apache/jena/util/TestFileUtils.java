@@ -170,7 +170,7 @@ public class TestFileUtils extends TestCase {
 		checkToFilename("file://file", "//file");
 	}
 
-	// Don't tranlate:
+	// Don't translate:
 	public void testTranslateFilename10() {
 		checkToFilename("Dir/File%20With Enc%21", "Dir/File%20With Enc%21");
 	}
@@ -192,37 +192,8 @@ public class TestFileUtils extends TestCase {
 	}
 
 	void checkToFilename(String url, String fn) {
-		String t = FileUtils.toFilename(url);
-		assertEquals("Wrong: " + t + " != " + fn, t, fn);
-	}
-
-	public void testToURL1() {
-		checkToURL("A%H","%25");
-	}
-	public void testToURL2() {
-		checkToURL("A#H","%23");
-	}
-	public void testToURL3() {
-		checkToURL("A?H","%3F");
-	}
-	public void testToURL4() {
-		checkToURL("A H","%20");
-	}
-	public void testToURL5() {
-		checkToURL("ü","ü");
-	}
-	private void checkToURL(String fn, String match) {
 		@SuppressWarnings("deprecation")
-        String r = FileUtils.toURL(fn);
-		if (!r.matches("^.*/[^/]*" + match + "[^/]*$"))
-			fail("Converted \"" + fn + "\" to <" + r
-					+ "> which did not match /" + match + "/");
-		if (!r.startsWith("file:///"))
-			fail("Converted \"" + fn + "\" to <" + r
-					+ "> which does not start file:///");
-		if (r.startsWith("file:////"))
-			fail("Converted \"" + fn + "\" to <" + r
-					+ "> which has too many initial /");
-
+        String t = FileUtils.toFilename(url);
+		assertEquals("Wrong: " + t + " != " + fn, t, fn);
 	}
 }

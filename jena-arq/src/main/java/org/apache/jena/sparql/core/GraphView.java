@@ -211,37 +211,11 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
 
         @Override
         public boolean addAllowed() {
-            return addAllowed(false);
-        }
-
-        @Override
-        public boolean addAllowed(boolean every) {
             return true;
         }
 
         @Override
         public boolean deleteAllowed() {
-            return deleteAllowed(false);
-        }
-
-        @Override
-        public boolean deleteAllowed(boolean every) {
-            return true;
-        }
-
-        @Override
-        public boolean canBeEmpty() {
-            return true;
-        }
-
-        @Override
-        public boolean iteratorRemoveAllowed() {
-            //Default for GraphViews is that iterators do not provide remove.
-            return false;
-        }
-
-        @Override
-        public boolean findContractSafe() {
             return true;
         }
 

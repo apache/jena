@@ -31,7 +31,7 @@ public class TestPackage extends TestSuite {
     static public TestSuite suite() {
         return new TestPackage();
     }
-    
+
     /** Creates new TestPackage */
     private TestPackage() {
         super("graph");
@@ -42,7 +42,7 @@ public class TestPackage extends TestSuite {
         addTest( TestTriple.suite() );
         addTest( TestTripleField.suite() );
         addTest( TestNodeToTriplesMap.suite() );
-        addTest( TestReifier.suite() );   
+        addTest( TestReifier.suite() );
         addTest( TestTypedLiterals.suite() );
         addTest( TestDateTime.suite() );
         addTest( TestFactory.suite() );
@@ -50,14 +50,13 @@ public class TestPackage extends TestSuite {
         addTest( new JUnit4TestAdapter(TestGraphPlain.class) );
         addTest( TestSimpleGraphMaker.suite() );
         addTest( TestGraphExtract.suite() );
-        addTest( TestCapabilities.suite() );
         addTest( TestGraphUtils.suite() );
-        addTest( TestGraphPrefixMapping.suite() );       
+        addTest( TestGraphPrefixMapping.suite() );
         addTest( TestGraphMatchWithInference.suite());
         addTestSuite( TestGraphEvents.class );
         addTestSuite( TestGraphBaseToString.class );
         addTest( new JUnit4TestAdapter(TestNodeExt.class) );
-        
+
         // Has to be in a different package.
         addTest( new JUnit4TestAdapter(TestGraphUtil.class) );
     }

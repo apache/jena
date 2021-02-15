@@ -46,7 +46,7 @@ public class QueryExceptionHTTP extends QueryException
         this.statusCode = responseCode ;
         this.responseMessage = responseMessage ;
     }
-    
+
 
     /**
      * Constructor for QueryExceptionHTTP.
@@ -58,32 +58,25 @@ public class QueryExceptionHTTP extends QueryException
         this.statusCode = responseCode ;
         this.responseMessage = null ;
     }
-    
-    /** The code for the reason for this exception
-     * @return statusCode
-     */  
-    public int getStatusCode() { return statusCode ; }
 
     /** The code for the reason for this exception
-     * @return responseCode
-     * @deprecated Use {@link #getStatusCode()}
-     */  
-    @Deprecated
-    public int getResponseCode() { return getStatusCode(); }
-    
+     * @return statusCode
+     */
+    public int getStatusCode() { return statusCode ; }
+
     /** The message for the reason for this exception
      * @return message
-     */  
+     */
     public String getResponseMessage() { return responseMessage ; }
 
     /** The response for this exception if available from HTTP
      * @return response or {@code null} if no HTTP response was received
-     */  
+     */
     public String getResponse() { return response ; }
 
     /** The status line for the response for this exception if available from HTTP
      * @return status line or {@code null} if no HTTP response was received
-     */  
+     */
     public String getStatusLine() { return statusLine ; }
 
     /**
@@ -96,14 +89,14 @@ public class QueryExceptionHTTP extends QueryException
         this.statusCode = noStatusCode ;
         this.responseMessage = null ;
     }
-    
+
     public QueryExceptionHTTP(String msg, Throwable cause)
     {
         super(msg, cause);
         this.statusCode = noStatusCode ;
         this.responseMessage = msg ;
     }
-    
+
     public QueryExceptionHTTP(int responseCode, String message, Throwable cause) {
         this(message, cause);
         this.statusCode = responseCode;
@@ -114,7 +107,7 @@ public class QueryExceptionHTTP extends QueryException
         this.statusLine = ex.getStatusLine();
         this.response = ex.getResponse();
     }
-    
+
     @Override
     public String toString()
     {
@@ -134,6 +127,6 @@ public class QueryExceptionHTTP extends QueryException
         {
             sb.append(getCause().toString()+": "+getMessage()) ;
         }
-        return sb.toString() ; 
+        return sb.toString() ;
     }
 }

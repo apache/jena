@@ -18,129 +18,111 @@
 
 package org.apache.jena.sparql.graph;
 
-import org.apache.jena.graph.* ;
-import org.apache.jena.shared.AddDeniedException ;
-import org.apache.jena.shared.DeleteDeniedException ;
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.graph.*;
+import org.apache.jena.shared.AddDeniedException;
+import org.apache.jena.shared.DeleteDeniedException;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.util.iterator.ExtendedIterator;
 
 /** Graph wrapper */
 public class GraphWrapper implements Graph
 {
-    // Like WrappedGraph but pure wrapper - use this?
-    final private Graph graph ;
+    // WrappedGraph is a GraphWithPerform
+    // This is a pure wrapper of Graph.
+    final private Graph graph;
 
-    public GraphWrapper(Graph graph) { this.graph = graph ; }
-    
-    public Graph get() { return graph ; }
-    
-    @Override
-    public void add(Triple t) throws AddDeniedException
-    { graph.add(t) ; }
+    public GraphWrapper(Graph graph) { this.graph = graph; }
+
+    public Graph get() { return graph; }
 
     @Override
-    public boolean dependsOn(Graph other)
-    {
-        return graph.dependsOn(other) ;
+    public void add(Triple t) throws AddDeniedException {
+        get().add(t);
     }
 
     @Override
-    public TransactionHandler getTransactionHandler()
-    {
-        return graph.getTransactionHandler() ;
+    public boolean dependsOn(Graph other) {
+        return get().dependsOn(other);
     }
 
     @Override
-    public Capabilities getCapabilities()
-    {
-        return graph.getCapabilities() ;
+    public TransactionHandler getTransactionHandler() {
+        return get().getTransactionHandler();
     }
 
     @Override
-    public GraphEventManager getEventManager()
-    {
-        return graph.getEventManager() ;
-    }
-
-    @Deprecated
-    @Override
-    public GraphStatisticsHandler getStatisticsHandler() {
-        return graph.getStatisticsHandler() ;
+    public Capabilities getCapabilities() {
+        return get().getCapabilities();
     }
 
     @Override
-    public PrefixMapping getPrefixMapping()
-    {
-        return graph.getPrefixMapping() ;
+    public GraphEventManager getEventManager() {
+        return get().getEventManager();
     }
 
     @Override
-    public void delete(Triple t) throws DeleteDeniedException
-    {
-        graph.delete(t) ;
+    public PrefixMapping getPrefixMapping() {
+        return get().getPrefixMapping();
     }
 
     @Override
-    public ExtendedIterator<Triple> find(Triple triple)
-    {
-        return graph.find(triple) ;
+    public void delete(Triple t) throws DeleteDeniedException {
+        get().delete(t);
     }
 
     @Override
-    public ExtendedIterator<Triple> find(Node s, Node p, Node o)
-    {
-        return graph.find(s, p, o) ;
+    public ExtendedIterator<Triple> find(Triple triple) {
+        return get().find(triple);
     }
 
     @Override
-    public boolean isIsomorphicWith(Graph g)
-    {
-        return graph.isIsomorphicWith(g) ;
+    public ExtendedIterator<Triple> find(Node s, Node p, Node o) {
+        return get().find(s, p, o);
     }
 
     @Override
-    public boolean contains(Node s, Node p, Node o)
-    {
-        return graph.contains(s, p, o) ;
+    public boolean isIsomorphicWith(Graph g) {
+        return get().isIsomorphicWith(g);
     }
 
     @Override
-    public boolean contains(Triple t)
-    {
-        return graph.contains(t) ;
+    public boolean contains(Node s, Node p, Node o) {
+        return get().contains(s, p, o);
     }
 
     @Override
-    public void close()
-    {
-        graph.close() ;
+    public boolean contains(Triple t) {
+        return get().contains(t);
     }
 
     @Override
-    public boolean isEmpty()
-    {
-        return graph.isEmpty() ;
+    public void close() {
+        get().close();
     }
 
     @Override
-    public int size()
-    {
-        return graph.size() ;
+    public boolean isEmpty() {
+        return get().isEmpty();
     }
 
     @Override
-    public boolean isClosed()
-    {
-        return graph.isClosed() ;
+    public int size() {
+        return get().size();
     }
 
     @Override
-    public void clear()
-    { graph.clear() ; }
+    public boolean isClosed() {
+        return get().isClosed();
+    }
 
     @Override
-    public void remove(Node s, Node p, Node o)
-    { graph.remove(s, p, o) ; }
+    public void clear() {
+        get().clear();
+    }
 
+    @Override
+    public void remove(Node s, Node p, Node o) {
+        get().remove(s, p, o);
+    }
 }
 

@@ -54,7 +54,6 @@ import org.apache.jena.sparql.sse.writers.WriterExpr ;
 import org.apache.jena.sparql.sse.writers.WriterGraph ;
 import org.apache.jena.sparql.sse.writers.WriterNode ;
 import org.apache.jena.sparql.sse.writers.WriterOp ;
-import org.apache.jena.sparql.util.FmtUtils ;
 import org.apache.jena.sparql.vocabulary.FOAF ;
 import org.apache.jena.sparql.vocabulary.ListPFunction ;
 import org.apache.jena.sys.JenaSystem ;
@@ -562,13 +561,6 @@ public class SSE
         action.accept(x);
         return x.asString() ;
     }
-
-    /** @deprecated Use {@link #str(Node)} */
-    @Deprecated
-    public static String format(Node node)                      { return FmtUtils.stringForNode(node) ; }
-    /** @deprecated  Use {@link #str(Node, PrefixMapping)} */
-    @Deprecated
-    public static String format(Node node, PrefixMapping pmap)  { return FmtUtils.stringForNode(node, pmap) ; }
 
     // ----
 

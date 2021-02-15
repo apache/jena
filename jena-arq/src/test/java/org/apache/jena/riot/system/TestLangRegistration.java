@@ -54,7 +54,7 @@ public class TestLangRegistration
         add("TRDF",     x, Lang.RDFTHRIFT,  true, true) ;
         return x ;
     }
-    
+
     private static void add(String name, List<Object[]> x, Lang lang, boolean istriples, boolean isquads) {
         x.add(new Object[] {name, lang, istriples , isquads }) ;
     }
@@ -73,7 +73,7 @@ public class TestLangRegistration
 
     @Test public void jenaSystem_read_1() {
         assertTrue(RDFLanguages.isRegistered(lang)) ;
-        if ( istriples ) 
+        if ( istriples )
             assertTrue(RDFLanguages.isTriples(lang)) ;
         else
             assertFalse(RDFLanguages.isTriples(lang)) ;
@@ -82,15 +82,14 @@ public class TestLangRegistration
         else
             assertFalse(RDFLanguages.isQuads(lang)) ;
     }
-    
-    @SuppressWarnings("deprecation")
+
     @Test public void jenaSystem_read_2() {
         if ( ! Lang.RDFNULL.equals(lang) ) {
             assertTrue(RDFParserRegistry.isRegistered(lang));
             assertNotNull(RDFParserRegistry.getFactory(lang)) ;
         }
     }
-    
+
     @Test public void jenaSystem_write_1() {
         assertTrue(RDFWriterRegistry.contains(lang)) ;
     }
@@ -100,11 +99,11 @@ public class TestLangRegistration
         if ( isquads )   assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(lang)) ;
         assertNotNull(RDFWriterRegistry.defaultSerialization(lang)) ;
     }
-    
+
 //    @Test public void jenaSystem_write_3() {
-//        
+//
 //        assertEquals(jsonldFmt1, RDFWriterRegistry.defaultSerialization(JSONLD)) ;
-//        
+//
 //        assertNotNull(RDFWriterRegistry.getWriterGraphFactory(jsonldFmt1)) ;
 //        assertNotNull(RDFWriterRegistry.getWriterGraphFactory(jsonldFmt2)) ;
 //
@@ -113,11 +112,11 @@ public class TestLangRegistration
 //
 //        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(jsonldFmt1)) ;
 //        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(jsonldFmt2)) ;
-//        
+//
 //        assertTrue(RDFWriterRegistry.registeredDatasetFormats().contains(jsonldFmt1)) ;
 //        assertTrue(RDFWriterRegistry.registeredDatasetFormats().contains(jsonldFmt2)) ;
 //    }
-//    
+//
 //    @Test public void jenaSystem_write_4() {
 //        assertNotNull(RDFDataMgr.createGraphWriter(jsonldFmt1)) ;
 //        assertNotNull(RDFDataMgr.createGraphWriter(jsonldFmt2)) ;

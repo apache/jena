@@ -34,18 +34,18 @@ public class LiteralLabelFactory
     //
     // In RDF 1.1, "abc" has no datatype xsd:string and is the same term as "abc"^^xsd:string
     // In RDF 1.1, "abc"@en has datatype rdf:langString.
-    
+
     private static final RDFDatatype dtSLangString = NodeFactory.getType(RDF.Nodes.langString.getURI()) ;
-    
+
     private static RDFDatatype fixDatatype(RDFDatatype dtype, String lang) {
-        if ( dtype != null ) 
+        if ( dtype != null )
             return dtype ;
         if ( JenaRuntime.isRDF11 )
             dtype = (lang == null || lang.equals("")) ? XSDDatatype.XSDstring : dtSLangString  ;
         return dtype ;
     }
-    
-    /** Create a literal with a dtype. */ 
+
+    /** Create a literal with a dtype. */
     public static LiteralLabel create( String lex, RDFDatatype dtype) {
         return new LiteralLabelImpl( lex, "", dtype );
     }
@@ -53,9 +53,9 @@ public class LiteralLabelFactory
     /** Using {@link #create(String, String)} or {@link #create(String, RDFDatatype)}
      * where possible is preferred.
      */
-    public static LiteralLabel createLiteralLabel( String lex, String lang, RDFDatatype dtype ) 
+    public static LiteralLabel createLiteralLabel( String lex, String lang, RDFDatatype dtype )
         throws DatatypeFormatException
-    { 
+    {
         dtype = fixDatatype(dtype, lang) ;
         return new LiteralLabelImpl( lex, lang, dtype ); }
 
@@ -72,22 +72,16 @@ public class LiteralLabelFactory
     /**
      * Build a typed literal label from its value form. If the value is a string we
      * assume this is intended to be a lexical form after all.
-     * 
+     *
      * @param value the value of the literal
      * @param lang the optional language tag, only relevant for plain literals
      * @param dtype the type of the literal, null for old style "plain" literals (which become xsd:string in RDF 1.1)
      */
     public static LiteralLabel createByValue(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
         dtype = fixDatatype(dtype, lang) ;
-        return new LiteralLabelImpl(value, lang, dtype) ; 
+        return new LiteralLabelImpl(value, lang, dtype) ;
     }
 
-    /** Use {@link #createTypedLiteral} */
-    @Deprecated
-    public static LiteralLabel create(Object value) {
-        return createTypedLiteral(value) ;
-    }
-    
     /**
      * Build a typed literal label from its value form using
      * whatever datatype is currently registered as the default
@@ -109,5 +103,5 @@ public class LiteralLabelFactory
         return create(s, lang) ;
     }
 
-    
+
 }

@@ -21,30 +21,30 @@ package org.apache.jena.graph.impl;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.jena.graph.* ;
-import org.apache.jena.mem.TrackingTripleIterator ;
-import org.apache.jena.util.IteratorCollection ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.graph.*;
+import org.apache.jena.mem.TrackingTripleIterator;
+import org.apache.jena.util.IteratorCollection;
+import org.apache.jena.util.iterator.ExtendedIterator;
 
 /**
     Simple implementation of GraphEventManager for GraphBase to use.
     The listeners are held as an [Array]List.
 <p>
-    This class also holds the utility method notifyingRemove, which wraps 
+    This class also holds the utility method notifyingRemove, which wraps
     iterators so that their .remove() operation notifies the specified graph of
-    the removal.    
+    the removal.
 */
 
 public class SimpleEventManager implements GraphEventManager
 {
     /* Implementation note:
-     * 
+     *
      * Use of CopyOnWriteArray is unnecessarily inefficient, in that
      * a copy is only needed when the register or unregister
      * is concurrent with an iteration over the list.
      * Since this list is not public we can either make it private
      * or provide methods for iterating, so that we know when
-     * it is necessary to copy the array of listeners and when it 
+     * it is necessary to copy the array of listeners and when it
      * isn't.
      * This is a fair bit of code, and would need either a lock or
      * an atomic integer or something from the concurrent package.
@@ -54,118 +54,104 @@ public class SimpleEventManager implements GraphEventManager
      * so the 10 registrations take 55 word copy operations - nothing
      * to get upset about.
      */
-    
-    /** @deprecated Use the graph passed in in notify operations. */
-    @Deprecated
-    protected Graph graph;
+
     protected List<GraphListener>  listeners;
-    
-    /** The graph object for the notification is passed
-     *  @deprecated Use the no argument constructor.    
-     */
-    @Deprecated
-    public SimpleEventManager( Graph graph )
-    { 
-        this();
-        this.graph = graph;
-    }
-    
+
     public SimpleEventManager() {
-        this.graph = null ;
         this.listeners = new CopyOnWriteArrayList<>();
     }
-    
+
     @Override
-    public GraphEventManager register( GraphListener listener ) { 
+    public GraphEventManager register( GraphListener listener ) {
         listeners.add( listener );
-        return this; 
-        }
+        return this;
+    }
 
     @Override
     public GraphEventManager unregister(GraphListener listener) {
-        listeners.remove(listener) ;
-        return this ;
+        listeners.remove(listener);
+        return this;
     }
 
     @Override
     public boolean listening() {
-        return listeners.size() > 0 ;
+        return listeners.size() > 0;
     }
 
     @Override
     public void notifyAddTriple(Graph g, Triple t) {
         for ( GraphListener l : listeners )
-            l.notifyAddTriple(g, t) ;
+            l.notifyAddTriple(g, t);
     }
 
     @Override
     public void notifyAddArray(Graph g, Triple[] ts) {
         for ( GraphListener l : listeners )
-            l.notifyAddArray(g, ts) ;
+            l.notifyAddArray(g, ts);
     }
 
     @Override
     public void notifyAddList(Graph g, List<Triple> L) {
         for ( GraphListener l : listeners )
-            l.notifyAddList(g, L) ;
+            l.notifyAddList(g, L);
     }
 
     @Override
     public void notifyAddIterator(Graph g, List<Triple> it) {
         for ( GraphListener l : listeners )
-            l.notifyAddIterator(g, it.iterator()) ;
+            l.notifyAddIterator(g, it.iterator());
     }
 
     @Override
     public void notifyAddIterator(Graph g, Iterator<Triple> it) {
-        notifyAddIterator(g, IteratorCollection.iteratorToList(it)) ;
+        notifyAddIterator(g, IteratorCollection.iteratorToList(it));
     }
 
     @Override
     public void notifyAddGraph(Graph g, Graph added) {
         for ( GraphListener l : listeners )
-            l.notifyAddGraph(g, added) ;
+            l.notifyAddGraph(g, added);
     }
 
     @Override
     public void notifyDeleteTriple(Graph g, Triple t) {
         for ( GraphListener l : listeners )
-            l.notifyDeleteTriple(g, t) ;
+            l.notifyDeleteTriple(g, t);
     }
 
     @Override
     public void notifyDeleteArray(Graph g, Triple[] ts) {
         for ( GraphListener l : listeners )
-            l.notifyDeleteArray(g, ts) ;
+            l.notifyDeleteArray(g, ts);
     }
 
     @Override
     public void notifyDeleteList(Graph g, List<Triple> L) {
         for ( GraphListener l : listeners )
-            l.notifyDeleteList(g, L) ;
+            l.notifyDeleteList(g, L);
     }
 
     @Override
     public void notifyDeleteIterator(Graph g, List<Triple> L) {
         for ( GraphListener l : listeners )
-            l.notifyDeleteIterator(g, L.iterator()) ;
+            l.notifyDeleteIterator(g, L.iterator());
     }
 
     @Override
     public void notifyDeleteIterator(Graph g, Iterator<Triple> it) {
-        notifyDeleteIterator(g, IteratorCollection.iteratorToList(it)) ;
+        notifyDeleteIterator(g, IteratorCollection.iteratorToList(it));
     }
 
     @Override
     public void notifyDeleteGraph(Graph g, Graph removed) {
         for ( GraphListener l : listeners )
-            l.notifyDeleteGraph(g, removed) ;
+            l.notifyDeleteGraph(g, removed);
     }
 
     @Override
     public void notifyEvent(Graph source, Object event) {
         for ( GraphListener l : listeners )
-            l.notifyEvent(source, event) ;
+            l.notifyEvent(source, event);
     }
 
     /**
@@ -174,14 +160,13 @@ public class SimpleEventManager implements GraphEventManager
      */
     public static ExtendedIterator<Triple> notifyingRemove(final Graph g, Iterator<Triple> i) {
         return new TrackingTripleIterator(i) {
-            protected final GraphEventManager gem = g.getEventManager() ;
+            protected final GraphEventManager gem = g.getEventManager();
 
             @Override
             public void remove() {
-                super.remove() ;
-                gem.notifyDeleteTriple(g, current) ;
+                super.remove();
+                gem.notifyDeleteTriple(g, current);
             }
-        } ;
+        };
     }
-
 }

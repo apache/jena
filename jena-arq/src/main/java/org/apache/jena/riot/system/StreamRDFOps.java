@@ -66,20 +66,13 @@ public class StreamRDFOps {
      * and quads for the named graphs without prefixes
      */
     public static void sendTriplesQuadsToStream(DatasetGraph datasetGraph, StreamRDF stream) {
-        sendDatasetToStream(datasetGraph, stream, null) ;
+        sendDatasetToStream(datasetGraph, stream, null, null) ;
     }
 
     /** Send a dataset to a StreamRDF as prefixes, triples and quads */
     public static void sendDatasetToStream(DatasetGraph datasetGraph, StreamRDF stream) {
         PrefixMap prefixMap = PrefixMapFactory.create(datasetGraph.getDefaultGraph().getPrefixMapping()) ;
-        sendDatasetToStream(datasetGraph, stream, prefixMap) ;
-    }
-
-    /**
-     * @deprecated prefer {@link #sendDatasetToStream(DatasetGraph, StreamRDF, String, PrefixMap)} with a null base URI.
-     */
-    public static void sendDatasetToStream(DatasetGraph datasetGraph, StreamRDF stream, PrefixMap prefixMap) {
-        sendDatasetToStream(datasetGraph, stream, null, prefixMap);
+        sendDatasetToStream(datasetGraph, stream, null, prefixMap) ;
     }
 
     /** Send a dataset to a StreamRDF as triples and quads, using the explicitly given prefix map */
@@ -104,14 +97,7 @@ public class StreamRDFOps {
      */
     public static void sendGraphToStream(Graph graph, StreamRDF stream) {
         PrefixMap prefixMap = PrefixMapFactory.create(graph.getPrefixMapping()) ;
-        sendGraphToStream(graph, stream, prefixMap) ;
-    }
-    /**
-     * @deprecated prefer {@link #sendGraphToStream(Graph, StreamRDF, String, PrefixMap)} with a null base URI.
-     */
-    @Deprecated
-    public static void sendGraphToStream(Graph graph, StreamRDF stream, PrefixMap prefixMap) {
-        sendGraphToStream(graph, stream, null, prefixMap);
+        sendGraphToStream(graph, stream, null, prefixMap) ;
     }
 
     /** Send the triples of graph, and an explicitly given prefix mapping, to a StreamRDF */
@@ -126,7 +112,7 @@ public class StreamRDFOps {
 
     /** Send the triples of graph to a StreamRDF (no prefix mapping) */
     public static void sendTriplesToStream(Graph graph, StreamRDF stream) {
-        sendGraphToStream(graph, stream, null) ;
+        sendGraphToStream(graph, stream, null, null) ;
     }
 
     /** Set triples to a StreamRDF - does not call .start/.finish */

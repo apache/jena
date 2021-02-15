@@ -31,7 +31,7 @@ public class FunctorDatatype extends BaseDatatype {
     public static final RDFDatatype theFunctorDatatype = new FunctorDatatype();
 
     private FunctorDatatype() {
-        super("urn:org.apache.jena:Functor");
+        super("urn:x-hp-jena:Functor");
     }
 
     /**

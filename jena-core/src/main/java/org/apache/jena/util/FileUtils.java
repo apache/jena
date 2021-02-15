@@ -38,11 +38,11 @@ public class FileUtils
     public static final String langNTriple      = "N-TRIPLE" ;
     public static final String langN3           = "N3" ;
     public static final String langTurtle       = "TURTLE" ;
-    
+
     static Charset utf8 = StandardCharsets.UTF_8 ;
-    
-    /** Create a reader that uses UTF-8 encoding */ 
-    
+
+    /** Create a reader that uses UTF-8 encoding */
+
     static public Reader asUTF8(InputStream in) {
         if ( JenaRuntime.runUnder(JenaRuntime.featureNoCharset) )
             return new InputStreamReader(in) ;
@@ -52,15 +52,15 @@ public class FileUtils
         return new InputStreamReader(in, utf8.newDecoder());
     }
 
-    /** Create a buffered reader that uses UTF-8 encoding */ 
-    
+    /** Create a buffered reader that uses UTF-8 encoding */
+
     static public BufferedReader asBufferedUTF8(InputStream in)
     {
         BufferedReader r = new BufferedReader(asUTF8(in)) ;
         return r ;
     }
 
-    /** Create a writer that uses UTF-8 encoding */ 
+    /** Create a writer that uses UTF-8 encoding */
 
     static public Writer asUTF8(OutputStream out) {
         if ( JenaRuntime.runUnder(JenaRuntime.featureNoCharset) )
@@ -68,14 +68,14 @@ public class FileUtils
         return new OutputStreamWriter(out, utf8.newEncoder());
     }
 
-    /** Create a print writer that uses UTF-8 encoding */ 
+    /** Create a print writer that uses UTF-8 encoding */
 
     static public PrintWriter asPrintWriterUTF8(OutputStream out) {
-        return new PrintWriter(asUTF8(out)); 
+        return new PrintWriter(asUTF8(out));
     }
-    
+
     /** Guess the language/type of model data.
-     * 
+     *
      * <ul>
      * <li> If the URI ends ".rdf", it is assumed to be RDF/XML</li>
      * <li> If the URI ends ".nt", it is assumed to be N-Triples</li>
@@ -95,12 +95,12 @@ public class FileUtils
         if (suffix.equals( "ttl" ))  return langTurtle ;
         if (suffix.equals( "rdf" ))  return langXML;
         if (suffix.equals( "owl" ))  return langXML;
-        return otherwise; 
-    }    
-   
-   
+        return otherwise;
+    }
+
+
     /** Guess the language/type of model data
-     * 
+     *
      * <ul>
      * <li> If the URI ends ".rdf", it is assumed to be RDF/XML</li>
      * <li> If the URI ends ".nt", it is assumed to be N-Triples</li>
@@ -116,17 +116,22 @@ public class FileUtils
         return guessLang(urlStr, langXML) ;
     }
 
-    /** Turn a file: URL or file name into a plain file name */
-    
+    /**
+     * Turn a file: URL or file name into a plain file name
+     * @deprecated Use IRILib.IRIToFilename.
+     */
+    @Deprecated
     public static String toFilename(String filenameOrURI)
     {
+        // Retained only because of OntModel -> FileManager -> LocatorFile.
+
         // Requirements of windows and Linux differ slightly here
         // Windows wants "file:///c:/foo" => "c:/foo"
         // but Linux only wants "file:///foo" => "/foo"
         // Pragmatically, a path of "/c:/foo", or "/foo" works everywhere.
-        // but not "//c:/foo" or "///c:/foo" 
+        // but not "//c:/foo" or "///c:/foo"
         // else IKVM thinks its a network path on Windows.
-        
+
         // If it's a a file: we apply %-decoding.
         // If there is no scheme name, we don't.
 
@@ -137,13 +142,13 @@ public class FileUtils
 
         if ( ! fn.startsWith("file:") )
             return fn ;
-        
+
         // file:
         // Convert absolute file names
         if ( fn.startsWith("file:///") )
             fn = fn.substring("file://".length()) ;
         else if ( fn.startsWith("file://localhost/") )
-            // NB Leaves the leading slash on. 
+            // NB Leaves the leading slash on.
             fn = fn.substring("file://localhost".length()) ;
         else
             // Just trim off the file:
@@ -151,10 +156,10 @@ public class FileUtils
 
         return decodeFileName(fn) ;
     }
-    
+
     public static String decodeFileName(String s)
     {
-        if ( s.indexOf('%') < 0 ) 
+        if ( s.indexOf('%') < 0 )
             return s ;
         int len = s.length();
         StringBuilder sbuff = new StringBuilder(len) ;
@@ -176,62 +181,36 @@ public class FileUtils
         }
         return sbuff.toString();
     }
-    
-    /** Turn a plain filename into a "file:" URL
-     * Use IRILib.filenameToIRI
-     * This remains only for legacy compatibility.
-     */
-    @Deprecated
-    public static String toURL(String filename)
-    {
-        if ( filename.length()>5
-        		&& filename.substring(0,5).equalsIgnoreCase("file:") )
-            return filename ;
-        
-        if ( filename.equals(".") )
-            filename = "" ;
-        
-        /**
-         * Convert a File, note java.net.URI does the right thing.
-         * viz:
-         *   Convert to absolute path.
-         *   Convert all % to %25.
-         *   then convert all ' ' to %20.
-         *   It quite probably does more e.g. ? #
-         * But has one /, not three, at beginning
-         */
-		return "file://" + new File(filename).toURI().toString().substring(5);
-    }
-    
-    /** Check whether 'name' is possibly a file reference  
-     * 
+
+    /** Check whether 'name' is possibly a file reference
+     *
      * @param name
-     * @return boolean False if clearly not a filename. 
+     * @return boolean False if clearly not a filename.
      */
     public static boolean isFile(String name)
     {
         String scheme = getScheme(name) ;
-        
+
         if ( scheme == null  )
             // No URI scheme - treat as filename
             return true ;
-        
+
         if ( scheme.equals("file") )
             // file: URI scheme
             return true ;
-            
+
         // Windows: "c:" etc
         if ( scheme.length() == 1 )
             // file: URI scheme
             return true ;
-        
+
         return false ;
     }
-    
+
     /** Check whether a name is an absolute URI (has a scheme name)
-     * 
+     *
      * @param name
-     * @return boolean True if there is a scheme name 
+     * @return boolean True if there is a scheme name
      */
     public static boolean isURI(String name)
     {
@@ -247,17 +226,17 @@ public class FileUtils
             if ( ch == ':' )
                 return uri.substring(0,i) ;
             if ( ! isASCIILetter(ch) )
-                // Some illegal character before the ':' 
+                // Some illegal character before the ':'
                 break ;
         }
         return null ;
     }
-    
+
     private static boolean isASCIILetter(char ch)
     {
         return ( ch >= 'a' && ch <= 'z' ) || ( ch >= 'A' && ch <= 'Z' ) ;
     }
-    
+
     /**
      * Get the directory part of a filename
      * @param filename
@@ -274,9 +253,9 @@ public class FileUtils
      */
     public static String getFilenameExt( String filename)
     {
-        int iSlash = filename.lastIndexOf( '/' );      
+        int iSlash = filename.lastIndexOf( '/' );
         int iBack = filename.lastIndexOf( '\\' );
-        int iExt = filename.lastIndexOf( '.' ); 
+        int iExt = filename.lastIndexOf( '.' );
         if (iBack > iSlash) iSlash = iBack;
         return iExt > iSlash ? filename.substring( iExt+1 ).toLowerCase() : "";
     }
@@ -285,7 +264,7 @@ public class FileUtils
      create a temporary file that will be deleted on exit, and do something
      sensible with any IO exceptions - namely, throw them up wrapped in
      a JenaException.
-     
+
      @param prefix the prefix for File.createTempFile
      @param suffix the suffix for File.createTempFile
      @return the temporary File
@@ -296,13 +275,13 @@ public class FileUtils
         if (result.exists()) return tempFileName( prefix, suffix );
         result.deleteOnExit();
         return result;
-    }  
-    
+    }
+
     /**
      Answer a File naming a freshly-created directory in the temporary directory. This
      directory should be deleted on exit.
      TODO handle threading issues, mkdir failure, and better cleanup
-     
+
      @param prefix the prefix for the directory name
      @return a File naming the new directory
      */
@@ -312,14 +291,14 @@ public class FileUtils
         if (result.exists()) return getScratchDirectory( prefix );
         if (result.mkdir() == false) throw new JenaException( "mkdir failed on " + result );
         result.deleteOnExit();
-        return result;   
-    } 
-    
+        return result;
+    }
+
     public static String getTempDirectory()
     { return JenaRuntime.getSystemProperty( "java.io.tmpdir" ); }
 
     private static int counter = 0;
-    
+
     private static int randomNumber()
     {
         return ++counter;
@@ -330,7 +309,7 @@ public class FileUtils
      Answer a BufferedReader than reads from the named resource file as
      UTF-8, possibly throwing WrappedIOExceptions.
      */
-    public static BufferedReader openResourceFile( String filename )  
+    public static BufferedReader openResourceFile( String filename )
     {
         try
         {
@@ -340,7 +319,7 @@ public class FileUtils
         catch (IOException e)
         { throw new WrappedIOException( e ); }
     }
-    
+
     /**
      * Open an resource file for reading.
      */
@@ -364,10 +343,10 @@ public class FileUtils
     }
 
     // TODO Replace with FileManager
-    public static BufferedReader readerFromURL( String urlStr ) 
+    public static BufferedReader readerFromURL( String urlStr )
     {
-        try { return asBufferedUTF8( new URL(urlStr).openStream() ); }    
-        catch (java.net.MalformedURLException e) 
+        try { return asBufferedUTF8( new URL(urlStr).openStream() ); }
+        catch (java.net.MalformedURLException e)
         { // Try as a plain filename.
             try { return asBufferedUTF8( new FileInputStream( urlStr ) ); }
             catch (FileNotFoundException f) { throw new WrappedIOException( f ); }
@@ -381,7 +360,7 @@ public class FileUtils
      * @return String
      * @throws IOException
      */
-    
+
     public static String readWholeFileAsUTF8(String filename) throws IOException {
         Path path = Paths.get(filename);
         byte b[] = Files.readAllBytes(path);
@@ -389,7 +368,7 @@ public class FileUtils
     }
 
     /** Read a whole stream as UTF-8
-     * 
+     *
      * @param in    InputStream to be read
      * @return      String
      * @throws IOException

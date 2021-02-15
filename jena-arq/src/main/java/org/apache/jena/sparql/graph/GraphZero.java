@@ -28,45 +28,45 @@ import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NullIterator;
 
-/** Invariant empty graph.  
+/** Invariant empty graph.
  *  @see GraphSink
  */
 public class GraphZero extends GraphBase {
-    
+
     public static Graph instance() {
-        // It has transaction state so unsafe to share one object on one thread. 
+        // It has transaction state so unsafe to share one object on one thread.
         return new GraphZero();
     }
 
     private GraphZero() {}
-    
+
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(Triple triplePattern) {
         return NullIterator.instance();
     }
-    
+
     private TransactionHandler transactionHandler = new TransactionHandlerNull();
-    
-    @Override 
-    public TransactionHandler getTransactionHandler() {
-        return transactionHandler; 
-    }
-    
+
     @Override
-    protected PrefixMapping createPrefixMapping() { 
+    public TransactionHandler getTransactionHandler() {
+        return transactionHandler;
+    }
+
+    @Override
+    protected PrefixMapping createPrefixMapping() {
         return new PrefixMappingZero() ;
     }
-    
+
     // Choice point: AddDeniedException/DeleteDeniedException or UnsupportedOperationException.
     //
-    // AddDeniedException is more access centric, e.g. permissions, 
+    // AddDeniedException is more access centric, e.g. permissions,
     // and may be different for different callers.
     //
     // UnsupportedOperationException is the general java "no" for not available ata ll,
     // but is different from the Jena core exceptions.
     @Override
     public void performAdd( Triple t ) { throw new UnsupportedOperationException("add triple"); }
-    
+
     @Override
     public void performDelete( Triple t ) { throw new UnsupportedOperationException("delete triple"); }
 
@@ -75,9 +75,7 @@ public class GraphZero extends GraphBase {
         if ( capabilities == null ) {
             capabilities = new AllCapabilities() {
                 @Override public boolean addAllowed() { return false; }
-                @Override public boolean addAllowed( boolean every ) { return false; } 
                 @Override public boolean deleteAllowed() { return false; }
-                @Override public boolean deleteAllowed( boolean every ) { return false; } 
             };
         }
         return capabilities;

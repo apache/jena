@@ -27,13 +27,15 @@ import org.apache.jena.util.iterator.* ;
  * Wraps a graph and randomizes the order of find results.
  */
 public class RandomOrderGraph extends WrappedGraph {
-	
+
 	public static Graph createDefaultGraph() {
 		return new RandomOrderGraph(Factory.createDefaultGraph());
 	}
+
 	public static Model createDefaultModel() {
 		return ModelFactory.createModelForGraph(createDefaultGraph());
 	}
+
     final private int bufsz;
 	/**
 	 * @param base
@@ -42,30 +44,32 @@ public class RandomOrderGraph extends WrappedGraph {
 		super(base);
 		this.bufsz = bufsz;
 	}
+
 	/**
 	 * @param base
 	 */
 	public RandomOrderGraph(Graph base) {
 		this(10,base);
 	}
-	
-	@Override
-    public ExtendedIterator<Triple> find( Triple triple )
-	{ return new RandomOrderIterator<>(bufsz,super.find( triple ));
-	}
 
-	@Override
-    public ExtendedIterator<Triple> find( Node s, Node p, Node o )
-	{ return new RandomOrderIterator<>(bufsz,super.find( s, p, o ));
-	}
+    @Override
+    public ExtendedIterator<Triple> find(Triple triple) {
+        return new RandomOrderIterator<>(bufsz, super.find(triple));
+    }
+
+    @Override
+    public ExtendedIterator<Triple> find(Node s, Node p, Node o) {
+        return new RandomOrderIterator<>(bufsz, super.find(s, p, o));
+    }
+
 	@Override
 	public Capabilities getCapabilities() {
 		return new MyCapabilities( super.getCapabilities() );
 	}
-	
+
 	private class MyCapabilities implements Capabilities {
 		private Capabilities parentCapabilities;
-		
+
 		public MyCapabilities( Capabilities parentCapabilities )
 		{
 			this.parentCapabilities = parentCapabilities;
@@ -86,41 +90,9 @@ public class RandomOrderGraph extends WrappedGraph {
             return parentCapabilities.deleteAllowed();
         }
 
-		@SuppressWarnings("deprecation")
-        @Override
-        public boolean addAllowed(boolean everyTriple) {
-			return parentCapabilities.addAllowed(everyTriple);
-		}
-
-        @SuppressWarnings("deprecation")
-		@Override
-        public boolean deleteAllowed(boolean everyTriple) {
-			return parentCapabilities.deleteAllowed(everyTriple);
-		}
-
-        @SuppressWarnings("deprecation")
-		@Override
-        public boolean canBeEmpty() {
-			return parentCapabilities.canBeEmpty();
-		}
-
-        @SuppressWarnings("deprecation")
-		@Override
-        public boolean findContractSafe() {
-			return parentCapabilities.findContractSafe();
-		}
-
 		@Override
         public boolean handlesLiteralTyping() {
 			return parentCapabilities.handlesLiteralTyping();
 		}
-
-		@Override
-		public boolean iteratorRemoveAllowed() {
-			return false;
-		}
-		
-		
 	}
-
 }

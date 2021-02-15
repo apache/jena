@@ -22,7 +22,7 @@ import org.apache.jena.web.HttpSC;
 
 /**
  * Class of HTTP Exceptions from Atlas code
- * 
+ *
  */
 public class HttpException extends RuntimeException {
     private int statusCode = -1;
@@ -41,7 +41,7 @@ public class HttpException extends RuntimeException {
 	        statusLine = HttpSC.getMessage(statusCode);
 	    return statusCode+" - "+HttpSC.getMessage(statusCode);
 	}
-    
+
     public HttpException(String message) {
         super(message);
     }
@@ -49,11 +49,11 @@ public class HttpException extends RuntimeException {
     public HttpException(String message, Throwable cause) {
         super(message, cause);
     }
-    
+
     public HttpException(Throwable cause) {
         super(cause);
     }
-    
+
     /**
      * Gets the status code, may be -1 if unknown
      * @return Status Code if known, -1 otherwise
@@ -62,16 +62,6 @@ public class HttpException extends RuntimeException {
         return this.statusCode;
     }
 
-    /**
-     * Gets the response code, may be -1 if unknown
-     * @return Response Code if known, -1 otherwise
-     * @deprecated Use {@link #getStatusCode()}
-     */
-    @Deprecated
-    public int getResponseCode() {
-        return getStatusCode();
-    }
-    
     /**
      * Gets the status line text, may be null if unknown. HTTP/2 does not have status line text.
      * @return Status line
