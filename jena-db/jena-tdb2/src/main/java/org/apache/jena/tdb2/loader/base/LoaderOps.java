@@ -32,7 +32,7 @@ import org.apache.jena.dboe.trans.bplustree.BPlusTree;
 import org.apache.jena.dboe.trans.data.TransBinaryDataFile;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFWrapper;
 import org.apache.jena.sparql.core.Quad;
@@ -102,15 +102,10 @@ public class LoaderOps {
     public static void inputFile(StreamRDF sink, String source, ProgressMonitor monitor) {
         if ( monitor != null ) {
             sink = new ProgressStreamRDF(sink, monitor);
-            //monitor.start();
         }
         sink.start();
-        RDFDataMgr.parse(sink, source);
+        RDFParser.source(source).parse(sink);
         sink.finish();
-        if ( monitor != null ) {
-            //monitor.finish();
-            //monitor.finishMessage("Data");
-        }
     }
 
     /** Copy a stream to several indexes (sequential version) */

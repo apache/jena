@@ -106,7 +106,7 @@ public class SysRIOT
     /**
      * Return a URI suitable for a baseURI, based on some input (which may be null).
      *
-     * @deprecated Use {@code IRIs.getBaseStr();}
+     * @deprecated Use {@link IRIs#toBase(String)}
      */
     @Deprecated
     public static String chooseBaseIRI(String baseURI) {

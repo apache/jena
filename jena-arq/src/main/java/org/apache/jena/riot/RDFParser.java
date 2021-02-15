@@ -122,7 +122,7 @@ public class RDFParser {
      * This is a shortcut for {@code RDFParser.create().source(path)}.
      *
      * @param path
-     * @return this
+     * @return RDFParserBuilder
      */
     public static RDFParserBuilder source(Path path) {
         return RDFParserBuilder.create().source(path);
@@ -135,7 +135,7 @@ public class RDFParser {
      * This is a shortcut for {@code RDFParser.create().source(uriOrFile)}.
      *
      * @param uriOrFile
-     * @return this
+     * @return RDFParserBuilder
      */
 
     public static RDFParserBuilder source(String uriOrFile) {
@@ -148,7 +148,7 @@ public class RDFParser {
      * <p>
      * Shortcut for {@code RDFParser.create.fromString(string)}.
      * @param string
-     * @return this
+     * @return RDFParserBuilder
      */
     public static RDFParserBuilder fromString(String string) {
         return RDFParserBuilder.create().fromString(string);
@@ -162,7 +162,7 @@ public class RDFParser {
      *  <p>
      *  This is a shortcut for {@code RDFParser.create().source(input)}.
      *  @param input
-     *  @return this
+     *  @return RDFParserBuilder
      */
     public static RDFParserBuilder source(InputStream input) {
         return RDFParserBuilder.create().source(input);
