@@ -32,7 +32,7 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
 
-/** A result set held in-memory. rewindable.  
+/** A result set held in-memory. rewindable.
  */
 
 public class ResultSetMem implements ResultSetRewindable, ResultSetPeekable
@@ -98,7 +98,7 @@ public class ResultSetMem implements ResultSetRewindable, ResultSetPeekable
     /**
      * Create an in-memory result set from an array of ResulSets. It is assumed
      * that all the ResultSets from the array have the same variables.
-     * 
+     *
      * @param sets
      *            the ResultSet objects to concatenate.
      */
@@ -143,10 +143,10 @@ public class ResultSetMem implements ResultSetRewindable, ResultSetPeekable
 
     /** Moves onto the next result possibility.
      */
-    
+
     @Override
     public QuerySolution nextSolution()  { return new ResultBinding(model, nextBinding()) ; }
-    
+
     @Override
     public Binding nextBinding()  { rowNumber++ ; return iterator.next() ; }
 
@@ -173,12 +173,12 @@ public class ResultSetMem implements ResultSetRewindable, ResultSetPeekable
     {
         return model ;
     }
-    
+
     /** Return the number of rows
      */
     @Override
     public int size() { return rows.size() ; }
-    
+
     /** Get the variable names for the projection
      */
     @Override

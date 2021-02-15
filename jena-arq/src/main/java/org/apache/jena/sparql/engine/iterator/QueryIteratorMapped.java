@@ -25,12 +25,10 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 
 /**
  * A query iterator which allows remapping variables to different names
- * 
  */
 public class QueryIteratorMapped extends QueryIteratorWrapper {
 
@@ -43,7 +41,7 @@ public class QueryIteratorMapped extends QueryIteratorWrapper {
      * will be applied and this will act as a simple wrapper over the underlying
      * wrapper
      * </p>
-     * 
+     *
      * @param qIter
      *            Iterator to wrap
      * @param varMapping
@@ -61,7 +59,7 @@ public class QueryIteratorMapped extends QueryIteratorWrapper {
             return b;
 
         // Apply remapping
-        BindingMap binding = BindingFactory.create();
+        BindingBuilder builder = Binding.builder();
         Iterator<Var> vs = b.vars();
         while (vs.hasNext()) {
             Var v = vs.next();
@@ -71,10 +69,9 @@ public class QueryIteratorMapped extends QueryIteratorWrapper {
             if (value == null)
                 continue;
             if (this.varMapping.containsKey(v)) {
-                binding.add(this.varMapping.get(v), value);
+                builder.add(this.varMapping.get(v), value);
             }
         }
-        return binding;
+        return builder.build();
     }
-
 }

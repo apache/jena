@@ -34,13 +34,13 @@ public class VarExprList
 {
     private List<Var> vars  ;
     private LinkedHashMap<Var, Expr> exprs  ;   // Preserve order.
-    
+
     public VarExprList(List<Var> vars)
     {
         this.vars = new ArrayList<>(vars) ;
         this.exprs = new LinkedHashMap<>() ;
     }
-    
+
     public VarExprList(VarExprList other)
     {
         this.vars = new ArrayList<>(other.vars) ;
@@ -52,7 +52,7 @@ public class VarExprList
         this.vars = new ArrayList<>() ;
         this.exprs = new LinkedHashMap<>() ;
     }
-    
+
     public VarExprList(Var var, Expr expr)
     {
         this() ;
@@ -61,7 +61,7 @@ public class VarExprList
 
     public List<Var> getVars()          { return vars ; }
     public Map<Var, Expr> getExprs()    { return exprs ; }
-    
+
     /** Call the action for each (variable, expression) defined.
      *  Not called when there is no expression, just a variable.
      *  Not order preserving.
@@ -69,13 +69,13 @@ public class VarExprList
     public void forEachExpr(BiConsumer<Var, Expr> action) {
         exprs.forEach(action);
     }
-    
+
     /** Call the action for each variable, in order.
      *  The expression may be null.
      *  Not called when there is no expression, just a variable.
      */
     public void forEachVarExpr(BiConsumer<Var, Expr> action) {
-        //*  See {@link #forEach}    
+        //*  See {@link #forEach}
         getVars().forEach((v) -> {
             // Maybe null.
             Expr e = exprs.get(v) ;
@@ -92,16 +92,15 @@ public class VarExprList
 
     public boolean contains(Var var) { return vars.contains(var) ; }
     public boolean hasExpr(Var var) { return exprs.containsKey(var) ; }
-    
+
     public Expr getExpr(Var var) { return exprs.get(var) ; }
-    
-    // Or Binding.get(var, NamedExprList)
+
     public Node get(Var var, Binding binding, FunctionEnv funcEnv)
     {
-        Expr expr = exprs.get(var) ; 
+        Expr expr = exprs.get(var) ;
         if ( expr == null )
-            return binding.get(var) ; 
-        
+            return binding.get(var) ;
+
         try {
             NodeValue nv = expr.eval(binding, funcEnv) ;
             if ( nv == null )
@@ -112,7 +111,7 @@ public class VarExprList
         { }
         return null ;
     }
-    
+
     public void add(Var var)
     {
         // Checking here controls whether duplicate variables are allowed.
@@ -137,10 +136,10 @@ public class VarExprList
             throw new ARQInternalErrorException("Attempt to add a named expression with a null variable") ;
         if ( exprs.containsKey(var) )
             throw new ARQInternalErrorException("Attempt to assign an expression again") ;
-        add(var) ; 
+        add(var) ;
         exprs.put(var, expr) ;
     }
-    
+
     public void addAll(VarExprList other)
     {
         for ( Var v : other.vars )
@@ -150,26 +149,26 @@ public class VarExprList
         }
     }
 
-    public void remove(Var var) { 
+    public void remove(Var var) {
         vars.remove(var) ;
         exprs.remove(var) ;
     }
 
-    public void clear() { 
+    public void clear() {
         vars.clear();
         exprs.clear();
     }
-    
+
     public int size() { return vars.size() ; }
-    public boolean isEmpty() { return vars.isEmpty() ; } 
-    
+    public boolean isEmpty() { return vars.isEmpty() ; }
+
     @Override
     public int hashCode()
-    { 
+    {
         int x = vars.hashCode() ^ exprs.hashCode() ;
         return x ;
     }
-    
+
     @Override
     public boolean equals(Object other)
     {
@@ -179,7 +178,7 @@ public class VarExprList
         VarExprList x = (VarExprList)other ;
         return Objects.equals(vars, x.vars) && Objects.equals(exprs, x.exprs) ;
     }
-    
+
     @Override
     public String toString()
     {

@@ -49,8 +49,8 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.describe.DescribeHandler;
 import org.apache.jena.sparql.core.describe.DescribeHandlerRegistry;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.engine.binding.BindingRoot;
-import org.apache.jena.sparql.engine.binding.BindingUtils;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorWrapper;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.lib.RDFTerm2Json;
@@ -642,7 +642,7 @@ public class QueryExecutionBase implements QueryExecution
 
     @Override
     public void setInitialBinding(QuerySolution startSolution) {
-        initialBinding = BindingUtils.asBinding(startSolution);
+        initialBinding = BindingLib.asBinding(startSolution);
     }
 
     @Override

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,8 @@
  */
 package org.apache.jena.arq.querybuilder;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,7 @@ import org.junit.Test;
 
 /**
  * Tests based on https://www.w3.org/TR/sparql11-update examples
- * 
+ *
  * Tests 13-15 are not implemented as the builder does not interface with them.
  *
  */
@@ -75,7 +76,7 @@ public class UpdateBuilderExampleTests {
 
 	/**
 	 * Example 1: Adding some triples to a graph
-	 * 
+	 *
 	 * @see <a href="https://www.w3.org/TR/sparql11-update/#example_1">sparql11-update example_1</a>
 	 */
 	@Test
@@ -104,7 +105,7 @@ public class UpdateBuilderExampleTests {
 
 	/**
 	 * Example 2: Adding some triples to a graph
-	 * 
+	 *
      * @see <a href="https://www.w3.org/TR/sparql11-update/#example_2">sparql11-update example_2</a>
 	 */
 	@Test
@@ -131,7 +132,7 @@ public class UpdateBuilderExampleTests {
 
 	/**
 	 * Example 3: Removing triples from a graph
-	 * 
+	 *
      * @see <a href="https://www.w3.org/TR/sparql11-update/#example_3">sparql11-update example_3</a>
 	 */
 	@Test
@@ -160,7 +161,7 @@ public class UpdateBuilderExampleTests {
 
 	/**
 	 * Example 4:
-	 * 
+	 *
      * @see <a href="https://www.w3.org/TR/sparql11-update/#example_4">sparql11-update example_4</a>
 	 */
 	@Test
@@ -198,7 +199,7 @@ public class UpdateBuilderExampleTests {
 
 	/**
 	 * Example 5:
-	 * 
+	 *
      * @see <a href="https://www.w3.org/TR/sparql11-update/#example_5">sparql11-update example_5</a>
 	 */
 	@Test
@@ -236,7 +237,7 @@ public class UpdateBuilderExampleTests {
 
 	/**
 	 * Example 6:
-	 * 
+	 *
      * @see <a href="https://www.w3.org/TR/sparql11-update/#example_6">sparql11-update example_6</a>
 	 */
 	@Test
@@ -289,7 +290,7 @@ public class UpdateBuilderExampleTests {
 
 	/**
 	 * Example 7:
-	 * 
+	 *
      * @see <a href="https://www.w3.org/TR/sparql11-update/#example_7">sparql11-update example_7</a>
 	 */
 	@Test
@@ -328,7 +329,7 @@ public class UpdateBuilderExampleTests {
 
 	/**
 	 * Example 8:
-	 * 
+	 *
      * @see <a href="https://www.w3.org/TR/sparql11-update/#example_8">sparql11-update example_8</a>
 	 */
 	@Test
@@ -409,7 +410,7 @@ public class UpdateBuilderExampleTests {
 
 	/**
 	 * Example 9:
-	 * 
+	 *
      * @see <a href="https://www.w3.org/TR/sparql11-update/#example_9">sparql11-update example_9</a>
 	 */
 	@Test
@@ -471,7 +472,7 @@ public class UpdateBuilderExampleTests {
 
 	/**
 	 * Example 10:
-	 * 
+	 *
      * @see <a href="https://www.w3.org/TR/sparql11-update/#example_10">sparql11-update example_10</a>
 	 */
 	@Test
@@ -542,7 +543,7 @@ public class UpdateBuilderExampleTests {
 
 	/**
 	 * Example 11:
-	 * 
+	 *
      * @see <a href="https://www.w3.org/TR/sparql11-update/#example_11">sparql11-update example_11</a>
 	 */
 	@Test
@@ -574,7 +575,7 @@ public class UpdateBuilderExampleTests {
 
 	/**
 	 * Example 12:
-	 * 
+	 *
      * @see <a href="https://www.w3.org/TR/sparql11-update/#example_12">sparql11-update example_12</a>
 	 */
 	@Test
@@ -619,5 +620,5 @@ public class UpdateBuilderExampleTests {
 		assertEquals(1, m2.listStatements().toList().size());
 		assertTrue(m2.contains(will, FOAF.mbox, willMail));
 	}
-	
+
 }

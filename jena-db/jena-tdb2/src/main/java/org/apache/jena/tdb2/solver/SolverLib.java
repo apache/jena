@@ -35,8 +35,8 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
-import org.apache.jena.sparql.engine.binding.BindingMap;
 import org.apache.jena.sparql.engine.iterator.QueryIterNullIterator;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.lib.NodeLib;
@@ -219,13 +219,13 @@ public class SolverLib
         else {
             // Makes nodes immediately. Causing unnecessary NodeTable accesses
             // (e.g. project)
-            BindingMap b = BindingFactory.create();
+            BindingBuilder builder = Binding.builder();
             for (Var v : bindingNodeIds) {
                 NodeId id = bindingNodeIds.get(v);
                 Node n = nodeTable.getNodeForNodeId(id);
-                b.add(v, n);
+                builder.add(v, n);
             }
-            return b;
+            return builder.build();
         }
     }
 

@@ -32,7 +32,6 @@ import org.apache.jena.query.QueryParseException ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.function.FunctionEnvBase ;
 import org.apache.jena.sparql.util.ExprUtils ;
 import org.apache.jena.sys.JenaSystem;
@@ -414,14 +413,9 @@ public class TestExpressions
         query.setPrefix("select",  selNS) ;
     }
     static String xsd = XSDDatatype.XSD+"#" ;
-    static Binding env ;
-    static {
-        BindingMap b = BindingFactory.create() ;
-        b.add(Var.alloc("a"), NodeFactory.createLiteral("A")) ;
-        b.add(Var.alloc("b"), NodeFactory.createBlankNode()) ;
-        b.add(Var.alloc("x"), NodeFactory.createURI("urn:ex:abcd")) ;
-        env = b ;
-    }
+    static Binding env = BindingFactory.binding(Var.alloc("a"), NodeFactory.createLiteral("A"),
+                                                Var.alloc("b"), NodeFactory.createBlankNode(),
+                                                Var.alloc("x"), NodeFactory.createURI("urn:ex:abcd")) ;
 
     // Parse and ensure the whole string was used.
     private static Expr parseToEnd(String exprString) {
@@ -447,40 +441,40 @@ public class TestExpressions
     // "should evaluate", don't care what the result is.
     private static void testEval(String string) {
         Expr expr = parseToEnd(string);
-        NodeValue v = expr.eval(BindingFactory.binding(), new FunctionEnvBase());
+        NodeValue v = expr.eval(BindingFactory.empty(), new FunctionEnvBase());
     }
 
     // All value testing should be parseToEnd
     private static void testNumeric(String string, int i) {
         Expr expr = parseToEnd(string);
-        NodeValue v = expr.eval(BindingFactory.binding(), new FunctionEnvBase());
+        NodeValue v = expr.eval(BindingFactory.empty(), new FunctionEnvBase());
         assertTrue(v.isInteger());
         assertEquals(i, v.getInteger().intValue());
     }
 
     private static void testNumeric(String string, BigDecimal decimal) {
         Expr expr = parseToEnd(string);
-        NodeValue v = expr.eval(BindingFactory.binding(), new FunctionEnvBase());
+        NodeValue v = expr.eval(BindingFactory.empty(), new FunctionEnvBase());
         assertTrue(v.isDecimal());
         assertEquals(decimal, v.getDecimal());
     }
 
     private static void testNumeric(String string, BigInteger integer) {
         Expr expr = parseToEnd(string);
-        NodeValue v = expr.eval(BindingFactory.binding(), new FunctionEnvBase());
+        NodeValue v = expr.eval(BindingFactory.empty(), new FunctionEnvBase());
         assertTrue(v.isInteger());
         assertEquals(integer, v.getInteger());
     }
 
     private static void testNumeric(String string, double d) {
         Expr expr = parseToEnd(string);
-        NodeValue v = expr.eval(BindingFactory.binding(), new FunctionEnvBase());
+        NodeValue v = expr.eval(BindingFactory.empty(), new FunctionEnvBase());
         assertTrue(v.isDouble());
         assertEquals(d, v.getDouble(), 0);
     }
 
     private static void testBoolean(String string, boolean b) {
-        testBoolean(string, b, BindingFactory.binding());
+        testBoolean(string, b, BindingFactory.empty());
     }
 
     private static void testBoolean(String string, boolean b, Binding env) {

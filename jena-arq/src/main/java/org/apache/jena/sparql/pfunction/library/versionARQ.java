@@ -25,8 +25,7 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.pfunction.PropFuncArg ;
 import org.apache.jena.sparql.pfunction.PropFuncArgType ;
@@ -36,30 +35,32 @@ import org.apache.jena.sparql.util.IterLib ;
 public class versionARQ extends PropertyFunctionEval
 {
     static String versionStr = ARQ.VERSION ;    // X.Y.Z
-    
+
     static Node version = NodeValue.makeString(versionStr).asNode() ;
-    
+
     static Node arq = NodeFactory.createURI(ARQ.arqIRI) ;
-    
+
     public versionARQ()
     { super(PropFuncArgType.PF_ARG_SINGLE, PropFuncArgType.PF_ARG_SINGLE) ; }
-    
+
     @Override
     public QueryIterator execEvaluated(Binding binding, PropFuncArg subject, Node predicate, PropFuncArg object, ExecutionContext execCxt)
     {
-        BindingMap b = BindingFactory.create(binding) ;
+        BindingBuilder builder = Binding.builder(binding) ;
 
         Node subj = subject.getArg() ;
-        if ( ! isSameOrVar(subj, arq) ) IterLib.noResults(execCxt) ;
+        if ( ! isSameOrVar(subj, arq) )
+            IterLib.noResults(execCxt) ;
         if ( subj.isVariable() )
-            b.add(Var.alloc(subj), arq) ;
+            builder.add(Var.alloc(subj), arq) ;
 
         Node obj = object.getArg() ;
-        if ( ! isSameOrVar(obj, version) ) IterLib.noResults(execCxt) ;
+        if ( ! isSameOrVar(obj, version) )
+            IterLib.noResults(execCxt) ;
         if ( obj.isVariable() )
-            b.add(Var.alloc(obj), version) ;
-        
-        return IterLib.result(b, execCxt) ;
+            builder.add(Var.alloc(obj), version) ;
+
+        return IterLib.result(builder.build(), execCxt) ;
     }
 
     private boolean isSameOrVar(Node var, Node value)

@@ -18,7 +18,10 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList ;
 import java.util.Iterator ;
@@ -41,9 +44,8 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.engine.binding.BindingComparator ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
 import org.apache.jena.sparql.expr.ExprVar ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
@@ -60,7 +62,7 @@ public class TestQueryIterSort {
     private CallbackIterator iterator ;
 
     @Before
-    public void setup() 
+    public void setup()
     {
         random = new Random();
         Var[] vars = new Var[]{
@@ -72,18 +74,18 @@ public class TestQueryIterSort {
         for(int i = 0; i < 500; i++){
             unsorted.add(randomBinding(vars));
         }
-        
+
         List<SortCondition> conditions = new ArrayList<>();
         conditions.add(new SortCondition(new ExprVar("8"), Query.ORDER_ASCENDING));
         comparator = new BindingComparator(conditions);
-        
+
         iterator = new CallbackIterator(unsorted.iterator(), 25, null);
         iterator.setCallback(new Callback() {
-            @Override 
+            @Override
             public void call() { throw new QueryCancelledException() ; }
         });
     }
-    
+
     @Test
     public void testNoSpill()
     {
@@ -107,7 +109,7 @@ public class TestQueryIterSort {
             qIter.close() ;
         }
     }
-    
+
     @Test
     public void testCleanAfterClose()
     {
@@ -129,11 +131,11 @@ public class TestQueryIterSort {
         {
             qIter.close() ;
         }
-        
+
         assertEquals(0, DataBagExaminer.countTemporaryFiles(qIter.db)) ;
     }
-    
-    @Test 
+
+    @Test
     public void testCloseClosesSourceIterator() {
         Context context = new Context() ;
         ExecutionContext ec = new ExecutionContext(context, (Graph) null, (DatasetGraph) null, (OpExecutorFactory) null);
@@ -142,7 +144,7 @@ public class TestQueryIterSort {
         assertTrue("source iterator should have been closed", iterator.isClosed());
     }
 
-    @Test 
+    @Test
     public void testExhaustionClosesSourceIterator() {
         iterator.setCallback(() -> {});
         Context context = new Context() ;
@@ -152,7 +154,7 @@ public class TestQueryIterSort {
         assertTrue("source iterator should have been closed", iterator.isClosed());
     }
 
-    @Test 
+    @Test
     public void testCancelClosesSourceIterator() {
         Context context = new Context() ;
         ExecutionContext ec = new ExecutionContext(context, (Graph) null, (DatasetGraph) null, (OpExecutorFactory) null);
@@ -174,7 +176,7 @@ public class TestQueryIterSort {
         context.set(ARQ.spillToDiskThreshold, 10L) ;
         ExecutionContext executionContext = new ExecutionContext(context, (Graph)null, (DatasetGraph)null, (OpExecutorFactory)null) ;
         QueryIterSort qIter = new QueryIterSort(iterator, comparator, executionContext) ;
-        
+
         // Usually qIter should be in a try/finally block, but we are testing the case that the user forgot to do that.
         // As a failsafe, QueryIteratorBase should close it when the iterator is exhausted.
         assertEquals(0, iterator.getReturnedElementCount()) ;
@@ -187,9 +189,9 @@ public class TestQueryIterSort {
         assertEquals(0, DataBagExaminer.countTemporaryFiles(qIter.db)) ;
         qIter.close() ;
     }
-    
+
     @Test(expected=QueryCancelledException.class)
-    public void testCancelInterruptsInitialisation() 
+    public void testCancelInterruptsInitialisation()
     {
 
         assertEquals(0, iterator.getReturnedElementCount());
@@ -197,26 +199,26 @@ public class TestQueryIterSort {
         context.set(ARQ.spillToDiskThreshold, 10L) ;
         ExecutionContext executionContext = new ExecutionContext(context, (Graph)null, (DatasetGraph)null, (OpExecutorFactory)null) ;
         QueryIterSort qIter = new QueryIterSort(iterator, comparator, executionContext) ;
-        try 
+        try
         {
             assertEquals(0, iterator.getReturnedElementCount()) ;
             assertEquals(0, DataBagExaminer.countTemporaryFiles(qIter.db)) ;
             qIter.cancel() ;
             qIter.hasNext() ;  // throws a QueryCancelledException
-        } 
-        finally 
+        }
+        finally
         {
             assertTrue(iterator.isCanceled()) ;
             assertEquals(0, iterator.getReturnedElementCount()) ;
             assertEquals(0, DataBagExaminer.countTemporaryFiles(qIter.db));
             qIter.close() ;
         }
-        
+
         assertEquals(0, DataBagExaminer.countTemporaryFiles(qIter.db)) ;
     }
-    
+
     @Test(expected=QueryCancelledException.class)
-    public void testCancelInterruptsExternalSortAfterStartingIteration() 
+    public void testCancelInterruptsExternalSortAfterStartingIteration()
     {
         assertEquals(0, iterator.getReturnedElementCount());
         Context context = new Context() ;
@@ -242,12 +244,12 @@ public class TestQueryIterSort {
         {
             qIter.close() ;
         }
-        
+
         assertEquals(0, DataBagExaminer.countTemporaryFiles(qIter.db)) ;
     }
-    
+
     @Test(expected=QueryCancelledException.class)
-    public void testCancelInterruptsExternalSortAtStartOfIteration() 
+    public void testCancelInterruptsExternalSortAtStartOfIteration()
     {
         iterator = new CallbackIterator(unsorted.iterator(), 25, null);
         iterator.setCallback(()->{});
@@ -256,7 +258,7 @@ public class TestQueryIterSort {
         context.set(ARQ.spillToDiskThreshold, 10L) ;
         ExecutionContext executionContext = new ExecutionContext(context, (Graph)null, (DatasetGraph)null, (OpExecutorFactory)null) ;
         QueryIterSort qIter = new QueryIterSort(iterator, comparator, executionContext) ;
-        try 
+        try
         {
             assertTrue(qIter.hasNext()) ;
             assertEquals(49, DataBagExaminer.countTemporaryFiles(qIter.db));
@@ -265,18 +267,18 @@ public class TestQueryIterSort {
             qIter.cancel() ;
             qIter.hasNext() ;  // throws a QueryCancelledException
         }
-        finally 
+        finally
         {
             //assertTrue(iterator.isCanceled()) ;
             assertEquals(500, iterator.getReturnedElementCount()) ;
             assertEquals(0, DataBagExaminer.countTemporaryFiles(qIter.db));
             qIter.close() ;
         }
-        
+
         assertEquals(0, DataBagExaminer.countTemporaryFiles(qIter.db)) ;
     }
 
-    @Test 
+    @Test
     public void testTopNCloseClosesSource() {
         long numItems = 3;
         boolean distinct = false;
@@ -287,7 +289,7 @@ public class TestQueryIterSort {
         assertTrue(iterator.isClosed());
     }
 
-    @Test 
+    @Test
     public void testTopNExhaustionClosesSource() {
         iterator.setCallback(() -> {});
         long numItems = 3;
@@ -302,25 +304,25 @@ public class TestQueryIterSort {
 
     private Binding randomBinding(Var[] vars)
     {
-        BindingMap binding = BindingFactory.create();
-        binding.add(vars[0], NodeFactory.createBlankNode());
-        binding.add(vars[1], NodeFactory.createURI(randomURI()));
-        binding.add(vars[2], NodeFactory.createURI(randomURI()));
-        binding.add(vars[3], NodeFactory.createLiteral(randomString(20)));
-        binding.add(vars[4], NodeFactory.createBlankNode());
-        binding.add(vars[5], NodeFactory.createURI(randomURI()));
-        binding.add(vars[6], NodeFactory.createURI(randomURI()));
-        binding.add(vars[7], NodeFactory.createLiteral(randomString(5)));
-        binding.add(vars[8], NodeFactory.createLiteral("" + random.nextInt(), XSDDatatype.XSDinteger));
-        binding.add(vars[9], NodeFactory.createBlankNode());
-        return binding;
+        BindingBuilder builder = Binding.builder();
+        builder.add(vars[0], NodeFactory.createBlankNode());
+        builder.add(vars[1], NodeFactory.createURI(randomURI()));
+        builder.add(vars[2], NodeFactory.createURI(randomURI()));
+        builder.add(vars[3], NodeFactory.createLiteral(randomString(20)));
+        builder.add(vars[4], NodeFactory.createBlankNode());
+        builder.add(vars[5], NodeFactory.createURI(randomURI()));
+        builder.add(vars[6], NodeFactory.createURI(randomURI()));
+        builder.add(vars[7], NodeFactory.createLiteral(randomString(5)));
+        builder.add(vars[8], NodeFactory.createLiteral("" + random.nextInt(), XSDDatatype.XSDinteger));
+        builder.add(vars[9], NodeFactory.createBlankNode());
+        return builder.build();
     }
-    
-    private String randomURI() 
+
+    private String randomURI()
     {
         return String.format("http://%s.example.com/%s", randomString(10), randomString(10));
     }
-    
+
     private String randomString(int length)
     {
         StringBuilder builder = new StringBuilder();
@@ -329,7 +331,7 @@ public class TestQueryIterSort {
         }
         return builder.toString();
     }
-    
+
 
     private static class CallbackIterator implements QueryIterator
     {
@@ -339,21 +341,21 @@ public class TestQueryIterSort {
         Iterator<Binding> delegate ;
         boolean canceled = false ;
         boolean closed = false ;
-        
+
         public CallbackIterator(Iterator<Binding> delegate, int trigger, Callback callback)
         {
             this.delegate = delegate ;
             this.callback = callback ;
             this.trigger = trigger ;
         }
-        
-        public void setCallback(Callback callback) 
+
+        public void setCallback(Callback callback)
         {
             this.callback = callback ;
         }
-        
+
         @Override
-        public boolean hasNext() 
+        public boolean hasNext()
         {
         // self-closing
         boolean has = delegate.hasNext() ;
@@ -362,7 +364,7 @@ public class TestQueryIterSort {
         }
 
         @Override
-        public Binding next() 
+        public Binding next()
         {
             if (elementsReturned++ >= trigger)
             {
@@ -376,7 +378,7 @@ public class TestQueryIterSort {
         {
             delegate.remove() ;
         }
-        
+
         public int getReturnedElementCount()
         {
             return elementsReturned ;
@@ -391,7 +393,7 @@ public class TestQueryIterSort {
         }
 
         @Override
-        public Binding nextBinding() 
+        public Binding nextBinding()
         {
             if (elementsReturned++ >= trigger) callback.call() ;
             return delegate.next() ;
@@ -405,10 +407,10 @@ public class TestQueryIterSort {
 
         @Override
         public void output(IndentedWriter out, SerializationContext sCxt) { throw new ARQNotImplemented() ; }
-        
+
         @Override
         public String toString(PrefixMapping pmap) { throw new ARQNotImplemented() ; }
-        
+
         @Override
         public void output(IndentedWriter out) { throw new ARQNotImplemented() ; }
 

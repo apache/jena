@@ -36,8 +36,7 @@ import org.apache.jena.sparql.engine.QueryEngineFactory ;
 import org.apache.jena.sparql.engine.QueryEngineRegistry ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.engine.binding.BindingRoot ;
 import org.apache.jena.sparql.engine.ref.QueryEngineRef ;
 import org.apache.jena.sparql.sse.Item ;
@@ -179,7 +178,7 @@ public class Algebra
             return null ;
 
         // If compatible, merge. Iterate over variables in right but not in left.
-        BindingMap b = BindingFactory.create(bindingLeft) ;
+        BindingBuilder b = Binding.builder(bindingLeft) ;
         for ( Iterator<Var> vIter = bindingRight.vars() ; vIter.hasNext() ; )
         {
             Var v = vIter.next();
@@ -187,7 +186,7 @@ public class Algebra
             if ( ! bindingLeft.contains(v) )
                 b.add(v, n) ;
         }
-        return b ;
+        return b.build() ;
     }
 
     public static boolean compatible(Binding bindingLeft, Binding bindingRight)

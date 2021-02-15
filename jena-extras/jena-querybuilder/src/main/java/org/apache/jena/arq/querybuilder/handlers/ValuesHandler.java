@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,7 +30,8 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.engine.binding.BindingHashMap;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.syntax.ElementData;
 
 public class ValuesHandler implements Handler {
@@ -52,13 +53,13 @@ public class ValuesHandler implements Handler {
 	public ValuesHandler() {
 		this( null );
 	}
-	
+
 	public ValuesHandler( Query query ) {
 		this.query = query;
 		this.valuesTable = new LinkedHashMap<Var, List<Node>>();
 		this.valueMap = Collections.emptyMap();
 	}
-	
+
 	public ElementData asElement() {
 		ElementData ed = new ElementData();
 		// remove all the vars that have been set
@@ -68,11 +69,12 @@ public class ValuesHandler implements Handler {
 			return ed;
 		}
 		vars.forEach( var -> ed.add(var));
-	
+
 		//List<Binding> bindings = new ArrayList<Binding>();
 		int count = valuesTable.get(vars.get(0)).size();
+        BindingBuilder builder = Binding.builder();
 		for (int i = 0; i < count; i++) {
-			BindingHashMap b = new BindingHashMap();
+            builder.reset();
 			for (Var var : vars) {
 				List<Node> lst = valuesTable.get(var);
 				// must be square
@@ -86,13 +88,14 @@ public class ValuesHandler implements Handler {
 					if (valueMap.containsKey(n)) {
 						n = valueMap.get(n);
 					}
-					b.add(var, n);
+					builder.add(var, n);
 				}
 			}
-	
-			if (!b.isEmpty()) {
-				ed.add(b);
-			}
+
+			if (builder.isEmpty())
+			    continue;
+			ed.add(builder.build());
+
 		}
 		return ed;
 	}
@@ -101,7 +104,7 @@ public class ValuesHandler implements Handler {
 	{
 		return valuesTable.isEmpty();
 	}
-	
+
 	@Override
 	public void setVars(Map<Var, Node> values) {
 		valueMap = values;
@@ -129,10 +132,10 @@ public class ValuesHandler implements Handler {
 
 	/**
 	 * Add a variable to the value statement.
-	 * 
+	 *
 	 * A variable may only be added once. Attempting to add the same variable
 	 * multiple times will be silently ignored.
-	 * 
+	 *
 	 * @param var
 	 *            The variable to add.
 	 */
@@ -146,7 +149,7 @@ public class ValuesHandler implements Handler {
 	/**
 	 * Add the values for the variables. There must be one value for each value
 	 * var.
-	 * 
+	 *
 	 * @param values
 	 *            the collection of values to add.
 	 */
@@ -164,7 +167,7 @@ public class ValuesHandler implements Handler {
 
 	/**
 	 * Add the ValuesHandler values to this values Handler.
-	 * 
+	 *
 	 * @param handler
 	 *            the handler that has the values to add.
 	 */
@@ -206,12 +209,12 @@ public class ValuesHandler implements Handler {
 	{
 		valuesTable.clear();
 	}
-	
+
 	public List<Var> getValuesVars()
 	{
 		return Collections.unmodifiableList(new ArrayList<Var>(valuesTable.keySet()));
 	}
-	
+
 	public Map<Var,List<Node>> getValuesMap() {
 		Map<Var,List<Node>> m = new LinkedHashMap<Var, List<Node>>();
 		for (Var key : valuesTable.keySet())

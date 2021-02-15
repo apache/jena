@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,13 +29,13 @@ import org.apache.jena.sparql.core.TriplePath ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingHashMap ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.util.ExprUtils ;
 
 /**
  * The base class for rewriters.
- * 
+ *
  * Rewriters push and pop items on the stack during processing.
  *
  * @param <T> The type of object being rewritten.
@@ -171,15 +171,15 @@ public class AbstractRewriter<T> {
 	 * @return The rewritten binding.
 	 */
 	protected final Binding rewrite(Binding binding) {
-		BindingHashMap retval = new BindingHashMap();
+        BindingBuilder builder = Binding.builder();
 		Iterator<Var> iter = binding.vars();
 		while (iter.hasNext()) {
 			Var v = iter.next();
 			Node n = changeNode(binding.get(v));
 			n = n.equals(v) ? binding.get(v) : n;
-			retval.add(v, n);
+			builder.add(v, n);
 		}
-		return retval;
+		return builder.build();
 	}
 
 	/**

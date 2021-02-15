@@ -34,22 +34,20 @@ import org.apache.jena.sparql.engine.iterator.QueryIterSingleton ;
 public class TableUnit extends TableBase
 {
     static public boolean isTableUnit(Table table)
-    { return (table instanceof TableUnit) ; } 
- 
+    { return (table instanceof TableUnit) ; }
+
     public TableUnit() {}
-    
+
     @Override
     public Iterator<Binding> rows() {
-        Binding binding = BindingFactory.binding() ;
+        Binding binding = BindingFactory.empty() ;
         return Iter.singleton(binding) ;
     }
-    
+
     @Override
-    public QueryIterator iterator(ExecutionContext execCxt)
-    {
-        // BindingRoot?
-        Binding binding = BindingFactory.binding() ;
-        return QueryIterSingleton.create(binding, execCxt) ;
+    public QueryIterator iterator(ExecutionContext execCxt) {
+        Binding binding = BindingFactory.empty();
+        return QueryIterSingleton.create(binding, execCxt);
     }
 
     @Override
@@ -64,7 +62,7 @@ public class TableUnit extends TableBase
     public List<String> getVarNames()   { return Collections.emptyList(); }
     @Override
     public List<Var> getVars()          { return Collections.emptyList(); }
-    
+
     @Override
     public String toString()    { return "TableUnit" ; }
 }

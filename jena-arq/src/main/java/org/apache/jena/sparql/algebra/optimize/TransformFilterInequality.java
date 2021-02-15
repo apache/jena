@@ -18,14 +18,7 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.query.ARQ ;
@@ -33,15 +26,15 @@ import org.apache.jena.sparql.algebra.* ;
 import org.apache.jena.sparql.algebra.op.* ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.expr.* ;
 import org.apache.jena.sparql.util.Context ;
 
 /**
  * A transform that aims to optimize queries where there is an inequality
  * constraint on a variable in an attempt to speed up evaluation e.g
- * 
+ *
  * <pre>
  * PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
  * SELECT *
@@ -52,9 +45,9 @@ import org.apache.jena.sparql.util.Context ;
  *   FILTER(?p != rdf:type)
  * }
  * </pre>
- * 
+ *
  * Would transform to the following:
- * 
+ *
  * <pre>
  * PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
  * SELECT *
@@ -65,7 +58,7 @@ import org.apache.jena.sparql.util.Context ;
  *   MINUS { VALUES ?p { rdf:type } }
  * }
  * </pre>
- * 
+ *
  * <h3>Status</h3>
  * <p>
  * Performance testing has shown that often this gives minimal performance
@@ -74,7 +67,7 @@ import org.apache.jena.sparql.util.Context ;
  * {@link Context} or the ARQ global context ({@link ARQ#getContext()} to
  * {@code true}
  * </p>
- * 
+ *
  * <h3>Applicability</h3>
  * <p>
  * This optimizer is conservative in that it only makes the optimization where
@@ -403,10 +396,10 @@ public class TransformFilterInequality extends TransformCopy {
         // they are actually independent since only one condition needs to fail
         // for the filter to reject the row. Thus for each unique variable/value
         // combination a single row must be produced
+        BindingBuilder builder = Binding.builder();
         for (Var v : possibleValues.keySet()) {
             for (NodeValue value : possibleValues.get(v)) {
-                BindingMap b = BindingFactory.create();
-                b.add(v, value.asNode());
+                Binding b = builder.reset().add(v, value.asNode()).build();
                 table.addBinding(b);
             }
         }

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,11 +17,7 @@
  */
 package org.apache.jena.arq.querybuilder.rewriters;
 
-import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -32,15 +28,29 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.NodeValue;
-import org.apache.jena.sparql.expr.nodevalue.*;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueBoolean;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueDateTime;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueDecimal;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueDouble;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueDuration;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueFloat;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueLang;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueNode;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueSortKey;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueString;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.sparql.util.Utils;
 import org.junit.Test;
 
 public class NodeValueRewriterTest {
-	
+
 	NodeValueRewriter rewriter = new NodeValueRewriter( new HashMap<Var, Node>());
 
 	@Test
@@ -63,7 +73,7 @@ public class NodeValueRewriterTest {
 
 	@Test
 	public void visitNodeValueDecimalTest() {
-		NodeValue nv = new NodeValueDecimal( new BigDecimal( 3.14 ));		
+		NodeValue nv = new NodeValueDecimal( new BigDecimal( 3.14 ));
 		nv.visit( rewriter );
 		NodeValue result = rewriter.getResult();
 		assertEquals( nv, result );
@@ -73,22 +83,22 @@ public class NodeValueRewriterTest {
 	@Test
 	public void visitNodeValueDecimalNodeTest() {
 		Node n = NodeFactory.createLiteral(XSDFuncOp.canonicalDecimalStr(new BigDecimal( 3.14 )), XSDDatatype.XSDdecimal) ;
-		NodeValue nv = new NodeValueDecimal( new BigDecimal( 3.14 ), n );		
+		NodeValue nv = new NodeValueDecimal( new BigDecimal( 3.14 ), n );
 		nv.visit( rewriter );
 		NodeValue result = rewriter.getResult();
 		assertEquals( nv, result );
 		assertEquals( nv.getClass(), result.getClass() );
 	}
-	
+
 	@Test
 	public void visitNodeValueDoubleTest() {
 		NodeValue nv = new NodeValueDouble( 3.14 );
 		nv.visit( rewriter );
 		NodeValue result = rewriter.getResult();
 		assertEquals( nv, result );
-		assertEquals( nv.getClass(), result.getClass() );	
+		assertEquals( nv.getClass(), result.getClass() );
 	}
-	
+
 	@Test
 	public void visitNodeValueDoubleNodeTest() {
 		Node n = NodeFactory.createLiteral(Utils.stringForm( 3.14 ), XSDDatatype.XSDdouble) ;
@@ -107,7 +117,7 @@ public class NodeValueRewriterTest {
 		assertEquals( nv, result );
 		assertEquals( nv.getClass(), result.getClass() );
 	}
-	
+
 	@Test
 	public void visitNodeValueFloatNodeTest() {
 		Node n = NodeFactory.createLiteral(Utils.stringForm( 3.14F ), XSDDatatype.XSDfloat) ;
@@ -128,7 +138,7 @@ public class NodeValueRewriterTest {
 	}
 
 	@Test
-	public void visitNodeValueIntegerNodeTest() {		
+	public void visitNodeValueIntegerNodeTest() {
 		Node n = NodeFactory.createLiteral(BigInteger.ONE.toString(), XSDDatatype.XSDinteger) ;
 		NodeValue nv = new NodeValueInteger( BigInteger.ONE, n );
 		nv.visit( rewriter );
@@ -164,7 +174,7 @@ public class NodeValueRewriterTest {
 		assertEquals( nv, result );
 		assertEquals( nv.getClass(), result.getClass() );
 	}
-	
+
     @Test
     public void visitNodeValueSortKeyTest() {
     	NodeValue nv = new NodeValueSortKey( "Hello", "fi" );
@@ -183,7 +193,7 @@ public class NodeValueRewriterTest {
 		assertEquals( nv, result );
 		assertEquals( nv.getClass(), result.getClass() );
     }
-    
+
 	@Test
 	public void visitNodeValueDTTest() {
 		// 2001-10-26T21:32:52
@@ -216,7 +226,7 @@ public class NodeValueRewriterTest {
 		assertEquals( nv, result );
 		assertEquals( nv.getClass(), result.getClass() );
 	}
-		 
+
 	@Test
 	public void visitNodeValueLangTest() {
 		NodeValue nv = new NodeValueLang( "Hello", "fi" );
@@ -225,7 +235,7 @@ public class NodeValueRewriterTest {
 		assertEquals( nv, result );
 		assertEquals( nv.getClass(), result.getClass() );
 	}
-	
+
 	@Test
 	public void visitNodeValueLangNodeTest() {
 		Node n =NodeFactory.createLiteral("Hello", "fi");
@@ -235,5 +245,5 @@ public class NodeValueRewriterTest {
 		assertEquals( nv, result );
 		assertEquals( nv.getClass(), result.getClass() );
 	}
-	
+
 }

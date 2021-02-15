@@ -43,7 +43,6 @@ import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.ResultSetStream ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import org.apache.jena.sparql.engine.iterator.QueryIterSingleton ;
 import org.apache.jena.sparql.sse.SSE ;
@@ -59,19 +58,19 @@ import org.junit.Test ;
 public class TestResultSet
 {
     static { JenaSystem.init(); }
-    
+
     @BeforeClass
     public static void setup() {
         // Disable warnings these tests will produce
         ResultSetPeeking.warnOnSyncErrors = false;
     }
-    
+
     @AfterClass
     public static void teardown() {
         // Re-enable warnings
         ResultSetPeeking.warnOnSyncErrors = true;
     }
-    
+
     // Test reading, writing and comparison
     @Test public void test_RS_1()
     {
@@ -83,7 +82,7 @@ public class TestResultSet
         ResultSet rs2 = ResultSetFactory.fromXML(ins) ;
         assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
-    
+
     @Test public void test_RS_1_str()
     {
         ResultSetRewindable rs1 = new ResultSetMem() ;
@@ -104,7 +103,7 @@ public class TestResultSet
         ResultSet rs2 = ResultSetFactory.fromXML(ins) ;
         assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
-    
+
     @Test public void test_RS_2_str()
     {
         ResultSetRewindable rs1 = makeRewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
@@ -116,7 +115,7 @@ public class TestResultSet
     }
 
     // RDF
-    
+
     @Test public void test_RS_3()
     {
         ResultSetRewindable rs1 = new ResultSetMem() ;
@@ -125,7 +124,7 @@ public class TestResultSet
         ResultSet rs2 = RDFInput.fromRDF(model) ;
         assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
-    
+
     @Test public void test_RS_4()
     {
         ResultSetRewindable rs1 = makeRewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
@@ -140,12 +139,12 @@ public class TestResultSet
             ResultSetFormatter.out(rs1) ;
             ResultSetFormatter.out(rs2) ;
         }
-        
+
         assertTrue(b) ;
     }
-    
+
     // JSON
-    
+
     @Test public void test_RS_5()
     {
         ResultSetRewindable rs1 = new ResultSetMem() ;
@@ -156,7 +155,7 @@ public class TestResultSet
         ResultSet rs2 = ResultSetFactory.fromJSON(ins) ;
         assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
-    
+
     @Test public void test_RS_6()
     {
         ResultSetRewindable rs1 = make2Rewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
@@ -167,28 +166,28 @@ public class TestResultSet
         ResultSet rs2 = ResultSetFactory.fromJSON(ins) ;    // Test using the DAWG examples
         assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
-    
+
     // Into some format.
     private static String DIR = "testing/ResultSet/";
-    
+
     @Test public void test_RS_7()
     {
         ResultSet rs = ResultSetFactory.load(DIR+"output.srx") ;
         test_RS_fmt(rs, ResultsFormat.FMT_RS_XML, true) ;
     }
-    
+
     @Test public void test_RS_8()
     {
         ResultSet rs = ResultSetFactory.load(DIR+"output.srx") ;
         test_RS_fmt(rs, ResultsFormat.FMT_RS_JSON, true) ;
     }
-    
+
     @Test public void test_RS_9()
     {
         ResultSet rs = ResultSetFactory.load(DIR+"output.srx") ;
         test_RS_fmt(rs, ResultsFormat.FMT_RDF_XML, false) ;
     }
-    
+
     @Test public void test_RS_10()
     {
         ResultSet rs = ResultSetFactory.load(DIR+"output.srx") ;
@@ -197,8 +196,8 @@ public class TestResultSet
         assertFalse(rs.hasNext());
     }
 
-    // Test reading "variations". Things that are accepted but not in the form Jena writes. 
-    
+    // Test reading "variations". Things that are accepted but not in the form Jena writes.
+
     // JENA-1563: xml:lang= and datatype=rdf:langString
     @Test
     public void rs_xmllang_datatype_1() {
@@ -217,8 +216,8 @@ public class TestResultSet
     public void rs_datatype_string() {
         ResultSet rs = ResultSetFactory.load(DIR + "rs-datatype-string.srj");
     }
-    
-    @Test public void test_RS_union_1() 
+
+    @Test public void test_RS_union_1()
     {
     	ResultSet rs1 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
     	ResultSet rs2 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
@@ -226,8 +225,8 @@ public class TestResultSet
     	assertTrue(ResultSetCompare.equalsByTerm(rs3, ResultSetUtils.union(rs1, rs2))) ;
     }
 
-    @Test(expected = ResultSetException.class) 
-    public void test_RS_union_2() 
+    @Test(expected = ResultSetException.class)
+    public void test_RS_union_2()
     {
     	ResultSet rs1 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
     	ResultSet rs2 = make("y", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
@@ -252,7 +251,7 @@ public class TestResultSet
             rs2.reset() ;
             b = b & ResultSetCompare.equalsByTerm(rs1, rs2) ;
         }
-        
+
         if ( !b )
         {
             System.out.println(new String(bytes)) ;
@@ -264,7 +263,7 @@ public class TestResultSet
 
         assertTrue(b) ;
     }
-    // Test comparison 
+    // Test comparison
     @Test public void test_RS_cmp_1()
     {
         ResultSetRewindable rs1 = new ResultSetMem() ;
@@ -274,7 +273,7 @@ public class TestResultSet
         rs2.reset() ;
         assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
-    
+
     @Test public void test_RS_cmp_2()
     {
         ResultSet rs1 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
@@ -319,8 +318,8 @@ public class TestResultSet
         rs2.reset() ;
         assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
-    
-    // Value based 
+
+    // Value based
     @Test public void test_RS_cmp_value_1()
     {
         ResultSetRewindable rs1 = makeRewindable("x", NodeFactoryExtra.parseNode("123")) ;
@@ -328,99 +327,99 @@ public class TestResultSet
         assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
         assertTrue(ResultSetCompare.equalsByValue(rs1, rs2)) ;
     }
-    
+
     // Peeking
-    @Test 
+    @Test
     public void test_RS_peeking_1() {
         ResultSetPeekable rs = makePeekable("x",  NodeFactory.createURI("tag:local"));
         assertTrue(rs.hasNext());
         assertNotNull(rs.peek());
-        
+
         // Peeking should not move the result set onwards so hasNext() should still report true
         assertTrue(rs.hasNext());
-        
+
         assertNotNull(rs.next());
         assertFalse(rs.hasNext());
     }
-    
+
     @Test(expected=NoSuchElementException.class)
     public void test_RS_peeking_2() {
         ResultSetPeekable rs = makePeekable("x",  NodeFactory.createURI("tag:local"));
         assertTrue(rs.hasNext());
         assertNotNull(rs.peek());
-        
+
         // Peeking should not move the result set onwards so hasNext() should still report true
         assertTrue(rs.hasNext());
-        
+
         assertNotNull(rs.next());
         assertFalse(rs.hasNext());
-        
+
         // Peeking beyond end of results throws an error
         rs.peek();
     }
-    
-    @Test 
+
+    @Test
     public void test_RS_peeking_3() {
         // Expect that a rewindable result set will be peekable
         ResultSetPeekable rs = (ResultSetPeekable)makeRewindable("x",  NodeFactory.createURI("tag:local"));
         assertTrue(rs.hasNext());
         assertNotNull(rs.peek());
-        
+
         // Peeking should not move the result set onwards so hasNext() should still report true
         assertTrue(rs.hasNext());
-        
+
         assertNotNull(rs.next());
         assertFalse(rs.hasNext());
     }
-    
+
     @Test(expected=NoSuchElementException.class)
     public void test_RS_peeking_4() {
         // Expect that a rewindable result set will be peekable
         ResultSetPeekable rs = (ResultSetPeekable) makeRewindable("x",  NodeFactory.createURI("tag:local"));
         assertTrue(rs.hasNext());
         assertNotNull(rs.peek());
-        
+
         // Peeking should not move the result set onwards so hasNext() should still report true
         assertTrue(rs.hasNext());
-        
+
         assertNotNull(rs.next());
         assertFalse(rs.hasNext());
-        
+
         // Peeking beyond end of results throws an error
         rs.peek();
     }
-    
-    @Test 
+
+    @Test
     public void test_RS_peeking_5() {
         // Peeking should be able to cope with people moving on the underlying result set independently
         ResultSet inner = new ResultSetMem(make("x", NodeFactory.createURI("tag:local")), make("x", NodeFactory.createURI("tag:local")));
         ResultSetPeekable rs = ResultSetFactory.makePeekable(inner);
         assertTrue(rs.hasNext());
         assertNotNull(rs.peek());
-        
+
         // Move on the inner result set independently
         inner.next();
-        
+
         // Since we fiddled with the underlying result set there won't be further elements available anymore
         assertFalse(rs.hasNext());
     }
-    
-    @Test 
+
+    @Test
     public void test_RS_peeking_6() {
         // Peeking should be able to cope with people moving on the underlying result set independently
         ResultSet inner = new ResultSetMem(make("x", NodeFactory.createURI("tag:local")), make("x", NodeFactory.createURI("tag:local")), make("x", NodeFactory.createURI("tag:local")));
         ResultSetPeekable rs = ResultSetFactory.makePeekable(inner);
         assertTrue(rs.hasNext());
         assertNotNull(rs.peek());
-        
+
         // Move on the inner result set independently
         inner.next();
-        
+
         // Since we fiddled with the underlying result set we'll be out of sync
         // but there should still be further data available
         assertTrue(rs.hasNext());
     }
-    
+
     @Test
     public void test_RS_peeking_7() {
         // Peeking may fail if someone moves backwards in the result set
@@ -429,15 +428,15 @@ public class TestResultSet
         ResultSetPeekable rs = ResultSetFactory.makePeekable(inner);
         assertTrue(rs.hasNext());
         assertNotNull(rs.peek());
-        
+
         // Reset the inner result set independently
         inner.reset();
-        
+
         // Since we moved the underlying result set backwards but we hadn't gone anywhere
         // we should still be able to safely access the underlying results
         assertTrue(rs.hasNext());
     }
-    
+
     @Test(expected=IllegalStateException.class)
     public void test_RS_peeking_8() {
         // Peeking may fail if someone moves backwards in the result set
@@ -447,36 +446,36 @@ public class TestResultSet
         assertTrue(rs.hasNext());
         assertNotNull(rs.peek());
         assertNotNull(rs.next());
-        
+
         // Reset the inner result set independently
         inner.reset();
-        
+
         // Since we moved the underlying result set backwards and had moved somewhere we
         // are now in an illegal state
         rs.hasNext();
     }
-    
-    @Test 
+
+    @Test
     public void test_RS_peeking_9() {
         // Check that peeking causes the correct row to be returned when we actually access the rows
         Node first = NodeFactory.createURI("tag:first");
         Node second = NodeFactory.createURI("tag:second");
         Var x = Var.alloc("x");
-        
+
         ResultSet inner = new ResultSetMem(make("x", first), make("x", second));
         ResultSetPeekable rs = ResultSetFactory.makePeekable(inner);
         assertTrue(rs.hasNext());
-        
+
         // Peek and check row is as expected
         Binding peeked = rs.peekBinding();
         assertNotNull(peeked);
         assertTrue(first.equals(peeked.get(x)));
-        
+
         // Check first row is as expected
         Binding next = rs.nextBinding();
         assertNotNull(next);
         assertTrue(first.equals(next.get(x)));
-        
+
         // Repeat for second row
         peeked = rs.peekBinding();
         assertNotNull(peeked);
@@ -485,11 +484,11 @@ public class TestResultSet
         assertNotNull(next);
         assertTrue(second.equals(next.get(x)));
     }
-    
+
     // ---- Isomorphism.
-    
+
     /* This is from the DAWG test suite.
-     * Result set 1: 
+     * Result set 1:
      *   ---------------
      *   | x    | y    |
      *   ===============
@@ -497,7 +496,7 @@ public class TestResultSet
      *   | _:b2 | _:b3 |
      *   | _:b1 | _:b0 |
      *   ---------------
-     * Result set 2: 
+     * Result set 2:
      *   ---------------
      *   | x    | y    |
      *   ===============
@@ -506,15 +505,15 @@ public class TestResultSet
      *   | _:b2 | _:b3 |
      *   ---------------
      */
-    
+
     // nasty result set.
     // These are the same but the first row of rs2$ throws in a wrong mapping of b0/c1
 
     // Right mapping is:
     // b0->c3, b1->c2, b2->c1, b3->c0
     // Currently we get, working simply top to bottom, no backtracking:
-    // b0->c1, b1->c0, b2->c3, b3->c2, then last row fails as _:b1 is mapped to c0, b0 to c1 not (c2, c3) 
-    
+    // b0->c1, b1->c0, b2->c3, b3->c2, then last row fails as _:b1 is mapped to c0, b0 to c1 not (c2, c3)
+
     private static String[] rs1$ = {
         "(resultset (?x ?y)",
         "   (row (?x _:b0) (?y _:b1))",
@@ -527,34 +526,34 @@ public class TestResultSet
         "   (row (?x _:c3) (?y _:c2))",
         "   (row (?x _:c2) (?y _:c3))",
         ")"} ;
-   
+
     @Test public void test_RS_iso_1()       { isotest(rs1$, rs2$) ; }
-    
+
     private void isotest(String[] rs1$2, String[] rs2$2)
     {
         ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(BuilderResultSet.build(SSE.parseItem(StrUtils.strjoinNL(rs1$)))) ;
         ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(BuilderResultSet.build(SSE.parseItem(StrUtils.strjoinNL(rs2$)))) ;
         assertTrue(ResultSetCompare.isomorphic(rs1, rs2)) ;
         rs1.reset() ;
-        rs2.reset() ;   
+        rs2.reset() ;
         assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
         assertTrue(ResultSetCompare.equalsByValue(rs1, rs2)) ;
     }
 
     // -- BNode preservation
-    
+
     static Context cxt;
-    static{ 
+    static{
         cxt = new Context();
         cxt.set(ARQ.inputGraphBNodeLabels, true);
         cxt.set(ARQ.outputGraphBNodeLabels, true);
     }
-    
+
     @Test public void preserve_bnodes_1() {
         preserve_bnodes(ResultSetLang.SPARQLResultSetJSON, cxt, true);
         preserve_bnodes(ResultSetLang.SPARQLResultSetJSON, ARQ.getContext(), false);
     }
-        
+
     @Test public void preserve_bnodes_2() {
         preserve_bnodes(ResultSetLang.SPARQLResultSetXML, cxt, true);
         preserve_bnodes(ResultSetLang.SPARQLResultSetXML, ARQ.getContext(), false);
@@ -569,10 +568,10 @@ public class TestResultSet
 
         ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(BuilderResultSet.build(SSE.parseItem(StrUtils.strjoinNL(rs1$)))) ;
         ByteArrayOutputStream x = new ByteArrayOutputStream();
-        
+
         ResultsWriter.create().context(cxt).lang(sparqlresultlang).write(x, rs1);
         ByteArrayInputStream y = new ByteArrayInputStream(x.toByteArray());
-        
+
         ResultSetRewindable rs2 = ResultSetFactory.copyResults(
             ResultsReader.create().context(cxt).lang(sparqlresultlang).read(y)
             );
@@ -583,14 +582,13 @@ public class TestResultSet
         else
             assertFalse(ResultSetCompare.equalsExact(rs1, rs2));
     }
-    
-    
+
+
     // -------- Support functions
-    
+
     private ResultSet make(String var, Node val)
     {
-        BindingMap b = BindingFactory.create() ;
-        b.add(Var.alloc(var), val) ;
+        Binding b = BindingFactory.binding(Var.alloc(var), val) ;
         List<String> vars = new ArrayList<>() ;
         vars.add(var) ;
         QueryIterator qIter = QueryIterSingleton.create(b, null) ;
@@ -600,52 +598,47 @@ public class TestResultSet
 
     private ResultSet make2(String var, Node val)
     {
-        BindingMap b1 = BindingFactory.create() ;
-        b1.add(Var.alloc(var), val) ;
-        BindingMap b2 = BindingFactory.create() ;
-        b2.add(Var.alloc(var), val) ;
-        
+        Binding b1 = BindingFactory.binding(Var.alloc(var), val) ;
+        Binding b2 = BindingFactory.binding(Var.alloc(var), val) ;
+
         List<String> vars = new ArrayList<>() ;
         vars.add(var) ;
 
         List<Binding> solutions = new ArrayList<>() ;
         solutions.add(b1) ;
         solutions.add(b2) ;
-        
+
         QueryIterator qIter = new QueryIterPlainWrapper(solutions.iterator(), null) ;
         ResultSet rs = new ResultSetStream(vars, null, qIter) ;
         return rs ;
     }
 
-    
+
     private ResultSetRewindable makeRewindable(String var, Node val)
     {
         ResultSet rs = make(var, val) ;
         ResultSetRewindable rsw = ResultSetFactory.makeRewindable(rs) ;
         return rsw ;
     }
-    
+
     private ResultSetRewindable make2Rewindable(String var, Node val)
     {
         ResultSet rs = make2(var, val) ;
         ResultSetRewindable rsw = ResultSetFactory.makeRewindable(rs) ;
         return rsw ;
     }
-    
+
     private ResultSet make(String var1, Node val1, String var2, Node val2 )
     {
-        BindingMap b = BindingFactory.create() ;
-        
-        b.add(Var.alloc(var1), val1) ;
-        b.add(Var.alloc(var2), val2) ;
-        
+        Binding b = BindingFactory.binding(Var.alloc(var1), val1, Var.alloc(var2), val2) ;
+
         List<String> vars = new ArrayList<>() ;
         vars.add(var1) ;
         vars.add(var2) ;
-        
+
         QueryIterator qIter = QueryIterSingleton.create(b, null) ;
         ResultSet rs = new ResultSetStream(vars, null, qIter) ;
-        return rs ; 
+        return rs ;
     }
 
     private ResultSetRewindable makeRewindable(String var1, Node val1, String var2, Node val2 )
@@ -654,13 +647,13 @@ public class TestResultSet
         ResultSetRewindable rsw = ResultSetFactory.makeRewindable(rs) ;
         return rsw ;
     }
-    
+
     private ResultSetPeekable makePeekable(String var, Node val) {
         ResultSet rs = make(var, val);
         ResultSetPeekable rsp = ResultSetFactory.makePeekable(rs);
         return rsp;
     }
-    
+
     private ResultSetPeekable make2Peekable(String var1, Node val1, String var2, Node val2) {
         ResultSet rs = make(var1, val1, var2, val2);
         ResultSetPeekable rsp = ResultSetFactory.makePeekable(rs);

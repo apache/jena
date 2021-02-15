@@ -34,22 +34,21 @@ import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ResultSetStream ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 /** Convenient comma separated values - see also TSV (tab separated values)
  *  which outputs full RDF terms (in Turtle-style).
- *  
+ *
  *  The CSV format supported is:
  *  <ul>
  *  <li>First row is variable names without '?'</li>
  *  <li>Strings, quoted if necessary and numbers output only.
  *  No language tags, or datatypes.
- *  URIs are send without $lt;&gt;  
+ *  URIs are send without $lt;&gt;
  *  </li>
- *  CSV is RFC 4180, but there are many variations. 
+ *  CSV is RFC 4180, but there are many variations.
  *  </ul>
  *  This code reads the file and treats everything as strings.
  *  <p>
@@ -62,11 +61,12 @@ import org.slf4j.LoggerFactory ;
  */
 public class CSVInput
 {
-    // This code exists to support the SPARQL WG tests. 
+    // This code exists to support the SPARQL WG tests.
     private static Logger log = LoggerFactory.getLogger(CSVInput.class) ;
     public static ResultSet fromCSV(InputStream in)
     {
         CSVParser parser = CSVParser.create(in) ;
+        BindingBuilder builder = Binding.builder();
         final List<Var> vars = vars(parser) ;
         List<String> varNames = Var.varNames(vars) ;
         Function<List<String>, Binding> transform = new Function<List<String>, Binding>(){
@@ -75,25 +75,24 @@ public class CSVInput
             public Binding apply(List<String> row) {
                 if ( row.size() != vars.size() )
                     FmtLog.warn(log, "Row %d: Length=%d: expected=%d", count, row.size(), vars.size()) ;
-                
-                BindingMap binding = BindingFactory.create() ;
+                builder.reset();
                 // Check.
                 for (int i = 0 ; i < vars.size() ; i++ ) {
                     Var v = vars.get(i) ;
                     String field = (i<row.size()) ? row.get(i) : "" ;
                     Node n = NodeFactory.createLiteral(field) ;
-                    binding.add(v, n);
+                    builder.add(v, n);
                 }
                 count++ ;
-                return binding ;
+                return builder.build() ;
             }} ;
         Iterator<Binding> bindings = Iter.map(parser.iterator(), transform) ;
-        
+
         //Generate an instance of ResultSetStream using TSVInputIterator
         //This will parse actual result rows as needed thus minimising memory usage
         return new ResultSetStream(varNames, null, bindings);
     }
-    
+
     private static List<Var> vars(CSVParser parser) {
         final List<Var> vars = new ArrayList<>();
         List<String> varNames = parser.parse1() ;
@@ -104,7 +103,7 @@ public class CSVInput
         }
         return vars ;
     }
-    
+
     public static boolean booleanFromCSV(InputStream in)
     {
         CSVParser parser = CSVParser.create(in) ;
@@ -113,9 +112,9 @@ public class CSVInput
             throw new ARQException("CSV Boolean Results malformed: variables line='"+vars+"'") ;
         }
         if ( ! vars.get(0).getName().equals("_askResult")) {
-            FmtLog.warn(log, "Boolean result variable is '%s', not '_askResult'", vars.get(0).getName()) ; 
+            FmtLog.warn(log, "Boolean result variable is '%s', not '_askResult'", vars.get(0).getName()) ;
         }
-        
+
         List<String> line = parser.parse1() ;
         if ( line.size() != 1 ) {
             throw new ARQException("CSV Boolean Results malformed: data line='"+line+"'") ;
@@ -129,7 +128,7 @@ public class CSVInput
         else {
             throw new ARQException("CSV Boolean Results malformed, expected one of - true yes false no - but got " + str);
             }
-        
+
         List<String> line2 = parser.parse1() ;
         if ( line2 != null ) {
             FmtLog.warn(log, "Extra rows: first is "+line2) ;

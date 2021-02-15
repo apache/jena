@@ -21,13 +21,14 @@ package org.apache.jena.sparql.engine.binding;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.Var ;
 
-/** Bindings are immutable, and are equal-by-value, but 
+/** Bindings are immutable, and are equal-by-value, but
  * they have to be constructed
  * somehow and this interface captures that.
- * Bindings should be created, then not changed, and 
- * returned as type "Binding".  
+ * Bindings should be created, then not changed, and
+ * returned as type "Binding".
+ *  @deprecated Use {@link BindingBuilder}; avoid mutable bindings.
  */
-
+@Deprecated
 public interface BindingMap extends Binding {
     /** Add a (var, value) pair - the value must not be null */
     public void add(Var var, Node node);

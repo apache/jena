@@ -25,7 +25,7 @@ import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingUtils ;
+import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.modify.* ;
 import org.apache.jena.sparql.util.Context ;
 
@@ -67,7 +67,7 @@ public class UpdateExecutionFactory
      * @return UpdateProcessor or null
      */
     public static UpdateProcessor create(Update update, Dataset dataset, QuerySolution inputBinding) {
-        return create(update, dataset.asDatasetGraph(), BindingUtils.asBinding(inputBinding));
+        return create(update, dataset.asDatasetGraph(), BindingLib.asBinding(inputBinding));
     }
 
     /**
@@ -119,7 +119,7 @@ public class UpdateExecutionFactory
      * @return UpdateProcessor or null
      */
     public static UpdateProcessor create(UpdateRequest updateRequest, Dataset dataset, QuerySolution inputBinding) {
-        return create(updateRequest, dataset.asDatasetGraph(), BindingUtils.asBinding(inputBinding));
+        return create(updateRequest, dataset.asDatasetGraph(), BindingLib.asBinding(inputBinding));
     }
 
     /**
@@ -168,7 +168,7 @@ public class UpdateExecutionFactory
      * @return UpdateProcessor or null
      */
     public static UpdateProcessorStreaming createStreaming(Dataset dataset, QuerySolution inputBinding) {
-        return createStreaming(dataset.asDatasetGraph(), BindingUtils.asBinding(inputBinding));
+        return createStreaming(dataset.asDatasetGraph(), BindingLib.asBinding(inputBinding));
     }
 
     /**
@@ -219,7 +219,7 @@ public class UpdateExecutionFactory
      * @return UpdateProcessor or null
      */
     public static UpdateProcessorStreaming createStreaming(Dataset dataset, QuerySolution inputBinding, Context context) {
-        return createStreaming(dataset.asDatasetGraph(), BindingUtils.asBinding(inputBinding), context);
+        return createStreaming(dataset.asDatasetGraph(), BindingLib.asBinding(inputBinding), context);
     }
 
     /**
@@ -274,7 +274,7 @@ public class UpdateExecutionFactory
      * @return UpdateProcessor or null
      */
     public static UpdateProcessor create(UpdateRequest updateRequest, Dataset dataset, QuerySolution inputBinding, Context context) {
-        return create(updateRequest, dataset.asDatasetGraph(), BindingUtils.asBinding(inputBinding), context);
+        return create(updateRequest, dataset.asDatasetGraph(), BindingLib.asBinding(inputBinding), context);
     }
 
     /**

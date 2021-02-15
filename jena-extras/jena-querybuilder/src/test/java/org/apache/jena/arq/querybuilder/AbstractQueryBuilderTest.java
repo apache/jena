@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,7 +18,9 @@
 
 package org.apache.jena.arq.querybuilder;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,12 +48,12 @@ public class AbstractQueryBuilderTest {
 
 	private class TestBuilder extends AbstractQueryBuilder<TestBuilder> {
 		private HandlerBlock handlerBlock;
-		
+
 		public TestBuilder()
 		{
 			super();
 			handlerBlock = new HandlerBlock( query );
-			
+
 		}
 		@Override
 		public String toString() {
@@ -62,7 +64,7 @@ public class AbstractQueryBuilderTest {
 		public HandlerBlock getHandlerBlock() {
 			return handlerBlock;
 		}
-		
+
 	}
 
 	private class NodeFront implements FrontsNode {
@@ -104,13 +106,13 @@ public class AbstractQueryBuilderTest {
 		{
 			// do nothing
 		}
-		
+
 		n = builder.makeNode( Integer.valueOf( 5 ));
 		assertTrue( n.isLiteral() );
 		LiteralLabel ll = LiteralLabelFactory.createTypedLiteral( Integer.valueOf(5));
 		assertEquals( NodeFactory.createLiteral(ll), n );
 
-		
+
 		n = builder.makeNode( NodeFactory.createVariable("foo"));
 		assertTrue( n.isVariable());
 		assertEquals( "foo", n.getName());
@@ -122,7 +124,7 @@ public class AbstractQueryBuilderTest {
 		assertEquals( "en", n.getLiteralLanguage());
 	}
 
-	
+
 
 	@Test
 	public void testMakeValueNodes()
@@ -136,9 +138,9 @@ public class AbstractQueryBuilderTest {
 		list.add( "demo:type" );
 		list.add( "<one>" );
 		list.add( Integer.valueOf(5) );
-		
+
 		Collection<Node> result = builder.makeValueNodes(list.iterator());
-		
+
 		assertEquals( 6, result.size() );
 		assertTrue( result.contains( null ));
 		assertTrue( result.contains( RDF.type.asNode()));
@@ -147,7 +149,7 @@ public class AbstractQueryBuilderTest {
 		assertTrue( result.contains(NodeFactory.createURI("one")));
 		LiteralLabel ll = LiteralLabelFactory.createTypedLiteral( Integer.valueOf(5));
 		assertTrue( result.contains(NodeFactory.createLiteral(ll)));
-		
+
 	}
-	
+
 }

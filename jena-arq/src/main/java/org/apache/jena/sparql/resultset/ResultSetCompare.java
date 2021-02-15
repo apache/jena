@@ -30,7 +30,7 @@ import org.apache.jena.query.ResultSetRewindable;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingUtils ;
+import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.util.EqualityTest;
 import org.apache.jena.sparql.util.Iso;
 import org.apache.jena.sparql.util.NodeIsomorphismMap ;
@@ -232,7 +232,7 @@ public class ResultSetCompare
     }
 
     static private List<Binding> convert(ResultSet rs) {
-        return Iter.iter(rs).map(item -> BindingUtils.asBinding(item)).toList() ;
+        return Iter.iter(rs).map(item -> BindingLib.asBinding(item)).toList() ;
     }
     
     

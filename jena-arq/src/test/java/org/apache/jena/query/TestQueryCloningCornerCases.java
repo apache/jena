@@ -21,10 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.ext.com.google.common.base.Stopwatch;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
-import org.apache.jena.sparql.engine.binding.BindingHashMap;
 import org.apache.jena.sparql.syntax.ElementData;
 import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.syntax.ElementPathBlock;
@@ -94,7 +91,7 @@ public class TestQueryCloningCornerCases {
         {
             Query cloneOfClone = clone.cloneQuery();
             ElementData elt = (ElementData)((ElementGroup)cloneOfClone.getQueryPattern()).get(1);
-            elt.getRows().add(BindingFactory.create());
+            elt.getRows().add(BindingFactory.empty());
             Assert.assertNotEquals(query, cloneOfClone);
         }
 
@@ -121,19 +118,6 @@ public class TestQueryCloningCornerCases {
             clone.getValuesVariables().clear();
             Assert.assertEquals(0, clone.getValuesVariables().size());
             Assert.assertNotEquals(0, query.getValuesVariables().size());
-        }
-
-        // Modifications of a values data block's bindings
-        // Cloning does not clone the binding objects themselves
-        {
-            Query clone = TestQueryCloningEssentials.checkedClone(query);
-
-            Binding originalBinding = query.getValuesData().iterator().next();
-            Binding cloneBinding = clone.getValuesData().iterator().next();
-            BindingHashMap downcast = (BindingHashMap)cloneBinding;
-            downcast.add(Var.alloc("s"), RDF.Nodes.type);
-
-            Assert.assertEquals(originalBinding, cloneBinding);
         }
     }
 }
