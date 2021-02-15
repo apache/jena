@@ -36,7 +36,7 @@ import org.apache.jena.sparql.util.PrintSerializableBase ;
 
 /** Class representing an argument (subject or object position) of a property function.
  *  Such an argument can be a graph node (variable, IRI, literal).
- * 
+ *
  *  Blank nodes from the query will be seen as variables.  Most implementations will want to
  *  work with the property function arguments after substitution from the current binding. */
 
@@ -44,7 +44,7 @@ public class PropFuncArg extends PrintSerializableBase
 {
     private List<Node> argList = null ;
     private Node arg = null ;
-    
+
     public PropFuncArg(List<Node> argList, Node arg) {
         // arg is always the argument, which may be a list in argList.
         // If it's a list, remember that.
@@ -57,10 +57,10 @@ public class PropFuncArg extends PrintSerializableBase
         if ( argList.isEmpty() )
             this.arg = NodeConst.nodeNil ;
     }
-        
+
     public PropFuncArg(List<Node> argList)  { this.argList = argList ; }
     public PropFuncArg(Node arg)            { this.arg = arg ; }
-    
+
     public Node getArg()                    { return arg ; }
     public List<Node> getArgList()          { return argList ; }
     public int  getArgListSize()            { return argList==null ? -1 : argList.size() ; }
@@ -90,29 +90,10 @@ public class PropFuncArg extends PrintSerializableBase
         return argList.equals(pfArg.argList) ;
 
     }
-    
+
     public boolean isList()             { return argList != null  ; }
     public boolean isNode()             { return arg != null  ; }
-    
-    
-    /** @deprecated To be removed - use {@link #asExprList()} */
-    @Deprecated
-    public ExprList asExprList(PropFuncArg pfArg) {
-        ExprList exprList = new ExprList() ;
-        if ( pfArg.isNode() ) {
-            Node n = pfArg.getArg() ;
-            Expr expr = ExprUtils.nodeToExpr(n) ;
-            exprList.add(expr) ;
-            return exprList ;
-        }
 
-        for ( Node n : pfArg.getArgList() ) {
-            Expr expr = ExprUtils.nodeToExpr(n) ;
-            exprList.add(expr) ;
-        }
-        return exprList ;
-    }
-    
     public ExprList asExprList() {
         ExprList exprList = new ExprList() ;
         if ( isNode() ) {
@@ -128,7 +109,7 @@ public class PropFuncArg extends PrintSerializableBase
         }
         return exprList ;
     }
-    
+
     @Override
     public void output(final IndentedWriter out, final SerializationContext sCxt) {
         if ( argList == null && arg == null )

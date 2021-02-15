@@ -31,10 +31,6 @@ public class SysRIOT
     public static final String riotLoggerName = "org.apache.jena.riot" ;
     private static Logger riotLogger = LoggerFactory.getLogger(riotLoggerName) ;
 
-    /** @deprecated Do not use - lexical forms are always strict. */
-    @Deprecated
-    public static boolean StrictXSDLexicialForms      = false ;
-
     public static boolean strictMode                  = false ;
 
     /** Some people argue that absolute URIs should not be normalized.
@@ -64,10 +60,6 @@ public class SysRIOT
      * {@link RDFReaderI} is called. Only has any effect on RDF/XML,
      */
     public static final Symbol sysRdfReaderProperties      = Symbol.create(riotBase+"rdfReader_properties") ;
-
-    /** @deprecated Use {@link #sysRdfWriterProperties} */
-    @Deprecated
-    public static final Symbol rdfWriterProperties      = sysRdfWriterProperties ;
 
     /** Context key for the StreamManager */
     public static Symbol sysStreamManager = Symbol.create(riotBase+"streamManager") ;

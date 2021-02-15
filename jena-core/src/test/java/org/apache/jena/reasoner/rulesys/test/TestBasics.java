@@ -104,8 +104,9 @@ public class TestBasics extends TestCase  {
         // Register so that parsing the string form works.
         RDFDatatype dt = FunctorDatatype.theFunctorDatatype;
         TypeMapper.getInstance().registerDatatype(dt);
+        String uri = FunctorDatatype.theFunctorDatatype.getURI();
         execTest("(?a rdf:type max(?a,1)) -> (?a rdf:type 'foo').",
-                 "[ (?a rdf:type 'max(?a \\'1\\'^^http://www.w3.org/2001/XMLSchema#int)'^^urn:org.apache.jena:Functor) -> (?a rdf:type 'foo') ]");
+                 "[ (?a rdf:type 'max(?a \\'1\\'^^http://www.w3.org/2001/XMLSchema#int)'^^"+uri+") -> (?a rdf:type 'foo') ]");
         TypeMapper.getInstance().unregisterDatatype(dt);
     }
 

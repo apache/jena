@@ -94,66 +94,6 @@ public class PrefixMapFactory {
     }
 
     /**
-     * Creates a new prefix map which is intended for use in input.
-     *
-     * @return Prefix map
-     * @deprecated Use {@link #create()}
-     */
-    @Deprecated
-    public static PrefixMap createForInput() {
-        return create();
-    }
-
-    /**
-     * Creates a new prefix map which is intended for use in input which starts
-     * with a copy of an existing map
-     * <p>
-     * Will use whatever the version of ARQ you are using considers the best
-     * implementation for input, this may change from release to release.
-     * </p>
-     *
-     * @param pmap
-     *            Prefix Map to copy
-     * @return Prefix Map
-     * @deprecated Use {@link #create(PrefixMap)}
-     */
-    @Deprecated
-    public static PrefixMap createForInput(PrefixMap pmap) {
-        return create(pmap);
-    }
-
-    /**
-     * Creates a new prefix map which is intended for use in iput which starts
-     * with a copy of an existing map
-     * <p>
-     * Will use whatever the version of ARQ you are using considers the best
-     * implementation for input, this may change from release to release.
-     * </p>
-     *
-     * @param pmap
-     *            Prefix Map to copy
-     *
-     * @return Prefix Map
-     * @deprecated Use {@link #create(PrefixMapping)}
-     */
-    @Deprecated
-    public static PrefixMap createForInput(PrefixMapping pmap) {
-        return create(pmap);
-    }
-
-    /**
-     * Creates a new prefix map, initialized from a Map of prefix to IRI string.
-     *
-     * @param pmap Mapping from prefix to IRI string
-     * @return Prefix Map
-     * @deprecated Use {@link #create(Map)}
-     */
-    @Deprecated
-    public static PrefixMap createForInput(Map<String, String> pmap) {
-        return create(pmap);
-    }
-
-    /**
      * Creates a new prefix map which is intended for use in output
      * <p>
      * Will use whatever the version of ARQ you are using considers the best

@@ -51,7 +51,6 @@ import org.apache.jena.sparql.path.P_Link;
 import org.apache.jena.sparql.path.Path ;
 import org.apache.jena.sparql.syntax.* ;
 import org.apache.jena.sparql.util.ExprUtils ;
-import org.apache.jena.sparql.util.LabelToNodeMap ;
 import org.apache.jena.vocabulary.RDF ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -91,8 +90,8 @@ public class QueryParserBase
     // 2/ Each BasicGraphPattern is a scope for blank node labels so each
     //    BGP causes the map to be cleared at the start of the BGP
 
-    LabelToNodeMap activeLabelMap = anonVarLabels ;
-    Set<String> previousLabels = new HashSet<>() ;
+    protected LabelToNodeMap activeLabelMap = anonVarLabels ;
+    protected Set<String> previousLabels = new HashSet<>() ;
 
     // Aggregates are only allowed in places where grouping can happen.
     // e.g. SELECT clause but not a FILTER.

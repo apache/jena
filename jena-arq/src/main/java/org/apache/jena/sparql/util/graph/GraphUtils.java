@@ -27,8 +27,6 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.riot.other.G;
-import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.util.NotUniqueException ;
 import org.apache.jena.sparql.util.PropertyRequiredException ;
 import org.apache.jena.sparql.util.QueryExecUtils;
@@ -39,21 +37,6 @@ import org.apache.jena.vocabulary.RDF ;
 /** Graph utilities. See also GraphFactory. */
 
 public class GraphUtils {
-    /**
-     * Convert an iterator of triples into quads for the default graph. This is
-     * {@link Quad#defaultGraphIRI}, not {@link Quad#defaultGraphNodeGenerated}, which is
-     * for quads outside a dataset, usually the output of parsers.
-     * @deprecated Use {@link G#triples2quadsDftGraph(Iterator)} instead
-     */
-    public static Iter<Quad> triples2quadsDftGraph(Iterator<Triple> iter) {
-        return G.triples2quadsDftGraph(iter);
-    }
-
-    /** Convert an iterator of triples into quads for the specified graph name. 
-     * @deprecated Use {@link G#triples2quads(Node,Iterator)} instead*/
-    public static Iter<Quad> triples2quads(final Node graphNode, Iterator<Triple> iter) {
-        return G.triples2quads(graphNode, iter);
-    }
 
     public static List<String> multiValueString(Resource r, Property p) {
         List<RDFNode> nodes = multiValue(r, p) ;
@@ -66,7 +49,7 @@ public class GraphUtils {
         }
         return values ;
     }
-    
+
     /** Get a list of the URIs (as strings) and strings
      *  @see #getAsStringValue
      */
@@ -177,7 +160,7 @@ public class GraphUtils {
             return null ;
         return s.getResource() ;
     }
-    
+
     public static List<Resource> listResourcesByType(Model model, Resource type) {
         return Iter.toList(model.listSubjectsWithProperty(RDF.type, type)) ;
     }
@@ -193,7 +176,7 @@ public class GraphUtils {
     }
 
     public static Resource findRootByType(Model model, Resource atype) {
-        String s = String.join("\n", 
+        String s = String.join("\n",
             "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
             "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
             "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }") ;
@@ -207,7 +190,7 @@ public class GraphUtils {
     }
 
     public static List<Resource> findRootsByType(Model model, Resource atype) {
-        String s = String.join("\n", 
+        String s = String.join("\n",
             "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
             "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
             "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }") ;
@@ -217,10 +200,10 @@ public class GraphUtils {
         try(QueryExecution qExec = QueryExecutionFactory.create(q, model, qsm)) {
             return ListUtils.toList(
                     QueryExecUtils.getAll(qExec, "root").stream().map(r->(Resource)r));
-            
+
         }
     }
-    
+
     public static String fmtURI(Resource r) {
         return r.getModel().shortForm(r.getURI()) ;
     }

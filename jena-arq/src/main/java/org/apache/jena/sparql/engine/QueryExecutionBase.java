@@ -60,7 +60,7 @@ import org.apache.jena.sparql.syntax.Template;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.ModelUtils;
 
-/** All the SPARQL query result forms made from a graph-level execution object */ 
+/** All the SPARQL query result forms made from a graph-level execution object */
 
 public class QueryExecutionBase implements QueryExecution
 {
@@ -69,7 +69,7 @@ public class QueryExecutionBase implements QueryExecution
     private final Context            context;
     private final Dataset            dataset;
     private final DatasetGraph       dsg;
-    
+
     private QueryIterator            queryIterator    = null;
     private Plan                     plan             = null;
     private Binding                  initialBinding   = null;
@@ -82,7 +82,7 @@ public class QueryExecutionBase implements QueryExecution
     private Alarm                    timeout2Alarm    = null;
 
     // synchronization.
-    private final Object             lockTimeout      = new Object(); 
+    private final Object             lockTimeout      = new Object();
     private static final long        TIMEOUT_UNSET    = -1;
     private static final long        TIMEOUT_INF      = -2;
     private long                     timeout1         = TIMEOUT_UNSET;
@@ -98,10 +98,8 @@ public class QueryExecutionBase implements QueryExecution
         this(query, null, datasetGraph, context, qeFactory);
     }
 
-    /** This will become a protected constructor */
-    @Deprecated
-    public QueryExecutionBase(Query query, Dataset dataset, DatasetGraph datasetGraph, 
-                              Context cxt, QueryEngineFactory qeFactory) {
+    protected QueryExecutionBase(Query query, Dataset dataset, DatasetGraph datasetGraph,
+                                 Context cxt, QueryEngineFactory qeFactory) {
         this.query = query;
         this.dataset = formDataset(dataset, datasetGraph);
         this.qeFactory = qeFactory;
@@ -109,9 +107,9 @@ public class QueryExecutionBase implements QueryExecution
         this.context = (cxt == null) ? Context.setupContextForDataset(cxt, datasetGraph) : cxt;
         init() ;
     }
-    
+
     private static Dataset formDataset(Dataset dataset, DatasetGraph datasetGraph) {
-        if ( dataset != null ) 
+        if ( dataset != null )
             return dataset;
         if ( datasetGraph != null )
             return DatasetFactory.wrap(datasetGraph);
@@ -119,20 +117,20 @@ public class QueryExecutionBase implements QueryExecution
     }
 
     private static DatasetGraph formDatasetGraph(DatasetGraph datasetGraph, Dataset dataset) {
-        if ( datasetGraph != null ) 
+        if ( datasetGraph != null )
             return datasetGraph;
         if ( dataset != null )
             return dataset.asDatasetGraph();
         return null;
     }
-    
+
     private void init() {
         Context.setCurrentDateTime(context);
         if ( query != null )
             context.put(ARQConstants.sysCurrentQuery, query);
-        // NB: Setting timeouts via the context after creating a QueryExecutionBase 
+        // NB: Setting timeouts via the context after creating a QueryExecutionBase
         // will not work. But we can't move it until the point the execution starts because of
-        // get and set timeout operations on this object.   
+        // get and set timeout operations on this object.
         setAnyTimeouts();
     }
 
@@ -151,7 +149,7 @@ public class QueryExecutionBase implements QueryExecution
         }
         queryStartTime = System.currentTimeMillis();
     }
-    
+
     @Override
     public void close() {
         closed = true;
@@ -191,7 +189,7 @@ public class QueryExecutionBase implements QueryExecution
                 queryIterator.cancel();
         }
     }
-    
+
     @Override
     public ResultSet execSelect() {
         checkNotClosed();
@@ -228,37 +226,37 @@ public class QueryExecutionBase implements QueryExecution
         }
         return model;
     }
-    
+
     @Override
     public Iterator<Triple> execConstructTriples() {
         checkNotClosed();
         if ( ! query.isConstructType() )
             throw new QueryExecException("Attempt to get a CONSTRUCT model from a "+labelForQuery(query)+" query") ;
         // This causes there to be no PROJECT around the pattern.
-        // That in turn, exposes the initial bindings.  
+        // That in turn, exposes the initial bindings.
         query.setQueryResultStar(true) ;
 
         startQueryIterator() ;
-        
+
         Template template = query.getConstructTemplate() ;
         return TemplateLib.calcTriples(template.getTriples(), queryIterator);
     }
-    
+
     @Override
     public Iterator<Quad> execConstructQuads() {
         checkNotClosed();
         if ( ! query.isConstructType() )
             throw new QueryExecException("Attempt to get a CONSTRUCT model from a "+labelForQuery(query)+" query") ;
         // This causes there to be no PROJECT around the pattern.
-        // That in turn, exposes the initial bindings.  
+        // That in turn, exposes the initial bindings.
         query.setQueryResultStar(true) ;
 
         startQueryIterator() ;
-        
+
         Template template = query.getConstructTemplate() ;
         return TemplateLib.calcQuads(template.getQuads(), queryIterator);
     }
-    
+
     @Override
     public Dataset execConstructDataset(){
         return execConstructDataset(DatasetFactory.create()) ;
@@ -266,14 +264,14 @@ public class QueryExecutionBase implements QueryExecution
 
     @Override
     public Dataset execConstructDataset(Dataset dataset) {
-        DatasetGraph dsg = dataset.asDatasetGraph() ; 
+        DatasetGraph dsg = dataset.asDatasetGraph() ;
         try {
             execConstructQuads().forEachRemaining(dsg::add);
             insertPrefixesInto(dataset);
         } finally {
             this.close();
         }
-        return dataset ; 
+        return dataset ;
     }
 
     @Override
@@ -284,16 +282,16 @@ public class QueryExecutionBase implements QueryExecution
     public Model execDescribe(Model model) {
         checkNotClosed() ;
         if ( ! query.isDescribeType() )
-            throw new QueryExecException("Attempt to get a DESCRIBE result from a "+labelForQuery(query)+" query") ; 
+            throw new QueryExecException("Attempt to get a DESCRIBE result from a "+labelForQuery(query)+" query") ;
         //Was: query.setQueryResultStar(true) ; but why?
         query.setResultVars() ;
-        // If there was no WhereClause, use an empty pattern (one solution, no columns). 
+        // If there was no WhereClause, use an empty pattern (one solution, no columns).
         if ( query.getQueryPattern() == null )
             query.setQueryPattern(new ElementGroup()) ;
-        
+
         Set<RDFNode> set = new HashSet<>() ;
 
-        //May return null (no query pattern) 
+        //May return null (no query pattern)
         ResultSet qRes = execResultSet() ;
 
         // Prefixes for result (after initialization)
@@ -357,7 +355,7 @@ public class QueryExecutionBase implements QueryExecution
             throw new QueryExecException("Attempt to have boolean from a " + labelForQuery(query) + " query");
 
         startQueryIterator();
-        
+
         boolean r;
         try {
             // Not has next because setting timeout1 which applies to getting
@@ -365,7 +363,7 @@ public class QueryExecutionBase implements QueryExecution
             queryIterator.next();
             r = true;
         } catch (NoSuchElementException ex) { r = false; }
-        
+
         this.close();
         return r;
     }
@@ -385,7 +383,7 @@ public class QueryExecutionBase implements QueryExecution
         while (queryIterator.hasNext())
         {
             Binding binding = queryIterator.next() ;
-            JsonObject jsonObject = new JsonObject() ; 
+            JsonObject jsonObject = new JsonObject() ;
             for (String resultVar : resultVars) {
                 Node n = binding.get(Var.alloc(resultVar)) ;
                 JsonValue value = RDFTerm2Json.fromNode(n) ;
@@ -398,7 +396,7 @@ public class QueryExecutionBase implements QueryExecution
     }
 
     @Override
-    public Iterator<JsonObject> execJsonItems() 
+    public Iterator<JsonObject> execJsonItems()
     {
         checkNotClosed() ;
         if ( ! query.isJsonType() )
@@ -441,12 +439,12 @@ public class QueryExecutionBase implements QueryExecution
     private static long asMillis(long duration, TimeUnit timeUnit) {
         return (duration < 0) ? duration : timeUnit.toMillis(duration);
     }
-    
+
     @Override
     public long getTimeout1() { return timeout1 ; }
     @Override
     public long getTimeout2() { return timeout2 ; }
-    
+
     private static boolean isTimeoutSet(long x) {
         return x >= 0;
     }
@@ -465,20 +463,20 @@ public class QueryExecutionBase implements QueryExecution
             }
         }
     }
-    
+
     private class QueryIteratorTimer2 extends QueryIteratorWrapper {
         public QueryIteratorTimer2(QueryIterator qIter) {
             super(qIter);
         }
-        
+
         long yieldCount = 0 ;
         boolean resetDone = false ;
         @Override
-        protected Binding moveToNextBinding() 
-        { 
+        protected Binding moveToNextBinding()
+        {
             Binding b = super.moveToNextBinding() ;
             yieldCount++ ;
-            
+
             if ( ! resetDone )
             {
                 // Sync on calls of .abort.
@@ -487,15 +485,15 @@ public class QueryExecutionBase implements QueryExecution
                 {
                     TimeoutCallback callback = new TimeoutCallback() ;
                     expectedCallback.set(callback) ;
-                    // Lock against calls of .abort() or of timeout1Callback. 
-                    
+                    // Lock against calls of .abort() or of timeout1Callback.
+
                     // Update/check the volatiles in a careful order.
-                    // This cause timeout1 not to call .abort and hence not set isCancelled 
+                    // This cause timeout1 not to call .abort and hence not set isCancelled
 
                     // But if timeout1 went off after moveToNextBinding, before expectedCallback is set,
-                    // then forget the row and cancel the query. 
+                    // then forget the row and cancel the query.
                     if ( isCancelled.get() )
-                        // timeout1 went off after the binding was yielded but 
+                        // timeout1 went off after the binding was yielded but
                         // before we got here.
                         throw new QueryCancelledException() ;
                     if ( timeout1Alarm != null ) {
@@ -507,7 +505,7 @@ public class QueryExecutionBase implements QueryExecution
                     if ( timeout2 > 0 ) {
                         // Set to time remaining.
                         long t = timeout2 - (System.currentTimeMillis()-queryStartTime);
-                        // Not first timeout - finite second timeout for remaining time. 
+                        // Not first timeout - finite second timeout for remaining time.
                         timeout2Alarm = alarmClock.add(callback, t) ;
                     }
                     resetDone = true ;
@@ -516,7 +514,7 @@ public class QueryExecutionBase implements QueryExecution
             return b ;
         }
     }
-    
+
     protected void execInit() { }
 
     private ResultSet asResultSet(QueryIterator qIter) {
@@ -525,24 +523,24 @@ public class QueryExecutionBase implements QueryExecution
             model = dataset.getDefaultModel() ;
         else
             model = ModelFactory.createDefaultModel() ;
-        
+
         ResultSetStream rStream = new ResultSetStream(query.getResultVars(), model, qIter) ;
         return rStream ;
     }
-    
-    /** Start the query iterator, setting timeouts as needed. */ 
+
+    /** Start the query iterator, setting timeouts as needed. */
     private void startQueryIterator() {
         execInit() ;
         if ( queryIterator != null )
             Log.warn(this, "Query iterator has already been started") ;
-        
+
         /* Timeouts:
          * -1,-1                No timeouts
          * N, same as -1,N      Overall timeout only.  No wrapper needed.
-         * N,-1                 Timeout on first row only. Need to cancel on first row. 
+         * N,-1                 Timeout on first row only. Need to cancel on first row.
          * N,M                  First/overall timeout. Need to reset on first row.
          */
-        
+
         if ( !isTimeoutSet(timeout1) && !isTimeoutSet(timeout2) ) {
             // Case -1,-1
             queryIterator = getPlan().iterator();
@@ -552,8 +550,8 @@ public class QueryExecutionBase implements QueryExecution
         if ( !isTimeoutSet(timeout1) && isTimeoutSet(timeout2) ) {
             // Case -1,N
             // Single overall timeout.
-            TimeoutCallback callback = new TimeoutCallback() ; 
-            expectedCallback.set(callback) ; 
+            TimeoutCallback callback = new TimeoutCallback() ;
+            expectedCallback.set(callback) ;
             timeout2Alarm = alarmClock.add(callback, timeout2) ;
             // Start the query.
             queryIterator = getPlan().iterator() ;
@@ -561,32 +559,32 @@ public class QueryExecutionBase implements QueryExecution
             return ;
         }
 
-        // Case N,-1 
-        // Case N,M 
+        // Case N,-1
+        // Case N,M
         // Case isTimeoutSet(timeout1)
         //   Whether timeout2 is set is determined by QueryIteratorTimer2
         //   Subcase 2: ! isTimeoutSet(timeout2)
         // Add timeout to first row.
-        TimeoutCallback callback = new TimeoutCallback() ; 
+        TimeoutCallback callback = new TimeoutCallback() ;
         timeout1Alarm = alarmClock.add(callback, timeout1) ;
         expectedCallback.set(callback) ;
 
         // We don't know if getPlan().iterator() does a lot of work or not
-        // (ideally it shouldn't start executing the query but in some sub-systems 
+        // (ideally it shouldn't start executing the query but in some sub-systems
         // it might be necessary)
         queryIterator = getPlan().iterator() ;
-        
+
         // Add the timeout1->timeout2 resetter wrapper.
         queryIterator = new QueryIteratorTimer2(queryIterator) ;
 
         // Minor optimization - timeout has already occurred. The first call of hasNext() or next()
         // will throw QueryCancelledExcetion anyway. This just makes it a bit earlier
         // in the case when the timeout (timeout1) is so short it's gone off already.
-        
+
         if ( isCancelled.get() )
             queryIterator.cancel() ;
     }
-    
+
     private ResultSet execResultSet() {
         startQueryIterator();
         return asResultSet(queryIterator);
@@ -623,11 +621,11 @@ public class QueryExecutionBase implements QueryExecution
     private void insertPrefixesInto(Dataset ds) {
         insertPrefixesInto(ds.getDefaultModel()) ;
     }
-    
+
     static private String labelForQuery(Query q) {
-        if ( q.isSelectType() )     return "SELECT" ; 
-        if ( q.isConstructType() )  return "CONSTRUCT" ; 
-        if ( q.isDescribeType() )   return "DESCRIBE" ; 
+        if ( q.isSelectType() )     return "SELECT" ;
+        if ( q.isConstructType() )  return "CONSTRUCT" ;
+        if ( q.isDescribeType() )   return "DESCRIBE" ;
         if ( q.isAskType() )        return "ASK" ;
         if ( q.isJsonType() )       return "JSON" ;
         return "<<unknown>>" ;
@@ -635,7 +633,7 @@ public class QueryExecutionBase implements QueryExecution
 
     @Override
     public Context getContext() { return context ; }
-    
+
     @Override
     public Dataset getDataset() { return dataset ; }
 
@@ -646,12 +644,12 @@ public class QueryExecutionBase implements QueryExecution
     public void setInitialBinding(QuerySolution startSolution) {
         initialBinding = BindingUtils.asBinding(startSolution);
     }
-    
+
     @Override
     public void setInitialBinding(Binding startSolution) {
         initialBinding = startSolution;
     }
-    
+
     //protected QuerySolution getInputBindings() { return initialBinding ; }
 
     public void setInitialBindings(ResultSet table)

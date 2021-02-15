@@ -30,7 +30,6 @@ import org.apache.jena.sparql.lang.SPARQLParser ;
 import org.apache.jena.sparql.lang.SPARQLParserRegistry ;
 import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.syntax.Template ;
-import org.apache.jena.util.FileManager;
 
 public class QueryFactory
 {
@@ -199,37 +198,21 @@ public class QueryFactory
 
     /** Read a query from a file.
      *
-     * @param url            URL (file: or http: or anything a FileManager can handle)
-     * @param filemanager    Optional filemanager
-     * @param baseURI        BaseURI for the query
-     * @param langURI        Query syntax
-     * @return               A new query object
-     * @deprecated           Use {@link #read(String, StreamManager, String, Syntax)}
+     * @param url              URL (file: or http: or anything a FileManager can handle)
+     * @param streamManager    Optional StreamManager
+     * @param baseURI          BaseURI for the query
+     * @param langURI          Query syntax
+     * @return                 A new query object
      */
-    @Deprecated
-    static public Query read(String url, FileManager filemanager, String baseURI, Syntax langURI)
+    static public Query read(String url, StreamManager streamManager, String baseURI, Syntax langURI)
     {
-        if ( filemanager == null )
-            filemanager = org.apache.jena.util.FileManager.getInternal() ;
-        String qStr = filemanager.readWholeFileAsUTF8(url) ;
-        if ( baseURI == null )
-            baseURI = url ;
-        if ( langURI == null )
-            langURI = Syntax.guessFileSyntax(url) ;
+        if ( streamManager == null )
+            streamManager = StreamManager.get() ;
 
-        return create(qStr, baseURI, langURI) ;
-    }
-
-    @Deprecated
-    static public Query read(String url, StreamManager filemanager, String baseURI, Syntax langURI)
-    {
-        if ( filemanager == null )
-            filemanager = StreamManager.get() ;
-
-        InputStream in = filemanager.open(url);
+        InputStream in = streamManager.open(url);
         if ( in == null )
             throw new NotFoundException("Not found: "+url);
-        String qStr = IO.readWholeFileAsUTF8(filemanager.open(url));
+        String qStr = IO.readWholeFileAsUTF8(streamManager.open(url));
         if ( baseURI == null )
             baseURI = url ;
         if ( langURI == null )

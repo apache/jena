@@ -124,9 +124,6 @@ public class RDFLanguages
                                                      .addAltNames("RDF_THRIFT", "RDFTHRIFT", "RDF/THRIFT", "TRDF")
                                                      .addFileExtensions("rt", "trdf")
                                                      .build() ;
-    /** @deprecated Use {@link #RDFTHRIFT} */
-    public static final Lang THRIFT     = RDFTHRIFT;
-
     /** Text */
     public static final Lang TEXT       = LangBuilder.create("text", contentTypeTextPlain)
                                                      .addAltNames("TEXT")

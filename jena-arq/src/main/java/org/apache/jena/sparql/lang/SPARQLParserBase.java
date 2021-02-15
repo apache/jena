@@ -31,7 +31,6 @@ import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.modify.UpdateSink ;
 import org.apache.jena.sparql.modify.request.* ;
-import org.apache.jena.sparql.util.LabelToNodeMap ;
 import org.apache.jena.update.Update ;
 
 /** Class that has all the parse event operations and other query/update specific things */

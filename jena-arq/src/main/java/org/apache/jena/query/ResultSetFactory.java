@@ -213,41 +213,7 @@ public class ResultSetFactory {
      * syntax based on filename/URL extension.
      */
     public static SPARQLResult result(String filenameOrURI) {
-        return result(filenameOrURI, null);
-    }
-
-    /**
-     * Read in any kind of result kind (result set, boolean, graph)
-     * @deprecated Use ReadAnything.read(filenameOrURI);
-     */
-    @Deprecated
-    public static SPARQLResult result(String filenameOrURI, ResultsFormat format) {
-        if (format == null)
-            format = ResultsFormat.guessSyntax(filenameOrURI);
-
-        if (format == null) {
-            Log.warn(ResultSet.class, "Null format - defaulting to XML");
-            format = ResultsFormat.FMT_RS_XML;
-        }
-
-        if (format.equals(ResultsFormat.FMT_TEXT)) {
-            Log.error(ResultSet.class, "Can't read a text result set");
-            throw new ResultSetException("Can't read a text result set");
-        }
-
-        if (format.equals(ResultsFormat.FMT_RS_XML) || format.equals(ResultsFormat.FMT_RS_JSON)
-            || format.equals(ResultsFormat.FMT_RS_TSV) || format.equals(ResultsFormat.FMT_RS_CSV)) {
-            SPARQLResult x = ReadAnything.read(filenameOrURI);
-            return x;
-        }
-
-        if (ResultsFormat.isRDFGraphSyntax(format)) {
-            Model model = RDFDataMgr.loadModel(filenameOrURI);
-            return new SPARQLResult(model);
-        }
-
-        Log.error(ResultSet.class, "Unknown result set syntax: " + format);
-        return null;
+        return ReadAnything.read(filenameOrURI);
     }
 
     /**

@@ -101,7 +101,7 @@ public class RDFParserRegistry
         registerLangQuads(RDFTHRIFT,    parserFactoryThrift) ;
         registerLangQuads(TRIX,         parserFactoryTriX) ;
         registerLangQuads(RDFNULL,      parserFactoryRDFNULL) ;
-        
+
         // Javacc based Turtle parser, different language name.
         TurtleJCC.register();
     }
@@ -142,9 +142,8 @@ public class RDFParserRegistry
 
     /**
      * Return the parser factory for the language, or null if not registered.
-     * @deprecated To be removed or made package scoped. Use {@code RDFParser.create() ... .build()}
+     * Use {@code RDFParser.create() ... .build()}
      */
-    @Deprecated
     public static ReaderRIOTFactory getFactory(Lang language)
     {
         return langToParserFactory.get(language) ;

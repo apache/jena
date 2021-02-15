@@ -37,7 +37,6 @@ public class TestThriftSetup {
         assertEquals(lang, RDFTHRIFT) ;
     }
 
-    @SuppressWarnings("deprecation")
     @Test public void setup_03() {
         assertTrue(RDFParserRegistry.isQuads(RDFTHRIFT)) ;
         assertTrue(RDFParserRegistry.isTriples(RDFTHRIFT)) ;

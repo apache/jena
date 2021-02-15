@@ -60,10 +60,6 @@ public class StreamManager {
         return streamManager ;
     }
 
-    /** @deprecated Use {@link #createStd()} */
-    @Deprecated
-    public static StreamManager makeDefaultStreamManager() { return createStd() ; }
-
     /**
      * Return the global {@code StreamManager}.
      */
@@ -97,10 +93,10 @@ public class StreamManager {
     public static void setGlobal(StreamManager streamManager) {
         globalStreamManager = streamManager ;
     }
-    
+
     static { setGlobal(createStd()) ; }
-    
-    /** Create a {@code StreamManager} with no locator or location mapper. */ 
+
+    /** Create a {@code StreamManager} with no locator or location mapper. */
     public StreamManager() {}
 
     /** Create a deep copy of this StreamManager */
