@@ -39,15 +39,15 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
 
 
 public class FRuleEngineIFactoryTest extends TestCase {
-    
+
     /**
      * Boilerplate for junit.
      * This is its own test suite
      */
     public static TestSuite suite() {
-        return new TestSuite( FRuleEngineIFactoryTest.class ); 
-    }  
-    
+        return new TestSuite( FRuleEngineIFactoryTest.class );
+    }
+
     @Override
     public void tearDown() {
         FRuleEngineIFactory.setInstance(new FRuleEngineIFactory());
@@ -55,10 +55,10 @@ public class FRuleEngineIFactoryTest extends TestCase {
 
     public void testItShouldBeASingleton() {
         FRuleEngineIFactory instance = FRuleEngineIFactory.getInstance();
-        
+
         assertNotNull("A default instance must be created", instance);
 
-        assertSame("The same instance should have be returned", 
+        assertSame("The same instance should have be returned",
                 instance, FRuleEngineIFactory.getInstance());
     }
 
@@ -66,13 +66,13 @@ public class FRuleEngineIFactoryTest extends TestCase {
         MyFRuleEngineIFactory anotherFactory  = new MyFRuleEngineIFactory();
         FRuleEngineIFactory.setInstance(anotherFactory);
 
-        assertSame("The instance should have been replaced", 
+        assertSame("The instance should have been replaced",
                    anotherFactory, FRuleEngineIFactory.getInstance());
     }
-    
+
     public void testItShouldInstantiateAFRuleEngineIfUseRETEisFalse() {
         ForwardRuleInfGraphI infGraph = new DummyForwardRuleInfGraph();
-        FRuleEngineI engine = 
+        FRuleEngineI engine =
                 FRuleEngineIFactory.getInstance().createFRuleEngineI(infGraph, null, false);
 
         assertSame("A FRuleEngine should have been instantiated", FRuleEngine.class, engine.getClass());
@@ -80,15 +80,15 @@ public class FRuleEngineIFactoryTest extends TestCase {
 
     public void testItShouldInstantiateAReteEngineIfUseRETEisTrue() {
         ForwardRuleInfGraphI infGraph = new DummyForwardRuleInfGraph();
-        FRuleEngineI engine = 
+        FRuleEngineI engine =
                 FRuleEngineIFactory.getInstance().createFRuleEngineI(infGraph, null, true);
 
         assertSame("A RETEEngine should have been instantiated", RETEEngine.class, engine.getClass());
     }
-    
+
     private static final class MyFRuleEngineIFactory extends FRuleEngineIFactory {
     }
-    
+
     private static final class DummyForwardRuleInfGraph implements ForwardRuleInfGraphI{
 
         @Override
@@ -123,7 +123,7 @@ public class FRuleEngineIFactoryTest extends TestCase {
 
         @Override
         public void setDerivationLogging(boolean logOn) {}
-        
+
         @Override
         public Iterator<Derivation> getDerivation(Triple triple) { return null; }
 
@@ -138,10 +138,6 @@ public class FRuleEngineIFactoryTest extends TestCase {
 
         @Override
         public GraphEventManager getEventManager() { return null; }
-
-        @SuppressWarnings("deprecation")
-        @Override
-        public GraphStatisticsHandler getStatisticsHandler() { return null; }
 
         @Override
         public PrefixMapping getPrefixMapping() { return null; }
@@ -175,7 +171,7 @@ public class FRuleEngineIFactoryTest extends TestCase {
 
         @Override
         public void close() {}
-        
+
         @Override
         public boolean isEmpty() { return false; }
 
@@ -202,10 +198,10 @@ public class FRuleEngineIFactoryTest extends TestCase {
 
         @Override
         public Graph getCurrentDeductionsGraph() { return null; }
-        
+
         @Override
         public void addDeduction(Triple t) {}
-        
+
         @Override
         public ExtendedIterator<Triple> findDataMatches(Node subject, Node predicate, Node object) {
             return null;
@@ -219,6 +215,6 @@ public class FRuleEngineIFactoryTest extends TestCase {
 
         @Override
         public void setFunctorFiltering(boolean param) {}
-        
+
     }
  }
