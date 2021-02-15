@@ -48,7 +48,7 @@ import org.junit.Test ;
 /**
  * Tests for verifying that a query returns the same results both with and
  * without a given optimizer enabled
- * 
+ *
  */
 public class TestSemanticEquivalence {
 
@@ -74,7 +74,7 @@ public class TestSemanticEquivalence {
         dsg.add(Quad.defaultGraphNodeGenerated, b, p2, o);
         dsg.add(Quad.defaultGraphNodeGenerated, c, p1, o);
         //dsg.add(Quad.defaultGraphNodeGenerated, a, pSelf, a);
-        
+
         // Currently these optimizations are off by default
         Assert.assertFalse(ARQ.isFalse(ARQ.optFilterImplicitJoin));
         Assert.assertFalse(ARQ.isFalse(ARQ.optImplicitLeftJoin));
@@ -86,7 +86,7 @@ public class TestSemanticEquivalence {
             implJoin.close();
             implJoin = null;
         }
-        
+
         // Currently these optimizations are off by default
         Assert.assertFalse(ARQ.isFalse(ARQ.optFilterImplicitJoin));
         Assert.assertFalse(ARQ.isFalse(ARQ.optImplicitLeftJoin));
@@ -151,20 +151,20 @@ public class TestSemanticEquivalence {
         String alg2 = "(leftjoin (bgp (?x <http://p1> ?o1)) (bgp (?y <http://p2> ?o2)) (&& (= ?y ?x)(> ?o1 ?o2)))";
         testAsAlgebra(alg2, implJoin, ARQ.optImplicitLeftJoin, 3);
     }
-    
+
     @Test
     public void implicitLeftJoinEvaluation3() {
         String query = "SELECT * WHERE { ?x ?p ?o . OPTIONAL { ?y ?p1 ?o1 . ?y ?p2 ?z . FILTER(?x = ?y) FILTER(?x = ?z) FILTER(?y = ?z) } }";
         test(query, implJoin, ARQ.optImplicitLeftJoin, 5);
-        
+
         String alg1 = "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1) (?y ?p2 ?z)) ((= ?x ?y) (= ?x ?z) (= ?y ?z)))";
         testAsAlgebra(alg1, implJoin, ARQ.optImplicitLeftJoin, 5);
     }
-    
+
     /**
      * Tests whether a query gives the same results when run both with and
      * without a given optimizer
-     * 
+     *
      * @param queryStr
      *            Query
      * @param ds
@@ -179,7 +179,7 @@ public class TestSemanticEquivalence {
 
         if (!q.isSelectType())
             Assert.fail("Only SELECT queries are testable with this method");
-        
+
         Op op = Algebra.compile(q);
         // Track current state
         boolean isEnabled = ARQ.isTrue(opt);
@@ -229,7 +229,7 @@ public class TestSemanticEquivalence {
     /**
      * Tests whether an algebra expression gives the same results when run both
      * with and without a given optimizer
-     * 
+     *
      * @param algStr
      *            Algebra
      * @param ds
@@ -253,8 +253,8 @@ public class TestSemanticEquivalence {
         try {
             // Run first without optimization
             ARQ.set(opt, false);
-            QueryEngineMain engine = new QueryEngineMain(op, ds.asDatasetGraph(), BindingFactory.binding(), ARQ.getContext());
-            QueryIterator iter = engine.eval(op, ds.asDatasetGraph(), BindingFactory.binding(), ARQ.getContext());
+            QueryEngineMain engine = new QueryEngineMain(op, ds.asDatasetGraph(), BindingFactory.empty(), ARQ.getContext());
+            QueryIterator iter = engine.eval(op, ds.asDatasetGraph(), BindingFactory.empty(), ARQ.getContext());
             ResultSetRewindable rs = ResultSetFactory.makeRewindable(new ResultSetStream(vars, ModelFactory.createDefaultModel(),
                     iter));
             if (expected != rs.size()) {
@@ -268,8 +268,8 @@ public class TestSemanticEquivalence {
 
             // Run with optimization
             ARQ.set(opt, true);
-            engine = new QueryEngineMain(op, ds.asDatasetGraph(), BindingFactory.binding(), ARQ.getContext());
-            QueryIterator iterOpt = engine.eval(op, ds.asDatasetGraph(), BindingFactory.binding(), ARQ.getContext());
+            engine = new QueryEngineMain(op, ds.asDatasetGraph(), BindingFactory.empty(), ARQ.getContext());
+            QueryIterator iterOpt = engine.eval(op, ds.asDatasetGraph(), BindingFactory.empty(), ARQ.getContext());
             ResultSetRewindable rsOpt = ResultSetFactory.makeRewindable(new ResultSetStream(vars, ModelFactory
                     .createDefaultModel(), iterOpt));
             if (expected != rsOpt.size()) {

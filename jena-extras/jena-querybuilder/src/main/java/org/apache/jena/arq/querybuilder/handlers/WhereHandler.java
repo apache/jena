@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.Converters;
 import org.apache.jena.arq.querybuilder.clauses.SelectClause;
@@ -37,13 +38,23 @@ import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
-import org.apache.jena.sparql.syntax.*;
+import org.apache.jena.sparql.syntax.Element;
+import org.apache.jena.sparql.syntax.ElementBind;
+import org.apache.jena.sparql.syntax.ElementFilter;
+import org.apache.jena.sparql.syntax.ElementGroup;
+import org.apache.jena.sparql.syntax.ElementMinus;
+import org.apache.jena.sparql.syntax.ElementNamedGraph;
+import org.apache.jena.sparql.syntax.ElementOptional;
+import org.apache.jena.sparql.syntax.ElementPathBlock;
+import org.apache.jena.sparql.syntax.ElementSubQuery;
+import org.apache.jena.sparql.syntax.ElementTriplesBlock;
+import org.apache.jena.sparql.syntax.ElementUnion;
 import org.apache.jena.sparql.util.ExprUtils;
 import org.apache.jena.vocabulary.RDF;
 
 /**
  * The where handler. Generally handles GroupGraphPattern.
- * 
+ *
  * @see <a href=
  *      "http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rGroupGraphPattern">
  *      SPARQL 11 Query Language - Group Graph Pattern</a>
@@ -53,12 +64,12 @@ public class WhereHandler implements Handler {
 
 	// the query to modify
 	private final Query query;
-	
+
 	private final ValuesHandler valuesHandler;
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param query
 	 *            The query to manipulate.
 	 */
@@ -66,14 +77,14 @@ public class WhereHandler implements Handler {
 		this.query = query;
 		this.valuesHandler = new ValuesHandler();
 	}
-	
+
 	/**
 	 * Creates a where handler with a new query.
 	 */
 	public WhereHandler() {
 		this( new Query() );
 	}
-	
+
 	/**
 	 * Get the query pattern from this where handler.
 	 * @return the query pattern
@@ -82,7 +93,7 @@ public class WhereHandler implements Handler {
 	{
 		 return query.getQueryPattern();
 	}
-	
+
 	/**
 	 * @return The query this where handler is using.
 	 */
@@ -92,7 +103,7 @@ public class WhereHandler implements Handler {
 
 	/**
 	 * Add all where attributes from the Where Handler argument.
-	 * 
+	 *
 	 * @param whereHandler
 	 *            The Where Handler to copy from.
 	 */
@@ -131,7 +142,7 @@ public class WhereHandler implements Handler {
 	 * Get the base element from the where clause. If the clause does not
 	 * contain an element return the element group, otherwise return the
 	 * enclosed element.
-	 * 
+	 *
 	 * @return the base element.
 	 */
 	public Element getElement() {
@@ -145,9 +156,9 @@ public class WhereHandler implements Handler {
 	/**
 	 * Get the element group for the clause. if The element group is not set,
 	 * create and set it.
-	 * 
+	 *
 	 * Public for ExprFactory use.
-	 * 
+	 *
 	 * @return The element group.
 	 */
 	public ElementGroup getClause() {
@@ -169,7 +180,7 @@ public class WhereHandler implements Handler {
 	/**
 	 * Test that a triple is valid. Throws an IllegalArgumentException if the
 	 * triple is not valid.
-	 * 
+	 *
 	 * @param t
 	 *            The trip to test.
 	 */
@@ -178,14 +189,14 @@ public class WhereHandler implements Handler {
 		boolean validSubject = t.getSubject().isURI() || t.getSubject().isBlank() || t.getSubject().isVariable()
 				|| t.getSubject().equals(Node.ANY);
 		boolean validPredicate;
-		
+
 		if (t.isTriple()) {
 			validPredicate = t.getPredicate().isURI() || t.getPredicate().isVariable()
 					|| t.getPredicate().equals(Node.ANY);
 		} else {
 			validPredicate = t.getPath() != null;
 		}
-				
+
 		boolean validObject = t.getObject().isURI() || t.getObject().isLiteral() || t.getObject().isBlank()
 				|| t.getObject().isVariable() || t.getObject().equals(Node.ANY);
 
@@ -212,7 +223,7 @@ public class WhereHandler implements Handler {
 
 	/**
 	 * Add the triple path to the where clause
-	 * 
+	 *
 	 * @param t
 	 *            The triple path to add.
 	 * @throws IllegalArgumentException
@@ -245,7 +256,7 @@ public class WhereHandler implements Handler {
 
 	/**
 	 * Add the triple path to the where clause
-	 * 
+	 *
 	 * @param values
 	 *            The values to add to this where clause.
 	 * @throws IllegalArgumentException
@@ -256,7 +267,7 @@ public class WhereHandler implements Handler {
 	}
 	/**
 	 * Add an optional triple to the where clause
-	 * 
+	 *
 	 * @param t
 	 *            The triple path to add.
 	 * @throws IllegalArgumentException
@@ -280,7 +291,7 @@ public class WhereHandler implements Handler {
 
 	/**
 	 * Add an expression string as a filter.
-	 * 
+	 *
 	 * @param expression
 	 *            The expression string to add.
 	 * @throws ParseException
@@ -292,7 +303,7 @@ public class WhereHandler implements Handler {
 
 	/**
 	 * add an expression as a filter.
-	 * 
+	 *
 	 * @param expr
 	 *            The expression to add.
 	 */
@@ -302,7 +313,7 @@ public class WhereHandler implements Handler {
 
 	/**
 	 * Add a subquery to the where clause.
-	 * 
+	 *
 	 * @param subQuery
 	 *            The sub query to add.
 	 */
@@ -312,7 +323,7 @@ public class WhereHandler implements Handler {
 
 	/**
 	 * Convert a subquery into a subquery element.
-	 * 
+	 *
 	 * @param subQuery
 	 *            The sub query to convert
 	 * @return THe converted element.
@@ -333,7 +344,7 @@ public class WhereHandler implements Handler {
 		// remove the prefix mappings from the sub query.
 		handlerBlock.getPrologHandler().clearPrefixes();
 
-		
+
 		//  make sure we have a query pattern before we start building.
 		if (q.getQueryPattern() == null)
 		{
@@ -345,7 +356,7 @@ public class WhereHandler implements Handler {
 
 	/**
 	 * Add a union to the where clause.
-	 * 
+	 *
 	 * @param subQuery
 	 *            The subquery to add as the union.
 	 */
@@ -383,7 +394,7 @@ public class WhereHandler implements Handler {
 
 	/**
 	 * Add a graph to the where clause.
-	 * 
+	 *
 	 * @param graph
 	 *            The name of the graph.
 	 * @param subQuery
@@ -395,9 +406,9 @@ public class WhereHandler implements Handler {
 
 	/**
 	 * Add a graph to the where clause.
-	 * 
+	 *
 	 * Short hand for graph { s, p, o }
-	 * 
+	 *
 	 * @param graph
 	 *            The name of the graph.
 	 * @param subQuery
@@ -405,13 +416,13 @@ public class WhereHandler implements Handler {
 	 */
 	public void addGraph(Node graph, TriplePath subQuery) {
 		ElementPathBlock epb = new ElementPathBlock();
-		epb.addTriple(subQuery);		
+		epb.addTriple(subQuery);
 		getClause().addElement(new ElementNamedGraph(graph, epb));
 	}
-	
+
 	/**
 	 * Add a binding to the where clause.
-	 * 
+	 *
 	 * @param expr
 	 *            The expression to bind.
 	 * @param var
@@ -423,7 +434,7 @@ public class WhereHandler implements Handler {
 
 	/**
 	 * Add a binding to the where clause.
-	 * 
+	 *
 	 * @param expression
 	 *            The expression to bind.
 	 * @param var
@@ -461,7 +472,7 @@ public class WhereHandler implements Handler {
 			if (visitor.getResult() instanceof ElementGroup) {
 				((ElementGroup)visitor.getResult()).addElement( valuesHandler.asElement());;
 			}
-			else {					
+			else {
 				ElementGroup eg = new ElementGroup();
 				eg.addElement(visitor.getResult());
 				eg.addElement( valuesHandler.asElement());
@@ -473,9 +484,9 @@ public class WhereHandler implements Handler {
 
 	/**
 	 * Create a list node from a list of objects as per RDF Collections.
-	 * 
+	 *
 	 * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#collections
-	 * 
+	 *
 	 * @param objs
 	 *            the list of objects for the list.
 	 * @return the first blank node in the list.
@@ -498,11 +509,11 @@ public class WhereHandler implements Handler {
 
 		return retval;
 	}
-	
+
 	/**
 	 * Add a minus operation to the where clause.
 	 * The prolog will be updated with the prefixes from the abstract query builder.
-	 * 
+	 *
 	 * @param qb the abstract builder that defines the data to subtract.
 	 */
 	public void addMinus( AbstractQueryBuilder<?> qb )
@@ -513,7 +524,7 @@ public class WhereHandler implements Handler {
 		ElementMinus minus = new ElementMinus(qb.getWhereHandler().getClause());
 		clause.addElement(minus);
 	}
-	
+
 	public void addValueVar(PrefixMapping prefixMapping, Object var) {
 		if (var == null)
 		{
@@ -531,20 +542,20 @@ public class WhereHandler implements Handler {
 			valuesHandler.addValueVar(v, Converters.makeValueNodes(iter,prefixMapping));
 		} else {
 			valuesHandler.addValueVar(Converters.makeVar(var), null );
-		}		
+		}
 	}
 
 	public void addValueVar(PrefixMapping prefixMapping, Object var, Object... objects) {
-		
+
 		Collection<Node> values = null;
 		if (objects != null)
 		{
 			values = Converters.makeValueNodes( Arrays.asList(objects).iterator(), prefixMapping);
 		}
-		
+
 		valuesHandler.addValueVar(Converters.makeVar(var), values );
 	}
-	
+
 	public <K extends Collection<?>> void addValueVars(PrefixMapping prefixMapping, Map<?,K> dataTable) {
 		ValuesHandler hdlr = new ValuesHandler();
 		for (Map.Entry<?, K> entry : dataTable.entrySet())
@@ -558,7 +569,7 @@ public class WhereHandler implements Handler {
 		}
 		valuesHandler.addAll( hdlr );
 	}
-	
+
 	public void addValueRow(PrefixMapping prefixMapping, Object... values) {
 		valuesHandler.addValueRow( Converters.makeValueNodes( Arrays.asList(values).iterator(), prefixMapping));
 	}
@@ -566,8 +577,8 @@ public class WhereHandler implements Handler {
 	public void addValueRow(PrefixMapping prefixMapping, Collection<?> values) {
 		valuesHandler.addValueRow( Converters.makeValueNodes( values.iterator(), prefixMapping));
 	}
-	
-	
+
+
 	public List<Var> getValuesVars() {
 		return valuesHandler.getValuesVars();
 	}
@@ -576,7 +587,7 @@ public class WhereHandler implements Handler {
 	public Map<Var,List<Node>> getValuesMap() {
 		return valuesHandler.getValuesMap();
 	}
-	
+
 
 	public  void clearValues() {
 		valuesHandler.clear();

@@ -58,7 +58,7 @@ public class RDFConnectionRemoteBuilder {
     protected String        acceptAskResult    = QueryEngineHTTP.defaultAskHeader();
     // All-purpose head that works for any query type (but is quite long!)
     protected String        acceptSparqlResults = acceptSelectResult+","+acceptGraph;
-    // Whether to parse SPARQL Queries and Updates for checkign purposes.
+    // Whether to parse SPARQL Queries and Updates for checking purposes.
     protected boolean       parseCheckQueries   = true;
     protected boolean       parseCheckUpdates   = true;
 
@@ -90,7 +90,7 @@ public class RDFConnectionRemoteBuilder {
     }
 
     /** URL of the remote SPARQL endpoint.
-     * For Fuseki, this is the URL of the dataset  e.g. http:/localhost:3030/dataset
+     * For Fuseki, this is the URL of the dataset  e.g. http://localhost:3030/dataset
      */
     public RDFConnectionRemoteBuilder destination(String destination) {
         Objects.requireNonNull(destination);

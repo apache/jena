@@ -41,18 +41,18 @@ public class TestRegex
         return Arrays.asList(new Object[][] { { "Java Regex",   ARQ.javaRegex },
                                               { "Xerces Regex", ARQ.xercesRegex } });
     }
-    
+
     public TestRegex(String name, Symbol setting) {
         ARQ.getContext().set(ARQ.regexImpl, setting) ;
     }
-    
-    private static Object value;  
-    
+
+    private static Object value;
+
     @BeforeClass
     public static void beforeClass() {
         value = ARQ.getContext().get(ARQ.regexImpl);
     }
-    
+
     @AfterClass
     public static void afterClass() {
         ARQ.getContext().set(ARQ.regexImpl, value);
@@ -67,11 +67,11 @@ public class TestRegex
     @Test public void testRegex07() { regexTest( "ABC",  "BC",   null,   true) ; }
     @Test public void testRegex08() { regexTest( "ABC",  "^BC",  null,   false) ; }
     @Test public void testRegex09() { regexTest( "[[",   "[",    "q",    true) ; }
-    
+
     public void regexTest(String value, String pattern, String flags, boolean expected) {
         Expr s = NodeValue.makeString(value) ;
         E_Regex r = new E_Regex(s, pattern, flags) ;
-        NodeValue nv = r.eval(BindingFactory.binding(), null) ;
+        NodeValue nv = r.eval(BindingFactory.empty(), null) ;
         boolean b = nv.getBoolean() ;
         if ( b != expected )
             fail(fmtTest(value, pattern, flags)+" ==> "+b+" expected "+expected) ;
@@ -82,17 +82,17 @@ public class TestRegex
         if ( flags != null )
             tmp = tmp + ", \""+flags+"\"" ;
         tmp = tmp + ")" ;
-        return tmp ; 
+        return tmp ;
     }
 
     // Bad regex
     @Test(expected=ExprEvalException.class)
     public void testRegexErr1() { regexTest("ABC", "(", null, false) ; }
-    
+
     // No such flag
     @Test(expected=ExprEvalException.class)
     public void testRegexErr2() { regexTest("ABC", "abc", "g", false) ; }
-    
+
     // No such flag
     @Test(expected=ExprEvalException.class)
     public void testRegexErr3() { regexTest("ABC", "abc", "u", false) ; }

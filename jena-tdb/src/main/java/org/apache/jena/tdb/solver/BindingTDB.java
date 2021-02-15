@@ -149,7 +149,7 @@ public class BindingTDB extends BindingBase
     }
     
     @Override
-    protected void format(StringBuffer sbuff, Var var)
+    protected void fmtVar(StringBuffer sbuff, Var var)
     {
         NodeId id = idBinding.get(var) ;
         String extra = "" ;

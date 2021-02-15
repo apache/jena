@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,7 @@ package org.apache.jena.arq.querybuilder.updatebuilder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.Converters;
 import org.apache.jena.arq.querybuilder.clauses.SelectClause;
@@ -35,7 +36,16 @@ import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
-import org.apache.jena.sparql.syntax.*;
+import org.apache.jena.sparql.syntax.Element;
+import org.apache.jena.sparql.syntax.ElementBind;
+import org.apache.jena.sparql.syntax.ElementFilter;
+import org.apache.jena.sparql.syntax.ElementGroup;
+import org.apache.jena.sparql.syntax.ElementMinus;
+import org.apache.jena.sparql.syntax.ElementNamedGraph;
+import org.apache.jena.sparql.syntax.ElementOptional;
+import org.apache.jena.sparql.syntax.ElementPathBlock;
+import org.apache.jena.sparql.syntax.ElementTriplesBlock;
+import org.apache.jena.sparql.syntax.ElementUnion;
 import org.apache.jena.sparql.util.ExprUtils;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NiceIterator;
@@ -43,7 +53,7 @@ import org.apache.jena.vocabulary.RDF;
 
 /**
  * The where processor. Generally handles update where clause.
- * 
+ *
  * @see <a href=
  *      "http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rGroupGraphPattern">
  *      SPARQL 11 Query Language - Group Graph Pattern</a>
@@ -56,7 +66,7 @@ public class WhereQuadHolder implements QuadHolder {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param prefixHandler
 	 *            the prefix handler to use.
 	 */
@@ -66,7 +76,7 @@ public class WhereQuadHolder implements QuadHolder {
 
 	/**
 	 * True if there are no elements in the where processor.
-	 * 
+	 *
 	 * @return true if there are no elements.
 	 */
 	public boolean isEmpty() {
@@ -77,7 +87,7 @@ public class WhereQuadHolder implements QuadHolder {
 	public ExtendedIterator<Quad> getQuads() {
 		return getQuads( Quad.defaultGraphNodeGenerated);
 	}
-	
+
 	public ExtendedIterator<Quad> getQuads( Node defaultGraphName ) {
 		if (isEmpty())
 		{
@@ -89,7 +99,7 @@ public class WhereQuadHolder implements QuadHolder {
 	}
 	/**
 	 * Add all where attributes from the Where Handler argument.
-	 * 
+	 *
 	 * @param whereHandler
 	 *            The Where Handler to copy from.
 	 */
@@ -127,9 +137,9 @@ public class WhereQuadHolder implements QuadHolder {
 	/**
 	 * Get the element group for the clause. if The element group is not set,
 	 * create and set it.
-	 * 
+	 *
 	 * Public for ExprFactory use.
-	 * 
+	 *
 	 * @return The element group.
 	 */
 	public ElementGroup getClause() {
@@ -151,7 +161,7 @@ public class WhereQuadHolder implements QuadHolder {
 	/**
 	 * Test that a triple is valid. Throws an IllegalArgumentException if the
 	 * triple is not valid.
-	 * 
+	 *
 	 * @param t
 	 *            The trip to test.
 	 */
@@ -194,7 +204,7 @@ public class WhereQuadHolder implements QuadHolder {
 
 	/**
 	 * Add the triple path to the where clause
-	 * 
+	 *
 	 * @param t
 	 *            The triple path to add.
 	 * @throws IllegalArgumentException
@@ -228,7 +238,7 @@ public class WhereQuadHolder implements QuadHolder {
 
 	/**
 	 * Add an optional triple to the where clause
-	 * 
+	 *
 	 * @param t
 	 *            The triple path to add.
 	 * @throws IllegalArgumentException
@@ -244,7 +254,7 @@ public class WhereQuadHolder implements QuadHolder {
 
 	/**
 	 * Add the contents of a where handler as an optional statement.
-	 * 
+	 *
 	 * @param whereHandler
 	 *            The where handler to use as the optional statement.
 	 */
@@ -254,7 +264,7 @@ public class WhereQuadHolder implements QuadHolder {
 
 	/**
 	 * Add an expression string as a filter.
-	 * 
+	 *
 	 * @param expression
 	 *            The expression string to add.
 	 * @throws ParseException
@@ -273,7 +283,7 @@ public class WhereQuadHolder implements QuadHolder {
 
 	/**
 	 * add an expression as a filter.
-	 * 
+	 *
 	 * @param expr
 	 *            The expression to add.
 	 */
@@ -283,7 +293,7 @@ public class WhereQuadHolder implements QuadHolder {
 
 	/**
 	 * Add a subquery to the where clause.
-	 * 
+	 *
 	 * @param subQuery
 	 *            The sub query to add.
 	 */
@@ -293,7 +303,7 @@ public class WhereQuadHolder implements QuadHolder {
 
 	/**
 	 * Add a union to the where clause.
-	 * 
+	 *
 	 * @param subQuery
 	 *            The subquery to add as the union.
 	 */
@@ -330,7 +340,7 @@ public class WhereQuadHolder implements QuadHolder {
 
 	/**
 	 * Add a graph to the where clause.
-	 * 
+	 *
 	 * @param graph
 	 *            The name of the graph.
 	 * @param subQuery
@@ -342,7 +352,7 @@ public class WhereQuadHolder implements QuadHolder {
 
 	/**
 	 * Add a binding to the where clause.
-	 * 
+	 *
 	 * @param expr
 	 *            The expression to bind.
 	 * @param var
@@ -354,7 +364,7 @@ public class WhereQuadHolder implements QuadHolder {
 
 	/**
 	 * Add a binding to the where clause.
-	 * 
+	 *
 	 * @param expression
 	 *            The expression to bind.
 	 * @param var
@@ -368,9 +378,9 @@ public class WhereQuadHolder implements QuadHolder {
 	/**
 	 * replace the vars in the expressions with the nodes in the values map.
 	 * Vars not listed in the values map are not changed.
-	 * 
+	 *
 	 * Will return null if the whereClause is null.
-	 * 
+	 *
 	 * @param values
 	 *            the value map to use
 	 * @return A new Element instance with the values changed.
@@ -378,7 +388,7 @@ public class WhereQuadHolder implements QuadHolder {
 	public WhereQuadHolder setVars(Map<Var, Node> values) {
 		if ( whereClause != null) {
 		/* process when values are empty as rewriter handles Node_Variable to Var translation.
-		 * 
+		 *
 		 */
 		ElementRewriter r = new ElementRewriter(values);
 		whereClause.visit(r);
@@ -386,7 +396,7 @@ public class WhereQuadHolder implements QuadHolder {
 		}
 		return this;
 	}
-	
+
 	@Override
 	public QuadHolder setValues(Map<Var, Node> values)
 	{
@@ -396,9 +406,9 @@ public class WhereQuadHolder implements QuadHolder {
 
 	/**
 	 * Create a list node from a list of objects as per RDF Collections.
-	 * 
+	 *
 	 * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#collections
-	 * 
+	 *
 	 * @param objs
 	 *            the list of objects for the list.
 	 * @return the first blank node in the list.
@@ -425,7 +435,7 @@ public class WhereQuadHolder implements QuadHolder {
 	/**
 	 * Add a minus operation to the where clause.
 	 * The prefixes will be updated with the prefixes from the abstract query builder.
-	 * 
+	 *
 	 * @param qb the abstract builder that defines the data to subtract.
 	 */
 	public void addMinus(AbstractQueryBuilder<?> qb) {
@@ -434,8 +444,8 @@ public class WhereQuadHolder implements QuadHolder {
 		ElementMinus minus = new ElementMinus(qb.getWhereHandler().getClause());
 		clause.addElement(minus);
 	}
-	
-	
+
+
 	/**
 	 * @return Build the whereClause and return the element.
 	 */

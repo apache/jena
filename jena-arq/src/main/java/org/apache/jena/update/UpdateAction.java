@@ -30,7 +30,7 @@ import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingUtils ;
+import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.lang.UpdateParser ;
 import org.apache.jena.sparql.modify.UpdateSink ;
 import org.apache.jena.sparql.modify.UsingList ;
@@ -144,7 +144,7 @@ public class UpdateAction
      */
     public static void parseExecute(String updateString, Dataset dataset, QuerySolution inputBinding)
     {
-        parseExecute(updateString, dataset.asDatasetGraph(), BindingUtils.asBinding(inputBinding)) ; 
+        parseExecute(updateString, dataset.asDatasetGraph(), BindingLib.asBinding(inputBinding)) ; 
     }
 
     /** Parse a string containing SPARQL Update operations, and execute the operations.
@@ -201,7 +201,7 @@ public class UpdateAction
      */
     public static void execute(UpdateRequest request, Dataset dataset, QuerySolution inputBinding)
     {
-        execute(request, dataset.asDatasetGraph(), BindingUtils.asBinding(inputBinding)) ;
+        execute(request, dataset.asDatasetGraph(), BindingLib.asBinding(inputBinding)) ;
     }
     
     /** Execute SPARQL Update operations.
@@ -272,7 +272,7 @@ public class UpdateAction
      */
     public static void execute(Update update, Dataset dataset, QuerySolution inputBinding)
     {
-        execute(update, dataset.asDatasetGraph(), BindingUtils.asBinding(inputBinding)) ;
+        execute(update, dataset.asDatasetGraph(), BindingLib.asBinding(inputBinding)) ;
     }
     
     /** Execute a single SPARQL Update operation.
@@ -315,7 +315,7 @@ public class UpdateAction
     /** Parse update operations into a GraphStore by reading it from a file */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, String fileName, QuerySolution inputBinding, String baseURI, Syntax syntax)
     { 
-        parseExecute(usingList, dataset, fileName, BindingUtils.asBinding(inputBinding), baseURI, syntax) ; 
+        parseExecute(usingList, dataset, fileName, BindingLib.asBinding(inputBinding), baseURI, syntax) ; 
     }
     
     /** Parse update operations into a GraphStore by reading it from a file */
@@ -392,7 +392,7 @@ public class UpdateAction
      */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, QuerySolution inputBinding, String baseURI, Syntax syntax)
     {
-        parseExecute(usingList, dataset, input, BindingUtils.asBinding(inputBinding), baseURI, syntax) ;
+        parseExecute(usingList, dataset, input, BindingLib.asBinding(inputBinding), baseURI, syntax) ;
     }
 
     /**

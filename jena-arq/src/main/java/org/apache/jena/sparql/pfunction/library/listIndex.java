@@ -29,7 +29,6 @@ import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
-import org.apache.jena.sparql.engine.binding.BindingMap;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.pfunction.PropFuncArg;
@@ -131,9 +130,7 @@ public class listIndex extends ListBaseList {
         for ( int i = 0 ; i < members.size() ; i++ ) {
             Node idx = NodeFactoryExtra.intToNode(i);
             Node member = members.get(i);
-            BindingMap b = BindingFactory.create(binding);
-            b.add(varIndex, idx);
-            b.add(varMember, member);
+            Binding b = BindingFactory.binding(binding, varIndex, idx, varMember, member);
             bindings.add(b);
         }
         return new QueryIterPlainWrapper(bindings.iterator(), execCxt);

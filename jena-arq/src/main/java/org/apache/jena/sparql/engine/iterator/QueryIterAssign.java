@@ -22,44 +22,46 @@ import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.QueryExecException ;
+import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 
-/** Extend each solution by a (var, expression) */ 
+/** Extend each solution by a (var, expression) */
 
 public class QueryIterAssign extends QueryIterProcessBinding
 {
     private VarExprList exprs ;
     private final boolean mustBeNewVar ;
-    
+
     public QueryIterAssign(QueryIterator input, Var var, Expr expr, ExecutionContext qCxt) {
         this(input, new VarExprList(var, expr) , qCxt, false) ;
     }
-    
+
     public QueryIterAssign(QueryIterator input, VarExprList exprs, ExecutionContext qCxt, boolean mustBeNewVar) {
         // mustBeNewVar : any variable introduced must not already exist.
         // true => BIND
-        // false => LET 
+        // false => LET
         // Syntax checking of BIND should have assured this.
         super(input, qCxt) ;
         this.exprs = exprs ;
         this.mustBeNewVar = mustBeNewVar ;
     }
-    
+
     @Override
     public Binding accept(Binding binding) {
-        BindingMap b = BindingFactory.create(binding);
+        // XXX Assumes ExprList.get(, Binding, )
+        //BindingMap b = BindingFactory.create(binding);
+        BindingBuilder b = Binding.builder(binding);
         for ( Var v : exprs.getVars() ) {
-            // if "binding", not "b" used, we get (Lisp) "let" 
+            // if "binding", not "b" used, we get (Lisp) "let"
             // semantics, not the desired "let*" semantics
-            Node n = exprs.get(v, b, getExecContext());
+            Node n = exprs.get(v, b.snapshot(), getExecContext());
 
             if ( n == null )
                 // Expression failed to evaluate - no assignment
@@ -77,11 +79,16 @@ public class QueryIterAssign extends QueryIterProcessBinding
                     return null ;
                 continue ;
             }
-            b.add(v, n) ;
+            try {
+                // Add same.
+                b.add(v, n) ;
+            } catch (ARQInternalErrorException ex) {
+                throw ex;
+            }
         }
-        return b ;
+        return b.build() ;
     }
-    
+
     @Override
     protected void details(IndentedWriter out, SerializationContext cxt) {
         out.print(Lib.className(this));

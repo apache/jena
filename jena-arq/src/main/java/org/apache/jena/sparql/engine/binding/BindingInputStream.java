@@ -154,7 +154,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
         {
             directives() ;
 
-            BindingMap binding = BindingFactory.create() ;
+            BindingBuilder builder = Binding.builder() ;
 
             int i = 0 ;
 
@@ -188,7 +188,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
                     } else {
                         n = profile.create(null, token) ;
                     }
-                    binding.add(v, n) ;
+                    builder.add(v, n) ;
                 }
                 i++ ;
             }
@@ -202,6 +202,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
                 Var v = vars.get(vars.size()-1) ;
                 exception(dot, "Too many items in a line.  Expected "+vars.size()) ;
             }
+            Binding binding = builder.build();
             lastLine = binding ;
             return binding ;
         }

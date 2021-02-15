@@ -27,8 +27,7 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.util.iterator.ClosableIterator ;
 import org.apache.jena.util.iterator.NiceIterator ;
@@ -64,6 +63,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
         private Node p ;
         private Node o ;
         private Binding binding ;
+        private BindingBuilder resultsBuilder ;
         private ClosableIterator<Triple> graphIter ;
         private Binding slot = null ;
         private boolean finished = false ;
@@ -76,6 +76,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
             this.p = substitute(pattern.getPredicate(), binding) ;
             this.o = substitute(pattern.getObject(), binding) ;
             this.binding = binding ;
+            this.resultsBuilder = Binding.builder(binding);
             Node s2 = tripleNode(s) ;
             Node p2 = tripleNode(p) ;
             Node o2 = tripleNode(o) ;
@@ -103,18 +104,17 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
 
         private Binding mapper(Triple r)
         {
-            BindingMap results = BindingFactory.create(binding) ;
-
-            if ( ! insert(s, r.getSubject(), results) )
+            resultsBuilder.reset();
+            if ( ! insert(s, r.getSubject(), resultsBuilder) )
                 return null ;
-            if ( ! insert(p, r.getPredicate(), results) )
+            if ( ! insert(p, r.getPredicate(), resultsBuilder) )
                 return null ;
-            if ( ! insert(o, r.getObject(), results) )
+            if ( ! insert(o, r.getObject(), resultsBuilder) )
                 return null ;
-            return results ;
+            return resultsBuilder.build() ;
         }
 
-        private static boolean insert(Node inputNode, Node outputNode, BindingMap results)
+        private static boolean insert(Node inputNode, Node outputNode, BindingBuilder results)
         {
             if ( ! Var.isVar(inputNode) )
                 return true ;

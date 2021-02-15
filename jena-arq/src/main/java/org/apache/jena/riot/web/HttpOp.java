@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory ;
  * be used by other code to generate more application specific HTTP interactions
  * (e.g. SPARQL queries). For more complicated requirements of HTTP, then the
  * application will need to use org.apache.http.client directly.
- * 
+ *
  * <p>
  * For HTTP GET, the application supplies a URL, the accept header string, and a
  * list of handlers to deal with different content type responses.
@@ -71,16 +71,16 @@ import org.slf4j.LoggerFactory ;
  * For HTTP PUT, the application supplies a URL, content, the accept header
  * string
  * </p>
- * 
+ *
  * @see HttpNames HttpNames, for HTTP related constants
  * @see WebContent WebContent, for content type name constants
  */
 public class HttpOp {
     /*
      * Implementation notes:
-     * 
+     *
      * Test are in Fuseki (need a server to test against)
-     * 
+     *
      * Pattern of functions provided: 1/ The full operation (includes
      * HttpClient, HttpContext) either of which can be null for
      * "default" 2/ Provide common use options without those two arguments.
@@ -107,11 +107,11 @@ public class HttpOp {
      * Used to reset {@link #defaultHttpClient} when needed
      */
     public static final HttpClient initialDefaultHttpClient = defaultHttpClient;
-    
+
     public static HttpClient createDefaultHttpClient() {
         return createPoolingHttpClient();
     }
-    
+
     /**
      * Constant for the default User-Agent header that ARQ will use
      */
@@ -174,10 +174,10 @@ public class HttpOp {
             return stream;
         }
     }
-    
+
     static class EOFInputStream extends InputStream {
         static InputStream empty = new EOFInputStream();
-        
+
         @Override
         public int available() { return 0 ; }
 
@@ -189,7 +189,7 @@ public class HttpOp {
      * Return the current default {@link HttpClient}. This may be null, meaning
      * a new {@link HttpClient} is created each time, if none is provided
      * in the HttpOp function call.
-     * 
+     *
      * @return Default HTTP Client
      */
     public static HttpClient getDefaultHttpClient() {
@@ -200,7 +200,7 @@ public class HttpOp {
      * Performance can be improved by using a shared HttpClient that uses connection pooling. However, pool management
      * is complicated and can lead to starvation (the system locks-up, especially on Java6; it's JVM sensitive). See the
      * Apache HTTP Commons Client documentation for more details.
-     * 
+     *
      * @param client HTTP client to use, if this is null, reset to original default instead
      */
     public static void setDefaultHttpClient(HttpClient client) {
@@ -209,7 +209,7 @@ public class HttpOp {
 
     /**
      * Setting an {@link HttpRequestTransformer} allows manipulation or enhancement of HTTP requests.
-     * 
+     *
      * @param tform HttpRequestTransformer to use, {@code null} for none (the default)
      * @return the previous HttpRequestTransformer in use
      */
@@ -226,7 +226,7 @@ public class HttpOp {
     public static CloseableHttpClient createPoolingHttpClient() {
         return createPoolingHttpClientBuilder().build() ;
     }
-    
+
     /**
      * Create an HttpClientBuilder that performs connection pooling.
      */
@@ -241,9 +241,9 @@ public class HttpOp {
     }
 
     /**
-     * Create an HttpClient that performs client-side caching and connection pooling. 
+     * Create an HttpClient that performs client-side caching and connection pooling.
      * This can be used with {@link #setDefaultHttpClient} or provided in the HttpOp calls.
-     * Beware that content is cached in this process, including across remote server restart. 
+     * Beware that content is cached in this process, including across remote server restart.
      */
     public static CloseableHttpClient createCachingHttpClient() {
         String s = System.getProperty("http.maxConnections", "5");
@@ -258,7 +258,7 @@ public class HttpOp {
 
     /**
      * Gets the User-Agent string that ARQ is applying to all HTTP requests
-     * 
+     *
      * @return User-Agent string
      */
     public static String getUserAgent() {
@@ -267,7 +267,7 @@ public class HttpOp {
 
     /**
      * Sets the User-Agent string that ARQ will apply to all HTTP requests
-     * 
+     *
      * @param userAgent
      *            User-Agent string
      */
@@ -281,7 +281,7 @@ public class HttpOp {
      * <p>
      * HTTP responses 400 and 500 become exceptions.
      * </p>
-     * 
+     *
      * @param url
      *            URL
      * @param acceptHeader
@@ -303,7 +303,7 @@ public class HttpOp {
      * dispatch the response body for handling.
      * <p>
      * HTTP responses 400 and 500 become exceptions.
-     * 
+     *
      * @param url
      *            URL
      * @param acceptHeader
@@ -328,7 +328,7 @@ public class HttpOp {
      * <p>
      * The acceptHeader string is any legal value for HTTP Accept: field.
      * </p>
-     * 
+     *
      * @param url
      *            URL
      * @return TypedInputStream
@@ -345,7 +345,7 @@ public class HttpOp {
      * <p>
      * The acceptHeader string is any legal value for HTTP Accept: field.
      * </p>
-     * 
+     *
      * @param url
      *            URL
      * @param acceptHeader
@@ -364,7 +364,7 @@ public class HttpOp {
      * A 404 will result in a null stream being returned, any other error code
      * results in an exception.
      * </p>
-     * 
+     *
      * @param url
      *            URL
      * @param acceptHeader
@@ -390,7 +390,7 @@ public class HttpOp {
     /**
      * Convenience operation to execute a GET with no content negotiation and
      * return the response as a string.
-     * 
+     *
      * @param url
      *            URL
      * @return Response as a string
@@ -402,7 +402,7 @@ public class HttpOp {
     /**
      * Convenience operation to execute a GET and return the response as a
      * string
-     * 
+     *
      * @param url
      *            URL
      * @param acceptHeader
@@ -425,7 +425,7 @@ public class HttpOp {
     /**
      * Executes a HTTP POST with the given contentype/string as the request body
      * and throws away success responses, failure responses will throw an error.
-     * 
+     *
      * @param url
      *            URL
      * @param contentType
@@ -439,7 +439,7 @@ public class HttpOp {
 
     /**
      * Execute a HTTP POST and return the typed return stream.
-     * 
+     *
      * @param url
      *            URL
      * @param contentType
@@ -456,7 +456,7 @@ public class HttpOp {
     /**
      * Executes a HTTP POST with a string as the request body and response
      * handling
-     * 
+     *
      * @param url
      *            URL
      * @param contentType
@@ -486,11 +486,11 @@ public class HttpOp {
         return handler.get();
     }
 
-    
+
     /**
      * Executes a HTTP POST with a string as the request body and response
      * handling
-     * 
+     *
      * @param url
      *            URL
      * @param contentType
@@ -524,7 +524,7 @@ public class HttpOp {
     /**
      * Executes a HTTP POST with a request body from an input stream without
      * response body with no response handling
-     * 
+     *
      * @param url
      *            URL
      * @param contentType
@@ -533,7 +533,7 @@ public class HttpOp {
      *            Input Stream to POST from
      * @param length
      *            Amount of content to POST
-     * 
+     *
      */
     public static void execHttpPost(String url, String contentType, InputStream input, long length) {
         execHttpPost(url, contentType, input, length, null, nullHandler, null, null);
@@ -545,7 +545,7 @@ public class HttpOp {
      * <p>
      * The input stream is assumed to be UTF-8.
      * </p>
-     * 
+     *
      * @param url
      *            URL
      * @param contentType
@@ -570,7 +570,7 @@ public class HttpOp {
      * <p>
      * The input stream is assumed to be UTF-8.
      * </p>
-     * 
+     *
      * @param url
      *            URL
      * @param contentType
@@ -600,10 +600,10 @@ public class HttpOp {
             closeEntity(e);
         }
     }
-    
+
     /**
      * Executes a HTTP POST of the given entity
-     * 
+     *
      * @param url
      *            URL
      * @param entity
@@ -615,7 +615,7 @@ public class HttpOp {
 
     /**
      * Execute a HTTP POST and return the typed return stream.
-     * 
+     *
      * @param url
      *            URL
      * @param entity
@@ -629,7 +629,7 @@ public class HttpOp {
 
     /**
      * Executes a HTTP Post
-     * 
+     *
      * @param url
      *            URL
      * @param entity
@@ -650,7 +650,7 @@ public class HttpOp {
      * <p>
      * Additional headers e.g. for authentication can be injected through an
      * {@link HttpContext}
-     * 
+     *
      * @param url
      *            URL
      * @param entity
@@ -672,7 +672,7 @@ public class HttpOp {
      * <p>
      * Additional headers e.g. for authentication can be injected through an
      * {@link HttpContext}
-     * 
+     *
      * @param url
      *            URL
      * @param entity
@@ -698,7 +698,7 @@ public class HttpOp {
      * <p>
      * Additional headers e.g. for authentication can be injected through an
      * {@link HttpContext}
-     * 
+     *
      * @param url
      *            URL
      * @param entity
@@ -720,14 +720,12 @@ public class HttpOp {
             httppost.setEntity(entity);
         exec(url, httppost, acceptHeader, handler, httpClient, httpContext);
     }
-    
-    
-    
+
     // ---- HTTP POST as a form.
 
     /**
      * Executes a HTTP POST.
-     * 
+     *
      * @param url
      *            URL
      * @param params
@@ -740,7 +738,7 @@ public class HttpOp {
     /**
      * Executes a HTTP POST and returns a TypedInputStream, The TypedInputStream
      * must be closed.
-     * 
+     *
      * @param url
      *            URL
      * @param params
@@ -767,8 +765,8 @@ public class HttpOp {
 //     * @param authenticator
 //     *            HTTP Authenticator
 //     */
-//    public static void execHttpPostForm(String url, Params params, 
-//                                        String acceptHeader,  
+//    public static void execHttpPostForm(String url, Params params,
+//                                        String acceptHeader,
 //                                        HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
 //        try {
 //            execHttpPostForm(url, params, acceptHeader, HttpResponseLib.nullResponse, httpClient, httpContext, authenticator);
@@ -790,7 +788,7 @@ public class HttpOp {
      * A 404 will result in a null stream being returned, any other error code
      * results in an exception.
      * </p>
-     * 
+     *
      * @param url
      *            URL
      * @param acceptHeader
@@ -817,7 +815,7 @@ public class HttpOp {
 
     /**
      * Executes a HTTP POST form operation
-     * 
+     *
      * @param url
      *            URL
      * @param params
@@ -833,7 +831,7 @@ public class HttpOp {
 
     /**
      * Executes a HTTP POST form operation
-     * 
+     *
      * @param url
      *            URL
      * @param params
@@ -859,7 +857,7 @@ public class HttpOp {
 
     /**
      * Executes a HTTP PUT operation
-     * 
+     *
      * @param url
      *            URL
      * @param contentType
@@ -873,7 +871,7 @@ public class HttpOp {
 
     /**
      * Executes a HTTP PUT operation
-     * 
+     *
      * @param url
      *            URL
      * @param contentType
@@ -900,7 +898,7 @@ public class HttpOp {
 
     /**
      * Executes a HTTP PUT operation
-     * 
+     *
      * @param url
      *            URL
      * @param contentType
@@ -916,7 +914,7 @@ public class HttpOp {
 
     /**
      * Executes a HTTP PUT operation
-     * 
+     *
      * @param url
      *            URL
      * @param contentType
@@ -944,7 +942,7 @@ public class HttpOp {
 
     /**
      * Executes a HTTP PUT operation
-     * 
+     *
      * @param url
      *            URL
      * @param entity
@@ -956,7 +954,7 @@ public class HttpOp {
 
     /**
      * Executes a HTTP PUT operation
-     * 
+     *
      * @param url
      *            URL
      * @param entity
@@ -975,7 +973,7 @@ public class HttpOp {
 
     /**
      * Executes a HTTP HEAD operation
-     * 
+     *
      * @param url
      *            URL
      */
@@ -985,7 +983,7 @@ public class HttpOp {
 
     /**
      * Executes a HTTP HEAD operation
-     * 
+     *
      * @param url
      *            URL
      * @param acceptString
@@ -999,7 +997,7 @@ public class HttpOp {
 
     /**
      * Executes a HTTP HEAD operation
-     * 
+     *
      * @param url
      *            URL
      * @param acceptString
@@ -1021,7 +1019,7 @@ public class HttpOp {
 
     /**
      * Executes a HTTP DELETE operation
-     * 
+     *
      * @param url
      *            URL
      */
@@ -1031,7 +1029,7 @@ public class HttpOp {
 
     /**
      * Executes a HTTP DELETE operation
-     * 
+     *
      * @param url
      *            URL
      * @param handler
@@ -1043,7 +1041,7 @@ public class HttpOp {
 
     /**
      * Executes a HTTP DELETE operation
-     * 
+     *
      * @param url
      *            URL
      * @param handler
@@ -1102,7 +1100,7 @@ public class HttpOp {
 
     /**
      * Applies the configured User-Agent string to the HTTP request
-     * 
+     *
      * @param message
      *            HTTP request
      */

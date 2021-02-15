@@ -46,8 +46,7 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.ResultSetStream;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.binding.BindingFactory;
-import org.apache.jena.sparql.engine.binding.BindingMap;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 import org.apache.jena.sparql.junit.QueryTestException;
@@ -253,7 +252,7 @@ public class QueryExecTest implements Runnable {
         List<Binding> bindings = new ArrayList<>();
         while (resultsActual.hasNext()) {
             Binding b = resultsActual.nextBinding();
-            BindingMap b2 = BindingFactory.create();
+            BindingBuilder builder = Binding.builder();
 
             for ( String vn : resultsActual.getResultVars() ) {
                 Var v = Var.alloc(vn);
@@ -265,9 +264,9 @@ public class QueryExecTest implements Runnable {
                     s = "_:" + n.getBlankNodeLabel();
                 else
                     s = NodeFunctions.str(n);
-                b2.add(v, NodeFactory.createLiteral(s));
+                builder.add(v, NodeFactory.createLiteral(s));
             }
-            bindings.add(b2);
+            bindings.add(builder.build());
         }
         ResultSet rs = new ResultSetStream(resultsActual.getResultVars(), null, new QueryIterPlainWrapper(bindings.iterator()));
         return ResultSetFactory.makeRewindable(rs);

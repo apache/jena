@@ -7,9 +7,9 @@ package org.apache.jena.arq.querybuilder;
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,15 +17,96 @@ package org.apache.jena.arq.querybuilder;
  * limitations under the License.
  */
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.apache.jena.arq.querybuilder.clauses.WhereClause;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Query;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.expr.*;
+import org.apache.jena.sparql.expr.E_Add;
+import org.apache.jena.sparql.expr.E_BNode;
+import org.apache.jena.sparql.expr.E_Bound;
+import org.apache.jena.sparql.expr.E_Call;
+import org.apache.jena.sparql.expr.E_Coalesce;
+import org.apache.jena.sparql.expr.E_Conditional;
+import org.apache.jena.sparql.expr.E_Datatype;
+import org.apache.jena.sparql.expr.E_DateTimeDay;
+import org.apache.jena.sparql.expr.E_DateTimeHours;
+import org.apache.jena.sparql.expr.E_DateTimeMinutes;
+import org.apache.jena.sparql.expr.E_DateTimeMonth;
+import org.apache.jena.sparql.expr.E_DateTimeSeconds;
+import org.apache.jena.sparql.expr.E_DateTimeTZ;
+import org.apache.jena.sparql.expr.E_DateTimeTimezone;
+import org.apache.jena.sparql.expr.E_DateTimeYear;
+import org.apache.jena.sparql.expr.E_Divide;
+import org.apache.jena.sparql.expr.E_Equals;
+import org.apache.jena.sparql.expr.E_Exists;
+import org.apache.jena.sparql.expr.E_Function;
+import org.apache.jena.sparql.expr.E_FunctionDynamic;
+import org.apache.jena.sparql.expr.E_GreaterThan;
+import org.apache.jena.sparql.expr.E_GreaterThanOrEqual;
+import org.apache.jena.sparql.expr.E_IRI;
+import org.apache.jena.sparql.expr.E_IsBlank;
+import org.apache.jena.sparql.expr.E_IsIRI;
+import org.apache.jena.sparql.expr.E_IsLiteral;
+import org.apache.jena.sparql.expr.E_IsNumeric;
+import org.apache.jena.sparql.expr.E_Lang;
+import org.apache.jena.sparql.expr.E_LangMatches;
+import org.apache.jena.sparql.expr.E_LessThan;
+import org.apache.jena.sparql.expr.E_LessThanOrEqual;
+import org.apache.jena.sparql.expr.E_LogicalAnd;
+import org.apache.jena.sparql.expr.E_LogicalNot;
+import org.apache.jena.sparql.expr.E_LogicalOr;
+import org.apache.jena.sparql.expr.E_MD5;
+import org.apache.jena.sparql.expr.E_Multiply;
+import org.apache.jena.sparql.expr.E_NotEquals;
+import org.apache.jena.sparql.expr.E_NotExists;
+import org.apache.jena.sparql.expr.E_NotOneOf;
+import org.apache.jena.sparql.expr.E_Now;
+import org.apache.jena.sparql.expr.E_NumAbs;
+import org.apache.jena.sparql.expr.E_NumCeiling;
+import org.apache.jena.sparql.expr.E_NumFloor;
+import org.apache.jena.sparql.expr.E_NumRound;
+import org.apache.jena.sparql.expr.E_OneOf;
+import org.apache.jena.sparql.expr.E_Random;
+import org.apache.jena.sparql.expr.E_Regex;
+import org.apache.jena.sparql.expr.E_SHA1;
+import org.apache.jena.sparql.expr.E_SHA224;
+import org.apache.jena.sparql.expr.E_SHA256;
+import org.apache.jena.sparql.expr.E_SHA384;
+import org.apache.jena.sparql.expr.E_SHA512;
+import org.apache.jena.sparql.expr.E_SameTerm;
+import org.apache.jena.sparql.expr.E_Str;
+import org.apache.jena.sparql.expr.E_StrAfter;
+import org.apache.jena.sparql.expr.E_StrBefore;
+import org.apache.jena.sparql.expr.E_StrConcat;
+import org.apache.jena.sparql.expr.E_StrContains;
+import org.apache.jena.sparql.expr.E_StrDatatype;
+import org.apache.jena.sparql.expr.E_StrEncodeForURI;
+import org.apache.jena.sparql.expr.E_StrEndsWith;
+import org.apache.jena.sparql.expr.E_StrLang;
+import org.apache.jena.sparql.expr.E_StrLength;
+import org.apache.jena.sparql.expr.E_StrLowerCase;
+import org.apache.jena.sparql.expr.E_StrReplace;
+import org.apache.jena.sparql.expr.E_StrStartsWith;
+import org.apache.jena.sparql.expr.E_StrSubstring;
+import org.apache.jena.sparql.expr.E_StrUUID;
+import org.apache.jena.sparql.expr.E_StrUpperCase;
+import org.apache.jena.sparql.expr.E_Subtract;
+import org.apache.jena.sparql.expr.E_UUID;
+import org.apache.jena.sparql.expr.E_UnaryMinus;
+import org.apache.jena.sparql.expr.E_UnaryPlus;
+import org.apache.jena.sparql.expr.E_Version;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.ExprNone;
+import org.apache.jena.sparql.expr.ExprVar;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueNode;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueString;
@@ -296,7 +377,7 @@ public class ExprFactoryTest {
 	// {
 	// assertTrue( e instanceof E_Cast);
 	// }
-	
+
 	@Test
 	public void divideTest() {
 		Expr e = factory.divide(factory.none(), factory.none());
@@ -418,7 +499,7 @@ public class ExprFactoryTest {
 	}
 
 	// expr3 functions
-	
+
 	@Test
 	public void condTest() {
 		Expr e = factory.cond(factory.none(), factory.none(), factory.none());
@@ -426,7 +507,7 @@ public class ExprFactoryTest {
 	}
 
 	// exprN functions
-	
+
 	@Test
 	public void bnodeTest_expr() {
 		Expr e = factory.bnode(factory.none());
@@ -530,7 +611,7 @@ public class ExprFactoryTest {
 	}
 
 	// expr op
-	
+
 	@Test
 	public void existsTest() {
 		WhereHandler handler = new WhereHandler(new Query());
@@ -619,7 +700,7 @@ public class ExprFactoryTest {
 		NodeValueInteger i = (NodeValueInteger)e;
 		assertEquals( 3, i.asNode().getLiteralValue());
 	}
-	
+
 	@Test
 	public void asExprTest_null() {
 		Expr e = factory.asExpr(null);
@@ -649,7 +730,7 @@ public class ExprFactoryTest {
 		NodeValueString n = (NodeValueString) e;
 		assertEquals("\"http://example.com/foo\"", n.asNode().toString());
 	}
-	
+
 	public void asExprTest_Varnode() {
 		Expr e = factory.asExpr(NodeFactory.createVariable("hello"));
 		assertTrue(e instanceof ExprVar);
@@ -679,7 +760,7 @@ public class ExprFactoryTest {
 		ExprVar v = (ExprVar) e;
 		assertEquals("foo", v.asVar().getName());
 	}
-	
+
 	@Test
 	public void asListTest() {
 		ExprList lst = factory.asList("?foo", "http://example.com", Converters.quoted("hello"), 1, 5L, 3.14f, 6.28d, Var.alloc( "bar" ), null, factory.rand() );

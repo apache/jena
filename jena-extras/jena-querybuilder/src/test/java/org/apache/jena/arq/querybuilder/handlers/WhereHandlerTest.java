@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,9 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,7 +39,8 @@ import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.engine.binding.BindingHashMap;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingFactory;
 import org.apache.jena.sparql.expr.E_Random;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.apache.jena.sparql.path.Path;
@@ -71,7 +74,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 				NodeFactory.createLiteral("three"))));
 		handler.addAll(handler2);
 		handler.build();
-		
+
 		assertContainsRegex(
 				WHERE + OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE + quote("three") + OPT_SPACE + CLOSE_CURLY,
 				query.toString());
@@ -86,7 +89,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 				NodeFactory.createLiteral("three"))));
 		handler.addAll(handler2);
 		handler.build();
-		
+
 		assertContainsRegex(WHERE + OPEN_CURLY + "ANY" + SPACE + "ANY" + SPACE + "ANY" + DOT + SPACE + uri("one")
 				+ SPACE + uri("two") + SPACE + quote("three") + OPT_SPACE + CLOSE_CURLY, query.toString());
 	}
@@ -96,7 +99,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		handler.addWhere(new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
 				NodeFactory.createURI("three"))));
 		handler.build();
-		
+
 		assertContainsRegex(
 				WHERE + OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE + uri("three") + OPT_SPACE + CLOSE_CURLY,
 				query.toString());
@@ -108,7 +111,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 				new TriplePath(new Triple(NodeFactory.createURI("one"), ResourceFactory.createResource("two").asNode(),
 						ResourceFactory.createLangLiteral("three", "en-US").asNode())));
 		handler.build();
-		
+
 		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE + quote("three") + "@en-US"
 				+ OPT_SPACE + CLOSE_CURLY, query.toString());
 	}
@@ -121,7 +124,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		handler.addWhere(new TriplePath(NodeFactory.createURI("one"), path,
 				ResourceFactory.createLangLiteral("three", "en-US").asNode()));
 		handler.build();
-		
+
 		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE + uri("urn:test:two") + "/" + uri("urn:test:dos")
 				+ SPACE + quote("three") + "@en-US" + OPT_SPACE + CLOSE_CURLY, query.toString());
 	}
@@ -130,7 +133,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 	public void testAddWhereAnonymous() {
 		handler.addWhere(new TriplePath(new Triple(Node.ANY, RDF.first.asNode(), Node.ANY)));
 		handler.build();
-		
+
 		assertContainsRegex(WHERE + OPEN_CURLY + "ANY" + SPACE
 				+ uri("http://www\\.w3\\.org/1999/02/22-rdf-syntax-ns#first") + SPACE + "ANY" + OPT_SPACE + CLOSE_CURLY,
 				query.toString());
@@ -169,14 +172,14 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
 		handler.addOptional(pattern);
 		handler.build();
-		
+
 		ElementPathBlock epb = new ElementPathBlock();
 		ElementOptional optional = new ElementOptional(epb);
 		TriplePath tp = new TriplePath( new Triple(s, q, n123));
 		epb.addTriplePath( tp );
 		 tp = new TriplePath( new Triple(s, v, x));
 		epb.addTriplePath( tp );
-		
+
 		WhereValidator visitor = new WhereValidator( optional );
 		handler.getQueryPattern().visit( visitor );
 		assertTrue( visitor.matching );
@@ -189,7 +192,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 				new TriplePath(new Triple(NodeFactory.createURI("one"), ResourceFactory.createResource("two").asNode(),
 						ResourceFactory.createLangLiteral("three", "en-US").asNode())));
 		handler.build();
-		
+
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE + OPEN_CURLY + uri("one") + SPACE + uri("two")
 				+ SPACE + quote("three") + "@en-US" + OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY, query.toString());
 	}
@@ -203,7 +206,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		handler.addOptional(new TriplePath(NodeFactory.createURI("one"), path,
 				ResourceFactory.createLangLiteral("three", "en-US").asNode()));
 		handler.build();
-		
+
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE + OPEN_CURLY + uri("one") + SPACE
 				+ uri("urn:test:two") + "/" + uri("urn:test:dos") + SPACE + quote("three") + "@en-US" + OPT_SPACE
 				+ CLOSE_CURLY + CLOSE_CURLY, query.toString());
@@ -214,7 +217,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		handler.addWhere(new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
 				NodeFactory.createURI("three"))));
 		handler.build();
-		
+
 		assertContainsRegex(
 				WHERE + OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE + uri("three") + OPT_SPACE + CLOSE_CURLY,
 				query.toString());
@@ -224,7 +227,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 	public void testAddFilter() throws ParseException {
 		handler.addFilter("?one < 10");
 		handler.build();
-		
+
 		assertContainsRegex(WHERE + OPEN_CURLY + "FILTER" + OPT_SPACE + OPEN_PAREN + var("one") + OPT_SPACE + LT
 				+ OPT_SPACE + "10" + CLOSE_PAREN + CLOSE_CURLY, query.toString());
 	}
@@ -234,7 +237,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		query.setPrefix("afn", "http://jena.apache.org/ARQ/function#");
 		handler.addFilter("afn:namespace(?one) = 'foo'");
 		handler.build();
-		
+
 		assertContainsRegex(
 				WHERE + OPEN_CURLY + "FILTER" + OPT_SPACE + OPEN_PAREN + "afn:namespace" + OPEN_PAREN + var("one")
 						+ CLOSE_PAREN + OPT_SPACE + EQ + OPT_SPACE + QUOTE + "foo" + QUOTE + CLOSE_PAREN + CLOSE_CURLY,
@@ -245,7 +248,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 	public void testAddFilterVarOnly() throws ParseException {
 		handler.addFilter("?one");
 		handler.build();
-		
+
 		assertContainsRegex(
 				WHERE + OPEN_CURLY + "FILTER" + OPT_SPACE + OPEN_PAREN + var("one") + CLOSE_PAREN + CLOSE_CURLY,
 				query.toString());
@@ -257,7 +260,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		sb.addPrefix("pfx", "uri").addVar("?x").addWhere("<one>", "<two>", "three");
 		handler.addSubQuery(sb);
 		handler.build();
-		
+
 		assertContainsRegex(SELECT + var("x") + SPACE + WHERE + OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
 				+ quote("three") + CLOSE_CURLY, query.toString());
 	}
@@ -268,7 +271,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		sb.addPrefix("pfx", "uri").addVar("count(*)", "?x").addWhere("<one>", "<two>", "three");
 		handler.addSubQuery(sb);
 		handler.build();
-		
+
 		assertContainsRegex(SELECT + OPEN_PAREN + "count" + OPEN_PAREN + "\\*" + CLOSE_PAREN + SPACE + "AS" + SPACE
 				+ var("x") + CLOSE_PAREN + SPACE + WHERE + OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
 				+ quote("three") + CLOSE_CURLY, query.toString());
@@ -280,7 +283,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		sb.addPrefix("pfx", "uri").addWhere("<one>", "<two>", "three");
 		handler.addSubQuery(sb);
 		handler.build();
-		
+
 		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE + quote("three") + CLOSE_CURLY,
 				query.toString());
 	}
@@ -289,31 +292,31 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 	public void testAddUnion() {
 		Triple t1 = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three"));
 		Triple t2 = new Triple(NodeFactory.createURI("uno"), NodeFactory.createURI("dos"), NodeFactory.createURI("tres"));
-				
+
 		SelectBuilder sb1 = new SelectBuilder()
 		.addWhere( t1 );
-		
+
 		SelectBuilder sb2 = new SelectBuilder()
 				.addWhere( t2 );
-				
+
 		handler.addUnion(sb1);
 		handler.addUnion(sb2);
 		handler.build();
-		
+
 
 		ElementUnion union = new ElementUnion();
 		ElementPathBlock epb1 = new ElementPathBlock();
 		epb1.addTriple(t1);
 		union.addElement( epb1 );
-		
+
 		ElementPathBlock epb2 = new ElementPathBlock();
 		epb2.addTriple(t2);
 		union.addElement( epb2 );
-		
+
 		WhereValidator visitor = new WhereValidator( union );
 		handler.getQueryPattern().visit( visitor );
 		assertTrue( visitor.matching );
-		
+
 	}
 
 	@Test
@@ -322,16 +325,16 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		SelectBuilder sb = new SelectBuilder().addWhere(t1);
 		handler.addUnion(sb);
 		handler.build();
-		
-		
+
+
 		ElementPathBlock epb1 = new ElementPathBlock();
 		epb1.addTriple(t1);
-		
+
 		WhereValidator visitor = new WhereValidator( epb1 );
 		handler.getQueryPattern().visit( visitor );
 		assertTrue( visitor.matching );
 	}
-	
+
 	@Test
 	public void testAddUnionToExisting() {
 		handler.addWhere(new TriplePath(
@@ -341,7 +344,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 				new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
 		handler.addUnion(sb);
 		handler.build();
-		
+
 		assertContainsRegex(WHERE + OPEN_CURLY + OPEN_CURLY + uri("s") + SPACE + uri("p") + SPACE + uri("o")
 				+ CLOSE_CURLY + OPT_SPACE + UNION + OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE + uri("three")
 				+ OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY, query.toString());
@@ -351,14 +354,14 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 	public void testAddUnionWithVar() {
 		Triple t1 = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three"));
 		Triple t2 = new Triple(NodeFactory.createURI("uno"), NodeFactory.createURI("dos"), NodeFactory.createURI("tres"));
-		
+
 		SelectBuilder sb = new SelectBuilder().addVar("x").addWhere( t1 );
 		handler.addUnion(sb);
-			
+
 		SelectBuilder sb2 = new SelectBuilder().addWhere( t2 );
 		handler.addUnion( sb2 );
 		handler.build();
-		
+
 		ElementUnion union = new ElementUnion();
 		Query q = new Query();
 		q.setQuerySelectType();
@@ -371,11 +374,11 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		ElementPathBlock epb2 = new ElementPathBlock();
 		epb2.addTriple(t2);
 		union.addElement( epb2 );
-		
+
 		WhereValidator visitor = new WhereValidator( union );
 		handler.getQueryPattern().visit( visitor );
 		assertTrue( visitor.matching );
-				
+
 	}
 
 	@Test
@@ -383,7 +386,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		handler.addWhere(new TriplePath(
 				new Triple(NodeFactory.createURI("s"), NodeFactory.createURI("p"), NodeFactory.createURI("o"))));
 		handler.build();
-		
+
 		SelectBuilder sb = new SelectBuilder().addVar("x").addWhere(
 				new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
 
@@ -402,7 +405,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
 		handler.addGraph(NodeFactory.createURI("graph"), handler2);
 		handler.build();
-		
+
 		assertContainsRegex(WHERE + OPEN_CURLY + "GRAPH" + SPACE + uri("graph") + SPACE + OPEN_CURLY + uri("one")
 				+ SPACE + uri("two") + SPACE + uri("three") + OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY, query.toString());
 
@@ -413,7 +416,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		Var v = Var.alloc("v");
 		handler.addWhere(new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v)));
 		handler.build();
-		
+
 		assertContainsRegex(
 				WHERE + OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE + var("v") + OPT_SPACE + CLOSE_CURLY,
 				query.toString());
@@ -435,7 +438,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		values.put(Var.alloc("v"), NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10)));
 		handler.setVars(values);
 		handler.build();
-		
+
 		assertContainsRegex(WHERE + OPEN_CURLY + "FILTER" + OPT_SPACE + OPEN_PAREN + var("one") + OPT_SPACE + LT
 				+ OPT_SPACE + quote("10") + "\\^\\^" + uri("http://www.w3.org/2001/XMLSchema#int") + CLOSE_PAREN
 				+ CLOSE_CURLY, query.toString());
@@ -447,7 +450,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		Var v = Var.alloc("v");
 		handler.addOptional(new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v)));
 		handler.build();
-		
+
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE + OPEN_CURLY + uri("one") + SPACE + uri("two")
 				+ SPACE + var("v") + OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY, query.toString());
 
@@ -455,7 +458,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		values.put(v, NodeFactory.createURI("three"));
 		handler.setVars(values);
 		handler.build();
-		
+
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE + OPEN_CURLY + uri("one") + SPACE + uri("two")
 				+ SPACE + uri("three") + OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY, query.toString());
 	}
@@ -467,15 +470,15 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		sb.addPrefix("pfx", "uri").addWhere("<one>", "<two>", v);
 		handler.addSubQuery(sb);
 		handler.build();
-		
+
 		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + ".+" + uri("two") + ".+" + var("v") + ".+" + CLOSE_CURLY,
 				query.toString());
-		
+
 		Map<Var, Node> values = new HashMap<>();
 		values.put(v, NodeFactory.createURI("three"));
 		handler.setVars(values);
 		handler.build();
-		
+
 		assertContainsRegex(
 				WHERE + OPEN_CURLY + uri("one") + ".+" + uri("two") + ".+" + uri("three") + ".+" + CLOSE_CURLY,
 				query.toString());
@@ -490,14 +493,14 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		SelectBuilder sb2 = new SelectBuilder().addWhere( "<uno>", "<dos>", "<tres>");
 		handler.addUnion(sb2);
 		handler.build();
-		
+
 		Node one = NodeFactory.createURI("one");
 		Node two = NodeFactory.createURI("two");
 		Node three = NodeFactory.createURI("three");
 		Node uno = NodeFactory.createURI("uno");
 		Node dos = NodeFactory.createURI("dos");
 		Node tres = NodeFactory.createURI("tres");
-		
+
 		ElementUnion union = new ElementUnion();
 		ElementPathBlock epb = new ElementPathBlock();
 		Triple t = new Triple( one, two, v.asNode());
@@ -510,12 +513,12 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		WhereValidator visitor = new WhereValidator( union );
 		handler.getQueryPattern().visit( visitor );
 		assertTrue( visitor.matching );
-		
+
 		Map<Var, Node> values = new HashMap<>();
 		values.put(v, three);
 		handler.setVars(values);
 		handler.build();
-		
+
 		 union = new ElementUnion();
 		 epb = new ElementPathBlock();
 		 t = new Triple( one, two, three);
@@ -528,7 +531,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		 visitor = new WhereValidator( union );
 			handler.getQueryPattern().visit( visitor );
 			assertTrue( visitor.matching );
-			
+
 	}
 
 	@Test
@@ -536,7 +539,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		Var v = Var.alloc("foo");
 		handler.addBind("rand()", v);
 		handler.build();
-		
+
 		assertContainsRegex(OPEN_CURLY + BIND + OPEN_PAREN + "rand\\(\\)" + SPACE + "AS" + SPACE + var("foo")
 				+ CLOSE_PAREN + CLOSE_CURLY, query.toString());
 	}
@@ -546,36 +549,36 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		Var v = Var.alloc("foo");
 		handler.addBind(new E_Random(), v);
 		handler.build();
-		
+
 		assertContainsRegex(OPEN_CURLY + BIND + OPEN_PAREN + "rand\\(\\)" + SPACE + "AS" + SPACE + var("foo")
 				+ CLOSE_PAREN + CLOSE_CURLY, query.toString());
 	}
 
 	@Test
 	public void testList() {
-		Node n = handler.list("<one>", "?var", "'three'");        
-		
+		Node n = handler.list("<one>", "?var", "'three'");
+
 		Node one = NodeFactory.createURI("one");
 		Node two = Var.alloc("var").asNode();
 		Node three = NodeFactory.createLiteral( "three");
-		
+
 		ElementPathBlock epb = new ElementPathBlock();
-		Node firstObject = NodeFactory.createBlankNode();		
+		Node firstObject = NodeFactory.createBlankNode();
 		Node secondObject = NodeFactory.createBlankNode();
 		Node thirdObject = NodeFactory.createBlankNode();
-		
+
 		epb.addTriplePath( new TriplePath( new Triple( firstObject, RDF.first.asNode(), one)));
 		epb.addTriplePath( new TriplePath( new Triple( firstObject, RDF.rest.asNode(), secondObject)));
 		epb.addTriplePath( new TriplePath( new Triple( secondObject, RDF.first.asNode(), two)));
 		epb.addTriplePath( new TriplePath( new Triple( secondObject, RDF.rest.asNode(), thirdObject)));
 		epb.addTriplePath( new TriplePath( new Triple( thirdObject, RDF.first.asNode(), three)));
 		epb.addTriplePath( new TriplePath( new Triple( thirdObject, RDF.rest.asNode(), RDF.nil.asNode())));
-		
-		
+
+
 		WhereValidator visitor = new WhereValidator( epb );
 		query.getQueryPattern().visit( visitor );
 		assertTrue( visitor.matching );
-		                    
+
 		assertTrue(n.isBlank());
 	}
 
@@ -584,7 +587,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		handler.addWhere(new TriplePath(new Triple(handler.list("<one>", "?var", "'three'"),
 				ResourceFactory.createResource("foo").asNode(), ResourceFactory.createResource("bar").asNode())));
 		handler.build();
-		
+
 		assertContainsRegex(WHERE + OPEN_CURLY + PAREN_OPEN+SPACE+uri("one")+SPACE+var("var")+SPACE+quote("three")+SPACE+PAREN_CLOSE ,
 		                    query.toString());
 
@@ -595,8 +598,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		SelectBuilder sb = new SelectBuilder();
 		sb.addPrefix("pfx", "uri").addWhere("<one>", "<two>", "three");
 		handler.addMinus(sb);
-		handler.build();	
-		
+		handler.build();
+
 		ElementPathBlock epb = new ElementPathBlock();
 		ElementMinus minus = new ElementMinus(epb);
 		epb.addTriplePath( new TriplePath( new Triple( NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createLiteral("three"))));
@@ -604,69 +607,60 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		query.getQueryPattern().visit( visitor );
 		assertTrue( visitor.matching );
 	}
-	
-	
+
+
 	@Test
 	public void testAddValueVar_pfx_obj() {
 		handler.addValueVar( query.getPrefixMapping(), "?v" );
 		handler.build();
-		
+
 		Var v = Var.alloc("v");
 		ElementData edat = new ElementData();
 		edat.add( v );
-		
+
 		WhereValidator visitor = new WhereValidator( edat );
 		query.getQueryPattern().visit( visitor );
 		assertTrue( visitor.matching );
 	}
-	
+
 	@Test
 	public void testAddValueVar_pfx_obj_array()
 	{
-		
+
 		Node two = NodeFactory.createURI( "two" );
 		handler.addValueVar( query.getPrefixMapping(), "?v", "<one>", two );
 		handler.build();
-		
+
 		Var v = Var.alloc("v");
 		ElementData edat = new ElementData();
 		edat.add( v );
-		BindingHashMap binding = new BindingHashMap();
-		binding.add( v, NodeFactory.createURI( "one" ));
-		edat.add( binding );
-		binding = new BindingHashMap();
-		binding.add( v, two);
-		edat.add( binding );
-		
+		Binding binding1 = BindingFactory.binding(v, NodeFactory.createURI( "one" ));
+		edat.add( binding1 );
+		Binding binding2 = BindingFactory.binding(v, two);
+		edat.add( binding2 );
+
 		WhereValidator visitor = new WhereValidator( edat );
 		query.getQueryPattern().visit( visitor );
 		assertTrue( visitor.matching );
 	}
-	
+
 	@Test
 	public void testAddValueVars() {
 		final Var v = Var.alloc("v");
 		Map<Object,List<?>> map = new LinkedHashMap<Object,List<?>>();
-		
+
 		map.put( Var.alloc("v"), Arrays.asList( "<one>", "<two>"));
 		map.put( "?x", Arrays.asList( "three", "four"));
-		
+
 		handler.addValueVars( query.getPrefixMapping(), map );
 		handler.build();
 
 		Var x = Var.alloc("x");
 		ElementData edat = new ElementData();
-		
+
 		edat.add( v );
 		edat.add( x );
-		BindingHashMap binding = new BindingHashMap();
-		binding.add( v, NodeFactory.createURI( "one" ));
-		binding.add( x, NodeFactory.createLiteral("three"));
-		edat.add( binding );
-		binding = new BindingHashMap();
-		binding.add( v, NodeFactory.createURI( "two" ));
-		binding.add( x, NodeFactory.createLiteral("four"));
-		edat.add( binding );
+        setupBindings(edat, x, v);
 
 		WhereValidator visitor = new WhereValidator( edat );
 		query.getQueryPattern().visit( visitor );
@@ -682,26 +676,19 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		handler.addValueVar( query.getPrefixMapping(), v );
 		handler.addValueVar( query.getPrefixMapping(), x );
 		handler.addValueRow( query.getPrefixMapping(), "<one>", "three" );
-		handler.addValueRow( query.getPrefixMapping(), "<two>", "four" );	
+		handler.addValueRow( query.getPrefixMapping(), "<two>", "four" );
 		handler.build();
-		
+
 		ElementData edat = new ElementData();
 		edat.add( v );
 		edat.add( x );
-		BindingHashMap binding = new BindingHashMap();
-		binding.add( v, NodeFactory.createURI( "one" ));
-		binding.add( x, NodeFactory.createLiteral("three"));
-		edat.add( binding );
-		binding = new BindingHashMap();
-		binding.add( v, NodeFactory.createURI( "two" ));
-		binding.add( x, NodeFactory.createLiteral("four"));
-		edat.add( binding );
+		setupBindings(edat, x, v);
 
 		WhereValidator visitor = new WhereValidator( edat );
 		query.getQueryPattern().visit( visitor );
 		assertTrue( visitor.matching );
 	}
-	
+
 	@Test
 	public void testAddValueRow_pfx_collection() {
 		final Var v = Var.alloc("v");
@@ -710,27 +697,26 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		handler.addValueVar( query.getPrefixMapping(), v );
 		handler.addValueVar( query.getPrefixMapping(), x );
 		handler.addValueRow( query.getPrefixMapping(), Arrays.asList("<one>", "three"));
-		handler.addValueRow( query.getPrefixMapping(), Arrays.asList("<two>", "four" ));	
+		handler.addValueRow( query.getPrefixMapping(), Arrays.asList("<two>", "four" ));
 		handler.build();
-		
+
 		ElementData edat = new ElementData();
 		edat.add( v );
 		edat.add( x );
-	
-		BindingHashMap binding = new BindingHashMap();
-		binding.add( v, NodeFactory.createURI( "one" ));
-		binding.add( x, NodeFactory.createLiteral("three"));
-		edat.add( binding );
-		binding = new BindingHashMap();
-		binding.add( v, NodeFactory.createURI( "two" ));
-		binding.add( x, NodeFactory.createLiteral("four"));
-		edat.add( binding );
+        setupBindings(edat, x, v);
 
 		WhereValidator visitor = new WhereValidator( edat );
 		query.getQueryPattern().visit( visitor );
 		assertTrue( visitor.matching );
 	}
-	
+
+    private static void setupBindings(ElementData edat, Var x, Var v) {
+        Binding binding1 = BindingFactory.binding(v, NodeFactory.createURI("one"), x, NodeFactory.createLiteral("three"));
+        edat.add(binding1);
+        Binding binding2 = BindingFactory.binding(v, NodeFactory.createURI("two"), x, NodeFactory.createLiteral("four"));
+        edat.add(binding2);
+    }
+
 	@Test
 	public void testGetValuesVars() {
 		final Var v = Var.alloc("v");
@@ -748,12 +734,12 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 	public void testGetValuesMap() {
 		final Var v = Var.alloc("v");
 		final Var x = Var.alloc("x");
-	
+
 		handler.addValueVar( query.getPrefixMapping(), v );
 		handler.addValueVar( query.getPrefixMapping(), x );
 		handler.addValueRow( query.getPrefixMapping(), Arrays.asList("<one>", "three"));
 		handler.addValueRow( query.getPrefixMapping(), Arrays.asList("<two>", "four" ));
-		
+
 		Map<Var,List<Node>> map = handler.getValuesMap();
 		assertEquals( 2, map.keySet().size());
 		assertTrue( map.keySet().contains( v ));
@@ -773,14 +759,14 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 	{
 		final Var v = Var.alloc("v");
 		final Var x = Var.alloc("x");
-	
+
 		handler.addValueVar( query.getPrefixMapping(), v );
 		handler.addValueVar( query.getPrefixMapping(), x );
 		handler.addValueRow( query.getPrefixMapping(), Arrays.asList("<one>", "three"));
 		handler.addValueRow( query.getPrefixMapping(), Arrays.asList("<two>", "four" ));
 		handler.clearValues();
 		Map<Var,List<Node>> map = handler.getValuesMap();
-		assertTrue( map.isEmpty());	
+		assertTrue( map.isEmpty());
 	}
 
 
@@ -794,23 +780,20 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		handler.addValueVar( query.getPrefixMapping(), "?x", "<one>", "?v");
 		handler.setVars(values);
 		handler.build();
-		
+
 		ElementData edat = new ElementData();
 		Var x = Var.alloc("x");
 		edat.add( x );
-	
-		BindingHashMap binding = new BindingHashMap();
-		binding.add( x, NodeFactory.createURI( "one" ));
-		edat.add( binding );
-		binding = new BindingHashMap();
-		binding.add( x, value);
-		edat.add( binding );
+		Binding binding1 = BindingFactory.binding(x, NodeFactory.createURI( "one" ));
+		edat.add( binding1 );
+		Binding binding2 = BindingFactory.binding(x, value);
+		edat.add( binding2 );
 
 		WhereValidator visitor = new WhereValidator( edat );
 		query.getQueryPattern().visit( visitor );
 		assertTrue( visitor.matching );
 	}
-	
+
 	@Test
 	public void testWhereDataQuery() {
 		// test that the getVars getMap and clear methods work.
@@ -818,15 +801,15 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		Var y = Var.alloc("y");
 		Node foo = NodeFactory.createURI( "foo" );
 		Node bar = NodeFactory.createLiteral( "bar" );
-		
+
 		assertTrue(handler.getValuesVars().isEmpty());
-		
+
 		handler.addValueVar(query.getPrefixMapping(), x, foo);
 		handler.addValueVar(query.getPrefixMapping(), y, bar);
-	
+
 		assertFalse(handler.getValuesVars().isEmpty());
-		
-		
+
+
 		List<Var> lst = handler.getValuesVars();
 		assertEquals(2, lst.size());
 		assertEquals(x, lst.get(0));

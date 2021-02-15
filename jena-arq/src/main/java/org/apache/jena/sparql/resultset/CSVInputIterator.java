@@ -30,8 +30,8 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.QueryException ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorBase ;
 import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
@@ -42,11 +42,11 @@ import org.apache.jena.sparql.serializer.SerializationContext ;
 public class CSVInputIterator extends QueryIteratorBase
 {
 	private BufferedReader reader;
-	private BindingMap binding;
+	private Binding binding;
 	private int expectedItems;
 	private List<Var> vars;
 	private long lineNum = 1;
-	
+
 	/**
 	 * Creates a new CSV Input Iterator
 	 * <p>
@@ -59,7 +59,7 @@ public class CSVInputIterator extends QueryIteratorBase
 		this.expectedItems = vars.size();
 		this.vars = vars;
 	}
-	
+
 	@Override
 	public void output(IndentedWriter out, SerializationContext sCxt) {
 	    // Not needed - only called as part of printing/debugging query plans.
@@ -80,18 +80,18 @@ public class CSVInputIterator extends QueryIteratorBase
 			return false;
 		}
 	}
-	
+
 	private boolean parseNextBinding()
 	{
 	    String line;
-	    try 
+	    try
 	    {
 	        line = this.reader.readLine();
 	        //Once EOF has been reached we'll see null for this call so we can return false because there are no further bindings
 	        if (line == null) return false;
 	        this.lineNum++;
-	    } 
-	    catch (IOException e) 
+	    }
+	    catch (IOException e)
 	    { throw new QueryException("Error parsing CSV results - " + e.getMessage()); }
 
 	    if ( line.isEmpty() )
@@ -99,29 +99,28 @@ public class CSVInputIterator extends QueryIteratorBase
 	        // Empty input line - no bindings.
 	    	// Only valid when we expect zero/one values as otherwise we should get a sequence of tab characters
 	    	// which means a non-empty string which we handle normally
-	    	if (expectedItems > 1) 
+	    	if (expectedItems > 1)
 	    	    throw new QueryException(String.format("Error Parsing CSV results at Line %d - The result row had 0/1 values when %d were expected", this.lineNum, expectedItems));
-	        binding = BindingFactory.create() ;
-	        if ( expectedItems == 1 )
-	            binding.add(vars.get(0), NodeConst.emptyString) ; 
+    	        binding =
+    	         ( expectedItems == 1 ) ? BindingFactory.binding(vars.get(0), NodeConst.emptyString) : BindingFactory.empty();
 	        return true ;
 	    }
-	    
+
 	    binding = parseLine(vars, line) ;
 	    return true ;
 	}
-	    
-	    
-    private BindingMap parseLine(List<Var> vars, String line)
+
+
+    private Binding parseLine(List<Var> vars, String line)
     {
-        BindingMap binding = BindingFactory.create() ;
+        BindingBuilder rowBuilder = Binding.builder() ;
         List<String> terms = new ArrayList<>() ;
         int idx = 0 ;
-        
+
         while(idx < line.length())
         {
             char ch = line.charAt(idx) ;
-            
+
             StringBuilder s = new StringBuilder() ;
             if ( ch == '\"' || ch == '\'' )
             {
@@ -157,9 +156,9 @@ public class CSVInputIterator extends QueryIteratorBase
                     s.append(ch) ;
                 }
             }
-            
+
             terms.add(s.toString()) ;
-            // At end of per-term processing, we are looking at "," or EOL.  
+            // At end of per-term processing, we are looking at "," or EOL.
 
             // Looking at , or EOL.
             if ( ch == ',' && idx==line.length()-1 )
@@ -171,12 +170,12 @@ public class CSVInputIterator extends QueryIteratorBase
             // Skip ","
             idx++ ;
         }
-        
+
         if ( terms.size() != vars.size() )
             throw new QueryException(String.format("Error Parsing CSV results at Line %d - The result row '%s' has %d items when %d was expected", this.lineNum, line, terms.size(), vars.size())) ;
         for ( int i = 0 ; i < vars.size() ; i++ )
-            binding.add(vars.get(i), NodeFactory.createLiteral(terms.get(i))) ;
-        return binding ;
+            rowBuilder.add(vars.get(i), NodeFactory.createLiteral(terms.get(i))) ;
+        return rowBuilder.build() ;
     }
 
 	@Override

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,7 +18,11 @@
 
 package org.apache.jena.arq.querybuilder;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -45,21 +49,21 @@ import org.junit.After;
 import org.junit.Test;
 
 public class ConvertersTest {
-	
+
 	@After
 	public void cleanup() {
 		TypeMapper.reset();
 	}
-	
 
-	@Test 
+
+	@Test
 	public void checkVarTest() {
 		Node n = Converters.checkVar( Node.ANY );
 		assertFalse( n instanceof Var );
 		n = Converters.checkVar(NodeFactory.createVariable( "myVar"));
 		assertTrue( n instanceof Var );
 	}
-	
+
 	@Test
 	public void makeLiteralObjectTest() throws MalformedURLException
 	{
@@ -72,13 +76,13 @@ public class ConvertersTest {
 		assertEquals( "Hello", n.getLiteralLexicalForm() );
 		assertEquals( "Hello", n.getLiteralValue());
 		assertEquals( "\"Hello\"", n.toString( null, true ));
-		
+
 		URL url = new URL( "http://example.com");
 		n = Converters.makeLiteral( url);
 		assertEquals( "http://example.com", n.getLiteralLexicalForm() );
 		assertEquals( url, n.getLiteralValue());
 		assertEquals( "\"http://example.com\"^^http://www.w3.org/2001/XMLSchema#anyURI", n.toString(null, true));
-		
+
 		UUID uuid = UUID.randomUUID();
 		try {
 			n = Converters.makeLiteral( uuid );
@@ -87,7 +91,7 @@ public class ConvertersTest {
 		catch (IllegalArgumentException expected) {
 			// do nothing
 		}
-		
+
 		TypeMapper.getInstance().registerDatatype(new UuidDataType());
 		try {
 			n = Converters.makeLiteral( uuid );
@@ -99,10 +103,10 @@ public class ConvertersTest {
 		catch (IllegalArgumentException expected) {
 			fail( "Unexpected IllegalArgumentException");
 		}
-		
-		
+
+
 	}
-	
+
 	@Test
 	public void makeLiteralStringStringTest()
 	{
@@ -129,12 +133,12 @@ public class ConvertersTest {
 			// do nothing.
 		}
 	}
-	
+
 	@Test
 	public void makeNodeTest() {
 		PrefixMapping pMap = PrefixMapping.Factory.create();
 		pMap.setNsPrefixes(PrefixMapping.Standard );
-		
+
 		Node n = Converters.makeNode(null, pMap);
 		assertEquals(Node.ANY, n);
 
@@ -160,13 +164,13 @@ public class ConvertersTest {
 		catch (IllegalArgumentException expected) {
 			// do nothing
 		}
-		
-		TypeMapper.getInstance().registerDatatype(new UuidDataType());		
+
+		TypeMapper.getInstance().registerDatatype(new UuidDataType());
 		n = Converters.makeNode( uuid, pMap );
 		LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(uuid);
 		assertEquals(NodeFactory.createLiteral(ll), n);
-		
-		
+
+
 		n = Converters.makeNode( NodeFactory.createVariable("foo"), pMap);
 		assertTrue( n.isVariable());
 		assertEquals( "foo", n.getName());
@@ -181,7 +185,7 @@ public class ConvertersTest {
 	public void makeNodeOrPathTest() {
 		PrefixMapping pMap = PrefixMapping.Factory.create();
 		pMap.setNsPrefixes(PrefixMapping.Standard );
-		
+
 		Object n = Converters.makeNodeOrPath(null, pMap);
 		assertEquals(Node.ANY, n);
 
@@ -208,11 +212,11 @@ public class ConvertersTest {
 			// do nothing
 		}
 
-		TypeMapper.getInstance().registerDatatype(new UuidDataType());		
+		TypeMapper.getInstance().registerDatatype(new UuidDataType());
 		n = Converters.makeNodeOrPath( uuid, pMap);
 		LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(uuid);
 		assertEquals(NodeFactory.createLiteral(ll), n);
-		
+
 		n = Converters.makeNodeOrPath( NodeFactory.createVariable("foo"), pMap);
 		assertTrue( n instanceof Var );
 		Node node = (Node)n;
@@ -224,14 +228,14 @@ public class ConvertersTest {
 		node = (Node)n;
 		assertEquals( "text", node.getLiteralLexicalForm());
 		assertEquals( "en", node.getLiteralLanguage());
-		
+
 		n = Converters.makeNodeOrPath( "<one>/<two>", pMap);
 		assertTrue( n instanceof Path );
 		Path pth = (Path)n;
 		assertEquals( "<one>/<two>", pth.toString() );
-		
+
 	}
-	
+
 	@Test
 	public void makeVarTest() {
 		Var v = Converters.makeVar(null);
@@ -283,9 +287,9 @@ public class ConvertersTest {
 		list.add( "demo:type" );
 		list.add( "<one>" );
 		list.add( Integer.MAX_VALUE );
-		
+
 		Collection<Node> result = Converters.makeValueNodes(list.iterator(), pMap);
-		
+
 		assertTrue( result.contains( null ));
 		assertTrue( result.contains( RDF.type.asNode()));
 		assertTrue( result.contains( n2 ));
@@ -293,7 +297,7 @@ public class ConvertersTest {
 		assertTrue( result.contains(NodeFactory.createURI("one")));
 
 	}
-	
+
 	@Test
 	public void quotedTest() {
 		assertEquals( "'one'", Converters.quoted( "one" ));
@@ -315,13 +319,13 @@ public class ConvertersTest {
 			return n;
 		}
 	}
-	
+
 	private class UuidDataType extends BaseDatatype {
-		
+
 		public UuidDataType() {
 			super( "java:java.util.UUID");
 		}
-	
+
 		@Override
         public Class<?> getJavaClass() {
             return UUID.class;
@@ -336,5 +340,5 @@ public class ConvertersTest {
             }
         }
     };
-	
+
 }

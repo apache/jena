@@ -27,8 +27,7 @@ import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.modify.UpdateSink ;
 import org.apache.jena.sparql.modify.request.* ;
 import org.apache.jena.update.Update ;
@@ -245,12 +244,15 @@ public class SPARQLParserBase extends QueryParserBase
 
     private List<Var> variables = null ;
     private List<Binding> values = null ;
+    private BindingBuilder rowBuilder;
     private int currentColumn = -1 ;
 
+    // Trailing VALUES.
     protected void startValuesClause(int line, int col)
     {
         variables = new ArrayList<>() ;
         values = new ArrayList<>() ;
+        rowBuilder = Binding.builder();
     }
 
     protected void finishValuesClause(int line, int col)
@@ -258,22 +260,22 @@ public class SPARQLParserBase extends QueryParserBase
         getQuery().setValuesDataBlock(variables, values) ;
     }
 
+    // ElementData. VALUES in the WHERE clause.
     protected void startInlineData(List<Var> vars, List<Binding> rows, int line, int col)
     {
         variables = vars ;
         values = rows ;
+        rowBuilder = Binding.builder();
     }
 
     protected void finishInlineData(int line, int col)
     {}
 
-    private BindingMap currentValueRow()                            { return (BindingMap)values.get(values.size()-1) ; }
-
     protected void emitDataBlockVariable(Var v)                     { variables.add(v) ; }
 
     protected void startDataBlockValueRow(int line, int col)
     {
-        values.add(BindingFactory.create()) ;
+        rowBuilder.reset();
         currentColumn = -1 ;
     }
 
@@ -291,19 +293,19 @@ public class SPARQLParserBase extends QueryParserBase
             throw new QueryParseException(msg, line, col) ;
         }
         if ( n != null )
-            currentValueRow().add(v, n) ;
+            rowBuilder.add(v, n) ;
     }
 
     protected void finishDataBlockValueRow(int line, int col)
     {
         //if ( variables.size() != currentValueRow().size() )
-
         if ( currentColumn+1 != variables.size() )
         {
             String msg = String.format("Mismatch: %d variables but %d values",variables.size(), currentColumn+1) ;
             msg = QueryParseException.formatMessage(msg, line, col) ;
             throw new QueryParseException(msg, line , col) ;
         }
+        values.add(rowBuilder.build());
     }
 
     private void pushLabelState()

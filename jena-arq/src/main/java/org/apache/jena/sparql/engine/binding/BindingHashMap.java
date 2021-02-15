@@ -31,13 +31,14 @@ import org.apache.jena.sparql.util.FmtUtils ;
  *  with higher (earlier levels) being shared.
  *  Looking up a name is done by looking in the current level,
  *  then trying the parent is not found.
+ *  @deprecated Use {@link BindingBuilder}; avoid mutable bindings.
  */
-
+@Deprecated
 public class BindingHashMap extends BindingBase implements BindingMap
 {
-    // Bindings are often small.  Is this overkill? 
+    // Bindings are often small.  Is this overkill?
     private Map<Var, Node> map = new HashMap<>() ;
-    
+
     /** Using BindingFactory.create is better */
     public BindingHashMap(Binding parent) { super(parent) ; }
     /** Using BindingFactory.create is better */
@@ -93,13 +94,23 @@ public class BindingHashMap extends BindingBase implements BindingMap
     }
 
     private void checkAdd(Var var, Node node) {
-        BindingBase.checkPair(var, node);
-        if ( BindingBase.UNIQUE_NAMES_CHECK && contains(var) )
+        checkPair(var, node);
+        if ( BindingBuilder.UNIQUE_NAMES_CHECK && contains(var) )
             throw new ARQInternalErrorException("Attempt to reassign '" + var + "' from '" + FmtUtils.stringForNode(get(var)) + "' to '"
                                                 + FmtUtils.stringForNode(node) + "'");
         // Let the implementation do a check as well.
         checkAdd1(var, node);
     }
+
+    protected static void checkPair(Var var, Node node) {
+        if ( !BindingBuilder.CHECKING )
+            return;
+        if ( var == null )
+            throw new ARQInternalErrorException("check(" + var + ", " + node + "): null var");
+        if ( node == null )
+            throw new ARQInternalErrorException("check(" + var + ", " + node + "): null node value");
+    }
+
 
     protected void checkAdd1(Var v, Node node) {}
 }

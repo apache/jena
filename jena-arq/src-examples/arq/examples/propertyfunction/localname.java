@@ -31,7 +31,6 @@ import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.engine.iterator.QueryIterNullIterator ;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import org.apache.jena.sparql.engine.iterator.QueryIterSingleton ;
@@ -41,18 +40,18 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /** Example property function that creates the association between a URI and it's localname.
  *  See also splitIRI which is more general. This is just an example.
- * 
+ *
  *  If it is not a URI, then does not match.
- *  
- *  Use as: 
- *  
+ *
+ *  Use as:
+ *
  *  <pre>
  *    ?uri ext:localname ?localname
  *  </pre>
- * 
+ *
  *  Depending on whether the subject/object are bound when called:
  *  <ul>
- *  <li>subject bound, object unbound => assign the local name to variable in object slot</li> 
+ *  <li>subject bound, object unbound => assign the local name to variable in object slot</li>
  *  <li>subject bound, object bound => check the subject has the local name given by object</li>
  *  <li>subject unbound, object bound => find all URIs in the model (s, p or o) that have that local name</li>
  *  <li>subject unbound, object unbound => generate all localname for all URI resources in the model</li>
@@ -60,7 +59,7 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
  *  The two searching forms (subject unbound) are expensive.
 
  *  Anything not a URI (subject) or string (object) causes no match.
- * */ 
+ * */
 
 public class localname extends PFuncSimple
 {
@@ -81,10 +80,10 @@ public class localname extends PFuncSimple
             // Subject bound but not a URI
             return QueryIterNullIterator.create(execCxt) ;
 
-        // Subject is bound and a URI - get the localname as a Node 
+        // Subject is bound and a URI - get the localname as a Node
         Node localname = NodeFactory.createLiteral(nodeURI.getLocalName()) ;
-        
-        // Object - unbound variable or a value? 
+
+        // Object - unbound variable or a value?
         if ( ! nodeLocalname.isVariable() )
         {
             // Object bound or a query constant.  Is it the same as the calculated value?
@@ -94,14 +93,14 @@ public class localname extends PFuncSimple
             // No - different - no match.
             return QueryIterNullIterator.create(execCxt) ;
         }
-        
+
         // Object unbound variable - assign the localname to it.
         return QueryIterSingleton.create(binding, Var.alloc(nodeLocalname), localname, execCxt) ;
     }
-    
+
     // Unbound subject - work hard.
     // Still two cases: object bound (filter by localname) and object unbound (generate all localnames for all URIs)
-    // Warning - will scan the entire graph (there is no localname index) but this example code. 
+    // Warning - will scan the entire graph (there is no localname index) but this example code.
 
     private QueryIterator execAllNodes(Var subjVar, Node nodeLocalname,  Binding input, ExecutionContext execCxt)
     {
@@ -110,15 +109,15 @@ public class localname extends PFuncSimple
             if ( ! nodeLocalname.isLiteral() )
                 // Not a variable, not a literal=> can't match
                 return QueryIterNullIterator.create(execCxt) ;
-        
+
             if( ! NodeUtils.isSimpleString(nodeLocalname) )
                 return QueryIterNullIterator.create(execCxt) ;
         }
-        
-        //Set bindings = new HashSet() ;    // Use a Set if you want unique results. 
-        List<Binding> bindings = new ArrayList<>() ;   // Use a list if you want counting results. 
+
+        //Set bindings = new HashSet() ;    // Use a Set if you want unique results.
+        List<Binding> bindings = new ArrayList<>() ;   // Use a list if you want counting results.
         Graph graph = execCxt.getActiveGraph() ;
-        
+
         ExtendedIterator<Triple>iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
         for ( ; iter.hasNext() ; )
         {
@@ -137,19 +136,19 @@ public class localname extends PFuncSimple
         if ( nodeLocalname.isVariable() )
         {
             // Object is an unbound variable.
-            BindingMap b = BindingFactory.create(input) ;
-            // Bind a pair for subject and object variables
-            b.add(Var.alloc(subjVar), node) ;
-            b.add(Var.alloc(nodeLocalname), localname) ;
+            Binding b = BindingFactory.binding
+                    (// Bind a pair for subject and object variables
+                     Var.alloc(subjVar), node,
+                     Var.alloc(nodeLocalname), localname) ;
             bindings.add(b) ;
             return ;
         }
-        
+
         // Object is a value / bound variable.
         if ( ! nodeLocalname.sameValueAs(localname) )
             return ;
         // Bind subject to this node.
-        Binding b = BindingFactory.binding(input, subjVar, node) ; 
+        Binding b = BindingFactory.binding(input, subjVar, node) ;
         bindings.add(b) ;
     }
 

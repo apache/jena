@@ -21,8 +21,7 @@ package org.apache.jena.sparql.sse.builders;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.ItemList ;
 import org.apache.jena.sparql.sse.Tags ;
@@ -35,26 +34,26 @@ public class BuilderBinding
         BuilderLib.checkList(item, "Attempt to build a binding from non-list: "+item) ;
         return buildBinding(item.getList()) ;
     }
-    
+
     private static Binding buildBinding(ItemList list)
     {
         // (row or (binding
         if ( list.size() == 0 )
             BuilderLib.broken(list, "Empty list") ;
-        
+
         Item head = list.get(0) ;
-        
+
         if ( ! head.isSymbolIgnoreCase(Tags.tagRow) && ! head.isSymbolIgnoreCase(Tags.tagBinding) )
             BuilderLib.broken(list, "Does not start ("+Tags.tagRow+" ...) or ("+Tags.tagBinding+" ...)", head) ;
-        
-        BindingMap binding = BindingFactory.create() ;
+
+        BindingBuilder builder = Binding.builder() ;
         for ( int i = 1 ; i < list.size() ; i++ )
         {
             Item item = list.get(i) ;
             BuilderLib.checkList(item, "Attempt to build a binding pair from non-list: "+item) ;
             ItemList pair = item.getList() ;
             BuilderLib.checkLength(2, pair, "Need a pair for a binding") ;
-            
+
             Var v = BuilderNode.buildVar(pair.get(0)) ;
             Item cdr = pair.get(1) ;
             // undef
@@ -68,8 +67,8 @@ public class BuilderBinding
                 BuilderLib.broken(item.getList().get(1), "No variables as table values: "+FmtUtils.stringForNode(node)) ;
             if ( !node.isConcrete() )
                 BuilderLib.broken(item.getList().get(1), "Only concrete nodes as table values: "+FmtUtils.stringForNode(node)) ;
-            binding.add(v, node) ;
+            builder.add(v, node) ;
         }
-        return binding ;
+        return builder.build() ;
     }
 }
