@@ -26,8 +26,8 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.sparql.lang.LabelToNodeMap;
 import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.LabelToNodeMap ;
 import org.apache.jena.sparql.util.Symbol ;
 
 public class E_BNode extends ExprFunctionN // 0 or one

@@ -18,139 +18,124 @@
 
 package org.apache.jena.sparql.pfunction.library;
 
-import java.util.ArrayList ;
-import java.util.Collection ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
-import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.pfunction.PropFuncArg ;
-import org.apache.jena.sparql.util.IterLib ;
-import org.apache.jena.sparql.util.NodeFactoryExtra ;
-import org.apache.jena.sparql.util.graph.GNode ;
-import org.apache.jena.sparql.util.graph.GraphList ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingFactory;
+import org.apache.jena.sparql.engine.binding.BindingMap;
+import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.pfunction.PropFuncArg;
+import org.apache.jena.sparql.util.IterLib;
+import org.apache.jena.sparql.util.NodeFactoryExtra;
+import org.apache.jena.sparql.util.graph.GNode;
+import org.apache.jena.sparql.util.graph.GraphList;
 
-/** List membership with index : property function to access list using index  
- *  Usage: ?list :listIndex (?index ?member) */
-
-public class listIndex extends ListBaseList
-{
+/**
+ * List membership with index : property function to access list using index Usage:
+ * ?list :listIndex (?index ?member)
+ */
+public class listIndex extends ListBaseList {
     @Override
-    protected QueryIterator execObjectList(Binding binding, Var listVar, Node predicate, List<Node> objectArgs,
-                                            ExecutionContext execCxt)
-    {
+    protected QueryIterator execObjectList(Binding binding, Var listVar, Node predicate, List<Node> objectArgs, ExecutionContext execCxt) {
         // subject a variable.
-        
+
         if ( objectArgs.size() != 2 )
-            throw new ExprEvalException("ListIndex : object not a list of length 2") ; 
-        Node indexNode = objectArgs.get(0) ;
-        Node memberNode = objectArgs.get(1) ;
-        
-        final Collection<Node> x ;
-        if ( ! Var.isVar(memberNode) )
+            throw new ExprEvalException("ListIndex : object not a list of length 2");
+        Node indexNode = objectArgs.get(0);
+        Node memberNode = objectArgs.get(1);
+
+        final Collection<Node> x;
+        if ( !Var.isVar(memberNode) )
             // If memberNode is defined, find lists containing it.
-            x = GraphList.listFromMember(new GNode(execCxt.getActiveGraph(), memberNode)) ;
-        else    
+            x = GraphList.listFromMember(new GNode(execCxt.getActiveGraph(), memberNode));
+        else
             // Hard. Subject unbound, no fixed member. Find every list and use BFI.
-            x = GraphList.findAllLists(execCxt.getActiveGraph()) ;
-        return super.allLists(binding, x, listVar, predicate, new PropFuncArg(objectArgs, null), execCxt) ;
+            x = GraphList.findAllLists(execCxt.getActiveGraph());
+        return super.allLists(binding, x, listVar, predicate, new PropFuncArg(objectArgs, null), execCxt);
     }
 
     @Override
-    protected QueryIterator execOneList(Binding binding, 
-                                        Node listNode, Node predicate, List<Node> objectArgs,
-                                        ExecutionContext execCxt)
-    {
+    protected QueryIterator execOneList(Binding binding, Node listNode, Node predicate, List<Node> objectArgs, ExecutionContext execCxt) {
         if ( Var.isVar(listNode) )
-            throw new ExprEvalException("ListIndex : subject not a list or variable bound to a list") ;
+            throw new ExprEvalException("ListIndex : subject not a list or variable bound to a list");
 
         if ( objectArgs.size() != 2 )
-            throw new ExprEvalException("ListIndex : object not a list of length 2") ;
+            throw new ExprEvalException("ListIndex : object not a list of length 2");
 
-        Node indexNode = objectArgs.get(0) ;
-        Node memberNode = objectArgs.get(1) ;
-        
-        Graph graph = execCxt.getActiveGraph() ;
-        
-        if ( Var.isVar(indexNode) && ! Var.isVar(memberNode) )
-            return findIndex(graph, binding, listNode, Var.alloc(indexNode), memberNode, execCxt) ;
-            
-        if ( ! Var.isVar(indexNode) && Var.isVar(memberNode) )
-            return getByIndex(graph, binding, listNode, indexNode, Var.alloc(memberNode), execCxt) ;
-        
-        if ( ! Var.isVar(indexNode) && ! Var.isVar(memberNode) )
-            return testSlotValue(graph, binding, listNode, indexNode, memberNode, execCxt) ;
-        
-        return findIndexMember(graph, binding, listNode, Var.alloc(indexNode), Var.alloc(memberNode), execCxt) ;
-        
+        Node indexNode = objectArgs.get(0);
+        Node memberNode = objectArgs.get(1);
+
+        Graph graph = execCxt.getActiveGraph();
+
+        if ( Var.isVar(indexNode) && !Var.isVar(memberNode) )
+            return findIndex(graph, binding, listNode, Var.alloc(indexNode), memberNode, execCxt);
+
+        if ( !Var.isVar(indexNode) && Var.isVar(memberNode) )
+            return getByIndex(graph, binding, listNode, indexNode, Var.alloc(memberNode), execCxt);
+
+        if ( !Var.isVar(indexNode) && !Var.isVar(memberNode) )
+            return testSlotValue(graph, binding, listNode, indexNode, memberNode, execCxt);
+
+        return findIndexMember(graph, binding, listNode, Var.alloc(indexNode), Var.alloc(memberNode), execCxt);
+
     }
 
-    private static QueryIterator getByIndex(Graph graph, Binding binding, 
-                                            Node listNode, Node indexNode, Var varMember,
-                                            ExecutionContext execCxt)
-    {
-        int i = NodeFactoryExtra.nodeToInt(indexNode) ;
+    private static QueryIterator getByIndex(Graph graph, Binding binding, Node listNode, Node indexNode, Var varMember,
+                                            ExecutionContext execCxt) {
+        int i = NodeFactoryExtra.nodeToInt(indexNode);
         if ( i < 0 )
-            return IterLib.noResults(execCxt) ;
+            return IterLib.noResults(execCxt);
 
-        Node n = GraphList.get(new GNode(graph, listNode), i) ;
+        Node n = GraphList.get(new GNode(graph, listNode), i);
         if ( n == null )
-            return IterLib.noResults(execCxt) ;
-        return IterLib.oneResult(binding, varMember, n, execCxt) ; 
+            return IterLib.noResults(execCxt);
+        return IterLib.oneResult(binding, varMember, n, execCxt);
     }
 
-    private static QueryIterator testSlotValue(Graph graph, Binding binding,
-                                               Node listNode, Node indexNode, Node memberNode,
-                                               ExecutionContext execCxt)
-    {
-        int i = NodeFactoryExtra.nodeToInt(indexNode) ;
+    private static QueryIterator testSlotValue(Graph graph, Binding binding, Node listNode, Node indexNode, Node memberNode,
+                                               ExecutionContext execCxt) {
+        int i = NodeFactoryExtra.nodeToInt(indexNode);
         if ( i < 0 )
-            return IterLib.noResults(execCxt) ;
-        Node n = GraphList.get(new GNode(graph, listNode), i) ;
+            return IterLib.noResults(execCxt);
+        Node n = GraphList.get(new GNode(graph, listNode), i);
         if ( n == null )
-            return IterLib.noResults(execCxt) ;
+            return IterLib.noResults(execCxt);
         if ( n.equals(memberNode) )
-            return IterLib.result(binding, execCxt) ; 
+            return IterLib.result(binding, execCxt);
         else
-            return IterLib.noResults(execCxt) ;
+            return IterLib.noResults(execCxt);
     }
 
-    private static QueryIterator findIndex(Graph graph, Binding binding,
-                                           Node listNode, Var var, Node member,
-                                           ExecutionContext execCxt)
-    {
+    private static QueryIterator findIndex(Graph graph, Binding binding, Node listNode, Var var, Node member, ExecutionContext execCxt) {
         // Find index of member.
-        int i = GraphList.index(new GNode(graph, listNode), member) ;
+        int i = GraphList.index(new GNode(graph, listNode), member);
         if ( i < 0 )
-            return IterLib.noResults(execCxt) ;
-        Node idx = NodeFactoryExtra.intToNode(i) ;
-        return IterLib.oneResult(binding, var, idx, execCxt) ; 
+            return IterLib.noResults(execCxt);
+        Node idx = NodeFactoryExtra.intToNode(i);
+        return IterLib.oneResult(binding, var, idx, execCxt);
     }
 
-    private static QueryIterator findIndexMember(Graph graph, Binding binding, 
-                                                 Node listNode, Var varIndex, Var varMember,
-                                                 ExecutionContext execCxt)
-    {
+    private static QueryIterator findIndexMember(Graph graph, Binding binding, Node listNode, Var varIndex, Var varMember,
+                                                 ExecutionContext execCxt) {
         // Iterate over list
-        List<Node> members = GraphList.members(new GNode(graph, listNode)) ;
-        List<Binding> bindings = new ArrayList<>() ;
-        for ( int i = 0 ; i < members.size() ; i++ )
-        {
-            Node idx = NodeFactoryExtra.intToNode(i) ;
-            Node member = members.get(i) ;
-            BindingMap b = BindingFactory.create(binding) ;
-            b.add(varIndex, idx) ;
-            b.add(varMember, member) ;
-            bindings.add(b) ;
+        List<Node> members = GraphList.members(new GNode(graph, listNode));
+        List<Binding> bindings = new ArrayList<>();
+        for ( int i = 0 ; i < members.size() ; i++ ) {
+            Node idx = NodeFactoryExtra.intToNode(i);
+            Node member = members.get(i);
+            BindingMap b = BindingFactory.create(binding);
+            b.add(varIndex, idx);
+            b.add(varMember, member);
+            bindings.add(b);
         }
-        return new QueryIterPlainWrapper(bindings.iterator(), execCxt) ;
+        return new QueryIterPlainWrapper(bindings.iterator(), execCxt);
     }
 }

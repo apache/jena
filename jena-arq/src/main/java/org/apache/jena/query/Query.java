@@ -149,7 +149,7 @@ public class Query extends Prologue implements Cloneable, Printable
     /** Return the {@link QueryType} */
     public QueryType queryType()                       { return queryType ; }
 
-    /** @deprecated Use {@link #queryType()} which returns an {@link QueryType} */
+    /** @deprecated Use {@link #queryType()} which returns a {@link QueryType} */
     @Deprecated
     public int getQueryType() {
         // Old constants.

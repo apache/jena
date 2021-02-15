@@ -18,63 +18,55 @@
 
 package org.apache.jena.sparql.pfunction.library;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.util.IterLib ;
-import org.apache.jena.sparql.util.NodeFactoryExtra ;
-import org.apache.jena.sparql.util.graph.GNode ;
-import org.apache.jena.sparql.util.graph.GraphList ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.util.IterLib;
+import org.apache.jena.sparql.util.NodeFactoryExtra;
+import org.apache.jena.sparql.util.graph.GNode;
+import org.apache.jena.sparql.util.graph.GraphList;
 
-/** List length : property function to get the length of a list. */ 
-
-public class listLength extends ListBase1
-{
+/** List length : property function to get the length of a list. */
+public class listLength extends ListBase1 {
     @Override
-    public QueryIterator execOneList(Binding binding, Node listNode, Node predicate, Node length, ExecutionContext execCxt)
-    {
-        Graph graph = execCxt.getActiveGraph() ;
+    public QueryIterator execOneList(Binding binding, Node listNode, Node predicate, Node length, ExecutionContext execCxt) {
+        Graph graph = execCxt.getActiveGraph();
         if ( Var.isVar(listNode) )
-            throw new ARQInternalErrorException("listLength: Subject is a variable") ;
-        // Case : arg 1 (the list) is bound and arg 2 not bound => generate possibilities
+            throw new ARQInternalErrorException("listLength: Subject is a variable");
+        // Case : arg 1 (the list) is bound and arg 2 not bound => generate
+        // possibilities
         // Case : arg 1 is bound and arg 2 is bound => test for membership.
 
         if ( Var.isVar(length) )
-            return length(binding, graph, listNode,  Var.alloc(length) , execCxt) ;
+            return length(binding, graph, listNode, Var.alloc(length), execCxt);
         else
-            return verify(binding, graph, listNode, length, execCxt) ;
+            return verify(binding, graph, listNode, length, execCxt);
     }
 
-    private QueryIterator length(Binding binding, Graph graph, 
-                                 Node listNode, Var varLength,
-                                 ExecutionContext execCxt)
-    {
-        int x = GraphList.length(new GNode(graph, listNode)) ;
+    private QueryIterator length(Binding binding, Graph graph, Node listNode, Var varLength, ExecutionContext execCxt) {
+        int x = GraphList.length(new GNode(graph, listNode));
         if ( x < 0 )
-            return IterLib.noResults(execCxt) ;
-        Node n = NodeFactoryExtra.intToNode(x) ;
-        return IterLib.oneResult(binding, varLength, n, execCxt) ;
+            return IterLib.noResults(execCxt);
+        Node n = NodeFactoryExtra.intToNode(x);
+        return IterLib.oneResult(binding, varLength, n, execCxt);
     }
-    
-    private QueryIterator verify(Binding binding, Graph graph, Node listNode, Node length, ExecutionContext execCxt)
-    {
-        int x = GraphList.length(new GNode(graph, listNode)) ;
-        int len = NodeFactoryExtra.nodeToInt(length) ;
-        
+
+    private QueryIterator verify(Binding binding, Graph graph, Node listNode, Node length, ExecutionContext execCxt) {
+        int x = GraphList.length(new GNode(graph, listNode));
+        int len = NodeFactoryExtra.nodeToInt(length);
+
         if ( x == len )
-            return IterLib.result(binding, execCxt) ;
-        return IterLib.noResults(execCxt) ;
+            return IterLib.result(binding, execCxt);
+        return IterLib.noResults(execCxt);
     }
 
     @Override
-    protected QueryIterator execObjectBound(Binding binding, Var listVar, Node predicate, Node length,
-                                            ExecutionContext execCxt)
-    {
-        Graph graph = execCxt.getActiveGraph() ;
-        return length(binding, graph, listVar,  Var.alloc(length) , execCxt) ;
+    protected QueryIterator execObjectBound(Binding binding, Var listVar, Node predicate, Node length, ExecutionContext execCxt) {
+        Graph graph = execCxt.getActiveGraph();
+        return length(binding, graph, listVar, Var.alloc(length), execCxt);
     }
 }

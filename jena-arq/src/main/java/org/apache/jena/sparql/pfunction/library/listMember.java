@@ -18,73 +18,64 @@
 
 package org.apache.jena.sparql.pfunction.library;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.query.QueryBuildException ;
-import org.apache.jena.query.QueryExecException ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.iterator.QueryIterExtendByVar ;
-import org.apache.jena.sparql.engine.iterator.QueryIterYieldN ;
-import org.apache.jena.sparql.pfunction.PropFuncArg ;
-import org.apache.jena.sparql.util.graph.GNode ;
-import org.apache.jena.sparql.util.graph.GraphList ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.query.QueryBuildException;
+import org.apache.jena.query.QueryExecException;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.iterator.QueryIterExtendByVar;
+import org.apache.jena.sparql.engine.iterator.QueryIterYieldN;
+import org.apache.jena.sparql.pfunction.PropFuncArg;
+import org.apache.jena.sparql.util.graph.GNode;
+import org.apache.jena.sparql.util.graph.GraphList;
 
-
-/** List membership : property function implementation of list:member. */ 
-
-public class listMember extends ListBase1
-{
-    // Does not work for   ... list:member ?x . 
-    // See old execOneList
-    public listMember()
-    { super() ; }
-   
-    @Override
-    public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
-    {
-        super.build(argSubject, predicate, argObject, execCxt) ;
-        
-        if ( argObject.isList() && argObject.getArgList().size() != 0 )
-            throw new QueryBuildException("List arguments (object) to "+predicate.getURI()) ;
+/** List membership : property function implementation of list:member. */
+public class listMember extends ListBase1 {
+    public listMember() {
+        super();
     }
-    
+
     @Override
-    protected QueryIterator execOneList(Binding binding, Node listNode, Node predicate, Node member, ExecutionContext execCxt)
-    {
+    public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {
+        super.build(argSubject, predicate, argObject, execCxt);
+
+        if ( argObject.isList() && argObject.getArgList().size() != 0 )
+            throw new QueryBuildException("List arguments (object) to " + predicate.getURI());
+    }
+
+    @Override
+    protected QueryIterator execOneList(Binding binding, Node listNode, Node predicate, Node member, ExecutionContext execCxt) {
         if ( Var.isVar(listNode) )
-            throw new QueryExecException("List : subject not a list or variable bound to a list") ;
-        // Case : arg 1 (the list) is bound and arg 2 not bound => generate possibilities
+            throw new QueryExecException("List : subject not a list or variable bound to a list");
+        // Case : arg 1 (the list) is bound and arg 2 not bound => generate
+        // possibilities
         // Case : arg 1 is bound and arg 2 is bound => test for membership.
 
         if ( Var.isVar(member) )
-            return members(binding, listNode,  Var.alloc(member) , execCxt) ;
+            return members(binding, listNode, Var.alloc(member), execCxt);
         else
-            return verify(binding, listNode, member, execCxt) ;
+            return verify(binding, listNode, member, execCxt);
     }
 
     @Override
-    protected QueryIterator execObjectBound(Binding binding, Var listVar, Node predicate, Node object, ExecutionContext execCxt)
-    {
+    protected QueryIterator execObjectBound(Binding binding, Var listVar, Node predicate, Node object, ExecutionContext execCxt) {
         // Given a concrete node, find lists it's in
-        GNode gnode = new GNode(execCxt.getActiveGraph(), object) ;
-        List<Node> lists = GraphList.listFromMember(gnode) ;
-        return new QueryIterExtendByVar(binding, listVar, lists.iterator(), execCxt) ;
+        GNode gnode = new GNode(execCxt.getActiveGraph(), object);
+        List<Node> lists = GraphList.listFromMember(gnode);
+        return new QueryIterExtendByVar(binding, listVar, lists.iterator(), execCxt);
     }
 
-    private QueryIterator members(Binding binding, Node listNode, Var itemVar, ExecutionContext execCxt)
-    {
-        List<Node> members = GraphList.members(new GNode(execCxt.getActiveGraph(), listNode)) ;
-        return new QueryIterExtendByVar(binding, itemVar, members.iterator(), execCxt) ;
-    }
-    
-    private QueryIterator verify(Binding binding, Node listNode, Node member, ExecutionContext execCxt)
-    {
-        int count = GraphList.occurs(new GNode(execCxt.getActiveGraph(), listNode), member) ;
-        return new QueryIterYieldN(count, binding) ;
+    private QueryIterator members(Binding binding, Node listNode, Var itemVar, ExecutionContext execCxt) {
+        List<Node> members = GraphList.members(new GNode(execCxt.getActiveGraph(), listNode));
+        return new QueryIterExtendByVar(binding, itemVar, members.iterator(), execCxt);
     }
 
+    private QueryIterator verify(Binding binding, Node listNode, Node member, ExecutionContext execCxt) {
+        int count = GraphList.occurs(new GNode(execCxt.getActiveGraph(), listNode), member);
+        return new QueryIterYieldN(count, binding);
+    }
 }

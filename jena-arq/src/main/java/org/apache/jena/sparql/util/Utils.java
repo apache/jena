@@ -25,8 +25,7 @@ import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 /** Miscellaneous operations - not query specific */
 
 public class Utils {
-    /** @deprecated Use {@link XSDFuncOp#canonicalDecimalStr}. */
-    @Deprecated
+
     static public String stringForm(BigDecimal decimal) {
         return XSDFuncOp.canonicalDecimalStr(decimal);
     }
@@ -55,7 +54,7 @@ public class Utils {
                 return "-INF" ;
             return "INF" ;
         }
-        
+
         // No SPARQL short form.
         return Float.toString(f) ;
     }

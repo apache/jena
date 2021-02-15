@@ -337,16 +337,6 @@ public class RiotLib
         out.println();
     }
 
-    /** Returns dataset that wraps a graph
-     * @deprecated Use {@link DatasetGraphFactory#wrap(Graph)}
-     * @param graph
-     * @return DatasetGraph
-     */
-    @Deprecated
-    public static DatasetGraph dataset(Graph graph) {
-        return DatasetGraphFactory.wrap(graph);
-    }
-
     public static PrefixMap prefixMap(DatasetGraph dsg) {
         return PrefixMapFactory.create(dsg.getDefaultGraph().getPrefixMapping());
     }

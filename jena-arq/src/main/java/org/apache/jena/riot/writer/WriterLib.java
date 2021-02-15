@@ -31,11 +31,6 @@ import org.apache.jena.sparql.util.Context;
         if ( context == null )
             return dftDirectiveStyle;
         Object x = context.get(RIOT.symTurtleDirectiveStyle) ;
-        if ( x == null ) {
-            @SuppressWarnings("deprecation")
-            String x1 = context.get(RIOT.symTurtlePrefixStyle) ;
-            x = x1;
-        }
 
         if ( x instanceof String ) {
             String s = (String)x ;

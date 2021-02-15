@@ -19,7 +19,6 @@
 package org.apache.jena.riot ;
 
 import org.apache.jena.query.ARQ ;
-import org.apache.jena.riot.lang.JsonLDReader;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.SystemARQ ;
@@ -78,10 +77,10 @@ public class RIOT {
             RDFParserRegistry.init() ;
             RDFWriterRegistry.init() ;
             ResultSetLang.init();
-            
+
             MappingRegistry.addPrefixMapping("ttl", TURTLE_SYMBOL_BASE) ;
             MappingRegistry.addPrefixMapping("trig", TURTLE_SYMBOL_BASE) ;
-            
+
             IO_Jena.wireIntoJena() ;
 
             // Don't register JMX info with ARQ as it may not be initialized
@@ -115,10 +114,6 @@ public class RIOT {
 
     // ---- Symbols
 
-    /** @deprecated Use {@link JsonLDReader#JSONLD_CONTEXT} */
-    @Deprecated
-    public static final Symbol JSONLD_CONTEXT = JsonLDReader.JSONLD_CONTEXT;
-
     private static String TURTLE_SYMBOL_BASE = "http://jena.apache.org/riot/turtle#";
 
     /**
@@ -135,8 +130,4 @@ public class RIOT {
      * not output BASE even when given.
      */
     public static final Symbol symTurtleOmitBase = SystemARQ.allocSymbol(TURTLE_SYMBOL_BASE, "omitBase");
-    
-    /** @deprecated Use {@link #symTurtleDirectiveStyle}. */
-    @Deprecated
-    public static final Symbol symTurtlePrefixStyle = SystemARQ.allocSymbol(TURTLE_SYMBOL_BASE, "prefixStyle");
 }

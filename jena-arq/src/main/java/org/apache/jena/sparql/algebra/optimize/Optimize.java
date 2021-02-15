@@ -25,12 +25,12 @@ import org.apache.jena.sparql.algebra.Transformer ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.util.Context ;
 
-/** Optimization of algebra expressions. 
+/** Optimization of algebra expressions.
  * <p>
  *  New optimization processes can be installed via a global change:
  *  <pre>
  *    Optimize.setFactory((cxt)-&gt;new MyOptimizer(cxt)) ;</pre>
- *  or on a per-context basis: 
+ *  or on a per-context basis:
  *  <pre>
  *    Optimize.RewriterFactory f = (cxt)-&gt;new MyOptimizer(cxt) ;
  *    context.set(ARQConstants.sysOptimizerFactory, f) ;<pre>
@@ -40,26 +40,22 @@ public class Optimize
     /** Factory for the "Do nothing" optimizer. */
     // also known as :: (context) -> { return (op) -> op ; } ;
     public static RewriteFactory noOptimizationFactory = context -> op -> op ; // Right associative.
-    
-    /** Factory for the "minimal" optimizer. */ 
+
+    /** Factory for the "minimal" optimizer. */
     public static RewriteFactory minimalOptimizationFactory = (context) -> new OptimizerMinimal(context);
 
-    /** Factory for the standard optimization sequnece. */ 
+    /** Factory for the standard optimization sequnece. */
     public static RewriteFactory stdOptimizationFactory = (context) -> new OptimizerStd(context);
-    
+
     /**
      * Set this via {@link #setFactory} to a different factory implementation to have a
      * different general optimizer.
      */
     private static RewriteFactory factory = stdOptimizationFactory ;
-        
+
     public static Op optimize(Op op, ExecutionContext execCxt) {
         return optimize(op, execCxt.getContext()) ;
     }
-
-    /** @deprecated Use {@link RewriteFactory} */
-    @Deprecated
-    public interface RewriterFactory extends RewriteFactory {} 
 
     /** Optimize based on all options */
     public static Op optimize(Op op, Context context) {
@@ -88,12 +84,12 @@ public class Optimize
             f = stdOptimizationFactory ;    // Only if default 'factory' gets lost.
         return f.create(context) ;
     }
-    
-    /** Globally set the factory for making optimizers */ 
+
+    /** Globally set the factory for making optimizers */
     public static void setFactory(RewriteFactory aFactory)
     { factory = aFactory ; }
 
-    /** Get the global factory for making optimizers */ 
+    /** Get the global factory for making optimizers */
     public static RewriteFactory getFactory()
     { return factory ; }
 
