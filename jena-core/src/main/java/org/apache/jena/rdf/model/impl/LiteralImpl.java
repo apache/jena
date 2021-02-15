@@ -30,29 +30,29 @@ import org.apache.jena.shared.* ;
 /** An implementation of Literal.
  */
 public class LiteralImpl extends EnhNode implements Literal {
-  
+
     final static public Implementation factory = new Implementation() {
         @Override public boolean canWrap( Node n, EnhGraph eg )
             { return n.isLiteral(); }
-            
+
         @Override public EnhNode wrap(Node n, EnhGraph eg) {
             if (!n.isLiteral()) throw new LiteralRequiredException( n );
             return new LiteralImpl(n,eg);
         }
-    };          
-          
+    };
+
     public LiteralImpl( Node n, ModelCom m) {
         super( n, m );
     }
-    
+
     public LiteralImpl( Node n, EnhGraph m ) {
         super( n, m );
     }
-    
+
     @Override
     public Object visitWith( RDFVisitor rv )
         { return rv.visitLiteral( this ); }
-        
+
     /**
         Literals are not in any particular model, and so inModel can return this.
         @param m a model to move the literal into
@@ -61,31 +61,31 @@ public class LiteralImpl extends EnhNode implements Literal {
     @Override
     public Literal inModel( Model m )
         {
-        return getModel() == m 
-            ? this 
+        return getModel() == m
+            ? this
             : (Literal) m.getRDFNode( asNode() )
             ;
          }
-    
+
     @Override
     public Literal asLiteral()
         { return this; }
-    
+
     @Override
     public Resource asResource()
         { throw new ResourceRequiredException( asNode() ); }
-    
+
     /**
         Answer the model this literal was created in, if any, otherwise null.
     */
     @Override
     public Model getModel()
         { return (ModelCom) getGraph(); }
-    
+
     @Override public String toString() {
         return asNode().toString( PrefixMapping.Standard, false );
     }
-    
+
     /**
      * Return the value of the literal. In the case of plain literals
      * this will return the literal string. In the case of typed literals
@@ -97,7 +97,7 @@ public class LiteralImpl extends EnhNode implements Literal {
     public Object getValue() {
         return asNode().getLiteralValue();
     }
-    
+
     /**
      * Return the datatype of the literal. This will be null in the
      * case of plain literals.
@@ -106,7 +106,7 @@ public class LiteralImpl extends EnhNode implements Literal {
     public RDFDatatype getDatatype() {
         return asNode().getLiteralDatatype();
     }
-     
+
     /**
      * Return the uri of the datatype of the literal. This will be null in the
      * case of plain literals.
@@ -115,18 +115,18 @@ public class LiteralImpl extends EnhNode implements Literal {
     public String getDatatypeURI() {
         return asNode().getLiteralDatatypeURI();
     }
-    
+
     /**
      * Return true if this is a "plain" (i.e. old style, not typed) literal.
-     * For RDF 1.1, the most compatible choice is "xsd:string" or "rdf:langString". 
+     * For RDF 1.1, the most compatible choice is "xsd:string" or "rdf:langString".
      */
     private boolean isPlainLiteral() {
         if ( JenaRuntime.isRDF11 )
-            return Util.isLangString(this) || Util.isSimpleString(this) ;  
+            return Util.isLangString(this) || Util.isSimpleString(this) ;
         else
             return asNode().getLiteralDatatype() == null;
     }
-    
+
     /**
      * Return the lexical form of the literal.
      */
@@ -156,7 +156,7 @@ public class LiteralImpl extends EnhNode implements Literal {
             }
         }
     }
-    
+
     @Override
     public byte getByte()  {
         if (isPlainLiteral()) {
@@ -166,7 +166,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         }
     }
 
-    
+
     @Override
     public short getShort()  {
         if (isPlainLiteral()) {
@@ -211,7 +211,7 @@ public class LiteralImpl extends EnhNode implements Literal {
             }
         }
     }
-    
+
     @Override
     public float getFloat()  {
         if (isPlainLiteral()) {
@@ -234,29 +234,17 @@ public class LiteralImpl extends EnhNode implements Literal {
     public String getString()  {
         return asNode().getLiteralLexicalForm();
     }
-    
-//    @Deprecated public Object getObject(ObjectF f)  {
-//        if (isPlainLiteral()) {
-//            try {
-//                return f.createObject(getString());
-//            } catch (Exception e) {
-//                throw new JenaException(e);
-//            }
-//        } else {
-//            return getValue();
-//        }
-//    }
-    
+
     @Override
     public String getLanguage() {
         return asNode().getLiteralLanguage();
     }
-    
+
     @Override
     public boolean isWellFormedXML() {
         return asNode().getLiteralIsXML();
-    } 
-   
+    }
+
     /**
      * Test that two literals are semantically equivalent.
      * In some cases this may be the same as equals, in others
@@ -269,7 +257,7 @@ public class LiteralImpl extends EnhNode implements Literal {
     public boolean sameValueAs(Literal other) {
         return asNode().sameValueAs(other.asNode());
     }
-        
+
      // Internal helper method to convert a value to number
     private Number asNumber(Object value) {
         if (value instanceof Number) {
@@ -284,7 +272,7 @@ public class LiteralImpl extends EnhNode implements Literal {
             message.append("Java representation type is " + (value == null ? "null" : value.getClass().toString()));
             throw new DatatypeFormatException(message.toString());
         }
-    }    
+    }
     private byte byteValue( Number n )
         {
         return (byte) getIntegralValueInRange( Byte.MIN_VALUE, n, Byte.MAX_VALUE );
@@ -296,7 +284,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         }
 
     private int intValue( Number n )
-        {        
+        {
         return (int) getIntegralValueInRange( Integer.MIN_VALUE, n, Integer.MAX_VALUE );
         }
 
@@ -306,5 +294,5 @@ public class LiteralImpl extends EnhNode implements Literal {
         if (min <= result && result <= max) return result;
         throw new IllegalArgumentException( "byte value required: " + result );
         }
-        
+
 }

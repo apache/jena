@@ -1682,7 +1682,7 @@ public interface OntModel
      * @return This model
      */
     public Model writeAll( OutputStream out, String lang, String base );
-    
+
     /**
      * <p>Write a serialized representation of all of the contents of the model,
      * including inferred statements and statements imported from other

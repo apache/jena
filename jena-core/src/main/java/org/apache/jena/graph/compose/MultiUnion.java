@@ -79,13 +79,9 @@ public class MultiUnion extends Polyadic
     */
     private boolean optimiseOne()
         { return optimising && m_subGraphs.size() == 1; }
-    
+
     private boolean optimising = JenaRuntime.getSystemProperty( "jena.union.optimise", "yes" ).equals( "yes" );
-    
-    @Deprecated
-    @Override  protected GraphStatisticsHandler createStatisticsHandler()
-        { return new MultiUnionStatisticsHandler( this ); }
-    
+
     /**
      * <p>
      * Add the given triple to the union model; the actual component model to
@@ -121,7 +117,7 @@ public class MultiUnion extends Polyadic
      * @param t A triple
      * @return True if any of the graphs in the union contain t
      */
-    @Override  public boolean graphBaseContains( Triple t ) 
+    @Override  public boolean graphBaseContains( Triple t )
         {
             for ( Graph m_subGraph : m_subGraphs )
             {
@@ -143,12 +139,12 @@ public class MultiUnion extends Polyadic
      * @param t The matcher to match against
      * @return An iterator of all triples matching t in the union of the graphs.
      */
-    @Override public ExtendedIterator<Triple> graphBaseFind( final Triple t ) 
+    @Override public ExtendedIterator<Triple> graphBaseFind( final Triple t )
         { // optimise the case where there's only one component graph.
-        ExtendedIterator<Triple> found = optimiseOne() ? singleGraphFind( t ) : multiGraphFind( t ); 
+        ExtendedIterator<Triple> found = optimiseOne() ? singleGraphFind( t ) : multiGraphFind( t );
         return SimpleEventManager.notifyingRemove( MultiUnion.this, found );
         }
-    
+
     /**
          Answer the result of <code>find( t )</code> on the single graph in
          this union.
@@ -192,32 +188,4 @@ public class MultiUnion extends Polyadic
             m_subGraphs.add( graph );
         }
     }
-    
-    @Deprecated
-    public static class MultiUnionStatisticsHandler implements GraphStatisticsHandler
-        {
-        protected final MultiUnion mu;
-        
-        public MultiUnionStatisticsHandler( MultiUnion mu )
-            { this.mu = mu; }
-    
-        @Override
-        public long getStatistic( Node S, Node P, Node O )
-            {
-            long result = 0;
-            for (int i = 0; i < mu.m_subGraphs.size(); i += 1)
-                {
-                Graph g = mu.m_subGraphs.get( i );
-                GraphStatisticsHandler s = g.getStatisticsHandler();
-                long n = s.getStatistic( S, P, O );
-                if (n < 0) return n;
-                result += n;
-                }
-            return result;
-            }
-
-        public MultiUnion getUnion()
-            { return mu; }
-        }
-
 }
