@@ -47,8 +47,7 @@ import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.ResultBinding;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.binding.BindingFactory;
-import org.apache.jena.sparql.engine.binding.BindingMap;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.resultset.ResultSetException;
 import org.apache.jena.sparql.resultset.SPARQLResult;
@@ -360,7 +359,7 @@ public class ResultsStAX implements ResultSet, Closeable {
         if ( finished )
             return null ;
         // At the start of <result>
-        BindingMap binding = BindingFactory.create() ;
+        BindingBuilder builder = Binding.builder() ;
         String varName = null ;
         while (parser.hasNext()) {
             int event = parser.next() ;
@@ -373,7 +372,7 @@ public class ResultsStAX implements ResultSet, Closeable {
                 case XMLStreamConstants.END_ELEMENT :
                     tag = parser.getLocalName() ;
                     if ( isTag(tag, XMLResults.dfSolution) )
-                        return binding ;
+                        return builder.build() ;
                     if ( isTag(tag, XMLResults.dfResults) )
                         // Hit the end of solutions.
                         return null ;
@@ -381,7 +380,7 @@ public class ResultsStAX implements ResultSet, Closeable {
                 case XMLStreamConstants.START_ELEMENT :
                     tag = parser.getLocalName() ;
                     if ( isTag(tag, XMLResults.dfSolution) ) {
-                        binding = BindingFactory.create() ;
+                        builder.reset();
                         break ;
                     }
                     if ( isTag(tag, XMLResults.dfBinding) ) {
@@ -393,7 +392,7 @@ public class ResultsStAX implements ResultSet, Closeable {
                     if ( value != null ) {
                         if ( varName == null )
                             throw new ResultSetException("No name for variable") ;
-                        addBinding(binding, Var.alloc(varName), value) ;
+                        addBinding(builder, Var.alloc(varName), value) ;
                         break;
                     }
                     break ;
@@ -516,17 +515,18 @@ public class ResultsStAX implements ResultSet, Closeable {
         return false;
     }
 
-    static protected void addBinding(BindingMap binding, Var var, Node value) {
-        Node n = binding.get(var);
+    static protected void addBinding(BindingBuilder builder, Var var, Node value) {
+        Node n = builder.get(var);
         if ( n != null ) {
-            // Same - silently skip.
             if ( n.equals(value) )
+                // Same - silently skip.
                 return;
+            // Different - warn and skip.
             Log.warn(ResultsStAX.class,
                      String.format("Multiple occurences of a binding for variable '%s' with different values - ignored", var.getName()));
             return;
         }
-        binding.add(var, value);
+        builder.add(var, value);
     }
 
     private boolean isTag(String localName, String expectedName) {

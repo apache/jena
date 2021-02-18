@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,10 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.query.Query ;
 import org.apache.jena.sparql.core.Var ;
@@ -70,7 +73,7 @@ public class SelectHandlerTest extends AbstractHandlerTest {
 		assertNotNull( "expression should not be null", e );
 		assertTrue( "Should be an E_Random", e instanceof E_Random);
 	}
-	
+
 	@Test
 	public void testAddStringWithPrefixVar() {
 		query.setPrefix( "xsd","http://www.w3.org/2001/XMLSchema#" );
@@ -83,7 +86,7 @@ public class SelectHandlerTest extends AbstractHandlerTest {
 		assertTrue( "Should be an ExprAggregator", e instanceof ExprAggregator);
 		assertTrue( "Should contain an AggSum", ((ExprAggregator)e).getAggregator() instanceof AggSum);
 	}
-	
+
 	@Test
 	public void testAddAggregateStringVar() {
 		Var v = Var.alloc("foo");
@@ -95,7 +98,7 @@ public class SelectHandlerTest extends AbstractHandlerTest {
 		assertTrue( "Should be an ExprAggregator", e instanceof ExprAggregator);
 		assertTrue( "Should be AggCount", ((ExprAggregator)e).getAggregator() instanceof AggCount);
 	}
-	
+
 	@Test
 	public void testAddExprVar() {
 		Var v = Var.alloc("foo");
@@ -106,7 +109,7 @@ public class SelectHandlerTest extends AbstractHandlerTest {
 		assertNotNull( "expression should not be null", e );
 		assertTrue( "Should be an E_Random", e instanceof E_Random);
 	}
-	
+
 	@Test
 	public void testAddVarAfterAsterisk() {
 		handler.addVar(null);

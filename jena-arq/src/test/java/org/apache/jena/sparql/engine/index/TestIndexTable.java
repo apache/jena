@@ -20,26 +20,21 @@ package org.apache.jena.sparql.engine.index ;
 
 import static org.apache.jena.reasoner.rulesys.Util.makeIntNode ;
 import static org.junit.Assert.assertEquals ;
-import static org.junit.Assert.assertTrue ;
 import static org.junit.Assert.assertFalse ;
+import static org.junit.Assert.assertTrue ;
 import static org.junit.Assert.fail ;
 
-import java.util.ArrayList ;
-import java.util.Collections ;
-import java.util.LinkedHashSet ;
-import java.util.List ;
-import java.util.Map ;
-import java.util.Set ;
+import java.util.*;
 
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingHashMap ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.engine.index.HashIndexTable.Key ;
 import org.apache.jena.sparql.engine.index.HashIndexTable.MissingBindingException ;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
-import org.junit.Test ;
 import org.junit.Before ;
+import org.junit.Test ;
 
 /**
  * Tests the {@link HashIndexTable} and
@@ -58,7 +53,7 @@ public class TestIndexTable {
 
 	private List<Binding> fData ;
 	private List<Binding> pData ;
-	
+
 	@Before
 	public void setup()
 	{
@@ -70,20 +65,20 @@ public class TestIndexTable {
 			order1.add(vars[i]) ;
 			order2.add(vars[vars.length - i - 1]) ;
 		}
-		
+
 		fData = new ArrayList<>() ;
 		pData = new ArrayList<>() ;
 		for ( int i = 10 ; i <= 100 ; i += 10 )
 		{
-			BindingHashMap bindingFull = new BindingHashMap() ;
-			BindingHashMap bindingPart = new BindingHashMap() ;
+			BindingBuilder bindingFull = Binding.builder() ;
+			BindingBuilder bindingPart = Binding.builder() ;
 			for ( int b = 0 ; b < vars.length ; b++ )
 			{
 				bindingFull.add(vars[b], makeIntNode(i + b)) ;  // 10,11,12 - 20,21,22 - 30,31,32 ... 100,101,102
 				if ( (i + b) % 7 != 0 ) bindingPart.add(vars[b], makeIntNode(i + b)) ; // skips 21, 42, 70, 91
 			}
-			fData.add(bindingFull) ;
-			pData.add(bindingPart) ;
+			fData.add(bindingFull.build()) ;
+			pData.add(bindingPart.build()) ;
 		}
 	}
 
@@ -95,10 +90,10 @@ public class TestIndexTable {
 		assertTrue(IndexFactory.createIndex(order1, partData()) instanceof LinearIndex) ;
 
 		try {
-			
+
 			new HashIndexTable(order1, partData()) ;
 			fail("Index built without failure on partial bindings") ;
-			
+
 		} catch (MissingBindingException e)
 		{
 			// check that the expected mapping occurred
@@ -135,7 +130,7 @@ public class TestIndexTable {
 		testTableData(new HashIndexTable(order1, fullData())) ;
 		testTableData(new HashIndexTable(order2, fullData())) ;
 	}
-	
+
 	@Test
 	public void testLinearIndexTableData()
 	{
@@ -149,12 +144,12 @@ public class TestIndexTable {
 
 		testTableData(new LinearIndex(order1, fullData(), emptyKeys, emptyMapping)) ;
 		testTableData(new LinearIndex(order2, fullData(), emptyKeys, emptyMapping)) ;
-		
+
 		// construction directly from part data should also work
 		testTableData(new LinearIndex(order1, partData(), emptyKeys, emptyMapping)) ;
 		testTableData(new LinearIndex(order2, partData(), emptyKeys, emptyMapping)) ;
 	}
-	
+
 	private void testTableData(IndexTable index)
 	{
 		// positive test for matching
@@ -192,10 +187,10 @@ public class TestIndexTable {
 	{
 		assert varNames.length() == ints.length ;
 
-		BindingHashMap b = new BindingHashMap() ;
+        BindingBuilder b = Binding.builder() ;
 		for ( int s = 0 ; s < varNames.length() ; s++ )
 			b.add(Var.alloc(varNames.substring(s, s + 1)), makeIntNode(ints[s])) ;
-		return b ;
+		return b.build() ;
 	}
 }
 

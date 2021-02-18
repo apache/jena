@@ -27,11 +27,10 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 
 /**
- * Yield new bindings, with a fixed parent, with values from an iterator. 
+ * Yield new bindings, with a fixed parent, with values from an iterator.
  * Parent must not have variables in common with the iterator stream.
  */
 public class QueryIterCommonParent extends QueryIterConvert
@@ -41,23 +40,23 @@ public class QueryIterCommonParent extends QueryIterConvert
         super(input, new ConverterExtend(binding) , execCxt) ;
     }
 
-    // Extend (with checking) an iterator stream of binding to have a common parent. 
+    // Extend (with checking) an iterator stream of binding to have a common parent.
     static class ConverterExtend implements QueryIterConvert.Converter
     {
         private Binding parentBinding ;
-        
+
         ConverterExtend(Binding parent) { parentBinding = parent ; }
-        
+
         @Override
         public Binding convert(Binding b)
         {
             if ( parentBinding == null || parentBinding.isEmpty() )
                 return b ;
-        
-            // This is the result.  Could have BindingBase.setParent etc.  
-            BindingMap b2 = BindingFactory.create(parentBinding) ;
 
-            // Copy the resultSet bindings to the combined result binding with checking. 
+            // This is the result.
+            BindingBuilder b2 = Binding.builder(parentBinding) ;
+
+            // Copy the resultSet bindings to the combined result binding with checking.
             for ( Iterator<Var> iter = b.vars() ; iter.hasNext(); )
             {
                 Var v = iter.next();
@@ -75,7 +74,7 @@ public class QueryIterCommonParent extends QueryIterConvert
                 }
                 b2.add(v, n) ;
             }
-            return b2 ;
+            return b2.build() ;
         }
     }
 }

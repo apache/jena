@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,7 +29,19 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.expr.* ;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprAggregator;
+import org.apache.jena.sparql.expr.ExprFunction0;
+import org.apache.jena.sparql.expr.ExprFunction1;
+import org.apache.jena.sparql.expr.ExprFunction2;
+import org.apache.jena.sparql.expr.ExprFunction3;
+import org.apache.jena.sparql.expr.ExprFunctionN;
+import org.apache.jena.sparql.expr.ExprFunctionOp;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.ExprNone;
+import org.apache.jena.sparql.expr.ExprVar;
+import org.apache.jena.sparql.expr.ExprVisitor;
+import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.syntax.Element ;
 
 /**

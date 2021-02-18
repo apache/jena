@@ -49,7 +49,7 @@ import org.apache.jena.sparql.util.IterLib;
  */
 public class strSplit extends PFuncSimpleAndList
 {
-    
+
     @Override
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {
         super.build(argSubject, predicate, argObject, execCxt);
@@ -65,25 +65,24 @@ public class strSplit extends PFuncSimpleAndList
         if (!object.getArg(0).isLiteral() || !object.getArg(1).isLiteral()) {
             return IterLib.noResults(execCxt);
         }
-        
+
         String s = object.getArg(0).getLiteralLexicalForm() ;
         String regex = object.getArg(1).getLiteralLexicalForm() ;
-        
+
         // StrUtils will also trim whitespace
         List<String> tokens = Arrays.asList(StrUtils.split(s, regex));
-        
+
         if (Var.isVar(subject)) {
-            
+
             // Case: Subject is variable. Return all tokens as results.
-            
+
             final Var subjectVar = Var.alloc(subject);
 
             Iterator<Binding> it = Iter.map(
                     tokens.iterator(),
-                    item -> BindingFactory.binding(binding, subjectVar,
-                            NodeFactory.createLiteral(item)));
+                    item -> BindingFactory.binding(binding, subjectVar, NodeFactory.createLiteral(item)));
             return new QueryIterPlainWrapper(it, execCxt);
-            
+
         } else if ( Util.isSimpleString(subject) ) {
             // Case: Subject is a plain literal.
             // Return input unchanged if it is one of the tokens, or nothing otherwise
@@ -92,9 +91,9 @@ public class strSplit extends PFuncSimpleAndList
             } else {
                 return IterLib.noResults(execCxt);
             }
-            
+
         }
-        
+
         // Any other case: Return nothing
         return IterLib.noResults(execCxt);
     }

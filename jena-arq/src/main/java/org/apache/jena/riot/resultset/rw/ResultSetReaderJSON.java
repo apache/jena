@@ -44,8 +44,7 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.ResultSetStream;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.binding.BindingFactory;
-import org.apache.jena.sparql.engine.binding.BindingMap;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.resultset.ResultSetException;
@@ -58,16 +57,14 @@ import org.apache.jena.vocabulary.RDF;
  * <a href="https://www.w3.org/TR/sparql11-results-json/">SPARQL 1.1 Query Results JSON Format</a>
  */
 public class ResultSetReaderJSON implements ResultSetReader {
-    
+
     public static final ResultSetReaderFactory factory = lang -> {
         if (!Objects.equals(lang, ResultSetLang.SPARQLResultSetJSON ) )
-            throw new ResultSetException("ResultSet for JSON asked for a "+lang); 
-        return new ResultSetReaderJSON(); 
+            throw new ResultSetException("ResultSet for JSON asked for a "+lang);
+        return new ResultSetReaderJSON();
     };
-    
+
     private ResultSetReaderJSON() {}
-    
-    // TODO Streaming version of JSON Result set processing
 
     @Override
     public SPARQLResult readAny(InputStream in, Context context) {
@@ -84,12 +81,12 @@ public class ResultSetReaderJSON implements ResultSetReader {
         if ( exec.rows != null ) {
             QueryIterator qIter = new QueryIterPlainWrapper(exec.rows.iterator());
             ResultSet rs = new ResultSetStream(Var.varNames(exec.vars), model, qIter);
-            return new SPARQLResult(rs); 
+            return new SPARQLResult(rs);
         } else
             return new SPARQLResult(exec.booleanResult);
     }
 
-    /** 
+    /**
      * Parse a result set - whether rows (SELECT) or a boolean results (ASK).
      * This object is one-time use and exists to carry the results as they are built-up.
      */
@@ -159,8 +156,9 @@ public class ResultSetReaderJSON implements ResultSetReader {
             JsonArray array = results.get(kBindings).getAsArray();
             Iterator<JsonValue> iter = array.iterator();
 
+            BindingBuilder builder = Binding.builder();
             for ( ; iter.hasNext() ; ) {
-                BindingMap b = BindingFactory.create();
+                builder.reset();
                 JsonValue v = iter.next();
                 if ( !v.isObject() )
                     throw new ResultSetException("Entry in 'bindings' array must be an object {}");
@@ -172,9 +170,9 @@ public class ResultSetReaderJSON implements ResultSetReader {
                     if ( !vt.isObject() )
                         throw new ResultSetException("Binding for variable '" + vn + "' is not a JSON object: " + vt);
                     Node n = parseOneTerm(vt.getAsObject(), labelMap);
-                    b.add(Var.alloc(vn), n);
+                    builder.add(Var.alloc(vn), n);
                 }
-                rows.add(b);
+                rows.add(builder.build());
             }
         }
 
@@ -198,12 +196,12 @@ public class ResultSetReaderJSON implements ResultSetReader {
             checkContains(term, false, false, kType, kValue, kXmlLang, kDatatype);
 
             String type = stringOrNull(term, kType);
-            
+
             if ( kTriple.equals(type) || kStatement.equals(type) ) {
                 JsonObject x = term.get(kValue).getAsObject();
                 return parseTripleTerm(x, labelMap);
             }
-            
+
             String v = stringOrNull(term, kValue);
 
             if ( kUri.equals(type) ) {
@@ -232,7 +230,7 @@ public class ResultSetReaderJSON implements ResultSetReader {
 
             if ( kBnode.equals(type) )
                 return labelMap.get(null, v);
-            
+
             throw new ResultSetException("Object key not recognized as valid for an RDF term: " + term);
         }
 
@@ -242,8 +240,8 @@ public class ResultSetReaderJSON implements ResultSetReader {
             checkContainsOneOf(term, kSubject, kSubjectAlt);
             checkContainsOneOf(term, kObject, kObjectAlt);
             checkContainsOneOf(term, kPredicate, kProperty, kPredicateAlt);
-            
-            JsonObject sTerm = get(term, kSubject, kSubjectAlt); 
+
+            JsonObject sTerm = get(term, kSubject, kSubjectAlt);
             JsonObject pTerm = get(term, kPredicate, kProperty, kPredicateAlt);
             JsonObject oTerm = get(term, kObject, kObjectAlt);
             if ( sTerm == null || pTerm == null || oTerm == null )
@@ -253,8 +251,8 @@ public class ResultSetReaderJSON implements ResultSetReader {
             Node o = parseOneTerm(oTerm, labelMap);
             return NodeFactory.createTripleNode(s, p, o);
         }
-        
-        // Get a object from an object - use the first name in the fields list  
+
+        // Get a object from an object - use the first name in the fields list
         private static JsonObject get(JsonObject term, String... fields) {
             for ( String f : fields ) {
                 JsonValue v = term.get(f);
@@ -286,7 +284,7 @@ public class ResultSetReaderJSON implements ResultSetReader {
             if ( requireAllExpectedKeys && declared.size() < expectedKeys.size() )
                 throw new ResultSetException("One or more of the required keys " + expectedKeys + " was not found");
         }
-        
+
         private static void checkContainsOneOf(JsonObject term, String... keys) {
             List<String> expectedKeys = Arrays.asList(keys);
             String found = null;

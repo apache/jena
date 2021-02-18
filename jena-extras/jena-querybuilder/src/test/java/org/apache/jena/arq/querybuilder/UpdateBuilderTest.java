@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,8 @@
  */
 package org.apache.jena.arq.querybuilder;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,7 +51,7 @@ import org.apache.jena.vocabulary.DC_11;
 import org.junit.Test;
 
 public class UpdateBuilderTest {
-	
+
 	private Node g = NodeFactory.createURI("http://example.com/graph");
 	private Node s = NodeFactory.createURI("http://example.com/subject");
 	private Node p = NodeFactory.createURI("http://example.com/predicate");
@@ -108,11 +109,11 @@ public class UpdateBuilderTest {
 		assertEquals( p, q.getPredicate());
 		assertEquals( o, q.getObject());
 	}
-	
+
 	@Test
 	public  void testInsert_GSPO()
 	{
-		
+
 		UpdateBuilder builder = new UpdateBuilder();
 		builder.addInsert( g, s, p, o);
 		Update update = builder.build();
@@ -126,7 +127,7 @@ public class UpdateBuilderTest {
 		assertEquals( p, q.getPredicate());
 		assertEquals( o, q.getObject());
 	}
-	
+
 	@Test
 	public  void testInsert_Quad()
 	{
@@ -149,16 +150,16 @@ public class UpdateBuilderTest {
 	{
 		UpdateBuilder builder = new UpdateBuilder();
 		Collection<Quad> quads = new ArrayList<Quad>();
-		
+
 		quads.add( new Quad( g, s, p, o) );
-		
+
 		Node g2 = NodeFactory.createURI("http://example.com/graph2");
 		Node s2 = NodeFactory.createURI("http://example.com/subject2");
 		Node p2 = NodeFactory.createURI("http://example.com/predicate2");
 		Node o2 = NodeFactory.createURI("http://example.com/object2");
 
 		quads.add( new Quad( g2, s2, p2, o2) );
-		
+
 		builder.addInsertQuads(quads);
 		Update update = builder.build();
 		assertTrue( update instanceof UpdateDataInsert);
@@ -170,14 +171,14 @@ public class UpdateBuilderTest {
 		assertEquals( s, q.getSubject());
 		assertEquals( p, q.getPredicate());
 		assertEquals( o, q.getObject());
-		
+
 		q = quads2.get(1);
 		assertEquals( g2, q.getGraph());
 		assertEquals( s2, q.getSubject());
 		assertEquals( p2, q.getPredicate());
 		assertEquals( o2, q.getObject());
 	}
-	
+
 	@Test
 	public void testInsertValueReplacement()
 	{
@@ -196,7 +197,7 @@ public class UpdateBuilderTest {
 		assertEquals( p, q.getPredicate());
 		assertEquals( o, q.getObject());
 	}
-	
+
 	@Test
 	public  void testDelete_SPO()
 	{
@@ -249,11 +250,11 @@ public class UpdateBuilderTest {
 		assertEquals( p, q.getPredicate());
 		assertEquals( o, q.getObject());
 	}
-	
+
 	@Test
 	public  void testDelete_GSPO()
 	{
-		
+
 		UpdateBuilder builder = new UpdateBuilder();
 		builder.addDelete( g, s, p, o);
 		Update update = builder.build();
@@ -267,11 +268,11 @@ public class UpdateBuilderTest {
 		assertEquals( p, q.getPredicate());
 		assertEquals( o, q.getObject());
 	}
-	
+
 	@Test
 	public  void testDelete_Quad()
 	{
-		
+
 		UpdateBuilder builder = new UpdateBuilder();
 		builder.addDelete( new Quad( g, s, p, o) );
 		Update update = builder.build();
@@ -285,22 +286,22 @@ public class UpdateBuilderTest {
 		assertEquals( p, q.getPredicate());
 		assertEquals( o, q.getObject());
 	}
-	
+
 	@Test
 	public  void testDelete_QuadCollection()
 	{
 		UpdateBuilder builder = new UpdateBuilder();
 		Collection<Quad> quads = new ArrayList<Quad>();
-		
+
 		quads.add( new Quad( g, s, p, o) );
-		
+
 		Node g2 = NodeFactory.createURI("http://example.com/graph2");
 		Node s2 = NodeFactory.createURI("http://example.com/subject2");
 		Node p2 = NodeFactory.createURI("http://example.com/predicate2");
 		Node o2 = NodeFactory.createURI("http://example.com/object2");
 
 		quads.add( new Quad( g2, s2, p2, o2) );
-		
+
 		builder.addDeleteQuads(quads);
 		Update update = builder.build();
 		assertTrue( update instanceof UpdateDataDelete);
@@ -312,7 +313,7 @@ public class UpdateBuilderTest {
 		assertEquals( s, q.getSubject());
 		assertEquals( p, q.getPredicate());
 		assertEquals( o, q.getObject());
-		
+
 		q = quads2.get(1);
 		assertEquals( g2, q.getGraph());
 		assertEquals( s2, q.getSubject());
@@ -338,7 +339,7 @@ public class UpdateBuilderTest {
 		assertEquals( p, q.getPredicate());
 		assertEquals( o, q.getObject());
 	}
-	
+
 	@Test
 	public  void testInsertAndDelete()
 	{
@@ -356,7 +357,7 @@ public class UpdateBuilderTest {
 		assertEquals( s, q.getSubject());
 		assertEquals( p, q.getPredicate());
 		assertEquals( o, q.getObject());
-		
+
 		quads = um.getDeleteQuads();
 		assertEquals( 1, quads.size());
 		q = quads.get(0);
@@ -364,7 +365,7 @@ public class UpdateBuilderTest {
 		assertEquals( s, q.getSubject());
 		assertEquals( p, q.getPredicate());
 		assertEquals( o, q.getObject());
-		
+
 		Element e = um.getWherePattern();
 		assertTrue( e instanceof ElementGroup );
 		ElementGroup eg = (ElementGroup) e;
@@ -375,7 +376,7 @@ public class UpdateBuilderTest {
 		assertEquals( p, t.getPredicate());
 		assertEquals( builder.makeNode("foo"), t.getObject());
 	}
-	
+
 	@Test
 	public  void testInsertAndDeleteWithVarReplacement()
 	{
@@ -396,7 +397,7 @@ public class UpdateBuilderTest {
 		assertEquals( s, q.getSubject());
 		assertEquals( p, q.getPredicate());
 		assertEquals( o, q.getObject());
-		
+
 		quads = um.getDeleteQuads();
 		assertEquals( 1, quads.size());
 		q = quads.get(0);
@@ -404,7 +405,7 @@ public class UpdateBuilderTest {
 		assertEquals( s, q.getSubject());
 		assertEquals( p, q.getPredicate());
 		assertEquals( o, q.getObject());
-		
+
 		Element e = um.getWherePattern();
 		assertTrue( e instanceof ElementGroup );
 		ElementGroup eg = (ElementGroup) e;
@@ -415,7 +416,7 @@ public class UpdateBuilderTest {
 		assertEquals( p, t.getPredicate());
 		assertEquals( builder.makeNode("foo"), t.getObject());
 	}
-	
+
 	@Test
 	public  void testInsertAndDeleteWithVariableNodeReplacement()
 	{
@@ -436,7 +437,7 @@ public class UpdateBuilderTest {
 		assertEquals( s, q.getSubject());
 		assertEquals( p, q.getPredicate());
 		assertEquals( o, q.getObject());
-		
+
 		quads = um.getDeleteQuads();
 		assertEquals( 1, quads.size());
 		q = quads.get(0);
@@ -444,7 +445,7 @@ public class UpdateBuilderTest {
 		assertEquals( s, q.getSubject());
 		assertEquals( p, q.getPredicate());
 		assertEquals( o, q.getObject());
-		
+
 		Element e = um.getWherePattern();
 		assertTrue( e instanceof ElementGroup );
 		ElementGroup eg = (ElementGroup) e;
@@ -455,7 +456,7 @@ public class UpdateBuilderTest {
 		assertEquals( p, t.getPredicate());
 		assertEquals( builder.makeNode("foo"), t.getObject());
 	}
-	
+
 	@Test
 	public  void testInsertAndDeleteWithVariableNode()
 	{
@@ -465,7 +466,7 @@ public class UpdateBuilderTest {
 		builder.addInsert( new Quad( g, s, v, o) );
 		builder.addDelete( new Triple( s, v, o) );
 		builder.addWhere( null, v, "foo");
-		
+
 		Update update = builder.build();
 		assertTrue( update instanceof UpdateModify);
 		UpdateModify um = (UpdateModify)update;
@@ -477,7 +478,7 @@ public class UpdateBuilderTest {
 		assertEquals( v, q.getPredicate());
 		assertEquals( o, q.getObject());
 		assertTrue( Var.isVar(q.getPredicate()));
-		
+
 		quads = um.getDeleteQuads();
 		assertEquals( 1, quads.size());
 		q = quads.get(0);
@@ -486,7 +487,7 @@ public class UpdateBuilderTest {
 		assertEquals( v, q.getPredicate());
 		assertEquals( o, q.getObject());
 		assertTrue( Var.isVar(q.getPredicate()));
-		
+
 		Element e = um.getWherePattern();
 		assertTrue( e instanceof ElementGroup );
 		ElementGroup eg = (ElementGroup) e;
@@ -507,7 +508,7 @@ public class UpdateBuilderTest {
 
 	PREFIX dc: <http://purl.org/dc/elements/1.1/>
 	INSERT DATA
-	{ 
+	{
 	  <http://example/book1> dc:title "A new book" ;
 	                         dc:creator "A.N.Other" .
 	}
@@ -540,16 +541,16 @@ public class UpdateBuilderTest {
 		.addPrefix( "dc", DC_11.NS)
 		.addInsert( n, DC_11.title, "A new book")
 		.addInsert( n, DC_11.creator, "A.N.Other");
-		
+
 		List<Triple> triples = new ArrayList<Triple>();
 		triples.add( new Triple( n, priceN, priceV ));
 		Graph g = new CollectionGraph( triples );
 		Model m = ModelFactory.createModelForGraph(g);
 		m.setNsPrefix( "dc", DC_11.NS);
 		m.setNsPrefix("ns", "http://example.org/ns#");
-	
+
 		UpdateAction.execute( builder.build(), m);
-		
+
 		Resource r = ResourceFactory.createResource( n.getURI() );
 		Property rPriceP = ResourceFactory.createProperty( priceN.getURI() );
 		Literal rPriceV = ResourceFactory.createPlainLiteral("42");
@@ -557,24 +558,24 @@ public class UpdateBuilderTest {
 		assertTrue( m.contains( r, DC_11.title, "A new book"));
 		assertTrue( m.contains( r, DC_11.creator, "A.N.Other"));
 		assertEquals( 3, triples.size());
-		
+
 	}
-	
+
 	@Test
 	public void testPathInWhereClause() {
 		Node p = NodeFactory.createURI("http://example.com/p");
 		Path path = new P_Link( p );
-				
+
 		// JENA-1739 fails here
 		new UpdateBuilder().addDelete( "?s", "<x>", "?p")
 		.addWhere( "?s", path, "?p").build();
 	}
-	
+
 	@Test
 	public void testPathInOptionalClause() {
 		Node p = NodeFactory.createURI("http://example.com/p");
 		Path path = new P_Link( p );
-				
+
 		// JENA-1739 fails here
 		new UpdateBuilder().addDelete( "?s", "<x>", "?p")
 		.addOptional( "?s", path, "?p").build();

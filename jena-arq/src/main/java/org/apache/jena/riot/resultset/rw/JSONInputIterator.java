@@ -36,8 +36,7 @@ import org.apache.jena.riot.tokens.Token;
 import org.apache.jena.riot.tokens.TokenType;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.binding.BindingFactory;
-import org.apache.jena.sparql.engine.binding.BindingMap;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorBase;
 import org.apache.jena.sparql.serializer.SerializationContext;
 
@@ -55,8 +54,10 @@ public class JSONInputIterator extends QueryIteratorBase {
 
     private InputStream         input;
 
-    private boolean             isBooleanResults = false,
-                                    boolResult = false, headerSeen = false;
+    private boolean             isBooleanResults = false;
+    private boolean             boolResult       = false;
+    private boolean             headerSeen       = false;
+    private BindingBuilder      builder          = Binding.builder();
     private Binding             binding          = null;
     private TokenizerJSON       tokens;
     private PeekIterator<Token> peekIter;
@@ -322,7 +323,7 @@ public class JSONInputIterator extends QueryIteratorBase {
     /**
      * Caches the first N results so we can infer variables, indicates whether
      * the caching exhausted the result set
-     * 
+     *
      * @param n
      *            Number of results to cache
      */
@@ -383,7 +384,6 @@ public class JSONInputIterator extends QueryIteratorBase {
     private boolean parseNextBinding() {
         if ( lookingAt(TokenType.LBRACE) ) {
             nextToken();
-            BindingMap b = BindingFactory.create();
             do {
                 if ( isPropertyName() ) {
                     Token t = nextToken();
@@ -391,7 +391,7 @@ public class JSONInputIterator extends QueryIteratorBase {
                     checkColon();
 
                     Node n = parseNode();
-                    b.add(Var.alloc(var), n);
+                    builder.add(Var.alloc(var), n);
 
                     checkComma(TokenType.RBRACE);
                 } else if ( lookingAt(TokenType.RBRACE) ) {
@@ -403,7 +403,7 @@ public class JSONInputIterator extends QueryIteratorBase {
                 }
             } while (true);
 
-            this.binding = b;
+            this.binding = builder.build();
             return true;
         } else if ( lookingAt(TokenType.RBRACKET) ) {
             // End of Bindings Array

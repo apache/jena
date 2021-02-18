@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,7 +25,10 @@ import org.apache.jena.arq.querybuilder.clauses.ConstructClause;
 import org.apache.jena.arq.querybuilder.clauses.DatasetClause;
 import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause;
 import org.apache.jena.arq.querybuilder.clauses.WhereClause;
-import org.apache.jena.arq.querybuilder.handlers.* ;
+import org.apache.jena.arq.querybuilder.handlers.ConstructHandler;
+import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
+import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
+import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
 import org.apache.jena.graph.FrontsTriple;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -45,8 +48,8 @@ import org.apache.jena.sparql.lang.sparql_11.ParseException;
  * <p>
  * The ConstructBuilder can be used as<b>prepared query</b>.
  * Values for variables in the created query can be set with {@link ConstructBuilder#setVar(Object, Object)} and {@link ConstructBuilder#setVar(Var, Node)}.
- * The method {@link ConstructBuilder#clearWhereValues()} allows to clear the set values. 
- * 
+ * The method {@link ConstructBuilder#clearWhereValues()} allows to clear the set values.
+ *
  * @see AskBuilder
  * @see DescribeBuilder
  * @see SelectBuilder
@@ -203,7 +206,7 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 		getWhereHandler().addWhere(t);
 		return this;
 	}
-	
+
 	@Override
 	public ConstructBuilder addWhere(Triple t) {
 		getWhereHandler().addWhere(new TriplePath(t));
@@ -228,22 +231,22 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 		getWhereHandler().addValueVar(getPrologHandler().getPrefixes(), var);
 		return this;
 	}
-	
+
 	@Override
 	public ConstructBuilder addWhereValueVar(Object var, Object... values)
 	{
 		getWhereHandler().addValueVar(getPrologHandler().getPrefixes(), var, values);
 		return this;
 	}
-	
-	
+
+
 	@Override
 	public <K extends Collection<?>> ConstructBuilder addWhereValueVars(Map<?,K> dataTable)
 	{
 		getWhereHandler().addValueVars(getPrologHandler().getPrefixes(), dataTable);
 		return this;
 	}
-	
+
 	@Override
 	public ConstructBuilder addWhereValueRow(Object... values)
 	{
@@ -256,7 +259,7 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 		getWhereHandler().addValueRow(getPrologHandler().getPrefixes(), values);
 		return this;
 	}
-	
+
 	@Override
 	public List<Var> getWhereValuesVars() {
 		return getWhereHandler().getValuesVars();
@@ -272,7 +275,7 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 		getWhereHandler().clearValues();
 		return this;
 	}
-	
+
 	@Override
 	public ConstructBuilder addOptional(TriplePath t) {
 		getWhereHandler().addOptional(t);
@@ -387,7 +390,7 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 	public Node list(Object... objs) {
 		return getWhereHandler().list(objs);
 	}
-	
+
 	@Override
 	public ConstructBuilder addMinus( AbstractQueryBuilder<?> t ) {
 		getWhereHandler().addMinus( t );

@@ -24,8 +24,7 @@ import org.apache.jena.sparql.algebra.Table ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.ResultSetStream ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingBase ;
-import org.apache.jena.sparql.engine.binding.BindingUtils ;
+import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.engine.ref.Evaluator ;
 
 public abstract class TableBase implements Table {
@@ -53,7 +52,7 @@ public abstract class TableBase implements Table {
         try {
             for (; qIter.hasNext();) {
                 Binding b2 = qIter.nextBinding() ;
-                if ( BindingUtils.equals(b, b2) )
+                if ( BindingLib.equals(b, b2) )
                     return true ;
             }
             return false ;
@@ -114,7 +113,7 @@ public abstract class TableBase implements Table {
             for (; qIter1.hasNext();) {
                 Binding bind1 = qIter1.nextBinding() ;
                 Binding bind2 = qIter2.nextBinding() ;
-                if ( !BindingBase.equals(bind1, bind2) )
+                if ( !BindingLib.equals(bind1, bind2) )
                     return false ;
             }
             return true ;

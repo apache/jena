@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,25 @@ import java.util.Map;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.path.* ;
+import org.apache.jena.sparql.path.P_Alt;
+import org.apache.jena.sparql.path.P_Distinct;
+import org.apache.jena.sparql.path.P_FixedLength;
+import org.apache.jena.sparql.path.P_Inverse;
+import org.apache.jena.sparql.path.P_Link;
+import org.apache.jena.sparql.path.P_Mod;
+import org.apache.jena.sparql.path.P_Multi;
+import org.apache.jena.sparql.path.P_NegPropSet;
+import org.apache.jena.sparql.path.P_OneOrMore1;
+import org.apache.jena.sparql.path.P_OneOrMoreN;
+import org.apache.jena.sparql.path.P_Path0;
+import org.apache.jena.sparql.path.P_ReverseLink;
+import org.apache.jena.sparql.path.P_Seq;
+import org.apache.jena.sparql.path.P_Shortest;
+import org.apache.jena.sparql.path.P_ZeroOrMore1;
+import org.apache.jena.sparql.path.P_ZeroOrMoreN;
+import org.apache.jena.sparql.path.P_ZeroOrOne;
+import org.apache.jena.sparql.path.Path;
+import org.apache.jena.sparql.path.PathVisitor;
 
 /**
  * A rewriter that implements PathVisitor.

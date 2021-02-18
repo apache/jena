@@ -31,8 +31,7 @@ import org.apache.jena.riot.thrift.wire.RDF_VAR ;
 import org.apache.jena.riot.thrift.wire.RDF_VarTuple ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.thrift.TException ;
 import org.apache.thrift.protocol.TProtocol ;
 import org.apache.thrift.transport.TIOStreamTransport ;
@@ -46,20 +45,21 @@ public class Thift2Binding extends IteratorSlotted<Binding> implements Iterator<
     private final RDF_DataTuple row = new RDF_DataTuple() ;
     private InputStream in ;
     private TProtocol protocol ;
+    private BindingBuilder b = Binding.builder() ;
 
-    public Thift2Binding(InputStream in) { 
+    public Thift2Binding(InputStream in) {
         this.in = in ;
         TIOStreamTransport transport = new TIOStreamTransport(in) ;
         this.protocol = TRDF.protocol(transport) ;
         readVars() ;
     }
-    
-    public Thift2Binding(TProtocol out) { 
+
+    public Thift2Binding(TProtocol out) {
         this.in = null ;
         this.protocol = out ;
         readVars() ;
     }
-    
+
     private void readVars() {
         RDF_VarTuple vrow = new RDF_VarTuple() ;
         try { vrow.read(protocol) ; }
@@ -74,22 +74,21 @@ public class Thift2Binding extends IteratorSlotted<Binding> implements Iterator<
         }
         vars = Var.varList(varNames) ;
     }
-    
+
     public List<Var> getVars()              { return vars ; }
 
     public List<String> getVarNames()       { return varNames ; }
-    
+
     @Override
     protected Binding moveToNext() {
+        b.reset();
         try { row.read(protocol) ; }
         catch (TTransportException e) { return null ; }
         catch (TException e) { TRDF.exception(e) ; }
-        
+
         if ( row.getRowSize() != vars.size() )
             throw new RiotThriftException(String.format("Vars %d : Row length : %d", vars.size(), row.getRowSize())) ;
 
-        BindingMap b = BindingFactory.create() ;
-        
         for ( int i = 0 ;  i < vars.size() ; i++ ) {
             // Old school
             Var v = vars.get(i) ;
@@ -100,7 +99,7 @@ public class Thift2Binding extends IteratorSlotted<Binding> implements Iterator<
             b.add(v, n) ;
         }
         row.clear() ;
-        return b ; 
+        return b.build() ;
     }
 
     @Override

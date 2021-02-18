@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,10 +20,28 @@ package org.apache.jena.arq.querybuilder.rewriters;
 import java.util.List;
 
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
-import org.apache.jena.sparql.syntax.*;
+import org.apache.jena.sparql.syntax.Element;
+import org.apache.jena.sparql.syntax.ElementAssign;
+import org.apache.jena.sparql.syntax.ElementBind;
+import org.apache.jena.sparql.syntax.ElementData;
+import org.apache.jena.sparql.syntax.ElementDataset;
+import org.apache.jena.sparql.syntax.ElementExists;
+import org.apache.jena.sparql.syntax.ElementFilter;
+import org.apache.jena.sparql.syntax.ElementFind;
+import org.apache.jena.sparql.syntax.ElementGroup;
+import org.apache.jena.sparql.syntax.ElementMinus;
+import org.apache.jena.sparql.syntax.ElementNamedGraph;
+import org.apache.jena.sparql.syntax.ElementNotExists;
+import org.apache.jena.sparql.syntax.ElementOptional;
+import org.apache.jena.sparql.syntax.ElementPathBlock;
+import org.apache.jena.sparql.syntax.ElementService;
+import org.apache.jena.sparql.syntax.ElementSubQuery;
+import org.apache.jena.sparql.syntax.ElementTriplesBlock;
+import org.apache.jena.sparql.syntax.ElementUnion;
+import org.apache.jena.sparql.syntax.ElementVisitor;
 
 /**
- * An element visitor that does an in-place modification of the elements to 
+ * An element visitor that does an in-place modification of the elements to
  * fix union-of-one and similar issues.
  *
  */
@@ -75,7 +93,7 @@ public class BuildElementVisitor implements ElementVisitor {
         // no change
         result=el;
 	}
-	
+
 	@Override
 	public void visit(ElementData el) {
 		// no change
@@ -90,7 +108,7 @@ public class BuildElementVisitor implements ElementVisitor {
     		 lst.set(i, result);
     	 }
 	}
-	
+
 	@Override
 	public void visit(ElementUnion el) {
 		List<Element> lst = el.getElements();
@@ -135,7 +153,7 @@ public class BuildElementVisitor implements ElementVisitor {
 		result = el;
 		}
 	}
-	
+
 	@Override
 	public void visit(ElementDataset el) {
 		// noting to do
@@ -165,7 +183,7 @@ public class BuildElementVisitor implements ElementVisitor {
 		}
 		else {
 			result = new ElementExists( result);
-		}			
+		}
 	}
 
 	@Override
@@ -205,7 +223,7 @@ public class BuildElementVisitor implements ElementVisitor {
 		else {
 			result = new ElementService( el.getServiceNode(), result, el.getSilent());
 		}
-		
+
 	}
 
 	@Override
@@ -218,5 +236,5 @@ public class BuildElementVisitor implements ElementVisitor {
 		}
 		result = el;
 	}
-	
+
 }

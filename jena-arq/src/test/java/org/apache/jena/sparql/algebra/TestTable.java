@@ -45,16 +45,16 @@ public class TestTable {
         String x = str(opTable);
         assertEquals("(table (vars ?a))",  x);
     }
-    
+
     @Test public void table_03() {
         Table table = TableFactory.create();
-        Binding b = BindingFactory.binding();
+        Binding b = BindingFactory.empty();
         table.addBinding(b);
         Op opTable = OpTable.create(table);
         String x = str(opTable);
         assertEquals("(table (vars) (row) )",  x);
     }
-    
+
     // String, no adornment
     private static String str(Op op) {
         SerializationContext sCxt = new SerializationContext();

@@ -571,13 +571,13 @@ public class RDFDataMgr
 
     /**
      * Read RDF data.
-     * @param sink     Destination for the RDF read.
+     * Short for {@code RDFParser.source(uri).parse(dest)}
+     * @param dest     Destination for the RDF read.
      * @param uri      URI to read from (includes file: and a plain file name).
-     * @deprecated     Use {@code RDFParser.source(uri).parse(sink)}
+     * Use
      */
-    @Deprecated
-    public static void parse(StreamRDF sink, String uri) {
-        parse(sink, uri, defaultLang(uri));
+    public static void parse(StreamRDF dest, String uri) {
+        RDFParser.source(uri).parse(dest);
     }
 
     /**
@@ -654,7 +654,7 @@ public class RDFDataMgr
      * @param in        Reader
      * @param base      Base URI (defaults to uri).
      * @param hintLang  Hint for the syntax
-     * @deprecated     To be removed. Use {@code RDFParser.create().source(in).base(base).lang(hintLang).parse(sink)}
+     * @deprecated      To be removed. Use {@code RDFParser.create().source(in).base(base).lang(hintLang).parse(sink)}
      */
     @Deprecated
     public static void parse(StreamRDF sink, StringReader in, String base, Lang hintLang) {
@@ -665,7 +665,7 @@ public class RDFDataMgr
      * Read RDF data.
      * @param sink      Destination for the RDF read.
      * @param in        Bytes to read. This must include the content type.
-     * @deprecated     To be removed. Use an {@code InputStream} and {@code RDFParser.source(in).lang(hintLang).parse(sink)}
+     * @deprecated      To be removed. Use an {@code InputStream} and {@code RDFParser.source(in).lang(hintLang).parse(sink)}
      */
     @Deprecated
     public static void parse(StreamRDF sink, TypedInputStream in) {

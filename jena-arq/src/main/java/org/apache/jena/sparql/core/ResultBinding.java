@@ -26,7 +26,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingBase ;
+import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.util.ModelUtils ;
 
 
@@ -44,13 +44,13 @@ public class ResultBinding extends QuerySolutionBase
         model = _model ;
         binding = _binding ;
     }
-    
+
 //    private ResultBinding( Model _model )
 //    {
 //        model = _model ;
 //        binding = BindingFactory.create() ;
 //    }
-    
+
     @Override
     protected RDFNode _get(String varName)
     {
@@ -59,7 +59,7 @@ public class ResultBinding extends QuerySolutionBase
             return null;
         return ModelUtils.convertGraphNodeToRDFNode(n, model) ;
     }
-    
+
     @Override
     protected boolean _contains(String varName)
     {
@@ -68,7 +68,7 @@ public class ResultBinding extends QuerySolutionBase
 
     @Override
     public Iterator<String> varNames()
-    { 
+    {
         List<String> x = new ArrayList<>() ;
         for ( Iterator<Var> iter = binding.vars() ; iter.hasNext(); )
         {
@@ -77,12 +77,12 @@ public class ResultBinding extends QuerySolutionBase
         }
         return x.iterator() ;
     }
-    
+
 //    public void setModel(Model m) { model = m ; }
 //    public Model getModel() { return model ; }
 
     public Binding getBinding() { return binding ; }
-    
+
     @Override
     public String toString()
     {
@@ -93,6 +93,6 @@ public class ResultBinding extends QuerySolutionBase
 
     public static boolean equals(ResultBinding rb1, ResultBinding rb2)
     {
-        return BindingBase.equals(rb1.getBinding(), rb2.getBinding() ) ; 
+        return BindingLib.equals(rb1.getBinding(), rb2.getBinding() ) ;
     }
 }

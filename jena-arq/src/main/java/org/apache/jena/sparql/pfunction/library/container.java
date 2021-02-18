@@ -91,7 +91,7 @@ public class container extends PFuncSimple
         for ( Node cn : c )
         {
             //Binding the container node.
-            Binding b = BindingFactory.binding( binding, cVar, cn );
+            Binding b = BindingFactory.binding(binding, cVar, cn);
             Node m = member;
             // Special case of ?x rdfs:member ?x
             if ( Var.isVar( member ) && member.equals( cVar ) )
@@ -125,7 +125,7 @@ public class container extends PFuncSimple
         List<Binding> bindings = new ArrayList<>() ;
         for ( Node n : x )
         {
-            Binding b = BindingFactory.binding( binding, memberVar, n );
+            Binding b = BindingFactory.binding(binding, memberVar, n);
             bindings.add( b );
         }
 

@@ -30,8 +30,7 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.pfunction.PropFuncArg ;
 import org.apache.jena.sparql.pfunction.PropFuncArgType ;
 import org.apache.jena.sparql.pfunction.PropertyFunctionEval ;
@@ -55,27 +54,27 @@ public class splitIRI extends PropertyFunctionEval
         if ( ! argObject.isList() )
             throw new QueryBuildException(Lib.className(this)+ "Object must be a list of two elements") ;
         if ( argObject.getArgList().size() != 2 )
-            throw new QueryBuildException(Lib.className(this)+ "Object is a list but it has "+argObject.getArgList().size()+" elements - should be 2") ; 
+            throw new QueryBuildException(Lib.className(this)+ "Object is a list but it has "+argObject.getArgList().size()+" elements - should be 2") ;
     }
 
     // Implementing .exec requires considering all the cases of variable being
     // bound/constants or unbound variables.  If an unexpected case arises, or
-    // one the implementation can't fulfil, then give warning and return 
+    // one the implementation can't fulfil, then give warning and return
     // QueryIterNullIterator or a null.
     //
-    // Do not throw an exception except when an internal error situation occurs. 
-    
+    // Do not throw an exception except when an internal error situation occurs.
+
     @Override
     public QueryIterator execEvaluated(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
         try {
-            // Subject bound to something other a URI. 
+            // Subject bound to something other a URI.
             if ( argSubject.getArg().isLiteral() || argSubject.getArg().isBlank() )
                 // Only split IRIs
                 return IterLib.noResults(execCxt) ;
-    
+
             if ( argSubject.getArg().isURI() )
-                // Case 1 : subject is a fixed URI or a variable bount to a URI. 
+                // Case 1 : subject is a fixed URI or a variable bount to a URI.
                 return subjectIsIRI(argSubject.getArg(), argObject, binding, execCxt) ;
             else
                 // Case 2 : subject is an unbound variable.
@@ -91,18 +90,18 @@ public class splitIRI extends PropertyFunctionEval
     {
         String namespace = subject.getNameSpace() ;
         String localname = subject.getLocalName() ;
-        
+
         Node namespaceNode = argObject.getArg(0) ;
         Node localnameNode = argObject.getArg(1) ;
-        
+
         // New binding to return.
-        BindingMap b = null ;
+        BindingBuilder builder = null ;
         if ( Var.isVar(namespaceNode) || Var.isVar(localnameNode) )
-            b = BindingFactory.create(binding) ;
-        
+            builder = Binding.builder(binding) ;
+
         if ( Var.isVar(namespaceNode) )
         {
-            b.add(Var.alloc(namespaceNode), NodeFactory.createURI(namespace)) ;
+            builder.add(Var.alloc(namespaceNode), NodeFactory.createURI(namespace)) ;
             // Check for the case of (?x ?x) (very unlikely - and even more unlikely to cause a match)
             // but it's possible for strange URI schemes.
             if ( localnameNode.isVariable() && Objects.equals(namespaceNode, localnameNode) )
@@ -119,20 +118,20 @@ public class splitIRI extends PropertyFunctionEval
                 ns = NodeUtils.stringLiteral(namespaceNode) ;
             if ( ns == null || ! ns.equals(namespace) )
                 return IterLib.noResults(execCxt) ;
-            // Fall through and proceed to localname 
+            // Fall through and proceed to localname
         }
-        
+
         if ( Var.isVar(localnameNode) )
-            b.add(Var.alloc(localnameNode), NodeFactory.createLiteral(localname)) ;
+            builder.add(Var.alloc(localnameNode), NodeFactory.createLiteral(localname)) ;
         else
         {
-            // Only string literals (plain strings or datatype xsd:string) 
+            // Only string literals (plain strings or datatype xsd:string)
             String lc = NodeUtils.stringLiteral(localnameNode) ;
             if ( lc == null || ! lc.equals(localname) )
                 return IterLib.noResults(execCxt) ;
         }
-        
-        Binding b2 = ( b == null ) ? binding : b ;
+
+        Binding b2 = ( builder == null ) ? binding : builder.build() ;
         return IterLib.result(b2, execCxt) ;
     }
 

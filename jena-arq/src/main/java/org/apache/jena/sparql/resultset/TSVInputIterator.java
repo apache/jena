@@ -31,8 +31,8 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorBase ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
@@ -43,11 +43,11 @@ import org.apache.jena.sparql.util.NodeFactoryExtra ;
 public class TSVInputIterator extends QueryIteratorBase
 {
 	private BufferedReader reader;
-	private BindingMap binding;
+	private Binding binding;
 	private int expectedItems;
 	private List<Var> vars;
 	private long lineNum = 1;
-	
+
 	/**
 	 * Creates a new TSV Input Iterator
 	 * <p>
@@ -100,7 +100,7 @@ public class TSVInputIterator extends QueryIteratorBase
             if ( expectedItems > 1 )
                 throw new ResultSetException(format("Error Parsing TSV results at Line %d - The result row had 0/1 values when %d were expected",
                                                     this.lineNum, expectedItems));
-            this.binding = BindingFactory.create();
+            this.binding = BindingFactory.empty();
             return true;
         }
 
@@ -109,7 +109,9 @@ public class TSVInputIterator extends QueryIteratorBase
         if ( tokens.length != expectedItems )
             throw new ResultSetException(format("Error Parsing TSV results at Line %d - The result row '%s' has %d values instead of the expected %d.",
                                                 this.lineNum, line, tokens.length, expectedItems));
-        this.binding = BindingFactory.create();
+        BindingBuilder builder = Binding.builder();
+
+        this.binding = null;
 
         for ( int i = 0 ; i < tokens.length ; i++ ) {
             String token = tokens[i];
@@ -123,13 +125,13 @@ public class TSVInputIterator extends QueryIteratorBase
                 Node node = NodeFactoryExtra.parseNode(token);
                 if ( !node.isConcrete() )
                     throw new ResultSetException(format("Line %d: Not a concrete RDF term: %s", lineNum, token));
-                this.binding.add(this.vars.get(i), node);
+                builder.add(this.vars.get(i), node);
             }
             catch (RiotException ex) {
                 throw new ResultSetException(format("Line %d: Data %s contains error: %s", lineNum, token, ex.getMessage()));
             }
         }
-
+        this.binding = builder.build();
         return true;
     }
 
