@@ -91,9 +91,9 @@ public class JettyHttps {
 
     /** Add HTTPS to a {@link Server}. */
     private static ServerConnector httpsConnector(Server server, int httpsPort, String keystore, String certPassword) {
-        SslContextFactory sslContextFactory = new SslContextFactory.Server();
-        sslContextFactory.setKeyStorePath(keystore);
-        sslContextFactory.setKeyStorePassword(certPassword);
+        SslContextFactory.Server sslContextFactoryServer = new SslContextFactory.Server();
+        sslContextFactoryServer.setKeyStorePath(keystore);
+        sslContextFactoryServer.setKeyStorePassword(certPassword);
 
         SecureRequestCustomizer src = new SecureRequestCustomizer();
         src.setStsMaxAge(2000);
@@ -106,7 +106,7 @@ public class JettyHttps {
 
         // HTTPS Connector
         ServerConnector sslConnector = new ServerConnector(server,
-            new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString()),
+            new SslConnectionFactory(sslContextFactoryServer, HttpVersion.HTTP_1_1.asString()),
             new HttpConnectionFactory(https_config));
         sslConnector.setPort(httpsPort);
         return sslConnector;
