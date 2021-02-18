@@ -1,8 +1,0 @@
-language: java
-os: linux
-install: true
-script: mvn -B clean install -Dmaven.javadoc.skip=true
-jdk:
-  - openjdk11
-env:
-  - JAVA_OPTS="-Xmx3072M -Xms512M"
