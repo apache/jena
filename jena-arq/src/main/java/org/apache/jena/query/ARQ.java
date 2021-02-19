@@ -248,7 +248,7 @@ public class ARQ
 
     /**
      * Control whether SERVICE processing is allowed.
-     * If the context of the query exexcution contains this,
+     * If the context of the query execution contains this,
      * and it's set to "false", then SERVICE is not allowed.
      */
 
