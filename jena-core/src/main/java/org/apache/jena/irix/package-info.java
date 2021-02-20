@@ -19,16 +19,16 @@
 /**
  * Support for RFC3986 IRIs.
  * <p>
- * The class {@link #IRIx} provides the application abstraction layer. There is an
- * {@link #IRIProvider} that is the implementation of IRIs providing parsing and
+ * The class {@link org.apache.jena.irix.IRIx IRIx} provides the application abstraction layer. There is an
+ * {@link org.apache.jena.irix.IRIProvider IRIProvider} that is the implementation of IRIs providing parsing and
  * resolution. A provider is selected at start-up and is not expected to changes
  * while the system is running.
  * <p>
- * {@link #IRIxResolver} is the main API. It provides {@link #IRIx} resolution with a
+ * {@link org.apache.jena.irix.IRIxResolver IRIxResolver} is the main API. It provides {@link org.apache.jena.irix.IRIx IRIx} resolution with a
  * base URI, and policy choices.
  * <p>
- * The class {@link #IRIs} provides functions related to IRIs including
- * {@link IRIs#reference} to check that a string is suitable for use in RDF.
+ * The class {@link org.apache.jena.irix.IRIs IRIs} provides functions related to IRIs including
+ * {@link org.apache.jena.irix.IRIs#reference IRIs.reference} to check that a string is suitable for use in RDF.
  * Use this function to check a string passed into the application.
  * <p>
  * Standards:

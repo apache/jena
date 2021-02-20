@@ -174,7 +174,7 @@ public abstract class IRIx {
 
     /**
      * Return the URI as string. This has a stronger contract than "toString".
-     * "Object.toString" is a user readable string (e.g. it might add enclosing "<>"
+     * "Object.toString" is a user readable string (e.g. it might add enclosing "{@literal <>}"
      * or show the parsed structure of the IRI) whereas {@code asString()} is by
      * contract the string that comprises the IRI. The string returned may be the
      * normalized form. It is guaranteed to be usable as string in other API calls

@@ -179,6 +179,8 @@ public class IRIProviderJenaIRI implements IRIProvider {
                 case Violation.SCHEME_PATTERN_MATCH_FAILED:
                     if ( isURN(iri) && ! STRICT_URN )
                         continue;
+                    if ( isFILE(iri) )
+                        continue;
                     break;
                 case Violation.REQUIRED_COMPONENT_MISSING:
                     if ( isFILE(iri) && ! STRICT_FILE )

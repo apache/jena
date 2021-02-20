@@ -1775,14 +1775,18 @@ This class is not part of the API.
             );
 
 
+     // Updated for RFC 8089
      spec =
        new SchemeSpecification(
                 "file",
-                "1738",
-                "http://www.apps.ietf.org/rfc/rfc1738.html#sec-3.10",
-                "Host-specific file names",
-                "3.10",
-
+//                "1738",
+//                "http://www.apps.ietf.org/rfc/rfc1738.html#sec-3.10",
+//                "Host-specific file names",
+//                "3.10",
+                "8089",
+                "https://tools.ietf.org/html/rfc8089",
+                "The \"file\" URI Scheme",
+                "",
                 new String[]{
 
       "file://user@example.org/foo/bar",
@@ -1793,9 +1797,9 @@ This class is not part of the API.
 
       "file://example.org",
 
-      "file://foo/bar;t",
-
-      "file://foo/~jjc",
+//      "file://foo/bar;t",
+//
+//      "file://foo/~jjc",
 
                 },
 
@@ -1811,41 +1815,42 @@ This class is not part of the API.
 
         spec
         .addDefinition(
-                "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",
-                ""+
-  "\n"+
-    "fileurl = \"file://\" [ host | \"localhost\" ] \"/\" fpath\n"+
-    ""+
-  "\n"+
-    "fpath = fsegment *[ \"/\" fsegment ]\n"+
-    "fsegment = *[ uchar | \"?\" | \":\" | \"@\" | \"&amp;\" | \"=\" ]\n"+
-    ""+
-  "\n"+
-    "safe = \"$\" | \"-\" | \"_\" | \".\" | \"+\"\n"+
-    "extra = \"!\" | \"*\" | \"'\" | \"(\" | \")\" | \",\"\n"+
-    "escape = \"%\" hex hex\n"+
-    "unreserved = alpha | digit | safe | extra\n"+
-    "uchar = unreserved | escape\n"+
-    "",
-                ""+
-     "</p><pre>\n"+
-    "fileurl = \"file://\" [ host | \"localhost\" ] \"/\" fpath\n"+
-    "</pre>"+
-     "<p>"+
-     "</p><pre>\n"+
-    "fpath = fsegment *[ \"/\" fsegment ]\n"+
-    "fsegment = *[ uchar | \"?\" | \":\" | \"@\" | \"&amp;\" | \"=\" ]\n"+
-    "</pre>"+
-     "<p>"+
-     "</p><pre>\n"+
-    "safe = \"$\" | \"-\" | \"_\" | \".\" | \"+\"\n"+
-    "extra = \"!\" | \"*\" | \"'\" | \"(\" | \")\" | \",\"\n"+
-    "escape = \"%\" hex hex\n"+
-    "unreserved = alpha | digit | safe | extra\n"+
-    "uchar = unreserved | escape\n"+
-    "</pre>"+
-     "<p>"
-        );
+                "https://tools.ietf.org/html/rfc8089", "", "");
+//                //"http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",
+//                ""+
+//  "\n"+
+//    "fileurl = \"file://\" [ host | \"localhost\" ] \"/\" fpath\n"+
+//    ""+
+//  "\n"+
+//    "fpath = fsegment *[ \"/\" fsegment ]\n"+
+//    "fsegment = *[ uchar | \"?\" | \":\" | \"@\" | \"&amp;\" | \"=\" ]\n"+
+//    ""+
+//  "\n"+
+//    "safe = \"$\" | \"-\" | \"_\" | \".\" | \"+\"\n"+
+//    "extra = \"!\" | \"*\" | \"'\" | \"(\" | \")\" | \",\"\n"+
+//    "escape = \"%\" hex hex\n"+
+//    "unreserved = alpha | digit | safe | extra\n"+
+//    "uchar = unreserved | escape\n"+
+//    "",
+//                ""+
+//     "</p><pre>\n"+
+//    "fileurl = \"file://\" [ host | \"localhost\" ] \"/\" fpath\n"+
+//    "</pre>"+
+//     "<p>"+
+//     "</p><pre>\n"+
+//    "fpath = fsegment *[ \"/\" fsegment ]\n"+
+//    "fsegment = *[ uchar | \"?\" | \":\" | \"@\" | \"&amp;\" | \"=\" ]\n"+
+//    "</pre>"+
+//     "<p>"+
+//     "</p><pre>\n"+
+//    "safe = \"$\" | \"-\" | \"_\" | \".\" | \"+\"\n"+
+//    "extra = \"!\" | \"*\" | \"'\" | \"(\" | \")\" | \",\"\n"+
+//    "escape = \"%\" hex hex\n"+
+//    "unreserved = alpha | digit | safe | extra\n"+
+//    "uchar = unreserved | escape\n"+
+//    "</pre>"+
+//     "<p>"
+//        );
 
         spec.setDNS(true);
 
@@ -1865,8 +1870,7 @@ This class is not part of the API.
               IRIComponents.AUTHORITY
         );
 
-        spec.setPattern(PATHQUERY,
-                "[^;~]*" );
+        spec.setPattern(PATHQUERY, "[^;~]*" );
 
         spec.setReserved(PATHQUERY,"~;");
 
@@ -2338,6 +2342,7 @@ This class is not part of the API.
             );
 
 
+     // See also https://tools.ietf.org/html/rfc8141
      spec =
        new SchemeSpecification(
                 "urn",
@@ -2348,15 +2353,16 @@ This class is not part of the API.
 
                 new String[]{
 
-      "urn:x-hp:foo/bar",
+//  Legal by 8141
+//      "urn:x-hp:foo/bar",
 
       "urn:urn:foo",
 
       "urn://foo",
 
       "urn:foo:bar?query",
-
-      "urn:foo:ff~",
+// Legal by 8141
+//      "urn:foo:ff~",
 
                 },
 
@@ -2365,6 +2371,9 @@ This class is not part of the API.
       "urn:x-hp:foo\u00E9",
 
       "urn:urn-1:foo",
+
+      "urn:urn-1:a/b/c"
+
 
                 }
             );
@@ -3032,7 +3041,8 @@ This class is not part of the API.
 
       "http://example.org/fo<o",
 
-      "http://example.org/fo&gt;o",
+      // & before ? (so in the PATH) is acceptable by RFC 3986 (general URI) and RFC 7230 (http URI scheme)
+//      "http://example.org/fo&gt;o",
 
       "http://example.org/fo\"o",
 
