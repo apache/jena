@@ -29,7 +29,7 @@ import java.util.function.Supplier;
  * <p>
  * Issues with java.net.URI:
  * <ul>
- * <li> It does not resolve correctly e.g. "http://host" and "path" => "http://hostpath" not "http://host/path"
+ * <li> It does not resolve correctly e.g. "http://host" and "path" =&gt; "http://hostpath" not "http://host/path"
  * <li> Does not resolve with "" correctly.
  * <li> Generates file:/path URIs
  * </ul>

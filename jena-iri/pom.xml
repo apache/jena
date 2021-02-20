@@ -61,7 +61,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <includes>
-            <include>org/apache/jena/iri/test/TestPackage.java</include>
+            <include>**/TS_*.java</include>
           </includes>
         </configuration>
       </plugin>

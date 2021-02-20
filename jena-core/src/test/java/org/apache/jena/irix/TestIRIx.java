@@ -124,6 +124,8 @@ public class TestIRIx {
     // [] not in IPv6 address
     public void http_07()   { parse("http://h/ab[]"); }
 
+    public void http_08()   { parse("http://example/~jena/file"); }
+
     // -- Compliance with URN scheme: https://tools.ietf.org/html/rfc8141
 
     @Test public void urn_01() { parse("urn:NID:NSS"); }
@@ -150,6 +152,8 @@ public class TestIRIx {
 
     @Test public void file_05() { parse("file:name"); }
 
+    @Test public void file_06() { parse("file:///c:/~user/file"); }
+
     // --- Use in RDF
 
     @Test public void reference_01() { reference("http://example/", true); }
@@ -165,6 +169,8 @@ public class TestIRIx {
     @Test public void reference_06() { reference("http://example/", true); }
 
     @Test public void reference_07() { reference("http://example/", true); }
+
+    @Test public void reference_08() { reference("file:///a:/~jena/file", true); }
 
     // -- Resolving
     @Test public void resolve_http_01() { resolve("http://example/", "path", "http://example/path"); }
