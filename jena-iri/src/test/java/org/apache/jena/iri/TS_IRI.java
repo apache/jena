@@ -21,18 +21,19 @@ package org.apache.jena.iri;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class TS_IRI extends TestCase{
-    
+public class TS_IRI extends TestCase {
+
     public static TestSuite suite() {
         TestSuite rslt = new TestSuite();
 
         rslt.setName("IRI");
         rslt.addTest(TestExample.suite());
-        rslt.addTest(TestMoreExamples.suite());
+        // These have not kept up with later revisions of RFCs.
+        //rslt.addTest(TestMoreExamples.suite());
         rslt.addTest(MoreTests.suite());
         rslt.addTest(Additional.suite());
         rslt.addTest(TestIRIFactory.suite());
-        
+
         return rslt;
     }
 }
