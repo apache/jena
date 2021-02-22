@@ -34,7 +34,7 @@ public class TestPackage extends TestCase {
         TestSuite ts = new TestSuite() ;
         ts.setName("Jena") ;
         addTest(ts,  "System setup", TestSystemSetup.suite());
-        addTest(ts,  "IRI", org.apache.jena.irix.TestIRIx.suite());
+        addTest(ts,  "IRI", org.apache.jena.irix.TS_IRIx.suite());
         addTest(ts,  "Enhanced", org.apache.jena.enhanced.test.TestPackage.suite());
         addTest(ts,  "Datatypes", org.apache.jena.datatypes.TestPackage.suite()) ;
         addTest(ts,  "Graph", org.apache.jena.graph.test.TestPackage.suite());

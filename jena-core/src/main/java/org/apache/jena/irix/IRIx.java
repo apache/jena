@@ -186,6 +186,13 @@ public abstract class IRIx {
         return iriString;
     }
 
+    // Provide value-based equality.
+    @Override
+    public abstract int hashCode();
+
+    @Override
+    public abstract boolean equals(Object other);
+
     /**
      * User readable form. Not guaranteed to be usable as a string
      * in other API calls.
