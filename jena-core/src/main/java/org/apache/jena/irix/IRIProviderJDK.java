@@ -20,6 +20,7 @@ package org.apache.jena.irix;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
@@ -117,6 +118,23 @@ public class IRIProviderJDK implements IRIProvider {
                 URI iri2 = this.javaURI.relativize(iriOther.javaURI);
                 return new IRIxJDK(iri2.toString(), iri2);
             });
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(javaURI);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if ( this == obj )
+                return true;
+            if ( obj == null )
+                return false;
+            if ( getClass() != obj.getClass() )
+                return false;
+            IRIxJDK other = (IRIxJDK)obj;
+            return Objects.equals(javaURI, other.javaURI);
         }
     }
 
