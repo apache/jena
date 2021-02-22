@@ -18,74 +18,18 @@
 
 package org.apache.jena.irix;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import junit.framework.JUnit4TestAdapter;
-import junit.framework.TestSuite;
-import org.junit.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class TestIRIx {
-
-    public static TestSuite suite() {
-        TestSuite ts = new TestSuite();
-        ts.setName("IRIx");
-        ts.addTest(new JUnit4TestAdapter(TestIRIx.class));
-        return ts;
-    }
-
-    // These are not complete tests for IRIs.
-    // They cover corner cases and the expected functionality of IRI
-    // providers and assume that RFC3986 parsing is (mostly) correct.
-    // (by taking the tests from iri4ld they could be made complete).
-
-    @Parameters(name = "{index}: {0}")
-    public static Iterable<Object[]> data() {
-        List<Object[]> data = new ArrayList<>();
-        data.add(new Object[]{"JenaIRI", new IRIProviderJenaIRI()});
-        // Future
-        // data.add(new Object[]{"IRI3986", new IRIProvider3986()});
-        // For completeness: see javadoc for reasons not to use this.
-        //  data.add(new Object[]{"JDK.URI", new IRIProviderJDK()});
-        return data;
-    }
-
-    private void notStrict(String scheme, Runnable action) {
-        provider.strictMode(scheme, false);
-        try { action.run(); }
-        finally { provider.strictMode(scheme, true); }
-    }
-
-    private final IRIProvider provider;
-    private static IRIProvider systemProvider;
-
-    @BeforeClass static public void beforeClass() {
-        systemProvider = SystemIRIx.getProvider();
-    }
-
-    @AfterClass static public void afterClass() {
-        SystemIRIx.setProvider(systemProvider);
-    }
-
-    @Before public void beforeTest() {
-        systemProvider = SystemIRIx.getProvider();
-        provider.strictMode("urn", true);
-        provider.strictMode("file", true);
-        SystemIRIx.setProvider(provider);
-    }
-
-    @After public void afterTest() {
-        SystemIRIx.setProvider(systemProvider);
-    }
+public class TestIRIx extends AbstractTestIRIx {
 
     public TestIRIx(String name, IRIProvider provider) {
-        this.provider = provider;
+        super(name, provider);
     }
 
     // ---- RFC 3986 Grammar
@@ -124,7 +68,7 @@ public class TestIRIx {
     // [] not in IPv6 address
     public void http_07()   { parse("http://h/ab[]"); }
 
-    public void http_08()   { parse("http://example/~jena/file"); }
+    @Test public void http_08() { parse("http://example/~jena/file"); }
 
     // -- Compliance with URN scheme: https://tools.ietf.org/html/rfc8141
 
@@ -225,10 +169,6 @@ public class TestIRIx {
     // ---- Things expected.
 
     @Test public void misc_01()     { reference("wm:/abc", true); }
-
-    @Test(expected=IRIException.class)
-    // Bad hex code: Breaks RFC 3986 grammar.
-    public void misc_02()           { parse("http://h/ab%XXcd"); }
 
     private void relative(String baseUriStr, String otherStr, String expected) {
         IRIx base = IRIx.create(baseUriStr);

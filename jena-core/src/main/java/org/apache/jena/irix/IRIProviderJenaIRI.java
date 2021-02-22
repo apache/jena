@@ -20,6 +20,8 @@ package org.apache.jena.irix;
 
 import java.io.PrintStream;
 import java.util.Iterator;
+import java.util.Objects;
+import java.util.regex.Pattern;
 
 import org.apache.jena.iri.*;
 import org.apache.jena.iri.impl.PatternCompiler;
@@ -96,12 +98,32 @@ public class IRIProviderJenaIRI implements IRIProvider {
         static private int relFlags = IRIRelativize.SAMEDOCUMENT | IRIRelativize.CHILD ;
         @Override
         public IRIx relativize(IRIx other) {
+            // Align of IRI3986 algorithm.
+            if (jenaIRI.getRawQuery() != null )
+                return null;
             IRIxJena iriOther = (IRIxJena)other;
             IRI iri2 = jenaIRI.relativize(iriOther.jenaIRI, relFlags);
             if ( iri2.equals(iriOther.jenaIRI))
                 return null;
             IRIProviderJenaIRI.exceptions(iri2);
             return new IRIxJena(iri2.toString(), iri2);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(jenaIRI);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if ( this == obj )
+                return true;
+            if ( obj == null )
+                return false;
+            if ( getClass() != obj.getClass() )
+                return false;
+            IRIxJena other = (IRIxJena)obj;
+            return Objects.equals(jenaIRI, other.jenaIRI);
         }
     }
 
@@ -110,6 +132,12 @@ public class IRIProviderJenaIRI implements IRIProvider {
         // "create" - does not throw exceptions
         IRI iriObj = iriFactory().create(iriStr);
         // errors and warnings.
+        if ( STRICT_FILE && isFILE(iriObj) ) {
+            if ( iriStr.startsWith("file://" ) && ! iriStr.startsWith("file:///") )
+                throw new IRIException("file: URLs should start file:///");
+        }
+        if ( isUUID(iriObj) )
+            checkUUID(iriObj, iriStr);
         exceptions(iriObj);
         return new IRIProviderJenaIRI.IRIxJena(iriStr, iriObj);
     }
@@ -161,21 +189,8 @@ public class IRIProviderJenaIRI implements IRIProvider {
             Violation v = vIter.next();
             int code = v.getViolationCode() ;
             // Filter codes.
-            if ( code == Violation.PERCENT_ENCODING_SHOULD_BE_UPPERCASE)
-                continue;
-
-            if ( code == Violation.SCHEME_PATTERN_MATCH_FAILED && isURN(iri) && ! STRICT_URN )
-                continue;
-
-            if ( code == Violation.REQUIRED_COMPONENT_MISSING && isFILE(iri) )
-                // jena-iri implements the earlier RFCs, not RFC8089 which adds "file:local"
-                continue;
-            //break to retain errors
+            // Global settings below; this section is for conditional filtering.
             switch(code) {
-                //case Violation.LOWERCASE_PREFERRED:
-                case Violation.PERCENT_ENCODING_SHOULD_BE_UPPERCASE:
-                    continue;
-
                 case Violation.SCHEME_PATTERN_MATCH_FAILED:
                     if ( isURN(iri) && ! STRICT_URN )
                         continue;
@@ -183,11 +198,12 @@ public class IRIProviderJenaIRI implements IRIProvider {
                         continue;
                     break;
                 case Violation.REQUIRED_COMPONENT_MISSING:
-                    if ( isFILE(iri) && ! STRICT_FILE )
+                    // jena-iri handling of file: URIs is only for (an interpretation of) RFC 1738.
+                    // RFC8089 allows relative file URIs and a wider use of characters.
+                    if ( isFILE(iri) )
                         continue;
-                default:
             }
-            String msg = iri.violations(false).next().getShortMessage();
+            String msg = v.getShortMessage();
             throw new IRIException(msg);
         }
         return iri;
@@ -196,7 +212,27 @@ public class IRIProviderJenaIRI implements IRIProvider {
     private static boolean isURN(IRI iri)  { return "urn".equalsIgnoreCase(iri.getScheme()); }
     private static boolean isFILE(IRI iri) { return "file".equalsIgnoreCase(iri.getScheme()); }
 
-    private static final boolean   ShowResolverSetup = false;
+    // Checks trailing part of URI.
+    // Works on "urn:" and "urn:uuid:".
+    private static Pattern UUID_PATTERN = Pattern.compile(":[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
+
+    private boolean isUUID(IRI iri) {
+        if ( "uuid".equalsIgnoreCase(iri.getScheme()) )
+                return true;
+        return iri.getRawPath().startsWith("uuid:");
+    }
+
+    private void checkUUID(IRI iriObj, String original) {
+        if ( iriObj.getRawFragment() != null )
+            throw new IRIException("Fragment used with UUID");
+        if ( iriObj.getRawQuery() != null )
+            throw new IRIException("Query used with UUID");
+        boolean matches = UUID_PATTERN.matcher(original).matches();
+        if ( !matches )
+            throw new IRIException("Not a valid UUID string: "+original);
+    }
+
+    private static final boolean ShowResolverSetup = false;
 
     private static final IRIFactory iriFactoryInst = new IRIFactory();
     static {
@@ -216,14 +252,17 @@ public class IRIProviderJenaIRI implements IRIProvider {
 
         // Accept any scheme.
         setErrorWarning(iriFactoryInst, ViolationCodes.UNREGISTERED_IANA_SCHEME, false, false);
-        setErrorWarning(iriFactoryInst, ViolationCodes.NON_INITIAL_DOT_SEGMENT, false, false);
+        setErrorWarning(iriFactoryInst, ViolationCodes.UNREGISTERED_NONIETF_SCHEME_TREE, false, false);
 
+        setErrorWarning(iriFactoryInst, ViolationCodes.NON_INITIAL_DOT_SEGMENT, false, false);
         setErrorWarning(iriFactoryInst, ViolationCodes.LOWERCASE_PREFERRED, false, true);
         setErrorWarning(iriFactoryInst, ViolationCodes.REQUIRED_COMPONENT_MISSING, true, true);
 
-        // Choices: setting here does not seem to have any effect. See CheckerIRI and IRIProviderJena for filtering.
-//      //setErrorWarning(iriFactoryInst, ViolationCodes.PERCENT_ENCODING_SHOULD_BE_UPPERCASE, false, true);
-//      //setErrorWarning(iriFactoryInst, ViolationCodes.SCHEME_PATTERN_MATCH_FAILED, false, true);
+        setErrorWarning(iriFactoryInst, ViolationCodes.PERCENT_ENCODING_SHOULD_BE_UPPERCASE, false, false);
+
+        // jena-iri has not been updated for percent in DNS name (RFC 3986)
+        setErrorWarning(iriFactoryInst, ViolationCodes.NOT_DNS_NAME, false, false);
+        setErrorWarning(iriFactoryInst, ViolationCodes.USE_PUNYCODE_NOT_PERCENTS, false, false);
 
         // NFC tests are not well understood by general developers and these cause confusion.
         // See JENA-864
