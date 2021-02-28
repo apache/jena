@@ -31,6 +31,7 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.shared.JenaException;
+import org.apache.jena.shared.OperationDeniedException;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 public class GSP_R extends GSP_Base {
@@ -74,6 +75,8 @@ public class GSP_R extends GSP_Base {
                 ( lang == Lang.RDFXML ) ? RDFFormat.RDFXML_PLAIN : RDFWriterRegistry.defaultSerialization(lang);
             try {
                 RDFDataMgr.write(out, dsg, fmt);
+            } catch (OperationDeniedException ex) {
+                throw ex;
             } catch (JenaException ex) {
                 if ( fmt.getLang().equals(Lang.RDFXML) )
                     ServletOps.errorBadRequest("Failed to write output in RDF/XML: "+ex.getMessage());
@@ -119,6 +122,8 @@ public class GSP_R extends GSP_Base {
                 ( lang == Lang.RDFXML ) ? RDFFormat.RDFXML_PLAIN : RDFWriterRegistry.defaultSerialization(lang);
             try {
                 RDFDataMgr.write(out, g, fmt);
+            } catch (OperationDeniedException ex) {
+                throw ex;
             } catch (JenaException ex) {
                 // Some RDF/XML data is unwritable. All we can do is pretend it's a bad
                 // request (inappropriate content type).
