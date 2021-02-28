@@ -30,6 +30,7 @@ import org.apache.jena.fuseki.system.UploadDetailsWithName;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.web.HttpNames;
+import org.apache.jena.shared.OperationDeniedException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.web.HttpSC;
@@ -98,7 +99,6 @@ public class SPARQL_Upload extends ActionService
             out.println("</body>");
             out.println("</html>");
             out.flush();
-            ServletOps.success(action);
         }
         catch (Exception ex) { ServletOps.errorOccurred(ex); }
     }
@@ -111,7 +111,7 @@ public class SPARQL_Upload extends ActionService
             return uploadNonTxn(action, base);
     }
 
-    /** 
+    /**
      * Non-transaction - buffer to a temporary graph so that parse errors
      * are caught before inserting any data.
      */
@@ -141,6 +141,9 @@ public class SPARQL_Upload extends ActionService
                 FusekiNetLib.addDataInto(dataTmp, action.getActiveDSG());
             action.commit();
             return count;
+        } catch (OperationDeniedException ex) {
+            try { action.abort(); } catch (Exception ex2) {}
+            throw ex;
         } catch (RuntimeException ex) {
             // If anything went wrong, try to backout.
             try { action.abort(); } catch (Exception ex2) {}

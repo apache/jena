@@ -32,6 +32,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.web.ContentType;
+import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.servlets.ActionErrorException;
 import org.apache.jena.fuseki.servlets.ActionLib;
 import org.apache.jena.fuseki.servlets.HttpAction;
@@ -182,7 +183,7 @@ public class Upload {
 
     /**
      * Process an HTTP file upload of RDF using the name field for the graph name destination.
-     * This function is used by SPARQL_Upload for {@code fuseki:serviceUpload}.
+     * This function is used by SPARQL_Upload for {@link Operation#Upload}.
      */
     public static UploadDetailsWithName multipartUploadWorker(HttpAction action, String base) {
         DatasetGraph dsgTmp = DatasetGraphFactory.create();
