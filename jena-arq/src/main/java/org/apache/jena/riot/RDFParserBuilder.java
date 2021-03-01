@@ -31,6 +31,7 @@ import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.graph.BlankNodeId;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.irix.IRIs;
+import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser.LangTagForm;
@@ -94,6 +95,7 @@ public class RDFParserBuilder {
 
     private boolean strict = SysRIOT.isStrictMode();
     private boolean resolveURIs = true;
+    private IRIxResolver resolver = null;
     // ----
 
     // Construction for the StreamRDF
@@ -290,6 +292,14 @@ public class RDFParserBuilder {
      *  Only set this to false for debugging and development purposes.
      */
     public RDFParserBuilder resolveURIs(boolean flag) { this.resolveURIs = flag ; return this; }
+
+    /**
+     * Provide a specific {@link IRIxResolver} to check and resolve URIs. Its
+     * settings will determine the base IRI and whether to resolve relative IRIs or
+     * not. The caller is responsible for giving a resolver that is suitable for the
+     * RDF syntax to be parsed.
+     */
+    public RDFParserBuilder resolver(IRIxResolver resolver) { this.resolver = resolver ; return this; }
 
     /**
      * Convert the lexical form of literals to a canonical form.
@@ -636,7 +646,7 @@ public class RDFParserBuilder {
                              client, hintLang, forceLang,
                              parserBaseURI, strict, checking,
                              canonicalValues, langTagForm,
-                             resolveURIs, factory$, errorHandler$, context);
+                             resolveURIs, resolver, factory$, errorHandler$, context);
     }
 
     private FactoryRDF buildFactoryRDF() {

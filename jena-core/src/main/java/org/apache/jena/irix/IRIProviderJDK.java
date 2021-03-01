@@ -50,6 +50,7 @@ public class IRIProviderJDK implements IRIProvider {
     /** {@link IRIx} implementation for the java.net.URI provider. */
     static class IRIxJDK extends IRIx {
         private final URI javaURI;
+
         private IRIxJDK(String iriStr, URI iri) {
             super(iri.toString());
             this.javaURI = iri;
@@ -121,6 +122,9 @@ public class IRIProviderJDK implements IRIProvider {
         }
 
         @Override
+        public URI getImpl() { return javaURI; }
+
+        @Override
         public int hashCode() {
             return Objects.hash(javaURI);
         }
@@ -149,7 +153,7 @@ public class IRIProviderJDK implements IRIProvider {
     }
 
     @Override
-    public void check(String iriStr) throws IRIException {}
+    public void check(String iriStr) throws IRIException { create(iriStr); }
 
     @Override
     public String toString() {
@@ -160,5 +164,8 @@ public class IRIProviderJDK implements IRIProvider {
     public void strictMode(String scheme, boolean runStrict) {
         // No configuration options.
     }
+
+    @Override
+    public boolean isStrictMode(String scheme) { return false; }
 }
 

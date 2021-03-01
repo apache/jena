@@ -18,161 +18,362 @@
 
 package org.apache.jena.riot.system;
 
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.regex.Pattern;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.checker.* ;
+import org.apache.jena.JenaRuntime;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Node_Triple;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.iri.IRI;
+import org.apache.jena.iri.IRIComponents;
+import org.apache.jena.iri.Violation;
+import org.apache.jena.irix.IRIs;
+import org.apache.jena.irix.SetupJenaIRI;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.graph.NodeConst;
+import org.apache.jena.util.SplitIRI;
 
-/** A checker that drives the process of validating RDF terms, triples and quads. */
-public final class Checker
-{
-    private boolean allowRelativeIRIs = false ;
-    private boolean warningsAreErrors = false ;
-    private ErrorHandler handler ;
+/**
+ * Functions for checking nodes, triples and quads.
+ * <p>
+ * If the errorHandler is null, use the system wide handler.
+ * <p>
+ * If the errorHandler line/columns numbers are -1, -1, messages do not include them.
+ * <p>
+ * Operations "<tt>checkXXX(<i>item</i>)</tt>" are for boolean testing
+ * and do not generate output.
+ */
 
-    private NodeChecker checkLiterals ;
-    private NodeChecker checkURIs ;
-    private NodeChecker checkBlankNodes ;
-    private NodeChecker checkVars ;
+public class Checker {
 
-    public Checker() {
-        this(null);
+    /** A node -- must be concrete node or a variable. */
+    public static boolean check(Node node) {
+        return check(node, nullErrorHandler, -1, -1);
     }
 
-    public Checker(ErrorHandler handler) {
-        if ( handler == null )
-            handler = ErrorHandlerFactory.getDefaultErrorHandler();
-        this.handler = handler;
-
-        checkLiterals = new CheckerLiterals(handler);
-
-        checkURIs = new CheckerIRI(handler);
-        checkBlankNodes = new CheckerBlankNodes(handler);
-        checkVars = new CheckerVar(handler);
+    /** A node -- must be a concrete node or a variable. */
+    public static boolean check(Node node, ErrorHandler errorHandler, long line, long col) {
+        if ( node.isURI() )
+            return checkIRI(node, errorHandler, line, col);
+        else if ( node.isBlank() )
+            return checkBlankNode(node, errorHandler, line, col);
+        else if ( node.isLiteral() )
+            return checkLiteral(node, errorHandler, line, col);
+        else if ( node.isVariable() )
+            return checkVar(node, errorHandler, line, col);
+        else if ( node.isNodeTriple() ) {
+            Triple t = Node_Triple.triple(node);
+            return check(t.getSubject()) && check(t.getPredicate()) && check(t.getObject())
+                    && checkTriple(t);
+        }
+        errorHandler(errorHandler).warning("Not a recognized node: ", line, col);
+        return false;
     }
 
-    public boolean check(Node node, long line, long col) {
-        // NodeVisitor?
-        if      ( node.isURI() )        return checkIRI(node, line, col) ;
-        else if ( node.isBlank() )      return checkBlank(node, line, col) ;
-        else if ( node.isLiteral() )    return checkLiteral(node, line, col) ;
-        else if ( node.isVariable() )   return checkVar(node, line, col) ;
-        handler.warning("Not a recognized node: ", line, col) ;
-        return false ;
+    // ==== IRIs
+
+    public static boolean checkIRI(Node node) {
+        return checkIRI(node, nullErrorHandler, -1, -1);
+    }
+
+    public static boolean checkIRI(Node node, ErrorHandler errorHandler, long line, long col) {
+        if ( !node.isURI() ) {
+            errorHandler(errorHandler).error("Not a URI: " + node, line, col);
+            return false;
+        }
+        return checkIRI(node.getURI(), errorHandler, -1, -1);
+    }
+
+    public static boolean checkIRI(String iriStr) {
+        return checkIRI(iriStr, nullErrorHandler, -1, -1);
+    }
+
+    /** See also {@link IRIs#reference} */
+    public static boolean checkIRI(String iriStr, ErrorHandler errorHandler, long line, long col) {
+        IRI iri = SetupJenaIRI.iriCheckerFactory().create(iriStr);
+        boolean b = iriViolations(iri, errorHandler, line, col);
+        return b;
+    }
+
+    /**
+     * Process violations on an IRI Calls the {@link ErrorHandler} on all errors and
+     * warnings (as warnings).
+     */
+    public static void iriViolations(IRI iri) {
+        iriViolations(iri, null, false, true, -1L, -1L);
+    }
+
+    /**
+     * Process violations on an IRI Calls the {@link ErrorHandler} on all errors and
+     * warnings (as warnings).
+     */
+    public static boolean iriViolations(IRI iri, ErrorHandler errorHandler, long line, long col) {
+        return iriViolations(iri, errorHandler, false, true, line, col);
+    }
+
+    /**
+     * Process violations on an IRI Calls the errorHandler on all errors and warnings
+     * (as warning). (If checking for relative IRIs, these are sent out as errors.)
+     * Assumes error handler throws exceptions on errors if need be
+     */
+    public static boolean iriViolations(IRI iri, ErrorHandler errorHandler,
+                                        boolean allowRelativeIRIs, boolean includeIRIwarnings,
+                                        long line, long col) {
+        if ( !allowRelativeIRIs && iri.isRelative() )
+            errorHandler(errorHandler).error("Relative IRI: " + iri, line, col);
+
+        boolean isOK = true;
+
+        if ( iri.hasViolation(includeIRIwarnings) ) {
+            Iterator<Violation> iter = iri.violations(includeIRIwarnings);
+
+            for ( ; iter.hasNext() ; ) {
+                Violation v = iter.next();
+                int code = v.getViolationCode();
+                boolean isError = v.isError();
+
+                // Anything we want to reprioritise?
+                if ( code == Violation.LOWERCASE_PREFERRED && v.getComponent() != IRIComponents.SCHEME ) {
+                    // Issue warning about the scheme part. Not e.g. DNS names.
+                    continue;
+                }
+                String msg = v.getShortMessage();
+                String iriStr = iri.toString();
+
+                errorHandler(errorHandler).warning("Bad IRI: " + msg, line, col);
+
+//                if ( isError )
+//                    errorHandler(errorHandler).warning("Bad IRI: " + msg, line, col);
+//                else
+//                    errorHandler(errorHandler).warning("Not advised IRI: " + msg, line, col);
+                isOK = true;
+            }
+        }
+        return isOK;
+    }
+
+    // ==== Literals
+
+    final static private Pattern langPattern = Pattern.compile("[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*");
+
+    public static boolean checkLiteral(Node node) {
+        return checkLiteral(node, nullErrorHandler, -1, -1);
+    }
+
+    public static boolean checkLiteral(Node node, ErrorHandler errorHandler, long line, long col) {
+        if ( !node.isLiteral() ) {
+            errorHandler(errorHandler).error("Not a literal: " + node, line, col);
+            return false;
+        }
+
+        return checkLiteral(node.getLiteralLexicalForm(), node.getLiteralLanguage(), node.getLiteralDatatype(), errorHandler, line, col);
+    }
+
+    public static boolean checkLiteral(String lexicalForm, RDFDatatype datatype, ErrorHandler errorHandler, long line, long col) {
+        return checkLiteral(lexicalForm, null, datatype, errorHandler, line, col);
+    }
+
+    public static boolean checkLiteral(String lexicalForm, String lang, ErrorHandler errorHandler, long line, long col) {
+        return checkLiteral(lexicalForm, lang, null, errorHandler, line, col);
+    }
+
+    public static boolean checkLiteral(String lexicalForm, String lang, RDFDatatype datatype, ErrorHandler errorHandler, long line,
+                                       long col) {
+        boolean hasLang = lang != null && !lang.equals("");
+        if ( !hasLang ) {
+            // Datatype check (and RDF 1.0 simple literals are always well formed)
+            if ( datatype != null )
+                return validateByDatatype(lexicalForm, datatype, errorHandler, line, col);
+            return true;
+        }
+
+        // Has a language.
+        if ( JenaRuntime.isRDF11 ) {
+            if ( datatype != null && !Objects.equals(datatype.getURI(), NodeConst.rdfLangString.getURI()) ) {
+                errorHandler(errorHandler).error("Literal has language but wrong datatype", line, col);
+                return false;
+            }
+        } else {
+            if ( datatype != null ) {
+                errorHandler(errorHandler).error("Literal has datatype and language", line, col);
+                return false;
+            }
+        }
+
+        // Test language tag format -- not a perfect test.
+        if ( !lang.isEmpty() && !langPattern.matcher(lang).matches() ) {
+            errorHandler(errorHandler).warning("Language not valid: " + lang, line, col);
+            return false;
+        }
+        return true;
+    }
+
+    // Whitespace.
+    // XSD allows whitespace before and after the lexical forms of a literal but not inside.
+    // Jena handles this correctly.
+
+    protected static boolean validateByDatatype(String lexicalForm, RDFDatatype datatype, ErrorHandler errorHandler, long line, long col) {
+//        if ( SysRIOT.StrictXSDLexicialForms )
+//            checkWhitespace(lexicalForm, datatype, errorHandler, line, col);
+        return validateByDatatypeJena(lexicalForm, datatype, errorHandler, line, col);
+    }
+
+    protected static boolean validateByDatatypeJena(String lexicalForm, RDFDatatype datatype, ErrorHandler errorHandler, long line,
+                                                    long col) {
+        if ( datatype.isValid(lexicalForm) )
+            return true;
+        errorHandler(errorHandler).warning("Lexical form '" + lexicalForm + "' not valid for datatype " + xsdDatatypeName(datatype), line, col);
+        return false;
+    }
+
+    protected static boolean checkWhitespace(String lexicalForm, RDFDatatype datatype, ErrorHandler errorHandler, long line, long col) {
+        if ( lexicalForm.contains(" ") ) {
+            errorHandler(errorHandler).warning("Whitespace in " + xsdDatatypeName(datatype) + " literal: '" + lexicalForm + "'", line, col);
+            return false;
+        }
+        if ( lexicalForm.contains("\n") ) {
+            errorHandler(errorHandler).warning("Newline in " + xsdDatatypeName(datatype) + " literal: '" + lexicalForm + "'", line, col);
+            return false;
+        }
+        if ( lexicalForm.contains("\r") ) {
+            errorHandler(errorHandler).warning("Newline in " + xsdDatatypeName(datatype) + " literal: '" + lexicalForm + "'", line, col);
+            return false;
+        }
+        return true;
+    }
+
+    private static String xsdDatatypeName(RDFDatatype datatype) {
+        return "XSD " + SplitIRI.localname(datatype.getURI());
+    }
+
+    // ==== Blank nodes
+
+    public static boolean checkBlankNode(Node node) {
+        return checkBlankNode(node, nullErrorHandler, -1, -1);
+    }
+
+    public static boolean checkBlankNode(Node node, ErrorHandler errorHandler, long line, long col) {
+        if ( !node.isBlank() ) {
+            errorHandler(errorHandler).error("Not a blank node: " + node, line, col);
+            return false;
+        }
+        return checkBlankNode(node.getBlankNodeLabel(), errorHandler, line, col);
+    }
+
+    public static boolean checkBlankNode(String label) {
+        return checkBlankNode(label, null, -1, -1);
+    }
+
+    public static boolean checkBlankNode(String label, ErrorHandler errorHandler, long line, long col) {
+        if ( label.indexOf(' ') >= 0 ) {
+            errorHandler(errorHandler).error("Illegal blank node label (contains a space): " + label, line, col);
+            return false;
+        }
+        return true;
+    }
+
+    // ==== Var
+
+    public static boolean checkVar(Node node) {
+        return checkVar(node, nullErrorHandler, -1, -1);
+    }
+
+    public static boolean checkVar(Node node, ErrorHandler errorHandler, long line, long col) {
+        if ( node.isVariable() ) {
+            errorHandler(errorHandler).error("Not a variable: " + node, line, col);
+            return false;
+        }
+        return true;
+    }
+
+    // ==== Triples
+
+    public static boolean checkTriple(Triple triple) {
+        return checkTriple(triple, nullErrorHandler, -1, -1);
     }
 
     /** Check a triple - assumes individual nodes are legal */
-    public boolean check(Triple triple, long line, long col) {
-        return checkTriple(triple.getSubject(), triple.getPredicate(), triple.getObject(), line, col);
+    public static boolean checkTriple(Triple triple, ErrorHandler errorHandler, long line, long col) {
+        return checkTriple(triple.getSubject(), triple.getPredicate(), triple.getObject(), errorHandler, line, col);
     }
 
-    /** Check a triple against the RDF rules for a triple : subject is a IRI or bnode, predicate is a IRI and object is an bnode, literal or IRI */
-    public boolean checkTriple(Node subject, Node predicate, Node object, long line, long col) {
+    /**
+     * Check a triple against the RDF rules for a triple : subject is a IRI or bnode,
+     * predicate is a IRI and object is an bnode, literal or IRI
+     */
+    public static boolean checkTriple(Node subject, Node predicate, Node object, ErrorHandler errorHandler, long line, long col) {
         boolean rc = true;
 
         if ( subject == null || (!subject.isURI() && !subject.isBlank()) ) {
-            handler.error("Subject is not a URI or blank node", line, col);
+            errorHandler(errorHandler).error("Subject is not a URI or blank node", line, col);
             rc = false;
         }
         if ( predicate == null || (!predicate.isURI()) ) {
-            handler.error("Predicate not a URI", line, col);
+            errorHandler(errorHandler).error("Predicate not a URI", line, col);
             rc = false;
         }
         if ( object == null || (!object.isURI() && !object.isBlank() && !object.isLiteral()) ) {
-            handler.error("Object is not a URI, blank node or literal", line, col);
+            errorHandler(errorHandler).error("Object is not a URI, blank node or literal", line, col);
             rc = false;
         }
         return rc;
+    }
+
+    // ==== Quads
+
+    public static boolean checkQuad(Quad quad) {
+        return checkQuad(quad, nullErrorHandler, -1, -1);
     }
 
     /** Check a quad - assumes individual nodes are legal */
-    public boolean checkQuad(Quad quad, long line, long col) {
-        return checkQuad(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject(), line, col);
+    public static boolean checkQuad(Quad quad, ErrorHandler errorHandler, long line, long col) {
+        return checkQuad(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject(), errorHandler, line, col);
     }
 
-    /** Check a quad against the RDF rules for a quad : subject is a IRI or bnode, predicate is a IRI and object is an bnode, literal or IRI */
-    public boolean checkQuad(Node graph, Node subject, Node predicate, Node object, long line, long col) {
+    /**
+     * Check a quad against the RDF rules for a quad : subject is a IRI or bnode,
+     * predicate is a IRI and object is an bnode, literal or IRI
+     */
+    public static boolean checkQuad(Node graph, Node subject, Node predicate, Node object, ErrorHandler errorHandler, long line, long col) {
         boolean rc = true;
 
         if ( graph == null || (!graph.isURI() && !graph.isBlank()) ) {
-            handler.error("Graph name is not a URI or blank node", line, col);
+            errorHandler(errorHandler).error("Graph name is not a URI or blank node", line, col);
             rc = false;
         }
 
-        if ( subject == null || (!subject.isURI() && !subject.isBlank() && !subject.isNodeTriple() ) ) {
-            handler.error("Subject is not a URI, blank node or RDF-star triple term", line, col);
+        if ( subject == null || (!subject.isURI() && !subject.isBlank() && !subject.isNodeTriple()) ) {
+            errorHandler(errorHandler).error("Subject is not a URI, blank node or RDF-star triple term", line, col);
             rc = false;
         }
         if ( predicate == null || (!predicate.isURI()) ) {
-            handler.error("Predicate not a URI", line, col);
+            errorHandler(errorHandler).error("Predicate not a URI", line, col);
             rc = false;
         }
-        if ( object == null || (!object.isURI() && !object.isBlank() && !object.isLiteral() && !subject.isNodeTriple() ) ) {
-            handler.error("Object is not a URI, blank node, literal or RDF-star triple term", line, col);
+        if ( object == null || (!object.isURI() && !object.isBlank() && !object.isLiteral() && !subject.isNodeTriple()) ) {
+            errorHandler(errorHandler).error("Object is not a URI, blank node, literal or RDF-star triple term", line, col);
             rc = false;
         }
         return rc;
     }
 
-    public boolean checkVar(Node node, long line, long col) {
-        return checkVars.check(node, line, col);
+    private static ErrorHandler errorHandler(ErrorHandler handler) {
+        return handler != null ? handler : ErrorHandlerFactory.errorHandlerStd;
     }
 
-    public boolean checkLiteral(Node node, long line, long col) {
-        return checkLiterals.check(node, line, col);
-    }
+    // Does nothing. Used in "check(node)" operations where the boolean result is key.
+    private static ErrorHandler nullErrorHandler  = new ErrorHandler() {
+        @Override
+        public void warning(String message, long line, long col) {}
 
-    public boolean checkBlank(Node node, long line, long col) {
-        return checkBlankNodes.check(node, line, col);
-    }
+        @Override
+        public void error(String message, long line, long col) {}
 
-    public boolean checkIRI(Node node, long line, long col) {
-        return checkURIs.check(node, line, col);
-    }
+        @Override
+        public void fatal(String message, long line, long col) {}
+    };
 
-    public ErrorHandler getHandler() {
-        return handler;
-    }
-
-    public Checker setHandler(ErrorHandler handler) {
-        this.handler = handler;
-        return this;
-    }
-
-    public NodeChecker getCheckLiterals() {
-        return checkLiterals;
-    }
-
-    public Checker setCheckLiterals(NodeChecker checkLiterals) {
-        this.checkLiterals = checkLiterals;
-        return this;
-    }
-
-    public NodeChecker getCheckURIs() {
-        return checkURIs;
-    }
-
-    public Checker setCheckURIs(NodeChecker checkURIs) {
-        this.checkURIs = checkURIs;
-        return this;
-    }
-
-    public NodeChecker getCheckBlankNodes() {
-        return checkBlankNodes;
-    }
-
-    public Checker setCheckBlankNodes(NodeChecker checkBlankNodes) {
-        this.checkBlankNodes = checkBlankNodes;
-        return this;
-    }
-
-    public NodeChecker getCheckVars() {
-        return checkVars;
-    }
-
-    public Checker setCheckVars(NodeChecker checkVars) {
-        this.checkVars = checkVars;
-        return this;
-    }
 }

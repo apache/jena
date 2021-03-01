@@ -30,6 +30,14 @@ public interface IRIProvider {
      */
     public IRIx create(String iri) throws IRIException;
 
+//    /**
+//     * Create an IRI, throw {@link IRIException} if the string does not conform to the grammar.
+//     * If there provider has additional errors and warnings about the IRI, these are signalled
+//     * using the two consumer functions.
+//     * This operation may still throw IRIException if the IRI string is unacceptable.
+//     */
+//    public void check(String iri, Consumer<String> errors, Consumer<String> warnings) throws IRIException;
+
     /**
      * Create an IRI, throw {@link IRIException} if the string does not conform to the grammar
      * or violates additional rules of the provider.
@@ -40,9 +48,11 @@ public interface IRIProvider {
      * Run in strict mode - the exact definition of "strict" depends on the provider.
      * When strict a provider should implement to the letter of the specifications,
      * including URI-scheme rules. This strictness should be documented.
-     * <p>
-     * In practice, there are application expectations are not strictly examples;
-     * {@code file:/filepath} (the file: URI schema only defines "file://host?/...").
      */
     public void strictMode(String scheme, boolean runStrict);
+
+    /*
+     * Return the state of strict mode for the given scheme.
+     */
+    public boolean isStrictMode(String scheme);
 }

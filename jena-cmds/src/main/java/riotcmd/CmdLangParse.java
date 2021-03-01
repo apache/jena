@@ -35,6 +35,7 @@ import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdGeneral;
+import org.apache.jena.irix.IRIException;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
@@ -117,9 +118,6 @@ public abstract class CmdLangParse extends CmdGeneral
 
     @Override
     protected void exec() {
-        if ( modLangParse.skipOnBadTerm() )
-            throw new CmdException("Not supported : skip on bad term");
-
         boolean oldStrictValue = SysRIOT.isStrictMode() ;
         if ( modLangParse.strictMode() )
             SysRIOT.setStrictMode(true) ;
@@ -264,26 +262,22 @@ public abstract class CmdLangParse extends CmdGeneral
         if ( modLangParse.explicitNoChecking() )
             checking = false;
         builder.checking(checking);
+        if ( checking )
+            builder.strict(true);
 
         ErrorHandlerTracking errHandler = ErrorHandlerFactory.errorHandlerTracking(ErrorHandlerFactory.stdLogger,
                                                                                    modLangParse.stopOnBadTerm(),
                                                                                    modLangParse.stopOnWarnings());
+        builder.errorHandler(errHandler);
 
-        if ( modLangParse.skipOnBadTerm() ) {
-            // skipOnBadterm - this needs collaboration from the parser.
-        }
-
-        // Make a flag.
-        // Input and output subflags.
+        // Make into a cmd flag. (input and output subflags?)
         // If input is "label, then output using NodeToLabel.createBNodeByLabelRaw() ;
         // else use NodeToLabel.createBNodeByLabel() ;
         // Also, as URI.
         final boolean labelsAsGiven = false ;
-
 //        NodeToLabel labels = SyntaxLabels.createNodeToLabel() ;
 //        if ( labelsAsGiven )
 //            labels = NodeToLabel.createBNodeByLabelEncoded() ;
-
         if ( labelsAsGiven )
             builder.labelToNode(LabelToNode.createUseLabelAsGiven());
 
@@ -294,14 +288,11 @@ public abstract class CmdLangParse extends CmdGeneral
         s = null ;
 
         boolean successful = true;
-        if ( checking )
-            SysRIOT.setStrictMode(true);
-        builder.errorHandler(errHandler);
 
         modTime.startTimer() ;
-        sink.start() ;
         RDFParser parser = builder.build();
         try {
+            sink.start() ;
             parser.parse(sink);
             successful = true;
         }
@@ -310,6 +301,9 @@ public abstract class CmdLangParse extends CmdGeneral
             successful = false;
         }
         catch (RiotException ex) {
+            successful = false;
+        }
+        catch (IRIException ex) {
             successful = false;
         }
         sink.finish() ;

@@ -28,6 +28,7 @@ import java.nio.file.Paths;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.jena.JenaRuntime ;
+import org.apache.jena.irix.IRIs;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.WrappedIOException ;
 
@@ -214,27 +215,27 @@ public class FileUtils
      */
     public static boolean isURI(String name)
     {
-        return (getScheme(name) != null) ;
+        return (IRIs.scheme(name) != null) ;
     }
 
-    public static String getScheme(String uri)
-    {
-        // Find "[^/:]*:.*"
-        for ( int i = 0 ; i < uri.length() ; i++ )
-        {
-            char ch = uri.charAt(i) ;
-            if ( ch == ':' )
-                return uri.substring(0,i) ;
-            if ( ! isASCIILetter(ch) )
-                // Some illegal character before the ':'
-                break ;
-        }
-        return null ;
-    }
-
-    private static boolean isASCIILetter(char ch)
-    {
-        return ( ch >= 'a' && ch <= 'z' ) || ( ch >= 'A' && ch <= 'Z' ) ;
+    /**
+     * Get the URI scheme at the start of the string. This is the substring up to, and
+     * excluding, the first ":" if it conforms to the syntax requirements. Return null
+     * if it does not look like a scheme.
+     * <p>
+     * The <a href="https://tools.ietf.org/html/rfc3986#appendix-A">RFC 3986 URI
+     * grammar</a> defines {@code scheme} as:
+     *
+     * <pre>
+     * URI         = scheme ":" hier-part [ "?" query ] [ "#" fragment ]
+     * scheme      = ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
+     * ...
+     * </pre>
+     * @deprecated Use {@link IRIs#scheme}
+     */
+    @Deprecated
+    public static String getScheme(String uri) {
+        return IRIs.scheme(uri);
     }
 
     /**

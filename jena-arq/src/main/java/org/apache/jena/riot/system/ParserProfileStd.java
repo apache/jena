@@ -18,15 +18,15 @@
 
 package org.apache.jena.riot.system;
 
+import org.apache.jena.atlas.lib.Cache;
+import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.*;
-import org.apache.jena.irix.IRIException;
-import org.apache.jena.irix.IRIx;
-import org.apache.jena.irix.IRIxResolver;
+import org.apache.jena.iri.IRI;
+import org.apache.jena.irix.*;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.RiotException;
-import org.apache.jena.riot.checker.CheckerLiterals;
 import org.apache.jena.riot.tokens.Token;
 import org.apache.jena.riot.tokens.TokenType;
 import org.apache.jena.sparql.core.Quad;
@@ -46,6 +46,9 @@ public class ParserProfileStd implements ParserProfile
     private final PrefixMap    prefixMap;
     private final boolean      strictMode;
     private final boolean      checking;
+    private static int DftCacheSize = 500;
+    private final Cache<String, IRI> iriCache;
+
     private boolean allowNodeExtentions;
 
     public ParserProfileStd(FactoryRDF factory, ErrorHandler errorHandler,
@@ -57,6 +60,7 @@ public class ParserProfileStd implements ParserProfile
         this.prefixMap = prefixMap;
         this.context = context;
         this.checking = checking;
+        this.iriCache = checking ? CacheFactory.createCache(DftCacheSize) : null;
         this.strictMode = strictMode;
         this.allowNodeExtentions = true; //(context.isTrue(RIOT.ALLOW_NODE_EXT)) ;
     }
@@ -88,20 +92,41 @@ public class ParserProfileStd implements ParserProfile
     }
 
     private IRIx internalMakeIRI(String uriStr, long line, long col) {
-        if ( uriStr.contains(" ") )
+        if ( uriStr.contains(" ") ) {
             // Specific check for spaces.
             errorHandler.warning("Bad IRI: <" + uriStr + "> Spaces are not legal in URIs/IRIs.", line, col);
+            return IRIx.createAny(uriStr);
+        }
 
         try {
             IRIx iri = resolver.resolve(uriStr);
+            if ( checking )
+                doChecking(iri, iri.str(), line, col);
             return iri;
         } catch (IRIException ex) {
             // This should only be errors and the errorHandler may be set to "don't continue".
-            //errorHandler.warning("Bad IRI: <" + uriStr + "> : "+ex.getMessage(), line, col);
-            errorHandler.error("Bad IRI: <" + uriStr + "> : "+ex.getMessage(), line, col);
+            // errorHandler.warning("Bad IRI: <" + uriStr + "> : "+ex.getMessage(), line, col);
+            if ( SystemIRIx.getProvider() instanceof IRIProviderJenaIRI )
+                // Checking did this error/warning.
+                // Puts the IRI in the message.
+                errorHandler.error("Bad IRI: "+ex.getMessage(), line, col);
+            else
+                // Does not put the IRI in the message.
+                errorHandler.error("Bad IRI: <" + uriStr + "> : "+ex.getMessage(), line, col);
             // Error handler let it pass so return something.
-            return IRIx.create(uriStr);
+            if ( checking )
+                doChecking(null, uriStr, line, col);
+            return IRIx.createAny(uriStr);
         }
+    }
+
+    private void doChecking(IRIx irix, String uriStr, long line, long col) {
+        IRI iri;
+        if ( irix instanceof IRIProviderJenaIRI.IRIxJena )
+            iri = (IRI)irix.getImpl();
+        else
+            iri = iriCache.getOrFill(uriStr, ()->SetupJenaIRI.iriCheckerFactory().create(uriStr));
+        Checker.iriViolations(iri, errorHandler, false, true, line, col);
     }
 
     /** Create a triple - this operation call {@link #checkTriple} if checking is enabled. */
@@ -166,14 +191,14 @@ public class ParserProfileStd implements ParserProfile
     @Override
     public Node createTypedLiteral(String lexical, RDFDatatype datatype, long line, long col) {
         if ( checking )
-            CheckerLiterals.checkLiteral(lexical, datatype, errorHandler, line, col);
+            Checker.checkLiteral(lexical, datatype, errorHandler, line, col);
         return factory.createTypedLiteral(lexical, datatype);
     }
 
     @Override
     public Node createLangLiteral(String lexical, String langTag, long line, long col) {
         if ( checking )
-            CheckerLiterals.checkLiteral(lexical, langTag, errorHandler, line, col);
+            Checker.checkLiteral(lexical, langTag, errorHandler, line, col);
         return factory.createLangLiteral(lexical, langTag);
     }
 

@@ -451,7 +451,7 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
 
     private static String chooseBaseURI(String baseURI)
     {
-        String scheme = FileUtils.getScheme(baseURI) ;
+        String scheme = IRIs.scheme(baseURI) ;
 
         if ( scheme != null )
         {

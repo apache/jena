@@ -22,17 +22,19 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.riot.SysRIOT;
 import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.riot.out.NodeToLabel;
 
 /**
- * Allocate blank nodes according to the label given. 
+ * Allocate blank nodes according to the label given.
  * This allocator reconstructs labels made by
  * {@link NodeToLabel#createBNodeByLabelEncoded()}
  */
 
 public class BlankNodeAllocatorLabelEncoded implements BlankNodeAllocator {
+    // Anon generation.
+    private static final String BNodeGenIdPrefix         = "genid" ;
+
     private AtomicLong counter = new AtomicLong(0);
 
     public BlankNodeAllocatorLabelEncoded() {}
@@ -47,7 +49,7 @@ public class BlankNodeAllocatorLabelEncoded implements BlankNodeAllocator {
 
     @Override
     public Node create() {
-        String label = SysRIOT.BNodeGenIdPrefix + (counter.getAndIncrement());
+        String label = BNodeGenIdPrefix + (counter.getAndIncrement());
         return NodeFactory.createBlankNode(label);
     }
 }

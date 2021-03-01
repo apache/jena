@@ -28,7 +28,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.util.FileUtils;
+import org.apache.jena.irix.IRIs;
 import org.apache.shiro.config.ConfigurationException;
 import org.apache.shiro.io.ResourceUtils;
 import org.apache.shiro.web.env.EnvironmentLoader;
@@ -95,7 +95,7 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
         for ( String loc : locations ) {
             // If file:, look for that file.
             // If a relative name without scheme, look in FUSEKI_BASE, FUSEKI_HOME, webapp.
-            String scheme = FileUtils.getScheme(loc);
+            String scheme = IRIs.scheme(loc);
 
             // Covers C:\\ as a "scheme name"
             if ( scheme != null ) {
