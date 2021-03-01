@@ -132,7 +132,6 @@ public class Dispatcher {
      * <li> target(action, operation) -> ActionProcess.
      *
      * @return ActionProcessor or null if the request URI can not be dealt with.
-     * @throws ActionErrorException for dispatch errors
      */
     private static ActionProcessor chooseProcessor(HttpAction action) {
         // "return null" indicates that processing failed to find a ActionProcessor

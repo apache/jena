@@ -32,6 +32,7 @@ import org.apache.jena.riot.RiotParseException;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.riot.web.HttpNames;
+import org.apache.jena.shared.OperationDeniedException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.graph.GraphFactory;
@@ -134,7 +135,7 @@ public class GSP_RW extends GSP_R {
     }
 
     // Refactoring:
-    //   Make doPutPost and doPustPosyQuads teh same pattern.
+    //   Make doPutPost and doPutPostQuads the same pattern.
     //   addDataInto*: Extract commonality in error handling.
 
     /** Directly add data in a transaction.
@@ -144,7 +145,7 @@ public class GSP_RW extends GSP_R {
      * @param cleanDest Whether to remove data first (true = PUT, false = POST)
      * @return whether the target existed beforehand
      */
-    protected UploadDetails addDataIntoTxn(HttpAction action, boolean overwrite) {
+    private UploadDetails addDataIntoTxn(HttpAction action, boolean overwrite) {
         action.beginWrite();
         try {
             DatasetGraph dsg = decideDataset(action);
@@ -162,10 +163,6 @@ public class GSP_RW extends GSP_R {
             upload.setExistedBefore(existedBefore);
             action.commit();
             return upload;
-        } catch (ActionErrorException ex) {
-            // Any ServletOps.error from calls in the try{} block.
-            action.abort();
-            throw ex;
         } catch (RiotParseException ex) {
             action.abort();
             ServletOps.errorParseError(ex);
@@ -175,6 +172,13 @@ public class GSP_RW extends GSP_R {
             action.abort();
             ServletOps.errorBadRequest(ex.getMessage());
             return null;
+        } catch (OperationDeniedException ex) {
+            action.abort();
+            throw ex;
+        } catch (ActionErrorException ex) {
+            // Any ServletOps.error from calls in the try{} block.
+            action.abort();
+            throw ex;
         } catch (Exception ex) {
             // Something unexpected.
             action.abort();
@@ -193,7 +197,7 @@ public class GSP_RW extends GSP_R {
      * @param cleanDest Whether to remove data first (true = PUT, false = POST)
      * @return whether the target existed beforehand.
      */
-    protected UploadDetails addDataIntoNonTxn(HttpAction action, boolean overwrite) {
+    private UploadDetails addDataIntoNonTxn(HttpAction action, boolean overwrite) {
         Graph graphTmp = GraphFactory.createGraphMem();
         StreamRDF dest = StreamRDFLib.graph(graphTmp);
 
@@ -219,6 +223,9 @@ public class GSP_RW extends GSP_R {
             details.setExistedBefore(existedBefore);
             action.commit();
             return details;
+        } catch (OperationDeniedException ex) {
+            action.abort();
+            throw ex;
         } catch (Exception ex) {
             // We parsed into a temporary graph so an exception at this point
             // is not because of a parse error.
@@ -249,7 +256,6 @@ public class GSP_RW extends GSP_R {
     }
 
     // ---- Quads
-    // XXX Make like doPutPost
 
     protected void doPutPostQuads(HttpAction action, boolean overwrite) {
         // See doPutPostGSP
@@ -280,6 +286,9 @@ public class GSP_RW extends GSP_R {
             // Parse error
             action.abort();
             ServletOps.errorBadRequest(ex.getMessage());
+        } catch (OperationDeniedException ex) {
+            action.abort();
+            throw ex;
         } catch (ActionErrorException ex) {
             action.abort();
             throw ex;
@@ -319,6 +328,9 @@ public class GSP_RW extends GSP_R {
             FusekiNetLib.addDataInto(dsgTmp, dsg);
             action.commit();
             ServletOps.success(action);
+        } catch (OperationDeniedException ex) {
+            action.abort();
+            throw ex;
         } catch (Exception ex) {
             // We're in a non-transactional upload so this probably will not
             // work but there still may be transaction state tracking.

@@ -21,7 +21,7 @@ package org.apache.jena.shared;
 /**
  * Exception to indicate that authentication is required for the operation to proceed.
  * 
- * My only be thrown if authentication credentials are not available.
+ * May only be thrown if authentication credentials are not available.
  *
  */
 public class AuthenticationRequiredException extends OperationDeniedException {

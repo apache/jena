@@ -51,6 +51,7 @@ import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.Syntax;
 import org.apache.jena.riot.web.HttpNames;
+import org.apache.jena.shared.OperationDeniedException;
 import org.apache.jena.sparql.modify.UsingList;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateException;
@@ -236,6 +237,10 @@ public class SPARQL_Update extends ActionService
             action.abort();
             // Counter inc'ed further out.
             ServletOps.errorBadRequest(messageForException(ex));
+        } catch ( OperationDeniedException ex) {
+            IO.skipToEnd(input);
+            action.abort();
+            throw ex;
         } catch (Throwable ex) {
             IO.skipToEnd(input);
             if ( ! ( ex instanceof ActionErrorException ) ) {
