@@ -25,9 +25,13 @@ import java.util.regex.Pattern;
 import org.apache.jena.JenaRuntime;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.iri.IRI;
+import org.apache.jena.iri.IRIComponents;
 import org.apache.jena.iri.Violation;
+import org.apache.jena.irix.IRIs;
+import org.apache.jena.irix.SetupJenaIRI;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.util.SplitIRI;
@@ -38,22 +42,20 @@ import org.apache.jena.util.SplitIRI;
  * If the errorHandler is null, use the system wide handler.
  * <p>
  * If the errorHandler line/columns numbers are -1, -1, messages do not include them.
+ * <p>
+ * Operations "<tt>checkXXX(<i>item</i>)</tt>" are for boolean testing
+ * and do not generate output.
  */
 
 public class Checker {
 
-    private static ErrorHandler errorHandler(ErrorHandler handler) {
-        return handler != null ? handler : ErrorHandlerFactory.errorHandlerStd;
-    }
-
     /** A node -- must be concrete node or a variable. */
     public static boolean check(Node node) {
-        return check(node, null, -1, -1);
+        return check(node, nullErrorHandler, -1, -1);
     }
 
-    /** A node -- must be concrete node or a variable. */
+    /** A node -- must be a concrete node or a variable. */
     public static boolean check(Node node, ErrorHandler errorHandler, long line, long col) {
-        // NodeVisitor?
         if ( node.isURI() )
             return checkIRI(node, errorHandler, line, col);
         else if ( node.isBlank() )
@@ -62,8 +64,11 @@ public class Checker {
             return checkLiteral(node, errorHandler, line, col);
         else if ( node.isVariable() )
             return checkVar(node, errorHandler, line, col);
-        else if ( node.isNodeTriple() )
-            return true;
+        else if ( node.isNodeTriple() ) {
+            Triple t = Node_Triple.triple(node);
+            return check(t.getSubject()) && check(t.getPredicate()) && check(t.getObject())
+                    && checkTriple(t);
+        }
         errorHandler(errorHandler).warning("Not a recognized node: ", line, col);
         return false;
     }
@@ -71,7 +76,7 @@ public class Checker {
     // ==== IRIs
 
     public static boolean checkIRI(Node node) {
-        return checkIRI(node, null, -1, -1);
+        return checkIRI(node, nullErrorHandler, -1, -1);
     }
 
     public static boolean checkIRI(Node node, ErrorHandler errorHandler, long line, long col) {
@@ -83,12 +88,13 @@ public class Checker {
     }
 
     public static boolean checkIRI(String iriStr) {
-        return checkIRI(iriStr, null, -1, -1);
+        return checkIRI(iriStr, nullErrorHandler, -1, -1);
     }
 
+    /** See also {@link IRIs#reference} */
     public static boolean checkIRI(String iriStr, ErrorHandler errorHandler, long line, long col) {
-        IRI iri = IRIResolver.iriCheckerFactory().create(iriStr);
-        boolean b = iriViolations(iri, errorHandler, false, true, line, col);
+        IRI iri = SetupJenaIRI.iriCheckerFactory().create(iriStr);
+        boolean b = iriViolations(iri, errorHandler, line, col);
         return b;
     }
 
@@ -104,8 +110,8 @@ public class Checker {
      * Process violations on an IRI Calls the {@link ErrorHandler} on all errors and
      * warnings (as warnings).
      */
-    public static void iriViolations(IRI iri, ErrorHandler errorHandler, long line, long col) {
-        iriViolations(iri, errorHandler, false, true, line, col);
+    public static boolean iriViolations(IRI iri, ErrorHandler errorHandler, long line, long col) {
+        return iriViolations(iri, errorHandler, false, true, line, col);
     }
 
     /**
@@ -113,9 +119,9 @@ public class Checker {
      * (as warning). (If checking for relative IRIs, these are sent out as errors.)
      * Assumes error handler throws exceptions on errors if need be
      */
-    /* package */ static boolean iriViolations(IRI iri, ErrorHandler errorHandler,
-                                               boolean allowRelativeIRIs, boolean includeIRIwarnings,
-                                               long line, long col) {
+    public static boolean iriViolations(IRI iri, ErrorHandler errorHandler,
+                                        boolean allowRelativeIRIs, boolean includeIRIwarnings,
+                                        long line, long col) {
         if ( !allowRelativeIRIs && iri.isRelative() )
             errorHandler(errorHandler).error("Relative IRI: " + iri, line, col);
 
@@ -130,15 +136,10 @@ public class Checker {
                 boolean isError = v.isError();
 
                 // Anything we want to reprioritise?
-                // Some jena-iri violations are fully controllable by error/warning
-                // controls
-                // and need to be handled here.
-                // [nothing at present]
-// if ( code == Violation.LOWERCASE_PREFERRED
-//   || code == Violation.PERCENT_ENCODING_SHOULD_BE_UPPERCASE
-//   || code == Violation.SCHEME_PATTERN_MATCH_FAILED )
-// continue ;
-
+                if ( code == Violation.LOWERCASE_PREFERRED && v.getComponent() != IRIComponents.SCHEME ) {
+                    // Issue warning about the scheme part. Not e.g. DNS names.
+                    continue;
+                }
                 String msg = v.getShortMessage();
                 String iriStr = iri.toString();
 
@@ -157,6 +158,10 @@ public class Checker {
     // ==== Literals
 
     final static private Pattern langPattern = Pattern.compile("[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*");
+
+    public static boolean checkLiteral(Node node) {
+        return checkLiteral(node, nullErrorHandler, -1, -1);
+    }
 
     public static boolean checkLiteral(Node node, ErrorHandler errorHandler, long line, long col) {
         if ( !node.isLiteral() ) {
@@ -207,13 +212,12 @@ public class Checker {
     }
 
     // Whitespace.
-    // XSD allows whitespace before and after the lexical forms of a literal but not
-    // insiode.
+    // XSD allows whitespace before and after the lexical forms of a literal but not inside.
     // Jena handles this correctly.
 
     protected static boolean validateByDatatype(String lexicalForm, RDFDatatype datatype, ErrorHandler errorHandler, long line, long col) {
-// if ( SysRIOT.StrictXSDLexicialForms )
-// checkWhitespace(lexicalForm, datatype, errorHandler, line, col);
+//        if ( SysRIOT.StrictXSDLexicialForms )
+//            checkWhitespace(lexicalForm, datatype, errorHandler, line, col);
         return validateByDatatypeJena(lexicalForm, datatype, errorHandler, line, col);
     }
 
@@ -248,7 +252,7 @@ public class Checker {
     // ==== Blank nodes
 
     public static boolean checkBlankNode(Node node) {
-        return checkBlankNode(node, null, -1, -1);
+        return checkBlankNode(node, nullErrorHandler, -1, -1);
     }
 
     public static boolean checkBlankNode(Node node, ErrorHandler errorHandler, long line, long col) {
@@ -274,7 +278,7 @@ public class Checker {
     // ==== Var
 
     public static boolean checkVar(Node node) {
-        return checkVar(node, null, -1, -1);
+        return checkVar(node, nullErrorHandler, -1, -1);
     }
 
     public static boolean checkVar(Node node, ErrorHandler errorHandler, long line, long col) {
@@ -288,7 +292,7 @@ public class Checker {
     // ==== Triples
 
     public static boolean checkTriple(Triple triple) {
-        return checkTriple(triple, null, -1, -1);
+        return checkTriple(triple, nullErrorHandler, -1, -1);
     }
 
     /** Check a triple - assumes individual nodes are legal */
@@ -321,7 +325,7 @@ public class Checker {
     // ==== Quads
 
     public static boolean checkQuad(Quad quad) {
-        return checkQuad(quad, null, -1, -1);
+        return checkQuad(quad, nullErrorHandler, -1, -1);
     }
 
     /** Check a quad - assumes individual nodes are legal */
@@ -355,5 +359,21 @@ public class Checker {
         }
         return rc;
     }
+
+    private static ErrorHandler errorHandler(ErrorHandler handler) {
+        return handler != null ? handler : ErrorHandlerFactory.errorHandlerStd;
+    }
+
+    // Does nothing. Used in "check(node)" operations where the boolean result is key.
+    private static ErrorHandler nullErrorHandler  = new ErrorHandler() {
+        @Override
+        public void warning(String message, long line, long col) {}
+
+        @Override
+        public void error(String message, long line, long col) {}
+
+        @Override
+        public void fatal(String message, long line, long col) {}
+    };
 
 }

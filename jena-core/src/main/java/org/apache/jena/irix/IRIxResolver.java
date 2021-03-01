@@ -58,7 +58,7 @@ public class IRIxResolver {
      * During parsing a lot of IRIs are being created, many the same. For example,
      * e.g. properties or blocks of triples with the same subject.
      */
-    private static int DftCacheSize = 100;
+    private static int DftCacheSize = 500;
     private Cache<String, IRIx> cache = CacheFactory.createCache(DftCacheSize);
 
     /** Resolve the argument URI string according to resolver policy */
@@ -76,6 +76,7 @@ public class IRIxResolver {
         IRIx iri = cache.getIfPresent(other);
         if ( iri != null )
             return iri;
+        // May throw an exception
         IRIx iriValue = resolve0(other);
         return cache.getOrFill(other, ()->iriValue);
     }
@@ -96,7 +97,7 @@ public class IRIxResolver {
         return new IRIxResolver(newBase, resolve, allowRelative);
     }
 
-   @Override
+    @Override
     public String toString() {
         return "IRIxResolver[base=" + base + ", resolve=" + resolve + ", relative=" + allowRelative+"]";
     }

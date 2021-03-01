@@ -31,9 +31,7 @@ import org.junit.Test ;
 /** Tests for node Checker */
 public class TestChecker
 {
-    private static Checker checker = new Checker(new ErrorHandlerTestLib.ErrorHandlerEx()) ;
-
-    boolean b ;
+    private boolean b ;
 
     @Before
     public void before() {
@@ -144,9 +142,11 @@ public class TestChecker
     // Exclusive canonicalization requires namespace declaration before attributes
     public void checker45()     { check("'''<x attr=\"foo\" xmlns=\"http://example/ns#\"></x>'''^^rdf:XMLLiteral") ; }
 
+    private static ErrorHandler errorHandler = new ErrorHandlerTestLib.ErrorHandlerEx();
+
     private static void check(String string)
     {
         Node n = NodeFactoryExtra.parseNode(string) ;
-        checker.check(n, -1, -1) ;
+        Checker.check(n, errorHandler, -1, -1);
     }
 }

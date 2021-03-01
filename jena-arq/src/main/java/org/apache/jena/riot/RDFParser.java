@@ -89,6 +89,7 @@ public class RDFParser {
     private final String            baseURI;
     private final boolean           strict;
     private final boolean           resolveURIs;
+    private final IRIxResolver      resolver;
     private final boolean           canonicalLexicalValues;
     private final LangTagForm       langTagForm;
     private final Optional<Boolean> checking;
@@ -172,7 +173,7 @@ public class RDFParser {
                             StreamManager streamManager, HttpClient httpClient,
                             Lang hintLang, Lang forceLang, String parserBaseURI, boolean strict, Optional<Boolean> checking,
                             boolean canonicalLexicalValues, LangTagForm langTagForm,
-                            boolean resolveURIs, FactoryRDF factory,
+                            boolean resolveURIs, IRIxResolver resolver, FactoryRDF factory,
                             ErrorHandler errorHandler, Context context) {
         int x = countNonNull(uri, path, content, inputStream, javaReader);
         if ( x >= 2 )
@@ -195,6 +196,7 @@ public class RDFParser {
         this.baseURI = parserBaseURI;
         this.strict = strict;
         this.resolveURIs = resolveURIs;
+        this.resolver = resolver;
         this.canonicalLexicalValues = canonicalLexicalValues;
         this.langTagForm = langTagForm;
         this.checking = checking;
@@ -449,9 +451,12 @@ public class RDFParser {
             // The JSON-LD subsystem handles this.
             resolve = false;
 
-        IRIxResolver resolver = IRIxResolver.create().base(baseStr).resolve(resolve).allowRelative(allowRelative).build();
+        IRIxResolver parserResolver = (resolver != null) ? resolver
+                : IRIxResolver.create().base(baseStr).resolve(resolve).allowRelative(allowRelative).build();
         PrefixMap prefixMap = PrefixMapFactory.create();
-        ParserProfileStd parserFactory = new ParserProfileStd(factory, errorHandler, resolver, prefixMap, context, checking$, strict);
+        ParserProfileStd parserFactory = new ParserProfileStd(factory, errorHandler,
+                                                              parserResolver, prefixMap,
+                                                              context, checking$, strict);
         return parserFactory;
     }
 }

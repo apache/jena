@@ -18,6 +18,10 @@
 
 package org.apache.jena.fuseki.validation.json;
 
+import static org.apache.jena.fuseki.validation.json.ValidatorJsonLib.getArgs;
+import static org.apache.jena.fuseki.validation.json.ValidatorJsonLib.jErrors;
+import static org.apache.jena.fuseki.validation.json.ValidatorJsonLib.jWarnings;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -28,14 +32,13 @@ import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.iri.IRI;
 import org.apache.jena.iri.IRIFactory;
 import org.apache.jena.iri.Violation;
-import org.apache.jena.riot.system.IRIResolver;
-import static org.apache.jena.fuseki.validation.json.ValidatorJsonLib.*;
+import org.apache.jena.irix.SetupJenaIRI;
 
 public class IRIValidatorJSON {
 
     public IRIValidatorJSON() { }
 
-    static IRIFactory iriFactory = IRIResolver.iriFactory();
+    static IRIFactory iriFactory = SetupJenaIRI.iriCheckerFactory();
 
     static final String paramIRI           = "iri";
 

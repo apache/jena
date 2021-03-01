@@ -20,30 +20,28 @@ package arq;
 
 import java.util.Iterator ;
 
-
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.Violation ;
-import org.apache.jena.riot.system.IRIResolver ;
+import org.apache.jena.irix.SetupJenaIRI;
 
 public class iri
 {
 
     public static void main(String... args)
     {
-        //IRIFactory iriFactory = IRIFactory.iriImplementation() ;
-        IRIFactory iriFactory = IRIResolver.iriFactory() ;
-        
+        IRIFactory iriFactory = SetupJenaIRI.iriCheckerFactory() ;
+
         boolean first = true ;
         for ( String iriStr : args )
         {
             if ( iriStr.startsWith("<") && iriStr.endsWith(">") )
                 iriStr = iriStr.substring(1, iriStr.length()-1) ;
-            
+
             if ( ! first )
                 System.out.println() ;
             first = false ;
-            
+
             IRI iri = iriFactory.create(iriStr) ;
             System.out.println(iriStr + " ==> "+iri) ;
             if ( iri.isRelative() )
@@ -56,5 +54,4 @@ public class iri
             }
         }
     }
-
 }

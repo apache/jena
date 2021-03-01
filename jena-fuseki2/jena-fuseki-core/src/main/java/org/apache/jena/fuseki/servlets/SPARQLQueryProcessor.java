@@ -254,9 +254,8 @@ public abstract class SPARQLQueryProcessor extends ActionService
             throw ex;
         } catch (QueryParseException ex) {
             ServletOps.errorBadRequest("Parse error: \n" + queryString + "\n" + SPARQLProtocol.messageForException(ex));
-        }
-        // Should not happen.
-        catch (QueryException ex) {
+        } catch (QueryException ex) {
+            // Should not happen.
             ServletOps.errorBadRequest("Error: \n" + queryString + "\n" + ex.getMessage());
         }
 

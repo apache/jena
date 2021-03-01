@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,9 +20,9 @@ package org.apache.jena.permissions.contract.model;
 import java.lang.reflect.InvocationTargetException;
 
 import junit.framework.TestSuite;
-
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph ;
+import org.apache.jena.irix.IRIs;
 import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.rdf.model.Model ;
@@ -30,10 +30,9 @@ import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.test.AbstractTestPackage ;
 import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
 import org.apache.jena.riot.system.stream.Locator;
-import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.riot.system.stream.LocatorZip;
+import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.util.FileUtils ;
 
 /**
  * Test package to test Model implementation.
@@ -45,7 +44,7 @@ public class SecTestPackage extends AbstractTestPackage
 	{
 		return new SecTestPackage();
 	}
-	
+
 	public SecTestPackage() throws SecurityException, IllegalArgumentException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException
 	{
 		super("SecuredModelTest", new PlainModelFactory() );
@@ -57,12 +56,12 @@ public class SecTestPackage extends AbstractTestPackage
 	/* package private */static class PlainModelFactory implements TestingModelFactory
 	{
 		private final SecurityEvaluator eval;
-		
+
 		public PlainModelFactory()
 		{
 			eval = new MockSecurityEvaluator(true, true, true, true, true, true);
 		}
-		
+
 		@Override
 		public Model createModel()
 		{
@@ -71,35 +70,35 @@ public class SecTestPackage extends AbstractTestPackage
 			return org.apache.jena.permissions.Factory.getInstance(eval, "testModel",
 					model);
 		}
-		
+
 		@Override
 		public PrefixMapping getPrefixMapping()
 		{
 			return createModel().getGraph().getPrefixMapping();
 		}
-		
+
 		@Override
 		public Model createModel( Graph base )
 		{
 			return ModelFactory.createModelForGraph(base);
 		}
 	}
-	
+
 	public static class LocatorJarURL implements Locator {
 
 		@Override
 		public TypedInputStream open(String uri) {
-			 String uriSchemeName = FileUtils.getScheme(uri) ;
+			 String uriSchemeName = IRIs.scheme(uri) ;
 			 if ( ! "jar".equalsIgnoreCase(uriSchemeName))
 			 {
 				 return null;
 			 }
-			 
+
 			 String[] parts = uri.substring( 4 ).split("!");
 			 if (parts.length != 2)
 			 {
 				 return null;
-			 } 
+			 }
 			 if (parts[0].toLowerCase().startsWith("file:"))
 			 {
 				 parts[0] = parts[0].substring( 5 );
@@ -116,6 +115,6 @@ public class SecTestPackage extends AbstractTestPackage
 		public String getName() {
 			return "JarURLLocator";
 		}
-		
+
 	}
 }

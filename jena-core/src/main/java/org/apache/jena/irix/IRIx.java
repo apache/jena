@@ -55,6 +55,16 @@ public abstract class IRIx {
     }
 
     /**
+     * Create an {@link IRIx} for any string.
+     * It returns a IRIx holder and does no checking whatsoever.
+     * Whether the IRI "works" is down to care by the application.
+     */
+    static public IRIx createAny(String iri) throws IRIException {
+        Objects.requireNonNull(iri);
+        return IRIProviderAny.stringProvider().create(iri);
+    }
+
+    /**
      * String must have been validated (e.g complies with the grammar of RFC3986).
      * This constructor does not perform any additional checking.
      */
@@ -151,6 +161,7 @@ public abstract class IRIx {
     /**
      * Try to resolve a string against this IRI as base.
      * Throw {@link IRIException} if the string does not conform to the IRI grammar.
+     * Return the original IRIx if there is no change.
      */
     public abstract IRIx resolve(IRIx other);
 
@@ -185,6 +196,12 @@ public abstract class IRIx {
     public String str() {
         return iriString;
     }
+
+    /**
+     * Return the implementation object of the provider.
+     * The class of the object depends on the provider.
+     */
+    public abstract Object getImpl();
 
     // Provide value-based equality.
     @Override

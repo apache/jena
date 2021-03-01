@@ -33,13 +33,13 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.irix.IRIs;
+import org.apache.jena.irix.SetupJenaIRI;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdfxml.xmlinput.* ;
 import org.apache.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
 import org.apache.jena.riot.*;
-import org.apache.jena.riot.checker.CheckerLiterals ;
+import org.apache.jena.riot.system.Checker;
 import org.apache.jena.riot.system.ErrorHandler;
-import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.util.Context;
@@ -163,7 +163,7 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
         }
 
         if ( JenaRuntime.isRDF11 )
-            arp.getOptions().setIRIFactory(IRIResolver.iriFactory());
+            arp.getOptions().setIRIFactory(SetupJenaIRI.iriFactory_RDFXML());
 
         if ( context != null ) {
             Map<String, Object> properties = null;
@@ -208,13 +208,11 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
     private static class HandlerSink extends ARPSaxErrorHandler implements StatementHandler, NamespaceHandler {
         private StreamRDF       output ;
         private ErrorHandler    riotErrorHandler ;
-        private CheckerLiterals checker ;
 
         HandlerSink(StreamRDF output, ErrorHandler errHandler) {
             super(new ErrorHandlerBridge(errHandler)) ;
             this.output = output ;
             this.riotErrorHandler = errHandler ;
-            this.checker = new CheckerLiterals(errHandler) ;
         }
 
         @Override
@@ -271,9 +269,9 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
         }
 
         private Triple convert(AResource s, AResource p, ALiteral o) {
-            Node object = convert(o) ;
-            checker.check(object, -1, -1) ;
-            return Triple.create(convert(s), convert(p), object) ;
+            Node literal = convert(o) ;
+            Checker.checkLiteral(literal, riotErrorHandler, -1, -1);
+            return Triple.create(convert(s), convert(p), literal) ;
         }
 
         @Override

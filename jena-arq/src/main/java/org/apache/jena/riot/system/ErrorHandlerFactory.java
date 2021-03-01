@@ -78,7 +78,7 @@ public class ErrorHandlerFactory
      * An error handler that throws exceptions in all cases.
      */
     public static ErrorHandler errorHandlerExceptions()        { return new ErrorHandlerRiotParseException() ; }
-    
+
     private static ErrorHandler defaultErrorHandler = errorHandlerStd ;
     /** Get the current default error handler */
     public static ErrorHandler getDefaultErrorHandler() { return defaultErrorHandler ; }
@@ -324,12 +324,12 @@ public class ErrorHandlerFactory
             throw new RiotParseException(message, line, col);
         }
     }
-    
+
     /** An error handler that throws a RiotParseException in all cases. */
     private static class ErrorHandlerRiotParseException implements ErrorHandler {
-        
+
         public ErrorHandlerRiotParseException() {}
-        
+
         @Override public void warning(String message, long line, long col) {
             throw new RiotParseException(message, line, col);
         }

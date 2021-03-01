@@ -21,7 +21,6 @@ package org.apache.jena.irix;
 import java.util.Objects;
 
 import org.apache.jena.atlas.lib.IRILib;
-import org.apache.jena.util.FileUtils;
 
 /**
  * Operations in support of {@link IRIx}.
@@ -78,7 +77,7 @@ public class IRIs {
      * turn it into a IRI suitable as a base IRI.
      */
     public static String toBase(String baseURI) {
-        String scheme = FileUtils.getScheme(baseURI);
+        String scheme = scheme(baseURI);
         // Assume scheme of one letter are Windows drive letters.
         if ( scheme != null && scheme.length() == 1 )
             scheme = "file";
@@ -142,5 +141,60 @@ public class IRIs {
         if ( ! base.isReference() )
             throw new IRIException("Not suitable as a base URI: '"+baseStr+"'");
         return resolve(base, iriStr);
+    }
+
+    /**
+     * Get the URI scheme at the start of the string. This is the substring up to, and
+     * excluding, the first ":" if it conforms to the syntax requirements. Return null
+     * if it does not look like a scheme.
+     * <p>
+     * The <a href="https://tools.ietf.org/html/rfc3986#appendix-A">RFC 3986 URI
+     * grammar</a> defines {@code scheme} as:
+     *
+     * <pre>
+     * URI         = scheme ":" hier-part [ "?" query ] [ "#" fragment ]
+     * scheme      = ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
+     * ...
+     * </pre>
+     */
+    public static String scheme(String str) {
+        int idx = scheme(str, 0);
+        if ( idx <= 0 || idx > str.length())
+            return null;
+        return str.substring(0, idx);
+    }
+
+    // Return the index of the ":" starting from "start"
+    // so that start to the returned index is the scheme including ":"
+    // Return <= 0 for no scheme.
+    // -1 Syntax error
+    // 0 did not find a colon.
+    private static int scheme(String str, int start) {
+        int p = start;
+        int end = str.length();
+        while (p < end) {
+            char c = str.charAt(p);
+            if ( c == ':' )
+                return p;
+            if ( ! isAlpha(c) ) {
+                if ( p == start )
+                    // Bad first character
+                    return -1;
+                if ( ! ( isDigit(c) || c == '+' || c == '-' || c == '.' ) )
+                    // Bad subsequent character
+                    return -1;
+            }
+            p++;
+        }
+        // Did not find ':'
+        return 0;
+    }
+
+    private static boolean isDigit(char ch) {
+        return (ch >= '0' && ch <= '9');
+    }
+
+    private static boolean isAlpha(char ch) {
+        return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
     }
 }
