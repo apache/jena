@@ -18,13 +18,11 @@ T * Licensed to the Apache Software Foundation (ASF) under one
 
 package org.apache.jena.irix;
 
-import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.apache.jena.iri.*;
-import org.apache.jena.iri.impl.PatternCompiler;
 
 /**
  * Provider for {@link IRIx} using the {@code jena-iri} module.
@@ -39,8 +37,9 @@ public class IRIProviderJenaIRI implements IRIProvider {
     public IRIProviderJenaIRI() { }
 
     /** {@link IRIx} implementation for the jena-iri provider. */
-    static class IRIxJena extends IRIx {
+    public static class IRIxJena extends IRIx {
         private final IRI jenaIRI;
+
         private IRIxJena(String iriStr, IRI iri) {
             super(iri.toString());
             this.jenaIRI = iri;
@@ -110,6 +109,11 @@ public class IRIProviderJenaIRI implements IRIProvider {
         }
 
         @Override
+        public IRI getImpl() {
+            return jenaIRI;
+        }
+
+        @Override
         public int hashCode() {
             return Objects.hash(jenaIRI);
         }
@@ -157,7 +161,23 @@ public class IRIProviderJenaIRI implements IRIProvider {
             case "file":
                 STRICT_FILE = runStrict;
                 break;
+            case "http":
+                STRICT_HTTP = runStrict;
             default:
+        }
+    }
+
+    @Override
+    public boolean isStrictMode(String scheme) {
+        switch(scheme) {
+            case "urn":
+                return STRICT_URN;
+            case "file":
+                return STRICT_FILE;
+            case "http":
+                return STRICT_HTTP;
+            default:
+                return false;
         }
     }
 
@@ -170,27 +190,41 @@ public class IRIProviderJenaIRI implements IRIProvider {
 
     // -----------------------------
 
-    static IRIFactory iriFactory() {
+    private static IRIFactory iriFactory() {
         return iriFactoryInst;
     }
 
+    // Parser settings.
+    private static final IRIFactory iriFactoryInst = SetupJenaIRI.setupCheckerIRIFactory();
+
+    private static boolean STRICT_HTTP = true;
     private static boolean STRICT_URN  = true;
     private static boolean STRICT_FILE = true;
+
     private static final boolean showExceptions = true;
+    // Should be "false" in a release - this is an assist for development checking.
+    private static final boolean includeWarnings = false;
 
     private static IRI exceptions(IRI iri) {
         if (!showExceptions)
             return iri;
-        if (!iri.hasViolation(false))
+        if (!iri.hasViolation(includeWarnings))
             return iri;
-        // Exclude certain errors which don't seem to be able to be switched off.
-        Iterator<Violation> vIter = iri.violations(false);
+        // Some error/warnings are scheme dependent.
+        Iterator<Violation> vIter = iri.violations(includeWarnings);
         while(vIter.hasNext()) {
             Violation v = vIter.next();
+
             int code = v.getViolationCode() ;
-            // Filter codes.
+            // Filter codes. These are for errors , not checking.
             // Global settings below; this section is for conditional filtering.
             switch(code) {
+                case Violation.PROHIBITED_COMPONENT_PRESENT:
+                    // Allow "p:u@" when non-strict.
+                    // Jena3 compatibility.
+                    if ( isHTTP(iri) && ! STRICT_HTTP && v.getComponent() == IRIComponents.USER )
+                        continue;
+                    break;
                 case Violation.SCHEME_PATTERN_MATCH_FAILED:
                     if ( isURN(iri) && ! STRICT_URN )
                         continue;
@@ -198,7 +232,7 @@ public class IRIProviderJenaIRI implements IRIProvider {
                         continue;
                     break;
                 case Violation.REQUIRED_COMPONENT_MISSING:
-                    // jena-iri handling of file: URIs is only for (an interpretation of) RFC 1738.
+                    // jena-iri handling of "file:" URIs is only for (an interpretation of) RFC 1738.
                     // RFC8089 allows relative file URIs and a wider use of characters.
                     if ( isFILE(iri) )
                         continue;
@@ -207,6 +241,11 @@ public class IRIProviderJenaIRI implements IRIProvider {
             throw new IRIException(msg);
         }
         return iri;
+    }
+
+    // HTTP and HTTPS
+    private static boolean isHTTP(IRI iri) {
+        return "http".equalsIgnoreCase(iri.getScheme()) || "https".equalsIgnoreCase(iri.getScheme());
     }
 
     private static boolean isURN(IRI iri)  { return "urn".equalsIgnoreCase(iri.getScheme()); }
@@ -231,191 +270,4 @@ public class IRIProviderJenaIRI implements IRIProvider {
         if ( !matches )
             throw new IRIException("Not a valid UUID string: "+original);
     }
-
-    private static final boolean ShowResolverSetup = false;
-
-    private static final IRIFactory iriFactoryInst = new IRIFactory();
-    static {
-        iriFactoryInst.useSpecificationIRI(true);
-        iriFactoryInst.useSchemeSpecificRules("*", true);
-
-        // Allow relative references for file: URLs.
-        iriFactoryInst.setSameSchemeRelativeReferences("file");
-
-        // Convert "SHOULD" to warning (default is "error").
-        // iriFactory.shouldViolation(false,true);
-
-        if ( ShowResolverSetup ) {
-            System.out.println("---- Default settings ----");
-            printSetting(iriFactoryInst);
-        }
-
-        // Accept any scheme.
-        setErrorWarning(iriFactoryInst, ViolationCodes.UNREGISTERED_IANA_SCHEME, false, false);
-        setErrorWarning(iriFactoryInst, ViolationCodes.UNREGISTERED_NONIETF_SCHEME_TREE, false, false);
-
-        setErrorWarning(iriFactoryInst, ViolationCodes.NON_INITIAL_DOT_SEGMENT, false, false);
-        setErrorWarning(iriFactoryInst, ViolationCodes.LOWERCASE_PREFERRED, false, true);
-        setErrorWarning(iriFactoryInst, ViolationCodes.REQUIRED_COMPONENT_MISSING, true, true);
-
-        setErrorWarning(iriFactoryInst, ViolationCodes.PERCENT_ENCODING_SHOULD_BE_UPPERCASE, false, false);
-
-        // jena-iri has not been updated for percent in DNS name (RFC 3986)
-        setErrorWarning(iriFactoryInst, ViolationCodes.NOT_DNS_NAME, false, false);
-        setErrorWarning(iriFactoryInst, ViolationCodes.USE_PUNYCODE_NOT_PERCENTS, false, false);
-
-        // NFC tests are not well understood by general developers and these cause confusion.
-        // See JENA-864
-        // NFC is in RDF 1.1 so do test for that.
-        // https://www.w3.org/TR/rdf11-concepts/#section-IRIs
-        // Leave switched on as a warning.
-        //setErrorWarning(iriFactoryInst, ViolationCodes.NOT_NFC,  false, false);
-
-        // NFKC is not mentioned in RDF 1.1. Switch off.
-        setErrorWarning(iriFactoryInst, ViolationCodes.NOT_NFKC, false, false);
-
-        // ** Applies to various unicode blocks.
-        // The set of legal characters depends on the Java version.
-        // If not set, this causes test failures in Turtle and Trig eval tests.
-        // "Any" unicode codepoint.
-        setErrorWarning(iriFactoryInst, ViolationCodes.COMPATIBILITY_CHARACTER, false, false);
-        setErrorWarning(iriFactoryInst, ViolationCodes.UNDEFINED_UNICODE_CHARACTER, false, false);
-        setErrorWarning(iriFactoryInst, ViolationCodes.UNASSIGNED_UNICODE_CHARACTER, false, false);
-
-        if ( ShowResolverSetup ) {
-            System.out.println("---- After initialization ----");
-            printSetting(iriFactoryInst);
-        }
-    }
-
-    /** Set the error/warning state of a violation code.
-     * @param factory   IRIFactory
-     * @param code      ViolationCodes constant
-     * @param isError   Whether it is to be treated an error.
-     * @param isWarning Whether it is to be treated a warning.
-     */
-    private static void setErrorWarning(IRIFactory factory, int code, boolean isError, boolean isWarning) {
-        factory.setIsWarning(code, isWarning);
-        factory.setIsError(code, isError);
-    }
-
-    private static void printSetting(IRIFactory factory) {
-        PrintStream ps = System.out;
-        printErrorWarning(ps, factory, ViolationCodes.UNREGISTERED_IANA_SCHEME);
-        printErrorWarning(ps, factory, ViolationCodes.NON_INITIAL_DOT_SEGMENT);
-        printErrorWarning(ps, factory, ViolationCodes.NOT_NFC);
-        printErrorWarning(ps, factory, ViolationCodes.NOT_NFKC);
-        printErrorWarning(ps, factory, ViolationCodes.UNWISE_CHARACTER);
-        printErrorWarning(ps, factory, ViolationCodes.UNDEFINED_UNICODE_CHARACTER);
-        printErrorWarning(ps, factory, ViolationCodes.UNASSIGNED_UNICODE_CHARACTER);
-        printErrorWarning(ps, factory, ViolationCodes.COMPATIBILITY_CHARACTER);
-        printErrorWarning(ps, factory, ViolationCodes.LOWERCASE_PREFERRED);
-        printErrorWarning(ps, factory, ViolationCodes.PERCENT_ENCODING_SHOULD_BE_UPPERCASE);
-        printErrorWarning(ps, factory, ViolationCodes.SCHEME_PATTERN_MATCH_FAILED);
-        ps.println();
-    }
-
-    private static void printErrorWarning(PrintStream ps, IRIFactory factory, int code) {
-        String x = PatternCompiler.errorCodeName(code);
-        ps.printf("%-40s : E:%-5s W:%-5s\n", x, factory.isError(code), factory.isWarning(code));
-    }
-
-//  // Jena 3.17.0
-//  // Accept any scheme.
-//  setErrorWarning(iriFactoryInst, ViolationCodes.UNREGISTERED_IANA_SCHEME, false, false);
-//
-//  // These are a warning from jena-iri motivated by problems in RDF/XML and also internal processing by IRI
-//  // (IRI.relativize).
-//  // The IRI is valid and does correct resolve when relative.
-//  setErrorWarning(iriFactoryInst, ViolationCodes.NON_INITIAL_DOT_SEGMENT, false, false);
-//
-//  // Turn off?? (ignored in CheckerIRI.iriViolations anyway).
-//  // setErrorWarning(iriFactory, ViolationCodes.SCHEME_PATTERN_MATCH_FAILED, false, false);
-//
-//  // Choices
-//  setErrorWarning(iriFactoryInst, ViolationCodes.LOWERCASE_PREFERRED, false, true);
-//  //setErrorWarning(iriFactoryInst, ViolationCodes.PERCENT_ENCODING_SHOULD_BE_UPPERCASE, false, true);
-//
-//  // NFC tests are not well understood by general developers and these cause confusion.
-//  // See JENA-864
-//  // NFC is in RDF 1.1 so do test for that.
-//  // https://www.w3.org/TR/rdf11-concepts/#section-IRIs
-//  // Leave switched on as a warning.
-//  //setErrorWarning(iriFactoryInst, ViolationCodes.NOT_NFC,  false, false);
-//
-//  // NFKC is not mentioned in RDF 1.1. Switch off.
-//  setErrorWarning(iriFactoryInst, ViolationCodes.NOT_NFKC, false, false);
-//
-//  // ** Applies to various unicode blocks.
-//  setErrorWarning(iriFactoryInst, ViolationCodes.COMPATIBILITY_CHARACTER, false, false);
-//  setErrorWarning(iriFactoryInst, ViolationCodes.UNDEFINED_UNICODE_CHARACTER, false, false);
-//  // The set of legal characters depends on the Java version.
-//  // If not set, this causes test failures in Turtle and Trig eval tests.
-//  setErrorWarning(iriFactoryInst, ViolationCodes.UNASSIGNED_UNICODE_CHARACTER, false, false);
-
-
-// Jena3: IRIResolver.iriFactory settings:
-//    0 ILLEGAL_CHARACTER                        : E:true  W:false
-//    1 PERCENT_ENCODING_SHOULD_BE_UPPERCASE     : E:true  W:false
-//    2 SUPERFLUOUS_NON_ASCII_PERCENT_ENCODING   : E:true  W:false
-//    3 SUPERFLUOUS_ASCII_PERCENT_ENCODING       : E:true  W:false
-//    4 UNWISE_CHARACTER                         : E:true  W:false
-//    5 CONTROL_CHARACTER                        : E:true  W:false
-//    6 NON_XML_CHARACTER                        : E:false W:false
-//    7 DISCOURAGED_XML_CHARACTER                : E:false W:false
-//    8 NON_INITIAL_DOT_SEGMENT                  : E:false W:false
-//    9 EMPTY_SCHEME                             : E:true  W:false
-//   10 SCHEME_MUST_START_WITH_LETTER            : E:true  W:false
-//   11 LOWERCASE_PREFERRED                      : E:false W:true
-//   12 PORT_SHOULD_NOT_BE_EMPTY                 : E:true  W:false
-//   13 DEFAULT_PORT_SHOULD_BE_OMITTED           : E:true  W:false
-//   14 PORT_SHOULD_NOT_BE_WELL_KNOWN            : E:true  W:false
-//   15 PORT_SHOULD_NOT_START_IN_ZERO            : E:true  W:false
-//   16 BIDI_FORMATTING_CHARACTER                : E:true  W:false
-//   17 WHITESPACE                               : E:true  W:false
-//   18 DOUBLE_WHITESPACE                        : E:true  W:false
-//   19 NOT_XML_SCHEMA_WHITESPACE                : E:true  W:false
-//   20 DOUBLE_DASH_IN_REG_NAME                  : E:false W:false
-//   21 SCHEME_INCLUDES_DASH                     : E:false W:false
-//   22 NON_URI_CHARACTER                        : E:false W:false
-//   23 PERCENT_20                               : E:false W:false
-//   24 PERCENT                                  : E:false W:false
-//   25 IP_V6_OR_FUTURE_ADDRESS_SYNTAX           : E:true  W:false
-//   26 IPv6ADDRESS_SHOULD_BE_LOWERCASE          : E:true  W:false
-//   27 IP_V4_OCTET_RANGE                        : E:true  W:false
-//   28 NOT_DNS_NAME                             : E:true  W:false
-//   29 USE_PUNYCODE_NOT_PERCENTS                : E:true  W:false
-//   30 ILLEGAL_PERCENT_ENCODING                 : E:true  W:false
-//   31 ACE_PREFIX                               : E:false W:false
-//   32 LONE_SURROGATE                           : E:false W:false
-//   33 DNS_LABEL_DASH_START_OR_END              : E:true  W:false
-//   34 BAD_IDN_UNASSIGNED_CHARS                 : E:true  W:false
-//   35 BAD_IDN                                  : E:true  W:false
-//   36 HAS_PASSWORD                             : E:true  W:false
-//   37 DISCOURAGED_IRI_CHARACTER                : E:true  W:false
-//   38 BAD_BIDI_SUBCOMPONENT                    : E:true  W:false
-//   39 DNS_LENGTH_LIMIT                         : E:false W:false
-//   40 DNS_LABEL_LENGTH_LIMIT                   : E:false W:false
-//   41 NOT_UTF8_ESCAPE                          : E:false W:false
-//   42 NOT_UTF8_ESCAPE_IN_HOST                  : E:false W:false
-//   43 BAD_DOT_IN_IDN                           : E:false W:false
-//   44 UNREGISTERED_IANA_SCHEME                 : E:false W:false
-//   45 UNREGISTERED_NONIETF_SCHEME_TREE         : E:true  W:false
-//   46 NOT_NFC                                  : E:true  W:false
-//   47 NOT_NFKC                                 : E:false W:false
-//   48 DEPRECATED_UNICODE_CHARACTER             : E:true  W:false
-//   49 UNDEFINED_UNICODE_CHARACTER              : E:false W:false
-//   50 PRIVATE_USE_CHARACTER                    : E:true  W:false
-//   51 UNICODE_CONTROL_CHARACTER                : E:true  W:false
-//   52 UNASSIGNED_UNICODE_CHARACTER             : E:false W:false
-//   53 MAYBE_NOT_NFC                            : E:false W:false
-//   54 MAYBE_NOT_NFKC                           : E:false W:false
-//   55 UNICODE_WHITESPACE                       : E:true  W:false
-//   56 COMPATIBILITY_CHARACTER                  : E:false W:false
-//   57 REQUIRED_COMPONENT_MISSING               : E:false W:false
-//   58 PROHIBITED_COMPONENT_PRESENT             : E:false W:false
-//   59 SCHEME_REQUIRES_LOWERCASE                : E:false W:false
-//   60 SCHEME_PREFERS_LOWERCASE                 : E:false W:false
-//   61 SCHEME_PATTERN_MATCH_FAILED              : E:false W:false
-//   62 QUERY_IN_LEGACY_SCHEME                   : E:false W:false
 }

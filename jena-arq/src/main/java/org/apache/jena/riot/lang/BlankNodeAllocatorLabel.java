@@ -24,12 +24,10 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.out.NodeToLabel;
 
-
-
 /** Allocate blank nodes according to the label given.
  *  The reverse operation is {@link NodeToLabel#createBNodeByLabelAsGiven()}
  *  but it is unsafe in general.
- *  
+ *
  *  Use {@link BlankNodeAllocatorLabelEncoded} and {@link NodeToLabel#createBNodeByLabelEncoded()}
  *  for round-tripping output-input.
  */
@@ -37,7 +35,7 @@ import org.apache.jena.riot.out.NodeToLabel;
 public class BlankNodeAllocatorLabel implements BlankNodeAllocator
 {
     private AtomicLong counter = new AtomicLong(0);
-    
+
     public BlankNodeAllocatorLabel()  {}
 
     @Override
@@ -45,14 +43,14 @@ public class BlankNodeAllocatorLabel implements BlankNodeAllocator
 
     @Override
     public Node alloc(String label) { return create(label); }
-    
+
     @Override
     public Node create() {
         long x = counter.getAndIncrement();
         Node n = create("@" + x);
         return n;
     }
-    
+
     private Node create(String label) {
         return NodeFactory.createBlankNode(label);
     }

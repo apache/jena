@@ -31,18 +31,8 @@ public class SysRIOT
     public static final String riotLoggerName = "org.apache.jena.riot" ;
     private static Logger riotLogger = LoggerFactory.getLogger(riotLoggerName) ;
 
-    public static boolean strictMode                  = false ;
-
-    /** Some people argue that absolute URIs should not be normalized.
-     * This flag puts IRI resolution in that mode.
-     * Beware: inconsistencies arise - relative URIs are still normalized so
-     * where the unnormalized part is in a prefix name changes the outcome.
-     * Jena has always normalized absolute URIs.
-     */
-    public static final boolean AbsURINoNormalization   = false ;
-    public static final String BNodeGenIdPrefix         = "genid" ;
-
     private static String riotBase = "http://jena.apache.org/riot/" ;
+    private static boolean strictMode                  = false ;
 
     /**
      * Context key for old style RDFWriter properties. The value of this in a

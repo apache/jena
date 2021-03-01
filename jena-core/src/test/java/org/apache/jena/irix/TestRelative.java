@@ -57,6 +57,7 @@ public class TestRelative extends AbstractTestIRIx {
 
     @Test
     public void relative_09() { testRelative("http://ex/path/", "http://ex/path/file#frag", "file#frag"); }
+
     @Test
     public void relative_10() { testRelative("http://example/ns#", "http://example/x", "x") ; }
 

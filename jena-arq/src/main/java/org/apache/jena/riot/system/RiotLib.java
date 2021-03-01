@@ -45,7 +45,6 @@ import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.writer.WriterGraphRIOTBase;
-import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
@@ -126,28 +125,6 @@ public class RiotLib
     public static String fixupPrefixIRI(String prefixedName) {
         return fixupPrefixes.apply(prefixedName);
     }
-
-    /** Internal ParserProfile used to create nodes from strings. */
-    private static ParserProfile setupInternalParserProfile() {
-        PrefixMap pmap = PrefixMapFactory.create();
-        pmap.add("rdf",  ARQConstants.rdfPrefix);
-        pmap.add("rdfs", ARQConstants.rdfsPrefix);
-        pmap.add("xsd",  ARQConstants.xsdPrefix);
-        pmap.add("owl" , ARQConstants.owlPrefix);
-        pmap.add("fn" ,  ARQConstants.fnPrefix);
-        pmap.add("op" ,  ARQConstants.fnPrefix);
-        pmap.add("ex" ,  "http://example/ns#");
-        pmap.add("" ,    "http://example/");
-
-        return new ParserProfileStd(RiotLib.factoryRDF(),
-                                    ErrorHandlerFactory.errorHandlerStd,
-                                    IRIs.stdResolver(),
-                                    pmap,
-                                    RIOT.getContext().copy(),
-                                    true, false);
-    }
-
-    private static ParserProfile profile = setupInternalParserProfile();
 
     /** Parse a string to get one Node (the first token in the string) */
     public static Node parse(String string) {

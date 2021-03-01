@@ -41,23 +41,44 @@ public class SystemIRIx {
     static {
         provider = providerJenaIRI;
         provider.strictMode("urn", false);
+        provider.strictMode("http", true);
+        provider.strictMode("file", false);
     }
 
     public static void init() {}
 
     public static void setProvider(IRIProvider aProvider) {
         provider = aProvider;
-        // Reset
-        systemBase = establishBaseURI();
+        // Reset provider of the system base.
+        IRIx iri = setupBase(systemBase.str());
+        setSystemBase(iri);
     }
 
     public static IRIProvider getProvider() {
         return provider;
     }
 
+    /**
+     * Run in strict mode - the exact definition of "strict" depends on the provider.
+     * When strict a provider should implement to the letter of the specifications,
+     * including URI-scheme rules. This strictness should be documented.
+     */
+    public static void strictMode(String scheme, boolean runStrict) {
+        getProvider().strictMode(scheme, runStrict);
+    }
+
+    /*
+     * Return the state of strict mode for the given scheme.
+     */
+    public static boolean isStrictMode(String scheme) {
+        return getProvider().isStrictMode(scheme);
+    }
+
     // -- System base
-    private static IRIx cwdURI = establishBaseURI();
+    private static final IRIx cwdURI = establishBaseURI();
     private static IRIx systemBase = cwdURI;
+    /* Used only if setting a base fails in some way. */
+    private static String fallbackBaseURI = "urn:jena:base";
 
     /*package*/ static IRIx getSystemBase() {
         return systemBase;
@@ -68,15 +89,24 @@ public class SystemIRIx {
             String baseStr = IRILib.filenameToIRI("./");
             if ( ! baseStr.endsWith("/") )
                 baseStr = baseStr+"/";
-            return setSystemBase(baseStr);
+            return setupBase(baseStr);
         } catch (Throwable ex) {
             ex.printStackTrace();
             // e.g. No filesystem.
-            return IRIx.create("urn:base:");
+            return IRIx.create(fallbackBaseURI);
         }
     }
 
-    private static IRIx setSystemBase(String baseStr) {
+    /**
+     * Create an {@link IRIx} suitable for a system base.
+     * This operation always returns an {@link IRIx}
+     * This operation does not set the system base.
+     * @param baseStr
+     * @return
+     */
+    private static IRIx setupBase(String baseStr) {
+        if ( baseStr == null )
+            return IRIx.create(fallbackBaseURI);
         try {
             if ( !baseStr.endsWith("/") )
                 baseStr = baseStr+"/";
@@ -86,7 +116,7 @@ public class SystemIRIx {
             return base;
         } catch (IRIException ex) {
             Log.error(IRIs.class, "Failed to create IRI from '"+baseStr+"'", ex);
-            return IRIx.create("urn:base:");
+            return IRIx.create(fallbackBaseURI);
         }
     }
 
@@ -95,7 +125,7 @@ public class SystemIRIx {
      * It is recommended to only do this during start-up and not during normal operation.
      * It is better to have {@link IRIx} argument to operate with a different base URI.
      */
-    /*package*/ static void setSystemBase(IRIx iri) {
+    private static void setSystemBase(IRIx iri) {
         systemBase = iri;
     }
 }

@@ -21,24 +21,24 @@ package org.apache.jena.riot.system.stream;
 import java.util.Locale ;
 
 import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.util.FileUtils ;
+import org.apache.jena.irix.IRIs;
 import org.slf4j.Logger ;
 
 public abstract class LocatorURL implements Locator
 {
     private final String[] schemeNames ;
-    
+
     protected LocatorURL(String[] sNames) {
         schemeNames = sNames ;
     }
-    
+
     protected abstract Logger log() ;
-    
+
     @Override
     public TypedInputStream open(String uri) {
         if ( ! acceptByScheme(uri) ) {
             if ( StreamManager.logAllLookups && log().isTraceEnabled() )
-                log().trace("Not found : "+uri) ; 
+                log().trace("Not found : "+uri) ;
             return null;
         }
         return performOpen(uri) ;
@@ -47,7 +47,7 @@ public abstract class LocatorURL implements Locator
     protected abstract TypedInputStream performOpen(String uri) ;
 
     protected boolean acceptByScheme(String filenameOrURI) {
-        String uriSchemeName = FileUtils.getScheme(filenameOrURI) ;
+        String uriSchemeName = IRIs.scheme(filenameOrURI) ;
         if ( uriSchemeName == null )
             return false ;
         uriSchemeName = uriSchemeName.toLowerCase(Locale.ROOT) ;

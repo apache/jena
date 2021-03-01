@@ -27,8 +27,8 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.irix.IRIs;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.util.FileUtils ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -78,7 +78,7 @@ public class LocatorFile implements Locator
         // Do not use directly : it will ignore the directory.
         //IRILib.filenameToIRI
 
-        String scheme = FileUtils.getScheme(filenameIRI) ;
+        String scheme = IRIs.scheme(filenameIRI) ;
         String fn = filenameIRI ;
         // Windows : C:\\ is not a scheme name!
         if ( scheme != null )

@@ -44,16 +44,14 @@ public class TestRFC3986 extends AbstractTestIRIx {
 
     @Test public void parse_02() { good("http://[::1]:8080/abc/def?qs=ghi#jkl"); }
 
-    // jena-iri does not allow %XX in the authority. It originated pre-3986 and does not seem to have updated completely.
     // %XX in host added at RFC 3986.
-    @Test public void parse_03() { goodNoIRICheck("http://ab%AAdef/xyzβ/abc"); }
+    @Test public void parse_03() { good("http://ab%AAdef/xyzβ/abc"); }
 
     @Test public void parse_04() { good("/abcdef"); }
 
     @Test public void parse_05() { good("/ab%FFdef"); }
 
-    // jena-iri mandates upper case.  The RFC 3986 grammar only has upper case but the normalization section discusses lower case.
-    // Unclear status.
+    // Uppercase preferred
     @Test public void parse_06() { goodNoIRICheck("/ab%ffdef"); }
 
     @Test public void parse_07() { good("http://host/abcdef?qs=foo#frag"); }
@@ -66,6 +64,7 @@ public class TestRFC3986 extends AbstractTestIRIx {
 
     @Test public void parse_11() { good("//host:8081/abc/def?qs=ghi#jkl"); }
 
+    // Legal, if weird, scheme name.
     @Test public void parse_12() { goodNoIRICheck("a+.-9://h/"); }
 
     // No path.
@@ -100,11 +99,11 @@ public class TestRFC3986 extends AbstractTestIRIx {
     // This is treated as legal with path and no authority.
     //@Test public void parse_http_02a()   { badSpecific("http:/file/name.txt"); }
 
-    @Test public void parse_http_03()   { badSpecific("http://users@host/file/name.txt"); }
+    @Test public void parse_http_03()   { badSpecific("http://user@host/file/name.txt"); }
 
-    @Test public void parse_http_04()   { good("nothttp://users@host/file/name.txt"); }
+    @Test public void parse_http_04()   { good("nothttp://user@host/file/name.txt"); }
 
-    @Test public void parse_http_05()   { good("nothttp://users@/file/name.txt"); }
+    @Test public void parse_http_05()   { good("nothttp://user@/file/name.txt"); }
 
     @Test public void parse_file_01() { good("file:///file/name.txt"); }
 
@@ -241,12 +240,14 @@ public class TestRFC3986 extends AbstractTestIRIx {
         IRIx iri = IRIx.create(string);
         assertNotNull(iri);
         if ( true ) {
-            IRI iri1 = JenaIRI.iriFactory().create(string);
+            // Run against checking mode.
+            IRI iri1 = SetupJenaIRI.iriCheckerFactory().create(string);
             if ( iri1.hasViolation(true) ) {
                 iri1.violations(true).forEachRemaining(v-> System.err.println("IRI = "+string + " :: "+v.getLongMessage()));
                 fail("Violations "+string);
             }
         }
+        // Check that the JDK can at least parse the string.
         java.net.URI javaURI = java.net.URI.create(string);
         assertNotNull(javaURI);
     }

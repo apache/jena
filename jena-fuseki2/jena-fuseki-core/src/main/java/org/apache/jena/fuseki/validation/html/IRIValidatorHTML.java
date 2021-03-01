@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.jena.iri.IRI;
 import org.apache.jena.iri.IRIFactory;
 import org.apache.jena.iri.Violation;
-import org.apache.jena.riot.system.IRIResolver;
+import org.apache.jena.irix.SetupJenaIRI;
 
 public class IRIValidatorHTML
 {
@@ -39,8 +39,7 @@ public class IRIValidatorHTML
     { }
 
     static final String paramIRI      = "iri";
-    //static IRIFactory iriFactory = IRIFactory.iriImplementation();
-    static IRIFactory iriFactory = IRIResolver.iriFactory();
+    static IRIFactory iriFactory = SetupJenaIRI.iriCheckerFactory();
 
     public static void executeHTML(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         try {
