@@ -173,6 +173,8 @@ public class DatabaseOps {
         synchronized(compactionLock) {
             Path base = container.getContainerPath();
             Path db1 = findLocation(base, dbPrefix);
+            if ( db1 == null )
+                throw new TDBException("No location: ("+base+","+dbPrefix+")");
             Location loc1 = IOX.asLocation(db1);
 
             // -- Checks

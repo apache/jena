@@ -283,7 +283,7 @@ public class TestAdmin extends AbstractFusekiTest {
             JsonValue v = x.getJSON();
             id = v.getAsObject().getString("taskId");
         } finally {
-            waitForTasksToFinish(1000, 20000);
+            waitForTasksToFinish(1000, 10, 20000);
         }
         Assert.assertNotNull(id);
         checkInTasks(id);
@@ -335,17 +335,24 @@ public class TestAdmin extends AbstractFusekiTest {
                 JsonValue v = x.getJSON();
                 id = v.getAsObject().getString(JsonConstCtl.taskId);
             } finally {
-                waitForTasksToFinish(1000, 5000);
+                waitForTasksToFinish(1000, 500, 20_000);
             }
             Assert.assertNotNull(id);
             checkInTasks(id);
 
             JsonValue task = getTask(id);
-            // Due to timing dependence of this test, task can be null on a heavily
-            // loaded setup which has become "jittery" (long pauses, meaning many
-            // seconds, for CPU scheduling).
-            Assert.assertNotNull(task);
-            // Expect task success
+            // ----
+            // The result assertion is throwing NPE occasionally on some heavily loaded CI servers.
+            // This may be because of server or test code encountering a very long wait.
+            // These next statements check the assumed structure of the return.
+            Assert.assertNotNull("Task value", task);
+            JsonObject obj = task.getAsObject();
+            Assert.assertNotNull("Task.getAsObject()", obj);
+            // Provoke code to get a stacktrace.
+            obj.getBoolean(JsonConstCtl.success);
+            // ----
+            // The assertion we really wanted to check.
+            // Check task success
             Assert.assertTrue("Expected task to be marked as successful", task.getAsObject().getBoolean(JsonConstCtl.success));
         } finally {
             deleteDataset(dsTestTdb2);
@@ -483,7 +490,7 @@ public class TestAdmin extends AbstractFusekiTest {
         String x2 = execSleepTask(null, 1000);
         List<String> running = runningTasks();
         assertTrue(running.size()>1);
-        waitForTasksToFinish(1000, 2000);
+        waitForTasksToFinish(1000, 100, 2000);
     }
 
     @Test public void task_7() {
@@ -505,7 +512,7 @@ public class TestAdmin extends AbstractFusekiTest {
                 assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
             }
         } finally {
-            waitForTasksToFinish(1000, 4000);
+            waitForTasksToFinish(1000, 250, 4000);
         }
     }
 
@@ -646,22 +653,28 @@ public class TestAdmin extends AbstractFusekiTest {
     * Algorithm: wait for {@code pause}, then start polling for upto {@code maxWaitMillis}.
     * Intervals in milliseconds.
     * @param pauseMillis
+    * @param pollInterval
     * @param maxWaitMillis
     * @return
     */
-   private static boolean waitForTasksToFinish(int pauseMillis, int maxWaitMillis) {
+   private static boolean waitForTasksToFinish(int pauseMillis, int pollInterval, int maxWaitMillis) {
        // Wait for them to finish.
        // Divide into chunks
        if ( pauseMillis > 0 )
            Lib.sleep(pauseMillis);
-       int waited = 0;
-       final int INTERVALS = 10;
-       for (int i = 0 ; i < INTERVALS ; i++ ) {
-           //System.err.println("Wait: "+i);
+       long start = System.currentTimeMillis();
+       long endTime = start + maxWaitMillis;
+       final int intervals = maxWaitMillis/pollInterval;
+       long now = start;
+       for (int i = 0 ; i < intervals ; i++ ) {
+           // May have waited (much) longer than the pollInterval : heavily loaded build systems.
+           if ( now-start > maxWaitMillis )
+               break;
            List<String> x = runningTasks();
            if ( x.isEmpty() )
                return true;
-           Lib.sleep(maxWaitMillis/INTERVALS);
+           Lib.sleep(pollInterval);
+           now = System.currentTimeMillis();
        }
        return false;
    }

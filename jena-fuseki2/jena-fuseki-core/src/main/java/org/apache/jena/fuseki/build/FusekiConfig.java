@@ -733,6 +733,9 @@ public class FusekiConfig {
             }
             ds.commit();
             return refs;
+        } catch (Throwable th) {
+            th.printStackTrace();
+            return refs;
         } finally { ds.end(); }
     }
 }
