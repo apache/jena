@@ -30,24 +30,24 @@ import org.junit.Test ;
 
 public class TestAlarmClock {
     /* Issues with MS Windows.
-     * 
+     *
      * Running some of these tests on windows is unreliable; sometimes they pass,
      * sometimes one or more fails.
-     *  
+     *
      * This seems to be that when the CI server (ASF Jenkins, Windows VM)
-     * is under load then the ScheduledThreadPoolExecutor used by AlarmClock 
-     * is unreliable.  
-     * 
+     * is under load then the ScheduledThreadPoolExecutor used by AlarmClock
+     * is unreliable.
+     *
      * But setting the times so high for this slows the tests down a lot
      * and makes some of them fairly pointless.
-     * 
+     *
      * The use of awaitility helps this - the timeouts can be set quite long
-     * and the polling done means the full wait time does not happen normally.  
+     * and the polling done means the full wait time does not happen normally.
      */
 
     private AtomicInteger count    = new AtomicInteger(0) ;
     private Runnable      callback = ()->count.getAndIncrement() ;
-    
+
     @Test
     public void alarm_01() {
         AlarmClock alarmClock = new AlarmClock() ;
@@ -60,20 +60,20 @@ public class TestAlarmClock {
 
     private void awaitUntil(int value, long timePeriod, TimeUnit units) {
         await()
-        .atMost(timePeriod, units)
-        .until(() -> {
-            return count.get() == value ;
-        }) ;
+            .atMost(timePeriod, units)
+            .until(() -> {
+                return count.get() == value ;
+            }) ;
     }
-    
+
     @Test
     public void alarm_02() {
         AlarmClock alarmClock = new AlarmClock() ;
         // Short - happens.
         Alarm a = alarmClock.add(callback, 10) ;
-        
+
         awaitUntil(1, 500, MILLISECONDS) ;
-        
+
         // try to cancel anyway.
         alarmClock.cancel(a) ;
         alarmClock.release() ;
@@ -84,9 +84,9 @@ public class TestAlarmClock {
         AlarmClock alarmClock = new AlarmClock() ;
         Alarm a1 = alarmClock.add(callback, 10) ;
         Alarm a2 = alarmClock.add(callback, 1000000) ;
-        
+
         awaitUntil(1, 500, MILLISECONDS) ;
-        
+
         alarmClock.cancel(a2) ;
         alarmClock.release() ;
     }
@@ -96,7 +96,7 @@ public class TestAlarmClock {
         AlarmClock alarmClock = new AlarmClock() ;
         Alarm a1 = alarmClock.add(callback, 10) ;
         Alarm a2 = alarmClock.add(callback, 20) ;
-        
+
         awaitUntil(2, 500, MILLISECONDS) ;
 
         alarmClock.release() ;
@@ -107,9 +107,9 @@ public class TestAlarmClock {
         AlarmClock alarmClock = new AlarmClock() ;
         Alarm a = alarmClock.add(callback, 50) ;
         alarmClock.reset(a, 20000) ;
-        
+
         sleep(150) ;
-        
+
         // Did not go off.
         assertEquals(0, count.get()) ;
         alarmClock.cancel(a);
