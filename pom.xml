@@ -98,7 +98,7 @@
 
     <ver.mockito>3.7.7</ver.mockito>
     <ver.awaitility>4.0.3</ver.awaitility>
-    <ver.micrometer>1.6.3</ver.micrometer>
+    <ver.micrometer>1.6.4</ver.micrometer>
 
     <ver.graalvm>21.0.0</ver.graalvm>
 
