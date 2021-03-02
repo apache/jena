@@ -18,10 +18,12 @@
 
 package org.apache.jena.base;
 
-import java.io.File ;
+import org.apache.commons.lang3.SystemUtils;
 
 public class Sys {
     /** Is this windows? */
-    public static final boolean isWindows = (File.pathSeparatorChar == ';') ;
-}
+    public static final boolean isWindows = SystemUtils.IS_OS_WINDOWS;
 
+    /** Is this MacOS? */
+    public static final boolean isMacOS = SystemUtils.IS_OS_MAC;
+}
