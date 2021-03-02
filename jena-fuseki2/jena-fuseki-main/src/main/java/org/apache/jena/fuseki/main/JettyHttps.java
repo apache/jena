@@ -16,8 +16,9 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.jetty;
+package org.apache.jena.fuseki.main;
 
+import org.apache.jena.fuseki.jetty.JettyLib;
 import org.eclipse.jetty.http.HttpScheme;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.*;
@@ -49,9 +50,21 @@ public class JettyHttps {
      * <p>
      * If httpPort is -1, don't add http otherwise make http redirect to https.
      */
-    public static Server jettyServerHttps(ServletContextHandler handler, String keystore, String certPassword, int httpPort, int httpsPort) {
+    public static Server jettyServerHttps(ServletContextHandler handler, String keystore, String certPassword,
+                                          int httpPort, int httpsPort) {
+        return jettyServerHttps(handler, keystore, certPassword, httpPort, httpsPort, -1,  -1);
+    }
+
+    /**
+     * Create a HTTPS Jetty server for the {@link ServletContextHandler}
+     * <p>
+     * If httpPort is -1, don't add http otherwise make http redirect to https.
+     */
+    public static Server jettyServerHttps(ServletContextHandler handler, String keystore, String certPassword,
+                                          int httpPort, int httpsPort,
+                                          int minThreads, int maxThreads) {
         // Server handling http and https.
-        Server jettyServer = server(keystore, certPassword, httpPort, httpsPort);
+        Server jettyServer = server(keystore, certPassword, httpPort, httpsPort, minThreads, maxThreads);
         if ( httpPort > 0 ) {
             // Redirect http to https.
             // Order matters. Check https and bounce if http as first choice.
@@ -65,8 +78,8 @@ public class JettyHttps {
     /** Build the server - http and https connectors.
      * If httpPort is -1, don't add http.
      */
-    private static Server server(String keystore, String certPassword, int httpPort, int httpsPort) {
-        Server server = new Server();
+    private static Server server(String keystore, String certPassword, int httpPort, int httpsPort, int minThreads, int maxThreads) {
+        Server server = JettyServer.jettyServer(minThreads, maxThreads);
         if ( httpPort > 0 ) {
             ServerConnector plainConnector = httpConnector(server, httpPort, httpsPort);
             server.addConnector(plainConnector);
