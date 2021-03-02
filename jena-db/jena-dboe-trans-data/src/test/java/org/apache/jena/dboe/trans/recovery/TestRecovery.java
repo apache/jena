@@ -31,7 +31,7 @@ import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.dboe.base.file.BufferChannel;
 import org.apache.jena.dboe.base.file.BufferChannelFile;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.dboe.sys.Sys;
+import org.apache.jena.dboe.sys.SysDB;
 import org.apache.jena.dboe.trans.data.TransBlob;
 import org.apache.jena.dboe.transaction.txn.ComponentId;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
@@ -55,11 +55,11 @@ public class TestRecovery {
     private static String loggerLevel; 
     
     @BeforeClass public static void beforeClass() {
-        loggerLevel = LogCtl.getLevel(Sys.syslog);
-        LogCtl.setLevel(Sys.syslog, "WARNING");
+        loggerLevel = LogCtl.getLevel(SysDB.syslog);
+        LogCtl.setLevel(SysDB.syslog, "WARNING");
     }
     @AfterClass public static void afterClass() {
-        LogCtl.setLevel(Sys.syslog, loggerLevel);
+        LogCtl.setLevel(SysDB.syslog, loggerLevel);
     }
     
     @Before public void before() {

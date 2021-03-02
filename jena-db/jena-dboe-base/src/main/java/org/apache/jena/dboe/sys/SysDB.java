@@ -28,9 +28,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Low level environment */
-public class Sys
+public class SysDB
 {
-    static final Logger log = LoggerFactory.getLogger("org.apache.jena.dboe.Sys");
+    static final Logger log = LoggerFactory.getLogger("org.apache.jena.dboe");
 
     /** System log - use for general messages (a few) and warnings.
      *  Generally, do not log events unless you want every user to see them every time.
@@ -60,18 +60,13 @@ public class Sys
         Log.error(clazz, string);
         throw new DBOpEnvException(string);
     }
-    public static final boolean isWindows = determineIfWindows();	// Memory mapped files behave differently.
+
+    // Memory mapped files behave differently.
+    public static final boolean isWindows = org.apache.jena.base.Sys.isWindows;
 
     //Or look in File.listRoots.
     //Alternative method:
     //  http://stackoverflow.com/questions/1293533/name-of-the-operating-system-in-java-not-os-name
-
-    private static boolean determineIfWindows() {
-    	String s = System.getProperty("os.name");
-    	if ( s == null )
-    		return false;
-    	return s.startsWith("Windows ");
-	}
 
     /** A general thread pool */
     public static Executor executor = Executors.newCachedThreadPool();

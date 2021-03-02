@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.dboe.base.block.Block;
-import org.apache.jena.dboe.sys.Sys;
+import org.apache.jena.dboe.sys.SysDB;
 
 /**
  * File access layer that simulates a disk in-memory - for testing, not written for efficiency.
@@ -172,7 +172,7 @@ public class BlockAccessMem implements BlockAccess
             return;
         if ( bb.capacity() != blockSize )
             throw new FileException(format("FileAccessMem: Wrong size block.  Expected=%d : actual=%d", blockSize, bb.capacity()));
-        if ( bb.order() != Sys.NetworkOrder )
+        if ( bb.order() != SysDB.NetworkOrder )
             throw new FileException("BlockMgrMem: Wrong byte order");
     }
 

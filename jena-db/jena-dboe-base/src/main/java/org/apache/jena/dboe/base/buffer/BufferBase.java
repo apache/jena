@@ -19,7 +19,7 @@
 package org.apache.jena.dboe.base.buffer;
 
 import static java.lang.String.format;
-import static org.apache.jena.dboe.sys.Sys.NetworkOrder;
+import static org.apache.jena.dboe.sys.SysDB.NetworkOrder;
 import static org.apache.jena.dboe.sys.SystemIndex.FillByte;
 import static org.apache.jena.dboe.sys.SystemIndex.NullOut;
 
