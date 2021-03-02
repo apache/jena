@@ -252,7 +252,7 @@ public class JettyServer {
          * Set the number threads used by Jetty. This uses a {@code org.eclipse.jetty.util.thread.QueuedThreadPool} provided by Jetty.
          * <p>
          * Argument order is (minThreads, maxThreads).
-         * <p> 
+         * <p>
          * <ul>
          * <li>Use (-1,-1) for Jetty "default". The Jetty 9.4 defaults are (min=8,max=200).
          * <li>If (min != -1, max is -1) then the default max is 20.
@@ -269,13 +269,23 @@ public class JettyServer {
             return this;
         }
 
+        /** @deprecated Renamed as {@link #maxServerThreads} */
+        @Deprecated
+        public Builder maxServerNumThreads(int maxThreads) {
+            return maxServerThreads(maxThreads);
+        }
+
         /**
          * Set the maximum number threads used by Jetty.
+         * This is equivalent to {@code numServerThreads(-1, maxThreads)}
+         * and overrides any previous setting of the maximum number of threads.
          * In development or in embedded use, limiting the maximum threads can be useful.
          */
-        public Builder maxServerNumThreads(int maxThreads) {
-            numServerThreads(-1, maxThreads);
-            return this;            
+        public Builder maxServerThreads(int maxThreads) {
+            if ( minThreads > maxThreads )
+                throw new FusekiConfigException(String.format("Bad thread setting: (min=%d, max=%d)", minThreads, maxThreads));
+            numServerThreads(minThreads, maxThreads);
+            return this;
         }
 
         /**
@@ -319,7 +329,8 @@ public class JettyServer {
         public JettyServer build() {
             ServletContextHandler handler = buildServletContext();
             // Use HandlerCollection for several ServletContextHandlers and thus several ServletContext.
-            Server server = jettyServer(port, loopback, minThreads, maxThreads);
+            Server server = jettyServer(minThreads, maxThreads);
+            serverAddConnectors(server, port, loopback);
             server.setHandler(handler);
             return new JettyServer(port, server);
         }
@@ -385,32 +396,34 @@ public class JettyServer {
             FilterHolder h = new FilterHolder(filter);
             context.addFilter(h, pathspec, null);
         }
-
-        /** Jetty server */
-        private static Server jettyServer(int port, boolean loopback, int minThreads, int maxThreads) {
-            ThreadPool threadPool = null;
-            // Jetty 9.4 : the Jetty default is 200,8
-            if ( minThreads != -1 || maxThreads != -1 ) {
-                if ( minThreads == -1 )
-                    minThreads = 2;
-                if ( maxThreads == -1 )
-                    maxThreads = 20;
-                maxThreads = Math.max(minThreads, maxThreads);
-                // Args reversed:Jetty uses (max,min)
-                threadPool = new QueuedThreadPool(maxThreads, minThreads);
-            }
-            Server server = new Server(threadPool);
-            HttpConnectionFactory f1 = new HttpConnectionFactory();
-
-            //f1.getHttpConfiguration().setRequestHeaderSize(512 * 1024);
-            //f1.getHttpConfiguration().setOutputBufferSize(1024 * 1024);
-            f1.getHttpConfiguration().setSendServerVersion(false);
-            ServerConnector connector = new ServerConnector(server, f1);
-            connector.setPort(port);
-            server.addConnector(connector);
-            if ( loopback )
-                connector.setHost("localhost");
-            return server;
-        }
     }
+
+    /** Jetty server */
+    /*package*/ static Server jettyServer(int minThreads, int maxThreads) {
+        ThreadPool threadPool = null;
+        // Jetty 9.4 : the Jetty default is 200,8
+        if ( minThreads < 0 )
+            minThreads = 2;
+        if ( maxThreads < 0 )
+            maxThreads = 20;
+        maxThreads = Math.max(minThreads, maxThreads);
+        // Args reversed:Jetty uses (max,min)
+        threadPool = new QueuedThreadPool(maxThreads, minThreads);
+        Server server = new Server(threadPool);
+        return server;
+    }
+
+    private static void serverAddConnectors(Server server, int port,  boolean loopback) {
+        HttpConnectionFactory f1 = new HttpConnectionFactory();
+
+        //f1.getHttpConfiguration().setRequestHeaderSize(512 * 1024);
+        //f1.getHttpConfiguration().setOutputBufferSize(1024 * 1024);
+        f1.getHttpConfiguration().setSendServerVersion(false);
+        ServerConnector connector = new ServerConnector(server, f1);
+        connector.setPort(port);
+        server.addConnector(connector);
+        if ( loopback )
+            connector.setHost("localhost");
+    }
+
 }
