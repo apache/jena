@@ -24,9 +24,9 @@ import org.apache.jena.dboe.base.block.FileMode;
 public class SystemIndex
 {
     /** Size, in bytes, of a pointer between blocks */
-    public static final int SizeOfPointer           = Sys.SizeOfInt;
+    public static final int SizeOfPointer           = SysDB.SizeOfInt;
 
-    public static final boolean is64bitSystem       = Sys.is64bitSystem;
+    public static final boolean is64bitSystem       = SysDB.is64bitSystem;
 
     // To make the class initialize
     static public void init() {}
@@ -100,7 +100,7 @@ public class SystemIndex
 
     public static void setFileMode(FileMode newFileMode) {
         if ( fileMode != null ) {
-            Sys.log.warn("System file mode already determined - setting it has no effect");
+            SysDB.log.warn("System file mode already determined - setting it has no effect");
             return;
         }
         fileMode = newFileMode;
@@ -119,20 +119,20 @@ public class SystemIndex
         String x = "default";
 
         if ( x.equalsIgnoreCase("direct") ) {
-            Sys.syslog.info("File mode: direct (forced)");
+            SysDB.syslog.info("File mode: direct (forced)");
             return FileMode.direct;
         }
         if ( x.equalsIgnoreCase("mapped") ) {
-            Sys.syslog.info("File mode: mapped (forced)");
+            SysDB.syslog.info("File mode: mapped (forced)");
             return FileMode.mapped;
         }
 
         if ( x.equalsIgnoreCase("default") ) {
             if ( is64bitSystem ) {
-                Sys.syslog.debug("File mode: Mapped");
+                SysDB.syslog.debug("File mode: Mapped");
                 return FileMode.mapped;
             }
-            Sys.syslog.debug("File mode: Direct");
+            SysDB.syslog.debug("File mode: Direct");
             return FileMode.direct;
         }
         throw new DBOpEnvException("Unrecognized file mode (not one of 'default', 'direct' or 'mapped': "+x);

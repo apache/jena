@@ -19,14 +19,14 @@
 package org.apache.jena.dboe;
 
 import org.apache.jena.atlas.lib.FileOps;
-import org.apache.jena.dboe.sys.Sys;
+import org.apache.jena.dboe.sys.SysDB;
 
 public class ConfigTestDBOE
 {
     private static String testingDataRoot = "testing";
     // Place under target
     private static final String testingDir = "target/dboe-testing";
-    static boolean nonDeleteableMMapFiles = Sys.isWindows;
+    static boolean nonDeleteableMMapFiles = SysDB.isWindows;
 
     static boolean initialized = false;
 

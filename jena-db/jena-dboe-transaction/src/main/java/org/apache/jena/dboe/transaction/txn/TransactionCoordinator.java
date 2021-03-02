@@ -35,7 +35,7 @@ import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.dboe.base.file.FileException;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.dboe.sys.Sys;
+import org.apache.jena.dboe.sys.SysDB;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
 import org.apache.jena.dboe.transaction.txn.journal.JournalEntry;
 import org.apache.jena.query.ReadWrite;
@@ -68,8 +68,8 @@ import org.slf4j.Logger;
  */
 final
 public class TransactionCoordinator {
-    private static Logger SysLog = Sys.syslog;
-    private static Logger SysErr = Sys.errlog;
+    private static Logger SysLog = SysDB.syslog;
+    private static Logger SysErr = SysDB.errlog;
 
     private final Journal journal;
     // Lock on configuration changes.

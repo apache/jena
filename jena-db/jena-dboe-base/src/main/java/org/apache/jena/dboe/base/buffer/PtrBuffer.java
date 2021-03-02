@@ -24,7 +24,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import org.apache.jena.dboe.base.record.RecordException;
-import org.apache.jena.dboe.sys.Sys;
+import org.apache.jena.dboe.sys.SysDB;
 import org.apache.jena.dboe.sys.SystemIndex;
 
 /** An IntBuffer with extra operations */
@@ -42,7 +42,7 @@ final public class PtrBuffer extends BufferBase {
 
         if ( CheckBuffer ) {
             // It is a IntBuffer with associated ByteBuffer
-            if ( iBuff.position() != 0 || bb.order() != Sys.NetworkOrder )
+            if ( iBuff.position() != 0 || bb.order() != SysDB.NetworkOrder )
                 throw new RecordException("Duff pointer buffer");
         }
     }

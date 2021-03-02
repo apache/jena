@@ -18,7 +18,7 @@
 
 package org.apache.jena.dboe.transaction.txn.journal;
 
-import static org.apache.jena.dboe.sys.Sys.SizeOfInt;
+import static org.apache.jena.dboe.sys.SysDB.SizeOfInt;
 
 import java.nio.ByteBuffer;
 import java.util.Iterator;

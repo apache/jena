@@ -28,7 +28,7 @@ import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.dboe.base.block.FileMode;
 import org.apache.jena.dboe.base.file.ProcessFileLock;
 import org.apache.jena.dboe.base.record.RecordFactory;
-import org.apache.jena.dboe.sys.Sys;
+import org.apache.jena.dboe.sys.SysDB;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation;
@@ -72,7 +72,7 @@ public class SystemTDB
     public static final int SizeOfNodeId            = NodeId.SIZE;
 
     /** Size, in bytes, of a pointer between blocks */
-    public static final int SizeOfPointer           = Sys.SizeOfInt;
+    public static final int SizeOfPointer           = SysDB.SizeOfInt;
 
     // ---- Node table related
 
@@ -135,7 +135,7 @@ public class SystemTDB
         propertyFileName = x;
     }
 
-    public static final boolean is64bitSystem = Sys.is64bitSystem;
+    public static final boolean is64bitSystem = SysDB.is64bitSystem;
 
     private static Properties properties = readPropertiesFile();
 

@@ -20,7 +20,7 @@ package dboe;
 
 import org.apache.jena.dboe.base.file.BlockAccessMem;
 import org.apache.jena.dboe.index.test.IndexTestLib;
-import org.apache.jena.dboe.sys.Sys;
+import org.apache.jena.dboe.sys.SysDB;
 import org.apache.jena.dboe.sys.SystemIndex;
 import org.apache.jena.dboe.trans.bplustree.BPT;
 import org.apache.jena.dboe.trans.bplustree.BPlusTree;
@@ -86,7 +86,7 @@ public class CmdTestBPlusTree extends BaseSoakTest
     @Override
     protected void runOneTest(int testCount, int order, int size) {
 //        //System.err.println("runOneTest("+order+","+size+")") ;
-        BPlusTree bpt = BPlusTreeFactory.makeMem(order, Sys.SizeOfInt, 0) ;
+        BPlusTree bpt = BPlusTreeFactory.makeMem(order, SysDB.SizeOfInt, 0) ;
         bpt = BPlusTreeFactory.addTracking(bpt) ;
         bpt.nonTransactional() ;
         IndexTestLib.randTest(bpt, 5*size, size, true);
