@@ -27,6 +27,7 @@ import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -148,6 +149,7 @@ public class IOX {
 
     /** Convert a {@link Path}  to a {@link Location}. */
     public static Location asLocation(Path path) {
+        Objects.requireNonNull(path, "IOX.asLocation(null)");
         if ( ! Files.isDirectory(path) )
             throw new RuntimeIOException("Path is not naming a directory: "+path);
         return Location.create(path.toString());

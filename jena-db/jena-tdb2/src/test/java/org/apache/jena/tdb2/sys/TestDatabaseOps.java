@@ -126,7 +126,7 @@ public class TestDatabaseOps
 
     @Test public void compact_prefixes_3() {
         // 2020-04:
-        // This test fails at "HERE" in the test, with an NPEwith Java14 on ASF Jenkins.
+        // This test fails with an NPE with Java11+ on ASF Jenkins.
         // java.lang.NullPointerException
         //         at java.base/java.nio.file.Files.provider(Files.java:105)
         //         at java.base/java.nio.file.Files.isDirectory(Files.java:2308)
@@ -135,15 +135,18 @@ public class TestDatabaseOps
         //         at org.apache.jena.tdb2.DatabaseMgr.compact(DatabaseMgr.java:62)
         //         at org.apache.jena.tdb2.sys.TestDatabaseOps.compact_prefixes_3_test(TestDatabaseOps.java:157)
         //         at org.apache.jena.tdb2.sys.TestDatabaseOps.compact_prefixes_3(TestDatabaseOps.java:135)
-        // (and now JDK15).
         // The NPE is from java.nio.file.Files.provider.
+        // It seems to be impossible for the data from TDB to be null intermittently.
         // It does not fail anywhere else except at ASF and it does not always fail.
-        // This seems to be on specific, maybe just on, Jenkins build node.
+        // This seems to be on specific, and maybe just on, an ASF-Jenkins build node.
         try {
             compact_prefixes_3_test();
-        } catch (Throwable th) {
-            th.printStackTrace();
-            throw th;
+        } catch (NullPointerException ex) {
+            ex.printStackTrace();
+//            StackTraceElement[] x = ex.getStackTrace();
+//            if ( x.length >= 0 && "java.nio.file.Files".equals(x[0].getClassName()) )
+//               return ;
+            throw ex;
         }
     }
 
