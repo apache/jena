@@ -20,7 +20,7 @@ package org.apache.jena.sparql;
 
 /**
  * The test suite for all SPARQL (the second SPARQL working group) approved tests.
- * These are actually covered by TC_Scripted.
+ * These are actually covered by Scripts_ARQ
  */
 //@RunWith(RunnerSPARQL.class)
 //@Label("ARQ")
