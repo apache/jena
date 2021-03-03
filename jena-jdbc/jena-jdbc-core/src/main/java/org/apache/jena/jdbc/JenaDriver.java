@@ -39,7 +39,6 @@ import java.util.Properties;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.postprocessing.ResultsPostProcessor;
 import org.apache.jena.jdbc.preprocessing.CommandPreProcessor;
-import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -189,19 +188,10 @@ public abstract class JenaDriver implements Driver {
     public static final String PARAM_PASSWORD = "password";
 
     /**
-     * Constant for the connection URL parameter used to set the path to a log4j
-     * properties file used to configure logging. When set to a file the file
-     * system is searched before the class path (since on the class path you are
-     * more likely to have duplicates particularly if using a standard name like
-     * <strong>log4j.properties</strong>).
-     * <p>
-     * When not set this defaults to the special value <strong>no-auto</strong>
-     * provided by the constant {@link #NO_AUTO_LOGGING_CONFIGURATION} that
-     * indicates that the driver should not configure any logging. This is
-     * useful if you want to have your application managed its own
-     * configuration.
-     * </p>
+     * Old connection URL property for having the driver configure logging, no longer supported as of Jena 4.x
+     * @deprecated No longer supported as of Jena 4.x
      */
+    @Deprecated
     public static final String PARAM_LOGGING = "logging";
 
     /**
@@ -209,6 +199,7 @@ public abstract class JenaDriver implements Driver {
      * parameter to indicate that the user code will manage configuration of
      * logging. This is also the default value when that parameter is not set.
      */
+    @Deprecated
     public static final String NO_AUTO_LOGGING_CONFIGURATION = "no-auto";
 
     /**
@@ -284,31 +275,13 @@ public abstract class JenaDriver implements Driver {
         Properties ps = this.getEffectiveProperties(url, props);
         this.modifyProperties(ps);
 
-        // Configure logging appropriately
+        // Configure logging is no longer supported, issue a warning if attempted
         String logConfig = ps.getProperty(PARAM_LOGGING);
         if (logConfig == null || logConfig.trim().length() == 0) {
             logConfig = NO_AUTO_LOGGING_CONFIGURATION;
         }
-
-        // Unless set to no configuration (which is the default attempt to
-        // configure)
         if (!logConfig.equals(NO_AUTO_LOGGING_CONFIGURATION)) {
-            // Search file system first
-            File logConfigFile = new File(logConfig);
-            if (logConfigFile.exists() && logConfigFile.isFile()) {
-                PropertyConfigurator.configure(logConfig);
-                LOGGER.info("Successfully configured logging using log file " + logConfigFile.getAbsolutePath());
-            } else {
-                // Otherwise try class path
-                URL logURL = this.getClass().getResource(logConfig);
-                if (logURL != null) {
-                    PropertyConfigurator.configure(logURL);
-                    LOGGER.info("Successfully configured logging using class path resource " + logConfig);
-                } else {
-                    throw new SQLException(
-                            "Unable to locate the specified log4j configuration file on either the file system or the class path");
-                }
-            }
+            LOGGER.warn("JenaDriver can no longer configure logging as of Jena 4.x - please configure logging via user code or at the application level");
         }
 
         // Figure out desired JDBC compatibility level

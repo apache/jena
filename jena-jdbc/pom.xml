@@ -35,7 +35,6 @@
 
   <properties>
     <automatic.module.name>org.apache.jena.jdbc</automatic.module.name> 
-    <ver.log4j1>1.2.17</ver.log4j1>
   </properties>
 
 	<modules>
@@ -48,16 +47,17 @@
 
   <dependencyManagement>
     <dependencies>
-      <!-- Log4j1 -->
+      <!-- Log4j2 -->
       <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
-        <version>${ver.slf4j}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>${ver.log4j2}</version>
       </dependency>
       <dependency>
-        <groupId>log4j</groupId>
+        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j</artifactId>
-        <version>${ver.log4j1}</version>
+        <version>${ver.log4j2}</version>
+        <type>pom</type>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -72,7 +72,6 @@
 			<!-- Sources Plugin -->
 			<plugin>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>3.2.1</version>
 				<executions>
 					<execution>
 						<id>bundle-sources</id>
