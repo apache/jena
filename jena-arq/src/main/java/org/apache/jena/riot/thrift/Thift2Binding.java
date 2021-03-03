@@ -49,8 +49,10 @@ public class Thift2Binding extends IteratorSlotted<Binding> implements Iterator<
 
     public Thift2Binding(InputStream in) {
         this.in = in ;
-        TIOStreamTransport transport = new TIOStreamTransport(in) ;
-        this.protocol = TRDF.protocol(transport) ;
+        try {
+            TIOStreamTransport transport = new TIOStreamTransport(in) ;
+            this.protocol = TRDF.protocol(transport) ;
+        } catch (TTransportException ex) { throw new RiotThriftException(ex); }
         readVars() ;
     }
 
