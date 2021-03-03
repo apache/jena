@@ -98,7 +98,7 @@ public class ModeSRS {
         if (!srsList.isEmpty()) {
             return srsList.get(0).getKey();
         } else {
-            throw new SrsException("No SRS found. Check 'http://www.opengis.net/ont/geosparql#hasSerialisation' or 'http://www.w3.org/2003/01/geo/wgs84_pos#lat'/'http://www.w3.org/2003/01/geo/wgs84_pos#lon' predicates are present in the source data. Hint: Inferencing with GeoSPARQL schema may be required.");
+            throw new SrsException("No SRS found. Check 'http://www.opengis.net/ont/geosparql#hasSerialization' or 'http://www.w3.org/2003/01/geo/wgs84_pos#lat'/'http://www.w3.org/2003/01/geo/wgs84_pos#lon' predicates are present in the source data. Hint: Inferencing with GeoSPARQL schema may be required.");
         }
     }
 
