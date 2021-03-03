@@ -20,8 +20,11 @@ package org.apache.jena.tdb2.store.nodetable;
 
 import java.util.Objects;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.jena.dboe.base.file.BinaryDataFile;
+import org.apache.thrift.TConfiguration;
 import org.apache.thrift.transport.TTransport;
+import org.apache.thrift.transport.TTransportException;
 
 /** A file transport that supports random access read and
  *  buffered append write.
@@ -81,6 +84,21 @@ public class TReadAppendFileTransport extends TTransport {
     @Override
     public void flush()  {
         file.sync();
+    }
+
+    // libthrift 0.14.0
+    @Override
+    public TConfiguration getConfiguration() {
+        throw new NotImplementedException("TReadAppendFileTransport.getConfiguration");
+        //return null;
+    }
+
+    @Override
+    public void updateKnownMessageSize(long size) throws TTransportException {
+    }
+
+    @Override
+    public void checkReadBytesAvailable(long numBytes) throws TTransportException {
     }
 }
 
