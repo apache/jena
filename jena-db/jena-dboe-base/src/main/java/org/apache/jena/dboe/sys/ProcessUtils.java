@@ -99,7 +99,7 @@ public class ProcessUtils {
             // then our check failed and for safety we assume the process is
             // alive
 
-            Sys.errlog
+            SysDB.errlog
                     .warn("Your platform does not support checking process liveness so TDB disk locations cannot be reliably locked to prevent possible corruption due to unsafe multi-JVM usage", e);
             return true;
         }
@@ -132,7 +132,7 @@ public class ProcessUtils {
      */
     private static List<String> getProcessInfo(String pidStr) throws IOException {
         Process p;
-        if (Sys.isWindows) {
+        if (SysDB.isWindows) {
             // Use the Windows tasklist utility
             ProcessBuilder builder = new ProcessBuilder("tasklist", "/FI", "PID eq " + pidStr);
             builder.redirectErrorStream(true);

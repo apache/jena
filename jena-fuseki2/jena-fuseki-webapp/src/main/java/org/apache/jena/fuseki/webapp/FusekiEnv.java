@@ -21,6 +21,8 @@ package org.apache.jena.fuseki.webapp;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.apache.commons.lang3.SystemUtils;
+
 /**
  * Separate initialization for FUSEKI_HOME and FUSEKI_BASE so that
  * FusekiLogging can use these values.
@@ -38,7 +40,7 @@ public class FusekiEnv {
     // public static final String DFT_FUSEKI_HOME = isWindows
     //        ? /*What's correct here?*/ "/usr/share/fuseki"
     //        : "/usr/share/fuseki";
-    static final boolean isWindows = determineIfWindows();
+    static final boolean isWindows = SystemUtils.IS_OS_WINDOWS;
     static final String  DFT_FUSEKI_BASE = isWindows ? /* What's correct here? */"/etc/fuseki" : "/etc/fuseki";
 
     /** Initialization mode, depending on the way Fuseki is started:
@@ -82,15 +84,6 @@ public class FusekiEnv {
      * This is not null - it may be /etc/fuseki, which must be writable.
      */
     public static Path FUSEKI_BASE = null;
-
-    // Copied from SystemTDB to avoid dependency.
-    // This code must not touch Jena.
-    private static boolean determineIfWindows() {
-        String s = System.getProperty("os.name");
-        if ( s == null )
-            return false;
-        return s.startsWith("Windows ");
-    }
 
     public static final String   ENV_runArea     = "run";
     private static boolean       initialized     = false;

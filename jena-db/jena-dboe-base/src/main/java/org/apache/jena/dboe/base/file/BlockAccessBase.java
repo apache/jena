@@ -28,7 +28,7 @@ import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.dboe.base.block.Block;
 import org.apache.jena.dboe.base.block.BlockException;
 import org.apache.jena.dboe.sys.FileLib;
-import org.apache.jena.dboe.sys.Sys;
+import org.apache.jena.dboe.sys.SysDB;
 import org.slf4j.Logger;
 
 /** Support for a disk file backed FileAccess */
@@ -149,7 +149,7 @@ public abstract class BlockAccessBase implements BlockAccess {
         ByteBuffer bb = block.getByteBuffer();
         if ( bb.capacity() != blockSize )
             throw new BlockException(format("BlockMgrFile: Wrong size block.  Expected=%d : actual=%d", blockSize, bb.capacity()));
-        if ( bb.order() != Sys.NetworkOrder )
+        if ( bb.order() != SysDB.NetworkOrder )
             throw new BlockException("BlockMgrFile: Wrong byte order");
     }
 

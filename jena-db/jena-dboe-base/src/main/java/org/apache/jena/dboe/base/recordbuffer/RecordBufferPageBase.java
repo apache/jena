@@ -25,7 +25,7 @@ import org.apache.jena.dboe.base.block.Block;
 import org.apache.jena.dboe.base.buffer.RecordBuffer;
 import org.apache.jena.dboe.base.page.PageBase;
 import org.apache.jena.dboe.base.record.RecordFactory;
-import org.apache.jena.dboe.sys.Sys;
+import org.apache.jena.dboe.sys.SysDB;
 
 /**
  * The on-disk form of a block of a single RecordBuffer
@@ -38,7 +38,7 @@ public abstract class RecordBufferPageBase extends PageBase // implements Page
     // Field offsets
     final public static int     COUNT        = 0;
     // Length due to this class - subclasses may use more overhead.
-    final private static int    FIELD_LENGTH = Sys.SizeOfInt;
+    final private static int    FIELD_LENGTH = SysDB.SizeOfInt;
 
     protected final int         headerLength;
 

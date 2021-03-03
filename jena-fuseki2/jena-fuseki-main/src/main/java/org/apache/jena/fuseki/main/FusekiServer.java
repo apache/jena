@@ -44,7 +44,6 @@ import org.apache.jena.fuseki.ctl.ActionMetrics;
 import org.apache.jena.fuseki.ctl.ActionPing;
 import org.apache.jena.fuseki.ctl.ActionStats;
 import org.apache.jena.fuseki.jetty.FusekiErrorHandler;
-import org.apache.jena.fuseki.jetty.JettyHttps;
 import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.fuseki.server.*;
@@ -241,6 +240,9 @@ public class FusekiServer {
         private int                      serverPort         = 3330;
         private int                      serverHttpsPort    = -1;
         private boolean                  networkLoopback    = false;
+        private int                      minThreads         = -1;
+        private int                      maxThreads         = -1;
+
         private boolean                  verbose            = false;
         private boolean                  withPing           = false;
         private boolean                  withMetrics        = false;
@@ -737,6 +739,41 @@ public class FusekiServer {
         }
 
         /**
+         * Set the number threads used by Jetty. This uses a {@code org.eclipse.jetty.util.thread.QueuedThreadPool} provided by Jetty.
+         * <p>
+         * Argument order is (minThreads, maxThreads).
+         * <p>
+         * <ul>
+         * <li>Use (-1,-1) for Jetty "default". The Jetty 9.4 defaults are (min=8,max=200).
+         * <li>If (min != -1, max is -1) then the default max is 20.
+         * <li>If (min is -1, max != -1) then the default min is 2.
+         * </ul>
+         */
+        public Builder numServerThreads(int minThreads, int maxThreads) {
+            if ( minThreads >= 0 && maxThreads > 0 ) {
+                if ( minThreads > maxThreads )
+                    throw new FusekiConfigException(String.format("Bad thread setting: (min=%d, max=%d)", minThreads, maxThreads));
+            }
+            this.minThreads = minThreads;
+            this.maxThreads = maxThreads;
+            return this;
+        }
+
+        /**
+         * Set the maximum number threads used by Jetty.
+         * This is equivalent to {@code numServerThreads(-1, maxThreads)}
+         * and overrides any previous setting of the maximum number of threads.
+         * In development or in embedded use, limiting the maximum threads can be useful.
+         */
+        public Builder maxServerThreads(int maxThreads) {
+            if ( minThreads > maxThreads )
+                throw new FusekiConfigException(String.format("Bad thread setting: (min=%d, max=%d)", minThreads, maxThreads));
+            numServerThreads(minThreads, maxThreads);
+            return this;
+        }
+
+
+        /**
          * Build a server according to the current description.
          */
         public FusekiServer build() {
@@ -750,10 +787,10 @@ public class FusekiServer {
                 Server server;
                 if ( serverHttpsPort == -1 ) {
                     // HTTP
-                    server = jettyServer(handler, serverPort);
+                    server = jettyServer(handler, serverPort, minThreads, maxThreads);
                 } else {
                     // HTTPS, no http redirection.
-                    server = jettyServerHttps(handler, serverPort, serverHttpsPort, httpsKeystore, httpsKeystorePasswd);
+                    server = jettyServerHttps(handler, serverPort, serverHttpsPort, minThreads, maxThreads, httpsKeystore, httpsKeystorePasswd);
                 }
                 if ( networkLoopback )
                     applyLocalhost(server);
@@ -1027,10 +1064,9 @@ public class FusekiServer {
         }
 
         /** Jetty server with one connector/port. */
-        private static Server jettyServer(ServletContextHandler handler, int port) {
-            Server server = new Server();
-
-            // Missed when HTTPS. 
+        private static Server jettyServer(ServletContextHandler handler, int port, int minThreads, int maxThreads) {
+            Server server = JettyServer.jettyServer(minThreads, maxThreads);
+            // Missed when HTTPS.
             // TODO Share with jettyServer :: jettyServerHttps
             HttpConfiguration httpConfig = new HttpConfiguration();
             // Some people do try very large operations ... really, should use POST.
@@ -1039,7 +1075,7 @@ public class FusekiServer {
             // Do not add "Server: Jetty(....) when not a development system.
             if ( ! Fuseki.outputJettyServerHeader )
                 httpConfig.setSendServerVersion(false);
-           
+
             HttpConnectionFactory f1 = new HttpConnectionFactory(httpConfig);
             ServerConnector connector = new ServerConnector(server, f1);
             connector.setPort(port);
@@ -1049,8 +1085,8 @@ public class FusekiServer {
         }
 
         /** Jetty server with https. */
-        private static Server jettyServerHttps(ServletContextHandler handler, int httpPort, int httpsPort, String keystore, String certPassword) {
-            return JettyHttps.jettyServerHttps(handler, keystore, certPassword, httpPort, httpsPort);
+        private static Server jettyServerHttps(ServletContextHandler handler, int httpPort, int httpsPort, int minThreads, int maxThreads, String keystore, String certPassword) {
+            return JettyHttps.jettyServerHttps(handler, keystore, certPassword, httpPort, httpsPort, minThreads, maxThreads);
         }
 
         /** Restrict connectors to localhost */
