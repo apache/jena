@@ -32,7 +32,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     TestMemDriver.class,
-    TestMemDriverWithLogging.class,
     TestDatasetConnection.class,
     TestDatasetConnectionMetadata.class,
     TestMemStatements.class,
