@@ -20,60 +20,65 @@ package org.apache.jena.permissions.utils;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.apache.jena.rdf.model.RDFList ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.rdf.model.RDFList;
+import org.apache.jena.vocabulary.RDF;
 
-public class RDFListIterator implements Iterator<RDFList>
-{
-	private RDFList current;
-	private Boolean found;
+/**
+ * An iterator on the elements of an RDFList.
+ */
+public class RDFListIterator implements Iterator<RDFList> {
+    private RDFList current;
+    private Boolean found;
 
-	public RDFListIterator( final RDFList start )
-	{
-		this.current = start;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param start The RDFList element to start with.
+     */
+    public RDFListIterator(final RDFList start) {
+        this.current = start;
+    }
 
-	private boolean endOfList()
-	{
-		return current.equals(RDF.nil);
-	}
+    /**
+     * Check if this is the end of the list.
+     * 
+     * @return true if this is the end of the list.
+     */
+    private boolean endOfList() {
+        return current.equals(RDF.nil);
+    }
 
-	@Override
-	public boolean hasNext()
-	{
-		if ((found == null) && !endOfList())
-		{
-			found = !endOfList();
-		}
-		return found == null ? false : found;
-	}
+    @Override
+    public boolean hasNext() {
+        if ((found == null) && !endOfList()) {
+            found = !endOfList();
+        }
+        return found == null ? false : found;
+    }
 
-	private void incrementCurrent()
-	{
-		if (!endOfList())
-		{
-			current = current.getRequiredProperty(RDF.rest).getResource()
-					.as(RDFList.class);
-		}
-	}
+    /**
+     * move to the next element in the list
+     */
+    private void incrementCurrent() {
+        if (!endOfList()) {
+            current = current.getRequiredProperty(RDF.rest).getResource().as(RDFList.class);
+        }
+    }
 
-	@Override
-	public RDFList next()
-	{
-		if (hasNext())
-		{
-			found = null;
-			final RDFList retval = current;
-			incrementCurrent();
-			return retval;
-		}
-		throw new NoSuchElementException();
-	}
+    @Override
+    public RDFList next() {
+        if (hasNext()) {
+            found = null;
+            final RDFList retval = current;
+            incrementCurrent();
+            return retval;
+        }
+        throw new NoSuchElementException();
+    }
 
-	@Override
-	public void remove()
-	{
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
 
 }

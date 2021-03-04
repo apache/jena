@@ -23,56 +23,53 @@ import org.apache.jena.shared.AuthenticationRequiredException;
 import org.apache.jena.shared.ReadDeniedException;
 
 public class SecuredSelector implements Selector {
-	private final SecuredItem securedItem;
-	private final Selector selector;
+    private final SecuredItem securedItem;
+    private final Selector selector;
 
-	public SecuredSelector(final SecuredItem securedItem) {
-		this(securedItem, new SimpleSelector());
-	}
+    public SecuredSelector(final SecuredItem securedItem) {
+        this(securedItem, new SimpleSelector());
+    }
 
-	public SecuredSelector(final SecuredItem securedItem,
-			final Selector selector) {
-		this.securedItem = securedItem;
-		this.selector = selector;
-	}
+    public SecuredSelector(final SecuredItem securedItem, final Selector selector) {
+        this.securedItem = securedItem;
+        this.selector = selector;
+    }
 
-	@Override
-	public RDFNode getObject() {
-		return selector.getObject();
-	}
+    @Override
+    public RDFNode getObject() {
+        return selector.getObject();
+    }
 
-	@Override
-	public Property getPredicate() {
-		return selector.getPredicate();
-	}
+    @Override
+    public Property getPredicate() {
+        return selector.getPredicate();
+    }
 
-	@Override
-	public Resource getSubject() {
-		return selector.getSubject();
-	}
+    @Override
+    public Resource getSubject() {
+        return selector.getSubject();
+    }
 
-	@Override
-	public boolean isSimple() {
-		return selector.isSimple();
-	}
+    @Override
+    public boolean isSimple() {
+        return selector.isSimple();
+    }
 
-	/**
-	 * This method is designed to be over ridden by subclasses to define
-	 * application specific constraints on the statements selected.
-	 * 
-	 * @param s
-	 *            the statement to be tested
-	 * @return true if the statement satisfies the constraint
-	 * @throws ReadDeniedException
-	 * @throws AuthenticationRequiredException
-	 */
-	@Override
-	public boolean test(final Statement s) throws ReadDeniedException,
-			AuthenticationRequiredException {
-		if (securedItem.canRead(s)) {
-			return selector.test(s);
-		}
-		return false;
-	}
+    /**
+     * This method is designed to be over ridden by subclasses to define application
+     * specific constraints on the statements selected.
+     * 
+     * @param s the statement to be tested
+     * @return true if the statement satisfies the constraint
+     * @throws ReadDeniedException
+     * @throws AuthenticationRequiredException
+     */
+    @Override
+    public boolean test(final Statement s) throws ReadDeniedException, AuthenticationRequiredException {
+        if (securedItem.canRead(s)) {
+            return selector.test(s);
+        }
+        return false;
+    }
 
 }

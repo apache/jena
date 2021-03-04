@@ -31,87 +31,80 @@ import org.apache.jena.sparql.function.FunctionEnv;
 import org.apache.jena.sparql.graph.NodeTransform;
 
 public class SecuredFunction extends ExprFunctionN {
-	private final SecurityEvaluator securityEvaluator;
-	private final List<Node> variables;
-	private final List<Triple> bgp;
-	private final Node graphIRI;
+    private final SecurityEvaluator securityEvaluator;
+    private final List<Node> variables;
+    private final List<Triple> bgp;
+    private final Node graphIRI;
 
-	private static ExprList createArgs(List<Node> variables) {
-		ExprList retval = new ExprList();
-		for (Node n : variables) {
-			retval.add(new ExprVar(n));
-		}
-		return retval;
-	}
+    private static ExprList createArgs(List<Node> variables) {
+        ExprList retval = new ExprList();
+        for (Node n : variables) {
+            retval.add(new ExprVar(n));
+        }
+        return retval;
+    }
 
-	public SecuredFunction(final Node graphIRI,
-			final SecurityEvaluator securityEvaluator,
-			final List<Node> variables, final List<Triple> bgp) {
-		super(String.format("<java:%s>", SecuredFunction.class.getName()),
-				createArgs(variables));
-		this.securityEvaluator = securityEvaluator;
-		this.variables = variables;
-		this.bgp = bgp;
-		this.graphIRI = graphIRI;
-	}
+    public SecuredFunction(final Node graphIRI, final SecurityEvaluator securityEvaluator, final List<Node> variables,
+            final List<Triple> bgp) {
+        super(String.format("<java:%s>", SecuredFunction.class.getName()), createArgs(variables));
+        this.securityEvaluator = securityEvaluator;
+        this.variables = variables;
+        this.bgp = bgp;
+        this.graphIRI = graphIRI;
+    }
 
-	private boolean checkAccess(Binding values)
-			throws AuthenticationRequiredException {
-		Object principal = securityEvaluator.getPrincipal();
-		for (final Triple t : bgp) {
-			final Triple secT = resolveTriple(t, values);
-			if (!securityEvaluator.evaluate(principal, Action.Read, graphIRI,
-					secT)) {
-				return false;
-			}
-		}
-		return true;
-	}
+    private boolean checkAccess(Binding values) throws AuthenticationRequiredException {
+        Object principal = securityEvaluator.getPrincipal();
+        for (final Triple t : bgp) {
+            final Triple secT = resolveTriple(t, values);
+            if (!securityEvaluator.evaluate(principal, Action.Read, graphIRI, secT)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	private Triple resolveTriple(final Triple t, final Binding values) {
-		int idx = variables.indexOf(t.getSubject());
+    private Triple resolveTriple(final Triple t, final Binding values) {
+        int idx = variables.indexOf(t.getSubject());
 
-		final Node s = idx == -1 ? t.getSubject() : values.get(Var
-				.alloc(variables.get(idx)));
+        final Node s = idx == -1 ? t.getSubject() : values.get(Var.alloc(variables.get(idx)));
 
-		idx = variables.indexOf(t.getPredicate());
-		final Node p = idx == -1 ? t.getPredicate() : values.get(Var
-				.alloc(variables.get(idx)));
-		idx = variables.indexOf(t.getObject());
-		final Node o = idx == -1 ? t.getObject() : values.get(Var
-				.alloc(variables.get(idx)));
-		return new Triple(s, p, o);
-	}
+        idx = variables.indexOf(t.getPredicate());
+        final Node p = idx == -1 ? t.getPredicate() : values.get(Var.alloc(variables.get(idx)));
+        idx = variables.indexOf(t.getObject());
+        final Node o = idx == -1 ? t.getObject() : values.get(Var.alloc(variables.get(idx)));
+        return new Triple(s, p, o);
+    }
 
-	@Override
-	public Expr copySubstitute(Binding binding) {
-		return this;
-	}
+    @Override
+    public Expr copySubstitute(Binding binding) {
+        return this;
+    }
 
-	@Override
-	public Expr applyNodeTransform(NodeTransform transform) {
-		return this;
-	}
+    @Override
+    public Expr applyNodeTransform(NodeTransform transform) {
+        return this;
+    }
 
-	@Override
-	public void visit(ExprVisitor visitor) {
-		visitor.visit(this);
-	}
+    @Override
+    public void visit(ExprVisitor visitor) {
+        visitor.visit(this);
+    }
 
-	@Override
-	public NodeValue eval(List<NodeValue> args) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public NodeValue eval(List<NodeValue> args) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public Expr copy(ExprList newArgs) {
-		return this;
-	}
+    @Override
+    public Expr copy(ExprList newArgs) {
+        return this;
+    }
 
-	@Override
-	protected NodeValue evalSpecial(Binding binding, FunctionEnv env) {
-		return NodeValue.booleanReturn(checkAccess(binding));
-	}
+    @Override
+    protected NodeValue evalSpecial(Binding binding, FunctionEnv env) {
+        return NodeValue.booleanReturn(checkAccess(binding));
+    }
 
 }

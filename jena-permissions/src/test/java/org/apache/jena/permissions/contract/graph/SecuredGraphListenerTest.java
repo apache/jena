@@ -17,35 +17,30 @@
  */
 package org.apache.jena.permissions.contract.graph;
 
-import org.apache.jena.graph.Factory ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.test.TestGraphListener ;
+import org.apache.jena.graph.Factory;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.test.TestGraphListener;
 import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator;
 
-public class SecuredGraphListenerTest extends TestGraphListener
-{
-	private final SecurityEvaluator eval;
+public class SecuredGraphListenerTest extends TestGraphListener {
+    private final SecurityEvaluator eval;
 
-	public SecuredGraphListenerTest( final Class<? extends Graph> graphClass,
-			final String name )
-	{
-		super(graphClass, name);
-		eval = new MockSecurityEvaluator(true, true, true, true, true, true);
-	}
+    public SecuredGraphListenerTest(final Class<? extends Graph> graphClass, final String name) {
+        super(graphClass, name);
+        eval = new MockSecurityEvaluator(true, true, true, true, true, true, true);
+    }
 
-	public SecuredGraphListenerTest( final String name )
-	{
-		super(name);
-		eval = new MockSecurityEvaluator(true, true, true, true, true, true);
-	}
+    public SecuredGraphListenerTest(final String name) {
+        super(name);
+        eval = new MockSecurityEvaluator(true, true, true, true, true, true, true);
+    }
 
-	@Override
-	public Graph getGraph()
-	{
-		final Graph graph = org.apache.jena.permissions.Factory.getInstance(eval,
-				getName(), Factory.createDefaultGraph());
-		graph.getEventManager().register(new CheckChanges("simple tracking", graph));
-		return graph;
-	}
+    @Override
+    public Graph getGraph() {
+        final Graph graph = org.apache.jena.permissions.Factory.getInstance(eval, getName(),
+                Factory.createDefaultGraph());
+        graph.getEventManager().register(new CheckChanges("simple tracking", graph));
+        return graph;
+    }
 }

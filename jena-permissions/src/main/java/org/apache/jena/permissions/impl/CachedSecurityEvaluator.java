@@ -28,75 +28,69 @@ import org.apache.jena.shared.AuthenticationRequiredException;
  * A SecurityEvaluator that can be cached for later use.
  */
 public class CachedSecurityEvaluator implements SecurityEvaluator {
-	private final SecurityEvaluator wrapped;
-	private final Object origPrincipal;
+    private final SecurityEvaluator wrapped;
+    private final Object origPrincipal;
 
-	/**
-	 *
-	 * @param wrapped
-	 * @param runAs
-	 */
-	public CachedSecurityEvaluator(final SecurityEvaluator wrapped,
-			final Object runAs) {
-		this.origPrincipal = runAs;
-		this.wrapped = wrapped;
-	}
+    /**
+     *
+     * @param wrapped
+     * @param runAs
+     */
+    public CachedSecurityEvaluator(final SecurityEvaluator wrapped, final Object runAs) {
+        this.origPrincipal = runAs;
+        this.wrapped = wrapped;
+    }
 
-	@Override
-	public boolean evaluate(final Object principal, final Action action,
-			final Node graphIRI) throws AuthenticationRequiredException {
-		return wrapped.evaluate(principal, action, graphIRI);
-	}
+    @Override
+    public boolean evaluate(final Object principal, final Action action, final Node graphIRI)
+            throws AuthenticationRequiredException {
+        return wrapped.evaluate(principal, action, graphIRI);
+    }
 
-	@Override
-	public boolean evaluate(final Object principal, final Action action,
-			final Node graphIRI, final Triple triple)
-			throws AuthenticationRequiredException {
-		return wrapped.evaluate(principal, action, graphIRI, triple);
-	}
+    @Override
+    public boolean evaluate(final Object principal, final Action action, final Node graphIRI, final Triple triple)
+            throws AuthenticationRequiredException {
+        return wrapped.evaluate(principal, action, graphIRI, triple);
+    }
 
-	@Override
-	public boolean evaluate(final Object principal, final Set<Action> actions,
-			final Node graphIRI) throws AuthenticationRequiredException {
-		return wrapped.evaluate(principal, actions, graphIRI);
-	}
+    @Override
+    public boolean evaluate(final Object principal, final Set<Action> actions, final Node graphIRI)
+            throws AuthenticationRequiredException {
+        return wrapped.evaluate(principal, actions, graphIRI);
+    }
 
-	@Override
-	public boolean evaluate(final Object principal, final Set<Action> actions,
-			final Node graphIRI, final Triple triple)
-			throws AuthenticationRequiredException {
-		return wrapped.evaluate(principal, actions, graphIRI, triple);
-	}
+    @Override
+    public boolean evaluate(final Object principal, final Set<Action> actions, final Node graphIRI, final Triple triple)
+            throws AuthenticationRequiredException {
+        return wrapped.evaluate(principal, actions, graphIRI, triple);
+    }
 
-	@Override
-	public boolean evaluateAny(final Object principal,
-			final Set<Action> actions, final Node graphIRI)
-			throws AuthenticationRequiredException {
-		return wrapped.evaluateAny(principal, actions, graphIRI);
-	}
+    @Override
+    public boolean evaluateAny(final Object principal, final Set<Action> actions, final Node graphIRI)
+            throws AuthenticationRequiredException {
+        return wrapped.evaluateAny(principal, actions, graphIRI);
+    }
 
-	@Override
-	public boolean evaluateAny(final Object principal,
-			final Set<Action> actions, final Node graphIRI, final Triple triple)
-			throws AuthenticationRequiredException {
-		return wrapped.evaluateAny(principal, actions, graphIRI, triple);
-	}
+    @Override
+    public boolean evaluateAny(final Object principal, final Set<Action> actions, final Node graphIRI,
+            final Triple triple) throws AuthenticationRequiredException {
+        return wrapped.evaluateAny(principal, actions, graphIRI, triple);
+    }
 
-	@Override
-	public boolean evaluateUpdate(final Object principal, final Node graphIRI,
-			final Triple from, final Triple to)
-			throws AuthenticationRequiredException {
-		return wrapped.evaluateUpdate(principal, graphIRI, from, to);
-	}
+    @Override
+    public boolean evaluateUpdate(final Object principal, final Node graphIRI, final Triple from, final Triple to)
+            throws AuthenticationRequiredException {
+        return wrapped.evaluateUpdate(principal, graphIRI, from, to);
+    }
 
-	@Override
-	public Object getPrincipal() {
-		return origPrincipal;
-	}
+    @Override
+    public Object getPrincipal() {
+        return origPrincipal;
+    }
 
-	@Override
-	public boolean isPrincipalAuthenticated(Object principal) {
-		return wrapped.isPrincipalAuthenticated(principal);
-	}
+    @Override
+    public boolean isPrincipalAuthenticated(Object principal) {
+        return wrapped.isPrincipalAuthenticated(principal);
+    }
 
 }

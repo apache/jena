@@ -28,60 +28,57 @@ import org.apache.jena.shared.AuthenticationRequiredException;
 /**
  * An example of a security evaluator that creates read-only graphs and models.
  * 
- *  This evaluator does this by only allowing the Action.READ action, all others
- *  are denied.
+ * This evaluator does this by only allowing the Action.READ action, all others
+ * are denied.
  *
  */
 public class ReadOnlyEval implements SecurityEvaluator {
 
     @Override
-    public boolean evaluate(Object principal, Action action, Node graphIRI)
+    public boolean evaluate(Object principal, Action action, Node graphIRI) throws AuthenticationRequiredException {
+        return Action.Read.equals(action);
+    }
+
+    @Override
+    public boolean evaluate(Object principal, Action action, Node graphIRI, Triple triple)
             throws AuthenticationRequiredException {
-        return Action.Read.equals( action );
+        return Action.Read.equals(action);
     }
 
     @Override
-    public boolean evaluate(Object principal, Action action, Node graphIRI,
-            Triple triple) throws AuthenticationRequiredException {
-        return Action.Read.equals( action );
-    }
-
-    @Override
-    public boolean evaluate(Object principal, Set<Action> actions,
-            Node graphIRI) throws AuthenticationRequiredException {
-        Set<Action> s = new HashSet<Action>( actions );
-        s.remove( Action.Read );
+    public boolean evaluate(Object principal, Set<Action> actions, Node graphIRI)
+            throws AuthenticationRequiredException {
+        Set<Action> s = new HashSet<Action>(actions);
+        s.remove(Action.Read);
         return s.isEmpty();
     }
 
     @Override
-    public boolean evaluate(Object principal, Set<Action> actions,
-            Node graphIRI, Triple triple)
+    public boolean evaluate(Object principal, Set<Action> actions, Node graphIRI, Triple triple)
             throws AuthenticationRequiredException {
-        Set<Action> s = new HashSet<Action>( actions );
-        s.remove( Action.Read );
+        Set<Action> s = new HashSet<Action>(actions);
+        s.remove(Action.Read);
         return s.isEmpty();
     }
 
     @Override
-    public boolean evaluateAny(Object principal, Set<Action> actions,
-            Node graphIRI) throws AuthenticationRequiredException {
-        return actions.contains( Action.Read );
+    public boolean evaluateAny(Object principal, Set<Action> actions, Node graphIRI)
+            throws AuthenticationRequiredException {
+        return actions.contains(Action.Read);
     }
 
     @Override
-    public boolean evaluateAny(Object principal, Set<Action> actions,
-            Node graphIRI, Triple triple)
+    public boolean evaluateAny(Object principal, Set<Action> actions, Node graphIRI, Triple triple)
             throws AuthenticationRequiredException {
-        return actions.contains( Action.Read );
+        return actions.contains(Action.Read);
     }
 
     /**
      * No updated are allowed.
      */
     @Override
-    public boolean evaluateUpdate(Object principal, Node graphIRI,
-            Triple from, Triple to) throws AuthenticationRequiredException {
+    public boolean evaluateUpdate(Object principal, Node graphIRI, Triple from, Triple to)
+            throws AuthenticationRequiredException {
         return false;
     }
 
@@ -100,5 +97,5 @@ public class ReadOnlyEval implements SecurityEvaluator {
     public boolean isPrincipalAuthenticated(Object principal) {
         return false;
     }
-    
+
 }

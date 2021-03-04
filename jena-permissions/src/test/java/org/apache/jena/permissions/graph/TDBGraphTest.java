@@ -28,23 +28,23 @@ import org.junit.After;
 
 public class TDBGraphTest extends MemGraphTest {
 
-	private DatasetGraph dsGraph;
+    private DatasetGraph dsGraph;
 
-	public TDBGraphTest(final MockSecurityEvaluator securityEvaluator) {
-		super(securityEvaluator);
-	}
+    public TDBGraphTest(final MockSecurityEvaluator securityEvaluator) {
+        super(securityEvaluator);
+    }
 
-	@Override
-	protected Graph createGraph() throws IOException {
-		dsGraph = TDBFactory.createDataset().asDatasetGraph();
-		return dsGraph.getDefaultGraph();
-	}
+    @Override
+    protected Graph createGraph() throws IOException {
+        dsGraph = TDBFactory.createDataset().asDatasetGraph();
+        return dsGraph.getDefaultGraph();
+    }
 
-	@After
-	public void tearDown() {
-		TDB.sync(dsGraph);
-		dsGraph.close();
-		TDB.closedown();
-	}
+    @After
+    public void tearDown() {
+        TDB.sync(dsGraph);
+        dsGraph.close();
+        TDB.closedown();
+    }
 
 }

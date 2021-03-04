@@ -37,101 +37,94 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SecuredQueryEngine extends QueryEngineMain {
-	private static Logger LOG = LoggerFactory
-			.getLogger(SecuredQueryEngine.class);
+    private static Logger LOG = LoggerFactory.getLogger(SecuredQueryEngine.class);
 
-	private SecurityEvaluator securityEvaluator;
-	private Node graphIRI;
+    private SecurityEvaluator securityEvaluator;
+    private Node graphIRI;
 
-	public SecuredQueryEngine(final Query query, final DatasetGraph dataset,
-			final Binding input, final Context context) {
-		super(query, dataset, input, context);
-		setGraphIRI(dataset);
-	}
+    public SecuredQueryEngine(final Query query, final DatasetGraph dataset, final Binding input,
+            final Context context) {
+        super(query, dataset, input, context);
+        setGraphIRI(dataset);
+    }
 
-	public SecurityEvaluator getSecurityEvaluator() {
-		return securityEvaluator;
-	}
+    public SecurityEvaluator getSecurityEvaluator() {
+        return securityEvaluator;
+    }
 
-	@Override
-	protected Op modifyOp(final Op op) {
-		final OpRewriter rewriter = new OpRewriter(securityEvaluator, graphIRI);
-		LOG.debug("Before: {}", op);
-		op.visit(rewriter);
-		Op result = rewriter.getResult();
-		result = result == null ? op : result;
-		LOG.debug("After: {}", result);
-		result = super.modifyOp(result);
-		LOG.debug("After Optimize: {}", result);
-		return result;
-	}
+    @Override
+    protected Op modifyOp(final Op op) {
+        final OpRewriter rewriter = new OpRewriter(securityEvaluator, graphIRI);
+        LOG.debug("Before: {}", op);
+        op.visit(rewriter);
+        Op result = rewriter.getResult();
+        result = result == null ? op : result;
+        LOG.debug("After: {}", result);
+        result = super.modifyOp(result);
+        LOG.debug("After Optimize: {}", result);
+        return result;
+    }
 
-	private void setGraphIRI(final DatasetGraph dataset) {
-		final Graph g = dataset.getDefaultGraph();
-		if (g instanceof SecuredGraph) {
-			final SecuredGraph sg = (SecuredGraph) g;
-			graphIRI = sg.getModelNode();
-			this.securityEvaluator = sg.getSecurityEvaluator();
-		} else {
-			graphIRI = NodeFactory.createURI("urn:x-arq:DefaultGraph");
-			this.securityEvaluator = new SecurityEvaluator() {
+    private void setGraphIRI(final DatasetGraph dataset) {
+        final Graph g = dataset.getDefaultGraph();
+        if (g instanceof SecuredGraph) {
+            final SecuredGraph sg = (SecuredGraph) g;
+            graphIRI = sg.getModelNode();
+            this.securityEvaluator = sg.getSecurityEvaluator();
+        } else {
+            graphIRI = NodeFactory.createURI("urn:x-arq:DefaultGraph");
+            this.securityEvaluator = new SecurityEvaluator() {
 
-				@Override
-				public boolean evaluate(final Object principal,
-						final Action action, final Node graphIRI) {
-					return true;
-				}
+                @Override
+                public boolean evaluate(final Object principal, final Action action, final Node graphIRI) {
+                    return true;
+                }
 
-				@Override
-				public boolean evaluate(final Object principal,
-						final Action action, final Node graphIRI,
-						final Triple triple) {
-					return true;
-				}
+                @Override
+                public boolean evaluate(final Object principal, final Action action, final Node graphIRI,
+                        final Triple triple) {
+                    return true;
+                }
 
-				@Override
-				public boolean evaluate(final Object principal,
-						final Set<Action> action, final Node graphIRI) {
-					return true;
-				}
+                @Override
+                public boolean evaluate(final Object principal, final Set<Action> action, final Node graphIRI) {
+                    return true;
+                }
 
-				@Override
-				public boolean evaluate(final Object principal,
-						final Set<Action> action, final Node graphIRI,
-						final Triple triple) {
-					return true;
-				}
+                @Override
+                public boolean evaluate(final Object principal, final Set<Action> action, final Node graphIRI,
+                        final Triple triple) {
+                    return true;
+                }
 
-				@Override
-				public boolean evaluateAny(final Object principal,
-						final Set<Action> action, final Node graphIRI) {
-					return true;
-				}
+                @Override
+                public boolean evaluateAny(final Object principal, final Set<Action> action, final Node graphIRI) {
+                    return true;
+                }
 
-				@Override
-				public boolean evaluateAny(final Object principal,
-						final Set<Action> action, final Node graphIRI,
-						final Triple triple) {
-					return true;
-				}
+                @Override
+                public boolean evaluateAny(final Object principal, final Set<Action> action, final Node graphIRI,
+                        final Triple triple) {
+                    return true;
+                }
 
-				@Override
-				public boolean evaluateUpdate(final Object principal,
-						final Node graphIRI, final Triple from, final Triple to) {
-					return true;
-				}
+                @Override
+                public boolean evaluateUpdate(final Object principal, final Node graphIRI, final Triple from,
+                        final Triple to) {
+                    return true;
+                }
 
-				@Override
-				public Principal getPrincipal() {
-					return null;
-				}
+                @Override
+                public Principal getPrincipal() {
+                    return null;
+                }
 
-				@Override
-				public boolean isPrincipalAuthenticated(Object principal) {
-					return true;
-				}
-			};
+                @Override
+                public boolean isPrincipalAuthenticated(Object principal) {
+                    return true;
+                }
+            };
 
-		}
-	}
+        }
+    }
 }

@@ -19,31 +19,29 @@ package org.apache.jena.permissions.utils;
 
 import java.util.function.Predicate;
 
-import org.apache.jena.rdf.model.Property ;
-import org.apache.jena.rdf.model.Statement ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.vocabulary.RDF;
 
-public class ContainerFilter implements Predicate<Statement>
-{
+/**
+ * A Predicate that filters out all predicates that do not start with '_'
+ * followed by an integer.
+ *
+ */
+public class ContainerFilter implements Predicate<Statement> {
 
-	@Override
-	public boolean test( final Statement o )
-	{
-		final Property p = o.getPredicate();
-		if (p.getNameSpace().equals(RDF.getURI())
-				&& p.getLocalName().startsWith("_"))
-		{
-			try
-			{
-				Integer.parseInt(p.getLocalName().substring(1));
-				return true;
-			}
-			catch (final NumberFormatException e)
-			{
-				// acceptable;
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean test(final Statement o) {
+        final Property p = o.getPredicate();
+        if (p.getNameSpace().equals(RDF.getURI()) && p.getLocalName().startsWith("_")) {
+            try {
+                Integer.parseInt(p.getLocalName().substring(1));
+                return true;
+            } catch (final NumberFormatException e) {
+                // acceptable;
+            }
+        }
+        return false;
+    }
 
 }

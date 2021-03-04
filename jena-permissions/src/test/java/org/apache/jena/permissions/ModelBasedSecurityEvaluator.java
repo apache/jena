@@ -21,65 +21,59 @@ import java.util.Set;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.Model;
 
 public class ModelBasedSecurityEvaluator implements SecurityEvaluator {
 
-	//private Model model;
-	
-	public ModelBasedSecurityEvaluator( Model model) {
-		//this.model = model;
-	}
-	
-	
+    // private Model model;
 
-	@Override
-	public boolean evaluate(final Object principal, Action action, Node graphIRI) {
-		return true;
-	}
+    public ModelBasedSecurityEvaluator(Model model) {
+        // this.model = model;
+    }
 
-	@Override
-	public boolean evaluate(final Object principal, Action action, Node graphIRI, Triple triple) {
-		return true;
-	}
+    @Override
+    public boolean evaluate(final Object principal, Action action, Node graphIRI) {
+        return true;
+    }
 
-	@Override
-	public boolean evaluate(final Object principal, Set<Action> actions, Node graphIRI) {
-		return true;
-	}
+    @Override
+    public boolean evaluate(final Object principal, Action action, Node graphIRI, Triple triple) {
+        return true;
+    }
 
-	@Override
-	public boolean evaluate(final Object principal, Set<Action> actions, Node graphIRI,
-			Triple triple) {
-		return true;
-	}
+    @Override
+    public boolean evaluate(final Object principal, Set<Action> actions, Node graphIRI) {
+        return true;
+    }
 
-	@Override
-	public boolean evaluateAny(final Object principal, Set<Action> actions, Node graphIRI) {
-		return true;
-	}
+    @Override
+    public boolean evaluate(final Object principal, Set<Action> actions, Node graphIRI, Triple triple) {
+        return true;
+    }
 
-	@Override
-	public boolean evaluateAny(final Object principal, Set<Action> actions, Node graphIRI,
-			Triple triple) {
-		return true;
-	}
+    @Override
+    public boolean evaluateAny(final Object principal, Set<Action> actions, Node graphIRI) {
+        return true;
+    }
 
-	@Override
-	public boolean evaluateUpdate(final Object principal, Node graphIRI, Triple from, Triple to) {
-		return true;
-	}
+    @Override
+    public boolean evaluateAny(final Object principal, Set<Action> actions, Node graphIRI, Triple triple) {
+        return true;
+    }
 
-	@Override
-	public Object getPrincipal() {
-		return "principal";
-	}
+    @Override
+    public boolean evaluateUpdate(final Object principal, Node graphIRI, Triple from, Triple to) {
+        return true;
+    }
 
+    @Override
+    public Object getPrincipal() {
+        return "principal";
+    }
 
-
-	@Override
-	public boolean isPrincipalAuthenticated(Object principal) {
-		return principal != null;
-	}
+    @Override
+    public boolean isPrincipalAuthenticated(Object principal) {
+        return principal != null;
+    }
 
 }

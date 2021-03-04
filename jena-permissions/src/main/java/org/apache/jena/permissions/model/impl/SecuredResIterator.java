@@ -25,109 +25,105 @@ import java.util.function.Predicate;
 
 import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.permissions.model.SecuredResource;
-import org.apache.jena.rdf.model.ResIterator ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.rdf.model.ResIterator;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.util.iterator.ExtendedIterator;
 
-public class SecuredResIterator implements ResIterator
-{
+public class SecuredResIterator implements ResIterator {
 
-	private class PermResourceMap implements Function<Resource, Resource>
-	{
-		private final SecuredModel securedModel;
+    /**
+     * Maps a Resource to a secured resource
+     *
+     */
+    private class PermResourceMap implements Function<Resource, Resource> {
+        private final SecuredModel securedModel;
 
-		public PermResourceMap( final SecuredModel securedModel )
-		{
-			this.securedModel = securedModel;
-		}
+        /**
+         * Constructor.
+         * 
+         * @param securedModel the secured model in which the resources will be created.
+         */
+        public PermResourceMap(final SecuredModel securedModel) {
+            this.securedModel = securedModel;
+        }
 
-		@Override
-		public SecuredResource apply( final Resource o )
-		{
-			return SecuredResourceImpl.getInstance(securedModel, o);
-		}
-	}
+        @Override
+        public SecuredResource apply(final Resource o) {
+            return SecuredResourceImpl.getInstance(securedModel, o);
+        }
+    }
 
-	private final ExtendedIterator<Resource> iter;
-	
-	public SecuredResIterator( final SecuredModel securedModel,
-			final ExtendedIterator<Resource> wrapped)
-	{
+    private final ExtendedIterator<Resource> iter;
 
-		final PermResourceMap map1 = new PermResourceMap(securedModel);
-		iter = wrapped.mapWith(map1);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param securedModel The model in which resources will be constructed
+     * @param wrapped      the Resource iterator.
+     */
+    public SecuredResIterator(final SecuredModel securedModel, final ExtendedIterator<Resource> wrapped) {
 
-	@Override
-	public <X extends Resource> ExtendedIterator<Resource> andThen(
-			final Iterator<X> other )
-	{
-		return iter.andThen(other);
-	}
+        final PermResourceMap map1 = new PermResourceMap(securedModel);
+        iter = wrapped.mapWith(map1);
+    }
 
-	@Override
-	public void close()
-	{
-		iter.close();
-	}
+    @Override
+    public <X extends Resource> ExtendedIterator<Resource> andThen(final Iterator<X> other) {
+        return iter.andThen(other);
+    }
 
-	@Override
-	public ExtendedIterator<Resource> filterDrop( final Predicate<Resource> f )
-	{
-		return iter.filterDrop(f);
-	}
+    @Override
+    public void close() {
+        iter.close();
+    }
 
-	@Override
-	public ExtendedIterator<Resource> filterKeep( final Predicate<Resource> f )
-	{
-		return iter.filterKeep(f);
-	}
+    @Override
+    public ExtendedIterator<Resource> filterDrop(final Predicate<Resource> f) {
+        return iter.filterDrop(f);
+    }
 
-	@Override
-	public boolean hasNext()
-	{
-		return iter.hasNext();
-	}
+    @Override
+    public ExtendedIterator<Resource> filterKeep(final Predicate<Resource> f) {
+        return iter.filterKeep(f);
+    }
 
-	@Override
-	public <U> ExtendedIterator<U> mapWith( final Function<Resource, U> map1 )
-	{
-		return iter.mapWith(map1);
-	}
+    @Override
+    public boolean hasNext() {
+        return iter.hasNext();
+    }
 
-	@Override
-	public Resource next()
-	{
-		return iter.next();
-	}
+    @Override
+    public <U> ExtendedIterator<U> mapWith(final Function<Resource, U> map1) {
+        return iter.mapWith(map1);
+    }
 
-	@Override
-	public Resource nextResource()
-	{
-		return next();
-	}
+    @Override
+    public Resource next() {
+        return iter.next();
+    }
 
-	@Override
-	public void remove()
-	{
-		iter.remove();
-	}
+    @Override
+    public Resource nextResource() {
+        return next();
+    }
 
-	@Override
-	public Resource removeNext()
-	{
-		return iter.removeNext();
-	}
+    @Override
+    public void remove() {
+        iter.remove();
+    }
 
-	@Override
-	public List<Resource> toList()
-	{
-		return iter.toList();
-	}
+    @Override
+    public Resource removeNext() {
+        return iter.removeNext();
+    }
 
-	@Override
-	public Set<Resource> toSet()
-	{
-		return iter.toSet();
-	}
+    @Override
+    public List<Resource> toList() {
+        return iter.toList();
+    }
+
+    @Override
+    public Set<Resource> toSet() {
+        return iter.toSet();
+    }
 }
