@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.engine.http;
 
 import java.net.SocketException ;
+import java.net.UnknownHostException;
 import java.util.HashMap ;
 import java.util.Map ;
 
@@ -75,7 +76,7 @@ public class TestService {
             Assert.fail("Expected QueryExceptionHTTP");
         } catch (QueryExceptionHTTP expected) {
             Throwable thrown = expected.getCause() ;
-            if ( thrown instanceof SocketException || thrown instanceof ConnectTimeoutException )  {
+            if ( thrown instanceof SocketException || thrown instanceof ConnectTimeoutException || thrown instanceof UnknownHostException )  {
                 // expected
             } else {
                 Assert.fail(String.format("Expected SocketException or ConnectTimeoutException, instead got: %s %s", 
@@ -103,7 +104,7 @@ public class TestService {
             Assert.fail("Expected QueryExceptionHTTP");
         } catch (QueryExceptionHTTP expected) {
             Throwable thrown = expected.getCause() ;
-            if ( thrown instanceof SocketException || thrown instanceof ConnectTimeoutException )  {
+            if ( thrown instanceof SocketException || thrown instanceof ConnectTimeoutException || thrown instanceof UnknownHostException )  {
                 // expected
             } else {
                 Assert.fail(String.format("Expected SocketException or ConnectTimeoutException, instead got: %s %s", 
@@ -130,7 +131,7 @@ public class TestService {
             Assert.fail("Expected QueryExceptionHTTP");
         } catch (QueryExceptionHTTP expected) {
             Throwable thrown = expected.getCause() ;
-            if ( thrown instanceof SocketException || thrown instanceof ConnectTimeoutException )  {
+            if ( thrown instanceof SocketException || thrown instanceof ConnectTimeoutException || thrown instanceof UnknownHostException )  {
                 // expected
             } else {
                 Assert.fail(String.format("Expected SocketException or ConnectTimeoutException, instead got: %s %s", 
