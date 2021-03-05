@@ -273,7 +273,7 @@ public abstract class JenaDriver implements Driver {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "resource"})
     @Override
     public final Connection connect(String url, Properties props) throws SQLException {
         // Make sure to return null if the URL is not supported
@@ -354,7 +354,7 @@ public abstract class JenaDriver implements Driver {
                     try {
                         LOGGER.info("Attempting to initialize pre-processor " + ppClassName);
                         Class<?> c = Class.forName(ppClassName);
-                        Object i = c.newInstance();
+                        Object i = c.getDeclaredConstructor().newInstance();
 
                         if (i instanceof CommandPreProcessor) {
                             // If it implements the right interface initialize
@@ -459,7 +459,7 @@ public abstract class JenaDriver implements Driver {
                     try {
                         LOGGER.info("Attempting to initialize post-processor " + ppClassName);
                         Class<?> c = Class.forName(ppClassName);
-                        Object i = c.newInstance();
+                        Object i = c.getDeclaredConstructor().newInstance();
 
                         if (i instanceof ResultsPostProcessor) {
                             // If it implements the right interface initialize
@@ -754,10 +754,8 @@ public abstract class JenaDriver implements Driver {
         // Search file system first
         File propFile = new File(resource);
         if (propFile.exists() && propFile.isFile()) {
-            try {
-                FileInputStream input = new FileInputStream(propFile);
+            try(FileInputStream input = new FileInputStream(propFile)) {
                 ps.load(input);
-                input.close();
             } catch (FileNotFoundException e) {
                 throw new SQLException("Located external properties file " + propFile.getAbsolutePath()
                         + " on file system but it was removed before it could be read", e);
@@ -769,10 +767,8 @@ public abstract class JenaDriver implements Driver {
             // Otherwise try class path
             URL propURL = this.getClass().getResource(resource);
             if (propURL != null) {
-                try {
-                    InputStream input = propURL.openStream();
+                try(InputStream input = propURL.openStream()) {
                     ps.load(input);
-                    input.close();
                 } catch (IOException e) {
                     throw new SQLException("IO Error attempting to load class path properties file from resource " + resource, e);
                 }

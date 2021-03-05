@@ -21,7 +21,7 @@ package org.apache.jena.irix;
 import java.util.Objects;
 
 /**
- * Non-resolving provider that accepts anything string for <...>
+ * Non-resolving provider that accepts anything string for &lt;...&gt;.
  * <p>
  * <i>Caveat emptor</i>.
  */

@@ -48,6 +48,7 @@ import org.junit.Test ;
  * specific stuff that has to be tested within this package
  *
  */
+@SuppressWarnings("resource")
 public abstract class AbstractJenaStatementTests {
 
     /**
