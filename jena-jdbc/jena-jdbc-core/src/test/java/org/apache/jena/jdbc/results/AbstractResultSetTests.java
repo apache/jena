@@ -45,6 +45,7 @@ import org.junit.* ;
  * compatibility level
  * 
  */
+@SuppressWarnings("resource")
 public abstract class AbstractResultSetTests {
 
     static {

@@ -48,6 +48,7 @@ import org.junit.Test ;
  * Abstract tests for {@link JenaConnection} implementations
  * 
  */
+@SuppressWarnings("resource")
 public abstract class AbstractJenaConnectionTests {
 
     static {

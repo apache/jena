@@ -32,6 +32,7 @@ import org.junit.Test;
  * Tests for the {@link MetaResultSet}
  * 
  */
+@SuppressWarnings("resource")
 public class TestMetaResultSet {
 
     /**
