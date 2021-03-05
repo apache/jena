@@ -97,7 +97,7 @@ then
 fi
 
 CP=$JAR
-if [ -d $FUSEKI_BASE/extra ]
+if [ -d "$FUSEKI_BASE/extra" ]
 then
    CP="${CP}:${FUSEKI_BASE}/extra/*" 
 fi
