@@ -137,13 +137,6 @@
 					<charset>UTF-8</charset>
 					<docencoding>UTF-8</docencoding>
 
-					<additionalDependencies>
-						<additionalDependency>
-							<groupId>log4j</groupId>
-							<artifactId>log4j</artifactId>
-							<version>${ver.log4j1}</version>
-						</additionalDependency>
-					</additionalDependencies>
 					<!-- Include only JDBC dependencies -->
 					<includeDependencySources>true</includeDependencySources>
 					<includeTransitiveDependencySources>true</includeTransitiveDependencySources>
