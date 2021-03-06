@@ -23,8 +23,8 @@ import static org.junit.Assert.*;
 import org.apache.jena.graph.*;
 import org.junit.Test;
 
-/** Tests for {@link Node_Ext} */
-public class TestNodeExt {
+/** Tests for {@link Node_Triple} and other unusual nodes */
+public class TestNodeExtras {
 
     private static Node s = NodeFactory.createBlankNode();
     private static Node p = NodeCreateUtils.create("eg:p");
@@ -39,59 +39,69 @@ public class TestNodeExt {
 
     private static Node_Triple newTripleTerm(Node s, Node p , Node o)   { return new Node_Triple(s,p,o); }
 
-     @Test public void ext_triple_1() {
-        Node_Triple nt = newTripleTerm(s,p,o);
-        assertNotNull(nt.get());
-        assertNotNull(Node_Triple.tripleOrNull(nt));
-        assertNotNull(Node_Triple.triple(nt));
-        assertEquals(triple1, nt.get());
+    private static Node_Graph newGraphTerm(Graph graph)                 { return new Node_Graph(graph); }
+
+    private static Node_Graph newGraphTerm()                            { return new Node_Graph(Factory.empty()); }
+
+     @Test public void term_triple_1() {
+        Node nt = newTripleTerm(s,p,o);
+        assertTrue(nt.isNodeTriple());
+        assertNotNull(nt.getTriple());
+        assertNotNull(nt.getTriple());
+        assertEquals(triple1, nt.getTriple());
 
         assertEquals(nt, nt);
-        assertNotEquals(nt.get().hashCode(), nt.hashCode());
+        assertNotEquals(nt.getTriple().hashCode(), nt.hashCode());
         assertTrue(nt.sameValueAs(nt));
     }
 
-    @Test public void ext_triple_2() {
-        Node_Triple nt1 = newTripleTerm(s,p,o);
-        Node_Triple nt2 = newTripleTerm(s,p,o);
+    @Test public void term_triple_2() {
+        Node nt1 = newTripleTerm(s,p,o);
+        Node nt2 = newTripleTerm(s,p,o);
 
         assertEquals(nt1, nt2);
         assertEquals(nt1.hashCode(), nt2.hashCode());
         assertTrue(nt1.sameValueAs(nt2));
     }
 
-    @Test public void ext_triple_3() {
-        Node_Triple nt1 = newTripleTerm(triple1);
-        Node_Triple nt2 = newTripleTerm(triple2);
-        assertNotSame(nt1.get(), nt2.get());
+    @Test public void term_triple_3() {
+        Node nt1 = newTripleTerm(triple1);
+        Node nt2 = newTripleTerm(triple2);
+        assertNotSame(nt1.getTriple(), nt2.getTriple());
         assertNotSame(nt1, nt2);
         assertEquals(nt1, nt2);
         assertEquals(nt1.hashCode(), nt2.hashCode());
     }
 
-    @Test public void ext_triple_4() {
-        Node_Triple nt1 = newTripleTerm(triple1);
-        Node_Triple nt9 = newTripleTerm(triple9);
-        assertNotSame(nt1.get(), nt9.get());
+    @Test public void term_triple_4() {
+        Node nt1 = newTripleTerm(triple1);
+        Node nt9 = newTripleTerm(triple9);
+        assertNotSame(nt1.getTriple(), nt9.getTriple());
         assertNotSame(nt1, nt9);
         assertNotEquals(nt1, nt9);
         assertFalse(nt1.sameValueAs(nt9));
     }
 
-    @Test public void ext_triple_bad_1() {
+    @Test(expected=UnsupportedOperationException.class)
+    public void term_triple_bad_1() {
         Node n = NodeFactory.createLiteral("abc");
-        assertNull(Node_Triple.tripleOrNull(n));
+        n.getTriple();
+    }
+
+    @Test(expected=UnsupportedOperationException.class)
+    public void term_triple_bad_2() {
+        Node n = NodeFactory.createURI("http://example/abc");
+        n.getTriple();
     }
 
     @Test
-    public void ext_triple_bad_2() {
-        Node n = NodeFactory.createLiteral("abc");
-        assertNull(Node_Triple.tripleOrNull(n));
-    }
+    public void term_graph_1() {
+        Node nGraph = newGraphTerm();
+        assertTrue(nGraph.isNodeGraph());
+        assertNotNull(nGraph.getGraph());
 
-    @Test(expected=JenaNodeException.class)
-    public void ext_triple_bad_3() {
-        Node n = NodeFactory.createLiteral("abc");
-        Node_Triple.triple(n);
+        assertEquals(nGraph, nGraph);
+        assertNotEquals(nGraph.getGraph().hashCode(), nGraph.hashCode());
+        assertTrue(nGraph.sameValueAs(nGraph));
     }
 }

@@ -26,15 +26,33 @@ package org.apache.jena.graph;
  * For experimentation.
  * Otherwise, unsupported.
  */
-public class Node_Graph extends Node_Ext<Graph>{
+public class Node_Graph extends Node {
+
+    private final Graph graph;
 
     public Node_Graph(Graph graph) {
         super(graph);
+        this.graph = graph;
+    }
+
+    @Override
+    public boolean isNodeGraph() {
+        return true;
+    }
+
+    @Override
+    public Graph getGraph() {
+        return graph;
+    }
+
+    @Override
+    public Object visitWith(NodeVisitor v) {
+        return v.visitGraph(this, graph);
     }
 
     @Override
     public int hashCode() {
-        return System.identityHashCode(get())*31;
+        return System.identityHashCode(getGraph())*31;
     }
 
     @Override
@@ -44,6 +62,12 @@ public class Node_Graph extends Node_Ext<Graph>{
         if ( !(o instanceof Node_Graph) )
             return false;
         Node_Graph other = (Node_Graph)o;
-        return this.get() == other.get();
+        return this.getGraph() == other.getGraph();
+    }
+
+    @Override
+    public boolean isConcrete() {
+        // Safe answer!
+        return false;
     }
 }

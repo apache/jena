@@ -476,6 +476,10 @@ public class TestNode extends GraphTestBase
             public Object visitURI( Node_URI it, String uri ) { return it; }
             @Override
             public Object visitVariable( Node_Variable it, String name ) { return it; }
+            @Override
+            public Object visitTriple(Node_Triple it, Triple triple) { return it; }
+            @Override
+            public Object visitGraph(Node_Graph it, Graph graph) { return it; }
         };
         testVisitorPatternNode( "sortOfURI", returnNode );
         testVisitorPatternNode( "?variable", returnNode );
@@ -497,6 +501,16 @@ public class TestNode extends GraphTestBase
         node( "_anon" ).visitWith( nv );        
         node( "11" ).visitWith( nv );        
         node( "??" ).visitWith( nv );
+        // ---
+        Node s = node( "uri1" );
+        Node p = node( "uri2" );
+        Node o = node( "uri1" );
+        Node_Triple nt = new Node_Triple(s, p, o);
+        nt.visitWith(nv);
+        // ---
+        Graph g = Factory.empty();
+        Node_Graph ng = new Node_Graph(g);
+        ng.visitWith(nv);
     }
 
     public void testVisitorPatternValue()
@@ -518,6 +532,12 @@ public class TestNode extends GraphTestBase
             @Override
             public Object visitVariable( Node_Variable it, String name ) 
             { assertEquals( it.getName(), name ); return null; }
+            @Override
+            public Object visitTriple(Node_Triple it, Triple triple)
+            { assertEquals( it.getTriple(), triple ); return null; }
+            @Override
+            public Object visitGraph(Node_Graph it, Graph graph)
+            { assertEquals( it.getGraph(), graph ); return null; }
         };
         visitExamples( checkValue );
     }
@@ -546,10 +566,17 @@ public class TestNode extends GraphTestBase
             @Override
             public Object visitVariable( Node_Variable it, String name ) 
             { strings[0] += " variable"; return null; }
+            @Override
+            public Object visitTriple(Node_Triple it, Triple triple)
+            { strings[0] += " termTriple"; return null; }
+            @Override
+            public Object visitGraph(Node_Graph it, Graph graph)
+            { strings[0] += " termGraph"; return null; }
+
         };
-        String desired = " uri variable blank literal any";        
+        String desired = " uri variable blank literal any termTriple termGraph";        
         visitExamples( checkCalled );
-        assertEquals( "all vists must have been made", desired, strings[0] );
+        assertEquals( "all visits must have been made", desired, strings[0] );
     }
 
     public void testSimpleMatches()

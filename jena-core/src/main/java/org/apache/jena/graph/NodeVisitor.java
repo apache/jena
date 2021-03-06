@@ -31,4 +31,6 @@ public interface NodeVisitor
     Object visitLiteral( Node_Literal it, LiteralLabel lit );
     Object visitURI( Node_URI it, String uri );
     Object visitVariable( Node_Variable it, String name );
+    Object visitTriple( Node_Triple it, Triple triple);
+    Object visitGraph( Node_Graph it, Graph graph);
     }

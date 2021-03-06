@@ -64,20 +64,6 @@ public abstract class Node implements Serializable {
     public abstract boolean isConcrete();
 
     /**
-        Answer true iff this node is an "triple node" (RDF-star)
-     */
-    public boolean isNodeTriple()
-        { return false; }
-
-    /**
-        Answer true iff this node is an "graph node" (N3 formula).
-        This is not related to named graphs.
-     */
-    public boolean isNodeGraph()
-        { return false; }
-
-
-    /**
          Answer true iff this node is a literal node [subclasses override]
     */
     public boolean isLiteral()
@@ -99,6 +85,19 @@ public abstract class Node implements Serializable {
         Answer true iff this node is a variable node - subclasses override
     */
     public boolean isVariable()
+        { return false; }
+
+    /**
+        Answer true iff this node is an "triple node" (RDF-star)
+     */
+    public boolean isNodeTriple()
+        { return false; }
+
+    /**
+        Answer true iff this node is an "graph node" (N3 formula).
+        This is not related to named graphs.
+     */
+    public boolean isNodeGraph()
         { return false; }
 
     /** get the blank node id if the node is blank, otherwise die horribly */
@@ -158,7 +157,7 @@ public abstract class Node implements Serializable {
         { throw new NotLiteral( this ); }
 
     /**
-        Exception thrown if a literal-access operation is attemted on a
+        Exception thrown if a literal-access operation is attempted on a
         non-literal node.
     */
     public static class NotLiteral extends JenaException
@@ -190,6 +189,14 @@ public abstract class Node implements Serializable {
     /** get a variable nodes name, otherwise die horribly */
     public String getName()
         { throw new UnsupportedOperationException( "this (" + this.getClass() + ") is not a variable node" ); }
+
+    /** Get the triple for a triple term (embedded triple), otherwise die horribly */
+    public Triple getTriple()
+        { throw new UnsupportedOperationException( "this (" + this.getClass() + ") is not a embedded triple node" ); }
+
+    /** Get the graph for a graph term (N3 formula), otherwise die horribly */
+    public Graph getGraph()
+        { throw new UnsupportedOperationException( "this (" + this.getClass() + ") is not a graph-valued node" ); }
 
     /** answer true iff this node is a URI node with the given URI */
     public boolean hasURI( String uri )

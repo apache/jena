@@ -55,7 +55,7 @@ public class TestPackage extends TestSuite {
         addTest( TestGraphMatchWithInference.suite());
         addTestSuite( TestGraphEvents.class );
         addTestSuite( TestGraphBaseToString.class );
-        addTest( new JUnit4TestAdapter(TestNodeExt.class) );
+        addTest( new JUnit4TestAdapter(TestNodeExtras.class) );
 
         // Has to be in a different package.
         addTest( new JUnit4TestAdapter(TestGraphUtil.class) );
