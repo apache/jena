@@ -26,11 +26,13 @@ import static org.apache.jena.riot.web.HttpOp.execHttpGet;
 import static org.apache.jena.riot.web.HttpOp.execHttpPost;
 import static org.apache.jena.riot.web.HttpOp.execHttpPostStream;
 import static org.junit.Assert.*;
+import static org.awaitility.Awaitility.await;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.List;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -54,6 +56,7 @@ import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.riot.web.HttpResponseHandler;
 import org.apache.jena.web.HttpSC;
+import org.awaitility.Awaitility;
 import org.junit.*;
 
 /** Tests of the admin functionality */
@@ -68,6 +71,8 @@ public class TestAdmin extends AbstractFusekiTest {
     @Before public void setLogging() {
         LogCtl.setLevel(Fuseki.backupLogName, "ERROR");
         LogCtl.setLevel(Fuseki.compactLogName,"ERROR");
+        Awaitility.setDefaultPollDelay(20,TimeUnit.MILLISECONDS);
+        Awaitility.setDefaultPollInterval(50,TimeUnit.MILLISECONDS);
     }
 
     @After public void unsetLogging() {
@@ -488,9 +493,8 @@ public class TestAdmin extends AbstractFusekiTest {
     @Test public void task_6() {
         String x1 = execSleepTask(null, 1000);
         String x2 = execSleepTask(null, 1000);
-        List<String> running = runningTasks();
-        assertTrue(running.size()>1);
-        waitForTasksToFinish(1000, 100, 2000);
+        await().timeout(500,TimeUnit.MILLISECONDS).until(() -> runningTasks().size() > 1);
+        await().timeout(2000, TimeUnit.MILLISECONDS).until(() -> runningTasks().isEmpty());
     }
 
     @Test public void task_7() {
