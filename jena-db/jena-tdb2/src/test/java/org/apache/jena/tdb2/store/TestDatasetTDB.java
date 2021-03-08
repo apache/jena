@@ -39,7 +39,6 @@ import org.junit.Test;
 public class TestDatasetTDB
 {
     static {
-        JenaSystem.DEBUG_INIT = true;
         JenaSystem.init();
     }
 
@@ -149,7 +148,7 @@ public class TestDatasetTDB
         Model m = ds.getDefaultModel();
         load1(m);
 
-        String qs = "CONSTRUCT {?s ?p ?o } WHERE { GRAPH <"+defaultGraph+"> {?s ?p ?o}}";
+        String qs = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <"+defaultGraph+"> {?s ?p ?o}}";
         Query q = QueryFactory.create(qs);
         QueryExecution qExec = QueryExecutionFactory.create(q, ds);
         Model m2 = qExec.execConstruct();
@@ -168,7 +167,7 @@ public class TestDatasetTDB
         load2(m);
         load3(m);
 
-        String qs = "CONSTRUCT {?s ?p ?o } WHERE { GRAPH <"+unionGraph+"> {?s ?p ?o}}";
+        String qs = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <"+unionGraph+"> {?s ?p ?o}}";
         Query q = QueryFactory.create(qs);
         QueryExecution qExec = QueryExecutionFactory.create(q, ds);
         Model m2 = qExec.execConstruct();

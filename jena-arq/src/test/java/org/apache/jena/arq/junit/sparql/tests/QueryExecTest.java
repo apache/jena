@@ -269,7 +269,7 @@ public class QueryExecTest implements Runnable {
             bindings.add(builder.build());
         }
         ResultSet rs = new ResultSetStream(resultsActual.getResultVars(), null, new QueryIterPlainWrapper(bindings.iterator()));
-        return ResultSetFactory.makeRewindable(rs);
+        return rs.rewindable();
     }
 
     private static ResultSetRewindable unique(ResultSetRewindable results) {
@@ -286,7 +286,7 @@ public class QueryExecTest implements Runnable {
         }
         QueryIterator qIter = new QueryIterPlainWrapper(x.iterator());
         ResultSet rs = new ResultSetStream(results.getResultVars(), ModelFactory.createDefaultModel(), qIter);
-        return ResultSetFactory.makeRewindable(rs);
+        return rs.rewindable();
     }
 
     private static boolean resultSetEquivalent(Query query, ResultSetRewindable resultsExpected, ResultSetRewindable resultsActual) {
@@ -322,7 +322,12 @@ public class QueryExecTest implements Runnable {
                     SparqlTestLib.testFailure("Expected results are not a graph: " + testItem.getName());
 
                 Model resultsExpected = results.getModel();
-                if ( !resultsExpected.isIsomorphicWith(resultsActual) ) {
+
+
+                boolean pass = IsoMatcher.isomorphic(resultsExpected.getGraph(), results.getModel().getGraph()) ;
+                // Does not cope with <<>>
+                //boolean pass = resultsExpected.isIsomorphicWith(resultsActual);
+                if (! pass ) {
                     printFailedModelTest(query, resultsExpected, resultsActual);
                     fail("Results do not match: " + testItem.getName());
                 }

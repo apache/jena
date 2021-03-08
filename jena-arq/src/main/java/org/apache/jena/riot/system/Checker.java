@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
 import org.apache.jena.JenaRuntime;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.iri.IRI;
 import org.apache.jena.iri.IRIComponents;
@@ -65,7 +64,7 @@ public class Checker {
         else if ( node.isVariable() )
             return checkVar(node, errorHandler, line, col);
         else if ( node.isNodeTriple() ) {
-            Triple t = Node_Triple.triple(node);
+            Triple t = node.getTriple();
             return check(t.getSubject()) && check(t.getPredicate()) && check(t.getObject())
                     && checkTriple(t);
         }

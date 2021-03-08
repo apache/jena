@@ -30,7 +30,6 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.datatypes.xsd.impl.RDFLangString ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
@@ -198,7 +197,7 @@ public class ThriftConvert
         }
 
         if ( node.isNodeTriple() ) {
-            Triple triple = Node_Triple.triple(node);
+            Triple triple = node.getTriple();
 
             RDF_Term sTerm = new RDF_Term();
             toThrift(triple.getSubject(), pmap, sTerm, allowValues);

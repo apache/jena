@@ -98,7 +98,7 @@ public abstract class AbstractTestDatasetWithTextIndexBase {
         dataset.begin(ReadWrite.READ);
         try(QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
             ResultSet rs = qexec.execSelect() ;
-            ResultSetRewindable results = ResultSetFactory.makeRewindable(rs) ;
+            ResultSetRewindable results = rs.rewindable();
 //            ResultSetFormatter.out(results); 
 //            results.reset(); 
             assertEquals(label, expectedNumResults > 0, results.hasNext());

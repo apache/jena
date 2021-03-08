@@ -56,8 +56,8 @@ public class TupleIndexWrapper implements TupleIndex
     }
 
     @Override
-    public String getMapping() {
-        return index.getMapping() ;
+    public String getMappingStr() {
+        return index.getMappingStr() ;
     }
 
     @Override

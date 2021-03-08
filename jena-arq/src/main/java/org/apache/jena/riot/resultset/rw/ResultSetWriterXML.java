@@ -25,7 +25,6 @@ import java.util.Objects;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.QuerySolution;
@@ -356,7 +355,7 @@ public class ResultSetWriterXML implements ResultSetWriter {
         }
 
         private void printTripleTerm(Node node) {
-            Triple triple = Node_Triple.triple(node);
+            Triple triple = node.getTriple();
             openTag(dfTriple);
 
             // Subject
@@ -397,13 +396,18 @@ public class ResultSetWriterXML implements ResultSetWriter {
             for (int i = 0; i < string.length(); i++) {
                 found = string.charAt(i);
 
-                switch (found) {
-                    case '&' : replacement = "&amp;"; break;
-                    case '<' : replacement = "&lt;"; break;
-                    case '>' : replacement = "&gt;"; break;
-                    case '\r': replacement = "&#x0D;"; break;
-                    case '\n': replacement = "&#x0A;"; break;
-                    default  : replacement = null;
+                if ( found < ' ' ) {
+                    // Strictly error in XML 1.0
+                    replacement = String.format("&#x%04X;", (int)found);
+                } else {
+                    switch (found) {
+                        case '&' : replacement = "&amp;"; break;
+                        case '<' : replacement = "&lt;"; break;
+                        case '>' : replacement = "&gt;"; break;
+                        case '\r': replacement = "&#x0D;"; break;
+                        case '\n': replacement = "&#x0A;"; break;
+                        default  : replacement = null;
+                    }
                 }
 
                 if (replacement != null) {

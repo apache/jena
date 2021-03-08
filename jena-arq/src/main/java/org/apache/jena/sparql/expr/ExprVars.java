@@ -23,7 +23,6 @@ import java.util.HashSet ;
 import java.util.Set ;
 
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.sparql.algebra.OpVars ;
@@ -160,9 +159,8 @@ public class ExprVars
                 action.var(acc, Var.alloc(node));
                 return;
             }
-            Triple t = Node_Triple.tripleOrNull(node);
-            if ( t != null )
-                process(t);
+            if ( node.isNodeTriple() )
+                process(node.getTriple());
         }
     }
 

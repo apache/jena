@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
@@ -88,7 +87,7 @@ public class TestSPARQLStarParse {
         Triple t = build("{ :x  :q << <<:s ?p :o>> :p 678 >> }");
         assertFalse(t.isConcrete());
         assertTrue(t.getObject().isNodeTriple());
-        assertTrue(Node_Triple.triple(t.getObject()).getSubject().isNodeTriple());
+        assertTrue(t.getObject().getTriple().getSubject().isNodeTriple());
     }
 
     @Test public void build_3()    {

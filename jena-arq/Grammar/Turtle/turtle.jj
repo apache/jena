@@ -194,7 +194,6 @@ Node EmbSubject(): { Node o ; String iri; }
 {
   ( iri = iri() { o = createNode(iri, token.beginLine, token.beginColumn) ; }
   | o = BlankNode()
-  | o = Literal()
   | o = EmbTriple()
   )
   { return o; }

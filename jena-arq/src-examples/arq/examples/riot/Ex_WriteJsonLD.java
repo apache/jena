@@ -53,8 +53,8 @@ public class Ex_WriteJsonLD
 
     /**
      * Simple stuff.
-     * 
-     * output using defaults, 
+     *
+     * output using defaults,
      * in "expanded"", compacted" or "flattened" format
      * (framed is more difficult, not handled here)
      */
@@ -84,7 +84,7 @@ public class Ex_WriteJsonLD
         // and corresponding values are displayed as prefix:localname
         // (note something nice wrt prefixes in jsonld: look in the output at the value of "seeAlso")
         m.setNsPrefix("ex", "http://www.ex.com/");
-        m.setNsPrefix("sh", "http://schema.org/");
+        m.setNsPrefix("sh", "https://schema.org/");
         System.out.println("\n--- DEFAULT, model including prefix mappings ---");
         RDFDataMgr.write(System.out, m, RDFFormat.JSONLD_PRETTY);
 
@@ -110,9 +110,9 @@ public class Ex_WriteJsonLD
      * To get more control about the output,
      * we have to use a mechanism provided by jena to pass information
      * to the writing process
-     * 
+     *
      * This requires a few lines of code, see {@link #write(DatasetGraph, RDFFormat, Context)}
-     * 
+     *
      * Here we use this write method to see what can be customized.
      */
     public void moreControl() {
@@ -138,7 +138,7 @@ public class Ex_WriteJsonLD
         // the JsonLDWriteContext class
 
         // so, the way to proceed is:
-        // JsonLDWriteContext ctx = new JsonLDWriteContext();       
+        // JsonLDWriteContext ctx = new JsonLDWriteContext();
         // ctx.setSomething(...)
         // write(g, RDFFormat.JSONLD_COMPACT_PRETTY, ctx);
 
@@ -153,7 +153,7 @@ public class Ex_WriteJsonLD
 
     /**
      * Shows how to customize the "@context" in "compacted" and "flattened" format.
-     * 
+     *
      * To set it to the URI of a vocab, {@link #settingAtContextToURI()}
      */
     void controllingAtContext() {
@@ -163,10 +163,10 @@ public class Ex_WriteJsonLD
         DatasetGraph g = DatasetFactory.wrap(m).asDatasetGraph();
         JsonLDWriteContext ctx = new JsonLDWriteContext();
 
-        // When no value for the "@context" is provided, 
+        // When no value for the "@context" is provided,
         // Jena computes one from the defined prefixes, and from the RDF content.
-        // This default is probably good enough in most of the cases, 
-        // but you may want to customize it. 
+        // This default is probably good enough in most of the cases,
+        // but you may want to customize it.
         // Or, if it is always the same one, you may consider that computing it again and again
         // (each time that you output data), is a waste of time.
         // (the computing of the "@context" implies to loop through all the triples).
@@ -177,7 +177,7 @@ public class Ex_WriteJsonLD
         // using the setJsonLDContext(String) method.
         // (Alternatively, you can directly pass the object expected by the JSON-LD API)
 
-        // For instance, we can pass a simple context 
+        // For instance, we can pass a simple context
         // that uses jsonld "@vocab" keyord to set the "default vocabulary"
         // to schema.org.
         String atContextAsJson = "{\"@vocab\":\"http://schema.org/\"}";
@@ -194,7 +194,7 @@ public class Ex_WriteJsonLD
         // containing the actual JSON-LD context.
 
         // Let's take one Model that only uses schema.org terms,
-        // and let's try to set the "@Context" to the URL of schema.org 
+        // and let's try to set the "@Context" to the URL of schema.org
         // "@context" : "http://schema.org/"
 
         Model m = aModelThatOnlyUsesSchemaDotOrg();
@@ -240,7 +240,7 @@ public class Ex_WriteJsonLD
         // a "frame" is a specific graph layout that is applied to output data
         // It can be used to filter the output data.
         // In this example, we show how to output only the resources of a givn rdf:type
-        
+
         Model m = ModelFactory.createDefaultModel();
         String ns = "http://schema.org/";
         Resource person = m.createResource(ns + "Person");
@@ -261,7 +261,7 @@ public class Ex_WriteJsonLD
         JsonLDWriteContext ctx = new JsonLDWriteContext();
 
         // only output the persons using a frame
-        
+
         String frame = "{\"@type\" : \"http://schema.org/Person\"}";
         ctx.setFrame(frame);
         System.out.println("\n--- Using frame to select resources to be output: only output persons ---");
@@ -287,13 +287,13 @@ public class Ex_WriteJsonLD
 
     /**
      * Write RDF data as JSON-LD.
-     * 
+     *
      * To get more control about the output,
      * we have to use a mechanism provided by jena to pass information
      * to the writing process (cf. org.apache.jena.riot.WriterDatasetRIOT and the "Context" mechanism).
      * For that, we have to create a WriterDatasetRIOT (a one-time use object)
      * and we pass a "Context" object (not to be confused with the "@context" in JSON-LD) as argument to its write method
-     * 
+     *
      * @param out
      * @param f RDFFormat of the output, eg. RDFFormat.JSONLD_COMPACT_PRETTY
      * @param g the data that we want to output as JSON-LD

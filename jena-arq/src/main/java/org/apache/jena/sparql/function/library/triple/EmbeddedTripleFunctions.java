@@ -22,7 +22,6 @@ import java.util.function.Function;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
@@ -51,7 +50,7 @@ public class EmbeddedTripleFunctions {
         Node n = nv.asNode();
         if ( ! n.isNodeTriple() )
             throw new ExprEvalException(name+": Not a triple term: "+nv);
-        Triple t = Node_Triple.triple(n);
+        Triple t = n.getTriple();
         Node x = accessor.apply(t);
         return NodeValue.makeNode(x);
     }

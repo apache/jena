@@ -33,27 +33,27 @@ public abstract class TupleIndexBase implements TupleIndex
     protected final int tupleLength ;
 
     private final String name ;
-    
+
     protected TupleIndexBase(int N, ColumnMap colMapping, String name)
     {
         this.tupleLength = N ;
         this.colMap = colMapping ;
         this.name = name ;
     }
-    
+
     /** Add tuple worker: Tuple passed in unmapped (untouched) order */
     protected abstract boolean performAdd(Tuple<NodeId> tuple) ;
-    
-    /** Delete tuple worker: Tuple passed in unmaped (untouched) order */
+
+    /** Delete tuple worker: Tuple passed in unmapped (untouched) order */
     protected abstract boolean performDelete(Tuple<NodeId> tuple) ;
-    
-    /** Find tuples worker: Tuple passed in unmaped (untouched) order */
+
+    /** Find tuples worker: Tuple passed in unmapped (untouched) order */
     protected abstract Iterator<Tuple<NodeId>> performFind(Tuple<NodeId> tuple) ;
 
     /** Insert a tuple - return true if it was really added, false if it was a duplicate */
     @Override
-    public final boolean add(Tuple<NodeId> tuple) 
-    { 
+    public final boolean add(Tuple<NodeId> tuple)
+    {
         if ( Check )
         {
             if ( tupleLength != tuple.len() )
@@ -63,8 +63,8 @@ public abstract class TupleIndexBase implements TupleIndex
     }
     /** Delete a tuple - return true if it was deleted, false if it didn't exist */
     @Override
-    public final boolean delete(Tuple<NodeId> tuple) 
-    { 
+    public final boolean delete(Tuple<NodeId> tuple)
+    {
         if ( Check )
         {
             if ( tupleLength != tuple.len() )
@@ -84,11 +84,11 @@ public abstract class TupleIndexBase implements TupleIndex
         {
             if ( tupleLength != pattern.len() )
             throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", pattern.len(), tupleLength)) ;
-        } 
+        }
         // null to NodeId.NodIdAny ??
         return performFind(pattern) ;
     }
-    
+
     @Override
     public final int weight(Tuple<NodeId> pattern)
     {
@@ -101,9 +101,9 @@ public abstract class TupleIndexBase implements TupleIndex
         }
         return tupleLength ;
     }
-    
+
     @Override
-    public final String getMapping()          { return colMap.getLabel() ; }
+    public final String getMappingStr()          { return colMap.getLabel() ; }
 
     @Override
     public final String getName()           { return name ; }
@@ -113,10 +113,10 @@ public abstract class TupleIndexBase implements TupleIndex
 
     @Override
     public final ColumnMap getColumnMap()   { return colMap ;  }
-    
+
     protected final boolean undef(NodeId x)
     { return NodeId.isAny(x) ; }
-    
+
     @Override
     public String toString() { return "index:"+getName() ; }
 }

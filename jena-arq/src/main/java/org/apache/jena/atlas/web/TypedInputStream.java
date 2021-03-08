@@ -18,53 +18,57 @@
 
 package org.apache.jena.atlas.web;
 
-import java.io.FilterInputStream ;
-import java.io.IOException ;
-import java.io.InputStream ;
+import java.io.FilterInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
-import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.IO;
 
 public class TypedInputStream extends FilterInputStream
 {
-    private ContentType mediaType ;
+    private ContentType mediaType;
     // The URI to use when parsing.
     // May be different from the URI used to access the resource
     // e.g. 303 redirection, mapped URI redirection
-    private String baseURI ;
-    private boolean isClosed = false ;
+    private String baseURI;
+    private boolean isClosed = false;
 
     public static TypedInputStream wrap(InputStream in) {
         return new TypedInputStream(in);
     }
 
     private TypedInputStream(InputStream in)
-    { this(in, (ContentType)null, null) ; }
+    { this(in, (ContentType)null, null); }
 
     public TypedInputStream(InputStream in, String contentType)
-    { this(in, ContentType.create(contentType), null) ; }
+    { this(in, ContentType.create(contentType), null); }
 
     public TypedInputStream(InputStream in, ContentType ct)
-    { this(in, ct, null) ; }
+    { this(in, ct, null); }
 
-    public TypedInputStream(InputStream in, ContentType ct, String baseURI)
-    {
-        super(in) ;
-        this.mediaType = ct ;
-        this.baseURI = baseURI ;
+    public TypedInputStream(InputStream in, ContentType ct, String baseURI) {
+        super(in);
+        this.mediaType = ct;
+        this.baseURI = baseURI;
     }
 
-    public String getContentType()          { return mediaType == null ? null : mediaType.getContentTypeStr() ; }
-    public String getCharset()              { return mediaType == null ? null : mediaType.getCharset() ; }
-    public ContentType getMediaType()       { return mediaType ; }
-    public String getBaseURI()             { return baseURI ; }
-    public InputStream getInputStream()     { return super.in ; }
+    public String getContentType()          { return mediaType == null ? null : mediaType.getContentTypeStr(); }
+    public String getCharset()              { return mediaType == null ? null : mediaType.getCharset(); }
+    public ContentType getMediaType()       { return mediaType; }
+    public String getBaseURI()              { return baseURI; }
+    public InputStream getInputStream()     { return super.in; }
 
     @Override
     public void close() {
         if ( isClosed )
-            return ;
+            return;
         isClosed = true;
         try { super.close(); }
         catch (IOException ex) { IO.exception(ex); }
+    }
+    
+    @Override
+    public String toString() {
+        return "TypeInputStream: type="+mediaType; 
     }
 }

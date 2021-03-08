@@ -105,6 +105,11 @@ public class NodeTupleTableConcrete implements NodeTupleTable
         }
     }
 
+    @Override
+    public int getTupleLen() {
+        return tupleTable.getTupleLen();
+    }
+
     /** Find by node. */
     @Override
     public Iterator<Tuple<Node>> find(Node... nodes)
@@ -168,7 +173,8 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     {
         try {
             startRead();
-            return iteratorControl(tupleTable.getIndex(0).all());
+            Iterator<Tuple<NodeId>> iter = tupleTable.getIndex(0).all();
+            return iteratorControl(iter);
         } finally { finishRead(); }
     }
 

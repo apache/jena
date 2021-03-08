@@ -39,4 +39,9 @@ public class Tuple0<X> extends TupleBase<X> {
 
     @Override
     public <Y> Tuple<Y> map(Function<X,Y> function) { return new Tuple0<>() ;}
+
+    @Override
+    public boolean contains(X item) {
+        return false;
+    }
 }

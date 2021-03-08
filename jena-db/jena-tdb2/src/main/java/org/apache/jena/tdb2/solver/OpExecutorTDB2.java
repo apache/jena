@@ -390,7 +390,7 @@ public class OpExecutorTDB2 extends OpExecutor
                 //return SolverLib.execute((GraphTDB)g, bgp, input, filter, execCxt);
                 GraphTDB gtdb = (GraphTDB)g;
                 Node gn = decideGraphNode(gtdb.getGraphName(), execCxt);
-                return SolverLib.execute(gtdb.getDSG(), gn, bgp, input, filter, execCxt);
+                return Solver.execute(gtdb.getDSG(), gn, bgp, input, filter, execCxt);
             }
             Log.warn(this, "Non-GraphTDB passed to OpExecutorPlainTDB: "+g.getClass().getSimpleName());
             return super.execute(opBGP, input);
@@ -407,7 +407,7 @@ public class OpExecutorTDB2 extends OpExecutor
                 DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset();
                 Explain.explain("Execute", opQuadPattern.getPattern(), execCxt.getContext());
                 BasicPattern bgp = opQuadPattern.getBasicPattern();
-                return SolverLib.execute(ds, gn, bgp, input, filter, execCxt);
+                return Solver.execute(ds, gn, bgp, input, filter, execCxt);
             }
             // Maybe a TDB named graph inside a non-TDB dataset.
             Graph g = execCxt.getActiveGraph();
@@ -418,7 +418,7 @@ public class OpExecutorTDB2 extends OpExecutor
                 BasicPattern bgp = opQuadPattern.getBasicPattern();
                 Explain.explain("Execute", bgp, execCxt.getContext());
                 // Don't pass in G -- gn may be different.
-                return SolverLib.execute(((GraphTDB)g).getDSG(), gn, bgp, input, filter, execCxt);
+                return Solver.execute(((GraphTDB)g).getDSG(), gn, bgp, input, filter, execCxt);
             }
             Log.warn(this, "Non-DatasetGraphTDB passed to OpExecutorPlainTDB");
             return super.execute(opQuadPattern, input);

@@ -226,7 +226,7 @@ public class WebContent
      *  </blockquote>
      *  We make content type (via content negotiation) strongest because a server
      *  may return something unexpected because that is all it can do. We are
-     *  assuming servers don't lie. The "hint" is really a hint just for file extenion override.
+     *  assuming servers don't lie. The "hint" is really a hint just for file extension override.
      *  </p><p>
      *  In the case of no file extension, this reduces to the hint being
      *  the default choice if conneg does not produce anything useful.  
@@ -240,6 +240,7 @@ public class WebContent
      */
     public static ContentType determineCT(String contentTypeStr, Lang hintLang, String target) {
         boolean isTextPlain = contentTypeTextPlain.equals(contentTypeStr) ;
+        //boolean isOctetStream = contentTypeOctets.equals(contentTypeStr) ;
     
         if ( contentTypeStr != null  )
             contentTypeStr = contentTypeCanonical(contentTypeStr) ;

@@ -23,9 +23,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.jena.atlas.lib.Map2;
-
-
-
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.tdb2.store.NodeId;
@@ -33,6 +30,10 @@ import org.apache.jena.tdb2.store.NodeId;
 /** Class for a Binding-like structure except it works on NodeIds, not on Nodes */
 public class BindingNodeId extends Map2<Var, NodeId>
 {
+    public static BindingNodeId root = new BindingNodeId(null, null, null) {
+        @Override public String toString()          { return "<root>"; }
+    };
+
     // This is the parent binding - which may be several steps up the chain.
     // This just carried around for later use when we go BindingNodeId back to Binding.
     private final Binding parentBinding;
@@ -40,26 +41,22 @@ public class BindingNodeId extends Map2<Var, NodeId>
     // Possible optimization: there are at most 3 possible values so HashMap is overkill.
     // Use a chain of small objects.
 
-    private BindingNodeId(Map<Var, NodeId> map1, Map2<Var, NodeId> map2, Binding parentBinding)
-    {
+    private BindingNodeId(Map<Var, NodeId> map1, Map2<Var, NodeId> map2, Binding parentBinding) {
         super(map1, map2);
         this.parentBinding = parentBinding;
     }
 
     // Make from an existing BindingNodeId
-    public BindingNodeId(BindingNodeId other)
-    {
-        this(new HashMap<Var, NodeId>(), other, other.getParentBinding());
+    public BindingNodeId(BindingNodeId other) {
+        this(new HashMap<Var, NodeId>(), other, other != null ? other.getParentBinding() : null);
     }
 
     // Make from an existing Binding
-    public BindingNodeId(Binding binding)
-    {
+    public BindingNodeId(Binding binding) {
         this(new HashMap<Var, NodeId>(), null, binding);
     }
 
-    public BindingNodeId()
-    {
+    public BindingNodeId() {
         this(new HashMap<Var, NodeId>(), null, null);
     }
 
@@ -71,6 +68,7 @@ public class BindingNodeId extends Map2<Var, NodeId>
     {
         if ( v == null || n == null )
             throw new IllegalArgumentException("("+v+","+n+")");
+        // Includes conversion where we are copying from parent.
         super.put(v, n);
     }
 
@@ -102,12 +100,16 @@ public class BindingNodeId extends Map2<Var, NodeId>
                 sb.append(" ");
             first = false;
             NodeId x = get(v);
-            sb.append(v);
-            sb.append(" = ");
-            sb.append(x);
+            if ( ! NodeId.isDoesNotExist(x)) {
+                sb.append(v);
+                sb.append(" = ");
+                sb.append(x);
+            }
         }
-
+        if ( getParentBinding() != null ) {
+            sb.append(" ->> ");
+            sb.append(getParentBinding());
+        }
         return sb.toString();
-
     }
 }

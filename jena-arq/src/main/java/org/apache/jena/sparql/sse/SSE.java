@@ -28,6 +28,7 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.shared.NotFoundException ;
 import org.apache.jena.shared.PrefixMapping ;
@@ -40,6 +41,7 @@ import org.apache.jena.sparql.algebra.Table ;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.graph.NodeConst ;
@@ -268,16 +270,27 @@ public class SSE
         return BuilderGraph.buildDataset(item) ;
     }
 
-    /** Read in a file, parse, and obtain a DatasetGraph */
+    /** Read in a file, parse, load a DatasetGraph */
     public static void readDatasetGraph(DatasetGraph dsg, String filename) { readDatasetGraph(dsg, filename, null) ; }
 
-    /** Read in a file, parse, and obtain a DatasetGraph */
-    public static void readDatasetGraph(DatasetGraph dsg, String filename, PrefixMapping pmap)
-    {
-        Item item = readFile(filename, pmap) ;
-        BuilderGraph.buildDataset(dsg, item) ;
+    /** Read in a file, parse, load a DatasetGraph */
+    public static void readDatasetGraph(DatasetGraph dsg, String filename, PrefixMapping pmap) {
+        Item item = readFile(filename, pmap);
+        BuilderGraph.buildDataset(dsg, item);
     }
 
+    /** Build a {@link Binding} */
+    public static Binding parseBinding(String string) {
+        Item item = parse(string);
+        return BuilderBinding.build(item);
+    }
+    
+    /** Build a {@link ResultSet} */
+    public static ResultSet parseResultSet(String string) {
+        Item item = parse(string);
+        return BuilderResultSet.build(item);
+    }
+   
     /** Read in a file, parse, and obtain a SPARQL algebra op */
     public static Op readOp(String filename) { return Algebra.read(filename) ; }
 

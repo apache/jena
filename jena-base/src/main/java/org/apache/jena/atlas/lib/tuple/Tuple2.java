@@ -18,6 +18,7 @@
 
 package org.apache.jena.atlas.lib.tuple;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -52,5 +53,12 @@ public class Tuple2<X> extends TupleBase<X> {
                 function.apply(x1),
                 function.apply(x2)
                 );
+    }
+
+    @Override
+    public boolean contains(X item) {
+        if ( Objects.equals(x1, item) ) return true;
+        if ( Objects.equals(x2, item) ) return true;
+        return false;
     }
 }

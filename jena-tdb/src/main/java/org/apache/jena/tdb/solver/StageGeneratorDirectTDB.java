@@ -31,28 +31,28 @@ import org.apache.jena.tdb.store.NodeId;
 
 /** Execute TDB requests directly -- no reordering
  *  Using OpExecutor is preferred.
- */ 
+ */
 public class StageGeneratorDirectTDB implements StageGenerator
 {
     // Using OpExecutor is preferred.
     StageGenerator above = null ;
-    
+
     public StageGeneratorDirectTDB(StageGenerator original)
     {
         above = original ;
     }
-    
+
     @Override
     public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
         // --- In case this isn't for TDB
         Graph g = execCxt.getActiveGraph() ;
-        
+
         if ( ! ( g instanceof GraphTDB ) )
             // Not us - bounce up the StageGenerator chain
             return above.execute(pattern, input, execCxt) ;
         GraphTDB graph = (GraphTDB)g ;
         Predicate<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext()) ;
-        return SolverLib.execute(graph, pattern, input, filter, execCxt) ;
+        return Solver.execute(graph, pattern, input, filter, execCxt) ;
     }
 }

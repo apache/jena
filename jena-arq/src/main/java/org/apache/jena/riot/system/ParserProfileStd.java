@@ -138,7 +138,7 @@ public class ParserProfileStd implements ParserProfile
     }
 
     private boolean allowSpecialNode(Node node) {
-        return this.allowNodeExtentions && node instanceof Node_Ext<?>;
+        return allowNodeExtentions && node instanceof Node_Triple;
     }
 
     protected void checkTriple(Node subject, Node predicate, Node object, long line, long col) {

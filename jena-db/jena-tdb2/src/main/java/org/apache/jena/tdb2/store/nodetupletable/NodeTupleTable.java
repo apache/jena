@@ -34,6 +34,9 @@ public interface NodeTupleTable extends Sync, Closeable
 
     public void deleteRow(Node... nodes);
 
+    /** The length of tuples managed. -1 indicates "variable length" */
+    public int getTupleLen();
+
     /** Find by node. */
     public Iterator<Tuple<Node>> find(Node... nodes);
 

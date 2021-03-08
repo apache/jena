@@ -21,6 +21,7 @@ package org.apache.jena.sparql.core ;
 import java.util.ArrayList ;
 import java.util.Collection ;
 import java.util.List ;
+import java.util.function.Function;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Node_Variable ;
@@ -80,6 +81,7 @@ public class Var extends Node_Variable
         return lookup(binding, var);
     }
 
+    
     /** Return the value in the binding or the variable itself. */
     public static Node lookup(Binding binding, Var var) {
         Node n = binding.get(var);
@@ -88,6 +90,22 @@ public class Var extends Node_Variable
         return var;
     }
     
+    /** Return the value of the access function or node itself. */
+    public static Node lookup(Function<Var, Node> access, Node node) {
+        if ( !Var.isVar(node) )
+            return node;
+        Var var = Var.alloc(node);
+        return lookup(access, var);
+    }
+
+    /** Return the value of the access function or var itself. */
+    public static Node lookup(Function<Var, Node> access, Var var) {
+        Node n = access.apply(var);
+        if ( n != null )
+            return n;
+        return var;
+    }
+
     // Precalulated the hash code because hashCode() is used so heavily with Var's
     private final int hashCodeValue ;  
     

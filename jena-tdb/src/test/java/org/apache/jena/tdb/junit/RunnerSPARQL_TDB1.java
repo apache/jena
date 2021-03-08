@@ -41,4 +41,3 @@ public class RunnerSPARQL_TDB1 extends AbstractRunnerOfTests {
                 SparqlTests.makeSPARQLTestExecOnly(manifestEntry, creator);
     }
 }
-

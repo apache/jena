@@ -29,8 +29,6 @@ import org.apache.jena.atlas.lib.tuple.TupleFactory;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.QueryCancelledException;
-import org.apache.jena.sparql.core.BasicPattern;
-import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
@@ -38,10 +36,8 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
 import org.apache.jena.sparql.engine.iterator.QueryIterNullIterator;
-import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.lib.NodeLib;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
-import org.apache.jena.tdb2.store.GraphTDB;
 import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
@@ -54,28 +50,6 @@ public class SolverLib
 {
     private static Logger log = LoggerFactory.getLogger(SolverLib.class);
 
-    /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */
-    public static QueryIterator execute(GraphTDB graph, BasicPattern pattern,
-                                        QueryIterator input, Predicate<Tuple<NodeId>> filter,
-                                        ExecutionContext execCxt)
-    {
-        // Maybe default graph or named graph.
-        NodeTupleTable ntt = graph.getNodeTupleTable();
-        return execute(ntt, graph.getGraphName(), pattern, input, filter, execCxt);
-    }
-
-    /** Non-reordering execution of a quad pattern, given a iterator of bindings as input.
-     *  GraphNode is Node.ANY for execution over the union of named graphs.
-     *  GraphNode is null for execution over the real default graph.
-     */
-    public static QueryIterator execute(DatasetGraphTDB ds, Node graphNode, BasicPattern pattern,
-                                        QueryIterator input, Predicate<Tuple<NodeId>> filter,
-                                        ExecutionContext execCxt)
-    {
-        NodeTupleTable ntt = ds.chooseNodeTupleTable(graphNode);
-        return execute(ntt, graphNode, pattern, input, filter, execCxt);
-    }
-
     public static Iterator<BindingNodeId> convertToIds(Iterator<Binding> iterBindings, NodeTable nodeTable)
     { return Iter.map(iterBindings, convFromBinding(nodeTable)); }
 
@@ -84,82 +58,6 @@ public class SolverLib
      */
     public static Iterator<Binding> convertToNodes(Iterator<BindingNodeId> iterBindingIds, NodeTable nodeTable)
     { return Iter.map(iterBindingIds, bindingNodeIds -> convToBinding(bindingNodeIds, nodeTable)); }
-
-    // The worker.  Callers choose the NodeTupleTable.
-    //     graphNode may be Node.ANY, meaning we should make triples unique.
-    //     graphNode may be null, meaning default graph
-
-    private static QueryIterator execute(NodeTupleTable nodeTupleTable, Node graphNode, BasicPattern pattern,
-                                         QueryIterator input, Predicate<Tuple<NodeId>> filter,
-                                         ExecutionContext execCxt)
-    {
-        if ( Quad.isUnionGraph(graphNode) )
-            graphNode = Node.ANY;
-        if ( Quad.isDefaultGraph(graphNode) )
-            graphNode = null;
-
-        List<Triple> triples = pattern.getList();
-        boolean anyGraph = (graphNode==null ? false : (Node.ANY.equals(graphNode)));
-
-        int tupleLen = nodeTupleTable.getTupleTable().getTupleLen();
-        if ( graphNode == null ) {
-            if ( 3 != tupleLen )
-                throw new TDBException("SolverLib: Null graph node but tuples are of length "+tupleLen);
-        } else {
-            if ( 4 != tupleLen )
-                throw new TDBException("SolverLib: Graph node specified but tuples are of length "+tupleLen);
-        }
-
-        // Convert from a QueryIterator (Bindings of Var/Node) to BindingNodeId
-        NodeTable nodeTable = nodeTupleTable.getNodeTable();
-
-        Iterator<BindingNodeId> chain = Iter.map(input, SolverLib.convFromBinding(nodeTable));
-        List<Abortable> killList = new ArrayList<>();
-
-        for ( Triple triple : triples )
-        {
-            Tuple<Node> tuple = null;
-            if ( graphNode == null )
-                // 3-tuples
-                tuple = TupleFactory.create3(triple.getSubject(), triple.getPredicate(), triple.getObject());
-            else
-                // 4-tuples.
-                tuple = TupleFactory.create4(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject());
-            // Plain RDF
-            //chain = solve(nodeTupleTable, tuple, anyGraph, chain, filter, execCxt) ;
-
-            // RDF-star PG
-            //chain = SolverRX.solveRX(nodeTupleTable, tuple, anyGraph, chain, filter, execCxt) ;
-
-            // RDF-star SA
-            chain = SolverRX_SA.stepOne(chain, graphNode, triple, nodeTupleTable, tuple, anyGraph, filter, execCxt) ;
-
-            chain = makeAbortable(chain, killList);
-        }
-
-        // DEBUG POINT
-        if ( false )
-        {
-            if ( chain.hasNext())
-                chain = Iter.debug(chain);
-            else
-                System.out.println("No results");
-        }
-
-        // Timeout wrapper ****
-        // QueryIterTDB gets called async.
-        // Iter.abortable?
-        // Or each iterator has a place to test.
-        // or pass in a thing to test?
-
-
-        // Need to make sure the bindings here point to parent.
-        Iterator<Binding> iterBinding = convertToNodes(chain, nodeTable);
-
-        // "input" will be closed by QueryIterTDB but is otherwise unused.
-        // "killList" will be aborted on timeout.
-        return new QueryIterTDB(iterBinding, killList, input, execCxt);
-    }
 
     /** Create an abortable iterator, storing it in the killList.
      *  Just return the input iterator if kilList is null.
@@ -209,14 +107,15 @@ public class SolverLib
         }
     }
 
-    public static Iterator<BindingNodeId> solve(NodeTupleTable nodeTupleTable,
-                                                Tuple<Node> tuple,
-                                                boolean anyGraph,
-                                                Iterator<BindingNodeId> chain, Predicate<Tuple<NodeId>> filter,
-                                                ExecutionContext execCxt)
-    {
-        return new StageMatchTuple(nodeTupleTable, chain, tuple, anyGraph, filter, execCxt);
+    /**
+     * Test whether a triple has an triple term as one of its components.
+     */
+    public static boolean tripleHasNodeTriple(Triple triple) {
+        return triple.getSubject().isNodeTriple()
+               /*|| triple.getPredicate().isNodeTriple()*/
+               || triple.getObject().isNodeTriple();
     }
+
 
     public static Binding convToBinding(BindingNodeId bindingNodeIds, NodeTable nodeTable) {
         if ( true )
@@ -234,15 +133,18 @@ public class SolverLib
         }
     }
 
+
     // Transform : Binding ==> BindingNodeId
-    public static Function<Binding, BindingNodeId> convFromBinding(final NodeTable nodeTable)
-    {
+    public static Iterator<BindingNodeId> convFromBinding(Iterator<Binding> input, NodeTable nodeTable) {
+        return Iter.map(input, SolverLib.convFromBinding(nodeTable));
+    }
+
+    public static Function<Binding, BindingNodeId> convFromBinding(final NodeTable nodeTable) {
         return binding -> SolverLib.convert(binding, nodeTable);
     }
 
     /** Binding {@literal ->} BindingNodeId, given a NodeTable */
-    public static BindingNodeId convert(Binding binding, NodeTable nodeTable)
-    {
+    public static BindingNodeId convert(Binding binding, NodeTable nodeTable) {
         if ( binding instanceof BindingTDB )
             return ((BindingTDB)binding).getBindingId();
 
@@ -250,8 +152,7 @@ public class SolverLib
         // and copy over, getting NodeIds.
         Iterator<Var> vars = binding.vars();
 
-        for (; vars.hasNext() ; )
-        {
+        for ( ; vars.hasNext() ; ) {
             Var v = vars.next();
             Node n = binding.get(v);
             if ( n == null )
@@ -265,7 +166,8 @@ public class SolverLib
             // Even put in "does not exist" for a node now known not to be in the DB.
             // Optional: whether to put in "known missing"
             // Currently, we do. The rest of the code should work with either choice.
-            //if ( ! NodeId.isDoesNotExist(id) )
+
+            // if ( ! NodeId.isDoesNotExist(id) )
             b.put(v, id);
         }
         return b;
