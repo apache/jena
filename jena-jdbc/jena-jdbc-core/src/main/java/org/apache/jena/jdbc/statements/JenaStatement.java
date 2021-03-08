@@ -235,9 +235,8 @@ public abstract class JenaStatement implements Statement {
             // Queue results i.e. stuff resulting from a query that produced
             // multiple result sets or executeBatch() calls
             while (!this.results.isEmpty()) {
-                ResultSet rset = this.results.poll();
-                if (rset != null)
-                    rset.close();
+                // Null is safe.
+                try(ResultSet rset = this.results.poll()) {}
             }
             // Close open result sets i.e. stuff left around depending on
             // statement correction

@@ -35,6 +35,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 /**
  * Test utility methods
  */
+@SuppressWarnings("deprecation")
 public class TestUtils {
 
     /**
