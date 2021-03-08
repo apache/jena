@@ -18,23 +18,27 @@
 
 package org.apache.jena.riot;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.github.jsonldjava.core.DocumentLoader;
-import com.github.jsonldjava.core.JsonLdOptions;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.system.ErrorHandlerFactory;
-import org.apache.jena.sparql.util.Context;
-import org.apache.jena.vocabulary.RDF;
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.Assert.assertTrue;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.github.jsonldjava.core.DocumentLoader;
+import com.github.jsonldjava.core.JsonLdOptions;
+
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.riot.system.ErrorHandlerFactory;
+import org.apache.jena.sparql.util.Context;
+import org.apache.jena.vocabulary.RDF;
+import org.junit.Test;
 
 public class TestJsonLDReader {
 
@@ -85,10 +89,6 @@ public class TestJsonLDReader {
         assertJohnDoeIsOK(ds.getDefaultModel());
     }
 
-    //
-    //
-    //
-
     /**
      * Reading some jsonld String, using a Context
      * @return a new Dataset
@@ -126,12 +126,17 @@ public class TestJsonLDReader {
 
     }
 
+    private static Resource person1 = ResourceFactory.createResource("http://schema.org/Person");
+    private static Resource person2 = ResourceFactory.createResource("https://schema.org/Person");
+    private static Property name1 = ResourceFactory.createProperty("http://schema.org/name");
+    private static Property name2 = ResourceFactory.createProperty("https://schema.org/name");
+
     /**
      * Checking that the data loaded from someSchemaDorOrgJsonld into a model, is OK
      */
     private void assertJohnDoeIsOK(Model m) {
-        assertTrue(m.contains(null, RDF.type, m.createResource("http://schema.org/Person")));
-        assertTrue(m.contains(null, m.createProperty("http://schema.org/name"), "John Doe"));
+        assertTrue(m.contains(null, RDF.type, person1) || m.contains(null, RDF.type, person2));
+        assertTrue(m.contains(null, name1, "John Doe") || m.contains(null, name2, "John Doe"));
     }
 
 
