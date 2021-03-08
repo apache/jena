@@ -44,7 +44,6 @@ public class TupleLib {
         return Iter.map(iter, item -> tupleNodeIds(nodeTable, item));
     }
 
-    // Leave - bypasses extract step in Tuple<NodeId> -> Tuple<Node> -> Triple
     public static Iterator<Triple> convertToTriples(final NodeTable nodeTable, Iterator<Tuple<NodeId>> iter) {
         return Iter.map(iter, item -> triple(nodeTable, item));
     }
@@ -54,22 +53,14 @@ public class TupleLib {
     }
 
     public static Tuple<Node> tupleNodes(NodeTable nodeTable, Tuple<NodeId> ids) {
-        int N = ids.len();
-        Node[] n = new Node[N];
-        for ( int i = 0; i < N ; i++ )
-            n[i] = nodeTable.getNodeForNodeId(ids.get(i));
-        return TupleFactory.create(n);
+        return ids.map(nid->nodeTable.getNodeForNodeId(nid));
     }
 
     public static Tuple<NodeId> tupleNodeIds(NodeTable nodeTable, Tuple<Node> nodes) {
-        int N = nodes.len();
-        NodeId[] n = new NodeId[N];
-        for ( int i = 0; i < N ; i++ )
-            n[i] = nodeTable.getNodeIdForNode(nodes.get(i));
-        return TupleFactory.create(n);
+        return nodes.map(n->nodeTable.getNodeIdForNode(n));
     }
 
-    private static Triple triple(NodeTable nodeTable, Tuple<NodeId> tuple) {
+    public static Triple triple(NodeTable nodeTable, Tuple<NodeId> tuple) {
         if ( tuple.len() != 3 )
             throw new TDBException("Tuple is not of length 3: " + tuple);
         return triple(nodeTable, tuple.get(0), tuple.get(1), tuple.get(2));
@@ -95,14 +86,18 @@ public class TupleLib {
         if ( oNode == null )
             throw new InternalErrorException("Invalid id node for object (null node): " + fmt(s, p, o));
 
-        return new Triple(sNode, pNode, oNode);
+        return Triple.create(sNode, pNode, oNode);
     }
 
     private static String fmt(NodeId s, NodeId p, NodeId o) {
         return "(" + s + ", " + p + ", " + o + ")";
     }
 
-    private static Quad quad(NodeTable nodeTable, Tuple<NodeId> tuple) {
+    private static String fmt(NodeId g, NodeId s, NodeId p, NodeId o) {
+        return "(" + g + "," + s + ", " + p + ", " + o + ")";
+    }
+
+    public static Quad quad(NodeTable nodeTable, Tuple<NodeId> tuple) {
         if ( tuple.len() != 4 )
             throw new TDBException("Tuple is not of length 4: " + tuple);
         return quad(nodeTable, tuple.get(0), tuple.get(1), tuple.get(2), tuple.get(3));
@@ -113,7 +108,15 @@ public class TupleLib {
         Node sNode = nodeTable.getNodeForNodeId(s);
         Node pNode = nodeTable.getNodeForNodeId(p);
         Node oNode = nodeTable.getNodeForNodeId(o);
-        return new Quad(gNode, sNode, pNode, oNode);
+        if ( gNode == null )
+            throw new InternalErrorException("Invalid id node for graph (null node): " + fmt(g, s, p, o));
+        if ( sNode == null )
+            throw new InternalErrorException("Invalid id node for subject (null node): " + fmt(g, s, p, o));
+        if ( pNode == null )
+            throw new InternalErrorException("Invalid id node for predicate (null node): " + fmt(g, s, p, o));
+        if ( oNode == null )
+            throw new InternalErrorException("Invalid id node for object (null node): " + fmt(g, s, p, o));
+        return Quad.create(gNode, sNode, pNode, oNode);
     }
 
     // ---- Tuples and Records

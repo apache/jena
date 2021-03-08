@@ -49,6 +49,9 @@ public interface Tuple<X> extends Iterable<X> {
         return new TupleList<>(this) ;
     }
 
+    /** forEach */
+    public boolean contains(X item);
+
     /** stream */
     public default Stream<X> stream() {
         return StreamSupport.stream(spliterator(), false) ;

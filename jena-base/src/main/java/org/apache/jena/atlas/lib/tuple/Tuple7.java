@@ -18,6 +18,7 @@
 
 package org.apache.jena.atlas.lib.tuple;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -72,5 +73,17 @@ public class Tuple7<X> extends TupleBase<X> {
                 function.apply(x6),
                 function.apply(x7)
                 );
+    }
+
+    @Override
+    public boolean contains(X item) {
+        if ( Objects.equals(x1, item) ) return true;
+        if ( Objects.equals(x2, item) ) return true;
+        if ( Objects.equals(x3, item) ) return true;
+        if ( Objects.equals(x4, item) ) return true;
+        if ( Objects.equals(x5, item) ) return true;
+        if ( Objects.equals(x6, item) ) return true;
+        if ( Objects.equals(x7, item) ) return true;
+        return false;
     }
 }

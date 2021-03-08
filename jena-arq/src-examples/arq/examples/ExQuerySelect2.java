@@ -63,7 +63,7 @@ public class ExQuerySelect2
             // Create a ResultSetRewindable that can be reset to the beginning.
             // Do before first use.
             
-            ResultSetRewindable rewindable = ResultSetFactory.makeRewindable(qexec.execSelect()) ;
+            ResultSetRewindable rewindable = qexec.execSelect().rewindable();
             ResultSetFormatter.out(rewindable) ;
             rewindable.reset() ;
             ResultSetFormatter.out(rewindable) ;

@@ -303,11 +303,10 @@ public class ResultSetFactory {
      * @return ResultSetRewindable
      */
     static public ResultSetRewindable makeRewindable(ResultSet resultSet) {
-        if ( resultSet instanceof ResultSetRewindable )
-        {
-            ResultSetRewindable rsw = (ResultSetRewindable)resultSet ;
-            rsw.reset() ;
-            return rsw ;
+        if ( resultSet instanceof ResultSetRewindable ) {
+            ResultSetRewindable rsw = (ResultSetRewindable)resultSet;
+            rsw.reset();
+            return rsw;
         }
         return new ResultSetMem(resultSet);
     }

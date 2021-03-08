@@ -25,7 +25,6 @@ import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Node_Literal ;
-import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdf.model.Model ;
@@ -48,7 +47,7 @@ import org.apache.jena.vocabulary.XSD ;
 
 public class FmtUtils
 {
-    // See alsoriot.NodeFmtLib
+    // See also riot.NodeFmtLib
 
     // Consider withdrawing non-serialization context forms of this.
     // Or a temporary SerialzationContext does not abbreviate bNodes.
@@ -377,7 +376,7 @@ public class FmtUtils
         } else if ( n.equals(Node.ANY) ) {
             result.append("ANY") ;
         } else if ( n.isNodeTriple() ) {
-            Triple t = ((Node_Triple)n).get();
+            Triple t = n.getTriple();
             result.append("<< ");
             stringForNode(result, t.getSubject(), context);
             result.append(" ");
@@ -385,6 +384,9 @@ public class FmtUtils
             result.append(" ");
             stringForNode(result, t.getObject(), context);
             result.append(" >>");
+        } else if ( n.isNodeGraph() ) {
+            Log.warn(FmtUtils.class, "Can not turn a graph term node into a string") ;
+            result.append(" { graph }");
         } else {
             Log.warn(FmtUtils.class, "Failed to turn a node into a string: " + n) ;
             result.append(n.toString()) ;

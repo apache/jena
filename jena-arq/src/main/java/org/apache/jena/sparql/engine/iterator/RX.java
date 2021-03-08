@@ -18,152 +18,45 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import static org.apache.jena.graph.Node_Triple.triple;
+import java.util.Iterator;
+import java.util.Objects;
 
-import org.apache.jena.atlas.lib.Pair;
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.sparql.ARQConstants;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.core.VarAlloc;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
-import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
+import org.apache.jena.util.iterator.ExtendedIterator;
 
-/**
- * Solver library for RDF-star.
- * <p>
- * There are two entry points.
- * <p>
- * Function {@link #rdfStarTriple} for matching a single triple pattern in a basic
- * graph pattern that may involve RDF-star terms.
- * <p>
- * Function {@link #matchTripleStar} for matches a triple term and assigning the
- * triple matched to a variable. It is used within {@link #rdfStarTriple} for nested
- * triple term and a temporary allocated variable as well can for
- * {@code FIND(<<...>> AS ?t)}.
- */
+/** RDF-star - when there is an embedded triple with variables. */
 public class RX {
+    // Note: running with DATAPATH = false
 
-    public static boolean MODE_SA = true;
+    // GraphMem is sameValueAs (historical)
+    // and tests use GraphPlain, which is langtag case insensitive (There is one DAWG test that needs this).
 
-    public static QueryIterator rdfStarTriple(QueryIterator chain, Triple triple, ExecutionContext execCxt) {
-        if ( MODE_SA )
-            return RX_SA.rdfStarTriple_SA(chain, triple, execCxt);
-        else
-            return rdfStarTriple_PG(chain, triple, execCxt);
-    }
-
-    // ---- PG mode ----
+    // If running in development with "DATAPATH = false" two failures ("lang-3", run twice).
 
     /**
-     * Match a single triple pattern that may involve RDF-star terms.
-     * This is the top level function for matching triples.
-     *
-     * The function {@link #matchTripleStar} matches a triple term and assigns the triple matched to a variable.
-     * It is used within {@link #rdfStarTriple} for nested triple term and a temporary allocated variable
-     * as well can for {@code FIND(<<...>> AS ?t)}.
-     *
-     * @implNote
-     * Without RDF-star, this would be a plain call of {@link #matchData} which is simply:
-     * <pre>
-     * new QueryIterTriplePattern(chain, triple, execCxt)}
-     * </pre>
+     * This constant is not public API. It is exposed only so integration testing can
+     * check the value for a release build.
      */
-    public static QueryIterator rdfStarTriple_PG(QueryIterator chain, Triple triple, ExecutionContext execCxt) {
+    public static final boolean DATAPATH = true;
+
+    public static QueryIterator rdfStarTriple(QueryIterator chain, Triple pattern, ExecutionContext execCxt) {
         // Should all work without this trap for plain RDF.
-        if ( ! tripleHasNodeTriple(triple) )
-            // No RDF-star : direct to data.
-            return matchData(chain, triple, execCxt);
-        return rdfStarTripleSub(chain, triple, execCxt);
-    }
-
-    /**
-     * Insert the stages necessary for a triple with triple pattern term inside it.
-     * If the triple pattern has a triple term, possibly with variables, introduce
-     * an iterator to solve for that, assign the matching triple term to a hidden
-     * variable, and put allocated variable in to main triple pattern. Do for subject
-     * and object positions, and also any nested triple pattern terms.
-     */
-    private static QueryIterator rdfStarTripleSub(QueryIterator chain, Triple triple, ExecutionContext execCxt) {
-        Pair<QueryIterator, Triple> pair = preprocessForTripleTerms(chain, triple, execCxt);
-        QueryIterator chain2 = matchData(pair.getLeft(), pair.getRight(), execCxt);
-        return chain2;
-    }
-
-    /**
-     * Match a triple pattern (which may have nested triple terms in it).
-     * Any matched triples are added as triple terms bound to the supplied variable.
-     */
-
-    public static QueryIterator findTripleStar(QueryIterator chain, Var var, Triple triple, ExecutionContext execCxt) {
-        // Called from OpFind/apf:find = TripleTermFind which are to be removed.
-        return matchTripleStar(chain, var, triple, execCxt);
-    }
-
-    private static QueryIterator matchTripleStar(QueryIterator chain, Var var, Triple triple, ExecutionContext execCxt) {
-        if ( tripleHasNodeTriple(triple) ) {
-            Pair<QueryIterator, Triple> pair = preprocessForTripleTerms(chain, triple, execCxt);
-            chain = pair.getLeft();
-            triple = pair.getRight();
+        if ( DATAPATH ) {
+            if ( ! tripleHasNodeTriple(pattern) ) {
+                // No RDF-star : direct to data.
+                return matchData(chain, pattern, execCxt);
+            }
         }
-        // Match to data and assign to var in each binding, based on the triple pattern grounded by the match.
-        QueryIterator qIter = bindTripleTerm(chain, var, triple, execCxt);
-        return qIter;
-    }
-
-    /**
-     * Process a triple for triple terms.
-     * <p>
-     * This creates additional matchers for triple terms in the pattern triple recursively.
-     */
-    private static Pair<QueryIterator, Triple> preprocessForTripleTerms(QueryIterator chain, Triple patternTriple, ExecutionContext execCxt) {
-        // PG mode
-        Node s = patternTriple.getSubject();
-        Node p = patternTriple.getPredicate();
-        Node o = patternTriple.getObject();
-        Node s1 = null;
-        Node o1 = null;
-
-        // Recurse.
-        if ( s.isNodeTriple() ) {
-            Triple t2 = triple(s);
-            Var var = varAlloc(execCxt).allocVar();
-            Triple tripleTerm = Triple.create(t2.getSubject(), t2.getPredicate(), t2.getObject());
-            chain = matchTripleStar(chain, var, tripleTerm, execCxt);
-            s1 = var;
-        }
-        if ( o.isNodeTriple() ) {
-            Triple t2 = triple(o);
-            Var var = varAlloc(execCxt).allocVar();
-            Triple tripleTerm = Triple.create(t2.getSubject(), t2.getPredicate(), t2.getObject());
-            chain = matchTripleStar(chain, var, tripleTerm, execCxt);
-            o1 = var;
-        }
-
-        // Because of the test in rdfStarTriple,
-        // This code only happens when there is a a triple term.
-
-        // No triple term in this triple.
-        if ( s1 == null && o1 == null )
-            return Pair.create(chain, patternTriple);
-
-        // Change. Replace original.
-        if ( s1 == null )
-            s1 = s ;
-        if ( o1 == null )
-            o1 = o ;
-        Triple triple1 = Triple.create(s1, p, o1);
-        return Pair.create(chain, triple1);
-    }
-
-    /**
-     * Add a binding to each row with triple grounded by the current row.
-     */
-    private static QueryIterator bindTripleTerm(QueryIterator chain, Var var, Triple pattern, ExecutionContext execCxt) {
-        QueryIterator qIter = matchData(chain, pattern, execCxt);
-        QueryIterator qIter2 = new QueryIterAddTripleTerm(qIter, var, pattern, execCxt);
-        return qIter2;
+        return rdfStarTripleSub(chain, pattern, execCxt);
     }
 
     /**
@@ -184,14 +77,120 @@ public class RX {
                || triple.getObject().isNodeTriple();
     }
 
-    private static VarAlloc varAlloc(ExecutionContext execCxt) {
-        Context context = execCxt.getContext();
-        VarAlloc varAlloc = VarAlloc.get(context, ARQConstants.sysVarAllocRDFStar);
-        if ( varAlloc == null ) {
-            varAlloc = new VarAlloc(ARQConstants.allocVarTripleTerm);
-            context.set(ARQConstants.sysVarAllocRDFStar, varAlloc);
+    private static QueryIterator rdfStarTripleSub(QueryIterator input, Triple pattern, ExecutionContext execCxt) {
+        Iterator<Binding> matches = Iter.flatMap(input, binding->rdfStarTripleSub(binding, pattern, execCxt));
+        return new QueryIterPlainWrapper(matches, execCxt);
+    }
+
+    private static Iterator<Binding> rdfStarTripleSub(Binding input, Triple tPattern, ExecutionContext execCxt) {
+        Node s = nodeTopLevel(tPattern.getSubject());
+        Node p = nodeTopLevel(tPattern.getPredicate());
+        Node o = nodeTopLevel(tPattern.getObject());
+        Graph graph = execCxt.getActiveGraph();
+        ExtendedIterator<Triple> graphIter = graph.find(s, p, o);
+        ExtendedIterator<Binding> matched = graphIter.mapWith(tData->matchTriple(input, tData, tPattern)).filterDrop(Objects::isNull);
+        return matched;
+    }
+
+    /** Convert a pattern node into ANY, or leave as a constant term. */
+    public static Node nodeTopLevel(Node node) {
+        // Public so TDB code can use it.
+        if ( Var.isVar(node) )
+            return Node.ANY;
+        if ( node.isNodeTriple() ) { //|| node.isNodeGraph() )
+            if ( ! node.getTriple().isConcrete() )
+                // Nested variables.
+                return Node.ANY;
         }
-        return varAlloc;
+        return node;
+    }
+
+    public static Binding matchTriple(Binding input, Triple tData, Triple tPattern) {
+        BindingBuilder bb = Binding.builder(input);
+        boolean r = matchTriple(bb, tData, tPattern);
+        return r ? bb.build() : null;
+    }
+
+    private static boolean matchTriple(BindingBuilder bb, Triple tData, Triple tPattern) {
+        Node sPattern = tPattern.getSubject();
+        Node pPattern = tPattern.getPredicate();
+        Node oPattern = tPattern.getObject();
+
+        Node sData = tData.getSubject();
+        Node pData = tData.getPredicate();
+        Node oData = tData.getObject();
+
+        if ( ! match(bb, sData, sPattern) )
+            return false;
+        if ( ! match(bb, pData, pPattern) )
+            return false;
+        if ( ! match(bb, oData, oPattern) )
+            return false;
+        return true;
+    }
+
+    /** Match data "qData" against "tGraphNode, tPattern", including RDF-star terms. */
+    public static Binding matchQuad(Binding input, Quad qData, Node tGraphNode, Triple tPattern) {
+        BindingBuilder bb = Binding.builder(input);
+        boolean r = matchQuad(bb, qData, tGraphNode, tPattern);
+        return r ? bb.build() : null;
+    }
+
+    private static boolean matchQuad(BindingBuilder bb, Quad qData, Node tGraphNode, Triple tPattern) {
+        Node sPattern = tPattern.getSubject();
+        Node pPattern = tPattern.getPredicate();
+        Node oPattern = tPattern.getObject();
+
+        Node gData = qData.getGraph();
+        Node sData = qData.getSubject();
+        Node pData = qData.getPredicate();
+        Node oData = qData.getObject();
+
+        if ( ! match(bb, gData, tGraphNode) )
+            return false;
+        if ( ! match(bb, sData, sPattern) )
+            return false;
+        if ( ! match(bb, pData, pPattern) )
+            return false;
+        if ( ! match(bb, oData, oPattern) )
+            return false;
+        return true;
+    }
+
+    // RDF term matcher - may recurse and call matchTriple is a triple term is in the pattern.
+    private static boolean match(BindingBuilder bb, Node nData, Node nPattern) {
+        if ( nPattern == null )
+            return true;
+        if ( nData == Node.ANY )
+            return true;
+
+        // Deep substitute. This happens anyway as we walk structures.
+        //   nPattern = Substitute.substitute(nPattern, input);
+        // Shallow substitute
+        nPattern = Var.lookup(v->bb.get(v), nPattern);
+
+        // nPattern.isConcrete() : either nPattern is an RDF term or is <<>> with no variables.
+        if ( nPattern.isConcrete() ) {
+            // No nested variables. Is data equal to pattern?
+            // Term comparison.
+            return nPattern.equals(nData);
+        }
+
+        // Easy case - nPattern is a variable.
+        if ( Var.isVar(nPattern) ) {
+            Var var = Var.alloc(nPattern);
+            bb.add(var,  nData);
+            return true;
+        }
+
+        // nPattern is <<>> with variables. Is the data a <<>>?
+        if ( ! nData.isNodeTriple() )
+            return false;
+
+        // nData is <<>>, nPattern is <<>>
+        // Unpack, match components.
+        Triple tPattern = nPattern.getTriple();
+        Triple tData = nData.getTriple();
+        return matchTriple(bb, tData, tPattern);
     }
 }
-

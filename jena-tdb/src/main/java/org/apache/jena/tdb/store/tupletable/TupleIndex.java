@@ -34,25 +34,25 @@ public interface TupleIndex extends Sync, Closeable
     public boolean add(Tuple<NodeId> tuple) ;
 
     /** Delete a tuple - return true if it was deleted, false if it didn't exist */
-    public boolean delete(Tuple<NodeId> tuple) ; 
-    
-    /** Get a convenient display string for the index - do not rely on the format */ 
+    public boolean delete(Tuple<NodeId> tuple) ;
+
+    /** Get a convenient display string for the index - do not rely on the format */
     public String getName() ;
-    
-    /** Get a convenient display string based on the details of the column map - do not rely on the format */ 
-    public String getMapping() ;
-    
+
+    /** Get a convenient display string based on the details of the column map - do not rely on the format */
+    public String getMappingStr() ;
+
     public ColumnMap getColumnMap() ;
-    
+
     /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any.
      *  Input pattern in natural order, not index order.
      */
 
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern) ;
-    
+
     /** return an iterator of everything */
     public Iterator<Tuple<NodeId>> all() ;
-    
+
     /** Weight a pattern - specified in normal order (not index order).
      * Large numbers means better match. */
     public int weight(Tuple<NodeId> pattern) ;
@@ -65,12 +65,12 @@ public interface TupleIndex extends Sync, Closeable
 
     /** Answer whether empty or not */
     public boolean isEmpty() ;
-    
+
     /** Clear the index */
     public void clear() ;
-    
+
     public static Iterator<Tuple<NodeId>> scan(Iterator<Tuple<NodeId>> iter, Tuple<NodeId> pattern) {
-        int tupleLength = pattern.len() ; 
+        int tupleLength = pattern.len() ;
         Predicate<Tuple<NodeId>> filter = new Predicate<Tuple<NodeId>>()
         {
             @Override
@@ -82,13 +82,13 @@ public interface TupleIndex extends Sync, Closeable
                     NodeId n = pattern.get(i) ;
                     // The pattern must be null/Any or match the tuple being tested.
                     if ( ! NodeId.isAny(n) )
-                        if ( ! item.get(i).equals(n) ) 
+                        if ( ! item.get(i).equals(n) )
                             return false ;
                 }
                 return true ;
             }
         } ;
-        
+
         return Iter.filter(iter, filter) ;
     }
 }

@@ -123,7 +123,7 @@ public class DumpOps
 
     public static void dumpTupleIndex(TupleIndex tIdx)
     {
-        System.out.print("## "+tIdx.getMapping()+"\n") ;
+        System.out.print("## "+tIdx.getMappingStr()+"\n") ;
         Iterator<Tuple<NodeId>> iter = tIdx.all() ; 
         for ( ; iter.hasNext() ; )
         {

@@ -19,7 +19,6 @@
 package org.apache.jena.sparql.algebra.table ;
 
 import org.apache.jena.query.ResultSet ;
-import org.apache.jena.query.ResultSetFactory ;
 import org.apache.jena.sparql.algebra.Table ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.ResultSetStream ;
@@ -70,8 +69,7 @@ public abstract class TableBase implements Table {
     @Override
     public ResultSet toResultSet() {
         QueryIterator qIter = iterator(null) ;
-        ResultSet rs = new ResultSetStream(getVarNames(), null, qIter) ;
-        rs = ResultSetFactory.makeRewindable(rs) ;
+        ResultSet rs = new ResultSetStream(getVarNames(), null, qIter).rewindable();
         qIter.close() ;
         return rs ;
     }

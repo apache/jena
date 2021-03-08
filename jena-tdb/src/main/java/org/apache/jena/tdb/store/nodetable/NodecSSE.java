@@ -25,7 +25,6 @@ import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.out.NodeFmtLib;
@@ -178,7 +177,7 @@ public class NodecSSE implements Nodec
             // "?"
             return 1+maxLength(node.getName());
         if ( node.isNodeTriple() ) {
-            Triple t = Node_Triple.triple(node);
+            Triple t = node.getTriple();
             // Leading an trailing <<>>, 4 spaces
             return (2+4+2)+maxLength(t.getSubject())+maxLength(t.getPredicate())+maxLength(t.getObject());
         }

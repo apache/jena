@@ -35,10 +35,9 @@ import org.junit.runner.RunWith;
     "testing/ARQ/manifest-arq.ttl" ,
     "testing/ARQ/Serialization/manifest.ttl" ,
     "testing/ARQ/RDF-star/SPARQL-star/manifest.ttl"
-    //"testing/ARQ/Examples/manifest.ttl"
 })
 public class Scripts_ARQ
-{ 
+{
     private static boolean bVerboseWarnings;
     private static boolean bWarnOnUnknownFunction;
 
@@ -55,5 +54,5 @@ public class Scripts_ARQ
         NodeValue.VerboseWarnings = bVerboseWarnings;
         E_Function.WarnOnUnknownFunction = bWarnOnUnknownFunction;
     }
-    
+
 }

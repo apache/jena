@@ -24,26 +24,6 @@ import org.apache.jena.shared.PrefixMapping;
 
 /** RDF triples as RDF terms for RDF-star embedded triples. */
 public class Node_Triple extends Node {
-//    /**
-//     * Return the triple from a Node_Triple.
-//     * Throws a {@link JenaException} if not a {@code Node_Triple}.
-//     * Pairs with {@link Node#isNodeTriple()}
-//     */
-//    public static Triple triple(Node n) {
-//        Objects.requireNonNull(n);
-//        try {
-//            // Instead of adding getTriple() to Node
-//            Node_Triple nt = (Node_Triple)n;
-//            return nt.getTriple();
-//        } catch (ClassCastException ex) {
-//            throw new JenaNodeException("Not a Node_Triple: "+n);
-//        }
-//    }
-
-    public static Node_Triple cast(Node n) {
-        return (Node_Triple)n;
-    }
-
     private final Triple triple;
 
     public Node_Triple(Node s, Node p, Node o) {

@@ -18,16 +18,14 @@
 
 package org.apache.jena.tdb;
 
+import org.apache.jena.query.Dataset;
+import org.apache.jena.sparql.AbstractTestAdditional;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+public class TestMiscTDB1 extends AbstractTestAdditional {
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestTDBFactory.class
-})
-
-public class TS_TDBFactory
-{
+    @Override
+    protected Dataset dataset() {
+        return TDBFactory.createDataset();
+    }
 
 }

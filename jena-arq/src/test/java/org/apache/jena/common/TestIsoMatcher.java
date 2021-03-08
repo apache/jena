@@ -122,7 +122,7 @@ public class TestIsoMatcher
     @Test public void iso_graph_30() { testGraphVar("(?A :p1 ?B)  (?B :p2 ?A)",
                                                     "(?A :p1 ?B1) (?A :p2 ?B1)",
                                                     false); }
-    
+
     //JENA-1789
     @Test public void iso_graph_31() { testGraphVar("(?A :p1 ?B) (?B :p2 ?A)",
                                                     "(?A :p1 ?B) (?A :p2 ?B)",
@@ -151,19 +151,27 @@ public class TestIsoMatcher
                                                  "(<_:a> :p1 <_:b>) (<_:b> :p2 <_:a>)",
                                                  true); }
 
-    
+
     // RDF-star terms
     @Test public void iso_graph_40() { testGraphIso("(<<:s :p :o>> :q1 :z1) (<<_:a :p :o>> :q2 :z2)",
                                                     "(<<_:a :p :o>> :q2 :z2) (<<:s :p :o>> :q1 :z1)",
                                                     true); }
 
-    @Test public void iso_graph_41() { testGraphIso("(<< _:a :p :o>> :q1 :z1) (<< _:a :p :o>> :q2 :z2)",
-                                                    "(<< _:a :p :o>> :q2 :z2) (<< _:a :p :o>> :q1 :z1)",
+    @Test public void iso_graph_41() { testGraphIso("(<< _:a :p :o>> :q1 :z1) (<< _:a :p :o>> :q2 :z2) (_:a :p :o)",
+                                                    "(<< _:a :p :o>> :q2 :z2) (<< _:a :p :o>> :q1 :z1) (_:a :p :o)",
                                                     true); }
 
     @Test public void iso_graph_42() { testGraphIso("(<<<_:a> :p :o>> :q1 :z1) (<<<_:a> :p :o>> :q2 :z2)",
                                                     "(<<<_:a> :p :o>> :q2 :z2) (<<<_:b> :p :o>> :q1 :z1)",
                                                     false); }
+
+    @Test public void iso_graph_43() { testGraphIso("(<< << _:a :p :o >> :q1 :z1>> :q2 :z2)",
+                                                    "(<< << _:a :p :o >> :q1 :z1>> :q2 :z2)",
+                                                    true); }
+
+    @Test public void iso_graph_44() { testGraphIso("(<< :a1 :q1 << :s :p _:o >> >> :q2 :z2)",
+                                                    "(<< :a1 :q1 << :s :p _:o >> >> :q2 :z2)",
+                                                    true); }
 
     @Test public void iso_triple_terms_1() { testTripleTerms("<< <_:a1> :p :o>>",
                                                              "<< <_:a2> :p :o>>",
@@ -172,7 +180,7 @@ public class TestIsoMatcher
     @Test public void iso_triple_terms_2() { testTripleTerms("<< <_:a1> :p :o>>",
                                                              "<<:s :p <_:a3> >>",
                                                              false);}
-    
+
     @Test public void iso_triple_terms_3() { testTripleTerms("<< <_:a4> :p <_:a4> >>",
                                                              "<< <_:a5> :p <_:a5> >>",
                                                              true ); }
@@ -183,12 +191,12 @@ public class TestIsoMatcher
 
     @Test public void iso_triple_terms_5() { testTripleTerms("<< <_:a7> :p << <_:b7> :q :o >> >>",
                                                              "<< <_:a8> :p << <_:b8> :q :o >> >>",
-                                                             true); } 
+                                                             true); }
 
     @Test public void iso_triple_terms_6() { testTripleTerms("<< <_:a7> :p << <_:b7> :q :o >> >>",
                                                              "<< <_:a9> :p << :s :q :o >>>>",
-                                                             false); } 
-    
+                                                             false); }
+
     @Test public void iso_dsg_50() { testDSG("(graph (_:a <p> _:a)) (graph <g> (<s> <q> _:a))" ,
                                          "(graph (_:a <p> _:a)) (graph <g> (<s> <q> _:a))" ,
                                          true) ; }
@@ -197,41 +205,44 @@ public class TestIsoMatcher
     @Test public void iso_dsg_51() { testDSG("(graph (_:a <p> _:a)) (graph <g> (<s> <q> _:a))" ,
                                          "(graph (_:a <p> _:a)) (graph <g> (<s> <q> _:b))" ,
                                          false) ; }
-    
-    
+
+    @Test public void iso_dsg_52() { testDSG("(:g << << _:a :p :o >> :q1 :z1>> :q2 :z2)",
+                                             "(:g << << _:a :p :o >> :q1 :z1>> :q2 :z2)",
+                                             true); }
+
     // List based tests
-    @Test public void iso_tuples_61() { 
+    @Test public void iso_tuples_61() {
         String[] x1 = {};
         String[] x2 = {};
         testTuples(x1, x2, true);
     }
 
-    @Test public void iso_tuples_62() { 
+    @Test public void iso_tuples_62() {
         String[] x1 = {"(<x> <p> 1)"};
         String[] x2 = {};
         testTuples(x1, x2, false);
     }
 
-    @Test public void iso_tuples_63() { 
+    @Test public void iso_tuples_63() {
         String[] x1 = {"(_:x <p> 1)"};
         String[] x2 = {"(_:y <p> 1)"};
         testTuples(x1, x2, true);
     }
-    
-    @Test public void iso_tuples_64() { 
+
+    @Test public void iso_tuples_64() {
         String[] x1 = {"(_:x <p> 1)", "(_:x <p> 1)"};
         String[] x2 = {"(_:y <p> 1)", "(_:x <p> 1)"};
         testTuples(x1, x2, true);
     }
 
-    @Test public void iso_tuples_65() { 
+    @Test public void iso_tuples_65() {
         String[] x1 = {"(_:x <p> 1)","(_:y <p> 1)"};
         String[] x2 = {"(_:y <p> 1)","(_:x <p> 1)"};
         testTuples(x1, x2, true);
     }
 
     // Backtracking. _:a -> _y needs unwinding.
-    @Test public void iso_tuples_66() { 
+    @Test public void iso_tuples_66() {
         String[] x1 = {"(_:a <p> 1)","(_:b <p> 1)","(_:a <p> 2)"};
         String[] x2 = {"(_:y <p> 1)","(_:z <p> 1)","(_:z <p> 2)"};
         testTuples(x1, x2, true);
@@ -272,7 +283,7 @@ public class TestIsoMatcher
         Node n2 = SSE.parseNode(term2);
         Collection<Tuple<Node>> x1 = Collections.singletonList(TupleFactory.create1(n1));
         Collection<Tuple<Node>> x2 = Collections.singletonList(TupleFactory.create1(n2));
-    
+
         boolean b = IsoMatcher.isomorphic(x1, x2);
         if ( b != expected ) {
             System.out.println("====");
@@ -294,7 +305,7 @@ public class TestIsoMatcher
         testGraph$(s1, s2, result, true);
         testGraph$(s2, s1, result, true);
     }
-    
+
     private void testGraph$(String s1, String s2, boolean expected, boolean extraCheck) {
         s1 = "(graph "+s1+")";
         s2 = "(graph "+s2+")";
@@ -329,10 +340,10 @@ public class TestIsoMatcher
 
         Graph g1 = SSE.parseGraph(s1);
         Graph g2 = SSE.parseGraph(s2);
-        
+
         Collection<Tuple<Node>> x1 = IsoMatcher.tuplesTriples(g1.find());
         Collection<Tuple<Node>> x2 = IsoMatcher.tuplesTriples(g2.find());
-        
+
         boolean b = IsoAlg.isIsomorphic(x1, x2, Iso.mappableBlankNodesVariables, NodeUtils.sameRdfTerm);
         if ( b != expected ) {
             System.out.println("====");
@@ -352,7 +363,7 @@ public class TestIsoMatcher
     private void testDSG$(String s1, String s2, boolean iso) {
         s1 = "(dataset "+s1+")";
         s2 = "(dataset "+s2+")";
-        
+
         DatasetGraph dsg1 = SSE.parseDatasetGraph(s1);
         DatasetGraph dsg2 = SSE.parseDatasetGraph(s2);
         boolean b = IsoMatcher.isomorphic(dsg1, dsg2);

@@ -51,7 +51,7 @@ public class TupleTable implements Sync, Closeable
         for ( TupleIndex index : indexes )
         {
             if ( index != null && index.getTupleLength() != tupleLen )
-                throw new TDBException("Incompatible index: "+index.getMapping()) ;
+                throw new TDBException("Incompatible index: "+index.getMappingStr()) ;
         }
         scanAllIndex = chooseScanAllIndex(tupleLen, indexes) ;
     }
@@ -100,7 +100,7 @@ public class TupleTable implements Sync, Closeable
                     return false ;
                 }
                 unexpectedDuplicate(t, i) ;
-                throw new TDBException(format("Secondary index duplicate: %s -> %s",indexes[i].getMapping(), t)) ;
+                throw new TDBException(format("Secondary index duplicate: %s -> %s",indexes[i].getMappingStr(), t)) ;
             }
             syncNeeded = true ;
         }
@@ -265,7 +265,7 @@ public class TupleTable implements Sync, Closeable
     public void setTupleIndex(int i, TupleIndex index)
     {
         if ( index != null && index.getTupleLength() != tupleLen )
-            throw new TDBException("Incompatible index: "+index.getMapping()) ;
+            throw new TDBException("Incompatible index: "+index.getMappingStr()) ;
         indexes[i] = index ;
     }
 

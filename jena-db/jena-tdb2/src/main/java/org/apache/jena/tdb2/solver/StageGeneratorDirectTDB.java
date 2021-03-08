@@ -30,22 +30,19 @@ import org.apache.jena.tdb2.store.GraphTDB;
 import org.apache.jena.tdb2.store.GraphViewSwitchable;
 import org.apache.jena.tdb2.store.NodeId;
 
-/** Execute TDB requests directly -- no reordering
- *  Using OpExecutor is preferred.
+/**
+ * Execute TDB requests directly -- no reordering Using OpExecutor is preferred.
  */
-public class StageGeneratorDirectTDB implements StageGenerator
-{
+public class StageGeneratorDirectTDB implements StageGenerator {
     // Using OpExecutor is preferred.
     StageGenerator above = null;
 
-    public StageGeneratorDirectTDB(StageGenerator original)
-    {
+    public StageGeneratorDirectTDB(StageGenerator original) {
         above = original;
     }
 
     @Override
-    public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
-    {
+    public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt) {
         // --- In case this isn't for TDB2
         Graph g = execCxt.getActiveGraph();
 
@@ -54,11 +51,11 @@ public class StageGeneratorDirectTDB implements StageGenerator
             g = gvs.getBaseGraph();
         }
 
-        if ( ! ( g instanceof GraphTDB ) )
+        if ( !(g instanceof GraphTDB) )
             // Not us - bounce up the StageGenerator chain
             return above.execute(pattern, input, execCxt);
         GraphTDB graph = (GraphTDB)g;
         Predicate<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext());
-        return SolverLib.execute(graph, pattern, input, filter, execCxt);
+        return Solver.execute(graph, pattern, input, filter, execCxt);
     }
 }

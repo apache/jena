@@ -99,6 +99,11 @@ public interface DatasetGraph extends Transactional, Closeable
 
     /** Add a quad */
     public void add(Node g, Node s, Node p, Node o) ;
+    
+    /** Add the {@code src} DatasetGraph to this one. */ 
+    public default void addAll(DatasetGraph src) {
+        src.find().forEachRemaining(this::add);
+    }
 
     /** Delete a quad */
     public void delete(Node g, Node s, Node p, Node o) ;

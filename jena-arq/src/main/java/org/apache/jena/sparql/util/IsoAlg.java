@@ -28,7 +28,6 @@ import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.atlas.lib.tuple.TupleFactory;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.util.Iso.Mappable;
 
@@ -246,7 +245,7 @@ public class IsoAlg {
             if ( n.isVariable() )
                 return true;
             if ( n.isNodeTriple() ) {
-                Tuple<Node> tuple1 = tripleToTuple.apply(Node_Triple.triple(n));
+                Tuple<Node> tuple1 = tripleToTuple.apply(n.getTriple());
                 boolean b = containsMappable(tuple1);
                 if ( b )
                     return true;
@@ -311,13 +310,12 @@ public class IsoAlg {
 
         if ( n1.isNodeTriple() ) {
             if ( n2.isNodeTriple() ) {
-                Triple t1 = Node_Triple.triple(n1);
-                Triple t2 = Node_Triple.triple(n2);
+                Triple t1 = n1.getTriple();
+                Triple t2 = n2.getTriple();
                 Tuple<Node> tuple1 = tripleToTuple.apply(t1);
                 Tuple<Node> tuple2 = tripleToTuple.apply(t2);
                 // Whether to records the triple term mapping.
                 return gen(tuple1, tuple2, mapping, mappable, nodeTest);
-                // Two triple terms
             }
         } else if ( n2.isNodeTriple() ) {
             return null;

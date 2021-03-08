@@ -31,6 +31,7 @@ import org.junit.runners.Suite;
     , TS_TranactionIntegration.class
     , TS_RDFConnectionIntegration.class
     , TS_Assembler.class
+    , TestSettings.class
 })
 
 public class TC_Integration { }

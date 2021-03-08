@@ -29,7 +29,7 @@ import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.graph.NodeTransform ;
 
 /**
- * RDF-start triple term in an expression.
+ * RDF-star triple term in an expression (AKA embedded triple).
  * It can still have variables in it.
  */
 public class ExprTripleTerm extends ExprNode {
@@ -47,7 +47,7 @@ public class ExprTripleTerm extends ExprNode {
     @Override public NodeValue eval(Binding binding, FunctionEnv env) {
         if ( nvTripleTerm != null )
             return nvTripleTerm;
-        Triple t1 = tripleTerm.get();
+        Triple t1 = tripleTerm.getTriple();
         Triple t2 = Substitute.substitute(t1, binding);
         if ( t2.isConcrete() ) {
             Node_Triple tripleTerm2 = new Node_Triple(t2);
@@ -61,7 +61,7 @@ public class ExprTripleTerm extends ExprNode {
     }
 
     public Triple getTriple() {
-        return tripleTerm.get();
+        return tripleTerm.getTriple();
     }
 
     @Override
@@ -71,8 +71,8 @@ public class ExprTripleTerm extends ExprNode {
 
     @Override
     public Expr copySubstitute(Binding binding) {
-        Triple t1 = tripleTerm.get();
-        Triple t2 = Substitute.substitute(tripleTerm.get(), binding);
+        Triple t1 = tripleTerm.getTriple();
+        Triple t2 = Substitute.substitute(tripleTerm.getTriple(), binding);
         if ( t2 == t1 )
             return this;
         Node_Triple nodeTriple = new Node_Triple(t2);

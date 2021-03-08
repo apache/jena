@@ -27,14 +27,13 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
-
 @RunWith(RunnerSPARQL.class)
 @Label("Examples")
 @Manifests({
     "testing/ARQ/Examples/manifest.ttl"
 })
 public class TC_Examples
-{ 
+{
     private static boolean bVerboseWarnings;
     private static boolean bWarnOnUnknownFunction;
 
@@ -51,5 +50,5 @@ public class TC_Examples
         NodeValue.VerboseWarnings = bVerboseWarnings;
         E_Function.WarnOnUnknownFunction = bWarnOnUnknownFunction;
     }
-    
+
 }

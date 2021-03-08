@@ -38,7 +38,7 @@ import org.junit.runners.Suite ;
     , TestTransRestart.class
     , TestTransactionTDB.class
     , TestTransactionUnionGraph.class
-    , TestMiscTDB.class
+    , TestTransactionMiscTDB.class
     , TestTDBInternal.class
     , TestTransPromoteTDB.class
     , TestTransControl.class

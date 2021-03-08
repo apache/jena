@@ -52,7 +52,7 @@ public abstract class TupleIndexBase implements TupleIndex
     /** Delete tuple worker: Tuple passed in unmapped (untouched) order */
     protected abstract void performDelete(Tuple<NodeId> tuple);
 
-    /** Find tuples worker: Tuple passed in unmaped (untouched) order */
+    /** Find tuples worker: Tuple passed in unmapped (untouched) order */
     protected abstract Iterator<Tuple<NodeId>> performFind(Tuple<NodeId> tuple);
 
     /** Insert a tuple */

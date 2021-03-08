@@ -39,11 +39,14 @@ import org.junit.Test;
 public class TestQuadFilter
 {
     private static String graphToHide = "http://example/g2";
-    private static Dataset ds = setup();
+    private static Dataset ds1 = setup1();
+    private static Dataset ds2 = setup2();
+
+    private static Dataset createDataset() { return  TDB2Factory.createDataset(); }
 
     /** Example setup - in-memory dataset with two graphs, one triple in each */
-    private static Dataset setup() {
-        Dataset ds = TDB2Factory.createDataset();
+    private static Dataset setup1() {
+        Dataset ds = createDataset();
         DatasetGraph dsg = ds.asDatasetGraph();
         Txn.executeWrite(dsg, () -> {
             Quad q1 = SSE.parseQuad("(<http://example/g1> <http://example/s> <http://example/p> <http://example/o1>)");
@@ -54,25 +57,43 @@ public class TestQuadFilter
         return ds;
     }
 
-    /** Create a filter to exclude the graph http://example/g2 */
-    private static Predicate<Tuple<NodeId>> createFilter(Dataset ds) {
-        DatasetGraphTDB dsg = TDBInternal.getDatasetGraphTDB(ds);
-        final NodeTable nodeTable = dsg.getQuadTable().getNodeTupleTable().getNodeTable();
-        final NodeId target = nodeTable.getNodeIdForNode(NodeFactory.createURI(graphToHide));
-        return item -> !(item.len() == 4 && item.get(0).equals(target));
+    private static Dataset setup2() {
+        Dataset ds = createDataset();
+        DatasetGraph dsg = ds.asDatasetGraph();
+        Txn.executeWrite(dsg, () -> {
+            Quad q1 = SSE.parseQuad("(:g1 << :s :p :o1 >> :q :z1)");
+            Quad q2 = SSE.parseQuad("(:g2 << :s :p :o2 >> :q :z2)");
+            dsg.add(q1);
+            dsg.add(q2);
+        });
+        return ds;
     }
 
-    @Test public void quad_filter_1()   { test("SELECT * { GRAPH ?g { ?s ?p ?o } }", 1, 2); }
-    @Test public void quad_filter_2()   { test("SELECT * { ?s ?p ?o }", 1, 2); }
-    @Test public void quad_filter_3()   { test("SELECT * { GRAPH ?g { } }", 1, 2); }
 
-    private void test(String qs, int withFilter, int withoutFilter)
-    {
-        Predicate<Tuple<NodeId>> filter = createFilter(ds);
+    /** Create a filter to exclude the graph http://example/g2 */
+    private static Predicate<Tuple<NodeId>> createFilter(Dataset dataset) {
+        return Txn.calculateRead(dataset, ()->{
+            DatasetGraphTDB dsg = TDBInternal.getDatasetGraphTDB(dataset);
+            final NodeTable nodeTable = dsg.getQuadTable().getNodeTupleTable().getNodeTable();
+            final NodeId target = nodeTable.getNodeIdForNode(NodeFactory.createURI(graphToHide));
+            // Check g slot. Exclude graphToHide
+            return item -> !(item.len() == 4 && item.get(0).equals(target));
+        });
+    }
+
+    @Test public void quad_filter_1()   { test(ds1, "SELECT * { GRAPH ?g { ?s ?p ?o } }", 1, 2); }
+    @Test public void quad_filter_2()   { test(ds1, "SELECT * { ?s ?p ?o }", 1, 2); }
+    @Test public void quad_filter_3()   { test(ds1, "SELECT * { GRAPH ?g { } }", 1, 2); }
+
+    @Test public void quad_filter_4()   { test(ds2, "SELECT * { GRAPH ?g { << ?s ?p ?o >> ?q ?z } }", 1, 2); }
+    @Test public void quad_filter_5()   { test(ds2, "SELECT * { << ?s ?p ?o >> ?q ?z }", 1, 2); }
+
+    private static void test(Dataset dataset, String qs, int withFilter, int withoutFilter) {
+        Predicate<Tuple<NodeId>> filter = createFilter(dataset);
         Query query = QueryFactory.create(qs);
-        
-        Txn.executeRead(ds, ()->{
-            try(QueryExecution qExec = QueryExecutionFactory.create(query, ds)) {
+
+        Txn.executeRead(dataset, ()->{
+            try(QueryExecution qExec = QueryExecutionFactory.create(query, dataset)) {
                 // Install filter for this query only.
                 qExec.getContext().set(SystemTDB.symTupleFilter, filter);
                 qExec.getContext().setTrue(TDB2.symUnionDefaultGraph);
@@ -80,7 +101,7 @@ public class TestQuadFilter
                 assertEquals(withFilter, x1);
             }
             // No filter.
-            try(QueryExecution qExec = QueryExecutionFactory.create(query, ds)) {
+            try(QueryExecution qExec = QueryExecutionFactory.create(query, dataset)) {
                 qExec.getContext().setTrue(TDB2.symUnionDefaultGraph);
                 long x2 = ResultSetFormatter.consume(qExec.execSelect());
                 assertEquals(withoutFilter, x2);

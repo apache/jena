@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.TransformCopy;
@@ -117,11 +116,11 @@ public class Substitute {
 
     public static Node substitute(Node n, Binding binding) {
         if ( ! n.isNodeTriple() )
-            return Var.lookup(binding, n);
+            return Var.lookup(binding::get, n);
         if ( n.isConcrete() )
             return n;
         // Node_Triple with variables.
-        Triple triple = Node_Triple.triple(n);
+        Triple triple = n.getTriple();
         Node s = triple.getSubject();
         Node p = triple.getPredicate();
         Node o = triple.getObject();
@@ -146,7 +145,7 @@ public class Substitute {
                 n = substitute(n, binding);
         } else if ( Var.isVar(n) ) {
             Var var = Var.alloc(n);
-            n = Var.lookup(binding, n);
+            n = Var.lookup(binding::get, n);
         }
         return n;
     }
