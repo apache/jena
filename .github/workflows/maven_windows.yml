@@ -19,5 +19,5 @@ jobs:
       run: bash -c "cp -r /d/a/jena/jena /c/jena"
 
     - name: Build with Maven for windows-latest
-      run: bash -c "mvn -B verify --file pom.xml"
+      run: bash -c "mvn -B verify -Pdev --file pom.xml"
       working-directory: c:\jena
