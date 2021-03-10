@@ -47,10 +47,10 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
 
     /**
      * SecurityRegistry.
-     * Builds a SecurityRegistry - a map from user name to
+     * Builds a SecurityRegistry - list the graphs a user has access to.
      * <pre>
      * &lt;#securityRegistry&gt; rdf:type access:SecurityRegistry;
-     *    access:entry ("user1" &lt;http://host/graphname1&gt;  &lt;http://host/graphname2&gt; ););
+     *    access:entry ("user1" &lt;http://host/graphname1&gt;  &lt;http://host/graphname2&gt; );
      *    access:entry ("user1" &lt;http://host/graphname3&gt; );
      *    access:entry ("user2" &lt;http://host/graphname3&gt; );
      *    .
