@@ -22,7 +22,6 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.PeekIterator ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetRewindable ;
@@ -124,16 +123,6 @@ public class ResultSetMem implements ResultSetRewindable, ResultSetPeekable
     }
 
     // -------- ResultSet interface ------------------------------
-   /**
-     *  @throws UnsupportedOperationException always thrown.
-     */
-
-    @Override
-    public void remove() throws java.lang.UnsupportedOperationException
-    {
-        throw new java.lang.UnsupportedOperationException(
-            Lib.className(this)+": Attempt to remove an element");
-    }
 
     /**
      * Is there another possibility?

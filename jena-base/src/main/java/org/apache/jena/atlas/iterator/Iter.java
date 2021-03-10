@@ -35,62 +35,70 @@ import org.apache.jena.atlas.lib.Sink ;
  * except for iterators (and hence single threaded).
  * <p>
  * Style 1: functional style using statics.
- * 
+ *
  * <pre>
  *  import static org.apache.jena.atlas.iterator.Iter.* ;
- *  
+ *
  *  filter(map(iterator, function), predicate)
  * </pre>
- * 
+ *
  * Style 2: Stream-like: The class {@code Iter} provides methods to call on an iterator.
- * 
+ *
  * <pre>
  * import static org.apache.jena.atlas.iterator.Iter.iter ;
- * 
+ *
  * iter(iterator).map(...).filter(...)
  * </pre>
  *
  * @param <T> the type of element over which an instance of {@code Iter} iterates,
  */
 public class Iter<T> implements Iterator<T> {
-    
+
     /** Shorter form of "forEachRemaining" */
     public static <T> void forEach(Iterator<T> iter, Consumer<T> action) {
         iter.forEachRemaining(action);
     }
-    
+
     // IteratorSlotted needed? IteratorPeek
     //   IteratorSlotted.inspect
-    
+
     public static <T> Stream<T> asStream(Iterator<T> iterator) {
         return asStream(iterator, false);
     }
 
     public static <T> Stream<T> asStream(Iterator<T> iterator, boolean parallel) {
-        // Why isn't there a JDK operation for Iterator -> (sequential) stream?  
+        // Why isn't there a JDK operation for Iterator -> (sequential) stream?
         int characteristics = Spliterator.IMMUTABLE;
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, characteristics), parallel);
     }
 
-    // ---- Special iterators. 
-    
+    // ---- Special iterators.
+
     public static <T> Iterator<T> singleton(T item) {
         // There is a singleton iterator in Collections but it is not public.
         return new SingletonIterator<>(item) ;
     }
-    
+
     public static <T> Iterator<T> nullIterator() {
         // Java7 caught up.
         return Collections.emptyIterator();
     }
-    
+
+    /**
+     * Return an iterator that does permit remove.
+     * This is makes an "UnmodifiedIterator".
+     */
+    public static <T> Iterator<T> noRemove(Iterator<T> iter) {
+        return new IteratorNoRemove<T>(iter);
+    }
+
     // ---- Collectors.
-    
+
     /** Collect an iterator into a set. */
     public static <T> Set<T> toSet(Iterator<? extends T> stream) {
         return collect(stream, Collectors.toSet());
     }
-    
+
     /** Collect an iterator into a list. */
     public static <T> List<T> toList(Iterator<? extends T> stream) {
         return collect(stream, Collectors.toList());
@@ -104,13 +112,13 @@ public class Iter<T> implements Iterator<T> {
         List<T> x = Iter.toList(iterator) ;
         return x.iterator() ;
     }
-    
+
     // Note fold-left and fold-right
     // http://en.wikipedia.org/wiki/Fold_%28higher-order_function%29
 
     // This reduce is a kind of fold-left (take first element, apply to rest of list)
     // and can deal with lists of zero elements.
-    
+
     // -- Operations on iterators.
 
     @FunctionalInterface
@@ -197,7 +205,7 @@ public class Iter<T> implements Iterator<T> {
     }
 
     /** Act on elements of an iterator.
-     * @see #map(Iterator, Function) 
+     * @see #map(Iterator, Function)
      */
     public static <T> void apply(Iterator<? extends T> stream, Consumer<T> action) {
         for (; stream.hasNext();) {
@@ -242,11 +250,6 @@ public class Iter<T> implements Iterator<T> {
                 }
                 throw new NoSuchElementException("filter.next") ;
             }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException("filter.remove") ;
-            }
         } ;
 
         return iter ;
@@ -270,7 +273,7 @@ public class Iter<T> implements Iterator<T> {
         }
         return true ;
     }
-    
+
     /**
      * Return true if one or more elements of stream passes the filter (reads
      * the stream to first element passing the filter)
@@ -320,11 +323,11 @@ public class Iter<T> implements Iterator<T> {
         }
         return Optional.ofNullable(thing);
     }
-    
+
     /**
      * Return an Optional with an element of an iterator that matches the predicate.
      * Return {@code Optional.empty} if none match.
-     * The element returned is not specified by the API contract. 
+     * The element returned is not specified by the API contract.
      */
     public static <T> Optional<T> findAny(Iterator<T> iter, Predicate<? super T> predicate) {
         return findFirst(iter, predicate);
@@ -333,7 +336,7 @@ public class Iter<T> implements Iterator<T> {
     // ---- Map
 
     /** Apply a function to every element of an iterator, transforming it
-     * from a {@code T} to an {@code R}. 
+     * from a {@code T} to an {@code R}.
      */
     public static <T, R> Iterator<R> map(Iterator<? extends T> stream, Function<T, R> converter) {
         final Iterator<R> iter = new Iterator<R>() {
@@ -346,28 +349,23 @@ public class Iter<T> implements Iterator<T> {
             public R next() {
                 return converter.apply(stream.next()) ;
             }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException("map.remove") ;
-            }
         } ;
         return iter ;
     }
 
-    /** 
+    /**
      * Apply a function to every element of an iterator, to produce possibly multiple mapping each time.
      * See {@link Stream#flatMap}
      */
     public static <T, R> Iterator<R> flatMap(Iterator<T> iter, Function<T, Iterator<R>> mapper) {
-        // Combined mapping and flattening  
+        // Combined mapping and flattening
         return new IteratorFlatMap<>(iter, mapper);
         // For reference: an alternative splitting the mapping out:
         //   Iterator<Iterator<R>> pipeline = Iter.map(iter, mapper);
         //   Iterator<R> outcome = new IteratorFlatten<>(pipeline);
         // IteratorFlatten is only one line and one field less complicated than IteratorFlatMap
     }
-    
+
     /**
      * Apply an action to everything in stream, yielding a stream of the
      * same items.
@@ -385,11 +383,6 @@ public class Iter<T> implements Iterator<T> {
                 action.accept(t) ;
                 return t ;
             }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException("operate.remove") ;
-            }
         } ;
         return iter ;
     }
@@ -405,7 +398,7 @@ public class Iter<T> implements Iterator<T> {
     }
 
     /** Join two iterators.
-     * If there, potentially, going to be many iterators, it is better to 
+     * If there, potentially, going to be many iterators, it is better to
      * create an {@link IteratorConcat} explicitly and add each iterator.
      */
     public static <T> Iterator<T> append(Iterator<? extends T> iter1, Iterator<? extends T> iter2) {
@@ -419,7 +412,7 @@ public class Iter<T> implements Iterator<T> {
         return filter(iter, new FilterUnique<T>()) ;
     }
 
-    /** Remove adjacent duplicates. This operation does not need 
+    /** Remove adjacent duplicates. This operation does not need
      * working memory to remember the all elements already seen,
      * just a slot for the last element seen.
      */
@@ -434,21 +427,21 @@ public class Iter<T> implements Iterator<T> {
 
     /** Step forward up to {@code steps} places.
      * <br/>Return number of steps taken.
-     * 
+     *
      * @apiNote
      * The iterator is moved at most {@code steps} places with no overshoot.
      * The iterator can be used afterwards.
-     */ 
+     */
     public static int step(Iterator<?> iter, int steps) {
         for ( int i = 0 ; i < steps; i++) {
-            if ( ! iter.hasNext() ) 
+            if ( ! iter.hasNext() )
                 return i;
             iter.next();
         }
         return steps;
     }
 
-    /** Take the first N elements of an iterator - stop early if too few 
+    /** Take the first N elements of an iterator - stop early if too few
      * @see #limit(Iterator, long)
      */
     public static <T> List<T> take(Iterator<T> iter, int N) {
@@ -458,30 +451,30 @@ public class Iter<T> implements Iterator<T> {
             x.add(iter.next()) ;
         return x ;
     }
-    
+
     /** Create an iterator such that it yields elements while a predicate test on
      *  the elements is true, end the iteration.
-     *  @see Iter#filter(Iterator, Predicate) 
+     *  @see Iter#filter(Iterator, Predicate)
      */
     public static <T> Iterator<T> takeWhile(Iterator<T> iter, Predicate<T> predicate) {
         return new IteratorTruncate<>(iter, predicate) ;
     }
-    
+
     /**
      * Create an iterator such that it yields elements until a predicate test on
      * the elements becomes true, end the iteration.
-     * 
+     *
      * @see Iter#filter(Iterator, Predicate)
      */
     public static <T> Iterator<T> takeUntil(Iterator<T> iter, Predicate<T> predicate) {
         return new IteratorTruncate<>(iter, predicate.negate()) ;
     }
-    
+
     /** Create an iterator such that elements from the front while
      *  a predicate test become true are dropped then return all remaining elements
-     *  are iterated over.  
+     *  are iterated over.
      *  The first element where the predicted becomes true is the first element of the
-     *  returned iterator.    
+     *  returned iterator.
      */
     public static <T> Iterator<T> dropWhile(Iterator<T> iter, Predicate<T> predicate) {
         PeekIterator<T> iter2 = new PeekIterator<>(iter) ;
@@ -494,20 +487,20 @@ public class Iter<T> implements Iterator<T> {
         }
         return iter2 ;
     }
-    
+
     /** Create an iterator such that elements from the front until
      *  a predicate test become true are dropped then return all remaining elements
-     *  are iterated over.  
+     *  are iterated over.
      *  The first element where the predicate becomes true is the first element of the
-     *  returned iterator.    
+     *  returned iterator.
      */
     public static <T> Iterator<T> dropUntil(Iterator<T> iter, Predicate<T> predicate) {
         return dropWhile(iter, predicate.negate()) ;
     }
-    
+
     /** Return an iterator that is limited to the given number of elements.
-     * If it is shorter than the limit, stop at the end. 
-     * @see #take(Iterator, int) 
+     * If it is shorter than the limit, stop at the end.
+     * @see #take(Iterator, int)
      */
     public static <X> Iterator<X> limit(Iterator<X> iterator, long limit) {
         final Iterator<X> iter = new Iterator<X>() {
@@ -531,7 +524,7 @@ public class Iter<T> implements Iterator<T> {
         return iter;
     }
 
-    /** Skip over a number of elements of an iterator */ 
+    /** Skip over a number of elements of an iterator */
     public static <X> Iterator<X> skip(Iterator<X> iterator, long limit) {
         for ( long i = 0; i < limit; i++ ) {
             if ( iterator.hasNext() )
@@ -597,12 +590,12 @@ public class Iter<T> implements Iterator<T> {
     public static <T> String asString(Iterator<T> stream, String sep) {
         return Iter.iter(stream).map(x->x.toString()).collect(Collectors.joining(sep));
     }
-    
+
     /** Create a string from an iterator, using the separator, prefix and suffix. Note: this consumes the iterator. */
     public static <T> String asString(Iterator<T> stream, CharSequence sep, CharSequence prefix, CharSequence suffix) {
         return Iter.iter(stream).map(x->x.toString()).collect(Collectors.joining(sep, prefix, suffix));
     }
-    
+
     public static <T> void close(Iterator<T> iter) {
         if ( iter instanceof Closeable )
             ((Closeable)iter).close() ;
@@ -611,7 +604,7 @@ public class Iter<T> implements Iterator<T> {
     /**
      * Print an iterator to stdout, return a copy of the iterator. Printing
      * occurs now. See {@link #debug} for an operation to print as the
-     * iterator is used. 
+     * iterator is used.
      */
     public static <T> Iterator<T> log(Iterator<T> stream) {
         return log(System.out, stream) ;
@@ -620,18 +613,18 @@ public class Iter<T> implements Iterator<T> {
     /**
      * Print an iterator to stdout, return a copy of the iterator. Printing
      * occurs now. See {@link #debug} for an operation to print as the
-     * iterator is used. 
+     * iterator is used.
      */
     public static <T> Iterator<T> log(final PrintStream out, Iterator<T> stream) {
         Iterator<T> iter = debug(out, stream) ;
         // And force it to run.
         return Iter.toList(iter).iterator();
     }
-    
+
     /**
      * Print an iterator to stdout, return a copy of the iterator. Printing
      * occurs when the iterator is used.  See {@link #log} for
-     * an operation to print now. 
+     * an operation to print now.
      */
     public static <T> Iterator<T> debug(Iterator<T> stream) {
         return debug(System.out, stream) ;
@@ -642,7 +635,7 @@ public class Iter<T> implements Iterator<T> {
      * occurs as the returned iterator is used.
      */
     public static <T> Iterator<T> debug(final PrintStream out, Iterator<T> stream) {
-        try { 
+        try {
             return map(stream, item -> {out.println(item); return item;}) ;
         } finally { out.flush() ; }
     }
@@ -727,7 +720,7 @@ public class Iter<T> implements Iterator<T> {
         return first(iter, (x)-> true ) ;
     }
 
-    /** Skip to the first element meeting a condition and return that element. */   
+    /** Skip to the first element meeting a condition and return that element. */
     public static <T> T first(Iterator<T> iter, Predicate<T> filter) {
         while (iter.hasNext()) {
             T t = iter.next() ;
@@ -781,7 +774,7 @@ public class Iter<T> implements Iterator<T> {
     private Iter(Iterator<T> iterator) {
         this.iterator = iterator ;
     }
-    
+
     /** Apply the Consumer to each element of the iterator */
     public void forEach(Consumer<T> action) {
         iterator.forEachRemaining(action);
@@ -800,7 +793,7 @@ public class Iter<T> implements Iterator<T> {
     public void sendToSink(Sink<T> sink) {
         sendToSink(iterator, sink) ;
     }
-    
+
     public T first() {
         return first(iterator) ;
     }
@@ -808,8 +801,8 @@ public class Iter<T> implements Iterator<T> {
     public T last() {
         return last(iterator) ;
     }
-    
-    /** Skip to the first element meeting a condition and return that element. */   
+
+    /** Skip to the first element meeting a condition and return that element. */
     public T first(Predicate<T> filter) {
         return first(iterator, filter) ;
     }
@@ -819,7 +812,7 @@ public class Iter<T> implements Iterator<T> {
         return firstIndex(iterator, filter) ;
     }
 
-    /** Filter by predicate */  
+    /** Filter by predicate */
     public Iter<T> filter(Predicate<T> filter) {
         return iter(filter(iterator, filter)) ;
     }
@@ -847,7 +840,7 @@ public class Iter<T> implements Iterator<T> {
     public Optional<T> findLast(Predicate<? super T> predicate) {
         return findLast(iterator, predicate);
     }
-    
+
     /** Remove nulls */
     public Iter<T> removeNulls() {
         return iter(removeNulls(this)) ;
@@ -873,11 +866,11 @@ public class Iter<T> implements Iterator<T> {
     public <R> R foldLeft(R initial, Folder<T, R> accumulator) {
         return foldLeft(iterator, initial, accumulator) ;
     }
-    
+
     public <R> R foldRight(R initial, Folder<T, R> accumulator) {
         return foldRight(iterator, initial, accumulator) ;
     }
-    
+
     /** Reduce.
      * This reduce is fold-left (take first element, apply to rest of list)
      */
@@ -896,7 +889,7 @@ public class Iter<T> implements Iterator<T> {
     public Optional<T> max(Comparator<T> comparator) {
         return max(iterator, comparator);
     }
-    
+
     /** See {@link Stream#collect(Supplier, BiConsumer, BiConsumer)}, except without the {@code BiConsumer<R, R> combiner} */
     public <R> R collect(Supplier<R> supplier, BiConsumer<R, T> accumulator/*, BiConsumer<R, R> combiner*/) {
         return Iter.collect(iterator, supplier, accumulator);
@@ -906,15 +899,15 @@ public class Iter<T> implements Iterator<T> {
     public <R, A> R collect(Collector<? super T, A, R> collector) {
         return collect(iterator, collector);
     }
-    
-    /** Apply an action to every element of an iterator */ 
+
+    /** Apply an action to every element of an iterator */
     public void apply(Consumer<T> action) {
         apply(iterator, action) ;
     }
 
     /** Join on an {@code Iterator}..
      * If there are going to be many iterators, uit is better to create an {@link IteratorConcat}
-     * and <tt>.add</tt> each iterator.  The overheads are much lower. 
+     * and <tt>.add</tt> each iterator.  The overheads are much lower.
      */
     public Iter<T> append(Iterator<T> iter) {
         return iter(IteratorCons.create(iterator, iter)) ;
@@ -925,40 +918,40 @@ public class Iter<T> implements Iterator<T> {
         return iter(take(iterator, N)) ;
     }
 
-    
+
     /** Create an {@code Iter} such that it yields elements while a predicate test on
      *  the elements is true, end the iteration.
-     *  @see Iter#filter(Predicate) 
+     *  @see Iter#filter(Predicate)
      */
     public Iter<T> takeWhile(Predicate<T> predicate) {
         return iter(takeWhile(iterator, predicate)) ;
     }
-    
+
     /**
      * Create an {@code Iter} such that it yields elements until a predicate test on
      * the elements becomes true, end the iteration.
-     * 
+     *
      * @see Iter#filter(Predicate)
      */
     public Iter<T> takeUntil(Predicate<T> predicate) {
         return iter(takeUntil(iterator, predicate)) ;
     }
-    
+
     /** Create an {@code Iter} such that elements from the front while
      *  a predicate test become true are dropped then return all remaining elements
-     *  are iterated over.  
+     *  are iterated over.
      *  The first element where the predicted becomes true is the first element of the
-     *  returned iterator.    
+     *  returned iterator.
      */
     public Iter<T> dropWhile(Predicate<T> predicate) {
         return iter(dropWhile(iterator, predicate)) ;
     }
-    
+
     /** Create an {@code Iter} such that elements from the front until
      *  a predicate test become true are dropped then return all remaining elements
-     *  are iterated over.  
+     *  are iterated over.
      *  The first element where the predicate becomes true is the first element of the
-     *  returned iterator.    
+     *  returned iterator.
      */
     public Iter<T> dropUntil(Predicate<T> predicate) {
         return iter(dropWhile(iterator, predicate.negate())) ;
@@ -975,7 +968,7 @@ public class Iter<T> implements Iterator<T> {
     }
 
 
-    
+
     /** Count the iterator (this is destructive on the iterator) */
     public long count() {
         ActionCount<T> action = new ActionCount<>() ;
@@ -991,7 +984,7 @@ public class Iter<T> implements Iterator<T> {
         return iter((distinct(iterator))) ;
     }
 
-    /** Remove adjacent duplicates. This operation does not need 
+    /** Remove adjacent duplicates. This operation does not need
      * working memory to remember the all elements already seen,
      * just a slot for the last element seen.
      */

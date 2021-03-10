@@ -144,8 +144,4 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
         slot = null ;
         return x ;
     }
-
-    @Override
-    public void remove()
-    { throw new UnsupportedOperationException() ; }
 }

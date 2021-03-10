@@ -27,7 +27,7 @@ import java.util.NoSuchElementException ;
  * Iterator that delays output by N slots so you can react to the output before
  * it's yielded. See also {@link PeekIterator} (which predates this code). See also
  * {@link IteratorWithHistory} for an iterator that remembers what it has yielded.
- * 
+ *
  * @see PeekIterator
  * @see PushbackIterator
  * @see IteratorWithHistory
@@ -78,11 +78,6 @@ public class IteratorWithBuffer<T> implements Iterator<T> {
             lookahead.add(nextItem) ;
         }
         return item ;
-    }
-
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException("remove") ;
     }
 
     /**

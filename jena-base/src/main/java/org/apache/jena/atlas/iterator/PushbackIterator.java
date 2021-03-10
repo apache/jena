@@ -52,11 +52,4 @@ public class PushbackIterator<T> implements Iterator<T> {
             return items.pop() ;
         return iter.next() ;
     }
-
-    @Override
-    public void remove() {
-        // Need to track if last next() was from the stack or not.
-        throw new UnsupportedOperationException() ;
-    }
-
 }

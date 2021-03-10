@@ -32,10 +32,10 @@ public class RecordBufferIterator implements Iterator<Record>
     private Record slot = null ;
     private final Record maxRec ;
     private final Record minRec ;
-    
+
     RecordBufferIterator(RecordBuffer rBuff)
     { this(rBuff, null, null); }
-    
+
     RecordBufferIterator(RecordBuffer rBuff, Record minRecord, Record maxRecord)
     {
         this.rBuff = rBuff ;
@@ -47,8 +47,8 @@ public class RecordBufferIterator implements Iterator<Record>
             if ( nextIdx < 0 )
                 nextIdx = decodeIndex(nextIdx) ;
         }
-        
-        maxRec = maxRecord ; 
+
+        maxRec = maxRecord ;
     }
 
     private void finish()
@@ -57,7 +57,7 @@ public class RecordBufferIterator implements Iterator<Record>
         nextIdx = -99 ;
         slot = null ;
     }
-    
+
     @Override
     public boolean hasNext()
     {
@@ -70,7 +70,7 @@ public class RecordBufferIterator implements Iterator<Record>
             finish() ;
             return false ;
         }
-        
+
         slot = rBuff.get(nextIdx) ;
         if ( maxRec != null && Record.keyGE(slot, maxRec) )
         {
@@ -91,9 +91,4 @@ public class RecordBufferIterator implements Iterator<Record>
         slot = null ;
         return r ;
     }
-
-    @Override
-    public void remove()
-    { throw new UnsupportedOperationException("RecordBufferIterator.remove") ; }
-    
 }

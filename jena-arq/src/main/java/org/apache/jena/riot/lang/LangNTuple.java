@@ -69,10 +69,6 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
         return parseOne();
     }
 
-    @Override
-    public final void remove()
-    { throw new UnsupportedOperationException(); }
-
     /** Parse one tuple - return object to be sent to the sink or null for none */
     protected abstract X parseOne() ;
 

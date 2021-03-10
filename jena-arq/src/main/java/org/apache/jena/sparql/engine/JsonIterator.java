@@ -80,12 +80,6 @@ public class JsonIterator implements Iterator<JsonObject>
         }
     }
 
-    @Override
-    public void remove()
-    {
-        throw new UnsupportedOperationException(this.getClass().getName() + ".remove") ;
-    }
-
     /**
      * Closes the QueryIterator, if it is an instance of Closeable.
      */

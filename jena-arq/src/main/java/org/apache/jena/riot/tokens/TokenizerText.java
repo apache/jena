@@ -125,10 +125,6 @@ public final class TokenizerText implements Tokenizer
         return token;
     }
 
-    @Override
-    public void remove()
-    { throw new UnsupportedOperationException(); }
-
 //    private TokenChecker getChecker() {
 //        return checker;
 //    }
@@ -386,7 +382,7 @@ public final class TokenizerText implements Tokenizer
             case CH_SLASH:      reader.readChar(); token.setType(TokenType.SLASH);     /*token.setImage(CH_SLASH);*/ return token;
             case CH_RSLASH:     reader.readChar(); token.setType(TokenType.RSLASH);    /*token.setImage(CH_RSLASH);*/ return token;
 //            case CH_VBAR:       reader.readChar(); token.setType(TokenType.VBAR);      /*token.setImage(CH_VBAR);*/ return token;
-            
+
             // |} for RDF-star annotation syntax.
             case CH_VBAR: {
                 reader.readChar();

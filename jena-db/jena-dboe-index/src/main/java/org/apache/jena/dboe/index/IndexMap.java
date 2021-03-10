@@ -89,12 +89,7 @@ public class IndexMap implements Index
                 Map.Entry<ByteArray, ByteArray> e = iter.next();
                 return record(e.getKey(), e.getValue());
             }
-
-            @Override
-            public void remove()
-            { throw new UnsupportedOperationException();}
         };
-
     }
 
     @Override

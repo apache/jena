@@ -30,8 +30,8 @@ public class IteratorInteger implements Iterator<Long>
     {
         return new IteratorInteger(start, finish) ;
     }
-    
-    
+
+
     /** [start, finish) */
     public IteratorInteger(long start, long finish)
     {
@@ -39,7 +39,7 @@ public class IteratorInteger implements Iterator<Long>
         this.finish = finish ;
         this.current = start ;
     }
-    
+
     @Override
     public boolean hasNext()
     {
@@ -53,9 +53,4 @@ public class IteratorInteger implements Iterator<Long>
         current++ ;
         return v ;
     }
-
-    @Override
-    public void remove()
-    { throw new UnsupportedOperationException() ; }
-
 }

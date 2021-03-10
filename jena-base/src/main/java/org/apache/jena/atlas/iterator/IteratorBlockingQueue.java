@@ -29,10 +29,10 @@ public class IteratorBlockingQueue<T> implements Iterator<T>
     private BlockingQueue<T> queue ;
     private boolean finished = false ;
     private T slot = null ;
-    private T endMarker ; 
+    private T endMarker ;
 
     public IteratorBlockingQueue(BlockingQueue<T> queue, T endMarker) { this.queue = queue ; this.endMarker = endMarker ; }
-    
+
     @Override
     public boolean hasNext()
     {
@@ -48,11 +48,11 @@ public class IteratorBlockingQueue<T> implements Iterator<T>
                 return false ;
             }
             return true ;
-            
+
         } catch (InterruptedException ex)
         {
             ex.printStackTrace();
-            
+
         }
         return false ;
     }
@@ -66,8 +66,4 @@ public class IteratorBlockingQueue<T> implements Iterator<T>
         slot = null ;
         return item ;
     }
-
-    @Override
-    public void remove()
-    { throw new UnsupportedOperationException() ; }
 }

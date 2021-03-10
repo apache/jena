@@ -23,28 +23,28 @@ import java.util.NoSuchElementException ;
 
 import org.apache.jena.atlas.lib.Lib ;
 
-/** An Iterator with a one slot lookahead. */  
+/** An Iterator with a one slot lookahead. */
 public abstract class IteratorSlotted<T> implements Iterator<T>
 {
     private boolean finished = false ;
     private boolean slotIsSet = false ;
-    private T slot = null ; 
+    private T slot = null ;
 
     protected IteratorSlotted() { }
 
-    // -------- The contract with the subclasses 
-    
+    // -------- The contract with the subclasses
+
     /** Implement this, not next() or nextBinding() */
     protected abstract T moveToNext() ;
-    
-    /** Can return true here then null from moveToNext() to indicate end. */ 
+
+    /** Can return true here then null from moveToNext() to indicate end. */
     protected abstract boolean hasMore() ;
     // alter add a flag to say if null is a legal value.
-    
+
     /** Close the iterator. */
     protected void closeIterator() { }
-   
-    // -------- The contract with the subclasses 
+
+    // -------- The contract with the subclasses
 
     protected boolean isFinished() { return finished ; }
 
@@ -62,23 +62,23 @@ public abstract class IteratorSlotted<T> implements Iterator<T>
             close() ;
             return false ;
         }
-        
+
         slot = moveToNext() ;
         if ( slot == null ) {
             close() ;
             return false ;
         }
-            
+
         slotIsSet = true ;
         return true ;
     }
-    
+
     /** final - autoclose and registration relies on it - implement moveToNextBinding() */
     @Override
     public final T next()
     {
         if ( ! hasNext() ) throw new NoSuchElementException(Lib.className(this)) ;
-        
+
         T obj = slot ;
         slot = null ;
         slotIsSet = false ;
@@ -90,7 +90,7 @@ public abstract class IteratorSlotted<T> implements Iterator<T>
     {
         return peek(null) ;
     }
-    
+
     /** Look at the next element - returns dft when there is no element */
     public final T peek(T dft)
     {
@@ -98,13 +98,7 @@ public abstract class IteratorSlotted<T> implements Iterator<T>
         if ( ! slotIsSet ) return dft ;
         return slot ;
     }
-    
-    @Override
-    public final void remove()
-    {
-        throw new UnsupportedOperationException(Lib.className(this)+".remove") ;
-    }
-    
+
     public final void close()
     {
         if ( finished )
