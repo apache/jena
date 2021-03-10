@@ -49,7 +49,4 @@ class Itr3<X> implements Iterator<X> {
         if ( idx == 3 ) return elt3;
         throw new NoSuchElementException();
     }
-
-    @Override
-    public void remove() { throw new UnsupportedOperationException("Itr3.remove"); }
 }

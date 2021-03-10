@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,49 +16,29 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.engine.binding;
+package org.apache.jena.atlas.iterator;
 
 import java.util.Iterator;
-import java.util.Map;
 
-import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.graph.Node;
-import org.apache.jena.sparql.core.Var;
+public class IteratorNoRemove<T> implements Iterator<T> {
+    protected final Iterator<T> iterator;
 
-/**
- * Implement {@link Binding} with a {@link Map}.
- */
-public class BindingOverMap extends BindingBase {
-
-    private final Map<Var, Node> map;
-
-    /*package*/BindingOverMap(Binding parent, Map<Var, Node> map) {
-        super(parent);
-        this.map = map;
+    public IteratorNoRemove(Iterator<T> iterator) {
+        this.iterator = iterator;
     }
 
     @Override
-    protected Iterator<Var> vars1() {
-        return Iter.noRemove(map.keySet().iterator());
+    public boolean hasNext() {
+        return iterator.hasNext();
     }
 
     @Override
-    protected boolean contains1(Var var) {
-        return map.containsKey(var);
+    public T next() {
+        return iterator.next();
     }
 
     @Override
-    protected Node get1(Var var) {
-        return map.get(var);
-    }
-
-    @Override
-    protected int size1() {
-        return map.size();
-    }
-
-    @Override
-    protected boolean isEmpty1() {
-        return map.isEmpty();
+    public final void remove() {
+        throw new UnsupportedOperationException("remove");
     }
 }

@@ -74,9 +74,4 @@ class RecordBufferPageLinker implements Iterator<RecordBufferPage> {
         slot = null;
         return rbp;
     }
-
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException();
-    }
 }

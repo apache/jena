@@ -26,15 +26,15 @@ import org.apache.jena.tdb.base.recordbuffer.RecordBufferPage ;
 
 /** From a stream of RecordBufferPage,  manage the link fields.
  * That is, be a one slot delay so that the "link" field can point to the next page.
- * Be careful about the last block.   
+ * Be careful about the last block.
  *
  */
 class RecordBufferPageLinker implements Iterator<RecordBufferPage>
 {
     PeekIterator<RecordBufferPage> peekIter ;
-    
+
     RecordBufferPage slot = null ;
-    
+
     RecordBufferPageLinker(Iterator<RecordBufferPage> iter)
     {
         if ( ! iter.hasNext() )
@@ -42,16 +42,16 @@ class RecordBufferPageLinker implements Iterator<RecordBufferPage>
             peekIter = null ;
             return ;
         }
-        
+
         peekIter = new PeekIterator<>(iter) ;
     }
-    
+
     @Override
     public boolean hasNext()
     {
         if ( slot != null )
             return true ;
-        
+
         if ( peekIter == null )
             return false ;
 
@@ -60,7 +60,7 @@ class RecordBufferPageLinker implements Iterator<RecordBufferPage>
             peekIter = null ;
             return false ;
         }
-        
+
         slot = peekIter.next() ;
         RecordBufferPage nextSlot = peekIter.peek() ;
         // If null, no slot ahead so no linkage field to set.
@@ -69,7 +69,7 @@ class RecordBufferPageLinker implements Iterator<RecordBufferPage>
             slot.setLink(nextSlot.getId()) ;
         return true ;
     }
-    
+
     @Override
     public RecordBufferPage next()
     {
@@ -78,8 +78,4 @@ class RecordBufferPageLinker implements Iterator<RecordBufferPage>
         slot = null ;
         return rbp ;
     }
-    
-    @Override
-    public void remove()
-    { throw new UnsupportedOperationException() ; }
 }

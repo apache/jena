@@ -52,7 +52,4 @@ class Itr4<X> implements Iterator<X> {
         if ( idx == 4 ) return elt4;
         throw new NoSuchElementException();
     }
-
-    @Override
-    public void remove() { throw new UnsupportedOperationException("Itr4.remove"); }
 }

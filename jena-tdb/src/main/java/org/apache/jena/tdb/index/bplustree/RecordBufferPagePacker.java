@@ -26,7 +26,7 @@ import org.apache.jena.tdb.base.record.Record ;
 import org.apache.jena.tdb.base.recordbuffer.RecordBufferPage ;
 import org.apache.jena.tdb.base.recordbuffer.RecordBufferPageMgr ;
 
-/** Iterate over a stream of records, packing them into RecordBufferPage -- the leaf of a B+Tree 
+/** Iterate over a stream of records, packing them into RecordBufferPage -- the leaf of a B+Tree
  *  This class does not write the blocks back to the block manager.
  *  This class does allocate block ids and blocks.
  *  @see RecordBufferPageLinker
@@ -37,13 +37,13 @@ class RecordBufferPagePacker implements Iterator<RecordBufferPage>
     Iterator<Record> records = null ;
     RecordBufferPage recordBufferPage = null ;
     RecordBufferPageMgr rbMgr = null ;
-    
+
     RecordBufferPagePacker(Iterator<Record> records, RecordBufferPageMgr rbMgr)
     {
         this.records = records ;
         this.rbMgr = rbMgr ;
     }
-    
+
     @Override
     public boolean hasNext()
     {
@@ -51,7 +51,7 @@ class RecordBufferPagePacker implements Iterator<RecordBufferPage>
         {
             if ( records == null )
                 return false ;
-            
+
             if ( !records.hasNext() )
             {
                 records = null ;
@@ -64,7 +64,7 @@ class RecordBufferPagePacker implements Iterator<RecordBufferPage>
 //            int id = rbMgr.allocateId() ;
 //            //System.out.println("Allocate : "+id) ;
             recordBufferPage = rbMgr.create() ;
-            
+
             RecordBuffer rb = recordBufferPage.getRecordBuffer() ;
             while ( !rb.isFull() && records.hasNext() )
             {
@@ -76,9 +76,9 @@ class RecordBufferPagePacker implements Iterator<RecordBufferPage>
             return true ;
         }
         return true ;
-        
+
     }
-    
+
     @Override
     public RecordBufferPage next()
     {
@@ -87,8 +87,4 @@ class RecordBufferPagePacker implements Iterator<RecordBufferPage>
         recordBufferPage = null ;
         return rbp ;
     }
-    
-    @Override
-    public void remove()
-    { throw new UnsupportedOperationException() ; }
 }
