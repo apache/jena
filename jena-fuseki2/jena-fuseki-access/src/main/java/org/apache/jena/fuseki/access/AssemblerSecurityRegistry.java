@@ -47,19 +47,15 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
 
     /**
      * SecurityRegistry.
-     * Builds a SecurityRegistry - a map fron user name to
-     *
-     * <#securityRegistry> rdf:type access:SecurityRegistry;
-     *    access:entry ("user1" <http://host/graphname1>  <http://host/graphname2> ););
-     *    access:entry ("user1" <http://host/graphname3> );
-     *    access:entry ("user2" <http://host/graphname3> );
-     *
+     * Builds a SecurityRegistry - a map from user name to
+     * <pre>
+     * &lt;#securityRegistry&gt; rdf:type access:SecurityRegistry;
+     *    access:entry ("user1" &lt;http://host/graphname1&gt;  &lt;http://host/graphname2&gt; ););
+     *    access:entry ("user1" &lt;http://host/graphname3&gt; );
+     *    access:entry ("user2" &lt;http://host/graphname3&gt; );
      *    .
-     *
-     * ## Drop?
-     * access:entry [ :user "user2"; :graphs (<http://host/graphname3> ) ];
+     * </pre>
      */
-
     @Override
     public AuthorizationService open(Assembler a, Resource root, Mode mode) {
         SecurityRegistry registry = new SecurityRegistry();

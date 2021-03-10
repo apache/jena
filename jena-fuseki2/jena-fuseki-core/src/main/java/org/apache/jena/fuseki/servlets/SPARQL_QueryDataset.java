@@ -46,7 +46,7 @@ public class SPARQL_QueryDataset extends SPARQLQueryProcessor {
      * @param action
      * @param query
      * @param queryStringLog
-     * @return Pair<DatasetGraph, Query>
+     * @return Pair&lt;DatasetGraph, Query&gt;
      */
     public Pair<DatasetGraph, Query> decideDatasetDynamic(HttpAction action, Query query, String queryStringLog) {
         DatasetGraph dsg = getDataset(action);
@@ -60,7 +60,7 @@ public class SPARQL_QueryDataset extends SPARQLQueryProcessor {
         }
         return Pair.create(dsg, query);
     }
-    
+
     protected DatasetGraph getDataset(HttpAction action) {
         return action.getActiveDSG();
     }
