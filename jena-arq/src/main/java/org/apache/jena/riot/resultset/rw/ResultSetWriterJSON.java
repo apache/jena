@@ -30,7 +30,6 @@ import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.json.io.JSWriter;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.ResultSet;
@@ -328,7 +327,7 @@ public class ResultSetWriterJSON implements ResultSetWriter {
         }
 
         private void writeValueNodeTriple(IndentedWriter out, Node value, boolean multiLine) {
-            Triple triple = Node_Triple.triple(value);
+            Triple triple = value.getTriple();
             print(out, quoteName(kType), ": ", quote(kTriple), " , ");
             println(out);
 
@@ -351,7 +350,7 @@ public class ResultSetWriterJSON implements ResultSetWriter {
             writeValue(out, triple.getSubject(), multiLineInnerValue);
             println(out, " ,");
 
-            print(out, quoteName(kProperty), ": ");
+            print(out, quoteName(kPredicate), ": ");
             writeValue(out, triple.getPredicate(), multiLineInnerValue);
             println(out, " ,");
 

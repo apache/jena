@@ -16,25 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.index;
+package org.apache.jena.sparql.core;
 
-import java.util.Objects;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.sparql.AbstractTestAdditional;
 
-import org.apache.jena.dboe.base.record.Record;
-import org.apache.jena.sparql.core.DatasetChanges;
+public class TestDatasetMisc extends AbstractTestAdditional {
 
-/** Temporary class to refine what to put into Jena itself.
- * @see DatasetChanges
- */
-public class IndexChange {
-    enum Action { ADD, DELETE }
-    final Action action;
-    final Record record;
-    public IndexChange(Action action, Record record) {
-        Objects.requireNonNull(action, "Action can not be null");
-        Objects.requireNonNull(record, "Record can not be null");
-        this.action = action;
-        this.record = record;
+    @Override
+    protected Dataset dataset() {
+        return DatasetFactory.create();
     }
-}
 
+}

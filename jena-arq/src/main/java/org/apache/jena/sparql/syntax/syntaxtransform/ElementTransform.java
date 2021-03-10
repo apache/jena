@@ -37,7 +37,6 @@ public interface ElementTransform
     public Element transform(ElementFilter el, Expr expr2);
     public Element transform(ElementAssign el, Var v, Expr expr2);
     public Element transform(ElementBind el, Var v, Expr expr2);
-    public Element transform(ElementFind el, Var v, Triple triple2);
     public Triple  transform(Triple triple);
     public Element transform(ElementData el);
     public Element transform(ElementDataset el, Element subElt);

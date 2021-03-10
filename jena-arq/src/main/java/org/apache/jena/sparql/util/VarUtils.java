@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.* ;
 import org.apache.jena.sparql.pfunction.PropFuncArg;
@@ -60,7 +59,7 @@ public class VarUtils {
         if ( n.isVariable() )
             acc.add(Var.alloc(n));
         else if ( n.isNodeTriple() ) {
-            Triple t = Node_Triple.triple(n);
+            Triple t = n.getTriple();
             addVarsFromTriple(acc, t);
         }
     }

@@ -19,6 +19,7 @@
 package org.apache.jena.atlas.lib.tuple;
 
 import java.util.Arrays ;
+import java.util.Objects;
 import java.util.function.Function;
 
 /** A Tuple of N items */
@@ -65,4 +66,16 @@ public class TupleN<X> extends TupleBase<X> {
         }
         return wrap(tuple2);
     }
+
+
+    @Override
+    public boolean contains(X item) {
+        int N = tuple.length;
+        for ( int i = 0 ; i < N ; i++ ) {
+            if ( Objects.equals(tuple[i], item) )
+                return true;
+        }
+        return false;
+    }
+
 }

@@ -49,6 +49,10 @@ public class NodeTupleTableWrapper implements NodeTupleTable
     { nodeTupleTable.deleteRow(nodes); }
 
     @Override
+    public int getTupleLen()
+    { return nodeTupleTable.getTupleLen(); }
+
+    @Override
     public Iterator<Tuple<Node>> find(Node... nodes)
     { return nodeTupleTable.find(nodes); }
 

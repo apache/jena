@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.NodeUtils ;
 import org.junit.Test ;
 
@@ -294,5 +295,50 @@ public class TestOrdering
         assertTrue("Variable nodes should be less than literal nodes", Expr.CMP_LESS == res);
         res = NodeUtils.compareRDFTerms(y, x);
         assertTrue("Variable nodes should be less than literal nodes", Expr.CMP_GREATER == res);
+    }
+    
+    @Test public void test_nodeTriple_1() {
+        Node x = SSE.parseNode("<<:s :p 1>>");
+        Node y = SSE.parseNode("<<:s :p 2>>");
+        int res = NodeUtils.compareRDFTerms(x, y);
+        assertTrue(Expr.CMP_LESS == res);
+        res = NodeUtils.compareRDFTerms(y, x);
+        assertTrue(Expr.CMP_GREATER == res);
+    }
+    
+    @Test public void test_nodeTriple_2() {
+        Node x = SSE.parseNode("<<:s2 :p 1>>");
+        Node y = SSE.parseNode("<<:s1 :p 2>>");
+        int res = NodeUtils.compareRDFTerms(x, y);
+        assertTrue(Expr.CMP_GREATER == res);
+        res = NodeUtils.compareRDFTerms(y, x);
+        assertTrue(Expr.CMP_LESS == res);
+    }
+    
+    @Test public void test_nodeTriple_3() {
+        Node x = SSE.parseNode("<<:s :p 2>>");
+        Node y = SSE.parseNode("<<:s :p 2>>");
+        int res = NodeUtils.compareRDFTerms(x, y);
+        assertTrue(Expr.CMP_EQUAL == res);
+    }
+
+    @Test public void test_nodeTriple_4() {
+        Node x = SSE.parseNode("'abc'");
+        Node y = SSE.parseNode("<<:s :p 2>>");
+        int res = NodeUtils.compareRDFTerms(x, y);
+        // After literals.
+        assertTrue(Expr.CMP_LESS == res);
+        res = NodeUtils.compareRDFTerms(y, x);
+        assertTrue(Expr.CMP_GREATER == res);
+    }
+    
+    @Test public void test_nodeTriple_5() {
+        Node x = SSE.parseNode("<uri>");
+        Node y = SSE.parseNode("<<:s :p 2>>");
+        int res = NodeUtils.compareRDFTerms(x, y);
+        // After URIs
+        assertTrue(Expr.CMP_LESS == res);
+        res = NodeUtils.compareRDFTerms(y, x);
+        assertTrue(Expr.CMP_GREATER == res);
     }
 }

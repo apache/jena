@@ -174,8 +174,8 @@ public class TestResultSetFormat1
     
     private static void areIsomorphic(ResultSet x, ResultSet y)
     {
-        ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(x) ;
-        ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(y) ;
+        ResultSetRewindable rs1 = x.rewindable();
+        ResultSetRewindable rs2 = y.rewindable();
 //        System.out.println(ResultSetFormatter.asText(rs1));
 //        System.out.println();
 //        System.out.println(ResultSetFormatter.asText(rs2));

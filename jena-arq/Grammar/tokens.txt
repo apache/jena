@@ -97,6 +97,7 @@
 [<UNSAID>]     ::=    'UNSAID'
 [<LET>]        ::=    'LET'
 [<BIND>]       ::=    'BIND'
+[<FIND>]       ::=    'FIND'
 
 [<FILTER>]     ::= 'FILTER'
 [<REGEXP>]     ::= 'REGEXP'
@@ -172,6 +173,12 @@
 [<REGEX>]      ::= 'REGEX'
 [<TRUE>]       ::= 'true'
 [<FALSE>]      ::= 'false'
+
+[<TRIPLE>]     ::= 'TRIPLE'
+[<IS_TRIPLE>]  ::= 'isTRIPLE'
+[<SUBJECT>]    ::= 'isSUBJECT'
+[<PREDICATE>]  ::= 'isPREDICATE'
+[<OBJECT>]     ::= 'isOBJECT'
 
 [<MODIFY>]       ::= 'MODIFY'
 [<INSERT>]       ::= 'INSERT'

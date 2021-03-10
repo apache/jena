@@ -19,25 +19,22 @@
 package org.apache.jena.sparql.syntax;
 
 /** A ElementVisitor that does nothing.  It saves writing lots of
- * empty visits when only interested in a few element types.  
+ * empty visits when only interested in a few element types.
  */
 
-public class ElementVisitorBase implements ElementVisitor 
+public class ElementVisitorBase implements ElementVisitor
 {
     @Override
     public void visit(ElementTriplesBlock el)   { }
 
     @Override
     public void visit(ElementFilter el)         { }
-    
+
     @Override
     public void visit(ElementAssign el)         { }
 
     @Override
     public void visit(ElementBind el)           { }
-
-    @Override
-    public void visit(ElementFind el)           { }
 
     @Override
     public void visit(ElementData el)           { }

@@ -31,11 +31,11 @@ public class JSONResultsKW
     public static String kBindings      = "bindings" ;
     public static String kType          = "type" ;
     public static String kUri           = "uri"  ;
-    
+
     public static String kValue         = "value" ;
     public static String kLiteral       = "literal" ;
     public static String kUnbound       = "undef" ;
-    
+
     // Legacy: kTypedLiteral
     public static String kTypedLiteral  = "typed-literal" ;
     public static String kXmlLang       = "xml:lang" ;
@@ -51,7 +51,7 @@ public class JSONResultsKW
     public static String kPredicate     = "predicate" ;
     public static String kProperty      = "property" ;
     public static String kObject        = "object" ;
-    // RDF-star Triple terms -alternative keywords
+    // RDF-star Triple terms - alternative keywords
     public static String kSubjectAlt    = "s" ;
     public static String kPredicateAlt  = "p" ;
     public static String kObjectAlt     = "o" ;

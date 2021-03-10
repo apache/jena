@@ -18,8 +18,6 @@
 
 package org.apache.jena.sparql.pfunction;
 
-import org.apache.jena.sparql.ARQConstants;
-import org.apache.jena.sparql.pfunction.library.triple.TripleTermFind;
 import org.apache.jena.sparql.vocabulary.ListPFunction;
 import org.apache.jena.vocabulary.RDFS;
 
@@ -37,11 +35,6 @@ public class StandardPropertyFunctions {
         // This is called during Jena-wide initialization.
         // Use function for constant (JENA-1294)
         add(registry, RDFS.Init.member().getURI(), org.apache.jena.sparql.pfunction.library.container.class);
-
-        // Property function - RDF-star
-//        PropertyFunctionFactory factory = (uri)->new TripleTermFind();
-//        registry.put(ARQConstants.ARQPropertyFunctionLibraryURI+"find", factory);
-        add(registry, ARQConstants.ARQPropertyFunctionLibraryURI+"find", TripleTermFind.class);
     }
 
     private static void add(PropertyFunctionRegistry registry, String uri, Class<? > funcClass) {

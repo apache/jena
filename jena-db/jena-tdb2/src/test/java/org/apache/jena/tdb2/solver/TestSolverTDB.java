@@ -18,7 +18,6 @@
 
 package org.apache.jena.tdb2.solver;
 
-
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -46,82 +45,77 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestSolverTDB
-{
+public class TestSolverTDB {
     static Dataset dataset = null;
     static PrefixMapping pmap = null;
 
-    @BeforeClass static public void beforeClass()
-    {
+    @BeforeClass
+    static public void beforeClass() {
         dataset = TL.createTestDatasetMem();
         dataset.begin(ReadWrite.WRITE);
-        String graphData = ConfigTest.getTestingDataRoot()+"/Data/solver-data.ttl";
+        String graphData = ConfigTest.getTestingDataRoot() + "/Data/solver-data.ttl";
         RDFDataMgr.read(dataset, graphData);
         pmap = new PrefixMappingImpl();
         pmap.setNsPrefix("", "http://example/");
     }
 
-
-    @AfterClass static public void afterClass() {
+    @AfterClass
+    static public void afterClass() {
         dataset.abort();
         TL.expel(dataset);
     }
 
-    static private void addAll(Graph srcGraph, Graph dstGraph)
-    {
+    static private void addAll(Graph srcGraph, Graph dstGraph) {
         Iterator<Triple> triples = srcGraph.find(Node.ANY, Node.ANY, Node.ANY);
         triples.forEachRemaining(dstGraph::add);
     }
 
-    @Test public void solve_01()
-    {
+    @Test
+    public void solve_01() {
         ResultSet rs1 = exec("(bgp (:s :p :o))");
         ResultSet rs2 = results("unit");
         equals(rs1, rs2);
     }
 
-    @Test public void solve_02()
-    {
+    @Test
+    public void solve_02() {
         ResultSet rs1 = exec("(bgp (:s :p :o2))");
         ResultSet rs2 = results("empty");
         equals(rs1, rs2);
     }
 
-    @Test public void solve_03()
-    {
+    @Test
+    public void solve_03() {
         // Above everything.
         ResultSet rs1 = exec("(bgp (:zzzz :p 999999))");
         ResultSet rs2 = results("empty");
         equals(rs1, rs2);
     }
 
-    @Test public void solve_04()
-    {
+    @Test
+    public void solve_04() {
         // Below everything.
         ResultSet rs1 = exec("(bgp (:a :p :a))");
         ResultSet rs2 = results("empty");
         equals(rs1, rs2);
     }
 
-    @Test public void solve_05()
-    {
+    @Test
+    public void solve_05() {
         ResultSet rs1 = exec("(project (?s ?y) (bgp (?s :p ?z) (?z :q ?y)))");
         ResultSet rs2 = results("(row (?s :s) (?y :y))");
         equals(rs1, rs2);
     }
 
-    @Test public void solve_06()
-    {
+    @Test
+    public void solve_06() {
         ResultSet rs1 = exec("(bgp (:s ?p ?o))");
-        ResultSet rs2 = results("(row (?p :p) (?o :o))",
-                                "(row (?p :p) (?o 10))",
-                                "(row (?p :p) (?o :x))"
-                                );
+        ResultSet rs2 = results("(row (?p :p) (?o :o))", "(row (?p :p) (?o 10))", "(row (?p :p) (?o :x))");
         equals(rs1, rs2);
     }
 
-    @Test public void solve_07()
-    {
+    @Test
+    public void solve_07() {
         // JENA-1428, JENA-1529
         String x = "(sequence  (table (vars ?X) (row [?X 'NotPresent']))  (bgp (triple :s :p ?o)))";
         ResultSet rs1 = exec(x);
@@ -132,16 +126,15 @@ public class TestSolverTDB
 
     // ------
 
-    private static void equals(ResultSet rs1, ResultSet rs2)
-    { same(rs1, rs2, true); }
+    private static void equals(ResultSet rs1, ResultSet rs2) {
+        same(rs1, rs2, true);
+    }
 
-    private static void same(ResultSet rs1, ResultSet rs2, boolean result)
-    {
+    private static void same(ResultSet rs1, ResultSet rs2, boolean result) {
         ResultSetRewindable rsw1 = ResultSetFactory.makeRewindable(rs1);
         ResultSetRewindable rsw2 = ResultSetFactory.makeRewindable(rs2);
         boolean b = ResultSetCompare.equalsByValue(rsw1, rsw2);
-        if ( b != result)
-        {
+        if ( b != result ) {
             System.out.println("Different: ");
             rsw1.reset();
             rsw2.reset();
@@ -153,28 +146,26 @@ public class TestSolverTDB
         assertTrue(b == result);
     }
 
-    private static ResultSet results(String... rows)
-    {
-        String str = "(table "+String.join("", rows)+")";
+    private static ResultSet results(String...rows) {
+        String str = "(table " + String.join("", rows) + ")";
         return SSE.parseTable(str).toResultSet();
     }
 
-    private static ResultSet exec(String pattern)
-    {
+    private static ResultSet exec(String pattern) {
         Op op = SSE.parseOp(pattern, pmap);
-        List<Var> vars =  new ArrayList<>();
+        List<Var> vars = new ArrayList<>();
         vars.addAll(OpVars.visibleVars(op));
-        //op = Algebra.toQuadForm(op);
+        // op = Algebra.toQuadForm(op);
         QueryIterator qIter = Algebra.exec(op, dataset.asDatasetGraph());
         // Will go via the StageGeneratorDirectTDB for TDB2
-        // QueryIterator qIter = Algebra.exec(op, dataset.asDatasetGraph().getDefaultGraph());
+        // QueryIterator qIter = Algebra.exec(op,
+        // dataset.asDatasetGraph().getDefaultGraph());
         return ResultSetFactory.create(qIter, Var.varNames(vars));
     }
 
-    private static List<Binding> toList(QueryIterator qIter)
-    {
+    private static List<Binding> toList(QueryIterator qIter) {
         List<Binding> x = new ArrayList<>();
-        for (; qIter.hasNext() ; )
+        for ( ; qIter.hasNext() ; )
             x.add(qIter.nextBinding());
         return x;
     }

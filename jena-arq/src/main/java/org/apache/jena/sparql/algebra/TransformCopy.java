@@ -30,7 +30,7 @@ public class TransformCopy implements Transform
     public static final boolean COPY_ALWAYS         = true ;
     public static final boolean COPY_ONLY_ON_CHANGE = false ;
     private boolean alwaysCopy = false ;
-    
+
     public TransformCopy()                                          { this(COPY_ONLY_ON_CHANGE) ; }
     public TransformCopy(boolean alwaysDuplicate)                   { this.alwaysCopy = alwaysDuplicate ; }
 
@@ -48,8 +48,6 @@ public class TransformCopy implements Transform
     public Op transform(OpQuad opQuad)                              { return xform(opQuad) ; }
     @Override
     public Op transform(OpPath opPath)                              { return xform(opPath) ; }
-    @Override
-    public Op transform(OpFind opFind)                              { return xform(opFind) ; }
 
     @Override
     public Op transform(OpProcedure opProc, Op subOp)               { return xform(opProc, subOp) ; }
@@ -69,7 +67,7 @@ public class TransformCopy implements Transform
     public Op transform(OpAssign opAssign, Op subOp)                { return xform(opAssign, subOp) ; }
     @Override
     public Op transform(OpExtend opExtend, Op subOp)                { return xform(opExtend, subOp) ; }
-    
+
     @Override
     public Op transform(OpJoin opJoin, Op left, Op right)           { return xform(opJoin, left, right) ; }
     @Override
@@ -87,15 +85,15 @@ public class TransformCopy implements Transform
     public Op transform(OpSequence opSequence, List<Op> elts)           { return xform(opSequence, elts) ; }
     @Override
     public Op transform(OpDisjunction opDisjunction, List<Op> elts)     { return xform(opDisjunction, elts) ; }
-    
+
     @Override
     public Op transform(OpExt opExt)                                { return xform(opExt) ; }
-    
+
     @Override
     public Op transform(OpNull opNull)                              { return opNull.copy() ; }
     @Override
     public Op transform(OpLabel opLabel, Op subOp)                  { return xform(opLabel, subOp) ; }
-    
+
     @Override
     public Op transform(OpList opList, Op subOp)                    { return xform(opList, subOp) ; }
     @Override
@@ -114,26 +112,26 @@ public class TransformCopy implements Transform
     public Op transform(OpGroup opGroup, Op subOp)                  { return xform(opGroup, subOp) ; }
 
     private Op xform(Op0 op)
-    { 
+    {
         if ( ! alwaysCopy )
             return op ;
         return op.copy() ;
     }
 
     private Op xform(Op1 op, Op subOp)
-    { 
+    {
         if ( ! alwaysCopy && op.getSubOp() == subOp )
             return op ;
         return op.copy(subOp) ;
     }
-    
+
     private Op xform(Op2 op, Op left, Op right)
     {
         if ( ! alwaysCopy && op.getLeft() == left && op.getRight() == right )
             return op ;
         return op.copy(left, right) ;
     }
-    
+
     private Op xform(OpN op, List<Op> elts)
     {
         // Need to do one-deep equality checking.
@@ -141,7 +139,7 @@ public class TransformCopy implements Transform
             return op ;
         return op.copy(elts) ;
     }
-    
+
     private Op xform(OpExt op)
     {
         try {
@@ -151,7 +149,7 @@ public class TransformCopy implements Transform
             return op;
         }
     }
-    
+
     private boolean equals1(List<Op> list1, List<Op> list2)
     {
         if ( list1.size() != list2.size() )

@@ -1144,22 +1144,23 @@ Expr UnaryExpression() : { Expr expr ; }
   | <MINUS> expr = PrimaryExpression() { return new E_UnaryMinus(expr) ; }
   | expr = PrimaryExpression() { return expr ; }
 }
-Expr PrimaryExpression() : { Expr expr ; Node gn ; }
+Expr PrimaryExpression() : { Expr expr ; Node n ; }
 {
   ( expr = BrackettedExpression() { return expr ; }
   | expr = BuiltInCall() { return expr ; }
   | expr = iriOrFunction() { return expr ; }
-  | gn = RDFLiteral() { return asExpr(gn) ; }
-  | gn = NumericLiteral() { return asExpr(gn) ; }
-  | gn = BooleanLiteral() { return asExpr(gn) ; }
-  | gn = Var() { return asExpr(gn) ; }
+  | n = RDFLiteral() { return asExpr(n) ; }
+  | n = NumericLiteral() { return asExpr(n) ; }
+  | n = BooleanLiteral() { return asExpr(n) ; }
+  | n = Var() { return asExpr(n) ; }
   )
 }
 Expr BrackettedExpression() : { Expr expr ; }
 {
     <LPAREN> expr = Expression() <RPAREN> { return expr ; }
 }
-Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
+Expr BuiltInCall() : { Expr expr ;
+                       Expr expr1 = null ; Expr expr2 = null ; Expr expr3 = null ;
                        Node gn ; ExprList a ; }
 {
     expr = Aggregate() { return expr ; }

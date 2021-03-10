@@ -39,13 +39,13 @@ public class update extends CmdUpdate
 {
     static final ArgDecl updateArg = new ArgDecl(ArgDecl.HasValue, "update", "file");
     static final ArgDecl dumpArg = new ArgDecl(ArgDecl.NoValue, "dump");       // Write the result to stdout.
-    
+
     List<String> requestFiles = null;
     boolean dump = false;
-    
+
     public static void main (String... argv)
     { new update(argv).mainRun(); }
-    
+
     protected update(String[] argv) {
         super(argv);
         super.add(updateArg, "--update=FILE", "Update commands to execute");
@@ -61,7 +61,7 @@ public class update extends CmdUpdate
 
     @Override
     protected String getCommandName() { return Lib.className(this); }
-    
+
     @Override
     protected String getSummary() { return getCommandName()+" --desc=assembler [--dump] --update=<request file>"; }
 
@@ -72,7 +72,7 @@ public class update extends CmdUpdate
             throw new CmdException("Nothing to do");
 
         Transactional transactional = graphStore;
-        
+
         for ( String filename : requestFiles )
             Txn.executeWrite(transactional, ()->execOneFile(filename, graphStore));
 
@@ -80,13 +80,13 @@ public class update extends CmdUpdate
             String requestString2 = indirect(requestString);
             Txn.executeWrite(transactional, ()->execOne(requestString2, graphStore));
         }
-        
+
         if ( ! ( transactional instanceof DatasetGraph ) )
             // Unlikely/impossible in Jena 3.7.0 onwards.
             SystemARQ.sync(graphStore);
 
         if ( dump )
-            Txn.executeRead(transactional, ()->RDFDataMgr.write(System.out, graphStore, Lang.NQUADS) );
+            Txn.executeRead(transactional, ()->RDFDataMgr.write(System.out, graphStore, Lang.TRIG) );
     }
 
     protected void execOneFile(String filename, DatasetGraph store) {

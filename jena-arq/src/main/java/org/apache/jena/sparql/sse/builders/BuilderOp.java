@@ -42,9 +42,9 @@ public class BuilderOp
     // order of statics matters (the dispatch table gets initialized to
     // tag/null because the buildXYZ are null at that point).
     // which forces the code structure unnaturally.
-    
+
     private static BuilderOp builderOp = new BuilderOp() ;
-    
+
     public static Op build(Item item)
     {
         if (item.isNode() )
@@ -52,7 +52,7 @@ public class BuilderOp
 
         if (item.isSymbol() )
             BuilderLib.broken(item, "Attempt to build op structure from a bare symbol") ;
-        
+
         if (!item.isTagged())
             BuilderLib.broken(item, "Attempt to build op structure from a non-tagged item") ;
 
@@ -94,7 +94,6 @@ public class BuilderOp
         addBuild(Tags.tagAssign,        buildAssign) ;
         addBuild(Tags.tagExtend,        buildExtend) ;
         addBuild(Tags.symAssign,        buildAssign) ;
-        addBuild(Tags.tagFind,          buildFind) ;
         addBuild(Tags.tagSlice,         buildSlice) ;
 
         addBuild(Tags.tagTable,         buildTable) ;
@@ -102,7 +101,7 @@ public class BuilderOp
         addBuild(Tags.tagLabel,         buildLabel) ;
     }
 
-    
+
     public static void add(String tag, Build builder)
     {
         builderOp.addBuild(tag, builder) ;
@@ -112,12 +111,12 @@ public class BuilderOp
     {
         builderOp.removeBuild(tag) ;
     }
-    
+
     public static boolean contains(String tag)
     {
         return builderOp.containsBuild(tag) ;
     }
-    
+
     // The main recursive build operation.
     private Op build(ItemList list)
     {
@@ -140,9 +139,9 @@ public class BuilderOp
             BuilderLib.broken(item, "Not a list for a basic graph pattern") ;
         ItemList list = item.getList() ;
         return buildBGP(list) ;
-        
+
     }
-    
+
     private static BasicPattern buildBGP(ItemList list)
     {
         // Skips the tag.
@@ -153,32 +152,32 @@ public class BuilderOp
             if ( ! item.isList() )
                 BuilderLib.broken(item, "Not a triple structure") ;
             Triple t = BuilderGraph.buildTriple(item.getList()) ;
-            triples.add(t) ; 
+            triples.add(t) ;
         }
         return triples ;
     }
-    
+
     protected Op build(ItemList list, int idx)
     {
         return build(list.get(idx).getList()) ;
     }
 
-    // <<<< ---- Coordinate these 
+    // <<<< ---- Coordinate these
     // Lowercase on insertion?
     protected void addBuild(String tag, Build builder)
     {
         dispatch.put(tag, builder) ;
     }
-    
+
     protected void removeBuild(String tag)
     {
         dispatch.remove(tag) ;
     }
-    
+
     protected boolean containsBuild(String tag)
     {
         return findBuild(tag) != null ;
-        
+
     }
 
     protected Build findBuild(String str)
@@ -194,17 +193,17 @@ public class BuilderOp
     }
 
     // >>>> ----
-    
+
     @FunctionalInterface
     public interface Build { Op make(ItemList list) ; }
 
     // Not static.  The initialization through the singleton would not work
     // (static initialization order - these operations would need to go
-    // before the singelton. 
+    // before the singelton.
     // Or assign null and create object on first call but that breaks add/remove
     final protected Build buildTable = (ItemList list) -> {
             Item t = Item.createList(list) ;
-            Table table = BuilderTable.build(t) ; 
+            Table table = BuilderTable.build(t) ;
             return OpTable.create(table) ;
     } ;
 
@@ -230,9 +229,9 @@ public class BuilderOp
 							BuilderLib.broken(item, "Quad has different graph node in quadapttern: "+q) ;
 					}
                 bp.add(q.asTriple()) ;
-                
+
             }
-            
+
 		OpQuadPattern op = new OpQuadPattern(g, bp) ;
 		return op ;
     } ;
@@ -248,7 +247,7 @@ public class BuilderOp
                 Quad q = BuilderGraph.buildQuad(item.getList()) ;
                 qp.add(q) ;
             }
-            
+
 		OpQuadBlock op = new OpQuadBlock(qp) ;
 		return op ;
     } ;
@@ -258,17 +257,17 @@ public class BuilderOp
 		Triple t = BuilderGraph.buildTriple(list) ;
 		return new OpTriple(t) ;
 	} ;
-    
+
     final protected Build buildQuad = (ItemList list) -> {
 		Quad q = BuilderGraph.buildQuad(list) ;
 		return new OpQuad(q) ;
 	} ;
-    
+
     final protected Build buildTriplePath = (ItemList list) -> {
 		TriplePath tp = BuilderPath.buildTriplePath(list) ;
 		return new OpPath(tp) ;
 	} ;
-    
+
     final protected Build buildFilter = (ItemList list) -> {
 		BuilderLib.checkLength(3, list, "Malformed filter") ;
 		Item itemExpr = list.get(1) ;
@@ -303,7 +302,7 @@ public class BuilderOp
 		addOps(op, list) ;
 		return op ;
     } ;
-    
+
     final protected Build buildDisjunction = (ItemList list) -> {
 		BuilderLib.checkLengthAtLeast(2, list, "Disjunction") ;
 		OpDisjunction op = OpDisjunction.create() ;
@@ -319,7 +318,7 @@ public class BuilderOp
 		if ( list.size() == 4 )
             {
                 Item exprItem = list.get(3) ;
-                // Allow empty 
+                // Allow empty
                 if ( exprItem.isList() && exprItem.getList().isEmpty() )
 					{}
                 else
@@ -352,13 +351,13 @@ public class BuilderOp
 		Op op = new OpUnion(left, right) ;
 		return op ;
     } ;
-    
+
     final protected Build buildDatasetNames = (ItemList list) -> {
 		BuilderLib.checkLength(2, list, Tags.tagDatasetNames) ;
 		Node n = BuilderNode.buildNode(list.get(1)) ;
 		return new OpDatasetNames(n) ;
     } ;
-    
+
     final protected Build buildConditional = (ItemList list) -> {
 		BuilderLib.checkLength(2, 3, list, "condition") ;
 		Op left = build(list, 1) ;
@@ -390,7 +389,7 @@ public class BuilderOp
                 silent = true ;
                 list = list.cdr() ;
             }
-            
+
 		Node service = BuilderNode.buildNode(list.car()) ;
 		if ( ! service.isURI() && ! service.isVariable() )
 			BuilderLib.broken(list, "Service must provide a URI or variable") ;
@@ -398,7 +397,7 @@ public class BuilderOp
 		Op sub  = build(list, 0) ;
 		return new OpService(service, sub, silent) ;
     } ;
-    
+
     final protected Build buildProcedure = (ItemList list) -> {
 		// (proc <foo> (args) form)
 		BuilderLib.checkLength(4, list, "proc") ;
@@ -408,13 +407,13 @@ public class BuilderOp
 		ExprList args = BuilderExpr.buildExprOrExprList(list.get(2)) ;
 		Op sub  = build(list, 3) ;
 		return new OpProcedure(procId, args, sub) ;
-    } ; 
+    } ;
 
     final protected Build buildPropertyFunction = (ItemList list) -> {
 		// (proc <foo> (subject args) (object args) form)
 		BuilderLib.checkLength(5, list, "propfunc") ;
 		Node property = BuilderNode.buildNode(list.get(1)) ;
-            
+
 		if ( ! property.isURI() )
 			BuilderLib.broken(list, "Property function name must be a URI") ;
 
@@ -423,7 +422,7 @@ public class BuilderOp
 		Op sub  = build(list, 4) ;
 		return new OpPropFunc(property, subjArg, objArg, sub) ;
     } ;
-    
+
     static final private PropFuncArg readPropFuncArg(Item item)
     {
         if ( item.isNode() )
@@ -447,7 +446,7 @@ public class BuilderOp
 		// GroupBy
 		VarExprList vars = BuilderExpr.buildNamedExprList(list.get(1).getList()) ;
 		List<ExprAggregator> aggregators = new ArrayList<>() ;
-            
+
 		if ( list.size() == 4 )
             {
                 // Aggregations : assume that the exprs are legal.
@@ -457,7 +456,7 @@ public class BuilderOp
                 // (so it can be set by the aggregation calculation)
                 // Bind aggregation to variable
                 // Remember to process in order that VarExprList keeps the variables.
-                
+
                 for ( Var aggVar : y.getVars() )
 					{
 						Expr e = y.getExpr(aggVar) ;
@@ -465,10 +464,10 @@ public class BuilderOp
 							BuilderLib.broken(list, "Not a aggregate expression: "+e) ;
 						ExprAggregator eAgg = (ExprAggregator)e ;
 						eAgg.setVar(aggVar) ;
-						aggregators.add(eAgg) ;    
+						aggregators.add(eAgg) ;
 					}
             }
-            
+
 		Op sub = build(list, list.size()-1) ;
 		Op op = OpGroup.create(sub,vars, aggregators) ;
 		return op ;
@@ -477,10 +476,10 @@ public class BuilderOp
     final protected Build buildOrderBy = (ItemList list) -> {
 		BuilderLib.checkLength(3, list,  "Order") ;
 		ItemList conditions = list.get(1).getList() ;
-            
+
 		// Maybe tagged (asc, desc or a raw expression)
 		List<SortCondition> x = new ArrayList<>() ;
-            
+
 		for ( int i = 0 ; i < conditions.size() ; i++ )
             {
                 //int direction = Query.ORDER_DEFAULT ;
@@ -504,7 +503,7 @@ public class BuilderOp
                 direction = Query.ORDER_ASCENDING ;
             else
                 direction = Query.ORDER_DESCENDING ;
-            item = item.getList().get(1) ; 
+            item = item.getList().get(1) ;
         }
         Expr expr = BuilderExpr.buildExpr(item) ;
         if ( expr.isVariable() )
@@ -512,15 +511,15 @@ public class BuilderOp
         else
             return new SortCondition(expr, direction) ;
     }
-    
+
     final protected Build buildTopN = (ItemList list) -> {
 		BuilderLib.checkLength(3, list,  Tags.tagTopN) ;
 		int N = BuilderNode.buildInt(list.get(1).getList(), 0, -1) ;
 		ItemList conditions = list.get(1).getList().cdr() ;
-            
+
 		// Maybe tagged (asc, desc or a raw expression)
 		List<SortCondition> x = new ArrayList<>() ;
-            
+
 		for ( int i = 0 ; i < conditions.size() ; i++ )
             {
                 //int direction = Query.ORDER_DEFAULT ;
@@ -532,22 +531,22 @@ public class BuilderOp
 		Op op = new OpTopN(sub, N, x) ;
 		return op ;
     } ;
-    
+
     final protected Build buildProject = (ItemList list) -> {
 		BuilderLib.checkLength(3, list, "project") ;
 		Item item1 = list.get(1);
 		List<Var> x = null;
 		if ( item1.isList() ) {
-			x = BuilderNode.buildVars(list.get(1).getList()) ; 
+			x = BuilderNode.buildVars(list.get(1).getList()) ;
 		} else if ( list.get(1).isVar() ) {
 			Var var = BuilderNode.buildVar(item1);
 			x = Collections.singletonList(var);
-		} else 
+		} else
 			BuilderLib.broken("Not a list of variable for project: "+list.get(1)) ;
 		Op sub = build(list, 2) ;
 		return new OpProject(sub, x) ;
     } ;
-    
+
     final protected Build buildDistinct = (ItemList list) -> {
 		BuilderLib.checkLength(2, list, "distinct") ;
 		Op sub = build(list, 1) ;
@@ -562,8 +561,8 @@ public class BuilderOp
 
     final protected Build buildAssign = (ItemList list) -> {
 		BuilderLib.checkLength(3, list, "assign") ;
-		VarExprList x = BuilderExpr.buildNamedExprOrExprList(list.get(1)) ; 
-		Op sub ; 
+		VarExprList x = BuilderExpr.buildNamedExprOrExprList(list.get(1)) ;
+		Op sub ;
 		if ( list.size() == 2 )
 			sub = OpTable.unit() ;
 		else
@@ -574,26 +573,13 @@ public class BuilderOp
     final protected Build buildExtend = (ItemList list) -> {
 		BuilderLib.checkLength(2, 3, list, "extend") ;
 		VarExprList x = BuilderExpr.buildNamedExprOrExprList(list.get(1)) ;
-		Op sub ; 
+		Op sub ;
 		if ( list.size() == 2 )
 			sub = OpTable.unit() ;
 		else
 			sub = build(list, 2) ;
 		return OpExtend.create(sub, x) ;
     } ;
-    
-    final protected Build buildFind = list -> {
-        BuilderLib.checkLength(3, list, "find") ;
-        // Var
-        Item item1 = list.get(1); // var
-        Var var = BuilderNode.buildVar(item1);
-        // Triple
-        Item tItem = list.get(2);
-        BuilderLib.checkList(tItem);
-        Triple triple = BuilderGraph.buildTriple(tItem.getList()) ;
-        
-        return new OpFind(triple, var);
-    };
 
     final protected Build buildSlice = list -> {
         BuilderLib.checkLength(4, list, "slice") ;
@@ -634,12 +620,12 @@ public class BuilderOp
             }
 		else
 			BuilderLib.broken("No a symbol or a node") ;
-            
+
 		if ( str == null )
 			str = label.toString() ;
-            
+
 		Op op = null ;
-            
+
 		if ( list.size() == 3 )
 			op = build(list, 2) ;
 		return OpLabel.create(str, op) ;

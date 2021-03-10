@@ -25,7 +25,6 @@ import java.util.Objects;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.QuerySolution;
@@ -48,15 +47,15 @@ public class ResultSetWriterXML implements ResultSetWriter {
 
     public static final Symbol xmlInstruction = SystemARQ.allocSymbol("xmlInstruction");
     public static final Symbol xmlStylesheet = SystemARQ.allocSymbol("xmlStylesheet");
-    
+
     public static ResultSetWriterFactory factory = lang->{
         if (!Objects.equals(lang, ResultSetLang.SPARQLResultSetXML ) )
-            throw new ResultSetException("ResultSetWriter for XML asked for a "+lang); 
-        return new ResultSetWriterXML(); 
+            throw new ResultSetException("ResultSetWriter for XML asked for a "+lang);
+        return new ResultSetWriterXML();
     };
-    
+
     private ResultSetWriterXML() {}
-    
+
     @Override
     public void write(Writer out, ResultSet resultSet, Context context) {
         throw new UnsupportedOperationException("Writing XML results to a java.io.Writer. Use an OutputStream.") ;
@@ -71,7 +70,7 @@ public class ResultSetWriterXML implements ResultSetWriter {
             out.stylesheetURL = (String)(context.get(xmlStylesheet));
         out.exec(result);
     }
-    
+
     @Override
     public void write(OutputStream outStream, ResultSet resultSet, Context context) {
         XMLOutputResultSet xOut = new XMLOutputResultSet(outStream, context);
@@ -82,7 +81,7 @@ public class ResultSetWriterXML implements ResultSetWriter {
         ResultSetApply a = new ResultSetApply(resultSet, xOut);
         a.apply();
     }
-    
+
     private class XMLOutputASK implements XMLResults {
         String         stylesheetURL = null;
         IndentedWriter out;
@@ -135,15 +134,15 @@ public class ResultSetWriterXML implements ResultSetWriter {
     private static class XMLOutputResultSet implements ResultSetProcessor, XMLResults
     {
         private static boolean outputExplicitUnbound = false ;
-        
-        private int index = 0 ;                     // First index is 1 
+
+        private int index = 0 ;                     // First index is 1
         private String stylesheetURL = null ;
         private boolean xmlInst = true ;
 
         private final IndentedWriter  out ;
         private int bNodeCounter = 0 ;
         private final NodeToLabel bNodeMap;
-        
+
         private XMLOutputResultSet(OutputStream outStream, Context context) {
             this(new IndentedWriter(outStream), context);
         }
@@ -273,11 +272,11 @@ public class ResultSetWriterXML implements ResultSetWriter {
             Node node = rdfNode.asNode();
             printBindingValue(node);
         }
-        
+
         private void printBindingValue(Node node) {
             if ( node == null )
                 return;
-        
+
             if ( node.isLiteral() ) {
                 printLiteral(node);
                 return;
@@ -287,7 +286,7 @@ public class ResultSetWriterXML implements ResultSetWriter {
                 printURI(node);
                 return;
             }
-            
+
             if ( node.isBlank() ) {
                 printBlankNode(node);
                 return;
@@ -296,7 +295,7 @@ public class ResultSetWriterXML implements ResultSetWriter {
                 printTripleTerm(node);
                 return;
             }
-            
+
             if ( node.isNodeGraph() )
                 throw new UnsupportedOperationException("Graph terms");
 
@@ -312,8 +311,8 @@ public class ResultSetWriterXML implements ResultSetWriter {
             out.print("</");
             out.print(dfURI);
             out.println(">");
-        }            
-            
+        }
+
         private void printBlankNode(Node node) {
             String label = bNodeMap.get(null, node);
             // Comes with leading "_:"
@@ -330,7 +329,7 @@ public class ResultSetWriterXML implements ResultSetWriter {
         private void printLiteral(Node literal) {
             out.print("<");
             out.print(dfLiteral);
-        
+
             if ( Util.isLangString(literal) ) {
                 String lang = literal.getLiteralLanguage();
                 out.print(" xml:lang=\"");
@@ -347,7 +346,7 @@ public class ResultSetWriterXML implements ResultSetWriter {
                 out.print(datatype);
                 out.print("\"");
             }
-        
+
             out.print(">");
             out.print(xml_escape(literal.getLiteralLexicalForm()));
             out.print("</");
@@ -356,25 +355,25 @@ public class ResultSetWriterXML implements ResultSetWriter {
         }
 
         private void printTripleTerm(Node node) {
-            Triple triple = Node_Triple.triple(node);
+            Triple triple = node.getTriple();
             openTag(dfTriple);
-            
+
             // Subject
             openTag(dfSubject);
             printBindingValue(triple.getSubject());
             closeTag(dfSubject);
-            // Property
-            openTag(dfProperty);
+            // Predicate
+            openTag(dfPredicate);
             printBindingValue(triple.getPredicate());
-            closeTag(dfProperty);
+            closeTag(dfPredicate);
             // Object
             openTag(dfObject);
             printBindingValue(triple.getObject());
             closeTag(dfObject);
-            
+
             closeTag(dfTriple);
         }
-        
+
         private void openTag(String name) {
             out.print("<");
             out.print(name);
@@ -396,22 +395,27 @@ public class ResultSetWriterXML implements ResultSetWriter {
             char found;
             for (int i = 0; i < string.length(); i++) {
                 found = string.charAt(i);
-                
-                switch (found) {
-                    case '&' : replacement = "&amp;"; break;
-                    case '<' : replacement = "&lt;"; break;
-                    case '>' : replacement = "&gt;"; break;
-                    case '\r': replacement = "&#x0D;"; break;
-                    case '\n': replacement = "&#x0A;"; break;
-                    default  : replacement = null;
+
+                if ( found < ' ' ) {
+                    // Strictly error in XML 1.0
+                    replacement = String.format("&#x%04X;", (int)found);
+                } else {
+                    switch (found) {
+                        case '&' : replacement = "&amp;"; break;
+                        case '<' : replacement = "&lt;"; break;
+                        case '>' : replacement = "&gt;"; break;
+                        case '\r': replacement = "&#x0D;"; break;
+                        case '\n': replacement = "&#x0A;"; break;
+                        default  : replacement = null;
+                    }
                 }
-                
+
                 if (replacement != null) {
                     sb.replace(offset + i, offset + i + 1, replacement);
                     offset += replacement.length() - 1; // account for added chars
                 }
             }
-            
+
             return sb.toString();
         }
 

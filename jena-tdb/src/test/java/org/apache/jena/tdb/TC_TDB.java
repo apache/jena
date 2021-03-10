@@ -57,10 +57,11 @@ import org.junit.runners.Suite ;
     , TS_SolverTDB.class
     , TS_Sys.class
     , TS_Graph.class
-    , TS_TDBFactory.class
+    , TS_TDB1Factory.class
     , TS_TDBAssembler.class
     , TS_TransactionTDB.class
     , TS_ObjectFile.class
+    , TestMiscTDB1.class
     , Scripts_TDB1.class
 } )
 
@@ -70,8 +71,8 @@ public class TC_TDB
         if ( false )
             SystemTDB.setFileMode(FileMode.direct) ;
     }
-    static ReorderTransformation dftReorder = null ; 
-        
+    static ReorderTransformation dftReorder = null ;
+
     @BeforeClass
     static public void beforeClass() {
         // Turn off general reordering (turned on for specific reorder tests)

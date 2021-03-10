@@ -17,11 +17,7 @@
  */
 package org.apache.jena.arq.querybuilder.rewriters;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -31,7 +27,7 @@ import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.util.ExprUtils ;
+import org.apache.jena.sparql.expr.ExprLib;
 
 /**
  * The base class for rewriters.
@@ -202,7 +198,7 @@ public class AbstractRewriter<T> {
 		}
 
 		for (Map.Entry<Var, Expr> entry : lst.getExprs().entrySet()) {
-			Expr target = ExprUtils.nodeToExpr(entry.getKey());
+			Expr target = ExprLib.nodeToExpr(entry.getKey());
 			Node n = values.get(entry.getKey());
 			Var v = entry.getKey();
 			Expr e = entry.getValue();
@@ -210,7 +206,7 @@ public class AbstractRewriter<T> {
 				if (n.isVariable()) {
 					v = Var.alloc(n);
 					if (target.equals(e)) {
-						e = ExprUtils.nodeToExpr(n);
+						e = ExprLib.nodeToExpr(n);
 					}
 				} else {
 					v = null;

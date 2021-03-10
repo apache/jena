@@ -25,7 +25,6 @@ import org.apache.jena.arq.junit.LibTestSetup;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.ResultSetFactory;
-import org.apache.jena.query.Syntax;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
@@ -67,7 +66,6 @@ public class QueryTestItem
     private List<String> namedGraphURIs ;
     private Resource     testType         = null ;
     private String       queryFile ;
-    private Syntax       queryFileSyntax ;
 
     public static QueryTestItem create(Resource entry, Resource defaultTestType) {
         return new QueryTestItem(entry, defaultTestType) ;
@@ -99,7 +97,6 @@ public class QueryTestItem
         namedGraphURIs = _getNamedGraphsURIs() ;
 
         queryFile = _getQueryFile() ;
-        queryFileSyntax = _getQuerySyntax(entry.getModel(), queryFile, Syntax.syntaxARQ) ;
         buildLuceneIndex = _getTextIndex() ;
     }
 
@@ -111,7 +108,6 @@ public class QueryTestItem
         namedGraphURIs = new ArrayList<>() ;
         resultFile = _resultFile ;
         comment = "" ;
-        queryFileSyntax = guessFileSyntax(_queryFile) ;
     }
 
     public Resource getResource() {
@@ -129,14 +125,6 @@ public class QueryTestItem
 
     public String getQueryFile() {
         return queryFile ;
-    }
-
-    public Syntax getFileSyntax() {
-        return queryFileSyntax ;
-    }
-
-    public void setFileSyntax(Syntax syntax) {
-        queryFileSyntax = syntax ;
     }
 
     public String getResultFile() {
@@ -194,16 +182,6 @@ public class QueryTestItem
 
     public boolean requiresTextIndex() {
         return buildLuceneIndex ;
-    }
-
-    // *.rq is strictly SPARQL 1.1 tests.
-    protected Syntax guessFileSyntax(String filename) {
-        if ( filename.endsWith(".rq") )
-            return Syntax.syntaxSPARQL_11;
-        if ( filename.endsWith(".ru") )
-            return Syntax.syntaxSPARQL_11;
-
-        return Syntax.guessFileSyntax(filename);
     }
 
     private String _getName() {
@@ -304,22 +282,6 @@ public class QueryTestItem
         if ( _getAction().isAnon() )
             return "[]" ;
         return _getAction().getURI() ;
-    }
-
-    private Syntax _getQuerySyntax(Model m, String uri, Syntax def) {
-        Resource r = m.createResource(uri) ;
-        if ( r.hasProperty(TestManifestX.querySyntax) ) {
-            Syntax x = Syntax.make(r.getProperty(TestManifestX.querySyntax).getResource().getURI()) ;
-            // System.err.println("Query syntax: "+x) ;
-            return x ;
-        }
-
-        if ( uri != null ) {
-            Syntax synFileName = guessFileSyntax(uri) ;
-            if ( synFileName != null )
-                return synFileName ;
-        }
-        return def ;
     }
 
     private boolean _getTextIndex() {

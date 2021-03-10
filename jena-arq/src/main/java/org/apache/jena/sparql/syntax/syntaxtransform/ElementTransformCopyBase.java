@@ -96,13 +96,6 @@ public class ElementTransformCopyBase implements ElementTransform {
     }
 
     @Override
-    public Element transform(ElementFind el, Var v, Triple triple2) {
-        if ( !alwaysCopy && el.getVar() == v && el.getTriple() == triple2 )
-            return el ;
-        return new ElementFind(v, triple2) ;
-    }
-
-    @Override
     public Element transform(ElementData el) {
          if( alwaysCopy ) {
              ElementData copy = new ElementData();

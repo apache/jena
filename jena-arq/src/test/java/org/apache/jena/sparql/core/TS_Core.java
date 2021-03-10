@@ -35,15 +35,16 @@ import org.junit.runners.Suite ;
     , TestDatasetGraphViewGraphs.class
     , TestGraphView.class
     , TestDatasetMonitor.class
-    
+
     , TestDatasetGraphBaseFind_General.class
     , TestDatasetGraphBaseFind_Mem.class
     , TestDatasetGraphBaseFindPattern_General.class
     , TestDatasetGraphBaseFindPattern_Mem.class
     , TestSpecialGraphNames.class
-    
+
     , TestDatasetGraphFilteredView.class
     , TestSpecials.class
+    , TestDatasetMisc.class
 })
 
 public class TS_Core

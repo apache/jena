@@ -18,19 +18,19 @@
 
 package org.apache.jena.sparql.function.library.triple;
 
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase1;
 
 /**
  * Return the predicate of a triple term.
  * Throws {@link ExprEvalException} if the argument is not a triple term.
  */
-public class TriplePredicate extends FunctionTripleTerm {
+public class TriplePredicate extends FunctionBase1 {
     public TriplePredicate() {}
 
     @Override
-    protected Node function(Triple triple) {
-        return triple.getPredicate();
+    public NodeValue exec(NodeValue nv) {
+        return EmbeddedTripleFunctions.triplePredicate(nv);
     }
 }

@@ -22,7 +22,6 @@ import java.util.* ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.ResultSetFactory;
@@ -100,8 +99,8 @@ public class ResultSetCompare
         
         //return equivalent(convert(rs1), convert(rs2), new BNodeIso(NodeUtils.sameValue)) ;
         
-        ResultSetRewindable rs1a = ResultSetFactory.makeRewindable(rs1) ;
-        ResultSetRewindable rs2a = ResultSetFactory.makeRewindable(rs2) ;
+        ResultSetRewindable rs1a = rs1.rewindable();
+        ResultSetRewindable rs2a = rs2.rewindable();
         
         if ( equivalent(convert(rs1a), convert(rs2a), new BNodeIso(NodeUtils.sameValue)) )
             return true ;
@@ -135,8 +134,8 @@ public class ResultSetCompare
         if ( ! compareHeader(rs1, rs2) ) return false ;
 
         //return equivalent(convert(rs1), convert(rs2), new BNodeIso(NodeUtils.sameTerm)) ;
-        ResultSetRewindable rs1a = ResultSetFactory.makeRewindable(rs1) ;
-        ResultSetRewindable rs2a = ResultSetFactory.makeRewindable(rs2) ;
+        ResultSetRewindable rs1a = rs1.rewindable();
+        ResultSetRewindable rs2a = rs2.rewindable();
         
         // Aligned rows
         if ( equivalent(convert(rs1a), convert(rs2a), new BNodeIso(NodeUtils.sameNode)) )
@@ -334,8 +333,8 @@ public class ResultSetCompare
                 return mapping.makeIsomorphic(n1, n2) ;
 
             if ( n1.isNodeTriple() && n2.isNodeTriple() ) {
-                Triple t1 = Node_Triple.triple(n1);
-                Triple t2 = Node_Triple.triple(n2);
+                Triple t1 = n1.getTriple();
+                Triple t2 = n2.getTriple();
                 return  Iso.tripleIso(t1, t2, mapping);
             }
             

@@ -16,17 +16,26 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb.transaction;
+package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.tdb.TDBFactory ;
-import org.junit.Assert ;
-import org.junit.Test ;
+import org.apache.jena.sparql.function.library.triple.EmbeddedTripleFunctions;
+import org.apache.jena.sparql.sse.Tags ;
 
-public class TestMiscTDB {
-    @Test public void support() {
-        DatasetGraph dsg = TDBFactory.createDatasetGraph() ;
-        Assert.assertTrue(dsg.supportsTransactions()) ;
-        Assert.assertTrue(dsg.supportsTransactionAbort()) ;
+public class E_TripleSubject extends ExprFunction1
+{
+    private static final String symbol = Tags.tagSubject;
+
+    public E_TripleSubject(Expr expr) {
+        super(expr, "subject", symbol) ;
+    }
+
+    @Override
+    public NodeValue eval(NodeValue nv) {
+        return EmbeddedTripleFunctions.tripleSubject(nv);
+    }
+
+    @Override
+    public Expr copy(Expr expr) {
+        return new E_TripleSubject(expr);
     }
 }

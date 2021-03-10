@@ -32,12 +32,12 @@ public class IterLib
     {
         return QueryIterNullIterator.create(execCxt) ;
     }
-    
-    public static QueryIterator oneResult(Binding binding, Var var, Node value, ExecutionContext execCxt)
+
+    public static QueryIterator oneResult(Binding parent, Var var, Node value, ExecutionContext execCxt)
     {
-        return QueryIterSingleton.create(binding, var, value, execCxt) ;
+        return QueryIterSingleton.create(parent, var, value, execCxt) ;
     }
-    
+
     public static QueryIterator result(Binding binding, ExecutionContext execCxt)
     {
         return QueryIterSingleton.create(binding, execCxt) ;

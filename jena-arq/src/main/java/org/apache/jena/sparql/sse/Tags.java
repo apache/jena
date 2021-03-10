@@ -40,6 +40,7 @@ public class Tags
     // RDF
     public static final String tagGraph           = "graph" ;
     public static final String tagLoad            = "graph@" ;
+    // Used for (triple) in BGP and data.
     public static final String tagTriple          = "triple" ;
     public static final String tagQuad            = "quad" ;
     public static final String tagTriplePath      = "path" ;
@@ -60,7 +61,6 @@ public class Tags
     public static final String tagQuadPattern     = "quadpattern" ;
     public static final String tagQuadBlock       = "quadblock" ;
     public static final String tagFilter          = "filter" ;
-    // public static final String traph = "graph" ;
     public static final String tagLabel           = "label" ;
     public static final String tagService         = "service" ;
     public static final String tagProc            = "proc" ;
@@ -213,6 +213,13 @@ public class Tags
     public static final String tagBNode           = "bnode" ;
     public static final String tagIri             = "iri" ;
     public static final String tagUri             = "uri" ;
+
+    public static final String tagIsTriple        = "isTriple" ;
+    public static final String tagSubject         = "subject" ;
+    public static final String tagPredicate       = "predicate" ;
+    public static final String tagObject          = "object" ;
+    // Used for (triple) function in expressions.
+    public static final String tagFnTriple        = "triple" ;
 
     public static final String tagIn              = "in" ;
     public static final String tagNotIn           = "notin" ;

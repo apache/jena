@@ -33,9 +33,9 @@ import org.apache.jena.sparql.syntax.*;
 public class SyntaxVarScope {
     /* SPARQL 1.1 "in scope" rules These define the variables from a pattern that are
      * in-scope These are not the usage rules.
-     * 
+     *
      * Syntax Form In-scope variables
-     * 
+     *
      * Basic Graph Pattern (BGP) v occurs in the BGP Path v occurs in the path Group
      * { P1 P2 ... } v is in-scope if in-scope in one or more of P1, P2, ... GRAPH
      * term { P } v is term or v is in-scope in P { P1 } UNION { P2 } v is in-scope
@@ -64,7 +64,7 @@ public class SyntaxVarScope {
         checkPatternAssign(queryPattern);
     }
 
-    // Check assignment forms that require a new variable.  
+    // Check assignment forms that require a new variable.
     // BIND and FIND
     private static void checkPatternAssign(Element queryPattern) {
         VarScopeChecker v = new VarScopeChecker();
@@ -162,7 +162,7 @@ public class SyntaxVarScope {
         if ( expr == null )
             return;
         // expr not null
-        if ( scope.contains(var) ) 
+        if ( scope.contains(var) )
             throw new QueryParseException("Variable used when already in-scope: "+var+" in "+fmtAssignment(expr, var), -1 , -1) ;
 
         // test for impossible variables - bound() is a bit odd.
@@ -225,11 +225,6 @@ public class SyntaxVarScope {
                     check(accScope, (ElementBind)e);
                 }
 
-                if ( e instanceof ElementFind ) {
-                    Collection<Var> accScope = calcScopeAll(el.getElements(), i);
-                    check(accScope, (ElementFind)e);
-                }
-
                 if ( e instanceof ElementService ) {
                     Collection<Var> accScope = calcScopeAll(el.getElements(), i);
                     check(accScope, (ElementService)e);
@@ -256,12 +251,6 @@ public class SyntaxVarScope {
             if ( scope.contains(var) )
                 throw new QueryParseException("BIND: Variable used when already in-scope: " + var + " in " + el, -1, -1);
             checkExpr(scope, el.getExpr(), var);
-        }
-
-        private static void check(Collection<Var> scope, ElementFind el) {
-            Var var = el.getVar();
-            if ( scope.contains(var) )
-                throw new QueryParseException("FIND: Variable used when already in-scope: " + var + " in " + el, -1, -1);
         }
 
         private static void check(Collection<Var> scope, ElementService el) {

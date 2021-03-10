@@ -32,17 +32,17 @@ public class NodeTupleTableWrapper implements NodeTupleTable
     protected NodeTupleTable nodeTupleTable ;
 
     public NodeTupleTableWrapper(NodeTupleTable ntt)
-    { 
+    {
         setNodeTupleTable(ntt) ;
     }
-    
+
     protected NodeTupleTable setNodeTupleTable(NodeTupleTable ntt)
     {
         NodeTupleTable old = nodeTupleTable ;
         nodeTupleTable = ntt ;
         return old ;
     }
-     
+
     @Override
     public boolean addRow(Node... nodes)
     { return nodeTupleTable.addRow(nodes) ; }
@@ -52,17 +52,21 @@ public class NodeTupleTableWrapper implements NodeTupleTable
     { return nodeTupleTable.deleteRow(nodes) ; }
 
     @Override
+    public int getTupleLen()
+    { return nodeTupleTable.getTupleLen(); }
+
+    @Override
     public Iterator<Tuple<Node>> find(Node... nodes)
     { return nodeTupleTable.find(nodes) ; }
-    
+
     @Override
     public Iterator<Tuple<NodeId>> find(NodeId... ids)
     { return nodeTupleTable.find(ids) ; }
-    
+
     @Override
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> tuple)
     { return nodeTupleTable.find(tuple) ; }
-    
+
     @Override
     public Iterator<Tuple<NodeId>> findAsNodeIds(Node... nodes)
     { return nodeTupleTable.findAsNodeIds(nodes) ; }
@@ -82,11 +86,11 @@ public class NodeTupleTableWrapper implements NodeTupleTable
     @Override
     public DatasetControl getPolicy()
     { return nodeTupleTable.getPolicy() ; }
-    
+
     @Override
     public boolean isEmpty()
     { return nodeTupleTable.isEmpty() ; }
-    
+
     @Override
     public void clear()
     { nodeTupleTable.clear(); }

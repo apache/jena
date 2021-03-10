@@ -50,52 +50,52 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 /** TDB executor for algebra expressions.  It is the standard ARQ executor
- *  except for basic graph patterns and filtered basic graph patterns (currently).  
- * 
- * See also: StageGeneratorDirectTDB, a non-reordering 
+ *  except for basic graph patterns and filtered basic graph patterns (currently).
+ *
+ * See also: StageGeneratorDirectTDB, a non-reordering
  */
 public class OpExecutorTDB1 extends OpExecutor
 {
     private static final Logger log = LoggerFactory.getLogger(OpExecutorTDB1.class) ;
-    
+
     public final static OpExecutorFactory OpExecFactoryTDB = new OpExecutorFactory()
     {
         @Override
         public OpExecutor create(ExecutionContext execCxt)
         { return new OpExecutorTDB1(execCxt) ; }
     } ;
-    
+
     private final boolean isForTDB ;
-    
+
     // A new compile object is created for each op compilation.
-    // So the execCxt is changing as we go through the query-compile-execute process  
+    // So the execCxt is changing as we go through the query-compile-execute process
     public OpExecutorTDB1(ExecutionContext execCxt)
     {
         super(execCxt) ;
         // NB. The dataset may be a TDB one, or a general one.
         // Any merged union graph magic (for a TDB dataset was handled
         // in QueryEngineTDB).
-        
+
         isForTDB = (execCxt.getActiveGraph() instanceof GraphTDB) ;
     }
 
     @Override
     protected QueryIterator exec(Op op, QueryIterator input) {
         if ( level < 0 )
-            // Print only at top level (and we're called before level++) 
+            // Print only at top level (and we're called before level++)
             Explain.explain("TDB", op, super.execCxt.getContext()) ;
         return super.exec(op, input) ;
-    } 
-    
+    }
+
     @Override
     protected QueryIterator execute(OpFilter opFilter, QueryIterator input)
     {
         if ( ! isForTDB )
             return super.execute(opFilter, input) ;
-        
+
         // If the filter does not apply to the input??
         // Where does ARQ catch this?
-        
+
         // (filter (bgp ...))
         if ( OpBGP.isBGP(opFilter.getSubOp()) )
         {
@@ -104,7 +104,7 @@ public class OpExecutorTDB1 extends OpExecutor
             OpBGP opBGP = (OpBGP)opFilter.getSubOp() ;
             return executeBGP(graph, opBGP, input, opFilter.getExprs(), execCxt) ;
         }
-        
+
         // (filter (quadpattern ...))
         if ( opFilter.getSubOp() instanceof OpQuadPattern )
         {
@@ -114,22 +114,22 @@ public class OpExecutorTDB1 extends OpExecutor
                                         quadPattern.getGraphNode(), quadPattern.getBasicPattern(),
                                         opFilter.getExprs(), execCxt) ;
         }
-    
+
         // (filter (anything else))
         return super.execute(opFilter, input) ;
         }
 
     // ---- Triple patterns
-    
+
     @Override
     protected QueryIterator execute(OpBGP opBGP, QueryIterator input)
     {
         if ( ! isForTDB )
             return super.execute(opBGP, input) ;
-        
+
         GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
         return executeBGP(graph, opBGP, input, null, execCxt) ;
-       
+
     }
 
     @Override
@@ -137,11 +137,11 @@ public class OpExecutorTDB1 extends OpExecutor
     {
         if ( ! isForTDB )
             return super.execute(quadPattern, input) ;
-            
+
     //        DatasetGraph dg = execCxt.getDataset() ;
     //        if ( ! ( dg instanceof DatasetGraphTDB ) )
     //            throw new InternalErrorException("Not a TDB backed dataset in quad pattern execution") ;
-        
+
         DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
         BasicPattern bgp = quadPattern.getBasicPattern() ;
         Node gn = quadPattern.getGraphNode() ;
@@ -151,22 +151,22 @@ public class OpExecutorTDB1 extends OpExecutor
     @Override
     protected QueryIterator execute(OpGraph opGraph, QueryIterator input)
     {
-        // Path evaluation or dataset sets which do not go straight to the DatasetGraphTDB  
+        // Path evaluation or dataset sets which do not go straight to the DatasetGraphTDB
         return new QueryIterGraph(input, opGraph, execCxt) ;
     }
 
-    /** Execute a BGP (and filters) on a TDB graph, which may be in default storage or it may be a named graph */ 
-    private static QueryIterator executeBGP(GraphTDB graph, OpBGP opBGP, QueryIterator input, ExprList exprs, 
+    /** Execute a BGP (and filters) on a TDB graph, which may be in default storage or it may be a named graph */
+    private static QueryIterator executeBGP(GraphTDB graph, OpBGP opBGP, QueryIterator input, ExprList exprs,
                                             ExecutionContext execCxt)
     {
         DatasetGraphTDB dsgtdb = graph.getDatasetGraphTDB() ;
         // Is it the real default graph (normal route or explicitly named)?
         if ( ! isDefaultGraphStorage(graph.getGraphName()))
         {
-            // Not default storage - it's a named graph in storage. 
+            // Not default storage - it's a named graph in storage.
             return optimizeExecuteQuads(dsgtdb, input, graph.getGraphName(), opBGP.getPattern(), exprs, execCxt) ;
         }
-        
+
         // Execute a BGP on the real default graph
         return optimizeExecuteTriples(dsgtdb, input, opBGP.getPattern(), exprs, execCxt) ;
     }
@@ -174,16 +174,16 @@ public class OpExecutorTDB1 extends OpExecutor
     /** Execute, with optimization, a basic graph pattern on the default graph storage */
     private static QueryIterator optimizeExecuteTriples(DatasetGraphTDB dsgtdb, QueryIterator input,
                                                         BasicPattern pattern, ExprList exprs,
-                                                        ExecutionContext execCxt) 
+                                                        ExecutionContext execCxt)
     {
         if ( ! input.hasNext() )
             return input ;
-    
+
         // -- Input
         // Must pass this iterator into the next stage.
         if ( pattern.size() >= 2 )
         {
-            // Must be 2 or triples to reorder. 
+            // Must be 2 or triples to reorder.
             ReorderTransformation transform = dsgtdb.getReorderTransform() ;
             if ( transform != null )
             {
@@ -193,36 +193,36 @@ public class OpExecutorTDB1 extends OpExecutor
             }
         }
         // -- Filter placement
-            
+
         Op op = null ;
         if ( exprs != null )
             op = TransformFilterPlacement.transform(exprs, pattern) ;
         else
             op = new OpBGP(pattern) ;
-        
+
         return plainExecute(op, input, execCxt) ;
     }
 
     /** Execute, with optimization, a quad pattern */
-    private static QueryIterator optimizeExecuteQuads(DatasetGraphTDB ds, 
-                                                      QueryIterator input, 
+    private static QueryIterator optimizeExecuteQuads(DatasetGraphTDB ds,
+                                                      QueryIterator input,
                                                       Node gn, BasicPattern bgp,
                                                       ExprList exprs, ExecutionContext execCxt)
     {
         if ( ! input.hasNext() )
             return input ;
 
-        // ---- Graph names with special meaning. 
+        // ---- Graph names with special meaning.
 
         gn = decideGraphNode(gn, execCxt) ;
         if ( gn == null )
             return optimizeExecuteTriples(ds, input, bgp, exprs, execCxt) ;
-        
+
         // ---- Execute quads+filters
         if ( bgp.size() >= 2 )
         {
             ReorderTransformation transform = ds.getReorderTransform() ;
-    
+
             if ( transform != null )
             {
                 QueryIterPeek peek = QueryIterPeek.create(input, execCxt) ;
@@ -240,14 +240,14 @@ public class OpExecutorTDB1 extends OpExecutor
         return plainExecute(op, input, execCxt) ;
     }
 
-    /** Execute without modification of the op - does <b>not</b> apply special graph name translations */ 
+    /** Execute without modification of the op - does <b>not</b> apply special graph name translations */
     private static QueryIterator plainExecute(Op op, QueryIterator input, ExecutionContext execCxt)
     {
         // -- Execute
         // Switch to a non-reordering executor
         // The Op may be a sequence due to TransformFilterPlacement
         // so we need to do a full execution step, not go straight to the SolverLib.
-        
+
         ExecutionContext ec2 = new ExecutionContext(execCxt) ;
         ec2.setExecutor(plainFactory) ;
 
@@ -267,10 +267,10 @@ public class OpExecutorTDB1 extends OpExecutor
             // determine the best order and the transformation is returned. This
             // transform is applied to the unsubstituted pattern (which will be
             // substituted as part of evaluation.
-            
+
             if ( ! peek.hasNext() )
                 throw new ARQInternalErrorException("Peek iterator is already empty") ;
- 
+
             BasicPattern pattern2 = Substitute.substitute(pattern, peek.peek() ) ;
             // Calculate the reordering based on the substituted pattern.
             ReorderProc proc = transform.reorderIndexes(pattern2) ;
@@ -279,23 +279,23 @@ public class OpExecutorTDB1 extends OpExecutor
         }
         return pattern ;
     }
-    
-    /** Handle special graph node names.  
+
+    /** Handle special graph node names.
      * Returns null for default graph in storage (use the triple table).
      * Returns Node.ANY for the union graph
      */
     public static Node decideGraphNode(Node gn, ExecutionContext execCxt)
     {
-     // ---- Graph names with special meaning. 
-    
+     // ---- Graph names with special meaning.
+
         // Graph names with special meaning:
         //   Quad.defaultGraphIRI -- the IRI used in GRAPH <> to mean the default graph.
         //   Quad.defaultGraphNodeGenerated -- the internal marker node used for the quad form of queries.
         //   Quad.unionGraph -- the IRI used in GRAPH <> to mean the union of named graphs
-    
-        if ( isDefaultGraphStorage(gn) ) 
+
+        if ( isDefaultGraphStorage(gn) )
         {
-            // Storage concrete, default graph. 
+            // Storage concrete, default graph.
             // Either outside GRAPH (no implicit union)
             // or using the "name" of the default graph
             return null ;
@@ -304,29 +304,29 @@ public class OpExecutorTDB1 extends OpExecutor
         // Not default storage graph.
         // ---- Union (RDF Merge) of named graphs
 
-        if ( Quad.isUnionGraph(gn) ) 
+        if ( Quad.isUnionGraph(gn) )
             return Node.ANY ;
         return gn ;
     }
 
-    // Is this a query against the real default graph in the storage (in a 3-tuple table). 
+    // Is this a query against the real default graph in the storage (in a 3-tuple table).
     private static boolean isDefaultGraphStorage(Node gn)
     {
         if ( gn == null )
             return true ;
-        
+
         // Is it the implicit name for default graph.
         if ( Quad.isDefaultGraph(gn) )
             // Not accessing the union of named graphs as the default graph
             // and pattern is directed to the default graph.
             return true ;
-    
+
         return false ;
     }
-    
+
     @Override
     protected QueryIterator execute(OpDatasetNames dsNames, QueryIterator input)
-    { 
+    {
         DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
         Predicate<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext()) ;
         Node gn = dsNames.getGraphNode() ;
@@ -337,7 +337,7 @@ public class OpExecutorTDB1 extends OpExecutor
     }
 
     // ---- OpExecute factories and plain executor.
-    
+
     private static OpExecutorFactory plainFactory = new OpExecutorPlainFactoryTDB() ;
     private static class OpExecutorPlainFactoryTDB implements OpExecutorFactory
     {
@@ -348,22 +348,22 @@ public class OpExecutorTDB1 extends OpExecutor
         }
     }
 
-    /** An op executor that simply executes a BGP or QuadPattern without any reordering */ 
+    /** An op executor that simply executes a BGP or QuadPattern without any reordering */
     private static class OpExecutorPlainTDB extends OpExecutor
     {
         Predicate<Tuple<NodeId>> filter = null ;
-        
+
         public OpExecutorPlainTDB(ExecutionContext execCxt)
         {
             super(execCxt) ;
             filter = QC2.getFilter(execCxt.getContext()) ;
         }
-        
+
         @Override
         public QueryIterator execute(OpBGP opBGP, QueryIterator input)
         {
             Graph g = execCxt.getActiveGraph() ;
-            
+
             if ( g instanceof GraphTDB )
             {
                 BasicPattern bgp = opBGP.getPattern() ;
@@ -372,24 +372,24 @@ public class OpExecutorTDB1 extends OpExecutor
                 //return SolverLib.execute((GraphTDB)g, bgp, input, filter, execCxt) ;
                 GraphTDB gtdb = (GraphTDB)g ;
                 Node gn = decideGraphNode(gtdb.getGraphName(), execCxt) ;
-                return SolverLib.execute(gtdb.getDatasetGraphTDB(), gn, bgp, input, filter, execCxt) ;
+                return Solver.execute(gtdb.getDatasetGraphTDB(), gn, bgp, input, filter, execCxt) ;
             }
             Log.warn(this, "Non-GraphTDB passed to OpExecutorPlainTDB") ;
             return super.execute(opBGP, input) ;
         }
-        
+
         @Override
         public QueryIterator execute(OpQuadPattern opQuadPattern, QueryIterator input)
         {
             Node gn = opQuadPattern.getGraphNode() ;
             gn = decideGraphNode(gn, execCxt) ;
-            
+
             if ( execCxt.getDataset() instanceof DatasetGraphTDB )
             {
                 DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
                 Explain.explain("Execute", opQuadPattern.getPattern(), execCxt.getContext()) ;
                 BasicPattern bgp = opQuadPattern.getBasicPattern() ;
-                return SolverLib.execute(ds, gn, bgp, input, filter, execCxt) ;
+                return Solver.execute(ds, gn, bgp, input, filter, execCxt) ;
             }
             // Maybe a TDB named graph inside a non-TDB dataset.
             Graph g = execCxt.getActiveGraph() ;
@@ -400,7 +400,7 @@ public class OpExecutorTDB1 extends OpExecutor
                 BasicPattern bgp = opQuadPattern.getBasicPattern() ;
                 Explain.explain("Execute", bgp, execCxt.getContext()) ;
                 // Don't pass in G -- gn may be different.
-                return SolverLib.execute(((GraphTDB)g).getDatasetGraphTDB(), gn, bgp, input, filter, execCxt) ;
+                return Solver.execute(((GraphTDB)g).getDatasetGraphTDB(), gn, bgp, input, filter, execCxt) ;
             }
             Log.warn(this, "Non-DatasetGraphTDB passed to OpExecutorPlainTDB") ;
             return super.execute(opQuadPattern, input) ;

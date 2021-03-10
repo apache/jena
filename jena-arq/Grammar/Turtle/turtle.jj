@@ -155,7 +155,6 @@ Node Verb() : { Node p ; }
   { return p ; }
 }
 
-// Turtle [10] subject (include RDF-star SubjectX)
 Node Subject() : { Node s; String iri ; }
 {
   (
@@ -165,8 +164,7 @@ Node Subject() : { Node s; String iri ; }
   |
     s = Collection()
   |
-    // RDF-star SubjectX
-    s = TripleStar()
+    s = EmbTriple()
   )
   { return s ; }
 }
@@ -187,35 +185,38 @@ Node Object(): { Node o ; String iri; }
   | o = Collection()
   | o = BlankNodePropertyList()
   | o = Literal()
-  |
-    // RDF-star ObjectX
-    o = TripleStar()
+  | o = EmbTriple()
   )
   { return o; }
 }
 
-// RDF-star objectXTurtle [12] object
-Node ObjectX(): { Node o ; String iri; }
+Node EmbSubject(): { Node o ; String iri; }
 {
-   ( iri = iri() { o = createNode(iri, token.beginLine, token.beginColumn) ; }
+  ( iri = iri() { o = createNode(iri, token.beginLine, token.beginColumn) ; }
+  | o = BlankNode()
+  | o = EmbTriple()
+  )
+  { return o; }
+}
+
+Node EmbObject(): { Node o ; String iri; }
+{
+  ( iri = iri() { o = createNode(iri, token.beginLine, token.beginColumn) ; }
   | o = BlankNode()
   | o = Literal()
-  |
-    // RDF-star ObjectX
-    o = TripleStar()
+  | o = EmbTriple()
   )
   { return o ; } 
 }
 
-// The syntax for RDF-star
-// RDF-star [] tripleX 
-Node TripleStar() : { Node s , p , o ; Token t ; }
+// The syntax for RDF-star <<>>
+Node EmbTriple() : { Node s , p , o ; Token t ; }
 {
   t = <LT2>
     { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
-  s = Subject()
-  p = Predicate()
-  o = ObjectX()
+  s = EmbSubject()
+  p = Verb()
+  o = EmbObject()
   <GT2>
   { Node n = createTripleTerm(s, p, o, beginLine, beginColumn);
     return n;

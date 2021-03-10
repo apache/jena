@@ -31,7 +31,6 @@ import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.lib.SetUtils;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.RIOT;
 import org.apache.jena.riot.other.G;
@@ -384,7 +383,7 @@ public abstract class TurtleShell {
         // Helper for findBNodeSyntax1
         private void extractBlankNodesInTripleTerms(Set<Node> blankNodesInTripleTerms, Node nodeTriple) {
             // Needs to recurse.
-            Triple triple = Node_Triple.triple(nodeTriple);
+            Triple triple = nodeTriple.getTriple();
             Node tSubj = triple.getSubject();
             Node tObj = triple.getObject();
 

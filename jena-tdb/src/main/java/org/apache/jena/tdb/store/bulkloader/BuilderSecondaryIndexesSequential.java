@@ -40,7 +40,7 @@ public class BuilderSecondaryIndexesSequential implements BuilderSecondaryIndexe
             if ( index != null )
             {
                 long time1 = timer.readTimer() ;
-                LoaderNodeTupleTable.copyIndex(primaryIndex.all(), new TupleIndex[]{index}, index.getMapping(), monitor) ;
+                LoaderNodeTupleTable.copyIndex(primaryIndex.all(), new TupleIndex[]{index}, index.getMappingStr(), monitor) ;
                 long time2 = timer.readTimer() ;
                 //                if ( printTiming )
                 //                    printf("Time for %s indexing: %.2fs\n", index.getLabel(), (time2-time1)/1000.0) ;

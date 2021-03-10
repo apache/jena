@@ -16,19 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2;
+package org.apache.jena.sparql.expr;
 
+import org.apache.jena.sparql.function.library.triple.EmbeddedTripleFunctions;
+import org.apache.jena.sparql.sse.Tags ;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+public class E_IsTriple extends ExprFunction1
+{
+    private static final String symbol = Tags.tagIsTriple ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestDatabaseMgr.class
-    , TestTDBFactory.class
-    , TestTDB2.class
+    public E_IsTriple(Expr expr)
+    {
+        super(expr, symbol) ;
+    }
 
-})
+    @Override
+    public NodeValue eval(NodeValue nv) { return EmbeddedTripleFunctions.isTriple(nv); }
 
-public class TS_Factory
-{}
+    @Override
+    public Expr copy(Expr expr) { return new E_IsTriple(expr) ; }
+}

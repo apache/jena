@@ -27,25 +27,7 @@ import org.apache.jena.query.Query;
 import org.apache.jena.sparql.core.TriplePath ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.syntax.Element;
-import org.apache.jena.sparql.syntax.ElementAssign;
-import org.apache.jena.sparql.syntax.ElementBind;
-import org.apache.jena.sparql.syntax.ElementData;
-import org.apache.jena.sparql.syntax.ElementDataset;
-import org.apache.jena.sparql.syntax.ElementExists;
-import org.apache.jena.sparql.syntax.ElementFilter;
-import org.apache.jena.sparql.syntax.ElementFind;
-import org.apache.jena.sparql.syntax.ElementGroup;
-import org.apache.jena.sparql.syntax.ElementMinus;
-import org.apache.jena.sparql.syntax.ElementNamedGraph;
-import org.apache.jena.sparql.syntax.ElementNotExists;
-import org.apache.jena.sparql.syntax.ElementOptional;
-import org.apache.jena.sparql.syntax.ElementPathBlock;
-import org.apache.jena.sparql.syntax.ElementService;
-import org.apache.jena.sparql.syntax.ElementSubQuery;
-import org.apache.jena.sparql.syntax.ElementTriplesBlock;
-import org.apache.jena.sparql.syntax.ElementUnion;
-import org.apache.jena.sparql.syntax.ElementVisitor;
+import org.apache.jena.sparql.syntax.*;
 
 /**
  * A rewriter that implements an ElementVisitor
@@ -117,20 +99,6 @@ public class ElementRewriter extends AbstractRewriter<Element> implements
 			push(new ElementTriplesBlock());
 		}
 	}
-
-    @Override
-    public void visit(ElementFind el) {
-        Node n = changeNode(el.getVar());
-        Triple triple = rewrite(el.getTriple());
-
-        if (n.equals(el.getVar())) {
-            push(new ElementFind(Var.alloc(n), triple));
-        } else {
-            ElementTriplesBlock etb = new ElementTriplesBlock();
-            etb.addTriple(triple);
-            push(etb);
-        }
-    }
 
 	@Override
 	public void visit(ElementData el) {

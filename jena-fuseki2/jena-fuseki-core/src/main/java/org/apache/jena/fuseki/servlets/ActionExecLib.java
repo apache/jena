@@ -35,6 +35,7 @@ import org.apache.jena.fuseki.system.ActionCategory;
 import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.shared.OperationDeniedException;
+import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger;
 
@@ -128,11 +129,25 @@ public class ActionExecLib {
                 else
                     ServletOps.responseSendError(response, ex.getRC());
             } catch (HttpException ex) {
+                int sc = ex.getStatusCode();
+                if ( sc <= 0 )
+                    // -1: Connection problem.
+                    sc = 400;
                 // Some code is passing up its own HttpException.
                 if ( ex.getMessage() == null )
-                    ServletOps.responseSendError(response, ex.getStatusCode());
+                    ServletOps.responseSendError(response, sc);
                 else
-                    ServletOps.responseSendError(response, ex.getStatusCode(), ex.getMessage());
+                    ServletOps.responseSendError(response, sc, ex.getMessage());
+            } catch (QueryExceptionHTTP ex) {
+                // SERVICE failure.
+                int sc = ex.getStatusCode();
+                if ( sc <= 0 )
+                    // -1: Connection problem. "Bad Gateway"
+                    sc = 502;
+                if ( ex.getMessage() == null )
+                    ServletOps.responseSendError(response, sc);
+                else
+                    ServletOps.responseSendError(response, sc, ex.getMessage());
             } catch (RuntimeIOException ex) {
                 FmtLog.warn(action.log, /*ex,*/ "[%d] Runtime IO Exception (client left?) RC = %d : %s", action.id, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage());
                 ServletOps.responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage());

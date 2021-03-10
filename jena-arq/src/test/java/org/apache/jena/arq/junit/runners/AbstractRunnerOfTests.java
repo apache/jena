@@ -24,7 +24,9 @@ import java.util.function.Function;
 
 import org.apache.jena.arq.junit.manifest.*;
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.sparql.junit.EarlReport;
+import org.apache.jena.sparql.vocabulary.VocabTestQuery;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
@@ -124,12 +126,35 @@ public abstract class AbstractRunnerOfTests extends ParentRunner<Runner> {
         return thisLevel;
     }
 
+    private static String prepareTestLabel(ManifestEntry entry, String prefix) {
+        String label = fixupName(entry.getName());
+        if ( prefix != null )
+            label = prefix+label;
+
+        // action URI or action -> qt:query
+        String str = null;
+
+        if ( entry.getAction().isURIResource() )
+            str = entry.getAction().getURI();
+        else if ( entry.getAction().isAnon() ) {
+            Statement stmt = entry.getAction().getProperty(VocabTestQuery.query);
+            if ( stmt != null && stmt.getObject().isURIResource() )
+                str = stmt.getObject().asResource().getURI();
+        }
+
+        if ( str != null ) {
+            int x = str.lastIndexOf('/');
+            if ( x > 0 && x < str.length() ) {
+                String fn = str.substring(x+1) ;
+                label = label+" ("+fn+")";
+            }
+        }
+        return label;
+    }
+
     public static void prepareTests(EarlReport report, RunnerOneManifest level, Manifest manifest, Function<ManifestEntry, Runnable> maker, String prefix) {
         manifest.entries().forEach(entry->{
-            String label = entry.getName();
-            label = fixupName(label);
-            if ( prefix != null )
-                label = prefix+label;
+            String label = prepareTestLabel(entry, prefix);
             Runnable runnable = maker.apply(entry);
             if ( runnable != null ) {
                 Runner r = new RunnerOneTest(label, runnable, entry.getURI(), report);

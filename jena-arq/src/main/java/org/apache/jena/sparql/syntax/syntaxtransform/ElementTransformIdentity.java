@@ -38,7 +38,7 @@ public final class ElementTransformIdentity implements ElementTransform
     private ElementTransformIdentity() {}
     private static ElementTransformIdentity singleton = new ElementTransformIdentity() ;
     static ElementTransform get() { return singleton ; }
-    
+
     @Override
     public Element transform(ElementTriplesBlock el) { return el ; }
     @Override
@@ -49,8 +49,6 @@ public final class ElementTransformIdentity implements ElementTransform
     public Element transform(ElementAssign el, Var v, Expr expr2) { return el ; }
     @Override
     public Element transform(ElementBind el, Var v, Expr expr2) { return el ; }
-    @Override
-    public Element transform(ElementFind el, Var v, Triple triple2) { return el ; }
     @Override
     public Triple transform(Triple triple) { return triple; }
     @Override

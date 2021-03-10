@@ -27,6 +27,7 @@ import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
@@ -140,8 +141,9 @@ public class NodeUtils
             return compareLiteralsBySyntax(node1, node2) ;
 
         // One or both not literals
-        // Variables < Blank nodes < URIs < Literals
+        // Variables < Blank nodes < URIs < Literals < Triple Terms
 
+        //-- Variables
         if ( node1.isVariable() ) {
             if ( node2.isVariable() ) {
                 return StrUtils.strCompare(node1.getName(), node2.getName()) ;
@@ -155,6 +157,7 @@ public class NodeUtils
             return Expr.CMP_GREATER ;
         }
 
+        //-- Blank nodes
         if ( node1.isBlank() ) {
             if ( node2.isBlank() ) {
                 String s1 = node1.getBlankNodeId().getLabelString() ;
@@ -171,6 +174,7 @@ public class NodeUtils
 
         // Not blanks. 2 URI or one URI and one literal
 
+        //-- URIs
         if ( node1.isURI() ) {
             if ( node2.isURI() ) {
                 String s1 = node1.getURI() ;
@@ -183,8 +187,36 @@ public class NodeUtils
         if ( node2.isURI() )
             return Expr.CMP_GREATER ;
 
-        // No URIs, no blanks nodes by this point
-        // And a pair of literals was filterd out first.
+        // -- Two literals already done just leaving ...
+        if ( node2.isLiteral() )
+            return Expr.CMP_GREATER;
+        
+        // Because triple terms are after literals ...
+        if ( node1.isLiteral() )
+            return Expr.CMP_LESS;
+        
+        // -- Triple nodes.
+        if ( node1.isNodeTriple() ) {
+            if ( node2.isNodeTriple() ) {
+                Triple t1 = node1.getTriple();
+                Triple t2 = node2.getTriple();
+                int x1 = compareRDFTerms(t1.getSubject(), t2.getSubject());
+                if ( x1 != Expr.CMP_EQUAL )
+                    return x1;
+                int x2 = compareRDFTerms(t1.getPredicate(), t2.getPredicate());
+                if ( x2 != Expr.CMP_EQUAL )
+                    return x2;
+                int x3 = compareRDFTerms(t1.getObject(), t2.getObject());
+                if ( x3 != Expr.CMP_EQUAL )
+                    return x3;
+                return Expr.CMP_EQUAL;
+            }
+        }
+        
+        if ( node2.isNodeTriple() )
+            return Expr.CMP_GREATER;
+        
+        // No URIs, no blanks, no literals, no triple terms nodes by this point
 
         // Should not happen.
         throw new ARQInternalErrorException("Compare: " + node1 + "  " + node2) ;

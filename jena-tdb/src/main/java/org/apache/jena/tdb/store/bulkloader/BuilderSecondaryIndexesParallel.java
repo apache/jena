@@ -44,7 +44,7 @@ public class BuilderSecondaryIndexesParallel implements BuilderSecondaryIndexes
         {
             if ( index != null )
             {
-                Runnable builder = setup(sema, primaryIndex, index, index.getMapping()) ;
+                Runnable builder = setup(sema, primaryIndex, index, index.getMappingStr()) ;
                 new Thread(builder).start() ;
                 semaCount++ ;
             }

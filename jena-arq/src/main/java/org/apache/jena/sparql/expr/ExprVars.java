@@ -22,6 +22,8 @@ import java.util.Collection ;
 import java.util.HashSet ;
 import java.util.Set ;
 
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.sparql.algebra.OpVars ;
 import org.apache.jena.sparql.algebra.walker.Walker ;
@@ -47,19 +49,19 @@ public class ExprVars
     }
 
     private static Action<Var> accVar = (a, var) -> a.add(var) ;
-    
+
     public static void varsMentioned(Collection<Var> acc, Expr expr) {
         ExprVarsWorker<Var> vv = new ExprVarsWorker<>(acc, accVar) ;
         Walker.walk(expr, vv) ;
     }
-    
+
     public static void nonOpVarsMentioned(Collection<Var> acc, Expr expr) {
         ExprNoOpVarsWorker<Var> vv = new ExprNoOpVarsWorker<>(acc, accVar) ;
         Walker.walk(expr, vv) ;
     }
-    
+
     // Collect variables / ExprList
-    
+
     public static Set<Var> getVarsMentioned(ExprList exprs) {
         Set<Var> acc = new HashSet<>();
         varsMentioned(acc, exprs);
@@ -74,28 +76,28 @@ public class ExprVars
         Set<Var> acc = new HashSet<>();
         nonOpVarsMentioned(acc, exprs);
         return acc;
-    }    
+    }
 
     public static void nonOpVarsMentioned(Collection<Var> acc, ExprList exprs) {
         exprs.forEach(e->nonOpVarsMentioned(acc, e));
     }
 
-    // Names variants 
-    
+    // Names variants
+
     public static Set<String> getVarNamesMentioned(Expr expr) {
         Set<String> acc = new HashSet<>() ;
         varNamesMentioned(acc, expr) ;
         return acc ;
     }
-    
+
     public static Set<String> getNonOpVarNamesMentioned(Expr expr) {
         Set<String> acc = new HashSet<>() ;
         nonOpVarNamesMentioned(acc, expr) ;
         return acc ;
     }
-    
+
     private static Action<String> accVarName = (a, var) -> a.add(var.getVarName());
-    
+
     public static void varNamesMentioned(Collection<String> acc, Expr expr) {
         ExprVisitor vv = new ExprVarsWorker<>(acc, accVarName);
         Walker.walk(expr, vv);
@@ -111,7 +113,7 @@ public class ExprVars
         varsMentioned(acc, sortCondition);
         return acc;
     }
-    
+
     public static Set<Var> getVarsMentioned(Collection<SortCondition> sortConditions) {
         Set<Var> acc = new HashSet<>() ;
         varsMentioned(acc, sortConditions) ;
@@ -131,31 +133,53 @@ public class ExprVars
     {
         protected final Collection<T> acc ;
         protected final Action<T> action ;
-        
+
         public ExprNoOpVarsWorker(Collection<T> acc, Action<T> action)
         { this.acc = acc ; this.action = action ; }
 
         @Override
         public void visit(ExprVar nv)
         { action.var(acc, nv.asVar()) ; }
+
+        @Override
+        public void visit(ExprTripleTerm exTripleTerm)
+        {
+            Triple t = exTripleTerm.getTriple();
+            process(t);
+        }
+
+        private void process(Triple t) {
+            process(t.getSubject());
+            process(t.getPredicate());
+            process(t.getObject());
+        }
+
+        private void process(Node node) {
+            if ( Var.isVar(node) ) {
+                action.var(acc, Var.alloc(node));
+                return;
+            }
+            if ( node.isNodeTriple() )
+                process(node.getTriple());
+        }
     }
-    
+
     static class ExprVarsWorker<T> extends ExprNoOpVarsWorker<T>
     {
         public ExprVarsWorker(Collection<T> acc, Action<T> action) {
             super(acc, action);
         }
-        
+
         // Also include variables in ExprFunctionOp : EXISTS and NOT EXISTS
         @Override
         public void visit(ExprFunctionOp funcOp)
-        { 
+        {
             Collection<Var> vars = OpVars.visibleVars(funcOp.getGraphPattern()) ;
             for ( Var v : vars )
                 action.var(acc, v) ;
         }
-        
+
     }
-    
+
 
 }

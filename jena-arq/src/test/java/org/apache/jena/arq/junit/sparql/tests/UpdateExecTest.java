@@ -56,9 +56,13 @@ public class UpdateExecTest implements Runnable
         Dataset input = getDataset(creator.create(), testEntry.getAction()) ;
         Dataset output = getDataset(DatasetFactory.create(), testEntry.getResult()) ;
 
-        String updateFile = testEntry.getAction().getProperty(TestManifestUpdate_11.request).getResource().getURI() ;
+        String updateFile = testEntry
+                .getAction()
+                .getProperty(TestManifestUpdate_11.request)
+                .getResource()
+                .getURI() ;
 
-        UpdateRequest request = UpdateFactory.read(updateFile, Syntax.syntaxSPARQL_11) ;
+        UpdateRequest request = UpdateFactory.read(updateFile, Syntax.syntaxARQ) ;
         UpdateAction.execute(request, input) ;
         boolean b = datasetSame(input, output, false) ;
         if ( ! b )
@@ -113,9 +117,9 @@ public class UpdateExecTest implements Runnable
 
     static Dataset getDataset(Dataset ds, Resource r)
     {
-        List<String> dftData = getAll(r,  TestManifestUpdate_11.data) ;
+        List<String> dftData = getAll(r, TestManifestUpdate_11.data) ;
         for ( String x : dftData )
-            SparqlTestLib.parser(x).parse(ds.getDefaultModel());
+            SparqlTestLib.parser(x).parse(ds);
 
         ClosableIterator<Statement> cIter =  r.listProperties(TestManifestUpdate_11.graphData) ;
         for ( ; cIter.hasNext() ; )

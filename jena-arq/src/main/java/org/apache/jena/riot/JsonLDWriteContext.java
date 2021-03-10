@@ -29,40 +29,40 @@ import com.github.jsonldjava.core.JsonLdOptions;
 
 /**
  * Set of parameters that can be used to control the writing of JSON-LD.
- * 
- * This class provides setters to define a "Context" suitable to be passed as 
+ *
+ * This class provides setters to define a "Context" suitable to be passed as
  * last argument to  {@link org.apache.jena.riot.WriterDatasetRIOT#write(OutputStream, DatasetGraph, PrefixMap, String, Context)}
  * when the WriterDatasetRIOT has been created with one of the JSON-LD RDFFormat variants (that is, when it is
  * an instance of {@link org.apache.jena.riot.writer.JsonLDWriter})
- * 
+ *
  * Parameters that are actually useful depend on the JSON-LD output variant.
- * 
+ *
  * None of them is required (default values being used), except for the "frame" one,
  * when outputting using JSON-LD "frame" output variant.
- * 
+ *
  */
 public class JsonLDWriteContext extends Context {
     /**
      * Set the JSON-LD java API's options
-     * 
+     *
      * If not set, a default value is used. (Note that this default
      * is not the same as the one used by JSON-LD java API).
-     * 
+     *
      * @param opts the options as defined by the JSON-LD java API
      */
-    public void setOptions(JsonLdOptions opts) {     
+    public void setOptions(JsonLdOptions opts) {
         set(JsonLDWriter.JSONLD_OPTIONS, opts);
     }
 
     /**
      * Set the value of the JSON-LD "@context" node, used in "Compact" and "Flattened" JSON-LD outputs.
-     * 
+     *
      * Only useful for "Compact" and "Flattened" JSON-LD outputs, and not required: if not set,
      * a value for the "@Context" node is computed, based on the content of the dataset and its prefix mappings.
-     * 
+     *
      * @param jsonLdContext the value of the "@context" node (a JSON value).
      * @see #setJsonLDContextSubstitution(String) for a way to overcome this problem.
-     * 
+     *
      * @see #setJsonLDContext(Object)
      */
     public void setJsonLDContext(String jsonLdContext) {
@@ -71,13 +71,13 @@ public class JsonLDWriteContext extends Context {
 
     /**
      * Set the value of the JSON-LD "@context" node, used in "Compact" and "Flattened" JSON-LD outputs.
-     * 
+     *
      * Only useful for "Compact" and "Flattened" JSON-LD outputs, and not required: if not set,
      * a value for the "@Context" node is computed, based on the content of the dataset and its prefix mappings.
-     * 
+     *
      * @param jsonLdContext the context as expected by JSON-LD java API.
      * @see #setJsonLDContextSubstitution(String) for a way to overcome this problem.
-     * 
+     *
      * @see #setJsonLDContext(String)
      */
     public void setJsonLDContext(Object jsonLdContext) {
@@ -86,18 +86,18 @@ public class JsonLDWriteContext extends Context {
 
     /**
      * Allow to replace the content of the "@context" node with a given value.
-     * 
-     * This is useful, for instance, to allow to set the @content in the output to an URI, such as "@context": "http://schema.org/"
+     *
+     * This is useful, for instance, to allow to set the @content in the output to an URI, such as "@context": "https://schema.org/"
      * Note that the actual content at this URI is NOT used when computing the output.
      * The context used to compute the JSONLD output is the one normally used (as defined by a call to -
-     * or the lack of call to - setJsonLdContext) 
-     * 
+     * or the lack of call to - setJsonLdContext)
+     *
      * Only useful for "Compact" and "Flattened" JSON-LD outputs, and not required
-     * 
+     *
      * @param jsonLdContext the value of the "@context" node. Note the string is supposed to be a JSON Value: if passing an URI, the String must be quoted.
      */
     public void setJsonLDContextSubstitution(String jsonLdContext) {
-        set(JsonLDWriter.JSONLD_CONTEXT_SUBSTITUTION, jsonLdContext);       
+        set(JsonLDWriter.JSONLD_CONTEXT_SUBSTITUTION, jsonLdContext);
     }
 
     /**
@@ -106,14 +106,14 @@ public class JsonLDWriteContext extends Context {
      */
     public void setFrame(String frame) {
         set(JsonLDWriter.JSONLD_FRAME, frame);
-    }    
-    
+    }
+
     /**
      * Set the frame used in a "Frame" output
      * @param frame the frame Object expected by the JSON-LD java API
      */
     public void setFrame(Object frame) {
         set(JsonLDWriter.JSONLD_FRAME, frame);
-    }           
+    }
 
 }

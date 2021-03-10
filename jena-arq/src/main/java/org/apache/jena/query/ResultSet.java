@@ -63,4 +63,23 @@ public interface ResultSet extends Iterator<QuerySolution>
 
     /** Get the model that resources are created against - may be null */
     public Model getResourceModel() ;
+    
+    /**
+     * Convert this result set to a {@link ResultSetRewindable}.
+     * <p>
+     * Warning: this is likely a copy:
+     * <ul>
+     * <li>"this" result set is consumed and not reusable.
+     * <li>the copy is in-memory
+     * </ul>
+     * Use the returned object, not "this" result set after calling this method.
+     * <p>
+     * Example of use:
+     * <pre>
+     *   ResultSetRewindable rs = queryExecution.execSelect().rewindable();
+     * </pre>
+     */
+    public default ResultSetRewindable rewindable() {
+        return ResultSetFactory.makeRewindable(this);
+    }
 }

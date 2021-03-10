@@ -893,9 +893,6 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = InlineData()
 #ifdef ARQ
  |
-   //el = BindOrFind()
-   el = Find()
- |
    el = Assignment()
  |
    el = ExistsElt()
@@ -941,32 +938,6 @@ Element Bind() : {  Var v ; Expr expr ; }
   <RPAREN>
   { return new ElementBind(v, expr) ; }
 }
-
-#ifdef ARQ
-// To follow RDF* paper using the overloaded "BIND" syntax.
-// Also make Bind() above in GraphPatternNotTriples SPARQL 1.1 only.
-// Element BindOrFind() : {  Var v ; Expr expr = null ; Node n = null ; }
-// {
-//   <BIND>
-//   <LPAREN>
-//   ( expr = Expression() |  n = TripleTerm() )
-//    <AS>
-//   v = Var()
-//   <RPAREN>
-//   { return expr != null ? new ElementBind(v, expr) : new ElementFind(v, n); }
-// }
-
-Element Find() : { Var v ; Node n; }
-{
-  <FIND>
-  <LPAREN>
-  n = TripleTerm()
-  <AS>
-  v = Var()
-  <RPAREN>
-  { return new ElementFind(v, n) ; }
-}
-#endif
 
 Element InlineData() : { ElementData el ; Token t ; }
 {
@@ -1031,13 +1002,14 @@ void InlineDataFull() : { Var v ; Node n ; Token t ; int beginLine; int beginCol
 
 Node DataBlockValue() : { Node n ; String iri ; }
 {
+#ifdef ARQ
+  n = TripleTermData()      { return n ; }
+|
+#endif
   iri = iri()           { return createNode(iri) ; }
 | n = RDFLiteral()      { return n ; }
 | n = NumericLiteral()  { return n ; }
 | n = BooleanLiteral()  { return n ; }
-#ifdef ARQ
-| n = TripleTerm()      { return n ; }
-#endif
 | <UNDEF>               { return null ; }
 }
 
@@ -1633,7 +1605,7 @@ Node CollectionPath(TripleCollectorMark acc) :
 }
 
 #ifdef ARQ
-// RDF* Annotation Syntax
+// RDF-star Annotation Syntax
 void AnnotationPath(TripleCollector acc, Node s, Node p, Path path, Node o) : {}
 {
   (
@@ -1646,7 +1618,7 @@ void AnnotationPath(TripleCollector acc, Node s, Node p, Path path, Node o) : {}
   )?
 }
 
-// RDF* Annotation Syntax
+// RDF-star Annotation Syntax
 void Annotation(TripleCollector acc, Node s, Node p, Path path, Node o) : { }
 {
   // path should be null.
@@ -1685,7 +1657,7 @@ Node VarOrTerm() : {Node n = null ; }
 }
 #endif
 #ifdef ARQ
-// RDF* Triple as term.
+// RDF-star Triple as term.
 Node VarOrTerm() : { Node n = null ; }
 {
   ( n = TripleTerm()
@@ -1704,6 +1676,26 @@ Node TripleTerm() :  { Node n = null ; Token t ; Node s , p , o ; }
   { n = createTripleTerm(s, p, o, t.beginLine, t.beginColumn); }
   <GT2>
   { return n; }
+}
+
+Node TripleTermData() :  { Node n = null ; Token t ; String iri ; Node s , p , o ; }
+{
+  t = <LT2>
+  ( s = DataValueTerm() )
+  ( iri = iri() { p = createNode(iri) ; } | <KW_A> { p = nRDFtype ; } )
+  ( o = DataValueTerm() )
+  { n = createTripleTerm(s, p, o, t.beginLine, t.beginColumn); }
+  <GT2>
+  { return n; }
+}
+
+Node DataValueTerm() : {  Node n = null ; String iri ; Node s , p , o ; }
+{
+  iri = iri()           { return createNode(iri) ; }
+| n = RDFLiteral()      { return n ; }
+| n = NumericLiteral()  { return n ; }
+| n = BooleanLiteral()  { return n ; }
+| n = TripleTermData()  { return n ; }
 }
 
 #endif
@@ -1863,17 +1855,21 @@ Expr UnaryExpression() : { Expr expr ; }
   | expr = PrimaryExpression() { return expr ; }
 }
 
-Expr PrimaryExpression() : { Expr expr ; Node gn ; }
+Expr PrimaryExpression() : { Expr expr ; Node n ; }
 {
   ( expr = BrackettedExpression() { return expr ; }
   | expr = BuiltInCall() { return expr ; }  
   | expr = iriOrFunction()  { return expr ; }
-// NOT  | gn = VarOrTerm()           { return asExpr(gn) ; }
+// NOT  | n = VarOrTerm()           { return asExpr(n) ; }
 // Because of iriOrFunction 
-  | gn = RDFLiteral()      { return asExpr(gn) ; }
-  | gn = NumericLiteral()  { return asExpr(gn) ; }
-  | gn = BooleanLiteral()  { return asExpr(gn) ; }
-  | gn = Var()             { return asExpr(gn) ; }
+  | n = RDFLiteral()      { return asExpr(n) ; }
+  | n = NumericLiteral()  { return asExpr(n) ; }
+  | n = BooleanLiteral()  { return asExpr(n) ; }
+  | n = Var()             { return asExpr(n) ; }
+#ifdef ARQ
+// Not necessary. In expressions, use "TRIPLE(?s,?p,?o)"
+  | n = TripleTerm()      { return asExpr(n) ; }
+#endif
 #ifdef ARQ
 // and not SPARQL 11
 // needs checking.
@@ -1888,7 +1884,8 @@ Expr BrackettedExpression() : { Expr expr ; }
     <LPAREN> expr = Expression() <RPAREN>  { return expr ; }
 }
 
-Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
+Expr BuiltInCall() : { Expr expr ;
+                       Expr expr1 = null ; Expr expr2 = null ; Expr expr3 = null ;
                        Node gn ; ExprList a ; }
 {
     expr = Aggregate() { return expr ; }
@@ -2041,13 +2038,28 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
 
   | <IS_NUMERIC> <LPAREN> expr = Expression() <RPAREN>
     { return new E_IsNumeric(expr) ; }
-
   | // Regular expression matcher
     expr = RegexExpression() { return expr ; }
 
   | expr = ExistsFunc()      { return expr ; }
 
   | expr = NotExistsFunc()   { return expr ; }
+#if ARQ
+  | <IS_TRIPLE>  <LPAREN> expr = Expression() <RPAREN>
+    { return new E_IsTriple(expr) ; }
+
+  | <TRIPLE>  <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <COMMA> expr3 = Expression() <RPAREN>
+    { return new E_TripleTerm(expr1, expr2, expr3) ; }
+
+  | <SUBJECT>  <LPAREN> expr = Expression() <RPAREN>
+    { return new E_TripleSubject(expr) ; }
+
+  | <PREDICATE>  <LPAREN> expr = Expression() <RPAREN>
+    { return new E_TriplePredicate(expr) ; }
+
+  | <OBJECT>  <LPAREN> expr = Expression() <RPAREN>
+    { return new E_TripleObject(expr) ; }
+#endif
 }
 
 Expr RegexExpression() :
@@ -2445,8 +2457,12 @@ TOKEN [IGNORE_CASE] :
 |  < SERVICE:     "service" >
 
 #ifdef ARQ
-|  < LET:         "let" >
-|  < FIND:        "find" >
+|  < LET:         "LET" >
+|  < TRIPLE:      "TRIPLE" >
+|  < IS_TRIPLE:   "isTRIPLE" >
+|  < SUBJECT:     "SUBJECT" >
+|  < PREDICATE:   "PREDICATE" >
+|  < OBJECT:      "OBJECT" >
 #endif
 |  < EXISTS:      "exists" >
 |  < NOT:         "not" >
