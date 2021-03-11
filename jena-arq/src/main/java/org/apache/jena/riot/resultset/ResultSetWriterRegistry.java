@@ -45,6 +45,7 @@ import org.apache.jena.sparql.resultset.TextOutput;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.util.Context ;
 
+@SuppressWarnings("deprecation")
 public class ResultSetWriterRegistry {
 
     private static Map<Lang, ResultSetWriterFactory> registry = new HashMap<>() ;
@@ -74,14 +75,14 @@ public class ResultSetWriterRegistry {
         initialized = true ;
 
         ResultSetWriterFactory factory = new ResultSetWriterFactoryStd() ;
-        register(SPARQLResultSetXML,    ResultSetWriterXML.factory) ;
-        register(SPARQLResultSetJSON,   ResultSetWriterJSON.factory) ;
-        register(SPARQLResultSetThrift, ResultSetWriterThrift.factory) ;
+        register(RS_XML,    ResultSetWriterXML.factory) ;
+        register(RS_JSON,   ResultSetWriterJSON.factory) ;
+        register(RS_Thrift, ResultSetWriterThrift.factory) ;
         // Build-in std factory (below).
-        register(SPARQLResultSetCSV,    factory) ;
-        register(SPARQLResultSetTSV,    factory) ;
-        register(SPARQLResultSetText,   factory) ;
-        register(SPARQLResultSetNone,   factory) ;
+        register(RS_CSV,    factory) ;
+        register(RS_TSV,    factory) ;
+        register(RS_Text,   factory) ;
+        register(RS_None,   factory) ;
     }
 
     private static ResultSetWriter writerCSV = new ResultSetWriter() {
@@ -145,12 +146,12 @@ public class ResultSetWriterRegistry {
         @Override
         public ResultSetWriter create(Lang lang) {
             lang = Objects.requireNonNull(lang, "Language must not be null");
-//            if ( lang.equals(SPARQLResultSetXML) )      return writerXML;
-//            if ( lang.equals(SPARQLResultSetJSON) )     return writerJSON;
-            if ( lang.equals(SPARQLResultSetCSV) )      return writerCSV;
-            if ( lang.equals(SPARQLResultSetTSV) )      return writerTSV;
-            if ( lang.equals(SPARQLResultSetText) )     return writerText;
-            if ( lang.equals(SPARQLResultSetNone) )     return writerNone;
+//            if ( lang.equals(RS_XML) )      return writerXML;
+//            if ( lang.equals(RS_JSON) )     return writerJSON;
+            if ( lang.equals(RS_CSV) )      return writerCSV;
+            if ( lang.equals(RS_TSV) )      return writerTSV;
+            if ( lang.equals(RS_Text) )     return writerText;
+            if ( lang.equals(RS_None) )     return writerNone;
             throw new RiotException("Lang not registered (ResultSet writer)") ;
         }
     }
