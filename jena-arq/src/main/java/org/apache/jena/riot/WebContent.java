@@ -269,9 +269,9 @@ public class WebContent
             return null;
         // Special cases : use of application/xml and application/json
         if ( contentType.equals(WebContent.contentTypeXML) )
-            return ResultSetLang.SPARQLResultSetXML;
+            return ResultSetLang.RS_XML;
         else if ( contentType.equals(WebContent.contentTypeJSON) )
-            return ResultSetLang.SPARQLResultSetJSON;
+            return ResultSetLang.RS_JSON;
         Lang lang = RDFLanguages.contentTypeToLang(contentType);
         // May not be a reader/write result set language. 
         return lang;

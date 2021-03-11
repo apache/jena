@@ -35,7 +35,7 @@ import org.apache.jena.sparql.util.Context;
 public class ResultSetReaderThrift implements ResultSetReader {
     
     public static ResultSetReaderFactory factory = lang->{
-        if (!Objects.equals(lang, ResultSetLang.SPARQLResultSetThrift ) )
+        if (!Objects.equals(lang, ResultSetLang.RS_Thrift ) )
             throw new ResultSetException("ResultSetReadernot  for Thrift asked for a "+lang); 
         return new ResultSetReaderThrift(); 
     };

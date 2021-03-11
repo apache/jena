@@ -23,6 +23,7 @@ import java.nio.charset.StandardCharsets ;
 
 import org.apache.jena.query.ResultSet ;
 
+@Deprecated
 public abstract class OutputBase implements OutputFormatter
 {
     @Override

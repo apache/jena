@@ -20,35 +20,17 @@ package org.apache.jena.riot.resultset;
 
 import static org.apache.jena.riot.resultset.ResultSetLang.*;
 
-import java.io.OutputStream ;
-import java.io.Writer ;
-import java.util.HashMap ;
 import java.util.Map ;
 import java.util.Objects ;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.jena.atlas.lib.NotImplemented ;
-import org.apache.jena.atlas.logging.FmtLog;
-import org.apache.jena.query.ARQ;
-import org.apache.jena.query.ResultSet ;
-import org.apache.jena.query.ResultSetFormatter;
-import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.resultset.rw.ResultSetWriterJSON;
-import org.apache.jena.riot.resultset.rw.ResultSetWriterThrift;
-import org.apache.jena.riot.resultset.rw.ResultSetWriterXML;
-import org.apache.jena.sparql.ARQConstants;
-import org.apache.jena.sparql.core.Prologue ;
-import org.apache.jena.sparql.resultset.CSVOutput;
-import org.apache.jena.sparql.resultset.TSVOutput;
-import org.apache.jena.sparql.resultset.TextOutput;
-import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.riot.resultset.rw.*;
 
-@SuppressWarnings("deprecation")
+/** Registry for ResultSetWriter factories. */
 public class ResultSetWriterRegistry {
 
-    private static Map<Lang, ResultSetWriterFactory> registry = new HashMap<>() ;
+    private static Map<Lang, ResultSetWriterFactory> registry = new ConcurrentHashMap<>() ;
 
     /** Lookup a {@link Lang} to get the registered {@link ResultSetReaderFactory} (or null) */
     public static ResultSetWriterFactory getFactory(Lang lang) {
@@ -74,86 +56,14 @@ public class ResultSetWriterRegistry {
             return ;
         initialized = true ;
 
-        ResultSetWriterFactory factory = new ResultSetWriterFactoryStd() ;
         register(RS_XML,    ResultSetWriterXML.factory) ;
         register(RS_JSON,   ResultSetWriterJSON.factory) ;
         register(RS_Thrift, ResultSetWriterThrift.factory) ;
+        register(RS_CSV,    ResultSetWriterCSV.factory) ;
+        register(RS_TSV,    ResultSetWriterTSV.factory) ;
         // Build-in std factory (below).
-        register(RS_CSV,    factory) ;
-        register(RS_TSV,    factory) ;
-        register(RS_Text,   factory) ;
-        register(RS_None,   factory) ;
-    }
-
-    private static ResultSetWriter writerCSV = new ResultSetWriter() {
-        @Override public void write(OutputStream out, ResultSet resultSet, Context context) {
-            CSVOutput fmt = new CSVOutput() ;
-            fmt.format(out, resultSet) ;
-        }
-        @Override public void write(Writer out, ResultSet resultSet, Context context)   { throw new NotImplemented("Writer") ; }
-        @Override public void write(OutputStream out, boolean result, Context context)  {
-            CSVOutput fmt = new CSVOutput() ;
-            fmt.format(out, result) ;
-        }
-    } ;
-
-    private static ResultSetWriter writerTSV = new ResultSetWriter() {
-        @Override public void write(OutputStream out, ResultSet resultSet, Context context) {
-            TSVOutput fmt = new TSVOutput() ;
-            fmt.format(out, resultSet) ;
-        }
-        @Override public void write(Writer out, ResultSet resultSet, Context context)   {throw new NotImplemented("Writer") ; }
-        @Override public void write(OutputStream out, boolean result, Context context)  {
-            TSVOutput fmt = new TSVOutput() ;
-            fmt.format(out, result) ;
-        }
-    } ;
-
-    private static ResultSetWriter writerNone = new ResultSetWriter() {
-        @Override public void write(OutputStream out, ResultSet resultSet, Context context) { ResultSetFormatter.consume(resultSet); }
-        @Override public void write(Writer out, ResultSet resultSet, Context context)       { ResultSetFormatter.consume(resultSet); }
-        @Override public void write(OutputStream out, boolean result, Context context)      {}
-    } ;
-
-    private static ResultSetWriter writerText = new ResultSetWriter() {
-        @Override public void write(OutputStream out, ResultSet resultSet, Context context) {
-            Prologue prologue = choosePrologue(resultSet, context);
-            TextOutput tFmt = new TextOutput(new SerializationContext(prologue)) ;
-            tFmt.format(out, resultSet) ;
-        }
-        @Override public void write(Writer out, ResultSet resultSet, Context context) {throw new NotImplemented("Writer") ; }
-        @Override public void write(OutputStream out, boolean result, Context context) {
-            TextOutput tFmt = new TextOutput(new SerializationContext((Prologue)null)) ;
-            tFmt.format(out, result) ;
-        }
-    } ;
-
-    /** Establish a prologue for formatting output.  Return "null" for none found. */
-    private static Prologue choosePrologue(ResultSet resultSet, Context context) {
-        try {
-            if ( context != null && context.get(ARQConstants.symPrologue) != null )
-                return context.get(ARQConstants.symPrologue);
-            Model m = resultSet.getResourceModel();
-            if ( m != null )
-                return new Prologue(m);
-        } catch (Exception ex) {
-            FmtLog.warn(ARQ.getExecLogger(), "Failed to establish a 'Prologue' for text output: %s", ex.getMessage());
-        }
-        return null;
-    }
-
-    private static class ResultSetWriterFactoryStd implements ResultSetWriterFactory {
-        @Override
-        public ResultSetWriter create(Lang lang) {
-            lang = Objects.requireNonNull(lang, "Language must not be null");
-//            if ( lang.equals(RS_XML) )      return writerXML;
-//            if ( lang.equals(RS_JSON) )     return writerJSON;
-            if ( lang.equals(RS_CSV) )      return writerCSV;
-            if ( lang.equals(RS_TSV) )      return writerTSV;
-            if ( lang.equals(RS_Text) )     return writerText;
-            if ( lang.equals(RS_None) )     return writerNone;
-            throw new RiotException("Lang not registered (ResultSet writer)") ;
-        }
+        register(RS_Text,   ResultSetWriterText.factory) ;
+        register(RS_None,   ResultSetWriterNone.factory) ;
     }
 }
 

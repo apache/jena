@@ -18,10 +18,10 @@
 
 package org.apache.jena.riot.resultset;
 
-import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetCSV ;
-import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetJSON ;
-import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetTSV ;
-import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetXML ;
+import static org.apache.jena.riot.resultset.ResultSetLang.RS_CSV ;
+import static org.apache.jena.riot.resultset.ResultSetLang.RS_JSON ;
+import static org.apache.jena.riot.resultset.ResultSetLang.RS_TSV ;
+import static org.apache.jena.riot.resultset.ResultSetLang.RS_XML ;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream ;
@@ -49,10 +49,10 @@ import org.junit.runners.Parameterized.Parameters ;
 public class TestResultSetIO {
     @Parameters(name = "{index}: {0}") 
     public static Collection<Object[]> data() { 
-        Lang[] langs = { SPARQLResultSetXML
-                       , SPARQLResultSetJSON
-                       , SPARQLResultSetCSV
-                       , SPARQLResultSetTSV
+        Lang[] langs = { RS_XML
+                       , RS_JSON
+                       , RS_CSV
+                       , RS_TSV
         } ;
         
         List<Object[]> x = new ArrayList<>() ;
@@ -91,7 +91,7 @@ public class TestResultSetIO {
         
         ResultSet rs = ResultSetMgr.read(in, lang) ;
         ResultSetRewindable rsw = ResultSetFactory.makeRewindable(rs) ;
-        if ( ! lang.equals(SPARQLResultSetCSV) )
+        if ( ! lang.equals(RS_CSV) )
             // CSV is not faithful
             assertTrue(ResultSetCompare.equalsByTerm(test_rs, rsw)) ;
 
@@ -116,7 +116,7 @@ public class TestResultSetIO {
 //        
 //        ResultSet rs = ResultSetMgr.read(in, lang) ;
 //        ResultSetRewindable rsw = ResultSetFactory.makeRewindable(rs) ;
-//        if ( ! lang.equals(SPARQLResultSetCSV) )
+//        if ( ! lang.equals(RS_CSV) )
 //            // CSV is not faithful
 //            assertTrue(ResultSetCompare.equalsByTerm(test_rs, rsw)) ;
 //

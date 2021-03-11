@@ -19,19 +19,17 @@
 package org.apache.jena.sparql.resultset;
 
 import java.io.OutputStream ;
-import java.io.PrintWriter ;
 import java.io.Writer ;
 
-import org.apache.jena.query.QuerySolution ;
-import org.apache.jena.query.ResultSet ;
-import org.apache.jena.query.ResultSetFactory ;
-import org.apache.jena.query.ResultSetRewindable ;
-import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
+import org.apache.jena.riot.resultset.ResultSetLang;
+import org.apache.jena.riot.resultset.rw.ResultSetWriterText;
+import org.apache.jena.riot.resultset.rw.ResultsWriter;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.FmtUtils ;
-import org.apache.jena.util.FileUtils ;
 
 /** <p>Takes a ResultSet object and creates displayable formatted output in plain text.</p>
  *
@@ -41,187 +39,101 @@ import org.apache.jena.util.FileUtils ;
  *  to pass over the results again, turning them into output.
  *  </p>
  * @see org.apache.jena.query.ResultSetFormatter for convenience ways to call this formatter
+ * @deprecated This will become an internal class. Use
+ *     {@link ResultSetFormatter#output} or
+ *     {@code ResultsWriter.create().lang(ResultSetLang.RS_Text).write(...)}
  */
-
+@Deprecated
 public class TextOutput extends OutputBase
 {
     //?? ResultSetProcessor to find column widths over a ResultSetRewindable and to output text
 
-    protected SerializationContext context = null ;
-    
-    //static final String notThere = "<<unset>>" ;
-    static final String notThere = " " ;
-    
+    private SerializationContext context = null ;
+
+    @Deprecated
     public TextOutput(Prologue prologue)
     { context = new SerializationContext(prologue) ; }
-    
+
+    @Deprecated
     public TextOutput(PrefixMapping pMap)
     { context = new SerializationContext(pMap) ; }
 
+    @Deprecated
     public TextOutput(SerializationContext cxt )
     { context = cxt ; }
 
+    /**
+     * @deprecated Use {@link ResultSetFormatter#out(OutputStream, ResultSet)} or
+     *     {@code ResultsWriter.create().lang(ResultSetLang.RS_Text).write(out, resultSet);}
+     */
+    @Deprecated
     @Override
-    public void format(OutputStream outs, ResultSet resultSet)
-    { write(outs, resultSet) ; }
-
-    /** Writer should be UTF-8 encoded - better to an OutputStream */ 
-    public void format(Writer w, ResultSet resultSet) { 
-        PrintWriter pw = new PrintWriter(w) ;
-        write(pw, resultSet) ;
-        pw.flush() ;
+    public void format(OutputStream out, ResultSet resultSet) {
+        ResultsWriter.create().lang(ResultSetLang.RS_Text).write(out, resultSet);
     }
 
-    private int[] colWidths(ResultSetRewindable rs) {
-        int numCols = rs.getResultVars().size() ;
-        int numRows = 0 ;
-        int[] colWidths = new int[numCols] ;
+    /**
+     * @deprecated Use {@link ResultSetFormatter#out(OutputStream, boolean)} or
+     *     {@code ResultsWriter.create().lang(ResultSetLang.RS_Text).write(out, booleanResult);}
+     */
+    @Deprecated
+    @Override
+    public void format(OutputStream out, boolean booleanResult) {
+        ResultsWriter.create().lang(ResultSetLang.RS_Text).write(out, booleanResult);
+    }
 
-        // Widths at least that of the variable name.  Assumes we will print col headings.
-        for ( int i = 0 ; i < numCols ; i++ )
-            colWidths[i] = (rs.getResultVars().get(i)).length() ;
-
-        // Preparation pass : find the maximum width for each column
-        for ( ; rs.hasNext() ; ) {
-            numRows++ ;
-            QuerySolution rBind = rs.nextSolution() ;
-            int col = -1 ;
-            for ( String s1 : rs.getResultVars() )
-            {
-                col++;
-                String rVar = s1;
-                String s = getVarValueAsString( rBind, rVar );
-                if ( colWidths[col] < s.length() )
-                {
-                    colWidths[col] = s.length();
-                }
-            }
-        }
-        rs.reset() ;
-        return colWidths ;
+    /** Writer should be UTF-8 encoded - better to an OutputStream
+     * @deprecated Use {@link ResultSetFormatter#out(OutputStream, ResultSet)} or
+     *      {@code ResultsWriter.create().lang(ResultSetLang.RS_Text).write(out, resultSet);}
+     */
+    @Deprecated
+    public void format(Writer out, ResultSet resultSet) {
+        ResultSetWriterText.output(IO.wrap(out), resultSet, null);
     }
 
     /** Textual representation : default layout using " | " to separate columns.
      *  Ensure the PrintWriter can handle UTF-8.
      *  OutputStream version is preferred.
-     *  @param pw         A PrintWriter
+     *  @param out         A Writer
      *  @param resultSet  ResultSet
+     * @deprecated Use {@link ResultSetFormatter#out(OutputStream, ResultSet)} or
+     *      {@code ResultsWriter.create().lang(ResultSetLang.RS_Text).write(out, resultSet);}
      */
-    public void write(PrintWriter pw, ResultSet resultSet)
-    { write(pw, resultSet, "| ", " | ", " |") ; }
-    
-    /** Output a result set. 
-     * @param outs       OutputStream
+    @Deprecated
+    public void write(Writer out, ResultSet resultSet) {
+        ResultSetWriterText.output(IO.wrap(out), resultSet, null);
+    }
+
+    /** Output a result set.
+     * @param out        OutputStream
      * @param resultSet  ResultSet
+     * @deprecated Use {@link ResultSetFormatter#out(OutputStream, ResultSet)} or
+     *      {@code ResultsWriter.create().lang(ResultSetLang.RS_Text).write(out, resultSet);}
      */
-    public void write(OutputStream outs, ResultSet resultSet)
-    { write(outs, resultSet, "| ", " | ", " |") ; }
-    
-    /** Output a result set. 
-     * @param outs       OutputStream
+    @Deprecated
+    public void write(OutputStream out, ResultSet resultSet) {
+        ResultsWriter.create().lang(ResultSetLang.RS_Text).write(out, resultSet);
+    }
+
+    /** Output a result set.
+     * @param out        OutputStream
      * @param resultSet  ResultSet
      * @param colStart   Left column
      * @param colSep     Inter-column
      * @param colEnd     Right column
      */
-    public void write(OutputStream outs, ResultSet resultSet, String colStart, String colSep, String colEnd)
-    {
-        PrintWriter pw = FileUtils.asPrintWriterUTF8(outs) ;
-        write(pw, resultSet, colStart, colSep, colEnd) ;
-        pw.flush() ;
+    public void write(OutputStream out, ResultSet resultSet, String colStart, String colSep, String colEnd) {
+        ResultSetWriterText.output(IO.wrapUTF8(out), resultSet, colStart, colSep, colEnd);
     }
-    
+
     /** Textual representation : layout using given separator.
      *  Ensure the PrintWriter can handle UTF-8.
-     *  @param pw         PrintWriter
+     *  @param out         Writer
      *  @param colSep      Column separator
+     *  @deprecated Use an java.io.OutputStream
      */
-    public void write(PrintWriter pw, ResultSet resultSet, String colStart, String colSep, String colEnd) {
-        if ( resultSet.getResultVars().size() == 0 ) {
-            pw.println("==== No variables ====");
-            // return ;
-        }
-
-        ResultSetRewindable resultSetRewindable = ResultSetFactory.makeRewindable(resultSet);
-
-        int numCols = resultSetRewindable.getResultVars().size();
-        int[] colWidths = colWidths(resultSetRewindable);
-
-        String row[] = new String[numCols];
-        int lineWidth = 0;
-        for ( int col = 0 ; col < numCols ; col++ ) {
-            String rVar = resultSet.getResultVars().get(col);
-            row[col] = rVar;
-            lineWidth += colWidths[col];
-            if ( col > 0 )
-                lineWidth += colSep.length();
-        }
-        if ( colStart != null )
-            lineWidth += colStart.length() ;
-        if ( colEnd != null )
-            lineWidth += colEnd.length() ; 
-
-        for ( int i = 0 ; i < lineWidth ; i++ )
-            pw.print('-') ;
-        pw.println() ;
-        
-        printRow(pw, row, colWidths, colStart, colSep, colEnd) ;
-
-        for ( int i = 0 ; i < lineWidth ; i++ )
-            pw.print('=') ;
-        pw.println() ;
-
-        for ( ; resultSetRewindable.hasNext() ; ) {
-            QuerySolution rBind = resultSetRewindable.nextSolution();
-            for ( int col = 0 ; col < numCols ; col++ ) {
-                String rVar = resultSet.getResultVars().get(col);
-                row[col] = this.getVarValueAsString(rBind, rVar);
-            }
-            printRow(pw, row, colWidths, colStart, colSep, colEnd);
-        }
-        for ( int i = 0 ; i < lineWidth ; i++ )
-            pw.print('-') ;
-        pw.println() ;
-        resultSetRewindable = null ;
-    }
-
-
-    private void printRow(PrintWriter out, String[] row, int[] colWidths, String rowStart, String colSep, String rowEnd) {
-        out.print(rowStart);
-        for ( int col = 0 ; col < colWidths.length ; col++ ) {
-            String s = row[col];
-            int pad = colWidths[col];
-            StringBuffer sbuff = new StringBuffer(120);
-
-            if ( col > 0 )
-                sbuff.append(colSep);
-
-            sbuff.append(s);
-            for ( int j = 0 ; j < pad - s.length() ; j++ )
-                sbuff.append(' ');
-
-            out.print(sbuff);
-        }
-        out.print(rowEnd);
-        out.println();
-    }
-
-    protected String getVarValueAsString(QuerySolution rBind, String varName) {
-        RDFNode obj = rBind.get(varName);
-
-        if ( obj == null )
-            return notThere;
-
-        return FmtUtils.stringForRDFNode(obj, context);
-    }
-
-    @Override
-    public void format(OutputStream out, boolean answer) {
-        PrintWriter pw = FileUtils.asPrintWriterUTF8(out);
-        if ( answer )
-            pw.write("yes");
-        else
-            pw.write("no");
-        pw.flush();
+    @Deprecated
+    public void write(Writer out, ResultSet resultSet, String colStart, String colSep, String colEnd) {
+        ResultSetWriterText.output(IO.wrap(out), resultSet, colStart, colSep, colEnd);
     }
 }
