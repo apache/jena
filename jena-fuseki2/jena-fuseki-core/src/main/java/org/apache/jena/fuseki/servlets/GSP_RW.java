@@ -106,7 +106,7 @@ public class GSP_RW extends GSP_R {
             haveCommited = true;
         }
         catch (ActionErrorException ex) { throw ex; }
-        catch (Exception ex) { action.abort(); }
+        catch (Exception ex) { abortSilent(action); }
         finally { action.end(); }
         ServletOps.successNoContent(action);
     }
@@ -164,29 +164,33 @@ public class GSP_RW extends GSP_R {
             action.commit();
             return upload;
         } catch (RiotParseException ex) {
-            action.abort();
+            abortSilent(action);
             ServletOps.errorParseError(ex);
             return null;
         } catch (RiotException ex) {
             // Parse error
-            action.abort();
+            abortSilent(action);
             ServletOps.errorBadRequest(ex.getMessage());
             return null;
         } catch (OperationDeniedException ex) {
-            action.abort();
+            abortSilent(action);
             throw ex;
         } catch (ActionErrorException ex) {
             // Any ServletOps.error from calls in the try{} block.
-            action.abort();
+            abortSilent(action);
             throw ex;
         } catch (Exception ex) {
             // Something unexpected.
-            action.abort();
+            abortSilent(action);
             ServletOps.errorOccurred(ex.getMessage());
             return null;
         } finally {
             action.end();
         }
+    }
+
+    private static void abortSilent(HttpAction action) {
+        action.abortSilent();
     }
 
     /** Add data where the destination does not support full transactions.
@@ -224,14 +228,14 @@ public class GSP_RW extends GSP_R {
             action.commit();
             return details;
         } catch (OperationDeniedException ex) {
-            action.abort();
+            abortSilent(action);
             throw ex;
         } catch (Exception ex) {
             // We parsed into a temporary graph so an exception at this point
             // is not because of a parse error.
             // We're in the non-transactional branch, this probably will not work
             // but it might and there is no harm safely trying.
-            try { action.abort(); } catch (Exception ex2) {}
+            abortSilent(action);
             ServletOps.errorOccurred(ex.getMessage());
             return null;
         } finally { action.end(); }
@@ -284,17 +288,17 @@ public class GSP_RW extends GSP_R {
             ServletOps.success(action);
         } catch (RiotException ex) {
             // Parse error
-            action.abort();
+            abortSilent(action);
             ServletOps.errorBadRequest(ex.getMessage());
         } catch (OperationDeniedException ex) {
-            action.abort();
+            abortSilent(action);
             throw ex;
         } catch (ActionErrorException ex) {
-            action.abort();
+            abortSilent(action);
             throw ex;
         } catch (Exception ex) {
             // Something else went wrong. Backout.
-            action.abort();
+            abortSilent(action);
             ServletOps.errorOccurred(ex.getMessage());
         } finally {
             action.end();
@@ -329,15 +333,13 @@ public class GSP_RW extends GSP_R {
             action.commit();
             ServletOps.success(action);
         } catch (OperationDeniedException ex) {
-            action.abort();
+            abortSilent(action);
             throw ex;
         } catch (Exception ex) {
             // We're in a non-transactional upload so this probably will not
             // work but there still may be transaction state tracking.
             // There is no harm safely trying.
-            try {
-                action.abort();
-            } catch (Exception ex2) {}
+            abortSilent(action);
             ServletOps.errorOccurred(ex.getMessage());
         } finally {
             action.end();
