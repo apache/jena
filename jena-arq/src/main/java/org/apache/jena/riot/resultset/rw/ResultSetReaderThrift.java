@@ -33,15 +33,15 @@ import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.util.Context;
 
 public class ResultSetReaderThrift implements ResultSetReader {
-    
+
     public static ResultSetReaderFactory factory = lang->{
         if (!Objects.equals(lang, ResultSetLang.RS_Thrift ) )
-            throw new ResultSetException("ResultSetReadernot  for Thrift asked for a "+lang); 
-        return new ResultSetReaderThrift(); 
+            throw new ResultSetException("ResultSetReader for Thrift asked for a "+lang);
+        return new ResultSetReaderThrift();
     };
-    
+
     private ResultSetReaderThrift() {}
-    
+
     @Override
     public ResultSet read(InputStream in, Context context) {
         return BinRDF.readResultSet(in);

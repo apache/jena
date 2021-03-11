@@ -24,6 +24,8 @@ import org.junit.Assert;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
+import org.apache.jena.riot.ResultSetMgr;
+import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.sparql.ARQException ;
 import org.junit.Test;
 
@@ -296,14 +298,14 @@ public class TestResultSetFormat2 {
         String x = "?x\t?y\n";
         parseTSVAsBoolean(x, false);
     }
-    
+
     @Test
     public void resultset_csv_01() {
     	// Normal header
     	String x = "x,y\n";
     	parseCSV(x);
     }
-    
+
     @Test
     public void resultset_csv_02() {
     	// Header with variable names using CSV field encoding i.e. surrounded by quotes
@@ -327,7 +329,7 @@ public class TestResultSetFormat2 {
         //@formatter:on
         parseJSON(input);
     }
-    
+
     @Test(expected = ResultSetException.class)
     public void resultset_json_02() {
         //@formatter:off
@@ -342,23 +344,23 @@ public class TestResultSetFormat2 {
                                           "    })",
                                           "    }");
         //@formatter:on
-        
+
         // No value for URI is illegal
         parseJSON(input);
     }
-    
+
     @Test(expected = ResultSetException.class)
     public void resultset_json_03() {
         String input = "{\"head\":{\"vars\":[\"s\"]}}";
-        
+
         // Missing results is illegal
         parseJSON(input);
     }
-    
+
     @Test(expected = ResultSetException.class)
     public void resultset_json_04() {
         String input = "{\"results\":{}}";
-        
+
         // Missing head is illegal
         parseJSON(input);
     }
@@ -366,18 +368,18 @@ public class TestResultSetFormat2 {
     private void parseTSV(String x) {
         byte[] b = StrUtils.asUTF8bytes(x);
         ByteArrayInputStream in = new ByteArrayInputStream(b);
-        ResultSet rs2 = ResultSetFactory.fromTSV(in);
+        ResultSet rs2 = ResultSetMgr.read(in, ResultSetLang.RS_TSV);
 
         while (rs2.hasNext()) {
             rs2.nextBinding();
         }
     }
-    
+
     private void parseCSV(String x) {
     	byte[] b = StrUtils.asUTF8bytes(x);
     	ByteArrayInputStream in = new ByteArrayInputStream(b);
-    	ResultSet rs2 = CSVInput.fromCSV(in);
-    	
+    	ResultSet rs2 = ResultSetMgr.read(in, ResultSetLang.RS_CSV);
+
     	while (rs2.hasNext()) {
     		rs2.nextBinding();
     	}
