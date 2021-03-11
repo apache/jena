@@ -19,24 +19,10 @@
 package org.apache.jena.sparql.resultset;
 
 import java.io.InputStream ;
-import java.util.ArrayList ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.function.Function;
 
-import org.apache.jena.atlas.csv.CSVParser ;
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.logging.FmtLog ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.ResultSet ;
-import org.apache.jena.sparql.ARQException ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.ResultSetStream ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingBuilder;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.riot.resultset.ResultSetLang;
+import org.apache.jena.riot.resultset.rw.ResultSetReaderCSV;
 
 /** Convenient comma separated values - see also TSV (tab separated values)
  *  which outputs full RDF terms (in Turtle-style).
@@ -62,77 +48,7 @@ import org.slf4j.LoggerFactory ;
 public class CSVInput
 {
     // This code exists to support the SPARQL WG tests.
-    private static Logger log = LoggerFactory.getLogger(CSVInput.class) ;
-    public static ResultSet fromCSV(InputStream in)
-    {
-        CSVParser parser = CSVParser.create(in) ;
-        BindingBuilder builder = Binding.builder();
-        final List<Var> vars = vars(parser) ;
-        List<String> varNames = Var.varNames(vars) ;
-        Function<List<String>, Binding> transform = new Function<List<String>, Binding>(){
-            private int count = 1 ;
-            @Override
-            public Binding apply(List<String> row) {
-                if ( row.size() != vars.size() )
-                    FmtLog.warn(log, "Row %d: Length=%d: expected=%d", count, row.size(), vars.size()) ;
-                builder.reset();
-                // Check.
-                for (int i = 0 ; i < vars.size() ; i++ ) {
-                    Var v = vars.get(i) ;
-                    String field = (i<row.size()) ? row.get(i) : "" ;
-                    Node n = NodeFactory.createLiteral(field) ;
-                    builder.add(v, n);
-                }
-                count++ ;
-                return builder.build() ;
-            }} ;
-        Iterator<Binding> bindings = Iter.map(parser.iterator(), transform) ;
-
-        //Generate an instance of ResultSetStream using TSVInputIterator
-        //This will parse actual result rows as needed thus minimising memory usage
-        return new ResultSetStream(varNames, null, bindings);
-    }
-
-    private static List<Var> vars(CSVParser parser) {
-        final List<Var> vars = new ArrayList<>();
-        List<String> varNames = parser.parse1() ;
-        if ( varNames == null )
-            throw new ARQException("SPARQL CSV Results malformed, input is empty");
-        for ( String vn : varNames ) {
-            vars.add(Var.alloc(vn)) ;
-        }
-        return vars ;
-    }
-
-    public static boolean booleanFromCSV(InputStream in)
-    {
-        CSVParser parser = CSVParser.create(in) ;
-        final List<Var> vars = vars(parser) ;
-        if ( vars.size() != 1 ) {
-            throw new ARQException("CSV Boolean Results malformed: variables line='"+vars+"'") ;
-        }
-        if ( ! vars.get(0).getName().equals("_askResult")) {
-            FmtLog.warn(log, "Boolean result variable is '%s', not '_askResult'", vars.get(0).getName()) ;
-        }
-
-        List<String> line = parser.parse1() ;
-        if ( line.size() != 1 ) {
-            throw new ARQException("CSV Boolean Results malformed: data line='"+line+"'") ;
-        }
-        String str = line.get(0) ;
-        boolean b ;
-        if ( str.equalsIgnoreCase("true") || str.equalsIgnoreCase("yes") )
-            b = true ;
-        else if (str.equalsIgnoreCase("false") || str.equalsIgnoreCase("no"))
-            b = false;
-        else {
-            throw new ARQException("CSV Boolean Results malformed, expected one of - true yes false no - but got " + str);
-            }
-
-        List<String> line2 = parser.parse1() ;
-        if ( line2 != null ) {
-            FmtLog.warn(log, "Extra rows: first is "+line2) ;
-        }
-        return b ;
+    public static ResultSet fromCSV(InputStream in) {
+        return ResultSetReaderCSV.factory.create(ResultSetLang.RS_CSV).read(in, null);
     }
 }
