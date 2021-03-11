@@ -85,9 +85,8 @@ public class Upload {
                                    details.detailsStr()));
             return details;
         } catch (RiotParseException ex) {
-            action.log.info(format("[%d] Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s : %s",
-                                   action.id, len, ct.getContentTypeStr(), ct.getCharset(), lang.getName(),
-                                   ex.getMessage()));
+            action.log.info(format("[%d] Attempt to load: Content-Length=%d, Content-Type=%s, Charset=%s => %s",
+                                   action.id, len, ct.getContentTypeStr(), ct.getCharset(), ex.getMessage()));
             // Exhaust input.
             ActionLib.consumeBody(action);
             throw ex;

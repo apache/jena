@@ -229,22 +229,22 @@ public class SPARQL_Update extends ActionService
             action.commit();
         } catch (UpdateException ex) {
             IO.skipToEnd(input);
-            action.abort();
+            abortSilent(action);
             incCounter(action.getEndpoint().getCounters(), UpdateExecErrors);
             ServletOps.errorOccurred(ex.getMessage());
         } catch (QueryParseException|QueryBuildException ex) {
             IO.skipToEnd(input);
-            action.abort();
+            abortSilent(action);
             // Counter inc'ed further out.
             ServletOps.errorBadRequest(messageForException(ex));
         } catch ( OperationDeniedException ex) {
             IO.skipToEnd(input);
-            action.abort();
+            abortSilent(action);
             throw ex;
         } catch (Throwable ex) {
             IO.skipToEnd(input);
             if ( ! ( ex instanceof ActionErrorException ) ) {
-                try { action.abort(); } catch (Exception ex2) {}
+                abortSilent(action);
                 ServletOps.errorOccurred(ex.getMessage(), ex);
             }
         } finally { action.end(); }
@@ -282,6 +282,10 @@ public class SPARQL_Update extends ActionService
         }
 
         return toReturn;
+    }
+
+    private static void abortSilent(HttpAction action) {
+        action.abortSilent();
     }
 
     private static Node createNode(String x) {

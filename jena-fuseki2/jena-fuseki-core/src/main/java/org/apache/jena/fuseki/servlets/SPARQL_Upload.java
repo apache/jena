@@ -142,11 +142,11 @@ public class SPARQL_Upload extends ActionService
             action.commit();
             return count;
         } catch (OperationDeniedException ex) {
-            try { action.abort(); } catch (Exception ex2) {}
+            action.abortSilent();
             throw ex;
         } catch (RuntimeException ex) {
             // If anything went wrong, try to backout.
-            try { action.abort(); } catch (Exception ex2) {}
+            action.abortSilent();
             ServletOps.errorOccurred(ex.getMessage());
             return -1;
         }
