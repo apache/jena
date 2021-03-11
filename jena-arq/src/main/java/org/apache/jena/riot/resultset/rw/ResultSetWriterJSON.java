@@ -48,7 +48,7 @@ import org.apache.jena.sparql.util.Context;
 public class ResultSetWriterJSON implements ResultSetWriter {
 
     public static ResultSetWriterFactory factory = lang->{
-        if (!Objects.equals(lang, ResultSetLang.SPARQLResultSetJSON ) )
+        if (!Objects.equals(lang, ResultSetLang.RS_JSON ) )
             throw new ResultSetException("ResultSetWriter for JSON asked for a "+lang);
         return new ResultSetWriterJSON();
     };

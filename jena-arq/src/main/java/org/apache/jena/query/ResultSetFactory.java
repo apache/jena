@@ -224,7 +224,7 @@ public class ResultSetFactory {
      * @return ResultSet
      */
     public static ResultSet fromXML(InputStream in) {
-        return ResultSetMgr.read(in, ResultSetLang.SPARQLResultSetXML);
+        return ResultSetMgr.read(in, ResultSetLang.RS_XML);
     }
 
     /**
@@ -236,7 +236,7 @@ public class ResultSetFactory {
      * @return ResultSet
      */
     public static ResultSet fromJSON(InputStream in) {
-        return ResultSetMgr.read(in, ResultSetLang.SPARQLResultSetJSON);
+        return ResultSetMgr.read(in, ResultSetLang.RS_JSON);
     }
 
     /**
@@ -248,7 +248,7 @@ public class ResultSetFactory {
      * @return ResultSet
      */
     public static ResultSet fromTSV(InputStream in) {
-        return ResultSetMgr.read(in, ResultSetLang.SPARQLResultSetTSV);
+        return ResultSetMgr.read(in, ResultSetLang.RS_TSV);
     }
 
     /**

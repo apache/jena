@@ -199,13 +199,13 @@ public class ResultsFormat extends Symbol
      */ 
     static Map<ResultsFormat, Lang> mapResultsFormatToLang = new HashMap<>() ;
     static {
-        mapResultsFormatToLang.put(ResultsFormat.FMT_NONE,      ResultSetLang.SPARQLResultSetNone) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_CSV,    ResultSetLang.SPARQLResultSetCSV) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_TSV,    ResultSetLang.SPARQLResultSetTSV) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_XML,    ResultSetLang.SPARQLResultSetXML) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_JSON,   ResultSetLang.SPARQLResultSetJSON) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_THRIFT, ResultSetLang.SPARQLResultSetThrift) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_TEXT,      ResultSetLang.SPARQLResultSetText);
+        mapResultsFormatToLang.put(ResultsFormat.FMT_NONE,      ResultSetLang.RS_None) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_CSV,    ResultSetLang.RS_CSV) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_TSV,    ResultSetLang.RS_TSV) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_XML,    ResultSetLang.RS_XML) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_JSON,   ResultSetLang.RS_JSON) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_THRIFT, ResultSetLang.RS_Thrift) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_TEXT,      ResultSetLang.RS_Text);
     }
 
     public static Lang convert(ResultsFormat fmt) {

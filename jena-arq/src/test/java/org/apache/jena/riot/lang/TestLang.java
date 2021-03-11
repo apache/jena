@@ -106,7 +106,7 @@ public class TestLang
         {
             if ( RDFLanguages.RDFNULL.equals(l) )
                 continue ;
-            if ( ResultSetLang.SPARQLResultSetNone.equals(l) ) 
+            if ( ResultSetLang.RS_None.equals(l) ) 
                 continue ;
 
             Assert.assertNotNull( l+" does not have file extensions defined", l.getFileExtensions());

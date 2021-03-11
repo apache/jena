@@ -25,7 +25,7 @@ import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.sparql.core.Transactional;
 
-/** 
+/**
  * Implementation of the {@link RDFConnection} interface for connecting to an Apache Jena Fuseki.
  * <p>
  * This adds the ability to work with blank nodes across the network.
@@ -43,7 +43,7 @@ public class RDFConnectionFuseki extends RDFConnectionRemote {
         return setupForFuseki(RDFConnectionRemote.create());
     }
 
-    /** 
+    /**
      * Create a connection builder which is initialized from an existing {@code RDFConnectionFuseki}.
      * @param other The RDFConnectionFuseki to clone.
      * @return RDFConnectionRemoteBuilder
@@ -51,59 +51,59 @@ public class RDFConnectionFuseki extends RDFConnectionRemote {
     public static RDFConnectionRemoteBuilder create(RDFConnectionFuseki other) {
         return setupCreator(RDFConnectionRemote.create(other));
     }
-    
+
     /** Fuseki settings */
     private static RDFConnectionRemoteBuilder setupForFuseki(RDFConnectionRemoteBuilder builder) {
         String ctRDFThrift = Lang.RDFTHRIFT.getContentType().getContentTypeStr();
-        String acceptHeaderSPARQL = String.join("," 
-                            , ResultSetLang.SPARQLResultSetThrift.getHeaderString()
-                            , ResultSetLang.SPARQLResultSetJSON.getHeaderString()+";q=0.9"
+        String acceptHeaderSPARQL = String.join(","
+                            , ResultSetLang.RS_Thrift.getHeaderString()
+                            , ResultSetLang.RS_JSON.getHeaderString()+";q=0.9"
                             , Lang.RDFTHRIFT.getHeaderString());
-        return 
+        return
             builder
                 .quadsFormat(RDFFormat.RDF_THRIFT)
                 .triplesFormat(RDFFormat.RDF_THRIFT)
                 .acceptHeaderGraph(ctRDFThrift)
                 .acceptHeaderDataset(ctRDFThrift)
-                .acceptHeaderSelectQuery(ResultSetLang.SPARQLResultSetThrift.getHeaderString())
-                .acceptHeaderAskQuery(ResultSetLang.SPARQLResultSetJSON.getHeaderString())
+                .acceptHeaderSelectQuery(ResultSetLang.RS_Thrift.getHeaderString())
+                .acceptHeaderAskQuery(ResultSetLang.RS_JSON.getHeaderString())
                 .acceptHeaderQuery(acceptHeaderSPARQL)
                 .parseCheckSPARQL(false)
                 // Create object of this class.
                 .creator((b)->fusekiMaker(b));
     }
-    
+
     private static RDFConnectionRemoteBuilder setupCreator(RDFConnectionRemoteBuilder builder) {
         return builder.creator((b)->fusekiMaker(b));
     }
-    
+
     static RDFConnectionFuseki fusekiMaker(RDFConnectionRemoteBuilder builder) {
         return new RDFConnectionFuseki(builder);
     }
 
     protected RDFConnectionFuseki(RDFConnectionRemoteBuilder base) {
-        this(base.txnLifecycle, base.httpClient, base.httpContext, 
+        this(base.txnLifecycle, base.httpClient, base.httpContext,
             base.destination, base.queryURL, base.updateURL, base.gspURL,
             base.outputQuads, base.outputTriples,
             base.acceptDataset, base.acceptGraph,
             base.acceptSparqlResults, base.acceptSelectResult, base.acceptAskResult,
             base.parseCheckQueries, base.parseCheckUpdates);
     }
-    
+
     protected RDFConnectionFuseki(Transactional txnLifecycle, HttpClient httpClient, HttpContext httpContext, String destination,
                                   String queryURL, String updateURL, String gspURL, RDFFormat outputQuads, RDFFormat outputTriples,
-                                  String acceptDataset, String acceptGraph, 
+                                  String acceptDataset, String acceptGraph,
                                   String acceptSparqlResults, String acceptSelectResult, String acceptAskResult,
                                   boolean parseCheckQueries, boolean parseCheckUpdates) {
-        super(txnLifecycle, httpClient, httpContext, 
+        super(txnLifecycle, httpClient, httpContext,
               destination, queryURL, updateURL, gspURL,
-              outputQuads, outputTriples, 
+              outputQuads, outputTriples,
               acceptDataset, acceptGraph,
               acceptSparqlResults, acceptSelectResult, acceptAskResult, parseCheckQueries, parseCheckUpdates);
     }
-    
+
     // Fuseki specific operations.
-    
+
 //    /**
 //     * Return a {@link Model} that is proxy for a remote model in a Fuseki server. This
 //     * support the model operations of accessing statements and changing the model.
@@ -112,17 +112,17 @@ public class RDFConnectionFuseki extends RDFConnectionRemote {
 //     * with and manipulating the remote model directly which may involve a significant
 //     * overhead for every {@code Model} API operation.
 //     * <p>
-//     * <b><em>Warning</em>:</b> This is <b>not</b> performant for bulk changes. 
+//     * <b><em>Warning</em>:</b> This is <b>not</b> performant for bulk changes.
 //     * <p>
 //     * Getting the model, using {@link #fetch()}, which copies the whole model into a local
 //     * {@code Model} object, maniupulating it and putting it back with {@link #put(Model)}
 //     * provides another way to work with remote data.
-//     * 
+//     *
 //     * @return Model
 //     */
 //    public Model getModelProxy() { return null; }
 //    public Model getModelProxy(String graphName) { return null; }
-//    
+//
 //    public Graph getGraphProxy() { return null; }
 //    public Graph getGraphProxy(String graphName) { return null; }
 //
@@ -133,6 +133,6 @@ public class RDFConnectionFuseki extends RDFConnectionRemote {
 //    public Stream<Triple> findStream(Node s, Node p , Node o) { return null; }
 //    public Stream<Quad> findStream(Node g, Node s, Node p , Node o) { return null; }
 
-    // Send Patch 
+    // Send Patch
 }
 

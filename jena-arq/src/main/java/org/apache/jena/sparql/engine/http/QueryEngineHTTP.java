@@ -519,9 +519,9 @@ public class QueryEngineHTTP implements QueryExecution {
                 // application/xml for application/sparql-results+xml
                 // application/json for application/sparql-results+json
                 if (actualContentType.equals(WebContent.contentTypeXML))
-                    lang = ResultSetLang.SPARQLResultSetXML;
+                    lang = ResultSetLang.RS_XML;
                 else if ( actualContentType.equals(WebContent.contentTypeJSON))
-                    lang = ResultSetLang.SPARQLResultSetJSON;
+                    lang = ResultSetLang.RS_JSON;
             }
             if ( lang == null )
                 throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not supported for ASK queries");

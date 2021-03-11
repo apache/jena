@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.util.Objects;
 
 import org.apache.jena.atlas.io.IO;
+import org.apache.jena.query.ARQ;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RiotException;
@@ -30,16 +31,17 @@ import org.apache.jena.riot.resultset.ResultSetWriter;
 import org.apache.jena.riot.resultset.ResultSetWriterFactory;
 import org.apache.jena.riot.resultset.ResultSetWriterRegistry;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.sys.JenaSystem;
 
 public class ResultsWriter {
     static { JenaSystem.init(); }
-    
+
     /** Create a {@code ResultsWriter.Builder}. */
     public static Builder create() { return new Builder() ; }
-    
+
     public static class Builder {
-        private Lang lang = null; 
+        private Lang lang = null;
         private Context context = null;
 
         /** Provide a {@link Lang} for the writer.*/
@@ -48,40 +50,67 @@ public class ResultsWriter {
             return this;
         }
 
-        /** Set the {@link Context}. This defaults to the global settings of {@code ARQ.getContext()}. */
+        /** Set the {@link Context}.
+         * The global settings of {@code ARQ.getContext()} are used unless otherwise changed.
+         * This call replaces any previous {@link #set}.
+         */
         public Builder context(Context context) {
-            if ( context != null )
-                context = context.copy();
             this.context = context;
             return this;
         }
-        
-        /** Build a {@code ResultWriter} */
-        public ResultsWriter build() {
-            return new ResultsWriter(lang, context); 
+
+        /** Set a value in the writing context. */
+        public Builder set(Symbol symbol, Object value) {
+            if ( context == null )
+                context = ARQ.getContext().copy();
+            context.set(symbol, value);
+            return this;
         }
 
-        /** Short form equivalent to {@code build().write(url, ResultSet)} */ 
+        /** Remove a context setting. */
+        public Builder unset(Symbol symbol) {
+            if ( context == null )
+                return this;
+            context.unset(symbol);
+            return this;
+        }
+
+        /** Build a {@code ResultWriter} */
+        public ResultsWriter build() {
+            return new ResultsWriter(lang, context);
+        }
+
+        /** Short form equivalent to {@code build().write(url, ResultSet)} */
         public void write(String url, ResultSet resultSet) {
             build().write(url, resultSet);
         }
-        
-        /** Short form equivalent to {@code build().write(OutputStream, ResultSet)} */ 
+
+        /** Short form equivalent to {@code build().write(OutputStream, ResultSet)} */
         public void write(OutputStream output, ResultSet resultSet) {
             build().write(output, resultSet);
         }
+
+        /** Short form equivalent to {@code build().write(url, boolValue)} */
+        public void write(String url, boolean booleanResult) {
+            build().write(url, booleanResult);
+        }
+
+        /** Short form equivalent to {@code build().write(OutputStream, booleanResult)} */
+        public void write(OutputStream output, boolean booleanResult) {
+            build().write(output, booleanResult);
+        }
     }
-    
+
     private final Lang lang;
     private final Context context;
-    
+
     private ResultsWriter(Lang lang, Context context) {
         super();
         this.lang = lang;
         this.context = context;
     }
 
-    /** Write a result set, using the configurartion of the {@code ResultWriter}, to a file */ 
+    /** Write a result set, using the configurartion of the {@code ResultWriter}, to a file */
     public void write(String filename, ResultSet resultSet) {
         Objects.requireNonNull(filename);
         Objects.requireNonNull(resultSet);
@@ -89,28 +118,28 @@ public class ResultsWriter {
             write(out, resultSet);
         } catch (IOException ex) { IO.exception(ex); }
     }
-    
-    /** Write a result set, using the configuration of the {@code ResultWriter}, to an {@code OutputStream}. */ 
+
+    /** Write a result set, using the configuration of the {@code ResultWriter}, to an {@code OutputStream}. */
     public void write(OutputStream output, ResultSet resultSet) {
         Objects.requireNonNull(output);
         Objects.requireNonNull(resultSet);
         write(output, resultSet, null, lang);
     }
-    
-    /** Write a boolean result, using the configurartion of the {@code ResultWriter}, to a file */ 
+
+    /** Write a boolean result, using the configurartion of the {@code ResultWriter}, to a file */
     public void write(String filename, boolean booleanResult) {
         Objects.requireNonNull(filename);
         try ( OutputStream out = openURL(filename) ) {
             write(out, booleanResult);
         } catch (IOException ex) { IO.exception(ex); }
     }
-    
-    /** Write a boolean result, using the configurartion of the {@code ResultWriter}, to an {@code OutputStream}. */ 
+
+    /** Write a boolean result, using the configurartion of the {@code ResultWriter}, to an {@code OutputStream}. */
     public void write(OutputStream output, boolean booleanResult) {
         Objects.requireNonNull(output);
         write(output, null, booleanResult, lang);
     }
-    
+
     private void write(OutputStream output, ResultSet resultSet, Boolean result, Lang lang) {
         if ( resultSet == null && result == null )
             throw new RiotException("No result set and no boolean result");
@@ -118,7 +147,7 @@ public class ResultsWriter {
             throw new RiotException("Both result set and boolean result supplied");
         if ( ! ResultSetWriterRegistry.isRegistered(lang) )
             throw new RiotException("Not registered as a SPARQL result set output syntax: "+lang);
-        
+
         ResultSetWriterFactory factory = ResultSetWriterRegistry.getFactory(lang);
         if ( factory == null )
             throw new RiotException("No ResultSetReaderFactory for "+lang);

@@ -22,33 +22,34 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.util.Objects;
 
-import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.resultset.ResultSetWriter;
 import org.apache.jena.riot.resultset.ResultSetWriterFactory;
-import org.apache.jena.riot.thrift.BinRDF;
 import org.apache.jena.sparql.resultset.ResultSetException;
 import org.apache.jena.sparql.util.Context;
 
-public class ResultSetWriterThrift implements ResultSetWriter {
-    
+public class ResultSetWriterNone implements ResultSetWriter {
+
     public static ResultSetWriterFactory factory = lang -> {
-        if (!Objects.equals(lang, ResultSetLang.RS_Thrift ) )
-            throw new ResultSetException("ResultSetWriter for RDF/Thift asked for a "+lang); 
-        return new ResultSetWriterThrift(); 
+        if ( !Objects.equals(lang, ResultSetLang.RS_None) )
+            throw new ResultSetException("ResultSetWriter for None asked for a " + lang);
+        return new ResultSetWriterNone();
     };
 
+    private ResultSetWriterNone() {}
+
     @Override
-    public void write(OutputStream out, ResultSet resultSet, Context context)
-    { BinRDF.writeResultSet(out, resultSet) ; }
+    public void write(OutputStream out, ResultSet resultSet, Context context) {
+        ResultSetFormatter.consume(resultSet);
+    }
 
     @Override
     public void write(Writer out, ResultSet resultSet, Context context) {
-        throw new NotImplemented("Writing binary data to a java.io.Writer is not possible") ;
+        ResultSetFormatter.consume(resultSet);
     }
-    
+
     @Override
-    public void write(OutputStream out, boolean result, Context context)
-    { throw new NotImplemented("No Thrift RDF encoding defined for boolean results"); }
+    public void write(OutputStream out, boolean result, Context context) {}
 }
