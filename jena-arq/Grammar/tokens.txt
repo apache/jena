@@ -176,9 +176,9 @@
 
 [<TRIPLE>]     ::= 'TRIPLE'
 [<IS_TRIPLE>]  ::= 'isTRIPLE'
-[<SUBJECT>]    ::= 'isSUBJECT'
-[<PREDICATE>]  ::= 'isPREDICATE'
-[<OBJECT>]     ::= 'isOBJECT'
+[<SUBJECT>]    ::= 'SUBJECT'
+[<PREDICATE>]  ::= 'PREDICATE'
+[<OBJECT>]     ::= 'OBJECT'
 
 [<MODIFY>]       ::= 'MODIFY'
 [<INSERT>]       ::= 'INSERT'
