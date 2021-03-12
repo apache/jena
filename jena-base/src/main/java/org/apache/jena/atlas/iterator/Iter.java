@@ -86,7 +86,7 @@ public class Iter<T> implements Iterator<T> {
 
     /**
      * Return an iterator that does permit remove.
-     * This is makes an "UnmodifiedIterator".
+     * This makes an "UnmodifiableIterator".
      */
     public static <T> Iterator<T> noRemove(Iterator<T> iter) {
         return new IteratorNoRemove<T>(iter);
