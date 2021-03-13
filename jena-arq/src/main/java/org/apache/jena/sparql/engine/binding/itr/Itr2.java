@@ -46,7 +46,4 @@ class Itr2<X> implements Iterator<X> {
         if ( idx == 2 ) return elt2;
         throw new NoSuchElementException();
     }
-
-    @Override
-    public void remove() { throw new UnsupportedOperationException("Itr2.remove"); }
 }

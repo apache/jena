@@ -62,13 +62,6 @@ public class TDB2Factory
         return (Dataset)AssemblerUtils.build(assemblerFile, VocabTDB2.tDatasetTDB);
     }
 
-    /** Test whether a dataset is backed by TDB or not.
-     * @deprecated Use {#isTDB2}
-     */
-    public static boolean isBackedByTDB(Dataset dataset) {
-        return isTDB2(dataset);
-    }
-
     /** Test whether a dataset is backed by TDB or not. */
     public static boolean isTDB2(Dataset dataset) {
         return DatabaseMgr.isTDB2(dataset.asDatasetGraph());

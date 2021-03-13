@@ -83,9 +83,4 @@ class RecordBufferPagePacker implements Iterator<RecordBufferPage> {
         recordBufferPage = null;
         return rbp;
     }
-
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException();
-    }
 }

@@ -41,9 +41,9 @@ import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.resultset.ResultSetWriterRegistry;
+import org.apache.jena.riot.resultset.rw.ResultSetWriterXML;
 import org.apache.jena.riot.resultset.rw.ResultsWriter;
 import org.apache.jena.sparql.core.Prologue;
-import org.apache.jena.sparql.resultset.XMLOutput;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger;
@@ -161,7 +161,8 @@ public class ResponseResultSet
 
         if ( Objects.equals(serializationType, contentTypeResultsXML) ) {
             charset = null;
-            XMLOutput.setStylesheetURL(cxt, stylesheetURL);
+            if ( stylesheetURL != null )
+                cxt.set(ResultSetWriterXML.xmlStylesheet, stylesheetURL);
         }
         if ( Objects.equals(serializationType, contentTypeResultsJSON) ) {
             jsonCallback = ResponseOps.paramCallback(action.request);

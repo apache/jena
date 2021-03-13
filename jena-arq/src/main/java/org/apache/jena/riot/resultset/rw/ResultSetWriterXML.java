@@ -49,7 +49,7 @@ public class ResultSetWriterXML implements ResultSetWriter {
     public static final Symbol xmlStylesheet = SystemARQ.allocSymbol("xmlStylesheet");
 
     public static ResultSetWriterFactory factory = lang->{
-        if (!Objects.equals(lang, ResultSetLang.SPARQLResultSetXML ) )
+        if (!Objects.equals(lang, ResultSetLang.RS_XML ) )
             throw new ResultSetException("ResultSetWriter for XML asked for a "+lang);
         return new ResultSetWriterXML();
     };

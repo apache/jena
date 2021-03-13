@@ -18,63 +18,46 @@
 
 package org.apache.jena.riot.tokens;
 
-public class TokenizerWrapper implements Tokenizer
-{
+public class TokenizerWrapper implements Tokenizer {
 
-    private final Tokenizer other ;
+    private final Tokenizer other;
 
-    public TokenizerWrapper(Tokenizer other)
-    {
-        this.other = other ;
-    }
-    
-    @Override
-    public long getColumn()
-    {
-        return other.getColumn() ;
+    public TokenizerWrapper(Tokenizer other) {
+        this.other = other;
     }
 
     @Override
-    public long getLine()
-    {
-        return other.getLine() ;
+    public long getColumn() {
+        return other.getColumn();
     }
 
     @Override
-    public boolean hasNext()
-    {
-        return other.hasNext() ;
+    public long getLine() {
+        return other.getLine();
     }
 
     @Override
-    public boolean eof()
-    {
-        return other.eof() ;
+    public boolean hasNext() {
+        return other.hasNext();
     }
 
     @Override
-    public Token next()
-    {
+    public boolean eof() {
+        return other.eof();
+    }
+
+    @Override
+    public Token next() {
         return other.next();
     }
 
     @Override
-    public Token peek()
-    {
-        return other.peek() ;
+    public Token peek() {
+        return other.peek();
     }
 
-    // @Override
     @Override
-    public void remove()
-    {
-        other.remove() ;
-    }
-
-    // @Override
-    @Override
-    public void close()
-    {
-        other.close() ;
+    public void close() {
+        other.close();
     }
 }

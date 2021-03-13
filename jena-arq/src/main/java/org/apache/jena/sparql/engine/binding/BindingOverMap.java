@@ -21,6 +21,7 @@ package org.apache.jena.sparql.engine.binding;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.Var;
 
@@ -38,7 +39,7 @@ public class BindingOverMap extends BindingBase {
 
     @Override
     protected Iterator<Var> vars1() {
-        return map.keySet().iterator();
+        return Iter.noRemove(map.keySet().iterator());
     }
 
     @Override

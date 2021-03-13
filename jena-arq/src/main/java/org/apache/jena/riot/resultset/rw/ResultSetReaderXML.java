@@ -33,7 +33,7 @@ import org.apache.jena.sparql.util.Context;
 public class ResultSetReaderXML implements ResultSetReader {
     
     public static final ResultSetReaderFactory factory = lang -> {
-        if (!Objects.equals(lang, ResultSetLang.SPARQLResultSetXML ) )
+        if (!Objects.equals(lang, ResultSetLang.RS_XML ) )
             throw new ResultSetException("ResultSet for XML asked for a "+lang); 
         return new ResultSetReaderXML(); 
     };

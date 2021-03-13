@@ -550,18 +550,18 @@ public class TestResultSet
     }
 
     @Test public void preserve_bnodes_1() {
-        preserve_bnodes(ResultSetLang.SPARQLResultSetJSON, cxt, true);
-        preserve_bnodes(ResultSetLang.SPARQLResultSetJSON, ARQ.getContext(), false);
+        preserve_bnodes(ResultSetLang.RS_JSON, cxt, true);
+        preserve_bnodes(ResultSetLang.RS_JSON, ARQ.getContext(), false);
     }
 
     @Test public void preserve_bnodes_2() {
-        preserve_bnodes(ResultSetLang.SPARQLResultSetXML, cxt, true);
-        preserve_bnodes(ResultSetLang.SPARQLResultSetXML, ARQ.getContext(), false);
+        preserve_bnodes(ResultSetLang.RS_XML, cxt, true);
+        preserve_bnodes(ResultSetLang.RS_XML, ARQ.getContext(), false);
     }
 
     @Test public void preserve_bnodes_3() {
-        preserve_bnodes(ResultSetLang.SPARQLResultSetThrift, cxt, true);
-        preserve_bnodes(ResultSetLang.SPARQLResultSetThrift, ARQ.getContext(), true);
+        preserve_bnodes(ResultSetLang.RS_Thrift, cxt, true);
+        preserve_bnodes(ResultSetLang.RS_Thrift, ARQ.getContext(), true);
     }
 
     private static void preserve_bnodes(Lang sparqlresultlang, Context cxt, boolean same) {

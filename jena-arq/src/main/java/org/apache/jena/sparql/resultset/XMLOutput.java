@@ -22,15 +22,22 @@ import java.io.OutputStream ;
 
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.ResultSet ;
+import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.resultset.rw.ResultSetWriterXML;
 import org.apache.jena.riot.resultset.rw.ResultsWriter;
 import org.apache.jena.sparql.util.Context;
 
+/**
+ * @deprecated This will become an internal class. Use
+ *     {@link ResultSetFormatter#outputAsTSV} or
+ *     {@code ResultsWriter.create().lang(ResultSetLang.RS_TSV).write(...)}
+ */
+@Deprecated
 public class XMLOutput extends OutputBase
 {
     /** Set the XML style sheet processing instruction {@code <?xml-stylesheet...>}.
-     *  Set to null to not use a stylesheet. */ 
+     *  Set to null to not use a stylesheet. */
     public static void setStylesheetURL(Context cxt, String stylesheetURL) {
         cxt.set(ResultSetWriterXML.xmlStylesheet, stylesheetURL);
     }
@@ -45,38 +52,46 @@ public class XMLOutput extends OutputBase
     }
 
     // -- Older
-    
+
     protected String stylesheetURL = null ;
     protected boolean includeXMLinst = true ;
-    
+
+    /** @deprecated Do not call directly. Use {@code ResultsWriter.create().lang(ResultSetLang.RS_XML).write(...)} */
+    @Deprecated
     public XMLOutput() {}
 
+    /** @deprecated Do not call directly. Use {@code ResultsWriter.create().lang(ResultSetLang.RS_XML).write(...)} */
+    @Deprecated
     public XMLOutput(String stylesheetURL) {
         setStylesheetURL(stylesheetURL);
     }
 
+    /** @deprecated Do not call directly. Use {@code ResultsWriter.create().lang(ResultSetLang.RS_XML).write(...)} */
+    @Deprecated
     public XMLOutput(boolean includeXMLinst) {
         setIncludeXMLinst(includeXMLinst);
     }
-    
+
+    /** @deprecated Do not call directly. Use {@code ResultsWriter.create().lang(ResultSetLang.RS_XML).write(...)} */
+    @Deprecated
     public XMLOutput(boolean includeXMLinst, String stylesheetURL) {
         setStylesheetURL(stylesheetURL);
         setIncludeXMLinst(includeXMLinst);
     }
-    
+
     @Override
     public void format(OutputStream out, ResultSet resultSet) {
         Context cxt = setup();
         ResultsWriter.create()
             .context(cxt)
-            .lang(ResultSetLang.SPARQLResultSetXML)
+            .lang(ResultSetLang.RS_XML)
             .write(out, resultSet);
     }
 
     /** @return Returns the includeXMLinst. */
     public boolean getIncludeXMLinst()
     { return includeXMLinst ; }
-    
+
     /** @param includeXMLinst The includeXMLinst to set. */
     public void setIncludeXMLinst(boolean includeXMLinst)
     { this.includeXMLinst = includeXMLinst ; }
@@ -84,21 +99,21 @@ public class XMLOutput extends OutputBase
     /** @return Returns the stylesheetURL. */
     public String getStylesheetURL()
     { return stylesheetURL ; }
-    
+
     /** @param stylesheetURL The stylesheetURL to set. */
     public void setStylesheetURL(String stylesheetURL)
     { this.stylesheetURL = stylesheetURL ; }
-    
+
     @Override
     public void format(OutputStream out, boolean booleanResult) {
         Context cxt = setup();
         ResultsWriter.create()
             .context(cxt)
-            .lang(ResultSetLang.SPARQLResultSetXML)
+            .lang(ResultSetLang.RS_XML)
             .build()
             .write(out, booleanResult);
     }
-    
+
     private Context setup() {
         Context cxt = ARQ.getContext().copy();
         setStylesheetURL(cxt, stylesheetURL);

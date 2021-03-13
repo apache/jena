@@ -92,8 +92,4 @@ public class RecordBufferIteratorMapper<X> implements Iterator<X>
         slot = null;
         return r;
     }
-
-    @Override
-    public void remove()
-    { throw new UnsupportedOperationException("RecordBufferIterator.remove"); }
 }

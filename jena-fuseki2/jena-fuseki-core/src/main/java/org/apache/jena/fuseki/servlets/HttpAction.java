@@ -285,8 +285,8 @@ public class HttpAction
         if ( dataService != null )
             dataService.finishTxn();
         if ( transactional != null ) {
-            transactional.commit();
-            transactional.end();
+            try { transactional.commit(); } catch (RuntimeException ex) {}
+            try { transactional.end(); } catch (RuntimeException ex) {}
         }
         activeDSG = null;
     }
@@ -302,8 +302,10 @@ public class HttpAction
                 Log.warn(this, "Exception in forced abort (trying to continue)", ex);
             }
         }
-        if ( transactional.isInTransaction() )
-            transactional.end();
+        if ( transactional.isInTransaction() ) {
+            try { transactional.end(); }
+            catch (RuntimeException ex) {}
+        }
         activeDSG = null;
     }
 
@@ -311,6 +313,15 @@ public class HttpAction
         dataService.finishTxn();
         transactional.commit();
         end();
+    }
+
+    /** Abort: ignore exceptions (for clearup code) */
+    public void abortSilent() {
+        try { transactional.abort(); }
+        catch (Exception ex) {}
+        finally {
+            try { end(); } catch (Exception ex) {}
+        }
     }
 
     public void abort() {

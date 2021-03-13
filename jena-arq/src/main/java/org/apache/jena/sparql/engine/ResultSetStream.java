@@ -37,13 +37,13 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 
 public class ResultSetStream implements ResultSet
 {
-    // Could use QueryIteratorWrapper 
+    // Could use QueryIteratorWrapper
     private Iterator<Binding> queryExecutionIter ;
     private List<String> resultVars ;
     private QuerySolution currentQuerySolution ;
     private int rowNumber ;
     private Model model ;
-    
+
     public ResultSetStream(List<String> resultVars, Model m, Iterator<Binding> iter)
     {
         queryExecutionIter = iter ;
@@ -51,16 +51,6 @@ public class ResultSetStream implements ResultSet
         currentQuerySolution = null ;
         rowNumber = 0 ;
         model = m ;
-    }
-    
-    /**
-     *  @throws UnsupportedOperationException Always thrown.
-     */
-
-    @Override
-    public void remove() throws java.lang.UnsupportedOperationException
-    {
-        throw new UnsupportedOperationException(this.getClass().getName()+".remove") ;
     }
 
     /**
@@ -91,7 +81,7 @@ public class ResultSetStream implements ResultSet
             throw ex ;
         }
     }
-    
+
     private void close()
     {
         // ARQ QueryIterators are org.apache.jena.atlas.lib.Closable.
@@ -107,21 +97,21 @@ public class ResultSetStream implements ResultSet
     public QuerySolution nextSolution()
     {
         if ( queryExecutionIter == null )
-//            ||  
+//            ||
 //             ( queryExecution != null && ! queryExecution.isActive() ) )
             throw new NoSuchElementException(this.getClass()+".next") ;
-        
+
         Binding binding = nextBinding() ;
         currentQuerySolution = new ResultBinding(model, binding) ;
         return currentQuerySolution ;
     }
 
-    
+
     /** Moves onto the next result possibility.*/
-    
+
     @Override
     public QuerySolution next() { return nextSolution() ; }
-    
+
     /** Return the "row number" - a count of the number of possibilities returned so far.
      *  Remains valid (as the total number of possibilities) after the iterator ends.
      */
@@ -137,9 +127,9 @@ public class ResultSetStream implements ResultSet
 
     @Override
     public List<String> getResultVars() { return resultVars ; }
-    
+
     public Model getModel() { return model ; }
-    
+
     @Override
     public Model getResourceModel() { return model ; }
 

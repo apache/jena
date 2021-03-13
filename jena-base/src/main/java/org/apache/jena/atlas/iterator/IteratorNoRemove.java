@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,29 +16,29 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.logging;
+package org.apache.jena.atlas.iterator;
 
-import org.apache.jena.atlas.lib.ProgressMonitor ;
-import org.slf4j.Logger ;
+import java.util.Iterator;
 
-/** 
- * @deprecated Use {@link ProgressMonitor#create}. This class will be removed.
- */
-@Deprecated
-public class ProgressLogger extends ProgressMonitor
-{
-    public ProgressLogger(Logger log, String label, long tickPoint, int superTick)
-    {
-        super(label, tickPoint, superTick, (fmt, args)->print(log, fmt, args) ) ;
+public class IteratorNoRemove<T> implements Iterator<T> {
+    protected final Iterator<T> iterator;
+
+    public IteratorNoRemove(Iterator<T> iterator) {
+        this.iterator = iterator;
     }
-    
-    /** Print a message in the form for this ProgressLogger */ 
-    static void print(Logger log, String fmt, Object...args)
-    {
-        if ( log != null && log.isInfoEnabled() )
-        {
-            String str = String.format(fmt, args) ;
-            log.info(str) ;
-        }
+
+    @Override
+    public boolean hasNext() {
+        return iterator.hasNext();
+    }
+
+    @Override
+    public T next() {
+        return iterator.next();
+    }
+
+    @Override
+    public final void remove() {
+        throw new UnsupportedOperationException("remove");
     }
 }

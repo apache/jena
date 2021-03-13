@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A wrapper around another result set that provides peek capabilities
- * 
+ *
  */
 public class ResultSetPeeking implements ResultSetPeekable, Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResultSetPeekable.class);
@@ -50,7 +50,7 @@ public class ResultSetPeeking implements ResultSetPeekable, Closeable {
 
     /**
      * Creates a peeking wrapper around another result set
-     * 
+     *
      * @param results
      *            Inner results
      */
@@ -67,7 +67,7 @@ public class ResultSetPeeking implements ResultSetPeekable, Closeable {
             return true;
         } else {
             return this.canPeek();
-        }        
+        }
     }
 
     @Override
@@ -113,11 +113,6 @@ public class ResultSetPeeking implements ResultSetPeekable, Closeable {
         return this.model;
     }
 
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException("remove() is not supported");
-    }
-
     private boolean hasPeeked() {
         int diff = this.results.getRowNumber() - this.rowNumber;
         if (diff == 0) {
@@ -146,7 +141,7 @@ public class ResultSetPeeking implements ResultSetPeekable, Closeable {
                     "Underlying result set position has moved backwards, this result set is no longer usable");
         }
     }
-    
+
     /**
      * Gets whether we can peek
      * @return True if we can peek, false otherwise

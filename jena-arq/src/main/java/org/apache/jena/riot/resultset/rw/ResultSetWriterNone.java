@@ -18,43 +18,38 @@
 
 package org.apache.jena.riot.resultset.rw;
 
-import java.io.InputStream;
-import java.io.Reader;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.util.Objects;
 
-import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.riot.resultset.ResultSetLang;
-import org.apache.jena.riot.resultset.ResultSetReader;
-import org.apache.jena.riot.resultset.ResultSetReaderFactory;
-import org.apache.jena.riot.thrift.BinRDF;
+import org.apache.jena.riot.resultset.ResultSetWriter;
+import org.apache.jena.riot.resultset.ResultSetWriterFactory;
 import org.apache.jena.sparql.resultset.ResultSetException;
-import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.util.Context;
 
-public class ResultSetReaderThrift implements ResultSetReader {
+public class ResultSetWriterNone implements ResultSetWriter {
 
-    public static ResultSetReaderFactory factory = lang->{
-        if (!Objects.equals(lang, ResultSetLang.RS_Thrift ) )
-            throw new ResultSetException("ResultSetReader for Thrift asked for a "+lang);
-        return new ResultSetReaderThrift();
+    public static ResultSetWriterFactory factory = lang -> {
+        if ( !Objects.equals(lang, ResultSetLang.RS_None) )
+            throw new ResultSetException("ResultSetWriter for None asked for a " + lang);
+        return new ResultSetWriterNone();
     };
 
-    private ResultSetReaderThrift() {}
+    private ResultSetWriterNone() {}
 
     @Override
-    public ResultSet read(InputStream in, Context context) {
-        return BinRDF.readResultSet(in);
+    public void write(OutputStream out, ResultSet resultSet, Context context) {
+        ResultSetFormatter.consume(resultSet);
     }
 
     @Override
-    public ResultSet read(Reader in, Context context) {
-        throw new NotImplemented("Reading binary data from a java.io.Reader is not possible");
+    public void write(Writer out, ResultSet resultSet, Context context) {
+        ResultSetFormatter.consume(resultSet);
     }
 
     @Override
-    public SPARQLResult readAny(InputStream in, Context context) {
-        return new SPARQLResult(read(in, context));
-    }
-
+    public void write(OutputStream out, boolean result, Context context) {}
 }

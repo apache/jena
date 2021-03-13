@@ -18,24 +18,27 @@
 
 package org.apache.jena.atlas.iterator;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
-public class IteratorWrapper<T> implements Iterator<T>
-{
-    protected final Iterator<T> iterator ;
+public class IteratorWrapper<T> implements Iterator<T> {
+    protected final Iterator<T> iterator;
 
-    public IteratorWrapper(Iterator<T> iterator)
-    {
-        this.iterator = iterator ;
+    public IteratorWrapper(Iterator<T> iterator) {
+        this.iterator = iterator;
     }
 
     @Override
-    public boolean hasNext()        { return iterator.hasNext() ; }
+    public boolean hasNext() {
+        return iterator.hasNext();
+    }
 
     @Override
-    public T next()                 { return iterator.next() ; }
-    
+    public T next() {
+        return iterator.next();
+    }
+
     @Override
-    public void remove()            { iterator.remove() ; }
+    public void remove() {
+        iterator.remove();
+    }
 }
-

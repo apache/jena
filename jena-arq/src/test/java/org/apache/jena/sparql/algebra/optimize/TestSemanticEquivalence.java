@@ -36,8 +36,6 @@ import org.apache.jena.sparql.engine.ResultSetStream ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.engine.main.QueryEngineMain ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
-import org.apache.jena.sparql.resultset.TextOutput ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.Symbol ;
 import org.junit.AfterClass ;
@@ -193,8 +191,7 @@ public class TestSemanticEquivalence {
                 rs = ResultSetFactory.makeRewindable(qe.execSelect());
                 if (expected != rs.size()) {
                     System.err.println("Non-optimized results not as expected");
-                    TextOutput output = new TextOutput((SerializationContext)null);
-                    output.format(System.out, rs);
+                    ResultSetFormatter.out(System.out, rs);
                     rs.reset();
                 }
                 Assert.assertEquals(expected, rs.size());
@@ -207,8 +204,7 @@ public class TestSemanticEquivalence {
                     rsOpt = ResultSetFactory.makeRewindable(qeOpt.execSelect());
                 if (expected != rsOpt.size()) {
                     System.err.println("Optimized results not as expected");
-                    TextOutput output = new TextOutput((SerializationContext)null);
-                    output.format(System.out, rsOpt);
+                    ResultSetFormatter.out(System.out, rsOpt);
                     rsOpt.reset();
                 }
                 Assert.assertEquals(expected, rsOpt.size());
@@ -259,8 +255,7 @@ public class TestSemanticEquivalence {
                     iter));
             if (expected != rs.size()) {
                 System.err.println("Non-optimized results not as expected");
-                TextOutput output = new TextOutput((SerializationContext)null);
-                output.format(System.out, rs);
+                ResultSetFormatter.out(System.out, rs);
                 rs.reset();
             }
             Assert.assertEquals(expected, rs.size());
@@ -274,8 +269,7 @@ public class TestSemanticEquivalence {
                     .createDefaultModel(), iterOpt));
             if (expected != rsOpt.size()) {
                 System.err.println("Optimized results not as expected");
-                TextOutput output = new TextOutput((SerializationContext)null);
-                output.format(System.out, rsOpt);
+                ResultSetFormatter.out(System.out, rsOpt);
                 rsOpt.reset();
             }
             Assert.assertEquals(expected, rsOpt.size());

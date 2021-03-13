@@ -17,110 +17,100 @@
  */
 
 package org.apache.jena.sparql.engine.iterator;
-import java.util.NoSuchElementException ;
 
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
+import java.util.NoSuchElementException;
 
-/** Repeatedly execute the subclass operation for each Binding in the input iterator. */
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
 
-public abstract class QueryIterRepeatApply extends QueryIter1
-{
-    int count = 0 ;
-    private QueryIterator currentStage ;
+/**
+ * Repeatedly execute the subclass operation for each Binding in the input iterator.
+ */
+public abstract class QueryIterRepeatApply extends QueryIter1 {
+    private int count = 0;
+    private QueryIterator currentStage;
     private volatile boolean cancelRequested = false;
 
-    public QueryIterRepeatApply( QueryIterator input ,
-                                 ExecutionContext context)
-    {
-        super(input, context) ;
-        this.currentStage = null ;
+    public QueryIterRepeatApply(QueryIterator input, ExecutionContext context) {
+        super(input, context);
+        this.currentStage = null;
 
-        if ( input == null )
-        {
-            Log.error(this, "[QueryIterRepeatApply] Repeated application to null input iterator") ;
-            return ;
+        if ( input == null ) {
+            Log.error(this, "[QueryIterRepeatApply] Repeated application to null input iterator");
+            return;
         }
     }
 
-    protected QueryIterator getCurrentStage()
-    {
-        return currentStage ;
+    protected QueryIterator getCurrentStage() {
+        return currentStage;
     }
 
-    protected abstract QueryIterator nextStage(Binding binding) ;
+    protected abstract QueryIterator nextStage(Binding binding);
 
     @Override
-    protected boolean hasNextBinding()
-    {
+    protected boolean hasNextBinding() {
         if ( isFinished() )
-            return false ;
+            return false;
 
-        for ( ;; )
-        {
-            if ( currentStage == null  )
-                currentStage = makeNextStage() ;
+        for ( ;; ) {
+            if ( currentStage == null )
+                currentStage = makeNextStage();
 
-            if ( currentStage == null  )
-                return false ;
+            if ( currentStage == null )
+                return false;
 
             if ( cancelRequested )
                 // Pass on the cancelRequest to the active stage.
                 performRequestCancel(currentStage);
 
             if ( currentStage.hasNext() )
-                return true ;
+                return true;
 
             // finish this step
-            currentStage.close() ;
-            currentStage = null ;
+            currentStage.close();
+            currentStage = null;
             // loop
         }
         // Unreachable
     }
 
     @Override
-    protected Binding moveToNextBinding()
-    {
-        if ( ! hasNextBinding() )
-            throw new NoSuchElementException(Lib.className(this)+".next()/finished") ;
-        return currentStage.nextBinding() ;
+    protected Binding moveToNextBinding() {
+        if ( !hasNextBinding() )
+            throw new NoSuchElementException(Lib.className(this) + ".next()/finished");
+        return currentStage.nextBinding();
 
     }
 
-    private QueryIterator makeNextStage()
-    {
-        count++ ;
+    private QueryIterator makeNextStage() {
+        count++;
 
         if ( getInput() == null )
-            return null ;
+            return null;
 
-        if ( !getInput().hasNext() )
-        {
-            getInput().close() ;
-            return null ;
+        if ( !getInput().hasNext() ) {
+            getInput().close();
+            return null;
         }
 
-        Binding binding = getInput().next() ;
-        QueryIterator iter = nextStage(binding) ;
-        return iter ;
+        Binding binding = getInput().next();
+        QueryIterator iter = nextStage(binding);
+        return iter;
     }
 
     @Override
-    protected void closeSubIterator()
-    {
+    protected void closeSubIterator() {
         if ( currentStage != null )
-            currentStage.close() ;
+            currentStage.close();
     }
 
     @Override
-    protected void requestSubCancel()
-    {
+    protected void requestSubCancel() {
         if ( currentStage != null )
-            currentStage.cancel() ; // [CANCEL]
+            currentStage.cancel(); // [CANCEL]
         cancelRequested = true;
     }
 }

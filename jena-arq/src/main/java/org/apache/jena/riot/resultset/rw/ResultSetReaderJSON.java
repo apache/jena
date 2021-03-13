@@ -59,7 +59,7 @@ import org.apache.jena.vocabulary.RDF;
 public class ResultSetReaderJSON implements ResultSetReader {
 
     public static final ResultSetReaderFactory factory = lang -> {
-        if (!Objects.equals(lang, ResultSetLang.SPARQLResultSetJSON ) )
+        if (!Objects.equals(lang, ResultSetLang.RS_JSON ) )
             throw new ResultSetException("ResultSet for JSON asked for a "+lang);
         return new ResultSetReaderJSON();
     };

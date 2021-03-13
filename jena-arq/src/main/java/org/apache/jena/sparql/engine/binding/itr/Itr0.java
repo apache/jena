@@ -41,7 +41,4 @@ class Itr0<X> implements Iterator<X> {
     public X next() {
         throw new NoSuchElementException();
     }
-
-    @Override
-    public void remove() { throw new UnsupportedOperationException("Itr0.remove"); }
 }

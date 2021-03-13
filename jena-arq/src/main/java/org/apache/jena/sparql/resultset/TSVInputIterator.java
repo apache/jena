@@ -22,31 +22,34 @@ import static java.lang.String.format ;
 
 import java.io.BufferedReader ;
 import java.io.IOException ;
+import java.util.Iterator;
 import java.util.List ;
 import java.util.NoSuchElementException ;
+import java.util.Objects;
+import java.util.regex.Pattern;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.iterator.QueryIteratorBase ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 
 /**
  * Class used to do streaming parsing of actual result rows from the TSV
  */
-public class TSVInputIterator extends QueryIteratorBase
+public class TSVInputIterator implements Iterator<Binding>
 {
+    private static Pattern pattern = Pattern.compile("\t");
+
 	private BufferedReader reader;
-	private Binding binding;
+	private Binding currentBinding;
 	private int expectedItems;
 	private List<Var> vars;
 	private long lineNum = 1;
+	private boolean finished = false;
 
 	/**
 	 * Creates a new TSV Input Iterator
@@ -55,37 +58,42 @@ public class TSVInputIterator extends QueryIteratorBase
 	 * </p>
 	 */
     public TSVInputIterator(BufferedReader reader, List<Var> vars) {
+        Objects.requireNonNull(reader);
         this.reader = reader;
         this.expectedItems = vars.size();
         this.vars = vars;
     }
 
     @Override
-    public void output(IndentedWriter out, SerializationContext sCxt) {
-        // Not needed - only called as part of printing/debugging query plans.
-        out.println("TSVInputIterator");
+    public boolean hasNext() {
+        if ( finished )
+            return false;
+        if ( currentBinding == null )
+            currentBinding = parseNextBinding();
+        if ( currentBinding == null ) {
+            IO.close(reader);
+            finished = true;
+        }
+        return ! finished;
     }
 
     @Override
-    protected boolean hasNextBinding() {
-        if ( this.reader != null ) {
-            if ( this.binding == null )
-                return this.parseNextBinding();
-            else
-                return true;
-        } else {
-            return false;
-        }
+    public Binding next() {
+        if ( ! hasNext() )
+            throw new NoSuchElementException();
+        Binding row = currentBinding;
+        currentBinding = null;
+        return row;
     }
 
-    private boolean parseNextBinding() {
+    private Binding parseNextBinding() {
         String line;
         try {
-            line = this.reader.readLine();
+            line = reader.readLine();
             // Once EOF has been reached we'll see null for this call so we can
             // return false because there are no further bindings
             if ( line == null )
-                return false;
+                return null;
             this.lineNum++;
         }
         catch (IOException e) {
@@ -100,18 +108,15 @@ public class TSVInputIterator extends QueryIteratorBase
             if ( expectedItems > 1 )
                 throw new ResultSetException(format("Error Parsing TSV results at Line %d - The result row had 0/1 values when %d were expected",
                                                     this.lineNum, expectedItems));
-            this.binding = BindingFactory.empty();
-            return true;
+            return BindingFactory.empty();
         }
 
-        String[] tokens = TSVInput.pattern.split(line, -1);
+        String[] tokens = pattern.split(line, -1);
 
         if ( tokens.length != expectedItems )
             throw new ResultSetException(format("Error Parsing TSV results at Line %d - The result row '%s' has %d values instead of the expected %d.",
                                                 this.lineNum, line, tokens.length, expectedItems));
         BindingBuilder builder = Binding.builder();
-
-        this.binding = null;
 
         for ( int i = 0 ; i < tokens.length ; i++ ) {
             String token = tokens[i];
@@ -131,29 +136,6 @@ public class TSVInputIterator extends QueryIteratorBase
                 throw new ResultSetException(format("Line %d: Data %s contains error: %s", lineNum, token, ex.getMessage()));
             }
         }
-        this.binding = builder.build();
-        return true;
-    }
-
-    @Override
-    protected Binding moveToNextBinding() {
-        if ( !hasNext() )
-            throw new NoSuchElementException();
-        Binding b = this.binding;
-        this.binding = null;
-        return b;
-    }
-
-    @Override
-    protected void closeIterator() {
-        IO.close(reader);
-        reader = null;
-    }
-
-    @Override
-    protected void requestCancel() {
-        // Don't need to do anything special to cancel
-        // Superclass should take care of that and call closeIterator() where we
-        // do our actual clean up
+        return builder.build();
     }
 }

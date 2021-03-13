@@ -34,7 +34,7 @@ import org.apache.jena.sparql.util.Context;
 public class ResultSetWriterThrift implements ResultSetWriter {
     
     public static ResultSetWriterFactory factory = lang -> {
-        if (!Objects.equals(lang, ResultSetLang.SPARQLResultSetThrift ) )
+        if (!Objects.equals(lang, ResultSetLang.RS_Thrift ) )
             throw new ResultSetException("ResultSetWriter for RDF/Thift asked for a "+lang); 
         return new ResultSetWriterThrift(); 
     };

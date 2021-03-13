@@ -18,10 +18,10 @@
 
 package org.apache.jena.query;
 
-import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetCSV;
-import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetJSON;
-import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetTSV;
-import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetXML;
+import static org.apache.jena.riot.resultset.ResultSetLang.RS_CSV;
+import static org.apache.jena.riot.resultset.ResultSetLang.RS_JSON;
+import static org.apache.jena.riot.resultset.ResultSetLang.RS_TSV;
+import static org.apache.jena.riot.resultset.ResultSetLang.RS_XML;
 
 import java.io.ByteArrayOutputStream ;
 import java.io.OutputStream ;
@@ -33,19 +33,20 @@ import java.util.List ;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.json.JsonObject;
+import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.ResultSetMgr ;
+import org.apache.jena.riot.resultset.ResultSetLang;
+import org.apache.jena.riot.resultset.rw.ResultSetWriterXML;
 import org.apache.jena.riot.resultset.rw.ResultsWriter;
 import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.ARQNotImplemented ;
 import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.resultset.ResultsFormat;
-import org.apache.jena.sparql.resultset.TextOutput;
-import org.apache.jena.sparql.resultset.XMLOutput;
-import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sys.JenaSystem;
 
 /** ResultSetFormatter - Convenience ways to call the various output formatters.
@@ -57,7 +58,7 @@ public class ResultSetFormatter {
     static { JenaSystem.init(); }
     // See also ResultSetMgr -- this post-dates this code.
     // Ideally, the operation here should call ResultSetMgr.
-    
+
     private ResultSetFormatter() {}
     /**
      * Output a result set in a text format.  The result set is consumed.
@@ -83,7 +84,7 @@ public class ResultSetFormatter {
      */
     public static void out(OutputStream out, ResultSet qresults)
     { out(out, qresults, (PrefixMapping)null) ; }
-    
+
     /**
      * Output a result set in a text format.  The result set is consumed.
      * Use @see{ResultSetFactory.makeRewindable(ResultSet)} for a rewindable one.
@@ -92,11 +93,11 @@ public class ResultSetFormatter {
      *  column widths and therefore may exhaust memory for large results
      *  </p>
      * @param qresults   result set
-     * @param query     May be used to abbreviate URIs 
+     * @param query     May be used to abbreviate URIs
      */
     public static void out(ResultSet qresults, Query query)
     { out(System.out, qresults, query) ; }
-    
+
     /**
      * Output a result set in a text format.  The result set is consumed.
      * Use @see{ResultSetFactory.makeRewindable(ResultSet)} for a rewindable one.
@@ -105,7 +106,7 @@ public class ResultSetFormatter {
      *  column widths and therefore may exhaust memory for large results
      *  </p>
      * @param qresults   result set
-     * @param prologue   May be used to abbreviate URIs 
+     * @param prologue   May be used to abbreviate URIs
      */
     public static void out(ResultSet qresults, Prologue prologue)
     { out(System.out, qresults, prologue) ; }
@@ -114,11 +115,11 @@ public class ResultSetFormatter {
 //     * Output a result set in a text format.
 //     * @param out        OutputStream
 //     * @param qresults   result set
-//     * @param query      May be used to abbreviate URIs 
+//     * @param query      May be used to abbreviate URIs
 //     */
 //    public static void out(OutputStream out, ResultSet qresults, Query query)
 //    { out(out, qresults, query.getPrefixMapping()) ; }
-    
+
     /**
      * Output a result set in a text format.  The result set is consumed.
      * Use @see{ResultSetFactory.makeRewindable(ResultSet)} for a rewindable one.
@@ -139,14 +140,13 @@ public class ResultSetFormatter {
      *  This caches the entire results in memory in order to determine the appropriate
      *  column widths and therefore may exhaust memory for large results
      *  </p>
-     * @param out       OutputStream
-     * @param qresults  result set
-     * @param pmap      Prefix mapping for abbreviating URIs.
+     * @param out        OutputStream
+     * @param resultSet  Result set
+     * @param pmap       Prefix mapping for abbreviating URIs.
      */
-    public static void out(OutputStream out, ResultSet qresults, PrefixMapping pmap)
-    {
-        TextOutput tFmt = new TextOutput(pmap) ;
-        tFmt.format(out, qresults) ;
+    public static void out(OutputStream out, ResultSet resultSet, PrefixMapping pmap) {
+        Prologue prologue = new Prologue(pmap);
+        out(out, resultSet, prologue);
     }
 
     /**
@@ -156,16 +156,16 @@ public class ResultSetFormatter {
      *  This caches the entire results in memory in order to determine the appropriate
      *  column widths and therefore may exhaust memory for large results
      *  </p>
-     * @param out       OutputStream
-     * @param qresults  result set
-     * @param prologue  Prologue, used to abbreviate IRIs
+     * @param out        OutputStream
+     * @param resultSet  result set
+     * @param prologue   Prologue, used to abbreviate IRIs
      */
-    public static void out(OutputStream out, ResultSet qresults, Prologue prologue)
-    {
-        TextOutput tFmt = new TextOutput(prologue) ;
-        tFmt.format(out, qresults) ;
+    public static void out(OutputStream out, ResultSet resultSet, Prologue prologue) {
+        ResultsWriter.create()
+            .lang(ResultSetLang.RS_Text)
+            .set(ARQConstants.symPrologue, prologue)
+            .write(out, resultSet);
     }
-
 
     /**
      * Output an ASK answer
@@ -179,22 +179,20 @@ public class ResultSetFormatter {
      * @param out       OutputStream
      * @param answer    The boolean answer
      */
-    public static void out(OutputStream out, boolean answer)
-    {
-        TextOutput tFmt = new TextOutput((SerializationContext)null) ;
-        tFmt.format(out, answer) ;
+    public static void out(OutputStream out, boolean answer) {
+        ResultsWriter.create().lang(ResultSetLang.RS_Text).write(out, answer);
     }
-    
+
     /** Return a string that has the result set serialized as a text table
      * <p>
      *  This caches the entire results in memory in order to determine the appropriate
      *  column widths and therefore may exhaust memory for large results
      *  </p>
-     * 
+     *
      * @param qresults  result set
      * @return  string
      */
-    
+
     public static String asText(ResultSet qresults)
     {
         ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
@@ -207,13 +205,13 @@ public class ResultSetFormatter {
      *  This caches the entire results in memory in order to determine the appropriate
      *  column widths and therefore may exhaust memory for large results
      *  </p>
-     * 
+     *
      * @param qresults  result set
      * @param prologue  Prologue, used to abbreviate IRIs
 
      * @return  string
      */
-    
+
     public static String asText(ResultSet qresults, Prologue prologue)
     {
         ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
@@ -228,9 +226,9 @@ public class ResultSetFormatter {
 
     // ----------------------------------------------------------------
     // Do nothing formatting
-    
+
     /** This operation faithfully walks the results but does nothing with them.
-     *  @return The count of the number of solutions. 
+     *  @return The count of the number of solutions.
      */
 
     public static int consume(ResultSet resultSet)
@@ -261,7 +259,7 @@ public class ResultSetFormatter {
         }
         return list ;
     }
-    
+
     /** Touch every var/value */
     private static void materialize(QuerySolution qs) {
         for ( Iterator<String> iter = qs.varNames() ; iter.hasNext() ; ) {
@@ -269,51 +267,51 @@ public class ResultSetFormatter {
             RDFNode n = qs.get(vn) ;
         }
     }
-    
+
     /** Output a ResultSet in some format.
-     * 
+     *
      * @param resultSet Result set
      * @param rFmt      A format to encode the result set in
      */
-    
+
     static public void output(ResultSet resultSet, ResultsFormat rFmt)
     { output(System.out, resultSet, rFmt) ; }
 
     /** Output a ResultSet in some format.
-     *  To get detailed control over each format, call the appropriate operation directly. 
-     * 
+     *  To get detailed control over each format, call the appropriate operation directly.
+     *
      * @param outStream Output
      * @param resultSet Result set
      * @param rFmt      A format to encode the result set in
      */
-    
+
     static public void output(OutputStream outStream, ResultSet resultSet, ResultsFormat rFmt) {
         Lang lang = ResultsFormat.convert(rFmt);
         if ( lang != null ) {
             output(outStream, resultSet, lang);
             return ;
         }
-        
+
         boolean b = ResultsFormat.oldWrite(outStream, rFmt, null, resultSet);
         if ( b )
             return ;
         throw new ARQException("Unknown ResultSet format: " + rFmt) ;
     }
-    
+
     // ---- General Output
 
     public static void output(ResultSet resultSet, Lang resultFormat) {
         output(System.out, resultSet, resultFormat);
     }
-    
+
     public static void output(OutputStream outStream, ResultSet resultSet, Lang resultFormat) {
         ResultsWriter.create().lang(resultFormat).write(outStream, resultSet);
     }
-    
+
     public static void output(boolean result, Lang resultFormat) {
         output(System.out, result, resultFormat);
     }
-    
+
     public static void output(OutputStream outStream, boolean result, Lang resultFormat) {
         ResultsWriter.create().lang(resultFormat).build().write(outStream, result);
     }
@@ -347,127 +345,130 @@ public class ResultSetFormatter {
     // ---- XML Output
 
     /** Output a result set in the XML format
-     * 
+     *
      * @param qresults      result set
      */
     static public void outputAsXML(ResultSet qresults)
     { outputAsXML(System.out, qresults) ; }
 
     /** Output a result set in the XML format
-     * 
+     *
      * @param outStream     output stream
      * @param qresults      result set
      */
-    
+
     static public void outputAsXML(OutputStream outStream, ResultSet qresults)
-    { output(outStream, qresults, SPARQLResultSetXML); }
-    
+    { output(outStream, qresults, RS_XML); }
+
     /** Output a result set in the XML format, inserting a style sheet in the XML output
-     * 
+     *
      * @param qresults      result set
      * @param stylesheet    The URL of the stylesheet
      */
-    
+
     static public void outputAsXML(ResultSet qresults, String stylesheet)
     { outputAsXML(System.out, qresults, stylesheet); }
 
     /** Output a result set in the XML format, inserting a style sheet in the XML output
-     * 
+     *
      * @param outStream     output stream
      * @param qresults      result set
      * @param stylesheet    The URL of the stylesheet
      */
-    
-    static public void outputAsXML(OutputStream outStream, ResultSet qresults, String stylesheet)
-    {
-        XMLOutput xOut = new XMLOutput(stylesheet) ;
-        xOut.format(outStream, qresults) ;
+
+    static public void outputAsXML(OutputStream outStream, ResultSet qresults, String stylesheet) {
+        ResultsWriter.Builder b = ResultsWriter.create().lang(ResultSetLang.RS_XML);
+        if ( stylesheet != null )
+            b.set(ResultSetWriterXML.xmlStylesheet, stylesheet);
+        b.write(outStream, qresults);
     }
-    
+
     // ----  XML output: ASK
-    
+
     /** Output a boolean result in the XML format
-     * 
+     *
      * @param booleanResult The boolean result to encode
      */
-    
+
     public static void outputAsXML(boolean booleanResult)
     { outputAsXML(System.out, booleanResult) ; }
-    
+
     /** Output a boolean result in the XML format
-     * 
+     *
      * @param outStream     output stream
      * @param booleanResult The boolean result to encode
      */
-    
+
     public static void outputAsXML(OutputStream outStream, boolean booleanResult)
-    { output(outStream, booleanResult, SPARQLResultSetXML); }
+    { output(outStream, booleanResult, RS_XML); }
 
     /** Output a boolean result in the XML format
-     * 
-     * @param booleanResult 
+     *
+     * @param booleanResult
      * @param stylesheet    The URL of the stylesheet
      */
     public static void outputAsXML(boolean booleanResult, String stylesheet)
     { outputAsXML(System.out, booleanResult, stylesheet) ; }
 
     /** Output a boolean result in the XML format
-     * 
+     *
      * @param outStream     output stream
-     * @param booleanResult 
+     * @param booleanResult
      * @param stylesheet    The URL of the stylesheet
      */
-    
-    public static void outputAsXML(OutputStream outStream, boolean booleanResult, String stylesheet) {  
-        XMLOutput xOut = new XMLOutput(stylesheet);
-        xOut.format(outStream, booleanResult);
+
+    public static void outputAsXML(OutputStream outStream, boolean booleanResult, String stylesheet) {
+        ResultsWriter.Builder b = ResultsWriter.create().lang(ResultSetLang.RS_XML);
+        if ( stylesheet != null )
+            b.set(ResultSetWriterXML.xmlStylesheet, stylesheet);
+        b.write(outStream, booleanResult);
     }
 
     /** Return a string that has the result set serialized as XML (not RDF)
      * <p>
      *  This builds the string in memory which can lead to memory exhaustion
-     *  for large results.  It is generally better to use the 
+     *  for large results.  It is generally better to use the
      *  {@link #outputAsXML(OutputStream, ResultSet)} overload instead
      *  </p>
-     * 
+     *
      * @param qresults  result set
      * @return  string
      */
-    
+
     public static String asXMLString(ResultSet qresults)
     {
         return asXMLString(qresults, null) ;
     }
-    
+
     /** Return a string that has the result set serialized as XML (not RDF)
      *  with a style sheet directive inserted into the XML.
      *  <p>
      *  This builds the string in memory which can lead to memory exhaustion
-     *  for large results.  It is generally better to use the 
+     *  for large results.  It is generally better to use the
      *  {@link #outputAsXML(OutputStream, ResultSet, String)} overload instead
      *  </p>
      * @param qresults  result set
      * @param stylesheet
      * @return  string
      */
-    
-    public static String asXMLString(ResultSet qresults, String stylesheet)
-    {
-        XMLOutput xOut = new XMLOutput(stylesheet) ;
-        return xOut.asString(qresults) ;
+
+    public static String asXMLString(ResultSet qresults, String stylesheet) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        outputAsXML(out, qresults, stylesheet);
+        return StrUtils.fromUTF8bytes(out.toByteArray());
     }
-    
+
     /** Return a string that has the result set serialized as XML (not RDF)
      * <p>
      *  This builds the string in memory which can lead to memory exhaustion
-     *  for large results.  It is generally better to use the 
+     *  for large results.  It is generally better to use the
      *  {@link #outputAsXML(OutputStream, boolean)} overload instead
      *  </p>
-     * 
+     *
      * @param booleanResult The boolean result to encode
      * @return  string
      */
-    
+
     public static String asXMLString(boolean booleanResult)
     {
         return asXMLString(booleanResult, null) ;
@@ -476,82 +477,83 @@ public class ResultSetFormatter {
     /** Return a string that has the result set serialized as XML (not RDF)
      * <p>
      *  This builds the string in memory which can lead to memory exhaustion
-     *  for large results.  It is generally better to use the 
+     *  for large results.  It is generally better to use the
      *  {@link #outputAsXML(OutputStream, boolean, String)} overload instead
      *  </p>
-     * 
+     *
      * @param booleanResult The boolean result to encode
      * @param stylesheet
      * @return  string
      */
-    
+
     public static String asXMLString(boolean booleanResult, String stylesheet)
     {
-        XMLOutput xOut = new XMLOutput(stylesheet) ;
-        return xOut.asString(booleanResult) ;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        outputAsXML(out, booleanResult, stylesheet);
+        return StrUtils.fromUTF8bytes(out.toByteArray());
     }
-    
+
     // ---- JSON
-    
+
     /** Output a result set in the JSON format
-     *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a> 
+     *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a>
      *  JSON: <a href="http://json.org">http://json.org/</a>
      * @param resultSet     result set
      */
-    
-    static public void outputAsJSON(ResultSet resultSet) 
+
+    static public void outputAsJSON(ResultSet resultSet)
     { outputAsJSON(System.out, resultSet) ; }
-    
+
     /** Output a result set in the JSON format
-     *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a> 
+     *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a>
      *  JSON: <a href="http://json.org">http://json.org/</a>
-     *  
+     *
      * @param outStream     output stream
      * @param resultSet     result set
      */
-    
+
     static public void outputAsJSON(OutputStream outStream, ResultSet resultSet)
-    { output(outStream, resultSet, SPARQLResultSetJSON) ; }
+    { output(outStream, resultSet, RS_JSON) ; }
 
     /** Output a result set in the JSON format
-     *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a> 
+     *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a>
      *  JSON: <a href="http://json.org">http://json.org/</a>
-     *  
+     *
      * @param booleanResult The boolean result to encode
      */
 
     static public void outputAsJSON(boolean booleanResult)
     { outputAsJSON(System.out, booleanResult) ; }
-    
+
     /** Output a result set in the JSON format
-     *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a> 
+     *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a>
      *  JSON: <a href="http://json.org">http://json.org/</a>
-     *  
+     *
      * @param outStream     output stream
      * @param booleanResult The boolean result to encode
      */
-    
+
     static public void outputAsJSON(OutputStream outStream, boolean booleanResult)
-    { output(outStream, booleanResult, SPARQLResultSetJSON) ; }
+    { output(outStream, booleanResult, RS_JSON) ; }
 
     // ---- SSE
-    
+
     /** Output a boolean result in the SSE format
-     *  Format: <a href="http://jena.apache.org/documentation/notes/sse.html">SSE</a> 
-     *  
+     *  Format: <a href="http://jena.apache.org/documentation/notes/sse.html">SSE</a>
+     *
      * @param booleanResult The boolean result to encode
      */
-    
+
     static public void outputAsSSE(boolean booleanResult)
     { outputAsSSE(System.out, booleanResult ) ; }
-    
+
     /** Output a boolean result in the SSE format
-     *  Format: <a href="http://jena.apache.org/documentation/notes/sse.html">SSE</a> 
-     *  
+     *  Format: <a href="http://jena.apache.org/documentation/notes/sse.html">SSE</a>
+     *
      * @param outStream     output stream
      * @param booleanResult The boolean result to encode
      */
-    
+
     static public void outputAsSSE(OutputStream outStream, boolean booleanResult)
     {
         throw new ARQNotImplemented("outputAsSSE") ;
@@ -561,15 +563,15 @@ public class ResultSetFormatter {
      *  Format: <a href="http://jena.apache.org/documentation/notes/sse.html">SSE</a>
      *  @param resultSet     result set
      */
-    
+
     static public void outputAsSSE(ResultSet resultSet)
     { outputAsSSE(System.out, resultSet) ; }
-    
+
     /** Output a result set in the SSE format
      *  Format: <a href="http://jena.apache.org/documentation/notes/sse.html">SSE</a>
      *  @param resultSet     result set
      */
-    
+
     static public void outputAsSSE(ResultSet resultSet, Prologue prologue)
     { outputAsSSE(System.out, resultSet, prologue) ; }
 
@@ -578,87 +580,87 @@ public class ResultSetFormatter {
      * @param outStream  The output stream
      * @param resultSet     The result set
      */
-    
+
     static public void outputAsSSE(OutputStream outStream, ResultSet resultSet)
     { outputAsSSE(outStream, resultSet, null) ; }
-    
+
     /** Output a result set in the SSE format
      *  Format: <a href="http://jena.apache.org/documentation/notes/sse.html">SSE</a>
      * @param outStream     output stream
      * @param resultSet     result set
      * @param prologue
      */
-    
+
     static public void outputAsSSE(OutputStream outStream, ResultSet resultSet, Prologue prologue)
     {
         throw new ARQNotImplemented("outputAsSSE") ;
     }
-    
+
     // ---- CSV
-    
+
     /** Output a boolean result in CSV format
-     *  
+     *
      * @param booleanResult The boolean result to encode
      */
-    
+
     static public void outputAsCSV(boolean booleanResult)
     { outputAsCSV(System.out, booleanResult ) ; }
-    
+
     /** Output a boolean result in CSV format
-     *  
+     *
      * @param outStream     output stream
      * @param booleanResult The boolean result to encode
      */
-    
+
     static public void outputAsCSV(OutputStream outStream, boolean booleanResult)
-    { output(outStream, booleanResult, SPARQLResultSetCSV); }
+    { output(outStream, booleanResult, RS_CSV); }
 
     /** Output a result set in CSV format
      *  @param resultSet     result set
      */
-    
+
     static public void outputAsCSV(ResultSet resultSet)
     { outputAsCSV(System.out, resultSet) ; }
-    
+
     /** Output a result set in CSV format
      * @param outStream  The output stream
      * @param resultSet     The result set
      */
-    
+
     static public void outputAsCSV(OutputStream outStream, ResultSet resultSet)
-    { output(outStream, resultSet, SPARQLResultSetCSV); }
+    { output(outStream, resultSet, RS_CSV); }
 
     // ---- TSV
-    
+
     /** Output a boolean result in TSV (tab separated values) format
-     *  
+     *
      * @param booleanResult The boolean result to encode
      */
-    
+
     static public void outputAsTSV(boolean booleanResult)
     { outputAsTSV(System.out, booleanResult ) ; }
-    
+
     /** Output a boolean result in TSV format
-     *  
+     *
      * @param outStream     output stream
      * @param booleanResult The boolean result to encode
      */
-    
+
     static public void outputAsTSV(OutputStream outStream, boolean booleanResult)
-    { output(outStream, booleanResult, SPARQLResultSetTSV); }
+    { output(outStream, booleanResult, RS_TSV); }
 
     /** Output a result set in TSV format
      *  @param resultSet     result set
      */
-    
+
     static public void outputAsTSV(ResultSet resultSet)
     { outputAsTSV(System.out, resultSet) ; }
-    
+
     /** Output a result set in TSV format
      * @param outStream  The output stream
      * @param resultSet     The result set
      */
-    
+
     static public void outputAsTSV(OutputStream outStream, ResultSet resultSet)
-    { output(outStream, resultSet, SPARQLResultSetTSV); }
+    { output(outStream, resultSet, RS_TSV); }
 }

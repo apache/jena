@@ -22,17 +22,17 @@ import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 import java.util.Queue ;
 
-/** PeekIterator - is one slot ahead from the wrapped iterator */ 
+/** PeekIterator - is one slot ahead from the wrapped iterator */
 public class PeekIterator<T> implements Iterator<T>
 {
     private final Iterator<T> iter ;
     private boolean finished = false ;
     // Slot always full when iterator active.  Null is a valid element.
     private T slot ;
-    
+
     public static <T> PeekIterator<T> create(PeekIterator<T> iter) { return iter ; }
     public static <T> PeekIterator<T> create(Iterator<T> iter)
-    { 
+    {
         if ( iter instanceof PeekIterator<?> )
             return (PeekIterator<T>)iter ;
         return new PeekIterator<>(iter) ;
@@ -43,7 +43,7 @@ public class PeekIterator<T> implements Iterator<T>
         this.iter = iter ;
         fill() ;
     }
-    
+
     private void fill()
     {
         if ( finished ) return ;
@@ -73,7 +73,7 @@ public class PeekIterator<T> implements Iterator<T>
             return null  ;
         return slot ;
     }
-    
+
     /** Peek the next element or throw  NoSuchElementException */
     public T element()
     {
@@ -81,7 +81,7 @@ public class PeekIterator<T> implements Iterator<T>
             throw new NoSuchElementException() ;
         return slot ;
     }
-    
+
     @Override
     public T next()
     {
@@ -92,9 +92,4 @@ public class PeekIterator<T> implements Iterator<T>
         fill() ;
         return x ;
     }
-
-    @Override
-    public void remove()
-    { throw new UnsupportedOperationException() ; }
-
 }

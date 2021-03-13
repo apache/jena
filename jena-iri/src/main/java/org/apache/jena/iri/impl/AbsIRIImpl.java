@@ -158,11 +158,6 @@ abstract public class AbsIRIImpl extends  IRI implements
 
                 private Violation next;
                 @Override
-                public void remove() {
-                    throw new UnsupportedOperationException();
-                }
-
-                @Override
                 public boolean hasNext() {
                     if (next==null) {
                         while (underlying.hasNext()) {
