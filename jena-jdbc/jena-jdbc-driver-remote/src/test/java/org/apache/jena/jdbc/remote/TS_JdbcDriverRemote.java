@@ -17,7 +17,6 @@
  */
 package org.apache.jena.jdbc.remote;
 
-import org.apache.jena.fuseki.main.FusekiTestServer ;
 import org.apache.jena.jdbc.remote.connections.TestRemoteEndpointConnection;
 import org.apache.jena.jdbc.remote.connections.TestRemoteEndpointConnectionWithAuth;
 import org.apache.jena.jdbc.remote.connections.TestRemoteEndpointConnectionWithGraphUris;
