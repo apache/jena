@@ -28,8 +28,6 @@ import arq.cmdline.CmdARQ;
 import arq.cmdline.ModAssembler;
 import arq.cmdline.ModDatasetAssembler;
 import org.apache.jena.assembler.exceptions.AssemblerException;
-import org.apache.jena.atlas.json.JSON;
-import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.AuthScheme;
@@ -81,11 +79,12 @@ public class FusekiMain extends CmdARQ {
     private static ArgDecl  argLocalhost    = new ArgDecl(ArgDecl.NoValue,  "localhost", "local");
     private static ArgDecl  argTimeout      = new ArgDecl(ArgDecl.HasValue, "timeout");
     private static ArgDecl  argConfig       = new ArgDecl(ArgDecl.HasValue, "config", "conf");
+    private static ArgDecl  argJettyConfig  = new ArgDecl(ArgDecl.HasValue, "jetty-config", "jetty");
     private static ArgDecl  argGZip         = new ArgDecl(ArgDecl.HasValue, "gzip");
     private static ArgDecl  argBase         = new ArgDecl(ArgDecl.HasValue, "base", "files");
 
     private static ArgDecl  argCORS         = new ArgDecl(ArgDecl.NoValue, "withCORS", "cors", "CORS");
-    private static ArgDecl  argNoCORS         = new ArgDecl(ArgDecl.NoValue, "noCORS", "no-cors");
+    private static ArgDecl  argNoCORS       = new ArgDecl(ArgDecl.NoValue, "noCORS", "no-cors");
     private static ArgDecl  argWithPing     = new ArgDecl(ArgDecl.NoValue, "withPing", "ping");
     private static ArgDecl  argWithStats    = new ArgDecl(ArgDecl.NoValue, "withStats", "stats");
     private static ArgDecl  argWithMetrics  = new ArgDecl(ArgDecl.NoValue,  "withMetrics", "metrics");
@@ -168,6 +167,7 @@ public class FusekiMain extends CmdARQ {
         add(argHttpsPort, "--httpsPort=NUM", "https port (default port is 3043)");
 
         add(argPasswdFile, "--passwd=FILE", "Password file");
+        add(argJettyConfig, "--jetty=FILE", "jetty.xml server configuration");
         add(argCORS); //, "--cors"); "Enable CORS");
         add(argNoCORS, "--no-cors", "Disable CORS");
         // put in the configuration file
@@ -239,14 +239,22 @@ public class FusekiMain extends CmdARQ {
         boolean allowUpdate = contains(argUpdate);
         serverConfig.allowUpdate = allowUpdate;
 
+        boolean hasJettyConfigFile = contains(argJettyConfig);
+
         // ---- Port
         serverConfig.port = defaultPort;
 
-        if ( contains(argPort) )
+        if ( contains(argPort) ) {
+            if ( hasJettyConfigFile )
+                throw new CmdException("Can't specify the port and also provide a Jetty configuration file");
             serverConfig.port = portNumber(argPort);
+        }
 
-        if ( contains(argLocalhost) )
+        if ( contains(argLocalhost) ) {
+            if ( hasJettyConfigFile )
+                throw new CmdException("Can't specify 'localhost' and also provide a Jetty configuration file");
             serverConfig.loopback = true;
+        }
 
         // ---- Dataset
         // Only one of these is choose from the checking above.
@@ -360,6 +368,8 @@ public class FusekiMain extends CmdARQ {
             serverConfig.validators = true;
         }
 
+        // -- Server setup.
+
         if ( contains(argBase) ) {
             // Static files.
             String filebase = getValue(argBase);
@@ -370,36 +380,45 @@ public class FusekiMain extends CmdARQ {
             serverConfig.contentDirectory = filebase;
         }
 
-        if ( contains(argPasswdFile) )
+        if ( contains(argPasswdFile) ) {
+            if ( hasJettyConfigFile )
+                throw new CmdException("Can't specify a password file and also provide a Jetty configuration file");
             serverConfig.passwdFile = getValue(argPasswdFile);
+        }
 
         if ( contains(argRealm) )
             serverConfig.realm =  getValue(argRealm);
 
         if ( contains(argHttpsPort) && ! contains(argHttps) )
-            throw new CmdException("https port given but not certificate dtails via --"+argHttps.getKeyName());
+            throw new CmdException("https port given but not certificate details via --"+argHttps.getKeyName());
 
         if ( contains(argHttps) ) {
+            if ( hasJettyConfigFile )
+                throw new CmdException("Can't specify \"https\" and also provide a Jetty configuration file");
             serverConfig.httpsPort = defaultHttpsPort;
             if (  contains(argHttpsPort) )
                 serverConfig.httpsPort = portNumber(argHttpsPort);
             String httpsSetup = getValue(argHttps);
             // The details go in a separate file that can be secured.
-            JsonObject httpsConf = JSON.read(httpsSetup);
-            Path path = Paths.get(httpsSetup).toAbsolutePath();
-            String keystore = httpsConf.get("keystore").getAsString().value();
-            // Resolve relative to the https setup file.
-            serverConfig.httpsKeystore = path.getParent().resolve(keystore).toString();
-
-            serverConfig.httpsKeystorePasswd = httpsConf.get("passwd").getAsString().value();
+            serverConfig.httpsKeysDetails = httpsSetup;
         }
 
         if ( contains(argAuth) ) {
+            if ( hasJettyConfigFile )
+                throw new CmdException("Can't specify authentication and also provide a Jetty configuration file");
             String schemeStr = getValue(argAuth);
             serverConfig.authScheme = AuthScheme.scheme(schemeStr);
         }
 
-        // 2020-10: Ignore argCORS - CORS is now on by default in Fuseki Main cmd  
+        // Jetty server : this will be the server configuration regardless of other settings.
+        if ( contains(argJettyConfig) ) {
+            String jettyConfigFile = getValue(argJettyConfig);
+            if ( ! FileOps.exists(jettyConfigFile) )
+                throw new CmdException("Jetty config file not found: "+jettyConfigFile);
+            serverConfig.jettyConfigFile = jettyConfigFile;
+        }
+
+        // 2020-10: Ignore argCORS - CORS is now on by default in Fuseki Main cmd
         serverConfig.withCORS = ! contains(argNoCORS);
         serverConfig.withPing = contains(argWithPing);
         serverConfig.withStats = contains(argWithStats);
@@ -414,13 +433,14 @@ public class FusekiMain extends CmdARQ {
 
     private int portNumber(ArgDecl arg) {
         String portStr = getValue(arg);
+        if ( portStr.isEmpty() )
+            return -1;
         try {
             int port = Integer.parseInt(portStr);
             return port;
         } catch (NumberFormatException ex) {
-            throw new CmdException(argPort.getKeyName() + " : bad port number: " + portStr);
+            throw new CmdException(argPort.getKeyName() + " : bad port number: '" + portStr+"'");
         }
-
     }
 
     @Override
@@ -432,7 +452,10 @@ public class FusekiMain extends CmdARQ {
                 server.start();
             } catch (FusekiException ex) {
                 if ( ex.getCause() instanceof BindException ) {
-                    Fuseki.serverLog.error("Failed to start server: "+ex.getCause().getMessage()+ ": port="+serverConfig.port);
+                    if ( serverConfig.jettyConfigFile == null )
+                        Fuseki.serverLog.error("Failed to start server: "+ex.getCause().getMessage()+ ": port="+serverConfig.port);
+                    else
+                        Fuseki.serverLog.error("Failed to start server: "+ex.getCause().getMessage()+ ": port in use");
                     System.exit(1);
                 }
                 throw ex;
@@ -466,6 +489,8 @@ public class FusekiMain extends CmdARQ {
     }
 
     private static FusekiServer buildServer(FusekiServer.Builder builder, ServerConfig serverConfig) {
+        if ( serverConfig.jettyConfigFile != null )
+            builder.jettyServerConfig(serverConfig.jettyConfigFile);
         builder.port(serverConfig.port);
         builder.loopback(serverConfig.loopback);
         builder.verbose(serverConfig.verboseLogging);
@@ -500,8 +525,8 @@ public class FusekiMain extends CmdARQ {
         if ( serverConfig.realm != null )
             builder.realm(serverConfig.realm);
 
-        if ( serverConfig.httpsKeystore != null )
-            builder.https(serverConfig.httpsPort, serverConfig.httpsKeystore, serverConfig.httpsKeystorePasswd);
+        if ( serverConfig.httpsKeysDetails != null)
+            builder.https(serverConfig.httpsPort, serverConfig.httpsKeysDetails);
 
         if ( serverConfig.authScheme != null )
             builder.auth(serverConfig.authScheme);

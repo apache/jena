@@ -33,6 +33,7 @@ import org.junit.runners.Suite.SuiteClasses;
   , TestStdSetup.class
   , TestConfigFile.class
   , TestHTTP.class
+  , TestFusekiServerBuild.class
   , TestFusekiShaclValidation.class
 })
 public class TS_FusekiMain {}

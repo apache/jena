@@ -36,7 +36,6 @@ import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.FusekiLib;
 import org.apache.jena.fuseki.main.FusekiServer;
-import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.QuerySolution;
@@ -92,14 +91,11 @@ public abstract class AbstractTestFusekiSecurityAssembler {
     }
 
     private String getURL() {
-        getServer();
-        int port = server.getPort();
-        return "http://localhost:"+port+"/database";
+        FusekiServer server = getServer();
+        return server.datasetURL("/database");
     }
-    
+
     private static FusekiServer setup(String assembler, boolean sharedDatabase) {
-        int port = FusekiNetLib.choosePort();
-        
         // This will have a warning because authentication is not set (no password
         // file, no security handler) and that's what we want - no authentication -
         // because we use "user.get()"in the tests.
@@ -110,19 +106,18 @@ public abstract class AbstractTestFusekiSecurityAssembler {
         // -- Start log manipulation.
         String level = LogCtl.getLevel(Fuseki.configLog.getName());
         LogCtl.disable(Fuseki.configLog);
-        
+
         // In case Fuseki.configLog is active - make sure the test log shows the build()
         // message is expected.
         Fuseki.configLog.warn("  (Expect one warning here)");
         FusekiServer server = FusekiServer.create()
-            .port(port)
+            .port(0)
             .parseConfigFile(assembler)
             .build();
         // Special way to get the servlet remote user (the authorized principle).
         FusekiLib.modifyForAccessCtl(server.getDataAccessPointRegistry(), (a)->user.get());
         server.start();
 
-        
         LogCtl.setLevel(Fuseki.configLog, level);
         // -- End log manipulation.
 
@@ -136,7 +131,7 @@ public abstract class AbstractTestFusekiSecurityAssembler {
                 ,"   GRAPH <http://host/graphname9> {:s9 :p :o}"
                 ,"}"
                 );
-            String plainUrl = "http://localhost:"+server.getPort()+"/plain";
+            String plainUrl = server.datasetURL("/plain");
             try(RDFConnection conn = RDFConnectionFactory.connect(plainUrl)) {
                 conn.update(data);
             }

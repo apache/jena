@@ -18,9 +18,6 @@
 
 package org.apache.jena.test.rdfconnection;
 
-import org.apache.jena.atlas.logging.LogCtl ;
-import org.apache.jena.atlas.web.WebLib;
-import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.main.FusekiServer ;
 import org.apache.jena.rdfconnection.AbstractTestRDFConnection;
 import org.apache.jena.rdfconnection.RDFConnection;
@@ -33,23 +30,15 @@ import org.junit.Before ;
 import org.junit.BeforeClass ;
 
 public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
-    private static FusekiServer server ;
+    protected static FusekiServer server ;
     private static DatasetGraph serverdsg = DatasetGraphFactory.createTxnMem() ;
-    protected static int PORT; 
-    
+
     @BeforeClass
     public static void beforeClass() {
-        PORT = WebLib.choosePort();
         server = FusekiServer.create().loopback(true)
-            .port(PORT)
+            .port(0)
             .add("/ds", serverdsg)
             .build() ;
-        LogCtl.setLevel(Fuseki.serverLogName,  "WARN");
-        LogCtl.setLevel(Fuseki.actionLogName,  "WARN");
-        LogCtl.setLevel(Fuseki.requestLogName, "WARN");
-        LogCtl.setLevel(Fuseki.adminLogName,   "WARN");
-        LogCtl.setLevel(Fuseki.adminLogName,   "WARN");
-        LogCtl.setLevel("org.eclipse.jetty",   "WARN");
         server.start() ;
     }
 
@@ -61,18 +50,18 @@ public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
 
 //  @After
 //  public void afterTest() {}
-    
+
     @AfterClass
     public static void afterClass() {
-        server.stop(); 
+        server.stop();
     }
-    
+
     @Override
     protected boolean supportsAbort() { return false ; }
 
     @Override
     protected RDFConnection connection() {
-        return RDFConnectionFactory.connect("http://localhost:"+PORT+"/ds");
+        return RDFConnectionFactory.connect(server.datasetURL("/ds"));
     }
 }
 
