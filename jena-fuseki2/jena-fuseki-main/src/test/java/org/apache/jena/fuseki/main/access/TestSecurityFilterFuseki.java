@@ -33,7 +33,6 @@ import org.apache.jena.fuseki.access.SecurityContextView;
 import org.apache.jena.fuseki.access.SecurityRegistry;
 import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiServer;
-import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.rdf.model.Model;
@@ -77,7 +76,6 @@ public class TestSecurityFilterFuseki {
 
     // Set up Fuseki with two datasets, "data1" backed by TDB and "data2" backed by TDB2.
     @BeforeClass public static void beforeClass() {
-        int port = FusekiNetLib.choosePort();
         addTestData(testdsg1);
         addTestData(testdsg2);
         addTestData(testdsg3);
@@ -100,7 +98,7 @@ public class TestSecurityFilterFuseki {
 
         fusekiServer = FusekiServer.create()
             .securityHandler(sh)
-            .port(port)
+            .port(0)
             .add("data1", testdsg1)
             .add("data2", testdsg2)
             .add("data3", testdsg3)
@@ -130,8 +128,7 @@ public class TestSecurityFilterFuseki {
     }
 
     public TestSecurityFilterFuseki(String label, String dsName) {
-        int port = fusekiServer.getPort();
-        baseUrl = "http://localhost:"+port+"/"+dsName;
+        baseUrl = fusekiServer.datasetURL(dsName);
     }
 
     private static String queryAll        = "SELECT * { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }";

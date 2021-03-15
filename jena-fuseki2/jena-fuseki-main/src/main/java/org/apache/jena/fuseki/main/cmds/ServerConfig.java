@@ -27,9 +27,17 @@ import org.apache.jena.sparql.core.DatasetGraph;
  */
 class ServerConfig {
     /** Server port. This is the http port when both http and https are active. */
-    public int port;
+    public int port                   = -1;
     /** Loopback */
     public boolean   loopback         = false;
+
+    // https
+    public int httpsPort              = -1;
+    public String httpsKeysDetails    = null;
+
+    // Jetty server configuration file.
+    public String jettyConfigFile     = null;
+
     /** The dataset name (canonical form) */
     public String    datasetPath      = null;
     /** Allow update */
@@ -54,16 +62,11 @@ class ServerConfig {
 
     public boolean validators         = false;
     /** An informative label */
-    public String datasetDescription;
+    public String datasetDescription  = null;
     public String contentDirectory    = null;
 
     // Server authentication
     public AuthScheme authScheme      = null;
     public String passwdFile          = null;
     public String realm               = null;
-
-    // https
-    public int httpsPort              = -1;
-    public String httpsKeystore       = null;
-    public String httpsKeystorePasswd = null;
 }

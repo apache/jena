@@ -19,8 +19,11 @@
 package org.apache.jena.fuseki.main;
 
 import static java.util.Objects.requireNonNull;
+import static org.apache.jena.fuseki.Fuseki.serverLog;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -30,6 +33,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.jena.atlas.json.JSON;
+import org.apache.jena.atlas.json.JsonObject;
+import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.AuthScheme;
@@ -125,8 +131,8 @@ public class FusekiServer {
     }
 
     private final Server server;
-    private final int httpPort;
-    private final int httpsPort;
+    private int httpPort;
+    private int httpsPort;
     private final String staticContentDir;
     private final ServletContext servletContext;
 
@@ -142,13 +148,84 @@ public class FusekiServer {
 
     /**
      * Return the port being used.
-     * This will be the give port, which defaults to 3330, or
-     * the one actually allocated if the port was 0 ("choose a free port").
-     * If https in use, this is the HTTPS port.
+     * <p>
+     * This will be the server port, which defaults to 3330 for embedded use,
+     * and to 3030 for command line use,
+     * or one actually allocated if the port was 0 ("choose a free port").
+     * <p>
+     * If https is in-use, this is the HTTPS port.
+     * <p>
+     * If http and https are in-use, this is the HTTPS port.
+     * <p>
+     * If there multiple ports of the same schema, return any one port in use.
+     * <p>
+     * See also {@link #getHttpPort} or Use {@link #getHttpsPort}.
      */
     public int getPort() {
         //TODO garantee to return the HTTPS port, if HTTPS is enabled
         return ((ServerConnector) getJettyServer().getConnectors()[0]).getLocalPort();
+    }
+
+    /**
+     * Get the HTTP port.
+     * <p>
+     * Returns -1 for no HTTP port.
+     * <p>
+     * If there are multiple HTTP ports configured, returns one of them.
+     */
+    public int getHttpPort() {
+        return httpPort;
+    }
+
+    /**
+     * Get the HTTPS port.
+     * <p>
+     * Returns -1 for no HTTPS port.
+     * <p>
+     * If there are multiple HTTPS ports configured, returns one of them.
+     */
+    public int getHttpsPort() {
+        return httpsPort;
+    }
+
+    /**
+     * Calculate the server URL for "localhost".
+     * <p>
+     * Example: {@code http://localhost:3330/}.
+     * The URL ends in "/".
+     * The host name is "localhost".
+     * If both HTTP and HTTPS are available, then reply with an HTTPS URL.
+     * <p>
+     * This operation is useful when using Fuseki as an embedded test server.
+     */
+    public String serverURL() {
+        return schemeHostPort()+"/";
+    }
+
+    /**
+     * Return the URL for a local dataset.
+     * <p>
+     * Example: {@code http://localhost:3330/dataset}.
+     * The host name is "localhost".
+     * If both HTTP and HTTPS are available, then reply with an HTTPS URL.
+     * <p>
+     * This operation is useful when using Fuseki as an embedded test server.
+     */
+    public String datasetURL(String dsName) {
+        if ( ! dsName.startsWith("/") )
+            dsName = "/"+dsName;
+        return schemeHostPort()+dsName;
+    }
+
+    // schema://host:port, no trailing "/".
+    private String schemeHostPort() {
+        int port = getHttpPort();
+        String scheme = "http";
+        if ( getHttpsPort() > 0 ) { //&& server.getHttpPort() < 0 ) {
+            scheme = "https";
+            port =  getHttpsPort();
+        }
+        return scheme+"://localhost:"+port;
     }
 
     /** Get the underlying Jetty server which has also been set up. */
@@ -183,7 +260,6 @@ public class FusekiServer {
      */
     public FusekiServer start() {
         try { server.start(); }
-
         catch (IOException ex) {
             if ( ex.getCause() instanceof java.security.UnrecoverableKeyException )
                 // Unbundle for clearer message.
@@ -196,16 +272,49 @@ public class FusekiServer {
         catch (Exception ex) {
             throw new FusekiException(ex);
         }
-        if ( httpsPort > 0 )
-            Fuseki.serverLog.info("Start Fuseki (port="+httpPort+"/"+httpsPort+")");
+
+        Connector[] connectors = server.getServer().getConnectors();
+        if ( connectors.length == 0 )
+            serverLog.warn("Start Fuseki: No connectors");
+
+        // Extract the ports from the Connectors.
+        Arrays.stream(connectors).forEach(c->{
+            if ( c instanceof ServerConnector ) {
+                ServerConnector connector = (ServerConnector)c;
+                String protocol = connector.getDefaultConnectionFactory().getProtocol();
+                String scheme = (protocol.startsWith("SSL-") || protocol.equals("SSL")) ? "https" : "http";
+                int port = connector.getLocalPort();
+                connector(scheme, port);
+            }
+        });
+
+        if ( httpsPort > 0 && httpPort > 0 )
+            Fuseki.serverLog.info("Start Fuseki (http="+httpPort+" https="+httpsPort+")");
+        else if ( httpsPort > 0 )
+            Fuseki.serverLog.info("Start Fuseki (https="+httpsPort+")");
+        else if ( httpPort > 0 )
+            Fuseki.serverLog.info("Start Fuseki (http="+httpPort+")");
         else
-            Fuseki.serverLog.info("Start Fuseki (port="+getPort()+")");
+            Fuseki.serverLog.info("Start Fuseki");
         return this;
+    }
+
+    private void connector(String scheme, int port) {
+        switch (scheme) {
+            case "http":
+                if ( httpPort <= 0 )
+                    httpPort = port;
+                break;
+            case "https":
+                if ( httpsPort <= 0 )
+                    httpsPort = port;
+                break;
+        }
     }
 
     /** Stop the server. */
     public void stop() {
-        Fuseki.serverLog.info("Stop Fuseki (port="+getPort()+")");
+        Fuseki.serverLog.info("Stop Fuseki");
         try { server.stop(); }
         catch (Exception e) { throw new FusekiException(e); }
     }
@@ -234,12 +343,16 @@ public class FusekiServer {
 
     /** FusekiServer.Builder */
     public static class Builder {
+        private static final int DefaultServerPort  = 3330;
+        private static final int PortUnset          = -2;
+        private static final int PortInactive       = -3;
+
         private final DataAccessPointRegistry  dataAccessPoints =
             new DataAccessPointRegistry( MetricsProviderRegistry.get().getMeterRegistry() );
         private final OperationRegistry  operationRegistry;
         // Default values.
-        private int                      serverPort         = 3330;
-        private int                      serverHttpsPort    = -1;
+        private int                      serverHttpPort     = PortUnset;
+        private int                      serverHttpsPort    = PortUnset;
         private boolean                  networkLoopback    = false;
         private int                      minThreads         = -1;
         private int                      maxThreads         = -1;
@@ -248,6 +361,8 @@ public class FusekiServer {
         private boolean                  withPing           = false;
         private boolean                  withMetrics        = false;
         private boolean                  withStats          = false;
+
+        private String                   jettyServerConfig  = null;
 
         private Map<String, String>      corsInitParams     = null;
 
@@ -300,14 +415,18 @@ public class FusekiServer {
         }
 
         /**
-         * Set the port to run on.
+         * Set the HTTP port to run on.
          * <p>
          * If set to 0, a random free port will be used.
          */
         public Builder port(int port) {
+            if ( port == -1 ) {
+                this.serverHttpPort = PortInactive;
+                return this;
+            }
             if ( port < 0 )
-                throw new IllegalArgumentException("Illegal port="+port+" : Port must be greater than or equal to zero.");
-            this.serverPort = port;
+                throw new IllegalArgumentException("Illegal port="+port+" : Port must be greater than or equal to zero, or -1 to unset");
+            this.serverHttpPort = port;
             return this;
         }
 
@@ -486,6 +605,19 @@ public class FusekiServer {
         }
 
         /**
+         * Build the server using a Jetty configuration file.
+         * See <a href="https://wiki.eclipse.org/Jetty/Reference/jetty.xml_syntax">Jetty/Reference/jetty.xml_syntax</a>
+         * This is instead of any other HTTP server settings such as port and HTTPs.
+         */
+        public Builder jettyServerConfig(String filename) {
+            requireNonNull(filename, "filename");
+            if ( ! FileOps.exists(filename) )
+                throw new FusekiConfigException("File no found: "+filename);
+            this.jettyServerConfig = filename;
+            return this;
+        }
+
+        /**
          * Server level setting specific to Fuseki main.
          * General settings done by {@link FusekiConfig#processServerConfiguration}.
          */
@@ -574,13 +706,70 @@ public class FusekiServer {
             return this;
         }
 
+        /**
+         * Set the HTTPs port and provide the certificate store and password.
+         * <br/>
+         * Pass -1 for the httpsPort to clear the settings.
+         * <br/>
+         * Pass port 0 to get an allocated free port on startup.
+         */
         public Builder https(int httpsPort, String certStore, String certStorePasswd) {
             requireNonNull(certStore, "certStore");
             requireNonNull(certStorePasswd, "certStorePasswd");
+            if ( httpsPort <= -1 ) {
+                this.serverHttpsPort = PortInactive;
+                this.httpsKeystore = null;
+                this.httpsKeystorePasswd = null;
+                return this;
+            }
             this.httpsKeystore = certStore;
             this.httpsKeystorePasswd = certStorePasswd;
             this.serverHttpsPort = httpsPort;
             return this;
+        }
+
+        /**
+         * Set the HTTPs port and read the certificate store location and password from a file.
+         * The file can be secured by the host OS.
+         * This means the password for the certificate is not in the application code.
+         * <p>
+         * The file format is a JSON object:
+         * <pre>
+         * {
+         *     "keystore" : "mykey.jks" ,
+         *     "passwd"   : "certificate password"
+         * }
+         * </pre>
+         * Pass -1 for the httpsPort to clear the settings.
+         * <br/>
+         * Pass port 0 to get an allocated free port on startup.
+         */
+        public Builder https(int httpsPort, String certificate) {
+            requireNonNull(certificate, "certificate file");
+            if ( httpsPort <= -1 ) {
+                this.serverHttpsPort = PortInactive;
+                this.httpsKeystore = null;
+                this.httpsKeystorePasswd = null;
+                return this;
+            }
+            setHttpsCert(certificate);
+            this.serverHttpsPort = httpsPort;
+            return this;
+        }
+
+        private void setHttpsCert(String filename) {
+            try {
+                JsonObject httpsConf = JSON.read(filename);
+                Path path = Paths.get(filename).toAbsolutePath();
+                String keystore = httpsConf.get("keystore").getAsString().value();
+                // Resolve relative to the https setup file.
+                this.httpsKeystore = path.getParent().resolve(keystore).toString();
+                this.httpsKeystorePasswd = httpsConf.get("passwd").getAsString().value();
+            } catch (Exception ex) {
+                this.httpsKeystore = null;
+                this.httpsKeystorePasswd = null;
+                throw new FusekiConfigException("Failed to read the HTTP details file: "+ex.getMessage());
+            }
         }
 
         /**
@@ -773,7 +962,6 @@ public class FusekiServer {
             return this;
         }
 
-
         /**
          * Build a server according to the current description.
          */
@@ -785,17 +973,25 @@ public class FusekiServer {
                     securityHandler = buildSecurityHandler();
                 ServletContextHandler handler = buildFusekiContext();
 
+                if ( jettyServerConfig != null ) {
+                    Server server = jettyServer(handler, jettyServerConfig);
+                    return new FusekiServer(-1, -1, server, staticContentDir, handler.getServletContext());
+                }
+
                 Server server;
-                if ( serverHttpsPort == -1 ) {
-                    // HTTP
-                    server = jettyServer(handler, serverPort, minThreads, maxThreads);
+                int httpPort = Math.max(-1, serverHttpPort);
+                int httpsPort = Math.max(-1, serverHttpsPort);
+
+                if ( httpsPort <= -1 ) {
+                    // HTTP only
+                    server = jettyServer(handler, httpPort, minThreads, maxThreads);
                 } else {
                     // HTTPS, no http redirection.
-                    server = jettyServerHttps(handler, serverPort, serverHttpsPort, minThreads, maxThreads, httpsKeystore, httpsKeystorePasswd);
+                    server = jettyServerHttps(handler, httpPort, httpsPort, minThreads, maxThreads, httpsKeystore, httpsKeystorePasswd);
                 }
                 if ( networkLoopback )
                     applyLocalhost(server);
-                return new FusekiServer(serverPort, serverHttpsPort, server, staticContentDir, handler.getServletContext());
+                return new FusekiServer(httpPort, httpsPort, server, staticContentDir, handler.getServletContext());
             } finally {
                 buildFinish();
             }
@@ -824,6 +1020,9 @@ public class FusekiServer {
         private List<DatasetGraph> datasets = null;
 
         private void buildStart() {
+            if ( serverHttpPort < 0 && serverHttpsPort < 0 )
+                serverHttpPort = DefaultServerPort;
+
             // -- Server and dataset authentication
             hasAuthenticationHandler = (passwordFile != null) || (securityHandler != null);
 
@@ -1067,20 +1266,23 @@ public class FusekiServer {
         /** Jetty server with one connector/port. */
         private static Server jettyServer(ServletContextHandler handler, int port, int minThreads, int maxThreads) {
             Server server = JettyServer.jettyServer(minThreads, maxThreads);
-            // Missed when HTTPS.
-            // TODO Share with jettyServer :: jettyServerHttps
-            HttpConfiguration httpConfig = new HttpConfiguration();
-            // Some people do try very large operations ... really, should use POST.
-            httpConfig.setRequestHeaderSize(512 * 1024);
-            httpConfig.setOutputBufferSize(1024 * 1024);
-            // Do not add "Server: Jetty(....) when not a development system.
-            if ( ! Fuseki.outputJettyServerHeader )
-                httpConfig.setSendServerVersion(false);
+            HttpConfiguration httpConfig = JettyLib.httpConfiguration();
+
+            // Do not add "Server: Jetty(....) unless configured to do so.
+            if ( Fuseki.outputJettyServerHeader )
+                httpConfig.setSendServerVersion(true);
 
             HttpConnectionFactory f1 = new HttpConnectionFactory(httpConfig);
             ServerConnector connector = new ServerConnector(server, f1);
             connector.setPort(port);
             server.addConnector(connector);
+            server.setHandler(handler);
+            return server;
+        }
+
+        private Server jettyServer(ServletContextHandler handler, String jettyServerConfig) {
+            serverLog.info("Jetty server config file = " + jettyServerConfig);
+            Server server = JettyServer.jettyServer(jettyServerConfig);
             server.setHandler(handler);
             return server;
         }

@@ -24,7 +24,7 @@ import java.net.ServerSocket;
 public class WebLib
 {
     /** Split a string, removing whitespace around the split string.
-     * e.g. Use in splitting HTTP accept/content-type headers.  
+     * e.g. Use in splitting HTTP accept/content-type headers.
      */
     public static String[] split(String s, String splitStr)
     {

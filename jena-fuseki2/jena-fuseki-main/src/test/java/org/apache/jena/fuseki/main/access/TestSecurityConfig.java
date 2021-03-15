@@ -18,7 +18,8 @@
 
 package org.apache.jena.fuseki.main.access;
 
-import static org.apache.jena.fuseki.test.FusekiTest.*;
+import static org.apache.jena.fuseki.test.FusekiTest.expectQuery401;
+import static org.apache.jena.fuseki.test.FusekiTest.expectQuery403;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -27,7 +28,6 @@ import java.util.function.Consumer;
 import org.apache.http.client.HttpClient;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
-import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.rdfconnection.LibSec;
 import org.apache.jena.rdfconnection.RDFConnection;
@@ -51,10 +51,6 @@ public class TestSecurityConfig {
     // Not in the user store.
     private AuthSetup authSetupX(FusekiServer server) { return new AuthSetup("localhost", server.getPort(), "userX", "pwX", REALM); }
 
-    private static String serverURL(FusekiServer server) {
-        return "http://localhost:"+server.getPort()+"/";
-    }
-
     private static String datasetURL(FusekiServer server, String dsName) {
         if ( dsName.startsWith("/") )
             dsName = dsName.substring(1);
@@ -62,10 +58,9 @@ public class TestSecurityConfig {
     }
 
     private static FusekiServer fusekiServer(String configFile) {
-        int port = WebLib.choosePort();
         FusekiServer fusekiServer =
             FusekiServer.create()
-                .port(port)
+                .port(0)
                 .parseConfigFile(configFile)
                 .passwordFile("testing/Access/passwd")
                 .build();
@@ -100,7 +95,7 @@ public class TestSecurityConfig {
     @Test public void access_serverNone() {
         test("testing/Access/config-server-0.ttl", fusekiServer -> {
             // Server access.
-            try (TypedInputStream in = HttpOp.execHttpGet(serverURL(fusekiServer))) {
+            try (TypedInputStream in = HttpOp.execHttpGet(fusekiServer.serverURL()) ) {
                 assertNotNull(in);
             } catch (HttpException ex) {
                 // 404 is OK - no static file area.
@@ -151,7 +146,7 @@ public class TestSecurityConfig {
         test("testing/Access/config-server-1.ttl", fusekiServer->{
             // Must be logged in.
             HttpClient hc = LibSec.httpClient(authSetup1(fusekiServer));
-            try( TypedInputStream in = HttpOp.execHttpGet(serverURL(fusekiServer), null, hc, null) ) {
+            try( TypedInputStream in = HttpOp.execHttpGet(fusekiServer.serverURL(), null, hc, null) ) {
                 assertNull(in);
             } catch (HttpException ex) {
                 // 404 is OK - no static file area.

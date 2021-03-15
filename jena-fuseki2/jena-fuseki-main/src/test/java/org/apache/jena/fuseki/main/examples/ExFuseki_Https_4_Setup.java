@@ -19,18 +19,19 @@
 package org.apache.jena.fuseki.main.examples;
 
 import java.security.GeneralSecurityException;
-import java.security.cert.X509Certificate;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 
 import org.apache.http.client.HttpClient;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.TrustStrategy;
 import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.query.QueryExecution;
@@ -77,17 +78,18 @@ public class ExFuseki_Https_4_Setup {
         return server;
     }
 
-    // Example HttpClient that trusts any certificates, including self-signed.
-    private static HttpClientBuilder httpClientBuilder() {
-        TrustStrategy trustStrategy = (X509Certificate[] chain, String authType) -> true;
+    /** Create an {@link HttpClientBuilder} that trusts self-signed, localhost https connections. */
+    public static HttpClientBuilder trustLocalhostUnsigned() {
+        TrustStrategy trustStrategy = TrustSelfSignedStrategy.INSTANCE;
         try {
             SSLContext sslCxt = new SSLContextBuilder().loadTrustMaterial(trustStrategy).build();
-            SSLConnectionSocketFactory sslfactory = new SSLConnectionSocketFactory(sslCxt, NoopHostnameVerifier.INSTANCE);
+            HostnameVerifier hostNameVerifier = (hostname, session) -> hostname.equals("localhost");
+            // Example: Any host.
+            // HostnameVerifier hostNameVerifier = NoopHostnameVerifier.INSTANCE;
+            SSLConnectionSocketFactory sslfactory = new SSLConnectionSocketFactory(sslCxt, hostNameVerifier);
             return HttpClients.custom().setSSLSocketFactory(sslfactory);
         } catch (GeneralSecurityException ex) {
-            ex.printStackTrace();
-            System.exit(1);
-            return null;
+            throw new FusekiException(ex);
         }
     }
 
@@ -96,7 +98,7 @@ public class ExFuseki_Https_4_Setup {
         //RDFConnection connSingle = RDFConnectionFactory.connect("https://localhost:3443/ds");
 
         // Allow self-signed
-        HttpClient hc = httpClientBuilder().build();
+        HttpClient hc = trustLocalhostUnsigned().build();
 
         RDFConnection connSingle = RDFConnectionFuseki.create()
             .httpClient(hc)

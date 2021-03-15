@@ -34,7 +34,6 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.HttpException;
-import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.rdfconnection.RDFConnectionRemote;
 import org.apache.jena.riot.system.stream.LocatorFTP;
@@ -296,11 +295,6 @@ public class Fuseki {
     // Force a call to init.
     static {
         init();
-    }
-
-    /** Retrun a free port */
-    public static int choosePort() {
-        return FusekiNetLib.choosePort();
     }
 
     /**

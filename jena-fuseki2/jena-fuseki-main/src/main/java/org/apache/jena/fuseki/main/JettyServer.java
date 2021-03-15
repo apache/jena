@@ -28,6 +28,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
@@ -50,13 +52,16 @@ import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
+import org.eclipse.jetty.xml.XmlConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
+import static org.apache.jena.fuseki.Fuseki.serverLog;
 
 /**
  * Jetty server for servlets, including being able to run Fuseki {@link ActionBase} derived servlets.
@@ -158,11 +163,16 @@ public class JettyServer {
         }
     }
 
+    public static class JettyConfigException extends FusekiConfigException {
+        public JettyConfigException(String msg) { super(msg); }
+    }
+
     public static class Builder {
         private int                     port               = -1;
         private int                     minThreads         = -1;
         private int                     maxThreads         = -1;
         private boolean                 loopback           = false;
+        private String                  jettyServerConfig  = null;
         protected boolean               verbose            = false;
         // Other servlets to add.
         private List<Pair<String, HttpServlet>> servlets   = new ArrayList<>();
@@ -182,6 +192,19 @@ public class JettyServer {
             if ( port < 0 )
                 throw new IllegalArgumentException("Illegal port="+port+" : Port must be greater than or equal to zero.");
             this.port = port;
+            return this;
+        }
+
+        /**
+         * Build the server using a Jetty configuration file.
+         * See <a href="https://wiki.eclipse.org/Jetty/Reference/jetty.xml_syntax">Jetty/Reference/jetty.xml_syntax</a>
+         * This is instead of any other server settings such as port or https.
+         */
+        public Builder jettyServerConfig(String filename) {
+            requireNonNull(filename, "filename");
+            if ( ! FileOps.exists(filename) )
+                throw new JettyConfigException("File not found: "+filename);
+            this.jettyServerConfig = filename;
             return this;
         }
 
@@ -262,7 +285,7 @@ public class JettyServer {
         public Builder numServerThreads(int minThreads, int maxThreads) {
             if ( minThreads >= 0 && maxThreads > 0 ) {
                 if ( minThreads > maxThreads )
-                    throw new FusekiConfigException(String.format("Bad thread setting: (min=%d, max=%d)", minThreads, maxThreads));
+                    throw new JettyConfigException(String.format("Bad thread setting: (min=%d, max=%d)", minThreads, maxThreads));
             }
             this.minThreads = minThreads;
             this.maxThreads = maxThreads;
@@ -283,7 +306,7 @@ public class JettyServer {
          */
         public Builder maxServerThreads(int maxThreads) {
             if ( minThreads > maxThreads )
-                throw new FusekiConfigException(String.format("Bad thread setting: (min=%d, max=%d)", minThreads, maxThreads));
+                throw new JettyConfigException(String.format("Bad thread setting: (min=%d, max=%d)", minThreads, maxThreads));
             numServerThreads(minThreads, maxThreads);
             return this;
         }
@@ -329,7 +352,9 @@ public class JettyServer {
         public JettyServer build() {
             ServletContextHandler handler = buildServletContext();
             // Use HandlerCollection for several ServletContextHandlers and thus several ServletContext.
-            Server server = jettyServer(minThreads, maxThreads);
+            Server server = jettyServerConfig != null
+                    ? jettyServer(jettyServerConfig)
+                    : jettyServer(minThreads, maxThreads);
             serverAddConnectors(server, port, loopback);
             server.setHandler(handler);
             return new JettyServer(port, server);
@@ -398,8 +423,22 @@ public class JettyServer {
         }
     }
 
-    /** Jetty server */
-    /*package*/ static Server jettyServer(int minThreads, int maxThreads) {
+    // Jetty Server
+
+    public static Server jettyServer(String jettyConfig) {
+        try {
+            Server server = new Server();
+            Resource configXml = Resource.newResource(jettyConfig);
+            XmlConfiguration configuration = new XmlConfiguration(configXml);
+            configuration.configure(server);
+            return server;
+        } catch (Exception ex) {
+            serverLog.error("JettyServer: Failed to configure server: " + ex.getMessage(), ex);
+            throw new JettyConfigException("Failed to configure a server using configuration file '" + jettyConfig + "'");
+        }
+    }
+
+    public static Server jettyServer(int minThreads, int maxThreads) {
         ThreadPool threadPool = null;
         // Jetty 9.4 : the Jetty default is 200,8
         if ( minThreads < 0 )

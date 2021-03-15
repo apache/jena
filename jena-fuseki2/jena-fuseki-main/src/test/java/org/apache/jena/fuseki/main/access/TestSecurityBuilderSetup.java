@@ -59,18 +59,23 @@ import org.junit.Test;
 public class TestSecurityBuilderSetup {
 
     private static FusekiServer fusekiServer = null;
-    private static int port = WebLib.choosePort();
-    private static String serverURL = "http://localhost:"+port+"/";
-    private static AuthSetup authSetup1 = new AuthSetup("localhost", port, "user1", "pw1", "TripleStore");
-    private static AuthSetup authSetup2 = new AuthSetup("localhost", port, "user2", "pw2", "TripleStore");
+    private static String serverURL;
+    private static AuthSetup authSetup1;
+    private static AuthSetup authSetup2;
     // Not in the user store.
-    private static AuthSetup authSetupX = new AuthSetup("localhost", port, "userX", "pwX", "TripleStore");
+    private static AuthSetup authSetupX;
 
     @BeforeClass
     public static void beforeClass() {
         if ( false )
             // To watch the HTTP headers
             LogCtl.enable("org.apache.http.headers");
+
+        int port = WebLib.choosePort();
+
+        authSetup1 = new AuthSetup("localhost", port, "user1", "pw1", "TripleStore");
+        authSetup2 = new AuthSetup("localhost", port, "user2", "pw2", "TripleStore");
+        authSetupX = new AuthSetup("localhost", port, "userX", "pwX", "TripleStore");
 
         // Two authorized users.
         UserStore userStore = new UserStore();
@@ -106,6 +111,9 @@ public class TestSecurityBuilderSetup {
                 //.staticFileBase(".")
                 .build();
         fusekiServer.start();
+
+        serverURL = fusekiServer.serverURL();
+
     }
 
     @Before
