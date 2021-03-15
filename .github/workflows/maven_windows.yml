@@ -1,12 +1,20 @@
 ## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 
-name: Apache Jena CI for Windows-latest
+name: Apache Jena CI (MS Windows)
 on: workflow_dispatch
+
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
 
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest]
+
+    # "windows" takes up a lot of diskspace due a longstanding JDK issue
+    # Running on c: seems to work.
     steps:
     - uses: actions/checkout@v2
    

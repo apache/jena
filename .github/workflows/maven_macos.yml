@@ -1,12 +1,13 @@
 ## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 
-name: Apache Jena CI
+name: Apache Jena CI - MacOS
+on: workflow_dispatch
 
-on:
-  push:
-    branches: [ main ]
-#  pull_request:
-#    branches: [ main ]
+## on:
+##   push:
+##     branches: [ main ]
+## #  pull_request:
+## #    branches: [ main ]
 
 jobs:
   build:
@@ -16,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [macos-latest]
 
     steps:
     - uses: actions/checkout@v2
