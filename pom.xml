@@ -60,7 +60,7 @@
     <ver.jetty>9.4.38.v20210224</ver.jetty>
     <ver.shiro>1.7.1</ver.shiro>
 
-    <ver.libthrift>0.14.0</ver.libthrift>
+    <ver.libthrift>0.14.1</ver.libthrift>
 
     <!-- jsonld-java depends on depends on Jackson core
          and Jackson databind. databind has had a few CVEs
