@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.api;
 
 import static org.apache.jena.atlas.lib.Lib.sleep ;
+import static org.junit.Assume.assumeFalse;
 
 import org.apache.jena.base.Sys ;
 import org.apache.jena.graph.Graph ;
@@ -27,6 +28,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.junit.Assert ;
+import org.junit.Before;
 import org.junit.Test ;
 
 public class TestQueryExecutionTimeout2
@@ -40,22 +42,15 @@ public class TestQueryExecutionTimeout2
     static DatasetGraph         dsg = DatasetGraphFactory.wrap(g) ;
     static Dataset              ds  = DatasetFactory.wrap(dsg) ;
 
-    private static void noException(ResultSet rs) {
-        ResultSetFormatter.consume(rs);
-    }
-
-    private static void exceptionExpected(ResultSet rs) {
-        try {
-            ResultSetFormatter.consume(rs);
-            Assert.fail("QueryCancelledException expected");
-        } catch (QueryCancelledException ex) {}
-    }
-
     // Loaded CI.
-    private static boolean mayBeErratic = Sys.isWindows ;
+    private static boolean mayBeErratic = Sys.isWindows || Sys.isMacOS;
 
-    private int timeout(int time1, int time2) {
-        return mayBeErratic ? time2 : time1 ;
+    @Before public void beforeTest() {
+        // These timeout test do not work reliably on MacOS in GH actions so for now
+        // they are skipped. It looks like the server machines are heavily loaded and
+        // as a result very long (10's seconds) pauses happen.
+        // These tests need rewriting to cope with such an environment.
+        assumeFalse(Sys.isMacOS);
     }
 
     @Test public void timeout_30()  { test2(200, 20, timeout(50, 250), true) ; }
@@ -95,6 +90,21 @@ public class TestQueryExecutionTimeout2
             else
                 noException(rs) ;
         }
+    }
+
+    private static void noException(ResultSet rs) {
+        ResultSetFormatter.consume(rs);
+    }
+
+    private static void exceptionExpected(ResultSet rs) {
+        try {
+            ResultSetFormatter.consume(rs);
+            Assert.fail("QueryCancelledException expected");
+        } catch (QueryCancelledException ex) {}
+    }
+
+    private int timeout(int time1, int time2) {
+        return mayBeErratic ? time2 : time1 ;
     }
 }
 
