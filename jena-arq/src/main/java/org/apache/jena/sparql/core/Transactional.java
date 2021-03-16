@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.core;
 
+import java.util.function.Supplier;
+
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.JenaTransactionException;
@@ -28,15 +30,17 @@ import org.apache.jena.system.Txn;
  * <pre> begin(READ) ... end()</pre>
  * <p>{@code commit} and {@code abort} are allowed.
  * <p>The write lifecycle is:
- * <pre> begin(WRITE) ... abort() or commit()</pre>
- * <p>{@code end()} is optional but preferred.
+ * <pre> begin(WRITE) ... abort() or commit() end()</pre>
+ * <p>{@code end()} is optional for "write" but is preferred.
  * <p>
- * Helper code is available {@link Txn} so, for example:
- * <pre>Txn.executeRead(dataset, {@literal ()->} { ... sparql query ... });</pre>
- * <pre>Txn.executeWrite(dataset, {@literal ()->} { ... sparql update ... });</pre>
- * or use one of <tt>Txn.calculateRead</tt> and <tt>Txn.executeWrite</tt>
+ * <h4>Application use</h4>
+ * Applications can conveniently execute the lifecycle with methods to read or write:
+ * <pre>dataset.executeRead({@literal ()->} { ... sparql query ... });</pre>
+ * <pre>dataset.executeWrite({@literal ()->} { ... sparql update ... });</pre>
+ * Use one of <tt>calculateRead</tt> or <tt>calculateWrite</tt>
  * to return a value for the transaction block.
  * <p>
+ * <h4>Core Functionality</h4>
  * Directly called, code might look like:
  * <pre>
  *     Transactional object = ...
@@ -45,7 +49,9 @@ import org.apache.jena.system.Txn;
  *       ... actions inside a read transaction ...
  *     } finally { object.end() ; }
  * </pre>
- * or
+ *
+ * <p>or</p>
+ *
  * <pre>
  *     Transactional object = ...
  *     object.begin(TxnMode.WRITE) ;
@@ -57,6 +63,8 @@ import org.apache.jena.system.Txn;
  *        object.end() ;
  *     }
  * </pre>
+ *
+ * @see Txn
  */
 
 public interface Transactional
@@ -192,4 +200,60 @@ public interface Transactional
 
     /** Say whether inside a transaction. */
     public boolean isInTransaction() ;
+
+    /**
+     * Execute application code in a transaction with the given {@link TxnType
+     * transaction type}. See {@link Txn#exec}.
+     */
+    public default void exec(TxnType txnType, Runnable action) { Txn.exec(this, txnType, action); }
+
+    /**
+     * Execute and return a value in a transaction with the given {@link TxnType
+     * transaction type}. See {@link Txn#calc}.
+     */
+    public default <T> T calc(TxnType txnType, Supplier<T> action) { return Txn.calc(this, txnType, action); }
+
+    /**
+     * Execute in a "read" transaction that can promote to "write".
+     * <p>
+     * Such a transaction may abort if an update is executed
+     * by another thread before this one is promoted to "write" mode.
+     * If so, the data protected by {@code txn} is unchanged.
+     * <p>
+     * If the application knows updates will be needed, consider using {@link #executeWrite}
+     * which starts in "write" mode.
+     * <p>
+     * The application code can call {@link Transactional#promote} to attempt to
+     * change from "read" to "write"; the {@link Transactional#promote promote} method
+     * returns a boolean indicating whether the promotion was possible or not.
+     */
+    public default void execute(Runnable r) { Txn.execute(this, r); }
+
+    /**
+     * Execute in a "read" transaction that can promote to "write" and return some calculated value.
+     * <p>
+     * Such a transaction may abort if an update is executed
+     * by another thread before this one is promoted to "write" mode.
+     * If so, the data protected by {@code txn} is unchanged.
+     * <p>
+     * If the application knows updates will be needed, consider using {@link #executeWrite}
+     * which starts in "write" mode.
+     * <p>
+     * The application code can call {@link Transactional#promote} to attempt to
+     * change from "read" to "write"; the {@link Transactional#promote promote} method
+     * returns a boolean indicating whether the promotion was possible or not.
+     */
+    public default <X> X calculate(Supplier<X> r) { return Txn.calculate(this, r); }
+
+    /** Execute in a read transaction */
+    public default <T extends Transactional> void executeRead(Runnable r) { Txn.executeRead(this, r); }
+
+    /** Execute and return a value in a read transaction */
+    public default <X> X calculateRead(Supplier<X> r) { return Txn.calculateRead(this, r); }
+
+    /** Execute the Runnable in a write transaction */
+    public default <T extends Transactional> void executeWrite(Runnable r) { Txn.executeWrite(this, r); }
+
+    /** Execute and return a value in a write transaction. */
+    public default <X> X calculateWrite(Supplier<X> r) { return Txn.calculateWrite(this, r); }
 }
