@@ -22,7 +22,10 @@ import org.apache.jena.graph.Node ;
 
 /** Interface for notification of changes
  * (adds and deletes of quads) to a DatasetGraph
+ * @deprecated Do not use. This interface will be removed or significantly changed.
+ *       To see changes to a dataset, use {@link DatasetGraphWrapper} to capture events of interest.
  */
+@Deprecated
 public interface DatasetChanges
 {
     /** Indicator that a sequence of changes is about to start */

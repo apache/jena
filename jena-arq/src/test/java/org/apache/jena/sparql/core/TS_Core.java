@@ -34,7 +34,6 @@ import org.junit.runners.Suite ;
     , TestGraphOverDatasetMem.class
     , TestDatasetGraphViewGraphs.class
     , TestGraphView.class
-    , TestDatasetMonitor.class
 
     , TestDatasetGraphBaseFind_General.class
     , TestDatasetGraphBaseFind_Mem.class

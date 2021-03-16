@@ -16,18 +16,26 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query.text;
+package org.apache.jena.query.text.changes;
 
-import org.apache.jena.query.text.changes.TextDatasetChanges;
+import org.apache.jena.graph.Node ;
 
-/**
- * Responsible for monitoring changes on a dataset and updating the TextIndex appropriately.
- * <p>
- * <strong>Note:</strong> If implementation is to be instantiated dynamically via an Assembler, it must
- * contain a constructor that accepts a single parameter of type {@link org.apache.jena.query.text.TextIndex}
+/** Interface for notification of changes
+ * (adds and deletes of quads) to a DatasetGraph
  */
-public interface TextDocProducer extends TextDatasetChanges
+public interface TextDatasetChanges
 {
+    /** Indicator that a sequence of changes is about to start */
+    public void start() ;
 
+    /** A change has occurred
+     * @see TextQuadAction
+     */
+    public void change(TextQuadAction qaction, Node g, Node s, Node p, Node o) ;
+
+    /** Indicator that a sequence of changes has now finished */
+    public void finish() ;
+
+    /** Release any resources */
+    public void reset() ;
 }
-

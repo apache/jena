@@ -21,20 +21,20 @@ package org.apache.jena.query.text ;
 import java.util.List ;
 
 import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.core.DatasetChangesBatched ;
+import org.apache.jena.query.text.changes.ChangesBatched;
+import org.apache.jena.query.text.changes.TextQuadAction;
 import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.core.QuadAction ;
 import org.apache.jena.sparql.util.FmtUtils ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-// Currently unused 
+// Currently unused
 // This would index multiple quads at a time from batched stream of changes (e.g. rdf-patch)
-public class TextDocProducerEntities extends DatasetChangesBatched implements TextDocProducer {
+public class TextDocProducerEntities extends ChangesBatched implements TextDocProducer {
     private static Logger          log     = LoggerFactory.getLogger(TextDocProducer.class) ;
     private final EntityDefinition defn ;
     private final TextIndex        indexer ;
-    
+
     // Have to have a ThreadLocal here to keep track of whether or not we are in a transaction,
     // therefore whether or not we have to do autocommit
     private final ThreadLocal<Boolean> inTransaction = new ThreadLocal<Boolean>() {
@@ -61,10 +61,10 @@ public class TextDocProducerEntities extends DatasetChangesBatched implements Te
     }
 
     @Override
-    protected void dispatch(QuadAction quadAction, List<Quad> batch) {
+    protected void dispatch(TextQuadAction quadAction, List<Quad> batch) {
         if ( !inTransaction.get() )
             throw new IllegalStateException("Not started") ;
-        if ( !QuadAction.ADD.equals(quadAction) )
+        if ( !TextQuadAction.ADD.equals(quadAction) )
             return ;
         if ( batch.size() == 0 )
             return ;
@@ -87,7 +87,7 @@ public class TextDocProducerEntities extends DatasetChangesBatched implements Te
         String graphField = defn.getGraphField() ;
         if ( defn.getGraphField() != null )
             entity.put(graphField, gx) ;
-        
+
         for ( Quad quad : batch ) {
             Node p = quad.getPredicate() ;
             String field = defn.getField(p) ;
