@@ -16,28 +16,27 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core ;
+package org.apache.jena.query.text.changes ;
 
 import java.util.ArrayList ;
 import java.util.List ;
 import java.util.Objects ;
 
 import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.core.Quad;
 
 /**
  * Collect a stream of DatasetChanges into batches. A batch is adjacent quads
  * changes with (same graph, same subject, same action).
- * @deprecated Do not use. This class does not have a clear contract when used with transactions.
  */
-@Deprecated
-public abstract class DatasetChangesBatched implements DatasetChanges {
-    private QuadAction currentAction   = null ;
+public abstract class ChangesBatched implements TextDatasetChanges {
+    private TextQuadAction currentAction   = null ;
     private Node       currentSubject  = null ;
     private Node       currentGraph    = null ;
     private List<Quad> batchQuads      = null ;
     private boolean    mergeBlankNodes = false ;
 
-    protected DatasetChangesBatched() {
+    protected ChangesBatched() {
         this(false) ;
     }
 
@@ -45,7 +44,7 @@ public abstract class DatasetChangesBatched implements DatasetChanges {
      * Merge bNodes in a batch - i.e. include them in the current batch, not as
      * new entities
      */
-    protected DatasetChangesBatched(boolean mergeBNodes) {
+    protected ChangesBatched(boolean mergeBNodes) {
         this.mergeBlankNodes = mergeBNodes ;
     }
 
@@ -65,7 +64,7 @@ public abstract class DatasetChangesBatched implements DatasetChanges {
     public final void reset() { }
 
     @Override
-    public void change(QuadAction qaction, Node g, Node s, Node p, Node o) {
+    public void change(TextQuadAction qaction, Node g, Node s, Node p, Node o) {
         if ( mergeBlankNodes && s.isBlank() ) {
             if ( batchQuads == null )
                 // No active batch.
@@ -94,7 +93,7 @@ public abstract class DatasetChangesBatched implements DatasetChanges {
         batchQuads = null ;
     }
 
-    protected abstract void dispatch(QuadAction quadAction, List<Quad> batch) ;
+    protected abstract void dispatch(TextQuadAction quadAction, List<Quad> batch) ;
 
     protected abstract void startBatched() ;
 

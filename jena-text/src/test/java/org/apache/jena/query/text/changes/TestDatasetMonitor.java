@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core;
+package org.apache.jena.query.text.changes;
 
-import static org.apache.jena.sparql.core.QuadAction.ADD ;
-import static org.apache.jena.sparql.core.QuadAction.DELETE ;
-import static org.apache.jena.sparql.core.QuadAction.NO_ADD ;
-import static org.apache.jena.sparql.core.QuadAction.NO_DELETE ;
+import static org.apache.jena.query.text.changes.TextQuadAction.ADD;
+import static org.apache.jena.query.text.changes.TextQuadAction.DELETE;
+import static org.apache.jena.query.text.changes.TextQuadAction.NO_ADD;
+import static org.apache.jena.query.text.changes.TextQuadAction.NO_DELETE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -30,6 +30,9 @@ import java.util.List ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
@@ -42,8 +45,8 @@ public class TestDatasetMonitor
 
     @Test public void countChanges_01() {
         DatasetGraph dsgBase = DatasetGraphFactory.create() ;
-        DatasetChangesCounter dsgChanges = new DatasetChangesCounter() ;
-        DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgChanges) ;
+        ChangesCounter dsgChanges = new ChangesCounter() ;
+        DatasetGraph dsg = new DatasetGraphTextMonitor(dsgBase, dsgChanges) ;
 
         check(dsgChanges, 0, 0, 0, 0) ;
         dsg.add(quad1) ;
@@ -52,9 +55,9 @@ public class TestDatasetMonitor
 
     @Test public void countChanges_02() {
         DatasetGraph dsgBase = DatasetGraphFactory.create() ;
-        DatasetChangesCounter dsgChanges = new DatasetChangesCounter() ;
-        DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgChanges) ;
-        
+        ChangesCounter dsgChanges = new ChangesCounter() ;
+        DatasetGraph dsg = new DatasetGraphTextMonitor(dsgBase, dsgChanges) ;
+
         check(dsgChanges, 0, 0, 0, 0) ;
         dsg.add(quad1) ;
         dsg.delete(quad1) ;
@@ -63,8 +66,8 @@ public class TestDatasetMonitor
 
     @Test public void countChanges_03() {
         DatasetGraph dsgBase = DatasetGraphFactory.create() ;
-        DatasetChangesCounter dsgChanges = new DatasetChangesCounter() ;
-        DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgChanges) ;
+        ChangesCounter dsgChanges = new ChangesCounter() ;
+        DatasetGraph dsg = new DatasetGraphTextMonitor(dsgBase, dsgChanges) ;
 
         check(dsgChanges, 0, 0, 0, 0) ;
         dsg.add(quad1) ;
@@ -76,9 +79,9 @@ public class TestDatasetMonitor
 
     @Test public void countChanges_04() {
         DatasetGraph dsgBase = DatasetGraphFactory.create() ;
-        DatasetChangesCounter dsgChanges = new DatasetChangesCounter() ;
-        DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgChanges) ;
-        
+        ChangesCounter dsgChanges = new ChangesCounter() ;
+        DatasetGraph dsg = new DatasetGraphTextMonitor(dsgBase, dsgChanges) ;
+
         check(dsgChanges, 0, 0, 0, 0) ;
         dsg.add(quad1) ;
         dsg.delete(quad1) ;
@@ -89,8 +92,8 @@ public class TestDatasetMonitor
 
     @Test public void countChanges_05() {
         DatasetGraph dsgBase = DatasetGraphFactory.create() ;
-        DatasetChangesCounter dsgChanges = new DatasetChangesCounter() ;
-        DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgChanges) ;
+        ChangesCounter dsgChanges = new ChangesCounter() ;
+        DatasetGraph dsg = new DatasetGraphTextMonitor(dsgBase, dsgChanges) ;
 
         check(dsgChanges, 0, 0, 0, 0) ;
         Graph g = dsg.getDefaultGraph();
@@ -103,8 +106,8 @@ public class TestDatasetMonitor
 
     @Test public void countChanges_06() {
         DatasetGraph dsgBase = DatasetGraphFactory.create() ;
-        DatasetChangesCounter dsgChanges = new DatasetChangesCounter() ;
-        DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgChanges) ;
+        ChangesCounter dsgChanges = new ChangesCounter() ;
+        DatasetGraph dsg = new DatasetGraphTextMonitor(dsgBase, dsgChanges) ;
 
         check(dsgChanges, 0, 0, 0, 0) ;
         Graph g = dsg.getGraph(NodeFactory.createURI("http://example.com/g1"));
@@ -117,8 +120,8 @@ public class TestDatasetMonitor
 
     @Test public void countChanges_07() {
         DatasetGraph dsgBase = DatasetGraphFactory.create() ;
-        DatasetChangesCounter dsgChanges = new DatasetChangesCounter() ;
-        DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgChanges) ;
+        ChangesCounter dsgChanges = new ChangesCounter() ;
+        DatasetGraph dsg = new DatasetGraphTextMonitor(dsgBase, dsgChanges) ;
 
         check(dsgChanges, 0, 0, 0, 0) ;
         Graph g = dsg.getDefaultGraph();
@@ -129,8 +132,8 @@ public class TestDatasetMonitor
 
     @Test public void countChanges_08() {
         DatasetGraph dsgBase = DatasetGraphFactory.create() ;
-        DatasetChangesCounter dsgChanges = new DatasetChangesCounter() ;
-        DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgChanges) ;
+        ChangesCounter dsgChanges = new ChangesCounter() ;
+        DatasetGraph dsg = new DatasetGraphTextMonitor(dsgBase, dsgChanges) ;
 
         check(dsgChanges, 0, 0, 0, 0) ;
         Graph g = dsg.getDefaultGraph();
@@ -141,43 +144,43 @@ public class TestDatasetMonitor
 
     @Test public void captureChanges_01() {
         DatasetGraph dsgBase = DatasetGraphFactory.create() ;
-        DatasetChangesCapture dsgCapture = new DatasetChangesCapture() ;
-        DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgCapture) ;
-        
+        ChangesCapture dsgCapture = new ChangesCapture() ;
+        DatasetGraph dsg = new DatasetGraphTextMonitor(dsgBase, dsgCapture) ;
+
         dsg.add(quad1) ;
         dsg.delete(quad1) ;
         dsg.add(quad2) ;
         dsg.add(quad2) ;
-        
-        List<Pair<QuadAction, Quad>> record = dsgCapture.getActions()  ;
+
+        List<Pair<TextQuadAction, Quad>> record = dsgCapture.getActions()  ;
         // Records only real actions.
         assertEquals(3, record.size()) ;
-        check(record, 0, ADD, quad1) ; 
+        check(record, 0, ADD, quad1) ;
         check(record, 1, DELETE, quad1) ;
         check(record, 2, ADD, quad2) ;
     }
 
     @Test public void captureChanges_02() {
         DatasetGraph dsgBase = DatasetGraphFactory.create() ;
-        DatasetChangesCapture dsgCapture = new DatasetChangesCapture(true) ;
-        DatasetGraph dsg = new DatasetGraphMonitor(dsgBase, dsgCapture) ;
-        
+        ChangesCapture dsgCapture = new ChangesCapture(true) ;
+        DatasetGraph dsg = new DatasetGraphTextMonitor(dsgBase, dsgCapture) ;
+
         dsg.add(quad1) ;
         dsg.delete(quad1) ;
         dsg.delete(quad1) ;
         dsg.add(quad2) ;
         dsg.add(quad2) ;
-        
-        List<Pair<QuadAction, Quad>> record = dsgCapture.getActions()  ;
+
+        List<Pair<TextQuadAction, Quad>> record = dsgCapture.getActions()  ;
         assertEquals(5, record.size()) ;
-        check(record, 0, ADD, quad1) ; 
+        check(record, 0, ADD, quad1) ;
         check(record, 1, DELETE, quad1) ;
         check(record, 2, NO_DELETE, quad1) ;
         check(record, 3, ADD, quad2) ;
         check(record, 4, NO_ADD, quad2) ;
     }
 
-    private static void check(DatasetChangesCounter changes, long adds, long deletes, long noAdds, long noDeletes)
+    private static void check(ChangesCounter changes, long adds, long deletes, long noAdds, long noDeletes)
     {
         assertEquals("Adds",        adds, changes.countAdd) ;
         assertEquals("Deletes",     deletes, changes.countDelete) ;
@@ -185,10 +188,10 @@ public class TestDatasetMonitor
         assertEquals("NoDeletes",   noDeletes, changes.countNoDelete) ;
     }
 
-    private static void check(List<Pair<QuadAction, Quad>> record, int indx, QuadAction quadAction, Quad quad)
+    private static void check(List<Pair<TextQuadAction, Quad>> record, int indx, TextQuadAction quadAction, Quad quad)
     {
         assertTrue("Index "+indx+" out of range [0,"+record.size()+")", 0 <= indx && indx < record.size() ) ;
-        Pair<QuadAction, Quad> pair = record.get(indx) ;
+        Pair<TextQuadAction, Quad> pair = record.get(indx) ;
         assertEquals(quadAction, pair.getLeft()) ;
         assertEquals(quad, pair.getRight()) ;
     }

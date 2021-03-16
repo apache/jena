@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core;
+package org.apache.jena.query.text.changes;
 
 /** A {@code QuadAction} is record of a type of change to a {@code DatasetGraph}.
  * <p>
@@ -28,14 +28,11 @@ package org.apache.jena.sparql.core;
  * <p>
  * A {@code QuadAction} can be an {@code ADD} or {@code DELETE}, indicating a change
  * to the {@code DatasetGraph} actually occured (this assumes checking is done -
- * {@link DatasetChanges} generators may not check - see implementation for details).
+ * {@link TextDatasetChanges} generators may not check - see implementation for details).
  * Otherwise a {@code NO_ADD}, {@code NO_DELETE} {@code QuadAction} is used.
- *
- * @deprecated Do not use. To see changes to a dataset, use {@link DatasetGraphWrapper} to capture change events.
  */
-@Deprecated
-public enum QuadAction {
+public enum TextQuadAction {
     ADD("A"), DELETE("D"), NO_ADD("#A"), NO_DELETE("#D") ;
     public final String label ;
-    QuadAction(String label) { this.label = label ; }
+    TextQuadAction(String label) { this.label = label ; }
 }

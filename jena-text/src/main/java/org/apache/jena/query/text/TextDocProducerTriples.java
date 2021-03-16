@@ -19,7 +19,7 @@
 package org.apache.jena.query.text ;
 
 import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.core.QuadAction ;
+import org.apache.jena.query.text.changes.TextQuadAction;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -27,7 +27,7 @@ public class TextDocProducerTriples implements TextDocProducer {
     private static Logger          log     = LoggerFactory.getLogger(TextDocProducerTriples.class) ;
     private final EntityDefinition defn ;
     private final TextIndex        indexer ;
-    
+
     // Have to have a ThreadLocal here to keep track of whether or not we are in a transaction,
     // therefore whether or not we have to do autocommit
     private final ThreadLocal<Boolean> inTransaction = new ThreadLocal<Boolean>() {
@@ -36,7 +36,7 @@ public class TextDocProducerTriples implements TextDocProducer {
             return Boolean.FALSE ;
         }
     } ;
-    
+
     public TextDocProducerTriples(TextIndex indexer) {
         this.defn = indexer.getDocDef() ;
         this.indexer = indexer ;
@@ -56,18 +56,18 @@ public class TextDocProducerTriples implements TextDocProducer {
     public void reset() { }
 
     @Override
-    public void change(QuadAction qaction, Node g, Node s, Node p, Node o) {
+    public void change(TextQuadAction qaction, Node g, Node s, Node p, Node o) {
         // One document per triple/quad
 
-        if ( qaction != QuadAction.ADD &&
-             qaction != QuadAction.DELETE )
+        if ( qaction != TextQuadAction.ADD &&
+             qaction != TextQuadAction.DELETE )
             return ;
 
 
         Entity entity = TextQueryFuncs.entityFromQuad(defn, g, s, p, o) ;
         // Null means does not match defn
         if ( entity != null ) {
-            if (qaction == QuadAction.ADD) {
+            if (qaction == TextQuadAction.ADD) {
                 indexer.addEntity(entity);
 
                 // Auto commit the entity if we aren't in a transaction
@@ -75,7 +75,7 @@ public class TextDocProducerTriples implements TextDocProducer {
                     indexer.commit();
                 }
             }
-            else if (qaction == QuadAction.DELETE) {
+            else if (qaction == TextQuadAction.DELETE) {
                 indexer.deleteEntity(entity);
 
                 // Auto commit the entity if we aren't in a transaction

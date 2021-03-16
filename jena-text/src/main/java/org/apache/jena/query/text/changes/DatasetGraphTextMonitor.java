@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core ;
+package org.apache.jena.query.text.changes ;
 
 import static org.apache.jena.atlas.iterator.Iter.take ;
 import static org.apache.jena.sparql.core.GraphView.createDefaultGraph;
@@ -29,23 +29,24 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.SystemARQ ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphWrapper;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /** Connect a DatasetGraph to a DatasetChanges monitor.
  *  Any add or delete to the DatasetGraph is notified to the
- *  monitoring object with a {@link QuadAction} to indicate
+ *  monitoring object with a {@link TextQuadAction} to indicate
  *  the change made.
- *  @deprecated Do not use. This class does not reflect transactions.
  */
-@Deprecated
-public class DatasetGraphMonitor extends DatasetGraphWrapper
+public class DatasetGraphTextMonitor extends DatasetGraphWrapper
 {
     /** Whether to see if a quad action will change the dataset - test before add for existence, test before delete for absence */
     private boolean CheckFirst = true ;
     /** Whether to record a no-op (maybe as a comment) */
     private boolean RecordNoAction = true ;
     /** Where to send the notifications */
-    private final DatasetChanges monitor ;
+    private final TextDatasetChanges monitor ;
 
     /**
      * Create a DatasetGraph wrapper that monitors the dataset for changes (add or delete quads).
@@ -54,10 +55,10 @@ public class DatasetGraphMonitor extends DatasetGraphWrapper
      * @param dsg       The DatasetGraph to monitor
      * @param monitor   The handler for a change
      *
-     * @see DatasetChanges
-     * @see QuadAction
+     * @see TextDatasetChanges
+     * @see TextQuadAction
      */
-    protected DatasetGraphMonitor(DatasetGraph dsg, DatasetChanges monitor)
+    public DatasetGraphTextMonitor(DatasetGraph dsg, TextDatasetChanges monitor)
     {
         super(dsg) ;
         this.monitor = monitor ;
@@ -72,10 +73,10 @@ public class DatasetGraphMonitor extends DatasetGraphWrapper
      *         If true, check to see if the change would have an effect (e.g. add is a new quad).
      *         If false, log changes as ADD/DELETE regardless of whether the dataset actually changes.
      *
-     * @see DatasetChanges
-     * @see QuadAction
+     * @see TextDatasetChanges
+     * @see TextQuadAction
      */
-    protected DatasetGraphMonitor(DatasetGraph dsg, DatasetChanges monitor, boolean recordOnlyIfRealChange)
+    public DatasetGraphTextMonitor(DatasetGraph dsg, TextDatasetChanges monitor, boolean recordOnlyIfRealChange)
     {
         super(dsg) ;
         CheckFirst = recordOnlyIfRealChange ;
@@ -83,7 +84,7 @@ public class DatasetGraphMonitor extends DatasetGraphWrapper
     }
 
     /** Return the monitor */
-    public DatasetChanges getMonitor()      { return monitor ; }
+    public TextDatasetChanges getMonitor()      { return monitor ; }
 
     /** Return the monitored DatasetGraph */
     public DatasetGraph   monitored()       { return getWrapped() ; }
@@ -93,7 +94,7 @@ public class DatasetGraphMonitor extends DatasetGraphWrapper
         if ( CheckFirst && contains(quad) )
         {
             if ( RecordNoAction )
-                record(QuadAction.NO_ADD, quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
+                record(TextQuadAction.NO_ADD, quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
             return ;
         }
         add$(quad) ;
@@ -104,7 +105,7 @@ public class DatasetGraphMonitor extends DatasetGraphWrapper
         if ( CheckFirst && contains(g,s,p,o) )
         {
             if ( RecordNoAction )
-                record(QuadAction.NO_ADD,g,s,p,o) ;
+                record(TextQuadAction.NO_ADD,g,s,p,o) ;
             return ;
         }
 
@@ -114,13 +115,13 @@ public class DatasetGraphMonitor extends DatasetGraphWrapper
     private void add$(Node g, Node s, Node p, Node o)
     {
         super.add(g,s,p,o) ;
-        record(QuadAction.ADD,g,s,p,o) ;
+        record(TextQuadAction.ADD,g,s,p,o) ;
     }
 
     private void add$(Quad quad)
     {
         super.add(quad) ;
-        record(QuadAction.ADD, quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
+        record(TextQuadAction.ADD, quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
     }
 
     @Override public void delete(Quad quad)
@@ -128,7 +129,7 @@ public class DatasetGraphMonitor extends DatasetGraphWrapper
         if ( CheckFirst && ! contains(quad) )
         {
             if ( RecordNoAction )
-                record(QuadAction.NO_DELETE, quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
+                record(TextQuadAction.NO_DELETE, quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
             return ;
         }
         delete$(quad) ;
@@ -139,7 +140,7 @@ public class DatasetGraphMonitor extends DatasetGraphWrapper
         if ( CheckFirst && ! contains(g,s,p,o) )
         {
             if ( RecordNoAction )
-                record(QuadAction.NO_DELETE, g,s,p,o) ;
+                record(TextQuadAction.NO_DELETE, g,s,p,o) ;
             return ;
         }
         delete$(g,s,p,o) ;
@@ -148,13 +149,13 @@ public class DatasetGraphMonitor extends DatasetGraphWrapper
     private void delete$(Quad quad)
     {
         super.delete(quad) ;
-        record(QuadAction.DELETE, quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
+        record(TextQuadAction.DELETE, quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
     }
 
     private void delete$(Node g, Node s, Node p, Node o)
     {
         super.delete(g,s,p,o) ;
-        record(QuadAction.DELETE,g,s,p,o) ;
+        record(TextQuadAction.DELETE,g,s,p,o) ;
     }
 
 
@@ -192,7 +193,7 @@ public class DatasetGraphMonitor extends DatasetGraphWrapper
         deleteAny(gn, Node.ANY, Node.ANY, Node.ANY) ;
     }
 
-    private void record(QuadAction action, Node g, Node s, Node p, Node o)
+    private void record(TextQuadAction action, Node g, Node s, Node p, Node o)
     {
         monitor.change(action, g, s, p, o) ;
     }

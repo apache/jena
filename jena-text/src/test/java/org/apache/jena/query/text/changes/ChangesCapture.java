@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core ;
+package org.apache.jena.query.text.changes ;
 
 import java.util.Collections ;
 import java.util.LinkedList ;
@@ -24,12 +24,11 @@ import java.util.List ;
 
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.core.Quad;
 
 /** Capture a record of quad actions
- * @deprecated Do not use. This class is not transaction-aware.
  */
-@Deprecated
-public class DatasetChangesCapture implements DatasetChanges {
+public class ChangesCapture implements TextDatasetChanges {
     // ArrayLists have an annoying issue that they grow by copying the internal
     // []-array.
     // This growth is by a fixed factor of adding 50% which for an array
@@ -37,14 +36,14 @@ public class DatasetChangesCapture implements DatasetChanges {
     // and copy-time issues.
     // Using a LinkedList avoids this although it adds overhead for list
     // entries.
-    private List<Pair<QuadAction, Quad>> actions ;
+    private List<Pair<TextQuadAction, Quad>> actions ;
     final private boolean                captureAdd ;
     final private boolean                captureDelete ;
     final private boolean                captureNoAdd ;
     final private boolean                captureNoDelete ;
 
     /** Capture quad actions, excluding no-ops */
-    public DatasetChangesCapture() {
+    public ChangesCapture() {
         this(true, true, false, false) ;
     }
 
@@ -52,15 +51,15 @@ public class DatasetChangesCapture implements DatasetChanges {
      * Capture quad actions, either including or excluding the "no ops"
      *
      * @param recordNoOps
-     *            Whether to record {@link QuadAction#NO_ADD} and
-     *            {@link QuadAction#NO_DELETE}
+     *            Whether to record {@link TextQuadAction#NO_ADD} and
+     *            {@link TextQuadAction#NO_DELETE}
      */
-    public DatasetChangesCapture(boolean recordNoOps) {
+    public ChangesCapture(boolean recordNoOps) {
         this(true, true, recordNoOps, recordNoOps) ;
     }
 
     /** Capture quad actions, selectively by category */
-    public DatasetChangesCapture(boolean captureAdd, boolean captureDelete, boolean captureNoAdd, boolean captureNoDelete) {
+    public ChangesCapture(boolean captureAdd, boolean captureDelete, boolean captureNoAdd, boolean captureNoDelete) {
         this.captureAdd = captureAdd ;
         this.captureDelete = captureDelete ;
         this.captureNoAdd = captureNoAdd ;
@@ -71,7 +70,7 @@ public class DatasetChangesCapture implements DatasetChanges {
     /** The actions recorded.
      *  Only valid until the next {@code start} call.
      */
-    public List<Pair<QuadAction, Quad>> getActions() {
+    public List<Pair<TextQuadAction, Quad>> getActions() {
         return Collections.unmodifiableList(actions) ;
     }
 
@@ -82,9 +81,9 @@ public class DatasetChangesCapture implements DatasetChanges {
     }
 
     @Override
-    public void change(QuadAction qaction, Node g, Node s, Node p, Node o) {
+    public void change(TextQuadAction qaction, Node g, Node s, Node p, Node o) {
         Quad q = new Quad(g, s, p, o) ;
-        Pair<QuadAction, Quad> pair = Pair.create(qaction, q) ;
+        Pair<TextQuadAction, Quad> pair = Pair.create(qaction, q) ;
 
         switch (qaction) {
             case ADD :
