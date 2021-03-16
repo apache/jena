@@ -168,6 +168,8 @@ public class FusekiNetLib {
         pmapDest.withDefaultMappings(pmapSrc);
     }
 
+    /** Use {@link WebLib#choosePort} or start servers with port 0 and then ask which port was allocated. */
+    @Deprecated
     public static int choosePort() {
         try {
             return WebLib.choosePort();

@@ -20,9 +20,9 @@ package org.apache.jena.jdbc.remote.connections;
 
 import java.sql.SQLException;
 
-import org.apache.jena.fuseki.main.FusekiTestServer;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
+import org.apache.jena.jdbc.remote.FusekiTestServer;
 import org.apache.jena.jdbc.utils.TestUtils;
 import org.apache.jena.query.Dataset ;
 import org.junit.After;

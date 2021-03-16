@@ -30,10 +30,10 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.cmd.FusekiArgs;
 import org.apache.jena.fuseki.cmd.JettyFusekiWebapp;
 import org.apache.jena.fuseki.jetty.JettyServerConfig;
-import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.fuseki.webapp.FusekiEnv;
 import org.apache.jena.fuseki.webapp.FusekiServerListener;
 import org.apache.jena.fuseki.webapp.FusekiWebapp;
@@ -115,7 +115,7 @@ public class ServerCtl {
 
     /*package : for import static */ enum ServerScope { SUITE, CLASS, TEST }
     private static ServerScope serverScope = ServerScope.CLASS;
-    private static int currentPort = FusekiNetLib.choosePort();
+    private static int currentPort = WebLib.choosePort();
 
     public static int port() {
         return currentPort;

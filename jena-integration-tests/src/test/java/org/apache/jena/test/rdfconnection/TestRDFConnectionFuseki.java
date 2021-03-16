@@ -24,7 +24,7 @@ import org.apache.jena.rdfconnection.RDFConnectionFactory;
 public class TestRDFConnectionFuseki extends TestRDFConnectionRemote {
     @Override
     protected RDFConnection connection() {
-        return RDFConnectionFactory.connectFuseki("http://localhost:"+PORT+"/ds");
+        return RDFConnectionFactory.connectFuseki(server.datasetURL("/ds"));
     }
 }
 

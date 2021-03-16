@@ -16,11 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.main;
+package org.apache.jena.jdbc.remote;
 
-import static org.apache.jena.fuseki.main.FusekiTestServer.ServerScope.CLASS;
-import static org.apache.jena.fuseki.main.FusekiTestServer.ServerScope.SUITE;
-import static org.apache.jena.fuseki.main.FusekiTestServer.ServerScope.TEST;
+import static org.apache.jena.jdbc.remote.FusekiTestServer.ServerScope.CLASS;
+import static org.apache.jena.jdbc.remote.FusekiTestServer.ServerScope.SUITE;
+import static org.apache.jena.jdbc.remote.FusekiTestServer.ServerScope.TEST;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -28,6 +28,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.web.WebLib;
+import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;

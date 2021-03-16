@@ -18,17 +18,29 @@
 
 package org.apache.jena.fuseki.jetty;
 
+import java.security.GeneralSecurityException;
 import java.util.Objects;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.TrustStrategy;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.FusekiConfigException;
+import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.riot.WebContent;
 import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.security.*;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.security.authentication.DigestAuthenticator;
 import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -217,5 +229,31 @@ public class JettyLib {
         mimeTypes.addMimeMapping("csv",     WebContent.contentTypeTextCSV);
         mimeTypes.addMimeMapping("tsv",     WebContent.contentTypeTextTSV);
         context.setMimeTypes(mimeTypes);
+    }
+
+    /** HTTP configuration with setting for Fuseki workload. No "secure" settings. */
+    public static HttpConfiguration httpConfiguration() {
+        HttpConfiguration http_config = new HttpConfiguration();
+        // Some people do try very large operations ... really, should use POST.
+        http_config.setRequestHeaderSize(512 * 1024);
+        http_config.setOutputBufferSize(1024 * 1024);
+//      http_config.setResponseHeaderSize(8192);
+        http_config.setSendServerVersion(false);
+        return http_config;
+    }
+
+    /** Create an {@link HttpClientBuilder} that trusts self-signed, localhost https connections. */
+    public static HttpClientBuilder trustLocalhostUnsigned() {
+        TrustStrategy trustStrategy = TrustSelfSignedStrategy.INSTANCE;
+        try {
+            SSLContext sslCxt = new SSLContextBuilder().loadTrustMaterial(trustStrategy).build();
+            HostnameVerifier hostNameVerifier = (hostname, session) -> hostname.equals("localhost");
+            // Example: Any host.
+            // HostnameVerifier hostNameVerifier = NoopHostnameVerifier.INSTANCE;
+            SSLConnectionSocketFactory sslfactory = new SSLConnectionSocketFactory(sslCxt, hostNameVerifier);
+            return HttpClients.custom().setSSLSocketFactory(sslfactory);
+        } catch (GeneralSecurityException ex) {
+            throw new FusekiException(ex);
+        }
     }
 }

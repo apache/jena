@@ -18,7 +18,6 @@
 
 package org.apache.jena.fuseki.main.access;
 
-import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.main.FusekiServer;
@@ -27,20 +26,31 @@ import org.apache.jena.fuseki.server.Endpoint;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 /**
- * AbstractTestServiceDatasetAuth with a programtically built server which should be
- * the same as the {@link TestServiceDataAuthConfig config file version}.
+ * AbstractTestServiceDatasetAuth with a programmatically built server which should be
+ * the same as the {@link TestServiceDataAuthConfig configuration file version}.
  */
 public class TestServiceDataAuthConfig extends AbstractTestServiceDatasetAuth {
+    private static FusekiServer server;
+
     @BeforeClass public static void beforeClass () {
-        port = WebLib.choosePort();
         server = build(port, null);
         server.start();
-    }        
-        
-    public static FusekiServer build(int port, AuthPolicy policy) { 
+    }
+
+    @AfterClass public static void afterClass () {
+        server.stop();
+    }
+
+    @Override
+    protected FusekiServer server() {
+        return server;
+    }
+
+    public static FusekiServer build(int port, AuthPolicy policy) {
         AuthPolicy policy12 = Auth.policyAllowSpecific("user1", "user2");
         AuthPolicy policy13 = Auth.policyAllowSpecific("user1", "user3");
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();

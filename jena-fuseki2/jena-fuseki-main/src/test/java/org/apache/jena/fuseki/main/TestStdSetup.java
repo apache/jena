@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.web.HttpException;
-import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
@@ -40,49 +39,48 @@ import org.junit.Test;
 
 /** Tests for .add("/ds", dsg) */
 public class TestStdSetup {
-    
-    private static FusekiServer server = null; 
+
+    private static FusekiServer server = null;
     private static int port;
 
     private static Model data;
     private static Dataset dataset;
 
     private static String URL;
-    
+
     @BeforeClass
     public static void beforeClass() {
-        port = WebLib.choosePort();
-        URL = "http://localhost:" + port + "/ds";
         Graph graph = SSE.parseGraph(StrUtils.strjoinNL
             ("(graph"
             ,"   (:s :p 1)"
             ,")"));
         data = ModelFactory.createModelForGraph(graph);
-        
+
         DatasetGraph dsgData = DatasetGraphFactory.create();
         dsgData.add(SSE.parseQuad("(:g :s :p 2 )"));
         dataset = DatasetFactory.wrap(dsgData);
-        
+
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
 
         FusekiServer server = FusekiServer.create()
             .add("/ds", dsg)
-            .port(port)
+            .port(0)
             .build();
         server.start();
+        URL = server.datasetURL("/ds");
     }
-    
+
     @AfterClass
     public static void afterClass() {
         if ( server != null )
             server.stop();
     }
-    
-    @Test public void stdSetup_1() { 
+
+    @Test public void stdSetup_1() {
 
         svcExec(URL, "/query",   conn->conn.queryAsk("ASK{}") );
         svcExec(URL, "/sparql",  conn->conn.queryAsk("ASK{}") );
-        svcExec(URL, "/update",  conn->conn.update("INSERT DATA { <x:s> <x:p> 123 }") ); 
+        svcExec(URL, "/update",  conn->conn.update("INSERT DATA { <x:s> <x:p> 123 }") );
         svcExec(URL, "/get",     conn->conn.fetch());
         svcExec(URL, "/data",    conn->conn.fetch());
         svcExec(URL, "/data",    conn->conn.put(data));
@@ -90,7 +88,7 @@ public class TestStdSetup {
 
     }
 
-    @Test public void stdSetup_2() { 
+    @Test public void stdSetup_2() {
         execDataset(URL, conn->conn.queryAsk("ASK{}") );
         execDataset(URL, conn->conn.update("INSERT DATA { <x:s> <x:p> 123 }") );
         execDataset(URL, conn->conn.fetch());
@@ -105,10 +103,10 @@ public class TestStdSetup {
         svcExecFail(URL, "/update", (RDFConnection conn)->conn.queryAsk("ASK{}") );
         svcExecFail(URL, "/doesNotExist", (RDFConnection conn)->conn.queryAsk("ASK{}") );
         svcExecFail(URL+"2", "", (RDFConnection conn)->conn.queryAsk("ASK{}") );
-        
+
     }
 
-    
+
     private static void svcExec(String url, String ep, Consumer<RDFConnection> action) {
         exec(url, ep, action);
     }
@@ -135,7 +133,7 @@ public class TestStdSetup {
         }
     }
 
-    private static void execEx(String url, String ep, Consumer<RDFConnection> action) {       
+    private static void execEx(String url, String ep, Consumer<RDFConnection> action) {
         String dest;
         if ( ep == null || ep.isEmpty() ) {
             dest = url;
@@ -148,7 +146,7 @@ public class TestStdSetup {
         }
         try ( RDFConnection conn = RDFConnectionFactory.connect(dest) ) {
             action.accept(conn);
-        } 
+        }
     }
 
     private static void handleException(RuntimeException ex, int responseCode, String message) {
@@ -161,7 +159,7 @@ public class TestStdSetup {
         try {
             execEx(url, ep, action);
             System.err.println("Expected an exception");
-        } 
+        }
         catch (HttpException ex) {}
         catch (QueryExceptionHTTP ex) {}
     }

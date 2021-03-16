@@ -26,7 +26,8 @@ import org.eclipse.jetty.server.handler.SecuredRedirectHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
-/** Library of functions to help with setting Jetty up with HTTPS.
+/**
+ * Library of functions to help with setting Jetty up with HTTPS.
  * This code is not supposed to be fully general.
  * It sets up "http" to redirect to "https".
  */
@@ -91,7 +92,7 @@ public class JettyHttps {
 
     /** Add HTTP to a {@link Server}, setting the secure redirection port. */
     private static ServerConnector httpConnector(Server server, int httpPort, int httpsPort) {
-        HttpConfiguration http_config = httpConfiguration();
+        HttpConfiguration http_config = JettyLib.httpConfiguration();
         http_config.setSendServerVersion(false);
         if ( httpPort >  0 ) {
             http_config.setSecureScheme(HttpScheme.HTTPS.asString());
@@ -112,7 +113,7 @@ public class JettyHttps {
         src.setStsMaxAge(2000);
         src.setStsIncludeSubDomains(true);
 
-        HttpConfiguration https_config = httpConfiguration();
+        HttpConfiguration https_config = JettyLib.httpConfiguration();
         https_config.setSecureScheme(HttpScheme.HTTPS.asString());
         https_config.setSecurePort(httpsPort);
         https_config.addCustomizer(src);
@@ -123,16 +124,5 @@ public class JettyHttps {
             new HttpConnectionFactory(https_config));
         sslConnector.setPort(httpsPort);
         return sslConnector;
-    }
-
-    /** HTTP configuration with setting for Fuseki workload. No "secure" settings. */
-    private static HttpConfiguration httpConfiguration() {
-        HttpConfiguration http_config = new HttpConfiguration();
-        // Some people do try very large operations ... really, should use POST.
-        http_config.setRequestHeaderSize(512 * 1024);
-        http_config.setOutputBufferSize(1024 * 1024);
-//      http_config.setResponseHeaderSize(8192);
-        http_config.setSendServerVersion(false);
-        return http_config;
     }
 }

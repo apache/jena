@@ -18,21 +18,32 @@
 
 package org.apache.jena.fuseki.main.access;
 
-import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 /**
- * AbstractTestServiceDatasetAuth with a config file.
+ * AbstractTestServiceDatasetAuth with a configuration file.
  */
 public class TestServiceDataAuthBuild extends AbstractTestServiceDatasetAuth {
+
+    static FusekiServer server;
+
     @BeforeClass public static void beforeClass () {
-        port = WebLib.choosePort();
         server = FusekiServer.create()
             //.verbose(true)
             .port(port)
             .parseConfigFile("testing/Access/config-auth.ttl")
             .build();
         server.start();
+    }
+
+    @AfterClass public static void afterClass () {
+        server.stop();
+    }
+
+    @Override
+    protected FusekiServer server() {
+        return server;
     }
 }

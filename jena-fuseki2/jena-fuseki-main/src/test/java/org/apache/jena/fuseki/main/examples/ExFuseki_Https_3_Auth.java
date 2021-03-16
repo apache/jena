@@ -19,22 +19,23 @@
 package org.apache.jena.fuseki.main.examples;
 
 import java.security.GeneralSecurityException;
-import java.security.cert.X509Certificate;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.TrustStrategy;
 import org.apache.jena.atlas.web.AuthScheme;
+import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.query.QueryExecution;
@@ -45,7 +46,7 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.util.QueryExecUtils;
 import org.apache.jena.web.AuthSetup;
 
-/** Run a Fuseki server with HTTPS and Authentication, programmatic. */ 
+/** Run a Fuseki server with HTTPS and Authentication, programmatic. */
 public class ExFuseki_Https_3_Auth {
     // Setup
     static String    USER     = "user1";
@@ -56,7 +57,7 @@ public class ExFuseki_Https_3_Auth {
     static String    HOST     = "localhost";
     static int       PORT     = 3443;
     static AuthSetup auth     = new AuthSetup(HOST, PORT, USER, PASSWORD, REALM);
-    
+
     // curl -k -d 'query=ASK{}' --basic --user 'user:password' https://localhost:3443/ds
 
     public static void main(String...argv) {
@@ -87,48 +88,46 @@ public class ExFuseki_Https_3_Auth {
         //server.join();
         return server;
     }
-    
-    // Example HttpClient that trusts any certificates, including self-signed. 
-    private static HttpClientBuilder httpClientBuilder() {
-        TrustStrategy trustStrategy = (X509Certificate[] chain, String authType) -> true;
+
+    /** Create an {@link HttpClientBuilder} that trusts self-signed, localhost https connections. */
+    public static HttpClientBuilder trustLocalhostUnsigned() {
+        TrustStrategy trustStrategy = TrustSelfSignedStrategy.INSTANCE;
         try {
             SSLContext sslCxt = new SSLContextBuilder().loadTrustMaterial(trustStrategy).build();
-            SSLConnectionSocketFactory sslfactory = new SSLConnectionSocketFactory(sslCxt, NoopHostnameVerifier.INSTANCE);
+            HostnameVerifier hostNameVerifier = (hostname, session) -> hostname.equals("localhost");
+            // Example: Any host.
+            // HostnameVerifier hostNameVerifier = NoopHostnameVerifier.INSTANCE;
+            SSLConnectionSocketFactory sslfactory = new SSLConnectionSocketFactory(sslCxt, hostNameVerifier);
             return HttpClients.custom().setSSLSocketFactory(sslfactory);
         } catch (GeneralSecurityException ex) {
-            ex.printStackTrace();
-            System.exit(1);
-            return null;
+            throw new FusekiException(ex);
         }
     }
 
     private static HttpClient httpClient(String user, String password) {
-    
         BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
         Credentials credentials = new UsernamePasswordCredentials(user, password);
         credsProvider.setCredentials(AuthScope.ANY, credentials);
-        
-        HttpClientBuilder builder = httpClientBuilder()
-            .setDefaultCredentialsProvider(credsProvider);
-        return builder.build(); 
+        HttpClientBuilder builder = trustLocalhostUnsigned().setDefaultCredentialsProvider(credsProvider);
+        return builder.build();
     }
-    
+
     private static void client() {
         //RDFConnection connSingle = RDFConnectionFactory.connect("https://localhost:3443/ds");
-        
+
         // Allow self-signed
         HttpClient hc = httpClient(USER, PASSWORD);
-        
+
         RDFConnection connSingle = RDFConnectionFuseki.create()
             .httpClient(hc)
             .destination("https://localhost:3443/ds")
             .build();
-            
+
         try ( RDFConnection conn = connSingle ) {
             QueryExecution qExec = conn.query("ASK{}");
             QueryExecUtils.executeQuery(qExec);
         }
-        
+
         HttpClient hc2 = httpClient("user1", "wrong-password");
         try ( RDFConnection conn = RDFConnectionFuseki.create()
                                     .httpClient(hc2)
