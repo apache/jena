@@ -234,9 +234,6 @@ public abstract class GraphBase implements GraphWithPerform
     public ExtendedIterator<Triple> forTestingOnly_graphBaseFind( Triple t )
         { return graphBaseFind( t ); }
 
-    /**
-
-    */
     @Override
     public final ExtendedIterator<Triple> find( Node s, Node p, Node o )
         { checkOpen();

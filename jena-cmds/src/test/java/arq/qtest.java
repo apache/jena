@@ -125,13 +125,13 @@ public class qtest extends CmdARQ
     {
         String name =  "ARQ" ;
         String releaseName =  "ARQ" ;
-        String version = "3.16.0" ;
+        String version = ARQ.VERSION;
         String homepage = "http://jena.apache.org/" ;
         String systemURI = "http://jena.apache.org/#arq" ;  // Null for bNode.
 
         // Include information later.
         EarlReport report = new EarlReport(systemURI, name, version, homepage) ;
-        
+
         TextTestRunner.runOne(report, testManifest, SparqlTests::makeSPARQLTest);
 
         Model model = report.getModel() ;
@@ -141,11 +141,10 @@ public class qtest extends CmdARQ
         Resource jena = model.createResource()
                     .addProperty(FOAF.homepage, model.createResource("http://jena.apache.org/")) ;
 
-        // ARQ is part fo Jena.
+        // ARQ is part of Jena.
         Resource arq = report.getSystem()
                         .addProperty(DCTerms.isPartOf, jena) ;
 
-        // Andy wrote the test software (updates the thing being tested as well as they are the same).
         Resource who = model.createResource(FOAF.Person)
                                 .addProperty(FOAF.name, "Andy Seaborne")
                                 .addProperty(FOAF.homepage,
