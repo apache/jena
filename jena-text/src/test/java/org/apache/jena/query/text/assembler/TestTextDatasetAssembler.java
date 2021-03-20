@@ -20,19 +20,13 @@ package org.apache.jena.query.text.assembler;
 
 import static org.junit.Assert.assertTrue ;
 
-import java.util.Iterator;
-
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.text.* ;
+import org.apache.jena.query.text.changes.TextQuadAction;
 import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.core.QuadAction ;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.tdb.assembler.AssemblerTDB ;
 import org.apache.jena.tdb.sys.TDBInternal;
@@ -53,16 +47,15 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
     private static final Resource noDatasetPropertySpec;
     private static final Resource noIndexPropertySpec;
     private static final Resource customTextDocProducerSpec;
-    private static final Resource customDyadicTextDocProducerSpec;
 
     @BeforeClass public static void clearBefore() {
         TDBInternal.reset();
     }
-    
+
     @After public void clearAfter() {
         TDBInternal.reset();
     }
-    
+
     @Test
     public void testSimpleDatasetAssembler() {
         Dataset dataset = (Dataset) Assembler.general.open(spec1);
@@ -88,22 +81,6 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
         dataset.close();
     }
 
-    @Test
-    public void testCustomTextDocProducerDyadicConstructor() {
-        Dataset dataset = (Dataset)Assembler.general.open(customDyadicTextDocProducerSpec) ;
-        DatasetGraphText dsgText = (DatasetGraphText)dataset.asDatasetGraph() ;
-        assertTrue(dsgText.getMonitor() instanceof CustomDyadicTextDocProducer) ;
-
-        Node G = NodeFactory.createURI("http://example.com/G");
-        Node S = NodeFactory.createURI("http://example.com/S");
-        Node P = NodeFactory.createURI("http://example.com/P");
-        Node O = NodeFactory.createLiteral("http://example.com/O");
-
-        dsgText.begin(ReadWrite.WRITE);
-        dsgText.add(G, S, P, O);
-        dsgText.commit();
-    }
-
     static {
         JenaSystem.init();
         TextAssembler.init();
@@ -127,13 +104,6 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
                  .addProperty(TextVocab.pDataset, SIMPLE_DATASET_SPEC)
                  .addProperty(TextVocab.pIndex, SIMPLE_INDEX_SPEC5)
                  .addProperty(TextVocab.pTextDocProducer, model.createResource("java:org.apache.jena.query.text.assembler.TestTextDatasetAssembler$CustomTextDocProducer"));
-
-        customDyadicTextDocProducerSpec =
-            model.createResource(TESTBASE + "customDyadicTextDocProducerSpec")
-                 .addProperty(RDF.type, TextVocab.textDataset)
-                 .addProperty(TextVocab.pDataset, SIMPLE_DATASET_SPEC)
-                 .addProperty(TextVocab.pIndex, SIMPLE_INDEX_SPEC5)
-                 .addProperty(TextVocab.pTextDocProducer, model.createResource("java:org.apache.jena.query.text.assembler.TestTextDatasetAssembler$CustomDyadicTextDocProducer"));
     }
 
     private static class CustomTextDocProducer implements TextDocProducer {
@@ -147,38 +117,9 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
         public void finish() { }
 
         @Override
-        public void change(QuadAction qaction, Node g, Node s, Node p, Node o) { }
+        public void change(TextQuadAction qaction, Node g, Node s, Node p, Node o) { }
 
         @Override
         public void reset() {}
     }
-
-
-    private static class CustomDyadicTextDocProducer implements TextDocProducer {
-
-        final DatasetGraph dg;
-        Node lastSubject = null;
-
-        public CustomDyadicTextDocProducer(DatasetGraph dg, TextIndex textIndex) { 
-            this.dg = dg;
-        }
-
-        @Override
-        public void start() { }
-
-        @Override
-        public void finish() { 
-            Iterator<Quad> qi = dg.find(null, lastSubject, Node.ANY, Node.ANY);
-            while (qi.hasNext()) qi.next();
-        }
-
-        @Override
-        public void change(QuadAction qaction, Node g, Node s, Node p, Node o) { 
-            lastSubject = s;
-        }
-
-        @Override
-        public void reset() {}
-    }
-
 }

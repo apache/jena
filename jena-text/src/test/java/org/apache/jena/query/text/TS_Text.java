@@ -21,6 +21,7 @@ package org.apache.jena.query.text;
 import org.apache.jena.query.text.assembler.TestEntityMapAssembler;
 import org.apache.jena.query.text.assembler.TestTextDatasetAssembler;
 import org.apache.jena.query.text.assembler.TestTextIndexLuceneAssembler;
+import org.apache.jena.query.text.changes.TestDatasetMonitor;
 import org.apache.jena.query.text.assembler.TestGenericAnalyzerAssembler;
 import org.apache.jena.query.text.assembler.TestPropListsAssembler;
 import org.junit.runner.RunWith;
@@ -31,13 +32,15 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
 
     TestBuildTextDataset.class
+    , TestDatasetMonitor.class
+
     , TestDatasetWithLuceneTextIndex.class
     , TestDatasetWithLuceneMultilingualTextIndex.class
     , TestDatasetWithLuceneTextIndexWithLangField.class
     , TestDatasetWithLuceneGraphTextIndex.class
     , TestDatasetWithLuceneTextIndexDeletionSupport.class
     , TestDatasetWithLuceneStoredLiterals.class
-    
+
     , TestTextNonTxn.class
     , TestTextTxn.class
     , TestTextNonTxnTDB1.class
@@ -62,11 +65,12 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestTextHighlighting.class
     , TestTextDefineAnalyzers.class
     , TestTextMultilingualEnhancements.class
-    
+
     , TestPropListsAssembler.class
     , TestTextPropLists.class
     , TestTextPropLists02.class
     , TestTextMultilingualEnhancements02.class
+
 })
 
 public class TS_Text

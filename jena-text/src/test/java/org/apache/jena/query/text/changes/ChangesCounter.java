@@ -16,23 +16,21 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core;
+package org.apache.jena.query.text.changes;
 
 import org.apache.jena.graph.Node ;
 
 /** Count changes, or simply note if a change has been made.
- *  @deprecated Do not use. This class is not transaction-aware.
  */
-@Deprecated
-public class DatasetChangesCounter implements DatasetChanges
+public class ChangesCounter implements TextDatasetChanges
 {
-    long countStart    = 0 ;
-    long countFinish   = 0 ;
+    public long countStart    = 0 ;
+    public long countFinish   = 0 ;
 
-    long countAdd      = 0 ;
-    long countDelete   = 0 ;
-    long countNoAdd    = 0 ;
-    long countNoDelete = 0 ;
+    public long countAdd      = 0 ;
+    public long countDelete   = 0 ;
+    public long countNoAdd    = 0 ;
+    public long countNoDelete = 0 ;
 
     @Override
     public void start() {
@@ -40,7 +38,7 @@ public class DatasetChangesCounter implements DatasetChanges
     }
 
     @Override
-    public void change(QuadAction qaction, Node g, Node s, Node p, Node o) {
+    public void change(TextQuadAction qaction, Node g, Node s, Node p, Node o) {
         if ( qaction == null )
             throw new NullPointerException() ;
         switch (qaction) {

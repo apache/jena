@@ -21,16 +21,13 @@ import java.util.Iterator;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.dboe.storage.StorageRDF;
 import org.apache.jena.dboe.transaction.txn.Transaction;
 import org.apache.jena.dboe.transaction.txn.TransactionalSystem;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.sparql.core.DatasetChanges;
 import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.sparql.core.QuadAction;
 
 /** {@link StorageRDF} for TDB2 */
 public class StorageTDB implements StorageRDF {
@@ -65,41 +62,9 @@ public class StorageTDB implements StorageRDF {
 
     private void checkActive() {}
 
-    // Watching changes (add, delete, deleteAny)
+    private final void notifyAdd(Node g, Node s, Node p, Node o) { }
 
-    private DatasetChanges monitor = null;
-
-    public void setMonitor(DatasetChanges changes) {
-        monitor = changes;
-    }
-
-    public void unsetMonitor(DatasetChanges changes) {
-        if ( monitor != changes )
-            throw new InternalErrorException();
-        monitor = null;
-    }
-
-    private final void notifyAdd(Node g, Node s, Node p, Node o) {
-        if ( monitor == null )
-            return;
-        QuadAction action = QuadAction.ADD;
-        if ( checkForChange ) {
-            if ( contains(g, s, p, o) )
-                action = QuadAction.NO_ADD;
-        }
-        monitor.change(action, g, s, p, o);
-    }
-
-    private final void notifyDelete(Node g, Node s, Node p, Node o) {
-        if ( monitor == null )
-            return;
-        QuadAction action = QuadAction.DELETE;
-        if ( checkForChange ) {
-            if ( !contains(g, s, p, o) )
-                action = QuadAction.NO_DELETE;
-        }
-        monitor.change(action, g, s, p, o);
-    }
+    private final void notifyDelete(Node g, Node s, Node p, Node o) { }
 
     @Override
     public void add(Node s, Node p, Node o) {

@@ -31,7 +31,7 @@ public class TextIndexTDB1 implements TransactionLifecycle {
     public TextIndexTDB1(TextIndex textIndex) {
         this.textIndex = textIndex;
     }
-    
+
     @Override
     public void begin(Transaction txn) {
     }
