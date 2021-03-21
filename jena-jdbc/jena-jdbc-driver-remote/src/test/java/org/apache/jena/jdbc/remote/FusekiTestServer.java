@@ -75,7 +75,7 @@ import org.apache.jena.update.UpdateProcessor;
  * {@literal @After}       public void ctlAfterTest()          { FusekiTestServer.ctlAfterTest(); }
  * </pre>
  *
- * Much of this machinery is unnessecary for just running a sever in the background:
+ * Much of this machinery is unnecessary for just running a server in the background:
  *
  * <pre>
  *   private static FusekiServer server;
@@ -93,7 +93,7 @@ import org.apache.jena.update.UpdateProcessor;
  *   &#64;Before
  *   public void beforeTest() {
  *       // Clear up data in server servers
- *       Txn.executeWrite(serverdsg, ()->serverdsg.clear());
+ *       Txn.executeWrite(serverdsg, (){@literal ->}serverdsg.clear());
  *   }
  *
  *   &#64;AfterClass
