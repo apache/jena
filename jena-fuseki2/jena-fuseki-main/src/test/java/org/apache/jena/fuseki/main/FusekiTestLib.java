@@ -68,18 +68,18 @@ public class FusekiTestLib {
     // Same - except a QueryExceptionHTTP.
 
     public static void expectQuery401(Runnable runnable) {
-        expectQueryFail(HttpSC.Code.UNAUTHORIZED, runnable);
+        expectQueryFail(runnable, HttpSC.Code.UNAUTHORIZED);
     }
 
     public static void expectQuery403(Runnable runnable) {
-        expectQueryFail(HttpSC.Code.FORBIDDEN, runnable);
+        expectQueryFail(runnable, HttpSC.Code.FORBIDDEN);
     }
 
     public static void expectQuery404(Runnable runnable) {
-        expectQueryFail(HttpSC.Code.NOT_FOUND, runnable);
+        expectQueryFail(runnable, HttpSC.Code.NOT_FOUND);
     }
 
-    public static void expectQueryFail(Code code, Runnable runnable) {
+    public static void expectQueryFail(Runnable runnable, Code code) {
         if ( code == null || ( 200 <= code.getCode() && code.getCode() < 300 ) ) {
             runnable.run();
             return;

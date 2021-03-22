@@ -41,7 +41,7 @@ import org.apache.jena.web.HttpSC;
  * {@code ?graph=} can be any graph name, or one of the words "default" or "union" (without quotes)
  * to indicate the default graph, which is also the default and the dataset union graph.
  * <p>
- * Optional parameter {@code ?target=} specifies the target node for the validation report. 
+ * Optional parameter {@code ?target=} specifies the target node for the validation report.
  */
 public class SHACL_Validation extends BaseActionREST { //ActionREST {
 
@@ -51,10 +51,10 @@ public class SHACL_Validation extends BaseActionREST { //ActionREST {
     protected void doPost(HttpAction action) {
         // Response syntax
         MediaType mediaType = ActionLib.contentNegotation(action, DEF.rdfOffer, DEF.acceptTurtle);
-        Lang lang = RDFLanguages.contentTypeToLang(mediaType.getContentType());
+        Lang lang = RDFLanguages.contentTypeToLang(mediaType.getContentTypeStr());
         if ( lang == null )
             lang = RDFLanguages.TTL;
-        
+
         String targetNodeStr = action.getRequest().getParameter(HttpNames.paramTarget);
 
         action.beginRead();
@@ -64,25 +64,24 @@ public class SHACL_Validation extends BaseActionREST { //ActionREST {
                 ServletOps.errorNotFound("No data graph: "+graphTarget.label());
             Graph data = graphTarget.graph();
             Graph shapesGraph = ActionLib.readFromRequest(action, Lang.TTL);
-            
+
             Node targetNode = null;
             if ( targetNodeStr != null ) {
                 String x = data.getPrefixMapping().expandPrefix(targetNodeStr);
                 targetNode = NodeFactory.createURI(x);
             }
-            
+
             Shapes shapes = Shapes.parse(shapesGraph);
             ValidationReport report = ( targetNode == null )
                 ? ShaclValidator.get().validate(shapesGraph, data)
                 : ShaclValidator.get().validate(shapesGraph, data, targetNode);
-            
+
             if ( report.conforms() )
                 action.log.info(format("[%d] shacl: conforms", action.id));
             else
                 action.log.info(format("[%d] shacl: %d validation errors", action.id, report.getEntries().size()));
             report.getEntries().size();
             action.response.setStatus(HttpSC.OK_200);
-            MediaType mt = ActionLib.contentNegotationRDF(action);
             ActionLib.graphResponse(action, report.getGraph(), lang);
         } finally {
             action.endRead();

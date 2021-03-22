@@ -80,6 +80,7 @@ import org.junit.Assert;
 public class FusekiTestAuth {
     // Old tests
     // Predates full auth support in Fuseki.
+    // Also used by jena-jdbc-driver-remote
     private static int currentPort = WebLib.choosePort();
 
     public static int port() {

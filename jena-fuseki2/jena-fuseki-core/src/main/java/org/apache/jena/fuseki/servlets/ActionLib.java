@@ -18,9 +18,15 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import static java.lang.String.format;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.CharacterCodingException;
+import java.util.Objects;
+import java.util.function.BiConsumer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,7 +49,10 @@ import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.riot.web.HttpNames;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.graph.GraphFactory;
+import org.apache.jena.web.HttpSC;
 
 /** Operations related to servlets */
 
@@ -174,8 +183,8 @@ public class ActionLib {
         MediaType mt = ConNeg.chooseContentType(action.request, myPrefs, defaultMediaType);
         if ( mt == null )
             return null;
-        if ( mt.getContentType() != null )
-            action.response.setContentType(mt.getContentType());
+        if ( mt.getContentTypeStr() != null )
+            action.response.setContentType(mt.getContentTypeStr());
         if ( mt.getCharset() != null )
             action.response.setCharacterEncoding(mt.getCharset());
         return mt;
@@ -191,11 +200,10 @@ public class ActionLib {
         return contentNegotation(action, DEF.quadsOffer, DEF.acceptNQuads);
     }
 
-    
     /**
      * Parse RDF content from the body of the request of the action, ends the
      * request, and sends a 400 if there is a parse error.
-     * 
+     *
      * @throws ActionErrorException
      */
     public static void parseOrError(HttpAction action, StreamRDF dest, Lang lang, String base) {
@@ -206,9 +214,9 @@ public class ActionLib {
             ServletOps.errorParseError(ex);
         }
     }
-    
+
     /**
-     * Parse RDF content. This wraps up the parse step reading from an action.   
+     * Parse RDF content. This wraps up the parse step reading from an action.
      * @throws RiotParseException
      */
     public static void parse(HttpAction action, StreamRDF dest, Lang lang, String base) {
@@ -217,9 +225,9 @@ public class ActionLib {
         catch (IOException ex) { IO.exception(ex); }
         parse(action, dest, input, lang, base);
     }
-    
+
     /**
-     * Parse RDF content. This wraps up the parse step reading from an input stream.   
+     * Parse RDF content. This wraps up the parse step reading from an input stream.
      * @throws RiotParseException
      */
     public static void parse(HttpAction action, StreamRDF dest, InputStream input, Lang lang, String base) {
@@ -243,16 +251,16 @@ public class ActionLib {
     /**
      * Reset the request input stream for an {@link HttpAction} if necessary.
      * If there is a {@code Content-Length} header, throw away input to exhaust this request.
-     * If there is a no {@code Content-Length} header, no need to do anything - the connection is not reusable. 
-     */ 
+     * If there is a no {@code Content-Length} header, no need to do anything - the connection is not reusable.
+     */
     public static void consumeBody(HttpAction action) {
         if ( action.request.getContentLengthLong() > 0 ) {
-            try { 
+            try {
                 IO.skipToEnd(action.request.getInputStream());
             } catch (IOException ex) {}
-        }    
+        }
     }
-    
+
     /*
      * Parse RDF content using content negotiation.
      */
@@ -280,14 +288,80 @@ public class ActionLib {
         return graph;
     }
 
-    /** Output a graph to the HTTP response */
+    /** Output a dataset to the HTTP response. */
+    public static void datasetResponse(HttpAction action, DatasetGraph dsg, Lang lang) {
+        Objects.requireNonNull(lang);
+        RDFFormat format = getNetworkFormatForLang(lang);
+        datasetResponse(action, dsg, format, null);
+    }
+
+    /** Output a dataset to the HTTP response. */
+    public static void datasetResponse(HttpAction action, DatasetGraph dsg, RDFFormat format, String contentType) {
+        Objects.requireNonNull(dsg);
+        Objects.requireNonNull(format);
+        writeResponse(action, (out, fmt) -> RDFDataMgr.write(out, dsg, fmt), format, contentType);
+    }
+
+    /** Output a graph to the HTTP response. Bad, unwritable RDF/XML causes a "406 Not Acceptable". */
     public static void graphResponse(HttpAction action, Graph graph, Lang lang) {
-        action.response.setContentType(lang.getContentType().getContentTypeStr());
+        Objects.requireNonNull(lang);
+        RDFFormat format = getNetworkFormatForLang(lang);
+        graphResponse(action, graph, format, null);
+    }
+
+    /** Output a graph to the HTTP response. Bad, unwritable RDF/XML causes a "406 Not Acceptable". */
+    public static void graphResponse(HttpAction action, Graph graph, RDFFormat format, String contentType) {
+        Objects.requireNonNull(graph);
+        Objects.requireNonNull(format);
+        writeResponse(action, (out, fmt) -> RDFDataMgr.write(out, graph, fmt), format, contentType);
+    }
+
+    /** Return the preferred {@link RDFFormat} for a given {@link Lang}. */
+    public static RDFFormat getNetworkFormatForLang(Lang lang) {
+        Objects.requireNonNull(lang);
+        return ( lang == Lang.RDFXML ) ? RDFFormat.RDFXML_PLAIN : RDFWriterRegistry.defaultSerialization(lang);
+    }
+
+    /**
+     * Output a graph to the HTTP response (does not set the status code) using the given Content-Type string.
+     * One of {@code lang} and {@code fmt} maybe null and will be calculated.
+     * {@code actualContentType} maybe null in which case the standard content type for the syntax is used.
+     */
+    private static void writeResponse(HttpAction action, BiConsumer<OutputStream, RDFFormat> writeAction,RDFFormat fmt, String actualContentType) {
+        String ct = actualContentType;
+        Lang lang = fmt.getLang();
+        if ( ct == null )
+            ct = lang.getContentType().toHeaderString();
+
         try {
-            RDFDataMgr.write(action.response.getOutputStream(), graph, lang);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            OutputStream out = action.response.getOutputStream();
+            // Do not use try-finally here. Error handling headers are written later.
+            // RDF/XML can go wrong during writing so we buffered to know it will succeed when we produce the output bytes.
+            // (Other formats are much less prone to this.)
+            boolean materializeFirst = ( lang == Lang.RDFXML );
+            if ( materializeFirst ) {
+                byte[] bytes;
+                try ( ByteArrayOutputStream bout = new ByteArrayOutputStream(100*1024) ) {
+                    writeAction.accept(bout, fmt);
+                    bytes = bout.toByteArray();
+                } catch (JenaException ex) {
+                    // Problems formatting.
+                    action.log.warn(format("[%d] Failed to produce %s: %s", action.id, lang.getLabel(), ex.getMessage()));
+                    ServletOps.error(HttpSC.NOT_ACCEPTABLE_406);
+                    return;
+                }
+                // Succeeded in formatting the RDF
+                action.response.setContentLength(bytes.length);
+                action.response.setContentType(ct);
+                action.response.setStatus(HttpSC.OK_200);
+                out.write(bytes);
+            } else {
+                // Try to write directly (streaming if possible).
+                action.response.setContentType(ct);
+                writeAction.accept(out, fmt);
+            }
+            out.flush();
+        } catch (IOException ex) { IO.exception(ex); }
     }
 
     /** Get one or zero strings from an HTTP header */
@@ -309,7 +383,7 @@ public class ActionLib {
     public static ContentType getContentType(HttpAction action) {
         return FusekiNetLib.getContentType(action.request);
     }
-    
+
     public static void setCommonHeadersForOptions(HttpServletResponse httpResponse) {
         if ( Fuseki.CORS_ENABLED )
             httpResponse.setHeader(HttpNames.hAccessControlAllowHeaders, "X-Requested-With, Content-Type, Authorization");

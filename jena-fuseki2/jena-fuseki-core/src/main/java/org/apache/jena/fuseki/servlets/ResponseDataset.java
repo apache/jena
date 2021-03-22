@@ -69,7 +69,7 @@ public class ResponseDataset
     }
 
     public static void doResponseModel(HttpAction action, Model model) {
-        Dataset ds = DatasetFactory.create(model);
+        Dataset ds = DatasetFactory.wrap(model);
         ResponseDataset.doResponseDataset(action, ds);
     }
 
@@ -81,7 +81,7 @@ public class ResponseDataset
 
         MediaType i = ConNeg.chooseContentType(request, DEF.constructOffer, DEF.acceptTurtle);
         if ( i != null )
-            mimeType = i.getContentType();
+            mimeType = i.getContentTypeStr();
 
         String outputField = ResponseOps.paramOutput(request, shortNamesModel);
         if ( outputField != null )
@@ -112,27 +112,19 @@ public class ResponseDataset
         Lang lang = RDFLanguages.contentTypeToLang(contentType);
         if ( lang == null )
             ServletOps.errorBadRequest("Can't determine output content type: "+contentType);
-        // Choose the serialization. For RDF/XML use the fast, plain variant.
-        RDFFormat fmt =
-            ( lang == Lang.RDFXML ) ? RDFFormat.RDFXML_PLAIN : RDFWriterRegistry.defaultSerialization(lang);
+        RDFFormat format = ActionLib.getNetworkFormatForLang(lang);
 
         try {
-            ResponseOps.setHttpResponse(action, contentType, charset);
-            response.setStatus(HttpSC.OK_200);
             ServletOutputStream out = response.getOutputStream();
             try {
+                // Use the Content-Type from the content negotiation.
                 if ( RDFLanguages.isQuads(lang) )
-                    RDFDataMgr.write(out, dataset, fmt);
+                    ActionLib.datasetResponse(action, dataset.asDatasetGraph(), format, contentType);
                 else
-                    RDFDataMgr.write(out, dataset.getDefaultModel(), fmt);
+                    ActionLib.graphResponse(action, dataset.getDefaultModel().getGraph(), format, contentType);
                 out.flush();
             } catch (JenaException ex) {
-                // Some RDF/XML data is unwritable. All we can do is pretend it's a bad
-                // request (inappropriate content type).
-                if ( lang.equals(Lang.RDFXML) )
-                    ServletOps.errorBadRequest("Failed to write output in RDF/XML: "+ex.getMessage());
-                else
-                    ServletOps.errorOccurred("Failed to write output: "+ex.getMessage(), ex);
+                ServletOps.errorOccurred("Failed to write output: "+ex.getMessage(), ex);
             }
         }
         catch (ActionErrorException ex) { throw ex; }
