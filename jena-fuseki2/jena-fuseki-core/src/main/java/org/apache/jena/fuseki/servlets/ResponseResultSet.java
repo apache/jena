@@ -107,7 +107,7 @@ public class ResponseResultSet
         // -- Conneg
         MediaType i = ConNeg.chooseContentType(request, contentTypeOffer, DEF.acceptRSXML);
         if ( i != null )
-            mimeType = i.getContentType();
+            mimeType = i.getContentTypeStr();
 
         // -- Override content type from conneg.
         // Does &output= override?

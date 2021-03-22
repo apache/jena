@@ -26,13 +26,14 @@ import java.io.IOException;
 import javax.servlet.ServletOutputStream;
 
 import org.apache.jena.atlas.web.MediaType;
-import org.apache.jena.atlas.web.TypedOutputStream;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.riot.*;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.OperationDeniedException;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.web.HttpSC;
 
 public class GSP_R extends GSP_Base {
 
@@ -48,42 +49,36 @@ public class GSP_R extends GSP_Base {
 
     protected void execGetQuads(HttpAction action) {
         ActionLib.setCommonHeaders(action.response);
+        // If this asks for triples, get N-Quads. Don't want the named graphs hidden.
         MediaType mediaType = ActionLib.contentNegotationQuads(action);
         ServletOutputStream output;
         try { output = action.response.getOutputStream(); }
         catch (IOException ex) { ServletOps.errorOccurred(ex); output = null; }
 
-        TypedOutputStream out = new TypedOutputStream(output, mediaType);
-        Lang lang = RDFLanguages.contentTypeToLang(mediaType.getContentType());
+        Lang lang = RDFLanguages.contentTypeToLang(mediaType.getContentTypeStr());
         if ( lang == null )
             lang = RDFLanguages.TRIG;
 
         if ( action.verbose )
             action.log.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", action.id,
-                mediaType.getContentType(), mediaType.getCharset(), lang.getName()));
+                mediaType.getContentTypeStr(), mediaType.getCharset(), lang.getName()));
         if ( !RDFLanguages.isQuads(lang) )
             ServletOps.errorBadRequest("Not a quads format: " + mediaType);
 
         action.beginRead();
         try {
             DatasetGraph dsg = decideDataset(action);
-            action.response.setHeader("Content-type", lang.getContentType().toHeaderString());
-            // ActionLib.contentNegotationQuads above
-            // RDF/XML is not a choice but this code is general.
-            RDFFormat fmt =
-                // Choose streaming.
-                ( lang == Lang.RDFXML ) ? RDFFormat.RDFXML_PLAIN : RDFWriterRegistry.defaultSerialization(lang);
             try {
-                RDFDataMgr.write(out, dsg, fmt);
+                // Use the preferred MIME type.
+                ActionLib.datasetResponse(action, dsg, lang);
+                ServletOps.success(action);
             } catch (OperationDeniedException ex) {
                 throw ex;
             } catch (JenaException ex) {
-                if ( fmt.getLang().equals(Lang.RDFXML) )
-                    ServletOps.errorBadRequest("Failed to write output in RDF/XML: "+ex.getMessage());
-                else
-                    ServletOps.errorOccurred("Failed to write output: "+ex.getMessage(), ex);
+                // Attempt to send an error - which may not work.
+                // "406 Not Acceptable" - Accept header issue; target is fine.
+                ServletOps.error(HttpSC.NOT_ACCEPTABLE_406, "Failed to write output: "+ex.getMessage());
             }
-            ServletOps.success(action);
         } finally {
             action.endRead();
         }
@@ -97,13 +92,14 @@ public class GSP_R extends GSP_Base {
         try { output = action.response.getOutputStream(); }
         catch (IOException ex) { ServletOps.errorOccurred(ex); output = null; }
 
-        TypedOutputStream out = new TypedOutputStream(output, mediaType);
-        Lang lang = RDFLanguages.contentTypeToLang(mediaType.getContentType());
+        Lang lang = RDFLanguages.contentTypeToLang(mediaType.getContentTypeStr());
+        if ( lang == null )
+            lang = RDFLanguages.TURTLE;
 
         action.beginRead();
         if ( action.verbose )
             action.log.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s",
-                            action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName()));
+                            action.id, mediaType.getContentTypeStr(), mediaType.getCharset(), lang.getName()));
         try {
             DatasetGraph dsg = decideDataset(action);
             GraphTarget target = determineTargetGSP(dsg, action);
@@ -112,28 +108,22 @@ public class GSP_R extends GSP_Base {
             boolean exists = target.exists();
             if ( ! exists )
                 ServletOps.errorNotFound("No such graph: "+target.label());
-            Graph g = target.graph();
-            // If we want to set the Content-Length, we need to buffer.
-            //response.setContentLength(??);
-            String ct = lang.getContentType().toHeaderString();
-            action.response.setContentType(ct);
-            //Special case RDF/XML to be the plain (faster, less readable) form
-            RDFFormat fmt =
-                ( lang == Lang.RDFXML ) ? RDFFormat.RDFXML_PLAIN : RDFWriterRegistry.defaultSerialization(lang);
+            Graph graph = target.graph();
+            // Special case RDF/XML to be the plain (faster, less readable) form
             try {
-                RDFDataMgr.write(out, g, fmt);
+                // Use the preferred MIME type.
+                ActionLib.graphResponse(action, graph, lang);
+                ServletOps.success(action);
             } catch (OperationDeniedException ex) {
                 throw ex;
             } catch (JenaException ex) {
-                // Some RDF/XML data is unwritable. All we can do is pretend it's a bad
-                // request (inappropriate content type).
-                // Good news - this happens before any output for RDF/XML-ABBREV.
-                if ( fmt.getLang().equals(Lang.RDFXML) )
-                    ServletOps.errorBadRequest("Failed to write output in RDF/XML: "+ex.getMessage());
-                else
-                    ServletOps.errorOccurred("Failed to write output: "+ex.getMessage(), ex);
+                // ActionLib.graphResponse has special handling for RDF/XML but for
+                // other syntax forms unexpected errors mean we may or may not have
+                // written some output because of output buffering.
+                // Attempt to send an error - which may not work.
+                // "406 Not Acceptable" - Accept header issue; target is fine.
+                ServletOps.error(HttpSC.NOT_ACCEPTABLE_406, "Failed to write output: "+ex.getMessage());
             }
-            ServletOps.success(action);
         } finally { action.endRead(); }
     }
 
@@ -156,7 +146,7 @@ public class GSP_R extends GSP_Base {
         ActionLib.setCommonHeaders(action.response);
         MediaType mediaType = ActionLib.contentNegotationQuads(action);
         if ( action.verbose )
-            action.log.info(format("[%d]   Head: Content-Type=%s", action.id, mediaType.getContentType()));
+            action.log.info(format("[%d]   Head: Content-Type=%s", action.id, mediaType.getContentTypeStr()));
         ServletOps.success(action);
     }
 
@@ -164,7 +154,7 @@ public class GSP_R extends GSP_Base {
         ActionLib.setCommonHeaders(action.response);
         MediaType mediaType = ActionLib.contentNegotationRDF(action);
         if ( action.verbose )
-            action.log.info(format("[%d]   Head: Content-Type=%s", action.id, mediaType.getContentType()));
+            action.log.info(format("[%d]   Head: Content-Type=%s", action.id, mediaType.getContentTypeStr()));
         // Check graph not 404.
         action.beginRead();
         try {

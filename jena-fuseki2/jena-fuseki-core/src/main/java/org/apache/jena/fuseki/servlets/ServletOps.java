@@ -39,12 +39,12 @@ import org.apache.jena.web.HttpSC.Code;
 
 public class ServletOps {
 
-    /** Send an HTTP error response. 
+    /** Send an HTTP error response.
      *  Include an optional message in the body (as text/plain), if provided.
      *  Note that we do not set a custom Reason Phrase.
      *  <br/>
-     *  HTTPS/2 does not have a "Reason Phrase". 
-     * 
+     *  HTTPS/2 does not have a "Reason Phrase".
+     *
      * @param response
      * @param statusCode
      * @param message
@@ -81,12 +81,12 @@ public class ServletOps {
             IO.exception(ex);
         }
     }
-     
+
      public static void writeMessagePlainTextError(HttpServletResponse response, String message) {
         try { writeMessagePlainText(response, message); }
         catch (RuntimeIOException ex) {}
      }
-    
+
     public static void successNoContent(HttpAction action) {
         success(action, HttpSC.NO_CONTENT_204);
     }
@@ -149,7 +149,7 @@ public class ServletOps {
         error(HttpSC.BAD_REQUEST_400, string);
     }
 
-    public static void errorNotFound() {    
+    public static void errorNotFound() {
         errorNotFound(Code.NOT_FOUND.getMessage());
     }
 

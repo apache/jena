@@ -45,9 +45,9 @@ public class ContentType
      * Get the type/subtype as a string.
      * @see #toHeaderString toHeaderString for use in HTTP headers.
      */
-    
+
     public String getContentTypeStr() {
-        return mediaType.getContentType() ;
+        return mediaType.getContentTypeStr() ;
     }
 
     public String getCharset() {

@@ -19,6 +19,7 @@
 package org.apache.jena.test;
 
 import org.apache.jena.test.assembler.TS_Assembler;
+import org.apache.jena.test.general.TestRemoteEndToEnd;
 import org.apache.jena.test.integration.TS_Integration;
 import org.apache.jena.test.rdfconnection.TS_RDFConnectionIntegration;
 import org.apache.jena.test.txn.TS_TranactionIntegration;
@@ -32,6 +33,7 @@ import org.junit.runners.Suite;
     , TS_RDFConnectionIntegration.class
     , TS_Assembler.class
     , TestSettings.class
+    , TestRemoteEndToEnd.class
 })
 
 public class TC_Integration { }

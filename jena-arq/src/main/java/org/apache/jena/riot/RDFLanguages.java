@@ -367,10 +367,10 @@ public class RDFLanguages
         if ( ct.getCharset() != null )
             return ct.getCharset() ;
 
-        String mt = ct.getContentType() ;
-        if ( contentTypeNTriples.equals(mt) )       return charsetUTF8 ;
-        if ( contentTypeNTriplesAlt.equals(mt) )    return charsetASCII ;
-        if ( contentTypeNQuads.equals(mt) )         return charsetUTF8 ;
+        String mt = ct.getContentTypeStr() ;
+        if ( contentTypeNTriples.equals(mt) )        return charsetUTF8 ;
+        if ( contentTypeNTriplesAlt.equals(mt) )     return charsetASCII ;
+        if ( contentTypeNQuads.equals(mt) )          return charsetUTF8 ;
         if ( contentTypeNQuadsAlt1.equals(mt) )      return charsetASCII ;
         if ( contentTypeNQuadsAlt2.equals(mt) )      return charsetASCII ;
         return charsetUTF8 ;
