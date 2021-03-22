@@ -350,6 +350,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
           </exclusion>
+          <!-- libthrift : 0.14.0 onwards : THRIFT-5375 -->
+          <exclusion>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
 
