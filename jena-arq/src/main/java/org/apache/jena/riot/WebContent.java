@@ -33,15 +33,16 @@ public class WebContent
     public static final String      contentTypeTurtleAlt1        = "application/turtle" ;
     public static final ContentType ctTurtleAlt1                 = ContentType.create(contentTypeTurtleAlt1) ;
 
-    public static final String      contentTypeTurtleAlt2        = "application/x-turtle" ;
-    public static final ContentType ctTurtleAlt2                 = ContentType.create(contentTypeTurtleAlt2) ;
+    // Name no longer supported - Jena 4.0.0.
+//    public static final String      contentTypeTurtleAlt2        = "application/x-turtle" ;
+//    public static final ContentType ctTurtleAlt2                 = ContentType.create(contentTypeTurtleAlt2) ;
 
     public static final String      contentTypeRDFXML            = "application/rdf+xml" ;
     public static final ContentType ctRDFXML                     = ContentType.create(contentTypeRDFXML) ;
 
     public static final String      contentTypeRDFJSON           = "application/rdf+json" ;
     public static final ContentType ctRDFJSON                    = ContentType.create(contentTypeRDFJSON) ;
-    
+
     public static final String      contentTypeJSONLD            = "application/ld+json" ;
     public static final ContentType ctJSONLD                     = ContentType.create(contentTypeJSONLD) ;
 
@@ -69,18 +70,19 @@ public class WebContent
     public static final String      contentTypeTriGAlt1          = "text/trig" ;
     public static final ContentType ctTriGAlt1                   = ContentType.create(contentTypeTriGAlt1) ;
 
-    public static final String      contentTypeTriGAlt2          = "application/x-trig" ;
-    public static final ContentType ctTriGAlt2                   = ContentType.create(contentTypeTriGAlt2) ;
+    // Name no longer supported - Jena 4.0.0.
+//    public static final String      contentTypeTriGAlt2          = "application/x-trig" ;
+//    public static final ContentType ctTriGAlt2                   = ContentType.create(contentTypeTriGAlt2) ;
 
-    // Unofficial
     public static final String      contentTypeRDFThrift         = "application/rdf+thrift" ;
     public static final ContentType ctRDFTHRIFT                  = ContentType.create(contentTypeRDFThrift) ;
 
     public static final String      contentTypeNQuadsAlt1        = "text/n-quads" ;
     public static final ContentType ctNQuadsAlt1                 = ContentType.create(contentTypeNQuadsAlt1) ;
 
-    public static final String      contentTypeNQuadsAlt2        = "text/nquads" ;
-    public static final ContentType ctNQuadsAlt2                 = ContentType.create(contentTypeNQuadsAlt2) ;
+    // Name no longer supported - Jena 4.0.0.
+//    public static final String      contentTypeNQuadsAlt2        = "text/nquads" ;
+//    public static final ContentType ctNQuadsAlt2                 = ContentType.create(contentTypeNQuadsAlt2) ;
 
     public static final String      contentTypeTriX              = "application/trix" ;
     public static final ContentType ctTriX                       = ContentType.create(contentTypeTriX) ;
@@ -101,6 +103,7 @@ public class WebContent
 
     public static final String      contentTypeN3                = "text/rdf+n3" ;
     public static final ContentType ctTypeN3                     = ContentType.create("text/rdf+n3") ;
+
     public static final String      contentTypeN3Alt1            = "application/n3" ;
     public static final ContentType ctN3Alt1                     = ContentType.create(contentTypeN3Alt1) ;
 
@@ -115,11 +118,11 @@ public class WebContent
 
     public static final String      contentTypeJSON              = "application/json" ;
     public static final ContentType ctJSON                       = ContentType.create(contentTypeJSON) ;
-    
+
     // Unofficial
     public static final String      contentTypeResultsThrift     = "application/sparql-results+thrift" ;
     public static final ContentType ctResultsThrift              = ContentType.create(contentTypeResultsThrift) ;
-    
+
     public static final String      contentTypeSPARQLQuery       = "application/sparql-query" ;
     public static final ContentType ctSPARQLQuery                = ContentType.create(contentTypeSPARQLQuery) ;
 
@@ -154,52 +157,52 @@ public class WebContent
 
     public static final String langNQuads           = "NQUADS" ;
     public static final String langTriG             = "TRIG" ;
-    
+
     /** Java name for UTF-8 encoding */
     public static final String encodingUTF8         = "utf-8" ;
-    
+
     /** Accept header part when looking for a graph */
-    private static final String defaultGraphAccept          
+    private static final String defaultGraphAccept
         =  "text/turtle,application/n-triples;q=0.9,application/ld+json;q=0.8,application/rdf+xml;q=0.7" ;
-    
+
     /** Accept header when looking for a graph */
     // Catches aplication/xml and application.json
-    public static final String defaultGraphAcceptHeader     =  defaultGraphAccept+",*/*;q=0.3" ; 
+    public static final String defaultGraphAcceptHeader     =  defaultGraphAccept+",*/*;q=0.3" ;
 
     /** Accept header part when looking for a dataset */
-    private static final String defaultDatasetAccept         
+    private static final String defaultDatasetAccept
         =  "application/trig,application/n-quads;q=0.9,application/ld+json;q=0.8" ;
-    
+
     /** Accept header when looking for a dataset */
     public static final String defaultDatasetAcceptHeader   =  defaultDatasetAccept+",*/*;q=0.3" ;
-    
+
     // This is the essence of defaultGraphAccept+","+defaultDatasetAccept+",*/*;q=0.5" cleaned up (e.g.de-duplicate JSON-LD).
     /** Accept header when looking for a graph or dataset */
-    public static final String defaultRDFAcceptHeader       =  
+    public static final String defaultRDFAcceptHeader       =
             "text/turtle,application/n-triples;q=0.9,application/rdf+xml;q=0.7," +
             "application/trig,application/n-quads;q=0.9,application/ld+json;q=0.8," +
             "*/*;q=0.5" ;
 
-    /** Return our "canonical" name for a Content Type.
-     * This should be the standard one, no X-*
+    /**
+     * Return our "canonical" name for a Content Type.
+     * This should be the standard one, no X-*, no alternative names.
      */
     public static String contentTypeCanonical(String contentType)
-    { 
+    {
         Lang lang = RDFLanguages.contentTypeToLang(contentType) ;
         if ( lang == null )
             return null ;
         return lang.getHeaderString() ;
-        //return mapLangToContentType.get(lang) ;
     }
 
-    /** Match content type (ignores charsets and other parameters) */ 
+    /** Match content type (ignores charsets and other parameters) */
     public static boolean matchContentType(ContentType ct1, ContentType ct2)  {
         if ( ct1 == null || ct2 == null )
             return false ;
-        
+
         return matchContentType(ct1.getContentTypeStr(), ct2.getContentTypeStr()) ;
     }
-    
+
     public static boolean matchContentType(String ct1, String ct2)  {
         return Lib.equalsIgnoreCase(ct1,  ct2) ;
     }
@@ -215,12 +218,12 @@ public class WebContent
     }
 
     /**
-     * <p> 
+     * <p>
      *  Determine the content type to be used, given the target URL, the content-type from
      *  Content Negotiation and a hint language.  This is a pragmatic balance.
      *  A content-type of "text/plain" is ignored - it is too often wrong.
      *  </p><p>
-     *  The decision is 
+     *  The decision is
      *  <blockquote>
      *  <i>Content type</i> (but not text/plain) {@literal >} <i>hint</i> {@literal >} <i>file extension</i>.
      *  </blockquote>
@@ -229,41 +232,41 @@ public class WebContent
      *  assuming servers don't lie. The "hint" is really a hint just for file extension override.
      *  </p><p>
      *  In the case of no file extension, this reduces to the hint being
-     *  the default choice if conneg does not produce anything useful.  
+     *  the default choice if conneg does not produce anything useful.
      *  </p>
-     *   
+     *
      * @param contentTypeStr     Content-Type string
      * @param hintLang  Default language
      * @param target    The URL of the target (file extension may be used)
-     *  
+     *
      * @return ContentType or null
      */
     public static ContentType determineCT(String contentTypeStr, Lang hintLang, String target) {
         boolean isTextPlain = contentTypeTextPlain.equals(contentTypeStr) ;
         //boolean isOctetStream = contentTypeOctets.equals(contentTypeStr) ;
-    
+
         if ( contentTypeStr != null  )
             contentTypeStr = contentTypeCanonical(contentTypeStr) ;
-    
+
         // If it's text plain, we ignore it because a lot of naive
         // server setups return text/plain for any file type.
-        // (It was never registered as being N-triples; 
+        // (It was never registered as being N-triples;
         // that was only for RDF 2004 testing.)
         ContentType ct = null ;
         if ( ! isTextPlain )
             // Not guaranteed to be registered as a language here.
             ct = (contentTypeStr==null) ? null : ContentType.create(contentTypeStr) ;
-        
-        if ( ct == null && hintLang != null ) 
+
+        if ( ct == null && hintLang != null )
             ct = hintLang.getContentType() ;
-        
+
         if ( ct == null )
             ct = RDFLanguages.guessContentType(target) ;
-        
+
         return ct ;
     }
-    
-    /** Map content-type to lang for SPARQL results, with pragmatic adapters. */   
+
+    /** Map content-type to lang for SPARQL results, with pragmatic adapters. */
     public static Lang contentTypeToLangResultSet(String contentType) {
         if ( contentType == null )
             return null;
@@ -273,7 +276,7 @@ public class WebContent
         else if ( contentType.equals(WebContent.contentTypeJSON) )
             return ResultSetLang.RS_JSON;
         Lang lang = RDFLanguages.contentTypeToLang(contentType);
-        // May not be a reader/write result set language. 
+        // May not be a reader/write result set language.
         return lang;
     }
 }

@@ -181,15 +181,15 @@ public class MediaType {
 
     private void setParameter(String name, String value) {
         params.put(name, value) ;
-        strContentType = null ;
     }
 
-    // A cache.
-    private String strContentType = null ;
-
+    /** @deprecated Use {@link #getContentTypeStr} */
+    @Deprecated
     public String getContentType() {
-        if ( strContentType != null )
-            return strContentType ;
+        return getContentTypeStr();
+    }
+
+    public String getContentTypeStr() {
         if ( subType == null )
             return type ;
         return type + "/" + subType ;
@@ -213,7 +213,7 @@ public class MediaType {
 
     /**
      * The outcome of parsing
-     * 
+     *
      * @see MediaType#parse
      */
     /* package */static class ParsedMediaType {

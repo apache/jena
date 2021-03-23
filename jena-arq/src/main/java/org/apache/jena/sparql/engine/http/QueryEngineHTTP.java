@@ -384,7 +384,6 @@ public class QueryEngineHTTP implements QueryExecution {
         return result;
     }
 
-    //  XXX Move
     private static String chooseAcceptHeader(String acceptHeader, String contentType) {
         if ( acceptHeader != null )
             return acceptHeader;
@@ -890,17 +889,9 @@ public class QueryEngineHTTP implements QueryExecution {
         accumulateContentTypeString(sBuff, WebContent.contentTypeTurtle,       1.0);
         accumulateContentTypeString(sBuff, WebContent.contentTypeNTriples,     1.0);
         accumulateContentTypeString(sBuff, WebContent.contentTypeRDFXML,       0.9);
-
-        accumulateContentTypeString(sBuff, WebContent.contentTypeTurtleAlt1,   0.8);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeTurtleAlt2,   0.8);
-
-        accumulateContentTypeString(sBuff, WebContent.contentTypeN3,           0.7);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeN3Alt1,       0.6);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeN3Alt2,       0.6);
-
-        accumulateContentTypeString(sBuff, WebContent.contentTypeNTriplesAlt,  0.5);
+        accumulateContentTypeString(sBuff, WebContent.contentTypeNTriplesAlt,  0.5);    // text/plain
+        accumulateContentTypeString(sBuff, WebContent.contentTypeN3,           0.3);
         accumulateContentTypeString(sBuff, "*/*",                              0.1) ;
-
         return sBuff.toString();
     }
 
@@ -916,32 +907,14 @@ public class QueryEngineHTTP implements QueryExecution {
         StringBuilder sBuff = new StringBuilder() ;
 
         accumulateContentTypeString(sBuff, WebContent.contentTypeTriG,         1.0) ;
-        accumulateContentTypeString(sBuff, WebContent.contentTypeTriGAlt1,     1.0) ;
-        accumulateContentTypeString(sBuff, WebContent.contentTypeTriGAlt2,     1.0) ;
-
         accumulateContentTypeString(sBuff, WebContent.contentTypeNQuads,       1.0) ;
-        accumulateContentTypeString(sBuff, WebContent.contentTypeNQuadsAlt1,   1.0) ;
-        accumulateContentTypeString(sBuff, WebContent.contentTypeNQuadsAlt2,   1.0) ;
-
         accumulateContentTypeString(sBuff, WebContent.contentTypeJSONLD,       0.9) ;
-
         // And triple formats (the case of execConstructDatasets but a regular triples CONSTRUCT).
         accumulateContentTypeString(sBuff, WebContent.contentTypeTurtle,       0.8);
         accumulateContentTypeString(sBuff, WebContent.contentTypeNTriples,     0.8);
-
         accumulateContentTypeString(sBuff, WebContent.contentTypeRDFXML,       0.7);
-
-        accumulateContentTypeString(sBuff, WebContent.contentTypeTurtleAlt1,   0.6);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeTurtleAlt2,   0.6);
-
-        accumulateContentTypeString(sBuff, WebContent.contentTypeN3,           0.5);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeN3Alt1,       0.5);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeN3Alt2,       0.5);
-
         accumulateContentTypeString(sBuff, WebContent.contentTypeNTriplesAlt,  0.4);
-
         accumulateContentTypeString(sBuff, "*/*",                              0.1) ;
-
         return sBuff.toString();
     }
 

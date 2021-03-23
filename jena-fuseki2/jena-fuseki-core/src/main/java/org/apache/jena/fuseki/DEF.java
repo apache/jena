@@ -34,7 +34,6 @@ public class DEF
 
     public static final AcceptList constructOffer     = AcceptList.create(contentTypeTurtle,
                                                                           contentTypeTurtleAlt1,
-                                                                          contentTypeTurtleAlt2,
                                                                           contentTypeNTriples,
                                                                           contentTypeNTriplesAlt,
                                                                           contentTypeRDFXML,
@@ -46,15 +45,12 @@ public class DEF
 
                                                                           contentTypeTriG,
                                                                           contentTypeTriGAlt1,
-                                                                          contentTypeTriGAlt2,
                                                                           contentTypeNQuads,
-                                                                          contentTypeNQuadsAlt1,
-                                                                          contentTypeNQuadsAlt2
+                                                                          contentTypeNQuadsAlt1
                                                                           );
 
     public static final AcceptList rdfOffer           = AcceptList.create(contentTypeTurtle,
                                                                           contentTypeTurtleAlt1,
-                                                                          contentTypeTurtleAlt2,
                                                                           contentTypeNTriples,
                                                                           contentTypeNTriplesAlt,
                                                                           contentTypeRDFXML,
@@ -67,11 +63,9 @@ public class DEF
 
     public static final AcceptList quadsOffer         = AcceptList.create(contentTypeTriG,
                                                                           contentTypeTriGAlt1,
-                                                                          contentTypeTriGAlt2,
                                                                           contentTypeJSONLD,
                                                                           contentTypeNQuads,
                                                                           contentTypeNQuadsAlt1,
-                                                                          contentTypeNQuadsAlt2,
                                                                           contentTypeTriX,
                                                                           contentTypeTriXxml
                                                                           );
