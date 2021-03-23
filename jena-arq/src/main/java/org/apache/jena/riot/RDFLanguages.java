@@ -68,7 +68,7 @@ public class RDFLanguages
     /** <a href="http://www.w3.org/TR/turtle/">Turtle</a>*/
     public static final Lang TURTLE     = LangBuilder.create(strLangTurtle, contentTypeTurtle)
                                                      .addAltNames("TTL")
-                                                     .addAltContentTypes(contentTypeTurtleAlt1, contentTypeTurtleAlt2)
+                                                     .addAltContentTypes(contentTypeTurtleAlt1)
                                                      .addFileExtensions("ttl")
                                                      .build() ;
 
@@ -105,14 +105,14 @@ public class RDFLanguages
 
     /** <a href="http://www.w3.org/TR/trig/">TriG</a> */
     public static final Lang TRIG       = LangBuilder.create(strLangTriG, contentTypeTriG)
-                                                     .addAltContentTypes(contentTypeTriGAlt1, contentTypeTriGAlt2)
+                                                     .addAltContentTypes(contentTypeTriGAlt1)
                                                      .addFileExtensions("trig")
                                                      .build() ;
 
     /** <a href="http://www.w3.org/TR/n-quads">N-Quads</a> */
     public static final Lang NQUADS     = LangBuilder.create(strLangNQuads, contentTypeNQuads)
                                                      .addAltNames("NQ", "NQuads", "NQuad", "N-Quad", "N-Quads")
-                                                     .addAltContentTypes(contentTypeNQuadsAlt1, contentTypeNQuadsAlt2)
+                                                     .addAltContentTypes(contentTypeNQuadsAlt1)
                                                      .addFileExtensions("nq")
                                                      .build() ;
 
@@ -372,7 +372,6 @@ public class RDFLanguages
         if ( contentTypeNTriplesAlt.equals(mt) )     return charsetASCII ;
         if ( contentTypeNQuads.equals(mt) )          return charsetUTF8 ;
         if ( contentTypeNQuadsAlt1.equals(mt) )      return charsetASCII ;
-        if ( contentTypeNQuadsAlt2.equals(mt) )      return charsetASCII ;
         return charsetUTF8 ;
     }
 
