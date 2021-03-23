@@ -87,32 +87,32 @@ public class ContainerImpl extends ResourceImpl
     
     @Override
     public Container add(boolean o)  {
-        return add( String.valueOf( o ) );
+        return add( getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public Container add(long o)  {
-        return add( String.valueOf( o ) );
+        return add( getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public Container add(char o)  {
-        return add( String.valueOf( o ) );
+        return add( getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public Container add( float o )  {
-        return add( String.valueOf( o ) );
+        return add( getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public Container add(double o)  {
-        return add( String.valueOf( o ) );
+        return add( getModel().createTypedLiteral( o ) );
     }
 
     @Override
     public Container add(Object o)  {
-        return add( String.valueOf( o ) );
+        return add( getModel().createTypedLiteral( o ) );
     }
      
     @Override
@@ -132,32 +132,32 @@ public class ContainerImpl extends ResourceImpl
 
     @Override
     public boolean contains(boolean o)  {
-        return contains( String.valueOf( o ) );
+        return contains( getModel().createTypedLiteral( o ) );
     }
 
     @Override
     public boolean contains(long o)  {
-        return contains( String.valueOf( o ) );
+        return contains( getModel().createTypedLiteral( o ) );
     }
 
     @Override
     public boolean contains(char o)  {
-        return contains( String.valueOf( o ) );
+        return contains( getModel().createTypedLiteral( o ) );
     }
 
     @Override
     public boolean contains(float o)  {
-        return contains( String.valueOf( o ) );
+        return contains( getModel().createTypedLiteral( o ) );
     }
 
     @Override
     public boolean contains(double o)  {
-        return contains( String.valueOf( o ) );
+        return contains( getModel().createTypedLiteral( o ) );
     }
 
     @Override
     public boolean contains(Object o)  {
-        return contains( String.valueOf( o ) );
+        return contains( getModel().createTypedLiteral( o ) );
     }
     
     @Override

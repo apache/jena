@@ -227,32 +227,32 @@ public class SeqImpl extends ContainerImpl implements Seq {
     
     @Override
     public Seq add(int index, boolean o)  {
-        return add( index, String.valueOf( o ) );
+        return add( index, getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public Seq add(int index, long o)  {
-        return add( index, String.valueOf( o ) );
+        return add( index, getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public Seq add(int index, char o)  {
-        return add( index, String.valueOf( o ) );
+        return add( index, getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public Seq add(int index, float o)  {
-        return add( index, String.valueOf( o ) );
+        return add( index, getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public Seq add(int index, double o)  {
-        return add( index, String.valueOf( o ) );
+        return add( index, getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public Seq add(int index, Object o)  {
-        return add( index, String.valueOf( o ) );
+        return add( index, getModel().createTypedLiteral( o ) );
     }
     
     @Override
@@ -304,32 +304,32 @@ public class SeqImpl extends ContainerImpl implements Seq {
     
     @Override
     public int indexOf(boolean o)  {
-        return indexOf( String.valueOf( o ) );
+        return indexOf( getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public int indexOf(long o)  {
-        return indexOf( String.valueOf( o ) );
+        return indexOf( getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public int indexOf(char o)  {
-        return indexOf( String.valueOf( o ) );
+        return indexOf( getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public int indexOf(float o)  {
-        return indexOf( String.valueOf( o ) );
+        return indexOf( getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public int indexOf(double o)  {
-        return indexOf( String.valueOf( o ) );
+        return indexOf( getModel().createTypedLiteral( o ) );
     }
 
     @Override
     public int indexOf(Object o)  {
-        return indexOf( String.valueOf( o ) );
+        return indexOf( getModel().createTypedLiteral( o ) );
     }
         
     @Override
