@@ -30,7 +30,6 @@ public class TestWebContent {
     {
         testCanonicalise(WebContent.contentTypeTurtle, WebContent.contentTypeTurtle);
         testCanonicalise(WebContent.contentTypeTurtleAlt1, WebContent.contentTypeTurtle);
-        testCanonicalise(WebContent.contentTypeTurtleAlt2, WebContent.contentTypeTurtle);
     }
 
     @Test
@@ -53,7 +52,6 @@ public class TestWebContent {
     {
         testCanonicalise(WebContent.contentTypeNQuads, WebContent.contentTypeNQuads);
         testCanonicalise(WebContent.contentTypeNQuadsAlt1, WebContent.contentTypeNQuads);
-        testCanonicalise(WebContent.contentTypeNQuadsAlt2, WebContent.contentTypeNQuads);
     }
 
     @Test
@@ -61,7 +59,6 @@ public class TestWebContent {
     {
         testCanonicalise(WebContent.contentTypeTriG, WebContent.contentTypeTriG);
         testCanonicalise(WebContent.contentTypeTriGAlt1, WebContent.contentTypeTriG);
-        testCanonicalise(WebContent.contentTypeTriGAlt2, WebContent.contentTypeTriG);
     }
 
     private void testCanonicalise(String input, String expected)
