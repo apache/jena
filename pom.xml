@@ -15,7 +15,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <name>Apache Jena</name>
@@ -93,18 +95,17 @@
     <ver.httpclient-osgi>${ver.httpclient}</ver.httpclient-osgi>
     
     <ver.lucene>8.8.0</ver.lucene>
+    <ver.graalvm>21.0.0.2</ver.graalvm>
+    <ver.micrometer>1.6.4</ver.micrometer>
 
     <ver.mockito>3.8.0</ver.mockito>
     <ver.awaitility>4.0.3</ver.awaitility>
-    <ver.micrometer>1.6.4</ver.micrometer>
-
-    <ver.graalvm>21.0.0.2</ver.graalvm>
+    <ver.contract.tests>0.2.0</ver.contract.tests>
 
     <java.version>11</java.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
-    <ver.contract.tests>0.2.0</ver.contract.tests>
   </properties>
 
   <issueManagement>
@@ -235,7 +236,6 @@
         <module>jena-cmds</module>
         <module>jena-fuseki2</module>
 
-        <!-- Javadoc does not build under Java11 without fixes (see plugin) -->
         <module>jena-geosparql</module>
         <module>jena-fuseki2/jena-fuseki-geosparql</module>
 
@@ -256,9 +256,7 @@
 
         <!-- Slow building modules -->
 
-        <!-- Javadoc does not build under Java11 without fixes (see plugin) -->
         <module>jena-jdbc</module>
-
         <module>apache-jena-osgi</module>
       </modules>
     </profile>
@@ -594,7 +592,7 @@
       <dependency>
         <groupId>io.micrometer</groupId>
         <artifactId>micrometer-registry-prometheus</artifactId>
-          <version>${ver.micrometer}</version>
+        <version>${ver.micrometer}</version>
       </dependency>
 
     </dependencies>
@@ -805,8 +803,8 @@
             <debug>true</debug>
             <debuglevel>source,lines,vars</debuglevel>
             <optimize>true</optimize>
-            <source>${jdk.version}</source>
-            <target>${jdk.version}</target>
+            <source>${java.version}</source>
+            <target>${java.version}</target>
           </configuration>
           -->
         </plugin>
@@ -857,51 +855,37 @@
             </execution>
           </executions>
           <configuration>
-            <!--
+            <!-- Java11:
                  https://bugs.openjdk.java.net/browse/JDK-8212233
-            -->
-            
-            <!-- Java 11: JDK-8212233
-                 Fixed in 12.0.1, 11.0.3
+                 JDK-8212233
+                 Fixed in 12.0.1, 11.0.3 (??)
 
                  Explicitly define the source as Java8 when building
                  with java8 source code for java8 output.
                  Not good enough when compiling for Java11 output.
 
-                 https://bugs.openjdk.java.net/browse/JDK-8212233
-                     which affects early Java11 and Java12
                  https://issues.apache.org/jira/browse/MJAVADOC-555
             -->
 
-            <!-- Java 11
-                 If Java8 output, and using Java11 to build, need:
-                 <source>8</source>
-                 See also Java11 problems below.
+            <!-- Fixes for Javadoc when building for Java11.
+                 (1) Fix for:
+                 Named / unnamed modules error/warning
+                 (2) Fix for:
+                 [ERROR] error: the unnamed module reads package PKG from both A and B
+
+                 Modules impacted:
+                   jena-geosparql
+                   jena-jdbc
             -->
-            <!-- Java 10
-                 <additionalOptions>-html5</additionalOptions>
-            -->
-            <quiet>true</quiet>
-            <doclint>none</doclint>
+            <detectJavaApiLink>false</detectJavaApiLink>
+            <source>8</source>
+            <!-- End Java11 fixes (2021-01) -->
 
             <!-- To allow the build to keep going despite javadoc problems:
                  <failOnError>false</failOnError>
             -->
-
-            <!-- Fixes for Javadoc when bulding for Java11. Both these are needed. -->
-
-            <!-- (1) Fix for:
-                 Named / unnamed modules error/warning
-            -->
-            <detectJavaApiLink>false</detectJavaApiLink>
-
-            <!-- (2) Fix for:
-                 [ERROR] error: the unnamed module reads package PKG from both A and B
-            -->
-            <source>8</source>
-
-            <!-- End Java11 fixes (2021-01) -->
-
+            <quiet>true</quiet>
+            <doclint>none</doclint>
             <version>true</version>
             <show>public</show>
             <encoding>UTF-8</encoding>
