@@ -638,10 +638,21 @@
       </plugin>
 
       <!-- Run the RAT Plugin -->
+      <!--
+           To run from the command line:
+               mvn apache-rat:rat \
+                      -Drat.excludeSubProjects=false \
+                      -Drat.excludesFile=build-files/rat-exclusions.txt
+      -->
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
         <version>0.13</version>
+        <!-- 
+             Run only if maven is running from this POM,
+             not when run in a sub-module with this as parent.
+        -->
+        <inherited>false</inherited>
         <executions>
           <execution>
             <id>rat-checks</id>
@@ -652,124 +663,8 @@
           </execution>
         </executions>
         <configuration>
-
-          <excludeSubProjects>true</excludeSubProjects>
-          <excludes>
-            <exclude>**/hs_err_pid*.log</exclude>
-
-            <!-- RAT option useDefaultExcludes isn't enough
-                 It only applies to modules in the profile,
-                 not all directories.
-            -->
-            <!-- Eclipse IDE -->
-            <exclude>**/.project</exclude>
-            <exclude>**/.settings/**</exclude>
-            <exclude>**/.classpath</exclude>
-            <exclude>**/*.recommenders/**/*</exclude>
-
-            <!-- IntelliJ -->
-            <exclude>**/.idea/**</exclude>
-            <exclude>**/*.iml</exclude>
-            <exclude>**/*.ipr</exclude>
-            <exclude>**/*.iws</exclude>
-
-            <exclude>**/target/**/*</exclude>
-            <exclude>**/README*</exclude>
-            <!--
-                jena-core exclusions
-            -->
-            <exclude>**/src-examples/data/*</exclude>
-            
-            <!--
-                jena-fuseki exclusions
-            -->
-            <exclude>**/dist/ABOUT</exclude>
-            <exclude>**/SEE_FUSEKI2</exclude>
-            <!-- 
-                 Need to exclude JS and CSS since much of it comes from 
-                 other projects
-            -->
-            <exclude>**/src/main/webapp/favicon.ico</exclude>
-            <exclude>**/src/main/webapp/css/*</exclude>
-            <exclude>**/src/main/webapp/fonts/*</exclude>
-            <exclude>**/src/main/webapp/js/**/*</exclude>
-
-            <!-- SPARQLer (in jena-fuseki-main) -->
-            <exclude>**/sparqler/data/empty.nt</exclude>
-            <exclude>**/sparqler/pages/robots.txt</exclude>
-            <exclude>**/sparqler/pages/crossdomain.xml</exclude>
-            
-            <!-- General exclusions -->
-            <!-- 
-                 Vocabularies are often just local copies of vocabularies
-                 published by others
-            -->
-            <exclude>**/vocabularies/*</exclude>
-            <exclude>**/Vocabularies/*</exclude>
-
-            <!--
-                Javadoc add-ons files are required to be simple and our javadoc configuration
-                will ensure appropriate license and copyright statements are inserted
-                into generated documentation anyway so no need to put license statements
-                in these files
-            -->
-            <exclude>**/src/main/**/*.html</exclude>
-            <exclude>**/src/**/package-info.java</exclude>
-            
-            <exclude>**/DEPENDENCIES</exclude>
-            
-            <!--
-                Text and Markdown files are typically used only for documentation purposes
-                and license declarations are usually spurious in these files since often they
-                will refer to the LICENSE/NOTICE for users to find the actual licenses
-            -->
-            <exclude>**/*.txt</exclude>
-            <exclude>**/*.md</exclude>
-            <!-- No comments in JSON -->
-            <exclude>**/*.json</exclude>
-            <exclude>**/*.srj</exclude>
-            
-            <!--
-                META-INF services files can include comments but a license header would be
-                unecessarily clutter so we exclude these
-            -->
-            <exclude>**/META-INF/services/*</exclude>
-            
-            <!--
-                Jena historically has large numbers of small test file
-                with no license headers.  Such small files are not required 
-                to have headers. 
-
-                In addition, there are files with different Licenses
-                (e.g. W3C Software Licence, W3C Test Suite License) as
-                noted in the code tree.
-            -->
-            <exclude>**/src/test/files/**/*</exclude>
-            <exclude>**/src/test/resources/**/*</exclude>
-            <exclude>**/testing/**/*</exclude>
-
-            <exclude>**/derby.log</exclude>
-            <exclude>**/DB/**/*</exclude>
-            <!-- TDB config files JSON - no comments allowed -->
-            <exclude>**/tdb*.cfg</exclude>
-            <!-- Fuseki2 server "run" area -->
-            <exclude>**/run/**/*</exclude>
-
-            <!-- Cached classpath for commands - autogenerated -->
-            <exclude>**/*.classpath</exclude>
-
-            <!-- MSHADE-124 -->
-            <exclude>**/dependency-reduced-pom.xml</exclude>
-            <exclude>.travis.yml</exclude>
-            <exclude>jena-examples/**</exclude>
-
-            <!-- This is OGC software licensed -->
-            <exclude>**/geosparql_vocab_all_v1_0_1_updated.rdf</exclude>
-
-            <!-- W3C SHACL vocabulary and shapes for SHACL itself -->
-            <exclude>**/src/main/resources/std/*</exclude>
-
-          </excludes>
+          <excludeSubProjects>false</excludeSubProjects>
+          <excludesFile>build-files/rat-exclusions.txt</excludesFile>
         </configuration>
       </plugin>
       <plugin>
