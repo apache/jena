@@ -23,7 +23,7 @@
 
   <artifactId>jena-tdb2</artifactId>
   <packaging>jar</packaging>
-  <name>Apache Jena - TDB2</name>
+  <name>Apache Jena - DBOE TDB2 (Native Triple Store)</name>
 
   <parent>
     <groupId>org.apache.jena</groupId>
