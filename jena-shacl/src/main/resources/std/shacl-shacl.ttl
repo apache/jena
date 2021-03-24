@@ -1,7 +1,7 @@
 ##  W3C SOFTWARE AND DOCUMENT NOTICE AND LICENSE
 ## https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
 ## This is Appendix C : https://www.w3.org/TR/shacl/#shacl-shacl
-## Copy taken: 2019-07-21
+## Copy taken: 2019-07-16
 ## --------
 
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .

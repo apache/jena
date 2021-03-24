@@ -1,5 +1,6 @@
 ##  W3C SOFTWARE AND DOCUMENT NOTICE AND LICENSE
 ## https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
+## Copy taken: 2019-07-16
 ## --------
 
 # W3C Shapes Constraint Language (SHACL) Vocabulary
