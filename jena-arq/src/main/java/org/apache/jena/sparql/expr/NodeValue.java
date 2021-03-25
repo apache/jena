@@ -138,7 +138,7 @@ public abstract class NodeValue extends ExprNode
 
     public static  DatatypeFactory xmlDatatypeFactory = DatatypeFactoryInst.newDatatypeFactory();
 
-    private Node node = null ;     // Null used when a value has not be turned into a Node.
+    private Node node = null ;     // Null used when a value has not been turned into a Node.
 
     // Don't create direct - the static builders manage the value/node relationship
     protected NodeValue() { super() ; }
@@ -416,17 +416,22 @@ public abstract class NodeValue extends ExprNode
 
     public boolean isIRI()
     {
-        if ( node == null ) return false ;
         forceToNode() ;
         return node.isURI() ;
     }
 
     public boolean isBlank()
     {
-        if ( node == null ) return false ;
         forceToNode() ;
         return node.isBlank() ;
     }
+
+    public boolean isTripleTerm()
+    {
+        forceToNode() ;
+        return node.isNodeTriple();
+    }
+
 
     // ----------------------------------------------------------------
     // ---- sameValueAs

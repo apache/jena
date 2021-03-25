@@ -81,7 +81,7 @@ public class TestScriptFunction {
     @After
     public void teardown() {
         ctx.unset(LanguageSymbols.scriptFunctions(language));
-        ctx.unset(LanguageSymbols.scriptFunctions(language));
+        ctx.unset(LanguageSymbols.scriptLibrary(language));
 
         ScriptFunction.clearEngineCache();
     }
