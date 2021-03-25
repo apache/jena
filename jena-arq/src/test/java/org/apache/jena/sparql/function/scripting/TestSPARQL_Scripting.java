@@ -16,35 +16,38 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.function.js;
+package org.apache.jena.sparql.function.scripting;
 
+import org.apache.jena.arq.junit.manifest.Label;
+import org.apache.jena.arq.junit.manifest.Manifests;
+import org.apache.jena.arq.junit.runners.RunnerSPARQL;
 import org.apache.jena.query.ARQ;
-import org.apache.jena.sparql.expr.E_Function;
+import org.apache.jena.sparql.util.Context;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
-@Deprecated
-@RunWith(Suite.class)
-@SuiteClasses( {
-    TestNV.class
-    , TestJavaScriptFunctions.class
-    , TestSPARQL_JS.class
+@RunWith(RunnerSPARQL.class)
+@Label("SPARQL-JS")
+@Manifests({
+    "testing/ARQ/Scripting/manifest.ttl"
 })
-public class TS_FunctionJS {
-    static boolean b = false;
+// TODO: Add more languages
+public class TestSPARQL_Scripting {
+    static final String JS_LIB_FILE = "testing/ARQ/Scripting/test-library.js";
     
-    @BeforeClass public static void beforeClass() {
-        b = E_Function.WarnOnUnknownFunction;
-        E_Function.WarnOnUnknownFunction = false ;
+    @BeforeClass
+    public static void setupJS() {
+        Context cxt = ARQ.getContext();
+        cxt.set(ARQ.symJavaScriptLibFile, JS_LIB_FILE);
+        cxt.set(ARQ.symJavaScriptFunctions, "function inc(x) { return x+1 }");
+        ScriptFunction.clearEngineCache();
     }
     
-    @AfterClass public static void afterClass() {
-        ARQ.getContext().unset(ARQ.symJavaScriptFunctions);
-        ARQ.getContext().unset(ARQ.symJavaScriptLibFile);
-        E_Function.WarnOnUnknownFunction = b ;
+    @AfterClass
+    public static void unsetupJS() {
+        Context cxt = ARQ.getContext();
+        cxt.remove(ARQ.symJavaScriptLibFile);
+        cxt.remove(ARQ.symJavaScriptFunctions);
     }
-
 }

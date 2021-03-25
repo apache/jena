@@ -16,20 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.function.js;
+package org.apache.jena.sparql.function.scripting;
 
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.sse.SSE;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-@Deprecated
+import static org.junit.Assert.assertEquals;
+
 public class TestNV {
 
     @Test public void nv_1() { test("'abc'"); }
     @Test public void nv_2() { test("true"); }
     @Test public void nv_3() { test("123"); }
-    @Test public void nv_4() { test("123.5"); }
+    @Test public void nv_4() { test("123.5e0"); }
     
     // No conversion to JS - becomes an NV.
     @Test public void nv_5() { test("'2018-01-06T17:56:41.293+00:00'^^xsd:dateTime"); }

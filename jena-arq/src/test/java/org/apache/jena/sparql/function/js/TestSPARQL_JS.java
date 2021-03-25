@@ -27,13 +27,14 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
+@Deprecated
 @RunWith(RunnerSPARQL.class)
 @Label("SPARQL-JS")
 @Manifests({
-    "testing/ARQ/JS/manifest.ttl"
+    "testing/ARQ/Scripting/manifest.ttl"
 })
 public class TestSPARQL_JS {
-    static final String JS_LIB_FILE = "testing/ARQ/JS/test-library.js";
+    static final String JS_LIB_FILE = "testing/ARQ/Scripting/test-library.js";
     
     @BeforeClass
     public static void setupJS() {

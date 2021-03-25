@@ -16,20 +16,31 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.function.js;
+package org.apache.jena.sparql.function.scripting;
+;
+import org.apache.jena.sparql.expr.E_Function;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-/**
- * The <a href="https://github.com/rdfjs/representation-task-force/">rdfjs/representation-task-force</a>
- * API for RDF terms.
- *
- * @deprecated Use {@link org.apache.jena.sparql.function.scripting.NV}
- */
-@Deprecated
-public interface RDFJS {
-    public String getTermType();
-    public String getValue();
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+        TestNV.class,
+        TestScriptFunction.class,
+        TestSPARQL_Scripting.class
+})
+public class TS_FunctionScripting {
+    static boolean b = false;
 
-//    public interface RDFJS_NamedNode {}
-//    public interface RDFJS_BlankNode {}
-//    public interface RDFJS_Literal {}
+    @BeforeClass
+    public static void beforeClass() {
+        b = E_Function.WarnOnUnknownFunction;
+        E_Function.WarnOnUnknownFunction = false ;
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        E_Function.WarnOnUnknownFunction = b ;
+    }
 }
