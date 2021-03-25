@@ -18,7 +18,6 @@
 
 package org.apache.jena.sparql;
 
-
 import org.apache.jena.query.TS_Query;
 import org.apache.jena.rdf_star.TS_RDF_Star;
 import org.apache.jena.sparql.algebra.TS_Algebra ;
@@ -34,8 +33,8 @@ import org.apache.jena.sparql.engine.join.TS_Join ;
 import org.apache.jena.sparql.expr.E_Function ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.TS_Expr ;
-import org.apache.jena.sparql.function.js.TS_FunctionJS;
 import org.apache.jena.sparql.function.library.TS_LibraryFunctions ;
+import org.apache.jena.sparql.function.scripting.TS_FunctionScripting;
 import org.apache.jena.sparql.function.user.TS_UserFunctions ;
 import org.apache.jena.sparql.graph.TS_Graph ;
 import org.apache.jena.sparql.lang.TS_Lang ;
@@ -61,18 +60,18 @@ import org.junit.runners.Suite ;
 @Suite.SuiteClasses( {
     TS_SSE.class
     , TS_Lang.class
-    
+
     , TS_Graph.class
     , TS_DyadicDatasetGraphs.class
     , TS_DatasetCollectors.class
     , TS_Util.class
-    
+
     , TS_Expr.class
     , TS_LibraryFunctions.class
     , TS_UserFunctions.class
-    , TS_FunctionJS.class
+    , TS_FunctionScripting.class
     , TS_PFunction.class
-    
+
     , TS_ResultSet.class
     , TS_Engine.class
     , TS_Negation.class
@@ -93,7 +92,7 @@ import org.junit.runners.Suite ;
     , TS_Update.class
     , TS_Transaction.class
     , TS_SparqlLib.class
-    
+
     , TS_RDF_Star.class
 })
 

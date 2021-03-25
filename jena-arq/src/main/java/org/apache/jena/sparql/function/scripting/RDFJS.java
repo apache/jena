@@ -16,20 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.function.js;
+package org.apache.jena.sparql.function.scripting;
 
 /**
  * The <a href="https://github.com/rdfjs/representation-task-force/">rdfjs/representation-task-force</a>
  * API for RDF terms.
- *
  */
-
 
 public interface RDFJS {
     public String getTermType();
     public String getValue();
-
-//    public interface RDFJS_NamedNode {}
-//    public interface RDFJS_BlankNode {}
-//    public interface RDFJS_Literal {}
 }

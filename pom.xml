@@ -85,6 +85,7 @@
     <ver.commons-compress>1.20</ver.commons-compress>
 
     <ver.dexxcollection>0.7</ver.dexxcollection>
+    <ver.micrometer>1.6.4</ver.micrometer>
 
     <ver.httpclient>4.5.13</ver.httpclient>
     <ver.httpcore>4.4.14</ver.httpcore>
@@ -96,7 +97,7 @@
     
     <ver.lucene>8.8.0</ver.lucene>
     <ver.graalvm>21.0.0.2</ver.graalvm>
-    <ver.micrometer>1.6.4</ver.micrometer>
+    <ver.jython>2.7.2</ver.jython>
 
     <ver.mockito>3.8.0</ver.mockito>
     <ver.awaitility>4.0.3</ver.awaitility>
@@ -548,6 +549,13 @@
         <groupId>org.graalvm.js</groupId>
         <artifactId>js-scriptengine</artifactId>
         <version>${ver.graalvm}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.python</groupId>
+        <artifactId>jython-standalone</artifactId>
+        <version>${ver.jython}</version>
+        <scope>test</scope>
       </dependency>
 
       <dependency>

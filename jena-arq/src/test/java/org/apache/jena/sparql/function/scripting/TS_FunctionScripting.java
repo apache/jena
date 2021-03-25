@@ -16,34 +16,31 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.function.js;
+package org.apache.jena.sparql.function.scripting;
 
-import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.expr.E_Function;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( {
-    TestNV.class
-    , TestJavaScriptFunctions.class
-    , TestSPARQL_JS.class
+@Suite.SuiteClasses( {
+        TestNV.class,
+        TestScriptFunction.class,
+        TestSPARQL_Scripting.class
 })
-public class TS_FunctionJS {
+public class TS_FunctionScripting {
     static boolean b = false;
-    
-    @BeforeClass public static void beforeClass() {
+
+    @BeforeClass
+    public static void beforeClass() {
         b = E_Function.WarnOnUnknownFunction;
         E_Function.WarnOnUnknownFunction = false ;
     }
-    
-    @AfterClass public static void afterClass() {
-        ARQ.getContext().unset(ARQ.symJavaScriptFunctions);
-        ARQ.getContext().unset(ARQ.symJavaScriptLibFile);
+
+    @AfterClass
+    public static void afterClass() {
         E_Function.WarnOnUnknownFunction = b ;
     }
-
 }

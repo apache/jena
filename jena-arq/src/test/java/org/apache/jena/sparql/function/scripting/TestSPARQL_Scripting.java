@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.function.js;
+package org.apache.jena.sparql.function.scripting;
 
 import org.apache.jena.arq.junit.manifest.Label;
 import org.apache.jena.arq.junit.manifest.Manifests;
@@ -30,17 +30,18 @@ import org.junit.runner.RunWith;
 @RunWith(RunnerSPARQL.class)
 @Label("SPARQL-JS")
 @Manifests({
-    "testing/ARQ/JS/manifest.ttl"
+    "testing/ARQ/Scripting/manifest.ttl"
 })
-public class TestSPARQL_JS {
-    static final String JS_LIB_FILE = "testing/ARQ/JS/test-library.js";
+// TODO: Add more languages
+public class TestSPARQL_Scripting {
+    static final String JS_LIB_FILE = "testing/ARQ/Scripting/test-library.js";
     
     @BeforeClass
     public static void setupJS() {
         Context cxt = ARQ.getContext();
         cxt.set(ARQ.symJavaScriptLibFile, JS_LIB_FILE);
         cxt.set(ARQ.symJavaScriptFunctions, "function inc(x) { return x+1 }");
-        EnvJavaScript.reset();
+        ScriptFunction.clearEngineCache();
     }
     
     @AfterClass
@@ -48,6 +49,5 @@ public class TestSPARQL_JS {
         Context cxt = ARQ.getContext();
         cxt.remove(ARQ.symJavaScriptLibFile);
         cxt.remove(ARQ.symJavaScriptFunctions);
-        //EnvJavaScript.reset();
     }
 }
