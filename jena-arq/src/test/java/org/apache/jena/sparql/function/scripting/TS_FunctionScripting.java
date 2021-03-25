@@ -17,7 +17,7 @@
  */
 
 package org.apache.jena.sparql.function.scripting;
-;
+
 import org.apache.jena.sparql.expr.E_Function;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

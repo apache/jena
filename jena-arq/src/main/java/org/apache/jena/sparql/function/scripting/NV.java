@@ -18,27 +18,32 @@
 
 package org.apache.jena.sparql.function.scripting;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.net.URI;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.lib.RDFTerm2Json;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.URI;
-
 /**
- * General representation of an {@link NodeValue} for JavaScript. Conversion is to native
- * types where possible, otherwise {@code NV}. {@code NV.toString} of a URI returns the
- * uri as a string so {@code NV} works naturally in Java/JavaScript.
+ * General representation of an {@link NodeValue} for JavaScript and other scripting
+ * languages used to write SPARQL custom functions.
+ * Class {@link NV} provides access to all the details of a {@link NodeValue} for cases where
+ * translation to native types isn't enough.
+ * <p>
+ * Conversion is to native types where
+ * possible, otherwise {@code NV}. {@code NV.toString} of a URI returns the uri as a
+ * string so {@code NV} works naturally in Java/JavaScript.
  *
  * @see #fromNodeValue
  * @see #toNodeValue
  * @see RDFTerm2Json RDFTerm2Json, for one way conversion JSON.
  */
 
-public class NV {
+public class NV implements RDFJS {
     //  Six data types that are primitives in JavaScript:
     //           Boolean
     //           Null
@@ -54,7 +59,7 @@ public class NV {
      */
     private final static boolean narrowDoubles = true;
     /**
-     * Map an ARQ {@link NodeValue} to java/Nashorn/GraalVM representation of a JavaScript object.
+     * Map an ARQ {@link NodeValue} to java/GraalVM representation of a JavaScript object.
      * Native JavaScript types supported are null, string, number and boolean.
      * Otherwise a {@link NV} is returned.
      */
@@ -76,7 +81,7 @@ public class NV {
         return new NV(nv);
     }
     /**
-     * Map a java/Nashorn/GraalVM representation of a JavaScript object to an ARQ
+     * Map a java/GraalVM representation of a JavaScript object to an ARQ
      * {@link NodeValue}. Identified types are null, string, number and boolean and also
      * {@code NV} returned by the JavaScript code.
      */
@@ -145,12 +150,15 @@ public class NV {
 
     // ------ Object NV
 
-    // Javascript names and RDF extras.
-    public boolean isURI() { return nv.isIRI(); }
-    public boolean isBlank() { return nv.isBlank(); }
-    public boolean isNumber() { return nv.isNumber(); }
-    public boolean isLiteral() { return nv.isLiteral(); }
+    public boolean isURI()          { return nv.isIRI(); }
+    public boolean isBlank()        { return nv.isBlank(); }
+    public boolean isNumber()       { return nv.isNumber(); }
+    public boolean isLiteral()      { return nv.isLiteral(); }
+    public boolean isTripleTerm()   { return nv.isTripleTerm(); }
 
+    // -- rdfjs
+
+    @Override
     public String getTermType() {
         if ( isURI() )
             return "NamedNode";
@@ -158,9 +166,13 @@ public class NV {
             return "BlankNode";
         if ( isLiteral() )
             return "Literal";
+        if ( isTripleTerm() )
+            // RDF-star embedded triple.
+            return "Triple";
         return null;
     }
 
+    @Override
     public String getValue() {
         if ( isURI() )
             return getUri();
@@ -168,9 +180,10 @@ public class NV {
             return getLabel();
         if ( isLiteral() )
             return getLex();
+        if ( isTripleTerm() )
+            return nv.asString();
         return null;
     }
-    // -- rdfjs
 
     public String getLabel()    { return nv.asNode().getBlankNodeLabel(); }
     public String getDT()       { return nv.getDatatypeURI(); }
