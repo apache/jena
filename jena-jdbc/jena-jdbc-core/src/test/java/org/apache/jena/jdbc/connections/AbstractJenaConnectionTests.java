@@ -1094,7 +1094,7 @@ public abstract class AbstractJenaConnectionTests {
         Statement stmt = conn.createStatement();
         stmt.executeUpdate("INSERT DATA { <http://x> <http://y> <http://z> }");
 
-        // Make a subsequent read, with auto-commit we should see some data
+        // Make a subsequent read
         ResultSet rset = stmt.executeQuery("SELECT * WHERE { ?s ?p ?o }");
         Assert.assertNotNull(rset);
         Assert.assertFalse(rset.isClosed());
@@ -1109,7 +1109,7 @@ public abstract class AbstractJenaConnectionTests {
         // Commit the transaction
         conn.commit();
 
-        // Check we still can read the data
+        // Check we still can read the data (second transaction).
         rset = stmt.executeQuery("SELECT * WHERE { ?s ?p ?o }");
         Assert.assertNotNull(rset);
         Assert.assertFalse(rset.isClosed());
@@ -1120,6 +1120,9 @@ public abstract class AbstractJenaConnectionTests {
         Assert.assertFalse(rset.next());
         rset.close();
         Assert.assertTrue(rset.isClosed());
+
+        // Commit the second transaction
+        conn.commit();
 
         // Close things
         stmt.close();
@@ -1147,7 +1150,7 @@ public abstract class AbstractJenaConnectionTests {
         Statement stmt = conn.createStatement();
         stmt.executeUpdate("INSERT DATA { <http://x> <http://y> <http://z> }");
 
-        // Make a subsequent read, with auto-commit we should see some data
+        // Make a subsequent read
         ResultSet rset = stmt.executeQuery("SELECT * WHERE { ?s ?p ?o }");
         Assert.assertNotNull(rset);
         Assert.assertFalse(rset.isClosed());
@@ -1162,7 +1165,7 @@ public abstract class AbstractJenaConnectionTests {
         // Rollback the transaction
         conn.rollback();
 
-        // Check we can no longer read the data
+        // Check we can no longer read the data (second transaction)
         rset = stmt.executeQuery("SELECT * WHERE { ?s ?p ?o }");
         Assert.assertNotNull(rset);
         Assert.assertFalse(rset.isClosed());
@@ -1172,6 +1175,9 @@ public abstract class AbstractJenaConnectionTests {
         Assert.assertFalse(rset.next());
         rset.close();
         Assert.assertTrue(rset.isClosed());
+
+        // Commit the second transaction
+        conn.commit();
 
         // Close things
         stmt.close();
