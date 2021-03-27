@@ -69,10 +69,6 @@ public class RIOT {
             }
             initialized = true ;
             JenaSystem.logLifecycle("RIOT.init - start") ;
-            // Be careful with what this touches - don't touch ARQ.*
-            // because that depends on Jena core and we may be
-            // initializing because IO_Ctl (ie. Jena core)
-            // called RIOT.init.
             RDFLanguages.init() ;
             RDFParserRegistry.init() ;
             RDFWriterRegistry.init() ;

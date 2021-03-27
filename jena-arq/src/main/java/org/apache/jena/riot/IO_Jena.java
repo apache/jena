@@ -25,10 +25,6 @@ import org.apache.jena.sys.JenaSystem ;
 public class IO_Jena
 {
     static { JenaSystem.init(); }
-    
-//    private static String      riotBase               = "http://jena.apache.org/riot/" ;
-//    private static String      streamManagerSymbolStr = riotBase + "streammanager" ;
-//    public static Symbol       streamManagerSymbol    = Symbol.create(streamManagerSymbolStr) ;
 
     public static void wireIntoJena() {
        IO_JenaReaders.wireIntoJena() ;
