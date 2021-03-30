@@ -101,6 +101,6 @@ public class update extends CmdUpdate
 
     @Override
     protected DatasetGraph dealWithNoDataset() {
-        return DatasetGraphFactory.create();
+        return DatasetGraphFactory.createGeneral();
     }
 }

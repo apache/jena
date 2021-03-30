@@ -20,9 +20,13 @@ package org.apache.jena.atlas.iterator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.function.Consumer;
 
-/** Null Iterator - also guaranteed shareable and immutable */
-public class NullIterator<T> implements Iterator<T>, Iterable<T> {
+/**
+ *  Null Iterator - also guaranteed shareable and immutable
+ */
+public class NullIterator<T> implements Iterator<T> {
     @Override
     public boolean hasNext() {
         return false;
@@ -34,7 +38,7 @@ public class NullIterator<T> implements Iterator<T>, Iterable<T> {
     }
 
     @Override
-    public Iterator<T> iterator() {
-        return this;
+    public void forEachRemaining(Consumer<? super T> action) {
+        Objects.requireNonNull(action);
     }
 }
