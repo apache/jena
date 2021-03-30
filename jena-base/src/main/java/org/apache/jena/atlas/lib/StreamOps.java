@@ -17,6 +17,7 @@
 
 package org.apache.jena.atlas.lib;
 
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -28,11 +29,12 @@ import org.apache.jena.atlas.iterator.Iter;
 
 /**
  * Collect some stream operations into one place.
- * Sometimes, the function form reads better. 
- * @see Iter Iter - a stream-like class for iterators. 
+ * Sometimes, the function form reads better.
+ * @see Iter Iter - a stream-like class for iterators.
  */
 public class StreamOps {
-    /** Iterator to Stream.
+    /**
+     * Iterator to Stream.
      * Call to {@linkplain Iter#asStream}.
      */
     public static <X> Stream<X> stream(Iterator<X> iter) {
@@ -54,17 +56,24 @@ public class StreamOps {
         return stream.findFirst().orElse(null);
     }
 
-    /** An element from a {@link Collection} */ 
+    /** An element from a {@link Collection} */
     public static <X> X element(Collection<X> collection) {
         return first(collection.stream());
     }
 
     /** Debug : print stream.
-     * This operation prints the whole stream at the point it is used, 
+     * This operation prints the whole stream at the point it is used,
      * and then returns a new stream of the same elements.
-     */ 
+     */
     public static <X> Stream<X> print(Stream<X> stream) {
         stream = stream.map(item -> { System.out.println(item); return item; });
         return toList(stream).stream();
     }
+
+    public static <X> Stream<X> print(PrintStream out, String leader, Stream<X> stream) {
+        String prefix = (leader==null) ? "" : leader;
+        stream = stream.map(item -> { out.print(prefix); out.println(item); return item; });
+        return toList(stream).stream();
+    }
+
 }

@@ -31,10 +31,10 @@ import org.apache.jena.sparql.graph.GraphOps;
 import org.apache.jena.sparql.sse.writers.WriterGraph ;
 import org.apache.jena.sparql.util.Context ;
 
-/** 
+/**
  * <p>DatasetGraph framework : readonly dataset need only provide find(g,s,p,o), getGraph() and getDefaultGraph()
  * although it may wish to override other operations and do better.</p>
- * 
+ *
  * <p>Implementations include:</p>
  * <ul>
  * <li>{@link DatasetGraphBase} that adds an implementation of find based on default / named graphs.</li>
@@ -43,37 +43,35 @@ import org.apache.jena.sparql.util.Context ;
  * <li>{@link DatasetGraphMap} provides for operations working over a collection of in-memory graphs.</li>
  * <li>{@link DatasetGraphMapLink} provides for operations working over a collection of graphs provided by the application.</li>
  * <li>{@link DatasetGraphCollection} that provides for operations working over a collection of graphs.</li>
- * </ul> 
+ * </ul>
  */
 abstract public class DatasetGraphBase implements DatasetGraph
 {
     private final Lock lock = new LockMRSW() ;
     private Context context = new Context() ;
-    
+
     protected DatasetGraphBase() {}
-    
+
     @Override
-    public boolean containsGraph(Node graphNode) { 
+    public boolean containsGraph(Node graphNode) {
         if ( Quad.isDefaultGraph(graphNode) )
             return true;
         if ( Quad.isUnionGraph(graphNode) )
             return true;
         return contains(graphNode, Node.ANY, Node.ANY, Node.ANY);
     }
-    
+
     // Explicit record of what's not provided here.
-    
+
     @Override
     public abstract Graph getDefaultGraph() ;
-    
+
     @Override
     public Graph getUnionGraph() {
         // Implementations are encouraged to implement an efficient named graph for
         // Quad.unionGraph that does not require the full "distinct()" used by this
         // general purpose implementation.
-        // See also
-        // {@code DatasetGraphBase.findQuadsInUnionGraph} and
-        // {@code findNG(Quad.unionGraph, Node.ANY, Node.ANY, Node.ANY)}
+        // See also {@code DatasetGraphBaseFind.findQuadsInUnionGraph}
         return GraphOps.unionGraph(this);
     }
 
@@ -82,31 +80,31 @@ abstract public class DatasetGraphBase implements DatasetGraph
 
     @Override
     public abstract void addGraph(Node graphName, Graph graph) ;
-    
+
     @Override
     public abstract void removeGraph(Node graphName) ;
 
     @Override
     public void setDefaultGraph(Graph g)
     { throw new UnsupportedOperationException("DatasetGraph.setDefaultGraph") ; }
-    
+
     @Override
-    public void add(Quad quad) { throw new UnsupportedOperationException("DatasetGraph.add(Quad)") ; } 
-    
+    public void add(Quad quad) { throw new UnsupportedOperationException("DatasetGraph.add(Quad)") ; }
+
     @Override
     public void delete(Quad quad) { throw new UnsupportedOperationException("DatasetGraph.delete(Quad)") ; }
-    
+
     @Override
-    public void add(Node g, Node s, Node p, Node o)     { add(new Quad(g,s,p,o)) ; }  
+    public void add(Node g, Node s, Node p, Node o)     { add(new Quad(g,s,p,o)) ; }
     @Override
     public void delete(Node g, Node s, Node p, Node o)  { delete(new Quad(g,s,p,o)) ; }
-    
+
     @Override
     /** Simple implementation but done without assuming iterator.remove() */
     public void deleteAny(Node g, Node s, Node p, Node o) {
         deleteAny(this, g, s, p, o);
     }
-    
+
     private static final int DeleteBufferSize = 1000 ;
     public static void deleteAny(DatasetGraph dsg, Node g, Node s, Node p, Node o) {
         // Delete in slices rather than assume .remove() on the iterator is implemented.
@@ -153,7 +151,7 @@ abstract public class DatasetGraphBase implements DatasetGraph
         Iter.close(iter);
         return b;
     }
-    
+
     protected static boolean isWildcard(Node g) {
         return g == null || g == Node.ANY;
     }
@@ -161,7 +159,7 @@ abstract public class DatasetGraphBase implements DatasetGraph
     protected static void unsupportedMethod(Object object, String method) {
         throw new UnsupportedOperationException(Lib.className(object)+"."+method) ;
     }
-    
+
     @Override
     public void clear() {
         deleteAny(Node.ANY, Node.ANY, Node.ANY, Node.ANY);
@@ -190,7 +188,7 @@ abstract public class DatasetGraphBase implements DatasetGraph
     @Override
     public void close()
     { }
-    
+
     @Override
     public String toString()
     {
