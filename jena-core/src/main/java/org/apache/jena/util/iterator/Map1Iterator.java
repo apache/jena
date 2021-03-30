@@ -26,31 +26,31 @@ import java.util.function.Function;
     delivering them; supports remove if the underlying iterator does.
 */
 
-public class Map1Iterator<From, To> extends NiceIterator<To> implements ClosableIterator<To>
+public class Map1Iterator<From, To> extends NiceIterator<To>
     {
 	private Function<From, To> map;
 	private Iterator<From> base;
-	
+
         /**
          * Construct a list of the converted.
          * @param map The conversion to apply.
          * @param base the iterator of elements to convert
          */
-	public Map1Iterator( Function<From, To> map, Iterator<From> base ) 
+	public Map1Iterator( Function<From, To> map, Iterator<From> base )
         {
         this.map = map;
         this.base = base;
         }
-    
-	public @Override To next() 
+
+	public @Override To next()
         { return map.apply( base.next() ); }
-	
+
 	public @Override boolean hasNext()
 	    { return base.hasNext(); }
-	
+
 	public @Override void remove()
 	    { base.remove(); }
-	
+
 	@Override public void close()
 	    { NiceIterator.close( base ); }
     }

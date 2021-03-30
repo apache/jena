@@ -18,8 +18,10 @@
 
 package org.apache.jena.atlas.lib;
 
-/** Close this object.
- *  This form does not allow Exceptions (it does allow RuntimeExceptions).  
+/**
+ * Close this object. This form does not allow Exceptions.
+ * <p>
+ * The {@link #close} operation may safely be called multiple times.
  */
 public interface Closeable
 {
