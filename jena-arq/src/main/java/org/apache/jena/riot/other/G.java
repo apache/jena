@@ -34,7 +34,12 @@ import org.apache.jena.sparql.util.graph.GNode;
 import org.apache.jena.sparql.util.graph.GraphList;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-/** A library of functions for working with {@link Graph}. */
+/**
+ * A library of functions for working with {@link Graph}. Internally all
+ * {@link ExtendedIterator ExtendedIterators} used, run to completion or have
+ * {@code .close()} called. Any {@link ExtendedIterator ExtendedIterators} returned
+ * by functions in this library must be used in the same way
+ */
 public class G {
     private G() {}
 
@@ -64,10 +69,10 @@ public class G {
     public static boolean isNodeGraph(Node n)   { return n != null && n.isNodeGraph(); }
 
     /** Convert null to Node.ANY */
-    public static Node nullAsAny(Node x) { return nullAsDft(x, Node.ANY) ; }
+    public static Node nullAsAny(Node x) { return nullAsDft(x, Node.ANY); }
 
     /** Convert null to some default Node */
-    public static Node nullAsDft(Node x, Node dft) { return x==null ? dft : x ; }
+    public static Node nullAsDft(Node x, Node dft) { return x==null ? dft : x; }
 
     /** Does the graph match the s/p/o pattern? */
     public static boolean contains(Graph graph, Node subject, Node predicate, Node object) {
@@ -83,7 +88,7 @@ public class G {
 //        return
 //            contains(graph, node, Node.ANY, Node.ANY) ||
 //            contains(graph, Node.ANY, Node.ANY, node) ||
-//            contains(graph, Node.ANY, node, Node.ANY) ;
+//            contains(graph, Node.ANY, node, Node.ANY);
     }
 
     /** Test whether the node has the type or is rdfs:subclassOf. */
@@ -520,6 +525,12 @@ public class G {
         } finally { iter.close(); }
     }
 
+    /** Count occurrences of the pattern. */
+    public static long count(Graph graph, Node subject, Node predicate, Node object) {
+        Objects.requireNonNull(graph, "graph");
+        return Iter.count(graph.find(subject, predicate, object));
+    }
+
     /** {@link Graph#find(Node, Node, Node)} as a function. */
     public static ExtendedIterator<Triple> find(Graph graph, Node subject, Node predicate, Node object) {
         Objects.requireNonNull(graph, "graph");
@@ -669,31 +680,31 @@ public class G {
 
     /** Project quad to graph name */
     public static Iterator<Node> quad2graphName(Iterator<Quad> iter)
-    { return Iter.map(iter, Quad::getGraph) ; }
+    { return Iter.map(iter, Quad::getGraph); }
 
     /** Project quad to subject */
     public static Iterator<Node> quad2subject(Iterator<Quad> iter)
-    { return Iter.map(iter, Quad::getSubject) ; }
+    { return Iter.map(iter, Quad::getSubject); }
 
     /** Project quad to predicate */
     public static Iterator<Node> quad2predicate(Iterator<Quad> iter)
-    { return Iter.map(iter, Quad::getPredicate) ; }
+    { return Iter.map(iter, Quad::getPredicate); }
 
     /** Project quad to object */
     public static Iterator<Node> quad2object(Iterator<Quad> iter)
-    { return Iter.map(iter, Quad::getObject) ; }
+    { return Iter.map(iter, Quad::getObject); }
 
     /** Project triple to subject */
     public static Iterator<Node> triple2subject(Iterator<Triple> iter)
-    { return Iter.map(iter, Triple::getSubject) ; }
+    { return Iter.map(iter, Triple::getSubject); }
 
     /** Project triple to predicate */
     public static Iterator<Node> triple2predicate(Iterator<Triple> iter)
-    { return Iter.map(iter, Triple::getPredicate) ; }
+    { return Iter.map(iter, Triple::getPredicate); }
 
     /** Project triple to object */
     public static Iterator<Node> triple2object(Iterator<Triple> iter)
-    { return Iter.map(iter, Triple::getObject) ; }
+    { return Iter.map(iter, Triple::getObject); }
 
     // Graph operations.
 
@@ -750,7 +761,7 @@ public class G {
 
     /** Convert an iterator of triples into quads for the specified graph name. */
     public static Iter<Quad> triples2quads(Node graphNode, Iterator<Triple> iter) {
-        return Iter.iter(iter).map(t -> new Quad(graphNode, t)) ;
+        return Iter.iter(iter).map(t -> new Quad(graphNode, t));
     }
 
     /**
@@ -759,6 +770,6 @@ public class G {
      * for quads outside a dataset, usually the output of parsers.
      */
     public static Iter<Quad> triples2quadsDftGraph(Iterator<Triple> iter) {
-        return triples2quads(Quad.defaultGraphIRI, iter) ;
+        return triples2quads(Quad.defaultGraphIRI, iter);
     }
 }
