@@ -36,7 +36,8 @@ import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable;
 
 class StageMatchTuple {
 
-    public static Iterator<BindingNodeId> access(NodeTupleTable nodeTupleTable, Iterator<BindingNodeId> input, Tuple<Node> patternTuple,
+    /* Entry point */
+    static Iterator<BindingNodeId> access(NodeTupleTable nodeTupleTable, Iterator<BindingNodeId> input, Tuple<Node> patternTuple,
                                                  Predicate<Tuple<NodeId>> filter, boolean anyGraph, ExecutionContext execCxt) {
         return Iter.flatMap(input, bnid -> {
             return StageMatchTuple.access(nodeTupleTable, bnid, patternTuple, filter, anyGraph, execCxt);
@@ -70,8 +71,7 @@ class StageMatchTuple {
         // we need to reduce the quads to unique triples.
         // We do that by having the graph slot as "any", then running
         // through a distinct-ifier.
-        // Assumes quads are GSPO - zaps the first slot.
-        // Assumes that tuples are not shared.
+        // Assumes quads are GSPO in the matching tuple - zaps the first slot.
         if ( anyGraph ) {
             iterMatches = Iter.map(iterMatches, quadsToAnyTriples);
             // Guaranteed

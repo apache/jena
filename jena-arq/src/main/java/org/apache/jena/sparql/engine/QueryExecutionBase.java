@@ -358,13 +358,14 @@ public class QueryExecutionBase implements QueryExecution
 
         boolean r;
         try {
-            // Not has next because setting timeout1 which applies to getting
+            // Not hasNext because setting timeout1 which applies to getting
             // the first result, not testing for it.
             queryIterator.next();
             r = true;
         } catch (NoSuchElementException ex) { r = false; }
-
-        this.close();
+        finally {
+            this.close();
+        }
         return r;
     }
 

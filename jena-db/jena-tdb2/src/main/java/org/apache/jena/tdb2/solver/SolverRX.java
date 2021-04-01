@@ -41,8 +41,11 @@ import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
 
+/** RDF-start processing for matching a triple/quad pattern. */
 public class SolverRX {
     /**
+     * Control whether to check for embedded triple terms with variables or to act in a direct manner.
+     * <p>
      * This constant is not public API. It is exposed only so integration testing can
      * check the value for a release build.
      */
