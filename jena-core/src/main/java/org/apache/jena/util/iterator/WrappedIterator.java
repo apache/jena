@@ -18,7 +18,8 @@
 
 package org.apache.jena.util.iterator;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.stream.Stream;
 
 /**
     a WrappedIterator is an ExtendedIterator wrapping around a plain (or
@@ -31,11 +32,11 @@ import java.util.*;
 public class WrappedIterator<T> extends NiceIterator<T>
     {
     /**
-         set to <code>true</code> if this wrapping doesn't permit the use of 
+         set to <code>true</code> if this wrapping doesn't permit the use of
          .remove(). Otherwise the .remove() is delegated to the base iterator.
     */
     protected boolean removeDenied;
-    
+
     /**
         Answer an ExtendedIterator returning the elements of <code>it</code>.
         If <code>it</code> is itself an ExtendedIterator, return that; otherwise
@@ -43,21 +44,33 @@ public class WrappedIterator<T> extends NiceIterator<T>
     */
     public static <T> ExtendedIterator<T> create( Iterator<T> it )
         { return it instanceof ExtendedIterator<?> ? (ExtendedIterator<T>) it : new WrappedIterator<>( it, false ); }
-    
+
     /**
         Answer an ExtendedIterator wrapped round <code>it</code> which does not
         permit <code>.remove()</code> even if <code>it</code> does.
     */
     public static <T> WrappedIterator<T> createNoRemove( Iterator<T> it )
         { return new WrappedIterator<>( it, true ); }
-   
-    
+
+    /**
+     * Answer an ExtendedIterator wrapped round a {@link Stream}. The extended
+     * iterator does not permit <code>.remove()</code>.
+     * <p>
+     * The stream should not be used directly. The effect of doing so is
+     * undefined.
+     */
+    public static <T> WrappedIterator<T> ofStream(Stream<T> stream) {
+        return new WrappedIterator<T>(stream.iterator(), true) {
+            @Override public void close() { stream.close(); }
+        };
+    }
+
     /** Given an Iterator that returns Iterator's, this creates an
      * Iterator over the next level values.
      * Similar to list splicing in lisp.
      */
     public static <T> ExtendedIterator<T> createIteratorIterator( Iterator<Iterator<T>> it )
-    { 
+    {
     	ExtendedIterator<T> retval = NullIterator.instance();
     	while (it.hasNext())
     	{
@@ -65,44 +78,44 @@ public class WrappedIterator<T> extends NiceIterator<T>
     	}
     	return retval;
     }
-   
-    /** the base iterator that we wrap */  
+
+    /** the base iterator that we wrap */
     protected final Iterator<? extends T> base;
-    
+
     public Iterator<? extends T> forTestingOnly_getBase()
         { return base; }
-    
+
     /** constructor: remember the base iterator */
     protected WrappedIterator( Iterator<? extends T> base )
         { this( base, false ); }
-    
+
     /**
          Initialise this wrapping with the given base iterator and remove-control.
          @param base the base iterator that this iterator wraps
          @param removeDenied true if .remove() must throw an exception
     */
     protected WrappedIterator( Iterator<? extends T> base, boolean removeDenied )
-        { this.base = base; 
+        { this.base = base;
         this.removeDenied = removeDenied; }
-        
+
     /** hasNext: defer to the base iterator */
     @Override public boolean hasNext()
         { return base.hasNext(); }
-        
+
     /** next: defer to the base iterator */
     @Override public T next()
         { return base.next(); }
-        
-    /** 
-         if .remove() is allowed, delegate to the base iterator's .remove; 
-         otherwise, throw an UnsupportedOperationException. 
+
+    /**
+         if .remove() is allowed, delegate to the base iterator's .remove;
+         otherwise, throw an UnsupportedOperationException.
     */
     @Override public void remove()
         {
         if (removeDenied) throw new UnsupportedOperationException();
-        base.remove(); 
+        base.remove();
         }
-        
+
     /** close: defer to the base, iff it is closable */
     @Override public void close()
         { close( base ); }

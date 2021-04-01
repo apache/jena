@@ -26,23 +26,17 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
 public class Transitive {
-    // GLib.
-
-    // (?x :p ?z) <- (?x :p ?y) (?y :p ?z)
-
     /**
      * Calculate the transitive closure of a property.
      *
      * Returns a map of node to all reachable nodes.
      */
     public static Map<Node, Collection<Node>> transitive(Graph graph, Node property) {
-        //Test against c.f. "SELECT ?x ?y { ?x property ?y }"
-
         Map<Node, Collection<Node>> reachable = new HashMap<>();
         ExtendedIterator<Triple> props = G.find(graph, null, property, null);
         // Old school loop.
         try {
-            for ( ; props.hasNext() ; ) {
+            for (; props.hasNext(); ) {
                 Triple triple = props.next();
                 Node node = triple.getSubject();
                 if ( ! reachable.containsKey(node) ) {
@@ -73,34 +67,34 @@ public class Transitive {
         try {
             Set<Node> visited = new HashSet<>();
             for (; iter.hasNext();) {
-                Node n1 = iter.next() ;
-                recurse(graph, forward, 1, -1, n1, predicate, visited, output) ;
+                Node n1 = iter.next();
+                recurse(graph, forward, 1, -1, n1, predicate, visited, output);
             }
         } finally { iter.close(); }
     }
 
     private static void recurse(Graph graph, boolean forward, int stepCount, int maxStepCount, Node node, Node predicate, Set<Node> visited, Collection<Node> output) {
         if ( maxStepCount >= 0 && stepCount > maxStepCount )
-            return ;
+            return;
         if ( !visited.add(node) )
-            return ;
+            return;
         output.add(node);
-        ExtendedIterator<Node> iter1 = singleStep(graph, forward, node, predicate) ;
+        ExtendedIterator<Node> iter1 = singleStep(graph, forward, node, predicate);
         try {
             // For each step, add to results and recurse.
             for (; iter1.hasNext();) {
-                Node n1 = iter1.next() ;
-                recurse(graph, forward, stepCount + 1, maxStepCount, n1, predicate, visited, output) ;
+                Node n1 = iter1.next();
+                recurse(graph, forward, stepCount + 1, maxStepCount, n1, predicate, visited, output);
             }
         } finally { iter1.close(); }
     }
 
     // A single step of a transitive properties.
-    // Because for SP? or ?PO, no duplicates occur, so works for both strategies.
-    static ExtendedIterator<Node> singleStep(Graph graph, boolean forward, Node node, Node property) {
+    // SP? or ?PO do not generate duplicates
+    private static ExtendedIterator<Node> singleStep(Graph graph, boolean forward, Node node, Node property) {
         if ( forward )
-            return G.find(graph, node, property, Node.ANY).mapWith(Triple::getObject);
+            return G.iterSP(graph, node, property);
         else
-            return G.find(graph, Node.ANY, property, node).mapWith(Triple::getSubject);
+            return G.iterPO(graph, property, node);
     }
 }

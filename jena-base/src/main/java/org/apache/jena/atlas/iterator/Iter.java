@@ -59,17 +59,15 @@ public class Iter<T> implements Iterator<T> {
         iter.forEachRemaining(action);
     }
 
-    // IteratorSlotted needed? IteratorPeek
-    //   IteratorSlotted.inspect
-
     public static <T> Stream<T> asStream(Iterator<T> iterator) {
         return asStream(iterator, false);
     }
 
     public static <T> Stream<T> asStream(Iterator<T> iterator, boolean parallel) {
-        // Why isn't there a JDK operation for Iterator -> (sequential) stream?
         int characteristics = Spliterator.IMMUTABLE;
-        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, characteristics), parallel);
+        Stream<T> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, characteristics), parallel);
+        stream.onClose(()->close(iterator));
+        return stream;
     }
 
     // ---- Special iterators.
@@ -80,12 +78,32 @@ public class Iter<T> implements Iterator<T> {
     }
 
     public static <T> Iterator<T> nullIterator() {
-        // Java7 caught up.
         return Collections.emptyIterator();
     }
 
+    // -- Stream inspired names
+
+    public static <T> Iterator<T> empty() {
+        return Collections.emptyIterator();
+    }
+
+    public static <T> Iterator<T> of(T item) {
+        return new SingletonIterator<>(item) ;
+    }
+
+    @SafeVarargs
+    public static <T> Iterator<T> of(T ...items) {
+        return Arrays.asList(items).iterator();
+    }
+
+    public static<T> Iterator<T> ofNullable(T t) {
+        return t == null ? Iter.empty() : Iter.ofNullable(t);
+    }
+
+    // --
+
     /**
-     * Return an iterator that does permit remove.
+     * Return an iterator that does not permit remove.
      * This makes an "UnmodifiableIterator".
      */
     public static <T> Iterator<T> noRemove(Iterator<T> iter) {
@@ -646,7 +664,7 @@ public class Iter<T> implements Iterator<T> {
     }
 
     /** Print an iterator (destructive) */
-    public static <T> void print(final PrintStream out, Iterator<T> stream) {
+    public static <T> void print(PrintStream out, Iterator<T> stream) {
         apply(stream, out::println) ;
     }
 

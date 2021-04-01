@@ -132,7 +132,7 @@ public class ResultSetWriterText implements ResultSetWriter {
             ResultSetRewindable resultSetRewindable = resultSet.rewindable();
 
             int numCols = resultSetRewindable.getResultVars().size();
-            int[] colWidths = colWidths(resultSetRewindable, null);
+            int[] colWidths = colWidths(resultSetRewindable, context);
 
             String row[] = new String[numCols];
             int lineWidth = 0;

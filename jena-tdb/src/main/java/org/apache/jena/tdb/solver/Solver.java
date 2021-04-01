@@ -134,13 +134,6 @@ public class Solver {
                 System.out.println("No results");
         }
 
-        // Timeout wrapper ****
-        // QueryIterTDB gets called async.
-        // Iter.abortable?
-        // Or each iterator has a place to test.
-        // or pass in a thing to test?
-
-        // Need to make sure the bindings here point to parent.
         Iterator<Binding> iterBinding = SolverLib.convertToNodes(chain, nodeTable);
 
         // "input" will be closed by QueryIterTDB but is otherwise unused.
@@ -148,9 +141,7 @@ public class Solver {
         return new QueryIterTDB(iterBinding, killList, input, execCxt);
     }
 
-    /*development only*/
-    public
-    static Iterator<BindingNodeId> matchQuadPattern(Iterator<BindingNodeId> chain, Node graphNode, Triple tPattern,
+    private static Iterator<BindingNodeId> matchQuadPattern(Iterator<BindingNodeId> chain, Node graphNode, Triple tPattern,
                                                             NodeTupleTable nodeTupleTable, Tuple<Node> patternTuple, boolean anyGraph,
                                                             Predicate<Tuple<NodeId>> filter, ExecutionContext execCxt) {
         return SolverRX.matchQuadPattern(chain, graphNode, tPattern, nodeTupleTable, patternTuple, anyGraph, filter, execCxt);

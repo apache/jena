@@ -27,9 +27,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 
 /* TODO
- * Split up StreamRDFLib into factory and operations
- * Check start/finish policies.
- * org.apache.jena.riot.stream?
+ * org.apache.jena.riot.streamrdf?
  *
  */
 /** Utilities for sending to StreamRDF.
