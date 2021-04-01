@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,34 +22,27 @@ import java.util.Iterator;
 
 import org.apache.jena.atlas.lib.Closeable;
 
-public class IteratorWrapper<T> implements Iterator<T>, Closeable {
-    protected final Iterator<T> iterator;
+/**
+ * Add an "onClose" action to an Iterator.
+ */
+public class IteratorOnClose<T> extends IteratorWrapper<T> implements Closeable {
 
-    protected Iterator<T> get() {
-        return iterator;
-    }
-
-    public IteratorWrapper(Iterator<T> iterator) {
-        this.iterator = iterator;
-    }
-
-    @Override
-    public boolean hasNext() {
-        return get().hasNext();
-    }
-
-    @Override
-    public T next() {
-        return get().next();
-    }
-
-    @Override
-    public void remove() {
-        get().remove();
+    /** 
+     * Ensure that an iterator is Closeable.
+     * If it is, return the input argument, otherwise add a wrapper.
+     */
+    
+    private final Runnable closeHandler;
+    
+    public IteratorOnClose(Iterator<T> iterator, Runnable closeHandler) {
+        super(iterator);
+        this.closeHandler = closeHandler;
     }
 
     @Override
     public void close() {
-        Iter.close(iterator);
+        if ( closeHandler != null )
+            closeHandler.run();
+           
     }
 }

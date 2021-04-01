@@ -664,7 +664,7 @@ public class Iter<T> implements Iterator<T> {
     }
 
     /** Print an iterator (destructive) */
-    public static <T> void print(final PrintStream out, Iterator<T> stream) {
+    public static <T> void print(PrintStream out, Iterator<T> stream) {
         apply(stream, out::println) ;
     }
 
