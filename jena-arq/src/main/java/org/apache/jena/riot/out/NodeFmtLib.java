@@ -47,6 +47,7 @@ public class NodeFmtLib
     // See and use EscapeStr
 
     private static final NodeFormatter plainFormatter = new NodeFormatterNT();
+    private static final String nullStr = "<null>";
 
     private static PrefixMap dftPrefixMap = PrefixMapFactory.create();
     static {
@@ -89,14 +90,20 @@ public class NodeFmtLib
 
     /** A displayable string for an RDFNode. Includes common abbreviations */
     public static String displayStr(RDFNode obj) {
+        if ( obj == null )
+            return nullStr;
         return displayStr(obj.asNode());
     }
 
     public static String displayStr(Triple t) {
+        if ( t == null )
+            return nullStr;
         return displayStrNodes(t.getSubject(), t.getPredicate(), t.getObject());
     }
 
     public static String displayStr(Node n) {
+        if ( n == null )
+            return nullStr;
         return str(n, null, dftPrefixMap);
     }
 
