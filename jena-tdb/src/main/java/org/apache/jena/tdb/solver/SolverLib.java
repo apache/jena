@@ -50,13 +50,13 @@ public class SolverLib
 {
     private static Logger log = LoggerFactory.getLogger(SolverLib.class);
 
-    public static Iterator<BindingNodeId> convertToIds(Iterator<Binding> iterBindings, NodeTable nodeTable)
+    static Iterator<BindingNodeId> convertToIds(Iterator<Binding> iterBindings, NodeTable nodeTable)
     { return Iter.map(iterBindings, convFromBinding(nodeTable)); }
 
     /** Convert from Iterator<BindingNodeId> to Iterator<Binding>, conversion "on demand"
      * (in convToBinding(BindingNodeId, NodeTable)
      */
-    public static Iterator<Binding> convertToNodes(Iterator<BindingNodeId> iterBindingIds, NodeTable nodeTable)
+    static Iterator<Binding> convertToNodes(Iterator<BindingNodeId> iterBindingIds, NodeTable nodeTable)
     { return Iter.map(iterBindingIds, bindingNodeIds -> convToBinding(bindingNodeIds, nodeTable)); }
 
     /** Create an abortable iterator, storing it in the killList.
@@ -71,16 +71,15 @@ public class SolverLib
         return k;
     }
 
-    /** Iterator that adds an abort operation which can be called
-     *  at any time, including from another thread, and causes the
-     *  iterator to throw an exception when next touched (hasNext, next).
+    /**
+     * Iterator that adds an abort operation which can be called at any time,
+     * including from another thread, and causes the iterator to throw an exception
+     * when next touched (hasNext, next).
      */
-    static class IterAbortable<T> extends IteratorWrapper<T> implements Abortable
-    {
+    static class IterAbortable<T> extends IteratorWrapper<T> implements Abortable {
         volatile boolean abortFlag = false;
 
-        public IterAbortable(Iterator<T> iterator)
-        {
+        public IterAbortable(Iterator<T> iterator) {
             super(iterator);
         }
 
@@ -91,16 +90,14 @@ public class SolverLib
         }
 
         @Override
-        public boolean hasNext()
-        {
+        public boolean hasNext() {
             if ( abortFlag )
                 throw new QueryCancelledException();
             return iterator.hasNext();
         }
 
         @Override
-        public T next()
-        {
+        public T next() {
             if ( abortFlag )
                 throw new QueryCancelledException();
             return iterator.next();
@@ -110,14 +107,13 @@ public class SolverLib
     /**
      * Test whether a triple has an triple term as one of its components.
      */
-    public static boolean tripleHasNodeTriple(Triple triple) {
+    static boolean tripleHasNodeTriple(Triple triple) {
         return triple.getSubject().isNodeTriple()
                /*|| triple.getPredicate().isNodeTriple()*/
                || triple.getObject().isNodeTriple();
     }
 
-
-    public static Binding convToBinding(BindingNodeId bindingNodeIds, NodeTable nodeTable) {
+    static Binding convToBinding(BindingNodeId bindingNodeIds, NodeTable nodeTable) {
         if ( true )
             return new BindingTDB(bindingNodeIds, nodeTable);
         else {
@@ -133,18 +129,17 @@ public class SolverLib
         }
     }
 
-
     // Transform : Binding ==> BindingNodeId
-    public static Iterator<BindingNodeId> convFromBinding(Iterator<Binding> input, NodeTable nodeTable) {
+    static Iterator<BindingNodeId> convFromBinding(Iterator<Binding> input, NodeTable nodeTable) {
         return Iter.map(input, SolverLib.convFromBinding(nodeTable));
     }
 
-    public static Function<Binding, BindingNodeId> convFromBinding(final NodeTable nodeTable) {
+    static Function<Binding, BindingNodeId> convFromBinding(final NodeTable nodeTable) {
         return binding -> SolverLib.convert(binding, nodeTable);
     }
 
     /** Binding {@literal ->} BindingNodeId, given a NodeTable */
-    public static BindingNodeId convert(Binding binding, NodeTable nodeTable) {
+    static BindingNodeId convert(Binding binding, NodeTable nodeTable) {
         if ( binding instanceof BindingTDB )
             return ((BindingTDB)binding).getBindingId();
 
@@ -174,7 +169,7 @@ public class SolverLib
     }
 
     /** Find whether a specific graph name is in the quads table. */
-    public static QueryIterator testForGraphName(DatasetGraphTDB ds, Node graphNode, QueryIterator input,
+    static QueryIterator testForGraphName(DatasetGraphTDB ds, Node graphNode, QueryIterator input,
                                                  Predicate<Tuple<NodeId>> filter, ExecutionContext execCxt) {
         NodeId nid = TDBInternal.getNodeId(ds, graphNode);
         boolean exists = !NodeId.isDoesNotExist(nid);
@@ -200,7 +195,7 @@ public class SolverLib
     }
 
     /** Find all the graph names in the quads table. */
-    public static QueryIterator graphNames(DatasetGraphTDB ds, Node graphNode, QueryIterator input,
+    static QueryIterator graphNames(DatasetGraphTDB ds, Node graphNode, QueryIterator input,
                                            Predicate<Tuple<NodeId>> filter, ExecutionContext execCxt) {
         List<Abortable> killList = new ArrayList<>();
         Iterator<Tuple<NodeId>> iter1 = ds.getQuadTable().getNodeTupleTable().find(NodeId.NodeIdAny, NodeId.NodeIdAny,
@@ -223,7 +218,7 @@ public class SolverLib
         return new QueryIterTDB(iterBinding, killList, input, execCxt);
     }
 
-    public static Set<NodeId> convertToNodeIds(Collection<Node> nodes, DatasetGraphTDB dataset)
+    static Set<NodeId> convertToNodeIds(Collection<Node> nodes, DatasetGraphTDB dataset)
     {
         Set<NodeId> graphIds = new HashSet<>();
         NodeTable nt = dataset.getQuadTable().getNodeTupleTable().getNodeTable();
@@ -250,5 +245,4 @@ public class SolverLib
     private static Function<Tuple<NodeId>, Tuple<NodeId>> quadsToAnyTriples = item -> {
         return TupleFactory.create4(NodeId.NodeIdAny, item.get(1), item.get(2), item.get(3) );
     };
-
 }

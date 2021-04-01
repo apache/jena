@@ -29,19 +29,19 @@ import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.util.FmtUtils ;
 import org.apache.jena.sparql.util.IterLib ;
 
-/** Basic property function handler that calls the implementation 
- * subclass one binding at a time */ 
+/** Basic property function handler that calls the implementation
+ * subclass one binding at a time */
 
 public abstract class PropertyFunctionBase implements PropertyFunction
 {
     PropFuncArgType subjArgType ;
     PropFuncArgType objFuncArgType ;
-    
+
     protected PropertyFunctionBase()
     {
         this(PropFuncArgType.PF_ARG_EITHER, PropFuncArgType.PF_ARG_EITHER) ;
     }
-    
+
     protected PropertyFunctionBase(PropFuncArgType subjArgType,  PropFuncArgType objFuncArgType)
     {
         this.subjArgType = subjArgType ;
@@ -50,11 +50,11 @@ public abstract class PropertyFunctionBase implements PropertyFunction
 
     @Override
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
-    { 
+    {
         if ( subjArgType.equals(PropFuncArgType.PF_ARG_SINGLE) )
             if ( argSubject.isList() )
                 throw new QueryBuildException("List arguments (subject) to "+predicate.getURI()) ;
-        
+
         if ( subjArgType.equals(PropFuncArgType.PF_ARG_LIST) && ! argSubject.isList() )
                 throw new QueryBuildException("Single argument, list expected (subject) to "+predicate.getURI()) ;
 
@@ -64,14 +64,12 @@ public abstract class PropertyFunctionBase implements PropertyFunction
                 // But allow rdf:nil.
                 throw new QueryBuildException("List arguments (object) to "+predicate.getURI()) ;
         }
-        
+
         if ( objFuncArgType.equals(PropFuncArgType.PF_ARG_LIST) )
             if ( ! argObject.isList() )
                 throw new QueryBuildException("Single argument, list expected (object) to "+predicate.getURI()) ;
     }
 
-
-    
     @Override
     public QueryIterator exec(QueryIterator input, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
@@ -82,18 +80,18 @@ public abstract class PropertyFunctionBase implements PropertyFunction
 
         return new RepeatApplyIteratorPF(input, argSubject, predicate, argObject, execCxt) ;
     }
-    
+
     public abstract QueryIterator exec(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) ;
-    
-    
+
+
     class RepeatApplyIteratorPF extends QueryIterRepeatApply
     {
-        private final PropFuncArg argSubject ; 
+        private final PropFuncArg argSubject ;
         private final Node predicate ;
         private final PropFuncArg argObject ;
-        
+
         public RepeatApplyIteratorPF(QueryIterator input, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
-        { 
+        {
             super(input, execCxt) ;
             this.argSubject = argSubject ;
             this.predicate = predicate ;
@@ -104,11 +102,11 @@ public abstract class PropertyFunctionBase implements PropertyFunction
         protected QueryIterator nextStage(Binding binding)
         {
             QueryIterator iter = exec(binding, argSubject, predicate, argObject, getExecContext()) ;
-            if ( iter == null ) 
+            if ( iter == null )
                 iter = IterLib.noResults(getExecContext()) ;
             return iter ;
         }
-        
+
         @Override
         protected void details(IndentedWriter out, SerializationContext sCxt)
         {
@@ -121,5 +119,4 @@ public abstract class PropertyFunctionBase implements PropertyFunction
             out.println() ;
         }
     }
-    
 }

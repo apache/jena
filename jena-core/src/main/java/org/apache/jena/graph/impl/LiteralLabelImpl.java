@@ -500,6 +500,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
     
     /** Return true if the literal label is a language string. (RDF 1.0 and RDF 1.1) */
     public static boolean isLangString(LiteralLabel lit) {
+        // Duplicated by Util.isLangString except for the consistency check.
         String lang = lit.language() ;
         if ( lang == null )
             return false ;
