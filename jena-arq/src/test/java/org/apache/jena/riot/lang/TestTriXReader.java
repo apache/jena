@@ -59,6 +59,9 @@ public class TestTriXReader {
                   { DIR+"/trix-14.trix", DIR+"/trix-14.nq" } ,
                   { DIR+"/trix-15.trix", DIR+"/trix-15.nq" } ,
 
+                  { DIR+"/trix-ns-1.trix", DIR+"/trix-ns-1.nq" } ,
+                  { DIR+"/trix-ns-2.trix", DIR+"/trix-ns-2.nq" } ,
+
                   // The example from HPL-2004-56
                   { DIR+"/trix-ex-1.trix", null },
 //                  //{ "trix-ex-2.trix", null },  // Contains <integer>
