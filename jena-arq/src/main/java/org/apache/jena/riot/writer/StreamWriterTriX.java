@@ -46,27 +46,40 @@ public class StreamWriterTriX implements StreamRDF {
     /*
      * Notes on writing qnames:
      * 1/ Currently disabled in favour of the most regular XML output.
-     * 2/ There is code in write(...,Node,...) to handle it which is currently commented out.
-     * 3/ Need to write prefixes which in turn needs delaying writing the <TriX> start.
+     * 2/ Only uses and writes a prefix map given at the start, not inline with StreamRDF.prefix.
+     *    Therefore, not available in stream writing mode.
+     * 4/ Does not use or write the empty namespace. The empty namespace is used by the trix tags.
+     *    (to change, need to change the tags to trix:trix etc and write xmls:trix=)
      */
 
-    private static String rdfXMLLiteral = XMLLiteralType.theXMLLiteralType.getURI() ;
-    private IndentedWriter out ;
+    private final static String rdfXMLLiteral = XMLLiteralType.theXMLLiteralType.getURI() ;
+    private final IndentedWriter out ;
     private Node gn = null ;
     private boolean inGraph = false ;
-    private PrefixMap pmap = PrefixMapFactory.create() ;
-    private int depth = 0 ;     // Start/finish count
+    private final PrefixMap pmap;
+    // StreamRDF.start/finish count
+    private int depth = 0 ;
 
-    public StreamWriterTriX(OutputStream out)   { this.out = new IndentedWriter(out) ; }
-    public StreamWriterTriX(IndentedWriter out) { this.out = out ; }
+    public StreamWriterTriX(OutputStream out, PrefixMap prefixMap) {
+        this(new IndentedWriter(out), prefixMap);
+    }
+
+    /*package*/ StreamWriterTriX(IndentedWriter out, PrefixMap prefixMap) {
+        this.out = out;
+        // Disabled. See notes
+        PrefixMap pm = null;
+        //PrefixMap pm = prefixMap;
+        if ( pm != null && pm.containsPrefix("") ) {
+            pm = PrefixMapFactory.create(pm);
+            // Can't write ""
+            pm.delete("");
+        }
+        pmap = pm;
+    }
 
     @Override public void start() {
-        if ( depth == 0 ) {
-            StreamWriterTriX.startXML(out) ;
-            // Write using the element name from the W3C DTD.
-            StreamWriterTriX.startTag(out, TriX.tagTriX, "xmlns", TriX.NS) ;
-            out.println() ;
-        }
+        if ( depth == 0 )
+            writeStart();
         depth ++ ;
     }
 
@@ -74,19 +87,15 @@ public class StreamWriterTriX implements StreamRDF {
         depth-- ;
         if ( depth != 0 )
             return ;
-        if ( inGraph ) {
-            StreamWriterTriX.endTag(out, TriX.tagGraph) ;
-            out.println() ;
-        }
-        StreamWriterTriX.endTag(out, TriX.tagTriX) ;
-        out.println() ;
+        writeFinish();
         out.flush() ;
     }
 
     @Override public void base(String base) {} // Ignore.
 
     @Override public void prefix(String prefix, String iri) {
-        pmap.add(prefix, iri) ;
+        // StreamRDF prefix : ignored.
+        // See notes.
     }
 
     @Override
@@ -136,7 +145,7 @@ public class StreamWriterTriX implements StreamRDF {
         StreamWriterTriX.write(out, quad.asTriple(), pmap) ;
     }
 
-    static void write(IndentedWriter out, Triple triple, PrefixMap prefixMap) {
+    private static void write(IndentedWriter out, Triple triple, PrefixMap prefixMap) {
         out.println("<triple>") ;
         out.incIndent();
         write(out, triple.getSubject(), prefixMap) ;
@@ -146,22 +155,21 @@ public class StreamWriterTriX implements StreamRDF {
         out.println("</triple>") ;
     }
 
-    static void write(IndentedWriter out, Node node, PrefixMap prefixMap) {
-
+    private static void write(IndentedWriter out, Node node, PrefixMap prefixMap) {
         if ( node.isURI() ) {
             String uri = node.getURI() ;
             // The decent use of TriX is very regular output as we do not use <qname>.
-            // See Notes above.
-//            if ( false && prefixMap != null ) {
-//                String abbrev = prefixMap.abbreviate(uri) ;
-//                if ( abbrev != null ) {
-//                    startTag(out, TriX.tagQName) ;
-//                    writeText(out, abbrev) ;
-//                    endTag(out, TriX.tagQName) ;
-//                    out.println() ;
-//                    return ;
-//                }
-//            }
+            // See notes on qnames above.
+            if ( prefixMap != null ) {
+                String abbrev = prefixMap.abbreviate(uri) ;
+                if ( abbrev != null ) {
+                    startTag(out, TriX.tagQName) ;
+                    writeText(out, abbrev) ;
+                    endTag(out, TriX.tagQName) ;
+                    out.println() ;
+                    return ;
+                }
+            }
 
             startTag(out, TriX.tagURI) ;
             writeText(out, node.getURI()) ;
@@ -220,30 +228,49 @@ public class StreamWriterTriX implements StreamRDF {
         throw new RiotException("Not a concrete node: "+node) ;
     }
 
-    static void writeText(IndentedWriter out, String string) {
+    private static void writeText(IndentedWriter out, String string) {
         string = Util.substituteEntitiesInElementContent(string) ;
         out.print(string) ;
     }
 
-    static void writeTextNoIndent(IndentedWriter out, String string) {
+    private static void writeTextNoIndent(IndentedWriter out, String string) {
         int x = out.getAbsoluteIndent() ;
         out.setAbsoluteIndent(0) ;
         writeText(out, string) ;
         out.setAbsoluteIndent(x) ;
     }
 
-    static void startXML(IndentedWriter out) {
+    private static void startXML(IndentedWriter out) {
         //out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>") ;
     }
 
-    static void startTag(IndentedWriter out, String text) {
+     void writeStart() {
+        StreamWriterTriX.startXML(out) ;
+        // Write using the element name from the W3C DTD.
+        if ( pmap == null || pmap.isEmpty() )
+            StreamWriterTriX.startTag(out, TriX.tagTriX, "xmlns", TriX.NS) ;
+        else
+            StreamWriterTriX.startTagNS(out, TriX.tagTriX, "xmlns", TriX.NS, pmap) ;
+        out.println() ;
+    }
+
+    private void writeFinish() {
+        if ( inGraph ) {
+            StreamWriterTriX.endTag(out, TriX.tagGraph) ;
+            out.println() ;
+        }
+        StreamWriterTriX.endTag(out, TriX.tagTriX) ;
+        out.println() ;
+    }
+
+    private static void startTag(IndentedWriter out, String text) {
         out.print("<") ;
         out.print(text) ;
         out.print(">") ;
         out.incIndent();
     }
 
-    static void startTag(IndentedWriter out, String text, String attr, String attrValue) {
+    private static void startTag(IndentedWriter out, String text, String attr, String attrValue) {
         out.print("<") ;
         out.print(text) ;
         out.print(" ") ;
@@ -256,7 +283,40 @@ public class StreamWriterTriX implements StreamRDF {
         out.incIndent();
     }
 
-    static void endTag(IndentedWriter out, String text) {
+    // Write start with namespaces.
+    private static void startTagNS(IndentedWriter out, String text, String attr, String attrValue, PrefixMap pmap) {
+        out.print("<") ;
+        out.print(text) ;
+        out.print(" ") ;
+        // Alignment of namespaces.
+        int offset = out.getCurrentOffset();
+
+        out.print("xmlns") ;
+        out.print("=\"") ;
+        attrValue = Util.substituteStandardEntities(attrValue) ;
+        out.print(attrValue) ;
+        out.print("\"") ;
+
+        // prefixes as XML namespaces.
+        // Can't write the empty namespace - it's used by TriX itself in this writer.
+        out.incIndent(offset);
+        pmap.forEach((ns,uri)->{
+            out.println();
+            out.print("xmlns:");
+            out.print(ns);
+            out.print("=");
+            out.print("\"");
+            uri = Util.substituteStandardEntities(uri);
+            out.print(uri);
+            out.print("\"");
+        });
+        out.decIndent(offset);
+
+        out.print(">") ;
+        out.incIndent();
+    }
+
+    private static void endTag(IndentedWriter out, String text) {
         out.decIndent();
         out.print("</") ;
         out.print(text) ;

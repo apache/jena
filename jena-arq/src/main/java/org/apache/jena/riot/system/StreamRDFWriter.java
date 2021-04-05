@@ -91,7 +91,7 @@ public class StreamRDFWriter {
     private static StreamRDFWriterFactory streamWriterFactoryTriX = new StreamRDFWriterFactory() {
         @Override
         public StreamRDF create(OutputStream output, RDFFormat format, Context context) {
-            return new StreamWriterTriX(output) ;
+            return new StreamWriterTriX(output, null) ;
         }
     } ;
 
