@@ -16,15 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.mgt;
+package org.apache.jena.fuseki.ctl;
 
 import static java.lang.String.format;
 
 import com.github.jsonldjava.shaded.com.google.common.base.Predicate;
 
 import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.fuseki.ctl.ActionAsyncTask;
-import org.apache.jena.fuseki.ctl.TaskBase;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.sparql.core.DatasetGraph;

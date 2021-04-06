@@ -57,6 +57,7 @@ public class FusekiVocab
     public static final Property pServerPing        = property("pingEP");
     public static final Property pServerStats       = property("statsEP");
     public static final Property pServerMetrics     = property("metricsEP");
+    public static final Property pServerCompact     = property("compactEP");
 
     // Endpoint description - old style.
     public static final Property pServiceQueryEP                = property("serviceQuery");

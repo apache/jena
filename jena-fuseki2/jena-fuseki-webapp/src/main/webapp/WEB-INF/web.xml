@@ -210,7 +210,7 @@
   
   <servlet>
     <servlet-name>ActionCompact</servlet-name>
-    <servlet-class>org.apache.jena.fuseki.mgt.ActionCompact</servlet-class>
+    <servlet-class>org.apache.jena.fuseki.ctl.ActionCompact</servlet-class>
   </servlet>
 
   <!-- An action that only creates a background task that sleeps. -->
