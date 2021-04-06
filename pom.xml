@@ -72,7 +72,6 @@
     -->
     <ver.jsonldjava>0.13.2</ver.jsonldjava>
     <ver.jackson>2.12.2</ver.jackson>
-    <ver.jackson-databind>2.12.2</ver.jackson-databind>
 
     <ver.commonsio>2.8.0</ver.commonsio>
     <ver.commonscli>1.4</ver.commonscli>
@@ -325,14 +324,11 @@
       </dependency>
 
       <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-core</artifactId>
+        <groupId>com.fasterxml.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
         <version>${ver.jackson}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-databind</artifactId>
-        <version>${ver.jackson-databind}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
 
       <dependency>
