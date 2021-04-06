@@ -88,6 +88,7 @@ public class FusekiMain extends CmdARQ {
     private static ArgDecl  argWithPing     = new ArgDecl(ArgDecl.NoValue, "withPing", "ping");
     private static ArgDecl  argWithStats    = new ArgDecl(ArgDecl.NoValue, "withStats", "stats");
     private static ArgDecl  argWithMetrics  = new ArgDecl(ArgDecl.NoValue,  "withMetrics", "metrics");
+    private static ArgDecl  argWithCompact  = new ArgDecl(ArgDecl.NoValue,  "withCompact", "compact");
 
     private static ArgDecl  argAuth         = new ArgDecl(ArgDecl.HasValue, "auth");
 
@@ -175,6 +176,7 @@ public class FusekiMain extends CmdARQ {
         add(argWithPing,    "--ping",   "Enable /$/ping");
         add(argWithStats,   "--stats",  "Enable /$/stats");
         add(argWithMetrics, "--metrics",  "Enable /$/metrics");
+        add(argWithCompact, "--compact", "Enable /$/compact/*");
 
         super.modVersion.addClass(Fuseki.class);
     }
@@ -423,6 +425,7 @@ public class FusekiMain extends CmdARQ {
         serverConfig.withPing = contains(argWithPing);
         serverConfig.withStats = contains(argWithStats);
         serverConfig.withMetrics = contains(argWithMetrics);
+        serverConfig.withCompact = contains(argWithCompact);
 
 //            if ( contains(argGZip) ) {
 //                if ( !hasValueOfTrue(argGZip) && !hasValueOfFalse(argGZip) )
@@ -542,6 +545,9 @@ public class FusekiMain extends CmdARQ {
 
         if ( serverConfig.withMetrics )
             builder.enableMetrics(true);
+
+        if ( serverConfig.withCompact )
+            builder.enableCompact(true);
 
         return builder.build();
     }

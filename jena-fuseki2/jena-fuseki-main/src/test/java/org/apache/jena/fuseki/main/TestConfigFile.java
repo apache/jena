@@ -18,14 +18,19 @@
 
 package org.apache.jena.fuseki.main;
 
+import java.io.IOException;
+
 import static org.apache.jena.fuseki.test.FusekiTest.expect400;
 import static org.apache.jena.fuseki.test.FusekiTest.expect404;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.QueryExecution;
@@ -225,6 +230,28 @@ public class TestConfigFile {
             assertNotNull(x2);
             String x3 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/metrics");
             assertNotNull(x3);
+        } finally {
+            server.stop();
+        }
+    }
+
+    @Test public void serverTDB2() {
+        int port = WebLib.choosePort();
+        FusekiServer server = server(port, "server-tdb2.ttl");
+        server.start();
+        try {
+            String x1 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/ping");
+            assertNotNull(x1);
+            String x2 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/stats");
+            assertNotNull(x2);
+            String x3 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/metrics");
+            assertNotNull(x3);
+            try(TypedInputStream x4 = HttpOp.execHttpPostStream("http://localhost:"+port+"/$/compact/ds", null, "application/json")) {
+                assertNotNull(x4);
+                assertNotEquals(0, x4.readAllBytes().length);
+            } catch (IOException ex) {
+                IO.exception(ex);
+            }
         } finally {
             server.stop();
         }

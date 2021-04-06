@@ -46,6 +46,7 @@ import org.apache.jena.fuseki.access.DataAccessCtl;
 import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.build.FusekiConfig;
+import org.apache.jena.fuseki.ctl.ActionCompact;
 import org.apache.jena.fuseki.ctl.ActionMetrics;
 import org.apache.jena.fuseki.ctl.ActionPing;
 import org.apache.jena.fuseki.ctl.ActionStats;
@@ -358,6 +359,7 @@ public class FusekiServer {
         private int                      maxThreads         = -1;
 
         private boolean                  verbose            = false;
+        private boolean                  withCompact        = false;
         private boolean                  withPing           = false;
         private boolean                  withMetrics        = false;
         private boolean                  withStats          = false;
@@ -502,6 +504,12 @@ public class FusekiServer {
             return this;
         }
 
+        /** Add the "/$/compact/*" servlet that triggers compaction for specified dataset. */
+        public Builder enableCompact(boolean withCompact) {
+            this.withCompact = withCompact;
+            return this;
+        }
+
         /**
          * Add the dataset with given name and a default set of services including update.
          * This is equivalent to {@code add(name, dataset, true)}.
@@ -628,6 +636,7 @@ public class FusekiServer {
             withPing  = argBoolean(server, FusekiVocab.pServerPing,  false);
             withStats = argBoolean(server, FusekiVocab.pServerStats, false);
             withMetrics = argBoolean(server, FusekiVocab.pServerMetrics, false);
+            withCompact = argBoolean(server, FusekiVocab.pServerCompact, false);
 
             // Extract settings - the server building is done in buildSecurityHandler,
             // buildAccessControl.  Dataset and graph level happen in assemblers.
@@ -1208,7 +1217,9 @@ public class FusekiServer {
                 addServlet(context, "/$/stats/*", new ActionStats());
             if ( withMetrics )
                 addServlet(context, "/$/metrics", new ActionMetrics());
-            // TODO Should we support registering other functionality e.g. /$/backup/* and /$/compact/*
+            if ( withCompact )
+                addServlet(context, "/$/compact/*", new ActionCompact());
+            // TODO Should we support registering other functionality e.g. /$/backup/*
 
             servlets.forEach(p-> addServlet(context, p.getLeft(), p.getRight()));
             filters.forEach (p-> addFilter(context, p.getLeft(), p.getRight()));

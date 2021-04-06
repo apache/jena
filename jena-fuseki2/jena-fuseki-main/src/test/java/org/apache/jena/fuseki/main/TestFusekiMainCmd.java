@@ -19,12 +19,15 @@
 package org.apache.jena.fuseki.main;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
 import org.apache.jena.atlas.json.JSON;
+import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
 import org.apache.jena.fuseki.system.FusekiLogging;
@@ -90,5 +93,13 @@ public class TestFusekiMainCmd {
         server("--mem", "--metrics", "/ds");
         String x = HttpOp.execHttpGetString(serverURL+"/$/metrics");
         assertNotNull(x);
+    }
+
+    @Test public void compact_01() throws IOException {
+        server("--memTDB", "--tdb2", "--compact", "/ds");
+        try(TypedInputStream x = HttpOp.execHttpPostStream(serverURL+"/$/compact/ds", null, "application/json")) {
+            assertNotNull(x);
+            assertNotEquals(0, x.readAllBytes().length);
+        }
     }
 }
