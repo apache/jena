@@ -40,42 +40,51 @@ import org.junit.runners.Parameterized.Parameters ;
 
 @RunWith(Parameterized.class)
 public class TestTriXReader {
-    
+    // see also TestTriXBad.
     static String DIR = "testing/RIOT/Lang/TriX" ;
-    
+
     @Parameters(name="{0}")
     public static Iterable<Object[]> data() {
-              return Arrays.asList(new Object[][] { 
+              return Arrays.asList(new Object[][] {
                   { DIR+"/trix-01.trix", DIR+"/trix-01.nq" } ,
                   { DIR+"/trix-02.trix", DIR+"/trix-02.nq" } ,
                   { DIR+"/trix-03.trix", DIR+"/trix-03.nq" } ,
                   { DIR+"/trix-04.trix", DIR+"/trix-04.nq" } ,
                   { DIR+"/trix-05.trix", DIR+"/trix-05.nq" } ,
                   { DIR+"/trix-06.trix", DIR+"/trix-06.nq" } ,
-                  { DIR+"/trix-10.trix", DIR+"/trix-10.nq" } ,        
-                  { DIR+"/trix-11.trix", DIR+"/trix-11.nq" } ,        
-                  { DIR+"/trix-12.trix", DIR+"/trix-12.nq" } ,        
-                  { DIR+"/trix-13.trix", DIR+"/trix-13.nq" } ,        
-                  { DIR+"/trix-14.trix", DIR+"/trix-14.nq" } , 
-                  { DIR+"/trix-15.trix", DIR+"/trix-15.nq" } , 
+                  { DIR+"/trix-10.trix", DIR+"/trix-10.nq" } ,
+                  { DIR+"/trix-11.trix", DIR+"/trix-11.nq" } ,
+                  { DIR+"/trix-12.trix", DIR+"/trix-12.nq" } ,
+                  { DIR+"/trix-13.trix", DIR+"/trix-13.nq" } ,
+                  { DIR+"/trix-14.trix", DIR+"/trix-14.nq" } ,
+                  { DIR+"/trix-15.trix", DIR+"/trix-15.nq" } ,
+
+                  { DIR+"/trix-ns-1.trix", DIR+"/trix-ns-1.nq" } ,
+                  { DIR+"/trix-ns-2.trix", DIR+"/trix-ns-2.nq" } ,
+
                   // The example from HPL-2004-56
                   { DIR+"/trix-ex-1.trix", null },
-//                  //{ "trix-ex-2.trix", null },  // Contains <integer> 
+//                  //{ "trix-ex-2.trix", null },  // Contains <integer>
                   { DIR+"/trix-ex-3.trix", null },
                   { DIR+"/trix-ex-4.trix", null },
                   { DIR+"/trix-ex-5.trix", null },
                   // W3C DTD
                   { DIR+"/trix-w3c-1.trix", DIR+"/trix-w3c-1.nq" },
-                  { DIR+"/trix-w3c-2.trix", DIR+"/trix-w3c-2.nq" }
+                  { DIR+"/trix-w3c-2.trix", DIR+"/trix-w3c-2.nq" },
+
+                  // RDF-star
+                  { DIR+"/trix-star-1.trix", DIR+"/trix-star-1.nq" },
+                  { DIR+"/trix-star-2.trix", DIR+"/trix-star-2.nq" },
+
                   });
     }
-    
+
     @Parameter(0)
     public String fInput;
-        
+
     @Parameter(1)
     public String fExpected;
-    
+
     @Test
     public void trix_direct() {
         ReaderRIOT r = new ReaderTriX(RiotLib.dftProfile(), ErrorHandlerFactory.errorHandlerNoWarnings);
@@ -110,9 +119,9 @@ public class TestTriXReader {
             ErrorHandlerFactory.setDefaultErrorHandler(err) ;
         }
         if ( m2 != null )
-            assertTrue("Models not isomorphic", m1.isIsomorphicWith(m2)) ;
+            assertTrue("Models not isomorphic", IsoMatcher.isomorphic(m1.getGraph(), m2.getGraph())) ;
     }
-    
+
     @Test
     public void trix_dataset() {
         DatasetGraph ds1 = RDFDataMgr.loadDatasetGraph(fInput) ;
@@ -123,4 +132,3 @@ public class TestTriXReader {
             assertTrue("Datasets not isomorphic", IsoMatcher.isomorphic(ds1, ds2)) ;
     }
 }
-
