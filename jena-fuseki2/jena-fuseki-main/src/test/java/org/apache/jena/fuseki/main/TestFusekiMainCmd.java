@@ -97,9 +97,13 @@ public class TestFusekiMainCmd {
 
     @Test public void compact_01() throws IOException {
         server("--memTDB", "--tdb2", "--compact", "/ds");
-        try(TypedInputStream x = HttpOp.execHttpPostStream(serverURL+"/$/compact/ds", null, "application/json")) {
-            assertNotNull(x);
-            assertNotEquals(0, x.readAllBytes().length);
+        try(TypedInputStream x0 = HttpOp.execHttpPostStream(serverURL+"/$/compact/ds", null, "application/json")) {
+            assertNotNull(x0);
+            assertNotEquals(0, x0.readAllBytes().length);
         }
+
+        String x1 = HttpOp.execHttpGetString(serverURL+"/$/tasks");
+        assertNotNull(x1);
+        JSON.parseAny(x1);
     }
 }
