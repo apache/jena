@@ -242,12 +242,29 @@ public class TestEmbeddedFuseki {
             .enableCompact(true)
             .build();
         server.start();
-        try(TypedInputStream x = HttpOp.execHttpPostStream("http://localhost:"+port+"/$/compact/FuTest", null, "application/json")) {
-            assertNotNull(x);
-            assertNotEquals(0, x.readAllBytes().length);
+        try(TypedInputStream x0 = HttpOp.execHttpPostStream("http://localhost:"+port+"/$/compact/FuTest", null, "application/json")) {
+            assertNotNull(x0);
+            assertNotEquals(0, x0.readAllBytes().length);
+
+            String x1 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/tasks");
+            assertNotNull(x1);
         } finally {
             server.stop();
         }
+    }
+
+    @Test public void embedded_tasks() {
+        DatasetGraph dsg = dataset();
+        int port = WebLib.choosePort();
+        FusekiServer server = FusekiServer.create()
+            .port(port)
+            .add("/ds0", dsg)
+            .enableTasks(true)
+            .build();
+        server.start();
+        String x = HttpOp.execHttpGetString("http://localhost:"+port+"/$/tasks");
+        assertNotNull(x);
+        server.stop();
     }
 
     // Context path.

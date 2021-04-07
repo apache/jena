@@ -246,12 +246,16 @@ public class TestConfigFile {
             assertNotNull(x2);
             String x3 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/metrics");
             assertNotNull(x3);
-            try(TypedInputStream x4 = HttpOp.execHttpPostStream("http://localhost:"+port+"/$/compact/ds", null, "application/json")) {
-                assertNotNull(x4);
-                assertNotEquals(0, x4.readAllBytes().length);
+            String x4 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/tasks");
+            assertNotNull(x4);
+            try(TypedInputStream x5 = HttpOp.execHttpPostStream("http://localhost:"+port+"/$/compact/ds", null, "application/json")) {
+                assertNotNull(x5);
+                assertNotEquals(0, x5.readAllBytes().length);
             } catch (IOException ex) {
                 IO.exception(ex);
             }
+            String x6 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/tasks/1");
+            assertNotNull(x6);
         } finally {
             server.stop();
         }
