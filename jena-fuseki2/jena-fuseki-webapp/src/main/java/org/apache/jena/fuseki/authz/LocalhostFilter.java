@@ -53,14 +53,14 @@ public class LocalhostFilter extends AuthorizationFilter403 {
 
     private static String LOCALHOST_IpV6_a = "[0:0:0:0:0:0:0:1]";
     private static String LOCALHOST_IpV6_b = "0:0:0:0:0:0:0:1";
+    private static String LOCALHOST_IpV6_c = "[::1]";
     private static String LOCALHOST_IpV4 =  "127.0.0.1";   // Strictly, 127.*.*.*
 
     private static final Collection<String> localhosts = new HashSet<>(
-        Arrays.asList(LOCALHOST_IpV4, LOCALHOST_IpV6_a, LOCALHOST_IpV6_b));  
+        Arrays.asList(LOCALHOST_IpV4, LOCALHOST_IpV6_a, LOCALHOST_IpV6_b, LOCALHOST_IpV6_c));
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
-        String remoteAddr = request.getRemoteAddr();
         return localhosts.contains(request.getRemoteAddr());
     }
 }
