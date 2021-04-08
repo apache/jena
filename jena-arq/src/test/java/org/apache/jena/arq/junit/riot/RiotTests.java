@@ -19,6 +19,7 @@
 package org.apache.jena.arq.junit.riot ;
 
 import org.apache.jena.arq.junit.LibTestSetup;
+import org.apache.jena.arq.junit.SurpressedTest;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.RDFLanguages ;
@@ -34,8 +35,8 @@ public class RiotTests
     public static String assumedRootURITurtle = "http://www.w3.org/2013/TurtleTests/" ;
     public static String assumedRootURITriG = "http://www.w3.org/2013/TriGTests/" ;
 
+    /** Create a RIOT language test - or return null for "unrecognized" */
     public static Runnable makeRIOTTest(ManifestEntry entry) {
-
         //Resource manifest = entry.getManifest();
         Resource item = entry.getEntry();
         String testName = entry.getName();
@@ -43,13 +44,10 @@ public class RiotTests
         Resource result = entry.getResult();
 
         String labelPrefix = "[RIOT]";
-        Resource dftTestType = null;
 
         try
         {
             Resource testType = LibTestSetup.getResource(item, RDF.type) ;
-            if ( testType == null )
-                testType = dftTestType ;
             if ( testType == null )
                 throw new RiotException("Can't determine the test type") ;
 
@@ -86,7 +84,7 @@ public class RiotTests
                 return new RiotSyntaxTest(entry, RDFLanguages.RDFJSON, false) ;
 
             if ( testType.equals(VocabLangRDF.TestSurpressed ))
-                return new SurpressedTest() ;
+                return new SurpressedTest(entry) ;
 
             // Eval.
 
@@ -123,12 +121,10 @@ public class RiotTests
             }
 //            if ( testType.equals(VocabLangRDF.TestNegativeEvalRJ) ) {
 //                String base = rebase(input, assumedRootURIex) ;
-//                return new EvalTest(entry, base, RDFLanguages.RDFJSON, false);
+//                return new RiotEvalTest(entry, base, RDFLanguages.RDFJSON, false);
 //            }
 
-            System.err.println("Unrecognized test : ("+testType+")" + testName) ;
-            return new SurpressedTest() ;
-
+            return null;
         } catch (Exception ex)
         {
             ex.printStackTrace(System.err) ;
