@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,14 +16,29 @@
  * limitations under the License.
  */
 
-package org.apache.jena.arq.junit.riot;
+package arq;
 
-public class SurpressedTest implements Runnable
-{
-    public SurpressedTest()
-    { }
+import org.apache.jena.cmd.TerminationException;
+import org.apache.jena.sys.JenaSystem;
 
-    @Override
-    public void run()
-    { }
+/** A program to execute test suites
+ *
+ * <pre>
+ * Usage:
+ *   <i>testManifest ...</i>
+ * </pre>
+ */
+public class rdftests extends AbstractTestCmd {
+    static { JenaSystem.init(); }
+
+    public static void main(String...argv) {
+        try { new rdftests(argv).mainRun(); }
+        catch (TerminationException ex) {
+            System.exit(ex.getCode());
+        }
+    }
+
+    public rdftests(String[] argv) {
+        super(argv);
+    }
 }

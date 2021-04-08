@@ -44,16 +44,11 @@ public class EarlReport
          earl:mode .... ].
      */
 
-    Model earl = null ;
-    Resource system = null ;
-    Resource reporter = null ;
+    private Model earl = null ;
 
-    /* Required:
-     * Recommended: DC title
-     * Optional: dc:hasVersion, dc:description, homepage
-     */
+    private Resource system;
 
-    public EarlReport(String systemURI, String name, String version, String homepage)
+    public EarlReport(String systemURI)
     {
         earl = ModelFactory.createDefaultModel() ;
 
@@ -65,92 +60,53 @@ public class EarlReport
         earl.setNsPrefix("doap", DOAP.getURI()) ;
         earl.setNsPrefix("xsd", XSD.getURI()) ;
         earl.setNsPrefix("rdft", "http://www.w3.org/ns/rdftest#");
-
         // Utils.
-        system = (systemURI == null ) ?
-                earl.createResource(EARL.Software) :
-                earl.createResource(systemURI, EARL.Software) ;
-
-        if ( name != null )
-            system.addProperty(DC.title, name);
-        if ( version != null )
-            system.addProperty(DCTerms.hasVersion, version);
-        if ( homepage != null )
-            system.addProperty(FOAF.homepage, earl.createResource(homepage));
-
-        // Can be a person or a thing.
-        // But here it is automated tests unless told otherwise..
-        reporter = system ;
+        system = (systemURI == null ) ? earl.createResource() : earl.createResource(systemURI) ;
     }
 
     public Resource getSystem() { return system ; }
 
-    public Resource getReporter() { return reporter ; }
-    public void setReporter(Resource reporter) { this.reporter = reporter ; }
-
-    public void success(String testURI)
-    {
-        createAssertionResult(testURI, EARL.passed) ;
-        //Old -- createAssertionResult(testURI, EARL.pass) ;
+    public void success(String testURI) {
+        createAssertionResult(testURI, EARL.passed);
     }
 
-    public void failure(String testURI)
-    {
-        createAssertionResult(testURI, EARL.failed) ;
-        //Old -- createAssertionResult(testURI, EARL.fail) ;
+    public void failure(String testURI) {
+        createAssertionResult(testURI, EARL.failed);
     }
 
-    public void notApplicable(String testURI)
-    {
+    public void notApplicable(String testURI) {
         createAssertionResult(testURI, EARL.inapplicable);
-        // Old --  createAssertionResult(testURI, EARL.notApplicable);
     }
 
-    public void notTested(String testURI)
-    {
+    public void notTested(String testURI) {
         createAssertionResult(testURI, EARL.untested);
-        // Old -- createAssertionResult(testURI, EARL.notTested);
     }
 
-    private void createAssertionResult(String testURI, Resource outcome)
-    {
-        Resource result = createResult(outcome) ;
-        Resource assertion = createAssertion(testURI, result) ;
+    private void createAssertionResult(String testURI, Resource outcome) {
+        Resource result = createResult(outcome);
+        Resource assertion = createAssertion(testURI, result);
     }
 
     /*
-    *  Required: earl:assertedBy , earl:subject , earl:test , earl:result
-    *  Recommended: earl:mode
-    */
+     * Required: earl:assertedBy , earl:subject , earl:test , earl:result
+     * Recommended: earl:mode
+     */
 
-    private Resource createAssertion(String testURI, Resource result)
-    {
-        Resource thisTest = earl.createResource(testURI) ;
+    private Resource createAssertion(String testURI, Resource result) {
+        Resource thisTest = earl.createResource(testURI);
         return earl.createResource(EARL.Assertion)
-                    .addProperty(EARL.test, thisTest)
-                    .addProperty(EARL.result, result)
-                    .addProperty(EARL.subject, system)
-                    .addProperty(EARL.assertedBy, system)
-                    .addProperty(EARL.mode, EARL.automatic) ;
+                .addProperty(EARL.test, thisTest)
+                .addProperty(EARL.result, result)
+                .addProperty(EARL.subject, system)
+                .addProperty(EARL.assertedBy, system)
+                .addProperty(EARL.mode, EARL.automatic);
     }
 
-    private Resource createResult(Resource outcome)
-    {
-//        String nowStr = Utils.nowAsXSDDateTimeString() ;
-//
-//        Literal now =
-//            ResourceFactory.createTypedLiteral(nowStr, XSDDatatype.XSDdateTime) ;
-
-        String todayStr = DateTimeUtils.todayAsXSDDateString() ;
-
-        Literal now =
-            ResourceFactory.createTypedLiteral(todayStr, XSDDatatype.XSDdate) ;
-
-        return earl.createResource(EARL.TestResult)
-                   .addProperty(EARL.outcome, outcome)
-                   .addProperty(DC.date, now) ;
+    private Resource createResult(Resource outcome) {
+        String todayStr = DateTimeUtils.todayAsXSDDateString();
+        Literal now = ResourceFactory.createTypedLiteral(todayStr, XSDDatatype.XSDdate);
+        return earl.createResource(EARL.TestResult).addProperty(EARL.outcome, outcome).addProperty(DC.date, now);
     }
-
 
     public Model getModel() { return earl ; }
 
