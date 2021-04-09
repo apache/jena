@@ -46,9 +46,11 @@ import org.apache.jena.fuseki.access.DataAccessCtl;
 import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.build.FusekiConfig;
+import org.apache.jena.fuseki.ctl.ActionCompact;
 import org.apache.jena.fuseki.ctl.ActionMetrics;
 import org.apache.jena.fuseki.ctl.ActionPing;
 import org.apache.jena.fuseki.ctl.ActionStats;
+import org.apache.jena.fuseki.ctl.ActionTasks;
 import org.apache.jena.fuseki.jetty.FusekiErrorHandler;
 import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
@@ -357,9 +359,11 @@ public class FusekiServer {
         private int                      maxThreads         = -1;
 
         private boolean                  verbose            = false;
+        private boolean                  withCompact        = false;
         private boolean                  withPing           = false;
         private boolean                  withMetrics        = false;
         private boolean                  withStats          = false;
+        private boolean                  withTasks          = false;
 
         private String                   jettyServerConfig  = null;
 
@@ -502,6 +506,25 @@ public class FusekiServer {
         }
 
         /**
+         * Add the "/$/compact/*" servlet that triggers compaction for specified dataset.
+         * Also adds the "/$/tasks/*" servlet if compact is enabled (but if compact is disabled,
+         * then tasks is not automatically disabled).
+         */
+        public Builder enableCompact(boolean withCompact) {
+            this.withCompact = withCompact;
+            if (withCompact) {
+                this.enableTasks(true);
+            }
+            return this;
+        }
+
+        /** Add the "/$/tasks" servlet that responds with info about tasks run on the server */
+        public Builder enableTasks(boolean withTasks) {
+            this.withTasks = withTasks;
+            return this;
+        }
+
+        /**
          * Add the dataset with given name and a default set of services including update.
          * This is equivalent to {@code add(name, dataset, true)}.
          */
@@ -624,9 +647,10 @@ public class FusekiServer {
             if ( server == null )
                 return;
 
-            withPing  = argBoolean(server, FusekiVocab.pServerPing,  false);
-            withStats = argBoolean(server, FusekiVocab.pServerStats, false);
-            withMetrics = argBoolean(server, FusekiVocab.pServerMetrics, false);
+            enablePing(argBoolean(server, FusekiVocab.pServerPing,  false));
+            enableStats(argBoolean(server, FusekiVocab.pServerStats, false));
+            enableMetrics(argBoolean(server, FusekiVocab.pServerMetrics, false));
+            enableCompact(argBoolean(server, FusekiVocab.pServerCompact, false));
 
             // Extract settings - the server building is done in buildSecurityHandler,
             // buildAccessControl.  Dataset and graph level happen in assemblers.
@@ -1207,7 +1231,12 @@ public class FusekiServer {
                 addServlet(context, "/$/stats/*", new ActionStats());
             if ( withMetrics )
                 addServlet(context, "/$/metrics", new ActionMetrics());
-            // TODO Should we support registering other functionality e.g. /$/backup/* and /$/compact/*
+            if ( withCompact )
+                addServlet(context, "/$/compact/*", new ActionCompact());
+            if ( withTasks )
+                addServlet(context, "/$/tasks/*", new ActionTasks());
+
+            // TODO Should we support registering other functionality e.g. /$/backup/*
 
             servlets.forEach(p-> addServlet(context, p.getLeft(), p.getRight()));
             filters.forEach (p-> addFilter(context, p.getLeft(), p.getRight()));

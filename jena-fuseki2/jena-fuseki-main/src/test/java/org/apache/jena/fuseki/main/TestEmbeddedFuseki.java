@@ -20,10 +20,13 @@ package org.apache.jena.fuseki.main;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.function.Consumer;
 
@@ -182,6 +185,9 @@ public class TestEmbeddedFuseki {
 
             String x3 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/metrics");
             assertNull(x3);
+
+            HttpException ex = assertThrows(HttpException.class, () -> HttpOp.execHttpPostStream("http://localhost:"+port+"/$/compact/ds", null, "application/json"));
+            assertEquals(404, ex.getStatusCode());
         } finally { server.stop(); }
     }
 
@@ -223,6 +229,40 @@ public class TestEmbeddedFuseki {
             .build();
         server.start();
         String x = HttpOp.execHttpGetString("http://localhost:"+port+"/$/metrics");
+        assertNotNull(x);
+        server.stop();
+    }
+
+    @Test public void embedded_compact() throws IOException {
+        DatasetGraph dsg = dataset();
+        int port = WebLib.choosePort();
+        FusekiServer server = FusekiServer.create()
+            .port(port)
+            .parseConfigFile(DIR+"tdb2-config.ttl")
+            .enableCompact(true)
+            .build();
+        server.start();
+        try(TypedInputStream x0 = HttpOp.execHttpPostStream("http://localhost:"+port+"/$/compact/FuTest", null, "application/json")) {
+            assertNotNull(x0);
+            assertNotEquals(0, x0.readAllBytes().length);
+
+            String x1 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/tasks");
+            assertNotNull(x1);
+        } finally {
+            server.stop();
+        }
+    }
+
+    @Test public void embedded_tasks() {
+        DatasetGraph dsg = dataset();
+        int port = WebLib.choosePort();
+        FusekiServer server = FusekiServer.create()
+            .port(port)
+            .add("/ds0", dsg)
+            .enableTasks(true)
+            .build();
+        server.start();
+        String x = HttpOp.execHttpGetString("http://localhost:"+port+"/$/tasks");
         assertNotNull(x);
         server.stop();
     }

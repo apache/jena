@@ -49,6 +49,7 @@ class ServerConfig {
     public boolean withPing           = false;
     public boolean withStats          = false;
     public boolean withMetrics        = false;
+    public boolean withCompact        = false;
 
     // This is set ...
     public DatasetGraph dsg           = null;
