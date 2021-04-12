@@ -198,8 +198,6 @@ public class Transaction implements TransactionInfo {
     public void end() {
         txnMgr.notifyEndStart(this);
         if ( isWriteTxn() && getState() == ACTIVE ) {
-            //Log.warn(this, "Write transaction with no commit() or abort() before end()");
-            // Just abort process.
             abort$();
             endInternal();
             throw new TransactionException("Write transaction with no commit() or abort() before end() - forced abort");
