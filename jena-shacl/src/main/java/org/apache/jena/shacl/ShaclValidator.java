@@ -39,13 +39,13 @@ public interface ShaclValidator {
     }
 
     /** Does the data conform to the shapes?
-     * This operation only checks whether the data is conformant or not - it does not genberate a complete report.
+     * This operation only checks whether the data is conformant or not - it does not generate a complete report.
      * @see #validate(Shapes, Graph)
      */
     public boolean conforms(Shapes shapes, Graph data);
 
     /** Does the data conform to the shapes?
-     * This operation only checks whether the data is conformant or not - it does not genberate a complete report.
+     * This operation only checks whether the data is conformant or not - it does not generate a complete report.
      * @see #validate(Graph, Graph)
      */
     public default boolean conforms(Graph shapesGraph, Graph data) {
@@ -54,7 +54,7 @@ public interface ShaclValidator {
 
     /**
      * Does the node within the data conform to the shapes?
-     * This operation only checks the data is conformant or not - it does not genberate a complete report.
+     * This operation only checks the data is conformant or not - it does not generate a complete report.
      * @see #validate(Shapes, Graph, Node)
      */
     public boolean conforms(Shapes shapes, Graph data, Node node);
