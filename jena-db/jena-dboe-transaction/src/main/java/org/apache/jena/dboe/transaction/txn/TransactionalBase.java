@@ -261,6 +261,7 @@ public class TransactionalBase implements TransactionalSystem {
                 // Can throw an exception on begin(W)...end().
                 txn.end();
             } finally {
+                // Makes this "call txn.end" once-only.
                 theTxn.set(null);
                 theTxn.remove();
             }
