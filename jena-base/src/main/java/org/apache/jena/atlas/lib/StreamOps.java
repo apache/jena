@@ -66,7 +66,11 @@ public class StreamOps {
      * and then returns a new stream of the same elements.
      */
     public static <X> Stream<X> print(Stream<X> stream) {
-        stream = stream.map(item -> { System.out.println(item); return item; });
+        return print(System.out, stream);
+    }
+
+    public static <X> Stream<X> print(PrintStream out, Stream<X> stream) {
+        stream = stream.map(item -> { out.println(item); return item; });
         return toList(stream).stream();
     }
 

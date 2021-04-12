@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * TDB2 uses a hierarchical structure to manage on disk.
  * <p>
  * If in-memory (non-scalable, not-performant, perfect simulation for functionality using a RAM disk, for testing mainly),
- * then the switchable layer is just a covenience. DatasetGrapOps such as {@link #compact}
+ * then the switchable layer is just a convenience. DatasetGrapOps such as {@link #compact}
  * and {@link #backup} do not apply.
  * <p>
  * Directory and files on disk:
