@@ -705,7 +705,6 @@ public class TransactionCoordinator {
     /** Signal that the transaction has finished. */
     /*package*/ void completed(Transaction transaction) {
         finishActiveTransaction(transaction);
-        journal.reset();
         notifyEnd(transaction);
     }
 
