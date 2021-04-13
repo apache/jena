@@ -77,7 +77,7 @@ public class TransactionCoordinator {
 
     private final ComponentGroup components = new ComponentGroup();
     private final List<TransactionListener> listeners = new ArrayList<>();
-    
+
     // Components
     private List<ShutdownHook> shutdownHooks;
     private TxnIdGenerator txnIdGenerator = TxnIdFactory.txnIdGenSimple;
@@ -173,7 +173,7 @@ public class TransactionCoordinator {
         listeners.remove(listener);
         return this;
     }
-    
+
     /**
      * Perform modification of this {@code TransactionCoordiator} after it has been
      * started.
@@ -197,11 +197,11 @@ public class TransactionCoordinator {
         }
     }
 
-    /** Call the action for each listener */ 
+    /** Call the action for each listener */
     private void listeners(Consumer<TransactionListener> action) {
         listeners.forEach(x->action.accept(x));
     }
-    
+
     /**
      * Add a shutdown hook. Shutdown is not guaranteed to be called
      * and hence hooks may not get called.
@@ -315,7 +315,7 @@ public class TransactionCoordinator {
     public void shutdown() {
         shutdown(false);
     }
-    
+
     public void shutdown(boolean silent) {
         if ( coordinatorLock == null )
             return;
@@ -612,7 +612,7 @@ public class TransactionCoordinator {
         // by the transaction system around it. e.g. TransactionalBase.
         if ( transaction.getTxnType() == TxnType.READ )
             throw new TransactionException("promote: can't promote a READ transaction");
-        
+
         notifyPromoteStart(transaction);
         boolean b = promoteTxn$(transaction, readCommittedPromotion);
         notifyPromoteFinish(transaction);
@@ -705,12 +705,11 @@ public class TransactionCoordinator {
     /** Signal that the transaction has finished. */
     /*package*/ void completed(Transaction transaction) {
         finishActiveTransaction(transaction);
-        journal.reset();
         notifyEnd(transaction);
     }
 
-    // Internally, an APi call "commit" is "prepare then commit". 
-    
+    // Internally, an API call "commit" is "prepare then commit".
+
     /*package*/ void executePrepare(Transaction transaction) {
         // Do here because it needs access to the journal.
         notifyPrepareStart(transaction);
@@ -726,11 +725,12 @@ public class TransactionCoordinator {
 
     /*package*/ void executeCommit(Transaction transaction, Runnable commit, Runnable finish, Runnable sysabort) {
         notifyCommitStart(transaction);
-        if ( transaction.getMode() == ReadWrite.READ ) {
+        if ( transaction.isReadTxn() ) {
             finish.run();
             notifyCommitFinish(transaction);
             return;
         }
+        // Writer
         journal.startWrite();
         try {
             executeCommitWriter(transaction, commit, finish, sysabort);
@@ -746,16 +746,11 @@ public class TransactionCoordinator {
     private void executeCommitWriter(Transaction transaction, Runnable commit, Runnable finish, Runnable sysabort) {
         synchronized(coordinatorLock) {
             try {
-                // Simulate a Thread.interrupt during I/O.
-//                if ( true )
-//                    throw new FileException(new ClosedByInterruptException());
-
                 // *** COMMIT POINT
                 journal.writeJournal(JournalEntry.COMMIT);
                 journal.sync();
                 // *** COMMIT POINT
             }
-            // catch (ClosedByInterruptException ex) {}
             // Some low level system error - probably a sign of something serious like disk error.
             catch(FileException ex)  {
                 if ( ex.getCause() instanceof ClosedByInterruptException ) {
@@ -937,7 +932,7 @@ public class TransactionCoordinator {
             releaseWriterLock();
     }
 
-    private void notifyAbortStart(Transaction transaction) { 
+    private void notifyAbortStart(Transaction transaction) {
         listeners(x->x.notifyAbortStart(transaction));
     }
 
