@@ -152,15 +152,26 @@ public class TestSolverTDB {
     }
 
     private static ResultSet exec(String pattern) {
-        Op op = SSE.parseOp(pattern, pmap);
+        Op op1 = SSE.parseOp(pattern, pmap);
         List<Var> vars = new ArrayList<>();
-        vars.addAll(OpVars.visibleVars(op));
-        // op = Algebra.toQuadForm(op);
-        QueryIterator qIter = Algebra.exec(op, dataset.asDatasetGraph());
-        // Will go via the StageGeneratorDirectTDB for TDB2
-        // QueryIterator qIter = Algebra.exec(op,
-        // dataset.asDatasetGraph().getDefaultGraph());
-        return ResultSetFactory.create(qIter, Var.varNames(vars));
+        vars.addAll(OpVars.visibleVars(op1));
+
+        Op op2 = Algebra.toQuadForm(op1);
+
+        // Execute in triples and quad forms.
+        QueryIterator qIter1 = Algebra.exec(op1, dataset.asDatasetGraph());
+        ResultSet rs1 = ResultSetFactory.create(qIter1, Var.varNames(vars));
+
+        QueryIterator qIter2 = Algebra.exec(op2, dataset.asDatasetGraph());
+        ResultSet rs2 = ResultSetFactory.create(qIter2, Var.varNames(vars));
+
+        ResultSetRewindable rsw1 = ResultSetFactory.makeRewindable(rs1);
+        ResultSetRewindable rsw2 = ResultSetFactory.makeRewindable(rs2);
+
+        same(rsw1, rsw2, true);
+        rsw1.reset();
+        rsw2.reset();
+        return rsw1;
     }
 
     private static List<Binding> toList(QueryIterator qIter) {

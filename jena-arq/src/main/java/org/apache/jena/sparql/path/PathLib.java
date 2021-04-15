@@ -156,7 +156,7 @@ public class PathLib
             Node n = iter.next() ;
             results.add(BindingFactory.binding(binding, var, n)) ;
         }
-        return new QueryIterPlainWrapper(results.iterator(), execCxt) ;
+        return QueryIterPlainWrapper.create(results.iterator(), execCxt) ;
     }
 
     // Subject and object are nodes.

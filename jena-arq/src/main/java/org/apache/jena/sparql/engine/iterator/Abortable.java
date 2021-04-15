@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,6 +16,6 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb.solver;
+package org.apache.jena.sparql.engine.iterator;
 
-interface Abortable { public void abort() ; }
+public interface Abortable { public void abort(); }

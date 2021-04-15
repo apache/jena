@@ -30,7 +30,8 @@ public class TestSettings {
 
     @Test
     public void setting_RDFstar_fastpath() {
-        assertTrue(org.apache.jena.sparql.engine.iterator.RX.DATAPATH);
+        assertTrue(org.apache.jena.sparql.engine.main.solver.SolverRX3.DATAPATH);
+        assertTrue(org.apache.jena.sparql.engine.main.solver.SolverRX4.DATAPATH);
     }
 
     @Test

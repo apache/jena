@@ -40,7 +40,7 @@ public class TableN extends TableBase {
     }
 
     /**
-     * Build table from an iterator. 
+     * Build table from an iterator.
      * This operation reads the QueryIterator to
      * completion when creating the table.
      */
@@ -88,7 +88,7 @@ public class TableN extends TableBase {
 
     @Override
     public QueryIterator iterator(ExecutionContext execCxt) {
-        return new QueryIterPlainWrapper(rows.iterator(), execCxt) ;
+        return QueryIterPlainWrapper.create(rows.iterator(), execCxt) ;
     }
 
     @Override

@@ -18,6 +18,8 @@
 
 package org.apache.jena.tdb2.solver;
 
+import static org.apache.jena.sparql.engine.main.solver.SolverLib.makeAbortable;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -33,7 +35,8 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper;
+import org.apache.jena.sparql.engine.iterator.Abortable;
+import org.apache.jena.sparql.engine.iterator.QueryIterAbortable;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.tdb2.store.GraphTDB;
@@ -41,8 +44,11 @@ import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
 
-/** Entry to the basic pattern solver for TDB2 */
-public class Solver {
+/**
+ * Entry to the basic pattern solver for TDB2.
+ * {@link SolverRX} is the single stage and include RDF-star.
+ */
+public class PatternMatchTDB2 {
 
     /** Non-reordering execution of a basic graph pattern, given an iterator of bindings as input */
     public static QueryIterator execute(GraphTDB graph, BasicPattern pattern,
@@ -93,20 +99,7 @@ public class Solver {
 
         // Convert from a QueryIterator (Bindings of Var/Node) to BindingNodeId
         NodeTable nodeTable = nodeTupleTable.getNodeTable();
-
-        if ( false ) {
-            List<Binding> x = Iter.toList(input);
-            System.out.println(x);
-            input = new QueryIterPlainWrapper(x.iterator());
-        }
-
-        Iterator<BindingNodeId> chain = Iter.map(input, SolverLib.convFromBinding(nodeTable));
-        if ( false ) {
-            List<BindingNodeId> x = Iter.toList(chain);
-            System.out.println(x);
-            chain = x.iterator();
-        }
-
+        Iterator<BindingNodeId> chain = Iter.map(input, SolverLibTDB.convFromBinding(nodeTable));
         List<Abortable> killList = new ArrayList<>();
 
         for ( Triple triple : triples ) {
@@ -123,22 +116,14 @@ public class Solver {
             // RDF-star SA
             chain = matchQuadPattern(chain, graphNode, triple, nodeTupleTable, patternTuple, anyGraph, filter, execCxt);
 
-            chain = SolverLib.makeAbortable(chain, killList);
+            chain = makeAbortable(chain, killList);
         }
 
-        // DEBUG POINT
-        if ( false ) {
-            if ( chain.hasNext() )
-                chain = Iter.debug(chain);
-            else
-                System.out.println("No results");
-        }
+        Iterator<Binding> iterBinding = SolverLibTDB.convertToNodes(chain, nodeTable);
 
-        Iterator<Binding> iterBinding = SolverLib.convertToNodes(chain, nodeTable);
-
-        // "input" will be closed by QueryIterTDB but is otherwise unused.
+        // "input" will be closed by QueryIterAbortable but is otherwise unused.
         // "killList" will be aborted on timeout.
-        return new QueryIterTDB(iterBinding, killList, input, execCxt);
+        return new QueryIterAbortable(iterBinding, killList, input, execCxt);
     }
 
     private static Iterator<BindingNodeId> matchQuadPattern(Iterator<BindingNodeId> chain, Node graphNode, Triple tPattern,

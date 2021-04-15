@@ -18,23 +18,24 @@
 
 package org.apache.jena.tdb2.solver;
 
+import static org.apache.jena.sparql.engine.main.solver.SolverLib.makeAbortable;
+
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.iterator.IteratorWrapper;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.atlas.lib.tuple.TupleFactory;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
-import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
+import org.apache.jena.sparql.engine.iterator.Abortable;
+import org.apache.jena.sparql.engine.iterator.QueryIterAbortable;
 import org.apache.jena.sparql.engine.iterator.QueryIterNullIterator;
 import org.apache.jena.tdb2.lib.NodeLib;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
@@ -46,9 +47,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Utilities used within the TDB BGP solver : local TDB store */
-public class SolverLib
+public class SolverLibTDB
 {
-    private static Logger log = LoggerFactory.getLogger(SolverLib.class);
+    private static Logger log = LoggerFactory.getLogger(SolverLibTDB.class);
 
     static Iterator<BindingNodeId> convertToIds(Iterator<Binding> iterBindings, NodeTable nodeTable)
     { return Iter.map(iterBindings, convFromBinding(nodeTable)); }
@@ -58,60 +59,6 @@ public class SolverLib
      */
     static Iterator<Binding> convertToNodes(Iterator<BindingNodeId> iterBindingIds, NodeTable nodeTable)
     { return Iter.map(iterBindingIds, bindingNodeIds -> convToBinding(bindingNodeIds, nodeTable)); }
-
-    /** Create an abortable iterator, storing it in the killList.
-     *  Just return the input iterator if kilList is null.
-     */
-    static <T> Iterator<T> makeAbortable(Iterator<T> iter, List<Abortable> killList)
-    {
-        if ( killList == null )
-            return iter;
-        IterAbortable<T> k = new IterAbortable<>(iter);
-        killList.add(k);
-        return k;
-    }
-
-    /**
-     * Iterator that adds an abort operation which can be called at any time,
-     * including from another thread, and causes the iterator to throw an exception
-     * when next touched (hasNext, next).
-     */
-    static class IterAbortable<T> extends IteratorWrapper<T> implements Abortable {
-        volatile boolean abortFlag = false;
-
-        public IterAbortable(Iterator<T> iterator) {
-            super(iterator);
-        }
-
-        /** Can call asynchronously at anytime */
-        @Override
-        public void abort() {
-            abortFlag = true;
-        }
-
-        @Override
-        public boolean hasNext() {
-            if ( abortFlag )
-                throw new QueryCancelledException();
-            return iterator.hasNext();
-        }
-
-        @Override
-        public T next() {
-            if ( abortFlag )
-                throw new QueryCancelledException();
-            return iterator.next();
-        }
-    }
-
-    /**
-     * Test whether a triple has an triple term as one of its components.
-     */
-    static boolean tripleHasNodeTriple(Triple triple) {
-        return triple.getSubject().isNodeTriple()
-               /*|| triple.getPredicate().isNodeTriple()*/
-               || triple.getObject().isNodeTriple();
-    }
 
     static Binding convToBinding(BindingNodeId bindingNodeIds, NodeTable nodeTable) {
         if ( true )
@@ -131,11 +78,11 @@ public class SolverLib
 
     // Transform : Binding ==> BindingNodeId
     static Iterator<BindingNodeId> convFromBinding(Iterator<Binding> input, NodeTable nodeTable) {
-        return Iter.map(input, SolverLib.convFromBinding(nodeTable));
+        return Iter.map(input, SolverLibTDB.convFromBinding(nodeTable));
     }
 
     static Function<Binding, BindingNodeId> convFromBinding(final NodeTable nodeTable) {
-        return binding -> SolverLib.convert(binding, nodeTable);
+        return binding -> SolverLibTDB.convert(binding, nodeTable);
     }
 
     /** Binding {@literal ->} BindingNodeId, given a NodeTable */
@@ -214,8 +161,7 @@ public class SolverLib
 
         final Var var = Var.alloc(graphNode);
         Iterator<Binding> iterBinding = Iter.map(iter4, node -> BindingFactory.binding(var, node));
-        // Not abortable.
-        return new QueryIterTDB(iterBinding, killList, input, execCxt);
+        return new QueryIterAbortable(iterBinding, killList, input, execCxt);
     }
 
     static Set<NodeId> convertToNodeIds(Collection<Node> nodes, DatasetGraphTDB dataset)

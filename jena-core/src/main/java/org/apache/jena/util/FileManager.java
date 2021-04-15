@@ -158,6 +158,7 @@ public interface FileManager {
      * @exception JenaException if there is syntax error in file.
      * @deprecated Use {@code RDFDataMgr}
      */
+    @Deprecated
     default Model readModel(Model model, String filenameOrURI) {
         return readModelInternal(model, filenameOrURI);
     }

@@ -18,10 +18,7 @@
 package org.apache.jena.atlas.lib;
 
 import java.io.PrintStream;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -78,6 +75,20 @@ public class StreamOps {
         String prefix = (leader==null) ? "" : leader;
         stream = stream.map(item -> { out.print(prefix); out.println(item); return item; });
         return toList(stream).stream();
+    }
+
+
+    /** Print immediate, noting empty streams */
+    public static <X> Stream<X> debug(Stream<X> stream) {
+        List<X> elts = StreamOps.toList(stream);
+        if ( elts.isEmpty() )
+            System.out.println("[empty]");
+        else {
+            StringJoiner sj = new StringJoiner("\n  ", "[\n  ", "\n]");
+            elts.forEach(b->sj.add(b.toString()));
+            System.out.println(sj.toString());
+        }
+        return elts.stream();
     }
 
 }

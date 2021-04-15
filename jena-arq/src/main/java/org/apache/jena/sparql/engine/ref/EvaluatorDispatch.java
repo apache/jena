@@ -70,7 +70,7 @@ public class EvaluatorDispatch implements OpVisitor
     @Override
     public void visit(OpQuadPattern quadPattern)
     {
-        push(Eval.evalQuadPattern(quadPattern, evaluator)) ;
+        push(RefEval.evalQuadPattern(quadPattern, evaluator)) ;
     }
 
     @Override
@@ -210,7 +210,7 @@ public class EvaluatorDispatch implements OpVisitor
     @Override
     public void visit(OpGraph opGraph)
     {
-        push(Eval.evalGraph(opGraph, evaluator)) ;
+        push(RefEval.evalGraph(opGraph, evaluator)) ;
     }
 
     @Override
@@ -224,7 +224,7 @@ public class EvaluatorDispatch implements OpVisitor
     @Override
     public void visit(OpDatasetNames dsNames)
     {
-        push(Eval.evalDS(dsNames, evaluator)) ;
+        push(RefEval.evalDS(dsNames, evaluator)) ;
     }
 
     @Override

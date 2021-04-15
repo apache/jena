@@ -28,11 +28,16 @@ import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
+import org.apache.jena.sparql.engine.main.QC;
 import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.util.iterator.ClosableIterator ;
 import org.apache.jena.util.iterator.NiceIterator ;
 
-/** Match a single triple pattern */
+/**
+ * Match a single triple pattern, no RDF-star &lt;&lt;&gt;&gt; with variables.
+ * @deprecated Use {@link QC#execute(QueryIterator, Triple, ExecutionContext)}.
+ */
+@Deprecated
 public class QueryIterTriplePattern extends QueryIterRepeatApply
 {
     private final Triple pattern ;

@@ -71,7 +71,7 @@ class QueryIteratorCopy extends QueryIteratorBase
     
     public QueryIterator copy()
     {
-        return new QueryIterPlainWrapper(elements.iterator()) ;
+        return QueryIterPlainWrapper.create(elements.iterator()) ;
     }
 
     @Override

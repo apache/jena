@@ -24,7 +24,7 @@
   <display-name>Apache Jena Fuseki Server</display-name>
 
   <listener>
-    <!-- Basic server initialiation, including logging -->
+    <!-- Basic server initialization, including logging -->
     <listener-class>org.apache.jena.fuseki.webapp.FusekiServerEnvironmentInit</listener-class>
   </listener>
 
@@ -99,7 +99,7 @@
     <param-value>log4j2.properties</param-value>
   </context-param>
   
-  <!-- Fuseki datatset serviced calls -->
+  <!-- Fuseki dataset serviced calls -->
   <filter>
     <filter-name>Fuseki</filter-name>
     <filter-class>org.apache.jena.fuseki.servlets.FusekiFilter</filter-class>

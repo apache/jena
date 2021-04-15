@@ -34,10 +34,10 @@ import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 public class BIOInput
 {
     private static Model m = ModelFactory.createDefaultModel() ;
-    
+
     public static ResultSet fromBIO(InputStream input)
     {
-        // Scan the stream for VARS and accumulate the total variables. 
+        // Scan the stream for VARS and accumulate the total variables.
         // Trade off of guessing first line is all the VARS and coping with
         // anything possible.  -> Cope with anything possible.
         BindingInputStream bin = new BindingInputStream(input) ;
@@ -53,7 +53,7 @@ public class BIOInput
                     vars.add(v) ;
             }
         }
-        QueryIterator qIter = new QueryIterPlainWrapper(bindings.iterator()) ;
+        QueryIterator qIter = QueryIterPlainWrapper.create(bindings.iterator()) ;
         return new ResultSetStream(Var.varNames(vars), m, qIter) ;
     }
 }

@@ -206,8 +206,8 @@ public class OpExecutor
         if (false) {
             // If needed, applies to OpDiff and OpLeftJoin as well.
             List<Binding> a = all(input) ;
-            QueryIterator qIter1 = new QueryIterPlainWrapper(a.iterator(), execCxt) ;
-            QueryIterator qIter2 = new QueryIterPlainWrapper(a.iterator(), execCxt) ;
+            QueryIterator qIter1 = QueryIterPlainWrapper.create(a.iterator(), execCxt) ;
+            QueryIterator qIter2 = QueryIterPlainWrapper.create(a.iterator(), execCxt) ;
 
             QueryIterator left = exec(opJoin.getLeft(), qIter1) ;
             QueryIterator right = exec(opJoin.getRight(), qIter2) ;
@@ -465,7 +465,7 @@ public class OpExecutor
             System.out.println(b) ;
         }
 
-        return new QueryIterPlainWrapper(x.iterator(), execCxt) ;
+        return QueryIterPlainWrapper.create(x.iterator(), execCxt) ;
     }
 
     private static List<Binding> all(QueryIterator input) {

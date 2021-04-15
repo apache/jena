@@ -34,36 +34,31 @@ import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.util.DateTimeStruct ;
 
-/** Operations to convert the given Node to a normalized form */ 
+/** Operations to convert the given Node to a normalized form */
 class NormalizeValue
 {
-    /** Handler that makes no changes and returns the input node */ 
+    /** Handler that makes no changes and returns the input node */
     private static DatatypeHandler identity = (Node node, String lexicalForm, RDFDatatype datatype) -> node ;
-    
-    // What about whitespace for 
-    //   hexBinary, base64Binary.
-    
-    // Auxillary class of datatype handers, placed here to avoid static initialization
-    // ordering problems (if in CanonicalizeLiteral, all this low-level machinery would
-    // need to be in the file before the external API, which I consider bad style).  It
-    // is a source of obscure bugs.
 
-    // See Normalizevalue2 for "faster" versions (less parsing overhead). 
-    
+    // What about whitespace for
+    //   hexBinary, base64Binary.
+
+    // See Normalizevalue2 for "faster" versions (less parsing overhead).
+
     static DatatypeHandler dtBoolean = (Node node, String lexicalForm, RDFDatatype datatype) -> {
         if ( lexicalForm.equals("1") ) return NodeConst.nodeTrue ;
         if ( lexicalForm.equals("0") ) return NodeConst.nodeFalse ;
         return node ;
     } ;
-    
+
     static DatatypeHandler dtAnyDateTime = (Node node, String lexicalForm, RDFDatatype datatype) -> {
-        // Fast test: 
+        // Fast test:
         if ( lexicalForm.indexOf('.') < 0 )
             // No fractional seconds.
             return node ;
 
         // Could use XMLGregorianCalendar but still need to canonicalize fractional seconds.
-        // Record for history. 
+        // Record for history.
         if ( false )
         {
             XMLGregorianCalendar xcal = NodeValue.xmlDatatypeFactory.newXMLGregorianCalendar(lexicalForm) ;
@@ -72,7 +67,7 @@ class NormalizeValue
                 if ( xcal.getFractionalSecond().compareTo(BigDecimal.ZERO) == 0 )
                     xcal.setFractionalSecond(null) ;
                 else
-                    // stripTrailingZeros does the right thing on fractional values. 
+                    // stripTrailingZeros does the right thing on fractional values.
                     xcal.setFractionalSecond(xcal.getFractionalSecond().stripTrailingZeros()) ;
             }
             String lex2 = xcal.toXMLFormat() ;
@@ -95,17 +90,17 @@ class NormalizeValue
 
         if ( i == idx )
             // All trailings zeros, drop the '.' as well.
-            dts.second = dts.second.substring(0, idx) ;    
+            dts.second = dts.second.substring(0, idx) ;
         else
             dts.second = dts.second.substring(0, i+1) ;
 
         String lex2 = dts.toString() ;
-        // Can't happen.  We munged dts.second. 
+        // Can't happen.  We munged dts.second.
 //            if ( lex2.equals(lexicalForm) )
 //                return node ;
         return NodeFactory.createLiteral(lex2, datatype) ;
     } ;
-    
+
     static DatatypeHandler dtDateTime = dtAnyDateTime ;
 
     static DatatypeHandler dtInteger = (Node node, String lexicalForm, RDFDatatype datatype) -> {
@@ -142,7 +137,7 @@ class NormalizeValue
 
         // XSD canonical is "1"
         // but in Turtle the ".0" is need for short print form.
-        
+
         // Ensure there is a "."
         //if ( bd.scale() <= 0 )
         if ( lex2.indexOf('.') == -1 )
@@ -153,10 +148,10 @@ class NormalizeValue
         return NodeFactory.createLiteral(lex2, datatype) ;
 
     } ;
-    
+
     static private DecimalFormatSymbols decimalNumberSymbols = new DecimalFormatSymbols(Locale.ROOT) ;
     static private NumberFormat fmtFloatingPoint = new DecimalFormat("0.0#################E0", decimalNumberSymbols) ;
-    
+
     /* http://www.w3.org/TR/xmlschema-2/#double-canonical-representation */
     /*
      * The canonical representation for double is defined by prohibiting certain
@@ -171,7 +166,7 @@ class NormalizeValue
      * single digit to the right of the decimal point unless the value being
      * represented is zero. The canonical representation for zero is 0.0E0.
      */
-    
+
     static DatatypeHandler dtDouble = (Node node, String lexicalForm, RDFDatatype datatype) -> {
         double d = Double.parseDouble(lexicalForm) ;
         String lex2 = fmtFloatingPoint.format(d) ;
@@ -179,7 +174,7 @@ class NormalizeValue
             return node ;
         return NodeFactory.createLiteral(lex2, datatype) ;
     } ;
-    
+
     static DatatypeHandler dtFloat = (Node node, String lexicalForm, RDFDatatype datatype) -> {
         float f = Float.parseFloat(lexicalForm) ;
         String lex2 = fmtFloatingPoint.format(f) ;
@@ -190,19 +185,19 @@ class NormalizeValue
 
     /** Convert xsd:string to simple literal */
     static DatatypeHandler dtXSDString = (Node node, String lexicalForm, RDFDatatype datatype) -> NodeFactory.createLiteral(lexicalForm) ;
-    
+
     /** Convert simple literal to xsd:string */
     static DatatypeHandler dtSimpleLiteral = (Node node, String lexicalForm, RDFDatatype datatype) -> NodeFactory.createLiteral(lexicalForm, datatype) ;
 
     /** rdf:langString */
     static DatatypeHandler dtLangString = identity ;
-    
+
     static DatatypeHandler dtPlainLiteral = (Node node, String lexicalForm, RDFDatatype datatype) -> {
         int idx = lexicalForm.lastIndexOf('@') ;
         if ( idx == -1 )
             // Bad rdf:PlainLiteral
             return node ;
-            
+
         String lex = lexicalForm.substring(0, idx) ;
         if ( idx == lexicalForm.length()-1 )
             return NodeFactory.createLiteral(lex) ;

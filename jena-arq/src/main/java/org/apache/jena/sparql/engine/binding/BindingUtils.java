@@ -27,6 +27,7 @@ import org.apache.jena.sparql.core.Var;
 public class BindingUtils {
     /** Convert a query solution to a binding
      * @deprecated Use {@link BindingLib#asBinding(QuerySolution)} instead*/
+    @Deprecated
     public static Binding asBinding(QuerySolution qSolution) {
         return BindingLib.asBinding(qSolution);
     }
@@ -34,6 +35,7 @@ public class BindingUtils {
     /**
      * @deprecated Use {@link BindingLib#toBinding(QuerySolution)} instead
      */
+    @Deprecated
     public static Binding toBinding(QuerySolution qSolution) {
         return BindingLib.toBinding(qSolution);
     }

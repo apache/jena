@@ -131,6 +131,7 @@ public class LocationMapper
      * Create a LocationMapper from a config file 
      * @deprecated Use {@code StreamManager} and {@code LocationMapper} from {@code org.apache.jena.riot.system.stream}.
      */
+    @Deprecated
     public LocationMapper(String config)
     {
         initFromPath(config, true) ;

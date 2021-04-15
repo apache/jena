@@ -81,18 +81,26 @@ public class TestNodeFunctions {
         assertFalse(NodeFunctions.rdfTermEquals(n1, n2)) ;
     }
 
-    @Test(expected=ExprEvalException.class)
-    public void testRDFtermEquals3() {
-        // Unextended - no language tag
-        Node n1 = NodeFactory.createLiteral("xyz") ;
-        Node n2 = NodeFactory.createLiteral("xyz", "en") ;
-        NodeFunctions.rdfTermEquals(n1, n2) ;
-    }
-
     @Test public void testRDFtermEquals2() {
         Node n1 = NodeFactory.createLiteral("xyz", "en") ;
         Node n2 = NodeFactory.createLiteral("xyz", "EN") ;
         assertTrue(NodeFunctions.rdfTermEquals(n1, n2)) ;
+    }
+
+    @Test(expected=ExprEvalException.class)
+    public void testRDFtermEquals3() {
+        // Unextended - not known to be same (no language tag support).
+        Node n1 = NodeFactory.createLiteral("xyz") ;
+        Node n2 = NodeFactory.createLiteral("xyz", "en") ;
+        NodeFunctions.rdfTermEquals(n1, n2);
+    }
+
+    @Test(expected=ExprEvalException.class)
+    public void testRDFtermEquals4() {
+        // Unextended - not known to be same.
+        Node n1 = NodeFactory.createLiteral("123", XSDDatatype.XSDinteger) ;
+        Node n2 = NodeFactory.createLiteral("456", XSDDatatype.XSDinteger) ;
+        NodeFunctions.rdfTermEquals(n1, n2);
     }
 
     @Test public void testStr1() {

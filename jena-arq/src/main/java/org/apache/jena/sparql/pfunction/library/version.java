@@ -68,7 +68,7 @@ public class version extends PropertyFunctionEval
                 builder.add(Var.alloc(obj), version) ;
             results.add(builder.build()) ;
         }
-        return new QueryIterPlainWrapper(results.iterator(), execCxt) ;
+        return QueryIterPlainWrapper.create(results.iterator(), execCxt) ;
     }
 
     private boolean isSameOrVar(Node var, Node value)

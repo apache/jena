@@ -27,10 +27,8 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.impl.LiteralLabel ;
-import org.apache.jena.query.QueryParseException ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -55,8 +53,6 @@ public class NodeFactoryExtra {
     public static Node parseNode(String nodeString) {
         return parseNode(nodeString, prefixMappingDefault) ;
     }
-
-    private static PrefixMap pmapEmpty = PrefixMapFactory.create() ;
 
     /**
      * Parse a string into a node.
@@ -87,10 +83,6 @@ public class NodeFactoryExtra {
                 throw new RiotException("Space(s) in  IRI: " + nodeString) ;
         }
         return node ;
-    }
-
-    private static QueryParseException makeException(String msg, int line, int column) {
-        return new QueryParseException(msg, line, column) ;
     }
 
     /** Create a literal Node, when the datatype, if given, is a string */
