@@ -18,6 +18,9 @@
 
 package org.apache.jena.graph;
 
+import java.util.stream.Stream;
+
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.impl.GraphBase ;
 import org.apache.jena.shared.AddDeniedException ;
 import org.apache.jena.shared.DeleteDeniedException ;
@@ -93,11 +96,27 @@ public interface Graph
 
 	/** Returns an iterator over Triples matching a pattern.
      *
-     * @return an iterator of all triples in this graph
+     * @return an iterator of triples in this graph matching the pattern.
 	 */
 	ExtendedIterator<Triple> find(Node s, Node p, Node o);
 
-    /** Returns an iterator over all Triples in the graph.
+	/** Returns a {@link Stream} of Triples matching a pattern.
+	 *
+	 * @return a stream  of triples in this graph matching the pattern.
+	 */
+	default Stream<Triple> stream(Node s, Node p, Node o) {
+	    return Iter.asStream(find(s,p,o));
+	}
+
+	/** Returns a {@link Stream} of all triples in the graph.
+	 *
+	 * @return a stream  of triples in this graph.
+	 */
+	default Stream<Triple> stream() {
+	    return stream(Node.ANY, Node.ANY, Node.ANY);
+	}
+
+	/** Returns an iterator over all Triples in the graph.
      * Equivalent to {@code find(Node.ANY, Node.ANY, Node.ANY)}
      *
      * @return an iterator of all triples in this graph
