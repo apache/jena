@@ -18,6 +18,7 @@
 
 package org.apache.jena.graph;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.apache.jena.atlas.iterator.Iter;
@@ -79,12 +80,38 @@ public interface Graph
     void add( Triple t ) throws AddDeniedException;
 
     /**
+     * Add the triple t (if possible) to the set belonging to this graph
+     *
+     * @param t the triple to add to the graph
+     * @throws AddDeniedException if the triple cannot be added
+     */
+    default void add(Node s, Node p, Node o) throws AddDeniedException {
+        Objects.requireNonNull(s, "Subject must not be null");
+        Objects.requireNonNull(p, "Predicate must not be null");
+        Objects.requireNonNull(o, "Object must not be null");
+        add(Triple.create(s, p, o));
+    }
+
+    /**
         Delete the triple t (if possible) from the set belonging to this graph
 
         @param  t the triple to delete to the graph
         @throws DeleteDeniedException if the triple cannot be removed
     */
 	void delete(Triple t) throws DeleteDeniedException;
+
+    /**
+     * Add the triple t (if possible) to the set belonging to this graph
+     *
+     * @param t the triple to add to the graph
+     * @throws AddDeniedException if the triple cannot be added
+     */
+    default void delete(Node s, Node p, Node o) throws DeleteDeniedException {
+        Objects.requireNonNull(s, "Subject must not be null");
+        Objects.requireNonNull(p, "Predicate must not be null");
+        Objects.requireNonNull(o, "Object must not be null");
+        delete(Triple.create(s, p, o));
+    }
 
 	/**
         Returns an iterator over all the Triples that match the triple pattern.
