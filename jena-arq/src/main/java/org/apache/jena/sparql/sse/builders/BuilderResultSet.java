@@ -51,7 +51,7 @@ public class BuilderResultSet {
             bindings.add(b);
         }
 
-        QueryIterator qIter = new QueryIterPlainWrapper(bindings.listIterator());
+        QueryIterator qIter = QueryIterPlainWrapper.create(bindings.listIterator());
         return new ResultSetStream(Var.varNames(vars), null, qIter);
     }
 }

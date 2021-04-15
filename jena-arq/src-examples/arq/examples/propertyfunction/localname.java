@@ -126,7 +126,7 @@ public class localname extends PFuncSimple
             slot(bindings, input, t.getPredicate(), subjVar, nodeLocalname) ;
             slot(bindings, input, t.getObject(),    subjVar, nodeLocalname) ;
         }
-        return new QueryIterPlainWrapper(bindings.iterator(), execCxt) ;
+        return QueryIterPlainWrapper.create(bindings.iterator(), execCxt) ;
     }
 
     private void slot(Collection<Binding> bindings, Binding input, Node node, Var subjVar, Node nodeLocalname)

@@ -20,48 +20,42 @@ package org.apache.jena.sparql.engine.main;
 
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.graph.Graph ;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.core.Substitute ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.iterator.QueryIterBlockTriples ;
 import org.apache.jena.sparql.engine.iterator.QueryIterPeek ;
+import org.apache.jena.sparql.engine.main.solver.PatternMatchData;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderProc ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.sparql.mgt.Explain ;
 
-/** Generic - always works - StageGenerator */
+/**
+ * Generic - always works - StageGenerator.
+ */
 public class StageGeneratorGeneric implements StageGenerator {
-    // Off - see StageGeneratorGenericStar for RDF-star
-    private StageGeneratorGeneric() {}
+    public StageGeneratorGeneric() {}
     private static final ReorderTransformation reorderFixed = ReorderLib.fixed() ;
-    
+
     @Override
     public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt) {
         if ( input == null )
             Log.error(this, "Null input to " + Lib.classShortName(this.getClass())) ;
 
-        Graph graph = execCxt.getActiveGraph() ;
-
         // Choose reorder transformation and execution strategy.
-
         ReorderTransformation reorder = reorderFixed ;
-        StageGenerator executor = StageBuilder.executeInline ;
-
-        return execute(pattern, reorder, executor, input, execCxt) ;
+        return execute(pattern, reorder, input, execCxt) ;
     }
 
-    protected QueryIterator execute(BasicPattern pattern, ReorderTransformation reorder, StageGenerator execution,
-                                    QueryIterator input, ExecutionContext execCxt)
-    {
+    protected QueryIterator execute(BasicPattern pattern, ReorderTransformation reorder,
+                                    QueryIterator input, ExecutionContext execCxt) {
         Explain.explain(pattern, execCxt.getContext()) ;
 
         if ( ! input.hasNext() )
             return input ;
-        
+
         if ( reorder != null && pattern.size() >= 2 ) {
             // If pattern size is 0 or 1, nothing to do.
             BasicPattern bgp2 = pattern ;
@@ -78,6 +72,6 @@ public class StageGeneratorGeneric implements StageGenerator {
             pattern = reorderProc.reorder(pattern) ;
         }
         Explain.explain("Reorder/generic", pattern, execCxt.getContext()) ;
-        return QueryIterBlockTriples.create(input, pattern, execCxt) ;
+        return PatternMatchData.execute(execCxt.getActiveGraph(), pattern, input, null, execCxt);
     }
 }

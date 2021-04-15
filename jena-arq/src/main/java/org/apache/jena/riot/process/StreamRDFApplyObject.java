@@ -26,6 +26,9 @@ import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFWrapper;
 import org.apache.jena.sparql.core.Quad;
 
+/**
+ * Apply a function to the object of triple/quads.
+ */
 public class StreamRDFApplyObject extends StreamRDFWrapper {
     private final Function<Node, Node> function;
 
@@ -33,14 +36,13 @@ public class StreamRDFApplyObject extends StreamRDFWrapper {
         super(other);
         this.function = function;
     }
-    
+
     @Override
     public void triple(Triple triple) {
         Node obj = triple.getObject();
         Node obj2 = function.apply(obj);
-        if ( obj != obj2 ) {
+        if ( obj != obj2 )
             triple = Triple.create(triple.getSubject(), triple.getPredicate(), obj2);
-        }
         super.triple(triple);
     }
 
@@ -48,9 +50,8 @@ public class StreamRDFApplyObject extends StreamRDFWrapper {
     public void quad(Quad quad) {
         Node obj = quad.getObject();
         Node obj2 = function.apply(obj);
-        if ( obj != obj2 ) {
+        if ( obj != obj2 )
             quad = Quad.create(quad.getGraph(), quad.getSubject(), quad.getPredicate(), obj2);
-        }
         super.quad(quad);
     }
 }

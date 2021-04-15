@@ -90,7 +90,7 @@ public class TableJoin
                 // Conditions on left?
                 out.add(bindingLeft) ;
         }
-        return new QueryIterPlainWrapper(out.iterator(), execCxt) ;
+        return QueryIterPlainWrapper.create(out.iterator(), execCxt) ;
     }
     
     private static QueryIterator applyConditions(QueryIterator qIter, ExprList conditions, ExecutionContext execCxt) {

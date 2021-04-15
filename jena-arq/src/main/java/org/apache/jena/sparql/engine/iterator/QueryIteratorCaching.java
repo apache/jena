@@ -28,14 +28,14 @@ import org.apache.jena.sparql.serializer.SerializationContext ;
 
 /** A caching QueryIterator.  On demand, the application can ask for a new
  *  query iterator which will repeat the bindings yielded so far.
- */  
+ */
 
-public 
+public
 class QueryIteratorCaching extends QueryIteratorWrapper
 {
     // Not tracked.
     List<Binding> cache = new ArrayList<>() ;
-    
+
     public QueryIteratorCaching(QueryIterator qIter)
     {
         super(qIter) ;
@@ -52,18 +52,17 @@ class QueryIteratorCaching extends QueryIteratorWrapper
     @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     {}
-    
-    
-    public QueryIteratorCaching createRepeat()
+
+    public QueryIterator createRepeat()
     {
         List<Binding> elements = cache ;
         if ( super.hasNext() )
             // If the iterator isn't finished, copy what we have so far.
             elements = new ArrayList<>(cache) ;
-        
-        return new QueryIteratorCaching(new QueryIterPlainWrapper(elements.iterator(), null)) ;
+
+        return QueryIterPlainWrapper.create(elements.iterator(), null) ;
     }
-    
+
     public static QueryIterator reset(QueryIterator qIter)
     {
         if ( qIter instanceof QueryIteratorCaching )
@@ -71,7 +70,7 @@ class QueryIteratorCaching extends QueryIteratorWrapper
             QueryIteratorCaching cIter = (QueryIteratorCaching)qIter ;
             return cIter.createRepeat() ;
         }
-            
+
         return qIter ;
     }
 }

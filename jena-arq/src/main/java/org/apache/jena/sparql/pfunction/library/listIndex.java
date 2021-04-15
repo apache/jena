@@ -133,6 +133,6 @@ public class listIndex extends ListBaseList {
             Binding b = BindingFactory.binding(binding, varIndex, idx, varMember, member);
             bindings.add(b);
         }
-        return new QueryIterPlainWrapper(bindings.iterator(), execCxt);
+        return QueryIterPlainWrapper.create(bindings.iterator(), execCxt);
     }
 }

@@ -47,11 +47,10 @@ import org.apache.jena.sparql.engine.iterator.QueryIterConcat ;
 import org.apache.jena.sparql.engine.iterator.QueryIterDistinguishedVars ;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import org.apache.jena.sparql.engine.iterator.QueryIterRoot ;
-import org.apache.jena.sparql.engine.main.StageBuilder ;
-import org.apache.jena.sparql.engine.main.StageGenerator ;
+import org.apache.jena.sparql.engine.main.QC;
 
 // Spit out a few of the longer ops.
-public class Eval
+public class RefEval
 {
     public static Table eval(Evaluator evaluator, Op op)
     {
@@ -60,21 +59,21 @@ public class Eval
         Table table = ev.getResult() ;
         return table ;
     }
-    
+
     static Table evalDS(OpDatasetNames opDSN, Evaluator evaluator)
     {
         Node graphNode = opDSN.getGraphNode() ;
         if ( graphNode.isURI() )
         {
             if ( evaluator.getExecContext().getDataset().containsGraph(graphNode) )
-            { return new TableUnit() ; } 
+            { return new TableUnit() ; }
             else
                 // WRONG
             { return new TableEmpty() ; }
         }
 
         if ( ! Var.isVar(graphNode) )
-            throw new ARQInternalErrorException("OpDatasetNames: Not a URI or variable: "+graphNode) ; 
+            throw new ARQInternalErrorException("OpDatasetNames: Not a URI or variable: "+graphNode) ;
 
         DatasetGraph dsg = evaluator.getExecContext().getDataset() ;
         Iterator<Node> iter = dsg.listGraphNodes() ;
@@ -86,15 +85,15 @@ public class Eval
             list.add(b) ;
         }
 
-        QueryIterator qIter = new QueryIterPlainWrapper(list.iterator(), evaluator.getExecContext()) ;
+        QueryIterator qIter = QueryIterPlainWrapper.create(list.iterator(), evaluator.getExecContext()) ;
         return TableFactory.create(qIter) ;
 
     }
-    
+
     static Table evalGraph(OpGraph opGraph, Evaluator evaluator)
     {
         ExecutionContext execCxt = evaluator.getExecContext() ;
-        
+
         if ( ! Var.isVar(opGraph.getNode()) )
         {
             DatasetGraph dsg = execCxt.getDataset() ;
@@ -108,7 +107,7 @@ public class Eval
             Evaluator e2 = EvaluatorFactory.create(execCxt2) ;
             return eval(e2, opGraph.getSubOp()) ;
         }
-        
+
         // Graph node is a variable.
         Var gVar = Var.alloc(opGraph.getNode()) ;
         Table current = null ;
@@ -118,40 +117,40 @@ public class Eval
             Graph graph = execCxt.getDataset().getGraph(gn) ;
             ExecutionContext execCxt2 = new ExecutionContext(execCxt, graph) ;
             Evaluator e2 = EvaluatorFactory.create(execCxt2) ;
-            
+
             Table tableVarURI = TableFactory.create(gVar, gn) ;
             // Evaluate the pattern, join with this graph node possibility.
             // XXX If Var.ANON then no-opt.
             Table patternTable = eval(e2, opGraph.getSubOp()) ;
             Table stepResult = evaluator.join(patternTable, tableVarURI) ;
-            
+
             if ( current == null )
                 current = stepResult ;
             else
                 current = evaluator.union(current, stepResult) ;
         }
-        
+
         if ( current == null )
             // Nothing to loop over
             return new TableEmpty() ;
         return current ;
     }
-    
+
     static Table evalQuadPattern(OpQuadPattern opQuad, Evaluator evaluator)
     {
         if ( opQuad.isEmpty() )
             return TableFactory.createUnit() ;
-        
+
         ExecutionContext cxt = evaluator.getExecContext() ;
         DatasetGraph ds = cxt.getDataset() ;
         BasicPattern pattern = opQuad.getBasicPattern() ;
-        
-        if ( ! opQuad.getGraphNode().isVariable() ) 
+
+        if ( ! opQuad.getGraphNode().isVariable() )
         {
             if ( ! opQuad.getGraphNode().isURI() )
             { throw new ARQInternalErrorException("Not a URI or variable: "+opQuad.getGraphNode()) ;}
             Graph g = null ;
-            
+
             if ( opQuad.isDefaultGraph() )
                 g = ds.getDefaultGraph() ;
             else
@@ -172,13 +171,13 @@ public class Eval
             {
                 Node gn = graphNodes.next() ;
                 //Op tableVarURI = TableFactory.create(gn.getName(), Node.createURI(uri)) ;
-                
+
                 Graph g = cxt.getDataset().getGraph(gn) ;
                 Binding b = BindingFactory.binding(BindingRoot.create(), gVar, gn) ;
                 ExecutionContext cxt2 = new ExecutionContext(cxt, g) ;
 
                 // Eval the pattern, eval the variable, join.
-                // Pattern may be non-linear in the variable - do a pure execution.  
+                // Pattern may be non-linear in the variable - do a pure execution.
                 Table t1 = TableFactory.create(gVar, gn) ;
                 QueryIterator qIter = executeBGP(pattern, QueryIterRoot.create(cxt2), cxt2) ;
                 Table t2 = TableFactory.create(qIter) ;
@@ -194,9 +193,8 @@ public class Eval
             return input ;
 
         boolean hideBNodeVars = execCxt.getContext().isTrue(ARQ.hideNonDistiguishedVariables) ;
-
-        StageGenerator gen = StageBuilder.executeInline ;
-        QueryIterator qIter = gen.execute(pattern, input, execCxt) ;
+        // Execute pattern: no reordering.
+        QueryIterator qIter = QC.executeDirect(pattern, input, execCxt);
 
         // Remove non-distinguished variables here.
         // Project out only named variables.
@@ -204,84 +202,4 @@ public class Eval
             qIter = new QueryIterDistinguishedVars(qIter, execCxt) ;
         return qIter ;
     }
-    
-    // This is for an arbitrary quad collection.
-    // Downside is that each quad is solved separtely, not in a BGP.
-    // This breaks property functions with list arguments
-    // and extension to entailment regimes which as DL.
-    
-//    public Table evalAny(Evaluator evaluator)
-//    {
-//        if ( getQuads().size() == 0 )
-//            return TableFactory.createUnit().eval(evaluator) ;
-//        
-//        ExecutionContext cxt = evaluator.getExecContext() ;
-//        DatasetGraph ds = cxt.getDataset() ;
-//        //Table working = TableFactory.createUnit().eval(evaluator) ;
-//        Table working = null ; 
-//        for ( Iterator iter = quads.iterator() ; iter.hasNext() ; )
-//        {
-//            Quad quad = (Quad)iter.next() ;
-//            Table nextTable = oneStep(quad, cxt)  ;
-//            if ( working != null )
-//                working = evaluator.join(working, nextTable) ;
-//            else
-//                working = nextTable ;
-//        }
-//        return working ;
-//    }
-//
-//    private Table oneStep(Quad quad, ExecutionContext cxt)
-//    {
-//        Node gn = quad.getGraph() ;
-//        DatasetGraph ds = cxt.getDataset() ;
-//        if ( ! gn.isVariable() ) 
-//        {
-//            if ( ! gn.isURI() )
-//                throw new ARQInternalErrorException("Not a URI or variable: "+gn) ;
-//            
-//            Graph g = gn.equals(AlgebraCompilerQuad.defaultGraph) ?
-//                          ds.getDefaultGraph() : 
-//                          ds.getNamedGraph(gn.getURI()) ;
-//            
-//            if ( g == null )
-//                return new TableEmpty() ;
-//
-//            ExecutionContext cxt2 = new ExecutionContext(cxt, g) ;
-//            // A BGP of one triple ensure property functions are processed.
-//            // QueryIterator qIter = new QueryIterTriplePattern(OpBGP.makeRoot(cxt2), quad.getTriple(), cxt2) ;
-//            // return TableFactory.create(qIter) ;
-//
-//            // Alt : gather adjacent quads with the same graph node.
-//            // Then blank node projection can be done.
-//            
-//            // Create a BGP of one to sort property functions out.
-//            // ** Projecting blank nodes must be off.
-//            ElementBasicGraphPattern bgp = new ElementBasicGraphPattern() ;
-//            bgp.addTriple(quad.getTriple()) ;
-//            PlanElement planElt = PlanBasicGraphPattern.make(cxt.getContext(), bgp) ;
-//            return TableFactory.
-//                    create(planElt.build(Algebra.makeRoot(cxt2), cxt2)) ;
-//        }
-//        else
-//        {
-//            // Or just just devolve to OpGraph and get OpUnion chain of OpJoin
-//            QueryIterConcat concat = new QueryIterConcat(cxt) ;
-//            for ( Iterator graphURIs = cxt.getDataset().listNames() ; graphURIs.hasNext(); )
-//            {
-//                String uri = (String)graphURIs.next() ;
-//                //Op tableVarURI = TableFactory.create(gn.getName(), Node.createURI(uri)) ;
-//                
-//                Graph g = cxt.getDataset().getNamedGraph(uri) ;
-//                Binding b = new Binding1(BindingRoot.create(), gn.getName(), Node.createURI(uri)) ;
-//                QueryIterator qIter1 = new QueryIterSingleton(b, cxt) ;
-//                ExecutionContext cxt2 = new ExecutionContext(cxt, g) ;
-//                QueryIterator qIter = new QueryIterTriplePattern(qIter1, quad.getTriple(), cxt2) ;
-//                concat.add(qIter) ;
-//            }
-//            return TableFactory.create(concat) ;
-//        }
-//        
-//    }
-
 }

@@ -23,8 +23,11 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.jena.graph.Graph;
+import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.engine.main.OpExecutor;
 import org.apache.jena.sparql.engine.main.OpExecutorFactory;
+import org.apache.jena.sparql.engine.main.QC;
 import org.apache.jena.sparql.function.FunctionEnv;
 import org.apache.jena.sparql.util.Context;
 
@@ -34,16 +37,16 @@ public class ExecutionContext implements FunctionEnv
 
     private Context context       = null;
     private DatasetGraph dataset  = null;
-    
+
     // Iterator tracking
     private Collection<QueryIterator> openIterators    = null;
     // Tracking all iterators leads to a build up of state,
-    private Collection<QueryIterator> allIterators     = null; 
+    private Collection<QueryIterator> allIterators     = null;
     private Graph activeGraph           = null;
     private OpExecutorFactory executor  = null;
 
     /** Clone */
-    public ExecutionContext(ExecutionContext other) 
+    public ExecutionContext(ExecutionContext other)
     {
         this.context = other.context;
         this.dataset = other.dataset;
@@ -52,12 +55,22 @@ public class ExecutionContext implements FunctionEnv
         this.activeGraph = other.activeGraph;
         this.executor = other.executor;
     }
-    
+
     /** Clone and change active graph - shares tracking */
-    public ExecutionContext(ExecutionContext other, Graph activeGraph) 
+    public ExecutionContext(ExecutionContext other, Graph activeGraph)
     {
-        this(other); 
-        this.activeGraph = activeGraph; 
+        this(other);
+        this.activeGraph = activeGraph;
+    }
+
+    /** Setup with defaults of global settings */
+    public ExecutionContext(DatasetGraph dataset) {
+        this(dataset, QC.getFactory(ARQ.getContext()));
+    }
+
+    /** Setup with defaults of global settings but explicit {@link OpExecutor} factory. */
+    public ExecutionContext(DatasetGraph dataset, OpExecutorFactory factory) {
+        this(ARQ.getContext().copy(), dataset.getDefaultGraph(), dataset, factory);
     }
 
     public ExecutionContext(Context params, Graph activeGraph, DatasetGraph dataset, OpExecutorFactory factory) {
@@ -96,7 +109,7 @@ public class ExecutionContext implements FunctionEnv
     public OpExecutorFactory getExecutor() {
         return executor;
     }
-    
+
     /** Setter for the policy for algebra expression evaluation - use with care */
     public void setExecutor(OpExecutorFactory executor) {
         this.executor = executor;
@@ -107,8 +120,8 @@ public class ExecutionContext implements FunctionEnv
 
     /** Return the active graph (the one matching is against at this point in the query.
      * May be null if unknown or not applicable - for example, doing quad store access or
-     * when sorting  
-     */ 
+     * when sorting
+     */
     @Override
     public Graph getActiveGraph()     { return activeGraph; }
 }

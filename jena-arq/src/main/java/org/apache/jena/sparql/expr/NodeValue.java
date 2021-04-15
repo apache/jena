@@ -509,6 +509,7 @@ public abstract class NodeValue extends ExprNode
                 // Like one literal with a language tag, and one without can't be sameAs.
 
                 if ( ! node1.isLiteral() || ! node2.isLiteral() )
+                    // Can't both be non-literals - that's VSPACE_NODE
                     // One or other not a literal => not sameAs
                     return false ;
 
@@ -519,7 +520,7 @@ public abstract class NodeValue extends ExprNode
 
                 if ( ! node1.getLiteralLanguage().equals("") ||
                      ! node2.getLiteralLanguage().equals("") )
-                    // One had lang tags but weren't sameNode => not equals
+                    // One had lang tag but weren't sameNode => not equals
                     return false ;
 
                 raise(new ExprEvalException("Unknown equality test: "+nv1+" and "+nv2)) ;

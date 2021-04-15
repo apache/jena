@@ -24,54 +24,59 @@ import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.util.iterator.NiceIterator ;
 
 /** Turn an normal java.util.Iterator (of Bindings) into a QueryIterator */
-
 public class QueryIterPlainWrapper extends QueryIter
 {
-    Iterator<Binding> iterator = null ;
-    
-    public QueryIterPlainWrapper(Iterator<Binding> iter)
-    { this(iter, null) ; }
-    
-    public QueryIterPlainWrapper(Iterator<Binding> iter, ExecutionContext context)
-    {
-        super(context) ;
-        iterator = iter ;
+    public static QueryIterator create(Iterator<Binding> iter, ExecutionContext execCxt) {
+        return new QueryIterPlainWrapper(iter, execCxt);
     }
 
-    /** Preferable to use a constructor - but sometimes that is inconvenient 
+    public static QueryIterator create(Iterator<Binding> iter) {
+        return new QueryIterPlainWrapper(iter);
+    }
+
+    private Iterator<Binding> iterator = null;
+
+    protected QueryIterPlainWrapper(Iterator<Binding> iter)
+    { this(iter, null); }
+
+    protected QueryIterPlainWrapper(Iterator<Binding> iter, ExecutionContext context) {
+        super(context);
+        iterator = iter;
+    }
+
+    /** Preferable to use a constructor - but sometimes that is inconvenient
      *  so pass null in the constructor and then call this before the iterator is
-     *  used.   
+     *  used.
      */
-    public void setIterator(Iterator<Binding> iterator) { this.iterator = iterator ; }
-    
-    @Override
-    protected boolean hasNextBinding() { return iterator.hasNext() ; } 
-    
-    @Override
-    protected Binding moveToNextBinding() { return iterator.next() ; }
+    public void setIterator(Iterator<Binding> iterator) { this.iterator = iterator; }
 
     @Override
-    protected void closeIterator()
-    {
-        if ( iterator != null )
-        {
-            NiceIterator.close(iterator) ;
+    protected boolean hasNextBinding() { return iterator.hasNext(); }
+
+    @Override
+    protected Binding moveToNextBinding() { return iterator.next(); }
+
+    @Override
+    protected void closeIterator() {
+        if ( iterator != null ) {
+            NiceIterator.close(iterator);
             // In case we wrapped, for example, another QueryIterator.
-            Iter.close(iterator) ;
-            iterator = null ;
+            Iter.close(iterator);
+            iterator = null;
         }
     }
-    
+
     @Override
     protected void requestCancel()
     { }
-    
+
     @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
-    { out.println(Lib.className(this)) ; }
+    { out.println(Lib.className(this)); }
 }

@@ -27,12 +27,7 @@ import java.util.List;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.query.ResultSetFactory;
-import org.apache.jena.query.ResultSetFormatter;
-import org.apache.jena.query.ResultSetRewindable;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.query.*;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
@@ -51,18 +46,25 @@ import org.junit.Test;
 
 public class TestSolverTDB {
     static String graphData = null;
-    static Graph graph = null;
+    static Dataset dataset = null;
     static PrefixMapping pmap = null;
 
     @BeforeClass
     static public void beforeClass() {
-        graphData = ConfigTest.getTestingDataRoot() + "/Data/solver-data.ttl";
-        graph = TDBFactory.createDatasetGraph().getDefaultGraph();
-        Model m = ModelFactory.createModelForGraph(graph);
-        RDFDataMgr.read(m, graphData);
-
+        dataset = TDBFactory.createDataset();
+        dataset.begin(ReadWrite.WRITE);
+        String graphData = ConfigTest.getTestingDataRoot() + "/Data/solver-data.ttl";
+        RDFDataMgr.read(dataset, graphData);
         pmap = new PrefixMappingImpl();
         pmap.setNsPrefix("", "http://example/");
+
+//        graphData = ConfigTest.getTestingDataRoot() + "/Data/solver-data.ttl";
+//        graph = TDBFactory.createDatasetGraph().getDefaultGraph();
+//        Model m = ModelFactory.createModelForGraph(graph);
+//        RDFDataMgr.read(m, graphData);
+//
+//        pmap = new PrefixMappingImpl();
+//        pmap.setNsPrefix("", "http://example/");
 
     }
 
@@ -73,14 +75,14 @@ public class TestSolverTDB {
 
     @Test
     public void solve_01() {
-        ResultSet rs1 = exec("(bgp (:s :p :o))", graph);
+        ResultSet rs1 = exec("(bgp (:s :p :o))");
         ResultSet rs2 = results("unit");
         equals(rs1, rs2);
     }
 
     @Test
     public void solve_02() {
-        ResultSet rs1 = exec("(bgp (:s :p :o2))", graph);
+        ResultSet rs1 = exec("(bgp (:s :p :o2))");
         ResultSet rs2 = results("empty");
         equals(rs1, rs2);
     }
@@ -88,7 +90,7 @@ public class TestSolverTDB {
     @Test
     public void solve_03() {
         // Above everything.
-        ResultSet rs1 = exec("(bgp (:zzzz :p 999999))", graph);
+        ResultSet rs1 = exec("(bgp (:zzzz :p 999999))");
         ResultSet rs2 = results("empty");
         equals(rs1, rs2);
     }
@@ -96,21 +98,21 @@ public class TestSolverTDB {
     @Test
     public void solve_04() {
         // Below everything.
-        ResultSet rs1 = exec("(bgp (:a :p :a))", graph);
+        ResultSet rs1 = exec("(bgp (:a :p :a))");
         ResultSet rs2 = results("empty");
         equals(rs1, rs2);
     }
 
     @Test
     public void solve_05() {
-        ResultSet rs1 = exec("(project (?s ?y) (bgp (?s :p ?z) (?z :q ?y)))", graph);
+        ResultSet rs1 = exec("(project (?s ?y) (bgp (?s :p ?z) (?z :q ?y)))");
         ResultSet rs2 = results("(row (?s :s) (?y :y))");
         equals(rs1, rs2);
     }
 
     @Test
     public void solve_06() {
-        ResultSet rs1 = exec("(bgp (:s ?p ?o))", graph);
+        ResultSet rs1 = exec("(bgp (:s ?p ?o))");
         ResultSet rs2 = results("(row (?p :p) (?o :o))", "(row (?p :p) (?o 10))", "(row (?p :p) (?o :x))");
         equals(rs1, rs2);
     }
@@ -119,7 +121,7 @@ public class TestSolverTDB {
     public void solve_07() {
         // JENA-1428, JENA-1529
         String x = "(sequence  (table (vars ?X) (row [?X 'NotPresent']))  (bgp (triple :s :p ?o)))";
-        ResultSet rs1 = exec(x, graph);
+        ResultSet rs1 = exec(x);
         assertTrue(rs1.hasNext());
         // Executing without stack trace is enough.
         ResultSetFormatter.consume(rs1);
@@ -152,12 +154,28 @@ public class TestSolverTDB {
         return SSE.parseTable(str).toResultSet();
     }
 
-    private static ResultSet exec(String pattern, Graph graph) {
-        Op op = SSE.parseOp(pattern, pmap);
+    private static ResultSet exec(String pattern) {
+        Op op1 = SSE.parseOp(pattern, pmap);
         List<Var> vars = new ArrayList<>();
-        vars.addAll(OpVars.visibleVars(op));
-        QueryIterator qIter = Algebra.exec(op, graph);
-        return ResultSetFactory.create(qIter, Var.varNames(vars));
+        vars.addAll(OpVars.visibleVars(op1));
+
+        Op op2 = Algebra.toQuadForm(op1);
+
+
+        // Execute in triples and quad forms.
+        QueryIterator qIter1 = Algebra.exec(op1, dataset.asDatasetGraph());
+        ResultSet rs1 = ResultSetFactory.create(qIter1, Var.varNames(vars));
+
+        QueryIterator qIter2 = Algebra.exec(op2, dataset.asDatasetGraph());
+        ResultSet rs2 = ResultSetFactory.create(qIter2, Var.varNames(vars));
+
+        ResultSetRewindable rsw1 = ResultSetFactory.makeRewindable(rs1);
+        ResultSetRewindable rsw2 = ResultSetFactory.makeRewindable(rs2);
+
+        same(rsw1, rsw2, true);
+        rsw1.reset();
+        rsw2.reset();
+        return rsw1;
     }
 
     private static List<Binding> toList(QueryIterator qIter) {

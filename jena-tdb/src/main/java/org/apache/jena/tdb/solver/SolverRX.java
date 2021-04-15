@@ -18,8 +18,9 @@
 
 package org.apache.jena.tdb.solver;
 
-import static org.apache.jena.tdb.solver.SolverLib.convFromBinding;
-import static org.apache.jena.tdb.solver.SolverLib.tripleHasNodeTriple;
+import static org.apache.jena.sparql.engine.main.solver.SolverLib.nodeTopLevel;
+import static org.apache.jena.sparql.engine.main.solver.SolverLib.tripleHasEmbTripleWithVars;
+import static org.apache.jena.tdb.solver.SolverLibTDB.convFromBinding;
 
 import java.util.Iterator;
 import java.util.function.Function;
@@ -35,13 +36,13 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
-import org.apache.jena.sparql.engine.iterator.RX;
+import org.apache.jena.sparql.engine.main.solver.SolverRX4;
 import org.apache.jena.tdb.lib.TupleLib;
 import org.apache.jena.tdb.store.NodeId;
 import org.apache.jena.tdb.store.nodetable.NodeTable;
 import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable;
 
-/** RDF-start processing for matching a triple/quad pattern. */
+/** RDF-start processing for matching an individual triple/quad pattern. */
 public class SolverRX {
     /**
      * Control whether to check for embedded triple terms with variables or to act in a direct manner.
@@ -57,10 +58,9 @@ public class SolverRX {
                                                     NodeTupleTable nodeTupleTable, Tuple<Node> patternTuple,
                                                     boolean anyGraph, Predicate<Tuple<NodeId>> filter, ExecutionContext execCxt) {
         if ( DATAPATH ) {
-            if ( ! tripleHasNodeTriple(tPattern) || tPattern.isConcrete() ) {
+            if ( ! tripleHasEmbTripleWithVars(tPattern) )
                 // No RDF-star <<>> with variables.
                 return StageMatchTuple.access(nodeTupleTable, chain, patternTuple, filter, anyGraph, execCxt);
-            }
         }
 
         // RDF-star <<>> with variables.
@@ -82,10 +82,10 @@ public class SolverRX {
         // graphNode is ANY for union graph and null for default graph.
         // Var to ANY, Triple Term to ANY.
 
-        Node g = ( graphNode == null ) ? null : RX.nodeTopLevel(graphNode);
-        Node s = RX.nodeTopLevel(tPattern.getSubject());
-        Node p = RX.nodeTopLevel(tPattern.getPredicate());
-        Node o = RX.nodeTopLevel(tPattern.getObject());
+        Node g = ( graphNode == null ) ? null : nodeTopLevel(graphNode);
+        Node s = nodeTopLevel(tPattern.getSubject());
+        Node p = nodeTopLevel(tPattern.getPredicate());
+        Node o = nodeTopLevel(tPattern.getObject());
         NodeTable nodeTable = nodeTupleTable.getNodeTable();
         Tuple<Node> patternTuple = ( g == null )
                 ? TupleFactory.create3(s,p,o)
@@ -94,7 +94,7 @@ public class SolverRX {
         Iterator<Quad> dsgIter = accessData(patternTuple, nodeTupleTable, anyGraph, filter, execCxt);
 
         Binding input = bnid.isEmpty() ? BindingFactory.empty() : new BindingTDB(bnid, nodeTable);
-        Iterator<Binding> matched = Iter.iter(dsgIter).map(dQuad->RX.matchQuad(input, dQuad, tGraphNode, tPattern)).removeNulls();
+        Iterator<Binding> matched = Iter.iter(dsgIter).map(dQuad->SolverRX4.matchQuad(input, dQuad, tGraphNode, tPattern)).removeNulls();
         return convFromBinding(matched, nodeTable);
     }
 

@@ -18,93 +18,87 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.core.BasicPattern ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.core.QuadPattern ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.core.BasicPattern;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.QuadPattern;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 /** The main Op used in converting SPARQL algebra to quad form.
- * OpQuadPattern reflects the fact that quads come in per-GRAPH units. 
+ * OpQuadPattern reflects the fact that quads come in per-GRAPH units.
  * {@link OpQuadBlock} is for a general containers of quads
- * without any contract on the quads sharing the same graph node.   
+ * without any contract on the quads sharing the same graph node.
  */
 public class OpQuadPattern extends Op0
 {
-    public static boolean isQuadPattern(Op op)
-    {
-        return (op instanceof OpQuadPattern ) ;
+    public static boolean isQuadPattern(Op op) {
+        return (op instanceof OpQuadPattern);
     }
-    
-    private Node graphNode ;
-    private BasicPattern triples ;
-    
-    private QuadPattern quads = null ;
-    
+
+    private Node graphNode;
+    private BasicPattern triples;
+
+    private QuadPattern quads = null;
+
     // A QuadPattern is a block of quads with the same graph arg.
     // i.e. a BasicGraphPattern.
 
-    // Match switch so OpQuadPattern is a 
+    // Match switch so OpQuadPattern is a
     // a sequence of OpQuadBlocks.
-    
-    public OpQuadPattern(Node quadNode, BasicPattern triples)
-    { 
-        this.graphNode = quadNode ;
-        this.triples = triples ;
+
+    public OpQuadPattern(Node quadNode, BasicPattern triples) {
+        this.graphNode = quadNode;
+        this.triples = triples;
     }
-    
-    private void initQuads()
-    {
-        if ( quads == null )
-        {
-            quads = new QuadPattern() ;
-            for (Triple t : triples )
-                quads.add(new Quad(graphNode, t)) ;
+
+    private void initQuads() {
+        if ( quads == null ) {
+            quads = new QuadPattern();
+            for ( Triple t : triples )
+                quads.add(new Quad(graphNode, t));
         }
     }
-    
-    public QuadPattern getPattern()
-    {
-        initQuads() ;
-        return quads ;
-    } 
-    
-    public Node getGraphNode()              { return graphNode ; } 
-    public BasicPattern getBasicPattern()   { return triples ; }
-    public boolean isEmpty()                { return triples.size() == 0 ; }
-    
-    /** Is this quad pattern referring to the default graph by quad transformation or explicit naming? */ 
-    public boolean isDefaultGraph()         { return Quad.isDefaultGraph(graphNode) ; }
+
+    public QuadPattern getPattern() {
+        initQuads();
+        return quads;
+    }
+
+    public Node getGraphNode()              { return graphNode; }
+    public BasicPattern getBasicPattern()   { return triples; }
+    public boolean isEmpty()                { return triples.size() == 0; }
+
+    /** Is this quad pattern referring to the default graph by quad transformation or explicit naming? */
+    public boolean isDefaultGraph()         { return Quad.isDefaultGraph(graphNode); }
 
     /** Is this quad pattern explicitly naming the union graph? */
-    public boolean isUnionGraph()           { return Quad.isUnionGraph(graphNode) ; }
-    
+    public boolean isUnionGraph()           { return Quad.isUnionGraph(graphNode); }
+
     @Override
-    public String getName()                 { return Tags.tagQuadPattern ; }
+    public String getName()                 { return Tags.tagQuadPattern; }
     @Override
-    public Op apply(Transform transform)    { return transform.transform(this) ; } 
+    public Op apply(Transform transform)    { return transform.transform(this); }
     @Override
-    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
+    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this); }
     @Override
-    public Op0 copy()                        { return new OpQuadPattern(graphNode, triples) ; }
+    public Op0 copy()                        { return new OpQuadPattern(graphNode, triples); }
 
     @Override
     public int hashCode()
-    { return graphNode.hashCode() ^ triples.hashCode() ; }
+    { return graphNode.hashCode() ^ triples.hashCode(); }
 
     @Override
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    {
-        if ( ! ( other instanceof OpQuadPattern ) ) return false ;
-        OpQuadPattern opQuad = (OpQuadPattern)other ;
-        if ( ! graphNode.equals(opQuad.graphNode) )
-            return false ;
-        return triples.equiv(opQuad.triples, labelMap) ;
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap) {
+        if ( !(other instanceof OpQuadPattern) )
+            return false;
+        OpQuadPattern opQuad = (OpQuadPattern)other;
+        if ( !graphNode.equals(opQuad.graphNode) )
+            return false;
+        return triples.equiv(opQuad.triples, labelMap);
     }
-
 }

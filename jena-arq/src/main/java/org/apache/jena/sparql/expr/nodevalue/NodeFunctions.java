@@ -32,6 +32,7 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.irix.IRIException;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.irix.IRIx;
+import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.ExprTypeException ;
@@ -139,31 +140,24 @@ public class NodeFunctions {
         return NodeValue.booleanReturn(sameTerm(nv1.asNode(), nv2.asNode())) ;
     }
 
-    public static boolean sameTerm(Node n1, Node n2) {
-        if ( n1.equals(n2) )
+    public static boolean sameTerm(Node node1, Node node2) {
+        if ( node1.equals(node2) )
             return true ;
-        if ( n1.isLiteral() && n2.isLiteral() ) {
-            // But language tags are case insensitive.
-            String lang1 = n1.getLiteralLanguage() ;
-            String lang2 = n2.getLiteralLanguage() ;
-
-            if ( !lang1.equals("") && lang1.equalsIgnoreCase(lang2) ) {
-                // Two language tags, equal by case insensitivity.
-                boolean b = n1.getLiteralLexicalForm().equals(n2.getLiteralLexicalForm()) ;
-                if ( b )
-                    return true ;
-            }
+        if ( Util.isLangString(node1) && Util.isLangString(node2) ) {
+            String lex1 = node1.getLiteralLexicalForm();
+            String lex2 = node2.getLiteralLexicalForm();
+            if ( !lex1.equals(lex2) )
+                return false;
+            return node1.getLiteralLanguage().equalsIgnoreCase(node2.getLiteralLanguage());
         }
         return false ;
     }
 
-    // -------- RDFterm-equals
+    // -------- RDFterm-equals -- raises an exception on "don't know" for literals.
 
-    public static NodeValue rdfTermEquals(NodeValue nv1, NodeValue nv2) {
-        return NodeValue.booleanReturn(rdfTermEquals(nv1.asNode(), nv2.asNode())) ;
-    }
-
-    // Exact as defined by SPARQL spec.
+    // Exact as defined by SPARQL spec, when there are no value extensions.
+    // That means no language tag understanding.
+    //   Exception for two literals that might be equal but we don't know because of language tags.
     public static boolean rdfTermEquals(Node n1, Node n2) {
         if ( n1.equals(n2) )
             return true ;
@@ -172,14 +166,20 @@ public class NodeFunctions {
             // Two literals, may be sameTerm by language tag case insensitivity.
             String lang1 = n1.getLiteralLanguage() ;
             String lang2 = n2.getLiteralLanguage() ;
-
-            if ( !lang1.equals("") && lang1.equalsIgnoreCase(lang2) ) {
-                // Two language tags, equal by case insensitivity.
-                boolean b = n1.getLiteralLexicalForm().equals(n2.getLiteralLexicalForm()) ;
-                if ( b )
-                    return true ;
+            if ( ! lang1.equals("") && ! lang2.equals("") ) {
+                // Two language tags, both not "", equal by case insensitivity => lexical test.
+                if ( lang1.equalsIgnoreCase(lang2) ) {
+                    boolean b = n1.getLiteralLexicalForm().equals(n2.getLiteralLexicalForm()) ;
+                    if ( b )
+                        return true ;
+                }
             }
-            // Two literals, different terms, different language tags.
+
+            // Two literals:
+            //   Were not .equals
+            //   case 1: At least one language tag., not same lexical form -> unknown.
+            //   case 2: No language tags, not .equals -> unknown.
+            // Raise error (rather than return false).
             NodeValue.raise(new ExprEvalException("Mismatch in RDFterm-equals: " + n1 + ", " + n2)) ;
         }
         // One or both not a literal.

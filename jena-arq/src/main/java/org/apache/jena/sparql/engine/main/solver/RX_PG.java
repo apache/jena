@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.engine.iterator;
+package org.apache.jena.sparql.engine.main.solver;
 
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.graph.Node;
@@ -26,6 +26,8 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.VarAlloc;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.iterator.QueryIterAddTripleTerm;
+import org.apache.jena.sparql.engine.main.QC;
 import org.apache.jena.sparql.util.Context;
 
 /**
@@ -158,7 +160,7 @@ import org.apache.jena.sparql.util.Context;
      * It assumes any triple terms have been dealt with.
      */
     private static QueryIterator matchData(QueryIterator chain, Triple pattern, ExecutionContext execCxt) {
-        return new QueryIterTriplePattern(chain, pattern, execCxt);
+        return QC.execute(chain, pattern, execCxt);
     }
 
     /**

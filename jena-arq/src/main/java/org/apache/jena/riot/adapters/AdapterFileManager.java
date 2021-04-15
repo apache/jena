@@ -495,6 +495,7 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
     /**
      * @deprecated Use {@link IO#readWholeFileAsUTF8(String)}
      */
+    @Deprecated
     @Override
     public String readWholeFileAsUTF8(String filename)
     {
