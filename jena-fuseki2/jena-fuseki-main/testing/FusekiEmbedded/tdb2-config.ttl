@@ -15,5 +15,5 @@ PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
 .
 
 <#dataset> rdf:type tdb2:DatasetTDB ;
-    tdb2:location "--mem--" ;
+    tdb2:location "target/tdb2" ;
 .

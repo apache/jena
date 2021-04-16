@@ -234,7 +234,6 @@ public class TestEmbeddedFuseki {
     }
 
     @Test public void embedded_compact() throws IOException {
-        DatasetGraph dsg = dataset();
         int port = WebLib.choosePort();
         FusekiServer server = FusekiServer.create()
             .port(port)
@@ -287,7 +286,6 @@ public class TestEmbeddedFuseki {
     }
 
     @Test public void embedded_09() {
-        DatasetGraph dsg = dataset();
         int port = WebLib.choosePort();
 
         FusekiServer server = FusekiServer.create()
@@ -301,7 +299,6 @@ public class TestEmbeddedFuseki {
     }
 
     @Test public void embedded_10() {
-        DatasetGraph dsg = dataset();
         int port = WebLib.choosePort();
 
         FusekiServer server = FusekiServer.create()
