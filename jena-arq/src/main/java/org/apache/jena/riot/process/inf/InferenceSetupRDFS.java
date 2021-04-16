@@ -28,28 +28,31 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 
+
+/**  @deprecated Use package <tt>org.apache.jena.rdfs</tt>. */
+@Deprecated
 public class InferenceSetupRDFS
 {
     /*package*/ final Map<Node, List<Node>> transClasses        = new HashMap<>() ;
     /*package*/ final Map<Node, List<Node>> transProperties     = new HashMap<>() ;
     /*package*/ final Map<Node, List<Node>> domainList          = new HashMap<>() ;
     /*package*/ final Map<Node, List<Node>> rangeList           = new HashMap<>() ;
-    
+
     public InferenceSetupRDFS(Model vocab)
     {
         // Find classes - uses property paths
         exec("SELECT ?x ?y { ?x rdfs:subClassOf+ ?y }", vocab, transClasses) ;
-        
+
         // Find properties
         exec("SELECT ?x ?y { ?x rdfs:subPropertyOf+ ?y }", vocab, transProperties) ;
-        
+
         // Find domain
         exec("SELECT ?x ?y { ?x rdfs:domain ?y }", vocab, domainList) ;
-        
+
         // Find range
         exec("SELECT ?x ?y { ?x rdfs:range ?y }", vocab, rangeList) ;
     }
-    
+
     private static void exec(String qs, Model model, Map<Node, List<Node>> multimap)
     {
         String preamble = StrUtils.strjoinNL("PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",

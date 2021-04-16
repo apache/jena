@@ -24,7 +24,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestDatasetPrefixes.class
+    , TestFusekiRDFS.class
 })
 
-/** General system integration tests */
+/** Various system integration tests. */
 public class TS_Integration {}

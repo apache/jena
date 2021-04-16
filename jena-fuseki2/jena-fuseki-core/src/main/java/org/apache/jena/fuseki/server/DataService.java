@@ -74,6 +74,13 @@ public class DataService {
         //goActive();
     }
 
+    /** Clone this {@code DataService} except use a different dataset graph */
+    public DataService alter(DatasetGraph dataset) {
+        DataService dSrv2 = new DataService(dataset);
+        this.forEachEndpoint(ep->dSrv2.addEndpoint$(ep));
+        return dSrv2;
+    }
+
     /*package*/ void noteDataAccessPoint(DataAccessPoint dap) {
         this.dataAccessPoints.add(dap);
     }

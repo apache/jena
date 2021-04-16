@@ -1,0 +1,23 @@
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+
+<#rdfsDS> rdf:type ja:DatasetRDFS ;
+      ja:rdfsSchema <assem-vocab.ttl>;
+      ja:dataset <#baseDS> ;
+      .
+
+<#baseDS> rdf:type ja:MemoryDataset ;
+     ja:data <assem-data.ttl>;
+     .
+
+<#rdfsGraph> rdf:type ja:GraphRDFS ;
+      ja:rdfsSchema <assem-vocab.ttl>;
+      ja:graph <#baseGraph> ;
+      .
+
+<#baseGraph> rdf:type ja:MemoryModel;
+     ja:data <assem-data.ttl> ;
+     .

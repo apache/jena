@@ -1,2 +1,3 @@
 org.apache.jena.riot.system.InitRIOT
 org.apache.jena.sparql.system.InitARQ
+org.apache.jena.rdfs.sys.InitRDFS
