@@ -49,7 +49,9 @@ import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.FusekiVocab;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdfs.RDFSFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
@@ -240,16 +242,26 @@ public class FusekiWebapp
         if ( params.fusekiCmdLineConfigFile != null ) {
             List<DataAccessPoint> confDatasets = processServerConfigFile(params.fusekiCmdLineConfigFile);
             datasets.addAll(confDatasets);
-        }
-        else if ( params.fusekiServerConfigFile != null ) {
-            List<DataAccessPoint> confDatasets = processServerConfigFile(params.fusekiServerConfigFile);
-            datasets.addAll(confDatasets);
-        }
-        else if ( params.dsg != null ) {
+        } else if ( params.dsg != null ) {
+            // RDFS
+            if ( params.rdfsGraph != null ) {
+                Graph rdfsGraph = RDFDataMgr.loadGraph(params.rdfsGraph);
+                params.dsg = RDFSFactory.datasetRDFS(params.dsg, rdfsGraph);
+            }
             DataAccessPoint dap = datasetDefaultConfiguration(params.datasetPath, params.dsg, params.allowUpdate);
             datasets.add(dap);
         } else if ( params.templateFile != null ) {
             DataAccessPoint dap = configFromTemplate(params.templateFile, params.datasetPath, params.allowUpdate, params.params);
+            if ( params.rdfsGraph != null ) {
+                // RDFS
+                // Create a new DataAccessPoint - same name, same operations, different dataset.
+                DataService dSrv = dap.getDataService();
+                DatasetGraph dsg = dSrv.getDataset();
+                Graph rdfsGraph = RDFDataMgr.loadGraph(params.rdfsGraph);
+                DatasetGraph dsg2 = RDFSFactory.datasetRDFS(dsg, rdfsGraph);
+                DataService dSrv2 = dSrv.alter(dsg2);
+                dap = new DataAccessPoint(dap.getName(), dSrv2);
+            }
             datasets.add(dap);
         }
         // No datasets is valid.

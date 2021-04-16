@@ -25,8 +25,10 @@ import org.apache.jena.riot.system.StreamRDFWrapper ;
 import org.apache.jena.sparql.core.Quad ;
 
 /** Receive triples and quads (incoming because this is a StreamRDF);
- *  allow RDFS; output to place provided. 
+ *  allow RDFS; output to place provided.
+ *  @deprecated Use package <tt>org.apache.jena.rdfs</tt>.
  */
+@Deprecated
 public class InferenceProcessorStreamRDF extends StreamRDFWrapper
 {
     private final InferenceSetupRDFS rdfsSetup ;
@@ -50,10 +52,10 @@ public class InferenceProcessorStreamRDF extends StreamRDFWrapper
             }
         } ;
     }
-    
+
     @Override
     public void triple(Triple triple)
-    { 
+    {
         super.triple(triple) ;
         isTriple = true ;
         g = null ;
@@ -68,6 +70,6 @@ public class InferenceProcessorStreamRDF extends StreamRDFWrapper
         g = quad.getGraph() ;
         rdfs.process(quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
     }
-    
+
 }
 

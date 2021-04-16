@@ -1040,8 +1040,6 @@ public class FusekiServer {
         // Triggers some checking.
         private boolean authenticateUser         = false;
 
-        private List<DatasetGraph> datasets = null;
-
         private void buildStart() {
             if ( serverHttpPort < 0 && serverHttpsPort < 0 )
                 serverHttpPort = DefaultServerPort;
@@ -1098,7 +1096,6 @@ public class FusekiServer {
         private void buildFinish() {
             hasAuthenticationHandler = false;
             hasDataAccessControl = false;
-            datasets = null;
         }
 
         /** Do some checking to make sure setup is consistent. */

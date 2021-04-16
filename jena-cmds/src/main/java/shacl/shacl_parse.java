@@ -66,12 +66,12 @@ public class shacl_parse extends CmdGeneral {
 
     public shacl_parse(String[] argv) {
         super(argv) ;
-        super.add(argOutput);
+        super.add(argOutput, "-output=", "Output formats: RDF, compact, text (default, terse)");
     }
 
     @Override
     protected String getSummary() {
-        return getCommandName()+" --out=FMT[,FMT] FILE";
+        return "Usage: "+getCommandName()+" --out=FMT[,FMT] FILE";
     }
 
     @Override
@@ -99,7 +99,7 @@ public class shacl_parse extends CmdGeneral {
              printText = values.remove("text") || values.remove("t");
              printCompact = values.remove("compact") || values.remove("c");
              printRDF = values.remove("rdf") || values.remove("r");
-             if ( values.remove("all")) {
+             if ( values.remove("all") || values.remove("a") ) {
                  printCompact = true;
                  printRDF = true;
                  printText = true;

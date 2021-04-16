@@ -53,7 +53,7 @@ import org.apache.jena.sparql.util.Closure;
  * </p>
  *
  * <pre>
- * java jena.rdfdiff model1 model2 lang1? lang2? base1? base2? 
+ * java jena.rdfdiff model1 model2 lang1? lang2? base1? base2?
  * </pre>
  */
 public class rdfdiff extends java.lang.Object {
@@ -91,7 +91,7 @@ public class rdfdiff extends java.lang.Object {
             base2 = args[5];
         }
 
-        System.out.println(in1 + " " + in2 + " " + lang1 + " " + lang2 + " " + base1 + " " + base2);
+        //System.out.println(in1 + " " + in2 + " " + lang1 + " " + lang2 + " " + base1 + " " + base2);
         try {
             Model m1 = ModelFactory.createDefaultModel();
             Model m2 = ModelFactory.createDefaultModel();
@@ -269,13 +269,12 @@ public class rdfdiff extends java.lang.Object {
         System.err.println("    lang1 and lang2 can take values:");
         System.err.println("      RDF/XML");
         System.err.println("      N-TRIPLE");
-        System.err.println("      N3");
+        System.err.println("      TTL");
         System.err.println("    lang1 defaults to RDF/XML, lang2 to N-TRIPLE");
         System.err.println("    base1 and base2 are URIs");
         System.err.println("    base1 defaults to null");
         System.err.println("    base2 defaults to base1");
         System.err.println("    If no base URIs are specified Jena determines the base URI based on the input source");
-
         System.err.println();
     }
 

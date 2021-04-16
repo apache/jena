@@ -21,16 +21,18 @@ package org.apache.jena.riot.process.inf;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.system.StreamRDF ;
 
+/** @deprecated Use {@link org.apache.jena.rdfs.RDFSFactory} */
+@Deprecated
 public class InfFactory
 {
     public static StreamRDF inf(StreamRDF data, Model vocab)
     {
         InferenceSetupRDFS setup =  new InferenceSetupRDFS(vocab) ;
-        return new InferenceProcessorStreamRDF(data, setup) ; 
+        return new InferenceProcessorStreamRDF(data, setup) ;
     }
-    
+
     public static StreamRDF inf(StreamRDF data, InferenceSetupRDFS setup)
     {
-        return new InferenceProcessorStreamRDF(data, setup) ; 
+        return new InferenceProcessorStreamRDF(data, setup) ;
     }
 }

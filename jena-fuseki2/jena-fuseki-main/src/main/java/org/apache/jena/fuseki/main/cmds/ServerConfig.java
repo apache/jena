@@ -19,6 +19,7 @@
 package org.apache.jena.fuseki.main.cmds;
 
 import org.apache.jena.atlas.web.AuthScheme;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 /** Setup details (command line, config file) from command line processing.
@@ -53,6 +54,9 @@ class ServerConfig {
 
     // This is set ...
     public DatasetGraph dsg           = null;
+    /** RDFS dataset - only when dataset is defined on the command line. */
+    public Graph rdfsGraph            = null;
+
     // ... or this.
     public String serverConfig        = null;
 
