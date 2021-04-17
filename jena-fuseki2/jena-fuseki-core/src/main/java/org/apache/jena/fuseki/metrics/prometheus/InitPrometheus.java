@@ -33,6 +33,6 @@ public class InitPrometheus implements JenaSubsystemLifecycle {
 
     @Override
     public int level() {
-        return 10;
+        return 500;
     }
 }

@@ -28,7 +28,7 @@ import java.util.function.Consumer ;
  * All initialization should be concurrent and thread-safe.  In particular,
  * some subsystems need initialization in some sort of order (e.g. ARQ before TDB).
  * <p>
- * This is achieved by "levels": levels less than 100 are considered "Jena system levels" 
+ * This is achieved by "levels": levels less than 100 are considered "Jena system levels"
  * and are reserved.
  * <ul>
  * <li>0 - reserved
@@ -45,28 +45,28 @@ public class JenaSystem {
 
     /** Development support - flag to enable output during
      * initialization. Output to {@code System.err}, not a logger
-     * to avoid the risk of recursive initialization.   
+     * to avoid the risk of recursive initialization.
      */
     public static boolean DEBUG_INIT = false ;
-    
+
     // A correct way to manage without synchonized using the double checked locking pattern.
     //   http://en.wikipedia.org/wiki/Double-checked_locking
-    //   http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html 
+    //   http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html
     private static volatile boolean initialized = false ;
     private static Object initLock = new Object() ;
-    
+
     /** Initialize Jena.
      * <p>
      * This function is cheap to call when already initialized so can be called to be sure.
      * A commonly used idiom in jena is a static initializer in key classes.
-     * <p> 
+     * <p>
      * By default, initialization happens by using {@code ServiceLoader.load} to find
      * {@link JenaSubsystemLifecycle} objects.
      * See {@link #setSubsystemRegistry} to intercept that choice.
      */
     public static void init() {
         // Any other thread attempting to initialize as well will
-        // first test the volatile outside the lock; if it's 
+        // first test the volatile outside the lock; if it's
         // not INITIALIZED, the thread will attempt to grab the lock
         // and hence wait, then see initialized as true.
 
@@ -87,31 +87,31 @@ public class JenaSystem {
             if ( initialized )  {
                 logLifecycle("JenaSystem.init - return");
                 return ;
-            } 
+            }
             // Catches recursive calls, same thread.
             initialized = true ;
             logLifecycle("JenaSystem.init - start");
-            
+
             if ( get() == null )
                 setSubsystemRegistry(new JenaSubsystemRegistryBasic()) ;
-            
+
             get().load() ;
-            
+
             // Debug : what did we find?
             if ( JenaSystem.DEBUG_INIT ) {
                 logLifecycle("Found:") ;
                 get().snapshot().forEach(mod->
                 logLifecycle("  %-20s [%d]", mod.getClass().getSimpleName(), mod.level())) ;
             }
-            
+
             get().add(new JenaInitLevel0()) ;
-            
+
             if ( JenaSystem.DEBUG_INIT ) {
                 logLifecycle("Initialization sequence:") ;
                 JenaSystem.forEach( module ->
                     logLifecycle("  %-20s [%d]", module.getClass().getSimpleName(), module.level()) ) ;
             }
-            
+
             JenaSystem.forEach( module -> {
                 logLifecycle("Init: %s", module.getClass().getSimpleName());
                 module.start() ;
@@ -127,7 +127,7 @@ public class JenaSystem {
             return ;
         }
         synchronized(initLock) {
-            if ( ! initialized ) { 
+            if ( ! initialized ) {
                 logLifecycle("JenaSystem.shutdown - return");
                 return ;
             }
@@ -140,7 +140,7 @@ public class JenaSystem {
             logLifecycle("JenaSystem.shutdown - finish");
         }
     }
-    
+
     private static JenaSubsystemRegistry singleton = null;
 
     /**
@@ -162,7 +162,7 @@ public class JenaSystem {
      * Call an action on each item in the registry. Calls are made sequentially
      * and in increasing level order. The exact order within a level is not
      * specified; it is not registration order.
-     * 
+     *
      * @param action
      */
     public static void forEach(Consumer<JenaSubsystemLifecycle> action) {
@@ -174,7 +174,7 @@ public class JenaSystem {
      * enumeration order. Calls are made sequentially and in decreasing level
      * order. The "reverse" is opposite order to {@link #forEach}, which may not
      * be stable within a level. It is not related to registration order.
-     * 
+     *
      * @param action
      */
     public static void forEachReverse(Consumer<JenaSubsystemLifecycle> action) {
@@ -191,7 +191,7 @@ public class JenaSystem {
         Collections.sort(x, ordering);
         x.forEach(action);
     }
-    
+
     /** Output a debugging message if DEBUG_INIT is set */
     public static void logLifecycle(String fmt, Object ...args) {
         if ( ! DEBUG_INIT )
@@ -200,20 +200,20 @@ public class JenaSystem {
         System.err.println() ;
     }
 
-    /** The level 0 subsystem - inserted without using the Registry load function. 
-     *  There should be only one such level 0 handler. 
+    /** The level 0 subsystem - inserted without using the Registry load function.
+     *  There should be only one such level 0 handler.
      */
     private static class JenaInitLevel0 implements JenaSubsystemLifecycle {
         @Override
         public void start() {
             logLifecycle("Jena initialization");
         }
-    
+
         @Override
         public void stop() {
             logLifecycle("Jena shutdown");
         }
-    
+
         @Override
         public int level() {
             return 0;
