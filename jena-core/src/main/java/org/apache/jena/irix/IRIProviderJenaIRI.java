@@ -216,11 +216,11 @@ public class IRIProviderJenaIRI implements IRIProvider {
             Violation v = vIter.next();
 
             int code = v.getViolationCode() ;
-            // Filter codes. These are for errors , not checking.
+            // Filter codes.
             // Global settings below; this section is for conditional filtering.
             switch(code) {
                 case Violation.PROHIBITED_COMPONENT_PRESENT:
-                    // Allow "p:u@" when non-strict.
+                    // Allow "u:p@" when non-strict.
                     // Jena3 compatibility.
                     if ( isHTTP(iri) && ! STRICT_HTTP && v.getComponent() == IRIComponents.USER )
                         continue;
@@ -237,6 +237,7 @@ public class IRIProviderJenaIRI implements IRIProvider {
                     if ( isFILE(iri) )
                         continue;
             }
+            // First error.
             String msg = v.getShortMessage();
             throw new IRIException(msg);
         }

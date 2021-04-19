@@ -40,8 +40,8 @@ public class SystemIRIx {
     private static IRIProvider provider;
     static {
         provider = providerJenaIRI;
-        provider.strictMode("urn", false);
-        provider.strictMode("http", true);
+        provider.strictMode("urn",  false);
+        provider.strictMode("http", false);
         provider.strictMode("file", false);
     }
 
