@@ -105,16 +105,14 @@ public class ParserProfileStd implements ParserProfile
             return iri;
         } catch (IRIException ex) {
             // This should only be errors and the errorHandler may be set to "don't continue".
+            // if it does continue, assume it prints something.
             if ( SystemIRIx.getProvider() instanceof IRIProviderJenaIRI )
-                // Checking did this error/warning.
+                // Checking using JenaIRI puts the URI string in the message.
                 // Puts the IRI in the message.
                 errorHandler.error("Bad IRI: "+ex.getMessage(), line, col);
             else
                 // Does not put the IRI in the message.
                 errorHandler.error("Bad IRI: <" + uriStr + "> : "+ex.getMessage(), line, col);
-//            // Error handler let it pass, but should have printed something so don't out duplicate messages.
-//            if ( checking )
-//                doChecking(null, uriStr, line, col);
             return IRIx.createAny(uriStr);
         }
     }
