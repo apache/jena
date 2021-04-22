@@ -27,8 +27,8 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 import org.apache.jena.atlas.json.JSON;
+import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.web.TypedInputStream;
-import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.query.ResultSetFormatter;
@@ -41,22 +41,22 @@ import org.junit.Test;
 /** Test features */
 public class TestFusekiMainCmd {
 
+    private static final String DATABASES="target/Databases";
     // Fuseki Main server
     private FusekiServer server = null;
     private String serverURL = null;
-    
+
     static { FusekiLogging.setLogging(); }
 
     private void server(String... cmdline) {
-        int port = WebLib.choosePort();
-
         String[] a = Stream.concat(
-            Stream.of("--port="+port),
+            Stream.of("--port=0"),
             Arrays.stream(cmdline))
             .toArray(String[]::new);
 
         FusekiServer server = FusekiMain.build(a);
         server.start();
+        int port = server.getPort();
         serverURL = "http://localhost:"+port;
     }
 
@@ -96,7 +96,10 @@ public class TestFusekiMainCmd {
     }
 
     @Test public void compact_01() throws IOException {
-        server("--memTDB", "--tdb2", "--compact", "/ds");
+        String DB_DIR = DATABASES+"/DB-compact";
+        FileOps.ensureDir(DB_DIR);
+        FileOps.clearAll(DB_DIR);
+        server("--loc="+DATABASES+"/DB-compact", "--tdb2", "--compact", "/ds");
         try(TypedInputStream x0 = HttpOp.execHttpPostStream(serverURL+"/$/compact/ds", null, "application/json")) {
             assertNotNull(x0);
             assertNotEquals(0, x0.readAllBytes().length);
@@ -105,5 +108,6 @@ public class TestFusekiMainCmd {
         String x1 = HttpOp.execHttpGetString(serverURL+"/$/tasks");
         assertNotNull(x1);
         JSON.parseAny(x1);
+        // Leaves "DB-compact" behind.
     }
 }
