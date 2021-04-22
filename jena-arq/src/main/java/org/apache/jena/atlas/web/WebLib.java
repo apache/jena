@@ -36,7 +36,11 @@ public class WebLib
         return x ;
     }
 
-    /** Choose an unused port for a server to listen on */
+    /**
+     * Choose an unused port for a server to listen on.
+     * Note: Fuseki main will start of "port 0", and then return the port actually allocated.
+     * This is atomic whereas "choosePort" does not reserve the port.
+     */
     public static int choosePort() {
         try (ServerSocket s = new ServerSocket(0)) {
             return s.getLocalPort();
