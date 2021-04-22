@@ -20,7 +20,7 @@ package org.apache.jena.sparql.engine.main;
 
 /**
  * Generic - always works - StageGenerator.
- * @deprecated Use {@link StageGeneratorGeneric} or call
+ * @deprecated Use {@link StageGeneratorGeneric}
  */
 @Deprecated
 public class StageGeneratorGenericStar extends StageGeneratorGeneric {

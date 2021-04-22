@@ -131,9 +131,6 @@ public class DatabaseOps {
             throw new TDBException("Dataset does not support admin operations");
     }
 
-    //private static void logWarn(String msg) {}
-
-
     // --> IOX
     private static Pair<OutputStream, Path> openUniqueFileForWriting(Path dirPath, String basename, String ext) {
         if ( ! Files.isDirectory(dirPath) )

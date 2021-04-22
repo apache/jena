@@ -66,7 +66,7 @@ public class FusekiLogging
     };
 
     private static final boolean LogLogging     = System.getenv("FUSEKI_LOGLOGGING") != null || System.getProperty("fuseki.loglogging") != null;
-    
+
     private static boolean loggingInitialized   = false;
 
     /**
@@ -93,7 +93,7 @@ public class FusekiLogging
     public static synchronized boolean hasInitialized() {
         return loggingInitialized;
     }
-    
+
     /** Set up logging. Allow an extra location (string directory name without trailing "/"). This may be null
      *
      * @param extraDir
@@ -167,7 +167,7 @@ public class FusekiLogging
         }
         return false;
     }
-    
+
     private static void loadConfiguration(InputStream inputStream, String resourceName) throws IOException {
         LogCtlLog4j2.resetLogging(inputStream, resourceName);
     }

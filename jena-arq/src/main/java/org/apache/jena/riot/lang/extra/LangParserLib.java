@@ -39,7 +39,7 @@ public class LangParserLib {
     public static String stripQuotes3(String s) {
         return s.substring(3, s.length() - 3) ;
     }
-    
+
     /** Unescape \t, \n etc.*/
     public static String unescapeStr(String s, int line, int column)
     { return unescape(s, '\\', false, line, column) ; }
@@ -52,8 +52,7 @@ public class LangParserLib {
             throw new RiotParseException(ex.getMessage(), line, column) ;
         }
     }
-    
-    
+
     /** Unescape \t, \n etc. and also  unicode \ u and \U */
     public static String unescapeUnicode(String s, int line, int column) {
         return unescape(s, '\\', true, line, column);
@@ -126,7 +125,7 @@ public class LangParserLib {
         }
         return sb.toString() ;
     }
-    
+
     public static void throwParseException(String msg, int line, int column) {
         throw new RiotParseException("Line " + line + ", column " + column + ": " + msg, line, column) ;
     }
