@@ -19,7 +19,6 @@
 package org.apache.jena.fuseki;
 
 import org.apache.jena.atlas.lib.FileOps;
-import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.fuseki.webapp.FusekiEnv;
 import org.junit.AfterClass;
@@ -58,22 +57,6 @@ public class TS_FusekiWebapp extends ServerTest
         System.setProperty("FUSEKI_HOME", FusekiTestHome);
         FusekiEnv.setEnvironment();
         FusekiLogging.setLogging();
-        // To avoid confusion with log4j.properties in the main part of the server,
-        // we modify in place the logging, not try to set it with another
-        // Log4j properties file from the classpath.
-        LogCtl.setLevel("org.apache.shiro",          "WARN");
-        LogCtl.setLevel("org.eclipse.jetty",         "WARN");
-
-        LogCtl.setLevel(Fuseki.serverLogName,        "WARN");
-        LogCtl.setLevel(Fuseki.configLogName,        "WARN");
-        LogCtl.setLevel(Fuseki.adminLogName,         "WARN");
-        LogCtl.setLevel(Fuseki.builderLogName,       "WARN");
-        LogCtl.setLevel(Fuseki.actionLogName,        "WARN");
-        LogCtl.setLevel(Fuseki.requestLogName,       "WARN");
-        LogCtl.setLevel(Fuseki.servletRequestLogName,"WARN");
-        LogCtl.setLevel(Fuseki.backupLogName,        "WARN");
-        LogCtl.setLevel(Fuseki.compactLogName,       "WARN");
-
         ServerCtl.ctlBeforeTestSuite();
     }
 
