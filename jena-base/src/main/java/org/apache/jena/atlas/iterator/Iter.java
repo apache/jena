@@ -83,21 +83,21 @@ public class Iter<T> implements Iterator<T> {
 
     // -- Stream inspired names
 
-    public static <T> Iterator<T> empty() {
-        return Collections.emptyIterator();
+    public static <T> Iter<T> empty() {
+        return Iter.iter(Collections.emptyIterator());
     }
 
-    public static <T> Iterator<T> of(T item) {
-        return new SingletonIterator<>(item) ;
+    public static <T> Iter<T> of(T item) {
+        return Iter.iter(new SingletonIterator<>(item)) ;
     }
 
     @SafeVarargs
-    public static <T> Iterator<T> of(T ...items) {
-        return Arrays.asList(items).iterator();
+    public static <T> Iter<T> of(T ...items) {
+        return Iter.iter(Arrays.asList(items).iterator());
     }
 
-    public static<T> Iterator<T> ofNullable(T t) {
-        return t == null ? Iter.empty() : Iter.ofNullable(t);
+    public static<T> Iter<T> ofNullable(T t) {
+        return t == null ? Iter.empty() : Iter.of(t);
     }
 
     // --
@@ -353,11 +353,12 @@ public class Iter<T> implements Iterator<T> {
 
     // ---- Map
 
-    /** Apply a function to every element of an iterator, transforming it
+    /**
+     * Apply a function to every element of an iterator, transforming it
      * from a {@code T} to an {@code R}.
      */
     public static <T, R> Iterator<R> map(Iterator<? extends T> stream, Function<T, R> converter) {
-        final Iterator<R> iter = new Iterator<R>() {
+        Iterator<R> iter = new Iterator<R>() {
             @Override
             public boolean hasNext() {
                 return stream.hasNext() ;
@@ -376,12 +377,7 @@ public class Iter<T> implements Iterator<T> {
      * See {@link Stream#flatMap}
      */
     public static <T, R> Iterator<R> flatMap(Iterator<T> iter, Function<T, Iterator<R>> mapper) {
-        // Combined mapping and flattening
         return new IteratorFlatMap<>(iter, mapper);
-        // For reference: an alternative splitting the mapping out:
-        //   Iterator<Iterator<R>> pipeline = Iter.map(iter, mapper);
-        //   Iterator<R> outcome = new IteratorFlatten<>(pipeline);
-        // IteratorFlatten is only one line and one field less complicated than IteratorFlatMap
     }
 
     /**
@@ -620,6 +616,14 @@ public class Iter<T> implements Iterator<T> {
     }
 
     /**
+     * Run an action when an iterator is closed.
+     * This assumes the iterator closed with {@link Iter#close}.
+     */
+    public static <T> Iterator<T> onClose(Iterator<T> iter, Runnable closeHandler) {
+        return new IteratorOnClose<>(iter, closeHandler);
+    }
+
+    /**
      * Print an iterator to stdout, return a copy of the iterator. Printing
      * occurs now. See {@link #debug} for an operation to print as the
      * iterator is used.
@@ -636,6 +640,8 @@ public class Iter<T> implements Iterator<T> {
     public static <T> Iterator<T> log(final PrintStream out, Iterator<T> stream) {
         Iterator<T> iter = debug(out, stream) ;
         // And force it to run.
+        if ( ! iter.hasNext() )
+            out.println("<empty>");
         return Iter.toList(iter).iterator();
     }
 
@@ -649,7 +655,7 @@ public class Iter<T> implements Iterator<T> {
     }
 
     /**
-     * Print an iterator,  return a copy of the iterator. Printing
+     * Print an iterator, return a copy of the iterator. Printing
      * occurs as the returned iterator is used.
      */
     public static <T> Iterator<T> debug(final PrintStream out, Iterator<T> stream) {
@@ -689,6 +695,7 @@ public class Iter<T> implements Iterator<T> {
     }
 
     public static <T> Iter<T> iter(Iterator<T> iterator) {
+        Objects.requireNonNull(iterator);
         if ( iterator instanceof Iter<? > )
             return (Iter<T>)iterator ;
         return new Iter<>(iterator) ;
@@ -897,7 +904,7 @@ public class Iter<T> implements Iterator<T> {
     }
 
     public T reduce(T identity, BinaryOperator<T> accumulator) {
-        return Iter.reduce(iterator, identity, accumulator);
+        return reduce(iterator, identity, accumulator);
     }
 
     public Optional<T> min(Comparator<T> comparator) {
@@ -910,7 +917,7 @@ public class Iter<T> implements Iterator<T> {
 
     /** See {@link Stream#collect(Supplier, BiConsumer, BiConsumer)}, except without the {@code BiConsumer<R, R> combiner} */
     public <R> R collect(Supplier<R> supplier, BiConsumer<R, T> accumulator/*, BiConsumer<R, R> combiner*/) {
-        return Iter.collect(iterator, supplier, accumulator);
+        return collect(iterator, supplier, accumulator);
     }
 
     /** See {@link Stream#collect(Collector)} */
@@ -924,7 +931,7 @@ public class Iter<T> implements Iterator<T> {
     }
 
     /** Join on an {@code Iterator}..
-     * If there are going to be many iterators, uit is better to create an {@link IteratorConcat}
+     * If there are going to be many iterators, it is better to create an {@link IteratorConcat}
      * and <tt>.add</tt> each iterator.  The overheads are much lower.
      */
     public Iter<T> append(Iterator<T> iter) {

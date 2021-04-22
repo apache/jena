@@ -104,7 +104,7 @@ public class QueryIterHashLeftJoin_Left extends AbstractIterHashJoin {
     @Override
     protected QueryIterator joinFinished() {
         Iterator<Binding> iter = Iter.filter(hashTable.values(), b-> ! leftHits.contains(b) )  ;
-        return new QueryIterPlainWrapper(iter, getExecContext()) ;
+        return QueryIterPlainWrapper.create(iter, getExecContext()) ;
     }
 }
 

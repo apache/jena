@@ -20,6 +20,8 @@ package org.apache.jena.atlas.lib;
 
 import java.util.Collection ;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 import org.apache.jena.atlas.iterator.Iter;
 
@@ -37,5 +39,15 @@ public class CollectionUtils
         if ( collection instanceof List<?> )
             return ((List<T>)collection).get(0);
         return Iter.first(collection.iterator());
+    }
+
+    /**
+     * Run an action on every member of a MultiMap
+     * (when not using Google Guava multimaps).
+     */
+    public static <X,V> void forEach(Map<X, ? extends Collection<V>> map, BiConsumer<X,V> action) {
+        map.forEach((k,c)->{
+            c.forEach(v->action.accept(k, v));
+        });
     }
 }

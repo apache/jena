@@ -56,6 +56,6 @@ public class StageGeneratorDirectTDB implements StageGenerator {
             return above.execute(pattern, input, execCxt);
         GraphTDB graph = (GraphTDB)g;
         Predicate<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext());
-        return Solver.execute(graph, pattern, input, filter, execCxt);
+        return PatternMatchTDB2.execute(graph, pattern, input, filter, execCxt);
     }
 }

@@ -72,7 +72,7 @@ public class QueryEngineRef extends QueryEngineBase
 
         ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg, QC.getFactory(context)) ;
         Evaluator eval = EvaluatorFactory.create(execCxt) ;
-        Table table = Eval.eval(eval, op) ;
+        Table table = RefEval.eval(eval, op) ;
         QueryIterator qIter = table.iterator(execCxt) ;
         return QueryIteratorCheck.check(qIter, execCxt) ;
     }

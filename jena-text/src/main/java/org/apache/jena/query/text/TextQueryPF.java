@@ -261,7 +261,7 @@ public class TextQueryPF extends PropertyFunctionBase {
         } ;
 
         Iterator<Binding> bIter = Iter.map(results.iterator(), converter);
-        QueryIterator qIter = new QueryIterPlainWrapper(bIter, execCxt);
+        QueryIterator qIter = QueryIterPlainWrapper.create(bIter, execCxt);
         return qIter ;
     }
 

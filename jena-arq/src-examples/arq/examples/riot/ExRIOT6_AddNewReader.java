@@ -29,16 +29,8 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.LangBuilder;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.RDFLanguages;
-import org.apache.jena.riot.RDFParserRegistry;
-import org.apache.jena.riot.ReaderRIOT;
-import org.apache.jena.riot.ReaderRIOTFactory;
+import org.apache.jena.riot.*;
 import org.apache.jena.riot.adapters.RDFReaderRIOT;
-import org.apache.jena.riot.system.ErrorHandler;
-import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.sse.Item;
@@ -50,7 +42,7 @@ import org.apache.jena.sparql.util.Context;
 public class ExRIOT6_AddNewReader
 {
     static { LogCtl.setLogging(); }
-    
+
     public static void main(String... argv) {
         Lang lang = LangBuilder.create("SSE", "text/x-sse").addFileExtensions("rsse").build();
         // This just registers the name, not the parser.
@@ -61,12 +53,12 @@ public class ExRIOT6_AddNewReader
         RDFParserRegistry.registerLangTriples(lang, factory);
 
         // use it ... inline data
-        String x = "(graph (<s> <p1> 123) (<s> <p2> 456) )"; 
+        String x = "(graph (<s> <p1> 123) (<s> <p2> 456) )";
         // Model.read( , "SSE")
         Model model = ModelFactory.createDefaultModel();
         RDFDataMgr.read(model, new StringReader(x), "http://example/", lang);
         // print results.
-        RDFDataMgr.write(System.out, model, Lang.TTL);      
+        RDFDataMgr.write(System.out, model, Lang.TTL);
     }
 
     static class SSEReaderFactory implements ReaderRIOTFactory
@@ -79,8 +71,6 @@ public class ExRIOT6_AddNewReader
 
     static class SSEReader implements ReaderRIOT
     {
-        private ErrorHandler errorHandler = ErrorHandlerFactory.getDefaultErrorHandler();
-        
         // This is just an example - it reads a graph in
         // http://jena.apache.org/documentation/notes/sse.html
         // format. It is not a streaming parser; it creates some triples,

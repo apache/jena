@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,11 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.arq.junit.sparql.tests;
+package org.apache.jena.arq.junit;
 
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
 
-public class SurpressedTest implements Runnable {
+public class SurpressedTest implements Runnable
+{
     public static boolean verbose = true;
     private ManifestEntry testEntry;
 

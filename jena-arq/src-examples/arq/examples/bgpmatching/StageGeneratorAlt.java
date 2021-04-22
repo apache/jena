@@ -19,13 +19,17 @@
 package arq.examples.bgpmatching;
 
 
+import java.util.Iterator;
+
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.impl.GraphBase ;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.iterator.QueryIterTriplePattern ;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import org.apache.jena.sparql.engine.main.StageGenerator ;
+import org.apache.jena.sparql.engine.main.solver.SolverRX3;
 
 /** Example stage generator that compiles a BasicPattern into a sequence of
  *  individual triple matching steps.
@@ -55,9 +59,9 @@ public class StageGeneratorAlt implements StageGenerator
         System.err.println("MyStageGenerator.compile:: triple patterns = "+pattern.size()) ;
 
         // Stream the triple matches together, one triple matcher at a time.
-        QueryIterator qIter = input ;
+        Iterator<Binding> iter = input ;
         for (Triple triple : pattern.getList())
-            qIter = new QueryIterTriplePattern(qIter, triple, execCxt) ;
-        return qIter ;
+            iter = SolverRX3.rdfStarTriple(iter, triple, execCxt);
+        return QueryIterPlainWrapper.create(iter) ;
     }
 }

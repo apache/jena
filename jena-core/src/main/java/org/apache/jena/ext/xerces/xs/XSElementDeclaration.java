@@ -52,6 +52,7 @@ public interface XSElementDeclaration extends XSTerm {
      * 
      * @deprecated Use getValueConstraintValue().getNormalizedValue() instead
      */
+    @Deprecated
     public String getConstraintValue();
 
     /**
@@ -64,6 +65,7 @@ public interface XSElementDeclaration extends XSTerm {
      * 
      * @deprecated Use getValueConstraintValue().getActualValue() instead
      */
+    @Deprecated
     public Object getActualVC()
                                             throws XSException;
 
@@ -83,6 +85,7 @@ public interface XSElementDeclaration extends XSTerm {
      * 
      * @deprecated Use getValueConstraintValue().getActualValueType() instead
      */
+    @Deprecated
     public short getActualVCType()
                                             throws XSException;
 
@@ -101,6 +104,7 @@ public interface XSElementDeclaration extends XSTerm {
      * 
      * @deprecated Use getValueConstraintValue().getListValueTypes() instead
      */
+    @Deprecated
     public ShortList getItemValueTypes()
                                             throws XSException;
 

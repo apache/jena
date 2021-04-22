@@ -19,21 +19,30 @@
 package org.apache.jena.sparql.engine.iterator;
 
 
+import java.util.function.Predicate;
+
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.BasicPattern;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.main.QC;
+import org.apache.jena.sparql.engine.main.solver.PatternMatchData;
 import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.util.FmtUtils;
 
+/**
+ * @deprecated Use {@link PatternMatchData#execute(Graph, BasicPattern, QueryIterator, Predicate, ExecutionContext)}
+ */
+@Deprecated
 public class QueryIterBlockTriples extends QueryIter1
 {
-    public static QueryIterator create(QueryIterator input, BasicPattern pattern,
-                                       ExecutionContext execContext) {
-        return new QueryIterBlockTriples(input, pattern, execContext);
+    public static QueryIterator create(QueryIterator input, BasicPattern pattern, ExecutionContext execCxt) {
+        //return new QueryIterBlockTriples(input, pattern, execContext);
+        return PatternMatchData.execute(execCxt.getActiveGraph(), pattern, input, null, execCxt);
     }
 
     private BasicPattern pattern;
@@ -45,7 +54,7 @@ public class QueryIterBlockTriples extends QueryIter1
         this.pattern = pattern;
         QueryIterator chain = getInput();
         for (Triple triple : pattern)
-            chain = new QueryIterTriplePattern(chain, triple, execContext);
+            chain = QC.execute(chain, triple, execContext);
         output = chain;
     }
 

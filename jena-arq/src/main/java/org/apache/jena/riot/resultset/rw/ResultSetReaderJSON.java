@@ -79,7 +79,7 @@ public class ResultSetReaderJSON implements ResultSetReader {
         if ( model == null )
             model = GraphFactory.makeJenaDefaultModel();
         if ( exec.rows != null ) {
-            QueryIterator qIter = new QueryIterPlainWrapper(exec.rows.iterator());
+            QueryIterator qIter = QueryIterPlainWrapper.create(exec.rows.iterator());
             ResultSet rs = new ResultSetStream(Var.varNames(exec.vars), model, qIter);
             return new SPARQLResult(rs);
         } else

@@ -29,9 +29,9 @@ import org.apache.jena.graph.impl.WrappedGraph;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 
-/** Some operations on graphs */ 
+/** Some operations on graphs */
 public class GraphOps {
-    /** 
+    /**
      * Check whether a dataset contains a named graph of the given name.
      * Graph with special names (union and default) return true.
      */
@@ -40,10 +40,10 @@ public class GraphOps {
             return true ;
         return dsg.containsGraph(gn) ;
     }
-    
+
     /** Get a graph from the dataset - the graph name may be special
      * - the union graph (which is immutable) or a special name for
-     * the default graph. 
+     * the default graph.
      * <p>
      * A graph name of "null" is interpreted as the default graph.
      */
@@ -65,7 +65,7 @@ public class GraphOps {
 
     /** Create an immutable union graph of all the named graphs in the dataset.
      * Future changes to the set of graphs in the dataset will be seen.
-     */   
+     */
     public static Graph unionGraph(DatasetGraph dsg) {
         return new GraphUnionRead(dsg) ;
     }
@@ -90,7 +90,7 @@ public class GraphOps {
         deleteAll(g, iter.iterator()) ;
     }
 
-    /** Remove all layers of graph wrapping. Returns the original graph is not wrapped at all.*/
+    /** Remove all layers of graph wrapping. Returns the original graph if not wrapped at all.*/
     public static Graph unwrapAll(Graph graph) {
         Graph graph1 = graph;
         for (;;) {
@@ -107,8 +107,8 @@ public class GraphOps {
         if ( graph instanceof GraphWrapper ) return true;
         return false;
     }
-        
-    /** Remove one layer of graph wrapping. Returns the orinalk graph is not wrapped at all. */
+
+    /** Remove one layer of graph wrapping. Returns the original graph if not wrapped at all. */
     public static Graph unwrapOne(Graph graph) {
         if ( graph instanceof WrappedGraph )
             // WrappedGraph is a GraphWithPerform

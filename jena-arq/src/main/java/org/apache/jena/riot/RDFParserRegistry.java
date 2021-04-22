@@ -31,7 +31,6 @@ import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.lang.* ;
 import org.apache.jena.riot.lang.extra.TurtleJCC;
-import org.apache.jena.riot.lang.extra.TurtleJavaccReaderRIOT;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.StreamRDF;
@@ -49,9 +48,6 @@ import org.apache.jena.sparql.util.Context ;
 
 public class RDFParserRegistry
 {
-    /** Map Jena I/O names to language */
-    private static Map<String, Lang> mapJenaNameToLang                 = new HashMap<>() ;
-
     /** map language to a parser factory */
     private static Map<Lang, ReaderRIOTFactory> langToParserFactory    = new HashMap<>() ;
 
@@ -226,26 +222,6 @@ public class RDFParserRegistry
         @Override
         public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
             throw new RiotException("RDF Thrift : Reading binary data from a java.io.reader is not supported. Please use an InputStream") ;
-        }
-    }
-
-    // JavaCC power Turtle parser.
-    private static class ReaderRDFTurtleJCC implements ReaderRIOT {
-        static ReaderRIOTFactory Factory = (Lang language, ParserProfile profile)->new TurtleJavaccReaderRIOT(profile);
-
-        private final ParserProfile profile;
-        public ReaderRDFTurtleJCC(ParserProfile profile) { this.profile = profile; }
-
-        @Override
-        public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-            TurtleJavaccReaderRIOT parser = new TurtleJavaccReaderRIOT(profile);
-            parser.read(in, baseURI, ct, output, context);
-        }
-
-        @Override
-        public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
-            TurtleJavaccReaderRIOT parser = new TurtleJavaccReaderRIOT(profile);
-            parser.read(reader, baseURI, ct, output, context);
         }
     }
 }

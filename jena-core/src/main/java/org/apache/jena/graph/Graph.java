@@ -18,6 +18,10 @@
 
 package org.apache.jena.graph;
 
+import java.util.Objects;
+import java.util.stream.Stream;
+
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.impl.GraphBase ;
 import org.apache.jena.shared.AddDeniedException ;
 import org.apache.jena.shared.DeleteDeniedException ;
@@ -76,12 +80,38 @@ public interface Graph
     void add( Triple t ) throws AddDeniedException;
 
     /**
+     * Add the triple t (if possible) to the set belonging to this graph
+     *
+     * @param t the triple to add to the graph
+     * @throws AddDeniedException if the triple cannot be added
+     */
+    default void add(Node s, Node p, Node o) throws AddDeniedException {
+        Objects.requireNonNull(s, "Subject must not be null");
+        Objects.requireNonNull(p, "Predicate must not be null");
+        Objects.requireNonNull(o, "Object must not be null");
+        add(Triple.create(s, p, o));
+    }
+
+    /**
         Delete the triple t (if possible) from the set belonging to this graph
 
         @param  t the triple to delete to the graph
         @throws DeleteDeniedException if the triple cannot be removed
     */
 	void delete(Triple t) throws DeleteDeniedException;
+
+    /**
+     * Add the triple t (if possible) to the set belonging to this graph
+     *
+     * @param t the triple to add to the graph
+     * @throws AddDeniedException if the triple cannot be added
+     */
+    default void delete(Node s, Node p, Node o) throws DeleteDeniedException {
+        Objects.requireNonNull(s, "Subject must not be null");
+        Objects.requireNonNull(p, "Predicate must not be null");
+        Objects.requireNonNull(o, "Object must not be null");
+        delete(Triple.create(s, p, o));
+    }
 
 	/**
         Returns an iterator over all the Triples that match the triple pattern.
@@ -93,11 +123,27 @@ public interface Graph
 
 	/** Returns an iterator over Triples matching a pattern.
      *
-     * @return an iterator of all triples in this graph
+     * @return an iterator of triples in this graph matching the pattern.
 	 */
 	ExtendedIterator<Triple> find(Node s, Node p, Node o);
 
-    /** Returns an iterator over all Triples in the graph.
+	/** Returns a {@link Stream} of Triples matching a pattern.
+	 *
+	 * @return a stream  of triples in this graph matching the pattern.
+	 */
+	default Stream<Triple> stream(Node s, Node p, Node o) {
+	    return Iter.asStream(find(s,p,o));
+	}
+
+	/** Returns a {@link Stream} of all triples in the graph.
+	 *
+	 * @return a stream  of triples in this graph.
+	 */
+	default Stream<Triple> stream() {
+	    return stream(Node.ANY, Node.ANY, Node.ANY);
+	}
+
+	/** Returns an iterator over all Triples in the graph.
      * Equivalent to {@code find(Node.ANY, Node.ANY, Node.ANY)}
      *
      * @return an iterator of all triples in this graph

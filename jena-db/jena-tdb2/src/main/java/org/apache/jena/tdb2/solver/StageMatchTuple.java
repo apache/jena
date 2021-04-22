@@ -49,9 +49,9 @@ class StageMatchTuple {
         // ---- Convert to NodeIds
         NodeId ids[] = new NodeId[patternTuple.len()];
         // Variables for this tuple after substitution
-        final Var[] var = new Var[patternTuple.len()];
+        final Var[] vars = new Var[patternTuple.len()];
 
-        boolean b = prepare(nodeTupleTable.getNodeTable(), patternTuple, input, ids, var);
+        boolean b = prepare(nodeTupleTable.getNodeTable(), patternTuple, input, ids, vars);
         if ( !b )
             // Short cut - known unknown NodeId
             return Iter.nullIterator();
@@ -90,22 +90,24 @@ class StageMatchTuple {
             iterMatches = Iter.distinctAdjacent(iterMatches);
         }
 
-        // Map Tuple<NodeId> to BindingNodeId
-        Function<Tuple<NodeId>, BindingNodeId> binder = tuple -> {
-            BindingNodeId output = new BindingNodeId(input);
-            for ( int i = 0 ; i < var.length ; i++ ) {
-                Var v = var[i];
-                if ( v == null )
-                    continue;
-                NodeId id = tuple.get(i);
-                if ( reject(output, v, id) )
-                    return null;
-                output.put(v, id);
-            }
-            return output;
-        };
 
+        Function<Tuple<NodeId>, BindingNodeId> binder = tuple -> tupleToBinding(input, tuple, vars);
         return Iter.iter(iterMatches).map(binder).removeNulls();
+    }
+
+    private static BindingNodeId tupleToBinding(BindingNodeId input, Tuple<NodeId> tuple, Var[] var) {
+        // Reuseable BindingNodeId builder?
+        BindingNodeId output = new BindingNodeId(input);
+        for ( int i = 0 ; i < var.length ; i++ ) {
+            Var v = var[i];
+            if ( v == null )
+                continue;
+            NodeId id = tuple.get(i);
+            if ( ! compatiable(output, v, id) )
+                return null;
+            output.put(v, id);
+        }
+        return output;
     }
 
     /**
@@ -144,14 +146,13 @@ class StageMatchTuple {
         return iter;
     }
 
-    private static boolean reject(BindingNodeId output, Var var, NodeId value) {
+    private static boolean compatiable(BindingNodeId output, Var var, NodeId value) {
         if ( !output.containsKey(var) )
-            return false;
-
+            return true;
+        // sameTermAs for language tags?
         if ( output.get(var).equals(value) )
-            return false;
-
-        return true;
+            return true;
+        return false;
     }
 
     private static Var asVar(Node node) {

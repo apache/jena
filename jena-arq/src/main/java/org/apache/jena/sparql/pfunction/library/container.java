@@ -29,6 +29,7 @@ import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.engine.iterator.* ;
+import org.apache.jena.sparql.engine.main.QC;
 import org.apache.jena.sparql.pfunction.PFuncSimple ;
 import org.apache.jena.sparql.util.IterLib ;
 import org.apache.jena.sparql.util.graph.GraphContainerUtils ;
@@ -62,7 +63,7 @@ public class container extends PFuncSimple
     {
         QueryIterator input = QueryIterSingleton.create(binding, execCxt) ;
         Graph graph = execCxt.getActiveGraph() ;
-        QueryIterator qIter = new QueryIterTriplePattern(input, new Triple(containerNode, predicate, member), execCxt) ;
+        QueryIterator qIter = QC.execute(input, new Triple(containerNode, predicate, member), execCxt) ;
         return qIter ;
     }
 
@@ -130,7 +131,7 @@ public class container extends PFuncSimple
         }
 
         // Turn into a QueryIterator of extra bindings.
-        return new QueryIterPlainWrapper(bindings.iterator(), execCxt) ;
+        return QueryIterPlainWrapper.create(bindings.iterator(), execCxt) ;
     }
 
     private QueryIterator verify(Binding binding, Node containerNode, Node member, ExecutionContext execCxt)

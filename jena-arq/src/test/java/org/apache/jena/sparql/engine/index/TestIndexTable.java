@@ -173,9 +173,9 @@ public class TestIndexTable {
 		assertFalse(index.containsCompatibleWithSharedDomain(binding("xyz", 10, 11, 12))) ;
 	}
 
-	private QueryIterator fullData() { return new QueryIterPlainWrapper(fData.iterator()) ; }
+	private QueryIterator fullData() { return QueryIterPlainWrapper.create(fData.iterator()) ; }
 
-	private QueryIterator partData() { return new QueryIterPlainWrapper(pData.iterator()) ; }
+	private QueryIterator partData() { return QueryIterPlainWrapper.create(pData.iterator()) ; }
 
 
 	/**

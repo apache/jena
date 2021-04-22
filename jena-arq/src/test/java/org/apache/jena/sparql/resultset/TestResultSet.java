@@ -608,7 +608,7 @@ public class TestResultSet
         solutions.add(b1) ;
         solutions.add(b2) ;
 
-        QueryIterator qIter = new QueryIterPlainWrapper(solutions.iterator(), null) ;
+        QueryIterator qIter = QueryIterPlainWrapper.create(solutions.iterator(), null) ;
         ResultSet rs = new ResultSetStream(vars, null, qIter) ;
         return rs ;
     }

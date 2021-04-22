@@ -23,15 +23,15 @@ import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.iterator.QueryIterBlockTriplesStar ;
+import org.apache.jena.sparql.engine.main.solver.PatternMatchData;
 import org.apache.jena.sparql.util.Context ;
 
 /** The stage builder (there is only one) is a library that encapsulates
  * evaluation of a basic graph pattern (BGP).  Matching BGPs is an extension
  * point of SPARQL; different entailment regimes plug in at this point.
  * They are also an extension point in ARQ to connect to any datasource,
- * the most common case being connecting to a Jena graph.     
- * 
+ * the most common case being connecting to a Jena graph.
+ *
  * The StageBuilder finds the registered StageGenerator, and calls it to
  * evaluate a basic graph pattern that has any bound variables
  * replaced by their value (in effect, an index join).
@@ -40,42 +40,21 @@ import org.apache.jena.sparql.util.Context ;
  * the context object for the execution. Setting the StageGenerator
  * in the global context ({@link ARQ}) makes it available
  * to all query execution created after the point of setting.
- * 
- * Helper static methods for setting the stage generator are provided.  
+ *
+ * Helper static methods for setting the stage generator are provided.
  */
 
 public class StageBuilder
 {
-//    public static QueryIterator execute(BasicPattern pattern, 
-//                                        QueryIterator input, 
-//                                        ExecutionContext execCxt)
-//    {
-//        if ( pattern.isEmpty() )
-//            return input ;
-//        
-//        boolean hideBNodeVars = execCxt.getContext().isTrue(ARQ.hideNonDistiguishedVariables) ;
-//        
-//        StageGenerator gen = chooseStageGenerator(execCxt.getContext()) ;
-//        QueryIterator qIter = gen.execute(pattern, input, execCxt) ;
-//
-//        // Remove non-distinguished variables here.
-//        // Project out only named variables.
-//        if ( hideBNodeVars )
-//            qIter = new QueryIterDistinguishedVars(qIter, execCxt) ;
-//        return qIter ;
-//    }
-    
-    // -------- Initialize
-    
-    private static StageGenerator defaultStageGenerator = new StageGeneratorGenericStar() ; 
-    
+    private static StageGenerator defaultStageGenerator = new StageGeneratorGeneric() ;
+
     /** The plain StageGenerator, no reordering */
-    public static StageGenerator executeInline = 
+    public static StageGenerator executeInline =
         (BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)->
-            QueryIterBlockTriplesStar.create(input, pattern, execCxt) ;
-        
+            PatternMatchData.execute(execCxt.getActiveGraph(), pattern, input, null, execCxt);
+
     // -------- Manage StageGenerator registration
-    
+
     public static void setGenerator(Context context, StageGenerator stageGenerator) {
         if ( ARQ.stageGenerator == null )
             // Indicator of initialization problems

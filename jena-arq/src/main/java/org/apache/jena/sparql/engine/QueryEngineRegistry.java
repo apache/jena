@@ -18,134 +18,127 @@
 
 package org.apache.jena.sparql.engine;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.jena.query.Query ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.engine.main.QueryEngineMain ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.query.Query;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.engine.main.QueryEngineMain;
+import org.apache.jena.sparql.util.Context;
 
 
 public class QueryEngineRegistry
 {
-    List<QueryEngineFactory> factories = new ArrayList<>() ;
-    static { init() ; }
-    
+    List<QueryEngineFactory> factories = new ArrayList<>();
+    static { init(); }
+
     // Singleton
-    static QueryEngineRegistry registry = null ;
+    static QueryEngineRegistry registry = null;
     static public QueryEngineRegistry get()
-    { 
+    {
         if ( registry == null )
-            init() ;
+            init();
         return registry;
     }
-    
+
     private QueryEngineRegistry() { }
-    
+
     private static synchronized void init()
     {
-        registry = new QueryEngineRegistry() ;
-        registry.add(QueryEngineMain.getFactory()) ;
-        registry.add(QueryEngineFactoryWrapper.get()) ;
+        registry = new QueryEngineRegistry();
+        registry.add(QueryEngineMain.getFactory());
+        registry.add(QueryEngineFactoryWrapper.get());
     }
-    
+
     /** Locate a suitable factory for this query and dataset from the default registry
-     * 
-     * @param query   Query 
+     *
+     * @param query   Query
      * @param dataset Dataset
      * @return A QueryExecutionFactory or null if none accept the request
      */
-    
+
     public static QueryEngineFactory findFactory(Query query, DatasetGraph dataset, Context context)
-    { return get().find(query, dataset, context) ; }
-    
+    { return get().find(query, dataset, context); }
+
     /** Locate a suitable factory for this algebra expression
      *  and dataset from the default registry
-     * 
-     * @param op   Algebra expression 
+     *
+     * @param op   Algebra expression
      * @param dataset DatasetGraph
      * @param context
      * @return A QueryExecutionFactory or null if none accept the request
      */
-    
+
     public static QueryEngineFactory findFactory(Op op, DatasetGraph dataset, Context context)
-    { return get().find(op, dataset, context) ; }
+    { return get().find(op, dataset, context); }
 
     /** Locate a suitable factory for this query and dataset
-     * 
-     * @param query   Query 
+     *
+     * @param query   Query
      * @param dataset Dataset
      * @return A QueryExecutionFactory or null if none accept the request
      */
-    
+
     public QueryEngineFactory find(Query query, DatasetGraph dataset)
-    { return find(query, dataset, null) ; }
+    { return find(query, dataset, null); }
 
     /** Locate a suitable factory for this query and dataset
-     * 
-     * @param query   Query 
+     *
+     * @param query   Query
      * @param dataset Dataset
      * @return A QueryExecutionFactory or null if none accept the request
      */
-    
-    public QueryEngineFactory find(Query query, DatasetGraph dataset, Context context)
-    {
-        for ( QueryEngineFactory f : factories )
-        {
-            if ( f.accept( query, dataset, context ) )
-            {
+
+    public QueryEngineFactory find(Query query, DatasetGraph dataset, Context context) {
+        for ( QueryEngineFactory f : factories ) {
+            if ( f.accept(query, dataset, context) ) {
                 return f;
             }
         }
-        return null ;
+        return null;
     }
-    
+
     /** Locate a suitable factory for this algebra expression and dataset
-     * 
-     * @param op   Algebra expression 
+     *
+     * @param op   Algebra expression
      * @param dataset DatasetGraph
      * @param context
-     * 
+     *
      * @return A QueryExecutionFactory or null if none accept the request
      */
-    
-    public QueryEngineFactory find(Op op, DatasetGraph dataset, Context context)
-    {
-        for ( QueryEngineFactory f : factories )
-        {
-            if ( f.accept( op, dataset, context ) )
-            {
+
+    public QueryEngineFactory find(Op op, DatasetGraph dataset, Context context) {
+        for ( QueryEngineFactory f : factories ) {
+            if ( f.accept(op, dataset, context) ) {
                 return f;
             }
         }
-        return null ;
+        return null;
     }
-    
+
     /** Add a QueryExecutionFactory to the default registry */
-    public static void addFactory(QueryEngineFactory f) { get().add(f) ; }
-    
+    public static void addFactory(QueryEngineFactory f) { get().add(f); }
+
     /** Add a QueryExecutionFactory */
     public void add(QueryEngineFactory f)
     {
         // Add to low end so that newer factories are tried first
-        factories.add(0, f) ; 
+        factories.add(0, f);
     }
-    
+
     /** Remove a QueryExecutionFactory */
-    public static void removeFactory(QueryEngineFactory f)  { get().remove(f) ; }
-    
+    public static void removeFactory(QueryEngineFactory f)  { get().remove(f); }
+
     /** Remove a QueryExecutionFactory */
-    public void remove(QueryEngineFactory f)  { factories.remove(f) ; }
-    
+    public void remove(QueryEngineFactory f)  { factories.remove(f); }
+
     /** Allow <b>careful</b> manipulation of the factories list */
-    public List<QueryEngineFactory> factories() { return factories ; }
+    public List<QueryEngineFactory> factories() { return factories; }
 
     /** Check whether a query engine factory is already registered in the default registry*/
-    public static boolean containsFactory(QueryEngineFactory f) { return get().contains(f) ; }
+    public static boolean containsFactory(QueryEngineFactory f) { return get().contains(f); }
 
     /** Check whether a query engine factory is already registered */
-    public boolean contains(QueryEngineFactory f) { return factories.contains(f) ; }
-
+    public boolean contains(QueryEngineFactory f) { return factories.contains(f); }
 }

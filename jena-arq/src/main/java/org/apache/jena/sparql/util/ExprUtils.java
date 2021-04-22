@@ -52,6 +52,7 @@ public class ExprUtils
 
     /** Go from a node to an expression.
      * @deprecated Use {@link ExprLib#nodeToExpr(Node)} instead*/
+    @Deprecated
     public static Expr nodeToExpr(Node n) {
         return ExprLib.nodeToExpr(n);
     }

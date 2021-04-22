@@ -19,21 +19,24 @@
 package org.apache.jena.sparql.engine.iterator;
 
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.sparql.core.BasicPattern;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.main.solver.PatternMatchData;
 import org.apache.jena.sparql.serializer.SerializationContext;
 
 /**
- * Like {@link QueryIterBlockTriples} except it process triple term patterns (RDF-star)
+ * Like {@link QueryIterBlockTriples} except it can process triple term patterns (RDF-star)
  * as well.
+ * @deprecated Use {@link PatternMatchData}.
  */
+@Deprecated
 public class QueryIterBlockTriplesStar extends QueryIter1 {
 
-    public static QueryIterator create(QueryIterator input, BasicPattern pattern, ExecutionContext execContext) {
-        return new QueryIterBlockTriplesStar(input, pattern, execContext);
+    public static QueryIterator create(QueryIterator input, BasicPattern pattern, ExecutionContext execCxt) {
+        return PatternMatchData.execute(execCxt.getActiveGraph(), pattern, input, null, execCxt);
     }
 
     private final BasicPattern pattern;
@@ -42,11 +45,9 @@ public class QueryIterBlockTriplesStar extends QueryIter1 {
     private QueryIterBlockTriplesStar(QueryIterator input, BasicPattern pattern, ExecutionContext execContext) {
         super(input, execContext);
         this.pattern = pattern;
-        QueryIterator chain = getInput();
-        for (Triple triple : pattern) {
-            chain = RX.rdfStarTriple(chain, triple, execContext);
-        }
-        output = chain;
+
+        Graph graph = execContext.getActiveGraph();
+        output = PatternMatchData.execute(graph, pattern, input, null, execContext);
     }
 
     @Override
@@ -74,6 +75,15 @@ public class QueryIterBlockTriplesStar extends QueryIter1 {
 
     @Override
     protected void details(IndentedWriter out, SerializationContext sCxt) {
-        out.print(this.getClass().getSimpleName()+": " + pattern);
+        out.print(this.getClass().getSimpleName());
+        if ( pattern.isEmpty() ) {
+            out.println(": Empty pattern");
+            return;
+        }
+        out.println();
+        out.incIndent();
+        out.print(pattern);
+        out.decIndent();
+        out.println();
     }
 }

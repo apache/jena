@@ -16,7 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.engine.iterator;
+package org.apache.jena.sparql.engine.main.solver;
+
+import static org.apache.jena.sparql.engine.main.solver.SolverLib.nodeTopLevel;
+import static org.apache.jena.sparql.engine.main.solver.SolverLib.sameTermAs;
+import static org.apache.jena.sparql.engine.main.solver.SolverLib.tripleHasEmbTripleWithVars;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -25,22 +29,14 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
-import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-/** RDF-star - when there is an embedded triple with variables. */
-public class RX {
-    // Note: running with DATAPATH = false
-
-    // GraphMem is sameValueAs (historical)
-    // and tests use GraphPlain, which is langtag case insensitive (There is one DAWG test that needs this).
-
-    // If running in development with "DATAPATH = false" two failures ("lang-3", run twice).
+/** RDF-star - triple form. Solve patterns when there is an embedded triple with variables. */
+public class SolverRX3 {
 
     /**
      * This constant is not public API. It is exposed only so integration testing can
@@ -48,38 +44,20 @@ public class RX {
      */
     public static final boolean DATAPATH = true;
 
-    public static QueryIterator rdfStarTriple(QueryIterator chain, Triple pattern, ExecutionContext execCxt) {
+    public static Iterator<Binding> rdfStarTriple(Iterator<Binding> chain, Triple tPattern, ExecutionContext execCxt) {
         // Should all work without this trap for plain RDF.
         if ( DATAPATH ) {
-            if ( ! tripleHasNodeTriple(pattern) ) {
+            // No variables inside <<>>
+            if ( ! tripleHasEmbTripleWithVars(tPattern) )
                 // No RDF-star : direct to data.
-                return matchData(chain, pattern, execCxt);
-            }
+                return matchData(chain, tPattern, execCxt);
         }
-        return rdfStarTripleSub(chain, pattern, execCxt);
+        return rdfStarTripleSub(chain, tPattern, execCxt);
     }
 
-    /**
-     * Match the graph with a triple pattern.
-     * This is the accessor to the graph.
-     * It assumes any triple terms have been dealt with.
-     */
-    private static QueryIterator matchData(QueryIterator chain, Triple pattern, ExecutionContext execCxt) {
-        return new QueryIterTriplePattern(chain, pattern, execCxt);
-    }
-
-    /**
-     * Test whether a triple has an triple term as one of its components.
-     */
-    private static boolean tripleHasNodeTriple(Triple triple) {
-        return triple.getSubject().isNodeTriple()
-               /*|| triple.getPredicate().isNodeTriple()*/
-               || triple.getObject().isNodeTriple();
-    }
-
-    private static QueryIterator rdfStarTripleSub(QueryIterator input, Triple pattern, ExecutionContext execCxt) {
-        Iterator<Binding> matches = Iter.flatMap(input, binding->rdfStarTripleSub(binding, pattern, execCxt));
-        return new QueryIterPlainWrapper(matches, execCxt);
+    private static Iterator<Binding> rdfStarTripleSub(Iterator<Binding> input, Triple tPattern, ExecutionContext execCxt) {
+        Iterator<Binding> matches = Iter.flatMap(input, binding->rdfStarTripleSub(binding, tPattern, execCxt));
+        return matches;
     }
 
     private static Iterator<Binding> rdfStarTripleSub(Binding input, Triple tPattern, ExecutionContext execCxt) {
@@ -92,26 +70,28 @@ public class RX {
         return matched;
     }
 
-    /** Convert a pattern node into ANY, or leave as a constant term. */
-    public static Node nodeTopLevel(Node node) {
-        // Public so TDB code can use it.
-        if ( Var.isVar(node) )
-            return Node.ANY;
-        if ( node.isNodeTriple() ) { //|| node.isNodeGraph() )
-            if ( ! node.getTriple().isConcrete() )
-                // Nested variables.
-                return Node.ANY;
-        }
-        return node;
+    /**
+     * Direct.
+     * Match the graph with a triple pattern.
+     * This is the accessor to the graph.
+     * It assumes any triple terms have been dealt with.
+     */
+    private static Iterator<Binding> matchData(Iterator<Binding> chain, Triple pattern, ExecutionContext execCxt) {
+        Graph g = execCxt.getActiveGraph();
+        Iterator<Binding> iter = StageMatchTriple.accessTriple(chain, g, pattern, null, execCxt);
+        return iter;
+        // 4.0.0 and before.
+        //return new QueryIterTriplePattern(chain, pattern, execCxt);
     }
 
     public static Binding matchTriple(Binding input, Triple tData, Triple tPattern) {
         BindingBuilder bb = Binding.builder(input);
-        boolean r = matchTriple(bb, tData, tPattern);
+        boolean r = bindTriple(bb, tData, tPattern);
         return r ? bb.build() : null;
     }
 
-    private static boolean matchTriple(BindingBuilder bb, Triple tData, Triple tPattern) {
+    // Used in matching a triple in an embedded triple term.
+    /*package*/ static boolean bindTriple(BindingBuilder bb, Triple tData, Triple tPattern) {
         Node sPattern = tPattern.getSubject();
         Node pPattern = tPattern.getPredicate();
         Node oPattern = tPattern.getObject();
@@ -128,35 +108,6 @@ public class RX {
             return false;
         return true;
     }
-
-    /** Match data "qData" against "tGraphNode, tPattern", including RDF-star terms. */
-    public static Binding matchQuad(Binding input, Quad qData, Node tGraphNode, Triple tPattern) {
-        BindingBuilder bb = Binding.builder(input);
-        boolean r = matchQuad(bb, qData, tGraphNode, tPattern);
-        return r ? bb.build() : null;
-    }
-
-    private static boolean matchQuad(BindingBuilder bb, Quad qData, Node tGraphNode, Triple tPattern) {
-        Node sPattern = tPattern.getSubject();
-        Node pPattern = tPattern.getPredicate();
-        Node oPattern = tPattern.getObject();
-
-        Node gData = qData.getGraph();
-        Node sData = qData.getSubject();
-        Node pData = qData.getPredicate();
-        Node oData = qData.getObject();
-
-        if ( ! match(bb, gData, tGraphNode) )
-            return false;
-        if ( ! match(bb, sData, sPattern) )
-            return false;
-        if ( ! match(bb, pData, pPattern) )
-            return false;
-        if ( ! match(bb, oData, oPattern) )
-            return false;
-        return true;
-    }
-
     // RDF term matcher - may recurse and call matchTriple is a triple term is in the pattern.
     private static boolean match(BindingBuilder bb, Node nData, Node nPattern) {
         if ( nPattern == null )
@@ -173,24 +124,24 @@ public class RX {
         if ( nPattern.isConcrete() ) {
             // No nested variables. Is data equal to pattern?
             // Term comparison.
-            return nPattern.equals(nData);
+            return sameTermAs(nData, nPattern);
         }
 
         // Easy case - nPattern is a variable.
         if ( Var.isVar(nPattern) ) {
             Var var = Var.alloc(nPattern);
-            bb.add(var,  nData);
+            bb.add(var, nData);
             return true;
         }
 
         // nPattern is <<>> with variables. Is the data a <<>>?
-        if ( ! nData.isNodeTriple() )
+        if ( !nData.isNodeTriple() )
             return false;
 
         // nData is <<>>, nPattern is <<>>
         // Unpack, match components.
         Triple tPattern = nPattern.getTriple();
         Triple tData = nData.getTriple();
-        return matchTriple(bb, tData, tPattern);
+        return bindTriple(bb, tData, tPattern);
     }
 }

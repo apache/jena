@@ -165,7 +165,7 @@ public class EvaluatorSimple implements Evaluator
             if ( expressions.isSatisfied(b, execCxt) )
                 output.add(b) ;
         }
-        return new TableN(new QueryIterPlainWrapper(output.iterator(), execCxt)) ;
+        return new TableN(QueryIterPlainWrapper.create(output.iterator(), execCxt)) ;
     }
 
 
