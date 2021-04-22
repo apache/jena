@@ -23,6 +23,7 @@ import static org.apache.jena.sparql.engine.main.solver.SolverLib.sameTermAs;
 import static org.apache.jena.sparql.engine.main.solver.SolverLib.tripleHasEmbTripleWithVars;
 
 import java.util.Iterator;
+import java.util.function.Predicate;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
@@ -75,8 +76,11 @@ public class SolverRX4 {
         return Iter.removeNulls(matched);
     }
 
+    private static final Predicate<Quad> NoFilter = null;
+    private static final boolean NoAnyGraph = false;
+
     private static Iterator<Binding> matchDataQuad(Iterator<Binding> chain, Node graphName, Triple pattern, ExecutionContext execCxt) {
-        Iterator<Binding> matches = StageMatchData.accessQuad(chain, graphName, pattern, /*filtr*/null, /*anyGraph*/false, execCxt);
+        Iterator<Binding> matches = StageMatchData.accessQuad(chain, graphName, pattern, NoFilter, NoAnyGraph, execCxt);
         return matches;
     }
 

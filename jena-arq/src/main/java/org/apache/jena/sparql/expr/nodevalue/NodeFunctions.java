@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.expr.nodevalue ;
 
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.UUID ;
@@ -110,28 +112,6 @@ public class NodeFunctions {
             return ;
 
         throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2) ;
-
-        // ----------
-
-//                if ( lang1.equals("") && !lang2.equals("") )
-//            throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2) ;
-//
-//
-//
-//        if ( n1.getLiteralDatatype() != null ) {
-//            // n1 is an xsd string by checkAndGetString
-//            if ( XSDDatatype.XSDstring.equals(n2.getLiteralDatatypeURI()) )
-//                return ;
-//            if ( n2.getLiteralLanguage().equals("") )
-//                return ;
-//            throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2) ;
-//        }
-//
-//        // Incompatible?
-//        // arg1 simple or xsd:string, arg2 has a lang.
-//        // arg1 with lang, arg2 has a different lang.
-//        if ( !lang1.equals("") && (!lang2.equals("") && !lang1.equals(lang2)) )
-//            throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2) ;
     }
 
     // -------- sameTerm
@@ -166,7 +146,7 @@ public class NodeFunctions {
             // Two literals, may be sameTerm by language tag case insensitivity.
             String lang1 = n1.getLiteralLanguage() ;
             String lang2 = n2.getLiteralLanguage() ;
-            if ( ! lang1.equals("") && ! lang2.equals("") ) {
+            if ( isNotEmpty(lang1) && isNotEmpty(lang2) ) {
                 // Two language tags, both not "", equal by case insensitivity => lexical test.
                 if ( lang1.equalsIgnoreCase(lang2) ) {
                     boolean b = n1.getLiteralLexicalForm().equals(n2.getLiteralLexicalForm()) ;

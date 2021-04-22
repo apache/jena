@@ -42,7 +42,7 @@ import org.apache.jena.tdb.store.NodeId;
 import org.apache.jena.tdb.store.nodetable.NodeTable;
 import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable;
 
-/** RDF-start processing for matching an individual triple/quad pattern. */
+/** RDF-star processing for matching an individual triple/quad pattern. */
 public class SolverRX {
     /**
      * Control whether to check for embedded triple terms with variables or to act in a direct manner.
