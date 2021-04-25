@@ -129,7 +129,6 @@ public class RDFWriterRegistry
          register(Lang.TRIX,        RDFFormat.TRIX) ;
          register(Lang.SHACLC,      RDFFormat.SHACLC);
 
-
          // Writer factories.
          register(RDFFormat.TURTLE_PRETTY,  wgfactory) ;
          register(RDFFormat.TURTLE_BLOCKS,  wgfactory) ;
