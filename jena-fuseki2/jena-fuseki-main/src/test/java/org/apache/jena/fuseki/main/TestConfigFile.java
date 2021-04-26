@@ -32,6 +32,7 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.atlas.web.WebLib;
+import org.apache.jena.base.Sys;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.rdfconnection.RDFConnection;
@@ -246,16 +247,51 @@ public class TestConfigFile {
             assertNotNull(x2);
             String x3 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/metrics");
             assertNotNull(x3);
-            String x4 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/tasks");
-            assertNotNull(x4);
-            try(TypedInputStream x5 = HttpOp.execHttpPostStream("http://localhost:"+port+"/$/compact/ds", null, "application/json")) {
-                assertNotNull(x5);
-                assertNotEquals(0, x5.readAllBytes().length);
+        } finally {
+            server.stop();
+        }
+    }
+
+    @Test public void serverTDB2_compact0() {
+        int port = WebLib.choosePort();
+        FusekiServer server = server(port, "server-tdb2_compact0.ttl");
+        server.start();
+        try {
+            String x1= HttpOp.execHttpGetString("http://localhost:"+port+"/$/tasks");
+            assertNotNull(x1);
+            try(TypedInputStream x2 = HttpOp.execHttpPostStream("http://localhost:"+port+"/$/compact/ds", null, "application/json")) {
+                assertNotNull(x2);
+                assertNotEquals(0, x2.readAllBytes().length);
             } catch (IOException ex) {
                 IO.exception(ex);
             }
-            String x6 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/tasks/1");
-            assertNotNull(x6);
+            String x3 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/tasks/1");
+            assertNotNull(x3);
+        } finally {
+            server.stop();
+        }
+    }
+
+    @Test public void serverTDB2_compact1() {
+        if ( Sys.isWindows ) {
+            // NOTE: Skipping deletion test for windows
+            return;
+        }
+
+        int port = WebLib.choosePort();
+        FusekiServer server = server(port, "server-tdb2_compact1.ttl");
+        server.start();
+        try {
+            String x1= HttpOp.execHttpGetString("http://localhost:"+port+"/$/tasks");
+            assertNotNull(x1);
+            try(TypedInputStream x2 = HttpOp.execHttpPostStream("http://localhost:"+port+"/$/compact/ds?deleteOld", null, "application/json")) {
+                assertNotNull(x2);
+                assertNotEquals(0, x2.readAllBytes().length);
+            } catch (IOException ex) {
+                IO.exception(ex);
+            }
+            String x3 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/tasks/1");
+            assertNotNull(x3);
         } finally {
             server.stop();
         }

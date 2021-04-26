@@ -20,7 +20,9 @@ package org.apache.jena.tdb2.sys;
 
 import java.io.*;
 import java.nio.file.*;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 import java.util.zip.GZIPOutputStream;
 
 import org.apache.jena.atlas.RuntimeIOException;
@@ -83,19 +85,19 @@ public class DatabaseOps {
             return new DatasetGraphSwitchable(null, location, dsg);
         }
         // Exists?
-       if ( ! location.exists() )
-           throw new TDBException("No such location: "+location);
-       Path path = IOX.asPath(location);
-       // Scan for DBs
-       Path db = findLocation(path, dbPrefix);
-       if ( db == null ) {
-           db = path.resolve(dbPrefix+SEP+startCount);
-           IOX.createDirectory(db);
-       }
-       Location loc2 = IOX.asLocation(db);
-       DatasetGraphTDB dsg = StoreConnection.connectCreate(loc2, params).getDatasetGraphTDB();
-       DatasetGraphSwitchable appDSG = new DatasetGraphSwitchable(path, location, dsg);
-       return appDSG;
+        if ( ! location.exists() )
+            throw new TDBException("No such location: "+location);
+        Path path = IOX.asPath(location);
+        // Scan for DBs
+        Path db = findLocation(path, dbPrefix);
+        if ( db == null ) {
+            db = path.resolve(dbPrefix+SEP+startCount);
+            IOX.createDirectory(db);
+        }
+        Location loc2 = IOX.asLocation(db);
+        DatasetGraphTDB dsg = StoreConnection.connectCreate(loc2, params).getDatasetGraphTDB();
+        DatasetGraphSwitchable appDSG = new DatasetGraphSwitchable(path, location, dsg);
+        return appDSG;
     }
 
     public static String backup(DatasetGraphSwitchable container) {
@@ -107,13 +109,13 @@ public class DatabaseOps {
 
         DatasetGraph dsg = container;
 
-//  // Per backup source lock.
-//  synchronized(activeBackups) {
-//      // Atomically check-and-set
-//      if ( activeBackups.contains(dsg) )
-//          Log.warn(Fuseki.serverLog, "Backup already in progress");
-//      activeBackups.add(dsg);
-//  }
+        //  // Per backup source lock.
+        //  synchronized(activeBackups) {
+        //      // Atomically check-and-set
+        //      if ( activeBackups.contains(dsg) )
+        //          Log.warn(Fuseki.serverLog, "Backup already in progress");
+        //      activeBackups.add(dsg);
+        //  }
 
         Pair<OutputStream, Path> x = openUniqueFileForWriting(backupDir, BACKUPS_FN, "nq.gz");
         try (OutputStream out2 = x.getLeft();
@@ -165,7 +167,16 @@ public class DatabaseOps {
     // JVM-wide :-(
     private static Object compactionLock = new Object();
 
+
+    /**
+     * @deprecated Use `compact(container, false)` instead.
+     */
+    @Deprecated
     public static void compact(DatasetGraphSwitchable container) {
+        compact(container, false);
+    }
+
+    public static void compact(DatasetGraphSwitchable container, boolean shouldDeleteOld) {
         checkSupportsAdmin(container);
         synchronized(compactionLock) {
             Path base = container.getContainerPath();
@@ -195,6 +206,19 @@ public class DatabaseOps {
             LOG.debug(String.format("Compact %s -> %s\n", db1.getFileName(), db2.getFileName()));
 
             compact(container, loc1, loc2);
+
+            if ( shouldDeleteOld ) {
+                Path loc1Path = IOX.asPath(loc1);
+                LOG.debug("Deleting old database after successful compaction (old db path='" + loc1Path + "')...");
+
+                try (Stream<Path> walk = Files.walk(loc1Path)){
+                    walk.sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .forEach(File::delete);
+                } catch (IOException ex) {
+                    throw IOX.exception(ex);
+                }
+            }
         }
     }
 

@@ -96,10 +96,10 @@ public class TestFusekiMainCmd {
     }
 
     @Test public void compact_01() throws IOException {
-        String DB_DIR = DATABASES+"/DB-compact";
+        String DB_DIR = DATABASES+"/DB-compact1";
         FileOps.ensureDir(DB_DIR);
         FileOps.clearAll(DB_DIR);
-        server("--loc="+DATABASES+"/DB-compact", "--tdb2", "--compact", "/ds");
+        server("--loc="+DATABASES+"/DB-compact1", "--tdb2", "--compact", "/ds");
         try(TypedInputStream x0 = HttpOp.execHttpPostStream(serverURL+"/$/compact/ds", null, "application/json")) {
             assertNotNull(x0);
             assertNotEquals(0, x0.readAllBytes().length);
@@ -108,6 +108,20 @@ public class TestFusekiMainCmd {
         String x1 = HttpOp.execHttpGetString(serverURL+"/$/tasks");
         assertNotNull(x1);
         JSON.parseAny(x1);
+        // Leaves "DB-compact" behind.
+    }
+
+    @Test public void compact_02() throws IOException {
+        String DB_DIR = DATABASES+"/DB-compact2";
+        FileOps.ensureDir(DB_DIR);
+        FileOps.clearAll(DB_DIR);
+        server("--loc="+DATABASES+"/DB-compact2", "--tdb2", "--compact", "/ds");
+        try(TypedInputStream x0 = HttpOp.execHttpPostStream(serverURL+"/$/compact/ds?deleteOld", null, "application/json")) {
+            assertNotNull(x0);
+            assertNotEquals(0, x0.readAllBytes().length);
+        }
+        String x1 = HttpOp.execHttpGetString(serverURL+"/$/tasks");
+        assertNotNull(x1);
         // Leaves "DB-compact" behind.
     }
 }
