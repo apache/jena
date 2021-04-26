@@ -18,18 +18,33 @@
 
 package tdb2;
 
+import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
 import org.apache.jena.tdb2.sys.DatabaseOps;
 import tdb2.cmdline.CmdTDB;
 
 public class tdbcompact extends CmdTDB {
+    private static final ArgDecl argDeleteOld = new ArgDecl(ArgDecl.NoValue, "deleteOld");
+
+    private boolean shouldDeleteOld = false;
+
+
     static public void main(String... argv) {
         CmdTDB.init() ;
         new tdbcompact(argv).mainRun() ;
     }
 
     protected tdbcompact(String[] argv) {
-        super(argv) ;
+        super(argv);
+
+        super.add(argDeleteOld, "--deleteOld", "Delete old database after compaction");
+    }
+
+    @Override
+    protected void processModulesAndArgs() {
+        super.processModulesAndArgs();
+
+        shouldDeleteOld = contains(argDeleteOld);
     }
 
     @Override
@@ -41,7 +56,7 @@ public class tdbcompact extends CmdTDB {
     protected void exec() {
         DatasetGraphSwitchable dsg = getDatabaseContainer() ;
         long start = System.currentTimeMillis();
-        DatabaseOps.compact(dsg) ;
+        DatabaseOps.compact(dsg, shouldDeleteOld) ;
         long finish = System.currentTimeMillis();
         System.out.printf("Compacted in %.3fs\n", (finish-start)/1000.0);
     }

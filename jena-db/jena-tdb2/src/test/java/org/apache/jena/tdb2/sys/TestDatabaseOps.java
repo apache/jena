@@ -72,7 +72,7 @@ public class TestDatabaseOps
             dsg.add(quad2);
             dsg.add(quad1);
         });
-        DatabaseMgr.compact(dsg);
+        DatabaseMgr.compact(dsg, false);
 
         assertFalse(StoreConnection.isSetup(loc1));
 
@@ -108,7 +108,7 @@ public class TestDatabaseOps
             dsg.add(quad2);
             dsg.add(quad1);
         });
-        DatabaseMgr.compact(dsg);
+        DatabaseMgr.compact(dsg, false);
         Txn.executeRead(dsg, ()-> {
             assertEquals(2, g.size());
             assertTrue(g.contains(triple2));
@@ -143,9 +143,9 @@ public class TestDatabaseOps
             compact_prefixes_3_test();
         } catch (NullPointerException ex) {
             ex.printStackTrace();
-//            StackTraceElement[] x = ex.getStackTrace();
-//            if ( x.length >= 0 && "java.nio.file.Files".equals(x[0].getClassName()) )
-//               return ;
+            //            StackTraceElement[] x = ex.getStackTrace();
+            //            if ( x.length >= 0 && "java.nio.file.Files".equals(x[0].getClassName()) )
+            //               return ;
             throw ex;
         }
     }
@@ -170,7 +170,7 @@ public class TestDatabaseOps
         int x1 = Txn.calculateRead(dsg, ()->dsg.prefixes().size());
         assertTrue("Prefxies count", x1 > 0);
 
-        DatabaseMgr.compact(dsgs); // HERE
+        DatabaseMgr.compact(dsgs, false); // HERE
 
         // After
         int x2 = Txn.calculateRead(dsg, ()->dsg.prefixes().size());
@@ -192,6 +192,35 @@ public class TestDatabaseOps
 
         Txn.executeWrite(dsg,    ()->g.getPrefixMapping().setNsPrefix("ex2", "http://exampl2/") );
         Txn.executeRead(dsgOld,  ()->assertNull(dsgOld.getDefaultGraph().getPrefixMapping().getNsPrefixURI("ex")));
+    }
+
+    @Test public void compact_delete() {
+        DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(dir);
+        DatasetGraphSwitchable dsgs = (DatasetGraphSwitchable)dsg;
+        DatasetGraph dsg1 = dsgs.get();
+        Location loc1 = ((DatasetGraphTDB)dsg1).getLocation();
+
+        Txn.executeWrite(dsg, ()-> {
+            dsg.add(quad2);
+            dsg.add(quad1);
+        });
+        DatabaseMgr.compact(dsg, true);
+
+        assertFalse(IOX.asFile(loc1).exists());
+
+        DatasetGraph dsg2 = dsgs.get();
+        Location loc2 = ((DatasetGraphTDB)dsg2).getLocation();
+
+        assertNotEquals(dsg1, dsg2);
+        assertNotEquals(loc1, loc2);
+
+        Txn.executeRead(dsg, ()-> {
+            assertTrue(dsg.contains(quad2));
+            assertTrue(dsg.contains(quad1));
+        });
+
+        Txn.executeRead(dsg,  ()->assertTrue(dsg.contains(quad2)) );
+        Txn.executeRead(dsg2, ()->assertTrue(dsg2.contains(quad2)) );
     }
 
     @Test public void backup_1() {

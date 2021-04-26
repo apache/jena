@@ -33,7 +33,7 @@ import org.apache.jena.tdb2.sys.TDBInternal;
  * @see TDB2Factory
  */
 public class DatabaseMgr {
-    
+
     private DatabaseMgr() {}
 
     // All creation of DatasetGraph for TDB2 goes through this method.
@@ -55,11 +55,29 @@ public class DatabaseMgr {
      * Compact a datasets which must be a switchable TDB database.
      * This is the normal dataset type for on-disk TDB2 databases.
      *
+     * Deletes old database after successful compaction if `shouldDeleteOld` is `true`.
+     *
      * @param container
+     *
+     * @deprecated Use `compact(container, false)` instead.
      */
+    @Deprecated
     public static void compact(DatasetGraph container) {
+        compact(container, false);
+    }
+
+    /**
+     * Compact a datasets which must be a switchable TDB database.
+     * This is the normal dataset type for on-disk TDB2 databases.
+     *
+     * Deletes old database after successful compaction if `shouldDeleteOld` is `true`.
+     *
+     * @param container
+     * @param shouldDeleteOld
+     */
+    public static void compact(DatasetGraph container, boolean shouldDeleteOld) {
         DatasetGraphSwitchable dsg = requireSwitchable(container);
-        DatabaseOps.compact(dsg);
+        DatabaseOps.compact(dsg, shouldDeleteOld);
     }
 
     /**
