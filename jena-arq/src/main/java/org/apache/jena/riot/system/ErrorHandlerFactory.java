@@ -66,7 +66,8 @@ public class ErrorHandlerFactory
     public static ErrorHandler errorHandlerSimple()                 { return new ErrorHandlerSimple() ; }
 
     /** Logs warnings and errors while tracking the counts of each and optionally throwing exceptions when errors and/or warnings are encounted */
-    public static ErrorHandlerTracking errorHandlerTracking(Logger log, boolean failOnError, boolean failOnWarning) { return new ErrorHandlerTracking(log, failOnError, failOnWarning); }
+    public static ErrorHandlerTracking errorHandlerTracking(Logger log, boolean failOnError, boolean failOnWarning)
+    { return new ErrorHandlerTracking(log, failOnError, failOnWarning); }
 
     /**
      * An error handler that throws a {@link RiotParseException}, hence it

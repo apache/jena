@@ -162,6 +162,7 @@ public class TestDatabaseOps
         });
 
         DatasetGraphSwitchable dsgs = (DatasetGraphSwitchable)dsg;
+        assertNotNull("DatasetGraphSwitchable created", dsgs.getLocation());
         DatasetGraph dsg1 = dsgs.get();
         Location loc1 = ((DatasetGraphTDB)dsg1).getLocation();
 

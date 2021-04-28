@@ -145,7 +145,7 @@ public class EscapeStr
 
     /** Unicode escapes  \-u and \-U only */
     public static String unescapeUnicode(String s) {
-        return  unescape(s, '\\', true) ;
+        return unescape(s, '\\', true) ;
     }
 
     // Main worker function for unescaping strings.
