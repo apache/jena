@@ -20,7 +20,6 @@ package org.apache.jena.riot.system;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.ErrorHandlerTestLib ;
-import org.apache.jena.riot.ErrorHandlerTestLib.ExError ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
 import org.apache.jena.shared.impl.JenaParameters ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
@@ -49,7 +48,7 @@ public class TestChecker
     @Test
     public void checker_uri_01()    { check("<http://example/x>") ; }
 
-    @Test(expected=ExError.class)
+    @Test(expected=ExWarning.class)
     public void checker_uri_02()    { check("<x>") ; }
 
     @Test (expected=ExWarning.class)

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,36 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system;
-
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
+package org.apache.jena.irix;
 
 /**
- * Test suite for RIOT system
- *
+ * Exception thrown due to relative IRIs when no permitted.
+ * See {@link IRIxResolver#resolve}.
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-    TestChecker.class
-    , TestStreamRDF.class
-    , TestFactoryRDF.class
-    , TestFactoryRDFCaching.class
-
-    // Prefix Map implementations
-    , TestPrefixMap.class
-    , TestPrefixMapWrapper.class
-    , TestPrefixMapOther.class
-
-    , TestIO_JenaReaders.class
-    , TestIO_JenaWriters.class
-    , TestLangRegistration.class
-    , TestFormatRegistration.class
-    , TestJsonLDReadWrite.class         // Some simple testing of the jsonld-java engine.
-    , TestSerializable.class
-    , TestIRIxRIOT.class
-})
-
-public class TS_RiotSystem
-{}
+public class RelativeIRIException extends IRIException {
+    public RelativeIRIException(String msg) { super(msg); }
+    @Override public Throwable fillInStackTrace() { return this ; }
+}

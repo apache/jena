@@ -21,6 +21,7 @@ package org.apache.jena.arq.junit.riot;
 import static org.junit.Assert.fail;
 
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.riot.Lang ;
@@ -56,8 +57,13 @@ public class RiotSyntaxTest implements Runnable {
         }
         try {
             ParseForTest.parse(stream, filename, lang);
-            if (! expectLegalSyntax )
+            if (! expectLegalSyntax ) {
+                String s = IO.readWholeFileAsUTF8(fn);
+                System.err.println();
+                System.err.println("== "+filename);
+                System.err.print(s);
                 fail("Parsing succeeded in a bad syntax test");
+            }
         } catch(RiotNotFoundException ex) {
             throw ex;
         } catch(RiotException ex) {

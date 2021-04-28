@@ -34,26 +34,24 @@ import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.FmtUtils;
 
 /**
- * {@link ParserProfileStd} uses a {@link FactoryRDF} to
- * create items in the parsing process.
+ * {@link ParserProfileStd} uses a {@link FactoryRDF} to create items in the parsing
+ * process.
  */
-public class ParserProfileStd implements ParserProfile
-{
-    private final FactoryRDF   factory;
+public class ParserProfileStd implements ParserProfile {
+    private final FactoryRDF factory;
     private final ErrorHandler errorHandler;
-    private final Context      context;
-    private       IRIxResolver resolver;
-    private final PrefixMap    prefixMap;
-    private final boolean      strictMode;
-    private final boolean      checking;
+    private final Context context;
+    private IRIxResolver resolver;
+    private final PrefixMap prefixMap;
+    private final boolean strictMode;
+    private final boolean checking;
     private static int DftCacheSize = 500;
     private final Cache<String, IRI> iriCache;
 
     private boolean allowNodeExtentions;
 
-    public ParserProfileStd(FactoryRDF factory, ErrorHandler errorHandler,
-                            IRIxResolver resolver, PrefixMap prefixMap,
-                            Context context, boolean checking, boolean strictMode) {
+    public ParserProfileStd(FactoryRDF factory, ErrorHandler errorHandler, IRIxResolver resolver, PrefixMap prefixMap, Context context,
+                            boolean checking, boolean strictMode) {
         this.factory = factory;
         this.errorHandler = errorHandler;
         this.resolver = resolver;
@@ -62,7 +60,7 @@ public class ParserProfileStd implements ParserProfile
         this.checking = checking;
         this.iriCache = checking ? CacheFactory.createCache(DftCacheSize) : null;
         this.strictMode = strictMode;
-        this.allowNodeExtentions = true; //(context.isTrue(RIOT.ALLOW_NODE_EXT)) ;
+        this.allowNodeExtentions = true; // (context.isTrue(RIOT.ALLOW_NODE_EXT)) ;
     }
 
     @Override
@@ -98,21 +96,20 @@ public class ParserProfileStd implements ParserProfile
             return IRIx.createAny(uriStr);
         }
 
+        // Relative IRIs.
+        // jena-iri : these are errors on the
         try {
             IRIx iri = resolver.resolve(uriStr);
             if ( checking )
                 doChecking(iri, iri.str(), line, col);
             return iri;
+        } catch (RelativeIRIException ex ) {
+            errorHandler.error("Relative IRI: " + uriStr, line, col);
+            return IRIx.createAny(uriStr);
         } catch (IRIException ex) {
-            // This should only be errors and the errorHandler may be set to "don't continue".
-            // if it does continue, assume it prints something.
-            if ( SystemIRIx.getProvider() instanceof IRIProviderJenaIRI )
-                // Checking using JenaIRI puts the URI string in the message.
-                // Puts the IRI in the message.
-                errorHandler.error("Bad IRI: "+ex.getMessage(), line, col);
-            else
-                // Does not put the IRI in the message.
-                errorHandler.error("Bad IRI: <" + uriStr + "> : "+ex.getMessage(), line, col);
+            // Same code as Checker.iriViolations
+            String msg = ex.getMessage();
+            Checker.iriViolationMessage(uriStr, true, msg, line, col, errorHandler);
             return IRIx.createAny(uriStr);
         }
     }
@@ -122,11 +119,14 @@ public class ParserProfileStd implements ParserProfile
         if ( irix instanceof IRIProviderJenaIRI.IRIxJena )
             iri = (IRI)irix.getImpl();
         else
-            iri = iriCache.getOrFill(uriStr, ()->SetupJenaIRI.iriCheckerFactory().create(uriStr));
+            iri = iriCache.getOrFill(uriStr, () -> SetupJenaIRI.iriCheckerFactory().create(uriStr));
         Checker.iriViolations(iri, errorHandler, false, true, line, col);
     }
 
-    /** Create a triple - this operation call {@link #checkTriple} if checking is enabled. */
+    /**
+     * Create a triple - this operation call {@link #checkTriple} if checking is
+     * enabled.
+     */
     @Override
     public Triple createTriple(Node subject, Node predicate, Node object, long line, long col) {
         if ( checking )
@@ -140,7 +140,7 @@ public class ParserProfileStd implements ParserProfile
 
     protected void checkTriple(Node subject, Node predicate, Node object, long line, long col) {
         if ( subject == null || (!subject.isURI() && !subject.isBlank()) ) {
-            if ( ! allowSpecialNode(subject) ) {
+            if ( !allowSpecialNode(subject) ) {
                 errorHandler.error("Subject is not a URI or blank node", line, col);
                 throw new RiotException("Bad subject: " + subject);
             }
@@ -150,14 +150,17 @@ public class ParserProfileStd implements ParserProfile
             throw new RiotException("Bad predicate: " + predicate);
         }
         if ( object == null || (!object.isURI() && !object.isBlank() && !object.isLiteral()) ) {
-            if ( ! allowSpecialNode(object) ) {
+            if ( !allowSpecialNode(object) ) {
                 errorHandler.error("Object is not a URI, blank node or literal", line, col);
                 throw new RiotException("Bad object: " + object);
             }
         }
     }
 
-    /** Create a quad - this operation call {@link #checkTriple} if checking is enabled. */
+    /**
+     * Create a quad - this operation call {@link #checkTriple} if checking is
+     * enabled.
+     */
     @Override
     public Quad createQuad(Node graph, Node subject, Node predicate, Node object, long line, long col) {
         if ( checking )
@@ -177,8 +180,8 @@ public class ParserProfileStd implements ParserProfile
     @Override
     public Node createURI(String x, long line, long col) {
         // Special cases that don't resolve.
-        //   <_:....> is a blank node.
-        //   <::...> is "don't touch" used for a fixed-up prefix name
+        // <_:....> is a blank node.
+        // <::...> is "don't touch" used for a fixed-up prefix name
         if ( !RiotLib.isBNodeIRI(x) && !RiotLib.isPrefixIRI(x) )
             // Really is an URI!
             x = resolveIRI(x, line, col);

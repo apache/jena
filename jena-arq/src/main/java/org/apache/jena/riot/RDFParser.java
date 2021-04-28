@@ -36,6 +36,7 @@ import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.irix.IRIs;
 import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
@@ -446,12 +447,17 @@ public class RDFParser {
         } else {
             if ( ! strict )
                 checking$ = checking.orElseGet(()->true);
+            // Languages, like Turtle, where the base defaults to the system base.
+            // Setting the resolver directly overrides this.
+            if ( baseStr == null && resolve )
+                baseStr = IRIs.getBaseStr();
         }
         if ( sameLang(RDFJSON, lang) )
             // The JSON-LD subsystem handles this.
             resolve = false;
 
-        IRIxResolver parserResolver = (resolver != null) ? resolver
+        IRIxResolver parserResolver = (resolver != null)
+                ? resolver
                 : IRIxResolver.create().base(baseStr).resolve(resolve).allowRelative(allowRelative).build();
         PrefixMap prefixMap = PrefixMapFactory.create();
         ParserProfileStd parserFactory = new ParserProfileStd(factory, errorHandler,
