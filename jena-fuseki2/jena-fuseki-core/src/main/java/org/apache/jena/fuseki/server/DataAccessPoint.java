@@ -44,7 +44,7 @@ public class DataAccessPoint {
 
     /** Canonical name (path) for a dataset.
      * This always starts with "/".
-     * It is the name within the Fuseki server, no servlet context path. 
+     * It is the name within the Fuseki server, no servlet context path.
      */
     public static String canonical(String datasetPath) {
         if ( datasetPath == null )
@@ -69,7 +69,7 @@ public class DataAccessPoint {
     public void startRequest(HttpAction httpAction)     { requests.incrementAndGet(); }
 
     public void finishRequest(HttpAction httpAction)    { requests.getAndDecrement(); }
-    
+
     @Override public String toString() {
         return "DataAccessPoint["+name+"]";
     }

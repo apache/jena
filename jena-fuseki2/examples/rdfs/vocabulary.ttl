@@ -1,0 +1,15 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:    <http://www.w3.org/2008/05/skos#>
+PREFIX list:    <http://jena.hpl.hp.com/ARQ/list#>
+
+PREFIX ns: <http://example/ns#>
+
+ns:T1 rdfs:subClassOf ns:T2 .
+ns:T2 rdfs:subClassOf ns:T3 .
+
+ns:p rdfs:domain ns:D .
+ns:p rdfs:range  ns:T1 .

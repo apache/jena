@@ -1,0 +1,61 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# RDFS with no axioms
+# Subclass, subproperty range and domain only.
+# Backwards rules.
+
+-> table(rdfs:subClassOf).
+-> table(rdfs:subPropertyOf).
+
+[rdfs2:  (?x rdf:type ?c) <- (?x ?p ?y), (?p rdfs:domain ?c) ]
+
+[rdfs3:  (?y rdf:type ?c) <- (?x ?p ?y), (?p rdfs:range ?c) ]
+
+[rdfs5a: (?a rdfs:subPropertyOf ?c) <- 
+	     (?a rdfs:subPropertyOf ?b) , notEqual(?a, ?b) , 
+	     (?b rdfs:subPropertyOf ?c) , notEqual(?b, ?c) , notEqual(?a, ?c) ]
+
+## [rdfs5b: (?a rdfs:subPropertyOf ?a) <- (?a rdf:type rdf:Property) ]
+
+[rdfs6:  (?a ?q ?b) <- (?a ?p ?b), (?p rdfs:subPropertyOf ?q) , notEqual(?p,?q) ]
+
+## [rdfs7:  (?a rdfs:subClassOf ?a) <- (?a rdf:type rdfs:Class) ]
+
+[rdfs8:  (?a rdfs:subClassOf ?c) <- 
+	     (?a rdfs:subClassOf ?b) , notEqual(?a, ?b) ,
+             (?b rdfs:subClassOf ?c) , notEqual(?b, ?c) , notEqual(?a, ?c) ]
+
+[rdfs9:  (?a rdf:type ?y) <-
+             (?x rdfs:subClassOf ?y), notEqual(?x,?y) ,
+	     (?a rdf:type ?x) ]
+
+# Ways classes can be mentioned.
+# rdf:type      rdfs:range  rdfs:Class
+# rdfs:domain   rdfs:range  rdfs:Class
+# rdfs:range    rdfs:range  rdfs:Class
+# These replace (rdfs:range rdfs:range rdfs:Class) which combines with 
+# rdfs7: (?a rdf:type rdfs:Class) ]
+
+[rdfsX1: (?T rdfs:subClassOf ?T )  <- (?a rdf:type ?T ) ]
+[rdfsX2: (?T rdfs:subClassOf ?T )  <- (?a rdf:domain ?T ) ]
+[rdfsX3: (?T rdfs:subClassOf ?T )  <- (?a rdf:range ?T ) ]
+
+[rdfsX4: (?a rdfs:subClassOf ?a )  <- (?a rdfs:subClassOf ?b ) , notEqual(?a,?b) ]
+[rdfsX5: (?b rdfs:subClassOf ?b )  <- (?a rdfs:subClassOf ?b ) , notEqual(?a,?b) ]
+
+[rdfsX6: (?a rdfs:subPropertyOf ?a ) <- (?a rdfs:subPropertyOf ?b ) , notEqual(?a,?b) ]
+[rdfsX7: (?b rdfs:subPropertyOf ?b ) <- (?a rdfs:subPropertyOf ?b ) , notEqual(?a,?b) ]

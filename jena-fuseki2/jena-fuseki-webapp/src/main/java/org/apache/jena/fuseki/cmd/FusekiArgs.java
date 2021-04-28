@@ -39,7 +39,10 @@ public class FusekiArgs {
     public String    datasetPath      = null;              // Dataset name on the command line.
     public boolean   allowUpdate      = false;             // Command line --update.
     // Special case - prebuilt dataset.  Uses datasetPath.
-    public DatasetGraph dsg           = null;             // Embedded or command line --file)
+    public DatasetGraph dsg           = null;              // Embedded or command line --file)
+
+    /** RDFS dataset - only when dataset is defined on the command line. */
+    public String rdfsGraph            = null;
 
     // Or configuration file from command line
     public String    fusekiCmdLineConfigFile = null;       // Command line --conf.

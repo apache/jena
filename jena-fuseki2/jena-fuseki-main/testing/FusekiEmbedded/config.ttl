@@ -14,5 +14,5 @@ PREFIX tdb:     <http://jena.hpl.hp.com/2008/tdb#>
     fuseki:dataset <#dataset> ;
 .
 
-<#dataset> rdf:type ja:RDFDataset;
+<#dataset> rdf:type ja:MemoryDataset ;
 .

@@ -24,21 +24,18 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdGeneral;
-import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.rdfs.RDFSFactory;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RDFParser;
-import org.apache.jena.riot.process.inf.InfFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 
 /*
- * TDB Infer
+ * Infer
  *   RDFS
- *   owl:sameAs (in T-Box, not A-Box)
- *   owl:equivalentClass, owl:equivalentProperty
- *   owl:TransitiveProperty, owl:SymmetricProperty
  *
  * OWLprime - Oracle
 - rdfs:domain
@@ -84,7 +81,7 @@ AllegroGraph RDFS++
 public class infer extends CmdGeneral
 {
     static final ArgDecl argRDFS = new ArgDecl(ArgDecl.HasValue, "rdfs") ;
-    private Model vocab ;
+    private Graph vocab ;
 
     public static void main(String... argv)
     {
@@ -96,14 +93,6 @@ public class infer extends CmdGeneral
         super(argv) ;
         super.add(argRDFS) ;
     }
-
-//    public static void expand(String filename, Model vocab)
-//    {
-//        Sink<Triple> sink = new SinkTripleOutput(System.out) ;
-//        sink = new InferenceExpanderRDFS(sink, vocab) ;
-//        RiotReader.parseTriples(filename, sink) ;
-//        IO.flush(System.out);
-//    }
 
     @Override
     protected String getSummary()
@@ -117,14 +106,14 @@ public class infer extends CmdGeneral
         if ( ! contains(argRDFS) )
             throw new CmdException("Required argument missing: --"+argRDFS.getKeyName()) ;
         String fn = getValue(argRDFS) ;
-        vocab = RDFDataMgr.loadModel(fn) ;
+        vocab = RDFDataMgr.loadGraph(fn) ;
     }
 
     @Override
     protected void exec()
     {
         StreamRDF sink = StreamRDFLib.writer(System.out) ;
-        sink = InfFactory.inf(sink, vocab) ;
+        sink = RDFSFactory.streamRDFS(sink, vocab) ;
 
         List<String> files = getPositionalOrStdin() ;
         if ( files.isEmpty() )

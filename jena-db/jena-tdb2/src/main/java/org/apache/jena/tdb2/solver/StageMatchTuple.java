@@ -103,7 +103,7 @@ class StageMatchTuple {
             if ( v == null )
                 continue;
             NodeId id = tuple.get(i);
-            if ( ! compatiable(output, v, id) )
+            if ( ! compatible(output, v, id) )
                 return null;
             output.put(v, id);
         }
@@ -146,7 +146,7 @@ class StageMatchTuple {
         return iter;
     }
 
-    private static boolean compatiable(BindingNodeId output, Var var, NodeId value) {
+    private static boolean compatible(BindingNodeId output, Var var, NodeId value) {
         if ( !output.containsKey(var) )
             return true;
         // sameTermAs for language tags?

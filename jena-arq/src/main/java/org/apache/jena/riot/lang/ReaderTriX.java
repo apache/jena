@@ -106,7 +106,7 @@ public class ReaderTriX implements ReaderRIOT {
     private static String nsRDF = RDF.getURI();
     private static String nsXSD = XSDDatatype.XSD; // No "#"
     private static String nsXML0 = "http://www.w3.org/XML/1998/namespace";
-    private static String rdfXMLLiteral = RDF.xmlLiteral.getURI();
+    private static String rdfXMLLiteral = RDF.Init.xmlLiteral().getURI();
 
     // State TRIPLE is "asserted triple" - a triple that will go into the output.
     // State E_TRIPLE is an "embedded triple" (<<>>) that will be term in another triple/quad.

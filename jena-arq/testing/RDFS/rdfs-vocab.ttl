@@ -1,0 +1,28 @@
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+
+PREFIX : <http://example/>
+
+:T rdfs:subClassOf :T2 .
+:T rdfs:subClassOf :T3 .
+
+:S1  rdfs:subClassOf :T .
+:S2  rdfs:subClassOf :T .
+
+:T2 rdfs:subClassOf :U .
+:T3 rdfs:subClassOf :U .
+
+:R  rdfs:subClassOf :S1 .
+:R  rdfs:subClassOf :S2 .
+
+:p rdfs:domain :Q .
+:Q rdfs:subClassOf :Q2 .
+:Q1 rdfs:subClassOf :Q .
+
+:q rdfs:range :P .
+:P rdfs:subClassOf :P2 .
+:P1 rdfs:subClassOf :P .
+
+:pp rdfs:subPropertyOf :p .
+:p  rdfs:subPropertyOf :pTop .
+:ppp rdfs:subPropertyOf :pp .

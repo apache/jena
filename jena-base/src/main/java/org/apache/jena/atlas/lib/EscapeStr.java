@@ -27,7 +27,7 @@ import org.apache.jena.atlas.io.StringWriterI ;
 public class EscapeStr
 {
     /*
-     * Escape characters in a string according to Turtle rules. 
+     * Escape characters in a string according to Turtle rules.
      */
     public static String stringEsc(String s) {
         AWriter w = new StringWriterI() ;
@@ -47,23 +47,23 @@ public class EscapeStr
                 continue ;
             }
             switch(c) {
-                case '\n':  out.print("\\n"); continue; 
-                case '\t':  out.print("\\t"); continue; 
-                case '\r':  out.print("\\r"); continue; 
-                case '\f':  out.print("\\f"); continue; 
+                case '\n':  out.print("\\n"); continue;
+                case '\t':  out.print("\\t"); continue;
+                case '\r':  out.print("\\r"); continue;
+                case '\f':  out.print("\\f"); continue;
                 default:    // Drop through
             }
             if ( !asciiOnly )
                 out.print(c);
-            else 
+            else
                 writeCharAsASCII(out, c) ;
         }
     }
-    
+
     public static void stringEsc(AWriter out, String s, char quoteChar, boolean singleLineString) {
         stringEsc(out, s, quoteChar, singleLineString, CharSpace.UTF8);
     }
-    
+
     public static void stringEsc(AWriter out, String s, char quoteChar, boolean singleLineString, CharSpace charSpace) {
         boolean ascii = ( CharSpace.ASCII == charSpace ) ;
         int len = s.length() ;
@@ -83,7 +83,7 @@ public class EscapeStr
                     if ( quotesInARow == 3 ) {
                         out.print("\\");
                         out.print(quoteChar);
-                        quotesInARow = 0; 
+                        quotesInARow = 0;
                         continue;
                     }
                 } else {
@@ -94,22 +94,22 @@ public class EscapeStr
                     out.print("\\"); out.print(c) ; continue ;
                 }
                 switch(c) {
-                    case '\n':  out.print("\\n"); continue; 
-                    case '\t':  out.print("\\t"); continue; 
-                    case '\r':  out.print("\\r"); continue; 
-                    case '\f':  out.print("\\f"); continue; 
+                    case '\n':  out.print("\\n"); continue;
+                    case '\t':  out.print("\\t"); continue;
+                    case '\r':  out.print("\\r"); continue;
+                    case '\f':  out.print("\\f"); continue;
                     default:    // Drop through
                 }
             }
 
             if ( !ascii )
                 out.print(c);
-            else 
+            else
                 writeCharAsASCII(out, c) ;
         }
     }
 
-    /** Write a string with Unicode to ASCII conversion using \-u escapes */  
+    /** Write a string with Unicode to ASCII conversion using \-u escapes */
     public static void writeASCII(AWriter out, String s) {
         int len = s.length() ;
         for (int i = 0; i < len; i++) {
@@ -137,27 +137,27 @@ public class EscapeStr
     /** Replace \ escapes (\\u, \t, \n etc) in a string */
     public static String unescapeStr(String s)
     { return unescapeStr(s, '\\') ; }
-    
+
     /** Replace \ escapes (\\u, \t, \n etc) in a string */
     public static String unescapeStr(String s, char escapeChar)
     { return unescape(s, escapeChar, false) ; }
 
-    
-    /** Unicode escapes  \-u abd \-U only */  
+
+    /** Unicode escapes  \-u and \-U only */
     public static String unescapeUnicode(String s) {
         return  unescape(s, '\\', true) ;
     }
-    
+
     // Main worker function for unescaping strings.
     public static String unescape(String s, char escape, boolean pointCodeOnly) {
         int i = s.indexOf(escape) ;
-        
+
         if ( i == -1 )
             return s ;
-        
+
         // Dump the initial part straight into the string buffer
         StringBuilder sb = new StringBuilder(s.substring(0,i)) ;
-        
+
         for ( ; i < s.length() ; i++ )
         {
             char ch = s.charAt(i) ;
@@ -167,13 +167,13 @@ public class EscapeStr
                 sb.append(ch) ;
                 continue ;
             }
-                
+
             // Escape
             if ( i >= s.length()-1 )
                 throw new AtlasException("Illegal escape at end of string") ;
             char ch2 = s.charAt(i+1) ;
             i = i + 1 ;
-            
+
             // \\u and \\U
             if ( ch2 == 'u' )
             {
@@ -207,10 +207,10 @@ public class EscapeStr
                 i = i+8 ;
                 continue ;
             }
-            
+
             // Are we doing just point code escapes?
-            // If so, \X-anything else is legal as a literal "\" and "X" 
-            
+            // If so, \X-anything else is legal as a literal "\" and "X"
+
             if ( pointCodeOnly )
             {
                 sb.append('\\') ;
@@ -218,12 +218,12 @@ public class EscapeStr
                 i = i + 1 ;
                 continue ;
             }
-            
+
             // Not just codepoints.  Must be a legal escape.
             char ch3 = 0 ;
             switch (ch2)
             {
-                case 'n': ch3 = '\n' ;  break ; 
+                case 'n': ch3 = '\n' ;  break ;
                 case 't': ch3 = '\t' ;  break ;
                 case 'r': ch3 = '\r' ;  break ;
                 case 'b': ch3 = '\b' ;  break ;

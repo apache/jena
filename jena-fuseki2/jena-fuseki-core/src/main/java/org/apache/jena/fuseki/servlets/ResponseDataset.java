@@ -115,6 +115,7 @@ public class ResponseDataset
         RDFFormat format = ActionLib.getNetworkFormatForLang(lang);
 
         try {
+            ServletOps.success(action);
             ServletOutputStream out = response.getOutputStream();
             try {
                 // Use the Content-Type from the content negotiation.

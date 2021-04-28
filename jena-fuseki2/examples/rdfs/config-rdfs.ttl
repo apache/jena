@@ -1,0 +1,32 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+
+[] rdf:type fuseki:Server ;
+   fuseki:services (
+     :service
+   ) .
+
+## Fuseki service /dataset with SPARQ query
+## /dataset?query=
+:service rdf:type fuseki:Service ;
+    fuseki:name "dataset" ;
+    fuseki:endpoint [ fuseki:operation fuseki:query ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:update ] ;
+    fuseki:dataset :rdfsDataset ;
+    .
+
+## RDFS
+:rdfsDataset rdf:type ja:DatasetRDFS ;
+    ja:rdfsSchema <file:vocabulary.ttl>;
+    ja:dataset :baseDataset;
+    .
+
+## Transactional in-memory dataset.
+:baseDataset rdf:type ja:MemoryDataset ;
+    ja:data <file:data.trig>;
+    .

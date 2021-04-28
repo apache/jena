@@ -85,6 +85,9 @@ public class FusekiCmd {
         private static ArgDecl  argTDB2mode     = new ArgDecl(ArgDecl.NoValue,  "tdb2");
         private static ArgDecl  argMemTDB       = new ArgDecl(ArgDecl.NoValue,  "memtdb", "memTDB", "tdbmem");
         private static ArgDecl  argTDB          = new ArgDecl(ArgDecl.HasValue, "loc", "location", "tdb");
+        // RDFS vocabulary applied to command line defined dataset.
+        private static ArgDecl  argRDFS         = new ArgDecl(ArgDecl.HasValue, "rdfs");
+
         private static ArgDecl  argPort         = new ArgDecl(ArgDecl.HasValue, "port");
         private static ArgDecl  argLocalhost    = new ArgDecl(ArgDecl.NoValue,  "localhost", "local");
         private static ArgDecl  argTimeout      = new ArgDecl(ArgDecl.HasValue, "timeout");
@@ -132,6 +135,8 @@ public class FusekiCmd {
                 "Use an existing TDB database (or create if does not exist)");
             add(argMemTDB, "--memTDB",
                 "Create an in-memory, non-persistent dataset using TDB (testing only)");
+            add(argRDFS, "--rdfs=",
+                "Apply RDFS on top of the dataset");
             add(argPort, "--port",
                 "Listen on this port number");
             // Set via jetty config file.
@@ -230,6 +235,9 @@ public class FusekiCmd {
                     cmdLine.fusekiServerConfigFile = cfg.toString();
             }
 
+            if ( ! cmdlineConfigPresent && contains(argRDFS) )
+                throw new CmdException("Need to define RDFS setup in the configuration file.");
+
             // Which TDB to use to create a command line TDB database.
             useTDB2 = contains(argTDB2mode);
 
@@ -285,6 +293,14 @@ public class FusekiCmd {
                 cmdLine.params.put(Template.DIR, dir);
                 cmdLine.reset();
                 WebappDSGSetup.setup(dir, useTDB2, cmdLine);
+            }
+
+            if ( contains(argRDFS) ) {
+                String rdfsVocab = getValue(argRDFS);
+                if ( !FileOps.exists(rdfsVocab) )
+                    throw new CmdException("No such file for RDFS: "+rdfsVocab);
+                cmdLine.rdfsGraph = rdfsVocab;
+                cmdLine.datasetDescription = cmdLine.datasetDescription+ " (with RDFS)";
             }
 
             // Otherwise

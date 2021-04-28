@@ -36,11 +36,11 @@ import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.irix.IRIException;
+import org.apache.jena.rdfs.RDFSFactory;
+import org.apache.jena.rdfs.SetupRDFS;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
-import org.apache.jena.riot.process.inf.InfFactory ;
-import org.apache.jena.riot.process.inf.InferenceSetupRDFS ;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.ErrorHandlerFactory.ErrorHandlerTracking;
 import org.apache.jena.riot.system.StreamRDF;
@@ -59,7 +59,7 @@ public abstract class CmdLangParse extends CmdGeneral
     protected ModTime modTime                   = new ModTime() ;
     protected ModLangParse modLangParse         = new ModLangParse() ;
     protected ModLangOutput modLangOutput       = new ModLangOutput() ;
-    protected InferenceSetupRDFS setup          = null ;
+    protected SetupRDFS setup                   = null ;
     protected ModContext modContext             = new ModContext() ;
     protected ArgDecl strictDecl                = new ArgDecl(ArgDecl.NoValue, "strict") ;
 
@@ -132,7 +132,7 @@ public abstract class CmdLangParse extends CmdGeneral
     protected void exec$() {
 
         if ( modLangParse.getRDFSVocab() != null )
-            setup = new InferenceSetupRDFS(modLangParse.getRDFSVocab()) ;
+            setup = RDFSFactory.setupRDFS(modLangParse.getRDFSVocab().getGraph()) ;
 
         if ( modLangOutput.compressedOutput() ) {
             try { outputWrite = new GZIPOutputStream(outputWrite, true) ; }
@@ -283,7 +283,7 @@ public abstract class CmdLangParse extends CmdGeneral
 
         StreamRDF s = outputStream ;
         if ( setup != null )
-            s = InfFactory.inf(s, setup) ;
+            s = RDFSFactory.streamRDFS(s, setup) ;
         StreamRDFCounting sink = StreamRDFLib.count(s) ;
         s = null ;
 
