@@ -182,7 +182,7 @@ public class DatabaseOps {
 
             // Is this the same database location?
             if ( ! loc1.equals(loc1a) )
-                throw new TDBException("Inconsistent (not latested?) : "+loc1a+" : "+loc1);
+                throw new TDBException("Inconsistent (not latest?) : "+loc1a+" : "+loc1);
             // -- Checks
 
             // Version

@@ -65,7 +65,6 @@ public class Manifest
         }
     }
 
-
     private Manifest(String fn) {
         filename = IRILib.filenameToIRI(fn) ;
         manifest = RDFDataMgr.loadModel(filename) ;

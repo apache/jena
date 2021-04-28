@@ -35,7 +35,7 @@ import org.apache.jena.atlas.AtlasException;
 public class StrUtils //extends StringUtils
 {
     private StrUtils() {}
-    
+
     /** strjoin with a newline as the separator */
     public static String strjoinNL(String... args) {
         return String.join("\n", args);
@@ -56,10 +56,10 @@ public class StrUtils //extends StringUtils
     public static final int CMP_GREATER  = +1 ;
     public static final int CMP_EQUAL    =  0 ;
     public static final int CMP_LESS     = -1 ;
-    
+
     public static final int CMP_UNEQUAL  = -9 ;
     public static final int CMP_INDETERMINATE  = 2 ;
-    
+
     public static int strCompare(String s1, String s2) {
         // Value is the difference of the first differing chars
         int x = s1.compareTo(s2) ;
@@ -68,7 +68,7 @@ public class StrUtils //extends StringUtils
         if ( x == 0 ) return CMP_EQUAL ;
         throw new InternalErrorException("String comparison failure") ;
     }
-    
+
     public static int strCompareIgnoreCase(String s1, String s2) {
         // x is the difference of the first differing chars
         int x = s1.compareToIgnoreCase(s2) ;
@@ -78,14 +78,22 @@ public class StrUtils //extends StringUtils
         throw new InternalErrorException("String comparison failure") ;
     }
 
+    public static boolean strStartsWithIgnoreCase(String str, String prefix) {
+        return str.regionMatches(true, 0, prefix, 0, prefix.length());
+    }
+
+    public static boolean strEndsWithIgnoreCase(String str, String suffix) {
+        return str.regionMatches(true, str.length()-suffix.length(), suffix, 0, suffix.length());
+    }
+
     public static byte[] asUTF8bytes(String s) {
-        return s.getBytes(UTF_8) ; 
+        return s.getBytes(UTF_8) ;
     }
 
     public static String fromUTF8bytes(byte[] bytes) {
-        return new String(bytes, UTF_8) ; 
+        return new String(bytes, UTF_8) ;
     }
-    
+
     /**
      * @param x
      * @return &lt;null&gt; if x == null, otherwise, x.toString()
@@ -98,10 +106,10 @@ public class StrUtils //extends StringUtils
     public static String[] split(String s, String splitStr) {
         return stream(s.split(splitStr)).map(String::trim).toArray(String[]::new) ;
     }
-    
+
     /**
      * Does one string contain another string?
-     * 
+     *
      * @param str1
      * @param str2
      * @return true if str1 contains str2
@@ -109,7 +117,7 @@ public class StrUtils //extends StringUtils
     public final static boolean contains(String str1, String str2) {
         return str1.contains(str2) ;
     }
-    
+
     public final static String replace(String string, String target, String replacement) {
         return string.replace(target, replacement) ;
     }
@@ -117,12 +125,12 @@ public class StrUtils //extends StringUtils
     public static String substitute(String str, Map<String, String> subs) {
         for ( Map.Entry<String, String> e : subs.entrySet() ) {
             String param = e.getKey() ;
-            if ( str.contains(param) ) 
+            if ( str.contains(param) )
                 str = str.replace(param, e.getValue()) ;
         }
         return str ;
     }
-    
+
     public static String strform(Map<String, String> subs, String... args) {
         return substitute(strjoinNL(args), subs) ;
     }
@@ -136,20 +144,20 @@ public class StrUtils //extends StringUtils
             x = StrUtils.chop(x) ;
         return x ;
     }
-    
+
     public static List<Character> toCharList(String str) {
         return str.codePoints().mapToObj(i -> (char) i).map(Character::valueOf).collect(toList());
     }
-    
+
     // ==== Encoding and decoding strings based on a marker character (e.g. %)
-    // and then the hexadecimal representation of the character.  
+    // and then the hexadecimal representation of the character.
     // Only characters 0-255 can be encoded.
     // Decoding is more general.
-    
+
     /**
      * Encode a string using hex values e.g. %20.
-     * Encoding only deals with single byte codepoints.  
-     * 
+     * Encoding only deals with single byte codepoints.
+     *
      * @param str String to encode
      * @param marker Marker character
      * @param escapees Characters to encode (must include the marker)
@@ -189,7 +197,7 @@ public class StrUtils //extends StringUtils
     /**
      * Decode a string using marked hex values e.g. %20.
      * Multi-byte UTF-8 codepoints are handled.
-     * 
+     *
      * @param str String to decode.
      * @param marker The marker character
      * @return Decoded string (returns input object if no change)
@@ -198,7 +206,7 @@ public class StrUtils //extends StringUtils
         if ( str.indexOf(marker) < 0 )
             // No marker, no work.
             return str;
-        // By working in bytes, we deal with mult-byte codepoints. 
+        // By working in bytes, we deal with mult-byte codepoints.
         byte[] strBytes = StrUtils.asUTF8bytes(str);
         final int N = strBytes.length;
         // Max length
@@ -224,13 +232,13 @@ public class StrUtils //extends StringUtils
         String s = new String(bytes, 0, i, StandardCharsets.UTF_8);
         return s;
     }
-    
+
     // Same but working on the string.  This is the pair of the encoder.
     // Encode/decode is normally use is for characters that illegal in a position
     // (e.g. URI components, spaces in URIs).
-    
-    // This string version is brittle - reverses the encoding of encodeHex() 
-    // but not general use as a decoder of a string. 
+
+    // This string version is brittle - reverses the encoding of encodeHex()
+    // but not general use as a decoder of a string.
     // Multi-byte codepoints do not get recombined if operating on strings/characters.
     private /*public*/ static String _forInfo_decodeHex(String str, char marker) {
         int idx = str.indexOf(marker);
@@ -267,7 +275,7 @@ public class StrUtils //extends StringUtils
             return ch - 'A' + 10;
         if ( ch >= 'a' && ch <= 'f' )
             return ch - 'a' + 10;
-        throw new AtlasException(format("Decoding error: bad character for hex digit (0x%02X) '%c' ",ch, ch)); 
+        throw new AtlasException(format("Decoding error: bad character for hex digit (0x%02X) '%c' ",ch, ch));
     }
 
     public static String escapeString(String x) {
