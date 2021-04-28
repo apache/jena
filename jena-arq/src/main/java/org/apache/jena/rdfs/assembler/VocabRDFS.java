@@ -20,12 +20,9 @@ package org.apache.jena.rdfs.assembler;
 
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.JA;
-import org.apache.jena.irix.IRIException;
-import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab;
 import org.apache.jena.sys.JenaSystem;
@@ -64,13 +61,6 @@ public class VocabRDFS {
 
     private static String iri(String localname) {
         String uri = NS + localname;
-        try {
-            IRIx iri = IRIx.create(uri);
-            if ( ! iri.isReference() )
-                throw new JenaException("Bad IRI (relative): "+uri);
-            return uri;
-        } catch (IRIException ex) {
-            throw new JenaException("Bad IRI: "+uri);
-        }
+        return uri;
     }
 }

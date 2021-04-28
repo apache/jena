@@ -28,7 +28,7 @@ import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.core.Quad ;
 
 /**
- * StreamRDF implementations which store received triples and quads
+ * StreamRDF implementations which stores received triples and quads
  * in a {@link java.util.Collection}.
  *
  * The resulting collection can be retrieved via the

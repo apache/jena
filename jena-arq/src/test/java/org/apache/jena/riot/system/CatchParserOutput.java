@@ -16,26 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.lang;
+package org.apache.jena.riot.system;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.core.Quad;
 
-class CatchParserOutput implements StreamRDF
+public class CatchParserOutput implements StreamRDF
 {
-    List<Triple>      triples     = new ArrayList<>() ;
-    List<Quad>        quads       = new ArrayList<>() ;
-    List<Pair<String,String>>     prefixes     = new ArrayList<>() ;
-    List<String>     bases       = new ArrayList<>() ;
+    public List<Triple>      triples     = new ArrayList<>() ;
+    public List<Quad>        quads       = new ArrayList<>() ;
+    public List<Pair<String,String>>     prefixes     = new ArrayList<>() ;
+    public List<String>     bases       = new ArrayList<>() ;
 
-    int startCalled = 0 ;
+    public int startCalled = 0 ;
 
-    int finishCalled = 0 ;
+    public int finishCalled = 0 ;
 
     @Override public void start()   { startCalled++ ; }
 

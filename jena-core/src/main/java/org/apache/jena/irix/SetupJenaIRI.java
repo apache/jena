@@ -65,6 +65,9 @@ public class SetupJenaIRI {
 
     /** IRI Factory with "checker" settings. */
     /*package*/ static final IRIFactory setupCheckerIRIFactory() {
+        // See IRIProviderJenaIRI.exceptions for context specific tuning.
+        // See Checker.iriViolations for filtering and output from parsers.
+
         IRIFactory iriCheckerFactory = new IRIFactory();
 
         //iriCheckerInst.shouldViolation(false,true);
@@ -81,6 +84,9 @@ public class SetupJenaIRI {
 
         // -- Scheme specific rules.
         setErrorWarning(iriCheckerFactory, ViolationCodes.SCHEME_PATTERN_MATCH_FAILED, false, true);
+        // jena-iri produces an error for PROHIBITED_COMPONENT_PRESENT regardless.
+        // See Checker.iriViolations for handling this
+        //setErrorWarning(iriCheckerFactory, ViolationCodes.PROHIBITED_COMPONENT_PRESENT, false, true);
 
         // == Scheme
         setErrorWarning(iriCheckerFactory, ViolationCodes.UNREGISTERED_IANA_SCHEME, false, false);

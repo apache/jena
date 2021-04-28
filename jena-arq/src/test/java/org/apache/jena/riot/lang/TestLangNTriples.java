@@ -35,7 +35,7 @@ import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
-/** Test of syntax by a triples parser (does not include node validitiy checking) */
+/** Test of syntax by a triples parser (does not include node validity checking) */
 
 public class TestLangNTriples extends AbstractTestLangNTuples
 {

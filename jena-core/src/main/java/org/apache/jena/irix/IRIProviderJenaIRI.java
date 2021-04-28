@@ -76,16 +76,14 @@ public class IRIProviderJenaIRI implements IRIProvider {
         @Override
         public IRIx resolve(String other) {
             IRI iri2 = jenaIRI.resolve(other);
-            IRIProviderJenaIRI.exceptions(iri2);
-            return new IRIxJena(iri2.toString(), iri2);
+            return newIRIxJena(iri2);
         }
 
         @Override
         public IRIx resolve(IRIx other) {
             IRIxJena iriOther = (IRIxJena)other;
             IRI iri2 = jenaIRI.resolve(iriOther.jenaIRI);
-            IRIProviderJenaIRI.exceptions(iri2);
-            return new IRIxJena(iri2.toString(), iri2);
+            return newIRIxJena(iri2);
         }
 
         @Override
@@ -104,8 +102,7 @@ public class IRIProviderJenaIRI implements IRIProvider {
             IRI iri2 = jenaIRI.relativize(iriOther.jenaIRI, relFlags);
             if ( iri2.equals(iriOther.jenaIRI))
                 return null;
-            IRIProviderJenaIRI.exceptions(iri2);
-            return new IRIxJena(iri2.toString(), iri2);
+            return newIRIxJena(iri2);
         }
 
         @Override
@@ -131,25 +128,27 @@ public class IRIProviderJenaIRI implements IRIProvider {
         }
     }
 
+    private static IRIxJena newIRIxJena(IRI iri2) {
+        String iriStr2 = iri2.toString();
+        return newIRIxJena(iri2, iriStr2);
+    }
+
+    private static IRIxJena newIRIxJena(IRI iri2, String iriStr2) {
+        IRIProviderJenaIRI.exceptions(iri2, iriStr2);
+        return new IRIxJena(iriStr2, iri2);
+    }
+
     @Override
     public IRIx create(String iriStr) throws IRIException {
         // "create" - does not throw exceptions
         IRI iriObj = iriFactory().create(iriStr);
-        // errors and warnings.
-        if ( STRICT_FILE && isFILE(iriObj) ) {
-            if ( iriStr.startsWith("file://" ) && ! iriStr.startsWith("file:///") )
-                throw new IRIException("file: URLs should start file:///");
-        }
-        if ( isUUID(iriObj) )
-            checkUUID(iriObj, iriStr);
-        exceptions(iriObj);
-        return new IRIProviderJenaIRI.IRIxJena(iriStr, iriObj);
+        return newIRIxJena(iriObj, iriStr);
     }
 
     @Override
     public void check(String iriStr) throws IRIException {
         IRI iri = iriFactory().create(iriStr);
-        exceptions(iri);
+        exceptions(iri, iriStr);
     }
 
     @Override
@@ -205,7 +204,21 @@ public class IRIProviderJenaIRI implements IRIProvider {
     // Should be "false" in a release - this is an assist for development checking.
     private static final boolean includeWarnings = false;
 
-    private static IRI exceptions(IRI iri) {
+    private static IRI exceptions(IRI iri, String iriStr) {
+        if ( iriStr == null )
+            iriStr = iri.toString();
+
+        // Additional checks
+
+        // errors and warnings.
+        if ( STRICT_FILE && isFILE(iri) ) {
+            if ( iriStr.startsWith("file://" ) && ! iriStr.startsWith("file:///") )
+                throw new IRIException("file: URLs should start file:///: <"+iriStr+">");
+        }
+
+        if ( isUUID(iri, iriStr) ) {
+            checkUUID(iri, iriStr);
+        }
         if (!showExceptions)
             return iri;
         if (!iri.hasViolation(includeWarnings))
@@ -218,6 +231,7 @@ public class IRIProviderJenaIRI implements IRIProvider {
             int code = v.getViolationCode() ;
             // Filter codes.
             // Global settings below; this section is for conditional filtering.
+            // See also Checker.iriViolations for WARN filtering.
             switch(code) {
                 case Violation.PROHIBITED_COMPONENT_PRESENT:
                     // Allow "u:p@" when non-strict.
@@ -237,7 +251,7 @@ public class IRIProviderJenaIRI implements IRIProvider {
                     if ( isFILE(iri) )
                         continue;
             }
-            // First error.
+            // Signal first error.
             String msg = v.getShortMessage();
             throw new IRIException(msg);
         }
@@ -246,23 +260,22 @@ public class IRIProviderJenaIRI implements IRIProvider {
 
     // HTTP and HTTPS
     private static boolean isHTTP(IRI iri) {
-        return "http".equalsIgnoreCase(iri.getScheme()) || "https".equalsIgnoreCase(iri.getScheme());
+        return "http".equalsIgnoreCase(iri.getScheme())
+            || "https".equalsIgnoreCase(iri.getScheme());
     }
 
     private static boolean isURN(IRI iri)  { return "urn".equalsIgnoreCase(iri.getScheme()); }
     private static boolean isFILE(IRI iri) { return "file".equalsIgnoreCase(iri.getScheme()); }
 
-    // Checks trailing part of URI.
-    // Works on "urn:" and "urn:uuid:".
-    private static Pattern UUID_PATTERN = Pattern.compile(":[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
+    private static String UUID_REGEXP = "^(?:urn:uuid|uuid):[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$";
+    private static Pattern UUID_PATTERN = Pattern.compile(UUID_REGEXP, Pattern.CASE_INSENSITIVE);
 
-    private boolean isUUID(IRI iri) {
-        if ( "uuid".equalsIgnoreCase(iri.getScheme()) )
-                return true;
-        return iri.getRawPath().startsWith("uuid:");
+    private static boolean isUUID(IRI iri, String iriStr) {
+        return iriStr.regionMatches(true, 0, "urn:uuid:", 0, "urn:uuid:".length())
+            || iriStr.regionMatches(true, 0, "uuid:", 0, "uuid:".length());
     }
 
-    private void checkUUID(IRI iriObj, String original) {
+    private static void checkUUID(IRI iriObj, String original) {
         if ( iriObj.getRawFragment() != null )
             throw new IRIException("Fragment used with UUID");
         if ( iriObj.getRawQuery() != null )

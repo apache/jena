@@ -21,6 +21,8 @@ package org.apache.jena.irix;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Locale;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -83,6 +85,23 @@ public class TestIRIx extends AbstractTestIRIx {
     @Test public void urn_04()  { notStrict("urn", ()->parse("urn:x:abc")); }
 
     @Test public void urn_05()  { notStrict("urn", ()->parse("urn:ex:")); }
+
+    private static String testUUID = "aa045fc2-a781-11eb-9041-afa3877612ee";
+
+    @Test public void uuid_01() { parse("uuid:"+testUUID); }
+
+    @Test public void uuid_02() { parse("uuid:"+(testUUID.toUpperCase(Locale.ROOT))); }
+
+    @Test public void uuid_03() { parse("UUID:"+testUUID); }
+
+    @Test public void uuid_04() { parse("urn:uuid:"+testUUID); }
+
+    @Test public void uuid_05() { parse("urn:uuid:"+(testUUID.toUpperCase(Locale.ROOT))); }
+
+    @Test public void uuid_06() { parse("URN:UUID:"+testUUID); }
+
+    @Test(expected=IRIException.class)
+    public void uuid_07() { parse("urn:uuid:06e775ac-ZZZZ-11b2-801c-8086f2cc00c9"); }
 
     // -- Compliance with file scheme: https://tools.ietf.org/html/rfc8089
 

@@ -39,7 +39,7 @@ public class IRIs {
         Objects.requireNonNull(iriStr);
         IRIx iri = IRIx.create(iriStr);
         if ( ! iri.isReference() )
-            throw new IRIException("Not an RDF IRI: "+iriStr);
+            throw new IRIException("Not an RDF IRI: <"+iriStr+">");
         return iri;
     }
 
