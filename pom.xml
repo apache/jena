@@ -82,7 +82,7 @@
     <ver.commons-compress>1.20</ver.commons-compress>
 
     <ver.dexxcollection>0.7</ver.dexxcollection>
-    <ver.micrometer>1.6.5</ver.micrometer>
+    <ver.micrometer>1.6.6</ver.micrometer>
 
     <ver.httpclient>4.5.13</ver.httpclient>
     <ver.httpcore>4.4.14</ver.httpcore>
