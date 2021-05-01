@@ -57,7 +57,7 @@
     <ver.log4j2>2.14.1</ver.log4j2>
     <ver.shade-plugin>3.2.4</ver.shade-plugin>
 
-    <ver.jetty>9.4.39.v20210325</ver.jetty>
+    <ver.jetty>9.4.40.v20210413</ver.jetty>
     <ver.shiro>1.7.1</ver.shiro>
 
     <ver.libthrift>0.14.1</ver.libthrift>
