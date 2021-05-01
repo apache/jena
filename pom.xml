@@ -93,7 +93,7 @@
     <ver.httpclient-osgi>${ver.httpclient}</ver.httpclient-osgi>
     
     <ver.lucene>8.8.0</ver.lucene>
-    <ver.graalvm>21.0.0.2</ver.graalvm>
+    <ver.graalvm>21.1.0</ver.graalvm>
     <ver.jython>2.7.2</ver.jython>
     <ver.jcommander>1.81</ver.jcommander>
     <ver.mockito>3.8.0</ver.mockito>
