@@ -21,18 +21,17 @@ package org.apache.jena.atlas.lib;
 import org.junit.Assert ;
 import org.junit.Test ;
 
-// Testing is a bit light here but the RDF term output and 
+// Testing is a bit light here but the RDF term output and
 // the language level output covers the ground as well.
-// See TestQuotedString in ARQ.
 
 public class TestEscapeStr {
-    
+
     @Test public void escape_str_01()   { test_esc("", "") ; }
     @Test public void escape_str_02()   { test_esc("A", "A") ; }
     @Test public void escape_str_03()   { test_esc("\n", "\\n") ; }
     @Test public void escape_str_04()   { test_esc("A\tB", "A\\tB") ; }
     @Test public void escape_str_05()   { test_esc("\"", "\\\"") ; }
-    
+
     @Test public void unescape_str_10()   { test_unesc("\\u0041", "A") ; }
     @Test public void unescape_str_11()   { test_unesc("\\U00000041", "A") ; }
     @Test public void unescape_str_12()   { test_unesc("12\\u004134", "12A34") ; }
@@ -42,10 +41,26 @@ public class TestEscapeStr {
         String output = EscapeStr.stringEsc(input) ;
         Assert.assertEquals(expected, output);
     }
-    
+
     private void test_unesc(String input, String expected) {
         String output = EscapeStr.unescapeStr(input) ;
         Assert.assertEquals(expected, output);
     }
-    
+
+    @Test public void unescape_unicode_1()   { test_unesc_unicode("", "") ; }
+    @Test public void unescape_unicode_2()   { test_unesc_unicode("abc\\u0020def", "abc def") ; }
+    @Test public void unescape_unicode_3()   { test_unesc_unicode("\\u0020", " ") ; }
+    @Test public void unescape_unicode_4()   { test_unesc_unicode("abc\\U00000020def", "abc def") ; }
+    @Test public void unescape_unicode_5()   { test_unesc_unicode("\\U00000020", " ") ; }
+
+    // Leaves non-unicode untouched.
+    @Test public void unescape_unicode_10()   { test_unesc_unicode("\\1\\2", "\\1\\2") ; }
+    @Test public void unescape_unicode_11()   { test_unesc_unicode("\\n\\t", "\\n\\t") ; }
+    @Test public void unescape_unicode_12()   { test_unesc_unicode("\\(\\)", "\\(\\)") ; }
+    @Test public void unescape_unicode_13()   { test_unesc_unicode("\\\\", "\\\\") ; }
+
+    private void test_unesc_unicode(String input, String expected) {
+        String output = EscapeStr.unescapeUnicode(input) ;
+        Assert.assertEquals(expected, output);
+    }
 }

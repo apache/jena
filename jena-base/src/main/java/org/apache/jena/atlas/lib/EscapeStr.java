@@ -215,7 +215,6 @@ public class EscapeStr
             {
                 sb.append('\\') ;
                 sb.append(ch2) ;
-                i = i + 1 ;
                 continue ;
             }
 
