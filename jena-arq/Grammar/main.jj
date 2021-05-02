@@ -1855,6 +1855,7 @@ Expr UnaryExpression() : { Expr expr ; }
   | expr = PrimaryExpression() { return expr ; }
 }
 
+#ifndef ARQ
 Expr PrimaryExpression() : { Expr expr ; Node n ; }
 {
   ( expr = BrackettedExpression() { return expr ; }
@@ -1866,18 +1867,52 @@ Expr PrimaryExpression() : { Expr expr ; Node n ; }
   | n = NumericLiteral()  { return asExpr(n) ; }
   | n = BooleanLiteral()  { return asExpr(n) ; }
   | n = Var()             { return asExpr(n) ; }
-#ifdef ARQ
-// Not necessary. In expressions, use "TRIPLE(?s,?p,?o)"
-  | n = TripleTerm()      { return asExpr(n) ; }
+  )
+}
 #endif
 #ifdef ARQ
+Expr PrimaryExpression() : { Expr expr ; Node n ; }
+{
+  ( expr = BrackettedExpression() { return expr ; }
+  | expr = BuiltInCall()   { return expr ; }  
+  | expr = iriOrFunction() { return expr ; }
+// NOT  | n = VarOrTerm()    { return asExpr(n) ; }
+// Because of iriOrFunction
+// Can't use iri() here
+  | n = RDFLiteral()      { return asExpr(n) ; }
+  | n = NumericLiteral()  { return asExpr(n) ; }
+  | n = BooleanLiteral()  { return asExpr(n) ; }
+  | n = Var()             { return asExpr(n) ; }
+  | n = ExprTripleTerm()  { return asExpr(n) ; }
 // and not SPARQL 11
 // needs checking.
 // Use this for ?var(args)
 //  |  expr = VarOrFunction()  { return expr ; }
-#endif
   )
 }
+
+Node ExprVarOrTerm() : { Node n; String s;}
+{
+  ( s = iri() { n = createNode(s); }
+  | n = RDFLiteral()
+  | n = NumericLiteral()
+  | n = BooleanLiteral()
+  | n = Var()
+  )
+  { return n; }
+}
+
+// Embedded triple in expressions
+Node ExprTripleTerm() : { Token t ; Node s,p,o,n; }
+{ t = <LT2>
+  s = ExprVarOrTerm()
+  p = Verb()
+  o = ExprVarOrTerm()
+  { n = createTripleTerm(s, p, o, t.beginLine, t.beginColumn); }
+  <GT2>
+  { return n; }
+}
+#endif
 
 Expr BrackettedExpression() : { Expr expr ; }
 {
