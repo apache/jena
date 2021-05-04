@@ -32,7 +32,15 @@ public class Cmds {
 
     static { JenaSystem.init(); }
 
-    private static Map<String, Consumer<String[]>> cmds = new HashMap<>();
+    private static Map<String, Consumer<String[]>> cmds;
+
+    // Initialize via JenaSubsystemLifecycle and not rely on class initialization.
+    static void init() {
+        // Initialization should be minimal, just enough to allow modules to register commands.
+        // We may be inside some other place where JenaSystem.init() was called.
+        if ( cmds != null )
+            cmds = new HashMap<>();
+    }
 
     public static void injectCmd(String name, Consumer<String[]> main) {
         cmds.put(name, main);
