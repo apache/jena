@@ -1361,8 +1361,27 @@ Expr PrimaryExpression() : { Expr expr ; Node n ; }
   | n = NumericLiteral() { return asExpr(n) ; }
   | n = BooleanLiteral() { return asExpr(n) ; }
   | n = Var() { return asExpr(n) ; }
-  | n = TripleTerm() { return asExpr(n) ; }
+  | n = ExprTripleTerm() { return asExpr(n) ; }
   )
+}
+Node ExprVarOrTerm() : { Node n; String s;}
+{
+  ( s = iri() { n = createNode(s); }
+  | n = RDFLiteral()
+  | n = NumericLiteral()
+  | n = BooleanLiteral()
+  | n = Var()
+  )
+  { return n; }
+}
+Node ExprTripleTerm() : { Token t ; Node s,p,o,n; }
+{ t = <LT2>
+  s = ExprVarOrTerm()
+  p = Verb()
+  o = ExprVarOrTerm()
+  { n = createTripleTerm(s, p, o, t.beginLine, t.beginColumn); }
+  <GT2>
+  { return n; }
 }
 Expr BrackettedExpression() : { Expr expr ; }
 {
