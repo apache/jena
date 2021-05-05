@@ -29,8 +29,10 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.iri.IRI;
 import org.apache.jena.iri.IRIComponents;
 import org.apache.jena.iri.Violation;
+import org.apache.jena.irix.IRIProviderJenaIRI;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.irix.SetupJenaIRI;
+import org.apache.jena.irix.SystemIRIx;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.util.SplitIRI;
@@ -121,8 +123,10 @@ public class Checker {
     public static boolean iriViolations(IRI iri, ErrorHandler errorHandler,
                                         boolean allowRelativeIRIs, boolean includeIRIwarnings,
                                         long line, long col) {
+
         if ( !allowRelativeIRIs && iri.isRelative() )
-            errorHandler(errorHandler).error("Relative IRI: " + iri, line, col);
+            // Relative IRIs.
+            iriViolationMessage(iri.toString(), true, "Relative IRI: " + iri, line, col, errorHandler);
 
         boolean isOK = true;
 
@@ -134,24 +138,45 @@ public class Checker {
                 int code = v.getViolationCode();
                 boolean isError = v.isError();
 
-                // Anything we want to reprioritise?
+                // --- Tune warnings.
+                // IRIProviderJena filters ERRORs and throws an exception on error.
+                // It can't add warnings or remove them at that point.
+                // Do WARN filtering here.
                 if ( code == Violation.LOWERCASE_PREFERRED && v.getComponent() != IRIComponents.SCHEME ) {
-                    // Issue warning about the scheme part. Not e.g. DNS names.
+                    // Issue warning about the scheme part only. Not e.g. DNS names.
                     continue;
                 }
+
+                // Convert selected violations from ERROR to WARN for output/
+                // There are cases where jena-iri always makes a violation an ERROR regardless of SetupJenaIRI
+                // PROHIBITED_COMPONENT_PRESENT
+//                if ( code == Violation.PROHIBITED_COMPONENT_PRESENT )
+//                    isError = false;
+
+                isOK = false;
                 String msg = v.getShortMessage();
                 String iriStr = iri.toString();
-
-                errorHandler(errorHandler).warning("Bad IRI: " + msg, line, col);
-
-//                if ( isError )
-//                    errorHandler(errorHandler).warning("Bad IRI: " + msg, line, col);
-//                else
-//                    errorHandler(errorHandler).warning("Not advised IRI: " + msg, line, col);
-                isOK = true;
+                iriViolationMessage(iriStr, isError, msg, line, col, errorHandler);
             }
         }
         return isOK;
+    }
+
+    /**
+     * Common handling messages about IRIs during parsing whether a violation or an
+     * IRIException. Prints a warning, with different messages for IRI error or warning.
+     */
+    public static void iriViolationMessage(String iriStr, boolean isError, String msg, long line, long col, ErrorHandler errorHandler) {
+        try {
+            if ( ! ( SystemIRIx.getProvider() instanceof IRIProviderJenaIRI ) )
+                msg = "<" + iriStr + "> : " + msg;
+
+            if ( isError ) {
+                // ?? Treat as error, catch exceptions?
+                errorHandler(errorHandler).warning("Bad IRI: " + msg, line, col);
+            } else
+                errorHandler(errorHandler).warning("Not advised IRI: " + msg, line, col);
+        } catch (org.apache.jena.iri.IRIException | org.apache.jena.irix.IRIException ex) {}
     }
 
     // ==== Literals

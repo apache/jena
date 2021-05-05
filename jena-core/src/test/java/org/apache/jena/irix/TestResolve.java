@@ -196,6 +196,12 @@ public class TestResolve extends AbstractTestIRIx {
         testResolve("http://example/dir1/dir2/", "//EX/OtherPath", "http://EX/OtherPath");
     }
 
+    @Test
+    public void resolve_34() {
+        String uuid = "urn:uuid:e79b5752-a82e-11eb-8c4e-cba73c34870a";
+        testResolve("http://example/base#", uuid, uuid);
+    }
+
     private void testResolve(String base, String rel, String expected) {
         IRIx baseIRI = IRIx.create(base);
         IRIx relIRI = IRIx.create(rel);

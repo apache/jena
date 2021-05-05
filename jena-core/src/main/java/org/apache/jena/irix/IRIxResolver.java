@@ -19,6 +19,7 @@
 package org.apache.jena.irix;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.lib.CacheFactory;
@@ -85,10 +86,8 @@ public class IRIxResolver {
         IRIx x = (base != null && resolve)
                 ? base.resolve(str)
                 : IRIx.create(str);
-        if ( ! allowRelative ) {
-            if ( ! x.isReference() )
-                throw new IRIException("Not an RDF IRI: "+str);
-        }
+        if ( ! allowRelative && x.isRelative() )
+            throw new RelativeIRIException("Relative IRI: <"+str+">");
         return x;
     }
 
@@ -104,15 +103,13 @@ public class IRIxResolver {
 
    public static Builder create() { return new Builder(); }
 
-
    /**
     * Create a {@link IRIxResolver} with the base URI which is resolved against the
     * current system default base.
     */
    public static Builder create(IRIxResolver original) {
        Builder builder = new Builder();
-       builder.base = original.base;
-       builder.baseSet = true;
+       builder.base = Optional.ofNullable(original.base);
        builder.resolve = original.resolve;
        builder.allowRelative = original.allowRelative;
        return builder;
@@ -136,29 +133,26 @@ public class IRIxResolver {
    }
 
    public static class Builder {
-
-       private boolean baseSet = false;
-       private IRIx base = null;
-       private boolean resolve = true;
+       // null is "unset".
+       private Optional<IRIx> base   = null;
+       private boolean resolve       = true;
        private boolean allowRelative = true;
 
        private Builder() {}
 
        public Builder base(IRIx baseURI) {
-           this.base = baseURI;
-           this.baseSet = true;
+           this.base = Optional.ofNullable(baseURI);
            return this;
        }
 
        public Builder base(String baseStr) {
-           base = (baseStr == null) ? null : IRIs.resolveIRI(baseStr);
-           this.baseSet = true;
+           IRIx baseIRI = (baseStr == null) ? null : IRIs.resolveIRI(baseStr);
+           this.base = Optional.ofNullable(baseIRI);
            return this;
        }
 
        public Builder noBase() {
-           base = null;
-           this.baseSet = true;
+           this.base = Optional.empty();
            return this;
        }
 
@@ -173,9 +167,10 @@ public class IRIxResolver {
        }
 
        public IRIxResolver build() {
-           if ( ! baseSet )
+           if ( base == null )
                throw new IRIException("Base has not been set");
-           return new IRIxResolver(base, resolve, allowRelative);
+           IRIx baseIRI = base.orElse(null);
+           return new IRIxResolver(baseIRI, resolve, allowRelative);
        }
    }
 }
