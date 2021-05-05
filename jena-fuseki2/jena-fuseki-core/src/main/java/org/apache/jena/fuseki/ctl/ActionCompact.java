@@ -88,10 +88,17 @@ public class ActionCompact extends ActionAsyncTask
     }
 
     static class CompactTask extends TaskBase {
-        static private Logger log = Fuseki.compactLog;
+        static private final Logger log = Fuseki.compactLog;
+
+        private final boolean shouldDeleteOld;
 
         public CompactTask(HttpAction action) {
             super(action);
+
+            String deleteOldParam = action.request.getParameter("deleteOld");
+
+            this.shouldDeleteOld = ( deleteOldParam != null
+                                     && ( deleteOldParam.isEmpty() || deleteOldParam.equalsIgnoreCase("true") ) );
         }
 
         @Override
@@ -99,7 +106,7 @@ public class ActionCompact extends ActionAsyncTask
             try {
                 DatasetGraph dsg = getTDB2(dataset);
                 log.info(format("[%d] >>>> Start compact %s", actionId, datasetName));
-                DatabaseMgr.compact(dsg);
+                DatabaseMgr.compact(dsg, this.shouldDeleteOld);
                 log.info(format("[%d] <<<< Finish compact %s", actionId, datasetName));
             } catch (Throwable ex) {
                 log.warn(format("[%d] **** Exception in compact", actionId), ex);
