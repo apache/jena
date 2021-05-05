@@ -38,7 +38,7 @@ public class Cmds {
     static void init() {
         // Initialization should be minimal, just enough to allow modules to register commands.
         // We may be inside some other place where JenaSystem.init() was called.
-        if ( cmds != null )
+        if ( cmds == null )
             cmds = new HashMap<>();
     }
 
