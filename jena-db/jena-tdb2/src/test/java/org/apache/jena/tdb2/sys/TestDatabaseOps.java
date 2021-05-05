@@ -19,9 +19,11 @@
 package org.apache.jena.tdb2.sys;
 
 import static org.junit.Assert.*;
+import static org.junit.Assume.assumeFalse;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.base.Sys;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
@@ -195,6 +197,7 @@ public class TestDatabaseOps
     }
 
     @Test public void compact_delete() {
+        assumeFalse(Sys.isWindows);
         DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(dir);
         DatasetGraphSwitchable dsgs = (DatasetGraphSwitchable)dsg;
         DatasetGraph dsg1 = dsgs.get();
@@ -206,7 +209,11 @@ public class TestDatabaseOps
         });
         DatabaseMgr.compact(dsg, true);
 
-        assertFalse(IOX.asFile(loc1).exists());
+        // Memory mapped files do not go away on MS Windows until the JVM exits.
+        // This is a long standing JDK issue.
+        // https://bugs.openjdk.java.net/browse/JDK-4715154
+        if ( ! Sys.isWindows )
+            assertFalse(IOX.asFile(loc1).exists());
 
         DatasetGraph dsg2 = dsgs.get();
         Location loc2 = ((DatasetGraphTDB)dsg2).getLocation();
