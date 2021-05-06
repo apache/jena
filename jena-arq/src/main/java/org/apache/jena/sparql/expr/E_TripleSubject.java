@@ -26,7 +26,7 @@ public class E_TripleSubject extends ExprFunction1
     private static final String symbol = Tags.tagSubject;
 
     public E_TripleSubject(Expr expr) {
-        super(expr, "subject", symbol) ;
+        super(expr, symbol) ;
     }
 
     @Override
