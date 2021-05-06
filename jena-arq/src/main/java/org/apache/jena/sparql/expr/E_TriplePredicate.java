@@ -26,7 +26,7 @@ public class E_TriplePredicate extends ExprFunction1
     private static final String symbol = Tags.tagPredicate;
 
     public E_TriplePredicate(Expr expr) {
-        super(expr, "predicate", symbol) ;
+        super(expr, symbol) ;
     }
 
     @Override
