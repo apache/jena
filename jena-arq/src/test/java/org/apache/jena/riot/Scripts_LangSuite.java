@@ -28,8 +28,8 @@ import org.junit.runner.RunWith ;
 @RunWith(RunnerRIOT.class)
 @Label("RIOT")
 @Manifests({
-    "testing/RIOT/Lang/manifest-all.ttl",
-    "testing/ARQ/RDF-star/Turtle-star/manifest.ttl"
+    "testing/RIOT/Lang/manifest-all.ttl"
+    // RDF-star tests also in Scripts_ARQ which runs the entire suite of community tests.
 })
 
 public class Scripts_LangSuite

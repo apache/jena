@@ -36,7 +36,8 @@ import org.junit.runner.RunWith ;
     "testing/RIOT/Lang/TurtleStd/manifest.ttl",
     "testing/RIOT/Lang/Turtle2/manifest.ttl",
     "testing/RIOT/Lang/TurtleSubm/manifest.ttl",
-    "testing/ARQ/RDF-star/Turtle-star/manifest.ttl"
+    "testing/ARQ/RDF-star/cg/turtle/syntax/manifest.ttl",
+    "testing/ARQ/RDF-star/cg/turtle/eval/manifest.ttl"
 })
 
 public class Scripts_AltTurtle
@@ -49,7 +50,7 @@ public class Scripts_AltTurtle
         TurtleJCC.register();
         ParseForTest.alternativeReaderFactories.put(Lang.TURTLE, TurtleJCC.factory);
     }
-    
+
     @AfterClass public static void afterClass() {
         ParseForTest.alternativeReaderFactories.remove(Lang.TURTLE);
     }
