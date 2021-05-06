@@ -1898,6 +1898,7 @@ Node ExprVarOrTerm() : { Node n; String s;}
   | n = NumericLiteral()
   | n = BooleanLiteral()
   | n = Var()
+  | n = ExprTripleTerm()
   )
   { return n; }
 }
