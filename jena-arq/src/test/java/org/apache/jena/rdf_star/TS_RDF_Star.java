@@ -29,10 +29,7 @@ import org.junit.runners.Suite;
     TestTurtleStarParse.class,
     TestSPARQLStarParse.class,
     TestSPARQLStarExtra.class
-
-    // See also Scripts_ARQ SPARQL-star/manifest.ttl
-    // and 
- 
+    // See also Scripts_ARQ and RDF-star/manifest.ttl
 })
 public class TS_RDF_Star {
 }

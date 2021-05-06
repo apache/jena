@@ -1,0 +1,165 @@
+## Distributed under both the "W3C Test Suite License" [1]
+## and the "W3C 3-clause BSD License".
+## [1] https://www.w3.org/Consortium/Legal/2008/04-testsuite-license
+## [2] https://www.w3.org/Consortium/Legal/2008/03-bsd-license
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+PREFIX test:   <http://www.w3.org/2001/sw/DataAccess/tests/>
+PREFIX rdft:   <http://www.w3.org/ns/rdftest#>
+PREFIX trs:    <https://w3c.github.io/rdf-star/tests/trig/syntax#>
+
+trs:manifest  rdf:type mf:Manifest ;
+    rdfs:label "TriG-star Syntax Tests" ;
+    mf:entries
+    (
+        trs:trig-star-1
+        trs:trig-star-2
+
+        trs:trig-star-inside-1
+        trs:trig-star-inside-2
+
+        trs:trig-star-nested-1
+        trs:trig-star-nested-2
+
+        trs:trig-star-compound-1
+
+        trs:trig-star-bnode-1
+        trs:trig-star-bnode-2
+        trs:trig-star-bnode-3
+
+        trs:trig-star-bad-1
+        trs:trig-star-bad-2
+        trs:trig-star-bad-3
+        trs:trig-star-bad-4
+        trs:trig-star-bad-5
+        trs:trig-star-bad-6
+        trs:trig-star-bad-7
+        trs:trig-star-bad-8
+
+        trs:trig-star-ann-1
+        trs:trig-star-ann-2
+        
+        trs:trig-star-bad-ann-1
+        trs:trig-star-bad-ann-2
+    ) .
+
+## Good Syntax
+
+trs:trig-star-1 rdf:type rdft:TestTrigPositiveSyntax ;
+   mf:name      "TriG-star - subject embedded triple" ;
+   mf:action    <trig-star-syntax-basic-01.trig> ;
+   .
+
+trs:trig-star-2 rdf:type rdft:TestTrigPositiveSyntax ;
+   mf:name      "TriG-star - object embedded triple" ;
+   mf:action    <trig-star-syntax-basic-02.trig> ;
+   .
+
+trs:trig-star-inside-1 rdf:type rdft:TestTrigPositiveSyntax ;
+   mf:name      "TriG-star - embedded triple inside blankNodePropertyList" ;
+   mf:action    <trig-star-syntax-inside-01.trig> ;
+   .
+
+trs:trig-star-inside-2 rdf:type rdft:TestTrigPositiveSyntax ;
+   mf:name      "TriG-star - embedded triple inside collection" ;
+   mf:action    <trig-star-syntax-inside-02.trig> ;
+   .
+
+trs:trig-star-nested-1 rdf:type rdft:TestTrigPositiveSyntax ;
+   mf:name      "TriG-star - nested embedded triple, subject position" ;
+   mf:action    <trig-star-syntax-nested-01.trig> ;
+   .
+
+trs:trig-star-nested-2 rdf:type rdft:TestTrigPositiveSyntax ;
+   mf:name      "TriG-star - nested embedded triple, object position" ;
+   mf:action     <trig-star-syntax-nested-02.trig> ;
+   .
+
+trs:trig-star-compound-1 rdf:type rdft:TestTrigPositiveSyntax ;
+   mf:name      "TriG-star - compound forms" ;
+   mf:action    <trig-star-syntax-compound.trig> ;
+   .
+
+trs:trig-star-bnode-1 rdf:type rdft:TestTrigPositiveSyntax ;
+   mf:name      "TriG-star - blank node subject" ;
+   mf:action    <trig-star-syntax-bnode-01.trig> ;
+   .
+
+trs:trig-star-bnode-2 rdf:type rdft:TestTrigPositiveSyntax ;
+   mf:name      "TriG-star - blank node object" ;
+   mf:action    <trig-star-syntax-bnode-02.trig> ;
+   .
+
+trs:trig-star-bnode-3 rdf:type rdft:TestTrigPositiveSyntax ;
+   mf:name      "TriG-star - blank node" ;
+   mf:action    <trig-star-syntax-bnode-03.trig> ;
+   .
+
+## Bad Syntax
+
+trs:trig-star-bad-1 rdf:type rdft:TestTrigNegativeSyntax ;
+    mf:name      "TriG-star - bad - embedded triple as predicate" ;
+    mf:action    <trig-star-syntax-bad-01.trig> ;
+    .
+
+trs:trig-star-bad-2 rdf:type rdft:TestTrigNegativeSyntax ;
+    mf:name      "TriG-star - bad - embedded triple outside triple" ;
+    mf:action    <trig-star-syntax-bad-02.trig> ;
+    .
+
+trs:trig-star-bad-3 rdf:type rdft:TestTrigNegativeSyntax ;
+    mf:name      "TriG-star - bad - collection list in embedded triple" ;
+    mf:action    <trig-star-syntax-bad-03.trig> ;
+    .
+
+trs:trig-star-bad-4 rdf:type rdft:TestTrigNegativeSyntax ;
+    mf:name      "TriG-star - bad - literal in subject position of embedded triple" ;
+    mf:action    <trig-star-syntax-bad-04.trig> ;
+    .
+
+trs:trig-star-bad-5 rdf:type rdft:TestTrigNegativeSyntax ;
+    mf:name      "TriG-star - bad - blank node  as predicate in embedded triple";
+    mf:action    <trig-star-syntax-bad-05.trig> ;
+    .
+
+trs:trig-star-bad-6 rdf:type rdft:TestTrigNegativeSyntax ;
+    mf:name      "TriG-star - bad - compound blank node expression";
+    mf:action    <trig-star-syntax-bad-06.trig> ;
+    .
+
+trs:trig-star-bad-7 rdf:type rdft:TestTrigNegativeSyntax ;
+    mf:name      "TriG-star - bad - incomplete embedded triple";
+    mf:action    <trig-star-syntax-bad-07.trig> ;
+    .
+
+trs:trig-star-bad-8 rdf:type rdft:TestTrigNegativeSyntax ;
+    mf:name      "TriG-star - bad - over-long embedded triple";
+    mf:action    <trig-star-syntax-bad-08.trig> ;
+    .
+
+## Annotation syntax
+
+trs:trig-star-ann-1 rdf:type rdft:TestTrigPositiveSyntax ;
+    mf:name      "TriG-star - Annotation form" ;
+    mf:action    <trig-star-annotation-1.trig> ;
+   .
+
+trs:trig-star-ann-2 rdf:type rdft:TestTrigPositiveSyntax ;
+    mf:name      "TriG-star - Annotation example" ;
+    mf:action    <trig-star-annotation-2.trig> ;
+    .
+
+## Bad annotation syntax
+
+trs:trig-star-bad-ann-1 rdf:type rdft:TestTrigNegativeSyntax ;
+    mf:name      "TriG-star - bad - empty annotation" ;
+    mf:action    <trig-star-syntax-bad-ann-1.trig> ;
+   .
+
+trs:trig-star-bad-ann-2 rdf:type rdft:TestTrigNegativeSyntax ;
+    mf:name      "TriG-star - bad - triple as annotation" ;
+    mf:action    <trig-star-syntax-bad-ann-2.trig> ;
+   .
+

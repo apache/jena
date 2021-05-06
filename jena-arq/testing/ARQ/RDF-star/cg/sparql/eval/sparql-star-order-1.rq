@@ -1,0 +1,5 @@
+PREFIX : <http://example/>
+
+SELECT * {
+   :item :p ?v .
+} ORDER BY ?v
