@@ -33,8 +33,8 @@ import org.junit.runner.RunWith;
 @Prefix("TDB1-")
 @Manifests
 ({
-    "testing/manifest.ttl",
-    "../jena-arq/testing/ARQ/RDF-star/SPARQL-star/manifest.ttl"
+    //"testing/manifest.ttl",
+    "../jena-arq/testing/ARQ/RDF-star/cg/sparql/eval/manifest.ttl"
 })
 
 public class Scripts_TDB1

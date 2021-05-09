@@ -27,7 +27,7 @@ public class E_TripleTerm extends ExprFunction3 {
 
     public E_TripleTerm(Expr expr1, Expr expr2, Expr expr3) {
         // SPARQL keyword, symbol for SSE.
-        super(expr1, expr2, expr3, "triple", symbol);
+        super(expr1, expr2, expr3, symbol);
     }
 
     @Override

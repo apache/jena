@@ -35,7 +35,6 @@ import org.apache.jena.riot.tokens.Tokenizer;
 import org.apache.jena.riot.tokens.TokenizerText;
 import org.apache.jena.riot.web.LangTag;
 import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.NodeUtils;
 import org.apache.jena.tdb.TDB;
 import org.apache.jena.tdb.TDBException;
@@ -66,28 +65,21 @@ public class NodecSSE implements Nodec
 
         String str = null;
 
-        if ( node.isURI() )
-        {
+        if ( node.isURI() ) {
             // Pesky spaces etc
             String x = StrUtils.encodeHex(node.getURI(), MarkerChar, invalidIRIChars);
             if ( x != node.getURI() )
                 node = NodeFactory.createURI(x);
-        }
-
-        if ( node.isLiteral() && NodeUtils.isLangString(node) )
-        {
+        } else if ( node.isLiteral() && NodeUtils.isLangString(node) ) {
             // Check syntactically valid.
             String lang = node.getLiteralLanguage();
             if ( ! LangTag.check(lang) )
                 throw new TDBException("bad language tag: "+node);
-        }
-
-        if ( node.isBlank() && ! onlySafeBNodeLabels ) {
+        } else if ( node.isBlank() && ! onlySafeBNodeLabels ) {
             // Special case.
             str = "_:"+node.getBlankNodeLabel();
-        }
-
-        if ( node.isNodeTriple() ) {
+        } else if ( node.isNodeTriple() ) {
+            // See comments in DecodeSSE.
             str = NodeFmtLib.str(node);
         }
 
@@ -107,27 +99,16 @@ public class NodecSSE implements Nodec
 
         // Byte -> String
         String str = BlockUTF8.toString(bb);
-        // String -> Node
 
-        // Easy cases.
-        if ( str.startsWith("_:") )
-        {
-            // Must be done this way.
-            // In particular, bnode labels can contain ":" from Jena
-            // TokenizerText does not recognize these.
+        // String -> Node
+        if ( str.startsWith("_:") ) {
             str = str.substring(2);
             return NodeFactory.createBlankNode(str);
-        }
-
-        if ( str.startsWith("<<") ) {
-            // Complex - not a single token so use full machinery.
-            return SSE.parseNode(str);
-        }
-
-        if ( str.startsWith("<") )
-        {
+        } else if ( str.startsWith("<<") ) {
+            // TripleTerms are written with NodeFmtLib.str (see above).
+            return DecoderSSE.parseNode(str);
+        } else if ( str.startsWith("<") ) {
             // Do directly.
-            // (is it quicker?)
             str = str.substring(1,str.length()-1);
             str = StrUtils.unescapeString(str);
             str = StrUtils.decodeHex(str, MarkerChar);
