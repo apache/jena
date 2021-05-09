@@ -10,8 +10,8 @@
         <ul class="nav nav-pills nav-stacked graphs">
           <% _.each( counts(), function( n, g ) { %>
             <li class="">
-              <a href="#" class="select-dataset" data-graph-name="<%= g %>" data-graph-size="<%= n %>">
-                <%= g %> (<%= n %> triples)
+              <a href="#" class="select-dataset" data-graph-name="<%- g %>" data-graph-size="<%= n %>">
+                <%- g %> (<%= n %> triples)
               </a>
             </li>
           <% } ); %>

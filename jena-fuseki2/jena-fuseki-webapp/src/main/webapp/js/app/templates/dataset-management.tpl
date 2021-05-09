@@ -14,7 +14,7 @@
         <% _.each( datasets, function( ds ) { %>
           <tr>
             <td>
-              <%= ds.name() %>
+              <%- ds.name() %>
             </td>
             <!-- JENA-867 temporarily disable non-functional checkbox
             <td>
@@ -24,9 +24,9 @@
             <td>
               <div>
                 <!-- JENA-869 Disable download button until it works again -->
-                <a class="btn btn-sm action remove btn-primary" data-ds-id='<%= ds.name() %>'><i class='fa fa-times-circle'></i> remove</a>
-                <a class="btn btn-sm action backup btn-primary" data-ds-id='<%= ds.name() %>'><i class='fa fa-download'></i> backup</a>
-                <a class="btn btn-sm action add-data btn-primary" href="dataset.html?tab=upload&ds=<%= ds.name() %>"><i class='fa fa-upload'></i> upload data</a>
+                <a class="btn btn-sm action remove btn-primary" data-ds-id='<%- ds.name() %>'><i class='fa fa-times-circle'></i> remove</a>
+                <a class="btn btn-sm action backup btn-primary" data-ds-id='<%- ds.name() %>'><i class='fa fa-download'></i> backup</a>
+                <a class="btn btn-sm action add-data btn-primary" href="dataset.html?tab=upload&ds=<%- ds.name() %>"><i class='fa fa-upload'></i> upload data</a>
               </div>
               <div class="action feedback"></a>
             </td>
