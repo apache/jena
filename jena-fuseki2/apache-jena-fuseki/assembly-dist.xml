@@ -75,7 +75,7 @@
     <fileSet>
       <outputDirectory></outputDirectory>
       <includes>
-        <include>templates/*</include>
+        <include>static/*</include>
         <include>README*</include>
         <include>DEPENDENCIES*</include>
       </includes>
@@ -92,7 +92,7 @@
     </fileSet>
 
     <fileSet>
-       <!-- Exeutables -->
+       <!-- Executables -->
        <outputDirectory></outputDirectory>
        <fileMode>0755</fileMode>
        <includes>
@@ -103,7 +103,7 @@
      </fileSet>
 
     <fileSet>
-      <directory>../jena-fuseki-webapp/src/main/webapp</directory>
+      <directory>../jena-fuseki-webapp/target/webapp/</directory>
       <outputDirectory>webapp</outputDirectory>
     </fileSet>
 
