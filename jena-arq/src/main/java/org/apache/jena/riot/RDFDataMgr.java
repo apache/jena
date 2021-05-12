@@ -574,7 +574,6 @@ public class RDFDataMgr
      * Short for {@code RDFParser.source(uri).parse(dest)}
      * @param dest     Destination for the RDF read.
      * @param uri      URI to read from (includes file: and a plain file name).
-     * Use
      */
     public static void parse(StreamRDF dest, String uri) {
         RDFParser.source(uri).parse(dest);
