@@ -81,7 +81,7 @@ public class JettyFusekiWebapp {
     // Standalone jar
     public static final String resourceBase1   = "webapp";
     // Development
-    public static final String resourceBase2   = "src/main/webapp";
+    public static final String resourceBase2   = "target/webapp";
 
     /**
      * Default setup which requires a {@link org.apache.jena.fuseki.jetty.JettyServerConfig}

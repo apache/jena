@@ -25,15 +25,15 @@ module.exports = {
       })
   },
   // see https://cli.vuejs.org/config/#devserver-proxy
-  devServer: {
-    proxy: {
-      '/': {
-        target: 'http://localhost:3030',
-        ws: true,
-        changeOrigin: true
-      }
-    }
-  },
+  // devServer: {
+  //   proxy: {
+  //     '/': {
+  //       target: 'http://localhost:3030',
+  //       ws: true,
+  //       changeOrigin: true
+  //     }
+  //   }
+  // },
   // Change build paths to make them Maven compatible
   // see https://cli.vuejs.org/config/
   outputDir: 'target/dist',

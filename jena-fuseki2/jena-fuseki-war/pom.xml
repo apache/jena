@@ -40,13 +40,6 @@
       <version>${project.version}</version>
     </dependency>
 
-	<!-- frontend assets (HTML, JS, CSS, images, etc.) -->
-	<dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-fuseki-ui</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
     <!-- Require a logging implementation -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -70,17 +63,12 @@
           </execution>
         </executions>
         <configuration>
-          <warSourceDirectory>../jena-fuseki-ui/target/dist/</warSourceDirectory>
+          <warSourceDirectory>../jena-fuseki-webapp/src/main/webapp</warSourceDirectory>
           <webXml>../jena-fuseki-webapp/src/main/webapp/WEB-INF/web.xml</webXml>
 
           <webResources>
             <resource>
               <directory>war-inclusions/</directory>
-              <targetPath>/</targetPath>
-            </resource>
-            <resource>
-              <directory>../jena-fuseki-webapp/src/main/webapp</directory>
-              <includes>log4j2.properties</includes>
               <targetPath>/</targetPath>
             </resource>
           </webResources>
