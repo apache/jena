@@ -72,6 +72,13 @@
       <artifactId>shiro-web</artifactId>
     </dependency>
 
+    <!-- frontend assets (HTML, JS, CSS, images, etc.) -->
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-fuseki-ui</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
     <!-- Logging  -->  
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -129,6 +136,22 @@
         <directory>src/main/resources</directory>
         <includes>
           <include>org/apache/jena/fuseki/fuseki-properties.xml</include>
+        </includes>
+      </resource>
+      <resource>
+        <filtering>false</filtering>
+        <directory>src/main/webapp/</directory>
+        <targetPath>${project.build.directory}/webapp/</targetPath>
+        <excludes>
+          <exclude>index.html</exclude>
+        </excludes>
+      </resource>
+      <resource>
+        <filtering>false</filtering>
+        <directory>../jena-fuseki-ui/target/dist/</directory>
+        <targetPath>${project.build.directory}/webapp/</targetPath>
+        <includes>
+          <include>**/*.*</include>
         </includes>
       </resource>
     </resources>

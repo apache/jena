@@ -33,9 +33,17 @@
 
   <dependencies>
 
+    <!-- backend servlets, filters (CORS, Shiro, etc.) -->
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-webapp</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- frontend assets (HTML, JS, CSS, images, etc.) -->
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-fuseki-ui</artifactId>
       <version>${project.version}</version>
     </dependency>
 
@@ -74,12 +82,17 @@
           </execution>
         </executions>
         <configuration>
-          <warSourceDirectory>../jena-fuseki-webapp/src/main/webapp</warSourceDirectory>
+          <warSourceDirectory>../jena-fuseki-webapp/target/webapp/</warSourceDirectory>
           <webXml>../jena-fuseki-webapp/src/main/webapp/WEB-INF/web.xml</webXml>
 
           <webResources>
             <resource>
               <directory>war-inclusions/</directory>
+              <targetPath>/</targetPath>
+            </resource>
+            <resource>
+              <directory>../jena-fuseki-webapp/src/main/webapp</directory>
+              <includes>log4j2.properties</includes>
               <targetPath>/</targetPath>
             </resource>
           </webResources>
