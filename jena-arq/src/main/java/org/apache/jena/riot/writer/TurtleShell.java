@@ -474,10 +474,22 @@ public abstract class TurtleShell {
             return Pair.create(x, eltsReversed) ;
         }
 
-        /** Return the triples of the list element, or null if invalid list */
+        /**
+         * Accumulate the triples of the list element.
+         * A valid node is:
+         * <ul>
+         * <li>A blank node.
+         * <li>is the subject of one {@code rdf:rest}
+         * <li>is the subject of one {@code rdf:first}
+         * <li>is the subject of no other triples
+         * </ul>
+         * Return true if valid else false.
+         */
         private boolean validListElement(Node x, List<Triple> acc) {
-            Triple t1 = triple1(x, RDF_Rest, null) ; // Which we came up to get
-                                                     // here :-(
+            if ( ! x.isBlank() )
+                return false;
+            // Which we came up to get here :-(
+            Triple t1 = triple1(x, RDF_Rest, null) ;
             if ( t1 == null )
                 return false ;
             Triple t2 = triple1(x, RDF_First, null) ;
