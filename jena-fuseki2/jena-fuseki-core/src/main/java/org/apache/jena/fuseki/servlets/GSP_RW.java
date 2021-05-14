@@ -23,6 +23,8 @@ import static org.apache.jena.riot.WebContent.ctMultipartMixed;
 import static org.apache.jena.riot.WebContent.matchContentType;
 
 import org.apache.jena.atlas.web.ContentType;
+import org.apache.jena.fuseki.FusekiConfigException;
+import org.apache.jena.fuseki.server.Validators;
 import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.fuseki.system.Upload;
 import org.apache.jena.fuseki.system.UploadDetails;
@@ -154,6 +156,17 @@ public class GSP_RW extends GSP_R {
                 action.log.debug(action.request.getMethod().toUpperCase()+"->"+target);
             if ( target.isUnion() )
                 ServletOps.errorBadRequest("Can't delete the union graph");
+            // Check URI.
+            if ( ! target.isDefault() && target.graphName() != null && ! target.graphName().isBlank()) {
+                String uri = target.graphName().getURI();
+                try {
+                    Validators.graphName(uri);
+                } catch (FusekiConfigException ex) {
+                    ServletOps.errorBadRequest("Bad URI: "+uri);
+                    return null;
+                }
+            }
+
             boolean existedBefore = target.exists();
             Graph g = target.graph();
             if ( overwrite && existedBefore )

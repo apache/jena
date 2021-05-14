@@ -84,7 +84,7 @@ public class IRILib
      * which is strict ASCII.
      * Include ':' (segment-nc) and '/' (segment separator).
      */
-    public static char[] charsComponent = {
+    private static char[] charsComponent = {
         //
         '!', '$', '&', '\'', '(', ')', '*', '+', ',', ';', '=', ':', '/', '?', '#', '[', ']', '@',
         // Other

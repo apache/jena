@@ -58,6 +58,14 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
         }
     }
 
+    /** @deprecated Use {@link #register(DataAccessPoint)} */
+    @Override
+    @Deprecated
+    public void put(String key, DataAccessPoint dap) {
+        // Ignore presented name. Use canonical name in the DataAccessPoint. */
+        register(dap);
+    }
+
     @Override
     public DataAccessPoint get(String key) {
         return super.get(key);
@@ -85,7 +93,6 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
     }
 
     // The server DataAccessPointRegistry is held in the ServletContext for the server.
-
     public static DataAccessPointRegistry get(ServletContext cxt) {
         DataAccessPointRegistry registry = (DataAccessPointRegistry)cxt.getAttribute(Fuseki.attrNameRegistry);
         if ( registry == null )

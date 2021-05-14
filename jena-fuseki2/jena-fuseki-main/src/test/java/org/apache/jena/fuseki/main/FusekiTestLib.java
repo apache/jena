@@ -27,6 +27,10 @@ import org.apache.jena.web.HttpSC.Code;
 
 public class FusekiTestLib {
 
+    public static void expect400(Runnable runnable) {
+        expectFail(runnable, HttpSC.Code.BAD_REQUEST);
+    }
+
     public static void expect401(Runnable runnable) {
         expectFail(runnable, HttpSC.Code.UNAUTHORIZED);
     }

@@ -19,7 +19,6 @@
 package org.apache.jena.fuseki.main.examples;
 
 import org.apache.jena.atlas.web.WebLib;
-import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Operation;
@@ -36,11 +35,11 @@ import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.web.HttpSC;
 
 /**
- * Create custom setup of a {@link DataService}, 
+ * Create custom setup of a {@link DataService},
  * with both a building in operation (query) and a custom one.
  * These are invoked with named endpoints.
- * 
- * This shows a more detailed setup compared to {@link ExFuseki_1_NamedService}. 
+ *
+ * This shows a more detailed setup compared to {@link ExFuseki_1_NamedService}.
  * See also {@link ExFuseki_1_NamedService} for more details.
  */
 
@@ -66,13 +65,14 @@ public class ExFuseki_2_Config_DataService {
         // Make a DataService with custom named for endpoints.
         // In this example, "q" for SPARQL query and "x" for our custom extension and no others.
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
-        DataService dataService = new DataService(dsg);
         // This would add the usual defaults.
         //FusekiBuilder.populateStdServices(dataService, true);
-        FusekiConfig.addServiceEP(dataService, myOperation, customEndpoint);
-        FusekiConfig.addServiceEP(dataService, Operation.Query, queryEndpoint);
+        DataService dataService = DataService.newBuilder(dsg)
+                .addEndpoint(myOperation, customEndpoint)
+                .addEndpoint(Operation.Query, queryEndpoint)
+                .build();
 
-        // The handled for the new operation.
+        // This will be the code to handled for the operation.
         ActionService customHandler = new DemoService();
 
         FusekiServer server =

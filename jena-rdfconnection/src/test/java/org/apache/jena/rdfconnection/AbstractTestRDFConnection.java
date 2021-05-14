@@ -40,7 +40,7 @@ import org.junit.Test;
 
 public abstract class AbstractTestRDFConnection {
     // Testing data.
-    static String DIR = "testing/RDFConnection/";
+    protected static String DIR = "testing/RDFConnection/";
 
     protected abstract RDFConnection connection();
     // Not all connection types support abort.

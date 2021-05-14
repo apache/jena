@@ -32,9 +32,9 @@ import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.FusekiConfigException;
-import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.build.FusekiExt;
 import org.apache.jena.fuseki.server.DataService;
+import org.apache.jena.fuseki.server.Endpoint;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.server.OperationRegistry;
 import org.apache.jena.fuseki.servlets.ActionService;
@@ -94,15 +94,18 @@ public class TestFusekiCustomOperation {
         // Create a DataService and add the endpoint -> operation association.
         // This still needs the server to have the operation registered.
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
-        DataService dataService = new DataService(dsg);
-        FusekiConfig.populateStdServices(dataService, true);
         try {
             FusekiExt.registerOperation(newOp, customHandler);
             assertTrue(OperationRegistry.get().isRegistered(newOp));
-
-            FusekiConfig.addServiceEP(dataService, newOp, endpointName);
-            FusekiServer server = FusekiServer.create().port(port).registerOperation(newOp, contentType, customHandler)
-                .add("/ds", dataService).build();
+            Endpoint endpoint = Endpoint.create(newOp, endpointName);
+            DataService dataService = DataService.newBuilder(dsg)
+                    .withStdServices(true)
+                    .addEndpoint(endpoint)
+                    .build();
+            FusekiServer server = FusekiServer.create().port(port)
+                    .registerOperation(newOp, contentType, customHandler)
+                    .add("/ds", dataService)
+                    .build();
             testServer(server, url, endpointName, true, false);
         }
         finally {
@@ -116,15 +119,19 @@ public class TestFusekiCustomOperation {
         // Create a DataService and add the endpoint -> operation association.
         // This still needs the server to have the operation registered.
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
-        DataService dataService = new DataService(dsg);
-        FusekiConfig.populateStdServices(dataService, true);
         try {
             FusekiExt.registerOperation(newOp, customHandler);
             assertTrue(OperationRegistry.get().isRegistered(newOp));
 
-            FusekiConfig.addServiceEP(dataService, newOp, null);
-            FusekiServer server = FusekiServer.create().port(port).registerOperation(newOp, contentType, customHandler)
-                .add("/ds", dataService).build();
+            Endpoint endpoint = Endpoint.create(newOp, null);
+            DataService dataService = DataService.newBuilder(dsg)
+                    .withStdServices(true)
+                    .addEndpoint(endpoint)
+                    .build();
+            FusekiServer server = FusekiServer.create().port(port)
+                    .registerOperation(newOp, contentType, customHandler)
+                    .add("/ds", dataService)
+                    .build();
             // No endpoint name dispatch - content-type required.
             testServer(server, url, "", false, true);
         }

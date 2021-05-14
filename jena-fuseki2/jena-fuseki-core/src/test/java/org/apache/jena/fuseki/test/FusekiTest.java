@@ -96,11 +96,11 @@ public class FusekiTest {
                 Assert.fail(ex.getMessage());
         }
     }
-    
+
     public static void expect400(Runnable action) {
         execWithHttpException(HttpSC.BAD_REQUEST_400, action);
     }
-    
+
     public static void expect401(Runnable action) {
         execWithHttpException(HttpSC.UNAUTHORIZED_401, action);
     }
@@ -127,7 +127,7 @@ public class FusekiTest {
     }
 
     // Specifically  QueryExceptionHTTP
-    
+
     public static void expectQuery403(Runnable action) {
         expectQuery(action, HttpSC.FORBIDDEN_403);
     }
@@ -145,6 +145,5 @@ public class FusekiTest {
                 throw ex;
         }
     }
-
 }
 

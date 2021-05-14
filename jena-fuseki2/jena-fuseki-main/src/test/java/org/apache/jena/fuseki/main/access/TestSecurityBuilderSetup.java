@@ -29,7 +29,6 @@ import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.auth.AuthPolicy;
-import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataService;
@@ -96,11 +95,11 @@ public class TestSecurityBuilderSetup {
 
         // Not controlled: "/open"
 
-        DataService dSrv = new DataService(DatasetGraphFactory.createTxnMem());
-        FusekiConfig.populateStdServices(dSrv, false);
         AuthPolicy reqAuth = Auth.policyAllowSpecific("user1");
-        dSrv.setAuthPolicy(reqAuth);
-
+        DataService dSrv = DataService.newBuilder(DatasetGraphFactory.createTxnMem())
+                .withStdServices(false)
+                .setAuthPolicy(reqAuth)
+                .build();
         fusekiServer =
             FusekiServer.create()
                 .port(port)

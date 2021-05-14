@@ -25,15 +25,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.access.AccessCtl_AllowGET;
 import org.apache.jena.fuseki.access.AccessCtl_Deny;
 import org.apache.jena.fuseki.access.AccessCtl_GSP_R;
 import org.apache.jena.fuseki.access.AccessCtl_SPARQL_QueryDataset;
 import org.apache.jena.fuseki.build.FusekiConfig;
-import org.apache.jena.fuseki.server.DataAccessPointRegistry;
-import org.apache.jena.fuseki.server.DataService;
-import org.apache.jena.fuseki.server.Endpoint;
-import org.apache.jena.fuseki.server.Operation;
+import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.fuseki.servlets.GSP_RW;
 import org.apache.jena.fuseki.servlets.HttpAction;
@@ -55,21 +53,29 @@ public class FusekiLib {
         return names;
     }
 
-    /** Add a dataset to a server */
+    /**
+     * Add a dataset to a server, with the default set of services.
+     * @deprecated Construct the server with the a {@link FusekiServer.Builder}.
+     */
+    @Deprecated
     public static FusekiServer addDataset(FusekiServer server, String name, DatasetGraph dsg, boolean withUpdate) {
-        DataAccessPointRegistry dataAccessPoints = DataAccessPointRegistry.get(server.getServletContext());
-        FusekiConfig.addDataset(dataAccessPoints, name, dsg, withUpdate);
-        return server;
+        DataService dataService = FusekiConfig.buildDataServiceStd(dsg, withUpdate);
+        return addDataset(server, name, dataService);
     }
 
+    @Deprecated
     /** Add a {@link DataService} to a server */
     public static FusekiServer addDataset(FusekiServer server, String name, DataService dataService) {
         DataAccessPointRegistry dataAccessPoints = DataAccessPointRegistry.get(server.getServletContext());
+        name = DataAccessPoint.canonical(name);
+        if ( dataAccessPoints.isRegistered(name) )
+            throw new FusekiConfigException("Data service name already registered: "+name);
         FusekiConfig.addDataService(dataAccessPoints, name, dataService);
         return server;
     }
 
     /** Remove dataset from a server */
+    @Deprecated
     public static FusekiServer removeDataset(FusekiServer server, String name) {
         DataAccessPointRegistry dataAccessPoints = DataAccessPointRegistry.get(server.getServletContext());
         FusekiConfig.removeDataset(dataAccessPoints, name);
