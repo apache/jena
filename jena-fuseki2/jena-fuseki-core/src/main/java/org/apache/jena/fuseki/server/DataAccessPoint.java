@@ -28,23 +28,26 @@ import org.apache.jena.fuseki.servlets.HttpAction;
  * in turn be named), in the URL space of the server
  */
 public class DataAccessPoint {
-    private final String name;
+    private final ValidString name;
     private final DataService dataService;
     private AtomicLong requests = new AtomicLong(0);
 
     public DataAccessPoint(String name, DataService dataService) {
         Objects.requireNonNull(name, "DataAccessPoint name");
         Objects.requireNonNull(dataService, "DataService");
-        this.name = canonical(name);
+        name = canonical(name);
+        ValidString vs = Validators.serviceName(name);
+        this.name = vs;
         this.dataService = dataService;
         dataService.noteDataAccessPoint(this);
     }
 
-    public String getName()     { return name; }
+    public String getName()     { return name.string; }
 
-    /** Canonical name (path) for a dataset.
+    /**
+     * Canonical name (path) for a dataset.
      * This always starts with "/".
-     * It is the name within the Fuseki server, no servlet context path.
+     * It is the name within the Fuseki server, not the servlet context path.
      */
     public static String canonical(String datasetPath) {
         if ( datasetPath == null )

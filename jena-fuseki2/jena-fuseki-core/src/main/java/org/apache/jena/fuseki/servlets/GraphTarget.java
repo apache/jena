@@ -81,11 +81,10 @@ public class GraphTarget {
         // Named graph - union
         if ( uri.equals(HttpNames.graphTargetUnion) )
             return createUnion(dsg);
-
+        // This logs bad URIs.
         String absUri = resolve0(uri, action);
         return createNamed(dsg, absUri);
     }
-
 
     // Resolving a relative URI in ?graph= is a bit murky.
     //   Whether to use the base of the dataset or the dataset+service endpoint name.

@@ -18,10 +18,14 @@
 
 package org.apache.jena.fuseki;
 
-/**
- * Tests in jena-fuseki-main and jena-fuseki-webapp
- * because so many rely on having a server to run.
- */
-public class Dummy {
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-}
+// Most testing needs a server.
+@RunWith(Suite.class)
+@SuiteClasses({
+    TestValidators.class
+})
+public class TS_FusekiCore {}
+

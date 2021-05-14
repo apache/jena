@@ -27,7 +27,7 @@
       <%- g %>
     </dt>
     <dd>
-      <div class="numeric"><%= n %></div>
+      <div class="numeric"><%- n %></div>
     </dd>
   <% } ); %>
 </dl>

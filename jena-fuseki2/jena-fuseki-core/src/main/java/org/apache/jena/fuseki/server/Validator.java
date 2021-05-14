@@ -16,15 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki;
+package org.apache.jena.fuseki.server;
 
-public class FusekiConfigException extends FusekiException
-{
-    public FusekiConfigException(String msg, Throwable cause)    { super(msg, cause); }
-    public FusekiConfigException(String msg)                     { super(msg); }
-    public FusekiConfigException(Throwable cause)                { super(cause); }
-    public FusekiConfigException()                               { super(); }
+import java.util.function.Function;
 
-//    @Override
-//    public FusekiException fillInStackTrace() { return this; }
+import org.apache.jena.fuseki.server.Validators.ValidationPolicy;
+
+public class Validator {
+    public final ValidationPolicy policy;
+    public final Function<String, Boolean> validator;
+    public Validator(ValidationPolicy policy, Function<String, Boolean> validator) {
+        super();
+        this.policy = policy;
+        this.validator = validator;
+    }
+    public String getPolicy() { return policy.label; }
 }

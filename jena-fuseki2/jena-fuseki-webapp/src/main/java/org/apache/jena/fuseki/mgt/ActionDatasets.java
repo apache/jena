@@ -212,6 +212,11 @@ public class ActionDatasets extends ActionContainerItem {
 
             // Need to be in Resource space at this point.
             DataAccessPoint dataAccessPoint = FusekiConfig.buildDataAccessPoint(subject, registry);
+            if ( dataAccessPoint == null ) {
+                FmtLog.error(action.log, "Failed to build DataAccessPoint: datasetPath = %s; DataAccessPoint name = %s", datasetPath, dataAccessPoint);
+                ServletOps.errorBadRequest("Failed to build DataAccessPoint");
+                return null;
+            }
             dataAccessPoint.getDataService().setEndpointProcessors(action.getOperationRegistry());
             dataAccessPoint.getDataService().goActive();
             if ( ! datasetPath.equals(dataAccessPoint.getName()) )

@@ -4,7 +4,7 @@
   </div>
   <div class="col-sm-3">
     <em>
-      <%= file.readableFileSize %>
+      <%- file.readableFileSize %>
     </em>
   </div>
   <div class="col-sm-6">

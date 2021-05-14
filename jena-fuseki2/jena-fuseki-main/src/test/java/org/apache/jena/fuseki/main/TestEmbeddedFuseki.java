@@ -18,13 +18,7 @@
 
 package org.apache.jena.fuseki.main;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,10 +27,12 @@ import java.util.function.Consumer;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentProducer;
 import org.apache.http.entity.EntityTemplate;
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.atlas.web.WebLib;
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Operation;
@@ -60,6 +56,7 @@ import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 import org.apache.jena.web.HttpSC;
 import org.junit.Test;
+import org.slf4j.Logger;
 
 public class TestEmbeddedFuseki {
 
@@ -69,7 +66,9 @@ public class TestEmbeddedFuseki {
     @Test public void embedded_01() {
         DatasetGraph dsg = dataset();
         int port = 3330;   // Default port.
-        FusekiServer server = FusekiServer.create().add("/ds", dsg).build();
+        FusekiServer server = FusekiServer.create()
+                .add("/ds", dsg)
+                .build();
         assertTrue(server.getDataAccessPointRegistry().isRegistered("/ds"));
         server.start();
         query("http://localhost:"+port+"/ds/query", "SELECT * { ?s ?p ?o}", qExec-> {
@@ -125,10 +124,11 @@ public class TestEmbeddedFuseki {
             dsg.add(q);
         });
 
-        DataService dataService = new DataService(dsg);
-        dataService.addEndpoint(Operation.GSP_RW);
-        dataService.addEndpoint(Operation.Query);
-        dataService.addEndpoint(Operation.Update);
+        DataService dataService = DataService.newBuilder(dsg)
+            .addEndpoint(Operation.GSP_RW)
+            .addEndpoint(Operation.Query)
+            .addEndpoint(Operation.Update)
+            .build();
         int port = WebLib.choosePort();
 
         FusekiServer server = FusekiServer.create()
@@ -322,9 +322,12 @@ public class TestEmbeddedFuseki {
         DatasetGraph dsg = dataset();
         int port = WebLib.choosePort();
 
-        DataService dSrv = new DataService(dsg);
-        dSrv.addEndpoint(Operation.Query, "q");
-        dSrv.addEndpoint(Operation.GSP_R, "gsp");
+        DataService dSrv = DataService.newBuilder()
+            .dataset(dsg)
+            .addEndpoint(Operation.Query, "q")
+            .addEndpoint(Operation.GSP_R, "gsp")
+            .build();
+
         FusekiServer server = FusekiServer.create()
             .add("/dsrv1", dSrv)
             .port(port)
@@ -341,9 +344,10 @@ public class TestEmbeddedFuseki {
         DatasetGraph dsg = dataset();
         int port = WebLib.choosePort();
 
-        DataService dSrv = new DataService(dsg);
-        dSrv.addEndpoint(Operation.Query, "q");
-        dSrv.addEndpoint(Operation.GSP_R, "gsp");
+        DataService dSrv = DataService.newBuilder(dsg)
+            .addEndpoint(Operation.Query, "q")
+            .addEndpoint(Operation.GSP_R, "gsp")
+            .build();
         FusekiServer server = FusekiServer.create()
             .add("/dsrv1", dSrv)
             .staticFileBase(DIR)
@@ -359,6 +363,44 @@ public class TestEmbeddedFuseki {
             String x2 = HttpOp.execHttpGetString("http://localhost:"+port+"/test.txt");
             assertNotNull(x2);
         } finally { server.stop(); }
+    }
+
+    // Errors in the configuration file.
+
+    @Test public void embedded_90() {
+        silent(()->{
+            FusekiServer server = FusekiServer.create()
+                    .parseConfigFile(DIR+"config-bad-svc.ttl")
+                    .build();
+            assertEquals(0, server.getDataAccessPointRegistry().size());
+        });
+    }
+
+    @Test public void embedded_91() {
+        silent(()->{
+            FusekiServer server = FusekiServer.create()
+                    .parseConfigFile(DIR+"config-bad-ep.ttl")
+                    .build();
+
+            // IF a dataset, then no endpoints.
+            server.getDataAccessPointRegistry().forEach((n,dap)->{
+                System.err.println(dap.getName());
+                System.err.println(dap.getDataService().getEndpoints());
+                assertEquals(0, dap.getDataService().getEndpoints().size());
+            });
+
+            // No endpoints.
+            assertEquals(0, server.getDataAccessPointRegistry().size());
+        });
+    }
+
+    private static void silent(Runnable action) {
+        Logger logger = Fuseki.configLog ;
+        String level = LogCtl.getLevel(logger);
+        try {
+            LogCtl.disable(logger);
+            action.run();
+        } finally { LogCtl.setLevel(logger, level); }
     }
 
     /** Create an HttpEntity for the graph */

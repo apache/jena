@@ -259,7 +259,7 @@ public class FusekiWebapp
                 DatasetGraph dsg = dSrv.getDataset();
                 Graph rdfsGraph = RDFDataMgr.loadGraph(params.rdfsGraph);
                 DatasetGraph dsg2 = RDFSFactory.datasetRDFS(dsg, rdfsGraph);
-                DataService dSrv2 = dSrv.alter(dsg2);
+                DataService dSrv2 = DataService.newBuilder(dSrv).dataset(dsg2).build();
                 dap = new DataAccessPoint(dap.getName(), dSrv2);
             }
             datasets.add(dap);
