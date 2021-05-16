@@ -76,7 +76,7 @@ union RDF_Term {
 6: RDF_ANY          any
 7: RDF_UNDEF        undefined
 8: RDF_REPEAT       repeat
-9: RDF_Triple       tripleTerm  # RDF*
+9: RDF_Triple       tripleTerm  # RDF-star
 
 # Value forms of literals.
 10: i64             valInteger
