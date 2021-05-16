@@ -1036,6 +1036,15 @@ public class XSDFuncOp
         return isDecimalDatatype(xsdDatatype) ;
     }
 
+    public static boolean isNumeric(Node node) {
+        if ( ! node.isLiteral() )
+            return false;
+        RDFDatatype rdfDT = node.getLiteralDatatype();
+        if ( ! ( rdfDT instanceof XSDDatatype ) )
+            return false;
+        return isNumericDatatype((XSDDatatype)rdfDT);
+    }
+
     public static boolean isDecimalDatatype(XSDDatatype xsdDatatype) {
         if ( XSDDatatype.XSDdecimal.equals(xsdDatatype) )
             return true ;
