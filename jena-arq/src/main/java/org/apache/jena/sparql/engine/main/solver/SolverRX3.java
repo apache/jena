@@ -29,6 +29,7 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.Substitute;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.binding.Binding;
@@ -60,7 +61,8 @@ public class SolverRX3 {
         return matches;
     }
 
-    private static Iterator<Binding> rdfStarTripleSub(Binding input, Triple tPattern, ExecutionContext execCxt) {
+    private static Iterator<Binding> rdfStarTripleSub(Binding input, Triple xPattern, ExecutionContext execCxt) {
+        Triple tPattern = Substitute.substitute(xPattern, input);
         Node s = nodeTopLevel(tPattern.getSubject());
         Node p = nodeTopLevel(tPattern.getPredicate());
         Node o = nodeTopLevel(tPattern.getObject());
