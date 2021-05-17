@@ -286,7 +286,7 @@ p = nRDFtype ;
     case PNAME_NS:
     case PNAME_LN:{
       iri = iri();
-s = createNode(iri, token.beginLine, token.beginColumn) ;
+s = createURI(iri, token.beginLine, token.beginColumn) ;
       break;
       }
     case ANON:
@@ -314,7 +314,7 @@ s = createNode(iri, token.beginLine, token.beginColumn) ;
 // Turtle [11] predicate
   final public Node Predicate() throws ParseException {String iri;
     iri = iri();
-{if ("" != null) return createNode(iri, token.beginLine, token.beginColumn);}
+{if ("" != null) return createURI(iri, token.beginLine, token.beginColumn);}
     throw new Error("Missing return statement in function");
   }
 
@@ -325,7 +325,7 @@ s = createNode(iri, token.beginLine, token.beginColumn) ;
     case PNAME_NS:
     case PNAME_LN:{
       iri = iri();
-o = createNode(iri, token.beginLine, token.beginColumn) ;
+o = createURI(iri, token.beginLine, token.beginColumn) ;
       break;
       }
     case ANON:
@@ -372,7 +372,7 @@ o = createNode(iri, token.beginLine, token.beginColumn) ;
     case PNAME_NS:
     case PNAME_LN:{
       iri = iri();
-o = createNode(iri, token.beginLine, token.beginColumn) ;
+o = createURI(iri, token.beginLine, token.beginColumn) ;
       break;
       }
     case ANON:
@@ -399,7 +399,7 @@ o = createNode(iri, token.beginLine, token.beginColumn) ;
     case PNAME_NS:
     case PNAME_LN:{
       iri = iri();
-o = createNode(iri, token.beginLine, token.beginColumn) ;
+o = createURI(iri, token.beginLine, token.beginColumn) ;
       break;
       }
     case ANON:

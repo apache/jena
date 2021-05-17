@@ -79,7 +79,7 @@ public class LangParserBase {
         return prefix ;
     }
 
-    protected Node createNode(String iriStr, int line, int column) {
+    protected Node createURI(String iriStr, int line, int column) {
         return profile.createURI(iriStr, line, column);
     }
 

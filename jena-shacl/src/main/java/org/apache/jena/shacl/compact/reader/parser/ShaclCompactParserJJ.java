@@ -1140,7 +1140,7 @@ p = PathFactory.pathInverse(p) ;
     case PNAME_NS:
     case PNAME_LN:{
       str = iri();
-n = createNode(str, token.beginLine, token.beginColumn) ; p = PathFactory.pathLink(n) ;
+n = createURI(str, token.beginLine, token.beginColumn) ; p = PathFactory.pathLink(n) ;
       break;
       }
     case LPAREN:{
@@ -1212,7 +1212,7 @@ Node iriOrLiteral() throws ParseException {Node n; String uriStr;
     case PNAME_NS:
     case PNAME_LN:{
       uriStr = iri();
-n = createNode(uriStr, token.beginLine, token.beginColumn);
+n = createURI(uriStr, token.beginLine, token.beginColumn);
       break;
       }
     case TRUE:
