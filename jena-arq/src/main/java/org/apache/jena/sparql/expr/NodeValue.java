@@ -41,6 +41,7 @@ import org.apache.jena.datatypes.xsd.XSDDateTime ;
 import org.apache.jena.ext.xerces.DatatypeFactoryInst;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.LiteralLabel ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.SystemARQ ;
@@ -409,29 +410,25 @@ public abstract class NodeValue extends ExprNode
     }
 
     @Override
-    public boolean isConstant() { return true ; }
+    public boolean isConstant()     { return true ; }
 
     @Override
-    public NodeValue getConstant()     { return this ; }
+    public NodeValue getConstant()  { return this ; }
 
-    public boolean isIRI()
-    {
+    public boolean isIRI() {
         forceToNode() ;
         return node.isURI() ;
     }
 
-    public boolean isBlank()
-    {
+    public boolean isBlank() {
         forceToNode() ;
         return node.isBlank() ;
     }
 
-    public boolean isTripleTerm()
-    {
+    public boolean isTripleTerm() {
         forceToNode() ;
-        return node.isNodeTriple();
+        return node.isNodeTriple() ;
     }
-
 
     // ----------------------------------------------------------------
     // ---- sameValueAs
@@ -451,7 +448,7 @@ public abstract class NodeValue extends ExprNode
         ValueSpaceClassification compType = classifyValueOp(nv1, nv2) ;
 
         // Special case - date/dateTime comparison is affected by timezones and may be
-        // interdeterminate based on the value of the dateTime/date.
+        // indeterminate based on the value of the dateTime/date.
 
         switch (compType)
         {
@@ -482,15 +479,15 @@ public abstract class NodeValue extends ExprNode
             case VSPACE_STRING:     return XSDFuncOp.compareString(nv1, nv2) == Expr.CMP_EQUAL ;
             case VSPACE_BOOLEAN:    return XSDFuncOp.compareBoolean(nv1, nv2) == Expr.CMP_EQUAL ;
 
-            case VSPACE_LANG:
-            {
-                // two literals, both with a language tag
-                Node node1 = nv1.asNode() ;
-                Node node2 = nv2.asNode() ;
-                return node1.getLiteralLexicalForm().equals(node2.getLiteralLexicalForm()) &&
-                       node1.getLiteralLanguage().equalsIgnoreCase(node2.getLiteralLanguage()) ;
+            case VSPACE_TRIPLE_TERM: {
+                Triple t1 = nv1.getNode().getTriple();
+                Triple t2 = nv2.getNode().getTriple();
+                return nSameAs(t1.getSubject(), t2.getSubject())
+                    && nSameAs(t1.getPredicate(), t2.getPredicate())
+                    && nSameAs(t1.getObject(), t2.getObject());
             }
 
+            case VSPACE_LANG:
             case VSPACE_NODE:
                 // Two non-literals
                 return NodeFunctions.sameTerm(nv1.getNode(), nv2.getNode()) ;
@@ -537,6 +534,13 @@ public abstract class NodeValue extends ExprNode
         }
 
         throw new ARQInternalErrorException("sameValueAs failure "+nv1+" and "+nv2) ;
+    }
+
+    /** Worker for sameAs. */
+    private static boolean nSameAs(Node n1, Node n2) {
+        NodeValue nv1 = NodeValue.makeNode(n1);
+        NodeValue nv2 = NodeValue.makeNode(n2);
+        return sameAs(nv1, nv2);
     }
 
     /** Return true if the two Nodes are known to be different,
@@ -669,6 +673,7 @@ public abstract class NodeValue extends ExprNode
             case VSPACE_BOOLEAN :
             case VSPACE_DIFFERENT :
             case VSPACE_LANG :
+            case VSPACE_TRIPLE_TERM:
             case VSPACE_NODE :
             case VSPACE_NUM :
             case VSPACE_STRING :
@@ -752,6 +757,18 @@ public abstract class NodeValue extends ExprNode
                 return x ;
             }
 
+            case VSPACE_TRIPLE_TERM: {
+                Triple t1 = nv1.getNode().getTriple();
+                Triple t2 = nv2.getNode().getTriple();
+                int x = nCompare(t1.getSubject(), t2.getSubject(), sortOrderingCompare);
+                if ( x != CMP_EQUAL )
+                    return x;
+                x = nCompare(t1.getPredicate(), t2.getPredicate(), sortOrderingCompare);
+                if ( x != CMP_EQUAL )
+                    return x;
+                return nCompare(t1.getObject(), t2.getObject(), sortOrderingCompare);
+            }
+
             case VSPACE_NODE:
                 // Two non-literals don't compare except for sorting.
                 if ( sortOrderingCompare )
@@ -789,6 +806,15 @@ public abstract class NodeValue extends ExprNode
         throw new ARQInternalErrorException("Compare failure "+nv1+" and "+nv2) ;
     }
 
+    /** Worker for compare. */
+    private static int nCompare(Node n1, Node n2, boolean sortOrderingCompare) {
+        if ( n1.equals(n2) )
+            return CMP_EQUAL;
+        NodeValue nv1 = NodeValue.makeNode(n1);
+        NodeValue nv2 = NodeValue.makeNode(n2);
+        return compare(nv1, nv2, sortOrderingCompare);
+    }
+
     public static ValueSpaceClassification classifyValueOp(NodeValue nv1, NodeValue nv2)
     {
         ValueSpaceClassification c1 = nv1.getValueSpace() ;
@@ -809,12 +835,13 @@ public abstract class NodeValue extends ExprNode
         if ( nv.isDateTime() )      return VSPACE_DATETIME ;
         if ( nv.isString())         return VSPACE_STRING ;
         if ( nv.isBoolean())        return VSPACE_BOOLEAN ;
+        if ( nv.isTripleTerm())     return VSPACE_TRIPLE_TERM ;
         if ( ! nv.isLiteral() )     return VSPACE_NODE ;
 
         if ( ! SystemARQ.ValueExtensions )
             return VSPACE_UNKNOWN ;
 
-        // Datatypes and their value spaces that are an extension of strict SPARQL.
+        // Datatypes and their value spaces that are an extension of minimal SPARQL 1.1
         if ( nv.isDate() )          return VSPACE_DATE ;
         if ( nv.isTime() )          return VSPACE_TIME ;
         if ( nv.isDuration() )      return VSPACE_DURATION ;
@@ -827,7 +854,6 @@ public abstract class NodeValue extends ExprNode
 
         if ( nv.isSortKey() )       return VSPACE_SORTKEY ;
 
-        // Already a literal by this point.
         if ( NodeUtils.hasLang(nv.asNode()) )
             return VSPACE_LANG ;
         return VSPACE_UNKNOWN ;

@@ -113,6 +113,20 @@ public class TestExpressions2
     @Test (expected=ExprEvalException.class)
     public void term_constructor_strlang_03()       { eval("STRLANG('abc'@en, 'en') = 'abc'@en") ; }
 
+    // RDF-star
+    @Test public void triple_term_cmp_01()
+    { eval("<<<ex:s> <ex:p> <ex:p>>> = <<<ex:s> <ex:p> <ex:p>>>"); }
+
+    @Test public void triple_term_cmp_02()
+    { eval("<<<ex:s> <ex:p> <ex:o1>>> != <<<ex:s> <ex:p> <ex:o2>>>"); }
+
+    @Test public void triple_term_cmp_03()
+    { eval("<<<ex:s> <ex:p> 1>> < <<<ex:s> <ex:p> 2>>"); }
+
+    @Test (expected=ExprEvalException.class)
+    public void triple_term_cmp_04()
+    { eval("<<<ex:s> <ex:p1> 2>> < <<<ex:s> <ex:p2> 2>>"); }
+
     // XSD casts
 
     @Test public void xsd_cast_01()                 { eval("xsd:integer('1') = 1", true) ; }

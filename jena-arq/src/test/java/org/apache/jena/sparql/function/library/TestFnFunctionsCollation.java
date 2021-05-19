@@ -39,8 +39,8 @@ public class TestFnFunctionsCollation {
 
         final String[] unordered = {"tšekin kieli" , "tulun kieli", "töyhtöhyyppä",
                                     "tsahurin kieli", "tsahurin kieli", "tulun kieli"};
-        String[] ordered = {"'tsahurin kieli'", "'tsahurin kieli'", "'tšekin kieli'",
-                            "'tulun kieli'", "'tulun kieli'", "'töyhtöhyyppä'"};
+        String[] ordered = {"tsahurin kieli", "tsahurin kieli", "tšekin kieli",
+                            "tulun kieli", "tulun kieli", "töyhtöhyyppä"};
         // tests collation sort order with Danish words, but New Zealand English
         // collation rules
         List<NodeValue> nodeValues = new LinkedList<>();
@@ -50,7 +50,7 @@ public class TestFnFunctionsCollation {
         nodeValues.sort((NodeValue o1, NodeValue o2) -> NodeValue.compare(o1, o2));
         List<String> result = new LinkedList<>();
         for ( NodeValue nv : nodeValues ) {
-            String s = nv.toString();
+            String s = nv.getNode().getLiteralLexicalForm();
             result.add(s);
         }
         assertArrayEquals(ordered, result.toArray(new String[0]));
