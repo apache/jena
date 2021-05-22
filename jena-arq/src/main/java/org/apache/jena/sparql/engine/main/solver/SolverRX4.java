@@ -31,6 +31,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.Substitute;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.binding.Binding;
@@ -65,7 +66,9 @@ public class SolverRX4 {
         return matches;
     }
 
-    private static Iterator<Binding> rdfStarQuadSub(Binding binding, Node graphName, Triple tPattern, ExecutionContext execCxt) {
+    private static Iterator<Binding> rdfStarQuadSub(Binding binding, Node xGraphName, Triple xPattern, ExecutionContext execCxt) {
+        Triple tPattern = Substitute.substitute(xPattern, binding);
+        Node graphName = Substitute.substitute(xGraphName, binding);
         Node g = (graphName == null) ? Quad.defaultGraphIRI : nodeTopLevel(graphName);
         Node s = nodeTopLevel(tPattern.getSubject());
         Node p = nodeTopLevel(tPattern.getPredicate());
@@ -94,8 +97,6 @@ public class SolverRX4 {
         Graph g = execCxt.getActiveGraph();
         Iterator<Binding> iter = StageMatchTriple.accessTriple(chain, g, pattern, null, execCxt);
         return iter;
-        // 4.0.0 and before.
-        //return new QueryIterTriplePattern(chain, pattern, execCxt);
     }
 
     /** Match data "qData" against "tGraphNode, tPattern", including RDF-star terms. */
