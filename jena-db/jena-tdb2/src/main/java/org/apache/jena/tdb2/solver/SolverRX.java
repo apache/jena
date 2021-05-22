@@ -33,6 +33,7 @@ import org.apache.jena.atlas.lib.tuple.TupleFactory;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.Substitute;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
@@ -75,9 +76,14 @@ public class SolverRX {
     }
 
     private static Iterator<BindingNodeId> find(BindingNodeId bnid, NodeTupleTable nodeTupleTable,
-                                                Node graphNode, Triple tPattern,
+                                                Node xGraphNode, Triple xPattern,
                                                 boolean anyGraph, Predicate<Tuple<NodeId>> filter,
                                                 ExecutionContext execCxt) {
+        NodeTable nodeTable = nodeTupleTable.getNodeTable();
+        Binding input = bnid.isEmpty() ? BindingFactory.empty() : new BindingTDB(bnid, nodeTable);
+        Triple tPattern = Substitute.substitute(xPattern, input);
+        Node graphNode = Substitute.substitute(xGraphNode, input);
+
         Node tGraphNode = anyGraph ? Quad.unionGraph : graphNode ;
         // graphNode is ANY for union graph and null for default graph.
         // Var to ANY, Triple Term to ANY.
@@ -86,14 +92,12 @@ public class SolverRX {
         Node s = nodeTopLevel(tPattern.getSubject());
         Node p = nodeTopLevel(tPattern.getPredicate());
         Node o = nodeTopLevel(tPattern.getObject());
-        NodeTable nodeTable = nodeTupleTable.getNodeTable();
         Tuple<Node> patternTuple = ( g == null )
                 ? TupleFactory.create3(s,p,o)
                 : TupleFactory.create4(g,s,p,o);
 
         Iterator<Quad> dsgIter = accessData(patternTuple, nodeTupleTable, anyGraph, filter, execCxt);
 
-        Binding input = bnid.isEmpty() ? BindingFactory.empty() : new BindingTDB(bnid, nodeTable);
         Iterator<Binding> matched = Iter.iter(dsgIter).map(dQuad->SolverRX4.matchQuad(input, dQuad, tGraphNode, tPattern)).removeNulls();
         return convFromBinding(matched, nodeTable);
     }

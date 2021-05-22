@@ -80,6 +80,9 @@ public class Substitute {
     }
 
     public static TriplePath substitute(TriplePath triplePath, Binding binding) {
+        if ( isNotNeeded(binding) )
+            return triplePath;
+
         if ( triplePath.isTriple() )
             return new TriplePath(Substitute.substitute(triplePath.asTriple(), binding));
 
@@ -115,6 +118,10 @@ public class Substitute {
     }
 
     public static Node substitute(Node n, Binding binding) {
+        if ( n == null )
+            return null;
+        if ( isNotNeeded(binding) )
+            return n;
         if ( ! n.isNodeTriple() )
             return Var.lookup(binding::get, n);
         if ( n.isConcrete() )
