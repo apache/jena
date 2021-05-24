@@ -820,7 +820,7 @@ public class TestNodeValue
         final String[] unordered =
                 {"Broager", "Åkirkeby", "Børkop", "Ærøskøbing", "Brædstrup", "Wandsbek"};
         final String[] ordered =
-                {"'Broager'", "'Brædstrup'", "'Børkop'", "'Wandsbek'", "'Ærøskøbing'", "'Åkirkeby'"};
+                {"Broager", "Brædstrup", "Børkop", "Wandsbek", "Ærøskøbing", "Åkirkeby"};
         // tests collation sort order for Danish
         final String collation = "da";
         List<NodeValue> nodeValues = new LinkedList<>();
@@ -835,7 +835,7 @@ public class TestNodeValue
         });
         List<String> result = new LinkedList<>();
         for (NodeValue nv : nodeValues) {
-            String s = nv.toString();
+            String s = nv.getNode().getLiteralLexicalForm();
             result.add(s);
         }
         assertArrayEquals(ordered, result.toArray(new String[0]));
@@ -846,7 +846,7 @@ public class TestNodeValue
         final String[] unordered = new String[]
                 {"Broager", "Åkirkeby", "Børkop", "Ærøskøbing", "Brædstrup", "Wandsbek"};
         final String[] ordered = new String[]
-                {"'Ærøskøbing'", "'Åkirkeby'", "'Brædstrup'", "'Broager'", "'Børkop'", "'Wandsbek'"};
+                {"Ærøskøbing", "Åkirkeby", "Brædstrup", "Broager", "Børkop", "Wandsbek"};
         // tests collation sort order with Danish words, but New Zealand English collation rules
         final String collation = "en-NZ";
         List<NodeValue> nodeValues = new LinkedList<>();
@@ -861,7 +861,7 @@ public class TestNodeValue
         });
         List<String> result = new LinkedList<>();
         for (NodeValue nv : nodeValues) {
-            String s = nv.toString();
+            String s = nv.getNode().getLiteralLexicalForm();
             result.add(s);
         }
         assertArrayEquals(ordered, result.toArray(new String[0]));
@@ -1068,8 +1068,8 @@ public class TestNodeValue
 
     @Test
     public void testEquals4() {
-        NodeValue nv1 = NodeValue.makeNode(org.apache.jena.graph.NodeFactory.createURI("http://example"));
-        NodeValue nv2 = NodeValue.makeNode(org.apache.jena.graph.NodeFactory.createURI("http://example"));
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createURI("http://example"));
+        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createURI("http://example"));
         assertEquals("Not NodeValue.equals()", nv1, nv2);
     }
 
@@ -1093,4 +1093,36 @@ public class TestNodeValue
         NodeValue nv2 = NodeValue.makeNode(org.apache.jena.graph.NodeFactory.createLiteral("http://example"));
         assertFalse("NodeValue.equals()", nv1.equals(nv2));
     }
+
+    @Test
+    public void testTripleTerms1() {
+        Node n1 = SSE.parseNode("<<:s :p 123>>");
+        Node n2 = SSE.parseNode("<<:s :p 456>>");
+        NodeValue nv1 = NodeValue.makeNode(n1);
+        NodeValue nv2 = NodeValue.makeNode(n2);
+        int xa = NodeValue.compare(nv1, nv2);
+        assertEquals(Expr.CMP_LESS, xa);
+        int xb = NodeValue.compare(nv2, nv1);
+        assertEquals(Expr.CMP_GREATER, xb);
+    }
+
+    @Test(expected=ExprNotComparableException.class)
+    public void testTripleTerms2() {
+        Node n1 = SSE.parseNode("<<:s :p 123>>");
+        Node n2 = SSE.parseNode("<<:s :p 'abc'>>");
+        NodeValue nv1 = NodeValue.makeNode(n1);
+        NodeValue nv2 = NodeValue.makeNode(n2);
+        NodeValue.compare(nv1, nv2);
+    }
+
+    @Test
+    public void testTripleTerms3() {
+        Node n1 = SSE.parseNode("<<:s :p 123>>");
+        Node n2 = SSE.parseNode("<<:s :p 'abc'>>");
+        NodeValue nv1 = NodeValue.makeNode(n1);
+        NodeValue nv2 = NodeValue.makeNode(n2);
+        int x = NodeValue.compareAlways(nv1, nv2);
+        assertEquals(Expr.CMP_LESS, x);
+    }
+
 }

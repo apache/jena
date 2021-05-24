@@ -31,6 +31,7 @@ import javax.xml.datatype.Duration;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.irix.IRIException;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.irix.IRIx;
@@ -120,6 +121,7 @@ public class NodeFunctions {
         return NodeValue.booleanReturn(sameTerm(nv1.asNode(), nv2.asNode())) ;
     }
 
+    /** sameTerm(x,y) */
     public static boolean sameTerm(Node node1, Node node2) {
         if ( node1.equals(node2) )
             return true ;
@@ -130,7 +132,16 @@ public class NodeFunctions {
                 return false;
             return node1.getLiteralLanguage().equalsIgnoreCase(node2.getLiteralLanguage());
         }
+        if ( node1.isNodeTriple() && node2.isNodeTriple() ) {
+            return sameTriples(node1.getTriple(), node2.getTriple());
+        }
         return false ;
+    }
+
+    private static boolean sameTriples(Triple t1, Triple t2) {
+        return sameTerm(t1.getSubject(), t2.getSubject())
+            && sameTerm(t1.getPredicate(), t2.getPredicate())
+            && sameTerm(t1.getObject(), t2.getObject());
     }
 
     // -------- RDFterm-equals -- raises an exception on "don't know" for literals.
@@ -162,7 +173,16 @@ public class NodeFunctions {
             // Raise error (rather than return false).
             NodeValue.raise(new ExprEvalException("Mismatch in RDFterm-equals: " + n1 + ", " + n2)) ;
         }
-        // One or both not a literal.
+
+        if ( n1.isNodeTriple() && n2.isNodeTriple() ) {
+            Triple t1 = n1.getTriple();
+            Triple t2 = n2.getTriple();
+            return rdfTermEquals(t1.getSubject(), t2.getSubject())
+                && rdfTermEquals(t1.getPredicate(), t2.getPredicate())
+                && rdfTermEquals(t1.getObject(), t2.getObject());
+        }
+
+        // Not both literal nor both tripel terms - .equals would have worked.
         return false ;
     }
 
