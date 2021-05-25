@@ -32,39 +32,39 @@ import org.junit.runner.RunWith;
 @RunWith(value = SecurityEvaluatorParameters.class)
 public class SecuredPropertyTest extends SecuredResourceTest {
 
-	public SecuredPropertyTest(final MockSecurityEvaluator securityEvaluator) {
-		super(securityEvaluator);
-	}
+    public SecuredPropertyTest(final MockSecurityEvaluator securityEvaluator) {
+        super(securityEvaluator);
+    }
 
-	private SecuredProperty getSecuredProperty() {
-		return (SecuredProperty) getSecuredRDFNode();
-	}
+    private SecuredProperty getSecuredProperty() {
+        return (SecuredProperty) getSecuredRDFNode();
+    }
 
-	@Override
-	@Before
-	public void setup() {
-		super.setup();
-		final Property p = ResourceFactory.createProperty("http://example.com/testProperty");
-		setSecuredRDFNode(SecuredPropertyImpl.getInstance(securedModel, p), p);
-		baseModel.add(p, SecuredRDFNodeTest.p, SecuredRDFNodeTest.o);
-		baseModel.add(p, SecuredRDFNodeTest.p2, "yeehaw");
-		baseModel.add(p, SecuredRDFNodeTest.p2, "yeehaw yall", "us");
-		baseModel.add(p, SecuredRDFNodeTest.p2, "whohoo", "uk");
-	}
+    @Override
+    @Before
+    public void setup() {
+        super.setup();
+        final Property p = ResourceFactory.createProperty("http://example.com/testProperty");
+        setSecuredRDFNode(SecuredPropertyImpl.getInstance(securedModel, p), p);
+        baseModel.add(p, SecuredRDFNodeTest.p, SecuredRDFNodeTest.o);
+        baseModel.add(p, SecuredRDFNodeTest.p2, "yeehaw");
+        baseModel.add(p, SecuredRDFNodeTest.p2, "yeehaw yall", "us");
+        baseModel.add(p, SecuredRDFNodeTest.p2, "whohoo", "uk");
+    }
 
-	@Test
-	public void testGetOrdinal() {
-		try {
-			getSecuredProperty().getOrdinal();
-			if (!securityEvaluator.evaluate(Action.Read)) {
-				Assert.fail("Should have thrown ReadDeniedException Exception");
-			}
-		} catch (final ReadDeniedException e) {
-			if (securityEvaluator.evaluate(Action.Read)) {
-				Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
-						e.getTriple()));
-			}
-		}
-	}
+    @Test
+    public void testGetOrdinal() {
+        try {
+            getSecuredProperty().getOrdinal();
+            if (!securityEvaluator.evaluate(Action.Read)) {
+                Assert.fail("Should have thrown ReadDeniedException Exception");
+            }
+        } catch (final ReadDeniedException e) {
+            if (securityEvaluator.evaluate(Action.Read)) {
+                Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
+                        e.getTriple()));
+            }
+        }
+    }
 
 }

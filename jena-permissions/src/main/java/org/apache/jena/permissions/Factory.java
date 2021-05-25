@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,54 +17,46 @@
  */
 package org.apache.jena.permissions;
 
-import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.permissions.graph.SecuredGraph;
 import org.apache.jena.permissions.model.SecuredModel;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.sys.JenaSystem ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.sys.JenaSystem;
 
 /**
- * The factory that can be used to create an instance of a SecuredGraph or a SecuredModel.
+ * The factory that can be used to create an instance of a SecuredGraph or a
+ * SecuredModel.
  */
-public class Factory
-{
-    static { JenaSystem.init(); }
-	/**
-	 * Create an instance of the SecuredGraph
-	 * 
-	 * @param securityEvaluator
-	 *            The security evaluator to use
-	 * @param graphIRI
-	 *            The IRI for the graph.
-	 * @param graph
-	 *            The graph that we are wrapping.
-	 * @return the graph secured under the name graphIRI
-	 */
-	public static SecuredGraph getInstance(
-			final SecurityEvaluator securityEvaluator, final String graphIRI,
-			final Graph graph )
-	{
+public class Factory {
+    static {
+        JenaSystem.init();
+    }
 
-		return org.apache.jena.permissions.graph.impl.Factory.getInstance(
-				securityEvaluator, graphIRI, graph);
-	}
+    /**
+     * Create an instance of the SecuredGraph
+     * 
+     * @param securityEvaluator The security evaluator to use
+     * @param graphIRI          The IRI for the graph.
+     * @param graph             The graph that we are wrapping.
+     * @return the graph secured under the name graphIRI
+     */
+    public static SecuredGraph getInstance(final SecurityEvaluator securityEvaluator, final String graphIRI,
+            final Graph graph) {
 
-	/**
-	 * Get an instance of SecuredModel
-	 * 
-	 * @param securityEvaluator
-	 *            The security evaluator to use
-	 * @param modelIRI
-	 *            The securedModel IRI (graph IRI) to evaluate against.
-	 * @param model
-	 *            The model to secure.
-	 * @return the model secured under the name modelIRI
-	 */
-	public static SecuredModel getInstance(
-			final SecurityEvaluator securityEvaluator, final String modelIRI,
-			final Model model )
-	{
-		return org.apache.jena.permissions.model.impl.SecuredModelImpl.getInstance(
-				securityEvaluator, modelIRI, model);
-	}
+        return org.apache.jena.permissions.graph.impl.Factory.getInstance(securityEvaluator, graphIRI, graph);
+    }
+
+    /**
+     * Get an instance of SecuredModel
+     * 
+     * @param securityEvaluator The security evaluator to use
+     * @param modelIRI          The securedModel IRI (graph IRI) to evaluate
+     *                          against.
+     * @param model             The model to secure.
+     * @return the model secured under the name modelIRI
+     */
+    public static SecuredModel getInstance(final SecurityEvaluator securityEvaluator, final String modelIRI,
+            final Model model) {
+        return org.apache.jena.permissions.model.impl.SecuredModelImpl.getInstance(securityEvaluator, modelIRI, model);
+    }
 }

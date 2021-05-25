@@ -35,7 +35,6 @@ public class SecurityEvaluatorTest {
     private static final EnumSet<Action> DISALLOWED_ACTIONS = EnumSet.complementOf(ALLOWED_ACTIONS);
     public static final EnumSet<Action> ALL_ACTIONS = EnumSet.noneOf(Action.class);
 
-
     private final SecurityEvaluator evaluator = new SecurityEvaluator() {
 
         @Override
@@ -44,7 +43,8 @@ public class SecurityEvaluatorTest {
         }
 
         @Override
-        public boolean evaluate(Object principal, Action action, Node graphIRI, Triple triple) throws AuthenticationRequiredException {
+        public boolean evaluate(Object principal, Action action, Node graphIRI, Triple triple)
+                throws AuthenticationRequiredException {
             return ALLOWED_ACTIONS.contains(action);
         }
 
@@ -67,7 +67,6 @@ public class SecurityEvaluatorTest {
         assertFalse(evaluator.evaluate(PRINCIPAL, EnumSet.allOf(Action.class), GRAPH));
     }
 
-
     @Test
     public void testAnyLogicForGraphOperations() {
         assertFalse(evaluator.evaluateAny(PRINCIPAL, ALL_ACTIONS, GRAPH));
@@ -82,7 +81,6 @@ public class SecurityEvaluatorTest {
         assertFalse(evaluator.evaluate(PRINCIPAL, DISALLOWED_ACTIONS, GRAPH, TRIPLE));
         assertFalse(evaluator.evaluate(PRINCIPAL, EnumSet.allOf(Action.class), GRAPH, TRIPLE));
     }
-
 
     @Test
     public void testAnyLogicForTripleOperations() {

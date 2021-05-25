@@ -17,13 +17,11 @@
  */
 package org.apache.jena.permissions.query;
 
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.Context;
 
-public class SecuredQueryEngineConfig
-{
+public class SecuredQueryEngineConfig {
 
-	public void initializeContext(Context context)
-	{
-		
-	}
+    public void initializeContext(Context context) {
+
+    }
 }

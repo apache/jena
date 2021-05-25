@@ -17,13 +17,13 @@
  */
 package org.apache.jena.permissions.contract.model;
 
-import org.apache.jena.rdf.model.test.TestLiterals ;
-import org.apache.jena.rdf.model.test.TestPackage ;
+import org.apache.jena.rdf.model.test.TestLiterals;
+import org.apache.jena.rdf.model.test.TestPackage;
 
 public class SecTestLiterals extends TestLiterals {
 
-	public SecTestLiterals() {
-		super(new TestPackage.PlainModelFactory(), "SecTestLiterals");
-	}
+    public SecTestLiterals() {
+        super(new TestPackage.PlainModelFactory(), "SecTestLiterals");
+    }
 
 }

@@ -29,49 +29,47 @@ import org.junit.Test;
 
 public class CrossIDGraphEventManagerTest {
 
-	private final GraphEventManager manager;
-	private final Graph g;
-	private final SecuredGraph sg;
-	private final StaticSecurityEvaluator securityEvaluator;
+    private final GraphEventManager manager;
+    private final Graph g;
+    private final SecuredGraph sg;
+    private final StaticSecurityEvaluator securityEvaluator;
 
-	private final RecordingGraphListener annListener;
-	private final RecordingGraphListener bobListener;
+    private final RecordingGraphListener annListener;
+    private final RecordingGraphListener bobListener;
 
-	public CrossIDGraphEventManagerTest() {
-		this.securityEvaluator = new StaticSecurityEvaluator("ann");
+    public CrossIDGraphEventManagerTest() {
+        this.securityEvaluator = new StaticSecurityEvaluator("ann");
 
-		g = GraphFactory.createDefaultGraph();
-		g.add(new Triple(NodeFactory.createURI("urn:ann"), NodeFactory
-				.createURI("http://example.com/v"), NodeFactory.createBlankNode()));
-		g.add(new Triple(NodeFactory.createURI("urn:bob"), NodeFactory
-				.createURI("http://example.com/v"), NodeFactory.createBlankNode()));
-		g.add(new Triple(NodeFactory.createURI("urn:ann"), NodeFactory
-				.createURI("http://example.com/v2"), NodeFactory.createBlankNode()));
+        g = GraphFactory.createDefaultGraph();
+        g.add(new Triple(NodeFactory.createURI("urn:ann"), NodeFactory.createURI("http://example.com/v"),
+                NodeFactory.createBlankNode()));
+        g.add(new Triple(NodeFactory.createURI("urn:bob"), NodeFactory.createURI("http://example.com/v"),
+                NodeFactory.createBlankNode()));
+        g.add(new Triple(NodeFactory.createURI("urn:ann"), NodeFactory.createURI("http://example.com/v2"),
+                NodeFactory.createBlankNode()));
 
-		sg = Factory.getInstance(securityEvaluator,
-				"http://example.com/testGraph", g);
-		manager = sg.getEventManager();
-		annListener = new RecordingGraphListener();
-		manager.register(annListener);
-		this.securityEvaluator.setUser("bob");
-		bobListener = new RecordingGraphListener();
-		manager.register(bobListener);
-	}
+        sg = Factory.getInstance(securityEvaluator, "http://example.com/testGraph", g);
+        manager = sg.getEventManager();
+        annListener = new RecordingGraphListener();
+        manager.register(annListener);
+        this.securityEvaluator.setUser("bob");
+        bobListener = new RecordingGraphListener();
+        manager.register(bobListener);
+    }
 
-	@Test
-	public void notificationsTest() {
-		sg.add(new Triple(NodeFactory.createURI("urn:bob"), NodeFactory
-				.createURI("http://example.com/v2"), NodeFactory.createBlankNode()));
+    @Test
+    public void notificationsTest() {
+        sg.add(new Triple(NodeFactory.createURI("urn:bob"), NodeFactory.createURI("http://example.com/v2"),
+                NodeFactory.createBlankNode()));
 
-		Assert.assertTrue("Should recorded add", bobListener.isAdd());
-		Assert.assertFalse("Should not have recorded add", annListener.isAdd());
+        Assert.assertTrue("Should recorded add", bobListener.isAdd());
+        Assert.assertFalse("Should not have recorded add", annListener.isAdd());
 
-		sg.delete(new Triple(NodeFactory.createURI("urn:bob"), NodeFactory
-				.createURI("http://example.com/v2"), NodeFactory.createBlankNode()));
+        sg.delete(new Triple(NodeFactory.createURI("urn:bob"), NodeFactory.createURI("http://example.com/v2"),
+                NodeFactory.createBlankNode()));
 
-		Assert.assertTrue("Should recorded delete", bobListener.isDelete());
-		Assert.assertFalse("Should not have recorded delete",
-				annListener.isDelete());
-	}
+        Assert.assertTrue("Should recorded delete", bobListener.isDelete());
+        Assert.assertFalse("Should not have recorded delete", annListener.isDelete());
+    }
 
 }

@@ -249,9 +249,7 @@
         <module>apache-jena</module>
 
         <!-- Other -->
-        <!-- Skip for Jena 4.0.0
-             <module>jena-permissions</module>
-        -->
+        <module>jena-permissions</module>
         <module>jena-extras</module>
 
         <!-- Slow building modules -->

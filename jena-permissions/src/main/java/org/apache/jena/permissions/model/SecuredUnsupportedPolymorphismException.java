@@ -17,25 +17,21 @@
  */
 package org.apache.jena.permissions.model;
 
-import org.apache.jena.enhanced.UnsupportedPolymorphismException ;
+import org.apache.jena.enhanced.UnsupportedPolymorphismException;
 import org.apache.jena.permissions.model.impl.SecuredRDFNodeImpl;
 
 /**
- * An extension to the UnsupportedPolymorphismException to handle
- * secured polymorphic changes.
+ * An extension to the UnsupportedPolymorphismException to handle secured
+ * polymorphic changes.
  */
-public class SecuredUnsupportedPolymorphismException extends
-		UnsupportedPolymorphismException
-{
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 4329005499222402816L;
+public class SecuredUnsupportedPolymorphismException extends UnsupportedPolymorphismException {
 
-	public SecuredUnsupportedPolymorphismException(
-			final SecuredRDFNodeImpl node, final Class<?> type )
-	{
-		super( node, node.getModel() != null, type);
-	}
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 4329005499222402816L;
+
+    public SecuredUnsupportedPolymorphismException(final SecuredRDFNodeImpl node, final Class<?> type) {
+        super(node, node.getModel() != null, type);
+    }
 }

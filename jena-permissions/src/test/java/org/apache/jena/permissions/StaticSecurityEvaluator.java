@@ -25,63 +25,59 @@ import org.apache.jena.graph.Triple;
 
 public class StaticSecurityEvaluator implements SecurityEvaluator {
 
-	private Node user;
-	
-	public StaticSecurityEvaluator( String user) {
-		this.user = NodeFactory.createURI( "urn:"+user );
-	}
-	
-	public void setUser( String user )
-	{
-		this.user = NodeFactory.createURI( "urn:"+user );
-	}
+    private Node user;
 
-	@Override
-	public boolean evaluate(final Object principal, Action action, Node graphIRI) {
-		return true;
-	}
+    public StaticSecurityEvaluator(String user) {
+        this.user = NodeFactory.createURI("urn:" + user);
+    }
 
-	@Override
-	public boolean evaluate(final Object principal, Action action, Node graphIRI, Triple triple) {
-		return triple.getSubject().equals( principal );
-	}
+    public void setUser(String user) {
+        this.user = NodeFactory.createURI("urn:" + user);
+    }
 
-	@Override
-	public boolean evaluate(final Object principal, Set<Action> actions, Node graphIRI) {
-		return true;
-	}
+    @Override
+    public boolean evaluate(final Object principal, Action action, Node graphIRI) {
+        return true;
+    }
 
-	@Override
-	public boolean evaluate(final Object principal, Set<Action> actions, Node graphIRI,
-			Triple triple) {
-		return triple.getSubject().equals( principal );
-	}
+    @Override
+    public boolean evaluate(final Object principal, Action action, Node graphIRI, Triple triple) {
+        return triple.getSubject().equals(principal);
+    }
 
-	@Override
-	public boolean evaluateAny(final Object principal, Set<Action> actions, Node graphIRI) {
-		return true;
-	}
+    @Override
+    public boolean evaluate(final Object principal, Set<Action> actions, Node graphIRI) {
+        return true;
+    }
 
-	@Override
-	public boolean evaluateAny(final Object principal, Set<Action> actions, Node graphIRI,
-			Triple triple) {
-		return triple.getSubject().equals( principal );
-	}
+    @Override
+    public boolean evaluate(final Object principal, Set<Action> actions, Node graphIRI, Triple triple) {
+        return triple.getSubject().equals(principal);
+    }
 
-	@Override
-	public boolean evaluateUpdate(final Object principal, Node graphIRI, Triple from, Triple to) {
-		return from.getSubject().equals( principal ) && 
-				to.getSubject().equals( principal );
-	}
+    @Override
+    public boolean evaluateAny(final Object principal, Set<Action> actions, Node graphIRI) {
+        return true;
+    }
 
-	@Override
-	public Node getPrincipal() {
-		return user;
-	}
+    @Override
+    public boolean evaluateAny(final Object principal, Set<Action> actions, Node graphIRI, Triple triple) {
+        return triple.getSubject().equals(principal);
+    }
 
-	@Override
-	public boolean isPrincipalAuthenticated(Object principal) {
-		return principal != null;
-	}
+    @Override
+    public boolean evaluateUpdate(final Object principal, Node graphIRI, Triple from, Triple to) {
+        return from.getSubject().equals(principal) && to.getSubject().equals(principal);
+    }
+
+    @Override
+    public Node getPrincipal() {
+        return user;
+    }
+
+    @Override
+    public boolean isPrincipalAuthenticated(Object principal) {
+        return principal != null;
+    }
 
 }

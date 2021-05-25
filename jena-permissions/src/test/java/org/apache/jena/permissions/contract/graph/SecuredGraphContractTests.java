@@ -17,35 +17,29 @@
  */
 package org.apache.jena.permissions.contract.graph;
 
-import org.apache.jena.graph.Factory ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.test.MetaTestGraph ;
+import org.apache.jena.graph.Factory;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.test.MetaTestGraph;
 import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator;
 
-public class SecuredGraphContractTests extends MetaTestGraph
-{
+public class SecuredGraphContractTests extends MetaTestGraph {
 
-	private final SecurityEvaluator eval;
+    private final SecurityEvaluator eval;
 
-	public SecuredGraphContractTests( final Class<? extends Graph> graphClass,
-			final String name )
-	{
-		super(graphClass, name);
-		eval = new MockSecurityEvaluator(true, true, true, true, true, true);
-	}
+    public SecuredGraphContractTests(final Class<? extends Graph> graphClass, final String name) {
+        super(graphClass, name);
+        eval = new MockSecurityEvaluator(true, true, true, true, true, true, true);
+    }
 
-	public SecuredGraphContractTests( final String name )
-	{
-		super(name);
-		eval = new MockSecurityEvaluator(true, true, true, true, true, true);
-	}
+    public SecuredGraphContractTests(final String name) {
+        super(name);
+        eval = new MockSecurityEvaluator(true, true, true, true, true, true, true);
+    }
 
-	@Override
-	public Graph getGraph()
-	{
-		return org.apache.jena.permissions.Factory.getInstance(eval, getName(),
-				Factory.createDefaultGraph());
-	}
+    @Override
+    public Graph getGraph() {
+        return org.apache.jena.permissions.Factory.getInstance(eval, getName(), Factory.createDefaultGraph());
+    }
 
 }
