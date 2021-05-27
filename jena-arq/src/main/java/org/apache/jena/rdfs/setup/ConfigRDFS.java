@@ -43,7 +43,7 @@ public interface ConfigRDFS<X> {
     public Map<X, Set<X>> getPropertyDomains();
 
     /** All super-types of an element.
-     * Does not include the element unless there is a cycle of length >1.
+     * Does not include the element unless there is a cycle of length &gt; 1.
      * Returns an empty set of there are no declared superclasses.
      */
     public Set<X> getSuperClasses(X elt);
@@ -51,19 +51,19 @@ public interface ConfigRDFS<X> {
     /** All super-types of an element, including the element itself. */
     public Set<X> getSuperClassesInc(X elt);
 
-    /** All sub-types of an element.  Does not include the element unless there is a cycle of length >1 */
+    /** All sub-types of an element.  Does not include the element unless there is a cycle of length &gt; 1 */
     public Set<X> getSubClasses(X elt);
 
     /** All sub-types of an element, including the element itself */
     public Set<X> getSubClassesInc(X elt);
 
-    /** All super-properties.  Does not include the property itself unless there is a cycle of length >1. */
+    /** All super-properties.  Does not include the property itself unless there is a cycle of length &gt; 1. */
     public Set<X> getSuperProperties(X elt);
 
     /** All super-properties including the property itself. */
     public Set<X> getSuperPropertiesInc(X elt);
 
-    /** All sub-properties.  Does not include the property itself unless there is a cycle of length >1. */
+    /** All sub-properties.  Does not include the property itself unless there is a cycle of length &gt; 1. */
     public Set<X> getSubProperties(X elt);
 
     /** All sub-properties including the property itself. */
