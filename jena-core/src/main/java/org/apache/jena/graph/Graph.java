@@ -80,9 +80,8 @@ public interface Graph
     void add( Triple t ) throws AddDeniedException;
 
     /**
-     * Add the triple t (if possible) to the set belonging to this graph
+     * Add the triple comprised of s,p,o to the set belonging to this graph
      *
-     * @param t the triple to add to the graph
      * @throws AddDeniedException if the triple cannot be added
      */
     default void add(Node s, Node p, Node o) throws AddDeniedException {
@@ -101,9 +100,8 @@ public interface Graph
 	void delete(Triple t) throws DeleteDeniedException;
 
     /**
-     * Add the triple t (if possible) to the set belonging to this graph
+     * Delete the triple comprised of s,p,o from the set belonging to this graph
      *
-     * @param t the triple to add to the graph
      * @throws AddDeniedException if the triple cannot be added
      */
     default void delete(Node s, Node p, Node o) throws DeleteDeniedException {

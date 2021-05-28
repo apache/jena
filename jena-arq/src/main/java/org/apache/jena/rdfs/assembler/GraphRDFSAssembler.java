@@ -54,9 +54,8 @@ public class GraphRDFSAssembler extends AssemblerBase implements Assembler {
      *
      * &lt;#baseGraph&gt; rdf:type ja:MemoryModel ;
      *     ja:data "data1.trig";
-<#baseGraph> rdf:type ja:MemoryModel;
-     ja:content [ja:externalContent <data.ttl> ];
-     .
+     *     &lt;#baseGraph&gt; rdf:type ja:MemoryModel;
+     *     ja:content [ja:externalContent &lt;data.ttl&gt; ];
      *     .
      * </pre>
      */
