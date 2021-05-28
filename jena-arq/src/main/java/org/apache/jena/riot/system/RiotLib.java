@@ -18,6 +18,18 @@
 
 package org.apache.jena.riot.system;
 
+import static org.apache.jena.riot.RDFLanguages.NQUADS;
+import static org.apache.jena.riot.RDFLanguages.NTRIPLES;
+import static org.apache.jena.riot.RDFLanguages.RDFJSON;
+import static org.apache.jena.riot.RDFLanguages.sameLang;
+import static org.apache.jena.riot.writer.WriterConst.PREFIX_IRI;
+
+import java.io.OutputStream;
+import java.io.Writer;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
@@ -38,15 +50,6 @@ import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-import java.io.OutputStream;
-import java.io.Writer;
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
-
-import static org.apache.jena.riot.RDFLanguages.*;
-import static org.apache.jena.riot.writer.WriterConst.PREFIX_IRI;
-
 /**
  * Misc RIOT code
  */
@@ -59,7 +62,7 @@ public class RiotLib {
      * Returns a Node_URI.
      */
     public static Node blankNodeToIri(Node node) {
-        if (node.isBlank())
+        if ( node.isBlank() )
             return NodeFactory.createURI(blankNodeToIriString(node));
         return node;
     }
@@ -68,11 +71,11 @@ public class RiotLib {
      * "Skolemize" to a string.
      */
     public static String blankNodeToIriString(Node node) {
-        if (node.isBlank()) {
+        if ( node.isBlank() ) {
             String x = node.getBlankNodeLabel();
             return "_:" + x;
         }
-        if (node.isURI())
+        if ( node.isURI() )
             return node.getURI();
         throw new RiotException("Not a blank node or URI");
     }
@@ -87,7 +90,7 @@ public class RiotLib {
      */
     public static Node createIRIorBNode(String str) {
         // Is it a bNode label? i.e. <_:xyz>
-        if (skolomizedBNodes && isBNodeIRI(str)) {
+        if ( skolomizedBNodes && isBNodeIRI(str) ) {
             String s = str.substring(bNodeLabelStart.length());
             return NodeFactory.createBlankNode(s);
         }
@@ -147,12 +150,12 @@ public class RiotLib {
     }
 
     public static ParserProfile profile(Lang lang, String baseIRI, ErrorHandler handler) {
-        if (sameLang(NTRIPLES, lang) || sameLang(NQUADS, lang)) {
+        if ( sameLang(NTRIPLES, lang) || sameLang(NQUADS, lang) ) {
             boolean checking = SysRIOT.isStrictMode();
             // If strict mode, do checking e.g. URIs
             return profile(baseIRI, false, checking, handler);
         }
-        if (sameLang(RDFJSON, lang))
+        if ( sameLang(RDFJSON, lang) )
             return profile(baseIRI, false, true, handler);
         return profile(baseIRI, true, true, handler);
     }
@@ -201,11 +204,12 @@ public class RiotLib {
      */
     public static ParserProfile createParserProfile(FactoryRDF factory, ErrorHandler errorHandler, boolean checking) {
         return new ParserProfileStd(factory,
-                errorHandler,
-                IRIxResolver.create(IRIs.getSystemBase()).build(),
-                PrefixMapFactory.create(),
-                RIOT.getContext().copy(),
-                checking, false);
+                                    errorHandler,
+                                    IRIxResolver.create(IRIs.getSystemBase()).build(),
+                                    PrefixMapFactory.create(),
+                                    RIOT.getContext().copy(),
+                                    checking,
+                                    false);
     }
 
     /**
@@ -297,7 +301,7 @@ public class RiotLib {
      * Write prefixes
      */
     public static void writePrefixes(IndentedWriter out, PrefixMap prefixMap, boolean newStyle) {
-        if (prefixMap != null && !prefixMap.isEmpty()) {
+        if ( prefixMap != null && !prefixMap.isEmpty() ) {
             int maxPrefixLenght = prefixMap.getMapping().keySet().stream()
                     .map(String::length)
                     .max(Comparator.naturalOrder())
