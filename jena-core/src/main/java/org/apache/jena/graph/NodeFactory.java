@@ -73,6 +73,13 @@ public class NodeFactory {
         return new Node_Variable(name) ;
     }
 
+    /** make an extension node based on a string. */
+    public static Node createExt(String name) {
+        Objects.requireNonNull(name, "Argument to NodeFactory.createExt is null") ;
+        return new Node_Marker(name) ;
+    }
+
+
     public static Node createLiteral(String value) {
         Objects.requireNonNull(value, "Argument to NodeFactory.createLiteral is null") ;
         return createLiteral(value, "", false) ;

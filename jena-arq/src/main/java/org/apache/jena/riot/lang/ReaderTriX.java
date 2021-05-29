@@ -30,10 +30,7 @@ import javax.xml.stream.*;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Node_Ext;
-import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.*;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.ParserProfile;
@@ -112,7 +109,7 @@ public class ReaderTriX implements ReaderRIOT {
     // State E_TRIPLE is an "embedded triple" (<<>>) that will be term in another triple/quad.
     enum State { OUTER, TRIX, GRAPH, TRIPLE, E_TRIPLE }
 
-    private static class NodeMarker extends Node_Ext<String> {
+    private static class NodeMarker extends Node_Marker {
         protected NodeMarker(String label) {
             super(label);
         }
