@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,22 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot;
+package org.apache.jena.arq.junit.runners;
 
-import org.apache.jena.arq.junit.manifest.Manifests;
-import org.apache.jena.arq.junit.runners.Label;
-import org.apache.jena.arq.junit.runners.RunnerRIOT;
-import org.junit.runner.RunWith ;
+import java.lang.annotation.*;
 
-/** The test suites - these are driven by a manifest file and use external files for tests */
-
-@RunWith(RunnerRIOT.class)
-@Label("RIOT")
-@Manifests({
-    "testing/RIOT/Lang/manifest-all.ttl"
-    // RDF-star tests also in Scripts_ARQ which runs the entire suite of community tests.
-})
-
-public class Scripts_LangSuite
-{}
-
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Inherited
+public @interface Directories {
+    public String[] value();
+}

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.arq.junit.manifest;
+package org.apache.jena.arq.junit.runners;
 
 import java.lang.annotation.*;
 
