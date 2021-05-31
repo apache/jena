@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>apache-jena-osgi</artifactId>
-    <version>4.0.0</version>
+    <version>4.1.0-SNAPSHOT</version>
   </parent>
   <artifactId>jena-osgi</artifactId>  
   <packaging>bundle</packaging>
@@ -76,7 +76,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>4.0.0</version>
+      <version>4.1.0-SNAPSHOT</version>
       <scope>provided</scope>
       <exclusions>
         <!-- These are all embedded within httpclient-osgi -->
@@ -106,42 +106,42 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>4.0.0</version>
+      <version>4.1.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-rdfconnection</artifactId>
-      <version>4.0.0</version>
+      <version>4.1.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shaded-guava</artifactId>
-      <version>4.0.0</version>
+      <version>4.1.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-commonsrdf</artifactId>
-      <version>4.0.0</version>
+      <version>4.1.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>4.0.0</version>
+      <version>4.1.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb2</artifactId>
-      <version>4.0.0</version>
+      <version>4.1.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <!--
@@ -154,7 +154,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-iri</artifactId>
-      <version>4.0.0</version>
+      <version>4.1.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
