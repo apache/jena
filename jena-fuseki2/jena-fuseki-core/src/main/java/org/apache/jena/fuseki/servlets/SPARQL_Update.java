@@ -22,6 +22,7 @@ import static java.lang.String.format;
 import static org.apache.jena.fuseki.server.CounterName.UpdateExecErrors;
 import static org.apache.jena.fuseki.servlets.ActionExecLib.incCounter;
 import static org.apache.jena.fuseki.servlets.SPARQLProtocol.messageForException;
+import static org.apache.jena.fuseki.servlets.SPARQLProtocol.messageForParseException;
 import static org.apache.jena.riot.WebContent.*;
 import static org.apache.jena.riot.web.HttpNames.paramRequest;
 import static org.apache.jena.riot.web.HttpNames.paramUpdate;
@@ -52,6 +53,7 @@ import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.Syntax;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.shared.OperationDeniedException;
+import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.sparql.modify.UsingList;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateException;
@@ -232,12 +234,20 @@ public class SPARQL_Update extends ActionService
             abortSilent(action);
             incCounter(action.getEndpoint().getCounters(), UpdateExecErrors);
             ServletOps.errorOccurred(ex.getMessage());
-        } catch (QueryParseException|QueryBuildException ex) {
+        } catch (QueryParseException ex) {
+            IO.skipToEnd(input);
+            abortSilent(action);
+            String msg = messageForParseException(ex);
+            action.log.warn(format("[%d] Parse error: %s", action.id, msg));
+            ServletOps.errorBadRequest(messageForException(ex));
+        } catch (QueryBuildException|QueryExceptionHTTP ex) {
             IO.skipToEnd(input);
             abortSilent(action);
             // Counter inc'ed further out.
+            String msg = messageForException(ex);
+            action.log.warn(format("[%d] Bad request: %s", action.id, msg));
             ServletOps.errorBadRequest(messageForException(ex));
-        } catch ( OperationDeniedException ex) {
+        } catch (OperationDeniedException ex) {
             IO.skipToEnd(input);
             abortSilent(action);
             throw ex;
