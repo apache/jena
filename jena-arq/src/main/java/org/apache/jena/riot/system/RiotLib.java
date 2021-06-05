@@ -43,6 +43,7 @@ import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.writer.WriterGraphRIOTBase;
+import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
@@ -104,7 +105,7 @@ public class RiotLib {
         return iri.startsWith(bNodeLabelStart);
     }
 
-    private static final String URI_PREFIX_FIXUP = "::";
+    private static final String URI_PREFIX_FIXUP = "local://";
 
     // These two must be in-step.
     /**
@@ -125,7 +126,7 @@ public class RiotLib {
     }
 
     /**
-     * Convert an prefix name (qname) to an IRI, for when the prerix is nor defined.
+     * Convert an prefix name (qname) to an IRI, for when the prefix is not defined.
      *
      * @see ARQ#fixupUndefinedPrefixes
      */
@@ -365,8 +366,10 @@ public class RiotLib {
         out.println();
     }
 
+    /** @deprecated Use {@link DatasetGraph#prefixes} */
+    @Deprecated
     public static PrefixMap prefixMap(DatasetGraph dsg) {
-        return PrefixMapFactory.create(dsg.getDefaultGraph().getPrefixMapping());
+        return dsg.prefixes();
     }
 
     /**
@@ -376,8 +379,10 @@ public class RiotLib {
         return new IndentedWriterWriter(writer);
     }
 
+    /** @deprecated Use {@link Prefixes#adapt(PrefixMapping)} */
+    @Deprecated
     public static PrefixMap prefixMap(Graph graph) {
-        return PrefixMapFactory.create(graph.getPrefixMapping());
+        return Prefixes.adapt(graph.getPrefixMapping());
     }
 
     public static WriterGraphRIOTBase adapter(WriterDatasetRIOT writer) {

@@ -18,27 +18,35 @@
 
 package org.apache.jena.shacl.engine;
 
-
 import java.util.*;
 
 import org.apache.jena.atlas.lib.CollectionUtils;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.out.NodeFormatter;
+import org.apache.jena.shacl.ShaclException;
+import org.apache.jena.shacl.engine.constraint.SparqlComponent;
 import org.apache.jena.shacl.lib.ShLib;
+import org.apache.jena.shacl.parser.TargetExtensions;
 import org.apache.jena.shacl.sys.C;
+import org.apache.jena.shacl.validation.EvalSparql;
 import org.apache.jena.shacl.vocabulary.SHACL;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 
-/** Algorithms that calculate targets */
+/** Algorithms concerned with targets */
 public class TargetOps {
     public static String strTargets(Collection<Target> targets, NodeFormatter nodeFmt) {
         if ( targets.size() == 1 )
             return strTarget(CollectionUtils.oneElt(targets), nodeFmt);
 
-        StringJoiner sj = new StringJoiner(", ","(",")");
-        targets.forEach(t->sj.add(strTarget(t, nodeFmt)));
+        StringJoiner sj = new StringJoiner(", ", "(", ")");
+        targets.forEach(t -> sj.add(strTarget(t, nodeFmt)));
         return sj.toString();
     }
 
@@ -46,17 +54,19 @@ public class TargetOps {
         if ( nodeFmt == null )
             nodeFmt = ShLib.nodeFmtAbbrev;
 
-        switch(target.getTargetType()) {
+        switch (target.getTargetType()) {
             case implicitClass :
-                return "T/Impl ["+ShLib.displayStr(target.getObject(), nodeFmt)+"]";
+                return "T/Impl [" + ShLib.displayStr(target.getObject(), nodeFmt) + "]";
             case targetClass :
-                return "T/Class [?x rdf:type "+ShLib.displayStr(target.getObject(), nodeFmt)+"]";
+                return "T/Class [?x rdf:type " + ShLib.displayStr(target.getObject(), nodeFmt) + "]";
             case targetNode :
-                return "T/Node [?x = "+ShLib.displayStr(target.getObject(), nodeFmt)+"]";
+                return "T/Node [?x = " + ShLib.displayStr(target.getObject(), nodeFmt) + "]";
             case targetObjectsOf :
-                return "T/Obj [_ "+ShLib.displayStr(target.getObject(), nodeFmt)+" ?x]";
+                return "T/Obj [_ " + ShLib.displayStr(target.getObject(), nodeFmt) + " ?x]";
             case targetSubjectsOf :
-                return "T/Subj [?x "+ShLib.displayStr(target.getObject(), nodeFmt)+" _]";
+                return "T/Subj [?x " + ShLib.displayStr(target.getObject(), nodeFmt) + " _]";
+            case targetExtension :
+                return "T/Ext [" + ShLib.displayStr(target.getObject(), nodeFmt) + "]";
             default :
                 return "** Unknown **";
         }
@@ -95,6 +105,94 @@ public class TargetOps {
         Set<Node> acc = new HashSet<>();
         acc.addAll(nodeShapes);
         acc.addAll(propertyShapes);
-        return acc ;
+        return acc;
+    }
+
+    /** SHACL-AF: SPARQL targets */
+    // Look for ? sh:target [ ].
+    public static Set<Node> shapesTargetExtension(Graph shapesGraph) {
+        Set<Node> x = new HashSet<>();
+        return G.allPO(shapesGraph, SHACL.target, null);
+    }
+
+    // If look for specific target extensions
+    private static Set<Node> shapesTargetSPARQL(Graph shapesGraph) {
+        return G.find(shapesGraph, null, SHACL.target, null)
+                .filterKeep(t->G.hasOneSP(shapesGraph, t.getObject(), SHACL.select))
+                .mapWith(Triple::getSubject)
+                .toSet();
+    }
+
+    //Could build a registry of SPARQL-based Target types.
+    private static Set<Node> shapesSPARQLTargetType(Graph shapesGraph) {
+        return G.find(shapesGraph, null, SHACL.target, null)
+                .filterKeep(t->G.isOfType(shapesGraph, t.getObject(), SHACL.Target))
+                .mapWith(Triple::getSubject)
+                .toSet();
+    }
+
+
+    // ---- Focus node generators
+
+    public static Collection<Node> focusTargetClass(Graph data, Target target) {
+        return G.allNodesOfTypeRDFS(data, target.getObject());
+    }
+
+    public static Collection<Node> focusImplicitClass(Graph data, Target target) {
+        return focusTargetClass(data, target);
+    }
+
+    public static Collection<Node> focusTargetNode(Graph data, Target target) {
+        return  Collections.singletonList(target.getObject());
+    }
+
+    public static Collection<Node> focusSubjectsOf(Graph data, Target target) {
+        return G.allPO(data, target.getObject(), null);
+    }
+
+    public static Collection<Node> focusObjectsOf(Graph data, Target target) {
+        return G.allSP(data, null, target.getObject());
+    }
+
+    public static Collection<Node> focusTargetExt(Graph data, Target target) {
+        Graph shapesGraph = Objects.requireNonNull(target.getShapesGraph());
+        Node targetArg = target.getObject();
+
+        if ( G.hasOneSP(shapesGraph, targetArg, SHACL.select) ) {
+            // SPARQL-based target -- sh:target [ sh:select ]
+            Query query = ShLib.extractSPARQLQuery(shapesGraph, targetArg);
+            if ( ! query.isSelectType() )
+                throw new ShaclException("Not a SELECT query");
+            DatasetGraph dsg = DatasetGraphFactory.wrap(data);
+            QueryExecution qExec = QueryExecutionFactory.create(query, dsg);
+            return EvalSparql.evalSparqlOneVar(qExec);
+        }
+
+        if ( G.isOfType(shapesGraph, targetArg, SHACL.Target) ) {
+            // Now find the type.
+            Node type;
+            List<Node> types = G.typesOfNodeAsList(shapesGraph, targetArg);
+            if ( types.size() == 1 )
+                // It passed the G.isOfType test.
+                type = CollectionUtils.oneElt(types);
+            else {
+                Set<Node> allClasses = G.subClasses(shapesGraph, SHACL.Target);
+                // Find any(first) in allClasses
+                Optional<Node> x = types.stream().filter(t->allClasses.contains(t)).findFirst();
+                type = x.orElseThrow();
+            }
+
+            try {
+                // This is also available via the Shapes object.
+                // Maybe attach to the target as it is created.
+                // But this is at the point of deciding focus nodes so called
+                // one (per target shape) not every validation of a focus node.
+                SparqlComponent sparqlComponent = TargetExtensions.sparqlTargetType(shapesGraph, type);
+                return EvalSparql.evalSparqlComponent(data, target.getObject(), sparqlComponent);
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        throw new ShaclException("Unknown target extension");
     }
 }

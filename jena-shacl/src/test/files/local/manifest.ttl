@@ -13,4 +13,6 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
   mf:include <additional/implicit-subclass-1.ttl> ;
   mf:include <additional/target-class-subclass-1.ttl> ;
   mf:include <additional/target-target-1.ttl> ;
+  mf:include <additional/target-sparql-1.ttl> ;
+  mf:include <additional/target-sparql-type-1.ttl> ;
 .

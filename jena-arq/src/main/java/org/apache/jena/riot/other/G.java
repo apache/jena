@@ -91,7 +91,7 @@ public class G {
 //            contains(graph, Node.ANY, node, Node.ANY);
     }
 
-    /** Test whether the node has the type or is rdfs:subclassOf. */
+    /** Test whether the node has the type or one of its types is an rdfs:subclassOf the type. */
     public static boolean isOfType(Graph graph, Node node, Node type) {
         Objects.requireNonNull(graph, "graph");
         Objects.requireNonNull(node, "node");
@@ -153,6 +153,15 @@ public class G {
     }
 
     /**
+     * Test whether there is exactly one object for the subject-predicate.
+     */
+    public static boolean hasOneSP(Graph graph, Node subject, Node predicate) {
+        Objects.requireNonNull(graph, "graph");
+        // Not contains!
+        return findZeroOneTriple(graph, subject, predicate, Node.ANY) != null;
+    }
+
+    /**
      * Get object for subject-predicate. Return null for none, object for one, and
      * exception {@linkplain RDFDataException} if more than one.
      */
@@ -177,6 +186,15 @@ public class G {
     public static Node getOnePO(Graph graph, Node predicate, Node object) {
         Objects.requireNonNull(graph, "graph");
         return subject(findUniqueTriple(graph, Node.ANY, predicate, object));
+    }
+
+    /**
+     * Test whether there is exactly one subject for the predicate-object.
+     */
+    public static boolean hasOnePO(Graph graph, Node predicate, Node object) {
+        Objects.requireNonNull(graph, "graph");
+        // Not contains!
+        return findUniqueTriple(graph, Node.ANY, predicate, object) != null;
     }
 
     /**
@@ -350,7 +368,8 @@ public class G {
     }
 
     /**
-     * Set of exact types of a node See {@link #allTypesOfNodeRDFS(Graph, Node)},
+     * Set of exact types of a node.
+     * <p>See {@link #allTypesOfNodeRDFS(Graph, Node)},
      * which does include super-classes.
      */
     public static Set<Node> typesOfNodeAsSet(Graph graph, Node node) {
@@ -592,7 +611,7 @@ public class G {
         return x;
     }
 
-    /** Find one triple matching subject-predicate-object. Return null for zero, quad for one or throw {@link RDFDataException}. */
+    /** Find one triple matching subject-predicate-object. Return null for zero, triple for one or throw {@link RDFDataException} for many. */
     private static Triple findZeroOneTriple(Graph graph, Node subject, Node predicate, Node object) {
         ExtendedIterator<Triple> iter = graph.find(subject, predicate, object);
         try {
@@ -605,7 +624,7 @@ public class G {
         } finally { iter.close(); }
     }
 
-    /** Find one quad matching graph-subject-predicate-object. Return null for zero, quad for one or throw {@link RDFDataException}. */
+    /** Find one quad matching graph-subject-predicate-object. Return null for zero, quad for one or throw {@link RDFDataException} for many. */
     private static Quad findZeroOneQuad(DatasetGraph dsg, Node graph, Node subject, Node predicate, Node object) {
         Iterator<Quad> iter = dsg.find(graph, subject, predicate, object);
         if ( ! iter.hasNext() )

@@ -31,6 +31,7 @@ import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdGeneral;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RiotException;
@@ -197,7 +198,7 @@ public class shacl_parse extends CmdGeneral {
 
     private boolean printRDF(PrintStream out, PrintStream err, Shapes shapes) {
         RDFDataMgr.write(out, shapes.getGraph(), Lang.TTL);
-        return ! shapes.getGraph().isEmpty() && ! shapes.getGraph().getPrefixMapping().hasNoMappings();
+        return somethingWritten(shapes.getGraph());
     }
 
     private boolean printCompact(PrintStream out, PrintStream err, Shapes shapes) {
@@ -206,6 +207,11 @@ public class shacl_parse extends CmdGeneral {
         } catch (ShaclException ex) {
             err.println(ex.getMessage());
         }
-        return ! shapes.getGraph().isEmpty() && ! shapes.getGraph().getPrefixMapping().hasNoMappings();
+        return somethingWritten(shapes.getGraph());
+    }
+
+    private static boolean somethingWritten(Graph graph) {
+        return ! ( graph.isEmpty() && graph.getPrefixMapping().hasNoMappings() );
+
     }
 }

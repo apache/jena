@@ -57,6 +57,13 @@ public class Targets {
     // 2.1.3.3 Implicit Class Targets
     public Set<Node>    implicitClassTargets;
 
+    // SPARQL-AF: 3. Custom Targets
+    // Any target that uses sh:target such as:
+    // 3.1  SPARQL-based Targets
+    public Set<Node>    targetExtension;
+    // 3.2 SPARQL-based Target Types
+    //public Set<Node>    targetTypeSPARQL;
+
     public Set<Node>    allTargets;
 
     public static Targets create(Graph shapesGraph) {
@@ -73,6 +80,10 @@ public class Targets {
         // ?X rdf:type sh:NodeShape
         targets.implicitClassTargets    = TargetOps.implicitClassTargets(shapesGraph);
 
+        // SHACL-AF
+        // sh:target [ a sh:SPARQLTarget ; ... ]
+        targets.targetExtension         = TargetOps.shapesTargetExtension(shapesGraph);
+
         // Derived: Calculate the set of all target predicates of all targetObjectsOf and targetSubjectsOf.
         targets.propertyTargetObjectsOf   = targetPredicatesOf(shapesGraph, SHACL.targetObjectsOf, targets.targetObjectsOf);
         targets.propertyTargetSubjectsOf  = targetPredicatesOf(shapesGraph, SHACL.targetSubjectsOf, targets.targetSubjectsOf);
@@ -83,6 +94,7 @@ public class Targets {
         allTargets.addAll(targets.targetObjectsOf);
         allTargets.addAll(targets.targetSubjectsOf);
         allTargets.addAll(targets.implicitClassTargets);
+        allTargets.addAll(targets.targetExtension);
         targets.allTargets = allTargets;
         return targets;
     }
@@ -117,6 +129,10 @@ public class Targets {
 
     public Set<Node> getClassNodeShape() {
         return implicitClassTargets;
+    }
+
+    public Set<Node> getTargetExt() {
+        return targetExtension;
     }
 
     private Targets() {}

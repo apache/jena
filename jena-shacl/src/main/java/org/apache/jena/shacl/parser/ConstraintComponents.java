@@ -30,13 +30,12 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.other.G;
 import org.apache.jena.shacl.engine.Parameter;
-import org.apache.jena.shacl.engine.SparqlConstraints;
 import org.apache.jena.shacl.engine.constraint.ConstraintComponentSPARQL;
 import org.apache.jena.shacl.engine.constraint.SparqlComponent;
-
+import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.vocabulary.SHACL;
 
-class ConstraintComponents {
+public class ConstraintComponents {
     // 6.2.1 Parameter Declarations (sh:parameter)
     // 6.2.2 Label Templates (sh:labelTemplate)
 
@@ -57,13 +56,12 @@ class ConstraintComponents {
     // validation against either node shapes or property shapes.
 
     // 6.3 Validation with SPARQL-based Constraint Components
-    //
 
     /*package*/ Multimap<Node, SparqlComponent> paramPathToComponents = ArrayListMultimap.create();
     /*package*/ Set<Parameter> parameters = new HashSet<>();
 
     /*package*/ ConstraintComponents() {}
-    /*package*/ boolean isEmpty() { return parameters.isEmpty(); }
+    /*package*/ boolean hasParameters() { return parameters.isEmpty(); }
 
     /** Stage 1 : find all Constraint Components */
     public static ConstraintComponents parseSparqlConstraintComponents(Graph shapesGraph) {
@@ -201,7 +199,8 @@ class ConstraintComponents {
         return null;
     }
 
-    private static SparqlComponent possibleSparqlValidator(Graph shapesGraph, Node valNode, List<Parameter> params, /* for reporting */ Node constraintComponentNode) {
+    private static SparqlComponent possibleSparqlValidator(Graph shapesGraph, Node valNode, List<Parameter> params,
+                                                           /* for reporting */ Node constraintComponentNode) {
         // Check for SHACL-JS
         Node xJSFunctionName = G.getZeroOrOneSP(shapesGraph, valNode, SHACL.jsFunctionName);
         if ( xJSFunctionName != null )
@@ -214,16 +213,18 @@ class ConstraintComponents {
             return null;
         if ( xSelect != null && xAsk != null )
             throw new ShaclParseException("SparqlConstraintComponent: Multiple SPARQL queries: "+displayStr(constraintComponentNode));
-        String prefixes = SparqlConstraints.prefixes(shapesGraph, valNode);
+        String prefixes = ShLib.prefixes(shapesGraph, valNode);
         String queryString = firstNonNull(xSelect, xAsk).getLiteralLexicalForm().trim();
         String message = asString(G.getZeroOrOneSP(shapesGraph, valNode, SHACL.message));
         if ( ! prefixes.isEmpty() )
             queryString = prefixes+"\n"+queryString;
         boolean isSelect = (xSelect!=null);
-        SparqlComponent cs = new SparqlComponent(constraintComponentNode, isSelect, queryString, params, message);
+        SparqlComponent cs = SparqlComponent.constraintComponent(constraintComponentNode, queryString, params, message);
+        if ( cs.getQuery().isSelectType() != isSelect )
+            throw new ShaclParseException("Query type does not match property");
         return cs;
     }
-    
+
     private static String asString(Node x) {
         if ( x == null )
             return null;

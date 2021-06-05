@@ -38,9 +38,18 @@ public class ShapeOutputVisitor implements ShapeVisitor {
     private final org.apache.jena.sparql.core.Prologue prologue;
 
     ShapeOutputVisitor(PrefixMapping pmap, NodeFormatter nodeFmt, IndentedWriter out) {
+        this(nodeFmt, out, new org.apache.jena.sparql.core.Prologue(pmap));
+    }
+
+    private ShapeOutputVisitor(NodeFormatter nodeFmt, IndentedWriter out, org.apache.jena.sparql.core.Prologue prologue) {
         this.nodeFmt = nodeFmt;
         this.out = out;
-        this.prologue = new org.apache.jena.sparql.core.Prologue(pmap);
+        this.prologue = prologue;
+    }
+
+    /** New ShapeOutputVisitor, using the same setup but with a different {@link IndentedWriter} */
+    public ShapeOutputVisitor fork(IndentedWriter out) {
+        return new ShapeOutputVisitor(this.nodeFmt, out, this.prologue);
     }
 
     @Override
@@ -130,6 +139,10 @@ public class ShapeOutputVisitor implements ShapeVisitor {
                 case targetObjectsOf :
                     break;
                 case targetSubjectsOf :
+                    break;
+                case targetExtension :
+                    throw new ShaclNotCompactException("sh:target not supported in compact syntax");
+                default :
                     break;
             }
             out.print(target.getTargetType().compact);

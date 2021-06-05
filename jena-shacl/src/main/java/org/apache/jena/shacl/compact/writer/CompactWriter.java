@@ -25,11 +25,10 @@ import java.util.stream.Collectors;
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.CollectionUtils;
-import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterTTL;
 import org.apache.jena.riot.system.PrefixMap;
-import org.apache.jena.riot.system.PrefixMapFactory;
+import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.riot.writer.WriterConst;
 import org.apache.jena.shacl.ShaclException;
@@ -46,31 +45,30 @@ public class CompactWriter {
     /** Write shapes with directives BASE/PREFIX/IMPORTS.*/
     public static void print(IndentedWriter out, Shapes shapes) {
         // Output PrefixMap
-        PrefixMapping graphPrefixMapping = shapes.getGraph().getPrefixMapping();
+        PrefixMap graphPrefixMap = shapes.getPrefixMap();
 
         // Formatter PrefixMap - with the std prefixes if not overridden.
         PrefixMap pmapWithStd = SHACLC.withStandardPrefixes();
-        // Add second so it can override any standard settings.
-        graphPrefixMapping.getNsPrefixMap().forEach((p,u)->pmapWithStd.add(p, u));
+        // Add to copy of standrard so it can override any standard settings.
+        pmapWithStd.putAll(graphPrefixMap);
         NodeFormatter nodeFmt = new NodeFormatterTTL(null, pmapWithStd);
 
         boolean someOutput = false;
 
         // BASE - output if and only if there is exactly one.
-        Node baseURI = shapes.getBase();
-        if ( baseURI != null && baseURI.isURI() ) {
+        String baseURI = shapes.getBaseURI();
+        if ( baseURI != null ) {
             if ( someOutput )
                 out.println();
-            RiotLib.writeBase(out, baseURI.getURI(), true);
+            RiotLib.writeBase(out, baseURI, true);
             someOutput = true;
         }
 
         // PREFIX
-        if ( ! graphPrefixMapping.hasNoMappings() ) {
-            PrefixMap pm = PrefixMapFactory.create(graphPrefixMapping);
+        if ( ! graphPrefixMap.isEmpty() ) {
             if ( someOutput )
                 out.println();
-            RiotLib.writePrefixes(out, pm, true);
+            RiotLib.writePrefixes(out, graphPrefixMap, true);
             someOutput = true;
         }
 
@@ -88,17 +86,18 @@ public class CompactWriter {
             }
         }
 
-        PrefixMapping prefixMappingWithStd = SHACLC.withStandardPrefixes(graphPrefixMapping);
+        PrefixMapping prefixMappingWithStd = Prefixes.adapt(pmapWithStd);
         ShapeOutputVisitor visitor = new ShapeOutputVisitor(prefixMappingWithStd, nodeFmt, out);
         shapes.iteratorAll().forEachRemaining(sh->{
             out.println();
-            writeOneShapeCompact(out, prefixMappingWithStd, nodeFmt, visitor, sh);
+            writeOneShapeCompact(out, nodeFmt, visitor, sh);
+            //writeOneShapeCompactOrSkip(out, nodeFmt, visitor, sh);
         });
         out.flush();
     }
 
     /** Write in compact syntax or throw {@link ShaclNotCompactException} */
-    private static void writeOneShapeCompact(IndentedWriter out, PrefixMapping prefixMappingWithStd, NodeFormatter nodeFmt, ShapeOutputVisitor visitor, Shape sh) {
+    private static void writeOneShapeCompact(IndentedWriter out, NodeFormatter nodeFmt, ShapeOutputVisitor visitor, Shape sh) {
         // Write-or-crash.
         // Provides indicate of information lost.
         if ( sh.getShapeNode().isURI() ) {
@@ -107,12 +106,12 @@ public class CompactWriter {
     }
 
     /** Write in compact syntax or skip, noting the fact in a comment */
-    private static void writeOneShapeCompactOrSkip(IndentedWriter out, PrefixMapping prefixMappingWithStd, NodeFormatter nodeFmt, ShapeOutputVisitor visitor, Shape sh) {
+    private static void writeOneShapeCompactOrSkip(IndentedWriter out, NodeFormatter nodeFmt, ShapeOutputVisitor visitor, Shape sh) {
         // Write a shape is we can, else comment.
         try {
             try ( IndentedLineBuffer out2 = new IndentedLineBuffer() ) {
-                // Need visitor to hold the IndentedLineBuffer
-                ShapeOutputVisitor visitorMem = new ShapeOutputVisitor(prefixMappingWithStd, nodeFmt, out2);
+                // Need new visitor to hold the IndentedLineBuffer
+                ShapeOutputVisitor visitorMem = visitor.fork(out2);
                 if ( sh.getShapeNode().isURI() )
                     CompactWriter.output(out2, nodeFmt, visitorMem, sh);
                 out.print(out2.asString());

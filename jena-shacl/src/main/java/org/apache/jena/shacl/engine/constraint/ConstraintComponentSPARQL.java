@@ -26,10 +26,8 @@ import org.apache.jena.ext.com.google.common.collect.Multimap;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryParseException;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.Parameter;
-import org.apache.jena.shacl.engine.SparqlConstraints;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.ConstraintVisitor;
@@ -44,20 +42,14 @@ public class ConstraintComponentSPARQL implements Constraint {
     protected final Multimap<Parameter, Node> parameterMap;
     protected final Query query;
 
-    public ConstraintComponentSPARQL(SparqlComponent sparqlConstraintComponent, 
+    public ConstraintComponentSPARQL(SparqlComponent sparqlConstraintComponent,
                                      Multimap<Parameter, Node> parameterMap) {
         //sh:labelTemplate
         this.sparqlConstraintComponent = sparqlConstraintComponent;
         this.parameterMap = parameterMap;
-
-        String qs =  sparqlConstraintComponent.getSparqlString();
-        try {
-            this.query = SparqlConstraints.parseQueryString(sparqlConstraintComponent.getSparqlString());
-            if ( !query.isAskType() && !query.isSelectType() )
-                throw new ShaclParseException("Not a SELECT or ASK query");
-        } catch (QueryParseException ex) {
-            throw new ShaclParseException("Bad query: "+ex.getMessage());
-        }
+        this.query = sparqlConstraintComponent.getQuery();
+        if ( !query.isAskType() && !query.isSelectType() )
+            throw new ShaclParseException("Not a SELECT or ASK query");
     }
 
     @Override
@@ -90,7 +82,7 @@ public class ConstraintComponentSPARQL implements Constraint {
 
     @Override
     public String toString() {
-        if ( sparqlConstraintComponent.isSelect() )
+        if ( sparqlConstraintComponent.getQuery().isSelectType() )
             return "SELECT"+parameterMap;
         else
             return "ASK"+parameterMap;
@@ -98,7 +90,7 @@ public class ConstraintComponentSPARQL implements Constraint {
 
     @Override
     public int hashCode() {
-        return Objects.hash(parameterMap, query, sparqlConstraintComponent);
+        return Objects.hash(parameterMap, sparqlConstraintComponent);
     }
 
     @Override
@@ -110,7 +102,7 @@ public class ConstraintComponentSPARQL implements Constraint {
         if ( getClass() != obj.getClass() )
             return false;
         ConstraintComponentSPARQL other = (ConstraintComponentSPARQL)obj;
-        return Objects.equals(parameterMap, other.parameterMap) && Objects.equals(query, other.query)
+        return Objects.equals(parameterMap, other.parameterMap)
                && Objects.equals(sparqlConstraintComponent, other.sparqlConstraintComponent);
     }
 }

@@ -13,5 +13,3 @@ which runs javacc to create the parser in
 ../src/main/java/org/apache/jena/shacl/compact/parser
 
 and cleans up the output files to remove or surpress Java warnings.
-
-
