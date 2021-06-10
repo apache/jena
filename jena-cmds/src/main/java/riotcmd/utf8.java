@@ -53,7 +53,7 @@ public class utf8
                     int ch = utf8.read() ;
                     if ( ch == -1 )
                         break ;
-                    System.out.printf("Char = %04X\n", ch);
+                    //System.out.printf("Char = %04X\n", ch);
                     charCount++ ;
                     if ( ch == '\n' ) {
                         lineNum++ ;

@@ -96,7 +96,7 @@ public class TestLangNTriples extends AbstractTestLangNTuples
 
     @Test(expected = ExFatal.class)
     public void nt_only_5b() {
-        parseCount(CharSpace.ASCII, "<x> <p> \"é\" .");
+        parseCount(CharSpace.ASCII, "<scheme:x> <scheme:p> <scheme:é> .");
     }
 
     protected Model parseToModel(String string) {

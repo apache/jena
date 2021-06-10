@@ -917,20 +917,24 @@ public class TestTokenizer {
         assertFalse(tokenizer.hasNext()) ;
     }
 
-    @Test(expected = RiotParseException.class)
+    @Test
     public void tokenizer_charset_2() {
         ByteArrayInputStream in = bytes("'abcdé'") ;
         Tokenizer tokenizer = TokenizerText.create().asciiOnly(true).source(in).build() ;
+        // ASCII only -> bad.
         Token t = tokenizer.next() ;
-        assertFalse(tokenizer.hasNext()) ;
+        char x = t.getImage().charAt(4);
+        // 0xFFFD - REPLACEMENT CHARACTER
+        assertEquals(x, 0xFFFD);
     }
 
     @Test(expected = RiotParseException.class)
     public void tokenizer_charset_3() {
         ByteArrayInputStream in = bytes("<http://example/abcdé>") ;
         Tokenizer tokenizer = TokenizerText.create().asciiOnly(true).source(in).build() ;
-        Token t = tokenizer.next() ;
-        assertFalse(tokenizer.hasNext()) ;
+        // ASCII only -> bad.
+        // URIs are checked for for specific characters.
+        tokenizer.next() ;
     }
 
     @Test
@@ -945,7 +949,7 @@ public class TestTokenizer {
         assertEquals("abc", token.getImage()) ;
         assertFalse(tokenizer.hasNext()) ;
     }
-    
+
     // First symbol from the stream.
     private static void testSymbol(String string, TokenType expected) {
         Tokenizer tokenizer = tokenizeAndTestFirst(string, expected, null) ;

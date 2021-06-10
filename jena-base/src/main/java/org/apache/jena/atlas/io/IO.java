@@ -46,8 +46,11 @@ public class IO
     private static Charset ascii = StandardCharsets.US_ASCII;
 
     /** Open an input stream to a file.
+     * <p>
      * If the filename is null or "-", return System.in
      * If the filename ends in .gz, wrap in  GZIPInputStream
+     * <p>
+     * Throws {@link RuntimeIOException} on failure to open.
      */
     static public InputStream openFile(String filename) {
         try { return openFileEx(filename); }
@@ -60,12 +63,12 @@ public class IO
      * If using this {@code InputStream} with an {@code InputStreamReader}
      * (e.g. to get UTF-8), there is no need to buffer the {@code InputStream}.
      * Instead, buffer the {@code Reader}.
+     * <p>
+     * Throws {@link RuntimeIOException} on failure to open.
      */
     static public InputStream openFileBuffered(String filename) {
-        try {
-            InputStream in = openFileEx(filename);
-            return new BufferedInputStream(in, BUFFER_SIZE);
-        } catch (IOException ex) { IO.exception(ex); return null; }
+        InputStream in = openFile(filename);
+        return new BufferedInputStream(in, BUFFER_SIZE);
     }
 
     private static final String ext_gz = "gz";
@@ -180,15 +183,13 @@ public class IO
     }
 
     /** Create an unbuffered reader that uses UTF-8 encoding */
-    static public Reader asUTF8(InputStream in)
-    {
-        return new InputStreamReader(in, utf8.newDecoder());
+    static public Reader asUTF8(InputStream in) {
+        return new InputStreamReader(in, StandardCharsets.UTF_8);
     }
 
     /** Create a unbuffered reader that uses ASCII encoding */
-    static public Reader asASCII(InputStream in)
-    {
-        return new InputStreamReader(in, ascii.newDecoder());
+    static public Reader asASCII(InputStream in) {
+        return new InputStreamReader(in, StandardCharsets.US_ASCII);
     }
 
     /** Create an buffered reader that uses UTF-8 encoding */
@@ -198,21 +199,25 @@ public class IO
 
     /** Create a writer that uses UTF-8 encoding */
     static public Writer asUTF8(OutputStream out) {
-        return new OutputStreamWriter(out, utf8.newEncoder());
+        return new OutputStreamWriter(out, StandardCharsets.UTF_8);
     }
 
     /** Create a writer that uses ASCII encoding */
     static public Writer asASCII(OutputStream out) {
-        return new OutputStreamWriter(out, ascii.newEncoder());
+        return new OutputStreamWriter(out, StandardCharsets.US_ASCII);
     }
 
     /** Create a writer that uses UTF-8 encoding and is buffered. */
     static public Writer asBufferedUTF8(OutputStream out) {
-        Writer w =  new OutputStreamWriter(out, utf8.newEncoder());
+        Writer w =  new OutputStreamWriter(out, StandardCharsets.UTF_8);
         return new BufferingWriter(w);
     }
 
-    /** Open a file for output - may include adding gzip processing. */
+    /**
+     * Open a file for output - may include adding gzip processing.
+     * <p>
+     * Throws {@link RuntimeIOException} on failure to open.
+     */
     static public OutputStream openOutputFile(String filename) {
         try { return openOutputFileEx(filename); }
         catch (IOException ex) { IO.exception(ex); return null; }
