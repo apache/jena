@@ -45,6 +45,12 @@ public class ListUtils
         return x;
     }
 
+    public static <T> T last(List<T> list) {
+        if ( list.isEmpty() )
+            return null;
+        return list.get(list.size()-1);
+    }
+
     // This is commonly needed
     public static <T> List<T> toList(Stream<T> stream) {
         return stream.collect(Collectors.toList()) ;
