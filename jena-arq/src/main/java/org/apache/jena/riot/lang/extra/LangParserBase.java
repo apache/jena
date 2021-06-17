@@ -115,7 +115,6 @@ public class LangParserBase {
     }
 
     protected Node createLiteral(String lexicalForm, String langTag, String datatypeURI, int line, int column) {
-        // XXX profile.
         Node n = null ;
         // Can't have type and lang tag in parsing.
         if ( datatypeURI != null ) {

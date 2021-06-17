@@ -1,0 +1,13 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+BASE <http://example/shapes>
+
+PREFIX : <http://example/>
+
+# Validate a simple nodeSelector/shapeLabel pair.
+:s @ <#shape1>
+
+# Validate a literal as S3.
+
+# validate everything with type Some/Type as the START shape.
+{FOCUS :property _ } @START 

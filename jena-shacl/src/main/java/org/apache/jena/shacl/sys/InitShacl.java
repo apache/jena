@@ -33,5 +33,5 @@ public class InitShacl implements JenaSubsystemLifecycle {
     @Override
     public void stop() {}
 
-    @Override public int level() { return 99; }
+    @Override public int level() { return 95; }
 }
