@@ -1,0 +1,5 @@
+PREFIX :       <http://example.org/>
+
+:S { :a ( @:T AND @:U ) }
+:T { :b @:S } 
+:U { :c @:T } 

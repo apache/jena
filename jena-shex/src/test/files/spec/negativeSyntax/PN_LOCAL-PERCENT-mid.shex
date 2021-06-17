@@ -1,0 +1,7 @@
+# PN_LOCAL with bad PERCENT escape in middle character
+# source: turtle-syntax-bad-pname-02.ttl
+PREFIX ex: <http://a.example/>
+
+ex:IssueShape {
+   ex:p%1g .
+}

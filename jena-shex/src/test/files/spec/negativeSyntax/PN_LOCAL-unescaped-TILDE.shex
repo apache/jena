@@ -1,0 +1,7 @@
+# PN_LOCAL with unescaped TILDE
+# source: turtle-syntax-bad-pname-01.ttl
+PREFIX ex: <http://a.example/>
+
+ex:IssueShape {
+   ex:p~1 .
+}

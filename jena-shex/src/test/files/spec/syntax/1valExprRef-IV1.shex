@@ -1,0 +1,5 @@
+IMPORT <1valExprRef-vc1>
+
+<http://a.example/S1> {
+   <http://a.example/p1> @<http://a.example/vc1>
+}

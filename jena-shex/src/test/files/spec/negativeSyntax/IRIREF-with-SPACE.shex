@@ -1,0 +1,5 @@
+# IRIREF with SPACE
+# source: turtle-syntax-bad-uri-01.ttl
+<http://a.example/IssueShape> {
+   <http://a.example/p 1> .
+}

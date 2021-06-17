@@ -1,0 +1,4 @@
+<http://a.example/S1>
+      { <http://a.example/p1> LITERAL minlength 4 }
+  AND { <http://a.example/p1> LITERAL maxlength 5 }
+  AND { <http://a.example/p1> LITERAL /(ab)+/ }

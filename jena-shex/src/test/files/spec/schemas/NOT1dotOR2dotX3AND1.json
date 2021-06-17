@@ -1,0 +1,131 @@
+{
+  "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "shapes": [
+    {
+      "id": "http://a.example/S1",
+      "type": "ShapeAnd",
+      "shapeExprs": [
+        {
+          "type": "ShapeOr",
+          "shapeExprs": [
+            {
+              "type": "ShapeNot",
+              "shapeExpr": {
+                "type": "Shape",
+                "expression": {
+                  "type": "TripleConstraint",
+                  "predicate": "http://a.example/p1"
+                }
+              }
+            },
+            {
+              "type": "Shape",
+              "expression": {
+                "type": "EachOf",
+                "expressions": [
+                  {
+                    "type": "TripleConstraint",
+                    "predicate": "http://a.example/p1"
+                  },
+                  {
+                    "type": "TripleConstraint",
+                    "predicate": "http://a.example/p2"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "ShapeOr",
+          "shapeExprs": [
+            {
+              "type": "ShapeNot",
+              "shapeExpr": {
+                "type": "Shape",
+                "expression": {
+                  "type": "TripleConstraint",
+                  "predicate": "http://a.example/p3"
+                }
+              }
+            },
+            {
+              "type": "Shape",
+              "expression": {
+                "type": "EachOf",
+                "expressions": [
+                  {
+                    "type": "TripleConstraint",
+                    "predicate": "http://a.example/p3"
+                  },
+                  {
+                    "type": "TripleConstraint",
+                    "predicate": "http://a.example/p4"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "ShapeOr",
+          "shapeExprs": [
+            {
+              "type": "ShapeNot",
+              "shapeExpr": {
+                "type": "Shape",
+                "expression": {
+                  "type": "TripleConstraint",
+                  "predicate": "http://a.example/p5"
+                }
+              }
+            },
+            {
+              "type": "Shape",
+              "expression": {
+                "type": "EachOf",
+                "expressions": [
+                  {
+                    "type": "TripleConstraint",
+                    "predicate": "http://a.example/p5"
+                  },
+                  {
+                    "type": "TripleConstraint",
+                    "predicate": "http://a.example/p6"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "ShapeOr",
+          "shapeExprs": [
+            {
+              "type": "Shape",
+              "expression": {
+                "type": "TripleConstraint",
+                "predicate": "http://a.example/p1"
+              }
+            },
+            {
+              "type": "Shape",
+              "expression": {
+                "type": "TripleConstraint",
+                "predicate": "http://a.example/p3"
+              }
+            },
+            {
+              "type": "Shape",
+              "expression": {
+                "type": "TripleConstraint",
+                "predicate": "http://a.example/p5"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

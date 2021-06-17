@@ -1,0 +1,3991 @@
+@base <https://raw.githubusercontent.com/shexSpec/shexTest/master/schemas/manifest> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix sht:    <http://www.w3.org/ns/shacl/test-suite#> .
+@prefix sx:     <https://shexspec.github.io/shexTest/ns#> .
+
+<> a mf:Manifest ;
+    rdfs:comment "ShEx representation tests" ;
+    mf:entries
+    (
+        <#0>
+        <#1dot>
+    <#open1dotclose>
+        <#1dot-base>
+        <#1dotSemi>
+        <#1dotLNex>
+        <#1dotNS2>
+        <#1dotNS2SingleComment>
+        <#1dotLNexSingleComment>
+        <#1dotNS2MultiComment>
+        <#1dotLNexMultiComment>
+        <#1dotLNdefault>
+        <#1dotNSdefault>
+        <#1dotLNex-HYPHEN_MINUS>
+        <#bnode1dot>
+        <#1inversedot>
+        <#1Adot>
+        <#1iri>
+        <#1bnode>
+        <#1literal>
+        <#1nonliteral>
+        <#1datatype>
+        <#1datatypelangString>
+        <#1card2>
+        <#1card25>
+        <#1card2Star>
+        <#1cardOpt>
+    <#open1dotclosecardOpt>
+        <#1cardPlus>
+        <#1cardStar>
+        <#1literalPlus>
+        <#1dotRef1>
+        <#1dotRefLNex1>
+        <#1dotRefSpaceLNex1>
+        <#1dotRefNS1>
+        <#1dotRefSpaceNS1>
+        <#1refbnode1>
+        <#1refbnode_with_leading_digit1>
+        <#1refbnode_with_leading_underscore1>
+        <#1refbnode_with_spanning_PN_CHARS1>
+        <#1refbnode_with_spanning_PN_CHARS_BASE1>
+        <#3circRefPlus1>
+        <#1iriRef1>
+        <#1bnodeRef1>
+        <#1dotInline1>
+        <#1val1IRIREF>
+        <#1IRI_with_all_punctuationdot>
+        <#1IRI_with_UCHAR.1dot>
+        <#1val1INTEGER>
+        <#1val1DOUBLE>
+        <#1val1DOUBLElowercase>
+        <#1val1LANGTAG>
+        <#1val1IRIREFDatatype>
+        <#1val1true>
+        <#1val1false>
+        <#1val1LNDatatype>
+        <#1val1STRING_LITERAL1>
+        <#1val1STRING_LITERAL1_with_all_controls>
+        <#1val1STRING_LITERAL1_with_all_punctuation>
+        <#1val1STRING_LITERAL1_with_ECHAR_escapes>
+        <#1val1STRING_LITERAL1_with_ascii_boundaries>
+        <#1val1STRING_LITERAL1_with_UTF8_boundaries>
+        <#1val2STRING_LITERAL1>
+        <#1val1STRING_LITERAL2>
+        <#1val1STRING_LITERAL2_with_LANGTAG>
+        <#1val1STRING_LITERAL2_with_subtag>
+        <#1val1STRING_LITERAL_LONG1>
+        <#1val1STRING_LITERAL_LONG2>
+        <#1val1STRING_LITERAL_LONG2_with_LANGTAG>
+        <#1val1STRING_LITERAL_LONG2_with_subtag>
+        <#1datatypeLength>
+        <#1literalFractiondigits5>
+        <#1literalFractiondigits4>
+        <#1literalTotaldigits5>
+        <#1literalTotaldigits6>
+        <#1literalTotaldigits2>
+        <#1floatMininclusiveINTEGER>
+        <#1integerMininclusiveINTEGER>
+        <#1floatMininclusiveINTEGERLead>
+        <#1integerMininclusiveINTEGERLead>
+        <#1integerMininclusiveDECIMAL>
+        <#1integerMininclusiveDECIMALLeadTrail>
+        <#1integerMininclusiveDECIMALint>
+        <#1integerMininclusiveDECIMALintLeadTrail>
+        <#1integerMininclusiveDOUBLE>
+        <#1integerMininclusiveDOUBLELeadTrail>
+        <#1integerMininclusiveDOUBLEint>
+        <#1integerMininclusiveDOUBLEintLeadTrail>
+        <#1decimalMininclusiveINTEGER>
+        <#1decimalMininclusiveINTEGERLead>
+        <#1decimalMininclusiveDECIMAL>
+        <#1decimalMininclusiveDECIMALLeadTrail>
+        <#1decimalMininclusiveDECIMALintLeadTrail>
+        <#1decimalMininclusiveDOUBLE>
+        <#1decimalMininclusiveDOUBLELeadTrail>
+        <#1decimalMininclusiveDOUBLEintLeadTrail>
+        <#1floatMininclusiveDECIMAL>
+        <#1floatMininclusiveDECIMALLeadTrail>
+        <#1floatMininclusiveDECIMALintLeadTrail>
+        <#1floatMininclusiveDOUBLE>
+        <#1floatMininclusiveDOUBLELeadTrail>
+        <#1floatMininclusiveDOUBLEintLeadTrail>
+        <#1doubleMininclusiveINTEGERLead>
+        <#1doubleMininclusiveDECIMAL>
+        <#1doubleMininclusiveDECIMALLeadTrail>
+        <#1doubleMininclusiveDECIMALintLeadTrail>
+        <#1doubleMininclusiveDOUBLE>
+        <#1doubleMininclusiveDOUBLELeadTrail>
+        <#1doubleMininclusiveDOUBLEintLeadTrail>
+        <#1integerMinexclusiveINTEGER>
+        <#1integerMinexclusiveDECIMALint>
+        <#1integerMinexclusiveDOUBLEint>
+        <#1decimalMinexclusiveINTEGER>
+        <#1decimalMinexclusiveDECIMAL>
+        <#1decimalMinexclusiveDOUBLE>
+        <#1floatMinexclusiveINTEGER>
+        <#1floatMinexclusiveDECIMAL>
+        <#1floatMinexclusiveDOUBLE>
+        <#1doubleMinexclusiveINTEGER>
+        <#1doubleMinexclusiveDECIMAL>
+        <#1doubleMinexclusiveDOUBLE>
+        <#1integerMaxinclusiveINTEGER>
+        <#1integerMaxinclusiveDECIMALint>
+        <#1integerMaxinclusiveDOUBLEint>
+        <#1decimalMaxinclusiveINTEGER>
+        <#1decimalMaxinclusiveDECIMAL>
+        <#1decimalMaxinclusiveDOUBLE>
+        <#1floatMaxinclusiveINTEGER>
+        <#1floatMaxinclusiveDECIMAL>
+        <#1floatMaxinclusiveDOUBLE>
+        <#1doubleMaxinclusiveINTEGER>
+        <#1doubleMaxinclusiveDECIMAL>
+        <#1doubleMaxinclusiveDOUBLE>
+        <#1integerMaxexclusiveINTEGER>
+        <#1integerMaxexclusiveDECIMALint>
+        <#1integerMaxexclusiveDOUBLEint>
+        <#1decimalMaxexclusiveINTEGER>
+        <#1decimalMaxexclusiveDECIMAL>
+        <#1decimalMaxexclusiveDOUBLE>
+        <#1decimalMaxexclusivexsd-byte>
+        <#1floatMaxexclusiveINTEGER>
+        <#1floatMaxexclusiveDECIMAL>
+        <#1floatMaxexclusiveDOUBLE>
+        <#1doubleMaxexclusiveINTEGER>
+        <#1doubleMaxexclusiveINTEGERLead>
+        <#1doubleMaxexclusiveDECIMAL>
+        <#1doubleMaxexclusiveDECIMALLeadTrail>
+        <#1doubleMaxexclusiveDECIMALint>
+        <#1doubleMaxexclusiveDECIMALintLeadTrail>
+        <#1doubleMaxexclusiveDOUBLE>
+        <#1doubleMaxexclusiveDOUBLELeadTrail>
+        <#1doubleMaxexclusiveDOUBLEint>
+        <#1doubleMaxexclusiveDOUBLEintLeadTrail>
+        <#1Length>
+        <#1literalLength>
+        <#1literalLength19>
+        <#1iriLength>
+        <#1iriRefLength1>
+        <#1bnodeLength>
+        <#1nonliteralLength>
+        <#1literalMinlength>
+        <#1iriMinlength>
+        <#1bnodeMinlength>
+        <#1nonliteralMinlength>
+        <#1literalMaxlength>
+        <#1iriMaxlength>
+        <#1bnodeMaxlength>
+        <#1nonliteralMaxlength>
+        <#1literalPattern>
+        <#1literalPattern_with_all_meta>
+        <#1literalPattern_with_all_controls>
+        <#1literalPattern_with_all_punctuation>
+        <#1literalPattern_with_ascii_boundaries>
+        <#1literalPattern_with_UTF8_boundaries>
+        <#1literalPattern_with_REGEXP_escapes>
+        <#1literalPattern_with_REGEXP_escapes_bare>
+        <#1literalPattern_with_REGEXP_escapes_escaped>
+        <#1literalPatterni>
+        <#1literalPattern19>
+        <#1literalStartPattern>
+        <#1literalPatternEnd>
+        <#1literalStartPatternEnd>
+        <#1literalPatternDollar>
+        <#1literalCarrotPatternDollar>
+        <#1literalPatternabEnd>
+        <#1iriPattern>
+        <#1iriPatternbc>
+        <#1bnodePattern>
+        <#1nonliteralPattern>
+        <#1val1dotMinusiri3>
+        <#1val1refvsMinusiri3>
+        <#1val1dotMinusiriStem3>
+        <#1val1iri>
+        <#1val1iriStem>
+        <#1val1iriStemMinusiri3>
+        <#1val1iriStemMinusiriStem3>
+        <#1val1dotMinusliteral3>
+        <#1val1dotMinusliteralStem3>
+        <#1val1literalStem>
+        <#1val1literalStemMinusliteral3>
+        <#1val1literalStemMinusliteralStem3>
+        <#1val1literaliriStem>
+        <#1val1literaliriStemMinusliteraliri3>
+        <#1val1dotMinuslanguage3>
+        <#1val1dotMinuslanguageStem3>
+        <#1val1language>
+        <#1val1emptylanguageStem>
+        <#1val1emptylanguageStemMinuslanguage3>
+        <#1val1emptylanguageStemMinuslanguageStem3>
+        <#1val1languageStem>
+        <#1val1languageStemMinuslanguage3>
+        <#1val1languageStemMinuslanguageStem3>
+        <#1val1literal>
+        <#1val1literallanguageStem>
+        <#1val1literallanguageStemMinusliterallanguage3>
+        <#1val1literalAtlanguageStem>
+        <#1val1literalAtlanguageStemMinusliteralAtlanguage3>
+        <#2dot>
+        <#2dotSemis>
+        <#open2dotclose>
+        <#open2dotsemisclose>
+        <#3Eachdot>
+        <#open3Eachdotclose>
+        <#1dotOne1dot>
+    <#openopen1dotOr1dotclose>
+        <#1dotSemiOne1dotSemi>
+        <#open1dotOne1dotclose>
+        <#open1dotSemiOne1dotSemicloseSemi>
+        <#2dotOne1dot>
+        <#2dotSemiOne1dotSemi>
+        <#open2dotOne1dotclose>
+        <#open2dotSemisOne1dotSemiclose>
+        <#openopen2dotcloseOne1dotclose>
+        <#openopen2dotSemiscloseOne1dotSemiclose>
+        <#open1dotopen1dotOne1dotcloseclose>
+        <#open1dotopen1dotSemiOne1dotSemicloseSemicloseSemi>
+        <#1dotOne2dot>
+        <#open1dotOneopen2dotcloseclose>
+        <#openopen1dotOne1dotclose1dotclose>
+        <#1val1vExprRefIRIREF1>
+        <#1val1vExprRefbnode1>
+        <#1dotRefAND3>
+        <#1val1vExpr1AND1AND1Ref3>
+        <#1val1vExprRefAND3>
+        <#1val1vExprAND3>
+        <#1dotRefOR3>
+        <#1val1vExpr1OR1OR1Ref3>
+        <#1val1vExprRefOR3>
+        <#1val1vExprOR3>
+        <#1NOTIRI>
+        <#1NOTNOTIRI>
+        <#1NOTvs>
+        <#1NOTNOTvs>
+        <#1NOTdot>
+        <#1NOTNOTdot>
+        <#1_NOTliteral_ANDvs>
+        <#1NOT_literalANDvs_>
+        <#1NOTliteralANDvs>
+        <#1_NOTvs_ANDvs>
+        <#1NOT_vsANDvs_>
+        <#1NOTvsANDvs>
+        <#1_NOTliteral_ORvs>
+        <#1NOT_literalORvs_>
+        <#1NOTliteralORvs>
+        <#1_NOTvs_ORvs>
+        <#1NOT_vsORvs_>
+        <#1NOTvsORvs>
+        <#NOT1NOTvs>
+        <#1val1vExpr1AND1OR1Ref3>
+        <#1val1vExpr1OR1AND1Ref3>
+        <#open3Onedotclosecard2>
+        <#open3Onedotclosecard23>
+        <#open4Onedotclosecard23>
+        <#open3Eachdotclosecard23>
+        <#1val1vShapeANDRef3>
+        <#1dotClosed>
+        <#1val1IRIREFExtra1>
+        <#1val1IRIREFExtra1Closed>
+        <#1val1IRIREFClosedExtra1>
+        <#1val2IRIREFExtra1>
+        <#1val2IRIREFPlusExtra1>
+        <#1val1IRIREFExtra1p2>
+        <#1val1IRIREFExtra1One>
+        <#1dotExtra1>
+        <#3EachdotExtra3>
+        <#3Eachdot3Extra>
+        <#3EachdotExtra3NLex>
+        <#startRefIRIREF>
+        <#startRefbnode>
+        <#startInline>
+        <#startEqualSpaceInline>
+        <#startSpaceEqualInline>
+        <#1IRIInline0>
+        <#2EachInclude1>
+        <#2EachInclude1-after>
+        <#2OneInclude1>
+        <#2OneInclude1-after>
+        <#1dotAnnotIRIREF>
+        <#1dotAnnotSTRING_LITERAL1>
+        <#1dotAnnot3>
+        <#1inversedotAnnot3>
+        <#1dotShapeAnnotIRIREF>
+        <#1dotShapePlusAnnotIRIREF>
+        <#1dotShapeAnnotAIRIREF>
+        <#1dotShapeAnnotSTRING_LITERAL1>
+        <#open3EachdotcloseAnnot3>
+        <#1dotCode1>
+    <#open1dotcloseCode1>
+        <#1dotNoCode1>
+        <#1inversedotCode1>
+        <#1dotCode3>
+    <#openopen1dotcloseCode1closeCode3>
+        <#1dotNoCode3>
+        <#1dotCode3fail>
+        <#1dotCodeWithEscapes1>
+        <#1dotShapeCode1>
+        <#1dotShapeNoCode1>
+        <#open3EachdotcloseCode1>
+        <#startCode1>
+        <#startNoCode1>
+        <#startCode1fail>
+        <#startCode1startRef>
+        <#startCode1startReffail>
+        <#startCode3>
+        <#startCode3fail>
+        <#open3Eachdotclosecard23Annot3Code2>
+        <#0focusIRI>
+        <#0focusBNODE>
+        <#1focusIRI_dot>
+        <#1focusBNODE_dot>
+        <#1focusnonLiteral-dot>
+        <#focusNOTRefOR1dot>
+        <#1focusLength-dot>
+        <#1focusMinLength-dot>
+        <#1focusMaxLength-dot>
+        <#1focusPattern-dot>
+        <#1focusPatternB-dot>
+        <#1focusIRILength_dot>
+        <#1focusBNODELength_dot>
+        <#1focusnonLiteralLength-dot>
+        <#NOT1dotOR2dot>
+        <#NOT1dotOR2dotX3>
+        <#NOT1dotOR2dotX3AND1>
+        <#1NOTRefOR1dot>
+        <#shapeExtern>
+        <#shapeExternRef>
+#        <#0Inherit1>
+#        <#1dotInherit1>
+#        <#1dotInherit3>
+#        <#1dot3Inherit>
+#        <#1dot3InheritLN>
+#         <#1dotVirtualShapeCode1>
+#         <#1dotVirtual>
+#         <#1dotUnlabeledCode1>
+        <#focusvsORdatatype>
+        <#focusvsANDIRI>
+        <#focusvsANDdatatype>
+        <#focusvs>
+        <#focusdatatype>
+        <#1dotPlusAnnotIRIREF>
+        <#1dotAnnotAIRIREF>
+        <#FocusIRI2EachBnodeNested2EachIRIRef>
+        <#1bnodeRefORRefMinlength>
+        <#1dotShapeAND1dot3X>
+        <#openopen1dotSemiOne1dotSemiclose1dotSemicloseSemi>
+        <#open1dotOne2dotclose>
+        <#open1dotSemiOneopen2dotSemiscloseclose>
+        <#open1dotSemiOne2dotsemisclose>
+        <#1dotSemiOne2dotSemis>
+        <#1literalMaxinclusiveINTEGER>
+        <#1literalMaxexclusiveINTEGER>
+        <#1literalMininclusiveINTEGER>
+        <#1literalMinexclusiveINTEGER>
+        <#1val1DECIMAL>
+        <#1datatypeRef1>
+        <#1card2blank>
+        <#1focusnonLiteralLength-nonLiteralLength>
+        <#1Include1>
+        <#1Include1-after>
+        <#startSelfRefIRIREF>
+        <#startSelfRefbnode>
+        <#datatypes>
+        <#_all>
+        <#kitchenSink>
+        <#node_kind_example>
+        <#dependent_shape>
+        <#recursion_example>
+        <#focusbnode0ORfocusPattern0>
+        <#1dotAND1dotAND1dot>
+        <#open1dotAND1dotcloseAND1dot>
+        <#1dotANDopen1dotAND1dotclose>
+        <#2Eachdot>
+        <#open2Eachdotclosecard25c1dot>
+
+        # cycles
+        <#CycleNoNegation_pass>
+        <#NoNegation_pass>
+        <#NoNegation2_pass>
+        <#OneNegation_pass>
+        <#TwoNegation_pass>
+        <#Cycle2NoNegation_pass>
+        <#Cycle2Extra_pass>
+
+        # imports
+        <#1dotIMPORT1dot>
+        <#2RefS1-IS2>
+        <#2RefS1-Icirc>
+#         <#2RefS1>
+        <#2RefS2-IS1>
+        <#start2RefS2-IstartS1>
+        <#start2RefS1-IstartS2>
+        <#2RefS2-Icirc>
+        <#2RefS2>
+        <#3circRefS1-IS2-IS3-IS3>
+        <#3circRefS1-IS2-IS3>
+        <#3circRefS1-IS23>
+        <#3circRefS1-Icirc>
+#         <#3circRefS12>
+        <#3circRefS123-Icirc>
+        <#3circRefS123>
+#         <#3circRefS2-IS3>
+        <#3circRefS2-Icirc>
+#         <#3circRefS23>
+        <#3circRefS3-IS12>
+        <#3circRefS3-Icirc>
+#         <#3circRefS3>
+        <#2EachInclude1-S2>
+        <#2EachInclude1-IS2>
+        <#1valExprRefbnode-vc1>
+        <#1valExprRefbnode-IV1>
+        <#1valExprRef-vc1>
+        <#1valExprRef-IV1>
+        <#1list0PlusDot>
+        <#1list0PlusIri>
+        <#1list1PlusIri>
+    ) .
+
+<#0> a sht:RepresentationTest ;
+    mf:name "0" ;
+    mf:status mf:Approved ;
+    sx:shex <0.shex> ;
+    sx:json <0.json> ;
+    sx:ttl <0.ttl> ;
+    .
+
+<#1dot> a sht:RepresentationTest ;
+    mf:name "1dot" ;
+    mf:status mf:Approved ;
+    sx:shex <1dot.shex> ;
+    sx:json <1dot.json> ;
+    sx:ttl <1dot.ttl> ;
+    .
+
+<#open1dotclose> a sht:RepresentationTest ;
+    mf:name "open1dotclose" ;
+    mf:status mf:Approved ;
+    sx:shex <open1dotclose.shex> ;
+    sx:json <1dot.json> ;
+    sx:ttl <1dot.ttl> ;
+    .
+
+<#1dot-base> a sht:RepresentationTest ;
+    mf:name "1dot-base" ;
+    mf:status mf:Approved ;
+    sx:shex <1dot-base.shex> ;
+    sx:json <1dot-base.json> ;
+    sx:ttl <1dot-base.ttl> ;
+    .
+
+<#1dotSemi> a sht:RepresentationTest ;
+    mf:name "1dotSemi" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotSemi.shex> ;
+    sx:json <1dotSemi.json> ;
+    sx:ttl <1dotSemi.ttl> ;
+    .
+
+<#1dotLNex> a sht:RepresentationTest ;
+    mf:name "1dotLNex" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotLNex.shex> ;
+    sx:json <1dotLNex.json> ;
+    sx:ttl <1dotLNex.ttl> ;
+    .
+
+<#1dotNS2> a sht:RepresentationTest ;
+    mf:name "1dotNS2" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotNS2.shex> ;
+    sx:json <1dotNS2.json> ;
+    sx:ttl <1dotNS2.ttl> ;
+    .
+
+<#1dotNS2SingleComment> a sht:RepresentationTest ;
+    mf:name "1dotNS2SingleComment" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotNS2SingleComment.shex> ;
+    sx:json <1dotNS2SingleComment.json> ;
+    sx:ttl <1dotNS2SingleComment.ttl> ;
+    .
+
+<#1dotLNexSingleComment> a sht:RepresentationTest ;
+    mf:name "1dotLNexSingleComment" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotLNexSingleComment.shex> ;
+    sx:json <1dotLNexSingleComment.json> ;
+    sx:ttl <1dotLNexSingleComment.ttl> ;
+    .
+
+<#1dotNS2MultiComment> a sht:RepresentationTest ;
+    mf:name "1dotNS2MultiComment" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotNS2MultiComment.shex> ;
+    sx:json <1dotNS2MultiComment.json> ;
+    sx:ttl <1dotNS2MultiComment.ttl> ;
+    .
+
+<#1dotLNexMultiComment> a sht:RepresentationTest ;
+    mf:name "1dotLNexMultiComment" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotLNexMultiComment.shex> ;
+    sx:json <1dotLNexMultiComment.json> ;
+    sx:ttl <1dotLNexMultiComment.ttl> ;
+    .
+
+<#1dotLNdefault> a sht:RepresentationTest ;
+    mf:name "1dotLNdefault" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotLNdefault.shex> ;
+    sx:json <1dotLNdefault.json> ;
+    sx:ttl <1dotLNdefault.ttl> ;
+    .
+
+<#1dotNSdefault> a sht:RepresentationTest ;
+    mf:name "1dotNSdefault" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotNSdefault.shex> ;
+    sx:json <1dotNSdefault.json> ;
+    sx:ttl <1dotNSdefault.ttl> ;
+    .
+
+<#1dotLNex-HYPHEN_MINUS> a sht:RepresentationTest ;
+    mf:name "1dotLNex-HYPHEN_MINUS" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotLNex-HYPHEN_MINUS.shex> ;
+    sx:json <1dotLNex-HYPHEN_MINUS.json> ;
+    sx:ttl <1dotLNex-HYPHEN_MINUS.ttl> ;
+    .
+
+<#bnode1dot> a sht:RepresentationTest ;
+    mf:name "bnode1dot" ;
+    mf:status mf:Approved ;
+    sx:shex <bnode1dot.shex> ;
+    sx:json <bnode1dot.json> ;
+    sx:ttl <bnode1dot.ttl> ;
+    .
+
+<#1inversedot> a sht:RepresentationTest ;
+    mf:name "1inversedot" ;
+    mf:status mf:Approved ;
+    sx:shex <1inversedot.shex> ;
+    sx:json <1inversedot.json> ;
+    sx:ttl <1inversedot.ttl> ;
+    .
+
+<#1Adot> a sht:RepresentationTest ;
+    mf:name "1Adot" ;
+    mf:status mf:Approved ;
+    sx:shex <1Adot.shex> ;
+    sx:json <1Adot.json> ;
+    sx:ttl <1Adot.ttl> ;
+    .
+
+<#1iri> a sht:RepresentationTest ;
+    mf:name "1iri" ;
+    mf:status mf:Approved ;
+    sx:shex <1iri.shex> ;
+    sx:json <1iri.json> ;
+    sx:ttl <1iri.ttl> ;
+    .
+
+<#1bnode> a sht:RepresentationTest ;
+    mf:name "1bnode" ;
+    mf:status mf:Approved ;
+    sx:shex <1bnode.shex> ;
+    sx:json <1bnode.json> ;
+    sx:ttl <1bnode.ttl> ;
+    .
+
+<#1literal> a sht:RepresentationTest ;
+    mf:name "1literal" ;
+    mf:status mf:Approved ;
+    sx:shex <1literal.shex> ;
+    sx:json <1literal.json> ;
+    sx:ttl <1literal.ttl> ;
+    .
+
+<#1nonliteral> a sht:RepresentationTest ;
+    mf:name "1nonliteral" ;
+    mf:status mf:Approved ;
+    sx:shex <1nonliteral.shex> ;
+    sx:json <1nonliteral.json> ;
+    sx:ttl <1nonliteral.ttl> ;
+    .
+
+<#1focusnonLiteralLength-nonLiteralLength> a sht:RepresentationTest ;
+    mf:name "1focusnonLiteralLength-nonLiteralLength" ;
+    mf:status mf:Approved ;
+    sx:shex <1focusnonLiteralLength-nonLiteralLength.shex> ;
+    sx:json <1focusnonLiteralLength-nonLiteralLength.json> ;
+    sx:ttl <1focusnonLiteralLength-nonLiteralLength.ttl> ;
+    .
+
+<#1datatype> a sht:RepresentationTest ;
+    mf:name "1datatype" ;
+    mf:status mf:Approved ;
+    sx:shex <1datatype.shex> ;
+    sx:json <1datatype.json> ;
+    sx:ttl <1datatype.ttl> ;
+    .
+
+<#1datatypelangString> a sht:RepresentationTest ;
+    mf:name "1datatypelangString" ;
+    mf:status mf:Approved ;
+    sx:shex <1datatypelangString.shex> ;
+    sx:json <1datatypelangString.json> ;
+    sx:ttl <1datatypelangString.ttl> ;
+    .
+
+<#1card2> a sht:RepresentationTest ;
+    mf:name "1card2" ;
+    mf:status mf:Approved ;
+    sx:shex <1card2.shex> ;
+    sx:json <1card2.json> ;
+    sx:ttl <1card2.ttl> ;
+    .
+
+<#1card2blank> a sht:RepresentationTest ;
+    mf:name "1card2blank" ;
+    mf:status mf:Approved ;
+    sx:shex <1card2blank.shex> ;
+    sx:json <1card2blank.json> ;
+    sx:ttl <1card2blank.ttl> ;
+    .
+
+<#1card25> a sht:RepresentationTest ;
+    mf:name "1card25" ;
+    mf:status mf:Approved ;
+    sx:shex <1card25.shex> ;
+    sx:json <1card25.json> ;
+    sx:ttl <1card25.ttl> ;
+    .
+
+<#1card2Star> a sht:RepresentationTest ;
+    mf:name "1card2Star" ;
+    mf:status mf:Approved ;
+    sx:shex <1card2Star.shex> ;
+    sx:json <1card2Star.json> ;
+    sx:ttl <1card2Star.ttl> ;
+    .
+
+<#1cardOpt> a sht:RepresentationTest ;
+    mf:name "1cardOpt" ;
+    mf:status mf:Approved ;
+    sx:shex <1cardOpt.shex> ;
+    sx:json <1cardOpt.json> ;
+    sx:ttl <1cardOpt.ttl> ;
+    .
+
+<#open1dotclosecardOpt> a sht:RepresentationTest ;
+    mf:name "open1dotclosecardOpt" ;
+    mf:status mf:Approved ;
+    sx:shex <open1dotclosecardOpt.shex> ;
+    sx:json <1cardOpt.json> ;
+    sx:ttl <1cardOpt.ttl> ;
+    .
+
+<#1cardPlus> a sht:RepresentationTest ;
+    mf:name "1cardPlus" ;
+    mf:status mf:Approved ;
+    sx:shex <1cardPlus.shex> ;
+    sx:json <1cardPlus.json> ;
+    sx:ttl <1cardPlus.ttl> ;
+    .
+
+<#1cardStar> a sht:RepresentationTest ;
+    mf:name "1cardStar" ;
+    mf:status mf:Approved ;
+    sx:shex <1cardStar.shex> ;
+    sx:json <1cardStar.json> ;
+    sx:ttl <1cardStar.ttl> ;
+    .
+
+<#1literalPlus> a sht:RepresentationTest ;
+    mf:name "1literalPlus" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalPlus.shex> ;
+    sx:json <1literalPlus.json> ;
+    sx:ttl <1literalPlus.ttl> ;
+    .
+
+<#1dotRef1> a sht:RepresentationTest ;
+    mf:name "1dotRef1" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotRef1.shex> ;
+    sx:json <1dotRef1.json> ;
+    sx:ttl <1dotRef1.ttl> ;
+    .
+
+<#1dotRefLNex1> a sht:RepresentationTest ;
+    mf:name "1dotRefLNex1" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotRefLNex1.shex> ;
+    sx:json <1dotRefLNex1.json> ;
+    sx:ttl <1dotRefLNex1.ttl> ;
+    .
+
+<#1dotRefSpaceLNex1> a sht:RepresentationTest ;
+    mf:name "1dotRefSpaceLNex1" ;
+    mf:status mf:Approved ;
+    mf:sameSemanticsAs <#1dotRefLNex1> ;
+    sx:shex <1dotRefSpaceLNex1.shex> ;
+    sx:json <1dotRefSpaceLNex1.json> ;
+    sx:ttl <1dotRefSpaceLNex1.ttl> ;
+    .
+
+<#1dotRefNS1> a sht:RepresentationTest ;
+    mf:name "1dotRefNS1" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotRefNS1.shex> ;
+    sx:json <1dotRefNS1.json> ;
+    sx:ttl <1dotRefNS1.ttl> ;
+    .
+
+<#1dotRefSpaceNS1> a sht:RepresentationTest ;
+    mf:name "1dotRefSpaceNS1" ;
+    mf:status mf:Approved ;
+    mf:sameSemanticsAs <#1dotRefNS1> ;
+    sx:shex <1dotRefSpaceNS1.shex> ;
+    sx:json <1dotRefSpaceNS1.json> ;
+    sx:ttl <1dotRefSpaceNS1.ttl> ;
+    .
+
+<#1refbnode1> a sht:RepresentationTest ;
+    mf:name "1refbnode1" ;
+    mf:status mf:Approved ;
+    sx:shex <1refbnode1.shex> ;
+    sx:json <1refbnode1.json> ;
+    sx:ttl <1refbnode1.ttl> ;
+    .
+
+<#1refbnode_with_leading_digit1> a sht:RepresentationTest ;
+    mf:name "1refbnode_with_leading_digit1" ;
+    mf:status mf:Approved ;
+    sx:shex <1refbnode_with_leading_digit1.shex> ;
+    sx:json <1refbnode_with_leading_digit1.json> ;
+    sx:ttl <1refbnode_with_leading_digit1.ttl> ;
+    .
+
+<#1refbnode_with_leading_underscore1> a sht:RepresentationTest ;
+    mf:name "1refbnode_with_leading_underscore1" ;
+    mf:status mf:Approved ;
+    sx:shex <1refbnode_with_leading_underscore1.shex> ;
+    sx:json <1refbnode_with_leading_underscore1.json> ;
+    sx:ttl <1refbnode_with_leading_underscore1.ttl> ;
+    .
+
+<#1refbnode_with_spanning_PN_CHARS1> a sht:RepresentationTest ;
+    mf:name "1refbnode_with_spanning_PN_CHARS1" ;
+    mf:status mf:Approved ;
+    sx:shex <1refbnode_with_spanning_PN_CHARS1.shex> ;
+    sx:json <1refbnode_with_spanning_PN_CHARS1.json> ;
+    sx:ttl <1refbnode_with_spanning_PN_CHARS1.ttl> ;
+    .
+
+<#1refbnode_with_spanning_PN_CHARS_BASE1> a sht:RepresentationTest ;
+    mf:name "1refbnode_with_spanning_PN_CHARS_BASE1" ;
+    mf:status mf:Approved ;
+    sx:shex <1refbnode_with_spanning_PN_CHARS_BASE1.shex> ;
+    sx:json <1refbnode_with_spanning_PN_CHARS_BASE1.json> ;
+    sx:ttl <1refbnode_with_spanning_PN_CHARS_BASE1.ttl> ;
+    .
+
+<#3circRefPlus1> a sht:RepresentationTest ;
+    mf:name "3circRefPlus1" ;
+    mf:status mf:Approved ;
+    sx:shex <3circRefPlus1.shex> ;
+    sx:json <3circRefPlus1.json> ;
+    sx:ttl <3circRefPlus1.ttl> ;
+    .
+
+<#1iriRef1> a sht:RepresentationTest ;
+    mf:name "1iriRef1" ;
+    mf:status mf:Approved ;
+    sx:shex <1iriRef1.shex> ;
+    sx:json <1iriRef1.json> ;
+    sx:ttl <1iriRef1.ttl> ;
+    .
+
+<#1bnodeRef1> a sht:RepresentationTest ;
+    mf:name "1bnodeRef1" ;
+    mf:status mf:Approved ;
+    sx:shex <1bnodeRef1.shex> ;
+    sx:json <1bnodeRef1.json> ;
+    sx:ttl <1bnodeRef1.ttl> ;
+    .
+
+<#1datatypeRef1> a sht:RepresentationTest ;
+    mf:name "1datatypeRef1" ;
+    mf:status mf:Approved ;
+    sx:shex <1datatypeRef1.shex> ;
+    sx:json <1datatypeRef1.json> ;
+    sx:ttl <1datatypeRef1.ttl> ;
+    .
+
+<#1dotInline1> a sht:RepresentationTest ;
+    mf:name "1dotInline1" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotInline1.shex> ;
+    sx:json <1dotInline1.json> ;
+    sx:ttl <1dotInline1.ttl> ;
+    .
+
+<#1val1IRIREF> a sht:RepresentationTest ;
+    mf:name "1val1IRIREF" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1IRIREF.shex> ;
+    sx:json <1val1IRIREF.json> ;
+    sx:ttl <1val1IRIREF.ttl> ;
+    .
+
+<#1IRI_with_all_punctuationdot> a sht:RepresentationTest ;
+    mf:name "1IRI_with_all_punctuationdot" ;
+    mf:status mf:Approved ;
+    sx:shex <1IRI_with_all_punctuationdot.shex> ;
+    sx:json <1IRI_with_all_punctuationdot.json> ;
+    sx:ttl <1IRI_with_all_punctuationdot.ttl> ;
+    .
+
+<#1IRI_with_UCHAR.1dot> a sht:RepresentationTest ;
+    mf:name "1IRI_with_UCHAR.1dot" ;
+    mf:status mf:Approved ;
+    sx:shex <1IRI_with_UCHAR.1dot.shex> ;
+    sx:json <1IRI_with_UCHAR.1dot.json> ;
+    sx:ttl <1IRI_with_UCHAR.1dot.ttl> ;
+    .
+
+<#1val1INTEGER> a sht:RepresentationTest ;
+    mf:name "1val1INTEGER" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1INTEGER.shex> ;
+    sx:json <1val1INTEGER.json> ;
+    sx:ttl <1val1INTEGER.ttl> ;
+    .
+
+<#1val1DECIMAL> a sht:RepresentationTest ;
+    mf:name "1val1DECIMAL" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1DECIMAL.shex> ;
+    sx:json <1val1DECIMAL.json> ;
+    sx:ttl <1val1DECIMAL.ttl> ;
+    .
+
+<#1val1DOUBLE> a sht:RepresentationTest ;
+    mf:name "1val1DOUBLE" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1DOUBLE.shex> ;
+    sx:json <1val1DOUBLE.json> ;
+    sx:ttl <1val1DOUBLE.ttl> ;
+    .
+
+<#1val1DOUBLElowercase> a sht:RepresentationTest ;
+    mf:name "1val1DOUBLElowercase" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1DOUBLElowercase.shex> ;
+    sx:json <1val1DOUBLElowercase.json> ;
+    sx:ttl <1val1DOUBLElowercase.ttl> ;
+    .
+
+<#1val1LANGTAG> a sht:RepresentationTest ;
+    mf:name "1val1LANGTAG" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1LANGTAG.shex> ;
+    sx:json <1val1LANGTAG.json> ;
+    sx:ttl <1val1LANGTAG.ttl> ;
+    .
+
+<#1val1IRIREFDatatype> a sht:RepresentationTest ;
+    mf:name "1val1IRIREFDatatype" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1IRIREFDatatype.shex> ;
+    sx:json <1val1IRIREFDatatype.json> ;
+    sx:ttl <1val1IRIREFDatatype.ttl> ;
+    .
+
+<#1val1true> a sht:RepresentationTest ;
+    mf:name "1val1true" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1true.shex> ;
+    sx:json <1val1true.json> ;
+    sx:ttl <1val1true.ttl> ;
+    .
+
+<#1val1false> a sht:RepresentationTest ;
+    mf:name "1val1false" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1false.shex> ;
+    sx:json <1val1false.json> ;
+    sx:ttl <1val1false.ttl> ;
+    .
+
+<#1val1LNDatatype> a sht:RepresentationTest ;
+    mf:name "1val1LNDatatype" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1LNDatatype.shex> ;
+    sx:json <1val1LNDatatype.json> ;
+    sx:ttl <1val1LNDatatype.ttl> ;
+    .
+
+<#1val1STRING_LITERAL1> a sht:RepresentationTest ;
+    mf:name "1val1STRING_LITERAL1" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1STRING_LITERAL1.shex> ;
+    sx:json <1val1STRING_LITERAL1.json> ;
+    sx:ttl <1val1STRING_LITERAL1.ttl> ;
+    .
+
+<#1val1STRING_LITERAL1_with_all_controls> a sht:RepresentationTest ;
+    mf:name "1val1STRING_LITERAL1_with_all_controls" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1STRING_LITERAL1_with_all_controls.shex> ;
+    sx:json <1val1STRING_LITERAL1_with_all_controls.json> ;
+    sx:ttl <1val1STRING_LITERAL1_with_all_controls.ttl> ;
+    .
+
+<#1val1STRING_LITERAL1_with_all_punctuation> a sht:RepresentationTest ;
+    mf:name "1val1STRING_LITERAL1_with_all_punctuation" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1STRING_LITERAL1_with_all_punctuation.shex> ;
+    sx:json <1val1STRING_LITERAL1_with_all_punctuation.json> ;
+    sx:ttl <1val1STRING_LITERAL1_with_all_punctuation.ttl> ;
+    .
+
+<#1val1STRING_LITERAL1_with_ECHAR_escapes> a sht:RepresentationTest ;
+    mf:name "1val1STRING_LITERAL1_with_ECHAR_escapes" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1STRING_LITERAL1_with_ECHAR_escapes.shex> ;
+    sx:json <1val1STRING_LITERAL1_with_ECHAR_escapes.json> ;
+    sx:ttl <1val1STRING_LITERAL1_with_ECHAR_escapes.ttl> ;
+    .
+
+<#1val1STRING_LITERAL1_with_ascii_boundaries> a sht:RepresentationTest ;
+    mf:name "1val1STRING_LITERAL1_with_ascii_boundaries" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1STRING_LITERAL1_with_ascii_boundaries.shex> ;
+    sx:json <1val1STRING_LITERAL1_with_ascii_boundaries.json> ;
+    sx:ttl <1val1STRING_LITERAL1_with_ascii_boundaries.ttl> ;
+    .
+
+<#1val1STRING_LITERAL1_with_UTF8_boundaries> a sht:RepresentationTest ;
+    mf:name "1val1STRING_LITERAL1_with_UTF8_boundaries" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1STRING_LITERAL1_with_UTF8_boundaries.shex> ;
+    sx:json <1val1STRING_LITERAL1_with_UTF8_boundaries.json> ;
+    sx:ttl <1val1STRING_LITERAL1_with_UTF8_boundaries.ttl> ;
+    .
+
+<#1val2STRING_LITERAL1> a sht:RepresentationTest ;
+    mf:name "1val2STRING_LITERAL1" ;
+    mf:status mf:Approved ;
+    sx:shex <1val2STRING_LITERAL1.shex> ;
+    sx:json <1val2STRING_LITERAL1.json> ;
+    sx:ttl <1val2STRING_LITERAL1.ttl> ;
+    .
+
+<#1val1STRING_LITERAL2> a sht:RepresentationTest ;
+    mf:name "1val1STRING_LITERAL2" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1STRING_LITERAL2.shex> ;
+    sx:json <1val1STRING_LITERAL2.json> ;
+    sx:ttl <1val1STRING_LITERAL2.ttl> ;
+    .
+
+<#1val1STRING_LITERAL2_with_LANGTAG> a sht:RepresentationTest ;
+    mf:name "1val1STRING_LITERAL2_with_LANGTAG" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1STRING_LITERAL2_with_LANGTAG.shex> ;
+    sx:json <1val1STRING_LITERAL2_with_LANGTAG.json> ;
+    sx:ttl <1val1STRING_LITERAL2_with_LANGTAG.ttl> ;
+    .
+
+<#1val1STRING_LITERAL2_with_subtag> a sht:RepresentationTest ;
+    mf:name "1val1STRING_LITERAL2_with_subtag" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1STRING_LITERAL2_with_subtag.shex> ;
+    sx:json <1val1STRING_LITERAL2_with_subtag.json> ;
+    sx:ttl <1val1STRING_LITERAL2_with_subtag.ttl> ;
+    .
+
+<#1val1STRING_LITERAL_LONG1> a sht:RepresentationTest ;
+    mf:name "1val1STRING_LITERAL_LONG1" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1STRING_LITERAL_LONG1.shex> ;
+    sx:json <1val1STRING_LITERAL_LONG1.json> ;
+    sx:ttl <1val1STRING_LITERAL_LONG1.ttl> ;
+    .
+
+<#1val1STRING_LITERAL_LONG2> a sht:RepresentationTest ;
+    mf:name "1val1STRING_LITERAL_LONG2" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1STRING_LITERAL_LONG2.shex> ;
+    sx:json <1val1STRING_LITERAL_LONG2.json> ;
+    sx:ttl <1val1STRING_LITERAL_LONG2.ttl> ;
+    .
+
+<#1val1STRING_LITERAL_LONG2_with_LANGTAG> a sht:RepresentationTest ;
+    mf:name "1val1STRING_LITERAL_LONG2_with_LANGTAG" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1STRING_LITERAL_LONG2_with_LANGTAG.shex> ;
+    sx:json <1val1STRING_LITERAL_LONG2_with_LANGTAG.json> ;
+    sx:ttl <1val1STRING_LITERAL_LONG2_with_LANGTAG.ttl> ;
+    .
+
+<#1val1STRING_LITERAL_LONG2_with_subtag> a sht:RepresentationTest ;
+    mf:name "1val1STRING_LITERAL_LONG2_with_subtag" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1STRING_LITERAL_LONG2_with_subtag.shex> ;
+    sx:json <1val1STRING_LITERAL_LONG2_with_subtag.json> ;
+    sx:ttl <1val1STRING_LITERAL_LONG2_with_subtag.ttl> ;
+    .
+
+<#1datatypeLength> a sht:RepresentationTest ;
+    mf:name "1datatypeLength" ;
+    mf:status mf:Approved ;
+    sx:shex <1datatypeLength.shex> ;
+    sx:json <1datatypeLength.json> ;
+    sx:ttl <1datatypeLength.ttl> ;
+    .
+
+<#1literalFractiondigits5> a sht:RepresentationTest ;
+    mf:name "1literalFractiondigits5" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalFractiondigits5.shex> ;
+    sx:json <1literalFractiondigits5.json> ;
+    sx:ttl <1literalFractiondigits5.ttl> ;
+    .
+
+<#1literalFractiondigits4> a sht:RepresentationTest ;
+    mf:name "1literalFractiondigits4" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalFractiondigits4.shex> ;
+    sx:json <1literalFractiondigits4.json> ;
+    sx:ttl <1literalFractiondigits4.ttl> ;
+    .
+
+<#1literalTotaldigits5> a sht:RepresentationTest ;
+    mf:name "1literalTotaldigits5" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalTotaldigits5.shex> ;
+    sx:json <1literalTotaldigits5.json> ;
+    sx:ttl <1literalTotaldigits5.ttl> ;
+    .
+
+<#1literalMinexclusiveINTEGER> a sht:RepresentationTest ;
+    mf:name "1literalMinexclusiveINTEGER" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalMinexclusiveINTEGER.shex> ;
+    sx:json <1literalMinexclusiveINTEGER.json> ;
+    sx:ttl <1literalMinexclusiveINTEGER.ttl> ;
+    .
+
+<#1literalMininclusiveINTEGER> a sht:RepresentationTest ;
+    mf:name "1literalMininclusiveINTEGER" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalMininclusiveINTEGER.shex> ;
+    sx:json <1literalMininclusiveINTEGER.json> ;
+    sx:ttl <1literalMininclusiveINTEGER.ttl> ;
+    .
+
+<#1literalMaxexclusiveINTEGER> a sht:RepresentationTest ;
+    mf:name "1literalMaxexclusiveINTEGER" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalMaxexclusiveINTEGER.shex> ;
+    sx:json <1literalMaxexclusiveINTEGER.json> ;
+    sx:ttl <1literalMaxexclusiveINTEGER.ttl> ;
+    .
+
+<#1literalMaxinclusiveINTEGER> a sht:RepresentationTest ;
+    mf:name "1literalMaxinclusiveINTEGER" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalMaxinclusiveINTEGER.shex> ;
+    sx:json <1literalMaxinclusiveINTEGER.json> ;
+    sx:ttl <1literalMaxinclusiveINTEGER.ttl> ;
+    .
+
+<#1literalTotaldigits6> a sht:RepresentationTest ;
+    mf:name "1literalTotaldigits6" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalTotaldigits6.shex> ;
+    sx:json <1literalTotaldigits6.json> ;
+    sx:ttl <1literalTotaldigits6.ttl> ;
+    .
+
+<#1literalTotaldigits2> a sht:RepresentationTest ;
+    mf:name "1literalTotaldigits2" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalTotaldigits2.shex> ;
+    sx:json <1literalTotaldigits2.json> ;
+    sx:ttl <1literalTotaldigits2.ttl> ;
+    .
+
+<#1floatMininclusiveINTEGER> a sht:RepresentationTest ;
+    mf:name "1floatMininclusiveINTEGER" ;
+    mf:status mf:Approved ;
+    sx:shex <1floatMininclusiveINTEGER.shex> ;
+    sx:json <1floatMininclusiveINTEGER.json> ;
+    sx:ttl <1floatMininclusiveINTEGER.ttl> ;
+    .
+
+<#1integerMininclusiveINTEGER> a sht:RepresentationTest ;
+    mf:name "1integerMininclusiveINTEGER" ;
+    mf:status mf:Approved ;
+    sx:shex <1integerMininclusiveINTEGER.shex> ;
+    sx:json <1integerMininclusiveINTEGER.json> ;
+    sx:ttl <1integerMininclusiveINTEGER.ttl> ;
+    .
+
+<#1floatMininclusiveINTEGERLead> a sht:RepresentationTest ;
+    mf:name "1floatMininclusiveINTEGERLead" ;
+    mf:status mf:Approved ;
+    sx:shex <1floatMininclusiveINTEGERLead.shex> ;
+    sx:json <1floatMininclusiveINTEGERLead.json> ;
+    sx:ttl <1floatMininclusiveINTEGERLead.ttl> ;
+    .
+
+<#1integerMininclusiveINTEGERLead> a sht:RepresentationTest ;
+    mf:name "1integerMininclusiveINTEGERLead" ;
+    mf:status mf:Approved ;
+    sx:shex <1integerMininclusiveINTEGERLead.shex> ;
+    sx:json <1integerMininclusiveINTEGERLead.json> ;
+    sx:ttl <1integerMininclusiveINTEGERLead.ttl> ;
+    .
+
+<#1integerMininclusiveDECIMAL> a sht:RepresentationTest ;
+    mf:name "1integerMininclusiveDECIMAL" ;
+    mf:status mf:Approved ;
+    sx:shex <1integerMininclusiveDECIMAL.shex> ;
+    sx:json <1integerMininclusiveDECIMAL.json> ;
+    sx:ttl <1integerMininclusiveDECIMAL.ttl> ;
+    .
+
+<#1integerMininclusiveDECIMALLeadTrail> a sht:RepresentationTest ;
+    mf:name "1integerMininclusiveDECIMALLeadTrail" ;
+    mf:status mf:Approved ;
+    sx:shex <1integerMininclusiveDECIMALLeadTrail.shex> ;
+    sx:json <1integerMininclusiveDECIMALLeadTrail.json> ;
+    sx:ttl <1integerMininclusiveDECIMALLeadTrail.ttl> ;
+    .
+
+<#1integerMininclusiveDECIMALint> a sht:RepresentationTest ;
+    mf:name "1integerMininclusiveDECIMALint" ;
+    mf:status mf:Approved ;
+    sx:shex <1integerMininclusiveDECIMALint.shex> ;
+    sx:json <1integerMininclusiveDECIMALint.json> ;
+    sx:ttl <1integerMininclusiveDECIMALint.ttl> ;
+    .
+
+<#1integerMininclusiveDECIMALintLeadTrail> a sht:RepresentationTest ;
+    mf:name "1integerMininclusiveDECIMALintLeadTrail" ;
+    mf:status mf:Approved ;
+    sx:shex <1integerMininclusiveDECIMALintLeadTrail.shex> ;
+    sx:json <1integerMininclusiveDECIMALintLeadTrail.json> ;
+    sx:ttl <1integerMininclusiveDECIMALintLeadTrail.ttl> ;
+    .
+
+<#1integerMininclusiveDOUBLE> a sht:RepresentationTest ;
+    mf:name "1integerMininclusiveDOUBLE" ;
+    mf:status mf:Approved ;
+    sx:shex <1integerMininclusiveDOUBLE.shex> ;
+    sx:json <1integerMininclusiveDOUBLE.json> ;
+    sx:ttl <1integerMininclusiveDOUBLE.ttl> ;
+    .
+
+<#1integerMininclusiveDOUBLELeadTrail> a sht:RepresentationTest ;
+    mf:name "1integerMininclusiveDOUBLELeadTrail" ;
+    mf:status mf:Approved ;
+    sx:shex <1integerMininclusiveDOUBLELeadTrail.shex> ;
+    sx:json <1integerMininclusiveDOUBLELeadTrail.json> ;
+    sx:ttl <1integerMininclusiveDOUBLELeadTrail.ttl> ;
+    .
+
+<#1integerMininclusiveDOUBLEint> a sht:RepresentationTest ;
+    mf:name "1integerMininclusiveDOUBLEint" ;
+    mf:status mf:Approved ;
+    sx:shex <1integerMininclusiveDOUBLEint.shex> ;
+    sx:json <1integerMininclusiveDOUBLEint.json> ;
+    sx:ttl <1integerMininclusiveDOUBLEint.ttl> ;
+    .
+
+<#1integerMininclusiveDOUBLEintLeadTrail> a sht:RepresentationTest ;
+    mf:name "1integerMininclusiveDOUBLEintLeadTrail" ;
+    mf:status mf:Approved ;
+    sx:shex <1integerMininclusiveDOUBLEintLeadTrail.shex> ;
+    sx:json <1integerMininclusiveDOUBLEintLeadTrail.json> ;
+    sx:ttl <1integerMininclusiveDOUBLEintLeadTrail.ttl> ;
+    .
+
+<#1decimalMininclusiveINTEGER> a sht:RepresentationTest ;
+    mf:name "1decimalMininclusiveINTEGER" ;
+    mf:status mf:Approved ;
+    sx:shex <1decimalMininclusiveINTEGER.shex> ;
+    sx:json <1decimalMininclusiveINTEGER.json> ;
+    sx:ttl <1decimalMininclusiveINTEGER.ttl> ;
+    .
+
+<#1decimalMininclusiveINTEGERLead> a sht:RepresentationTest ;
+    mf:name "1decimalMininclusiveINTEGERLead" ;
+    mf:status mf:Approved ;
+    sx:shex <1decimalMininclusiveINTEGERLead.shex> ;
+    sx:json <1decimalMininclusiveINTEGERLead.json> ;
+    sx:ttl <1decimalMininclusiveINTEGERLead.ttl> ;
+    .
+
+<#1decimalMininclusiveDECIMAL> a sht:RepresentationTest ;
+    mf:name "1decimalMininclusiveDECIMAL" ;
+    mf:status mf:Approved ;
+    sx:shex <1decimalMininclusiveDECIMAL.shex> ;
+    sx:json <1decimalMininclusiveDECIMAL.json> ;
+    sx:ttl <1decimalMininclusiveDECIMAL.ttl> ;
+    .
+
+<#1decimalMininclusiveDECIMALLeadTrail> a sht:RepresentationTest ;
+    mf:name "1decimalMininclusiveDECIMALLeadTrail" ;
+    mf:status mf:Approved ;
+    sx:shex <1decimalMininclusiveDECIMALLeadTrail.shex> ;
+    sx:json <1decimalMininclusiveDECIMALLeadTrail.json> ;
+    sx:ttl <1decimalMininclusiveDECIMALLeadTrail.ttl> ;
+    .
+
+<#1decimalMininclusiveDECIMALintLeadTrail> a sht:RepresentationTest ;
+    mf:name "1decimalMininclusiveDECIMALintLeadTrail" ;
+    mf:status mf:Approved ;
+    sx:shex <1decimalMininclusiveDECIMALintLeadTrail.shex> ;
+    sx:json <1decimalMininclusiveDECIMALintLeadTrail.json> ;
+    sx:ttl <1decimalMininclusiveDECIMALintLeadTrail.ttl> ;
+    .
+
+<#1decimalMininclusiveDOUBLE> a sht:RepresentationTest ;
+    mf:name "1decimalMininclusiveDOUBLE" ;
+    mf:status mf:Approved ;
+    sx:shex <1decimalMininclusiveDOUBLE.shex> ;
+    sx:json <1decimalMininclusiveDOUBLE.json> ;
+    sx:ttl <1decimalMininclusiveDOUBLE.ttl> ;
+    .
+
+<#1decimalMininclusiveDOUBLELeadTrail> a sht:RepresentationTest ;
+    mf:name "1decimalMininclusiveDOUBLELeadTrail" ;
+    mf:status mf:Approved ;
+    sx:shex <1decimalMininclusiveDOUBLELeadTrail.shex> ;
+    sx:json <1decimalMininclusiveDOUBLELeadTrail.json> ;
+    sx:ttl <1decimalMininclusiveDOUBLELeadTrail.ttl> ;
+    .
+
+<#1decimalMininclusiveDOUBLEintLeadTrail> a sht:RepresentationTest ;
+    mf:name "1decimalMininclusiveDOUBLEintLeadTrail" ;
+    mf:status mf:Approved ;
+    sx:shex <1decimalMininclusiveDOUBLEintLeadTrail.shex> ;
+    sx:json <1decimalMininclusiveDOUBLEintLeadTrail.json> ;
+    sx:ttl <1decimalMininclusiveDOUBLEintLeadTrail.ttl> ;
+    .
+
+<#1floatMininclusiveDECIMAL> a sht:RepresentationTest ;
+    mf:name "1floatMininclusiveDECIMAL" ;
+    mf:status mf:Approved ;
+    sx:shex <1floatMininclusiveDECIMAL.shex> ;
+    sx:json <1floatMininclusiveDECIMAL.json> ;
+    sx:ttl <1floatMininclusiveDECIMAL.ttl> ;
+    .
+
+<#1floatMininclusiveDECIMALLeadTrail> a sht:RepresentationTest ;
+    mf:name "1floatMininclusiveDECIMALLeadTrail" ;
+    mf:status mf:Approved ;
+    sx:shex <1floatMininclusiveDECIMALLeadTrail.shex> ;
+    sx:json <1floatMininclusiveDECIMALLeadTrail.json> ;
+    sx:ttl <1floatMininclusiveDECIMALLeadTrail.ttl> ;
+    .
+
+<#1floatMininclusiveDECIMALintLeadTrail> a sht:RepresentationTest ;
+    mf:name "1floatMininclusiveDECIMALintLeadTrail" ;
+    mf:status mf:Approved ;
+    sx:shex <1floatMininclusiveDECIMALintLeadTrail.shex> ;
+    sx:json <1floatMininclusiveDECIMALintLeadTrail.json> ;
+    sx:ttl <1floatMininclusiveDECIMALintLeadTrail.ttl> ;
+    .
+
+<#1floatMininclusiveDOUBLE> a sht:RepresentationTest ;
+    mf:name "1floatMininclusiveDOUBLE" ;
+    mf:status mf:Approved ;
+    sx:shex <1floatMininclusiveDOUBLE.shex> ;
+    sx:json <1floatMininclusiveDOUBLE.json> ;
+    sx:ttl <1floatMininclusiveDOUBLE.ttl> ;
+    .
+
+<#1floatMininclusiveDOUBLELeadTrail> a sht:RepresentationTest ;
+    mf:name "1floatMininclusiveDOUBLELeadTrail" ;
+    mf:status mf:Approved ;
+    sx:shex <1floatMininclusiveDOUBLELeadTrail.shex> ;
+    sx:json <1floatMininclusiveDOUBLELeadTrail.json> ;
+    sx:ttl <1floatMininclusiveDOUBLELeadTrail.ttl> ;
+    .
+
+<#1floatMininclusiveDOUBLEintLeadTrail> a sht:RepresentationTest ;
+    mf:name "1floatMininclusiveDOUBLEintLeadTrail" ;
+    mf:status mf:Approved ;
+    sx:shex <1floatMininclusiveDOUBLEintLeadTrail.shex> ;
+    sx:json <1floatMininclusiveDOUBLEintLeadTrail.json> ;
+    sx:ttl <1floatMininclusiveDOUBLEintLeadTrail.ttl> ;
+    .
+
+<#1doubleMininclusiveINTEGERLead> a sht:RepresentationTest ;
+    mf:name "1doubleMininclusiveINTEGERLead" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMininclusiveINTEGERLead.shex> ;
+    sx:json <1doubleMininclusiveINTEGERLead.json> ;
+    sx:ttl <1doubleMininclusiveINTEGERLead.ttl> ;
+    .
+
+<#1doubleMininclusiveDECIMAL> a sht:RepresentationTest ;
+    mf:name "1doubleMininclusiveDECIMAL" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMininclusiveDECIMAL.shex> ;
+    sx:json <1doubleMininclusiveDECIMAL.json> ;
+    sx:ttl <1doubleMininclusiveDECIMAL.ttl> ;
+    .
+
+<#1doubleMininclusiveDECIMALLeadTrail> a sht:RepresentationTest ;
+    mf:name "1doubleMininclusiveDECIMALLeadTrail" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMininclusiveDECIMALLeadTrail.shex> ;
+    sx:json <1doubleMininclusiveDECIMALLeadTrail.json> ;
+    sx:ttl <1doubleMininclusiveDECIMALLeadTrail.ttl> ;
+    .
+
+<#1doubleMininclusiveDECIMALintLeadTrail> a sht:RepresentationTest ;
+    mf:name "1doubleMininclusiveDECIMALintLeadTrail" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMininclusiveDECIMALintLeadTrail.shex> ;
+    sx:json <1doubleMininclusiveDECIMALintLeadTrail.json> ;
+    sx:ttl <1doubleMininclusiveDECIMALintLeadTrail.ttl> ;
+    .
+
+<#1doubleMininclusiveDOUBLE> a sht:RepresentationTest ;
+    mf:name "1doubleMininclusiveDOUBLE" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMininclusiveDOUBLE.shex> ;
+    sx:json <1doubleMininclusiveDOUBLE.json> ;
+    sx:ttl <1doubleMininclusiveDOUBLE.ttl> ;
+    .
+
+<#1doubleMininclusiveDOUBLELeadTrail> a sht:RepresentationTest ;
+    mf:name "1doubleMininclusiveDOUBLELeadTrail" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMininclusiveDOUBLELeadTrail.shex> ;
+    sx:json <1doubleMininclusiveDOUBLELeadTrail.json> ;
+    sx:ttl <1doubleMininclusiveDOUBLELeadTrail.ttl> ;
+    .
+
+<#1doubleMininclusiveDOUBLEintLeadTrail> a sht:RepresentationTest ;
+    mf:name "1doubleMininclusiveDOUBLEintLeadTrail" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMininclusiveDOUBLEintLeadTrail.shex> ;
+    sx:json <1doubleMininclusiveDOUBLEintLeadTrail.json> ;
+    sx:ttl <1doubleMininclusiveDOUBLEintLeadTrail.ttl> ;
+    .
+
+<#1integerMinexclusiveINTEGER> a sht:RepresentationTest ;
+    mf:name "1integerMinexclusiveINTEGER" ;
+    mf:status mf:Approved ;
+    sx:shex <1integerMinexclusiveINTEGER.shex> ;
+    sx:json <1integerMinexclusiveINTEGER.json> ;
+    sx:ttl <1integerMinexclusiveINTEGER.ttl> ;
+    .
+
+<#1integerMinexclusiveDECIMALint> a sht:RepresentationTest ;
+    mf:name "1integerMinexclusiveDECIMALint" ;
+    mf:status mf:Approved ;
+    sx:shex <1integerMinexclusiveDECIMALint.shex> ;
+    sx:json <1integerMinexclusiveDECIMALint.json> ;
+    sx:ttl <1integerMinexclusiveDECIMALint.ttl> ;
+    .
+
+<#1integerMinexclusiveDOUBLEint> a sht:RepresentationTest ;
+    mf:name "1integerMinexclusiveDOUBLEint" ;
+    mf:status mf:Approved ;
+    sx:shex <1integerMinexclusiveDOUBLEint.shex> ;
+    sx:json <1integerMinexclusiveDOUBLEint.json> ;
+    sx:ttl <1integerMinexclusiveDOUBLEint.ttl> ;
+    .
+
+<#1decimalMinexclusiveINTEGER> a sht:RepresentationTest ;
+    mf:name "1decimalMinexclusiveINTEGER" ;
+    mf:status mf:Approved ;
+    sx:shex <1decimalMinexclusiveINTEGER.shex> ;
+    sx:json <1decimalMinexclusiveINTEGER.json> ;
+    sx:ttl <1decimalMinexclusiveINTEGER.ttl> ;
+    .
+
+<#1decimalMinexclusiveDECIMAL> a sht:RepresentationTest ;
+    mf:name "1decimalMinexclusiveDECIMAL" ;
+    mf:status mf:Approved ;
+    sx:shex <1decimalMinexclusiveDECIMAL.shex> ;
+    sx:json <1decimalMinexclusiveDECIMAL.json> ;
+    sx:ttl <1decimalMinexclusiveDECIMAL.ttl> ;
+    .
+
+<#1decimalMinexclusiveDOUBLE> a sht:RepresentationTest ;
+    mf:name "1decimalMinexclusiveDOUBLE" ;
+    mf:status mf:Approved ;
+    sx:shex <1decimalMinexclusiveDOUBLE.shex> ;
+    sx:json <1decimalMinexclusiveDOUBLE.json> ;
+    sx:ttl <1decimalMinexclusiveDOUBLE.ttl> ;
+    .
+
+<#1floatMinexclusiveINTEGER> a sht:RepresentationTest ;
+    mf:name "1floatMinexclusiveINTEGER" ;
+    mf:status mf:Approved ;
+    sx:shex <1floatMinexclusiveINTEGER.shex> ;
+    sx:json <1floatMinexclusiveINTEGER.json> ;
+    sx:ttl <1floatMinexclusiveINTEGER.ttl> ;
+    .
+
+<#1floatMinexclusiveDECIMAL> a sht:RepresentationTest ;
+    mf:name "1floatMinexclusiveDECIMAL" ;
+    mf:status mf:Approved ;
+    sx:shex <1floatMinexclusiveDECIMAL.shex> ;
+    sx:json <1floatMinexclusiveDECIMAL.json> ;
+    sx:ttl <1floatMinexclusiveDECIMAL.ttl> ;
+    .
+
+<#1floatMinexclusiveDOUBLE> a sht:RepresentationTest ;
+    mf:name "1floatMinexclusiveDOUBLE" ;
+    mf:status mf:Approved ;
+    sx:shex <1floatMinexclusiveDOUBLE.shex> ;
+    sx:json <1floatMinexclusiveDOUBLE.json> ;
+    sx:ttl <1floatMinexclusiveDOUBLE.ttl> ;
+    .
+
+<#1doubleMinexclusiveINTEGER> a sht:RepresentationTest ;
+    mf:name "1doubleMinexclusiveINTEGER" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMinexclusiveINTEGER.shex> ;
+    sx:json <1doubleMinexclusiveINTEGER.json> ;
+    sx:ttl <1doubleMinexclusiveINTEGER.ttl> ;
+    .
+
+<#1doubleMinexclusiveDECIMAL> a sht:RepresentationTest ;
+    mf:name "1doubleMinexclusiveDECIMAL" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMinexclusiveDECIMAL.shex> ;
+    sx:json <1doubleMinexclusiveDECIMAL.json> ;
+    sx:ttl <1doubleMinexclusiveDECIMAL.ttl> ;
+    .
+
+<#1doubleMinexclusiveDOUBLE> a sht:RepresentationTest ;
+    mf:name "1doubleMinexclusiveDOUBLE" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMinexclusiveDOUBLE.shex> ;
+    sx:json <1doubleMinexclusiveDOUBLE.json> ;
+    sx:ttl <1doubleMinexclusiveDOUBLE.ttl> ;
+    .
+
+<#1integerMaxinclusiveINTEGER> a sht:RepresentationTest ;
+    mf:name "1integerMaxinclusiveINTEGER" ;
+    mf:status mf:Approved ;
+    sx:shex <1integerMaxinclusiveINTEGER.shex> ;
+    sx:json <1integerMaxinclusiveINTEGER.json> ;
+    sx:ttl <1integerMaxinclusiveINTEGER.ttl> ;
+    .
+
+<#1integerMaxinclusiveDECIMALint> a sht:RepresentationTest ;
+    mf:name "1integerMaxinclusiveDECIMALint" ;
+    mf:status mf:Approved ;
+    sx:shex <1integerMaxinclusiveDECIMALint.shex> ;
+    sx:json <1integerMaxinclusiveDECIMALint.json> ;
+    sx:ttl <1integerMaxinclusiveDECIMALint.ttl> ;
+    .
+
+<#1integerMaxinclusiveDOUBLEint> a sht:RepresentationTest ;
+    mf:name "1integerMaxinclusiveDOUBLEint" ;
+    mf:status mf:Approved ;
+    sx:shex <1integerMaxinclusiveDOUBLEint.shex> ;
+    sx:json <1integerMaxinclusiveDOUBLEint.json> ;
+    sx:ttl <1integerMaxinclusiveDOUBLEint.ttl> ;
+    .
+
+<#1decimalMaxinclusiveINTEGER> a sht:RepresentationTest ;
+    mf:name "1decimalMaxinclusiveINTEGER" ;
+    mf:status mf:Approved ;
+    sx:shex <1decimalMaxinclusiveINTEGER.shex> ;
+    sx:json <1decimalMaxinclusiveINTEGER.json> ;
+    sx:ttl <1decimalMaxinclusiveINTEGER.ttl> ;
+    .
+
+<#1decimalMaxinclusiveDECIMAL> a sht:RepresentationTest ;
+    mf:name "1decimalMaxinclusiveDECIMAL" ;
+    mf:status mf:Approved ;
+    sx:shex <1decimalMaxinclusiveDECIMAL.shex> ;
+    sx:json <1decimalMaxinclusiveDECIMAL.json> ;
+    sx:ttl <1decimalMaxinclusiveDECIMAL.ttl> ;
+    .
+
+<#1decimalMaxinclusiveDOUBLE> a sht:RepresentationTest ;
+    mf:name "1decimalMaxinclusiveDOUBLE" ;
+    mf:status mf:Approved ;
+    sx:shex <1decimalMaxinclusiveDOUBLE.shex> ;
+    sx:json <1decimalMaxinclusiveDOUBLE.json> ;
+    sx:ttl <1decimalMaxinclusiveDOUBLE.ttl> ;
+    .
+
+<#1floatMaxinclusiveINTEGER> a sht:RepresentationTest ;
+    mf:name "1floatMaxinclusiveINTEGER" ;
+    mf:status mf:Approved ;
+    sx:shex <1floatMaxinclusiveINTEGER.shex> ;
+    sx:json <1floatMaxinclusiveINTEGER.json> ;
+    sx:ttl <1floatMaxinclusiveINTEGER.ttl> ;
+    .
+
+<#1floatMaxinclusiveDECIMAL> a sht:RepresentationTest ;
+    mf:name "1floatMaxinclusiveDECIMAL" ;
+    mf:status mf:Approved ;
+    sx:shex <1floatMaxinclusiveDECIMAL.shex> ;
+    sx:json <1floatMaxinclusiveDECIMAL.json> ;
+    sx:ttl <1floatMaxinclusiveDECIMAL.ttl> ;
+    .
+
+<#1floatMaxinclusiveDOUBLE> a sht:RepresentationTest ;
+    mf:name "1floatMaxinclusiveDOUBLE" ;
+    mf:status mf:Approved ;
+    sx:shex <1floatMaxinclusiveDOUBLE.shex> ;
+    sx:json <1floatMaxinclusiveDOUBLE.json> ;
+    sx:ttl <1floatMaxinclusiveDOUBLE.ttl> ;
+    .
+
+<#1doubleMaxinclusiveINTEGER> a sht:RepresentationTest ;
+    mf:name "1doubleMaxinclusiveINTEGER" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMaxinclusiveINTEGER.shex> ;
+    sx:json <1doubleMaxinclusiveINTEGER.json> ;
+    sx:ttl <1doubleMaxinclusiveINTEGER.ttl> ;
+    .
+
+<#1doubleMaxinclusiveDECIMAL> a sht:RepresentationTest ;
+    mf:name "1doubleMaxinclusiveDECIMAL" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMaxinclusiveDECIMAL.shex> ;
+    sx:json <1doubleMaxinclusiveDECIMAL.json> ;
+    sx:ttl <1doubleMaxinclusiveDECIMAL.ttl> ;
+    .
+
+<#1doubleMaxinclusiveDOUBLE> a sht:RepresentationTest ;
+    mf:name "1doubleMaxinclusiveDOUBLE" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMaxinclusiveDOUBLE.shex> ;
+    sx:json <1doubleMaxinclusiveDOUBLE.json> ;
+    sx:ttl <1doubleMaxinclusiveDOUBLE.ttl> ;
+    .
+
+<#1integerMaxexclusiveINTEGER> a sht:RepresentationTest ;
+    mf:name "1integerMaxexclusiveINTEGER" ;
+    mf:status mf:Approved ;
+    sx:shex <1integerMaxexclusiveINTEGER.shex> ;
+    sx:json <1integerMaxexclusiveINTEGER.json> ;
+    sx:ttl <1integerMaxexclusiveINTEGER.ttl> ;
+    .
+
+<#1integerMaxexclusiveDECIMALint> a sht:RepresentationTest ;
+    mf:name "1integerMaxexclusiveDECIMALint" ;
+    mf:status mf:Approved ;
+    sx:shex <1integerMaxexclusiveDECIMALint.shex> ;
+    sx:json <1integerMaxexclusiveDECIMALint.json> ;
+    sx:ttl <1integerMaxexclusiveDECIMALint.ttl> ;
+    .
+
+<#1integerMaxexclusiveDOUBLEint> a sht:RepresentationTest ;
+    mf:name "1integerMaxexclusiveDOUBLEint" ;
+    mf:status mf:Approved ;
+    sx:shex <1integerMaxexclusiveDOUBLEint.shex> ;
+    sx:json <1integerMaxexclusiveDOUBLEint.json> ;
+    sx:ttl <1integerMaxexclusiveDOUBLEint.ttl> ;
+    .
+
+<#1decimalMaxexclusiveINTEGER> a sht:RepresentationTest ;
+    mf:name "1decimalMaxexclusiveINTEGER" ;
+    mf:status mf:Approved ;
+    sx:shex <1decimalMaxexclusiveINTEGER.shex> ;
+    sx:json <1decimalMaxexclusiveINTEGER.json> ;
+    sx:ttl <1decimalMaxexclusiveINTEGER.ttl> ;
+    .
+
+<#1decimalMaxexclusiveDECIMAL> a sht:RepresentationTest ;
+    mf:name "1decimalMaxexclusiveDECIMAL" ;
+    mf:status mf:Approved ;
+    sx:shex <1decimalMaxexclusiveDECIMAL.shex> ;
+    sx:json <1decimalMaxexclusiveDECIMAL.json> ;
+    sx:ttl <1decimalMaxexclusiveDECIMAL.ttl> ;
+    .
+
+<#1decimalMaxexclusiveDOUBLE> a sht:RepresentationTest ;
+    mf:name "1decimalMaxexclusiveDOUBLE" ;
+    mf:status mf:Approved ;
+    sx:shex <1decimalMaxexclusiveDOUBLE.shex> ;
+    sx:json <1decimalMaxexclusiveDOUBLE.json> ;
+    sx:ttl <1decimalMaxexclusiveDOUBLE.ttl> ;
+    .
+
+<#1decimalMaxexclusivexsd-byte> a sht:RepresentationTest ;
+    mf:name "1decimalMaxexclusivexsd-byte" ;
+    mf:status mf:Approved ;
+    sx:shex <1decimalMaxexclusivexsd-byte.shex> ;
+    sx:json <1decimalMaxexclusivexsd-byte.json> ;
+    sx:ttl <1decimalMaxexclusivexsd-byte.ttl> ;
+    .
+
+<#1floatMaxexclusiveINTEGER> a sht:RepresentationTest ;
+    mf:name "1floatMaxexclusiveINTEGER" ;
+    mf:status mf:Approved ;
+    sx:shex <1floatMaxexclusiveINTEGER.shex> ;
+    sx:json <1floatMaxexclusiveINTEGER.json> ;
+    sx:ttl <1floatMaxexclusiveINTEGER.ttl> ;
+    .
+
+<#1floatMaxexclusiveDECIMAL> a sht:RepresentationTest ;
+    mf:name "1floatMaxexclusiveDECIMAL" ;
+    mf:status mf:Approved ;
+    sx:shex <1floatMaxexclusiveDECIMAL.shex> ;
+    sx:json <1floatMaxexclusiveDECIMAL.json> ;
+    sx:ttl <1floatMaxexclusiveDECIMAL.ttl> ;
+    .
+
+<#1floatMaxexclusiveDOUBLE> a sht:RepresentationTest ;
+    mf:name "1floatMaxexclusiveDOUBLE" ;
+    mf:status mf:Approved ;
+    sx:shex <1floatMaxexclusiveDOUBLE.shex> ;
+    sx:json <1floatMaxexclusiveDOUBLE.json> ;
+    sx:ttl <1floatMaxexclusiveDOUBLE.ttl> ;
+    .
+
+<#1doubleMaxexclusiveINTEGER> a sht:RepresentationTest ;
+    mf:name "1doubleMaxexclusiveINTEGER" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMaxexclusiveINTEGER.shex> ;
+    sx:json <1doubleMaxexclusiveINTEGER.json> ;
+    sx:ttl <1doubleMaxexclusiveINTEGER.ttl> ;
+    .
+
+<#1doubleMaxexclusiveINTEGERLead> a sht:RepresentationTest ;
+    mf:name "1doubleMaxexclusiveINTEGERLead" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMaxexclusiveINTEGERLead.shex> ;
+    sx:json <1doubleMaxexclusiveINTEGERLead.json> ;
+    sx:ttl <1doubleMaxexclusiveINTEGERLead.ttl> ;
+    .
+
+<#1doubleMaxexclusiveDECIMAL> a sht:RepresentationTest ;
+    mf:name "1doubleMaxexclusiveDECIMAL" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMaxexclusiveDECIMAL.shex> ;
+    sx:json <1doubleMaxexclusiveDECIMAL.json> ;
+    sx:ttl <1doubleMaxexclusiveDECIMAL.ttl> ;
+    .
+
+<#1doubleMaxexclusiveDECIMALLeadTrail> a sht:RepresentationTest ;
+    mf:name "1doubleMaxexclusiveDECIMALLeadTrail" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMaxexclusiveDECIMALLeadTrail.shex> ;
+    sx:json <1doubleMaxexclusiveDECIMALLeadTrail.json> ;
+    sx:ttl <1doubleMaxexclusiveDECIMALLeadTrail.ttl> ;
+    .
+
+<#1doubleMaxexclusiveDECIMALint> a sht:RepresentationTest ;
+    mf:name "1doubleMaxexclusiveDECIMALint" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMaxexclusiveDECIMALint.shex> ;
+    sx:json <1doubleMaxexclusiveDECIMALint.json> ;
+    sx:ttl <1doubleMaxexclusiveDECIMALint.ttl> ;
+    .
+
+<#1doubleMaxexclusiveDECIMALintLeadTrail> a sht:RepresentationTest ;
+    mf:name "1doubleMaxexclusiveDECIMALintLeadTrail" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMaxexclusiveDECIMALintLeadTrail.shex> ;
+    sx:json <1doubleMaxexclusiveDECIMALintLeadTrail.json> ;
+    sx:ttl <1doubleMaxexclusiveDECIMALintLeadTrail.ttl> ;
+    .
+
+<#1doubleMaxexclusiveDOUBLE> a sht:RepresentationTest ;
+    mf:name "1doubleMaxexclusiveDOUBLE" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMaxexclusiveDOUBLE.shex> ;
+    sx:json <1doubleMaxexclusiveDOUBLE.json> ;
+    sx:ttl <1doubleMaxexclusiveDOUBLE.ttl> ;
+    .
+
+<#1doubleMaxexclusiveDOUBLELeadTrail> a sht:RepresentationTest ;
+    mf:name "1doubleMaxexclusiveDOUBLELeadTrail" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMaxexclusiveDOUBLELeadTrail.shex> ;
+    sx:json <1doubleMaxexclusiveDOUBLELeadTrail.json> ;
+    sx:ttl <1doubleMaxexclusiveDOUBLELeadTrail.ttl> ;
+    .
+
+<#1doubleMaxexclusiveDOUBLEint> a sht:RepresentationTest ;
+    mf:name "1doubleMaxexclusiveDOUBLEint" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMaxexclusiveDOUBLEint.shex> ;
+    sx:json <1doubleMaxexclusiveDOUBLEint.json> ;
+    sx:ttl <1doubleMaxexclusiveDOUBLEint.ttl> ;
+    .
+
+<#1doubleMaxexclusiveDOUBLEintLeadTrail> a sht:RepresentationTest ;
+    mf:name "1doubleMaxexclusiveDOUBLEintLeadTrail" ;
+    mf:status mf:Approved ;
+    sx:shex <1doubleMaxexclusiveDOUBLEintLeadTrail.shex> ;
+    sx:json <1doubleMaxexclusiveDOUBLEintLeadTrail.json> ;
+    sx:ttl <1doubleMaxexclusiveDOUBLEintLeadTrail.ttl> ;
+    .
+
+<#1Length> a sht:RepresentationTest ;
+    mf:name "1Length" ;
+    mf:status mf:Approved ;
+    sx:shex <1Length.shex> ;
+    sx:json <1Length.json> ;
+    sx:ttl <1Length.ttl> ;
+    .
+
+<#1literalLength> a sht:RepresentationTest ;
+    mf:name "1literalLength" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalLength.shex> ;
+    sx:json <1literalLength.json> ;
+    sx:ttl <1literalLength.ttl> ;
+    .
+
+<#1literalLength19> a sht:RepresentationTest ;
+    mf:name "1literalLength19" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalLength19.shex> ;
+    sx:json <1literalLength19.json> ;
+    sx:ttl <1literalLength19.ttl> ;
+    .
+
+<#1iriLength> a sht:RepresentationTest ;
+    mf:name "1iriLength" ;
+    mf:status mf:Approved ;
+    sx:shex <1iriLength.shex> ;
+    sx:json <1iriLength.json> ;
+    sx:ttl <1iriLength.ttl> ;
+    .
+
+<#1iriRefLength1> a sht:RepresentationTest ;
+    mf:name "1iriRefLength1" ;
+    mf:status mf:Approved ;
+    sx:shex <1iriRefLength1.shex> ;
+    sx:json <1iriRefLength1.json> ;
+    sx:ttl <1iriRefLength1.ttl> ;
+    .
+
+<#1bnodeLength> a sht:RepresentationTest ;
+    mf:name "1bnodeLength" ;
+    mf:status mf:Approved ;
+    sx:shex <1bnodeLength.shex> ;
+    sx:json <1bnodeLength.json> ;
+    sx:ttl <1bnodeLength.ttl> ;
+    .
+
+<#1nonliteralLength> a sht:RepresentationTest ;
+    mf:name "1nonliteralLength" ;
+    mf:status mf:Approved ;
+    sx:shex <1nonliteralLength.shex> ;
+    sx:json <1nonliteralLength.json> ;
+    sx:ttl <1nonliteralLength.ttl> ;
+    .
+
+<#1literalMinlength> a sht:RepresentationTest ;
+    mf:name "1literalMinlength" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalMinlength.shex> ;
+    sx:json <1literalMinlength.json> ;
+    sx:ttl <1literalMinlength.ttl> ;
+    .
+
+<#1iriMinlength> a sht:RepresentationTest ;
+    mf:name "1iriMinlength" ;
+    mf:status mf:Approved ;
+    sx:shex <1iriMinlength.shex> ;
+    sx:json <1iriMinlength.json> ;
+    sx:ttl <1iriMinlength.ttl> ;
+    .
+
+<#1bnodeMinlength> a sht:RepresentationTest ;
+    mf:name "1bnodeMinlength" ;
+    mf:status mf:Approved ;
+    sx:shex <1bnodeMinlength.shex> ;
+    sx:json <1bnodeMinlength.json> ;
+    sx:ttl <1bnodeMinlength.ttl> ;
+    .
+
+<#1nonliteralMinlength> a sht:RepresentationTest ;
+    mf:name "1nonliteralMinlength" ;
+    mf:status mf:Approved ;
+    sx:shex <1nonliteralMinlength.shex> ;
+    sx:json <1nonliteralMinlength.json> ;
+    sx:ttl <1nonliteralMinlength.ttl> ;
+    .
+
+<#1literalMaxlength> a sht:RepresentationTest ;
+    mf:name "1literalMaxlength" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalMaxlength.shex> ;
+    sx:json <1literalMaxlength.json> ;
+    sx:ttl <1literalMaxlength.ttl> ;
+    .
+
+<#1iriMaxlength> a sht:RepresentationTest ;
+    mf:name "1iriMaxlength" ;
+    mf:status mf:Approved ;
+    sx:shex <1iriMaxlength.shex> ;
+    sx:json <1iriMaxlength.json> ;
+    sx:ttl <1iriMaxlength.ttl> ;
+    .
+
+<#1bnodeMaxlength> a sht:RepresentationTest ;
+    mf:name "1bnodeMaxlength" ;
+    mf:status mf:Approved ;
+    sx:shex <1bnodeMaxlength.shex> ;
+    sx:json <1bnodeMaxlength.json> ;
+    sx:ttl <1bnodeMaxlength.ttl> ;
+    .
+
+<#1nonliteralMaxlength> a sht:RepresentationTest ;
+    mf:name "1nonliteralMaxlength" ;
+    mf:status mf:Approved ;
+    sx:shex <1nonliteralMaxlength.shex> ;
+    sx:json <1nonliteralMaxlength.json> ;
+    sx:ttl <1nonliteralMaxlength.ttl> ;
+    .
+
+<#1literalPattern> a sht:RepresentationTest ;
+    mf:name "1literalPattern" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalPattern.shex> ;
+    sx:json <1literalPattern.json> ;
+    sx:ttl <1literalPattern.ttl> ;
+    .
+
+<#1literalPattern_with_all_meta> a sht:RepresentationTest ;
+    mf:name "1literalPattern_with_all_meta" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalPattern_with_all_meta.shex> ;
+    sx:json <1literalPattern_with_all_meta.json> ;
+    sx:ttl <1literalPattern_with_all_meta.ttl> ;
+    .
+
+<#1literalPattern_with_all_controls> a sht:RepresentationTest ;
+    mf:name "1literalPattern_with_all_controls" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalPattern_with_all_controls.shex> ;
+    sx:json <1literalPattern_with_all_controls.json> ;
+    sx:ttl <1literalPattern_with_all_controls.ttl> ;
+    .
+
+<#1literalPattern_with_all_punctuation> a sht:RepresentationTest ;
+    mf:name "1literalPattern_with_all_punctuation" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalPattern_with_all_punctuation.shex> ;
+    sx:json <1literalPattern_with_all_punctuation.json> ;
+    sx:ttl <1literalPattern_with_all_punctuation.ttl> ;
+    .
+
+<#1literalPattern_with_ascii_boundaries> a sht:RepresentationTest ;
+    mf:name "1literalPattern_with_ascii_boundaries" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalPattern_with_ascii_boundaries.shex> ;
+    sx:json <1literalPattern_with_ascii_boundaries.json> ;
+    sx:ttl <1literalPattern_with_ascii_boundaries.ttl> ;
+    .
+
+<#1literalPattern_with_UTF8_boundaries> a sht:RepresentationTest ;
+    mf:name "1literalPattern_with_UTF8_boundaries" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalPattern_with_UTF8_boundaries.shex> ;
+    sx:json <1literalPattern_with_UTF8_boundaries.json> ;
+    sx:ttl <1literalPattern_with_UTF8_boundaries.ttl> ;
+    .
+
+<#1literalPattern_with_REGEXP_escapes> a sht:RepresentationTest ;
+    mf:name "1literalPattern_with_REGEXP_escapes" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalPattern_with_REGEXP_escapes.shex> ;
+    sx:json <1literalPattern_with_REGEXP_escapes.json> ;
+    sx:ttl <1literalPattern_with_REGEXP_escapes.ttl> ;
+    .
+
+<#1literalPattern_with_REGEXP_escapes_bare> a sht:RepresentationTest ;
+    mf:name "1literalPattern_with_REGEXP_escapes_bare" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalPattern_with_REGEXP_escapes_bare.shex> ;
+    sx:json <1literalPattern_with_REGEXP_escapes_bare.json> ;
+    sx:ttl <1literalPattern_with_REGEXP_escapes_bare.ttl> ;
+    .
+
+<#1literalPattern_with_REGEXP_escapes_escaped> a sht:RepresentationTest ;
+    mf:name "1literalPattern_with_REGEXP_escapes_escaped" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalPattern_with_REGEXP_escapes_escaped.shex> ;
+    sx:json <1literalPattern_with_REGEXP_escapes_escaped.json> ;
+    sx:ttl <1literalPattern_with_REGEXP_escapes_escaped.ttl> ;
+    .
+
+<#1literalPatterni> a sht:RepresentationTest ;
+    mf:name "1literalPatterni" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalPatterni.shex> ;
+    sx:json <1literalPatterni.json> ;
+    sx:ttl <1literalPatterni.ttl> ;
+    .
+
+<#1literalPattern19> a sht:RepresentationTest ;
+    mf:name "1literalPattern19" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalPattern19.shex> ;
+    sx:json <1literalPattern19.json> ;
+    sx:ttl <1literalPattern19.ttl> ;
+    .
+
+<#1literalStartPattern> a sht:RepresentationTest ;
+    mf:name "1literalStartPattern" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalStartPattern.shex> ;
+    sx:json <1literalStartPattern.json> ;
+    sx:ttl <1literalStartPattern.ttl> ;
+    .
+
+<#1literalPatternEnd> a sht:RepresentationTest ;
+    mf:name "1literalPatternEnd" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalPatternEnd.shex> ;
+    sx:json <1literalPatternEnd.json> ;
+    sx:ttl <1literalPatternEnd.ttl> ;
+    .
+
+<#1literalStartPatternEnd> a sht:RepresentationTest ;
+    mf:name "1literalStartPatternEnd" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalStartPatternEnd.shex> ;
+    sx:json <1literalStartPatternEnd.json> ;
+    sx:ttl <1literalStartPatternEnd.ttl> ;
+    .
+
+<#1literalPatternDollar> a sht:RepresentationTest ;
+    mf:name "1literalPatternDollar" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalPatternDollar.shex> ;
+    sx:json <1literalPatternDollar.json> ;
+    sx:ttl <1literalPatternDollar.ttl> ;
+    .
+
+<#1literalCarrotPatternDollar> a sht:RepresentationTest ;
+    mf:name "1literalCarrotPatternDollar" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalCarrotPatternDollar.shex> ;
+    sx:json <1literalCarrotPatternDollar.json> ;
+    sx:ttl <1literalCarrotPatternDollar.ttl> ;
+    .
+
+<#1literalPatternabEnd> a sht:RepresentationTest ;
+    mf:name "1literalPatternabEnd" ;
+    mf:status mf:Approved ;
+    sx:shex <1literalPatternabEnd.shex> ;
+    sx:json <1literalPatternabEnd.json> ;
+    sx:ttl <1literalPatternabEnd.ttl> ;
+    .
+
+<#1iriPattern> a sht:RepresentationTest ;
+    mf:name "1iriPattern" ;
+    mf:status mf:Approved ;
+    sx:shex <1iriPattern.shex> ;
+    sx:json <1iriPattern.json> ;
+    sx:ttl <1iriPattern.ttl> ;
+    .
+
+<#1iriPatternbc> a sht:RepresentationTest ;
+    mf:name "1iriPatternbc" ;
+    mf:status mf:Approved ;
+    sx:shex <1iriPatternbc.shex> ;
+    sx:json <1iriPatternbc.json> ;
+    sx:ttl <1iriPatternbc.ttl> ;
+    .
+
+<#1bnodePattern> a sht:RepresentationTest ;
+    mf:name "1bnodePattern" ;
+    mf:status mf:Approved ;
+    sx:shex <1bnodePattern.shex> ;
+    sx:json <1bnodePattern.json> ;
+    sx:ttl <1bnodePattern.ttl> ;
+    .
+
+<#1nonliteralPattern> a sht:RepresentationTest ;
+    mf:name "1nonliteralPattern" ;
+    mf:status mf:Approved ;
+    sx:shex <1nonliteralPattern.shex> ;
+    sx:json <1nonliteralPattern.json> ;
+    sx:ttl <1nonliteralPattern.ttl> ;
+    .
+
+<#1val1dotMinusiri3> a sht:RepresentationTest ;
+    mf:name "1val1dotMinusiri3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1dotMinusiri3.shex> ;
+    sx:json <1val1dotMinusiri3.json> ;
+    sx:ttl <1val1dotMinusiri3.ttl> ;
+    .
+
+<#1val1refvsMinusiri3> a sht:RepresentationTest ;
+    mf:name "1val1refvsMinusiri3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1refvsMinusiri3.shex> ;
+    sx:json <1val1refvsMinusiri3.json> ;
+    sx:ttl <1val1refvsMinusiri3.ttl> ;
+    .
+
+<#1val1dotMinusiriStem3> a sht:RepresentationTest ;
+    mf:name "1val1dotMinusiriStem3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1dotMinusiriStem3.shex> ;
+    sx:json <1val1dotMinusiriStem3.json> ;
+    sx:ttl <1val1dotMinusiriStem3.ttl> ;
+    .
+
+<#1val1iri> a sht:RepresentationTest ;
+    mf:name "1val1iri" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1iri.shex> ;
+    sx:json <1val1iri.json> ;
+    sx:ttl <1val1iri.ttl> ;
+    .
+
+<#1val1iriStem> a sht:RepresentationTest ;
+    mf:name "1val1iriStem" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1iriStem.shex> ;
+    sx:json <1val1iriStem.json> ;
+    sx:ttl <1val1iriStem.ttl> ;
+    .
+
+<#1val1iriStemMinusiri3> a sht:RepresentationTest ;
+    mf:name "1val1iriStemMinusiri3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1iriStemMinusiri3.shex> ;
+    sx:json <1val1iriStemMinusiri3.json> ;
+    sx:ttl <1val1iriStemMinusiri3.ttl> ;
+    .
+
+<#1val1iriStemMinusiriStem3> a sht:RepresentationTest ;
+    mf:name "1val1iriStemMinusiriStem3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1iriStemMinusiriStem3.shex> ;
+    sx:json <1val1iriStemMinusiriStem3.json> ;
+    sx:ttl <1val1iriStemMinusiriStem3.ttl> ;
+    .
+
+<#1val1dotMinusliteral3> a sht:RepresentationTest ;
+    mf:name "1val1dotMinusliteral3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1dotMinusliteral3.shex> ;
+    sx:json <1val1dotMinusliteral3.json> ;
+    sx:ttl <1val1dotMinusliteral3.ttl> ;
+    .
+
+<#1val1dotMinusliteralStem3> a sht:RepresentationTest ;
+    mf:name "1val1dotMinusliteralStem3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1dotMinusliteralStem3.shex> ;
+    sx:json <1val1dotMinusliteralStem3.json> ;
+    sx:ttl <1val1dotMinusliteralStem3.ttl> ;
+    .
+
+<#1val1literal> a sht:RepresentationTest ;
+    mf:name "1val1literal" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1literal.shex> ;
+    sx:json <1val1literal.json> ;
+    sx:ttl <1val1literal.ttl> ;
+    .
+
+<#1val1literalStem> a sht:RepresentationTest ;
+    mf:name "1val1literalStem" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1literalStem.shex> ;
+    sx:json <1val1literalStem.json> ;
+    sx:ttl <1val1literalStem.ttl> ;
+    .
+
+<#1val1literalStemMinusliteral3> a sht:RepresentationTest ;
+    mf:name "1val1literalStemMinusliteral3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1literalStemMinusliteral3.shex> ;
+    sx:json <1val1literalStemMinusliteral3.json> ;
+    sx:ttl <1val1literalStemMinusliteral3.ttl> ;
+    .
+
+<#1val1literalStemMinusliteralStem3> a sht:RepresentationTest ;
+    mf:name "1val1literalStemMinusliteralStem3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1literalStemMinusliteralStem3.shex> ;
+    sx:json <1val1literalStemMinusliteralStem3.json> ;
+    sx:ttl <1val1literalStemMinusliteralStem3.ttl> ;
+    .
+
+<#1val1literaliriStem> a sht:RepresentationTest ;
+    mf:name "1val1literaliriStem" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1literaliriStem.shex> ;
+    sx:json <1val1literaliriStem.json> ;
+    sx:ttl <1val1literaliriStem.ttl> ;
+    .
+
+<#1val1literaliriStemMinusliteraliri3> a sht:RepresentationTest ;
+    mf:name "1val1literaliriStemMinusliteraliri3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1literaliriStemMinusliteraliri3.shex> ;
+    sx:json <1val1literaliriStemMinusliteraliri3.json> ;
+    sx:ttl <1val1literaliriStemMinusliteraliri3.ttl> ;
+    .
+
+<#1val1dotMinuslanguage3> a sht:RepresentationTest ;
+    mf:name "1val1dotMinuslanguage3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1dotMinuslanguage3.shex> ;
+    sx:json <1val1dotMinuslanguage3.json> ;
+    sx:ttl <1val1dotMinuslanguage3.ttl> ;
+    .
+
+<#1val1dotMinuslanguageStem3> a sht:RepresentationTest ;
+    mf:name "1val1dotMinuslanguageStem3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1dotMinuslanguageStem3.shex> ;
+    sx:json <1val1dotMinuslanguageStem3.json> ;
+    sx:ttl <1val1dotMinuslanguageStem3.ttl> ;
+    .
+
+<#1val1language> a sht:RepresentationTest ;
+    mf:name "1val1language" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1language.shex> ;
+    sx:json <1val1language.json> ;
+    sx:ttl <1val1language.ttl> ;
+    .
+
+<#1val1emptylanguageStem> a sht:RepresentationTest ;
+    mf:name "1val1emptylanguageStem" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1emptylanguageStem.shex> ;
+    sx:json <1val1emptylanguageStem.json> ;
+    sx:ttl <1val1emptylanguageStem.ttl> ;
+    .
+
+<#1val1emptylanguageStemMinuslanguage3> a sht:RepresentationTest ;
+    mf:name "1val1emptylanguageStemMinuslanguage3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1emptylanguageStemMinuslanguage3.shex> ;
+    sx:json <1val1emptylanguageStemMinuslanguage3.json> ;
+    sx:ttl <1val1emptylanguageStemMinuslanguage3.ttl> ;
+    .
+
+<#1val1emptylanguageStemMinuslanguageStem3> a sht:RepresentationTest ;
+    mf:name "1val1emptylanguageStemMinuslanguageStem3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1emptylanguageStemMinuslanguageStem3.shex> ;
+    sx:json <1val1emptylanguageStemMinuslanguageStem3.json> ;
+    sx:ttl <1val1emptylanguageStemMinuslanguageStem3.ttl> ;
+    .
+
+<#1val1languageStem> a sht:RepresentationTest ;
+    mf:name "1val1languageStem" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1languageStem.shex> ;
+    sx:json <1val1languageStem.json> ;
+    sx:ttl <1val1languageStem.ttl> ;
+    .
+
+<#1val1languageStemMinuslanguage3> a sht:RepresentationTest ;
+    mf:name "1val1languageStemMinuslanguage3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1languageStemMinuslanguage3.shex> ;
+    sx:json <1val1languageStemMinuslanguage3.json> ;
+    sx:ttl <1val1languageStemMinuslanguage3.ttl> ;
+    .
+
+<#1val1languageStemMinuslanguageStem3> a sht:RepresentationTest ;
+    mf:name "1val1languageStemMinuslanguageStem3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1languageStemMinuslanguageStem3.shex> ;
+    sx:json <1val1languageStemMinuslanguageStem3.json> ;
+    sx:ttl <1val1languageStemMinuslanguageStem3.ttl> ;
+    .
+
+<#1val1literallanguageStem> a sht:RepresentationTest ;
+    mf:name "1val1literallanguageStem" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1literallanguageStem.shex> ;
+    sx:json <1val1literallanguageStem.json> ;
+    sx:ttl <1val1literallanguageStem.ttl> ;
+    .
+
+<#1val1literallanguageStemMinusliterallanguage3> a sht:RepresentationTest ;
+    mf:name "1val1literallanguageStemMinusliterallanguage3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1literallanguageStemMinusliterallanguage3.shex> ;
+    sx:json <1val1literallanguageStemMinusliterallanguage3.json> ;
+    sx:ttl <1val1literallanguageStemMinusliterallanguage3.ttl> ;
+    .
+
+<#1val1literalAtlanguageStem> a sht:RepresentationTest ;
+    mf:name "1val1literalAtlanguageStem" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1literalAtlanguageStem.shex> ;
+    sx:json <1val1literalAtlanguageStem.json> ;
+    sx:ttl <1val1literalAtlanguageStem.ttl> ;
+    .
+
+<#1val1literalAtlanguageStemMinusliteralAtlanguage3> a sht:RepresentationTest ;
+    mf:name "1val1literalAtlanguageStemMinusliteralAtlanguage3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1literalAtlanguageStemMinusliteralAtlanguage3.shex> ;
+    sx:json <1val1literalAtlanguageStemMinusliteralAtlanguage3.json> ;
+    sx:ttl <1val1literalAtlanguageStemMinusliteralAtlanguage3.ttl> ;
+    .
+
+<#2dot> a sht:RepresentationTest ;
+    mf:name "2dot" ;
+    mf:status mf:Approved ;
+    sx:shex <2dot.shex> ;
+    sx:json <2dot.json> ;
+    sx:ttl <2dot.ttl> ;
+    .
+
+<#2dotSemis> a sht:RepresentationTest ;
+    mf:name "2dotSemis" ;
+    mf:status mf:Approved ;
+    mf:sameSemanticsAs <#2dotSemis> ;
+    sx:shex <2dotSemis.shex> ;
+    sx:json <2dotSemis.json> ;
+    sx:ttl <2dotSemis.ttl> ;
+    .
+
+<#open2dotclose> a sht:RepresentationTest ;
+    mf:name "open2dotclose" ;
+    mf:status mf:Approved ;
+    mf:sameSemanticsAs <#2dotSemis> ;
+    sx:shex <open2dotclose.shex> ;
+    sx:json <open2dotclose.json> ;
+    sx:ttl <open2dotclose.ttl> ;
+    .
+
+<#open2dotsemisclose> a sht:RepresentationTest ;
+    mf:name "open2dotsemisclose" ;
+    mf:status mf:Approved ;
+    mf:sameSemanticsAs <#2dotSemis> ;
+    sx:shex <open2dotsemisclose.shex> ;
+    sx:json <open2dotsemisclose.json> ;
+    sx:ttl <open2dotsemisclose.ttl> ;
+    .
+
+<#3Eachdot> a sht:RepresentationTest ;
+    mf:name "3Eachdot" ;
+    mf:status mf:Approved ;
+    sx:shex <3Eachdot.shex> ;
+    sx:json <3Eachdot.json> ;
+    sx:ttl <3Eachdot.ttl> ;
+    .
+
+<#open3Eachdotclose> a sht:RepresentationTest ;
+    mf:name "open3Eachdotclose" ;
+    mf:status mf:Approved ;
+    mf:sameSemanticsAs <#3Eachdot> ;
+    sx:shex <open3Eachdotclose.shex> ;
+    sx:json <open3Eachdotclose.json> ;
+    sx:ttl <open3Eachdotclose.ttl> ;
+    .
+
+<#1dotOne1dot> a sht:RepresentationTest ;
+    mf:name "1dotOne1dot" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotOne1dot.shex> ;
+    sx:json <1dotOne1dot.json> ;
+    sx:ttl <1dotOne1dot.ttl> ;
+    .
+
+<#openopen1dotOr1dotclose> a sht:RepresentationTest ;
+    mf:name "openopen1dotOr1dotclose" ;
+    mf:status mf:Approved ;
+    sx:shex <openopen1dotOr1dotclose.shex> ;
+    sx:json <1dotOne1dot.json> ;
+    sx:ttl <1dotOne1dot.ttl> ;
+    .
+
+<#1dotSemiOne1dotSemi> a sht:RepresentationTest ;
+    mf:name "1dotSemiOne1dotSemi" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotSemiOne1dotSemi.shex> ;
+    sx:json <1dotSemiOne1dotSemi.json> ;
+    sx:ttl <1dotSemiOne1dotSemi.ttl> ;
+    .
+
+<#open1dotOne1dotclose> a sht:RepresentationTest ;
+    mf:name "open1dotOne1dotclose" ;
+    mf:status mf:Approved ;
+    mf:sameSemanticsAs <#1dotSemiOne1dotSemi> ;
+    sx:shex <open1dotOne1dotclose.shex> ;
+    sx:json <open1dotOne1dotclose.json> ;
+    sx:ttl <open1dotOne1dotclose.ttl> ;
+    .
+
+<#open1dotSemiOne1dotSemicloseSemi> a sht:RepresentationTest ;
+    mf:name "open1dotSemiOne1dotSemicloseSemi" ;
+    mf:status mf:Approved ;
+    mf:sameSemanticsAs <#1dotSemiOne1dotSemi> ;
+    sx:shex <open1dotSemiOne1dotSemicloseSemi.shex> ;
+    sx:json <open1dotSemiOne1dotSemicloseSemi.json> ;
+    sx:ttl <open1dotSemiOne1dotSemicloseSemi.ttl> ;
+    .
+
+<#2dotOne1dot> a sht:RepresentationTest ;
+    mf:name "2dotOne1dot" ;
+    mf:status mf:Approved ;
+    sx:shex <2dotOne1dot.shex> ;
+    sx:json <2dotOne1dot.json> ;
+    sx:ttl <2dotOne1dot.ttl> ;
+    .
+
+<#2dotSemiOne1dotSemi> a sht:RepresentationTest ;
+    mf:name "2dotSemiOne1dotSemi" ;
+    mf:status mf:Approved ;
+    mf:sameSemanticsAs <#2dotOne1dot> ;
+    sx:shex <2dotSemiOne1dotSemi.shex> ;
+    sx:json <2dotSemiOne1dotSemi.json> ;
+    sx:ttl <2dotSemiOne1dotSemi.ttl> ;
+    .
+
+<#open2dotOne1dotclose> a sht:RepresentationTest ;
+    mf:name "open2dotOne1dotclose" ;
+    mf:status mf:Approved ;
+    mf:sameSemanticsAs <#2dotOne1dot> ;
+    sx:shex <open2dotOne1dotclose.shex> ;
+    sx:json <open2dotOne1dotclose.json> ;
+    sx:ttl <open2dotOne1dotclose.ttl> ;
+    .
+
+<#open2dotSemisOne1dotSemiclose> a sht:RepresentationTest ;
+    mf:name "open2dotSemisOne1dotSemiclose" ;
+    mf:status mf:Approved ;
+    mf:sameSemanticsAs <#2dotOne1dot> ;
+    sx:shex <open2dotSemisOne1dotSemiclose.shex> ;
+    sx:json <open2dotSemisOne1dotSemiclose.json> ;
+    sx:ttl <open2dotSemisOne1dotSemiclose.ttl> ;
+    .
+
+<#openopen2dotcloseOne1dotclose> a sht:RepresentationTest ;
+    mf:name "openopen2dotcloseOne1dotclose" ;
+    mf:status mf:Approved ;
+    mf:sameSemanticsAs <#2dotOne1dot> ;
+    sx:shex <openopen2dotcloseOne1dotclose.shex> ;
+    sx:json <openopen2dotcloseOne1dotclose.json> ;
+    sx:ttl <openopen2dotcloseOne1dotclose.ttl> ;
+    .
+
+<#openopen2dotSemiscloseOne1dotSemiclose> a sht:RepresentationTest ;
+    mf:name "openopen2dotSemiscloseOne1dotSemiclose" ;
+    mf:status mf:Approved ;
+    mf:sameSemanticsAs <#2dotOne1dot> ;
+    sx:shex <openopen2dotSemiscloseOne1dotSemiclose.shex> ;
+    sx:json <openopen2dotSemiscloseOne1dotSemiclose.json> ;
+    sx:ttl <openopen2dotSemiscloseOne1dotSemiclose.ttl> ;
+    .
+
+<#open1dotopen1dotOne1dotcloseclose> a sht:RepresentationTest ;
+    mf:name "open1dotopen1dotOne1dotcloseclose" ;
+    mf:status mf:Approved ;
+    sx:shex <open1dotopen1dotOne1dotcloseclose.shex> ;
+    sx:json <open1dotopen1dotOne1dotcloseclose.json> ;
+    sx:ttl <open1dotopen1dotOne1dotcloseclose.ttl> ;
+    .
+
+<#open1dotopen1dotSemiOne1dotSemicloseSemicloseSemi> a sht:RepresentationTest ;
+    mf:name "open1dotopen1dotSemiOne1dotSemicloseSemicloseSemi" ;
+    mf:status mf:Approved ;
+    mf:sameSemanticsAs <#open1dotopen1dotOne1dotcloseclose> ;
+    sx:shex <open1dotopen1dotSemiOne1dotSemicloseSemicloseSemi.shex> ;
+    sx:json <open1dotopen1dotSemiOne1dotSemicloseSemicloseSemi.json> ;
+    sx:ttl <open1dotopen1dotSemiOne1dotSemicloseSemicloseSemi.ttl> ;
+    .
+
+<#1dotOne2dot> a sht:RepresentationTest ;
+    mf:name "1dotOne2dot" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotOne2dot.shex> ;
+    sx:json <1dotOne2dot.json> ;
+    sx:ttl <1dotOne2dot.ttl> ;
+    .
+
+<#1dotSemiOne2dotSemis> a sht:RepresentationTest ;
+    mf:name "1dotSemiOne2dotSemis" ;
+    mf:status mf:Approved ;
+    mf:sameSemanticsAs <#1dotOne2dot> ;
+    sx:shex <1dotSemiOne2dotSemis.shex> ;
+    sx:json <1dotSemiOne2dotSemis.json> ;
+    sx:ttl <1dotSemiOne2dotSemis.ttl> ;
+    .
+
+<#open1dotSemiOne2dotsemisclose> a sht:RepresentationTest ;
+    mf:name "open1dotSemiOne2dotsemisclose" ;
+    mf:status mf:Approved ;
+    mf:sameSemanticsAs <#1dotOne2dot> ;
+    sx:shex <open1dotSemiOne2dotsemisclose.shex> ;
+    sx:json <open1dotSemiOne2dotsemisclose.json> ;
+    sx:ttl <open1dotSemiOne2dotsemisclose.ttl> ;
+    .
+
+<#open1dotSemiOneopen2dotSemiscloseclose> a sht:RepresentationTest ;
+    mf:name "open1dotSemiOneopen2dotSemiscloseclose" ;
+    mf:status mf:Approved ;
+    mf:sameSemanticsAs <#1dotOne2dot> ;
+    sx:shex <open1dotSemiOneopen2dotSemiscloseclose.shex> ;
+    sx:json <open1dotSemiOneopen2dotSemiscloseclose.json> ;
+    sx:ttl <open1dotSemiOneopen2dotSemiscloseclose.ttl> ;
+    .
+
+<#open1dotOne2dotclose> a sht:RepresentationTest ;
+    mf:name "open1dotOne2dotclose" ;
+    mf:status mf:Approved ;
+    mf:sameSemanticsAs <#1dotOne2dot> ;
+    sx:shex <open1dotOne2dotclose.shex> ;
+    sx:json <open1dotOne2dotclose.json> ;
+    sx:ttl <open1dotOne2dotclose.ttl> ;
+    .
+
+<#open1dotOneopen2dotcloseclose> a sht:RepresentationTest ;
+    mf:name "open1dotOneopen2dotcloseclose" ;
+    mf:status mf:Approved ;
+    sx:shex <open1dotOneopen2dotcloseclose.shex> ;
+    sx:json <open1dotOneopen2dotcloseclose.json> ;
+    sx:ttl <open1dotOneopen2dotcloseclose.ttl> ;
+    .
+
+<#openopen1dotOne1dotclose1dotclose> a sht:RepresentationTest ;
+    mf:name "openopen1dotOne1dotclose1dotclose" ;
+    mf:status mf:Approved ;
+    sx:shex <openopen1dotOne1dotclose1dotclose.shex> ;
+    sx:json <openopen1dotOne1dotclose1dotclose.json> ;
+    sx:ttl <openopen1dotOne1dotclose1dotclose.ttl> ;
+    .
+
+<#openopen1dotSemiOne1dotSemiclose1dotSemicloseSemi> a sht:RepresentationTest ;
+    mf:name "openopen1dotSemiOne1dotSemiclose1dotSemicloseSemi" ;
+    mf:status mf:Approved ;
+    mf:sameSemanticsAs <#openopen1dotSemiOne1dotSemiclose1dotSemicloseSemi> ;
+    sx:shex <openopen1dotSemiOne1dotSemiclose1dotSemicloseSemi.shex> ;
+    sx:json <openopen1dotSemiOne1dotSemiclose1dotSemicloseSemi.json> ;
+    sx:ttl <openopen1dotSemiOne1dotSemiclose1dotSemicloseSemi.ttl> ;
+    .
+
+<#1val1vExprRefIRIREF1> a sht:RepresentationTest ;
+    mf:name "1val1vExprRefIRIREF1" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1vExprRefIRIREF1.shex> ;
+    sx:json <1val1vExprRefIRIREF1.json> ;
+    sx:ttl <1val1vExprRefIRIREF1.ttl> ;
+    .
+
+<#1val1vExprRefbnode1> a sht:RepresentationTest ;
+    mf:name "1val1vExprRefbnode1" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1vExprRefbnode1.shex> ;
+    sx:json <1val1vExprRefbnode1.json> ;
+    sx:ttl <1val1vExprRefbnode1.ttl> ;
+    .
+
+<#1dotShapeAND1dot3X> a sht:RepresentationTest ;
+    mf:name "1dotShapeAND1dot3X" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotShapeAND1dot3X.shex> ;
+    sx:json <1dotShapeAND1dot3X.json> ;
+    sx:ttl <1dotShapeAND1dot3X.ttl> ;
+    .
+
+<#1dotRefAND3> a sht:RepresentationTest ;
+    mf:name "1dotRefAND3" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotRefAND3.shex> ;
+    sx:json <1dotRefAND3.json> ;
+    sx:ttl <1dotRefAND3.ttl> ;
+    .
+
+<#1val1vExpr1AND1AND1Ref3> a sht:RepresentationTest ;
+    mf:name "1val1vExpr1AND1AND1Ref3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1vExpr1AND1AND1Ref3.shex> ;
+    sx:json <1val1vExpr1AND1AND1Ref3.json> ;
+    sx:ttl <1val1vExpr1AND1AND1Ref3.ttl> ;
+    .
+
+<#1val1vExprRefAND3> a sht:RepresentationTest ;
+    mf:name "1val1vExprRefAND3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1vExprRefAND3.shex> ;
+    sx:json <1val1vExprRefAND3.json> ;
+    sx:ttl <1val1vExprRefAND3.ttl> ;
+    .
+
+<#1val1vExprAND3> a sht:RepresentationTest ;
+    mf:name "1val1vExprAND3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1vExprAND3.shex> ;
+    sx:json <1val1vExprAND3.json> ;
+    sx:ttl <1val1vExprAND3.ttl> ;
+    .
+
+<#1bnodeRefORRefMinlength> a sht:RepresentationTest ;
+    mf:name "1bnodeRefORRefMinlength" ;
+    mf:status mf:Approved ;
+    sx:shex <1bnodeRefORRefMinlength.shex> ;
+    sx:json <1bnodeRefORRefMinlength.json> ;
+    sx:ttl <1bnodeRefORRefMinlength.ttl> ;
+    .
+
+<#1dotRefOR3> a sht:RepresentationTest ;
+    mf:name "1dotRefOR3" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotRefOR3.shex> ;
+    sx:json <1dotRefOR3.json> ;
+    sx:ttl <1dotRefOR3.ttl> ;
+    .
+
+<#1val1vExpr1OR1OR1Ref3> a sht:RepresentationTest ;
+    mf:name "1val1vExpr1OR1OR1Ref3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1vExpr1OR1OR1Ref3.shex> ;
+    sx:json <1val1vExpr1OR1OR1Ref3.json> ;
+    sx:ttl <1val1vExpr1OR1OR1Ref3.ttl> ;
+    .
+
+<#1val1vExprRefOR3> a sht:RepresentationTest ;
+    mf:name "1val1vExprRefOR3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1vExprRefOR3.shex> ;
+    sx:json <1val1vExprRefOR3.json> ;
+    sx:ttl <1val1vExprRefOR3.ttl> ;
+    .
+
+<#1val1vExprOR3> a sht:RepresentationTest ;
+    mf:name "1val1vExprOR3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1vExprOR3.shex> ;
+    sx:json <1val1vExprOR3.json> ;
+    sx:ttl <1val1vExprOR3.ttl> ;
+    .
+
+#START
+<#1NOTIRI> a sht:RepresentationTest ;
+    mf:name "1NOTIRI" ;
+    mf:status mf:Approved ;
+    sx:shex <1NOTIRI.shex> ;
+    sx:json <1NOTIRI.json> ;
+    sx:ttl <1NOTIRI.ttl> ;
+    .
+
+<#1NOTNOTIRI> a sht:RepresentationTest ;
+    mf:name "1NOTNOTIRI" ;
+    mf:status mf:Approved ;
+    sx:shex <1NOTNOTIRI.shex> ;
+    sx:json <1NOTNOTIRI.json> ;
+    sx:ttl <1NOTNOTIRI.ttl> ;
+    .
+
+<#1NOTvs> a sht:RepresentationTest ;
+    mf:name "1NOTvs" ;
+    mf:status mf:Approved ;
+    sx:shex <1NOTvs.shex> ;
+    sx:json <1NOTvs.json> ;
+    sx:ttl <1NOTvs.ttl> ;
+    .
+
+<#1NOTNOTvs> a sht:RepresentationTest ;
+    mf:name "1NOTNOTvs" ;
+    mf:status mf:Approved ;
+    sx:shex <1NOTNOTvs.shex> ;
+    sx:json <1NOTNOTvs.json> ;
+    sx:ttl <1NOTNOTvs.ttl> ;
+    .
+
+<#1NOTdot> a sht:RepresentationTest ;
+    mf:name "1NOTdot" ;
+    mf:status mf:Approved ;
+    sx:shex <1NOTdot.shex> ;
+    sx:json <1NOTdot.json> ;
+    sx:ttl <1NOTdot.ttl> ;
+    .
+
+<#1NOTNOTdot> a sht:RepresentationTest ;
+    mf:name "1NOTNOTdot" ;
+    mf:status mf:Approved ;
+    sx:shex <1NOTNOTdot.shex> ;
+    sx:json <1NOTNOTdot.json> ;
+    sx:ttl <1NOTNOTdot.ttl> ;
+    .
+
+<#1_NOTliteral_ANDvs> a sht:RepresentationTest ;
+    mf:name "1_NOTliteral_ANDvs" ;
+    mf:status mf:Approved ;
+    sx:shex <1_NOTliteral_ANDvs.shex> ;
+    sx:json <1_NOTliteral_ANDvs.json> ;
+    sx:ttl <1_NOTliteral_ANDvs.ttl> ;
+    .
+
+<#1NOT_literalANDvs_> a sht:RepresentationTest ;
+    mf:name "1NOT_literalANDvs_" ;
+    mf:status mf:Approved ;
+    sx:shex <1NOT_literalANDvs_.shex> ;
+    sx:json <1NOT_literalANDvs_.json> ;
+    sx:ttl <1NOT_literalANDvs_.ttl> ;
+    .
+
+<#1NOTliteralANDvs> a sht:RepresentationTest ;
+    mf:name "1NOTliteralANDvs" ;
+    mf:status mf:Approved ;
+    sx:shex <1NOTliteralANDvs.shex> ;
+    sx:json <1NOTliteralANDvs.json> ;
+    sx:ttl <1NOTliteralANDvs.ttl> ;
+    .
+
+<#1_NOTvs_ANDvs> a sht:RepresentationTest ;
+    mf:name "1_NOTvs_ANDvs" ;
+    mf:status mf:Approved ;
+    sx:shex <1_NOTvs_ANDvs.shex> ;
+    sx:json <1_NOTvs_ANDvs.json> ;
+    sx:ttl <1_NOTvs_ANDvs.ttl> ;
+    .
+
+<#1NOT_vsANDvs_> a sht:RepresentationTest ;
+    mf:name "1NOT_vsANDvs_" ;
+    mf:status mf:Approved ;
+    sx:shex <1NOT_vsANDvs_.shex> ;
+    sx:json <1NOT_vsANDvs_.json> ;
+    sx:ttl <1NOT_vsANDvs_.ttl> ;
+    .
+
+<#1NOTvsANDvs> a sht:RepresentationTest ;
+    mf:name "1NOTvsANDvs" ;
+    mf:status mf:Approved ;
+    sx:shex <1NOTvsANDvs.shex> ;
+    sx:json <1NOTvsANDvs.json> ;
+    sx:ttl <1NOTvsANDvs.ttl> ;
+    .
+
+<#1_NOTliteral_ORvs> a sht:RepresentationTest ;
+    mf:name "1_NOTliteral_ORvs" ;
+    mf:status mf:Approved ;
+    sx:shex <1_NOTliteral_ORvs.shex> ;
+    sx:json <1_NOTliteral_ORvs.json> ;
+    sx:ttl <1_NOTliteral_ORvs.ttl> ;
+    .
+
+<#1NOT_literalORvs_> a sht:RepresentationTest ;
+    mf:name "1NOT_literalORvs_" ;
+    mf:status mf:Approved ;
+    sx:shex <1NOT_literalORvs_.shex> ;
+    sx:json <1NOT_literalORvs_.json> ;
+    sx:ttl <1NOT_literalORvs_.ttl> ;
+    .
+
+<#1NOTliteralORvs> a sht:RepresentationTest ;
+    mf:name "1NOTliteralORvs" ;
+    mf:status mf:Approved ;
+    sx:shex <1NOTliteralORvs.shex> ;
+    sx:json <1NOTliteralORvs.json> ;
+    sx:ttl <1NOTliteralORvs.ttl> ;
+    .
+
+<#1_NOTvs_ORvs> a sht:RepresentationTest ;
+    mf:name "1_NOTvs_ORvs" ;
+    mf:status mf:Approved ;
+    sx:shex <1_NOTvs_ORvs.shex> ;
+    sx:json <1_NOTvs_ORvs.json> ;
+    sx:ttl <1_NOTvs_ORvs.ttl> ;
+    .
+
+<#1NOT_vsORvs_> a sht:RepresentationTest ;
+    mf:name "1NOT_vsORvs_" ;
+    mf:status mf:Approved ;
+    sx:shex <1NOT_vsORvs_.shex> ;
+    sx:json <1NOT_vsORvs_.json> ;
+    sx:ttl <1NOT_vsORvs_.ttl> ;
+    .
+
+<#1NOTvsORvs> a sht:RepresentationTest ;
+    mf:name "1NOTvsORvs" ;
+    mf:status mf:Approved ;
+    sx:shex <1NOTvsORvs.shex> ;
+    sx:json <1NOTvsORvs.json> ;
+    sx:ttl <1NOTvsORvs.ttl> ;
+    .
+
+<#NOT1NOTvs> a sht:RepresentationTest ;
+    mf:name "NOT1NOTvs" ;
+    mf:status mf:Approved ;
+    sx:shex <NOT1NOTvs.shex> ;
+    sx:json <NOT1NOTvs.json> ;
+    sx:ttl <NOT1NOTvs.ttl> ;
+    .
+
+#END
+
+<#1val1vExpr1AND1OR1Ref3> a sht:RepresentationTest ;
+    mf:name "1val1vExpr1AND1OR1Ref3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1vExpr1AND1OR1Ref3.shex> ;
+    sx:json <1val1vExpr1AND1OR1Ref3.json> ;
+    sx:ttl <1val1vExpr1AND1OR1Ref3.ttl> ;
+    .
+
+<#1val1vExpr1OR1AND1Ref3> a sht:RepresentationTest ;
+    mf:name "1val1vExpr1OR1AND1Ref3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1vExpr1OR1AND1Ref3.shex> ;
+    sx:json <1val1vExpr1OR1AND1Ref3.json> ;
+    sx:ttl <1val1vExpr1OR1AND1Ref3.ttl> ;
+    .
+
+<#open3Onedotclosecard2> a sht:RepresentationTest ;
+    mf:name "open3Onedotclosecard2" ;
+    mf:status mf:Approved ;
+    sx:shex <open3Onedotclosecard2.shex> ;
+    sx:json <open3Onedotclosecard2.json> ;
+    sx:ttl <open3Onedotclosecard2.ttl> ;
+    .
+
+<#open3Onedotclosecard23> a sht:RepresentationTest ;
+    mf:name "open3Onedotclosecard23" ;
+    mf:status mf:Approved ;
+    sx:shex <open3Onedotclosecard23.shex> ;
+    sx:json <open3Onedotclosecard23.json> ;
+    sx:ttl <open3Onedotclosecard23.ttl> ;
+    .
+
+<#open4Onedotclosecard23> a sht:RepresentationTest ;
+    mf:name "open4Onedotclosecard23" ;
+    mf:status mf:Approved ;
+    sx:shex <open4Onedotclosecard23.shex> ;
+    sx:json <open4Onedotclosecard23.json> ;
+    sx:ttl <open4Onedotclosecard23.ttl> ;
+    .
+
+<#open3Eachdotclosecard23> a sht:RepresentationTest ;
+    mf:name "open3Eachdotclosecard23" ;
+    mf:status mf:Approved ;
+    sx:shex <open3Eachdotclosecard23.shex> ;
+    sx:json <open3Eachdotclosecard23.json> ;
+    sx:ttl <open3Eachdotclosecard23.ttl> ;
+    .
+
+<#1val1vShapeANDRef3> a sht:RepresentationTest ;
+    mf:name "1val1vShapeANDRef3" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1vShapeANDRef3.shex> ;
+    sx:json <1val1vShapeANDRef3.json> ;
+    sx:ttl <1val1vShapeANDRef3.ttl> ;
+    .
+
+<#1dotClosed> a sht:RepresentationTest ;
+    mf:name "1dotClosed" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotClosed.shex> ;
+    sx:json <1dotClosed.json> ;
+    sx:ttl <1dotClosed.ttl> ;
+    .
+
+<#FocusIRI2EachBnodeNested2EachIRIRef> a sht:RepresentationTest ;
+    mf:name "FocusIRI2EachBnodeNested2EachIRIRef" ;
+    mf:status mf:Approved ;
+    sx:shex <FocusIRI2EachBnodeNested2EachIRIRef.shex> ;
+    sx:json <FocusIRI2EachBnodeNested2EachIRIRef.json> ;
+    sx:ttl <FocusIRI2EachBnodeNested2EachIRIRef.ttl> ;
+    .
+
+<#1val1IRIREFExtra1> a sht:RepresentationTest ;
+    mf:name "1val1IRIREFExtra1" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1IRIREFExtra1.shex> ;
+    sx:json <1val1IRIREFExtra1.json> ;
+    sx:ttl <1val1IRIREFExtra1.ttl> ;
+    .
+
+<#1val1IRIREFExtra1Closed> a sht:RepresentationTest ;
+    mf:name "1val1IRIREFExtra1Closed" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1IRIREFExtra1Closed.shex> ;
+    sx:json <1val1IRIREFExtra1Closed.json> ;
+    sx:ttl <1val1IRIREFExtra1Closed.ttl> ;
+    .
+
+<#1val1IRIREFClosedExtra1> a sht:RepresentationTest ;
+    mf:name "1val1IRIREFClosedExtra1" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1IRIREFClosedExtra1.shex> ;
+    sx:json <1val1IRIREFClosedExtra1.json> ;
+    sx:ttl <1val1IRIREFClosedExtra1.ttl> ;
+    .
+
+<#1val2IRIREFExtra1> a sht:RepresentationTest ;
+    mf:name "1val2IRIREFExtra1" ;
+    mf:status mf:Approved ;
+    sx:shex <1val2IRIREFExtra1.shex> ;
+    sx:json <1val2IRIREFExtra1.json> ;
+    sx:ttl <1val2IRIREFExtra1.ttl> ;
+    .
+
+<#1val2IRIREFPlusExtra1> a sht:RepresentationTest ;
+    mf:name "1val2IRIREFPlusExtra1" ;
+    mf:status mf:Approved ;
+    sx:shex <1val2IRIREFPlusExtra1.shex> ;
+    sx:json <1val2IRIREFPlusExtra1.json> ;
+    sx:ttl <1val2IRIREFPlusExtra1.ttl> ;
+    .
+
+<#1val1IRIREFExtra1p2> a sht:RepresentationTest ;
+    mf:name "1val1IRIREFExtra1p2" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1IRIREFExtra1p2.shex> ;
+    sx:json <1val1IRIREFExtra1p2.json> ;
+    sx:ttl <1val1IRIREFExtra1p2.ttl> ;
+    .
+
+<#1val1IRIREFExtra1One> a sht:RepresentationTest ;
+    mf:name "1val1IRIREFExtra1One" ;
+    mf:status mf:Approved ;
+    sx:shex <1val1IRIREFExtra1One.shex> ;
+    sx:json <1val1IRIREFExtra1One.json> ;
+    sx:ttl <1val1IRIREFExtra1One.ttl> ;
+    .
+
+<#1dotExtra1> a sht:RepresentationTest ;
+    mf:name "1dotExtra1" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotExtra1.shex> ;
+    sx:json <1dotExtra1.json> ;
+    sx:ttl <1dotExtra1.ttl> ;
+    .
+
+<#3EachdotExtra3> a sht:RepresentationTest ;
+    mf:name "3EachdotExtra3" ;
+    mf:status mf:Approved ;
+    sx:shex <3EachdotExtra3.shex> ;
+    sx:json <3EachdotExtra3.json> ;
+    sx:ttl <3EachdotExtra3.ttl> ;
+    .
+
+<#3Eachdot3Extra> a sht:RepresentationTest ;
+    mf:name "3Eachdot3Extra" ;
+    mf:status mf:Approved ;
+    sx:shex <3Eachdot3Extra.shex> ;
+    sx:json <3Eachdot3Extra.json> ;
+    sx:ttl <3Eachdot3Extra.ttl> ;
+    .
+
+<#3EachdotExtra3NLex> a sht:RepresentationTest ;
+    mf:name "3EachdotExtra3NLex" ;
+    mf:status mf:Approved ;
+    sx:shex <3EachdotExtra3NLex.shex> ;
+    sx:json <3EachdotExtra3NLex.json> ;
+    sx:ttl <3EachdotExtra3NLex.ttl> ;
+    .
+
+<#startRefIRIREF> a sht:RepresentationTest ;
+    mf:name "startRefIRIREF" ;
+    mf:status mf:Approved ;
+    sx:shex <startRefIRIREF.shex> ;
+    sx:json <startRefIRIREF.json> ;
+    sx:ttl <startRefIRIREF.ttl> ;
+    .
+
+<#startRefbnode> a sht:RepresentationTest ;
+    mf:name "startRefbnode" ;
+    mf:status mf:Approved ;
+    sx:shex <startRefbnode.shex> ;
+    sx:json <startRefbnode.json> ;
+    sx:ttl <startRefbnode.ttl> ;
+    .
+
+<#startInline> a sht:RepresentationTest ;
+    mf:name "startInline" ;
+    mf:status mf:Approved ;
+    sx:shex <startInline.shex> ;
+    sx:json <startInline.json> ;
+    sx:ttl <startInline.ttl> ;
+    .
+
+<#startEqualSpaceInline> a sht:RepresentationTest ;
+    mf:name "startEqualSpaceInline" ;
+    mf:status mf:Approved ;
+    sx:shex <startEqualSpaceInline.shex> ;
+    sx:json <startEqualSpaceInline.json> ;
+    sx:ttl <startEqualSpaceInline.ttl> ;
+    .
+
+<#startSpaceEqualInline> a sht:RepresentationTest ;
+    mf:name "startSpaceEqualInline" ;
+    mf:status mf:Approved ;
+    sx:shex <startSpaceEqualInline.shex> ;
+    sx:json <startSpaceEqualInline.json> ;
+    sx:ttl <startSpaceEqualInline.ttl> ;
+    .
+
+<#1IRIInline0> a sht:RepresentationTest ;
+    mf:name "1IRIInline0" ;
+    mf:status mf:Approved ;
+    sx:shex <1IRIInline0.shex> ;
+    sx:json <1IRIInline0.json> ;
+    sx:ttl <1IRIInline0.ttl> ;
+    .
+
+<#2EachInclude1> a sht:RepresentationTest ;
+    mf:name "2EachInclude1" ;
+    mf:status mf:Approved ;
+    sx:shex <2EachInclude1.shex> ;
+    sx:json <2EachInclude1.json> ;
+    sx:ttl <2EachInclude1.ttl> ;
+    .
+
+<#2EachInclude1-after> a sht:RepresentationTest ;
+    mf:name "2EachInclude1-after" ;
+    mf:status mf:Approved ;
+    sx:shex <2EachInclude1-after.shex> ;
+    sx:json <2EachInclude1-after.json> ;
+    sx:ttl <2EachInclude1-after.ttl> ;
+    .
+
+<#2OneInclude1> a sht:RepresentationTest ;
+    mf:name "2OneInclude1" ;
+    mf:status mf:Approved ;
+    sx:shex <2OneInclude1.shex> ;
+    sx:json <2OneInclude1.json> ;
+    sx:ttl <2OneInclude1.ttl> ;
+    .
+
+<#2OneInclude1-after> a sht:RepresentationTest ;
+    mf:name "2OneInclude1-after" ;
+    mf:status mf:Approved ;
+    sx:shex <2OneInclude1-after.shex> ;
+    sx:json <2OneInclude1-after.json> ;
+    sx:ttl <2OneInclude1-after.ttl> ;
+    .
+
+<#1dotAnnotIRIREF> a sht:RepresentationTest ;
+    mf:name "1dotAnnotIRIREF" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotAnnotIRIREF.shex> ;
+    sx:json <1dotAnnotIRIREF.json> ;
+    sx:ttl <1dotAnnotIRIREF.ttl> ;
+    .
+
+<#1dotPlusAnnotIRIREF> a sht:RepresentationTest ;
+    mf:name "1dotPlusAnnotIRIREF" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotPlusAnnotIRIREF.shex> ;
+    sx:json <1dotPlusAnnotIRIREF.json> ;
+    sx:ttl <1dotPlusAnnotIRIREF.ttl> ;
+    .
+
+<#1dotAnnotAIRIREF> a sht:RepresentationTest ;
+    mf:name "1dotAnnotAIRIREF" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotAnnotAIRIREF.shex> ;
+    sx:json <1dotAnnotAIRIREF.json> ;
+    sx:ttl <1dotAnnotAIRIREF.ttl> ;
+    .
+
+<#1dotAnnotSTRING_LITERAL1> a sht:RepresentationTest ;
+    mf:name "1dotAnnotSTRING_LITERAL1" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotAnnotSTRING_LITERAL1.shex> ;
+    sx:json <1dotAnnotSTRING_LITERAL1.json> ;
+    sx:ttl <1dotAnnotSTRING_LITERAL1.ttl> ;
+    .
+
+<#1dotAnnot3> a sht:RepresentationTest ;
+    mf:name "1dotAnnot3" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotAnnot3.shex> ;
+    sx:json <1dotAnnot3.json> ;
+    sx:ttl <1dotAnnot3.ttl> ;
+    .
+
+<#1inversedotAnnot3> a sht:RepresentationTest ;
+    mf:name "1inversedotAnnot3" ;
+    mf:status mf:Approved ;
+    sx:shex <1inversedotAnnot3.shex> ;
+    sx:json <1inversedotAnnot3.json> ;
+    sx:ttl <1inversedotAnnot3.ttl> ;
+    .
+
+<#1dotShapeAnnotIRIREF> a sht:RepresentationTest ;
+    mf:name "1dotShapeAnnotIRIREF" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotShapeAnnotIRIREF.shex> ;
+    sx:json <1dotShapeAnnotIRIREF.json> ;
+    sx:ttl <1dotShapeAnnotIRIREF.ttl> ;
+    .
+
+<#1dotShapePlusAnnotIRIREF> a sht:RepresentationTest ;
+    mf:name "1dotShapePlusAnnotIRIREF" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotShapePlusAnnotIRIREF.shex> ;
+    sx:json <1dotShapePlusAnnotIRIREF.json> ;
+    sx:ttl <1dotShapePlusAnnotIRIREF.ttl> ;
+    .
+
+<#1dotShapeAnnotAIRIREF> a sht:RepresentationTest ;
+    mf:name "1dotShapeAnnotAIRIREF" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotShapeAnnotAIRIREF.shex> ;
+    sx:json <1dotShapeAnnotAIRIREF.json> ;
+    sx:ttl <1dotShapeAnnotAIRIREF.ttl> ;
+    .
+
+<#1dotShapeAnnotSTRING_LITERAL1> a sht:RepresentationTest ;
+    mf:name "1dotShapeAnnotSTRING_LITERAL1" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotShapeAnnotSTRING_LITERAL1.shex> ;
+    sx:json <1dotShapeAnnotSTRING_LITERAL1.json> ;
+    sx:ttl <1dotShapeAnnotSTRING_LITERAL1.ttl> ;
+    .
+
+<#open3EachdotcloseAnnot3> a sht:RepresentationTest ;
+    mf:name "open3EachdotcloseAnnot3" ;
+    mf:status mf:Approved ;
+    sx:shex <open3EachdotcloseAnnot3.shex> ;
+    sx:json <open3EachdotcloseAnnot3.json> ;
+    sx:ttl <open3EachdotcloseAnnot3.ttl> ;
+    .
+
+<#1dotCode1> a sht:RepresentationTest ;
+    mf:name "1dotCode1" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotCode1.shex> ;
+    sx:json <1dotCode1.json> ;
+    sx:ttl <1dotCode1.ttl> ;
+    .
+
+<#open1dotcloseCode1> a sht:RepresentationTest ;
+    mf:name "open1dotcloseCode1" ;
+    mf:status mf:Approved ;
+    sx:shex <open1dotcloseCode1.shex> ;
+    sx:json <1dotCode1.json> ;
+    sx:ttl <1dotCode1.ttl> ;
+    .
+
+<#1dotNoCode1> a sht:RepresentationTest ;
+    mf:name "1dotNoCode1" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotNoCode1.shex> ;
+    sx:json <1dotNoCode1.json> ;
+    sx:ttl <1dotNoCode1.ttl> ;
+    .
+
+<#1inversedotCode1> a sht:RepresentationTest ;
+    mf:name "1inversedotCode1" ;
+    mf:status mf:Approved ;
+    sx:shex <1inversedotCode1.shex> ;
+    sx:json <1inversedotCode1.json> ;
+    sx:ttl <1inversedotCode1.ttl> ;
+    .
+
+<#1dotCode3> a sht:RepresentationTest ;
+    mf:name "1dotCode3" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotCode3.shex> ;
+    sx:json <1dotCode3.json> ;
+    sx:ttl <1dotCode3.ttl> ;
+    .
+
+<#openopen1dotcloseCode1closeCode3> a sht:RepresentationTest ;
+    mf:name "openopen1dotcloseCode1closeCode3" ;
+    mf:status mf:Approved ;
+    sx:shex <openopen1dotcloseCode1closeCode3.shex> ;
+    sx:json <1dotCode3.json> ;
+    sx:ttl <1dotCode3.ttl> ;
+    .
+
+<#1dotNoCode3> a sht:RepresentationTest ;
+    mf:name "1dotNoCode3" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotNoCode3.shex> ;
+    sx:json <1dotNoCode3.json> ;
+    sx:ttl <1dotNoCode3.ttl> ;
+    .
+
+<#1dotCode3fail> a sht:RepresentationTest ;
+    mf:name "1dotCode3fail" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotCode3fail.shex> ;
+    sx:json <1dotCode3fail.json> ;
+    sx:ttl <1dotCode3fail.ttl> ;
+    .
+
+<#1dotCodeWithEscapes1> a sht:RepresentationTest ;
+    mf:name "1dotCodeWithEscapes1" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotCodeWithEscapes1.shex> ;
+    sx:json <1dotCodeWithEscapes1.json> ;
+    sx:ttl <1dotCodeWithEscapes1.ttl> ;
+    .
+
+<#1dotShapeCode1> a sht:RepresentationTest ;
+    mf:name "1dotShapeCode1" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotShapeCode1.shex> ;
+    sx:json <1dotShapeCode1.json> ;
+    sx:ttl <1dotShapeCode1.ttl> ;
+    .
+
+<#1dotShapeNoCode1> a sht:RepresentationTest ;
+    mf:name "1dotShapeNoCode1" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotShapeNoCode1.shex> ;
+    sx:json <1dotShapeNoCode1.json> ;
+    sx:ttl <1dotShapeNoCode1.ttl> ;
+    .
+
+<#open3EachdotcloseCode1> a sht:RepresentationTest ;
+    mf:name "open3EachdotcloseCode1" ;
+    mf:status mf:Approved ;
+    sx:shex <open3EachdotcloseCode1.shex> ;
+    sx:json <open3EachdotcloseCode1.json> ;
+    sx:ttl <open3EachdotcloseCode1.ttl> ;
+    .
+
+<#startCode1> a sht:RepresentationTest ;
+    mf:name "startCode1" ;
+    mf:status mf:Approved ;
+    sx:shex <startCode1.shex> ;
+    sx:json <startCode1.json> ;
+    sx:ttl <startCode1.ttl> ;
+    .
+
+<#startNoCode1> a sht:RepresentationTest ;
+    mf:name "startNoCode1" ;
+    mf:status mf:Approved ;
+    sx:shex <startNoCode1.shex> ;
+    sx:json <startNoCode1.json> ;
+    sx:ttl <startNoCode1.ttl> ;
+    .
+
+<#startCode1fail> a sht:RepresentationTest ;
+    mf:name "startCode1fail" ;
+    mf:status mf:Approved ;
+    sx:shex <startCode1fail.shex> ;
+    sx:json <startCode1fail.json> ;
+    sx:ttl <startCode1fail.ttl> ;
+    .
+
+<#startCode1startRef> a sht:RepresentationTest ;
+    mf:name "startCode1startRef" ;
+    mf:status mf:Approved ;
+    sx:shex <startCode1startRef.shex> ;
+    sx:json <startCode1startRef.json> ;
+    sx:ttl <startCode1startRef.ttl> ;
+    .
+
+<#startCode1startReffail> a sht:RepresentationTest ;
+    mf:name "startCode1startReffail" ;
+    mf:status mf:Approved ;
+    sx:shex <startCode1startReffail.shex> ;
+    sx:json <startCode1startReffail.json> ;
+    sx:ttl <startCode1startReffail.ttl> ;
+    .
+
+<#startCode3> a sht:RepresentationTest ;
+    mf:name "startCode3" ;
+    mf:status mf:Approved ;
+    sx:shex <startCode3.shex> ;
+    sx:json <startCode3.json> ;
+    sx:ttl <startCode3.ttl> ;
+    .
+
+<#startCode3fail> a sht:RepresentationTest ;
+    mf:name "startCode3fail" ;
+    mf:status mf:Approved ;
+    sx:shex <startCode3fail.shex> ;
+    sx:json <startCode3fail.json> ;
+    sx:ttl <startCode3fail.ttl> ;
+    .
+
+<#open3Eachdotclosecard23Annot3Code2> a sht:RepresentationTest ;
+    mf:name "open3Eachdotclosecard23Annot3Code2" ;
+    mf:status mf:Approved ;
+    sx:shex <open3Eachdotclosecard23Annot3Code2.shex> ;
+    sx:json <open3Eachdotclosecard23Annot3Code2.json> ;
+    sx:ttl <open3Eachdotclosecard23Annot3Code2.ttl> ;
+    .
+
+<#0focusIRI> a sht:RepresentationTest ;
+    mf:name "0focusIRI" ;
+    mf:status mf:Approved ;
+    sx:shex <0focusIRI.shex> ;
+    sx:json <0focusIRI.json> ;
+    sx:ttl <0focusIRI.ttl> ;
+    .
+
+<#0focusBNODE> a sht:RepresentationTest ;
+    mf:name "0focusBNODE" ;
+    mf:status mf:Approved ;
+    sx:shex <0focusBNODE.shex> ;
+    sx:json <0focusBNODE.json> ;
+    sx:ttl <0focusBNODE.ttl> ;
+    .
+
+<#1focusIRI_dot> a sht:RepresentationTest ;
+    mf:name "1focusIRI_dot" ;
+    mf:status mf:Approved ;
+    sx:shex <1focusIRI_dot.shex> ;
+    sx:json <1focusIRI_dot.json> ;
+    sx:ttl <1focusIRI_dot.ttl> ;
+    .
+
+<#1focusBNODE_dot> a sht:RepresentationTest ;
+    mf:name "1focusBNODE_dot" ;
+    mf:status mf:Approved ;
+    sx:shex <1focusBNODE_dot.shex> ;
+    sx:json <1focusBNODE_dot.json> ;
+    sx:ttl <1focusBNODE_dot.ttl> ;
+    .
+
+<#1focusnonLiteral-dot> a sht:RepresentationTest ;
+    mf:name "1focusnonLiteral-dot" ;
+    mf:status mf:Approved ;
+    sx:shex <1focusnonLiteral-dot.shex> ;
+    sx:json <1focusnonLiteral-dot.json> ;
+    sx:ttl <1focusnonLiteral-dot.ttl> ;
+    .
+
+<#focusdatatype> a sht:RepresentationTest ;
+    mf:name "focusdatatype" ;
+    mf:status mf:Approved ;
+    sx:shex <focusdatatype.shex> ;
+    sx:json <focusdatatype.json> ;
+    sx:ttl <focusdatatype.ttl> ;
+    .
+
+<#focusvs> a sht:RepresentationTest ;
+    mf:name "focusvs" ;
+    mf:status mf:Approved ;
+    sx:shex <focusvs.shex> ;
+    sx:json <focusvs.json> ;
+    sx:ttl <focusvs.ttl> ;
+    .
+
+<#focusvsANDdatatype> a sht:RepresentationTest ;
+    mf:name "focusvsANDdatatype" ;
+    mf:status mf:Approved ;
+    sx:shex <focusvsANDdatatype.shex> ;
+    sx:json <focusvsANDdatatype.json> ;
+    sx:ttl <focusvsANDdatatype.ttl> ;
+    .
+
+<#focusvsANDIRI> a sht:RepresentationTest ;
+    mf:name "focusvsANDIRI" ;
+    mf:status mf:Approved ;
+    sx:shex <focusvsANDIRI.shex> ;
+    sx:json <focusvsANDIRI.json> ;
+    sx:ttl <focusvsANDIRI.ttl> ;
+    .
+
+<#focusvsORdatatype> a sht:RepresentationTest ;
+    mf:name "focusvsORdatatype" ;
+    mf:status mf:Approved ;
+    sx:shex <focusvsORdatatype.shex> ;
+    sx:json <focusvsORdatatype.json> ;
+    sx:ttl <focusvsORdatatype.ttl> ;
+    .
+
+<#focusNOTRefOR1dot> a sht:RepresentationTest ;
+    mf:name "focusNOTRefOR1dot" ;
+    mf:status mf:Proposed ;
+    sx:shex <focusNOTRefOR1dot.shex> ;
+    sx:json <focusNOTRefOR1dot.json> ;
+    sx:ttl <focusNOTRefOR1dot.ttl> ;
+    .
+
+<#1focusLength-dot> a sht:RepresentationTest ;
+    mf:name "1focusLength-dot" ;
+    mf:status mf:Approved ;
+    sx:shex <1focusLength-dot.shex> ;
+    sx:json <1focusLength-dot.json> ;
+    sx:ttl <1focusLength-dot.ttl> ;
+    .
+
+<#1focusMinLength-dot> a sht:RepresentationTest ;
+    mf:name "1focusMinLength-dot" ;
+    mf:status mf:Approved ;
+    sx:shex <1focusMinLength-dot.shex> ;
+    sx:json <1focusMinLength-dot.json> ;
+    sx:ttl <1focusMinLength-dot.ttl> ;
+    .
+
+<#1focusMaxLength-dot> a sht:RepresentationTest ;
+    mf:name "1focusMaxLength-dot" ;
+    mf:status mf:Approved ;
+    sx:shex <1focusMaxLength-dot.shex> ;
+    sx:json <1focusMaxLength-dot.json> ;
+    sx:ttl <1focusMaxLength-dot.ttl> ;
+    .
+
+<#1focusPattern-dot> a sht:RepresentationTest ;
+    mf:name "1focusPattern-dot" ;
+    mf:status mf:Approved ;
+    sx:shex <1focusPattern-dot.shex> ;
+    sx:json <1focusPattern-dot.json> ;
+    sx:ttl <1focusPattern-dot.ttl> ;
+    .
+
+<#1focusPatternB-dot> a sht:RepresentationTest ;
+    mf:name "1focusPatternB-dot" ;
+    mf:status mf:Approved ;
+    sx:shex <1focusPatternB-dot.shex> ;
+    sx:json <1focusPatternB-dot.json> ;
+    sx:ttl <1focusPatternB-dot.ttl> ;
+    .
+
+<#1focusIRILength_dot> a sht:RepresentationTest ;
+    mf:name "1focusIRILength_dot" ;
+    mf:status mf:Approved ;
+    sx:shex <1focusIRILength_dot.shex> ;
+    sx:json <1focusIRILength_dot.json> ;
+    sx:ttl <1focusIRILength_dot.ttl> ;
+    .
+
+<#1focusBNODELength_dot> a sht:RepresentationTest ;
+    mf:name "1focusBNODELength_dot" ;
+    mf:status mf:Approved ;
+    sx:shex <1focusBNODELength_dot.shex> ;
+    sx:json <1focusBNODELength_dot.json> ;
+    sx:ttl <1focusBNODELength_dot.ttl> ;
+    .
+
+<#1focusnonLiteralLength-dot> a sht:RepresentationTest ;
+    mf:name "1focusnonLiteralLength-dot" ;
+    mf:status mf:Approved ;
+    sx:shex <1focusnonLiteralLength-dot.shex> ;
+    sx:json <1focusnonLiteralLength-dot.json> ;
+    sx:ttl <1focusnonLiteralLength-dot.ttl> ;
+    .
+
+<#NOT1dotOR2dot> a sht:RepresentationTest ;
+    mf:name "NOT1dotOR2dot" ;
+    mf:status mf:Approved ;
+    sx:shex <NOT1dotOR2dot.shex> ;
+    sx:json <NOT1dotOR2dot.json> ;
+    sx:ttl <NOT1dotOR2dot.ttl> ;
+    .
+
+<#NOT1dotOR2dotX3> a sht:RepresentationTest ;
+    mf:name "NOT1dotOR2dotX3" ;
+    mf:status mf:Approved ;
+    sx:shex <NOT1dotOR2dotX3.shex> ;
+    sx:json <NOT1dotOR2dotX3.json> ;
+    sx:ttl <NOT1dotOR2dotX3.ttl> ;
+    .
+
+<#NOT1dotOR2dotX3AND1> a sht:RepresentationTest ;
+    mf:name "NOT1dotOR2dotX3AND1" ;
+    mf:status mf:Approved ;
+    sx:shex <NOT1dotOR2dotX3AND1.shex> ;
+    sx:json <NOT1dotOR2dotX3AND1.json> ;
+    sx:ttl <NOT1dotOR2dotX3AND1.ttl> ;
+    .
+
+<#1NOTRefOR1dot> a sht:RepresentationTest ;
+    mf:name "1NOTRefOR1dot" ;
+    mf:status mf:Proposed ;
+    sx:shex <1NOTRefOR1dot.shex> ;
+    sx:json <1NOTRefOR1dot.json> ;
+    sx:ttl <1NOTRefOR1dot.ttl> ;
+    .
+
+<#shapeExtern> a sht:RepresentationTest ;
+    mf:name "shapeExtern" ;
+    mf:status mf:Approved ;
+    sx:shex <shapeExtern.shex> ;
+    sx:json <shapeExtern.json> ;
+    sx:ttl <shapeExtern.ttl> ;
+    .
+
+<#shapeExternRef> a sht:RepresentationTest ;
+    mf:name "shapeExternRef" ;
+    mf:status mf:Approved ;
+    sx:shex <shapeExternRef.shex> ;
+    sx:json <shapeExternRef.json> ;
+    sx:ttl <shapeExternRef.ttl> ;
+    .
+
+# <#0Inherit1> a sht:RepresentationTest ;
+#     mf:name "0Inherit1" ;
+#     mf:status mf:Proposed ;
+#     sx:shex <0Inherit1.shex> ;
+#     sx:json <0Inherit1.json> ;
+#     sx:ttl <0Inherit1.ttl> ;
+#     .
+# 
+# <#1dotInherit1> a sht:RepresentationTest ;
+#     mf:name "1dotInherit1" ;
+#     mf:status mf:Proposed ;
+#     sx:shex <1dotInherit1.shex> ;
+#     sx:json <1dotInherit1.json> ;
+#     sx:ttl <1dotInherit1.ttl> ;
+#     .
+# 
+# <#1dotInherit3> a sht:RepresentationTest ;
+#     mf:name "1dotInherit3" ;
+#     mf:status mf:Proposed ;
+#     sx:shex <1dotInherit3.shex> ;
+#     sx:json <1dotInherit3.json> ;
+#     sx:ttl <1dotInherit3.ttl> ;
+#     .
+# 
+# <#1dot3Inherit> a sht:RepresentationTest ;
+#     mf:name "1dot3Inherit" ;
+#     mf:status mf:Proposed ;
+#     mf:sameSemanticsAs <#1dotInherit3> ;
+#     sx:shex <1dot3Inherit.shex> ;
+#     sx:json <1dot3Inherit.json> ;
+#     sx:ttl <1dot3Inherit.ttl> ;
+#     .
+# 
+# <#1dot3InheritLN> a sht:RepresentationTest ;
+#     mf:name "1dot3InheritLN" ;
+#     mf:status mf:Proposed ;
+#     sx:shex <1dot3InheritLN.shex> ;
+#     sx:json <1dot3InheritLN.json> ;
+#     sx:ttl <1dot3InheritLN.ttl> ;
+#     .
+
+# <#1dotVirtualShapeCode1> a sht:RepresentationTest ;
+#     mf:name "1dotVirtualShapeCode1" ;
+#     mf:status mf:Proposed ;
+#     sx:shex <1dotVirtualShapeCode1.shex> ;
+#     sx:json <1dotVirtualShapeCode1.json> ;
+#     sx:ttl <1dotVirtualShapeCode1.ttl> ;
+#     .
+# 
+# <#1dotVirtual> a sht:RepresentationTest ;
+#     mf:name "1dotVirtual" ;
+#     mf:status mf:Proposed ;
+#     sx:shex <1dotVirtual.shex> ;
+#     sx:json <1dotVirtual.json> ;
+#     sx:ttl <1dotVirtual.ttl> ;
+#     .
+
+# <#1dotUnlabeledCode1> a sht:RepresentationTest ;
+#     mf:name "1dotUnlabeledCode1" ;
+#     mf:status mf:Proposed ;
+#     sx:shex <1dotUnlabeledCode1.shex> ;
+#     sx:json <1dotUnlabeledCode1.json> ;
+#     sx:ttl <1dotUnlabeledCode1.ttl> ;
+#     .
+
+<#1Include1> a sht:RepresentationTest ;
+    mf:name "1Include1" ;
+    mf:status mf:Approved ;
+    sx:shex <1Include1.shex> ;
+    sx:json <1Include1.json> ;
+    sx:ttl <1Include1.ttl> ;
+    .
+
+<#1Include1-after> a sht:RepresentationTest ;
+    mf:name "1Include1-after" ;
+    mf:status mf:Approved ;
+    sx:shex <1Include1-after.shex> ;
+    sx:json <1Include1-after.json> ;
+    sx:ttl <1Include1-after.ttl> ;
+    .
+
+<#startSelfRefIRIREF> a sht:RepresentationTest ;
+    mf:name "startSelfRefIRIREF" ;
+    mf:status mf:Approved ;
+    sx:shex <startSelfRefIRIREF.shex> ;
+    sx:json <startSelfRefIRIREF.json> ;
+    sx:ttl <startSelfRefIRIREF.ttl> ;
+    .
+
+<#startSelfRefbnode> a sht:RepresentationTest ;
+    mf:name "startSelfRefbnode" ;
+    mf:status mf:Approved ;
+    sx:shex <startSelfRefbnode.shex> ;
+    sx:json <startSelfRefbnode.json> ;
+    sx:ttl <startSelfRefbnode.ttl> ;
+    .
+
+<#datatypes> a sht:RepresentationTest ;
+    mf:name "datatypes" ;
+    mf:status mf:Approved ;
+    sx:shex <datatypes.shex> ;
+    sx:json <datatypes.json> ;
+    sx:ttl <datatypes.ttl> ;
+    .
+
+<#_all> a sht:RepresentationTest ;
+    mf:name "_all" ;
+    mf:status mf:Approved ;
+    sx:shex <_all.shex> ;
+    sx:json <_all.json> ;
+    sx:ttl <_all.ttl> ;
+    .
+
+<#kitchenSink> a sht:RepresentationTest ;
+    mf:name "kitchenSink" ;
+    mf:status mf:Approved ;
+    sx:shex <kitchenSink.shex> ;
+    sx:json <kitchenSink.json> ;
+    sx:ttl <kitchenSink.ttl> ;
+    .
+
+<#node_kind_example> a sht:RepresentationTest ;
+    mf:name "node_kind_example" ;
+    mf:status mf:Approved ;
+    sx:shex <node_kind_example.shex> ;
+    sx:json <node_kind_example.json> ;
+    sx:ttl <node_kind_example.ttl> ;
+    .
+
+<#dependent_shape> a sht:RepresentationTest ;
+    mf:name "dependent_shape" ;
+    mf:status mf:Approved ;
+    sx:shex <dependent_shape.shex> ;
+    sx:json <dependent_shape.json> ;
+    sx:ttl <dependent_shape.ttl> ;
+    .
+
+<#recursion_example> a sht:RepresentationTest ;
+    mf:name "recursion_example" ;
+    mf:status mf:Approved ;
+    sx:shex <recursion_example.shex> ;
+    sx:json <recursion_example.json> ;
+    sx:ttl <recursion_example.ttl> ;
+    .
+
+<#focusbnode0ORfocusPattern0> a sht:RepresentationTest ;
+    mf:name "focusbnode0ORfocusPattern0" ;
+    mf:status mf:Approved ;
+    sx:shex <focusbnode0ORfocusPattern0.shex> ;
+    sx:json <focusbnode0ORfocusPattern0.json> ;
+    sx:ttl <focusbnode0ORfocusPattern0.ttl> ;
+    .
+
+<#1dotAND1dotAND1dot> a sht:RepresentationTest ;
+    mf:name "1dotAND1dotAND1dot" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotAND1dotAND1dot.shex> ;
+    sx:json <1dotAND1dotAND1dot.json> ;
+    sx:ttl <1dotAND1dotAND1dot.ttl> ;
+    .
+
+<#open1dotAND1dotcloseAND1dot> a sht:RepresentationTest ;
+    mf:name "open1dotAND1dotcloseAND1dot" ;
+    mf:status mf:Approved ;
+    sx:shex <open1dotAND1dotcloseAND1dot.shex> ;
+    sx:json <open1dotAND1dotcloseAND1dot.json> ;
+    sx:ttl <open1dotAND1dotcloseAND1dot.ttl> ;
+    .
+
+<#1dotANDopen1dotAND1dotclose> a sht:RepresentationTest ;
+    mf:name "1dotANDopen1dotAND1dotclose" ;
+    mf:status mf:Approved ;
+    sx:shex <1dotANDopen1dotAND1dotclose.shex> ;
+    sx:json <1dotANDopen1dotAND1dotclose.json> ;
+    sx:ttl <1dotANDopen1dotAND1dotclose.ttl> ;
+    .
+
+<#2Eachdot> a sht:RepresentationTest ;
+    mf:name "2Eachdot" ;
+    mf:status mf:Approved ;
+    sx:shex <2Eachdot.shex> ;
+    sx:json <2Eachdot.json> ;
+    sx:ttl <2Eachdot.ttl> ;
+    .
+
+<#open2Eachdotclosecard25c1dot> a sht:RepresentationTest ;
+    mf:name "open2Eachdotclosecard25c1dot" ;
+    mf:status mf:Approved ;
+    sx:shex <open2Eachdotclosecard25c1dot.shex> ;
+    sx:json <open2Eachdotclosecard25c1dot.json> ;
+    sx:ttl <open2Eachdotclosecard25c1dot.ttl> ;
+    .
+
+# cycles {
+
+<#CycleNoNegation_pass> a sht:RepresentationTest ;
+    mf:name "CycleNoNegation_pass" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Cycle ;
+    sx:shex <CycleNoNegation.shex> ;
+    sx:json <CycleNoNegation.json> ;
+    sx:ttl <CycleNoNegation.ttl> ;
+    .
+
+<#NoNegation_pass> a sht:RepresentationTest ;
+    mf:name "NoNegation_pass" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Cycle ;
+    sx:shex <NoNegation.shex> ;
+    sx:json <NoNegation.json> ;
+    sx:ttl <NoNegation.ttl> ;
+    .
+
+<#NoNegation2_pass> a sht:RepresentationTest ;
+    mf:name "NoNegation2_pass" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Cycle ;
+    sx:shex <NoNegation2.shex> ;
+    sx:json <NoNegation2.json> ;
+    sx:ttl <NoNegation2.ttl> ;
+    .
+
+<#OneNegation_pass> a sht:RepresentationTest ;
+    mf:name "OneNegation_pass" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Cycle ;
+    sx:shex <OneNegation.shex> ;
+    sx:json <OneNegation.json> ;
+    sx:ttl <OneNegation.ttl> ;
+    .
+
+<#TwoNegation_pass> a sht:RepresentationTest ;
+    mf:name "TwoNegation_pass" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Cycle ;
+    sx:shex <TwoNegation.shex> ;
+    sx:json <TwoNegation.json> ;
+    sx:ttl <TwoNegation.ttl> ;
+    .
+
+<#Cycle2NoNegation_pass> a sht:RepresentationTest ;
+    mf:name "Cycle2NoNegation_pass" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Cycle ;
+    sx:shex <Cycle2NoNegation.shex> ;
+    sx:json <Cycle2NoNegation.json> ;
+    sx:ttl <Cycle2NoNegation.ttl> ;
+    .
+
+<#Cycle2Extra_pass> a sht:RepresentationTest ;
+    mf:name "Cycle2Extra_pass" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Cycle ;
+    sx:shex <Cycle2Extra.shex> ;
+    sx:json <Cycle2Extra.json> ;
+    sx:ttl <Cycle2Extra.ttl> ;
+    .
+
+# } cycles
+
+# imports {
+
+<#1dotIMPORT1dot> a sht:RepresentationTest ;
+    mf:name "1dotIMPORT1dot" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <1dotIMPORT1dot.shex> ;
+    sx:json <1dotIMPORT1dot.json> ;
+    sx:ttl <1dotIMPORT1dot.ttl> ;
+    .
+
+<#2RefS1-IS2> a sht:RepresentationTest ;
+    mf:name "2RefS1-IS2" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <2RefS1-IS2.shex> ;
+    sx:json <2RefS1-IS2.json> ;
+    sx:ttl <2RefS1-IS2.ttl> ;
+    .
+
+<#2RefS1-Icirc> a sht:RepresentationTest ;
+    mf:name "2RefS1-Icirc" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <2RefS1-Icirc.shex> ;
+    sx:json <2RefS1-Icirc.json> ;
+    sx:ttl <2RefS1-Icirc.ttl> ;
+    .
+
+# <#2RefS1> a sht:RepresentationTest ;
+#     mf:name "2RefS1" ;
+#     mf:status mf:Proposed ;
+#     sht:trait sht:Import ;
+#     sx:shex <2RefS1.shex> ;
+#     sx:json <2RefS1.json> ;
+#     sx:ttl <2RefS1.ttl> ;
+#     .
+
+<#2RefS2-IS1> a sht:RepresentationTest ;
+    mf:name "2RefS2-IS1" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <2RefS2-IS1.shex> ;
+    sx:json <2RefS2-IS1.json> ;
+    sx:ttl <2RefS2-IS1.ttl> ;
+    .
+
+<#start2RefS2-IstartS1> a sht:RepresentationTest ;
+    mf:name "start2RefS2-IstartS1" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <start2RefS2-IstartS1.shex> ;
+    sx:json <start2RefS2-IstartS1.json> ;
+    sx:ttl <start2RefS2-IstartS1.ttl> ;
+    .
+
+<#start2RefS1-IstartS2> a sht:RepresentationTest ;
+    mf:name "start2RefS1-IstartS2" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <start2RefS1-IstartS2.shex> ;
+    sx:json <start2RefS1-IstartS2.json> ;
+    sx:ttl <start2RefS1-IstartS2.ttl> ;
+    .
+
+<#2RefS2-Icirc> a sht:RepresentationTest ;
+    mf:name "2RefS2-Icirc" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import, sht:start ;
+    sx:shex <2RefS2-Icirc.shex> ;
+    sx:json <2RefS2-Icirc.json> ;
+    sx:ttl <2RefS2-Icirc.ttl> ;
+    .
+
+<#2RefS2> a sht:RepresentationTest ;
+    mf:name "2RefS2" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <2RefS2.shex> ;
+    sx:json <2RefS2.json> ;
+    sx:ttl <2RefS2.ttl> ;
+    .
+
+<#3circRefS1-IS2-IS3-IS3> a sht:RepresentationTest ;
+    mf:name "3circRefS1-IS2-IS3-IS3" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <3circRefS1-IS2-IS3-IS3.shex> ;
+    sx:json <3circRefS1-IS2-IS3-IS3.json> ;
+    sx:ttl <3circRefS1-IS2-IS3-IS3.ttl> ;
+    .
+
+<#3circRefS1-IS2-IS3> a sht:RepresentationTest ;
+    mf:name "3circRefS1-IS2-IS3" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <3circRefS1-IS2-IS3.shex> ;
+    sx:json <3circRefS1-IS2-IS3.json> ;
+    sx:ttl <3circRefS1-IS2-IS3.ttl> ;
+    .
+
+<#3circRefS1-IS23> a sht:RepresentationTest ;
+    mf:name "3circRefS1-IS23" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <3circRefS1-IS23.shex> ;
+    sx:json <3circRefS1-IS23.json> ;
+    sx:ttl <3circRefS1-IS23.ttl> ;
+    .
+
+<#3circRefS1-Icirc> a sht:RepresentationTest ;
+    mf:name "3circRefS1-Icirc" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <3circRefS1-Icirc.shex> ;
+    sx:json <3circRefS1-Icirc.json> ;
+    sx:ttl <3circRefS1-Icirc.ttl> ;
+    .
+
+# <#3circRefS12> a sht:RepresentationTest ;
+#     mf:name "3circRefS12" ;
+#     mf:status mf:Proposed ;
+#     sht:trait sht:Import ;
+#     sx:shex <3circRefS12.shex> ;
+#     sx:json <3circRefS12.json> ;
+#     sx:ttl <3circRefS12.ttl> ;
+#     .
+
+<#3circRefS123-Icirc> a sht:RepresentationTest ;
+    mf:name "3circRefS123-Icirc" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <3circRefS123-Icirc.shex> ;
+    sx:json <3circRefS123-Icirc.json> ;
+    sx:ttl <3circRefS123-Icirc.ttl> ;
+    .
+
+<#3circRefS123> a sht:RepresentationTest ;
+    mf:name "3circRefS123" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <3circRefS123.shex> ;
+    sx:json <3circRefS123.json> ;
+    sx:ttl <3circRefS123.ttl> ;
+    .
+
+# <#3circRefS2-IS3> a sht:RepresentationTest ;
+#     mf:name "3circRefS2-IS3" ;
+#     mf:status mf:Proposed ;
+#     sht:trait sht:Import ;
+#     sx:shex <3circRefS2-IS3.shex> ;
+#     sx:json <3circRefS2-IS3.json> ;
+#     sx:ttl <3circRefS2-IS3.ttl> ;
+#     .
+
+<#3circRefS2-Icirc> a sht:RepresentationTest ;
+    mf:name "3circRefS2-Icirc" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <3circRefS2-Icirc.shex> ;
+    sx:json <3circRefS2-Icirc.json> ;
+    sx:ttl <3circRefS2-Icirc.ttl> ;
+    .
+
+# <#3circRefS23> a sht:RepresentationTest ;
+#     mf:name "3circRefS23" ;
+#     mf:status mf:Proposed ;
+#     sht:trait sht:Import ;
+#     sx:shex <3circRefS23.shex> ;
+#     sx:json <3circRefS23.json> ;
+#     sx:ttl <3circRefS23.ttl> ;
+#     .
+
+<#3circRefS3-IS12> a sht:RepresentationTest ;
+    mf:name "3circRefS3-IS12" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <3circRefS3-IS12.shex> ;
+    sx:json <3circRefS3-IS12.json> ;
+    sx:ttl <3circRefS3-IS12.ttl> ;
+    .
+
+<#3circRefS3-Icirc> a sht:RepresentationTest ;
+    mf:name "3circRefS3-Icirc" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <3circRefS3-Icirc.shex> ;
+    sx:json <3circRefS3-Icirc.json> ;
+    sx:ttl <3circRefS3-Icirc.ttl> ;
+    .
+
+# <#3circRefS3> a sht:RepresentationTest ;
+#     mf:name "3circRefS3" ;
+#     mf:status mf:Proposed ;
+#     sht:trait sht:Import ;
+#     sx:shex <3circRefS3.shex> ;
+#     sx:json <3circRefS3.json> ;
+#     sx:ttl <3circRefS3.ttl> ;
+#     .
+
+<#1valExprRef-IV1> a sht:RepresentationTest ;
+    mf:name "1valExprRef-IV1" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <1valExprRef-IV1.shex> ;
+    sx:json <1valExprRef-IV1.json> ;
+    sx:ttl <1valExprRef-IV1.ttl> ;
+    .
+
+<#1valExprRef-vc1> a sht:RepresentationTest ;
+    mf:name "1valExprRef-vc1" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <1valExprRef-vc1.shex> ;
+    sx:json <1valExprRef-vc1.json> ;
+    sx:ttl <1valExprRef-vc1.ttl> ;
+    .
+
+<#1valExprRefbnode-IV1> a sht:RepresentationTest ;
+    mf:name "1valExprRefbnode-IV1" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <1valExprRefbnode-IV1.shex> ;
+    sx:json <1valExprRefbnode-IV1.json> ;
+    sx:ttl <1valExprRefbnode-IV1.ttl> ;
+    .
+
+<#1valExprRefbnode-vc1> a sht:RepresentationTest ;
+    mf:name "1valExprRefbnode-vc1" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <1valExprRefbnode-vc1.shex> ;
+    sx:json <1valExprRefbnode-vc1.json> ;
+    sx:ttl <1valExprRefbnode-vc1.ttl> ;
+    .
+
+<#2EachInclude1-IS2> a sht:RepresentationTest ;
+    mf:name "2EachInclude1-IS2" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <2EachInclude1-IS2.shex> ;
+    sx:json <2EachInclude1-IS2.json> ;
+    sx:ttl <2EachInclude1-IS2.ttl> ;
+    .
+
+<#2EachInclude1-S2> a sht:RepresentationTest ;
+    mf:name "2EachInclude1-S2" ;
+    mf:status mf:Approved ;
+    sht:trait sht:Import ;
+    sx:shex <2EachInclude1-S2.shex> ;
+    sx:json <2EachInclude1-S2.json> ;
+    sx:ttl <2EachInclude1-S2.ttl> ;
+    .
+
+# } imports
+
+# lists {
+
+<#1list0PlusDot> a sht:RepresentationTest ;
+    mf:name "1list0PlusDot" ;
+    mf:status mf:Proposed ;
+    sht:trait sht:Import ;
+    sx:shex <1list0PlusDot.shex> ;
+    sx:json <1list0PlusDot.json> ;
+    sx:ttl <1list0PlusDot.ttl> ;
+    .
+
+<#1list0PlusIri> a sht:RepresentationTest ;
+    mf:name "1list0PlusIri" ;
+    mf:status mf:Proposed ;
+    sht:trait sht:Import ;
+    sx:shex <1list0PlusIri.shex> ;
+    sx:json <1list0PlusIri.json> ;
+    sx:ttl <1list0PlusIri.ttl> ;
+    .
+
+<#1list1PlusIri> a sht:RepresentationTest ;
+    mf:name "1list1PlusIri" ;
+    mf:status mf:Proposed ;
+    sht:trait sht:Import ;
+    sx:shex <1list1PlusIri.shex> ;
+    sx:json <1list1PlusIri.json> ;
+    sx:ttl <1list1PlusIri.ttl> ;
+    .
+
+# } lists
+
+# regexp template:
+
+# match:
+# <#\(.*?\)> a sht:RepresentationTest ;
+#     mf:name "\1" ;
+#     mf:status mf:Proposed ;\(
+#     mf:sameSemanticsAs <#.*?> ;\)?\(
+#     sht:trait .*? ;\)?
+#     sx:shex <\(.*?\)\.shex> ;
+#     sx:json <\4\.json> ;
+#     sx:ttl <\4\.ttl> ;
+#     \.
+
+# emit:
+# <#\1> a sht:RepresentationTest ;
+#     mf:name "\1" ;
+#     mf:status mf:Proposed ;\2\3
+#     sx:shex <\4.shex> ;
+#     sx:json <\4.json> ;
+#     sx:ttl <\4.ttl> ;
+#     .
+

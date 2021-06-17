@@ -1,0 +1,7 @@
+# UCHAR.1 is not in PN_LOCAL
+# source: turtle-syntax-bad-pname-03.ttl
+PREFIX ex: <http://a.example/>
+
+<http://a.example/IssueShape> {
+   ex:p\u0031 .
+}

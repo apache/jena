@@ -1,0 +1,8 @@
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+<http://a.example/n1> <http://a.example/p1> _:l0 .
+_:l0 rdf:first <http://a.example/v1> .
+_:l0 rdf:first <http://a.example/v2> .
+_:l0 rdf:rest _:l2 .
+_:l2 rdf:first <http://a.example/v3> .
+_:l2 rdf:rest rdf:nil .

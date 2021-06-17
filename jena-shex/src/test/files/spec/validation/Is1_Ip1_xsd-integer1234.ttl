@@ -1,0 +1,1 @@
+<http://a.example/s1>  <http://a.example/p1> "1234"^^<http://www.w3.org/2001/XMLSchema#integer> .

@@ -1,0 +1,34 @@
+PREFIX ex: <http://a.example>
+PREFIX sx: <http://www.w3.org/ns/shex#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+[] a sx:Schema ;
+    sx:shapes (<http://a.example/S1>) .
+
+<http://a.example/S1> a sx:ShapeAnd ;
+  sx:shapeExprs (
+    [ a sx:NodeConstraint ; sx:nodeKind sx:iri ; sx:pattern "^https?://" ]
+    [ a sx:Shape ; sx:expression [ a sx:EachOf ; sx:expressions (
+      [ a sx:TripleConstraint ; sx:predicate <http://a.example/p1> ;
+        sx:valueExpr [ a sx:NodeConstraint ; sx:datatype <http://a.example/dt1> ] ]
+      [ a sx:TripleConstraint ; sx:predicate <http://a.example/p2> ;
+        sx:valueExpr [ a sx:ShapeAnd ; sx:shapeExprs (
+          [ a sx:NodeConstraint ; sx:nodeKind sx:bnode ]
+          [ a sx:Shape ; sx:expression [ a sx:EachOf ; sx:expressions (
+            [ a sx:TripleConstraint ; sx:predicate <http://a.example/p3> ;
+                sx:valueExpr [ a sx:NodeConstraint ; sx:nodeKind sx:literal ] ]
+            [ a sx:TripleConstraint ; sx:predicate <http://a.example/p4> ;
+              sx:min 0 ; sx:max 1 ;
+              sx:valueExpr [ a sx:ShapeAnd ; sx:shapeExprs (
+                [ a sx:NodeConstraint ; sx:nodeKind sx:iri ; sx:pattern "^https?://" ]
+                <http://a.example/S1>
+              ) ] ]
+          ) ] ]
+          [ a sx:Shape ; sx:closed true ; sx:expression [ a sx:EachOf ; sx:expressions (
+            [ a sx:TripleConstraint ; sx:predicate <http://a.example/p3> ]
+            [ a sx:TripleConstraint ; sx:predicate <http://a.example/p4> ]
+          ) ] ]
+      ) ] ]
+    ) ] ]
+  ) .
+

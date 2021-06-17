@@ -1,0 +1,7 @@
+<http://a.example/S1> {
+   <http://a.example/p1> @_:_
+}
+
+_:_ {
+   <http://a.example/p2> .
+}

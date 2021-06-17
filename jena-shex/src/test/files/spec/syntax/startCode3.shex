@@ -1,0 +1,6 @@
+%<http://shex.io/extensions/Test/>{ print("startAct 1") %}
+%<http://shex.io/extensions/Test/>{ print("startAct 2") %}
+%<http://shex.io/extensions/Test/>{ print("startAct 3") %}
+<http://a.example/S1> {
+   <http://a.example/p1> .
+}

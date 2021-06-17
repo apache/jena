@@ -1,0 +1,468 @@
+{
+  "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "startActs": [
+    {
+      "type": "SemAct",
+      "name": "http://all.example/act1",
+      "code": " START1 "
+    },
+    {
+      "type": "SemAct",
+      "name": "http://all.example/act2",
+      "code": " START2 "
+    }
+  ],
+  "start": "http://all.example/S3",
+  "shapes": [
+    {
+      "id": "http://all.example/S1",
+      "type": "Shape",
+      "expression": {
+        "id": "http://all.example/S1e",
+        "type": "EachOf",
+        "expressions": [
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://all.example/p1"
+          },
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://all.example/p2"
+          },
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://all.example/p3"
+          }
+        ]
+      },
+      "extra": [
+        "http://all.example/p1",
+        "http://all.example/p2",
+        "http://all.example/p3"
+      ]
+    },
+    {
+      "id": "http://all.example/S2",
+      "type": "Shape",
+      "expression": {
+        "id": "http://all.example/S2e",
+        "type": "EachOf",
+        "expressions": [
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://all.example/p1-"
+          },
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://all.example/p2"
+          },
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://all.example/p3"
+          }
+        ]
+      },
+      "extra": [
+        "http://all.example/p1",
+        "http://all.example/p2",
+        "http://all.example/p3"
+      ]
+    },
+    {
+      "id": "http://all.example/IRI",
+      "type": "NodeConstraint",
+      "nodeKind": "iri"
+    },
+    {
+      "id": "http://all.example/vs1",
+      "type": "ShapeAnd",
+      "shapeExprs": [
+        {
+          "type": "NodeConstraint",
+          "values": [
+            "http://a.example/a1",
+            {
+              "type": "IriStemRange",
+              "stem": "http://all.example/",
+              "exclusions": [
+                {
+                  "type": "IriStem",
+                  "stem": "http://all.example/a"
+                },
+                "http://all.example/b"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "NodeConstraint",
+          "datatype": "http://all.example/IRI"
+        }
+      ]
+    },
+    {
+      "id": "http://all.example/S3",
+      "type": "Shape",
+      "expression": {
+        "type": "EachOf",
+        "expressions": [
+          "http://all.example/S1e",
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://all.example/a"
+          },
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://all.example/prefix",
+            "valueExpr": {
+              "type": "NodeConstraint",
+              "datatype": "http://all.example/dt",
+              "length": 2
+            },
+            "min": 0,
+            "max": 1
+          },
+          {
+            "type": "OneOf",
+            "expressions": [
+              {
+                "type": "EachOf",
+                "expressions": [
+                  {
+                    "type": "TripleConstraint",
+                    "predicate": "http://all.example/base",
+                    "valueExpr": {
+                      "type": "NodeConstraint",
+                      "nodeKind": "iri"
+                    },
+                    "min": 0,
+                    "max": -1
+                  },
+                  {
+                    "type": "TripleConstraint",
+                    "predicate": "http://all.example/PREFIX",
+                    "valueExpr": {
+                      "type": "NodeConstraint",
+                      "nodeKind": "iri",
+                      "pattern": "^http://",
+                      "length": 5
+                    },
+                    "min": 1,
+                    "max": -1
+                  },
+                  {
+                    "type": "TripleConstraint",
+                    "predicate": "http://all.example/BaSe",
+                    "valueExpr": "http://all.example/S5",
+                    "min": 2,
+                    "max": 2
+                  }
+                ]
+              },
+              {
+                "type": "TripleConstraint",
+                "predicate": "http://all.example/virtual",
+                "valueExpr": {
+                  "type": "ShapeAnd",
+                  "shapeExprs": [
+                    {
+                      "type": "NodeConstraint",
+                      "nodeKind": "nonliteral"
+                    },
+                    "http://all.example/S5"
+                  ]
+                },
+                "min": 2,
+                "max": -1
+              },
+              {
+                "type": "TripleConstraint",
+                "predicate": "http://all.example/closed",
+                "valueExpr": {
+                  "type": "ShapeOr",
+                  "shapeExprs": [
+                    {
+                      "type": "ShapeAnd",
+                      "shapeExprs": [
+                        {
+                          "type": "NodeConstraint",
+                          "nodeKind": "bnode"
+                        },
+                        "http://all.example/S5"
+                      ]
+                    },
+                    {
+                      "type": "ShapeAnd",
+                      "shapeExprs": [
+                        {
+                          "type": "NodeConstraint",
+                          "minlength": 2,
+                          "maxlength": 4
+                        },
+                        "http://all.example/S5"
+                      ]
+                    }
+                  ]
+                },
+                "min": 2,
+                "max": -1
+              },
+              {
+                "type": "EachOf",
+                "expressions": [
+                  {
+                    "type": "OneOf",
+                    "expressions": [
+                      {
+                        "type": "EachOf",
+                        "expressions": [
+                          {
+                            "type": "TripleConstraint",
+                            "inverse": true,
+                            "predicate": "http://all.example/extra",
+                            "valueExpr": {
+                              "type": "Shape",
+                              "expression": {
+                                "type": "TripleConstraint",
+                                "predicate": "http://all.example/p1",
+                                "valueExpr": {
+                                  "type": "NodeConstraint",
+                                  "values": [
+                                    {
+                                      "value": "STRING_LITERAL2"
+                                    },
+                                    {
+                                      "value": "STRING_LITERAL2",
+                                      "language": "en-uk"
+                                    },
+                                    "http://all.example/",
+                                    "http://all.example/val1",
+                                    "http://all.example/",
+                                    "scheme:!$%25&amp;'()*+,-./0123456789:/@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~?#",
+                                    "http://a.example/p1",
+                                    {
+                                      "value": "0.0",
+                                      "type": "http://www.w3.org/2001/XMLSchema#decimal"
+                                    },
+                                    {
+                                      "value": "0e0",
+                                      "type": "http://www.w3.org/2001/XMLSchema#double"
+                                    },
+                                    {
+                                      "value": "0E0",
+                                      "type": "http://www.w3.org/2001/XMLSchema#double"
+                                    },
+                                    {
+                                      "value": "false",
+                                      "type": "http://www.w3.org/2001/XMLSchema#boolean"
+                                    },
+                                    {
+                                      "value": "0",
+                                      "type": "http://www.w3.org/2001/XMLSchema#integer"
+                                    },
+                                    {
+                                      "value": "ab",
+                                      "type": "http://all.example/bloodType"
+                                    },
+                                    {
+                                      "value": "o+",
+                                      "type": "http://all.example/bloodType"
+                                    },
+                                    {
+                                      "value": " !\"#$%&():;<=>?@[]^_`{|}~"
+                                    },
+                                    {
+                                      "value": "\t\u000b\f\u000e&([]"
+                                    },
+                                    {
+                                      "value": "߿ࠀ࿿က쿿퀀퟿�𐀀𿿽񀀀󿿽􀀀􏿽"
+                                    },
+                                    {
+                                      "value": "\"\\"
+                                    },
+                                    {
+                                      "value": "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+                                    },
+                                    {
+                                      "value": "STRING_LITERAL_LONG2",
+                                      "language": "en-uk"
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            "min": 2,
+                            "max": 3,
+                            "semActs": [
+                              {
+                                "type": "SemAct",
+                                "name": "http://all.example/act1",
+                                "code": " code1 "
+                              }
+                            ]
+                          },
+                          {
+                            "type": "TripleConstraint",
+                            "predicate": "http://all.example/iri",
+                            "valueExpr": {
+                              "type": "NodeConstraint",
+                              "nodeKind": "literal"
+                            },
+                            "min": 1,
+                            "max": -1,
+                            "semActs": [
+                              {
+                                "type": "SemAct",
+                                "name": "http://all.example/act1",
+                                "code": " %{printf(\"品川\\n\");%} "
+                              }
+                            ],
+                            "annotations": [
+                              {
+                                "type": "Annotation",
+                                "predicate": "http://a.example/annot1",
+                                "object": "http://a.example/IRIREF"
+                              },
+                              {
+                                "type": "Annotation",
+                                "predicate": "http://a.example/annot2",
+                                "object": {
+                                  "value": "STRING_LITERAL2"
+                                }
+                              },
+                              {
+                                "type": "Annotation",
+                                "predicate": "http://a.example/annot3",
+                                "object": {
+                                  "value": "3",
+                                  "type": "http://www.w3.org/2001/XMLSchema#integer"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "EachOf",
+                        "expressions": [
+                          {
+                            "type": "TripleConstraint",
+                            "inverse": true,
+                            "predicate": "http://all.example/bnode",
+                            "min": 1,
+                            "max": -1,
+                            "semActs": [
+                              {
+                                "type": "SemAct",
+                                "name": "http://all.example/act1",
+                                "code": " code1 "
+                              }
+                            ]
+                          },
+                          {
+                            "type": "TripleConstraint",
+                            "inverse": true,
+                            "predicate": "http://all.example/literal",
+                            "min": 1,
+                            "max": -1,
+                            "semActs": [
+                              {
+                                "type": "SemAct",
+                                "name": "http://all.example/act1",
+                                "code": " code1 "
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "TripleConstraint",
+                    "predicate": "http://all.example/nonliteral",
+                    "valueExpr": {
+                      "type": "NodeConstraint",
+                      "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                      "mininclusive": 5,
+                      "maxinclusive": 5,
+                      "totaldigits": 1,
+                      "fractiondigits": 1
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://all.example/or",
+            "valueExpr": "http://all.example/vs1"
+          },
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://all.example/pattern",
+            "valueExpr": {
+              "type": "NodeConstraint",
+              "values": [
+                {
+                  "type": "IriStemRange",
+                  "stem": {
+                    "type": "Wildcard"
+                  },
+                  "exclusions": [
+                    {
+                      "type": "IriStem",
+                      "stem": "http://all.example/a"
+                    },
+                    "http://all.example/b"
+                  ]
+                }
+              ]
+            },
+            "semActs": [
+              {
+                "type": "SemAct",
+                "name": "http://all.example/act1",
+                "code": " code1 "
+              },
+              {
+                "type": "SemAct",
+                "name": "http://all.example/act2",
+                "code": " code2 "
+              }
+            ]
+          }
+        ]
+      },
+      "extra": [
+        "http://all.example/a",
+        "http://all.example/prefix",
+        "http://all.example/base"
+      ]
+    },
+    {
+      "id": "http://all.example/S5",
+      "type": "NodeConstraint",
+      "nodeKind": "iri"
+    },
+    {
+      "id": "_:a·̀ͯ‿.⁀",
+      "type": "Shape",
+      "closed": true,
+      "expression": {
+        "id": "_:a·̀ͯ‿.⁀e",
+        "type": "EachOf",
+        "expressions": [
+          "http://all.example/S1e",
+          "http://all.example/S2e"
+        ]
+      }
+    },
+    {
+      "id": "_:AZazÀÖØöø˿ͰͽͿ῿‌‍⁰↏Ⰰ⿯、퟿豈﷏ﷰ�𐀀󯿽",
+      "type": "Shape",
+      "expression": "_:a·̀ͯ‿.⁀e"
+    }
+  ]
+}

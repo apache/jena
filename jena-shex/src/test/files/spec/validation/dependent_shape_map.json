@@ -1,0 +1,4 @@
+[
+  {"node":"http://inst.example/Issue1" , "shape":"http://schema.example/IssueShape"},
+  {"node":"http://inst.example/Tester2", "shape":"http://schema.example/TesterShape"}
+]

@@ -1,0 +1,7 @@
+PREFIX ex: <http://a.example/>
+
+<http://a.example/S1> EXTRA ex:p1 ex:p2 ex:p3 {
+   <http://a.example/p1> [<http://a.example/o1>];
+   <http://a.example/p2> [<http://a.example/o2>];
+   <http://a.example/p3> [<http://a.example/o3>]
+}

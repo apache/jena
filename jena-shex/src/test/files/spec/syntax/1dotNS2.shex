@@ -1,0 +1,6 @@
+PREFIX S1: <http://a.example/S1>
+PREFIX p1: <http://a.example/p1>
+
+S1: {
+   p1: .
+}

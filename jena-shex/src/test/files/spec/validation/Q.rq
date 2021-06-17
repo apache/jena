@@ -1,0 +1,6 @@
+PREFIX sht: <http://www.w3.org/ns/shacl/test-suite#>
+
+SELECT DISTINCT ?o {
+    ?s a ?o .
+    FILTER(STRSTARTS( str(?o) , str(sht:) ))
+}

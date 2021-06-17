@@ -1,0 +1,8 @@
+<http://a.example/S1> {
+   <http://a.example/p1> @_:0
+}
+
+_:0 {
+   <http://a.example/p2> .
+}
+

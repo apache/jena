@@ -1,0 +1,5 @@
+# IRIREF with bad UCHAR.2
+# source: turtle-syntax-bad-uri-03.ttl
+<http://a.example/IssueShape> {
+   <http://a.example/\U000000p1> .
+}

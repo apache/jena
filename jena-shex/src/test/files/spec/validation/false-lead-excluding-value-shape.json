@@ -1,0 +1,78 @@
+{
+  "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "shapes": [
+    {
+      "id": "http://a.example.org/S",
+      "type": "Shape",
+      "expression": {
+        "type": "EachOf",
+        "expressions": [
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://a.example/a",
+            "valueExpr": "http://a.example.org/T1",
+            "min": 0,
+            "max": -1
+          },
+          {
+            "type": "OneOf",
+            "expressions": [
+              {
+                "type": "TripleConstraint",
+                "predicate": "http://a.example/a",
+                "valueExpr": "http://a.example.org/T2"
+              },
+              {
+                "type": "TripleConstraint",
+                "predicate": "http://a.example/b",
+                "valueExpr": {
+                  "type": "NodeConstraint",
+                  "datatype": "http://www.w3.org/2001/XMLSchema#integer"
+                }
+              }
+            ]
+          },
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://a.example/b"
+          }
+        ]
+      }
+    },
+    {
+      "id": "http://a.example.org/T1",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/b",
+        "valueExpr": "http://a.example.org/T3"
+      }
+    },
+    {
+      "id": "http://a.example.org/T2",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/b",
+        "valueExpr": "http://a.example.org/T4"
+      }
+    },
+    {
+      "id": "http://a.example.org/T3",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/c"
+      }
+    },
+    {
+      "id": "http://a.example.org/T4",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/d"
+      }
+    }
+  ]
+}

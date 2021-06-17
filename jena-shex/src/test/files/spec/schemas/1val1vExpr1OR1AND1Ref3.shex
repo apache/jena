@@ -1,0 +1,7 @@
+<http://a.example/vc1> LITERAL minlength 5
+<http://a.example/vc2> LITERAL maxlength 3
+<http://a.example/vc3> LITERAL /^(ab)*$/
+
+<http://a.example/S1> {
+   <http://a.example/p1> @<http://a.example/vc1> OR @<http://a.example/vc2> AND @<http://a.example/vc3>
+}

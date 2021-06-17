@@ -1,0 +1,5 @@
+# tripleConsraint with no valueClass
+# source: turtle-syntax-bad-struct-12.ttl
+<http://a.example/IssueShape> {
+   <http://a.example/p1>
+}

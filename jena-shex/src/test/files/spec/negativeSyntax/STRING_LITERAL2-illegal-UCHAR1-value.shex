@@ -1,0 +1,5 @@
+# STRING_LITERAL2 with illegal UCHAR1 value
+# source: turtle-syntax-bad-esc-03.ttl
+<http://a.example/IssueShape> {
+   <http://a.example/p1> ["\U0000WXYZ"]
+}

@@ -1,0 +1,4 @@
+# source: langtagged_non_LONG.nt
+<http://a.example/S1> {
+   <http://a.example/p1> ["STRING_LITERAL2"@en]
+}

@@ -1,0 +1,5 @@
+# ANON predicate
+# source: turtle-syntax-bad-struct-06.ttl
+<http://a.example/IssueShape> {
+   [] .
+}

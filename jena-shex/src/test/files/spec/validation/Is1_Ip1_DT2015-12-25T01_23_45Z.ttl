@@ -1,0 +1,1 @@
+<http://a.example/s1> <http://a.example/p1> '2015-12-25T01:23:45Z'^^<http://www.w3.org/2001/XMLSchema#dateTime> .

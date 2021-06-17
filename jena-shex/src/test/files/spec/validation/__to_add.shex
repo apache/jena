@@ -1,0 +1,990 @@
+<../schemas/NOT1dotOR2dot.shex> ; "<S1> NOT { <p1> . } OR { <p1> .; <p2> . }"
+<#NOT1dotOR2dot_pass-empty>     "{  }"                                       ; <empty.ttl> ;
+<#NOT1dotOR2dot_pass-NoShape1>  "{ <n1>  <p2> <n2> }"                        ; <In1_Ip2_In2.ttl> ;
+<#NOT1dotOR2dot_pass-Shape2>    "{ <n1>  <p1> <n2> . <n1>  <p2> <n3> }"      ; <In1_Ip1_In2.In1_Ip2_In3.ttl> ;
+<#NOT1dotOR2dot_fail-Shape2>    "{ <n1>  <p1> <n2> }"                        ; <In1_Ip1_In2.ttl> ;
+
+<../schemas/NOT1dotOR2dotX3.shex> ; "<S1> ((NOT { <p1> . } OR { <p1> .; <p2> . }) AND (NOT { <p3> . } OR { <p3> .; <p4> . }) AND (NOT { <p5> . } OR { <p5> .; <p6> . }) )"
+<#NOT1dotOR2dotX3_pass-empty>     "{  }"                                     ; <empty.ttl> ;
+<#NOT1dotOR2dotX3_pass-NoShape1>  "{ <n1>  <p2> <n2> }"                      ; <In1_Ip2_In2.ttl> ;
+<#NOT1dotOR2dotX3_pass-Shape2>    "{ <n1>  <p1> <n2> . <n1>  <p2> <n3> }"    ; <In1_Ip1_In2.In1_Ip2_In3.ttl> ;
+<#NOT1dotOR2dotX3_fail-Shape2>    "{ <n1>  <p1> <n2> }"                      ; <In1_Ip1_In2.ttl> ;
+
+<../schemas/NOT1dotOR2dotX3AND1.shex> ; "<S1> ((NOT { <p1> . } OR { <p1> .; <p2> . }) AND (NOT { <p3> . } OR { <p3> .; <p4> . }) AND (NOT { <p5> . } OR { <p5> .; <p6> . }) AND ({ <p1> . } OR { <p3> . } OR { <p5> . } ) )"
+<#NOT1dotOR2dotX3AND1_fail-empty>    "{  }"                                  ; <empty.ttl> ;
+<#NOT1dotOR2dotX3AND1_fail-NoShape1> "{ <n1>  <p2> <n2> }"                   ; <In1_Ip2_In2.ttl> ;
+<#NOT1dotOR2dotX3AND1_pass-Shape2>   "{ <n1>  <p1> <n2> . <n1>  <p2> <n3> }" ; <In1_Ip1_In2.In1_Ip2_In3.ttl> ;
+<#NOT1dotOR2dotX3AND1_fail-Shape2>   "{ <n1>  <p1> <n2> }"                   ; <In1_Ip1_In2.ttl> ;
+
+
+<S0> { <p1> NOT IRI }
+<S1> { <p1> NOT(NOT IRI) }
+<S2> { <p1> NOT [<v1> <v2> <v3>] }
+<S3> { <p1> NOT(NOT [<v1>]) }
+<S4> { <p1> NOT . }
+<S5> { <p1> NOT(NOT .) }
+<S6> { <p1> (NOT  IRI) AND [<v1> <v2> <v3>]  }
+<S7> { <p1>  NOT (IRI  AND [<v1> <v2> <v3>]) }
+<S8> { <p1>  NOT  IRI  AND [<v1> <v2> <v3>]  }
+<S9> { <p1> (NOT  [<v1>]) AND [<v2> <v3>]  }
+<S10> { <p1>  NOT ([<v1>]  AND [<v2> <v3>]) }
+<S11> { <p1>  NOT  [<v1>]  AND [<v2> <v3>]  }
+<S12> { <p1> (NOT  IRI) OR [<v1> <v2> <v3>]  }
+<S13> { <p1>  NOT (IRI  OR [<v1> <v2> <v3>]) }
+<S14> { <p1>  NOT  IRI  OR [<v1> <v2> <v3>]  }
+<S15> { <p1> (NOT  [<v1>]) OR [<v2> <v3>]  }
+<S16> { <p1>  NOT ([<v1>]  OR [<v2> <v3>]) }
+<S17> { <p1>  NOT  [<v1>]  OR [<v2> <v3>]  }
+<S18> NOT { <p1> NOT [<v1> <v2> <v3>] }
+
+<../schemas/1NOTIRI.shex> <S1> { <p1> NOT IRI }
+P <Is1_Ip1_Lv.ttl> { <s1> <p1> 'v' }
+F <Is1_Ip1_Io1.ttl> { <s1> <p1> <o1> }
+F <empty.ttl> {  }
+
+<../schemas/1NOTNOTIRI.shex><S1> { <p1> NOT(NOT IRI) }
+F <Is1_Ip1_Lv.ttl> { <s1> <p1> 'v' }
+P <Is1_Ip1_Io1.ttl> { <s1> <p1> <o1> }
+
+<../schemas/1NOTvs.shex> <S1> { <p1> NOT [<v1> <v2> <v3>] }
+F <Is1_Ip1_Iv1.ttl> { <s1> <p1> <v1> }
+P <Is1_Ip1_Io1.ttl> { <s1> <p1> <o1> }
+F <empty.ttl> {  }
+
+<../schemas/1NOTNOTvs.shex> <S1> { <p1> NOT(NOT [<v1>]) }
+P <Is1_Ip1_Iv1.ttl> { <s1> <p1> <v1> }
+F <Is1_Ip1_Io1.ttl> { <s1> <p1> <o1> }
+
+<../schemas/1NOTdot.shex> <S1> { <p1> NOT . }
+F <Is1_Ip1_Iv1.ttl> { <s1> <p1> <v1> }
+F <Is1_Ip1_Io1.ttl> { <s1> <p1> <o1> }
+F <empty.ttl> {  }
+
+<../schemas/1NOTNOTdot.shex> <S1> { <p1> NOT(NOT .) }
+P <Is1_Ip1_Iv1.ttl> { <s1> <p1> <v1> }
+P <Is1_Ip1_Io1.ttl> { <s1> <p1> <o1> }
+
+<../schemas/1_NOTliteral_ANDvs.shex> <S1> { <p1> (NOT  LITERAL) AND [<v1> <v2>]  }
+P <Is1_Ip1_Iv1.ttl> { <s1> <p1> <v1> }
+F <Is1_Ip1_Io1.ttl> { <s1> <p1> <o1> }
+F <Is1_Ip1_Lv.ttl> { <s1> <p1> 'v' }
+
+<../schemas/1NOT_literalANDvs_.shex> <S1> { <p1>  NOT (LITERAL  AND [<v1> <v2>]) }
+P <Is1_Ip1_Iv1.ttl> { <s1> <p1> <v1> }
+P <Is1_Ip1_Lv.ttl> { <s1> <p1> 'v' }
+
+<../schemas/1NOTliteralANDvs.shex> <S1> { <p1>  NOT  LITERAL  AND [<v1> <v2>]  }
+P <Is1_Ip1_Iv1.ttl> { <s1> <p1> <v1> }
+F <Is1_Ip1_Io1.ttl> { <s1> <p1> <o1> }
+F <Is1_Ip1_Lv.ttl> { <s1> <p1> 'v' }
+
+<../schemas/1_NOTvs_ANDvs.shex> <S1> { <p1> (NOT  [<v1>]) AND [<v2>]  }
+F <Is1_Ip1_Iv1.ttl> { <s1> <p1> <v1> }
+P <Is1_Ip1_Iv2.ttl> { <s1> <p1> <v2> }
+F <Is1_Ip1_Iv3.ttl> { <s1> <p1> <v3> }
+
+<../schemas/1NOT_vsANDvs_.shex> <S1> { <p1>  NOT ([<v1>]  AND [<v2>]) }
+P <Is1_Ip1_Iv1.ttl> { <s1> <p1> <v1> }
+P <Is1_Ip1_Iv2.ttl> { <s1> <p1> <v2> }
+P <Is1_Ip1_Iv3.ttl> { <s1> <p1> <v3> }
+
+<../schemas/1NOTvsANDvs.shex> <S1> { <p1>  NOT  [<v1>]  AND [<v2>]  }
+F <Is1_Ip1_Iv1.ttl> { <s1> <p1> <v1> }
+P <Is1_Ip1_Iv2.ttl> { <s1> <p1> <v2> }
+F <Is1_Ip1_Iv3.ttl> { <s1> <p1> <v3> }
+
+<../schemas/1_NOTliteral_ORvs.shex><S1> { <p1> (NOT  LITERAL) OR [<v1> <v2>]  }
+F <Is1_Ip1_Iv1.ttl> { <s1> <p1> <v1> }
+F <Is1_Ip1_Io1.ttl> { <s1> <p1> <o1> }
+P <Is1_Ip1_Lv.ttl> { <s1> <p1> 'v' }
+
+<../schemas/1NOT_literalORvs_.shex><S1> { <p1>  NOT (LITERAL  OR [<v1> <v2>]) }
+F <Is1_Ip1_Iv1.ttl> { <s1> <p1> <v1> }
+P <Is1_Ip1_Io1.ttl> { <s1> <p1> <o1> }
+F <Is1_Ip1_Lv.ttl> { <s1> <p1> 'v' }
+
+<../schemas/1NOTliteralORvs.shex><S1> { <p1>  NOT  LITERAL  OR [<v1> <v2>]  }
+P <Is1_Ip1_Iv1.ttl> { <s1> <p1> <v1> }
+P <Is1_Ip1_Io1.ttl> { <s1> <p1> <o1> }
+F <Is1_Ip1_Lv.ttl> { <s1> <p1> 'v' }
+
+<../schemas/1_NOTvs_ORvs.shex> <S1> { <p1> (NOT  [<v1>]) OR [<v2>]  }
+F <Is1_Ip1_Iv1.ttl> { <s1> <p1> <v1> }
+P <Is1_Ip1_Iv2.ttl> { <s1> <p1> <v2> }
+P <Is1_Ip1_Iv3.ttl> { <s1> <p1> <v3> }
+
+<../schemas/1NOT_vsORvs_.shex> <S1> { <p1>  NOT ([<v1>]  OR [<v2>]) }
+F <Is1_Ip1_Iv1.ttl> { <s1> <p1> <v1> }
+F <Is1_Ip1_Iv2.ttl> { <s1> <p1> <v2> }
+P <Is1_Ip1_Iv3.ttl> { <s1> <p1> <v3> }
+
+<../schemas/1NOTvsORvs.shex> <S1> { <p1>  NOT  [<v1>]  OR [<v2>]  }
+F <Is1_Ip1_Iv1.ttl> { <s1> <p1> <v1> }
+F <Is1_Ip1_Iv2.ttl> { <s1> <p1> <v2> }
+P <Is1_Ip1_Iv3.ttl> { <s1> <p1> <v3> }
+
+<../schemas/NOT1NOTvs.shex> <S1> NOT { <p1> NOT [<v1> <v2>] }
+F <Is1_Ip1_Iv1.ttl> { <s1> <p1> <v1> }
+F <Is1_Ip1_Iv2.ttl> { <s1> <p1> <v2> }
+P <Is1_Ip1_Iv3.ttl> { <s1> <p1> <v3> }
+
+
+
+
+P <../schemas/1NOTIRI.shex> <Is1_Ip1_Lv.ttl> "<S1> { <p1> NOT IRI } on { <s1> <p1> 'v' }" ;
+F <../schemas/1NOTIRI.shex> <Is1_Ip1_Io1.ttl> "<S1> { <p1> NOT IRI } on { <s1> <p1> <o1> }" ;
+F <../schemas/1NOTIRI.shex> <empty.ttl> "<S1> { <p1> NOT IRI } on {  }" ;
+
+
+F <../schemas/1NOTNOTIRI.shex> <Is1_Ip1_Lv.ttl> "<S1> { <p1> NOT(NOT IRI) } on { <s1> <p1> 'v' }" ;
+P <../schemas/1NOTNOTIRI.shex> <Is1_Ip1_Io1.ttl> "<S1> { <p1> NOT(NOT IRI) } on { <s1> <p1> <o1> }" ;
+
+
+F <../schemas/1NOTvs.shex> <Is1_Ip1_Iv1.ttl> "<S1> { <p1> NOT [<v1> <v2> <v3>] } on { <s1> <p1> <v1> }" ;
+P <../schemas/1NOTvs.shex> <Is1_Ip1_Io1.ttl> "<S1> { <p1> NOT [<v1> <v2> <v3>] } on { <s1> <p1> <o1> }" ;
+F <../schemas/1NOTvs.shex> <empty.ttl> "<S1> { <p1> NOT [<v1> <v2> <v3>] } on {  }" ;
+
+
+P <../schemas/1NOTNOTvs.shex> <Is1_Ip1_Iv1.ttl> "<S1> { <p1> NOT(NOT [<v1>]) } on { <s1> <p1> <v1> }" ;
+F <../schemas/1NOTNOTvs.shex> <Is1_Ip1_Io1.ttl> "<S1> { <p1> NOT(NOT [<v1>]) } on { <s1> <p1> <o1> }" ;
+
+
+F <../schemas/1NOTdot.shex> <Is1_Ip1_Iv1.ttl> "<S1> { <p1> NOT . } on { <s1> <p1> <v1> }" ;
+F <../schemas/1NOTdot.shex> <Is1_Ip1_Io1.ttl> "<S1> { <p1> NOT . } on { <s1> <p1> <o1> }" ;
+F <../schemas/1NOTdot.shex> <empty.ttl> "<S1> { <p1> NOT . } on {  }" ;
+
+
+P <../schemas/1NOTNOTdot.shex> <Is1_Ip1_Iv1.ttl> "<S1> { <p1> NOT(NOT .) } on { <s1> <p1> <v1> }" ;
+P <../schemas/1NOTNOTdot.shex> <Is1_Ip1_Io1.ttl> "<S1> { <p1> NOT(NOT .) } on { <s1> <p1> <o1> }" ;
+
+
+P <../schemas/1_NOTliteral_ANDvs.shex> <Is1_Ip1_Iv1.ttl> "<S1> { <p1> (NOT  LITERAL) AND [<v1> <v2>]  } on { <s1> <p1> <v1> }" ;
+F <../schemas/1_NOTliteral_ANDvs.shex> <Is1_Ip1_Io1.ttl> "<S1> { <p1> (NOT  LITERAL) AND [<v1> <v2>]  } on { <s1> <p1> <o1> }" ;
+F <../schemas/1_NOTliteral_ANDvs.shex> <Is1_Ip1_Lv.ttl> "<S1> { <p1> (NOT  LITERAL) AND [<v1> <v2>]  } on { <s1> <p1> 'v' }" ;
+
+
+P <../schemas/1NOT_literalANDvs_.shex> <Is1_Ip1_Iv1.ttl> "<S1> { <p1>  NOT (LITERAL  AND [<v1> <v2>]) } on { <s1> <p1> <v1> }" ;
+P <../schemas/1NOT_literalANDvs_.shex> <Is1_Ip1_Lv.ttl> "<S1> { <p1>  NOT (LITERAL  AND [<v1> <v2>]) } on { <s1> <p1> 'v' }" ;
+
+
+P <../schemas/1NOTliteralANDvs.shex> <Is1_Ip1_Iv1.ttl> "<S1> { <p1>  NOT  LITERAL  AND [<v1> <v2>]  } on { <s1> <p1> <v1> }" ;
+F <../schemas/1NOTliteralANDvs.shex> <Is1_Ip1_Io1.ttl> "<S1> { <p1>  NOT  LITERAL  AND [<v1> <v2>]  } on { <s1> <p1> <o1> }" ;
+F <../schemas/1NOTliteralANDvs.shex> <Is1_Ip1_Lv.ttl> "<S1> { <p1>  NOT  LITERAL  AND [<v1> <v2>]  } on { <s1> <p1> 'v' }" ;
+
+
+F <../schemas/1_NOTvs_ANDvs.shex> <Is1_Ip1_Iv1.ttl> "<S1> { <p1> (NOT  [<v1>]) AND [<v2>]  } on { <s1> <p1> <v1> }" ;
+P <../schemas/1_NOTvs_ANDvs.shex> <Is1_Ip1_Iv2.ttl> "<S1> { <p1> (NOT  [<v1>]) AND [<v2>]  } on { <s1> <p1> <v2> }" ;
+F <../schemas/1_NOTvs_ANDvs.shex> <Is1_Ip1_Iv3.ttl> "<S1> { <p1> (NOT  [<v1>]) AND [<v2>]  } on { <s1> <p1> <v3> }" ;
+
+
+P <../schemas/1NOT_vsANDvs_.shex> <Is1_Ip1_Iv1.ttl> "<S1> { <p1>  NOT ([<v1>]  AND [<v2>]) } on { <s1> <p1> <v1> }" ;
+P <../schemas/1NOT_vsANDvs_.shex> <Is1_Ip1_Iv2.ttl> "<S1> { <p1>  NOT ([<v1>]  AND [<v2>]) } on { <s1> <p1> <v2> }" ;
+P <../schemas/1NOT_vsANDvs_.shex> <Is1_Ip1_Iv3.ttl> "<S1> { <p1>  NOT ([<v1>]  AND [<v2>]) } on { <s1> <p1> <v3> }" ;
+
+
+F <../schemas/1NOTvsANDvs.shex> <Is1_Ip1_Iv1.ttl> "<S1> { <p1>  NOT  [<v1>]  AND [<v2>]  } on { <s1> <p1> <v1> }" ;
+P <../schemas/1NOTvsANDvs.shex> <Is1_Ip1_Iv2.ttl> "<S1> { <p1>  NOT  [<v1>]  AND [<v2>]  } on { <s1> <p1> <v2> }" ;
+F <../schemas/1NOTvsANDvs.shex> <Is1_Ip1_Iv3.ttl> "<S1> { <p1>  NOT  [<v1>]  AND [<v2>]  } on { <s1> <p1> <v3> }" ;
+
+
+F <../schemas/1_NOTliteral_ORvs.shex> <Is1_Ip1_Iv1.ttl> "<S1> { <p1> (NOT  LITERAL) OR [<v1> <v2>]  } on { <s1> <p1> <v1> }" ;
+F <../schemas/1_NOTliteral_ORvs.shex> <Is1_Ip1_Io1.ttl> "<S1> { <p1> (NOT  LITERAL) OR [<v1> <v2>]  } on { <s1> <p1> <o1> }" ;
+P <../schemas/1_NOTliteral_ORvs.shex> <Is1_Ip1_Lv.ttl> "<S1> { <p1> (NOT  LITERAL) OR [<v1> <v2>]  } on { <s1> <p1> 'v' }" ;
+
+
+F <../schemas/1NOT_literalORvs_.shex> <Is1_Ip1_Iv1.ttl> "<S1> { <p1>  NOT (LITERAL  OR [<v1> <v2>]) } on { <s1> <p1> <v1> }" ;
+P <../schemas/1NOT_literalORvs_.shex> <Is1_Ip1_Io1.ttl> "<S1> { <p1>  NOT (LITERAL  OR [<v1> <v2>]) } on { <s1> <p1> <o1> }" ;
+F <../schemas/1NOT_literalORvs_.shex> <Is1_Ip1_Lv.ttl> "<S1> { <p1>  NOT (LITERAL  OR [<v1> <v2>]) } on { <s1> <p1> 'v' }" ;
+
+
+P <../schemas/1NOTliteralORvs.shex> <Is1_Ip1_Iv1.ttl> "<S1> { <p1>  NOT  LITERAL  OR [<v1> <v2>]  } on { <s1> <p1> <v1> }" ;
+P <../schemas/1NOTliteralORvs.shex> <Is1_Ip1_Io1.ttl> "<S1> { <p1>  NOT  LITERAL  OR [<v1> <v2>]  } on { <s1> <p1> <o1> }" ;
+F <../schemas/1NOTliteralORvs.shex> <Is1_Ip1_Lv.ttl> "<S1> { <p1>  NOT  LITERAL  OR [<v1> <v2>]  } on { <s1> <p1> 'v' }" ;
+
+
+F <../schemas/1_NOTvs_ORvs.shex> <Is1_Ip1_Iv1.ttl> "<S1> { <p1> (NOT  [<v1>]) OR [<v2>]  } on { <s1> <p1> <v1> }" ;
+P <../schemas/1_NOTvs_ORvs.shex> <Is1_Ip1_Iv2.ttl> "<S1> { <p1> (NOT  [<v1>]) OR [<v2>]  } on { <s1> <p1> <v2> }" ;
+P <../schemas/1_NOTvs_ORvs.shex> <Is1_Ip1_Iv3.ttl> "<S1> { <p1> (NOT  [<v1>]) OR [<v2>]  } on { <s1> <p1> <v3> }" ;
+
+
+F <../schemas/1NOT_vsORvs_.shex> <Is1_Ip1_Iv1.ttl> "<S1> { <p1>  NOT ([<v1>]  OR [<v2>]) } on { <s1> <p1> <v1> }" ;
+F <../schemas/1NOT_vsORvs_.shex> <Is1_Ip1_Iv2.ttl> "<S1> { <p1>  NOT ([<v1>]  OR [<v2>]) } on { <s1> <p1> <v2> }" ;
+P <../schemas/1NOT_vsORvs_.shex> <Is1_Ip1_Iv3.ttl> "<S1> { <p1>  NOT ([<v1>]  OR [<v2>]) } on { <s1> <p1> <v3> }" ;
+
+
+F <../schemas/1NOTvsORvs.shex> <Is1_Ip1_Iv1.ttl> "<S1> { <p1>  NOT  [<v1>]  OR [<v2>]  } on { <s1> <p1> <v1> }" ;
+F <../schemas/1NOTvsORvs.shex> <Is1_Ip1_Iv2.ttl> "<S1> { <p1>  NOT  [<v1>]  OR [<v2>]  } on { <s1> <p1> <v2> }" ;
+P <../schemas/1NOTvsORvs.shex> <Is1_Ip1_Iv3.ttl> "<S1> { <p1>  NOT  [<v1>]  OR [<v2>]  } on { <s1> <p1> <v3> }" ;
+
+
+F <../schemas/NOT1NOTvs.shex> <Is1_Ip1_Iv1.ttl> "<S1> NOT { <p1> NOT [<v1> <v2>] } on { <s1> <p1> <v1> }" ;
+F <../schemas/NOT1NOTvs.shex> <Is1_Ip1_Iv2.ttl> "<S1> NOT { <p1> NOT [<v1> <v2>] } on { <s1> <p1> <v2> }" ;
+P <../schemas/NOT1NOTvs.shex> <Is1_Ip1_Iv3.ttl> "<S1> NOT { <p1> NOT [<v1> <v2>] } on { <s1> <p1> <v3> }" ;
+
+-----------------------------------------------------
+
+
+
+<#1NOTIRI_passLv> a sht:ValidationTest ;
+    mf:name "1NOTIRI_passLv" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> NOT IRI } on { <s1> <p1> 'v' }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTIRI.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Lv.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTIRI_failIo1> a sht:ValidationFailure ;
+    mf:name "1NOTIRI_failIo1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> NOT IRI } on { <s1> <p1> <o1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTIRI.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Io1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTIRI_failempty> a sht:ValidationFailure ; ;
+    mf:name "1NOTIRI_Fempty" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> NOT IRI } on {  }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTIRI.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <empty.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTNOTIRI_failLv> a sht:ValidationFailure ;
+    mf:name "1NOTNOTIRI_failLv" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> NOT(NOT IRI) } on { <s1> <p1> 'v' }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTNOTIRI.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Lv.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTNOTIRI_passIo1> a sht:ValidationTest ;
+    mf:name "1NOTNOTIRI_passIo1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> NOT(NOT IRI) } on { <s1> <p1> <o1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTNOTIRI.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Io1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTvs_failIv1> a sht:ValidationFailure ;
+    mf:name "1NOTvs_failIv1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> NOT [<v1> <v2> <v3>] } on { <s1> <p1> <v1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTvs_passIo1> a sht:ValidationTest ;
+    mf:name "1NOTvs_passIo1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> NOT [<v1> <v2> <v3>] } on { <s1> <p1> <o1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Io1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTvs_failempty> a sht:ValidationFailure ; ;
+    mf:name "1NOTvs_Fempty" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> NOT [<v1> <v2> <v3>] } on {  }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <empty.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+<#1NOTNOTvs_passIv1> a sht:ValidationTest ;
+    mf:name "1NOTNOTvs_passIv1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> NOT(NOT [<v1>]) } on { <s1> <p1> <v1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTNOTvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTNOTvs_failIo1> a sht:ValidationFailure ;
+    mf:name "1NOTNOTvs_failIo1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> NOT(NOT [<v1>]) } on { <s1> <p1> <o1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTNOTvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Io1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTdot_failIv1> a sht:ValidationFailure ;
+    mf:name "1NOTdot_failIv1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> NOT . } on { <s1> <p1> <v1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTdot.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTdot_failIo1> a sht:ValidationFailure ;
+    mf:name "1NOTdot_failIo1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> NOT . } on { <s1> <p1> <o1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTdot.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Io1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTdot_failempty> a sht:ValidationFailure ; ;
+    mf:name "1NOTdot_Fempty" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> NOT . } on {  }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTdot.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <empty.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+<#1NOTNOTdot_passIv1> a sht:ValidationTest ;
+    mf:name "1NOTNOTdot_passIv1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> NOT(NOT .) } on { <s1> <p1> <v1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTNOTdot.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTNOTdot_passIo1> a sht:ValidationTest ;
+    mf:name "1NOTNOTdot_passIo1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> NOT(NOT .) } on { <s1> <p1> <o1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTNOTdot.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Io1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1_NOTliteral_ANDvs_passIv1> a sht:ValidationTest ;
+    mf:name "1_NOTliteral_ANDvs_passIv1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> (NOT  LITERAL) AND [<v1> <v2>]  } on { <s1> <p1> <v1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1_NOTliteral_ANDvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1_NOTliteral_ANDvs_failIo1> a sht:ValidationFailure ;
+    mf:name "1_NOTliteral_ANDvs_failIo1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> (NOT  LITERAL) AND [<v1> <v2>]  } on { <s1> <p1> <o1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1_NOTliteral_ANDvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Io1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1_NOTliteral_ANDvs_failLv> a sht:ValidationFailure ;
+    mf:name "1_NOTliteral_ANDvs_failLv" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> (NOT  LITERAL) AND [<v1> <v2>]  } on { <s1> <p1> 'v' }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1_NOTliteral_ANDvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Lv.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOT_literalANDvs__passIv1> a sht:ValidationTest ;
+    mf:name "1NOT_literalANDvs__passIv1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT (LITERAL  AND [<v1> <v2>]) } on { <s1> <p1> <v1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOT_literalANDvs_.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOT_literalANDvs__passLv> a sht:ValidationTest ;
+    mf:name "1NOT_literalANDvs__passLv" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT (LITERAL  AND [<v1> <v2>]) } on { <s1> <p1> 'v' }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOT_literalANDvs_.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Lv.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTliteralANDvs_passIv1> a sht:ValidationTest ;
+    mf:name "1NOTliteralANDvs_passIv1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT  LITERAL  AND [<v1> <v2>]  } on { <s1> <p1> <v1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTliteralANDvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTliteralANDvs_failIo1> a sht:ValidationFailure ;
+    mf:name "1NOTliteralANDvs_failIo1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT  LITERAL  AND [<v1> <v2>]  } on { <s1> <p1> <o1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTliteralANDvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Io1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTliteralANDvs_failLv> a sht:ValidationFailure ;
+    mf:name "1NOTliteralANDvs_failLv" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT  LITERAL  AND [<v1> <v2>]  } on { <s1> <p1> 'v' }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTliteralANDvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Lv.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1_NOTvs_ANDvs_failIv1> a sht:ValidationFailure ;
+    mf:name "1_NOTvs_ANDvs_failIv1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> (NOT  [<v1>]) AND [<v2>]  } on { <s1> <p1> <v1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1_NOTvs_ANDvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1_NOTvs_ANDvs_passIv2> a sht:ValidationTest ;
+    mf:name "1_NOTvs_ANDvs_passIv2" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> (NOT  [<v1>]) AND [<v2>]  } on { <s1> <p1> <v2> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1_NOTvs_ANDvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv2.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1_NOTvs_ANDvs_failIv3> a sht:ValidationFailure ;
+    mf:name "1_NOTvs_ANDvs_failIv3" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> (NOT  [<v1>]) AND [<v2>]  } on { <s1> <p1> <v3> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1_NOTvs_ANDvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv3.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOT_vsANDvs__passIv1> a sht:ValidationTest ;
+    mf:name "1NOT_vsANDvs__passIv1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT ([<v1>]  AND [<v2>]) } on { <s1> <p1> <v1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOT_vsANDvs_.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOT_vsANDvs__passIv2> a sht:ValidationTest ;
+    mf:name "1NOT_vsANDvs__passIv2" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT ([<v1>]  AND [<v2>]) } on { <s1> <p1> <v2> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOT_vsANDvs_.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv2.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOT_vsANDvs__passIv3> a sht:ValidationTest ;
+    mf:name "1NOT_vsANDvs__passIv3" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT ([<v1>]  AND [<v2>]) } on { <s1> <p1> <v3> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOT_vsANDvs_.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv3.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTvsANDvs_failIv1> a sht:ValidationFailure ;
+    mf:name "1NOTvsANDvs_failIv1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT  [<v1>]  AND [<v2>]  } on { <s1> <p1> <v1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTvsANDvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTvsANDvs_passIv2> a sht:ValidationTest ;
+    mf:name "1NOTvsANDvs_passIv2" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT  [<v1>]  AND [<v2>]  } on { <s1> <p1> <v2> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTvsANDvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv2.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTvsANDvs_failIv3> a sht:ValidationFailure ;
+    mf:name "1NOTvsANDvs_failIv3" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT  [<v1>]  AND [<v2>]  } on { <s1> <p1> <v3> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTvsANDvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv3.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1_NOTliteral_ORvs_passIv1> a sht:ValidationTest ;
+    mf:name "1_NOTliteral_ORvs_passIv1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> (NOT  LITERAL) OR [<v1> <v2>]  } on { <s1> <p1> <v1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1_NOTliteral_ORvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1_NOTliteral_ORvs_failIo1> a sht:ValidationFailure ;
+    mf:name "1_NOTliteral_ORvs_failIo1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> (NOT  LITERAL) OR [<v1> <v2>]  } on { <s1> <p1> <o1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1_NOTliteral_ORvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Io1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1_NOTliteral_ORvs_passLv> a sht:ValidationTest ;
+    mf:name "1_NOTliteral_ORvs_passLv" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> (NOT  LITERAL) OR [<v1> <v2>]  } on { <s1> <p1> 'v' }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1_NOTliteral_ORvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Lv.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOT_literalORvs__failIv1> a sht:ValidationFailure ;
+    mf:name "1NOT_literalORvs__failIv1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT (LITERAL  OR [<v1> <v2>]) } on { <s1> <p1> <v1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOT_literalORvs_.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOT_literalORvs__passIo1> a sht:ValidationTest ;
+    mf:name "1NOT_literalORvs__passIo1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT (LITERAL  OR [<v1> <v2>]) } on { <s1> <p1> <o1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOT_literalORvs_.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Io1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOT_literalORvs__failLv> a sht:ValidationFailure ;
+    mf:name "1NOT_literalORvs__failLv" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT (LITERAL  OR [<v1> <v2>]) } on { <s1> <p1> 'v' }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOT_literalORvs_.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Lv.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTliteralORvs_passIv1> a sht:ValidationTest ;
+    mf:name "1NOTliteralORvs_passIv1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT  LITERAL  OR [<v1> <v2>]  } on { <s1> <p1> <v1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTliteralORvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTliteralORvs_passIo1> a sht:ValidationTest ;
+    mf:name "1NOTliteralORvs_passIo1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT  LITERAL  OR [<v1> <v2>]  } on { <s1> <p1> <o1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTliteralORvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Io1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTliteralORvs_failLv> a sht:ValidationFailure ;
+    mf:name "1NOTliteralORvs_failLv" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT  LITERAL  OR [<v1> <v2>]  } on { <s1> <p1> 'v' }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTliteralORvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Lv.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1_NOTvs_ORvs_failIv1> a sht:ValidationFailure ;
+    mf:name "1_NOTvs_ORvs_failIv1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> (NOT  [<v1>]) OR [<v2>]  } on { <s1> <p1> <v1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1_NOTvs_ORvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1_NOTvs_ORvs_passIv2> a sht:ValidationTest ;
+    mf:name "1_NOTvs_ORvs_passIv2" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> (NOT  [<v1>]) OR [<v2>]  } on { <s1> <p1> <v2> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1_NOTvs_ORvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv2.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1_NOTvs_ORvs_passIv3> a sht:ValidationTest ;
+    mf:name "1_NOTvs_ORvs_passIv3" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1> (NOT  [<v1>]) OR [<v2>]  } on { <s1> <p1> <v3> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1_NOTvs_ORvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv3.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOT_vsORvs__failIv1> a sht:ValidationFailure ;
+    mf:name "1NOT_vsORvs__failIv1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT ([<v1>]  OR [<v2>]) } on { <s1> <p1> <v1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOT_vsORvs_.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOT_vsORvs__failIv2> a sht:ValidationFailure ;
+    mf:name "1NOT_vsORvs__failIv2" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT ([<v1>]  OR [<v2>]) } on { <s1> <p1> <v2> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOT_vsORvs_.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv2.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOT_vsORvs__passIv3> a sht:ValidationTest ;
+    mf:name "1NOT_vsORvs__passIv3" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT ([<v1>]  OR [<v2>]) } on { <s1> <p1> <v3> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOT_vsORvs_.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv3.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTvsORvs_failIv1> a sht:ValidationFailure ;
+    mf:name "1NOTvsORvs_failIv1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT  [<v1>]  OR [<v2>]  } on { <s1> <p1> <v1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTvsORvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTvsORvs_failIv2> a sht:ValidationFailure ;
+    mf:name "1NOTvsORvs_failIv2" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT  [<v1>]  OR [<v2>]  } on { <s1> <p1> <v2> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTvsORvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv2.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#1NOTvsORvs_passIv3> a sht:ValidationTest ;
+    mf:name "1NOTvsORvs_passIv3" ;
+    sht:trait null ;
+    rdfs:comment "<S1> { <p1>  NOT  [<v1>]  OR [<v2>]  } on { <s1> <p1> <v3> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/1NOTvsORvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv3.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#NOT1NOTvs_failIv1> a sht:ValidationFailure ;
+    mf:name "NOT1NOTvs_failIv1" ;
+    sht:trait null ;
+    rdfs:comment "<S1> NOT { <p1> NOT [<v1> <v2>] } on { <s1> <p1> <v1> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/NOT1NOTvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv1.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#NOT1NOTvs_failIv2> a sht:ValidationFailure ;
+    mf:name "NOT1NOTvs_failIv2" ;
+    sht:trait null ;
+    rdfs:comment "<S1> NOT { <p1> NOT [<v1> <v2>] } on { <s1> <p1> <v2> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/NOT1NOTvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv2.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+<#NOT1NOTvs_passIv3> a sht:ValidationTest ;
+    mf:name "NOT1NOTvs_passIv3" ;
+    sht:trait null ;
+    rdfs:comment "<S1> NOT { <p1> NOT [<v1> <v2>] } on { <s1> <p1> <v3> }" ;
+    mf:status mf:proposed ;
+    mf:action [
+      sht:schema <../schemas/NOT1NOTvs.shex> ;
+      sht:shape <http://a.example/S1> ;
+      sht:data  <Is1_Ip1_Iv3.ttl> ;
+      sht:focus <http://a.example/s1>
+    ]
+    .
+
+
+<#1NOTIRI_passLv>
+<#1NOTIRI_failIo1>
+<#1NOTIRI_failempty> ;
+<#1NOTNOTIRI_failLv>
+<#1NOTNOTIRI_passIo1>
+<#1NOTvs_failIv1>
+<#1NOTvs_passIo1>
+<#1NOTvs_failempty> ;
+<#1NOTNOTvs_passIv1>
+<#1NOTNOTvs_failIo1>
+<#1NOTdot_failIv1>
+<#1NOTdot_failIo1>
+<#1NOTdot_failempty> ;
+<#1NOTNOTdot_passIv1>
+<#1NOTNOTdot_passIo1>
+<#1_NOTliteral_ANDvs_passIv1>
+<#1_NOTliteral_ANDvs_failIo1>
+<#1_NOTliteral_ANDvs_failLv>
+<#1NOT_literalANDvs__passIv1>
+<#1NOT_literalANDvs__passLv>
+<#1NOTliteralANDvs_passIv1>
+<#1NOTliteralANDvs_failIo1>
+<#1NOTliteralANDvs_failLv>
+<#1_NOTvs_ANDvs_failIv1>
+<#1_NOTvs_ANDvs_passIv2>
+<#1_NOTvs_ANDvs_failIv3>
+<#1NOT_vsANDvs__passIv1>
+<#1NOT_vsANDvs__passIv2>
+<#1NOT_vsANDvs__passIv3>
+<#1NOTvsANDvs_failIv1>
+<#1NOTvsANDvs_passIv2>
+<#1NOTvsANDvs_failIv3>
+<#1_NOTliteral_ORvs_passIv1>
+<#1_NOTliteral_ORvs_failIo1>
+<#1_NOTliteral_ORvs_passLv>
+<#1NOT_literalORvs__failIv1>
+<#1NOT_literalORvs__passIo1>
+<#1NOT_literalORvs__failLv>
+<#1NOTliteralORvs_passIv1>
+<#1NOTliteralORvs_passIo1>
+<#1NOTliteralORvs_failLv>
+<#1_NOTvs_ORvs_failIv1>
+<#1_NOTvs_ORvs_passIv2>
+<#1_NOTvs_ORvs_passIv3>
+<#1NOT_vsORvs__failIv1>
+<#1NOT_vsORvs__failIv2>
+<#1NOT_vsORvs__passIv3>
+<#1NOTvsORvs_failIv1>
+<#1NOTvsORvs_failIv2>
+<#1NOTvsORvs_passIv3>
+<#NOT1NOTvs_failIv1>
+<#NOT1NOTvs_failIv2>
+<#NOT1NOTvs_passIv3>
+
+---------------------------------------------------------
+
+<../schemas/1NOTIRI.shex> <http://a.example/S1> { <http://a.example/p1> NOT IRI }
+<../schemas/1NOTNOTIRI.shex><http://a.example/S1> { <http://a.example/p1> NOT(NOT IRI) }
+<../schemas/1NOTvs.shex> <http://a.example/S1> { <http://a.example/p1> NOT [<http://a.example/v1> <http://a.example/v2> <http://a.example/v3>] }
+<../schemas/1NOTNOTvs.shex> <http://a.example/S1> { <http://a.example/p1> NOT(NOT [<http://a.example/v1>]) }
+<../schemas/1NOTdot.shex> <http://a.example/S1> { <http://a.example/p1> NOT . }
+<../schemas/1NOTNOTdot.shex> <http://a.example/S1> { <http://a.example/p1> NOT(NOT .) }
+<../schemas/1_NOTliteral_ANDvs.shex> <http://a.example/S1> { <http://a.example/p1> (NOT  LITERAL) AND [<http://a.example/v1> <http://a.example/v2>]  }
+<../schemas/1NOT_literalANDvs_.shex> <http://a.example/S1> { <http://a.example/p1>  NOT (LITERAL  AND [<http://a.example/v1> <http://a.example/v2>]) }
+<../schemas/1NOTliteralANDvs.shex> <http://a.example/S1> { <http://a.example/p1>  NOT  LITERAL  AND [<http://a.example/v1> <http://a.example/v2>]  }
+<../schemas/1_NOTvs_ANDvs.shex> <http://a.example/S1> { <http://a.example/p1> (NOT  [<http://a.example/v1>]) AND [<http://a.example/v2>]  }
+<../schemas/1NOT_vsANDvs_.shex> <http://a.example/S1> { <http://a.example/p1>  NOT ([<http://a.example/v1>]  AND [<http://a.example/v2>]) }
+<../schemas/1NOTvsANDvs.shex> <http://a.example/S1> { <http://a.example/p1>  NOT  [<http://a.example/v1>]  AND [<http://a.example/v2>]  }
+<../schemas/1_NOTliteral_ORvs.shex><http://a.example/S1> { <http://a.example/p1> (NOT  LITERAL) OR [<http://a.example/v1> <http://a.example/v2>]  }
+<../schemas/1NOT_literalORvs_.shex><http://a.example/S1> { <http://a.example/p1>  NOT (LITERAL  OR [<http://a.example/v1> <http://a.example/v2>]) }
+<../schemas/1NOTliteralORvs.shex><http://a.example/S1> { <http://a.example/p1>  NOT  LITERAL  OR [<http://a.example/v1> <http://a.example/v2>]  }
+<../schemas/1_NOTvs_ORvs.shex> <http://a.example/S1> { <http://a.example/p1> (NOT  [<http://a.example/v1>]) OR [<http://a.example/v2>]  }
+<../schemas/1NOT_vsORvs_.shex> <http://a.example/S1> { <http://a.example/p1>  NOT ([<http://a.example/v1>]  OR [<http://a.example/v2>]) }
+<../schemas/1NOTvsORvs.shex> <http://a.example/S1> { <http://a.example/p1>  NOT  [<http://a.example/v1>]  OR [<http://a.example/v2>]  }
+<../schemas/NOT1NOTvs.shex> <http://a.example/S1> NOT { <http://a.example/p1> NOT [<http://a.example/v1> <http://a.example/v2>] }

@@ -1,0 +1,3 @@
+<http://a.example/S1> EXTRA <http://a.example/p1> {
+   <http://a.example/p1> [<http://a.example/o1>]
+}

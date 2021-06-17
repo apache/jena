@@ -1,0 +1,5 @@
+# STRING_LITERAL2 with LANGTAG and datatype
+# source: turtle-syntax-bad-LITERAL2_with_langtag_and_datatype.ttl
+<http://a.example/IssueShape> {
+   <http://a.example/p1> ["value"@en^^<http://a.example/dt>]
+}

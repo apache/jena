@@ -1,0 +1,4 @@
+BASE <http://a.example.org/>
+PREFIX : <http://a.example/>
+
+<S> { ( :a .; :b . )?; :c . }

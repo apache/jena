@@ -1,0 +1,11 @@
+# Negated circular reference to :S.
+PREFIX :       <http://example.org/>
+
+:S (    (NOT @:T)
+    AND (NOT @:U) )
+:T {
+  :a @:S
+}
+:U {
+  :b .
+} 

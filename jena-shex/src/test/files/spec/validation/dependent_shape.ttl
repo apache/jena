@@ -1,0 +1,4 @@
+PREFIX ex: <http://schema.example/>
+PREFIX inst: <http://inst.example/>
+inst:Issue1 ex:reproducedBy inst:Tester2 .
+inst:Tester2 ex:role ex:testingRole .

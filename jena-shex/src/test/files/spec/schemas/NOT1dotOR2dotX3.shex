@@ -1,0 +1,20 @@
+<http://a.example/S1>
+  ((NOT {
+      <http://a.example/p1> .
+    } OR {
+      <http://a.example/p1> .;
+      <http://a.example/p2> .
+    }) AND
+   (NOT {
+      <http://a.example/p3> .
+    } OR {
+      <http://a.example/p3> .;
+      <http://a.example/p4> .
+    }) AND
+   (NOT {
+      <http://a.example/p5> .
+    } OR {
+      <http://a.example/p5> .;
+      <http://a.example/p6> .
+    })
+  )

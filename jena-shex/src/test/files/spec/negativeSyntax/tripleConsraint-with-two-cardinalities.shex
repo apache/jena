@@ -1,0 +1,4 @@
+# tripleConsraint with two cardinalities
+<http://a.example/IssueShape> {
+   <http://a.example/p1> . +*
+}

@@ -1,0 +1,6 @@
+BASE <http://a.example/base/>
+PREFIX : <http://a.example/>
+<n> :a <pt1> .         # <pt1> satisfies both P and T
+<n> :a <pt2> .         # <pt2> satisfies both P and T
+<n> :a <t> .           # <t> satisfies T only
+<n> :a <p> .           # <p> satisfies P only

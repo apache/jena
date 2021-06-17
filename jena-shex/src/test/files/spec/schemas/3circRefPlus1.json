@@ -1,0 +1,52 @@
+{
+  "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "shapes": [
+    {
+      "id": "http://a.example/S1",
+      "type": "Shape",
+      "expression": {
+        "type": "EachOf",
+        "expressions": [
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://a.example/p1"
+          },
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://a.example/p2",
+            "valueExpr": "http://a.example/S2",
+            "min": 0,
+            "max": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "http://a.example/S2",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p3",
+        "valueExpr": "http://a.example/S3"
+      }
+    },
+    {
+      "id": "http://a.example/S3",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p4",
+        "valueExpr": "http://a.example/S1"
+      }
+    },
+    {
+      "id": "http://a.example/S4",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p5"
+      }
+    }
+  ]
+}

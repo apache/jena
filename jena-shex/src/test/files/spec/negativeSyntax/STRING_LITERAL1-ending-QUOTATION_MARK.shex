@@ -1,0 +1,5 @@
+# STRING_LITERAL1 ending with QUOTATION MARK
+# source: turtle-syntax-bad-string-02.ttl
+<http://a.example/IssueShape> {
+   <http://a.example/p1> ['abc"]
+}

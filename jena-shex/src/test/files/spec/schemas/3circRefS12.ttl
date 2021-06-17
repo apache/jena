@@ -1,0 +1,15 @@
+PREFIX sx: <http://www.w3.org/ns/shex#>
+
+[] a sx:Schema ;
+  sx:shapes (<http://a.example/S1> <http://a.example/S2>) .
+    <http://a.example/S1> a sx:Shape ; sx:expression [
+        a sx:EachOf ; sx:expressions (
+          [ a sx:TripleConstraint ; sx:predicate <http://a.example/p1> ]
+          [ a sx:TripleConstraint ; sx:predicate <http://a.example/p2> ; sx:min 0 ; sx:max 1 ;
+            sx:valueExpr <http://a.example/S2> ]
+        ) ] .
+
+    <http://a.example/S2> a sx:Shape ; sx:expression [
+        a sx:TripleConstraint ; sx:predicate <http://a.example/p3> ;
+        sx:valueExpr <http://a.example/S3> ] .
+

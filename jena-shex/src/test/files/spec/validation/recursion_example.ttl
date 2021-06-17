@@ -1,0 +1,5 @@
+PREFIX ex: <http://schema.example/>
+PREFIX inst: <http://inst.example/>
+inst:Issue1 ex:related inst:Issue2 .
+inst:Issue2 ex:related inst:Issue3 .
+inst:Issue3 ex:related inst:Issue1 .

@@ -1,0 +1,7 @@
+PREFIX : <http://a.example/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+<s0> :a <t0> ; :b "b0-0", "b0-1" . <t0> :d "d0" ; :e "e0" .
+<s0> :a <t1> ; :b "b1-0" .         <t1> :d "d1" ; :e "e1" .
+<s0> :a <t2>, <t2b> . <t2> :d "d2" ; :e "e2" . <t2b> :d "d2b" ; :e "e2b" .
+<s0> :c "c0" .

@@ -1,0 +1,6 @@
+# Missing ex: prefix
+# source: turtle-syntax-bad-prefix-01.ttl
+
+<http://a.example/IssueShape> {
+   ex:p1 .
+}

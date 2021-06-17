@@ -1,0 +1,4 @@
+# tripleConsraint with datatype and valueSet
+<http://a.example/IssueShape> {
+   <http://a.example/p1> <http://a.example/dt1> [<http://a.example/val1>]
+}

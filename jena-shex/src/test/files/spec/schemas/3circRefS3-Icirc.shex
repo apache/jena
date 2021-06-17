@@ -1,0 +1,4 @@
+IMPORT <3circRefS1-Icirc>
+<http://a.example/S3> {
+   <http://a.example/p4> @<http://a.example/S1>
+}

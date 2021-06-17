@@ -1,0 +1,19 @@
+{ "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "shapes": [
+    { "id": "http://a.example/S1",
+      "type": "ShapeOr",
+      "shapeExprs": [
+        { "type": "ShapeAnd",
+          "shapeExprs": [
+            { "type": "NodeConstraint", "nodeKind": "bnode" },
+            { "type": "Shape" }
+          ] },
+        { "type": "ShapeAnd",
+          "shapeExprs": [
+            { "type": "NodeConstraint",
+              "pattern": "^http://a.example/s1$" },
+            { "type": "Shape" }
+          ] }
+      ] }
+  ] }

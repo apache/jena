@@ -1,0 +1,8 @@
+# source: comment_following_localName.ttl
+
+PREFIX ex: <http://a.example/>
+
+ex:S1 {
+   ex:p1/*comment
+line2*/.
+}

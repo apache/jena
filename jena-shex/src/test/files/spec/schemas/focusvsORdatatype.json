@@ -1,0 +1,24 @@
+{
+  "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "shapes": [
+    {
+      "id": "http://a.example/vs1",
+      "type": "ShapeOr",
+      "shapeExprs": [
+        {
+          "type": "NodeConstraint",
+          "values": [
+            "http://a.example/v1",
+            "http://a.example/v2",
+            "http://a.example/v3"
+          ]
+        },
+        {
+          "type": "NodeConstraint",
+          "datatype": "http://a.example/dt1"
+        }
+      ]
+    }
+  ]
+}

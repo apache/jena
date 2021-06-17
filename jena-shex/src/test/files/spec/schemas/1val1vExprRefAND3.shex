@@ -1,0 +1,8 @@
+<http://a.example/vc1> LITERAL minlength 4
+<http://a.example/vc2> LITERAL maxlength 5
+<http://a.example/vc3> LITERAL /^(ab)+$/
+<http://a.example/vc4> @<http://a.example/vc1> AND @<http://a.example/vc2> AND @<http://a.example/vc3>
+
+<http://a.example/S1> {
+   <http://a.example/p1> @<http://a.example/vc4>
+}

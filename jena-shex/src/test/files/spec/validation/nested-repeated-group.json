@@ -1,0 +1,73 @@
+{
+  "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "prefixes": {
+    "": "http://a.example/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "shapes": {
+    "http://a.example.org/S": {
+      "type": "Shape",
+      "expression": {
+        "type": "EachOf",
+        "expressions": [
+          {
+            "type": "EachOf",
+            "expressions": [
+              {
+                "type": "TripleConstraint",
+                "predicate": "http://a.example/a",
+                "valueExpr": {
+                  "type": "ValueClass",
+                  "reference": "http://a.example.org/T"
+                },
+                "min": 1,
+                "max": -1
+              },
+              {
+                "type": "TripleConstraint",
+                "predicate": "http://a.example/b",
+                "valueExpr": {
+                  "type": "ValueClass"
+                },
+                "min": 0,
+                "max": -1
+              }
+            ],
+            "min": 2,
+            "max": 5
+          },
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://a.example/c",
+            "valueExpr": {
+              "type": "ValueClass"
+            }
+          }
+        ]
+      }
+    },
+    "http://a.example.org/T": {
+      "type": "Shape",
+      "expression": {
+        "type": "EachOf",
+        "expressions": [
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://a.example/d",
+            "valueExpr": {
+              "type": "ValueClass"
+            }
+          },
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://a.example/e",
+            "valueExpr": {
+              "type": "ValueClass"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

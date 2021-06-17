@@ -1,0 +1,5 @@
+# keyword a as shape name
+# source: turtle-syntax-bad-kw-02.ttl
+a {
+   <http://a.example/p1> .
+}

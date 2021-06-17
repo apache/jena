@@ -1,0 +1,21 @@
+{
+  "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "shapes": [
+    {
+      "id": "S1",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "p1",
+        "valueExpr": {
+          "type": "NodeConstraint",
+          "values": [
+            "o1"
+          ]
+        }
+      }
+    }
+  ]
+}
+

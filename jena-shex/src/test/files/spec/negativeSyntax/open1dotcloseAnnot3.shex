@@ -1,0 +1,7 @@
+# Annotation on singleton group
+<http://a.example/IssueShape> {
+   (<http://a.example/p1> .) ;
+      <http://a.example/annot1> "1" ;
+      <http://a.example/annot2> "2" ;
+      <http://a.example/annot3> "3"
+}

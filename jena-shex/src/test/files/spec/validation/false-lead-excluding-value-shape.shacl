@@ -1,0 +1,56 @@
+@prefix :      &lt;http://a.example/&gt; .
+@prefix sh:    &lt;http://www.w3.org/ns/shacl/core#&gt; .
+@prefix xsd:   &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+
+&lt;T3&gt;    sh:property  [ a             sh:PropertyConstraint ;
+                       sh:maxCount   1 ;
+                       sh:minCount   1 ;
+                       sh:predicate  :c
+                     ] ;
+        sh:schema    _:b0 .
+
+&lt;T1&gt;    sh:property  [ a             sh:PropertyConstraint ;
+                       sh:maxCount   1 ;
+                       sh:minCount   1 ;
+                       sh:predicate  :b
+                     ] ;
+        sh:schema    _:b0 .
+
+&lt;S&gt;     sh:property  [ a             sh:PropertyConstraint ;
+                       sh:maxCount   1 ;
+                       sh:minCount   1 ;
+                       sh:nodeKind   sh:IRI ;
+                       sh:predicate  :b
+                     ] ;
+        sh:property  [ a             sh:PropertyConstraint ;
+                       sh:minCount   0 ;
+                       sh:predicate  :a
+                     ] ;
+        sh:schema    _:b0 ;
+        sh:someOf    [ sh:property  [ a             sh:PropertyConstraint ;
+                                      sh:maxCount   1 ;
+                                      sh:minCount   1 ;
+                                      sh:predicate  :b ;
+                                      sh:valueType  xsd:integer
+                                    ] ;
+                  sh:property  [ a             sh:PropertyConstraint ;
+                                 sh:minCount   1 ;
+                                 sh:predicate  :a
+                               ] ] .
+
+_:b0    a       sh:Schema .
+
+&lt;T4&gt;    sh:property  [ a             sh:PropertyConstraint ;
+                       sh:maxCount   1 ;
+                       sh:minCount   1 ;
+                       sh:predicate  :d
+                     ] ;
+        sh:schema    _:b0 .
+
+&lt;T2&gt;    sh:property  [ a             sh:PropertyConstraint ;
+                       sh:maxCount   1 ;
+                       sh:minCount   1 ;
+                       sh:predicate  :b
+                     ] ;
+        sh:schema    _:b0 .
+

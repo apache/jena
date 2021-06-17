@@ -1,0 +1,6 @@
+# PN_PREFIX with undeclared FULL STOP in first character
+# source: turtle-syntax-bad-missing-ns-dot-end.ttl
+PREFIX valid: <http://a.example/ns/valid#>
+PREFIX invalid: <http://a.example/ns/invalid#>
+
+valid:s valid:p .invalid:o .

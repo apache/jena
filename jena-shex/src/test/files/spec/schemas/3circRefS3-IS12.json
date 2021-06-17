@@ -1,0 +1,7 @@
+{ "@context": "http://www.w3.org/ns/shex.jsonld", "type": "Schema",
+  "imports": [ "3circRefS12" ],
+  "shapes": [
+    { "id": "http://a.example/S3", "type": "Shape", "expression": {
+        "type": "TripleConstraint", "predicate": "http://a.example/p4",
+        "valueExpr": "http://a.example/S1" } }
+  ] }
