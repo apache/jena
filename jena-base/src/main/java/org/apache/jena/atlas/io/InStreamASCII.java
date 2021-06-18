@@ -26,64 +26,61 @@ import org.apache.jena.atlas.AtlasException ;
 
 /** Fast and streaming.
  */
-public final class InStreamASCII extends Reader implements CharStream
-{
-    private InputStreamBuffered input ;
-    private long count = 0 ;
+public final class InStreamASCII extends Reader implements CharStream {
+    private InputStreamBuffered input;
+    private long count = 0;
 
-    public InStreamASCII(InputStream in)
-    {
-        if ( in instanceof InputStreamBuffered )
-        {
-            input = (InputStreamBuffered)in ;
-            return ;
+    public InStreamASCII(InputStream in) {
+        if ( in instanceof InputStreamBuffered ) {
+            input = (InputStreamBuffered)in;
+            return;
         }
-        input = new InputStreamBuffered(in) ;
+        input = new InputStreamBuffered(in);
     }
-    
-    public InStreamASCII(InputStreamBuffered in) { input = in ; }
 
-    @Override
-    public boolean ready() throws IOException
-    {
-        return input.available() > 0 ;
+    public InStreamASCII(InputStreamBuffered in) {
+        input = in;
     }
-    
-    @Override
-    public void close() throws IOException
-    { input.close() ; }
 
     @Override
-    public void closeStream()
-    { IO.close(input) ; }
+    public boolean ready() throws IOException {
+        return input.available() > 0;
+    }
 
     @Override
-    public int read(char[] cbuf, int off, int len)
-    {
-        for ( int i = off ; i < off+len ; i++ )
-        {
-            int x = read() ;
-            if ( x == -1 )
-            {
+    public void close() throws IOException {
+        input.close();
+    }
+
+    @Override
+    public void closeStream() {
+        IO.close(input);
+    }
+
+    @Override
+    public int read(char[] cbuf, int off, int len) {
+        for ( int i = off ; i < off + len ; i++ ) {
+            int x = read();
+            if ( x == -1 ) {
                 if ( i == off )
-                    return -1 ;
-                return (i-off) ;
+                    return -1;
+                return (i - off);
             }
             if ( x > 128 )
-                throw new AtlasException("Illegal ASCII character : "+x) ;
-            cbuf[i] = (char)x ;
+                throw new AtlasException("Illegal ASCII character : " + x);
+            cbuf[i] = (char)x;
         }
-        return len ; 
+        return len;
     }
 
     @Override
-    public int read()
-    { return advance() ; }
-    
+    public int read() {
+        return advance();
+    }
+
     @Override
-    public int advance()
-    {
-        count++ ;
-        return input.advance() ;
+    public int advance() {
+        count++;
+        return input.advance();
     }
 }

@@ -27,25 +27,28 @@ import org.apache.jena.riot.system.*;
 
 public class ParseForTest {
 
-    private static ErrorHandler errorHandlerTestStrict = ErrorHandlerFactory.errorHandlerStrictSilent();
-
-    public static void parse(StreamRDF destination, String uri, Lang lang) {
-        parse(destination, uri, uri, lang);
+    public static void parse(StreamRDF destination, String uri, Lang lang, boolean ignoreWarnings) {
+        parse(destination, uri, uri, lang, ignoreWarnings);
     }
 
     public static Map<Lang, ReaderRIOTFactory> alternativeReaderFactories = new ConcurrentHashMap<>();
 
-    public static void parse(StreamRDF destination, String uri, String base, Lang lang) {
+    public static void parse(StreamRDF destination, String uri, String base, Lang lang, boolean ignoreWarnings) {
+
+        ErrorHandler errorHandlerTest = ignoreWarnings
+                ? ErrorHandlerFactory.errorHandlerIgnoreWarnings(null)
+                : ErrorHandlerFactory.errorHandlerStrictSilent();
+
         if ( alternativeReaderFactories.containsKey(lang) ) {
             ReaderRIOTFactory factoryForTest = alternativeReaderFactories.get(lang);
             InputStream in = RDFDataMgr.open(uri);
-            ParserProfile profile = RiotLib.profile(lang, base, errorHandlerTestStrict);
+            ParserProfile profile = RiotLib.profile(lang, base, errorHandlerTest);
             factoryForTest.create(lang, profile).read(in, base, null, destination, RIOT.getContext());
             return ;
         }
         // Otherwise use the RDFParser builder.
         RDFParser.create()
-            .errorHandler(errorHandlerTestStrict)
+            .errorHandler(errorHandlerTest)
             .strict(true)
             .forceLang(lang)
             .source(uri)

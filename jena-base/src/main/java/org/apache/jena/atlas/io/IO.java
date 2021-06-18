@@ -42,8 +42,8 @@ public class IO
     // Buffer size.  Larger than Java's default.
     private static final int BUFFER_SIZE = 128*1024;
 
-    private static Charset utf8  = StandardCharsets.UTF_8;
-    private static Charset ascii = StandardCharsets.US_ASCII;
+//    private static Charset utf8  = StandardCharsets.UTF_8;
+//    private static Charset ascii = xStandardCharsets.US_ASCII;
 
     /** Open an input stream to a file.
      * <p>
@@ -168,13 +168,17 @@ public class IO
      * If the filename is null or "-", use System.in
      * If the filename ends in .gz, use GZIPInputStream
      */
-    static public Reader openFileUTF8(String filename)  { return openFileReader(filename, utf8); }
+    static public Reader openFileUTF8(String filename) {
+        return openFileReader(filename, StandardCharsets.UTF_8);
+    }
 
     /** Open an ASCII Reader for a file.
      * If the filename is null or "-", use System.in
      * If the filename ends in .gz, use GZIPInputStream
      */
-    static public Reader openFileASCII(String filename)  { return openFileReader(filename, ascii); }
+    static public Reader openFileASCII(String filename) {
+        return openFileReader(filename, StandardCharsets.US_ASCII);
+    }
 
     private static Reader openFileReader(String filename, Charset charset)
     {
