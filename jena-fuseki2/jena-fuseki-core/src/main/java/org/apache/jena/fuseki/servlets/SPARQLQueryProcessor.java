@@ -122,7 +122,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
             ServletOps.errorNotFound("Service Description: " + action.request.getRequestURI());
         }
 
-        // Use of the dataset describing parameters is check later.
+        // Use of the dataset describing parameters is checked later.
         try {
             Collection<String> x = acceptedParams(action);
             validateParams(action, x);
@@ -253,10 +253,14 @@ public abstract class SPARQLQueryProcessor extends ActionService
         } catch (ActionErrorException ex) {
             throw ex;
         } catch (QueryParseException ex) {
-            ServletOps.errorBadRequest("Parse error: \n" + queryString + "\n" + SPARQLProtocol.messageForException(ex));
+            String msg = SPARQLProtocol.messageForParseException(ex);
+            action.log.warn(format("[%d] %s", action.id, msg));
+            ServletOps.errorBadRequest(msg);
         } catch (QueryException ex) {
+            String msg = SPARQLProtocol.messageForException(ex);
             // Should not happen.
-            ServletOps.errorBadRequest("Error: \n" + queryString + "\n" + ex.getMessage());
+            action.log.warn(format("[%d] %s", action.id, msg));
+            ServletOps.errorBadRequest("Error: \n" + queryString + "\n" + msg);
         }
 
         // Assumes finished whole thing by end of sendResult.

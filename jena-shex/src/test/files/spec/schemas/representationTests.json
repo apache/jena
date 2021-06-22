@@ -1,0 +1,2408 @@
+[
+  {
+    "schemaLabel": "0",
+    "shexURL": "0.shex",
+    "jsonURL": "0.json",
+    "rdfURL": "0.ttl"
+  },
+  {
+    "schemaLabel": "1dot",
+    "shexURL": "1dot.shex",
+    "jsonURL": "1dot.json",
+    "rdfURL": "1dot.ttl"
+  },
+  {
+    "schemaLabel": "open1dotclose",
+    "shexURL": "open1dotclose.shex",
+    "jsonURL": "1dot.json",
+    "rdfURL": "1dot.ttl"
+  },
+  {
+    "schemaLabel": "1dot-base",
+    "shexURL": "1dot-base.shex",
+    "jsonURL": "1dot-base.json",
+    "rdfURL": "1dot-base.ttl"
+  },
+  {
+    "schemaLabel": "1dotSemi",
+    "shexURL": "1dotSemi.shex",
+    "jsonURL": "1dotSemi.json",
+    "rdfURL": "1dotSemi.ttl"
+  },
+  {
+    "schemaLabel": "1dotLNex",
+    "shexURL": "1dotLNex.shex",
+    "jsonURL": "1dotLNex.json",
+    "rdfURL": "1dotLNex.ttl"
+  },
+  {
+    "schemaLabel": "1dotNS2",
+    "shexURL": "1dotNS2.shex",
+    "jsonURL": "1dotNS2.json",
+    "rdfURL": "1dotNS2.ttl"
+  },
+  {
+    "schemaLabel": "1dotNS2SingleComment",
+    "shexURL": "1dotNS2SingleComment.shex",
+    "jsonURL": "1dotNS2SingleComment.json",
+    "rdfURL": "1dotNS2SingleComment.ttl"
+  },
+  {
+    "schemaLabel": "1dotLNexSingleComment",
+    "shexURL": "1dotLNexSingleComment.shex",
+    "jsonURL": "1dotLNexSingleComment.json",
+    "rdfURL": "1dotLNexSingleComment.ttl"
+  },
+  {
+    "schemaLabel": "1dotNS2MultiComment",
+    "shexURL": "1dotNS2MultiComment.shex",
+    "jsonURL": "1dotNS2MultiComment.json",
+    "rdfURL": "1dotNS2MultiComment.ttl"
+  },
+  {
+    "schemaLabel": "1dotLNexMultiComment",
+    "shexURL": "1dotLNexMultiComment.shex",
+    "jsonURL": "1dotLNexMultiComment.json",
+    "rdfURL": "1dotLNexMultiComment.ttl"
+  },
+  {
+    "schemaLabel": "1dotLNdefault",
+    "shexURL": "1dotLNdefault.shex",
+    "jsonURL": "1dotLNdefault.json",
+    "rdfURL": "1dotLNdefault.ttl"
+  },
+  {
+    "schemaLabel": "1dotNSdefault",
+    "shexURL": "1dotNSdefault.shex",
+    "jsonURL": "1dotNSdefault.json",
+    "rdfURL": "1dotNSdefault.ttl"
+  },
+  {
+    "schemaLabel": "1dotLNex-HYPHEN_MINUS",
+    "shexURL": "1dotLNex-HYPHEN_MINUS.shex",
+    "jsonURL": "1dotLNex-HYPHEN_MINUS.json",
+    "rdfURL": "1dotLNex-HYPHEN_MINUS.ttl"
+  },
+  {
+    "schemaLabel": "bnode1dot",
+    "shexURL": "bnode1dot.shex",
+    "jsonURL": "bnode1dot.json",
+    "rdfURL": "bnode1dot.ttl"
+  },
+  {
+    "schemaLabel": "1inversedot",
+    "shexURL": "1inversedot.shex",
+    "jsonURL": "1inversedot.json",
+    "rdfURL": "1inversedot.ttl"
+  },
+  {
+    "schemaLabel": "1Adot",
+    "shexURL": "1Adot.shex",
+    "jsonURL": "1Adot.json",
+    "rdfURL": "1Adot.ttl"
+  },
+  {
+    "schemaLabel": "1iri",
+    "shexURL": "1iri.shex",
+    "jsonURL": "1iri.json",
+    "rdfURL": "1iri.ttl"
+  },
+  {
+    "schemaLabel": "1bnode",
+    "shexURL": "1bnode.shex",
+    "jsonURL": "1bnode.json",
+    "rdfURL": "1bnode.ttl"
+  },
+  {
+    "schemaLabel": "1literal",
+    "shexURL": "1literal.shex",
+    "jsonURL": "1literal.json",
+    "rdfURL": "1literal.ttl"
+  },
+  {
+    "schemaLabel": "1nonliteral",
+    "shexURL": "1nonliteral.shex",
+    "jsonURL": "1nonliteral.json",
+    "rdfURL": "1nonliteral.ttl"
+  },
+  {
+    "schemaLabel": "1datatype",
+    "shexURL": "1datatype.shex",
+    "jsonURL": "1datatype.json",
+    "rdfURL": "1datatype.ttl"
+  },
+  {
+    "schemaLabel": "1datatypelangString",
+    "shexURL": "1datatypelangString.shex",
+    "jsonURL": "1datatypelangString.json",
+    "rdfURL": "1datatypelangString.ttl"
+  },
+  {
+    "schemaLabel": "1card2",
+    "shexURL": "1card2.shex",
+    "jsonURL": "1card2.json",
+    "rdfURL": "1card2.ttl"
+  },
+  {
+    "schemaLabel": "1card25",
+    "shexURL": "1card25.shex",
+    "jsonURL": "1card25.json",
+    "rdfURL": "1card25.ttl"
+  },
+  {
+    "schemaLabel": "1card2Star",
+    "shexURL": "1card2Star.shex",
+    "jsonURL": "1card2Star.json",
+    "rdfURL": "1card2Star.ttl"
+  },
+  {
+    "schemaLabel": "1cardOpt",
+    "shexURL": "1cardOpt.shex",
+    "jsonURL": "1cardOpt.json",
+    "rdfURL": "1cardOpt.ttl"
+  },
+  {
+    "schemaLabel": "open1dotclosecardOpt",
+    "shexURL": "open1dotclosecardOpt.shex",
+    "jsonURL": "1cardOpt.json",
+    "rdfURL": "1cardOpt.ttl"
+  },
+  {
+    "schemaLabel": "1cardPlus",
+    "shexURL": "1cardPlus.shex",
+    "jsonURL": "1cardPlus.json",
+    "rdfURL": "1cardPlus.ttl"
+  },
+  {
+    "schemaLabel": "1cardStar",
+    "shexURL": "1cardStar.shex",
+    "jsonURL": "1cardStar.json",
+    "rdfURL": "1cardStar.ttl"
+  },
+  {
+    "schemaLabel": "1literalPlus",
+    "shexURL": "1literalPlus.shex",
+    "jsonURL": "1literalPlus.json",
+    "rdfURL": "1literalPlus.ttl"
+  },
+  {
+    "schemaLabel": "1dotRef1",
+    "shexURL": "1dotRef1.shex",
+    "jsonURL": "1dotRef1.json",
+    "rdfURL": "1dotRef1.ttl"
+  },
+  {
+    "schemaLabel": "1dotRefLNex1",
+    "shexURL": "1dotRefLNex1.shex",
+    "jsonURL": "1dotRefLNex1.json",
+    "rdfURL": "1dotRefLNex1.ttl"
+  },
+  {
+    "schemaLabel": "1dotRefSpaceLNex1",
+    "shexURL": "1dotRefSpaceLNex1.shex",
+    "jsonURL": "1dotRefSpaceLNex1.json",
+    "rdfURL": "1dotRefSpaceLNex1.ttl"
+  },
+  {
+    "schemaLabel": "1dotRefNS1",
+    "shexURL": "1dotRefNS1.shex",
+    "jsonURL": "1dotRefNS1.json",
+    "rdfURL": "1dotRefNS1.ttl"
+  },
+  {
+    "schemaLabel": "1dotRefSpaceNS1",
+    "shexURL": "1dotRefSpaceNS1.shex",
+    "jsonURL": "1dotRefSpaceNS1.json",
+    "rdfURL": "1dotRefSpaceNS1.ttl"
+  },
+  {
+    "schemaLabel": "1refbnode1",
+    "shexURL": "1refbnode1.shex",
+    "jsonURL": "1refbnode1.json",
+    "rdfURL": "1refbnode1.ttl"
+  },
+  {
+    "schemaLabel": "1refbnode_with_leading_digit1",
+    "shexURL": "1refbnode_with_leading_digit1.shex",
+    "jsonURL": "1refbnode_with_leading_digit1.json",
+    "rdfURL": "1refbnode_with_leading_digit1.ttl"
+  },
+  {
+    "schemaLabel": "1refbnode_with_leading_underscore1",
+    "shexURL": "1refbnode_with_leading_underscore1.shex",
+    "jsonURL": "1refbnode_with_leading_underscore1.json",
+    "rdfURL": "1refbnode_with_leading_underscore1.ttl"
+  },
+  {
+    "schemaLabel": "1refbnode_with_spanning_PN_CHARS1",
+    "shexURL": "1refbnode_with_spanning_PN_CHARS1.shex",
+    "jsonURL": "1refbnode_with_spanning_PN_CHARS1.json",
+    "rdfURL": "1refbnode_with_spanning_PN_CHARS1.ttl"
+  },
+  {
+    "schemaLabel": "1refbnode_with_spanning_PN_CHARS_BASE1",
+    "shexURL": "1refbnode_with_spanning_PN_CHARS_BASE1.shex",
+    "jsonURL": "1refbnode_with_spanning_PN_CHARS_BASE1.json",
+    "rdfURL": "1refbnode_with_spanning_PN_CHARS_BASE1.ttl"
+  },
+  {
+    "schemaLabel": "3circRefPlus1",
+    "shexURL": "3circRefPlus1.shex",
+    "jsonURL": "3circRefPlus1.json",
+    "rdfURL": "3circRefPlus1.ttl"
+  },
+  {
+    "schemaLabel": "1iriRef1",
+    "shexURL": "1iriRef1.shex",
+    "jsonURL": "1iriRef1.json",
+    "rdfURL": "1iriRef1.ttl"
+  },
+  {
+    "schemaLabel": "1bnodeRef1",
+    "shexURL": "1bnodeRef1.shex",
+    "jsonURL": "1bnodeRef1.json",
+    "rdfURL": "1bnodeRef1.ttl"
+  },
+  {
+    "schemaLabel": "1dotInline1",
+    "shexURL": "1dotInline1.shex",
+    "jsonURL": "1dotInline1.json",
+    "rdfURL": "1dotInline1.ttl"
+  },
+  {
+    "schemaLabel": "1val1IRIREF",
+    "shexURL": "1val1IRIREF.shex",
+    "jsonURL": "1val1IRIREF.json",
+    "rdfURL": "1val1IRIREF.ttl"
+  },
+  {
+    "schemaLabel": "1IRI_with_all_punctuationdot",
+    "shexURL": "1IRI_with_all_punctuationdot.shex",
+    "jsonURL": "1IRI_with_all_punctuationdot.json",
+    "rdfURL": "1IRI_with_all_punctuationdot.ttl"
+  },
+  {
+    "schemaLabel": "1IRI_with_UCHAR.1dot",
+    "shexURL": "1IRI_with_UCHAR.1dot.shex",
+    "jsonURL": "1IRI_with_UCHAR.1dot.json",
+    "rdfURL": "1IRI_with_UCHAR.1dot.ttl"
+  },
+  {
+    "schemaLabel": "1val1INTEGER",
+    "shexURL": "1val1INTEGER.shex",
+    "jsonURL": "1val1INTEGER.json",
+    "rdfURL": "1val1INTEGER.ttl"
+  },
+  {
+    "schemaLabel": "1val1DOUBLE",
+    "shexURL": "1val1DOUBLE.shex",
+    "jsonURL": "1val1DOUBLE.json",
+    "rdfURL": "1val1DOUBLE.ttl"
+  },
+  {
+    "schemaLabel": "1val1DOUBLElowercase",
+    "shexURL": "1val1DOUBLElowercase.shex",
+    "jsonURL": "1val1DOUBLElowercase.json",
+    "rdfURL": "1val1DOUBLElowercase.ttl"
+  },
+  {
+    "schemaLabel": "1val1LANGTAG",
+    "shexURL": "1val1LANGTAG.shex",
+    "jsonURL": "1val1LANGTAG.json",
+    "rdfURL": "1val1LANGTAG.ttl"
+  },
+  {
+    "schemaLabel": "1val1IRIREFDatatype",
+    "shexURL": "1val1IRIREFDatatype.shex",
+    "jsonURL": "1val1IRIREFDatatype.json",
+    "rdfURL": "1val1IRIREFDatatype.ttl"
+  },
+  {
+    "schemaLabel": "1val1true",
+    "shexURL": "1val1true.shex",
+    "jsonURL": "1val1true.json",
+    "rdfURL": "1val1true.ttl"
+  },
+  {
+    "schemaLabel": "1val1false",
+    "shexURL": "1val1false.shex",
+    "jsonURL": "1val1false.json",
+    "rdfURL": "1val1false.ttl"
+  },
+  {
+    "schemaLabel": "1val1LNDatatype",
+    "shexURL": "1val1LNDatatype.shex",
+    "jsonURL": "1val1LNDatatype.json",
+    "rdfURL": "1val1LNDatatype.ttl"
+  },
+  {
+    "schemaLabel": "1val1STRING_LITERAL1",
+    "shexURL": "1val1STRING_LITERAL1.shex",
+    "jsonURL": "1val1STRING_LITERAL1.json",
+    "rdfURL": "1val1STRING_LITERAL1.ttl"
+  },
+  {
+    "schemaLabel": "1val1STRING_LITERAL1_with_all_controls",
+    "shexURL": "1val1STRING_LITERAL1_with_all_controls.shex",
+    "jsonURL": "1val1STRING_LITERAL1_with_all_controls.json",
+    "rdfURL": "1val1STRING_LITERAL1_with_all_controls.ttl"
+  },
+  {
+    "schemaLabel": "1val1STRING_LITERAL1_with_all_punctuation",
+    "shexURL": "1val1STRING_LITERAL1_with_all_punctuation.shex",
+    "jsonURL": "1val1STRING_LITERAL1_with_all_punctuation.json",
+    "rdfURL": "1val1STRING_LITERAL1_with_all_punctuation.ttl"
+  },
+  {
+    "schemaLabel": "1val1STRING_LITERAL1_with_ECHAR_escapes",
+    "shexURL": "1val1STRING_LITERAL1_with_ECHAR_escapes.shex",
+    "jsonURL": "1val1STRING_LITERAL1_with_ECHAR_escapes.json",
+    "rdfURL": "1val1STRING_LITERAL1_with_ECHAR_escapes.ttl"
+  },
+  {
+    "schemaLabel": "1val1STRING_LITERAL1_with_ascii_boundaries",
+    "shexURL": "1val1STRING_LITERAL1_with_ascii_boundaries.shex",
+    "jsonURL": "1val1STRING_LITERAL1_with_ascii_boundaries.json",
+    "rdfURL": "1val1STRING_LITERAL1_with_ascii_boundaries.ttl"
+  },
+  {
+    "schemaLabel": "1val1STRING_LITERAL1_with_UTF8_boundaries",
+    "shexURL": "1val1STRING_LITERAL1_with_UTF8_boundaries.shex",
+    "jsonURL": "1val1STRING_LITERAL1_with_UTF8_boundaries.json",
+    "rdfURL": "1val1STRING_LITERAL1_with_UTF8_boundaries.ttl"
+  },
+  {
+    "schemaLabel": "1val1STRING_LITERAL2",
+    "shexURL": "1val1STRING_LITERAL2.shex",
+    "jsonURL": "1val1STRING_LITERAL2.json",
+    "rdfURL": "1val1STRING_LITERAL2.ttl"
+  },
+  {
+    "schemaLabel": "1val1STRING_LITERAL2_with_LANGTAG",
+    "shexURL": "1val1STRING_LITERAL2_with_LANGTAG.shex",
+    "jsonURL": "1val1STRING_LITERAL2_with_LANGTAG.json",
+    "rdfURL": "1val1STRING_LITERAL2_with_LANGTAG.ttl"
+  },
+  {
+    "schemaLabel": "1val1STRING_LITERAL2_with_subtag",
+    "shexURL": "1val1STRING_LITERAL2_with_subtag.shex",
+    "jsonURL": "1val1STRING_LITERAL2_with_subtag.json",
+    "rdfURL": "1val1STRING_LITERAL2_with_subtag.ttl"
+  },
+  {
+    "schemaLabel": "1val1STRING_LITERAL_LONG1",
+    "shexURL": "1val1STRING_LITERAL_LONG1.shex",
+    "jsonURL": "1val1STRING_LITERAL_LONG1.json",
+    "rdfURL": "1val1STRING_LITERAL_LONG1.ttl"
+  },
+  {
+    "schemaLabel": "1val1STRING_LITERAL_LONG2",
+    "shexURL": "1val1STRING_LITERAL_LONG2.shex",
+    "jsonURL": "1val1STRING_LITERAL_LONG2.json",
+    "rdfURL": "1val1STRING_LITERAL_LONG2.ttl"
+  },
+  {
+    "schemaLabel": "1val1STRING_LITERAL_LONG2_with_LANGTAG",
+    "shexURL": "1val1STRING_LITERAL_LONG2_with_LANGTAG.shex",
+    "jsonURL": "1val1STRING_LITERAL_LONG2_with_LANGTAG.json",
+    "rdfURL": "1val1STRING_LITERAL_LONG2_with_LANGTAG.ttl"
+  },
+  {
+    "schemaLabel": "1val1STRING_LITERAL_LONG2_with_subtag",
+    "shexURL": "1val1STRING_LITERAL_LONG2_with_subtag.shex",
+    "jsonURL": "1val1STRING_LITERAL_LONG2_with_subtag.json",
+    "rdfURL": "1val1STRING_LITERAL_LONG2_with_subtag.ttl"
+  },
+  {
+    "schemaLabel": "1datatypeLength",
+    "shexURL": "1datatypeLength.shex",
+    "jsonURL": "1datatypeLength.json",
+    "rdfURL": "1datatypeLength.ttl"
+  },
+  {
+    "schemaLabel": "1literalFractiondigits5",
+    "shexURL": "1literalFractiondigits5.shex",
+    "jsonURL": "1literalFractiondigits5.json",
+    "rdfURL": "1literalFractiondigits5.ttl"
+  },
+  {
+    "schemaLabel": "1literalFractiondigits4",
+    "shexURL": "1literalFractiondigits4.shex",
+    "jsonURL": "1literalFractiondigits4.json",
+    "rdfURL": "1literalFractiondigits4.ttl"
+  },
+  {
+    "schemaLabel": "1literalTotaldigits5",
+    "shexURL": "1literalTotaldigits5.shex",
+    "jsonURL": "1literalTotaldigits5.json",
+    "rdfURL": "1literalTotaldigits5.ttl"
+  },
+  {
+    "schemaLabel": "1literalTotaldigits6",
+    "shexURL": "1literalTotaldigits6.shex",
+    "jsonURL": "1literalTotaldigits6.json",
+    "rdfURL": "1literalTotaldigits6.ttl"
+  },
+  {
+    "schemaLabel": "1literalTotaldigits2",
+    "shexURL": "1literalTotaldigits2.shex",
+    "jsonURL": "1literalTotaldigits2.json",
+    "rdfURL": "1literalTotaldigits2.ttl"
+  },
+  {
+    "schemaLabel": "1floatMininclusiveINTEGER",
+    "shexURL": "1floatMininclusiveINTEGER.shex",
+    "jsonURL": "1floatMininclusiveINTEGER.json",
+    "rdfURL": "1floatMininclusiveINTEGER.ttl"
+  },
+  {
+    "schemaLabel": "1integerMininclusiveINTEGER",
+    "shexURL": "1integerMininclusiveINTEGER.shex",
+    "jsonURL": "1integerMininclusiveINTEGER.json",
+    "rdfURL": "1integerMininclusiveINTEGER.ttl"
+  },
+  {
+    "schemaLabel": "1floatMininclusiveINTEGERLead",
+    "shexURL": "1floatMininclusiveINTEGERLead.shex",
+    "jsonURL": "1floatMininclusiveINTEGERLead.json",
+    "rdfURL": "1floatMininclusiveINTEGERLead.ttl"
+  },
+  {
+    "schemaLabel": "1integerMininclusiveINTEGERLead",
+    "shexURL": "1integerMininclusiveINTEGERLead.shex",
+    "jsonURL": "1integerMininclusiveINTEGERLead.json",
+    "rdfURL": "1integerMininclusiveINTEGERLead.ttl"
+  },
+  {
+    "schemaLabel": "1integerMininclusiveDECIMAL",
+    "shexURL": "1integerMininclusiveDECIMAL.shex",
+    "jsonURL": "1integerMininclusiveDECIMAL.json",
+    "rdfURL": "1integerMininclusiveDECIMAL.ttl"
+  },
+  {
+    "schemaLabel": "1integerMininclusiveDECIMALLeadTrail",
+    "shexURL": "1integerMininclusiveDECIMALLeadTrail.shex",
+    "jsonURL": "1integerMininclusiveDECIMALLeadTrail.json",
+    "rdfURL": "1integerMininclusiveDECIMALLeadTrail.ttl"
+  },
+  {
+    "schemaLabel": "1integerMininclusiveDECIMALint",
+    "shexURL": "1integerMininclusiveDECIMALint.shex",
+    "jsonURL": "1integerMininclusiveDECIMALint.json",
+    "rdfURL": "1integerMininclusiveDECIMALint.ttl"
+  },
+  {
+    "schemaLabel": "1integerMininclusiveDECIMALintLeadTrail",
+    "shexURL": "1integerMininclusiveDECIMALintLeadTrail.shex",
+    "jsonURL": "1integerMininclusiveDECIMALintLeadTrail.json",
+    "rdfURL": "1integerMininclusiveDECIMALintLeadTrail.ttl"
+  },
+  {
+    "schemaLabel": "1integerMininclusiveDOUBLE",
+    "shexURL": "1integerMininclusiveDOUBLE.shex",
+    "jsonURL": "1integerMininclusiveDOUBLE.json",
+    "rdfURL": "1integerMininclusiveDOUBLE.ttl"
+  },
+  {
+    "schemaLabel": "1integerMininclusiveDOUBLELeadTrail",
+    "shexURL": "1integerMininclusiveDOUBLELeadTrail.shex",
+    "jsonURL": "1integerMininclusiveDOUBLELeadTrail.json",
+    "rdfURL": "1integerMininclusiveDOUBLELeadTrail.ttl"
+  },
+  {
+    "schemaLabel": "1integerMininclusiveDOUBLEint",
+    "shexURL": "1integerMininclusiveDOUBLEint.shex",
+    "jsonURL": "1integerMininclusiveDOUBLEint.json",
+    "rdfURL": "1integerMininclusiveDOUBLEint.ttl"
+  },
+  {
+    "schemaLabel": "1integerMininclusiveDOUBLEintLeadTrail",
+    "shexURL": "1integerMininclusiveDOUBLEintLeadTrail.shex",
+    "jsonURL": "1integerMininclusiveDOUBLEintLeadTrail.json",
+    "rdfURL": "1integerMininclusiveDOUBLEintLeadTrail.ttl"
+  },
+  {
+    "schemaLabel": "1decimalMininclusiveINTEGER",
+    "shexURL": "1decimalMininclusiveINTEGER.shex",
+    "jsonURL": "1decimalMininclusiveINTEGER.json",
+    "rdfURL": "1decimalMininclusiveINTEGER.ttl"
+  },
+  {
+    "schemaLabel": "1decimalMininclusiveINTEGERLead",
+    "shexURL": "1decimalMininclusiveINTEGERLead.shex",
+    "jsonURL": "1decimalMininclusiveINTEGERLead.json",
+    "rdfURL": "1decimalMininclusiveINTEGERLead.ttl"
+  },
+  {
+    "schemaLabel": "1decimalMininclusiveDECIMAL",
+    "shexURL": "1decimalMininclusiveDECIMAL.shex",
+    "jsonURL": "1decimalMininclusiveDECIMAL.json",
+    "rdfURL": "1decimalMininclusiveDECIMAL.ttl"
+  },
+  {
+    "schemaLabel": "1decimalMininclusiveDECIMALLeadTrail",
+    "shexURL": "1decimalMininclusiveDECIMALLeadTrail.shex",
+    "jsonURL": "1decimalMininclusiveDECIMALLeadTrail.json",
+    "rdfURL": "1decimalMininclusiveDECIMALLeadTrail.ttl"
+  },
+  {
+    "schemaLabel": "1decimalMininclusiveDECIMALintLeadTrail",
+    "shexURL": "1decimalMininclusiveDECIMALintLeadTrail.shex",
+    "jsonURL": "1decimalMininclusiveDECIMALintLeadTrail.json",
+    "rdfURL": "1decimalMininclusiveDECIMALintLeadTrail.ttl"
+  },
+  {
+    "schemaLabel": "1decimalMininclusiveDOUBLE",
+    "shexURL": "1decimalMininclusiveDOUBLE.shex",
+    "jsonURL": "1decimalMininclusiveDOUBLE.json",
+    "rdfURL": "1decimalMininclusiveDOUBLE.ttl"
+  },
+  {
+    "schemaLabel": "1decimalMininclusiveDOUBLELeadTrail",
+    "shexURL": "1decimalMininclusiveDOUBLELeadTrail.shex",
+    "jsonURL": "1decimalMininclusiveDOUBLELeadTrail.json",
+    "rdfURL": "1decimalMininclusiveDOUBLELeadTrail.ttl"
+  },
+  {
+    "schemaLabel": "1decimalMininclusiveDOUBLEintLeadTrail",
+    "shexURL": "1decimalMininclusiveDOUBLEintLeadTrail.shex",
+    "jsonURL": "1decimalMininclusiveDOUBLEintLeadTrail.json",
+    "rdfURL": "1decimalMininclusiveDOUBLEintLeadTrail.ttl"
+  },
+  {
+    "schemaLabel": "1floatMininclusiveDECIMAL",
+    "shexURL": "1floatMininclusiveDECIMAL.shex",
+    "jsonURL": "1floatMininclusiveDECIMAL.json",
+    "rdfURL": "1floatMininclusiveDECIMAL.ttl"
+  },
+  {
+    "schemaLabel": "1floatMininclusiveDECIMALLeadTrail",
+    "shexURL": "1floatMininclusiveDECIMALLeadTrail.shex",
+    "jsonURL": "1floatMininclusiveDECIMALLeadTrail.json",
+    "rdfURL": "1floatMininclusiveDECIMALLeadTrail.ttl"
+  },
+  {
+    "schemaLabel": "1floatMininclusiveDECIMALintLeadTrail",
+    "shexURL": "1floatMininclusiveDECIMALintLeadTrail.shex",
+    "jsonURL": "1floatMininclusiveDECIMALintLeadTrail.json",
+    "rdfURL": "1floatMininclusiveDECIMALintLeadTrail.ttl"
+  },
+  {
+    "schemaLabel": "1floatMininclusiveDOUBLE",
+    "shexURL": "1floatMininclusiveDOUBLE.shex",
+    "jsonURL": "1floatMininclusiveDOUBLE.json",
+    "rdfURL": "1floatMininclusiveDOUBLE.ttl"
+  },
+  {
+    "schemaLabel": "1floatMininclusiveDOUBLELeadTrail",
+    "shexURL": "1floatMininclusiveDOUBLELeadTrail.shex",
+    "jsonURL": "1floatMininclusiveDOUBLELeadTrail.json",
+    "rdfURL": "1floatMininclusiveDOUBLELeadTrail.ttl"
+  },
+  {
+    "schemaLabel": "1floatMininclusiveDOUBLEintLeadTrail",
+    "shexURL": "1floatMininclusiveDOUBLEintLeadTrail.shex",
+    "jsonURL": "1floatMininclusiveDOUBLEintLeadTrail.json",
+    "rdfURL": "1floatMininclusiveDOUBLEintLeadTrail.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMininclusiveINTEGERLead",
+    "shexURL": "1doubleMininclusiveINTEGERLead.shex",
+    "jsonURL": "1doubleMininclusiveINTEGERLead.json",
+    "rdfURL": "1doubleMininclusiveINTEGERLead.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMininclusiveDECIMAL",
+    "shexURL": "1doubleMininclusiveDECIMAL.shex",
+    "jsonURL": "1doubleMininclusiveDECIMAL.json",
+    "rdfURL": "1doubleMininclusiveDECIMAL.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMininclusiveDECIMALLeadTrail",
+    "shexURL": "1doubleMininclusiveDECIMALLeadTrail.shex",
+    "jsonURL": "1doubleMininclusiveDECIMALLeadTrail.json",
+    "rdfURL": "1doubleMininclusiveDECIMALLeadTrail.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMininclusiveDECIMALintLeadTrail",
+    "shexURL": "1doubleMininclusiveDECIMALintLeadTrail.shex",
+    "jsonURL": "1doubleMininclusiveDECIMALintLeadTrail.json",
+    "rdfURL": "1doubleMininclusiveDECIMALintLeadTrail.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMininclusiveDOUBLE",
+    "shexURL": "1doubleMininclusiveDOUBLE.shex",
+    "jsonURL": "1doubleMininclusiveDOUBLE.json",
+    "rdfURL": "1doubleMininclusiveDOUBLE.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMininclusiveDOUBLELeadTrail",
+    "shexURL": "1doubleMininclusiveDOUBLELeadTrail.shex",
+    "jsonURL": "1doubleMininclusiveDOUBLELeadTrail.json",
+    "rdfURL": "1doubleMininclusiveDOUBLELeadTrail.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMininclusiveDOUBLEintLeadTrail",
+    "shexURL": "1doubleMininclusiveDOUBLEintLeadTrail.shex",
+    "jsonURL": "1doubleMininclusiveDOUBLEintLeadTrail.json",
+    "rdfURL": "1doubleMininclusiveDOUBLEintLeadTrail.ttl"
+  },
+  {
+    "schemaLabel": "1integerMinexclusiveINTEGER",
+    "shexURL": "1integerMinexclusiveINTEGER.shex",
+    "jsonURL": "1integerMinexclusiveINTEGER.json",
+    "rdfURL": "1integerMinexclusiveINTEGER.ttl"
+  },
+  {
+    "schemaLabel": "1integerMinexclusiveDECIMALint",
+    "shexURL": "1integerMinexclusiveDECIMALint.shex",
+    "jsonURL": "1integerMinexclusiveDECIMALint.json",
+    "rdfURL": "1integerMinexclusiveDECIMALint.ttl"
+  },
+  {
+    "schemaLabel": "1integerMinexclusiveDOUBLEint",
+    "shexURL": "1integerMinexclusiveDOUBLEint.shex",
+    "jsonURL": "1integerMinexclusiveDOUBLEint.json",
+    "rdfURL": "1integerMinexclusiveDOUBLEint.ttl"
+  },
+  {
+    "schemaLabel": "1decimalMinexclusiveINTEGER",
+    "shexURL": "1decimalMinexclusiveINTEGER.shex",
+    "jsonURL": "1decimalMinexclusiveINTEGER.json",
+    "rdfURL": "1decimalMinexclusiveINTEGER.ttl"
+  },
+  {
+    "schemaLabel": "1decimalMinexclusiveDECIMAL",
+    "shexURL": "1decimalMinexclusiveDECIMAL.shex",
+    "jsonURL": "1decimalMinexclusiveDECIMAL.json",
+    "rdfURL": "1decimalMinexclusiveDECIMAL.ttl"
+  },
+  {
+    "schemaLabel": "1decimalMinexclusiveDOUBLE",
+    "shexURL": "1decimalMinexclusiveDOUBLE.shex",
+    "jsonURL": "1decimalMinexclusiveDOUBLE.json",
+    "rdfURL": "1decimalMinexclusiveDOUBLE.ttl"
+  },
+  {
+    "schemaLabel": "1floatMinexclusiveINTEGER",
+    "shexURL": "1floatMinexclusiveINTEGER.shex",
+    "jsonURL": "1floatMinexclusiveINTEGER.json",
+    "rdfURL": "1floatMinexclusiveINTEGER.ttl"
+  },
+  {
+    "schemaLabel": "1floatMinexclusiveDECIMAL",
+    "shexURL": "1floatMinexclusiveDECIMAL.shex",
+    "jsonURL": "1floatMinexclusiveDECIMAL.json",
+    "rdfURL": "1floatMinexclusiveDECIMAL.ttl"
+  },
+  {
+    "schemaLabel": "1floatMinexclusiveDOUBLE",
+    "shexURL": "1floatMinexclusiveDOUBLE.shex",
+    "jsonURL": "1floatMinexclusiveDOUBLE.json",
+    "rdfURL": "1floatMinexclusiveDOUBLE.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMinexclusiveINTEGER",
+    "shexURL": "1doubleMinexclusiveINTEGER.shex",
+    "jsonURL": "1doubleMinexclusiveINTEGER.json",
+    "rdfURL": "1doubleMinexclusiveINTEGER.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMinexclusiveDECIMAL",
+    "shexURL": "1doubleMinexclusiveDECIMAL.shex",
+    "jsonURL": "1doubleMinexclusiveDECIMAL.json",
+    "rdfURL": "1doubleMinexclusiveDECIMAL.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMinexclusiveDOUBLE",
+    "shexURL": "1doubleMinexclusiveDOUBLE.shex",
+    "jsonURL": "1doubleMinexclusiveDOUBLE.json",
+    "rdfURL": "1doubleMinexclusiveDOUBLE.ttl"
+  },
+  {
+    "schemaLabel": "1integerMaxinclusiveINTEGER",
+    "shexURL": "1integerMaxinclusiveINTEGER.shex",
+    "jsonURL": "1integerMaxinclusiveINTEGER.json",
+    "rdfURL": "1integerMaxinclusiveINTEGER.ttl"
+  },
+  {
+    "schemaLabel": "1integerMaxinclusiveDECIMALint",
+    "shexURL": "1integerMaxinclusiveDECIMALint.shex",
+    "jsonURL": "1integerMaxinclusiveDECIMALint.json",
+    "rdfURL": "1integerMaxinclusiveDECIMALint.ttl"
+  },
+  {
+    "schemaLabel": "1integerMaxinclusiveDOUBLEint",
+    "shexURL": "1integerMaxinclusiveDOUBLEint.shex",
+    "jsonURL": "1integerMaxinclusiveDOUBLEint.json",
+    "rdfURL": "1integerMaxinclusiveDOUBLEint.ttl"
+  },
+  {
+    "schemaLabel": "1decimalMaxinclusiveINTEGER",
+    "shexURL": "1decimalMaxinclusiveINTEGER.shex",
+    "jsonURL": "1decimalMaxinclusiveINTEGER.json",
+    "rdfURL": "1decimalMaxinclusiveINTEGER.ttl"
+  },
+  {
+    "schemaLabel": "1decimalMaxinclusiveDECIMAL",
+    "shexURL": "1decimalMaxinclusiveDECIMAL.shex",
+    "jsonURL": "1decimalMaxinclusiveDECIMAL.json",
+    "rdfURL": "1decimalMaxinclusiveDECIMAL.ttl"
+  },
+  {
+    "schemaLabel": "1decimalMaxinclusiveDOUBLE",
+    "shexURL": "1decimalMaxinclusiveDOUBLE.shex",
+    "jsonURL": "1decimalMaxinclusiveDOUBLE.json",
+    "rdfURL": "1decimalMaxinclusiveDOUBLE.ttl"
+  },
+  {
+    "schemaLabel": "1floatMaxinclusiveINTEGER",
+    "shexURL": "1floatMaxinclusiveINTEGER.shex",
+    "jsonURL": "1floatMaxinclusiveINTEGER.json",
+    "rdfURL": "1floatMaxinclusiveINTEGER.ttl"
+  },
+  {
+    "schemaLabel": "1floatMaxinclusiveDECIMAL",
+    "shexURL": "1floatMaxinclusiveDECIMAL.shex",
+    "jsonURL": "1floatMaxinclusiveDECIMAL.json",
+    "rdfURL": "1floatMaxinclusiveDECIMAL.ttl"
+  },
+  {
+    "schemaLabel": "1floatMaxinclusiveDOUBLE",
+    "shexURL": "1floatMaxinclusiveDOUBLE.shex",
+    "jsonURL": "1floatMaxinclusiveDOUBLE.json",
+    "rdfURL": "1floatMaxinclusiveDOUBLE.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMaxinclusiveINTEGER",
+    "shexURL": "1doubleMaxinclusiveINTEGER.shex",
+    "jsonURL": "1doubleMaxinclusiveINTEGER.json",
+    "rdfURL": "1doubleMaxinclusiveINTEGER.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMaxinclusiveDECIMAL",
+    "shexURL": "1doubleMaxinclusiveDECIMAL.shex",
+    "jsonURL": "1doubleMaxinclusiveDECIMAL.json",
+    "rdfURL": "1doubleMaxinclusiveDECIMAL.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMaxinclusiveDOUBLE",
+    "shexURL": "1doubleMaxinclusiveDOUBLE.shex",
+    "jsonURL": "1doubleMaxinclusiveDOUBLE.json",
+    "rdfURL": "1doubleMaxinclusiveDOUBLE.ttl"
+  },
+  {
+    "schemaLabel": "1integerMaxexclusiveINTEGER",
+    "shexURL": "1integerMaxexclusiveINTEGER.shex",
+    "jsonURL": "1integerMaxexclusiveINTEGER.json",
+    "rdfURL": "1integerMaxexclusiveINTEGER.ttl"
+  },
+  {
+    "schemaLabel": "1integerMaxexclusiveDECIMALint",
+    "shexURL": "1integerMaxexclusiveDECIMALint.shex",
+    "jsonURL": "1integerMaxexclusiveDECIMALint.json",
+    "rdfURL": "1integerMaxexclusiveDECIMALint.ttl"
+  },
+  {
+    "schemaLabel": "1integerMaxexclusiveDOUBLEint",
+    "shexURL": "1integerMaxexclusiveDOUBLEint.shex",
+    "jsonURL": "1integerMaxexclusiveDOUBLEint.json",
+    "rdfURL": "1integerMaxexclusiveDOUBLEint.ttl"
+  },
+  {
+    "schemaLabel": "1decimalMaxexclusiveINTEGER",
+    "shexURL": "1decimalMaxexclusiveINTEGER.shex",
+    "jsonURL": "1decimalMaxexclusiveINTEGER.json",
+    "rdfURL": "1decimalMaxexclusiveINTEGER.ttl"
+  },
+  {
+    "schemaLabel": "1decimalMaxexclusiveDECIMAL",
+    "shexURL": "1decimalMaxexclusiveDECIMAL.shex",
+    "jsonURL": "1decimalMaxexclusiveDECIMAL.json",
+    "rdfURL": "1decimalMaxexclusiveDECIMAL.ttl"
+  },
+  {
+    "schemaLabel": "1decimalMaxexclusiveDOUBLE",
+    "shexURL": "1decimalMaxexclusiveDOUBLE.shex",
+    "jsonURL": "1decimalMaxexclusiveDOUBLE.json",
+    "rdfURL": "1decimalMaxexclusiveDOUBLE.ttl"
+  },
+  {
+    "schemaLabel": "1decimalMaxexclusivexsd-byte",
+    "shexURL": "1decimalMaxexclusivexsd-byte.shex",
+    "jsonURL": "1decimalMaxexclusivexsd-byte.json",
+    "rdfURL": "1decimalMaxexclusivexsd-byte.ttl"
+  },
+  {
+    "schemaLabel": "1floatMaxexclusiveINTEGER",
+    "shexURL": "1floatMaxexclusiveINTEGER.shex",
+    "jsonURL": "1floatMaxexclusiveINTEGER.json",
+    "rdfURL": "1floatMaxexclusiveINTEGER.ttl"
+  },
+  {
+    "schemaLabel": "1floatMaxexclusiveDECIMAL",
+    "shexURL": "1floatMaxexclusiveDECIMAL.shex",
+    "jsonURL": "1floatMaxexclusiveDECIMAL.json",
+    "rdfURL": "1floatMaxexclusiveDECIMAL.ttl"
+  },
+  {
+    "schemaLabel": "1floatMaxexclusiveDOUBLE",
+    "shexURL": "1floatMaxexclusiveDOUBLE.shex",
+    "jsonURL": "1floatMaxexclusiveDOUBLE.json",
+    "rdfURL": "1floatMaxexclusiveDOUBLE.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMaxexclusiveINTEGER",
+    "shexURL": "1doubleMaxexclusiveINTEGER.shex",
+    "jsonURL": "1doubleMaxexclusiveINTEGER.json",
+    "rdfURL": "1doubleMaxexclusiveINTEGER.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMaxexclusiveINTEGERLead",
+    "shexURL": "1doubleMaxexclusiveINTEGERLead.shex",
+    "jsonURL": "1doubleMaxexclusiveINTEGERLead.json",
+    "rdfURL": "1doubleMaxexclusiveINTEGERLead.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMaxexclusiveDECIMAL",
+    "shexURL": "1doubleMaxexclusiveDECIMAL.shex",
+    "jsonURL": "1doubleMaxexclusiveDECIMAL.json",
+    "rdfURL": "1doubleMaxexclusiveDECIMAL.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMaxexclusiveDECIMALLeadTrail",
+    "shexURL": "1doubleMaxexclusiveDECIMALLeadTrail.shex",
+    "jsonURL": "1doubleMaxexclusiveDECIMALLeadTrail.json",
+    "rdfURL": "1doubleMaxexclusiveDECIMALLeadTrail.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMaxexclusiveDECIMALint",
+    "shexURL": "1doubleMaxexclusiveDECIMALint.shex",
+    "jsonURL": "1doubleMaxexclusiveDECIMALint.json",
+    "rdfURL": "1doubleMaxexclusiveDECIMALint.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMaxexclusiveDECIMALintLeadTrail",
+    "shexURL": "1doubleMaxexclusiveDECIMALintLeadTrail.shex",
+    "jsonURL": "1doubleMaxexclusiveDECIMALintLeadTrail.json",
+    "rdfURL": "1doubleMaxexclusiveDECIMALintLeadTrail.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMaxexclusiveDOUBLE",
+    "shexURL": "1doubleMaxexclusiveDOUBLE.shex",
+    "jsonURL": "1doubleMaxexclusiveDOUBLE.json",
+    "rdfURL": "1doubleMaxexclusiveDOUBLE.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMaxexclusiveDOUBLELeadTrail",
+    "shexURL": "1doubleMaxexclusiveDOUBLELeadTrail.shex",
+    "jsonURL": "1doubleMaxexclusiveDOUBLELeadTrail.json",
+    "rdfURL": "1doubleMaxexclusiveDOUBLELeadTrail.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMaxexclusiveDOUBLEint",
+    "shexURL": "1doubleMaxexclusiveDOUBLEint.shex",
+    "jsonURL": "1doubleMaxexclusiveDOUBLEint.json",
+    "rdfURL": "1doubleMaxexclusiveDOUBLEint.ttl"
+  },
+  {
+    "schemaLabel": "1doubleMaxexclusiveDOUBLEintLeadTrail",
+    "shexURL": "1doubleMaxexclusiveDOUBLEintLeadTrail.shex",
+    "jsonURL": "1doubleMaxexclusiveDOUBLEintLeadTrail.json",
+    "rdfURL": "1doubleMaxexclusiveDOUBLEintLeadTrail.ttl"
+  },
+  {
+    "schemaLabel": "1Length",
+    "shexURL": "1Length.shex",
+    "jsonURL": "1Length.json",
+    "rdfURL": "1Length.ttl"
+  },
+  {
+    "schemaLabel": "1literalLength",
+    "shexURL": "1literalLength.shex",
+    "jsonURL": "1literalLength.json",
+    "rdfURL": "1literalLength.ttl"
+  },
+  {
+    "schemaLabel": "1literalLength19",
+    "shexURL": "1literalLength19.shex",
+    "jsonURL": "1literalLength19.json",
+    "rdfURL": "1literalLength19.ttl"
+  },
+  {
+    "schemaLabel": "1iriLength",
+    "shexURL": "1iriLength.shex",
+    "jsonURL": "1iriLength.json",
+    "rdfURL": "1iriLength.ttl"
+  },
+  {
+    "schemaLabel": "1iriRefLength1",
+    "shexURL": "1iriRefLength1.shex",
+    "jsonURL": "1iriRefLength1.json",
+    "rdfURL": "1iriRefLength1.ttl"
+  },
+  {
+    "schemaLabel": "1bnodeLength",
+    "shexURL": "1bnodeLength.shex",
+    "jsonURL": "1bnodeLength.json",
+    "rdfURL": "1bnodeLength.ttl"
+  },
+  {
+    "schemaLabel": "1nonliteralLength",
+    "shexURL": "1nonliteralLength.shex",
+    "jsonURL": "1nonliteralLength.json",
+    "rdfURL": "1nonliteralLength.ttl"
+  },
+  {
+    "schemaLabel": "1literalMinlength",
+    "shexURL": "1literalMinlength.shex",
+    "jsonURL": "1literalMinlength.json",
+    "rdfURL": "1literalMinlength.ttl"
+  },
+  {
+    "schemaLabel": "1iriMinlength",
+    "shexURL": "1iriMinlength.shex",
+    "jsonURL": "1iriMinlength.json",
+    "rdfURL": "1iriMinlength.ttl"
+  },
+  {
+    "schemaLabel": "1bnodeMinlength",
+    "shexURL": "1bnodeMinlength.shex",
+    "jsonURL": "1bnodeMinlength.json",
+    "rdfURL": "1bnodeMinlength.ttl"
+  },
+  {
+    "schemaLabel": "1nonliteralMinlength",
+    "shexURL": "1nonliteralMinlength.shex",
+    "jsonURL": "1nonliteralMinlength.json",
+    "rdfURL": "1nonliteralMinlength.ttl"
+  },
+  {
+    "schemaLabel": "1literalMaxlength",
+    "shexURL": "1literalMaxlength.shex",
+    "jsonURL": "1literalMaxlength.json",
+    "rdfURL": "1literalMaxlength.ttl"
+  },
+  {
+    "schemaLabel": "1iriMaxlength",
+    "shexURL": "1iriMaxlength.shex",
+    "jsonURL": "1iriMaxlength.json",
+    "rdfURL": "1iriMaxlength.ttl"
+  },
+  {
+    "schemaLabel": "1bnodeMaxlength",
+    "shexURL": "1bnodeMaxlength.shex",
+    "jsonURL": "1bnodeMaxlength.json",
+    "rdfURL": "1bnodeMaxlength.ttl"
+  },
+  {
+    "schemaLabel": "1nonliteralMaxlength",
+    "shexURL": "1nonliteralMaxlength.shex",
+    "jsonURL": "1nonliteralMaxlength.json",
+    "rdfURL": "1nonliteralMaxlength.ttl"
+  },
+  {
+    "schemaLabel": "1literalPattern",
+    "shexURL": "1literalPattern.shex",
+    "jsonURL": "1literalPattern.json",
+    "rdfURL": "1literalPattern.ttl"
+  },
+  {
+    "schemaLabel": "1literalPattern_with_all_meta",
+    "shexURL": "1literalPattern_with_all_meta.shex",
+    "jsonURL": "1literalPattern_with_all_meta.json",
+    "rdfURL": "1literalPattern_with_all_meta.ttl"
+  },
+  {
+    "schemaLabel": "1literalPattern_with_all_controls",
+    "shexURL": "1literalPattern_with_all_controls.shex",
+    "jsonURL": "1literalPattern_with_all_controls.json",
+    "rdfURL": "1literalPattern_with_all_controls.ttl"
+  },
+  {
+    "schemaLabel": "1literalPattern_with_all_punctuation",
+    "shexURL": "1literalPattern_with_all_punctuation.shex",
+    "jsonURL": "1literalPattern_with_all_punctuation.json",
+    "rdfURL": "1literalPattern_with_all_punctuation.ttl"
+  },
+  {
+    "schemaLabel": "1literalPattern_with_ascii_boundaries",
+    "shexURL": "1literalPattern_with_ascii_boundaries.shex",
+    "jsonURL": "1literalPattern_with_ascii_boundaries.json",
+    "rdfURL": "1literalPattern_with_ascii_boundaries.ttl"
+  },
+  {
+    "schemaLabel": "1literalPattern_with_UTF8_boundaries",
+    "shexURL": "1literalPattern_with_UTF8_boundaries.shex",
+    "jsonURL": "1literalPattern_with_UTF8_boundaries.json",
+    "rdfURL": "1literalPattern_with_UTF8_boundaries.ttl"
+  },
+  {
+    "schemaLabel": "1literalPattern_with_REGEXP_escapes",
+    "shexURL": "1literalPattern_with_REGEXP_escapes.shex",
+    "jsonURL": "1literalPattern_with_REGEXP_escapes.json",
+    "rdfURL": "1literalPattern_with_REGEXP_escapes.ttl"
+  },
+  {
+    "schemaLabel": "1literalPattern_with_REGEXP_escapes_bare",
+    "shexURL": "1literalPattern_with_REGEXP_escapes_bare.shex",
+    "jsonURL": "1literalPattern_with_REGEXP_escapes_bare.json",
+    "rdfURL": "1literalPattern_with_REGEXP_escapes_bare.ttl"
+  },
+  {
+    "schemaLabel": "1literalPattern_with_REGEXP_escapes_escaped",
+    "shexURL": "1literalPattern_with_REGEXP_escapes_escaped.shex",
+    "jsonURL": "1literalPattern_with_REGEXP_escapes_escaped.json",
+    "rdfURL": "1literalPattern_with_REGEXP_escapes_escaped.ttl"
+  },
+  {
+    "schemaLabel": "1literalPatterni",
+    "shexURL": "1literalPatterni.shex",
+    "jsonURL": "1literalPatterni.json",
+    "rdfURL": "1literalPatterni.ttl"
+  },
+  {
+    "schemaLabel": "1literalPattern19",
+    "shexURL": "1literalPattern19.shex",
+    "jsonURL": "1literalPattern19.json",
+    "rdfURL": "1literalPattern19.ttl"
+  },
+  {
+    "schemaLabel": "1literalStartPattern",
+    "shexURL": "1literalStartPattern.shex",
+    "jsonURL": "1literalStartPattern.json",
+    "rdfURL": "1literalStartPattern.ttl"
+  },
+  {
+    "schemaLabel": "1literalPatternEnd",
+    "shexURL": "1literalPatternEnd.shex",
+    "jsonURL": "1literalPatternEnd.json",
+    "rdfURL": "1literalPatternEnd.ttl"
+  },
+  {
+    "schemaLabel": "1literalStartPatternEnd",
+    "shexURL": "1literalStartPatternEnd.shex",
+    "jsonURL": "1literalStartPatternEnd.json",
+    "rdfURL": "1literalStartPatternEnd.ttl"
+  },
+  {
+    "schemaLabel": "1literalPatternDollar",
+    "shexURL": "1literalPatternDollar.shex",
+    "jsonURL": "1literalPatternDollar.json",
+    "rdfURL": "1literalPatternDollar.ttl"
+  },
+  {
+    "schemaLabel": "1literalCarrotPatternDollar",
+    "shexURL": "1literalCarrotPatternDollar.shex",
+    "jsonURL": "1literalCarrotPatternDollar.json",
+    "rdfURL": "1literalCarrotPatternDollar.ttl"
+  },
+  {
+    "schemaLabel": "1literalPatternabEnd",
+    "shexURL": "1literalPatternabEnd.shex",
+    "jsonURL": "1literalPatternabEnd.json",
+    "rdfURL": "1literalPatternabEnd.ttl"
+  },
+  {
+    "schemaLabel": "1iriPattern",
+    "shexURL": "1iriPattern.shex",
+    "jsonURL": "1iriPattern.json",
+    "rdfURL": "1iriPattern.ttl"
+  },
+  {
+    "schemaLabel": "1iriPatternbc",
+    "shexURL": "1iriPatternbc.shex",
+    "jsonURL": "1iriPatternbc.json",
+    "rdfURL": "1iriPatternbc.ttl"
+  },
+  {
+    "schemaLabel": "1bnodePattern",
+    "shexURL": "1bnodePattern.shex",
+    "jsonURL": "1bnodePattern.json",
+    "rdfURL": "1bnodePattern.ttl"
+  },
+  {
+    "schemaLabel": "1nonliteralPattern",
+    "shexURL": "1nonliteralPattern.shex",
+    "jsonURL": "1nonliteralPattern.json",
+    "rdfURL": "1nonliteralPattern.ttl"
+  },
+  {
+    "schemaLabel": "1val1dotMinusiri3",
+    "shexURL": "1val1dotMinusiri3.shex",
+    "jsonURL": "1val1dotMinusiri3.json",
+    "rdfURL": "1val1dotMinusiri3.ttl"
+  },
+  {
+    "schemaLabel": "1val1refvsMinusiri3",
+    "shexURL": "1val1refvsMinusiri3.shex",
+    "jsonURL": "1val1refvsMinusiri3.json",
+    "rdfURL": "1val1refvsMinusiri3.ttl"
+  },
+  {
+    "schemaLabel": "1val1dotMinusiriStem3",
+    "shexURL": "1val1dotMinusiriStem3.shex",
+    "jsonURL": "1val1dotMinusiriStem3.json",
+    "rdfURL": "1val1dotMinusiriStem3.ttl"
+  },
+  {
+    "schemaLabel": "1val1iri",
+    "shexURL": "1val1iri.shex",
+    "jsonURL": "1val1iri.json",
+    "rdfURL": "1val1iri.ttl"
+  },
+  {
+    "schemaLabel": "1val1iriStem",
+    "shexURL": "1val1iriStem.shex",
+    "jsonURL": "1val1iriStem.json",
+    "rdfURL": "1val1iriStem.ttl"
+  },
+  {
+    "schemaLabel": "1val1iriStemMinusiri3",
+    "shexURL": "1val1iriStemMinusiri3.shex",
+    "jsonURL": "1val1iriStemMinusiri3.json",
+    "rdfURL": "1val1iriStemMinusiri3.ttl"
+  },
+  {
+    "schemaLabel": "1val1iriStemMinusiriStem3",
+    "shexURL": "1val1iriStemMinusiriStem3.shex",
+    "jsonURL": "1val1iriStemMinusiriStem3.json",
+    "rdfURL": "1val1iriStemMinusiriStem3.ttl"
+  },
+  {
+    "schemaLabel": "1val1dotMinusliteral3",
+    "shexURL": "1val1dotMinusliteral3.shex",
+    "jsonURL": "1val1dotMinusliteral3.json",
+    "rdfURL": "1val1dotMinusliteral3.ttl"
+  },
+  {
+    "schemaLabel": "1val1dotMinusliteralStem3",
+    "shexURL": "1val1dotMinusliteralStem3.shex",
+    "jsonURL": "1val1dotMinusliteralStem3.json",
+    "rdfURL": "1val1dotMinusliteralStem3.ttl"
+  },
+  {
+    "schemaLabel": "1val1literalStem",
+    "shexURL": "1val1literalStem.shex",
+    "jsonURL": "1val1literalStem.json",
+    "rdfURL": "1val1literalStem.ttl"
+  },
+  {
+    "schemaLabel": "1val1literalStemMinusliteral3",
+    "shexURL": "1val1literalStemMinusliteral3.shex",
+    "jsonURL": "1val1literalStemMinusliteral3.json",
+    "rdfURL": "1val1literalStemMinusliteral3.ttl"
+  },
+  {
+    "schemaLabel": "1val1literalStemMinusliteralStem3",
+    "shexURL": "1val1literalStemMinusliteralStem3.shex",
+    "jsonURL": "1val1literalStemMinusliteralStem3.json",
+    "rdfURL": "1val1literalStemMinusliteralStem3.ttl"
+  },
+  {
+    "schemaLabel": "1val1literaliriStem",
+    "shexURL": "1val1literaliriStem.shex",
+    "jsonURL": "1val1literaliriStem.json",
+    "rdfURL": "1val1literaliriStem.ttl"
+  },
+  {
+    "schemaLabel": "1val1literaliriStemMinusliteraliri3",
+    "shexURL": "1val1literaliriStemMinusliteraliri3.shex",
+    "jsonURL": "1val1literaliriStemMinusliteraliri3.json",
+    "rdfURL": "1val1literaliriStemMinusliteraliri3.ttl"
+  },
+  {
+    "schemaLabel": "1val1dotMinuslanguage3",
+    "shexURL": "1val1dotMinuslanguage3.shex",
+    "jsonURL": "1val1dotMinuslanguage3.json",
+    "rdfURL": "1val1dotMinuslanguage3.ttl"
+  },
+  {
+    "schemaLabel": "1val1dotMinuslanguageStem3",
+    "shexURL": "1val1dotMinuslanguageStem3.shex",
+    "jsonURL": "1val1dotMinuslanguageStem3.json",
+    "rdfURL": "1val1dotMinuslanguageStem3.ttl"
+  },
+  {
+    "schemaLabel": "1val1language",
+    "shexURL": "1val1language.shex",
+    "jsonURL": "1val1language.json",
+    "rdfURL": "1val1language.ttl"
+  },
+  {
+    "schemaLabel": "1val1emptylanguageStem",
+    "shexURL": "1val1emptylanguageStem.shex",
+    "jsonURL": "1val1emptylanguageStem.json",
+    "rdfURL": "1val1emptylanguageStem.ttl"
+  },
+  {
+    "schemaLabel": "1val1emptylanguageStemMinuslanguage3",
+    "shexURL": "1val1emptylanguageStemMinuslanguage3.shex",
+    "jsonURL": "1val1emptylanguageStemMinuslanguage3.json",
+    "rdfURL": "1val1emptylanguageStemMinuslanguage3.ttl"
+  },
+  {
+    "schemaLabel": "1val1emptylanguageStemMinuslanguageStem3",
+    "shexURL": "1val1emptylanguageStemMinuslanguageStem3.shex",
+    "jsonURL": "1val1emptylanguageStemMinuslanguageStem3.json",
+    "rdfURL": "1val1emptylanguageStemMinuslanguageStem3.ttl"
+  },
+  {
+    "schemaLabel": "1val1languageStem",
+    "shexURL": "1val1languageStem.shex",
+    "jsonURL": "1val1languageStem.json",
+    "rdfURL": "1val1languageStem.ttl"
+  },
+  {
+    "schemaLabel": "1val1languageStemMinuslanguage3",
+    "shexURL": "1val1languageStemMinuslanguage3.shex",
+    "jsonURL": "1val1languageStemMinuslanguage3.json",
+    "rdfURL": "1val1languageStemMinuslanguage3.ttl"
+  },
+  {
+    "schemaLabel": "1val1languageStemMinuslanguageStem3",
+    "shexURL": "1val1languageStemMinuslanguageStem3.shex",
+    "jsonURL": "1val1languageStemMinuslanguageStem3.json",
+    "rdfURL": "1val1languageStemMinuslanguageStem3.ttl"
+  },
+  {
+    "schemaLabel": "1val1literal",
+    "shexURL": "1val1literal.shex",
+    "jsonURL": "1val1literal.json",
+    "rdfURL": "1val1literal.ttl"
+  },
+  {
+    "schemaLabel": "1val1literallanguageStem",
+    "shexURL": "1val1literallanguageStem.shex",
+    "jsonURL": "1val1literallanguageStem.json",
+    "rdfURL": "1val1literallanguageStem.ttl"
+  },
+  {
+    "schemaLabel": "1val1literallanguageStemMinusliterallanguage3",
+    "shexURL": "1val1literallanguageStemMinusliterallanguage3.shex",
+    "jsonURL": "1val1literallanguageStemMinusliterallanguage3.json",
+    "rdfURL": "1val1literallanguageStemMinusliterallanguage3.ttl"
+  },
+  {
+    "schemaLabel": "1val1literalAtlanguageStem",
+    "shexURL": "1val1literalAtlanguageStem.shex",
+    "jsonURL": "1val1literalAtlanguageStem.json",
+    "rdfURL": "1val1literalAtlanguageStem.ttl"
+  },
+  {
+    "schemaLabel": "1val1literalAtlanguageStemMinusliteralAtlanguage3",
+    "shexURL": "1val1literalAtlanguageStemMinusliteralAtlanguage3.shex",
+    "jsonURL": "1val1literalAtlanguageStemMinusliteralAtlanguage3.json",
+    "rdfURL": "1val1literalAtlanguageStemMinusliteralAtlanguage3.ttl"
+  },
+  {
+    "schemaLabel": "2dot",
+    "shexURL": "2dot.shex",
+    "jsonURL": "2dot.json",
+    "rdfURL": "2dot.ttl"
+  },
+  {
+    "schemaLabel": "2dotSemis",
+    "shexURL": "2dotSemis.shex",
+    "jsonURL": "2dotSemis.json",
+    "rdfURL": "2dotSemis.ttl"
+  },
+  {
+    "schemaLabel": "open2dotclose",
+    "shexURL": "open2dotclose.shex",
+    "jsonURL": "open2dotclose.json",
+    "rdfURL": "open2dotclose.ttl"
+  },
+  {
+    "schemaLabel": "open2dotsemisclose",
+    "shexURL": "open2dotsemisclose.shex",
+    "jsonURL": "open2dotsemisclose.json",
+    "rdfURL": "open2dotsemisclose.ttl"
+  },
+  {
+    "schemaLabel": "3groupdot",
+    "shexURL": "3groupdot.shex",
+    "jsonURL": "3groupdot.json",
+    "rdfURL": "3groupdot.ttl"
+  },
+  {
+    "schemaLabel": "open3groupdotclose",
+    "shexURL": "open3groupdotclose.shex",
+    "jsonURL": "open3groupdotclose.json",
+    "rdfURL": "open3groupdotclose.ttl"
+  },
+  {
+    "schemaLabel": "1dotOne1dot",
+    "shexURL": "1dotOne1dot.shex",
+    "jsonURL": "1dotOne1dot.json",
+    "rdfURL": "1dotOne1dot.ttl"
+  },
+  {
+    "schemaLabel": "openopen1dotOr1dotclose",
+    "shexURL": "openopen1dotOr1dotclose.shex",
+    "jsonURL": "1dotOne1dot.json",
+    "rdfURL": "1dotOne1dot.ttl"
+  },
+  {
+    "schemaLabel": "1dotSemiOne1dotSemi",
+    "shexURL": "1dotSemiOne1dotSemi.shex",
+    "jsonURL": "1dotSemiOne1dotSemi.json",
+    "rdfURL": "1dotSemiOne1dotSemi.ttl"
+  },
+  {
+    "schemaLabel": "open1dotOne1dotclose",
+    "shexURL": "open1dotOne1dotclose.shex",
+    "jsonURL": "open1dotOne1dotclose.json",
+    "rdfURL": "open1dotOne1dotclose.ttl"
+  },
+  {
+    "schemaLabel": "open1dotSemiOne1dotSemicloseSemi",
+    "shexURL": "open1dotSemiOne1dotSemicloseSemi.shex",
+    "jsonURL": "open1dotSemiOne1dotSemicloseSemi.json",
+    "rdfURL": "open1dotSemiOne1dotSemicloseSemi.ttl"
+  },
+  {
+    "schemaLabel": "2dotOne1dot",
+    "shexURL": "2dotOne1dot.shex",
+    "jsonURL": "2dotOne1dot.json",
+    "rdfURL": "2dotOne1dot.ttl"
+  },
+  {
+    "schemaLabel": "2dotSemiOne1dotSemi",
+    "shexURL": "2dotSemiOne1dotSemi.shex",
+    "jsonURL": "2dotSemiOne1dotSemi.json",
+    "rdfURL": "2dotSemiOne1dotSemi.ttl"
+  },
+  {
+    "schemaLabel": "open2dotOne1dotclose",
+    "shexURL": "open2dotOne1dotclose.shex",
+    "jsonURL": "open2dotOne1dotclose.json",
+    "rdfURL": "open2dotOne1dotclose.ttl"
+  },
+  {
+    "schemaLabel": "open2dotSemisOne1dotSemiclose",
+    "shexURL": "open2dotSemisOne1dotSemiclose.shex",
+    "jsonURL": "open2dotSemisOne1dotSemiclose.json",
+    "rdfURL": "open2dotSemisOne1dotSemiclose.ttl"
+  },
+  {
+    "schemaLabel": "openopen2dotcloseOne1dotclose",
+    "shexURL": "openopen2dotcloseOne1dotclose.shex",
+    "jsonURL": "openopen2dotcloseOne1dotclose.json",
+    "rdfURL": "openopen2dotcloseOne1dotclose.ttl"
+  },
+  {
+    "schemaLabel": "openopen2dotSemiscloseOne1dotSemiclose",
+    "shexURL": "openopen2dotSemiscloseOne1dotSemiclose.shex",
+    "jsonURL": "openopen2dotSemiscloseOne1dotSemiclose.json",
+    "rdfURL": "openopen2dotSemiscloseOne1dotSemiclose.ttl"
+  },
+  {
+    "schemaLabel": "open1dotopen1dotOne1dotcloseclose",
+    "shexURL": "open1dotopen1dotOne1dotcloseclose.shex",
+    "jsonURL": "open1dotopen1dotOne1dotcloseclose.json",
+    "rdfURL": "open1dotopen1dotOne1dotcloseclose.ttl"
+  },
+  {
+    "schemaLabel": "open1dotopen1dotSemiOne1dotSemicloseSemicloseSemi",
+    "shexURL": "open1dotopen1dotSemiOne1dotSemicloseSemicloseSemi.shex",
+    "jsonURL": "open1dotopen1dotSemiOne1dotSemicloseSemicloseSemi.json",
+    "rdfURL": "open1dotopen1dotSemiOne1dotSemicloseSemicloseSemi.ttl"
+  },
+  {
+    "schemaLabel": "1dotOne2dot",
+    "shexURL": "1dotOne2dot.shex",
+    "jsonURL": "1dotOne2dot.json",
+    "rdfURL": "1dotOne2dot.ttl"
+  },
+  {
+    "schemaLabel": "open1dotOneopen2dotcloseclose",
+    "shexURL": "open1dotOneopen2dotcloseclose.shex",
+    "jsonURL": "open1dotOneopen2dotcloseclose.json",
+    "rdfURL": "open1dotOneopen2dotcloseclose.ttl"
+  },
+  {
+    "schemaLabel": "openopen1dotOne1dotclose1dotclose",
+    "shexURL": "openopen1dotOne1dotclose1dotclose.shex",
+    "jsonURL": "openopen1dotOne1dotclose1dotclose.json",
+    "rdfURL": "openopen1dotOne1dotclose1dotclose.ttl"
+  },
+  {
+    "schemaLabel": "1val1vExprRefIRIREF1",
+    "shexURL": "1val1vExprRefIRIREF1.shex",
+    "jsonURL": "1val1vExprRefIRIREF1.json",
+    "rdfURL": "1val1vExprRefIRIREF1.ttl"
+  },
+  {
+    "schemaLabel": "1val1vExprRefbnode1",
+    "shexURL": "1val1vExprRefbnode1.shex",
+    "jsonURL": "1val1vExprRefbnode1.json",
+    "rdfURL": "1val1vExprRefbnode1.ttl"
+  },
+  {
+    "schemaLabel": "1dotRefAND3",
+    "shexURL": "1dotRefAND3.shex",
+    "jsonURL": "1dotRefAND3.json",
+    "rdfURL": "1dotRefAND3.ttl"
+  },
+  {
+    "schemaLabel": "1val1vExpr1AND1AND1Ref3",
+    "shexURL": "1val1vExpr1AND1AND1Ref3.shex",
+    "jsonURL": "1val1vExpr1AND1AND1Ref3.json",
+    "rdfURL": "1val1vExpr1AND1AND1Ref3.ttl"
+  },
+  {
+    "schemaLabel": "1val1vExprRefAND3",
+    "shexURL": "1val1vExprRefAND3.shex",
+    "jsonURL": "1val1vExprRefAND3.json",
+    "rdfURL": "1val1vExprRefAND3.ttl"
+  },
+  {
+    "schemaLabel": "1val1vExprAND3",
+    "shexURL": "1val1vExprAND3.shex",
+    "jsonURL": "1val1vExprAND3.json",
+    "rdfURL": "1val1vExprAND3.ttl"
+  },
+  {
+    "schemaLabel": "1dotRefOR3",
+    "shexURL": "1dotRefOR3.shex",
+    "jsonURL": "1dotRefOR3.json",
+    "rdfURL": "1dotRefOR3.ttl"
+  },
+  {
+    "schemaLabel": "1val1vExpr1OR1OR1Ref3",
+    "shexURL": "1val1vExpr1OR1OR1Ref3.shex",
+    "jsonURL": "1val1vExpr1OR1OR1Ref3.json",
+    "rdfURL": "1val1vExpr1OR1OR1Ref3.ttl"
+  },
+  {
+    "schemaLabel": "1val1vExprRefOR3",
+    "shexURL": "1val1vExprRefOR3.shex",
+    "jsonURL": "1val1vExprRefOR3.json",
+    "rdfURL": "1val1vExprRefOR3.ttl"
+  },
+  {
+    "schemaLabel": "1val1vExprOR3",
+    "shexURL": "1val1vExprOR3.shex",
+    "jsonURL": "1val1vExprOR3.json",
+    "rdfURL": "1val1vExprOR3.ttl"
+  },
+  {
+    "schemaLabel": "1NOTIRI",
+    "shexURL": "1NOTIRI.shex",
+    "jsonURL": "1NOTIRI.json",
+    "rdfURL": "1NOTIRI.ttl"
+  },
+  {
+    "schemaLabel": "1NOTNOTIRI",
+    "shexURL": "1NOTNOTIRI.shex",
+    "jsonURL": "1NOTNOTIRI.json",
+    "rdfURL": "1NOTNOTIRI.ttl"
+  },
+  {
+    "schemaLabel": "1NOTvs",
+    "shexURL": "1NOTvs.shex",
+    "jsonURL": "1NOTvs.json",
+    "rdfURL": "1NOTvs.ttl"
+  },
+  {
+    "schemaLabel": "1NOTNOTvs",
+    "shexURL": "1NOTNOTvs.shex",
+    "jsonURL": "1NOTNOTvs.json",
+    "rdfURL": "1NOTNOTvs.ttl"
+  },
+  {
+    "schemaLabel": "1NOTdot",
+    "shexURL": "1NOTdot.shex",
+    "jsonURL": "1NOTdot.json",
+    "rdfURL": "1NOTdot.ttl"
+  },
+  {
+    "schemaLabel": "1NOTNOTdot",
+    "shexURL": "1NOTNOTdot.shex",
+    "jsonURL": "1NOTNOTdot.json",
+    "rdfURL": "1NOTNOTdot.ttl"
+  },
+  {
+    "schemaLabel": "1_NOTliteral_ANDvs",
+    "shexURL": "1_NOTliteral_ANDvs.shex",
+    "jsonURL": "1_NOTliteral_ANDvs.json",
+    "rdfURL": "1_NOTliteral_ANDvs.ttl"
+  },
+  {
+    "schemaLabel": "1NOT_literalANDvs_",
+    "shexURL": "1NOT_literalANDvs_.shex",
+    "jsonURL": "1NOT_literalANDvs_.json",
+    "rdfURL": "1NOT_literalANDvs_.ttl"
+  },
+  {
+    "schemaLabel": "1NOTliteralANDvs",
+    "shexURL": "1NOTliteralANDvs.shex",
+    "jsonURL": "1NOTliteralANDvs.json",
+    "rdfURL": "1NOTliteralANDvs.ttl"
+  },
+  {
+    "schemaLabel": "1_NOTvs_ANDvs",
+    "shexURL": "1_NOTvs_ANDvs.shex",
+    "jsonURL": "1_NOTvs_ANDvs.json",
+    "rdfURL": "1_NOTvs_ANDvs.ttl"
+  },
+  {
+    "schemaLabel": "1NOT_vsANDvs_",
+    "shexURL": "1NOT_vsANDvs_.shex",
+    "jsonURL": "1NOT_vsANDvs_.json",
+    "rdfURL": "1NOT_vsANDvs_.ttl"
+  },
+  {
+    "schemaLabel": "1NOTvsANDvs",
+    "shexURL": "1NOTvsANDvs.shex",
+    "jsonURL": "1NOTvsANDvs.json",
+    "rdfURL": "1NOTvsANDvs.ttl"
+  },
+  {
+    "schemaLabel": "1_NOTliteral_ORvs",
+    "shexURL": "1_NOTliteral_ORvs.shex",
+    "jsonURL": "1_NOTliteral_ORvs.json",
+    "rdfURL": "1_NOTliteral_ORvs.ttl"
+  },
+  {
+    "schemaLabel": "1NOT_literalORvs_",
+    "shexURL": "1NOT_literalORvs_.shex",
+    "jsonURL": "1NOT_literalORvs_.json",
+    "rdfURL": "1NOT_literalORvs_.ttl"
+  },
+  {
+    "schemaLabel": "1NOTliteralORvs",
+    "shexURL": "1NOTliteralORvs.shex",
+    "jsonURL": "1NOTliteralORvs.json",
+    "rdfURL": "1NOTliteralORvs.ttl"
+  },
+  {
+    "schemaLabel": "1_NOTvs_ORvs",
+    "shexURL": "1_NOTvs_ORvs.shex",
+    "jsonURL": "1_NOTvs_ORvs.json",
+    "rdfURL": "1_NOTvs_ORvs.ttl"
+  },
+  {
+    "schemaLabel": "1NOT_vsORvs_",
+    "shexURL": "1NOT_vsORvs_.shex",
+    "jsonURL": "1NOT_vsORvs_.json",
+    "rdfURL": "1NOT_vsORvs_.ttl"
+  },
+  {
+    "schemaLabel": "1NOTvsORvs",
+    "shexURL": "1NOTvsORvs.shex",
+    "jsonURL": "1NOTvsORvs.json",
+    "rdfURL": "1NOTvsORvs.ttl"
+  },
+  {
+    "schemaLabel": "NOT1NOTvs",
+    "shexURL": "NOT1NOTvs.shex",
+    "jsonURL": "NOT1NOTvs.json",
+    "rdfURL": "NOT1NOTvs.ttl"
+  },
+  {
+    "schemaLabel": "1val1vExpr1AND1OR1Ref3",
+    "shexURL": "1val1vExpr1AND1OR1Ref3.shex",
+    "jsonURL": "1val1vExpr1AND1OR1Ref3.json",
+    "rdfURL": "1val1vExpr1AND1OR1Ref3.ttl"
+  },
+  {
+    "schemaLabel": "1val1vExpr1OR1AND1Ref3",
+    "shexURL": "1val1vExpr1OR1AND1Ref3.shex",
+    "jsonURL": "1val1vExpr1OR1AND1Ref3.json",
+    "rdfURL": "1val1vExpr1OR1AND1Ref3.ttl"
+  },
+  {
+    "schemaLabel": "open3Onedotclosecard2",
+    "shexURL": "open3Onedotclosecard2.shex",
+    "jsonURL": "open3Onedotclosecard2.json",
+    "rdfURL": "open3Onedotclosecard2.ttl"
+  },
+  {
+    "schemaLabel": "open3Onedotclosecard23",
+    "shexURL": "open3Onedotclosecard23.shex",
+    "jsonURL": "open3Onedotclosecard23.json",
+    "rdfURL": "open3Onedotclosecard23.ttl"
+  },
+  {
+    "schemaLabel": "open4Onedotclosecard23",
+    "shexURL": "open4Onedotclosecard23.shex",
+    "jsonURL": "open4Onedotclosecard23.json",
+    "rdfURL": "open4Onedotclosecard23.ttl"
+  },
+  {
+    "schemaLabel": "open3groupdotclosecard23",
+    "shexURL": "open3groupdotclosecard23.shex",
+    "jsonURL": "open3groupdotclosecard23.json",
+    "rdfURL": "open3groupdotclosecard23.ttl"
+  },
+  {
+    "schemaLabel": "1val1vShapeANDRef3",
+    "shexURL": "1val1vShapeANDRef3.shex",
+    "jsonURL": "1val1vShapeANDRef3.json",
+    "rdfURL": "1val1vShapeANDRef3.ttl"
+  },
+  {
+    "schemaLabel": "1dotClosed",
+    "shexURL": "1dotClosed.shex",
+    "jsonURL": "1dotClosed.json",
+    "rdfURL": "1dotClosed.ttl"
+  },
+  {
+    "schemaLabel": "1val1IRIREFExtra1",
+    "shexURL": "1val1IRIREFExtra1.shex",
+    "jsonURL": "1val1IRIREFExtra1.json",
+    "rdfURL": "1val1IRIREFExtra1.ttl"
+  },
+  {
+    "schemaLabel": "1val1IRIREFExtra1Closed",
+    "shexURL": "1val1IRIREFExtra1Closed.shex",
+    "jsonURL": "1val1IRIREFExtra1Closed.json",
+    "rdfURL": "1val1IRIREFExtra1Closed.ttl"
+  },
+  {
+    "schemaLabel": "1val1IRIREFClosedExtra1",
+    "shexURL": "1val1IRIREFClosedExtra1.shex",
+    "jsonURL": "1val1IRIREFClosedExtra1.json",
+    "rdfURL": "1val1IRIREFClosedExtra1.ttl"
+  },
+  {
+    "schemaLabel": "1val2IRIREFExtra1",
+    "shexURL": "1val2IRIREFExtra1.shex",
+    "jsonURL": "1val2IRIREFExtra1.json",
+    "rdfURL": "1val2IRIREFExtra1.ttl"
+  },
+  {
+    "schemaLabel": "1val2IRIREFPlusExtra1",
+    "shexURL": "1val2IRIREFPlusExtra1.shex",
+    "jsonURL": "1val2IRIREFPlusExtra1.json",
+    "rdfURL": "1val2IRIREFPlusExtra1.ttl"
+  },
+  {
+    "schemaLabel": "1val1IRIREFExtra1p2",
+    "shexURL": "1val1IRIREFExtra1p2.shex",
+    "jsonURL": "1val1IRIREFExtra1p2.json",
+    "rdfURL": "1val1IRIREFExtra1p2.ttl"
+  },
+  {
+    "schemaLabel": "1val1IRIREFExtra1One",
+    "shexURL": "1val1IRIREFExtra1One.shex",
+    "jsonURL": "1val1IRIREFExtra1One.json",
+    "rdfURL": "1val1IRIREFExtra1One.ttl"
+  },
+  {
+    "schemaLabel": "1dotExtra1",
+    "shexURL": "1dotExtra1.shex",
+    "jsonURL": "1dotExtra1.json",
+    "rdfURL": "1dotExtra1.ttl"
+  },
+  {
+    "schemaLabel": "3groupdotExtra3",
+    "shexURL": "3groupdotExtra3.shex",
+    "jsonURL": "3groupdotExtra3.json",
+    "rdfURL": "3groupdotExtra3.ttl"
+  },
+  {
+    "schemaLabel": "3groupdot3Extra",
+    "shexURL": "3groupdot3Extra.shex",
+    "jsonURL": "3groupdot3Extra.json",
+    "rdfURL": "3groupdot3Extra.ttl"
+  },
+  {
+    "schemaLabel": "3groupdotExtra3NLex",
+    "shexURL": "3groupdotExtra3NLex.shex",
+    "jsonURL": "3groupdotExtra3NLex.json",
+    "rdfURL": "3groupdotExtra3NLex.ttl"
+  },
+  {
+    "schemaLabel": "startRefIRIREF",
+    "shexURL": "startRefIRIREF.shex",
+    "jsonURL": "startRefIRIREF.json",
+    "rdfURL": "startRefIRIREF.ttl"
+  },
+  {
+    "schemaLabel": "startRefbnode",
+    "shexURL": "startRefbnode.shex",
+    "jsonURL": "startRefbnode.json",
+    "rdfURL": "startRefbnode.ttl"
+  },
+  {
+    "schemaLabel": "startInline",
+    "shexURL": "startInline.shex",
+    "jsonURL": "startInline.json",
+    "rdfURL": "startInline.ttl"
+  },
+  {
+    "schemaLabel": "startEqualSpaceInline",
+    "shexURL": "startEqualSpaceInline.shex",
+    "jsonURL": "startEqualSpaceInline.json",
+    "rdfURL": "startEqualSpaceInline.ttl"
+  },
+  {
+    "schemaLabel": "startSpaceEqualInline",
+    "shexURL": "startSpaceEqualInline.shex",
+    "jsonURL": "startSpaceEqualInline.json",
+    "rdfURL": "startSpaceEqualInline.ttl"
+  },
+  {
+    "schemaLabel": "1IRIInline0",
+    "shexURL": "1IRIInline0.shex",
+    "jsonURL": "1IRIInline0.json",
+    "rdfURL": "1IRIInline0.ttl"
+  },
+  {
+    "schemaLabel": "2EachInclude1",
+    "shexURL": "2EachInclude1.shex",
+    "jsonURL": "2EachInclude1.json",
+    "rdfURL": "2EachInclude1.ttl"
+  },
+  {
+    "schemaLabel": "2EachInclude1-after",
+    "shexURL": "2EachInclude1-after.shex",
+    "jsonURL": "2EachInclude1-after.json",
+    "rdfURL": "2EachInclude1-after.ttl"
+  },
+  {
+    "schemaLabel": "2OneInclude1",
+    "shexURL": "2OneInclude1.shex",
+    "jsonURL": "2OneInclude1.json",
+    "rdfURL": "2OneInclude1.ttl"
+  },
+  {
+    "schemaLabel": "2OneInclude1-after",
+    "shexURL": "2OneInclude1-after.shex",
+    "jsonURL": "2OneInclude1-after.json",
+    "rdfURL": "2OneInclude1-after.ttl"
+  },
+  {
+    "schemaLabel": "1dotAnnotIRIREF",
+    "shexURL": "1dotAnnotIRIREF.shex",
+    "jsonURL": "1dotAnnotIRIREF.json",
+    "rdfURL": "1dotAnnotIRIREF.ttl"
+  },
+  {
+    "schemaLabel": "1dotAnnotSTRING_LITERAL1",
+    "shexURL": "1dotAnnotSTRING_LITERAL1.shex",
+    "jsonURL": "1dotAnnotSTRING_LITERAL1.json",
+    "rdfURL": "1dotAnnotSTRING_LITERAL1.ttl"
+  },
+  {
+    "schemaLabel": "1dotAnnot3",
+    "shexURL": "1dotAnnot3.shex",
+    "jsonURL": "1dotAnnot3.json",
+    "rdfURL": "1dotAnnot3.ttl"
+  },
+  {
+    "schemaLabel": "1inversedotAnnot3",
+    "shexURL": "1inversedotAnnot3.shex",
+    "jsonURL": "1inversedotAnnot3.json",
+    "rdfURL": "1inversedotAnnot3.ttl"
+  },
+  {
+    "schemaLabel": "1dotShapeAnnotIRIREF",
+    "shexURL": "1dotShapeAnnotIRIREF.shex",
+    "jsonURL": "1dotShapeAnnotIRIREF.json",
+    "rdfURL": "1dotShapeAnnotIRIREF.ttl"
+  },
+  {
+    "schemaLabel": "1dotShapePlusAnnotIRIREF",
+    "shexURL": "1dotShapePlusAnnotIRIREF.shex",
+    "jsonURL": "1dotShapePlusAnnotIRIREF.json",
+    "rdfURL": "1dotShapePlusAnnotIRIREF.ttl"
+  },
+  {
+    "schemaLabel": "1dotShapeAnnotAIRIREF",
+    "shexURL": "1dotShapeAnnotAIRIREF.shex",
+    "jsonURL": "1dotShapeAnnotAIRIREF.json",
+    "rdfURL": "1dotShapeAnnotAIRIREF.ttl"
+  },
+  {
+    "schemaLabel": "1dotShapeAnnotSTRING_LITERAL1",
+    "shexURL": "1dotShapeAnnotSTRING_LITERAL1.shex",
+    "jsonURL": "1dotShapeAnnotSTRING_LITERAL1.json",
+    "rdfURL": "1dotShapeAnnotSTRING_LITERAL1.ttl"
+  },
+  {
+    "schemaLabel": "open3groupdotcloseAnnot3",
+    "shexURL": "open3groupdotcloseAnnot3.shex",
+    "jsonURL": "open3groupdotcloseAnnot3.json",
+    "rdfURL": "open3groupdotcloseAnnot3.ttl"
+  },
+  {
+    "schemaLabel": "1dotCode1",
+    "shexURL": "1dotCode1.shex",
+    "jsonURL": "1dotCode1.json",
+    "rdfURL": "1dotCode1.ttl"
+  },
+  {
+    "schemaLabel": "open1dotcloseCode1",
+    "shexURL": "open1dotcloseCode1.shex",
+    "jsonURL": "1dotCode1.json",
+    "rdfURL": "1dotCode1.ttl"
+  },
+  {
+    "schemaLabel": "1dotNoCode1",
+    "shexURL": "1dotNoCode1.shex",
+    "jsonURL": "1dotNoCode1.json",
+    "rdfURL": "1dotNoCode1.ttl"
+  },
+  {
+    "schemaLabel": "1inversedotCode1",
+    "shexURL": "1inversedotCode1.shex",
+    "jsonURL": "1inversedotCode1.json",
+    "rdfURL": "1inversedotCode1.ttl"
+  },
+  {
+    "schemaLabel": "1dotCode3",
+    "shexURL": "1dotCode3.shex",
+    "jsonURL": "1dotCode3.json",
+    "rdfURL": "1dotCode3.ttl"
+  },
+  {
+    "schemaLabel": "openopen1dotcloseCode1closeCode3",
+    "shexURL": "openopen1dotcloseCode1closeCode3.shex",
+    "jsonURL": "1dotCode3.json",
+    "rdfURL": "1dotCode3.ttl"
+  },
+  {
+    "schemaLabel": "1dotNoCode3",
+    "shexURL": "1dotNoCode3.shex",
+    "jsonURL": "1dotNoCode3.json",
+    "rdfURL": "1dotNoCode3.ttl"
+  },
+  {
+    "schemaLabel": "1dotCode3fail",
+    "shexURL": "1dotCode3fail.shex",
+    "jsonURL": "1dotCode3fail.json",
+    "rdfURL": "1dotCode3fail.ttl"
+  },
+  {
+    "schemaLabel": "1dotCodeWithEscapes1",
+    "shexURL": "1dotCodeWithEscapes1.shex",
+    "jsonURL": "1dotCodeWithEscapes1.json",
+    "rdfURL": "1dotCodeWithEscapes1.ttl"
+  },
+  {
+    "schemaLabel": "1dotShapeCode1",
+    "shexURL": "1dotShapeCode1.shex",
+    "jsonURL": "1dotShapeCode1.json",
+    "rdfURL": "1dotShapeCode1.ttl"
+  },
+  {
+    "schemaLabel": "1dotShapeNoCode1",
+    "shexURL": "1dotShapeNoCode1.shex",
+    "jsonURL": "1dotShapeNoCode1.json",
+    "rdfURL": "1dotShapeNoCode1.ttl"
+  },
+  {
+    "schemaLabel": "open3groupdotcloseCode1",
+    "shexURL": "open3groupdotcloseCode1.shex",
+    "jsonURL": "open3groupdotcloseCode1.json",
+    "rdfURL": "open3groupdotcloseCode1.ttl"
+  },
+  {
+    "schemaLabel": "startCode1",
+    "shexURL": "startCode1.shex",
+    "jsonURL": "startCode1.json",
+    "rdfURL": "startCode1.ttl"
+  },
+  {
+    "schemaLabel": "startNoCode1",
+    "shexURL": "startNoCode1.shex",
+    "jsonURL": "startNoCode1.json",
+    "rdfURL": "startNoCode1.ttl"
+  },
+  {
+    "schemaLabel": "startCode1fail",
+    "shexURL": "startCode1fail.shex",
+    "jsonURL": "startCode1fail.json",
+    "rdfURL": "startCode1fail.ttl"
+  },
+  {
+    "schemaLabel": "startCode1startRef",
+    "shexURL": "startCode1startRef.shex",
+    "jsonURL": "startCode1startRef.json",
+    "rdfURL": "startCode1startRef.ttl"
+  },
+  {
+    "schemaLabel": "startCode1startReffail",
+    "shexURL": "startCode1startReffail.shex",
+    "jsonURL": "startCode1startReffail.json",
+    "rdfURL": "startCode1startReffail.ttl"
+  },
+  {
+    "schemaLabel": "startCode3",
+    "shexURL": "startCode3.shex",
+    "jsonURL": "startCode3.json",
+    "rdfURL": "startCode3.ttl"
+  },
+  {
+    "schemaLabel": "startCode3fail",
+    "shexURL": "startCode3fail.shex",
+    "jsonURL": "startCode3fail.json",
+    "rdfURL": "startCode3fail.ttl"
+  },
+  {
+    "schemaLabel": "open3groupdotclosecard23Annot3Code2",
+    "shexURL": "open3groupdotclosecard23Annot3Code2.shex",
+    "jsonURL": "open3groupdotclosecard23Annot3Code2.json",
+    "rdfURL": "open3groupdotclosecard23Annot3Code2.ttl"
+  },
+  {
+    "schemaLabel": "0focusIRI",
+    "shexURL": "0focusIRI.shex",
+    "jsonURL": "0focusIRI.json",
+    "rdfURL": "0focusIRI.ttl"
+  },
+  {
+    "schemaLabel": "0focusBNODE",
+    "shexURL": "0focusBNODE.shex",
+    "jsonURL": "0focusBNODE.json",
+    "rdfURL": "0focusBNODE.ttl"
+  },
+  {
+    "schemaLabel": "1focusIRI_dot",
+    "shexURL": "1focusIRI_dot.shex",
+    "jsonURL": "1focusIRI_dot.json",
+    "rdfURL": "1focusIRI_dot.ttl"
+  },
+  {
+    "schemaLabel": "1focusBNODE_dot",
+    "shexURL": "1focusBNODE_dot.shex",
+    "jsonURL": "1focusBNODE_dot.json",
+    "rdfURL": "1focusBNODE_dot.ttl"
+  },
+  {
+    "schemaLabel": "1focusnonLiteral-dot",
+    "shexURL": "1focusnonLiteral-dot.shex",
+    "jsonURL": "1focusnonLiteral-dot.json",
+    "rdfURL": "1focusnonLiteral-dot.ttl"
+  },
+  {
+    "schemaLabel": "1focusLength-dot",
+    "shexURL": "1focusLength-dot.shex",
+    "jsonURL": "1focusLength-dot.json",
+    "rdfURL": "1focusLength-dot.ttl"
+  },
+  {
+    "schemaLabel": "1focusMinLength-dot",
+    "shexURL": "1focusMinLength-dot.shex",
+    "jsonURL": "1focusMinLength-dot.json",
+    "rdfURL": "1focusMinLength-dot.ttl"
+  },
+  {
+    "schemaLabel": "1focusMaxLength-dot",
+    "shexURL": "1focusMaxLength-dot.shex",
+    "jsonURL": "1focusMaxLength-dot.json",
+    "rdfURL": "1focusMaxLength-dot.ttl"
+  },
+  {
+    "schemaLabel": "1focusPattern-dot",
+    "shexURL": "1focusPattern-dot.shex",
+    "jsonURL": "1focusPattern-dot.json",
+    "rdfURL": "1focusPattern-dot.ttl"
+  },
+  {
+    "schemaLabel": "1focusPatternB-dot",
+    "shexURL": "1focusPatternB-dot.shex",
+    "jsonURL": "1focusPatternB-dot.json",
+    "rdfURL": "1focusPatternB-dot.ttl"
+  },
+  {
+    "schemaLabel": "1focusIRILength_dot",
+    "shexURL": "1focusIRILength_dot.shex",
+    "jsonURL": "1focusIRILength_dot.json",
+    "rdfURL": "1focusIRILength_dot.ttl"
+  },
+  {
+    "schemaLabel": "1focusBNODELength_dot",
+    "shexURL": "1focusBNODELength_dot.shex",
+    "jsonURL": "1focusBNODELength_dot.json",
+    "rdfURL": "1focusBNODELength_dot.ttl"
+  },
+  {
+    "schemaLabel": "1focusnonLiteralLength-dot",
+    "shexURL": "1focusnonLiteralLength-dot.shex",
+    "jsonURL": "1focusnonLiteralLength-dot.json",
+    "rdfURL": "1focusnonLiteralLength-dot.ttl"
+  },
+  {
+    "schemaLabel": "NOT1dotOR2dot",
+    "shexURL": "NOT1dotOR2dot.shex",
+    "jsonURL": "NOT1dotOR2dot.json",
+    "rdfURL": "NOT1dotOR2dot.ttl"
+  },
+  {
+    "schemaLabel": "NOT1dotOR2dotX3",
+    "shexURL": "NOT1dotOR2dotX3.shex",
+    "jsonURL": "NOT1dotOR2dotX3.json",
+    "rdfURL": "NOT1dotOR2dotX3.ttl"
+  },
+  {
+    "schemaLabel": "NOT1dotOR2dotX3AND1",
+    "shexURL": "NOT1dotOR2dotX3AND1.shex",
+    "jsonURL": "NOT1dotOR2dotX3AND1.json",
+    "rdfURL": "NOT1dotOR2dotX3AND1.ttl"
+  },
+  {
+    "schemaLabel": "shapeExtern",
+    "shexURL": "shapeExtern.shex",
+    "jsonURL": "shapeExtern.json",
+    "rdfURL": "shapeExtern.ttl"
+  },
+  {
+    "schemaLabel": "shapeExternRef",
+    "shexURL": "shapeExternRef.shex",
+    "jsonURL": "shapeExternRef.json",
+    "rdfURL": "shapeExternRef.ttl"
+  },
+  {
+    "schemaLabel": "focusvsORdatatype",
+    "shexURL": "focusvsORdatatype.shex",
+    "jsonURL": "focusvsORdatatype.json",
+    "rdfURL": "focusvsORdatatype.ttl"
+  },
+  {
+    "schemaLabel": "focusvsANDIRI",
+    "shexURL": "focusvsANDIRI.shex",
+    "jsonURL": "focusvsANDIRI.json",
+    "rdfURL": "focusvsANDIRI.ttl"
+  },
+  {
+    "schemaLabel": "focusvsANDdatatype",
+    "shexURL": "focusvsANDdatatype.shex",
+    "jsonURL": "focusvsANDdatatype.json",
+    "rdfURL": "focusvsANDdatatype.ttl"
+  },
+  {
+    "schemaLabel": "focusvs",
+    "shexURL": "focusvs.shex",
+    "jsonURL": "focusvs.json",
+    "rdfURL": "focusvs.ttl"
+  },
+  {
+    "schemaLabel": "focusdatatype",
+    "shexURL": "focusdatatype.shex",
+    "jsonURL": "focusdatatype.json",
+    "rdfURL": "focusdatatype.ttl"
+  },
+  {
+    "schemaLabel": "1dotPlusAnnotIRIREF",
+    "shexURL": "1dotPlusAnnotIRIREF.shex",
+    "jsonURL": "1dotPlusAnnotIRIREF.json",
+    "rdfURL": "1dotPlusAnnotIRIREF.ttl"
+  },
+  {
+    "schemaLabel": "1dotAnnotAIRIREF",
+    "shexURL": "1dotAnnotAIRIREF.shex",
+    "jsonURL": "1dotAnnotAIRIREF.json",
+    "rdfURL": "1dotAnnotAIRIREF.ttl"
+  },
+  {
+    "schemaLabel": "FocusIRI2groupBnodeNested2groupIRIRef",
+    "shexURL": "FocusIRI2groupBnodeNested2groupIRIRef.shex",
+    "jsonURL": "FocusIRI2groupBnodeNested2groupIRIRef.json",
+    "rdfURL": "FocusIRI2groupBnodeNested2groupIRIRef.ttl"
+  },
+  {
+    "schemaLabel": "1bnodeRefORRefMinlength",
+    "shexURL": "1bnodeRefORRefMinlength.shex",
+    "jsonURL": "1bnodeRefORRefMinlength.json",
+    "rdfURL": "1bnodeRefORRefMinlength.ttl"
+  },
+  {
+    "schemaLabel": "1dotShapeAND1dot3X",
+    "shexURL": "1dotShapeAND1dot3X.shex",
+    "jsonURL": "1dotShapeAND1dot3X.json",
+    "rdfURL": "1dotShapeAND1dot3X.ttl"
+  },
+  {
+    "schemaLabel": "openopen1dotSemiOne1dotSemiclose1dotSemicloseSemi",
+    "shexURL": "openopen1dotSemiOne1dotSemiclose1dotSemicloseSemi.shex",
+    "jsonURL": "openopen1dotSemiOne1dotSemiclose1dotSemicloseSemi.json",
+    "rdfURL": "openopen1dotSemiOne1dotSemiclose1dotSemicloseSemi.ttl"
+  },
+  {
+    "schemaLabel": "open1dotOne2dotclose",
+    "shexURL": "open1dotOne2dotclose.shex",
+    "jsonURL": "open1dotOne2dotclose.json",
+    "rdfURL": "open1dotOne2dotclose.ttl"
+  },
+  {
+    "schemaLabel": "open1dotSemiOneopen2dotSemiscloseclose",
+    "shexURL": "open1dotSemiOneopen2dotSemiscloseclose.shex",
+    "jsonURL": "open1dotSemiOneopen2dotSemiscloseclose.json",
+    "rdfURL": "open1dotSemiOneopen2dotSemiscloseclose.ttl"
+  },
+  {
+    "schemaLabel": "open1dotSemiOne2dotsemisclose",
+    "shexURL": "open1dotSemiOne2dotsemisclose.shex",
+    "jsonURL": "open1dotSemiOne2dotsemisclose.json",
+    "rdfURL": "open1dotSemiOne2dotsemisclose.ttl"
+  },
+  {
+    "schemaLabel": "1dotSemiOne2dotSemis",
+    "shexURL": "1dotSemiOne2dotSemis.shex",
+    "jsonURL": "1dotSemiOne2dotSemis.json",
+    "rdfURL": "1dotSemiOne2dotSemis.ttl"
+  },
+  {
+    "schemaLabel": "1literalMaxinclusiveINTEGER",
+    "shexURL": "1literalMaxinclusiveINTEGER.shex",
+    "jsonURL": "1literalMaxinclusiveINTEGER.json",
+    "rdfURL": "1literalMaxinclusiveINTEGER.ttl"
+  },
+  {
+    "schemaLabel": "1literalMaxexclusiveINTEGER",
+    "shexURL": "1literalMaxexclusiveINTEGER.shex",
+    "jsonURL": "1literalMaxexclusiveINTEGER.json",
+    "rdfURL": "1literalMaxexclusiveINTEGER.ttl"
+  },
+  {
+    "schemaLabel": "1literalMininclusiveINTEGER",
+    "shexURL": "1literalMininclusiveINTEGER.shex",
+    "jsonURL": "1literalMininclusiveINTEGER.json",
+    "rdfURL": "1literalMininclusiveINTEGER.ttl"
+  },
+  {
+    "schemaLabel": "1literalMinexclusiveINTEGER",
+    "shexURL": "1literalMinexclusiveINTEGER.shex",
+    "jsonURL": "1literalMinexclusiveINTEGER.json",
+    "rdfURL": "1literalMinexclusiveINTEGER.ttl"
+  },
+  {
+    "schemaLabel": "1val1DECIMAL",
+    "shexURL": "1val1DECIMAL.shex",
+    "jsonURL": "1val1DECIMAL.json",
+    "rdfURL": "1val1DECIMAL.ttl"
+  },
+  {
+    "schemaLabel": "1datatypeRef1",
+    "shexURL": "1datatypeRef1.shex",
+    "jsonURL": "1datatypeRef1.json",
+    "rdfURL": "1datatypeRef1.ttl"
+  },
+  {
+    "schemaLabel": "1card2blank",
+    "shexURL": "1card2blank.shex",
+    "jsonURL": "1card2blank.json",
+    "rdfURL": "1card2blank.ttl"
+  },
+  {
+    "schemaLabel": "1focusnonLiteralLength-nonLiteralLength",
+    "shexURL": "1focusnonLiteralLength-nonLiteralLength.shex",
+    "jsonURL": "1focusnonLiteralLength-nonLiteralLength.json",
+    "rdfURL": "1focusnonLiteralLength-nonLiteralLength.ttl"
+  },
+  {
+    "schemaLabel": "1Include1",
+    "shexURL": "1Include1.shex",
+    "jsonURL": "1Include1.json",
+    "rdfURL": "1Include1.ttl"
+  },
+  {
+    "schemaLabel": "1Include1-after",
+    "shexURL": "1Include1-after.shex",
+    "jsonURL": "1Include1-after.json",
+    "rdfURL": "1Include1-after.ttl"
+  },
+  {
+    "schemaLabel": "startSelfRefIRIREF",
+    "shexURL": "startSelfRefIRIREF.shex",
+    "jsonURL": "startSelfRefIRIREF.json",
+    "rdfURL": "startSelfRefIRIREF.ttl"
+  },
+  {
+    "schemaLabel": "startSelfRefbnode",
+    "shexURL": "startSelfRefbnode.shex",
+    "jsonURL": "startSelfRefbnode.json",
+    "rdfURL": "startSelfRefbnode.ttl"
+  },
+  {
+    "schemaLabel": "datatypes",
+    "shexURL": "datatypes.shex",
+    "jsonURL": "datatypes.json",
+    "rdfURL": "datatypes.ttl"
+  },
+  {
+    "schemaLabel": "_all",
+    "shexURL": "_all.shex",
+    "jsonURL": "_all.json",
+    "rdfURL": "_all.ttl"
+  },
+  {
+    "schemaLabel": "kitchenSink",
+    "shexURL": "kitchenSink.shex",
+    "jsonURL": "kitchenSink.json",
+    "rdfURL": "kitchenSink.ttl"
+  },
+  {
+    "schemaLabel": "node_kind_example",
+    "shexURL": "node_kind_example.shex",
+    "jsonURL": "node_kind_example.json",
+    "rdfURL": "node_kind_example.ttl"
+  },
+  {
+    "schemaLabel": "dependent_shape",
+    "shexURL": "dependent_shape.shex",
+    "jsonURL": "dependent_shape.json",
+    "rdfURL": "dependent_shape.ttl"
+  },
+  {
+    "schemaLabel": "recursion_example",
+    "shexURL": "recursion_example.shex",
+    "jsonURL": "recursion_example.json",
+    "rdfURL": "recursion_example.ttl"
+  },
+  {
+    "schemaLabel": "focusbnode0ORfocusPattern0",
+    "shexURL": "focusbnode0ORfocusPattern0.shex",
+    "jsonURL": "focusbnode0ORfocusPattern0.json",
+    "rdfURL": "focusbnode0ORfocusPattern0.ttl"
+  },
+  {
+    "schemaLabel": "1dotAND1dotAND1dot",
+    "shexURL": "1dotAND1dotAND1dot.shex",
+    "jsonURL": "1dotAND1dotAND1dot.json",
+    "rdfURL": "1dotAND1dotAND1dot.ttl"
+  },
+  {
+    "schemaLabel": "open1dotAND1dotcloseAND1dot",
+    "shexURL": "open1dotAND1dotcloseAND1dot.shex",
+    "jsonURL": "open1dotAND1dotcloseAND1dot.json",
+    "rdfURL": "open1dotAND1dotcloseAND1dot.ttl"
+  },
+  {
+    "schemaLabel": "1dotANDopen1dotAND1dotclose",
+    "shexURL": "1dotANDopen1dotAND1dotclose.shex",
+    "jsonURL": "1dotANDopen1dotAND1dotclose.json",
+    "rdfURL": "1dotANDopen1dotAND1dotclose.ttl"
+  },
+  {
+    "schemaLabel": "1dotIMPORT1dot",
+    "shexURL": "1dotIMPORT1dot.shex",
+    "jsonURL": "1dotIMPORT1dot.json",
+    "rdfURL": "1dotIMPORT1dot.ttl"
+  },
+  {
+    "schemaLabel": "2RefS1-IS2",
+    "shexURL": "2RefS1-IS2.shex",
+    "jsonURL": "2RefS1-IS2.json",
+    "rdfURL": "2RefS1-IS2.ttl"
+  },
+  {
+    "schemaLabel": "2RefS1-Icirc",
+    "shexURL": "2RefS1-Icirc.shex",
+    "jsonURL": "2RefS1-Icirc.json",
+    "rdfURL": "2RefS1-Icirc.ttl"
+  },
+  {
+    "schemaLabel": "2RefS2-IS1",
+    "shexURL": "2RefS2-IS1.shex",
+    "jsonURL": "2RefS2-IS1.json",
+    "rdfURL": "2RefS2-IS1.ttl"
+  },
+  {
+    "schemaLabel": "2RefS2-Icirc",
+    "shexURL": "2RefS2-Icirc.shex",
+    "jsonURL": "2RefS2-Icirc.json",
+    "rdfURL": "2RefS2-Icirc.ttl"
+  },
+  {
+    "schemaLabel": "2RefS2",
+    "shexURL": "2RefS2.shex",
+    "jsonURL": "2RefS2.json",
+    "rdfURL": "2RefS2.ttl"
+  },
+  {
+    "schemaLabel": "3circRefS1-IS2-IS3-IS3",
+    "shexURL": "3circRefS1-IS2-IS3-IS3.shex",
+    "jsonURL": "3circRefS1-IS2-IS3-IS3.json",
+    "rdfURL": "3circRefS1-IS2-IS3-IS3.ttl"
+  },
+  {
+    "schemaLabel": "3circRefS1-IS2-IS3",
+    "shexURL": "3circRefS1-IS2-IS3.shex",
+    "jsonURL": "3circRefS1-IS2-IS3.json",
+    "rdfURL": "3circRefS1-IS2-IS3.ttl"
+  },
+  {
+    "schemaLabel": "3circRefS1-IS23",
+    "shexURL": "3circRefS1-IS23.shex",
+    "jsonURL": "3circRefS1-IS23.json",
+    "rdfURL": "3circRefS1-IS23.ttl"
+  },
+  {
+    "schemaLabel": "3circRefS1-Icirc",
+    "shexURL": "3circRefS1-Icirc.shex",
+    "jsonURL": "3circRefS1-Icirc.json",
+    "rdfURL": "3circRefS1-Icirc.ttl"
+  },
+  {
+    "schemaLabel": "3circRefS123-Icirc",
+    "shexURL": "3circRefS123-Icirc.shex",
+    "jsonURL": "3circRefS123-Icirc.json",
+    "rdfURL": "3circRefS123-Icirc.ttl"
+  },
+  {
+    "schemaLabel": "3circRefS123",
+    "shexURL": "3circRefS123.shex",
+    "jsonURL": "3circRefS123.json",
+    "rdfURL": "3circRefS123.ttl"
+  },
+  {
+    "schemaLabel": "3circRefS2-Icirc",
+    "shexURL": "3circRefS2-Icirc.shex",
+    "jsonURL": "3circRefS2-Icirc.json",
+    "rdfURL": "3circRefS2-Icirc.ttl"
+  },
+  {
+    "schemaLabel": "3circRefS3-IS12",
+    "shexURL": "3circRefS3-IS12.shex",
+    "jsonURL": "3circRefS3-IS12.json",
+    "rdfURL": "3circRefS3-IS12.ttl"
+  },
+  {
+    "schemaLabel": "3circRefS3-Icirc",
+    "shexURL": "3circRefS3-Icirc.shex",
+    "jsonURL": "3circRefS3-Icirc.json",
+    "rdfURL": "3circRefS3-Icirc.ttl"
+  },
+  {
+    "schemaLabel": "2EachInclude1-S2",
+    "shexURL": "2EachInclude1-S2.shex",
+    "jsonURL": "2EachInclude1-S2.json",
+    "rdfURL": "2EachInclude1-S2.ttl"
+  },
+  {
+    "schemaLabel": "2EachInclude1-IS2",
+    "shexURL": "2EachInclude1-IS2.shex",
+    "jsonURL": "2EachInclude1-IS2.json",
+    "rdfURL": "2EachInclude1-IS2.ttl"
+  },
+  {
+    "schemaLabel": "1valExprRefbnode-vc1",
+    "shexURL": "1valExprRefbnode-vc1.shex",
+    "jsonURL": "1valExprRefbnode-vc1.json",
+    "rdfURL": "1valExprRefbnode-vc1.ttl"
+  },
+  {
+    "schemaLabel": "1valExprRefbnode-IV1",
+    "shexURL": "1valExprRefbnode-IV1.shex",
+    "jsonURL": "1valExprRefbnode-IV1.json",
+    "rdfURL": "1valExprRefbnode-IV1.ttl"
+  },
+  {
+    "schemaLabel": "1valExprRef-vc1",
+    "shexURL": "1valExprRef-vc1.shex",
+    "jsonURL": "1valExprRef-vc1.json",
+    "rdfURL": "1valExprRef-vc1.ttl"
+  },
+  {
+    "schemaLabel": "1valExprRef-IV1",
+    "shexURL": "1valExprRef-IV1.shex",
+    "jsonURL": "1valExprRef-IV1.json",
+    "rdfURL": "1valExprRef-IV1.ttl"
+  }
+]

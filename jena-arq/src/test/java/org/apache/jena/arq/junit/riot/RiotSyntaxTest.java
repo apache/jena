@@ -56,7 +56,7 @@ public class RiotSyntaxTest implements Runnable {
             };
         }
         try {
-            ParseForTest.parse(stream, filename, lang);
+            ParseForTest.parse(stream, filename, lang, RiotTests.allowWarnings(testEntry));
             if (! expectLegalSyntax ) {
                 String s = IO.readWholeFileAsUTF8(fn);
                 System.err.println();

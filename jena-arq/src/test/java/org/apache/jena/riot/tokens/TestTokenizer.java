@@ -18,17 +18,21 @@
 
 package org.apache.jena.riot.tokens ;
 
+import static org.apache.jena.riot.system.ErrorHandlerFactory.errorHandlerSimple;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream ;
+import java.io.Reader;
 
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.RiotParseException ;
+import org.apache.jena.riot.system.ErrorHandlerFactory.ErrorHandlerRecorder;
 import org.apache.jena.sparql.ARQConstants ;
 import org.junit.Test ;
 
@@ -921,16 +925,107 @@ public class TestTokenizer {
     public void tokenizer_charset_2() {
         ByteArrayInputStream in = bytes("'abcdé'") ;
         Tokenizer tokenizer = TokenizerText.create().asciiOnly(true).source(in).build() ;
+        // ASCII only -> bad.
         Token t = tokenizer.next() ;
-        assertFalse(tokenizer.hasNext()) ;
     }
 
     @Test(expected = RiotParseException.class)
     public void tokenizer_charset_3() {
         ByteArrayInputStream in = bytes("<http://example/abcdé>") ;
         Tokenizer tokenizer = TokenizerText.create().asciiOnly(true).source(in).build() ;
+        // ASCII only -> bad.
         Token t = tokenizer.next() ;
-        assertFalse(tokenizer.hasNext()) ;
+    }
+
+    // Test for warnings
+    @Test
+    public void tokenStr_replacmentChar_str_1() {
+        testExpectWarning("'\uFFFD'", TokenType.STRING, 1);
+    }
+
+    @Test
+    public void tokenStr_replacmentChar_str_2() {
+        // As unicode escape.
+        testExpectWarning("'\\uFFFD'", TokenType.STRING, 0);
+    }
+
+    @Test
+    public void tokenStr_replacmentChar_str_3() {
+        testExpectWarning("'''\uFFFD'''", TokenType.STRING, 1);
+    }
+
+    @Test
+    public void tokenStr_replacmentChar_str_4() {
+        // As unicode escape.
+        testExpectWarning("'''\\uFFFD'''", TokenType.STRING, 0);
+    }
+
+    @Test
+    public void tokenStr_replacmentChar_str_5() {
+        testExpectWarning("'abc\uFFFDdef'", TokenType.STRING, 1);
+    }
+
+    @Test
+    public void tokenStr_replacmentChar_str_6() {
+        // Illegal encoding.
+        // 0xDF is ß (lower case) in ISO-8859-1.
+        // Here it is an illegal encoding (high set, next byte should have the high bit set but does not).
+        // In Unicode it is 0xC39F.
+
+        // This is the quoted string "ß" in ISO-8859-1.
+        byte[] bytes = {(byte)0x22, (byte)0xDF, (byte)0x22};
+        Reader r = IO.asUTF8(new ByteArrayInputStream(bytes));
+        PeekReader pr = PeekReader.make(r);
+        Token t = testExpectWarning(pr, TokenType.STRING, 1);
+        int char0 = t.getImage().codePointAt(0);
+        assertEquals("Expected Unicode REPLACEMENT CHARACTER", 0xFFFD, char0);
+    }
+
+    @Test
+    public void tokenStr_replacmentChar_IRI_1() {
+        testExpectWarning("<http://example/\uFFFD>", TokenType.IRI, 1);
+    }
+
+    @Test
+    public void tokenStr_replacmentChar_IRI_2() {
+        // As unicode escape. Still bad (it is not a ucschar so not an IRI character)
+        testExpectWarning("<http://example/\\uFFFD>", TokenType.IRI, 1);
+    }
+
+    @Test
+    public void tokenStr_replacmentChar_prefixedName_1() {
+        testExpectWarning("ex:abc\uFFFD", TokenType.PREFIXED_NAME, 1);
+    }
+
+    @Test(expected=RiotException.class)
+    public void tokenStr_replacmentChar_prefixedName_2() {
+        // Unicode escape
+        testExpectWarning("ex:abc\\uFFFD", TokenType.PREFIXED_NAME, 0);
+    }
+
+    @Test
+    public void tokenStr_replacmentChar_blankNode_1() {
+        testExpectWarning("_:b\uFFFD", TokenType.BNODE, 1);
+        // and no escaped characters for blank node labels.
+    }
+
+    private static Token testExpectWarning(String input, TokenType expectedTokenType, int warningCount) {
+        PeekReader r = PeekReader.readString(input);
+        return testExpectWarning(r, expectedTokenType, warningCount);
+    }
+
+    private static Token testExpectWarning(PeekReader r, TokenType expectedTokenType, int warningCount) {
+        ErrorHandlerRecorder errHandler = new ErrorHandlerRecorder(errorHandlerSimple());
+        Tokenizer tokenizer = TokenizerText.create().source(r).errorHandler(errHandler).build();
+        assertTrue(tokenizer.hasNext()) ;
+        Token token = tokenizer.next() ;
+        if ( expectedTokenType != null )
+            assertEquals(expectedTokenType, token.getType());
+        assertFalse("Expected one token", tokenizer.hasNext());
+        assertEquals("Warnings: ", warningCount, errHandler.getWarningCount());
+        assertEquals("Errors: ", 0, errHandler.getErrorCount());
+        assertEquals("Fatal: ", 0, errHandler.getFatalCount());
+        return token;
     }
 
     @Test
@@ -945,7 +1040,7 @@ public class TestTokenizer {
         assertEquals("abc", token.getImage()) ;
         assertFalse(tokenizer.hasNext()) ;
     }
-    
+
     // First symbol from the stream.
     private static void testSymbol(String string, TokenType expected) {
         Tokenizer tokenizer = tokenizeAndTestFirst(string, expected, null) ;

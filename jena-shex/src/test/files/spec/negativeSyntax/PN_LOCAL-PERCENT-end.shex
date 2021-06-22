@@ -1,0 +1,7 @@
+# PN_LOCAL with bad PERCENT escape in last character
+# source: turtle-syntax-bad-ln-escape.ttl
+PREFIX ex: <http://a.example/>
+
+ex:IssueShape {
+   ex:p%1 .
+}

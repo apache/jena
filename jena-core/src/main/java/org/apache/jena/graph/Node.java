@@ -100,6 +100,11 @@ public abstract class Node implements Serializable {
     public boolean isNodeGraph()
         { return false; }
 
+    /** Extension node. Typically used in data structures based on triples.*/
+    public boolean isExt() {
+        return false;
+    }
+
     /** get the blank node id if the node is blank, otherwise die horribly */
     public BlankNodeId getBlankNodeId()
         { throw new UnsupportedOperationException( this + " is not a blank node" ); }

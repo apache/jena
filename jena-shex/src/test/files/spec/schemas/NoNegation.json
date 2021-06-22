@@ -1,0 +1,40 @@
+{
+  "type": "Schema",
+  "shapes": [
+    {
+      "id": "http://example.org/S",
+      "type": "ShapeAnd",
+      "shapeExprs": [
+        "http://example.org/T",
+        "http://example.org/U"
+      ]
+    },
+    {
+      "id": "http://example.org/T",
+      "type": "Shape",
+      "expression": {
+        "type": "EachOf",
+        "expressions": [
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://example.org/a",
+            "valueExpr": "http://example.org/S"
+          },
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://example.org/c"
+          }
+        ]
+      }
+    },
+    {
+      "id": "http://example.org/U",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://example.org/b"
+      }
+    }
+  ],
+  "@context": "http://www.w3.org/ns/shex.jsonld"
+}

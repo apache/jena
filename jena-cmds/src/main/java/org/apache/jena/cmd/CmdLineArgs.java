@@ -18,18 +18,9 @@
 
 package org.apache.jena.cmd;
 
-import static java.nio.file.Files.readAllBytes;
+import java.util.*;
 
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.ArrayList ;
-import java.util.Arrays ;
-import java.util.Collections ;
-import java.util.HashMap ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Map ;
-
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.logging.Log ;
 
 /**
@@ -45,13 +36,13 @@ public class CmdLineArgs extends CommandLineBase {
     protected Map<String, ArgDecl> argMap = new HashMap<>() ;   // Map from string name to ArgDecl
     protected Map<String, Arg> args = new HashMap<>() ;         // Name to Arg
     protected List<String> positionals = new ArrayList<>() ;    // Positional arguments as strings.
-    
+
     public void process() throws IllegalArgumentException
     {
         processedArgs = true ;
         apply(new ArgProcessor()) ;
     }
-    
+
     // ---- Setting the ArgDecls
 
     /** Add an argument to those to be accepted on the command line.
@@ -70,7 +61,7 @@ public class CmdLineArgs extends CommandLineBase {
      * @param argName Name
      * @return The CommandLine processor object
      */
-   
+
     public CmdLineArgs add(boolean hasValue, String argName) {
         return add(new ArgDecl(hasValue, argName)) ;
     }
@@ -79,7 +70,7 @@ public class CmdLineArgs extends CommandLineBase {
      * @param arg Argument to add
      * @return The CommandLine processor object
      */
-   
+
     public CmdLineArgs add(ArgDecl arg) {
         for (Iterator<String> iter = arg.names(); iter.hasNext();) {
             String name = iter.next() ;
@@ -89,7 +80,7 @@ public class CmdLineArgs extends CommandLineBase {
         }
         return this ;
     }
-    
+
     /**
      * Add a positional parameter
      * @param value
@@ -99,7 +90,7 @@ public class CmdLineArgs extends CommandLineBase {
         positionals.add(value) ;
         return this ;
     }
-    
+
     /**
      * Add a named argument which has no value.
      * @param name
@@ -142,63 +133,62 @@ public class CmdLineArgs extends CommandLineBase {
     // ---- Indirection
 
     static final String DefaultIndirectMarker = "@" ;
-    
+
     public boolean matchesIndirect(String s) { return matchesIndirect(s, DefaultIndirectMarker) ; }
     public boolean matchesIndirect(String s, String marker) { return s.startsWith(marker) ; }
-    
+
     public String indirect(String s) { return indirect(s, DefaultIndirectMarker) ; }
-    
+
     public String indirect(String s, String marker) {
         if ( !matchesIndirect(s, marker) )
             return s ;
         s = s.substring(marker.length()) ;
-        try {
-			return new String(readAllBytes(Paths.get(s)));
-		} catch (IOException e) {
-			throw new CmdException("Could not read from: " + s, e);
-		}
+        String str = IO.readWholeFileAsUTF8(s);
+        if ( str == null )
+            throw new CmdException("Could not read from: " + s);
+        return str;
     }
 
     // ---- Argument access
-    
+
     /** Test whether an argument was seen. */
 
     public boolean contains(ArgDecl argDecl)    { return getArg(argDecl) != null ; }
-    
+
     /** Test whether an argument was seen. */
 
     public boolean contains(String s)           { return getArg(s) != null ; }
-    
-    /** Test whether an argument was seen more than once */ 
+
+    /** Test whether an argument was seen more than once */
     public boolean containsMultiple(String s)   { return getValues(s).size() > 1 ; }
-    
-    /** Test whether an argument was seen more than once */ 
+
+    /** Test whether an argument was seen more than once */
     public boolean containsMultiple(ArgDecl argDecl) { return getValues(argDecl).size() > 1 ; }
-    
+
     public boolean hasArgs() { return args.size() > 0 ; }
-    
+
     /** Test whether the command line had a particular argument
-     * 
+     *
      * @param argName
      * @return this object
      */
     public boolean hasArg(String argName) { return getArg(argName) != null ; }
 
     /** Test whether the command line had a particular argument
-     * 
+     *
      * @param argDecl
      * @return true or false
      */
-    
+
     public boolean hasArg(ArgDecl argDecl) { return getArg(argDecl) != null ; }
 
-    
+
     /** Get the argument associated with the argument declaration.
      *  Actually returns the LAST one seen
      *  @param argDecl Argument declaration to find
      *  @return Last argument that matched.
      */
-    
+
     public Arg getArg(ArgDecl argDecl) {
         Arg arg = null ;
         for ( Arg a : args.values() )
@@ -210,7 +200,7 @@ public class CmdLineArgs extends CommandLineBase {
         }
         return arg ;
     }
-    
+
     /** Get the argument associated with the argument name.
      *  Actually returns the LAST one seen
      *  @param argName Argument name
@@ -220,10 +210,10 @@ public class CmdLineArgs extends CommandLineBase {
         argName = ArgDecl.canonicalForm(argName) ;
         return args.get(argName) ;
     }
-    
+
     /**
-     * Returns the value (a string) for an argument with a value - 
-     * returns null for no argument and no value.  
+     * Returns the value (a string) for an argument with a value -
+     * returns null for no argument and no value.
      * @param argDecl
      * @return String
      */
@@ -237,8 +227,8 @@ public class CmdLineArgs extends CommandLineBase {
     }
 
     /**
-     * Returns the value (a string) for an argument with a value - 
-     * returns null for no argument and no value.  
+     * Returns the value (a string) for an argument with a value -
+     * returns null for no argument and no value.
      * @param argName
      * @return String
      */
@@ -248,7 +238,7 @@ public class CmdLineArgs extends CommandLineBase {
             return null ;
         return arg.getValue() ;
     }
-    
+
     /** Is the value something that looks like "true" or "yes"? */
     public boolean hasValueOfTrue(ArgDecl argDecl) {
         String x = getValue(argDecl) ;
@@ -270,9 +260,9 @@ public class CmdLineArgs extends CommandLineBase {
             return true ;
         return false ;
     }
-    
+
     /**
-     * Returns all the values (0 or more strings) for an argument. 
+     * Returns all the values (0 or more strings) for an argument.
      * @param argDecl
      * @return List
      */
@@ -284,7 +274,7 @@ public class CmdLineArgs extends CommandLineBase {
     }
 
     /**
-     * Returns all the values (0 or more strings) for an argument. 
+     * Returns all the values (0 or more strings) for an argument.
      * @param argName
      * @return List
      */
@@ -294,14 +284,14 @@ public class CmdLineArgs extends CommandLineBase {
             return new ArrayList<>() ;
         return arg.getValues() ;
     }
-    
-   // ---- Positional 
+
+   // ---- Positional
     /** Get the i'th positional argument (indexed from 0)*/
     public String getPositionalArg(int i) {
         return positionals.get(i) ;
     }
 
-    /** Return the number of positional arguments */  
+    /** Return the number of positional arguments */
     public int getNumPositional() {
         return positionals.size() ;
     }
@@ -321,9 +311,9 @@ public class CmdLineArgs extends CommandLineBase {
         List<String> x = Arrays.asList("-") ;
         return Collections.unmodifiableList(x) ;
     }
-    
+
     // ----
-    
+
     /**
      * Handle an unrecognised argument; default is to throw an exception
      * @param argStr The string image of the unrecognised argument
@@ -331,7 +321,7 @@ public class CmdLineArgs extends CommandLineBase {
     protected void handleUnrecognizedArg( String argStr ) {
         throw new CmdException("Unknown argument: "+argStr) ;
     }
-    
+
     @Override
     public String toString() {
         if ( !processedArgs )

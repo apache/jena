@@ -26,15 +26,15 @@ import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
 
-/** Builder for TokenizeText */
+/** Builder for TokenizerText */
 public class TokenizeTextBuilder {
-    
+
     // One of these.
     private PeekReader   peekReader   = null;
     private InputStream  input        = null;
     private Reader       reader       = null;
     private String       string       = null;
-    
+
     private boolean      lineMode     = false;
     private boolean      utf8         = true;
     private ErrorHandler errorHandler = null;

@@ -20,20 +20,18 @@ package org.apache.jena.shacl.lib;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.impl.Util;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterTTL;
 import org.apache.jena.riot.system.PrefixMap;
@@ -43,7 +41,11 @@ import org.apache.jena.shacl.ValidationReport;
 import org.apache.jena.shacl.engine.ShaclPaths;
 import org.apache.jena.shacl.engine.Target;
 import org.apache.jena.shacl.engine.TargetType;
+import org.apache.jena.shacl.parser.ShaclParseException;
 import org.apache.jena.shacl.vocabulary.SHACL;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
@@ -229,7 +231,91 @@ public class ShLib {
     }
 
     public static NodeFormatter nodeFormatter(Shapes shapes) {
-        PrefixMap pmap = PrefixMapFactory.create(shapes.getGraph().getPrefixMapping());
-        return new NodeFormatterTTL(null, pmap);
+        return new NodeFormatterTTL(shapes.getBaseURI(), shapes.getPrefixMap());
+    }
+
+    /**
+     * Parse a string to produce a {@link Query}.
+     * All {@link Query} should go through this function to allow of inserting default prefixes.
+     */
+    public static Query parseQueryString(String queryString) {
+        try {
+            Query query = new Query();
+            // The SHACL spec does not define any default prefixes.
+            // But for identified practical reasons some may be added such as:
+    //        query.getPrefixMapping().setNsPrefix("owl",  OWL.getURI());
+    //        query.getPrefixMapping().setNsPrefix("rdf",  RDF.getURI());
+    //        query.getPrefixMapping().setNsPrefix("rdfs", RDFS.getURI());
+    //        query.getPrefixMapping().setNsPrefix("sh",   SHACL.getURI());
+    //        query.getPrefixMapping().setNsPrefix("xsd",  XSD.getURI());
+            QueryFactory.parse(query, queryString, null,  Syntax.defaultQuerySyntax);
+            return query;
+        } catch (QueryParseException ex) {
+            throw new ShaclParseException("Bad query: "+ex.getMessage());
+        }
+    }
+
+    /** Parse a SPARQL query */
+    public static Query extractSPARQLQuery(Graph shapesGraph, Node sparqlNode) {
+        String qs = extractSPARQLQueryString(shapesGraph, sparqlNode);
+        try {
+            Query query = parseQueryString(qs);
+            return query;
+        } catch (QueryParseException ex) {
+//            Log.warn("SHACL", "SPARQL parse error: "+ex.getMessage()+"\n"+qs);
+//            return new SparqlConstraint(new Query(), msg);
+            throw new ShaclParseException("SPARQL parse error: "+ex.getMessage()+"\n"+qs);
+        }
+    }
+
+    public static String extractSPARQLQueryString(Graph shapesGraph, Node sparqlNode) {
+        // XXX Optimize prefixes acquisition in case of use from more than one place.
+        String prefixes = prefixes(shapesGraph, sparqlNode);
+        Node selectNode = G.getOneSP(shapesGraph, sparqlNode, SHACL.select);
+        if ( ! Util.isSimpleString(selectNode) )
+            throw new ShaclParseException("Not a string for sh:select: "+ShLib.displayStr(selectNode));
+        String selectQuery = selectNode.getLiteralLexicalForm();
+        String qs = prefixes+"\n"+selectQuery;
+        return qs;
+    }
+
+    private static String prefixesQueryString = StrUtils.strjoinNL
+            ("PREFIX owl:     <http://www.w3.org/2002/07/owl#>"
+            ,"PREFIX sh:      <http://www.w3.org/ns/shacl#>"
+            ,"SELECT * { ?x sh:prefixes/owl:imports*/sh:declare [ sh:prefix ?prefix ; sh:namespace ?namespace ] }"
+            );
+    private static Query prefixesQuery = QueryFactory.create(prefixesQueryString);
+    private static Var varPrefix = Var.alloc("prefix");
+    private static Var varNamespace = Var.alloc("namespace");
+
+    public static String prefixes(Graph shapesGraph, Node sparqlNode) {
+        StringJoiner prefixesSJ = new StringJoiner("\n");
+        QueryExecution qExec = QueryExecutionFactory.create(prefixesQuery, DatasetGraphFactory.wrap(shapesGraph));
+        ResultSet rs = qExec.execSelect();
+        Map<String, String> seen = new HashMap<>();
+
+        while(rs.hasNext()) {
+            Binding binding = rs.nextBinding();
+            Node nPrefix = binding.get(varPrefix);
+            // Strictly, namespace must be xsd:anyURI.
+            // We accept any literal, and also URIs
+            // which makes [ sh:prefix "ex" ; sh:namespace ex: ] work.
+            Node nNamespace = binding.get(varNamespace);
+            String prefix = nPrefix.getLiteralLexicalForm();
+            String ns;
+            if ( nNamespace.isLiteral() )
+                ns = nNamespace.getLiteralLexicalForm();
+            else if ( nNamespace.isURI() )
+                ns = nNamespace.getURI();
+            else
+                throw new ShaclParseException("sh:namespace is not  a literal or URI");
+            if ( seen.containsKey(prefix) ) {
+                if ( seen.get(prefix).equals(ns) )
+                    continue;
+            }
+            prefixesSJ.add("PREFIX "+prefix+": <"+ns+">");
+            seen.put(prefix, ns);
+        }
+        return prefixesSJ.toString();
     }
 }

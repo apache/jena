@@ -21,27 +21,36 @@ package org.apache.jena.shacl;
 import java.util.*;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.shacl.engine.Targets;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.parser.ShapesParser;
+import org.apache.jena.shacl.parser.ShapesParser.ParserResult;
 import org.apache.jena.sys.JenaSystem;
 
-/** A collection of shapes as output by the SHACL parser.
- * Usage:
+/**
+ * A collection of shapes as output by the SHACL parser. Usage:
+ *
  * <pre>
- *    Shapes myShapes = Shapes.parse(graph);
+ * Shapes myShapes = Shapes.parse(graph);
  * </pre>
  */
 public class Shapes implements Iterable<Shape> {
-    static { JenaSystem.init(); }
+    static {
+        JenaSystem.init();
+    }
 
+    // Keep for reference.
+    private final ParserResult parserResult;
     private final Graph shapesGraph;
-    //Map is Node to Shape.
+    private final Node shapesBase;
+    private final PrefixMap prefixMap;
+    // Map is Node to Shape.
     private final Map<Node, Shape> shapes;
 
     // Shapes with targets (including implicit class target).
@@ -50,10 +59,8 @@ public class Shapes implements Iterable<Shape> {
     private final Collection<Shape> declShapes;
     private final Targets targets;
 
-    private final Node shapesBase;
     // Imports in the graph.
     private final List<Node> imports;
-
     /** Parse the model and return the shapes. */
     public static Shapes parse(Model model) {
         return parse(model.getGraph());
@@ -67,9 +74,7 @@ public class Shapes implements Iterable<Shape> {
 
     /** Load the file, parse the graph and return the shapes. */
     public static Shapes parse(String fileOrURL, boolean withImports) {
-        Graph g = withImports
-            ? Imports.loadWithImports(fileOrURL)
-            : RDFDataMgr.loadGraph(fileOrURL);
+        Graph g = withImports ? Imports.loadWithImports(fileOrURL) : RDFDataMgr.loadGraph(fileOrURL);
         return parse(g);
     }
 
@@ -78,66 +83,62 @@ public class Shapes implements Iterable<Shape> {
         return parseAll(graph);
     }
 
-    /** Parse the graph and return the shapes connected to the targets. */
+    /**
+     * Parse the graph and return the shapes connected to the targets.
+     *
+     * @deprecated Use {@link #parse(Graph)}.
+     */
+    @Deprecated
     public static Shapes parseTargets(Graph graph) {
-        Targets targets = ShapesParser.targets(graph);
-        Shapes shapes = parseProcess(graph, targets, Collections.emptyList());
+        Shapes shapes = parseProcess(graph, Collections.emptyList());
         return shapes;
     }
 
     /**
-     * Parse the graph and also include all declared (have rdf:type) node and property shapes
-     * (i.e. have rdf:type sh:NodeShape or sh:PropertyShape)
-     * whether connected to the targets or not.
+     * Parse the graph and also include all declared (have rdf:type) node and
+     * property shapes (i.e. have rdf:type sh:NodeShape or sh:PropertyShape) whether
+     * connected to the targets or not.
      */
     private static Shapes parseAll(Graph graph) {
-        Targets targets = ShapesParser.targets(graph);
-        // May include targets if there are explicit node/property shapes and also have a target.
+        // May include targets if there are explicit node/property shapes and also
+        // have a target.
         Collection<Node> declShapes = ShapesParser.findDeclaredShapes(graph);
-        Shapes shapes = parseProcess(graph, targets, declShapes);
+        Shapes shapes = parseProcess(graph, declShapes);
         return shapes;
     }
 
-    private static Shapes parseProcess(Graph shapesGraph, Targets targets, Collection<Node> declaredNodes) {
-        Map<Node, Shape> shapesMap = new HashMap<>();
-        // Returns shapes with targets.
-        Collection<Shape> rootShapes = ShapesParser.parseShapes(shapesGraph, targets, shapesMap);
-
-        // This skips declared+targets because the shapesMap is in common.
-        declaredNodes.forEach(shapeNode -> {
-            if ( !shapesMap.containsKey(shapeNode) ) {
-                Shape shape = ShapesParser.parseShape(shapesMap, shapesGraph, shapeNode);
-            }
-        });
-
-        // All declared shapes, without targets, so not a root shape.
-        Collection<Shape> declShapes = new ArrayList<>();
-        declaredNodes.forEach(shapeNode -> {
-            if ( shapesMap.containsKey(shapeNode) ) {
-                Shape sh = shapesMap.get(shapeNode);
-                if ( ! rootShapes.contains(sh) )
-                    declShapes.add(shapesMap.get(shapeNode));
-            } else {
-                throw new ShaclException("Failed to find shape for declared shape: "+shapeNode);
-            }
-        });
-
-        return new Shapes(shapesGraph, shapesMap, targets, rootShapes, declShapes);
+    private static Shapes parseProcess(Graph shapesGraph, Collection<Node> declaredNodes) {
+        ShapesParser.ParserResult x = ShapesParser.parseProcess(shapesGraph, declaredNodes);
+        return new Shapes(shapesGraph, x);
     }
 
-    private Shapes(Graph shapesGraph, Map<Node, Shape> shapesMap, Targets targets,
-                  Collection<Shape> rootShapes, Collection<Shape> declShapes) {
+    private Shapes(Graph shapesGraph, ShapesParser.ParserResult x) {
+        this.parserResult = x;
         this.shapesGraph = shapesGraph;
-        this.targets = targets;
-        this.shapes = shapesMap;
-        this.rootShapes = rootShapes;
-        this.declShapes = declShapes;
-
-        // Extract base and imports.
-        Pair<Node,List<Node>> pair = Imports.baseAndImports(shapesGraph);
-        this.shapesBase = pair.getLeft();
-        this.imports = pair.getRight();
+        this.prefixMap = Prefixes.adapt(shapesGraph);
+        this.targets = x.targets;
+        this.shapes = x.shapesMap;
+        this.rootShapes = x.rootShapes;
+        this.declShapes = x.declaredShapes;
+        this.shapesBase = x.shapesBase;
+        this.imports = x.imports;
+        //x.sparqlConstraintComponents
+        //x.targetExtensions
     }
+
+//    private Shapes(Graph shapesGraph, Map<Node, Shape> shapesMap, Targets targets,
+//                   Collection<Shape> rootShapes, Collection<Shape> declShapes) {
+//        this.shapesGraph = shapesGraph;
+//        this.targets = targets;
+//        this.shapes = shapesMap;
+//        this.rootShapes = rootShapes;
+//        this.declShapes = declShapes;
+//
+//        // Extract base and imports.
+//        Pair<Node, List<Node>> pair = Imports.baseAndImports(shapesGraph);
+//        this.shapesBase = pair.getLeft();
+//        this.imports = pair.getRight();
+//    }
 
     public boolean isEmpty() {
         return shapes.isEmpty();
@@ -156,16 +157,26 @@ public class Shapes implements Iterable<Shape> {
         return shapesBase;
     }
 
-    public Shape getShape(Node node) {
-        return shapes.get(node);
+    public String getBaseURI() {
+        if ( shapesBase == null || ! shapesBase.isURI() )
+            return null;
+        return shapesBase.getURI();
     }
 
-    public Map<Node,Shape> getShapeMap() {
-        return shapes;
+    public PrefixMap getPrefixMap() {
+        return prefixMap;
     }
 
     public Graph getGraph() {
         return shapesGraph;
+    }
+
+    public Shape getShape(Node node) {
+        return shapes.get(node);
+    }
+
+    public Map<Node, Shape> getShapeMap() {
+        return shapes;
     }
 
     public Targets getTargets() {
@@ -186,7 +197,10 @@ public class Shapes implements Iterable<Shape> {
         return rootShapes.iterator();
     }
 
-    /** Iterator over the shapes with targets and with explicit type NodeShape or PropertyShape. */
+    /**
+     * Iterator over the shapes with targets and with explicit type NodeShape or
+     * PropertyShape.
+     */
     public Iterator<Shape> iteratorAll() {
         // rootsShapes and declShaes are disjoint so no duplicates in the iterator.
         return Iter.concat(rootShapes.iterator(), declShapes.iterator());

@@ -1,0 +1,5 @@
+@prefix ex: <http://a.example> .
+@prefix sx: <http://www.w3.org/ns/shex#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+

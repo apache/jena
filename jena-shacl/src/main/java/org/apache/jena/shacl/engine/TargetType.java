@@ -26,13 +26,15 @@ public enum TargetType {
     targetClass(SHACL.targetClass, "targetClass"),
     targetObjectsOf(SHACL.targetObjectsOf, "targetObjectsOf"),
     targetSubjectsOf(SHACL.targetSubjectsOf, "targetSubjectsOf"),
-    implicitClass(null,null);
+    implicitClass(null,null),
+    // Any use of sh:target
+    targetExtension(SHACL.target, null);
 
     public final Node predicate;
     public final String compact;
 
     TargetType(Node n, String compactWord) {
         this.predicate = n;
-        this.compact = compactWord; 
+        this.compact = compactWord;
     }
 }

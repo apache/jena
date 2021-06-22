@@ -1,0 +1,3 @@
+<http://a.example/S1> {
+   <http://a.example/p1> <http://www.w3.org/2001/XMLSchema#double> MAXEXCLUSIVE 05.50E0
+}

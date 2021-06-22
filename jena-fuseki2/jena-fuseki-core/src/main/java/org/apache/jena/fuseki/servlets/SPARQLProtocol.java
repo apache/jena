@@ -32,6 +32,7 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryException;
+import org.apache.jena.query.QueryParseException;
 import org.apache.jena.sparql.core.DatasetDescription;
 
 /**
@@ -39,9 +40,28 @@ import org.apache.jena.sparql.core.DatasetDescription;
  */
 public class SPARQLProtocol {
 
+    /**
+     * Form a message from a {@link QueryException}.
+     */
     public static String messageForException(QueryException ex) {
         if ( ex.getMessage() != null )
             return ex.getMessage();
+        if ( ex.getCause() != null )
+            return Lib.classShortName(ex.getCause().getClass());
+        return null;
+    }
+
+    /**
+     * Form a message from a {@link QueryParseException}.
+     */
+    public static String messageForParseException(QueryParseException ex) {
+        if ( ex.getMessage() != null ) {
+            // Only the first line, otherwise they can be very long.
+            String exMsg = ex.getMessage();
+            if ( exMsg.contains("\n") )
+                exMsg = exMsg.substring(0, exMsg.indexOf("\n"));
+            return "Parse error: "+exMsg;
+        }
         if ( ex.getCause() != null )
             return Lib.classShortName(ex.getCause().getClass());
         return null;

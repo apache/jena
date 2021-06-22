@@ -1,0 +1,9 @@
+PREFIX sx: <http://www.w3.org/ns/shex#>
+
+[] a sx:Schema ;
+  sx:imports ( <2RefS2> ) ;
+  sx:shapes (<http://a.example/S1>) .
+    <http://a.example/S1> a sx:Shape ; sx:expression [
+        a sx:TripleConstraint ; sx:predicate <http://a.example/p1> ;
+        sx:valueExpr <http://a.example/S2> ] .
+

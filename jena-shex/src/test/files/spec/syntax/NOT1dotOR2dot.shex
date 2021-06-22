@@ -1,0 +1,7 @@
+<http://a.example/S1> NOT {
+   <http://a.example/p1> .
+} OR {
+   <http://a.example/p1> .;
+   <http://a.example/p2> .
+}
+

@@ -1,0 +1,6 @@
+<http://a.example/S1> {
+   <http://a.example/p1> ["v"~
+                          - "v1"
+                          - "v2"
+                          - "v3"]
+}

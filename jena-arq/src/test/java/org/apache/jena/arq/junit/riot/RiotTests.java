@@ -18,6 +18,9 @@
 
 package org.apache.jena.arq.junit.riot ;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.jena.arq.junit.LibTestSetup;
 import org.apache.jena.arq.junit.SurpressedTest;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
@@ -139,4 +142,29 @@ public class RiotTests
         baseIRI = baseIRI+x ;
         return baseIRI ;
     }
+
+    static Set<String> allowWarningSet = new HashSet<>();
+    static {
+        //allowWarningSet.add("#turtle-eval-bad-01");
+    }
+
+    // Some tests have U+FFFD which, in Jena, generates a helpful warning.
+    /*package*/ static boolean allowWarnings(ManifestEntry testEntry) {
+      String fragment = fragment(testEntry.getURI());
+      if ( fragment == null )
+          return false;
+      if ( fragment.endsWith("UTF8_boundaries") || fragment.endsWith("character_boundaries") )
+          // Boundaries of the Unicode allowed character blocks.
+          return true;
+      return false;
+    }
+
+    /*package*/ static String fragment(String uri) {
+        if ( uri == null )
+            return null;
+        int j = uri.lastIndexOf('#') ;
+        String frag = (j >= 0) ? uri.substring(j) : uri ;
+        return frag ;
+    }
+
 }

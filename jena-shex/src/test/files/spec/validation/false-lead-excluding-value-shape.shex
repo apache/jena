@@ -1,0 +1,9 @@
+BASE <http://a.example.org/>
+PREFIX : <http://a.example/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+<S> { :a @<T1>*; (:a @<T2> | :b xsd:integer); :b . }
+<T1> { :b @<T3> }
+<T2> { :b @<T4> }
+<T3> { :c . }
+<T4> { :d . }

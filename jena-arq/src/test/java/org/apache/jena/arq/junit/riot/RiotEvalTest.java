@@ -71,12 +71,17 @@ public class RiotEvalTest implements Runnable {
         StreamRDF dest = StreamRDFLib.graph(graph);
         try {
             if ( baseIRI != null )
-                ParseForTest.parse(dest, input, baseIRI, lang);
+                ParseForTest.parse(dest, input, baseIRI, lang, RiotTests.allowWarnings(testEntry));
             else
-                ParseForTest.parse(dest, input, lang);
+                ParseForTest.parse(dest, input, lang, RiotTests.allowWarnings(testEntry));
 
-            if ( ! expectLegalSyntax )
-                fail("Passed bad syntax eval test");
+            if ( ! expectLegalSyntax ) {
+                String fragment = RiotTests.fragment(testEntry.getURI());
+                if ( fragment != null )
+                    fail(fragment+": Passed bad syntax eval test");
+                else
+                    fail("Passed bad syntax eval test");
+            }
 
             Lang outLang = RDFLanguages.filenameToLang(output, Lang.NQUADS) ;
 
@@ -92,7 +97,7 @@ public class RiotEvalTest implements Runnable {
             }
 
             boolean b = IsoMatcher.isomorphic(graph, results);
-            
+
             if ( !b ) {
                 // model.isIsomorphicWith(results) ;
                 // IsoMatcher.isomorphic(graph, results);
@@ -114,10 +119,11 @@ public class RiotEvalTest implements Runnable {
         DatasetGraph dsg = DatasetGraphFactory.create() ;
         StreamRDF dest = StreamRDFLib.dataset(dsg);
         try {
+
             if ( baseIRI != null )
-                ParseForTest.parse(dest, input, baseIRI, lang) ;
+                ParseForTest.parse(dest, input, baseIRI, lang, RiotTests.allowWarnings(testEntry)) ;
             else
-                ParseForTest.parse(dest, input, lang) ;
+                ParseForTest.parse(dest, input, lang, RiotTests.allowWarnings(testEntry)) ;
             if ( ! expectLegalSyntax )
                 fail("Passed bad syntax eval test");
 

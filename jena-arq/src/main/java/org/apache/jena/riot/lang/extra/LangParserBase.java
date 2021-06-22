@@ -79,7 +79,7 @@ public class LangParserBase {
         return prefix ;
     }
 
-    protected Node createNode(String iriStr, int line, int column) {
+    protected Node createURI(String iriStr, int line, int column) {
         return profile.createURI(iriStr, line, column);
     }
 
@@ -115,7 +115,6 @@ public class LangParserBase {
     }
 
     protected Node createLiteral(String lexicalForm, String langTag, String datatypeURI, int line, int column) {
-        // XXX profile.
         Node n = null ;
         // Can't have type and lang tag in parsing.
         if ( datatypeURI != null ) {

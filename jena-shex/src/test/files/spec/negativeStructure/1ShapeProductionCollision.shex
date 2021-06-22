@@ -1,0 +1,6 @@
+# <http://a.example/S1> can't be a shape expr label and a triple expr label.
+<http://a.example/S1> {
+  $<http://a.example/S1> <http://a.example/p1> .
+}
+
+<http://a.example/S2> [1]

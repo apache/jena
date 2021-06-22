@@ -1,0 +1,6 @@
+<http://a.example/S1> {
+   <http://a.example/p1> LITERAL /ab.*/
+                      OR LITERAL /.*cd.*/
+                      OR LITERAL /.*ef/
+}
+

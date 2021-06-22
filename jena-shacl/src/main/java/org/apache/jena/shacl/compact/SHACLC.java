@@ -76,7 +76,6 @@ public class SHACLC {
     /** Return a copy of the {@link PrefixMap} with the SHACLC standard prefixes added */
     public static PrefixMap withStandardPrefixes() {
         PrefixMap pmap = PrefixMapFactory.create();
-        //pmap.add("owl",  OWL.getURI());
         return addStandardPrefixes(pmap);
     }
 

@@ -1,0 +1,5 @@
+# group without SEMICOLON separators
+<http://a.example/IssueShape> {
+   <http://a.example/p1> .
+   <http://a.example/p2> .
+}

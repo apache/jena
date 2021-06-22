@@ -1,0 +1,66 @@
+# kitchenSink.shex - Issue schema using most ShEx features.
+
+BASE <http://ex.example/>
+PREFIX e: <http://ex.example/>
+PREFIX ex: <http://ex.example/#>
+PREFIX UserShape: <http://ex.example/#UserShape>
+PREFIX : <http://ex.example/#>
+PREFIX foaf: <http://xmlns.com/foaf/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schem#>
+
+%ex:foo{ initializer for ignored extension %}
+start = @<S1>  # Issue validation starts with <IssueShape>
+
+<S1> { a [ex:Issue]?;            # An <IssueShape> has:
+    ex:state [ex:state~ - ex:state_resolved]// # a state starting with "state-"
+      rdfs:label "State"// rdfs:description "the sit";
+    ex:reportedBy IRI @UserShape:;        # reported by a <UserShape>.
+    ex:reportedOn xsd:dateTime;           # reported some date/time.
+    (                                     # optionally
+     ex:reproducedBy
+          NONLITERAL @:EmployeeShape;     #   reproduced by someone
+     ex:reproducedOn xsd:dateTime         #   at some data/time.
+    )? %ex:foo{ asdfasdf %};
+    ex:related @<S1>*             # n related issues.
+}
+
+UserShape: {                             # A <UserShape> has:
+    (                             # a name which is either
+       foaf:name xsd:string               #   a FOAF name
+     |                                    #  or
+       foaf:givenName xsd:string+;        #   one or more givenNames
+       foaf:familyName xsd:string);       #   and one familyName.
+    foaf:mbox IRI /^mailto:/;     # one FOAF mbox.
+    ex:id BNODE @_:IDshape
+}
+
+:EmployeeShape {                         # An <EmployeeShape> has:
+    foaf:givenName xsd:string+;           # at least one givenName.
+    foaf:familyName xsd:string;           # one familyName.
+    foaf:phone IRI*;                      # any number of phone numbers.
+    foaf:mbox IRI?                        # maybe one FOAF mbox.
+}
+
+BASE <../>
+#VIRTUAL
+_:IDshape {
+    $_:IDshapeE (
+    ex:code LITERAL;
+    ex:system IRI;
+    ex:literal ["a" "b"^^ex:c "c"@en "d"@en-fr]{2,3};
+    ex:misc BNODE %ex:foo{ ignored %} %ex:bar{ also ignored %}
+    | (^ex:ref [true false];
+        ^ex:miscRef .);
+    ex:issues @e:S1*;
+    ex:seeAlso @ # interjection!
+                 e:S1*;
+    ex:says @ # interjection2!
+                 :EmployeeShape*; )
+}
+
+ex:FooID CLOSED # &_:IDshape
+  EXTRA ex:code ex:system {
+    &_:IDshapeE
+  }
+

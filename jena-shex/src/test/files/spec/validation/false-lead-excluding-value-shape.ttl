@@ -1,0 +1,14 @@
+PREFIX : <http://a.example/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+<x> :a <x1> . # C1
+<x> :a <x2> . # C2
+<x> :a <x3> . # C1
+<x> :b <x4> . # C3
+# <x> :b 1 .
+<x1> :b <y1> .
+<x2> :b <y2> .
+<x3> :b <y3> .
+<y1> :c 1 .
+<y2> :d 2 .
+<y3> :c 3 .

@@ -135,12 +135,14 @@ public abstract class AbstractRunnerOfTests extends ParentRunner<Runner> {
         // action URI or action -> qt:query
         String str = null;
 
-        if ( entry.getAction().isURIResource() )
-            str = entry.getAction().getURI();
-        else if ( entry.getAction().isAnon() ) {
-            Statement stmt = entry.getAction().getProperty(VocabTestQuery.query);
-            if ( stmt != null && stmt.getObject().isURIResource() )
-                str = stmt.getObject().asResource().getURI();
+        if ( entry.getAction() != null ) {
+            if ( entry.getAction().isURIResource() )
+                str = entry.getAction().getURI();
+            else if ( entry.getAction().isAnon() ) {
+                Statement stmt = entry.getAction().getProperty(VocabTestQuery.query);
+                if ( stmt != null && stmt.getObject().isURIResource() )
+                    str = stmt.getObject().asResource().getURI();
+            }
         }
 
         if ( str != null ) {

@@ -1,0 +1,234 @@
+{
+  "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "shapes": [
+    {
+      "id": "http://a.example/S-integer",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p",
+        "valueExpr": {
+          "type": "NodeConstraint",
+          "datatype": "http://www.w3.org/2001/XMLSchema#integer"
+        }
+      }
+    },
+    {
+      "id": "http://a.example/S-decimal",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p",
+        "valueExpr": {
+          "type": "NodeConstraint",
+          "datatype": "http://www.w3.org/2001/XMLSchema#decimal"
+        }
+      }
+    },
+    {
+      "id": "http://a.example/S-float",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p",
+        "valueExpr": {
+          "type": "NodeConstraint",
+          "datatype": "http://www.w3.org/2001/XMLSchema#float"
+        }
+      }
+    },
+    {
+      "id": "http://a.example/S-double",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p",
+        "valueExpr": {
+          "type": "NodeConstraint",
+          "datatype": "http://www.w3.org/2001/XMLSchema#double"
+        }
+      }
+    },
+    {
+      "id": "http://a.example/S-string",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p",
+        "valueExpr": {
+          "type": "NodeConstraint",
+          "datatype": "http://www.w3.org/2001/XMLSchema#string"
+        }
+      }
+    },
+    {
+      "id": "http://a.example/S-boolean",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p",
+        "valueExpr": {
+          "type": "NodeConstraint",
+          "datatype": "http://www.w3.org/2001/XMLSchema#boolean"
+        }
+      }
+    },
+    {
+      "id": "http://a.example/S-dateTime",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p",
+        "valueExpr": {
+          "type": "NodeConstraint",
+          "datatype": "http://www.w3.org/2001/XMLSchema#dateTime"
+        }
+      }
+    },
+    {
+      "id": "http://a.example/S-nonPositiveInteger",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p",
+        "valueExpr": {
+          "type": "NodeConstraint",
+          "datatype": "http://www.w3.org/2001/XMLSchema#nonPositiveInteger"
+        }
+      }
+    },
+    {
+      "id": "http://a.example/S-negativeInteger",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p",
+        "valueExpr": {
+          "type": "NodeConstraint",
+          "datatype": "http://www.w3.org/2001/XMLSchema#negativeInteger"
+        }
+      }
+    },
+    {
+      "id": "http://a.example/S-long",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p",
+        "valueExpr": {
+          "type": "NodeConstraint",
+          "datatype": "http://www.w3.org/2001/XMLSchema#long"
+        }
+      }
+    },
+    {
+      "id": "http://a.example/S-int",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p",
+        "valueExpr": {
+          "type": "NodeConstraint",
+          "datatype": "http://www.w3.org/2001/XMLSchema#int"
+        }
+      }
+    },
+    {
+      "id": "http://a.example/S-short",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p",
+        "valueExpr": {
+          "type": "NodeConstraint",
+          "datatype": "http://www.w3.org/2001/XMLSchema#short"
+        }
+      }
+    },
+    {
+      "id": "http://a.example/S-byte",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p",
+        "valueExpr": {
+          "type": "NodeConstraint",
+          "datatype": "http://www.w3.org/2001/XMLSchema#byte"
+        }
+      }
+    },
+    {
+      "id": "http://a.example/S-nonNegativeInteger",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p",
+        "valueExpr": {
+          "type": "NodeConstraint",
+          "datatype": "http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+        }
+      }
+    },
+    {
+      "id": "http://a.example/S-unsignedLong",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p",
+        "valueExpr": {
+          "type": "NodeConstraint",
+          "datatype": "http://www.w3.org/2001/XMLSchema#unsignedLong"
+        }
+      }
+    },
+    {
+      "id": "http://a.example/S-unsignedInt",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p",
+        "valueExpr": {
+          "type": "NodeConstraint",
+          "datatype": "http://www.w3.org/2001/XMLSchema#unsignedInt"
+        }
+      }
+    },
+    {
+      "id": "http://a.example/S-unsignedShort",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p",
+        "valueExpr": {
+          "type": "NodeConstraint",
+          "datatype": "http://www.w3.org/2001/XMLSchema#unsignedShort"
+        }
+      }
+    },
+    {
+      "id": "http://a.example/S-unsignedByte",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p",
+        "valueExpr": {
+          "type": "NodeConstraint",
+          "datatype": "http://www.w3.org/2001/XMLSchema#unsignedByte"
+        }
+      }
+    },
+    {
+      "id": "http://a.example/S-positiveInteger",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p",
+        "valueExpr": {
+          "type": "NodeConstraint",
+          "datatype": "http://www.w3.org/2001/XMLSchema#positiveInteger"
+        }
+      }
+    }
+  ]
+}

@@ -26,6 +26,7 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Node_Literal ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.irix.IRIException;
 import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFNode ;
@@ -469,17 +470,20 @@ public class FmtUtils
     }
 
     public static String abbrevByBase(String uriStr, String base) {
-        IRIx baseIRI = IRIx.create(base);
-        if ( baseIRI == null )
+        try {
+            IRIx baseIRI = IRIx.create(base);
+            if ( baseIRI == null )
+                return null;
+            IRIx relInput = IRIx.create(uriStr);
+            IRIx relativized = baseIRI.relativize(relInput);
+            return (relativized==null) ? null : relativized.toString();
+        } catch (IRIException ex) {
             return null;
-        IRIx relInput = IRIx.create(uriStr);
-        IRIx relativized = baseIRI.relativize(relInput);
-        return (relativized==null) ? null : relativized.toString();
+        }
     }
 
     static private Pattern schemePattern = Pattern.compile("[A-Za-z]+:") ;
-    static private boolean hasScheme(String uriStr)
-    {
+    static private boolean hasScheme(String uriStr) {
         return schemePattern.matcher(uriStr).matches() ;
     }
 

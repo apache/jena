@@ -18,8 +18,8 @@
 
 package org.apache.jena.riot;
 
-import org.apache.jena.arq.junit.manifest.Label;
 import org.apache.jena.arq.junit.manifest.Manifests;
+import org.apache.jena.arq.junit.runners.Label;
 import org.apache.jena.arq.junit.runners.RunnerRIOT;
 import org.junit.runner.RunWith ;
 

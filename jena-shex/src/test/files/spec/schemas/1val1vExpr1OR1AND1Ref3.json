@@ -1,0 +1,45 @@
+{
+  "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "shapes": [
+    {
+      "id": "http://a.example/vc1",
+      "type": "NodeConstraint",
+      "nodeKind": "literal",
+      "minlength": 5
+    },
+    {
+      "id": "http://a.example/vc2",
+      "type": "NodeConstraint",
+      "nodeKind": "literal",
+      "maxlength": 3
+    },
+    {
+      "id": "http://a.example/vc3",
+      "type": "NodeConstraint",
+      "nodeKind": "literal",
+      "pattern": "^(ab)*$"
+    },
+    {
+      "id": "http://a.example/S1",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p1",
+        "valueExpr": {
+          "type": "ShapeOr",
+          "shapeExprs": [
+            "http://a.example/vc1",
+            {
+              "type": "ShapeAnd",
+              "shapeExprs": [
+                "http://a.example/vc2",
+                "http://a.example/vc3"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

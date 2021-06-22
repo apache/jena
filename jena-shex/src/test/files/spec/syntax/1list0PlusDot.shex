@@ -1,0 +1,10 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+<http://a.example/S1> CLOSED {
+  <http://a.example/p1> @<http://a.example/List0PlusDot>
+}
+
+<http://a.example/List0PlusDot> [rdf:nil] OR CLOSED {
+  rdf:first . ;
+  rdf:rest  @<http://a.example/List0PlusDot>
+}

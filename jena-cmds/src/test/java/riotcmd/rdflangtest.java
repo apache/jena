@@ -33,7 +33,7 @@ import arq.rdftests;
 @Deprecated
 public class rdflangtest {
     public static void main (String... argv) {
-        System.err.println("Run arq.rdftests");
+        System.err.println("** Run arq.rdftests");
         rdftests.main(argv);
     }
  }

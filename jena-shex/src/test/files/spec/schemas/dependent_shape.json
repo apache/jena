@@ -1,0 +1,19 @@
+{
+  "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "shapes": [
+   { "id": "http://schema.example/IssueShape",
+     "type": "Shape",
+     "expression":
+    { "type": "TripleConstraint",
+      "predicate": "http://schema.example/reproducedBy",
+      "valueExpr": "http://schema.example/TesterShape" } },
+   { "id": "http://schema.example/TesterShape",
+     "type": "Shape",
+     "expression":
+    { "type": "TripleConstraint",
+      "predicate": "http://schema.example/role",
+      "valueExpr":
+      { "type": "NodeConstraint",
+        "values": [ "http://schema.example/testingRole" ] } } }
+  ] }

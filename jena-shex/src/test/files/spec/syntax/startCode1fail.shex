@@ -1,0 +1,4 @@
+%<http://shex.io/extensions/Test/>{ fail("startAct") %}
+<http://a.example/S1> {
+   <http://a.example/p1> .
+}

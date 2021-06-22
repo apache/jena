@@ -1,0 +1,1109 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+options
+{
+    JAVA_UNICODE_ESCAPE   = false ;
+    UNICODE_INPUT         = true ;
+
+    STATIC                = false ;
+    //   DEBUG_PARSER          = true ;
+    //   DEBUG_TOKEN_MANAGER   = true ;
+}
+
+PARSER_BEGIN(ShExJavacc)
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.jena.shex.parser.javacc;
+
+import static org.apache.jena.shex.sys.SysShex.*;
+import org.apache.jena.shex.parser.*;
+import org.apache.jena.shex.expressions.*;
+import org.apache.jena.graph.*;
+import static org.apache.jena.riot.lang.extra.LangParserLib.*;
+import java.util.*;
+
+public class ShExJavacc extends ParserShExC
+{}
+PARSER_END(ShExJavacc)
+
+void UnitShapes(): { }
+{
+    (<BOM>)?
+    shexDoc()
+    <EOF>
+}
+
+void shexDoc() : {}
+{
+    { startShexDoc(); }
+    (directive())*
+    (
+      (notStartAction() | startActions())
+      (statement())*
+    )?
+    { finishShexDoc(); }
+}
+
+// ----
+
+void directive() : {}
+{
+    ( baseDecl() | prefixDecl() | importDecl() )
+}
+
+void baseDecl() : { String iri ; }
+{
+    <BASE> iri = IRIREF()
+    { setBase(iri, token.beginLine, token.beginColumn) ; }
+}
+
+void prefixDecl() : { Token t ; String iri ; }
+{
+    <PREFIX> t = <PNAME_NS> iri = IRIREF()
+    { setPrefix(t.image, iri, t.beginLine, t.beginColumn) ; }
+}
+
+void importDecl() : { Token t ; String iri ; }
+{
+    t = <IMPORT> iri = iri()
+    { imports(iri, token.beginLine, token.beginColumn) ; }
+}
+
+// ----
+
+void notStartAction() : {}
+{
+    start() | shapeExprDecl()
+}
+
+void start() : { }
+{
+    { startStartClause(); }
+    <START> <EQUALS> inlineShapeExpression()
+    { finishStartClause(); }
+}
+
+void startActions() : {}
+{
+    (codeDecl())+
+}
+
+void statement() : {}
+{
+    directive() | notStartAction()
+}
+
+// ----
+
+void shapeExprDecl() : { Node n;}
+{
+    { startShapeExprDecl(); }
+    n = shapeExprLabel()
+    { shapeExprDecl(n, token.beginLine, token.beginColumn); }
+    (shapeExpression() | <EXTERNAL> { shapeExternal(); })
+    { finishShapeExprDecl(); }
+}
+
+// From: shapeExprDecl
+// Recursion: () in shapeAtom, at shapeRef, and inlineShapeAtom()
+void shapeExpression() : { int idx; }
+{
+    { idx = startShapeExpression(); }
+    shapeOr()
+    { finishShapeExpression(idx); }
+}
+
+void shapeOr() : { int idx; }
+{
+    { idx = startShapeOr(); }
+    shapeAnd() (<OR> shapeAnd())*
+    { finishShapeOr(idx); }
+}
+
+void shapeAnd() : { int idx; }
+{
+    { idx = startShapeAnd(); }
+    shapeNot() (<AND> shapeNot())*
+    { finishShapeAnd(idx); }
+}
+
+void shapeNot() : { int idx; boolean negate = false; }
+{
+    { idx = startShapeNot(); }
+    (<NOT> { negate = true; })? shapeAtom()
+    { finishShapeNot(idx,negate); }
+}
+
+void shapeAtom() : { int idx; }
+{
+    { idx = startShapeAtom(); }
+      // No literals-as-subjects.
+    ( nonLitNodeConstraint() (shapeOrRef())?
+    | litNodeConstraint()
+    | shapeOrRef() (nonLitNodeConstraint())?
+    | <LPAREN> shapeExpression() <RPAREN>
+    | <DOT> { shapeAtomDOT(); }
+    )
+    { finishShapeAtom(idx); }
+}
+
+// void shapeAtomNoRef() : {}
+// {
+//     nonLitNodeConstraint() (shapeOrRef())?
+//   | litNodeConstraint()
+//   | shapeDefinition() (nonLitNodeConstraint())?
+//   | <LPAREN> shapeExpression() <RPAREN>
+//   | <DOT>
+// }
+
+// Inline versions of same.
+
+// From start()
+// Recursion: in tripleConstraint
+void inlineShapeExpression() : { int idx; }
+{
+    { idx = startInlineShapeExpression(); }
+    inlineShapeOr()
+    { finishInlineShapeExpression(idx); }
+}
+
+void inlineShapeOr() : { int idx; }
+{
+    { idx = startInlineShapeOr(); }
+    inlineShapeAnd() (<OR> inlineShapeAnd())*
+    { finishInlineShapeOr(idx); }
+}
+
+void inlineShapeAnd() : { int idx; }
+{
+    { idx = startInlineShapeAnd(); }
+    inlineShapeNot() (<AND> inlineShapeNot())*
+    { finishInlineShapeAnd(idx); }
+}
+
+void inlineShapeNot() : { int idx; boolean negate = false; }
+{
+    { idx = startInlineShapeNot(); }
+    (<NOT> { negate = true; })? inlineShapeAtom()
+    { finishInlineShapeNot(idx, negate); }
+}
+
+void inlineShapeAtom() : { int idx; }
+{
+  { idx = startInlineShapeAtom(); }
+    // No literals-as-subjects.
+  ( nonLitNodeConstraint() (inlineShapeOrRef())?
+  | litNodeConstraint()
+  | inlineShapeOrRef() (nonLitNodeConstraint())?
+  | <LPAREN> shapeExpression() <RPAREN>
+  | <DOT> { shapeAtomDOT(); }
+  )
+  { finishInlineShapeAtom(idx); }
+}
+
+void shapeOrRef() : { int idx; }
+{
+    shapeDefinition() | shapeRef()
+}
+
+void inlineShapeOrRef() : { int idx; }
+{
+    inlineShapeDefinition() | shapeRef()
+}
+
+void shapeRef() : { Token t ; Node ref; }
+{
+    ( t = <ATPNAME_LN>
+       { ref = resolve_AT_PName(t.image, t.beginLine, t.beginColumn) ; }
+    | t = <ATPNAME_NS>
+       { ref = resolve_AT_PName(t.image, t.beginLine, t.beginColumn) ; }
+    | <AT> ref = shapeExprLabel()
+    )
+    { shapeReference(ref); }
+}
+
+void litNodeConstraint() : { String str; Token t; int idx; } {
+  { idx = startLiteralNodeConstraint(token.beginLine, token.beginColumn); }
+  (
+    t = <LITERAL>
+    { cNodeKind(t.image, t.beginLine, t.beginColumn); }
+    (xsFacet())*
+  | str = datatype()
+    { cDatatype(str, token.beginLine, token.beginColumn); }
+    (xsFacet())*
+  | valueSet()
+    (xsFacet())*
+  | (numericFacet())+
+  )
+  { finishLiteralNodeConstraint(idx, token.beginLine, token.beginColumn); }
+}
+
+// Check precedence
+
+void nonLitNodeConstraint() : { int idx; } {
+  { idx = startNonLiteralNodeConstraint(token.beginLine, token.beginColumn); }
+  (  nonLiteralKind() (stringFacet())*
+  | (stringFacet())+
+  )
+  { finishNonLiteralNodeConstraint(idx, token.beginLine, token.beginColumn); }
+}
+
+void nonLiteralKind() : { Token t; }
+{
+    ( t = <IRI> | t = <BNODE> | t = <NONLITERAL> )
+    { cNodeKind(t.image, t.beginLine, t.beginColumn); }
+}
+
+void xsFacet() : { }
+{
+    stringFacet() | numericFacet()
+}
+
+void stringFacet() : { String str; Token t;}
+{
+  ( str = stringLength() t = <INTEGER>
+    { int len = integer(t.image, t.beginLine, t.beginColumn);
+      stringFacetLength(str, len);
+    }
+  | t = <REGEXP>
+    { stringFacetRegex(t.image, t.beginLine, t.beginColumn); }
+  )
+}
+
+String stringLength() : { }
+{
+  ( <LENGTH> | <MINLENGTH> | <MAXLENGTH> )
+  { return token.image; }
+}
+
+void numericFacet() : { String range; Token t; Node numLit; String lenStr; }
+{
+  (
+    range = numericRange() numLit = numericLiteral()
+     { numericFacetRange(range, numLit, token.beginLine, token.beginColumn); }
+  | lenStr = numericLength() t = <INTEGER>
+     { int num = integer(t.image, t.beginLine, t.beginColumn);
+       numericFacetLength(lenStr, num, token.beginLine, token.beginColumn);
+     }
+  )
+}
+
+String numericRange() : { Token t; }
+{
+    ( t = <MININCLUSIVE> | t = <MINEXCLUSIVE> | t = <MAXINCLUSIVE> | t = <MAXEXCLUSIVE> )
+    { return t.image; }
+}
+
+String numericLength() : { Token t; }
+{
+    ( t = <TOTALDIGITS> | t = <FRACTIONDIGITS> )
+    { return t.image; }
+}
+
+// "{ ... }"
+void shapeDefinition() :
+{ boolean closed = false ;
+  TripleExpression tripleExpr = null;
+  List<Node> extras = new ArrayList<Node>();
+}
+{
+    { startShapeDefinition(); }
+ 	(extraPropertySet(extras) | <CLOSED> { closed = true; } )*
+    <LBRACE> (tripleExpr = tripleExpression())? <RBRACE>
+    (annotation())*
+    semanticActions()
+    { finishShapeDefinition(tripleExpr, extras, closed); }
+}
+
+void inlineShapeDefinition() :
+{ boolean closed = false ;
+  TripleExpression tripleExpr = null;
+  List<Node> extras = new ArrayList<Node>();
+}
+{
+    { startShapeDefinition(); }
+   	( extraPropertySet(extras) | <CLOSED> { closed = true; } )*
+    <LBRACE> (tripleExpr = tripleExpression())? <RBRACE>
+    { finishShapeDefinition(tripleExpr, extras, closed); }
+}
+
+void extraPropertySet(List<Node> extras) : { Node p; }
+{
+   	<EXTRA> (p = predicate() { extras.add(p); })+
+}
+
+// Original:
+// void tripleExpression() : {}
+// {
+//     oneOfTripleExpr()
+// }
+// 
+// void oneOfTripleExpr() : {}
+// {
+//  	(LOOKAHEAD(2)
+//       groupTripleExpr()
+//     | multiElementOneOf()
+//     )
+// }
+// 
+// void multiElementOneOf() : {}
+// {
+//    	groupTripleExpr() (<VBAR> groupTripleExpr())+
+// }
+// 
+// void groupTripleExpr() : {}
+// {
+//     ( LOOKAHEAD(2)
+//    	  singleElementGroup()
+//     | multiElementGroup()
+//     )
+// }
+// 
+// void singleElementGroup() : {}
+// {
+//   	unaryTripleExpr() (<SEMI_COLON>)?
+// }
+// 
+// void multiElementGroup() : {}
+// {
+//   	unaryTripleExpr()
+//      (LOOKAHEAD(2) <SEMI_COLON> unaryTripleExpr())+
+//      (<SEMI_COLON>)?
+// }
+
+// ---- Improvement for LL(1)
+TripleExpression tripleExpression() : { int idx; }
+{
+  { idx = startTripleExpression(); }
+  tripleExpressionClause() (<VBAR> tripleExpressionClause())*
+  { return finishTripleExpression(idx); }
+}
+
+void tripleExpressionClause() : { int idx; } {
+   { idx = startTripleExpressionClause(); }
+   tripleExpressionClause_1()
+   { finishTripleExpressionClause(idx); }
+}
+
+// // Can end in single ";"
+// void tripleExpressionClause_0() : {}
+// {
+//     unaryTripleExpr()
+// // Allows ";;;"
+//     (<SEMI_COLON> ( unaryTripleExpr() )?)*
+// }
+
+// Iterative, but needs LOOKAHEAD(2)
+void tripleExpressionClause_1() : { }
+{
+    unaryTripleExpr()
+    ( LOOKAHEAD(2)
+      <SEMI_COLON> unaryTripleExpr()
+    )*
+    (<SEMI_COLON>)?
+}
+
+// // Recursive
+// void tripleExpressionClause_2() : { }
+// {
+//     unaryTripleExpr() (<SEMI_COLON> (tripleExpressionClause() )? )?
+// }
+
+// ----
+
+void unaryTripleExpr() : { Node n = null; }
+{
+    { startUnaryTripleExpr(); }
+    (
+      ( (<DOLLAR> n = tripleExprLabel())? (tripleConstraint(n) | bracketedTripleExpr(n)) )
+    | include()
+    )
+    { finishUnaryTripleExpr(); }
+}
+
+void bracketedTripleExpr(Node label): { TripleExpression tripleExpr = null; Cardinality cardinality = null; }
+{
+    { startBracketedTripleExpr(); }
+   	<LPAREN> tripleExpr = tripleExpression() <RPAREN>
+    (cardinality = cardinality())?
+    (annotation())*
+    semanticActions()
+    { finishBracketedTripleExpr(label, tripleExpr, cardinality); }
+}
+
+void tripleConstraint(Node label) : { Node p; int idx; boolean reverse = false; Cardinality cardinality = null; }
+{
+    { idx = startTripleConstraint(); }
+  	( reverse = senseFlags() )?
+    p = predicate()
+    inlineShapeExpression()
+    (cardinality = cardinality())?
+    (annotation())*
+    semanticActions()
+    { finishTripleConstraint(label, idx, p, reverse, cardinality); }
+}
+
+Cardinality cardinality() : {}
+{
+   	( <STAR> | <PLUS>| <QMARK> | <REPEAT_RANGE> )
+    { return cardinalityRange(token.image, token.beginLine, token.beginColumn); }
+}
+
+boolean senseFlags() : {}
+{
+  	<CARAT>
+    { return true; }
+}
+
+void valueSet() : {}
+{
+    { startValueSet(); }
+  	<LBRACKET> (valueSetValue())* <RBRACKET>
+    { finishValueSet(); }
+}
+
+// in https://github.com/shexSpec/grammar/blob/master/ShExDoc.g4
+// valueSetValue   : iriRange
+// 				| literalRange
+// 				| languageRange
+// 				| '.' (iriExclusion+ | literalExclusion+ | languageExclusion+)
+// 				;
+
+// void valueSetValue() : {}
+// {
+//     iriRange() | literalRange() | languageRange() | (LOOKAHEAD(2) exclusion())+
+// }
+// 
+// void exclusion() : {}
+// {
+//   	<MINUS>
+//     (
+//         iri() | literal() | <LANGTAG>
+//     ) (<TILDE>)?
+// }
+
+void valueSetValue() : {}
+{
+    { startValueSetValue(); }
+    ( iriRange()
+    | literalRange()
+    | languageRange() 
+    | ( <DOT> { startValueSetValueDot(); } (valueExclusion())+ { finishValueSetValueDot(); } )
+    )
+    { finishValueSetValue(); }
+}
+
+void valueExclusion() : { String iriStr = null; String lang = null; Node lit = null; boolean isStem = false; }
+{
+    <MINUS>
+    { startValueExclusion(); }
+    ( iriStr = iri()
+    | lit = literal()
+    | <LANGTAG> { lang = token.image; }
+    )
+    (<TILDE> { isStem = true ;})?
+    { finishValueExclusion(iriStr, lang, lit, isStem); }
+}
+
+// void iriRange() : {}
+// {
+//    iri() (<TILDE> ( iriExclusion())*)?
+// }
+// 
+// void iriExclusion() : {}
+// {
+//     <MINUS> iri() (<TILDE>)?
+// }
+
+void iriRange() : { String iriStr; boolean seenTilde = false; boolean haveSet = false; }
+{
+    // iri() (<TILDE> ( <MINUS> iri() (<TILDE>)? )* )?
+    { startIriRange(); }
+    iriStr = iri()
+    ( <TILDE> { seenTilde = true; }
+      { valueSetIriRange(iriStr, seenTilde); haveSet = true; }
+      ( <MINUS> 
+        { iriStr = null; seenTilde = false; }
+        iriStr = iri()
+        (<TILDE> { seenTilde = true; })?
+        { exclusionIriRange(iriStr, seenTilde); }
+      )*
+    )?
+    { if ( ! haveSet ) { valueSetIriRange(iriStr, false); }
+      finishIriRange(); }
+}
+
+// void literalRange() : {}
+// {
+//     literal() (<TILDE> ( literalExclusion() )* )?
+// }
+// 
+// void literalExclusion() : {}
+// {
+//     <MINUS> literal() (<TILDE>)?
+// }
+
+void literalRange() : { Node lit; boolean seenTilde = false; boolean haveSet = false; }
+{
+    // literal() (<TILDE> ( <MINUS> literal() (<TILDE>)? )* )?
+    { startLiteralRange(); }
+    lit = literal()
+    ( <TILDE> { seenTilde = true; }
+      { valueSetLiteralRange(lit, seenTilde); haveSet = true; }
+      ( <MINUS> 
+        { lit = null; seenTilde = false; }
+        lit = literal()
+        (<TILDE> { seenTilde = true; })?
+        { exclusionLiteralRange(lit, seenTilde); }
+      )*
+    )?
+    { if ( ! haveSet ) { valueSetLiteralRange(lit, false); }
+      finishLiteralRange();
+    }    
+}
+
+// void languageRange() : {}
+// {
+//     (
+//     <LANGTAG> (<TILDE> ( languageExclusion() )* )?
+//     |
+//     <AT> <TILDE> ( languageExclusion() )*
+//     )
+// }
+// 
+// void languageExclusion() : {}
+// {
+//     <MINUS> <LANGTAG> (<TILDE>)?
+// }
+
+// Better as original?
+void languageRange() : { } 
+{
+   { startLanguageRange(); }
+   (langRangeLANGTAG() | langRangeAT() )
+   { finishLanguageRange(); }
+}
+
+void langRangeLANGTAG() : { String lang = null; boolean seenTilde = false; boolean haveSet = false; }
+{
+   <LANGTAG> { lang = token.image; }
+   ( <TILDE> { seenTilde = true; }
+     { valueSetLanguageRange(lang, seenTilde); haveSet = true; }
+     ( <MINUS>
+       { lang = null; seenTilde = false; }
+       <LANGTAG> { lang = token.image; }
+       (<TILDE> { seenTilde = true; })?
+       { exclusionLanguageRange(lang, seenTilde); }
+     )*
+   )?
+   { if ( ! haveSet ) valueSetLanguageRange(lang, false);
+   }    
+}
+
+void langRangeAT() : { boolean haveSet = false; String lang = null; boolean seenTilde = false;}
+{
+   <AT>
+   <TILDE>
+   { valueSetLanguageRange("@", true); }
+   ( <MINUS>
+     <LANGTAG>  { lang = token.image; }
+     (<TILDE> { seenTilde = true; })?
+     { exclusionLanguageRange(lang, seenTilde); }
+   )*
+}
+
+void include() : { Node n = null; }
+{
+     <AMP> n = tripleExprLabel()
+     { ampTripleExprLabel(n); }
+
+}
+
+void annotation() : {}
+{
+    "//" predicate() (iri() | literal())
+}
+
+void semanticActions() : {}
+{
+    (codeDecl())*
+}
+
+void codeDecl() : {}
+{
+    // Spec:
+    // <CODE>                 ::=         "{" ([^%\\] | "\\" [%\\] | UCHAR)* "%" "}"
+    //    <PERCENT_CHAR> iri() (<CODE> | <PERCENT_CHAR> )
+    
+    // Avoid <CODE> token which causes a lot of backtracking.
+    // It starts "{" which is used for blocks - and it is only the "%}"
+    // that causes the decision of <CODE> or <LBRACE>
+    
+    // CODE_BLOCK this as a single token introduced with "%".
+    
+    <CODE_BLOCK>
+
+    // try:
+    // 
+    //  <PERCENT_CHAR> and token state change
+}
+
+Node literal() : { Node n ; }
+{
+  ( n = rdfLiteral() | n = numericLiteral() | n = booleanLiteral() )
+  { return n; }
+}
+
+Node predicate() : { String s; }
+{
+    ( s = iri() { return createURI(s, token.beginLine, token.beginColumn); }
+    | <RDF_TYPE> { return nRDFtype; }
+    )
+}
+
+Node shapeExprLabel() : { Node n ; }
+{
+    //iri() | blankNode()
+    n = _label() { return n ; }
+}
+
+Node tripleExprLabel() : { Node n; }
+{
+    //iri() | blankNode()
+    n = _label() { return n ; }
+}
+
+Node _label() : { String n; }
+{
+    ( n = iri()
+      { return createURI(n, token.beginLine, token.beginColumn); }
+    | n = blankNode()
+      { return createBNode(n, token.beginLine, token.beginColumn); }
+    )
+}
+
+// ------------------------- Terms
+
+Node booleanLiteral():{}
+{
+    <TRUE> { return XSD_TRUE; }
+  |
+    <FALSE> { return XSD_FALSE; }
+}
+
+Node numericLiteral():{ Token t; }
+{
+  (  t = <INTEGER>
+    { return createLiteralInteger(t.image, token.beginLine, token.beginColumn) ; }
+  | t = <DECIMAL>
+    { return createLiteralDecimal(t.image, token.beginLine, token.beginColumn) ; }
+  | t = <DOUBLE>
+    { return createLiteralDouble(t.image, token.beginLine, token.beginColumn) ; }
+  )
+}
+
+Node rdfLiteral() : { Node n; Token t; String lex; String dt = null; }
+{
+    n = langString() { return n; }
+  |
+    lex = string()
+    { t = token; }
+    ("^^" dt = datatype())?
+    { return createLiteral(lex, null, dt, t.beginLine, t.beginColumn) ; }
+}
+
+String datatype():{ String s; }
+{
+    s = iri() { return s; }
+}
+
+String string() : { Token t ; String lex ; }
+{
+  ( t = <STRING_LITERAL1>      { lex = stripQuotes(t.image) ; }
+  | t = <STRING_LITERAL2>      { lex = stripQuotes(t.image) ; }
+  | t = <STRING_LITERAL_LONG1> { lex = stripQuotes3(t.image) ; }
+  | t = <STRING_LITERAL_LONG2> { lex = stripQuotes3(t.image) ; }
+  )
+    { return unescapeStr(lex,  t.beginLine, t.beginColumn) ; }
+}
+
+Node langString() : { Token t; Node n; }
+{
+    t = <LANG_STRING_LITERAL1>       { return langStringLiteral(1, t.image, t.beginLine, t.beginColumn); }
+  | t = <LANG_STRING_LITERAL2>       { return langStringLiteral(1, t.image, t.beginLine, t.beginColumn); }
+  | t = <LANG_STRING_LITERAL_LONG2>  { return langStringLiteral(3, t.image, t.beginLine, t.beginColumn); }
+  | t = <LANG_STRING_LITERAL_LONG1>  { return langStringLiteral(3, t.image, t.beginLine, t.beginColumn); }
+}
+
+String iri() : { String iri = null; }
+{
+  iri = IRIREF() { return iri ; }
+|
+  iri = prefixedName() { return iri ; }
+}
+
+String blankNode() : {}
+{
+    <BLANK_NODE_LABEL>
+    { return token.image; }
+}
+
+String prefixedName() : { Token t ; }
+{
+  ( t = <PNAME_LN>
+    { return resolvePName(t.image, t.beginLine, t.beginColumn) ; }
+  |
+    t = <PNAME_NS>
+    { return resolvePName(t.image, t.beginLine, t.beginColumn) ; }
+  )
+}
+
+String IRIREF() : { Token t ; }
+{
+  t = <IRIref>
+  { return resolveQuotedIRI(t.image, t.beginLine, t.beginColumn) ; }
+}
+
+// ---- Shape Map
+
+void UnitShapeMap(): { }
+{
+    (<BOM>)?
+    shexMapDoc()
+    <EOF>
+}
+
+void shexMapDoc() : {}
+{
+    // Extension
+    ( directive() )*
+    shapeMap()
+}
+
+void shapeMap() : {}
+{
+    shapeAssociation()
+    //(<COMMA>  shapeAssociation() )*
+    ((<COMMA>)? shapeAssociation())*
+}
+
+void shapeAssociation() : { Node n = null ; Triple t = null ; Node label; }
+{
+    //nodeSelector()
+    // Inline to return either kind.
+    ( n = objectTerm() | t = triplePattern() )
+    label = shapeSpec()
+    { association(n, t, label); }
+    // Extension.
+    (<DOT>)?
+}
+
+// void nodeSelector() : { Node n; Triple t; }
+// {
+//   ( n = objectTerm() { shapeAssociation(n); }
+//   | t = triplePattern() { shapeAssociation(t); }
+//   )
+// }
+
+Node subjectTerm() : { String s; }
+{
+    ( s = iri()
+      { return createURI(s, token.beginLine, token.beginColumn); }
+    | s = blankNode()
+      { return createBNode(s, token.beginLine, token.beginColumn); }
+    )
+}
+
+Node objectTerm() : { Node n; }
+{
+    ( n = subjectTerm() | n = literal() )
+    { return n ; }
+}
+
+Triple triplePattern() : { Node s = null; Node p = null ; Node o = null ; Token tok; }
+{
+  tok = <LBRACE>
+  (
+    <FOCUS> { s = focusNode; } p = predicate() ( o = objectTerm() | <USCORE> { o = Node.ANY; } )
+  |
+    ( s = subjectTerm() | <USCORE> { s = Node.ANY; } ) p = predicate() <FOCUS> { o = focusNode;}
+  )
+  <RBRACE>
+  { return createTriple(s, p, o, tok.beginLine, tok.beginColumn); }
+}
+
+Node shapeSpec() : { String x; }
+{
+  ( <AT>  ( x = iri() { return createURI(x, token.beginLine, token.beginColumn); }
+          | <START> { return startNode; }
+          )
+  ) | <ATSTART> { return startNode; }
+}
+
+// ----
+
+SKIP : { " " | "\t" | "\n" | "\r" | "\f" }
+
+// SPECIAL_TOKEN :
+// { <SINGLE_LINE_COMMENT: "#" (~["\n","\r"])* ("\n"|"\r"|"\r\n")? > }
+
+
+// Comments.
+SKIP :
+{
+  < "#" (~["\r", "\n"])* >
+| < "/*" > : ML_COMMENT_STATE
+}
+
+<ML_COMMENT_STATE> SKIP :
+{
+  < "*/" > : DEFAULT
+| < ~[] >   
+}
+
+
+// // C-style comments (they don't nest /* /*...*/ */ is a syntax error)
+// // When a /* is seen in the DEFAULT state, skip it and switch to the IN_COMMENT state
+// SKIP : { "/*": IN_COMMENT }
+//       
+// // When any other character is seen in the IN_COMMENT state, skip it.
+// < IN_COMMENT > SKIP : { < ~[] > }
+//       
+// // When a */ is seen in the IN_COMMENT state, skip it and switch back to the DEFAULT state
+// < IN_COMMENT > SKIP : { "*/": DEFAULT } 
+
+TOKEN: { 
+  <BOM:    "\uFEFF">
+| <RDF_TYPE         : "a" >
+}
+
+TOKEN [IGNORE_CASE] :
+{
+  // Keywords
+  <BASE             : "BASE" >
+| <IMPORT           : "IMPORT">
+| <PREFIX           : "PREFIX">
+
+| <SHAPE_CLASS      : "shapeClass">
+| <SHAPE            : "shape">
+| <START            : "start">
+| <EXTERNAL         : "external">
+| <FOCUS            : "focus">
+
+| <NOT              : "not">
+| <OR               : "or" >
+| <AND              : "and" >
+
+| <LITERAL          : "literal">
+| <IRI              : "iri" >
+| <BNODE            : "bnode" >
+| <NONLITERAL       : "nonliteral" >
+
+| <LENGTH           : "length" >
+| <MINLENGTH        : "minlength" >
+| <MAXLENGTH        : "maxlength" >
+| <MININCLUSIVE     : "mininclusive" >
+| <MINEXCLUSIVE     : "minexclusive" >
+| <MAXINCLUSIVE     : "maxinclusive" >
+| <MAXEXCLUSIVE     : "maxexclusive" >
+| <TOTALDIGITS      : "totaldigits" >
+| <FRACTIONDIGITS   : "fractiondigits" >
+
+| <CLOSED           : "closed" >
+| <EXTRA            : "extra" >
+
+// Works but slow.
+//| <CODE             : "{" (~[ "%","\\"] | "\\" ["%","\\"] )* "%" "}" >
+
+| <CODE_BLOCK    : <PERCENT_CHAR>
+                         (" ")*
+                         (<IRIref>|<PNAME_LN>|<PNAME_NS>)
+                         (" ")*
+                         (  <LBRACE>
+                            ( ~[ "%","\\"] | ("\\" ["%","\\"]) | <UCHAR> )*
+                            <PERCENT_CHAR><RBRACE>
+                         |  <PERCENT_CHAR> ) >
+                            
+
+// Why is this a token?
+| <REPEAT_RANGE	    : <LBRACE> <INTEGER> ( <COMMA> (<INTEGER> | <STAR> )? )? <RBRACE> >
+
+| <TRUE             : "true">
+| <FALSE            : "false">
+| <#HEX                : ["0"-"9"] | ["A"-"F"] | ["a"-"f"] >
+| <PLUS                : "+" >
+| <MINUS               : "-" >
+| <VBAR                : "|" >
+| <AT                  : "@">
+| <CARAT               : "^">
+| <DOT                 : ".">
+| <BANG                : "!">
+| <QMARK               : "?">
+| <SLASH               : "/">
+| <STAR                : "*">
+| <EQUALS              : "=">
+| <LPAREN              : "(" >
+| <RPAREN              : ")" >
+| <LBRACE              : "{" >
+| <RBRACE              : "}" >
+| <LBRACKET            : "[" >
+| <RBRACKET            : "]" >
+| <PERCENT_CHAR        : "%" >
+| <COMMA               : "," >
+| <USCORE              : "_" >
+
+// Breaks PNAME_NS
+// | <COLON               : ":" >
+| <SEMI_COLON          : ";" >
+| <DOLLAR              : "$" >
+| <TILDE               : "~" >
+| <AMP                 : "&" >
+
+| <#UCHAR              : "\\" ( "u" <HEX> <HEX> <HEX> <HEX> |
+                                "U" <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX>
+                              ) >
+| <IRIref              : "<"
+                           ( ~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`","\u0000"-"\u0020"]
+                           | <UCHAR>
+                           )*
+                         ">" >
+| <PNAME_NS            : (<PN_PREFIX>)? ":" >
+| <PNAME_LN            : <PNAME_NS> <PN_LOCAL> >
+
+| <ATPNAME_NS          : <AT><PNAME_LN> >
+| <ATPNAME_LN          : <AT><PNAME_NS> >
+
+| <ATSTART             : <AT><START> >
+
+| <#QUOTE_3D: "\"\"\"">
+| <#QUOTE_3S: "'''">
+| <ECHAR : "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
+
+| <STRING_LITERAL1: 
+      // Single quoted string
+      "'" ( (~["'","\\","\n","\r"]) | <ECHAR> | <UCHAR> )* "'" > 
+| <STRING_LITERAL2:
+    // Double quoted string
+      "\"" ( (~["\"","\\","\n","\r"]) | <ECHAR>  | <UCHAR> )* "\"" >
+| <STRING_LITERAL_LONG1:
+     <QUOTE_3S> 
+      ( ("'" | "''")? (~["'","\\"] | <ECHAR>  | <UCHAR> ))*
+     <QUOTE_3S> >
+| <STRING_LITERAL_LONG2: 
+     <QUOTE_3D> 
+      ( ("\"" | "\"\"")? (~["\"","\\"] | <ECHAR> | <UCHAR>))*
+     <QUOTE_3D> >
+
+| <LANG_STRING_LITERAL1       : <STRING_LITERAL1> <LANGTAG> >
+| <LANG_STRING_LITERAL2       : <STRING_LITERAL2> <LANGTAG> >
+| <LANG_STRING_LITERAL_LONG1  : <STRING_LITERAL_LONG1> <LANGTAG> >
+| <LANG_STRING_LITERAL_LONG2  : <STRING_LITERAL_LONG2> <LANGTAG> >
+
+| <#DIGITS             : (["0"-"9"])+>
+| <INTEGER             : (<PLUS>|<MINUS>)? <DIGITS> >
+| <DECIMAL             : (<PLUS>|<MINUS>)? (<DIGITS>)? "." <DIGITS> >
+| <DOUBLE              : (<PLUS>|<MINUS>)?
+                          ( (["0"-"9"])+ "." (["0"-"9"])* <EXPONENT>
+                          | "." (["0"-"9"])+ (<EXPONENT>)
+                          | (["0"-"9"])+ <EXPONENT>
+                          ) >
+    
+| <#EXPONENT           : ["e","E"] (["+","-"])? (["0"-"9"])+ >
+
+
+| <REGEXP              :    <SLASH>
+                            ( ~["/","\\","\n", "\r"]
+                            | "\\" [ "n", "r", "t", "\\", "|", "." , "?", "*", "+",
+                                    "(", ")", "{", "}", "$", "-", "[", "]", "^", "/" ]
+                            | <UCHAR>
+                            )+ <SLASH> (["s","m","i","x"])*
+                          >
+| <BLANK_NODE_LABEL: "_:" (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS> | ".")* <PN_CHARS>)? >
+| <LANGTAG: <AT> (<A2Z>)+("-" (<A2ZN>)+)* >
+| <#A2Z: ["a"-"z","A"-"Z"]>
+| <#A2ZN: ["a"-"z","A"-"Z","0"-"9"]>
+| <#PN_CHARS_BASE:
+          ["A"-"Z"] | ["a"-"z"] |
+          ["\u00C0"-"\u00D6"] | ["\u00D8"-"\u00F6"] | ["\u00F8"-"\u02FF"] |
+          ["\u0370"-"\u037D"] | ["\u037F"-"\u1FFF"] |
+          ["\u200C"-"\u200D"] | ["\u2070"-"\u218F"] | ["\u2C00"-"\u2FEF"] |
+          ["\u3001"-"\uD7FF"] | ["\uF900"-"\uFFFD"] 
+          >
+          // [#x10000-#xEFFFF]
+|
+  // With underscore
+  <#PN_CHARS_U: <PN_CHARS_BASE> | "_" >
+|
+  <#PN_CHARS: (<PN_CHARS_U> | "-" | ["0"-"9"] | "\u00B7" |
+              ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] ) >
+|
+  // No leading "_", no trailing ".", can have dot inside prefix name.
+  <#PN_PREFIX: <PN_CHARS_BASE> ((<PN_CHARS>|".")* <PN_CHARS>)?  >
+|
+  <#PN_LOCAL: (<PN_CHARS_U> | ":" | ["0"-"9"] | <PLX> ) 
+              ( (<PN_CHARS> | "." |":" | <PLX> )* 
+                (<PN_CHARS> | ":" | <PLX>) )?  >
+|
+  <#VARNAME: ( <PN_CHARS_U> | ["0"-"9"] )
+             ( <PN_CHARS_U> | ["0"-"9"] | "\u00B7" |
+               ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] )* >
+|
+  < #PN_LOCAL_ESC: "\\" 
+          ( "_" | 
+            "~" | "." | "-" | "!" | "$" | "&" | "'" | 
+           "(" | ")" | "*" | "+" | "," | ";" | "=" | 
+           "/" | "?" | "#" | "@" | "%" ) >
+|
+  <#PLX:  <PERCENT> | <PN_LOCAL_ESC> >
+|
+  <#PERCENT : "%" <HEX> <HEX> >
+}
+
+// Catch-all tokens.  Must be last.  
+// Any non-whitespace.  Causes a parser exception, rather than a
+// token manager error (which hides the line numbers).
+TOKEN:
+{
+  <#UNKNOWN: (~[" ","\t","\n","\r","\f" ])+ >
+}
+
+
+/*
+# Local Variables:
+# tab-width: 4
+# indent-tabs-mode: nil
+# comment-default-style: "//"
+# End:
+*/

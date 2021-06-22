@@ -1,0 +1,5 @@
+# STRING_LITERAL2 with bad ECHAR
+# source: turtle-syntax-bad-esc-01
+<http://a.example/IssueShape> {
+   <http://a.example/p1> ["a\zb"]
+}

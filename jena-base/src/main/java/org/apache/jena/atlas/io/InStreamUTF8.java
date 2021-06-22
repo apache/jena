@@ -18,12 +18,12 @@
 
 package org.apache.jena.atlas.io;
 
-import java.io.ByteArrayInputStream ;
-import java.io.IOException ;
-import java.io.InputStream ;
-import java.io.Reader ;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 
-import org.apache.jena.atlas.AtlasException ;
+import org.apache.jena.atlas.AtlasException;
 
 /** Fast and streaming UTF-8 */
 public final class InStreamUTF8 extends Reader implements CharStream
@@ -76,34 +76,35 @@ public final class InStreamUTF8 extends Reader implements CharStream
     // of CharsetDecoder (sun.io.StreamDecoder) but it's not on all platforms
     // I want a known decoder specifically for UTF8
 
-    private InputStreamBuffered input ;
-    //private long count = 0 ;
+    private InputStreamBuffered input;
+    // private long count = 0 ;
 
-    public InStreamUTF8(InputStream in)
-    {
-        if ( in instanceof InputStreamBuffered )
-        {
-            input = (InputStreamBuffered)in ;
-            return ;
+    public InStreamUTF8(InputStream in) {
+        if ( in instanceof InputStreamBuffered ) {
+            input = (InputStreamBuffered)in;
+            return;
         }
-        input = new InputStreamBuffered(in) ;
+        input = new InputStreamBuffered(in);
     }
 
-    public InStreamUTF8(InputStreamBuffered in) { input = in ; }
-
-    @Override
-    public boolean ready() throws IOException
-    {
-        return input.available() > 0 ;
+    public InStreamUTF8(InputStreamBuffered in) {
+        input = in;
     }
 
     @Override
-    public void close() throws IOException
-    { input.close() ; }
+    public boolean ready() throws IOException {
+        return input.available() > 0;
+    }
 
     @Override
-    public void closeStream()
-    { IO.close(input) ; }
+    public void close() throws IOException {
+        input.close();
+    }
+
+    @Override
+    public void closeStream() {
+        IO.close(input);
+    }
 
     @Override
     public int read(char[] cbuf, int off, int len) {
@@ -126,32 +127,38 @@ public final class InStreamUTF8 extends Reader implements CharStream
         if ( false ) {
             if ( !Character.isDefined(codepoint) )
                 throw new AtlasException(String.format("Undefined codepoint: 0x%04X", codepoint));
-          }
+        }
         return codepoint;
     }
 
-    /** Next codepoint, given the first byte of any UTF-8 byte sequence is already known.
-     *  Not necessarily a valid char (this function can be used a straight UTF8 decoder
+    /**
+     * Next codepoint, given the first byte of any UTF-8 byte sequence is already
+     * known. Not necessarily a valid char (this function can be used a straight UTF8
+     * decoder)
      */
     @Override
-    public final int advance()
-    { return advance(input) ; }
+    public final int advance() {
+        return advance(input);
+    }
 
     /** Next codepoint */
     public static final int advance(InputStreamBuffered input) {
-        int x = input.advance() ;
-        if ( x == -1 ) return -1 ;
+        int x = input.advance();
+        if ( x == -1 )
+            return -1;
 
-        int codepoint = advance(input, x) ;
+        int codepoint = advance(input, x);
         return codepoint;
     }
 
-    /** Next codepoint, given the first byte of any UTF-8 byte sequence is already known.
-     * Not necessarily a valid char (this function can be used as a straight UTF8 decoder).
+    /**
+     * Next codepoint, given the first byte of any UTF-8 byte sequence is already
+     * known. Not necessarily a valid char (this function can be used as a straight
+     * UTF8 decoder).
      */
 
     private static final int advance(InputStreamBuffered input, int x) {
-        //count++ ;
+        // count++ ;
         // ASCII Fastpath
         if ( x == -1 || (x >= 0 && x <= 127) ) {
             // count++ ;
@@ -186,19 +193,20 @@ public final class InStreamUTF8 extends Reader implements CharStream
     }
 
     private static int readMultiBytes(InputStreamBuffered input, int start, int len) {
-        int x = start ;
-        for ( int i = 0 ; i < len-1 ; i++ ) {
-            int x2 = input.advance() ;
+        int x = start;
+        for ( int i = 0 ; i < len - 1 ; i++ ) {
+            int x2 = input.advance();
             if ( x2 == -1 )
-                throw new AtlasException("Premature end to UTF-8 sequence at end of input") ;
+                throw new AtlasException("Premature end to UTF-8 sequence at end of input");
 
             if ( (x2 & 0xC0) != 0x80 )
-                //throw new AtlasException("Illegal UTF-8 processing character "+count+": "+x2) ;
-                throw new AtlasException(String.format("Illegal UTF-8 processing character: 0x%04X",x2)) ;
+                // throw new AtlasException("Illegal UTF-8 processing character
+                // "+count+": "+x2) ;
+                throw new AtlasException(String.format("Illegal UTF-8 processing character: 0x%04X", x2));
             // 6 bits of x2
             x = (x << 6) | (x2 & 0x3F);
         }
-        return x ;
+        return x;
     }
 
     public static String decode(byte[] bytes) {
@@ -210,8 +218,7 @@ public final class InStreamUTF8 extends Reader implements CharStream
             len = r.read(chars);
             IO.close(r);
             return new String(chars, 0, len);
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             IO.exception(ex);
             return null;
         }

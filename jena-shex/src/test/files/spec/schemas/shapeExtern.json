@@ -1,0 +1,10 @@
+{
+  "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "shapes": [
+    {
+      "id": "http://a.example/Sext",
+      "type": "ShapeExternal"
+    }
+  ]
+}

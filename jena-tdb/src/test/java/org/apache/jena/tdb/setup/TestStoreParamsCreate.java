@@ -44,42 +44,42 @@ public class TestStoreParamsCreate {
     private final Path db = Paths.get(DB_DIR) ;
     private final Path cfg = Paths.get(DB_DIR, TDB_CONFIG_FILE) ;
     private final Location loc = Location.create(DB_DIR) ;
-    
-    static final StoreParams pApp = StoreParams.getSmallStoreParams() ; 
+
+    static final StoreParams pApp = StoreParams.getSmallStoreParams() ;
     static final StoreParams pDft = StoreParams.getDftStoreParams() ;
     static final StoreParams pSpecial = StoreParams.builder(pApp)
         .blockSize(1024)
         .blockReadCacheSize(4)
         .build();
-    
-    @Before public void clearupTest() { 
+
+    @Before public void clearupTest() {
         // Flush and clean.
         StoreConnection.expel(loc, true) ;
         FileOps.clearAll(DB_DIR);
     }
 
-    @After public void expelDatabase() { 
+    @After public void expelDatabase() {
         StoreConnection.expel(loc, true) ;
     }
-    
+
     @Test public void params_create_01() {
         StoreConnection.make(loc, null) ;
         // Check.  Default setup, no params.
         assertTrue("DB directory", Files.exists(db)) ;
         assertFalse("Config file unexpectedly found", Files.exists(cfg)) ;
     }
-    
+
     @Test public void params_create_02() {
         StoreConnection.make(loc, pApp) ;
         // Check.  Custom setup.
         assertTrue("DB directory", Files.exists(db)) ;
-        assertTrue("Config file not found", Files.exists(cfg)) ;
+        assertTrue("Config file not found: "+cfg, Files.exists(cfg)) ;
         StoreParams pLoc = StoreParamsCodec.read(loc) ;
         assertTrue(StoreParams.sameValues(pLoc, pApp)) ;
     }
-    
+
     // Defaults
-    @Test public void params_reconnect_01() { 
+    @Test public void params_reconnect_01() {
         // Create.
         StoreConnection.make(loc, null) ;
         // Drop.
@@ -88,15 +88,15 @@ public class TestStoreParamsCreate {
         StoreConnection.make(loc, null) ;
         StoreParams pLoc = StoreParamsCodec.read(loc) ;
         assertNull(pLoc) ;
-        
+
         StoreParams pDB = StoreConnection.getExisting(loc).getBaseDataset().getConfig().params ;
         assertNotNull(pDB) ;
         // Should be the default setup.
         assertTrue(StoreParams.sameValues(pDft, pDB)) ;
     }
-    
+
     // Defaults, then reconnect with app modified.
-    @Test public void params_reconnect_02() { 
+    @Test public void params_reconnect_02() {
         // Create.
         StoreConnection.make(loc, null) ;
         // Drop.
@@ -105,7 +105,7 @@ public class TestStoreParamsCreate {
         StoreConnection.make(loc, pSpecial) ;
         //StoreParams pLoc = StoreParamsCodec.read(loc) ;
         //assertNotNull(pLoc) ;
-        
+
         StoreParams pDB = StoreConnection.getExisting(loc).getBaseDataset().getConfig().params ;
         assertNotNull(pDB) ;
         // Should be the default setup, modified by pApp for cache sizes.
@@ -115,13 +115,13 @@ public class TestStoreParamsCreate {
         // Check it's default-modified-by-special.
         assertEquals(pSpecial.getBlockReadCacheSize(), pDB.getBlockReadCacheSize()) ;
         assertNotEquals(pDft.getBlockReadCacheSize(), pDB.getBlockReadCacheSize()) ;
-        
+
         assertNotEquals(pSpecial.getBlockSize(), pDB.getBlockSize()) ;
         assertEquals(pDft.getBlockSize(), pDB.getBlockSize()) ;
     }
-    
+
     // Custom, then reconnect with some special settings.
-    @Test public void params_reconnect_03() { 
+    @Test public void params_reconnect_03() {
         // Create.
         StoreConnection.make(loc, pApp) ;
         // Drop.
@@ -130,7 +130,7 @@ public class TestStoreParamsCreate {
         StoreConnection.make(loc, pSpecial) ;
         //StoreParams pLoc = StoreParamsCodec.read(loc) ;
         //assertNotNull(pLoc) ;
-        
+
         StoreParams pDB = StoreConnection.getExisting(loc).getBaseDataset().getConfig().params ;
         assertNotNull(pDB) ;
         // Should be the default setup, modified by pApp for cache sizes.
@@ -140,14 +140,14 @@ public class TestStoreParamsCreate {
         // Check it's default-modified-by-special.
         assertEquals(pSpecial.getBlockReadCacheSize(), pDB.getBlockReadCacheSize()) ;
         assertNotEquals(pApp.getBlockReadCacheSize(), pDB.getBlockReadCacheSize()) ;
-        
+
         assertNotEquals(pSpecial.getBlockSize(), pDB.getBlockSize()) ;
         assertEquals(pApp.getBlockSize(), pDB.getBlockSize()) ;
     }
 
-    
+
 //    // Custom then modified.
-//    @Test public void params_reconnect_03() { 
+//    @Test public void params_reconnect_03() {
 //        // Create.
 //        StoreConnection.make(loc, pLoc) ;
 //        // Drop.

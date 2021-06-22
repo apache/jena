@@ -1,0 +1,5 @@
+IMPORT <start2RefS1>
+start=@<http://a.example/S2>
+<http://a.example/S2> {
+   <http://a.example/p2> @<http://a.example/S1>
+}

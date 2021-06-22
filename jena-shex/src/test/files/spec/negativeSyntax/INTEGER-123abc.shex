@@ -1,0 +1,5 @@
+# bad INTEGER 123abc
+# source: turtle-syntax-bad-num-03.ttl
+<http://a.example/IssueShape> {
+   <http://a.example/p1> [123abc]
+}

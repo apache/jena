@@ -18,16 +18,15 @@
 
 package org.apache.jena.riot.system;
 
-import java.util.Map ;
+import java.util.Map;
 
-import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.shared.PrefixMapping;
 
 /**
  * Factory which provides prefix maps
  *
  */
 public class PrefixMapFactory {
-
     /**
      * Creates a new prefix map.
      * <p>
@@ -131,14 +130,14 @@ public class PrefixMapFactory {
      * implementation for output, this may change from release to release.
      * </p>
      *
-     * @param pmap
+     * @param prefixMapping
      *            Prefix Map to copy
      *
      * @return Prefix Map
      */
-    public static PrefixMap createForOutput(PrefixMapping pmap) {
+    public static PrefixMap createForOutput(PrefixMapping prefixMapping) {
         PrefixMap created = createForOutput();
-        created.putAll(pmap);
+        created.putAll(prefixMapping);
         return created;
     }
 

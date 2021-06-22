@@ -1,0 +1,31 @@
+{
+  "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "startActs": [
+    {
+      "type": "SemAct",
+      "name": "http://shex.io/extensions/Test/",
+      "code": " print(\"startAct 1\") "
+    },
+    {
+      "type": "SemAct",
+      "name": "http://shex.io/extensions/Test/",
+      "code": " fail(\"startAct 2\") "
+    },
+    {
+      "type": "SemAct",
+      "name": "http://shex.io/extensions/Test/",
+      "code": " print(\"startAct 3\") "
+    }
+  ],
+  "shapes": [
+    {
+      "id": "http://a.example/S1",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p1"
+      }
+    }
+  ]
+}

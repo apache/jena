@@ -18,149 +18,110 @@
 
 package org.apache.jena.atlas.io;
 
-import static org.apache.jena.atlas.io.IO.EOF ;
+import static org.apache.jena.atlas.io.IO.EOF;
 
-import java.io.IOException ;
-import java.io.Reader ;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.Reader;
 
-/** Buffering reader without the (hidden) sync overhead in BufferedReader
- * 
+/**
+ * Buffering reader without the (hidden) sync overhead in BufferedReader
+ *
  * @see java.io.BufferedReader
- */ 
+ */
 
+public final class CharStreamBuffered extends CharStreamReader {
+    /* package */ static final int CB_SIZE = 128 * 1024;
 
-public final class CharStreamBuffered extends CharStreamReader
-{
-    /*package*/ static final int CB_SIZE       = 128 * 1024 ;
-    
-    private final char[] chars ;            // CharBuffer?
-    private int buffLen = 0 ;
-    private int idx = 0 ;
+    private final char[] chars;            // CharBuffer?
+    private int buffLen = 0;
+    private int idx = 0;
 
     private final Source source;
-    
-    public CharStreamBuffered(Reader r)
-    { this(r, CB_SIZE) ; }
+
+    public CharStreamBuffered(Reader r) {
+        this(r, CB_SIZE);
+    }
 
     /**
      * @param r
      * @param buffSize
      */
-    public CharStreamBuffered(Reader r, int buffSize)
-    {
-        super() ;
-        source = new SourceReader(r) ;
-        chars = new char[buffSize] ;
+    public CharStreamBuffered(Reader r, int buffSize) {
+        super();
+        source = new SourceReader(r);
+        chars = new char[buffSize];
     }
 
     // Local adapter/encapsulation
-    private interface Source
-    { 
-        int fill(char[] array) ;
-        void close() ; 
+    private interface Source {
+        int fill(char[] array);
+        void close();
     }
-    
-    static final class SourceReader implements Source
-    {
-        final Reader reader ;
-        SourceReader(Reader r) { reader = r ; }
-        
-        @Override
-        public void close()
-        { 
-            try { reader.close() ; } catch (IOException ex) { IO.exception(ex) ; } 
+
+    static final class SourceReader implements Source {
+        final private Reader reader;
+        private boolean isClosed = false;
+        SourceReader(Reader r) {
+            reader = r;
         }
-        
+
         @Override
-        public int fill(char[] array)
-        {
-            try { return reader.read(array) ; } catch (IOException ex) { IO.exception(ex) ; return -1 ; }
+        public void close() {
+            try {
+                isClosed = true;
+                reader.close();
+            } catch (IOException ex) {
+                IO.exception(ex);
+            }
+        }
+
+        @Override
+        public int fill(char[] array) {
+            if ( isClosed )
+                return -1;
+            try {
+                return reader.read(array);
+            } catch (EOFException ex) {
+                close();
+                return -1;
+            } catch (IOException ex) {
+                close();
+                IO.exception(ex);
+                return -1;
+            }
         }
     }
-    
-//    /** Faster?? for ASCII */
-//    static final class SourceASCII implements Source
-//    {
-//        final InputStream input ;
-//        SourceASCII(InputStream r) { input = r ; }
-//        public void close()
-//        { try { input.close() ; } catch (IOException ex) { exception(ex) ; } } 
-//        
-//        public final int fill(char[] array)
-//        {
-//            try {
-//                // Recycle.
-//                byte[] buff = new byte[array.length] ;
-//                int len = input.read(buff) ;
-//                for ( int i = 0 ; i < len ; i++ )
-//                {
-//                    byte b = buff[i] ;
-//                    if ( b < 0 )
-//                        throw new AtlasException("Illegal ASCII charcater: "+b) ;
-//                   array[i] = (char)b ;
-//                }
-//                return len ;
-//            } catch (IOException ex) { exception(ex) ; return -1 ; }
-//        }
-//    }
-//    
-//    static final class SourceChannel implements Source
-//    {
-//        final ReadableByteChannel channel ;
-//        CharsetDecoder decoder = Chars.createDecoder() ;
-//        SourceChannel(ReadableByteChannel r) { channel = r ; }
-//        
-//        @Override
-//        public void close()
-//        { 
-//            try { channel.close() ; } catch (IOException ex) { exception(ex) ; } 
-//        }
-//        
-//        @Override
-//        public int fill(char[] array)
-//        {
-//            // Encoding foo.
-////             Bytes
-////             
-////            ByteBuffer b = ByteBuffer.wrap(null) ;
-////            
-////            try { return channel.read(null).read(array) ; } catch (IOException ex) { exception(ex) ; return -1 ; }
-//            return -1 ;
-//        }
-//    }
 
     @Override
-    public final int advance()
-    {
+    public final int advance() {
         if ( idx >= buffLen )
-            // Points outside the array.  Refill it 
-            fillArray() ;
-        
+            // Points outside the array. Refill it
+            fillArray();
+
         // Advance one character.
-        if ( buffLen >= 0 )
-        {
-            char ch = chars[idx] ;
+        if ( buffLen >= 0 ) {
+            char ch = chars[idx];
             // Advance the lookahead character
-            idx++ ;
-            return ch ;
-        }  
-        else
+            idx++;
+            return ch;
+        } else
             // Buffer empty, end of stream.
-            return EOF ;
+            return EOF;
     }
 
-    private int fillArray()
-    {
-        int x = source.fill(chars) ;
-        idx = 0 ;
-        buffLen = x ;   // Maybe -1
-        return x ;
+    private long total = 0 ;
+    private int fillArray() {
+        int x = source.fill(chars);
+        if ( x >= 0 )
+            total += x;
+        idx = 0;
+        buffLen = x;   // Maybe -1
+        return x;
     }
 
-    
     @Override
-    public void closeStream()
-    {
-        source.close() ;
+    public void closeStream() {
+        source.close();
     }
 }

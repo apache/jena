@@ -1,0 +1,112 @@
+{
+  "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "shapes": [
+    {
+      "id": "http://a.example/base/P",
+      "type": "NodeConstraint",
+      "values": [
+        "http://a.example/base/p",
+        "http://a.example/base/pt1",
+        "http://a.example/base/pt2"
+      ]
+    },
+    {
+      "id": "http://a.example/base/T",
+      "type": "NodeConstraint",
+      "values": [
+        "http://a.example/base/t",
+        "http://a.example/base/pt1",
+        "http://a.example/base/pt2"
+      ]
+    },
+    {
+      "id": "http://a.example/base/S1",
+      "type": "Shape",
+      "expression": {
+        "type": "EachOf",
+        "expressions": [
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://a.example/a",
+            "valueExpr": "http://a.example/base/P",
+            "min": 0,
+            "max": -1
+          },
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://a.example/a",
+            "valueExpr": "http://a.example/base/T"
+          }
+        ]
+      }
+    },
+    {
+      "id": "http://a.example/base/S2",
+      "type": "Shape",
+      "expression": {
+        "type": "EachOf",
+        "expressions": [
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://a.example/a",
+            "valueExpr": "http://a.example/base/P"
+          },
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://a.example/a",
+            "valueExpr": "http://a.example/base/T",
+            "min": 0,
+            "max": -1
+          }
+        ]
+      }
+    },
+    {
+      "id": "http://a.example/base/S3",
+      "type": "Shape",
+      "expression": {
+        "type": "EachOf",
+        "expressions": [
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://a.example/a",
+            "valueExpr": "http://a.example/base/P",
+            "min": 0,
+            "max": -1
+          },
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://a.example/a",
+            "valueExpr": "http://a.example/base/T",
+            "min": 0,
+            "max": -1
+          }
+        ]
+      }
+    },
+    {
+      "id": "http://a.example/base/S4",
+      "type": "Shape",
+      "expression": {
+        "type": "EachOf",
+        "expressions": [
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://a.example/a",
+            "valueExpr": "http://a.example/base/P",
+            "min": 2,
+            "max": 2
+          },
+          {
+            "type": "TripleConstraint",
+            "predicate": "http://a.example/a",
+            "valueExpr": "http://a.example/base/T",
+            "min": 2,
+            "max": 2
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+<http://a.example/n1> <http://a.example/p1> (
+  <http://a.example/v1>
+  <http://a.example/v2>
+  <http://a.example/v3>
+) .

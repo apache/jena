@@ -33,7 +33,7 @@ public class ErrorHandlerFactory
     static public final ErrorHandler errorHandlerStd          = errorHandlerStd(stdLogger) ;
 
     /** Error handler (no warnings) - logs to stdLogger */
-    static public final ErrorHandler errorHandlerNoWarnings   = errorHandlerNoWarnings(stdLogger) ;
+    static public final ErrorHandler errorHandlerNoWarnings   = errorHandlerIgnoreWarnings(stdLogger) ;
 
     /** Strict error handler - logs to stdLogger - exceptions for warnings */
     static public final ErrorHandler errorHandlerStrict       = errorHandlerStrict(stdLogger) ;
@@ -57,7 +57,7 @@ public class ErrorHandlerFactory
     public static ErrorHandler errorHandlerStd(Logger log)          { return new ErrorHandlerStd(log) ; }
 
     /** An error handler that logs error and fatal messages, but not warnings */
-    public static ErrorHandler errorHandlerNoWarnings(Logger log)   { return new ErrorHandlerNoWarnings(log) ; }
+    public static ErrorHandler errorHandlerIgnoreWarnings(Logger log)   { return new ErrorHandlerIgnoreWarnings(log) ; }
 
     /** An error handler that logs messages for errors and warnings and attempts to carry on */
     public static ErrorHandler errorHandlerWarning(Logger log)      { return new ErrorHandlerWarning(log) ; }
@@ -156,8 +156,8 @@ public class ErrorHandlerFactory
     }
 
     /** An error handler that logs message then throws exceptions for errors but not warnings */
-    private static class ErrorHandlerNoWarnings extends ErrorLogger implements ErrorHandler {
-        public ErrorHandlerNoWarnings(Logger log) {
+    private static class ErrorHandlerIgnoreWarnings extends ErrorLogger implements ErrorHandler {
+        public ErrorHandlerIgnoreWarnings(Logger log) {
             super(log) ;
         }
 
@@ -231,6 +231,39 @@ public class ErrorHandlerFactory
         }
     }
 
+    /** An error handler that counts errors and warnings.  */
+    public static class ErrorHandlerRecorder implements ErrorHandler {
+        private long warningCount = 0 ;
+        private long errorCount = 0;
+        private long fatalCount = 0;
+        private final ErrorHandler other;
+        public ErrorHandlerRecorder(ErrorHandler other) {
+            this.other = other;
+        }
+        @Override
+        public void warning(String message, long line, long col) {
+            warningCount++;
+            other.warning(message, line, col);
+        }
+
+        @Override
+        public void error(String message, long line, long col) {
+            errorCount++;
+            other.error(message, line, col);
+        }
+
+        @Override
+        public void fatal(String message, long line, long col) {
+            fatalCount++;
+            other.fatal(message, line, col);
+        }
+
+        public long getFatalCount() { return this.fatalCount; }
+        public long getErrorCount() { return this.errorCount; }
+        public long getWarningCount() { return this.warningCount; }
+    }
+
+
     /** An error handler that logs message for errors and warnings and throw exceptions on either */
     public static class ErrorHandlerTracking extends ErrorLogger implements ErrorHandler {
         private final boolean failOnError, failOnWarning;
@@ -238,7 +271,6 @@ public class ErrorHandlerFactory
 
         public ErrorHandlerTracking(Logger log, boolean failOnError, boolean failOnWarning) {
             super(log) ;
-
             this.failOnError = failOnError;
             this.failOnWarning = failOnWarning;
         }

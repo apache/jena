@@ -53,6 +53,7 @@ riotcmd.infer
 riotcmd.utf8
 riotcmd.rdfxml
 shacl.shacl
+shex.shex
 tdb.tdbbackup
 tdb.tdbdump
 tdb.tdbloader

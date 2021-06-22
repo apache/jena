@@ -1,0 +1,5 @@
+# BLANK_NODE_LABEL predicate
+# source: turtle-syntax-bad-struct-07.ttl
+<http://a.example/IssueShape> {
+   _:p1 .
+}

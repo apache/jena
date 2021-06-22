@@ -18,178 +18,190 @@
 
 package org.apache.jena.atlas.lib;
 
-import java.nio.charset.* ;
+import java.nio.charset.*;
 
 public class Chars
 {
     private Chars() {}
-    
+
  // So also Bytes.hexDigits to get bytes.
     final public static char[] digits10 = {
         '0' , '1' , '2' , '3' , '4' , '5' , '6' , '7' , '8' , '9'
-    } ;
-    
-    /** Hex digits : upper case **/ 
+    };
+
+    /** Hex digits : upper case **/
     final public static char[] hexDigitsUC = {
         '0' , '1' , '2' , '3' , '4' , '5' , '6' , '7' , '8' ,
-        '9' , 'A' , 'B' , 'C' , 'D' , 'E' , 'F' } ;
+        '9' , 'A' , 'B' , 'C' , 'D' , 'E' , 'F' };
 
-    /** Hex digits : lower case **/ 
+    /** Hex digits : lower case **/
     final public static char[] hexDigitsLC = {
         '0' , '1' , '2' , '3' , '4' , '5' , '6' , '7' , '8' ,
-        '9' , 'a' , 'b' , 'c' , 'd' , 'e' , 'f' } ;
+        '9' , 'a' , 'b' , 'c' , 'd' , 'e' , 'f' };
 
-    
+
 //         , 'g' , 'h' ,
 //        'i' , 'j' , 'k' , 'l' , 'm' , 'n' ,
 //        'o' , 'p' , 'q' , 'r' , 's' , 't' ,
 //        'u' , 'v' , 'w' , 'x' , 'y' , 'z'
-    
-    public static final Charset charsetUTF8 = StandardCharsets.UTF_8 ;
-    public static final Charset charsetASCII = StandardCharsets.US_ASCII ;
-    
+
+    public static final Charset charsetUTF8 = StandardCharsets.UTF_8;
+    public static final Charset charsetASCII = StandardCharsets.US_ASCII;
+
     // Pools for encoders/decoder.
     // Better? use a ThreadLocal.
     // Initial pool size. Any additional encoder/decoder are later
     // placed in the pool - it's an infinite, reusing, growing pool.
-    
+
     // Better?  If so, use these!
-    
+
     private static final ThreadLocal<CharsetEncoder> threadCharsetEncoder =
         new ThreadLocal<CharsetEncoder>() {
         @Override protected CharsetEncoder initialValue() {
-            return createEncoder() ;
+            return createEncoder();
         }
     };
 
     private static final ThreadLocal<CharsetDecoder> threadCharsetDecoder =
         new ThreadLocal<CharsetDecoder>() {
         @Override protected CharsetDecoder initialValue() {
-            return createDecoder() ;
+            return createDecoder();
         }
     };
 
-    /** Return a per-thread CharsetEncoder */ 
-    public static CharsetEncoder getThreadEncoder() { return threadCharsetEncoder.get() ; }
+    /** Return a per-thread CharsetEncoder */
+    public static CharsetEncoder getThreadEncoder() { return threadCharsetEncoder.get(); }
 
-    /** Return a per-thread CharsetDecoder */ 
-    public static CharsetDecoder getThreadDecoder() { return threadCharsetDecoder.get() ; }
+    /** Return a per-thread CharsetDecoder */
+    public static CharsetDecoder getThreadDecoder() { return threadCharsetDecoder.get(); }
 
-    private static final int PoolSize = 2 ;
-    private static Pool<CharsetEncoder> encoders = PoolSync.create(new PoolBase<CharsetEncoder>()) ;
-    private static Pool<CharsetDecoder> decoders = PoolSync.create(new PoolBase<CharsetDecoder>()) ;
+    private static final int PoolSize = 2;
+    private static Pool<CharsetEncoder> encoders = PoolSync.create(new PoolBase<CharsetEncoder>());
+    private static Pool<CharsetDecoder> decoders = PoolSync.create(new PoolBase<CharsetDecoder>());
 
     static {
         // Fill the pool.
         for ( int i = 0 ; i < PoolSize ; i++ )
         {
-            putEncoder(createEncoder()) ;
-            putDecoder(createDecoder()) ;
+            putEncoder(createEncoder());
+            putDecoder(createDecoder());
         }
     }
-    
+
     /** Create a UTF-8 encoder */
-    public static CharsetEncoder createEncoder()    { return charsetUTF8.newEncoder() ; }
+    public static CharsetEncoder createEncoder()    { return charsetUTF8.newEncoder(); }
     /** Create a UTF-8 decoder */
-    public static CharsetDecoder createDecoder()    { return charsetUTF8.newDecoder() ; }
+    public static CharsetDecoder createDecoder()    { return charsetUTF8.newDecoder(); }
 
-    /** Get a UTF-8 encoder from the pool (null if pool empty) */ 
-    public static CharsetEncoder getEncoder()       { return encoders.get() ; }
+    /** Get a UTF-8 encoder from the pool (null if pool empty) */
+    public static CharsetEncoder getEncoder()       { return encoders.get(); }
     /** Add/return a UTF-8 encoder to the pool */
-    public static void putEncoder(CharsetEncoder encoder) { encoders.put(encoder) ; }
+    public static void putEncoder(CharsetEncoder encoder) { encoders.put(encoder); }
 
-    /** Get a UTF-8 decoder from the pool (null if pool empty) */ 
-    public static CharsetDecoder getDecoder()       { return decoders.get() ; }
+    /** Get a UTF-8 decoder from the pool (null if pool empty) */
+    public static CharsetDecoder getDecoder()       { return decoders.get(); }
     /** Add/return a UTF-8 decoder to the pool */
-    public static void putDecoder(CharsetDecoder decoder) { decoders.put(decoder) ; }
-    
+    public static void putDecoder(CharsetDecoder decoder) { decoders.put(decoder); }
+
     /** Allocate a CharsetEncoder, creating as necessary */
-    public static CharsetEncoder allocEncoder()
-    {
+    public static CharsetEncoder allocEncoder() {
         CharsetEncoder enc = Chars.getEncoder();
         // Blocking finite Pool - does not happen.
-        // Plain Pool (sync wrapped) - might - allocate an extra one. 
-        if ( enc == null ) 
-            enc = Chars.createEncoder() ;
+        // Plain Pool (sync wrapped) - might - allocate an extra one.
+        if ( enc == null )
+            enc = Chars.createEncoder();
         enc
           .onMalformedInput(CodingErrorAction.REPLACE)
           .onUnmappableCharacter(CodingErrorAction.REPLACE)
-          .reset() ;
-        
-        return enc ;
+          .reset();
+
+        return enc;
     }
     /** Deallocate a CharsetEncoder, may increase pool size */
-    public static void deallocEncoder(CharsetEncoder enc) { putEncoder(enc) ; }
-        
+    public static void deallocEncoder(CharsetEncoder enc) { putEncoder(enc); }
+
     /** Allocate a CharsetDecoder, creating as necessary */
-    public static CharsetDecoder allocDecoder()
-    {
+    public static CharsetDecoder allocDecoder() {
         CharsetDecoder dec = Chars.getDecoder();
         // Blocking finite Pool - does not happen.
-        // Plain Pool (sync wrapped) - might - allocate an extra one. 
-        if ( dec == null ) 
-            dec = Chars.createDecoder() ;
+        // Plain Pool (sync wrapped) - might - allocate an extra one.
+        if ( dec == null )
+            dec = Chars.createDecoder();
         dec
           .onMalformedInput(CodingErrorAction.REPLACE)
           .onUnmappableCharacter(CodingErrorAction.REPLACE)
-          .reset() ;
-        
-        return dec ;
+          .reset();
+
+        return dec;
     }
     /** Deallocate a CharsetDecoder, may increase pool size */
-    public static void deallocDecoder(CharsetDecoder dec) { putDecoder(dec) ; }
-    
+    public static void deallocDecoder(CharsetDecoder dec) { putDecoder(dec); }
+
     /** Is char in the array? */
     public static boolean charInArray(int ch, char[] chars) {
         for ( int xch : chars ) {
             if ( ch == xch )
-                return true ;
+                return true;
         }
-        return false ;
+        return false;
     }
 
-    public static void encodeAsHex(StringBuilder buff, char marker, char ch)
-    {
-        if ( ch < 256 )
-        {
-            buff.append(marker) ;
-            int lo = ch & 0xF ;
-            int hi = (ch >> 4) & 0xF ;
-            buff.append(Chars.hexDigitsUC[hi]) ;                
-            buff.append(Chars.hexDigitsUC[lo]) ;
-            return ;
+    public static void encodeAsHex(StringBuilder buff, char marker, char ch) {
+        if ( ch < 256 ) {
+            buff.append(marker);
+            int lo = ch & 0xF;
+            int hi = (ch >> 4) & 0xF;
+            buff.append(Chars.hexDigitsUC[hi]);
+            buff.append(Chars.hexDigitsUC[lo]);
+            return;
         }
-        int n4 = ch & 0xF ;
-        int n3 = (ch >> 4) & 0xF ;
-        int n2 = (ch >> 8) & 0xF ;
-        int n1 = (ch >> 12) & 0xF ;
-        buff.append(marker) ;
-        buff.append(Chars.hexDigitsUC[n1]) ;                
-        buff.append(Chars.hexDigitsUC[n2]) ;
-        buff.append(marker) ;
-        buff.append(Chars.hexDigitsUC[n3]) ;
-        buff.append(Chars.hexDigitsUC[n4]) ;
-        
+        int n4 = ch & 0xF;
+        int n3 = (ch >> 4) & 0xF;
+        int n2 = (ch >> 8) & 0xF;
+        int n1 = (ch >> 12) & 0xF;
+        buff.append(marker);
+        buff.append(Chars.hexDigitsUC[n1]);
+        buff.append(Chars.hexDigitsUC[n2]);
+        buff.append(marker);
+        buff.append(Chars.hexDigitsUC[n3]);
+        buff.append(Chars.hexDigitsUC[n4]);
     }
 
     /** End of file - not a Unicode codepoint */
-    public static final int EOF             = -1 ;
-    // BOM  : U+FEFF encoded in bytes as xEF,0xBB,0xBF
-    public static final char BOM            = 0xFEFF ;  
-    
-    /** undefined character (exact meaning depends on use) - not a Unicode codepoint */
+    public static final int EOF              = -1 ;
+
+    // BOM  : U+FEFF encoded in UTF-8 as xEF,0xBB,0xBF
+    public static final char BOM             = 0xFEFF ;
+
+    // Specials block:
+    //   https://www.unicode.org/charts/PDF/UFFF0.pdf
+    //   https://en.wikipedia.org/wiki/Specials_(Unicode_block)
+    // OBJECT REPLACEMENT CHARACTER
+    public static final char OBJECT_REPLACEMENT = 0xFFFC ;
+
+    // REPLACEMENT CHARACTER
+    public static final char REPLACEMENT     = 0xFFFD ;
+
+    // Not a character
+    public static final char NotACharacter   = 0xFFFF ;
+    // Detect byte order by contrast (BOM reversed).
+    public static final char ReverseOrderBOM = 0xFFFE ;
+
+    /** Undefined character (exact meaning depends on use) - not a Unicode codepoint */
     public static final int  UNSET           =  -2 ;
     public static final char NL              = '\n' ;
+    public static final char LF              = NL ;     // Alt name.
     public static final char CR              = '\r' ;
     public static final char TAB             = '\t' ;
+    public static final char FF              = '\f' ;   // Form feed
     public static final char SPC             = ' ' ;
     public static final char BSPACE          = '\b' ;
-    
+
     public static final char CH_ZERO         =  (char)0 ;
 
     public static final char CH_LBRACKET     = '[' ;
     public static final char CH_RBRACKET     = ']' ;
-    
+
     public static final char CH_LBRACE       = '{' ;
     public static final char CH_RBRACE       = '}' ;
 
@@ -220,14 +232,14 @@ public class Chars
     public static final char CH_RSLASH       = '\\' ;
     public static final char CH_PERCENT      = '%' ;
     public static final char CH_VBAR         = '|' ;
-    
+
     // Byte versions of the above
     public static final byte B_NL            = NL ;
     public static final byte B_CR            = CR ;
-    
+
     public static final byte B_LBRACKET      = '[' ;
     public static final byte B_RBRACKET      = ']' ;
-    
+
     public static final byte B_LBRACE        = '{' ;
     public static final byte B_RBRACE        = '}' ;
 
@@ -258,11 +270,11 @@ public class Chars
     public static final byte B_RSLASH        = '\\' ;
     public static final byte B_PERCENT       = '%' ;
     public static final byte B_VBAR          = '|' ;
-    
+
     // String versions - a few compound "chars" as well.
     public static final String S_LBRACKET     = "[" ;
     public static final String S_RBRACKET     = "]" ;
-    
+
     public static final String S_LBRACE       = "{" ;
     public static final String S_RBRACE       = "}" ;
 

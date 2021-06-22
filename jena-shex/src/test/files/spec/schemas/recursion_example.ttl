@@ -1,0 +1,15 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://schema.example/IssueShape> a <http://www.w3.org/ns/shex#Shape>;
+   <http://www.w3.org/ns/shex#expression> [
+     a <http://www.w3.org/ns/shex#TripleConstraint>;
+     <http://www.w3.org/ns/shex#max> -1;
+     <http://www.w3.org/ns/shex#min> 0;
+     <http://www.w3.org/ns/shex#predicate> <http://schema.example/related>;
+     <http://www.w3.org/ns/shex#valueExpr> <http://schema.example/IssueShape>
+   ] .
+
+[]
+     a <http://www.w3.org/ns/shex#Schema>;
+     <http://www.w3.org/ns/shex#shapes> (<http://schema.example/IssueShape>) .

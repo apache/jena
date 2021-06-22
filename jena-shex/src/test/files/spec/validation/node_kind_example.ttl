@@ -1,0 +1,5 @@
+PREFIX ex: <http://schema.example/>
+
+<http://example/issue1> ex:state ex:HunkyDory .
+<http://example/issue2> ex:taste ex:GoodEnough .
+<http://example/issue3> ex:state "just fine" .

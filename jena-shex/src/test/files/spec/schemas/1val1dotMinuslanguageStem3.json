@@ -1,0 +1,39 @@
+{
+  "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "shapes": [
+    {
+      "id": "http://a.example/S1",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p1",
+        "valueExpr": {
+          "type": "NodeConstraint",
+          "values": [
+            {
+              "type": "LanguageStemRange",
+              "stem": {
+                "type": "Wildcard"
+              },
+              "exclusions": [
+                {
+                  "type": "LanguageStem",
+                  "stem": "fr-be"
+                },
+                {
+                  "type": "LanguageStem",
+                  "stem": "fr-cd"
+                },
+                {
+                  "type": "LanguageStem",
+                  "stem": "fr-ch"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

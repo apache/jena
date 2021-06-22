@@ -1,0 +1,4 @@
+PREFIX : <http://a.example/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+<s0> :a "1" ; :b "1" .

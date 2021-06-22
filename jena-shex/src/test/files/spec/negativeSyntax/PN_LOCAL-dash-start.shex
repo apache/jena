@@ -1,0 +1,7 @@
+# PN_LOCAL starting with a dash
+# source: turtle-syntax-bad-ln-dash-start.ttl
+PREFIX ex: <http://a.example/>
+
+ex:IssueShape {
+   ex:-p1 .
+}

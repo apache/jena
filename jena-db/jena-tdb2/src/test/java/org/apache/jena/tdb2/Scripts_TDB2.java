@@ -18,9 +18,9 @@
 
 package org.apache.jena.tdb2;
 
-import org.apache.jena.arq.junit.manifest.Label;
 import org.apache.jena.arq.junit.manifest.Manifests;
 import org.apache.jena.arq.junit.manifest.Prefix;
+import org.apache.jena.arq.junit.runners.Label;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.expr.E_Function;
 import org.apache.jena.sparql.expr.NodeValue;

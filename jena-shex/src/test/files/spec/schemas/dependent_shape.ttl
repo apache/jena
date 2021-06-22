@@ -1,0 +1,23 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<http://schema.example/IssueShape> a <http://www.w3.org/ns/shex#Shape>;
+   <http://www.w3.org/ns/shex#expression> [
+     a <http://www.w3.org/ns/shex#TripleConstraint>;
+     <http://www.w3.org/ns/shex#predicate> <http://schema.example/reproducedBy>;
+     <http://www.w3.org/ns/shex#valueExpr> <http://schema.example/TesterShape>
+   ] .
+
+<http://schema.example/TesterShape> a <http://www.w3.org/ns/shex#Shape>;
+   <http://www.w3.org/ns/shex#expression> [
+     a <http://www.w3.org/ns/shex#TripleConstraint>;
+     <http://www.w3.org/ns/shex#predicate> <http://schema.example/role>;
+     <http://www.w3.org/ns/shex#valueExpr> [
+       a <http://www.w3.org/ns/shex#NodeConstraint>;
+       <http://www.w3.org/ns/shex#values> (<http://schema.example/testingRole>)
+     ]
+   ] .
+
+[]
+     a <http://www.w3.org/ns/shex#Schema>;
+     <http://www.w3.org/ns/shex#shapes> (<http://schema.example/TesterShape>
+       <http://schema.example/IssueShape>) .

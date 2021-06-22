@@ -19,7 +19,6 @@
 package org.apache.jena.shacl.validation;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -163,20 +162,7 @@ public class VLib {
 
     // ValidationProc
     public static Collection<Node> focusNodes(Graph data, Target target) {
-        Node targetObj = target.getObject();
-        switch(target.getTargetType()) {
-            case targetClass:
-            case implicitClass:
-                return G.allNodesOfTypeRDFS(data, targetObj);
-            case targetNode:
-                return Collections.singletonList(targetObj);
-            case targetObjectsOf:
-                return G.allSP(data, null, targetObj);
-            case targetSubjectsOf:
-                return G.allPO(data, targetObj, null);
-            default:
-                return Collections.emptyList();
-        }
+        return target.getFocusNodes(data);
     }
 
     // From ValidationProc.
@@ -198,6 +184,9 @@ public class VLib {
                 return data.contains(null, targetObject, node);
             case targetSubjectsOf:
                 return data.contains(node, targetObject, null);
+            case targetExtension:
+                // Ouch
+                focusNodes(data, target).contains(node);
             default:
                 return false;
         }

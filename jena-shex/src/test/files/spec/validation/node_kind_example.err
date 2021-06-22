@@ -1,0 +1,49 @@
+{
+  "type": "FailureList",
+  "errors": [
+    {
+      "type": "Failure",
+      "node": "http://example/issue2",
+      "shape": "http://schema.example/IssueShape",
+      "errors": [
+        {
+          "type": "MissingProperty",
+          "property": "http://schema.example/state",
+          "valueExpr": {
+            "type": "NodeConstraint",
+            "nodeKind": "iri"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Failure",
+      "node": "http://example/issue3",
+      "shape": "http://schema.example/IssueShape",
+      "errors": [
+        {
+          "type": "TypeMismatch",
+          "triple": {
+            "type": "TestedTriple",
+            "subject": "http://example/issue3",
+            "predicate": "http://schema.example/state",
+            "object": {
+              "value": "just fine"
+            }
+          },
+          "constraint": {
+            "type": "TripleConstraint",
+            "predicate": "http://schema.example/state",
+            "valueExpr": {
+              "type": "NodeConstraint",
+              "nodeKind": "iri"
+            }
+          },
+          "errors": [
+            "Error validating \"just fine\" as {\"type\":\"NodeConstraint\",\"nodeKind\":\"iri\"}: literal found when iri expected"
+          ]
+        }
+      ]
+    }
+  ]
+}

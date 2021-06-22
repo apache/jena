@@ -1,0 +1,19 @@
+{
+  "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "shapes": [
+    {
+      "id": "http://a.example/S1",
+      "type": "ShapeAnd",
+      "shapeExprs": [
+        {
+          "type": "NodeConstraint",
+          "nodeKind": "iri"
+        },
+        {
+          "type": "Shape"
+        }
+      ]
+    }
+  ]
+}

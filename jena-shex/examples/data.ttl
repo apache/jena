@@ -1,0 +1,17 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX : <http://example/>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+
+:s :p :1 .
+:s :p :2 .
+
+:x :property 123 .
+:x :property 256 .
+
+:instance1 rdf:type :myClass ;
+    :p <http://example/ref> .
+
+:instance2 rdf:type :myClass ;
+    :p "literal" .

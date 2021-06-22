@@ -1,0 +1,22 @@
+{
+  "type": "Schema",
+  "shapes": [
+    {
+      "id": "http://example.org/S",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://example.org/a",
+        "valueExpr": {
+          "type": "Shape",
+          "expression": {
+            "type": "TripleConstraint",
+            "predicate": "http://example.org/b",
+            "valueExpr": "http://example.org/S"
+          }
+        }
+      }
+    }
+  ],
+  "@context": "http://www.w3.org/ns/shex.jsonld"
+}

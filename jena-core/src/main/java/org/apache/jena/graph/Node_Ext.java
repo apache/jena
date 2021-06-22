@@ -51,6 +51,12 @@ public abstract class Node_Ext<X> extends Node {
         return (X)label;
     }
 
+    @Override
+    public boolean isExt() {
+        return true;
+    }
+
+
     // Only based on label.
     @Override
     public int hashCode() {

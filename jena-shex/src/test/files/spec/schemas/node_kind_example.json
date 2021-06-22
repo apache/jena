@@ -1,0 +1,17 @@
+{
+  "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "shapes": [
+    {
+      "id": "http://schema.example/IssueShape",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://schema.example/state",
+        "valueExpr": {
+          "type": "NodeConstraint", "nodeKind": "iri"
+        }
+      }
+    }
+  ]
+}

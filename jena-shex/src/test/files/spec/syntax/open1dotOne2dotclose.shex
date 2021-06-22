@@ -1,0 +1,6 @@
+<http://a.example/S1> {
+  (  <http://a.example/p1> .
+   | <http://a.example/p2> .;
+     <http://a.example/p3> .
+  )
+}

@@ -1,0 +1,5 @@
+# bad DOUBLE 123e
+# source: turtle-syntax-bad-num-02.ttl
+<http://a.example/IssueShape> {
+   <http://a.example/p1> [123e]
+}

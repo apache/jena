@@ -23,6 +23,7 @@ import org.apache.jena.graph.NodeFactory;
 
 // Vocabulary for http://www.w3.org/ns/shacl#
 // schemagen then converted to Node level.
+// then add SHACL-AF
 
 public class SHACL {
     private static Node createResource(String uri) { return NodeFactory.createURI(uri); }

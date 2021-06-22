@@ -1,0 +1,7 @@
+PREFIX : <http://a.example/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+<x> :a "1" ; :b "1" .
+<x> :a "2" ; :b "2" .
+<x> :a "3" ; :b "3" .
+<x> :c "1" .

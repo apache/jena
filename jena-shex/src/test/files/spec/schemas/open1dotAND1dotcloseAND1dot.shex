@@ -1,0 +1,8 @@
+<http://a.example/S1> ({
+    <http://a.example/p1> .
+  } AND {
+    <http://a.example/p2> .
+  }
+) AND {
+  <http://a.example/p3> .
+}

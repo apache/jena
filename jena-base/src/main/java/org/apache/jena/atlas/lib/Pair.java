@@ -26,21 +26,21 @@ import java.util.Objects;
 public class Pair<A, B>
 {
     public static <L, R> Pair<L,R> create(L x, R y) { return new Pair<>(x,y) ; }
-    
+
     final A a ;
     final B b ;
     public Pair(A a, B b) { this.a = a; this.b = b ; }
-    
+
     public A getLeft()  { return a ; }
     public B getRight() { return b ; }
-    
+
     public A car() { return a ; }
     public B cdr() { return b ; }
-    
+
     @Override
     public int hashCode()
     {
-        return hashCodeObject(car()) ^ hashCodeObject(cdr())<<1 ; 
+        return hashCodeObject(car()) ^ hashCodeObject(cdr())<<1 ;
     }
 
     @Override
@@ -53,12 +53,17 @@ public class Pair<A, B>
         // Type erasure makes this hard to check otherwise.
         // Use class X extends Pair<A,B> and implement .equals to do
         // instanceof then call super.equals.
-        
+
         if( ! ( other instanceof Pair<?,?> ) ) return false ;
         Pair<?,?> p2 = (Pair<?,?>)other ;
         return Objects.equals(car(), p2.car()) && Objects.equals(cdr(), p2.cdr()) ;
     }
-    
-    @Override 
+
+    /** Test whether the arguments are equal to the elements of this pair */
+    public boolean equalElts(A left, B right) {
+        return Objects.equals(car(), left) && Objects.equals(cdr(), right) ;
+    }
+
+    @Override
     public String toString() { return "("+str(a)+", "+str(b)+")" ; }
 }

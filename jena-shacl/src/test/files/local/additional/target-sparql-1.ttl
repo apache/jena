@@ -1,0 +1,75 @@
+PREFIX mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> 
+PREFIX owl: <http://www.w3.org/2002/07/owl#> 
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+PREFIX sh: <http://www.w3.org/ns/shacl#> 
+PREFIX sht: <http://www.w3.org/ns/shacl-test#> 
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
+
+PREFIX ex: <http://example.com/ns#>
+PREFIX : <http://example/>
+
+## Shape.
+
+ex:NS
+	sh:declare [
+		sh:prefix "" ;
+		sh:namespace "http://example/"^^xsd:anyURI;
+	] .
+				
+ex:Shape
+	a sh:NodeShape ;
+	sh:target [
+		a sh:SPARQLTarget ;
+		sh:prefixes ex:NS ;
+		sh:select """
+			SELECT ?this
+			WHERE {
+				?this :value 123
+			}
+			""" ;
+	] ;
+    sh:property [
+      sh:path :p ;
+      sh:datatype xsd:string ;
+      sh:minCount 1;
+    ] .
+
+## Data
+
+:item1 :value 123 .
+
+:item2 :value 123 ; :p "abc" .
+
+:item3 :value 456 .
+:item4 :value 456 ; :p "xyz" .
+
+
+## Test case
+
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <targetSparql-001>
+    ) ;
+.
+<targetSparql-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:target [ SPARQL ] 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode                  :item1 ;
+          sh:resultPath                 :p ;
+          sh:resultSeverity             sh:Violation ;
+          sh:sourceConstraintComponent  sh:MinCountConstraintComponent ;
+          sh:sourceShape                []
+        ] ;
+    ] ;
+.

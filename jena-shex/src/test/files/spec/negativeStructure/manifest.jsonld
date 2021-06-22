@@ -1,0 +1,172 @@
+{
+  "@context": [
+    {
+      "@base": "https://raw.githubusercontent.com/shexSpec/shexTest/master/negativeStructure/manifest"
+    },
+    "../context.jsonld"
+  ],
+  "@graph": [
+    {
+      "@id": "",
+      "@type": "mf:Manifest",
+      "rdfs:comment": "ShEx negative structure tests",
+      "entries": [
+        {
+          "@id": "#1MissingRef",
+          "@type": "sht:NegativeStructure",
+          "name": "1MissingRef",
+          "status": "mf:Proposed",
+          "shex": "1MissingRef.shex",
+          "startRow": 3,
+          "startColumn": 24,
+          "endRow": 4,
+          "endColumn": 1
+        },
+        {
+          "@id": "#1focusMissingRefdot",
+          "@type": "sht:NegativeStructure",
+          "name": "1focusMissingRefdot",
+          "status": "mf:Proposed",
+          "shex": "1focusMissingRefdot.shex",
+          "startRow": 2,
+          "startColumn": 22,
+          "endRow": 3,
+          "endColumn": 28
+        },
+        {
+          "@id": "#1focusRefANDSelfdot",
+          "@type": "sht:NegativeStructure",
+          "name": "1focusRefANDSelfdot",
+          "status": "mf:Proposed",
+          "shex": "1focusRefANDSelfdot.shex",
+          "startRow": 4,
+          "startColumn": 6,
+          "endRow": 5,
+          "endColumn": 6
+        },
+        {
+          "@id": "#includeExpressionNotFound",
+          "@type": "sht:NegativeStructure",
+          "name": "includeExpressionNotFound",
+          "status": "mf:Proposed",
+          "shex": "includeExpressionNotFound.shex",
+          "startRow": 3,
+          "startColumn": 3,
+          "endRow": 4,
+          "endColumn": 3
+        },
+        {
+          "@id": "#includeSimpleShape",
+          "@type": "sht:NegativeStructure",
+          "name": "includeSimpleShape",
+          "status": "mf:Proposed",
+          "shex": "includeSimpleShape.shex",
+          "startRow": 3,
+          "startColumn": 3,
+          "endRow": 4,
+          "endColumn": 3
+        },
+        {
+          "@id": "#includeNonSimpleShape",
+          "@type": "sht:NegativeStructure",
+          "name": "includeNonSimpleShape",
+          "status": "mf:Proposed",
+          "shex": "includeNonSimpleShape.shex",
+          "startRow": 3,
+          "startColumn": 3,
+          "endRow": 4,
+          "endColumn": 3
+        },
+        {
+          "@id": "#1ShapeProductionCollision",
+          "@type": "sht:NegativeStructure",
+          "name": "1ShapeProductionCollision",
+          "status": "mf:Proposed",
+          "shex": "1ShapeProductionCollision.shex",
+          "startRow": 3,
+          "startColumn": 3,
+          "endRow": 6,
+          "endColumn": 22
+        },
+        {
+          "@id": "#Cycle1Negation1",
+          "@type": "sht:NegativeStructure",
+          "name": "Cycle1Negation1",
+          "status": "mf:Approved",
+          "shex": "Cycle1Negation1.shex",
+          "startRow": 6,
+          "startColumn": 8,
+          "endRow": 7,
+          "endColumn": 4
+        },
+        {
+          "@id": "#Cycle1Negation2",
+          "@type": "sht:NegativeStructure",
+          "name": "Cycle1Negation2",
+          "status": "mf:Approved",
+          "shex": "Cycle1Negation2.shex",
+          "startRow": 6,
+          "startColumn": 8,
+          "endRow": 7,
+          "endColumn": 4
+        },
+        {
+          "@id": "#Cycle1Negation3",
+          "@type": "sht:NegativeStructure",
+          "name": "Cycle1Negation3",
+          "status": "mf:Approved",
+          "shex": "Cycle1Negation3.shex",
+          "startRow": 6,
+          "startColumn": 8,
+          "endRow": 7,
+          "endColumn": 4
+        },
+        {
+          "@id": "#TwoNegation",
+          "@type": "sht:NegativeStructure",
+          "name": "TwoNegation",
+          "status": "mf:Approved",
+          "shex": "TwoNegation.shex",
+          "startRow": 7,
+          "startColumn": 6,
+          "endRow": 8,
+          "endColumn": 2
+        },
+        {
+          "@id": "#TwoNegation2",
+          "@type": "sht:NegativeStructure",
+          "name": "TwoNegation2",
+          "status": "mf:Proposed",
+          "shex": "TwoNegation2.shex",
+          "startRow": 7,
+          "startColumn": 6,
+          "endRow": 8,
+          "endColumn": 2
+        },
+        {
+          "@id": "#Cycle2Negation",
+          "@type": "sht:NegativeStructure",
+          "name": "Cycle2Negation",
+          "status": "mf:Approved",
+          "shex": "Cycle2Negation.shex",
+          "startRow": 5,
+          "startColumn": 6,
+          "endRow": 6,
+          "endColumn": 2
+        },
+        {
+          "@id": "#Cycle2Extra",
+          "@type": "sht:NegativeStructure",
+          "name": "Cycle2Extra",
+          "status": "mf:Approved",
+          "shex": "Cycle2Extra.shex",
+          "startRow": 5,
+          "startColumn": 6,
+          "endRow": 6,
+          "endColumn": 2
+        }
+      ]
+    }
+  ]
+}
+

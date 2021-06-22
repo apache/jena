@@ -1,0 +1,7 @@
+<http://a.example/S1> IRI /^https?:\/\// {
+   <http://a.example/p1> <http://a.example/dt1> ;
+   <http://a.example/p2> BNODE {
+     <http://a.example/p3> LITERAL ;
+     <http://a.example/p4> IRI /^https?:\/\// @<http://a.example/S1>?
+   } AND CLOSED { <http://a.example/p3> . ; <http://a.example/p4> . }
+}

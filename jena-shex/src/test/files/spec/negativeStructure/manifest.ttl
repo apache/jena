@@ -1,0 +1,166 @@
+@base <https://raw.githubusercontent.com/shexSpec/shexTest/master/negativeStructure/manifest> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix sht:    <http://www.w3.org/ns/shacl/test-suite#> .
+@prefix sx:     <https://shexspec.github.io/shexTest/ns#> .
+
+<> a mf:Manifest ;
+    rdfs:comment "ShEx negative structure tests" ;
+    mf:entries (
+    <#1MissingRef>
+    <#1focusMissingRefdot>
+    <#1focusRefANDSelfdot>
+    <#includeExpressionNotFound>
+    <#includeSimpleShape>
+    <#includeNonSimpleShape>
+    <#1ShapeProductionCollision>
+    <#Cycle1Negation1>
+    <#Cycle1Negation2>
+    <#Cycle1Negation3>
+    <#TwoNegation>
+    <#TwoNegation2>
+    <#Cycle2Negation>
+    <#Cycle2Extra>
+) .
+
+<#1MissingRef> a sht:NegativeStructure ;
+  mf:name "1MissingRef" ;
+  mf:status mf:Proposed ;
+  sx:shex <1MissingRef.shex> ;
+  mf:startRow 3 ;
+  mf:startColumn 24 ;
+  mf:endRow 4 ;
+  mf:endColumn 1 ;
+  .
+
+<#1focusMissingRefdot> a sht:NegativeStructure ;
+  mf:name "1focusMissingRefdot" ;
+  mf:status mf:Proposed ;
+  sx:shex <1focusMissingRefdot.shex> ;
+  mf:startRow 2 ;
+  mf:startColumn 22 ;
+  mf:endRow 3 ;
+  mf:endColumn 28 ;
+  .
+
+<#1focusRefANDSelfdot> a sht:NegativeStructure ;
+  mf:name "1focusRefANDSelfdot" ;
+  mf:status mf:Proposed ;
+  sx:shex <1focusRefANDSelfdot.shex> ;
+  mf:startRow 4 ;
+  mf:startColumn 6 ;
+  mf:endRow 5 ;
+  mf:endColumn 6 ;
+  .
+
+<#includeExpressionNotFound> a sht:NegativeStructure ;
+  mf:name "includeExpressionNotFound" ;
+  mf:status mf:Proposed ;
+  sx:shex <includeExpressionNotFound.shex> ;
+  mf:startRow 3 ;
+  mf:startColumn 3 ;
+  mf:endRow 4 ;
+  mf:endColumn 3 ;
+  .
+
+<#includeSimpleShape> a sht:NegativeStructure ;
+  mf:name "includeSimpleShape" ;
+  mf:status mf:Proposed ;
+  sx:shex <includeSimpleShape.shex> ;
+  mf:startRow 3 ;
+  mf:startColumn 3 ;
+  mf:endRow 4 ;
+  mf:endColumn 3 ;
+  .
+
+<#includeNonSimpleShape> a sht:NegativeStructure ;
+  mf:name "includeNonSimpleShape" ;
+  mf:status mf:Proposed ;
+  sx:shex <includeNonSimpleShape.shex> ;
+  mf:startRow 3 ;
+  mf:startColumn 3 ;
+  mf:endRow 4 ;
+  mf:endColumn 3 ;
+  .
+
+<#1ShapeProductionCollision> a sht:NegativeStructure ;
+  mf:name "1ShapeProductionCollision" ;
+  mf:status mf:Proposed ;
+  sx:shex <1ShapeProductionCollision.shex> ;
+  mf:startRow 3 ;
+  mf:startColumn 3 ;
+  mf:endRow 6 ;
+  mf:endColumn 22 ; # 1st token after closing curly brace
+  .
+
+<#Cycle1Negation1> a sht:NegativeStructure ;
+  mf:name "Cycle1Negation1" ;
+  mf:status mf:Approved ;
+  sx:shex <Cycle1Negation1.shex> ;
+  mf:startRow 6 ;
+  mf:startColumn 8 ;
+  mf:endRow 7 ;
+  mf:endColumn 4 ;
+  .
+
+<#Cycle1Negation2> a sht:NegativeStructure ;
+  mf:name "Cycle1Negation2" ;
+  mf:status mf:Approved ;
+  sx:shex <Cycle1Negation2.shex> ;
+  mf:startRow 6 ;
+  mf:startColumn 8 ;
+  mf:endRow 7 ;
+  mf:endColumn 4 ;
+  .
+
+<#Cycle1Negation3> a sht:NegativeStructure ;
+  mf:name "Cycle1Negation3" ;
+  mf:status mf:Approved ;
+  sx:shex <Cycle1Negation3.shex> ;
+  mf:startRow 6 ;
+  mf:startColumn 8 ;
+  mf:endRow 7 ;
+  mf:endColumn 4 ;
+  .
+
+<#TwoNegation> a sht:NegativeStructure ;
+  mf:name "TwoNegation" ;
+  mf:status mf:Approved ;
+  sx:shex <TwoNegation.shex> ;
+  mf:startRow 7 ;
+  mf:startColumn 6 ;
+  mf:endRow 8 ;
+  mf:endColumn 2 ;
+  .
+
+<#TwoNegation2> a sht:NegativeStructure ;
+  mf:name "TwoNegation2" ;
+  mf:status mf:Proposed ;
+  sx:shex <TwoNegation2.shex> ;
+  mf:startRow 7 ;
+  mf:startColumn 6 ;
+  mf:endRow 8 ;
+  mf:endColumn 2 ;
+  .
+
+<#Cycle2Negation> a sht:NegativeStructure ;
+  mf:name "Cycle2Negation" ;
+  mf:status mf:Approved ;
+  sx:shex <Cycle2Negation.shex> ;
+  mf:startRow 5 ;
+  mf:startColumn 6 ;
+  mf:endRow 6 ;
+  mf:endColumn 2 ;
+  .
+
+<#Cycle2Extra> a sht:NegativeStructure ;
+  mf:name "Cycle2Extra" ;
+  mf:status mf:Approved ;
+  sx:shex <Cycle2Extra.shex> ;
+  mf:startRow 5 ;
+  mf:startColumn 6 ;
+  mf:endRow 6 ;
+  mf:endColumn 2 ;
+  .
+

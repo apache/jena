@@ -1,0 +1,5 @@
+# bad literal 0x123
+# source: turtle-syntax-bad-num-04.ttl
+<http://a.example/IssueShape> {
+   <http://a.example/p1> [0x123]
+}
