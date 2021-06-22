@@ -29,6 +29,7 @@ import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.function.FunctionEnv;
 import org.apache.jena.sparql.function.FunctionEnvBase;
 import org.apache.jena.sparql.function.library.leviathan.LeviathanConstants;
+import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.ExprUtils;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
@@ -71,6 +72,15 @@ public class LibTestExpr {
         test(exprStr, rExpected);
     }
 
+    /** SSE syntax */
+    public static void testSSE(String functionExprStr, String exprStrExpected) {
+        Expr expected = SSE.parseExpr(exprStrExpected) ;
+        NodeValue vExpected = expected.eval(null, LibTestExpr.createTest());
+        Expr actual = SSE.parseExpr(functionExprStr) ;
+        NodeValue vActual = expected.eval(null, LibTestExpr.createTest());
+        assertTrue("Expected = " + expected + " : Actual = " + actual, sameValueSameDatatype(vExpected, vActual));
+    }
+
     public static void test(String exprString, Node result) {
         NodeValue expected = NodeValue.makeNode(result);
         test(exprString, expected);
@@ -79,7 +89,18 @@ public class LibTestExpr {
     public static void test(String exprStr, NodeValue expected) {
         Expr expr = parse(exprStr);
         NodeValue actual = expr.eval(null, LibTestExpr.createTest());
-        assertTrue("Expected = " + expected + " : Actual = " + actual, NodeValue.sameAs(expected, actual));
+        assertTrue("Expected = " + expected + " : Actual = " + actual, sameValueSameDatatype(expected, actual));
+    }
+
+    private static boolean sameValueSameDatatype(NodeValue nv1, NodeValue nv2) {
+        if ( ! NodeValue.sameAs(nv1, nv2) )
+            return false;
+        Node n1 = nv1.asNode();
+        Node n2 = nv2.asNode();
+        if ( ! n1.isLiteral() || ! n2.isLiteral() )
+            // URIs, bnodes etc because the sameAs test passed ...
+            return true;
+        return nv1.asNode().getLiteralDatatype().equals(nv2.asNode().getLiteralDatatype());
     }
 
     public static void test(String exprStr) {
@@ -105,7 +126,6 @@ public class LibTestExpr {
         // between how things like doubles are expressed
         if (NodeValue.sameAs(expected, actual))
             return;
-
         testDouble(exprString, expected.getDouble(), delta);;
     }
 

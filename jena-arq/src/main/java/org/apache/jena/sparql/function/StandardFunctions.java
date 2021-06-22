@@ -30,35 +30,35 @@ public class StandardFunctions
 {
     /* JENA-508
      * Missing: (July 2016)
-     * 
+     *
      *   fn:format-dateTime
      *   fn:format-date
      *   fn:format-time
-     * 
+     *
      * and adapters to SPARQL operations that have keywords:
      *   fn:replace
      *   fn:matches
-     * and sparql:* for all the SPARQL builtins. 
+     * and sparql:* for all the SPARQL builtins.
      */
-    
+
     /* Implementation notes
      *   fn:format-dateTime / fn:format-time / fn:format-date
      *   This is not Java's SimpleDateFormat.
      *   It has its own picture syntax.
-     *     Like adjust-* we may need only one function. 
+     *     Like adjust-* we may need only one function.
      */
-    
+
     public static void loadStdDefs(FunctionRegistry registry) {
         String xfn = ARQConstants.fnPrefix ;
         String math = ARQConstants.mathPrefix ;
         String sparqlfn = ARQConstants.fnSparql ;
-        
+
         // Update documentation in xsd-support.md
-        
+
         // See also:
         // http://www.w3.org/TR/xpath-datamodel/#types-hierarchy
         // https://www.w3.org/TR/xpath-datamodel-3/
-        
+
         addCastNumeric(registry, XSDDatatype.XSDdecimal) ;
         addCastNumeric(registry, XSDDatatype.XSDinteger) ;
 
@@ -66,7 +66,7 @@ public class StandardFunctions
         addCastNumeric(registry, XSDDatatype.XSDint) ;
         addCastNumeric(registry, XSDDatatype.XSDshort) ;
         addCastNumeric(registry, XSDDatatype.XSDbyte) ;
-        
+
         addCastNumeric(registry, XSDDatatype.XSDnonPositiveInteger) ;
         addCastNumeric(registry, XSDDatatype.XSDnegativeInteger) ;
 
@@ -78,14 +78,14 @@ public class StandardFunctions
 
         addCastNumeric(registry, XSDDatatype.XSDdouble) ;
         addCastNumeric(registry, XSDDatatype.XSDfloat) ;
-        
+
         addCastXSD(registry, XSDDatatype.XSDboolean) ;
         addCastXSD(registry, XSDDatatype.XSDduration) ;
         addCastXSD(registry, XSDDatatype.XSDdayTimeDuration) ;
         addCastXSD(registry, XSDDatatype.XSDyearMonthDuration) ;
         addCastXSD(registry, XSDDatatype.XSDstring) ;
         addCastXSD(registry, XSDDatatype.XSDanyURI) ;
-        
+
         addCastTemporal(registry, XSDDatatype.XSDdateTime) ;
         addCastTemporal(registry, XSDDatatype.XSDdate) ;
         addCastTemporal(registry, XSDDatatype.XSDtime) ;
@@ -100,14 +100,14 @@ public class StandardFunctions
 
         //TODO op:numeric-greater-than etc.
         //TODO sparql:* for all the SPARQL builtins.
-        
+
         // Sections refer to XQ/XP Expression 3.1
         // https://www.w3.org/TR/xpath-functions-3/
 
         // 3.1.1 fn:error
         add(registry, xfn+"error",         FN_Error.class) ;
 
-        
+
 //      5.4.1 fn:concat
 //      5.4.3 fn:substring
 //      5.4.4 fn:string-length
@@ -120,7 +120,7 @@ public class StandardFunctions
 //      5.5.3 fn:ends-with
 //      5.5.4 fn:substring-before
 //      5.5.5 fn:substring-after
-        
+
         //add(registry, xfn+"string-join",   FN_StrJoin.class) ;    // Works fn:string-join works on a sequence.
         add(registry, xfn+"concat",         FN_StrConcat.class) ;
         add(registry, xfn+"substring",      FN_StrSubstring.class) ;
@@ -145,7 +145,7 @@ public class StandardFunctions
         add(registry, xfn+"replace",        FN_StrReplace.class) ;
 
 //      Not 5.6.4 fn:tokenize - returns a sequence.
-        
+
 //        4.7.2 fn:format-number
         add(registry, xfn+"format-number",  FN_FormatNumber.class) ;
 
@@ -163,7 +163,7 @@ public class StandardFunctions
 //        6.2 fn:encode-for-uri
 //        6.3 fn:iri-to-uri         -- meaningless in SPARQL.
 //        6.4 fn:escape-html-uri
-        
+
         add(registry, xfn+"encode-for-uri", FN_StrEncodeForURI.class) ;
 
         add(registry, xfn+"years-from-date",        FN_YearsFromDate.class) ;
@@ -175,7 +175,7 @@ public class StandardFunctions
         add(registry, xfn+"minutes-from-time",      FN_MinutesFromTime.class) ;
         add(registry, xfn+"seconds-from-time",      FN_SecondsFromTime.class) ;
         add(registry, xfn+"timezone-from-time",     FN_TimezoneFromTime.class) ;
-        
+
         add(registry, xfn+"dateTime",               FN_DateTime.class) ;
         add(registry, xfn+"years-from-dateTime",    FN_YearsFromDateTime.class) ;
         add(registry, xfn+"months-from-dateTime",   FN_MonthsFromDateTime.class) ;
@@ -191,12 +191,12 @@ public class StandardFunctions
         add(registry, xfn+"hours-from-duration",    FN_HoursFromDuration.class) ;
         add(registry, xfn+"minutes-from-duration",  FN_MinutesFromDuration.class) ;
         add(registry, xfn+"seconds-from-duration",  FN_SecondsFromDuration.class) ;
-        
+
 //      7.3.1 fn:boolean
 //      7.3.2 fn:not
       add(registry, xfn+"boolean",        FN_BEV.class) ;
       add(registry, xfn+"not",            FN_Not.class) ;
-        
+
         // XQ/XP 3.
 //        9.6.1 fn:adjust-dateTime-to-timezone
         add(registry, xfn+"adjust-dateTime-to-timezone",  FN_AdjustDatetimeToTimezone.class) ;
@@ -207,12 +207,12 @@ public class StandardFunctions
 //        9.8.1 fn:format-dateTime
 //        9.8.2 fn:format-date
 //        9.8.3 fn:format-time
-        
-        
+
+
 //        15.6 fn:implicit-timezone -> xsd:dayTimeDuration
         add(registry, xfn+"implicit-timezone",  FN_Timezone.class) ;
         // Also available as afn:timezone.
-        
+
         // math:
 //        4.8 Trigonometric and exponential functions
 //        4.8.1 math:pi
@@ -229,19 +229,19 @@ public class StandardFunctions
 //        4.8.12 math:acos
 //        4.8.13 math:atan
 //        4.8.14 math:atan2
-        
+
         // check.
-        add(registry, math+"pi",        pi.class) ;        
+        add(registry, math+"pi",        pi.class) ;
         add(registry, math+"exp",       Math_exp.class) ;      // -> XSDFuncOp
         add(registry, math+"exp10",     Math_exp10.class) ;    // -> XSDFuncOp
-        // Levianthan "log" is a function which takes one or two arguments.  
+        // Levianthan "log" is a function which takes one or two arguments.
         add(registry, math+"log",       Math_log.class) ;      // -> XSDFuncOp   ln.class?
         add(registry, math+"log10",     Math_log10.class) ;    // -> XSDFuncOp                 // - rename
 
-        // math_pow : integer preserving, otherwise doubles. 
+        // math_pow : integer preserving, otherwise doubles.
         add(registry, math+"pow",       Math_pow.class) ;      // -> XSDFuncOp
         add(registry, math+"sqrt",      sqrt.class) ;
-    
+
         // From leviathan, with math: naming.
         add(registry, math+"sin",       sin.class) ;
         add(registry, math+"cos",       cos.class) ;
@@ -249,12 +249,15 @@ public class StandardFunctions
         add(registry, math+"asin",      sin1.class) ;
         add(registry, math+"acos",      cos1.class) ;
         add(registry, math+"atan",      tan1.class) ;
-        
+
         add(registry, math+"atan2",     Math_atan2.class) ;
-        
+
         // F&O 3.1
         add(registry, xfn+"apply",           FN_Apply.class);
         add(registry, xfn+"collation-key",   FN_CollationKey.class);
+
+        add(registry, xfn+"numeric-mod",              Op_NumericMod.class);
+        add(registry, xfn+"numeric-integer-divide",   Op_NumericIntegerDivide.class);
 
         // And add op:'s
 //        4.2.1 op:numeric-add
@@ -314,7 +317,7 @@ public class StandardFunctions
 //        9.7.13 op:add-dayTimeDuration-to-time
 //        9.7.14 op:subtract-dayTimeDuration-from-time
     }
-    
+
     private static void addCastXSD(FunctionRegistry registry, XSDDatatype dt) {
         registry.put(dt.getURI(), new FunctionCastXSD(dt)) ;
     }

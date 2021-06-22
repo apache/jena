@@ -1840,8 +1840,12 @@ Expr MultiplicativeExpression() : { Expr expr1, expr2 ; }
     { expr1 = new E_Multiply(expr1, expr2) ; }
   | <SLASH> expr2 = UnaryExpression()
     { expr1 = new E_Divide(expr1, expr2) ; }
-//   | <REM>   expr2 = UnaryExpression()
-//     { expr1 = new E_Modulus(expr1, expr2) ; }
+#ifdef ARQ
+  | <MOD>   expr2 = UnaryExpression()
+    { expr1 = new E_OpNumericMod(expr1, expr2) ; }
+  | <IDIV>  expr2 = UnaryExpression()
+    { expr1 = new E_OpNumericIntegerDivide(expr1, expr2) ; }
+#endif
   )*
     { return expr1 ; }
 }
@@ -1963,6 +1967,12 @@ Expr BuiltInCall() : { Expr expr ;
   | <FLOOR> <LPAREN> expr1 = Expression() <RPAREN> { return new E_NumFloor(expr1) ; }
     
   | <ROUND> <LPAREN> expr1 = Expression() <RPAREN> { return new E_NumRound(expr1) ; }
+
+#if ARQ
+  | <MOD>  <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN> { return new E_OpNumericMod(expr1, expr2); }
+  
+  | <IDIV> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN> { return new E_OpNumericIntegerDivide(expr1, expr2); }
+#endif
     
   | <CONCAT> a = ExpressionList() { return new E_StrConcat(a) ; }
     
@@ -2564,6 +2574,11 @@ TOKEN [IGNORE_CASE] :
 |  < CEIL:        "CEIL" >
 |  < FLOOR:       "FLOOR" >
 |  < ROUND:       "ROUND" >
+#ifdef ARQ
+|  < MOD:         "MOD" >
+|  < IDIV:        "IDIV" >
+#endif
+
 |  < CONCAT:      "CONCAT" >
 |  < SUBSTR:      "SUBSTR" >
 |  < STRLEN:      "STRLEN" >
@@ -2741,7 +2756,6 @@ TOKEN :
 | < STAR:    "*" >
 | < SLASH:   "/" >
 
-//| < AMP: "&" >
 //| < REM: "%" >
 
 | < DATATYPE: "^^">

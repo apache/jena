@@ -148,6 +148,9 @@ public class Tags
     public static final String symDiv             = "/" ;
     public static final String tagDivide          = "divide" ;
 
+    public static final String tagMod             = "mod" ;
+    public static final String tagIDiv            = "idiv" ;
+
     public static final String symNot             = "!" ;
     public static final String tagNot             = "not" ;
     public static final String tagStr             = "str" ;

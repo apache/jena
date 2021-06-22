@@ -125,6 +125,9 @@
 [<CEIL>]        ::= 'CEIL'
 [<FLOOR>]       ::= 'FLOOR'
 [<ROUND>]       ::= 'ROUND'
+[<IDIV>]        ::= 'IDIV'
+[<MOD>]         ::= 'MOD'
+
 [<CONCAT>]      ::= 'CONCAT'
 [<SUBSTR>]      ::= 'SUBSTR'
 [<STRLEN>]      ::= 'STRLEN'
@@ -225,11 +228,8 @@
 [<BLK1_L>]     ::= '(|'
 [<BLK1_R>]     ::= '|)'
 
-[<BLK2_L>]     ::= '{|'
-[<BLK2_R>]     ::= '|}'
-
 //[<ANON>]       ::= '[' ']'
-<ANON>       ::= '['  <WS>* ']'
+<ANON>         ::= '['  <WS>* ']'
 
 [<SEMICOLON>]  ::= ';'
 [<COMMA>]      ::= ','

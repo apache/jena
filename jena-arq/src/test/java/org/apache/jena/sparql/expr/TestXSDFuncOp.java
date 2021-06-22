@@ -37,28 +37,28 @@ public class TestXSDFuncOp
     private static final double accuracyExact_F = 0.0f ;
     private static final double accuracyClose_D = 0.000001d ;
     private static final double accuracyClose_F = 0.000001f ;
-    
-    
+
+
     @Test public void lex_decimal_1() {
         lex_decimal_value(BigDecimal.valueOf(0), "0.0");
     }
-    
+
     @Test public void lex_decimal_2() {
         lex_decimal_value(BigDecimal.valueOf(1), "1.0");
     }
-    
+
     @Test public void lex_decimal_3() {
         lex_decimal_value(BigDecimal.valueOf(0.5), "0.5");
     }
-    
+
     @Test public void lex_decimal_4() {
         lex_decimal_value(BigDecimal.valueOf(-0.5), "-0.5");
     }
-    
+
     @Test public void lex_decimal_5() {
         lex_decimal_value(BigDecimal.valueOf(1_000_000_000_000_000L), "1000000000000000.0");
     }
-    
+
     @Test public void lex_decimal_6() {
         lex_decimal_value(BigDecimal.valueOf(-1_000_000_000_000_000L), "-1000000000000000.0");
     }
@@ -66,7 +66,7 @@ public class TestXSDFuncOp
     @Test public void lex_decimal_canonical_1() {
         lex_decimal_canonical("+.0","0.0");
     }
-    
+
     @Test public void lex_decimal_canonical_2() {
         lex_decimal_canonical("-.0","0.0");
     }
@@ -78,35 +78,35 @@ public class TestXSDFuncOp
     @Test public void lex_decimal_canonical_4() {
         lex_decimal_canonical("0012.0000","12.0");
     }
-    
+
     @Test public void lex_decimal_canonical_5() {
         lex_decimal_canonical("-0012.0000","-12.0");
     }
 
-    
+
     // Exact given lexical form preserved.
     @Test public void lex_decimal_nodevalue_1() {
         lex_decimal_nodevalue("0.0","0.0");
     }
-    
+
     @Test public void lex_decimal_nodevalue_2() {
         // As input.
         lex_decimal_nodevalue("0.","0.");
     }
-    
+
     @Test public void lex_decimal_nodevalue3() {
         // As input.
         lex_decimal_nodevalue("+.0","+.0");
     }
-    
+
     private static void lex_decimal_value(BigDecimal decimal, String expected) {
         String lex = XSDFuncOp.canonicalDecimalStr(decimal);
         assertEquals(expected, lex);
     }
-    
+
     private static void lex_decimal_nodevalue(String input, String expected) {
         NodeValue nv = NodeValue.makeDecimal(input);
-        String lex = nv.asString(); 
+        String lex = nv.asString();
         assertEquals(expected, lex);
     }
 
@@ -117,7 +117,7 @@ public class TestXSDFuncOp
     }
 
     // These add tests also test that the right kind of operation was done.
-    
+
     @Test public void testAddIntegerInteger()
     {
         NodeValue nv1 = NodeValue.makeInteger(5) ;
@@ -137,7 +137,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueDecimal: "+r, r instanceof NodeValueDecimal) ;
         assertEquals("Wrong result", 8, r.getDecimal().doubleValue(), accuracyExact_D ) ;
     }
-    
+
     @Test public void testAddFloatFloat()
     {
         NodeValue nv1 = NodeValue.makeFloat(7.5f) ;
@@ -159,7 +159,7 @@ public class TestXSDFuncOp
         assertEquals("Wrong result", 10, r.getDouble(), accuracyExact_D ) ;
     }
 
-    
+
     @Test public void testAddIntegerDecimal()
     {
         NodeValue nv1 = NodeValue.makeInteger(5) ;
@@ -169,7 +169,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueDecimal: "+r, r instanceof NodeValueDecimal) ;
         assertEquals("Wrong result", 12, r.getDecimal().longValue()) ;
     }
-    
+
     @Test public void testAddDecimalInteger()
     {
         NodeValue nv1 = NodeValue.makeDecimal(7) ;
@@ -179,7 +179,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueDecimal: "+r, r instanceof NodeValueDecimal) ;
         assertEquals("Wrong result", 12, r.getDecimal().longValue()) ;
     }
-    
+
     @Test public void testAddIntegerFloat()
     {
         NodeValue nv1 = NodeValue.makeInteger(5) ;
@@ -189,7 +189,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueFloat: "+r, r instanceof NodeValueFloat) ;
         assertEquals("Wrong result", 12, r.getDouble(), accuracyExact_F ) ;
     }
-    
+
     @Test public void testAddFloatInteger()
     {
         NodeValue nv1 = NodeValue.makeFloat(7) ;
@@ -209,7 +209,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueDouble: "+r, r instanceof NodeValueDouble) ;
         assertEquals("Wrong result", 12, r.getDouble(), accuracyExact_D ) ;
     }
-    
+
     @Test public void testAddDoubleInteger()
     {
         NodeValue nv1 = NodeValue.makeDouble(7) ;
@@ -229,7 +229,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueFloat: "+r, r instanceof NodeValueFloat) ;
         assertEquals("Wrong result", 8, r.getFloat(), accuracyExact_F) ;
     }
-    
+
     @Test public void testAddFloatDecimal()
     {
         NodeValue nv1 = NodeValue.makeFloat(4.5f) ;
@@ -248,7 +248,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueDouble: "+r, r instanceof NodeValueDouble) ;
         assertEquals("Wrong result", 8, r.getDouble(), accuracyExact_D) ;
     }
-    
+
     @Test public void testAddDoubleDecimal()
     {
         NodeValue nv1 = NodeValue.makeDouble(4.5) ;
@@ -298,13 +298,13 @@ public class TestXSDFuncOp
         assertTrue("Not a decimal: "+r, r.isDecimal()) ;
         // sameAv (value) test : does not test lexical form or datatype.
         assertTrue("Wrong result : expected="+r+" : got="+nv3, NodeValue.sameAs(r, nv3));
-        return r.getNode().getLiteralLexicalForm();
+        return r.asNode().getLiteralLexicalForm();
     }
-    
+
     @Test public void testDivideDecimal1() {
         divideDecimal("1", "10", "0.1");
     }
-    
+
     @Test public void testDivideDecimal2() {
         divideDecimal("1", "2", "0.5");
     }
@@ -317,32 +317,32 @@ public class TestXSDFuncOp
 
     @Test public void testDivideDecimal4() {
         String x = divideDecimal("0", "3", "0");
-        assertEquals("Wrong lexical form", "0.0", x); 
+        assertEquals("Wrong lexical form", "0.0", x);
     }
 
     // JENA-1943 : If exact, return more than DIVIDE_PRECISION
     @Test public void testDivideDecimal5() {
         String x = divideDecimal("1", "10000000000000000000000000", "0.0000000000000000000000001");
-        // More than 2 (for the "0.") plus XSDFuncOp.DIVIDE_PRECISION = 24 
+        // More than 2 (for the "0.") plus XSDFuncOp.DIVIDE_PRECISION = 24
         assertEquals("Wrong length lexical form", 27, x.length());
     }
-    
+
     // JENA-1943
     @Test public void testDivideDecimal6() {
         String x = divideDecimal("1", "10000000000000000000000000000", "0.0000000000000000000000000001");
         // Exact
         assertEquals("Wrong length lexical form", 30, x.length());
     }
-    
+
     // divide errors
     @Test(expected=ExprEvalException.class)
     public void testDivideByZero1()
-    {   
+    {
         NodeValue nv1 = NodeValue.makeInteger(1) ;
         NodeValue nv2 = NodeValue.makeInteger(0) ;
         NodeValue r = XSDFuncOp.numDivide(nv1, nv2) ;
     }
-    
+
     @Test public void testDivideByZero2()
     {
         NodeValue nv1 = NodeValue.makeInteger(1) ;
@@ -351,7 +351,7 @@ public class TestXSDFuncOp
         assertTrue("Not a double: "+r, r.isDouble()) ;
         assertTrue("Not a +INF: "+r, r.getDouble()==Double.POSITIVE_INFINITY) ;
     }
-    
+
     @Test public void testDivideByZero4()
     {
         NodeValue nv1 = NodeValue.makeInteger(-1) ;
@@ -360,7 +360,7 @@ public class TestXSDFuncOp
         assertTrue("Not a double: "+r, r.isDouble()) ;
         assertTrue("Not a -INF: "+r, r.getDouble()==Double.NEGATIVE_INFINITY) ;
     }
-    
+
     @Test(expected=ExprEvalException.class)
     public void testDivideByZero5()
     {
@@ -386,7 +386,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueDouble: "+r, r instanceof NodeValueDouble) ;
         assertEquals("Wrong result", 1d, r.getDouble(), accuracyExact_D ) ;
     }
-    
+
     @Test public void testSubtractDecimalInteger()
     {
         NodeValue nv1 = NodeValue.makeDecimal(3.5) ;
@@ -396,7 +396,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueDecimal: "+r, r instanceof NodeValueDecimal) ;
         assertTrue("Wrong result", NodeValue.sameAs(NodeValue.makeDecimal(1.5), r) ) ;
     }
-    
+
     @Test public void testMultiplyDoubleDecimal()
     {
         NodeValue nv1 = NodeValue.makeDouble(4.5) ;
@@ -406,7 +406,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueDouble: "+r, r instanceof NodeValueDouble) ;
         assertEquals("Wrong result", 4.5d*3.5d, r.getDouble(), accuracyExact_D ) ;
     }
-    
+
     @Test public void testMultiplyDecimalInteger()
     {
         NodeValue nv1 = NodeValue.makeDecimal(3.5) ;
@@ -416,7 +416,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueDecimal: "+r, r instanceof NodeValueDecimal) ;
         assertEquals("Wrong result", 7L, r.getDecimal().longValue()) ;
     }
-    
+
     @Test public void testCompare1()
     {
         NodeValue nv5 = NodeValue.makeInteger(5) ;
@@ -426,17 +426,17 @@ public class TestXSDFuncOp
         NodeValue nv5b = NodeValue.makeInteger(5) ;
         assertEquals("Does not compare "+nv5+" & "+nv5b, NodeValue.CMP_EQUAL, NodeValue.compare(nv5, nv5b)) ;
     }
-    
+
     @Test public void testCompare2()
     {
         NodeValue nv5 = NodeValue.makeInteger(5) ;
-        NodeValue nv7 = NodeValue.makeNodeInteger(7) ; 
+        NodeValue nv7 = NodeValue.makeNodeInteger(7) ;
         assertEquals("Does not compare "+nv5+" & "+nv7, NodeValue.CMP_LESS, NodeValue.compare(nv5, nv7) ) ;
 
         NodeValue nv5b = NodeValue.makeNodeInteger(5) ;
         assertEquals("Does not compare "+nv5+" & "+nv5b, NodeValue.CMP_EQUAL, NodeValue.compare(nv5, nv5b) ) ;
     }
-    
+
     @Test public void testCompare3()
     {
         NodeValue nv5 = NodeValue.makeInteger(5) ;
@@ -457,8 +457,8 @@ public class TestXSDFuncOp
         NodeValue nv7 = NodeValue.makeDecimal(7) ;
         assertEquals("Does not compare "+nv5+" & "+nv7, NodeValue.CMP_LESS, NodeValue.compare(nv5, nv7) ) ;
     }
-    
-    
+
+
     @Test public void testCompare10()
     {
         NodeValue nv1 = NodeValue.makeDateTime("2005-10-14T13:09:43Z") ;
@@ -494,7 +494,7 @@ public class TestXSDFuncOp
         } catch (ExprNotComparableException ex)
         {}
     }
-    
+
     @Test public void testCompare16()
     {
         // One in a timezone, one not.  Within +/- 14 hours.  Can't compare.
@@ -518,7 +518,7 @@ public class TestXSDFuncOp
         } catch (ExprNotComparableException ex)
         {}
     }
-    
+
     @Test public void testCompare18()
     {
         // One in a timezone, one not.  More than +/- 14 hours.  Can compare.
@@ -527,7 +527,7 @@ public class TestXSDFuncOp
         assertEquals(Expr.CMP_GREATER, NodeValue.compare(nv1, nv2)) ;
     }
 
-    
+
     @Test public void testCompare20()
     {
         NodeValue nv1 = NodeValue.makeString("abcd") ;
@@ -539,22 +539,22 @@ public class TestXSDFuncOp
     {
         NodeValue nv5 = NodeValue.makeInteger(5) ;
         NodeValue nv7 = NodeValue.makeString("5") ;
-        
+
         try {
             NodeValue.compare(nv5, nv7) ;
-            fail("Should not compare (but did) "+nv5+" & "+nv7) ; 
+            fail("Should not compare (but did) "+nv5+" & "+nv7) ;
         } catch (ExprEvalException ex)
         { /* expected */}
-            
+
         int x = NodeValue.compareAlways(nv5, nv7) ;
         assertEquals("Does not compare "+nv5+" & "+nv7, NodeValue.CMP_GREATER, NodeValue.compareAlways(nv5, nv7) ) ;
     }
-    
+
     @Test public void testCompare22()
     {
         NodeValue nv1 = NodeValue.makeNodeString("aaa") ;
         NodeValue nv2 = NodeValue.makeString("aaabbb") ;
-        
+
         int x = NodeValue.compare(nv1, nv2) ;
         assertEquals("Not CMP_LESS", x, Expr.CMP_LESS) ;
         assertTrue("It's CMP_GREATER", x != Expr.CMP_GREATER) ;
@@ -565,39 +565,39 @@ public class TestXSDFuncOp
     {
         NodeValue nv1 = NodeValue.makeNode(NodeFactory.createBlankNode()) ;
         NodeValue nv2 = NodeValue.makeString("5") ;
-        
+
         try {
             NodeValue.compare(nv1, nv2) ;
-            fail("Should not compare (but did) "+nv1+" & "+nv2) ; 
+            fail("Should not compare (but did) "+nv1+" & "+nv2) ;
         } catch (ExprEvalException ex)
         { /* expected */}
     }
-    
+
     @Test public void testSameUnknown_1()
     {
-        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createURI("test:abc")) ; 
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createURI("test:abc")) ;
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createURI("test:abc")) ;
-        
-        assertTrue(NodeValue.sameAs(nv1, nv2)) ; 
+
+        assertTrue(NodeValue.sameAs(nv1, nv2)) ;
         assertFalse(NodeValue.notSameAs(nv1, nv2)) ;
         try {
             NodeValue.compare(nv1, nv2) ;
-            fail("Should not compare (but did) "+nv1+" & "+nv2) ; 
+            fail("Should not compare (but did) "+nv1+" & "+nv2) ;
         } catch (ExprEvalException ex)
         { /* expected */}
-            
+
     }
-    
+
     @Test public void testSameUnknown_2()
     {
-        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createBlankNode()) ; 
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createBlankNode()) ;
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createURI("test:abc")) ;
-        
+
         assertFalse(NodeValue.sameAs(nv1, nv2)) ;
         assertTrue(NodeValue.notSameAs(nv1, nv2)) ;
         try {
             NodeValue.compare(nv1, nv2) ;
-            fail("Should not compare (but did) "+nv1+" & "+nv2) ; 
+            fail("Should not compare (but did) "+nv1+" & "+nv2) ;
         } catch (ExprEvalException ex)
         { /* expected */}
     }
@@ -606,43 +606,43 @@ public class TestXSDFuncOp
 
     // SameValue and compare of date and dateTimes
     // Timezone tricknesses - if one has a TZ and the other has not, then a difference of 14 hours
-    // is needed for a comparison.  
+    // is needed for a comparison.
 
     @Test public void testSameDateTime_1()
     {
         NodeValue nv1 = NodeValue.makeDateTime("2007-09-04T09:22:03") ;
         NodeValue nv2 = NodeValue.makeDateTime("2007-09-04T09:22:03") ;
-        
+
         assertTrue(NodeValue.sameAs(nv1, nv2)) ;
         assertFalse(NodeValue.notSameAs(nv1, nv2)) ;
     }
-    
+
     @Test public void testSameDateTime_2()
     {
         NodeValue nv1 = NodeValue.makeDateTime("2007-09-04T09:22:03") ;
         NodeValue nv2 = NodeValue.makeDateTime("2007-09-04T19:00:00") ;
-        
+
         assertFalse(NodeValue.sameAs(nv1, nv2)) ;
         assertTrue(NodeValue.notSameAs(nv1, nv2)) ;
     }
 
-    
+
     @Test public void testSameDateTime_3()
     {
         // These are the same.
         NodeValue nv1 = NodeValue.makeDateTime("2007-09-04T10:22:03+01:00") ;
         NodeValue nv2 = NodeValue.makeDateTime("2007-09-04T09:22:03Z") ;
-        
+
         assertTrue(NodeValue.sameAs(nv1, nv2)) ;
         assertFalse(NodeValue.notSameAs(nv1, nv2)) ;
     }
-    
+
     @Test public void testSameDateTime_4()
     {
         // These are not the same.
         NodeValue nv1 = NodeValue.makeDateTime("2007-09-04T10:22:03+01:00") ;
         NodeValue nv2 = NodeValue.makeDateTime("2007-09-04T10:22:03Z") ;
-        
+
         assertFalse(NodeValue.sameAs(nv1, nv2)) ;
         assertTrue(NodeValue.notSameAs(nv1, nv2)) ;
     }
@@ -651,75 +651,75 @@ public class TestXSDFuncOp
     {
         NodeValue nv1 = NodeValue.makeDateTime("2007-09-04T10:22:03+01:00") ;
         NodeValue nv2 = NodeValue.makeDateTime("2007-09-04T09:22:03") ;     // No timezone
-        
-        try { 
+
+        try {
             NodeValue.sameAs(nv1, nv2) ;
             fail("Should not sameValueAs (but did) "+nv1+" & "+nv2) ;
         } catch (ExprEvalException ex) {}
-        
-        try { 
+
+        try {
             NodeValue.notSameAs(nv1, nv2) ;
             fail("Should not notSameValueAs (but did) "+nv1+" & "+nv2) ;
         } catch (ExprEvalException ex) {}
     }
-    
+
     // ---- sameValueAs -- xsd:date
-    
+
     @Test public void testSameDate_1()
     {
         NodeValue nv1 = NodeValue.makeDate("2007-09-04") ;
         NodeValue nv2 = NodeValue.makeDate("2007-09-04") ;
-        
+
         assertTrue(NodeValue.sameAs(nv1, nv2)) ;
         assertFalse(NodeValue.notSameAs(nv1, nv2)) ;
     }
-    
+
     @Test public void testSameDate_2()
     {
         NodeValue nv1 = NodeValue.makeDate("2007-09-04Z") ;
         NodeValue nv2 = NodeValue.makeDate("2007-09-04+00:00") ;
-        
+
         assertTrue(NodeValue.sameAs(nv1, nv2)) ;
         assertFalse(NodeValue.notSameAs(nv1, nv2)) ;
     }
-    
-    
+
+
     @Test public void testSameDate_3()
     {
         NodeValue nv1 = NodeValue.makeDate("2007-09-04Z") ;
         NodeValue nv2 = NodeValue.makeDate("2007-09-04") ;     // No timezone
-        
-        try { 
+
+        try {
             NodeValue.sameAs(nv1, nv2) ;
             fail("Should not sameValueAs (but did) "+nv1+" & "+nv2) ;
         } catch (ExprEvalException ex) {}
-        
-        try { 
+
+        try {
             NodeValue.notSameAs(nv1, nv2) ;
             fail("Should not notSameValueAs (but did) "+nv1+" & "+nv2) ;
         } catch (ExprEvalException ex) {}
     }
-    
-    
+
+
     // General comparisons for sorting.
-    
+
     // bnodes < URIs < literals
-    
+
     @Test public void testCompareGeneral1()
     {
         NodeValue nv1 = NodeValue.makeNode(NodeFactory.createBlankNode()) ;
         NodeValue nv2 = NodeValue.makeString("5") ;
-        
+
         // bNodes before strings
         int x = NodeValue.compareAlways(nv1, nv2) ;
         assertEquals("Does not compare "+nv1+" & "+nv2, NodeValue.CMP_LESS, NodeValue.compareAlways(nv1, nv2) ) ;
     }
-    
+
     @Test public void testCompareGeneral2()
     {
         NodeValue nv1 = NodeValue.makeNode(NodeFactory.createBlankNode()) ;
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createURI("test:abc")) ;
-        
+
         // bNodes before URIs
         int x = NodeValue.compareAlways(nv1, nv2) ;
         assertEquals("Does not compare "+nv1+" & "+nv2, NodeValue.CMP_LESS, NodeValue.compareAlways(nv1, nv2) ) ;
@@ -729,7 +729,7 @@ public class TestXSDFuncOp
     {
         NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteral("test:abc")) ;
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createURI("test:abc")) ;
-        
+
         // URIs before literals
         int x = NodeValue.compareAlways(nv1, nv2) ;
         assertEquals("Does not compare "+nv1+" & "+nv2, NodeValue.CMP_GREATER, NodeValue.compareAlways(nv1, nv2) ) ;
@@ -739,7 +739,7 @@ public class TestXSDFuncOp
     {
         NodeValue nv1 = NodeValue.makeNode(NodeFactory.createURI("test:abc")) ;
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createURI("test:xyz")) ;
-        
+
         int x = NodeValue.compareAlways(nv1, nv2) ;
         assertEquals("Does not compare "+nv1+" & "+nv2, NodeValue.CMP_LESS, NodeValue.compareAlways(nv1, nv2) ) ;
     }
@@ -747,27 +747,27 @@ public class TestXSDFuncOp
     @Test public void testCompareDuration_01() {
         testCompare("'P365D'^^xsd:duration", "'P300D'^^xsd:duration", Expr.CMP_GREATER) ;
     }
-    
+
     // JENA-814
-    @Test(expected=ExprNotComparableException.class) 
+    @Test(expected=ExprNotComparableException.class)
     public void testCompareDuration_02() {
         testCompare("'P365D'^^xsd:duration", "'P1Y'^^xsd:duration", Expr.CMP_INDETERMINATE) ;
     }
-    
+
     // JENA-814
-    @Test(expected=ExprNotComparableException.class) 
+    @Test(expected=ExprNotComparableException.class)
     public void testCompareDuration_03() {
         testCompare("'P365D'^^xsd:dayTimeDuration", "'P1Y'^^xsd:yearMonthDuration", Expr.CMP_INDETERMINATE) ;
     }
 
     // JENA-814
-    @Test(expected=ExprNotComparableException.class) 
+    @Test(expected=ExprNotComparableException.class)
     public void testCompareDuration_04() {
         testCompare("'P1M'^^xsd:duration", "'P28D'^^xsd:duration", Expr.CMP_INDETERMINATE) ;
     }
 
     // JENA-814
-    @Test(expected=ExprNotComparableException.class) 
+    @Test(expected=ExprNotComparableException.class)
     public void testCompareDuration_05() {
         testCompare("'P1M'^^xsd:yearMonthDuration", "'P28D'^^xsd:dayTimeDuration", Expr.CMP_INDETERMINATE) ;
     }
@@ -775,20 +775,20 @@ public class TestXSDFuncOp
     @Test public void testCompareDuration_06() {
         testCompare("'P13M'^^xsd:yearMonthDuration", "'P1Y'^^xsd:yearMonthDuration", Expr.CMP_GREATER) ;
     }
-    
+
     // -------
-    
+
     private static void testCompare(String s1, String s2, int correct) {
-        NodeValue nv1 = parse(s1) ; 
-        NodeValue nv2 = parse(s2) ; 
+        NodeValue nv1 = parse(s1) ;
+        NodeValue nv2 = parse(s2) ;
         int x = NodeValue.compare(nv1, nv2) ;
         assertEquals("("+s1+", "+s2+") -> "+name(x)+" ["+name(correct)+"]", correct, x) ;
         int y = x ;
-        if ( x == Expr.CMP_LESS || x == Expr.CMP_GREATER ) 
+        if ( x == Expr.CMP_LESS || x == Expr.CMP_GREATER )
             y = -x ;
         assertEquals("Not symmetric: ("+s1+", "+s2+")", NodeValue.compare(nv2, nv1), y) ;
     }
-    
+
     private static String name(int cmp) {
         switch(cmp) {
             case Expr.CMP_EQUAL :       return "EQ" ;
@@ -797,15 +797,15 @@ public class TestXSDFuncOp
             case Expr.CMP_UNEQUAL :     return "NE" ;
             case Expr.CMP_INDETERMINATE : return "INDET" ;
             default:return "Unknown" ;
-                
+
         }
     }
-    
+
     private static NodeValue parse(String str) {
         Node n = SSE.parseNode(str) ;
-        return NodeValue.makeNode(n) ; 
+        return NodeValue.makeNode(n) ;
     }
-    // abs is a test of Function.unaryOp machinery 
+    // abs is a test of Function.unaryOp machinery
     @Test public void testAbs1()
     {
         NodeValue nv = NodeValue.makeInteger(2) ;
@@ -814,7 +814,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueInteger: "+r, r instanceof NodeValueInteger) ;
         assertEquals("Wrong result", 2, r.getInteger().longValue() ) ;
     }
-    
+
     @Test public void testAbs2()
     {
         NodeValue nv = NodeValue.makeInteger(-2) ;
@@ -823,7 +823,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueInteger: "+r, r instanceof NodeValueInteger) ;
         assertEquals("Wrong result", 2, r.getInteger().longValue() ) ;
     }
-    
+
     @Test public void testAbs3()
     {
         NodeValue nv = NodeValue.makeDecimal(2) ;
@@ -832,7 +832,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueDecimal: "+r, r instanceof NodeValueDecimal) ;
         assertEquals("Wrong result", 2, r.getDecimal().doubleValue(), accuracyExact_D ) ;
     }
-    
+
     @Test public void testAbs4()
     {
         NodeValue nv = NodeValue.makeDecimal(-2) ;
@@ -841,7 +841,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueDecimal: "+r, r instanceof NodeValueDecimal) ;
         assertEquals("Wrong result", 2, r.getDecimal().doubleValue(), accuracyExact_D ) ;
     }
-    
+
     @Test public void testAbs5()
     {
         NodeValue nv = NodeValue.makeFloat(2) ;
@@ -886,7 +886,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueDecimal: "+r, r instanceof NodeValueDecimal) ;
         assertEquals("Wrong result", 3, r.getDecimal().longValue()) ;
     }
-    
+
     @Test public void testCeiling2()
     {
         NodeValue nv = NodeValue.makeDecimal(-3.6) ;
@@ -895,7 +895,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueDecimal: "+r, r instanceof NodeValueDecimal) ;
         assertEquals("Wrong result", -3, r.getDecimal().longValue() ) ;
     }
-    
+
     @Test public void testCeiling3()
     {
         NodeValue nv = NodeValue.makeDouble(2.6) ;
@@ -904,7 +904,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueDouble: "+r, r instanceof NodeValueDouble) ;
         assertEquals("Wrong result", 3, r.getDouble(), accuracyExact_D ) ;
     }
-    
+
     @Test public void testCeiling4()
     {
         NodeValue nv = NodeValue.makeDouble(-3.6) ;
@@ -922,7 +922,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueInteger: "+r, r instanceof NodeValueInteger) ;
         assertEquals("Wrong result", 3, r.getInteger().longValue() ) ;
     }
-    
+
     @Test public void testFloor1()
     {
         NodeValue nv = NodeValue.makeDecimal(2.6) ;
@@ -931,7 +931,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueDecimal: "+r, r instanceof NodeValueDecimal) ;
         assertEquals("Wrong result", 2, r.getDecimal().longValue()) ;
     }
-    
+
     @Test public void testFloor2()
     {
         NodeValue nv = NodeValue.makeDecimal(-3.6) ;
@@ -940,7 +940,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueDecimal: "+r, r instanceof NodeValueDecimal) ;
         assertEquals("Wrong result", -4, r.getDecimal().longValue() ) ;
     }
-    
+
     @Test public void testFloor3()
     {
         NodeValue nv = NodeValue.makeDouble(2.6) ;
@@ -949,7 +949,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueDouble: "+r, r instanceof NodeValueDouble) ;
         assertEquals("Wrong result", 2, r.getDouble(), accuracyExact_D ) ;
     }
-    
+
     @Test public void testFloor4()
     {
         NodeValue nv = NodeValue.makeDouble(-3.6) ;
@@ -958,7 +958,7 @@ public class TestXSDFuncOp
         assertTrue("Not a NodeValueDouble: "+r, r instanceof NodeValueDouble) ;
         assertEquals("Wrong result", -4, r.getDouble(), accuracyExact_D ) ;
     }
-    
+
     @Test public void testFloor5()
     {
         NodeValue nv = NodeValue.makeInteger(3) ;
@@ -973,13 +973,13 @@ public class TestXSDFuncOp
         NodeValue four = NodeValue.makeInteger(4) ;
         NodeValue two = NodeValue.makeDouble(2) ;
         NodeValue result = XSDFuncOp.sqrt( four ) ;
-        
+
         assertTrue(result.isDouble()) ;
         assertFalse(result.isDecimal()) ;
         assertTrue( NodeValue.sameAs( two, result)) ;
         assertTrue( two.asNode().sameValueAs(result.asNode()) ) ;
     }
-    
+
     @Test public void testSqrt2()
     {
         NodeValue four = NodeValue.makeDouble(4) ;
@@ -988,36 +988,36 @@ public class TestXSDFuncOp
 
         assertTrue(result.isDouble()) ;
         assertTrue( NodeValue.sameAs( two, result)) ;
-        
+
         assertNotNull(result.asNode()) ;
     }
-    
+
     @Test(expected=ExprEvalException.class)
     public void testStrReplace() {
-        //test invalid pattern 
+        //test invalid pattern
         NodeValue wrong = NodeValue.makeString("^(?:-*[^-]){-9}");
         NodeValue nvStr= NodeValue.makeString("AGIKLAKLMTUARAR");
         NodeValue empty= NodeValue.makeString("");
         XSDFuncOp.strReplace(nvStr, wrong, empty);
     }
-    
+
     // All compatible - no timezone.
     private static NodeValue nv_dt = NodeValue.makeNode("2010-03-22T20:31:54.5", XSDDatatype.XSDdateTime) ;
     private static NodeValue nv_d = NodeValue.makeNode("2010-03-22", XSDDatatype.XSDdate) ;
     private static NodeValue nv_gy = NodeValue.makeNode("2010", XSDDatatype.XSDgYear) ;
     private static NodeValue nv_gym = NodeValue.makeNode("2010-03", XSDDatatype.XSDgYearMonth) ;
-    
+
     private static NodeValue nv_gmd = NodeValue.makeNode("--03-22", XSDDatatype.XSDgMonthDay) ;
     private static NodeValue nv_gm = NodeValue.makeNode("--03", XSDDatatype.XSDgMonth) ;
     private static NodeValue nv_gd = NodeValue.makeNode("---22", XSDDatatype.XSDgDay) ;
     private static NodeValue nv_t = NodeValue.makeNode("20:31:54.5", XSDDatatype.XSDtime) ;
-    
+
     private static void testDateTimeCast(NodeValue nv, XSDDatatype xsd, NodeValue nvResult )
     {
         NodeValue nv2 = XSDFuncOp.dateTimeCast(nv, xsd) ;
         Assert.assertEquals(nvResult, nv2) ;
     }
-    
+
     // datetime to other
     @Test public void cast_gregorian_01() { testDateTimeCast(nv_dt, XSDDatatype.XSDdateTime, nv_dt) ; }
     @Test public void cast_gregorian_02() { testDateTimeCast(nv_dt, XSDDatatype.XSDdate, nv_d) ; }
@@ -1026,7 +1026,7 @@ public class TestXSDFuncOp
     @Test public void cast_gregorian_05() { testDateTimeCast(nv_dt, XSDDatatype.XSDgMonthDay, nv_gmd) ; }
     @Test public void cast_gregorian_06() { testDateTimeCast(nv_dt, XSDDatatype.XSDgMonth, nv_gm) ; }
     @Test public void cast_gregorian_07() { testDateTimeCast(nv_dt, XSDDatatype.XSDgDay, nv_gd) ; }
-    
+
     @Test public void cast_gregorian_08() { testDateTimeCast(nv_dt, XSDDatatype.XSDtime, nv_t) ; }
 
     // date to other
@@ -1046,46 +1046,46 @@ public class TestXSDFuncOp
     @Test public void cast_gregorian_25() { testDateTimeCast(nv_gd, XSDDatatype.XSDgDay, nv_gd) ; }
 
     // G* to date
-    
+
     @Test(expected=ExprEvalTypeException.class)
     public void cast_gregorian_31()     { testDateTimeCast(nv_gym, XSDDatatype.XSDdate, nv_d) ; }
-    
+
     @Test(expected=ExprEvalTypeException.class)
     public void cast_gregorian_32()     { testDateTimeCast(nv_gy, XSDDatatype.XSDdate, NodeValue.makeDate("2010-01-01")) ; }
-    
+
     @Test(expected=ExprEvalTypeException.class)
     public void cast_gregorian_33()     { testDateTimeCast(nv_gmd, XSDDatatype.XSDdate, nv_d) ; }
-    
+
     @Test(expected=ExprEvalTypeException.class)
     public void cast_gregorian_34()     { testDateTimeCast(nv_gm, XSDDatatype.XSDdate, nv_d) ; }
-    
+
     @Test(expected=ExprEvalTypeException.class)
     public void cast_gregorian_35()     { testDateTimeCast(nv_gd, XSDDatatype.XSDdate, nv_d) ; }
 
     // Junk to date/time thing.
     @Test (expected=ExprEvalTypeException.class)
     public void cast_err_gregorian_01() { testDateTimeCast(NodeValue.makeBoolean(false), XSDDatatype.XSDgDay, nv_gd) ; }
-    
+
     private static NodeValue nv_dt_tz1 = NodeValue.makeNode("2010-03-22T20:31:54.5+01:00", XSDDatatype.XSDdateTime) ;
     private static NodeValue nv_dt_tz2 = NodeValue.makeNode("2010-03-22T20:31:54.5-05:00", XSDDatatype.XSDdateTime) ;
     private static NodeValue nv_dt_tz3 = NodeValue.makeNode("2010-03-22T20:31:54.5Z", XSDDatatype.XSDdateTime) ;
-    
+
     private static NodeValue nv_d_tz1 = NodeValue.makeNode("2010-03-22+01:00", XSDDatatype.XSDdate) ;
     private static NodeValue nv_d_tz2 = NodeValue.makeNode("2010-03-22-05:00", XSDDatatype.XSDdate) ;
     private static NodeValue nv_d_tz3 = NodeValue.makeNode("2010-03-22Z", XSDDatatype.XSDdate) ;
-    
+
     private static NodeValue nv_t_tz1 = NodeValue.makeNode("20:31:54.5+01:00", XSDDatatype.XSDtime) ;
     private static NodeValue nv_t_tz2 = NodeValue.makeNode("20:31:54.5-05:00", XSDDatatype.XSDtime) ;
     private static NodeValue nv_t_tz3 = NodeValue.makeNode("20:31:54.5Z", XSDDatatype.XSDtime) ;
-    
+
     @Test public void cast_date_tz_01() { testDateTimeCast(nv_dt_tz1, XSDDatatype.XSDdate, nv_d_tz1) ; }
     @Test public void cast_date_tz_02() { testDateTimeCast(nv_dt_tz2, XSDDatatype.XSDdate, nv_d_tz2) ; }
     @Test public void cast_date_tz_03() { testDateTimeCast(nv_dt_tz3, XSDDatatype.XSDdate, nv_d_tz3) ; }
-    
+
     @Test public void cast_time_tz_01() { testDateTimeCast(nv_dt_tz1, XSDDatatype.XSDtime, nv_t_tz1) ; }
     @Test public void cast_time_tz_02() { testDateTimeCast(nv_dt_tz2, XSDDatatype.XSDtime, nv_t_tz2) ; }
     @Test public void cast_time_tz_03() { testDateTimeCast(nv_dt_tz3, XSDDatatype.XSDtime, nv_t_tz3) ; }
-    
+
     @Test
     public void fn_error_01() {
         try {

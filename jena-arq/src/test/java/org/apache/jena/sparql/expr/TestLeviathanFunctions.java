@@ -120,12 +120,12 @@ public class TestLeviathanFunctions {
 
     @Test
     public void log_01() {
-        LibTestExpr.test("lfn:log(1)", "0");
+        LibTestExpr.test("lfn:log(1)", "0e0");
     }
 
     @Test
     public void log_02() {
-        LibTestExpr.test("lfn:log(10)", "1");
+        LibTestExpr.test("lfn:log(10)", "1e0");
     }
 
     @Test
@@ -135,42 +135,42 @@ public class TestLeviathanFunctions {
 
     @Test
     public void log_04() {
-        LibTestExpr.test("lfn:log(4, 2)", "2");
+        LibTestExpr.test("lfn:log(4, 2)", "2e0");
     }
 
     @Test
     public void log_05() {
-        LibTestExpr.test("lfn:log(4, 16)", "0.5");
+        LibTestExpr.test("lfn:log(4, 16)", "0.5e0");
     }
 
     @Test
     public void log_06() {
-        LibTestExpr.test("lfn:log(16, 4)", "2");
+        LibTestExpr.test("lfn:log(16, 4)", "2e0");
     }
 
     @Test
     public void reciprocal_01() {
-        LibTestExpr.test("lfn:reciprocal(1)", "1");
+        LibTestExpr.test("lfn:reciprocal(1)", "1e0");
     }
 
     @Test
     public void reciprocal_02() {
-        LibTestExpr.test("lfn:reciprocal(2)", "0.5");
+        LibTestExpr.test("lfn:reciprocal(2)", "0.5e0");
     }
 
     @Test
     public void reciprocal_03() {
-        LibTestExpr.test("lfn:reciprocal(lfn:reciprocal(2))", "2");
+        LibTestExpr.test("lfn:reciprocal(lfn:reciprocal(2))", "2e0");
     }
 
     @Test
     public void root_01() {
-        LibTestExpr.test("lfn:root(4,2)", "2");
+        LibTestExpr.test("lfn:root(4,2)", "2e0");
     }
 
     @Test
     public void root_02() {
-        LibTestExpr.test("lfn:root(2,1)", "2");
+        LibTestExpr.test("lfn:root(2,1)", "2e0");
     }
 
     @Test
@@ -180,44 +180,44 @@ public class TestLeviathanFunctions {
 
     @Test
     public void sqrt_01() {
-        LibTestExpr.test("lfn:sqrt(4)", "2");
+        LibTestExpr.test("lfn:sqrt(4)", "2e0");
     }
 
     @Test
     public void sqrt_02() {
-        LibTestExpr.test("lfn:sqrt(144)", "12");
+        LibTestExpr.test("lfn:sqrt(144)", "12e0");
     }
 
     @Test
     public void cartesian_01() {
-        LibTestExpr.test("lfn:cartesian(0, 0, 0, 0)", "0");
+        LibTestExpr.test("lfn:cartesian(0, 0, 0, 0)", "0e0");
     }
 
     @Test
     public void cartesian_02() {
-        LibTestExpr.test("lfn:cartesian(0, 0, 3, 4)", "5");
+        LibTestExpr.test("lfn:cartesian(0, 0, 3, 4)", "5e0");
     }
 
     @Test
     public void cartesian_03() {
-        LibTestExpr.test("lfn:cartesian(0, 0, 0, 3, 4, 0)", "5");
+        LibTestExpr.test("lfn:cartesian(0, 0, 0, 3, 4, 0)", "5e0");
     }
 
     @Test
     public void cartesian_04() {
-        LibTestExpr.test("lfn:cartesian(0, 0, 0, 0, 3, 4)", "5");
+        LibTestExpr.test("lfn:cartesian(0, 0, 0, 0, 3, 4)", "5e0");
     }
 
     @Test
     public void cartesian_05() {
-        LibTestExpr.test("lfn:cartesian(0, 0, 0, 3, 0, 4)", "5");
+        LibTestExpr.test("lfn:cartesian(0, 0, 0, 3, 0, 4)", "5e0");
     }
 
     @Test
     public void cos_01() {
         testDouble("lfn:cos(lfn:degrees-to-radians(60))", "0.5", DELTA);
     }
-    
+
     @Test
     public void acos_01() {
         testDouble("lfn:radians-to-degrees(lfn:cos-1(lfn:cos(lfn:degrees-to-radians(60))))", "60", DELTA);
