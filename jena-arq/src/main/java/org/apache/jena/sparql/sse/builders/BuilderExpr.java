@@ -351,6 +351,20 @@ public class BuilderExpr
         return new E_Divide(left, right);
     };
 
+    private static Build buildIDiv = (ItemList list) -> {
+        BuilderLib.checkLength(3, list, "idiv: wanted 2 arguments: got :"+numArgs(list));
+        Expr left = buildExpr(list.get(1));
+        Expr right = buildExpr(list.get(2));
+        return new E_OpNumericIntegerDivide(left, right);
+    };
+
+    private static Build buildMod = (ItemList list) -> {
+        BuilderLib.checkLength(3, list, "mod: wanted 2 arguments: got :"+numArgs(list));
+        Expr left = buildExpr(list.get(1));
+        Expr right = buildExpr(list.get(2));
+        return new E_OpNumericMod(left, right);
+    };
+
     private static Build buildNot = (ItemList list) -> {
         BuilderLib.checkLength(2, list, "!: wanted 1 arguments: got :"+numArgs(list));
         Expr ex = buildExpr(list.get(1));
@@ -932,6 +946,9 @@ public class BuilderExpr
 
         dispatch.put(Tags.symDiv, buildDiv);
         dispatch.put(Tags.tagDivide, buildDiv);
+
+        dispatch.put(Tags.tagIDiv, buildIDiv);
+        dispatch.put(Tags.tagMod, buildMod);
 
         dispatch.put(Tags.tagNot, buildNot);   // Same builders for (not ..) and (! ..)
         dispatch.put(Tags.symNot, buildNot);

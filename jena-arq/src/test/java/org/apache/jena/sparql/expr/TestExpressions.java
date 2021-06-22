@@ -369,6 +369,8 @@ public class TestExpressions
     @Test public void testBoolean_152() { testBoolean("<"+xsd+"double>(str('3')) = 3", true) ; }
 
     @Test public void testString_23()   { testString("'a'+'b'", "ab") ; }
+
+    // Not strict
     @Test(expected=ExprEvalException.class)
     public void testString_24()         { testString("'a'+12") ; }
     public void testString_25()         { testString("12+'a'") ; }

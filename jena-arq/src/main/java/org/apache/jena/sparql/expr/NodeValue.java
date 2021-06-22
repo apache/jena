@@ -37,6 +37,7 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.datatypes.DatatypeFormatException ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.datatypes.xsd.XSDDateTime ;
 import org.apache.jena.ext.xerces.DatatypeFactoryInst;
 import org.apache.jena.graph.Node ;
@@ -340,8 +341,10 @@ public abstract class NodeValue extends ExprNode
 
     public static NodeValue makeNodeDecimal(BigDecimal decimal)
     {
-        NodeValue nv = XSDFuncOp.canonicalDecimalNV(decimal) ;
-        return nv ;
+      String lex = XSDFuncOp.canonicalDecimalStr(decimal);
+      return NodeValue.makeNode(lex, XSDDatatype.XSDdecimal) ;
+//        NodeValue nv = XSDFuncOp.canonicalDecimalNV(decimal) ;
+//        return nv ;
     }
 
     public static NodeValue makeNodeDecimal(String lexicalForm)

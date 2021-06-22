@@ -129,8 +129,6 @@ public class XSDFuncOp
     public static NodeValue numDivide(NodeValue nv1, NodeValue nv2) {
         switch (classifyNumeric("divide", nv1, nv2)) {
             case OP_INTEGER : {
-                if ( nv2.getInteger().equals(BigInteger.ZERO) )
-                    throw new ExprEvalException("Divide by zero in divide") ;
                 // Note: result is a decimal
                 BigDecimal d1 = new BigDecimal(nv1.getInteger()) ;
                 BigDecimal d2 = new BigDecimal(nv2.getInteger()) ;
@@ -157,17 +155,104 @@ public class XSDFuncOp
             throw new ExprEvalException("Divide by zero in decimal divide") ;
         BigDecimal d3;
         try {
+            // Jena 3.16.0 used d1.divide(d2, DIVIDE_PRECISION, BigDecimal.ROUND_FLOOR)
+            // which can looses precision even when there is exact answer.
+            // See JENA-1943 and JENA-2116
+            // Casting the dividend (the left hand value) to xsd:double gets approximate division always.
+
+            // Exact where possible.
+            // But this generates an exception when not exact which can be costly in some situations.
             d3 = d1.divide(d2, MathContext.UNLIMITED);
         } catch (ArithmeticException ex) {
-            // Does not throw ArithmeticException
             d3 = d1.divide(d2, DIVIDE_PRECISION, RoundingMode.HALF_EVEN);
         }
-        return canonicalDecimalNV(d3) ;
+        return NodeValue.makeDecimal(d3) ;
     }
 
-    public static NodeValue canonicalDecimalNV(BigDecimal d) {
-        String x = canonicalDecimalStr(d);
-        return NodeValue.makeNode(x, XSDDatatype.XSDdecimal) ;
+    /** Integer divide */
+    public static NodeValue numIntegerDivide(NodeValue nv1, NodeValue nv2) {
+        switch (XSDFuncOp.classifyNumeric("idiv", nv1, nv2)) {
+            case OP_INTEGER :
+                BigInteger bi1 = nv1.getInteger();
+                BigInteger bi2 = nv2.getInteger();
+                if ( BigInteger.ZERO.equals(bi2) )
+                    throw new ExprEvalException("Divide by zero in IDIV") ;
+                BigInteger bi3 = bi1.divide(bi2);
+                return NodeValue.makeInteger(bi3);
+            case OP_DECIMAL :
+                BigDecimal bd_a = nv1.getDecimal();
+                BigDecimal bd_b = nv2.getDecimal();
+                if ( BigDecimal.ZERO.compareTo(bd_b) == 0 )
+                    throw new ExprEvalException("Divide by zero in IDIV") ;
+                BigInteger bi = bd_a.divideToIntegralValue(bd_b).toBigIntegerExact();
+                return NodeValue.makeInteger(bi);
+            case OP_FLOAT : {
+                float arg1 = nv1.getFloat();
+                float arg2 = nv2.getFloat();
+                if ( arg2 == 0.0  )
+                    throw new ExprEvalException("Divide by zero in IDIV") ;
+                if ( Float.isNaN(arg1) || Float.isNaN(arg2) )
+                    throw new ExprEvalException("Divide by NaN in IDIV") ;
+                if ( Float.isInfinite(arg1) )
+                    throw new ExprEvalException("+/-INF in IDIV") ;
+                float f = arg1 / arg2;
+                return NodeValue.makeInteger((long)f);
+            }
+            case OP_DOUBLE : {
+                double arg1 = nv1.getDouble();
+                double arg2 = nv2.getDouble();
+                if ( arg2 == 0.0  )
+                    throw new ExprEvalException("Divide by zero in IDIV") ;
+                if ( Double.isNaN(arg1) || Double.isNaN(arg2) )
+                    throw new ExprEvalException("Divide by NaN in IDIV") ;
+                if ( Double.isInfinite(arg1) )
+                    throw new ExprEvalException("+/-INF in IDIV") ;
+                double d = arg1 / arg2;
+                return NodeValue.makeInteger((long)d);
+            }
+            default :
+                throw new ARQInternalErrorException("Unrecognized numeric operation : (" + nv1 + " ," + nv2 + ")") ;
+        }
+    }
+
+    public static NodeValue numericMod(NodeValue nv1, NodeValue nv2) {
+        // F&O modulus operation != Java Number.mod operations.
+        switch (XSDFuncOp.classifyNumeric("mod", nv1, nv2)) {
+            // a = (a idiv b)*b+(a mod b)
+            // => except corner cases (none or xsd:decimal except precision?)
+            // a - (a idiv b)*b
+
+            case OP_INTEGER :
+                // Not BigInteger.mod. F&O != Java.
+                BigInteger bi1 = nv1.getInteger();
+                BigInteger bi2 = nv2.getInteger();
+                if ( BigInteger.ZERO.equals(bi2) )
+                    throw new ExprEvalException("Divide by zero in MOD") ;
+                BigInteger bi3 = bi1.remainder(bi2);
+                return NodeValue.makeInteger(bi3);
+            case OP_DECIMAL :
+                BigDecimal bd_a = nv1.getDecimal();
+                BigDecimal bd_b = nv2.getDecimal();
+                if ( BigDecimal.ZERO.compareTo(bd_b) == 0 )
+                    throw new ExprEvalException("Divide by zero in MOD") ;
+                // This is the MOD for X&O
+                BigDecimal bd_mod = bd_a.remainder(bd_b);
+                return NodeValue.makeDecimal(bd_mod);
+            case OP_FLOAT :
+                float f1 = nv1.getFloat();
+                float f2 = nv2.getFloat();
+                if ( f2 == 0 )
+                    throw new ExprEvalException("Divide by zero in MOD") ;
+                return NodeValue.makeFloat( f1 % f2) ;
+            case OP_DOUBLE :
+                double d1 = nv1.getDouble();
+                double d2 = nv2.getDouble();
+                if ( d2 == 0 )
+                    throw new ExprEvalException("Divide by zero in MOD") ;
+                return NodeValue.makeDouble(d1 % d2) ;
+            default :
+                throw new ARQInternalErrorException("Unrecognized numeric operation : (" + nv1 + " ," + nv2 + ")") ;
+        }
     }
 
     /**
@@ -389,9 +474,9 @@ public class XSDFuncOp
     }
 
     // The following function 'roundXpath3' implements the definition for "fn:round" in F&O v3.
-    // This is diffrent to the "fn:round" in F&O v2.
+    // This is different to the "fn:round" in F&O v2.
     // SPARQL 1.1 references F&O v2.
-    private static BigDecimal roundDecimalValue(BigDecimal dec,int precision,boolean isHalfToEven)
+    private static BigDecimal roundDecimalValue(BigDecimal dec, int precision, boolean isHalfToEven)
     {
         if(isHalfToEven){
             return dec.setScale(precision, RoundingMode.HALF_EVEN);
