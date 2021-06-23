@@ -15,9 +15,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
 
 <Configure id="Server" class="org.eclipse.jetty.server.Server">
-  <!-- Mininal jetty.xml to run on a specific port, locked to localhost -->
+  <!-- Minimal jetty.xml to run on a specific port, locked to localhost -->
   <Call name="addConnector">
     <Arg>
       <New id="httpConnector" class="org.eclipse.jetty.server.ServerConnector">
