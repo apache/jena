@@ -148,7 +148,7 @@ public class RDFConnectionRemoteBuilder {
 
     }
 
-    /** Set the {@link HttpClient} fir the connection to tbe built */
+    /** Set the {@link HttpClient} for the connection to be built */
     public RDFConnectionRemoteBuilder httpClient(HttpClient httpClient) {
         this.httpClient = httpClient;
         return this;
@@ -171,7 +171,8 @@ public class RDFConnectionRemoteBuilder {
         return this;
     }
 
-    /** Set the output format for sending RDF Datasets to the remote server.
+    /**
+     * Set the output format for sending RDF Datasets to the remote server.
      * This is used for HTTP PUT and POST to a dataset.
      * This must be a quads format.
      */

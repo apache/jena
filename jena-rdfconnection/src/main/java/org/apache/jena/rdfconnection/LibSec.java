@@ -64,7 +64,7 @@ public class LibSec {
         HttpClient httpClient = httpClient(auth); 
         
         // Needs retryable mods to RDFConnectionRemote??
-        try ( RDFConnection conn = RDFConnectionRemote.create()
+        try ( RDFConnection conn = RDFConnectionRemote.newBuilder()
                 .destination(urlStr)
                 .httpClient(httpClient)
                 .httpContext(httpContext)

@@ -91,7 +91,7 @@ public class ExFuseki_DataAccessCtl {
         HttpClient client = httpClient("user1", "pw1");
 
         // ---- Use it.
-        try (RDFConnection conn = RDFConnectionRemote.create()
+        try (RDFConnection conn = RDFConnectionRemote.newBuilder()
             .destination(URL)
             .httpClient(client)
             .build()){

@@ -40,7 +40,7 @@ public class RDFConnectionFuseki extends RDFConnectionRemote {
      * @return RDFConnectionRemoteBuilder
      */
     public static RDFConnectionRemoteBuilder create() {
-        return setupForFuseki(RDFConnectionRemote.create());
+        return setupForFuseki(RDFConnectionRemote.newBuilder());
     }
 
     /**
@@ -49,7 +49,7 @@ public class RDFConnectionFuseki extends RDFConnectionRemote {
      * @return RDFConnectionRemoteBuilder
      */
     public static RDFConnectionRemoteBuilder create(RDFConnectionFuseki other) {
-        return setupCreator(RDFConnectionRemote.create(other));
+        return setupCreator(RDFConnectionRemote.newBuilder(other));
     }
 
     /** Fuseki settings */

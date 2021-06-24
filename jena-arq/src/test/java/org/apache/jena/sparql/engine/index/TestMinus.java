@@ -89,7 +89,7 @@ public class TestMinus {
         test(x3);
      }
     
-    private static DatasetGraph dsgzero = new DatasetGraphZero();
+    private static DatasetGraph dsgzero = DatasetGraphZero.create();
     
     private void test(String queryStr) {
         Query ast = QueryFactory.create(queryStr);

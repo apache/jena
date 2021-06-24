@@ -32,8 +32,7 @@ import org.apache.jena.sparql.util.Context;
 /** A interface for a single execution of a query. */
 public interface QueryExecution extends AutoCloseable
 {
-    @SuppressWarnings("deprecation")
-    public static QueryExecutionBuilder create() { return QueryExecutionBuilder.create(); }
+    public static QueryExecutionBuilder create() { return QueryExecutionBuilder.newBuilder(); }
 
     /** Set the initial association of variables and values.
      * May not be supported by all QueryExecution implementations.

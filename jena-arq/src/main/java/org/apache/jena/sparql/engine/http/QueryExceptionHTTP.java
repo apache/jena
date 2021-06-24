@@ -35,6 +35,27 @@ public class QueryExceptionHTTP extends QueryException
     // these are negative to avoid clashes
     public static final int NoServer = -404 ;
 
+    public static QueryExceptionHTTP rewrap(HttpException httpEx) {
+        // The historical contract of HTTP Queries has been to throw QueryExceptionHTTP however using the standard
+        // ARQ machinery we use these days means the internal HTTP errors come back as HttpException
+        // Therefore we need to wrap appropriately
+        int responseCode = httpEx.getStatusCode();
+        if (responseCode != -1) {
+            // Was an actual HTTP error
+            String responseLine = httpEx.getStatusLine() != null ? httpEx.getStatusLine() : "No Status Line";
+            return new QueryExceptionHTTP(responseCode, responseLine, httpEx);
+        } else if (httpEx.getMessage() != null) {
+            // Some non-HTTP error with a valid message e.g. Socket Communications failed, IO error
+            return new QueryExceptionHTTP(responseCode, "Unexpected error making the query: " + httpEx.getMessage(), httpEx);
+        } else if (httpEx.getCause() != null) {
+            // Some other error with a cause e.g. Socket Communications failed, IO error
+            return new QueryExceptionHTTP(responseCode, "Unexpected error making the query, see cause for further details", httpEx);
+        } else {
+            // Some other error with no message and no further cause
+            return new QueryExceptionHTTP(responseCode, "Unexpected error making the query", httpEx);
+        }
+    }
+
     /**
      * Constructor for QueryExceptionHTTP.
      * @param responseCode

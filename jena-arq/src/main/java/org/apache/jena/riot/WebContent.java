@@ -21,6 +21,7 @@ package org.apache.jena.riot;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.resultset.ResultSetLang;
+import org.apache.jena.riot.system.ContentHeaderBuilder;
 
 
 public class WebContent
@@ -174,7 +175,7 @@ public class WebContent
         =  "text/turtle,application/n-triples;q=0.9,application/ld+json;q=0.8,application/rdf+xml;q=0.7" ;
 
     /** Accept header when looking for a graph */
-    // Catches aplication/xml and application.json
+    // Catches application/xml and application/json
     public static final String defaultGraphAcceptHeader     =  defaultGraphAccept+",*/*;q=0.3" ;
 
     /** Accept header part when looking for a dataset */
@@ -190,6 +191,31 @@ public class WebContent
             "text/turtle,application/n-triples;q=0.9,application/rdf+xml;q=0.7," +
             "application/trig,application/n-quads;q=0.9,application/ld+json;q=0.8," +
             "*/*;q=0.5" ;
+
+
+    public static final String acceptEncoding        = "gzip, deflate" ;
+
+    // The "header" form includes pragmatic extras.
+
+    public static final String sparqlResults = ContentHeaderBuilder.create()
+            .add(WebContent.contentTypeResultsJSON)
+            .add(WebContent.contentTypeResultsXML,   0.9)
+            .add(WebContent.contentTypeTextTSV,      0.7)
+            .add(WebContent.contentTypeTextCSV,      0.5)
+            .build();
+    public static final String defaultSparqlResultsHeader = sparqlResults+
+            ","+WebContent.contentTypeJSON+";q=0.2"+
+            ","+WebContent.contentTypeXML+";q=0.2"+
+            ",*/*;q=0.1";
+
+    public static final String sparqlAsk = ContentHeaderBuilder.create()
+            .add(WebContent.contentTypeResultsJSON)
+            .add(WebContent.contentTypeResultsXML,   0.9)
+            .build();
+    public static final String defaultSparqlAskHeader = sparqlAsk+
+            ","+WebContent.contentTypeJSON+";q=0.2"+
+            ","+WebContent.contentTypeXML+";q=0.2"+
+            ",*/*;q=0.1";
 
     /**
      * Return our "canonical" name for a Content Type.

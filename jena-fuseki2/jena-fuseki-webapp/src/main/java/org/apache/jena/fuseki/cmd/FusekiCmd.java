@@ -292,6 +292,7 @@ public class FusekiCmd {
                 String dir = getValue(argTDB);
                 cmdLine.params.put(Template.DIR, dir);
                 cmdLine.reset();
+                cmdLine.allowUpdate = contains(argUpdate);
                 WebappDSGSetup.setup(dir, useTDB2, cmdLine);
             }
 

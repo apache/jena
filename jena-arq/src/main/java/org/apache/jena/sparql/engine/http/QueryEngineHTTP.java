@@ -56,7 +56,6 @@ import org.slf4j.LoggerFactory ;
 /**
  * A query execution implementation where queries are executed against a remote
  * service
- *
  */
 public class QueryEngineHTTP implements QueryExecution {
     private static Logger log = LoggerFactory.getLogger(QueryEngineHTTP.class);
@@ -87,16 +86,28 @@ public class QueryEngineHTTP implements QueryExecution {
     // Compression Support
     private boolean allowCompression = true;
 
-    // Content Types
-    private String selectContentType    = defaultSelectHeader();
-    private String askContentType       = defaultAskHeader();
-    private String modelContentType     = defaultConstructHeader();
+//    // Content Types
+//    private String selectContentType    = defaultSelectHeader();
+//    private String askContentType       = defaultAskHeader();
+//    private String modelContentType     = defaultConstructHeader();
+//
+//    private String constructContentType = defaultConstructHeader() ;
+//    private String datasetContentType   = defaultConstructDatasetHeader() ;
+//
+//    // If this is non-null, it overrides the ???ContentType choice.
+//    private String acceptHeader         = null;
 
-    private String constructContentType = defaultConstructHeader() ;
-    private String datasetContentType   = defaultConstructDatasetHeader() ;
+    // Updates default headers, same variables.
+    private String selectContentType    = WebContent.defaultSparqlResultsHeader;
+    private String askContentType       = WebContent.defaultSparqlAskHeader;
+    private String modelContentType     = WebContent.defaultGraphAcceptHeader;
+
+//    private String constructContentType = WebContent.defaultGraphAcceptHeader;
+    private String datasetContentType   = WebContent.defaultDatasetAcceptHeader;
 
     // If this is non-null, it overrides the ???ContentType choice.
     private String acceptHeader         = null;
+
 
     // Received content type
     private String httpResponseContentType = null ;

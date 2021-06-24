@@ -53,10 +53,10 @@ public class TestTransactionSupport {
             (Creator<DatasetGraph>)()->DatasetGraphFactory.wrap(GraphFactory.createDefaultGraph()),
             true, false}) ;
         x.add(new Object[] {"zero" ,
-            (Creator<DatasetGraph>)()->new DatasetGraphZero(),
+            (Creator<DatasetGraph>)()->DatasetGraphZero.create(),
             true, true}) ;
         x.add(new Object[] {"sink" ,
-            (Creator<DatasetGraph>)()->new DatasetGraphSink(),
+            (Creator<DatasetGraph>)()->DatasetGraphSink.create(),
             true, true}) ;
         x.add(new Object[] {"create(Graph)",
             (Creator<DatasetGraph>)()->DatasetGraphFactory.create(GraphFactory.createDefaultGraph()),

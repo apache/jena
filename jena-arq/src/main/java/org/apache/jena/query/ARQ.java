@@ -247,6 +247,23 @@ public class ARQ
      */
     public static final Symbol serviceParams = SystemARQ.allocSymbol("serviceParams") ;
 
+
+    // Jena HTTP related.
+
+    // [QExec]
+    // Sort out context and setup.
+    /**
+     * Use this symbol to provide a {@link RegistryRequestModifier} that can modifier
+     * an HTTP request just before it is sent.
+     */
+    public static final Symbol httpRegistryRequestModifer = SystemARQ.allocSymbol("httpRegistryRequestModifer") ;
+
+    /**
+     * Use this symbol to provide a {@link HttpRequestModifier} directly.
+     * This takes precedence over registry lookup.
+     */
+
+    public static final Symbol httpRequestModifer = SystemARQ.allocSymbol("httpRequestModifer") ;
     /**
      * Control whether SERVICE processing is allowed.
      * If the context of the query execution contains this,

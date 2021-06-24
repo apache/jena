@@ -45,7 +45,7 @@ public class TestUnionDatasetGraph extends AbstractTestDyadicDatasetGraph {
         final DatasetGraph dsg2 = DatasetGraphFactory.create(g2);
         final Node graphName2 = NodeFactory.createBlankNode();
         dsg2.addGraph(graphName2, g2);
-        DatasetGraph dsg = testInstance(dsg1, dsg2, Context.emptyContext);
+        DatasetGraph dsg = testInstance(dsg1, dsg2, Context.emptyContext());
 
         assertEquals(2, dsg.size());
         assertTrue(g1.isIsomorphicWith(dsg.getGraph(graphName1)));

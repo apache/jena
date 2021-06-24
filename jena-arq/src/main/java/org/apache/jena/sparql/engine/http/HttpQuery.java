@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory ;
  * Create an execution object for performing a query on a model over HTTP. This
  * is the main protocol engine for HTTP query. There are higher level classes
  * for doing a query and presenting the results in an API fashion.
- * 
+ *
  * If the query string is large, then HTTP POST is used.
  */
 
@@ -80,7 +80,7 @@ public class HttpQuery extends Params {
 
     /**
      * Create a execution object for a whole model GET
-     * 
+     *
      * @param serviceURL
      *            The model
      */
@@ -90,7 +90,7 @@ public class HttpQuery extends Params {
 
     /**
      * Create a execution object for a whole model GET
-     * 
+     *
      * @param url
      *            The model
      */
@@ -119,7 +119,7 @@ public class HttpQuery extends Params {
 
     /**
      * Set the content type (Accept header) for the results
-     * 
+     *
      * @param contentType
      *            Accept content type
      */
@@ -134,7 +134,7 @@ public class HttpQuery extends Params {
      * if it has not been made this reflects only the Accept header that will be
      * sent (as set via the {@link #setAccept(String)} method)
      * </p>
-     * 
+     *
      * @return Content Type
      */
     public String getContentType() {
@@ -144,7 +144,7 @@ public class HttpQuery extends Params {
     /**
      * Gets the HTTP Response Code returned by the request (returns 0 if request
      * has yet to be made)
-     * 
+     *
      * @return Response Code
      */
     public int getResponseCode() {
@@ -154,7 +154,7 @@ public class HttpQuery extends Params {
     /**
      * Gets the HTTP Response Message returned by the request (returns null if request
      * has yet to be made)
-     * 
+     *
      * @return Response Message
      */
     public String getResponseMessage() {
@@ -164,7 +164,7 @@ public class HttpQuery extends Params {
     /**
      * Sets whether the HTTP request will include compressed encoding
      * header
-     * 
+     *
      * @param allow
      *            Whether to allow compressed encoding
      */
@@ -179,7 +179,7 @@ public class HttpQuery extends Params {
     public void setClient(HttpClient client) {
         this.client = client;
     }
-    
+
     /**
      * Sets the context to use
      * @param context HTTP context
@@ -187,7 +187,7 @@ public class HttpQuery extends Params {
     public void setContext(HttpContext context) {
         this.context = context;
     }
-    
+
     /**
      * Gets the HTTP client that is being used, may be null if no request has yet been made
      * @return HTTP Client or null
@@ -204,20 +204,20 @@ public class HttpQuery extends Params {
         }
         return client;
     }
-    
+
     /**
      * Gets the HTTP context that is being used, or sets and returns a default
      * @return the {@code HttpContext} in scope
      */
     public HttpContext getContext() {
-        if (context == null) 
+        if (context == null)
             context = new BasicHttpContext();
         return context;
     }
 
     /**
      * Return whether this request will go by GET or POST
-     * 
+     *
      * @return boolean
      */
     public boolean usesPOST() {
@@ -238,7 +238,7 @@ public class HttpQuery extends Params {
 
     /**
      * Sets HTTP Connection timeout, any value {@literal <=} 0 is taken to mean no timeout
-     * 
+     *
      * @param timeout
      *            Connection Timeout
      */
@@ -248,7 +248,7 @@ public class HttpQuery extends Params {
 
     /**
      * Gets the HTTP Connection timeout
-     * 
+     *
      * @return Connection Timeout
      */
     public int getConnectTimeout() {
@@ -257,7 +257,7 @@ public class HttpQuery extends Params {
 
     /**
      * Sets HTTP Read timeout, any value {@literal <=} 0 is taken to mean no timeout
-     * 
+     *
      * @param timeout
      *            Read Timeout
      */
@@ -267,7 +267,7 @@ public class HttpQuery extends Params {
 
     /**
      * Gets the HTTP Read timeout
-     * 
+     *
      * @return Read Timeout
      */
     public int getReadTimeout() {
@@ -276,7 +276,7 @@ public class HttpQuery extends Params {
 
     /**
      * Execute the operation
-     * 
+     *
      * @return Model The resulting model
      * @throws QueryExceptionHTTP
      */
@@ -299,11 +299,11 @@ public class HttpQuery extends Params {
             throw jEx;
         }
     }
-    
+
     private void contextualizeCompressionSettings(RequestConfig.Builder builder) {
         builder.setContentCompressionEnabled(allowCompression);
     }
-    
+
     private void contextualizeTimeoutSettings(RequestConfig.Builder builder) {
         if (connectTimeout > 0) builder.setConnectTimeout(connectTimeout);
         if (readTimeout > 0) builder.setSocketTimeout(readTimeout);
@@ -338,10 +338,10 @@ public class HttpQuery extends Params {
                 throw httpEx;
             }
         } catch (HttpException httpEx) {
-            throw rewrap(httpEx);
+            throw QueryExceptionHTTP.rewrap(httpEx);
         }
     }
-    
+
     // With exception.
     private static TypedInputStream execHttpGet(String url, String acceptHeader, HttpClient httpClient, HttpContext httpContext) {
         HttpCaptureResponse<TypedInputStream> handler = new CaptureInput();
@@ -367,28 +367,7 @@ public class HttpQuery extends Params {
                 throw new QueryExceptionHTTP(404);
             return execCommon(stream);
         } catch (HttpException httpEx) {
-        	throw rewrap(httpEx);
-        }
-    }
-    
-    private QueryExceptionHTTP rewrap(HttpException httpEx) {
-        // The historical contract of HTTP Queries has been to throw QueryExceptionHTTP however using the standard
-        // ARQ HttpOp machinery we use these days means the internal HTTP errors come back as HttpException
-        // Therefore we need to wrap appropriately
-        responseCode = httpEx.getStatusCode();
-        if (responseCode != -1) {
-        	// Was an actual HTTP error
-        	String responseLine = httpEx.getStatusLine() != null ? httpEx.getStatusLine() : "No Status Line";
-        	return new QueryExceptionHTTP(responseCode, responseLine, httpEx);
-        } else if (httpEx.getMessage() != null) {
-        	// Some non-HTTP error with a valid message e.g. Socket Communications failed, IO error
-        	return new QueryExceptionHTTP(responseCode, "Unexpected error making the query: " + httpEx.getMessage(), httpEx);
-        } else if (httpEx.getCause() != null) {
-        	// Some other error with a cause e.g. Socket Communications failed, IO error
-        	return new QueryExceptionHTTP(responseCode, "Unexpected error making the query, see cause for further details", httpEx);
-        } else {
-        	// Some other error with no message and no further cause
-        	return new QueryExceptionHTTP(responseCode, "Unexpected error making the query", httpEx);
+        	throw QueryExceptionHTTP.rewrap(httpEx);
         }
     }
 

@@ -20,6 +20,7 @@ package org.apache.jena.sparql.engine;
 
 import java.util.concurrent.TimeUnit;
 
+import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.query.QueryExecution;
@@ -35,36 +36,39 @@ public class EngineLib {
         if ( str == null )
             return;
         try {
-            if ( str.contains(",") ) {
-                String[] a = str.split(",");
-                if ( a.length > 2 ) {
-                    Log.warn(qExec, "Can't interpret string for timeout: " + str);
-                    throw new QueryBuildException();
-                }
-                long x1 = Long.parseLong(a[0]);
-                x1 = unit.toMillis(x1);
-                long x2 = Long.parseLong(a[1]);
-                x2 = unit.toMillis(x2);
-                if ( merge )
-                    mergeTimeouts(qExec, x1, x2);
-                else
-                    qExec.setTimeout(x1, x2);
-            } else {
-                long x = Long.parseLong(str);
-                x = unit.toMillis(x);
-                if ( merge )
-                    mergeTimeouts(qExec, -1, x);
-                else
-                    qExec.setTimeout(x);
-            }
+            Pair<Long, Long> pair = parseTimoutStr(str, unit);
+            long x1 = pair.getLeft();
+            long x2 = pair.getRight();
+            if ( merge )
+                mergeTimeouts(qExec, x1, x2);
+            else
+                qExec.setTimeout(x1, x2);
         } catch (RuntimeException ex) {
             Log.warn(qExec, "Can't interpret string for timeout: " + str);
         }
     }
 
+    public static Pair<Long, Long> parseTimoutStr(String str, TimeUnit unit) {
+        if ( str.contains(",") ) {
+            String[] a = str.split(",");
+            if ( a.length > 2 )
+                throw new QueryBuildException();
+            long x1 = Long.parseLong(a[0]);
+            x1 = unit.toMillis(x1);
+            long x2 = Long.parseLong(a[1]);
+            x2 = unit.toMillis(x2);
+            return Pair.create(x1, x2);
+        } else {
+            long x = Long.parseLong(str);
+            x = unit.toMillis(x);
+            // Overall timout
+            return Pair.create(-1L, x);
+        }
+    }
+
     /** Merge in query timeouts - that is respect settings in qExec already there. */
     private static void mergeTimeouts(QueryExecution qExec, long timeout1, long timeout2) {
-        // Bound timeout if the QueryExecution alredy has a setting
+        // Bound timeout if the QueryExecution alreasdy has a setting
         if ( timeout1 >= 0 ) {
             if ( qExec.getTimeout1() != -1 )
                 timeout1 = Math.min(qExec.getTimeout1(), timeout1);

@@ -33,7 +33,7 @@ public class TestDifferenceDatasetGraph extends AbstractTestDyadicDatasetGraph {
     public DifferenceDatasetGraph testInstance(DatasetGraph left, DatasetGraph right, Context c) {
         return new DifferenceDatasetGraph(left, right, c);
     }
-    
+
     @Test
     public void testDifference() {
         final Graph g1 = parseGraph("(graph (triple <s1> <p1> <o1> ))");
@@ -44,7 +44,7 @@ public class TestDifferenceDatasetGraph extends AbstractTestDyadicDatasetGraph {
         final DatasetGraph dsg2 = DatasetGraphFactory.create(g2);
         final Node graphName2 = NodeFactory.createBlankNode();
         dsg2.addGraph(graphName2, g2);
-        DatasetGraph dsg = testInstance(dsg1, dsg2, Context.emptyContext);
+        DatasetGraph dsg = testInstance(dsg1, dsg2, Context.emptyContext());
 
         assertEquals(1, dsg.size());
         assertTrue(g1.isIsomorphicWith(dsg.getGraph(graphName1)));

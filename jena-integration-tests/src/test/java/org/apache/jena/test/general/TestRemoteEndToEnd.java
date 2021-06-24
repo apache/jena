@@ -79,7 +79,7 @@ public class TestRemoteEndToEnd {
         int port = server.getPort();
         String URL = server.datasetURL(dataset);
 
-        try ( RDFConnection conn = RDFConnectionRemote.create()
+        try ( RDFConnection conn = RDFConnectionRemote.newBuilder()
                 .acceptHeaderGraph("application/rdf+xml")
                 .destination(URL)
                 .build() ) {

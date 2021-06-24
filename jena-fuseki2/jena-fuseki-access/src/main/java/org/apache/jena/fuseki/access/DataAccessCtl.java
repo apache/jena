@@ -119,7 +119,7 @@ public class DataAccessCtl {
         if ( sCxt instanceof SecurityContextAllowAll )
             return dsg;
         if ( sCxt instanceof SecurityContextAllowNone ) {
-            return new DatasetGraphZero();
+            return DatasetGraphZero.create();
         }
         // Nothing special done for SecurityContextAllowNamedGraphs currently.
         // Unfortunately that means find all named graphs.

@@ -66,7 +66,7 @@ public class TestJsonEval {
 
     private void test(String queryString, String jsonExpected) {
         Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
-        DatasetGraph dsg = new DatasetGraphZero();
+        DatasetGraph dsg = DatasetGraphZero.create();
         Dataset ds = DatasetFactory.wrap(dsg);
         try ( QueryExecution qExec = QueryExecutionFactory.create(query, ds) ) {
             JsonValue jvGot = qExec.execJson() ;

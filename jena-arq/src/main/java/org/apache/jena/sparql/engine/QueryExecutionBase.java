@@ -61,7 +61,6 @@ import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.ModelUtils;
 
 /** All the SPARQL query result forms made from a graph-level execution object */
-
 public class QueryExecutionBase implements QueryExecution
 {
     private final Query              query;

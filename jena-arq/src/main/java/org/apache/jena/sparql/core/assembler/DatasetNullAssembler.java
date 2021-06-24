@@ -47,9 +47,9 @@ public class DatasetNullAssembler extends AssemblerBase {
     public Object open(Assembler a, Resource root, Mode mode) {
         DatasetGraph dsg;
         if ( DatasetAssemblerVocab.tDatasetSink.equals(tDataset) )
-            dsg = new DatasetGraphSink();
+            dsg = DatasetGraphSink.create();
         else if ( DatasetAssemblerVocab.tDatasetZero.equals(tDataset) )
-            dsg = new DatasetGraphZero();
+            dsg = DatasetGraphZero.create();
         else
             throw new InternalErrorException();
         Dataset ds = DatasetFactory.wrap(dsg);
