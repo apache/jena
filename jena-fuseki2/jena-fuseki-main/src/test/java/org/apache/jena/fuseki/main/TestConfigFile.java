@@ -57,7 +57,7 @@ public class TestConfigFile {
         );
 
     private static RDFConnection namedServices(String baseURL) {
-        return RDFConnectionRemote.create()
+        return RDFConnectionRemote.newBuilder()
             .destination(baseURL)
             .queryEndpoint("sparql")
             .updateEndpoint("update")
@@ -165,7 +165,7 @@ public class TestConfigFile {
                 // 400 if on the dataset
                 expect400(()->conn.queryAsk("ASK{}"));
             }
-            RDFConnectionRemoteBuilder builder = RDFConnectionRemote.create()
+            RDFConnectionRemoteBuilder builder = RDFConnectionRemote.newBuilder()
                 .destination(serverURL)
                 .queryEndpoint("sparql")
                 .updateEndpoint("update")
@@ -187,11 +187,11 @@ public class TestConfigFile {
 
         server.start();
         try {
-            RDFConnectionRemoteBuilder builderUnamedServices = RDFConnectionRemote.create()
+            RDFConnectionRemoteBuilder builderUnamedServices = RDFConnectionRemote.newBuilder()
                 .destination(serverURL)
                 .updateEndpoint("")
                 .queryEndpoint("");
-            RDFConnectionRemoteBuilder builderNamedServices = RDFConnectionRemote.create()
+            RDFConnectionRemoteBuilder builderNamedServices = RDFConnectionRemote.newBuilder()
                 .destination(serverURL)
                 .queryEndpoint("sparql")
                 .updateEndpoint("update")
@@ -356,7 +356,7 @@ public class TestConfigFile {
                 assertEquals(1, x);
             }
             // Query union endpoint.
-            RDFConnectionRemoteBuilder builder = RDFConnectionRemote.create()
+            RDFConnectionRemoteBuilder builder = RDFConnectionRemote.newBuilder()
                 .destination(serverURL)
                 .queryEndpoint("sparql-union");
             try ( RDFConnection conn = builder.build() ) {

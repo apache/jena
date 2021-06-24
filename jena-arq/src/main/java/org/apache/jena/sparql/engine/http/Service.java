@@ -18,11 +18,12 @@
 
 package org.apache.jena.sparql.engine.http;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 
 import org.apache.http.client.HttpClient;
 import org.apache.jena.query.Query ;
@@ -73,9 +74,9 @@ public class Service {
      * If the context contains this, and it is set to "false",
      * then SERVICE is not allowed.
      */
-    
+
     public static final Symbol serviceAllowed = SystemARQ.allocSymbol(base, "serviceAllowed");
-    
+
     /**
      * Set timeout. The value of this symbol gives the value of the timeout in
      * milliseconds
@@ -90,9 +91,12 @@ public class Service {
      */
     public static final Symbol queryTimeout = SystemARQ.allocSymbol(base, "queryTimeout");
 
+    // [QExec] DEvELOPMENT !!
+    public static BiFunction<OpService, Context, QueryIterator> braveNewWorld = null;
+
     /**
      * Executes a service operator
-     * 
+     *
      * @param op
      *            Service
      * @param context
@@ -100,9 +104,12 @@ public class Service {
      * @return Query iterator of service results
      */
     public static QueryIterator exec(OpService op, Context context) {
+        if ( braveNewWorld != null )
+            return braveNewWorld.apply(op, context);
+
         if ( context != null && context.isFalse(serviceAllowed) )
             throw new QueryExecException("SERVICE execution disabled") ;
-        
+
         if (!op.getService().isURI())
             throw new QueryExecException("Service URI not bound: " + op.getService());
 
@@ -194,10 +201,10 @@ public class Service {
 
     /**
      * Create and configure the HttpQuery object.
-     * 
+     *
      * The parentContext is not modified but is used to create a new context
      * copy.
-     * 
+     *
      * @param uri
      *            The uri of the endpoint
      * @param parentContext
@@ -225,7 +232,7 @@ public class Service {
         httpQuery.setAllowCompression(context.isTrueOrUndef(queryCompression));
 
         HttpClient client = context.get(queryClient);
-        if (client != null) httpQuery.setClient(client);    
+        if (client != null) httpQuery.setClient(client);
 
         setAnyTimeouts(httpQuery, context);
 
@@ -234,7 +241,7 @@ public class Service {
 
     /**
      * Modified from QueryExecutionBase
-     * 
+     *
      * @see org.apache.jena.sparql.engine.QueryExecutionBase
      */
     private static void setAnyTimeouts(HttpQuery query, Context context) {

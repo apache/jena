@@ -47,7 +47,7 @@ public class RDFConnectionFactory {
      * @see #connect(String, String, String, String)
      */
     public static RDFConnection connect(String destination) {
-        return RDFConnectionRemote.create().destination(destination).build();
+        return RDFConnectionRemote.newBuilder().destination(destination).build();
     }
 
     /** Create a connection specifying the URLs of the service.
@@ -60,7 +60,7 @@ public class RDFConnectionFactory {
     public static RDFConnection connect(String queryServiceEndpoint,
                                         String updateServiceEndpoint,
                                         String graphStoreProtocolEndpoint) {
-        return RDFConnectionRemote.create()
+        return RDFConnectionRemote.newBuilder()
             .queryEndpoint(queryServiceEndpoint)
             .updateEndpoint(updateServiceEndpoint)
             .gspEndpoint(graphStoreProtocolEndpoint)
@@ -81,7 +81,7 @@ public class RDFConnectionFactory {
                                         String queryServiceEndpoint,
                                         String updateServiceEndpoint,
                                         String graphStoreProtocolEndpoint) {
-        return RDFConnectionRemote.create()
+        return RDFConnectionRemote.newBuilder()
             .destination(datasetURL)
             .queryEndpoint(queryServiceEndpoint)
             .updateEndpoint(updateServiceEndpoint)
@@ -101,7 +101,7 @@ public class RDFConnectionFactory {
         Credentials credentials = new UsernamePasswordCredentials(user, password);
         credsProvider.setCredentials(AuthScope.ANY, credentials);
         HttpClient client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
-        return RDFConnectionRemote.create()
+        return RDFConnectionRemote.newBuilder()
             .destination(URL)
             .httpClient(client)
             .build();

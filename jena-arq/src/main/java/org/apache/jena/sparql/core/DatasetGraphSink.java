@@ -39,7 +39,7 @@ public class DatasetGraphSink extends DatasetGraphNull {
         return GraphSink.instance();
     }
 
-    public DatasetGraphSink() {}
+    private DatasetGraphSink() {}
 
     // Ignore all updates.
 

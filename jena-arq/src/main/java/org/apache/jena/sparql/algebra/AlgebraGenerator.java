@@ -98,7 +98,6 @@ public class AlgebraGenerator
      */
     public Op compile(Query query) {
         Op op = compile(query.getQueryPattern());     // Not compileElement - may need to apply simplification.
-
         op = compileModifiers(query, op);
         return op;
     }

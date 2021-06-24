@@ -89,16 +89,35 @@ public class RDFConnectionRemote implements RDFConnection {
     // Whether to check SPARQL updates given as strings by parsing them.
     protected final boolean parseCheckUpdates;
 
-    /** Create a {@link RDFConnectionRemoteBuilder}. */
+    /**
+     * Create a {@link RDFConnectionRemoteBuilder}.
+     * @deprecated Use {@link #newBuilder()}.
+     */
+    @Deprecated
     public static RDFConnectionRemoteBuilder create() {
+        return newBuilder();
+    }
+
+    /** Create a {@link RDFConnectionRemoteBuilder}. */
+    public static RDFConnectionRemoteBuilder newBuilder() {
         return new RDFConnectionRemoteBuilder();
     }
 
     /**
      * Create a {@link RDFConnectionRemoteBuilder} initialized with the
      * settings of another {@code RDFConnectionRemote}.
+     * @deprecated Use {@link #newBuilder(RDFConnectionRemote)}.
      */
+    @Deprecated
     public static RDFConnectionRemoteBuilder create(RDFConnectionRemote base) {
+        return newBuilder();
+    }
+
+    /**
+     * Create a {@link RDFConnectionRemoteBuilder} initialized with the
+     * settings of another {@code RDFConnectionRemote}.
+     */
+    public static RDFConnectionRemoteBuilder newBuilder(RDFConnectionRemote base) {
         return new RDFConnectionRemoteBuilder(base);
     }
 

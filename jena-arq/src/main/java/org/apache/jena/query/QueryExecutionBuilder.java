@@ -18,31 +18,44 @@
 
 package org.apache.jena.query;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphOne;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.QueryEngineFactory;
 import org.apache.jena.sparql.engine.QueryEngineRegistry;
 import org.apache.jena.sparql.engine.QueryExecutionBase;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
 import org.apache.jena.sparql.util.Context;
 
-/** Query Execution builder. */
+/**
+ * Query Execution for local datasets - builder style.
+ */
 public class QueryExecutionBuilder {
 
-    private DatasetGraph dataset = null;
-    private Query        query   = null;
-    private Context      context = null;
-    private Binding      binding = null;    
-
-    public static QueryExecutionBuilder create() {
-        return new QueryExecutionBuilder();
+    /** Create a new builder of {@link QueryExecution} for a local dataset. */
+    public static QueryExecutionBuilder newBuilder() {
+        QueryExecutionBuilder builder = new QueryExecutionBuilder();
+        return builder;
     }
 
-    private QueryExecutionBuilder() {}
+    private DatasetGraph dataset            = null;
+    private Query        query              = null;
+    private Context      context            = null;
+    private Binding      initialBinding     = null;
+    private long         timeout1           = -1;
+    private TimeUnit     timeoutTimeUnit1   = null;
+    private long         timeout2           = -1;
+    private TimeUnit     timeoutTimeUnit2   = null;
 
     public QueryExecutionBuilder query(Query query) {
         this.query = query;
@@ -50,27 +63,60 @@ public class QueryExecutionBuilder {
     }
 
     public QueryExecutionBuilder query(String queryString) {
-        this.query = QueryFactory.create(queryString);
+        query(queryString, Syntax.syntaxARQ);
         return this;
     }
-    
+
+    public QueryExecutionBuilder query(String queryString, Syntax syntax) {
+        this.query = QueryFactory.create(queryString, syntax);
+        return this;
+    }
+
     public QueryExecutionBuilder dataset(DatasetGraph dsg) {
         this.dataset = dsg;
         return this;
     }
 
-    public QueryExecutionBuilder graph(Graph graph) {
-        this.dataset = DatasetGraphOne.create(graph);
+    public QueryExecutionBuilder dataset(Dataset dataset) {
+        this.dataset = dataset.asDatasetGraph();
         return this;
     }
 
     public QueryExecutionBuilder context(Context context) {
-        this.context = context;
+        if ( context == null )
+            return this;
+        ensureContext();
+        this.context.putAll(context);
         return this;
     }
 
+    private void ensureContext() {
+        if ( context == null )
+            context = new Context();
+    }
+
     public QueryExecutionBuilder initialBinding(Binding binding) {
-        this.binding = binding;
+        this.initialBinding = binding;
+        return this;
+    }
+
+    public QueryExecutionBuilder timeout(long value, TimeUnit timeUnit) {
+        this.timeout1 = value;
+        this.timeoutTimeUnit1 = timeUnit;
+        this.timeout2 = value;
+        this.timeoutTimeUnit2 = timeUnit;
+        return this;
+    }
+
+    public QueryExecutionBuilder initialTimeout(long value, TimeUnit timeUnit) {
+        this.timeout1 = value;
+        this.timeoutTimeUnit1 = timeUnit;
+        return this;
+    }
+
+    public QueryExecutionBuilder overallTimeout(long value, TimeUnit timeUnit) {
+        this.timeout2 = value;
+        this.timeoutTimeUnit2 = timeUnit;
         return this;
     }
 
@@ -79,7 +125,7 @@ public class QueryExecutionBuilder {
 
         query.setResultVars();
         Context cxt;
-        
+
         if ( context == null ) {
             // Default is to take the global context, the copy it and merge in the dataset context.
             // If a context is specified by context(Context), use that as given.
@@ -97,10 +143,79 @@ public class QueryExecutionBuilder {
             return null;
         }
 
+        Query queryActual = query;
+        if ( initialBinding != null ) {
+            Map<Var, Node> substitutions = bindingToMap(initialBinding);
+            queryActual = QueryTransformOps.transform(query, substitutions);
+        }
+
         // QueryExecutionBase set up the final context, merging in the dataset context and setting the current time.
-        QueryExecution qExec = new QueryExecutionBase(query, dataset, cxt, f);
-        if ( binding != null )
-            qExec.setInitialBinding(binding);
+        QueryExecution qExec = new QueryExecutionBase(queryActual, dataset, cxt, f);
+        if ( false ) {
+            if ( initialBinding != null )
+                qExec.setInitialBinding(initialBinding);
+        }
+        if ( timeoutTimeUnit1 != null && timeout1 > 0 ) {
+            if ( timeoutTimeUnit2 != null  && timeout2 > 0 )
+                qExec.setTimeout(timeout1, timeoutTimeUnit1, timeout2, timeoutTimeUnit2);
+            else
+                qExec.setTimeout(timeout1, timeoutTimeUnit1);
+        }
         return qExec;
     }
+
+    // ==> BindingUtils
+    /** Binding as a Map */
+    public static Map<Var, Node> bindingToMap(Binding binding) {
+        Map<Var, Node> substitutions = new HashMap<>();
+        Iterator<Var> iter = binding.vars();
+        while(iter.hasNext()) {
+            Var v = iter.next();
+            Node n = binding.get(v);
+            substitutions.put(v, n);
+        }
+        return substitutions;
+    }
+
+    // (Slightly shorter) abbreviated forms - build-execute now.
+
+    public void select(Consumer<QuerySolution> rowAction) {
+        if ( !query.isSelectType() )
+            throw new QueryExecException("Attempt to execute SELECT for a "+query.queryType()+" query");
+        try ( QueryExecution qExec = build() ) {
+            forEachRow(qExec.execSelect(), rowAction);
+        }
+    }
+
+    // Also in RDFLink
+    private static void forEachRow(ResultSet resultSet, Consumer<QuerySolution> rowAction) {
+        while(resultSet.hasNext()) {
+            rowAction.accept(resultSet.next());
+        }
+    }
+
+    public Model construct() {
+        if ( !query.isConstructType() )
+            throw new QueryExecException("Attempt to execute CONSTRUCT for a "+query.queryType()+" query");
+        try ( QueryExecution qExec = build() ) {
+            return qExec.execConstruct();
+        }
+    }
+
+    public Model describe() {
+        if ( !query.isDescribeType() )
+            throw new QueryExecException("Attempt to execute DESCRIBE for a "+query.queryType()+" query");
+        try ( QueryExecution qExec = build() ) {
+            return qExec.execDescribe();
+        }
+    }
+
+    public boolean ask() {
+        if ( !query.isAskType() )
+            throw new QueryExecException("Attempt to execute ASK for a "+query.queryType()+" query");
+        try ( QueryExecution qExec = build() ) {
+            return qExec.execAsk();
+        }
+    }
 }
+

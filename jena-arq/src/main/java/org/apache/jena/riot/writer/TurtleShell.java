@@ -760,6 +760,7 @@ public abstract class TurtleShell {
                 print("a") ;
             else
                 writeNode(p) ;
+
             int colPredicateFinish = out.getCol() ;
             int wPredicate = (colPredicateFinish - colPredicateStart) ;
 
@@ -767,7 +768,6 @@ public abstract class TurtleShell {
                 println() ;
             else {
                 out.pad(predicateMaxWidth) ;
-                // out.print(' ', predicateMaxWidth-wPredicate) ;
                 gap(GAP_P_O) ;
             }
         }

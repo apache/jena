@@ -68,9 +68,9 @@ public class ResultSetReaderRegistry {
         register(RS_TSV,    ResultSetReaderTSV.factory) ;
     }
 
-    private static ResultSetReader readerNo = new ResultSetReader() {
-        @Override public ResultSet read(InputStream in, Context context)    { return null ; }
-        @Override public ResultSet read(Reader in, Context context)         { return null ; }
+    private static class ResultSetReaderNone implements ResultSetReader {
+        @Override public ResultSet read(InputStream in, Context context)       { return null ; }
+        @Override public ResultSet read(Reader in, Context context)            { return null ; }
         @Override public SPARQLResult readAny(InputStream in, Context context) { return null ; }
     } ;
 }

@@ -35,7 +35,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
      * available factory to make an UpdateProcessor
-     * 
+     *
      * @param update
      * @param dataset
      * @return UpdateProcessor or null
@@ -47,7 +47,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
      * available factory to make an UpdateProcessor
-     * 
+     *
      * @param update
      * @param datasetGraph
      * @return UpdateProcessor or null
@@ -59,7 +59,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
      * available factory to make an UpdateProcessor
-     * 
+     *
      * @param update
      * @param dataset
      * @param inputBinding Initial binding to be applied to Update operations that
@@ -73,7 +73,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
      * available factory to make an UpdateProcessor
-     * 
+     *
      * @param update
      * @param datasetGraph
      * @param inputBinding Initial binding to be applied to Update operations that
@@ -87,7 +87,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
      * available factory to make an UpdateProcessor
-     * 
+     *
      * @param updateRequest
      * @param dataset
      * @return UpdateProcessor or null
@@ -99,7 +99,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
      * available factory to make an UpdateProcessor
-     * 
+     *
      * @param updateRequest
      * @param datasetGraph
      * @return UpdateProcessor or null
@@ -111,7 +111,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
      * available factory to make an UpdateProcessor
-     * 
+     *
      * @param updateRequest
      * @param dataset
      * @param inputBinding Initial binding to be applied to Update operations that
@@ -125,7 +125,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
      * available factory to make an UpdateProcessor
-     * 
+     *
      * @param updateRequest
      * @param datasetGraph
      * @param inputBinding Initial binding to be applied to Update operations that
@@ -139,7 +139,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
      * available factory to make an UpdateProcessor
-     * 
+     *
      * @param dataset
      * @return UpdateProcessor or null
      */
@@ -150,7 +150,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
      * available factory to make an UpdateProcessor
-     * 
+     *
      * @param datasetGraph
      * @return UpdateProcessor or null
      */
@@ -161,7 +161,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
      * available factory to make an UpdateProcessor
-     * 
+     *
      * @param dataset
      * @param inputBinding Initial binding to be applied to Update operations that
      *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
@@ -174,7 +174,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
      * available factory to make an UpdateProcessor
-     * 
+     *
      * @param datasetGraph
      * @param inputBinding Initial binding to be applied to Update operations that
      *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
@@ -187,7 +187,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
      * available factory to make an UpdateProcessor
-     * 
+     *
      * @param dataset
      * @param context (null means use merge of global and graph store context))
      * @return UpdateProcessor or null
@@ -199,7 +199,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
      * available factory to make an UpdateProcessor
-     * 
+     *
      * @param datasetGraph
      * @param context (null means use merge of global and graph store context))
      * @return UpdateProcessor or null
@@ -211,7 +211,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
      * available factory to make an UpdateProcessor
-     * 
+     *
      * @param dataset
      * @param inputBinding Initial binding to be applied to Update operations that
      *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
@@ -225,7 +225,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
      * available factory to make an UpdateProcessor
-     * 
+     *
      * @param datasetGraph
      * @param inputBinding Initial binding to be applied to Update operations that
      *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
@@ -239,7 +239,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
      * available factory to make an UpdateProcessor
-     * 
+     *
      * @param updateRequest
      * @param dataset
      * @param context (null means use merge of global and graph store context))
@@ -252,7 +252,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
      * available factory to make an UpdateProcessor
-     * 
+     *
      * @param updateRequest
      * @param datasetGraph
      * @param context (null means use merge of global and graph store context))
@@ -265,7 +265,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
      * available factory to make an UpdateProcessor
-     * 
+     *
      * @param updateRequest
      * @param dataset
      * @param inputBinding Initial binding to be applied to Update operations that
@@ -280,7 +280,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
      * available factory to make an UpdateProcessor
-     * 
+     *
      * @param updateRequest
      * @param datasetGraph
      * @param inputBinding Initial binding to be applied to Update operations that
@@ -316,7 +316,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update to a remote SPARQL Update
      * service.
-     * 
+     *
      * @param update Updates
      * @param remoteEndpoint Endpoint URL
      * @return Remote Update processor
@@ -328,7 +328,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update to a remote SPARQL Update
      * service.
-     * 
+     *
      * @param update Updates
      * @param remoteEndpoint Endpoint URL
      * @param client HTTP client
@@ -341,7 +341,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update to a remote SPARQL Update
      * service.
-     * 
+     *
      * @param update Updates
      * @param remoteEndpoint Endpoint URL
      * @param client HTTP client
@@ -354,7 +354,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update to a remote SPARQL Update
      * service.
-     * 
+     *
      * @param update Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context
@@ -367,7 +367,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update to a remote SPARQL Update
      * service.
-     * 
+     *
      * @param update Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context
@@ -381,7 +381,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update to a remote SPARQL Update
      * service.
-     * 
+     *
      * @param update Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context
@@ -397,7 +397,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update request to a remote SPARQL
      * Update service.
-     * 
+     *
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
      * @return Remote Update processor
@@ -409,7 +409,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update request to a remote SPARQL
      * Update service.
-     * 
+     *
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
      * @param client HTTP client
@@ -422,7 +422,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update request to a remote SPARQL
      * Update service.
-     * 
+     *
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
      * @param client HTTP client
@@ -437,7 +437,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update request to a remote SPARQL
      * Update service.
-     * 
+     *
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context
@@ -450,7 +450,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update request to a remote SPARQL
      * Update service.
-     * 
+     *
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context
@@ -464,7 +464,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update request to a remote SPARQL
      * Update service.
-     * 
+     *
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context
@@ -480,7 +480,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update request to a remote SPARQL
      * Update service using an HTML form
-     * 
+     *
      * @param update Updates
      * @param remoteEndpoint Endpoint URL
      * @return Remote Update processor
@@ -492,7 +492,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update request to a remote SPARQL
      * Update service using an HTML form
-     * 
+     *
      * @param update Updates
      * @param remoteEndpoint Endpoint URL
      * @param client HTTP client
@@ -505,7 +505,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update request to a remote SPARQL
      * Update service using an HTML form
-     * 
+     *
      * @param update Updates
      * @param remoteEndpoint Endpoint URL
      * @param client HTTP client
@@ -519,7 +519,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update request to a remote SPARQL
      * Update service using an HTML form
-     * 
+     *
      * @param update Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context
@@ -532,7 +532,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update request to a remote SPARQL
      * Update service using an HTML form
-     * 
+     *
      * @param update Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context
@@ -546,7 +546,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update request to a remote SPARQL
      * Update service using an HTML form
-     * 
+     *
      * @param update Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context
@@ -562,7 +562,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update request to a remote SPARQL
      * Update service using an HTML form
-     * 
+     *
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
      * @return Remote Update processor
@@ -574,7 +574,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update request to a remote SPARQL
      * Update service using an HTML form
-     * 
+     *
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
      * @param client HTTP client
@@ -587,7 +587,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update request to a remote SPARQL
      * Update service using an HTML form
-     * 
+     *
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
      * @param client HTTP client
@@ -602,7 +602,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update request to a remote SPARQL
      * Update service using an HTML form
-     * 
+     *
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context
@@ -615,7 +615,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update request to a remote SPARQL
      * Update service using an HTML form
-     * 
+     *
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context
@@ -629,7 +629,7 @@ public class UpdateExecutionFactory
     /**
      * Create an UpdateProcessor that sends the update request to a remote SPARQL
      * Update service using an HTML form
-     * 
+     *
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context

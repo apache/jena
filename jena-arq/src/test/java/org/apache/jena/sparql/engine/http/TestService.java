@@ -48,14 +48,14 @@ import org.junit.Test ;
 
 /** This test suite does external network traffic.
  *  It causes INFO level messages if the network interface is not reachable.
- *  It does not cause tests to fail. 
+ *  It does not cause tests to fail.
  */
 public class TestService {
-    // TODO Move to jena-integration-tests and use a Fuskei server as target.
+    // TODO Move to jena-integration-tests and use a Fuseki server as target.
     private static final String SERVICE = "http://example.com:40000/";
 
     private static Object value ;
-    
+
     @BeforeClass public static void recordContextState() { value = ARQ.getContext().get(Service.serviceContext) ; }
     @AfterClass public static void restoreContextState() { ARQ.getContext().set(Service.serviceContext, value) ; }
 
@@ -79,8 +79,8 @@ public class TestService {
             if ( thrown instanceof SocketException || thrown instanceof ConnectTimeoutException || thrown instanceof UnknownHostException )  {
                 // expected
             } else {
-                Assert.fail(String.format("Expected SocketException or ConnectTimeoutException, instead got: %s %s", 
-                                          thrown.getClass().getName(), 
+                Assert.fail(String.format("Expected SocketException or ConnectTimeoutException, instead got: %s %s",
+                                          thrown.getClass().getName(),
                                           thrown.getMessage()));
             }
         }
@@ -107,8 +107,8 @@ public class TestService {
             if ( thrown instanceof SocketException || thrown instanceof ConnectTimeoutException || thrown instanceof UnknownHostException )  {
                 // expected
             } else {
-                Assert.fail(String.format("Expected SocketException or ConnectTimeoutException, instead got: %s %s", 
-                                          thrown.getClass().getName(), 
+                Assert.fail(String.format("Expected SocketException or ConnectTimeoutException, instead got: %s %s",
+                                          thrown.getClass().getName(),
                                           thrown.getMessage()));
             }
         }
@@ -134,8 +134,8 @@ public class TestService {
             if ( thrown instanceof SocketException || thrown instanceof ConnectTimeoutException || thrown instanceof UnknownHostException )  {
                 // expected
             } else {
-                Assert.fail(String.format("Expected SocketException or ConnectTimeoutException, instead got: %s %s", 
-                                          thrown.getClass().getName(), 
+                Assert.fail(String.format("Expected SocketException or ConnectTimeoutException, instead got: %s %s",
+                                          thrown.getClass().getName(),
                                           thrown.getMessage()));
             }
         }
