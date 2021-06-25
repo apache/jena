@@ -242,6 +242,9 @@ public class FusekiWebapp
         if ( params.fusekiCmdLineConfigFile != null ) {
             List<DataAccessPoint> confDatasets = processServerConfigFile(params.fusekiCmdLineConfigFile);
             datasets.addAll(confDatasets);
+        } else if ( params.fusekiServerConfigFile != null ) {
+                List<DataAccessPoint> confDatasets = processServerConfigFile(params.fusekiServerConfigFile);
+                datasets.addAll(confDatasets);
         } else if ( params.dsg != null ) {
             // RDFS
             if ( params.rdfsGraph != null ) {

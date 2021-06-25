@@ -38,7 +38,7 @@ import org.apache.jena.rdf.model.Resource;
  * <pre>
  * &lt;#graph&gt; rdf:type ja:ViewGraph ;
  *     ja:graphName "..." ;            # Optional: else default graph
- *     js:dataset &lt;#dataset&gt; ;
+ *     ja:dataset &lt;#dataset&gt; ;
  *     .
  *  &lt;#dataset&gt; rdf:type ja:RDFDataset ; # Any subtype
  *    ...
