@@ -73,7 +73,7 @@
     <ver.jsonldjava>0.13.3</ver.jsonldjava>
     <ver.jackson>2.12.3</ver.jackson>
 
-    <ver.commonsio>2.9.0</ver.commonsio>
+    <ver.commonsio>2.10.0</ver.commonsio>
     <ver.commonscli>1.4</ver.commonscli>
     <ver.commonslang3>3.12.0</ver.commonslang3>
     <ver.commonsrdf>0.5.0</ver.commonsrdf>
