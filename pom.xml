@@ -96,7 +96,7 @@
     <ver.graalvm>21.1.0</ver.graalvm>
     <ver.jython>2.7.2</ver.jython>
     <ver.jcommander>1.81</ver.jcommander>
-    <ver.mockito>3.10.0</ver.mockito>
+    <ver.mockito>3.11.2</ver.mockito>
     <ver.awaitility>4.1.0</ver.awaitility>
     <ver.contract.tests>0.2.0</ver.contract.tests>
 
