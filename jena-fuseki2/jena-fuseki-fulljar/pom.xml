@@ -30,7 +30,7 @@
   </parent> 
 
   <packaging>jar</packaging>
-  <description>Fuseki server - combined jar with built-in webserver.</description>
+  <description>Fuseki Webapp - combined jar with built-in webserver.</description>
 
   <dependencies>
 

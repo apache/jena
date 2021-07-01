@@ -66,7 +66,6 @@ public class TestFusekiServerBuild {
                 boolean b = conn.queryAsk("ASK{}");
             }
 
-
         } finally { server.stop(); }
     }
 }
