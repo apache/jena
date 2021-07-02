@@ -27,27 +27,27 @@ import org.xenei.junit.contract.IProducer;
 @ContractImpl(WhereBuilder.class)
 public class WhereBuilderContractTest {
 
-	// create the producer to inject
-	private IProducer<WhereBuilder> producer = new IProducer<WhereBuilder>() {
+    // create the producer to inject
+    private IProducer<WhereBuilder> producer = new IProducer<WhereBuilder>() {
 
-		@Override
-		public WhereBuilder newInstance() {
-			return new WhereBuilder();
-		}
+        @Override
+        public WhereBuilder newInstance() {
+            return new WhereBuilder();
+        }
 
-		@Override
-		public void cleanUp() {
-			// no cleanup required
-		}
+        @Override
+        public void cleanUp() {
+            // no cleanup required
+        }
 
-	};
+    };
 
-	public WhereBuilderContractTest() {
-	}
+    public WhereBuilderContractTest() {
+    }
 
-	@Contract.Inject
-	public IProducer<WhereBuilder> getProducer() {
-		return producer;
-	}
+    @Contract.Inject
+    public IProducer<WhereBuilder> getProducer() {
+        return producer;
+    }
 
 }

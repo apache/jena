@@ -30,17 +30,19 @@ import org.apache.jena.util.iterator.ExtendedIterator;
  */
 public interface QuadHolder {
 
-	/**
-	 * Get an extended iterator over the quads this holder holds.
-	 * @return the extended iterator.
-	 */
-	public ExtendedIterator<Quad> getQuads();
-	
-	/**
-	 * Apply values to the variables in the quads held by this holder.
-	 * May return this holder or a new holder instance.
-	 * @param values the values to set.
-	 * @return a QuadHolder in which the variables have been replaced.
-	 */
-	public QuadHolder setValues(Map<Var, Node> values);
+    /**
+     * Get an extended iterator over the quads this holder holds.
+     * 
+     * @return the extended iterator.
+     */
+    public ExtendedIterator<Quad> getQuads();
+
+    /**
+     * Apply values to the variables in the quads held by this holder. May return
+     * this holder or a new holder instance.
+     * 
+     * @param values the values to set.
+     * @return a QuadHolder in which the variables have been replaced.
+     */
+    public QuadHolder setValues(Map<Var, Node> values);
 }

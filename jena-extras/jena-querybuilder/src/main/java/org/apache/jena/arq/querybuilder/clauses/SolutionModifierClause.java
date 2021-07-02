@@ -29,166 +29,147 @@ import org.apache.jena.sparql.lang.sparql_11.ParseException;
  * Interface that defines the SolutionClause as per
  * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rSolutionModifier
  * 
- * @param <T>
- *            The Builder type that the clause is part of.
+ * @param <T> The Builder type that the clause is part of.
  */
 public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 
-	/**
-	 * Add an ascending order by.
-	 * 
-	 * Use ExprFactory or NodeValue static or the AbstractQueryBuilder.makeExpr
-	 * methods to create the expression.
-	 * 
-	 * @see ExprFactory
-	 * @see org.apache.jena.sparql.expr.NodeValue
-	 * @see AbstractQueryBuilder#makeExpr(String) 
-	 * 
-	 * @param orderBy
-	 *            The expression to order by.
-	 * @return This builder for chaining.
-	 */
-	public T addOrderBy(Expr orderBy);
+    /**
+     * Add an ascending order by.
+     * 
+     * Use ExprFactory or NodeValue static or the AbstractQueryBuilder.makeExpr
+     * methods to create the expression.
+     * 
+     * @see ExprFactory
+     * @see org.apache.jena.sparql.expr.NodeValue
+     * @see AbstractQueryBuilder#makeExpr(String)
+     * 
+     * @param orderBy The expression to order by.
+     * @return This builder for chaining.
+     */
+    public T addOrderBy(Expr orderBy);
 
-	/**
-	 * Add an ascending order by.
-	 * 
-	 * @param orderBy
-	 *            The object to order by.
-	 * @return This builder for chaining.
-	 */
-	public T addOrderBy(Object orderBy);
+    /**
+     * Add an ascending order by.
+     * 
+     * @param orderBy The object to order by.
+     * @return This builder for chaining.
+     */
+    public T addOrderBy(Object orderBy);
 
-	/**
-	 * Add an ascending order by.
-	 * 
-	 * @param orderBy
-	 *            The SortCondition to order by.
-	 * @return This builder for chaining.
-	 */
-	public T addOrderBy(SortCondition orderBy);
+    /**
+     * Add an ascending order by.
+     * 
+     * @param orderBy The SortCondition to order by.
+     * @return This builder for chaining.
+     */
+    public T addOrderBy(SortCondition orderBy);
 
-	/**
-	 * Add an order by with direction specified.
-	 * 
-	 * @param orderBy
-	 *            The expression to order by.
-	 * @param order
-	 *            The direction to order.
-	 * @return This builder for chaining.
-	 */
-	public T addOrderBy(Expr orderBy, Order order);
+    /**
+     * Add an order by with direction specified.
+     * 
+     * @param orderBy The expression to order by.
+     * @param order   The direction to order.
+     * @return This builder for chaining.
+     */
+    public T addOrderBy(Expr orderBy, Order order);
 
-	/**
-	 * Add an order by with direction specified.
-	 * 
-	 * @param orderBy
-	 *            The object to order by.
-	 * @param order
-	 *            The direction to order.
-	 * @return This builder for chaining.
-	 */
-	public T addOrderBy(Object orderBy, Order order);
+    /**
+     * Add an order by with direction specified.
+     * 
+     * @param orderBy The object to order by.
+     * @param order   The direction to order.
+     * @return This builder for chaining.
+     */
+    public T addOrderBy(Object orderBy, Order order);
 
-	/**
-	 * Add a variable to the group by clause.
-	 * 
-	 * @param groupBy
-	 *            The object to group by.
-	 * @return This builder for chaining.
-	 */
-	public T addGroupBy(Object groupBy);
+    /**
+     * Add a variable to the group by clause.
+     * 
+     * @param groupBy The object to group by.
+     * @return This builder for chaining.
+     */
+    public T addGroupBy(Object groupBy);
 
-	/**
-	 * Add an expression to the group by clause. The expression may be created
-	 * from a string using the makeExpr() method.
-	 * 
-	 * @param groupBy
-	 *            The expression to add.
-	 */
-	public T addGroupBy(Expr groupBy);
+    /**
+     * Add an expression to the group by clause. The expression may be created from
+     * a string using the makeExpr() method.
+     * 
+     * @param groupBy The expression to add.
+     */
+    public T addGroupBy(Expr groupBy);
 
-	/**
-	 * Add var and expression to the group by clause.
-	 * 
-	 * @param var
-	 *            The variable to add.
-	 * @param expr
-	 *            The expression to add.
-	 */
-	public T addGroupBy(Object var, Expr expr);
+    /**
+     * Add var and expression to the group by clause.
+     * 
+     * @param var  The variable to add.
+     * @param expr The expression to add.
+     */
+    public T addGroupBy(Object var, Expr expr);
 
-	/**
-	 * Add var and expression to the group by clause.
-	 * 
-	 * @param var
-	 *            The variable to add.
-	 * @param expr
-	 *            The expression to add.
-	 */
-	public T addGroupBy(Object var, String expr);
+    /**
+     * Add var and expression to the group by clause.
+     * 
+     * @param var  The variable to add.
+     * @param expr The expression to add.
+     */
+    public T addGroupBy(Object var, String expr);
 
-	/**
-	 * Add a having expression.
-	 * 
-	 * @param expression
-	 *            Expression to evaluate for the having.
-	 * @return This builder for chaining.
-	 */
-	public T addHaving(String expression) throws ParseException;
+    /**
+     * Add a having expression.
+     * 
+     * @param expression Expression to evaluate for the having.
+     * @return This builder for chaining.
+     */
+    public T addHaving(String expression) throws ParseException;
 
-	/**
-	 * Add a having expression.
-	 * 
-	 * Use ExprFactory or NodeValue static or the AbstractQueryBuilder.makeExpr
-	 * methods to create the expression.
-	 * 
-	 * @see ExprFactory
-	 * @see org.apache.jena.sparql.expr.NodeValue
-	 * @see AbstractQueryBuilder#makeExpr(String)
-	 * 
-	 * @param expression
-	 *            Expression to evaluate for the having.
-	 * @return This builder for chaining.
-	 */
-	public T addHaving(Expr expression) throws ParseException;
+    /**
+     * Add a having expression.
+     * 
+     * Use ExprFactory or NodeValue static or the AbstractQueryBuilder.makeExpr
+     * methods to create the expression.
+     * 
+     * @see ExprFactory
+     * @see org.apache.jena.sparql.expr.NodeValue
+     * @see AbstractQueryBuilder#makeExpr(String)
+     * 
+     * @param expression Expression to evaluate for the having.
+     * @return This builder for chaining.
+     */
+    public T addHaving(Expr expression) throws ParseException;
 
-	/**
-	 * Add a having expression.
-	 * 
-	 * @param var
-	 *            the variable to have.
-	 * @return This builder for chaining.
-	 */
-	public T addHaving(Object var) throws ParseException;
+    /**
+     * Add a having expression.
+     * 
+     * @param var the variable to have.
+     * @return This builder for chaining.
+     */
+    public T addHaving(Object var) throws ParseException;
 
-	/**
-	 * Set the limit.
-	 * 
-	 * Setting the limit to 0 (zero) sets no limit.
-	 * 
-	 * @param limit
-	 *            the maximum number of results to return.
-	 * @return This builder for chaining.
-	 */
-	public T setLimit(int limit);
+    /**
+     * Set the limit.
+     * 
+     * Setting the limit to 0 (zero) sets no limit.
+     * 
+     * @param limit the maximum number of results to return.
+     * @return This builder for chaining.
+     */
+    public T setLimit(int limit);
 
-	/**
-	 * Set the offset.
-	 * 
-	 * Setting the offset to 0 (zero) sets no offset.
-	 * 
-	 * @param offset
-	 *            the number of results to skip before returning results..
-	 * @return This builder for chaining.
-	 */
-	public T setOffset(int offset);
+    /**
+     * Set the offset.
+     * 
+     * Setting the offset to 0 (zero) sets no offset.
+     * 
+     * @param offset the number of results to skip before returning results..
+     * @return This builder for chaining.
+     */
+    public T setOffset(int offset);
 
-	/**
-	 * Get the Solution modifier for this clause.
-	 * 
-	 * @return The SolutionModifierHandler the clause is using.
-	 */
-	public SolutionModifierHandler getSolutionModifierHandler();
+    /**
+     * Get the Solution modifier for this clause.
+     * 
+     * @return The SolutionModifierHandler the clause is using.
+     */
+    public SolutionModifierHandler getSolutionModifierHandler();
 
 }

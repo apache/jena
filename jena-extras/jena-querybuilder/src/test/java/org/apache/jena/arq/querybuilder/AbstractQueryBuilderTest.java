@@ -27,115 +27,110 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.graph.impl.LiteralLabel ;
-import org.apache.jena.graph.impl.LiteralLabelFactory ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.impl.LiteralLabel;
+import org.apache.jena.graph.impl.LiteralLabelFactory;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.vocabulary.RDF;
 import org.junit.Before;
 import org.junit.Test;
 
 public class AbstractQueryBuilderTest {
 
-	private AbstractQueryBuilder<?> builder;
+    private AbstractQueryBuilder<?> builder;
 
-	@Before
-	public void setup() {
-		builder = new TestBuilder();
-	}
+    @Before
+    public void setup() {
+        builder = new TestBuilder();
+    }
 
-	private class TestBuilder extends AbstractQueryBuilder<TestBuilder> {
-		private HandlerBlock handlerBlock;
+    private class TestBuilder extends AbstractQueryBuilder<TestBuilder> {
+        private HandlerBlock handlerBlock;
 
-		public TestBuilder()
-		{
-			super();
-			handlerBlock = new HandlerBlock( query );
+        public TestBuilder() {
+            super();
+            handlerBlock = new HandlerBlock(query);
 
-		}
-		@Override
-		public String toString() {
-			return "TestBuilder";
-		}
+        }
 
-		@Override
-		public HandlerBlock getHandlerBlock() {
-			return handlerBlock;
-		}
+        @Override
+        public String toString() {
+            return "TestBuilder";
+        }
 
-	}
+        @Override
+        public HandlerBlock getHandlerBlock() {
+            return handlerBlock;
+        }
 
-	@Test
-	public void testMakeNode() {
-		Node n = builder.makeNode(null);
-		assertEquals(Node.ANY, n);
+    }
 
-		n = builder.makeNode(RDF.type);
-		assertEquals(RDF.type.asNode(), n);
+    @Test
+    public void testMakeNode() {
+        Node n = builder.makeNode(null);
+        assertEquals(Node.ANY, n);
 
-		Node n2 = NodeFactory.createBlankNode();
-		n = builder.makeNode(n2);
-		assertEquals(n2, n);
+        n = builder.makeNode(RDF.type);
+        assertEquals(RDF.type.asNode(), n);
 
-		builder.addPrefix("demo", "http://example.com/");
-		n = builder.makeNode("demo:type");
-		assertEquals(NodeFactory.createURI("http://example.com/type"), n);
+        Node n2 = NodeFactory.createBlankNode();
+        n = builder.makeNode(n2);
+        assertEquals(n2, n);
 
-		n = builder.makeNode("<one>");
-		assertEquals(NodeFactory.createURI("one"), n);
+        builder.addPrefix("demo", "http://example.com/");
+        n = builder.makeNode("demo:type");
+        assertEquals(NodeFactory.createURI("http://example.com/type"), n);
 
-		try {
-			n = builder.makeNode(builder);
-			fail( "Should have thrown IllegalArgumentException");
-		} catch (IllegalArgumentException expected)
-		{
-			// do nothing
-		}
+        n = builder.makeNode("<one>");
+        assertEquals(NodeFactory.createURI("one"), n);
 
-		n = builder.makeNode( Integer.valueOf( 5 ));
-		assertTrue( n.isLiteral() );
-		LiteralLabel ll = LiteralLabelFactory.createTypedLiteral( Integer.valueOf(5));
-		assertEquals( NodeFactory.createLiteral(ll), n );
+        try {
+            n = builder.makeNode(builder);
+            fail("Should have thrown IllegalArgumentException");
+        } catch (IllegalArgumentException expected) {
+            // do nothing
+        }
 
+        n = builder.makeNode(Integer.valueOf(5));
+        assertTrue(n.isLiteral());
+        LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(Integer.valueOf(5));
+        assertEquals(NodeFactory.createLiteral(ll), n);
 
-		n = builder.makeNode( NodeFactory.createVariable("foo"));
-		assertTrue( n.isVariable());
-		assertEquals( "foo", n.getName());
-		assertTrue( n instanceof Var );
+        n = builder.makeNode(NodeFactory.createVariable("foo"));
+        assertTrue(n.isVariable());
+        assertEquals("foo", n.getName());
+        assertTrue(n instanceof Var);
 
-		n = builder.makeNode( "'text'@en");
-		assertTrue( n.isLiteral() );
-		assertEquals( "text", n.getLiteralLexicalForm());
-		assertEquals( "en", n.getLiteralLanguage());
-	}
+        n = builder.makeNode("'text'@en");
+        assertTrue(n.isLiteral());
+        assertEquals("text", n.getLiteralLexicalForm());
+        assertEquals("en", n.getLiteralLanguage());
+    }
 
+    @Test
+    public void testMakeValueNodes() {
+        List<Object> list = new ArrayList<Object>();
+        list.add(null);
+        list.add(RDF.type);
+        Node n2 = NodeFactory.createBlankNode();
+        list.add(n2);
+        builder.addPrefix("demo", "http://example.com/");
+        list.add("demo:type");
+        list.add("<one>");
+        list.add(Integer.valueOf(5));
 
+        Collection<Node> result = builder.makeValueNodes(list.iterator());
 
-	@Test
-	public void testMakeValueNodes()
-	{
-		List<Object> list = new ArrayList<Object>();
-		list.add( null);
-		list.add( RDF.type );
-		Node n2 = NodeFactory.createBlankNode();
-		list.add( n2 );
-		builder.addPrefix("demo", "http://example.com/");
-		list.add( "demo:type" );
-		list.add( "<one>" );
-		list.add( Integer.valueOf(5) );
+        assertEquals(6, result.size());
+        assertTrue(result.contains(null));
+        assertTrue(result.contains(RDF.type.asNode()));
+        assertTrue(result.contains(n2));
+        assertTrue(result.contains(NodeFactory.createURI("http://example.com/type")));
+        assertTrue(result.contains(NodeFactory.createURI("one")));
+        LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(Integer.valueOf(5));
+        assertTrue(result.contains(NodeFactory.createLiteral(ll)));
 
-		Collection<Node> result = builder.makeValueNodes(list.iterator());
-
-		assertEquals( 6, result.size() );
-		assertTrue( result.contains( null ));
-		assertTrue( result.contains( RDF.type.asNode()));
-		assertTrue( result.contains( n2 ));
-		assertTrue( result.contains(NodeFactory.createURI("http://example.com/type") ));
-		assertTrue( result.contains(NodeFactory.createURI("one")));
-		LiteralLabel ll = LiteralLabelFactory.createTypedLiteral( Integer.valueOf(5));
-		assertTrue( result.contains(NodeFactory.createLiteral(ll)));
-
-	}
+    }
 
 }

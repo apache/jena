@@ -45,306 +45,298 @@ import org.junit.Test;
 
 public class SelectBuilderTest extends AbstractRegexpBasedTest {
 
-	private SelectBuilder builder;
+    private SelectBuilder builder;
 
-	@Before
-	public void setup() {
-		builder = new SelectBuilder();
-	}
+    @Before
+    public void setup() {
+        builder = new SelectBuilder();
+    }
 
-	@Test
-	public void testSelectAsterisk() {
-		builder.addVar("*").addWhere("?s", "?p", "?o");
+    @Test
+    public void testSelectAsterisk() {
+        builder.addVar("*").addWhere("?s", "?p", "?o");
 
-		assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY + var("s") + SPACE + var("p") + SPACE + var("o")
-				+ OPT_SPACE + CLOSE_CURLY, builder.buildString());
+        assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY + var("s") + SPACE + var("p") + SPACE + var("o")
+                + OPT_SPACE + CLOSE_CURLY, builder.buildString());
 
-		builder.setVar(Var.alloc("p"), RDF.type);
+        builder.setVar(Var.alloc("p"), RDF.type);
 
-		assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY + var("s") + SPACE + regexRDFtype + SPACE
-				+ var("o") + OPT_SPACE + CLOSE_CURLY, builder.buildString());
-	}
+        assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY + var("s") + SPACE + regexRDFtype + SPACE
+                + var("o") + OPT_SPACE + CLOSE_CURLY, builder.buildString());
+    }
 
-	@Test
-	public void testAll() {
-		builder.addVar("s").addPrefix("foaf", "http://xmlns.com/foaf/0.1/").addWhere("?s", RDF.type, "foaf:Person")
-				.addOptional("?s", "foaf:name", "?name").addOrderBy("?s");
+    @Test
+    public void testAll() {
+        builder.addVar("s").addPrefix("foaf", "http://xmlns.com/foaf/0.1/").addWhere("?s", RDF.type, "foaf:Person")
+                .addOptional("?s", "foaf:name", "?name").addOrderBy("?s");
 
-		String query = builder.buildString();
-		/*
-		 * PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-		 * 
-		 * SELECT ?s WHERE { ?s
-		 * <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> foaf:Person .
-		 * OPTIONAL { ?s foaf:name ?name .} } ORDER BY ?s
-		 */
-		assertContainsRegex(PREFIX + "foaf:" + SPACE + uri("http://xmlns.com/foaf/0.1/"), query);
-		assertContainsRegex(SELECT + var("s"), query);
-		assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE + regexRDFtype + SPACE + "foaf:Person" + SPACE
-				+ OPTIONAL + OPEN_CURLY + var("s") + SPACE + "foaf:name" + SPACE + var("name") + OPT_SPACE + CLOSE_CURLY
-				+ CLOSE_CURLY, query);
-		assertContainsRegex(ORDER_BY + var("s"), query);
+        String query = builder.buildString();
+        /*
+         * PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+         * 
+         * SELECT ?s WHERE { ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+         * foaf:Person . OPTIONAL { ?s foaf:name ?name .} } ORDER BY ?s
+         */
+        assertContainsRegex(PREFIX + "foaf:" + SPACE + uri("http://xmlns.com/foaf/0.1/"), query);
+        assertContainsRegex(SELECT + var("s"), query);
+        assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE + regexRDFtype + SPACE + "foaf:Person" + SPACE
+                + OPTIONAL + OPEN_CURLY + var("s") + SPACE + "foaf:name" + SPACE + var("name") + OPT_SPACE + CLOSE_CURLY
+                + CLOSE_CURLY, query);
+        assertContainsRegex(ORDER_BY + var("s"), query);
 
-		builder.setVar("name", "Smith");
+        builder.setVar("name", "Smith");
 
-		query = builder.buildString();
-		assertContainsRegex(PREFIX + "foaf:" + SPACE + uri("http://xmlns.com/foaf/0.1/"), query);
-		assertContainsRegex(SELECT + var("s"), query);
-		assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE + regexRDFtype + SPACE + "foaf:Person" + SPACE
-				+ OPTIONAL + OPEN_CURLY + var("s") + SPACE + "foaf:name" + SPACE + quote("Smith") + presentStringType()
-				+ OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY, query);
-		assertContainsRegex(ORDER_BY + var("s"), query);
-	}
+        query = builder.buildString();
+        assertContainsRegex(PREFIX + "foaf:" + SPACE + uri("http://xmlns.com/foaf/0.1/"), query);
+        assertContainsRegex(SELECT + var("s"), query);
+        assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE + regexRDFtype + SPACE + "foaf:Person" + SPACE
+                + OPTIONAL + OPEN_CURLY + var("s") + SPACE + "foaf:name" + SPACE + quote("Smith") + presentStringType()
+                + OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY, query);
+        assertContainsRegex(ORDER_BY + var("s"), query);
+    }
 
-	@Test
-	public void testPredicateVar() {
-		builder.addVar("*").addPrefix("", "http://example/").addWhere(":S", "?p", ":O");
-		String query = builder.buildString();
+    @Test
+    public void testPredicateVar() {
+        builder.addVar("*").addPrefix("", "http://example/").addWhere(":S", "?p", ":O");
+        String query = builder.buildString();
 
-		assertContainsRegex(WHERE + OPEN_CURLY + ":S" + SPACE + var("p") + SPACE + ":O" + OPT_SPACE + CLOSE_CURLY,
-				query);
-	}
+        assertContainsRegex(WHERE + OPEN_CURLY + ":S" + SPACE + var("p") + SPACE + ":O" + OPT_SPACE + CLOSE_CURLY,
+                query);
+    }
 
-	@Test
-	public void testSubjectVar() {
-		builder.addVar("*").addPrefix("", "http://example/").addWhere("?s", ":P", ":O");
-		String query = builder.buildString();
+    @Test
+    public void testSubjectVar() {
+        builder.addVar("*").addPrefix("", "http://example/").addWhere("?s", ":P", ":O");
+        String query = builder.buildString();
 
-		assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE + ":P" + SPACE + ":O" + OPT_SPACE + CLOSE_CURLY,
-				query);
-	}
+        assertContainsRegex(WHERE + OPEN_CURLY + var("s") + SPACE + ":P" + SPACE + ":O" + OPT_SPACE + CLOSE_CURLY,
+                query);
+    }
 
-	@Test
-	public void testObjectVar() {
-		builder.addVar("*").addPrefix("", "http://example/").addWhere(":S", ":P", "?o");
-		String query = builder.buildString();
+    @Test
+    public void testObjectVar() {
+        builder.addVar("*").addPrefix("", "http://example/").addWhere(":S", ":P", "?o");
+        String query = builder.buildString();
 
-		assertContainsRegex(WHERE + OPEN_CURLY + ":S" + SPACE + ":P" + SPACE + var("o") + OPT_SPACE + CLOSE_CURLY,
-				query);
-	}
+        assertContainsRegex(WHERE + OPEN_CURLY + ":S" + SPACE + ":P" + SPACE + var("o") + OPT_SPACE + CLOSE_CURLY,
+                query);
+    }
 
-	@Test
-	public void testNoVars() {
-		builder.addWhere("?s", "?p", "?o");
-		String query = builder.buildString();
+    @Test
+    public void testNoVars() {
+        builder.addWhere("?s", "?p", "?o");
+        String query = builder.buildString();
 
-		assertContainsRegex(SELECT + "\\*" + SPACE, query);
-	}
+        assertContainsRegex(SELECT + "\\*" + SPACE, query);
+    }
 
-	@Test
-	public void testList() {
-		
-		builder.addVar("*").addWhere(builder.list("<one>", "?two", "'three'"), "<foo>", "<bar>");
-		Query query = builder.build();
+    @Test
+    public void testList() {
 
-		
-		Node one = NodeFactory.createURI("one");
-		Node two = Var.alloc("two").asNode();
-		Node three = NodeFactory.createLiteral( "three");
-		Node foo = NodeFactory.createURI("foo");
-		Node bar = NodeFactory.createURI("bar");
-		
-		ElementPathBlock epb = new ElementPathBlock();
-		Node firstObject = NodeFactory.createBlankNode();		
-		Node secondObject = NodeFactory.createBlankNode();
-		Node thirdObject = NodeFactory.createBlankNode();
-		
-		epb.addTriplePath( new TriplePath( new Triple( firstObject, RDF.first.asNode(), one)));
-		epb.addTriplePath( new TriplePath( new Triple( firstObject, RDF.rest.asNode(), secondObject)));
-		epb.addTriplePath( new TriplePath( new Triple( secondObject, RDF.first.asNode(), two)));
-		epb.addTriplePath( new TriplePath( new Triple( secondObject, RDF.rest.asNode(), thirdObject)));
-		epb.addTriplePath( new TriplePath( new Triple( thirdObject, RDF.first.asNode(), three)));
-		epb.addTriplePath( new TriplePath( new Triple( thirdObject, RDF.rest.asNode(), RDF.nil.asNode())));
-		epb.addTriplePath( new TriplePath( new Triple( firstObject, foo, bar)));
-		
-		
-		WhereValidator visitor = new WhereValidator( epb );
-		query.getQueryPattern().visit( visitor );
-		assertTrue( visitor.matching );
-	}
+        builder.addVar("*").addWhere(builder.list("<one>", "?two", "'three'"), "<foo>", "<bar>");
+        Query query = builder.build();
 
-	@Test
-	public void testClone() {
-		builder.addVar("*").addWhere("?two", "<foo>", "<bar>");
-		SelectBuilder builder2 = builder.clone();
-		builder2.addOrderBy("?two");
+        Node one = NodeFactory.createURI("one");
+        Node two = Var.alloc("two").asNode();
+        Node three = NodeFactory.createLiteral("three");
+        Node foo = NodeFactory.createURI("foo");
+        Node bar = NodeFactory.createURI("bar");
 
-		String q1 = builder.buildString();
-		String q2 = builder2.buildString();
+        ElementPathBlock epb = new ElementPathBlock();
+        Node firstObject = NodeFactory.createBlankNode();
+        Node secondObject = NodeFactory.createBlankNode();
+        Node thirdObject = NodeFactory.createBlankNode();
 
-		assertTrue(q2.contains("ORDER BY"));
-		assertFalse(q1.contains("ORDER BY"));
-	}
+        epb.addTriplePath(new TriplePath(new Triple(firstObject, RDF.first.asNode(), one)));
+        epb.addTriplePath(new TriplePath(new Triple(firstObject, RDF.rest.asNode(), secondObject)));
+        epb.addTriplePath(new TriplePath(new Triple(secondObject, RDF.first.asNode(), two)));
+        epb.addTriplePath(new TriplePath(new Triple(secondObject, RDF.rest.asNode(), thirdObject)));
+        epb.addTriplePath(new TriplePath(new Triple(thirdObject, RDF.first.asNode(), three)));
+        epb.addTriplePath(new TriplePath(new Triple(thirdObject, RDF.rest.asNode(), RDF.nil.asNode())));
+        epb.addTriplePath(new TriplePath(new Triple(firstObject, foo, bar)));
 
-	@Test
-	public void testAggregatorsInSelect() throws ParseException {
-		builder.addVar("?x").addVar("count(*)", "?c").addWhere("?x", "?p", "?o").addGroupBy("?x");
+        WhereValidator visitor = new WhereValidator(epb);
+        query.getQueryPattern().visit(visitor);
+        assertTrue(visitor.matching);
+    }
 
-		Model m = ModelFactory.createDefaultModel();
-		Resource r = m.createResource("urn:one");
-		m.add(r, m.getProperty("urn:p:one"), m.createTypedLiteral(1));
-		m.add(r, m.getProperty("urn:p:two"), m.createTypedLiteral(3));
-		m.add(r, m.getProperty("urn:p:three"), m.createTypedLiteral(5));
-		r = m.createResource("urn:two");
-		m.add(r, m.getProperty("urn:p:one"), m.createTypedLiteral(1));
-		m.add(r, m.getProperty("urn:p:two"), m.createTypedLiteral(3));
-		m.add(r, m.getProperty("urn:p:three"), m.createTypedLiteral(5));
+    @Test
+    public void testClone() {
+        builder.addVar("*").addWhere("?two", "<foo>", "<bar>");
+        SelectBuilder builder2 = builder.clone();
+        builder2.addOrderBy("?two");
 
-		QueryExecution qexec = QueryExecutionFactory.create(builder.build(), m);
+        String q1 = builder.buildString();
+        String q2 = builder2.buildString();
 
-		ResultSet results = qexec.execSelect();
-		assertTrue(results.hasNext());
-		for (; results.hasNext();) {
-			QuerySolution soln = results.nextSolution();
-			assertTrue(soln.contains("c"));
-			assertTrue(soln.contains("x"));
-			assertEquals(3, soln.get("c").asLiteral().getInt());
-		}
+        assertTrue(q2.contains("ORDER BY"));
+        assertFalse(q1.contains("ORDER BY"));
+    }
 
-		builder.addVar("min(?o)", "?min").addVar("max(?o)", "?max");
+    @Test
+    public void testAggregatorsInSelect() throws ParseException {
+        builder.addVar("?x").addVar("count(*)", "?c").addWhere("?x", "?p", "?o").addGroupBy("?x");
 
-		qexec = QueryExecutionFactory.create(builder.build(), m);
+        Model m = ModelFactory.createDefaultModel();
+        Resource r = m.createResource("urn:one");
+        m.add(r, m.getProperty("urn:p:one"), m.createTypedLiteral(1));
+        m.add(r, m.getProperty("urn:p:two"), m.createTypedLiteral(3));
+        m.add(r, m.getProperty("urn:p:three"), m.createTypedLiteral(5));
+        r = m.createResource("urn:two");
+        m.add(r, m.getProperty("urn:p:one"), m.createTypedLiteral(1));
+        m.add(r, m.getProperty("urn:p:two"), m.createTypedLiteral(3));
+        m.add(r, m.getProperty("urn:p:three"), m.createTypedLiteral(5));
 
-		results = qexec.execSelect();
-		assertTrue(results.hasNext());
-		for (; results.hasNext();) {
-			QuerySolution soln = results.nextSolution();
-			assertTrue(soln.contains("c"));
-			assertTrue(soln.contains("x"));
-			assertTrue(soln.contains("?min"));
-			assertEquals(3, soln.get("c").asLiteral().getInt());
-			assertEquals(1, soln.get("min").asLiteral().getInt());
-			assertEquals(5, soln.get("max").asLiteral().getInt());
-		}
+        QueryExecution qexec = QueryExecutionFactory.create(builder.build(), m);
 
-	}
+        ResultSet results = qexec.execSelect();
+        assertTrue(results.hasNext());
+        for (; results.hasNext();) {
+            QuerySolution soln = results.nextSolution();
+            assertTrue(soln.contains("c"));
+            assertTrue(soln.contains("x"));
+            assertEquals(3, soln.get("c").asLiteral().getInt());
+        }
 
-	@Test
-	public void testAggregatorsInSubQuery() throws ParseException {
+        builder.addVar("min(?o)", "?min").addVar("max(?o)", "?max");
 
-		Model m = ModelFactory.createDefaultModel();
-		Resource r = m.createResource("urn:one");
-		m.add(r, m.getProperty("urn:p:one"), m.createTypedLiteral(1));
-		m.add(r, m.getProperty("urn:p:two"), m.createTypedLiteral(3));
-		m.add(r, m.getProperty("urn:p:three"), m.createTypedLiteral(5));
-		r = m.createResource("urn:two");
-		m.add(r, m.getProperty("urn:p:one"), m.createTypedLiteral(2));
-		m.add(r, m.getProperty("urn:p:two"), m.createTypedLiteral(4));
-		m.add(r, m.getProperty("urn:p:three"), m.createTypedLiteral(6));
+        qexec = QueryExecutionFactory.create(builder.build(), m);
 
-		SelectBuilder sb = new SelectBuilder().addVar("?x").addVar("max(?o)", "?max").addWhere("?x", "?p", "?o")
-				.addGroupBy("?x");
+        results = qexec.execSelect();
+        assertTrue(results.hasNext());
+        for (; results.hasNext();) {
+            QuerySolution soln = results.nextSolution();
+            assertTrue(soln.contains("c"));
+            assertTrue(soln.contains("x"));
+            assertTrue(soln.contains("?min"));
+            assertEquals(3, soln.get("c").asLiteral().getInt());
+            assertEquals(1, soln.get("min").asLiteral().getInt());
+            assertEquals(5, soln.get("max").asLiteral().getInt());
+        }
 
-		builder.addPrefix("xsd", XSD.getURI()).addVar("?x").addVar("min(?o2)", "?min").addWhere("?x", "?p2", "?o2")
-				.addSubQuery(sb).addFilter("?max = '6'^^xsd:int").addGroupBy("?x");
+    }
 
-		QueryExecution qexec = QueryExecutionFactory.create(builder.build(), m);
+    @Test
+    public void testAggregatorsInSubQuery() throws ParseException {
 
-		ResultSet results = qexec.execSelect();
-		assertTrue(results.hasNext());
-		for (; results.hasNext();) {
-			QuerySolution soln = results.nextSolution();
-			assertTrue(soln.contains("x"));
-			assertTrue(soln.contains("min"));
-			assertEquals("urn:two", soln.get("?x").asResource().getURI());
-			assertEquals(2, soln.get("?min").asLiteral().getInt());
-		}
-	}
-	
-	@Test
-	public void testVarReplacementInSubQuery() throws ParseException {
+        Model m = ModelFactory.createDefaultModel();
+        Resource r = m.createResource("urn:one");
+        m.add(r, m.getProperty("urn:p:one"), m.createTypedLiteral(1));
+        m.add(r, m.getProperty("urn:p:two"), m.createTypedLiteral(3));
+        m.add(r, m.getProperty("urn:p:three"), m.createTypedLiteral(5));
+        r = m.createResource("urn:two");
+        m.add(r, m.getProperty("urn:p:one"), m.createTypedLiteral(2));
+        m.add(r, m.getProperty("urn:p:two"), m.createTypedLiteral(4));
+        m.add(r, m.getProperty("urn:p:three"), m.createTypedLiteral(6));
 
-		Model m = ModelFactory.createDefaultModel();
-		Resource r = m.createResource("urn:one");
-		m.add(r, m.getProperty("urn:p:one"), m.createTypedLiteral(1));
-		m.add(r, m.getProperty("urn:p:two"), m.createTypedLiteral(3));
-		m.add(r, m.getProperty("urn:p:three"), m.createTypedLiteral(5));
-		r = m.createResource("urn:two");
-		m.add(r, m.getProperty("urn:p:one"), m.createTypedLiteral(2));
-		m.add(r, m.getProperty("urn:p:two"), m.createTypedLiteral(4));
-		m.add(r, m.getProperty("urn:p:three"), m.createTypedLiteral(6));
+        SelectBuilder sb = new SelectBuilder().addVar("?x").addVar("max(?o)", "?max").addWhere("?x", "?p", "?o")
+                .addGroupBy("?x");
 
-		SelectBuilder sb = new SelectBuilder().addVar("?x").addVar("?p").addWhere("?x", "?p", "?o")
-				.addFilter( "?o < ?limit");
+        builder.addPrefix("xsd", XSD.getURI()).addVar("?x").addVar("min(?o2)", "?min").addWhere("?x", "?p2", "?o2")
+                .addSubQuery(sb).addFilter("?max = '6'^^xsd:int").addGroupBy("?x");
 
-		builder.addPrefix("xsd", XSD.getURI()).addVar("?x").addVar("count(?p)", "?c").addWhere("?x", "?p", "?o2")
-				.addSubQuery(sb).addGroupBy("?x");
+        QueryExecution qexec = QueryExecutionFactory.create(builder.build(), m);
 
-		
-		builder.setVar( "?limit",  4 );
-		
-		QueryExecution qexec = QueryExecutionFactory.create(builder.build(), m);
+        ResultSet results = qexec.execSelect();
+        assertTrue(results.hasNext());
+        for (; results.hasNext();) {
+            QuerySolution soln = results.nextSolution();
+            assertTrue(soln.contains("x"));
+            assertTrue(soln.contains("min"));
+            assertEquals("urn:two", soln.get("?x").asResource().getURI());
+            assertEquals(2, soln.get("?min").asLiteral().getInt());
+        }
+    }
 
-		ResultSet results = qexec.execSelect();
-		assertTrue(results.hasNext());
-		for (; results.hasNext();) {
-			QuerySolution soln = results.nextSolution();
-			assertTrue(soln.contains("x"));
-			assertTrue(soln.contains("c"));
-			if ("urn:one".equals( soln.get("?x").asResource().getURI()))
-			{
-				assertEquals( 2, soln.get("?c").asLiteral().getInt());
-			}
-			else 
-			{
-				assertEquals( 1, soln.get("?c").asLiteral().getInt());
-			}
-		}
-	}
-	
-	
-	@Test
-	public void setDistinctTest() throws Exception {
-		Query query = builder.query;
-		assertFalse(query.isDistinct());
-		assertFalse(query.isReduced());
+    @Test
+    public void testVarReplacementInSubQuery() throws ParseException {
 
-		query = builder.setDistinct(true).query;
-		assertTrue(query.isDistinct());
-		assertFalse(query.isReduced());
+        Model m = ModelFactory.createDefaultModel();
+        Resource r = m.createResource("urn:one");
+        m.add(r, m.getProperty("urn:p:one"), m.createTypedLiteral(1));
+        m.add(r, m.getProperty("urn:p:two"), m.createTypedLiteral(3));
+        m.add(r, m.getProperty("urn:p:three"), m.createTypedLiteral(5));
+        r = m.createResource("urn:two");
+        m.add(r, m.getProperty("urn:p:one"), m.createTypedLiteral(2));
+        m.add(r, m.getProperty("urn:p:two"), m.createTypedLiteral(4));
+        m.add(r, m.getProperty("urn:p:three"), m.createTypedLiteral(6));
 
-		query = builder.setReduced(false).query;
-		assertTrue(query.isDistinct());
-		assertFalse(query.isReduced());
+        SelectBuilder sb = new SelectBuilder().addVar("?x").addVar("?p").addWhere("?x", "?p", "?o")
+                .addFilter("?o < ?limit");
 
-		query = builder.setReduced(true).query;
-		assertFalse(query.isDistinct());
-		assertTrue(query.isReduced());
+        builder.addPrefix("xsd", XSD.getURI()).addVar("?x").addVar("count(?p)", "?c").addWhere("?x", "?p", "?o2")
+                .addSubQuery(sb).addGroupBy("?x");
 
-		query = builder.setDistinct(true).query;
-		assertTrue(query.isDistinct());
-		assertFalse(query.isReduced());
+        builder.setVar("?limit", 4);
 
-		query = builder.setDistinct(false).query;
-		assertFalse(query.isDistinct());
-		assertFalse(query.isReduced());
-	}
+        QueryExecution qexec = QueryExecutionFactory.create(builder.build(), m);
 
-	@Test
-	public void setReducedTest() throws Exception {
-		Query query = builder.query;
-		assertFalse(query.isDistinct());
-		assertFalse(query.isReduced());
+        ResultSet results = qexec.execSelect();
+        assertTrue(results.hasNext());
+        for (; results.hasNext();) {
+            QuerySolution soln = results.nextSolution();
+            assertTrue(soln.contains("x"));
+            assertTrue(soln.contains("c"));
+            if ("urn:one".equals(soln.get("?x").asResource().getURI())) {
+                assertEquals(2, soln.get("?c").asLiteral().getInt());
+            } else {
+                assertEquals(1, soln.get("?c").asLiteral().getInt());
+            }
+        }
+    }
 
-		query = builder.setReduced(true).query;
-		assertFalse(query.isDistinct());
-		assertTrue(query.isReduced());
+    @Test
+    public void setDistinctTest() throws Exception {
+        Query query = builder.query;
+        assertFalse(query.isDistinct());
+        assertFalse(query.isReduced());
 
-		query = builder.setDistinct(false).query;
-		assertFalse(query.isDistinct());
-		assertTrue(query.isReduced());
+        query = builder.setDistinct(true).query;
+        assertTrue(query.isDistinct());
+        assertFalse(query.isReduced());
 
-		query = builder.setDistinct(true).query;
-		assertTrue(query.isDistinct());
-		assertFalse(query.isReduced());
+        query = builder.setReduced(false).query;
+        assertTrue(query.isDistinct());
+        assertFalse(query.isReduced());
 
-		query = builder.setReduced(true).query;
-		assertFalse(query.isDistinct());
-		assertTrue(query.isReduced());
+        query = builder.setReduced(true).query;
+        assertFalse(query.isDistinct());
+        assertTrue(query.isReduced());
 
-		query = builder.setReduced(false).query;
-		assertFalse(query.isDistinct());
-		assertFalse(query.isReduced());
-	}
+        query = builder.setDistinct(true).query;
+        assertTrue(query.isDistinct());
+        assertFalse(query.isReduced());
+
+        query = builder.setDistinct(false).query;
+        assertFalse(query.isDistinct());
+        assertFalse(query.isReduced());
+    }
+
+    @Test
+    public void setReducedTest() throws Exception {
+        Query query = builder.query;
+        assertFalse(query.isDistinct());
+        assertFalse(query.isReduced());
+
+        query = builder.setReduced(true).query;
+        assertFalse(query.isDistinct());
+        assertTrue(query.isReduced());
+
+        query = builder.setDistinct(false).query;
+        assertFalse(query.isDistinct());
+        assertTrue(query.isReduced());
+
+        query = builder.setDistinct(true).query;
+        assertTrue(query.isDistinct());
+        assertFalse(query.isReduced());
+
+        query = builder.setReduced(true).query;
+        assertFalse(query.isDistinct());
+        assertTrue(query.isReduced());
+
+        query = builder.setReduced(false).query;
+        assertFalse(query.isDistinct());
+        assertFalse(query.isReduced());
+    }
 
 }

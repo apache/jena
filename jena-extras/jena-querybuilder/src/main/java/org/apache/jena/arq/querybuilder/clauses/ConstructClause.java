@@ -19,55 +19,50 @@ package org.apache.jena.arq.querybuilder.clauses;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.handlers.ConstructHandler;
-import org.apache.jena.graph.FrontsTriple ;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.FrontsTriple;
+import org.apache.jena.graph.Triple;
 
 /**
  * Interface that defines the ConstructClause as per
  * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rConstructTemplate
  * 
- * @param <T>
- *            The Builder type that the clause is part of.
+ * @param <T> The Builder type that the clause is part of.
  */
 public interface ConstructClause<T extends AbstractQueryBuilder<T>> {
 
-	/**
-	 * Add a construct triple.
-	 * 
-	 * @param t
-	 *            The triple to add.
-	 * @return The builder for chaining.
-	 */
-	public T addConstruct(Triple t);
+    /**
+     * Add a construct triple.
+     * 
+     * @param t The triple to add.
+     * @return The builder for chaining.
+     */
+    public T addConstruct(Triple t);
 
-	/**
-	 * Add a construct triple.
-	 * 
-	 * @param t
-	 *            The triple to add.
-	 * @return The builder for chaining.
-	 */
-	public T addConstruct(FrontsTriple t);
+    /**
+     * Add a construct triple.
+     * 
+     * @param t The triple to add.
+     * @return The builder for chaining.
+     */
+    public T addConstruct(FrontsTriple t);
 
-	/**
-	 * Add a construct triple.
-	 * 
-	 * See {@link AbstractQueryBuilder#makeNode} for conversion of the param values.
-	 * 
-	 * @param s
-	 *            The subject of the triple,
-	 * @param p
-	 *            The predicate of the triple.
-	 * @param o
-	 *            The object of the triple.
-	 * @return the builder for chaining.
-	 */
-	public T addConstruct(Object s, Object p, Object o);
+    /**
+     * Add a construct triple.
+     * 
+     * See {@link AbstractQueryBuilder#makeNode} for conversion of the param values.
+     * 
+     * @param s The subject of the triple,
+     * @param p The predicate of the triple.
+     * @param o The object of the triple.
+     * @return the builder for chaining.
+     */
+    public T addConstruct(Object s, Object p, Object o);
 
-	/**
-	 * Get the Construct handler for this construct clause.
-	 * @return the construct handler used by this builder.
-	 */
-	public ConstructHandler getConstructHandler();
+    /**
+     * Get the Construct handler for this construct clause.
+     * 
+     * @return the construct handler used by this builder.
+     */
+    public ConstructHandler getConstructHandler();
 
 }

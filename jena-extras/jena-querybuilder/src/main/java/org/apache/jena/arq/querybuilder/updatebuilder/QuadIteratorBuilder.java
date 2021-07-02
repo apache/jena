@@ -52,133 +52,122 @@ import org.apache.jena.util.iterator.WrappedIterator;
  *
  */
 class QuadIteratorBuilder implements ElementVisitor {
-	// the default graph name
-	private final Node defaultGraph;
-	// the extended iterator we will add to.
-	ExtendedIterator<Quad> iter = WrappedIterator.emptyIterator();
+    // the default graph name
+    private final Node defaultGraph;
+    // the extended iterator we will add to.
+    ExtendedIterator<Quad> iter = WrappedIterator.emptyIterator();
 
-	// a function to map triples to quads using the default graph name.
-	private final Function<Triple,Quad> MAP =
-			new Function<Triple,Quad>(){
+    // a function to map triples to quads using the default graph name.
+    private final Function<Triple, Quad> MAP = new Function<Triple, Quad>() {
 
-		@Override
-		public Quad apply(Triple triple) {
-			return new Quad( defaultGraph,
-					Converters.checkVar( triple.getSubject()),
-					Converters.checkVar( triple.getPredicate()),
-					Converters.checkVar( triple.getObject()));
-		}
-	};
+        @Override
+        public Quad apply(Triple triple) {
+            return new Quad(defaultGraph, Converters.checkVar(triple.getSubject()),
+                    Converters.checkVar(triple.getPredicate()), Converters.checkVar(triple.getObject()));
+        }
+    };
 
-	/**
-	 * Constructor.
-	 * @param defaultGraph the default graph name.
-	 */
-	QuadIteratorBuilder(Node defaultGraph)
-	{
-		this.defaultGraph = defaultGraph;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param defaultGraph the default graph name.
+     */
+    QuadIteratorBuilder(Node defaultGraph) {
+        this.defaultGraph = defaultGraph;
+    }
 
+    @Override
+    public void visit(ElementTriplesBlock el) {
+        iter = iter.andThen(WrappedIterator.create(el.getPattern().getList().iterator()).mapWith(MAP));
+    }
 
-	@Override
-	public void visit(ElementTriplesBlock el) {
-		iter = iter.andThen( WrappedIterator.create(el.getPattern().getList().iterator())
-				.mapWith( MAP ));
-	}
+    @Override
+    public void visit(ElementPathBlock el) {
+        for (final TriplePath pth : el.getPattern().getList()) {
+            if (!pth.isTriple()) {
+                throw new QueryParseException("Paths not permitted in data quad", -1, -1);
+            }
+        }
+        iter = iter.andThen(WrappedIterator.create(el.getPattern().getList().iterator()).mapWith(pth -> pth.asTriple())
+                .mapWith(MAP));
+    }
 
-	@Override
-	public void visit(ElementPathBlock el) {
-		for (final TriplePath pth : el.getPattern().getList())
-		{
-			if ( ! pth.isTriple())
-			{
-				throw new QueryParseException("Paths not permitted in data quad", -1, -1) ;
-			}
-		}
-		iter = iter.andThen(
-				WrappedIterator.create(el.getPattern().getList().iterator())
-				.mapWith( pth -> pth.asTriple() )
-				.mapWith( MAP ));
-	}
+    @Override
+    public void visit(ElementFilter el) {
+        throw new QueryParseException("Paths not permitted in data quad", -1, -1);
+    }
 
-	@Override
-	public void visit(ElementFilter el) {
-		throw new QueryParseException("Paths not permitted in data quad", -1, -1) ;
-	}
+    @Override
+    public void visit(ElementAssign el) {
+        throw new QueryParseException("element assignment not permitted in data quad", -1, -1);
+    }
 
-	@Override
-	public void visit(ElementAssign el) {
-		throw new QueryParseException("element assignment not permitted in data quad", -1, -1) ;
-	}
+    @Override
+    public void visit(ElementBind el) {
+        throw new QueryParseException("bind not permitted in data quad", -1, -1);
 
-	@Override
-	public void visit(ElementBind el) {
-		throw new QueryParseException("bind not permitted in data quad", -1, -1) ;
+    }
 
-	}
+    @Override
+    public void visit(ElementData el) {
+        throw new QueryParseException("element data not permitted in data quad", -1, -1);
+    }
 
-	@Override
-	public void visit(ElementData el) {
-		throw new QueryParseException("element data not permitted in data quad", -1, -1) ;
-	}
+    @Override
+    public void visit(ElementUnion el) {
+        for (final Element e : el.getElements()) {
+            e.visit(this);
+        }
+    }
 
-	@Override
-	public void visit(ElementUnion el) {
-		for (final Element e : el.getElements())
-		{
-			e.visit( this );
-		}
-	}
+    @Override
+    public void visit(ElementOptional el) {
+        throw new QueryParseException("optional not permitted in data quad", -1, -1);
+    }
 
-	@Override
-	public void visit(ElementOptional el) {
-		throw new QueryParseException("optional not permitted in data quad", -1, -1) ;
-	}
+    @Override
+    public void visit(ElementGroup el) {
+        for (final Element e : el.getElements()) {
+            e.visit(this);
+        }
+    }
 
-	@Override
-	public void visit(ElementGroup el) {
-		for (final Element e : el.getElements())
-		{
-			e.visit( this );
-		}
-	}
+    @Override
+    public void visit(ElementDataset el) {
+        iter = iter.andThen(el.getDataset().find());
+    }
 
-	@Override
-	public void visit(ElementDataset el) {
-		iter = iter.andThen(el.getDataset().find());
-	}
+    @Override
+    public void visit(ElementNamedGraph el) {
+        final QuadIteratorBuilder bldr = new QuadIteratorBuilder(el.getGraphNameNode());
+        el.getElement().visit(bldr);
+        iter = iter.andThen(bldr.iter);
+    }
 
-	@Override
-	public void visit(ElementNamedGraph el) {
-		final QuadIteratorBuilder bldr = new QuadIteratorBuilder( el.getGraphNameNode());
-		el.getElement().visit(bldr);
-		iter = iter.andThen( bldr.iter );
-	}
+    @Override
+    public void visit(ElementExists el) {
+        throw new QueryParseException("exists not permitted in data quad", -1, -1);
+    }
 
-	@Override
-	public void visit(ElementExists el) {
-		throw new QueryParseException("exists not permitted in data quad", -1, -1) ;
-	}
+    @Override
+    public void visit(ElementNotExists el) {
+        throw new QueryParseException("not exists not permitted in data quad", -1, -1);
+    }
 
-	@Override
-	public void visit(ElementNotExists el) {
-		throw new QueryParseException("not exists not permitted in data quad", -1, -1) ;
-	}
+    @Override
+    public void visit(ElementMinus el) {
+        throw new QueryParseException("minus not permitted in data quad", -1, -1);
+    }
 
-	@Override
-	public void visit(ElementMinus el) {
-		throw new QueryParseException("minus not permitted in data quad", -1, -1) ;
-	}
+    @Override
+    public void visit(ElementService el) {
+        throw new QueryParseException("service not permitted in data quad", -1, -1);
+    }
 
-	@Override
-	public void visit(ElementService el) {
-		throw new QueryParseException("service not permitted in data quad", -1, -1) ;
-	}
-
-	@Override
-	public void visit(ElementSubQuery el) {
-		final Query q = el.getQuery();
-		q.getQueryPattern().visit( this );
-	}
+    @Override
+    public void visit(ElementSubQuery el) {
+        final Query q = el.getQuery();
+        q.getQueryPattern().visit(this);
+    }
 
 }
