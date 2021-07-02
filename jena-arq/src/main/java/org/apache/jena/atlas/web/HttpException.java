@@ -27,14 +27,20 @@ import org.apache.jena.web.HttpSC;
 public class HttpException extends RuntimeException {
     private int statusCode = -1;
     private String statusLine = null ;
-	private String response;
+	private String response = null;
 
-	public HttpException(int statusCode, String statusLine, String response) {
+	public HttpException(int statusCode, String statusLine) {
 		super(exMessage(statusCode, statusLine));
 		this.statusCode = statusCode;
 		this.statusLine = statusLine ;
-		this.response = response;
 	}
+
+    public HttpException(int statusCode, String statusLine, String response) {
+        super(exMessage(statusCode, statusLine));
+        this.statusCode = statusCode;
+        this.statusLine = statusLine ;
+        this.response = response;
+    }
 
 	private static String exMessage(int statusCode, String statusLine) {
 	    if ( statusLine == null )

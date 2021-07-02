@@ -22,23 +22,34 @@ import static org.apache.jena.query.TxnType.READ;
 import static org.apache.jena.query.TxnType.READ_PROMOTE;
 import static org.apache.jena.query.TxnType.WRITE;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.DeflaterInputStream;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.system.ActionCategory;
 import org.apache.jena.query.TxnType;
+import org.apache.jena.riot.WebContent;
+import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.core.TransactionalLock;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger;
 
 /**
@@ -88,9 +99,9 @@ public class HttpAction
     public String responseContentType = null;
 
     // Cleared to archive:
-    public Map <String, String> headers = new HashMap<>();
-    public HttpServletRequest request;
-    public HttpServletResponseTracker response;
+    public  Map <String, String> headers = new HashMap<>();
+    public  HttpServletRequest request;
+    public  HttpServletResponseTracker response;
     private final String actionURI;
     private final String contextPath;
 
@@ -423,6 +434,34 @@ public class HttpAction
 
     public HttpServletResponseTracker getResponse()     { return response; }
 
+    private InputStream inputStream = null;
+    private OutputStream outputStream = null;
+
+    public InputStream getInputStream() {
+        if ( inputStream == null ) {
+            inputStream = getInputStreamOneTime(this);
+        }
+        return inputStream;
+    }
+
+    /** Get the input steram, bypassing any compression.
+     * The state of the input stream is unknown.
+     * Only useful for skipping a body on a connection.
+     */
+    public InputStream getRequestInputStream() {
+        try {
+            return request.getInputStream();
+        } catch (IOException ex) { IO.exception(ex); return null; }
+    }
+
+    public OutputStream getOutputStream() {
+        if ( outputStream == null ) {
+            outputStream = getOutputStreamOneTime(this);
+        }
+        return outputStream;
+    }
+
+
     /**
      * Return the recorded time taken in milliseconds. {@link #setStartTime} and
      * {@link #setFinishTime} must have been called.
@@ -442,5 +481,68 @@ public class HttpAction
     @Override
     public String toString() {
         return request.getMethod()+" "+request.getRequestURL().toString();
+    }
+
+    /**
+     * Get the output stream for the response, respecting "Accept-Encoding" in the
+     * request. This function sets the "Content-Encoding" header of the response if
+     * compression is added.
+     * @implNote
+     * This most be called only once per response is encoding
+     * is used because GZIPOutputStream adds header information when created.
+     */
+    private static OutputStream getOutputStreamOneTime(HttpAction action) {
+        try {
+            OutputStream output = action.response.getOutputStream();
+            // Ignore requests to encode response.
+//            if ( true )
+//                return output;
+            String encoding = action.request.getHeader(HttpNames.hAcceptEncoding);
+            if ( encoding == null )
+                return output;
+            String[] options = ActionLib.splitOnComma(encoding);
+            if ( ActionLib.splitContains(options, WebContent.encodingGzip) ) {
+                action.response.setHeader(HttpNames.hContentEncoding, WebContent.encodingGzip);
+                return new GZIPOutputStream(output, 8192);
+            }
+            if ( ActionLib.splitContains(options, WebContent.encodingDeflate) ) {
+                action.response.setHeader(HttpNames.hContentEncoding, WebContent.encodingDeflate);
+                return new DeflaterOutputStream(output);
+            }
+            // "compress" is legacy - ignore.
+            // Bad. Log and continue with no added encoding.
+            String msg = HttpNames.hAcceptEncoding+" '"+encoding+"' encoding not supported";
+            action.log.warn(msg);
+            return output;
+        } catch (IOException ex) { IO.exception(ex); return null; }
+    }
+
+    /**
+     * Get the InputStream for the request, adding a compression decoder if the
+     * "Content-Encoding" is set in the request. Responds 400 if the encoding is not
+     * one that the server understands.
+     */
+    private static InputStream getInputStreamOneTime(HttpAction action) {
+        try {
+            InputStream input = action.request.getInputStream();
+            String encoding = action.request.getHeader(HttpNames.hContentEncoding);
+            if ( encoding == null )
+                return input;
+            switch (encoding) {
+                case WebContent.encodingGzip :
+                    return new GZIPInputStream(input, 8192);
+                case WebContent.encodingDeflate :
+                    return new DeflaterInputStream(input);
+                    // Not supported:
+                case "br" :
+                    // From Apache Common Compress but needs extra org.brotli.dec.BrotliInputStream
+                case "compress" :
+                    // Legacy - not supported
+                default :
+            }
+            // Not supported or not understood.
+            ServletOps.error(HttpSC.BAD_REQUEST_400, HttpNames.hContentEncoding+" '"+encoding+"' encoding not supported");
+            return null;
+        } catch (IOException ex) { IO.exception(ex); return null; }
     }
 }

@@ -21,9 +21,7 @@ package org.apache.jena.fuseki.servlets;
 import static java.lang.String.format;
 import static org.apache.jena.fuseki.servlets.GraphTarget.determineTargetGSP;
 
-import java.io.IOException;
-
-import javax.servlet.ServletOutputStream;
+import java.io.OutputStream;
 
 import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.graph.Graph;
@@ -51,9 +49,7 @@ public class GSP_R extends GSP_Base {
         ActionLib.setCommonHeaders(action.response);
         // If this asks for triples, get N-Quads. Don't want the named graphs hidden.
         MediaType mediaType = ActionLib.contentNegotationQuads(action);
-        ServletOutputStream output;
-        try { output = action.response.getOutputStream(); }
-        catch (IOException ex) { ServletOps.errorOccurred(ex); output = null; }
+        OutputStream output = action.getOutputStream();
 
         Lang lang = RDFLanguages.contentTypeToLang(mediaType.getContentTypeStr());
         if ( lang == null )
@@ -87,11 +83,6 @@ public class GSP_R extends GSP_Base {
     protected void execGetGSP(HttpAction action) {
         ActionLib.setCommonHeaders(action.response);
         MediaType mediaType = ActionLib.contentNegotationRDF(action);
-
-        ServletOutputStream output;
-        try { output = action.response.getOutputStream(); }
-        catch (IOException ex) { ServletOps.errorOccurred(ex); output = null; }
-
         Lang lang = RDFLanguages.contentTypeToLang(mediaType.getContentTypeStr());
         if ( lang == null )
             lang = RDFLanguages.TURTLE;
