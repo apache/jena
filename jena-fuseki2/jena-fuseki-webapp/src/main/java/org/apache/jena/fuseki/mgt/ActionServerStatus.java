@@ -22,8 +22,7 @@ import static org.apache.jena.riot.WebContent.charsetUTF8;
 import static org.apache.jena.riot.WebContent.contentTypeJSON;
 
 import java.io.IOException;
-
-import javax.servlet.ServletOutputStream;
+import java.io.OutputStream;
 
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonBuilder;
@@ -65,7 +64,7 @@ public class ActionServerStatus extends ActionCtl
     }
 
     private void description(HttpAction action) throws IOException {
-        ServletOutputStream out = action.getResponseOutputStream();
+        OutputStream out = action.getResponseOutputStream();
         action.setResponseContentType(contentTypeJSON);
         action.setResponseCharacterEncoding(charsetUTF8);
 
@@ -77,7 +76,7 @@ public class ActionServerStatus extends ActionCtl
 
         JsonValue v = builder.build();
         JSON.write(out, v);
-        out.println();
+        out.write('\n');
         out.flush();
     }
 

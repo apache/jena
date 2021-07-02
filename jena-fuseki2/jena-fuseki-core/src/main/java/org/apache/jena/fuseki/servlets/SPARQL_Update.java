@@ -231,29 +231,29 @@ public class SPARQL_Update extends ActionService
                 UpdateAction.execute(req, action.getActiveDSG());
             action.commit();
         } catch (UpdateException ex) {
-            IO.skipToEnd(input);
+            ActionLib.consumeBody(action);
             abortSilent(action);
             incCounter(action.getEndpoint().getCounters(), UpdateExecErrors);
             ServletOps.errorOccurred(ex.getMessage());
         } catch (QueryParseException ex) {
-            IO.skipToEnd(input);
+            ActionLib.consumeBody(action);
             abortSilent(action);
             String msg = messageForParseException(ex);
             action.log.warn(format("[%d] Parse error: %s", action.id, msg));
             ServletOps.errorBadRequest(messageForException(ex));
         } catch (QueryBuildException|QueryExceptionHTTP ex) {
-            IO.skipToEnd(input);
+            ActionLib.consumeBody(action);
             abortSilent(action);
             // Counter inc'ed further out.
             String msg = messageForException(ex);
             action.log.warn(format("[%d] Bad request: %s", action.id, msg));
             ServletOps.errorBadRequest(messageForException(ex));
         } catch (OperationDeniedException ex) {
-            IO.skipToEnd(input);
+            ActionLib.consumeBody(action);
             abortSilent(action);
             throw ex;
         } catch (Throwable ex) {
-            IO.skipToEnd(input);
+            ActionLib.consumeBody(action);
             if ( ! ( ex instanceof ActionErrorException ) ) {
                 abortSilent(action);
                 ServletOps.errorOccurred(ex.getMessage(), ex);

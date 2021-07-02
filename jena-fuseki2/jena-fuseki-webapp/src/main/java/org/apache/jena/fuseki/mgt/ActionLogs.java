@@ -22,8 +22,7 @@ import static org.apache.jena.riot.WebContent.charsetUTF8;
 import static org.apache.jena.riot.WebContent.contentTypeTextPlain;
 
 import java.io.IOException;
-
-import javax.servlet.ServletOutputStream;
+import java.io.PrintStream;
 
 import org.apache.jena.fuseki.ctl.ActionCtl;
 import org.apache.jena.fuseki.servlets.HttpAction;
@@ -44,7 +43,7 @@ public class ActionLogs extends ActionCtl
     @Override
     public void execute(HttpAction action) {
         try {
-            ServletOutputStream out = action.getResponseOutputStream();
+            PrintStream out = new PrintStream(action.getResponseOutputStream());
             action.setResponseContentType(contentTypeTextPlain);
             action.setResponseCharacterEncoding(charsetUTF8);
             out.println("Not implemented yet");

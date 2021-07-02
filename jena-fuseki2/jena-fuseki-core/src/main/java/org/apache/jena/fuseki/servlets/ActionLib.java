@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.web.AcceptList;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.MediaType;
@@ -169,7 +170,7 @@ public class ActionLib {
         ServletContext servletCxt = request.getServletContext();
         if ( servletCxt == null )
             return request.getRequestURI();
-                    
+
         String contextPath = servletCxt.getContextPath();
         String uri = request.getRequestURI();
         if ( contextPath == null )
@@ -204,6 +205,23 @@ public class ActionLib {
         return contentNegotation(action, DEF.quadsOffer, DEF.acceptNQuads);
     }
 
+    /** Split a string on "," and remove leadign and trailing whitespace on each element */
+    public static String[] splitOnComma(String string) {
+        String split[] = string.split(",");
+        for ( int i = 0 ; i < split.length ; i++ ) {
+            split[i] = split[i].trim();
+        }
+        return split;
+    }
+
+    public static boolean splitContains(String[] elts, String str) {
+        for ( int i = 0 ; i < elts.length ; i++ ) {
+            if ( Lib.equals(elts[i],  str) )
+                return true;
+        }
+        return false;
+    }
+
     /**
      * Parse RDF content from the body of the request of the action, ends the
      * request, and sends a 400 if there is a parse error.
@@ -221,13 +239,14 @@ public class ActionLib {
 
     /**
      * Parse RDF content. This wraps up the parse step reading from an action.
+     * It includes handling compression if the {@code Content-Encoding} header is present
      * @throws RiotParseException
      */
     public static void parse(HttpAction action, StreamRDF dest, Lang lang, String base) {
-        InputStream input = null;
-        try { input = action.getRequestInputStream(); }
-        catch (IOException ex) { IO.exception(ex); }
-        parse(action, dest, input, lang, base);
+        try {
+            InputStream input = action.getRequestInputStream();
+            parse(action, dest, input, lang, base);
+        } catch (IOException ex) { IO.exception(ex); }
     }
 
     /**
@@ -258,11 +277,13 @@ public class ActionLib {
      * If there is a no {@code Content-Length} header, no need to do anything - the connection is not reusable.
      */
     public static void consumeBody(HttpAction action) {
-        if ( action.getRequestContentLengthLong() > 0 ) {
-            try {
-                IO.skipToEnd(action.getRequestInputStream());
-            } catch (IOException ex) {}
-        }
+        // If there isn't a Content-Length, we can't recover.
+        try {
+            if ( action.getRequestContentLengthLong() > 0 ) {
+                InputStream input = action.getRequestInputStream();
+                IO.skipToEnd(input);
+            }
+        } catch (IOException ex) { IO.exception(ex); }
     }
 
     /*
@@ -391,7 +412,7 @@ public class ActionLib {
     public static void setCommonHeadersForOptions(HttpAction action) {
         setCommonHeadersForOptions(action.getResponse());
     }
-    
+
     private static void setCommonHeadersForOptions(HttpServletResponse httpResponse) {
         if ( Fuseki.CORS_ENABLED )
             httpResponse.setHeader(HttpNames.hAccessControlAllowHeaders, "X-Requested-With, Content-Type, Authorization");
@@ -401,7 +422,7 @@ public class ActionLib {
     public static void setCommonHeaders(HttpAction action) {
         setCommonHeaders(action.getResponse());
     }
-    
+
     private static void setCommonHeaders(HttpServletResponse httpResponse) {
         if ( Fuseki.CORS_ENABLED )
             httpResponse.setHeader(HttpNames.hAccessControlAllowOrigin, "*");

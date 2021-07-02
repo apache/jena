@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets ;
 import java.util.HashMap ;
 import java.util.Map ;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity ;
 import org.apache.http.HttpResponse ;
 import org.apache.http.util.EntityUtils ;
@@ -60,14 +61,14 @@ public class HttpResponseLib
                 // org.apache.http.entity.ContentType ;
                 String ct = contentType(response) ;
                 Lang lang = RDFLanguages.contentTypeToLang(ct) ;
-                StreamRDF dest = StreamRDFLib.graph(g) ; 
+                StreamRDF dest = StreamRDFLib.graph(g) ;
                 try(InputStream in = entity.getContent()) {
                     RDFParser.source(in).lang(lang).base(baseIRI).parse(dest);
                 }
-                this.graph = g ; 
+                this.graph = g ;
             } catch (IOException ex) { IO.exception(ex) ; }
         }
-    
+
         @Override
         public Graph get() { return graph ; }
     }
@@ -89,15 +90,15 @@ public class HttpResponseLib
                 try(InputStream in = entity.getContent()) {
                     RDFParser.source(in).lang(lang).base(baseIRI).parse(dest);
                 }
-                this.dsg = dsg ; 
+                this.dsg = dsg ;
             } catch (IOException ex) { IO.exception(ex) ; }
         }
-    
+
         @Override
         public DatasetGraph get() { return dsg ; }
     }
 
-    
+
     /** Dump, to System.out, a response */
     public static HttpResponseHandler httpDumpResponse = new HttpResponseHandler()
     {
@@ -122,12 +123,12 @@ public class HttpResponseLib
             }
         }
     } ;
-    
+
     /** Consume a response quietly. */
     public static HttpResponseHandler nullResponse = (b, r) -> EntityUtils.consumeQuietly(r.getEntity());
 
     // Old world.
-    // See also ResultSetFactory.load(in, fmt) 
+    // See also ResultSetFactory.load(in, fmt)
     private static ResultsFormat contentTypeToResultsFormat(String contentType) { return mapContentTypeToResultSet.get(contentType) ; }
     private static final Map<String, ResultsFormat> mapContentTypeToResultSet = new HashMap<>() ;
     static {
@@ -156,11 +157,19 @@ public class HttpResponseLib
             return rs;
         }
     }
-    
+
     private static String contentType(HttpResponse response) {
         HttpEntity entity = response.getEntity() ;
         //org.apache.http.entity.ContentType ;
         org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.get(entity) ;
         return ct.getMimeType() ;
+    }
+
+    // Development helper
+    private static void printResponse(HttpResponse response) {
+        response.headerIterator().forEachRemaining(obj->{
+            Header header = (Header)obj;
+            System.out.printf("  %-20s %s\n", header.getName()+":", header.getValue());
+        });
     }
 }

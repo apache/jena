@@ -227,7 +227,6 @@ public class QueryEngineHTTP implements QueryExecution {
                 try {
                     String str = obj.toString();
                     if (str.contains(",")) {
-
                         String[] a = str.split(",");
                         int connect = Integer.parseInt(a[0]);
                         int read = Integer.parseInt(a[1]);

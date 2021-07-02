@@ -27,7 +27,6 @@ import static org.apache.jena.riot.WebContent.isHtmlForm;
 import static org.apache.jena.riot.WebContent.matchContentType;
 import static org.apache.jena.riot.web.HttpNames.*;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -226,7 +225,8 @@ public abstract class SPARQLQueryProcessor extends ActionService
         try {
             InputStream input = action.getRequestInputStream();
             queryString = IO.readWholeFileAsUTF8(input);
-        } catch (IOException ex) {
+        } catch (Throwable ex) {
+            ActionLib.consumeBody(action);
             ServletOps.errorOccurred(ex);
         }
         execute(queryString, action);
