@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
-import org.apache.jena.graph.FrontsNode ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.impl.LiteralLabel ;
@@ -65,19 +64,6 @@ public class AbstractQueryBuilderTest {
 			return handlerBlock;
 		}
 
-	}
-
-	private class NodeFront implements FrontsNode {
-		Node n;
-
-		NodeFront(Node n) {
-			this.n = n;
-		}
-
-		@Override
-		public Node asNode() {
-			return n;
-		}
 	}
 
 	@Test

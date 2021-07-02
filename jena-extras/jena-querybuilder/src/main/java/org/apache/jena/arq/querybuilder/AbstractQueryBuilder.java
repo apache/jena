@@ -151,11 +151,8 @@ implements Cloneable, PrologClause<T>, ValuesClause<T> {
 		if (po instanceof Path)
 		{
 			return new TriplePath(makeNode(s), (Path)po, makeNode(o));
-		} else
-		{
-			return new TriplePath( new Triple( makeNode(s), (Node)po, makeNode(o)));
-		}
-
+		} 
+		return new TriplePath( new Triple( makeNode(s), (Node)po, makeNode(o)));
 	}
 
 

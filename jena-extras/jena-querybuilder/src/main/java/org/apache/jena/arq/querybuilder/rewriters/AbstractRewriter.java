@@ -95,12 +95,11 @@ public class AbstractRewriter<T> {
 		if (t.getPath() == null) {
 			return new TriplePath(new Triple(changeNode(t.getSubject()),
 					changeNode(t.getPredicate()), changeNode(t.getObject())));
-		} else {
-			PathRewriter transform = new PathRewriter(values);
-			t.getPath().visit(transform);
-			return new TriplePath(changeNode(t.getSubject()),
-					transform.getResult(), changeNode(t.getObject()));
-		}
+		} 
+		PathRewriter transform = new PathRewriter(values);
+		t.getPath().visit(transform);
+		return new TriplePath(changeNode(t.getSubject()),
+				transform.getResult(), changeNode(t.getObject()));
 	}
 
 	/**
