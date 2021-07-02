@@ -160,4 +160,6 @@ public class ConstructBuilderTest extends AbstractRegexpBasedTest {
 		assertTrue( q2.contains("ORDER BY"));
 		assertFalse( q1.contains("ORDER BY"));
 	}
+	
+	
 }
