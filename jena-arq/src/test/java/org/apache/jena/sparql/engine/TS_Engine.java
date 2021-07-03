@@ -21,7 +21,6 @@ package org.apache.jena.sparql.engine;
 import org.apache.jena.sparql.engine.binding.TestBinding;
 import org.apache.jena.sparql.engine.binding.TestBindingStreams ;
 import org.apache.jena.sparql.engine.binding.TestItr;
-import org.apache.jena.sparql.engine.http.TestQueryEngineHTTP ;
 import org.apache.jena.sparql.engine.http.TestService ;
 import org.apache.jena.sparql.engine.ref.TestTableJoin ;
 import org.junit.runner.RunWith ;
@@ -36,7 +35,6 @@ import org.junit.runners.Suite ;
       , TestTableJoin.class
 
       , TestService.class
-      , TestQueryEngineHTTP.class
 
       , TestQueryEngineMultiThreaded.class
       , TestJsonIterator.class

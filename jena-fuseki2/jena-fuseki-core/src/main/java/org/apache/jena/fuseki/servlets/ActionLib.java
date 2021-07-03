@@ -201,7 +201,7 @@ public class ActionLib {
         return contentNegotation(action, DEF.quadsOffer, DEF.acceptNQuads);
     }
 
-    /** Split a string on "," and remove leadign and trailing whitespace on each element */
+    /** Split a string on "," and remove leading and trailing whitespace on each element */
     public static String[] splitOnComma(String string) {
         String split[] = string.split(",");
         for ( int i = 0 ; i < split.length ; i++ ) {
@@ -373,6 +373,7 @@ public class ActionLib {
                     return;
                 }
                 // Succeeded in formatting the RDF
+                // Can not write the length here if compressed.
                 action.response.setContentLength(bytes.length);
                 action.response.setContentType(ct);
                 action.response.setStatus(HttpSC.OK_200);

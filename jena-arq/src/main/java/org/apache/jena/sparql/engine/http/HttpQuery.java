@@ -73,7 +73,21 @@ public class HttpQuery extends Params {
     private boolean serviceParams = false;
     private final Pattern queryParamPattern = Pattern.compile(".+[&|\\?]query=.*");
     private int connectTimeout = 0, readTimeout = 0;
+
+    // It is in HttpQuery that policy about supporting compression (client side) is
+    // made. Between compression, and transfer-encoding:chunked to maintain a reusable
+    // streaming connection, "it's complicated"
+    // Compressing e.g ResultSet (one time objects) isn't as valuable as being to
+    // upload gzip compressed objects (e.g. GSP data for a file).
     private boolean allowCompression = false;
+
+    /**
+     * Whether to allow asking for compression of result sets.
+     * If false, ignore the "allowCompression" setting.
+     * See {@link #setAllowCompression}.
+     */
+    private static boolean globalCompressionAllow = false;
+
     private HttpClient client;
 
     private HttpContext context;
@@ -169,7 +183,8 @@ public class HttpQuery extends Params {
      *            Whether to allow compressed encoding
      */
     public void setAllowCompression(boolean allow) {
-        allowCompression = allow;
+        if ( globalCompressionAllow )
+            allowCompression = allow;
     }
 
     /**

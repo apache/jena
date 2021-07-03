@@ -222,9 +222,10 @@ public class ResponseResultSet
     // Set HTTP response and execute OutputContent inside try-catch.
     private static void output(HttpAction action, String contentType, String charset, OutputContent proc) {
         try {
+            action.response.setHeader("Connection", "close");
+            OutputStream out = action.getOutputStream();
             ResponseOps.setHttpResponse(action, contentType, charset);
             ServletOps.success(action);
-            OutputStream out = action.getOutputStream();
             try {
                 proc.output(out);
                 out.flush();
