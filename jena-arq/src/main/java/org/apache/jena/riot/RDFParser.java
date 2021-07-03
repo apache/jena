@@ -336,11 +336,8 @@ public class RDFParser {
             throw new RiotException("Failed to determine the RDF syntax (.lang or .base required)");
 
         ReaderRIOT readerRiot = createReader(ct);
-        if ( readerRiot == null ) {
-//            readerRiot = createReader(lang);
-//            if ( readerRiot == null )
-                throw new RiotException("No parser registered for content type: " + ct.getContentTypeStr());
-        }
+        if ( readerRiot == null )
+            throw new RiotException("No parser registered for content type: " + ct.getContentTypeStr());
         Reader jr = javaReader;
         if ( content != null )
             jr = new StringReader(content);

@@ -81,8 +81,7 @@ public class TestEmbeddedFuseki {
     // Different dataset name.
     @Test public void embedded_02() {
         DatasetGraph dsg = dataset();
-        int port = 0;//FusekiEnv.choosePort();
-        FusekiServer server = FusekiServer.make(port, "/ds2", dsg);
+        FusekiServer server = FusekiServer.make(0, "/ds2", dsg);
         DataAccessPointRegistry registry = server.getDataAccessPointRegistry();
         // But no /ds
         assertEquals(1, registry.size());
@@ -96,12 +95,12 @@ public class TestEmbeddedFuseki {
     // Different dataset name.
     @Test public void embedded_03() {
         DatasetGraph dsg = dataset();
-        int port = WebLib.choosePort();
         FusekiServer server = FusekiServer.create()
-            .port(port)
+            .port(0)
             .add("/ds1", dsg)
             .build();
         server.start();
+        int port = server.getPort();
         try {
             // Add while live.
             Txn.executeWrite(dsg,  ()->{

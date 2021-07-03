@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.jena.atlas.lib.StrUtils;
@@ -223,7 +222,7 @@ public class ResponseResultSet
         try {
             ResponseOps.setHttpResponse(action, contentType, charset);
             ServletOps.success(action);
-            ServletOutputStream out = action.getResponseOutputStream();
+            OutputStream out = action.getResponseOutputStream();
             try {
                 proc.output(out);
                 out.flush();

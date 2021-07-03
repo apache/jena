@@ -166,7 +166,7 @@ public class HttpResponseLib
     }
 
     // Development helper
-    private static void printResponse(HttpResponse response) {
+    public static void printResponse(HttpResponse response) {
         response.headerIterator().forEachRemaining(obj->{
             Header header = (Header)obj;
             System.out.printf("  %-20s %s\n", header.getName()+":", header.getValue());

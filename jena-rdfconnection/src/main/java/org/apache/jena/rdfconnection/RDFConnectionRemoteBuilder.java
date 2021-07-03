@@ -28,7 +28,6 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.jena.riot.*;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.core.TransactionalLock;
-import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
 
 /** Builder class for {@link RDFConnectionRemote} */
 public class RDFConnectionRemoteBuilder {
@@ -54,8 +53,8 @@ public class RDFConnectionRemoteBuilder {
     protected String        acceptGraph        = WebContent.defaultGraphAcceptHeader;
     protected String        acceptDataset      = WebContent.defaultDatasetAcceptHeader;
 
-    protected String        acceptSelectResult = QueryEngineHTTP.defaultSelectHeader();
-    protected String        acceptAskResult    = QueryEngineHTTP.defaultAskHeader();
+    protected String        acceptSelectResult = WebContent.defaultSparqlResultsHeader;
+    protected String        acceptAskResult    = WebContent.defaultSparqlAskHeader;
     // All-purpose head that works for any query type (but is quite long!)
     protected String        acceptSparqlResults = acceptSelectResult+","+acceptGraph;
     // Whether to parse SPARQL Queries and Updates for checking purposes.
@@ -154,7 +153,7 @@ public class RDFConnectionRemoteBuilder {
         return this;
     }
 
-    /** Set the {@link HttpContext} for the connection to tbe built */
+    /** Set the {@link HttpContext} for the connection to be built */
     public RDFConnectionRemoteBuilder httpContext(HttpContext httpContext) {
         this.httpContext = httpContext;
         return this;

@@ -194,7 +194,7 @@ public class WebContent {
 
     public static final String encodingGzip = "gzip";
     public static final String encodingDeflate = "deflate";
-    public static final String acceptEncoding = encodingGzip+", "+encodingDeflate;
+    //public static final String acceptEncodingCompressed = encodingGzip+", "+encodingDeflate;
 
     // The "header" form includes pragmatic extras.
 

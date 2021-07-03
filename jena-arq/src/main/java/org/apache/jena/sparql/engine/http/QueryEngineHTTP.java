@@ -84,18 +84,9 @@ public class QueryEngineHTTP implements QueryExecution {
     private TimeUnit readTimeoutUnit = TimeUnit.MILLISECONDS;
 
     // Compression Support
+    // Note that compression setting is used in HttpQuery.
+    /** See {@link HttpQuery} */
     private boolean allowCompression = true;
-
-//    // Content Types
-//    private String selectContentType    = defaultSelectHeader();
-//    private String askContentType       = defaultAskHeader();
-//    private String modelContentType     = defaultConstructHeader();
-//
-//    private String constructContentType = defaultConstructHeader() ;
-//    private String datasetContentType   = defaultConstructDatasetHeader() ;
-//
-//    // If this is non-null, it overrides the ???ContentType choice.
-//    private String acceptHeader         = null;
 
     // Updates default headers, same variables.
     private String selectContentType    = WebContent.defaultSparqlResultsHeader;
@@ -390,6 +381,7 @@ public class QueryEngineHTTP implements QueryExecution {
             throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not supported for SELECT queries");
         // This returns a streaming result set for some formats.
         // Do not close the InputStream at this point.
+
         ResultSet result = ResultSetMgr.read(in, lang);
         return result;
     }
@@ -855,85 +847,6 @@ public class QueryEngineHTTP implements QueryExecution {
         if (!RDFLanguages.isQuads(lang))
             throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not a RDF Dataset format");
         datasetContentType = contentType;
-    }
-
-    private static final String dftSelectContentTypeHeader = initSelectContentTypes() ;
-
-    public static String defaultSelectHeader() {
-        return dftSelectContentTypeHeader ;
-    }
-
-    private static String initSelectContentTypes() {
-        StringBuilder sBuff = new StringBuilder() ;
-        accumulateContentTypeString(sBuff, WebContent.contentTypeResultsJSON,  1.0);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeResultsXML,   0.9);     // Less efficient
-
-        accumulateContentTypeString(sBuff, WebContent.contentTypeTextTSV,      0.7);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeTextCSV,      0.5);
-
-        accumulateContentTypeString(sBuff, WebContent.contentTypeJSON,         0.2);     // We try to parse these in
-        accumulateContentTypeString(sBuff, WebContent.contentTypeXML,          0.2) ;    // the hope they are right.
-        accumulateContentTypeString(sBuff, "*/*",                              0.1) ;    // Get something!
-        return sBuff.toString() ;
-    }
-
-    private static final String askContentTypeHeader = initAskContentTypes() ;
-
-    public static String defaultAskHeader() {
-        return dftSelectContentTypeHeader ;
-    }
-
-    // These happen to be the same.
-    private static String initAskContentTypes() { return initSelectContentTypes(); }
-
-    private static final String dftConstructContentTypeHeader = initConstructContentTypes() ;
-
-    public static String defaultConstructHeader() {
-        return dftConstructContentTypeHeader ;
-    }
-
-    private static String initConstructContentTypes() {
-        // Or use WebContent.defaultGraphAcceptHeader which is slightly
-        // narrower. Here, we have a tuned setting for SPARQL operations.
-        StringBuilder sBuff = new StringBuilder() ;
-        accumulateContentTypeString(sBuff, WebContent.contentTypeTurtle,       1.0);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeNTriples,     1.0);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeRDFXML,       0.9);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeNTriplesAlt,  0.5);    // text/plain
-        accumulateContentTypeString(sBuff, WebContent.contentTypeN3,           0.3);
-        accumulateContentTypeString(sBuff, "*/*",                              0.1) ;
-        return sBuff.toString();
-    }
-
-    private static final String dftConstructDatasetContentTypeHeader = initConstructDatasetContentTypes() ;
-
-    public static String defaultConstructDatasetHeader() {
-        return dftConstructDatasetContentTypeHeader ;
-    }
-
-    private static String initConstructDatasetContentTypes() {
-        // Or use WebContent.defaultDatasetAcceptHeader which is slightly
-        // narrower. Here, we have a tuned setting for SPARQL operations.
-        StringBuilder sBuff = new StringBuilder() ;
-
-        accumulateContentTypeString(sBuff, WebContent.contentTypeTriG,         1.0) ;
-        accumulateContentTypeString(sBuff, WebContent.contentTypeNQuads,       1.0) ;
-        accumulateContentTypeString(sBuff, WebContent.contentTypeJSONLD,       0.9) ;
-        // And triple formats (the case of execConstructDatasets but a regular triples CONSTRUCT).
-        accumulateContentTypeString(sBuff, WebContent.contentTypeTurtle,       0.8);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeNTriples,     0.8);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeRDFXML,       0.7);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeNTriplesAlt,  0.4);
-        accumulateContentTypeString(sBuff, "*/*",                              0.1) ;
-        return sBuff.toString();
-    }
-
-    private static void accumulateContentTypeString(StringBuilder sBuff, String str, double v) {
-        if ( sBuff.length() != 0 )
-            sBuff.append(", ") ;
-        sBuff.append(str) ;
-        if ( v < 1 )
-            sBuff.append(";q=").append(v) ;
     }
 
     /** Get the HTTP Accept header for the request. */

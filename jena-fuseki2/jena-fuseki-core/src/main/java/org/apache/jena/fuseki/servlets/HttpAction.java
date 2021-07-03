@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
@@ -302,12 +303,10 @@ public class HttpAction
             try { transactional.commit(); } catch (RuntimeException ex) {}
             try { transactional.end(); } catch (RuntimeException ex) {}
         }
-        activeDSG = null;
     }
 
     public void end() {
         dataService.finishTxn();
-
         if ( transactional.isInTransaction() ) {
             Log.warn(this, "Transaction still active - no commit or abort seen (forced abort)");
             try {
@@ -320,7 +319,19 @@ public class HttpAction
             try { transactional.end(); }
             catch (RuntimeException ex) {}
         }
+        endOfAction();
+    }
+
+    private void endOfAction() {
         activeDSG = null;
+        // Should be handled where necessary in the request handling.
+//        if ( inputStream != null ) {
+//            ActionLib.consumeBody(this);
+//        }
+//        if ( outputStream != null ) {
+//            IO.flush(outputStream);
+//            IO.close(outputStream);
+//        }
     }
 
     public void commit() {
@@ -457,6 +468,7 @@ public class HttpAction
 //        }
 //        return outputStream;
 //    }
+//
 
     /**
      * Return the recorded time taken in milliseconds. {@link #setStartTime} and
@@ -570,6 +582,51 @@ public class HttpAction
         response.setCharacterEncoding(charset);
     }
 
+    /**
+     * Get the output stream for the response, respecting "Accept-Encoding" in the
+     * request. This function sets the "Content-Encoding" header of the response if
+     * compression is added.
+     * @implNote
+     * This most be called only once per response is encoding
+     * is used because GZIPOutputStream adds header information when created.
+     */
+    private static OutputStream __getOutputStreamOneTime(HttpAction action) {
+        try {
+            OutputStream output = action.response.getOutputStream();
+            // Ignore requests to encode response.
+            if ( true )
+                return output;
+            // This does not work.
+            // It requires:
+            // * better handling so that the Content-Encoding is "chunked, gzip", not "gzip", when
+            //   combined with streaming. Jetty seems to lose this only sending "chunked".
+            // * The client to cooperate.
+            // It is of dubious value to gzip one-off responses.
+            // Also needs to work with Content-Length
+            throw new NotImplemented("Content-Encoding: chunked, gzip");
+
+//            String encoding = action.request.getHeader(HttpNames.hAcceptEncoding);
+//            if ( encoding == null )
+//                return output;
+//            String[] options = ActionLib.splitOnComma(encoding);
+//            if ( ActionLib.splitContains(options, WebContent.encodingGzip) ) {
+//                action.response.setHeader(HttpNames.hContentEncoding, WebContent.encodingGzip);
+//                // This must be closed to finish the compression.
+//                // flush is not enough.
+//                return new GZIPOutputStream(output, 8192);
+//            }
+//            if ( ActionLib.splitContains(options, WebContent.encodingDeflate) ) {
+//                action.response.setHeader(HttpNames.hContentEncoding, WebContent.encodingDeflate);
+//                return new DeflaterOutputStream(output);
+//            }
+//            // "compress" is legacy - ignore.
+//            // Bad. Log and continue with no added encoding.
+//            String msg = HttpNames.hAcceptEncoding+" '"+encoding+"' encoding not supported";
+//            action.log.warn(msg);
+//            return output;
+        } catch (IOException ex) { IO.exception(ex); return null; }
+    }
+
     public void setResponseContentType(String ct) {
         response.setContentType(ct);
     }
@@ -597,40 +654,6 @@ public class HttpAction
     public PrintWriter getResponseWriter() throws IOException {
         return response.getWriter();
     }
-
-    // Compression needs to be handled further out.
-    // There are problems with "Content-Encoding" and e.g. chunked.
-//    /**
-//     * Get the output stream for the response, respecting "Accept-Encoding" in the
-//     * request. This function sets the "Content-Encoding" header of the response if
-//     * compression is added.
-//     * @implNote
-//     * This most be called only once per response is encoding
-//     * is used because GZIPOutputStream adds header information when created.
-//     */
-//    private static OutputStream getOutputStreamOneTime(HttpAction action)  throws IOException {
-//        OutputStream output = action.response.getOutputStream();
-//        // Ignore requests to encode response.
-////            if ( true )
-////                return output;
-//        String encoding = action.request.getHeader(HttpNames.hAcceptEncoding);
-//        if ( encoding == null )
-//            return output;
-//        String[] options = ActionLib.splitOnComma(encoding);
-//        if ( ActionLib.splitContains(options, WebContent.encodingGzip) ) {
-//            action.response.setHeader(HttpNames.hContentEncoding, WebContent.encodingGzip);
-//            return new GZIPOutputStream(output, 8192);
-//        }
-//        if ( ActionLib.splitContains(options, WebContent.encodingDeflate) ) {
-//            action.response.setHeader(HttpNames.hContentEncoding, WebContent.encodingDeflate);
-//            return new DeflaterOutputStream(output);
-//        }
-//        // "compress" is legacy - ignore.
-//        // Bad. Log and continue with no added encoding.
-//        String msg = HttpNames.hAcceptEncoding+" '"+encoding+"' encoding not supported";
-//        action.log.warn(msg);
-//        return output;
-//    }
 
     /**
      * Get the InputStream for the request, adding a compression decoder if the
