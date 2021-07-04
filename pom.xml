@@ -173,7 +173,7 @@
         <module>apache-jena-libs</module>
 
         <module>jena-text</module>
-        
+        <module>jena-spatial</module> 
         <module>jena-cmds</module>
         <module>jena-fuseki2</module>
 

@@ -1,0 +1,86 @@
+@prefix : <http://localhost/jena_example/#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+@prefix dbp: <http://dbpedia.org/resource/> .
+@prefix airports: <http://airports.dataincubator.org/airports/> .
+@prefix airports_sc: <http://airports.dataincubator.org/schema/> .
+
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix wkt: <http://www.opengis.net/ont/geosparql#> .
+
+airports:EGBB rdf:type airports_sc:LargeAirport ;
+    geo:lat "52.4539"^^xsd:float ;
+    geo:long "-1.74803"^^xsd:float ;
+    rdfs:label "Birmingham International Airport"
+    .
+
+airports:EGBB__Pair_1 rdf:type airports_sc:LargeAirport ;
+    :latitude_1 "52.4539"^^xsd:float ;
+    :longitude_1 "-1.74803"^^xsd:float ;
+    rdfs:label "Birmingham International Airport (Pair_1)"
+    .
+
+airports:EGBB_Pair_2 rdf:type airports_sc:LargeAirport ;
+    :latitude_2 "52.4539"^^xsd:float ;
+    :longitude_2 "-1.74803"^^xsd:float ;
+    rdfs:label "Birmingham International Airport (Pair_2)"
+    .
+
+airports:EGBB_WKT rdf:type airports_sc:LargeAirport ;
+    wkt:asWKT "POINT(-1.74803 52.4539)"^^wkt:wktLiteral ;
+    rdfs:label "Birmingham International Airport (wktLiteral)"
+    .
+
+airports:EGBB_WKT_1 rdf:type airports_sc:LargeAirport ;
+    :wkt_1 "POINT(-1.74803 52.4539)"^^wkt:wktLiteral ;
+    rdfs:label "Birmingham International Airport (wktLiteral_1)"
+    .
+
+airports:EGBB_WKT_2 rdf:type airports_sc:LargeAirport ;
+    :wkt_2 "POINT(-1.74803 52.4539)"^^wkt:wktLiteral ;
+    rdfs:label "Birmingham International Airport (wktLiteral_2)"
+    .
+
+airports:EGBB_String rdf:type airports_sc:LargeAirport ;
+    geo:lat "52.4539" ;
+    geo:long "-1.74803" ;
+    rdfs:label "Birmingham International Airport (String)"
+    .
+
+airports:EGFF rdf:type airports_sc:LargeAirport ;
+    geo:lat "51.3967"^^xsd:float ;
+    geo:long "-3.34333"^^xsd:float ;
+    rdfs:label "Cardiff International Airport"
+    .
+
+airports:EGGD rdf:type airports_sc:LargeAirport ;
+    geo:lat "51.3827"^^xsd:float ;
+    geo:long "-2.71909"^^xsd:float ;
+    rdfs:label "Bristol International Airport"
+    .
+
+airports:EGKK rdf:type airports_sc:LargeAirport ;
+    geo:lat "51.1481"^^xsd:float ;
+    geo:long "-0.190278"^^xsd:float ;
+    rdfs:label "London Gatwick Airport"
+    .
+
+airports:EGSS rdf:type airports_sc:LargeAirport ;
+    geo:lat "51.885"^^xsd:float ;
+    geo:long "0.235"^^xsd:float ;
+    rdfs:label "London Stansted Airport"
+    .
+
+airports:EGBB_Fake_In_Box rdf:type airports_sc:LargeAirport ;
+    wkt:asWKT "Polygon ((-2.0000 51.2000, 1.0000 51.2000, 1.0000 51.8000, -2.0000 51.8000, -2.0000 51.2000))"^^wkt:wktLiteral ;
+    rdfs:label "Fake in Box Airport (wktLiteral)"
+    .
+
+airports:EGBB_Fake_out_of_Box rdf:type airports_sc:LargeAirport ;
+    wkt:asWKT "Polygon ((-2.0000 50.2000, 1.0000 50.2000, 1.0000 50.8000, -2.0000 50.8000, -2.0000 50.2000))"^^wkt:wktLiteral ;
+    rdfs:label "Fake out of Box Airport (wktLiteral)"
+    .
+
+
