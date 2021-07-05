@@ -330,20 +330,13 @@ public class WhereHandler implements Handler {
 	 */
 	public ElementSubQuery makeSubQuery(AbstractQueryBuilder<?> subQuery) {
 		Query q = new Query();
-		SelectHandler sh = subQuery.getHandlerBlock().getSelectHandler();
-		if (sh != null)
-		{
-			if (! sh.getProject().isEmpty()) {
-				q.setQuerySelectType();
-			}
-		}
+		q.setQuerySelectType();
 		PrologHandler ph = new PrologHandler(query);
 		ph.addPrefixes( subQuery.getPrologHandler().getPrefixes() );
 		HandlerBlock handlerBlock = new HandlerBlock(q);
 		handlerBlock.addAll( subQuery.getHandlerBlock() );
 		// remove the prefix mappings from the sub query.
 		handlerBlock.getPrologHandler().clearPrefixes();
-
 
 		//  make sure we have a query pattern before we start building.
 		if (q.getQueryPattern() == null)

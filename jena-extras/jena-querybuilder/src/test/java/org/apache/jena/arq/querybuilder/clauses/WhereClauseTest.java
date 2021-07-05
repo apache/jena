@@ -234,7 +234,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	}
 
 	@ContractTest
-	public void testAddOptionalGroupPattern() throws ParseException {
+	public void testAddOptionalGroupPattern() {
 
 		Var s = Var.alloc("s" );
 		Node q = NodeFactory.createURI( "urn:q" );
@@ -264,7 +264,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	}
 
 	@ContractTest
-	public void testAddOptionalGroupPattern_VariableNode() throws ParseException {
+	public void testAddOptionalGroupPattern_VariableNode() {
 
 		Node s = NodeFactory.createVariable("s");
 		Node q = NodeFactory.createURI( "urn:q" );
@@ -557,6 +557,8 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		AbstractQueryBuilder<?> builder = whereClause.addSubQuery(sb);
 
 		Query subQuery = new Query();
+		subQuery.setQuerySelectType();
+		subQuery.setQueryResultStar(true);
 		ElementSubQuery esq = new ElementSubQuery(subQuery);
 		ElementPathBlock epb = new ElementPathBlock();
 		subQuery.setQueryPattern(epb);
@@ -571,6 +573,8 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		builder.setVar(v, NodeFactory.createURI("three"));
 
 		subQuery = new Query();
+        subQuery.setQuerySelectType();
+        subQuery.setQueryResultStar(true);
 		esq = new ElementSubQuery(subQuery);
 		epb = new ElementPathBlock();
 		subQuery.setQueryPattern(epb);
@@ -592,6 +596,8 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		AbstractQueryBuilder<?> builder = whereClause.addSubQuery(sb);
 
 		Query subQuery = new Query();
+        subQuery.setQuerySelectType();
+        subQuery.setQueryResultStar(true);
 		ElementSubQuery esq = new ElementSubQuery(subQuery);
 		ElementPathBlock epb = new ElementPathBlock();
 		subQuery.setQueryPattern(epb);
@@ -605,6 +611,8 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		builder.setVar(v, NodeFactory.createURI("three"));
 
 		subQuery = new Query();
+		subQuery.setQuerySelectType();
+        subQuery.setQueryResultStar(true);
 		esq = new ElementSubQuery(subQuery);
 		epb = new ElementPathBlock();
 		subQuery.setQueryPattern(epb);
@@ -1162,7 +1170,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	}
 
 	@ContractTest
-	public void testSetVarsInWhereValues() throws ParseException {
+	public void testSetVarsInWhereValues() {
 		Var v = Var.alloc("v");
 		Node value = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10));
 		Map<Var, Node> values = new HashMap<>();
@@ -1190,7 +1198,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	}
 
 	@ContractTest
-	public void testSetVarsInWhereValues_NodeVariable() throws ParseException {
+	public void testSetVarsInWhereValues_NodeVariable() {
 		Node v = NodeFactory.createVariable("v");
 		Node value = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10));
 
