@@ -27,27 +27,27 @@ import org.xenei.junit.contract.IProducer;
 @ContractImpl(DescribeBuilder.class)
 public class DescribeBuilderContractTest {
 
-	// create the producer to inject
-	private IProducer<DescribeBuilder> producer = new IProducer<DescribeBuilder>() {
+    // create the producer to inject
+    private IProducer<DescribeBuilder> producer = new IProducer<DescribeBuilder>() {
 
-		@Override
-		public DescribeBuilder newInstance() {
-			return new DescribeBuilder();
-		}
+        @Override
+        public DescribeBuilder newInstance() {
+            return new DescribeBuilder();
+        }
 
-		@Override
-		public void cleanUp() {
-			// no cleanup required
-		}
+        @Override
+        public void cleanUp() {
+            // no cleanup required
+        }
 
-	};
+    };
 
-	public DescribeBuilderContractTest() {
-	}
+    public DescribeBuilderContractTest() {
+    }
 
-	@Contract.Inject
-	public IProducer<DescribeBuilder> getProducer() {
-		return producer;
-	}
+    @Contract.Inject
+    public IProducer<DescribeBuilder> getProducer() {
+        return producer;
+    }
 
 }

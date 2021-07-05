@@ -19,25 +19,28 @@ package org.apache.jena.arq.querybuilder.handlers;
 
 import java.util.Map;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.core.Var;
 
 /**
  * The base interface for handlers.
  *
  */
 public interface Handler {
-	/**
-	 * Set the values for variables managed by the handler implementation.
-	 * This method is called by the builder to set values handled by this Handler implementation.
-	 * @param values The map of variable to node value.
-	 */
-	public void setVars(Map<Var, Node> values);
+    /**
+     * Set the values for variables managed by the handler implementation. This
+     * method is called by the builder to set values handled by this Handler
+     * implementation.
+     * 
+     * @param values The map of variable to node value.
+     */
+    public void setVars(Map<Var, Node> values);
 
-	/**
-	 * Called by the build process for this handler to perform any adjustments to the query before
-	 * the build completes.  The adjustments are made after setVars() has been called.
-	 */
-	public void build();
-	
+    /**
+     * Called by the build process for this handler to perform any adjustments to
+     * the query before the build completes. The adjustments are made after
+     * setVars() has been called.
+     */
+    public void build();
+
 }

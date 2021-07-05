@@ -34,299 +34,288 @@ import java.util.UUID;
 import org.apache.jena.datatypes.BaseDatatype;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.TypeMapper;
-import org.apache.jena.graph.FrontsNode ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.graph.impl.LiteralLabel ;
-import org.apache.jena.graph.impl.LiteralLabelFactory ;
-import org.apache.jena.reasoner.rulesys.Node_RuleVariable ;
+import org.apache.jena.graph.FrontsNode;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.impl.LiteralLabel;
+import org.apache.jena.graph.impl.LiteralLabelFactory;
+import org.apache.jena.reasoner.rulesys.Node_RuleVariable;
 import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.expr.ExprVar ;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.expr.ExprVar;
 import org.apache.jena.sparql.path.Path;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.vocabulary.RDF;
 import org.junit.After;
 import org.junit.Test;
 
 public class ConvertersTest {
 
-	@After
-	public void cleanup() {
-		TypeMapper.reset();
-	}
+    @After
+    public void cleanup() {
+        TypeMapper.reset();
+    }
 
+    @Test
+    public void checkVarTest() {
+        Node n = Converters.checkVar(Node.ANY);
+        assertFalse(n instanceof Var);
+        n = Converters.checkVar(NodeFactory.createVariable("myVar"));
+        assertTrue(n instanceof Var);
+    }
 
-	@Test
-	public void checkVarTest() {
-		Node n = Converters.checkVar( Node.ANY );
-		assertFalse( n instanceof Var );
-		n = Converters.checkVar(NodeFactory.createVariable( "myVar"));
-		assertTrue( n instanceof Var );
-	}
+    @Test
+    public void makeLiteralObjectTest() throws MalformedURLException {
+        Node n = Converters.makeLiteral(5);
+        assertEquals("5", n.getLiteralLexicalForm());
+        assertEquals(Integer.valueOf(5), n.getLiteralValue());
+        assertEquals("\"5\"^^http://www.w3.org/2001/XMLSchema#int", n.toString(null, true));
 
-	@Test
-	public void makeLiteralObjectTest() throws MalformedURLException
-	{
-		Node n = Converters.makeLiteral( 5 );
-		assertEquals( "5", n.getLiteralLexicalForm() );
-		assertEquals( Integer.valueOf(5), n.getLiteralValue());
-		assertEquals( "\"5\"^^http://www.w3.org/2001/XMLSchema#int", n.toString( null, true ));
+        n = Converters.makeLiteral("Hello");
+        assertEquals("Hello", n.getLiteralLexicalForm());
+        assertEquals("Hello", n.getLiteralValue());
+        assertEquals("\"Hello\"", n.toString(null, true));
 
-		n = Converters.makeLiteral( "Hello" );
-		assertEquals( "Hello", n.getLiteralLexicalForm() );
-		assertEquals( "Hello", n.getLiteralValue());
-		assertEquals( "\"Hello\"", n.toString( null, true ));
+        URL url = new URL("http://example.com");
+        n = Converters.makeLiteral(url);
+        assertEquals("http://example.com", n.getLiteralLexicalForm());
+        assertEquals(url, n.getLiteralValue());
+        assertEquals("\"http://example.com\"^^http://www.w3.org/2001/XMLSchema#anyURI", n.toString(null, true));
 
-		URL url = new URL( "http://example.com");
-		n = Converters.makeLiteral( url);
-		assertEquals( "http://example.com", n.getLiteralLexicalForm() );
-		assertEquals( url, n.getLiteralValue());
-		assertEquals( "\"http://example.com\"^^http://www.w3.org/2001/XMLSchema#anyURI", n.toString(null, true));
+        UUID uuid = UUID.randomUUID();
+        try {
+            n = Converters.makeLiteral(uuid);
+            fail("Should throw exception");
+        } catch (IllegalArgumentException expected) {
+            // do nothing
+        }
 
-		UUID uuid = UUID.randomUUID();
-		try {
-			n = Converters.makeLiteral( uuid );
-			fail( "Should throw exception");
-		}
-		catch (IllegalArgumentException expected) {
-			// do nothing
-		}
+        TypeMapper.getInstance().registerDatatype(new UuidDataType());
+        try {
+            n = Converters.makeLiteral(uuid);
+            assertEquals(uuid.toString(), n.getLiteralLexicalForm());
+            assertEquals(uuid, n.getLiteralValue());
+            String value = String.format("\"%s\"^^java:java.util.UUID", uuid);
+            assertEquals(value, n.toString(null, true));
+        } catch (IllegalArgumentException expected) {
+            fail("Unexpected IllegalArgumentException");
+        }
 
-		TypeMapper.getInstance().registerDatatype(new UuidDataType());
-		try {
-			n = Converters.makeLiteral( uuid );
-			assertEquals( uuid.toString(), n.getLiteralLexicalForm() );
-			assertEquals( uuid, n.getLiteralValue());
-			String value = String.format( "\"%s\"^^java:java.util.UUID", uuid);
-			assertEquals( value, n.toString(null, true));
-		}
-		catch (IllegalArgumentException expected) {
-			fail( "Unexpected IllegalArgumentException");
-		}
+    }
 
+    @Test
+    public void makeLiteralStringStringTest() {
+        Node n = Converters.makeLiteral("5", "http://www.w3.org/2001/XMLSchema#int");
+        assertEquals("5", n.getLiteralLexicalForm());
+        assertEquals(Integer.valueOf(5), n.getLiteralValue());
+        assertEquals("\"5\"^^http://www.w3.org/2001/XMLSchema#int", n.toString(null, true));
 
-	}
+        n = Converters.makeLiteral("one", "some:stuff");
+        assertEquals("one", n.getLiteralLexicalForm());
+        try {
+            n.getLiteralValue();
+            fail("Should have thrown DatatypeFormatException");
+        } catch (DatatypeFormatException expected) {
+            // do nothing.
+        }
+        assertEquals("\"one\"^^some:stuff", n.toString(null, true));
 
-	@Test
-	public void makeLiteralStringStringTest()
-	{
-		Node n = Converters.makeLiteral( "5", "http://www.w3.org/2001/XMLSchema#int" );
-		assertEquals( "5", n.getLiteralLexicalForm() );
-		assertEquals( Integer.valueOf(5), n.getLiteralValue());
-		assertEquals( "\"5\"^^http://www.w3.org/2001/XMLSchema#int", n.toString( null, true ));
+        try {
+            Converters.makeLiteral("NaN", "http://www.w3.org/2001/XMLSchema#int");
+            fail("Should have thrown DatatypeFormatException");
+        } catch (DatatypeFormatException expected) {
+            // do nothing.
+        }
+    }
 
-		n = Converters.makeLiteral( "one", "some:stuff" );
-		assertEquals( "one", n.getLiteralLexicalForm() );
-		try {
-			n.getLiteralValue();
-			fail( "Should have thrown DatatypeFormatException");
-		}
-		catch (DatatypeFormatException expected) {
-			// do nothing.
-		}
-		assertEquals( "\"one\"^^some:stuff", n.toString(null, true));
+    @Test
+    public void makeNodeTest() {
+        PrefixMapping pMap = PrefixMapping.Factory.create();
+        pMap.setNsPrefixes(PrefixMapping.Standard);
 
-		try {
-			Converters.makeLiteral( "NaN", "http://www.w3.org/2001/XMLSchema#int" );
-			fail( "Should have thrown DatatypeFormatException");
-		} catch (DatatypeFormatException expected) {
-			// do nothing.
-		}
-	}
+        Node n = Converters.makeNode(null, pMap);
+        assertEquals(Node.ANY, n);
 
-	@Test
-	public void makeNodeTest() {
-		PrefixMapping pMap = PrefixMapping.Factory.create();
-		pMap.setNsPrefixes(PrefixMapping.Standard );
+        n = Converters.makeNode(RDF.type, pMap);
+        assertEquals(RDF.type.asNode(), n);
 
-		Node n = Converters.makeNode(null, pMap);
-		assertEquals(Node.ANY, n);
+        Node n2 = NodeFactory.createBlankNode();
+        n = Converters.makeNode(n2, pMap);
+        assertEquals(n2, n);
 
-		n = Converters.makeNode(RDF.type, pMap);
-		assertEquals(RDF.type.asNode(), n);
+        pMap.setNsPrefix("demo", "http://example.com/");
+        n = Converters.makeNode("demo:type", pMap);
+        assertEquals(NodeFactory.createURI("http://example.com/type"), n);
 
-		Node n2 = NodeFactory.createBlankNode();
-		n = Converters.makeNode(n2, pMap);
-		assertEquals(n2, n);
+        n = Converters.makeNode("<one>", pMap);
+        assertEquals(NodeFactory.createURI("one"), n);
 
-		pMap.setNsPrefix("demo", "http://example.com/");
-		n = Converters.makeNode("demo:type", pMap);
-		assertEquals(NodeFactory.createURI("http://example.com/type"), n);
+        UUID uuid = UUID.randomUUID();
+        try {
+            Converters.makeNode(uuid, pMap);
+            fail("Should have thrown IllegalArgumentException");
+        } catch (IllegalArgumentException expected) {
+            // do nothing
+        }
 
-		n = Converters.makeNode("<one>", pMap);
-		assertEquals(NodeFactory.createURI("one"), n);
+        TypeMapper.getInstance().registerDatatype(new UuidDataType());
+        n = Converters.makeNode(uuid, pMap);
+        LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(uuid);
+        assertEquals(NodeFactory.createLiteral(ll), n);
 
-		UUID uuid = UUID.randomUUID();
-		try {
-			Converters.makeNode( uuid, pMap);
-			fail( "Should have thrown IllegalArgumentException");
-		}
-		catch (IllegalArgumentException expected) {
-			// do nothing
-		}
+        n = Converters.makeNode(NodeFactory.createVariable("foo"), pMap);
+        assertTrue(n.isVariable());
+        assertEquals("foo", n.getName());
+        assertTrue(n instanceof Var);
 
-		TypeMapper.getInstance().registerDatatype(new UuidDataType());
-		n = Converters.makeNode( uuid, pMap );
-		LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(uuid);
-		assertEquals(NodeFactory.createLiteral(ll), n);
+        n = Converters.makeNode("'text'@en", pMap);
+        assertEquals("text", n.getLiteralLexicalForm());
+        assertEquals("en", n.getLiteralLanguage());
+    }
 
+    @Test
+    public void makeNodeOrPathTest() {
+        PrefixMapping pMap = PrefixMapping.Factory.create();
+        pMap.setNsPrefixes(PrefixMapping.Standard);
 
-		n = Converters.makeNode( NodeFactory.createVariable("foo"), pMap);
-		assertTrue( n.isVariable());
-		assertEquals( "foo", n.getName());
-		assertTrue( n instanceof Var );
+        Object n = Converters.makeNodeOrPath(null, pMap);
+        assertEquals(Node.ANY, n);
 
-		n = Converters.makeNode( "'text'@en", pMap);
-		assertEquals( "text", n.getLiteralLexicalForm());
-		assertEquals( "en", n.getLiteralLanguage());
-	}
+        n = Converters.makeNodeOrPath(RDF.type, pMap);
+        assertEquals(RDF.type.asNode(), n);
 
-	@Test
-	public void makeNodeOrPathTest() {
-		PrefixMapping pMap = PrefixMapping.Factory.create();
-		pMap.setNsPrefixes(PrefixMapping.Standard );
+        Node n2 = NodeFactory.createBlankNode();
+        n = Converters.makeNodeOrPath(n2, pMap);
+        assertEquals(n2, n);
 
-		Object n = Converters.makeNodeOrPath(null, pMap);
-		assertEquals(Node.ANY, n);
+        pMap.setNsPrefix("demo", "http://example.com/");
+        n = Converters.makeNodeOrPath("demo:type", pMap);
+        assertEquals(NodeFactory.createURI("http://example.com/type"), n);
 
-		n = Converters.makeNodeOrPath(RDF.type, pMap);
-		assertEquals(RDF.type.asNode(), n);
+        n = Converters.makeNodeOrPath("<one>", pMap);
+        assertEquals(NodeFactory.createURI("one"), n);
 
-		Node n2 = NodeFactory.createBlankNode();
-		n = Converters.makeNodeOrPath(n2, pMap);
-		assertEquals(n2, n);
+        UUID uuid = UUID.randomUUID();
+        try {
+            Converters.makeNodeOrPath(uuid, pMap);
+            fail("Should have thrown IllegalArgumentException");
+        } catch (IllegalArgumentException expected) {
+            // do nothing
+        }
 
-		pMap.setNsPrefix("demo", "http://example.com/");
-		n = Converters.makeNodeOrPath("demo:type", pMap);
-		assertEquals(NodeFactory.createURI("http://example.com/type"), n);
+        TypeMapper.getInstance().registerDatatype(new UuidDataType());
+        n = Converters.makeNodeOrPath(uuid, pMap);
+        LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(uuid);
+        assertEquals(NodeFactory.createLiteral(ll), n);
 
-		n = Converters.makeNodeOrPath("<one>", pMap);
-		assertEquals(NodeFactory.createURI("one"), n);
+        n = Converters.makeNodeOrPath(NodeFactory.createVariable("foo"), pMap);
+        assertTrue(n instanceof Var);
+        Node node = (Node) n;
+        assertTrue(node.isVariable());
+        assertEquals("foo", node.getName());
 
-		UUID uuid = UUID.randomUUID();
-		try {
-			Converters.makeNodeOrPath( uuid, pMap);
-			fail( "Should have thrown IllegalArgumentException");
-		}
-		catch (IllegalArgumentException expected) {
-			// do nothing
-		}
+        n = Converters.makeNodeOrPath("'text'@en", pMap);
+        assertTrue(n instanceof Node);
+        node = (Node) n;
+        assertEquals("text", node.getLiteralLexicalForm());
+        assertEquals("en", node.getLiteralLanguage());
 
-		TypeMapper.getInstance().registerDatatype(new UuidDataType());
-		n = Converters.makeNodeOrPath( uuid, pMap);
-		LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(uuid);
-		assertEquals(NodeFactory.createLiteral(ll), n);
+        n = Converters.makeNodeOrPath("<one>/<two>", pMap);
+        assertTrue(n instanceof Path);
+        Path pth = (Path) n;
+        assertEquals("<one>/<two>", pth.toString());
 
-		n = Converters.makeNodeOrPath( NodeFactory.createVariable("foo"), pMap);
-		assertTrue( n instanceof Var );
-		Node node = (Node)n;
-		assertTrue( node.isVariable());
-		assertEquals( "foo", node.getName());
+    }
 
-		n = Converters.makeNodeOrPath( "'text'@en", pMap);
-		assertTrue( n instanceof Node );
-		node = (Node)n;
-		assertEquals( "text", node.getLiteralLexicalForm());
-		assertEquals( "en", node.getLiteralLanguage());
+    @Test
+    public void makeVarTest() {
+        Var v = Converters.makeVar(null);
+        assertEquals(Var.ANON, v);
 
-		n = Converters.makeNodeOrPath( "<one>/<two>", pMap);
-		assertTrue( n instanceof Path );
-		Path pth = (Path)n;
-		assertEquals( "<one>/<two>", pth.toString() );
+        v = Converters.makeVar("a");
+        assertEquals(Var.alloc("a"), v);
 
-	}
+        v = Converters.makeVar("?a");
+        assertEquals(Var.alloc("a"), v);
 
-	@Test
-	public void makeVarTest() {
-		Var v = Converters.makeVar(null);
-		assertEquals(Var.ANON, v);
+        Node n = NodeFactory.createVariable("foo");
+        v = Converters.makeVar(n);
+        assertEquals(Var.alloc("foo"), v);
 
-		v = Converters.makeVar("a");
-		assertEquals(Var.alloc("a"), v);
+        NodeFront nf = new NodeFront(n);
+        v = Converters.makeVar(nf);
+        assertEquals(Var.alloc("foo"), v);
 
-		v = Converters.makeVar("?a");
-		assertEquals(Var.alloc("a"), v);
+        v = Converters.makeVar(Node_RuleVariable.WILD);
+        assertNull(v);
 
-		Node n = NodeFactory.createVariable("foo");
-		v = Converters.makeVar(n);
-		assertEquals(Var.alloc("foo"), v);
+        ExprVar ev = new ExprVar("bar");
+        v = Converters.makeVar(ev);
+        assertEquals(Var.alloc("bar"), v);
 
-		NodeFront nf = new NodeFront(n);
-		v = Converters.makeVar(nf);
-		assertEquals(Var.alloc("foo"), v);
+        ev = new ExprVar(n);
+        v = Converters.makeVar(ev);
+        assertEquals(Var.alloc("foo"), v);
 
-		v = Converters.makeVar(Node_RuleVariable.WILD);
-		assertNull(v);
+        ev = new ExprVar(Var.ANON);
+        v = Converters.makeVar(ev);
+        assertEquals(Var.ANON, v);
 
-		ExprVar ev = new ExprVar("bar");
-		v = Converters.makeVar(ev);
-		assertEquals(Var.alloc("bar"), v);
+    }
 
-		ev = new ExprVar(n);
-		v = Converters.makeVar(ev);
-		assertEquals(Var.alloc("foo"), v);
+    @Test
+    public void makeValueNodesTest() {
+        PrefixMapping pMap = PrefixMapping.Factory.create();
+        pMap.setNsPrefixes(PrefixMapping.Standard);
 
-		ev = new ExprVar(Var.ANON);
-		v = Converters.makeVar(ev);
-		assertEquals(Var.ANON, v);
+        List<Object> list = new ArrayList<Object>();
+        list.add(null);
+        list.add(RDF.type);
+        Node n2 = NodeFactory.createBlankNode();
+        list.add(n2);
+        pMap.setNsPrefix("demo", "http://example.com/");
+        list.add("demo:type");
+        list.add("<one>");
+        list.add(Integer.MAX_VALUE);
 
-	}
+        Collection<Node> result = Converters.makeValueNodes(list.iterator(), pMap);
 
-	@Test
-	public void makeValueNodesTest()
-	{
-		PrefixMapping pMap = PrefixMapping.Factory.create();
-		pMap.setNsPrefixes(PrefixMapping.Standard );
+        assertTrue(result.contains(null));
+        assertTrue(result.contains(RDF.type.asNode()));
+        assertTrue(result.contains(n2));
+        assertTrue(result.contains(NodeFactory.createURI("http://example.com/type")));
+        assertTrue(result.contains(NodeFactory.createURI("one")));
 
-		List<Object> list = new ArrayList<Object>();
-		list.add( null);
-		list.add( RDF.type );
-		Node n2 = NodeFactory.createBlankNode();
-		list.add( n2 );
-		pMap.setNsPrefix("demo", "http://example.com/");
-		list.add( "demo:type" );
-		list.add( "<one>" );
-		list.add( Integer.MAX_VALUE );
+    }
 
-		Collection<Node> result = Converters.makeValueNodes(list.iterator(), pMap);
+    @Test
+    public void quotedTest() {
+        assertEquals("'one'", Converters.quoted("one"));
+        assertEquals("\"'one'\"", Converters.quoted("'one'"));
+        assertEquals("'\"one\"'", Converters.quoted("\"one\""));
+        assertEquals("'\"I am the 'one'\"'", Converters.quoted("\"I am the 'one'\""));
+        assertEquals("\"'I am the \"one\"'\"", Converters.quoted("'I am the \"one\"'"));
+    }
 
-		assertTrue( result.contains( null ));
-		assertTrue( result.contains( RDF.type.asNode()));
-		assertTrue( result.contains( n2 ));
-		assertTrue( result.contains(NodeFactory.createURI("http://example.com/type") ));
-		assertTrue( result.contains(NodeFactory.createURI("one")));
+    private class NodeFront implements FrontsNode {
+        Node n;
 
-	}
+        NodeFront(Node n) {
+            this.n = n;
+        }
 
-	@Test
-	public void quotedTest() {
-		assertEquals( "'one'", Converters.quoted( "one" ));
-		assertEquals( "\"'one'\"", Converters.quoted( "'one'" ));
-		assertEquals( "'\"one\"'", Converters.quoted( "\"one\"" ));
-		assertEquals( "'\"I am the 'one'\"'", Converters.quoted( "\"I am the 'one'\"" ));
-		assertEquals( "\"'I am the \"one\"'\"", Converters.quoted( "'I am the \"one\"'" ));
-	}
+        @Override
+        public Node asNode() {
+            return n;
+        }
+    }
 
-	private class NodeFront implements FrontsNode {
-		Node n;
+    private class UuidDataType extends BaseDatatype {
 
-		NodeFront(Node n) {
-			this.n = n;
-		}
+        public UuidDataType() {
+            super("java:java.util.UUID");
+        }
 
-		@Override
-		public Node asNode() {
-			return n;
-		}
-	}
-
-	private class UuidDataType extends BaseDatatype {
-
-		public UuidDataType() {
-			super( "java:java.util.UUID");
-		}
-
-		@Override
+        @Override
         public Class<?> getJavaClass() {
             return UUID.class;
         }

@@ -41,62 +41,49 @@ public class QuadCollectionHolder implements QuadHolder {
     /**
      * Constructor.
      * 
-     * @param quads
-     *            the collection of quads.
+     * @param quads the collection of quads.
      */
-    public QuadCollectionHolder( final Collection<Quad> quads) {
+    public QuadCollectionHolder(final Collection<Quad> quads) {
         this.collection = new HashSet<Quad>();
-        this.collection.addAll( quads );
+        this.collection.addAll(quads);
     }
 
     /**
      * Constructor.
      * 
-     * @param quads
-     *            the collection of quads.
+     * @param quads the collection of quads.
      */
-    public QuadCollectionHolder( final Iterator<Quad> quads) {
+    public QuadCollectionHolder(final Iterator<Quad> quads) {
         this.collection = new HashSet<Quad>();
-        quads.forEachRemaining( collection::add );
+        quads.forEachRemaining(collection::add);
     }
-    
-    private Node valueMap( Node n )
-    {
-    	if (n.isVariable())
-    	{
-    		Var v = Var.alloc(n);
-    		return values.getOrDefault(v, n);
-    	}
-    	return n;
+
+    private Node valueMap(Node n) {
+        if (n.isVariable()) {
+            Var v = Var.alloc(n);
+            return values.getOrDefault(v, n);
+        }
+        return n;
     }
 
     @Override
     public ExtendedIterator<Quad> getQuads() {
-    	ExtendedIterator<Quad> retval = 
-    			WrappedIterator.create( collection.iterator() );
-    
-    	if (values != null)
-    	{
-    		retval = retval.mapWith( q -> new Quad(
-        				valueMap(q.getGraph()),
-        				valueMap(q.getSubject()),
-        				valueMap(q.getPredicate()),
-        				valueMap(q.getObject())
-        				));
-    	}
-    	return retval;
+        ExtendedIterator<Quad> retval = WrappedIterator.create(collection.iterator());
+
+        if (values != null) {
+            retval = retval.mapWith(q -> new Quad(valueMap(q.getGraph()), valueMap(q.getSubject()),
+                    valueMap(q.getPredicate()), valueMap(q.getObject())));
+        }
+        return retval;
     }
-    
-  
 
     /**
      * This implementation does nothing.
      */
     @Override
     public QuadHolder setValues(final Map<Var, Node> values) {
-    	this.values = values;
+        this.values = values;
         return this;
     }
-
 
 }
