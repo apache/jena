@@ -305,8 +305,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         handler.build();
 
         ElementPathBlock epb = new ElementPathBlock();
-        TriplePath tp = new TriplePath(new Triple( NodeFactory.createURI("one"), NodeFactory.createURI("two"),
-                NodeFactory.createURI("three")));
+        TriplePath tp = new TriplePath(
+                new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
         epb.addTriplePath(tp);
 
         WhereValidator visitor = new WhereValidator(epb);
@@ -318,10 +318,10 @@ public class WhereHandlerTest extends AbstractHandlerTest {
     public void testAddFilter() throws ParseException {
         handler.addFilter("?one < 10");
         handler.build();
-        
-        BigInteger bi = new BigInteger( Integer.toString(10) );
-        E_LessThan expr = new ExprFactory().lt( NodeFactory.createVariable("one"), bi );
-        WhereValidator visitor = new WhereValidator(new ElementFilter( expr ) );
+
+        BigInteger bi = new BigInteger(Integer.toString(10));
+        E_LessThan expr = new ExprFactory().lt(NodeFactory.createVariable("one"), bi);
+        WhereValidator visitor = new WhereValidator(new ElementFilter(expr));
         handler.getQueryPattern().visit(visitor);
         assertTrue(visitor.matching);
     }
@@ -332,10 +332,10 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         handler.addFilter("afn:namespace(?one) = 'foo'");
         handler.build();
 
-        ExprFactory fact = new ExprFactory();   
-        E_Function func = new E_Function("http://jena.apache.org/ARQ/function#namespace", fact.asList( "?one"));
-        E_Equals expr = fact.eq( func, "foo" );
-        WhereValidator visitor = new WhereValidator( new ElementFilter(expr));
+        ExprFactory fact = new ExprFactory();
+        E_Function func = new E_Function("http://jena.apache.org/ARQ/function#namespace", fact.asList("?one"));
+        E_Equals expr = fact.eq(func, "foo");
+        WhereValidator visitor = new WhereValidator(new ElementFilter(expr));
         handler.getQueryPattern().visit(visitor);
         assertTrue(visitor.matching);
 
@@ -346,8 +346,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         handler.addFilter("?one");
         handler.build();
 
-        ExprFactory fact = new ExprFactory(); 
-        WhereValidator visitor = new WhereValidator( new ElementFilter( fact.asExpr( "?one")));
+        ExprFactory fact = new ExprFactory();
+        WhereValidator visitor = new WhereValidator(new ElementFilter(fact.asExpr("?one")));
         handler.getQueryPattern().visit(visitor);
         assertTrue(visitor.matching);
 
@@ -481,20 +481,20 @@ public class WhereHandlerTest extends AbstractHandlerTest {
                 new Triple(NodeFactory.createURI("s"), NodeFactory.createURI("p"), NodeFactory.createURI("o")));
         ElementPathBlock epb1 = new ElementPathBlock();
         epb1.addTriple(tp1);
-        
-        TriplePath tp2 = new TriplePath( 
+
+        TriplePath tp2 = new TriplePath(
                 new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
         ElementPathBlock epb2 = new ElementPathBlock();
         epb2.addTriple(tp2);
-        
+
         ElementUnion union = new ElementUnion();
-        union.addElement( epb1 );
-        union.addElement( epb2 );
-        
+        union.addElement(epb1);
+        union.addElement(epb2);
+
         WhereValidator visitor = new WhereValidator(union);
         handler.getQueryPattern().visit(visitor);
         assertTrue(visitor.matching);
-        
+
     }
 
     @Test
@@ -540,12 +540,12 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
         handler.addUnion(sb);
         handler.build();
-        
-        
+
         Query q = new Query();
         q.setQuerySelectType();
         ElementPathBlock epb1 = new ElementPathBlock();
-        epb1.addTriple(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
+        epb1.addTriple(
+                new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
         q.setQueryPattern(epb1);
         q.addProjectVars(Arrays.asList(Var.alloc("x")));
         ElementSubQuery sq = new ElementSubQuery(q);
@@ -571,13 +571,12 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         handler.addGraph(NodeFactory.createURI("graph"), handler2);
         handler.build();
 
-        TriplePath tp = new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
-                NodeFactory.createURI("three")));
+        TriplePath tp = new TriplePath(
+                new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
         ElementPathBlock epb = new ElementPathBlock();
-        epb.addTriple( tp );
-        ElementNamedGraph eng = new ElementNamedGraph(NodeFactory.createURI("graph"),
-                epb );
-        
+        epb.addTriple(tp);
+        ElementNamedGraph eng = new ElementNamedGraph(NodeFactory.createURI("graph"), epb);
+
         WhereValidator visitor = new WhereValidator(eng);
         handler.getQueryPattern().visit(visitor);
         assertTrue(visitor.matching);
@@ -591,46 +590,44 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
         Triple t = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v);
         ElementPathBlock epb = new ElementPathBlock();
-        epb.addTriple( t );
+        epb.addTriple(t);
         WhereValidator visitor = new WhereValidator(epb);
         handler.getQueryPattern().visit(visitor);
         assertTrue(visitor.matching);
-        
+
         Map<Var, Node> values = new HashMap<>();
         values.put(v, NodeFactory.createURI("three"));
         handler.setVars(values);
         handler.build();
-        
+
         t = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three"));
         epb = new ElementPathBlock();
-        epb.addTriple( t );
+        epb.addTriple(t);
         visitor = new WhereValidator(epb);
         handler.getQueryPattern().visit(visitor);
         assertTrue(visitor.matching);
-        
-       
+
     }
 
     @Test
     public void testSetVarsInFilter() throws ParseException {
         handler.addFilter("?one < ?v");
         handler.build();
-                
-        E_LessThan expr = new ExprFactory().lt( NodeFactory.createVariable("one"), NodeFactory.createVariable("v") );
-        WhereValidator visitor = new WhereValidator(new ElementFilter( expr ) );
+
+        E_LessThan expr = new ExprFactory().lt(NodeFactory.createVariable("one"), NodeFactory.createVariable("v"));
+        WhereValidator visitor = new WhereValidator(new ElementFilter(expr));
         handler.getQueryPattern().visit(visitor);
         assertTrue(visitor.matching);
-        
-        
+
         Map<Var, Node> values = new HashMap<>();
 
         values.put(Var.alloc("v"), NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10)));
         handler.setVars(values);
         handler.build();
 
-        expr = new ExprFactory().lt( NodeFactory.createVariable("one"), 
-                NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10)) );
-        visitor = new WhereValidator(new ElementFilter( expr ) );
+        expr = new ExprFactory().lt(NodeFactory.createVariable("one"),
+                NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10)));
+        visitor = new WhereValidator(new ElementFilter(expr));
         handler.getQueryPattern().visit(visitor);
         assertTrue(visitor.matching);
     }
@@ -641,22 +638,19 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         handler.addOptional(new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v)));
         handler.build();
 
-        
-        TriplePath tp = new TriplePath(
-                new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v));
+        TriplePath tp = new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v));
         ElementPathBlock epb = new ElementPathBlock();
         epb.addTriple(tp);
         ElementOptional opt = new ElementOptional(epb);
         WhereValidator wv = new WhereValidator(opt);
         query.getQueryPattern().visit(wv);
         assertTrue(wv.matching);
-        
-        
+
         Map<Var, Node> values = new HashMap<>();
         values.put(v, NodeFactory.createURI("three"));
         handler.setVars(values);
         handler.build();
-       
+
         tp = new TriplePath(
                 new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
         epb = new ElementPathBlock();
@@ -664,7 +658,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         opt = new ElementOptional(epb);
         wv = new WhereValidator(opt);
         query.getQueryPattern().visit(wv);
-        assertTrue(wv.matching);        
+        assertTrue(wv.matching);
     }
 
     @Test
@@ -675,15 +669,13 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         handler.addSubQuery(sb);
         handler.build();
 
-
-        TriplePath tp = new TriplePath(
-                new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v));
+        TriplePath tp = new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v));
         ElementPathBlock epb = new ElementPathBlock();
         epb.addTriple(tp);
         WhereValidator wv = new WhereValidator(epb);
         query.getQueryPattern().visit(wv);
         assertTrue(wv.matching);
-        
+
         Map<Var, Node> values = new HashMap<>();
         values.put(v, NodeFactory.createURI("three"));
         handler.setVars(values);
@@ -754,11 +746,11 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         handler.addBind("rand()", v);
         handler.build();
 
-        ElementBind bind = new ElementBind( Var.alloc( "foo"), new E_Random() );
+        ElementBind bind = new ElementBind(Var.alloc("foo"), new E_Random());
         WhereValidator visitor = new WhereValidator(bind);
         handler.getQueryPattern().visit(visitor);
         assertTrue(visitor.matching);
-       
+
     }
 
     @Test
@@ -767,7 +759,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         handler.addBind(new E_Random(), v);
         handler.build();
 
-        ElementBind bind = new ElementBind( Var.alloc( "foo"), new E_Random() );
+        ElementBind bind = new ElementBind(Var.alloc("foo"), new E_Random());
         WhereValidator visitor = new WhereValidator(bind);
         handler.getQueryPattern().visit(visitor);
         assertTrue(visitor.matching);
@@ -806,29 +798,29 @@ public class WhereHandlerTest extends AbstractHandlerTest {
                 ResourceFactory.createResource("foo").asNode(), ResourceFactory.createResource("bar").asNode())));
         handler.build();
 
-        P_Link first = new P_Link( RDF.first.asNode() );
-        P_Link rest = new P_Link( RDF.rest.asNode() );
+        P_Link first = new P_Link(RDF.first.asNode());
+        P_Link rest = new P_Link(RDF.rest.asNode());
         Node n = NodeFactory.createURI("foo");
-        P_Link foo = new P_Link( n );
-        //ElementPathBlock epb = (ElementPathBlock) query.getQueryPattern();
+        P_Link foo = new P_Link(n);
+        // ElementPathBlock epb = (ElementPathBlock) query.getQueryPattern();
         ElementPathBlock epb = new ElementPathBlock();
-        Node list = NodeFactory.createBlankNode(); 
+        Node list = NodeFactory.createBlankNode();
         Node s = list;
-        epb.addTriple( new TriplePath( s, first, NodeFactory.createURI( "one")));
+        epb.addTriple(new TriplePath(s, first, NodeFactory.createURI("one")));
         Node o = NodeFactory.createBlankNode();
-        epb.addTriple( new TriplePath( s, rest, o ));
+        epb.addTriple(new TriplePath(s, rest, o));
         s = o;
-        epb.addTriple( new TriplePath( s, first, Var.alloc( "var")));
+        epb.addTriple(new TriplePath(s, first, Var.alloc("var")));
         o = NodeFactory.createBlankNode();
-        epb.addTriple( new TriplePath( s, rest, o ));
+        epb.addTriple(new TriplePath(s, rest, o));
         s = o;
-        epb.addTriple( new TriplePath( s, first, NodeFactory.createLiteral("three")));
-        epb.addTriple( new TriplePath( s, rest, RDF.nil.asNode()));
-        epb.addTriple( new TriplePath( list, foo, NodeFactory.createURI( "bar")));
-              
+        epb.addTriple(new TriplePath(s, first, NodeFactory.createLiteral("three")));
+        epb.addTriple(new TriplePath(s, rest, RDF.nil.asNode()));
+        epb.addTriple(new TriplePath(list, foo, NodeFactory.createURI("bar")));
+
         WhereValidator visitor = new WhereValidator(epb);
         query.getQueryPattern().visit(visitor);
-        assertTrue(visitor.matching);       
+        assertTrue(visitor.matching);
     }
 
     @Test

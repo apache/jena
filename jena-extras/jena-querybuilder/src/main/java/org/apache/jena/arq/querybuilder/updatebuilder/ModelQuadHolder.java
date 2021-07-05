@@ -37,10 +37,8 @@ public class ModelQuadHolder implements QuadHolder {
     /**
      * Constructor.
      * 
-     * @param graph
-     *            the default graph name for the triples
-     * @param model
-     *            the model that is providing the triples.
+     * @param graph the default graph name for the triples
+     * @param model the model that is providing the triples.
      */
     public ModelQuadHolder(final Node graph, final Model model) {
         this.model = model;
@@ -51,16 +49,15 @@ public class ModelQuadHolder implements QuadHolder {
      * Constructor. Uses Quad.defaultGraphNodeGenerated for the graph name.
      * 
      * @see Quad#defaultGraphNodeGenerated
-     * @param model
-     *            the model that is providing the triples.
+     * @param model the model that is providing the triples.
      */
     public ModelQuadHolder(final Model model) {
-        this( Quad.defaultGraphNodeGenerated, model );
+        this(Quad.defaultGraphNodeGenerated, model);
     }
 
     @Override
     public ExtendedIterator<Quad> getQuads() {
-        return model.listStatements().mapWith( stmt -> new Quad( defaultGraphName, stmt.asTriple() ) );
+        return model.listStatements().mapWith(stmt -> new Quad(defaultGraphName, stmt.asTriple()));
     }
 
     /**
