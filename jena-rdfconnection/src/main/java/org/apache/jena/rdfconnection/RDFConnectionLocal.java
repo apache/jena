@@ -44,7 +44,7 @@ import org.apache.jena.update.UpdateRequest;
  * {@link RDFConnection} behave like a remote connection. This should be the normal use in
  * testing.
  * <ul>
- * <li>{@code COPY} &ndash; {@code Model}s and {@code Dataset}s are copied. 
+ * <li>{@code COPY} &ndash; {@code Model}s and {@code Dataset}s are copied.
  *     This is most like a remote connection.
  * <li>{@code READONLY} &ndash; Read-only wrappers are added but changes to
  *     the underlying model or dataset will be seen.
@@ -54,14 +54,14 @@ import org.apache.jena.update.UpdateRequest;
 
 public class RDFConnectionLocal implements RDFConnection {
     private ThreadLocal<Boolean> transactionActive = ThreadLocal.withInitial(()->false);
-    
+
     private Dataset dataset;
     private final Isolation isolation;
-    
+
     public RDFConnectionLocal(Dataset dataset) {
         this(dataset, Isolation.NONE);
     }
-    
+
     public RDFConnectionLocal(Dataset dataset, Isolation isolation) {
         this.dataset = dataset;
         this.isolation = isolation;
@@ -70,14 +70,14 @@ public class RDFConnectionLocal implements RDFConnection {
     @Override
     public QueryExecution query(Query query) {
         checkOpen();
-        // There is no point doing this in a transaction because the QueryExecution is passed out. 
+        // There is no point doing this in a transaction because the QueryExecution is passed out.
         return QueryExecutionFactory.create(query, dataset);
     }
 
     @Override
     public void update(UpdateRequest update) {
         checkOpen();
-        Txn.executeWrite(dataset, ()->UpdateExecutionFactory.create(update, dataset).execute() ); 
+        Txn.executeWrite(dataset, ()->UpdateExecutionFactory.create(update, dataset).execute() );
     }
 
     @Override
@@ -96,21 +96,21 @@ public class RDFConnectionLocal implements RDFConnection {
     public void load(String graphName, Model model) {
         checkOpen();
         Txn.executeWrite(dataset, ()-> {
-            Model modelDst = modelFor(graphName); 
+            Model modelDst = modelFor(graphName);
             modelDst.add(model);
         });
     }
 
     @Override
-    public void load(Model model) { 
+    public void load(Model model) {
         load(null, model);
     }
 
     @Override
     public Model fetch(String graph) {
         return Txn.calculateRead(dataset, ()-> {
-            Model model = modelFor(graph); 
-            return isolate(model); 
+            Model model = modelFor(graph);
+            return isolate(model);
         });
     }
 
@@ -134,14 +134,14 @@ public class RDFConnectionLocal implements RDFConnection {
 
     @Override
     public void put(Model model) {
-        put(null, model); 
+        put(null, model);
     }
 
     @Override
     public void put(String graphName, Model model) {
         checkOpen();
         Txn.executeWrite(dataset, ()-> {
-            Model modelDst = modelFor(graphName); 
+            Model modelDst = modelFor(graphName);
             modelDst.removeAll();
             modelDst.add(model);
         });
@@ -151,9 +151,9 @@ public class RDFConnectionLocal implements RDFConnection {
     public void delete(String graph) {
         checkOpen();
         Txn.executeWrite(dataset,() ->{
-            if ( LibRDFConn.isDefault(graph) ) 
+            if ( LibRDFConn.isDefault(graph) )
                 dataset.getDefaultModel().removeAll();
-            else 
+            else
                 dataset.removeNamedModel(graph);
         });
     }
@@ -167,19 +167,19 @@ public class RDFConnectionLocal implements RDFConnection {
     private void doPutPost(String graph, String file, boolean replace) {
         Objects.requireNonNull(file);
         Lang lang = RDFLanguages.filenameToLang(file);
-        
+
         Txn.executeWrite(dataset,() ->{
             if ( RDFLanguages.isTriples(lang) ) {
                 Model model = LibRDFConn.isDefault(graph) ? dataset.getDefaultModel() : dataset.getNamedModel(graph);
                 if ( replace )
                     model.removeAll();
-                RDFDataMgr.read(model, file); 
+                RDFDataMgr.read(model, file);
             }
             else if ( RDFLanguages.isQuads(lang) ) {
                 if ( replace )
-                    dataset.asDatasetGraph().clear(); 
+                    dataset.asDatasetGraph().clear();
                 // Try to POST to the dataset.
-                RDFDataMgr.read(dataset, file); 
+                RDFDataMgr.read(dataset, file);
             }
             else
                 throw new ARQException("Not an RDF format: "+file+" (lang="+lang+")");
@@ -193,7 +193,7 @@ public class RDFConnectionLocal implements RDFConnection {
     private Model isolate(Model model) {
         switch(isolation) {
             case COPY: {
-                // Copy - the model is completely isolated from the original. 
+                // Copy - the model is completely isolated from the original.
                 Model m2 = ModelFactory.createDefaultModel();
                 m2.add(model);
                 return m2;
@@ -230,7 +230,7 @@ public class RDFConnectionLocal implements RDFConnection {
     }
 
     private Model modelFor(String graph) {
-        if ( LibRDFConn.isDefault(graph)) 
+        if ( LibRDFConn.isDefault(graph) )
             return dataset.getDefaultModel();
         return dataset.getNamedModel(graph);
     }
@@ -238,7 +238,7 @@ public class RDFConnectionLocal implements RDFConnection {
     @Override
     public Dataset fetchDataset() {
         checkOpen();
-        return Txn.calculateRead(dataset,() -> isolate(dataset));   
+        return Txn.calculateRead(dataset,() -> isolate(dataset));
     }
 
     @Override
@@ -250,9 +250,12 @@ public class RDFConnectionLocal implements RDFConnection {
     }
 
     @Override
-    public void loadDataset(Dataset dataset) {
-        Txn.executeWrite(dataset,() ->{
-            dataset.asDatasetGraph().find().forEachRemaining((q)->this.dataset.asDatasetGraph().add(q));
+    public void loadDataset(Dataset srcDataset) {
+        checkOpen();
+        srcDataset.executeRead(()->{
+            dataset.executeWrite(()->{
+                srcDataset.asDatasetGraph().find().forEachRemaining((q)->this.dataset.asDatasetGraph().add(q));
+            });
         });
     }
 
@@ -276,7 +279,7 @@ public class RDFConnectionLocal implements RDFConnection {
     public void close() {
         dataset = null;
     }
-    
+
     @Override
     public boolean isClosed() {
         return dataset == null;

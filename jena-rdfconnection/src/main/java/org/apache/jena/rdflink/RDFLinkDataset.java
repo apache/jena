@@ -253,10 +253,12 @@ public class RDFLinkDataset implements RDFLink {
     }
 
     @Override
-    public void loadDataset(DatasetGraph dataset) {
+    public void loadDataset(DatasetGraph srcDataset) {
         checkOpen();
-        Txn.executeWrite(dataset,() ->{
-            dataset.find().forEachRemaining((q)->this.dataset.add(q));
+        srcDataset.executeRead(()->{
+            dataset.executeWrite(()->{
+                srcDataset.find().forEachRemaining(q->dataset.add(q));
+            });
         });
     }
 

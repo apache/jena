@@ -1,0 +1,16 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+prefix : <http://example/>
+
+:s :p :o .
+:s0 :p0 :o .
+
+:g1 {
+   :s :p :o .
+   :s1 :p1 :o1 .
+   }
+
+:g2 {
+  :s :p :o .
+  :s2 :p2 :o .
+  }

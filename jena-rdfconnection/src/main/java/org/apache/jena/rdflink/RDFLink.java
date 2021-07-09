@@ -432,14 +432,14 @@ public interface RDFLink extends
     @Override
     public void delete();
 
-    /* Load (add, append) RDF triple or quad data into a dataset. Triples wil go into the default graph.
+    /* Load (add, append) RDF triple or quad data into a dataset. Triples will go into the default graph.
      * This is not a SPARQL Graph Store Protocol operation.
      * It is an HTTP POST equivalent to the dataset.
      */
     @Override
     public void loadDataset(String file);
 
-    /* Load (add, append) RDF triple or quad data into a dataset. Triples wil go into the default graph.
+    /* Load (add, append) RDF triple or quad data into a dataset. Triples will go into the default graph.
      * This is not a SPARQL Graph Store Protocol operation.
      * It is an HTTP POST equivalent to the dataset.
      */

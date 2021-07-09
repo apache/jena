@@ -16,33 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.test;
+package org.apache.jena.http;
 
-import org.apache.jena.http.TS_JenaHttp;
-import org.apache.jena.integration.TS_RDFLinkIntegration;
-import org.apache.jena.sparql.exec.http.TS_SparqlExecHttp;
-import org.apache.jena.test.assembler.TS_Assembler;
-import org.apache.jena.test.general.TestRemoteEndToEnd;
-import org.apache.jena.test.integration.TS_Integration;
-import org.apache.jena.test.rdfconnection.TS_RDFConnectionIntegration;
-import org.apache.jena.test.service.TS_SPARQLService;
-import org.apache.jena.test.txn.TS_TranactionIntegration;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TS_JenaHttp.class
-    , TS_SparqlExecHttp.class
-    , TS_RDFLinkIntegration.class
-    , TS_Integration.class
-    , TS_TranactionIntegration.class
-    , TS_RDFConnectionIntegration.class
-    , TS_Assembler.class
-    , TestSettings.class
-    , TestRemoteEndToEnd.class
-    , TS_SPARQLService.class
+    TestBlankNodeBinary.class
+    , TestHttpOp2.class
+    , TestHttpRDF.class
+    , TestAsyncHttpRDF.class
+    , TestAuthRemote.class
 })
 
-public class TC_Integration { }
-
+public class TS_JenaHttp { }
