@@ -18,6 +18,8 @@
 
 package org.apache.jena.query;
 
+import org.apache.jena.http.sys.HttpRequestModifier;
+import org.apache.jena.http.sys.RegistryRequestModifier;
 import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.system.RiotLib ;
