@@ -70,6 +70,12 @@
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-fuseki-main</artifactId>
             <version>4.3.0-SNAPSHOT</version>
+            <exclusions>
+              <exclusion>
+                <groupId>org.apache.jena</groupId>
+                <artifactId>jena-cmds</artifactId>
+              </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -171,6 +177,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
+                    <source>8</source>
                     <version>true</version>
                     <show>public</show>
                     <quiet>true</quiet>

@@ -851,6 +851,16 @@
                    jena-jdbc
             -->
             <detectJavaApiLink>false</detectJavaApiLink>
+
+            <!-- 
+                 Some modules have source = ${java.version} wheer they use 
+                 Java 11 features but appling that here causes two kinds of problems.
+                 1/ apache-jena-libs:pom. Thsi artifact as a dependency now causes
+                    an error attaching as a POM.
+                 2/ dependency errors on overlapping packages (which don't appear
+                    to overlap)
+                 3/ Mixed modules and non-module jars (may be the same as 2)
+            -->
             <source>8</source>
             <!-- End Java11 fixes (2021-01) -->
 
