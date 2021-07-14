@@ -206,6 +206,32 @@ public class TestVarRename
             "    (bgp (triple ?/x ?/y ?/v))))" ;
         checkRename(queryString, opExpectedString) ;
     }
+
+
+    // JENA-2132 : Renaming must descend into RDFStar TripleNodes
+    @Test public void query_rename_08()
+    {
+        String queryString
+                = "SELECT COUNT(*) {\n"
+                + "  SELECT ?src {\n"
+                + "    ?src  <urn:connectedTo>  ?tgt .\n"
+                + "    << ?src <urn:connectedTo> ?tgt >>\n"
+                + "                  <urn:hasValue>  ?v\n"
+                + "  }\n"
+                + "}";
+
+        String opExpectedString
+                = "(project (?.1)\n"
+                + "  (extend ((?.1 ?.0))\n"
+                + "    (group () ((?.0 (count)))\n"
+                + "      (project (?src)\n"
+                + "        (bgp\n"
+                + "          (triple ?src <urn:connectedTo> ?/tgt)\n"
+                + "          (triple << ?src <urn:connectedTo> ?/tgt >> <urn:hasValue> ?/v)\n"
+                + "        )))))";
+
+        checkRename(queryString, opExpectedString) ;
+    }
     
     // JENA-1275
     @Test

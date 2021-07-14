@@ -21,8 +21,12 @@ package org.apache.jena.sparql.engine;
 import java.util.Collection ;
 import java.util.HashMap ;
 import java.util.Map ;
+import java.util.Objects;
 import java.util.Set ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Node_Triple;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.core.Var ;
@@ -117,7 +121,13 @@ public class Rename
         
         @Override
         public final Node apply(Node node) {
-            if ( ! Var.isVar(node) ) return node ;
+            if ( node.isNodeTriple() ) {
+                Triple t1 = node.getTriple();
+                Triple t2 = NodeTransformLib.transform(this, t1);
+                return Objects.equals(t1, t2) ? node : NodeFactory.createTripleNode(t2);
+            } else if ( ! Var.isVar(node) ) {
+                return node ;
+            }
             if ( constants.contains(node) ) return node ;
 
             Var var = (Var)node ;
@@ -149,8 +159,14 @@ public class Rename
 
         @Override
         public Node apply(Node node) {
-            if ( !Var.isVar(node) )
+            if ( node.isNodeTriple() ) {
+                Triple t1 = node.getTriple();
+                Triple t2 = NodeTransformLib.transform(this, t1);
+                return Objects.equals(t1, t2) ? node : NodeFactory.createTripleNode(t2);
+            } else if ( !Var.isVar(node) ) {
                 return node ;
+            }
+
             Var var = (Var)node ;
             String varName = var.getName() ;
             
