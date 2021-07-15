@@ -108,7 +108,7 @@ public class DatasetOperations {
                 dataset = TDB2Factory.connectDataset(tdbFolder.getAbsolutePath());
             }else{
                 dataset = TDBFactory.createDataset(tdbFolder.getAbsolutePath());
-            }            
+            }
         } else {
             LOGGER.info("In-Memory Dataset");
             dataset = DatasetFactory.create();
@@ -163,7 +163,7 @@ public class DatasetOperations {
                         LOGGER.info("Reading RDF - Not Completed - File: {} does not exist", rdfFile, graphName, rdfFormat);
                     }
                 }
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 dataset.abort();
                 throw new DatasetException("Read Error: " + ex.getMessage(), ex);
             } finally {

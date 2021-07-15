@@ -26,12 +26,12 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.logging.LogCtl;
-import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -84,7 +84,7 @@ public class TestQueryExecCleanServer {
     // This test means the server will see "broken connection".
     // The test suite will restore logging on exit.
     // It can't be done here because the server does not see the broken connection immediately.
-    @Test(expected=HttpException.class)
+    @Test(expected=QueryExceptionHTTP.class)
     public void query_timeout_1() {
         LogCtl.set(Fuseki.actionLog, "error");
         String queryString = strjoinNL

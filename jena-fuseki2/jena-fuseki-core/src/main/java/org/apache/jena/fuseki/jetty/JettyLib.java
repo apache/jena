@@ -65,11 +65,8 @@ public class JettyLib {
         return sh;
     }
 
-    /**
-     * Digest requires an extra round trip so it is unfriendly to API
-     * or scripts that stream.
-     */
-    public final static AuthScheme dftAuthMode = AuthScheme.DIGEST;
+    /** Default setting. */
+    public final static AuthScheme dftAuthMode = AuthScheme.BASIC;
     /** Current auth mode */
     public static AuthScheme authMode = dftAuthMode;
 

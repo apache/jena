@@ -43,7 +43,7 @@ public abstract class ExecHTTPBuilder<X, Y> {
     protected Params params = Params.create();
     protected Context context = null;
     // Accept: Handled as special case because the defaults varies by query type.
-    protected String acceptHeader;
+    protected String appExplicitAcceptHeader = null;
     protected long timeout = -1;
     protected TimeUnit timeoutUnit = null;
 
@@ -196,7 +196,7 @@ public abstract class ExecHTTPBuilder<X, Y> {
 
     public Y acceptHeader(String acceptHeader) {
         Objects.requireNonNull(acceptHeader);
-        this.acceptHeader = acceptHeader;
+        this.appExplicitAcceptHeader = acceptHeader;
         return thisBuilder();
     }
 

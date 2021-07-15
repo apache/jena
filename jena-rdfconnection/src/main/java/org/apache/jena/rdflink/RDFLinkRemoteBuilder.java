@@ -56,8 +56,8 @@ public class RDFLinkRemoteBuilder {
     protected String        acceptSelectResult = WebContent.defaultSparqlResultsHeader;
     protected String        acceptAskResult    = WebContent.defaultSparqlAskHeader;
     // All-purpose head that works for any query type (but is quite long!)
-    protected String        acceptSparqlResults = acceptSelectResult+","+acceptGraph;
-    // Whether to parse SPARQL Queries and Updates for checkign purposes.
+    protected String        acceptSparqlResults = WebContent.defaultSparqlResultsHeader;
+    // Whether to parse SPARQL Queries and Updates for checking purposes.
     protected boolean       parseCheckQueries   = true;
     protected boolean       parseCheckUpdates   = true;
 

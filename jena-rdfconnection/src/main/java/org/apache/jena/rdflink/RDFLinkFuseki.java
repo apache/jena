@@ -91,10 +91,10 @@ public class RDFLinkFuseki extends RDFLinkRemote {
     }
 
     protected RDFLinkFuseki(Transactional txnLifecycle, HttpClient httpClient, String destination,
-                                  String queryURL, String updateURL, String gspURL, RDFFormat outputQuads, RDFFormat outputTriples,
-                                  String acceptDataset, String acceptGraph,
-                                  String acceptSparqlResults, String acceptSelectResult, String acceptAskResult,
-                                  boolean parseCheckQueries, boolean parseCheckUpdates) {
+                            String queryURL, String updateURL, String gspURL, RDFFormat outputQuads, RDFFormat outputTriples,
+                            String acceptDataset, String acceptGraph,
+                            String acceptSparqlResults, String acceptSelectResult, String acceptAskResult,
+                            boolean parseCheckQueries, boolean parseCheckUpdates) {
         super(txnLifecycle, httpClient,
               destination, queryURL, updateURL, gspURL,
               outputQuads, outputTriples,
@@ -118,16 +118,12 @@ public class RDFLinkFuseki extends RDFLinkRemote {
 //     * {@code Model} object, maniupulating it and putting it back with {@link #put(Model)}
 //     * provides another way to work with remote data.
 //     *
-//     * @return Model
+//     * @return Graph
 //     */
-//    public Model getModelProxy() { return null; }
-//    public Model getModelProxy(String graphName) { return null; }
-//
 //    public Graph getGraphProxy() { return null; }
 //    public Graph getGraphProxy(String graphName) { return null; }
 //
-//    public Dataset getDatasetProxy() { return null; }
-//    public DatasetGraph getDatasetGraphProxy() { return null; }
+//    public DatasetGraph getDatasetProxy() { return null; }
 //
 //    // Or remote RDFStorage?
 //    public Stream<Triple> findStream(Node s, Node p , Node o) { return null; }

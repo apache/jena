@@ -37,7 +37,9 @@ import org.apache.jena.update.UpdateRequest;
 
 public class RDFConnectionAdapter implements RDFConnection {
 
-    public static RDFConnection wrap(RDFLink link) {
+    public static RDFConnection adapt(RDFLink link) {
+        if ( link instanceof RDFLinkAdapter )
+            return ((RDFLinkAdapter)link).getConnection();
         return new RDFConnectionAdapter(link);
     }
 
@@ -48,7 +50,7 @@ public class RDFConnectionAdapter implements RDFConnection {
     /** Return the {@link RDFLink} for this connection. */
     public RDFLink getLink() { return get(); }
 
-    private RDFConnectionAdapter(RDFLink conn) {
+    protected RDFConnectionAdapter(RDFLink conn) {
         this.other = conn;
     }
 

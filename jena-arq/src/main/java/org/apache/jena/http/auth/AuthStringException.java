@@ -16,21 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.rdfconnection;
+package org.apache.jena.http.auth;
 
-public interface RDFConnectionRemote extends RDFConnection{
-
-    /**
-     * Create a {@link RDFConnectionRemoteBuilder}.
-     * @deprecated Use {@link #newBuilder()}.
-     */
-    @Deprecated
-    public static RDFConnectionRemoteBuilder create() {
-        return newBuilder();
+public class AuthStringException extends RuntimeException {
+    public AuthStringException() {
+        super();
     }
 
-    /** Create a {@link RDFConnectionRemoteBuilder}. */
-    public static RDFConnectionRemoteBuilder newBuilder() {
-        return new RDFConnectionRemoteBuilder();
+    public AuthStringException(String msg) {
+        super(msg);
     }
 }

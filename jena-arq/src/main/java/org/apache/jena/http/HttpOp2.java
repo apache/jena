@@ -62,7 +62,7 @@ public class HttpOp2 {
     }
 
     public static String httpGetString(HttpClient httpClient, String url, String acceptHeader) {
-        HttpRequest request = newGetRequest(httpClient, url, setAcceptHeader(acceptHeader));
+        HttpRequest request = newGetRequest(url, setAcceptHeader(acceptHeader));
         HttpResponse<InputStream> response = execute(httpClient, request);
         return handleResponseRtnString(response);
     }
@@ -74,7 +74,7 @@ public class HttpOp2 {
 
     /** POST (without a body) - like httpGetString but uses POST - expects a response */
     public static String httpPostRtnString(HttpClient httpClient, String url) {
-        HttpRequest requestData = HttpRequest.newBuilder()
+        HttpRequest requestData = HttpLib.newBuilderFor(url)
             .POST(BodyPublishers.noBody())
             .uri(toRequestURI(url))
             .build();
@@ -106,7 +106,7 @@ public class HttpOp2 {
     private static InputStream execGet(HttpClient httpClient, String url, String acceptHeader) {
         if ( acceptHeader == null )
             acceptHeader = "*/*";
-        HttpRequest request = newGetRequest(httpClient, url, setAcceptHeader(acceptHeader));
+        HttpRequest request = newGetRequest(url, setAcceptHeader(acceptHeader));
         return execGet(httpClient, request);
     }
 
@@ -182,7 +182,7 @@ public class HttpOp2 {
         acceptString = HttpLib.dft(acceptString, "*/*");
         URI uri = toRequestURI(url);
         String formData = params.httpString();
-        HttpRequest request = HttpRequest.newBuilder()
+        HttpRequest request = HttpLib.newBuilderFor(url)
             .uri(uri)
             .POST(BodyPublishers.ofString(formData))
             .header(HttpNames.hContentType, WebContent.contentTypeHTMLForm)
@@ -201,7 +201,7 @@ public class HttpOp2 {
     /** DELETE */
     public static void httpDelete(HttpClient httpClient, String url) {
         URI uri = toRequestURI(url);
-        HttpRequest requestData = HttpRequest.newBuilder()
+        HttpRequest requestData = HttpLib.newBuilderFor(url)
             .DELETE()
             .uri(uri)
             .build();
@@ -232,7 +232,7 @@ public class HttpOp2 {
 //     */
 //    public static String httpRequest(HttpClient httpClient, String method, String url) {
 //        HttpRequest.Builder builder =
-//            HttpRequest.newBuilder().uri(toRequestURI(url)).method(method, BodyPublishers.noBody());
+//            HttpLib.newBuilderFor(url).uri(toRequestURI(url)).method(method, BodyPublishers.noBody());
 //        HttpRequest request = builder.build();
 //        HttpResponse<InputStream> response = execute(httpClient, request);
 //        return handleResponseRtnString(response);

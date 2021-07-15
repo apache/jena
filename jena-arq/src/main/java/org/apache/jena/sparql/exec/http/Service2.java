@@ -51,26 +51,29 @@ public class Service2 {
 
 
     // ARQ namespace.
+
+    // ARQ.serviceParams
+
     // [QExec] Put this in ARQ or ARQConstants
     public static final String base = ARQ.arqParamNS; //"http://jena.apache.org/ARQ/http#";
-    public static final Symbol httpQueryCompression = SystemARQ.allocSymbol("httpQueryCompression");
-    public static final Symbol httpQueryClient = SystemARQ.allocSymbol("httpQueryClient");
+    public static final Symbol httpQueryCompression  = SystemARQ.allocSymbol("httpQueryCompression");
+    public static final Symbol httpQueryClient       = SystemARQ.allocSymbol("httpQueryClient");
     // [QExec]
-    public static final Symbol httpServiceContext = SystemARQ.allocSymbol("httpServiceContext");
-    public static final Symbol httpServiceAllowed = SystemARQ.allocSymbol("httpServiceAllowed");
+    public static final Symbol httpServiceContext    = SystemARQ.allocSymbol("httpServiceContext");
+    public static final Symbol httpServiceAllowed    = SystemARQ.allocSymbol("httpServiceAllowed");
     // Not connection timeout which is now in HttpClient
-    public static final Symbol httpQueryTimeout = SystemARQ.allocSymbol("httpQueryTimeout");
+    public static final Symbol httpQueryTimeout      = SystemARQ.allocSymbol("httpQueryTimeout");
     // ContextBuilder?
 
     private static Context emptyContext = Context.emptyContext();
 
     // Old names.
     public static final String baseOld = "http://jena.hpl.hp.com/Service#";
-    public static final Symbol oldQueryClient = SystemARQ.allocSymbol(baseOld, "queryClient");
-    public static final Symbol oldServiceContext = SystemARQ.allocSymbol(baseOld, "serviceContext");
-    public static final Symbol oldServiceAllowed = SystemARQ.allocSymbol(baseOld, "serviceAllowed");
-    public static final Symbol oldQueryTimeout = SystemARQ.allocSymbol(baseOld, "queryTimeout");
-    public static final Symbol oldQueryCompression = SystemARQ.allocSymbol(baseOld, "queryCompression");
+    public static final Symbol oldQueryClient       = SystemARQ.allocSymbol(baseOld, "queryClient");
+    public static final Symbol oldServiceContext    = SystemARQ.allocSymbol(baseOld, "serviceContext");
+    public static final Symbol oldServiceAllowed    = SystemARQ.allocSymbol(baseOld, "serviceAllowed");
+    public static final Symbol oldQueryTimeout      = SystemARQ.allocSymbol(baseOld, "queryTimeout");
+    public static final Symbol oldQueryCompression  = SystemARQ.allocSymbol(baseOld, "queryCompression");
 
     private void oldCheckForOldParameters(Context context) {
         if ( context == null )

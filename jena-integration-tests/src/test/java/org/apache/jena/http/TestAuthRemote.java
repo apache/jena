@@ -46,7 +46,7 @@ import org.junit.Test;
  */
 public class TestAuthRemote {
     private static String user = "user";
-    private static String password = "passwrd";
+    private static String password = "password";
 
     private static EnvTest env;
     @BeforeClass public static void beforeClass() {

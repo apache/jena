@@ -25,14 +25,20 @@ import org.apache.jena.web.HttpSC;
  *
  */
 public class HttpException extends RuntimeException {
-    private int statusCode = -1;
-    private String statusLine = null ;
-	private String response = null;
+    private final int statusCode;
+    private final String statusLine;
+	private final String response;
+
+	// HTTP/2 does not have an information message.
+	public HttpException(int statusCode) {
+	    this(statusCode, null);
+	}
 
 	public HttpException(int statusCode, String statusLine) {
 		super(exMessage(statusCode, statusLine));
 		this.statusCode = statusCode;
 		this.statusLine = statusLine ;
+		this.response = null;
 	}
 
     public HttpException(int statusCode, String statusLine, String response) {
@@ -50,14 +56,23 @@ public class HttpException extends RuntimeException {
 
     public HttpException(String message) {
         super(message);
+        this.statusCode = -1;
+        this.statusLine = null ;
+        this.response = null;
     }
 
     public HttpException(String message, Throwable cause) {
         super(message, cause);
+        this.statusCode = -1;
+        this.statusLine = null ;
+        this.response = null;
     }
 
     public HttpException(Throwable cause) {
         super(cause);
+        this.statusCode = -1;
+        this.statusLine = null ;
+        this.response = null;
     }
 
     /**

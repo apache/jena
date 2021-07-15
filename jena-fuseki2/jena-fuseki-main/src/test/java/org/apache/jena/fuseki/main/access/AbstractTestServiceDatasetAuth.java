@@ -18,7 +18,8 @@
 
 package org.apache.jena.fuseki.main.access;
 
-import static org.apache.jena.fuseki.main.FusekiTestLib.*;
+import static org.apache.jena.fuseki.main.FusekiTestLib.expect403;
+import static org.apache.jena.fuseki.main.FusekiTestLib.expectOK;
 import static org.apache.jena.fuseki.main.FusekiTestLib.expectQuery401;
 import static org.apache.jena.fuseki.main.FusekiTestLib.expectQuery403;
 

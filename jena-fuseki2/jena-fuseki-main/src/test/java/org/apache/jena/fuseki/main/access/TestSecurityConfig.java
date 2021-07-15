@@ -23,20 +23,22 @@ import static org.apache.jena.fuseki.test.FusekiTest.expectQuery403;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.http.HttpClient;
 import java.util.function.Consumer;
 
-import org.apache.http.client.HttpClient;
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.http.HttpOp2;
 import org.apache.jena.rdfconnection.LibSec;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionRemote;
 import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.web.AuthSetup;
 import org.apache.jena.web.HttpSC;
-import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -66,19 +68,6 @@ public class TestSecurityConfig {
                 .build();
         fusekiServer.start();
         return fusekiServer;
-    }
-
-    @BeforeClass
-    public static void beforeClass() {
-        // Reset before every test and after the suite.
-        HttpClient hc = HttpOp.createDefaultHttpClient();
-        HttpOp.setDefaultHttpClient(hc);
-    }
-
-    @After
-    public void after() {
-        HttpClient hc = HttpOp.createDefaultHttpClient();
-        HttpOp.setDefaultHttpClient(hc);
     }
 
     private static void test(String configFile, Consumer<FusekiServer> action) {
@@ -146,13 +135,13 @@ public class TestSecurityConfig {
         test("testing/Access/config-server-1.ttl", fusekiServer->{
             // Must be logged in.
             HttpClient hc = LibSec.httpClient(authSetup1(fusekiServer));
-            try( TypedInputStream in = HttpOp.execHttpGet(fusekiServer.serverURL(), null, hc, null) ) {
+            try( InputStream in = HttpOp2.httpGet(hc, fusekiServer.serverURL()) ) {
                 assertNull(in);
-            } catch (HttpException ex) {
+            } catch (HttpException  ex) {
                 // 404 is OK - no static file area.
                 if ( ex.getStatusCode() != HttpSC.NOT_FOUND_404 )
                     throw ex;
-            }
+            } catch (IOException ex) { IO.exception(ex); }
         });
     }
 

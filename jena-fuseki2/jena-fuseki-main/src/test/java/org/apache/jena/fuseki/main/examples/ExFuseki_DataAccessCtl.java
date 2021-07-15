@@ -19,15 +19,16 @@
 package org.apache.jena.fuseki.main.examples;
 
 import static java.lang.String.format;
+import static org.apache.jena.fuseki.main.examples.ExamplesLib.httpClient;
 
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.BasicCredentialsProvider;
+import java.net.http.HttpClient;
+
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.WebLib;
-import org.apache.jena.fuseki.access.*;
+import org.apache.jena.fuseki.access.AuthorizationService;
+import org.apache.jena.fuseki.access.DataAccessCtl;
+import org.apache.jena.fuseki.access.SecurityContextView;
+import org.apache.jena.fuseki.access.SecurityRegistry;
 import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiLib;
 import org.apache.jena.fuseki.main.FusekiServer;
@@ -38,7 +39,6 @@ import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionRemote;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
-import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
@@ -114,15 +114,6 @@ public class ExFuseki_DataAccessCtl {
         System.exit(0);
     }
 
-    /** HttpClient with user/password */
-    private static HttpClient httpClient(String user, String password) {
-        BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
-        Credentials credentials = new UsernamePasswordCredentials(user, password);
-        credsProvider.setCredentials(AuthScope.ANY, credentials);
-        HttpClient client = HttpOp.createPoolingHttpClientBuilder().setDefaultCredentialsProvider(credsProvider).build();
-        return client;
-    }
-
     /** Create data : the subject indicates whic it comes from */
     private static DatasetGraph createData() {
         DatasetGraph dsg = DatabaseMgr.createDatasetGraph();
@@ -155,7 +146,7 @@ public class ExFuseki_DataAccessCtl {
         // Associate access control information with the dataset.
         DatasetGraph dsx = DataAccessCtl.controlledDataset(dsgBase, authorizeSvc);
         // Build a Fuseki server with the access control operations replacing the normal (no control) operations.
-        
+
         FusekiServer.Builder builder = FusekiLib.fusekiBuilderAccessCtl(DataAccessCtl.requestUserServlet)
             .port(port)
             .add(dsName, dsx, false);

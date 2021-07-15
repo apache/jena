@@ -49,6 +49,7 @@ import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.web.HttpException;
+import org.apache.jena.http.auth.AuthLib;
 import org.apache.jena.http.sys.HttpRequestModifier;
 import org.apache.jena.http.sys.RegistryRequestModifier;
 import org.apache.jena.query.ARQ;
@@ -63,7 +64,6 @@ import org.apache.jena.web.HttpSC;
 public class HttpLib {
 
     private HttpLib() {}
-
 
     public static BodyHandler<Void> noBody() { return BodyHandlers.discarding(); }
 
@@ -100,7 +100,7 @@ public class HttpLib {
      * Closing the InputStream may close the HTTP connection.
      * Assumes the status code has been handled e.g. {@link #handleHttpStatusCode} has been called.
      */
-    private static InputStream getInputStream(HttpResponse<InputStream> httpResponse) {
+    public static InputStream getInputStream(HttpResponse<InputStream> httpResponse) {
         String encoding = httpResponse.headers().firstValue(HttpNames.hContentEncoding).orElse("");
         InputStream responseInput = httpResponse.body();
         // Only support "Content-Encoding: <compression>" and not
@@ -135,7 +135,7 @@ public class HttpLib {
      * Throws {@link HttpException} for 3xx (redirection should have happened by
      * now), 4xx and 5xx, having consumed the body input stream.
      */
-    static void handleHttpStatusCode(HttpResponse<InputStream> response) {
+    public static void handleHttpStatusCode(HttpResponse<InputStream> response) {
         int httpStatusCode = response.statusCode();
         // There is no status message in HTTP/2.
         if ( ! inRange(httpStatusCode, 100, 599) )
@@ -152,8 +152,6 @@ public class HttpLib {
             // Either way, we should not continue processing.
             try {
                 finish(response);
-                //BodySubscribers.discarding().getBody().toCompletableFuture().get();
-            //} catch (InterruptedException | ExecutionException | IOException ex) {
             } catch (Exception ex) {
                 throw new HttpException("Error discarding body of "+httpStatusCode , ex);
             }
@@ -211,11 +209,11 @@ public class HttpLib {
 
     static HttpException exception(HttpResponse<InputStream> response, int httpStatusCode) {
         InputStream in = response.body();
-        String msg = null;
+        String msg;
         try {
             msg = IO.readWholeFileAsUTF8(in);
         } catch (RuntimeIOException e) {
-            e.printStackTrace();
+            msg = null;
         }
         return new HttpException(httpStatusCode, HttpSC.getMessage(httpStatusCode), msg);
     }
@@ -228,7 +226,7 @@ public class HttpLib {
      * {@code close} may close the underlying HTTP connection.
      *  See {@link BodySubscribers#ofInputStream()}.
      */
-    public static void finish(HttpResponse<InputStream> response) {
+    private static void finish(HttpResponse<InputStream> response) {
         finish(response.body());
     }
 
@@ -271,7 +269,7 @@ public class HttpLib {
     }
 
     /** String to {@link URI}. Throws {@link HttpException} on bad syntax or if the URI isn't absolute. */
-    static URI toRequestURI(String uriStr) {
+    public static URI toRequestURI(String uriStr) {
         try {
             URI uri = new URI(uriStr);
             if ( ! uri.isAbsolute() )
@@ -286,12 +284,66 @@ public class HttpLib {
         }
     }
 
-    public static HttpRequest newGetRequest(HttpClient httpClient, String url, Consumer<HttpRequest.Builder> modifier) {
-        HttpRequest.Builder builder = HttpRequest.newBuilder().uri(toRequestURI(url)).GET();
+    // Terminology:
+    // RFC 2616:   Request-Line   = Method SP Request-URI SP HTTP-Version CRLF
+
+    // RFC 7320:   request-line   = method SP request-target SP HTTP-version CRLF
+    // https://datatracker.ietf.org/doc/html/rfc7230#section-3.1.1
+
+    // request-target:
+    // https://datatracker.ietf.org/doc/html/rfc7230#section-5.3
+    // When it is for the origin server ==> absolute-path [ "?" query ]
+
+    // EndpointURI: URL for a service, no query string.
+
+    /** Test whether a URI is a service endpoint. It must be absolute, with host and path, and without query string or fragment. */
+    public static boolean isEndpoint(URI uri) {
+        return uri.isAbsolute() &&
+                uri.getHost() != null &&
+                uri.getRawPath() != null &&
+                uri.getRawQuery() == null &&
+                uri.getRawFragment() == null;
+    }
+
+    // [QExec] Check usage - what about endpoint(URI uri)?
+    /**
+     * String: URI string with host, without query string or fragment.
+     */
+    public static String endpoint(String uriStr) {
+        int idx1 = uriStr.indexOf('?');
+        int idx2 = uriStr.indexOf('#');
+
+        if ( idx1 < 0 && idx2 < 0 )
+            return uriStr;
+
+        int idx = -1;
+        if ( idx1 < 0 && idx2 > 0 )
+            idx = idx2;
+        else if ( idx1 > 0 && idx2 < 0 )
+            idx = idx1;
+        else
+            idx = Math.min(idx1,  idx2);
+        return uriStr.substring(0, idx);
+    }
+
+    /** RFC7320 "request-target", used in digest authentication. */
+    public static String requestTarget(URI uri) {
+        String path = uri.getRawPath();
+        if ( path == null || path.isEmpty() )
+            path = "/";
+        String qs = uri.getQuery();
+        if ( qs == null || qs.isEmpty() )
+            return path;
+        return path+"?"+qs;
+    }
+
+    // [QExec] is it worth having this special? */
+    /** Return a HttpRequest */
+    public static HttpRequest newGetRequest(String url, Consumer<HttpRequest.Builder> modifier) {
+        HttpRequest.Builder builder = HttpLib.newBuilderFor(url).uri(toRequestURI(url)).GET();
         if ( modifier != null )
             modifier.accept(builder);
-        HttpRequest request = builder.build();
-        return request;
+        return builder.build();
     }
 
     public static <X> X dft(X value, X dftValue) {
@@ -319,12 +371,37 @@ public class HttpLib {
         return requestURL;
     }
 
+    public static HttpRequest.Builder newBuilderFor(String serviceEndpoint) {
+        HttpRequest.Builder requestBuilder= HttpRequest.newBuilder();
+        return AuthLib.addAuth(requestBuilder, serviceEndpoint);
+    }
+
+    // [QExec] Sort out building.
     public static Builder newBuilder(String url, Map<String, String> httpHeaders, long readTimeout, TimeUnit readTimeoutUnit) {
-        HttpRequest.Builder builder = HttpRequest.newBuilder();
+        HttpRequest.Builder builder = HttpLib.newBuilderFor(url);
         headers(builder, httpHeaders);
         builder.uri(toRequestURI(url));
         if ( readTimeout >= 0 )
             builder.timeout(Duration.ofMillis(readTimeoutUnit.toMillis(readTimeout)));
+        return builder;
+    }
+
+    /** Create a {@code HttpRequest.Builder} from an {@code HttpRequest}. */
+    public static HttpRequest.Builder createBuilder(HttpRequest request) {
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
+                .expectContinue(request.expectContinue())
+                .uri(request.uri());
+        builder.method(request.method(), request.bodyPublisher().orElse(BodyPublishers.noBody()));
+//      switch(request.method()) {
+//          case HttpNames.METHOD_GET: builder.GET(); break;
+//          case HttpNames.METHOD_HEAD: builder.method(request.method(), request.bodyPublisher().orElse(null)); break;
+//          case HttpNames.METHOD_POST: builder.POST(request.bodyPublisher().orElse(null)); break;
+//          case HttpNames.METHOD_PUT: builder.PUT(request.bodyPublisher().orElse(null)); break;
+//          case HttpNames.METHOD_DELETE: builder.DELETE(); break;
+//      }
+        request.timeout().ifPresent(builder::timeout);
+        request.version().ifPresent(builder::version);
+        request.headers().map().forEach((name, values)->values.forEach(value->builder.header(name, value)));
         return builder;
     }
 
@@ -337,21 +414,25 @@ public class HttpLib {
 
 
     /** Set the "Accept" header if value is not null. Returns the builder. */
-    public
-    /*package*/ static Builder acceptHeader(Builder builder, String acceptHeader) {
+    public static Builder acceptHeader(Builder builder, String acceptHeader) {
         if ( acceptHeader != null )
             builder.header(HttpNames.hAccept, acceptHeader);
         return builder;
     }
 
     /** Set the "Content-Type" header if value is not null. Returns the builder. */
-    public
-    /*package*/ static Builder contentTypeHeader(Builder builder, String contentType) {
+    public static Builder contentTypeHeader(Builder builder, String contentType) {
         if ( contentType != null )
             builder.header(HttpNames.hContentType, contentType);
         return builder;
     }
 
+    // Disabled. Don't encourage using compression ("Content-Encoding: gzip") because it interacts with streaming.
+    // Specifically, streaming (unknown Content-Length) needs chunking. Both chunking and compression
+    // encodings use the same HTTP header. Yet they are handled by different layers.
+    // The basic http code handles chunking.
+    // The complete encoding header can get removed resulting in a compressed stream
+    // without any indication being passed to the application.
 //    /**
 //     * Set the "Accept-Encoding" header. Returns the builder.
 //     * See {@link #getInputStream(HttpResponse)}.
@@ -362,34 +443,63 @@ public class HttpLib {
 //        return builder;
 //    }
 
-    /** Execute a request, return a {@code HttpResponse<InputStream>} which can be passed to
-     * {@link #handleHttpStatusCode(HttpResponse)}.
+
+//    /** Execute a request, return a {@code HttpResponse<InputStream>} which can be passed to
+//     * {@link #handleHttpStatusCode(HttpResponse)}.
+//     * This function handles authentication (basic and digest).
+//     * "endpointURL" is the key used for registering session information locally.
+//     * @param httpClient
+//     * @param httpRequestBuilder
+//     * @param endpointURL - the service, with host, without query string
+//     * @return HttpResponse
+//     */
+//    public
+//    /*package*/ static HttpResponse<InputStream> execute(HttpClient httpClient,
+//                                                         HttpRequest.Builder httpRequestBuilder,
+//                                                         String endpointURL) {
+//        if ( false ) {
+//            HttpRequest httpRequest = httpRequestBuilder.build();
+//            return executeJDK(httpClient, httpRequest);
+//        }
+//
+//        try {
+//            return AuthLib.authExecute(httpClient, httpRequestBuilder, endpointURL, BodyHandlers.ofInputStream());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+//
+
+    /** Execute a request, return a {@code HttpResponse<InputStream>} which
+     * can be passed to {@link #handleHttpStatusCode(HttpResponse)}.
      * @param httpClient
      * @param httpRequest
      * @return HttpResponse
      */
     public
     /*package*/ static HttpResponse<InputStream> execute(HttpClient httpClient, HttpRequest httpRequest) {
-        return execute(httpClient, httpRequest, BodyHandlers.ofInputStream());
+        return AuthLib.authExecute(httpClient, httpRequest, BodyHandlers.ofInputStream());
+        //return executeJDK(httpClient, httpRequest, BodyHandlers.ofInputStream());
     }
 
     /**
-     * Execute request and return a response - error messages as JSON in 4xx and 5xx
-     * can not be handled if {@code <T>} is not {@code InputStream}. See
-     * {@link #execute(HttpClient, HttpRequest)} because we need an
-     * {@code InputStream} response.
+     * Execute request and return a response without authentication challenge handling.
      * @param httpClient
      * @param httpRequest
      * @param bodyHandler
      * @return HttpResponse
      */
-    private static <T> HttpResponse<T> execute(HttpClient httpClient, HttpRequest httpRequest, BodyHandler<T> bodyHandler) {
+    public static <T> HttpResponse<T> executeJDK(HttpClient httpClient, HttpRequest httpRequest, BodyHandler<T> bodyHandler) {
         try {
             // This is the one place all HTTP requests go through.
             logRequest(httpRequest);
             HttpResponse<T> httpResponse = httpClient.send(httpRequest, bodyHandler);
             logResponse(httpResponse);
             return httpResponse;
+        //} catch (HttpTimeoutException ex) {
         } catch (IOException | InterruptedException ex) {
             if ( ex.getMessage() != null ) {
                 // This is silly.
@@ -412,13 +522,13 @@ public class HttpLib {
     /** Push data. POST, PUT, PATCH request with no response body data. */
     public static void httpPushData(HttpClient httpClient, Push style, String url, Consumer<HttpRequest.Builder> modifier, BodyPublisher body) {
         URI uri = toRequestURI(url);
-        HttpRequest.Builder builder = HttpRequest.newBuilder();
+        HttpRequest.Builder builder = newBuilderFor(url);
         builder.uri(uri);
         builder.method(style.method(), body);
         if ( modifier != null )
             modifier.accept(builder);
-        HttpRequest request = builder.build();
-        HttpResponse<InputStream> response = execute(httpClient, request);
+
+        HttpResponse<InputStream> response = execute(httpClient, builder.build());
         handleResponseNoBody(response);
     }
 

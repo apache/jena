@@ -50,8 +50,9 @@ import org.apache.jena.update.UpdateRequest;
  *     the underlying model or dataset will be seen.
  * <li>{@code NONE} (default) &ndash; Changes to the returned {@code Model}s or {@code Dataset}s act on the original object.
  * </ul>
+ * @deprecated Use {@link RDFConnectionFactory}.
  */
-
+@Deprecated
 public class RDFConnectionLocal implements RDFConnection {
     private ThreadLocal<Boolean> transactionActive = ThreadLocal.withInitial(()->false);
 
