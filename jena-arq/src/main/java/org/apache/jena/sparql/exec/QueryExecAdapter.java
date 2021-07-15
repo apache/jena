@@ -32,15 +32,22 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context;
 
-public class QueryExecAdapter implements QueryExec{
+public class QueryExecAdapter implements QueryExec {
 
     private QueryExecution queryExecution;
 
-    QueryExecAdapter(QueryExecution queryExecution) {
+    protected QueryExecAdapter(QueryExecution queryExecution) {
         this.queryExecution = queryExecution;
     }
 
     protected QueryExecution get() { return queryExecution; }
+
+    public static QueryExec adapt(QueryExecution qExec) {
+        if ( qExec instanceof QueryExecutionAdapter) {
+            return ((QueryExecutionAdapter)qExec).get();
+        }
+        return new QueryExecAdapter(qExec);
+    }
 
     @Override
     public DatasetGraph getDataset() {

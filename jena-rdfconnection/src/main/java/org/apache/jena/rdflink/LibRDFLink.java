@@ -30,7 +30,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 
 /** package-wide utilities etc */
-public class LibRDFLink {
+class LibRDFLink {
     private static String dftName =  "default" ;
 
     /*package*/ static boolean isDefault(Node name) {
@@ -80,7 +80,7 @@ public class LibRDFLink {
         return NodeFactory.createURI(graphName);
     }
 
-    public static String formServiceURL(String destination, String srvEndpoint) {
+    /*package*/ static String formServiceURL(String destination, String srvEndpoint) {
         if ( srvEndpoint == null )
             return null;
         if ( srvEndpoint == RDFLinkRemoteBuilder.SameAsDestination )

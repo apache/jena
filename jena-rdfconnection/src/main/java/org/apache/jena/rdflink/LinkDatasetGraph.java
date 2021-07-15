@@ -135,8 +135,8 @@ public interface LinkDatasetGraph extends LinkDatasetGraphAccess, Transactional,
      */
     public void putDataset(DatasetGraph dataset);
 
-    //    /** Clear the dataset - remove all named graphs, clear the default graph. */
-//    public void clearDataset();
+    /** Clear the dataset - remove all named graphs, clear the default graph. */
+    public void clearDataset();
 
     /** Test whether this connection is closed or not */
     @Override

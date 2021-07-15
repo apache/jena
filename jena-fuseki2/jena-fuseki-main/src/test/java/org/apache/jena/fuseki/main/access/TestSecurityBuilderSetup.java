@@ -33,7 +33,7 @@ import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.rdfconnection.LibSec;
+import org.apache.jena.rdfconnection.LibSec_AHC;
 import org.apache.jena.riot.web.HttpCaptureResponse;
 import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.riot.web.HttpOp.CaptureInput;
@@ -150,14 +150,14 @@ public class TestSecurityBuilderSetup {
 
     @Test public void access_open_user1() {
         // OK.
-        LibSec.withAuth(serverURL+"open", authSetup1, (conn)->{
+        LibSec_AHC.withAuth(serverURL+"open", authSetup1, (conn)->{
             conn.queryAsk("ASK{}");
         });
     }
 
     @Test public void access_open_userX() {
         // OK.
-        LibSec.withAuth(serverURL+"open", authSetupX, (conn)->{
+        LibSec_AHC.withAuth(serverURL+"open", authSetupX, (conn)->{
             conn.queryAsk("ASK{}");
         });
     }
@@ -183,7 +183,7 @@ public class TestSecurityBuilderSetup {
     }
 
     @Test public void access_allow_nowhere() {
-        HttpClient hc = LibSec.httpClient(authSetup1);
+        HttpClient hc = LibSec_AHC.httpClient(authSetup1);
         HttpCaptureResponse<TypedInputStream> handler = new CaptureInput();
         try( TypedInputStream in = HttpOp.execHttpGet(serverURL+"nowhere", null, hc, null) ) {
             // null for 404.
@@ -195,7 +195,7 @@ public class TestSecurityBuilderSetup {
     }
 
     @Test public void access_allow_ds() {
-        HttpClient hc = LibSec.httpClient(authSetup1);
+        HttpClient hc = LibSec_AHC.httpClient(authSetup1);
         HttpCaptureResponse<TypedInputStream> handler = new CaptureInput();
         try( TypedInputStream in = HttpOp.execHttpGet(serverURL+"ds", null, hc, null) ) {
             assertNotNull(in);
@@ -205,7 +205,7 @@ public class TestSecurityBuilderSetup {
     // Service level : ctl.
     @Test public void access_service_ctl_user1() {
         // user1 -- allowed.
-        HttpClient hc = LibSec.httpClient(authSetup1);
+        HttpClient hc = LibSec_AHC.httpClient(authSetup1);
         try( TypedInputStream in = HttpOp.execHttpGet(serverURL+"ctl", null, hc, null) ) {
             assertNotNull(in);
         }
@@ -213,7 +213,7 @@ public class TestSecurityBuilderSetup {
 
     @Test public void access_service_ctl_user2() {
         // user2 -- can login, not allowed.
-        HttpClient hc = LibSec.httpClient(authSetup2);
+        HttpClient hc = LibSec_AHC.httpClient(authSetup2);
         try( TypedInputStream in = HttpOp.execHttpGet(serverURL+"ctl", null, hc, null) ) {
             fail("Didn't expect to succeed");
         } catch (HttpException ex) {
@@ -224,7 +224,7 @@ public class TestSecurityBuilderSetup {
 
     @Test public void access_service_ctl_userX() {
         // userX -- can't login, not allowed.
-        HttpClient hc = LibSec.httpClient(authSetupX);
+        HttpClient hc = LibSec_AHC.httpClient(authSetupX);
         try( TypedInputStream in = HttpOp.execHttpGet(serverURL+"ctl", null, hc, null) ) {
             fail("Didn't expect to succeed");
         } catch (HttpException ex) {

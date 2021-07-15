@@ -27,7 +27,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.atlas.RuntimeIOException;
@@ -52,6 +55,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.http.HttpParams;
+import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.util.Context;
@@ -93,14 +97,14 @@ public class QueryExecHTTP implements QueryExec {
     private TimeUnit readTimeoutUnit = TimeUnit.MILLISECONDS;
 
     // Content Types: these list the standard formats and also include */*.
-    private String selectAcceptheader    = WebContent.defaultSparqlResultsHeader;
-    private String askAcceptHeader       = WebContent.defaultSparqlAskHeader;
-    private String describeAcceptHeader  = WebContent.defaultGraphAcceptHeader;
-    private String constructAcceptHeader = WebContent.defaultGraphAcceptHeader;
-    private String datasetAcceptHeader   = WebContent.defaultDatasetAcceptHeader;
+    private final String selectAcceptheader    = WebContent.defaultSparqlResultsHeader;
+    private final String askAcceptHeader       = WebContent.defaultSparqlAskHeader;
+    private final String describeAcceptHeader  = WebContent.defaultGraphAcceptHeader;
+    private final String constructAcceptHeader = WebContent.defaultGraphAcceptHeader;
+    private final String datasetAcceptHeader   = WebContent.defaultDatasetAcceptHeader;
 
     // If this is non-null, it overrides the use of any Content-Type above.
-    private String acceptHeader         = null;
+    private String appProvidedAcceptHeader         = null;
 
     // Received content type
     private String httpResponseContentType = null;
@@ -115,7 +119,7 @@ public class QueryExecHTTP implements QueryExec {
     public QueryExecHTTP(String serviceURL, Query query, String queryString, int urlLimit,
                          HttpClient httpClient, Map<String, String> httpHeaders, Params params, Context context,
                          List<String> defaultGraphURIs, List<String> namedGraphURIs,
-                         QuerySendMode sendMode, String acceptHeader,
+                         QuerySendMode sendMode, String explicitAcceptHeader,
                          long timeout, TimeUnit timeoutUnit) {
         this.context = ( context == null ) ? ARQ.getContext().copy() : context.copy();
         this.service = serviceURL;
@@ -126,10 +130,10 @@ public class QueryExecHTTP implements QueryExec {
         this.defaultGraphURIs = defaultGraphURIs;
         this.namedGraphURIs = namedGraphURIs;
         this.sendMode = sendMode;
-        this.acceptHeader = acceptHeader;
+        this.appProvidedAcceptHeader = explicitAcceptHeader;
         // Important - handled as special case because the defaults vary by query type.
         if ( httpHeaders.containsKey(HttpNames.hAccept) ) {
-            this.acceptHeader = httpHeaders.get(HttpNames.hAccept);
+            this.appProvidedAcceptHeader = httpHeaders.get(HttpNames.hAccept);
             this.httpHeaders.remove(HttpNames.hAccept);
         }
         this.httpHeaders = httpHeaders;
@@ -154,10 +158,11 @@ public class QueryExecHTTP implements QueryExec {
     }
 
     private RowSet execRowSet() {
-        String thisAcceptHeader = dft(acceptHeader, selectAcceptheader);
+        // Use the explicitly given header or the default selectAcceptheader
+        String thisAcceptHeader = dft(appProvidedAcceptHeader, selectAcceptheader);
 
         HttpResponse<InputStream> response = query(thisAcceptHeader);
-        InputStream in = HttpLib.handleResponseInputStream(response);
+        InputStream in = HttpLib.getInputStream(response);
         // Don't assume the endpoint actually gives back the content type we asked for
         String actualContentType = response.headers().firstValue(HttpNames.hContentType).orElse(null);
 
@@ -196,9 +201,9 @@ public class QueryExecHTTP implements QueryExec {
     public boolean ask() {
         checkNotClosed();
         check(QueryType.ASK);
-        String thisAcceptHeader = dft(acceptHeader, askAcceptHeader);
+        String thisAcceptHeader = dft(appProvidedAcceptHeader, askAcceptHeader);
         HttpResponse<InputStream> response = query(thisAcceptHeader);
-        InputStream in = HttpLib.handleResponseInputStream(response);
+        InputStream in = HttpLib.getInputStream(response);
 
         String actualContentType = response.headers().firstValue(HttpNames.hContentType).orElse(null);
         httpResponseContentType = actualContentType;
@@ -222,7 +227,7 @@ public class QueryExecHTTP implements QueryExec {
         if ( lang == null )
             throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not supported for ASK queries");
         boolean result = ResultSetMgr.readBoolean(in, lang);
-        finish(response);
+        finish(in);
         return result;
     }
 
@@ -326,9 +331,9 @@ public class QueryExecHTTP implements QueryExec {
     // ifNoContentType - some wild guess at the content type.
     private Pair<InputStream, Lang> execRdfWorker(String contentType, String ifNoContentType) {
         checkNotClosed();
-        String thisAcceptHeader = dft(acceptHeader, contentType);
+        String thisAcceptHeader = dft(appProvidedAcceptHeader, contentType);
         HttpResponse<InputStream> response = query(thisAcceptHeader);
-        InputStream in = HttpLib.handleResponseInputStream(response);
+        InputStream in = HttpLib.getInputStream(response);
 
         // Don't assume the endpoint actually gives back the content type we asked for
         String actualContentType = response.headers().firstValue(HttpNames.hContentType).orElse(null);
@@ -352,10 +357,12 @@ public class QueryExecHTTP implements QueryExec {
     public JsonArray execJson() {
         checkNotClosed();
         check(QueryType.CONSTRUCT_JSON);
-        String thisAcceptHeader = dft(acceptHeader, WebContent.contentTypeJSON);
+        String thisAcceptHeader = dft(appProvidedAcceptHeader, WebContent.contentTypeJSON);
         HttpResponse<InputStream> response = query(thisAcceptHeader);
-        InputStream in = HttpLib.handleResponseInputStream(response);
-        return JSON.parseAny(in).getAsArray();
+        InputStream in = HttpLib.getInputStream(response);
+        try {
+            return JSON.parseAny(in).getAsArray();
+        } finally { finish(in); }
     }
 
     @Override
@@ -425,7 +432,12 @@ public class QueryExecHTTP implements QueryExec {
         return (duration < 0) ? duration : timeUnit.toMillis(duration);
     }
 
-    // Make a query.
+    /**
+     * Make a query over HTTP.
+     * The response is returned after status code processing so the caller can assume the
+     * query execution was successful and return 200.
+     * Use {@link HttpLib#getInputStream} to access the body.
+     */
     private HttpResponse<InputStream> query(String reqAcceptHeader) {
         if (closed)
             throw new ARQException("HTTP execution already closed");
@@ -447,24 +459,34 @@ public class QueryExecHTTP implements QueryExec {
         HttpLib.modifyByService(service, context, thisParams,  httpHeaders);
 
         QuerySendMode actualSendMode = actualSendMode();
-        HttpRequest.Builder builder;
+        HttpRequest.Builder requestBuilder;
         switch(actualSendMode) {
             case asGetAlways :
-                builder = executeQueryGet(thisParams, reqAcceptHeader);
+                requestBuilder = executeQueryGet(thisParams, reqAcceptHeader);
                 break;
             case asPostForm :
-                builder = executeQueryPostForm(thisParams, reqAcceptHeader);
+                requestBuilder = executeQueryPostForm(thisParams, reqAcceptHeader);
                 break;
             case asPostBody :
-                builder = executeQueryPostBody(thisParams, reqAcceptHeader);
+                requestBuilder = executeQueryPostBody(thisParams, reqAcceptHeader);
                 break;
             default :
                 // Should not happen!
                 throw new HttpException("Send mode not recognized for query request: "+sendMode);
         }
-        HttpRequest request = builder.build();
-        // Status code has not been processed on the return from execute*
+        HttpRequest request = requestBuilder.build();
         return executeQuery(request);
+    }
+
+    private HttpResponse<InputStream> executeQuery(HttpRequest request) {
+        logQuery(queryString, request);
+        try {
+            HttpResponse<InputStream> response = execute(httpClient, request);
+            HttpLib.handleHttpStatusCode(response);
+            return response;
+        } catch (HttpException httpEx) {
+            throw QueryExceptionHTTP.rewrap(httpEx);
+        }
     }
 
     private QuerySendMode actualSendMode() {
@@ -498,23 +520,17 @@ public class QueryExecHTTP implements QueryExec {
     }
 
     private HttpRequest.Builder executeQueryGet(Params thisParams, String acceptHeader) {
-        Objects.requireNonNull(service);
-        Objects.requireNonNull(thisParams);
-        Objects.requireNonNull(httpClient);
-
         thisParams.add(HttpParams.pQuery, queryString);
         String requestURL = requestURL(service, thisParams.httpString());
-
         HttpRequest.Builder builder = HttpLib.newBuilder(requestURL, httpHeaders, readTimeout, readTimeoutUnit);
         acceptHeader(builder, acceptHeader);
         return builder.GET();
     }
 
     private HttpRequest.Builder executeQueryPostForm(Params thisParams, String acceptHeader) {
-        String requestURL = service;
         thisParams.add(HttpParams.pQuery, queryString);
+        String requestURL = service;
         String formBody = thisParams.httpString();
-
         HttpRequest.Builder builder = HttpLib.newBuilder(requestURL, httpHeaders, readTimeout, readTimeoutUnit);
         acceptHeader(builder, acceptHeader);
         // Use an HTML form.
@@ -527,16 +543,10 @@ public class QueryExecHTTP implements QueryExec {
     private HttpRequest.Builder executeQueryPostBody(Params thisParams, String acceptHeader) {
         // Use thisParams (for default-graph-uri etc)
         String requestURL = requestURL(service, thisParams.httpString());
-
         HttpRequest.Builder builder = HttpLib.newBuilder(requestURL, httpHeaders, readTimeout, readTimeoutUnit);
         contentTypeHeader(builder, WebContent.contentTypeSPARQLQuery);
         acceptHeader(builder, acceptHeader);
         return builder.POST(BodyPublishers.ofString(queryString));
-    }
-
-    private HttpResponse<InputStream> executeQuery(HttpRequest request) {
-        logQuery(queryString, request);
-        return execute(httpClient, request);
     }
 
     private static void logQuery(String queryString, HttpRequest request) {}

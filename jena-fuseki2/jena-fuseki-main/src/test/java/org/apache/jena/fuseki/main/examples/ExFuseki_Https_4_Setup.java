@@ -100,8 +100,10 @@ public class ExFuseki_Https_4_Setup {
         // Allow self-signed
         HttpClient hc = trustLocalhostUnsigned().build();
 
+        System.err.println("PORT to java.net.http");
+
         RDFConnection connSingle = RDFConnectionFuseki.create()
-            .httpClient(hc)
+            //.httpClient(hc)
             .destination("https://localhost:3443/ds")
             .build();
 

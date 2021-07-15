@@ -18,28 +18,26 @@
 
 package org.apache.jena.fuseki;
 
-import java.io.IOException;
+import java.io.InputStream;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpResponse;
 import java.util.Calendar;
+import java.util.Optional;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContext;
 
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpOptions;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.lib.DateTimeUtils;
-import org.apache.jena.atlas.logging.FmtLog;
-import org.apache.jena.atlas.web.HttpException;
+import org.apache.jena.http.HttpEnv;
+import org.apache.jena.http.HttpLib;
 import org.apache.jena.query.ARQ;
-import org.apache.jena.rdfconnection.RDFConnectionRemote;
 import org.apache.jena.riot.system.stream.LocatorFTP;
 import org.apache.jena.riot.system.stream.LocatorHTTP;
 import org.apache.jena.riot.system.stream.StreamManager;
-import org.apache.jena.riot.web.HttpOp;
+import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.mgt.SystemInfo;
 import org.apache.jena.sparql.util.Context;
@@ -303,56 +301,23 @@ public class Fuseki {
      * the signature.
      */
     public static boolean isFuseki(String datasetURL) {
-        HttpOptions request = new HttpOptions(datasetURL);
-        HttpClient httpClient = HttpOp.getDefaultHttpClient();
-        if ( httpClient == null )
-            httpClient = HttpClients.createSystem();
-        return isFuseki(request, httpClient, null);
-    }
+        HttpRequest.Builder builder =
+                HttpRequest.newBuilder().uri(HttpLib.toRequestURI(datasetURL)).method(HttpNames.METHOD_HEAD, BodyPublishers.noBody());
+        HttpRequest request = builder.build();
+        HttpClient httpClient = HttpEnv.getDftHttpClient();
+        HttpResponse<InputStream> response = HttpLib.execute(httpClient, request);
+        HttpLib.handleResponseNoBody(response);
 
-    /**
-     * Test whether a {@link RDFConnectionRemote} connects to a Fuseki server. This
-     * operation can not guaranteed to detect a Fuseki server - for example, it may be
-     * behind a reverse proxy that masks the signature.
-     */
-    public static boolean isFuseki(RDFConnectionRemote connection) {
-        HttpOptions request = new HttpOptions(connection.getDestination());
-        HttpClient httpClient = connection.getHttpClient();
-        if ( httpClient == null )
-            httpClient = HttpClients.createSystem();
-        HttpContext httpContext = connection.getHttpContext();
-        return isFuseki(request, httpClient, httpContext);
-    }
-
-    private static boolean isFuseki(HttpOptions request, HttpClient httpClient, HttpContext httpContext) {
-        try {
-            HttpResponse response = httpClient.execute(request);
-            // Fuseki does not send "Server" in release mode.
-            // (best practice).
-            // We can do is try for the "Fuseki-Request-Id"
-            String reqId = safeGetHeader(response, FusekiRequestIdHeader);
-            if ( reqId != null )
-                return true;
-
-            // If returning "Server"
-            String serverIdent = safeGetHeader(response, "Server");
-            if ( serverIdent != null ) {
-                FmtLog.debug(ARQ.getHttpRequestLogger(), "Server: %s", serverIdent);
-                boolean isFuseki = serverIdent.startsWith("Apache Jena Fuseki");
-                if ( !isFuseki )
-                    isFuseki = serverIdent.toLowerCase().contains("fuseki");
-                return isFuseki;
-            }
+        Optional<String> value1 = response.headers().firstValue(FusekiRequestIdHeader);
+        if ( value1.isPresent() )
+            return true;
+        Optional<String> value2 = response.headers().firstValue("Server");
+        if ( value2.isEmpty() )
             return false;
-        } catch (IOException ex) {
-            throw new HttpException("Failed to check for a Fuseki server", ex);
-        }
-    }
-
-    static String safeGetHeader(HttpResponse response, String header) {
-        Header h = response.getFirstHeader(header);
-        if ( h == null )
-            return null;
-        return h.getValue();
+        String headerValue = value2.get();
+        boolean isFuseki = headerValue.startsWith("Apache Jena Fuseki");
+        if ( !isFuseki )
+            isFuseki = headerValue.toLowerCase().contains("fuseki");
+        return isFuseki;
     }
 }

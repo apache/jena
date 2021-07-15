@@ -38,7 +38,7 @@ import org.junit.Test;
 
 /* Tests that blanknodes work over RDFConnectionFuseki
  * This consists of testing each of the necessary components,
- * and then a test of a connection itself.  
+ * and then a test of a connection itself.
  */
 
 public class TestRDFConnectionFusekiBinary {
@@ -50,17 +50,17 @@ public class TestRDFConnectionFusekiBinary {
         // Goes in as URI! (pre this PR)
         Model model = ModelFactory.createDefaultModel();
         model.getGraph().add(triple);
-        
+
         int PORT = WebLib.choosePort();
         FusekiServer server = createFusekiServer(PORT).build().start();
         try {
             String dsURL = "http://localhost:"+PORT+"/ds" ;
-            assertTrue(Fuseki.isFuseki(dsURL)); 
+            assertTrue(Fuseki.isFuseki(dsURL));
 
             RDFConnectionRemoteBuilder builder = RDFConnectionFuseki.create().destination(dsURL);
 
             try (RDFConnectionFuseki conn = (RDFConnectionFuseki)builder.build()) {
-                assertTrue(Fuseki.isFuseki(conn));
+                assertTrue(Fuseki.isFuseki(dsURL));
                 // GSP
                 conn.put(model);
                 checkModel(conn, "b3456");
@@ -95,7 +95,7 @@ public class TestRDFConnectionFusekiBinary {
                 conn.update("INSERT DATA { <x:s> <x:p> <_:6789> }" );
                 checkModel(conn, "6789");
             }
-        } finally { server.stop(); } 
+        } finally { server.stop(); }
     }
 
     private void checkModel(RDFConnectionFuseki conn, String label) {
@@ -110,15 +110,15 @@ public class TestRDFConnectionFusekiBinary {
         assertEquals(label, n.getBlankNodeLabel());
     }
 
-    
+
     private static FusekiServer.Builder createFusekiServer(int PORT) {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
-        return  
+        return
             FusekiServer.create().loopback(true)
                 .port(PORT)
                 //.setStaticFileBase("/home/afs/ASF/jena-fuseki-cmds/sparqler")
                 .add("/ds", dsg)
                 //.setVerbose(true)
                 ;
-    }               
+    }
 }

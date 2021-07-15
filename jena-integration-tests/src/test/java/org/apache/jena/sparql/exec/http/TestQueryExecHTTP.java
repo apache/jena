@@ -121,6 +121,7 @@ public class TestQueryExecHTTP {
 
     @Test
     public void query_select_accept_1() {
+        // Explicitly set the Accept header
         try ( QueryExecHTTP qExec = QueryExecHTTP.newBuilder()
                     .service(dsURL)
                     .queryString("SELECT * { ?s ?p ?o }")
@@ -134,7 +135,7 @@ public class TestQueryExecHTTP {
         }
     }
 
-    // Not supported because of the interations of "chunked" (for streaming) and "gzip".
+    // Not supported because of the interactions of "chunked" (for streaming) and "gzip".
 //    @Test
 //    public void query_select_compress_1() {
 //        try ( QueryExecHTTP qExec = QueryExecHTTP.newBuilder()

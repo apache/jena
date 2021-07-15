@@ -182,10 +182,9 @@ public class AsyncHttpRDF {
      * @see HttpLib#finish(HttpResponse)
      */
     private static CompletableFuture<HttpResponse<InputStream>> asyncGetToInput(HttpClient httpClient, String url, Consumer<HttpRequest.Builder> modifier) {
-        // HttpLib.asyncExecute(client, requestData);
         Objects.requireNonNull(httpClient);
         Objects.requireNonNull(url);
-        HttpRequest requestData = HttpLib.newGetRequest(httpClient, url, modifier);// HttpLib?
+        HttpRequest requestData = HttpLib.newGetRequest(url, modifier);
         return HttpLib.asyncExecute(httpClient, requestData);
     }
 }

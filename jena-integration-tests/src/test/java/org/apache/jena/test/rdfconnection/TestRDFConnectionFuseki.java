@@ -27,4 +27,3 @@ public class TestRDFConnectionFuseki extends TestRDFConnectionRemote {
         return RDFConnectionFactory.connectFuseki(server.datasetURL("/ds"));
     }
 }
-

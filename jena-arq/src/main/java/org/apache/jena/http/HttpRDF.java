@@ -139,7 +139,7 @@ public class HttpRDF {
             throw ex;
         } finally {
             // Even if parsing finished, it is possible we only read part of the input stream (e.g. RDF/XML).
-            finish(response);
+            finish(in);
         }
     }
 
@@ -150,7 +150,7 @@ public class HttpRDF {
     private static HttpResponse<InputStream> execGetToInput(HttpClient client, String url, Consumer<HttpRequest.Builder> modifier) {
         Objects.requireNonNull(client);
         Objects.requireNonNull(url);
-        HttpRequest requestData = HttpLib.newGetRequest(client, url, modifier);
+        HttpRequest requestData = HttpLib.newGetRequest(url, modifier);
         HttpResponse<InputStream> response = HttpLib.execute(client, requestData);
         handleHttpStatusCode(response);
         return response;
@@ -221,7 +221,7 @@ public class HttpRDF {
 
     public static void httpDeleteGraph(HttpClient httpClient, String url) {
         URI uri = toRequestURI(url);
-        HttpRequest requestData = HttpRequest.newBuilder()
+        HttpRequest requestData = HttpLib.newBuilderFor(url)
             .DELETE()
             .uri(uri)
             .build();

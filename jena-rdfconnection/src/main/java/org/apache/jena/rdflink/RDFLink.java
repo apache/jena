@@ -463,6 +463,7 @@ public interface RDFLink extends
     public void putDataset(DatasetGraph dataset);
 
     /** Clear the dataset - remove all named graphs, clear the default graph. */
+    @Override
     public void clearDataset();
 
     /** Test whether this connection is closed or not */

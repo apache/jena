@@ -18,6 +18,9 @@
 
 package org.apache.jena.rdfconnection;
 
+import org.apache.jena.rdflink.RDFConnectionAdapter;
+import org.apache.jena.rdflink.RDFLink;
+
 /** package-wide utilities etc */
 /*package*/ class LibRDFConn {
     private static String dftName =  "default" ;
@@ -25,6 +28,9 @@ package org.apache.jena.rdfconnection;
     /*package*/ static boolean isDefault(String name) {
         return name == null || name.equals(dftName) ;
     }
+
+    /*package*/ static RDFConnection adapt(RDFLink link) { return RDFConnectionAdapter.adapt(link); }
+
 
     private static String queryStringForGraph(String ch, String graphName) {
         return
