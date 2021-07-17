@@ -34,10 +34,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.net.http.HttpResponse.BodySubscribers;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -49,6 +46,7 @@ import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.web.HttpException;
+import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.http.auth.AuthLib;
 import org.apache.jena.http.sys.HttpRequestModifier;
 import org.apache.jena.http.sys.RegistryRequestModifier;
@@ -170,10 +168,21 @@ public class HttpLib {
      * @param httpResponse
      * @return InputStream
      */
-    public
-    /*package*/ static InputStream handleResponseInputStream(HttpResponse<InputStream> httpResponse) {
+    public static InputStream handleResponseInputStream(HttpResponse<InputStream> httpResponse) {
         handleHttpStatusCode(httpResponse);
         return getInputStream(httpResponse);
+    }
+
+    /**
+     * Handle the HTTP response and return the TypedInputStream that includes the
+     * {@code Content-Type} if a 200.
+     * @param httpResponse
+     * @return TypedInputStream
+     */
+    public static TypedInputStream handleResponseTypedInputStream(HttpResponse<InputStream> httpResponse) {
+        InputStream input = handleResponseInputStream(httpResponse);
+        String ct = HttpLib.responseHeader(httpResponse, HttpNames.hContentType);
+        return new TypedInputStream(input, ct);
     }
 
     /**
@@ -273,7 +282,7 @@ public class HttpLib {
         try {
             URI uri = new URI(uriStr);
             if ( ! uri.isAbsolute() )
-                throw new HttpException("Not an absolute URL: "+uriStr);
+                throw new HttpException("Not an absolute URL: <"+uriStr+">");
             return uri;
         } catch (URISyntaxException ex) {
             int idx = ex.getIndex();
@@ -364,8 +373,10 @@ public class HttpLib {
     }
 
     /** Query string is assumed to already be encoded. */
-    public
-    /*package*/ static String requestURL(String url, String queryString) {
+    public static String requestURL(String url, String queryString) {
+        if ( queryString == null || queryString.isEmpty() )
+            // Empty string. Don't add "?"
+            return url;
         String sep =  url.contains("?") ? "&" : "?";
         String requestURL = url+sep+queryString;
         return requestURL;
@@ -521,16 +532,28 @@ public class HttpLib {
 
     /** Push data. POST, PUT, PATCH request with no response body data. */
     public static void httpPushData(HttpClient httpClient, Push style, String url, Consumer<HttpRequest.Builder> modifier, BodyPublisher body) {
+        HttpResponse<InputStream> response = httpPushWithResponse(httpClient, style, url, modifier, body);
+        handleResponseNoBody(response);
+    }
+
+//    /** Push data. POST, PUT, PATCH request, then expect content in the response body. */
+//    public static TypedInputStream httpPushDataRtn(HttpClient httpClient, Push style, String url, Consumer<HttpRequest.Builder> modifier, BodyPublisher body) {
+//        HttpResponse<InputStream> response = httpPushWithResponse(httpClient, style, url, modifier, body);
+//        return handleResponseTypedInputStream(response);
+//    }
+
+    // Worker
+    /*package*/ static HttpResponse<InputStream> httpPushWithResponse(HttpClient httpClient, Push style, String url, Consumer<HttpRequest.Builder> modifier, BodyPublisher body) {
         URI uri = toRequestURI(url);
         HttpRequest.Builder builder = newBuilderFor(url);
         builder.uri(uri);
         builder.method(style.method(), body);
         if ( modifier != null )
             modifier.accept(builder);
-
         HttpResponse<InputStream> response = execute(httpClient, builder.build());
-        handleResponseNoBody(response);
+        return response;
     }
+
 
     /** Request */
     private static void logRequest(HttpRequest httpRequest) {
@@ -611,5 +634,12 @@ public class HttpLib {
      */
     static Consumer<HttpRequest.Builder> header(String headerName, String headerValue) {
         return x->x.header(headerName, headerValue);
+    }
+
+    /** Return the first header of the given name, or null if none */
+    public static String responseHeader(HttpResponse<?> response, String headerName) {
+        Objects.requireNonNull(response);
+        Objects.requireNonNull(headerName);
+        return response.headers().firstValue(headerName).orElse(null);
     }
 }

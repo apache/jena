@@ -33,6 +33,7 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.util.Objects;
 
+import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.exec.http.GSP;
@@ -83,27 +84,27 @@ public class HttpOp2 {
     }
 
     /** Perform an HTTP GET to a URL, with "Accept" header "*{@literal /}*". The application MUST close the InputStream. */
-    public static InputStream httpGet(String url) {
+    public static TypedInputStream httpGet(String url) {
         return httpGet(HttpEnv.getDftHttpClient(), url);
     }
 
     /** Perform an HTTP GET to a URL. The application MUST close the InputStream. */
-    public static InputStream httpGet(String url, String acceptHeader) {
+    public static TypedInputStream httpGet(String url, String acceptHeader) {
         return httpGet(HttpEnv.getDftHttpClient(), url, acceptHeader);
     }
 
     /** Perform an HTTP GET to a URL. The application MUST close the InputStream. */
-    public static InputStream httpGet(HttpClient httpClient, String url) {
+    public static TypedInputStream httpGet(HttpClient httpClient, String url) {
         return httpGet(httpClient, url, null);
     }
 
     /** Perform an HTTP GET to a URL. The application MUST close the InputStream. */
-    public static InputStream httpGet(HttpClient httpClient, String url, String acceptHeader) {
+    public static TypedInputStream httpGet(HttpClient httpClient, String url, String acceptHeader) {
         return execGet(httpClient, url, acceptHeader);
     }
 
     /** MUST read the whole InputStream or close it. */
-    private static InputStream execGet(HttpClient httpClient, String url, String acceptHeader) {
+    private static TypedInputStream execGet(HttpClient httpClient, String url, String acceptHeader) {
         if ( acceptHeader == null )
             acceptHeader = "*/*";
         HttpRequest request = newGetRequest(url, setAcceptHeader(acceptHeader));
@@ -111,9 +112,9 @@ public class HttpOp2 {
     }
 
     /** MUST read the whole InputStream or close it. */
-    private static InputStream execGet(HttpClient httpClient, HttpRequest request) {
+    private static TypedInputStream execGet(HttpClient httpClient, HttpRequest request) {
         HttpResponse<InputStream> response = execute(httpClient, request);
-        return handleResponseInputStream(response);
+        return handleResponseTypedInputStream(response);
     }
 
     /** POST
@@ -222,7 +223,7 @@ public class HttpOp2 {
             HttpRequest.newBuilder().uri(toRequestURI(url)).method(HttpNames.METHOD_OPTIONS, BodyPublishers.noBody());
         HttpRequest request = builder.build();
         HttpResponse<InputStream> response = execute(httpClient, request);
-        String allowValue = response.headers().firstValue(HttpNames.hAllow).orElse(null);
+        String allowValue = HttpLib.responseHeader(response, HttpNames.hAllow);
         handleResponseNoBody(response);
         return allowValue;
     }
@@ -246,7 +247,7 @@ public class HttpOp2 {
      * streams.
      */
     private static <T> String determineContentType(HttpResponse<T> response) {
-        String ctStr = response.headers().firstValue(HttpNames.hContentType).orElse(null);
+        String ctStr = HttpLib.responseHeader(response, HttpNames.hContentType);
         if ( ctStr != null ) {
             int i = ctStr.indexOf(';');
             if ( i >= 0 )
