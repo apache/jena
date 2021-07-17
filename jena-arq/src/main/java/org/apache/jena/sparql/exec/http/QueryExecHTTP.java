@@ -164,7 +164,7 @@ public class QueryExecHTTP implements QueryExec {
         HttpResponse<InputStream> response = query(thisAcceptHeader);
         InputStream in = HttpLib.getInputStream(response);
         // Don't assume the endpoint actually gives back the content type we asked for
-        String actualContentType = response.headers().firstValue(HttpNames.hContentType).orElse(null);
+        String actualContentType = responseHeader(response, HttpNames.hContentType);
 
         // Remember the response.
         httpResponseContentType = actualContentType;
@@ -205,7 +205,7 @@ public class QueryExecHTTP implements QueryExec {
         HttpResponse<InputStream> response = query(thisAcceptHeader);
         InputStream in = HttpLib.getInputStream(response);
 
-        String actualContentType = response.headers().firstValue(HttpNames.hContentType).orElse(null);
+        String actualContentType = responseHeader(response, HttpNames.hContentType);
         httpResponseContentType = actualContentType;
         actualContentType = removeCharset(actualContentType);
 
@@ -336,7 +336,7 @@ public class QueryExecHTTP implements QueryExec {
         InputStream in = HttpLib.getInputStream(response);
 
         // Don't assume the endpoint actually gives back the content type we asked for
-        String actualContentType = response.headers().firstValue(HttpNames.hContentType).orElse(null);
+        String actualContentType = responseHeader(response, HttpNames.hContentType);
         httpResponseContentType = actualContentType;
         actualContentType = removeCharset(actualContentType);
 

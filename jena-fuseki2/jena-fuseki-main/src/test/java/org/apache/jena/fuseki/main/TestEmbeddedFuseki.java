@@ -21,14 +21,10 @@ package org.apache.jena.fuseki.main;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.function.Consumer;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.entity.ContentProducer;
-import org.apache.http.entity.EntityTemplate;
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.logging.LogCtl;
-import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.atlas.web.WebLib;
@@ -37,18 +33,16 @@ import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.query.ResultSetFormatter;
-import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.http.HttpEnv;
+import org.apache.jena.http.HttpRDF;
 import org.apache.jena.riot.RDFFormat;
-import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.sparql.graph.GraphFactory;
+import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.exec.http.QueryExecHTTP;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
 import org.apache.jena.update.UpdateExecutionFactory;
@@ -72,7 +66,7 @@ public class TestEmbeddedFuseki {
         assertTrue(server.getDataAccessPointRegistry().isRegistered("/ds"));
         server.start();
         query("http://localhost:"+port+"/ds/query", "SELECT * { ?s ?p ?o}", qExec-> {
-            ResultSet rs = qExec.execSelect();
+            RowSet rs = qExec.select();
             assertFalse(rs.hasNext());
         });
         server.stop();
@@ -108,8 +102,8 @@ public class TestEmbeddedFuseki {
                 dsg.add(q);
             });
             query("http://localhost:"+port+"/ds1/query", "SELECT * { ?s ?p ?o}", qExec->{
-                ResultSet rs = qExec.execSelect();
-                int x = ResultSetFormatter.consume(rs);
+                RowSet rs = qExec.select();
+                long x = Iter.count(rs);
                 assertEquals(1, x);
             });
         } finally { server.stop(); }
@@ -139,19 +133,18 @@ public class TestEmbeddedFuseki {
             // Put data in.
             String data = "(graph (:s :p 1) (:s :p 2) (:s :p 3))";
             Graph g = SSE.parseGraph(data);
-            HttpEntity e = graphToHttpEntity(g);
-            HttpOp.execHttpPut("http://localhost:"+port+"/data", e);
 
-            // Get data out.
-            try ( TypedInputStream in = HttpOp.execHttpGet("http://localhost:"+port+"/data") ) {
-                Graph g2 = GraphFactory.createDefaultGraph();
-                RDFDataMgr.read(g2, in, RDFLanguages.contentTypeToLang(in.getContentType()));
-                assertTrue(g.isIsomorphicWith(g2));
-            }
+            // POST (This is posint to the GSP_RW service with no name -> quads operation.
+            String destination = "http://localhost:"+port+"/data";
+            HttpRDF.httpPutGraph(HttpEnv.getDftHttpClient(), destination, g, RDFFormat.NT);
+            // GET
+            Graph g2 = HttpRDF.httpGetGraph(destination);
+            assertTrue(g.isIsomorphicWith(g2));
+
             // Query.
             query("http://localhost:"+port+"/data", "SELECT * { ?s ?p ?o}", qExec->{
-                ResultSet rs = qExec.execSelect();
-                int x = ResultSetFormatter.consume(rs);
+                RowSet rs = qExec.select();
+                long x = Iter.count(rs);
                 assertEquals(3, x);
             });
             // Update
@@ -159,9 +152,8 @@ public class TestEmbeddedFuseki {
             UpdateExecutionFactory.createRemote(req, "http://localhost:"+port+"/data").execute();
             // Query again.
             query("http://localhost:"+port+"/data", "SELECT * { ?s ?p ?o}", qExec-> {
-                ResultSet rs = qExec.execSelect();
-                int x = ResultSetFormatter.consume(rs);
-                assertEquals(0, x);
+                RowSet rs = qExec.select();
+                assertFalse(rs.hasNext());
             });
         } finally { server.stop(); }
     }
@@ -402,27 +394,12 @@ public class TestEmbeddedFuseki {
         } finally { LogCtl.setLevel(logger, level); }
     }
 
-    /** Create an HttpEntity for the graph */
-    protected static HttpEntity graphToHttpEntity(final Graph graph) {
-        final RDFFormat syntax = RDFFormat.TURTLE_BLOCKS;
-        ContentProducer producer = new ContentProducer() {
-            @Override
-            public void writeTo(OutputStream out) {
-                RDFDataMgr.write(out, graph, syntax);
-            }
-        };
-        EntityTemplate entity = new EntityTemplate(producer);
-        ContentType ct = syntax.getLang().getContentType();
-        entity.setContentType(ct.getContentTypeStr());
-        return entity;
-    }
-
     /*package*/ static DatasetGraph dataset() {
         return DatasetGraphFactory.createTxnMem();
     }
 
-    /*package*/ static void query(String URL, String query, Consumer<QueryExecution> body) {
-        try (QueryExecution qExec = QueryExecutionFactory.sparqlService(URL, query) ) {
+    /*package*/ static void query(String URL, String query, Consumer<QueryExec> body) {
+        try (QueryExec qExec = QueryExecHTTP.newBuilder().service(URL).queryString(query).build() ) {
             body.accept(qExec);
         }
     }

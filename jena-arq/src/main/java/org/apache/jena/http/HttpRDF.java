@@ -40,8 +40,8 @@ import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.riot.web.HttpNames;
-import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.graph.GraphFactory;
 
 /**
@@ -170,6 +170,21 @@ public class HttpRDF {
         pushBody(httpClient, url, Push.POST, bodyPublisher, format, httpHeaders);
     }
 
+    /** Post a graph and expect an RDF graph back as the result. */
+    public static Graph httpPostGraphRtn(String url, Graph graph) {
+        return httpPostGraphRtn(HttpEnv.getDftHttpClient(), url, graph,  HttpEnv.dftTriplesFormat, null);
+    }
+
+    /** Post a graph and expect an RDF graph back as the result. */
+    public static Graph httpPostGraphRtn(HttpClient httpClient, String url, Graph graph, RDFFormat format, Map<String, String> httpHeaders) {
+        BodyPublisher bodyPublisher = graphToHttpBody(graph, HttpEnv.dftTriplesFormat);
+        HttpResponse<InputStream> httpResponse = pushWithResponse(httpClient, url, Push.POST, bodyPublisher, format, httpHeaders);
+        Graph graphResponse = GraphFactory.createDefaultGraph();
+        StreamRDF dest = StreamRDFLib.graph(graphResponse);
+        httpResponseToStreamRDF(url, httpResponse, dest);
+        return graphResponse;
+    }
+
     public static void httpPostDataset(HttpClient httpClient, String url, DatasetGraph dataset, RDFFormat format) {
         httpPostDataset(httpClient, url, dataset, format, null);
     }
@@ -215,6 +230,16 @@ public class HttpRDF {
         HttpLib.httpPushData(httpClient, style, url, HttpLib.setHeaders(httpHeaders), bodyPublisher);
     }
 
+    private static HttpResponse<InputStream> pushWithResponse(HttpClient httpClient, String url, Push style, BodyPublisher bodyPublisher,
+                                                              RDFFormat format, Map<String, String> httpHeaders) {
+        String contentType = format.getLang().getHeaderString();
+        if ( httpHeaders == null )
+            httpHeaders = Collections.singletonMap(HttpNames.hContentType, contentType);
+        else
+            httpHeaders.put(HttpNames.hContentType, contentType);
+        return HttpLib.httpPushWithResponse(httpClient, style, url, HttpLib.setHeaders(httpHeaders), bodyPublisher);
+    }
+
     public static void httpDeleteGraph(String url) {
         httpDeleteGraph(HttpEnv.getDftHttpClient(), url);
     }
@@ -231,7 +256,7 @@ public class HttpRDF {
 
     /** RDF {@link Lang}. */
     /*package*/ static <T> Lang determineSyntax(HttpResponse<T> response, Lang dftSyntax) {
-        String ctStr = response.headers().firstValue(HttpNames.hContentType).orElse(null);
+        String ctStr = responseHeader(response, HttpNames.hContentType);
         if ( ctStr != null ) {
             int i = ctStr.indexOf(';');
             if ( i >= 0 )

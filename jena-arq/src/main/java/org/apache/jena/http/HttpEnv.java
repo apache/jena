@@ -56,16 +56,19 @@ public class HttpEnv {
     private static HttpClient httpClient = buildDftHttpClient();
 
     private static HttpClient buildDftHttpClient() {
-        return HttpClient.newBuilder()
-            // By default, the client has polling and connection-caching.
-            // Version HTTP/2 is the default, negotiating up from HTTP 1.1.
-            .connectTimeout(Duration.ofSeconds(10))
-            .followRedirects(Redirect.NORMAL)
-            //.sslContext
-            //.sslParameters
-            //.proxy
-            //.authenticator
-            .build();
+        return httpClientBuilder().build();
     }
 
+    public static HttpClient.Builder httpClientBuilder() {
+        return HttpClient.newBuilder()
+                // By default, the client has polling and connection-caching.
+                // Version HTTP/2 is the default, negotiating up from HTTP 1.1.
+                .connectTimeout(Duration.ofSeconds(10))
+                .followRedirects(Redirect.NORMAL)
+                //.sslContext
+                //.sslParameters
+                //.proxy
+                //.authenticator
+                ;
+    }
 }

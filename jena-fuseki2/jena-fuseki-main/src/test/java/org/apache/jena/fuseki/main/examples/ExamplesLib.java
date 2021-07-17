@@ -37,7 +37,7 @@ public class ExamplesLib {
     /** HttpClient with user/password and trusting the test certificate */
     static HttpClient httpClient(String user, String password, SSLContext sslContext) {
         Authenticator authenticator = AuthLib.authenticator(user, password);
-        return  HttpClient.newBuilder()
+        return HttpClient.newBuilder()
                 .authenticator(authenticator)
                 .connectTimeout(Duration.ofSeconds(10))
                 .sslContext(sslContext)

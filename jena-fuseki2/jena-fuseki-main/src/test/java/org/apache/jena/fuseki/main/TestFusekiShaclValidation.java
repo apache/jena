@@ -21,16 +21,12 @@ package org.apache.jena.fuseki.main;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.apache.http.entity.EntityTemplate;
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.http.HttpRDF;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
-import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.web.HttpCaptureResponse;
-import org.apache.jena.riot.web.HttpOp;
-import org.apache.jena.riot.web.HttpResponseLib;
 import org.apache.jena.shacl.ValidationReport;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -41,8 +37,8 @@ public class TestFusekiShaclValidation {
     private static FusekiServer server = null;
     private static String serverURL = null;
     private static final String DIR = "testing/ShaclValidation/";
-    
-    @BeforeClass 
+
+    @BeforeClass
     public static void beforeClass() {
         int port = WebLib.choosePort();
 
@@ -53,13 +49,13 @@ public class TestFusekiShaclValidation {
         server.start();
         serverURL = "http://localhost:"+port;
     }
-    
+
     @AfterClass
     public static void afterClass() {
         if ( server != null )
             server.stop();
     }
-    
+
     @Test
     public void shacl_empty_shapes() {
         try ( RDFConnection conn = RDFConnectionFactory.connect(serverURL+"/ds")) {
@@ -70,7 +66,7 @@ public class TestFusekiShaclValidation {
             conn.update("CLEAR ALL");
         }
     }
-    
+
     @Test
     public void shacl_default_graph() {
         try ( RDFConnection conn = RDFConnectionFactory.connect(serverURL+"/ds")) {
@@ -151,7 +147,7 @@ public class TestFusekiShaclValidation {
             conn.update("CLEAR ALL");
         }
     }
-    
+
     @Test
     public void shacl_targetNode_3() {
         try ( RDFConnection conn = RDFConnectionFactory.connect(serverURL+"/ds")) {
@@ -162,15 +158,10 @@ public class TestFusekiShaclValidation {
             conn.update("CLEAR ALL");
         }
     }
-    
+
     private static ValidationReport validateReport(String url, String shapesFile) {
         Graph shapesGraph = RDFDataMgr.loadGraph(shapesFile);
-        EntityTemplate entity = new EntityTemplate((out)->RDFDataMgr.write(out, shapesGraph, Lang.TTL));
-        String ct = Lang.TTL.getContentType().getContentTypeStr();
-        entity.setContentType(ct);
-
-        HttpCaptureResponse<Graph> graphResponse = HttpResponseLib.graphHandler();
-        HttpOp.execHttpPost(url, entity, "*/*", graphResponse);
-        return ValidationReport.fromGraph(graphResponse.get());
+        Graph responseGraph = HttpRDF.httpPostGraphRtn(url, shapesGraph);
+        return ValidationReport.fromGraph(responseGraph);
     }
 }

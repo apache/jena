@@ -69,55 +69,19 @@ import org.apache.jena.sparql.graph.GraphFactory;
  * </pre>
  */
 public class GSP {
-    /**
-     * Return the URL for a graph named using the
-     * <a href="https://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL 1.1 Graph Store Protocol</a>.
-     * The {@code graphStore} is the URL of the network location of the graph store.
-     * The {@code graphName} be a valid, absolute URI (i.e. includes the scheme)
-     * or the word "default", or null, for the default graph of the store
-     * or the word "union" for the union graph of the store (this is a Jena extension).
-     * @param graphStore
-     * @param graphName
-     * @return String
-     */
-    public static String urlForGraph(String graphStore, String graphName) {
-        // If query string already has a "?...", assume we are appending with "&".
-        String ch = "?";
-        if ( graphStore.contains("?") )
-            // Already has a query string, append with "&"
-            ch = "&";
-        return graphStore + ch + queryStringForGraph(graphName) ;
-    }
-
-    private static String dftName =  "default" ;
-
-//    /*package*/ static boolean isDefault(String name) {
-//        return name == null || name.equals(dftName) ;
-//    }
-
-    private static String queryStringForGraph(String graphName) {
-        if ( graphName== null )
-            return HttpNames.paramGraphDefault;
-        switch (graphName) {
-            case HttpNames.graphTargetDefault:
-                return HttpNames.paramGraphDefault;
-            case HttpNames.graphTargetUnion:
-                return HttpNames.paramGraph+"=union";
-            default:
-                return HttpNames.paramGraph+"="+HttpLib.urlEncodeQueryString(graphName);
-        }
-    }
-
     private String              serviceEndpoint = null;
     // Need to keep this separately from contentType because it affects the choice of writer.
     private RDFFormat           rdfFormat       = null;
     private HttpClient          httpClient      = null;
     private Map<String, String> httpHeaders     = new HashMap<>();
 
-    // One, and only one of these, must be set at the point the terminating operation is called.
-    private boolean             datasetGraph    = false;
+    // One, and only one of these three, must be set at the point the terminating operation is called.
+    // 1 - Graph operation, GSP naming, default graph
     private boolean             defaultGraph    = false;
+    // 2 - Graph operation, GSP naming, graph name.
     private String              graphName       = null;
+    // 3 - Dataset operation without ?default or ?graph=
+    private boolean             datasetGraph    = false;
 
     /** Create a request to the remote service (without GSP naming).
      *  Call {@link #defaultGraph()} or {@link #graphName(String)} to select the target graph.
@@ -177,6 +141,7 @@ public class GSP {
     /** Send request for a named graph (used in {@code ?graph=}) */
     public GSP graphName(Node graphName) {
         Objects.requireNonNull(graphName);
+        clearOperation();
         if ( ! graphName.isURI() && ! graphName.isBlank() )
             throw exception("Not an acceptable graph name: "+this.graphName);
         Node gn = RiotLib.blankNodeToIri(graphName);
@@ -188,18 +153,22 @@ public class GSP {
 
     /** Send request for the default graph (that is, {@code ?default}) */
     public GSP defaultGraph() {
-        this.graphName = null;
+        clearOperation();
         this.defaultGraph = true;
-        this.datasetGraph = false;
         return this;
     }
 
-    /** Send request for the dataset. */
+    /** Send request for the dataset. This is "no GSP naming". */
     public GSP dataset() {
-        this.graphName = null;
-        this.defaultGraph = false;
+        clearOperation();
         this.datasetGraph = true;
         return this;
+    }
+
+    private void clearOperation() {
+        this.defaultGraph = false;
+        this.datasetGraph = false;
+        this.graphName = null;
     }
 
     /** Set the accept header on GET requests. Optional; if not set, a system default is used. */
@@ -301,12 +270,14 @@ public class GSP {
     public Graph GET() {
         validateGraphOperation();
         ensureAcceptHeader(WebContent.defaultGraphAcceptHeader);
-        String url = HttpLib.requestURL(serviceEndpoint, queryStringForGraph(graphName));
+        String url = graphRequestURL();
         Graph graph = GraphFactory.createDefaultGraph();
         HttpClient hc = requestHttpClient(serviceEndpoint, url);
         HttpRDF.httpGetToStream(hc, url, httpHeaders, StreamRDFLib.graph(graph));
         return graph;
     }
+
+
 
 //    /**
 //     * Get a graph.
@@ -326,7 +297,7 @@ public class GSP {
      */
     public void POST(String file) {
         validateGraphOperation();
-        String url = HttpLib.requestURL(serviceEndpoint, queryStringForGraph(graphName));
+        String url = graphRequestURL();
         String fileExtContentType = contentTypeFromFilename(file);
         HttpClient hc = requestHttpClient(serviceEndpoint, url);
         uploadTriples(hc, url, file, fileExtContentType, httpHeaders, Push.POST);
@@ -351,7 +322,7 @@ public class GSP {
     public void POST(Graph graph) {
         validateGraphOperation();
         RDFFormat requestFmt = rdfFormat(HttpEnv.dftTriplesFormat);
-        String url = HttpLib.requestURL(serviceEndpoint, queryStringForGraph(graphName));
+        String url = graphRequestURL();
         HttpClient hc = requestHttpClient(serviceEndpoint, url);
         HttpRDF.httpPostGraph(hc, url, graph, requestFmt, httpHeaders);
     }
@@ -376,7 +347,7 @@ public class GSP {
      */
     public void PUT(String file) {
         validateGraphOperation();
-        String url = HttpLib.requestURL(serviceEndpoint, queryStringForGraph(graphName));
+        String url = graphRequestURL();
         String fileExtContentType = contentTypeFromFilename(file);
         HttpClient hc = requestHttpClient(serviceEndpoint, url);
         uploadTriples(hc, url, file, fileExtContentType, httpHeaders, Push.PUT);
@@ -403,7 +374,7 @@ public class GSP {
     public void PUT(Graph graph) {
         validateGraphOperation();
         RDFFormat requestFmt = rdfFormat(HttpEnv.dftTriplesFormat);
-        String url = HttpLib.requestURL(serviceEndpoint, queryStringForGraph(graphName));
+        String url = graphRequestURL();
         HttpClient hc = requestHttpClient(serviceEndpoint, url);
         HttpRDF.httpPutGraph(hc, url, graph, requestFmt, httpHeaders);
     }
@@ -421,7 +392,7 @@ public class GSP {
     /** Delete a graph. */
     public void DELETE() {
         validateGraphOperation();
-        String url = HttpLib.requestURL(serviceEndpoint, queryStringForGraph(graphName));
+        String url = graphRequestURL();
         HttpClient hc = requestHttpClient(serviceEndpoint, url);
         HttpRDF.httpDeleteGraph(hc, url);
     }
@@ -435,6 +406,36 @@ public class GSP {
 //        // Synonym
 //        DELETE();
 //    }
+
+    private String graphRequestURL() {
+
+        return HttpLib.requestURL(serviceEndpoint, queryStringForGraph(graphName));
+    }
+
+    /**
+     * Return the query string for a graphusing the
+     * <a href="https://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL 1.1 Graph Store Protocol</a>.
+     * The {@code graphName} be a valid, absolute URI (i.e. includes the scheme)
+     * or the word "default", or null, for the default graph of the store
+     * or the word "union" for the union graph of the store (this is a Jena extension).
+     * or the word "none" for graph operation but no naming. (this is a Jena extension).
+     * @param graphStore
+     * @param graphName
+     * @return String without the "?"
+     */
+
+    private static String queryStringForGraph(String graphName) {
+        if ( graphName == null )
+            return HttpNames.paramGraphDefault;
+        switch (graphName) {
+            case HttpNames.graphTargetDefault:
+                return HttpNames.paramGraphDefault;
+            case HttpNames.graphTargetUnion:
+                return HttpNames.paramGraph+"=union";
+            default:
+                return HttpNames.paramGraph+"="+HttpLib.urlEncodeQueryString(graphName);
+        }
+    }
 
     /**
      * GET dataset.
