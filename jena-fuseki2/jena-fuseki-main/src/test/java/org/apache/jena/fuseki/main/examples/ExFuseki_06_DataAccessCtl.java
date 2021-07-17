@@ -19,9 +19,10 @@
 package org.apache.jena.fuseki.main.examples;
 
 import static java.lang.String.format;
-import static org.apache.jena.fuseki.main.examples.ExamplesLib.httpClient;
 
+import java.net.Authenticator;
 import java.net.http.HttpClient;
+import java.time.Duration;
 
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.WebLib;
@@ -33,6 +34,7 @@ import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiLib;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.system.FusekiLogging;
+import org.apache.jena.http.auth.AuthLib;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdfconnection.RDFConnection;
@@ -52,13 +54,13 @@ import org.eclipse.jetty.util.security.Password;
 /**
  * Example of a Fuseki with per-graph data access control.
  */
-public class ExFuseki_DataAccessCtl {
+public class ExFuseki_06_DataAccessCtl {
 
     public static void main(String ... a) {
         FusekiLogging.setLogging();
         int port = WebLib.choosePort();
         String datasetName = "/ds";
-        String URL = format("http://localhost:%d/%s", port, datasetName);
+        String URL = format("http://localhost:%d%s", port, datasetName);
 
         // ---- Set up the registry.
         AuthorizationService authorizeSvc;
@@ -88,27 +90,33 @@ public class ExFuseki_DataAccessCtl {
         server.start();
 
         // ---- HttpClient connection with user and password basic authentication.
-        HttpClient client = httpClient("user1", "pw1");
+        Authenticator authenticator = AuthLib.authenticator("user1", "pw1");
+        HttpClient client = HttpClient.newBuilder()
+                .authenticator(authenticator)
+                .connectTimeout(Duration.ofSeconds(10))
+                .build();
 
         // ---- Use it.
         try (RDFConnection conn = RDFConnectionRemote.newBuilder()
-            .destination(URL)
-            .httpClient(client)
-            .build()){
+                .destination(URL)
+                .httpClient(client)
+                .build()) {
 
             // What can we see of the database? user1 can see g1 and the default graph
+            System.out.println("\nFetch dataset");
             Dataset ds1 = conn.fetchDataset();
             RDFDataMgr.write(System.out, ds1, RDFFormat.TRIG_FLAT);
 
             // Get a graph.
+            System.out.println("\nFetch named graph");
             Model m1 = conn.fetch("http://example/g1");
             RDFDataMgr.write(System.out, m1, RDFFormat.TURTLE_FLAT);
 
             // Get a graph. user tries to get a graph they have no permission for ==> 404
+            System.out.println("\nFetch unexistent named graph");
             try {
                 Model m2 = conn.fetch("http://example/g2");
-                } catch (HttpException ex) {
-                }
+            } catch (HttpException ex) { System.out.println(ex.getMessage()); }
         }
         // Need to exit the JVM : there is a background server
         System.exit(0);
@@ -124,6 +132,7 @@ public class ExFuseki_DataAccessCtl {
             for ( int i = 0 ; i < 5 ; i++ ) {
                 dsg.add(SSE.parseQuad(format("(:g%d :s%d :p :o)", i, i)));
             }
+            System.out.println("Test data");
             RDFDataMgr.write(System.out, dsg, RDFFormat.TRIG_FLAT);
         });
         return dsg;

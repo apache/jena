@@ -40,7 +40,7 @@ import org.apache.jena.sys.JenaSystem;
  * <p>
  * See <a href="https://jena.apache.org/documentation/notes/system-initialization.html">System Initialization</a>
  */
-public class ExFuseki_4_CustomOperation_External {
+public class ExFuseki_04_CustomOperation_External {
 
     static {
         JenaSystem.init();

@@ -37,7 +37,7 @@ import org.apache.jena.sparql.function.FunctionRegistry;
  * Use the function.
  */
 
-public class ExFuseki_5_CustomFunction {
+public class ExFuseki_05_CustomFunction {
 
     /** Our function */
     public static class MyFunction extends FunctionBase1 {
