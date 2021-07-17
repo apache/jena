@@ -18,20 +18,11 @@
 
 package org.apache.jena.fuseki.main.examples;
 
-import java.security.GeneralSecurityException;
+import java.net.http.HttpClient;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContextBuilder;
-import org.apache.http.ssl.TrustStrategy;
 import org.apache.jena.atlas.lib.Lib;
-import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.query.QueryExecution;
@@ -42,7 +33,7 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.util.QueryExecUtils;
 
 /** Run a Fuseki server with HTTPS, programmatic. */
-public class ExFuseki_Https_4_Setup {
+public class ExFuseki_10_Https_Setup {
 
     // curl -k -d 'query=ASK{}' https://localhost:3443/ds
 
@@ -63,12 +54,28 @@ public class ExFuseki_Https_4_Setup {
         }
     }
 
+    private static void client() {
+        // Need to provide a suitable HttpClient that can handle https.
+        // Allow self-signed
+        HttpClient hc = trustLocalhostUnsigned().build();
+
+        RDFConnection connSingle = RDFConnectionFuseki.create()
+            .httpClient(hc)
+            .destination("https://localhost:3443/ds")
+            .build();
+
+        try ( RDFConnection conn = connSingle ) {
+            QueryExecution qExec = conn.query("ASK{}");
+            QueryExecUtils.executeQuery(qExec);
+        }
+    }
+
     public static FusekiServer codeHttps() {
         FusekiLogging.setLogging();
         // Some empty dataset
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         FusekiServer server = FusekiServer.create()
-            .https(3443, /*certStore*/"Examples/certs/mykey.jks", /*certStorePassword*/"cert-pw")
+            .https(3443, ExConst.KEYSTORE, ExConst.KEYSTOREPASSWORD)
             .port(3030)
             .add("/ds", dsg)
             .build();
@@ -78,38 +85,9 @@ public class ExFuseki_Https_4_Setup {
         return server;
     }
 
-    /** Create an {@link HttpClientBuilder} that trusts self-signed, localhost https connections. */
-    public static HttpClientBuilder trustLocalhostUnsigned() {
-        TrustStrategy trustStrategy = TrustSelfSignedStrategy.INSTANCE;
-        try {
-            SSLContext sslCxt = new SSLContextBuilder().loadTrustMaterial(trustStrategy).build();
-            HostnameVerifier hostNameVerifier = (hostname, session) -> hostname.equals("localhost");
-            // Example: Any host.
-            // HostnameVerifier hostNameVerifier = NoopHostnameVerifier.INSTANCE;
-            SSLConnectionSocketFactory sslfactory = new SSLConnectionSocketFactory(sslCxt, hostNameVerifier);
-            return HttpClients.custom().setSSLSocketFactory(sslfactory);
-        } catch (GeneralSecurityException ex) {
-            throw new FusekiException(ex);
-        }
-    }
-
-    private static void client() {
-        // Need to provide a suitable HttpClient that can handle https.
-        //RDFConnection connSingle = RDFConnectionFactory.connect("https://localhost:3443/ds");
-
-        // Allow self-signed
-        HttpClient hc = trustLocalhostUnsigned().build();
-
-        System.err.println("PORT to java.net.http");
-
-        RDFConnection connSingle = RDFConnectionFuseki.create()
-            //.httpClient(hc)
-            .destination("https://localhost:3443/ds")
-            .build();
-
-        try ( RDFConnection conn = connSingle ) {
-            QueryExecution qExec = conn.query("ASK{}");
-            QueryExecUtils.executeQuery(qExec);
-        }
+    /** Create an {@code HttpClient.Builder} that trusts self-signed, localhost https connections. */
+    public static HttpClient.Builder trustLocalhostUnsigned() {
+        SSLContext sslContext = ExamplesLib.trustOneCert(ExConst.KEYSTORE, ExConst.KEYSTOREPASSWORD);
+        return HttpClient.newBuilder().sslContext(sslContext);
     }
 }

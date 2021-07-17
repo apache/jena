@@ -20,14 +20,14 @@ package org.apache.jena.fuseki.main.examples;
 
 import org.apache.jena.fuseki.main.cmds.FusekiMainCmd;
 
-/** Run Fuseki server, with HTTPS and authentication */ 
-public class ExFuseki_Https_2_CmdAuth {
-    
-    // curl -k -d 'query=ASK{}' --basic --user 'user:password' https://localhost:3443/ds
+/** Run a Fuseki server with https from the command line */
+public class ExFuseki_07_Https_Cmd {
+
+    // curl -k -d 'query=ASK{}' https://localhost:3443/ds
 
     public static void main(String...argv) {
         try {
-            cmdHttpsAuth();
+            cmdHttps();
         } catch (Exception ex){
             ex.printStackTrace();
         } finally {
@@ -35,12 +35,9 @@ public class ExFuseki_Https_2_CmdAuth {
         }
     }
 
-    public static void cmdHttpsAuth() {
+    public static void cmdHttps() {
         FusekiMainCmd.main(
-            //"--verbose",
-            "--https=Examples/certs/https-details",
-            "--auth=basic",
-            "--passwd=Examples/passwd-basic",
+            "--https="+ExConst.DIR+"/certs/https-details",
             "--port=3030",
             "--httpsPort=3443",
             "--mem",

@@ -18,25 +18,80 @@
 
 package org.apache.jena.fuseki.main.examples;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.Authenticator;
+import java.net.Socket;
 import java.net.http.HttpClient;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
+import java.security.cert.X509Certificate;
 import java.time.Duration;
+
+import javax.net.ssl.*;
 
 import org.apache.jena.http.auth.AuthLib;
 
 /** Shared code in examples. */
 public class ExamplesLib {
-    /** HttpClient with user/password */
-    static HttpClient httpClient(String user, String password) {
+    /** HttpClient with user/password and trusting the test certificate */
+    static HttpClient httpClient(String user, String password, SSLContext sslContext) {
         Authenticator authenticator = AuthLib.authenticator(user, password);
-        return  HttpClient.newBuilder().authenticator(authenticator).connectTimeout(Duration.ofSeconds(10)).build();
-        // Apache HttpClient
-//        BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
-//        Credentials credentials = new UsernamePasswordCredentials(user, password);
-//        credsProvider.setCredentials(AuthScope.ANY, credentials);
-//        HttpClient client = HttpOp.createPoolingHttpClientBuilder().setDefaultCredentialsProvider(credsProvider).build();
-//        return client;
+        return  HttpClient.newBuilder()
+                .authenticator(authenticator)
+                .connectTimeout(Duration.ofSeconds(10))
+                .sslContext(sslContext)
+                .build();
     }
 
+    /** Create an SSL Context that trusts certificates in a keystore. */
+    public static SSLContext trustOneCert(String keystore, String keystorePassword) {
+        try {
+            InputStream in = new FileInputStream(keystore);
+            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            keyStore.load(in, keystorePassword.toCharArray());
+            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            trustManagerFactory.init(keyStore);
+            SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustManagerFactory.getTrustManagers(), null);
+            return sslContext;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    /** Create an SSL Context that trusts any certificate. */
+    static SSLContext trustAll() {
+        // Setup a TrustManager that trusts anything (for self-signed certificates).
+        // Use with great care.
+        TrustManager[] trustAllCerts = new TrustManager[] {
+            new X509ExtendedTrustManager() {
+                @Override
+                public void checkClientTrusted (X509Certificate [] chain, String authType, Socket socket) {}
+                @Override
+                public void checkServerTrusted (X509Certificate [] chain, String authType, Socket socket) {}
+                @Override
+                public void checkClientTrusted (X509Certificate [] chain, String authType, SSLEngine engine) {}
+                @Override
+                public void checkServerTrusted (X509Certificate [] chain, String authType, SSLEngine engine) {}
+                // X509TrustManager
+                @Override
+                public void checkClientTrusted (X509Certificate [] certs, String authType) {}
+                @Override
+                public void checkServerTrusted (X509Certificate [] certs, String authType) {}
+                @Override
+                public java.security.cert.X509Certificate [] getAcceptedIssuers () { return new X509Certificate[0];}
+            }
+        };
+
+        try {
+            SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+            return sslContext;
+        } catch (GeneralSecurityException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
+    }
 
 }

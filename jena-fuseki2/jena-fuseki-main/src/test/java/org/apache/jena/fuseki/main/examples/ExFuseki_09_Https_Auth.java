@@ -18,11 +18,20 @@
 
 package org.apache.jena.fuseki.main.examples;
 
+import static org.apache.jena.fuseki.main.examples.ExConst.KEYSTORE;
+import static org.apache.jena.fuseki.main.examples.ExConst.KEYSTOREPASSWORD;
+import static org.apache.jena.fuseki.main.examples.ExConst.PASSWD;
+
+import java.net.Authenticator;
 import java.net.http.HttpClient;
+import java.time.Duration;
+
+import javax.net.ssl.SSLContext;
 
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.system.FusekiLogging;
+import org.apache.jena.http.auth.AuthLib;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFuseki;
@@ -32,7 +41,7 @@ import org.apache.jena.sparql.util.QueryExecUtils;
 import org.apache.jena.web.AuthSetup;
 
 /** Run a Fuseki server with HTTPS and Authentication, programmatic. */
-public class ExFuseki_Https_3_Auth {
+public class ExFuseki_09_Https_Auth {
     // Setup
     // Aligned with the testing/Access/passwd file.
     static String    USER     = "user1";
@@ -44,13 +53,16 @@ public class ExFuseki_Https_3_Auth {
     static int       PORT     = 3443;
     static AuthSetup auth     = new AuthSetup(HOST, PORT, USER, PASSWORD, REALM);
 
-    // curl -k -d 'query=ASK{}' --basic --user 'user:password' https://localhost:3443/ds
+    // curl -k -d 'query=ASK{}' --basic --user 'user1:pw1' https://localhost:3443/ds
 
     public static void main(String...argv) {
         try {
+            // Create an SSLContext for our test setup.
+            SSLContext sslContext = ExamplesLib.trustOneCert(KEYSTORE, KEYSTOREPASSWORD);
+
             // By code, with client.
             codeHttpsAuth();
-            client();
+            client(sslContext);
         } catch (Exception ex){
             ex.printStackTrace();
         } finally {
@@ -63,11 +75,10 @@ public class ExFuseki_Https_3_Auth {
         // Some empty dataset
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         FusekiServer server = FusekiServer.create()
-            //.verbose(true)
-            .https(3443, /*certStore*/"testing/Access/certs/mykey.jks", /*certStorePassword*/"cert-pw")
-            .port(3030)
+            .verbose(true)
+            .https(3443, KEYSTORE, KEYSTOREPASSWORD)
             .auth(AuthScheme.BASIC)
-            .passwordFile("testing/Access/passwd")
+            .passwordFile(PASSWD)
             .add("/ds", dsg)
             .build();
         server.start();
@@ -75,12 +86,15 @@ public class ExFuseki_Https_3_Auth {
         return server;
     }
 
-    private static void client() {
-        //RDFConnection connSingle = RDFConnectionFactory.connect("https://localhost:3443/ds");
+    private static void client(SSLContext sslContext) {
+        Authenticator authenticator1 = AuthLib.authenticator(USER, PASSWORD);
+        HttpClient hc = HttpClient.newBuilder()
+                .authenticator(authenticator1)
+                .connectTimeout(Duration.ofSeconds(10))
+                .sslContext(sslContext)
+                .build();
 
-        // Allow self-signed
-        HttpClient hc = ExamplesLib.httpClient(USER, PASSWORD);
-
+        System.out.println("Good client set up");
         RDFConnection connSingle = RDFConnectionFuseki.create()
             .httpClient(hc)
             .destination("https://localhost:3443/ds")
@@ -91,7 +105,13 @@ public class ExFuseki_Https_3_Auth {
             QueryExecUtils.executeQuery(qExec);
         }
 
-        HttpClient hc2 = ExamplesLib.httpClient("user1", "wrong-password");
+        System.out.println("Bad client set up");
+        Authenticator authenticator2 = AuthLib.authenticator(USER, "wrong-trousers-gromit");
+        HttpClient hc2 = HttpClient.newBuilder()
+                .authenticator(authenticator2)
+                .connectTimeout(Duration.ofSeconds(10))
+                .sslContext(sslContext)
+                .build();
         try ( RDFConnection conn = RDFConnectionFuseki.create()
                                     .httpClient(hc2)
                                     .destination("https://localhost:3443/ds")

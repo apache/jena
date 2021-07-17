@@ -39,11 +39,11 @@ import org.apache.jena.web.HttpSC;
  * with both a building in operation (query) and a custom one.
  * These are invoked with named endpoints.
  *
- * This shows a more detailed setup compared to {@link ExFuseki_1_NamedService}.
- * See also {@link ExFuseki_1_NamedService} for more details.
+ * This shows a more detailed setup compared to {@link ExFuseki_01_NamedService}.
+ * See also {@link ExFuseki_01_NamedService} for more details.
  */
 
-public class ExFuseki_2_Config_DataService {
+public class ExFuseki_02_Config_DataService {
     static { FusekiLogging.setLogging(); }
 
     // Endpoint dispatch only.

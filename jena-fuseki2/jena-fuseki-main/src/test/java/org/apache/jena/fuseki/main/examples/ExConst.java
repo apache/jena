@@ -18,29 +18,11 @@
 
 package org.apache.jena.fuseki.main.examples;
 
-import org.apache.jena.fuseki.main.cmds.FusekiMainCmd;
+class ExConst {
 
-/** Run a Fuseki server with https from the command line*/
-public class ExFuseki_Https_1_Cmd {
+    static final String DIR                 = "testing/Access";
+    static final String KEYSTORE            = DIR+"/certs/localhost-test.jks";
+    static final String KEYSTOREPASSWORD    = "store-pw";
+    static final String PASSWD              = DIR+"/passwd";
 
-    // curl -k -d 'query=ASK{}' https://localhost:3443/ds
-    
-    public static void main(String...argv) {
-        try {
-            cmdHttps();
-        } catch (Exception ex){
-            ex.printStackTrace();
-        } finally {
-            System.exit(0);
-        }
-    }
-    
-    public static void cmdHttps() {
-        FusekiMainCmd.main(
-            "--https=Examples/certs/https-details",
-            "--port=3030",
-            "--httpsPort=3443",
-            "--mem",
-            "/ds");
-    }
 }
