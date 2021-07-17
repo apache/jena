@@ -22,9 +22,9 @@ import static org.apache.jena.rdfconnection.LibRDFConn.adapt;
 
 import java.net.Authenticator;
 import java.net.http.HttpClient;
-import java.time.Duration;
 import java.util.Objects;
 
+import org.apache.jena.http.HttpEnv;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdflink.RDFLinkBuilder;
 import org.apache.jena.sys.JenaSystem;
@@ -105,8 +105,7 @@ public class RDFConnectionFactory {
 
         // Authenticator to hold user and password.
         Authenticator authenticator = LibSec.authenticator(user, password);
-        HttpClient client = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(20))
+        HttpClient client = HttpEnv.httpClientBuilder()
                 .authenticator(authenticator)
                 .build();
         return RDFConnectionRemote.newBuilder()

@@ -22,9 +22,9 @@ import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.net.URI;
 import java.net.http.HttpClient;
-import java.time.Duration;
 import java.util.function.Consumer;
 
+import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.auth.AuthDomain;
 import org.apache.jena.http.auth.AuthEnv;
 import org.apache.jena.web.AuthSetup;
@@ -42,7 +42,7 @@ public class LibSec {
 
     public static HttpClient httpClient(AuthSetup authSetup) {
         Authenticator a = authenticator(authSetup.user, authSetup.password);
-        return HttpClient.newBuilder().connectTimeout(Duration.ofMillis(10*1000)).authenticator(a).build();
+        return HttpEnv.httpClientBuilder().authenticator(a).build();
     }
 
     public static void withAuth(String urlStr, AuthSetup auth, Consumer<RDFConnection> action) {
