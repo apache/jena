@@ -28,9 +28,9 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.jena.fuseki.main.old.FusekiTestAuth;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
+import org.apache.jena.jdbc.remote.FusekiTestAuth;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
 import org.apache.jena.jdbc.utils.TestUtils;
 import org.apache.jena.query.Dataset ;
@@ -48,7 +48,7 @@ import org.junit.Ignore;
 
 /**
  * Tests result sets from a remote endpoint
- * 
+ *
  */
 @Ignore
 public class TestRemoteEndpointResultsWithAuth extends AbstractRemoteEndpointResultSetTests {
@@ -61,7 +61,7 @@ public class TestRemoteEndpointResultsWithAuth extends AbstractRemoteEndpointRes
 
     /**
      * Setup for the tests by allocating a Fuseki instance to work with
-     * 
+     *
      * @throws SQLException
      * @throws IOException
      */
@@ -69,11 +69,11 @@ public class TestRemoteEndpointResultsWithAuth extends AbstractRemoteEndpointRes
     public static void setup() throws SQLException, IOException {
         SecurityHandler sh = FusekiTestAuth.makeSimpleSecurityHandler("/*", USER, PASSWORD);
         FusekiTestAuth.setupServer(true, sh);
-        
+
         BasicCredentialsProvider credsProv = new BasicCredentialsProvider();
         credsProv.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(USER, PASSWORD));
         client = HttpClients.custom().setDefaultCredentialsProvider(credsProv).build();
-        
+
         connection = new RemoteEndpointConnection(FusekiTestAuth.serviceQuery(), FusekiTestAuth.serviceUpdate(), null, null, null, null,
                 client, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, null, null);
         connection.setJdbcCompatibilityLevel(JdbcCompatibility.HIGH);
@@ -91,7 +91,7 @@ public class TestRemoteEndpointResultsWithAuth extends AbstractRemoteEndpointRes
 
     /**
      * Clean up after tests by de-allocating the Fuseki instance
-     * 
+     *
      * @throws SQLException
      */
     @AfterClass
