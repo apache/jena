@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 
 public interface RowSet extends Iterator<Binding> {
@@ -46,8 +47,6 @@ public interface RowSet extends Iterator<Binding> {
      * This consumes this RowSet - the iterator will have ended after a call to this method.
      */
     public default RowSet materialize() {
-//        Iterator<Binding> bindings = Iter.materialize(this);
-//        return new RowSetStream(bindings, getResultVars());
         return rewindable();
     }
 
@@ -55,17 +54,31 @@ public interface RowSet extends Iterator<Binding> {
     public long getRowNumber();
 
     public static RowSet adapt(ResultSet resultSet) {
-        if ( resultSet instanceof ResultSetAdapter ) {
+        if ( resultSet instanceof ResultSetAdapter )
             return ((ResultSetAdapter)resultSet).get();
-        }
         return new RowSetAdapter(resultSet);
     }
 
     // [QExec] Migrate to ResultSet
     public static ResultSet adapt(RowSet rowSet) {
-        if ( rowSet instanceof RowSetAdapter ) {
+        if ( rowSet instanceof RowSetAdapter )
             return ((RowSetAdapter)rowSet).get();
-        }
         return new ResultSetAdapter(rowSet);
     }
+
+    /**
+     * Turn a {@link QueryIterator} into a RowSet.
+     * This operation does not materialize the QueryIterator.
+     */
+    public static RowSet create(QueryIterator qIter, List<Var> vars) {
+        return new RowSetStream(qIter, vars);
+    }
+
+    /**
+     * Normally a RowSet is process until complete which implicitly closes any
+     * underlying resources. This "close" operation exists to explicitly do this in
+     * cases where it does onto automatically. There is no need to close RowSets
+     * normally - it is the {@link QueryExec} that should be closed.
+     */
+    public void close();
 }

@@ -55,6 +55,7 @@ public class Tags
     public static final String tagBinding         = "binding" ;
     public static final String tagTable           = "table" ;
     public static final String tagResultSet       = "resultset" ;
+    public static final String tagRowSet          = "rowset" ;
 
     // SPARQL algebra
     public static final String tagBGP             = "bgp" ;
