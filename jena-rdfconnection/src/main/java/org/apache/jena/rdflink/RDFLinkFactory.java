@@ -18,11 +18,6 @@
 
 package org.apache.jena.rdflink;
 
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
-import java.net.http.HttpClient;
-import java.time.Duration;
-
 import org.apache.jena.rdfconnection.Isolation;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sys.JenaSystem;
@@ -94,38 +89,6 @@ public class RDFLinkFactory {
             .updateEndpoint(updateServiceEndpoint)
             .gspEndpoint(graphStoreProtocolEndpoint)
             .build();
-    }
-
-    /** Make a remote RDFLink to the URL, with user and password for the client access using basic auth.
-     *  Use with care.  Basic auth over plain HTTP reveals the password on the network.
-     * @param URL
-     * @param user
-     * @param password
-     * @return RDFLink
-     */
-    public static RDFLink connectPW(String URL, String user, String password) {
-        Authenticator authenticator = newAuthenticator(user, password);
-        return connectPW(URL, authenticator);
-    }
-
-    public static RDFLink connectPW(String URL, Authenticator authenticator) {
-        HttpClient httpClientAuth = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofSeconds(10))
-           .authenticator(authenticator)
-            .build();
-        return RDFLinkRemote.newBuilder()
-            .destination(URL)
-            .httpClient(httpClientAuth)
-            .build();
-    }
-
-    private static Authenticator newAuthenticator(String user, String password) {
-        return new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(user, password.toCharArray());
-            }
-        };
     }
 
     /**
@@ -200,9 +163,9 @@ public class RDFLinkFactory {
      * @return RDFLinkFuseki
      */
     public static RDFLinkFuseki connectFuseki(String datasetURL,
-                                                    String queryServiceEndpoint,
-                                                    String updateServiceEndpoint,
-                                                    String graphStoreProtocolEndpoint) {
+                                              String queryServiceEndpoint,
+                                              String updateServiceEndpoint,
+                                              String graphStoreProtocolEndpoint) {
         return (RDFLinkFuseki)RDFLinkFuseki.newBuilder()
                 .destination(datasetURL)
                 .queryEndpoint(queryServiceEndpoint)

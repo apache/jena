@@ -18,7 +18,6 @@
 
 package org.apache.jena.fuseki.main;
 
-import org.apache.jena.fuseki.main.old.TestFusekiTestAuthOld;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -27,7 +26,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
   TestEmbeddedFuseki.class
   , TestMultipleEmbedded.class
-  , TestFusekiTestAuthOld.class
   , TestFusekiCustomOperation.class
   , TestFusekiMainCmd.class
   , TestStdSetup.class
