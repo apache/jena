@@ -128,4 +128,7 @@ public class RowSetMem implements RowSetRewindable
     public Binding peek() {
         return iterator.element();
     }
+
+    @Override
+    public void close() {}
 }

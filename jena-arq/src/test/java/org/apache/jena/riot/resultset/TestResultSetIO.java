@@ -18,10 +18,7 @@
 
 package org.apache.jena.riot.resultset;
 
-import static org.apache.jena.riot.resultset.ResultSetLang.RS_CSV ;
-import static org.apache.jena.riot.resultset.ResultSetLang.RS_JSON ;
-import static org.apache.jena.riot.resultset.ResultSetLang.RS_TSV ;
-import static org.apache.jena.riot.resultset.ResultSetLang.RS_XML ;
+import static org.apache.jena.riot.resultset.ResultSetLang.* ;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream ;
@@ -47,21 +44,22 @@ import org.junit.runners.Parameterized.Parameters ;
 
 @RunWith(Parameterized.class)
 public class TestResultSetIO {
-    @Parameters(name = "{index}: {0}") 
-    public static Collection<Object[]> data() { 
+    @Parameters(name = "{index}: {0}")
+    public static Collection<Object[]> data() {
         Lang[] langs = { RS_XML
                        , RS_JSON
                        , RS_CSV
                        , RS_TSV
+                       , RS_Thrift
         } ;
-        
+
         List<Object[]> x = new ArrayList<>() ;
         for ( Lang lang : langs ) {
             x.add(new Object[]{ "test:"+lang.getName(), lang } ) ;
         }
-        return x ;                                
+        return x ;
     }
-    
+
     static String rsStr = StrUtils.strjoinNL
         ("(resultset (?x ?y)"
         ,"   (row (?x _:b0) (?y _:b1))"
@@ -72,23 +70,23 @@ public class TestResultSetIO {
         ,"   (row )"
         ,")"
         ) ;
-    
+
     static ResultSetRewindable test_rs = ResultSetFactory.makeRewindable(BuilderResultSet.build(SSE.parse(rsStr))) ;
 
     private final Lang lang ;
     @Before public void beforetest() { test_rs.reset() ; }
-    
+
     public TestResultSetIO(String name, Lang lang) {
         this.lang = lang ;
     }
-    
+
     @Test public void test_resultset_01() {
         // write(data)-read-compare
-        ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-        ResultSetMgr.write(out, test_rs, lang) ;
-        test_rs.reset(); 
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
-        
+        ByteArrayOutputStream out1 = new ByteArrayOutputStream() ;
+        ResultSetMgr.write(out1, test_rs, lang) ;
+        test_rs.reset();
+        ByteArrayInputStream in = new ByteArrayInputStream(out1.toByteArray()) ;
+
         ResultSet rs = ResultSetMgr.read(in, lang) ;
         ResultSetRewindable rsw = ResultSetFactory.makeRewindable(rs) ;
         if ( ! lang.equals(RS_CSV) )
@@ -96,41 +94,15 @@ public class TestResultSetIO {
             assertTrue(ResultSetCompare.equalsByTerm(test_rs, rsw)) ;
 
         rsw.reset();
-        test_rs.reset(); 
-        
-        out = new ByteArrayOutputStream() ;
+        test_rs.reset();
 
+        ByteArrayOutputStream out2 = new ByteArrayOutputStream() ;
         // Round trip the output from above - write(rsw)-read-compare
-        ResultSetMgr.write(out, rsw, lang) ;
-        in = new ByteArrayInputStream(out.toByteArray()) ;
+        ResultSetMgr.write(out2, rsw, lang) ;
+        rsw.reset();
+        in = new ByteArrayInputStream(out2.toByteArray()) ;
         ResultSet rs2 = ResultSetMgr.read(in, lang) ;
-        // Not test_rs -- CSV round-trips to itself.
         assertTrue(ResultSetCompare.equalsByTerm(rsw, rs2)) ;
     }
-    
-//    @Test public void test_resultset_02() {
-//        StringWriter out = new StringWriter() ;
-//        ResultSetMgr.write(out, test_rs, lang) ;
-//        test_rs.reset(); 
-//        StringReader in = new StringReader(out.toString()) ;
-//        
-//        ResultSet rs = ResultSetMgr.read(in, lang) ;
-//        ResultSetRewindable rsw = ResultSetFactory.makeRewindable(rs) ;
-//        if ( ! lang.equals(RS_CSV) )
-//            // CSV is not faithful
-//            assertTrue(ResultSetCompare.equalsByTerm(test_rs, rsw)) ;
-//
-//        rsw.reset();
-//        test_rs.reset(); 
-//        
-//        out = new StringWriter() ;
-//
-//        // Round trip the output from above.
-//        ResultSetMgr.write(out, rsw, lang) ;
-//        in = new StringReader(out.toString()) ;
-//        ResultSet rs2 = ResultSetMgr.read(in, lang) ;
-//        // Not test_rs -- CSV is not faithful
-//        assertTrue(ResultSetCompare.equalsByTerm(rsw, rs2)) ;
-//    }
 }
 

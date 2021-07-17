@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 
@@ -61,5 +62,10 @@ public class RowSetStream implements RowSet {
     @Override
     public long getRowNumber() {
         return rowNumber;
+    }
+
+    @Override
+    public void close() {
+        Iter.close(iterator);
     }
 }

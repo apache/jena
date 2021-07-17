@@ -16,15 +16,8 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.sse.builders;
+package org.apache.jena.sparql.exec;
 
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.sparql.exec.RowSet;
-import org.apache.jena.sparql.sse.Item;
+public class RowSetFactory {
 
-public class BuilderResultSet {
-
-    public static ResultSet build(Item item) {
-        return RowSet.adapt(BuilderRowSet.build(item));
-    }
 }

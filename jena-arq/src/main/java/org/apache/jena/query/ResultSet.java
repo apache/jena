@@ -35,15 +35,11 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 
 public interface ResultSet extends Iterator<QuerySolution>
 {
-    // Could have a ResultSetBase that does all the Node=>Resource (= ResultBinding)  
-    /**
-     * Is there another result?
-     */
+    /** Is there another result? */
     @Override
     public boolean hasNext() ;
 
     /** Moves onto the next result. */
-    
     @Override
     public QuerySolution next() ;
 
@@ -52,18 +48,19 @@ public interface ResultSet extends Iterator<QuerySolution>
 
     /** Move to the next binding (low level) */
     public Binding nextBinding() ;
-    
+
     /** Return the "row" number for the current iterator item */
     public int getRowNumber() ;
-    
-    /** Get the variable names for the projection. Not all query
-     *  solutions from a result have every variable defined. 
+
+    /**
+     * Get the variable names for the projection. Not all query
+     * solutions from a result have every variable defined.
      */
     public List<String> getResultVars() ;
 
     /** Get the model that resources are created against - may be null */
     public Model getResourceModel() ;
-    
+
     /**
      * Convert this result set to a {@link ResultSetRewindable}.
      * <p>
