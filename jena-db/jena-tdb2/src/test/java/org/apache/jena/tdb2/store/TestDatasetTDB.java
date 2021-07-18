@@ -116,14 +116,14 @@ public class TestDatasetTDB
     @Test public void query1()
     {
         Dataset ds = dataset();
-        Model m = ds.getDefaultModel();
-        load1(m);
+        Model expected = ds.getDefaultModel();
+        load1(expected);
 
         String qs = "CONSTRUCT {?s ?p ?o } WHERE {?s ?p ?o}";
         Query q = QueryFactory.create(qs);
         QueryExecution qExec = QueryExecutionFactory.create(q, ds);
         Model m2 = qExec.execConstruct();
-        assertTrue(m.isIsomorphicWith(m2));
+        assertTrue(expected.isIsomorphicWith(m2));
     }
 
     @Test public void query2()
@@ -145,14 +145,14 @@ public class TestDatasetTDB
     @Test public void special1()
     {
         Dataset ds = dataset();
-        Model m = ds.getDefaultModel();
-        load1(m);
+        Model expected = ds.getDefaultModel();
+        load1(expected);
 
         String qs = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <"+defaultGraph+"> {?s ?p ?o}}";
         Query q = QueryFactory.create(qs);
         QueryExecution qExec = QueryExecutionFactory.create(q, ds);
         Model m2 = qExec.execConstruct();
-        assertTrue(m.isIsomorphicWith(m2));
+        assertTrue(expected.isIsomorphicWith(m2));
     }
 
     @Test public void special2()
@@ -163,15 +163,15 @@ public class TestDatasetTDB
         load2(ds.getNamedModel("http://example/graph1"));
         load3(ds.getNamedModel("http://example/graph2"));
 
-        Model m = ModelFactory.createDefaultModel();
-        load2(m);
-        load3(m);
+        Model expected = ModelFactory.createDefaultModel();
+        load2(expected);
+        load3(expected);
 
         String qs = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <"+unionGraph+"> {?s ?p ?o}}";
         Query q = QueryFactory.create(qs);
         QueryExecution qExec = QueryExecutionFactory.create(q, ds);
         Model m2 = qExec.execConstruct();
-        assertTrue(m.isIsomorphicWith(m2));
+        assertTrue(expected.isIsomorphicWith(m2));
     }
 
     @Test public void special3()
@@ -183,27 +183,27 @@ public class TestDatasetTDB
         load2(ds.getNamedModel("http://example/graph1"));
         load3(ds.getNamedModel("http://example/graph2"));
 
-        Model m = ModelFactory.createDefaultModel();
-        load2(m);
-        load3(m);
+        Model expected = ModelFactory.createDefaultModel();
+        load2(expected);
+        load3(expected);
 
         String qs = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
         Query q = QueryFactory.create(qs);
         QueryExecution qExec = QueryExecutionFactory.create(q, ds);
         qExec.getContext().set(TDB2.symUnionDefaultGraph, true);
         Model m2 = qExec.execConstruct();
-        if ( ! m.isIsomorphicWith(m2) )
+        if ( ! expected.isIsomorphicWith(m2) )
         {
             System.out.println("---- ----");
             SSE.write(ds.asDatasetGraph());
             System.out.println("-- Expected");
-            m.write(System.out, "TTL");
+            expected.write(System.out, "TTL");
             System.out.println("-- Actual");
             m2.write(System.out, "TTL");
             System.out.println("---- ----");
 
         }
-        assertTrue(m.isIsomorphicWith(m2));
+        assertTrue(expected.isIsomorphicWith(m2));
     }
 
     @Test public void special4()
@@ -214,16 +214,16 @@ public class TestDatasetTDB
         load2(ds.getNamedModel("http://example/graph1"));
         load3(ds.getNamedModel("http://example/graph2"));
 
-        Model m = ModelFactory.createDefaultModel();
-        load2(m);
-        load3(m);
+        Model expected = ModelFactory.createDefaultModel();
+        load2(expected);
+        load3(expected);
 
         String qs = "PREFIX : <"+baseNS+"> SELECT (COUNT(?x) as ?c) WHERE { ?x (:p1|:p2) 'x1' }";
         Query q = QueryFactory.create(qs);
 
         long c_m;
         // Model
-        try (QueryExecution qExec = QueryExecutionFactory.create(q, m)) {
+        try (QueryExecution qExec = QueryExecutionFactory.create(q, expected)) {
             c_m = qExec.execSelect().next().getLiteral("c").getLong();
         }
 
@@ -266,7 +266,7 @@ public class TestDatasetTDB
         load1(ds.getDefaultModel());
         load2(ds.getNamedModel("http://example/graph1"));
         load3(ds.getNamedModel("http://example/graph2"));
-        Model m = ds.getNamedModel("http://example/graph2");
+        Model expected = ds.getNamedModel("http://example/graph2");
 
         // Use graph2 as default model.
         Dataset ds2 = DatasetFactory.create();
@@ -276,7 +276,7 @@ public class TestDatasetTDB
         Query q = QueryFactory.create(qs);
         QueryExecution qExec = QueryExecutionFactory.create(q, ds2);
         Model m2 = qExec.execConstruct();
-        assertTrue(m.isIsomorphicWith(m2));
+        assertTrue(expected.isIsomorphicWith(m2));
     }
 
     @Test public void generalDataset2()

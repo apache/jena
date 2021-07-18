@@ -20,6 +20,7 @@ package org.apache.jena.sparql.engine.http;
 
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.query.QueryException;
+import org.apache.jena.web.HttpSC;
 
 /** Exception class for all operations in the SPARQL client library.
  *  Error codes are as HTTP status codes. */
@@ -42,7 +43,7 @@ public class QueryExceptionHTTP extends QueryException
         int responseCode = httpEx.getStatusCode();
         if (responseCode != -1) {
             // Was an actual HTTP error
-            String responseLine = httpEx.getStatusLine() != null ? httpEx.getStatusLine() : "No Status Line";
+            String responseLine = httpEx.getStatusLine() != null ? httpEx.getStatusLine() : HttpSC.getMessage(responseCode);
             return new QueryExceptionHTTP(responseCode, responseLine, httpEx);
         } else if (httpEx.getMessage() != null) {
             // Some non-HTTP error with a valid message e.g. Socket Communications failed, IO error

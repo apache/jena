@@ -102,6 +102,7 @@ public class TestQuadFilter
             // No filter.
             try(QueryExecution qExec = QueryExecutionFactory.create(query, dataset)) {
                 qExec.getContext().setTrue(TDB.symUnionDefaultGraph);
+                Dataset dsx = qExec.getDataset();
                 long x2 = ResultSetFormatter.consume(qExec.execSelect());
                 assertEquals(withoutFilter, x2);
             }

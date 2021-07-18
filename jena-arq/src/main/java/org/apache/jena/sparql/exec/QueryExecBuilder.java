@@ -60,6 +60,8 @@ public class QueryExecBuilder {
     private DatasetGraph dataset            = null;
     private Query        query              = null;
     private Context      context            = null;
+    // For migration to QueryExec, we need to update the context from QueryExecution.
+    private boolean      contextSetup       = false;
     private Binding      initialBinding     = null;
     private long         timeout1           = UNSET;
     private TimeUnit     timeoutTimeUnit1   = null;
@@ -97,6 +99,20 @@ public class QueryExecBuilder {
         ensureContext();
         this.context.putAll(context);
         return this;
+    }
+
+    // Help with QueryExec migration.
+    // This allows the build context to be available to QueryExecutionCompact
+    // To be removed!
+    /** @deprecated Do not use - migration only */
+    @Deprecated
+    public Context setupContext() {
+        if ( ! contextSetup ) {
+            if ( context == null )
+                context = buildContext(context, dataset);
+            contextSetup = true;
+        }
+        return context;
     }
 
     private void ensureContext() {
@@ -161,18 +177,9 @@ public class QueryExecBuilder {
         Objects.requireNonNull(query, "Query for QueryExecution");
 
         query.setResultVars();
-        Context cxt;
 
-        if ( context == null ) {
-            // Default is to take the global context, the copy it and merge in the dataset context.
-            // If a context is specified by context(Context), use that as given.
-            // The query context is modified to insert the current time.
-            cxt = ARQ.getContext();
-            cxt = Context.setupContextForDataset(cxt, dataset) ;
-        } else {
-            // Isolate to snapshot it and to allow it to be  modified.
-            cxt = context.copy();
-        }
+        Context cxt = contextSetup ? context : buildContext(context, dataset);
+
         QueryEngineFactory f = QueryEngineRegistry.get().find(query, dataset, cxt);
         if ( f == null ) {
             Log.warn(QueryExecBuilder.class, "Failed to find a QueryEngineFactory");
@@ -181,14 +188,32 @@ public class QueryExecBuilder {
 
         // Initial bindings / parameterized query
         Query queryActual = query;
-        if ( initialBinding != null ) {
+        Binding initialToEngine = initialBinding;
+        if ( false && initialBinding != null ) {
+            // [QExec] Need CONSTRUCT fix.
+            // Do by rewrite - need
             Map<Var, Node> substitutions = bindingToMap(initialBinding);
             queryActual = QueryTransformOps.transform(query, substitutions);
+            initialToEngine = null;
         }
 
         defaultTimeoutsFromContext(this, cxt);
-        QueryExec qExec = new QueryExecDataset(queryActual, dataset, cxt, f, timeout1, timeoutTimeUnit1, timeout2, timeoutTimeUnit2);
+        QueryExec qExec = new QueryExecDataset(queryActual, dataset, cxt, f, timeout1, timeoutTimeUnit1, timeout2, timeoutTimeUnit2, initialToEngine);
         return qExec;
+    }
+
+    private static Context buildContext(Context context, DatasetGraph dataset) {
+        if ( context == null ) {
+            // Default is to take the global context, the copy it and merge in the dataset context.
+            // If a context is specified by context(Context), use that as given.
+            // The query context is modified to insert the current time.
+            Context cxt = ARQ.getContext();
+            cxt = Context.setupContextForDataset(cxt, dataset) ;
+            return cxt;
+        } else {
+            // Isolate to snapshot it and to allow it to be  modified.
+            return context.copy();
+        }
     }
 
     // ==> BindingUtils

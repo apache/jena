@@ -19,7 +19,6 @@
 package org.apache.jena.sparql.exec;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.atlas.json.JsonArray;
@@ -39,10 +38,10 @@ import org.apache.jena.sparql.util.Context;
  */
 public class QueryExecutionAdapter implements QueryExecution
 {
+    // Pure adapter. Does not support timeout or initial bindings.
     private final QueryExec qExec;
     private final Dataset dataset;
-    //public static QueryExecBuilder create() { return QueryExecBuilder.create(); }
-    private final List<String> varNames;
+//    //public static QueryExecBuilder create() { return QueryExecBuilder.create(); }
 
     // [QExec] Move to QueryExecution
     public static QueryExecution adapt(QueryExec qExec) {
@@ -54,8 +53,10 @@ public class QueryExecutionAdapter implements QueryExecution
 
     protected QueryExecutionAdapter(QueryExec qExec) {
         this.qExec = qExec;
-        this.dataset =  (qExec.getDataset() != null) ? DatasetFactory.wrap(qExec.getDataset()) : null;
-        this.varNames = (qExec.getQuery() != null) ? qExec.getQuery().getResultVars() : null;
+        if ( qExec == null )
+            this.dataset = null;
+        else
+            this.dataset = (get().getDataset() != null) ? DatasetFactory.wrap(get().getDataset()) : null;
     }
 
     protected QueryExec get() { return qExec; }
@@ -82,13 +83,13 @@ public class QueryExecutionAdapter implements QueryExecution
      *  May be null (this implementation does not provide any configuration).
      */
     @Override
-    public Context getContext() { return qExec.getContext(); }
+    public Context getContext() { return get().getContext(); }
 
     /** The query associated with a query execution.
      *  May be null (QueryExecution may have been created by other means)
      */
     @Override
-    public Query getQuery() { return qExec.getQuery(); }
+    public Query getQuery() { return get().getQuery(); }
 
     /**
      *  Execute a SELECT query
@@ -103,22 +104,22 @@ public class QueryExecutionAdapter implements QueryExecution
      *  */
     @Override
     public ResultSet execSelect() {
-        if ( dataset != null )
-            return new ResultSetAdapter(qExec.select(), dataset.getDefaultModel());
+        if ( getDataset() != null )
+            return new ResultSetAdapter(get().select(), getDataset().getDefaultModel());
         else
-            return new ResultSetAdapter(qExec.select());
+            return new ResultSetAdapter(get().select());
     }
 
     /** Execute a CONSTRUCT query */
     @Override
-    public Model execConstruct() { return ModelFactory.createModelForGraph(qExec.construct()); }
+    public Model execConstruct() { return ModelFactory.createModelForGraph(get().construct()); }
 
     /** Execute a CONSTRUCT query, putting the statements into a graph.
      *  @return Graph The model argument for cascaded code.
      */
     @Override
     public Model execConstruct(Model model) {
-        qExec.construct(model.getGraph());
+        get().construct(model.getGraph());
         return model;
     }
 
@@ -140,7 +141,7 @@ public class QueryExecutionAdapter implements QueryExecution
      * by applying the CONSTRUCT template of the query to the bindings in the WHERE clause.
      */
     @Override
-    public Iterator<Triple> execConstructTriples() { return qExec.constructTriples(); }
+    public Iterator<Triple> execConstructTriples() { return get().constructTriples(); }
 
     /**
      * Execute a CONSTRUCT query, returning the results as an iterator of {@link Quad}.
@@ -155,14 +156,14 @@ public class QueryExecutionAdapter implements QueryExecution
      * See {@link #execConstructTriples} for usage and features.
      */
     @Override
-    public Iterator<Quad> execConstructQuads() { return qExec.constructQuads(); }
+    public Iterator<Quad> execConstructQuads() { return get().constructQuads(); }
 
     /** Execute a CONSTRUCT query, putting the statements into 'dataset'.
      *  This maybe an extended syntax query (if supported).
      */
     @Override
     public Dataset execConstructDataset() {
-        return DatasetFactory.wrap(qExec.constructDataset());
+        return DatasetFactory.wrap(get().constructDataset());
     }
 
     /** Execute a CONSTRUCT query, putting the statements into 'dataset'.
@@ -170,20 +171,20 @@ public class QueryExecutionAdapter implements QueryExecution
      */
     @Override
     public Dataset execConstructDataset(Dataset dataset) {
-        qExec.constructDataset(dataset.asDatasetGraph());
+        get().constructDataset(dataset.asDatasetGraph());
         return dataset;
     }
 
     /** Execute a DESCRIBE query */
     @Override
-    public Model execDescribe() { return ModelFactory.createModelForGraph(qExec.describe()); }
+    public Model execDescribe() { return ModelFactory.createModelForGraph(get().describe()); }
 
     /** Execute a DESCRIBE query, putting the statements into a graph.
      *  @return Graph The model argument for cascaded code.
      */
     @Override
     public Model execDescribe(Model model) {
-        qExec.describe(model.getGraph());
+        get().describe(model.getGraph());
         return model;
     }
 
@@ -204,19 +205,19 @@ public class QueryExecutionAdapter implements QueryExecution
      * @return An iterator of Triple objects (possibly containing duplicates) generated as the output of the DESCRIBE query.
      */
     @Override
-    public Iterator<Triple> execDescribeTriples() { return qExec.describeTriples(); }
+    public Iterator<Triple> execDescribeTriples() { return get().describeTriples(); }
 
     /** Execute an ASK query */
     @Override
-    public boolean execAsk() { return qExec.ask(); }
+    public boolean execAsk() { return get().ask(); }
 
     /** Execute a JSON query and return a json array */
     @Override
-    public JsonArray execJson() { return qExec.execJson(); }
+    public JsonArray execJson() { return get().execJson(); }
 
     /** Execute a JSON query and return an iterator */
     @Override
-    public Iterator<JsonObject> execJsonItems() { return qExec.execJsonItems(); }
+    public Iterator<JsonObject> execJsonItems() { return get().execJsonItems(); }
 
     /** Stop in mid execution.
      *  This method can be called in parallel with other methods on the
@@ -228,7 +229,7 @@ public class QueryExecutionAdapter implements QueryExecution
      */
 
     @Override
-    public void abort() { qExec.abort(); }
+    public void abort() { get().abort(); }
 
     /** Close the query execution and stop query evaluation as soon as convenient.
      *  QueryExecution objects, and a {@link ResultSet} from {@link #execSelect},
@@ -243,14 +244,14 @@ public class QueryExecutionAdapter implements QueryExecution
      *  result set are permitted after this call.
      */
     @Override
-    public void close() { qExec.close(); }
+    public void close() { get().close(); }
 
     /**
      * Answer whether this QueryExecution object has been closed or not.
      * @return boolean
      */
     @Override
-    public boolean isClosed() { return qExec.isClosed(); }
+    public boolean isClosed() { return get().isClosed(); }
 
     /** Set a timeout on the query execution.
      * Processing will be aborted after the timeout (which starts when the appropriate exec call is made).
@@ -258,13 +259,17 @@ public class QueryExecutionAdapter implements QueryExecution
      * A timeout of less than zero means no timeout.
      */
     @Override
-    public void setTimeout(long timeout, TimeUnit timeoutUnits)  {}
+    public void setTimeout(long timeout, TimeUnit timeoutUnits) {
+        throw new UnsupportedOperationException();
+    }
 
     /** Set time, in milliseconds
      * @see #setTimeout(long, TimeUnit)
      */
     @Override
-    public void setTimeout(long timeout) {}
+    public void setTimeout(long timeout) {
+        throw new UnsupportedOperationException();
+    }
 
     /** Set timeouts on the query execution; the first timeout refers to time to first result,
      * the second refers to overall query execution after the first result.

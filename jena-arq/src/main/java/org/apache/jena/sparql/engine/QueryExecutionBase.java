@@ -63,6 +63,7 @@ import org.apache.jena.sparql.util.ModelUtils;
 /** All the SPARQL query result forms made from a graph-level execution object */
 public class QueryExecutionBase implements QueryExecution
 {
+    //[QExec] OLD - remove.
     private final Query              query;
     private final QueryEngineFactory qeFactory;
     private final Context            context;
@@ -89,10 +90,10 @@ public class QueryExecutionBase implements QueryExecution
     private final AlarmClock         alarmClock       = AlarmClock.get();
     private long                     queryStartTime;
 
-    public QueryExecutionBase(Query query, Dataset dataset, Context context, QueryEngineFactory qeFactory) {
-        this(query, dataset, null, context, qeFactory);
-    }
-
+//    public QueryExecutionBase(Query query, Dataset dataset, Context context, QueryEngineFactory qeFactory) {
+//        this(query, dataset, null, context, qeFactory);
+//    }
+//
     public QueryExecutionBase(Query query, DatasetGraph datasetGraph, Context context, QueryEngineFactory qeFactory) {
         this(query, null, datasetGraph, context, qeFactory);
     }

@@ -44,6 +44,7 @@ import org.junit.runners.Suite ;
     , TestStoreConnectionsMapped.class
     , TestLocationLockStoreConnection.class
     , TestGraphTDB_Prefixes.class
+    , TestQuadFilter.class
 } )
 public class TS_Store
 {
