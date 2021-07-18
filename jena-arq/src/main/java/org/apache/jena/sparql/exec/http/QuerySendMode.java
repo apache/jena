@@ -21,7 +21,7 @@ package org.apache.jena.sparql.exec.http;
 /** Enum of different ways to send a SPARQL query over HTTP */
 public enum QuerySendMode {
 
-    // Use HTTP GET when below the lkength limit else POST an HTML Form encoding
+    // Use HTTP GET when below the length limit else POST an HTML Form encoding
     asGetWithLimitForm,
 
     // Use HTTP GET when below the length limit else POST the query as application/sparql-query

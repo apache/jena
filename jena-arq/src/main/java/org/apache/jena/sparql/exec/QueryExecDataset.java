@@ -74,7 +74,7 @@ public class QueryExecDataset implements QueryExec
 
     private QueryIterator            queryIterator    = null;
     private Plan                     plan             = null;
-    private Binding                  initialBinding   = null;
+    private Binding                  initialToEngine  = null;
 
     // Set if QueryIterator.cancel has been called
     private AtomicBoolean            isCancelled      = new AtomicBoolean(false);
@@ -93,7 +93,7 @@ public class QueryExecDataset implements QueryExec
     private long                     queryStartTime   = -1; // Unset
 
     protected QueryExecDataset(Query query, DatasetGraph datasetGraph, Context cxt, QueryEngineFactory qeFactory,
-                               long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2) {
+                               long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2, Binding initialToEngine) {
         // Content cxt is already a safe copy.
         this.query = query;
         this.dataset = datasetGraph;
@@ -101,6 +101,8 @@ public class QueryExecDataset implements QueryExec
         this.context = (cxt == null) ? Context.setupContextForDataset(cxt, datasetGraph) : cxt;
         this.timeout1 = asMillis(timeout1, timeUnit1);
         this.timeout2 = asMillis(timeout2, timeUnit2);
+        // Wil swap to query substitution handled in QueryExecBuilder
+        this.initialToEngine = initialToEngine;
         init();
     }
 
@@ -502,7 +504,7 @@ public class QueryExecDataset implements QueryExec
 
     private Plan getPlan() {
         if ( plan == null ) {
-            Binding initial = BindingFactory.root();
+            Binding initial = ( initialToEngine != null ) ? initialToEngine : BindingFactory.root();
             plan = qeFactory.create(query, dataset, initial, getContext());
         }
         return plan;
