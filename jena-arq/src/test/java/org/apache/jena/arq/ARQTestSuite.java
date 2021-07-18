@@ -21,6 +21,7 @@ package org.apache.jena.arq;
 import org.apache.jena.atlas.TC_Atlas_ARQ;
 import org.apache.jena.atlas.legacy.BaseTest2;
 import org.apache.jena.common.TC_Common;
+import org.apache.jena.http.auth.TS_HttpAuth;
 import org.apache.jena.rdfs.TS_InfRdfs;
 import org.apache.jena.riot.TC_Riot;
 import org.apache.jena.sparql.*;
@@ -49,6 +50,7 @@ import org.junit.runners.Suite;
     TS_System.class,
 
     TS_InfRdfs.class,
+    TS_HttpAuth.class,
 
     // Main ARQ java tests
     TC_ARQ.class,

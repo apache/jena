@@ -25,8 +25,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.Builder;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandler;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.jena.atlas.web.HttpException;
@@ -73,22 +73,46 @@ public class AuthLib {
         return mod.addAuth(requestBuilder);
     }
 
+    /**
+     * Choose the first Digest auth header, else first Basic auth header.
+     */
+    private static AuthChallenge authenticateHeader(HttpResponse<?> httpResponse) {
+        List<String> headers = httpResponse.headers().allValues("WWW-Authenticate");
+        if ( headers.size() == 0 )
+            return null;
+        // Choose first digest or first basic.
+        AuthChallenge aHeader = null;
+        String result = null;
+        for ( String headerValue : headers ) {
+            AuthChallenge aHeader2 = AuthChallenge.parse(headerValue);
+            if ( aHeader2 == null )
+                AuthEnv.LOG.warn("Bad authentication response - ignored: "+headerValue);
+            // Prefer Digest
+            switch(aHeader2.authScheme) {
+                case  DIGEST :
+                    return aHeader2;
+                case BASIC:
+                    if ( aHeader == null )
+                        // Choose first Basic auth for now - there may also be a Digest.
+                        aHeader = aHeader2;
+                    break;
+                default:
+                    AuthEnv.LOG.warn("Unrecogized authentication response - ignored: "+headerValue);
+            }
+        }
+        return aHeader;
+    }
+
     /* Handle a 401 (Basic and Digest) authentication challenge. */
     private static <T> HttpResponse<T> handle401(HttpClient httpClient,
                                                  HttpRequest request,
                                                  BodyHandler<T> bodyHandler,
                                                  HttpResponse<T> httpResponse1) {
-        Optional<String> h = httpResponse1.headers().firstValue("WWW-Authenticate");
-        if ( h.isEmpty() )
-            // No header - simply return the original response.
+        AuthChallenge aHeader = authenticateHeader(httpResponse1);
+        if ( aHeader == null )
+            // No valid header - simply return the original response.
             return httpResponse1;
 
-        String wwwAuthenticHeader = h.get();
-        AuthChallenge aHeader = AuthChallenge.parse(wwwAuthenticHeader);
-        if ( aHeader == null )
-            throw new AuthStringException("Bad header -- "+wwwAuthenticHeader);
-
-        // Better parsing!
         AuthDomain domain = new AuthDomain(request.uri());
         PasswordRecord passwordRecord = AuthEnv.getUsernamePassword(request.uri());
         if ( passwordRecord == null )
@@ -108,7 +132,7 @@ public class AuthLib {
                 break;
             }
             default:
-                throw new HttpException("Not an authentication scheme -- "+h);
+                throw new HttpException("Not an authentication scheme -- "+aHeader.authScheme);
         }
         String endpointURL = HttpLib.requestTarget(request.uri());
         recordAuthModifier(endpointURL, digestAuthModifier);
