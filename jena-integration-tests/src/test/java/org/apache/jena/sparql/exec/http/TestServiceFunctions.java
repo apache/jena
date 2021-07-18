@@ -25,27 +25,27 @@ import org.junit.Test;
 
 public class TestServiceFunctions {
     @Test public void service_timeout_1() {
-        long x = Service2.parseTimeout(Integer.valueOf(56));
+        long x = Service.parseTimeout(Integer.valueOf(56));
         assertEquals(56, x);
     }
     @Test public void service_timeout_2() {
-        long x = Service2.parseTimeout("1045");
+        long x = Service.parseTimeout("1045");
         assertEquals(1045, x);
     }
 
     @Test public void service_timeout_3() {
-        long x = Service2.parseTimeout(null);
+        long x = Service.parseTimeout(null);
         assertEquals(-1L, x);
     }
 
     @Test public void service_timeout_4() {
-        String level = LogCtl.getLevel(Service2.class);
+        String level = LogCtl.getLevel(Service.class);
         try {
-            LogCtl.setLevel(Service2.class, "ERROR");
-            long x = Service2.parseTimeout("Not a number");
+            LogCtl.setLevel(Service.class, "ERROR");
+            long x = Service.parseTimeout("Not a number");
             assertEquals(-1L, x);
         } finally {
-            LogCtl.setLevel(Service2.class, level);
+            LogCtl.setLevel(Service.class, level);
         }
     }
 }

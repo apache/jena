@@ -46,7 +46,7 @@ import org.apache.jena.sparql.util.Symbol ;
 
 /** Execution of OpService */
 
-public class Service {
+public class Service_AHC {
     /* define the symbols that Service will use to set the HttpQuery parameters */
     public static final String base = "http://jena.hpl.hp.com/Service#";
 

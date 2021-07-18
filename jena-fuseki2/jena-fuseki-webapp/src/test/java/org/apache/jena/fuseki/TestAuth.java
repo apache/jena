@@ -41,7 +41,7 @@ import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
-import org.apache.jena.sparql.engine.http.Service;
+import org.apache.jena.sparql.engine.http.Service_AHC;
 import org.apache.jena.sparql.modify.UpdateProcessRemoteBase;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.update.UpdateExecutionFactory;
@@ -200,9 +200,9 @@ public class TestAuth {
         Context authContext = new Context();
 
         HttpClient client = withBasicAuth(ANY, "allowed", "password");
-        authContext.put(Service.queryClient, client);
+        authContext.put(Service_AHC.queryClient, client);
         serviceContext.put(authServiceQuery, authContext);
-        qe.getContext().put(Service.serviceContext, serviceContext);
+        qe.getContext().put(Service_AHC.serviceContext, serviceContext);
         Assert.assertTrue(qe.execAsk());
     }
 
@@ -217,9 +217,9 @@ public class TestAuth {
         Context authContext = new Context();
 
         HttpClient client = withBasicAuth(ANY, "allowed", "password");
-        authContext.put(Service.queryClient, client);
+        authContext.put(Service_AHC.queryClient, client);
         serviceContext.put(authServiceQuery, authContext);
-        qe.getContext().put(Service.serviceContext, serviceContext);
+        qe.getContext().put(Service_AHC.serviceContext, serviceContext);
         Assert.assertTrue(qe.execAsk());
     }
 

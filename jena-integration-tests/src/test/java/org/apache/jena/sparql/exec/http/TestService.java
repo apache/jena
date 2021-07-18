@@ -45,7 +45,7 @@ import org.apache.jena.sparql.core.DatasetGraphZero;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
-import org.apache.jena.sparql.engine.http.Service;
+import org.apache.jena.sparql.engine.http.Service_AHC;
 import org.apache.jena.sparql.engine.main.iterator.QueryIterService;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
@@ -62,9 +62,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /** Test Service implementation code -- Service.exec */
-public class TestService2 {
+public class TestService {
 
-    static { Service.braveNewWorld = (op,cxt)->Service2.exec(op, cxt); }
+    static { Service_AHC.braveNewWorld = (op,cxt)->org.apache.jena.sparql.exec.http.Service.exec(op, cxt); }
 
     private static String SERVICE;
     private static EnvTest env;
@@ -82,7 +82,10 @@ public class TestService2 {
 
     /*package*/ static OpService makeOp(EnvTest env) {
         Node serviceNode = NodeFactory.createURI(env.datasetURL());
+        return makeOp(env, serviceNode);
+    }
 
+    /*package*/ static OpService makeOp(EnvTest env, Node serviceNode) {
         ElementGroup elt = new ElementGroup();
         Element elt1 = new ElementTriplesBlock(bgp);
         elt.addElement(elt1);
@@ -131,13 +134,13 @@ public class TestService2 {
 
     @Test public void service_exec_1() {
         OpService op = makeOp(env);
-        QueryIterator qIter = Service2.exec(op, new Context());
+        QueryIterator qIter = Service.exec(op, new Context());
         assertNotNull(qIter);
     }
 
     @Test public void service_exec_2() {
         OpService op = makeOpElt(env);
-        QueryIterator qIter = Service2.exec(op, new Context());
+        QueryIterator qIter = Service.exec(op, new Context());
         assertNotNull(qIter);
     }
 
@@ -146,7 +149,7 @@ public class TestService2 {
         dsg.executeWrite(()->dsg.add(SSE.parseQuad("(_ :s :p :o)")));
 
         OpService op = makeOpElt(env);
-        QueryIterator qIter = Service2.exec(op, new Context());
+        QueryIterator qIter = Service.exec(op, new Context());
         assertNotNull(qIter);
         assertTrue(qIter.hasNext());
         qIter.next();
@@ -296,7 +299,7 @@ public class TestService2 {
     public void service_query_disabled_local_dataset() {
         String queryString = "ASK { SERVICE <"+SERVICE+"?format=json> { BIND(now() AS ?now) } }";
         DatasetGraph localdsg = localDataset();
-        localdsg.getContext().set(Service2.httpServiceAllowed, false);
+        localdsg.getContext().set(Service.httpServiceAllowed, false);
         try ( RDFLink link = RDFLinkFactory.connect(localdsg) ) {
             boolean b = link.queryAsk(queryString);
         }
@@ -306,19 +309,19 @@ public class TestService2 {
     public void service_query_disabled_global() {
         String queryString = "ASK { SERVICE <"+SERVICE+"?format=json> { BIND(now() AS ?now) } }";
         try {
-            ARQ.getContext().set(Service2.httpServiceAllowed, false);
+            ARQ.getContext().set(Service.httpServiceAllowed, false);
             try ( RDFLink link = RDFLinkFactory.connect(localDataset()) ) {
                 boolean b = link.queryAsk(queryString);
             }
         } finally {
-            ARQ.getContext().unset(Service2.httpServiceAllowed);
+            ARQ.getContext().unset(Service.httpServiceAllowed);
         }
     }
 
     @Test (expected=QueryExecException.class)
     public void service_query_disabled_queryexec() {
         String queryString = "ASK { SERVICE <"+SERVICE+"?format=json> { BIND(now() AS ?now) } }";
-        Context context = Context.create().set(Service2.httpServiceAllowed, false);
+        Context context = Context.create().set(Service.httpServiceAllowed, false);
         try ( QueryExec qExec = QueryExec.newBuilder().query(queryString).dataset(localDataset()).context(context).build() ) {
             qExec.ask();
         }

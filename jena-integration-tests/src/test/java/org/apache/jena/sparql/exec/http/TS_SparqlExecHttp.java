@@ -28,7 +28,7 @@ import org.junit.runners.Suite;
     , TestQueryExecCleanServer.class
     , TestUpdateExecHTTP.class
     , TestServiceFunctions.class
-    , TestService2.class
+    , TestService.class
     , TestServiceAuth.class
 })
 

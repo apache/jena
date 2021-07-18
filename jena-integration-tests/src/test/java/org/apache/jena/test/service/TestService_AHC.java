@@ -38,7 +38,7 @@ import org.apache.jena.sparql.algebra.op.OpService ;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
-import org.apache.jena.sparql.engine.http.Service;
+import org.apache.jena.sparql.engine.http.Service_AHC;
 import org.apache.jena.sparql.modify.UpdateProcessRemoteBase ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.update.UpdateExecutionFactory ;
@@ -53,7 +53,7 @@ import org.junit.Test ;
  *  It causes INFO level messages if the network interface is not reachable.
  *  It does not cause tests to fail.
  */
-public class TestServiceSetup {
+public class TestService_AHC {
     private static final String SERVICE = "http://example.com:40000/";
 
     private static Object value ;

@@ -69,16 +69,14 @@ public class EnvTest {
         EnvTest.stop(env);
     }
 */
-
-
     public static boolean VERBOSE = false;
 
     public  final FusekiServer server;
     private final String dsName;
     private final DatasetGraph dataset;
     private final StringHolderServlet holder;
-    private final String badUser = "bad-u";
-    private final String badPassword = "bad-p";
+    private final String badUser        = "bad-u";
+    private final String badPassword    = "bad-p";
     private final String user;
     private final String password;
 
@@ -122,6 +120,7 @@ public class EnvTest {
             .port(0)
             .verbose(verbose)
             .enablePing(true)
+            .auth(AuthScheme.BASIC)
             .addServlet(data, holder)
             .add(dsName, dsg);
         if ( user != null ) {

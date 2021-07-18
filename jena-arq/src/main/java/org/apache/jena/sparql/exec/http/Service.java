@@ -44,15 +44,15 @@ import org.apache.jena.sparql.syntax.Element;
 import org.apache.jena.sparql.syntax.ElementSubQuery;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol ;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Execution of OpService */
 
-public class Service2 {
+public class Service {
+    private Service() {}
 
-
-    // ARQ namespace.
-
-    // ARQ.serviceParams
+    private static final Logger LOGGER = LoggerFactory.getLogger(Service.class);
 
     // [QExec] Put this in ARQ or ARQConstants
     public static final String base = ARQ.arqParamNS; //"http://jena.apache.org/ARQ/http#";
@@ -87,7 +87,7 @@ public class Service2 {
 
     private void oldCheckForOldParameters(Context context, Symbol oldSymbol) {
         if ( context.isDefined(oldSymbol) )
-            Log.warnOnce(Service2.class, "Service context parameter '"+oldSymbol.getSymbol()+"' no longer used - see ARQ constants for replacements.", oldSymbol);
+            Log.warnOnce(LOGGER, "Service context parameter '"+oldSymbol.getSymbol()+"' no longer used - see ARQ constants for replacements.", oldSymbol);
     }
 
     public static QueryIterator exec(OpService op, Context context) {
@@ -157,18 +157,18 @@ public class Service2 {
         if ( httpClient == null && context != null ) {
             // Check for old setting.
             if ( context.isDefined(oldQueryClient) )
-                Log.warn(Service2.class, "Deprecated context symbol "+oldQueryClient+". See "+httpQueryClient+".");
+                LOGGER.warn("Deprecated context symbol "+oldQueryClient+". See "+httpQueryClient+".");
 
             Object client = context.get(httpQueryClient);
             if ( client != null ) {
                 // Check for old HttpClient
                 if ( client instanceof org.apache.http.client.HttpClient ) {
-                    Log.warn(Service2.class, "Found Apache HttpClient for content symbol "+httpQueryClient+". Jena now uses java.net.http.HttpClient");
+                    LOGGER.warn("Found Apache HttpClient for content symbol "+httpQueryClient+". Jena now uses java.net.http.HttpClient");
                     client = null;
                 } else if ( client instanceof HttpClient ) {
                     httpClient = (HttpClient)client;
                 } else {
-                    Log.warn(Service2.class, "Not recognized "+httpQueryClient+" -> "+client);
+                    LOGGER.warn("Not recognized "+httpQueryClient+" -> "+client);
                 }
             }
         }
@@ -192,10 +192,10 @@ public class Service2 {
                 return ((Number)obj).longValue();
             if ( obj instanceof String )
                 return Long.parseLong((String)obj);
-            Log.warn(Service2.class, "Can't interpret timeout: " + obj);
+            LOGGER.warn("Can't interpret timeout: " + obj);
             return -1L;
         } catch (Exception ex) {
-            Log.warn(Service2.class, "Exception setting timeout (context) from: "+obj);
+            LOGGER.warn("Exception setting timeout (context) from: "+obj);
             return -1L;
         }
     }
@@ -229,7 +229,7 @@ public class Service2 {
             }
             return params;
         } catch(Throwable ex) {
-            Log.warn(Service2.class, "Failed to process "+obj+" : context value of ARQ.serviceParams");
+            LOGGER.warn("Failed to process "+obj+" : context value of ARQ.serviceParams");
             return null;
         }
     }

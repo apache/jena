@@ -25,7 +25,7 @@ import org.apache.jena.sparql.algebra.op.OpService ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.http.Service ;
+import org.apache.jena.sparql.engine.http.Service_AHC ;
 import org.apache.jena.sparql.engine.iterator.QueryIter;
 import org.apache.jena.sparql.engine.iterator.QueryIterCommonParent;
 import org.apache.jena.sparql.engine.iterator.QueryIterRepeatApply;
@@ -44,7 +44,7 @@ public class QueryIterService extends QueryIterRepeatApply
     public QueryIterService(QueryIterator input, OpService opService, ExecutionContext context)
     {
         super(input, context) ;
-        if ( context.getContext().isFalse(Service.serviceAllowed) )
+        if ( context.getContext().isFalse(Service_AHC.serviceAllowed) )
             throw new QueryExecException("SERVICE not allowed") ;
         this.opService = opService ;
     }
