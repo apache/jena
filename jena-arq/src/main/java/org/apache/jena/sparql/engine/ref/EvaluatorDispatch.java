@@ -31,7 +31,7 @@ import org.apache.jena.sparql.algebra.Table ;
 import org.apache.jena.sparql.algebra.TableFactory ;
 import org.apache.jena.sparql.algebra.op.* ;
 import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.http.Service ;
+import org.apache.jena.sparql.engine.http.Service_AHC ;
 
 /**  Class to provide type-safe eval() dispatch using the visitor support of Op */
 
@@ -216,7 +216,7 @@ public class EvaluatorDispatch implements OpVisitor
     @Override
     public void visit(OpService opService)
     {
-        QueryIterator qIter = Service.exec(opService, ARQ.getContext()) ;
+        QueryIterator qIter = Service_AHC.exec(opService, ARQ.getContext()) ;
         Table table = TableFactory.create(qIter) ;
         push(table) ;
     }

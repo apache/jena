@@ -209,12 +209,12 @@ public class HttpQuery extends Params {
      */
     public HttpClient getClient() {
         Context arqContext = ARQ.getContext();
-        if (arqContext.isDefined(Service.serviceContext)) {
+        if (arqContext.isDefined(Service_AHC.serviceContext)) {
             @SuppressWarnings("unchecked")
-            Map<String, Context> context = (Map<String, Context>) arqContext.get(Service.serviceContext);
+            Map<String, Context> context = (Map<String, Context>) arqContext.get(Service_AHC.serviceContext);
             if (context.containsKey(serviceURL)) {
                 Context serviceContext = context.get(serviceURL);
-                if (serviceContext.isDefined(Service.queryClient)) return serviceContext.get(Service.queryClient);
+                if (serviceContext.isDefined(Service_AHC.queryClient)) return serviceContext.get(Service_AHC.queryClient);
             }
         }
         return client;

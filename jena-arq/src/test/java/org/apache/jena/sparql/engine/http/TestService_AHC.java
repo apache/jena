@@ -50,14 +50,13 @@ import org.junit.Test ;
  *  It causes INFO level messages if the network interface is not reachable.
  *  It does not cause tests to fail.
  */
-public class TestService {
-    // TODO Move to jena-integration-tests and use a Fuseki server as target.
+public class TestService_AHC {
     private static final String SERVICE = "http://example.com:40000/";
 
     private static Object value ;
 
-    @BeforeClass public static void recordContextState() { value = ARQ.getContext().get(Service.serviceContext) ; }
-    @AfterClass public static void restoreContextState() { ARQ.getContext().set(Service.serviceContext, value) ; }
+    @BeforeClass public static void recordContextState() { value = ARQ.getContext().get(Service_AHC.serviceContext) ; }
+    @AfterClass public static void restoreContextState() { ARQ.getContext().set(Service_AHC.serviceContext, value) ; }
 
     @Test
     public void testNumericTimeout() {
@@ -69,10 +68,10 @@ public class TestService {
         Context context = new Context();
         ARQ.setNormalMode(context);
 
-        context.set(Service.queryTimeout, 10);
+        context.set(Service_AHC.queryTimeout, 10);
 
         try {
-            Service.exec(opService, context);
+            Service_AHC.exec(opService, context);
             Assert.fail("Expected QueryExceptionHTTP");
         } catch (QueryExceptionHTTP expected) {
             Throwable thrown = expected.getCause() ;
@@ -97,10 +96,10 @@ public class TestService {
         Context context = new Context();
         ARQ.setNormalMode(context);
 
-        context.set(Service.queryTimeout, "10");
+        context.set(Service_AHC.queryTimeout, "10");
 
         try {
-            Service.exec(opService, context);
+            Service_AHC.exec(opService, context);
             Assert.fail("Expected QueryExceptionHTTP");
         } catch (QueryExceptionHTTP expected) {
             Throwable thrown = expected.getCause() ;
@@ -124,10 +123,10 @@ public class TestService {
         Context context = new Context();
         ARQ.setNormalMode(context);
 
-        context.set(Service.queryTimeout, "10,10000");
+        context.set(Service_AHC.queryTimeout, "10,10000");
 
         try {
-            Service.exec(opService, context);
+            Service_AHC.exec(opService, context);
             Assert.fail("Expected QueryExceptionHTTP");
         } catch (QueryExceptionHTTP expected) {
             Throwable thrown = expected.getCause() ;
@@ -145,7 +144,7 @@ public class TestService {
     public void query_service_context_application_01() {
         // This test requires no service context to be set
         @SuppressWarnings("unchecked")
-        Map<String, Context> serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service.serviceContext);
+        Map<String, Context> serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service_AHC.serviceContext);
         if (serviceContextMap != null) {
             serviceContextMap.remove(SERVICE);
         }
@@ -166,10 +165,10 @@ public class TestService {
     public void query_service_context_application_02() {
         // This test requires us to set some authentication credentials for the
         // service
-        Map<String, Context> serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service.serviceContext);
+        Map<String, Context> serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service_AHC.serviceContext);
         if (serviceContextMap == null) {
-            ARQ.getContext().put(Service.serviceContext, new HashMap<String, Context>());
-            serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service.serviceContext);
+            ARQ.getContext().put(Service_AHC.serviceContext, new HashMap<String, Context>());
+            serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service_AHC.serviceContext);
         }
         if (serviceContextMap.get(SERVICE) == null) {
             serviceContextMap.put(SERVICE, new Context(ARQ.getContext()));
@@ -177,7 +176,7 @@ public class TestService {
         Context serviceContext = serviceContextMap.get(SERVICE);
         try {
             HttpClient testClient = HttpClients.custom().build();
-            serviceContext.put(Service.queryClient, testClient);
+            serviceContext.put(Service_AHC.queryClient, testClient);
 
             Query q = QueryFactory.create("ASK { }");
             QueryEngineHTTP engine = QueryExecutionFactory.createServiceRequest(SERVICE, q);
@@ -190,7 +189,7 @@ public class TestService {
             Assert.assertEquals(testClient, engine.getClient());
 
         } finally {
-            serviceContext.remove(Service.queryClient);
+            serviceContext.remove(Service_AHC.queryClient);
         }
     }
 
@@ -198,17 +197,17 @@ public class TestService {
     @Test
     public void query_service_context_application_03() {
         // This test requires us to set some timeouts for the service
-        Map<String, Context> serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service.serviceContext);
+        Map<String, Context> serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service_AHC.serviceContext);
         if (serviceContextMap == null) {
-            ARQ.getContext().put(Service.serviceContext, new HashMap<String, Context>());
-            serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service.serviceContext);
+            ARQ.getContext().put(Service_AHC.serviceContext, new HashMap<String, Context>());
+            serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service_AHC.serviceContext);
         }
         if (serviceContextMap.get(SERVICE) == null) {
             serviceContextMap.put(SERVICE, new Context(ARQ.getContext()));
         }
         Context serviceContext = serviceContextMap.get(SERVICE);
         try {
-            serviceContext.put(Service.queryTimeout, "10");
+            serviceContext.put(Service_AHC.queryTimeout, "10");
 
             Query q = QueryFactory.create("ASK { }");
             QueryEngineHTTP engine = QueryExecutionFactory.createServiceRequest(SERVICE, q);
@@ -220,7 +219,7 @@ public class TestService {
             Assert.assertTrue(engine.getAllowCompression());
             Assert.assertNull(engine.getClient());
         } finally {
-            serviceContext.remove(Service.queryTimeout);
+            serviceContext.remove(Service_AHC.queryTimeout);
         }
     }
 
@@ -228,17 +227,17 @@ public class TestService {
     @Test
     public void query_service_context_application_04() {
         // This test requires us to set some timeouts for the service
-        Map<String, Context> serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service.serviceContext);
+        Map<String, Context> serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service_AHC.serviceContext);
         if (serviceContextMap == null) {
-            ARQ.getContext().put(Service.serviceContext, new HashMap<String, Context>());
-            serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service.serviceContext);
+            ARQ.getContext().put(Service_AHC.serviceContext, new HashMap<String, Context>());
+            serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service_AHC.serviceContext);
         }
         if (serviceContextMap.get(SERVICE) == null) {
             serviceContextMap.put(SERVICE, new Context(ARQ.getContext()));
         }
         Context serviceContext = serviceContextMap.get(SERVICE);
         try {
-            serviceContext.put(Service.queryTimeout, "10,20");
+            serviceContext.put(Service_AHC.queryTimeout, "10,20");
 
             Query q = QueryFactory.create("ASK { }");
             QueryEngineHTTP engine = QueryExecutionFactory.createServiceRequest(SERVICE, q);
@@ -250,7 +249,7 @@ public class TestService {
             Assert.assertTrue(engine.getAllowCompression());
             Assert.assertNull(engine.getClient());
         } finally {
-            serviceContext.remove(Service.queryTimeout);
+            serviceContext.remove(Service_AHC.queryTimeout);
         }
     }
 
@@ -258,17 +257,17 @@ public class TestService {
     @Test
     public void query_service_context_application_05() {
         // This test requires us to set that GZip and Deflate are permitted
-        Map<String, Context> serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service.serviceContext);
+        Map<String, Context> serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service_AHC.serviceContext);
         if (serviceContextMap == null) {
-            ARQ.getContext().put(Service.serviceContext, new HashMap<String, Context>());
-            serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service.serviceContext);
+            ARQ.getContext().put(Service_AHC.serviceContext, new HashMap<String, Context>());
+            serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service_AHC.serviceContext);
         }
         if (serviceContextMap.get(SERVICE) == null) {
             serviceContextMap.put(SERVICE, new Context(ARQ.getContext()));
         }
         Context serviceContext = serviceContextMap.get(SERVICE);
         try {
-            serviceContext.put(Service.queryCompression, false);
+            serviceContext.put(Service_AHC.queryCompression, false);
 
             Query q = QueryFactory.create("ASK { }");
             QueryEngineHTTP engine = QueryExecutionFactory.createServiceRequest(SERVICE, q);
@@ -280,7 +279,7 @@ public class TestService {
             Assert.assertFalse(engine.getAllowCompression());
             Assert.assertNull(engine.getClient());
         } finally {
-            serviceContext.remove(Service.queryCompression);
+            serviceContext.remove(Service_AHC.queryCompression);
         }
     }
 
@@ -288,7 +287,7 @@ public class TestService {
     public void update_service_context_application_01() {
         // This test requires no service context to be set
         @SuppressWarnings("unchecked")
-        Map<String, Context> serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service.serviceContext);
+        Map<String, Context> serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service_AHC.serviceContext);
         if (serviceContextMap != null) {
             serviceContextMap.remove(SERVICE);
         }
@@ -305,10 +304,10 @@ public class TestService {
     @Test
     public void update_service_context_application_02() {
         // This test requires no service context to be set
-        Map<String, Context> serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service.serviceContext);
+        Map<String, Context> serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service_AHC.serviceContext);
         if (serviceContextMap == null) {
-            ARQ.getContext().put(Service.serviceContext, new HashMap<String, Context>());
-            serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service.serviceContext);
+            ARQ.getContext().put(Service_AHC.serviceContext, new HashMap<String, Context>());
+            serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service_AHC.serviceContext);
         }
         if (serviceContextMap.get(SERVICE) == null) {
             serviceContextMap.put(SERVICE, new Context(ARQ.getContext()));
@@ -316,7 +315,7 @@ public class TestService {
         Context serviceContext = serviceContextMap.get(SERVICE);
         try {
             HttpClient testClient = HttpClients.custom().build();
-            serviceContext.put(Service.queryClient, testClient);
+            serviceContext.put(Service_AHC.queryClient, testClient);
 
             UpdateRequest updates = UpdateFactory.create("CREATE GRAPH <http://example>");
             UpdateProcessRemoteBase engine = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(updates, SERVICE);
@@ -326,7 +325,7 @@ public class TestService {
             Assert.assertEquals(testClient, engine.getClient());
 
         } finally {
-            serviceContext.remove(Service.queryClient);
+            serviceContext.remove(Service_AHC.queryClient);
         }
     }
 }

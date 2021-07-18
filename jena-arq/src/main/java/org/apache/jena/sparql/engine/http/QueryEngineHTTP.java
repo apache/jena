@@ -166,7 +166,7 @@ public class QueryEngineHTTP implements QueryExecution {
      * <p>
      * Based off proposed patch for JENA-405 but modified to apply all relevant
      * configuration, this is in part also based off of the private
-     * {@code configureQuery()} method of the {@link Service} class though it
+     * {@code configureQuery()} method of the {@link Service_AHC} class though it
      * omits parameter merging since that will be done automatically whenever
      * the {@link QueryEngineHTTP} instance makes a query for remote submission.
      * </p>
@@ -179,18 +179,18 @@ public class QueryEngineHTTP implements QueryExecution {
             return;
 
         @SuppressWarnings("unchecked")
-        Map<String, Context> serviceContextMap = (Map<String, Context>) engine.context.get(Service.serviceContext);
+        Map<String, Context> serviceContextMap = (Map<String, Context>) engine.context.get(Service_AHC.serviceContext);
         if (serviceContextMap != null && serviceContextMap.containsKey(serviceURI)) {
             Context serviceContext = serviceContextMap.get(serviceURI);
             if (log.isDebugEnabled())
                 log.debug("Endpoint URI {} has SERVICE Context: {} ", serviceURI, serviceContext);
 
-            // Apply behavioral options
-            engine.setAllowCompression(serviceContext.isTrueOrUndef(Service.queryCompression));
+            // Apply behavioural options
+            engine.setAllowCompression(serviceContext.isTrueOrUndef(Service_AHC.queryCompression));
             applyServiceTimeouts(engine, serviceContext);
 
             // Apply context-supplied client settings
-            HttpClient client = serviceContext.get(Service.queryClient);
+            HttpClient client = serviceContext.get(Service_AHC.queryClient);
 
             if (client != null) {
                 if (log.isDebugEnabled())
@@ -209,8 +209,8 @@ public class QueryEngineHTTP implements QueryExecution {
      *            Context
      */
     private static void applyServiceTimeouts(QueryEngineHTTP engine, Context context) {
-        if (context.isDefined(Service.queryTimeout)) {
-            Object obj = context.get(Service.queryTimeout);
+        if (context.isDefined(Service_AHC.queryTimeout)) {
+            Object obj = context.get(Service_AHC.queryTimeout);
             if (obj instanceof Number) {
                 int x = ((Number) obj).intValue();
                 engine.setTimeout(-1, x);
@@ -689,11 +689,11 @@ public class QueryEngineHTTP implements QueryExecution {
         httpQuery.setAllowCompression(allowCompression);
 
         // check for service context overrides
-        if (context.isDefined(Service.serviceContext)) {
-            Map<String, Context> servicesContext = context.get(Service.serviceContext);
+        if (context.isDefined(Service_AHC.serviceContext)) {
+            Map<String, Context> servicesContext = context.get(Service_AHC.serviceContext);
             if (servicesContext.containsKey(service)) {
                 Context serviceContext = servicesContext.get(service);
-                if (serviceContext.isDefined(Service.queryClient)) client = serviceContext.get(Service.queryClient);
+                if (serviceContext.isDefined(Service_AHC.queryClient)) client = serviceContext.get(Service_AHC.queryClient);
             }
         }
         httpQuery.setClient(client);
