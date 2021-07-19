@@ -41,7 +41,6 @@ public class QueryExecutionAdapter implements QueryExecution
     // Pure adapter. Does not support timeout or initial bindings.
     private final QueryExec qExec;
     private final Dataset dataset;
-//    //public static QueryExecBuilder create() { return QueryExecBuilder.create(); }
 
     // [QExec] Move to QueryExecution
     public static QueryExecution adapt(QueryExec qExec) {

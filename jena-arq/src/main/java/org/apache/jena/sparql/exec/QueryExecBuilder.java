@@ -31,6 +31,7 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.*;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.EngineLib;
 import org.apache.jena.sparql.engine.QueryEngineFactory;
@@ -90,6 +91,12 @@ public class QueryExecBuilder {
 
     public QueryExecBuilder dataset(DatasetGraph dsg) {
         this.dataset = dsg;
+        return this;
+    }
+
+    public QueryExecBuilder graph(Graph graph) {
+        DatasetGraph dsg = DatasetGraphFactory.wrap(graph);
+        dataset(dsg);
         return this;
     }
 

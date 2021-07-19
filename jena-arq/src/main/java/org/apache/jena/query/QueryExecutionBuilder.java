@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -78,6 +79,12 @@ public class QueryExecutionBuilder {
         return this;
     }
 
+    public QueryExecutionBuilder model(Model model) {
+        Graph graph = model.getGraph();
+        builder.graph(graph);
+        return this;
+    }
+
     public QueryExecutionBuilder set(Symbol symbol, Object value) {
         builder.set(symbol, value);
         return this;
@@ -99,8 +106,10 @@ public class QueryExecutionBuilder {
     }
 
     public QueryExecutionBuilder initialBinding(QuerySolution querySolution) {
-        Binding binding = BindingLib.toBinding(querySolution);
-        initialBinding(binding);
+        if ( querySolution != null ) {
+            Binding binding = BindingLib.toBinding(querySolution);
+            initialBinding(binding);
+        }
         return this;
     }
 

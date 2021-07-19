@@ -246,7 +246,7 @@ public class HttpRDF {
 
     public static void httpDeleteGraph(HttpClient httpClient, String url) {
         URI uri = toRequestURI(url);
-        HttpRequest requestData = HttpLib.newBuilderFor(url)
+        HttpRequest requestData = HttpLib.requestBuilderFor(url)
             .DELETE()
             .uri(uri)
             .build();

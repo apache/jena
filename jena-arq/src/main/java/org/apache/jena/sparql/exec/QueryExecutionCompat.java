@@ -45,6 +45,10 @@ public class QueryExecutionCompat extends QueryExecutionAdapter {
     private QueryExec qExecHere = null;
     private Dataset datasetHere = null;
 
+    public static QueryExecution compatibility(QueryExecBuilder qExec) {
+        return new QueryExecutionCompat(qExec);
+    }
+
     @SuppressWarnings("deprecation")
     public QueryExecutionCompat(QueryExecBuilder qExecBuilder) {
         super(null);
