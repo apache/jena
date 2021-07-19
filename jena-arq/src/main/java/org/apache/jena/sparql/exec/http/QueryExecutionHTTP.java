@@ -16,24 +16,24 @@
  * limitations under the License.
  */
 
-package arq.examples;
+package org.apache.jena.sparql.exec.http;
 
-import org.apache.jena.query.* ;
-import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.sparql.exec.QueryExecutionAdapter;
 
-public class ExampleDBpedia1
-{
-    static public void main(String... argv) {
-        String queryString = 
-            "SELECT * WHERE { " +
-            "    SERVICE <http://dbpedia-live.openlinksw.com/sparql?timeout=2000> { " +
-            "        SELECT DISTINCT ?company where {?company a <http://dbpedia.org/ontology/Company>} LIMIT 20" +
-            "    }" +
-            "}" ;
-        Query query = QueryFactory.create(queryString) ;
-        try (QueryExecution qexec = QueryExecutionFactory.create(query, ModelFactory.createDefaultModel())) {
-            ResultSet rs = qexec.execSelect() ;
-            ResultSetFormatter.out(System.out, rs, query) ;
-        }
+/**
+ * A query execution implementation where queries are executed
+ * against a remote service over HTTP.
+ */
+public class QueryExecutionHTTP extends QueryExecutionAdapter {
+
+    public static QueryExecutionHTTPBuilder create() { return QueryExecutionHTTPBuilder.newBuilder(); }
+
+    public QueryExecutionHTTP(QueryExecHTTP qExecHTTP) {
+        super(qExecHTTP);
+    }
+
+    /** Get the content-type of the response. Only valid after successful execution of the query. */
+    public String getHttpResponseContentType() {
+        return ((QueryExecHTTP)get()).getHttpResponseContentType();
     }
 }

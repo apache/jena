@@ -27,30 +27,30 @@ import java.util.Objects;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.sys.ExecHTTPBuilder;
 import org.apache.jena.query.QueryException;
-import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.query.QueryExecution;
 
-public class QueryExecHTTPBuilder extends ExecHTTPBuilder<QueryExec, QueryExecHTTPBuilder> {
+public class QueryExecutionHTTPBuilder extends ExecHTTPBuilder<QueryExecution, QueryExecutionHTTPBuilder> {
 
-    public static QueryExecHTTPBuilder newBuilder() { return new QueryExecHTTPBuilder(); }
+    public static QueryExecutionHTTPBuilder newBuilder() { return new QueryExecutionHTTPBuilder(); }
 
-    private QueryExecHTTPBuilder() {}
+    private QueryExecutionHTTPBuilder() {}
 
     @Override
-    public QueryExecHTTP build() {
-      Objects.requireNonNull(serviceURL, "No service URL");
-      if ( queryString == null && query == null )
-          throw new QueryException("No query for QueryExecHTTP");
-      HttpClient hClient = HttpEnv.getHttpClient(serviceURL, httpClient);
-      return new QueryExecHTTP(serviceURL, query, queryString, urlLimit,
-                               hClient, new HashMap<>(httpHeaders), Params.create(params), context,
-                               copyArray(defaultGraphURIs),
-                               copyArray(namedGraphURIs),
-                               sendMode, appAcceptHeader,
-                               timeout, timeoutUnit);
+    public QueryExecutionHTTP build() {
+        Objects.requireNonNull(serviceURL, "No service URL");
+        if ( queryString == null && query == null )
+            throw new QueryException("No query for QueryExecutionHTTP");
+        HttpClient hClient = HttpEnv.getHttpClient(serviceURL, httpClient);
+        QueryExecHTTP qExec = new QueryExecHTTP(serviceURL, query, queryString, urlLimit,
+                                                hClient, new HashMap<>(httpHeaders), Params.create(params), context,
+                                                copyArray(defaultGraphURIs), copyArray(namedGraphURIs),
+                                                sendMode, appAcceptHeader,
+                                                timeout, timeoutUnit);
+        return new QueryExecutionHTTP(qExec);
     }
 
     @Override
-    protected QueryExecHTTPBuilder thisBuilder() {
+    protected QueryExecutionHTTPBuilder thisBuilder() {
         return this;
     }
 }

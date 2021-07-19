@@ -30,15 +30,20 @@ public class ExampleDBpedia3
 {
     static public void main(String... argv) {
         String serviceURI  = "http://dbpedia-live.openlinksw.com/sparql" ;
-        String queryString = 
+        String queryString =
             "SELECT * WHERE { " +
             "    SERVICE <" + serviceURI + "> { " +
             "        SELECT DISTINCT ?company where {?company a <http://dbpedia.org/ontology/Company>} LIMIT 20" +
             "    }" +
             "}" ;
-        
+
         Query query = QueryFactory.create(queryString) ;
+
+        // Local execution which uses SERBVICE for remote access.
+        QueryExecutionBuilder.newBuilder().context(null);
+
         try(QueryExecution qexec = QueryExecutionFactory.create(query, ModelFactory.createDefaultModel())) {
+
             Map<String, Map<String,List<String>>> serviceParams = new HashMap<>() ;
             Map<String,List<String>> params = new HashMap<>() ;
             List<String> values = new ArrayList<>() ;
@@ -46,6 +51,8 @@ public class ExampleDBpedia3
             params.put("timeout", values) ;
             serviceParams.put(serviceURI, params) ;
             qexec.getContext().set(ARQ.serviceParams, serviceParams) ;
+
+
             ResultSet rs = qexec.execSelect() ;
             ResultSetFormatter.out(System.out, rs, query) ;
         }

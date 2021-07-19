@@ -18,9 +18,7 @@
 
 package org.apache.jena.sparql.exec.http;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -40,18 +38,18 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.DatasetGraphZero;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
-import org.apache.jena.sparql.engine.http.Service_AHC;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.test.conn.EnvTest;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /** Test Service implementation code -- Service.exec */
 public class TestServiceAuth {
-
-    static { Service_AHC.braveNewWorld = (op,cxt)->org.apache.jena.sparql.exec.http.Service.exec(op, cxt); }
 
     private static String SERVICE;
     private static final String USER = "user13";
@@ -77,10 +75,8 @@ public class TestServiceAuth {
         QueryIterator qIter = Service.exec(op, new Context());
     }
 
-    @Ignore("Needs SERVICE URL authority handling")
     @Test
     public void service_auth_url_auth_1() {
-
         // Service request with users/password in it. Not ideal.
         String authorityURL = "http://"+USER+":"+PASSWORD+"@localhost:"+env.server.getPort()+env.dsName();
         Node serviceNode = NodeFactory.createURI(authorityURL);
@@ -90,25 +86,36 @@ public class TestServiceAuth {
 
     @Test
     public void service_auth_url_auth_2() {
-        // [QExec] Move to Service code.
-        System.err.println("Needs SERVICE URL authority handling");
         String serviceURL = "http://"+USER+":"+PASSWORD+"@localhost:"+env.server.getPort()+env.dsName();
-        URI uri = URI.create(serviceURL);
-        if ( uri.getUserInfo() != null ) {
-            String[] up = uri.getUserInfo().split(":");
-            // The auth key will be with u:p making it unique.
-            AuthEnv.registerUsernamePassword(URI.create(serviceURL), up[0], up[1]);
+        URI key = URI.create(serviceURL);
+
+        Query query = QueryFactory.create("SELECT * { SERVICE <"+serviceURL+"> { BIND( 'X' as ?X) } }");
+        try ( QueryExec qExec = QueryExec.newBuilder().query(query).dataset(env.dsg()).build() ) {
+            qExec.select().materialize();
+        }
+        // Check no registration in place.
+        assertNull(AuthEnv.getUsernamePassword(key));
+    }
+
+    @Test
+    public void service_auth_url_auth_4() {
+        String serviceURL = "http://"+USER+":"+PASSWORD+"@localhost:"+env.server.getPort()+env.dsName();
+        Query query = QueryFactory.create("SELECT * { SERVICE <"+serviceURL+"> { BIND( 'X' as ?X) } }");
+        try ( QueryExec qExec = QueryExec.newBuilder().query(query).dataset(env.dsg()).build() ) {
+            qExec.select().materialize();
         }
 
-        try {
-            Query query = QueryFactory.create("SELECT * { SERVICE <"+serviceURL+"> { BIND( 'X' as ?X) } }");
-            try ( QueryExec qExec = QueryExec.newBuilder().query(query).dataset(env.dsg()).build() ) {
-                qExec.select().materialize();
-            }
-        } finally {
-            AuthEnv.unregisterUsernamePassword(URI.create(serviceURL));
+        // And again but no auth.
+        String serviceURL2 = "http://localhost:"+env.server.getPort()+env.dsName();
+        Query query2 = QueryFactory.create("SELECT * { SERVICE <"+serviceURL2+"> { BIND( 'X' as ?X) } }");
+        try ( QueryExec qExec = QueryExec.newBuilder().query(query2).dataset(env.dsg()).build() ) {
+            qExec.select().materialize();
+            fail("Expected 401");
+        } catch ( QueryExceptionHTTP ex) {
+            assertEquals(401, ex.getStatusCode());
         }
     }
+
 
     @Test public void service_auth_good_registry_1() {
         HttpClient hc = env.httpClientAuthGood();

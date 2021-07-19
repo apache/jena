@@ -42,8 +42,8 @@ public abstract class ExecHTTPBuilder<X, Y> {
     protected Map<String, String> httpHeaders = new HashMap<>();
     protected Params params = Params.create();
     protected Context context = null;
-    // Accept: Handled as special case because the defaults varies by query type.
-    protected String appExplicitAcceptHeader = null;
+    // Accept choice by the application
+    protected String appAcceptHeader = null;
     protected long timeout = -1;
     protected TimeUnit timeoutUnit = null;
 
@@ -196,7 +196,7 @@ public abstract class ExecHTTPBuilder<X, Y> {
 
     public Y acceptHeader(String acceptHeader) {
         Objects.requireNonNull(acceptHeader);
-        this.appExplicitAcceptHeader = acceptHeader;
+        this.appAcceptHeader = acceptHeader;
         return thisBuilder();
     }
 

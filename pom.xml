@@ -104,6 +104,9 @@
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
+    <!-- MPOM-255 for Apache parent POM v24
+    <project.build.outputTimestamp>1</project.build.outputTimestamp>
+    -->
   </properties>
 
   <issueManagement>

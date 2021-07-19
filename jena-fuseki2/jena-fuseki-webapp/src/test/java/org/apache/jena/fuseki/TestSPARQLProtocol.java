@@ -27,7 +27,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.query.*;
 import org.apache.jena.riot.WebContent;
-import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
+import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
 import org.apache.jena.sparql.util.Convert;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
@@ -63,9 +63,12 @@ public class TestSPARQLProtocol extends AbstractFusekiTest
     @Test
     public void query_02() {
         Query query = QueryFactory.create("SELECT * { ?s ?p ?o }");
-        QueryEngineHTTP engine = QueryExecutionFactory.createServiceRequest(serviceQuery(), query);
-        engine.setSelectContentType(WebContent.contentTypeResultsJSON);
-        ResultSet rs = engine.execSelect();
+        QueryExecution qExec = QueryExecutionHTTP.create()
+                .service(serviceQuery())
+                .query(query)
+                .acceptHeader(WebContent.contentTypeResultsJSON)
+                .build();
+        ResultSet rs = qExec.execSelect();
         int x = ResultSetFormatter.consume(rs);
         assertTrue(x != 0);
     }

@@ -34,6 +34,7 @@ import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.QueryExecBuilder;
 import org.apache.jena.sparql.exec.QueryExecutionCompat;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.Symbol;
 
 /**
  * Query Execution for local datasets - builder style.
@@ -74,6 +75,16 @@ public class QueryExecutionBuilder {
 
     public QueryExecutionBuilder dataset(Dataset dataset) {
         builder.dataset(dataset.asDatasetGraph());
+        return this;
+    }
+
+    public QueryExecutionBuilder set(Symbol symbol, Object value) {
+        builder.set(symbol, value);
+        return this;
+    }
+
+    public QueryExecutionBuilder set(Symbol symbol, boolean value) {
+        builder.set(symbol, value);
         return this;
     }
 

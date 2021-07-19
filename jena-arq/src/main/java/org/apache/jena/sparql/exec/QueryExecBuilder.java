@@ -38,6 +38,7 @@ import org.apache.jena.sparql.engine.QueryEngineRegistry;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.Symbol;
 
 /**
  * Query execution for local datasets - builder style.
@@ -53,20 +54,24 @@ public class QueryExecBuilder {
         return builder;
     }
 
-    public QueryExecBuilder() {}
-
     private static final long UNSET         = -1;
 
     private DatasetGraph dataset            = null;
     private Query        query              = null;
-    private Context      context            = null;
-    // For migration to QueryExec, we need to update the context from QueryExecution.
-    private boolean      contextSetup       = false;
+    // Items added with "set(,)"
+    private Context      addedContext       = new Context();
+    // Explicitly given base context (defaults to a copy of ARQ.getContext() merged with dataset context.
+    private Context      baseContext        = null;
+    // Migration - context when built, but available early to QueryExecution
+    private Context      builtContext        = null;
+
     private Binding      initialBinding     = null;
     private long         timeout1           = UNSET;
     private TimeUnit     timeoutTimeUnit1   = null;
     private long         timeout2           = UNSET;
     private TimeUnit     timeoutTimeUnit2   = null;
+
+    private QueryExecBuilder() { }
 
     public QueryExecBuilder query(Query query) {
         this.query = query;
@@ -88,16 +93,19 @@ public class QueryExecBuilder {
         return this;
     }
 
-//    public QExecBuilder dataset(Dataset dataset) {
-//        this.dataset = dataset.asDatasetGraph();
-//        return this;
-//    }
+    public QueryExecBuilder set(Symbol symbol, Object value) {
+        addedContext.set(symbol, value);
+        return this;
+    }
+
+    public QueryExecBuilder set(Symbol symbol, boolean value) {
+        addedContext.set(symbol, value);
+        return this;
+    }
 
     public QueryExecBuilder context(Context context) {
-        if ( context == null )
-            return this;
-        ensureContext();
-        this.context.putAll(context);
+        this.baseContext = context;
+        this.addedContext.clear();
         return this;
     }
 
@@ -107,17 +115,13 @@ public class QueryExecBuilder {
     /** @deprecated Do not use - migration only */
     @Deprecated
     public Context setupContext() {
-        if ( ! contextSetup ) {
-            if ( context == null )
-                context = buildContext(context, dataset);
-            contextSetup = true;
-        }
-        return context;
+        return builtContext();
     }
 
-    private void ensureContext() {
-        if ( context == null )
-            context = new Context();
+    private Context builtContext() {
+        if ( builtContext == null )
+            builtContext = buildContext(baseContext, dataset, addedContext);
+        return builtContext;
     }
 
     public QueryExecBuilder initialBinding(Binding binding) {
@@ -175,10 +179,8 @@ public class QueryExecBuilder {
 
     public QueryExec build() {
         Objects.requireNonNull(query, "Query for QueryExecution");
-
         query.setResultVars();
-
-        Context cxt = contextSetup ? context : buildContext(context, dataset);
+        Context cxt = builtContext();
 
         QueryEngineFactory f = QueryEngineRegistry.get().find(query, dataset, cxt);
         if ( f == null ) {
@@ -202,18 +204,24 @@ public class QueryExecBuilder {
         return qExec;
     }
 
-    private static Context buildContext(Context context, DatasetGraph dataset) {
-        if ( context == null ) {
-            // Default is to take the global context, the copy it and merge in the dataset context.
-            // If a context is specified by context(Context), use that as given.
-            // The query context is modified to insert the current time.
-            Context cxt = ARQ.getContext();
-            cxt = Context.setupContextForDataset(cxt, dataset) ;
-            return cxt;
-        } else {
-            // Isolate to snapshot it and to allow it to be  modified.
-            return context.copy();
-        }
+    private Context dftContext() {
+        return Context.setupContextForDataset(ARQ.getContext(), dataset) ;
+    }
+
+    private static Context buildContext(Context baseContext, DatasetGraph dataset, Context addedContext) {
+        // Default is to take the global context, the copy it and merge in the dataset context.
+        // If a context is specified by context(Context), use that as given.
+        // The query context is modified to insert the current time.
+        // This copy-isolates.
+
+        Context cxt;
+        if ( baseContext == null )
+            cxt = Context.setupContextForDataset(ARQ.getContext(), dataset) ;
+        else
+            cxt = baseContext;
+        if ( addedContext != null )
+            cxt.putAll(addedContext);
+        return cxt;
     }
 
     // ==> BindingUtils

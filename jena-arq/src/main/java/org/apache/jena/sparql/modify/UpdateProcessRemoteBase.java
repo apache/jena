@@ -20,7 +20,6 @@ package org.apache.jena.sparql.modify;
 
 import java.util.ArrayList ;
 import java.util.List ;
-import java.util.Map ;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.protocol.HttpContext ;
@@ -28,8 +27,7 @@ import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.http.HttpParams ;
 import org.apache.jena.sparql.engine.http.Params ;
-import org.apache.jena.sparql.engine.http.QueryEngineHTTP ;
-import org.apache.jena.sparql.engine.http.Service_AHC ;
+import org.apache.jena.sparql.exec.http.Service;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol ;
 import org.apache.jena.update.UpdateProcessor ;
@@ -98,22 +96,25 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
      *            Service URI
      */
     private static void applyServiceConfig(String serviceURI, UpdateProcessRemoteBase engine) {
-        @SuppressWarnings("unchecked")
-        Map<String, Context> serviceContextMap = (Map<String, Context>) engine.context.get(Service_AHC.serviceContext);
-        if (serviceContextMap != null && serviceContextMap.containsKey(serviceURI)) {
-            Context serviceContext = serviceContextMap.get(serviceURI);
-            if (log.isDebugEnabled())
-                log.debug("Endpoint URI {} has SERVICE Context: {} ", serviceURI, serviceContext);
+        if ( engine.context.isDefined(Service.oldServiceContext) )
+            System.err.println("************ UpdateProcessRemoteBase.applyServiceConfig NOT IMPLEMENTED *************");
 
-            // Apply client settings
-            HttpClient client = serviceContext.get(Service_AHC.queryClient);
-
-            if (client != null) {
-                if (log.isDebugEnabled())
-                    log.debug("Using context-supplied client for endpoint URI {}", serviceURI);
-                engine.setClient(client);
-            }
-        }
+//        @SuppressWarnings("unchecked")
+//        Map<String, Context> serviceContextMap = (Map<String, Context>) engine.context.get(Service_AHC.serviceContext);
+//        if (serviceContextMap != null && serviceContextMap.containsKey(serviceURI)) {
+//            Context serviceContext = serviceContextMap.get(serviceURI);
+//            if (log.isDebugEnabled())
+//                log.debug("Endpoint URI {} has SERVICE Context: {} ", serviceURI, serviceContext);
+//
+//            // Apply client settings
+//            HttpClient client = serviceContext.get(Service_AHC.queryClient);
+//
+//            if (client != null) {
+//                if (log.isDebugEnabled())
+//                    log.debug("Using context-supplied client for endpoint URI {}", serviceURI);
+//                engine.setClient(client);
+//            }
+//        }
     }
 
     @Override
