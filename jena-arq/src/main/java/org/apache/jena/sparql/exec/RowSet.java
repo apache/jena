@@ -44,7 +44,7 @@ public interface RowSet extends Iterator<Binding> {
 
     /**
      * Return a {@code RowSet} that is not connected to the original source.
-     * This consumes this RowSet - the iterator will have ended after a call to this method.
+     * This consumes this ResultSet and produces another one.
      */
     public default RowSet materialize() {
         return rewindable();

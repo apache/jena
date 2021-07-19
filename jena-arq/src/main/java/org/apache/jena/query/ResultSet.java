@@ -79,4 +79,12 @@ public interface ResultSet extends Iterator<QuerySolution>
     public default ResultSetRewindable rewindable() {
         return ResultSetFactory.makeRewindable(this);
     }
+
+    /**
+     * Return a {@code ResultSet} that is not connected to the original source.
+     * This consumes this ResultSet and produces another one.
+     */
+    public default ResultSet materialise() {
+        return rewindable();
+    }
 }
