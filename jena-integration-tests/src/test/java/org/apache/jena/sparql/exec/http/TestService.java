@@ -45,7 +45,6 @@ import org.apache.jena.sparql.core.DatasetGraphZero;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
-import org.apache.jena.sparql.engine.http.Service_AHC;
 import org.apache.jena.sparql.engine.main.iterator.QueryIterService;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
@@ -63,8 +62,6 @@ import org.junit.Test;
 
 /** Test Service implementation code -- Service.exec */
 public class TestService {
-
-    static { Service_AHC.braveNewWorld = (op,cxt)->org.apache.jena.sparql.exec.http.Service.exec(op, cxt); }
 
     private static String SERVICE;
     private static EnvTest env;

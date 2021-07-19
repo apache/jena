@@ -47,6 +47,7 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
+import org.apache.jena.http.auth.AuthEnv;
 import org.apache.jena.http.auth.AuthLib;
 import org.apache.jena.http.sys.HttpRequestModifier;
 import org.apache.jena.http.sys.RegistryRequestModifier;
@@ -346,10 +347,21 @@ public class HttpLib {
         return path+"?"+qs;
     }
 
-    // [QExec] is it worth having this special? */
+    /** URI, without query string and fragment. */
+    public static URI endpointURI(URI uri) {
+        if ( uri.getRawQuery() == null && uri.getRawFragment() == null )
+            return uri;
+        try {
+            // Same URI except without query strinf an fragment.
+            return new URI(uri.getScheme(), uri.getRawAuthority(), uri.getRawPath(), null, null);
+        } catch (URISyntaxException x) {
+            throw new IllegalArgumentException(x.getMessage(), x);
+        }
+    }
+
     /** Return a HttpRequest */
     public static HttpRequest newGetRequest(String url, Consumer<HttpRequest.Builder> modifier) {
-        HttpRequest.Builder builder = HttpLib.newBuilderFor(url).uri(toRequestURI(url)).GET();
+        HttpRequest.Builder builder = HttpLib.requestBuilderFor(url).uri(toRequestURI(url)).GET();
         if ( modifier != null )
             modifier.accept(builder);
         return builder.build();
@@ -382,14 +394,14 @@ public class HttpLib {
         return requestURL;
     }
 
-    public static HttpRequest.Builder newBuilderFor(String serviceEndpoint) {
+    public static HttpRequest.Builder requestBuilderFor(String serviceEndpoint) {
         HttpRequest.Builder requestBuilder= HttpRequest.newBuilder();
         return AuthLib.addAuth(requestBuilder, serviceEndpoint);
     }
 
     // [QExec] Sort out building.
-    public static Builder newBuilder(String url, Map<String, String> httpHeaders, long readTimeout, TimeUnit readTimeoutUnit) {
-        HttpRequest.Builder builder = HttpLib.newBuilderFor(url);
+    public static Builder requestBuilder(String url, Map<String, String> httpHeaders, long readTimeout, TimeUnit readTimeoutUnit) {
+        HttpRequest.Builder builder = HttpLib.requestBuilderFor(url);
         headers(builder, httpHeaders);
         builder.uri(toRequestURI(url));
         if ( readTimeout >= 0 )
@@ -454,36 +466,6 @@ public class HttpLib {
 //        return builder;
 //    }
 
-
-//    /** Execute a request, return a {@code HttpResponse<InputStream>} which can be passed to
-//     * {@link #handleHttpStatusCode(HttpResponse)}.
-//     * This function handles authentication (basic and digest).
-//     * "endpointURL" is the key used for registering session information locally.
-//     * @param httpClient
-//     * @param httpRequestBuilder
-//     * @param endpointURL - the service, with host, without query string
-//     * @return HttpResponse
-//     */
-//    public
-//    /*package*/ static HttpResponse<InputStream> execute(HttpClient httpClient,
-//                                                         HttpRequest.Builder httpRequestBuilder,
-//                                                         String endpointURL) {
-//        if ( false ) {
-//            HttpRequest httpRequest = httpRequestBuilder.build();
-//            return executeJDK(httpClient, httpRequest);
-//        }
-//
-//        try {
-//            return AuthLib.authExecute(httpClient, httpRequestBuilder, endpointURL, BodyHandlers.ofInputStream());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
-//
-
     /** Execute a request, return a {@code HttpResponse<InputStream>} which
      * can be passed to {@link #handleHttpStatusCode(HttpResponse)}.
      * @param httpClient
@@ -492,8 +474,22 @@ public class HttpLib {
      */
     public
     /*package*/ static HttpResponse<InputStream> execute(HttpClient httpClient, HttpRequest httpRequest) {
-        return AuthLib.authExecute(httpClient, httpRequest, BodyHandlers.ofInputStream());
-        //return executeJDK(httpClient, httpRequest, BodyHandlers.ofInputStream());
+        // No jena-supplied authentication handling.
+        // return executeJDK(httpClient, httpRequest, BodyHandlers.ofInputStream());
+        URI uri = httpRequest.uri();
+        URI key = null;
+        if ( uri.getUserInfo() != null ) {
+            String[] up = uri.getUserInfo().split(":");
+            key = HttpLib.endpointURI(uri);
+            // The auth key will be with u:p making it specific.
+            AuthEnv.registerUsernamePassword(key, up[0], up[1]);
+        }
+        try {
+            return AuthLib.authExecute(httpClient, httpRequest, BodyHandlers.ofInputStream());
+        } finally {
+            if ( key != null )
+                AuthEnv.unregisterUsernamePassword(key);
+        }
     }
 
     /**
@@ -536,16 +532,10 @@ public class HttpLib {
         handleResponseNoBody(response);
     }
 
-//    /** Push data. POST, PUT, PATCH request, then expect content in the response body. */
-//    public static TypedInputStream httpPushDataRtn(HttpClient httpClient, Push style, String url, Consumer<HttpRequest.Builder> modifier, BodyPublisher body) {
-//        HttpResponse<InputStream> response = httpPushWithResponse(httpClient, style, url, modifier, body);
-//        return handleResponseTypedInputStream(response);
-//    }
-
     // Worker
     /*package*/ static HttpResponse<InputStream> httpPushWithResponse(HttpClient httpClient, Push style, String url, Consumer<HttpRequest.Builder> modifier, BodyPublisher body) {
         URI uri = toRequestURI(url);
-        HttpRequest.Builder builder = newBuilderFor(url);
+        HttpRequest.Builder builder = requestBuilderFor(url);
         builder.uri(uri);
         builder.method(style.method(), body);
         if ( modifier != null )

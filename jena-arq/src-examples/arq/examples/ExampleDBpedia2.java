@@ -18,22 +18,28 @@
 
 package arq.examples;
 
-import org.apache.jena.query.* ;
-import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.query.*;
+import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
+import org.apache.jena.sparql.util.Context;
 
 public class ExampleDBpedia2
 {
-    static public void main(String... argv) {
-        String queryString = 
-            "SELECT * WHERE { " +
-            "    SERVICE <http://dbpedia-live.openlinksw.com/sparql?timeout=2000> { " +
-            "        SELECT DISTINCT ?company where {?company a <http://dbpedia.org/ontology/Company>} LIMIT 20" +
-            "    }" +
-            "}" ;
-        Query query = QueryFactory.create(queryString) ;
-        try (QueryExecution qexec = QueryExecutionFactory.create(query, ModelFactory.createDefaultModel())) {
-            ResultSet rs = qexec.execSelect() ;
-            ResultSetFormatter.out(System.out, rs, query) ;
+    static public void main(String...argv)
+    {
+        String queryStr = "select distinct ?Concept where {[] a ?Concept} LIMIT 10";
+        Query query = QueryFactory.create(queryStr);
+
+        Context cxt = ARQ.getContext().copy();
+
+        // Build-execute
+        try ( QueryExecution qExec = QueryExecutionHTTP.create()
+                    .service("http://dbpedia.org/sparql")
+                    .query(query)
+                    .param("timeout", "10000")
+                    .build() ) {
+          // Execute.
+          ResultSet rs = qExec.execSelect();
+          ResultSetFormatter.out(System.out, rs, query);
         }
     }
 }

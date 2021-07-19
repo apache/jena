@@ -522,7 +522,7 @@ public class QueryExecHTTP implements QueryExec {
     private HttpRequest.Builder executeQueryGet(Params thisParams, String acceptHeader) {
         thisParams.add(HttpParams.pQuery, queryString);
         String requestURL = requestURL(service, thisParams.httpString());
-        HttpRequest.Builder builder = HttpLib.newBuilder(requestURL, httpHeaders, readTimeout, readTimeoutUnit);
+        HttpRequest.Builder builder = HttpLib.requestBuilder(requestURL, httpHeaders, readTimeout, readTimeoutUnit);
         acceptHeader(builder, acceptHeader);
         return builder.GET();
     }
@@ -531,7 +531,7 @@ public class QueryExecHTTP implements QueryExec {
         thisParams.add(HttpParams.pQuery, queryString);
         String requestURL = service;
         String formBody = thisParams.httpString();
-        HttpRequest.Builder builder = HttpLib.newBuilder(requestURL, httpHeaders, readTimeout, readTimeoutUnit);
+        HttpRequest.Builder builder = HttpLib.requestBuilder(requestURL, httpHeaders, readTimeout, readTimeoutUnit);
         acceptHeader(builder, acceptHeader);
         // Use an HTML form.
         contentTypeHeader(builder, WebContent.contentTypeHTMLForm);
@@ -543,7 +543,7 @@ public class QueryExecHTTP implements QueryExec {
     private HttpRequest.Builder executeQueryPostBody(Params thisParams, String acceptHeader) {
         // Use thisParams (for default-graph-uri etc)
         String requestURL = requestURL(service, thisParams.httpString());
-        HttpRequest.Builder builder = HttpLib.newBuilder(requestURL, httpHeaders, readTimeout, readTimeoutUnit);
+        HttpRequest.Builder builder = HttpLib.requestBuilder(requestURL, httpHeaders, readTimeout, readTimeoutUnit);
         contentTypeHeader(builder, WebContent.contentTypeSPARQLQuery);
         acceptHeader(builder, acceptHeader);
         return builder.POST(BodyPublishers.ofString(queryString));

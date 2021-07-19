@@ -20,8 +20,6 @@ package org.apache.jena.query;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.protocol.HttpContext;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.impl.WrappedGraph;
 import org.apache.jena.rdf.model.Model;
@@ -33,7 +31,8 @@ import org.apache.jena.sparql.engine.QueryEngineFactory;
 import org.apache.jena.sparql.engine.QueryEngineRegistry;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingRoot;
-import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
+import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
+import org.apache.jena.sparql.exec.http.QueryExecutionHTTPBuilder;
 import org.apache.jena.sparql.graph.GraphWrapper;
 import org.apache.jena.sparql.syntax.Element;
 import org.apache.jena.sparql.util.Context;
@@ -299,24 +298,17 @@ public class QueryExecutionFactory
      * @param query     Query string to execute
      * @return QueryExecution
      */
-    static public QueryExecution sparqlService(String service, String query) {
-        return sparqlService(service, query, (HttpClient)null);
+    static public QueryExecutionHTTP sparqlService(String service, Query query) {
+        return sparqlService(service, query, null, null);
     }
 
-    static public QueryExecution sparqlService(String service, String query, HttpClient client) {
-        return sparqlService(service, query, client, null);
-    }
-        /** Create a QueryExecution that will access a SPARQL service over HTTP
+    /** Create a QueryExecution that will access a SPARQL service over HTTP
      * @param service   URL of the remote service
      * @param query     Query string to execute
-     * @param client    HTTP client
-     * @param httpContext HTTP Context
      * @return QueryExecution
      */
-    static public QueryExecution sparqlService(String service, String query, HttpClient client, HttpContext httpContext) {
-        checkNotNull(service, "URL for service is null");
-        checkArg(query);
-        return sparqlService(service, QueryFactory.create(query), client);
+    static public QueryExecutionHTTP sparqlService(String service, String query) {
+        return sparqlService(service, query, null, null);
     }
 
     /** Create a QueryExecution that will access a SPARQL service over HTTP
@@ -326,33 +318,7 @@ public class QueryExecutionFactory
      * @return QueryExecution
      */
     static public QueryExecution sparqlService(String service, String query, String defaultGraph) {
-        return sparqlService(service, query, defaultGraph, null);
-    }
-
-    /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service       URL of the remote service
-     * @param query         Query string to execute
-     * @param defaultGraph  URI of the default graph
-     * @param client        HTTP client
-     * @return QueryExecution
-     */
-    static public QueryExecution sparqlService(String service, String query, String defaultGraph, HttpClient client) {
-        return sparqlService(service, query, defaultGraph, client, null);
-    }
-
-    /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service       URL of the remote service
-     * @param query         Query string to execute
-     * @param defaultGraph  URI of the default graph
-     * @param client        HTTP client
-     * @param httpContext   HTTP Context
-     * @return QueryExecution
-     */
-    static public QueryExecution sparqlService(String service, String query, String defaultGraph, HttpClient client, HttpContext httpContext) {
-        checkNotNull(service, "URL for service is null");
-        // checkNotNull(defaultGraph, "IRI for default graph is null");
-        checkArg(query);
-        return sparqlService(service, QueryFactory.create(query), defaultGraph, client, httpContext);
+        return sparqlService(service, query, List.of(defaultGraph), null);
     }
 
     /** Create a QueryExecution that will access a SPARQL service over HTTP
@@ -362,8 +328,8 @@ public class QueryExecutionFactory
      * @param namedGraphURIs    List of URIs to make up the named graphs
      * @return QueryExecution
      */
-    static public QueryExecution sparqlService(String service, String query, List<String> defaultGraphURIs, List<String> namedGraphURIs) {
-        return sparqlService(service, query, defaultGraphURIs, namedGraphURIs, null);
+    static public QueryExecutionHTTP sparqlService(String service, Query query, List<String> defaultGraphURIs, List<String> namedGraphURIs) {
+        return sparqlService(service, query.toString(), defaultGraphURIs, namedGraphURIs);
     }
 
     /** Create a QueryExecution that will access a SPARQL service over HTTP
@@ -371,192 +337,42 @@ public class QueryExecutionFactory
      * @param query             Query string to execute
      * @param defaultGraphURIs  List of URIs to make up the default graph
      * @param namedGraphURIs    List of URIs to make up the named graphs
-     * @param client            HTTP client
      * @return QueryExecution
      */
-    static public QueryExecution sparqlService(String service, String query, List<String> defaultGraphURIs, List<String> namedGraphURIs,
-                                               HttpClient client) {
-        return sparqlService(service, query, defaultGraphURIs, namedGraphURIs, client, null);
-    }
-
-    /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service           URL of the remote service
-     * @param query             Query string to execute
-     * @param defaultGraphURIs  List of URIs to make up the default graph
-     * @param namedGraphURIs    List of URIs to make up the named graphs
-     * @param client            HTTP client
-     * @param httpContext HTTP Context
-     * @return QueryExecution
-     */
-    static public QueryExecution sparqlService(String service, String query, List<String> defaultGraphURIs, List<String> namedGraphURIs,
-                                               HttpClient client, HttpContext httpContext) {
-        checkNotNull(service, "URL for service is null");
-        // checkNotNull(defaultGraphURIs, "List of default graph URIs is null");
-        // checkNotNull(namedGraphURIs, "List of named graph URIs is null");
-        checkArg(query);
-        return sparqlService(service, QueryFactory.create(query), defaultGraphURIs, namedGraphURIs, client, httpContext);
-    }
-
-    /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service   URL of the remote service
-     * @param query     Query to execute
-     * @return QueryExecution
-     */
-    static public QueryExecution sparqlService(String service, Query query) {
-        return sparqlService(service, query, (HttpClient)null);
-    }
-
-    /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service   URL of the remote service
-     * @param query     Query to execute
-     * @param client    HTTP client
-     * @return QueryExecution
-     */
-    static public QueryExecution sparqlService(String service, Query query, HttpClient client) {
-        return sparqlService(service, query, null, null, client, null);
-    }
-
-    /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service   URL of the remote service
-     * @param query     Query to execute
-     * @param client    HTTP client
-     * @return QueryExecution
-     */
-    static public QueryExecution sparqlService(String service, Query query, HttpClient client, HttpContext httpContext) {
-        checkNotNull(service, "URL for service is null");
-        checkArg(query);
-        return sparqlServiceWorker(service, query, null, null, client, httpContext);
-    }
-
-    /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service           URL of the remote service
-     * @param query             Query to execute
-     * @param defaultGraphURIs  List of URIs to make up the default graph
-     * @param namedGraphURIs    List of URIs to make up the named graphs
-     * @return QueryExecution
-     */
-    static public QueryExecution sparqlService(String service, Query query, List<String> defaultGraphURIs, List<String> namedGraphURIs) {
-        return sparqlService(service, query, defaultGraphURIs, namedGraphURIs, null, null);
-    }
-
-    /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service           URL of the remote service
-     * @param query             Query to execute
-     * @param defaultGraphURIs  List of URIs to make up the default graph
-     * @param namedGraphURIs    List of URIs to make up the named graphs
-     * @param client            HTTP client
-     * @return QueryExecution
-     */
-    static public QueryExecution sparqlService(String service, Query query, List<String> defaultGraphURIs, List<String> namedGraphURIs, HttpClient client) {
-        return sparqlService(service, query, defaultGraphURIs, namedGraphURIs, client, null);
-    }
-
-    /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service           URL of the remote service
-     * @param query             Query to execute
-     * @param defaultGraphURIs  List of URIs to make up the default graph
-     * @param namedGraphURIs    List of URIs to make up the named graphs
-     * @param client            HTTP client
-     * @param httpContext       HTTP Context
-     * @return QueryExecution
-     */
-    static public QueryExecution sparqlService(String service, Query query,
-                                               List<String> defaultGraphURIs, List<String> namedGraphURIs,
-                                               HttpClient client, HttpContext httpContext) {
-        checkNotNull(service, "URL for service is null");
-        // checkNotNull(defaultGraphURIs, "List of default graph URIs is null");
-        // checkNotNull(namedGraphURIs, "List of named graph URIs is null");
-        checkArg(query);
-        return sparqlServiceWorker(service, query, defaultGraphURIs, namedGraphURIs, client, httpContext);
-    }
-
-    // String defaultGraph
-
-    /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service       URL of the remote service
-     * @param query         Query to execute
-     * @param defaultGraph  URI of the default graph
-     * @return QueryExecution
-     */
-    static public QueryExecution sparqlService(String service, Query query, String defaultGraph) {
-        return sparqlService(service, query, defaultGraph, null);
-    }
-
-    /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service       URL of the remote service
-     * @param query         Query to execute
-     * @param defaultGraph  URI of the default graph
-     * @param client        HTTP client
-     * @return QueryExecution
-     */
-    static public QueryExecution sparqlService(String service, Query query, String defaultGraph, HttpClient client) {
-       return sparqlService(service, query, defaultGraph, client, null);
-    }
-
-    /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service       URL of the remote service
-     * @param query         Query to execute
-     * @param defaultGraph  URI of the default graph
-     * @param client        HTTP client
-     * @return QueryExecution
-     */
-    static public QueryExecution sparqlService(String service, Query query, String defaultGraph, HttpClient client, HttpContext httpContext) {
-        return sparqlServiceWorker(service, query, List.of(defaultGraph), null, client, httpContext);
-    }
-
-    // All sparqlService calls
-    static private QueryExecution sparqlServiceWorker(String service, Query query, List<String> defaultGraphURIs, List<String> namedGraphURIs, HttpClient client, HttpContext httpContext) {
-        checkNotNull(service, "URL for service is null");
-        // checkNotNull(defaultGraph, "IRI for default graph is null");
-        checkArg(query);
-        QueryEngineHTTP qe = createQueryEngineHTTP(service, query, client, httpContext);
+    static public QueryExecutionHTTP sparqlService(String service, String query, List<String> defaultGraphURIs, List<String> namedGraphURIs) {
+        QueryExecutionHTTPBuilder builder = createExecutionHTTP(service, query);
         if ( defaultGraphURIs != null )
-            qe.setDefaultGraphURIs(defaultGraphURIs);
+            defaultGraphURIs.forEach(builder::addDefaultGraphURI);
         if ( namedGraphURIs != null )
-            qe.setNamedGraphURIs(namedGraphURIs);
-        return qe;
+            namedGraphURIs.forEach(builder::addNamedGraphURI);
+        return builder.build();
     }
 
-    /** Create a service request for remote execution over HTTP.  The returned class,
-     * {@link QueryEngineHTTP},
+    /** Create a QueryExecution that will access a SPARQL service over HTTP
+     * @param service       URL of the remote service
+     * @param query         Query to execute
+     * @param defaultGraph  URI of the default graph
+     * @return QueryExecution
+     */
+    static public QueryExecutionHTTP sparqlService(String service, Query query, String defaultGraph) {
+        return sparqlService(service, query.toString(), List.of(defaultGraph), null);
+    }
+
+    /** Create a service request for remote execution over HTTP.
      * allows various HTTP specific parameters to be set.
      * @param service Endpoint URL
      * @param query Query
-     * @return Remote Query Engine
+     * @return QueryExecutionHTTP
+     * @deprecated Use the builder directly {@code QueryExecutionHTTP.create()....build()}
      */
-    static public QueryEngineHTTP createServiceRequest(String service, Query query) {
-        return createServiceRequest(service, query, null);
-    }
-
-    /** Create a service request for remote execution over HTTP.  The returned class,
-     * {@link QueryEngineHTTP},
-     * allows various HTTP specific parameters to be set.
-     * @param service Endpoint URL
-     * @param query Query
-     * @param client HTTP client
-     * @return Remote Query Engine
-     */
-    static public QueryEngineHTTP createServiceRequest(String service, Query query, HttpClient client) {
-        return createServiceRequest(service, query, client, null);
-    }
-
-    /** Create a service request for remote execution over HTTP.  The returned class,
-     * {@link QueryEngineHTTP},
-     * allows various HTTP specific parameters to be set.
-     * @param service Endpoint URL
-     * @param query Query
-     * @param client HTTP client
-     * @param httpContext HTTP Context
-     * @return Remote Query Engine
-     */
-    static public QueryEngineHTTP createServiceRequest(String service, Query query, HttpClient client, HttpContext httpContext) {
-        return createQueryEngineHTTP(service, query, client, httpContext);
+    @Deprecated
+    static public QueryExecutionHTTPBuilder createServiceRequest(String service, Query query) {
+        return createExecutionHTTP(service, query.toString());
     }
 
     // All createServiceRequest calls
-    static private QueryEngineHTTP createQueryEngineHTTP(String service, Query query, HttpClient client, HttpContext httpContext) {
-        QueryEngineHTTP qe = new QueryEngineHTTP(service, query, client, httpContext);
-        return qe;
+    static private QueryExecutionHTTPBuilder createExecutionHTTP(String serviceURL, String queryStr) {
+        return QueryExecutionHTTP.create().service(serviceURL).queryString(queryStr);
     }
 
     // -----------------

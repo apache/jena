@@ -75,6 +75,9 @@ public class Service {
     public static final Symbol oldQueryTimeout      = SystemARQ.allocSymbol(baseOld, "queryTimeout");
     public static final Symbol oldQueryCompression  = SystemARQ.allocSymbol(baseOld, "queryCompression");
 
+    // Compatibility with old AHC (Aapche HttpClient)version
+    public static final Symbol serviceAllowed    = SystemARQ.allocSymbol(baseOld, "serviceAllowed");
+
     private void oldCheckForOldParameters(Context context) {
         if ( context == null )
             return ;

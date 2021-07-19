@@ -344,6 +344,10 @@ public class Context {
         return mapSize();
     }
 
+    public void clear() {
+        context.clear();
+    }
+
     @Override
     public String toString() {
         String x = "";
@@ -362,7 +366,6 @@ public class Context {
         Context dsgCxt = ( dataset != null )
             ? dataset.getContext()
             : null;
-
         Context context = mergeCopy(globalContext, dsgCxt);
         return context;
     }

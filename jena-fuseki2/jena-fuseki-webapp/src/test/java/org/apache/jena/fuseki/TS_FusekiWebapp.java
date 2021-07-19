@@ -36,7 +36,7 @@ import org.junit.runners.Suite;
     , TestDatasetGraphAccessorHTTP.class
     , TestDatasetAccessorHTTP.class
     , TestQuery.class
-    , TestAuth.class
+    , TestAuth_AHC.class
     , TestDatasetOps.class
     , TestFileUpload.class
     , TestAdmin.class
