@@ -480,9 +480,12 @@ public class HttpLib {
         URI key = null;
         if ( uri.getUserInfo() != null ) {
             String[] up = uri.getUserInfo().split(":");
-            key = HttpLib.endpointURI(uri);
-            // The auth key will be with u:p making it specific.
-            AuthEnv.registerUsernamePassword(key, up[0], up[1]);
+            if ( up.length == 2 ) {
+                // Only if "user:password@host", not "user@host"
+                key = HttpLib.endpointURI(uri);
+                // The auth key will be with u:p making it specific.
+                AuthEnv.registerUsernamePassword(key, up[0], up[1]);
+            }
         }
         try {
             return AuthLib.authExecute(httpClient, httpRequest, BodyHandlers.ofInputStream());

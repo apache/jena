@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 
 import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.fuseki.main.FusekiTestLib;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.http.RegistryHttpClient;
@@ -87,18 +88,21 @@ public class TestServiceAuth {
     @Test
     public void service_auth_url_auth_2() {
         String serviceURL = "http://"+USER+":"+PASSWORD+"@localhost:"+env.server.getPort()+env.dsName();
-        URI key = URI.create(serviceURL);
-
         Query query = QueryFactory.create("SELECT * { SERVICE <"+serviceURL+"> { BIND( 'X' as ?X) } }");
+
+        URI key = URI.create(serviceURL);
+        assertFalse(AuthEnv.hasRegistation(key));
+
         try ( QueryExec qExec = QueryExec.newBuilder().query(query).dataset(env.dsg()).build() ) {
             qExec.select().materialize();
         }
+        AuthEnv.hasRegistation(key);
         // Check no registration in place.
-        assertNull(AuthEnv.getUsernamePassword(key));
+        assertFalse(AuthEnv.hasRegistation(key));
     }
 
     @Test
-    public void service_auth_url_auth_4() {
+    public void service_auth_url_auth_3() {
         String serviceURL = "http://"+USER+":"+PASSWORD+"@localhost:"+env.server.getPort()+env.dsName();
         Query query = QueryFactory.create("SELECT * { SERVICE <"+serviceURL+"> { BIND( 'X' as ?X) } }");
         try ( QueryExec qExec = QueryExec.newBuilder().query(query).dataset(env.dsg()).build() ) {
@@ -108,14 +112,44 @@ public class TestServiceAuth {
         // And again but no auth.
         String serviceURL2 = "http://localhost:"+env.server.getPort()+env.dsName();
         Query query2 = QueryFactory.create("SELECT * { SERVICE <"+serviceURL2+"> { BIND( 'X' as ?X) } }");
-        try ( QueryExec qExec = QueryExec.newBuilder().query(query2).dataset(env.dsg()).build() ) {
-            qExec.select().materialize();
-            fail("Expected 401");
-        } catch ( QueryExceptionHTTP ex) {
-            assertEquals(401, ex.getStatusCode());
-        }
+        FusekiTestLib.expectQuery401(()->{
+            try ( QueryExec qExec = QueryExec.newBuilder().query(query2).dataset(env.dsg()).build() ) {
+                qExec.select().materialize();
+                fail("Expected 401");
+            }
+        });
     }
 
+    @Test
+    public void service_auth_url_auth_4() {
+        // User, no password
+        String serviceURL = "http://"+USER+"@localhost:"+env.server.getPort()+env.dsName();
+        Query query = QueryFactory.create("SELECT * { SERVICE <"+serviceURL+"> { BIND( 'X' as ?X) } }");
+        // Bad (and checks no registration)
+        FusekiTestLib.expectQuery401(()->{
+            try ( QueryExec qExec = QueryExec.newBuilder().query(query).dataset(env.dsg()).build() ) {
+                qExec.select().materialize();
+            }
+        });
+
+        // Good
+        // Register (user, password) on user@localhost
+        URI serviceURI = URI.create(serviceURL);
+        try {
+            AuthEnv.registerUsernamePassword(URI.create(serviceURL), USER, PASSWORD);
+            try ( QueryExec qExec = QueryExec.newBuilder().query(query).dataset(env.dsg()).build() ) {
+                qExec.select().materialize();
+            }
+        } finally {
+            AuthEnv.unregisterUsernamePassword(serviceURI);
+        }
+
+        FusekiTestLib.expectQuery401(()->{
+            try ( QueryExec qExec = QueryExec.newBuilder().query(query).dataset(env.dsg()).build() ) {
+                qExec.select().materialize();
+            }
+        });
+    }
 
     @Test public void service_auth_good_registry_1() {
         HttpClient hc = env.httpClientAuthGood();

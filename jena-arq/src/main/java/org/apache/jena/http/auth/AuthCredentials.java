@@ -43,6 +43,10 @@ public class AuthCredentials {
 
     }
 
+    public boolean contains(AuthDomain location) {
+        return prefixes.contains(location.uri.toString());
+    }
+
     public PasswordRecord get(AuthDomain location) {
         PasswordRecord pwRecord = authRegistry.get(location);
         if ( pwRecord != null )
@@ -61,6 +65,7 @@ public class AuthCredentials {
     }
 
     public void remove(AuthDomain location) {
+        prefixes.remove(location.uri.toString());
         authRegistry.remove(location);
     }
 
