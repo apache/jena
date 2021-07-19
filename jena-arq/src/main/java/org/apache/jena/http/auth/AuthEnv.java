@@ -34,6 +34,12 @@ public class AuthEnv {
         AuthEnv.passwordRegistry.put(domain, new PasswordRecord(user, password));
     }
 
+    /** Check whether there is a registation. */
+    public static boolean hasRegistation(URI uri) {
+        AuthDomain location = new AuthDomain(uri, null);
+        return AuthEnv.passwordRegistry.contains(location);
+    }
+
     /** Register (username, password) information for a URI endpoint. */
     public static void unregisterUsernamePassword(URI uri) {
         AuthDomain location = new AuthDomain(uri, null);
