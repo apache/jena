@@ -93,7 +93,8 @@ public class TestSyntaxTransform
                   "srv", "<urn:ex:service>") ; }
 
     @Test public void subst_query_30() {
-        testQuery("SELECT * { ?s ?p ?o } ORDER BY ?s", "SELECT * { <urn:ex:z> ?p ?o } ORDER BY (<urn:ex:z>)",
+        testQuery("SELECT * { ?s ?p ?o } ORDER BY ?s",
+                  "SELECT * { <urn:ex:z> ?p ?o } ORDER BY (<urn:ex:z>)",
                 "s", "<urn:ex:z>");
     }
 
@@ -101,6 +102,36 @@ public class TestSyntaxTransform
     @Test public void subst_query_31() {
         testQueryModel("SELECT * { ?s ?p ?o } ORDER BY ?s", "SELECT * { <urn:ex:z> ?p ?o } ORDER BY (<urn:ex:z>)",
                        "s", "<urn:ex:z>");
+    }
+
+    @Test public void subst_query_40() {
+        testQueryModel("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }",
+                       "CONSTRUCT { <urn:ex:z> ?p ?o } WHERE { <urn:ex:z> ?p ?o }",
+                       "s", "<urn:ex:z>");
+    }
+
+    @Test public void subst_query_41() {
+        testQueryModel("CONSTRUCTWHERE { ?s ?p ?o }",
+                       "CONSTRUCT { <urn:ex:z> ?p ?o } WHERE { <urn:ex:z> ?p ?o }",
+                       "s", "<urn:ex:z>");
+    }
+
+    @Test public void subst_query_42() {
+        testQueryModel("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }",
+                       "CONSTRUCT { <urn:ex:z> ?p 57 } WHERE { <urn:ex:z> ?p 57 }",
+                       "s", "<urn:ex:z>", "o", "57");
+    }
+
+    @Test public void subst_query_43() {
+        testQueryModel("CONSTRUCT { GRAPH ?g {?s ?p ?o } } WHERE { GRAPH ?g {?s ?p ?o } }",
+                       "CONSTRUCT { GRAPH <urn:ex:g> { <urn:ex:z> ?p ?o } } WHERE { GRAPH <urn:ex:g> { <urn:ex:z> ?p ?o } }",
+                       "s", "<urn:ex:z>", "g", "<urn:ex:g>");
+    }
+
+    @Test public void subst_query_44() {
+        testQueryModel("CONSTRUCTWHERE { GRAPH ?g {?s ?p ?o } }",
+                       "CONSTRUCT { GRAPH <urn:ex:g> { <urn:ex:z> ?p ?o } } WHERE { GRAPH <urn:ex:g> { <urn:ex:z> ?p ?o } }",
+                       "s", "<urn:ex:z>", "g", "<urn:ex:g>");
     }
 
     @Test public void subst_update_01() {
@@ -160,13 +191,27 @@ public class TestSyntaxTransform
         Query q1 = QueryFactory.create(PREFIX+input) ;
         Query qExpected = QueryFactory.create(PREFIX+output) ;
 
-        Map<String, RDFNode> map = new HashMap<>() ;
-        Node n = SSE.parseNode(valStr);
-        RDFNode x = ModelUtils.convertGraphNodeToRDFNode(n);
-        map.put(varStr, x);
+        Map<String, RDFNode> map = Map.of(varStr, fromString(valStr));
 
         Query qTrans = QueryTransformOps.transformQuery(q1, map) ;
         assertEquals(qExpected, qTrans) ;
+    }
+
+    private void testQueryModel(String input, String output, String varStr1, String valStr1, String varStr2, String valStr2) {
+        Query q1 = QueryFactory.create(PREFIX+input) ;
+        Query qExpected = QueryFactory.create(PREFIX+output) ;
+
+        Map<String, RDFNode> map = Map.of(varStr1, fromString(valStr1), varStr2, fromString(valStr2));
+
+        Query qTrans = QueryTransformOps.transformQuery(q1, map) ;
+        assertEquals(qExpected, qTrans) ;
+
+    }
+
+    private RDFNode fromString(String valStr) {
+        Node n = SSE.parseNode(valStr);
+        RDFNode x = ModelUtils.convertGraphNodeToRDFNode(n);
+        return x;
     }
 
     private void testUpdate(String input, String output, String varStr, String valStr) {

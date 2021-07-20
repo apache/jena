@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryVisitor;
 import org.apache.jena.query.SortCondition;
@@ -32,19 +33,14 @@ import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.sparql.ARQException;
-import org.apache.jena.sparql.core.DatasetDescription;
-import org.apache.jena.sparql.core.Prologue;
-import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.core.VarExprList;
+import org.apache.jena.sparql.core.*;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprTransform;
 import org.apache.jena.sparql.expr.ExprTransformer;
 import org.apache.jena.sparql.expr.ExprVar;
 import org.apache.jena.sparql.graph.NodeTransform;
-import org.apache.jena.sparql.syntax.Element;
-import org.apache.jena.sparql.syntax.ElementData;
-import org.apache.jena.sparql.syntax.ElementGroup;
-import org.apache.jena.sparql.syntax.ElementSubQuery;
+import org.apache.jena.sparql.modify.request.QuadAcc;
+import org.apache.jena.sparql.syntax.*;
 
 /** Support for transformation of query abstract syntax. */
 public class QueryTransformOps {
@@ -70,6 +66,9 @@ public class QueryTransformOps {
      *  It is the responsibility of these transforms to transform to a legal SPARQL query.
      */
     public static Query transform(Query query, ElementTransform transform, ExprTransform exprTransform) {
+        // The substitutions do not appear as (var,value) in the output.
+        // SELECT * and initial bindings not in query will not show the substitutions.
+
         Query q2 = QueryTransformOps.shallowCopy(query);
         // "Shallow copy with transform."
         // Mutate the q2 structures which are already allocated and no other code can access yet.
@@ -79,6 +78,10 @@ public class QueryTransformOps {
         if (q2.getOrderBy() != null) {
             mutateSortConditions(q2.getOrderBy(), exprTransform);
         }
+
+
+        // CONSTRUCT
+        mutateConstruct(query, q2, transform);
 
         Element el = q2.getQueryPattern();
 
@@ -114,6 +117,34 @@ public class QueryTransformOps {
     public static Query transform(Query query, ElementTransform transform) {
         ExprTransform noop = new ExprTransformApplyElementTransform(transform);
         return transform(query, transform, noop);
+    }
+
+    // Transform CONSTRUCT query template
+    private static void mutateConstruct(Query query, Query query2, ElementTransform transform) {
+        if ( query.isConstructQuad() ) {
+            Template template = query.getConstructTemplate();
+            List<Quad> quads = template.getQuads();
+            QuadAcc accQuads = new QuadAcc();
+            quads.forEach(quad1->{
+                Quad quad2 = transform.transform(quad1);
+                accQuads.addQuad(quad2);
+            });
+            Template template2 = new Template(accQuads);
+            query2.setConstructTemplate(template2);
+            return;
+        }
+        if (query.isConstructType() ) {
+            Template template = query.getConstructTemplate();
+            List<Triple> triples = template.getBGP().getList();
+            BasicPattern accTriple = new BasicPattern();
+            triples.forEach(triple1->{
+                Triple triple2 = transform.transform(triple1);
+                accTriple.add(triple2);
+            });
+            Template template2 = new Template(accTriple);
+            query2.setConstructTemplate(template2);
+            return;
+        }
     }
 
     // ** Mutates the List
