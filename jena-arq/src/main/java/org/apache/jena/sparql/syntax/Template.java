@@ -19,7 +19,6 @@
 package org.apache.jena.sparql.syntax;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +27,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.BasicPattern;
 import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.modify.TemplateLib;
 import org.apache.jena.sparql.modify.request.QuadAcc;
 import org.apache.jena.sparql.serializer.FormatterTemplate;
 import org.apache.jena.sparql.util.Iso;
@@ -54,16 +51,6 @@ public class Template
     	this.bgp = bgp;
     	this.qp = null;
     }
-
-//    public void addTriple(Triple t) { quads.addTriple(t) ; }
-//    public int mark() { return quads.mark() ; }
-//    public void addTriple(int index, Triple t) { quads.addTriple(index, t) ; }
-//    public void addTriplePath(TriplePath path)
-//    { throw new ARQException("Triples-only collector") ; }
-//
-//    public void addTriplePath(int index, TriplePath path)
-//    { throw new ARQException("Triples-only collector") ; }
-
 
     public boolean containsRealQuad(){
     	for(Quad quad : this.getQuads()){
@@ -92,16 +79,17 @@ public class Template
     		return this.bgp.getList();
     	}
     	List<Triple> triples = new ArrayList<>();
-    	for(Quad q: qp.getQuads()){
+    	for(Quad q: qp.getQuads()) {
     		if (Quad.defaultGraphNodeGenerated.equals(q.getGraph()))
     			triples.add(q.asTriple());
     	}
     	return triples;
     }
+
     public List<Quad> getQuads() {
     	if( this.bgp != null){
     		List<Quad> quads = new ArrayList<>();
-    		for(Triple triple: this.bgp.getList()){
+    		for(Triple triple: this.bgp.getList()) {
     			quads.add( new Quad( Quad.defaultGraphNodeGenerated, triple ) );
     		}
     		return quads;
@@ -113,26 +101,17 @@ public class Template
         List<Quad> quads = getQuads();
         HashMap<Node, BasicPattern> graphs = new HashMap<>();
         for (Quad q: quads){
-          BasicPattern bgp = graphs.get(q.getGraph());
-          if (bgp == null){
-            bgp = new BasicPattern();
-            graphs.put(q.getGraph(), bgp);
-          }
-          bgp.add( q.asTriple() );
+            BasicPattern bgp = graphs.get(q.getGraph());
+            if (bgp == null){
+                bgp = new BasicPattern();
+                graphs.put(q.getGraph(), bgp);
+            }
+            bgp.add( q.asTriple() );
         }
         return graphs;
     }
 
     // -------------------------
-
-    public void subst(Collection<Triple> acc, Map<Node, Node> bNodeMap, Binding b)
-    {
-        for ( Triple t : getTriples() )
-        {
-            t = TemplateLib.subst(t, b, bNodeMap) ;
-            acc.add(t) ;
-        }
-    }
 
     private int calcHashCode = -1 ;
     @Override

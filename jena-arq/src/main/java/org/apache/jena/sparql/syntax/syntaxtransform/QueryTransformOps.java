@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryVisitor;
 import org.apache.jena.query.SortCondition;
@@ -63,8 +64,9 @@ public class QueryTransformOps {
         return transform(query, map);
     }
 
-    /** Transform a query using {@link ElementTransform} and {@link ExprTransform}.
-     *  It is the responsibility of these transforms to transform to a legal SPARQL query.
+    /**
+     * Transform a query using {@link ElementTransform} and {@link ExprTransform}.
+     * It is the responsibility of these transforms to transform to a legal SPARQL query.
      */
     public static Query transform(Query query, ElementTransform transform, ExprTransform exprTransform) {
         Query q2 = QueryTransformOps.shallowCopy(query);
@@ -146,6 +148,34 @@ public class QueryTransformOps {
     public static Query transform(Query query, ElementTransform transform) {
         ExprTransform noop = new ExprTransformApplyElementTransform(transform);
         return transform(query, transform, noop);
+    }
+
+    // Transform CONSTRUCT query template
+    private static void mutateConstruct(Query query, Query query2, ElementTransform transform) {
+        if ( query.isConstructQuad() ) {
+            Template template = query.getConstructTemplate();
+            List<Quad> quads = template.getQuads();
+            QuadAcc accQuads = new QuadAcc();
+            quads.forEach(quad1->{
+                Quad quad2 = transform.transform(quad1);
+                accQuads.addQuad(quad2);
+            });
+            Template template2 = new Template(accQuads);
+            query2.setConstructTemplate(template2);
+            return;
+        }
+        if (query.isConstructType() ) {
+            Template template = query.getConstructTemplate();
+            List<Triple> triples = template.getBGP().getList();
+            BasicPattern accTriple = new BasicPattern();
+            triples.forEach(triple1->{
+                Triple triple2 = transform.transform(triple1);
+                accTriple.add(triple2);
+            });
+            Template template2 = new Template(accTriple);
+            query2.setConstructTemplate(template2);
+            return;
+        }
     }
 
     // ** Mutates the List
