@@ -19,8 +19,8 @@
 package jena ;
 
 import arq.cmdline.CmdARQ ;
-import jena.cmd.ArgDecl ;
-import jena.cmd.CmdException ;
+import org.apache.jena.cmd.ArgDecl ;
+import org.apache.jena.cmd.CmdException ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.spatial.SpatialIndex ;
 import org.apache.jena.query.spatial.SpatialIndexException ;

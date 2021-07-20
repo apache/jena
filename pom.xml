@@ -54,6 +54,8 @@
     <ver.junit>4.13.2</ver.junit>  
 
     <ver.slf4j>1.7.31</ver.slf4j>
+    <ver.spatial4j>0.8</ver.spatial4j>
+
     <ver.log4j2>2.14.1</ver.log4j2>
     <ver.shade-plugin>3.2.4</ver.shade-plugin>
 
@@ -232,7 +234,7 @@
         <module>apache-jena-libs</module>
 
         <module>jena-text</module>
-
+        <module>jena-spatial</module>
         <module>jena-cmds</module>
         <module>jena-fuseki2</module>
 
@@ -477,6 +479,19 @@
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-backward-codecs</artifactId>
         <version>${ver.lucene}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-spatial-extras</artifactId>
+        <version>${ver.lucene}</version>
+      </dependency>
+      
+      <!-- Spatial4j dependency for jena-spatial-->
+      <dependency>
+        <groupId>org.locationtech.spatial4j</groupId>
+        <artifactId>spatial4j</artifactId>
+        <version>${ver.spatial4j}</version>
       </dependency>
 
       <!-- Logging -->

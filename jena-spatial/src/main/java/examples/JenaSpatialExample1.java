@@ -22,7 +22,6 @@ import java.io.File ;
 import java.io.IOException ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.* ;
 import org.apache.jena.query.spatial.* ;
 import org.apache.jena.rdf.model.Model ;
@@ -38,7 +37,7 @@ import org.slf4j.LoggerFactory ;
 /** Build a spatial search dataset */
 public class JenaSpatialExample1 {
     static {
-        LogCtl.setLog4j();
+    //    LogCtl.setLog4j();
     }
     static Logger log = LoggerFactory.getLogger("JenaSpatialExample");
 

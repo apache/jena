@@ -19,8 +19,8 @@
 package jena;
 
 import arq.cmdline.CmdARQ;
-import jena.cmd.ArgDecl ;
-import jena.cmd.CmdException ;
+import org.apache.jena.cmd.ArgDecl ;
+import org.apache.jena.cmd.CmdException ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.spatial.DatasetGraphSpatial;
 import org.apache.jena.query.spatial.SpatialDatasetFactory;
