@@ -74,7 +74,7 @@ public class QueryExecDataset implements QueryExec
 
     private QueryIterator            queryIterator    = null;
     private Plan                     plan             = null;
-    private Binding                  initialToEngine  = null;
+    private Binding                  initialBinding   = null;
 
     // Set if QueryIterator.cancel has been called
     private AtomicBoolean            isCancelled      = new AtomicBoolean(false);
@@ -102,7 +102,7 @@ public class QueryExecDataset implements QueryExec
         this.timeout1 = asMillis(timeout1, timeUnit1);
         this.timeout2 = asMillis(timeout2, timeUnit2);
         // Wil swap to query substitution handled in QueryExecBuilder
-        this.initialToEngine = initialToEngine;
+        this.initialBinding = initialToEngine;
         init();
     }
 
@@ -504,7 +504,7 @@ public class QueryExecDataset implements QueryExec
 
     private Plan getPlan() {
         if ( plan == null ) {
-            Binding initial = ( initialToEngine != null ) ? initialToEngine : BindingFactory.root();
+            Binding initial = ( initialBinding != null ) ? initialBinding : BindingFactory.root();
             plan = qeFactory.create(query, dataset, initial, getContext());
         }
         return plan;

@@ -18,8 +18,6 @@
 
 package org.apache.jena.sparql.exec;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -66,6 +64,10 @@ public class QueryExecBuilder {
     // Migration - context when built, but available early to QueryExecution
     private Context      builtContext        = null;
 
+    // Uses query rewrite to replace variables by values.
+    private Map<Var, Node>  substitutionMap = null;
+
+    // Uses initial binding to execution (old, original) feature
     private Binding      initialBinding     = null;
     private long         timeout1           = UNSET;
     private TimeUnit     timeoutTimeUnit1   = null;
@@ -129,6 +131,16 @@ public class QueryExecBuilder {
         if ( builtContext == null )
             builtContext = buildContext(baseContext, dataset, addedContext);
         return builtContext;
+    }
+
+    public QueryExecBuilder substitution(Binding binding) {
+        binding.forEach(this.substitutionMap::put);
+        return this;
+    }
+
+    public QueryExecBuilder substitution(Var var, Node value) {
+        this.substitutionMap.put(var, value);
+        return this;
     }
 
     public QueryExecBuilder initialBinding(Binding binding) {
@@ -197,17 +209,12 @@ public class QueryExecBuilder {
 
         // Initial bindings / parameterized query
         Query queryActual = query;
-        Binding initialToEngine = initialBinding;
-        if ( false && initialBinding != null ) {
-            // [QExec] Need CONSTRUCT fix.
-            // Do by rewrite - need
-            Map<Var, Node> substitutions = bindingToMap(initialBinding);
-            queryActual = QueryTransformOps.transform(query, substitutions);
-            initialToEngine = null;
-        }
+
+        if ( substitutionMap != null && ! substitutionMap.isEmpty() )
+            queryActual = QueryTransformOps.transform(query, substitutionMap);
 
         defaultTimeoutsFromContext(this, cxt);
-        QueryExec qExec = new QueryExecDataset(queryActual, dataset, cxt, f, timeout1, timeoutTimeUnit1, timeout2, timeoutTimeUnit2, initialToEngine);
+        QueryExec qExec = new QueryExecDataset(queryActual, dataset, cxt, f, timeout1, timeoutTimeUnit1, timeout2, timeoutTimeUnit2, initialBinding);
         return qExec;
     }
 
@@ -229,19 +236,6 @@ public class QueryExecBuilder {
         if ( addedContext != null )
             cxt.putAll(addedContext);
         return cxt;
-    }
-
-    // ==> BindingUtils
-    /** Binding as a Map */
-    public static Map<Var, Node> bindingToMap(Binding binding) {
-        Map<Var, Node> substitutions = new HashMap<>();
-        Iterator<Var> iter = binding.vars();
-        while(iter.hasNext()) {
-            Var v = iter.next();
-            Node n = binding.get(v);
-            substitutions.put(v, n);
-        }
-        return substitutions;
     }
 
     // (Slightly shorter) abbreviated forms - build-execute now.

@@ -26,8 +26,10 @@ import java.util.Objects;
 
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.sys.ExecHTTPBuilder;
+import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryException;
 import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
 
 public class QueryExecHTTPBuilder extends ExecHTTPBuilder<QueryExec, QueryExecHTTPBuilder> {
 
@@ -41,7 +43,18 @@ public class QueryExecHTTPBuilder extends ExecHTTPBuilder<QueryExec, QueryExecHT
       if ( queryString == null && query == null )
           throw new QueryException("No query for QueryExecHTTP");
       HttpClient hClient = HttpEnv.getHttpClient(serviceURL, httpClient);
-      return new QueryExecHTTP(serviceURL, query, queryString, urlLimit,
+
+      Query queryActual = query;
+
+      if ( substitutionMap != null && ! substitutionMap.isEmpty() ) {
+          if ( query == null )
+              throw new QueryException("Substitution only supported if a Query object was provided");
+
+          queryActual = QueryTransformOps.transform(query, substitutionMap);
+      }
+
+
+      return new QueryExecHTTP(serviceURL, queryActual, queryString, urlLimit,
                                hClient, new HashMap<>(httpHeaders), Params.create(params), context,
                                copyArray(defaultGraphURIs),
                                copyArray(namedGraphURIs),
