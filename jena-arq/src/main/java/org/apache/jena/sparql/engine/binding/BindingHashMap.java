@@ -90,7 +90,7 @@ public class BindingHashMap extends BindingBase implements BindingMap
 
     @Override
     final public void addAll(Binding other) {
-        BindingUtils.addAll(this, other);
+        other.forEach(this::add);
     }
 
     private void checkAdd(Var var, Node node) {

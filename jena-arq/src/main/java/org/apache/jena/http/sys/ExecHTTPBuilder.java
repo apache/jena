@@ -22,8 +22,12 @@ import java.net.http.HttpClient;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.jena.graph.Node;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.http.Params;
 import org.apache.jena.sparql.exec.http.QuerySendMode;
 import org.apache.jena.sparql.util.Context;
@@ -52,6 +56,9 @@ public abstract class ExecHTTPBuilder<X, Y> {
     protected List<String> defaultGraphURIs = new ArrayList<>();
     protected List<String> namedGraphURIs = new ArrayList<>();
 
+    // Uses query rewrite to replace variables by values.
+    protected Map<Var, Node> substitutionMap     = new HashMap<>();
+
     public ExecHTTPBuilder() {}
 
     protected abstract Y thisBuilder();
@@ -64,12 +71,33 @@ public abstract class ExecHTTPBuilder<X, Y> {
 
     /** Set the query - this also sets the query string to agree with the query argument. */
     public Y query(Query query) {
-        this.query = Objects.requireNonNull(query);
-        this.queryString = query.toString();
+        Objects.requireNonNull(query);
+        String queryStr = query.toString();
+        setQuery(query, queryStr);
         return thisBuilder();
     }
 
-    /** Set the query string - this also clears any Query already set. */
+    /** Set the query - the the string must be valid syntax.
+     * Use {@link #queryString} to pass in a query with other syntax
+     * (e.g. the remote end has SPARQL syntax extensions).
+     */
+    public Y query(String queryStr) {
+        Objects.requireNonNull(queryStr);
+        Query query = QueryFactory.create(queryStr);
+        setQuery(query, queryStr);
+        return thisBuilder();
+    }
+
+    /** Set the query - this also sets the query string to agree with the query argument. */
+    private void setQuery(Query query, String queryStr) {
+        this.query = query;
+        this.queryString = queryStr;
+    }
+
+    /** Set the query string - this also clears any Query already set.
+     * The queryString is not interpreted and it may contain SPARQL syntax
+     * extensions supported by the target triple store.
+     */
     public Y queryString(String queryString) {
         this.query = null;
         this.queryString = Objects.requireNonNull(queryString);
@@ -191,6 +219,16 @@ public abstract class ExecHTTPBuilder<X, Y> {
         Objects.requireNonNull(name);
         Objects.requireNonNull(value);
         this.params.add(name, value);
+        return thisBuilder();
+    }
+
+    public Y substitution(Binding binding) {
+        binding.forEach(this.substitutionMap::put);
+        return thisBuilder();
+    }
+
+    public Y substitution(Var var, Node value) {
+        this.substitutionMap.put(var, value);
         return thisBuilder();
     }
 
