@@ -29,8 +29,8 @@ import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryExecution ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP ;
+import org.apache.jena.sparql.modify.UpdateProcessRemote;
 import org.apache.jena.sparql.modify.UpdateProcessRemoteBase ;
-import org.apache.jena.update.UpdateExecutionFactory ;
 import org.apache.jena.update.UpdateProcessor ;
 import org.apache.jena.update.UpdateRequest ;
 
@@ -121,8 +121,7 @@ public class RemoteEndpointPreparedStatement extends JenaPreparedStatement {
 
     @Override
     protected UpdateProcessor createUpdateProcessor(UpdateRequest u) {
-        UpdateProcessRemoteBase proc = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(u,
-                this.remoteConn.getUpdateEndpoint());
+        UpdateProcessRemoteBase proc = new UpdateProcessRemote(u, this.remoteConn.getUpdateEndpoint(),null);
 
         // Apply HTTP settings
         if (this.client != null) {

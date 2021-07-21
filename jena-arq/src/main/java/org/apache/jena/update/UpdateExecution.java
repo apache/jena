@@ -16,28 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.exec;
+package org.apache.jena.update;
 
-import org.apache.jena.update.UpdateProcessor;
-
-public class UpdateProcessorAdapter implements UpdateProcessor {
-
-    private final UpdateExec updateExec;
-
-    public static UpdateProcessor adapt(UpdateExec updateExec) {
-        if ( updateExec instanceof UpdateExecAdapter ) {
-            return ((UpdateExecAdapter)updateExec).get();
-        }
-        return new UpdateProcessorAdapter(updateExec);
-    }
-
-    protected UpdateExec get() { return updateExec; }
-    
-    protected UpdateProcessorAdapter(UpdateExec updateExec) {
-        this.updateExec = updateExec;
-    }
-
+/** An instance of a execution of an UpdateRequest */
+public interface UpdateExecution extends UpdateProcessor
+{
+    /** Execute */
     @Override
-    public void execute() { updateExec.execute(); }
-
+    public void execute() ;
 }

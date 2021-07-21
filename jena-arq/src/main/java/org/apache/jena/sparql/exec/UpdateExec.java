@@ -20,9 +20,11 @@ package org.apache.jena.sparql.exec;
 
 import org.apache.jena.update.UpdateProcessor;
 
-public interface UpdateExec extends UpdateProcessor {
+public interface UpdateExec extends UpdateProcessor
+{
+    public static UpdateExecBuilder newBuilder() { return UpdateExecBuilder.newBuilder(); }
+
     /** Execute */
     @Override
     public void execute();
 }
-

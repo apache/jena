@@ -35,11 +35,12 @@ import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
 import org.apache.jena.jdbc.utils.TestUtils;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.riot.web.HttpOp;
+import org.apache.jena.sparql.modify.UpdateProcessRemote;
 import org.apache.jena.sparql.modify.request.Target ;
 import org.apache.jena.sparql.modify.request.UpdateDrop ;
 import org.apache.jena.update.Update ;
-import org.apache.jena.update.UpdateExecutionFactory ;
 import org.apache.jena.update.UpdateProcessor ;
+import org.apache.jena.update.UpdateRequest;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -85,7 +86,7 @@ public class TestRemoteEndpointResultsWithAuth extends AbstractRemoteEndpointRes
     @After
     public void cleanupTest() {
         Update clearRequest = new UpdateDrop(Target.ALL) ;
-        UpdateProcessor proc = UpdateExecutionFactory.createRemote(clearRequest, FusekiTestAuth.serviceUpdate(), client) ;
+        UpdateProcessor proc = new UpdateProcessRemote(new UpdateRequest(clearRequest), FusekiTestAuth.serviceUpdate(), null, client, null) ;
         proc.execute() ;
     }
 

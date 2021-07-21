@@ -22,48 +22,29 @@ import static org.apache.jena.http.HttpLib.copyArray;
 
 import java.net.http.HttpClient;
 import java.util.HashMap;
-import java.util.Objects;
 
-import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.sys.ExecHTTPBuilder;
 import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryException;
-import org.apache.jena.sparql.exec.QueryExec;
-import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
+import org.apache.jena.sparql.util.Context;
 
-public class QueryExecHTTPBuilder extends ExecHTTPBuilder<QueryExec, QueryExecHTTPBuilder> {
+public class QueryExecHTTPBuilder extends ExecHTTPBuilder<QueryExecHTTP, QueryExecHTTPBuilder> {
 
     public static QueryExecHTTPBuilder newBuilder() { return new QueryExecHTTPBuilder(); }
 
     private QueryExecHTTPBuilder() {}
 
     @Override
-    public QueryExecHTTP build() {
-      Objects.requireNonNull(serviceURL, "No service URL");
-      if ( queryString == null && query == null )
-          throw new QueryException("No query for QueryExecHTTP");
-      HttpClient hClient = HttpEnv.getHttpClient(serviceURL, httpClient);
-
-      Query queryActual = query;
-
-      if ( substitutionMap != null && ! substitutionMap.isEmpty() ) {
-          if ( query == null )
-              throw new QueryException("Substitution only supported if a Query object was provided");
-
-          queryActual = QueryTransformOps.transform(query, substitutionMap);
-      }
-
-
-      return new QueryExecHTTP(serviceURL, queryActual, queryString, urlLimit,
-                               hClient, new HashMap<>(httpHeaders), Params.create(params), context,
-                               copyArray(defaultGraphURIs),
-                               copyArray(namedGraphURIs),
-                               sendMode, appAcceptHeader,
-                               timeout, timeoutUnit);
+    protected QueryExecHTTPBuilder thisBuilder() {
+        return this;
     }
 
     @Override
-    protected QueryExecHTTPBuilder thisBuilder() {
-        return this;
+    protected QueryExecHTTP buildX(HttpClient hClient, Query queryActual, Context cxt) {
+        return new QueryExecHTTP(serviceURL, queryActual, queryString, urlLimit,
+                                 hClient, new HashMap<>(httpHeaders), Params.create(params), cxt,
+                                 copyArray(defaultGraphURIs),
+                                 copyArray(namedGraphURIs),
+                                 sendMode, appAcceptHeader,
+                                 timeout, timeoutUnit);
     }
 }

@@ -24,35 +24,38 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.http.HttpEnv;
+import org.apache.jena.query.ARQ;
 import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryException;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.http.Params;
 import org.apache.jena.sparql.exec.http.QuerySendMode;
+import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sys.JenaSystem;
 
 /** Execution builder for remote queries. */
 public abstract class ExecHTTPBuilder<X, Y> {
     // neutral superclass.
-    // [QExec] Collapse if RDFConnection is an adapter over RDFLink.
+
     static { JenaSystem.init(); }
 
     protected String serviceURL = null;
-    protected Query query = null;
+    private Query query = null;
     protected String queryString = null;
-    protected HttpClient httpClient = null;
+    private HttpClient httpClient = null;
     protected Map<String, String> httpHeaders = new HashMap<>();
     protected Params params = Params.create();
-    protected Context context = null;
+    private Context context = null;
     // Accept choice by the application
     protected String appAcceptHeader = null;
     protected long timeout = -1;
     protected TimeUnit timeoutUnit = null;
 
     protected int urlLimit = HttpEnv.urlLimit;
-    protected QuerySendMode sendMode = QuerySendMode.systemtDefault;
+    protected QuerySendMode sendMode = QuerySendMode.systemDefault;
     protected List<String> defaultGraphURIs = new ArrayList<>();
     protected List<String> namedGraphURIs = new ArrayList<>();
 
@@ -180,7 +183,7 @@ public abstract class ExecHTTPBuilder<X, Y> {
      * "application/sparql-query"
      */
     public Y postQuery() {
-        this.sendMode = QuerySendMode.asPostBody;
+        this.sendMode = QuerySendMode.asPost;
         return thisBuilder();
     }
 
@@ -277,5 +280,25 @@ public abstract class ExecHTTPBuilder<X, Y> {
         return thisBuilder();
     }
 
-    public abstract X build();
+    final
+    public X build() {
+        Objects.requireNonNull(serviceURL, "No service URL");
+        if ( queryString == null && query == null )
+            throw new QueryException("No query for QueryExecHTTP");
+        HttpClient hClient = HttpEnv.getHttpClient(serviceURL, httpClient);
+
+        Query queryActual = query;
+
+        if ( substitutionMap != null && ! substitutionMap.isEmpty() ) {
+            if ( query == null )
+                throw new QueryException("Substitution only supported if a Query object was provided");
+
+            queryActual = QueryTransformOps.transform(query, substitutionMap);
+        }
+        // [QExec] upgrade and freeze this
+        Context cxt = (context!=null) ? context : ARQ.getContext().copy();
+        return buildX(hClient, queryActual, cxt);
+    }
+
+    protected abstract X buildX(HttpClient hClient, Query queryActual, Context cxt);
 }

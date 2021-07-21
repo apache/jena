@@ -82,6 +82,7 @@ public class TestUpdateExecHTTP {
     @Test public void update_1() {
         UpdateExecHTTP uExec = UpdateExecHTTP.newBuilder()
             .service(service())
+            .sendMode(UpdateSendMode.systemDefault)
             .updateString("INSERT DATA { <x:s> <x:p> 234 } ")
             .build();
         uExec.execute();
@@ -98,7 +99,7 @@ public class TestUpdateExecHTTP {
         UpdateRequest req = UpdateFactory.create("INSERT DATA { <x:s> <x:p> 567 } ");
         UpdateExecHTTP uExec = UpdateExecHTTP.newBuilder()
             .service(service())
-            //.sendMode(UpdateSendMode.asPostForm)
+            .sendMode(UpdateSendMode.asPostForm)
             .update(req)
             .build();
         uExec.execute();

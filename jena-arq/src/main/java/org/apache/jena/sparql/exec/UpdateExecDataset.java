@@ -18,26 +18,23 @@
 
 package org.apache.jena.sparql.exec;
 
-import org.apache.jena.update.UpdateProcessor;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.modify.UpdateEngineFactory;
+import org.apache.jena.sparql.modify.UpdateProcessorBase;
+import org.apache.jena.sparql.util.Context;
+import org.apache.jena.update.UpdateRequest;
 
-public class UpdateProcessorAdapter implements UpdateProcessor {
+public class UpdateExecDataset extends UpdateProcessorBase implements UpdateExec {
 
-    private final UpdateExec updateExec;
-
-    public static UpdateProcessor adapt(UpdateExec updateExec) {
-        if ( updateExec instanceof UpdateExecAdapter ) {
-            return ((UpdateExecAdapter)updateExec).get();
-        }
-        return new UpdateProcessorAdapter(updateExec);
-    }
-
-    protected UpdateExec get() { return updateExec; }
-    
-    protected UpdateProcessorAdapter(UpdateExec updateExec) {
-        this.updateExec = updateExec;
+    protected UpdateExecDataset(UpdateRequest request, DatasetGraph datasetGraph,
+                                Binding inputBinding, Context context, UpdateEngineFactory factory) {
+        super(request, datasetGraph, inputBinding, context, factory);
     }
 
     @Override
-    public void execute() { updateExec.execute(); }
-
+    public void execute() {
+        super.execute();
+    }
 }
+

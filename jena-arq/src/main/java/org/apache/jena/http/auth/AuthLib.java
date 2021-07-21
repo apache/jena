@@ -22,12 +22,9 @@ import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.net.http.HttpRequest.Builder;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandler;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.http.HttpLib;
@@ -35,9 +32,6 @@ import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.web.HttpSC;
 
 public class AuthLib {
-
-    // Active digest sessions.
-    /*package*/ static Map<String, AuthRequestModifier> authModifiers = new ConcurrentHashMap<>();
 
     /**
      * Call {@link HttpClient#send} after applying an active {@link AuthRequestModifier}
@@ -59,18 +53,6 @@ public class AuthLib {
             return httpResponse;
         HttpResponse<T> httpResponse2 = handle401(httpClient, httpRequest, bodyHandler, httpResponse);
         return httpResponse2;
-    }
-
-    // [QExec] Clean up. Pass in URI?
-    public static Builder addAuth(Builder requestBuilder, String uri) {
-        if ( authModifiers.isEmpty() )
-            return requestBuilder;
-        // Covert to the key for authentication handlers.
-        String endpointURL = HttpLib.endpoint(uri);
-        AuthRequestModifier mod = authModifiers.get(endpointURL);
-        if ( mod == null )
-            return requestBuilder;
-        return mod.addAuth(requestBuilder);
     }
 
     /**
@@ -135,7 +117,7 @@ public class AuthLib {
                 throw new HttpException("Not an authentication scheme -- "+aHeader.authScheme);
         }
         String endpointURL = HttpLib.requestTarget(request.uri());
-        recordAuthModifier(endpointURL, digestAuthModifier);
+        AuthEnv.registerAuthModifier(endpointURL, digestAuthModifier);
 
         // ---- Call with modifier or fail.
         HttpRequest.Builder request2builder = HttpLib.createBuilder(request);
@@ -144,13 +126,6 @@ public class AuthLib {
         HttpRequest httpRequest2 = request2builder.build();
         HttpResponse<T> httpResponse2 = HttpLib.executeJDK(httpClient, httpRequest2, bodyHandler);
         return httpResponse2;
-    }
-
-    private static void recordAuthModifier(String requestTarget, AuthRequestModifier digestAuthModifier) {
-        // Without query string or fragment.
-        String serviceEndpoint = HttpLib.endpoint(requestTarget);
-        //AuthEnv.LOG.info("Setup authentication for "+serviceEndpoint);
-        authModifiers.put(serviceEndpoint, digestAuthModifier);
     }
 
     /**

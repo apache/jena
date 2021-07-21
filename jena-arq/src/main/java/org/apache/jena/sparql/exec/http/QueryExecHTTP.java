@@ -467,7 +467,7 @@ public class QueryExecHTTP implements QueryExec {
             case asPostForm :
                 requestBuilder = executeQueryPostForm(thisParams, reqAcceptHeader);
                 break;
-            case asPostBody :
+            case asPost :
                 requestBuilder = executeQueryPostBody(thisParams, reqAcceptHeader);
                 break;
             default :
@@ -495,7 +495,7 @@ public class QueryExecHTTP implements QueryExec {
             // Not switchable.
             case asGetAlways :
             case asPostForm :
-            case asPostBody :
+            case asPost :
                 return sendMode;
             case asGetWithLimitBody :
             case asGetWithLimitForm :
@@ -516,7 +516,7 @@ public class QueryExecHTTP implements QueryExec {
         if ( length <= thisLengthLimit )
             return QuerySendMode.asGetAlways;
 
-        return (sendMode==QuerySendMode.asGetWithLimitBody) ? QuerySendMode.asPostBody : QuerySendMode.asPostForm;
+        return (sendMode==QuerySendMode.asGetWithLimitBody) ? QuerySendMode.asPost : QuerySendMode.asPostForm;
     }
 
     private HttpRequest.Builder executeQueryGet(Params thisParams, String acceptHeader) {

@@ -19,6 +19,8 @@
 package org.apache.jena.http.auth;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,8 +33,9 @@ import org.apache.jena.atlas.web.HttpException;
  */
 public class AuthCredentials {
     private Map<AuthDomain, PasswordRecord> authRegistry = new ConcurrentHashMap<>();
-    private Trie<AuthDomain> prefixes =  new Trie<>();
+    private Trie<AuthDomain> prefixes = new Trie<>();
     public AuthCredentials() {}
+
     public void put(AuthDomain location, PasswordRecord pwRecord) {
         // Checks.
         URI uri = location.uri;
@@ -40,11 +43,14 @@ public class AuthCredentials {
             throw new HttpException("Endpoint URI must not have query string or fragment: "+uri);
         authRegistry.put(location, pwRecord);
         prefixes.add(uri.toString(), location);
-
     }
 
     public boolean contains(AuthDomain location) {
         return prefixes.contains(location.uri.toString());
+    }
+
+    public List<AuthDomain> registered() {
+        return new ArrayList<>(authRegistry.keySet());
     }
 
     public PasswordRecord get(AuthDomain location) {

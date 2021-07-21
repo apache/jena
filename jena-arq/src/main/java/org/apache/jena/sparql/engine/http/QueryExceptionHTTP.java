@@ -22,8 +22,10 @@ import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.query.QueryException;
 import org.apache.jena.web.HttpSC;
 
-/** Exception class for all operations in the SPARQL client library.
- *  Error codes are as HTTP status codes. */
+/**
+ * Exception class for all operations in the SPARQL client library. Error codes are
+ * as HTTP status codes.
+ */
 public class QueryExceptionHTTP extends QueryException
 {
     public static final int noStatusCode = -1234;

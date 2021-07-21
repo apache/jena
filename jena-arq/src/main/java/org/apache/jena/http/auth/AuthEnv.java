@@ -19,7 +19,12 @@
 package org.apache.jena.http.auth;
 
 import java.net.URI;
+import java.net.http.HttpRequest.Builder;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.jena.http.HttpLib;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,13 +33,16 @@ public class AuthEnv {
 
     private static AuthCredentials passwordRegistry = new AuthCredentials();
 
+    // Challenge setups
+    /*package*/ static Map<String, AuthRequestModifier> authModifiers = new ConcurrentHashMap<>();
+
     /** Register (username, password) information for a URI endpoint. */
     public static void registerUsernamePassword(URI uri, String user, String password) {
         AuthDomain domain = new AuthDomain(uri, null);
         AuthEnv.passwordRegistry.put(domain, new PasswordRecord(user, password));
     }
 
-    /** Check whether there is a registation. */
+    /** Check whether there is a registration. */
     public static boolean hasRegistation(URI uri) {
         AuthDomain location = new AuthDomain(uri, null);
         return AuthEnv.passwordRegistry.contains(location);
@@ -43,7 +51,10 @@ public class AuthEnv {
     /** Register (username, password) information for a URI endpoint. */
     public static void unregisterUsernamePassword(URI uri) {
         AuthDomain location = new AuthDomain(uri, null);
-        AuthEnv.passwordRegistry.remove(location);
+        passwordRegistry.remove(location);
+        // and remove any active modifiers.
+        // [QExec] authModifiers Move to AuthEnv.
+        authModifiers.remove(uri.toString());
     }
 
     /**
@@ -54,10 +65,34 @@ public class AuthEnv {
      */
     public static PasswordRecord getUsernamePassword(URI uri) {
         AuthDomain domain = new AuthDomain(uri, null);
-        return AuthEnv.passwordRegistry.get(domain);
+        return passwordRegistry.get(domain);
     }
 
-    public static void clearAuthRequestModifiers() {
-        AuthLib.authModifiers.clear();
+    // Clear the setup active registrations.
+    public static void clearPasswordRegistry() {
+        List<AuthDomain> items = passwordRegistry.registered();
+        items.forEach(ad->{
+            passwordRegistry.remove(ad);
+            authModifiers.remove(ad.getURI().toString());
+        });
+    }
+
+    // [QExec] Clean up. Pass in URI?
+    public static Builder addAuth(Builder requestBuilder, String uri) {
+        if ( authModifiers.isEmpty() )
+            return requestBuilder;
+        // Covert to the key for authentication handlers.
+        String endpointURL = HttpLib.endpoint(uri);
+        AuthRequestModifier mod = authModifiers.get(endpointURL);
+        if ( mod == null )
+            return requestBuilder;
+        return mod.addAuth(requestBuilder);
+    }
+
+    static void registerAuthModifier(String requestTarget, AuthRequestModifier digestAuthModifier) {
+        // Without query string or fragment.
+        String serviceEndpoint = HttpLib.endpoint(requestTarget);
+        //AuthEnv.LOG.info("Setup authentication for "+serviceEndpoint);
+        authModifiers.put(serviceEndpoint, digestAuthModifier);
     }
 }

@@ -61,7 +61,7 @@ public class rsparql extends CmdARQ
 
         try {
             String serviceURL = modRemote.getServiceURL();
-            QuerySendMode sendMode = modRemote.usePost() ? QuerySendMode.asPostBody : QuerySendMode.systemtDefault;
+            QuerySendMode sendMode = modRemote.usePost() ? QuerySendMode.asPost : QuerySendMode.systemDefault;
 
             QueryExecutionHTTP qe = QueryExecutionHTTPBuilder.newBuilder().service(serviceURL).query(query).sendMode(sendMode).build();
 
