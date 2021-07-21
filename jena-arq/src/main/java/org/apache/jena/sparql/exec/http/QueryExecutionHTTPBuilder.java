@@ -22,35 +22,29 @@ import static org.apache.jena.http.HttpLib.copyArray;
 
 import java.net.http.HttpClient;
 import java.util.HashMap;
-import java.util.Objects;
 
-import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.sys.ExecHTTPBuilder;
-import org.apache.jena.query.QueryException;
-import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.Query;
+import org.apache.jena.sparql.util.Context;
 
-public class QueryExecutionHTTPBuilder extends ExecHTTPBuilder<QueryExecution, QueryExecutionHTTPBuilder> {
+public class QueryExecutionHTTPBuilder extends ExecHTTPBuilder<QueryExecutionHTTP, QueryExecutionHTTPBuilder> {
 
     public static QueryExecutionHTTPBuilder newBuilder() { return new QueryExecutionHTTPBuilder(); }
 
     private QueryExecutionHTTPBuilder() {}
 
     @Override
-    public QueryExecutionHTTP build() {
-        Objects.requireNonNull(serviceURL, "No service URL");
-        if ( queryString == null && query == null )
-            throw new QueryException("No query for QueryExecutionHTTP");
-        HttpClient hClient = HttpEnv.getHttpClient(serviceURL, httpClient);
-        QueryExecHTTP qExec = new QueryExecHTTP(serviceURL, query, queryString, urlLimit,
-                                                hClient, new HashMap<>(httpHeaders), Params.create(params), context,
+    protected QueryExecutionHTTPBuilder thisBuilder() {
+        return this;
+    }
+
+    @Override
+    protected QueryExecutionHTTP buildX(HttpClient hClient, Query queryActual, Context cxt) {
+        QueryExecHTTP qExec = new QueryExecHTTP(serviceURL, queryActual, queryString, urlLimit,
+                                                hClient, new HashMap<>(httpHeaders), Params.create(params), cxt,
                                                 copyArray(defaultGraphURIs), copyArray(namedGraphURIs),
                                                 sendMode, appAcceptHeader,
                                                 timeout, timeoutUnit);
         return new QueryExecutionHTTP(qExec);
-    }
-
-    @Override
-    protected QueryExecutionHTTPBuilder thisBuilder() {
-        return this;
     }
 }

@@ -19,13 +19,13 @@
 package org.apache.jena.sparql.exec.http;
 
 /** Enum of different ways to send a SPARQL update over HTTP */
-enum UpdateSendMode {
+public enum UpdateSendMode {
 
     // POST HTML forms (update=...)
     asPostForm,
 
     // POST application/sparql-update
-    asPostBody ;
+    asPost ;
 
-    public static UpdateSendMode systemtDefault = UpdateSendMode.asPostBody;
+    public static UpdateSendMode systemDefault = UpdateSendMode.asPost;
 }

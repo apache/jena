@@ -34,7 +34,7 @@ public enum QuerySendMode {
     asPostForm,
 
     // POST and application/sparql-query
-    asPostBody;
+    asPost;
 
-    public static QuerySendMode systemtDefault = QuerySendMode.asGetWithLimitBody;
+    public static QuerySendMode systemDefault = QuerySendMode.asGetWithLimitBody;
 }

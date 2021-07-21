@@ -20,24 +20,24 @@ package org.apache.jena.sparql.exec;
 
 import org.apache.jena.update.UpdateProcessor;
 
-public class UpdateProcessorAdapter implements UpdateProcessor {
+public class UpdateExecAdapter implements UpdateExec {
 
-    private final UpdateExec updateExec;
+    private final UpdateProcessor updateProc;
 
-    public static UpdateProcessor adapt(UpdateExec updateExec) {
-        if ( updateExec instanceof UpdateExecAdapter ) {
-            return ((UpdateExecAdapter)updateExec).get();
+    public static UpdateExec adapt(UpdateProcessor updateExec) {
+        if ( updateExec instanceof UpdateProcessorAdapter ) {
+            return ((UpdateProcessorAdapter)updateExec).get();
         }
-        return new UpdateProcessorAdapter(updateExec);
+        return new UpdateExecAdapter(updateExec);
     }
 
-    protected UpdateExec get() { return updateExec; }
-    
-    protected UpdateProcessorAdapter(UpdateExec updateExec) {
-        this.updateExec = updateExec;
+    protected UpdateProcessor get() { return updateProc; }
+
+    protected UpdateExecAdapter(UpdateProcessor updateProc) {
+        this.updateProc = updateProc;
     }
 
     @Override
-    public void execute() { updateExec.execute(); }
+    public void execute() { updateProc.execute(); }
 
 }

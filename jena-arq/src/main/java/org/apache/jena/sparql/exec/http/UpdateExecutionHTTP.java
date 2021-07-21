@@ -16,28 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.exec;
+package org.apache.jena.sparql.exec.http;
 
-import org.apache.jena.update.UpdateProcessor;
+import org.apache.jena.sparql.exec.UpdateProcessorAdapter;
 
-public class UpdateProcessorAdapter implements UpdateProcessor {
+public class UpdateExecutionHTTP extends UpdateProcessorAdapter {
 
-    private final UpdateExec updateExec;
+    public static UpdateExecutionHTTPBuilder create() { return UpdateExecutionHTTPBuilder.newBuilder(); }
 
-    public static UpdateProcessor adapt(UpdateExec updateExec) {
-        if ( updateExec instanceof UpdateExecAdapter ) {
-            return ((UpdateExecAdapter)updateExec).get();
-        }
-        return new UpdateProcessorAdapter(updateExec);
+    public UpdateExecutionHTTP(UpdateExecHTTP execHttp) {
+        super(execHttp);
     }
-
-    protected UpdateExec get() { return updateExec; }
-    
-    protected UpdateProcessorAdapter(UpdateExec updateExec) {
-        this.updateExec = updateExec;
-    }
-
-    @Override
-    public void execute() { updateExec.execute(); }
-
 }

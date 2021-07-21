@@ -41,7 +41,7 @@ import org.apache.jena.update.UpdateRequest;
 
 public class UpdateExecHTTP implements UpdateExec {
 
-    public static UpdateExecHTTPBuilder newBuilder() { return new UpdateExecHTTPBuilder(); }
+    public static UpdateExecHTTPBuilder newBuilder() { return UpdateExecHTTPBuilder.newBuilder(); }
 
     private final Context context;
     private final String service;
@@ -99,7 +99,7 @@ public class UpdateExecHTTP implements UpdateExec {
         modifyByService(service, context, thisParams, httpHeaders);
 
         switch(sendMode) {
-            case asPostBody :
+            case asPost :
                 executePostBody(thisParams); break;
             case asPostForm :
                 executePostForm(thisParams); break;

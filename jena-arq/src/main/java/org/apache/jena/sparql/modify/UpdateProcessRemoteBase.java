@@ -27,10 +27,12 @@ import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.http.HttpParams ;
 import org.apache.jena.sparql.engine.http.Params ;
+import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
+import org.apache.jena.sparql.engine.http.Service_AHC;
+import org.apache.jena.sparql.exec.UpdateExec;
 import org.apache.jena.sparql.exec.http.Service;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol ;
-import org.apache.jena.update.UpdateProcessor ;
 import org.apache.jena.update.UpdateRequest ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -40,7 +42,7 @@ import org.slf4j.LoggerFactory ;
  * HTTP
  *
  */
-public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
+public abstract class UpdateProcessRemoteBase implements UpdateExec {
     private static Logger log = LoggerFactory.getLogger(UpdateProcessRemoteBase.class);
 
     /**

@@ -25,12 +25,8 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.modify.UpdateEngineFactory;
 import org.apache.jena.sparql.modify.UpdateEngineRegistry;
-import org.apache.jena.sparql.modify.UpdateProcessorBase;
 import org.apache.jena.sparql.util.Context;
-import org.apache.jena.update.Update;
-import org.apache.jena.update.UpdateFactory;
-import org.apache.jena.update.UpdateProcessor;
-import org.apache.jena.update.UpdateRequest;
+import org.apache.jena.update.*;
 
 public class UpdateExecBuilder {
 
@@ -88,27 +84,26 @@ public class UpdateExecBuilder {
             context = new Context();
     }
 
-    // [QExec] Becomes UpdateExec
-    public UpdateProcessor build() {
-        return build(dataset);
+    public UpdateExecBuilder initialBinding(Binding initialBinding) {
+        this.initialBinding = initialBinding;
+        return this;
     }
 
-    // [QExec] Becomes UpdateExec
-    private UpdateProcessor build(DatasetGraph dsg) {
-        Objects.requireNonNull(dsg, "No datset for update");
-        Context cxt = Context.setupContextForDataset(context, dsg);
-        UpdateEngineFactory f = UpdateEngineRegistry.get().find(dsg, cxt);
+    public UpdateExec build() {
+        Objects.requireNonNull(dataset, "No dataset for update");
+        Objects.requireNonNull(updateRequest, "No update request");
+        Context cxt = Context.setupContextForDataset(context, dataset);
+        UpdateEngineFactory f = UpdateEngineRegistry.get().find(dataset, cxt);
         if ( f == null )
-            return null;
-        UpdateProcessorBase uProc = new UpdateProcessorBase(updateRequest, dsg, initialBinding, cxt, f);
-        return uProc;
+            throw new UpdateException("Failed to find an UpdateEngine");
+        UpdateExec uExec = new UpdateExecDataset(updateRequest, dataset, initialBinding, cxt, f);
+        return uExec;
     }
 
     // Abbreviated forms
     public void execute(DatasetGraph dsg) {
         dataset(dsg);
-        UpdateProcessor uProc = build(dsg);
-        uProc.execute();
+        build().execute();
     }
 
     private void add(UpdateRequest request) {

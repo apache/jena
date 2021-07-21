@@ -26,23 +26,24 @@ import java.util.HashMap;
 import org.apache.jena.http.sys.ExecUpdateHTTPBuilder;
 import org.apache.jena.sparql.util.Context;
 
-public class UpdateExecHTTPBuilder extends ExecUpdateHTTPBuilder<UpdateExecHTTP, UpdateExecHTTPBuilder>{
+public class UpdateExecutionHTTPBuilder extends ExecUpdateHTTPBuilder<UpdateExecutionHTTP, UpdateExecutionHTTPBuilder>{
 
-    public static UpdateExecHTTPBuilder newBuilder() { return new UpdateExecHTTPBuilder(); }
+    public static UpdateExecutionHTTPBuilder newBuilder() { return new UpdateExecutionHTTPBuilder(); }
 
-    private UpdateExecHTTPBuilder() {}
+    private UpdateExecutionHTTPBuilder() {}
 
     @Override
-    protected UpdateExecHTTPBuilder thisBuilder() {
+    protected UpdateExecutionHTTPBuilder thisBuilder() {
         return this;
     }
 
     @Override
-    protected UpdateExecHTTP buildX(HttpClient hClient, Context cxt) {
-        return new UpdateExecHTTP(serviceURL, updateOperations, updateString, hClient, params,
+    protected UpdateExecutionHTTP buildX(HttpClient hClient, Context cxt) {
+        UpdateExecHTTP uExec = new UpdateExecHTTP(serviceURL, updateOperations, updateString, hClient, params,
                                   copyArray(usingGraphURIs),
                                   copyArray(usingNamedGraphURIs),
                                   new HashMap<>(httpHeaders),
                                   sendMode, cxt);
+        return new UpdateExecutionHTTP(uExec);
     }
 }

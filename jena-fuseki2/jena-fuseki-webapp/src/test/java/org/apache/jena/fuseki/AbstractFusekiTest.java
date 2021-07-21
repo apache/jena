@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 
 /**
- * This package has the Fuseki full server tests.  ServerCtl manages a full server for tetsing.
+ * This package has the Fuseki full server tests.  ServerCtl manages a full server for testing.
  *
  * Tests on the server also test the client-side operation
  * It is testing various client APIs.
