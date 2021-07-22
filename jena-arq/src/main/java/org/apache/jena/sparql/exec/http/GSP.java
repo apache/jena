@@ -32,10 +32,7 @@ import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.http.HttpEnv;
-import org.apache.jena.http.HttpLib;
-import org.apache.jena.http.HttpRDF;
-import org.apache.jena.http.Push;
+import org.apache.jena.http.*;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.riot.system.StreamRDFLib;
@@ -504,13 +501,12 @@ public class GSP {
         HttpRDF.httpPutDataset(hc, serviceEndpoint, dataset, requestFmt, httpHeaders);
     }
 
-    // SPARQL "CLEAR ALL"
-//    /** Clear - delete named graphs, empty the default graph */
-//    public void clearDataset() {
-//        validateDatasetOperation();
-//        String url = serviceEndpoint;
-//        HttpOp2.httpDelete(url);
-//    }
+    /** Clear - delete named graphs, empty the default graph - SPARQL "CLEAR ALL" */
+    public void clearDataset() {
+        validateDatasetOperation();
+        String url = serviceEndpoint;
+        HttpOp2.httpDelete(url);
+    }
 
     /** Send a file of triples to a URL. */
     private static void uploadTriples(HttpClient httpClient, String gspUrl, String file, String fileExtContentType,

@@ -219,7 +219,7 @@ public class TestQueryExecutionTimeout1
         ARQ.getContext().set(ARQ.queryTimeout, "10") ;
         QueryExecution qExec = QueryExecutionFactory.create(qs, ds) ;
         ResultSet rs = qExec.execSelect() ;
-        exceptionExpected(rs, 50, 50, 150) ;
+        exceptionExpected(rs, 50, 50, 250) ;
     }
 
     @Test
@@ -229,7 +229,7 @@ public class TestQueryExecutionTimeout1
         ARQ.getContext().set(ARQ.queryTimeout, "20,10") ;
         QueryExecution qExec = QueryExecutionFactory.create(qs, ds) ;
         ResultSet rs = qExec.execSelect() ;
-        exceptionExpected(rs, 50, 50, 150) ;
+        exceptionExpected(rs, 50, 50, 250) ;
     }
 
     @Test

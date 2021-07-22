@@ -38,7 +38,6 @@ import org.apache.jena.rdfconnection.RDFConnectionFuseki;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.util.QueryExecUtils;
-import org.apache.jena.web.AuthSetup;
 
 /** Run a Fuseki server with HTTPS and Authentication, programmatic. */
 public class ExFuseki_09_Https_Auth {
@@ -51,7 +50,6 @@ public class ExFuseki_09_Https_Auth {
     static String    REALM    = "TripleStore";
     static String    HOST     = "localhost";
     static int       PORT     = 3443;
-    static AuthSetup auth     = new AuthSetup(HOST, PORT, USER, PASSWORD, REALM);
 
     // curl -k -d 'query=ASK{}' --basic --user 'user1:pw1' https://localhost:3443/ds
 
