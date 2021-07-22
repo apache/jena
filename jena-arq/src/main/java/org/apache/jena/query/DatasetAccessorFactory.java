@@ -43,7 +43,7 @@ public class DatasetAccessorFactory
     {
         return adapt(new DatasetGraphAccessorHTTP(serviceURI)) ;
     }
-    
+
     /**
      * Create an accessor for a remote HTTP service that requires a custom client (e.g. for authentication)
      * @param serviceURI Service URI
@@ -64,7 +64,7 @@ public class DatasetAccessorFactory
     {
         return adapt(new DatasetGraphAccessorBasic(dataset)) ;
     }
-    
+
     /**
      * Create an accessor for a local dataset
      * @param dataset Dataset
@@ -84,10 +84,10 @@ public class DatasetAccessorFactory
     {
         return new DatasetGraphAccessorBasic(dataset) ;
     }
-    
+
     private static DatasetAccessor adapt(DatasetGraphAccessor dgu)
     {
         return new DatasetAdapter(dgu) ;
     }
-    
+
 }

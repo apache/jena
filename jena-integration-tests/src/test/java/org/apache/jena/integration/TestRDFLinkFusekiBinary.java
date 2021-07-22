@@ -21,11 +21,11 @@ package org.apache.jena.integration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.http.HttpLib;
 import org.apache.jena.rdflink.RDFLinkFuseki;
 import org.apache.jena.rdflink.RDFLinkRemoteBuilder;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -52,13 +52,12 @@ public class TestRDFLinkFusekiBinary {
         int port = server.getPort();
         try {
             String dsURL = "http://localhost:"+port+"/ds" ;
-            assertTrue(Fuseki.isFuseki(dsURL));
+            assertTrue(HttpLib.isFuseki(dsURL));
 
             RDFLinkRemoteBuilder builder = RDFLinkFuseki.newBuilder().destination(dsURL);
 
             try (RDFLinkFuseki link = (RDFLinkFuseki)builder.build()) {
-                // XXX On merge, fix up.
-                //assertTrue(Fuseki.isFuseki(link));
+                //assertTrue(isFuseki(link));
                 // GSP
                 link.put(graph);
                 checkGraph(link, "b3456");

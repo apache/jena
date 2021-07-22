@@ -22,14 +22,19 @@ import java.net.http.HttpClient;
 import java.util.*;
 
 import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.graph.Node;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.QueryException;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.http.Params;
 import org.apache.jena.sparql.exec.http.UpdateSendMode;
+import org.apache.jena.sparql.syntax.syntaxtransform.UpdateTransformOps;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.update.Update;
+import org.apache.jena.update.UpdateException;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 
@@ -39,15 +44,18 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
 
     protected String serviceURL;
     protected String updateString;
+    private UpdateRequest updateOperations = null;
     protected Params params = Params.create();
     protected boolean allowCompression;
     protected Map<String, String> httpHeaders = new HashMap<>();
     protected HttpClient httpClient;
     protected UpdateSendMode sendMode = UpdateSendMode.systemDefault;
-    protected UpdateRequest updateOperations = null;
     protected List<String> usingGraphURIs = null;
     protected List<String> usingNamedGraphURIs = null;
     protected Context context = null;
+    // Uses query rewrite to replace variables by values.
+    protected Map<Var, Node> substitutionMap     = new HashMap<>();
+
 
     protected ExecUpdateHTTPBuilder() {}
 
@@ -92,6 +100,16 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
         Objects.requireNonNull(updateString);
         this.updateOperations = null;
         this.updateString = updateString;
+        return thisBuilder();
+    }
+
+    public Y substitution(Binding binding) {
+        binding.forEach(this.substitutionMap::put);
+        return thisBuilder();
+    }
+
+    public Y substitution(Var var, Node value) {
+        this.substitutionMap.put(var, value);
         return thisBuilder();
     }
 
@@ -187,9 +205,17 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
         if ( updateOperations != null && updateString != null )
             throw new InternalErrorException("UpdateRequest and update string");
         HttpClient hClient = HttpEnv.getHttpClient(serviceURL, httpClient);
+        UpdateRequest updateActual = updateOperations;
+
+        if ( substitutionMap != null && ! substitutionMap.isEmpty() ) {
+            if ( updateActual == null )
+                throw new UpdateException("Substitution only supported if an UpdateRequest object was provided");
+
+            updateActual = UpdateTransformOps.transform(updateActual, substitutionMap);
+        }
         Context cxt = (context!=null) ? context : ARQ.getContext().copy();
-        return buildX(hClient, cxt);
+        return buildX(hClient, updateActual, cxt);
     }
 
-    protected abstract X buildX(HttpClient hClient, Context cxt);
+    protected abstract X buildX(HttpClient hClient, UpdateRequest updateActual, Context cxt);
 }

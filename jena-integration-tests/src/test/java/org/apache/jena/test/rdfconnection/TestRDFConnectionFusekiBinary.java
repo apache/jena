@@ -22,10 +22,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.atlas.web.WebLib;
-import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.http.HttpLib;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -55,12 +55,12 @@ public class TestRDFConnectionFusekiBinary {
         FusekiServer server = createFusekiServer(PORT).build().start();
         try {
             String dsURL = "http://localhost:"+PORT+"/ds" ;
-            assertTrue(Fuseki.isFuseki(dsURL));
+            assertTrue(HttpLib.isFuseki(dsURL));
 
             RDFConnectionRemoteBuilder builder = RDFConnectionFuseki.create().destination(dsURL);
 
             try (RDFConnectionFuseki conn = (RDFConnectionFuseki)builder.build()) {
-                assertTrue(Fuseki.isFuseki(dsURL));
+                assertTrue(HttpLib.isFuseki(dsURL));
                 // GSP
                 conn.put(model);
                 checkModel(conn, "b3456");

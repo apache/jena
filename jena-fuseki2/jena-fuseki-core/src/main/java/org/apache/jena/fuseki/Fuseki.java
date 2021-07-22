@@ -18,26 +18,17 @@
 
 package org.apache.jena.fuseki;
 
-import java.io.InputStream;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpRequest.BodyPublishers;
-import java.net.http.HttpResponse;
 import java.util.Calendar;
-import java.util.Optional;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContext;
 
 import org.apache.jena.atlas.lib.DateTimeUtils;
-import org.apache.jena.http.HttpEnv;
-import org.apache.jena.http.HttpLib;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.system.stream.LocatorFTP;
 import org.apache.jena.riot.system.stream.LocatorHTTP;
 import org.apache.jena.riot.system.stream.StreamManager;
-import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.mgt.SystemInfo;
 import org.apache.jena.sparql.util.Context;
@@ -293,31 +284,5 @@ public class Fuseki {
     // Force a call to init.
     static {
         init();
-    }
-
-    /**
-     * Test whether a URL identifies a Fuseki server. This operation can not guarantee to
-     * detect a Fuseki server - for example, it may be behind a reverse proxy that masks
-     * the signature.
-     */
-    public static boolean isFuseki(String datasetURL) {
-        HttpRequest.Builder builder =
-                HttpRequest.newBuilder().uri(HttpLib.toRequestURI(datasetURL)).method(HttpNames.METHOD_HEAD, BodyPublishers.noBody());
-        HttpRequest request = builder.build();
-        HttpClient httpClient = HttpEnv.getDftHttpClient();
-        HttpResponse<InputStream> response = HttpLib.execute(httpClient, request);
-        HttpLib.handleResponseNoBody(response);
-
-        Optional<String> value1 = response.headers().firstValue(FusekiRequestIdHeader);
-        if ( value1.isPresent() )
-            return true;
-        Optional<String> value2 = response.headers().firstValue("Server");
-        if ( value2.isEmpty() )
-            return false;
-        String headerValue = value2.get();
-        boolean isFuseki = headerValue.startsWith("Apache Jena Fuseki");
-        if ( !isFuseki )
-            isFuseki = headerValue.toLowerCase().contains("fuseki");
-        return isFuseki;
     }
 }
