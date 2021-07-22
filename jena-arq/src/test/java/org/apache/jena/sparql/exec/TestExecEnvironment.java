@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,22 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.modify;
+package org.apache.jena.sparql.exec;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
+import org.junit.Test;
 
-@RunWith(Suite.class)
-@SuiteClasses( {
-    TestUpdateGraphMem.class
-    , TestUpdateGraphMgtMem.class
-    , TestUpdateOperations.class
-    , TestUpdateCompare.class
-    , TestUpdateWriter.class
-    , TestBuildUpdate.class
-})
-public class TS_Update
-{
+public class TestExecEnvironment {
+
+    @Test public void dummy() {}
+
+    // Authenv
+
+    // RegisterHttpClkient
+
+    // RegistryRequestModifier
 }
-

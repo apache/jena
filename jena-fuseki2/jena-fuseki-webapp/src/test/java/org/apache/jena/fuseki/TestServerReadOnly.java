@@ -27,6 +27,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.fuseki.test.FusekiTest;
+import org.apache.jena.http.HttpOp2;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -134,7 +135,7 @@ public class TestServerReadOnly
 
     @Test
     public void options_gsp_readonly() {
-        String v = FusekiTest.execOptions(ServerCtl.serviceGSP()+"?default");
+        String v = HttpOp2.httpOptions(ServerCtl.serviceGSP()+"?default");
         FusekiTest.assertStringList(v, "GET", "OPTIONS", "HEAD");
     }
 

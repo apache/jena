@@ -96,7 +96,7 @@ public class AuthLib {
             return httpResponse1;
 
         AuthDomain domain = new AuthDomain(request.uri());
-        PasswordRecord passwordRecord = AuthEnv.getUsernamePassword(request.uri());
+        PasswordRecord passwordRecord = AuthEnv.get().getUsernamePassword(request.uri());
         if ( passwordRecord == null )
             // No entry.
             throw new HttpException(HttpSC.UNAUTHORIZED_401);
@@ -117,7 +117,7 @@ public class AuthLib {
                 throw new HttpException("Not an authentication scheme -- "+aHeader.authScheme);
         }
         String endpointURL = HttpLib.requestTarget(request.uri());
-        AuthEnv.registerAuthModifier(endpointURL, digestAuthModifier);
+        AuthEnv.get().registerAuthModifier(endpointURL, digestAuthModifier);
 
         // ---- Call with modifier or fail.
         HttpRequest.Builder request2builder = HttpLib.createBuilder(request);

@@ -310,6 +310,7 @@ public class TestAuthRemote {
     @Test
     public void auth_registryHttpClient_exact_401_3() {
         // Longer name.
+        // It does not match; prefixes are limited to ending in "/"
         String registerKey = env.serverPath(env.dsName()+"X");
         FusekiTest.expect401(()->{
             exec_auth_registry_exact(registerKey);
@@ -328,6 +329,7 @@ public class TestAuthRemote {
     @Test
     public void auth_registryHttpClient_exact_401_5() {
         // Shorter dataset name, prefix of actual one.
+        // It does not match.
         String registerKey = env.serverPath("d");
         FusekiTest.expect401(()->{
             exec_auth_registry_exact(registerKey);

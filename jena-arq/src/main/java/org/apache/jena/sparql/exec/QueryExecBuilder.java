@@ -18,6 +18,7 @@
 
 package org.apache.jena.sparql.exec;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -65,7 +66,7 @@ public class QueryExecBuilder {
     private Context      builtContext        = null;
 
     // Uses query rewrite to replace variables by values.
-    private Map<Var, Node>  substitutionMap = null;
+    private Map<Var, Node>  substitutionMap  = null;
 
     // Uses initial binding to execution (old, original) feature
     private Binding      initialBinding     = null;
@@ -134,13 +135,20 @@ public class QueryExecBuilder {
     }
 
     public QueryExecBuilder substitution(Binding binding) {
+        ensureSubstitutionMap();
         binding.forEach(this.substitutionMap::put);
         return this;
     }
 
     public QueryExecBuilder substitution(Var var, Node value) {
+        ensureSubstitutionMap();
         this.substitutionMap.put(var, value);
         return this;
+    }
+
+    private void ensureSubstitutionMap() {
+        if ( substitutionMap == null )
+            substitutionMap = new HashMap<>();
     }
 
     public QueryExecBuilder initialBinding(Binding binding) {

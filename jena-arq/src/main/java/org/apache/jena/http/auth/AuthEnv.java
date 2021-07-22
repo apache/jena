@@ -31,25 +31,31 @@ import org.slf4j.LoggerFactory;
 public class AuthEnv {
     public static Logger LOG =  LoggerFactory.getLogger(AuthEnv.class);
 
-    private static AuthCredentials passwordRegistry = new AuthCredentials();
+    private AuthCredentials passwordRegistry = new AuthCredentials();
+    // Challenge setups that are active.
+    private Map<String, AuthRequestModifier> authModifiers = new ConcurrentHashMap<>();
 
-    // Challenge setups
-    /*package*/ static Map<String, AuthRequestModifier> authModifiers = new ConcurrentHashMap<>();
+    private static AuthEnv singleton = new AuthEnv();
+    public static AuthEnv get() { return singleton; }
+
+    private AuthEnv() {
+        //super(Function.identity());
+    }
 
     /** Register (username, password) information for a URI endpoint. */
-    public static void registerUsernamePassword(URI uri, String user, String password) {
+    public void registerUsernamePassword(URI uri, String user, String password) {
         AuthDomain domain = new AuthDomain(uri, null);
-        AuthEnv.passwordRegistry.put(domain, new PasswordRecord(user, password));
+        passwordRegistry.put(domain, new PasswordRecord(user, password));
     }
 
     /** Check whether there is a registration. */
-    public static boolean hasRegistation(URI uri) {
+    public boolean hasRegistation(URI uri) {
         AuthDomain location = new AuthDomain(uri, null);
-        return AuthEnv.passwordRegistry.contains(location);
+        return passwordRegistry.contains(location);
     }
 
     /** Register (username, password) information for a URI endpoint. */
-    public static void unregisterUsernamePassword(URI uri) {
+    public void unregisterUsernamePassword(URI uri) {
         AuthDomain location = new AuthDomain(uri, null);
         passwordRegistry.remove(location);
         // and remove any active modifiers.
@@ -63,13 +69,17 @@ public class AuthEnv {
      * If there is no exact match for the URI, then the information mapped from the
      * longest prefix entry is returned.
      */
-    public static PasswordRecord getUsernamePassword(URI uri) {
+    public PasswordRecord getUsernamePassword(URI uri) {
         AuthDomain domain = new AuthDomain(uri, null);
         return passwordRegistry.get(domain);
     }
 
+    public void clearActiveAuthentication() {
+        authModifiers.clear();
+    }
+
     // Clear the setup active registrations.
-    public static void clearPasswordRegistry() {
+    public void clearAuthEnv() {
         List<AuthDomain> items = passwordRegistry.registered();
         items.forEach(ad->{
             passwordRegistry.remove(ad);
@@ -78,7 +88,7 @@ public class AuthEnv {
     }
 
     // [QExec] Clean up. Pass in URI?
-    public static Builder addAuth(Builder requestBuilder, String uri) {
+    public Builder addAuth(Builder requestBuilder, String uri) {
         if ( authModifiers.isEmpty() )
             return requestBuilder;
         // Covert to the key for authentication handlers.
@@ -89,10 +99,25 @@ public class AuthEnv {
         return mod.addAuth(requestBuilder);
     }
 
-    static void registerAuthModifier(String requestTarget, AuthRequestModifier digestAuthModifier) {
+    void registerAuthModifier(String requestTarget, AuthRequestModifier digestAuthModifier) {
         // Without query string or fragment.
         String serviceEndpoint = HttpLib.endpoint(requestTarget);
         //AuthEnv.LOG.info("Setup authentication for "+serviceEndpoint);
         authModifiers.put(serviceEndpoint, digestAuthModifier);
     }
+
+//    public void state() {
+//        org.apache.jena.atlas.io.IndentedWriter out = org.apache.jena.atlas.io.IndentedWriter.stdout.clone();
+//        out.setFlushOnNewline(true);
+//
+//        out.println("Password Registry");
+//        out.incIndent();
+//        passwordRegistry.registered().forEach(ad->out.println(ad.uri));
+//        out.decIndent();
+//
+//        out.println("Auth Modifiers");
+//        out.incIndent();
+//        authModifiers.forEach((String uriStr, AuthRequestModifier m)->{out.println(uriStr);});
+//        out.decIndent();
+//    }
 }

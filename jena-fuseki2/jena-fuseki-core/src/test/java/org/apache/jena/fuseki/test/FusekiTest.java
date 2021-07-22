@@ -18,20 +18,9 @@
 
 package org.apache.jena.fuseki.test;
 
-import java.io.IOException;
 import java.util.Objects;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.HttpOptions;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
 import org.apache.jena.atlas.web.HttpException;
-import org.apache.jena.riot.web.HttpNames;
-import org.apache.jena.riot.web.HttpResponseLib;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.web.HttpSC;
 import org.junit.Assert;
@@ -57,30 +46,6 @@ public class FusekiTest {
                 return true;
         }
         return false;
-    }
-
-    /** Do an HTTP Options. */
-    public static String execOptions(String url) {
-        // Prepare and execute
-        try ( CloseableHttpClient httpClient = HttpClients.createDefault() ) {
-            HttpUriRequest request = new HttpOptions(url);
-            HttpResponse response = httpClient.execute(request, (HttpContext)null);
-
-            // Response
-            StatusLine statusLine = response.getStatusLine();
-            int statusCode = statusLine.getStatusCode();
-            if (HttpSC.isClientError(statusCode) || HttpSC.isServerError(statusCode)) {
-                // Error responses can have bodies so it is important to clear up.
-                String contentPayload = "";
-                if ( response.getEntity() != null )
-                    contentPayload = EntityUtils.toString(response.getEntity());
-                throw new HttpException(statusCode, statusLine.getReasonPhrase(), contentPayload);
-            }
-            HttpResponseLib.nullResponse.handle(url, response);
-            return response.getFirstHeader(HttpNames.hAllow).getValue();
-        } catch (IOException ex) {
-            throw new HttpException(ex);
-        }
     }
 
     public static void expect4xx(Runnable action) {

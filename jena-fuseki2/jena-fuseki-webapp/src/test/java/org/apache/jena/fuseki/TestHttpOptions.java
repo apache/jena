@@ -19,37 +19,39 @@
 package org.apache.jena.fuseki;
 
 import org.apache.jena.fuseki.test.FusekiTest;
+import org.apache.jena.http.HttpOp2;
 import org.junit.Test;
 
 public class TestHttpOptions extends AbstractFusekiTest
 {
     @Test
     public void options_query() {
-        String v = FusekiTest.execOptions(ServerCtl.serviceQuery());
+        String v = HttpOp2.httpOptions(ServerCtl.serviceQuery());
         FusekiTest.assertStringList(v, "GET", "OPTIONS", "POST");
     }
 
     @Test
     public void options_update() {
-        String v = FusekiTest.execOptions(ServerCtl.serviceUpdate());
+        String v = HttpOp2.httpOptions(ServerCtl.serviceUpdate());
         FusekiTest.assertStringList(v, "OPTIONS", "POST", "PATCH");
     }
 
     @Test
     public void options_dataset_01() {
-        String v = FusekiTest.execOptions(ServerCtl.urlDataset());
+        String v = HttpOp2.httpOptions(ServerCtl.urlDataset());
         // Not DELETE
         FusekiTest.assertStringList(v, "HEAD", "GET", "OPTIONS", "POST", "PUT");
     }
 
     @Test
     public void options_dataset_02() {
-        //"quads"
+        String v = HttpOp2.httpOptions(ServerCtl.serviceGSP());
+        FusekiTest.assertStringList(v, "GET", "OPTIONS", "HEAD", "POST", "PUT");
     }
 
     @Test
     public void options_gsp_rw() {
-        String v = FusekiTest.execOptions(ServerCtl.serviceGSP()+"?default");
+        String v = HttpOp2.httpOptions(ServerCtl.serviceGSP()+"?default");
         FusekiTest.assertStringList(v, "GET", "OPTIONS", "HEAD", "POST", "PUT", "DELETE");
     }
 

@@ -51,12 +51,12 @@ public class LibSec {
         //String requestTarget = HttpLib.requestTarget(urix);
         AuthDomain domain = new AuthDomain(urix, null);
         try {
-            AuthEnv.registerUsernamePassword(urix, auth.user, auth.password);
+            AuthEnv.get().registerUsernamePassword(urix, auth.user, auth.password);
             try ( RDFConnection conn = RDFConnectionRemote.newBuilder().destination(urlStr).build() ) {
                 action.accept(conn);
             }
         } finally {
-            AuthEnv.unregisterUsernamePassword(urix);
+            AuthEnv.get().unregisterUsernamePassword(urix);
         }
     }
 }
