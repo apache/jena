@@ -25,6 +25,7 @@ import java.util.HashMap;
 
 import org.apache.jena.http.sys.ExecUpdateHTTPBuilder;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.update.UpdateRequest;
 
 public class UpdateExecHTTPBuilder extends ExecUpdateHTTPBuilder<UpdateExecHTTP, UpdateExecHTTPBuilder>{
 
@@ -38,8 +39,8 @@ public class UpdateExecHTTPBuilder extends ExecUpdateHTTPBuilder<UpdateExecHTTP,
     }
 
     @Override
-    protected UpdateExecHTTP buildX(HttpClient hClient, Context cxt) {
-        return new UpdateExecHTTP(serviceURL, updateOperations, updateString, hClient, params,
+    protected UpdateExecHTTP buildX(HttpClient hClient, UpdateRequest updateActual, Context cxt) {
+        return new UpdateExecHTTP(serviceURL, updateActual, updateString, hClient, params,
                                   copyArray(usingGraphURIs),
                                   copyArray(usingNamedGraphURIs),
                                   new HashMap<>(httpHeaders),

@@ -18,6 +18,9 @@
 
 package org.apache.jena.rdflink;
 
+import static org.apache.jena.riot.other.G.clear;
+import static org.apache.jena.riot.other.G.copyGraphSrcToDst;
+
 import java.util.Objects;
 
 import org.apache.jena.atlas.lib.InternalErrorException;
@@ -100,7 +103,7 @@ public class RDFLinkDataset implements RDFLink {
         checkOpen();
         Txn.executeWrite(dataset, ()-> {
             Graph graphDst = graphFor(graphName);
-            G2.copyGraphSrcToDst(graphSrc, graphDst);
+            copyGraphSrcToDst(graphSrc, graphDst);
         });
     }
 
@@ -145,8 +148,8 @@ public class RDFLinkDataset implements RDFLink {
         checkOpen();
         Txn.executeWrite(dataset, ()-> {
             Graph graphDst = graphFor(graphName);
-            G2.clear(graphDst);
-            G2.copyGraphSrcToDst(graph, graphDst);
+            clear(graphDst);
+            copyGraphSrcToDst(graph, graphDst);
         });
     }
 
@@ -155,9 +158,9 @@ public class RDFLinkDataset implements RDFLink {
         checkOpen();
         Txn.executeWrite(dataset,() ->{
             if ( LibRDFLink.isDefault(graphName) )
-                G2.clear(dataset.getDefaultGraph());
+                clear(dataset.getDefaultGraph());
             else
-                G2.clear(dataset.getGraph(graphName));
+                clear(dataset.getGraph(graphName));
         });
     }
 
@@ -175,7 +178,7 @@ public class RDFLinkDataset implements RDFLink {
             if ( RDFLanguages.isTriples(lang) ) {
                 Graph graph = LibRDFLink.isDefault(graphName) ? dataset.getDefaultGraph() : dataset.getGraph(graphName);
                 if ( replace )
-                    G2.clear(graph);
+                    clear(graph);
                 RDFDataMgr.read(graph, file);
             }
             else if ( RDFLanguages.isQuads(lang) ) {
@@ -198,7 +201,7 @@ public class RDFLinkDataset implements RDFLink {
             case COPY: {
                 // Copy - the graph is completely isolated from the original.
                 Graph graph2 = GraphFactory.createDefaultGraph();
-                G2.copyGraphSrcToDst(graph, graph2);
+                copyGraphSrcToDst(graph, graph2);
                 return graph2;
             }
             case READONLY : {

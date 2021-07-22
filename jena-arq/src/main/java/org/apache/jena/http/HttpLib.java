@@ -59,6 +59,7 @@ import org.apache.jena.web.HttpSC;
 
 /**
  * Operations related to SPARQL HTTP requests - Query, Update and Graph Store protocols.
+ * This class is not considered "API".
  */
 public class HttpLib {
 
@@ -634,5 +635,34 @@ public class HttpLib {
         Objects.requireNonNull(response);
         Objects.requireNonNull(headerName);
         return response.headers().firstValue(headerName).orElse(null);
+    }
+
+    // HTTP response header inserted to aid tracking.
+    public static String FusekiRequestIdHeader = "Fuseki-Request-Id";
+
+    /**
+     * Test whether a URL identifies a Fuseki server. This operation can not guarantee to
+     * detect a Fuseki server - for example, it may be behind a reverse proxy that masks
+     * the signature.
+     */
+    public static boolean isFuseki(String datasetURL) {
+        HttpRequest.Builder builder =
+                HttpRequest.newBuilder().uri(toRequestURI(datasetURL)).method(HttpNames.METHOD_HEAD, BodyPublishers.noBody());
+        HttpRequest request = builder.build();
+        HttpClient httpClient = HttpEnv.getDftHttpClient();
+        HttpResponse<InputStream> response = execute(httpClient, request);
+        handleResponseNoBody(response);
+
+        Optional<String> value1 = response.headers().firstValue(FusekiRequestIdHeader);
+        if ( value1.isPresent() )
+            return true;
+        Optional<String> value2 = response.headers().firstValue("Server");
+        if ( value2.isEmpty() )
+            return false;
+        String headerValue = value2.get();
+        boolean isFuseki = headerValue.startsWith("Apache Jena Fuseki");
+        if ( !isFuseki )
+            isFuseki = headerValue.toLowerCase().contains("fuseki");
+        return isFuseki;
     }
 }

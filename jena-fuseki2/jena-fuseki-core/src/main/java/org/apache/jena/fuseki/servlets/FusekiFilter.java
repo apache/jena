@@ -36,10 +36,7 @@ public class FusekiFilter implements Filter {
     private static Logger log = Fuseki.serverLog;
 
     @Override
-    public void init(FilterConfig filterConfig) {
-//        log.info("Filter: ["+Utils.className(this)+"] ServletContextName = "+filterConfig.getServletContext().getServletContextName());
-//        log.info("Filter: ["+Utils.className(this)+"] ContextPath        = "+filterConfig.getServletContext().getContextPath());
-    }
+    public void init(FilterConfig filterConfig) {}
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
