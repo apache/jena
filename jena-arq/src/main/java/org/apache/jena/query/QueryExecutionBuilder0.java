@@ -43,12 +43,13 @@ import org.apache.jena.sparql.util.Context;
 public class QueryExecutionBuilder0 {
 
     // OLD - pre QueryExec.
+    // TO BE DELETED
 
-    /** Create a new builder of {@link QueryExecution} for a local dataset. */
-    public static QueryExecutionBuilder0 newBuilder(int DUMMY) {
-        QueryExecutionBuilder0 builder = new QueryExecutionBuilder0();
-        return builder;
-    }
+//    /** Create a new builder of {@link QueryExecution} for a local dataset. */
+//    public static QueryExecutionBuilder0 newBuilder() {
+//        QueryExecutionBuilder0 builder = new QueryExecutionBuilder0();
+//        return builder;
+//    }
 
     private DatasetGraph dataset            = null;
     private Query        query              = null;

@@ -56,10 +56,20 @@ public class HttpRDF {
     // ---- GET
     /**
      * GET a graph from a URL
+     *
      * @throws HttpException
      */
     public static Graph httpGetGraph(String url) {
         return httpGetGraph(HttpEnv.getDftHttpClient(), url);
+    }
+
+    /**
+     * GET a graph from a URL using the provided "Accept" header.
+     *
+     * @throws HttpException
+     */
+    public static Graph httpGetGraph(String url, String acceptHeader) {
+        return httpGetGraph(HttpEnv.getDftHttpClient(), url, acceptHeader);
     }
 
     /**
