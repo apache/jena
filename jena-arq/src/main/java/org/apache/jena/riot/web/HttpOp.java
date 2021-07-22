@@ -234,6 +234,7 @@ public class HttpOp {
         String s = System.getProperty("http.maxConnections", "5");
         int max = Integer.parseInt(s);
         return HttpClientBuilder.create()
+            .disableContentCompression()
             .useSystemProperties()
             .setRedirectStrategy(laxRedirectStrategy)
             .setMaxConnPerRoute(max)
@@ -315,8 +316,8 @@ public class HttpOp {
      * @param httpContext
      *            HTTP Context
      */
-    public static void execHttpGet(String url, String acceptHeader, HttpResponseHandler handler, HttpClient httpClient,
-            HttpContext httpContext) {
+    public static void execHttpGet(String url, String acceptHeader, HttpResponseHandler handler,
+                                   HttpClient httpClient, HttpContext httpContext) {
         String requestURI = determineRequestURI(url);
         HttpGet httpget = new HttpGet(requestURI);
         exec(url, httpget, acceptHeader, handler, httpClient, httpContext);

@@ -18,6 +18,9 @@
 
 package org.apache.jena.test;
 
+import org.apache.jena.http.TS_JenaHttp;
+import org.apache.jena.integration.TS_RDFLinkIntegration;
+import org.apache.jena.sparql.exec.http.TS_SparqlExecHttp;
 import org.apache.jena.test.assembler.TS_Assembler;
 import org.apache.jena.test.general.TestRemoteEndToEnd;
 import org.apache.jena.test.integration.TS_Integration;
@@ -28,7 +31,10 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TS_Integration.class
+    TS_JenaHttp.class
+    , TS_SparqlExecHttp.class
+    , TS_RDFLinkIntegration.class
+    , TS_Integration.class
     , TS_TranactionIntegration.class
     , TS_RDFConnectionIntegration.class
     , TS_Assembler.class

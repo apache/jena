@@ -20,10 +20,7 @@ package org.apache.jena.fuseki;
 
 import static org.apache.jena.fuseki.ServerCtl.serviceGSP;
 import static org.apache.jena.fuseki.ServerCtl.serviceQuery;
-import static org.apache.jena.fuseki.ServerTest.gn1;
-import static org.apache.jena.fuseki.ServerTest.gn2;
-import static org.apache.jena.fuseki.ServerTest.model1;
-import static org.apache.jena.fuseki.ServerTest.model2;
+import static org.apache.jena.fuseki.ServerTest.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -31,21 +28,23 @@ import static org.junit.Assert.assertTrue;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.http.HttpClient;
 import java.util.Iterator;
 
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.web.AcceptList;
 import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.http.HttpEnv;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
+import org.apache.jena.sparql.exec.http.GSP;
+import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
+import org.apache.jena.sparql.exec.http.QueryExecutionHTTPBuilder;
 import org.apache.jena.sparql.resultset.ResultSetCompare;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Convert;
@@ -53,14 +52,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-@SuppressWarnings("deprecation")
 public class TestQuery extends AbstractFusekiTest {
 
     @Before
     public void before() {
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP());
-        du.putModel(model1);
-        du.putModel(gn1, model2);
+        GSP.request(serviceGSP()).defaultGraph().PUT(graph1);
+        GSP.request(serviceGSP()).graphName(gn1).PUT(graph2);
     }
 
     private static final AcceptList quadsOfferTest = DEF.quadsOffer;
@@ -103,9 +100,6 @@ public class TestQuery extends AbstractFusekiTest {
 
     @Test
     public void query_dynamic_dataset_01() {
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP());
-        du.putModel(model1);
-        du.putModel(gn1, model2);
         {
             String query = "SELECT * { ?s ?p ?o }";
             try (QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery() + "?output=json", query)) {
@@ -116,7 +110,7 @@ public class TestQuery extends AbstractFusekiTest {
             }
         }
         {
-            String query = "SELECT * FROM <" + gn1 + "> { ?s ?p ?o }";
+            String query = "SELECT * FROM <" + graphName1 + "> { ?s ?p ?o }";
             try (QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery() + "?output=json", query)) {
                 ResultSet rs = qExec.execSelect();
                 Node o = rs.next().getLiteral("o").asNode();
@@ -128,11 +122,10 @@ public class TestQuery extends AbstractFusekiTest {
 
     @Test
     public void query_dynamic_dataset_02() {
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP());
-        du.putModel(model1);
-        du.putModel(gn1, model1);
-        du.putModel(gn2, model2);
-        String query = "SELECT * FROM <"+gn1+"> FROM <"+gn2+"> { ?s ?p ?o }";
+        GSP.request(serviceGSP()).clearDataset();
+        GSP.request(serviceGSP()).graphName(gn1).PUT(graph1);
+        GSP.request(serviceGSP()).graphName(gn2).PUT(graph2);
+        String query = "SELECT * FROM <"+graphName1+"> FROM <"+graphName2+"> { ?s ?p ?o }";
         try (QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery() + "?output=json", query)) {
             ResultSet rs = qExec.execSelect();
             int n = ResultSetFormatter.consume(rs);
@@ -146,7 +139,7 @@ public class TestQuery extends AbstractFusekiTest {
         String queryString = " CONSTRUCT { GRAPH <http://eg/g> {?s ?p ?oq} } WHERE {?s ?p ?oq}";
         Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
 
-        try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery(), query) ) {
+        try ( QueryExecutionHTTP qExec = QueryExecutionFactory.sparqlService(serviceQuery(), query) ) {
             Iterator<Quad> result = qExec.execConstructQuads();
             Assert.assertTrue(result.hasNext());
             Assert.assertEquals( "http://eg/g", result.next().getGraph().getURI());
@@ -206,66 +199,66 @@ public class TestQuery extends AbstractFusekiTest {
     }
 
     // Conneg tests:
-    // These use independent connection pooling.
-    // Sharing pooling too much leads to lock up if the list is long (contentTypeTriXxml seems significant)
-    // Hence: try (CloseableHttpClient client = HttpOp.createPoolingHttpClient()) { ... qExec.setClient(client); ... }
-
 
     @Test
     public void query_construct_conneg() throws IOException {
-        try (CloseableHttpClient client = HttpOp.createPoolingHttpClient()) {
-            String query = " CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}";
-            for (MediaType type : rdfOfferTest.entries()) {
+        String query = " CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}";
+        for (MediaType type : rdfOfferTest.entries()) {
 
-                String contentType = type.toHeaderString();
-                try (QueryEngineHTTP qExec = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery(),
-                        query)) {
-                    qExec.setModelContentType(contentType);
-                    qExec.setClient(client);
-                    Iterator<Triple> iter = qExec.execConstructTriples();
-                    assertTrue(iter.hasNext());
-                    String x = qExec.getHttpResponseContentType();
-                    assertEquals(contentType, x);
-                }
+            String contentType = type.toHeaderString();
+            try (QueryExecutionHTTP qExec =
+                    QueryExecutionHTTPBuilder.newBuilder()
+                    .service(serviceQuery())
+                    .queryString(query)
+                    .acceptHeader(contentType)
+                    .build() ) {
+                Iterator<Triple> iter = qExec.execConstructTriples();
+                assertTrue(iter.hasNext());
+                String x = qExec.getHttpResponseContentType();
+                assertEquals(contentType, x);
             }
         }
     }
 
     @Test
     public void query_construct_quad_conneg() throws IOException {
-        try (CloseableHttpClient client = HttpOp.createPoolingHttpClient()) {
-            String queryString = " CONSTRUCT { GRAPH ?g {?s ?p ?o} } WHERE { GRAPH ?g {?s ?p ?o}}";
-            Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
-            for (MediaType type : quadsOfferTest.entries()) {
-                String contentType = type.toHeaderString();
-                try (QueryEngineHTTP qExec = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery(),
-                        query)) {
-                    qExec.setDatasetContentType(contentType);
-                    qExec.setClient(client);
-                    Iterator<Quad> iter = qExec.execConstructQuads();
-                    assertTrue(iter.hasNext());
-                    String x = qExec.getHttpResponseContentType();
-                    assertEquals(contentType, x);
-                }
+        String queryString = " CONSTRUCT { GRAPH ?g {?s ?p ?o} } WHERE { GRAPH ?g {?s ?p ?o}}";
+        Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
+        for (MediaType type : quadsOfferTest.entries()) {
+            String contentType = type.toHeaderString();
+            try (QueryExecutionHTTP qExec =
+                    QueryExecutionHTTPBuilder.newBuilder()
+                    .service(serviceQuery())
+                    .query(query)
+                    .acceptHeader(contentType)
+                    .build() ) {
+                Iterator<Quad> iter = qExec.execConstructQuads();
+                assertTrue(iter.hasNext());
+                String x = qExec.getHttpResponseContentType();
+                assertEquals(contentType, x);
             }
         }
     }
 
     @Test
     public void query_describe_conneg() throws IOException {
-        try (CloseableHttpClient client = HttpOp.createPoolingHttpClient()) {
-            String query = "DESCRIBE ?s WHERE {?s ?p ?o}";
-            for (MediaType type : rdfOfferTest.entries()) {
-                String contentType = type.toHeaderString();
-                try (QueryEngineHTTP qExec = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery(),
-                        query)) {
-                    qExec.setModelContentType(contentType);
-                    qExec.setClient(client);
-                    Model m = qExec.execDescribe();
-                    String x = qExec.getHttpResponseContentType();
-                    assertEquals(contentType, x);
-                    assertFalse(m.isEmpty());
-                }
+        HttpClient client = HttpEnv.httpClientBuilder().build();
+        String query = "DESCRIBE ?s WHERE {?s ?p ?o}";
+        for (MediaType type : rdfOfferTest.entries()) {
+            String contentType = type.toHeaderString();
+            QueryExecutionHTTP qExec =
+                    QueryExecutionHTTPBuilder.newBuilder()
+                    .httpClient(client)
+                    .service(serviceQuery())
+                    .queryString(query)
+                    .acceptHeader(contentType)
+                    .build();
+
+            try ( qExec ) {
+                Model m = qExec.execDescribe();
+                String x = qExec.getHttpResponseContentType();
+                assertEquals(contentType, x);
+                assertFalse(m.isEmpty());
             }
         }
     }
@@ -273,7 +266,6 @@ public class TestQuery extends AbstractFusekiTest {
     public void query_json_01() throws IOException {
         Query query = QueryFactory.create("JSON { \"s\": ?s , \"p\": ?p , \"o\" : ?o } "
                 + "WHERE { ?s ?p ?o }", Syntax.syntaxARQ);
-        query.toString();
         try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery(), query) ) {
             JsonArray result = qExec.execJson();
             assertEquals(1, result.size());

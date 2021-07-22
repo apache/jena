@@ -20,7 +20,6 @@ package org.apache.jena.sparql.modify;
 
 import java.util.ArrayList ;
 import java.util.List ;
-import java.util.Map ;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.protocol.HttpContext ;
@@ -28,11 +27,12 @@ import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.http.HttpParams ;
 import org.apache.jena.sparql.engine.http.Params ;
-import org.apache.jena.sparql.engine.http.QueryEngineHTTP ;
-import org.apache.jena.sparql.engine.http.Service ;
+import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
+import org.apache.jena.sparql.engine.http.Service_AHC;
+import org.apache.jena.sparql.exec.UpdateExec;
+import org.apache.jena.sparql.exec.http.Service;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol ;
-import org.apache.jena.update.UpdateProcessor ;
 import org.apache.jena.update.UpdateRequest ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory ;
  * HTTP
  *
  */
-public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
+public abstract class UpdateProcessRemoteBase implements UpdateExec {
     private static Logger log = LoggerFactory.getLogger(UpdateProcessRemoteBase.class);
 
     /**
@@ -89,7 +89,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
      * <p>
      * Based off proposed patch for JENA-405 but modified to apply all relevant
      * configuration, this is in part also based off of the private
-     * {@code configureQuery()} method of the {@link Service} class though it
+     * {@code configureQuery()} method of the {@link Service_AHC} class though it
      * omits parameter merging since that will be done automatically whenever
      * the {@link QueryEngineHTTP} instance makes a query for remote submission.
      * </p>
@@ -98,22 +98,25 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
      *            Service URI
      */
     private static void applyServiceConfig(String serviceURI, UpdateProcessRemoteBase engine) {
-        @SuppressWarnings("unchecked")
-        Map<String, Context> serviceContextMap = (Map<String, Context>) engine.context.get(Service.serviceContext);
-        if (serviceContextMap != null && serviceContextMap.containsKey(serviceURI)) {
-            Context serviceContext = serviceContextMap.get(serviceURI);
-            if (log.isDebugEnabled())
-                log.debug("Endpoint URI {} has SERVICE Context: {} ", serviceURI, serviceContext);
+        if ( engine.context.isDefined(Service.oldServiceContext) )
+            System.err.println("************ UpdateProcessRemoteBase.applyServiceConfig NOT IMPLEMENTED *************");
 
-            // Apply client settings
-            HttpClient client = serviceContext.get(Service.queryClient);
-
-            if (client != null) {
-                if (log.isDebugEnabled())
-                    log.debug("Using context-supplied client for endpoint URI {}", serviceURI);
-                engine.setClient(client);
-            }
-        }
+//        @SuppressWarnings("unchecked")
+//        Map<String, Context> serviceContextMap = (Map<String, Context>) engine.context.get(Service_AHC.serviceContext);
+//        if (serviceContextMap != null && serviceContextMap.containsKey(serviceURI)) {
+//            Context serviceContext = serviceContextMap.get(serviceURI);
+//            if (log.isDebugEnabled())
+//                log.debug("Endpoint URI {} has SERVICE Context: {} ", serviceURI, serviceContext);
+//
+//            // Apply client settings
+//            HttpClient client = serviceContext.get(Service_AHC.queryClient);
+//
+//            if (client != null) {
+//                if (log.isDebugEnabled())
+//                    log.debug("Using context-supplied client for endpoint URI {}", serviceURI);
+//                engine.setClient(client);
+//            }
+//        }
     }
 
     @Override

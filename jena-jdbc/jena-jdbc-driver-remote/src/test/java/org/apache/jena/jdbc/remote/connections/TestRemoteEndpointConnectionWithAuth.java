@@ -26,9 +26,9 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.jena.fuseki.main.old.FusekiTestAuth;
 import org.apache.jena.jdbc.JdbcCompatibility ;
 import org.apache.jena.jdbc.connections.JenaConnection ;
+import org.apache.jena.jdbc.remote.FusekiTestAuth;
 import org.apache.jena.jdbc.utils.TestUtils ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.riot.web.HttpOp;
@@ -43,7 +43,7 @@ import org.junit.Ignore;
 /**
  * Tests for the {@link RemoteEndpointConnection} where we use HTTP
  * authentication
- * 
+ *
  */
 @Ignore
 public class TestRemoteEndpointConnectionWithAuth extends AbstractRemoteEndpointConnectionTests {
@@ -54,13 +54,13 @@ public class TestRemoteEndpointConnectionWithAuth extends AbstractRemoteEndpoint
 
     /**
      * Setup for the tests by allocating a Fuseki instance to work with
-     * @throws IOException 
+     * @throws IOException
      */
     @BeforeClass
     public static void setup() throws IOException {
         SecurityHandler sh = FusekiTestAuth.makeSimpleSecurityHandler("/*", USER, PASSWORD);
         FusekiTestAuth.setupServer(true, sh);
-        
+
         BasicCredentialsProvider credsProv = new BasicCredentialsProvider();
         credsProv.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(USER, PASSWORD));
         client = HttpClients.custom().setDefaultCredentialsProvider(credsProv).build();

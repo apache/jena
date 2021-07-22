@@ -37,7 +37,7 @@ import org.apache.jena.riot.system.RiotChars ;
  */
 
 public class LangTag {
-    // Valid language tag, not ireegular nor grandfathered.
+    // Valid language tag, not irregular, not grand-fathered.
     /** Index of the language part */
     public static final int  idxLanguage  = 0 ;
     /** Index of the script part */
@@ -73,34 +73,34 @@ public class LangTag {
 
     /*
      * ABNF definition: <a href="http://www.ietf.org/rfc/rfc4234.txt">RFC 4234</a>
-     * 
+     *
      * Language-Tag = langtag / privateuse ; private use tag / grandfathered ;
      * grandfathered registrations
-     * 
+     *
      * langtag = (language ["-" script] ["-" region]("-" variant)("-" extension) ["-" privateuse])
-     * 
+     *
      * language = (2*3ALPHA [ extlang ])      ; shortest ISO 639 code / 4ALPHA ;
      * reserved for future use / 5*8ALPHA     ; registered language subtag
-     * 
+     *
      * extlang = *3("-" 3ALPHA)               ; reserved for future use
-     * 
+     *
      * script = 4ALPHA ; ISO 15924 code
-     * 
+     *
      * region = 2ALPHA ; ISO 3166 code / 3DIGIT ; UN M.49 code
-     * 
+     *
      * variant = 5*8alphanum                  ; registered variants / (DIGIT 3alphanum)
-     * 
+     *
      * extension = singleton 1*("-" (2*8alphanum))
-     * 
+     *
      * singleton = %x41-57 / %x59-5A / %x61-77 / %x79-7A / DIGIT ; "a"-"w" /
      * "y"-"z" / "A"-"W" / "Y"-"Z" / "0"-"9"   ; Single letters: x/X is reserved for private use
-     * 
+     *
      * privateuse = ("x"/"X") 1*("-" (1*8alphanum))
-     * 
-     * grandfathered = 1*3ALPHA 1*2("-" (2*8alphanum))   ; grandfathered registration 
+     *
+     * grandfathered = 1*3ALPHA 1*2("-" (2*8alphanum))   ; grandfathered registration
      *                                                   ; Note: i is the only singleton
      *                                                   ; that starts a grandfathered tag
-     * 
+     *
      * alphanum = (ALPHA / DIGIT)                        ; letters and numbers
      */
 
@@ -180,7 +180,7 @@ public class LangTag {
      * Parse a langtag string and return it's parts in canonical case. See
      * constants for the array contents. Parts not present cause a null in
      * the return array.
-     * 
+     *
      * @return Langtag parts, or null if the input string does not parse as a lang tag.
      */
     public static String[] parse(String languageTag) {

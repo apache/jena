@@ -75,16 +75,18 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.slf4j.Logger;
 
 /**
- * Embedded Fuseki server. This is a Fuseki server running with a pre-configured set of
- * datasets and services. There is no admin UI and no security.
+ * Embedded Fuseki server. This is a Fuseki server running with a pre-configured set
+ * of datasets and services. There is no admin UI and no security.
  * <p>
- * To create a embedded sever, use {@link FusekiServer} ({@link #make} is a
- * packaging of a call to {@link FusekiServer} for the case of one dataset,
- * responding to localhost only).
+ * To create a embedded sever, use {@link FusekiServer} ({@link #make} is a packaging
+ * of a call to {@link FusekiServer} for the case of one dataset, responding to
+ * localhost only).
  * <p>
- * The application should call {@link #start()} to actually start the server
- * (it will run in the background : see {@link #join}).
- * <p>Example:
+ * The application should call {@link #start()} to actually start the server (it will
+ * run in the background : see {@link #join}).
+ * <p>
+ * Example:
+ *
  * <pre>
  *      DatasetGraph dsg = ...;
  *      FusekiServer server = FusekiServer.create()
@@ -93,10 +95,15 @@ import org.slf4j.Logger;
  *          .build();
  *       server.start();
  * </pre>
- * Compact form (use the builder pattern above to get more flexibility):
+ * <p>
+ * Supplying a port number of 0, causes the server to allocate a free port and use
+ * that. The actual port can be found with {@link #getPort()}.
+ * <p>
+ * The following {@link #make compact form} builds a server that only responds to localhost traffic:
  * <pre>
  *    FusekiServer.make(1234, "/ds", dsg).start();
  * </pre>
+ * which may be useful for a test server.
  */
 
 public class FusekiServer {

@@ -18,7 +18,9 @@
 
 package org.apache.jena.sparql.engine.binding;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Objects;
 
 import org.apache.jena.atlas.logging.Log;
@@ -71,6 +73,13 @@ public class BindingLib {
         return builder.build();
     }
 
+    /** Convert Binding to a Map */
+    public static Map<Var, Node> bindingToMap(Binding binding) {
+        Map<Var, Node> map = new HashMap<>();
+        binding.forEach(map::put);
+        return map;
+    }
+
     /** Convert a query solution to a binding */
     public static Binding asBinding(QuerySolution qSolution) {
         if ( qSolution == null )
@@ -86,7 +95,7 @@ public class BindingLib {
         BindingBuilder builder = Binding.builder();
         for ( Iterator<String> iter = qSolution.varNames() ; iter.hasNext() ; ) {
             String n = iter.next();
-    
+
             RDFNode x = qSolution.get(n);
             if ( Var.isBlankNodeVarName(n) )
                 continue;
@@ -94,7 +103,7 @@ public class BindingLib {
                 builder.add(Var.alloc(n), x.asNode());
             } catch (ARQInternalErrorException ex) {
                 // bad binding attempt.
-                Log.warn(BindingUtils.class, "Attempt to bind " + n + " when already bound");
+                Log.warn(BindingLib.class, "Attempt to bind " + n + " when already bound");
             }
         }
         return builder.build();

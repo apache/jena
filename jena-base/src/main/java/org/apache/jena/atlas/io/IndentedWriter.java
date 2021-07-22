@@ -95,6 +95,10 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
         return dup;
     }
 
+    @Override
+    public IndentedWriter clone() {
+        return clone(this);
+    }
     private static Writer makeWriter(OutputStream out) {
         return IO.asBufferedUTF8(out) ;
     }

@@ -65,7 +65,7 @@ import org.junit.Test;
 public class TestAPI
 {
     private static final String ns = "http://example/ns#" ;
-    
+
     static Model m = GraphFactory.makeJenaDefaultModel() ;
     static Resource r1 = m.createResource() ;
     static Property p1 = m.createProperty(ns+"p1") ;
@@ -85,38 +85,38 @@ public class TestAPI
         d = DatasetFactory.create(dft);
         d.addNamedModel(g1.getURI(), m);
     }
-    
+
     @Test public void testInitialBindingsConstruct1()
     {
-        try(QueryExecution qExec = makeQExec("CONSTRUCT {?s ?p ?z} {?s ?p 'x1'}")) {
+        try(QueryExecution qExec = makeQExecution("CONSTRUCT {?s ?p ?z} {?s ?p 'x1'}")) {
             QuerySolutionMap init = new QuerySolutionMap() ;
             init.add("z", m.createLiteral("zzz"));
-            
+
             qExec.setInitialBinding(init) ;
             Model r = qExec.execConstruct() ;
-        
+
             assertTrue("Empty model", r.size() > 0 ) ;
-        
+
             Property p1 = m.createProperty(ns+"p1") ;
-        
-            assertTrue("Empty model", r.contains(null,p1, init.get("z"))) ; 
+
+            assertTrue("Empty model", r.contains(null,p1, init.get("z"))) ;
         }
     }
-    
+
     @Test public void testInitialBindingsConstruct2()
     {
-        try(QueryExecution qExec = makeQExec("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }")) {
+        try(QueryExecution qExec = makeQExecution("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }")) {
             QuerySolutionMap init = new QuerySolutionMap() ;
             init.add("o", m.createLiteral("x1"));
-            
+
             qExec.setInitialBinding(init) ;
             Model r = qExec.execConstruct() ;
-        
+
             assertTrue("Empty model", r.size() > 0 ) ;
-        
+
             Property p1 = m.createProperty(ns+"p1") ;
-        
-            assertTrue("Empty model", r.contains(null, p1, init.get("x1"))) ; 
+
+            assertTrue("Empty model", r.contains(null, p1, init.get("x1"))) ;
         }
     }
 
@@ -126,21 +126,21 @@ public class TestAPI
     // This is testing that the model for the resource in the result is the
     // same object as the model supplied to the query.
     // "Same" here means "same contents" includign blank nodes.
-    // 
-    // it used to be that this tested whether they were the same object. 
+    //
+    // it used to be that this tested whether they were the same object.
     // That is dubious and no longer true even for DatasetImpl (teh default mode
     // is not cached but recreated on demand so theer are no problems with
-    // transaction boundaries).    
-    // 
+    // transaction boundaries).
+    //
     // Left as an active test so the assumption is tested (it has been true for
-    // many years). 
+    // many years).
     //
     // Using the Resource.getXXX and Resource.listXXX operations is dubious if
     // there are named graphs and that has always been the case.
-    
+
     @Test public void test_API1()
     {
-        try(QueryExecution qExec = makeQExec("SELECT * {?s ?p ?o}")) {
+        try(QueryExecution qExec = makeQExecution("SELECT * {?s ?p ?o}")) {
             ResultSet rs = qExec.execSelect() ;
             assertTrue("No results", rs.hasNext()) ;
             QuerySolution qs = rs.nextSolution() ;
@@ -151,7 +151,7 @@ public class TestAPI
             assertEquals(s1,s2) ;
         }
     }
-    
+
     @Test public void testInitialBindings0()
     {
         QuerySolutionMap smap1 = new QuerySolutionMap() ;
@@ -162,25 +162,25 @@ public class TestAPI
         smap2.clear() ;
         assertFalse(smap2.contains("o")) ;
         assertTrue(smap1.contains("o")) ;
-        
+
         QuerySolutionMap smap3 = new QuerySolutionMap() ;
         smap2.addAll((QuerySolution)smap1) ;
         assertTrue(smap2.contains("o")) ;
     }
-    
+
     @Test public void testInitialBindings1()
     {
-        QueryExecution qExec = makeQExec("SELECT * {?s ?p ?o}") ;
+        QueryExecution qExec = makeQExecution("SELECT * {?s ?p ?o}") ;
         QuerySolutionMap init = new QuerySolutionMap() ;
         init.add("o", m.createLiteral("y1"));
         qExec.setInitialBinding(init) ;
         int count = queryAndCount(qExec) ;
         assertEquals("Initial binding didn't restrict query properly", 1, count) ;
     }
-    
+
     @Test public void testInitialBindings2()
     {
-        QueryExecution qExec = makeQExec("SELECT * {?s ?p ?o}") ;
+        QueryExecution qExec = makeQExecution("SELECT * {?s ?p ?o}") ;
         QuerySolutionMap init = new QuerySolutionMap() ;
         init.add("z", m.createLiteral("zzz"));
         qExec.setInitialBinding(init) ;
@@ -190,7 +190,7 @@ public class TestAPI
 
     @Test public void testInitialBindings3()
     {
-        try(QueryExecution qExec = makeQExec("SELECT * {?s ?p 'x1'}")) {
+        try(QueryExecution qExec = makeQExecution("SELECT * {?s ?p 'x1'}")) {
             QuerySolutionMap init = new QuerySolutionMap() ;
             init.add("z", m.createLiteral("zzz"));
             qExec.setInitialBinding(init) ;
@@ -199,7 +199,7 @@ public class TestAPI
             assertTrue("Initial setting not set correctly now", qs.getLiteral("z").getLexicalForm().equals("zzz")) ;
         }
     }
-    
+
     @Test public void testInitialBindings4()
     {
         // Test derived from report by Holger Knublauch
@@ -213,13 +213,13 @@ public class TestAPI
             "        ?x rdfs:label ?z . \n" +
             "    }\n" +
             "}";
-        
+
         Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
         try(QueryExecution qexec = QueryExecutionFactory.create(query, m)) {
             QuerySolutionMap map = new QuerySolutionMap();
             map.add("this", OWL.Thing);
             qexec.setInitialBinding(map);
-            
+
             ResultSet rs = qexec.execSelect();
             while(rs.hasNext()) {
                 QuerySolution qs = rs.nextSolution();
@@ -227,7 +227,7 @@ public class TestAPI
             }
         }
     }
-    
+
     /**
      * Initial binding substitution happens before optimization so initial bindings can make a semantically always false query into one that can return true
      */
@@ -239,16 +239,17 @@ public class TestAPI
                 "    FILTER (?a = <http://constant>) .\n" +
                 "}");
         //System.out.println(Algebra.optimize(Algebra.compile(query)).toString());
-        
+
         Model model = ModelFactory.createDefaultModel();
         model.add(OWL.Thing, RDF.type, OWL.Class);
         QuerySolutionMap initialBinding = new QuerySolutionMap();
         initialBinding.add("a", ResourceFactory.createResource("http://constant"));
-        QueryExecution qexec = QueryExecutionFactory.create(query, model, initialBinding);
-        boolean result = qexec.execAsk();
-        assertTrue(result);
+        try ( QueryExecution qExec = QueryExecution.create().query(query).model(model).initialBinding(initialBinding).build() ) {
+            boolean result = qExec.execAsk();
+            assertTrue(result);
+        }
     }
-    
+
     /**
      * Initial binding substitution happens before optimization so initial bindings can make a semantically always false query into one that can return true
      */
@@ -260,17 +261,18 @@ public class TestAPI
                 "    FILTER (?a = ?b) .\n" +
                 "}");
         //System.out.println(Algebra.optimize(Algebra.compile(query)).toString());
-        
+
         Model model = ModelFactory.createDefaultModel();
         model.add(OWL.Thing, RDF.type, OWL.Class);
         QuerySolutionMap initialBinding = new QuerySolutionMap();
         initialBinding.add("a", ResourceFactory.createTypedLiteral(Boolean.TRUE));
         initialBinding.add("b", ResourceFactory.createTypedLiteral(Boolean.TRUE));
-        QueryExecution qexec = QueryExecutionFactory.create(query, model, initialBinding);
-        boolean result = qexec.execAsk();
-        assertTrue(result);
+        try ( QueryExecution qExec = QueryExecution.create().query(query).model(model).initialBinding(initialBinding).build() ) {
+            boolean result = qExec.execAsk();
+            assertTrue(result);
+        }
     }
-    
+
     @Test public void testInitialBindings7() {
         // JENA-1354
         Query query = QueryFactory.create("SELECT DISTINCT ?x WHERE {}");
@@ -281,58 +283,58 @@ public class TestAPI
             assertFalse(qexec.execSelect().next().contains("a"));
         }
     }
-    
+
 
     @Test public void testReuseQueryObject1()
     {
         String queryString = "SELECT * {?s ?p ?o}";
         Query q = QueryFactory.create(queryString) ;
-        
+
         QueryExecution qExec = QueryExecutionFactory.create(q, m) ;
         int count = queryAndCount(qExec) ;
         assertEquals(3, count) ;
-        
+
         qExec = QueryExecutionFactory.create(q, m) ;
         count = queryAndCount(qExec) ;
         assertEquals(3, count) ;
     }
-    
+
     @Test public void testReuseQueryObject2()
     {
         String queryString = "SELECT (count(?o) AS ?c) {?s ?p ?o} GROUP BY ?s";
         Query q = QueryFactory.create(queryString) ;
-        
+
         try(QueryExecution qExec = QueryExecutionFactory.create(q, m)) {
             ResultSet rs = qExec.execSelect() ;
             QuerySolution qs = rs.nextSolution() ;
             assertEquals(3, qs.getLiteral("c").getInt()) ;
         }
-            
+
         try(QueryExecution qExec = QueryExecutionFactory.create(q, m)) {
             ResultSet rs = qExec.execSelect() ;
             QuerySolution qs = rs.nextSolution() ;
             assertEquals(3, qs.getLiteral("c").getInt()) ;
         }
     }
-    
+
     @Test public void testConstructRejectsBadTriples1()
     {
         String queryString = "CONSTRUCT { ?s ?p ?o } WHERE { ?o ?p ?s }";
         Query q = QueryFactory.create(queryString);
-        
+
         QueryExecution qExec = QueryExecutionFactory.create(q, m);
-        
+
         Model resultModel = qExec.execConstruct();
         assertEquals(0, resultModel.size());
     }
-    
+
     @Test public void testConstructRejectsBadTriples2()
     {
         String queryString = "CONSTRUCT { ?s ?p ?o } WHERE { ?o ?p ?s }";
         Query q = QueryFactory.create(queryString);
-        
+
         QueryExecution qExec = QueryExecutionFactory.create(q, m);
-        
+
         Iterator<Triple> ts = qExec.execConstructTriples();
         long count = 0;
         while (ts.hasNext()) {
@@ -341,8 +343,8 @@ public class TestAPI
         }
         assertEquals(0, count);
     }
-    
-    
+
+
 //    // Execute a test both with and without regex optimization enabled
 //    // Check the number of results
 //    private void XexecRegexTest(int expected, String queryString)
@@ -360,18 +362,18 @@ public class TestAPI
 //            ARQ.getContext().set(ARQ.enableRegexConstraintsOpt, b) ;
 //        }
 //    }
-    
+
     // ARQ Construct Quad Tests:
     // Two types of query strings: a) construct triple string; b) construct quad string;
     // Two kinds of query methods: 1) execTriples(); 2) execQuads();
-    
+
     // Test a)+1)
     @Test public void testARQConstructQuad_a_1() {
         String queryString = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH ?g { ?s ?p ?o } }";
         Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
-        
+
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
-        
+
         Iterator<Triple> ts = qExec.execConstructTriples();
         Model result = ModelFactory.createDefaultModel();
         while (ts.hasNext()) {
@@ -383,14 +385,14 @@ public class TestAPI
         assertEquals(3, result.size());
         assertTrue(m.isIsomorphicWith(result));
     }
-    
+
     // Test b)+2)
     @Test public void testARQConstructQuad_b_2() {
         String queryString = "CONSTRUCT { GRAPH ?g1 {?s ?p ?o} } WHERE { ?s ?p ?o. GRAPH ?g1 {?s1 ?p1 'x1'} }";
         Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
-        
+
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
-        
+
         Iterator<Quad> ts = qExec.execConstructQuads();
         DatasetGraph result = DatasetGraphFactory.create();
         long count = 0;
@@ -399,22 +401,22 @@ public class TestAPI
             Quad qd = ts.next();
             result.add(qd);
         }
-        
+
         DatasetGraph expected = DatasetGraphFactory.create();
         expected.add(g1.asNode(), s.asNode(), p.asNode(), o.asNode());
-        
-        assertEquals(1, count); 
+
+        assertEquals(1, count);
         assertTrue(IsoMatcher.isomorphic( expected, result) );
-        
+
     }
-    
+
     // Test a)+2): Quads constructed in the default graph
     @Test public void testARQConstructQuad_a_2() {
         String queryString = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
         Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
-        
+
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
-        
+
         Iterator<Quad> ts = qExec.execConstructQuads();
         DatasetGraph result = DatasetGraphFactory.create();
         long count = 0;
@@ -426,9 +428,9 @@ public class TestAPI
         expected.add(Quad.defaultGraphNodeGenerated, s.asNode(), p.asNode(), o.asNode());
         assertEquals(1, count);
         assertTrue(IsoMatcher.isomorphic( expected, result) );
-        
+
     }
-    
+
     // Test b)+1): Projection on default graph, ignoring constructing named graphs
     @Test public void testARQConstructQuad_b_1() {
         String queryString = "CONSTRUCT { ?s ?p ?o GRAPH ?g1 { ?s1 ?p1 ?o1 } } WHERE { ?s ?p ?o. GRAPH ?g1 { ?s1 ?p1 ?o1 } }";
@@ -445,7 +447,7 @@ public class TestAPI
         assertEquals(1, result.size());
         assertTrue(dft.isIsomorphicWith(result));
     }
-    
+
     @Test public void testARQConstructQuad_bnodes() {
         String queryString = "PREFIX : <http://example/> CONSTRUCT { :s :p :o GRAPH _:a { :s :p :o1 } } WHERE { }";
         Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
@@ -458,14 +460,14 @@ public class TestAPI
         assertNotNull(g) ;
         assertFalse(g.isEmpty()) ;
    }
-    
+
     // Allow duplicated quads in execConstructQuads()
     @Test public void testARQConstructQuad_Duplicate_1() {
         String queryString = "CONSTRUCT { GRAPH ?g1 {?s ?p ?o} } WHERE { ?s ?p ?o. GRAPH ?g1 {?s1 ?p1 ?o1} }";
         Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
-        
+
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
-        
+
         Iterator<Quad> ts = qExec.execConstructQuads();
         long count = 0;
         Quad expected = Quad.create( g1.asNode(), s.asNode(), p.asNode(), o.asNode());
@@ -476,14 +478,14 @@ public class TestAPI
         }
         assertEquals(3, count); // 3 duplicated quads
     }
-    
+
     // No duplicated quads in execConstructDataset()
     @Test public void testARQConstructQuad_Duplicate_2() {
         String queryString = "CONSTRUCT { GRAPH ?g1 {?s ?p ?o} } WHERE { ?s ?p ?o. GRAPH ?g1 {?s1 ?p1 ?o1} }";
         Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
-        
+
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
-        
+
         Dataset result = qExec.execConstructDataset();
 
         DatasetGraph expected = DatasetGraphFactory.create();
@@ -491,14 +493,14 @@ public class TestAPI
         assertEquals(1, result.asDatasetGraph().size());
         assertTrue(IsoMatcher.isomorphic( expected, result.asDatasetGraph()) );
     }
-    
+
     // Allow duplicated template quads in execConstructQuads()
     @Test public void testARQConstructQuad_Duplicate_3() {
         String queryString = "CONSTRUCT { GRAPH ?g1 {?s ?p ?o} GRAPH ?g1 {?s ?p ?o} } WHERE { ?s ?p ?o. GRAPH ?g1 {?s1 ?p1 ?o1} }";
         Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
-        
+
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
-        
+
         Iterator<Quad> ts = qExec.execConstructQuads();
         long count = 0;
         Quad expected = Quad.create( g1.asNode(), s.asNode(), p.asNode(), o.asNode());
@@ -509,14 +511,14 @@ public class TestAPI
         }
         assertEquals(6, count); // 6 duplicated quads
     }
-    
+
     // Allow duplicated template quads in execConstructQuads()
     @Test public void testARQConstructQuad_Prefix() {
         String queryString = "PREFIX :   <http://example/ns#> CONSTRUCT { GRAPH :g1 { ?s :p ?o} } WHERE { ?s ?p ?o }";
         Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
-        
+
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
-        
+
         Iterator<Quad> quads = qExec.execConstructQuads();
         DatasetGraph result = DatasetGraphFactory.create();
         long count = 0;
@@ -525,54 +527,54 @@ public class TestAPI
             Quad qd = quads.next();
             result.add(qd);
         }
-        
+
         DatasetGraph expected = DatasetGraphFactory.create();
         expected.add(g1.asNode(), s.asNode(), p.asNode(), o.asNode());
-        
-        assertEquals(1, count); 
+
+        assertEquals(1, count);
         assertTrue(IsoMatcher.isomorphic( expected, result) );
-        
+
     }
-    
+
     // Test construct triple short form:
     @Test public void testARQConstructQuad_ShortForm_1() {
         String queryString = "CONSTRUCT WHERE {?s ?p ?o }";
         Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
-        
+
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
-        
+
         Model result = ModelFactory.createDefaultModel();
         qExec.execConstruct(result);
 
         assertEquals(1, result.size());
         assertTrue(dft.isIsomorphicWith(result));
     }
-    
+
     // Test construct quad short form:
     @Test public void testARQConstructQuad_ShortForm_2() {
         String queryString = "CONSTRUCT WHERE { GRAPH ?g {?s ?p ?o} }";
         Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
-        
+
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
         Dataset result = qExec.execConstructDataset();
-        
+
         Dataset expected = DatasetFactory.createTxnMem();
         expected.addNamedModel(g1.getURI(), m);
-        
+
         assertTrue(IsoMatcher.isomorphic( expected.asDatasetGraph(), result.asDatasetGraph()) );
     }
-    
+
     // Test construct triple and quad short form:
     @Test public void testARQConstructQuad_ShortForm_3() {
         String queryString = "CONSTRUCT WHERE { ?s ?p ?o. GRAPH ?g1 {?s1 ?p1 ?o1} }";
         Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
-        
+
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
         Dataset result = qExec.execConstructDataset();
-        
+
         assertTrue(IsoMatcher.isomorphic( d.asDatasetGraph(), result.asDatasetGraph()) );
     }
-    
+
     // Test bad construct quad short form:
     @Test public void testARQConstructQuad_ShortForm_bad() {
         String queryString = "CONSTRUCT WHERE { GRAPH ?g {?s ?p ?o. FILTER isIRI(?o)}  }";
@@ -583,7 +585,7 @@ public class TestAPI
         }
         fail("Short form of construct quad MUST be simple graph patterns!");
     }
-    
+
     @Test public void testResultSetCloseableGood() {
         String queryString = "SELECT * { ?s ?p ?o. }";
         Query q = QueryFactory.create(queryString);
@@ -593,8 +595,8 @@ public class TestAPI
             assertEquals(1,x);
         }
     }
-    
-    @Test(expected=IllegalArgumentException.class) 
+
+    @Test(expected=IllegalArgumentException.class)
     public void testResultSetCloseableBad() {
         String queryString = "ASK { ?s ?p ?o. }";
         Query q = QueryFactory.create(queryString);
@@ -605,14 +607,14 @@ public class TestAPI
         }
     }
 
-    private QueryExecution makeQExec(String queryString) {
+    private QueryExecution makeQExecution(String queryString) {
         Query q = QueryFactory.create(queryString);
         QueryExecution qExec = QueryExecutionFactory.create(q, m);
         return qExec;
     }
 
     private int queryAndCount(String queryString) {
-        QueryExecution qExec = makeQExec(queryString);
+        QueryExecution qExec = makeQExecution(queryString);
         return queryAndCount(qExec);
     }
 
@@ -633,7 +635,7 @@ public class TestAPI
         // JENA-632
         Query query = QueryFactory.create("JSON { \"s\": ?s , \"p\": ?p , \"o\" : ?o } "
                 + "WHERE { ?s ?p ?o }", Syntax.syntaxARQ);
-        
+
         try ( QueryExecution qexec = QueryExecutionFactory.create(query, m) ) {
             JsonArray jsonArray = qexec.execJson();
             assertNotNull( jsonArray );

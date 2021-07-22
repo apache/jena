@@ -24,6 +24,9 @@ import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.query.*;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.RowSetFormatter;
+import org.apache.jena.sparql.exec.RowSetRewindable;
 import org.apache.jena.sparql.resultset.ResultSetCompare;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
@@ -43,7 +46,7 @@ public abstract class AbstractTestAdditional {
         String resultsStr = StrUtils.strjoinNL("(resultset (?s ?p ?o)"
                                                , "(row (?s :s1) (?p :p) (?o :o))"
                                               ,")" );
-        ResultSetRewindable expected = SSE.parseResultSet(resultsStr).rewindable();
+        RowSetRewindable expected = SSE.parseRowSet(resultsStr).rewindable();
         Txn.executeWrite(dataset, ()->{
             String data = StrUtils.strjoinNL("(dataset"
                                             ,"  (:g1 :s1 :p :o)"
@@ -55,21 +58,21 @@ public abstract class AbstractTestAdditional {
             dataset.asDatasetGraph().addAll(dsg);
             String qs = PREFIXES+"SELECT * { VALUES ?s { :s1 } GRAPH <"+Quad.unionGraph+"> { ?s ?p ?o } }";
             Query query = QueryFactory.create(qs);
-            try ( QueryExecution qExec = QueryExecutionFactory.create(query, dataset)) {
-                ResultSetRewindable rs = qExec.execSelect().rewindable();
+            try ( QueryExec qExec = QueryExec.newBuilder().dataset(dsg).query(query).build() ) {
+                RowSetRewindable rs = qExec.select().rewindable();
                 testRS(expected, rs);
             }
         });
     }
 
-    private static void testRS(ResultSetRewindable rsExpected, ResultSetRewindable rsGot) {
+    private static void testRS(RowSetRewindable rsExpected, RowSetRewindable rsGot) {
         boolean b = ResultSetCompare.equalsByTerm(rsExpected, rsGot);
         if (! b ) {
             rsExpected.reset();
             rsGot.reset();
-            System.out.println(ResultSetFormatter.asText(rsExpected));
+            RowSetFormatter.out(System.out, rsExpected);
             System.out.println();
-            System.out.println(ResultSetFormatter.asText(rsGot));
+            RowSetFormatter.out(System.out, rsGot);
         }
         assertTrue("result sets different", b);
     }

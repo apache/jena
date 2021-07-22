@@ -22,6 +22,7 @@ import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.ARQConstants ;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Closure ;
 import org.apache.jena.sparql.util.Context ;
 
@@ -33,19 +34,23 @@ public class DescribeBNodeClosure implements DescribeHandler
 {
     Model acc ;
     Dataset dataset ;
-    
+
     public DescribeBNodeClosure() {}
-    
+
     @Override
     public void start(Model accumulateResultModel, Context cxt)
     {
         acc = accumulateResultModel ;
-        this.dataset = (Dataset)cxt.get(ARQConstants.sysCurrentDataset) ;
+        Object obj = cxt.get(ARQConstants.sysCurrentDataset) ;
+        if ( obj instanceof Dataset )
+            this.dataset = (Dataset)obj;
+        else if ( obj instanceof DatasetGraph )
+            this.dataset = DatasetFactory.wrap((DatasetGraph)obj);
     }
 
-    // DISTINCT - we only need each ?g once. 
-    private static Query query = QueryFactory.create("SELECT DISTINCT ?g { GRAPH ?g { ?s ?p ?o } }") ; 
-    
+    // DISTINCT - we only need each ?g once.
+    private static Query query = QueryFactory.create("SELECT DISTINCT ?g { GRAPH ?g { ?s ?p ?o } }") ;
+
     // Check all named graphs
     @Override
     public void describe(Resource r)
@@ -58,7 +63,7 @@ public class DescribeBNodeClosure implements DescribeHandler
         // names of graphs in the case of very large numbers
         // of graphs, few of which contain the resource, in
         // some kind of persistent storage.
-        
+
         QuerySolutionMap qsm = new QuerySolutionMap() ;
         qsm.add("s", r) ;
         try(QueryExecution qExec = QueryExecutionFactory.create(query, dataset, qsm)) {
@@ -71,7 +76,7 @@ public class DescribeBNodeClosure implements DescribeHandler
                 Closure.closure(r2, false, acc) ;
             }
         }
-        
+
 //        // Named graphs
 //        for ( Iterator<String> iter = dataset.listNames() ; iter.hasNext() ; )
 //        {
@@ -80,7 +85,7 @@ public class DescribeBNodeClosure implements DescribeHandler
 //            Resource r2 = otherModel(r, model) ;
 //            Closure.closure(r2, false, acc) ;
 //        }
-        
+
         Closure.closure(r, false, acc) ;
     }
 

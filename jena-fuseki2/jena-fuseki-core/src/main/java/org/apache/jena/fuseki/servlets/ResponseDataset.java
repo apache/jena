@@ -23,7 +23,6 @@ import static org.apache.jena.riot.WebContent.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -35,7 +34,9 @@ import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.*;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFFormat;
+import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.web.HttpSC;
 
@@ -116,17 +117,12 @@ public class ResponseDataset
 
         try {
             ServletOps.success(action);
-            ServletOutputStream out = response.getOutputStream();
-            try {
-                // Use the Content-Type from the content negotiation.
-                if ( RDFLanguages.isQuads(lang) )
-                    ActionLib.datasetResponse(action, dataset.asDatasetGraph(), format, contentType);
-                else
-                    ActionLib.graphResponse(action, dataset.getDefaultModel().getGraph(), format, contentType);
-                out.flush();
-            } catch (JenaException ex) {
-                ServletOps.errorOccurred("Failed to write output: "+ex.getMessage(), ex);
-            }
+            if ( RDFLanguages.isQuads(lang) )
+                ActionLib.datasetResponse(action, dataset.asDatasetGraph(), format, contentType);
+            else
+                ActionLib.graphResponse(action, dataset.getDefaultModel().getGraph(), format, contentType);
+        } catch (JenaException ex) {
+            ServletOps.errorOccurred("Failed to write output: "+ex.getMessage(), ex);
         }
         catch (ActionErrorException ex) { throw ex; }
         catch (Exception ex) {

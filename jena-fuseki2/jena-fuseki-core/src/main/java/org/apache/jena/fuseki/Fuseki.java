@@ -18,28 +18,17 @@
 
 package org.apache.jena.fuseki;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContext;
 
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpOptions;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.lib.DateTimeUtils;
-import org.apache.jena.atlas.logging.FmtLog;
-import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.query.ARQ;
-import org.apache.jena.rdfconnection.RDFConnectionRemote;
 import org.apache.jena.riot.system.stream.LocatorFTP;
 import org.apache.jena.riot.system.stream.LocatorHTTP;
 import org.apache.jena.riot.system.stream.StreamManager;
-import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.mgt.SystemInfo;
 import org.apache.jena.sparql.util.Context;
@@ -295,64 +284,5 @@ public class Fuseki {
     // Force a call to init.
     static {
         init();
-    }
-
-    /**
-     * Test whether a URL identifies a Fuseki server. This operation can not guarantee to
-     * detect a Fuseki server - for example, it may be behind a reverse proxy that masks
-     * the signature.
-     */
-    public static boolean isFuseki(String datasetURL) {
-        HttpOptions request = new HttpOptions(datasetURL);
-        HttpClient httpClient = HttpOp.getDefaultHttpClient();
-        if ( httpClient == null )
-            httpClient = HttpClients.createSystem();
-        return isFuseki(request, httpClient, null);
-    }
-
-    /**
-     * Test whether a {@link RDFConnectionRemote} connects to a Fuseki server. This
-     * operation can not guaranteed to detech a Fuseki server - for example, it may be
-     * behind a reverse proxy that masks the signature.
-     */
-    public static boolean isFuseki(RDFConnectionRemote connection) {
-        HttpOptions request = new HttpOptions(connection.getDestination());
-        HttpClient httpClient = connection.getHttpClient();
-        if ( httpClient == null )
-            httpClient = HttpClients.createSystem();
-        HttpContext httpContext = connection.getHttpContext();
-        return isFuseki(request, httpClient, httpContext);
-    }
-
-    private static boolean isFuseki(HttpOptions request, HttpClient httpClient, HttpContext httpContext) {
-        try {
-            HttpResponse response = httpClient.execute(request);
-            // Fuseki does not send "Server" in release mode.
-            // (best practice).
-            // We can do is try for the "Fuseki-Request-Id"
-            String reqId = safeGetHeader(response, FusekiRequestIdHeader);
-            if ( reqId != null )
-                return true;
-
-            // If returning "Server"
-            String serverIdent = safeGetHeader(response, "Server");
-            if ( serverIdent != null ) {
-                FmtLog.debug(ARQ.getHttpRequestLogger(), "Server: %s", serverIdent);
-                boolean isFuseki = serverIdent.startsWith("Apache Jena Fuseki");
-                if ( !isFuseki )
-                    isFuseki = serverIdent.toLowerCase().contains("fuseki");
-                return isFuseki;
-            }
-            return false;
-        } catch (IOException ex) {
-            throw new HttpException("Failed to check for a Fuseki server", ex);
-        }
-    }
-
-    static String safeGetHeader(HttpResponse response, String header) {
-        Header h = response.getFirstHeader(header);
-        if ( h == null )
-            return null;
-        return h.getValue();
     }
 }

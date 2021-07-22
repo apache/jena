@@ -189,10 +189,10 @@ public class ARQConstants
     //public static final String allocGlobalVarMarker     = allocVarMarker+globalVar ;    // VarAlloc
     public static final String allocPathVariables       = allocVarAnonMarker+"P" ;      // PathCompiler
     public static final String allocQueryVariables      = allocVarMarker ;              // Query
-    
+
     /** Marker for RDF-star variables */
     public static final String allocVarTripleTerm      = "~";                           // RX, SolverRX
-    
+
     public static final String allocParserAnonVars      = allocVarAnonMarker ;          // LabelToModeMap
     // SSE
     public static final String allocSSEUnamedVars       = "_" ;                         // ParseHandlerPlain - SSE token "?" - legal SPARQL
@@ -220,7 +220,7 @@ public class ARQConstants
     public static final Symbol sysCurrentDataset        = Symbol.create(systemVarNS+"dataset") ;
 
     public static final Symbol sysVarAllocRDFStar       = Symbol.create(systemVarNS+"varAllocRDFStar") ;
-    
+
     /** Context key for the dataset description (if any).
      *  See the <a href="http://www.w3.org/TR/sparql11-protocol">SPARQL protocol</a>.
      *  <p>

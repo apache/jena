@@ -196,7 +196,7 @@ public class NodeFunctions {
             return node.getLiteral().getLexicalForm() ;
         if ( node.isURI() )
             return node.getURI() ;
-        // if ( node.isBlank() ) return node.getBlankNodeId().getLabelString() ;
+        //if ( node.isBlank() ) return node.getBlankNodeId().getLabelString() ;
         // if ( node.isBlank() ) return "" ;
         if ( node.isBlank() )
             NodeValue.raise(new ExprTypeException("Blank node: " + node)) ;

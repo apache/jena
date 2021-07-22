@@ -21,26 +21,31 @@ package org.apache.jena.jdbc.utils;
 import static org.apache.jena.graph.Node.ANY;
 import static org.apache.jena.sparql.core.Quad.defaultGraphIRI;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Iterator;
 
 import org.apache.http.client.HttpClient;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.IRILib;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.DatasetAccessor ;
-import org.apache.jena.query.DatasetAccessorFactory ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFFormat;
+import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.sparql.core.DatasetGraph ;
 
 /**
  * Test utility methods
  */
-@SuppressWarnings("deprecation")
 public class TestUtils {
 
     /**
      * Generates a synthetic dataset for testing
-     * 
+     *
      * @param numGraphs
      *            Number of graphs to generate
      * @param triplesPerGraph
@@ -80,7 +85,7 @@ public class TestUtils {
 
     /**
      * Copies one dataset to another
-     * 
+     *
      * @param source
      *            Source Dataset
      * @param target
@@ -92,7 +97,7 @@ public class TestUtils {
 
     /**
      * Copies one dataset to another
-     * 
+     *
      * @param source
      *            Source Dataset
      * @param target
@@ -100,7 +105,7 @@ public class TestUtils {
      * @param copyDefaultAsQuads
      *            Whether the default graph should be copied as quads (required
      *            for TDB datasets)
-     * 
+     *
      */
     public static void copyDataset(Dataset source, Dataset target, boolean copyDefaultAsQuads) {
         // Copy the default graph
@@ -119,7 +124,7 @@ public class TestUtils {
     /**
      * Copies a dataset to a remote service that provides SPARQL 1.1 Graph Store
      * protocol support
-     * 
+     *
      * @param source
      *            Source Dataset
      * @param service
@@ -132,7 +137,7 @@ public class TestUtils {
     /**
      * Copies a dataset to a remote service that provides SPARQL 1.1 Graph Store
      * protocol support
-     * 
+     *
      * @param source
      *            Source Dataset
      * @param service
@@ -141,20 +146,31 @@ public class TestUtils {
      *            HTTP Client
      */
     public static void copyToRemoteDataset(Dataset source, String service, HttpClient client) {
-        DatasetAccessor target = DatasetAccessorFactory.createHTTP(service, client);
-        target.putModel(source.getDefaultModel());
+        copyToRemoteGraph(service, source.getDefaultModel().getGraph(), null, client);
         Iterator<String> uris = source.listNames();
         while (uris.hasNext()) {
             String uri = uris.next();
-            target.putModel(uri, source.getNamedModel(uri));
+            copyToRemoteGraph(service, source.getNamedModel(uri).getGraph(), uri, client);
         }
-        
+    }
+
+    // Code extracted from DatasetGraphAccessorHTTP so Apache Http Client still works.
+    private static void copyToRemoteGraph(String service, Graph data, String gn, HttpClient client) {
+        RDFFormat syntax = RDFFormat.TURTLE_BLOCKS;
+        String url = ( gn == null ) ? service+"?default" : service+"?graph="+IRILib.encodeUriComponent(gn);
+        String ct = syntax.getLang().getContentType().toHeaderString();
+        ByteArrayOutputStream out = new ByteArrayOutputStream(128*1024);
+        RDFDataMgr.write(out, data, syntax);
+        IO.close(out);
+        ByteArrayEntity entity = new ByteArrayEntity(out.toByteArray());
+        entity.setContentType(ct);
+        HttpOp.execHttpPut(url, entity, client, null) ;
     }
 
     /**
      * Renames a graph of a dataset producing a new dataset so as to not modify
      * the original dataset
-     * 
+     *
      * @param ds
      *            Dataset
      * @param oldUri

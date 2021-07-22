@@ -45,7 +45,7 @@ public class SecurityContextAllowNone implements SecurityContext {
 
     @Override
     public QueryExecution createQueryExecution(Query query, DatasetGraph dsg) {
-        return QueryExecutionFactory.create(query, new DatasetGraphSink());
+        return QueryExecutionFactory.create(query, DatasetGraphSink.create());
     }
 
     @Override

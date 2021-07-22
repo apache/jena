@@ -302,9 +302,13 @@ public class TestResultSet
         // Same variable, different values
         ResultSetRewindable rs1 = makeRewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local:1")) ;
         ResultSetRewindable rs2 = makeRewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local:2")) ;
+
         assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
         rs1.reset() ;
         rs2.reset() ;
+
+        assertTrue(rs1.hasNext());
+        assertTrue(rs2.hasNext());
         assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
 
@@ -316,6 +320,8 @@ public class TestResultSet
         assertFalse(ResultSetCompare.equalsByTermAndOrder(rs1, rs2)) ;
         rs1.reset() ;
         rs2.reset() ;
+        assertTrue(rs1.hasNext());
+        assertTrue(rs2.hasNext());
         assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
 

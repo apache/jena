@@ -18,6 +18,8 @@
 
 package org.apache.jena.query;
 
+import org.apache.jena.http.sys.HttpRequestModifier;
+import org.apache.jena.http.sys.RegistryRequestModifier;
 import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.system.RiotLib ;
@@ -25,7 +27,7 @@ import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.algebra.optimize.TransformOrderByDistinctApplication ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
-import org.apache.jena.sparql.engine.http.Service ;
+import org.apache.jena.sparql.exec.http.Service;
 import org.apache.jena.sparql.expr.aggregate.AggregateRegistry ;
 import org.apache.jena.sparql.function.FunctionRegistry ;
 import org.apache.jena.sparql.mgt.ARQMgt ;
@@ -242,17 +244,34 @@ public class ARQ
      * The key of the first map is the SERVICE IRI, the value is a Map
      * which maps the name of a query string parameters to its values.
      *
-     * @see org.apache.jena.sparql.engine.http.Service
+     * @see org.apache.jena.sparql.exec.http.Service
      */
     public static final Symbol serviceParams = SystemARQ.allocSymbol("serviceParams") ;
+
+
+    // Jena HTTP related.
+
+    // [QExec]
+    // Sort out context and setup.
+    /**
+     * Use this symbol to provide a {@link RegistryRequestModifier} that can modifier
+     * an HTTP request just before it is sent.
+     */
+    public static final Symbol httpRegistryRequestModifer = SystemARQ.allocSymbol("httpRegistryRequestModifer") ;
+
+    /**
+     * Use this symbol to provide a {@link HttpRequestModifier} directly.
+     * This takes precedence over registry lookup.
+     */
+
+    public static final Symbol httpRequestModifer = SystemARQ.allocSymbol("httpRequestModifer") ;
 
     /**
      * Control whether SERVICE processing is allowed.
      * If the context of the query execution contains this,
      * and it's set to "false", then SERVICE is not allowed.
      */
-
-    public static final Symbol serviceAllowed = Service.serviceAllowed ;
+    public static final Symbol serviceAllowed = Service.httpServiceAllowed ;
 
     /** If set to true, the parsers will convert undefined prefixes to a URI
      * according to the fixup function {@link RiotLib#fixupPrefixes}.

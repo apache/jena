@@ -34,7 +34,7 @@ public class DatasetLib {
     }
 
     public static Dataset union(final Dataset d1, final Dataset d2) {
-        return union(d1, d2, emptyContext);
+        return union(d1, d2, emptyContext());
     }
 
     public static Dataset intersection(final Dataset d1, final Dataset d2, Context c) {
@@ -42,7 +42,7 @@ public class DatasetLib {
     }
 
     public static Dataset intersection(final Dataset d1, final Dataset d2) {
-        return intersection(d1, d2, emptyContext);
+        return intersection(d1, d2, emptyContext());
     }
 
     public static Dataset difference(final Dataset d1, final Dataset d2, Context c) {
@@ -50,7 +50,7 @@ public class DatasetLib {
     }
 
     public static Dataset difference(final Dataset d1, final Dataset d2) {
-        return DatasetFactory.wrap(new DifferenceDatasetGraph(d1.asDatasetGraph(), d2.asDatasetGraph(), emptyContext));
+        return DatasetFactory.wrap(new DifferenceDatasetGraph(d1.asDatasetGraph(), d2.asDatasetGraph(), emptyContext()));
     }
 
     public static Collectors collectors() {

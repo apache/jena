@@ -94,9 +94,8 @@ public class Backup
 
         OutputStream out = null;
         try {
-
             if ( true ) {
-                // This seems to achive about the same as "gzip -6"
+                // This seems to achieve about the same as "gzip -6"
                 // It's not too expensive in elapsed time but it's not
                 // zero cost. GZip, large buffer.
                 out = new FileOutputStream(backupfile + ".gz");

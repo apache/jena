@@ -59,7 +59,7 @@ public class TestServiceDataAuthConfig extends AbstractTestServiceDatasetAuth {
         dSrvBuilder.addEndpoint(Endpoint.create(Operation.Update, null, policy13));
         DataService dSrv = dSrvBuilder.build();
         FusekiServer server = FusekiServer.create()
-            //.verbose(true)
+            .verbose(true)
             .port(port)
             .passwordFile("testing/Access/passwd")
             //.serverAuthPolicy(policy)

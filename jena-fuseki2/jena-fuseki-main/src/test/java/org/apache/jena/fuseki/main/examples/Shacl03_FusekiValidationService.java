@@ -20,19 +20,16 @@ package org.apache.jena.fuseki.main.examples;
 
 import java.io.IOException;
 
-import org.apache.http.entity.EntityTemplate;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.FusekiVocab;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.http.HttpRDF;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.web.HttpCaptureResponse;
-import org.apache.jena.riot.web.HttpOp;
-import org.apache.jena.riot.web.HttpResponseLib;
 import org.apache.jena.shacl.ValidationReport;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -76,12 +73,7 @@ public class Shacl03_FusekiValidationService {
 
     static ValidationReport validateReport(String url, String shapesFile) {
         Graph shapesGraph = RDFDataMgr.loadGraph(shapesFile);
-        EntityTemplate entity = new EntityTemplate((out)->RDFDataMgr.write(out, shapesGraph, Lang.TTL));
-        String ct = Lang.TTL.getContentType().getContentTypeStr();
-        entity.setContentType(ct);
-
-        HttpCaptureResponse<Graph> graphResponse = HttpResponseLib.graphHandler();
-        HttpOp.execHttpPost(url, entity, "*/*", graphResponse);
-        return ValidationReport.fromGraph(graphResponse.get());
+        Graph responseGraph = HttpRDF.httpPostGraphRtn(url, shapesGraph);
+        return ValidationReport.fromGraph(responseGraph);
     }
 }

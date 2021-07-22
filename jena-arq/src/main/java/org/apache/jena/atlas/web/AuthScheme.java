@@ -19,10 +19,10 @@
 package org.apache.jena.atlas.web;
 
 /** Authorization scheme */
-public enum AuthScheme { 
-    BASIC, 
+public enum AuthScheme {
+    BASIC,
     DIGEST ;
-    
+
     public static AuthScheme scheme(String name) {
         if ( name == null )
             return null;
@@ -31,7 +31,17 @@ public enum AuthScheme {
             case "basic": return BASIC;
             case "digest": return DIGEST;
             default:
-                throw new IllegalArgumentException("no recognized as an authorization scheme: "+name);
+                throw new IllegalArgumentException("not recognized as an authorization scheme: "+name);
+        }
+    }
+
+    @Override
+    public String toString() {
+        switch(this) {
+            case BASIC : return "Basic";
+            case DIGEST : return "Digest";
+            default:
+                return null;
         }
     }
 }

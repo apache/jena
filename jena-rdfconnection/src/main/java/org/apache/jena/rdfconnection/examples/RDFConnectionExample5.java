@@ -31,7 +31,7 @@ import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
 public class RDFConnectionExample5 {
     public static void main(String ...args) {
         
-        RDFConnectionRemoteBuilder builder = RDFConnectionRemote.create()
+        RDFConnectionRemoteBuilder builder = RDFConnectionRemote.newBuilder()
             .destination("http://sparql.org/")
             // Query only.
             .queryEndpoint("sparql")

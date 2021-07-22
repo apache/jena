@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory ;
  * Simple wrappers and operations for convenient, non-time critical logging. These
  * operations find/create the logger by name, or by the class of some object, or an
  * org.slf4j.Logger object.
- * 
+ *
  * @see LogCtl
  * @see FmtLog
  */
@@ -81,7 +81,16 @@ public class Log {
     public static void warnOnce(Class<?> cls, String message, Object key) {
         if ( ! warningsDone.contains(key) ) {
             Log.warn(cls, message) ;
-            warningsDone.add(key); 
+            warningsDone.add(key);
         }
     }
+
+    /** Generate a warning, once(ish) */
+    public static void warnOnce(Logger logger, String message, Object key) {
+        if ( ! warningsDone.contains(key) ) {
+            logger.warn(message) ;
+            warningsDone.add(key);
+        }
+    }
+
 }

@@ -30,7 +30,8 @@ import org.apache.jena.sparql.core.ResultBinding ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 
 
-/** The main ResultSet implementation for returning results from queries.
+/**
+ * The main ResultSet implementation for returning results from queries.
  * This version is "use once" - you can not reset the result set because
  * the results of the query are not remembered so as not to consume potentially
  * large amounts of memory. */
