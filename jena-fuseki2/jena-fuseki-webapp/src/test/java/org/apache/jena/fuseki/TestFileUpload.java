@@ -20,25 +20,23 @@ package org.apache.jena.fuseki;
 
 import static org.junit.Assert.assertEquals;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.web.TypedInputStream;
-import org.apache.jena.query.DatasetAccessor;
-import org.apache.jena.query.DatasetAccessorFactory;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.http.HttpOp2;
+import org.apache.jena.http.HttpRDF;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.RDFLanguages;
-import org.apache.jena.riot.web.HttpOp;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFLib;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.exec.http.GSP;
+import org.apache.jena.sparql.graph.GraphFactory;
 import org.junit.Test;
 
 /**
- * Additional tests for the SPARQL Graph Store protocol, mainly for HTTP file upload.
- * See {@linkplain TestDatasetAccessorHTTP} and {@linkplain TestHttpOp} for tests
- * that exercise direct GSp functionality
- *
- * @see TestDatasetAccessorHTTP
- * @see TestHttpOp
+ * Tests for multi-part file upload.
  */
-@SuppressWarnings("deprecation")
 public class TestFileUpload extends AbstractFusekiTest {
     @Test
     public void upload_gsp_01() {
@@ -46,13 +44,23 @@ public class TestFileUpload extends AbstractFusekiTest {
         x.add("D.ttl", "<http://example/s> <http://example/p> <http://example/o> .", "text/turtle");
         x.send("POST");
 
-        Model m = ModelFactory.createDefaultModel();
-        TypedInputStream in = HttpOp.execHttpGet(ServerCtl.serviceGSP(), "text/turtle");
-        RDFDataMgr.read(m, in, RDFLanguages.contentTypeToLang(in.getMediaType()));
-        // which is is effectively :
-// DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST);
-// Model m = du.getModel();
-        assertEquals(1, m.size());
+        // Ways to get the content, from highest to lowest level APIs.
+
+        Graph graph1 = GSP.request(ServerCtl.serviceGSP()).acceptHeader("text/turtle").defaultGraph().GET();
+        assertEquals(1, graph1.size());
+
+        Graph graph2 = HttpRDF.httpGetGraph(ServerCtl.serviceGSP(), "text/turtle");
+        assertEquals(1, graph2.size());
+
+        Graph graph3 = GraphFactory.createDefaultGraph();
+        StreamRDF stream = StreamRDFLib.graph(graph3);
+        HttpRDF.httpGetToStream(ServerCtl.serviceGSP(), "text/turtle", stream);
+
+        Graph graph4 = GraphFactory.createDefaultGraph();
+        TypedInputStream in = HttpOp2.httpGet(ServerCtl.serviceGSP(), "text/turtle");
+        RDFDataMgr.read(graph4, in, Lang.TTL);
+
+        assertEquals(1, graph4.size());
     }
 
     @Test
@@ -62,10 +70,8 @@ public class TestFileUpload extends AbstractFusekiTest {
         x.add("D.nt", "<http://example/s> <http://example/p> <http://example/o-456> .", "application/n-triples");
         x.send("PUT");
 
-        // BUG
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(ServerCtl.serviceGSP());
-        Model m = du.getModel();
-        assertEquals(2, m.size());
+        Graph graph = GSP.request(ServerCtl.serviceGSP()).defaultGraph().GET();
+        assertEquals(2, graph.size());
     }
 
     // Extension of GSP - no graph selector => dataset
@@ -73,57 +79,23 @@ public class TestFileUpload extends AbstractFusekiTest {
     public void upload_gsp_03() {
         FileSender x = new FileSender(ServerCtl.serviceGSP());
         x.add("D.ttl", "<http://example/s> <http://example/p> <http://example/o> .", "text/turtle");
-        x.add("D.trig", "<http://example/g> { <http://example/s> <http://example/p> <http://example/o> }", "text/trig");
+        x.add("D.trig", "<http://example/g> { <http://example/s> <http://example/p> 123,456 }", "text/trig");
         x.send("POST");
 
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(ServerCtl.serviceGSP());
-        Model m = du.getModel();
-        assertEquals(1, m.size());
+        DatasetGraph dsg = GSP.request(ServerCtl.serviceGSP()).getDataset();
+        long c = Iter.count(dsg.find());
+        assertEquals(3, c);
     }
 
     @Test
     public void upload_gsp_04() {
-        {
-            DatasetAccessor du = DatasetAccessorFactory.createHTTP(ServerCtl.serviceGSP());
-            Model m = du.getModel();
-            assertEquals(0, m.size());
-        }
         FileSender x = new FileSender(ServerCtl.urlDataset());
         x.add("D.ttl", "<http://example/s> <http://example/p> <http://example/o> .", "text/plain");
         x.add("D.trig", "<http://example/g> { <http://example/s> <http://example/p> 123,456 }", "text/plain");
         x.send("POST");
 
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(ServerCtl.serviceGSP());
-        Model m = du.getModel();
-        assertEquals(1, m.size());
-        m = du.getModel("http://example/g");
-        assertEquals(2, m.size());
+        DatasetGraph dsg = GSP.request(ServerCtl.serviceGSP()).getDataset();
+        assertEquals(1, dsg.getDefaultGraph().size());
+        assertEquals(2, dsg.getUnionGraph().size());
     }
-
-    // Via DatasetAccessor
-
-    @Test
-    public void dataset_accessor_01() {
-        FileSender x = new FileSender(ServerCtl.urlDataset());
-        x.add("D.nq", "", "application/-n-quads");
-        x.send("PUT");
-
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(ServerCtl.serviceGSP());
-        Model m = du.getModel();
-        assertEquals(0, m.size());
-    }
-
-    @Test
-    public void dataset_accessor_02() {
-        FileSender x = new FileSender(ServerCtl.urlDataset());
-        x.add("D.nq", "<http://example/s> <http://example/p> <http://example/o-456> <http://example/g> .", "application/n-quads");
-        x.send("PUT");
-
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(ServerCtl.serviceGSP());
-        Model m = du.getModel("http://example/g");
-        assertEquals(1, m.size());
-        m = du.getModel();
-        assertEquals(0, m.size());
-    }
-
 }

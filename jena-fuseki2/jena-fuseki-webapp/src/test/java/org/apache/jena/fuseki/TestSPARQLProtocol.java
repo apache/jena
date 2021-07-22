@@ -18,15 +18,15 @@
 
 package org.apache.jena.fuseki;
 
+import static org.apache.jena.fuseki.ServerCtl.serviceGSP;
 import static org.apache.jena.fuseki.ServerCtl.serviceQuery;
 import static org.apache.jena.fuseki.ServerCtl.serviceUpdate;
-import static org.apache.jena.fuseki.ServerTest.gn1;
-import static org.apache.jena.fuseki.ServerTest.model1;
-import static org.apache.jena.fuseki.ServerTest.model2;
+import static org.apache.jena.fuseki.ServerTest.*;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.query.*;
 import org.apache.jena.riot.WebContent;
+import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
 import org.apache.jena.sparql.util.Convert;
 import org.apache.jena.update.UpdateExecutionFactory;
@@ -36,15 +36,12 @@ import org.apache.jena.update.UpdateRequest;
 import org.junit.Before;
 import org.junit.Test;
 
-@SuppressWarnings("deprecation")
 public class TestSPARQLProtocol extends AbstractFusekiTest
 {
     @Before
     public void before() {
-        // Load some data.
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(ServerCtl.serviceGSP());
-        du.putModel(model1);
-        du.putModel(gn1, model2);
+        GSP.request(serviceGSP()).defaultGraph().PUT(graph1);
+        GSP.request(serviceGSP()).graphName(gn1).PUT(graph2);
     }
 
     static String query(String base, String queryString) {

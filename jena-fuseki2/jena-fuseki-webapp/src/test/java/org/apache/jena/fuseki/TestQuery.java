@@ -20,10 +20,7 @@ package org.apache.jena.fuseki;
 
 import static org.apache.jena.fuseki.ServerCtl.serviceGSP;
 import static org.apache.jena.fuseki.ServerCtl.serviceQuery;
-import static org.apache.jena.fuseki.ServerTest.gn1;
-import static org.apache.jena.fuseki.ServerTest.gn2;
-import static org.apache.jena.fuseki.ServerTest.model1;
-import static org.apache.jena.fuseki.ServerTest.model2;
+import static org.apache.jena.fuseki.ServerTest.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -45,6 +42,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTPBuilder;
 import org.apache.jena.sparql.resultset.ResultSetCompare;
@@ -54,14 +52,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-@SuppressWarnings("deprecation")
 public class TestQuery extends AbstractFusekiTest {
 
     @Before
     public void before() {
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP());
-        du.putModel(model1);
-        du.putModel(gn1, model2);
+        GSP.request(serviceGSP()).defaultGraph().PUT(graph1);
+        GSP.request(serviceGSP()).graphName(gn1).PUT(graph2);
     }
 
     private static final AcceptList quadsOfferTest = DEF.quadsOffer;
@@ -104,9 +100,6 @@ public class TestQuery extends AbstractFusekiTest {
 
     @Test
     public void query_dynamic_dataset_01() {
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP());
-        du.putModel(model1);
-        du.putModel(gn1, model2);
         {
             String query = "SELECT * { ?s ?p ?o }";
             try (QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery() + "?output=json", query)) {
@@ -117,7 +110,7 @@ public class TestQuery extends AbstractFusekiTest {
             }
         }
         {
-            String query = "SELECT * FROM <" + gn1 + "> { ?s ?p ?o }";
+            String query = "SELECT * FROM <" + graphName1 + "> { ?s ?p ?o }";
             try (QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery() + "?output=json", query)) {
                 ResultSet rs = qExec.execSelect();
                 Node o = rs.next().getLiteral("o").asNode();
@@ -129,11 +122,10 @@ public class TestQuery extends AbstractFusekiTest {
 
     @Test
     public void query_dynamic_dataset_02() {
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP());
-        du.putModel(model1);
-        du.putModel(gn1, model1);
-        du.putModel(gn2, model2);
-        String query = "SELECT * FROM <"+gn1+"> FROM <"+gn2+"> { ?s ?p ?o }";
+        GSP.request(serviceGSP()).clearDataset();
+        GSP.request(serviceGSP()).graphName(gn1).PUT(graph1);
+        GSP.request(serviceGSP()).graphName(gn2).PUT(graph2);
+        String query = "SELECT * FROM <"+graphName1+"> FROM <"+graphName2+"> { ?s ?p ?o }";
         try (QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery() + "?output=json", query)) {
             ResultSet rs = qExec.execSelect();
             int n = ResultSetFormatter.consume(rs);
