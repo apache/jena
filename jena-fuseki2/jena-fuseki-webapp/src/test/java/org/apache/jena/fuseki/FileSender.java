@@ -28,16 +28,8 @@ import java.util.UUID;
 
 import org.apache.jena.atlas.io.IO;
 
+/** Multipart HTTP PUT/POST. */
 public class FileSender {
-    // HttpClient 4.3 has MultipartEntity but the 4.2->4.3 change is less
-    // than trivial (and it seems some environment fix the HttpClient)
-    // so here's some code for testing support.
-//    MultipartEntity entity = new MultipartEntity();
-//    entity.addPart(...)
-//    HttpPost request = new HttpPost(url);
-//    request.setEntity(entity);
-//    HttpClient client = new DefaultHttpClient();
-//    HttpResponse response = client.execute(request);
 
     class Entry {
         String fileName;
