@@ -60,12 +60,12 @@ public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
         QueryExecutionHTTP qe = QueryExecutionHTTP.create().service(authServiceQuery).query("ASK { }").build();
         String dsURL = authServiceQuery;
         URI uri = URI.create(dsURL);
-        AuthEnv.registerUsernamePassword(uri, "allowed", "password");
+        AuthEnv.get().registerUsernamePassword(uri, "allowed", "password");
         try {
             Assert.assertTrue(qe.execAsk());
         } finally {
-            AuthEnv.unregisterUsernamePassword(uri);
-            //AuthEnv.clearAuthRequestModifiers();
+            AuthEnv.get().unregisterUsernamePassword(uri);
+            //AuthEnv.get().clearAuthRequestModifiers();
         }
     }
 
@@ -75,11 +75,11 @@ public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
         // Dataset URL.
         String dsURL = "http://localhost:"+authPort+authDatasetPath;
         URI uri = URI.create(dsURL);
-        AuthEnv.registerUsernamePassword(uri, "allowed", "password");
+        AuthEnv.get().registerUsernamePassword(uri, "allowed", "password");
         try {
             Assert.assertTrue(qe.execAsk());
         } finally {
-            AuthEnv.unregisterUsernamePassword(uri);
+            AuthEnv.get().unregisterUsernamePassword(uri);
         }
     }
 
@@ -89,11 +89,11 @@ public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
         // Wrong registration
         String dsURL = "http://localhost:"+authPort+"/anotherPlace";
         URI uri = URI.create(dsURL);
-        AuthEnv.registerUsernamePassword(uri, "allowed", "password");
+        AuthEnv.get().registerUsernamePassword(uri, "allowed", "password");
         try {
             expectQuery401(()->qe.execAsk());
         } finally {
-            AuthEnv.unregisterUsernamePassword(uri);
+            AuthEnv.get().unregisterUsernamePassword(uri);
         }
     }
 }

@@ -81,11 +81,11 @@ public class TestAuthUpdate_JDK extends AbstractTestAuth_JDK {
         UpdateProcessor ue = UpdateExecutionHTTP.create().service(authServiceUpdate).update(updates).build();
         String dsURL = authServiceUpdate;
         URI uri = URI.create(dsURL);
-        AuthEnv.registerUsernamePassword(uri, "allowed", "password");
+        AuthEnv.get().registerUsernamePassword(uri, "allowed", "password");
         try {
             ue.execute();
         } finally {
-            AuthEnv.unregisterUsernamePassword(uri);
+            AuthEnv.get().unregisterUsernamePassword(uri);
         }
     }
 }

@@ -397,7 +397,7 @@ public class HttpLib {
 
     public static HttpRequest.Builder requestBuilderFor(String serviceEndpoint) {
         HttpRequest.Builder requestBuilder= HttpRequest.newBuilder();
-        return AuthEnv.addAuth(requestBuilder, serviceEndpoint);
+        return AuthEnv.get().addAuth(requestBuilder, serviceEndpoint);
     }
 
     // [QExec] Sort out building.
@@ -475,24 +475,28 @@ public class HttpLib {
      */
     public
     /*package*/ static HttpResponse<InputStream> execute(HttpClient httpClient, HttpRequest httpRequest) {
-        // No jena-supplied authentication handling.
-        // return executeJDK(httpClient, httpRequest, BodyHandlers.ofInputStream());
+        // To run with no jena-supplied authentication handling.
+        if ( false )
+            return executeJDK(httpClient, httpRequest, BodyHandlers.ofInputStream());
         URI uri = httpRequest.uri();
         URI key = null;
+
+        AuthEnv authEnv = AuthEnv.get();
+
         if ( uri.getUserInfo() != null ) {
             String[] up = uri.getUserInfo().split(":");
             if ( up.length == 2 ) {
                 // Only if "user:password@host", not "user@host"
                 key = HttpLib.endpointURI(uri);
                 // The auth key will be with u:p making it specific.
-                AuthEnv.registerUsernamePassword(key, up[0], up[1]);
+                authEnv.registerUsernamePassword(key, up[0], up[1]);
             }
         }
         try {
             return AuthLib.authExecute(httpClient, httpRequest, BodyHandlers.ofInputStream());
         } finally {
             if ( key != null )
-                AuthEnv.unregisterUsernamePassword(key);
+                authEnv.unregisterUsernamePassword(key);
         }
     }
 

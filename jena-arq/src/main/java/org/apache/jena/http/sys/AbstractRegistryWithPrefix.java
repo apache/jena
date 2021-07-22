@@ -20,6 +20,7 @@ package org.apache.jena.http.sys;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 import org.apache.jena.atlas.lib.Trie;
 
@@ -31,43 +32,53 @@ import org.apache.jena.atlas.lib.Trie;
  * "http://someHost/dataset/sparql" and "http://someHost/dataset/update" but not to
  *  "https://someHost/..." which uses "https".
  */
-public abstract class AbstractRegistryByServiceURL<T> {
+public abstract class AbstractRegistryWithPrefix<X, T> {
 
     private final Map<String, T> exactMap = new ConcurrentHashMap<>();
     private final Trie<T> trie = new Trie<>();
+    private final Function<X, String> generateKey;
 
-    protected AbstractRegistryByServiceURL() { }
+    protected AbstractRegistryWithPrefix(Function<X, String> genKey) {
+        this.generateKey = genKey;
+    }
 
-    public void add(String key, T value) {
+    public void add(X service, T value) {
+        String key = generateKey.apply(service);
         exactMap.put(key, value);
     }
 
-    public void addPrefix(String key, T value) {
+    /** Add a prefix. The prefix must end in "/" */
+    public void addPrefix(X service, T value) {
+        String key = generateKey.apply(service);
         if ( ! key.endsWith("/") )
             throw new IllegalArgumentException("Prefix must end in \"/\"");
-        trie.add(key, value);
+
+        //if ( key.endsWith("/") )
+            trie.add(key, value);
+        // A prefix is also an exact match.
+        // Exact matches take precedence on lookup.
+        exactMap.put(key, value);
     }
 
     /** Returns the T with either an exact match or the longest prefix for the find key. */
-    public T find(String findKey) {
-        T item = findExact(findKey);
+    public T find(X findRef) {
+        String findKey = generateKey.apply(findRef);
+        T item = exactMap.get(findKey);
         if ( item == null )
             item = trie.longestMatch(findKey);
         return item;
     }
 
-    private T findExact(String findKey) {
-        return exactMap.get(findKey);
-    }
-
-    private T findPrefix(String findKey) {
+    private T findPrefix(X findRef) {
+        String findKey = generateKey.apply(findRef);
         if ( trie.isEmpty() )
             return null;
         T hc = trie.longestMatch(findKey);
         return hc;
     }
 
-    public void remove(String key) {
+    public void remove(X findRef) {
+        String key = generateKey.apply(findRef);
         exactMap.remove(key);
         trie.remove(key);
     }

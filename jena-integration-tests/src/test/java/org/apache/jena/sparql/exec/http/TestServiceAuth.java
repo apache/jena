@@ -18,7 +18,9 @@
 
 package org.apache.jena.sparql.exec.http;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -29,8 +31,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.http.RegistryHttpClient;
 import org.apache.jena.http.auth.AuthEnv;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdflink.RDFLink;
 import org.apache.jena.rdflink.RDFLinkFactory;
 import org.apache.jena.sparql.algebra.op.OpService ;
@@ -70,6 +70,22 @@ public class TestServiceAuth {
         EnvTest.stop(env);
     }
 
+    private static DatasetGraph empty = DatasetGraphZero.create();
+
+    private static void runServiceQuery(String serviceURL) {
+        String queryString = "SELECT * { SERVICE <"+serviceURL+"> { BIND( 'X' as ?X) } }";
+        try ( QueryExec qExec = QueryExec.newBuilder().query(queryString).dataset(empty).build() ) {
+            qExec.select().materialize();
+        }
+    }
+
+    private static void runServiceQueryWithContext(String serviceURL, Context cxt) {
+        String queryString = "SELECT * { SERVICE <"+serviceURL+"> { BIND( 'X' as ?X) } }";
+        try ( QueryExec qExec = QueryExec.newBuilder().query(queryString).dataset(empty).context(cxt).build() ) {
+            qExec.select().materialize();
+        }
+    }
+
     @Test(expected=QueryExceptionHTTP.class)
     public void service_auth_none() {
         OpService op = TestService.makeOp(env);
@@ -77,7 +93,7 @@ public class TestServiceAuth {
     }
 
     @Test
-    public void service_auth_url_auth_1() {
+    public void service_exec_auth() {
         // Service request with users/password in it. Not ideal.
         String authorityURL = "http://"+USER+":"+PASSWORD+"@localhost:"+env.server.getPort()+env.dsName();
         Node serviceNode = NodeFactory.createURI(authorityURL);
@@ -86,171 +102,130 @@ public class TestServiceAuth {
     }
 
     @Test
-    public void service_auth_url_auth_2() {
+    public void service_auth_userinfo_1() {
         String serviceURL = "http://"+USER+":"+PASSWORD+"@localhost:"+env.server.getPort()+env.dsName();
-        Query query = QueryFactory.create("SELECT * { SERVICE <"+serviceURL+"> { BIND( 'X' as ?X) } }");
 
         URI key = URI.create(serviceURL);
-        assertFalse(AuthEnv.hasRegistation(key));
+        assertFalse(AuthEnv.get().hasRegistation(key));
 
-        try ( QueryExec qExec = QueryExec.newBuilder().query(query).dataset(env.dsg()).build() ) {
-            qExec.select().materialize();
-        }
-        AuthEnv.hasRegistation(key);
-        // Check no registration in place.
-        assertFalse(AuthEnv.hasRegistation(key));
+        runServiceQuery(serviceURL);
+
+        // Check no registration left in place.
+        assertFalse(AuthEnv.get().hasRegistation(key));
     }
 
     @Test
-    public void service_auth_url_auth_3() {
-        String serviceURL = "http://"+USER+":"+PASSWORD+"@localhost:"+env.server.getPort()+env.dsName();
-        Query query = QueryFactory.create("SELECT * { SERVICE <"+serviceURL+"> { BIND( 'X' as ?X) } }");
-        try ( QueryExec qExec = QueryExec.newBuilder().query(query).dataset(env.dsg()).build() ) {
-            qExec.select().materialize();
-        }
+    public void service_auth_userinfo_2() {
+        String serviceURL1 = "http://"+USER+":"+PASSWORD+"@localhost:"+env.server.getPort()+env.dsName();
+        runServiceQuery(serviceURL1);
 
         // And again but no auth.
         String serviceURL2 = "http://localhost:"+env.server.getPort()+env.dsName();
-        Query query2 = QueryFactory.create("SELECT * { SERVICE <"+serviceURL2+"> { BIND( 'X' as ?X) } }");
+
         FusekiTestLib.expectQuery401(()->{
-            try ( QueryExec qExec = QueryExec.newBuilder().query(query2).dataset(env.dsg()).build() ) {
-                qExec.select().materialize();
-                fail("Expected 401");
-            }
+            runServiceQuery(serviceURL2);
         });
     }
 
     @Test
-    public void service_auth_url_auth_4() {
+    public void service_auth_userinfo_3() {
+        // userinfo in the service URL.
+        // Registration here for that users.
+        String userURL = "http://role@localhost:"+env.server.getPort()+"/";
+        URI uri = URI.create(userURL);
+        AuthEnv.get().registerUsernamePassword(uri, USER, PASSWORD);
+
+        // Includes "role", not the (user,password)
+        String serviceURL = userURL+"ds";
+        try {
+            runServiceQuery(serviceURL);
+        } finally {
+            AuthEnv.get().unregisterUsernamePassword(uri);
+        }
+    }
+
+    @Test
+    public void service_auth_userinfo_4() {
         // User, no password
+        // No registration
         String serviceURL = "http://"+USER+"@localhost:"+env.server.getPort()+env.dsName();
-        Query query = QueryFactory.create("SELECT * { SERVICE <"+serviceURL+"> { BIND( 'X' as ?X) } }");
-        // Bad (and checks no registration)
         FusekiTestLib.expectQuery401(()->{
-            try ( QueryExec qExec = QueryExec.newBuilder().query(query).dataset(env.dsg()).build() ) {
-                qExec.select().materialize();
-            }
-        });
-
-        // Good
-        // Register (user, password) on user@localhost
-        URI serviceURI = URI.create(serviceURL);
-        try {
-            AuthEnv.registerUsernamePassword(URI.create(serviceURL), USER, PASSWORD);
-            try ( QueryExec qExec = QueryExec.newBuilder().query(query).dataset(env.dsg()).build() ) {
-                qExec.select().materialize();
-            }
-        } finally {
-            AuthEnv.unregisterUsernamePassword(serviceURI);
-        }
-
-        FusekiTestLib.expectQuery401(()->{
-            try ( QueryExec qExec = QueryExec.newBuilder().query(query).dataset(env.dsg()).build() ) {
-                qExec.select().materialize();
-            }
+            runServiceQuery(serviceURL);
         });
     }
 
-    @Test public void service_auth_good_registry_1() {
+    @Test public void service_auth_good_registry_1_exact() {
         HttpClient hc = env.httpClientAuthGood();
-        RegistryHttpClient.get().add(SERVICE, hc);
+        String serviceURL = env.datasetURL();
+        RegistryHttpClient.get().add(serviceURL, hc);
         try {
-            OpService op = TestService.makeOp(env);
-            QueryIterator qIter = Service.exec(op, null);
-            assertNotNull(qIter);
-            qIter.hasNext();
+            runServiceQuery(serviceURL);
         } finally {
-            RegistryHttpClient.get().remove(SERVICE);
+            RegistryHttpClient.get().remove(serviceURL);
         }
     }
 
-    @Test public void service_auth_good_registry_2() {
-        runWithPrefix(env.serverBaseURL(), env.httpClientAuthGood(), ()->{
-            OpService op = TestService.makeOp(env);
-            QueryIterator qIter = Service.exec(op, null);
-            assertNotNull(qIter);
-            qIter.hasNext();
-        });
-    }
-
-    private static void runWith(String key, HttpClient hc, Runnable action) {
-        RegistryHttpClient.get().add(SERVICE, hc);
+    @Test public void service_auth_good_registry_2_prefix() {
+        HttpClient hc = env.httpClientAuthGood();
+        String serviceURL = env.datasetURL();
+        RegistryHttpClient.get().addPrefix(env.serverBaseURL(), hc);
         try {
-            action.run();
+            runServiceQuery(serviceURL);
         } finally {
-            RegistryHttpClient.get().remove(SERVICE);
+            RegistryHttpClient.get().remove(env.serverBaseURL());
         }
     }
 
-    private static void runWithPrefix(String prefix, HttpClient hc, Runnable action) {
-        RegistryHttpClient.get().addPrefix(prefix, hc);
+    @Test public void service_auth_good_registry_3_prefix() {
+        HttpClient hc = env.httpClientAuthGood();
+        String serviceURL = env.datasetURL();
+        // Prefix of the URL.
+        String serverURL = env.serverBaseURL();
+        assertTrue(serviceURL.startsWith(serverURL));
+
+        // Register under a prefix.
+        RegistryHttpClient.get().addPrefix(serverURL, hc);
         try {
-            action.run();
+            runServiceQuery(serviceURL);
         } finally {
-            RegistryHttpClient.get().remove(prefix);
+            RegistryHttpClient.get().remove(serverURL);
+            //RegistryHttpClient.get().clear();
         }
     }
 
-    @Test public void service_auth_good_cxt() {
-        OpService op = TestService.makeOp(env);
+    @Test public void service_auth_good_cxt_1() {
+        // context
         Context context = new Context();
         HttpClient hc = env.httpClientAuthGood();
         context.set(Service.httpQueryClient, hc);
-        QueryIterator qIter = Service.exec(op, context);
+        runServiceQueryWithContext(env.datasetURL(), context);
     }
-
 
     @Test(expected=QueryExceptionHTTP.class)
-    public void service_auth_bad_retries() {
-        runWith(SERVICE, env.httpClientAuthBadRetry(), ()->{
-            OpService op = TestService.makeOp(env);
-            Context context = new Context();
-            QueryIterator qIter = Service.exec(op, context);
-        });
+    public void service_auth_bad_cxt_2() {
+        Context context = new Context();
+        HttpClient hc = env.httpClientAuthBadRetry();    // Bad
+        context.set(Service.httpQueryClient, hc);
+        runServiceQueryWithContext(env.datasetURL(), context);
     }
 
-    @Test public void service_query_auth_context() {
-        DatasetGraph dsg = env.dsg();
-
-        String queryString = "ASK { SERVICE <"+SERVICE+"> { BIND (123 AS ?X) }} ";
-
+    @Test public void service_auth_good_dsg_cxt() {
         // Context dataset graph.
         DatasetGraph local = DatasetGraphZero.create();
         Context context = local.getContext();
         HttpClient hc = env.httpClientAuthGood();
         context.set(Service.httpQueryClient, hc);
-
-        // Connect to local, unused, permanently empty dataset
-        try ( RDFLink link = RDFLinkFactory.connect(local) ) {
-            try ( QueryExec qExec = link.query(queryString) ) {
-                boolean b = qExec.ask();
-                assertTrue(b);
-            }
-        }
+        runServiceQueryWithContext(SERVICE, context);
     }
 
     @Test(expected=QueryExceptionHTTP.class)
     public void service_query_auth_context_bad() {
-        DatasetGraph dsg = env.dsg();
-        dsg.executeWrite(()->dsg.add(SSE.parseQuad("(_ :s :p :o)")));
-
-        String queryString = "SELECT * { SERVICE <"+SERVICE+"> { ?s ?p ?o }} ";
-
         // Context dataset graph.
         DatasetGraph local = DatasetGraphZero.create();
         Context context = local.getContext();
-        HttpClient hc = env.httpClientAuthBad(); // Bad user/password.
+        HttpClient hc = env.httpClientAuthBad();    // Bad
         context.set(Service.httpQueryClient, hc);
-
-        RDFLink link = RDFLinkFactory.connect(local);
-        try ( link ) {
-            try ( QueryExec qExec = link.query(queryString) ) {
-                RowSet rs = qExec.select();
-                // OK here. Next line causes the SERVICE clause to execute.
-                long x = Iter.count(rs);
-                fail("Should not get this far");
-            }
-        }
+        runServiceQuery(SERVICE);
     }
 
     public void service_query_auth_context_silent() {
@@ -261,19 +236,18 @@ public class TestServiceAuth {
 
         // Context dataset graph.
         DatasetGraph local = DatasetGraphZero.create();
-        Context context = local.getContext();
-        HttpClient hc = env.httpClientAuthBad(); // Bad user/password.
-        context.set(Service.httpQueryClient, hc);
 
-        RDFLink link = RDFLinkFactory.connect(local);
-        try ( link ) {
-            try ( QueryExec qExec = link.query(queryString) ) {
-                RowSet rs = qExec.select();
-                // OK here. Next line causes the SERVICE clause to execute.
-                long x = Iter.count(rs);
-                fail("Should not get this far");
+        FusekiTestLib.expectQuery401(() -> {
+            RDFLink link = RDFLinkFactory.connect(local);
+            try (link) {
+                try (QueryExec qExec = link.query(queryString)) {
+                    RowSet rs = qExec.select();
+                    // OK here. Next line causes the SERVICE clause to execute.
+                    long x = Iter.count(rs);
+                    fail("Should not get this far");
+                }
             }
-        }
+        });
     }
 
 }

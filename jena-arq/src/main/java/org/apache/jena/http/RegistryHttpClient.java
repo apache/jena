@@ -19,8 +19,9 @@
 package org.apache.jena.http;
 
 import java.net.http.HttpClient;
+import java.util.function.Function;
 
-import org.apache.jena.http.sys.AbstractRegistryByServiceURL;
+import org.apache.jena.http.sys.AbstractRegistryWithPrefix;
 
 /**
  * A service registry is a collection of {@link HttpClient HttpClients} to use for
@@ -34,10 +35,12 @@ import org.apache.jena.http.sys.AbstractRegistryByServiceURL;
  * This is one way of managing authentication for particular remote services -
  * register a {@link HttpClient} with authentication credentials.
  */
-public class RegistryHttpClient extends AbstractRegistryByServiceURL<HttpClient> {
+public class RegistryHttpClient extends AbstractRegistryWithPrefix<String, HttpClient> {
 
     private static RegistryHttpClient singleton = new RegistryHttpClient();
     public static RegistryHttpClient get() { return singleton; }
 
-    private RegistryHttpClient() { }
+    private RegistryHttpClient() {
+        super(Function.identity());
+    }
 }

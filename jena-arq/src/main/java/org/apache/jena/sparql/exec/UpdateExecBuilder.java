@@ -18,15 +18,23 @@
 
 package org.apache.jena.sparql.exec;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
+import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.modify.UpdateEngineFactory;
 import org.apache.jena.sparql.modify.UpdateEngineRegistry;
+import org.apache.jena.sparql.syntax.syntaxtransform.UpdateTransformOps;
 import org.apache.jena.sparql.util.Context;
-import org.apache.jena.update.*;
+import org.apache.jena.update.Update;
+import org.apache.jena.update.UpdateException;
+import org.apache.jena.update.UpdateFactory;
+import org.apache.jena.update.UpdateRequest;
 
 public class UpdateExecBuilder {
 
@@ -35,6 +43,9 @@ public class UpdateExecBuilder {
     private DatasetGraph dataset            = null;
     private Query        query              = null;
     private Context      context            = null;
+    // Uses query rewrite to replace variables by values.
+    private Map<Var, Node>  substitutionMap  = null;
+
     private Binding      initialBinding     = null;
     private UpdateRequest update            = null;
     private UpdateRequest updateRequest     = new UpdateRequest();
@@ -84,6 +95,23 @@ public class UpdateExecBuilder {
             context = new Context();
     }
 
+    public UpdateExecBuilder substitution(Binding binding) {
+        ensureSubstitutionMap();
+        binding.forEach(this.substitutionMap::put);
+        return this;
+    }
+
+    public UpdateExecBuilder substitution(Var var, Node value) {
+        ensureSubstitutionMap();
+        this.substitutionMap.put(var, value);
+        return this;
+    }
+
+    private void ensureSubstitutionMap() {
+        if ( substitutionMap == null )
+            substitutionMap = new HashMap<>();
+    }
+
     public UpdateExecBuilder initialBinding(Binding initialBinding) {
         this.initialBinding = initialBinding;
         return this;
@@ -92,11 +120,17 @@ public class UpdateExecBuilder {
     public UpdateExec build() {
         Objects.requireNonNull(dataset, "No dataset for update");
         Objects.requireNonNull(updateRequest, "No update request");
+
+        UpdateRequest actualUpdate = updateRequest;
+
+        if ( substitutionMap != null && ! substitutionMap.isEmpty() )
+            actualUpdate = UpdateTransformOps.transform(actualUpdate, substitutionMap);
+
         Context cxt = Context.setupContextForDataset(context, dataset);
         UpdateEngineFactory f = UpdateEngineRegistry.get().find(dataset, cxt);
         if ( f == null )
             throw new UpdateException("Failed to find an UpdateEngine");
-        UpdateExec uExec = new UpdateExecDataset(updateRequest, dataset, initialBinding, cxt, f);
+        UpdateExec uExec = new UpdateExecDataset(actualUpdate, dataset, initialBinding, cxt, f);
         return uExec;
     }
 

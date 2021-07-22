@@ -18,16 +18,20 @@
 
 package org.apache.jena.http.sys;
 
+import java.util.function.Function;
+
 /**
  * A service registry is a set of actions to take to modify an HTTP request before
  * sending it to a specific endpoint.
  *
  * The key can be a prefix which must end in "/"
  */
-public class RegistryRequestModifier extends AbstractRegistryByServiceURL<HttpRequestModifier> {
+public class RegistryRequestModifier extends AbstractRegistryWithPrefix<String, HttpRequestModifier> {
 
     private static RegistryRequestModifier singleton = new RegistryRequestModifier();
     public static RegistryRequestModifier get() { return singleton; }
 
-    public RegistryRequestModifier() { }
+    public RegistryRequestModifier() {
+        super(Function.identity());
+    }
 }
