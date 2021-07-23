@@ -32,7 +32,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class TestAuthUpdate_JDK extends AbstractTestAuth_JDK {
+public class TestWebappAuthUpdate_JDK extends AbstractTestWebappAuth_JDK {
     @Test
     public void update_jdk_auth_01() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");

@@ -513,9 +513,12 @@ public class GSP {
 
     /** Clear - delete named graphs, empty the default graph - SPARQL "CLEAR ALL" */
     public void clearDataset() {
+        internalDataset();
         validateDatasetOperation();
-        String url = serviceEndpoint;
-        HttpOp2.httpDelete(url);
+        // DELETE on a dataset URL is not supported in Fuseki.
+//        String url = serviceEndpoint;
+//        HttpOp2.httpDelete(url);
+        UpdateExecHTTP.service(serviceEndpoint).update("CLEAR ALL").execute();
     }
 
     /** Send a file of triples to a URL. */

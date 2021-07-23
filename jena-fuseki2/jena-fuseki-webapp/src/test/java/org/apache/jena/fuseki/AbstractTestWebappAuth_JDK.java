@@ -25,9 +25,9 @@ import java.net.Authenticator;
 import java.net.http.HttpClient;
 
 import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.cmd.JettyFusekiWebapp;
 import org.apache.jena.fuseki.system.FusekiLogging;
-import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.fuseki.webapp.FusekiEnv;
 import org.apache.jena.http.auth.AuthLib;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
@@ -37,10 +37,9 @@ import org.apache.jena.sparql.exec.http.UpdateExecutionHTTPBuilder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-public class AbstractTestAuth_JDK {
+public class AbstractTestWebappAuth_JDK {
 
-    @SuppressWarnings("deprecation")
-    protected static final int authPort             = FusekiNetLib.choosePort();
+    protected static final int authPort             = WebLib.choosePort();
     protected static final String authUrlRoot       = "http://localhost:"+authPort+"/";
     protected static final String authDatasetPath   = "/dataset";
     protected static final String authServiceUpdate = "http://localhost:"+authPort+authDatasetPath+"/update";

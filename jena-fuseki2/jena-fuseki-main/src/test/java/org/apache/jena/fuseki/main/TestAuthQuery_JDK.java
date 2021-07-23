@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki;
+package org.apache.jena.fuseki.main;
 
 import static org.apache.jena.fuseki.test.FusekiTest.expectQuery401;
 
@@ -33,7 +33,7 @@ import org.junit.runners.MethodSorters;
 public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
     @Test
     public void query_auth_jdk_01_no_auth() {
-        QueryExecutionHTTP qe = QueryExecutionHTTP.create().endpoint(authServiceQuery).query("ASK { }").build();
+        QueryExecutionHTTP qe = QueryExecutionHTTP.create().endpoint(databaseURL()).query("ASK { }").build();
         // No auth credentials should result in an error
         expectQuery401(()->qe.execAsk());
     }
@@ -41,7 +41,7 @@ public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
     @Test
     public void query_auth_jdk_02_bad_auth() {
         // Auth - bad password
-        QueryExecutionHTTP qe = withAuthJDK(QueryExecutionHTTP.create().endpoint(authServiceQuery).query("ASK { }"),
+        QueryExecutionHTTP qe = withAuthJDK(QueryExecutionHTTP.create().endpoint(databaseURL()).query("ASK { }"),
                                               "allowed", "incorrect");
         expectQuery401(()->qe.execAsk());
     }
@@ -49,7 +49,7 @@ public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
     @Test
     public void query_auth_jdk_03_good_auth() {
         // Auth credentials for valid user with correct password
-        QueryExecutionHTTP qe = withAuthJDK(QueryExecutionHTTP.create().endpoint(authServiceQuery).query("ASK { }"),
+        QueryExecutionHTTP qe = withAuthJDK(QueryExecutionHTTP.create().endpoint(databaseURL()).query("ASK { }"),
                                               "allowed", "password");
         Assert.assertTrue(qe.execAsk());
     }
@@ -57,8 +57,8 @@ public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
     @Test
     public void query_authenv_01_good() {
         // Auth credentials for valid user with correct password
-        QueryExecutionHTTP qe = QueryExecutionHTTP.create().endpoint(authServiceQuery).query("ASK { }").build();
-        String dsURL = authServiceQuery;
+        QueryExecutionHTTP qe = QueryExecutionHTTP.create().endpoint(databaseURL()).query("ASK { }").build();
+        String dsURL = databaseURL();
         URI uri = URI.create(dsURL);
         AuthEnv.get().registerUsernamePassword(uri, "allowed", "password");
         try {
@@ -71,9 +71,9 @@ public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
 
     @Test
     public void query_authenv_02_prefix_good() {
-        QueryExecutionHTTP qe = QueryExecutionHTTP.create().endpoint(authServiceQuery).query("ASK { }").build();
+        QueryExecutionHTTP qe = QueryExecutionHTTP.create().endpoint(databaseURL()).query("ASK { }").build();
         // Dataset URL.
-        String dsURL = "http://localhost:"+authPort+authDatasetPath;
+        String dsURL = serverURL;
         URI uri = URI.create(dsURL);
         AuthEnv.get().registerUsernamePassword(uri, "allowed", "password");
         try {
@@ -85,9 +85,9 @@ public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
 
     @Test
     public void query_authenv_03_bad_endpoint() {
-        QueryExecutionHTTP qe = QueryExecutionHTTP.create().endpoint(authServiceQuery).query("ASK { }").build();
+        QueryExecutionHTTP qe = QueryExecutionHTTP.create().endpoint(databaseURL()).query("ASK { }").build();
         // Wrong registration
-        String dsURL = "http://localhost:"+authPort+"/anotherPlace";
+        String dsURL = serverURL+"anotherPlace";
         URI uri = URI.create(dsURL);
         AuthEnv.get().registerUsernamePassword(uri, "allowed", "password");
         try {

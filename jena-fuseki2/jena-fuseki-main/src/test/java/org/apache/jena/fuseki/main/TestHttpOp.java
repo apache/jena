@@ -16,12 +16,8 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki;
+package org.apache.jena.fuseki.main;
 
-import static org.apache.jena.fuseki.ServerCtl.serviceGSP;
-import static org.apache.jena.fuseki.ServerCtl.serviceQuery;
-import static org.apache.jena.fuseki.ServerCtl.serviceUpdate;
-import static org.apache.jena.fuseki.ServerCtl.urlRoot;
 import static org.apache.jena.fuseki.test.FusekiTest.execWithHttpException;
 import static org.apache.jena.fuseki.test.FusekiTest.expect404;
 import static org.apache.jena.riot.web.HttpOp.initialDefaultHttpClient;
@@ -55,8 +51,6 @@ public class TestHttpOp extends AbstractFusekiTest {
         assertSame("Failed to reset to initial client!", initialDefaultHttpClient, HttpOp.getDefaultHttpClient());
         HttpOp.setDefaultHttpClient(defaultClient);
     }
-
-    // Basic operations
 
     @Test public void httpGet_01() {
         assertNotNull(HttpOp.execHttpGetString(pingURL));
@@ -166,10 +160,10 @@ public class TestHttpOp extends AbstractFusekiTest {
         HttpOp.execHttpPost(namedGraphURL, WebContent.contentTypeTurtle, graphString);
         String s1 = HttpOp.execHttpGetString(namedGraphURL, WebContent.contentTypeNTriples);
         assertFalse(s1.isEmpty());
-        
+
         String s2 = HttpOp.execHttpGetString(defaultGraphURL, WebContent.contentTypeNTriples);
         assertTrue(s2.isEmpty());
-        
+
         HttpOp.execHttpDelete(namedGraphURL);
         String s3 = HttpOp.execHttpGetString(defaultGraphURL, WebContent.contentTypeNTriples);
         assertTrue(s3.isEmpty());

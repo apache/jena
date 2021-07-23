@@ -43,7 +43,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /** Tests on a read only server. */
-public class TestServerReadOnly
+public class TestWebappServerReadOnly
 {
     // readonly server.
     @BeforeClass

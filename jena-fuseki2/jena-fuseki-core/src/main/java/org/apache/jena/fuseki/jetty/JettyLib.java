@@ -143,7 +143,7 @@ public class JettyLib {
             throw new FusekiConfigException("No such file: "+passwordFile);
         PropertyUserStore propertyUserStore = new PropertyUserStore();
         propertyUserStore.setConfig(passwordFile);
-        propertyUserStore.setHotReload(true);
+        propertyUserStore.setHotReload(true); // Need directory access
         try { propertyUserStore.start(); }
         catch (Exception ex) { throw new RuntimeException("UserStore", ex); }
         return propertyUserStore;

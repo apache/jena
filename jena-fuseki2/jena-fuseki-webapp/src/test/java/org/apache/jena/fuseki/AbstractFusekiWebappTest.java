@@ -33,14 +33,14 @@ import org.junit.BeforeClass;
  * RDFConnection calls the different client APIs. So both servers get tested with the
  * client APIs, by different means.
  *
- * See {@link org.apache.jena.fuseki.AbstractFusekiTest}.
+ * See {@link org.apache.jena.fuseki.AbstractFusekiWebappTest}.
  *
  * Framework for tests using client-side operation onto a forked Fuseki server. Not
  * general - some test sets set up their own environment for different, additional
  * requirements.
  */
 
-public class AbstractFusekiTest
+public class AbstractFusekiWebappTest
 {
     @BeforeClass public static void ctlBeforeClass() { ServerCtl.ctlBeforeClass(); }
     @AfterClass  public static void ctlAfterClass()  { ServerCtl.ctlAfterClass(); }

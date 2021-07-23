@@ -31,7 +31,7 @@ import static org.apache.commons.lang3.StringUtils.substringBefore;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class TestMetrics extends AbstractFusekiTest {
+public class TestWebappMetrics extends AbstractFusekiWebappTest {
 
     @Test
     public void can_retrieve_metrics() {

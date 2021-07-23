@@ -16,11 +16,8 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki;
+package org.apache.jena.fuseki.main;
 
-import static org.apache.jena.fuseki.ServerCtl.serviceGSP;
-import static org.apache.jena.fuseki.ServerCtl.serviceQuery;
-import static org.apache.jena.fuseki.ServerTest.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -34,7 +31,11 @@ import java.util.Iterator;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.web.AcceptList;
 import org.apache.jena.atlas.web.MediaType;
+import org.apache.jena.fuseki.DEF;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.query.*;
@@ -53,6 +54,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class TestQuery extends AbstractFusekiTest {
+
+    private static final String  graphName1    = "http://graph/1";
+    private static final String  graphName2    = "http://graph/2";
+
+    private static final Node    gn1           = NodeFactory.createURI(graphName1);
+    private static final Node    gn2           = NodeFactory.createURI(graphName2);
+    private static final Graph   graph1        = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 1)))");
+    private static final Graph   graph2        = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 2)))");
 
     @Before
     public void before() {
@@ -122,7 +131,6 @@ public class TestQuery extends AbstractFusekiTest {
 
     @Test
     public void query_dynamic_dataset_02() {
-        GSP.service(serviceGSP()).clearDataset();
         GSP.service(serviceGSP()).graphName(gn1).PUT(graph1);
         GSP.service(serviceGSP()).graphName(gn2).PUT(graph2);
         String query = "SELECT * FROM <"+graphName1+"> FROM <"+graphName2+"> { ?s ?p ?o }";

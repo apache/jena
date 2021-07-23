@@ -47,7 +47,7 @@ import org.junit.Test;
 /** More tests of the admin functionality
  * See also TestAdmin.
  */
-public class TestAdminAPI extends AbstractFusekiTest {
+public class TestAdminAPI extends AbstractFusekiWebappTest {
 
     @Test public void add_delete_api_1() throws Exception {
         testAddDelete("db_mem", "mem", false);

@@ -16,18 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki;
+package org.apache.jena.fuseki.main;
 
-import static org.apache.jena.fuseki.ServerCtl.serviceGSP;
-import static org.apache.jena.fuseki.ServerCtl.serviceQuery;
-import static org.apache.jena.fuseki.ServerCtl.serviceUpdate;
-import static org.apache.jena.fuseki.ServerTest.*;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.*;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
+import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Convert;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
@@ -38,6 +38,14 @@ import org.junit.Test;
 
 public class TestSPARQLProtocol extends AbstractFusekiTest
 {
+    private static final String  graphName1    = "http://graph/1";
+    private static final String  graphName2    = "http://graph/2";
+
+    private static final Node    gn1           = NodeFactory.createURI(graphName1);
+    private static final Node    gn2           = NodeFactory.createURI(graphName2);
+    private static final Graph   graph1        = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 1)))");
+    private static final Graph   graph2        = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 2)))");
+
     @Before
     public void before() {
         GSP.service(serviceGSP()).defaultGraph().PUT(graph1);

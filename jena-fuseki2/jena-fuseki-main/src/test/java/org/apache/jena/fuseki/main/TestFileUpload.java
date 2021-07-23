@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki;
+package org.apache.jena.fuseki.main;
 
 import static org.junit.Assert.assertEquals;
 
@@ -32,32 +32,35 @@ import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.graph.GraphFactory;
+import org.apache.jena.web.FileSender;
 import org.junit.Test;
 
 /**
  * Tests for multi-part file upload.
+ * Fuseki support multifile upload for GSP.
  */
-public class TestFileUpload extends AbstractFusekiTest {
+public class TestFileUpload  extends AbstractFusekiTest {
+
     @Test
     public void upload_gsp_01() {
-        FileSender x = new FileSender(ServerCtl.serviceGSP() + "?default");
+        FileSender x = new FileSender(databaseURL() + "?default");
         x.add("D.ttl", "<http://example/s> <http://example/p> <http://example/o> .", "text/turtle");
         x.send("POST");
 
         // Ways to get the content, from highest to lowest level APIs.
 
-        Graph graph1 = GSP.service(ServerCtl.serviceGSP()).acceptHeader("text/turtle").defaultGraph().GET();
+        Graph graph1 = GSP.service(databaseURL()).acceptHeader("text/turtle").defaultGraph().GET();
         assertEquals(1, graph1.size());
 
-        Graph graph2 = HttpRDF.httpGetGraph(ServerCtl.serviceGSP(), "text/turtle");
+        Graph graph2 = HttpRDF.httpGetGraph(databaseURL(), "text/turtle");
         assertEquals(1, graph2.size());
 
         Graph graph3 = GraphFactory.createDefaultGraph();
         StreamRDF stream = StreamRDFLib.graph(graph3);
-        HttpRDF.httpGetToStream(ServerCtl.serviceGSP(), "text/turtle", stream);
+        HttpRDF.httpGetToStream(databaseURL(), "text/turtle", stream);
 
         Graph graph4 = GraphFactory.createDefaultGraph();
-        TypedInputStream in = HttpOp2.httpGet(ServerCtl.serviceGSP(), "text/turtle");
+        TypedInputStream in = HttpOp2.httpGet(databaseURL(), "text/turtle");
         RDFDataMgr.read(graph4, in, Lang.TTL);
 
         assertEquals(1, graph4.size());
@@ -65,36 +68,36 @@ public class TestFileUpload extends AbstractFusekiTest {
 
     @Test
     public void upload_gsp_02() {
-        FileSender x = new FileSender(ServerCtl.serviceGSP() + "?default");
+        FileSender x = new FileSender(databaseURL() + "?default");
         x.add("D.ttl", "<http://example/s> <http://example/p> 123 .", "text/turtle");
         x.add("D.nt", "<http://example/s> <http://example/p> <http://example/o-456> .", "application/n-triples");
         x.send("PUT");
 
-        Graph graph = GSP.service(ServerCtl.serviceGSP()).defaultGraph().GET();
+        Graph graph = GSP.service(databaseURL()).defaultGraph().GET();
         assertEquals(2, graph.size());
     }
 
     // Extension of GSP - no graph selector => dataset
     @Test
     public void upload_gsp_03() {
-        FileSender x = new FileSender(ServerCtl.serviceGSP());
+        FileSender x = new FileSender(databaseURL());
         x.add("D.ttl", "<http://example/s> <http://example/p> <http://example/o> .", "text/turtle");
         x.add("D.trig", "<http://example/g> { <http://example/s> <http://example/p> 123,456 }", "text/trig");
         x.send("POST");
 
-        DatasetGraph dsg = GSP.service(ServerCtl.serviceGSP()).getDataset();
+        DatasetGraph dsg = GSP.service(databaseURL()).getDataset();
         long c = Iter.count(dsg.find());
         assertEquals(3, c);
     }
 
     @Test
     public void upload_gsp_04() {
-        FileSender x = new FileSender(ServerCtl.urlDataset());
+        FileSender x = new FileSender(databaseURL());
         x.add("D.ttl", "<http://example/s> <http://example/p> <http://example/o> .", "text/plain");
         x.add("D.trig", "<http://example/g> { <http://example/s> <http://example/p> 123,456 }", "text/plain");
         x.send("POST");
 
-        DatasetGraph dsg = GSP.service(ServerCtl.serviceGSP()).getDataset();
+        DatasetGraph dsg = GSP.service(databaseURL()).getDataset();
         assertEquals(1, dsg.getDefaultGraph().size());
         assertEquals(2, dsg.getUnionGraph().size());
     }

@@ -24,15 +24,31 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+    //17
+
   TestEmbeddedFuseki.class
   , TestMultipleEmbedded.class
   , TestFusekiCustomOperation.class
   , TestFusekiMainCmd.class
   , TestStdSetup.class
   , TestConfigFile.class
-  , TestHTTP.class
   , TestFusekiServerBuild.class
+
+  , TestFileUpload.class
+  , TestAuthQuery_JDK.class
+  , TestAuthUpdate_JDK.class
+  , TestHTTP.class
+  , TestHttpOp.class
+  , TestHttpOperations.class
+  , TestHttpOptions.class
+
+  , TestQuery.class
+  , TestSPARQLProtocol.class
+
+  // Test ping.
+  , TestMetrics.class
   , TestFusekiShaclValidation.class
+
 })
 public class TS_FusekiMain {}
 

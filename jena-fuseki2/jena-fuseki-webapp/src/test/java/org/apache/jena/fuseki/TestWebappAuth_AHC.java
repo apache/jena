@@ -55,7 +55,7 @@ import org.junit.Test;
  * These tests use Jetty-supplied authentication, not Apache Shiro.
  */
 @SuppressWarnings("deprecation")
-public class TestAuth_AHC {
+public class TestWebappAuth_AHC {
 
     // Use different port etc because sometimes the previous testing servers
     // don't release ports fast enough (OS issue / Linux)

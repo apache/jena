@@ -16,10 +16,8 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki;
+package org.apache.jena.fuseki.main;
 
-import static org.apache.jena.fuseki.ServerCtl.serviceQuery;
-import static org.apache.jena.fuseki.ServerCtl.serviceUpdate;
 
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
@@ -109,7 +107,7 @@ public class TestHttpOperations extends AbstractFusekiTest {
 
     @Test
     public void ds_fetch_by_get_1() {
-        String u = ServerCtl.urlDataset();
+        String u = databaseURL();
         try (TypedInputStream in = HttpOp.execHttpGet(u)) {
             Assert.assertNotNull(in);
         }
@@ -117,7 +115,7 @@ public class TestHttpOperations extends AbstractFusekiTest {
 
     @Test
     public void ds_query_by_post_1() {
-        String u = ServerCtl.urlDataset();
+        String u = databaseURL();
         try (TypedInputStream in = HttpOp.execHttpPostStream(u, WebContent.contentTypeSPARQLQuery, "ASK{}", "*")) {
             Assert.assertNotNull(in);
         }
@@ -125,7 +123,7 @@ public class TestHttpOperations extends AbstractFusekiTest {
 
     @Test
     public void ds_update_by_post_1() {
-        String u = ServerCtl.urlDataset();
+        String u = databaseURL();
         HttpOp.execHttpPost(u, WebContent.contentTypeSPARQLUpdate, "INSERT DATA{}");
     }
 }

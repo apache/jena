@@ -199,6 +199,22 @@ public class TestGSP {
         GSP.service(gspServiceURL()).defaultGraph().putDataset(dataset);
     }
 
+    @Test
+    public void gsp_ds_clear_01() {
+        // DELETE on the GSP endpoint would be the default graph.
+        // DELETE on the dataset endpoint is not supported by Fuseki - this does "CLER ALL"
+        GSP.service(env.datasetURL()).clearDataset();
+    }
+
+    @Test
+    public void gsp_ds_clear_02() {
+        GSP.service(gspServiceURL()).postDataset(dataset);
+        GSP.service(env.datasetURL()).clearDataset();
+        DatasetGraph dsg = GSP.service(gspServiceURL()).getDataset();
+        assertFalse(dsg.find().hasNext());
+    }
+
+
 //    @Test public void gsp_ds_put_delete_01() {
 //        GSP.request(gspServiceURL()).putDataset(dataset);
 //        GSP.request(gspServiceURL()).clearDataset();
