@@ -38,7 +38,7 @@ public class RDFLinkFactory {
      * @see #connect(String, String, String, String)
      */
     public static RDFLink connect(String destination) {
-        return RDFLinkRemote.newBuilder().destination(destination).build();
+        return RDFLinkRemote.service(destination).build();
     }
 
     /** Create a connection specifying the URLs of the service.

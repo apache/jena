@@ -33,7 +33,7 @@ public class ExampleDBpedia2
 
         // Build-execute
         try ( QueryExecution qExec = QueryExecutionHTTP.create()
-                    .service("http://dbpedia.org/sparql")
+                    .endpoint("http://dbpedia.org/sparql")
                     .query(query)
                     .param("timeout", "10000")
                     .build() ) {

@@ -46,4 +46,9 @@ public class UpdateExecHTTPBuilder extends ExecUpdateHTTPBuilder<UpdateExecHTTP,
                                   new HashMap<>(httpHeaders),
                                   sendMode, cxt);
     }
+
+    /** Short form for {@code build().execute()} */
+    public void execute() {
+        build().execute();
+    }
 }

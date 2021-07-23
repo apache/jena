@@ -49,7 +49,7 @@ public class RDFConnectionFactory {
      * @see #connect(String, String, String, String)
      */
     public static RDFConnection connect(String destination) {
-        return RDFConnectionRemote.newBuilder().destination(destination).build();
+        return RDFConnectionRemote.service(destination).build();
     }
 
     /** Create a connection specifying the URLs of the service.

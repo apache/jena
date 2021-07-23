@@ -56,8 +56,8 @@ public class TestQuery extends AbstractFusekiTest {
 
     @Before
     public void before() {
-        GSP.request(serviceGSP()).defaultGraph().PUT(graph1);
-        GSP.request(serviceGSP()).graphName(gn1).PUT(graph2);
+        GSP.service(serviceGSP()).defaultGraph().PUT(graph1);
+        GSP.service(serviceGSP()).graphName(gn1).PUT(graph2);
     }
 
     private static final AcceptList quadsOfferTest = DEF.quadsOffer;
@@ -122,9 +122,9 @@ public class TestQuery extends AbstractFusekiTest {
 
     @Test
     public void query_dynamic_dataset_02() {
-        GSP.request(serviceGSP()).clearDataset();
-        GSP.request(serviceGSP()).graphName(gn1).PUT(graph1);
-        GSP.request(serviceGSP()).graphName(gn2).PUT(graph2);
+        GSP.service(serviceGSP()).clearDataset();
+        GSP.service(serviceGSP()).graphName(gn1).PUT(graph1);
+        GSP.service(serviceGSP()).graphName(gn2).PUT(graph2);
         String query = "SELECT * FROM <"+graphName1+"> FROM <"+graphName2+"> { ?s ?p ?o }";
         try (QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery() + "?output=json", query)) {
             ResultSet rs = qExec.execSelect();
@@ -208,7 +208,7 @@ public class TestQuery extends AbstractFusekiTest {
             String contentType = type.toHeaderString();
             try (QueryExecutionHTTP qExec =
                     QueryExecutionHTTPBuilder.newBuilder()
-                    .service(serviceQuery())
+                    .endpoint(serviceQuery())
                     .queryString(query)
                     .acceptHeader(contentType)
                     .build() ) {
@@ -228,7 +228,7 @@ public class TestQuery extends AbstractFusekiTest {
             String contentType = type.toHeaderString();
             try (QueryExecutionHTTP qExec =
                     QueryExecutionHTTPBuilder.newBuilder()
-                    .service(serviceQuery())
+                    .endpoint(serviceQuery())
                     .query(query)
                     .acceptHeader(contentType)
                     .build() ) {
@@ -249,7 +249,7 @@ public class TestQuery extends AbstractFusekiTest {
             QueryExecutionHTTP qExec =
                     QueryExecutionHTTPBuilder.newBuilder()
                     .httpClient(client)
-                    .service(serviceQuery())
+                    .endpoint(serviceQuery())
                     .queryString(query)
                     .acceptHeader(contentType)
                     .build();

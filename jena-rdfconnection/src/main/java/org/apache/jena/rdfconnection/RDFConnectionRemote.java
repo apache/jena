@@ -22,15 +22,14 @@ public interface RDFConnectionRemote extends RDFConnection{
 
     /**
      * Create a {@link RDFConnectionRemoteBuilder}.
-     * @deprecated Use {@link #newBuilder()}.
      */
-    @Deprecated
-    public static RDFConnectionRemoteBuilder create() {
-        return newBuilder();
-    }
+    public static RDFConnectionRemoteBuilder create() { return newBuilder(); }
 
     /** Create a {@link RDFConnectionRemoteBuilder}. */
-    public static RDFConnectionRemoteBuilder newBuilder() {
-        return new RDFConnectionRemoteBuilder();
+    public static RDFConnectionRemoteBuilder newBuilder() { return new RDFConnectionRemoteBuilder(); }
+
+    /** Create a {@link RDFConnectionRemoteBuilder} for a nremnote destination. */
+    public static RDFConnectionRemoteBuilder service(String destinationURL) {
+        return newBuilder().destination(destinationURL);
     }
 }

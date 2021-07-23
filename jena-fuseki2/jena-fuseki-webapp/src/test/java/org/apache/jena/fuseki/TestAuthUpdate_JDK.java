@@ -37,7 +37,7 @@ public class TestAuthUpdate_JDK extends AbstractTestAuth_JDK {
     public void update_jdk_auth_01() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
         UpdateProcessor ue = UpdateExecutionHTTP.create()
-                                    .service(authServiceUpdate)
+                                    .endpoint(authServiceUpdate)
                                     .update(updates)
                                     .build();
         // No auth credentials should result in an error
@@ -48,7 +48,7 @@ public class TestAuthUpdate_JDK extends AbstractTestAuth_JDK {
     public void update_jdk_auth_02() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
         UpdateProcessor ue = withAuthJDK(UpdateExecutionHTTP.create()
-                                               .service(authServiceUpdate)
+                                               .endpoint(authServiceUpdate)
                                                .update(updates),
                                            "allowed", "bad-password");
         expect401(()->ue.execute());
@@ -58,7 +58,7 @@ public class TestAuthUpdate_JDK extends AbstractTestAuth_JDK {
     public void update_jdk_auth_03() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
         UpdateProcessor ue = withAuthJDK(UpdateExecutionHTTP.create()
-                                               .service(authServiceUpdate)
+                                               .endpoint(authServiceUpdate)
                                                .update(updates),
                                            "allowed", "password");
         ue.execute();
@@ -68,7 +68,7 @@ public class TestAuthUpdate_JDK extends AbstractTestAuth_JDK {
     public void update_with_auth_04() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
         UpdateProcessor ue = withAuthJDK(UpdateExecutionHTTP.create()
-                                               .service(authServiceUpdate)
+                                               .endpoint(authServiceUpdate)
                                                .update(updates),
                                            "allowed", "password");
         ue.execute();
@@ -78,7 +78,7 @@ public class TestAuthUpdate_JDK extends AbstractTestAuth_JDK {
     public void update_authenv_01_good() {
         // Auth credentials for valid user with correct password
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
-        UpdateProcessor ue = UpdateExecutionHTTP.create().service(authServiceUpdate).update(updates).build();
+        UpdateProcessor ue = UpdateExecutionHTTP.create().endpoint(authServiceUpdate).update(updates).build();
         String dsURL = authServiceUpdate;
         URI uri = URI.create(dsURL);
         AuthEnv.get().registerUsernamePassword(uri, "allowed", "password");

@@ -83,6 +83,11 @@ public class RDFLinkRemote implements RDFLink {
         return new RDFLinkRemoteBuilder();
     }
 
+    /** Create a {@link RDFLinkRemoteBuilder}. */
+    public static RDFLinkRemoteBuilder service(String destinationURL) {
+        return new RDFLinkRemoteBuilder().destination(destinationURL);
+    }
+
     /**
      * Create a {@link RDFLinkRemoteBuilder} initialized with the
      * settings of another {@code RDFLinkRemote}.
@@ -252,7 +257,7 @@ public class RDFLinkRemote implements RDFLink {
     // Create the QExec
     private QueryExec createQExec(Query query, String queryStringToSend, QueryType queryType) {
         QueryExecHTTPBuilder builder = QueryExecHTTPBuilder.newBuilder()
-            .service(svcQuery)
+            .endpoint(svcQuery)
             .httpClient(httpClient)
             .queryString(queryStringToSend);
 
@@ -329,7 +334,7 @@ public class RDFLinkRemote implements RDFLink {
         // Use the update string as provided if possible, otherwise serialize the update.
         String updateStringToSend = ( updateString != null ) ? updateString  : update.toString();
         UpdateExecHTTP.newBuilder()
-            .service(svcUpdate)
+            .endpoint(svcUpdate)
             .httpClient(httpClient)
             .updateString(updateStringToSend)
             .build()
@@ -435,7 +440,7 @@ public class RDFLinkRemote implements RDFLink {
     }
 
     private GSP gspRequest() {
-        return GSP.request(svcGraphStore).httpClient(httpClient);
+        return GSP.service(svcGraphStore).httpClient(httpClient);
     }
 
     @Override

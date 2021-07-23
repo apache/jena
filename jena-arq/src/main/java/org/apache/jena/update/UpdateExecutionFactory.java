@@ -21,21 +21,35 @@ package org.apache.jena.update;
 import java.util.Objects;
 
 import org.apache.jena.query.ARQ;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.QuerySolution ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.QuerySolution;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.exec.UpdateExec;
 import org.apache.jena.sparql.exec.http.UpdateExecutionHTTP;
+import org.apache.jena.sparql.exec.http.UpdateExecutionHTTPBuilder;
 import org.apache.jena.sparql.exec.http.UpdateSendMode;
 import org.apache.jena.sparql.modify.UpdateEngineFactory;
 import org.apache.jena.sparql.modify.UpdateEngineRegistry;
 import org.apache.jena.sparql.modify.UpdateProcessorStreamingBase;
 import org.apache.jena.sparql.util.Context ;
 
-/** Create UpdateProcessors (one-time executions of a SPARQL Update request) */
+/**
+ * Create {@link UpdateProcessor} execution objects.
+ * <p>
+ * For more control of building a local or remote {@link UpdateProcessor} object see the builder pattern:
+ * <ul>
+ * <li>{@code UpdateProcessor.create(). ... .build()} for querying local data.</li>
+ * <li>{@code UpdateProcessorHTTP.service(url). ... .build()} for querying a remote store using HTTP.</li>
+ * </ul>
+ * <p>
+ * See also {@code RDFConnection} for working with SPARQL Query, SPARQL Update and SPARQL Graph Store Protocol together.
+ *
+ * @see UpdateExecutionBuilder
+ * @see UpdateExecutionHTTPBuilder
+ */
 public class UpdateExecutionFactory
 {
     /**
@@ -99,7 +113,7 @@ public class UpdateExecutionFactory
      * @return UpdateProcessor or null
      */
     public static UpdateProcessor create(UpdateRequest updateRequest, Dataset dataset) {
-        return make(updateRequest, dataset.asDatasetGraph(), null, null);
+        return make(updateRequest, dataset, null, null);
     }
 
     /**
@@ -109,7 +123,9 @@ public class UpdateExecutionFactory
      * @param updateRequest
      * @param datasetGraph
      * @return UpdateProcessor or null
+     * @deprecated Use {@code UpdateExec.newBuilder(). ... build()}
      */
+    @Deprecated
     public static UpdateProcessor create(UpdateRequest updateRequest, DatasetGraph datasetGraph) {
         return make(updateRequest, datasetGraph, null, null);
     }
@@ -125,7 +141,7 @@ public class UpdateExecutionFactory
      * @return UpdateProcessor or null
      */
     public static UpdateProcessor create(UpdateRequest updateRequest, Dataset dataset, QuerySolution inputBinding) {
-        return create(updateRequest, dataset.asDatasetGraph(), BindingLib.asBinding(inputBinding));
+        return make(updateRequest, dataset, inputBinding, null);
     }
 
     /**
@@ -137,7 +153,9 @@ public class UpdateExecutionFactory
      * @param inputBinding Initial binding to be applied to Update operations that
      *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
      * @return UpdateProcessor or null
+     * @deprecated Use {@code UpdateExec.newBuilder(). ... build()}
      */
+    @Deprecated
     public static UpdateProcessor create(UpdateRequest updateRequest, DatasetGraph datasetGraph, Binding inputBinding) {
         return make(updateRequest, datasetGraph, inputBinding, null);
     }
@@ -252,7 +270,7 @@ public class UpdateExecutionFactory
      * @return UpdateProcessor or null
      */
     public static UpdateProcessor create(UpdateRequest updateRequest, Dataset dataset, Context context) {
-        return make(updateRequest, dataset.asDatasetGraph(), null, context);
+        return make(updateRequest, dataset, null, context);
     }
 
     /**
@@ -280,7 +298,7 @@ public class UpdateExecutionFactory
      * @return UpdateProcessor or null
      */
     public static UpdateProcessor create(UpdateRequest updateRequest, Dataset dataset, QuerySolution inputBinding, Context context) {
-        return create(updateRequest, dataset.asDatasetGraph(), BindingLib.asBinding(inputBinding), context);
+        return make(updateRequest, dataset, inputBinding, context);
     }
 
     /**
@@ -299,9 +317,13 @@ public class UpdateExecutionFactory
     }
 
     // Everything for local updates comes through one of these two make methods
+    private static UpdateProcessor make(UpdateRequest updateRequest, Dataset dataset, QuerySolution inputBinding, Context context) {
+        return UpdateExecution.create().update(updateRequest).dataset(dataset).initialBinding(inputBinding).build();
+    }
+
+    // Everything for local updates comes through one of these two make methods
     private static UpdateExec make(UpdateRequest updateRequest, DatasetGraph datasetGraph, Binding inputBinding, Context context) {
         Context cxt = Context.setupContextForDataset(context, datasetGraph);
-        UpdateEngineFactory f = UpdateEngineRegistry.get().find(datasetGraph, cxt);
         return UpdateExec.newBuilder().update(updateRequest).dataset(datasetGraph).initialBinding(inputBinding).context(cxt).build();
     }
 
@@ -449,7 +471,7 @@ public class UpdateExecutionFactory
 
         return UpdateExecutionHTTP.create()
                 .context(context)
-                .service(remoteEndpoint)
+                .endpoint(remoteEndpoint)
                 .update(updateRequest)
                 .sendMode(updateSendMode)
                 .build();

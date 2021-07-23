@@ -67,7 +67,7 @@ public abstract class ExecHTTPBuilder<X, Y> {
     protected abstract Y thisBuilder();
 
     /** Set the URL of the query endpoint. */
-    public Y service(String serviceURL) {
+    public Y endpoint(String serviceURL) {
         this.serviceURL = Objects.requireNonNull(serviceURL);
         return thisBuilder();
     }

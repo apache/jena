@@ -90,10 +90,10 @@ public class TestGSP {
     }
 
     @Test public void gsp_put_get_01() {
-        GSP.request(gspServiceURL())
+        GSP.service(gspServiceURL())
             .defaultGraph()
             .PUT(graph);
-        Graph g = GSP.request(gspServiceURL())
+        Graph g = GSP.service(gspServiceURL())
             .defaultGraph()
             .GET();
         assertNotNull(g);
@@ -103,28 +103,28 @@ public class TestGSP {
     @Test(expected=HttpException.class)
     public void gsp_bad_put_01() {
         // No .defaultGraph
-        GSP.request(gspServiceURL()).PUT(graph);
+        GSP.service(gspServiceURL()).PUT(graph);
     }
 
     @Test(expected=HttpException.class)
     public void gsp_bad_get_err_02() {
         // No .defaultGraph
-        GSP.request(gspServiceURL()).GET();
+        GSP.service(gspServiceURL()).GET();
     }
 
     @Test public void gsp_post_get_ct_01() {
         String graphName = "http://example/graph";
-        GSP.request(gspServiceURL())
+        GSP.service(gspServiceURL())
             .graphName(graphName)
             .POST(graph);
-        Graph g1 = GSP.request(gspServiceURL())
+        Graph g1 = GSP.service(gspServiceURL())
             .defaultGraph()
             .acceptHeader("application/rdf+xml")
             .GET();
         assertNotNull(g1);
         assertTrue(g1.isEmpty());
 
-        Graph g2 = GSP.request(gspServiceURL())
+        Graph g2 = GSP.service(gspServiceURL())
             .graphName(graphName)
             .acceptHeader("application/rdf+xml")
             .GET();
@@ -134,11 +134,11 @@ public class TestGSP {
     }
 
     @Test public void gsp_put_get_ct_02() {
-        GSP.request(gspServiceURL())
+        GSP.service(gspServiceURL())
             .defaultGraph()
             .contentType(RDFFormat.NTRIPLES)
             .PUT(graph);
-        Graph g1 = GSP.request(gspServiceURL())
+        Graph g1 = GSP.service(gspServiceURL())
             .defaultGraph()
             .accept(Lang.RDFXML)
             .GET();
@@ -148,18 +148,18 @@ public class TestGSP {
     }
 
     @Test public void gsp_put_delete_01() {
-        GSP.request(gspServiceURL())
+        GSP.service(gspServiceURL())
             .defaultGraph()
             .PUT(graph);
-        Graph g1 = GSP.request(gspServiceURL())
+        Graph g1 = GSP.service(gspServiceURL())
              .defaultGraph()
              .GET();
         assertFalse(g1.isEmpty());
 
-        GSP.request(gspServiceURL())
+        GSP.service(gspServiceURL())
             .defaultGraph()
             .DELETE();
-        Graph g2 = GSP.request(gspServiceURL())
+        Graph g2 = GSP.service(gspServiceURL())
             .defaultGraph()
             .GET();
         assertTrue(g2.isEmpty());
@@ -171,32 +171,32 @@ public class TestGSP {
     }
 
     @Test public void gsp_dft_ct_1() {
-        GSP.request(url("/ds")).defaultGraph().contentType(RDFFormat.RDFXML).PUT(DIR+"data-rdfxml");
+        GSP.service(url("/ds")).defaultGraph().contentType(RDFFormat.RDFXML).PUT(DIR+"data-rdfxml");
     }
 
     @Test public void gsp_dft_ct_2() {
-        GSP.request(url("/ds")).defaultGraph().contentTypeHeader(WebContent.contentTypeRDFXML).PUT(DIR+"data-rdfxml");
+        GSP.service(url("/ds")).defaultGraph().contentTypeHeader(WebContent.contentTypeRDFXML).PUT(DIR+"data-rdfxml");
     }
 
     // ----------------------------------------
 
     @Test public void gsp_ds_put_get_01() {
-        GSP.request(gspServiceURL()).putDataset(dataset);
-        DatasetGraph dsg = GSP.request(gspServiceURL()).getDataset();
+        GSP.service(gspServiceURL()).putDataset(dataset);
+        DatasetGraph dsg = GSP.service(gspServiceURL()).getDataset();
         assertNotNull(dsg);
         assertTrue(IsoMatcher.isomorphic(dataset, dsg));
     }
 
     @Test public void gsp_ds_post_get_02() {
-        GSP.request(gspServiceURL()).postDataset(dataset);
-        DatasetGraph dsg = GSP.request(gspServiceURL()).getDataset();
+        GSP.service(gspServiceURL()).postDataset(dataset);
+        DatasetGraph dsg = GSP.service(gspServiceURL()).getDataset();
         assertNotNull(dsg);
         assertTrue(IsoMatcher.isomorphic(dataset, dsg));
     }
 
     @Test(expected=HttpException.class)
     public void gsp_ds_err_01() {
-        GSP.request(gspServiceURL()).defaultGraph().putDataset(dataset);
+        GSP.service(gspServiceURL()).defaultGraph().putDataset(dataset);
     }
 
 //    @Test public void gsp_ds_put_delete_01() {
@@ -209,21 +209,21 @@ public class TestGSP {
     @Test public void gsp_union_get() {
         Node gn1 = NodeFactory.createURI("http://example/graph1");
         Node gn2 = NodeFactory.createURI("http://example/graph2");
-        GSP.request(gspServiceURL())
+        GSP.service(gspServiceURL())
            .graphName(gn1)
            .PUT(graph1);
-        GSP.request(gspServiceURL())
+        GSP.service(gspServiceURL())
            .graphName(gn2)
             .PUT(graph2);
         // get union
 
-        Graph g = GSP.request(gspServiceURL()).graphName("union").GET();
+        Graph g = GSP.service(gspServiceURL()).graphName("union").GET();
         assertEquals(3, g.size());
     }
 
     @Test public void gsp_union_post() {
         expect400(()->{
-            GSP.request(gspServiceURL()).graphName("union").POST(graph1);
+            GSP.service(gspServiceURL()).graphName("union").POST(graph1);
         });
     }
 
@@ -232,19 +232,19 @@ public class TestGSP {
     @Test public void gsp_404_01() {
         String graphName = "http://example/graph2";
         Node gn = NodeFactory.createURI("http://example/graph2");
-        GSP.request(gspServiceURL())
+        GSP.service(gspServiceURL())
             .graphName(gn)
             .PUT(graph);
-        Graph g = GSP.request(gspServiceURL())
+        Graph g = GSP.service(gspServiceURL())
             .graphName(graphName)
             .GET();
         assertFalse(g.isEmpty());
-        GSP.request(gspServiceURL())
+        GSP.service(gspServiceURL())
             .graphName(gn)
             .DELETE();
 
         expect404(()->
-            GSP.request(gspServiceURL())
+            GSP.service(gspServiceURL())
                 .graphName(graphName)
                 .GET()
         );
@@ -253,13 +253,13 @@ public class TestGSP {
     @Test public void gsp_404_1() {
         String graphName = "http://example/graph404";
         expect404(
-            ()->GSP.request(gspServiceURL()).graphName(graphName).GET()
+            ()->GSP.service(gspServiceURL()).graphName(graphName).GET()
         );
     }
 
     @Test public void gsp_404_2() {
         expect404(
-            ()->GSP.request(gspServiceURL()+"junk").getDataset()
+            ()->GSP.service(gspServiceURL()+"junk").getDataset()
         );
     }
 }

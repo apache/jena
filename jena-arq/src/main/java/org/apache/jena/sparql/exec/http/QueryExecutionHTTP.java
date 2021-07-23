@@ -27,6 +27,12 @@ import org.apache.jena.sparql.exec.QueryExecutionAdapter;
 public class QueryExecutionHTTP extends QueryExecutionAdapter {
 
     public static QueryExecutionHTTPBuilder create() { return QueryExecutionHTTPBuilder.newBuilder(); }
+    public static QueryExecutionHTTPBuilder newBuilder() { return QueryExecutionHTTPBuilder.newBuilder(); }
+
+    /** Create a new builder for the remote endpoint */
+    public static QueryExecutionHTTPBuilder service(String endpointURL) { return QueryExecutionHTTPBuilder.newBuilder().endpoint(endpointURL); }
+
+
 
     public QueryExecutionHTTP(QueryExecHTTP qExecHTTP) {
         super(qExecHTTP);

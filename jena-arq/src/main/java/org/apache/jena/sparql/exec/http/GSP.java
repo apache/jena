@@ -84,17 +84,17 @@ public class GSP {
      *  Call {@link #defaultGraph()} or {@link #graphName(String)} to select the target graph.
      * @param service
      */
-    public static GSP request(String service) {
-        return new GSP().service(service);
+    public static GSP service(String service) {
+        return new GSP().endpoint(service);
     }
 
     protected GSP() {}
 
     /**
      * Set the URL of the query endpoint. This replaces any value set in the
-     * {@link #request(String)} call.
+     * {@link #service(String)} call.
      */
-    public GSP service(String serviceURL) {
+    public GSP endpoint(String serviceURL) {
         this.serviceEndpoint = Objects.requireNonNull(serviceURL);
         return this;
     }
@@ -215,7 +215,7 @@ public class GSP {
         return this;
     }
 
-    private void validateGraphOperation() {
+    final protected void validateGraphOperation() {
         Objects.requireNonNull(serviceEndpoint);
         if ( ! defaultGraph && graphName == null )
             throw exception("Need either default graph or a graph name");
@@ -223,8 +223,8 @@ public class GSP {
             throw exception("Dataset request specified for graph operation");
     }
 
-    private void internalDataset() {
-        // Set dataset request.
+    final protected void internalDataset() {
+        // Set as dataset request.
         // Checking is done by validateDatasetOperation.
         // The dataset operations have "Dataset" in the name, so less point having
         // required dataset(). We can't use GET() because the return type
@@ -233,7 +233,7 @@ public class GSP {
         this.datasetGraph = true;
     }
 
-    private void validateDatasetOperation() {
+    final protected void validateDatasetOperation() {
         Objects.requireNonNull(serviceEndpoint);
         if ( defaultGraph )
             throw exception("Default graph specified for dataset operation");
@@ -405,7 +405,6 @@ public class GSP {
 //    }
 
     private String graphRequestURL() {
-
         return HttpLib.requestURL(serviceEndpoint, queryStringForGraph(graphName));
     }
 
@@ -421,7 +420,7 @@ public class GSP {
      * @return String without the "?"
      */
 
-    private static String queryStringForGraph(String graphName) {
+    protected static String queryStringForGraph(String graphName) {
         if ( graphName == null )
             return HttpNames.paramGraphDefault;
         switch (graphName) {
@@ -433,6 +432,17 @@ public class GSP {
                 return HttpNames.paramGraph+"="+HttpLib.urlEncodeQueryString(graphName);
         }
     }
+
+    // Expose access for subclasses. "final" to enmsure that this class controls constraints and expectations.
+    // Only valid when the request has correctly been setup.
+
+    final protected String graphName() { return graphName; }
+    final protected String service() { return serviceEndpoint; }
+
+    final protected boolean isDefaultGraph() { return graphName == null; }
+    final protected boolean isGraphOperation() { return defaultGraph || graphName != null; }
+    final protected boolean isDatasetOperation() { return datasetGraph; }
+
 
     /**
      * GET dataset.

@@ -18,8 +18,11 @@
 
 package org.apache.jena.sparql.modify;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.engine.binding.Binding;
@@ -29,7 +32,7 @@ import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 import org.junit.Test;
 
-public class TestBuildUpdate {
+public class TestUpdateBuild {
 
     static String insertData =  "INSERT DATA { <http://example/s> <http://example/p> 123 . }";
     static UpdateRequest update = UpdateFactory.create(insertData);
@@ -74,4 +77,28 @@ public class TestBuildUpdate {
         assertFalse(dsg.getDefaultGraph().isEmpty());
     }
 
+    @Test public void update_build_execute_1() {
+        DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
+        assertTrue(dsg.isEmpty());
+        dsg.execute(()->{
+            UpdateExec.newBuilder()
+                .dataset(dsg)
+                .update("INSERT DATA { <x:s> <x:p> <x:o> }")
+                .execute();
+        });
+        assertFalse(dsg.isEmpty());
+    }
+
+    @Test public void update_build_execute_2() {
+        DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
+        assertTrue(dsg.isEmpty());
+        dsg.execute(()->{
+            UpdateExec.newBuilder()
+                .dataset(dsg)
+                .update("INSERT DATA { <x:s> <x:p> <x:o1> }")
+                .update("INSERT DATA { <x:s> <x:p> <x:o2> }")
+                .execute();
+        });
+        assertEquals(2, Iter.count(dsg.find()));
+    }
 }

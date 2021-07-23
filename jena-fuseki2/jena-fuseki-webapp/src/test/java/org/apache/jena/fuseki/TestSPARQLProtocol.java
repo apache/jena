@@ -40,8 +40,8 @@ public class TestSPARQLProtocol extends AbstractFusekiTest
 {
     @Before
     public void before() {
-        GSP.request(serviceGSP()).defaultGraph().PUT(graph1);
-        GSP.request(serviceGSP()).graphName(gn1).PUT(graph2);
+        GSP.service(serviceGSP()).defaultGraph().PUT(graph1);
+        GSP.service(serviceGSP()).graphName(gn1).PUT(graph2);
     }
 
     static String query(String base, String queryString) {
@@ -61,7 +61,7 @@ public class TestSPARQLProtocol extends AbstractFusekiTest
     public void query_02() {
         Query query = QueryFactory.create("SELECT * { ?s ?p ?o }");
         QueryExecution qExec = QueryExecutionHTTP.create()
-                .service(serviceQuery())
+                .endpoint(serviceQuery())
                 .query(query)
                 .acceptHeader(WebContent.contentTypeResultsJSON)
                 .build();

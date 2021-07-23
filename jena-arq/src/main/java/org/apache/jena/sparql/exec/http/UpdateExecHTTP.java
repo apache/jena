@@ -42,6 +42,7 @@ import org.apache.jena.update.UpdateRequest;
 public class UpdateExecHTTP implements UpdateExec {
 
     public static UpdateExecHTTPBuilder newBuilder() { return UpdateExecHTTPBuilder.newBuilder(); }
+    public static UpdateExecHTTPBuilder service(String endpointURL) { return UpdateExecHTTPBuilder.newBuilder().endpoint(endpointURL); }
 
     private final Context context;
     private final String service;

@@ -61,7 +61,7 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
 
     protected abstract Y thisBuilder();
 
-    public Y service(String serviceURL) {
+    public Y endpoint(String serviceURL) {
         this.serviceURL = serviceURL;
         return thisBuilder();
     }
@@ -205,12 +205,11 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
         if ( updateOperations != null && updateString != null )
             throw new InternalErrorException("UpdateRequest and update string");
         HttpClient hClient = HttpEnv.getHttpClient(serviceURL, httpClient);
-        UpdateRequest updateActual = updateOperations;
 
+        UpdateRequest updateActual = updateOperations;
         if ( substitutionMap != null && ! substitutionMap.isEmpty() ) {
             if ( updateActual == null )
                 throw new UpdateException("Substitution only supported if an UpdateRequest object was provided");
-
             updateActual = UpdateTransformOps.transform(updateActual, substitutionMap);
         }
         Context cxt = (context!=null) ? context : ARQ.getContext().copy();

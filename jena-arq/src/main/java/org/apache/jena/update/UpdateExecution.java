@@ -21,6 +21,8 @@ package org.apache.jena.update;
 /** An instance of a execution of an UpdateRequest */
 public interface UpdateExecution extends UpdateProcessor
 {
+    public static UpdateExecutionBuilder create() { return UpdateExecutionBuilder.create(); }
+
     /** Execute */
     @Override
     public void execute() ;

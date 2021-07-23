@@ -56,7 +56,9 @@ import org.slf4j.LoggerFactory ;
 /**
  * A query execution implementation where queries are executed against a remote
  * service
+ * @deprecated Use the QueryExecutionHTTP builder. {@code QueryExecutionHTTP.create()....execute()}
  */
+@Deprecated
 public class QueryEngineHTTP implements QueryExecution {
     private static Logger log = LoggerFactory.getLogger(QueryEngineHTTP.class);
 

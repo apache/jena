@@ -38,6 +38,7 @@ import org.apache.jena.update.UpdateRequest ;
  * A Jena JDBC statement against a remote endpoint
  *
  */
+@SuppressWarnings("deprecation")
 public class RemoteEndpointPreparedStatement extends JenaPreparedStatement {
 
     private RemoteEndpointConnection remoteConn;

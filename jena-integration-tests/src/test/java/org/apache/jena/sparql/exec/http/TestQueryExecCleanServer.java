@@ -94,7 +94,7 @@ public class TestQueryExecCleanServer {
                 ,"}");
 
         try ( QueryExecHTTP qExec = QueryExecHTTP.newBuilder()
-                                            .service(dsURL)
+                                            .endpoint(dsURL)
                                             .queryString(queryString)
                                             // Short!
                                             .timeout(10, TimeUnit.MILLISECONDS)

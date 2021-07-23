@@ -42,9 +42,19 @@ import org.apache.jena.sparql.syntax.Element;
 import org.apache.jena.sparql.util.Context;
 
 /**
- * Place to make {@link QueryExecution} objects from {@link Query} objects or a string.
+ * {@code QueryExecutionFactory} provides some convenience operations for making {@link QueryExecution} objects.
+ * It is not comprehensive and only covers common, simple cases.
+ * <p>
+ * For more control of building a local or remote {@link QueryExecution} object see the builder pattern:
+ * <ul>
+ * <li>{@code QueryExecution.create(). ... .build()} for querying local data.</li>
+ * <li>{@code QueryExecutionHTTP.service(url). ... .build()} for querying a remote store using HTTP.</li>
+ * </ul>
+ * <p>
+ * See also {@code RDFConnection} for working with SPARQL Query, SPARQL Update and SPARQL Graph Store Protocol together.
  *
- * For detailed creation of a {@link QueryExecution}, see {@link QueryExecutionBuilder}.
+ * @see QueryExecutionBuilder
+ * @see QueryExecutionHTTPBuilder
  */
 
 public class QueryExecutionFactory
@@ -392,7 +402,7 @@ public class QueryExecutionFactory
 
     // All createServiceRequest calls
     static private QueryExecutionHTTPBuilder createExecutionHTTP(String serviceURL, String queryStr) {
-        return QueryExecutionHTTP.create().service(serviceURL).queryString(queryStr);
+        return QueryExecutionHTTP.create().endpoint(serviceURL).queryString(queryStr);
     }
 
     // -----------------

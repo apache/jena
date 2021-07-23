@@ -21,6 +21,8 @@ package org.apache.jena.sparql.api;
 import static org.apache.jena.atlas.lib.Lib.sleep ;
 import static org.junit.Assume.assumeFalse;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.jena.base.Sys ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.query.* ;
@@ -70,9 +72,12 @@ public class TestQueryExecutionTimeout2
 
     private static void test2(long timeout1, long timeout2, int delay, boolean exceptionExpected)
     {
+        String qs = prefix+"SELECT * { ?s ?p ?o }";
         // Enough rows to keep the iterator pipeline full.
-        try(QueryExecution qExec = QueryExecutionFactory.create(prefix+"SELECT * { ?s ?p ?o }", ds)) {
-            qExec.setTimeout(timeout1, timeout2) ;
+        try (QueryExecution qExec = QueryExecution.create().query(qs).dataset(ds)
+                .initialTimeout(timeout1, TimeUnit.MILLISECONDS)
+                .overallTimeout(timeout2, TimeUnit.MILLISECONDS)
+                .build()) {
             ResultSet rs = qExec.execSelect() ;
             // ... wait for first binding.
             try {
@@ -82,7 +87,6 @@ public class TestQueryExecutionTimeout2
                 return;
             }
 
-            //System.err.println(b1) ;
             // ... then a possible timeout.
             sleep(delay) ;
             if ( exceptionExpected )

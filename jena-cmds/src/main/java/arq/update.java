@@ -30,21 +30,25 @@ import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Transactional;
+import org.apache.jena.sparql.exec.UpdateExec;
 import org.apache.jena.system.Txn;
-import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 
-public class update extends CmdUpdate
-{
+public class update extends CmdUpdate {
     static final ArgDecl updateArg = new ArgDecl(ArgDecl.HasValue, "update", "file");
-    static final ArgDecl dumpArg = new ArgDecl(ArgDecl.NoValue, "dump");       // Write the result to stdout.
+    static final ArgDecl dumpArg = new ArgDecl(ArgDecl.NoValue, "dump");       // Write
+                                                                               // the
+                                                                               // result
+                                                                               // to
+                                                                               // stdout.
 
     List<String> requestFiles = null;
     boolean dump = false;
 
-    public static void main (String... argv)
-    { new update(argv).mainRun(); }
+    public static void main(String...argv) {
+        new update(argv).mainRun();
+    }
 
     protected update(String[] argv) {
         super(argv);
@@ -60,10 +64,14 @@ public class update extends CmdUpdate
     }
 
     @Override
-    protected String getCommandName() { return Lib.className(this); }
+    protected String getCommandName() {
+        return Lib.className(this);
+    }
 
     @Override
-    protected String getSummary() { return getCommandName()+" --desc=assembler [--dump] --update=<request file>"; }
+    protected String getSummary() {
+        return getCommandName() + " --desc=assembler [--dump] --update=<request file>";
+    }
 
     // Subclass for specialised commands making common updates more convenient
     @Override
@@ -74,29 +82,29 @@ public class update extends CmdUpdate
         Transactional transactional = graphStore;
 
         for ( String filename : requestFiles )
-            Txn.executeWrite(transactional, ()->execOneFile(filename, graphStore));
+            Txn.executeWrite(transactional, () -> execOneFile(filename, graphStore));
 
         for ( String requestString : super.getPositional() ) {
             String requestString2 = indirect(requestString);
-            Txn.executeWrite(transactional, ()->execOne(requestString2, graphStore));
+            Txn.executeWrite(transactional, () -> execOne(requestString2, graphStore));
         }
 
-        if ( ! ( transactional instanceof DatasetGraph ) )
+        if ( !(transactional instanceof DatasetGraph) )
             // Unlikely/impossible in Jena 3.7.0 onwards.
             SystemARQ.sync(graphStore);
 
         if ( dump )
-            Txn.executeRead(transactional, ()->RDFDataMgr.write(System.out, graphStore, Lang.TRIG) );
+            Txn.executeRead(transactional, () -> RDFDataMgr.write(System.out, graphStore, Lang.TRIG));
     }
 
     protected void execOneFile(String filename, DatasetGraph store) {
         UpdateRequest req = UpdateFactory.read(filename, updateSyntax);
-        UpdateExecutionFactory.create(req, store).execute();
+        UpdateExec.newBuilder().update(req).dataset(store).execute();;
     }
 
     protected void execOne(String requestString, DatasetGraph store) {
         UpdateRequest req = UpdateFactory.create(requestString, updateSyntax);
-        UpdateExecutionFactory.create(req, store).execute();
+        UpdateExec.newBuilder().update(req).dataset(store).execute();
     }
 
     @Override

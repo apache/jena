@@ -46,7 +46,7 @@ public class TestFileUpload extends AbstractFusekiTest {
 
         // Ways to get the content, from highest to lowest level APIs.
 
-        Graph graph1 = GSP.request(ServerCtl.serviceGSP()).acceptHeader("text/turtle").defaultGraph().GET();
+        Graph graph1 = GSP.service(ServerCtl.serviceGSP()).acceptHeader("text/turtle").defaultGraph().GET();
         assertEquals(1, graph1.size());
 
         Graph graph2 = HttpRDF.httpGetGraph(ServerCtl.serviceGSP(), "text/turtle");
@@ -70,7 +70,7 @@ public class TestFileUpload extends AbstractFusekiTest {
         x.add("D.nt", "<http://example/s> <http://example/p> <http://example/o-456> .", "application/n-triples");
         x.send("PUT");
 
-        Graph graph = GSP.request(ServerCtl.serviceGSP()).defaultGraph().GET();
+        Graph graph = GSP.service(ServerCtl.serviceGSP()).defaultGraph().GET();
         assertEquals(2, graph.size());
     }
 
@@ -82,7 +82,7 @@ public class TestFileUpload extends AbstractFusekiTest {
         x.add("D.trig", "<http://example/g> { <http://example/s> <http://example/p> 123,456 }", "text/trig");
         x.send("POST");
 
-        DatasetGraph dsg = GSP.request(ServerCtl.serviceGSP()).getDataset();
+        DatasetGraph dsg = GSP.service(ServerCtl.serviceGSP()).getDataset();
         long c = Iter.count(dsg.find());
         assertEquals(3, c);
     }
@@ -94,7 +94,7 @@ public class TestFileUpload extends AbstractFusekiTest {
         x.add("D.trig", "<http://example/g> { <http://example/s> <http://example/p> 123,456 }", "text/plain");
         x.send("POST");
 
-        DatasetGraph dsg = GSP.request(ServerCtl.serviceGSP()).getDataset();
+        DatasetGraph dsg = GSP.service(ServerCtl.serviceGSP()).getDataset();
         assertEquals(1, dsg.getDefaultGraph().size());
         assertEquals(2, dsg.getUnionGraph().size());
     }

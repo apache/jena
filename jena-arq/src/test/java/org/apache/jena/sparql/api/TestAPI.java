@@ -88,48 +88,46 @@ public class TestAPI
 
     @Test public void testInitialBindingsConstruct1()
     {
-        try(QueryExecution qExec = makeQExecution("CONSTRUCT {?s ?p ?z} {?s ?p 'x1'}")) {
-            QuerySolutionMap init = new QuerySolutionMap() ;
-            init.add("z", m.createLiteral("zzz"));
-
-            qExec.setInitialBinding(init) ;
+        QuerySolutionMap init = new QuerySolutionMap() ;
+        init.add("z", m.createLiteral("zzz"));
+        String qs = "CONSTRUCT {?s ?p ?z} {?s ?p 'x1'}";
+        try ( QueryExecution qExec = QueryExecution.create()
+                .query(qs)
+                .model(m)
+                .initialBinding(init)
+                .build() ) {
             Model r = qExec.execConstruct() ;
-
             assertTrue("Empty model", r.size() > 0 ) ;
-
             Property p1 = m.createProperty(ns+"p1") ;
-
             assertTrue("Empty model", r.contains(null,p1, init.get("z"))) ;
         }
     }
 
     @Test public void testInitialBindingsConstruct2()
     {
-        try(QueryExecution qExec = makeQExecution("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }")) {
-            QuerySolutionMap init = new QuerySolutionMap() ;
-            init.add("o", m.createLiteral("x1"));
-
-            qExec.setInitialBinding(init) ;
+        QuerySolutionMap init = new QuerySolutionMap() ;
+        init.add("o", m.createLiteral("x1"));
+        String qs = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
+        try ( QueryExecution qExec = QueryExecution.create().query(qs).model(m)
+                .initialBinding(init)
+                .build() ) {
             Model r = qExec.execConstruct() ;
-
             assertTrue("Empty model", r.size() > 0 ) ;
-
             Property p1 = m.createProperty(ns+"p1") ;
-
             assertTrue("Empty model", r.contains(null, p1, init.get("x1"))) ;
         }
     }
 
-    // The original test (see commented out "assertSame) is test is now bogus.
+    // The original test (see commented out "assertSame) in the test is now bogus.
     // DatasetImpl no longer caches the default model as that caused problems.
     //
     // This is testing that the model for the resource in the result is the
     // same object as the model supplied to the query.
-    // "Same" here means "same contents" includign blank nodes.
+    // "Same" here means "same contents" including blank nodes.
     //
     // it used to be that this tested whether they were the same object.
-    // That is dubious and no longer true even for DatasetImpl (teh default mode
-    // is not cached but recreated on demand so theer are no problems with
+    // That is dubious and no longer true even for DatasetImpl (the default mode
+    // is not cached but recreated on demand so there are no problems with
     // transaction boundaries).
     //
     // Left as an active test so the assumption is tested (it has been true for
@@ -140,11 +138,13 @@ public class TestAPI
 
     @Test public void test_API1()
     {
-        try(QueryExecution qExec = makeQExecution("SELECT * {?s ?p ?o}")) {
+        String qs = "SELECT * {?s ?p ?o}";
+        try ( QueryExecution qExec = QueryExecution.create().query(qs).model(m)
+                .build() ) {
             ResultSet rs = qExec.execSelect() ;
             assertTrue("No results", rs.hasNext()) ;
-            QuerySolution qs = rs.nextSolution() ;
-            Resource qr = qs.getResource("s") ;
+            QuerySolution qSoln = rs.nextSolution() ;
+            Resource qr = qSoln.getResource("s") ;
             //assertSame("Not the same model as queried", qr.getModel(), m) ;
             Set<Statement> s1 = qr.getModel().listStatements().toSet() ;
             Set<Statement> s2 = m.listStatements().toSet() ;
@@ -170,33 +170,41 @@ public class TestAPI
 
     @Test public void testInitialBindings1()
     {
-        QueryExecution qExec = makeQExecution("SELECT * {?s ?p ?o}") ;
         QuerySolutionMap init = new QuerySolutionMap() ;
         init.add("o", m.createLiteral("y1"));
-        qExec.setInitialBinding(init) ;
-        int count = queryAndCount(qExec) ;
-        assertEquals("Initial binding didn't restrict query properly", 1, count) ;
+        String qs = "SELECT * {?s ?p ?o}";
+        try ( QueryExecution qExec = QueryExecution.create().query(qs).model(m)
+                .initialBinding(init)
+                .build() ) {
+            int count = queryAndCount(qExec) ;
+            assertEquals("Initial binding didn't restrict query properly", 1, count) ;
+        }
     }
 
     @Test public void testInitialBindings2()
     {
-        QueryExecution qExec = makeQExecution("SELECT * {?s ?p ?o}") ;
         QuerySolutionMap init = new QuerySolutionMap() ;
         init.add("z", m.createLiteral("zzz"));
-        qExec.setInitialBinding(init) ;
-        int count = queryAndCount(qExec) ;
-        assertEquals("Initial binding restricted query improperly", 3, count) ;
+        String qs = "SELECT * {?s ?p ?o}";
+        try ( QueryExecution qExec = QueryExecution.create().query(qs).model(m)
+                .initialBinding(init)
+                .build() ) {
+            int count = queryAndCount(qExec) ;
+            assertEquals("Initial binding restricted query improperly", 3, count) ;
+        }
     }
 
     @Test public void testInitialBindings3()
     {
-        try(QueryExecution qExec = makeQExecution("SELECT * {?s ?p 'x1'}")) {
-            QuerySolutionMap init = new QuerySolutionMap() ;
-            init.add("z", m.createLiteral("zzz"));
-            qExec.setInitialBinding(init) ;
+        QuerySolutionMap init = new QuerySolutionMap() ;
+        init.add("z", m.createLiteral("zzz"));
+        String qs = "SELECT * {?s ?p 'x1'}";
+        try ( QueryExecution qExec = QueryExecution.create().query(qs).model(m)
+                .initialBinding(init)
+                .build() ) {
             ResultSet rs = qExec.execSelect() ;
-            QuerySolution qs = rs.nextSolution() ;
-            assertTrue("Initial setting not set correctly now", qs.getLiteral("z").getLexicalForm().equals("zzz")) ;
+            QuerySolution qSoln= rs.nextSolution() ;
+            assertTrue("Initial setting not set correctly now", qSoln.getLiteral("z").getLexicalForm().equals("zzz")) ;
         }
     }
 
@@ -215,15 +223,15 @@ public class TestAPI
             "}";
 
         Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
-        try(QueryExecution qexec = QueryExecutionFactory.create(query, m)) {
-            QuerySolutionMap map = new QuerySolutionMap();
-            map.add("this", OWL.Thing);
-            qexec.setInitialBinding(map);
+        QuerySolutionMap map = new QuerySolutionMap();
+        map.add("this", OWL.Thing);
 
-            ResultSet rs = qexec.execSelect();
+        try ( QueryExecution qExec = QueryExecution.create().query(queryString).model(m)
+                .initialBinding(map)
+                .build() ) {
+            ResultSet rs = qExec.execSelect();
             while(rs.hasNext()) {
                 QuerySolution qs = rs.nextSolution();
-                //System.out.println("Result: " + qs);
             }
         }
     }
@@ -607,14 +615,8 @@ public class TestAPI
         }
     }
 
-    private QueryExecution makeQExecution(String queryString) {
-        Query q = QueryFactory.create(queryString);
-        QueryExecution qExec = QueryExecutionFactory.create(q, m);
-        return qExec;
-    }
-
     private int queryAndCount(String queryString) {
-        QueryExecution qExec = makeQExecution(queryString);
+        QueryExecution qExec = QueryExecution.create().query(queryString).model(m).build();
         return queryAndCount(qExec);
     }
 

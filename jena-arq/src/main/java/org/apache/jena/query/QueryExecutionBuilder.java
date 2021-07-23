@@ -27,6 +27,7 @@ import java.util.function.Consumer;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
@@ -43,10 +44,7 @@ import org.apache.jena.sparql.util.Symbol;
 public class QueryExecutionBuilder {
 
     /** Create a new builder of {@link QueryExecution} for a local dataset. */
-    public static QueryExecutionBuilder newBuilder() {
-        QueryExecutionBuilder builder = new QueryExecutionBuilder();
-        return builder;
-    }
+    public static QueryExecutionBuilder newBuilder() { return new QueryExecutionBuilder(); }
 
     private final QueryExecBuilder builder;
 
@@ -100,11 +98,13 @@ public class QueryExecutionBuilder {
         return this;
     }
 
+    /** Prefer {@link #substitution(Binding)} which substitutes variables for values in the the query before execution. */
     public QueryExecutionBuilder initialBinding(Binding binding) {
         builder.initialBinding(binding);
         return this;
     }
 
+    /** Prefer {@link #substitution(QuerySolution)} which substitutes variables for values in the the query before execution. */
     public QueryExecutionBuilder initialBinding(QuerySolution querySolution) {
         if ( querySolution != null ) {
             Binding binding = BindingLib.toBinding(querySolution);
@@ -113,16 +113,38 @@ public class QueryExecutionBuilder {
         return this;
     }
 
+    public QueryExecutionBuilder substitution(QuerySolution querySolution) {
+        if ( querySolution != null ) {
+            Binding binding = BindingLib.toBinding(querySolution);
+            builder.substitution(binding);
+        }
+        return this;
+    }
+
+    public QueryExecutionBuilder substitution(Binding binding) {
+        builder.substitution(binding);
+        return this;
+    }
+
+    public QueryExecutionBuilder substitution(String varName, RDFNode value) {
+        Var var = Var.alloc(varName);
+        Node val = value.asNode();
+        builder.substitution(var, val);
+        return this;
+    }
+
     public QueryExecutionBuilder timeout(long value, TimeUnit timeUnit) {
         builder.timeout(value, timeUnit);
         return this;
     }
 
+    /** The time-to-first result timeout. */
     public QueryExecutionBuilder initialTimeout(long value, TimeUnit timeUnit) {
         builder.initialTimeout(value, timeUnit);
         return this;
     }
 
+    /** The overall, start-to-finish timeout, to go with an initial timeout. */
     public QueryExecutionBuilder overallTimeout(long value, TimeUnit timeUnit) {
         builder.overallTimeout(value, timeUnit);
         return this;

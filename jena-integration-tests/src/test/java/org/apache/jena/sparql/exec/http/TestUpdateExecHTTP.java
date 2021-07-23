@@ -68,8 +68,7 @@ public class TestUpdateExecHTTP {
     }
 
     private static void clear() {
-        UpdateExecHTTP.newBuilder()
-            .service(service())
+        UpdateExecHTTP.service(service())
             .updateString("CLEAR ALL")
             .build()
             .execute();
@@ -80,14 +79,13 @@ public class TestUpdateExecHTTP {
 
 
     @Test public void update_1() {
-        UpdateExecHTTP uExec = UpdateExecHTTP.newBuilder()
-            .service(service())
+        UpdateExecHTTP uExec = UpdateExecHTTP.service(service())
             .sendMode(UpdateSendMode.systemDefault)
             .updateString("INSERT DATA { <x:s> <x:p> 234 } ")
             .build();
         uExec.execute();
         try ( QueryExecHTTP qExec = QueryExecHTTP.newBuilder()
-                .service(serviceQuery())
+                .endpoint(serviceQuery())
                 .queryString("ASK { ?s ?p 234 }")
                 .build()) {
             boolean b = qExec.ask();
@@ -98,13 +96,13 @@ public class TestUpdateExecHTTP {
     @Test public void update_form_2() {
         UpdateRequest req = UpdateFactory.create("INSERT DATA { <x:s> <x:p> 567 } ");
         UpdateExecHTTP uExec = UpdateExecHTTP.newBuilder()
-            .service(service())
+            .endpoint(service())
             .sendMode(UpdateSendMode.asPostForm)
             .update(req)
             .build();
         uExec.execute();
         try ( QueryExecHTTP qExec = QueryExecHTTP.newBuilder()
-                .service(serviceQuery())
+                .endpoint(serviceQuery())
                 .queryString("ASK { ?s ?p 567 }")
                 .build()) {
             boolean b = qExec.ask();
@@ -127,7 +125,7 @@ public class TestUpdateExecHTTP {
         {
             UpdateRequest req1 = UpdateFactory.create("INSERT DATA { GRAPH <http://example/gg> { <x:s> <x:p> 567 } }");
             UpdateExecHTTP uExec1 = UpdateExecHTTP.newBuilder()
-                .service(service()).update(req1)
+                .endpoint(service()).update(req1)
                 .build();
             uExec1.execute();
         }
@@ -135,14 +133,14 @@ public class TestUpdateExecHTTP {
             // Should apply the change because USING = http://example/gg
             UpdateRequest req2 = UpdateFactory.create("INSERT { <x:s1> <x:p1> ?o } WHERE { ?s ?p ?o }");
             UpdateExecHTTP uExec2 = UpdateExecHTTP.newBuilder()
-                .service(service()).update(req2)
+                .endpoint(service()).update(req2)
                 .addUsingGraphURI("http://example/gg")
                 .build();
             uExec2.execute();
         }
 
         try ( QueryExecHTTP qExec = QueryExecHTTP.newBuilder()
-                .service(serviceQuery())
+                .endpoint(serviceQuery())
                 .queryString("ASK { ?s ?p 567 }")
                 .build()) {
             boolean b = qExec.ask();

@@ -69,7 +69,7 @@ public class TestAuthRemote {
         FusekiTest.expect401(()->{
             try ( QueryExec qexec = QueryExecHTTP.newBuilder()
                     //.httpClient(hc)
-                    .service(env.datasetURL())
+                    .endpoint(env.datasetURL())
                     .queryString("ASK{}")
                     .build()) {
                 qexec.ask();
@@ -81,7 +81,7 @@ public class TestAuthRemote {
     public void auth_qe_good_auth() {
         try ( QueryExec qexec = QueryExecHTTP.newBuilder()
                 .httpClient(env.httpClientAuthGood())
-                .service(env.datasetURL())
+                .endpoint(env.datasetURL())
                 .queryString("ASK{}")
                 .build()) {
             qexec.ask();
@@ -93,7 +93,7 @@ public class TestAuthRemote {
         FusekiTest.expect401(()->{
             try ( QueryExec qexec = QueryExecHTTP.newBuilder()
                     .httpClient(env.httpClientAuthBad())
-                    .service(env.datasetURL())
+                    .endpoint(env.datasetURL())
                     .queryString("ASK{}")
                     .build()) {
                 qexec.ask();
@@ -108,7 +108,7 @@ public class TestAuthRemote {
             try ( QueryExec qexec = QueryExecHTTP.newBuilder()
                     // retry blindly.
                     .httpClient(EnvTest.httpClient(env.authenticatorBadRetries()))
-                    .service(env.datasetURL())
+                    .endpoint(env.datasetURL())
                     .queryString("ASK{}")
                     .build()) {
                 qexec.ask();
@@ -122,7 +122,7 @@ public class TestAuthRemote {
     public void auth_update_no_auth() {
         FusekiTest.expect401(()->
             UpdateExecHTTP.newBuilder()
-                .service(env.datasetURL())
+                .endpoint(env.datasetURL())
                 .updateString("INSERT DATA { <x:s> <x:p> <x:o> }")
                 .build()
                 .execute()
@@ -133,7 +133,7 @@ public class TestAuthRemote {
     public void auth_update_good_auth() {
         UpdateExecHTTP.newBuilder()
             .httpClient(env.httpClientAuthGood())
-            .service(env.datasetURL())
+            .endpoint(env.datasetURL())
             .updateString("INSERT DATA { <x:s> <x:p> <x:o> }")
             .build()
             .execute();
@@ -144,7 +144,7 @@ public class TestAuthRemote {
         FusekiTest.expect401(()->
             UpdateExecHTTP.newBuilder()
                 .httpClient(env.httpClientAuthBad())
-                .service(env.datasetURL())
+                .endpoint(env.datasetURL())
                 .updateString("INSERT DATA { <x:s> <x:p> <x:o> }")
                 .build()
                 .execute()
@@ -156,20 +156,20 @@ public class TestAuthRemote {
     @Test
     public void auth_gsp_no_auth() {
         FusekiTest.expect401(()->{
-            GSP.request(env.datasetURL()).defaultGraph().GET();
+            GSP.service(env.datasetURL()).defaultGraph().GET();
         });
     }
 
     @Test
     public void auth_gsp_good_auth() {
-        GSP.request(env.datasetURL()).httpClient(env.httpClientAuthGood()).defaultGraph().GET();
+        GSP.service(env.datasetURL()).httpClient(env.httpClientAuthGood()).defaultGraph().GET();
     }
 
     @Test
     public void auth_gsp_bad_auth() {
         // 401 because we didn't authenticate.
         FusekiTest.expect401(()->
-            GSP.request(env.datasetURL()).httpClient(env.httpClientAuthBad()).defaultGraph().GET()
+            GSP.service(env.datasetURL()).httpClient(env.httpClientAuthBad()).defaultGraph().GET()
         );
     }
 
@@ -270,7 +270,7 @@ public class TestAuthRemote {
 
     private void exec_register_test() {
         try (QueryExec qExec = QueryExecHTTP.newBuilder()
-                .service(env.datasetURL())
+                .endpoint(env.datasetURL())
                 .queryString("ASK{  }")
                 .build()) {
             boolean b = qExec.ask();
@@ -406,12 +406,12 @@ public class TestAuthRemote {
         try {
             // Component level
             UpdateExecHTTP.newBuilder()
-                .service(env.datasetURL())
+                .endpoint(env.datasetURL())
                 .updateString("INSERT DATA { <x:s> <x:p> <x:o> }")
                 .build()
                 .execute();
             try ( QueryExec qExec = QueryExecHTTP.newBuilder()
-                    .service(env.datasetURL())
+                    .endpoint(env.datasetURL())
                     .queryString("ASK{ <x:s> <x:p> <x:o> }")
                     .build()){
                 boolean b = qExec.ask();
@@ -448,13 +448,13 @@ public class TestAuthRemote {
         Graph graph = GraphFactory.createDefaultGraph();
         graph.add(triple);
 
-        GSP.request(env.datasetURL())
+        GSP.service(env.datasetURL())
             .httpHeader(HttpNames.hAuthorization, HttpLib.basicAuth(user, password))
             .defaultGraph()
             .POST(graph);
         // By query.
         try ( QueryExec qExec = QueryExecHTTP.newBuilder()
-                .service(env.datasetURL())
+                .endpoint(env.datasetURL())
                 .queryString("ASK{ <x:s> <x:p> <x:o> }")
                 .httpHeader(HttpNames.hAuthorization, HttpLib.basicAuth(user, password))
                 .build()) {
@@ -463,7 +463,7 @@ public class TestAuthRemote {
         }
         // By GSP
         Graph graph2 =
-            GSP.request(env.datasetURL())
+            GSP.service(env.datasetURL())
                 .httpHeader(HttpNames.hAuthorization, HttpLib.basicAuth(user, password))
                 .defaultGraph()
                 .GET();

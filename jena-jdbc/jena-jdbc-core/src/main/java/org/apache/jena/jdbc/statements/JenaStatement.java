@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Abstract Jena JDBC implementation of a statement that only permits read
  * operations
- * 
+ *
  */
 public abstract class JenaStatement implements Statement {
 
@@ -86,7 +86,7 @@ public abstract class JenaStatement implements Statement {
 
     /**
      * Creates a new statement
-     * 
+     *
      * @param connection
      *            Connection
      * @throws SQLException
@@ -99,7 +99,7 @@ public abstract class JenaStatement implements Statement {
 
     /**
      * Creates a new statement
-     * 
+     *
      * @param connection
      *            Connection
      * @param type
@@ -116,7 +116,7 @@ public abstract class JenaStatement implements Statement {
      *            Transaction level
      * @throws SQLException
      *             Thrown if there is an error with the statement parameters
-     * 
+     *
      */
     public JenaStatement(JenaConnection connection, int type, int fetchDir, int fetchSize, int holdability, boolean autoCommit,
             int transactionLevel) throws SQLException {
@@ -137,7 +137,7 @@ public abstract class JenaStatement implements Statement {
      * Gets the underlying {@link JenaConnection} implementation, useful for
      * accessing Jena JDBC specific information such as desired JDBC
      * compatibility level
-     * 
+     *
      * @return Underlying Jena Connection
      */
     public JenaConnection getJenaConnection() {
@@ -153,7 +153,7 @@ public abstract class JenaStatement implements Statement {
      * level for this statement. This allows you to change the compatibility
      * level on a per-query basis if so desired.
      * </p>
-     * 
+     *
      * @return Compatibility level
      */
     public int getJdbcCompatibilityLevel() {
@@ -175,7 +175,7 @@ public abstract class JenaStatement implements Statement {
      * Changing the level may not effect existing open objects, behaviour in
      * this case will be implementation specific.
      * </p>
-     * 
+     *
      * @param level
      *            Compatibility level
      */
@@ -288,6 +288,7 @@ public abstract class JenaStatement implements Statement {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private boolean executeQuery(Query q) throws SQLException {
         updateCount = NOT_AN_UPDATE;
         if (this.isClosed())
@@ -414,7 +415,7 @@ public abstract class JenaStatement implements Statement {
     /**
      * Helper method which derived classes must implement to provide a query
      * execution
-     * 
+     *
      * @param q
      *            Query
      * @return Query Execution
@@ -484,7 +485,7 @@ public abstract class JenaStatement implements Statement {
     /**
      * Helper method which derived classes must implement to provide an update
      * processor
-     * 
+     *
      * @param u
      *            Update
      * @return Update Processor
@@ -705,7 +706,7 @@ public abstract class JenaStatement implements Statement {
     /**
      * Helper method for use in execute() method implementations to set the
      * current results
-     * 
+     *
      * @param results
      *            Results
      * @throws SQLException
@@ -753,7 +754,7 @@ public abstract class JenaStatement implements Statement {
 
     /**
      * Helper method which derived classes may use to set the update count
-     * 
+     *
      * @param count
      *            Update Count
      */
@@ -768,7 +769,7 @@ public abstract class JenaStatement implements Statement {
 
     /**
      * Helper method that derived classes may use to set warnings
-     * 
+     *
      * @param warning
      *            Warning
      */
@@ -785,7 +786,7 @@ public abstract class JenaStatement implements Statement {
 
     /**
      * Helper method that derived classes may use to set warnings
-     * 
+     *
      * @param warning
      *            Warning
      */
@@ -795,7 +796,7 @@ public abstract class JenaStatement implements Statement {
 
     /**
      * Helper method that derived classes may use to set warnings
-     * 
+     *
      * @param warning
      *            Warning
      * @param cause
@@ -834,7 +835,7 @@ public abstract class JenaStatement implements Statement {
     /**
      * Helper method which checks whether a given fetch direction is valid
      * throwing an error if it is not
-     * 
+     *
      * @param dir
      *            Fetch Direction
      * @throws SQLException

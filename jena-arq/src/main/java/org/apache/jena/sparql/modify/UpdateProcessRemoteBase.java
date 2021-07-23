@@ -27,7 +27,6 @@ import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.http.HttpParams ;
 import org.apache.jena.sparql.engine.http.Params ;
-import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
 import org.apache.jena.sparql.engine.http.Service_AHC;
 import org.apache.jena.sparql.exec.UpdateExec;
 import org.apache.jena.sparql.exec.http.Service;

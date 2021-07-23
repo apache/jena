@@ -399,7 +399,7 @@ public class TestEmbeddedFuseki {
     }
 
     /*package*/ static void query(String URL, String query, Consumer<QueryExec> body) {
-        try (QueryExec qExec = QueryExecHTTP.newBuilder().service(URL).queryString(query).build() ) {
+        try (QueryExec qExec = QueryExecHTTP.newBuilder().endpoint(URL).queryString(query).build() ) {
             body.accept(qExec);
         }
     }

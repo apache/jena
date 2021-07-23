@@ -136,7 +136,7 @@ public class Service {
 
         // Build the execution
         QueryExecHTTP qExec = QueryExecHTTP.newBuilder()
-                .service(serviceURL)
+                .endpoint(serviceURL)
                 .timeout(timeoutMillis, TimeUnit.MILLISECONDS)
                 .query(query)
                 .params(serviceParams)

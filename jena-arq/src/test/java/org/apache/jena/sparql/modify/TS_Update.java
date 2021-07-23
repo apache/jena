@@ -29,7 +29,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestUpdateOperations.class
     , TestUpdateCompare.class
     , TestUpdateWriter.class
-    , TestBuildUpdate.class
+    , TestUpdateBuild.class
 })
 public class TS_Update
 {

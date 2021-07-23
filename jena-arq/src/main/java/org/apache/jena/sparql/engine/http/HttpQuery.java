@@ -51,8 +51,9 @@ import org.slf4j.LoggerFactory ;
  * for doing a query and presenting the results in an API fashion.
  *
  * If the query string is large, then HTTP POST is used.
+ * @deprecated Use the QueryExecutionHTTP builder. {@code QueryExecutionHTTP.create()....execute()}
  */
-
+@Deprecated
 public class HttpQuery extends Params {
     static final Logger log = LoggerFactory.getLogger(HttpQuery.class.getName());
 

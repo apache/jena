@@ -125,6 +125,7 @@ public class QueryExecutionBuilder0 {
         return this;
     }
 
+    @SuppressWarnings("deprecation")
     public QueryExecution build() {
         Objects.requireNonNull(query, "Query for QueryExecution");
 

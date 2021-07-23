@@ -47,4 +47,9 @@ public class UpdateExecutionHTTPBuilder extends ExecUpdateHTTPBuilder<UpdateExec
                                                   sendMode, cxt);
         return new UpdateExecutionHTTP(uExec);
     }
+
+    /** Short form for {@code build().execute()} */
+    public void execute() {
+        build().execute();
+    }
 }

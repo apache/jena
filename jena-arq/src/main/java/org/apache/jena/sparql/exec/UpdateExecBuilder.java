@@ -135,9 +135,14 @@ public class UpdateExecBuilder {
     }
 
     // Abbreviated forms
+
+    public void execute() {
+        build().execute();
+    }
+
     public void execute(DatasetGraph dsg) {
         dataset(dsg);
-        build().execute();
+        execute();
     }
 
     private void add(UpdateRequest request) {
@@ -147,6 +152,4 @@ public class UpdateExecBuilder {
     private void add(Update update) {
         this.updateRequest.add(update);
     }
-
-
 }
